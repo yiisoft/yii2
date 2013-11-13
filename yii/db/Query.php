@@ -41,12 +41,12 @@ class Query extends Component
 
 	/**
 	 * Sort ascending
-	 * @see orderBy
+	 * @see orderBy()
 	 */
 	const SORT_ASC = false;
 	/**
 	 * Sort descending
-	 * @see orderBy
+	 * @see orderBy()
 	 */
 	const SORT_DESC = true;
 

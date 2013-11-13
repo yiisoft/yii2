@@ -48,6 +48,7 @@ class Schema extends \yii\db\Schema
 		'double precision' => self::TYPE_DECIMAL,
 		'inet' => self::TYPE_STRING,
 		'smallint' => self::TYPE_SMALLINT,
+		'int4' => self::TYPE_INTEGER,
 		'integer' => self::TYPE_INTEGER,
 		'bigint' => self::TYPE_BIGINT,
 		'interval' => self::TYPE_STRING,
@@ -127,6 +128,28 @@ class Schema extends \yii\db\Schema
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Determines the PDO type for the given PHP data value.
+	 * @param mixed $data the data whose PDO type is to be determined
+	 * @return integer the PDO type
+	 * @see http://www.php.net/manual/en/pdo.constants.php
+	 */
+	public function getPdoType($data)
+	{
+		// php type => PDO type
+		static $typeMap = [
+			// https://github.com/yiisoft/yii2/issues/1115
+			// Cast boolean to integer values to work around problems with PDO casting false to string '' https://bugs.php.net/bug.php?id=33876
+			'boolean' => \PDO::PARAM_INT,
+			'integer' => \PDO::PARAM_INT,
+			'string' => \PDO::PARAM_STR,
+			'resource' => \PDO::PARAM_LOB,
+			'NULL' => \PDO::PARAM_NULL,
+		];
+		$type = gettype($data);
+		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
 	}
 
 	/**
@@ -281,7 +304,7 @@ SQL;
 			$table->columns[$column->name] = $column;
 			if ($column->isPrimaryKey === true) {
 				$table->primaryKey[] = $column->name;
-				if ($table->sequenceName === null && preg_match("/nextval\('\w+'(::regclass)?\)/", $column->defaultValue) === 1) {
+				if ($table->sequenceName === null && preg_match("/nextval\\('\"?\\w+\"?'(::regclass)?\\)/", $column->defaultValue) === 1) {
 					$table->sequenceName = preg_replace(['/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'], '', $column->defaultValue);
 				}
 			}
@@ -303,7 +326,7 @@ SQL;
 		$column->dbType = $info['data_type'];
 		$column->defaultValue = $info['column_default'];
 		$column->enumValues = explode(',', str_replace(["''"], ["'"], $info['enum_values']));
-		$column->unsigned = false; // has no meanining in PG
+		$column->unsigned = false; // has no meaning in PG
 		$column->isPrimaryKey = $info['is_pkey'];
 		$column->name = $info['column_name'];
 		$column->precision = $info['numeric_precision'];

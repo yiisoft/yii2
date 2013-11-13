@@ -67,13 +67,15 @@ class Command extends \yii\base\Component
 	 */
 	public $fetchMode = \PDO::FETCH_ASSOC;
 	/**
+	 * @var array the parameters (name => value) that are bound to the current PDO statement.
+	 * This property is maintained by methods such as [[bindValue()]].
+	 * Do not modify it directly.
+	 */
+	public $params = [];
+	/**
 	 * @var string the SQL statement that this command represents
 	 */
 	private $_sql;
-	/**
-	 * @var array the parameter log information (name => value)
-	 */
-	private $_params = [];
 
 	/**
 	 * Returns the SQL statement for this command.
@@ -95,7 +97,7 @@ class Command extends \yii\base\Component
 		if ($sql !== $this->_sql) {
 			$this->cancel();
 			$this->_sql = $this->db->quoteSql($sql);
-			$this->_params = [];
+			$this->params = [];
 		}
 		return $this;
 	}
@@ -108,11 +110,11 @@ class Command extends \yii\base\Component
 	 */
 	public function getRawSql()
 	{
-		if (empty($this->_params)) {
+		if (empty($this->params)) {
 			return $this->_sql;
 		} else {
 			$params = [];
-			foreach ($this->_params as $name => $value) {
+			foreach ($this->params as $name => $value) {
 				if (is_string($value)) {
 					$params[$name] = $this->db->quoteValue($value);
 				} elseif ($value === null) {
@@ -190,7 +192,7 @@ class Command extends \yii\base\Component
 		} else {
 			$this->pdoStatement->bindParam($name, $value, $dataType, $length, $driverOptions);
 		}
-		$this->_params[$name] =& $value;
+		$this->params[$name] =& $value;
 		return $this;
 	}
 
@@ -212,7 +214,7 @@ class Command extends \yii\base\Component
 			$dataType = $this->db->getSchema()->getPdoType($value);
 		}
 		$this->pdoStatement->bindValue($name, $value, $dataType);
-		$this->_params[$name] = $value;
+		$this->params[$name] = $value;
 		return $this;
 	}
 
@@ -239,7 +241,7 @@ class Command extends \yii\base\Component
 					$type = $this->db->getSchema()->getPdoType($value);
 				}
 				$this->pdoStatement->bindValue($name, $value, $type);
-				$this->_params[$name] = $value;
+				$this->params[$name] = $value;
 			}
 		}
 		return $this;
@@ -258,7 +260,7 @@ class Command extends \yii\base\Component
 
 		$rawSql = $this->getRawSql();
 
-		Yii::trace($rawSql, __METHOD__);
+		Yii::info($rawSql, __METHOD__);
 
 		if ($sql == '') {
 			return 0;
@@ -362,9 +364,9 @@ class Command extends \yii\base\Component
 		$db = $this->db;
 		$rawSql = $this->getRawSql();
 
-		Yii::trace($rawSql, __METHOD__);
+		Yii::info($rawSql, __METHOD__);
 
-		/** @var $cache \yii\caching\Cache */
+		/** @var \yii\caching\Cache $cache */
 		if ($db->enableQueryCache && $method !== '') {
 			$cache = is_string($db->queryCache) ? Yii::$app->getComponent($db->queryCache) : $db->queryCache;
 		}

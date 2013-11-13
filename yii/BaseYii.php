@@ -63,8 +63,7 @@ class BaseYii
 	 * The array keys are the class names (without leading backslashes), and the array values
 	 * are the corresponding class file paths (or path aliases). This property mainly affects
 	 * how [[autoload()]] works.
-	 * @see import
-	 * @see autoload
+	 * @see autoload()
 	 */
 	public static $classMap = [];
 	/**
@@ -73,8 +72,8 @@ class BaseYii
 	public static $app;
 	/**
 	 * @var array registered path aliases
-	 * @see getAlias
-	 * @see setAlias
+	 * @see getAlias()
+	 * @see setAlias()
 	 */
 	public static $aliases = ['@yii' => __DIR__];
 	/**
@@ -95,7 +94,7 @@ class BaseYii
 	 * ]
 	 * ~~~
 	 *
-	 * @see createObject
+	 * @see createObject()
 	 */
 	public static $objectConfig = [];
 
@@ -136,7 +135,7 @@ class BaseYii
 	 * If this is false and an invalid alias is given, false will be returned by this method.
 	 * @return string|boolean the path corresponding to the alias, false if the root alias is not previously registered.
 	 * @throws InvalidParamException if the alias is invalid while $throwException is true.
-	 * @see setAlias
+	 * @see setAlias()
 	 */
 	public static function getAlias($alias, $throwException = true)
 	{
@@ -219,7 +218,7 @@ class BaseYii
 	 *   actual path first by calling [[getAlias()]].
 	 *
 	 * @throws InvalidParamException if $path is an invalid alias.
-	 * @see getAlias
+	 * @see getAlias()
 	 */
 	public static function setAlias($alias, $path)
 	{
@@ -321,18 +320,12 @@ class BaseYii
 	 * the rest of the name-value pairs in the array will be used to initialize
 	 * the corresponding object properties.
 	 *
-	 * The object type can be either a class name or the [[getAlias()|alias]] of
-	 * the class. For example,
-	 *
-	 * - `app\components\GoogleMap`: fully-qualified namespaced class.
-	 * - `@app/components/GoogleMap`: an alias, used for non-namespaced class.
-	 *
 	 * Below are some usage examples:
 	 *
 	 * ~~~
-	 * $object = \Yii::createObject('@app/components/GoogleMap');
+	 * $object = \Yii::createObject('app\components\GoogleMap');
 	 * $object = \Yii::createObject([
-	 *     'class' => '\app\components\GoogleMap',
+	 *     'class' => 'app\components\GoogleMap',
 	 *     'apiKey' => 'xyz',
 	 * ]);
 	 * ~~~
@@ -374,7 +367,7 @@ class BaseYii
 		}
 
 		if (($n = func_num_args()) > 1) {
-			/** @var $reflection \ReflectionClass */
+			/** @var \ReflectionClass $reflection */
 			if (isset($reflections[$class])) {
 				$reflection = $reflections[$class];
 			} else {
@@ -456,7 +449,7 @@ class BaseYii
 	 * ~~~
 	 * @param string $token token for the code block
 	 * @param string $category the category of this log message
-	 * @see endProfile
+	 * @see endProfile()
 	 */
 	public static function beginProfile($token, $category = 'application')
 	{
@@ -468,7 +461,7 @@ class BaseYii
 	 * This has to be matched with a previous call to [[beginProfile]] with the same category name.
 	 * @param string $token token for the code block
 	 * @param string $category the category of this log message
-	 * @see beginProfile
+	 * @see beginProfile()
 	 */
 	public static function endProfile($token, $category = 'application')
 	{

@@ -34,20 +34,7 @@ class DbDependency extends Dependency
 	/**
 	 * @var array the parameters (name => value) to be bound to the SQL statement specified by [[sql]].
 	 */
-	public $params;
-
-	/**
-	 * Constructor.
-	 * @param string $sql the SQL query whose result is used to determine if the dependency has been changed.
-	 * @param array $params the parameters (name => value) to be bound to the SQL statement specified by [[sql]].
-	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 */
-	public function __construct($sql, $params = [], $config = [])
-	{
-		$this->sql = $sql;
-		$this->params = $params;
-		parent::__construct($config);
-	}
+	public $params = [];
 
 	/**
 	 * Generates the data needed to determine if dependency has been changed.
@@ -61,6 +48,9 @@ class DbDependency extends Dependency
 		$db = Yii::$app->getComponent($this->db);
 		if (!$db instanceof Connection) {
 			throw new InvalidConfigException("DbDependency::db must be the application component ID of a DB connection.");
+		}
+		if ($this->sql === null) {
+			throw new InvalidConfigException("DbDependency::sql must be set.");
 		}
 
 		if ($db->enableQueryCache) {

@@ -29,6 +29,8 @@ use yii\helpers\Inflector;
  * @property mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
  * returned if the primary key is composite or `$asArray` is true. A string is returned otherwise (null will be
  * returned if the key value is null). This property is read-only.
+ * @property array $populatedRelations An array of relation data indexed by relation names. This property is
+ * read-only.
  * @property mixed $primaryKey The primary key value. An array (column name => column value) is returned if
  * the primary key is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
  * the key value is null). This property is read-only.
@@ -107,7 +109,7 @@ class ActiveRecord extends Model
 	/**
 	 * @var array related models indexed by the relation names
 	 */
-	private $_related;
+	private $_related = [];
 
 
 	/**
@@ -374,22 +376,21 @@ class ActiveRecord extends Model
 	 * This method is overridden so that attributes and related objects can be accessed like properties.
 	 * @param string $name property name
 	 * @return mixed property value
-	 * @see getAttribute
+	 * @see getAttribute()
 	 */
 	public function __get($name)
 	{
 		if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
 			return $this->_attributes[$name];
-		} elseif (isset($this->getTableSchema()->columns[$name])) {
+		} elseif ($this->hasAttribute($name)) {
 			return null;
 		} else {
-			$t = strtolower($name);
-			if (isset($this->_related[$t]) || $this->_related !== null && array_key_exists($t, $this->_related)) {
-				return $this->_related[$t];
+			if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
+				return $this->_related[$name];
 			}
 			$value = parent::__get($name);
 			if ($value instanceof $this->relationClassName) {
-				return $this->_related[$t] = $value->multiple ? $value->all() : $value->one();
+				return $this->_related[$name] = $value->multiple ? $value->all() : $value->one();
 			} else {
 				return $value;
 			}
@@ -434,12 +435,11 @@ class ActiveRecord extends Model
 	 */
 	public function __unset($name)
 	{
-		if (isset($this->getTableSchema()->columns[$name])) {
+		if ($this->hasAttribute($name)) {
 			unset($this->_attributes[$name]);
 		} else {
-			$t = strtolower($name);
-			if (isset($this->_related[$t])) {
-				unset($this->_related[$t]);
+			if (isset($this->_related[$name])) {
+				unset($this->_related[$name]);
 			} else {
 				parent::__unset($name);
 			}
@@ -527,12 +527,31 @@ class ActiveRecord extends Model
 	/**
 	 * Populates the named relation with the related records.
 	 * Note that this method does not check if the relation exists or not.
-	 * @param string $name the relation name (case-insensitive)
+	 * @param string $name the relation name (case-sensitive)
 	 * @param ActiveRecord|array|null the related records to be populated into the relation.
 	 */
 	public function populateRelation($name, $records)
 	{
-		$this->_related[strtolower($name)] = $records;
+		$this->_related[$name] = $records;
+	}
+
+	/**
+	 * Check whether the named relation has been populated with records.
+	 * @param string $name the relation name (case-sensitive)
+	 * @return bool whether relation has been populated with records.
+	 */
+	public function isRelationPopulated($name)
+	{
+		return array_key_exists($name, $this->_related);
+	}
+
+	/**
+	 * Returns all populated relations.
+	 * @return array an array of relation data indexed by relation names.
+	 */
+	public function getPopulatedRelations()
+	{
+		return $this->_related;
 	}
 
 	/**
@@ -546,12 +565,22 @@ class ActiveRecord extends Model
 	}
 
 	/**
+	 * Returns a value indicating whether the model has an attribute with the specified name.
+	 * @param string $name the name of the attribute
+	 * @return boolean whether the model has an attribute with the specified name.
+	 */
+	public function hasAttribute($name)
+	{
+		return isset($this->_attributes[$name]) || isset($this->getTableSchema()->columns[$name]);
+	}
+
+	/**
 	 * Returns the named attribute value.
 	 * If this record is the result of a query and the attribute is not loaded,
 	 * null will be returned.
 	 * @param string $name the attribute name
 	 * @return mixed the attribute value. Null if the attribute is not set or does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function getAttribute($name)
 	{
@@ -563,7 +592,7 @@ class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @param mixed $value the attribute value.
 	 * @throws InvalidParamException if the named attribute does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function setAttribute($name, $value)
 	{
@@ -572,16 +601,6 @@ class ActiveRecord extends Model
 		} else {
 			throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
 		}
-	}
-
-	/**
-	 * Returns a value indicating whether the model has an attribute with the specified name.
-	 * @param string $name the name of the attribute
-	 * @return boolean whether the model has an attribute with the specified name.
-	 */
-	public function hasAttribute($name)
-	{
-		return isset($this->_attributes[$name]) || isset($this->getTableSchema()->columns[$name]);
 	}
 
 	/**
@@ -610,7 +629,7 @@ class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @return mixed the old attribute value. Null if the attribute is not loaded before
 	 * or does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function getOldAttribute($name)
 	{
@@ -622,11 +641,11 @@ class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @param mixed $value the old attribute value.
 	 * @throws InvalidParamException if the named attribute does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function setOldAttribute($name, $value)
 	{
-		if (isset($this->_oldAttributes[$name]) || isset($this->getTableSchema()->columns[$name])) {
+		if (isset($this->_oldAttributes[$name]) || $this->hasAttribute($name)) {
 			$this->_oldAttributes[$name] = $value;
 		} else {
 			throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
@@ -1015,7 +1034,7 @@ class ActiveRecord extends Model
 	/**
 	 * Sets the value indicating whether the record is new.
 	 * @param boolean $value whether the record is new and should be inserted when calling [[save()]].
-	 * @see getIsNewRecord
+	 * @see getIsNewRecord()
 	 */
 	public function setIsNewRecord($value)
 	{
@@ -1142,7 +1161,7 @@ class ActiveRecord extends Model
 			$this->_attributes[$name] = $record->_attributes[$name];
 		}
 		$this->_oldAttributes = $this->_attributes;
-		$this->_related = null;
+		$this->_related = [];
 		return true;
 	}
 
@@ -1270,6 +1289,8 @@ class ActiveRecord extends Model
 			$relation = $this->$getter();
 			if ($relation instanceof $this->relationClassName) {
 				return $relation;
+			} else {
+				return null;
 			}
 		} catch (UnknownMethodException $e) {
 			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);
@@ -1288,7 +1309,7 @@ class ActiveRecord extends Model
 	 *
 	 * Note that this method requires that the primary key value is not null.
 	 *
-	 * @param string $name the name of the relationship
+	 * @param string $name the case sensitive name of the relationship
 	 * @param ActiveRecord $model the model to be linked with the current one.
 	 * @param array $extraColumns additional column values to be saved into the pivot table.
 	 * This parameter is only meaningful for a relationship involving a pivot table
@@ -1304,13 +1325,13 @@ class ActiveRecord extends Model
 				throw new InvalidCallException('Unable to link models: both models must NOT be newly created.');
 			}
 			if (is_array($relation->via)) {
-				/** @var $viaRelation ActiveRelation */
+				/** @var ActiveRelation $viaRelation */
 				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
+				/** @var ActiveRecord $viaClass */
 				$viaClass = $viaRelation->modelClass;
 				$viaTable = $viaClass::tableName();
 				// unset $viaName so that it can be reloaded to reflect the change
-				unset($this->_related[strtolower($viaName)]);
+				unset($this->_related[$viaName]);
 			} else {
 				$viaRelation = $relation->via;
 				$viaTable = reset($relation->via->from);
@@ -1366,7 +1387,7 @@ class ActiveRecord extends Model
 	 * The model with the foreign key of the relationship will be deleted if `$delete` is true.
 	 * Otherwise, the foreign key will be set null and the model will be saved without validation.
 	 *
-	 * @param string $name the name of the relationship.
+	 * @param string $name the case sensitive name of the relationship.
 	 * @param ActiveRecord $model the model to be unlinked from the current one.
 	 * @param boolean $delete whether to delete the model that contains the foreign key.
 	 * If false, the model's foreign key will be set null and saved.
@@ -1379,12 +1400,12 @@ class ActiveRecord extends Model
 
 		if ($relation->via !== null) {
 			if (is_array($relation->via)) {
-				/** @var $viaRelation ActiveRelation */
+				/** @var ActiveRelation $viaRelation */
 				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
+				/** @var ActiveRecord $viaClass */
 				$viaClass = $viaRelation->modelClass;
 				$viaTable = $viaClass::tableName();
-				unset($this->_related[strtolower($viaName)]);
+				unset($this->_related[$viaName]);
 			} else {
 				$viaRelation = $relation->via;
 				$viaTable = reset($relation->via->from);
@@ -1427,7 +1448,7 @@ class ActiveRecord extends Model
 		if (!$relation->multiple) {
 			unset($this->_related[$name]);
 		} elseif (isset($this->_related[$name])) {
-			/** @var $b ActiveRecord */
+			/** @var ActiveRecord $b */
 			foreach ($this->_related[$name] as $a => $b) {
 				if ($model->getPrimaryKey() == $b->getPrimaryKey()) {
 					unset($this->_related[$name][$a]);

@@ -16,6 +16,10 @@ use yii\helpers\Json;
 use yii\widgets\BaseListView;
 
 /**
+ * The GridView widget is used to display data in a grid.
+ *
+ * It provides features like sorting, paging and also filtering the data.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -89,10 +93,9 @@ class GridView extends BaseListView
 	 */
 	public $showFooter = false;
 	/**
-	 * @var string|boolean the HTML content to be displayed when [[dataProvider]] does not have any data.
-	 * If false, the grid view will still be displayed (without body content though).
+	 * @var boolean whether to show the grid view if [[dataProvider]] returns no data.
 	 */
-	public $empty = false;
+	public $showOnEmpty = true;
 	/**
 	 * @var array|Formatter the formatter used to format model attribute values into displayable texts.
 	 * This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]]
@@ -342,7 +345,13 @@ class GridView extends BaseListView
 				}
 			}
 		}
-		return "<tbody>\n" . implode("\n", $rows) . "\n</tbody>";
+
+		if (empty($rows)) {
+			$colspan = count($this->columns);
+			return "<tbody>\n<tr><td colspan=\"$colspan\">" . $this->renderEmpty() . "</td></tr>\n</tbody>";
+		} else {
+			return "<tbody>\n" . implode("\n", $rows) . "\n</tbody>";
+		}
 	}
 
 	/**

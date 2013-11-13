@@ -31,7 +31,7 @@ use yii\base\InvalidConfigException;
  * [
  *     'components' => [
  *         'cache' => [
- *             'class' => 'MemCache',
+ *             'class' => 'yii\caching\MemCache',
  *             'servers' => [
  *                 [
  *                     'host' => 'server1',

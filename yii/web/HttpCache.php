@@ -12,7 +12,32 @@ use yii\base\ActionFilter;
 use yii\base\Action;
 
 /**
- * The HttpCache provides functionality for caching via HTTP Last-Modified and Etag headers
+ * The HttpCache provides functionality for caching via HTTP Last-Modified and Etag headers.
+ *
+ * It is an action filter that can be added to a controller and handles the `beforeAction` event.
+ *
+ * To use AccessControl, declare it in the `behaviors()` method of your controller class.
+ * In the following example the filter will be applied to the `list`-action and
+ * the Last-Modified header will contain the date of the last update to the user table in the database.
+ *
+ * ~~~
+ * public function behaviors()
+ * {
+ *     return [
+ *         'httpCache' => [
+ *             'class' => \yii\web\HttpCache::className(),
+ *             'only' => ['list'],
+ *             'lastModified' => function ($action, $params) {
+ *                 $q = new Query();
+ *                 return strtotime($q->from('users')->max('updated_timestamp'));
+ *             },
+ * //            'etagSeed' => function ($action, $params) {
+ * //                return // generate etag seed here
+ * //            }
+ *         ],
+ *     ];
+ * }
+ * ~~~
  *
  * @author Da:Sourcerer <webmaster@dasourcerer.net>
  * @author Qiang Xue <qiang.xue@gmail.com>

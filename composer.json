@@ -65,16 +65,15 @@
 	},
 	"require": {
 		"php": ">=5.4.0",
-		"yiisoft/yii2-composer": "*",
 		"ext-mbstring": "*",
 		"lib-pcre": "*",
-		"phpspec/php-diff": "1.0.*",
-		"ezyang/htmlpurifier": "4.5.*"
+		"yiisoft/yii2-composer": "*",
+		"yiisoft/jquery": "1.10.*",
+		"phpspec/php-diff": ">=1.0.2",
+		"ezyang/htmlpurifier": "4.5.*",
+		"michelf/php-markdown": "1.3.*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\": "/" }
-	},
-	"suggest": {
-		"michelf/php-markdown": "Required by Markdown."
 	}
 }
