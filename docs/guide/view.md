@@ -240,7 +240,7 @@ details on how to define asset bundles in [asset manager](assets.md) section of 
 asset bundle, it's very straightforward:
 
 ```php
-frontend\config\AppAsset::register($this);
+frontend\assets\AppAsset::register($this);
 ```
 
 ### Layout
