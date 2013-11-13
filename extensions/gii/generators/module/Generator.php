@@ -139,7 +139,7 @@ EOD;
 	 */
 	public function validateModuleClass()
 	{
-		if (strpos($this->moduleClass, '\\') === false || Yii::getAlias('@' . str_replace('\\', '/', $this->moduleClass)) === false) {
+		if (strpos($this->moduleClass, '\\') === false || Yii::getAlias('@' . str_replace('\\', '/', $this->moduleClass), false) === false) {
 			$this->addError('moduleClass', 'Module class must be properly namespaced.');
 		}
 		if (substr($this->moduleClass, -1, 1) == '\\') {
