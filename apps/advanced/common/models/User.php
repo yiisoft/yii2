@@ -104,18 +104,18 @@ class User extends ActiveRecord implements IdentityInterface
 	public function rules()
 	{
 		return [
-			[['username'], 'filter', 'filter' => 'trim'],
-			[['username'], 'required'],
-			[['username'], 'string', 'min' => 2, 'max' => 255],
+			['username', 'filter', 'filter' => 'trim'],
+			['username', 'required'],
+			['username', 'string', 'min' => 2, 'max' => 255],
 
-			[['email'], 'filter', 'filter' => 'trim'],
-			[['email'], 'required'],
-			[['email'], 'email'],
-			[['email'], 'unique', 'message' => 'This email address has already been taken.', 'on' => 'signup'],
-			[['email'], 'exist', 'message' => 'There is no user with such email.', 'on' => 'requestPasswordResetToken'],
+			['email', 'filter', 'filter' => 'trim'],
+			['email', 'required'],
+			['email', 'email'],
+			['email', 'unique', 'message' => 'This email address has already been taken.', 'on' => 'signup'],
+			['email', 'exist', 'message' => 'There is no user with such email.', 'on' => 'requestPasswordResetToken'],
 
-			[['password'], 'required'],
-			[['password'], 'string', 'min' => 6],
+			['password', 'required'],
+			['password', 'string', 'min' => 6],
 		];
 	}
 
