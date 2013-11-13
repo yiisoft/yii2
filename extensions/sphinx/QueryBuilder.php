@@ -62,7 +62,7 @@ class QueryBuilder extends Object
 			$this->buildWithin($query->within),
 			$this->buildOrderBy($query->orderBy),
 			$this->buildLimit($query->limit, $query->offset),
-			$this->buildOption($query->options),
+			$this->buildOption($query->options, $params),
 		];
 		return [implode($this->separator, array_filter($clauses)), $params];
 	}
@@ -311,9 +311,13 @@ class QueryBuilder extends Object
 		if (!empty($options)) {
 			$optionParts = [];
 			foreach ($options as $name => $value) {
-				$phName = self::PARAM_PREFIX . count($params);
-				$params[$phName] = $value;
-				$optionParts[] = $phName . ' AS ' . $name;
+				if ($value instanceof Expression) {
+					$actualValue = $value->expression;
+				} else {
+					$actualValue = self::PARAM_PREFIX . count($params);
+					$params[$actualValue] = $value;
+				}
+				$optionParts[] = $actualValue . ' AS ' . $name;
 			}
 			$optionSql = ', ' . implode(', ', $optionParts);
 		} else {
@@ -768,17 +772,24 @@ class QueryBuilder extends Object
 	}
 
 	/**
-	 * @param array $options
+	 * @param array $options query options in format: optionName => optionValue
+	 * @param array $params the binding parameters to be populated
 	 * @return string the OPTION clause build from [[query]]
 	 */
-	public function buildOption(array $options)
+	public function buildOption($options, &$params)
 	{
 		if (empty($options)) {
 			return '';
 		}
 		$optionLines = [];
 		foreach ($options as $name => $value) {
-			$optionLines[] = $name . ' = ' . $value;
+			if ($value instanceof Expression) {
+				$actualValue = $value->expression;
+			} else {
+				$actualValue = self::PARAM_PREFIX . count($params);
+				$params[$actualValue] = $value;
+			}
+			$optionLines[] = $name . ' = ' . $actualValue;
 		}
 		return 'OPTION ' . implode(', ', $optionLines);
 	}

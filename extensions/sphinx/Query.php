@@ -30,10 +30,14 @@ class Query extends Component
 	 */
 	const SORT_DESC = true;
 
+	/**
+	 * @var array the columns being selected. For example, `['id', 'group_id']`.
+	 * This is used to construct the SELECT clause in a SQL statement. If not set, if means selecting all columns.
+	 * @see select()
+	 */
 	public $select;
 	/**
-	 * @var string additional option that should be appended to the 'SELECT' keyword. For example,
-	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
+	 * @var string additional option that should be appended to the 'SELECT' keyword.
 	 */
 	public $selectOption;
 	/**
@@ -41,15 +45,45 @@ class Query extends Component
 	 * the SELECT clause would be changed to SELECT DISTINCT.
 	 */
 	public $distinct;
+	/**
+	 * @var array the index(es) to be selected from. For example, `['idx_user', 'idx_post']`.
+	 * This is used to construct the FROM clause in a SQL statement.
+	 * @see from()
+	 */
 	public $from;
+	/**
+	 * @var string|array query condition. This refers to the WHERE clause in a SQL statement.
+	 * For example, `MATCH('ipod') AND team = 1`.
+	 * @see where()
+	 */
 	public $where;
+	/**
+	 * @var integer maximum number of records to be returned.
+	 * Note: if not set implicit LIMIT 0,20 is present by default.
+	 */
 	public $limit;
+	/**
+	 * @var integer zero-based offset from where the records are to be returned. If not set or
+	 * less than 0, it means starting from the beginning.
+	 * Note: implicit LIMIT 0,20 is present by default.
+	 */
 	public $offset;
+	/**
+	 * @var array how to sort the query results. This is used to construct the ORDER BY clause in a SQL statement.
+	 * The array keys are the columns to be sorted by, and the array values are the corresponding sort directions which
+	 * can be either [[Query::SORT_ASC]] or [[Query::SORT_DESC]]. The array may also contain [[Expression]] objects.
+	 * If that is the case, the expressions will be converted into strings without any change.
+	 */
 	public $orderBy;
+	/**
+	 * @var array how to group the query results. For example, `['company', 'department']`.
+	 * This is used to construct the GROUP BY clause in a SQL statement.
+	 */
 	public $groupBy;
 	/**
 	 * @var string WITHIN GROUP ORDER BY clause. This is a Sphinx specific extension
 	 * that lets you control how the best row within a group will to be selected.
+	 * The possible value matches the [[orderBy]] one.
 	 */
 	public $within;
 	/**
@@ -502,13 +536,25 @@ class Query extends Component
 		return $this;
 	}
 
-	public function options(array $options)
+	/**
+	 * Sets the query options.
+	 * @param array $options query options in format: optionName => optionValue
+	 * @return static the query object itself
+	 * @see addOptions()
+	 */
+	public function options($options)
 	{
 		$this->options = $options;
 		return $this;
 	}
 
-	public function addOptions(array $options)
+	/**
+	 * Adds additional query options.
+	 * @param array $options query options in format: optionName => optionValue
+	 * @return static the query object itself
+	 * @see options()
+	 */
+	public function addOptions($options)
 	{
 		if (is_array($this->options)) {
 			$this->options = array_merge($this->options, $options);
@@ -518,12 +564,32 @@ class Query extends Component
 		return $this;
 	}
 
+	/**
+	 * Sets the WITHIN GROUP ORDER BY part of the query.
+	 * @param string|array $columns the columns (and the directions) to find best row within a group.
+	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+	 * (e.g. `['id' => Query::SORT_ASC, 'name' => Query::SORT_DESC]`).
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @return static the query object itself
+	 * @see addWithin()
+	 */
 	public function within($columns)
 	{
 		$this->within = $this->normalizeOrderBy($columns);
 		return $this;
 	}
 
+	/**
+	 * Adds additional WITHIN GROUP ORDER BY columns to the query.
+	 * @param string|array $columns the columns (and the directions) to find best row within a group.
+	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+	 * (e.g. `['id' => Query::SORT_ASC, 'name' => Query::SORT_DESC]`).
+	 * The method will automatically quote the column names unless a column contains some parenthesis
+	 * (which means the column contains a DB expression).
+	 * @return static the query object itself
+	 * @see within()
+	 */
 	public function addWithin($columns)
 	{
 		$columns = $this->normalizeOrderBy($columns);
