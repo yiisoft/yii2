@@ -97,13 +97,13 @@ trait ActiveRelationTrait
 
 		if ($this->via instanceof self) {
 			// via pivot table
-			/** @var ActiveRelation $viaQuery */
+			/** @var ActiveRelationTrait $viaQuery */
 			$viaQuery = $this->via;
 			$viaModels = $viaQuery->findPivotRows($primaryModels);
 			$this->filterByModels($viaModels);
 		} elseif (is_array($this->via)) {
 			// via relation
-			/** @var ActiveRelation $viaQuery */
+			/** @var ActiveRelationTrait $viaQuery */
 			list($viaName, $viaQuery) = $this->via;
 			$viaQuery->primaryModel = null;
 			$viaModels = $viaQuery->findWith($viaName, $primaryModels);
