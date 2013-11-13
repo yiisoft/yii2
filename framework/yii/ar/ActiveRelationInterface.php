@@ -10,6 +10,8 @@ namespace yii\ar;
 /**
  * ActiveRelationInterface defines the common interface to be implemented by active record relation classes.
  *
+ * A class implementing this interface should also use [[ActiveRelationTrait]].
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
