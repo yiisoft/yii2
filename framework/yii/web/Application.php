@@ -13,6 +13,7 @@ use yii\base\InvalidRouteException;
 /**
  * Application is the base class for all web application classes.
  *
+ * @property \yii\rbac\Manager $authManager The auth manager for this application. This property is read-only.
  * @property AssetManager $assetManager The asset manager component. This property is read-only.
  * @property string $homeUrl The homepage URL.
  * @property Request $request The request component. This property is read-only.
@@ -149,6 +150,15 @@ class Application extends \yii\base\Application
 	public function getUser()
 	{
 		return $this->getComponent('user');
+	}
+
+	/**
+	 * Returns the auth manager for this application.
+	 * @return \yii\rbac\Manager the auth manager for this application.
+	 */
+	public function getAuthManager()
+	{
+		return $this->getComponent('authManager');
 	}
 
 	/**
