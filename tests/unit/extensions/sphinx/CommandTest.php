@@ -18,6 +18,58 @@ class CommandTest extends SphinxTestCase
 
 	// Tests :
 
+	public function testConstruct()
+	{
+		$db = $this->getConnection(false);
+
+		// null
+		$command = $db->createCommand();
+		$this->assertEquals(null, $command->sql);
+
+		// string
+		$sql = 'SELECT * FROM yii2_test_item_index';
+		$params = [
+			'name' => 'value'
+		];
+		$command = $db->createCommand($sql, $params);
+		$this->assertEquals($sql, $command->sql);
+		$this->assertEquals($params, $command->params);
+	}
+
+	public function testGetSetSql()
+	{
+		$db = $this->getConnection(false);
+
+		$sql = 'SELECT * FROM yii2_test_item_index';
+		$command = $db->createCommand($sql);
+		$this->assertEquals($sql, $command->sql);
+
+		$sql2 = 'SELECT * FROM yii2_test_item_index';
+		$command->sql = $sql2;
+		$this->assertEquals($sql2, $command->sql);
+	}
+
+	public function testAutoQuoting()
+	{
+		$db = $this->getConnection(false);
+
+		$sql = 'SELECT [[id]], [[t.name]] FROM {{yii2_test_item_index}} t';
+		$command = $db->createCommand($sql);
+		$this->assertEquals("SELECT `id`, `t`.`name` FROM `yii2_test_item_index` t", $command->sql);
+	}
+
+	public function testPrepareCancel()
+	{
+		$db = $this->getConnection(false);
+
+		$command = $db->createCommand('SELECT * FROM yii2_test_item_index');
+		$this->assertEquals(null, $command->pdoStatement);
+		$command->prepare();
+		$this->assertNotEquals(null, $command->pdoStatement);
+		$command->cancel();
+		$this->assertEquals(null, $command->pdoStatement);
+	}
+
 	public function testExecute()
 	{
 		$db = $this->getConnection();

@@ -10,6 +10,7 @@ namespace yii\sphinx;
 /**
  * Class Connection
  *
+ * @property Schema $schema The schema information for this Sphinx connection. This property is read-only.
  * @method Schema getSchema() The schema information for this Sphinx connection
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -47,6 +48,16 @@ class Connection extends \yii\db\Connection
 	public function quoteIndexName($name)
 	{
 		return $this->getSchema()->quoteIndexName($name);
+	}
+
+	/**
+	 * Alias of [[quoteIndexName()]].
+	 * @param string $name table name
+	 * @return string the properly quoted table name
+	 */
+	public function quoteTableName($name)
+	{
+		return $this->quoteIndexName($name);
 	}
 
 	/**
