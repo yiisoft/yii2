@@ -92,19 +92,19 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 *
 	 * ~~~
 	 * [
-	 *     'attribute list',
+	 *     ['attribute1', 'attribute2'],
 	 *     'validator type',
-	 *     'on' => 'scenario name',
+	 *     'on' => ['scenario1', 'scenario2'],
 	 *     ...other parameters...
 	 * ]
 	 * ~~~
 	 *
 	 * where
 	 *
-	 *  - attribute list: required, specifies the attributes (separated by commas) to be validated;
+	 *  - attribute list: required, specifies the attributes array to be validated, for single attribute you can pass string;
 	 *  - validator type: required, specifies the validator to be used. It can be the name of a model
 	 *    class method, the name of a built-in validator, or a validator class name (or its path alias).
-	 *  - on: optional, specifies the [[scenario|scenarios]] (separated by commas) when the validation
+	 *  - on: optional, specifies the [[scenario|scenarios]] array when the validation
 	 *    rule can be applied. If this option is not set, the rule will apply to all scenarios.
 	 *  - additional name-value pairs can be specified to initialize the corresponding validator properties.
 	 *    Please refer to individual validator class API for possible properties.
@@ -129,7 +129,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * ~~~
 	 * [
 	 *     // built-in "required" validator
-	 *     ['username', 'required'],
+	 *     [['username', 'password'], 'required'],
 	 *     // built-in "string" validator customized with "min" and "max" properties
 	 *     ['username', 'string', 'min' => 3, 'max' => 12],
 	 *     // built-in "compare" validator that is used in "register" scenario only
@@ -391,7 +391,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 			if ($rule instanceof Validator) {
 				$validators->append($rule);
 			} elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
-				$validator = Validator::createValidator($rule[1], $this, $rule[0], array_slice($rule, 2));
+				$validator = Validator::createValidator($rule[1], $this, (array) $rule[0], array_slice($rule, 2));
 				$validators->append($validator);
 			} else {
 				throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
