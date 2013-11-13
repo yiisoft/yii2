@@ -253,17 +253,35 @@ class CommandTest extends SphinxTestCase
 		$this->assertEquals(0, count($rows), 'Unable to delete record!');
 	}
 
+	/**
+	 * @depends testQuery
+	 */
 	public function testCallSnippets()
 	{
 		$db = $this->getConnection();
 
 		$query = 'pencil';
-		$data = ['Some data sentence about ' . $query];
-		$rows = $db->createCommand()->callSnippets('yii2_test_item_index', $data, $query)->queryColumn();
+		$source = 'Some data sentence about ' . $query;
+
+		$rows = $db->createCommand()->callSnippets('yii2_test_item_index', $source, $query)->queryColumn();
 		$this->assertNotEmpty($rows, 'Unable to call snippets!');
 		$this->assertContains('<b>' . $query . '</b>', $rows[0], 'Query not present in the snippet!');
+
+		$rows = $db->createCommand()->callSnippets('yii2_test_item_index', [$source], $query)->queryColumn();
+		$this->assertNotEmpty($rows, 'Unable to call snippets for array source!');
+
+		$options = [
+			'before_match' => '[',
+			'after_match' => ']',
+			'limit' => 20,
+		];
+		$snippet = $db->createCommand()->callSnippets('yii2_test_item_index', $source, $query, $options)->queryScalar();
+		$this->assertContains($options['before_match'] . $query . $options['after_match'], $snippet, 'Unable to apply options!');
 	}
 
+	/**
+	 * @depends testQuery
+	 */
 	public function testCallKeywords()
 	{
 		$db = $this->getConnection();

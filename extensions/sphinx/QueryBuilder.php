@@ -269,15 +269,26 @@ class QueryBuilder extends Object
 	}
 
 	/**
-	 * Builds a SQL statement for truncating a DB index.
+	 * Builds a SQL statement for truncating an index.
 	 * @param string $index the index to be truncated. The name will be properly quoted by the method.
-	 * @return string the SQL statement for truncating a DB index.
+	 * @return string the SQL statement for truncating an index.
 	 */
 	public function truncateIndex($index)
 	{
 		return 'TRUNCATE RTINDEX ' . $this->db->quoteIndexName($index);
 	}
 
+	/**
+	 * Builds a SQL statement for call snippet from provided data and query, using specified index settings.
+	 * @param string $index name of the index, from which to take the text processing settings.
+	 * @param string|array $source is the source data to extract a snippet from.
+	 * It could be either a single string or array of strings.
+	 * @param string $query the full-text query to build snippets for.
+	 * @param array $options list of options in format: optionName => optionValue
+	 * @param array $params the binding parameters that will be modified by this method
+	 * so that they can be bound to the Sphinx command later.
+	 * @return string the SQL statement for call snippets.
+	 */
 	public function callSnippets($index, $source, $query, $options, &$params)
 	{
 		if (is_array($source)) {
@@ -297,10 +308,30 @@ class QueryBuilder extends Object
 		$params[$indexParamName] = $index;
 		$queryParamName = self::PARAM_PREFIX . count($params);
 		$params[$queryParamName] = $query;
-		$optionSql = ''; // @todo
+		if (!empty($options)) {
+			$optionParts = [];
+			foreach ($options as $name => $value) {
+				$phName = self::PARAM_PREFIX . count($params);
+				$params[$phName] = $value;
+				$optionParts[] = $phName . ' AS ' . $name;
+			}
+			$optionSql = ', ' . implode(', ', $optionParts);
+		} else {
+			$optionSql = '';
+		}
 		return 'CALL SNIPPETS(' . $dataSql. ', ' . $indexParamName . ', ' . $queryParamName . $optionSql. ')';
 	}
 
+	/**
+	 * Builds a SQL statement for returning tokenized and normalized forms of the keywords, and,
+	 * optionally, keyword statistics.
+	 * @param string $index the name of the index from which to take the text processing settings
+	 * @param string $text the text to break down to keywords.
+	 * @param boolean $fetchStatistic whether to return document and hit occurrence statistics
+	 * @param array $params the binding parameters that will be modified by this method
+	 * so that they can be bound to the Sphinx command later.
+	 * @return string the SQL statement for call keywords.
+	 */
 	public function callKeywords($index, $text, $fetchStatistic, &$params)
 	{
 		$indexParamName = self::PARAM_PREFIX . count($params);

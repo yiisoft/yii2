@@ -496,13 +496,29 @@ class Command extends Component
 		return $this->setSql($sql);
 	}
 
-	public function callSnippets($index, $source, $query, array $options = [])
+	/**
+	 * Builds a snippet from provided data and query, using specified index settings.
+	 * @param string $index name of the index, from which to take the text processing settings.
+	 * @param string|array $source is the source data to extract a snippet from.
+	 * It could be either a single string or array of strings.
+	 * @param string $query the full-text query to build snippets for.
+	 * @param array $options list of options in format: optionName => optionValue
+	 * @return static the command object itself
+	 */
+	public function callSnippets($index, $source, $query, $options = [])
 	{
 		$params = [];
 		$sql = $this->db->getQueryBuilder()->callSnippets($index, $source, $query, $options, $params);
 		return $this->setSql($sql)->bindValues($params);
 	}
 
+	/**
+	 * Returns tokenized and normalized forms of the keywords, and, optionally, keyword statistics.
+	 * @param string $index the name of the index from which to take the text processing settings
+	 * @param string $text the text to break down to keywords.
+	 * @param boolean $fetchStatistic whether to return document and hit occurrence statistics
+	 * @return string the SQL statement for call keywords.
+	 */
 	public function callKeywords($index, $text, $fetchStatistic = false)
 	{
 		$params = [];
