@@ -17,10 +17,9 @@
 			"email": "klimov.paul@gmail.com"
 		}
 	],
-	"minimum-stability": "dev",
 	"require": {
 		"yiisoft/yii2": "*",
-		"swiftmailer/swiftmailer": "@stable"
+		"swiftmailer/swiftmailer": "*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\swiftmailer\\": "" }

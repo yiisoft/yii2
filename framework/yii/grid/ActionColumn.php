@@ -12,6 +12,8 @@ use Closure;
 use yii\helpers\Html;
 
 /**
+ * ActionColumn is a column for the [[GridView]] widget that displays buttons for viewing and manipulating the items.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

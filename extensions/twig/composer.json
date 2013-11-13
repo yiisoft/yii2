@@ -17,10 +17,9 @@
 			"email": "sam@rmcreative.ru"
 		}
 	],
-	"minimum-stability": "dev",
 	"require": {
 		"yiisoft/yii2": "*",
-		"twig/twig": "1.13.*"
+		"twig/twig": "*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\twig\\": "" }

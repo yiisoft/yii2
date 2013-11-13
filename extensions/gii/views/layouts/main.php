@@ -4,8 +4,8 @@ use yii\bootstrap\Nav;
 use yii\helpers\Html;
 
 /**
- * @var $this \yii\web\View
- * @var $content string
+ * @var \yii\web\View $this
+ * @var string $content
  */
 $asset = yii\gii\GiiAsset::register($this);
 ?>

@@ -366,7 +366,7 @@ class Command extends \yii\base\Component
 
 		Yii::info($rawSql, __METHOD__);
 
-		/** @var $cache \yii\caching\Cache */
+		/** @var \yii\caching\Cache $cache */
 		if ($db->enableQueryCache && $method !== '') {
 			$cache = is_string($db->queryCache) ? Yii::$app->getComponent($db->queryCache) : $db->queryCache;
 		}

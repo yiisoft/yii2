@@ -92,7 +92,7 @@ abstract class Schema extends Object
 		$realName = $this->getRawTableName($name);
 
 		if ($db->enableSchemaCache && !in_array($name, $db->schemaCacheExclude, true)) {
-			/** @var $cache Cache */
+			/** @var Cache $cache */
 			$cache = is_string($db->schemaCache) ? Yii::$app->getComponent($db->schemaCache) : $db->schemaCache;
 			if ($cache instanceof Cache) {
 				$key = $this->getCacheKey($name);
@@ -215,7 +215,7 @@ abstract class Schema extends Object
 	 */
 	public function refresh()
 	{
-		/** @var $cache Cache */
+		/** @var Cache $cache */
 		$cache = is_string($this->db->schemaCache) ? Yii::$app->getComponent($this->db->schemaCache) : $this->db->schemaCache;
 		if ($this->db->enableSchemaCache && $cache instanceof Cache) {
 			GroupDependency::invalidate($cache, $this->getCacheGroup());
@@ -291,7 +291,7 @@ abstract class Schema extends Object
 	 * then this method will do nothing.
 	 * @param string $name table name
 	 * @return string the properly quoted table name
-	 * @see quoteSimpleTableName
+	 * @see quoteSimpleTableName()
 	 */
 	public function quoteTableName($name)
 	{
@@ -316,7 +316,7 @@ abstract class Schema extends Object
 	 * then this method will do nothing.
 	 * @param string $name column name
 	 * @return string the properly quoted column name
-	 * @see quoteSimpleColumnName
+	 * @see quoteSimpleColumnName()
 	 */
 	public function quoteColumnName($name)
 	{

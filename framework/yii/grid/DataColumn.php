@@ -15,6 +15,10 @@ use yii\helpers\Html;
 use yii\helpers\Inflector;
 
 /**
+ * DataColumn is the default column type for the [[GridView]] widget.
+ *
+ * It is used to show data columns and allows sorting them.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

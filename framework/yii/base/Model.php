@@ -46,7 +46,8 @@ use yii\validators\Validator;
  * @property ArrayIterator $iterator An iterator for traversing the items in the list. This property is
  * read-only.
  * @property string $scenario The scenario that this model is in. Defaults to [[DEFAULT_SCENARIO]].
- * @property ArrayObject $validators All the validators declared in the model. This property is read-only.
+ * @property ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the model.
+ * This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -144,7 +145,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * merge the parent rules with child rules using functions such as `array_merge()`.
 	 *
 	 * @return array validation rules
-	 * @see scenarios
+	 * @see scenarios()
 	 */
 	public function rules()
 	{
@@ -255,7 +256,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * merge the parent labels with child labels using functions such as `array_merge()`.
 	 *
 	 * @return array attribute labels (name => label)
-	 * @see generateAttributeLabel
+	 * @see generateAttributeLabel()
 	 */
 	public function attributeLabels()
 	{
@@ -349,7 +350,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * $model->validators[] = $newValidator;
 	 * ~~~
 	 *
-	 * @return ArrayObject all the validators declared in the model.
+	 * @return ArrayObject|\yii\validators\Validator[] all the validators declared in the model.
 	 */
 	public function getValidators()
 	{
@@ -369,7 +370,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	{
 		$validators = [];
 		$scenario = $this->getScenario();
-		/** @var $validator Validator */
 		foreach ($this->getValidators() as $validator) {
 			if ($validator->isActive($scenario) && ($attribute === null || in_array($attribute, $validator->attributes, true))) {
 				$validators[] = $validator;
@@ -444,8 +444,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * Returns the text label for the specified attribute.
 	 * @param string $attribute the attribute name
 	 * @return string the attribute label
-	 * @see generateAttributeLabel
-	 * @see attributeLabels
+	 * @see generateAttributeLabel()
+	 * @see attributeLabels()
 	 */
 	public function getAttributeLabel($attribute)
 	{
@@ -483,8 +483,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * ]
 	 * ~~~
 	 *
-	 * @see getFirstErrors
-	 * @see getFirstError
+	 * @see getFirstErrors()
+	 * @see getFirstError()
 	 */
 	public function getErrors($attribute = null)
 	{
@@ -498,8 +498,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	/**
 	 * Returns the first error of every attribute in the model.
 	 * @return array the first errors. An empty array will be returned if there is no error.
-	 * @see getErrors
-	 * @see getFirstError
+	 * @see getErrors()
+	 * @see getFirstError()
 	 */
 	public function getFirstErrors()
 	{
@@ -520,8 +520,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * Returns the first error of the specified attribute.
 	 * @param string $attribute attribute name.
 	 * @return string the error message. Null is returned if no error.
-	 * @see getErrors
-	 * @see getFirstErrors
+	 * @see getErrors()
+	 * @see getFirstErrors()
 	 */
 	public function getFirstError($attribute)
 	{
