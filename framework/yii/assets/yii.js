@@ -176,21 +176,21 @@ yii = (function ($) {
 				if ("script" !== options.dataType) {
 					xhr.done(function (data, status, xhr) {
 						var filter = xhr.getResponseHeader('X-Asset-Filter');
-						$.merge(assetFilter, (filter || '').split(',').map($.trim));
+						if (filter) {
+							$.merge(assetFilter, filter.split(',').map($.trim));
+						}
 					});
 				}
 			});
 			
 			// filter out already included javascript files
-			var prefixStrip = /(http[s]?:\/\/.*?)?(\/.+)/i;
-			var loadedAssets = $('script').filter(function() { return this.src; }).map(function() { return prefixStrip.exec(this.src)[2]; }).toArray();
+			var loadedAssets = $('script').filter(function() { return this.src; }).map(function() { return this.src; }).toArray();
 			$.ajaxPrefilter('script', function (options, originalOptions, xhr) {
-				var url = prefixStrip.exec(options.url)[2];
-				if (-1 === $.inArray(url, assetFilter) && -1 !== $.inArray(url, loadedAssets)) {
+				if (-1 === $.inArray(options.url, assetFilter) && -1 !== $.inArray(options.url, loadedAssets)) {
 					xhr.abort();
 				}
-				if (-1 === $.inArray(url, loadedAssets)) {
-					loadedAssets.push(url);
+				if (-1 === $.inArray(options.url, loadedAssets)) {
+					loadedAssets.push(options.url);
 				}
 			});
 
