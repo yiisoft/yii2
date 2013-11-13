@@ -131,6 +131,10 @@ class QueryTest extends SphinxTestCase
 			->where("MATCH('about')")
 			->options([
 				'cutoff' => 50,
+				'field_weights' => [
+					'title' => 10,
+					'content' => 3,
+				],
 			])
 			->all($connection);
 		$this->assertNotEmpty($rows);

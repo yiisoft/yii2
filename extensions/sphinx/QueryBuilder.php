@@ -871,8 +871,28 @@ class QueryBuilder extends Object
 			if ($value instanceof Expression) {
 				$actualValue = $value->expression;
 			} else {
-				$actualValue = self::PARAM_PREFIX . count($params);
-				$params[$actualValue] = $value;
+				if (is_array($value)) {
+					$actualValueParts = [];
+					foreach ($value as $key => $valuePart) {
+						if (is_numeric($key)) {
+							$actualValuePart = '';
+						} else {
+							$actualValuePart = $key . ' = ';
+						}
+						if ($valuePart instanceof Expression) {
+							$actualValuePart .= $valuePart->expression;
+						} else {
+							$phName = self::PARAM_PREFIX . count($params);
+							$params[$phName] = $valuePart;
+							$actualValuePart .= $phName;
+						}
+						$actualValueParts[] = $actualValuePart;
+					}
+					$actualValue = '(' . implode(', ', $actualValueParts) . ')';
+				} else {
+					$actualValue = self::PARAM_PREFIX . count($params);
+					$params[$actualValue] = $value;
+				}
 			}
 			$optionLines[] = $name . ' = ' . $actualValue;
 		}
