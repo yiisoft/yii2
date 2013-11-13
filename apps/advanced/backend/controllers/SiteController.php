@@ -15,9 +15,8 @@ class SiteController extends Controller
 				'class' => \yii\web\AccessControl::className(),
 				'rules' => [
 					[
-						'actions' => ['login'],
+						'actions' => ['login', 'error'],
 						'allow' => true,
-						'roles' => ['?'],
 					],
 					[
 						'actions' => ['logout', 'index'],
@@ -45,9 +44,13 @@ class SiteController extends Controller
 
 	public function actionLogin()
 	{
+		if (!\Yii::$app->user->isGuest) {
+			$this->goHome();
+		}
+
 		$model = new LoginForm();
 		if ($model->load($_POST) && $model->login()) {
-			return $this->goHome();
+			return $this->goBack();
 		} else {
 			return $this->render('login', [
 				'model' => $model,

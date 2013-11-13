@@ -10,7 +10,7 @@ a custom template engines by reconfiguring this component's behavior:
 [
 	'components' => [
 		'view' => [
-			'class' => 'yii\base\View',
+			'class' => 'yii\web\View',
 			'renderers' => [
 				'tpl' => [
 					'class' => 'yii\renderers\SmartyViewRenderer',

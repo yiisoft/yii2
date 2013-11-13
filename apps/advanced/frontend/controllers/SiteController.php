@@ -17,10 +17,10 @@ class SiteController extends Controller
 		return [
 			'access' => [
 				'class' => \yii\web\AccessControl::className(),
-				'only' => ['login', 'logout', 'signup'],
+				'only' => ['logout', 'signup'],
 				'rules' => [
 					[
-						'actions' => ['login', 'signup'],
+						'actions' => ['signup'],
 						'allow' => true,
 						'roles' => ['?'],
 					],
@@ -54,9 +54,13 @@ class SiteController extends Controller
 
 	public function actionLogin()
 	{
+		if (!\Yii::$app->user->isGuest) {
+			$this->goHome();
+		}
+
 		$model = new LoginForm();
 		if ($model->load($_POST) && $model->login()) {
-			return $this->goHome();
+			return $this->goBack();
 		} else {
 			return $this->render('login', [
 				'model' => $model,
@@ -155,6 +159,7 @@ class SiteController extends Controller
 
 		$user->password_reset_token = Security::generateRandomKey();
 		if ($user->save(false)) {
+			// todo: refactor it with mail component. pay attention to the arrangement of mail view files
 			$fromEmail = \Yii::$app->params['supportEmail'];
 			$name = '=?UTF-8?B?' . base64_encode(\Yii::$app->name . ' robot') . '?=';
 			$subject = '=?UTF-8?B?' . base64_encode('Password reset for ' . \Yii::$app->name) . '?=';

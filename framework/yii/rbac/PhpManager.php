@@ -36,8 +36,8 @@ class PhpManager extends Manager
 	 * If not set, it will be using 'protected/data/rbac.php' as the data file.
 	 * Make sure this file is writable by the Web server process if the authorization
 	 * needs to be changed.
-	 * @see loadFromFile
-	 * @see saveToFile
+	 * @see loadFromFile()
+	 * @see saveToFile()
 	 */
 	public $authFile;
 
@@ -74,7 +74,7 @@ class PhpManager extends Manager
 		if (!isset($this->_items[$itemName])) {
 			return false;
 		}
-		/** @var $item Item */
+		/** @var Item $item */
 		$item = $this->_items[$itemName];
 		Yii::trace('Checking permission: ' . $item->getName(), __METHOD__);
 		if (!isset($params['userId'])) {
@@ -85,7 +85,7 @@ class PhpManager extends Manager
 				return true;
 			}
 			if (isset($this->_assignments[$userId][$itemName])) {
-				/** @var $assignment Assignment */
+				/** @var Assignment $assignment */
 				$assignment = $this->_assignments[$userId][$itemName];
 				if ($this->executeBizRule($assignment->bizRule, $params, $assignment->data)) {
 					return true;
@@ -113,9 +113,9 @@ class PhpManager extends Manager
 		if (!isset($this->_items[$childName], $this->_items[$itemName])) {
 			throw new Exception("Either '$itemName' or '$childName' does not exist.");
 		}
-		/** @var $child Item */
+		/** @var Item $child */
 		$child = $this->_items[$childName];
-		/** @var $item Item */
+		/** @var Item $item */
 		$item = $this->_items[$itemName];
 		$this->checkItemChildType($item->type, $child->type);
 		if ($this->detectLoop($itemName, $childName)) {
@@ -270,14 +270,14 @@ class PhpManager extends Manager
 		$items = [];
 		if ($userId === null) {
 			foreach ($this->_items as $name => $item) {
-				/** @var $item Item */
+				/** @var Item $item */
 				if ($item->type == $type) {
 					$items[$name] = $item;
 				}
 			}
 		} elseif (isset($this->_assignments[$userId])) {
 			foreach ($this->_assignments[$userId] as $assignment) {
-				/** @var $assignment Assignment */
+				/** @var Assignment $assignment */
 				$name = $assignment->itemName;
 				if (isset($this->_items[$name]) && ($type === null || $this->_items[$name]->type == $type)) {
 					$items[$name] = $this->_items[$name];
@@ -400,7 +400,7 @@ class PhpManager extends Manager
 	{
 		$items = [];
 		foreach ($this->_items as $name => $item) {
-			/** @var $item Item */
+			/** @var Item $item */
 			$items[$name] = [
 				'type' => $item->type,
 				'description' => $item->description,
@@ -409,7 +409,7 @@ class PhpManager extends Manager
 			];
 			if (isset($this->_children[$name])) {
 				foreach ($this->_children[$name] as $child) {
-					/** @var $child Item */
+					/** @var Item $child */
 					$items[$name]['children'][] = $child->getName();
 				}
 			}
@@ -417,7 +417,7 @@ class PhpManager extends Manager
 
 		foreach ($this->_assignments as $userId => $assignments) {
 			foreach ($assignments as $name => $assignment) {
-				/** @var $assignment Assignment */
+				/** @var Assignment $assignment */
 				if (isset($items[$name])) {
 					$items[$name]['assignments'][$userId] = [
 						'bizRule' => $assignment->bizRule,
@@ -505,7 +505,7 @@ class PhpManager extends Manager
 			return false;
 		}
 		foreach ($this->_children[$childName] as $child) {
-			/** @var $child Item */
+			/** @var Item $child */
 			if ($this->detectLoop($itemName, $child->getName())) {
 				return true;
 			}
@@ -517,7 +517,7 @@ class PhpManager extends Manager
 	 * Loads the authorization data from a PHP script file.
 	 * @param string $file the file path.
 	 * @return array the authorization data
-	 * @see saveToFile
+	 * @see saveToFile()
 	 */
 	protected function loadFromFile($file)
 	{
@@ -532,7 +532,7 @@ class PhpManager extends Manager
 	 * Saves the authorization data to a PHP script file.
 	 * @param array $data the authorization data
 	 * @param string $file the file path.
-	 * @see loadFromFile
+	 * @see loadFromFile()
 	 */
 	protected function saveToFile($data, $file)
 	{

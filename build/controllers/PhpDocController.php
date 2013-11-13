@@ -278,11 +278,35 @@ class PhpDocController extends Controller
 								  . ' See [[get'.ucfirst($propName).'()]] and [[set'.ucfirst($propName).'()]] for details.';
 						}
 					} elseif (isset($prop['get'])) {
-						$note = ' This property is read-only.';
-//						$docline .= '-read';
+						// check if parent class has setter defined
+						$c = $className;
+						$parentSetter = false;
+						while($parent = get_parent_class($c)) {
+							if (method_exists($parent, 'set' . ucfirst($propName))) {
+								$parentSetter = true;
+								break;
+							}
+							$c = $parent;
+						}
+						if (!$parentSetter) {
+							$note = ' This property is read-only.';
+//							$docline .= '-read';
+						}
 					} elseif (isset($prop['set'])) {
-						$note = ' This property is write-only.';
-//						$docline .= '-write';
+						// check if parent class has getter defined
+						$c = $className;
+						$parentGetter = false;
+						while($parent = get_parent_class($c)) {
+							if (method_exists($parent, 'set' . ucfirst($propName))) {
+								$parentGetter = true;
+								break;
+							}
+							$c = $parent;
+						}
+						if (!$parentGetter) {
+							$note = ' This property is write-only.';
+//							$docline .= '-write';
+						}
 					} else {
 						continue;
 					}

@@ -8,6 +8,10 @@
 namespace yii\console;
 
 /**
+ * The console Request represents the environment information for a console application.
+ *
+ * It is a wrapper for the PHP `$_SERVER` variable which holds information about the
+ * currently running PHP script and the command line arguments given to it.
  *
  * @property array $params The command line arguments. It does not include the entry script name.
  *

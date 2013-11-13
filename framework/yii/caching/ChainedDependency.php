@@ -23,7 +23,7 @@ class ChainedDependency extends Dependency
 	 * @var Dependency[] list of dependencies that this dependency is composed of.
 	 * Each array element must be a dependency object.
 	 */
-	public $dependencies;
+	public $dependencies = [];
 	/**
 	 * @var boolean whether this dependency is depending on every dependency in [[dependencies]].
 	 * Defaults to true, meaning if any of the dependencies has changed, this dependency is considered changed.
@@ -31,18 +31,6 @@ class ChainedDependency extends Dependency
 	 * is considered NOT changed.
 	 */
 	public $dependOnAll = true;
-
-	/**
-	 * Constructor.
-	 * @param Dependency[] $dependencies list of dependencies that this dependency is composed of.
-	 * Each array element should be a dependency object.
-	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 */
-	public function __construct($dependencies = [], $config = [])
-	{
-		$this->dependencies = $dependencies;
-		parent::__construct($config);
-	}
 
 	/**
 	 * Evaluates the dependency by generating and saving the data related with dependency.

@@ -1,9 +1,9 @@
 <?php
 $params = require(__DIR__ . '/params.php');
 $config = [
-	'id' => 'bootstrap',
+	'id' => 'basic',
 	'basePath' => dirname(__DIR__),
-	'extensions' => require(__DIR__ . '/../vendor/yii-extensions.php'),
+	'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
 	'components' => [
 		'request' => [
 			'enableCsrfValidation' => true,
@@ -16,6 +16,9 @@ $config = [
 		],
 		'errorHandler' => [
 			'errorAction' => 'site/error',
+		],
+		'mail' => [
+			'class' => 'yii\swiftmailer\Mailer',
 		],
 		'log' => [
 			'traceLevel' => YII_DEBUG ? 3 : 0,

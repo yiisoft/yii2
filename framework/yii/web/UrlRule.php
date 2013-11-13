@@ -11,7 +11,17 @@ use yii\base\Object;
 use yii\base\InvalidConfigException;
 
 /**
- * UrlRule represents a rule used for parsing and generating URLs.
+ * UrlRule represents a rule used by [[UrlManager]] for parsing and generating URLs.
+ *
+ * To define your own URL parsing and creation logic you can extend from this class
+ * and add it to [[UrlManager::rules]] like this:
+ *
+ * ~~~
+ * 'rules' => [
+ *     ['class' => 'MyUrlRule', 'pattern' => '...', 'route' => 'site/index', ...],
+ *     // ...
+ * ]
+ * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

@@ -19,6 +19,15 @@ use yii\base\InvalidConfigException;
  * Formatter requires the PHP "intl" extension to be installed. Formatter supports localized
  * formatting of date, time and numbers, based on the current [[locale]].
  *
+ * This Formatter can replace the `formatter` application component that is configured by default.
+ * To do so, add the following to your application config under `components`:
+ *
+ * ```php
+ * 'formatter' => [
+ *     'class' => 'yii\i18n\Formatter',
+ * ]
+ * ```
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -131,7 +140,12 @@ class Formatter extends \yii\base\Formatter
 			$formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE);
 		} else {
 			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
-			$formatter->setPattern($format);
+			if ($formatter !== null) {
+				$formatter->setPattern($format);
+			}
+		}
+		if ($formatter === null) {
+			throw new InvalidConfigException(intl_get_error_message());
 		}
 		return $formatter->format($value);
 	}
@@ -167,7 +181,12 @@ class Formatter extends \yii\base\Formatter
 			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format]);
 		} else {
 			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
-			$formatter->setPattern($format);
+			if ($formatter !== null) {
+				$formatter->setPattern($format);
+			}
+		}
+		if ($formatter === null) {
+			throw new InvalidConfigException(intl_get_error_message());
 		}
 		return $formatter->format($value);
 	}
@@ -203,7 +222,12 @@ class Formatter extends \yii\base\Formatter
 			$formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format]);
 		} else {
 			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
-			$formatter->setPattern($format);
+			if ($formatter !== null) {
+				$formatter->setPattern($format);
+			}
+		}
+		if ($formatter === null) {
+			throw new InvalidConfigException(intl_get_error_message());
 		}
 		return $formatter->format($value);
 	}

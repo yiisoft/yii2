@@ -9,6 +9,8 @@ namespace yii\validators;
 use yii\web\AssetBundle;
 
 /**
+ * This asset bundle provides the javascript files for client validation.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

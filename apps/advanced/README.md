@@ -76,6 +76,13 @@ php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced yii-a
 
 Note that in order to install some dependencies you must have `php_openssl` extension enabled.
 
+After the application is installed, switch to the project folder and run the following command
+to initialize the application:
+
+~~~
+./init         (init on Windows)
+~~~
+
 
 ### Install from an Archive File
 

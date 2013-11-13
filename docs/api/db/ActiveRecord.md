@@ -1,6 +1,6 @@
 ActiveRecord implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
 The idea is that an ActiveRecord object is associated with a row in a database table
-so object properties are mapped to colums of the corresponding database row.
+so object properties are mapped to columns of the corresponding database row.
 For example, a `Customer` object is associated with a row in the `tbl_customer`
 table. Instead of writing raw SQL statements to access the data in the table,
 you can call intuitive methods available in the corresponding ActiveRecord class

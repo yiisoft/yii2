@@ -15,10 +15,11 @@ return [
 	'controllerNamespace' => 'console\controllers',
 	'modules' => [
 	],
-	'extensions' => require(__DIR__ . '/../../vendor/yii-extensions.php'),
+	'extensions' => require(__DIR__ . '/../../vendor/yiisoft/extensions.php'),
 	'components' => [
 		'db' => $params['components.db'],
 		'cache' => $params['components.cache'],
+		'mail' => $params['components.mail'],
 		'log' => [
 			'targets' => [
 				[

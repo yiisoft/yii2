@@ -74,7 +74,7 @@ class UploadedFile extends Object
 	 * For example, '[1]file' for tabular file uploading; and 'file[1]' for an element in a file array.
 	 * @return UploadedFile the instance of the uploaded file.
 	 * Null is returned if no file is uploaded for the specified model attribute.
-	 * @see getInstanceByName
+	 * @see getInstanceByName()
 	 */
 	public static function getInstance($model, $attribute)
 	{

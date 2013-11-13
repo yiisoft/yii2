@@ -3,12 +3,13 @@ use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
+use app\config\AppAsset;
 
 /**
- * @var $this \yii\base\View
- * @var $content string
+ * @var \yii\web\View $this
+ * @var string $content
  */
-app\config\AppAsset::register($this);
+AppAsset::register($this);
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
@@ -36,7 +37,7 @@ app\config\AppAsset::register($this);
 				['label' => 'Contact', 'url' => ['/site/contact']],
 				Yii::$app->user->isGuest ?
 					['label' => 'Login', 'url' => ['/site/login']] :
-					['label' => 'Logout (' . Yii::$app->user->identity->username .')' ,
+					['label' => 'Logout (' . Yii::$app->user->identity->username . ')' ,
 						'url' => ['/site/logout'],
 						'linkOptions' => ['data-method' => 'post']],
 			],
@@ -45,9 +46,9 @@ app\config\AppAsset::register($this);
 	?>
 
 	<div class="container">
-		<?=Breadcrumbs::widget([
+		<?= Breadcrumbs::widget([
 			'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-		]); ?>
+		]) ?>
 		<?= $content ?>
 	</div>
 

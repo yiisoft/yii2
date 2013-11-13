@@ -1,8 +1,8 @@
 <?php
 
-Yii::setAlias('common', __DIR__ . '/../');
-Yii::setAlias('frontend', __DIR__ . '/../../frontend');
-Yii::setAlias('backend', __DIR__ . '/../../backend');
+Yii::setAlias('common', realpath(__DIR__ . '/../'));
+Yii::setAlias('frontend', realpath(__DIR__ . '/../../frontend'));
+Yii::setAlias('backend', realpath(__DIR__ . '/../../backend'));
 
 return [
 	'adminEmail' => 'admin@example.com',
@@ -10,6 +10,10 @@ return [
 
 	'components.cache' => [
 		'class' => 'yii\caching\FileCache',
+	],
+
+	'components.mail' => [
+		'class' => 'yii\swiftmailer\Mailer',
 	],
 
 	'components.db' => [

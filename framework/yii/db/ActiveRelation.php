@@ -31,6 +31,12 @@ class ActiveRelation extends ActiveQuery
 	use \yii\ar\ActiveRelationTrait;
 
 	/**
+	 * @var array|ActiveRelation the query associated with the pivot table. Please call [[via()]]
+	 * or [[viaTable()]] to set this property instead of directly setting it.
+	 */
+	public $via;
+
+	/**
 	 * Specifies the pivot table.
 	 * @param string $tableName the name of the pivot table.
 	 * @param array $link the link between the pivot table and the table associated with [[primaryModel]].
@@ -72,7 +78,7 @@ class ActiveRelation extends ActiveQuery
 				$this->filterByModels($viaModels);
 			} elseif (is_array($this->via)) {
 				// via relation
-				/** @var $viaQuery ActiveRelation */
+				/** @var ActiveRelation $viaQuery */
 				list($viaName, $viaQuery) = $this->via;
 				if ($viaQuery->multiple) {
 					$viaModels = $viaQuery->all();

@@ -1,7 +1,7 @@
 <?php
 /**
- * @var $this \yii\base\View
- * @var $content string
+ * @var \yii\web\View $this
+ * @var string $content
  */
 ?>
 <?php $this->beginPage(); ?>

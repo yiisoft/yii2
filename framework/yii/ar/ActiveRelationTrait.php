@@ -55,9 +55,11 @@ trait ActiveRelationTrait
 	 */
 	public function __clone()
 	{
+		// make a clone of "via" object so that the same query object can be reused multiple times
 		if (is_object($this->via)) {
-			// make a clone of "via" object so that the same query object can be reused multiple times
 			$this->via = clone $this->via;
+		} elseif (is_array($this->via)) {
+			$this->via = [$this->via[0], clone $this->via[1]];
 		}
 	}
 
@@ -94,13 +96,13 @@ trait ActiveRelationTrait
 
 		if ($this->via instanceof self) {
 			// via pivot table
-			/** @var $viaQuery ActiveRelation */
+			/** @var ActiveRelation $viaQuery */
 			$viaQuery = $this->via;
 			$viaModels = $viaQuery->findPivotRows($primaryModels);
 			$this->filterByModels($viaModels);
 		} elseif (is_array($this->via)) {
 			// via relation
-			/** @var $viaQuery ActiveRelation */
+			/** @var ActiveRelation $viaQuery */
 			list($viaName, $viaQuery) = $this->via;
 			$viaQuery->primaryModel = null;
 			$viaModels = $viaQuery->findWith($viaName, $primaryModels);
@@ -246,7 +248,7 @@ trait ActiveRelationTrait
 			return [];
 		}
 		$this->filterByModels($primaryModels);
-		/** @var $primaryModel ActiveRecord */
+		/** @var ActiveRecord $primaryModel */
 		$primaryModel = reset($primaryModels);
 		return $this->asArray()->all($primaryModel->getDb());
 	}

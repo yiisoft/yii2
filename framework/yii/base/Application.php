@@ -15,6 +15,7 @@ use yii\web\HttpException;
  * Application is the base class for all application classes.
  *
  * @property \yii\rbac\Manager $authManager The auth manager for this application. This property is read-only.
+ * @property string $basePath The root directory of the application.
  * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
  * This property is read-only.
  * @property \yii\db\Connection $db The database connection. This property is read-only.
@@ -208,6 +209,11 @@ abstract class Application extends Module
 	protected function initExtensions($extensions)
 	{
 		foreach ($extensions as $extension) {
+			if (!empty($extension['alias'])) {
+				foreach ($extension['alias'] as $name => $path) {
+					Yii::setAlias($name, $path);
+				}
+			}
 			if (isset($extension['bootstrap'])) {
 				/** @var Extension $class */
 				$class = $extension['bootstrap'];
@@ -256,6 +262,7 @@ abstract class Application extends Module
 	 * Sets the root directory of the applicaition and the @app alias.
 	 * This method can only be invoked at the beginning of the constructor.
 	 * @param string $path the root directory of the application.
+	 * @property string the root directory of the application.
 	 * @throws InvalidParamException if the directory does not exist.
 	 */
 	public function setBasePath($path)
@@ -466,7 +473,7 @@ abstract class Application extends Module
 			'formatter' => ['class' => 'yii\base\Formatter'],
 			'i18n' => ['class' => 'yii\i18n\I18N'],
 			'urlManager' => ['class' => 'yii\web\UrlManager'],
-			'view' => ['class' => 'yii\base\View'],
+			'view' => ['class' => 'yii\web\View'],
 		]);
 	}
 
@@ -609,10 +616,8 @@ abstract class Application extends Module
 	{
 		$category = get_class($exception);
 		if ($exception instanceof HttpException) {
-			/** @var $exception HttpException */
 			$category .= '\\' . $exception->statusCode;
 		} elseif ($exception instanceof \ErrorException) {
-			/** @var $exception \ErrorException */
 			$category .= '\\' . $exception->getSeverity();
 		}
 		Yii::error((string)$exception, $category);

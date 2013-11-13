@@ -6,8 +6,8 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 
 /**
- * @var $this \yii\base\View
- * @var $content string
+ * @var \yii\web\View $this
+ * @var string $content
  */
 AppAsset::register($this);
 ?>
@@ -45,9 +45,9 @@ AppAsset::register($this);
 	?>
 
 	<div class="container">
-	<?=Breadcrumbs::widget([
+	<?= Breadcrumbs::widget([
 		'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-	]); ?>
+	]) ?>
 	<?= $content ?>
 	</div>
 

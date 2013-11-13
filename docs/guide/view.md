@@ -38,7 +38,7 @@ Widgets
 
 Widgets are a self-contained building blocks for your views. A widget may contain advanced logic, typically takes some
 configuration and data and returns HTML. There is a good number of widgets bundled with Yii such as [active form](form.md),
-breadcrumbs, menu or [wrappers around bootstrap component framework](boostrap-widgets.md). Additionally there are
+breadcrumbs, menu or [wrappers around bootstrap component framework](bootstrap-widgets.md). Additionally there are
 extensions providing additional widgets such as official one for jQueryUI components.
 
 In order to use widget you need to do the following:
@@ -113,7 +113,7 @@ to learn more refer to [Using template engines](template.md) section of the guid
 Using View object in templates
 ------------------------------
 
-An instance of `yii\base\View` component is available in view templates as `$this` variable. Using it in templates you
+An instance of `yii\web\View` component is available in view templates as `$this` variable. Using it in templates you
 can do many useful things including setting page title and meta, registering scripts and accessing the context.
 
 ### Setting page title
@@ -342,7 +342,7 @@ Customizing View component
 --------------------------
 
 Since view is also an application component named `view` you can replace it with your own component that extends
-from `yii\base\View`. It can be done via application configuration file such as `config/web.php`:
+from `yii\base\View` or `yii\web\View`. It can be done via application configuration file such as `config/web.php`:
 
 ```php
 return [

@@ -15,7 +15,7 @@ use yii\base\InvalidParamException;
  * Session provides session data management and the related configurations.
  *
  * Session is a Web application component that can be accessed via `Yii::$app->session`.
-
+ *
  * To start the session, call [[open()]]; To complete and send out session data, call [[close()]];
  * To destroy the session, call [[destroy()]].
  *
@@ -80,11 +80,12 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 * @var string the name of the session variable that stores the flash message data.
 	 */
 	public $flashVar = '__flash';
-
 	/**
-	 * @var array parameter-value pairs to override default session cookie parameters
+	 * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
+	 * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httpOnly'
+	 * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
 	 */
-	public $cookieParams = ['httpOnly' => true];
+	private $_cookieParams = ['httpOnly' => true];
 
 	/**
 	 * Initializes the application component.
@@ -135,7 +136,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 				);
 			}
 
-			$this->setCookieParams($this->cookieParams);
+			$this->setCookieParamsInternal();
 
 			@session_start();
 
@@ -263,26 +264,36 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 			$params['httpOnly'] = $params['httponly'];
 			unset($params['httponly']);
 		}
-		return $params;
+		return array_merge($params, $this->_cookieParams);
 	}
 
 	/**
 	 * Sets the session cookie parameters.
-	 * The effect of this method only lasts for the duration of the script.
-	 * Call this method before the session starts.
+	 * The cookie parameters passed to this method will be merged with the result
+	 * of `session_get_cookie_params()`.
 	 * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httpOnly`.
 	 * @throws InvalidParamException if the parameters are incomplete.
 	 * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
 	 */
-	public function setCookieParams($value)
+	public function setCookieParams(array $value)
+	{
+		$this->_cookieParams = $value;
+	}
+
+	/**
+	 * Sets the session cookie parameters.
+	 * This method is called by [[open()]] when it is about to open the session.
+	 * @throws InvalidParamException if the parameters are incomplete.
+	 * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
+	 */
+	private function setCookieParamsInternal()
 	{
 		$data = $this->getCookieParams();
 		extract($data);
-		extract($value);
 		if (isset($lifetime, $path, $domain, $secure, $httpOnly)) {
 			session_set_cookie_params($lifetime, $path, $domain, $secure, $httpOnly);
 		} else {
-			throw new InvalidParamException('Please make sure these parameters are provided: lifetime, path, domain, secure and httpOnly.');
+			throw new InvalidParamException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httpOnly.');
 		}
 	}
 

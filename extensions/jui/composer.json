@@ -11,14 +11,17 @@
 		"irc": "irc://irc.freenode.net/yii",
 		"source": "https://github.com/yiisoft/yii2"
 	},
-	"minimum-stability": "dev",
+	"authors": [
+		{
+			"name": "Qiang Xue",
+			"email": "qiang.xue@gmail.com"
+		}
+	],
 	"require": {
 		"yiisoft/yii2": "*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\jui\\": "" }
 	},
-	"extra": {
-		"bootstrap": "yii\\jui\\Extension"
-	}
+	"target-dir": "yii/jui"
 }
