@@ -27,6 +27,25 @@ interface ActiveQueryInterface extends QueryInterface
 	public function asArray($value = true);
 
 	/**
+	 * Sets the [[indexBy]] property.
+	 * @param string|callable $column the name of the column by which the query results should be indexed by.
+	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
+	 * row or model data. The signature of the callable should be:
+	 *
+	 * ~~~
+	 * // $model is an AR instance when `asArray` is false,
+	 * // or an array of column values when `asArray` is true.
+	 * function ($model)
+	 * {
+	 *     // return the index value corresponding to $model
+	 * }
+	 * ~~~
+	 *
+	 * @return static the query object itself
+	 */
+	public function indexBy($column);
+
+	/**
 	 * Specifies the relations with which this query should be performed.
 	 *
 	 * The parameters to this method can be either one or multiple strings, or a single array
