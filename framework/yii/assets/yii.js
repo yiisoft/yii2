@@ -177,7 +177,9 @@ yii = (function ($) {
 					xhr.done(function (data, status, xhr) {
 						var filter = xhr.getResponseHeader('X-Asset-Filter');
 						if (filter) {
-							$.merge(assetFilter, filter.split(',').map($.trim));
+							$.merge(assetFilter, filter.split(',').map(function(value) {
+								return (-1 === value.indexOf('http://') ? window.location.protocol + '//' + window.location.host : '') + $.trim(value);
+							}));
 						}
 					});
 				}
