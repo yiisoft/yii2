@@ -495,4 +495,18 @@ class Command extends Component
 		$sql = $this->db->getQueryBuilder()->truncateIndex($index);
 		return $this->setSql($sql);
 	}
+
+	public function callSnippets($index, $source, $query, array $options = [])
+	{
+		$params = [];
+		$sql = $this->db->getQueryBuilder()->callSnippets($index, $source, $query, $options, $params);
+		return $this->setSql($sql)->bindValues($params);
+	}
+
+	public function callKeywords($index, $text, $fetchStatistic = false)
+	{
+		$params = [];
+		$sql = $this->db->getQueryBuilder()->callKeywords($index, $text, $fetchStatistic, $params);
+		return $this->setSql($sql)->bindValues($params);
+	}
 }

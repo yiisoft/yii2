@@ -278,6 +278,38 @@ class QueryBuilder extends Object
 		return 'TRUNCATE RTINDEX ' . $this->db->quoteIndexName($index);
 	}
 
+	public function callSnippets($index, $source, $query, $options, &$params)
+	{
+		if (is_array($source)) {
+			$dataSqlParts = [];
+			foreach ($source as $sourceRow) {
+				$phName = self::PARAM_PREFIX . count($params);
+				$params[$phName] = $sourceRow;
+				$dataSqlParts[] = $phName;
+			}
+			$dataSql = '(' . implode(',', $dataSqlParts) . ')';
+		} else {
+			$phName = self::PARAM_PREFIX . count($params);
+			$params[$phName] = $source;
+			$dataSql = $phName;
+		}
+		$indexParamName = self::PARAM_PREFIX . count($params);
+		$params[$indexParamName] = $index;
+		$queryParamName = self::PARAM_PREFIX . count($params);
+		$params[$queryParamName] = $query;
+		$optionSql = ''; // @todo
+		return 'CALL SNIPPETS(' . $dataSql. ', ' . $indexParamName . ', ' . $queryParamName . $optionSql. ')';
+	}
+
+	public function callKeywords($index, $text, $fetchStatistic, &$params)
+	{
+		$indexParamName = self::PARAM_PREFIX . count($params);
+		$params[$indexParamName] = $index;
+		$textParamName = self::PARAM_PREFIX . count($params);
+		$params[$textParamName] = $text;
+		return 'CALL KEYWORDS(' . $textParamName . ', ' . $indexParamName . ($fetchStatistic ? ', 1' : '') . ')';
+	}
+
 	/**
 	 * @param array $columns
 	 * @param boolean $distinct

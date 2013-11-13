@@ -252,4 +252,32 @@ class CommandTest extends SphinxTestCase
 		$rows = $db->createCommand('SELECT * FROM yii2_test_rt_index')->queryAll();
 		$this->assertEquals(0, count($rows), 'Unable to delete record!');
 	}
+
+	public function testCallSnippets()
+	{
+		$db = $this->getConnection();
+
+		$query = 'pencil';
+		$data = ['Some data sentence about ' . $query];
+		$rows = $db->createCommand()->callSnippets('yii2_test_item_index', $data, $query)->queryColumn();
+		$this->assertNotEmpty($rows, 'Unable to call snippets!');
+		$this->assertContains('<b>' . $query . '</b>', $rows[0], 'Query not present in the snippet!');
+	}
+
+	public function testCallKeywords()
+	{
+		$db = $this->getConnection();
+
+		$text = 'table pencil';
+		$rows = $db->createCommand()->callKeywords('yii2_test_item_index', $text)->queryAll();
+		$this->assertNotEmpty($rows, 'Unable to call keywords!');
+		$this->assertArrayHasKey('tokenized', $rows[0], 'No tokenized keyword!');
+		$this->assertArrayHasKey('normalized', $rows[0], 'No normalized keyword!');
+
+		$text = 'table pencil';
+		$rows = $db->createCommand()->callKeywords('yii2_test_item_index', $text, true)->queryAll();
+		$this->assertNotEmpty($rows, 'Unable to call keywords with statistic!');
+		$this->assertArrayHasKey('docs', $rows[0], 'No docs!');
+		$this->assertArrayHasKey('hits', $rows[0], 'No hits!');
+	}
 }
