@@ -17,6 +17,8 @@ use yii\helpers\StringHelper;
 /**
  * XmlResponseFormatter formats the given data into an XML response content.
  *
+ * It is used by [[Response]] to format response data.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

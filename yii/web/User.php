@@ -20,6 +20,21 @@ use yii\base\InvalidConfigException;
  * User works with a class implementing the [[IdentityInterface]]. This class implements
  * the actual user authentication logic and is often backed by a user database table.
  *
+ * User is configured as an application component in [[yii\web\Application]] by default.
+ * You can access that instance via `Yii::$app->user`.
+ *
+ * You can modify its configuration by adding an array to your application config under `components`
+ * as it is shown in the following example:
+ *
+ * ~~~
+ * 'user' => [
+ *     'identityClass' => 'app\models\User', // User must implement the IdentityInterface
+ *     'enableAutoLogin' => true,
+ *     // 'loginUrl' => ['user/login'],
+ *     // ...
+ * ]
+ * ~~~
+ *
  * @property string|integer $id The unique identifier for the user. If null, it means the user is a guest.
  * This property is read-only.
  * @property IdentityInterface $identity The identity object associated with the currently logged user. Null

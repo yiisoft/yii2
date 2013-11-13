@@ -19,6 +19,7 @@ use yii\base\InvalidConfigException;
  * must be pre-created. The table name can be changed by setting [[sessionTable]].
  *
  * The following example shows how you can configure the application to use DbSession:
+ * Add the following to your application config under `components`:
  *
  * ~~~
  * 'session' => [

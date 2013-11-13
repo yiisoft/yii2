@@ -16,6 +16,14 @@ use yii\base\UserException;
  * keeps a standard HTTP status code (e.g. 404, 500). Error handlers may use this status code
  * to decide how to format the error page.
  *
+ * Throwing an HttpException like in the following example will result in the 404 page to be displayed.
+ *
+ * ```php
+ * if ($item === null) { // item does not exist
+ *     throw new \yii\web\HttpException(404, 'The requested Item could not be found.');
+ * }
+ * ```
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

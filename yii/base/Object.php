@@ -10,7 +10,10 @@ namespace yii\base;
 use Yii;
 
 /**
+ * Object is the base class that implements the *property* feature.
+ *
  * @include @yii/base/Object.md
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

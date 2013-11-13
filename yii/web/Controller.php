@@ -150,6 +150,13 @@ class Controller extends \yii\base\Controller
 	 * Redirects the browser to the specified URL.
 	 * This method is a shortcut to [[Response::redirect()]].
 	 *
+	 * You can use it in an action by returning the [[Response]] directly:
+	 *
+	 * ```php
+	 * // stop executing this action and redirect to login page
+	 * return $this->redirect(['login']);
+	 * ```
+	 *
 	 * @param string|array $url the URL to be redirected to. This can be in one of the following formats:
 	 *
 	 * - a string representing a URL (e.g. "http://example.com")
@@ -172,6 +179,14 @@ class Controller extends \yii\base\Controller
 
 	/**
 	 * Redirects the browser to the home page.
+	 *
+	 * You can use this method in an action by returning the [[Response]] directly:
+	 *
+	 * ```php
+	 * // stop executing this action and redirect to home page
+	 * return $this->goHome();
+	 * ```
+	 *
 	 * @return Response the current response object
 	 */
 	public function goHome()
@@ -181,6 +196,14 @@ class Controller extends \yii\base\Controller
 
 	/**
 	 * Redirects the browser to the last visited page.
+	 *
+	 * You can use this method in an action by returning the [[Response]] directly:
+	 *
+	 * ```php
+	 * // stop executing this action and redirect to last visited page
+	 * return $this->goBack();
+	 * ```
+	 *
 	 * @param string|array $defaultUrl the default return URL in case it was not set previously.
 	 * If this is null and the return URL was not set previously, [[Application::homeUrl]] will be redirected to.
 	 * Please refer to [[User::setReturnUrl()]] on accepted format of the URL.
@@ -195,6 +218,14 @@ class Controller extends \yii\base\Controller
 	/**
 	 * Refreshes the current page.
 	 * This method is a shortcut to [[Response::refresh()]].
+	 *
+	 * You can use it in an action by returning the [[Response]] directly:
+	 *
+	 * ```php
+	 * // stop executing this action and refresh the current page
+	 * return $this->refresh();
+	 * ```
+	 *
 	 * @param string $anchor the anchor that should be appended to the redirection URL.
 	 * Defaults to empty. Make sure the anchor starts with '#' if you want to specify it.
 	 * @return Response the response object itself

@@ -8,6 +8,8 @@
 namespace yii\web;
 
 /**
+ * This asset bundle provides the base javascript files for the Yii Framework.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
