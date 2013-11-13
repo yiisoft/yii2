@@ -7,12 +7,13 @@
  */
 
 namespace yii\db;
+use yii\ar\ActiveQueryInterface;
+use yii\ar\ActiveQueryTrait;
 
 /**
  * ActiveQuery represents a DB query associated with an Active Record class.
  *
- * ActiveQuery instances are usually created by [[ActiveRecord::find()]], [[ActiveRecord::findBySql()]]
- * and [[ActiveRecord::count()]].
+ * ActiveQuery instances are usually created by [[ActiveRecord::find()]] and [[ActiveRecord::findBySql()]].
  *
  * ActiveQuery mainly provides the following methods to retrieve the query results:
  *
@@ -42,11 +43,12 @@ namespace yii\db;
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ActiveQuery extends Query
+class ActiveQuery extends Query implements ActiveQueryInterface
 {
-	use \yii\ar\ActiveQueryTrait;
+	use ActiveQueryTrait;
 
 	/**
 	 * @var string the SQL statement to be executed for retrieving AR records.

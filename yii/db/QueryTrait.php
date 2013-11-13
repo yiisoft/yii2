@@ -7,18 +7,6 @@
 
 namespace yii\db;
 
-// TODO where to put these constants?
-/**
- * Sort ascending
- * @see orderBy
- */
-const SORT_ASC = false;
-/**
- * Sort descending
- * @see orderBy
- */
-const SORT_DESC = true;
-
 /**
  * The BaseQuery trait represents the minimum method set of a database Query.
  *
@@ -53,8 +41,10 @@ trait QueryTrait
 	/**
 	 * @var array how to sort the query results. This is used to construct the ORDER BY clause in a SQL statement.
 	 * The array keys are the columns to be sorted by, and the array values are the corresponding sort directions which
-	 * can be either [[Query::SORT_ASC]] or [[Query::SORT_DESC]]. The array may also contain [[Expression]] objects.
-	 * If that is the case, the expressions will be converted into strings without any change.
+	 * can be either [SORT_ASC](http://php.net/manual/en/array.constants.php#constant.sort-asc)
+	 * or [SORT_DESC](http://php.net/manual/en/array.constants.php#constant.sort-desc).
+	 * The array may also contain [[Expression]] objects. If that is the case, the expressions
+	 * will be converted into strings without any change.
 	 */
 	public $orderBy;
 	/**
@@ -86,90 +76,9 @@ trait QueryTrait
 	}
 
 	/**
-	 * Executes the query and returns all results as an array.
-	 * @return array the query results. If the query results in nothing, an empty array will be returned.
-	 */
-	abstract public function all();
-
-	/**
-	 * Executes the query and returns a single row of result.
-	 * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
-	 * results in nothing.
-	 */
-	abstract public function one();
-
-	/**
-	 * Returns the number of records.
-	 * @return integer number of records
-	 */
-	abstract public function count();
-
-	/**
-	 * Returns a value indicating whether the query result contains any row of data.
-	 * @return boolean whether the query result contains any row of data.
-	 */
-	abstract public function exists();
-
-	/**
 	 * Sets the WHERE part of the query.
 	 *
-	 * The method requires a $condition parameter.
-	 *
-	 * The $condition parameter should be an array in one of the following two formats:
-	 *
-	 * - hash format: `['column1' => value1, 'column2' => value2, ...]`
-	 * - operator format: `[operator, operand1, operand2, ...]`
-	 *
-	 * A condition in hash format represents the following SQL expression in general:
-	 * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array,
-	 * an `IN` expression will be generated. And if a value is null, `IS NULL` will be used
-	 * in the generated expression. Below are some examples:
-	 *
-	 * - `['type' => 1, 'status' => 2]` generates `(type = 1) AND (status = 2)`.
-	 * - `['id' => [1, 2, 3], 'status' => 2]` generates `(id IN (1, 2, 3)) AND (status = 2)`.
-	 * - `['status' => null] generates `status IS NULL`.
-	 *
-	 * A condition in operator format generates the SQL expression according to the specified operator, which
-	 * can be one of the followings:
-	 *
-	 * - `and`: the operands should be concatenated together using `AND`. For example,
-	 * `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,
-	 * it will be converted into a string using the rules described here. For example,
-	 * `['and', 'type=1', ['or', 'id=1', 'id=2']]` will generate `type=1 AND (id=1 OR id=2)`.
-	 * The method will NOT do any quoting or escaping.
-	 *
-	 * - `or`: similar to the `and` operator except that the operands are concatenated using `OR`.
-	 *
-	 * - `between`: operand 1 should be the column name, and operand 2 and 3 should be the
-	 * starting and ending values of the range that the column is in.
-	 * For example, `['between', 'id', 1, 10]` will generate `id BETWEEN 1 AND 10`.
-	 *
-	 * - `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
-	 * in the generated condition.
-	 *
-	 * - `in`: operand 1 should be a column or DB expression, and operand 2 be an array representing
-	 * the range of the values that the column or DB expression should be in. For example,
-	 * `['in', 'id', [1, 2, 3]]` will generate `id IN (1, 2, 3)`.
-	 * The method will properly quote the column name and escape values in the range.
-	 *
-	 * - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
-	 *
-	 * - `like`: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
-	 * the values that the column or DB expression should be like.
-	 * For example, `['like', 'name', '%tester%']` will generate `name LIKE '%tester%'`.
-	 * When the value range is given as an array, multiple `LIKE` predicates will be generated and concatenated
-	 * using `AND`. For example, `['like', 'name', ['%test%', '%sample%']]` will generate
-	 * `name LIKE '%test%' AND name LIKE '%sample%'`.
-	 * The method will properly quote the column name and escape values in the range.
-	 *
-	 * - `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`
-	 * predicates when operand 2 is an array.
-	 *
-	 * - `not like`: similar to the `like` operator except that `LIKE` is replaced with `NOT LIKE`
-	 * in the generated condition.
-	 *
-	 * - `or not like`: similar to the `not like` operator except that `OR` is used to concatenate
-	 * the `NOT LIKE` predicates.
+	 * See [[QueryInterface::where()]] for detailed documentation.
 	 *
 	 * @param array $condition the conditions that should be put in the WHERE part.
 	 * @return static the query object itself
@@ -224,7 +133,7 @@ trait QueryTrait
 	 * Sets the ORDER BY part of the query.
 	 * @param string|array $columns the columns (and the directions) to be ordered by.
 	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-	 * (e.g. `['id' => Query::SORT_ASC, 'name' => Query::SORT_DESC]`).
+	 * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
 	 * @return static the query object itself
@@ -240,7 +149,7 @@ trait QueryTrait
 	 * Adds additional ORDER BY columns to the query.
 	 * @param string|array $columns the columns (and the directions) to be ordered by.
 	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-	 * (e.g. `['id' => Query::SORT_ASC, 'name' => Query::SORT_DESC]`).
+	 * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
 	 * @return static the query object itself
@@ -266,9 +175,9 @@ trait QueryTrait
 			$result = [];
 			foreach ($columns as $column) {
 				if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
-					$result[$matches[1]] = strcasecmp($matches[2], 'desc') ? self::SORT_ASC : self::SORT_DESC;
+					$result[$matches[1]] = strcasecmp($matches[2], 'desc') ? SORT_ASC : SORT_DESC;
 				} else {
-					$result[$column] = self::SORT_ASC;
+					$result[$column] = SORT_ASC;
 				}
 			}
 			return $result;

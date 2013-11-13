@@ -8,6 +8,7 @@
 
 namespace yii\db;
 
+use yii\ar\ActiveRelationInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\InvalidParamException;
@@ -36,6 +37,7 @@ use yii\helpers\Inflector;
  * the key value is null). This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
 class ActiveRecord extends Model
@@ -94,10 +96,6 @@ class ActiveRecord extends Model
 	 */
 	const OP_ALL = 0x07;
 
-	/**
-	 * @var string the name of the class to use for relations.
-	 */
-	protected $relationClassName = 'yii\\db\\ActiveRelation';
 	/**
 	 * @var array attribute values indexed by attribute names
 	 */
@@ -256,7 +254,7 @@ class ActiveRecord extends Model
 
 	/**
 	 * Creates an [[ActiveQuery]] instance.
-	 * This method is called by [[find()]], [[findBySql()]] and [[count()]] to start a SELECT query.
+	 * This method is called by [[find()]], [[findBySql()]] to start a SELECT query.
 	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
 	 * written for querying `Customer` purpose.)
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
@@ -389,7 +387,7 @@ class ActiveRecord extends Model
 				return $this->_related[$name];
 			}
 			$value = parent::__get($name);
-			if ($value instanceof $this->relationClassName) {
+			if ($value instanceof ActiveRelationInterface) {
 				return $this->_related[$name] = $value->multiple ? $value->all() : $value->one();
 			} else {
 				return $value;
@@ -478,7 +476,7 @@ class ActiveRecord extends Model
 	 */
 	public function hasOne($class, $link)
 	{
-		return new $this->relationClassName([
+		return $this->createActiveRelation([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
@@ -516,12 +514,24 @@ class ActiveRecord extends Model
 	 */
 	public function hasMany($class, $link)
 	{
-		return new $this->relationClassName([
+		return $this->createActiveRelation([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
 			'multiple' => true,
 		]);
+	}
+
+	/**
+	 * Creates an [[ActiveRelation]] instance.
+	 * This method is called by [[hasOne()]] and [[hasMany()]] to create a relation instance.
+	 * You may override this method to return a customized relation.
+	 * @param array $config the configuration passed to the ActiveRelation class.
+	 * @return ActiveRelation the newly created [[ActiveRelation]] instance.
+	 */
+	protected function createActiveRelation($config = [])
+	{
+		return new ActiveRelation($config);
 	}
 
 	/**
@@ -1287,7 +1297,7 @@ class ActiveRecord extends Model
 		$getter = 'get' . $name;
 		try {
 			$relation = $this->$getter();
-			if ($relation instanceof $this->relationClassName) {
+			if ($relation instanceof ActiveRelationInterface) {
 				return $relation;
 			} else {
 				return null;

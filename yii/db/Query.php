@@ -33,22 +33,12 @@ use yii\base\Component;
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class Query extends Component
+class Query extends Component implements QueryInterface
 {
 	use QueryTrait;
-
-	/**
-	 * Sort ascending
-	 * @see orderBy()
-	 */
-	const SORT_ASC = false;
-	/**
-	 * Sort descending
-	 * @see orderBy()
-	 */
-	const SORT_DESC = true;
 
 	/**
 	 * @var array the columns being selected. For example, `['id', 'name']`.
@@ -189,13 +179,13 @@ class Query extends Component
 
 	/**
 	 * Returns the number of records.
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given (or null), the `db` application component will be used.
 	 * @param string $q the COUNT expression. Defaults to '*'.
 	 * Make sure you properly quote column names in the expression.
-	 * @param Connection $db the database connection used to generate the SQL statement.
-	 * If this parameter is not given, the `db` application component will be used.
 	 * @return integer number of records
 	 */
-	public function count($q = '*', $db = null)
+	public function count($db = null, $q = '*')
 	{
 		$this->select = ["COUNT($q)"];
 		return $this->createCommand($db)->queryScalar();
