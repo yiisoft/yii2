@@ -23,6 +23,7 @@ use yii\db\ActiveRecord;
  * If a relation involves a pivot table, it may be specified by [[via()]] or [[viaTable()]] method.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
 trait ActiveRelationTrait

@@ -10,10 +10,7 @@ namespace yii\ar;
 use yii\db\ActiveRecord;
 
 /**
- * ActiveQuery represents a DB query associated with an Active Record class.
- *
- * ActiveQuery instances are usually created by [[ActiveRecord::find()]], [[ActiveRecord::findBySql()]]
- * and [[ActiveRecord::count()]].
+ * ActiveQueryTrait implements the common set of methods that are used by DB queries associated with an Active Record class.
  *
  * ActiveQuery mainly provides the following methods to retrieve the query results:
  *
@@ -150,6 +147,11 @@ trait ActiveQueryTrait
 		return parent::indexBy($column);
 	}
 
+	/**
+	 * Converts found rows into model instances
+	 * @param array $rows
+	 * @return array|ActiveRecord[]
+	 */
 	private function createModels($rows)
 	{
 		$models = [];
@@ -187,6 +189,10 @@ trait ActiveQueryTrait
 		return $models;
 	}
 
+	/**
+	 * @param ActiveRecord[] $models
+	 * @param array $with
+	 */
 	private function populateRelations(&$models, $with)
 	{
 		$primaryModel = new $this->modelClass;
@@ -203,7 +209,7 @@ trait ActiveQueryTrait
 	/**
 	 * @param ActiveRecord $model
 	 * @param array $with
-	 * @return ActiveRelation[]
+	 * @return ActiveRelationInterface[]
 	 */
 	private function normalizeRelations($model, $with)
 	{

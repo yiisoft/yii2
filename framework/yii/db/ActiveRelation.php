@@ -7,6 +7,8 @@
  */
 
 namespace yii\db;
+use yii\ar\ActiveRelationInterface;
+use yii\ar\ActiveRelationTrait;
 
 /**
  * ActiveRelation represents a relation between two Active Record classes.
@@ -24,17 +26,12 @@ namespace yii\db;
  * or [[viaTable()]] to set this property instead of directly setting it.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ActiveRelation extends ActiveQuery
+class ActiveRelation extends ActiveQuery implements ActiveRelationInterface
 {
-	use \yii\ar\ActiveRelationTrait;
-
-	/**
-	 * @var array|ActiveRelation the query associated with the pivot table. Please call [[via()]]
-	 * or [[viaTable()]] to set this property instead of directly setting it.
-	 */
-	public $via;
+	use ActiveRelationTrait;
 
 	/**
 	 * Specifies the pivot table.

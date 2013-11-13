@@ -167,8 +167,8 @@ For ordering results `orderBy` and `addOrderBy` could be used:
 
 ```php
 $query->orderBy([
-	'id' => Query::SORT_ASC,
-	'name' => Query::SORT_DESC,
+	'id' => SORT_ASC,
+	'name' => SORT_DESC,
 ]);
 ```
 
