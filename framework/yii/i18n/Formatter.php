@@ -19,6 +19,15 @@ use yii\base\InvalidConfigException;
  * Formatter requires the PHP "intl" extension to be installed. Formatter supports localized
  * formatting of date, time and numbers, based on the current [[locale]].
  *
+ * This Formatter can replace the `formatter` application component that is configured by default.
+ * To do so, add the following to your application config under `components`:
+ *
+ * ```php
+ * 'formatter' => [
+ *     'class' => 'yii\i18n\Formatter',
+ * ]
+ * ```
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

@@ -8,6 +8,11 @@
 namespace yii\base;
 
 /**
+ * ActionFilter provides a base implementation for action filters that can be added to a controller
+ * to handle the `beforeAction` event.
+ *
+ * Check implementation of [[AccessControl]], [[PageCache]] and [[HttpCache]] as examples on how to use it.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

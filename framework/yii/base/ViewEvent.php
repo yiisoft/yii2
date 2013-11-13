@@ -8,6 +8,8 @@
 namespace yii\base;
 
 /**
+ * ViewEvent represents events triggered by the [[View]] component.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

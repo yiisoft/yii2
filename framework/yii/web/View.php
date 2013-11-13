@@ -22,6 +22,22 @@ use yii\base\InvalidConfigException;
  *
  * View provides a set of methods (e.g. [[render()]]) for rendering purpose.
  *
+ * View is configured as an application component in [[yii\base\Application]] by default.
+ * You can access that instance via `Yii::$app->view`.
+ *
+ * You can modify its configuration by adding an array to your application config under `components`
+ * as it is shown in the following example:
+ *
+ * ~~~
+ * 'view' => [
+ *     'theme' => 'app\themes\MyTheme',
+ *     'renderers' => [
+ *         // you may add Smarty or Twig renderer here
+ *     ]
+ *     // ...
+ * ]
+ * ~~~
+ *
  * @property \yii\web\AssetManager $assetManager The asset manager. Defaults to the "assetManager" application
  * component.
  *

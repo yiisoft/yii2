@@ -22,6 +22,20 @@ use yii\helpers\StringHelper;
  * It holds the [[headers]], [[cookies]] and [[content]] that is to be sent to the client.
  * It also controls the HTTP [[statusCode|status code]].
  *
+ * Response is configured as an application component in [[yii\web\Application]] by default.
+ * You can access that instance via `Yii::$app->response`.
+ *
+ * You can modify its configuration by adding an array to your application config under `components`
+ * as it is shown in the following example:
+ *
+ * ~~~
+ * 'response' => [
+ *     'format' => yii\web\Response::FORMAT_JSON,
+ *     'charset' => 'UTF-8',
+ *     // ...
+ * ]
+ * ~~~
+ *
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
  * @property boolean $isClientError Whether this response indicates a client error. This property is
