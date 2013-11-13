@@ -204,9 +204,10 @@ class QueryBuilder extends Object
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the binding parameters that will be modified by this method
 	 * so that they can be bound to the DB command later.
+	 * @param array $options list of options in format: optionName => optionValue
 	 * @return string the UPDATE SQL
 	 */
-	public function update($index, $columns, $condition, &$params)
+	public function update($index, $columns, $condition, &$params, $options)
 	{
 		if (($indexSchema = $this->db->getIndexSchema($index)) !== null) {
 			$columnSchemas = $indexSchema->columns;
@@ -241,7 +242,14 @@ class QueryBuilder extends Object
 
 		$sql = 'UPDATE ' . $this->db->quoteIndexName($index) . ' SET ' . implode(', ', $lines);
 		$where = $this->buildWhere($condition, $params);
-		return $where === '' ? $sql : $sql . ' ' . $where;
+		if ($where !== '') {
+			$sql = $sql . ' ' . $where;
+		}
+		$option = $this->buildOption($options, $params);
+		if ($option !== '') {
+			$sql = $sql . ' ' . $option;
+		}
+		return $sql;
 	}
 
 	/**

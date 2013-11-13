@@ -233,6 +233,36 @@ class CommandTest extends SphinxTestCase
 	}
 
 	/**
+	 * @depends testUpdate
+	 */
+	public function testUpdateWithOptions()
+	{
+		$db = $this->getConnection();
+
+		$db->createCommand()->insert('yii2_test_rt_index', [
+			'title' => 'Test title',
+			'content' => 'Test content',
+			'type_id' => 2,
+			'id' => 1,
+		])->execute();
+
+		$newTypeId = 5;
+		$command = $db->createCommand()->update(
+			'yii2_test_rt_index',
+			[
+				'type_id' => $newTypeId,
+				'non_existing_attribute' => 10,
+			],
+			'id = 1',
+			[],
+			[
+				'ignore_nonexistent_columns' => 1
+			]
+		);
+		$this->assertEquals(1, $command->execute(), 'Unable to execute update!');
+	}
+
+	/**
 	 * @depends testInsert
 	 */
 	public function testDelete()

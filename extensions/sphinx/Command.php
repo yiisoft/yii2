@@ -453,11 +453,12 @@ class Command extends Component
 	 * @param string|array $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the parameters to be bound to the command
+	 * @param array $options list of options in format: optionName => optionValue
 	 * @return static the command object itself
 	 */
-	public function update($index, $columns, $condition = '', $params = [])
+	public function update($index, $columns, $condition = '', $params = [], $options = [])
 	{
-		$sql = $this->db->getQueryBuilder()->update($index, $columns, $condition, $params);
+		$sql = $this->db->getQueryBuilder()->update($index, $columns, $condition, $params, $options);
 		return $this->setSql($sql)->bindValues($params);
 	}
 
