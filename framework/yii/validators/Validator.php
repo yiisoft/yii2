@@ -76,7 +76,8 @@ abstract class Validator extends Component
 	];
 
 	/**
-	 * @var array list of attributes to be validated.
+	 * @var array|string attributes to be validated by this validator. For multiple attributes,
+	 * please specify them as an array; for single attribute, you may use either a string or an array.
 	 */
 	public $attributes = [];
 	/**
@@ -88,7 +89,8 @@ abstract class Validator extends Component
 	 */
 	public $message;
 	/**
-	 * @var array list of scenarios that the validator can be applied to.
+	 * @var array|string scenarios that the validator can be applied to. For multiple scenarios,
+	 * please specify them as an array; for single scenario, you may use either a string or an array.
 	 */
 	public $on = [];
 	/**
@@ -131,7 +133,7 @@ abstract class Validator extends Component
 	 * @param array $params initial values to be applied to the validator properties
 	 * @return Validator the validator
 	 */
-	public static function createValidator($type, $object, array $attributes, $params = [])
+	public static function createValidator($type, $object, $attributes, $params = [])
 	{
 		$params['attributes'] = $attributes;
 
@@ -153,6 +155,20 @@ abstract class Validator extends Component
 		}
 
 		return Yii::createObject($params);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function init()
+	{
+		parent::init();
+		if (!is_array($this->attributes)) {
+			$this->attributes = (array)$this->attributes;
+		}
+		if (!is_array($this->on)) {
+			$this->on = (array)$this->on;
+		}
 	}
 
 	/**
