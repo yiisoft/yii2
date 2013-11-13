@@ -237,10 +237,10 @@ class Generator extends \yii\gii\Generator
 
 		$rules = [];
 		foreach ($types as $type => $columns) {
-			$rules[] = "[['" . implode(', ', $columns) . "'], '$type']";
+			$rules[] = "[['" . implode("', '", $columns) . "'], '$type']";
 		}
 		foreach ($lengths as $length => $columns) {
-			$rules[] = "[['" . implode(', ', $columns) . "'], 'string', 'max' => $length]";
+			$rules[] = "[['" . implode("', '", $columns) . "'], 'string', 'max' => $length]";
 		}
 
 		return $rules;
