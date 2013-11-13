@@ -28,7 +28,7 @@ namespace yii\db;
  */
 class ActiveRelation extends ActiveQuery
 {
-	use \yii\ar\ActiveRelation;
+	use \yii\ar\ActiveRelationTrait;
 
 	/**
 	 * Specifies the pivot table.

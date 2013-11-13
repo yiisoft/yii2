@@ -33,7 +33,7 @@ const SORT_DESC = true;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-trait BaseQuery
+trait QueryTrait
 {
 	/**
 	 * @var string|array query condition. This refers to the WHERE clause in a SQL statement.

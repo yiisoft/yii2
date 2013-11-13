@@ -37,7 +37,7 @@ use yii\base\Component;
  */
 class Query extends Component
 {
-	use BaseQuery;
+	use QueryTrait;
 
 	/**
 	 * Sort ascending

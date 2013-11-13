@@ -46,7 +46,7 @@ namespace yii\db;
  */
 class ActiveQuery extends Query
 {
-	use \yii\ar\ActiveQuery;
+	use \yii\ar\ActiveQueryTrait;
 
 	/**
 	 * @var string the SQL statement to be executed for retrieving AR records.
