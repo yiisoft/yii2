@@ -683,7 +683,7 @@ class QueryBuilder extends \yii\base\Object
 			if (is_object($direction)) {
 				$orders[] = (string)$direction;
 			} else {
-				$orders[] = $this->db->quoteColumnName($name) . ($direction === Query::SORT_DESC ? ' DESC' : '');
+				$orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
 			}
 		}
 

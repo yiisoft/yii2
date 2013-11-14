@@ -119,10 +119,19 @@ class ActiveRecordTest extends DatabaseTestCase
 	{
 		/** @var Customer $customer */
 		$customer = Customer::find(2);
+		$this->assertFalse($customer->isRelationPopulated('orders'));
 		$orders = $customer->orders;
+		$this->assertTrue($customer->isRelationPopulated('orders'));
 		$this->assertEquals(2, count($orders));
+		$this->assertEquals(1, count($customer->populatedRelations));
 
+		/** @var Customer $customer */
+		$customer = Customer::find(2);
+		$this->assertFalse($customer->isRelationPopulated('orders'));
 		$orders = $customer->getOrders()->where('id=3')->all();
+		$this->assertFalse($customer->isRelationPopulated('orders'));
+		$this->assertEquals(0, count($customer->populatedRelations));
+
 		$this->assertEquals(1, count($orders));
 		$this->assertEquals(3, $orders[0]->id);
 	}
@@ -131,8 +140,15 @@ class ActiveRecordTest extends DatabaseTestCase
 	{
 		$customers = Customer::find()->with('orders')->all();
 		$this->assertEquals(3, count($customers));
+		$this->assertTrue($customers[0]->isRelationPopulated('orders'));
+		$this->assertTrue($customers[1]->isRelationPopulated('orders'));
 		$this->assertEquals(1, count($customers[0]->orders));
 		$this->assertEquals(2, count($customers[1]->orders));
+
+		$customer = Customer::find()->with('orders')->one();
+		$this->assertTrue($customer->isRelationPopulated('orders'));
+		$this->assertEquals(1, count($customer->orders));
+		$this->assertEquals(1, count($customer->populatedRelations));
 	}
 
 	public function testFindLazyVia()

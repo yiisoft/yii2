@@ -8,11 +8,11 @@
 namespace yii\data;
 
 use Yii;
+use yii\ar\ActiveQueryInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
-use yii\db\Query;
-use yii\db\ActiveQuery;
 use yii\db\Connection;
+use yii\db\QueryInterface;
 
 /**
  * ActiveDataProvider implements a data provider based on [[Query]] and [[ActiveQuery]].
@@ -54,7 +54,7 @@ use yii\db\Connection;
 class ActiveDataProvider extends BaseDataProvider
 {
 	/**
-	 * @var Query the query that is used to fetch data models and [[totalCount]]
+	 * @var QueryInterface the query that is used to fetch data models and [[totalCount]]
 	 * if it is not explicitly set.
 	 */
 	public $query;
@@ -97,8 +97,8 @@ class ActiveDataProvider extends BaseDataProvider
 	 */
 	protected function prepareModels()
 	{
-		if (!$this->query instanceof Query) {
-			throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
+		if (!$this->query instanceof QueryInterface) {
+			throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
 		}
 		if (($pagination = $this->getPagination()) !== false) {
 			$pagination->totalCount = $this->getTotalCount();
@@ -125,7 +125,7 @@ class ActiveDataProvider extends BaseDataProvider
 				}
 			}
 			return $keys;
-		} elseif ($this->query instanceof ActiveQuery) {
+		} elseif ($this->query instanceof ActiveQueryInterface) {
 			/** @var \yii\db\ActiveRecord $class */
 			$class = $this->query->modelClass;
 			$pks = $class::primaryKey();
@@ -154,11 +154,11 @@ class ActiveDataProvider extends BaseDataProvider
 	 */
 	protected function prepareTotalCount()
 	{
-		if (!$this->query instanceof Query) {
-			throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
+		if (!$this->query instanceof QueryInterface) {
+			throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
 		}
 		$query = clone $this->query;
-		return (int) $query->limit(-1)->offset(-1)->count('*', $this->db);
+		return (int) $query->limit(-1)->offset(-1)->orderBy([])->count('*', $this->db);
 	}
 
 	/**
@@ -167,7 +167,7 @@ class ActiveDataProvider extends BaseDataProvider
 	public function setSort($value)
 	{
 		parent::setSort($value);
-		if (($sort = $this->getSort()) !== false && empty($sort->attributes) && $this->query instanceof ActiveQuery) {
+		if (($sort = $this->getSort()) !== false && empty($sort->attributes) && $this->query instanceof ActiveQueryInterface) {
 			/** @var Model $model */
 			$model = new $this->query->modelClass;
 			foreach ($model->attributes() as $attribute) {
