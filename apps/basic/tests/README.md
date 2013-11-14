@@ -4,7 +4,6 @@ These tests are developed with [Codeception PHP Testing Framework](http://codece
 To run the tests, follow these steps:
 
 1. [Install Codeception](http://codeception.com/quickstart) if you do not have it yet.
-2. Update tests
 2. Create test configuration files based on your environment:
    - Copy `acceptance.suite.dist.yml` to `acceptance.suite.yml` and customize it;
    - Copy `functional.suite.dist.yml` to `functional.suite.yml` and customize it;
