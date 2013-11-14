@@ -32,6 +32,14 @@ class QueryTest extends SphinxTestCase
 		$this->assertEquals(['tbl_user'], $query->from);
 	}
 
+	public function testMatch()
+	{
+		$query = new Query;
+		$match = 'test match';
+		$query->match($match);
+		$this->assertEquals($match, $query->match);
+	}
+
 	public function testWhere()
 	{
 		$query = new Query;
@@ -128,7 +136,7 @@ class QueryTest extends SphinxTestCase
 
 		$query = new Query;
 		$rows = $query->from('yii2_test_article_index')
-			->where("MATCH('about')")
+			->match('about')
 			->options([
 				'cutoff' => 50,
 				'field_weights' => [

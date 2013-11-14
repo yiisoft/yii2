@@ -54,6 +54,11 @@ class QueryBuilder extends Object
 	public function build($query)
 	{
 		$params = $query->params;
+		if ($query->match !== null) {
+			$phName = self::PARAM_PREFIX . count($params);
+			$params[$phName] = (string)$query->match;
+			$query->andWhere('MATCH(' . $phName . ')');
+		}
 		$clauses = [
 			$this->buildSelect($query->select, $query->distinct, $query->selectOption),
 			$this->buildFrom($query->from),

@@ -52,8 +52,13 @@ class Query extends Component
 	 */
 	public $from;
 	/**
+	 * @var string text, which should be searched in fulltext mode.
+	 * This value will be composed into MATCH operator inside the WHERE clause.
+	 */
+	public $match;
+	/**
 	 * @var string|array query condition. This refers to the WHERE clause in a SQL statement.
-	 * For example, `MATCH('ipod') AND team = 1`.
+	 * For example, `group_id > 5 AND team = 1`.
 	 * @see where()
 	 */
 	public $where;
@@ -332,6 +337,87 @@ class Query extends Component
 		return $this;
 	}
 
+	/**
+	 * Sets the fulltext query text. This text will be composed into
+	 * MATCH operator inside the WHERE clause.
+	 * @param string $query fulltext query text.
+	 * @return static the query object itself
+	 */
+	public function match($query)
+	{
+		$this->match = $query;
+		return $this;
+	}
+
+	/**
+	 * Sets the WHERE part of the query.
+	 *
+	 * The method requires a $condition parameter, and optionally a $params parameter
+	 * specifying the values to be bound to the query.
+	 *
+	 * The $condition parameter should be either a string (e.g. 'id=1') or an array.
+	 * If the latter, it must be in one of the following two formats:
+	 *
+	 * - hash format: `['column1' => value1, 'column2' => value2, ...]`
+	 * - operator format: `[operator, operand1, operand2, ...]`
+	 *
+	 * A condition in hash format represents the following SQL expression in general:
+	 * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array,
+	 * an `IN` expression will be generated. And if a value is null, `IS NULL` will be used
+	 * in the generated expression. Below are some examples:
+	 *
+	 * - `['type' => 1, 'status' => 2]` generates `(type = 1) AND (status = 2)`.
+	 * - `['id' => [1, 2, 3], 'status' => 2]` generates `(id IN (1, 2, 3)) AND (status = 2)`.
+	 * - `['status' => null] generates `status IS NULL`.
+	 *
+	 * A condition in operator format generates the SQL expression according to the specified operator, which
+	 * can be one of the followings:
+	 *
+	 * - `and`: the operands should be concatenated together using `AND`. For example,
+	 * `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,
+	 * it will be converted into a string using the rules described here. For example,
+	 * `['and', 'type=1', ['or', 'id=1', 'id=2']]` will generate `type=1 AND (id=1 OR id=2)`.
+	 * The method will NOT do any quoting or escaping.
+	 *
+	 * - `or`: similar to the `and` operator except that the operands are concatenated using `OR`.
+	 *
+	 * - `between`: operand 1 should be the column name, and operand 2 and 3 should be the
+	 * starting and ending values of the range that the column is in.
+	 * For example, `['between', 'id', 1, 10]` will generate `id BETWEEN 1 AND 10`.
+	 *
+	 * - `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
+	 * in the generated condition.
+	 *
+	 * - `in`: operand 1 should be a column or DB expression, and operand 2 be an array representing
+	 * the range of the values that the column or DB expression should be in. For example,
+	 * `['in', 'id', [1, 2, 3]]` will generate `id IN (1, 2, 3)`.
+	 * The method will properly quote the column name and escape values in the range.
+	 *
+	 * - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
+	 *
+	 * - `like`: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
+	 * the values that the column or DB expression should be like.
+	 * For example, `['like', 'name', '%tester%']` will generate `name LIKE '%tester%'`.
+	 * When the value range is given as an array, multiple `LIKE` predicates will be generated and concatenated
+	 * using `AND`. For example, `['like', 'name', ['%test%', '%sample%']]` will generate
+	 * `name LIKE '%test%' AND name LIKE '%sample%'`.
+	 * The method will properly quote the column name and escape values in the range.
+	 *
+	 * - `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`
+	 * predicates when operand 2 is an array.
+	 *
+	 * - `not like`: similar to the `like` operator except that `LIKE` is replaced with `NOT LIKE`
+	 * in the generated condition.
+	 *
+	 * - `or not like`: similar to the `not like` operator except that `OR` is used to concatenate
+	 * the `NOT LIKE` predicates.
+	 *
+	 * @param string|array $condition the conditions that should be put in the WHERE part.
+	 * @param array $params the parameters (name => value) to be bound to the query.
+	 * @return static the query object itself
+	 * @see andWhere()
+	 * @see orWhere()
+	 */
 	public function where($condition, $params = [])
 	{
 		$this->where = $condition;
