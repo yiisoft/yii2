@@ -38,6 +38,10 @@ class QueryTest extends SphinxTestCase
 		$match = 'test match';
 		$query->match($match);
 		$this->assertEquals($match, $query->match);
+
+		$command = $query->createCommand($this->getConnection(false));
+		$this->assertContains('MATCH(', $command->getSql(), 'No MATCH operator present!');
+		$this->assertContains($match, $command->params, 'No match query among params!');
 	}
 
 	public function testWhere()
