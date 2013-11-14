@@ -11,10 +11,10 @@ namespace yii\sphinx;
  * Class Connection
  *
  * @property Schema $schema The schema information for this Sphinx connection. This property is read-only.
- * @property QueryBuilder $queryBuilder The query builder for this Sphinx connection. This property is
+ * @property \yii\sphinx\QueryBuilder $queryBuilder The query builder for this Sphinx connection. This property is
  * read-only.
  * @method Schema getSchema() The schema information for this Sphinx connection
- * @method QueryBuilder getQueryBuilder() the query builder for this Sphinx connection
+ * @method \yii\sphinx\QueryBuilder getQueryBuilder() the query builder for this Sphinx connection
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

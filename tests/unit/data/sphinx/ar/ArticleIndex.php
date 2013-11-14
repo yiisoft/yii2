@@ -1,0 +1,18 @@
+<?php
+
+namespace yiiunit\data\sphinx\ar;
+
+class ArticleIndex extends ActiveRecord
+{
+	public $custom_column;
+
+	public static function indexName()
+	{
+		return 'yii2_test_article_index';
+	}
+
+	public static function favoriteAuthor($query)
+	{
+		$query->andWhere('author_id=1');
+	}
+}
