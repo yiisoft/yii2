@@ -70,7 +70,7 @@ class Schema extends Object
 	 * @param string $name index name
 	 * @return IndexSchema driver dependent index metadata. Null if the index does not exist.
 	 */
-	protected function loadTableSchema($name)
+	protected function loadIndexSchema($name)
 	{
 		$index = new IndexSchema;
 		$this->resolveIndexNames($index, $name);
@@ -119,7 +119,7 @@ class Schema extends Object
 			if ($cache instanceof Cache) {
 				$key = $this->getCacheKey($name);
 				if ($refresh || ($index = $cache->get($key)) === false) {
-					$index = $this->loadTableSchema($realName);
+					$index = $this->loadIndexSchema($realName);
 					if ($index !== null) {
 						$cache->set($key, $index, $db->schemaCacheDuration, new GroupDependency($this->getCacheGroup()));
 					}
@@ -127,7 +127,7 @@ class Schema extends Object
 				return $this->_indexes[$name] = $index;
 			}
 		}
-		return $this->_indexes[$name] = $index = $this->loadTableSchema($realName);
+		return $this->_indexes[$name] = $index = $this->loadIndexSchema($realName);
 	}
 
 	/**
@@ -424,7 +424,7 @@ class Schema extends Object
 			$column = $this->loadColumnSchema($info);
 			$index->columns[$column->name] = $column;
 			if ($column->isPrimaryKey) {
-				$index->primaryKey[] = $column->name;
+				$index->primaryKey = $column->name;
 			}
 		}
 		return true;

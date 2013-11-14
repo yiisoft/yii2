@@ -29,9 +29,9 @@ class IndexSchema extends Object
 	 */
 	public $name;
 	/**
-	 * @var string[] primary keys of this index.
+	 * @var string primary key of this index.
 	 */
-	public $primaryKey = [];
+	public $primaryKey;
 	/**
 	 * @var ColumnSchema[] column metadata of this index. Each array element is a [[ColumnSchema]] object, indexed by column names.
 	 */
@@ -55,28 +55,5 @@ class IndexSchema extends Object
 	public function getColumnNames()
 	{
 		return array_keys($this->columns);
-	}
-
-	/**
-	 * Manually specifies the primary key for this table.
-	 * @param string|array $keys the primary key (can be composite)
-	 * @throws InvalidParamException if the specified key cannot be found in the table.
-	 */
-	public function fixPrimaryKey($keys)
-	{
-		if (!is_array($keys)) {
-			$keys = [$keys];
-		}
-		$this->primaryKey = $keys;
-		foreach ($this->columns as $column) {
-			$column->isPrimaryKey = false;
-		}
-		foreach ($keys as $key) {
-			if (isset($this->columns[$key])) {
-				$this->columns[$key]->isPrimaryKey = true;
-			} else {
-				throw new InvalidParamException("Primary key '$key' cannot be found in index '{$this->name}'.");
-			}
-		}
 	}
 }
