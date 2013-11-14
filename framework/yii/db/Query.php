@@ -179,13 +179,13 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Returns the number of records.
-	 * @param Connection $db the database connection used to generate the SQL statement.
-	 * If this parameter is not given (or null), the `db` application component will be used.
 	 * @param string $q the COUNT expression. Defaults to '*'.
 	 * Make sure you properly quote column names in the expression.
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given (or null), the `db` application component will be used.
 	 * @return integer number of records
 	 */
-	public function count($db = null, $q = '*')
+	public function count($q = '*', $db = null)
 	{
 		$this->select = ["COUNT($q)"];
 		return $this->createCommand($db)->queryScalar();
