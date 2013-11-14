@@ -94,7 +94,8 @@ abstract class Validator extends Component
 	 */
 	public $on = [];
 	/**
-	 * @var array list of scenarios that the validator should not be applied to.
+	 * @var array|string scenarios that the validator should not be applied to. For multiple scenarios,
+	 * please specify them as an array; for single scenario, you may use either a string or an array.
 	 */
 	public $except = [];
 	/**
@@ -163,12 +164,9 @@ abstract class Validator extends Component
 	public function init()
 	{
 		parent::init();
-		if (!is_array($this->attributes)) {
-			$this->attributes = (array)$this->attributes;
-		}
-		if (!is_array($this->on)) {
-			$this->on = (array)$this->on;
-		}
+		$this->attributes = (array)$this->attributes;
+		$this->on = (array)$this->on;
+		$this->except = (array)$this->except;
 	}
 
 	/**
