@@ -7,8 +7,6 @@
  */
 
 namespace yii\db;
-use yii\ar\ActiveQueryInterface;
-use yii\ar\ActiveQueryTrait;
 
 /**
  * ActiveQuery represents a DB query associated with an Active Record class.

@@ -8,7 +8,6 @@
 
 namespace yii\db;
 
-use yii\ar\ActiveRelationInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\InvalidParamException;
