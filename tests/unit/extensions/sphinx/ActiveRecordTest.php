@@ -161,35 +161,12 @@ class ActiveRecordTest extends SphinxTestCase
 		$record2 = RuntimeIndex::find(['id' => 2]);
 		$this->assertEquals(9, $record2->type_id);
 
-		// updateCounters
-		/*$pk = ['id' => 1];
-		$record = RuntimeIndex::find($pk);
-		$this->assertEquals(1, $record->quantity);
-		$ret = $record->updateCounters(['quantity' => -1]);
-		$this->assertTrue($ret);
-		$this->assertEquals(0, $record->quantity);
-		$record = RuntimeIndex::find($pk);
-		$this->assertEquals(0, $record->quantity);*/
-
 		// updateAll
 		$pk = ['id' => 2];
 		$ret = RuntimeIndex::updateAll(['type_id' => 55], $pk);
 		$this->assertEquals(1, $ret);
 		$record = RuntimeIndex::find($pk);
 		$this->assertEquals(55, $record->type_id);
-
-		// updateAllCounters
-		/*$pk = ['order_id' => 1, 'item_id' => 2];
-		$record = RuntimeIndex::find($pk);
-		$this->assertEquals(2, $record->quantity);
-		$ret = RuntimeIndex::updateAllCounters([
-			'quantity' => 3,
-			'subtotal' => -10,
-		], $pk);
-		$this->assertEquals(1, $ret);
-		$record = RuntimeIndex::find($pk);
-		$this->assertEquals(5, $record->quantity);
-		$this->assertEquals(30, $record->subtotal);*/
 	}
 
 	/**

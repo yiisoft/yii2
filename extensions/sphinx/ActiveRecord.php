@@ -177,34 +177,6 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * Updates the whole table using the provided counter changes and conditions.
-	 * For example, to increment all customers' age by 1,
-	 *
-	 * ~~~
-	 * Customer::updateAllCounters(['age' => 1]);
-	 * ~~~
-	 *
-	 * @param array $counters the counters to be updated (attribute name => increment value).
-	 * Use negative values if you want to decrement the counters.
-	 * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
-	 * Please refer to [[Query::where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name => value) to be bound to the query.
-	 * Do not name the parameters as `:bp0`, `:bp1`, etc., because they are used internally by this method.
-	 * @return integer the number of rows updated
-	 */
-	public static function updateAllCounters($counters, $condition = '', $params = [])
-	{
-		$n = 0;
-		foreach ($counters as $name => $value) {
-			$counters[$name] = new Expression("[[$name]]+:bp{$n}", [":bp{$n}" => $value]);
-			$n++;
-		}
-		$command = static::getDb()->createCommand();
-		$command->update(static::indexName(), $counters, $condition, $params);
-		return $command->execute();
-	}
-
-	/**
 	 * Deletes rows in the table using the provided conditions.
 	 * WARNING: If you do not specify any condition, this method will delete ALL rows in the table.
 	 *
@@ -810,36 +782,6 @@ class ActiveRecord extends Model
 		}
 		$this->afterSave(false);
 		return $rows;
-	}
-
-	/**
-	 * Updates one or several counter columns for the current AR object.
-	 * Note that this method differs from [[updateAllCounters()]] in that it only
-	 * saves counters for the current AR object.
-	 *
-	 * An example usage is as follows:
-	 *
-	 * ~~~
-	 * $post = Post::find($id);
-	 * $post->updateCounters(['view_count' => 1]);
-	 * ~~~
-	 *
-	 * @param array $counters the counters to be updated (attribute name => increment value)
-	 * Use negative values if you want to decrement the counters.
-	 * @return boolean whether the saving is successful
-	 * @see updateAllCounters()
-	 */
-	public function updateCounters($counters)
-	{
-		if ($this->updateAllCounters($counters, $this->getOldPrimaryKey(true)) > 0) {
-			foreach ($counters as $name => $value) {
-				$this->_attributes[$name] += $value;
-				$this->_oldAttributes[$name] = $this->_attributes[$name];
-			}
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	/**
