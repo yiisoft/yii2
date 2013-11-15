@@ -116,7 +116,7 @@ class Generator extends \yii\gii\Generator
 	public function autoCompleteData()
 	{
 		$db = $this->getDbConnection();
-		if ($db === null) {
+		if ($db !== null) {
 			return [
 				'tableName' => function () use ($db) {
 					return $db->getSchema()->getTableNames();
