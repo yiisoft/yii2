@@ -74,11 +74,11 @@ class AssetConverter extends Component implements AssetConverterInterface
 			'{from}' => escapeshellarg("$basePath/$asset"),
 			'{to}' => escapeshellarg("$basePath/$result"),
 		]);
-		$descriptor = array(
-			1 => array('pipe', 'w'),
-			2 => array('pipe', 'w'),
-		);
-		$pipes = array();
+		$descriptor = [
+			1 => ['pipe', 'w'],
+			2 => ['pipe', 'w'],
+		];
+		$pipes = [];
 		$proc = proc_open($command, $descriptor, $pipes, $basePath);
 		$stdout = stream_get_contents($pipes[1]);
 		$stderr = stream_get_contents($pipes[2]);
