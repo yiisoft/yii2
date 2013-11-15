@@ -121,7 +121,9 @@ class Schema extends Object
 				if ($refresh || ($index = $cache->get($key)) === false) {
 					$index = $this->loadIndexSchema($realName);
 					if ($index !== null) {
-						$cache->set($key, $index, $db->schemaCacheDuration, new GroupDependency($this->getCacheGroup()));
+						$cache->set($key, $index, $db->schemaCacheDuration, new GroupDependency([
+							'group' => $this->getCacheGroup(),
+						]));
 					}
 				}
 				return $this->_indexes[$name] = $index;
