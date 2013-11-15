@@ -69,7 +69,7 @@ class BaseMessageTest extends TestCase
 class TestMailer extends BaseMailer
 {
 	public $messageClass = 'yiiunit\framework\mail\TestMessage';
-	public $sentMessages = array();
+	public $sentMessages = [];
 
 	protected function sendMessage($message)
 	{
