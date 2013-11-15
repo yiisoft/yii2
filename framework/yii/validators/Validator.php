@@ -76,7 +76,8 @@ abstract class Validator extends Component
 	];
 
 	/**
-	 * @var array list of attributes to be validated.
+	 * @var array|string attributes to be validated by this validator. For multiple attributes,
+	 * please specify them as an array; for single attribute, you may use either a string or an array.
 	 */
 	public $attributes = [];
 	/**
@@ -88,11 +89,13 @@ abstract class Validator extends Component
 	 */
 	public $message;
 	/**
-	 * @var array list of scenarios that the validator can be applied to.
+	 * @var array|string scenarios that the validator can be applied to. For multiple scenarios,
+	 * please specify them as an array; for single scenario, you may use either a string or an array.
 	 */
 	public $on = [];
 	/**
-	 * @var array list of scenarios that the validator should not be applied to.
+	 * @var array|string scenarios that the validator should not be applied to. For multiple scenarios,
+	 * please specify them as an array; for single scenario, you may use either a string or an array.
 	 */
 	public $except = [];
 	/**
@@ -133,18 +136,7 @@ abstract class Validator extends Component
 	 */
 	public static function createValidator($type, $object, $attributes, $params = [])
 	{
-		if (!is_array($attributes)) {
-			$attributes = preg_split('/[\s,]+/', $attributes, -1, PREG_SPLIT_NO_EMPTY);
-		}
 		$params['attributes'] = $attributes;
-
-		if (isset($params['on']) && !is_array($params['on'])) {
-			$params['on'] = preg_split('/[\s,]+/', $params['on'], -1, PREG_SPLIT_NO_EMPTY);
-		}
-
-		if (isset($params['except']) && !is_array($params['except'])) {
-			$params['except'] = preg_split('/[\s,]+/', $params['except'], -1, PREG_SPLIT_NO_EMPTY);
-		}
 
 		if (method_exists($object, $type)) {
 			// method-based validator
@@ -164,6 +156,17 @@ abstract class Validator extends Component
 		}
 
 		return Yii::createObject($params);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function init()
+	{
+		parent::init();
+		$this->attributes = (array)$this->attributes;
+		$this->on = (array)$this->on;
+		$this->except = (array)$this->except;
 	}
 
 	/**

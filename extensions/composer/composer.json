@@ -17,7 +17,6 @@
 			"email": "qiang.xue@gmail.com"
 		}
 	],
-	"minimum-stability": "dev",
 	"autoload": {
 		"psr-0": { "yii\\composer\\": "" }
 	},

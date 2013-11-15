@@ -46,7 +46,8 @@ use yii\validators\Validator;
  * @property ArrayIterator $iterator An iterator for traversing the items in the list. This property is
  * read-only.
  * @property string $scenario The scenario that this model is in. Defaults to [[DEFAULT_SCENARIO]].
- * @property ArrayObject $validators All the validators declared in the model. This property is read-only.
+ * @property ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the model.
+ * This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -91,19 +92,19 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 *
 	 * ~~~
 	 * [
-	 *     'attribute list',
+	 *     ['attribute1', 'attribute2'],
 	 *     'validator type',
-	 *     'on' => 'scenario name',
+	 *     'on' => ['scenario1', 'scenario2'],
 	 *     ...other parameters...
 	 * ]
 	 * ~~~
 	 *
 	 * where
 	 *
-	 *  - attribute list: required, specifies the attributes (separated by commas) to be validated;
+	 *  - attribute list: required, specifies the attributes array to be validated, for single attribute you can pass string;
 	 *  - validator type: required, specifies the validator to be used. It can be the name of a model
 	 *    class method, the name of a built-in validator, or a validator class name (or its path alias).
-	 *  - on: optional, specifies the [[scenario|scenarios]] (separated by commas) when the validation
+	 *  - on: optional, specifies the [[scenario|scenarios]] array when the validation
 	 *    rule can be applied. If this option is not set, the rule will apply to all scenarios.
 	 *  - additional name-value pairs can be specified to initialize the corresponding validator properties.
 	 *    Please refer to individual validator class API for possible properties.
@@ -128,7 +129,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * ~~~
 	 * [
 	 *     // built-in "required" validator
-	 *     ['username', 'required'],
+	 *     [['username', 'password'], 'required'],
 	 *     // built-in "string" validator customized with "min" and "max" properties
 	 *     ['username', 'string', 'min' => 3, 'max' => 12],
 	 *     // built-in "compare" validator that is used in "register" scenario only
@@ -144,7 +145,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * merge the parent rules with child rules using functions such as `array_merge()`.
 	 *
 	 * @return array validation rules
-	 * @see scenarios
+	 * @see scenarios()
 	 */
 	public function rules()
 	{
@@ -255,7 +256,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * merge the parent labels with child labels using functions such as `array_merge()`.
 	 *
 	 * @return array attribute labels (name => label)
-	 * @see generateAttributeLabel
+	 * @see generateAttributeLabel()
 	 */
 	public function attributeLabels()
 	{
@@ -349,7 +350,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * $model->validators[] = $newValidator;
 	 * ~~~
 	 *
-	 * @return ArrayObject all the validators declared in the model.
+	 * @return ArrayObject|\yii\validators\Validator[] all the validators declared in the model.
 	 */
 	public function getValidators()
 	{
@@ -369,7 +370,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	{
 		$validators = [];
 		$scenario = $this->getScenario();
-		/** @var $validator Validator */
 		foreach ($this->getValidators() as $validator) {
 			if ($validator->isActive($scenario) && ($attribute === null || in_array($attribute, $validator->attributes, true))) {
 				$validators[] = $validator;
@@ -391,7 +391,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 			if ($rule instanceof Validator) {
 				$validators->append($rule);
 			} elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
-				$validator = Validator::createValidator($rule[1], $this, $rule[0], array_slice($rule, 2));
+				$validator = Validator::createValidator($rule[1], $this, (array) $rule[0], array_slice($rule, 2));
 				$validators->append($validator);
 			} else {
 				throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
@@ -444,8 +444,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * Returns the text label for the specified attribute.
 	 * @param string $attribute the attribute name
 	 * @return string the attribute label
-	 * @see generateAttributeLabel
-	 * @see attributeLabels
+	 * @see generateAttributeLabel()
+	 * @see attributeLabels()
 	 */
 	public function getAttributeLabel($attribute)
 	{
@@ -483,8 +483,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * ]
 	 * ~~~
 	 *
-	 * @see getFirstErrors
-	 * @see getFirstError
+	 * @see getFirstErrors()
+	 * @see getFirstError()
 	 */
 	public function getErrors($attribute = null)
 	{
@@ -498,8 +498,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	/**
 	 * Returns the first error of every attribute in the model.
 	 * @return array the first errors. An empty array will be returned if there is no error.
-	 * @see getErrors
-	 * @see getFirstError
+	 * @see getErrors()
+	 * @see getFirstError()
 	 */
 	public function getFirstErrors()
 	{
@@ -520,8 +520,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * Returns the first error of the specified attribute.
 	 * @param string $attribute attribute name.
 	 * @return string the error message. Null is returned if no error.
-	 * @see getErrors
-	 * @see getFirstErrors
+	 * @see getErrors()
+	 * @see getFirstErrors()
 	 */
 	public function getFirstError($attribute)
 	{

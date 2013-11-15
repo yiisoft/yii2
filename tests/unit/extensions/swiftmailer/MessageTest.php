@@ -115,10 +115,48 @@ class MessageTest extends VendorTestCase
 	/**
 	 * @depends testGetSwiftMessage
 	 */
+	public function testSetGet()
+	{
+		$message = new Message();
+
+		$charset = 'utf-16';
+		$message->setCharset($charset);
+		$this->assertEquals($charset, $message->getCharset(), 'Unable to set charset!');
+
+		$subject = 'Test Subject';
+		$message->setSubject($subject);
+		$this->assertEquals($subject, $message->getSubject(), 'Unable to set subject!');
+
+		$from = 'from@somedomain.com';
+		$message->setFrom($from);
+		$this->assertContains($from, array_keys($message->getFrom()), 'Unable to set from!');
+
+		$replyTo = 'reply-to@somedomain.com';
+		$message->setReplyTo($replyTo);
+		$this->assertContains($replyTo, array_keys($message->getReplyTo()), 'Unable to set replyTo!');
+
+		$to = 'someuser@somedomain.com';
+		$message->setTo($to);
+		$this->assertContains($to, array_keys($message->getTo()), 'Unable to set to!');
+
+		$cc = 'ccuser@somedomain.com';
+		$message->setCc($cc);
+		$this->assertContains($cc, array_keys($message->getCc()), 'Unable to set cc!');
+
+		$bcc = 'bccuser@somedomain.com';
+		$message->setBcc($bcc);
+		$this->assertContains($bcc, array_keys($message->getBcc()), 'Unable to set bcc!');
+	}
+
+	/**
+	 * @depends testGetSwiftMessage
+	 */
 	public function testSetupHeaders()
 	{
 		$charset = 'utf-16';
 		$subject = 'Test Subject';
+		$from = 'from@somedomain.com';
+		$replyTo = 'reply-to@somedomain.com';
 		$to = 'someuser@somedomain.com';
 		$cc = 'ccuser@somedomain.com';
 		$bcc = 'bccuser@somedomain.com';
@@ -126,6 +164,8 @@ class MessageTest extends VendorTestCase
 		$messageString = $this->createTestMessage()
 			->setCharset($charset)
 			->setSubject($subject)
+			->setFrom($from)
+			->setReplyTo($replyTo)
 			->setTo($to)
 			->setCc($cc)
 			->setBcc($bcc)
@@ -133,22 +173,11 @@ class MessageTest extends VendorTestCase
 
 		$this->assertContains('charset=' . $charset, $messageString, 'Incorrect charset!');
 		$this->assertContains('Subject: ' . $subject, $messageString, 'Incorrect "Subject" header!');
+		$this->assertContains('From: ' . $from, $messageString, 'Incorrect "From" header!');
+		$this->assertContains('Reply-To: ' . $replyTo, $messageString, 'Incorrect "Reply-To" header!');
 		$this->assertContains('To: ' . $to, $messageString, 'Incorrect "To" header!');
 		$this->assertContains('Cc: ' . $cc, $messageString, 'Incorrect "Cc" header!');
 		$this->assertContains('Bcc: ' . $bcc, $messageString, 'Incorrect "Bcc" header!');
-	}
-
-	/**
-	 * @depends testGetSwiftMessage
-	 */
-	public function testSetupFrom()
-	{
-		$from = 'someuser@somedomain.com';
-		$messageString = $this->createTestMessage()
-			->setFrom($from)
-			->toString();
-		$this->assertContains('From: ' . $from, $messageString, 'Incorrect "From" header!');
-		$this->assertContains('Reply-To: ' . $from, $messageString, 'Incorrect "Reply-To" header!');
 	}
 
 	/**
@@ -277,7 +306,7 @@ class MessageTest extends VendorTestCase
 		$htmlPresent = false;
 		foreach ($messageParts as $part) {
 			if (!($part instanceof \Swift_Mime_Attachment)) {
-				/* @var $part \Swift_Mime_MimePart */
+				/* @var \Swift_Mime_MimePart $part */
 				if ($part->getContentType() == 'text/plain') {
 					$textPresent = true;
 				}

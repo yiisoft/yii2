@@ -16,21 +16,18 @@ use yii\web\View;
 /**
  * BaseMailer serves as a base class that implements the basic functions required by [[MailerInterface]].
  *
- * Concrete child classes should may focus on implementing the [[send()]] method.
+ * Concrete child classes should may focus on implementing the [[sendMessage()]] method.
  *
  * @see BaseMessage
  *
- * @property View|array $view view instance or its array configuration.
+ * @property View $view View instance. Note that the type of this property differs in getter and setter. See
+ * [[getView()]] and [[setView()]] for details.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
 abstract class BaseMailer extends Component implements MailerInterface, ViewContextInterface
 {
-	/**
-	 * @var \yii\base\View|array view instance or its array configuration.
-	 */
-	private $_view = [];
 	/**
 	 * @var string directory containing view files for this email messages.
 	 * This can be specified as an absolute path or path alias.
@@ -70,6 +67,33 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * @var string the default class name of the new message instances created by [[createMessage()]]
 	 */
 	public $messageClass = 'yii\mail\BaseMessage';
+	/**
+	 * @var boolean whether to save email messages as files under [[fileTransportPath]] instead of sending them
+	 * to the actual recipients. This is usually used during development for debugging purpose.
+	 * @see fileTransportPath
+	 */
+	public $useFileTransport = false;
+	/**
+	 * @var string the directory where the email messages are saved when [[useFileTransport]] is true.
+	 */
+	public $fileTransportPath = '@runtime/mail';
+	/**
+	 * @var callback a PHP callback that will be called by [[send()]] when [[useFileTransport]] is true.
+	 * The callback should return a file name which will be used to save the email message.
+	 * If not set, the file name will be generated based on the current timestamp.
+	 *
+	 * The signature of the callback is:
+	 *
+	 * ~~~
+	 * function ($mailer, $message)
+	 * ~~~
+	 */
+	public $fileTransportCallback;
+
+	/**
+	 * @var \yii\base\View|array view instance or its array configuration.
+	 */
+	private $_view = [];
 
 	/**
 	 * @param array|View $view view instance or its array configuration that will be used to
@@ -172,6 +196,30 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	}
 
 	/**
+	 * Sends the given email message.
+	 * This method will log a message about the email being sent.
+	 * If [[useFileTransport]] is true, it will save the email as a file under [[fileTransportPath]].
+	 * Otherwise, it will call [[sendMessage()]] to send the email to its recipient(s).
+	 * Child classes should implement [[sendMessage()]] with the actual email sending logic.
+	 * @param MessageInterface $message email message instance to be sent
+	 * @return boolean whether the message has been sent successfully
+	 */
+	public function send($message)
+	{
+		$address = $message->getTo();
+		if (is_array($address)) {
+			$address = implode(', ', array_keys($address));
+		}
+		Yii::info('Sending email "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
+
+		if ($this->useFileTransport) {
+			return $this->saveMessage($message);
+		} else {
+			return $this->sendMessage($message);
+		}
+	}
+
+	/**
 	 * Sends multiple messages at once.
 	 *
 	 * The default implementation simply calls [[send()]] multiple times.
@@ -208,6 +256,35 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 		} else {
 			return $output;
 		}
+	}
+
+	/**
+	 * Sends the specified message.
+	 * This method should be implemented by child classes with the actual email sending logic.
+	 * @param MessageInterface $message the message to be sent
+	 * @return boolean whether the message is sent successfully
+	 */
+	abstract protected function sendMessage($message);
+
+	/**
+	 * Saves the message as a file under [[fileTransportPath]].
+	 * @param MessageInterface $message
+	 * @return boolean whether the message is saved successfully
+	 */
+	protected function saveMessage($message)
+	{
+		$path = Yii::getAlias($this->fileTransportPath);
+		if (!is_dir(($path))) {
+			mkdir($path, 0777, true);
+		}
+		if ($this->fileTransportCallback !== null) {
+			$file = $path . '/' . call_user_func($this->fileTransportCallback, $this, $message);
+		} else {
+			$time = microtime(true);
+			$file = $path . '/' . date('Ymd-His-', $time) . sprintf('%04d', (int)(($time - (int)$time) * 10000)) . '-' . sprintf('%04d', mt_rand(0, 10000)) . '.eml';
+		}
+		file_put_contents($file, $message->toString());
+		return true;
 	}
 
 	/**

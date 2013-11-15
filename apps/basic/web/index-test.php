@@ -13,5 +13,12 @@ require_once(__DIR__ . '/../vendor/yiisoft/yii2/yii/Yii.php');
 
 $config = require(__DIR__ . '/../config/web-test.php');
 
-$application = new yii\web\Application($config);
-$application->run();
+if (isset($this)) {
+	// run in functional tests
+	$config['class'] = 'yii\web\Application';
+	return $config;
+} else {
+	// run in acceptance tests
+	$application = new yii\web\Application($config);
+	$application->run();
+}

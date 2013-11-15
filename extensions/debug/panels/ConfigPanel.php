@@ -63,6 +63,7 @@ EOD;
 		];
 		return "<h1>Configuration</h1>\n"
 			. $this->renderData('Application Configuration', $app) . "\n"
+			. $this->renderExtensions()
 			. $this->renderData('PHP Configuration', $php) . "\n"
 			. $this->getPhpInfo();
 	}
@@ -93,6 +94,18 @@ $rows
 EOD;
 	}
 
+	protected function renderExtensions()
+	{
+		if (empty($this->data['extensions'])) {
+			return '';
+		}
+		$data = [];
+		foreach ($this->data['extensions'] as $extension) {
+			$data[$extension['name']] = $extension['version'];
+		}
+		return $this->renderData('Installed Extensions', $data) . "\n";
+	}
+
 	public function save()
 	{
 		return [
@@ -110,6 +123,7 @@ EOD;
 				'apc' => extension_loaded('apc'),
 				'memcache' => extension_loaded('memcache'),
 			],
+			'extensions' => Yii::$app->extensions,
 		];
 	}
 }

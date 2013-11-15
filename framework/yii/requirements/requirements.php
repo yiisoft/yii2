@@ -3,7 +3,7 @@
  * These are the Yii core requirements for the [[YiiRequirementChecker]] instance.
  * These requirements are mandatory for any Yii application.
  *
- * @var $this YiiRequirementChecker
+ * @var YiiRequirementChecker $this
  */
 return array(
 	array(

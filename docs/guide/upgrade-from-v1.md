@@ -38,7 +38,7 @@ of `Object` should declare its constructor (if needed) in the following way so t
 it can be properly configured:
 
 ```php
-class MyClass extends \yii\Object
+class MyClass extends \yii\base\Object
 {
     public function __construct($param1, $param2, $config = [])
     {
@@ -109,7 +109,7 @@ Yii::$app->trigger($eventName);
 If you need to handle all instances of a class instead of the object you can attach a handler like the following:
 
 ```php
-Event::on([ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT], function ($event) {
+Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
 	Yii::trace(get_class($event->sender) . ' is inserted.');
 });
 ```

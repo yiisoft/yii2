@@ -14,9 +14,9 @@ class Singer extends Model
 	public function rules()
 	{
 		return [
-			['lastName', 'default', 'value' => 'Lennon'],
-			['lastName', 'required'],
-			['underscore_style', 'yii\captcha\CaptchaValidator'],
+			[['lastName'], 'default', 'value' => 'Lennon'],
+			[['lastName'], 'required'],
+			[['underscore_style'], 'yii\captcha\CaptchaValidator'],
 		];
 	}
 }

@@ -2,10 +2,10 @@
 use yii\helpers\Html;
 
 /**
- * @var $this \yii\web\View
- * @var $content string
- * @var yii\gii\Generator[] $generators
- * @var yii\gii\Generator $activeGenerator
+ * @var \yii\web\View $this
+ * @var \yii\gii\Generator[] $generators
+ * @var \yii\gii\Generator $activeGenerator
+ * @var string $content
  */
 $generators = Yii::$app->controller->module->generators;
 $activeGenerator = Yii::$app->controller->generator;

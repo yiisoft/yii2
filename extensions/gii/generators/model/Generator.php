@@ -53,17 +53,17 @@ class Generator extends \yii\gii\Generator
 	public function rules()
 	{
 		return array_merge(parent::rules(), [
-			['db, ns, tableName, modelClass, baseClass', 'filter', 'filter' => 'trim'],
-			['db, ns, tableName, baseClass', 'required'],
-			['db, modelClass', 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
-			['ns, baseClass', 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'],
-			['tableName', 'match', 'pattern' => '/^(\w+\.)?([\w\*]+)$/', 'message' => 'Only word characters, and optionally an asterisk and/or a dot are allowed.'],
-			['db', 'validateDb'],
-			['ns', 'validateNamespace'],
-			['tableName', 'validateTableName'],
-			['modelClass', 'validateModelClass', 'skipOnEmpty' => false],
-			['baseClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
-			['generateRelations, generateLabelsFromComments', 'boolean'],
+			[['db', 'ns', 'tableName', 'modelClass', 'baseClass'], 'filter', 'filter' => 'trim'],
+			[['db', 'ns', 'tableName', 'baseClass'], 'required'],
+			[['db', 'modelClass'], 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
+			[['ns', 'baseClass'], 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'],
+			[['tableName'], 'match', 'pattern' => '/^(\w+\.)?([\w\*]+)$/', 'message' => 'Only word characters, and optionally an asterisk and/or a dot are allowed.'],
+			[['db'], 'validateDb'],
+			[['ns'], 'validateNamespace'],
+			[['tableName'], 'validateTableName'],
+			[['modelClass'], 'validateModelClass', 'skipOnEmpty' => false],
+			[['baseClass'], 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
+			[['generateRelations', 'generateLabelsFromComments'], 'boolean'],
 		]);
 	}
 
@@ -104,7 +104,7 @@ class Generator extends \yii\gii\Generator
 			'baseClass' => 'This is the base class of the new ActiveRecord class. It should be a fully qualified namespaced class name.',
 			'generateRelations' => 'This indicates whether the generator should generate relations based on
 				foreign key constraints it detects in the database. Note that if your database contains too many tables,
-				you may want to uncheck this option to accelerate the code generation proc	ess.',
+				you may want to uncheck this option to accelerate the code generation process.',
 			'generateLabelsFromComments' => 'This indicates whether the generator should generate attribute labels
 				by using the comments of the corresponding DB columns.',
 		];
@@ -237,10 +237,10 @@ class Generator extends \yii\gii\Generator
 
 		$rules = [];
 		foreach ($types as $type => $columns) {
-			$rules[] = "['" . implode(', ', $columns) . "', '$type']";
+			$rules[] = "[['" . implode("', '", $columns) . "'], '$type']";
 		}
 		foreach ($lengths as $length => $columns) {
-			$rules[] = "['" . implode(', ', $columns) . "', 'string', 'max' => $length]";
+			$rules[] = "[['" . implode("', '", $columns) . "'], 'string', 'max' => $length]";
 		}
 
 		return $rules;

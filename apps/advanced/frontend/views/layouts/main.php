@@ -1,14 +1,14 @@
 <?php
-use frontend\config\AppAsset;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
+use frontend\assets\AppAsset;
 use frontend\widgets\Alert;
 
 /**
- * @var $this \yii\web\View
- * @var $content string
+ * @var \yii\web\View $this
+ * @var string $content
  */
 AppAsset::register($this);
 ?>
@@ -42,17 +42,17 @@ AppAsset::register($this);
 			$menuItems[] = ['label' => 'Logout (' . Yii::$app->user->identity->username .')' , 'url' => ['/site/logout']];
 		}
 		echo Nav::widget([
-			'options' => ['class' => 'navbar-nav pull-right'],
+			'options' => ['class' => 'navbar-nav navbar-right'],
 			'items' => $menuItems,
 		]);
 		NavBar::end();
 	?>
 
 	<div class="container">
-	<?=Breadcrumbs::widget([
+	<?= Breadcrumbs::widget([
 		'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-	]); ?>
-	<?=Alert::widget()?>
+	]) ?>
+	<?= Alert::widget() ?>
 	<?= $content ?>
 	</div>
 

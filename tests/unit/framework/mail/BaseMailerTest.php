@@ -208,6 +208,28 @@ class BaseMailerTest extends TestCase
 		$this->assertEquals($htmlViewFileContent, $message->_htmlBody, 'Unable to render html by direct view!');
 		$this->assertEquals(strip_tags($htmlViewFileContent), $message->_textBody, 'Unable to render text by direct view!');
 	}
+
+	public function testUseFileTransport()
+	{
+		$mailer = new Mailer();
+		$this->assertFalse($mailer->useFileTransport);
+		$this->assertEquals('@runtime/mail', $mailer->fileTransportPath);
+
+		$mailer->fileTransportPath = '@yiiunit/runtime/mail';
+		$mailer->useFileTransport = true;
+		$mailer->fileTransportCallback = function () {
+			return 'message.txt';
+		};
+		$message = $mailer->compose()
+			->setTo('to@example.com')
+			->setFrom('from@example.com')
+			->setSubject('test subject')
+			->setTextBody('text body' . microtime(true));
+		$this->assertTrue($mailer->send($message));
+		$file = Yii::getAlias($mailer->fileTransportPath) . '/message.txt';
+		$this->assertTrue(is_file($file));
+		$this->assertEquals($message->toString(), file_get_contents($file));
+	}
 }
 
 /**
@@ -218,7 +240,7 @@ class Mailer extends BaseMailer
 	public $messageClass = 'yiiunit\framework\mail\Message';
 	public $sentMessages = [];
 
-	public function send($message)
+	protected function sendMessage($message)
 	{
 		$this->sentMessages[] = $message;
 	}
@@ -340,6 +362,6 @@ class Message extends BaseMessage
 
 	public function toString()
 	{
-		return get_class($this);
+		return var_export($this, true);
 	}
 }

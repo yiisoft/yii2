@@ -42,17 +42,17 @@ class Generator extends \yii\gii\Generator
 	public function rules()
 	{
 		return array_merge(parent::rules(), [
-			['moduleID, controllerClass, modelClass, searchModelClass, baseControllerClass', 'filter', 'filter' => 'trim'],
-			['modelClass, searchModelClass, controllerClass, baseControllerClass, indexWidgetType', 'required'],
-			['searchModelClass', 'compare', 'compareAttribute' => 'modelClass', 'operator' => '!==', 'message' => 'Search Model Class must not be equal to Model Class.'],
-			['modelClass, controllerClass, baseControllerClass, searchModelClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
-			['modelClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
-			['baseControllerClass', 'validateClass', 'params' => ['extends' => Controller::className()]],
-			['controllerClass', 'match', 'pattern' => '/Controller$/', 'message' => 'Controller class name must be suffixed with "Controller".'],
-			['controllerClass, searchModelClass', 'validateNewClass'],
-			['indexWidgetType', 'in', 'range' => ['grid', 'list']],
-			['modelClass', 'validateModelClass'],
-			['moduleID', 'validateModuleID'],
+			[['moduleID', 'controllerClass', 'modelClass', 'searchModelClass', 'baseControllerClass'], 'filter', 'filter' => 'trim'],
+			[['modelClass', 'searchModelClass', 'controllerClass', 'baseControllerClass', 'indexWidgetType'], 'required'],
+			[['searchModelClass'], 'compare', 'compareAttribute' => 'modelClass', 'operator' => '!==', 'message' => 'Search Model Class must not be equal to Model Class.'],
+			[['modelClass', 'controllerClass', 'baseControllerClass', 'searchModelClass'], 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
+			[['modelClass'], 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
+			[['baseControllerClass'], 'validateClass', 'params' => ['extends' => Controller::className()]],
+			[['controllerClass'], 'match', 'pattern' => '/Controller$/', 'message' => 'Controller class name must be suffixed with "Controller".'],
+			[['controllerClass', 'searchModelClass'], 'validateNewClass'],
+			[['indexWidgetType'], 'in', 'range' => ['grid', 'list']],
+			[['modelClass'], 'validateModelClass'],
+			[['moduleID'], 'validateModuleID'],
 		]);
 	}
 
@@ -278,7 +278,7 @@ class Generator extends \yii\gii\Generator
 
 		$rules = [];
 		foreach ($types as $type => $columns) {
-			$rules[] = "['" . implode(', ', $columns) . "', '$type']";
+			$rules[] = "[['" . implode("', '", $columns) . "'], '$type']";
 		}
 
 		return $rules;
@@ -341,7 +341,9 @@ class Generator extends \yii\gii\Generator
 
 	public function generateUrlParams()
 	{
-		$pks = $this->getTableSchema()->primaryKey;
+		/** @var ActiveRecord $class */
+		$class = $this->modelClass;
+		$pks = $class::primaryKey();
 		if (count($pks) === 1) {
 			return "'id' => \$model->{$pks[0]}";
 		} else {
@@ -355,7 +357,9 @@ class Generator extends \yii\gii\Generator
 
 	public function generateActionParams()
 	{
-		$pks = $this->getTableSchema()->primaryKey;
+		/** @var ActiveRecord $class */
+		$class = $this->modelClass;
+		$pks = $class::primaryKey();
 		if (count($pks) === 1) {
 			return '$id';
 		} else {
@@ -366,7 +370,9 @@ class Generator extends \yii\gii\Generator
 	public function generateActionParamComments()
 	{
 		$table = $this->getTableSchema();
-		$pks = $table->primaryKey;
+		/** @var ActiveRecord $class */
+		$class = $this->modelClass;
+		$pks = $class::primaryKey();
 		if (count($pks) === 1) {
 			return ['@param ' . $table->columns[$pks[0]]->phpType . ' $id'];
 		} else {

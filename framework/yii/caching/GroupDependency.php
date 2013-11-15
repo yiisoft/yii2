@@ -6,6 +6,7 @@
  */
 
 namespace yii\caching;
+use yii\base\InvalidConfigException;
 
 /**
  * GroupDependency marks a cached data item with a group name.
@@ -19,29 +20,22 @@ namespace yii\caching;
 class GroupDependency extends Dependency
 {
 	/**
-	 * @var string the group name
+	 * @var string the group name. This property must be set.
 	 */
 	public $group;
-
-	/**
-	 * Constructor.
-	 * @param string $group the group name
-	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 */
-	public function __construct($group, $config = [])
-	{
-		$this->group = $group;
-		parent::__construct($config);
-	}
 
 	/**
 	 * Generates the data needed to determine if dependency has been changed.
 	 * This method does nothing in this class.
 	 * @param Cache $cache the cache component that is currently evaluating this dependency
 	 * @return mixed the data needed to determine if dependency has been changed.
+	 * @throws InvalidConfigException if [[group]] is not set.
 	 */
 	protected function generateDependencyData($cache)
 	{
+		if ($this->group === null) {
+			throw new InvalidConfigException('GroupDependency::group must be set');
+		}
 		$version = $cache->get([__CLASS__, $this->group]);
 		if ($version === false) {
 			$version = $this->invalidate($cache, $this->group);
@@ -53,9 +47,13 @@ class GroupDependency extends Dependency
 	 * Performs the actual dependency checking.
 	 * @param Cache $cache the cache component that is currently evaluating this dependency
 	 * @return boolean whether the dependency is changed or not.
+	 * @throws InvalidConfigException if [[group]] is not set.
 	 */
 	public function getHasChanged($cache)
 	{
+		if ($this->group === null) {
+			throw new InvalidConfigException('GroupDependency::group must be set');
+		}
 		$version = $cache->get([__CLASS__, $this->group]);
 		return $version === false || $version !== $this->data;
 	}

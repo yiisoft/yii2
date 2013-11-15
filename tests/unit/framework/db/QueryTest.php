@@ -86,19 +86,19 @@ class QueryTest extends DatabaseTestCase
 	{
 		$query = new Query;
 		$query->orderBy('team');
-		$this->assertEquals(['team' => false], $query->orderBy);
+		$this->assertEquals(['team' => SORT_ASC], $query->orderBy);
 
 		$query->addOrderBy('company');
-		$this->assertEquals(['team' => false, 'company' => false], $query->orderBy);
+		$this->assertEquals(['team' => SORT_ASC, 'company' => SORT_ASC], $query->orderBy);
 
 		$query->addOrderBy('age');
-		$this->assertEquals(['team' => false, 'company' => false, 'age' => false], $query->orderBy);
+		$this->assertEquals(['team' => SORT_ASC, 'company' => SORT_ASC, 'age' => SORT_ASC], $query->orderBy);
 
-		$query->addOrderBy(['age' => true]);
-		$this->assertEquals(['team' => false, 'company' => false, 'age' => true], $query->orderBy);
+		$query->addOrderBy(['age' => SORT_DESC]);
+		$this->assertEquals(['team' => SORT_ASC, 'company' => SORT_ASC, 'age' => SORT_DESC], $query->orderBy);
 
 		$query->addOrderBy('age ASC, company DESC');
-		$this->assertEquals(['team' => false, 'company' => true, 'age' => false], $query->orderBy);
+		$this->assertEquals(['team' => SORT_ASC, 'company' => SORT_DESC, 'age' => SORT_ASC], $query->orderBy);
 	}
 
 	public function testLimitOffset()

@@ -17,10 +17,9 @@
 			"email": "sam@rmcreative.ru"
 		}
 	],
-	"minimum-stability": "dev",
 	"require": {
 		"yiisoft/yii2": "*",
-		"smarty/smarty": ">=v3.1.13"
+		"smarty/smarty": "*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\smarty\\": "" }

@@ -29,11 +29,14 @@ use yii\helpers\Inflector;
  * @property mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
  * returned if the primary key is composite or `$asArray` is true. A string is returned otherwise (null will be
  * returned if the key value is null). This property is read-only.
+ * @property array $populatedRelations An array of relation data indexed by relation names. This property is
+ * read-only.
  * @property mixed $primaryKey The primary key value. An array (column name => column value) is returned if
  * the primary key is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
  * the key value is null). This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
 class ActiveRecord extends Model
@@ -250,7 +253,7 @@ class ActiveRecord extends Model
 
 	/**
 	 * Creates an [[ActiveQuery]] instance.
-	 * This method is called by [[find()]], [[findBySql()]] and [[count()]] to start a SELECT query.
+	 * This method is called by [[find()]], [[findBySql()]] to start a SELECT query.
 	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
 	 * written for querying `Customer` purpose.)
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
@@ -370,7 +373,7 @@ class ActiveRecord extends Model
 	 * This method is overridden so that attributes and related objects can be accessed like properties.
 	 * @param string $name property name
 	 * @return mixed property value
-	 * @see getAttribute
+	 * @see getAttribute()
 	 */
 	public function __get($name)
 	{
@@ -383,7 +386,7 @@ class ActiveRecord extends Model
 				return $this->_related[$name];
 			}
 			$value = parent::__get($name);
-			if ($value instanceof ActiveRelation) {
+			if ($value instanceof ActiveRelationInterface) {
 				return $this->_related[$name] = $value->multiple ? $value->all() : $value->one();
 			} else {
 				return $value;
@@ -472,7 +475,7 @@ class ActiveRecord extends Model
 	 */
 	public function hasOne($class, $link)
 	{
-		return new ActiveRelation([
+		return $this->createActiveRelation([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
@@ -510,12 +513,24 @@ class ActiveRecord extends Model
 	 */
 	public function hasMany($class, $link)
 	{
-		return new ActiveRelation([
+		return $this->createActiveRelation([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
 			'multiple' => true,
 		]);
+	}
+
+	/**
+	 * Creates an [[ActiveRelation]] instance.
+	 * This method is called by [[hasOne()]] and [[hasMany()]] to create a relation instance.
+	 * You may override this method to return a customized relation.
+	 * @param array $config the configuration passed to the ActiveRelation class.
+	 * @return ActiveRelation the newly created [[ActiveRelation]] instance.
+	 */
+	protected function createActiveRelation($config = [])
+	{
+		return new ActiveRelation($config);
 	}
 
 	/**
@@ -574,7 +589,7 @@ class ActiveRecord extends Model
 	 * null will be returned.
 	 * @param string $name the attribute name
 	 * @return mixed the attribute value. Null if the attribute is not set or does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function getAttribute($name)
 	{
@@ -586,7 +601,7 @@ class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @param mixed $value the attribute value.
 	 * @throws InvalidParamException if the named attribute does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function setAttribute($name, $value)
 	{
@@ -623,7 +638,7 @@ class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @return mixed the old attribute value. Null if the attribute is not loaded before
 	 * or does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function getOldAttribute($name)
 	{
@@ -635,7 +650,7 @@ class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @param mixed $value the old attribute value.
 	 * @throws InvalidParamException if the named attribute does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function setOldAttribute($name, $value)
 	{
@@ -1028,7 +1043,7 @@ class ActiveRecord extends Model
 	/**
 	 * Sets the value indicating whether the record is new.
 	 * @param boolean $value whether the record is new and should be inserted when calling [[save()]].
-	 * @see getIsNewRecord
+	 * @see getIsNewRecord()
 	 */
 	public function setIsNewRecord($value)
 	{
@@ -1281,7 +1296,7 @@ class ActiveRecord extends Model
 		$getter = 'get' . $name;
 		try {
 			$relation = $this->$getter();
-			if ($relation instanceof ActiveRelation) {
+			if ($relation instanceof ActiveRelationInterface) {
 				return $relation;
 			} else {
 				return null;
@@ -1319,9 +1334,9 @@ class ActiveRecord extends Model
 				throw new InvalidCallException('Unable to link models: both models must NOT be newly created.');
 			}
 			if (is_array($relation->via)) {
-				/** @var $viaRelation ActiveRelation */
+				/** @var ActiveRelation $viaRelation */
 				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
+				/** @var ActiveRecord $viaClass */
 				$viaClass = $viaRelation->modelClass;
 				$viaTable = $viaClass::tableName();
 				// unset $viaName so that it can be reloaded to reflect the change
@@ -1394,9 +1409,9 @@ class ActiveRecord extends Model
 
 		if ($relation->via !== null) {
 			if (is_array($relation->via)) {
-				/** @var $viaRelation ActiveRelation */
+				/** @var ActiveRelation $viaRelation */
 				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
+				/** @var ActiveRecord $viaClass */
 				$viaClass = $viaRelation->modelClass;
 				$viaTable = $viaClass::tableName();
 				unset($this->_related[$viaName]);
@@ -1442,7 +1457,7 @@ class ActiveRecord extends Model
 		if (!$relation->multiple) {
 			unset($this->_related[$name]);
 		} elseif (isset($this->_related[$name])) {
-			/** @var $b ActiveRecord */
+			/** @var ActiveRecord $b */
 			foreach ($this->_related[$name] as $a => $b) {
 				if ($model->getPrimaryKey() == $b->getPrimaryKey()) {
 					unset($this->_related[$name][$a]);

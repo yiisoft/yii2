@@ -578,7 +578,7 @@ abstract class Module extends Component
 	{
 		$parts = $this->createController($route);
 		if (is_array($parts)) {
-			/** @var $controller Controller */
+			/** @var Controller $controller */
 			list($controller, $actionID) = $parts;
 			$oldController = Yii::$app->controller;
 			Yii::$app->controller = $controller;

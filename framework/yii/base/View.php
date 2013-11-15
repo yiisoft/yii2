@@ -123,7 +123,7 @@ class View extends Component
 	 * existing [[context]] will be used.
 	 * @return string the rendering result
 	 * @throws InvalidParamException if the view cannot be resolved or the view file does not exist.
-	 * @see renderFile
+	 * @see renderFile()
 	 */
 	public function render($view, $params = [], $context = null)
 	{
@@ -410,7 +410,7 @@ class View extends Component
 	{
 		$properties['id'] = $id;
 		$properties['view'] = $this;
-		/** @var $cache FragmentCache */
+		/** @var FragmentCache $cache */
 		$cache = FragmentCache::begin($properties);
 		if ($cache->getCachedContent() !== false) {
 			$this->endCache();

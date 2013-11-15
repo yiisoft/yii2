@@ -104,13 +104,13 @@ class Mailer extends BaseMailer
 	/**
 	 * @inheritdoc
 	 */
-	public function send($message)
+	protected function sendMessage($message)
 	{
 		$address = $message->getTo();
 		if (is_array($address)) {
-			$address = implode(', ', $address);
+			$address = implode(', ', array_keys($address));
 		}
-		Yii::trace('Sending email "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
+		Yii::info('Sending email "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
 		return $this->getSwiftMailer()->send($message->getSwiftMessage()) > 0;
 	}
 
@@ -145,7 +145,7 @@ class Mailer extends BaseMailer
 					$transport->$name = $value;
 				} else {
 					$setter = 'set' . $name;
-					if (method_exists($transport, $setter)) {
+					if (method_exists($transport, $setter) || method_exists($transport, '__call')) {
 						$transport->$setter($value);
 					} else {
 						throw new InvalidConfigException('Setting unknown property: ' . get_class($transport) . '::' . $name);

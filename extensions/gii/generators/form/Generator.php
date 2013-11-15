@@ -60,14 +60,14 @@ class Generator extends \yii\gii\Generator
 	public function rules()
 	{
 		return array_merge(parent::rules(), [
-			['modelClass, viewName, scenarioName, viewPath', 'filter', 'filter' => 'trim'],
-			['modelClass, viewName, viewPath', 'required'],
-			['modelClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
-			['modelClass', 'validateClass', 'params' => ['extends' => Model::className()]],
-			['viewName', 'match', 'pattern' => '/^\w+[\\-\\/\w]*$/', 'message' => 'Only word characters, dashes and slashes are allowed.'],
-			['viewPath', 'match', 'pattern' => '/^@?\w+[\\-\\/\w]*$/', 'message' => 'Only word characters, dashes, slashes and @ are allowed.'],
-			['viewPath', 'validateViewPath'],
-			['scenarioName', 'match', 'pattern' => '/^[\w\\-]+$/', 'message' => 'Only word characters and dashes are allowed.'],
+			[['modelClass', 'viewName', 'scenarioName', 'viewPath'], 'filter', 'filter' => 'trim'],
+			[['modelClass', 'viewName', 'viewPath'], 'required'],
+			[['modelClass'], 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
+			[['modelClass'], 'validateClass', 'params' => ['extends' => Model::className()]],
+			[['viewName'], 'match', 'pattern' => '/^\w+[\\-\\/\w]*$/', 'message' => 'Only word characters, dashes and slashes are allowed.'],
+			[['viewPath'], 'match', 'pattern' => '/^@?\w+[\\-\\/\w]*$/', 'message' => 'Only word characters, dashes, slashes and @ are allowed.'],
+			[['viewPath'], 'validateViewPath'],
+			[['scenarioName'], 'match', 'pattern' => '/^[\w\\-]+$/', 'message' => 'Only word characters and dashes are allowed.'],
 		]);
 	}
 
