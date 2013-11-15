@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\ar;
+namespace yii\db;
 
 /**
  * ActiveRelationInterface defines the common interface to be implemented by active record relation classes.

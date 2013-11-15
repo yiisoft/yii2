@@ -5,10 +5,9 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\ar;
+namespace yii\db;
 
 use yii\base\InvalidConfigException;
-use yii\db\ActiveRecord;
 
 /**
  * ActiveRelationTrait implements the common methods and properties for active record relation classes.

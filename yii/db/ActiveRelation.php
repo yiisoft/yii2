@@ -7,8 +7,6 @@
  */
 
 namespace yii\db;
-use yii\ar\ActiveRelationInterface;
-use yii\ar\ActiveRelationTrait;
 
 /**
  * ActiveRelation represents a relation between two Active Record classes.
