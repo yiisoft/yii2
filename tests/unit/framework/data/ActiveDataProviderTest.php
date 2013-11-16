@@ -28,6 +28,9 @@ class ActiveDataProviderTest extends DatabaseTestCase
 	{
 		parent::setUp();
 		ActiveRecord::$db = $this->getConnection();
+		$this->mockApplication([
+			'request' => 'yii\\web\\Request',
+		]);
 	}
 
 	public function testActiveQuery()
