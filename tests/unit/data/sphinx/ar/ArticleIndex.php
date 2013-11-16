@@ -2,6 +2,8 @@
 
 namespace yiiunit\data\sphinx\ar;
 
+use yii\db\ActiveRelation;
+
 class ArticleIndex extends ActiveRecord
 {
 	public $custom_column;
@@ -14,5 +16,16 @@ class ArticleIndex extends ActiveRecord
 	public static function favoriteAuthor($query)
 	{
 		$query->andWhere('author_id=1');
+	}
+
+	public function getSource()
+	{
+		$config = [
+			'modelClass' => ArticleDb::className(),
+			'primaryModel' => $this,
+			'link' => ['id' => 'id'],
+			'multiple' => false,
+		];
+		return new ActiveRelation($config);
 	}
 }

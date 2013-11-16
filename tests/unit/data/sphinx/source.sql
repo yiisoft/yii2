@@ -1,5 +1,10 @@
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
+/**
+ * This is the MySQL database schema for creation of the test Sphinx index sources.
+ */
+
+DROP TABLE IF EXISTS yii2_test_article;
+DROP TABLE IF EXISTS yii2_test_item;
+DROP TABLE IF EXISTS yii2_test_article_tag;
 
 CREATE TABLE IF NOT EXISTS `yii2_test_article` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -10,10 +15,6 @@ CREATE TABLE IF NOT EXISTS `yii2_test_article` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
-INSERT INTO `yii2_test_article` (`id`, `title`, `content`, `author_id`, `create_date`) VALUES
-(1, 'About cats', 'This article is about cats', 1, '2013-10-23 00:00:00'),
-(2, 'About dogs', 'This article is about dogs', 2, '2013-11-15 00:00:00');
-
 CREATE TABLE IF NOT EXISTS `yii2_test_item` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -23,15 +24,19 @@ CREATE TABLE IF NOT EXISTS `yii2_test_item` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
-INSERT INTO `yii2_test_item` (`id`, `name`, `description`, `category_id`, `price`) VALUES
-(1, 'pencil', 'Simple pencil', 1, 2.5),
-(2, 'table', 'Wooden table', 2, 100);
-
 CREATE TABLE IF NOT EXISTS `yii2_test_article_tag` (
   `article_id` int(11) NOT NULL,
   `tag_id` int(11) NOT NULL,
   PRIMARY KEY (`article_id`,`tag_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+INSERT INTO `yii2_test_article` (`id`, `title`, `content`, `author_id`, `create_date`) VALUES
+(1, 'About cats', 'This article is about cats', 1, '2013-10-23 00:00:00'),
+(2, 'About dogs', 'This article is about dogs', 2, '2013-11-15 00:00:00');
+
+INSERT INTO `yii2_test_item` (`id`, `name`, `description`, `category_id`, `price`) VALUES
+(1, 'pencil', 'Simple pencil', 1, 2.5),
+(2, 'table', 'Wooden table', 2, 100);
 
 INSERT INTO `yii2_test_article_tag` (`article_id`, `tag_id`) VALUES
 (1, 1),

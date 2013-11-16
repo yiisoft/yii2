@@ -21,9 +21,21 @@ class SphinxTestCase extends TestCase
 		'password' => '',
 	];
 	/**
-	 * @var Connection
+	 * @var Connection Sphinx connection instance.
 	 */
 	protected $sphinx;
+	/**
+	 * @var array Database connection configuration.
+	 */
+	protected $dbConfig = [
+		'dsn' => 'mysql:host=127.0.0.1;',
+		'username' => '',
+		'password' => '',
+	];
+	/**
+	 * @var \yii\db\Connection database connection instance.
+	 */
+	protected $db;
 
 	public static function setUpBeforeClass()
 	{
@@ -33,9 +45,13 @@ class SphinxTestCase extends TestCase
 	protected function setUp()
 	{
 		parent::setUp();
-		//$this->sphinxConfig = $this->getParam('sphinx');
 		if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
 			$this->markTestSkipped('pdo and pdo_mysql extension are required.');
+		}
+		$config = $this->getParam('sphinx');
+		if (!empty($config)) {
+			$this->sphinxConfig = $config['sphinx'];
+			$this->dbConfig = $config['db'];
 		}
 		$this->mockApplication();
 		static::loadClassMap();
@@ -67,15 +83,15 @@ class SphinxTestCase extends TestCase
 
 	/**
 	 * @param bool $reset whether to clean up the test database
-	 * @param bool $open whether to open and populate test database
+	 * @param bool $open whether to open test database
 	 * @return \yii\sphinx\Connection
 	 */
-	public function getConnection($reset = true, $open = true)
+	public function getConnection($reset = false, $open = true)
 	{
 		if (!$reset && $this->sphinx) {
 			return $this->sphinx;
 		}
-		$db = new \yii\sphinx\Connection;
+		$db = new Connection;
 		$db->dsn = $this->sphinxConfig['dsn'];
 		if (isset($this->sphinxConfig['username'])) {
 			$db->username = $this->sphinxConfig['username'];
@@ -86,14 +102,6 @@ class SphinxTestCase extends TestCase
 		}
 		if ($open) {
 			$db->open();
-			if (!empty($this->sphinxConfig['fixture'])) {
-				$lines = explode(';', file_get_contents($this->sphinxConfig['fixture']));
-				foreach ($lines as $line) {
-					if (trim($line) !== '') {
-						$db->pdo->exec($line);
-					}
-				}
-			}
 		}
 		$this->sphinx = $db;
 		return $db;
@@ -108,5 +116,39 @@ class SphinxTestCase extends TestCase
 		if ($this->sphinx) {
 			$this->sphinx->createCommand('TRUNCATE RTINDEX ' . $indexName)->execute();
 		}
+	}
+
+	/**
+	 * @param bool $reset whether to clean up the test database
+	 * @param bool $open whether to open and populate test database
+	 * @return \yii\db\Connection
+	 */
+	public function getDbConnection($reset = true, $open = true)
+	{
+		if (!$reset && $this->db) {
+			return $this->db;
+		}
+		$db = new \yii\db\Connection;
+		$db->dsn = $this->dbConfig['dsn'];
+		if (isset($this->dbConfig['username'])) {
+			$db->username = $this->dbConfig['username'];
+			$db->password = $this->dbConfig['password'];
+		}
+		if (isset($this->dbConfig['attributes'])) {
+			$db->attributes = $this->dbConfig['attributes'];
+		}
+		if ($open) {
+			$db->open();
+			if (!empty($this->dbConfig['fixture'])) {
+				$lines = explode(';', file_get_contents($this->dbConfig['fixture']));
+				foreach ($lines as $line) {
+					if (trim($line) !== '') {
+						$db->pdo->exec($line);
+					}
+				}
+			}
+		}
+		$this->db = $db;
+		return $db;
 	}
 }
