@@ -653,6 +653,9 @@ class BaseHtml
 	 */
 	public static function dropDownList($name, $selection = null, $items = [], $options = [])
 	{
+		if (!empty($options['multiple'])) {
+			return static::listBox($name, $selection, $items, $options);
+		}
 		$options['name'] = $name;
 		$selectOptions = static::renderSelectOptions($selection, $items, $options);
 		return static::tag('select', "\n" . $selectOptions . "\n", $options);
