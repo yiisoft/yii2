@@ -12,6 +12,7 @@ use yii\base\InvalidParamException;
 use yii\base\Model;
 use yii\base\ModelEvent;
 use yii\base\UnknownMethodException;
+use yii\db\ActiveRelationInterface;
 use yii\db\Expression;
 use yii\db\StaleObjectException;
 use yii\helpers\Inflector;
@@ -324,8 +325,7 @@ class ActiveRecord extends Model
 				return $this->_related[$name];
 			}
 			$value = parent::__get($name);
-			// TODO: relation
-			if ($value instanceof ActiveRelation) {
+			if ($value instanceof ActiveRelationInterface) {
 				return $this->_related[$name] = $value->multiple ? $value->all() : $value->one();
 			} else {
 				return $value;
@@ -1094,10 +1094,10 @@ class ActiveRecord extends Model
 
 	/**
 	 * Returns the relation object with the specified name.
-	 * A relation is defined by a getter method which returns an [[ActiveRelation]] object.
+	 * A relation is defined by a getter method which returns an [[ActiveRelationInterface]] object.
 	 * It can be declared in either the Active Record class itself or one of its behaviors.
 	 * @param string $name the relation name
-	 * @return ActiveRelation the relation object
+	 * @return ActiveRelationInterface the relation object
 	 * @throws InvalidParamException if the named relation does not exist.
 	 */
 	public function getRelation($name)
@@ -1105,7 +1105,7 @@ class ActiveRecord extends Model
 		$getter = 'get' . $name;
 		try {
 			$relation = $this->$getter();
-			if ($relation instanceof ActiveRelation) {
+			if ($relation instanceof ActiveRelationInterface) {
 				return $relation;
 			} else {
 				return null;
