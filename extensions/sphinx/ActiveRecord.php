@@ -11,6 +11,7 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\Model;
 use yii\base\ModelEvent;
+use yii\base\NotSupportedException;
 use yii\base\UnknownMethodException;
 use yii\db\ActiveRelationInterface;
 use yii\db\Expression;
@@ -92,6 +93,10 @@ class ActiveRecord extends Model
 	 * @var array related models indexed by the relation names
 	 */
 	private $_related = [];
+	/**
+	 * @var string snippet value for this Active Record instance.
+	 */
+	private $_snippet;
 
 	/**
 	 * Returns the Sphinx connection used by this AR class.
@@ -245,6 +250,90 @@ class ActiveRecord extends Model
 	public static function primaryKey()
 	{
 		return static::getIndexSchema()->primaryKey;
+	}
+
+	/**
+	 * Builds a snippet from provided data and query, using specified index settings.
+	 * @param string|array $source is the source data to extract a snippet from.
+	 * It could be either a single string or array of strings.
+	 * @param string $query the full-text query to build snippets for.
+	 * @param array $options list of options in format: optionName => optionValue
+	 * @return string|array built snippet in case "source" is a string, list of built snippets
+	 * in case "source" is an array.
+	 */
+	public static function callSnippets($source, $query, $options = [])
+	{
+		$command = static::getDb()->createCommand();
+		$command->callSnippets(static::indexName(), $source, $query, $options);
+		if (is_array($source)) {
+			return $command->queryColumn();
+		} else {
+			return $command->queryScalar();
+		}
+	}
+
+	/**
+	 * Returns tokenized and normalized forms of the keywords, and, optionally, keyword statistics.
+	 * @param string $text the text to break down to keywords.
+	 * @param boolean $fetchStatistic whether to return document and hit occurrence statistics
+	 * @return array keywords and statistics
+	 */
+	public static function callKeywords($text, $fetchStatistic = false)
+	{
+		$command = static::getDb()->createCommand();
+		$command->callKeywords(static::indexName(), $text, $fetchStatistic);
+		return $command->queryAll();
+	}
+
+	/**
+	 * @param string $snippet
+	 */
+	public function setSnippet($snippet)
+	{
+		$this->_snippet = $snippet;
+	}
+
+	/**
+	 * @param string $query snippet source query
+	 * @param array $options list of options in format: optionName => optionValue
+	 * @return string snippet value
+	 */
+	public function getSnippet($query = null, $options = [])
+	{
+		if ($query !== null) {
+			$this->_snippet = $this->fetchSnippet($query, $options);
+		}
+		return $this->_snippet;
+	}
+
+	/**
+	 * Builds up the snippet value from the given query.
+	 * @param string $query the full-text query to build snippets for.
+	 * @param array $options list of options in format: optionName => optionValue
+	 * @return string snippet value.
+	 */
+	protected function fetchSnippet($query, $options = [])
+	{
+		return static::callSnippets($this->getSnippetSource(), $query, $options);
+	}
+
+	/**
+	 * Returns the string, which should be used as a source to create snippet for this
+	 * Active Record instance.
+	 * Child classes must implement this method to return the actual snippet source text.
+	 * For example:
+	 * ```php
+	 * public function getSnippetSource()
+	 * {
+	 *     return $this->snippetSourceRelation->content;
+	 * }
+	 * ```
+	 * @return string snippet source string.
+	 * @throws \yii\base\NotSupportedException if this is not supported by the Active Record class
+	 */
+	public function getSnippetSource()
+	{
+		throw new NotSupportedException($this->className() . ' does not provide snippet source.');
 	}
 
 	/**
@@ -1137,7 +1226,7 @@ class ActiveRecord extends Model
 	 */
 	public function offsetSet($offset, $item)
 	{
-		// Bypass relation owner restriction to 'yii\db\ActiveRecord' at [[ActiveRelationTrait::findWith()]]:
+		// Bypass relation owner restriction to 'yii\db\ActiveRecord' at [[yii\db\ActiveRelationTrait::findWith()]]:
 		try {
 			$relation = $this->getRelation($offset);
 			if (is_object($relation)) {

@@ -202,4 +202,27 @@ class ActiveRecordTest extends SphinxTestCase
 		$records = RuntimeIndex::find()->all();
 		$this->assertEquals(0, count($records));
 	}
+
+	public function testCallSnippets()
+	{
+		$query = 'pencil';
+		$source = 'Some data sentence about ' . $query;
+
+		$snippet = ArticleIndex::callSnippets($source, $query);
+		$this->assertNotEmpty($snippet, 'Unable to call snippets!');
+		$this->assertContains('<b>' . $query . '</b>', $snippet, 'Query not present in the snippet!');
+
+		$rows = ArticleIndex::callSnippets([$source], $query);
+		$this->assertNotEmpty($rows, 'Unable to call snippets!');
+		$this->assertContains('<b>' . $query . '</b>', $rows[0], 'Query not present in the snippet!');
+	}
+
+	public function testCallKeywords()
+	{
+		$text = 'table pencil';
+		$rows = ArticleIndex::callKeywords($text);
+		$this->assertNotEmpty($rows, 'Unable to call keywords!');
+		$this->assertArrayHasKey('tokenized', $rows[0], 'No tokenized keyword!');
+		$this->assertArrayHasKey('normalized', $rows[0], 'No normalized keyword!');
+	}
 }
