@@ -312,15 +312,6 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * Returns the GET request parameter values.
-	 * @return array the GET request parameter values
-	 */
-	public function getGet()
-	{
-		return $_GET;
-	}
-
-	/**
 	 * Returns the named POST parameter value.
 	 * If the POST parameter does not exist, the second parameter to this method will be returned.
 	 * @param string $name the POST parameter name. If not specified, whole $_POST is returned.
