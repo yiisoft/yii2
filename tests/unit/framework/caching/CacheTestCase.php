@@ -91,6 +91,27 @@ abstract class CacheTestCase extends TestCase
 		$this->assertEquals('array_test', $array['array_test']);
 	}
 
+	public function testMset()
+	{
+		$this->markTestIncomplete('Work in progress');
+
+		$cache = $this->getCacheInstance();
+		$cache->flush();
+
+		$this->assertTrue($cache->mset(['string_test' => 'string_test',
+						'number_test' => 42,
+						'array_test' => ['array_test' => 'array_test'],
+						]));
+
+		$this->assertEquals('string_test', $cache->get('string_test'));
+
+		$this->assertEquals(42, $cache->get('number_test'));
+
+		$array = $cache->get('array_test');
+		$this->assertArrayHasKey('array_test', $array);
+		$this->assertEquals('array_test', $array['array_test']);
+	}
+
 	public function testExists()
 	{
 		$cache = $this->prepare();
