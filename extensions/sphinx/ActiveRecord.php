@@ -1126,4 +1126,27 @@ class ActiveRecord extends Model
 		$transactions = $this->transactions();
 		return isset($transactions[$scenario]) && ($transactions[$scenario] & $operation);
 	}
+
+	/**
+	 * Sets the element at the specified offset.
+	 * This method is required by the SPL interface `ArrayAccess`.
+	 * It is implicitly called when you use something like `$model[$offset] = $item;`.
+	 * @param integer $offset the offset to set element
+	 * @param mixed $item the element value
+	 * @throws \Exception on failure
+	 */
+	public function offsetSet($offset, $item)
+	{
+		// Bypass relation owner restriction to 'yii\db\ActiveRecord' at [[ActiveRelationTrait::findWith()]]:
+		try {
+			$relation = $this->getRelation($offset);
+			if (is_object($relation)) {
+				$this->populateRelation($offset, $item);
+				return;
+			}
+		} catch (UnknownMethodException $e) {
+			throw $e->getPrevious();
+		}
+		parent::offsetSet($offset, $item);
+	}
 }

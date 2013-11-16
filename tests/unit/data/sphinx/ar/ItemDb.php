@@ -2,9 +2,9 @@
 
 namespace yiiunit\data\sphinx\ar;
 
-use yiiunit\data\ar;
+use yiiunit\data\ar\ActiveRecord as ActiveRecordDb;
 
-class ItemDb extends ActiveRecord
+class ItemDb extends ActiveRecordDb
 {
 	public static function tableName()
 	{
