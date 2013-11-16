@@ -133,7 +133,8 @@ class Pagination extends Object
 	{
 		if ($this->_page === null || $recalculate) {
 			if (($params = $this->params) === null) {
-				$params = (Yii::$app->request instanceof Request) ? Yii::$app->request->get : [];
+				$request = Yii::$app->getRequest();
+				$params = $request instanceof Request ? $request->get() : [];
 			}
 			if (isset($params[$this->pageVar]) && is_scalar($params[$this->pageVar])) {
 				$this->_page = (int)$params[$this->pageVar] - 1;
@@ -173,7 +174,8 @@ class Pagination extends Object
 	public function createUrl($page)
 	{
 		if (($params = $this->params) === null) {
-			$params = (Yii::$app->request instanceof Request) ? Yii::$app->request->get : [];
+			$request = Yii::$app->getRequest();
+			$params = $request instanceof Request ? $request->get() : [];
 		}
 		if ($page > 0 || $page >= 0 && $this->forcePageVar) {
 			$params[$this->pageVar] = $page + 1;
