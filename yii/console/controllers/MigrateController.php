@@ -594,7 +594,7 @@ class MigrateController extends Controller
 	{
 		echo 'Creating migration history table "' . $this->migrationTable . '"...';
 		$this->db->createCommand()->createTable($this->migrationTable, [
-			'version' => 'varchar(255) NOT NULL PRIMARY KEY',
+			'version' => 'varchar(180) NOT NULL PRIMARY KEY',
 			'apply_time' => 'integer',
 		])->execute();
 		$this->db->createCommand()->insert($this->migrationTable, [
