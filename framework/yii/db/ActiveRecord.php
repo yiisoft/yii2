@@ -1485,18 +1485,19 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * @param array $keys
-	 * @return boolean
+	 * Returns a value indicating whether the given set of attributes represents the primary key for this model
+	 * @param array $keys the set of attributes to check
+	 * @return boolean whether the given set of attributes represents the primary key for this model
 	 */
-	private function isPrimaryKey($keys)
+	public static function isPrimaryKey($keys)
 	{
-		$pks = $this->primaryKey();
+		$pks = static::primaryKey();
 		foreach ($keys as $key) {
 			if (!in_array($key, $pks, true)) {
 				return false;
 			}
 		}
-		return true;
+		return count($keys) === count($pks);
 	}
 
 	/**
