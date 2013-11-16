@@ -13,7 +13,7 @@ class LoginForm extends Model
 	public $username;
 	public $password;
 	public $rememberMe = true;
-	private $_user;
+	private $_users = [];
 
 	/**
 	 * @return array the validation rules.
@@ -64,9 +64,9 @@ class LoginForm extends Model
 	 */
 	private function getUserByUsername($username)
 	{
-		if ($this->_user === null) {
-			$this->_user = User::findByUsername($username);
+		if (empty($this->_users[$username])) {
+			$this->_users[$username] = User::findByUsername($username);
 		}
-		return $this->_user;
+		return $this->_users[$username];
 	}
 }
