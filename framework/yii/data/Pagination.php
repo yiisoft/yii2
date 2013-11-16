@@ -9,6 +9,7 @@ namespace yii\data;
 
 use Yii;
 use yii\base\Object;
+use yii\web\Request;
 
 /**
  * Pagination represents information relevant to pagination of data items.
@@ -131,7 +132,9 @@ class Pagination extends Object
 	public function getPage($recalculate = false)
 	{
 		if ($this->_page === null || $recalculate) {
-			$params = $this->params === null ? Yii::$app->request->get() : $this->params;
+			if (($params = $this->params) === null) {
+				$params = (Yii::$app->request instanceof Request) ? Yii::$app->request->get : [];
+			}
 			if (isset($params[$this->pageVar]) && is_scalar($params[$this->pageVar])) {
 				$this->_page = (int)$params[$this->pageVar] - 1;
 				if ($this->validatePage) {
@@ -169,7 +172,9 @@ class Pagination extends Object
 	 */
 	public function createUrl($page)
 	{
-		$params = $this->params === null ? Yii::$app->request->get() : $this->params;
+		if (($params = $this->params) === null) {
+			$params = (Yii::$app->request instanceof Request) ? Yii::$app->request->get : [];
+		}
 		if ($page > 0 || $page >= 0 && $this->forcePageVar) {
 			$params[$this->pageVar] = $page + 1;
 		} else {
