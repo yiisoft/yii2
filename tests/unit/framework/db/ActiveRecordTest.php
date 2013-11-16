@@ -489,4 +489,21 @@ class ActiveRecordTest extends DatabaseTestCase
 		$customers = Customer::find()->where(['status' => false])->all();
 		$this->assertEquals(1, count($customers));
 	}
+
+	public function testIsPrimaryKey()
+	{
+		$this->assertFalse(Customer::isPrimaryKey([]));
+		$this->assertTrue(Customer::isPrimaryKey(['id']));
+		$this->assertFalse(Customer::isPrimaryKey(['id', 'name']));
+		$this->assertFalse(Customer::isPrimaryKey(['name']));
+		$this->assertFalse(Customer::isPrimaryKey(['name', 'email']));
+
+		$this->assertFalse(OrderItem::isPrimaryKey([]));
+		$this->assertFalse(OrderItem::isPrimaryKey(['order_id']));
+		$this->assertFalse(OrderItem::isPrimaryKey(['item_id']));
+		$this->assertFalse(OrderItem::isPrimaryKey(['quantity']));
+		$this->assertFalse(OrderItem::isPrimaryKey(['quantity', 'subtotal']));
+		$this->assertTrue(OrderItem::isPrimaryKey(['order_id', 'item_id']));
+		$this->assertFalse(OrderItem::isPrimaryKey(['order_id', 'item_id', 'quantity']));
+	}
 }
