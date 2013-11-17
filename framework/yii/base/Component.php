@@ -435,6 +435,7 @@ class Component extends Object
 	 * all attached handlers for the event.
 	 * @param string $name the event name
 	 * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
+	 * @return mix Result that attached handlers
 	 */
 	public function trigger($name, $event = null)
 	{
@@ -450,14 +451,18 @@ class Component extends Object
 			$event->name = $name;
 			foreach ($this->_events[$name] as $handler) {
 				$event->data = $handler[1];
-				call_user_func($handler[0], $event);
+				$returnedEvent = call_user_func($handler[0], $event);
+				if ($returnedEvent instanceof Event) {
+					$event = $returnedEvent;
+				}
 				// stop further handling if the event is handled
 				if ($event instanceof Event && $event->handled) {
-					return;
+					return $event;
 				}
 			}
 		}
 		Event::trigger($this, $name, $event);
+		return $event;
 	}
 
 	/**
