@@ -31,7 +31,8 @@ use yii\web\HttpException;
  * @property \yii\web\UrlManager $urlManager The URL manager for this application. This property is read-only.
  * @property string $vendorPath The directory that stores vendor files. Defaults to "vendor" directory under
  * [[basePath]].
- * @property View $view The view object that is used to render various view files. This property is read-only.
+ * @property View|\yii\web\View $view The view object that is used to render various view files. This property
+ * is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
