@@ -39,7 +39,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		if (!empty($rows)) {
 			$models = $this->createModels($rows);
 			if (!empty($this->with)) {
-				$this->populateRelations($models, $this->with);
+				$this->findWith($this->with, $models);
 			}
 			return $models;
 		} else {
@@ -69,7 +69,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			}
 			if (!empty($this->with)) {
 				$models = [$model];
-				$this->populateRelations($models, $this->with);
+				$this->findWith($this->with, $models);
 				$model = $models[0];
 			}
 			return $model;
