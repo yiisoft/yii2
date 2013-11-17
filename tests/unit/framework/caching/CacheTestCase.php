@@ -93,15 +93,14 @@ abstract class CacheTestCase extends TestCase
 
 	public function testMset()
 	{
-		$this->markTestIncomplete('Work in progress');
-
 		$cache = $this->getCacheInstance();
 		$cache->flush();
 
-		$this->assertTrue($cache->mset(['string_test' => 'string_test',
-						'number_test' => 42,
-						'array_test' => ['array_test' => 'array_test'],
-						]));
+		$cache->mset([
+			'string_test' => 'string_test',
+			'number_test' => 42,
+			'array_test' => ['array_test' => 'array_test'],
+		]);
 
 		$this->assertEquals('string_test', $cache->get('string_test'));
 
@@ -182,6 +181,21 @@ abstract class CacheTestCase extends TestCase
 		// should store data if it's not there yet
 		$this->assertFalse($cache->get('add_test'));
 		$this->assertTrue($cache->add('add_test', 13));
+		$this->assertEquals(13, $cache->get('add_test'));
+	}
+
+	public function testMadd()
+	{
+		$cache = $this->prepare();
+
+		$this->assertFalse($cache->get('add_test'));
+
+		$cache->madd([
+			'number_test' => 13,
+			'add_test' => 13,
+		]);
+
+		$this->assertEquals(42, $cache->get('number_test'));
 		$this->assertEquals(13, $cache->get('add_test'));
 	}
 

@@ -72,6 +72,17 @@ class ApcCache extends Cache
 	}
 
 	/**
+	 * Stores multiple key-value pairs in cache.
+	 * @param array $data array where key corresponds to cache key while value
+	 * @param integer $expire the number of seconds in which the cached values will expire. 0 means never expire.
+	 * @return array array of failed keys
+	 */
+	protected function setValues($data, $expire)
+	{
+		return array_keys(apc_store($data, null, $expire));
+	}
+
+	/**
 	 * Stores a value identified by a key into cache if the cache does not contain this key.
 	 * This is the implementation of the method declared in the parent class.
 	 * @param string $key the key identifying the value to be cached
@@ -82,6 +93,17 @@ class ApcCache extends Cache
 	protected function addValue($key, $value, $expire)
 	{
 		return apc_add($key, $value, $expire);
+	}
+
+	/**
+	 * Adds multiple key-value pairs to cache.
+	 * @param array $data array where key corresponds to cache key while value is the value stored
+	 * @param integer $expire the number of seconds in which the cached values will expire. 0 means never expire.
+	 * @return array array of failed keys
+	 */
+	protected function addValues($data, $expire)
+	{
+		return array_keys(apc_add($data, null, $expire));
 	}
 
 	/**
