@@ -108,20 +108,76 @@ class Query extends Component
 	 * row data. For more details, see [[indexBy()]]. This property is only used by [[all()]].
 	 */
 	public $indexBy;
+	/**
+	 * @var callback PHP callback, which should be used to fetch source data for the snippets.
+	 * Such callback will receive array of query result rows as an argument and must return the
+	 * array of snippet source strings in the order, which match one of incoming rows.
+	 * For example:
+	 * ```php
+	 * $query = new Query;
+	 * $query->from('idx_item')
+	 *     ->match('pencil')
+	 *     ->snippetCallback(function ($rows) {
+	 *         $result = [];
+	 *         foreach ($rows as $row) {
+	 *             $result[] = file_get_contents('/path/to/index/files/' . $row['id'] . '.txt');
+	 *         }
+	 *         return $result;
+	 *     })
+	 *     ->all();
+	 * ```
+	 */
+	public $snippetCallback;
+	/**
+	 * @var array query options for the call snippet.
+	 */
+	public $snippetOptions;
+	/**
+	 * @var Connection the Sphinx connection used to generate the SQL statements.
+	 */
+	private $_connection;
+
+	/**
+	 * @param Connection $connection Sphinx connection instance
+	 * @return static the query object itself
+	 */
+	public function setConnection($connection)
+	{
+		$this->_connection = $connection;
+		return $this;
+	}
+
+	/**
+	 * @return Connection Sphinx connection instance
+	 */
+	public function getConnection()
+	{
+		if ($this->_connection === null) {
+			$this->_connection = $this->defaultConnection();
+		}
+		return $this->_connection;
+	}
+
+	/**
+	 * @return Connection default connection value.
+	 */
+	protected function defaultConnection()
+	{
+		return Yii::$app->getComponent('sphinx');
+	}
 
 	/**
 	 * Creates a Sphinx command that can be used to execute this query.
-	 * @param Connection $sphinxConnection the Sphinx connection used to generate the SQL statement.
+	 * @param Connection $connection the Sphinx connection used to generate the SQL statement.
 	 * If this parameter is not given, the `sphinx` application component will be used.
 	 * @return Command the created Sphinx command instance.
 	 */
-	public function createCommand($sphinxConnection = null)
+	public function createCommand($connection = null)
 	{
-		if ($sphinxConnection === null) {
-			$sphinxConnection = Yii::$app->getComponent('sphinx');
-		}
-		list ($sql, $params) = $sphinxConnection->getQueryBuilder()->build($this);
-		return $sphinxConnection->createCommand($sql, $params);
+		$this->setConnection($connection);
+		$connection = $this->getConnection();
+		list ($sql, $params) = $connection->getQueryBuilder()->build($this);
+		return $connection->createCommand($sql, $params);
 	}
 
 	/**
@@ -154,6 +210,7 @@ class Query extends Component
 	public function all($db = null)
 	{
 		$rows = $this->createCommand($db)->queryAll();
+		$rows = $this->fillUpSnippets($rows);
 		if ($this->indexBy === null) {
 			return $rows;
 		}
@@ -178,7 +235,11 @@ class Query extends Component
 	 */
 	public function one($db = null)
 	{
-		return $this->createCommand($db)->queryOne();
+		$result = $this->createCommand($db)->queryOne();
+		if ($result) {
+			list ($result) = $this->fillUpSnippets([$result]);
+		}
+		return $result;
 	}
 
 	/**
@@ -685,5 +746,59 @@ class Query extends Component
 			$this->within = array_merge($this->within, $columns);
 		}
 		return $this;
+	}
+
+	/**
+	 * @param callback $callback
+	 * @return static the query object itself
+	 */
+	public function snippetCallback($callback)
+	{
+		$this->snippetCallback = $callback;
+		return $this;
+	}
+
+	/**
+	 * @param array $options
+	 * @return static the query object itself
+	 */
+	public function snippetOptions($options)
+	{
+		$this->snippetOptions = $options;
+		return $this;
+	}
+
+	/**
+	 * Fills the query result rows with the snippets built from source determined by
+	 * [[snippetCallback]] result.
+	 * @param array $rows raw query result rows.
+	 * @return array query result rows with filled up snippets.
+	 */
+	protected function fillUpSnippets($rows)
+	{
+		if ($this->snippetCallback === null) {
+			return $rows;
+		}
+		$snippetSources = call_user_func($this->snippetCallback, $rows);
+		$snippets = $this->callSnippets($snippetSources);
+		$snippetKey = 0;
+		foreach ($rows as $key => $row) {
+			$rows[$key]['snippet'] = $snippets[$snippetKey];
+			$snippetKey++;
+		}
+		return $rows;
+	}
+
+	/**
+	 * Builds a snippets from provided source data.
+	 * @param array $source the source data to extract a snippet from.
+	 * @return array snippets list
+	 */
+	protected function callSnippets(array $source)
+	{
+		$connection = $this->getConnection();
+		return $connection->createCommand()
+			->callSnippets($this->from[0], $source, $this->match, $this->snippetOptions)
+			->queryColumn();
 	}
 }

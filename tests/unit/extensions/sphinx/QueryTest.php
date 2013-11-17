@@ -151,4 +151,37 @@ class QueryTest extends SphinxTestCase
 			->all($connection);
 		$this->assertNotEmpty($rows);
 	}
+
+	/**
+	 * @depends testRun
+	 */
+	public function testSnippet()
+	{
+		$connection = $this->getConnection();
+
+		$match = 'about';
+		$snippetPrefix = 'snippet#';
+		$snippetCallback = function() use ($match, $snippetPrefix) {
+			return [
+				$snippetPrefix . '1: ' . $match,
+				$snippetPrefix . '2: ' . $match,
+			];
+		};
+		$snippetOptions = [
+			'before_match' => '[',
+			'after_match' => ']',
+		];
+
+		$query = new Query;
+		$rows = $query->from('yii2_test_article_index')
+			->match($match)
+			->snippetCallback($snippetCallback)
+			->snippetOptions($snippetOptions)
+			->all($connection);
+		$this->assertNotEmpty($rows);
+		foreach ($rows as $row) {
+			$this->assertContains($snippetPrefix, $row['snippet'], 'Snippet source not present!');
+			$this->assertContains($snippetOptions['before_match'] . $match, $row['snippet'] . $snippetOptions['after_match'], 'Options not applied!');
+		}
+	}
 }
