@@ -21,7 +21,7 @@ trait ActiveQueryTrait
 	 */
 	public $modelClass;
 	/**
-	 * @var array list of relations that this query should be performed with
+	 * @var array a list of relations that this query should be performed with
 	 */
 	public $with;
 	/**
@@ -143,10 +143,12 @@ trait ActiveQueryTrait
 	}
 
 	/**
-	 * @param ActiveRecord[] $models
-	 * @param array $with
+	 * Finds records corresponding to one or multiple relations and populates them into the primary models.
+	 * @param array $with a list of relations that this query should be performed with. Please
+	 * refer to [[with()]] for details about specifying this parameter.
+	 * @param ActiveRecord[] $models the primary models
 	 */
-	private function populateRelations(&$models, $with)
+	public function findWith($with, &$models)
 	{
 		$primaryModel = new $this->modelClass;
 		$relations = $this->normalizeRelations($primaryModel, $with);
@@ -155,7 +157,7 @@ trait ActiveQueryTrait
 				// inherit asArray from primary query
 				$relation->asArray = $this->asArray;
 			}
-			$relation->findWith($name, $models);
+			$relation->populateRelation($name, $models);
 		}
 	}
 
