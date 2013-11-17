@@ -28,4 +28,9 @@ class ArticleIndex extends ActiveRecord
 		];
 		return new ActiveRelation($config);
 	}
+
+	public function getSnippetSource()
+	{
+		return $this->source->content;
+	}
 }

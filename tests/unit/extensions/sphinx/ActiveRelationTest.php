@@ -39,4 +39,17 @@ class ActiveRelationTest extends SphinxTestCase
 		$this->assertTrue($articles[0]->source instanceof ArticleDb);
 		$this->assertTrue($articles[1]->source instanceof ArticleDb);
 	}
+
+	/**
+	 * @depends testFindEager
+	 */
+	public function testFindWithSnippets()
+	{
+		$articles = ArticleIndex::find()
+			->match('about')
+			->with('source')
+			->snippetByModel()
+			->all();
+		$this->assertEquals(2, count($articles));
+	}
 }

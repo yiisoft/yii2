@@ -9,6 +9,7 @@ namespace yii\sphinx;
 
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidCallException;
 use yii\db\Expression;
 
 /**
@@ -235,11 +236,11 @@ class Query extends Component
 	 */
 	public function one($db = null)
 	{
-		$result = $this->createCommand($db)->queryOne();
-		if ($result) {
-			list ($result) = $this->fillUpSnippets([$result]);
+		$row = $this->createCommand($db)->queryOne();
+		if ($row !== false) {
+			list ($row) = $this->fillUpSnippets([$row]);
 		}
-		return $result;
+		return $row;
 	}
 
 	/**
@@ -797,8 +798,12 @@ class Query extends Component
 	protected function callSnippets(array $source)
 	{
 		$connection = $this->getConnection();
+		$match = $this->match;
+		if ($match === null) {
+			throw new InvalidCallException('Unable to call snippets: "' . $this->className() . '::match" should be specified.');
+		}
 		return $connection->createCommand()
-			->callSnippets($this->from[0], $source, $this->match, $this->snippetOptions)
+			->callSnippets($this->from[0], $source, $match, $this->snippetOptions)
 			->queryColumn();
 	}
 }

@@ -27,6 +27,19 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	public $sql;
 
 	/**
+	 * Sets the [[snippetCallback]] to [[fetchSnippetSourceFromModels]], which allows to
+	 * fetch the snippet source strings from the Active Record models, using method
+	 * [[ActiveRecord::getSnippetSource()]].
+	 * Warning: this option should NOT be used with [[asArray]] at the same time!
+	 * @return static the query object itself
+	 */
+	public function snippetByModel()
+	{
+		$this->snippetCallback(array($this, 'fetchSnippetSourceFromModels'));
+		return $this;
+	}
+
+	/**
 	 * Executes query and returns all results as an array.
 	 * @param Connection $db the DB connection used to create the DB command.
 	 * If null, the DB connection returned by [[modelClass]] will be used.
@@ -41,6 +54,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			if (!empty($this->with)) {
 				$this->findWith($this->with, $models);
 			}
+			$models = $this->fillUpSnippets($models);
 			return $models;
 		} else {
 			return [];
@@ -72,6 +86,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 				$this->findWith($this->with, $models);
 				$model = $models[0];
 			}
+			list ($model) = $this->fillUpSnippets([$model]);
 			return $model;
 		} else {
 			return null;
@@ -88,9 +103,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	{
 		/** @var $modelClass ActiveRecord */
 		$modelClass = $this->modelClass;
-		if ($db === null) {
-			$db = $modelClass::getDb();
-		}
+		$this->setConnection($db);
+		$db = $this->getConnection();
 
 		$params = $this->params;
 		if ($this->sql === null) {
@@ -104,5 +118,28 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			list ($this->sql, $params) = $db->getQueryBuilder()->build($this);
 		}
 		return $db->createCommand($this->sql, $params);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultConnection()
+	{
+		$modelClass = $this->modelClass;
+		return $modelClass::getDb();
+	}
+
+	/**
+	 * Fetches the source for the snippets using [[ActiveRecord::getSnippetSource()]] method.
+	 * @param ActiveRecord[] $models raw query result rows.
+	 * @return array snippet source strings
+	 */
+	protected function fetchSnippetSourceFromModels($models)
+	{
+		$result = [];
+		foreach ($models as $model) {
+			$result[] = $model->getSnippetSource();
+		}
+		return $result;
 	}
 }
