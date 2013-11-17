@@ -35,7 +35,6 @@ use yii\helpers\Security;
  * @property string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned
  * if no such header is sent. This property is read-only.
  * @property array $delete The DELETE request parameter values. This property is read-only.
- * @property array $get The GET request parameter values. This property is read-only.
  * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
  * `http://www.yiiframework.com`).
  * @property boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
@@ -309,15 +308,6 @@ class Request extends \yii\base\Request
 			return $_GET;
 		}
 		return isset($_GET[$name]) ? $_GET[$name] : $defaultValue;
-	}
-
-	/**
-	 * Returns the GET request parameter values.
-	 * @return array the GET request parameter values
-	 */
-	public function getGet()
-	{
-		return $_GET;
 	}
 
 	/**

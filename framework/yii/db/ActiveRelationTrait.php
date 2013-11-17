@@ -73,13 +73,12 @@ trait ActiveRelationTrait
 
 	/**
 	 * Finds the related records and populates them into the primary models.
-	 * This method is internally used by [[ActiveQuery]]. Do not call it directly.
 	 * @param string $name the relation name
 	 * @param array $primaryModels primary models
 	 * @return array the related models
-	 * @throws InvalidConfigException
+	 * @throws InvalidConfigException if [[link]] is invalid
 	 */
-	public function findWith($name, &$primaryModels)
+	public function populateRelation($name, &$primaryModels)
 	{
 		if (!is_array($this->link)) {
 			throw new InvalidConfigException('Invalid link: it must be an array of key-value pairs.');
@@ -96,7 +95,7 @@ trait ActiveRelationTrait
 			/** @var ActiveRelationTrait $viaQuery */
 			list($viaName, $viaQuery) = $this->via;
 			$viaQuery->primaryModel = null;
-			$viaModels = $viaQuery->findWith($viaName, $primaryModels);
+			$viaModels = $viaQuery->populateRelation($viaName, $primaryModels);
 			$this->filterByModels($viaModels);
 		} else {
 			$this->filterByModels($primaryModels);

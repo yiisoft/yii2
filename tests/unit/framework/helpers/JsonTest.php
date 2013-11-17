@@ -4,7 +4,7 @@
 namespace yiiunit\framework\helpers;
 
 use yii\helpers\Json;
-use yii\test\TestCase;
+use yiiunit\TestCase;
 use yii\web\JsExpression;
 
 /**

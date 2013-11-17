@@ -17,9 +17,9 @@ use yii\mail\BaseMailer;
  * To use Mailer, you should configure it in the application configuration like the following,
  *
  * ~~~
- * 'components' => array(
+ * 'components' => [
  *     ...
- *     'email' => array(
+ *     'email' => [
  *         'class' => 'yii\swiftmailer\Mailer',
  *         'transport' => [
  *             'class' => 'Swift_SmtpTransport',
@@ -29,9 +29,9 @@ use yii\mail\BaseMailer;
  *             'port' => '587',
  *             'encryption' => 'tls',
  *         ],
- *     ),
+ *     ],
  *     ...
- * ),
+ * ],
  * ~~~
  *
  * You may also skip the configuration of the [[transport]] property. In that case, the default

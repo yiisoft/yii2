@@ -48,7 +48,7 @@ use yii\helpers\Html;
  *     'bars' => [
  *         ['percent' => 30, 'options' => ['class' => 'bar-danger']],
  *         ['percent' => 30, 'label' => 'test', 'options' => ['class' => 'bar-success']],
- *         ['percent' => 35, 'options' => array['class' => 'bar-warning']],
+ *         ['percent' => 35, 'options' => ['class' => 'bar-warning']],
  *     ]
  * ]);
  * ```

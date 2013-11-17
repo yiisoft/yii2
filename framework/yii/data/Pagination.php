@@ -9,6 +9,7 @@ namespace yii\data;
 
 use Yii;
 use yii\base\Object;
+use yii\web\Request;
 
 /**
  * Pagination represents information relevant to pagination of data items.
@@ -83,7 +84,7 @@ class Pagination extends Object
 	public $route;
 	/**
 	 * @var array parameters (name => value) that should be used to obtain the current page number
-	 * and to create new pagination URLs. If not set, $_GET will be used instead.
+	 * and to create new pagination URLs. If not set, all parameters from $_GET will be used instead.
 	 *
 	 * The array element indexed by [[pageVar]] is considered to be the current page number.
 	 * If the element does not exist, the current page number is considered 0.
@@ -131,7 +132,10 @@ class Pagination extends Object
 	public function getPage($recalculate = false)
 	{
 		if ($this->_page === null || $recalculate) {
-			$params = $this->params === null ? $_GET : $this->params;
+			if (($params = $this->params) === null) {
+				$request = Yii::$app->getRequest();
+				$params = $request instanceof Request ? $request->get() : [];
+			}
 			if (isset($params[$this->pageVar]) && is_scalar($params[$this->pageVar])) {
 				$this->_page = (int)$params[$this->pageVar] - 1;
 				if ($this->validatePage) {
@@ -169,7 +173,10 @@ class Pagination extends Object
 	 */
 	public function createUrl($page)
 	{
-		$params = $this->params === null ? $_GET : $this->params;
+		if (($params = $this->params) === null) {
+			$request = Yii::$app->getRequest();
+			$params = $request instanceof Request ? $request->get() : [];
+		}
 		if ($page > 0 || $page >= 0 && $this->forcePageVar) {
 			$params[$this->pageVar] = $page + 1;
 		} else {

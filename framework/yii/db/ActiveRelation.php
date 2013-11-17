@@ -20,9 +20,6 @@ namespace yii\db;
  *
  * If a relation involves a pivot table, it may be specified by [[via()]] or [[viaTable()]] method.
  *
- * @property array|ActiveRelation $via the query associated with the pivot table. Please call [[via()]]
- * or [[viaTable()]] to set this property instead of directly setting it.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

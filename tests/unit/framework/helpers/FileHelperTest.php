@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\FileHelper;
-use yii\test\TestCase;
+use yiiunit\TestCase;
 
 /**
  * Unit test for [[yii\helpers\FileHelper]]
@@ -126,10 +126,10 @@ class FileHelperTest extends TestCase
 
 		FileHelper::copyDirectory($srcDirName, $dstDirName);
 
-		$this->assertTrue(file_exists($dstDirName), 'Destination directory does not exist!');
+		$this->assertFileExists($dstDirName, 'Destination directory does not exist!');
 		foreach ($files as $name => $content) {
 			$fileName = $dstDirName . DIRECTORY_SEPARATOR . $name;
-			$this->assertTrue(file_exists($fileName), 'Directory file is missing!');
+			$this->assertFileExists($fileName);
 			$this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
 		}
 	}
@@ -189,7 +189,7 @@ class FileHelperTest extends TestCase
 
 		FileHelper::removeDirectory($dirName);
 
-		$this->assertFalse(file_exists($dirName), 'Unable to remove directory!');
+		$this->assertFileNotExists($dirName, 'Unable to remove directory!');
 
 		// should be silent about non-existing directories
 		FileHelper::removeDirectory($basePath . DIRECTORY_SEPARATOR . 'nonExisting');
@@ -277,7 +277,7 @@ class FileHelperTest extends TestCase
 		$basePath = $this->testFilePath;
 		$dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_level_1' . DIRECTORY_SEPARATOR . 'test_dir_level_2';
 		$this->assertTrue(FileHelper::createDirectory($dirName), 'FileHelper::createDirectory should return true if directory was created!');
-		$this->assertTrue(file_exists($dirName), 'Unable to create directory recursively!');
+		$this->assertFileExists($dirName, 'Unable to create directory recursively!');
 		$this->assertTrue(FileHelper::createDirectory($dirName), 'FileHelper::createDirectory should return true for already existing directories!');
 	}
 
