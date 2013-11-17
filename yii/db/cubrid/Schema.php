@@ -180,7 +180,7 @@ class Schema extends \yii\db\Schema
 
 		$column->name = $info['Field'];
 		$column->allowNull = $info['Null'] === 'YES';
-		$column->isPrimaryKey = strpos($info['Key'], 'PRI') !== false;
+		$column->isPrimaryKey = false; // primary key will be set by loadTableSchema() later
 		$column->autoIncrement = stripos($info['Extra'], 'auto_increment') !== false;
 
 		$column->dbType = strtolower($info['Type']);
