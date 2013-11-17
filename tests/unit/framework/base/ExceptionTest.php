@@ -1,7 +1,7 @@
 <?php
 namespace yiiunit\framework\base;
 
-use yii\test\TestCase;
+use yiiunit\TestCase;
 use yii\base\UserException;
 use yii\base\InvalidCallException;
 

@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\FileHelper;
-use yii\test\TestCase;
+use yiiunit\TestCase;
 
 /**
  * Unit test for [[yii\helpers\FileHelper]]

@@ -2,10 +2,15 @@
 
 namespace yiiunit;
 
+require_once('PHPUnit/Runner/Version.php');
+spl_autoload_unregister(['Yii', 'autoload']);
+require_once('PHPUnit/Autoload.php');
+spl_autoload_register(['Yii', 'autoload']); // put yii's autoloader at the end
+
 /**
  * This is the base class for all yii framework unit tests.
  */
-abstract class TestCase extends \yii\test\TestCase
+abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
 	public static $params;
 

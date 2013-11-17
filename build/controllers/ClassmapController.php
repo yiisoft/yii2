@@ -46,10 +46,7 @@ class ClassmapController extends Controller
 			'except' => [
 				'Yii.php',
 				'BaseYii.php',
-				'/debug/',
 				'/console/',
-				'/test/',
-				'/gii/',
 			],
 		];
 		$files = FileHelper::findFiles($root, $options);
