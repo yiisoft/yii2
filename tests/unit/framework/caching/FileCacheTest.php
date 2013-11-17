@@ -33,4 +33,16 @@ class FileCacheTest extends CacheTestCase
 		static::$time++;
 		$this->assertFalse($cache->get('expire_test'));
 	}
+
+	public function testExpireAdd()
+	{
+		$cache = $this->getCacheInstance();
+
+		static::$time = \time();
+		$this->assertTrue($cache->add('expire_testa', 'expire_testa', 2));
+		static::$time++;
+		$this->assertEquals('expire_testa', $cache->get('expire_testa'));
+		static::$time++;
+		$this->assertFalse($cache->get('expire_testa'));
+	}
 }
