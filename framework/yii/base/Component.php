@@ -452,7 +452,7 @@ class Component extends Object
 				$event->data = $handler[1];
 				call_user_func($handler[0], $event);
 				// stop further handling if the event is handled
-				if ($event instanceof Event && $event->handled) {
+				if ($event->handled) {
 					return;
 				}
 			}
