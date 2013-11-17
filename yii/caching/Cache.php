@@ -220,14 +220,62 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * If the cache already contains such a key, the existing value and
 	 * expiration time will be replaced with the new ones, respectively.
 	 *
-	 * @param array $items the items to be cached, as key-value pairs. Each key can be a simple string or
-	 * a complex data structure consisting of factors representing the key.
-	 * @param integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
+	 * @param array $items the items to be cached, as key-value pairs.
+	 * @param integer $expire default number of seconds in which the cached values will expire. 0 means never expire.
+	 * @param Dependency $dependency dependency of the cached items. If the dependency changes,
+	 * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
+	 * This parameter is ignored if [[serializer]] is false.
 	 * @return boolean whether the items are successfully stored into cache
 	 */
-	public function mset($items, $expire = 0)
+	public function mset($items, $expire = 0, $dependency = null)
 	{
-		return false;
+		if ($dependency !== null && $this->serializer !== false) {
+			$dependency->evaluateDependency($this);
+		}
+
+		$data = [];
+		foreach ($items as $key => $value) {
+			$itemKey = $this->buildKey($key);
+			if ($this->serializer === null) {
+				$itemValue = serialize([$value, $dependency]);
+			} elseif ($this->serializer !== false) {
+				$itemValue = call_user_func($this->serializer[0], [$value, $dependency]);
+			}
+
+			$data[$itemKey] = $itemValue;
+		}
+		return $this->setValues($data, $expire);
+	}
+
+	/**
+	 * Stores multiple items in cache. Each item contains a value identified by a key.
+	 * If the cache already contains such a key, the existing value and expiration time will be preserved.
+	 *
+	 * @param array $items the items to be cached, as key-value pairs.
+	 * @param integer $expire default number of seconds in which the cached values will expire. 0 means never expire.
+	 * @param Dependency $dependency dependency of the cached items. If the dependency changes,
+	 * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
+	 * This parameter is ignored if [[serializer]] is false.
+	 * @return boolean whether the items are successfully stored into cache
+	 */
+	public function madd($items, $expire = 0, $dependency = null)
+	{
+		if ($dependency !== null && $this->serializer !== false) {
+			$dependency->evaluateDependency($this);
+		}
+
+		$data = [];
+		foreach ($items as $key => $value) {
+			$itemKey = $this->buildKey($key);
+			if ($this->serializer === null) {
+				$itemValue = serialize([$value, $dependency]);
+			} elseif ($this->serializer !== false) {
+				$itemValue = call_user_func($this->serializer[0], [$value, $dependency]);
+			}
+
+			$data[$itemKey] = $itemValue;
+		}
+		return $this->addValues($data, $expire);
 	}
 
 	/**
@@ -339,6 +387,46 @@ abstract class Cache extends Component implements \ArrayAccess
 			$results[$key] = $this->getValue($key);
 		}
 		return $results;
+	}
+
+	/**
+	 * Stores multiple key-value pairs in cache.
+	 * The default implementation calls [[setValue()]] multiple times store values one by one. If the underlying cache
+	 * storage supports multiset, this method should be overridden to exploit that feature.
+	 * @param array $data array where key corresponds to cache key while value is the value stored
+	 * @param integer $expire the number of seconds in which the cached values will expire. 0 means never expire.
+	 * @return array array of failed keys
+	 */
+	protected function setValues($data, $expire)
+	{
+		$failedKeys = [];
+		foreach ($data as $key => $value)
+		{
+			if ($this->setValue($key, $value, $expire) === false) {
+				$failedKeys[] = $key;
+			}
+		}
+		return $failedKeys;
+	}
+
+	/**
+	 * Adds multiple key-value pairs to cache.
+	 * The default implementation calls [[addValue()]] multiple times add values one by one. If the underlying cache
+	 * storage supports multiadd, this method should be overridden to exploit that feature.
+	 * @param array $data array where key corresponds to cache key while value is the value stored
+	 * @param integer $expire the number of seconds in which the cached values will expire. 0 means never expire.
+	 * @return array array of failed keys
+	 */
+	protected function addValues($data, $expire)
+	{
+		$failedKeys = [];
+		foreach ($data as $key => $value)
+		{
+			if ($this->addValue($key, $value, $expire) === false) {
+				$failedKeys[] = $key;
+			}
+		}
+		return $failedKeys;
 	}
 
 	/**
