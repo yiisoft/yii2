@@ -24,7 +24,7 @@ class SchemaTest extends SphinxTestCase
 	{
 		$schema = $this->getConnection()->schema;
 
-		$indexes = $schema->getTableSchemas();
+		$indexes = $schema->getIndexSchemas();
 		$this->assertEquals(count($schema->getIndexNames()), count($indexes));
 		foreach($indexes as $index) {
 			$this->assertInstanceOf('yii\sphinx\IndexSchema', $index);
@@ -67,5 +67,18 @@ class SchemaTest extends SphinxTestCase
 			$this->assertEquals($value[1], $schema->getPdoType($value[0]));
 		}
 		fclose($fp);
+	}
+
+	public function testIndexType()
+	{
+		$schema = $this->getConnection()->schema;
+
+		$index = $schema->getIndexSchema('yii2_test_article_index');
+		$this->assertEquals('local', $index->type);
+		$this->assertFalse($index->isRuntime);
+
+		$index = $schema->getIndexSchema('yii2_test_rt_index');
+		$this->assertEquals('rt', $index->type);
+		$this->assertTrue($index->isRuntime);
 	}
 }

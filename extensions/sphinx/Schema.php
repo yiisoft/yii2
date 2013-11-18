@@ -40,6 +40,10 @@ class Schema extends Object
 	 */
 	private $_indexNames;
 	/**
+	 * @var array list of ALL index types in the Sphinx (index name => index type)
+	 */
+	private $_indexTypes;
+	/**
 	 * @var array list of loaded index metadata (index name => IndexSchema)
 	 */
 	private $_indexes = [];
@@ -74,6 +78,7 @@ class Schema extends Object
 	{
 		$index = new IndexSchema;
 		$this->resolveIndexNames($index, $name);
+		$this->resolveIndexType($index);
 
 		if ($this->findColumns($index)) {
 			return $index;
@@ -90,6 +95,17 @@ class Schema extends Object
 	protected function resolveIndexNames($index, $name)
 	{
 		$index->name = str_replace('`', '', $name);
+	}
+
+	/**
+	 * Resolves the index name.
+	 * @param IndexSchema $index the index metadata object
+	 */
+	protected function resolveIndexType($index)
+	{
+		$indexTypes = $this->getIndexTypes();
+		$index->type = array_key_exists($index->name, $indexTypes) ? $indexTypes[$index->name] : 'unknown';
+		$index->isRuntime = ($index->type == 'rt');
 	}
 
 	/**
@@ -162,7 +178,7 @@ class Schema extends Object
 	 * @return IndexSchema[] the metadata for all indexes in the Sphinx.
 	 * Each array element is an instance of [[IndexSchema]] or its child class.
 	 */
-	public function getTableSchemas($refresh = false)
+	public function getIndexSchemas($refresh = false)
 	{
 		$indexes = [];
 		foreach ($this->getIndexNames($refresh) as $name) {
@@ -174,27 +190,56 @@ class Schema extends Object
 	}
 
 	/**
-	 * Returns all index names in the database.
+	 * Returns all index names in the Sphinx.
 	 * @param boolean $refresh whether to fetch the latest available index names. If this is false,
 	 * index names fetched previously (if available) will be returned.
-	 * @return string[] all index names in the database.
+	 * @return string[] all index names in the Sphinx.
 	 */
 	public function getIndexNames($refresh = false)
 	{
 		if (!isset($this->_indexNames) || $refresh) {
-			$this->_indexNames = $this->findIndexNames();
+			$this->initIndexesInfo();
 		}
 		return $this->_indexNames;
 	}
 
 	/**
-	 * Returns all index names in the database.
-	 * @return array all index names in the database. The names have NO schema name prefix.
+	 * Returns all index types in the Sphinx.
+	 * @param boolean $refresh whether to fetch the latest available index types. If this is false,
+	 * index types fetched previously (if available) will be returned.
+	 * @return array all index types in the Sphinx in format: index name => index type.
 	 */
-	protected function findIndexNames()
+	public function getIndexTypes($refresh = false)
+	{
+		if (!isset($this->_indexTypes) || $refresh) {
+			$this->initIndexesInfo();
+		}
+		return $this->_indexTypes;
+	}
+
+	/**
+	 * Initializes information about name and type of all index in the Sphinx.
+	 */
+	protected function initIndexesInfo()
+	{
+		$this->_indexNames = [];
+		$this->_indexTypes = [];
+		$indexes = $this->findIndexes();
+		foreach ($indexes as $index) {
+			$indexName = $index['Index'];
+			$this->_indexNames[] = $indexName;
+			$this->_indexTypes[$indexName] = $index['Type'];
+		}
+	}
+
+	/**
+	 * Returns all index names in the Sphinx.
+	 * @return array all index names in the Sphinx.
+	 */
+	protected function findIndexes()
 	{
 		$sql = 'SHOW TABLES';
-		return $this->db->createCommand($sql)->queryColumn();
+		return $this->db->createCommand($sql)->queryAll();
 	}
 
 	/**

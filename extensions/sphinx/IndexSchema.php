@@ -25,6 +25,14 @@ class IndexSchema extends Object
 	 */
 	public $name;
 	/**
+	 * @var string type of the index.
+	 */
+	public $type;
+	/**
+	 * @var boolean whether this index is a runtime index.
+	 */
+	public $isRuntime;
+	/**
 	 * @var string primary key of this index.
 	 */
 	public $primaryKey;
