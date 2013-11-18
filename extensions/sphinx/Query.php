@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidCallException;
 use yii\db\Expression;
+use yii\db\QueryInterface;
 
 /**
  * Class Query
@@ -18,7 +19,7 @@ use yii\db\Expression;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class Query extends Component
+class Query extends Component implements QueryInterface
 {
 	/**
 	 * Sort ascending
