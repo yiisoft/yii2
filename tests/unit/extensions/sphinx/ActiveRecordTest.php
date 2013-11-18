@@ -161,6 +161,16 @@ class ActiveRecordTest extends SphinxTestCase
 		$record2 = RuntimeIndex::find(['id' => 2]);
 		$this->assertEquals(9, $record2->type_id);
 
+		// replace
+		$query = 'replace';
+		$rows = RuntimeIndex::find($query);
+		$this->assertEmpty($rows);
+		$record = RuntimeIndex::find(['id' => 2]);
+		$record->content = 'Test content with ' . $query;
+		$record->save();
+		$rows = RuntimeIndex::find($query);
+		$this->assertNotEmpty($rows);
+
 		// updateAll
 		$pk = ['id' => 2];
 		$ret = RuntimeIndex::updateAll(['type_id' => 55], $pk);

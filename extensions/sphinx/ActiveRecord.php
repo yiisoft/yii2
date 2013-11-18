@@ -851,7 +851,20 @@ class ActiveRecord extends Model
 			return 0;
 		}
 
+		// Replace is supported only by runtime indexes and necessary only for field update
+		$useReplace = false;
+		$indexSchema = $this->getIndexSchema();
 		if ($this->getIndexSchema()->isRuntime) {
+			foreach ($values as $name => $value) {
+				$columnSchema = $indexSchema->getColumn($name);
+				if ($columnSchema->isField) {
+					$useReplace = true;
+					break;
+				}
+			}
+		}
+
+		if ($useReplace) {
 			$values = array_merge($values, $this->getOldPrimaryKey(true));
 			$command = static::getDb()->createCommand();
 			$command->replace(static::indexName(), $values);
