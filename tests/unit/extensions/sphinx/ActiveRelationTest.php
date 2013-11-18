@@ -19,37 +19,26 @@ class ActiveRelationTest extends SphinxTestCase
 		ActiveRecordDb::$db = $this->getDbConnection();
 	}
 
+	// Tests :
+
 	public function testFindLazy()
 	{
-		/** @var ArticleIndex $article */
-		$article = ArticleIndex::find(['id' => 2]);
-		$this->assertFalse($article->isRelationPopulated('source'));
-		$source = $article->source;
-		$this->assertTrue($article->isRelationPopulated('source'));
-		$this->assertTrue($source instanceof ArticleDb);
+		/** @var ArticleDb $article */
+		$article = ArticleDb::find(['id' => 2]);
+		$this->assertFalse($article->isRelationPopulated('index'));
+		$index = $article->index;
+		$this->assertTrue($article->isRelationPopulated('index'));
+		$this->assertTrue($index instanceof ArticleIndex);
 		$this->assertEquals(1, count($article->populatedRelations));
 	}
 
 	public function testFindEager()
 	{
-		$articles = ArticleIndex::find()->with('source')->all();
+		$articles = ArticleDb::find()->with('index')->all();
 		$this->assertEquals(2, count($articles));
-		$this->assertTrue($articles[0]->isRelationPopulated('source'));
-		$this->assertTrue($articles[1]->isRelationPopulated('source'));
-		$this->assertTrue($articles[0]->source instanceof ArticleDb);
-		$this->assertTrue($articles[1]->source instanceof ArticleDb);
-	}
-
-	/**
-	 * @depends testFindEager
-	 */
-	public function testFindWithSnippets()
-	{
-		$articles = ArticleIndex::find()
-			->match('about')
-			->with('source')
-			->snippetByModel()
-			->all();
-		$this->assertEquals(2, count($articles));
+		$this->assertTrue($articles[0]->isRelationPopulated('index'));
+		$this->assertTrue($articles[1]->isRelationPopulated('index'));
+		$this->assertTrue($articles[0]->index instanceof ArticleIndex);
+		$this->assertTrue($articles[1]->index instanceof ArticleIndex);
 	}
 }
