@@ -21,10 +21,6 @@ use yii\base\InvalidParamException;
 class IndexSchema extends Object
 {
 	/**
-	 * @var string name of the schema that this index belongs to.
-	 */
-	public $schemaName;
-	/**
 	 * @var string name of this index.
 	 */
 	public $name;

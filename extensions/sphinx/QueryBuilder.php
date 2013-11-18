@@ -581,7 +581,6 @@ class QueryBuilder extends Object
 		return is_array($columns) ? implode(', ', $columns) : $columns;
 	}
 
-
 	/**
 	 * Parses the condition specification and generates the corresponding SQL expression.
 	 * @param string|array $condition the condition specification. Please refer to [[Query::where()]]

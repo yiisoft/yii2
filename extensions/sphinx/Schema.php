@@ -38,7 +38,7 @@ class Schema extends Object
 	/**
 	 * @var array list of ALL index names in the Sphinx
 	 */
-	private $_indexNames = [];
+	private $_indexNames;
 	/**
 	 * @var array list of loaded index metadata (index name => IndexSchema)
 	 */
@@ -83,19 +83,13 @@ class Schema extends Object
 	}
 
 	/**
-	 * Resolves the index name and schema name (if any).
+	 * Resolves the index name.
 	 * @param IndexSchema $index the index metadata object
 	 * @param string $name the index name
 	 */
 	protected function resolveIndexNames($index, $name)
 	{
-		$parts = explode('.', str_replace('`', '', $name));
-		if (isset($parts[1])) {
-			$index->schemaName = $parts[0];
-			$index->name = $parts[1];
-		} else {
-			$index->name = $parts[0];
-		}
+		$index->name = str_replace('`', '', $name);
 	}
 
 	/**
@@ -163,19 +157,15 @@ class Schema extends Object
 
 	/**
 	 * Returns the metadata for all indexes in the database.
-	 * @param string $schema the schema of the indexes. Defaults to empty string, meaning the current or default schema name.
 	 * @param boolean $refresh whether to fetch the latest available index schemas. If this is false,
 	 * cached data may be returned if available.
 	 * @return IndexSchema[] the metadata for all indexes in the Sphinx.
 	 * Each array element is an instance of [[IndexSchema]] or its child class.
 	 */
-	public function getTableSchemas($schema = '', $refresh = false)
+	public function getTableSchemas($refresh = false)
 	{
 		$indexes = [];
-		foreach ($this->getIndexNames($schema, $refresh) as $name) {
-			if ($schema !== '') {
-				$name = $schema . '.' . $name;
-			}
+		foreach ($this->getIndexNames($refresh) as $name) {
 			if (($index = $this->getIndexSchema($name, $refresh)) !== null) {
 				$indexes[] = $index;
 			}
@@ -185,31 +175,25 @@ class Schema extends Object
 
 	/**
 	 * Returns all index names in the database.
-	 * @param string $schema the schema of the indexes. Defaults to empty string, meaning the current or default schema name.
-	 * If not empty, the returned index names will be prefixed with the schema name.
 	 * @param boolean $refresh whether to fetch the latest available index names. If this is false,
 	 * index names fetched previously (if available) will be returned.
 	 * @return string[] all index names in the database.
 	 */
-	public function getIndexNames($schema = '', $refresh = false)
+	public function getIndexNames($refresh = false)
 	{
-		if (!isset($this->_indexNames[$schema]) || $refresh) {
-			$this->_indexNames[$schema] = $this->findIndexNames($schema);
+		if (!isset($this->_indexNames) || $refresh) {
+			$this->_indexNames = $this->findIndexNames();
 		}
-		return $this->_indexNames[$schema];
+		return $this->_indexNames;
 	}
 
 	/**
 	 * Returns all index names in the database.
-	 * @param string $schema the schema of the indexes. Defaults to empty string, meaning the current or default schema.
 	 * @return array all index names in the database. The names have NO schema name prefix.
 	 */
-	protected function findIndexNames($schema = '')
+	protected function findIndexNames()
 	{
 		$sql = 'SHOW TABLES';
-		if ($schema !== '') {
-			$sql .= ' FROM ' . $this->quoteSimpleIndexName($schema);
-		}
 		return $this->db->createCommand($sql)->queryColumn();
 	}
 
@@ -304,14 +288,7 @@ class Schema extends Object
 		if (strpos($name, '(') !== false || strpos($name, '{{') !== false) {
 			return $name;
 		}
-		if (strpos($name, '.') === false) {
-			return $this->quoteSimpleIndexName($name);
-		}
-		$parts = explode('.', $name);
-		foreach ($parts as $i => $part) {
-			$parts[$i] = $this->quoteSimpleIndexName($part);
-		}
-		return implode('.', $parts);
+		return $this->quoteSimpleIndexName($name);
 	}
 
 	/**
