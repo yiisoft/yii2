@@ -850,20 +850,30 @@ class ActiveRecord extends Model
 			$this->afterSave(false);
 			return 0;
 		}
-		$condition = $this->getOldPrimaryKey(true);
-		$lock = $this->optimisticLock();
-		if ($lock !== null) {
-			if (!isset($values[$lock])) {
-				$values[$lock] = $this->$lock + 1;
-			}
-			$condition[$lock] = $this->$lock;
-		}
-		// We do not check the return value of updateAll() because it's possible
-		// that the UPDATE statement doesn't change anything and thus returns 0.
-		$rows = $this->updateAll($values, $condition);
 
-		if ($lock !== null && !$rows) {
-			throw new StaleObjectException('The object being updated is outdated.');
+		if ($this->getIndexSchema()->isRuntime) {
+			$values = array_merge($values, $this->getOldPrimaryKey(true));
+			$command = static::getDb()->createCommand();
+			$command->replace(static::indexName(), $values);
+			// We do not check the return value of replace because it's possible
+			// that the REPLACE statement doesn't change anything and thus returns 0.
+			$rows = $command->execute();
+		} else {
+			$condition = $this->getOldPrimaryKey(true);
+			$lock = $this->optimisticLock();
+			if ($lock !== null) {
+				if (!isset($values[$lock])) {
+					$values[$lock] = $this->$lock + 1;
+				}
+				$condition[$lock] = $this->$lock;
+			}
+			// We do not check the return value of updateAll() because it's possible
+			// that the UPDATE statement doesn't change anything and thus returns 0.
+			$rows = $this->updateAll($values, $condition);
+
+			if ($lock !== null && !$rows) {
+				throw new StaleObjectException('The object being updated is outdated.');
+			}
 		}
 
 		foreach ($values as $name => $value) {
