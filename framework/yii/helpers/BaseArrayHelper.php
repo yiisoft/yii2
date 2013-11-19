@@ -377,7 +377,7 @@ class BaseArrayHelper
 			} else {
 				$args[] = static::getColumn($array, $key);
 			}
-			$args[] = $direction;
+			$args[] = $direction[$i];
 			$args[] = $flag;
 		}
 		$args[] = &$array;
