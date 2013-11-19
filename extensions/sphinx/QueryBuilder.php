@@ -62,7 +62,7 @@ class QueryBuilder extends Object
 		$clauses = [
 			$this->buildSelect($query->select, $query->distinct, $query->selectOption),
 			$this->buildFrom($query->from),
-			$this->buildWhere($query->where, $params),
+			$this->buildWhere($query->from, $query->where, $params),
 			$this->buildGroupBy($query->groupBy),
 			$this->buildWithin($query->within),
 			$this->buildOrderBy($query->orderBy),
@@ -131,37 +131,16 @@ class QueryBuilder extends Object
 	protected function generateInsertReplace($statement, $index, $columns, &$params)
 	{
 		if (($indexSchema = $this->db->getIndexSchema($index)) !== null) {
-			$columnSchemas = $indexSchema->columns;
+			$indexSchemas = [$indexSchema];
 		} else {
-			$columnSchemas = [];
+			$indexSchemas = [];
 		}
 		$names = [];
 		$placeholders = [];
 		foreach ($columns as $name => $value) {
 			$names[] = $this->db->quoteColumnName($name);
-			if ($value instanceof Expression) {
-				$placeholders[] = $value->expression;
-				foreach ($value->params as $n => $v) {
-					$params[$n] = $v;
-				}
-			} else {
-				if (is_array($value)) {
-					// MVA :
-					$placeholderParts = [];
-					foreach ($value as $subValue) {
-						$phName = self::PARAM_PREFIX . count($params);
-						$placeholderParts[] = $phName;
-						$params[$phName] = isset($columnSchemas[$name]) ? $columnSchemas[$name]->typecast($subValue) : $subValue;
-					}
-					$placeholders[] = '(' . implode(',', $placeholderParts) . ')';
-				} else {
-					$phName = self::PARAM_PREFIX . count($params);
-					$placeholders[] = $phName;
-					$params[$phName] = isset($columnSchemas[$name]) ? $columnSchemas[$name]->typecast($value) : $value;
-				}
-			}
+			$placeholders[] = $this->composeColumnValue($indexSchemas, $name, $value, $params);
 		}
-
 		return $statement . ' INTO ' . $this->db->quoteIndexName($index)
 			. ' (' . implode(', ', $names) . ') VALUES ('
 			. implode(', ', $placeholders) . ')';
@@ -231,9 +210,9 @@ class QueryBuilder extends Object
 	protected function generateBatchInsertReplace($statement, $index, $columns, $rows, &$params)
 	{
 		if (($indexSchema = $this->db->getIndexSchema($index)) !== null) {
-			$columnSchemas = $indexSchema->columns;
+			$indexSchemas = [$indexSchema];
 		} else {
-			$columnSchemas = [];
+			$indexSchemas = [];
 		}
 
 		foreach ($columns as $i => $name) {
@@ -244,23 +223,7 @@ class QueryBuilder extends Object
 		foreach ($rows as $row) {
 			$vs = [];
 			foreach ($row as $i => $value) {
-				if (is_array($value)) {
-					// MVA :
-					$vsParts = [];
-					foreach ($value as $subValue) {
-						$phName = self::PARAM_PREFIX . count($params);
-						$vsParts[] = $phName;
-						$params[$phName] = isset($columnSchemas[$columns[$i]]) ? $columnSchemas[$columns[$i]]->typecast($subValue) : $subValue;
-					}
-					$vs[] = '(' . implode(',', $vsParts) . ')';
-				} else {
-					$phName = self::PARAM_PREFIX . count($params);
-					if (isset($columnSchemas[$columns[$i]])) {
-						$value = $columnSchemas[$columns[$i]]->typecast($value);
-					}
-					$params[$phName] = is_string($value) ? $this->db->quoteValue($value) : $value;
-					$vs[] = $phName;
-				}
+				$vs[] = $this->composeColumnValue($indexSchemas, $columns[$i], $value, $params);
 			}
 			$values[] = '(' . implode(', ', $vs) . ')';
 		}
@@ -292,38 +255,18 @@ class QueryBuilder extends Object
 	public function update($index, $columns, $condition, &$params, $options)
 	{
 		if (($indexSchema = $this->db->getIndexSchema($index)) !== null) {
-			$columnSchemas = $indexSchema->columns;
+			$indexSchemas = [$indexSchema];
 		} else {
-			$columnSchemas = [];
+			$indexSchemas = [];
 		}
 
 		$lines = [];
 		foreach ($columns as $name => $value) {
-			if ($value instanceof Expression) {
-				$lines[] = $this->db->quoteColumnName($name) . '=' . $value->expression;
-				foreach ($value->params as $n => $v) {
-					$params[$n] = $v;
-				}
-			} else {
-				if (is_array($value)) {
-					// MVA :
-					$lineParts = [];
-					foreach ($value as $subValue) {
-						$phName = self::PARAM_PREFIX . count($params);
-						$lineParts[] = $phName;
-						$params[$phName] = isset($columnSchemas[$name]) ? $columnSchemas[$name]->typecast($subValue) : $subValue;
-					}
-					$lines[] = $this->db->quoteColumnName($name) . '=' . '(' . implode(',', $lineParts) . ')';
-				} else {
-					$phName = self::PARAM_PREFIX . count($params);
-					$lines[] = $this->db->quoteColumnName($name) . '=' . $phName;
-					$params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->typecast($value) : $value;
-				}
-			}
+			$lines[] = $this->db->quoteColumnName($name) . '=' . $this->composeColumnValue($indexSchemas, $name, $value, $params);
 		}
 
 		$sql = 'UPDATE ' . $this->db->quoteIndexName($index) . ' SET ' . implode(', ', $lines);
-		$where = $this->buildWhere($condition, $params);
+		$where = $this->buildWhere([$index], $condition, $params);
 		if ($where !== '') {
 			$sql = $sql . ' ' . $where;
 		}
@@ -354,7 +297,7 @@ class QueryBuilder extends Object
 	public function delete($index, $condition, &$params)
 	{
 		$sql = 'DELETE FROM ' . $this->db->quoteIndexName($index);
-		$where = $this->buildWhere($condition, $params);
+		$where = $this->buildWhere([$index], $condition, $params);
 		return $where === '' ? $sql : $sql . ' ' . $where;
 	}
 
@@ -499,13 +442,26 @@ class QueryBuilder extends Object
 	}
 
 	/**
+	 * @param string[] $indexes list of index names, which affected by query
 	 * @param string|array $condition
 	 * @param array $params the binding parameters to be populated
 	 * @return string the WHERE clause built from [[query]].
 	 */
-	public function buildWhere($condition, &$params)
+	public function buildWhere($indexes, $condition, &$params)
 	{
-		$where = $this->buildCondition($condition, $params);
+		if (empty($condition)) {
+			return '';
+		}
+		$indexSchemas = [];
+		if (!empty($indexes)) {
+			foreach ($indexes as $indexName) {
+				$index = $this->db->getIndexSchema($indexName);
+				if ($index !== null) {
+					$indexSchemas[] = $index;
+				}
+			}
+		}
+		$where = $this->buildCondition($indexSchemas, $condition, $params);
 		return $where === '' ? '' : 'WHERE ' . $where;
 	}
 
@@ -583,13 +539,14 @@ class QueryBuilder extends Object
 
 	/**
 	 * Parses the condition specification and generates the corresponding SQL expression.
+	 * @param IndexSchema[] $indexes list of indexes, which affected by query
 	 * @param string|array $condition the condition specification. Please refer to [[Query::where()]]
 	 * on how to specify a condition.
 	 * @param array $params the binding parameters to be populated
 	 * @return string the generated SQL expression
 	 * @throws \yii\db\Exception if the condition is in bad format
 	 */
-	public function buildCondition($condition, &$params)
+	public function buildCondition($indexes, $condition, &$params)
 	{
 		static $builders = [
 			'AND' => 'buildAndCondition',
@@ -614,42 +571,38 @@ class QueryBuilder extends Object
 			if (isset($builders[$operator])) {
 				$method = $builders[$operator];
 				array_shift($condition);
-				return $this->$method($operator, $condition, $params);
+				return $this->$method($indexes, $operator, $condition, $params);
 			} else {
 				throw new Exception('Found unknown operator in query: ' . $operator);
 			}
 		} else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
-			return $this->buildHashCondition($condition, $params);
+			return $this->buildHashCondition($indexes, $condition, $params);
 		}
 	}
 
 	/**
 	 * Creates a condition based on column-value pairs.
+	 * @param IndexSchema[] $indexes list of indexes, which affected by query
 	 * @param array $condition the condition specification.
 	 * @param array $params the binding parameters to be populated
 	 * @return string the generated SQL expression
 	 */
-	public function buildHashCondition($condition, &$params)
+	public function buildHashCondition($indexes, $condition, &$params)
 	{
 		$parts = [];
 		foreach ($condition as $column => $value) {
 			if (is_array($value)) { // IN condition
-				$parts[] = $this->buildInCondition('IN', [$column, $value], $params);
+				$parts[] = $this->buildInCondition($indexes, 'IN', [$column, $value], $params);
 			} else {
 				if (strpos($column, '(') === false) {
-					$column = $this->db->quoteColumnName($column);
+					$quotedColumn = $this->db->quoteColumnName($column);
+				} else {
+					$quotedColumn = $column;
 				}
 				if ($value === null) {
-					$parts[] = "$column IS NULL";
-				} elseif ($value instanceof Expression) {
-					$parts[] = "$column=" . $value->expression;
-					foreach ($value->params as $n => $v) {
-						$params[$n] = $v;
-					}
+					$parts[] = "$quotedColumn IS NULL";
 				} else {
-					$phName = self::PARAM_PREFIX . count($params);
-					$parts[] = "$column=$phName";
-					$params[$phName] = $value;
+					$parts[] = $quotedColumn . '=' . $this->composeColumnValue($indexes, $column, $value, $params);
 				}
 			}
 		}
@@ -658,17 +611,18 @@ class QueryBuilder extends Object
 
 	/**
 	 * Connects two or more SQL expressions with the `AND` or `OR` operator.
+	 * @param IndexSchema[] $indexes list of indexes, which affected by query
 	 * @param string $operator the operator to use for connecting the given operands
 	 * @param array $operands the SQL expressions to connect.
 	 * @param array $params the binding parameters to be populated
 	 * @return string the generated SQL expression
 	 */
-	public function buildAndCondition($operator, $operands, &$params)
+	public function buildAndCondition($indexes, $operator, $operands, &$params)
 	{
 		$parts = [];
 		foreach ($operands as $operand) {
 			if (is_array($operand)) {
-				$operand = $this->buildCondition($operand, $params);
+				$operand = $this->buildCondition($indexes, $operand, $params);
 			}
 			if ($operand !== '') {
 				$parts[] = $operand;
@@ -683,6 +637,7 @@ class QueryBuilder extends Object
 
 	/**
 	 * Creates an SQL expressions with the `BETWEEN` operator.
+	 * @param IndexSchema[] $indexes list of indexes, which affected by query
 	 * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
 	 * @param array $operands the first operand is the column name. The second and third operands
 	 * describe the interval that column value should be in.
@@ -690,7 +645,7 @@ class QueryBuilder extends Object
 	 * @return string the generated SQL expression
 	 * @throws Exception if wrong number of operands have been given.
 	 */
-	public function buildBetweenCondition($operator, $operands, &$params)
+	public function buildBetweenCondition($indexes, $operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1], $operands[2])) {
 			throw new Exception("Operator '$operator' requires three operands.");
@@ -699,18 +654,19 @@ class QueryBuilder extends Object
 		list($column, $value1, $value2) = $operands;
 
 		if (strpos($column, '(') === false) {
-			$column = $this->db->quoteColumnName($column);
+			$quotedColumn = $this->db->quoteColumnName($column);
+		} else {
+			$quotedColumn = $column;
 		}
-		$phName1 = self::PARAM_PREFIX . count($params);
-		$params[$phName1] = $value1;
-		$phName2 = self::PARAM_PREFIX . count($params);
-		$params[$phName2] = $value2;
+		$phName1 = $this->composeColumnValue($indexes, $column, $value1, $params);
+		$phName2 = $this->composeColumnValue($indexes, $column, $value2, $params);
 
-		return "$column $operator $phName1 AND $phName2";
+		return "$quotedColumn $operator $phName1 AND $phName2";
 	}
 
 	/**
 	 * Creates an SQL expressions with the `IN` operator.
+	 * @param IndexSchema[] $indexes list of indexes, which affected by query
 	 * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
 	 * @param array $operands the first operand is the column name. If it is an array
 	 * a composite IN condition will be generated.
@@ -721,7 +677,7 @@ class QueryBuilder extends Object
 	 * @return string the generated SQL expression
 	 * @throws Exception if wrong number of operands have been given.
 	 */
-	public function buildInCondition($operator, $operands, &$params)
+	public function buildInCondition($indexes, $operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1])) {
 			throw new Exception("Operator '$operator' requires two operands.");
@@ -736,7 +692,7 @@ class QueryBuilder extends Object
 		}
 
 		if (count($column) > 1) {
-			return $this->buildCompositeInCondition($operator, $column, $values, $params);
+			return $this->buildCompositeInCondition($indexes, $operator, $column, $values, $params);
 		} elseif (is_array($column)) {
 			$column = reset($column);
 		}
@@ -744,18 +700,7 @@ class QueryBuilder extends Object
 			if (is_array($value)) {
 				$value = isset($value[$column]) ? $value[$column] : null;
 			}
-			if ($value === null) {
-				$values[$i] = 'NULL';
-			} elseif ($value instanceof Expression) {
-				$values[$i] = $value->expression;
-				foreach ($value->params as $n => $v) {
-					$params[$n] = $v;
-				}
-			} else {
-				$phName = self::PARAM_PREFIX . count($params);
-				$params[$phName] = $value;
-				$values[$i] = $phName;
-			}
+			$values[$i] = $this->composeColumnValue($indexes, $column, $value, $params);
 		}
 		if (strpos($column, '(') === false) {
 			$column = $this->db->quoteColumnName($column);
@@ -769,16 +714,22 @@ class QueryBuilder extends Object
 		}
 	}
 
-	protected function buildCompositeInCondition($operator, $columns, $values, &$params)
+	/**
+	 * @param IndexSchema[] $indexes list of indexes, which affected by query
+	 * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
+	 * @param array $columns
+	 * @param array $values
+	 * @param array $params the binding parameters to be populated
+	 * @return string the generated SQL expression
+	 */
+	protected function buildCompositeInCondition($indexes, $operator, $columns, $values, &$params)
 	{
 		$vss = [];
 		foreach ($values as $value) {
 			$vs = [];
 			foreach ($columns as $column) {
 				if (isset($value[$column])) {
-					$phName = self::PARAM_PREFIX . count($params);
-					$params[$phName] = $value[$column];
-					$vs[] = $phName;
+					$vs[] = $this->composeColumnValue($indexes, $column, $value[$column], $params);
 				} else {
 					$vs[] = 'NULL';
 				}
@@ -795,6 +746,7 @@ class QueryBuilder extends Object
 
 	/**
 	 * Creates an SQL expressions with the `LIKE` operator.
+	 * @param IndexSchema[] $indexes list of indexes, which affected by query
 	 * @param string $operator the operator to use (e.g. `LIKE`, `NOT LIKE`, `OR LIKE` or `OR NOT LIKE`)
 	 * @param array $operands the first operand is the column name.
 	 * The second operand is a single value or an array of values that column value
@@ -805,7 +757,7 @@ class QueryBuilder extends Object
 	 * @return string the generated SQL expression
 	 * @throws Exception if wrong number of operands have been given.
 	 */
-	public function buildLikeCondition($operator, $operands, &$params)
+	public function buildLikeCondition($indexes, $operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1])) {
 			throw new Exception("Operator '$operator' requires two operands.");
@@ -901,5 +853,47 @@ class QueryBuilder extends Object
 			$optionLines[] = $name . ' = ' . $actualValue;
 		}
 		return 'OPTION ' . implode(', ', $optionLines);
+	}
+
+	/**
+	 * Composes column value for SQL, taking in account the column type.
+	 * @param IndexSchema[] $indexes list of indexes, which affected by query
+	 * @param string $columnName name of the column
+	 * @param mixed $value raw column value
+	 * @param array $params the binding parameters to be populated
+	 * @return string SQL expression, which represents column value
+	 */
+	protected function composeColumnValue($indexes, $columnName, $value, &$params) {
+		if ($value === null) {
+			return 'NULL';
+		} elseif ($value instanceof Expression) {
+			$params = array_merge($params, $value->params);
+			return $value->expression;
+		}
+		foreach ($indexes as $index) {
+			$columnSchema = $index->getColumn($columnName);
+			if ($columnSchema !== null) {
+				break;
+			}
+		}
+		if (is_array($value)) {
+			// MVA :
+			$lineParts = [];
+			foreach ($value as $subValue) {
+				if ($subValue instanceof Expression) {
+					$params = array_merge($params, $subValue->params);
+					$lineParts[] = $subValue->expression;
+				} else {
+					$phName = self::PARAM_PREFIX . count($params);
+					$lineParts[] = $phName;
+					$params[$phName] = (isset($columnSchema)) ? $columnSchema->typecast($subValue) : $subValue;
+				}
+			}
+			return '(' . implode(',', $lineParts) . ')';
+		} else {
+			$phName = self::PARAM_PREFIX . count($params);
+			$params[$phName] = (isset($columnSchema)) ? $columnSchema->typecast($value) : $value;
+			return $phName;
+		}
 	}
 }
