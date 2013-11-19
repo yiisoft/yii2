@@ -182,7 +182,7 @@ class Pagination extends Object
 		} else {
 			unset($params[$this->pageVar]);
 		}
-		$route = $this->route === null ? Yii::$app->controller->route : $this->route;
+		$route = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
 		return Yii::$app->getUrlManager()->createUrl($route, $params);
 	}
 
