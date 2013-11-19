@@ -129,13 +129,13 @@ class ArrayHelperTest extends TestCase
 			['name' => 'A', 'age' => 1],
 		];
 
-		ArrayHelper::multisort($array, ['name', 'age'], false, [SORT_STRING, SORT_REGULAR]);
+		ArrayHelper::multisort($array, ['name', 'age'], SORT_ASC, [SORT_STRING, SORT_REGULAR]);
 		$this->assertEquals(['name' => 'A', 'age' => 1], $array[0]);
 		$this->assertEquals(['name' => 'B', 'age' => 4], $array[1]);
 		$this->assertEquals(['name' => 'a', 'age' => 3], $array[2]);
 		$this->assertEquals(['name' => 'b', 'age' => 2], $array[3]);
 
-		ArrayHelper::multisort($array, ['name', 'age'], false, [SORT_STRING, SORT_REGULAR], false);
+		ArrayHelper::multisort($array, ['name', 'age'], SORT_ASC, [SORT_STRING | SORT_FLAG_CASE, SORT_REGULAR]);
 		$this->assertEquals(['name' => 'A', 'age' => 1], $array[0]);
 		$this->assertEquals(['name' => 'a', 'age' => 3], $array[1]);
 		$this->assertEquals(['name' => 'b', 'age' => 2], $array[2]);
