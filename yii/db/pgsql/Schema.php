@@ -49,6 +49,7 @@ class Schema extends \yii\db\Schema
 		'inet' => self::TYPE_STRING,
 		'smallint' => self::TYPE_SMALLINT,
 		'int4' => self::TYPE_INTEGER,
+		'int8' => self::TYPE_BIGINT,
 		'integer' => self::TYPE_INTEGER,
 		'bigint' => self::TYPE_BIGINT,
 		'interval' => self::TYPE_STRING,
