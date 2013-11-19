@@ -147,7 +147,7 @@ class ArrayHelperTest extends TestCase
 		// single key
 		$sort = new Sort([
 			'attributes' => ['name', 'age'],
-			'defaultOrder' => ['name' => Sort::ASC],
+			'defaultOrder' => ['name' => SORT_ASC],
 		]);
 		$orders = $sort->getOrders();
 
@@ -164,7 +164,7 @@ class ArrayHelperTest extends TestCase
 		// multiple keys
 		$sort = new Sort([
 			'attributes' => ['name', 'age'],
-			'defaultOrder' => ['name' => Sort::ASC, 'age' => Sort::DESC],
+			'defaultOrder' => ['name' => SORT_ASC, 'age' => SORT_DESC],
 		]);
 		$orders = $sort->getOrders();
 
