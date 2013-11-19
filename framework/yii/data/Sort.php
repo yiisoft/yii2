@@ -355,7 +355,7 @@ class Sort extends Object
 		$definition = $this->attributes[$attribute];
 		$directions = $this->getAttributeOrders();
 		if (isset($directions[$attribute])) {
-			$descending = $directions[$attribute] === SORT_DESC;
+			$descending = $directions[$attribute] !== SORT_DESC;
 			unset($directions[$attribute]);
 		} else {
 			$descending = isset($definition['default']) && $definition['default'] === SORT_DESC;
