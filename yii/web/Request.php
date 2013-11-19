@@ -908,11 +908,11 @@ class Request extends \yii\base\Request
 			return isset($acceptedLanguages[0]) ? $acceptedLanguages[0] : null;
 		}
 		foreach ($acceptedLanguages as $acceptedLanguage) {
-			$acceptedLanguage = str_replace('-', '_', strtolower($acceptedLanguage));
+			$acceptedLanguage = str_replace('_', '-', strtolower($acceptedLanguage));
 			foreach ($languages as $language) {
-				$language = str_replace('-', '_', strtolower($language));
-				// en_us==en_us, en==en_us, en_us==en
-				if ($language === $acceptedLanguage || strpos($acceptedLanguage, $language . '_') === 0 || strpos($language, $acceptedLanguage . '_') === 0) {
+				$language = str_replace('_', '-', strtolower($language));
+				// en-us==en-us, en==en-us, en-us==en
+				if ($language === $acceptedLanguage || strpos($acceptedLanguage, $language . '-') === 0 || strpos($language, $acceptedLanguage . '-') === 0) {
 					return $language;
 				}
 			}
