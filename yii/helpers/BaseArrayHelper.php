@@ -339,13 +339,10 @@ class BaseArrayHelper
 	 * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, `SORT_LOCALE_STRING`, `SORT_NATURAL` and `SORT_FLAG_CASE`.
 	 * Please refer to [PHP manual](http://php.net/manual/en/function.sort.php)
 	 * for more details. When sorting by multiple keys with different sort flags, use an array of sort flags.
-	 * @param boolean|array $caseSensitive whether to sort string in case-sensitive manner. This parameter
-	 * is used only when `$sortFlag` is `SORT_STRING`.
-	 * When sorting by multiple keys with different case sensitivities, use an array of boolean values.
 	 * @throws InvalidParamException if the $descending or $sortFlag parameters do not have
 	 * correct number of elements as that of $key.
 	 */
-	public static function multisort(&$array, $key, $direction = SORT_ASC, $sortFlag = SORT_REGULAR, $caseSensitive = true)
+	public static function multisort(&$array, $key, $direction = SORT_ASC, $sortFlag = SORT_REGULAR)
 	{
 		$keys = is_array($key) ? $key : [$key];
 		if (empty($keys) || empty($array)) {
@@ -362,21 +359,10 @@ class BaseArrayHelper
 		} elseif (count($sortFlag) !== $n) {
 			throw new InvalidParamException('The length of $sortFlag parameter must be the same as that of $keys.');
 		}
-		if (is_scalar($caseSensitive)) {
-			$caseSensitive = array_fill(0, $n, $caseSensitive);
-		} elseif (count($caseSensitive) !== $n) {
-			throw new InvalidParamException('The length of $caseSensitive parameter must be the same as that of $keys.');
-		}
 		$args = [];
 		foreach ($keys as $i => $key) {
 			$flag = $sortFlag[$i];
-			$cs = $caseSensitive[$i];
-			if (!$cs && ($flag === SORT_STRING)) {
-				$flag = $flag | SORT_FLAG_CASE;
-				$args[] = static::getColumn($array, $key);
-			} else {
-				$args[] = static::getColumn($array, $key);
-			}
+			$args[] = static::getColumn($array, $key);
 			$args[] = $direction[$i];
 			$args[] = $flag;
 		}
