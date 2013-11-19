@@ -219,19 +219,17 @@ yii = (function ($) {
 
 	function initScriptFilter() {
 		var hostInfo = location.protocol + '//' + location.host;
-		var loadedScripts = $('script').filter(function () {
-			return this.src;
-		}).map(function () {
+		var loadedScripts = $('script[src]').map(function () {
 			return this.src.charAt(0) === '/' ? hostInfo + this.src : this.src;
 		}).toArray();
 		$.ajaxPrefilter('script', function (options, originalOptions, xhr) {
 			var url = options.url.charAt(0) === '/' ? hostInfo + options.url : options.url;
-			if (loadedScripts.indexOf(url) < 0) {
+			if ($.inArray(url, loadedScripts) === -1) {
 				loadedScripts.push(url);
 			} else {
-				var found = pub.reloadableScripts.map(function () {
-					return this.charAt(0) === '/' ? hostInfo + this : this;
-				}).indexOf(url) >= 0;
+				var found = $.inArray(url, $.map(pub.reloadableScripts, function (script) {
+					return script.charAt(0) === '/' ? hostInfo + script : script;
+				})) !== -1;
 				if (!found) {
 					xhr.abort();
 				}
