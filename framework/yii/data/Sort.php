@@ -355,21 +355,21 @@ class Sort extends Object
 		$definition = $this->attributes[$attribute];
 		$directions = $this->getAttributeOrders();
 		if (isset($directions[$attribute])) {
-			$descending = $directions[$attribute] !== SORT_DESC;
+			$direction = $directions[$attribute] === SORT_DESC ? SORT_ASC : SORT_DESC;
 			unset($directions[$attribute]);
 		} else {
-			$descending = isset($definition['default']) && $definition['default'] === SORT_DESC;
+			$direction = isset($definition['default']) ? $definition['default'] : SORT_ASC;
 		}
 
 		if ($this->enableMultiSort) {
-			$directions = array_merge([$attribute => $descending], $directions);
+			$directions = array_merge([$attribute => $direction], $directions);
 		} else {
-			$directions = [$attribute => $descending];
+			$directions = [$attribute => $direction];
 		}
 
 		$sorts = [];
-		foreach ($directions as $attribute => $descending) {
-			$sorts[] = $descending ? $attribute . $this->separators[1] . $this->descTag : $attribute;
+		foreach ($directions as $attribute => $direction) {
+			$sorts[] = $direction === SORT_DESC ? $attribute . $this->separators[1] . $this->descTag : $attribute;
 		}
 		return implode($this->separators[0], $sorts);
 	}
