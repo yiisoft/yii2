@@ -78,12 +78,12 @@ class Sort extends Object
 	/**
 	 * Sort ascending
 	 */
-	const ASC = false;
+	const ASC = SORT_ASC;
 
 	/**
 	 * Sort descending
 	 */
-	const DESC = true;
+	const DESC = SORT_DESC;
 
 	/**
 	 * @var boolean whether the sorting can be applied to multiple attributes simultaneously.
