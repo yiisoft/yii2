@@ -288,7 +288,7 @@ FROM
 	LEFT JOIN pg_namespace d ON d.oid = c.relnamespace
 	LEFT join pg_constraint ct on ct.conrelid=c.oid and ct.contype='p'
 WHERE
-	a.attnum > 0 and t.typename != ''
+	a.attnum > 0 and t.typname != ''
 	and c.relname = {$tableName}
 	and d.nspname = {$schemaName}
 ORDER BY
