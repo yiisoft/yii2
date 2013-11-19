@@ -44,6 +44,11 @@
 yii = (function ($) {
 	var pub = {
 		/**
+		 * List of scripts that can be loaded multiple times via AJAX requests. Each script can be represented
+		 * as either an absolute URL or a relative one.
+		 */
+		reloadableScripts: [],
+		/**
 		 * The selector for clickable elements that need to support confirmation and form submission.
 		 */
 		clickableSelector: 'a, button, input[type="submit"], input[type="button"], input[type="reset"], input[type="image"]',
@@ -161,46 +166,79 @@ yii = (function ($) {
 		},
 
 		init: function () {
-			var $document = $(document);
-
-			// automatically send CSRF token for all AJAX requests
-			$.ajaxPrefilter(function (options, originalOptions, xhr) {
-				if (!options.crossDomain && pub.getCsrfVar()) {
-					xhr.setRequestHeader('X-CSRF-Token', pub.getCsrfToken());
-				}
-			});
-
-			// handle AJAX redirection
-			$document.ajaxComplete(function (event, xhr, settings) {
-				var url = xhr.getResponseHeader('X-Redirect');
-				if (url) {
-					window.location = url;
-				}
-			});
-
-			// handle data-confirm and data-method for clickable elements
-			$document.on('click.yii', pub.clickableSelector, function (event) {
-				var $this = $(this);
-				if (pub.allowAction($this)) {
-					return pub.handleAction($this);
-				} else {
-					event.stopImmediatePropagation();
-					return false;
-				}
-			});
-
-			// handle data-confirm and data-method for changeable elements
-			$document.on('change.yii', pub.changeableSelector, function (event) {
-				var $this = $(this);
-				if (pub.allowAction($this)) {
-					return pub.handleAction($this);
-				} else {
-					event.stopImmediatePropagation();
-					return false;
-				}
-			});
+			initCsrfHandler();
+			initRedirectHandler();
+			initScriptFilter();
+			initDataMethods();
 		}
 	};
+
+	function initRedirectHandler() {
+		// handle AJAX redirection
+		$(document).ajaxComplete(function (event, xhr, settings) {
+			var url = xhr.getResponseHeader('X-Redirect');
+			if (url) {
+				window.location = url;
+			}
+		});
+	}
+
+	function initCsrfHandler() {
+		// automatically send CSRF token for all AJAX requests
+		$.ajaxPrefilter(function (options, originalOptions, xhr) {
+			if (!options.crossDomain && pub.getCsrfVar()) {
+				xhr.setRequestHeader('X-CSRF-Token', pub.getCsrfToken());
+			}
+		});
+	}
+
+	function initDataMethods() {
+		var $document = $(document);
+		// handle data-confirm and data-method for clickable elements
+		$document.on('click.yii', pub.clickableSelector, function (event) {
+			var $this = $(this);
+			if (pub.allowAction($this)) {
+				return pub.handleAction($this);
+			} else {
+				event.stopImmediatePropagation();
+				return false;
+			}
+		});
+
+		// handle data-confirm and data-method for changeable elements
+		$document.on('change.yii', pub.changeableSelector, function (event) {
+			var $this = $(this);
+			if (pub.allowAction($this)) {
+				return pub.handleAction($this);
+			} else {
+				event.stopImmediatePropagation();
+				return false;
+			}
+		});
+	}
+
+	function initScriptFilter() {
+		var hostInfo = location.protocol + '//' + location.host;
+		var loadedScripts = $('script').filter(function () {
+			return this.src;
+		}).map(function () {
+			return this.src.charAt(0) === '/' ? hostInfo + this.src : this.src;
+		}).toArray();
+		$.ajaxPrefilter('script', function (options, originalOptions, xhr) {
+			var url = options.url.charAt(0) === '/' ? hostInfo + options.url : options.url;
+			if (loadedScripts.indexOf(url) < 0) {
+				loadedScripts.push(url);
+			} else {
+				var found = pub.reloadableScripts.map(function () {
+					return this.charAt(0) === '/' ? hostInfo + this : this;
+				}).indexOf(url) >= 0;
+				if (!found) {
+					xhr.abort();
+				}
+			}
+		});
+	}
+
 	return pub;
 })(jQuery);
 
