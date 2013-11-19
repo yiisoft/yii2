@@ -124,7 +124,7 @@ class HelpController extends Controller
 				continue;
 			}
 			foreach ($this->getModuleCommands($child) as $command) {
-				$commands[] = $prefix . $id . '/' . $command;
+				$commands[] = $command;
 			}
 		}
 
