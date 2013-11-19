@@ -498,7 +498,7 @@ class BaseYii
 	 * @param string $category the message category.
 	 * @param string $message the message to be translated.
 	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
-	 * @param string $language the language code (e.g. `en_US`, `en`). If this is null, the current
+	 * @param string $language the language code (e.g. `en-US`, `en`). If this is null, the current
 	 * [[\yii\base\Application::language|application language]] will be used.
 	 * @return string the translated message.
 	 */

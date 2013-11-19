@@ -136,7 +136,7 @@ _MSG_
 	public function testNamedArguments($pattern, $expected, $args)
 	{
 		$formatter = new FallbackMessageFormatter();
-		$result = $formatter->fallbackFormat($pattern, $args, 'en_US');
+		$result = $formatter->fallbackFormat($pattern, $args, 'en-US');
 		$this->assertEquals($expected, $result, $formatter->getErrorMessage());
 	}
 
@@ -147,7 +147,7 @@ _MSG_
 		$formatter = new FallbackMessageFormatter();
 		$result = $formatter->fallbackFormat('{'.self::SUBJECT.'} is {'.self::N.'}', [
 			self::N => self::N_VALUE,
-		], 'en_US');
+		], 'en-US');
 
 		$this->assertEquals($expected, $result);
 	}
@@ -157,7 +157,7 @@ _MSG_
 		$pattern = '{'.self::SUBJECT.'} is '.self::N;
 
 		$formatter = new FallbackMessageFormatter();
-		$result = $formatter->fallbackFormat($pattern, [], 'en_US');
+		$result = $formatter->fallbackFormat($pattern, [], 'en-US');
 		$this->assertEquals($pattern, $result, $formatter->getErrorMessage());
 	}
 }
