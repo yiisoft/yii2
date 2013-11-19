@@ -333,8 +333,8 @@ class BaseArrayHelper
 	 * elements, a property name of the objects, or an anonymous function returning the values for comparison
 	 * purpose. The anonymous function signature should be: `function($item)`.
 	 * To sort by multiple keys, provide an array of keys here.
-	 * @param boolean|array $descending whether to sort in descending or ascending order. When
-	 * sorting by multiple keys with different descending orders, use an array of descending flags.
+	 * @param integer|array $direction the sorting direction. It can be either `SORT_ASC` or `SORT_DESC`.
+	 * When sorting by multiple keys with different sorting directions, use an array of sorting directions.
 	 * @param integer|array $sortFlag the PHP sort flag. Valid values include
 	 * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, `SORT_LOCALE_STRING`, `SORT_NATURAL` and `SORT_FLAG_CASE`.
 	 * Please refer to [PHP manual](http://php.net/manual/en/function.sort.php)
@@ -345,16 +345,16 @@ class BaseArrayHelper
 	 * @throws InvalidParamException if the $descending or $sortFlag parameters do not have
 	 * correct number of elements as that of $key.
 	 */
-	public static function multisort(&$array, $key, $descending = false, $sortFlag = SORT_REGULAR, $caseSensitive = true)
+	public static function multisort(&$array, $key, $direction = SORT_ASC, $sortFlag = SORT_REGULAR, $caseSensitive = true)
 	{
 		$keys = is_array($key) ? $key : [$key];
 		if (empty($keys) || empty($array)) {
 			return;
 		}
 		$n = count($keys);
-		if (is_scalar($descending)) {
-			$descending = array_fill(0, $n, $descending);
-		} elseif (count($descending) !== $n) {
+		if (is_scalar($direction)) {
+			$direction = array_fill(0, $n, $direction);
+		} elseif (count($direction) !== $n) {
 			throw new InvalidParamException('The length of $descending parameter must be the same as that of $keys.');
 		}
 		if (is_scalar($sortFlag)) {
@@ -377,7 +377,7 @@ class BaseArrayHelper
 			} else {
 				$args[] = static::getColumn($array, $key);
 			}
-			$args[] = $descending[$i] ? SORT_DESC : SORT_ASC;
+			$args[] = $direction;
 			$args[] = $flag;
 		}
 		$args[] = &$array;
