@@ -20,13 +20,7 @@ class ArticleIndex extends ActiveRecord
 
 	public function getSource()
 	{
-		$config = [
-			'modelClass' => ArticleDb::className(),
-			'primaryModel' => $this,
-			'link' => ['id' => 'id'],
-			'multiple' => false,
-		];
-		return new ActiveRelation($config);
+		return $this->hasOne('db', ArticleDb::className(), ['id' => 'id']);
 	}
 
 	public function getSnippetSource()

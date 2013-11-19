@@ -18,6 +18,7 @@ use yii\db\Expression;
 use yii\db\StaleObjectException;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use Yii;
 
 /**
  * Class ActiveRecord
@@ -469,6 +470,113 @@ class ActiveRecord extends Model
 				parent::__unset($name);
 			}
 		}
+	}
+
+	/**
+	 * Declares a `has-one` relation.
+	 * The declaration is returned in terms of an [[ActiveRelationInterface]] instance
+	 * through which the related record can be queried and retrieved back.
+	 *
+	 * A `has-one` relation means that there is at most one related record matching
+	 * the criteria set by this relation, e.g., a particular index has one source.
+	 *
+	 * For example, to declare the `source` relation for `ArticleIndex` class, we can write
+	 * the following code in the `ArticleIndex` class:
+	 *
+	 * ~~~
+	 * public function getSource()
+	 * {
+	 *     return $this->hasOne('db', ArticleContent::className(), ['article_id' => 'id']);
+	 * }
+	 * ~~~
+	 *
+	 * Note that in the above, the 'article_id' key in the `$link` parameter refers to an attribute name
+	 * in the related class `ArticleContent`, while the 'id' value refers to an attribute name
+	 * in the current AR class.
+	 *
+	 * @param string $type relation type or class name.
+	 *  - if value contains backslash ("\"), it is treated as full active relation class name,
+	 * for example: "app\mydb\ActiveRelation"
+	 *  - if value does not contain backslash ("\"), the active relation class name will be composed
+	 * by pattern: "yii\{type}\ActiveRelation", for example: type "db" refers "yii\db\ActiveRelation",
+	 * type "sphinx" - "yii\sphinx\ActiveRelation"
+	 * @param string $class the class name of the related record
+	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
+	 * the attributes in the `$class` model, while the values of the array refer to the corresponding
+	 * attributes in the index associated with this AR class.
+	 * @return ActiveRelationInterface the relation object.
+	 */
+	public function hasOne($type, $class, $link)
+	{
+		return $this->createActiveRelation($type, [
+			'modelClass' => $class,
+			'primaryModel' => $this,
+			'link' => $link,
+			'multiple' => false,
+		]);
+	}
+
+	/**
+	 * Declares a `has-many` relation.
+	 * The declaration is returned in terms of an [[ActiveRelationInterface]] instance
+	 * through which the related record can be queried and retrieved back.
+	 *
+	 * A `has-many` relation means that there are multiple related records matching
+	 * the criteria set by this relation, e.g., an article has many tags.
+	 *
+	 * For example, to declare the `tags` relation for `ArticleIndex` class, we can write
+	 * the following code in the `ArticleIndex` class:
+	 *
+	 * ~~~
+	 * public function getOrders()
+	 * {
+	 *     return $this->hasMany('db', Tag::className(), ['id' => 'tag_id']);
+	 * }
+	 * ~~~
+	 *
+	 * Note that in the above, the 'id' key in the `$link` parameter refers to
+	 * an attribute name in the related class `Tag`, while the 'tag_id' value refers to
+	 * a multi value attribute name in the current AR class.
+	 *
+	 * @param string $type relation type or class name.
+	 *  - if value contains backslash ("\"), it is treated as full active relation class name,
+	 * for example: "app\mydb\ActiveRelation"
+	 *  - if value does not contain backslash ("\"), the active relation class name will be composed
+	 * by pattern: "yii\{type}\ActiveRelation", for example: type "db" refers "yii\db\ActiveRelation",
+	 * type "sphinx" - "yii\sphinx\ActiveRelation"
+	 * @param string $class the class name of the related record
+	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
+	 * the columns in the table associated with the `$class` model, while the values of the
+	 * array refer to the corresponding columns in the table associated with this AR class.
+	 * @return ActiveRelationInterface the relation object.
+	 */
+	public function hasMany($type, $class, $link)
+	{
+		return $this->createActiveRelation($type, [
+			'modelClass' => $class,
+			'primaryModel' => $this,
+			'link' => $link,
+			'multiple' => true,
+		]);
+	}
+
+	/**
+	 * Creates an [[ActiveRelationInterface]] instance.
+	 * This method is called by [[hasOne()]] and [[hasMany()]] to create a relation instance.
+	 * You may override this method to return a customized relation.
+	 * @param string $type relation type or class name.
+	 * @param array $config the configuration passed to the ActiveRelation class.
+	 * @return ActiveRelationInterface the newly created [[ActiveRelation]] instance.
+	 */
+	protected function createActiveRelation($type, $config = [])
+	{
+		if (strpos($type, '\\') === false) {
+			$class = "yii\\{$type}\\ActiveRelation";
+		} else {
+			$class = $type;
+		}
+		$config['class'] = $class;
+		return Yii::createObject($config);
 	}
 
 	/**
