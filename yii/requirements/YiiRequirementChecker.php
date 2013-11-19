@@ -178,6 +178,9 @@ class YiiRequirementChecker
 		if (empty($extensionVersion)) {
 			return false;
 		}
+		if (strncasecmp($extensionVersion, 'PECL-', 5) == 0) {
+			$extensionVersion = substr($extensionVersion, 5);
+		}
 		return version_compare($extensionVersion, $version, $compare);
 	}
 
