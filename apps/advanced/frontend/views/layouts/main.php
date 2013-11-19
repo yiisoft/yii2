@@ -14,7 +14,7 @@ AppAsset::register($this);
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= str_replace('_', '-', Yii::$app->language) ?>">
 <head>
 	<meta charset="<?= Yii::$app->charset ?>"/>
 	<title><?= Html::encode($this->title) ?></title>
