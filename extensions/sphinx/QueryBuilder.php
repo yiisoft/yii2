@@ -488,7 +488,7 @@ class QueryBuilder extends Object
 			if (is_object($direction)) {
 				$orders[] = (string)$direction;
 			} else {
-				$orders[] = $this->db->quoteColumnName($name) . ($direction === Query::SORT_DESC ? ' DESC' : '');
+				$orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
 			}
 		}
 
@@ -806,7 +806,7 @@ class QueryBuilder extends Object
 			if (is_object($direction)) {
 				$orders[] = (string)$direction;
 			} else {
-				$orders[] = $this->db->quoteColumnName($name) . ($direction === Query::SORT_DESC ? ' DESC' : '');
+				$orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
 			}
 		}
 		return 'WITHIN GROUP ORDER BY ' . implode(', ', $orders);

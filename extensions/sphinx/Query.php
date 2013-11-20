@@ -12,25 +12,20 @@ use yii\base\Component;
 use yii\base\InvalidCallException;
 use yii\db\Expression;
 use yii\db\QueryInterface;
+use yii\db\QueryTrait;
 
 /**
  * Class Query
+ *
+ *
+ * Note: implicit LIMIT 0,20 is present by default.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
 class Query extends Component implements QueryInterface
 {
-	/**
-	 * Sort ascending
-	 * @see orderBy
-	 */
-	const SORT_ASC = false;
-	/**
-	 * Sort descending
-	 * @see orderBy
-	 */
-	const SORT_DESC = true;
+	use QueryTrait;
 
 	/**
 	 * @var array the columns being selected. For example, `['id', 'group_id']`.
@@ -59,30 +54,6 @@ class Query extends Component implements QueryInterface
 	 */
 	public $match;
 	/**
-	 * @var string|array query condition. This refers to the WHERE clause in a SQL statement.
-	 * For example, `group_id > 5 AND team = 1`.
-	 * @see where()
-	 */
-	public $where;
-	/**
-	 * @var integer maximum number of records to be returned.
-	 * Note: if not set implicit LIMIT 0,20 is present by default.
-	 */
-	public $limit;
-	/**
-	 * @var integer zero-based offset from where the records are to be returned. If not set or
-	 * less than 0, it means starting from the beginning.
-	 * Note: implicit LIMIT 0,20 is present by default.
-	 */
-	public $offset;
-	/**
-	 * @var array how to sort the query results. This is used to construct the ORDER BY clause in a SQL statement.
-	 * The array keys are the columns to be sorted by, and the array values are the corresponding sort directions which
-	 * can be either [[Query::SORT_ASC]] or [[Query::SORT_DESC]]. The array may also contain [[Expression]] objects.
-	 * If that is the case, the expressions will be converted into strings without any change.
-	 */
-	public $orderBy;
-	/**
 	 * @var array how to group the query results. For example, `['company', 'department']`.
 	 * This is used to construct the GROUP BY clause in a SQL statement.
 	 */
@@ -104,12 +75,6 @@ class Query extends Component implements QueryInterface
 	 * For example, `[':name' => 'Dan', ':age' => 31]`.
 	 */
 	public $params;
-	/**
-	 * @var string|callable $column the name of the column by which the query results should be indexed by.
-	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
-	 * row data. For more details, see [[indexBy()]]. This property is only used by [[all()]].
-	 */
-	public $indexBy;
 	/**
 	 * @var callback PHP callback, which should be used to fetch source data for the snippets.
 	 * Such callback will receive array of query result rows as an argument and must return the
@@ -180,27 +145,6 @@ class Query extends Component implements QueryInterface
 		$connection = $this->getConnection();
 		list ($sql, $params) = $connection->getQueryBuilder()->build($this);
 		return $connection->createCommand($sql, $params);
-	}
-
-	/**
-	 * Sets the [[indexBy]] property.
-	 * @param string|callable $column the name of the column by which the query results should be indexed by.
-	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
-	 * row data. The signature of the callable should be:
-	 *
-	 * ~~~
-	 * function ($row)
-	 * {
-	 *     // return the index value corresponding to $row
-	 * }
-	 * ~~~
-	 *
-	 * @return static the query object itself
-	 */
-	public function indexBy($column)
-	{
-		$this->indexBy = $column;
-		return $this;
 	}
 
 	/**
@@ -567,83 +511,6 @@ class Query extends Component implements QueryInterface
 		} else {
 			$this->groupBy = array_merge($this->groupBy, $columns);
 		}
-		return $this;
-	}
-
-	/**
-	 * Sets the ORDER BY part of the query.
-	 * @param string|array $columns the columns (and the directions) to be ordered by.
-	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-	 * (e.g. `['id' => Query::SORT_ASC, 'name' => Query::SORT_DESC]`).
-	 * The method will automatically quote the column names unless a column contains some parenthesis
-	 * (which means the column contains a DB expression).
-	 * @return static the query object itself
-	 * @see addOrderBy()
-	 */
-	public function orderBy($columns)
-	{
-		$this->orderBy = $this->normalizeOrderBy($columns);
-		return $this;
-	}
-
-	/**
-	 * Adds additional ORDER BY columns to the query.
-	 * @param string|array $columns the columns (and the directions) to be ordered by.
-	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-	 * (e.g. `['id' => Query::SORT_ASC, 'name' => Query::SORT_DESC]`).
-	 * The method will automatically quote the column names unless a column contains some parenthesis
-	 * (which means the column contains a DB expression).
-	 * @return static the query object itself
-	 * @see orderBy()
-	 */
-	public function addOrderBy($columns)
-	{
-		$columns = $this->normalizeOrderBy($columns);
-		if ($this->orderBy === null) {
-			$this->orderBy = $columns;
-		} else {
-			$this->orderBy = array_merge($this->orderBy, $columns);
-		}
-		return $this;
-	}
-
-	protected function normalizeOrderBy($columns)
-	{
-		if (is_array($columns)) {
-			return $columns;
-		} else {
-			$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-			$result = [];
-			foreach ($columns as $column) {
-				if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
-					$result[$matches[1]] = strcasecmp($matches[2], 'desc') ? self::SORT_ASC : self::SORT_DESC;
-				} else {
-					$result[$column] = self::SORT_ASC;
-				}
-			}
-			return $result;
-		}
-	}
-
-	/**
-	 * Sets the LIMIT part of the query.
-	 * @param integer $limit the limit. Use null or negative value to disable limit.
-	 * @return static the query object itself
-	 */
-	public function limit($limit)
-	{
-		$this->limit = $limit;
-		return $this;
-	}
-
-	/**
-	 * Sets the OFFSET part of the query.
-	 * @param integer $offset the offset. Use null or negative value to disable offset.
-	 * @return static the query object itself
-	 */
-	public function offset($offset)
-	{
-		$this->offset = $offset;
 		return $this;
 	}
 
