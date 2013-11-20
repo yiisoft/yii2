@@ -14,14 +14,22 @@ use yii\base\ModelEvent;
 use yii\base\NotSupportedException;
 use yii\base\UnknownMethodException;
 use yii\db\ActiveRelationInterface;
-use yii\db\Expression;
 use yii\db\StaleObjectException;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 use Yii;
 
 /**
- * Class ActiveRecord
+ * ActiveRecord is the base class for classes representing relational data in terms of objects.
+ *
+ * @property array $dirtyAttributes The changed attribute values (name-value pairs). This property is
+ * read-only.
+ * @property boolean $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
+ * @property array $oldAttributes The old attribute values (name-value pairs).
+ * @property integer $oldPrimaryKey The old primary key value. This property is read-only.
+ * @property array $populatedRelations An array of relation data indexed by relation names. This property is
+ * read-only.
+ * @property integer $primaryKey The primary key value. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -148,7 +156,7 @@ class ActiveRecord extends Model
 	 * Below is an example:
 	 *
 	 * ~~~
-	 * $customers = Customer::findBySql('SELECT * FROM tbl_customer')->all();
+	 * $customers = Article::findBySql("SELECT * FROM `idx_article` WHERE MATCH('development')")->all();
 	 * ~~~
 	 *
 	 * @param string $sql the SQL statement to be executed
@@ -164,10 +172,10 @@ class ActiveRecord extends Model
 
 	/**
 	 * Updates the whole table using the provided attribute values and conditions.
-	 * For example, to change the status to be 1 for all customers whose status is 2:
+	 * For example, to change the status to be 1 for all articles which status is 2:
 	 *
 	 * ~~~
-	 * Customer::updateAll(['status' => 1], 'status = 2');
+	 * Article::updateAll(['status' => 1], 'status = 2');
 	 * ~~~
 	 *
 	 * @param array $attributes attribute values (name-value pairs) to be saved into the table
@@ -184,13 +192,12 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * Deletes rows in the table using the provided conditions.
-	 * WARNING: If you do not specify any condition, this method will delete ALL rows in the table.
+	 * Deletes rows in the index using the provided conditions.
 	 *
-	 * For example, to delete all customers whose status is 3:
+	 * For example, to delete all articles whose status is 3:
 	 *
 	 * ~~~
-	 * Customer::deleteAll('status = 3');
+	 * Article::deleteAll('status = 3');
 	 * ~~~
 	 *
 	 * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
@@ -208,8 +215,8 @@ class ActiveRecord extends Model
 	/**
 	 * Creates an [[ActiveQuery]] instance.
 	 * This method is called by [[find()]], [[findBySql()]] and [[count()]] to start a SELECT query.
-	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
-	 * written for querying `Customer` purpose.)
+	 * You may override this method to return a customized query (e.g. `ArticleQuery` specified
+	 * written for querying `Article` purpose.)
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
 	 */
 	public static function createQuery()
@@ -218,11 +225,11 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * Declares the name of the database table associated with this AR class.
-	 * By default this method returns the class name as the table name by calling [[Inflector::camel2id()]]
-	 * with prefix 'tbl_'. For example, 'Customer' becomes 'tbl_customer', and 'OrderItem' becomes
-	 * 'tbl_order_item'. You may override this method if the table is not named after this convention.
-	 * @return string the table name
+	 * Declares the name of the Sphinx index associated with this AR class.
+	 * By default this method returns the class name as the index name by calling [[Inflector::camel2id()]].
+	 * For example, 'Article' becomes 'article', and 'StockItem' becomes
+	 * 'stock_item'. You may override this method if the index is not named after this convention.
+	 * @return string the index name
 	 */
 	public static function indexName()
 	{
@@ -230,9 +237,9 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * Returns the schema information of the DB table associated with this AR class.
-	 * @return IndexSchema the schema information of the DB table associated with this AR class.
-	 * @throws InvalidConfigException if the table for the AR class does not exist.
+	 * Returns the schema information of the Sphinx index associated with this AR class.
+	 * @return IndexSchema the schema information of the Sphinx index associated with this AR class.
+	 * @throws InvalidConfigException if the index for the AR class does not exist.
 	 */
 	public static function getIndexSchema()
 	{
@@ -246,7 +253,7 @@ class ActiveRecord extends Model
 
 	/**
 	 * Returns the primary key name for this AR class.
-	 * @return string the primary keys of the associated database table.
+	 * @return string the primary key of the associated Sphinx index.
 	 */
 	public static function primaryKey()
 	{
@@ -257,15 +264,15 @@ class ActiveRecord extends Model
 	 * Builds a snippet from provided data and query, using specified index settings.
 	 * @param string|array $source is the source data to extract a snippet from.
 	 * It could be either a single string or array of strings.
-	 * @param string $query the full-text query to build snippets for.
+	 * @param string $match the full-text query to build snippets for.
 	 * @param array $options list of options in format: optionName => optionValue
 	 * @return string|array built snippet in case "source" is a string, list of built snippets
 	 * in case "source" is an array.
 	 */
-	public static function callSnippets($source, $query, $options = [])
+	public static function callSnippets($source, $match, $options = [])
 	{
 		$command = static::getDb()->createCommand();
-		$command->callSnippets(static::indexName(), $source, $query, $options);
+		$command->callSnippets(static::indexName(), $source, $match, $options);
 		if (is_array($source)) {
 			return $command->queryColumn();
 		} else {

@@ -13,7 +13,37 @@ use yii\caching\Cache;
 use yii\db\Exception;
 
 /**
- * Class Command
+ * Command represents a SQL statement to be executed against a Sphinx.
+ *
+ * A command object is usually created by calling [[Connection::createCommand()]].
+ * The SQL statement it represents can be set via the [[sql]] property.
+ *
+ * To execute a non-query SQL (such as INSERT, REPLACE, DELETE, UPDATE), call [[execute()]].
+ * To execute a SQL statement that returns result data set (such as SELECT, CALL SNIPPETS, CALL KEYWORDS),
+ * use [[queryAll()]], [[queryOne()]], [[queryColumn()]], [[queryScalar()]], or [[query()]].
+ * For example,
+ *
+ * ~~~
+ * $articles = $connection->createCommand("SELECT * FROM `idx_article` WHERE MATCH('programming')")->queryAll();
+ * ~~~
+ *
+ * Command supports SQL statement preparation and parameter binding just as [[\yii\db\Command]] does.
+ *
+ * Command also supports building SQL statements by providing methods such as [[insert()]],
+ * [[update()]], etc. For example,
+ *
+ * ~~~
+ * $connection->createCommand()->update('idx_article', [
+ *     'genre_id' => 15,
+ *     'author_id' => 157,
+ * ])->execute();
+ * ~~~
+ *
+ * To build SELECT SQL statements, please use [[Query]] and [[QueryBuilder]] instead.
+ *
+ * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
+ * [[sql]]. This property is read-only.
+ * @property string $sql The SQL statement to be executed.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -554,14 +584,14 @@ class Command extends Component
 	 * @param string $index name of the index, from which to take the text processing settings.
 	 * @param string|array $source is the source data to extract a snippet from.
 	 * It could be either a single string or array of strings.
-	 * @param string $query the full-text query to build snippets for.
+	 * @param string $match the full-text query to build snippets for.
 	 * @param array $options list of options in format: optionName => optionValue
 	 * @return static the command object itself
 	 */
-	public function callSnippets($index, $source, $query, $options = [])
+	public function callSnippets($index, $source, $match, $options = [])
 	{
 		$params = [];
-		$sql = $this->db->getQueryBuilder()->callSnippets($index, $source, $query, $options, $params);
+		$sql = $this->db->getQueryBuilder()->callSnippets($index, $source, $match, $options, $params);
 		return $this->setSql($sql)->bindValues($params);
 	}
 

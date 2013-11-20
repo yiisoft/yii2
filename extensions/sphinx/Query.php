@@ -15,10 +15,31 @@ use yii\db\QueryInterface;
 use yii\db\QueryTrait;
 
 /**
- * Class Query
+ * Query represents a SELECT SQL statement.
  *
+ * Query provides a set of methods to facilitate the specification of different clauses
+ * in a SELECT statement. These methods can be chained together.
  *
- * Note: implicit LIMIT 0,20 is present by default.
+ * By calling [[createCommand()]], we can get a [[Command]] instance which can be further
+ * used to perform/execute the Sphinx query.
+ *
+ * For example,
+ *
+ * ~~~
+ * $query = new Query;
+ * $query->select('id, groupd_id')
+ *     ->from('idx_item')
+ *     ->limit(10);
+ * // build and execute the query
+ * $command = $query->createCommand();
+ * // $command->sql returns the actual SQL
+ * $rows = $command->queryAll();
+ * ~~~
+ *
+ * Since Sphinx does not store the original indexed text, the snippets for the rows in query result
+ * should be build separately via another query. You can simplify this workflow using [[snippetCallback]].
+ *
+ * Warning: even if you do not set any query limit, implicit LIMIT 0,20 is present by default!
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -43,7 +64,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public $distinct;
 	/**
-	 * @var array the index(es) to be selected from. For example, `['idx_user', 'idx_post']`.
+	 * @var array the index(es) to be selected from. For example, `['idx_user', 'idx_user_delta']`.
 	 * This is used to construct the FROM clause in a SQL statement.
 	 * @see from()
 	 */
@@ -149,8 +170,8 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Executes the query and returns all results as an array.
-	 * @param Connection $db the database connection used to generate the SQL statement.
-	 * If this parameter is not given, the `db` application component will be used.
+	 * @param Connection $db the Sphinx connection used to generate the SQL statement.
+	 * If this parameter is not given, the `sphinx` application component will be used.
 	 * @return array the query results. If the query results in nothing, an empty array will be returned.
 	 */
 	public function all($db = null)
@@ -174,8 +195,8 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Executes the query and returns a single row of result.
-	 * @param Connection $db the database connection used to generate the SQL statement.
-	 * If this parameter is not given, the `db` application component will be used.
+	 * @param Connection $db the Sphinx connection used to generate the SQL statement.
+	 * If this parameter is not given, the `sphinx` application component will be used.
 	 * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
 	 * results in nothing.
 	 */
@@ -191,8 +212,8 @@ class Query extends Component implements QueryInterface
 	/**
 	 * Returns the query result as a scalar value.
 	 * The value returned will be the first column in the first row of the query results.
-	 * @param Connection $db the database connection used to generate the SQL statement.
-	 * If this parameter is not given, the `db` application component will be used.
+	 * @param Connection $db the Sphinx connection used to generate the SQL statement.
+	 * If this parameter is not given, the `sphinx` application component will be used.
 	 * @return string|boolean the value of the first column in the first row of the query result.
 	 * False is returned if the query result is empty.
 	 */
@@ -203,8 +224,8 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Executes the query and returns the first column of the result.
-	 * @param Connection $db the database connection used to generate the SQL statement.
-	 * If this parameter is not given, the `db` application component will be used.
+	 * @param Connection $db the Sphinx connection used to generate the SQL statement.
+	 * If this parameter is not given, the `sphinx` application component will be used.
 	 * @return array the first column of the query result. An empty array is returned if the query results in nothing.
 	 */
 	public function column($db = null)
@@ -216,8 +237,8 @@ class Query extends Component implements QueryInterface
 	 * Returns the number of records.
 	 * @param string $q the COUNT expression. Defaults to '*'.
 	 * Make sure you properly quote column names in the expression.
-	 * @param Connection $db the database connection used to generate the SQL statement.
-	 * If this parameter is not given, the `db` application component will be used.
+	 * @param Connection $db the Sphinx connection used to generate the SQL statement.
+	 * If this parameter is not given, the `sphinx` application component will be used.
 	 * @return integer number of records
 	 */
 	public function count($q = '*', $db = null)
@@ -230,8 +251,8 @@ class Query extends Component implements QueryInterface
 	 * Returns the sum of the specified column values.
 	 * @param string $q the column name or expression.
 	 * Make sure you properly quote column names in the expression.
-	 * @param Connection $db the database connection used to generate the SQL statement.
-	 * If this parameter is not given, the `db` application component will be used.
+	 * @param Connection $db the Sphinx connection used to generate the SQL statement.
+	 * If this parameter is not given, the `sphinx` application component will be used.
 	 * @return integer the sum of the specified column values
 	 */
 	public function sum($q, $db = null)
@@ -244,8 +265,8 @@ class Query extends Component implements QueryInterface
 	 * Returns the average of the specified column values.
 	 * @param string $q the column name or expression.
 	 * Make sure you properly quote column names in the expression.
-	 * @param Connection $db the database connection used to generate the SQL statement.
-	 * If this parameter is not given, the `db` application component will be used.
+	 * @param Connection $db the Sphinx connection used to generate the SQL statement.
+	 * If this parameter is not given, the `sphinx` application component will be used.
 	 * @return integer the average of the specified column values.
 	 */
 	public function average($q, $db = null)
@@ -258,8 +279,8 @@ class Query extends Component implements QueryInterface
 	 * Returns the minimum of the specified column values.
 	 * @param string $q the column name or expression.
 	 * Make sure you properly quote column names in the expression.
-	 * @param Connection $db the database connection used to generate the SQL statement.
-	 * If this parameter is not given, the `db` application component will be used.
+	 * @param Connection $db the Sphinx connection used to generate the SQL statement.
+	 * If this parameter is not given, the `sphinx` application component will be used.
 	 * @return integer the minimum of the specified column values.
 	 */
 	public function min($q, $db = null)
@@ -272,8 +293,8 @@ class Query extends Component implements QueryInterface
 	 * Returns the maximum of the specified column values.
 	 * @param string $q the column name or expression.
 	 * Make sure you properly quote column names in the expression.
-	 * @param Connection $db the database connection used to generate the SQL statement.
-	 * If this parameter is not given, the `db` application component will be used.
+	 * @param Connection $db the Sphinx connection used to generate the SQL statement.
+	 * If this parameter is not given, the `sphinx` application component will be used.
 	 * @return integer the maximum of the specified column values.
 	 */
 	public function max($q, $db = null)
@@ -284,8 +305,8 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Returns a value indicating whether the query result contains any row of data.
-	 * @param Connection $db the database connection used to generate the SQL statement.
-	 * If this parameter is not given, the `db` application component will be used.
+	 * @param Connection $db the Sphinx connection used to generate the SQL statement.
+	 * If this parameter is not given, the `sphinx` application component will be used.
 	 * @return boolean whether the query result contains any row of data.
 	 */
 	public function exists($db = null)
@@ -298,11 +319,9 @@ class Query extends Component implements QueryInterface
 	 * Sets the SELECT part of the query.
 	 * @param string|array $columns the columns to be selected.
 	 * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
-	 * Columns can contain table prefixes (e.g. "tbl_user.id") and/or column aliases (e.g. "tbl_user.id AS user_id").
 	 * The method will automatically quote the column names unless a column contains some parenthesis
-	 * (which means the column contains a DB expression).
-	 * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
-	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
+	 * (which means the column contains a Sphinx expression).
+	 * @param string $option additional option that should be appended to the 'SELECT' keyword.
 	 * @return static the query object itself
 	 */
 	public function select($columns, $option = null)
@@ -328,11 +347,10 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Sets the FROM part of the query.
-	 * @param string|array $tables the table(s) to be selected from. This can be either a string (e.g. `'tbl_user'`)
-	 * or an array (e.g. `['tbl_user', 'tbl_profile']`) specifying one or several table names.
-	 * Table names can contain schema prefixes (e.g. `'public.tbl_user'`) and/or table aliases (e.g. `'tbl_user u'`).
+	 * @param string|array $tables the table(s) to be selected from. This can be either a string (e.g. `'idx_user'`)
+	 * or an array (e.g. `['idx_user', 'idx_user_delta']`) specifying one or several index names.
 	 * The method will automatically quote the table names unless it contains some parenthesis
-	 * (which means the table is given as a sub-query or DB expression).
+	 * (which means the table is given as a sub-query or Sphinx expression).
 	 * @return static the query object itself
 	 */
 	public function from($tables)
@@ -618,8 +636,11 @@ class Query extends Component implements QueryInterface
 	}
 
 	/**
-	 * @param callback $callback
+	 * Sets the PHP callback, which should be used to retrieve the source data
+	 * for the snippets building.
+	 * @param callback $callback PHP callback, which should be used to fetch source data for the snippets.
 	 * @return static the query object itself
+	 * @see snippetCallback
 	 */
 	public function snippetCallback($callback)
 	{
@@ -628,8 +649,10 @@ class Query extends Component implements QueryInterface
 	}
 
 	/**
-	 * @param array $options
+	 * Sets the call snippets query options.
+	 * @param array $options call snippet options in format: option_name => option_value
 	 * @return static the query object itself
+	 * @see snippetCallback
 	 */
 	public function snippetOptions($options)
 	{
@@ -661,7 +684,8 @@ class Query extends Component implements QueryInterface
 	/**
 	 * Builds a snippets from provided source data.
 	 * @param array $source the source data to extract a snippet from.
-	 * @return array snippets list
+	 * @throws InvalidCallException in case [[match]] is not specified.
+	 * @return array snippets list.
 	 */
 	protected function callSnippets(array $source)
 	{

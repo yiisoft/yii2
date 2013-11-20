@@ -19,7 +19,9 @@
 	],
 	"minimum-stability": "dev",
 	"require": {
-		"yiisoft/yii2": "*"
+		"yiisoft/yii2": "*",
+		"ext-pdo": "*",
+		"ext-pdo_mysql": "*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\sphinx\\": "" }

@@ -6,14 +6,51 @@
  */
 
 namespace yii\sphinx;
+use yii\base\NotSupportedException;
 
 /**
- * Class Connection
+ * Connection represents the Sphinx connection via MySQL protocol.
+ * This class uses [PDO](http://www.php.net/manual/en/ref.pdo.php) to maintain such connection.
+ * Note: although PDO supports numerous database drivers, this class supports only MySQL.
+ *
+ * In order to setup Sphinx "searchd" to support MySQL protocol following configuration should be added:
+ * ```
+ * searchd
+ * {
+ *     listen = localhost:9306:mysql41
+ *     ...
+ * }
+ * ```
+ *
+ * The following example shows how to create a Connection instance and establish
+ * the Sphinx connection:
+ * ~~~
+ * $connection = new \yii\db\Connection([
+ *     'dsn' => 'mysql:host=127.0.0.1;port=9306;',
+ *     'username' => $username,
+ *     'password' => $password,
+ * ]);
+ * $connection->open();
+ * ~~~
+ *
+ * After the Sphinx connection is established, one can execute SQL statements like the following:
+ * ~~~
+ * $command = $connection->createCommand("SELECT * FROM idx_article WHERE MATCH('programming')");
+ * $articles = $command->queryAll();
+ * $command = $connection->createCommand('UPDATE idx_article SET status=2 WHERE id=1');
+ * $command->execute();
+ * ~~~
+ *
+ * For more information about how to perform various DB queries, please refer to [[Command]].
+ *
+ * This class supports transactions exactly as "yii\db\Connection".
+ *
+ * Note: while this class extends "yii\db\Connection" some of its methods are not supported.
  *
  * @property Schema $schema The schema information for this Sphinx connection. This property is read-only.
  * @property \yii\sphinx\QueryBuilder $queryBuilder The query builder for this Sphinx connection. This property is
  * read-only.
- * @method Schema getSchema() The schema information for this Sphinx connection
+ * @method \yii\sphinx\Schema getSchema() The schema information for this Sphinx connection
  * @method \yii\sphinx\QueryBuilder getQueryBuilder() the query builder for this Sphinx connection
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -77,5 +114,16 @@ class Connection extends \yii\db\Connection
 			'sql' => $sql,
 		]);
 		return $command->bindValues($params);
+	}
+
+	/**
+	 * This method is not supported by Sphinx.
+	 * @param string $sequenceName name of the sequence object
+	 * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
+	 * @throws \yii\base\NotSupportedException always.
+	 */
+	public function getLastInsertID($sequenceName = '')
+	{
+		throw new NotSupportedException('"' . $this->className() . '::getLastInsertID" is not supported.');
 	}
 }

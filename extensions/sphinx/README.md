@@ -39,4 +39,15 @@ Usage & Documentation
 
 This extension adds [Sphinx](http://sphinxsearch.com/docs) full text search engine extension for the Yii framework.
 This extension interact with Sphinx search daemon using MySQL protocol and [SphinxQL](http://sphinxsearch.com/docs/current.html#sphinxql) query language.
+In order to setup Sphinx "searchd" to support MySQL protocol following configuration should be added:
+```
+searchd
+{
+	listen = localhost:9306:mysql41
+	...
+}
+```
 
+This extension supports all Sphinx features including [Runtime Indexes](http://sphinxsearch.com/docs/current.html#rt-indexes).
+Since this extension uses MySQL protocol to access Sphinx, it shares base approach and much code from the
+regular "yii\db" package.
