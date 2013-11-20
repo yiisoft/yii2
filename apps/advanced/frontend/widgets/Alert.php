@@ -33,18 +33,18 @@ class Alert extends \yii\bootstrap\Widget
 	public function init()
 	{
 		$session = \Yii::$app->getSession();
-		$appendCss = isset($this->options['class']) ? $this->options['class'] : '';
+		$flashes = $session->getAllFlashes();
+		$appendCss = isset($this->options['class']) ? ' ' . $this->options['class'] : '';
 
 		foreach ($flashes as $type => $message) {
 			if (in_array($type, $this->allowedTypes)) {
-				$this->options['class'] = (($type === 'error') ? 'alert-danger' : 'alert-' . $type) . ' ' . $appendCss;
+				$this->options['class'] = (($type === 'error') ? 'alert-danger' : 'alert-' . $type) . $appendCss;
 				echo \yii\bootstrap\Alert::widget([
 					'body' => $message,
 					'closeButton' => $this->closeButton,
 					'options' => $this->options
 				]);
 				$session->removeFlash($type);
-				$this->_doNotRender = false;
 			}
 		}
 		parent::init();
