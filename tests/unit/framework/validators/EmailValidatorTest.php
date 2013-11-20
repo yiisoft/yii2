@@ -41,17 +41,23 @@ class EmailValidatorTest extends TestCase
 		$this->assertFalse($validator->validateValue('info@örtliches.de'));
 		$this->assertFalse($validator->validateValue('sam@рмкреатиф.ru'));
 		$this->assertFalse($validator->validateValue('Informtation info@oertliches.de'));
+		$this->assertTrue($validator->validateValue('test@example.com'));
+		$this->assertTrue($validator->validateValue('John Smith <john.smith@example.com>'));
+		$this->assertFalse($validator->validateValue('John Smith <example.com>'));
 	}
 
-	public function testValidateIdnValue()
+	public function testValidateValueIdn()
 	{
-		if (!extension_loaded("intl")) {
-			$this->markTestSkipped("intl not installed. Skipping.");
+		if (!function_exists('idn_to_ascii')) {
+			$this->markTestSkipped('Intl extension required');
+			return;
 		}
-
 		$validator = new EmailValidator();
 		$validator->enableIDN = true;
 
+		$this->assertTrue($validator->validateValue('5011@example.com'));
+		$this->assertTrue($validator->validateValue('example@äüößìà.de'));
+		$this->assertTrue($validator->validateValue('example@xn--zcack7ayc9a.de'));
 		$this->assertTrue($validator->validateValue('info@örtliches.de'));
 		$this->assertTrue($validator->validateValue('sam@рмкреатиф.ru'));
 		$this->assertTrue($validator->validateValue('sam@rmcreative.ru'));
@@ -73,6 +79,9 @@ class EmailValidatorTest extends TestCase
 		$this->assertTrue($validator->validateValue('Carsten Brandt <mail@cebe.cc>'));
 		$this->assertTrue($validator->validateValue('"Carsten Brandt" <mail@cebe.cc>'));
 		$this->assertTrue($validator->validateValue('<mail@cebe.cc>'));
+		$this->assertTrue($validator->validateValue('test@example.com'));
+		$this->assertTrue($validator->validateValue('John Smith <john.smith@example.com>'));
+		$this->assertFalse($validator->validateValue('John Smith <example.com>'));
 	}
 
 	public function testValidateValueMx()
@@ -95,25 +104,5 @@ class EmailValidatorTest extends TestCase
 		$model->attr_email = '5011@gmail.com';
 		$val->validateAttribute($model, 'attr_email');
 		$this->assertFalse($model->hasErrors('attr_email'));
-	}
-
-	public function testValidateValueIdn()
-	{
-		if (!function_exists('idn_to_ascii')) {
-			$this->markTestSkipped('Intl extension required');
-			return;
-		}
-		$val = new EmailValidator(['enableIDN' => true]);
-		$this->assertTrue($val->validateValue('5011@example.com'));
-		$this->assertTrue($val->validateValue('example@äüößìà.de'));
-		$this->assertTrue($val->validateValue('example@xn--zcack7ayc9a.de'));
-	}
-
-	public function testValidateValueWithName()
-	{
-		$val = new EmailValidator(['allowName' => true]);
-		$this->assertTrue($val->validateValue('test@example.com'));
-		$this->assertTrue($val->validateValue('John Smith <john.smith@example.com>'));
-		$this->assertFalse($val->validateValue('John Smith <example.com>'));
 	}
 }
