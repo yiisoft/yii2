@@ -32,10 +32,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 	 */
 	public function getParam($name, $default = null)
 	{
-		if (self::$params === null) {
-			self::$params = require(__DIR__ . '/data/config.php');
+		if (static::$params === null) {
+			static::$params = require(__DIR__ . '/data/config.php');
 		}
-		return isset(self::$params[$name]) ? self::$params[$name] : $default;
+		return isset(static::$params[$name]) ? static::$params[$name] : $default;
 	}
 
 	/**

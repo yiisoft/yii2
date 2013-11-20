@@ -26,14 +26,14 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
 
 	public static function findIdentity($id)
 	{
-		return isset(self::$users[$id]) ? new self(self::$users[$id]) : null;
+		return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
 	}
 
 	public static function findByUsername($username)
 	{
 		foreach (self::$users as $user) {
 			if (strcasecmp($user['username'], $username) === 0) {
-				return new self($user);
+				return new static($user);
 			}
 		}
 		return null;

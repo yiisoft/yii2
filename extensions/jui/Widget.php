@@ -66,7 +66,7 @@ class Widget extends \yii\base\Widget
 		/** @var \yii\web\AssetBundle $assetBundle */
 		$assetBundle::register($view);
 		/** @var \yii\web\AssetBundle $themeAsset */
-		$themeAsset = self::$theme;
+		$themeAsset = static::$theme;
 		$themeAsset::register($view);
 
 		$id = $this->options['id'];
