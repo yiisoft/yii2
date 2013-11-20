@@ -10,7 +10,7 @@ namespace yii\caching;
 use yii\redis\Connection;
 
 /**
- * RedisCache implements a cache application component based on [redis](http://redis.io/) version 2.6 or higher.
+ * RedisCache implements a cache application component based on [redis](http://redis.io/) version 2.6.12 or higher.
  *
  * RedisCache needs to be configured with [[hostname]], [[port]] and [[database]] of the server
  * to connect to. By default RedisCache assumes there is a redis server running on localhost at
@@ -119,10 +119,7 @@ class RedisCache extends Cache
 	}
 
 	/**
-	 * Retrieves a value from cache with a specified key.
-	 * This is the implementation of the method declared in the parent class.
-	 * @param string $key a unique key identifying the cached value
-	 * @return string|boolean the value stored in cache, false if the value is not in the cache or expired.
+	 * @inheritDocs
 	 */
 	protected function getValue($key)
 	{
@@ -130,9 +127,7 @@ class RedisCache extends Cache
 	}
 
 	/**
-	 * Retrieves multiple values from cache with the specified keys.
-	 * @param array $keys a list of keys identifying the cached values
-	 * @return array a list of cached values indexed by the keys
+	 * @inheritDocs
 	 */
 	protected function getValues($keys)
 	{
@@ -146,55 +141,67 @@ class RedisCache extends Cache
 	}
 
 	/**
-	 * Stores a value identified by a key in cache.
-	 * This is the implementation of the method declared in the parent class.
-	 *
-	 * @param string $key the key identifying the value to be cached
-	 * @param string $value the value to be cached
-	 * @param float $expire the number of seconds in which the cached value will expire. 0 means never expire.
-	 * This can be a floating point number to specify the time in milliseconds.
-	 * @return boolean true if the value is successfully stored into cache, false otherwise
+	 * @inheritDocs
 	 */
-	protected function setValue($key,$value,$expire)
+	protected function setValue($key, $value, $expire)
 	{
 		if ($expire == 0) {
 			return (bool) $this->_connection->executeCommand('SET', [$key, $value]);
 		} else {
 			$expire = (int) ($expire * 1000);
-			return (bool) $this->_connection->executeCommand('PSETEX', [$key, $expire, $value]);
+			return (bool) $this->_connection->executeCommand('SET', [$key, $value, 'PX', $expire]);
 		}
 	}
 
 	/**
-	 * Stores a value identified by a key into cache if the cache does not contain this key.
-	 * This is the implementation of the method declared in the parent class.
-	 *
-	 * @param string $key the key identifying the value to be cached
-	 * @param string $value the value to be cached
-	 * @param float $expire the number of seconds in which the cached value will expire. 0 means never expire.
-	 * This can be a floating point number to specify the time in milliseconds.
-	 * @return boolean true if the value is successfully stored into cache, false otherwise
+	 * @inheritDocs
 	 */
-	protected function addValue($key,$value,$expire)
+	protected function setValues($data, $expire)
 	{
+		$args = [];
+		foreach($data as $key => $value) {
+			$args[] = $key;
+			$args[] = $value;
+		}
+
+		$failedKeys = [];
 		if ($expire == 0) {
-			return (bool) $this->_connection->executeCommand('SETNX', [$key, $value]);
+			$this->_connection->executeCommand('MSET', $args);
 		} else {
-			// TODO consider requiring redis version >= 2.6.12 that supports this in one command
 			$expire = (int) ($expire * 1000);
 			$this->_connection->executeCommand('MULTI');
-			$this->_connection->executeCommand('SETNX', [$key, $value]);
-			$this->_connection->executeCommand('PEXPIRE', [$key, $expire]);
-			$response = $this->_connection->executeCommand('EXEC');
-			return (bool) $response[0];
+			$this->_connection->executeCommand('MSET', $args);
+			$index = [];
+			foreach ($data as $key => $value) {
+				$this->_connection->executeCommand('PEXPIRE', [$key, $expire]);
+				$index[] = $key;
+			}
+			$result = $this->_connection->executeCommand('EXEC');
+			array_shift($result);
+			foreach($result as $i => $r) {
+				if ($r != 1) {
+					$failedKeys[] = $index[$i];
+				}
+			}
+		}
+		return $failedKeys;
+	}
+
+	/**
+	 * @inheritDocs
+	 */
+	protected function addValue($key, $value, $expire)
+	{
+		if ($expire == 0) {
+			return (bool) $this->_connection->executeCommand('SET', [$key, $value, 'NX']);
+		} else {
+			$expire = (int) ($expire * 1000);
+			return (bool) $this->_connection->executeCommand('SET', [$key, $value, 'PX', $expire, 'NX']);
 		}
 	}
 
 	/**
-	 * Deletes a value with the specified key from cache
-	 * This is the implementation of the method declared in the parent class.
-	 * @param string $key the key of the value to be deleted
-	 * @return boolean if no error happens during deletion
+	 * @inheritDocs
 	 */
 	protected function deleteValue($key)
 	{
@@ -202,9 +209,7 @@ class RedisCache extends Cache
 	}
 
 	/**
-	 * Deletes all values from cache.
-	 * This is the implementation of the method declared in the parent class.
-	 * @return boolean whether the flush operation was successful.
+	 * @inheritDocs
 	 */
 	protected function flushValues()
 	{

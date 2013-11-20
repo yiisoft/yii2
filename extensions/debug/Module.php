@@ -85,7 +85,7 @@ class Module extends \yii\base\Module
 
 	public function renderToolbar($event)
 	{
-		if (!$this->checkAccess()) {
+		if (!$this->checkAccess() || Yii::$app->getRequest()->getIsAjax()) {
 			return;
 		}
 		$url = Yii::$app->getUrlManager()->createUrl($this->id . '/default/toolbar', [

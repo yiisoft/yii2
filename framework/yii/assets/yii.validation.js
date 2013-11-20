@@ -117,16 +117,16 @@ yii.validation = (function ($) {
 			var valid = true;
 
 			if (options.enableIDN) {
-				var regexp = /^(.*)@(.*)$/,
+				var regexp = /^(.*<?)(.*)@(.*)(>?)$/,
 					matches = regexp.exec(value);
 				if (matches === null) {
 					valid = false;
 				} else {
-					value = punycode.toASCII(matches[1]) + '@' + punycode.toASCII(matches[2]);
+					value = matches[1] + punycode.toASCII(matches[2]) + '@' + punycode.toASCII(matches[3]) + matches[4];
 				}
 			}
 
-			if (!valid || !(value.match(options.pattern) && (!options.allowName || value.match(options.fullPattern)))) {
+			if (!valid || !(value.match(options.pattern) || (options.allowName && value.match(options.fullPattern)))) {
 				addMessage(messages, options.message, value);
 			}
 		},

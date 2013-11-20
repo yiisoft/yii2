@@ -45,6 +45,17 @@ class RedisCacheTest extends CacheTestCase
 		$this->assertFalse($cache->get('expire_test_ms'));
 	}
 
+	public function testExpireAddMilliseconds()
+	{
+		$cache = $this->getCacheInstance();
+
+		$this->assertTrue($cache->add('expire_testa_ms', 'expire_testa_ms', 0.2));
+		usleep(100000);
+		$this->assertEquals('expire_testa_ms', $cache->get('expire_testa_ms'));
+		usleep(300000);
+		$this->assertFalse($cache->get('expire_testa_ms'));
+	}
+
 	/**
 	 * Store a value that is 2 times buffer size big
 	 * https://github.com/yiisoft/yii2/issues/743

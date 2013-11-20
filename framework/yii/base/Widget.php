@@ -41,7 +41,7 @@ class Widget extends Component implements ViewContextInterface
 	 * This method creates an instance of the calling class. It will apply the configuration
 	 * to the created instance. A matching [[end()]] call should be called later.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 * @return Widget the newly created widget instance
+	 * @return static the newly created widget instance
 	 */
 	public static function begin($config = [])
 	{
@@ -55,7 +55,7 @@ class Widget extends Component implements ViewContextInterface
 	/**
 	 * Ends a widget.
 	 * Note that the rendering result of the widget is directly echoed out.
-	 * @return Widget the widget instance that is ended.
+	 * @return static the widget instance that is ended.
 	 * @throws InvalidCallException if [[begin()]] and [[end()]] calls are not properly nested
 	 */
 	public static function end()

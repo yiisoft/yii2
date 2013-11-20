@@ -436,7 +436,7 @@ class Component extends Object
 	 * @param string $name the event name
 	 * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
 	 */
-	public function trigger($name, $event = null)
+	public function trigger($name, Event $event = null)
 	{
 		$this->ensureBehaviors();
 		if (!empty($this->_events[$name])) {

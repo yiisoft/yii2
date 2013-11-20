@@ -49,6 +49,7 @@ class Schema extends \yii\db\Schema
 		'inet' => self::TYPE_STRING,
 		'smallint' => self::TYPE_SMALLINT,
 		'int4' => self::TYPE_INTEGER,
+		'int8' => self::TYPE_BIGINT,
 		'integer' => self::TYPE_INTEGER,
 		'bigint' => self::TYPE_BIGINT,
 		'interval' => self::TYPE_STRING,
@@ -241,18 +242,17 @@ SQL;
 		$schemaName = $this->db->quoteValue($table->schemaName);
 		$sql = <<<SQL
 SELECT 
-	current_database() as table_catalog,
-	d.nspname AS table_schema,        
-        c.relname AS table_name,
-        a.attname AS column_name,
-        t.typname AS data_type,
-        a.attlen AS character_maximum_length,
-        pg_catalog.col_description(c.oid, a.attnum) AS column_comment,
-        a.atttypmod AS modifier,
-        a.attnotnull = false AS is_nullable,	
-        CAST(pg_get_expr(ad.adbin, ad.adrelid) AS varchar) AS column_default,
-        coalesce(pg_get_expr(ad.adbin, ad.adrelid) ~ 'nextval',false) AS is_autoinc,
-        array_to_string((select array_agg(enumlabel) from pg_enum where enumtypid=a.atttypid)::varchar[],',') as enum_values,
+	d.nspname AS table_schema,
+	c.relname AS table_name,
+	a.attname AS column_name,
+	t.typname AS data_type,
+	a.attlen AS character_maximum_length,
+	pg_catalog.col_description(c.oid, a.attnum) AS column_comment,
+	a.atttypmod AS modifier,
+	a.attnotnull = false AS is_nullable,
+	CAST(pg_get_expr(ad.adbin, ad.adrelid) AS varchar) AS column_default,
+	coalesce(pg_get_expr(ad.adbin, ad.adrelid) ~ 'nextval',false) AS is_autoinc,
+	array_to_string((select array_agg(enumlabel) from pg_enum where enumtypid=a.atttypid)::varchar[],',') as enum_values,
 	CASE atttypid
 		 WHEN 21 /*int2*/ THEN 16
 		 WHEN 23 /*int4*/ THEN 32
@@ -288,7 +288,7 @@ FROM
 	LEFT JOIN pg_namespace d ON d.oid = c.relnamespace
 	LEFT join pg_constraint ct on ct.conrelid=c.oid and ct.contype='p'
 WHERE
-	a.attnum > 0
+	a.attnum > 0 and t.typname != ''
 	and c.relname = {$tableName}
 	and d.nspname = {$schemaName}
 ORDER BY

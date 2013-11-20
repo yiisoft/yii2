@@ -38,16 +38,11 @@ class EmailValidator extends Validator
 	 */
 	public $allowName = false;
 	/**
-	 * @var boolean whether to check the MX record for the email address.
-	 * Defaults to false. To enable it, you need to make sure the PHP function 'checkdnsrr'
-	 * exists in your PHP installation.
+	 * @var boolean whether to check whether the emails domain exists and has either an A or MX record.
+	 * Be aware of the fact that this check can fail due to temporary DNS problems even if the email address is
+	 * valid and an email would be deliverable. Defaults to false.
 	 */
-	public $checkMX = false;
-	/**
-	 * @var boolean whether to check port 25 for the email address.
-	 * Defaults to false.
-	 */
-	public $checkPort = false;
+	public $checkDNS = false;
 	/**
 	 * @var boolean whether validation process should take into account IDN (internationalized domain
 	 * names). Defaults to false meaning that validation of emails containing IDN will always fail.
@@ -93,24 +88,19 @@ class EmailValidator extends Validator
 	public function validateValue($value)
 	{
 		// make sure string length is limited to avoid DOS attacks
-		if (!is_string($value) || strlen($value) >= 255) {
+		if (!is_string($value) || strlen($value) >= 320) {
 			return false;
 		}
-		if (($atPosition = strpos($value, '@')) === false) {
+		if (!preg_match('/^(.*<?)(.*)@(.*)(>?)$/', $value, $matches)) {
 			return false;
 		}
-		$domain = rtrim(substr($value, $atPosition + 1), '>');
+		$domain = $matches[3];
 		if ($this->enableIDN) {
-			$value = idn_to_ascii(ltrim(substr($value, 0, $atPosition), '<')) . '@' . idn_to_ascii($domain);
+			$value = $matches[1] . idn_to_ascii($matches[2]) . '@' . idn_to_ascii($domain) . $matches[4];
 		}
 		$valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
-		if ($valid) {
-			if ($this->checkMX && function_exists('checkdnsrr')) {
-				$valid = checkdnsrr($domain, 'MX');
-			}
-			if ($valid && $this->checkPort && function_exists('fsockopen')) {
-				$valid = fsockopen($domain, 25) !== false;
-			}
+		if ($valid && $this->checkDNS) {
+			$valid = checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A');
 		}
 		return $valid;
 	}

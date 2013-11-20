@@ -124,6 +124,10 @@ class ApcCache extends Cache
 	 */
 	protected function flushValues()
 	{
-		return apc_clear_cache('user');
+		if (extension_loaded('apcu')) {
+			return apc_clear_cache();
+		} else {
+			return apc_clear_cache('user');
+		}
 	}
 }

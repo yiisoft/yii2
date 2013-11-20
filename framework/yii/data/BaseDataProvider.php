@@ -165,10 +165,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 	public function getPagination()
 	{
 		if ($this->_pagination === null) {
-			$this->_pagination = new Pagination;
-			if ($this->id !== null) {
-				$this->_pagination->pageVar = $this->id . '-page';
-			}
+			$this->setPagination([]);
 		}
 		return $this->_pagination;
 	}
