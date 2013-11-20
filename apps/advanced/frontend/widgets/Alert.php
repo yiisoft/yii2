@@ -36,10 +36,10 @@ class Alert extends Widget
 			if (in_array($type, $this->allowedTypes)) {
 				$class = ($type === 'error') ? 'alert-danger' : 'alert-' . $type;
 				Html::addCssClass($this->options, $class);
-				echo BsAlert::widget(array(
+				echo BsAlert::widget([
 					'body' => $message,
 					'options' => $this->options
-				));	
+				]);	
 				$session->removeFlash($type);
 				$this->_doNotRender = false;
 			}
