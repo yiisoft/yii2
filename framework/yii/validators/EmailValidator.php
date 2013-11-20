@@ -41,24 +41,8 @@ class EmailValidator extends Validator
 	 * @var boolean whether to check whether the emails domain exists and has either an A or MX record.
 	 * Be aware of the fact that this check can fail due to temporary DNS problems even if the email address is
 	 * valid and an email would be deliverable. Defaults to false.
-	 * @see dnsMessage
 	 */
 	public $checkDNS = false;
-	/**
-	 * @var string the error message to display when the domain of the email does not exist.
-	 * It may contain the following placeholders which will be replaced accordingly by the validator:
-	 *
-	 * - `{attribute}`: the label of the attribute being validated
-	 * - `{value}`: the value of the attribute being validated
-	 *
-	 * @see checkDNS
-	 */
-	public $dnsMessage;
-	/**
-	 * @var boolean whether to check port 25 for the email address.
-	 * Defaults to false.
-	 */
-	public $checkPort = false;
 	/**
 	 * @var boolean whether validation process should take into account IDN (internationalized domain
 	 * names). Defaults to false meaning that validation of emails containing IDN will always fail.
@@ -79,9 +63,6 @@ class EmailValidator extends Validator
 		}
 		if ($this->message === null) {
 			$this->message = Yii::t('yii', '{attribute} is not a valid email address.');
-		}
-		if ($this->dnsMessage === null) {
-			$this->dnsMessage = Yii::t('yii', 'The domain of this email address does not seem to exist.');
 		}
 	}
 
@@ -118,13 +99,8 @@ class EmailValidator extends Validator
 			$value = $matches[1] . idn_to_ascii($matches[2]) . '@' . idn_to_ascii($domain) . $matches[4];
 		}
 		$valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
-		if ($valid) {
-			if ($this->checkDNS) {
-				$valid = checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A');
-			}
-			if ($valid && $this->checkPort && function_exists('fsockopen')) {
-				$valid = fsockopen($domain, 25) !== false;
-			}
+		if ($valid && $this->checkDNS) {
+			$valid = checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A');
 		}
 		return $valid;
 	}
