@@ -93,15 +93,15 @@ class EmailValidator extends Validator
 	public function validateValue($value)
 	{
 		// make sure string length is limited to avoid DOS attacks
-		if (!is_string($value) || strlen($value) >= 255) {
+		if (!is_string($value) || strlen($value) >= 320) {
 			return false;
 		}
-		if (($atPosition = strpos($value, '@')) === false) {
+		if (!preg_match('/^(.*<?)(.*)@(.*)(>?)$/', $value, $matches)) {
 			return false;
 		}
-		$domain = rtrim(substr($value, $atPosition + 1), '>');
+		$domain = $matches[3];
 		if ($this->enableIDN) {
-			$value = idn_to_ascii(ltrim(substr($value, 0, $atPosition), '<')) . '@' . idn_to_ascii($domain);
+			$value = $matches[1] . idn_to_ascii($matches[2]) . '@' . idn_to_ascii($domain) . $matches[4];
 		}
 		$valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
 		if ($valid) {
