@@ -8,35 +8,46 @@
 namespace frontend\widgets;
 
 use yii\helpers\Html;
+use yii\bootstrap\Widget;
+use yii\bootstrap\Alert as BsAlert;
 
 /**
- * Alert widget renders a message from session flash. You can set message as following:
+ * Alert widget renders a message from session flash. All flash messages are displayed
+ * in the sequence they were assigned using setFlash. You can set message as following:
  *
  * - \Yii::$app->getSession()->setFlash('error', 'This is the message');
  * - \Yii::$app->getSession()->setFlash('success', 'This is the message');
  * - \Yii::$app->getSession()->setFlash('info', 'This is the message');
  *
  * @author Alexander Makarov <sam@rmcerative.ru>
+ * @author Kartik Visweswaran <kartikv2@gmail.com>
  */
-class Alert extends \yii\bootstrap\Alert
+class Alert extends Widget
 {
-	private $_doNotRender = false;
+	private $_doNotRender = true;
+	public $allowedTypes = ['error', 'danger', 'success', 'info', 'warning'];
+	
 	public function init()
 	{
-		if ($this->body = \Yii::$app->getSession()->getFlash('error', null, true)) {
-			Html::addCssClass($this->options, 'alert-danger');
-		} elseif ($this->body = \Yii::$app->getSession()->getFlash('success', null, true)) {
-			Html::addCssClass($this->options, 'alert-success');
-		} elseif ($this->body = \Yii::$app->getSession()->getFlash('info', null, true)) {
-			Html::addCssClass($this->options, 'alert-info');
-		} elseif ($this->body = \Yii::$app->getSession()->getFlash('warning', null, true)) {
-			Html::addCssClass($this->options, 'alert-warning');
-		} else {
-			$this->_doNotRender = true;
-			return;
+		$this->_doNotRender = true;
+		$session = \Yii::$app->getSession();
+		$flashes = $session->getAllFlashes();
+		foreach ($flashes as $type => $message) {
+			if (in_array($type, $this->allowedTypes)) {
+				$class = ($type === 'error') ? 'alert-danger' : 'alert-' . $type;
+				Html::addCssClass($this->options, $class);
+				echo BsAlert::widget(array(
+					'body' => $message,
+					'options' => $this->options
+				));	
+				$session->removeFlash($type);
+				$this->_doNotRender = false;
+			}
 		}
-
-		parent::init();
+		
+		if (!$this->_doNotRender) {
+			parent::init();
+		}
 	}
 
 	public function run()
