@@ -18,7 +18,7 @@ Getting started
 Base concepts
 =============
 
-- [Basic concepts of Yii] - The Object and Component class, Path aliases and autoloading
+- [Basic concepts of Yii](basics.md) - The Object and Component class, Path aliases and autoloading
 - [MVC](mvc.md) - Implementation of MVC in Yii and a typical MVC application flow
   - [Model](model.md) - The Yii Model provides Attributes, Scenarios and data Validation
   - [View](view.md) - Rendering Views applying layouts, using Widgets and asset management
@@ -46,13 +46,13 @@ Extensions and 3rd party libraries
 ==================================
 
 - [Composer](composer.md) - How to manage applications dependencies via composer
-- [Extending Yii](extension.md)
+- [Extending Yii](extensions.md)
 - [Template engines](template.md) - Using template engines such as Smary or Twig
 
 Security and access control
 ===========================
 
-- [Authentication](authentication.md) - Identifying User
+- [Authentication](authentication.md) - Identifying Users
 - [Authorization](authorization.md) - Access control and RBAC
 - [Security](security.md) - Hashing and verifying passwords, encryption
 - [Views security](view.md#security) - how to prevent XSS
@@ -69,6 +69,7 @@ Data providers, lists and grids
 Advanced Topics
 ===============
 
+- [Asset Management](assets.md)
 - [Working with forms](form.md)
 - [Bootstrap widgets](bootstrap-widgets.md) - Using [twitter bootstrap](http://getbootstrap.com/)
 - [Theming](theming.md)

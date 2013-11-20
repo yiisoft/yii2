@@ -30,6 +30,9 @@ Directory structure
 
 The basic application does not divide application directories much. Here's the basic structure:
 
+- `assets` - application asset files.
+  - `AppAsset.php` - definition of application assets such as CSS, JavaScript etc. Check [Managing assets](assets.md) for
+    details.
 - `commands` - console controllers.
 - `config` - configuration.
 - `controllers` - web controllers.
@@ -56,14 +59,12 @@ code repository, add it there.
 
 This directory contains configuration files:
 
-- `AppAsset.php` - definition of application assets such as CSS, JavaScript etc. Check [Managing assets](assets.md) for
-  details.
 - `console.php` - console application configuration.
 - `params.php` - common application parameters.
 - `web.php` - web application configuration.
 - `web-test.php` - web application configuration used when running functional tests.
 
-All these files except `AppAsset.php` are returning arrays used to configure corresponding application properties. Check
+All these files are returning arrays used to configure corresponding application properties. Check
 [Configuration](configuration.md) guide section for details.
 
 ### views
@@ -111,7 +112,7 @@ Configuring Composer
 After application template is installed it's a good idea to adjust default `composer.json` that can be found in the root
 directory:
 
-```javascript
+```json
 {
 	"name": "yiisoft/yii2-app-basic",
 	"description": "Yii 2 Basic Application Template",
@@ -130,7 +131,10 @@ directory:
 	"require": {
 		"php": ">=5.4.0",
 		"yiisoft/yii2": "dev-master",
-		"yiisoft/yii2-composer": "dev-master"
+		"yiisoft/yii2-swiftmailer": "dev-master",
+		"yiisoft/yii2-bootstrap": "dev-master",
+		"yiisoft/yii2-debug": "dev-master",
+		"yiisoft/yii2-gii": "dev-master"
 	},
 	"scripts": {
 		"post-create-project-cmd": [
@@ -153,8 +157,7 @@ First we're updating basic information. Change `name`, `description`, `keywords`
 your project.
 
 Now the interesting part. You can add more packages your application needs to `require` section.
-For example, to use markdown helper you need to add `michelf/php-markdown`. All these packages are coming from
-[packagist.org](https://packagist.org/) so feel free to browse the website for useful code.
+All these packages are coming from [packagist.org](https://packagist.org/) so feel free to browse the website for useful code.
 
 After your `composer.json` is changed you can run `php composer.phar update`, wait till packages are downloaded and
 installed and then just use them. Autoloading of classes will be handled automatically.
