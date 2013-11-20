@@ -27,13 +27,13 @@ class Widget extends Component implements ViewContextInterface
 	 * @var integer a counter used to generate [[id]] for widgets.
 	 * @internal
 	 */
-	public static $_counter = 0;
+	public static $counter = 0;
 	/**
 	 * @var Widget[] the widgets that are currently being rendered (not ended). This property
 	 * is maintained by [[begin()]] and [[end()]] methods.
 	 * @internal
 	 */
-	public static $_stack = [];
+	public static $stack = [];
 
 	
 	/**
@@ -48,7 +48,7 @@ class Widget extends Component implements ViewContextInterface
 		$config['class'] = get_called_class();
 		/** @var Widget $widget */
 		$widget = Yii::createObject($config);
-		self::$_stack[] = $widget;
+		self::$stack[] = $widget;
 		return $widget;
 	}
 
@@ -60,8 +60,8 @@ class Widget extends Component implements ViewContextInterface
 	 */
 	public static function end()
 	{
-		if (!empty(self::$_stack)) {
-			$widget = array_pop(self::$_stack);
+		if (!empty(self::$stack)) {
+			$widget = array_pop(self::$stack);
 			if (get_class($widget) === get_called_class()) {
 				$widget->run();
 				return $widget;
@@ -100,7 +100,7 @@ class Widget extends Component implements ViewContextInterface
 	public function getId($autoGenerate = true)
 	{
 		if ($autoGenerate && $this->_id === null) {
-			$this->_id = 'w' . self::$_counter++;
+			$this->_id = 'w' . self::$counter++;
 		}
 		return $this->_id;
 	}
