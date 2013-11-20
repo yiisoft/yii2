@@ -78,10 +78,14 @@ class EmailValidatorTest extends TestCase
 	public function testValidateValueMx()
 	{
 		$validator = new EmailValidator();
-		$validator->checkMX = true;
 
+		$validator->checkDNS = true;
 		$this->assertTrue($validator->validateValue('5011@gmail.com'));
-		$this->assertFalse($validator->validateValue('test@example.com'));
+
+		$validator->checkDNS = false;
+		$this->assertTrue($validator->validateValue('test@nonexistingsubdomain.example.com'));
+		$validator->checkDNS = true;
+		$this->assertFalse($validator->validateValue('test@nonexistingsubdomain.example.com'));
 	}
 
 	public function testValidateAttribute()
