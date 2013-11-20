@@ -24,8 +24,17 @@ use yii\bootstrap\Alert as BsAlert;
  */
 class Alert extends Widget
 {
-	private $_doNotRender = true;
+	/**
+	 * @var array the allowed bootstrap alert types.
+	 */
 	public $allowedTypes = ['error', 'danger', 'success', 'info', 'warning'];
+	 
+	/**
+	 * @var array the options for rendering the close button tag.
+	 */
+	public $closeButton = [];
+	
+	private $_doNotRender = true;
 	
 	public function init()
 	{
@@ -35,11 +44,12 @@ class Alert extends Widget
 		foreach ($flashes as $type => $message) {
 			if (in_array($type, $this->allowedTypes)) {
 				$class = ($type === 'error') ? 'alert-danger' : 'alert-' . $type;
-				Html::addCssClass($this->options, $class);
+				$this->options['class'] = $class;
 				echo BsAlert::widget([
 					'body' => $message,
+					'closeButton' => $this->closeButton,
 					'options' => $this->options
-				]);	
+				]);
 				$session->removeFlash($type);
 				$this->_doNotRender = false;
 			}
