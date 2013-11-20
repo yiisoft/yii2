@@ -23,6 +23,11 @@ class ArticleIndex extends ActiveRecord
 		return $this->hasOne('db', ArticleDb::className(), ['id' => 'id']);
 	}
 
+	public function getTags()
+	{
+		return $this->hasMany('db', TagDb::className(), ['id' => 'tag']);
+	}
+
 	public function getSnippetSource()
 	{
 		return $this->source->content;
