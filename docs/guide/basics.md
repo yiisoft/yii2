@@ -79,3 +79,8 @@ Autoloading
 -----------
 
 TBD
+
+Helper classes
+--------------
+
+TDB

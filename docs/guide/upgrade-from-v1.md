@@ -29,6 +29,8 @@ If your class does not need the event or behavior feature, you should consider u
 `Object` as the base class. This is usually the case for classes that represent basic
 data structures.
 
+More details about Object and component can be found in the [Basic concepts section](basics.md).
+
 
 Object Configuration
 --------------------
@@ -72,7 +74,8 @@ $object = Yii::createObject([
 ], $param1, $param2);
 ```
 
-More on configuration in [configuration](configuration.md)
+More on configuration can be found in the [Basic concepts section](basics.md).
+
 
 Events
 ------
@@ -116,6 +119,9 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 
 The code above defines a handler that will be triggered for every Active Record object's `EVENT_AFTER_INSERT` event.
 
+See [Event handling section](events.md) for more details.
+
+
 Path Alias
 ----------
 
@@ -131,6 +137,8 @@ any further configuration. For example, because `@yii` refers to the Yii install
 a class like `yii\web\Request` can be autoloaded by Yii. If you use a third party library
 such as Zend Framework, you may define a path alias `@Zend` which refers to its installation 
 directory and Yii will be able to autoload any class in this library.
+
+More on path aliases can be found in the [Basic concepts section](basics.md).
 
 
 View
@@ -164,6 +172,8 @@ no longer supported. To use these template engines, you just need to use `tpl` a
 extension for your Smarty views, or `twig` for Twig views. You may also configure the
 `View::renderers` property to use other template engines. See [Using template engines](template.md) section
 of the guide for more details.
+
+See [View section](view.md) for more details.
 
 
 Models
@@ -230,6 +240,7 @@ sending them out. You have to `echo` them explicitly, e.g., `echo $this->render(
 
 To learn more about Yii 2.0 controllers refer to [Controller](controller.md) section of the guide.
 
+
 Widgets
 -------
 
@@ -252,6 +263,8 @@ $form = \yii\widgets\ActiveForm::begin([
 Previously in 1.1, you would have to enter the widget class names as strings via the `beginWidget()`,
 `endWidget()` and `widget()` methods of `CBaseController`. The approach above gets better IDE support.
 
+For more on widgets see the [View section](view.md#widgets).
+
 
 Themes
 ------
@@ -266,6 +279,8 @@ of the context of a controller or a widget.
 
 There is no more `CThemeManager`. Instead, `theme` is a configurable property of the "view"
 application component.
+
+For more on themes see the [Theming section](theming.md).
 
 
 Console Applications
@@ -282,6 +297,8 @@ are treated as global options declared in `globalOptions()`.
 
 Yii 2.0 supports automatic generation of command help information from comment blocks.
 
+For more on console applications see the [Console section](console.md).
+
 
 I18N
 ----
@@ -290,7 +307,7 @@ Yii 2.0 removes date formatter and number formatter in favor of the PECL intl PH
 
 Message translation is still supported, but managed via the "i18n" application component.
 The component manages a set of message sources, which allows you to use different message
-sources based on message categories. For more information, see the class documentation for `I18N`.
+sources based on message categories. For more information, see the class documentation for [I18N](i18n.md).
 
 
 Action Filters
@@ -315,6 +332,7 @@ public function behaviors()
 }
 ```
 
+For more on action filters see the [Controller section](controller.md#action-filters).
 
 
 Assets
@@ -329,7 +347,7 @@ By registering an asset bundle via `AssetBundle::register()`, you will be able t
 the assets in that bundle accessible via Web, and the current page will automatically
 contain the references to the JavaScript and CSS files specified in that bundle.
 
-
+To learn more about assets see the [asset manager documentation](assets.md).
 
 Static Helpers
 --------------
@@ -441,6 +459,8 @@ By default, ActiveRecord now only saves dirty attributes. In 1.1, all attributes
 are saved to database when you call `save()`, regardless of having changed or not,
 unless you explicitly list the attributes to save.
 
+See [active record docs](active-record.md) for more details.
+
 
 Auto-quoting Table and Column Names
 ------------------------------------
@@ -483,13 +503,17 @@ the same goal.
 ]
 ```
 
-
+More details in the [Url manager docs](url.md).
 
 Response
 --------
 
+TBD
+
 Extensions
 ----------
+
+TBD
 
 Integration with Composer
 -------------------------
