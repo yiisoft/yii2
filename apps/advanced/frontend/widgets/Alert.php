@@ -41,10 +41,11 @@ class Alert extends Widget
 		$this->_doNotRender = true;
 		$session = \Yii::$app->getSession();
 		$flashes = $session->getAllFlashes();
+		$baseCssClass = isset($this->options['class']) ? $this->options['class'] : '';
+
 		foreach ($flashes as $type => $message) {
 			if (in_array($type, $this->allowedTypes)) {
-				$class = ($type === 'error') ? 'alert-danger' : 'alert-' . $type;
-				Html::addCssClass($this->options, $class);
+				$this->options['class'] = (($type === 'error') ? "alert-danger" : "alert-{$type}") . ' ' . $baseCssClass;
 				echo BsAlert::widget([
 					'body' => $message,
 					'closeButton' => $this->closeButton,
