@@ -1,6 +1,7 @@
 Events
 ======
 
+TBD, see also [Component.md](../api/base/Component.md).
 
 There is no longer the need to define an `on`-method in order to define an event in Yii 2.0.
 Instead, you can use whatever event names. To attach a handler to an event, you should

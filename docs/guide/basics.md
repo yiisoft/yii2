@@ -5,21 +5,21 @@ Basic concepts of Yii
 Component and Object
 --------------------
 
-Yii 2.0 breaks the `CComponent` class in 1.1 into two classes: `Object` and `Component`.
-The `Object` class is a lightweight base class that allows defining class properties
-via getters and setters. The `Component` class extends from `Object` and supports
-the event feature and the behavior feature.
+Classes of the Yii framework usually extend from one of the two base classes [[Object]] and [[Component]].
+These classes provide useful features that are added automatically to all classes extending from them.
 
-If your class does not need the event or behavior feature, you should consider using
-`Object` as the base class. This is usually the case for classes that represent basic
-data structures.
+The `Object` class provides the [configuration and property feature](../api/base/Object.md).
+The `Component` class extends from `Object` and adds [event handling](events.md) and [behaviors](behaviors.md).
+
+`Object` is usually used for classes that represent basic data structures while `Component` is used for
+application components and other classes that implement higher logic.
 
 
 Object Configuration
 --------------------
 
-The `Object` class introduces a uniform way of configuring objects. Any descendant class
-of `Object` should declare its constructor (if needed) in the following way so that
+The [[Object]] class introduces a uniform way of configuring objects. Any descendant class
+of [[Object]] should declare its constructor (if needed) in the following way so that
 it can be properly configured:
 
 ```php
@@ -57,11 +57,9 @@ $object = Yii::createObject([
 ], $param1, $param2);
 ```
 
-More on configuration in [configuration](configuration.md)
 
-
-Path Alias
-----------
+Path Aliases
+------------
 
 Yii 2.0 expands the usage of path aliases to both file/directory paths and URLs. An alias
 must start with a `@` character so that it can be differentiated from file/directory paths and URLs.
