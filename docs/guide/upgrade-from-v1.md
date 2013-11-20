@@ -72,7 +72,7 @@ $object = Yii::createObject([
 ], $param1, $param2);
 ```
 
-
+More on configuration in [configuration](configuration.md)
 
 Events
 ------

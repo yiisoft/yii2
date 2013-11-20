@@ -4,7 +4,7 @@ Security
 Good security is vital to the health and success of many websites. Unfortunately, many developers may cut corners when it comes to security due to a lack of understanding or too large of an implementation hurdle. To make your Yii-based site as secure as possible, the Yii framework has baked in several excellent, and easy to use, security features. 
 
 Hashing and verifying passwords
-------------------------------
+-------------------------------
 
 Most developers know that you cannot store passwords in plain text, but many believe it's safe to hash passwords using `md5` or `sha1`. There was a time when those hashing algorithms were sufficient, but modern hardware makes it possible to break those hashes very quickly using a brute force attack.
 
