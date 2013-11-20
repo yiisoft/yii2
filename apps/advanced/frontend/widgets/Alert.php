@@ -44,12 +44,13 @@ class Alert extends Widget
 		foreach ($flashes as $type => $message) {
 			if (in_array($type, $this->allowedTypes)) {
 				$class = ($type === 'error') ? 'alert-danger' : 'alert-' . $type;
-				$this->options['class'] = $class;
+				Html::addCssClass($this->options, $class);
 				echo BsAlert::widget([
 					'body' => $message,
 					'closeButton' => $this->closeButton,
 					'options' => $this->options
 				]);
+				Html::removeCssClass($this->options, $class);
 				$session->removeFlash($type);
 				$this->_doNotRender = false;
 			}
