@@ -21,9 +21,18 @@ namespace frontend\widgets;
 class Alert extends \yii\bootstrap\Widget
 {
 	/**
-	 * @var array the allowed bootstrap alert types.
+	 * @var array the alert types configuration for the flash messages.
+	 * This array is setup as $key => $value, where:
+	 * - $key is the name of the session flash variable
+	 * - $value is the bootstrap alert type (i.e. danger, success, info, warning)
 	 */
-	public $allowedTypes = ['error', 'danger', 'success', 'info', 'warning'];
+	public $alertTypes = [
+		'error'   => 'danger', 
+		'danger'  => 'danger', 
+		'success' => 'success', 
+		'info'    => 'info', 
+		'warning' => 'warning'
+	];
 	 
 	/**
 	 * @var array the options for rendering the close button tag.
@@ -37,15 +46,13 @@ class Alert extends \yii\bootstrap\Widget
 		$appendCss = isset($this->options['class']) ? ' ' . $this->options['class'] : '';
 
 		foreach ($flashes as $type => $message) {
-			if (in_array($type, $this->allowedTypes)) {
-				$this->options['class'] = (($type === 'error') ? 'alert-danger' : 'alert-' . $type) . $appendCss;
-				echo \yii\bootstrap\Alert::widget([
-					'body' => $message,
-					'closeButton' => $this->closeButton,
-					'options' => $this->options
-				]);
-				$session->removeFlash($type);
-			}
+			$this->options['class'] = 'alert-' . $this->alertTypes[$type] . $appendCss;
+			echo \yii\bootstrap\Alert::widget([
+				'body' => $message,
+				'closeButton' => $this->closeButton,
+				'options' => $this->options
+			]);
+			$session->removeFlash($type);
 		}
 		parent::init();
 	}
