@@ -14,13 +14,13 @@ use yii\base\NotSupportedException;
  * Note: although PDO supports numerous database drivers, this class supports only MySQL.
  *
  * In order to setup Sphinx "searchd" to support MySQL protocol following configuration should be added:
- * ```
+ * ~~~
  * searchd
  * {
  *     listen = localhost:9306:mysql41
  *     ...
  * }
- * ```
+ * ~~~
  *
  * The following example shows how to create a Connection instance and establish
  * the Sphinx connection:

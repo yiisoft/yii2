@@ -101,7 +101,7 @@ class Query extends Component implements QueryInterface
 	 * Such callback will receive array of query result rows as an argument and must return the
 	 * array of snippet source strings in the order, which match one of incoming rows.
 	 * For example:
-	 * ```php
+	 * ~~~
 	 * $query = new Query;
 	 * $query->from('idx_item')
 	 *     ->match('pencil')
@@ -113,7 +113,7 @@ class Query extends Component implements QueryInterface
 	 *         return $result;
 	 *     })
 	 *     ->all();
-	 * ```
+	 * ~~~
 	 */
 	public $snippetCallback;
 	/**

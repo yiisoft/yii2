@@ -51,3 +51,19 @@ searchd
 This extension supports all Sphinx features including [Runtime Indexes](http://sphinxsearch.com/docs/current.html#rt-indexes).
 Since this extension uses MySQL protocol to access Sphinx, it shares base approach and much code from the
 regular "yii\db" package.
+
+To use this extension, simply add the following code in your application configuration:
+
+```php
+return [
+	//....
+	'components' => [
+		'sphinx' => [
+			'class' => 'yii\sphinx\Connection',
+			'dsn' => 'mysql:host=127.0.0.1;port=9306;',
+			'username' => '',
+			'password' => '',
+		],
+	],
+];
+```

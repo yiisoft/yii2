@@ -11,7 +11,47 @@ use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
 
 /**
- * Class ActiveQuery
+ * ActiveQuery represents a Sphinx query associated with an Active Record class.
+ *
+ * ActiveQuery instances are usually created by [[ActiveRecord::find()]] and [[ActiveRecord::findBySql()]].
+ *
+ * Because ActiveQuery extends from [[Query]], one can use query methods, such as [[where()]],
+ * [[orderBy()]] to customize the query options.
+ *
+ * ActiveQuery also provides the following additional query options:
+ *
+ * - [[with()]]: list of relations that this query should be performed with.
+ * - [[indexBy()]]: the name of the column by which the query result should be indexed.
+ * - [[asArray()]]: whether to return each record as an array.
+ *
+ * These options can be configured using methods of the same name. For example:
+ *
+ * ~~~
+ * $articles = Article::find()->with('source')->asArray()->all();
+ * ~~~
+ *
+ * ActiveQuery allows to build the snippets using sources provided by ActiveRecord.
+ * You can use [[snippetByModel()]] method to enable this.
+ * For example:
+ *
+ * ~~~
+ * class Article extends ActiveRecord
+ * {
+ *     public function getSource()
+ *     {
+ *         return $this->hasOne('db', ArticleDb::className(), ['id' => 'id']);
+ *     }
+ *
+ *     public function getSnippetSource()
+ *     {
+ *         return $this->source->content;
+ *     }
+ *
+ *     ...
+ * }
+ *
+ * $articles = Article::find()->with('source')->snippetByModel()->all();
+ * ~~~
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
