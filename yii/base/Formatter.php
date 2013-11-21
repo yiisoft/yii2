@@ -190,7 +190,7 @@ class Formatter extends Component
 		if ($value === null) {
 			return $this->nullDisplay;
 		}
-		return Html::mailto($value);
+		return Html::mailto(Html::encode($value), $value);
 	}
 
 	/**
