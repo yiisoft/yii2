@@ -119,17 +119,30 @@ resulting in "prettier" URLs without the need for `index.php` references.
 
 ~~~
 server {
+    set $yii_bootstrap "index.php";
     charset utf-8;
+    client_max_body_size 128M;
 
-    listen       80;
-    server_name  mysite.local;
-    root         /path/to/project/web
+    listen 80; ## listen for ipv4
+    #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
+
+    server_name mysite.local;
+    root        /path/to/project/web;
+    index       $yii_bootstrap;
 
     access_log  /path/to/project/log/access.log  main;
+    error_log   /path/to/project/log/error.log;
 
     location / {
-        try_files   $uri $uri/ /index.php?$args; # Redirect everything that isn't real file to index.php including arguments.
+        # Redirect everything that isn't real file to yii bootstrap file including arguments.
+        try_files $uri $uri/ /$yii_bootstrap?$args;
     }
+
+    # uncomment to avoid processing of calls to unexisting static files by yii
+    #location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
+    #    try_files $uri =404;
+    #}
+    #error_page 404 /404.html;
 
     location ~ \.php$ {
         include fastcgi.conf;
