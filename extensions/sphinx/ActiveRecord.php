@@ -253,11 +253,16 @@ class ActiveRecord extends Model
 
 	/**
 	 * Returns the primary key name for this AR class.
-	 * @return string the primary key of the associated Sphinx index.
+	 * The default implementation will return the primary key as declared
+	 * in the Sphinx index, which is associated with this AR class.
+	 *
+	 * Note that an array should be returned even for a table with single primary key.
+	 *
+	 * @return string[] the primary keys of the associated Sphinx index.
 	 */
 	public static function primaryKey()
 	{
-		return static::getIndexSchema()->primaryKey;
+		return [static::getIndexSchema()->primaryKey];
 	}
 
 	/**
@@ -861,8 +866,9 @@ class ActiveRecord extends Model
 		}
 		$values = $this->getDirtyAttributes($attributes);
 		if (empty($values)) {
-			$key = $this->primaryKey();
-			$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
+			foreach ($this->primaryKey() as $key) {
+				$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
+			}
 		}
 		$db = static::getDb();
 		$command = $db->createCommand()->insert($this->indexName(), $values);
@@ -1231,12 +1237,15 @@ class ActiveRecord extends Model
 	 */
 	public function getPrimaryKey($asArray = false)
 	{
-		$key = $this->primaryKey();
-		$value = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
-		if ($asArray) {
-			return [$key => $value];
+		$keys = $this->primaryKey();
+		if (count($keys) === 1 && !$asArray) {
+			return isset($this->_attributes[$keys[0]]) ? $this->_attributes[$keys[0]] : null;
 		} else {
-			return $value;
+			$values = [];
+			foreach ($keys as $name) {
+				$values[$name] = isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
+			}
+			return $values;
 		}
 	}
 
@@ -1254,12 +1263,15 @@ class ActiveRecord extends Model
 	 */
 	public function getOldPrimaryKey($asArray = false)
 	{
-		$key = $this->primaryKey();
-		$value = isset($this->_oldAttributes[$key]) ? $this->_oldAttributes[$key] : null;
-		if ($asArray) {
-			return [$key => $value];
+		$keys = $this->primaryKey();
+		if (count($keys) === 1 && !$asArray) {
+			return isset($this->_oldAttributes[$keys[0]]) ? $this->_oldAttributes[$keys[0]] : null;
 		} else {
-			return $value;
+			$values = [];
+			foreach ($keys as $name) {
+				$values[$name] = isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
+			}
+			return $values;
 		}
 	}
 
