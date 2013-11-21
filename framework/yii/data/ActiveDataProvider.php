@@ -172,8 +172,8 @@ class ActiveDataProvider extends BaseDataProvider
 			$model = new $this->query->modelClass;
 			foreach ($model->attributes() as $attribute) {
 				$sort->attributes[$attribute] = [
-					'asc' => [$attribute => Sort::ASC],
-					'desc' => [$attribute => Sort::DESC],
+					'asc' => [$attribute => SORT_ASC],
+					'desc' => [$attribute => SORT_DESC],
 					'label' => $model->getAttributeLabel($attribute),
 				];
 			}

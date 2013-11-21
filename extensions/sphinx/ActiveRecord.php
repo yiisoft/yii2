@@ -30,6 +30,7 @@ use Yii;
  * @property array $populatedRelations An array of relation data indexed by relation names. This property is
  * read-only.
  * @property integer $primaryKey The primary key value. This property is read-only.
+ * @property string $snippet current snippet value for this Active Record instance..
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -103,7 +104,9 @@ class ActiveRecord extends Model
 	 */
 	private $_related = [];
 	/**
-	 * @var string snippet value for this Active Record instance.
+	 * @var string current snippet value for this Active Record instance.
+	 * It will be filled up automatically when instance found using [[Query::snippetCallback]]
+	 * or [[ActiveQuery::snippetByModel()]].
 	 */
 	private $_snippet;
 
@@ -307,27 +310,28 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * @param string $query snippet source query
+	 * Returns current snippet value or generates new one from given match.
+	 * @param string $match snippet source query
 	 * @param array $options list of options in format: optionName => optionValue
 	 * @return string snippet value
 	 */
-	public function getSnippet($query = null, $options = [])
+	public function getSnippet($match = null, $options = [])
 	{
-		if ($query !== null) {
-			$this->_snippet = $this->fetchSnippet($query, $options);
+		if ($match !== null) {
+			$this->_snippet = $this->fetchSnippet($match, $options);
 		}
 		return $this->_snippet;
 	}
 
 	/**
 	 * Builds up the snippet value from the given query.
-	 * @param string $query the full-text query to build snippets for.
+	 * @param string $match the full-text query to build snippets for.
 	 * @param array $options list of options in format: optionName => optionValue
 	 * @return string snippet value.
 	 */
-	protected function fetchSnippet($query, $options = [])
+	protected function fetchSnippet($match, $options = [])
 	{
-		return static::callSnippets($this->getSnippetSource(), $query, $options);
+		return static::callSnippets($this->getSnippetSource(), $match, $options);
 	}
 
 	/**
@@ -335,12 +339,12 @@ class ActiveRecord extends Model
 	 * Active Record instance.
 	 * Child classes must implement this method to return the actual snippet source text.
 	 * For example:
-	 * ```php
+	 * ~~~
 	 * public function getSnippetSource()
 	 * {
 	 *     return $this->snippetSourceRelation->content;
 	 * }
-	 * ```
+	 * ~~~
 	 * @return string snippet source string.
 	 * @throws \yii\base\NotSupportedException if this is not supported by the Active Record class
 	 */
@@ -369,6 +373,9 @@ class ActiveRecord extends Model
 	 *    and implement necessary business logic (e.g. merging the changes, prompting stated data)
 	 *    to resolve the conflict.
 	 *
+	 * Warning: optimistic lock will NOT work in case of updating fields (not attributes) for the
+	 * runtime indexes!
+	 *
 	 * @return string the column name that stores the lock version of a table row.
 	 * If null is returned (default implemented), optimistic locking will not be supported.
 	 */
@@ -378,10 +385,10 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * Declares which DB operations should be performed within a transaction in different scenarios.
+	 * Declares which operations should be performed within a transaction in different scenarios.
 	 * The supported DB operations are: [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]],
 	 * which correspond to the [[insert()]], [[update()]] and [[delete()]] methods, respectively.
-	 * By default, these methods are NOT enclosed in a DB transaction.
+	 * By default, these methods are NOT enclosed in a transaction.
 	 *
 	 * In some scenarios, to ensure data consistency, you may want to enclose some or all of them
 	 * in transactions. You can do so by overriding this method and returning the operations
@@ -768,20 +775,21 @@ class ActiveRecord extends Model
 	 * This method will call [[insert()]] when [[isNewRecord]] is true, or [[update()]]
 	 * when [[isNewRecord]] is false.
 	 *
-	 * For example, to save a customer record:
+	 * For example, to save an article record:
 	 *
 	 * ~~~
-	 * $customer = new Customer;  // or $customer = Customer::find($id);
-	 * $customer->name = $name;
-	 * $customer->email = $email;
+	 * $customer = new Article;  // or $customer = Article::find(['id' => $id]);
+	 * $customer->id = $id;
+	 * $customer->genre_id = $genreId;
+	 * $customer->content = $email;
 	 * $customer->save();
 	 * ~~~
 	 *
 	 *
 	 * @param boolean $runValidation whether to perform validation before saving the record.
-	 * If the validation fails, the record will not be saved to database.
+	 * If the validation fails, the record will not be saved.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
-	 * meaning all attributes that are loaded from DB will be saved.
+	 * meaning all attributes that are loaded from index will be saved.
 	 * @return boolean whether the saving succeeds
 	 */
 	public function save($runValidation = true, $attributes = null)
@@ -794,7 +802,7 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * Inserts a row into the associated database table using the attribute values of this record.
+	 * Inserts a row into the associated Sphinx index using the attribute values of this record.
 	 *
 	 * This method performs the following steps in order:
 	 *
@@ -803,31 +811,29 @@ class ActiveRecord extends Model
 	 * 2. call [[afterValidate()]] when `$runValidation` is true.
 	 * 3. call [[beforeSave()]]. If the method returns false, it will skip the
 	 *    rest of the steps;
-	 * 4. insert the record into database. If this fails, it will skip the rest of the steps;
+	 * 4. insert the record into index. If this fails, it will skip the rest of the steps;
 	 * 5. call [[afterSave()]];
 	 *
 	 * In the above step 1, 2, 3 and 5, events [[EVENT_BEFORE_VALIDATE]],
 	 * [[EVENT_BEFORE_INSERT]], [[EVENT_AFTER_INSERT]] and [[EVENT_AFTER_VALIDATE]]
 	 * will be raised by the corresponding methods.
 	 *
-	 * Only the [[changedAttributes|changed attribute values]] will be inserted into database.
+	 * Only the [[changedAttributes|changed attribute values]] will be inserted.
 	 *
-	 * If the table's primary key is auto-incremental and is null during insertion,
-	 * it will be populated with the actual value after insertion.
-	 *
-	 * For example, to insert a customer record:
+	 * For example, to insert an article record:
 	 *
 	 * ~~~
-	 * $customer = new Customer;
-	 * $customer->name = $name;
-	 * $customer->email = $email;
-	 * $customer->insert();
+	 * $article = new Article;
+	 * $article->id = $id;
+	 * $article->genre_id = $genreId;
+	 * $article->content = $content;
+	 * $article->insert();
 	 * ~~~
 	 *
 	 * @param boolean $runValidation whether to perform validation before saving the record.
-	 * If the validation fails, the record will not be inserted into the database.
+	 * If the validation fails, the record will not be inserted.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
-	 * meaning all attributes that are loaded from DB will be saved.
+	 * meaning all attributes that are loaded from index will be saved.
 	 * @return boolean whether the attributes are valid and the record is inserted successfully.
 	 * @throws \Exception in case insert failed.
 	 */
@@ -883,7 +889,7 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * Saves the changes to this active record into the associated database table.
+	 * Saves the changes to this active record into the associated Sphinx index.
 	 *
 	 * This method performs the following steps in order:
 	 *
@@ -892,7 +898,7 @@ class ActiveRecord extends Model
 	 * 2. call [[afterValidate()]] when `$runValidation` is true.
 	 * 3. call [[beforeSave()]]. If the method returns false, it will skip the
 	 *    rest of the steps;
-	 * 4. save the record into database. If this fails, it will skip the rest of the steps;
+	 * 4. save the record into index. If this fails, it will skip the rest of the steps;
 	 * 5. call [[afterSave()]];
 	 *
 	 * In the above step 1, 2, 3 and 5, events [[EVENT_BEFORE_VALIDATE]],
@@ -901,13 +907,13 @@ class ActiveRecord extends Model
 	 *
 	 * Only the [[changedAttributes|changed attribute values]] will be saved into database.
 	 *
-	 * For example, to update a customer record:
+	 * For example, to update an article record:
 	 *
 	 * ~~~
-	 * $customer = Customer::find($id);
-	 * $customer->name = $name;
-	 * $customer->email = $email;
-	 * $customer->update();
+	 * $article = Article::find(['id' => $id]);
+	 * $article->genre_id = $genreId;
+	 * $article->group_id = $groupId;
+	 * $article->update();
 	 * ~~~
 	 *
 	 * Note that it is possible the update does not affect any row in the table.
@@ -1018,13 +1024,13 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * Deletes the table row corresponding to this active record.
+	 * Deletes the index entry corresponding to this active record.
 	 *
 	 * This method performs the following steps in order:
 	 *
 	 * 1. call [[beforeDelete()]]. If the method returns false, it will skip the
 	 *    rest of the steps;
-	 * 2. delete the record from the database;
+	 * 2. delete the record from the index;
 	 * 3. call [[afterDelete()]].
 	 *
 	 * In the above step 1 and 3, events named [[EVENT_BEFORE_DELETE]] and [[EVENT_AFTER_DELETE]]
@@ -1310,8 +1316,6 @@ class ActiveRecord extends Model
 	 * This method is called by [[create()]].
 	 * You may override this method if the instance being created
 	 * depends on the row data to be populated into the record.
-	 * For example, by creating a record based on the value of a column,
-	 * you may implement the so-called single-table inheritance mapping.
 	 * @param array $row row data to be populated into the record.
 	 * @return ActiveRecord the newly created active record
 	 */

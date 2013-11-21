@@ -11,7 +11,7 @@ use yii\db\ActiveRelationInterface;
 use yii\db\ActiveRelationTrait;
 
 /**
- * Class ActiveRelation
+ * ActiveRelation represents a relation to Sphinx Active Record class.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

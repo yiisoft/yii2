@@ -29,9 +29,9 @@ use yii\helpers\Inflector;
  *         'attributes' => [
  *             'age',
  *             'name' => [
- *                 'asc' => ['first_name' => Sort::ASC, 'last_name' => Sort::ASC],
- *                 'desc' => ['first_name' => Sort::DESC, 'last_name' => Sort::DESC],
- *                 'default' => Sort::DESC,
+ *                 'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
+ *                 'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+ *                 'default' => SORT_DESC,
  *                 'label' => 'Name',
  *             ],
  *         ],
@@ -66,7 +66,7 @@ use yii\helpers\Inflector;
  * that can lead to pages with the data sorted by the corresponding attributes.
  *
  * @property array $attributeOrders Sort directions indexed by attribute names. Sort direction can be either
- * [[Sort::ASC]] for ascending order or [[Sort::DESC]] for descending order. This property is read-only.
+ * `SORT_ASC` for ascending order or `SORT_DESC` for descending order. This property is read-only.
  * @property array $orders The columns (keys) and their corresponding sort directions (values). This can be
  * passed to [[\yii\db\Query::orderBy()]] to construct a DB query. This property is read-only.
  *
@@ -75,16 +75,6 @@ use yii\helpers\Inflector;
  */
 class Sort extends Object
 {
-	/**
-	 * Sort ascending
-	 */
-	const ASC = false;
-
-	/**
-	 * Sort descending
-	 */
-	const DESC = true;
-
 	/**
 	 * @var boolean whether the sorting can be applied to multiple attributes simultaneously.
 	 * Defaults to false, which means each time the data can only be sorted by one attribute.
@@ -99,9 +89,9 @@ class Sort extends Object
 	 * [
 	 *     'age',
 	 *     'name' => [
-	 *         'asc' => ['first_name' => Sort::ASC, 'last_name' => Sort::ASC],
-	 *         'desc' => ['first_name' => Sort::DESC, 'last_name' => Sort::DESC],
-	 *         'default' => Sort::DESC,
+	 *         'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
+	 *         'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+	 *         'default' => SORT_DESC,
 	 *         'label' => 'Name',
 	 *     ],
 	 * ]
@@ -112,9 +102,9 @@ class Sort extends Object
 	 *
 	 * ~~~
 	 * 'age' => [
-	 *     'asc' => ['age' => Sort::ASC],
-	 *     'desc' => ['age' => Sort::DESC],
-	 *     'default' => Sort::ASC,
+	 *     'asc' => ['age' => SORT_ASC],
+	 *     'desc' => ['age' => SORT_DESC],
+	 *     'default' => SORT_ASC,
 	 *     'label' => Inflector::camel2words('age'),
 	 * ]
 	 * ~~~
@@ -153,8 +143,8 @@ class Sort extends Object
 	 *
 	 * ~~~
 	 * [
-	 *     'name' => Sort::ASC,
-	 *     'create_time' => Sort::DESC,
+	 *     'name' => SORT_ASC,
+	 *     'create_time' => SORT_DESC,
 	 * ]
 	 * ~~~
 	 *
@@ -199,13 +189,13 @@ class Sort extends Object
 		foreach ($this->attributes as $name => $attribute) {
 			if (!is_array($attribute)) {
 				$attributes[$attribute] = [
-					'asc' => [$attribute => self::ASC],
-					'desc' => [$attribute => self::DESC],
+					'asc' => [$attribute => SORT_ASC],
+					'desc' => [$attribute => SORT_DESC],
 				];
 			} elseif (!isset($attribute['asc'], $attribute['desc'])) {
 				$attributes[$name] = array_merge([
-					'asc' => [$name => self::ASC],
-					'desc' => [$name => self::DESC],
+					'asc' => [$name => SORT_ASC],
+					'desc' => [$name => SORT_DESC],
 				], $attribute);
 			} else {
 				$attributes[$name] = $attribute;
@@ -226,7 +216,7 @@ class Sort extends Object
 		$orders = [];
 		foreach ($attributeOrders as $attribute => $direction) {
 			$definition = $this->attributes[$attribute];
-			$columns = $definition[$direction === self::ASC ? 'asc' : 'desc'];
+			$columns = $definition[$direction === SORT_ASC ? 'asc' : 'desc'];
 			foreach ($columns as $name => $dir) {
 				$orders[$name] = $dir;
 			}
@@ -243,8 +233,8 @@ class Sort extends Object
 	 * Returns the currently requested sort information.
 	 * @param boolean $recalculate whether to recalculate the sort directions
 	 * @return array sort directions indexed by attribute names.
-	 * Sort direction can be either [[Sort::ASC]] for ascending order or
-	 * [[Sort::DESC]] for descending order.
+	 * Sort direction can be either `SORT_ASC` for ascending order or
+	 * `SORT_DESC` for descending order.
 	 */
 	public function getAttributeOrders($recalculate = false)
 	{
@@ -262,7 +252,7 @@ class Sort extends Object
 					}
 
 					if (isset($this->attributes[$attribute])) {
-						$this->_attributeOrders[$attribute] = $descending;
+						$this->_attributeOrders[$attribute] = $descending ? SORT_DESC : SORT_ASC;
 						if (!$this->enableMultiSort) {
 							return $this->_attributeOrders;
 						}
@@ -279,8 +269,8 @@ class Sort extends Object
 	/**
 	 * Returns the sort direction of the specified attribute in the current request.
 	 * @param string $attribute the attribute name
-	 * @return boolean|null Sort direction of the attribute. Can be either [[Sort::ASC]]
-	 * for ascending order or [[Sort::DESC]] for descending order. Null is returned
+	 * @return boolean|null Sort direction of the attribute. Can be either `SORT_ASC`
+	 * for ascending order or `SORT_DESC` for descending order. Null is returned
 	 * if the attribute is invalid or does not need to be sorted.
 	 */
 	public function getAttributeOrder($attribute)
@@ -305,7 +295,7 @@ class Sort extends Object
 	public function link($attribute, $options = [])
 	{
 		if (($direction = $this->getAttributeOrder($attribute)) !== null) {
-			$class = $direction ? 'desc' : 'asc';
+			$class = $direction === SORT_DESC ? 'desc' : 'asc';
 			if (isset($options['class'])) {
 				$options['class'] .= ' ' . $class;
 			} else {
@@ -365,21 +355,21 @@ class Sort extends Object
 		$definition = $this->attributes[$attribute];
 		$directions = $this->getAttributeOrders();
 		if (isset($directions[$attribute])) {
-			$descending = !$directions[$attribute];
+			$direction = $directions[$attribute] === SORT_DESC ? SORT_ASC : SORT_DESC;
 			unset($directions[$attribute]);
 		} else {
-			$descending = !empty($definition['default']);
+			$direction = isset($definition['default']) ? $definition['default'] : SORT_ASC;
 		}
 
 		if ($this->enableMultiSort) {
-			$directions = array_merge([$attribute => $descending], $directions);
+			$directions = array_merge([$attribute => $direction], $directions);
 		} else {
-			$directions = [$attribute => $descending];
+			$directions = [$attribute => $direction];
 		}
 
 		$sorts = [];
-		foreach ($directions as $attribute => $descending) {
-			$sorts[] = $descending ? $attribute . $this->separators[1] . $this->descTag : $attribute;
+		foreach ($directions as $attribute => $direction) {
+			$sorts[] = $direction === SORT_DESC ? $attribute . $this->separators[1] . $this->descTag : $attribute;
 		}
 		return implode($this->separators[0], $sorts);
 	}

@@ -129,13 +129,13 @@ class ArrayHelperTest extends TestCase
 			['name' => 'A', 'age' => 1],
 		];
 
-		ArrayHelper::multisort($array, ['name', 'age'], false, [SORT_STRING, SORT_REGULAR]);
+		ArrayHelper::multisort($array, ['name', 'age'], SORT_ASC, [SORT_STRING, SORT_REGULAR]);
 		$this->assertEquals(['name' => 'A', 'age' => 1], $array[0]);
 		$this->assertEquals(['name' => 'B', 'age' => 4], $array[1]);
 		$this->assertEquals(['name' => 'a', 'age' => 3], $array[2]);
 		$this->assertEquals(['name' => 'b', 'age' => 2], $array[3]);
 
-		ArrayHelper::multisort($array, ['name', 'age'], false, [SORT_STRING, SORT_REGULAR], false);
+		ArrayHelper::multisort($array, ['name', 'age'], SORT_ASC, [SORT_STRING | SORT_FLAG_CASE, SORT_REGULAR]);
 		$this->assertEquals(['name' => 'A', 'age' => 1], $array[0]);
 		$this->assertEquals(['name' => 'a', 'age' => 3], $array[1]);
 		$this->assertEquals(['name' => 'b', 'age' => 2], $array[2]);
@@ -147,7 +147,7 @@ class ArrayHelperTest extends TestCase
 		// single key
 		$sort = new Sort([
 			'attributes' => ['name', 'age'],
-			'defaultOrder' => ['name' => Sort::ASC],
+			'defaultOrder' => ['name' => SORT_ASC],
 		]);
 		$orders = $sort->getOrders();
 
@@ -164,7 +164,7 @@ class ArrayHelperTest extends TestCase
 		// multiple keys
 		$sort = new Sort([
 			'attributes' => ['name', 'age'],
-			'defaultOrder' => ['name' => Sort::ASC, 'age' => Sort::DESC],
+			'defaultOrder' => ['name' => SORT_ASC, 'age' => SORT_DESC],
 		]);
 		$orders = $sort->getOrders();
 
