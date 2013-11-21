@@ -35,6 +35,8 @@ use yii\helpers\Html;
  *                          ['label' => 'Level 2 -DropdownA', 'url' => '#'],
  *                      ],
  *                  ],
+ *                  '<li class="divider"></li>',
+ *                  '<li class="dropdown-header">Dropdown Header</li>',
  *                  ['label' => 'Level 1 -DropdownB', 'url' => '#'],
  *             ],
  *         ],
