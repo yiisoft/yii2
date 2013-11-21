@@ -392,7 +392,7 @@ class DbManager extends Manager
 				->where(['user_id' => $userId, 'name' => new Expression('item_name')])
 				->createCommand($this->db);
 		} else {
-			$command = $query->select('name', 'type', 'description', 't1.biz_rule', 't1.data')
+			$command = $query->select(['name', 'type', 'description', 't1.biz_rule', 't1.data'])
 				->from([$this->itemTable . ' t1', $this->assignmentTable . ' t2'])
 				->where(['user_id' => $userId, 'type' => $type, 'name' => new Expression('item_name')])
 				->createCommand($this->db);
