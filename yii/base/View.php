@@ -356,10 +356,10 @@ class View extends Component
 	/**
 	 * Begins the rendering of content that is to be decorated by the specified view.
 	 * This method can be used to implement nested layout. For example, a layout can be embedded
-	 * in another layout file specified as '@app/view/layouts/base.php' like the following:
+	 * in another layout file specified as '@app/views/layouts/base.php' like the following:
 	 *
 	 * ~~~
-	 * <?php $this->beginContent('@app/view/layouts/base.php'); ?>
+	 * <?php $this->beginContent('@app/views/layouts/base.php'); ?>
 	 * ...layout content here...
 	 * <?php $this->endContent(); ?>
 	 * ~~~
