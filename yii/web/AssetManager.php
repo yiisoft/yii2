@@ -41,9 +41,18 @@ use yii\helpers\FileHelper;
 class AssetManager extends Component
 {
 	/**
-	 * @var array list of available asset bundles. The keys are the class names of the asset bundles,
-	 * and the values are either the configuration arrays for creating the [[AssetBundle]] objects
-	 * or the corresponding asset bundle instances.
+	 * @var array list of available asset bundles. The keys are the class names (without leading backslash)
+	 * of the asset bundles, and the values are either the configuration arrays for creating the [[AssetBundle]]
+	 * objects or the corresponding asset bundle instances. For example, the following code disables
+	 * the bootstrap css file used by Bootstrap widgets (because you want to use your own styles):
+	 *
+	 * ~~~
+	 * [
+	 *     'yii\bootstrap\BootstrapAsset' => [
+	 *         'css' => [],
+	 *     ],
+	 * ]
+	 * ~~~
 	 */
 	public $bundles = [];
 	/**
