@@ -503,7 +503,7 @@ class ActiveField extends Component
 	 * As a result, the corresponding submitted value is an array.
 	 * The selection of the checkbox list is taken from the value of the model attribute.
 	 * @param array $items the data item used to generate the checkboxes.
-	 * The array keys are the labels, while the array values are the corresponding checkbox values.
+	 * The array values are the labels, while the array keys are the corresponding checkbox values.
 	 * Note that the labels will NOT be HTML-encoded, while the values will.
 	 * @param array $options options (name => config) for the checkbox list. The following options are specially handled:
 	 *
