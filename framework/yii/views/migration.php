@@ -8,6 +8,8 @@
 echo "<?php\n";
 ?>
 
+use yii\db\Schema;
+
 class <?= $className ?> extends \yii\db\Migration
 {
 	public function up()
