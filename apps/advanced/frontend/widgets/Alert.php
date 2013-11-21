@@ -15,8 +15,8 @@ namespace frontend\widgets;
  * - \Yii::$app->getSession()->setFlash('success', 'This is the message');
  * - \Yii::$app->getSession()->setFlash('info', 'This is the message');
  *
- * @author Alexander Makarov <sam@rmcerative.ru>
  * @author Kartik Visweswaran <kartikv2@gmail.com>
+ * @author Alexander Makarov <sam@rmcerative.ru>
  */
 class Alert extends \yii\bootstrap\Widget
 {
@@ -37,23 +37,30 @@ class Alert extends \yii\bootstrap\Widget
 	/**
 	 * @var array the options for rendering the close button tag.
 	 */
-	public $closeButton = [];
+	public $closeButtonOptions = [];
 	
 	public function init()
 	{
+		parent::init();
+
 		$session = \Yii::$app->getSession();
 		$flashes = $session->getAllFlashes();
 		$appendCss = isset($this->options['class']) ? ' ' . $this->options['class'] : '';
-
+		
 		foreach ($flashes as $type => $message) {
-			$this->options['class'] = 'alert-' . $this->alertTypes[$type] . $appendCss;
+			/* initialize css class for each alert box in loop */
+			$this->options['class'] = 'alert-' . $this->alertTypes[$type] . $appendCss; 
+
+			/* assign unique id to each alert box in the loop */
+			$this->options['id'] = $this->getId() . '-' . $type;
+
 			echo \yii\bootstrap\Alert::widget([
 				'body' => $message,
-				'closeButton' => $this->closeButton,
+				'closeButton' => $this->closeButtonOptions,
 				'options' => $this->options
 			]);
+
 			$session->removeFlash($type);
 		}
-		parent::init();
 	}
 }
