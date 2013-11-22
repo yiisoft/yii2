@@ -20,16 +20,16 @@ class Html extends \yii\helpers\Html
 	/**
 	 * CSS Class constants that can be used directly
 	 */
-	const FLOAT_LEFT 	     = 'pull-left';
-	const FLOAT_RIGHT 	     = 'pull-right';
-	const FLOAT_CENTER 	     = 'center-block';
+	const FLOAT_LEFT         = 'pull-left';
+	const FLOAT_RIGHT        = 'pull-right';
+	const FLOAT_CENTER       = 'center-block';
 	const NAVBAR_FLOAT_LEFT  = 'navbar-left';
 	const NAVBAR_FLOAT_RIGHT = 'navbar-right';
 	const SHOWN              = 'show';
 	const HIDDEN             = 'hidden';
 	const INVISIBLE          = 'invisible';
 	const SCREEN_READER      = 'sr-only';
-	const IMAGE_REPLACE 	 = 'text-hide';
+	const IMAGE_REPLACE      = 'text-hide';
 	
 	/**
 	 * Generates a bootstrap icon.
@@ -71,5 +71,18 @@ class Html extends \yii\helpers\Html
 	{
 		static::addCssClass($options, 'caret');
 		return static::tag($tag, '', $options);
+	}
+	
+	/**
+	 * Generates a bootstrap static input.
+	 * @param string $value the static input value
+	 * @param array $options html options for the static input container
+	 * @param string $tag the html tag for rendering the static input - defaults to 'p'
+	 * @see http://getbootstrap.com/css/#forms-controls-static
+	 */
+	public static function staticInput($value, $options = [], $tag = 'p')
+	{
+		static::addCssClass($options, 'form-control-static');
+		return static::tag($tag, $value, $options);
 	}
 }
