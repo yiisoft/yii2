@@ -276,7 +276,6 @@ class Connection extends Component
 			$this->executeCommand('QUIT');
 			stream_socket_shutdown($this->_socket, STREAM_SHUT_RDWR);
 			$this->_socket = null;
-			$this->_transaction = null;
 		}
 	}
 
