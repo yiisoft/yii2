@@ -10,6 +10,8 @@ namespace yii\base;
 use Yii;
 
 /**
+ * Component is the base class that implements the *property*, *event* and *behavior* features.
+ *
  * @include @yii/base/Component.md
  *
  * @property Behavior[] $behaviors List of behaviors attached to this component. This property is read-only.
@@ -41,7 +43,7 @@ class Component extends Object
 	 * @return mixed the property value or the value of a behavior's property
 	 * @throws UnknownPropertyException if the property is not defined
 	 * @throws InvalidCallException if the property is write-only.
-	 * @see __set
+	 * @see __set()
 	 */
 	public function __get($name)
 	{
@@ -80,7 +82,7 @@ class Component extends Object
 	 * @param mixed $value the property value
 	 * @throws UnknownPropertyException if the property is not defined
 	 * @throws InvalidCallException if the property is read-only.
-	 * @see __get
+	 * @see __get()
 	 */
 	public function __set($name, $value)
 	{
@@ -195,7 +197,7 @@ class Component extends Object
 		$this->ensureBehaviors();
 		foreach ($this->_behaviors as $object) {
 			if ($object->hasMethod($name)) {
-				return call_user_func_array(array($object, $name), $params);
+				return call_user_func_array([$object, $name], $params);
 			}
 		}
 
@@ -225,8 +227,8 @@ class Component extends Object
 	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
 	 * @return boolean whether the property is defined
-	 * @see canGetProperty
-	 * @see canSetProperty
+	 * @see canGetProperty()
+	 * @see canSetProperty()
 	 */
 	public function hasProperty($name, $checkVars = true, $checkBehaviors = true)
 	{
@@ -246,7 +248,7 @@ class Component extends Object
 	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
 	 * @return boolean whether the property can be read
-	 * @see canSetProperty
+	 * @see canSetProperty()
 	 */
 	public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
 	{
@@ -276,7 +278,7 @@ class Component extends Object
 	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
 	 * @return boolean whether the property can be written
-	 * @see canGetProperty
+	 * @see canGetProperty()
 	 */
 	public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
 	{
@@ -329,11 +331,11 @@ class Component extends Object
 	 * the behavior class or an array of the following structure:
 	 *
 	 * ~~~
-	 * 'behaviorName' => array(
+	 * 'behaviorName' => [
 	 *     'class' => 'BehaviorClass',
 	 *     'property1' => 'value1',
 	 *     'property2' => 'value2',
-	 * )
+	 * ]
 	 * ~~~
 	 *
 	 * Note that a behavior class must extend from [[Behavior]]. Behavior names can be strings
@@ -347,7 +349,7 @@ class Component extends Object
 	 */
 	public function behaviors()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -358,23 +360,23 @@ class Component extends Object
 	public function hasEventHandlers($name)
 	{
 		$this->ensureBehaviors();
-		return !empty($this->_events[$name]);
+		return !empty($this->_events[$name]) || Event::hasHandlers($this, $name);
 	}
 
 	/**
 	 * Attaches an event handler to an event.
 	 *
-	 * An event handler must be a valid PHP callback. The followings are
+	 * The event handler must be a valid PHP callback. The followings are
 	 * some examples:
 	 *
 	 * ~~~
 	 * function ($event) { ... }         // anonymous function
-	 * array($object, 'handleClick')    // $object->handleClick()
-	 * array('Page', 'handleClick')     // Page::handleClick()
-	 * 'handleClick'                    // global function handleClick()
+	 * [$object, 'handleClick']          // $object->handleClick()
+	 * ['Page', 'handleClick']           // Page::handleClick()
+	 * 'handleClick'                     // global function handleClick()
 	 * ~~~
 	 *
-	 * An event handler must be defined with the following signature,
+	 * The event handler must be defined with the following signature,
 	 *
 	 * ~~~
 	 * function ($event)
@@ -391,7 +393,7 @@ class Component extends Object
 	public function on($name, $handler, $data = null)
 	{
 		$this->ensureBehaviors();
-		$this->_events[$name][] = array($handler, $data);
+		$this->_events[$name][] = [$handler, $data];
 	}
 
 	/**
@@ -406,24 +408,25 @@ class Component extends Object
 	public function off($name, $handler = null)
 	{
 		$this->ensureBehaviors();
-		if (isset($this->_events[$name])) {
-			if ($handler === null) {
-				$this->_events[$name] = array();
-			} else {
-				$removed = false;
-				foreach ($this->_events[$name] as $i => $event) {
-					if ($event[0] === $handler) {
-						unset($this->_events[$name][$i]);
-						$removed = true;
-					}
-				}
-				if ($removed) {
-					$this->_events[$name] = array_values($this->_events[$name]);
-				}
-				return $removed;
-			}
+		if (empty($this->_events[$name])) {
+			return false;
 		}
-		return false;
+		if ($handler === null) {
+			unset($this->_events[$name]);
+			return true;
+		} else {
+			$removed = false;
+			foreach ($this->_events[$name] as $i => $event) {
+				if ($event[0] === $handler) {
+					unset($this->_events[$name][$i]);
+					$removed = true;
+				}
+			}
+			if ($removed) {
+				$this->_events[$name] = array_values($this->_events[$name]);
+			}
+			return $removed;
+		}
 	}
 
 	/**
@@ -433,7 +436,7 @@ class Component extends Object
 	 * @param string $name the event name
 	 * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
 	 */
-	public function trigger($name, $event = null)
+	public function trigger($name, Event $event = null)
 	{
 		$this->ensureBehaviors();
 		if (!empty($this->_events[$name])) {
@@ -449,11 +452,12 @@ class Component extends Object
 				$event->data = $handler[1];
 				call_user_func($handler[0], $event);
 				// stop further handling if the event is handled
-				if ($event instanceof Event && $event->handled) {
+				if ($event->handled) {
 					return;
 				}
 			}
 		}
+		Event::trigger($this, $name, $event);
 	}
 
 	/**
@@ -490,7 +494,7 @@ class Component extends Object
 	 *  - an object configuration array that will be passed to [[Yii::createObject()]] to create the behavior object.
 	 *
 	 * @return Behavior the behavior object
-	 * @see detachBehavior
+	 * @see detachBehavior()
 	 */
 	public function attachBehavior($name, $behavior)
 	{
@@ -503,7 +507,7 @@ class Component extends Object
 	 * Each behavior is indexed by its name and should be a [[Behavior]] object,
 	 * a string specifying the behavior class, or an configuration array for creating the behavior.
 	 * @param array $behaviors list of behaviors to be attached to the component
-	 * @see attachBehavior
+	 * @see attachBehavior()
 	 */
 	public function attachBehaviors($behaviors)
 	{
@@ -543,7 +547,7 @@ class Component extends Object
 				$this->detachBehavior($name);
 			}
 		}
-		$this->_behaviors = array();
+		$this->_behaviors = [];
 	}
 
 	/**
@@ -552,7 +556,7 @@ class Component extends Object
 	public function ensureBehaviors()
 	{
 		if ($this->_behaviors === null) {
-			$this->_behaviors = array();
+			$this->_behaviors = [];
 			foreach ($this->behaviors() as $name => $behavior) {
 				$this->attachBehaviorInternal($name, $behavior);
 			}

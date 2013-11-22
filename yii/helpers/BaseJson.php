@@ -33,7 +33,7 @@ class BaseJson
 	 */
 	public static function encode($value, $options = 0)
 	{
-		$expressions = array();
+		$expressions = [];
 		$value = static::processData($value, $expressions, uniqid());
 		$json = json_encode($value, $options);
 		return empty($expressions) ? $json : strtr($json, $expressions);
@@ -81,32 +81,26 @@ class BaseJson
 	 */
 	protected static function processData($data, &$expressions, $expPrefix)
 	{
+		if (is_object($data)) {
+			if ($data instanceof JsExpression) {
+				$token = "!{[$expPrefix=" . count($expressions) . ']}!';
+				$expressions['"' . $token . '"'] = $data->expression;
+				return $token;
+			}
+			$data = $data instanceof Arrayable ? $data->toArray() : get_object_vars($data);
+			if ($data === [] && !$data instanceof Arrayable) {
+				return new \stdClass();
+			}
+		}
+
 		if (is_array($data)) {
 			foreach ($data as $key => $value) {
 				if (is_array($value) || is_object($value)) {
 					$data[$key] = static::processData($value, $expressions, $expPrefix);
 				}
 			}
-			return $data;
-		} elseif (is_object($data)) {
-			if ($data instanceof JsExpression) {
-				$token = "!{[$expPrefix=" . count($expressions) . ']}!';
-				$expressions['"' . $token . '"'] = $data->expression;
-				return $token;
-			} else {
-				$data = $data instanceof Arrayable ? $data->toArray() : get_object_vars($data);
-				$result = array();
-				foreach ($data as $key => $value) {
-					if (is_array($value) || is_object($value)) {
-						$result[$key] = static::processData($value, $expressions, $expPrefix);
-					} else {
-						$result[$key] = $value;
-					}
-				}
-				return $result;
-			}
-		} else {
-			return $data;
 		}
+
+		return $data;
 	}
 }

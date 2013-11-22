@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
 	yii\web\YiiAsset::className(),
 	yii\web\JqueryAsset::className(),
 	yii\validators\PunycodeAsset::className(),
@@ -8,4 +8,4 @@ return array(
 	yii\widgets\ActiveFormAsset::className(),
 	yii\captcha\CaptchaAsset::className(),
 	yii\widgets\MaskedInputAsset::className(),
-);
+];

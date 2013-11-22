@@ -74,12 +74,12 @@ class MessageController extends Controller
 			throw new Exception("The configuration file does not exist: $configFile");
 		}
 
-		$config = array_merge(array(
+		$config = array_merge([
 			'translator' => 'Yii::t',
 			'overwrite' => false,
 			'removeUnused' => false,
 			'sort' => false,
-		), require($configFile));
+		], require($configFile));
 
 		if (!isset($config['sourcePath'], $config['messagePath'], $config['languages'])) {
 			throw new Exception('The configuration file must specify "sourcePath", "messagePath" and "languages".');
@@ -96,7 +96,7 @@ class MessageController extends Controller
 
 		$files = FileHelper::findFiles(realpath($config['sourcePath']), $config);
 
-		$messages = array();
+		$messages = [];
 		foreach ($files as $file) {
 			$messages = array_merge_recursive($messages, $this->extractMessages($file, $config['translator']));
 		}
@@ -127,9 +127,9 @@ class MessageController extends Controller
 	{
 		echo "Extracting messages from $fileName...\n";
 		$subject = file_get_contents($fileName);
-		$messages = array();
+		$messages = [];
 		if (!is_array($translator)) {
-			$translator = array($translator);
+			$translator = [$translator];
 		}
 		foreach ($translator as $currentTranslator) {
 			$n = preg_match_all(
@@ -168,8 +168,8 @@ class MessageController extends Controller
 				echo "nothing new...skipped.\n";
 				return;
 			}
-			$merged = array();
-			$untranslated = array();
+			$merged = [];
+			$untranslated = [];
 			foreach ($messages as $message) {
 				if (array_key_exists($message, $translated) && strlen($translated[$message]) > 0) {
 					$merged[$message] = $translated[$message];
@@ -179,7 +179,7 @@ class MessageController extends Controller
 			}
 			ksort($merged);
 			sort($untranslated);
-			$todo = array();
+			$todo = [];
 			foreach ($untranslated as $message) {
 				$todo[$message] = '';
 			}
@@ -202,7 +202,7 @@ class MessageController extends Controller
 			}
 			echo "translation merged.\n";
 		} else {
-			$merged = array();
+			$merged = [];
 			foreach ($messages as $message) {
 				$merged[$message] = '';
 			}

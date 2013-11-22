@@ -7,20 +7,19 @@
 
 namespace yii\web;
 
-use Yii;
-use yii\base\View;
-
 /**
+ * This asset bundle provides the base javascript files for the Yii Framework.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class YiiAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/assets';
-	public $js = array(
+	public $js = [
 		'yii.js',
-	);
-	public $depends = array(
+	];
+	public $depends = [
 		'yii\web\JqueryAsset',
-	);
+	];
 }

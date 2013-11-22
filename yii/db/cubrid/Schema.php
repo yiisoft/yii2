@@ -24,7 +24,7 @@ class Schema extends \yii\db\Schema
 	 * Please refer to [CUBRID manual](http://www.cubrid.org/manual/91/en/sql/datatype.html) for
 	 * details on data types.
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		// Numeric data types
 		'short' => self::TYPE_SMALLINT,
 		'smallint' => self::TYPE_SMALLINT,
@@ -62,7 +62,7 @@ class Schema extends \yii\db\Schema
 		'list' => self::TYPE_STRING,
 		'sequence' => self::TYPE_STRING,
 		'enum' => self::TYPE_STRING,
-	);
+	];
 
 	/**
 	 * Quotes a table name for use in a query.
@@ -101,7 +101,8 @@ class Schema extends \yii\db\Schema
 
 		$this->db->open();
 		// workaround for broken PDO::quote() implementation in CUBRID 9.1.0 http://jira.cubrid.org/browse/APIS-658
-		if (version_compare($this->db->pdo->getAttribute(\PDO::ATTR_CLIENT_VERSION), '9.1.0', '<=')) {
+		$version = $this->db->pdo->getAttribute(\PDO::ATTR_CLIENT_VERSION);
+		if (version_compare($version, '8.4.4.0002', '<') || $version[0] == '9' && version_compare($version, '9.2.0.0002', '<=')) {
 			return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
 		} else {
 			return $this->db->pdo->quote($str);
@@ -137,23 +138,27 @@ class Schema extends \yii\db\Schema
 			foreach ($columns as $info) {
 				$column = $this->loadColumnSchema($info);
 				$table->columns[$column->name] = $column;
-				if ($column->isPrimaryKey) {
-					$table->primaryKey[] = $column->name;
-					if ($column->autoIncrement) {
-						$table->sequenceName = '';
-					}
+			}
+
+			$primaryKeys = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $table->name);
+			foreach ($primaryKeys as $key) {
+				$column = $table->columns[$key['ATTR_NAME']];
+				$column->isPrimaryKey = true;
+				$table->primaryKey[] = $column->name;
+				if ($column->autoIncrement) {
+					$table->sequenceName = '';
 				}
 			}
 
 			$foreignKeys = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $table->name);
-			foreach($foreignKeys as $key) {
+			foreach ($foreignKeys as $key) {
 				if (isset($table->foreignKeys[$key['FK_NAME']])) {
 					$table->foreignKeys[$key['FK_NAME']][$key['FKCOLUMN_NAME']] = $key['PKCOLUMN_NAME'];
 				} else {
-					$table->foreignKeys[$key['FK_NAME']] = array(
+					$table->foreignKeys[$key['FK_NAME']] = [
 						$key['PKTABLE_NAME'],
 						$key['FKCOLUMN_NAME'] => $key['PKCOLUMN_NAME']
-					);
+					];
 				}
 			}
 			$table->foreignKeys = array_values($table->foreignKeys);
@@ -175,7 +180,7 @@ class Schema extends \yii\db\Schema
 
 		$column->name = $info['Field'];
 		$column->allowNull = $info['Null'] === 'YES';
-		$column->isPrimaryKey = strpos($info['Key'], 'PRI') !== false;
+		$column->isPrimaryKey = false; // primary key will be set by loadTableSchema() later
 		$column->autoIncrement = stripos($info['Extra'], 'auto_increment') !== false;
 
 		$column->dbType = strtolower($info['Type']);
@@ -228,13 +233,33 @@ class Schema extends \yii\db\Schema
 	{
 		$this->db->open();
 		$tables = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
-		$tableNames = array();
-		foreach($tables as $table) {
+		$tableNames = [];
+		foreach ($tables as $table) {
 			// do not list system tables
 			if ($table['TYPE'] != 0) {
 				$tableNames[] = $table['NAME'];
 			}
 		}
 		return $tableNames;
+	}
+
+	/**
+	 * Determines the PDO type for the given PHP data value.
+	 * @param mixed $data the data whose PDO type is to be determined
+	 * @return integer the PDO type
+	 * @see http://www.php.net/manual/en/pdo.constants.php
+	 */
+	public function getPdoType($data)
+	{
+		static $typeMap = [
+			// php type => PDO type
+			'boolean' => \PDO::PARAM_INT, // PARAM_BOOL is not supported by CUBRID PDO
+			'integer' => \PDO::PARAM_INT,
+			'string' => \PDO::PARAM_STR,
+			'resource' => \PDO::PARAM_LOB,
+			'NULL' => \PDO::PARAM_NULL,
+		];
+		$type = gettype($data);
+		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
 	}
 }

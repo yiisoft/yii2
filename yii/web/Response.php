@@ -22,6 +22,20 @@ use yii\helpers\StringHelper;
  * It holds the [[headers]], [[cookies]] and [[content]] that is to be sent to the client.
  * It also controls the HTTP [[statusCode|status code]].
  *
+ * Response is configured as an application component in [[yii\web\Application]] by default.
+ * You can access that instance via `Yii::$app->response`.
+ *
+ * You can modify its configuration by adding an array to your application config under `components`
+ * as it is shown in the following example:
+ *
+ * ~~~
+ * 'response' => [
+ *     'format' => yii\web\Response::FORMAT_JSON,
+ *     'charset' => 'UTF-8',
+ *     // ...
+ * ]
+ * ~~~
+ *
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
  * @property boolean $isClientError Whether this response indicates a client error. This property is
@@ -112,9 +126,10 @@ class Response extends \yii\base\Response
 	 */
 	public $charset;
 	/**
-	 * @var string
+	 * @var string the HTTP status description that comes together with the status code.
+	 * @see [[httpStatuses]]
 	 */
-	public $statusText;
+	public $statusText = 'OK';
 	/**
 	 * @var string the version of the HTTP protocol to use. If not set, it will be determined via `$_SERVER['SERVER_PROTOCOL']`,
 	 * or '1.1' if that is not available.
@@ -123,7 +138,7 @@ class Response extends \yii\base\Response
 	/**
 	 * @var array list of HTTP status codes and the corresponding texts
 	 */
-	public static $httpStatuses = array(
+	public static $httpStatuses = [
 		100 => 'Continue',
 		101 => 'Switching Protocols',
 		102 => 'Processing',
@@ -189,12 +204,12 @@ class Response extends \yii\base\Response
 		509 => 'Bandwidth Limit Exceeded',
 		510 => 'Not Extended',
 		511 => 'Network Authentication Required',
-	);
+	];
 
 	/**
 	 * @var integer the HTTP status code to send with the response.
 	 */
-	private $_statusCode;
+	private $_statusCode = 200;
 	/**
 	 * @var HeaderCollection
 	 */
@@ -235,16 +250,14 @@ class Response extends \yii\base\Response
 	public function setStatusCode($value, $text = null)
 	{
 		if ($value === null) {
-			$this->_statusCode = null;
-			$this->statusText = null;
-			return;
+			$value = 200;
 		}
 		$this->_statusCode = (int)$value;
 		if ($this->getIsInvalid()) {
 			throw new InvalidParamException("The HTTP status code is invalid: $value");
 		}
 		if ($text === null) {
-			$this->statusText = isset(self::$httpStatuses[$this->_statusCode]) ? self::$httpStatuses[$this->_statusCode] : '';
+			$this->statusText = isset(static::$httpStatuses[$this->_statusCode]) ? static::$httpStatuses[$this->_statusCode] : '';
 		} else {
 			$this->statusText = $text;
 		}
@@ -283,10 +296,10 @@ class Response extends \yii\base\Response
 	{
 		$this->_headers = null;
 		$this->_cookies = null;
-		$this->_statusCode = null;
+		$this->_statusCode = 200;
+		$this->statusText = 'OK';
 		$this->data = null;
 		$this->content = null;
-		$this->statusText = null;
 	}
 
 	/**
@@ -298,9 +311,7 @@ class Response extends \yii\base\Response
 			return;
 		}
 		$statusCode = $this->getStatusCode();
-		if ($statusCode !== null) {
-			header("HTTP/{$this->version} $statusCode {$this->statusText}");
-		}
+		header("HTTP/{$this->version} $statusCode {$this->statusText}");
 		if ($this->_headers) {
 			$headers = $this->getHeaders();
 			foreach ($headers as $name => $values) {
@@ -463,7 +474,7 @@ class Response extends \yii\base\Response
 	protected function getHttpRange($fileSize)
 	{
 		if (!isset($_SERVER['HTTP_RANGE']) || $_SERVER['HTTP_RANGE'] === '-') {
-			return array(0, $fileSize - 1);
+			return [0, $fileSize - 1];
 		}
 		if (!preg_match('/^bytes=(\d*)-(\d*)$/', $_SERVER['HTTP_RANGE'], $matches)) {
 			return false;
@@ -484,7 +495,7 @@ class Response extends \yii\base\Response
 		if ($start < 0 || $start > $end) {
 			return false;
 		} else {
-			return array($start, $end);
+			return [$start, $end];
 		}
 	}
 
@@ -595,19 +606,19 @@ class Response extends \yii\base\Response
 	 *
 	 * - a string representing a URL (e.g. "http://example.com")
 	 * - a string representing a URL alias (e.g. "@example.com")
-	 * - an array in the format of `array($route, ...name-value pairs...)` (e.g. `array('site/index', 'ref' => 1)`).
+	 * - an array in the format of `[$route, ...name-value pairs...]` (e.g. `['site/index', 'ref' => 1]`).
 	 *   Note that the route is with respect to the whole application, instead of relative to a controller or module.
 	 *   [[Html::url()]] will be used to convert the array into a URL.
 	 *
 	 * Any relative URL will be converted into an absolute one by prepending it with the host info
 	 * of the current request.
 	 *
-	 * @param integer $statusCode the HTTP status code. If null, it will use 302.
+	 * @param integer $statusCode the HTTP status code. Defaults to 302.
 	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
 	 * for details about HTTP status code
-	 * @return Response the response object itself
+	 * @return static the response object itself
 	 */
-	public function redirect($url, $statusCode = null)
+	public function redirect($url, $statusCode = 302)
 	{
 		if (is_array($url) && isset($url[0])) {
 			// ensure the route is absolute
@@ -656,10 +667,10 @@ class Response extends \yii\base\Response
 	 *
 	 * ~~~
 	 * // add a cookie
-	 * $response->cookies->add(new Cookie(array(
+	 * $response->cookies->add(new Cookie([
 	 *     'name' => $name,
 	 *     'value' => $value,
-	 * ));
+	 * ]);
 	 *
 	 * // remove a cookie
 	 * $response->cookies->remove('name');
@@ -754,7 +765,7 @@ class Response extends \yii\base\Response
 	 */
 	public function getIsEmpty()
 	{
-		return in_array($this->getStatusCode(), array(201, 204, 304));
+		return in_array($this->getStatusCode(), [201, 204, 304]);
 	}
 
 	/**

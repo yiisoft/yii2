@@ -16,6 +16,10 @@ yii.validation = (function ($) {
 			|| value === '' || trim && $.trim(value) === '';
 	};
 
+	var addMessage = function (messages, message, value) {
+		messages.push(message.replace(/\{value\}/g, value));
+	};
+
 	return {
 		required: function (value, messages, options) {
 			var valid = false;
@@ -28,7 +32,7 @@ yii.validation = (function ($) {
 			}
 
 			if (!valid) {
-				messages.push(options.message);
+				addMessage(messages, options.message, value);
 			}
 		},
 
@@ -40,7 +44,7 @@ yii.validation = (function ($) {
 				|| options.strict && (value === options.trueValue || value === options.falseValue);
 
 			if (!valid) {
-				messages.push(options.message);
+				addMessage(messages, options.message, value);
 			}
 		},
 
@@ -50,18 +54,18 @@ yii.validation = (function ($) {
 			}
 
 			if (typeof value !== 'string') {
-				messages.push(options.message);
+				addMessage(messages, options.message, value);
 				return;
 			}
 
 			if (options.min !== undefined && value.length < options.min) {
-				messages.push(options.tooShort);
+				addMessage(messages, options.tooShort, value);
 			}
 			if (options.max !== undefined && value.length > options.max) {
-				messages.push(options.tooLong);
+				addMessage(messages, options.tooLong, value);
 			}
 			if (options.is !== undefined && value.length != options.is) {
-				messages.push(options.is);
+				addMessage(messages, options.is, value);
 			}
 		},
 
@@ -71,15 +75,15 @@ yii.validation = (function ($) {
 			}
 
 			if (typeof value === 'string' && !value.match(options.pattern)) {
-				messages.push(options.message);
+				addMessage(messages, options.message, value);
 				return;
 			}
 
 			if (options.min !== undefined && value < options.min) {
-				messages.push(options.tooSmall);
+				addMessage(messages, options.tooSmall, value);
 			}
 			if (options.max !== undefined && value > options.max) {
-				messages.push(options.tooBig);
+				addMessage(messages, options.tooBig, value);
 			}
 		},
 
@@ -91,7 +95,7 @@ yii.validation = (function ($) {
 				|| options.not && $.inArray(value, options.range) == -1;
 
 			if (!valid) {
-				messages.push(options.message);
+				addMessage(messages, options.message, value);
 			}
 		},
 
@@ -101,7 +105,7 @@ yii.validation = (function ($) {
 			}
 
 			if (!options.not && !value.match(options.pattern) || options.not && value.match(options.pattern)) {
-				messages.push(options.message)
+				addMessage(messages, options.message, value);
 			}
 		},
 
@@ -113,17 +117,17 @@ yii.validation = (function ($) {
 			var valid = true;
 
 			if (options.enableIDN) {
-				var regexp = /^(.*)@(.*)$/,
+				var regexp = /^(.*<?)(.*)@(.*)(>?)$/,
 					matches = regexp.exec(value);
 				if (matches === null) {
 					valid = false;
 				} else {
-					value = punycode.toASCII(matches[1]) + '@' + punycode.toASCII(matches[2]);
+					value = matches[1] + punycode.toASCII(matches[2]) + '@' + punycode.toASCII(matches[3]) + matches[4];
 				}
 			}
 
-			if (!valid || !(value.match(options.pattern) && (!options.allowName || value.match(options.fullPattern)))) {
-				messages.push(options.message);
+			if (!valid || !(value.match(options.pattern) || (options.allowName && value.match(options.fullPattern)))) {
+				addMessage(messages, options.message, value);
 			}
 		},
 
@@ -149,7 +153,7 @@ yii.validation = (function ($) {
 			}
 
 			if (!valid || !value.match(options.pattern)) {
-				messages.push(options.message);
+				addMessage(messages, options.message, value);
 			}
 		},
 
@@ -170,7 +174,7 @@ yii.validation = (function ($) {
 				h += v.charCodeAt(i);
 			}
 			if (h != hash) {
-				messages.push(options.message);
+				addMessage(messages, options.message, value);
 			}
 		},
 
@@ -210,10 +214,13 @@ yii.validation = (function ($) {
 				case '<=':
 					valid = value <= compareValue;
 					break;
+				default:
+					valid = false;
+					break;
 			}
 
 			if (!valid) {
-				messages.push(options.message);
+				addMessage(messages, options.message, value);
 			}
 		}
 	};

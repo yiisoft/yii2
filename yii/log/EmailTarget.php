@@ -22,7 +22,7 @@ class EmailTarget extends Target
 	/**
 	 * @var array list of destination email addresses.
 	 */
-	public $emails = array();
+	public $emails = [];
 	/**
 	 * @var string email subject
 	 */
@@ -34,7 +34,7 @@ class EmailTarget extends Target
 	/**
 	 * @var array list of additional headers to use when sending an email.
 	 */
-	public $headers = array();
+	public $headers = [];
 
 	/**
 	 * Sends log messages to specified email addresses.

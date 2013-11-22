@@ -8,7 +8,6 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\Component;
-use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\base\Model;
@@ -40,9 +39,7 @@ class ActiveField extends Component
 	 *
 	 * - tag: the tag name of the container element. Defaults to "div".
 	 */
-	public $options = array(
-		'class' => 'form-group',
-	);
+	public $options = ['class' => 'form-group'];
 	/**
 	 * @var string the template that is used to arrange the label, the input field, the error message and the hint text.
 	 * The following tokens will be replaced when [[render()]] is called: `{label}`, `{input}`, `{error}` and `{hint}`.
@@ -52,7 +49,7 @@ class ActiveField extends Component
 	 * @var array the default options for the input tags. The parameter passed to individual input methods
 	 * (e.g. [[textInput()]]) will be merged with this property when rendering the input tag.
 	 */
-	public $inputOptions = array('class' => 'form-control');
+	public $inputOptions = ['class' => 'form-control'];
 	/**
 	 * @var array the default options for the error tags. The parameter passed to [[error()]] will be
 	 * merged with this property when rendering the error tag.
@@ -60,12 +57,12 @@ class ActiveField extends Component
 	 *
 	 * - tag: the tag name of the container element. Defaults to "div".
 	 */
-	public $errorOptions = array('class' => 'help-block');
+	public $errorOptions = ['class' => 'help-block'];
 	/**
 	 * @var array the default options for the label tags. The parameter passed to [[label()]] will be
 	 * merged with this property when rendering the label tag.
 	 */
-	public $labelOptions = array('class' => 'control-label');
+	public $labelOptions = ['class' => 'control-label'];
 	/**
 	 * @var array the default options for the hint tags. The parameter passed to [[hint()]] will be
 	 * merged with this property when rendering the hint tag.
@@ -73,7 +70,7 @@ class ActiveField extends Component
 	 *
 	 * - tag: the tag name of the container element. Defaults to "div".
 	 */
-	public $hintOptions = array('class' => 'hint-block');
+	public $hintOptions = ['class' => 'hint-block'];
 	/**
 	 * @var boolean whether to enable client-side data validation.
 	 * If not set, it will take the value of [[ActiveForm::enableClientValidation]].
@@ -104,7 +101,7 @@ class ActiveField extends Component
 	/**
 	 * @var array the jQuery selectors for selecting the container, input and error tags.
 	 * The array keys should be "container", "input", and/or "error", and the array values
-	 * are the corresponding selectors. For example, `array('input' => '#my-input')`.
+	 * are the corresponding selectors. For example, `['input' => '#my-input']`.
 	 *
 	 * The container selector is used under the context of the form, while the input and the error
 	 * selectors are used under the context of the container.
@@ -119,7 +116,7 @@ class ActiveField extends Component
 	 * `{error}`, and `{error}`. Note that you normally don't need to access this property directly as
 	 * it is maintained by various methods of this class.
 	 */
-	public $parts = array();
+	public $parts = [];
 
 
 	/**
@@ -191,7 +188,7 @@ class ActiveField extends Component
 		$inputID = Html::getInputId($this->model, $this->attribute);
 		$attribute = Html::getAttributeName($this->attribute);
 		$options = $this->options;
-		$class = isset($options['class']) ? array($options['class']) : array();
+		$class = isset($options['class']) ? [$options['class']] : [];
 		$class[] = "field-$inputID";
 		if ($this->model->isAttributeRequired($attribute)) {
 			$class[] = $this->form->requiredCssClass;
@@ -221,9 +218,9 @@ class ActiveField extends Component
 	 * @param array $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
 	 * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
 	 * using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function label($label = null, $options = array())
+	public function label($label = null, $options = [])
 	{
 		$options = array_merge($this->labelOptions, $options);
 		if ($label !== null) {
@@ -244,9 +241,9 @@ class ActiveField extends Component
 	 *
 	 * - tag: this specifies the tag name. If not set, "div" will be used.
 	 *
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function error($options = array())
+	public function error($options = [])
 	{
 		$options = array_merge($this->errorOptions, $options);
 		$this->parts['{error}'] = Html::error($this->model, $this->attribute, $options);
@@ -263,9 +260,9 @@ class ActiveField extends Component
 	 *
 	 * - tag: this specifies the tag name. If not set, "div" will be used.
 	 *
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function hint($content, $options = array())
+	public function hint($content, $options = [])
 	{
 		$options = array_merge($this->hintOptions, $options);
 		$tag = ArrayHelper::remove($options, 'tag', 'div');
@@ -278,9 +275,9 @@ class ActiveField extends Component
 	 * @param string $type the input type (e.g. 'text', 'password')
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function input($type, $options = array())
+	public function input($type, $options = [])
 	{
 		$options = array_merge($this->inputOptions, $options);
 		$this->parts['{input}'] = Html::activeInput($type, $this->model, $this->attribute, $options);
@@ -293,9 +290,9 @@ class ActiveField extends Component
 	 * unless they are explicitly specified in `$options`.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function textInput($options = array())
+	public function textInput($options = [])
 	{
 		$options = array_merge($this->inputOptions, $options);
 		$this->parts['{input}'] = Html::activeTextInput($this->model, $this->attribute, $options);
@@ -308,9 +305,9 @@ class ActiveField extends Component
 	 * unless they are explicitly specified in `$options`.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function passwordInput($options = array())
+	public function passwordInput($options = [])
 	{
 		$options = array_merge($this->inputOptions, $options);
 		$this->parts['{input}'] = Html::activePasswordInput($this->model, $this->attribute, $options);
@@ -323,11 +320,12 @@ class ActiveField extends Component
 	 * unless they are explicitly specified in `$options`.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function fileInput($options = array())
+	public function fileInput($options = [])
 	{
-		if ($this->inputOptions !== array('class' => 'form-control')) {
+		// https://github.com/yiisoft/yii2/pull/795
+		if ($this->inputOptions !== ['class' => 'form-control']) {
 			$options = array_merge($this->inputOptions, $options);
 		}
 		$this->parts['{input}'] = Html::activeFileInput($this->model, $this->attribute, $options);
@@ -339,9 +337,9 @@ class ActiveField extends Component
 	 * The model attribute value will be used as the content in the textarea.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function textarea($options = array())
+	public function textarea($options = [])
 	{
 		$options = array_merge($this->inputOptions, $options);
 		$this->parts['{input}'] = Html::activeTextarea($this->model, $this->attribute, $options);
@@ -367,9 +365,9 @@ class ActiveField extends Component
 	 * @param boolean $enclosedByLabel whether to enclose the radio within the label.
 	 * If true, the method will still use [[template]] to layout the checkbox and the error message
 	 * except that the radio is enclosed by the label tag.
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function radio($options = array(), $enclosedByLabel = true)
+	public function radio($options = [], $enclosedByLabel = true)
 	{
 		if ($enclosedByLabel) {
 			if (!isset($options['label'])) {
@@ -402,9 +400,9 @@ class ActiveField extends Component
 	 * @param boolean $enclosedByLabel whether to enclose the checkbox within the label.
 	 * If true, the method will still use [[template]] to layout the checkbox and the error message
 	 * except that the checkbox is enclosed by the label tag.
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function checkbox($options = array(), $enclosedByLabel = true)
+	public function checkbox($options = [], $enclosedByLabel = true)
 	{
 		if ($enclosedByLabel) {
 			if (!isset($options['label'])) {
@@ -436,10 +434,10 @@ class ActiveField extends Component
 	 *   and the array values are the extra attributes for the corresponding option tags. For example,
 	 *
 	 * ~~~
-	 * array(
-	 *     'value1' => array('disabled' => true),
-	 *     'value2' => array('label' => 'value 2'),
-	 * );
+	 * [
+	 *     'value1' => ['disabled' => true],
+	 *     'value2' => ['label' => 'value 2'],
+	 * ];
 	 * ~~~
 	 *
 	 * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
@@ -448,9 +446,9 @@ class ActiveField extends Component
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
 	 *
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function dropDownList($items, $options = array())
+	public function dropDownList($items, $options = [])
 	{
 		$options = array_merge($this->inputOptions, $options);
 		$this->parts['{input}'] = Html::activeDropDownList($this->model, $this->attribute, $items, $options);
@@ -475,10 +473,10 @@ class ActiveField extends Component
 	 *   and the array values are the extra attributes for the corresponding option tags. For example,
 	 *
 	 * ~~~
-	 * array(
-	 *     'value1' => array('disabled' => true),
-	 *     'value2' => array('label' => 'value 2'),
-	 * );
+	 * [
+	 *     'value1' => ['disabled' => true],
+	 *     'value2' => ['label' => 'value 2'],
+	 * ];
 	 * ~~~
 	 *
 	 * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
@@ -490,9 +488,9 @@ class ActiveField extends Component
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
 	 *
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function listBox($items, $options = array())
+	public function listBox($items, $options = [])
 	{
 		$options = array_merge($this->inputOptions, $options);
 		$this->parts['{input}'] = Html::activeListBox($this->model, $this->attribute, $items, $options);
@@ -505,7 +503,7 @@ class ActiveField extends Component
 	 * As a result, the corresponding submitted value is an array.
 	 * The selection of the checkbox list is taken from the value of the model attribute.
 	 * @param array $items the data item used to generate the checkboxes.
-	 * The array keys are the labels, while the array values are the corresponding checkbox values.
+	 * The array values are the labels, while the array keys are the corresponding checkbox values.
 	 * Note that the labels will NOT be HTML-encoded, while the values will.
 	 * @param array $options options (name => config) for the checkbox list. The following options are specially handled:
 	 *
@@ -522,9 +520,9 @@ class ActiveField extends Component
 	 * where $index is the zero-based index of the checkbox in the whole list; $label
 	 * is the label for the checkbox; and $name, $value and $checked represent the name,
 	 * value and the checked status of the checkbox input.
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function checkboxList($items, $options = array())
+	public function checkboxList($items, $options = [])
 	{
 		$this->parts['{input}'] = Html::activeCheckboxList($this->model, $this->attribute, $items, $options);
 		return $this;
@@ -552,9 +550,9 @@ class ActiveField extends Component
 	 * where $index is the zero-based index of the radio button in the whole list; $label
 	 * is the label for the radio button; and $name, $value and $checked represent the name,
 	 * value and the checked status of the radio button input.
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function radioList($items, $options = array())
+	public function radioList($items, $options = [])
 	{
 		$this->parts['{input}'] = Html::activeRadioList($this->model, $this->attribute, $items, $options);
 		return $this;
@@ -571,9 +569,9 @@ class ActiveField extends Component
 	 *
 	 * @param string $class the widget class name
 	 * @param array $config name-value pairs that will be used to initialize the widget
-	 * @return ActiveField the field object itself
+	 * @return static the field object itself
 	 */
-	public function widget($class, $config = array())
+	public function widget($class, $config = [])
 	{
 		/** @var \yii\base\Widget $class */
 		$config['model'] = $this->model;
@@ -589,10 +587,14 @@ class ActiveField extends Component
 	 */
 	protected function getClientOptions()
 	{
+		$attribute = Html::getAttributeName($this->attribute);
+		if (!in_array($attribute, $this->model->activeAttributes(), true)) {
+			return [];
+		}
+
 		$enableClientValidation = $this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation;
 		if ($enableClientValidation) {
-			$attribute = Html::getAttributeName($this->attribute);
-			$validators = array();
+			$validators = [];
 			foreach ($this->model->getActiveValidators($attribute) as $validator) {
 				/** @var \yii\validators\Validator $validator */
 				$js = $validator->clientValidateAttribute($this->model, $attribute, $this->form->getView());
@@ -613,7 +615,7 @@ class ActiveField extends Component
 		if ($enableClientValidation && !empty($options['validate']) || $enableAjaxValidation) {
 			$inputID = Html::getInputId($this->model, $this->attribute);
 			$options['name'] = $inputID;
-			foreach (array('validateOnChange', 'validateOnType', 'validationDelay') as $name) {
+			foreach (['validateOnChange', 'validateOnType', 'validationDelay'] as $name) {
 				$options[$name] = $this->$name === null ? $this->form->$name : $this->$name;
 			}
 			$options['container'] = isset($this->selectors['container']) ? $this->selectors['container'] : ".field-$inputID";
@@ -625,7 +627,7 @@ class ActiveField extends Component
 			}
 			return $options;
 		} else {
-			return array();
+			return [];
 		}
 	}
 }

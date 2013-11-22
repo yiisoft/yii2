@@ -20,7 +20,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		Schema::TYPE_PK => 'int IDENTITY PRIMARY KEY',
 		Schema::TYPE_BIGPK => 'bigint IDENTITY PRIMARY KEY',
 		Schema::TYPE_STRING => 'varchar(255)',
@@ -37,7 +37,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		Schema::TYPE_BINARY => 'binary',
 		Schema::TYPE_BOOLEAN => 'tinyint(1)',
 		Schema::TYPE_MONEY => 'decimal(19,4)',
-	);
+	];
 
 //	public function update($table, $columns, $condition, &$params)
 //	{

@@ -61,7 +61,7 @@ class Connection extends Component
 	/**
 	 * @var array List of available redis commands http://redis.io/commands
 	 */
-	public $redisCommands = array(
+	public $redisCommands = [
 		'BRPOP', // key [key ...] timeout Remove and get the last element in a list, or block until one is available
 		'BRPOPLPUSH', // source destination timeout Pop a value from a list, push it to another list and return it; or block until one is available
 		'CLIENT KILL', // ip:port Kill the connection of a client
@@ -201,7 +201,7 @@ class Connection extends Component
 		'ZREVRANK', // key member Determine the index of a member in a sorted set, with scores ordered from high to low
 		'ZSCORE', // key member Get the score associated with the given member in a sorted set
 		'ZUNIONSTORE', // destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX] Add multiple sorted sets and store the resulting sorted set in a new key
-	);
+	];
 	/**
 	 * @var Transaction the currently active transaction
 	 */
@@ -260,9 +260,9 @@ class Connection extends Component
 					stream_set_timeout($this->_socket, $timeout=(int)$this->dataTimeout, (int) (($this->dataTimeout - $timeout) * 1000000));
 				}
 				if ($this->password !== null) {
-					$this->executeCommand('AUTH', array($this->password));
+					$this->executeCommand('AUTH', [$this->password]);
 				}
-				$this->executeCommand('SELECT', array($db));
+				$this->executeCommand('SELECT', [$db]);
 				$this->initConnection();
 			} else {
 				\Yii::error("Failed to open DB connection ({$this->dsn}): " . $errorNumber . ' - ' . $errorDescription, __CLASS__);
@@ -313,9 +313,7 @@ class Connection extends Component
 	public function beginTransaction()
 	{
 		$this->open();
-		$this->_transaction = new Transaction(array(
-			'db' => $this,
-		));
+		$this->_transaction = new Transaction(['db' => $this]);
 		$this->_transaction->begin();
 		return $this->_transaction;
 	}
@@ -368,7 +366,7 @@ class Connection extends Component
 	 * for details on the mentioned reply types.
 	 * @trows Exception for commands that return [error reply](http://redis.io/topics/protocol#error-reply).
 	 */
-	public function executeCommand($name, $params=array())
+	public function executeCommand($name, $params=[])
 	{
 		$this->open();
 
@@ -386,7 +384,7 @@ class Connection extends Component
 
 	private function parseResponse($command)
 	{
-		if(($line = fgets($this->_socket)) === false) {
+		if (($line = fgets($this->_socket)) === false) {
 			throw new Exception("Failed to read from socket.\nRedis command was: " . $command);
 		}
 		$type = $line[0];
@@ -407,7 +405,7 @@ class Connection extends Component
 				$length = $line + 2;
 				$data = '';
 				while ($length > 0) {
-					if(($block = fread($this->_socket, $line + 2)) === false) {
+					if (($block = fread($this->_socket, $line + 2)) === false) {
 						throw new Exception("Failed to read from socket.\nRedis command was: " . $command);
 					}
 					$data .= $block;
@@ -416,8 +414,8 @@ class Connection extends Component
 				return mb_substr($data, 0, -2, '8bit');
 			case '*': // Multi-bulk replies
 				$count = (int) $line;
-				$data = array();
-				for($i = 0; $i < $count; $i++) {
+				$data = [];
+				for ($i = 0; $i < $count; $i++) {
 					$data[] = $this->parseResponse($command);
 				}
 				return $data;

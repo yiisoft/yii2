@@ -36,7 +36,7 @@ class LinkPager extends Widget
 	/**
 	 * @var array HTML attributes for the pager container tag.
 	 */
-	public $options = array('class' => 'pagination');
+	public $options = ['class' => 'pagination'];
 	/**
 	 * @var string the CSS class for the "first" page button.
 	 */
@@ -112,7 +112,7 @@ class LinkPager extends Widget
 	 */
 	protected function renderPageButtons()
 	{
-		$buttons = array();
+		$buttons = [];
 
 		$pageCount = $this->pagination->getPageCount();
 		$currentPage = $this->pagination->getPage();
@@ -164,15 +164,15 @@ class LinkPager extends Widget
 	 */
 	protected function renderPageButton($label, $page, $class, $disabled, $active)
 	{
+		$options = ['class' => $class === '' ? null : $class];
 		if ($active) {
-			$class .= ' ' . $this->activePageCssClass;
+			Html::addCssClass($options, $this->activePageCssClass);
 		}
 		if ($disabled) {
-			$class .= ' ' . $this->disabledPageCssClass;
+			Html::addCssClass($options, $this->disabledPageCssClass);
+			return Html::tag('li', Html::tag('span', $label), $options);
 		}
-		$class = trim($class);
-		$options = array('class' => $class === '' ? null : $class);
-		return Html::tag('li', Html::a($label, $this->pagination->createUrl($page), array('data-page' => $page)), $options);
+		return Html::tag('li', Html::a($label, $this->pagination->createUrl($page), ['data-page' => $page]), $options);
 	}
 
 	/**
@@ -188,6 +188,6 @@ class LinkPager extends Widget
 			$endPage = $pageCount - 1;
 			$beginPage = max(0, $endPage - $this->maxButtonCount + 1);
 		}
-		return array($beginPage, $endPage);
+		return [$beginPage, $endPage];
 	}
 }

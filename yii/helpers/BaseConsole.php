@@ -263,7 +263,7 @@ class BaseConsole
 	 * This is equal to calling
 	 *
 	 * ```php
-	 * echo Console::ansiFormatCode(array(Console::RESET))
+	 * echo Console::ansiFormatCode([Console::RESET])
 	 * ```
 	 */
 	public static function endAnsiFormat()
@@ -280,7 +280,7 @@ class BaseConsole
 	 * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
 	 * @return string
 	 */
-	public static function ansiFormat($string, $format = array())
+	public static function ansiFormat($string, $format = [])
 	{
 		$code = implode(';', $format);
 		return "\033[0m" . ($code !== '' ? "\033[" . $code . "m" : '') . $string . "\033[0m";
@@ -337,74 +337,74 @@ class BaseConsole
 		return preg_replace_callback(
 			'/\033\[[\d;]+m/',
 			function ($ansi) use (&$tags) {
-				$styleA = array();
+				$styleA = [];
 				foreach (explode(';', $ansi) as $controlCode) {
 					switch ($controlCode) {
 						case self::FG_BLACK:
-							$style = array('color' => '#000000');
+							$style = ['color' => '#000000'];
 							break;
 						case self::FG_BLUE:
-							$style = array('color' => '#000078');
+							$style = ['color' => '#000078'];
 							break;
 						case self::FG_CYAN:
-							$style = array('color' => '#007878');
+							$style = ['color' => '#007878'];
 							break;
 						case self::FG_GREEN:
-							$style = array('color' => '#007800');
+							$style = ['color' => '#007800'];
 							break;
 						case self::FG_GREY:
-							$style = array('color' => '#787878');
+							$style = ['color' => '#787878'];
 							break;
 						case self::FG_PURPLE:
-							$style = array('color' => '#780078');
+							$style = ['color' => '#780078'];
 							break;
 						case self::FG_RED:
-							$style = array('color' => '#780000');
+							$style = ['color' => '#780000'];
 							break;
 						case self::FG_YELLOW:
-							$style = array('color' => '#787800');
+							$style = ['color' => '#787800'];
 							break;
 						case self::BG_BLACK:
-							$style = array('background-color' => '#000000');
+							$style = ['background-color' => '#000000'];
 							break;
 						case self::BG_BLUE:
-							$style = array('background-color' => '#000078');
+							$style = ['background-color' => '#000078'];
 							break;
 						case self::BG_CYAN:
-							$style = array('background-color' => '#007878');
+							$style = ['background-color' => '#007878'];
 							break;
 						case self::BG_GREEN:
-							$style = array('background-color' => '#007800');
+							$style = ['background-color' => '#007800'];
 							break;
 						case self::BG_GREY:
-							$style = array('background-color' => '#787878');
+							$style = ['background-color' => '#787878'];
 							break;
 						case self::BG_PURPLE:
-							$style = array('background-color' => '#780078');
+							$style = ['background-color' => '#780078'];
 							break;
 						case self::BG_RED:
-							$style = array('background-color' => '#780000');
+							$style = ['background-color' => '#780000'];
 							break;
 						case self::BG_YELLOW:
-							$style = array('background-color' => '#787800');
+							$style = ['background-color' => '#787800'];
 							break;
 						case self::BOLD:
-							$style = array('font-weight' => 'bold');
+							$style = ['font-weight' => 'bold'];
 							break;
 						case self::ITALIC:
-							$style = array('font-style' => 'italic');
+							$style = ['font-style' => 'italic'];
 							break;
 						case self::UNDERLINE:
-							$style = array('text-decoration' => array('underline'));
+							$style = ['text-decoration' => ['underline']];
 							break;
 						case self::OVERLINED:
-							$style = array('text-decoration' => array('overline'));
+							$style = ['text-decoration' => ['overline']];
 							break;
 						case self::CROSSED_OUT:
-							$style = array('text-decoration' => array('line-through'));
+							$style = ['text-decoration' => ['line-through']];
 							break;
 						case self::BLINK:
-							$style = array('text-decoration' => array('blink'));
+							$style = ['text-decoration' => ['blink']];
 							break;
 						case self::NEGATIVE: // ???
 						case self::CONCEALED:
@@ -422,7 +422,7 @@ class BaseConsole
 
 					$styleA = ArrayHelper::merge($styleA, $style);
 				}
-				$styleString[] = array();
+				$styleString[] = [];
 				foreach ($styleA as $name => $content) {
 					if ($name === 'text-decoration') {
 						$content = implode(' ', $content);
@@ -480,41 +480,41 @@ class BaseConsole
 	// TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
 	public static function renderColoredString($string, $colored = true)
 	{
-		static $conversions = array(
-			'%y' => array(self::FG_YELLOW),
-			'%g' => array(self::FG_GREEN),
-			'%b' => array(self::FG_BLUE),
-			'%r' => array(self::FG_RED),
-			'%p' => array(self::FG_PURPLE),
-			'%m' => array(self::FG_PURPLE),
-			'%c' => array(self::FG_CYAN),
-			'%w' => array(self::FG_GREY),
-			'%k' => array(self::FG_BLACK),
-			'%n' => array(0), // reset
-			'%Y' => array(self::FG_YELLOW, self::BOLD),
-			'%G' => array(self::FG_GREEN, self::BOLD),
-			'%B' => array(self::FG_BLUE, self::BOLD),
-			'%R' => array(self::FG_RED, self::BOLD),
-			'%P' => array(self::FG_PURPLE, self::BOLD),
-			'%M' => array(self::FG_PURPLE, self::BOLD),
-			'%C' => array(self::FG_CYAN, self::BOLD),
-			'%W' => array(self::FG_GREY, self::BOLD),
-			'%K' => array(self::FG_BLACK, self::BOLD),
-			'%N' => array(0, self::BOLD),
-			'%3' => array(self::BG_YELLOW),
-			'%2' => array(self::BG_GREEN),
-			'%4' => array(self::BG_BLUE),
-			'%1' => array(self::BG_RED),
-			'%5' => array(self::BG_PURPLE),
-			'%6' => array(self::BG_PURPLE),
-			'%7' => array(self::BG_CYAN),
-			'%0' => array(self::BG_GREY),
-			'%F' => array(self::BLINK),
-			'%U' => array(self::UNDERLINE),
-			'%8' => array(self::NEGATIVE),
-			'%9' => array(self::BOLD),
-			'%_' => array(self::BOLD)
-		);
+		static $conversions = [
+			'%y' => [self::FG_YELLOW],
+			'%g' => [self::FG_GREEN],
+			'%b' => [self::FG_BLUE],
+			'%r' => [self::FG_RED],
+			'%p' => [self::FG_PURPLE],
+			'%m' => [self::FG_PURPLE],
+			'%c' => [self::FG_CYAN],
+			'%w' => [self::FG_GREY],
+			'%k' => [self::FG_BLACK],
+			'%n' => [0], // reset
+			'%Y' => [self::FG_YELLOW, self::BOLD],
+			'%G' => [self::FG_GREEN, self::BOLD],
+			'%B' => [self::FG_BLUE, self::BOLD],
+			'%R' => [self::FG_RED, self::BOLD],
+			'%P' => [self::FG_PURPLE, self::BOLD],
+			'%M' => [self::FG_PURPLE, self::BOLD],
+			'%C' => [self::FG_CYAN, self::BOLD],
+			'%W' => [self::FG_GREY, self::BOLD],
+			'%K' => [self::FG_BLACK, self::BOLD],
+			'%N' => [0, self::BOLD],
+			'%3' => [self::BG_YELLOW],
+			'%2' => [self::BG_GREEN],
+			'%4' => [self::BG_BLUE],
+			'%1' => [self::BG_RED],
+			'%5' => [self::BG_PURPLE],
+			'%6' => [self::BG_PURPLE],
+			'%7' => [self::BG_CYAN],
+			'%0' => [self::BG_GREY],
+			'%F' => [self::BLINK],
+			'%U' => [self::UNDERLINE],
+			'%8' => [self::NEGATIVE],
+			'%9' => [self::BOLD],
+			'%_' => [self::BOLD],
+		];
 
 		if ($colored) {
 			$string = str_replace('%%', '% ', $string);
@@ -588,26 +588,26 @@ class BaseConsole
 		}
 
 		if (static::isRunningOnWindows()) {
-			$output = array();
+			$output = [];
 			exec('mode con', $output);
 			if (isset($output) && strpos($output[1], 'CON') !== false) {
-				return $size = array((int)preg_replace('~[^0-9]~', '', $output[3]), (int)preg_replace('~[^0-9]~', '', $output[4]));
+				return $size = [(int)preg_replace('~[^0-9]~', '', $output[3]), (int)preg_replace('~[^0-9]~', '', $output[4])];
 			}
 		} else {
 			// try stty if available
-			$stty = array();
+			$stty = [];
 			if (exec('stty -a 2>&1', $stty) && preg_match('/rows\s+(\d+);\s*columns\s+(\d+);/mi', implode(' ', $stty), $matches)) {
-				return $size = array($matches[2], $matches[1]);
+				return $size = [$matches[2], $matches[1]];
 			}
 
 			// fallback to tput, which may not be updated on terminal resize
 			if (($width = (int) exec('tput cols 2>&1')) > 0 && ($height = (int) exec('tput lines 2>&1')) > 0) {
-				return $size = array($width, $height);
+				return $size = [$width, $height];
 			}
 
 			// fallback to ENV variables, which may not be updated on terminal resize
 			if (($width = (int) getenv('COLUMNS')) > 0 && ($height = (int) getenv('LINES')) > 0) {
-				return $size = array($width, $height);
+				return $size = [$width, $height];
 			}
 		}
 
@@ -697,17 +697,17 @@ class BaseConsole
 	 *      - $error: the error value passed by reference if validation failed.
 	 * @return string the user input
 	 */
-	public static function prompt($text, $options = array())
+	public static function prompt($text, $options = [])
 	{
 		$options = ArrayHelper::merge(
-			$options,
-			array(
+			[
 				'required'  => false,
 				'default'   => null,
 				'pattern'   => null,
 				'validator' => null,
 				'error'     => 'Invalid input.',
-			)
+			],
+			$options
 		);
 		$error   = null;
 
@@ -727,7 +727,7 @@ class BaseConsole
 			static::output($options['error']);
 			goto top;
 		} elseif ($options['validator'] &&
-			!call_user_func_array($options['validator'], array($input, &$error))
+			!call_user_func_array($options['validator'], [$input, &$error])
 		) {
 			static::output(isset($error) ? $error : $options['error']);
 			goto top;
@@ -759,7 +759,7 @@ class BaseConsole
 	 *
 	 * @return string An option character the user chose
 	 */
-	public static function select($prompt, $options = array())
+	public static function select($prompt, $options = [])
 	{
 		top:
 		static::stdout("$prompt [" . implode(',', array_keys($options)) . ",?]: ");

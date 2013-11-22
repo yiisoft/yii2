@@ -65,11 +65,11 @@ class ExistValidator extends Validator
 			return;
 		}
 
-		/** @var $className \yii\db\ActiveRecord */
+		/** @var \yii\db\ActiveRecord $className */
 		$className = $this->className === null ? get_class($object) : $this->className;
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
 		$query = $className::find();
-		$query->where(array($attributeName => $value));
+		$query->where([$attributeName => $value]);
 		if (!$query->exists()) {
 			$this->addError($object, $attribute, $this->message);
 		}
@@ -92,10 +92,10 @@ class ExistValidator extends Validator
 		if ($this->attributeName === null) {
 			throw new InvalidConfigException('The "attributeName" property must be set.');
 		}
-		/** @var $className \yii\db\ActiveRecord */
+		/** @var \yii\db\ActiveRecord $className */
 		$className = $this->className;
 		$query = $className::find();
-		$query->where(array($this->attributeName => $value));
+		$query->where([$this->attributeName => $value]);
 		return $query->exists();
 	}
 }

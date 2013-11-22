@@ -27,7 +27,7 @@ class MissingTranslationEvent extends Event
 	 */
 	public $category;
 	/**
-	 * @var string the language ID (e.g. en_US) that the message is to be translated to
+	 * @var string the language ID (e.g. en-US) that the message is to be translated to
 	 */
 	public $language;
 }

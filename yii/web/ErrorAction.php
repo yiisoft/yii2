@@ -23,11 +23,9 @@ use yii\base\UserException;
  * ```php
  * public function actions()
  * {
- *     return array(
- *         'error' => array(
- *             'class' => 'yii\web\ErrorAction',
- *         ),
- *     );
+ *     return [
+ *         'error' => ['class' => 'yii\web\ErrorAction'],
+ *     ];
  * }
  * ```
  *
@@ -41,9 +39,9 @@ use yii\base\UserException;
  * Finally, configure the "errorHandler" application component as follows,
  *
  * ```php
- * 'errorHandler' => array(
+ * 'errorHandler' => [
  *     'errorAction' => 'site/error',
- * )
+ * ]
  * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -98,11 +96,11 @@ class ErrorAction extends Action
 		if (Yii::$app->getRequest()->getIsAjax()) {
 			return "$name: $message";
 		} else {
-			return $this->controller->render($this->view ?: $this->id, array(
+			return $this->controller->render($this->view ?: $this->id, [
 				'name' => $name,
 				'message' => $message,
 				'exception' => $exception,
-			));
+			]);
 		}
 	}
 }

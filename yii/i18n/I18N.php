@@ -10,10 +10,16 @@ namespace yii\i18n;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 
 /**
  * I18N provides features related with internationalization (I18N) and localization (L10N).
+ *
+ * I18N is configured as an application component in [[yii\base\Application]] by default.
+ * You can access that instance via `Yii::$app->i18n`.
+ *
+ * @property MessageFormatter $messageFormatter The message formatter to be used to format message via ICU
+ * message format. Note that the type of this property differs in getter and setter. See
+ * [[getMessageFormatter()]] and [[setMessageFormatter()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -37,17 +43,6 @@ class I18N extends Component
 	 * You may override the configuration of both categories.
 	 */
 	public $translations;
-	/**
-	 * @var string the path or path alias of the file that contains the plural rules.
-	 * By default, this refers to a file shipped with the Yii distribution. The file is obtained
-	 * by converting from the data file in the CLDR project.
-	 *
-	 * If the default rule file does not contain the expected rules, you may copy and modify it
-	 * for your application, and then configure this property to point to your modified copy.
-	 *
-	 * @see http://www.unicode.org/cldr/charts/supplemental/language_plural_rules.html
-	 */
-	public $pluralRuleFile = '@yii/i18n/data/plurals.php';
 
 	/**
 	 * Initializes the component by configuring the default message categories.
@@ -56,48 +51,100 @@ class I18N extends Component
 	{
 		parent::init();
 		if (!isset($this->translations['yii'])) {
-			$this->translations['yii'] = array(
+			$this->translations['yii'] = [
 				'class' => 'yii\i18n\PhpMessageSource',
-				'sourceLanguage' => 'en_US',
+				'sourceLanguage' => 'en-US',
 				'basePath' => '@yii/messages',
-			);
+			];
 		}
 		if (!isset($this->translations['app'])) {
-			$this->translations['app'] = array(
+			$this->translations['app'] = [
 				'class' => 'yii\i18n\PhpMessageSource',
-				'sourceLanguage' => 'en_US',
+				'sourceLanguage' => 'en-US',
 				'basePath' => '@app/messages',
-			);
+			];
 		}
 	}
 
 	/**
 	 * Translates a message to the specified language.
-	 * If the first parameter in `$params` is a number and it is indexed by 0, appropriate plural rules
-	 * will be applied to the translated message.
+	 *
+	 * After translation the message will be formatted using [[MessageFormatter]] if it contains
+	 * ICU message format and `$params` are not empty.
+	 *
 	 * @param string $category the message category.
 	 * @param string $message the message to be translated.
 	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
-	 * @param string $language the language code (e.g. `en_US`, `en`).
-	 * @return string the translated message.
+	 * @param string $language the language code (e.g. `en-US`, `en`).
+	 * @return string the translated and formatted message.
 	 */
 	public function translate($category, $message, $params, $language)
 	{
 		$message = $this->getMessageSource($category)->translate($category, $message, $language);
+		return $this->format($message, $params, $language);
+	}
 
-		if (!is_array($params)) {
-			$params = array($params);
+	/**
+	 * Formats a message using [[MessageFormatter]].
+	 *
+	 * @param string $message the message to be formatted.
+	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
+	 * @param string $language the language code (e.g. `en-US`, `en`).
+	 * @return string the formatted message.
+	 */
+	public function format($message, $params, $language)
+	{
+		$params = (array)$params;
+		if ($params === []) {
+			return $message;
 		}
 
-		if (isset($params[0])) {
-			$message = $this->applyPluralRules($message, $params[0], $language);
-			if (!isset($params['{n}'])) {
-				$params['{n}'] = $params[0];
+		if (preg_match('~{\s*[\d\w]+\s*,~u', $message)) {
+			$formatter = $this->getMessageFormatter();
+			$result = $formatter->format($message, $params, $language);
+			if ($result === false) {
+				$errorMessage = $formatter->getErrorMessage();
+				Yii::warning("Formatting message for language '$language' failed with error: $errorMessage. The message being formatted was: $message.");
+				return $message;
+			} else {
+				return $result;
 			}
-			unset($params[0]);
 		}
 
-		return empty($params) ? $message : strtr($message, $params);
+		$p = [];
+		foreach($params as $name => $value) {
+			$p['{' . $name . '}'] = $value;
+		}
+		return strtr($message, $p);
+	}
+
+	/**
+	 * @var string|array|MessageFormatter
+	 */
+	private $_messageFormatter;
+
+	/**
+	 * Returns the message formatter instance.
+	 * @return MessageFormatter the message formatter to be used to format message via ICU message format.
+	 */
+	public function getMessageFormatter()
+	{
+		if ($this->_messageFormatter === null) {
+			$this->_messageFormatter = new MessageFormatter();
+		} elseif (is_array($this->_messageFormatter) || is_string($this->_messageFormatter)) {
+			$this->_messageFormatter = Yii::createObject($this->_messageFormatter);
+		}
+		return $this->_messageFormatter;
+	}
+
+	/**
+	 * @param string|array|MessageFormatter $value the message formatter to be used to format message via ICU message format.
+	 * Can be given as array or string configuration that will be given to [[Yii::createObject]] to create an instance
+	 * or a [[MessageFormatter]] instance.
+	 */
+	public function setMessageFormatter($value)
+	{
+		$this->_messageFormatter = $value;
 	}
 
 	/**
@@ -124,63 +171,5 @@ class I18N extends Component
 		} else {
 			throw new InvalidConfigException("Unable to locate message source for category '$category'.");
 		}
-	}
-
-	/**
-	 * Applies appropriate plural rules to the given message.
-	 * @param string $message the message to be applied with plural rules
-	 * @param mixed $number the number by which plural rules will be applied
-	 * @param string $language the language code that determines which set of plural rules to be applied.
-	 * @return string the message that has applied plural rules
-	 */
-	protected function applyPluralRules($message, $number, $language)
-	{
-		if (strpos($message, '|') === false) {
-			return $message;
-		}
-		$chunks = explode('|', $message);
-
-		$rules = $this->getPluralRules($language);
-		foreach ($rules as $i => $rule) {
-			if (isset($chunks[$i]) && $this->evaluate($rule, $number)) {
-				return $chunks[$i];
-			}
-		}
-		$n = count($rules);
-		return isset($chunks[$n]) ? $chunks[$n] : $chunks[0];
-	}
-
-	private $_pluralRules = array(); // language => rule set
-
-	/**
-	 * Returns the plural rules for the given language code.
-	 * @param string $language the language code (e.g. `en_US`, `en`).
-	 * @return array the plural rules
-	 * @throws InvalidParamException if the language code is invalid.
-	 */
-	protected function getPluralRules($language)
-	{
-		if (isset($this->_pluralRules[$language])) {
-			return $this->_pluralRules[$language];
-		}
-		$allRules = require(Yii::getAlias($this->pluralRuleFile));
-		if (isset($allRules[$language])) {
-			return $this->_pluralRules[$language] = $allRules[$language];
-		} elseif (preg_match('/^[a-z]+/', strtolower($language), $matches)) {
-			return $this->_pluralRules[$language] = isset($allRules[$matches[0]]) ? $allRules[$matches[0]] : array();
-		} else {
-			throw new InvalidParamException("Invalid language code: $language");
-		}
-	}
-
-	/**
-	 * Evaluates a PHP expression with the given number value.
-	 * @param string $expression the PHP expression
-	 * @param mixed $n the number value
-	 * @return boolean the expression result
-	 */
-	protected function evaluate($expression, $n)
-	{
-		return eval("return $expression;");
 	}
 }

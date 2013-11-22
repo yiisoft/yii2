@@ -21,7 +21,7 @@ class Schema extends \yii\db\Schema
 	/**
 	 * @var array mapping from physical column types (keys) to abstract column types (values)
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		'tinyint' => self::TYPE_SMALLINT,
 		'bit' => self::TYPE_SMALLINT,
 		'smallint' => self::TYPE_SMALLINT,
@@ -47,7 +47,7 @@ class Schema extends \yii\db\Schema
 		'time' => self::TYPE_TIME,
 		'timestamp' => self::TYPE_TIMESTAMP,
 		'enum' => self::TYPE_STRING,
-	);
+	];
 
 	/**
 	 * Creates a query builder for the MySQL database.
@@ -128,7 +128,7 @@ class Schema extends \yii\db\Schema
 		foreach ($keys as $key) {
 			$id = (int)$key['id'];
 			if (!isset($table->foreignKeys[$id])) {
-				$table->foreignKeys[$id] = array($key['table'], $key['from'] => $key['to']);
+				$table->foreignKeys[$id] = [$key['table'], $key['from'] => $key['to']];
 			} else {
 				// composite FK
 				$table->foreignKeys[$id][$key['from']] = $key['to'];
@@ -153,7 +153,7 @@ class Schema extends \yii\db\Schema
 
 		$column->type = self::TYPE_STRING;
 		if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
-			$type = $matches[1];
+			$type = strtolower($matches[1]);
 			if (isset($this->typeMap[$type])) {
 				$column->type = $this->typeMap[$type];
 			}

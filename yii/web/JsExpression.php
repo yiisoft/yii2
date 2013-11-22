@@ -30,7 +30,7 @@ class JsExpression extends Object
 	 * @param string $expression the JavaScript expression represented by this object
 	 * @param array $config additional configurations for this object
 	 */
-	public function __construct($expression, $config = array())
+	public function __construct($expression, $config = [])
 	{
 		$this->expression = $expression;
 		parent::__construct($config);
