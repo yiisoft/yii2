@@ -5,6 +5,7 @@ Yii has a database access layer built on top of PHP's [PDO](http://www.php.net/m
 uniform API and solves some inconsistencies between different DBMS. By default Yii supports the following DBMS:
 
 - [MySQL](http://www.mysql.com/)
+- [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
 - [PostgreSQL](http://www.postgresql.org/)
 - [CUBRID](http://www.cubrid.org/) (version 9.1.0 and higher).

@@ -125,6 +125,7 @@ class Module extends \yii\base\Module
 				return true;
 			}
 		}
+		Yii::warning('Access to Gii is denied due to IP address restriction. The requested IP is ' . $ip, __METHOD__);
 		return false;
 	}
 

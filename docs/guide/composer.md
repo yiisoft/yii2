@@ -21,8 +21,8 @@ curl -s http://getcomposer.org/installer | php
 Adding more packages to your project
 ------------------------------------
 
-The act of [installing a Yii application](installing.md) creates the `composer.json` file in the root directory of your project.
-In this file you list the packages that your application requires. For Yii sites, the most important part of the file is `require` the section:
+The act of [installing a Yii application](installation.md) creates the `composer.json` file in the root directory of your project.
+In this file you list the packages that your application requires. For Yii sites, the most important part of the file is the `require` section:
 
 ```
 {
@@ -33,19 +33,23 @@ In this file you list the packages that your application requires. For Yii sites
 }
 ```
 
-Within the `require` section, you specify the name and version of each required package. The above example says that a version greater than or equal to 1.3 of Michaelf's PHP-Markdown package is required, as is version 4.5 or greater of Ezyang's HTMLPurifier. For details of this syntax, see the [official Composer documentation](http://getcomposer.org). 
+Within the `require` section, you specify the name and version of each required package.
+The above example says that a version greater than or equal to 1.3 of Michaelf's PHP-Markdown package is required,
+as is version 4.5 or greater of Ezyang's HTMLPurifier.
+For details of this syntax, see the [official Composer documentation](http://getcomposer.org).
 
-The full list of available Composer-supported PHP packages can be found at [packagist](http://packagist.org/). Any Yii extension can also be explicitly named using the syntax:
+The full list of available Composer-supported PHP packages can be found at [packagist](http://packagist.org/).
 
-???
-
-Once you have edited the `composer.json`, you can invoke Composer to install the identified dependencies. For the first installation of the dependencies, use this command:
+Once you have edited the `composer.json`, you can invoke Composer to install the identified dependencies.
+For the first installation of the dependencies, use this command:
 
 ```
 php composer.phar install
 ```
 
-This must be executed within your Yii project's directory, where the `composer.json` file can be found. Depending upon your operating system and setup, you may need to provide paths to the PHP executable and to the `composer.phar` script.
+This must be executed within your Yii project's directory, where the `composer.json` file can be found.
+Depending upon your operating system and setup, you may need to provide paths to the PHP executable and
+to the `composer.phar` script.
 
 For an existing installation, you can have Composer update the dependencies using:
 
@@ -55,7 +59,8 @@ php composer.phar update
 
 Again, you may need to provide specific path references.
 
-In both cases, after some waiting, the required packages will be installed and ready to use in your Yii application. No additional configuration of those packages will be required.
+In both cases, after some waiting, the required packages will be installed and ready to use in your Yii application.
+No additional configuration of those packages will be required.
 
 
 FAQ

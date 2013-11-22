@@ -14,7 +14,7 @@ use yii\helpers\Html;
 
 /**
  * Nav renders a nav HTML component.
- *
+ * 
  * For example:
  *
  * ```php
@@ -28,21 +28,21 @@ use yii\helpers\Html;
  *         [
  *             'label' => 'Dropdown',
  *             'items' => [
- *                  [
- *                      'label' => 'Level 1 -DropdownA',
- *                      'url' => '#',
- *                      'items' => [
- *                          ['label' => 'Level 2 -DropdownA', 'url' => '#'],
- *                      ],
- *                  ],
- *                  ['label' => 'Level 1 -DropdownB', 'url' => '#'],
+ *                  ['label' => 'Level 1 - Dropdown A', 'url' => '#'],
+ *                  '<li class="divider"></li>',
+ *                  '<li class="dropdown-header">Dropdown Header</li>',
+ *                  ['label' => 'Level 1 - Dropdown B', 'url' => '#'],
  *             ],
  *         ],
  *     ],
  * ]);
  * ```
- *
- * @see http://twitter.github.io/bootstrap/components.html#nav
+ * 
+ * Note: Multilevel dropdowns beyond Level 1 are not supported in Bootstrap 3.
+ * 
+ * @see http://getbootstrap.com/components.html#dropdowns
+ * @see http://getbootstrap.com/components/#nav
+ * 
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */

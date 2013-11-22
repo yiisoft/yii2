@@ -164,14 +164,14 @@ class LinkPager extends Widget
 	 */
 	protected function renderPageButton($label, $page, $class, $disabled, $active)
 	{
+		$options = ['class' => $class === '' ? null : $class];
 		if ($active) {
-			$class .= ' ' . $this->activePageCssClass;
+			Html::addCssClass($options, $this->activePageCssClass);
 		}
 		if ($disabled) {
-			$class .= ' ' . $this->disabledPageCssClass;
+			Html::addCssClass($options, $this->disabledPageCssClass);
+			return Html::tag('li', Html::tag('span', $label), $options);
 		}
-		$class = trim($class);
-		$options = ['class' => $class === '' ? null : $class];
 		return Html::tag('li', Html::a($label, $this->pagination->createUrl($page), ['data-page' => $page]), $options);
 	}
 

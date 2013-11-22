@@ -197,6 +197,8 @@ class UrlManager extends Component
 				return false;
 			}
 
+			Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
+
 			$suffix = (string)$this->suffix;
 			if ($suffix !== '' && $pathInfo !== '') {
 				$n = strlen($this->suffix);
@@ -212,14 +214,13 @@ class UrlManager extends Component
 				}
 			}
 
-			Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
 			return [$pathInfo, []];
 		} else {
+			Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
 			$route = $request->get($this->routeVar);
 			if (is_array($route)) {
 				$route = '';
 			}
-			Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
 			return [(string)$route, []];
 		}
 	}

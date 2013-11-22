@@ -92,8 +92,6 @@ class Controller extends \yii\base\Controller
 	{
 		if (parent::beforeAction($action)) {
 			if ($this->enableCsrfValidation && !Yii::$app->getRequest()->validateCsrfToken()) {
-				// avoid checking again if errorAction is called to display exception
-				Yii::$app->getRequest()->enableCsrfValidation = false;
 				throw new HttpException(400, Yii::t('yii', 'Unable to verify your data submission.'));
 			}
 			return true;
@@ -169,12 +167,12 @@ class Controller extends \yii\base\Controller
 	 * Any relative URL will be converted into an absolute one by prepending it with the host info
 	 * of the current request.
 	 *
-	 * @param integer $statusCode the HTTP status code. If null, it will use 302.
+	 * @param integer $statusCode the HTTP status code. Defaults to 302.
 	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
 	 * for details about HTTP status code
 	 * @return Response the current response object
 	 */
-	public function redirect($url, $statusCode = null)
+	public function redirect($url, $statusCode = 302)
 	{
 		return Yii::$app->getResponse()->redirect(Html::url($url), $statusCode);
 	}
