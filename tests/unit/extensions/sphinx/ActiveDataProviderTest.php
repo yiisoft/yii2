@@ -3,6 +3,7 @@
 namespace yiiunit\extensions\sphinx;
 
 use yii\data\ActiveDataProvider;
+use yii\sphinx\Query;
 use yiiunit\data\sphinx\ar\ActiveRecord;
 use yiiunit\data\sphinx\ar\ArticleIndex;
 
@@ -18,6 +19,29 @@ class ActiveDataProviderTest extends SphinxTestCase
 	}
 
 	// Tests :
+
+	public function testQuery()
+	{
+		$query = new Query;
+		$query->from('yii2_test_article_index');
+
+		$provider = new ActiveDataProvider([
+			'query' => $query,
+			'db' => $this->getConnection(),
+		]);
+		$models = $provider->getModels();
+		$this->assertEquals(2, count($models));
+
+		$provider = new ActiveDataProvider([
+			'query' => $query,
+			'db' => $this->getConnection(),
+			'pagination' => [
+				'pageSize' => 1,
+			]
+		]);
+		$models = $provider->getModels();
+		$this->assertEquals(1, count($models));
+	}
 
 	public function testActiveQuery()
 	{

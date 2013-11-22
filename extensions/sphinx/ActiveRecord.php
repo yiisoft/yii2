@@ -35,7 +35,7 @@ use Yii;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class ActiveRecord extends Model
+abstract class ActiveRecord extends Model
 {
 	/**
 	 * @event Event an event that is triggered when the record is initialized via [[init()]].

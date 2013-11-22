@@ -67,3 +67,52 @@ return [
 	],
 ];
 ```
+
+This extension provides ActiveRecord solution similar ot the [[\yii\db\ActiveRecord]].
+To declare an ActiveRecord class you need to extend [[\yii\sphinx\ActiveRecord]] and
+implement the `indexName` method:
+
+```php
+use yii\sphinx\ActiveRecord;
+
+class Article extends ActiveRecord
+{
+	/**
+	 * @return string the name of the index associated with this ActiveRecord class.
+	 */
+	public static function indexName()
+	{
+		return 'idx_article';
+	}
+}
+```
+
+You can use [[\yii\data\ActiveDataProvider]] with the [[\yii\sphinx\Query]] and [[\yii\sphinx\ActiveQuery]]:
+
+```php
+use yii\data\ActiveDataProvider;
+use yii\sphinx\Query;
+
+$query = new Query;
+$query->from('yii2_test_article_index')->match('development');
+$provider = new ActiveDataProvider([
+	'query' => $query,
+	'pagination' => [
+		'pageSize' => 10,
+	]
+]);
+$models = $provider->getModels();
+```
+
+```php
+use yii\data\ActiveDataProvider;
+use app\models\Article;
+
+$provider = new ActiveDataProvider([
+	'query' => Article::find(),
+	'pagination' => [
+		'pageSize' => 10,
+	]
+]);
+$models = $provider->getModels();
+```
