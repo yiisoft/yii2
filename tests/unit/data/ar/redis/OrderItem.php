@@ -6,6 +6,16 @@ use yii\redis\RecordSchema;
 
 class OrderItem extends ActiveRecord
 {
+	public static function primaryKey()
+	{
+		return ['order_id', 'item_id'];
+	}
+
+	public static function attributes()
+	{
+		return ['order_id', 'item_id', 'quantity', 'subtotal'];
+	}
+
 	public function getOrder()
 	{
 		return $this->hasOne(Order::className(), ['id' => 'order_id']);
@@ -14,19 +24,5 @@ class OrderItem extends ActiveRecord
 	public function getItem()
 	{
 		return $this->hasOne(Item::className(), ['id' => 'item_id']);
-	}
-
-	public static function getRecordSchema()
-	{
-		return new RecordSchema(array(
-			'name' => 'order_item',
-			'primaryKey' => ['order_id', 'item_id'],
-			'columns' => array(
-				'order_id' => 'integer',
-				'item_id' => 'integer',
-				'quantity' => 'integer',
-				'subtotal' => 'decimal',
-			)
-		));
 	}
 }

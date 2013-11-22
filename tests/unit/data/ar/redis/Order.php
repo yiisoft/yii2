@@ -2,10 +2,13 @@
 
 namespace yiiunit\data\ar\redis;
 
-use yii\redis\RecordSchema;
-
 class Order extends ActiveRecord
 {
+	public static function attributes()
+	{
+		return ['id', 'customer_id', 'create_time', 'total'];
+	}
+
 	public function getCustomer()
 	{
 		return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
@@ -40,20 +43,4 @@ class Order extends ActiveRecord
 			return false;
 		}
 	}
-
-
-	public static function getRecordSchema()
-	{
-		return new RecordSchema(array(
-			'name' => 'orders',
-			'primaryKey' => ['id'],
-			'columns' => array(
-				'id' => 'integer',
-				'customer_id' => 'integer',
-				'create_time' => 'integer',
-				'total' => 'decimal',
-			)
-		));
-	}
-
 }

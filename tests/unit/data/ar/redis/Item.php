@@ -2,21 +2,10 @@
 
 namespace yiiunit\data\ar\redis;
 
-use yii\redis\RecordSchema;
-
 class Item extends ActiveRecord
 {
-	public static function getRecordSchema()
+	public static function attributes()
 	{
-		return new RecordSchema([
-			'name' => 'item',
-			'primaryKey' => ['id'],
-			'sequenceName' => 'id',
-			'columns' => [
-				'id' => 'integer',
-				'name' => 'string',
-				'category_id' => 'integer'
-			]
-		]);
+		return ['id', 'name', 'category_id'];
 	}
 }

@@ -129,6 +129,10 @@ class LuaScriptBuilder extends \yii\base\Object
 	 */
 	private function build($query, $buildResult, $return)
 	{
+		if (!empty($query->orderBy)) {
+			throw new NotSupportedException('orderBy is currently not supported by redis ActiveRecord.');
+		}
+
 		$columns = [];
 		if ($query->where !== null) {
 			$condition = $this->buildCondition($query->where, $columns);
@@ -139,6 +143,7 @@ class LuaScriptBuilder extends \yii\base\Object
 		$start = $query->offset === null ? 0 : $query->offset;
 		$limitCondition = 'i>' . $start . ($query->limit === null ? '' : ' and i<=' . ($start + $query->limit));
 
+		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName());
 		$loadColumnValues = '';
