@@ -44,7 +44,6 @@ use yii\helpers\Html;
  * @see http://getbootstrap.com/components/#nav
  * 
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
- * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 2.0
  */
 class Nav extends Widget
