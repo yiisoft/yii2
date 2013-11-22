@@ -9,22 +9,33 @@ namespace yii\redis;
 
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
-use yii\db\TableSchema;
 use yii\helpers\StringHelper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
+ *
+ * This class implements the ActiveRecord pattern for the [redis](http://redis.io/) key-value store.
+ *
+ * For defining a record a subclass should at least implement the [[attributes()]] method to define
+ * attributes. A primary key can be defined via [[primaryKey()]] which defaults to `id` if not specified.
+ *
+ * The following is an example model called `Customer`:
+ *
+ * ```php
+ * class Customer extends \yii\redis\ActiveRecord
+ * {
+ *     public function attributes()
+ *     {
+ *         return ['id', 'name', 'address', 'registration_date'];
+ *     }
+ * }
+ * ```
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
 class ActiveRecord extends \yii\db\ActiveRecord
 {
-	/**
-	 * @var array cache for TableSchema instances
-	 */
-	private static $_tables = [];
-
 	/**
 	 * Returns the database connection used by this AR class.
 	 * By default, the "redis" application component is used as the database connection.
@@ -34,14 +45,6 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	public static function getDb()
 	{
 		return \Yii::$app->getComponent('redis');
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public static function findBySql($sql, $params = [])
-	{
-		throw new NotSupportedException('findBySql() is not supported by redis ActiveRecord');
 	}
 
 	/**
@@ -61,35 +64,26 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * Declares the name of the database table associated with this AR class.
-	 * @return string the table name
+	 * Returns the primary key name(s) for this AR class.
+	 * This method should be overridden by child classes to define the primary key.
+	 *
+	 * Note that an array should be returned even when it is a single primary key.
+	 *
+	 * @return string[] the primary keys of this record.
 	 */
-	public static function tableName()
+	public static function primaryKey()
 	{
-		return static::getTableSchema()->name;
+		return ['id'];
 	}
 
 	/**
-	 * This method is ment to be overridden in redis ActiveRecord subclasses to return a [[RecordSchema]] instance.
-	 * @return RecordSchema
-	 * @throws \yii\base\InvalidConfigException
+	 * Returns the list of all attribute names of the model.
+	 * This method must be overridden by child classes to define available attributes.
+	 * @return array list of attribute names.
 	 */
-	public static function getRecordSchema()
+	public static function attributes()
 	{
-		throw new InvalidConfigException(__CLASS__.'::getRecordSchema() needs to be overridden in subclasses and return a RecordSchema.');
-	}
-
-	/**
-	 * Returns the schema information of the DB table associated with this AR class.
-	 * @return TableSchema the schema information of the DB table associated with this AR class.
-	 */
-	public static function getTableSchema()
-	{
-		$class = get_called_class();
-		if (isset(self::$_tables[$class])) {
-			return self::$_tables[$class];
-		}
-		return self::$_tables[$class] = static::getRecordSchema();
+		throw new InvalidConfigException('The attributes() method of redis ActiveRecord has to be implemented by child classes.');
 	}
 
 	/**
@@ -297,6 +291,22 @@ class ActiveRecord extends \yii\db\ActiveRecord
 			}
 		}
 		return md5(json_encode($key));
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public static function getTableSchema()
+	{
+		throw new NotSupportedException('getTableSchema() is not supported by redis ActiveRecord');
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public static function findBySql($sql, $params = [])
+	{
+		throw new NotSupportedException('findBySql() is not supported by redis ActiveRecord');
 	}
 
 	/**
