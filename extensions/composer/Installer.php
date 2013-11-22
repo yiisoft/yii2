@@ -57,7 +57,7 @@ class Installer extends LibraryInstaller
 		$this->removePackage($initial);
 		$this->addPackage($target);
 		// ensure the yii2-dev package also provides Yii.php in the same place as yii2 does
-		if ($package->getName() == 'yiisoft/yii2-dev') {
+		if ($initial->getName() == 'yiisoft/yii2-dev') {
 			$this->linkYiiBaseFiles();
 		}
 	}
