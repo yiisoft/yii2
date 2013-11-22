@@ -70,10 +70,11 @@ class MailerTest extends VendorTestCase
 	{
 		$mailer = new Mailer();
 
+		$class = 'Swift_SmtpTransport';
 		$host = 'some.test.host';
 		$port = 999;
 		$transportConfig = [
-			'class' => 'Swift_SmtpTransport',
+			'class' => $class,
 			'constructArgs' => [
 				$host,
 				$port,
@@ -82,6 +83,7 @@ class MailerTest extends VendorTestCase
 		$mailer->setTransport($transportConfig);
 		$transport = $mailer->getTransport();
 		$this->assertTrue(is_object($transport), 'Unable to setup transport via config!');
+		$this->assertEquals($class, get_class($transport), 'Invalid transport class!');
 		$this->assertEquals($host, $transport->getHost(), 'Invalid transport host!');
 		$this->assertEquals($port, $transport->getPort(), 'Invalid transport host!');
 	}
