@@ -27,6 +27,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	public function buildAll($query)
 	{
 		// TODO add support for orderBy
+		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName() . ':a:');
 		return $this->build($query, "n=n+1 pks[n]=redis.call('HGETALL',$key .. pk)", 'pks');
@@ -40,6 +41,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	public function buildOne($query)
 	{
 		// TODO add support for orderBy
+		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName() . ':a:');
 		return $this->build($query, "do return redis.call('HGETALL',$key .. pk) end", 'pks');
@@ -54,6 +56,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	public function buildColumn($query, $column)
 	{
 		// TODO add support for orderBy and indexBy
+		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName() . ':a:');
 		return $this->build($query, "n=n+1 pks[n]=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'pks');
@@ -77,6 +80,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	 */
 	public function buildSum($query, $column)
 	{
+		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName() . ':a:');
 		return $this->build($query, "n=n+redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'n');
@@ -90,6 +94,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	 */
 	public function buildAverage($query, $column)
 	{
+		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName() . ':a:');
 		return $this->build($query, "n=n+1 if v==nil then v=0 end v=v+redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'v/n');
@@ -103,6 +108,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	 */
 	public function buildMin($query, $column)
 	{
+		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName() . ':a:');
 		return $this->build($query, "n=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ") if v==nil or n<v then v=n end", 'v');
@@ -116,6 +122,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	 */
 	public function buildMax($query, $column)
 	{
+		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::tableName() . ':a:');
 		return $this->build($query, "n=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ") if v==nil or n>v then v=n end", 'v');
@@ -225,7 +232,7 @@ EOF;
 		];
 
 		if (!is_array($condition)) {
-			throw new NotSupportedException('Where must be an array.');
+			throw new NotSupportedException('Where condition must be an array in redis ActiveRecord.');
 		}
 		if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
 			$operator = strtolower($condition[0]);
@@ -353,35 +360,6 @@ EOF;
 
 	private function buildLikeCondition($operator, $operands, &$columns)
 	{
-		throw new NotSupportedException('LIKE is not yet supported.');
-		if (!isset($operands[0], $operands[1])) {
-			throw new Exception("Operator '$operator' requires two operands.");
-		}
-
-		list($column, $values) = $operands;
-
-		$values = (array)$values;
-
-		if (empty($values)) {
-			return $operator === 'like' || $operator === 'or like' ? 'false' : 'true';
-		}
-
-		if ($operator === 'like' || $operator === 'not like') {
-			$andor = ' and ';
-		} else {
-			$andor = ' or ';
-			$operator = $operator === 'or like' ? 'like' : 'not like';
-		}
-
-		$column = $this->addColumn($column, $columns);
-
-		$parts = [];
-		foreach ($values as $value) {
-			// TODO implement matching here correctly
-			$value = $this->quoteValue($value);
-			$parts[] = "$column $operator $value";
-		}
-
-		return implode($andor, $parts);
+		throw new NotSupportedException('LIKE conditions are not suppoerted by redis ActiveRecord.');
 	}
 }
