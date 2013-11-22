@@ -6,7 +6,11 @@
  */
 
 namespace yii\redis;
+use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\db\ActiveQueryInterface;
+use yii\db\ActiveQueryTrait;
+use yii\db\QueryTrait;
 
 /**
  * ActiveQuery represents a query associated with an Active Record class.
@@ -43,91 +47,24 @@ use yii\base\NotSupportedException;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ActiveQuery extends \yii\base\Component
+class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 {
-	/**
-	 * Sort ascending
-	 * @see orderBy
-	 */
-	const SORT_ASC = false;
-	/**
-	 * Sort descending
-	 * @see orderBy
-	 */
-	const SORT_DESC = true;
+	use QueryTrait;
+	use ActiveQueryTrait;
 
 	/**
-	 * @var string the name of the ActiveRecord class.
+	 * Executes the query and returns all results as an array.
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return ActiveRecord[] the query results. If the query results in nothing, an empty array will be returned.
 	 */
-	public $modelClass;
-	/**
-	 * @var array list of relations that this query should be performed with
-	 */
-	public $with;
-	/**
-	 * @var string|callable $column the name of the column by which the query results should be indexed by.
-	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
-	 * row or model data. For more details, see [[indexBy()]].
-	 */
-	public $indexBy;
-	/**
-	 * @var boolean whether to return each record as an array. If false (default), an object
-	 * of [[modelClass]] will be created to represent each record.
-	 */
-	public $asArray;
-	/**
-	 * @var array the query condition.
-	 * @see where()
-	 */
-	public $where;
-	/**
-	 * @var integer maximum number of records to be returned. If not set or less than 0, it means no limit.
-	 */
-	public $limit;
-	/**
-	 * @var integer zero-based offset from where the records are to be returned.
-	 * If not set, it means starting from the beginning.
-	 * If less than zero it means starting n elements from the end.
-	 */
-	public $offset;
-	/**
-	 * @var array how to sort the query results. This is used to construct the ORDER BY clause in a SQL statement.
-	 * The array keys are the columns to be sorted by, and the array values are the corresponding sort directions which
-	 * can be either [[ActiveQuery::SORT_ASC]] or [[ActiveQuery::SORT_DESC]]. The array may also contain [[Expression]] objects.
-	 * If that is the case, the expressions will be converted into strings without any change.
-	 */
-	public $orderBy;
-
-	/**
-	 * PHP magic method.
-	 * This method allows calling static method defined in [[modelClass]] via this query object.
-	 * It is mainly implemented for supporting the feature of scope.
-	 * @param string $name the method name to be called
-	 * @param array $params the parameters passed to the method
-	 * @return mixed the method return result
-	 */
-	public function __call($name, $params)
-	{
-		if (method_exists($this->modelClass, $name)) {
-			array_unshift($params, $this);
-			call_user_func_array(array($this->modelClass, $name), $params);
-			return $this;
-		} else {
-			return parent::__call($name, $params);
-		}
-	}
-
-	/**
-	 * Executes query and returns all results as an array.
-	 * @return array the query results. If the query results in nothing, an empty array will be returned.
-	 */
-	public function all()
+	public function all($db = null)
 	{
 		// TODO add support for orderBy
-		$data = $this->executeScript('All');
-		$rows = array();
+		$data = $this->executeScript($db, 'All');
+		$rows = [];
 		foreach($data as $dataRow) {
-			$row = array();
+			$row = [];
 			$c = count($dataRow);
 			for($i = 0; $i < $c; ) {
 				$row[$dataRow[$i++]] = $dataRow[$i++];
@@ -137,28 +74,30 @@ class ActiveQuery extends \yii\base\Component
 		if (!empty($rows)) {
 			$models = $this->createModels($rows);
 			if (!empty($this->with)) {
-				$this->populateRelations($models, $this->with);
+				$this->findWith($this->with, $models);
 			}
 			return $models;
 		} else {
-			return array();
+			return [];
 		}
 	}
 
 	/**
-	 * Executes query and returns a single row of result.
+	 * Executes the query and returns a single row of result.
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `db` application component will be used.
 	 * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
 	 * the query result may be either an array or an ActiveRecord object. Null will be returned
 	 * if the query results in nothing.
 	 */
-	public function one()
+	public function one($db = null)
 	{
 		// TODO add support for orderBy
-		$data = $this->executeScript('One');
-		if ($data === array()) {
+		$data = $this->executeScript($db, 'One');
+		if (empty($data)) {
 			return null;
 		}
-		$row = array();
+		$row = [];
 		$c = count($data);
 		for($i = 0; $i < $c; ) {
 			$row[$data[$i++]] = $data[$i++];
@@ -166,584 +105,273 @@ class ActiveQuery extends \yii\base\Component
 		if ($this->asArray) {
 			$model = $row;
 		} else {
-			/** @var $class ActiveRecord */
+			/** @var ActiveRecord $class */
 			$class = $this->modelClass;
 			$model = $class::create($row);
 		}
 		if (!empty($this->with)) {
-			$models = array($model);
-			$this->populateRelations($models, $this->with);
+			$models = [$model];
+			$this->findWith($this->with, $models);
 			$model = $models[0];
 		}
 		return $model;
 	}
 
 	/**
-	 * Executes the query and returns the first column of the result.
-	 * @param string $column name of the column to select
-	 * @return array the first column of the query result. An empty array is returned if the query results in nothing.
-	 */
-	public function column($column)
-	{
-		// TODO add support for indexBy and orderBy
-		return $this->executeScript('Column', $column);
-	}
-
-	/**
 	 * Returns the number of records.
-	 * @param string $q the COUNT expression. Defaults to '*'.
-	 * Make sure you properly quote column names.
+	 * @param string $q the COUNT expression. This parameter is ignored by this implementation.
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `db` application component will be used.
 	 * @return integer number of records
 	 */
-	public function count()
+	public function count($q = '*', $db = null)
 	{
 		if ($this->offset === null && $this->limit === null && $this->where === null) {
 			$modelClass = $this->modelClass;
-			/** @var Connection $db */
-			$db = $modelClass::getDb();
-			return $db->executeCommand('LLEN', array($modelClass::tableName()));
+			if ($db === null) {
+				$db = $modelClass::getDb();
+			}
+			return $db->executeCommand('LLEN', [$modelClass::tableName()]);
 		} else {
-			return $this->executeScript('Count');
+			return $this->executeScript($db, 'Count');
 		}
+	}
+
+	/**
+	 * Returns a value indicating whether the query result contains any row of data.
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return boolean whether the query result contains any row of data.
+	 */
+	public function exists($db = null)
+	{
+		return $this->one($db) !== null;
+	}
+
+	/**
+	 * Executes the query and returns the first column of the result.
+	 * @param string $column name of the column to select
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return array the first column of the query result. An empty array is returned if the query results in nothing.
+	 */
+	public function column($column, $db = null)
+	{
+		// TODO add support for indexBy and orderBy
+		return $this->executeScript($db, 'Column', $column);
 	}
 
 	/**
 	 * Returns the number of records.
 	 * @param string $column the column to sum up
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `db` application component will be used.
 	 * @return integer number of records
 	 */
-	public function sum($column)
+	public function sum($column, $db = null)
 	{
-		return $this->executeScript('Sum', $column);
+		return $this->executeScript($db, 'Sum', $column);
 	}
 
 	/**
 	 * Returns the average of the specified column values.
 	 * @param string $column the column name or expression.
 	 * Make sure you properly quote column names in the expression.
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `db` application component will be used.
 	 * @return integer the average of the specified column values.
 	 */
-	public function average($column)
+	public function average($column, $db = null)
 	{
-		return $this->executeScript('Average', $column);
+		return $this->executeScript($db, 'Average', $column);
 	}
 
 	/**
 	 * Returns the minimum of the specified column values.
 	 * @param string $column the column name or expression.
 	 * Make sure you properly quote column names in the expression.
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `db` application component will be used.
 	 * @return integer the minimum of the specified column values.
 	 */
-	public function min($column)
+	public function min($column, $db = null)
 	{
-		return $this->executeScript('Min', $column);
+		return $this->executeScript($db, 'Min', $column);
 	}
 
 	/**
 	 * Returns the maximum of the specified column values.
 	 * @param string $column the column name or expression.
 	 * Make sure you properly quote column names in the expression.
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `db` application component will be used.
 	 * @return integer the maximum of the specified column values.
 	 */
-	public function max($column)
+	public function max($column, $db = null)
 	{
-		return $this->executeScript('Max', $column);
+		return $this->executeScript($db, 'Max', $column);
 	}
 
 	/**
 	 * Returns the query result as a scalar value.
 	 * The value returned will be the first column in the first row of the query results.
 	 * @param string $column name of the column to select
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `db` application component will be used.
 	 * @return string|boolean the value of the first column in the first row of the query result.
 	 * False is returned if the query result is empty.
 	 */
-	public function scalar($column)
+	public function scalar($column, $db = null)
 	{
-		$record = $this->one();
-		return $record->$column;
+		$record = $this->one($db);
+		if ($record === null) {
+			return false;
+		} else {
+			return $record->$column;
+		}
 	}
 
-	/**
-	 * Returns a value indicating whether the query result contains any row of data.
-	 * @return boolean whether the query result contains any row of data.
-	 */
-	public function exists()
-	{
-		return $this->one() !== null;
-	}
 
 	/**
 	 * Executes a script created by [[LuaScriptBuilder]]
-	 * @param string $type
-	 * @param null $column
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @param string $type the type of the script to generate
+	 * @param string $columnName
 	 * @return array|bool|null|string
 	 */
-	protected function executeScript($type, $columnName=null)
+	protected function executeScript($db, $type, $columnName = null)
 	{
-		if (($data = $this->findByPk($type)) === false) {
-			$modelClass = $this->modelClass;
-			/** @var Connection $db */
-			$db = $modelClass::getDb();
+		/** @var ActiveRecord $modelClass */
+		$modelClass = $this->modelClass;
 
-			$method = 'build' . $type;
-			$script = $db->getLuaScriptBuilder()->$method($this, $columnName);
-			return $db->executeCommand('EVAL', array($script, 0));
+		if ($db === null) {
+			$db = $modelClass::getDb();
 		}
-		return $data;
+
+		// find by primary key if possible. This is much faster than scanning all records
+		if (is_array($this->where) && !isset($this->where[0]) && $modelClass::isPrimaryKey(array_keys($this->where))) {
+			return $this->findByPk($db, $type, $columnName);
+		}
+
+		$method = 'build' . $type;
+		$script = $db->getLuaScriptBuilder()->$method($this, $columnName);
+		return $db->executeCommand('EVAL', [$script, 0]);
 	}
 
 	/**
 	 * Fetch by pk if possible as this is much faster
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @param string $type the type of the script to generate
+	 * @param string $columnName
+	 * @return array|bool|null|string
+	 * @throws \yii\base\NotSupportedException
 	 */
-	private function findByPk($type, $columnName = null)
+	private function findByPk($db, $type, $columnName = null)
 	{
-		$modelClass = $this->modelClass;
-		if (is_array($this->where) && !isset($this->where[0]) && $modelClass::isPrimaryKey(array_keys($this->where))) {
-			/** @var Connection $db */
-			$db = $modelClass::getDb();
-
-			if (count($this->where) == 1) {
-				$pks = (array) reset($this->where);
-			} else {
-				// TODO support IN for composite PK
-				return false;
+		if (count($this->where) == 1) {
+			$pks = (array) reset($this->where);
+		} else {
+			foreach($this->where as $column => $values) {
+				if (is_array($values)) {
+					// TODO support composite IN for composite PK
+					throw new NotSupportedException('find by composite PK is not yet implemented.');
+				}
 			}
+			$pks = [$this->where];
+		}
 
-			$start = $this->offset === null ? 0 : $this->offset;
-			$i = 0;
-			$data = array();
-			foreach($pks as $pk) {
-				if (++$i > $start && ($this->limit === null || $i <= $start + $this->limit)) {
-					$key = $modelClass::tableName() . ':a:' . $modelClass::buildKey($pk);
-					$result = $db->executeCommand('HGETALL', array($key));
-					if (!empty($result)) {
-						$data[] = $result;
-						if ($type === 'One' && $this->orderBy === null) {
+		/** @var ActiveRecord $modelClass */
+		$modelClass = $this->modelClass;
+
+		$start = $this->offset === null ? 0 : $this->offset;
+		$i = 0;
+		$data = [];
+		foreach($pks as $pk) {
+			if (++$i > $start && ($this->limit === null || $i <= $start + $this->limit)) {
+				$key = $modelClass::tableName() . ':a:' . $modelClass::buildKey($pk);
+				$result = $db->executeCommand('HGETALL', [$key]);
+				if (!empty($result)) {
+					$data[] = $result;
+					if ($type === 'One' && $this->orderBy === null) {
+						break;
+					}
+				}
+			}
+		}
+		// TODO support orderBy
+
+		switch($type) {
+			case 'All':
+				return $data;
+			case 'One':
+				return reset($data);
+			case 'Count':
+				return count($data);
+			case 'Column':
+				// TODO support indexBy
+				$column = [];
+				foreach($data as $dataRow) {
+					$row = [];
+					$c = count($dataRow);
+					for($i = 0; $i < $c; ) {
+						$row[$dataRow[$i++]] = $dataRow[$i++];
+					}
+					$column[] = $row[$columnName];
+				}
+				return $column;
+			case 'Sum':
+				$sum = 0;
+				foreach($data as $dataRow) {
+					$c = count($dataRow);
+					for($i = 0; $i < $c; ) {
+						if ($dataRow[$i++] == $columnName) {
+							$sum += $dataRow[$i];
 							break;
 						}
 					}
 				}
-			}
-			// TODO support orderBy
-
-			switch($type) {
-				case 'All':
-					return $data;
-				case 'One':
-					return reset($data);
-				case 'Column':
-					// TODO support indexBy
-					$column = array();
-					foreach($data as $dataRow) {
-						$row = array();
-						$c = count($dataRow);
-						for($i = 0; $i < $c; ) {
-							$row[$dataRow[$i++]] = $dataRow[$i++];
-						}
-						$column[] = $row[$columnName];
-					}
-					return $column;
-				case 'Count':
-					return count($data);
-				case 'Sum':
-					$sum = 0;
-					foreach($data as $dataRow) {
-						$c = count($dataRow);
-						for($i = 0; $i < $c; ) {
-							if ($dataRow[$i++] == $columnName) {
-								$sum += $dataRow[$i];
-								break;
-							}
+				return $sum;
+			case 'Average':
+				$sum = 0;
+				$count = 0;
+				foreach($data as $dataRow) {
+					$count++;
+					$c = count($dataRow);
+					for($i = 0; $i < $c; ) {
+						if ($dataRow[$i++] == $columnName) {
+							$sum += $dataRow[$i];
+							break;
 						}
 					}
-					return $sum;
-				case 'Average':
-					$sum = 0;
-					$count = 0;
-					foreach($data as $dataRow) {
-						$count++;
-						$c = count($dataRow);
-						for($i = 0; $i < $c; ) {
-							if ($dataRow[$i++] == $columnName) {
-								$sum += $dataRow[$i];
-								break;
-							}
-						}
-					}
-					return $sum / $count;
-				case 'Min':
-					$min = null;
-					foreach($data as $dataRow) {
-						$c = count($dataRow);
-						for($i = 0; $i < $c; ) {
-							if ($dataRow[$i++] == $columnName && ($min == null || $dataRow[$i] < $min)) {
-								$min = $dataRow[$i];
-								break;
-							}
-						}
-					}
-					return $min;
-				case 'Max':
-					$max = null;
-					foreach($data as $dataRow) {
-						$c = count($dataRow);
-						for($i = 0; $i < $c; ) {
-							if ($dataRow[$i++] == $columnName && ($max == null || $dataRow[$i] > $max)) {
-								$max = $dataRow[$i];
-								break;
-							}
-						}
-					}
-					return $max;
-			}
-		}
-		return false;
-	}
-
-	// TODO: refactor. code below here is all duplicated from yii/db/ActiveQuery and yii/db/Query
-
-	/**
-	 * Sets the [[asArray]] property.
-	 * @param boolean $value whether to return the query results in terms of arrays instead of Active Records.
-	 * @return ActiveQuery the query object itself
-	 */
-	public function asArray($value = true)
-	{
-		$this->asArray = $value;
-		return $this;
-	}
-
-	/**
-	 * Sets the ORDER BY part of the query.
-	 * @param string|array $columns the columns (and the directions) to be ordered by.
-	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-	 * (e.g. `array('id' => Query::SORT_ASC, 'name' => Query::SORT_DESC)`).
-	 * The method will automatically quote the column names unless a column contains some parenthesis
-	 * (which means the column contains a DB expression).
-	 * @return ActiveQuery the query object itself
-	 * @see addOrderBy()
-	 */
-	public function orderBy($columns)
-	{
-		$this->orderBy = $this->normalizeOrderBy($columns);
-		return $this;
-	}
-
-	/**
-	 * Adds additional ORDER BY columns to the query.
-	 * @param string|array $columns the columns (and the directions) to be ordered by.
-	 * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-	 * (e.g. `array('id' => Query::SORT_ASC, 'name' => Query::SORT_DESC)`).
-	 * The method will automatically quote the column names unless a column contains some parenthesis
-	 * (which means the column contains a DB expression).
-	 * @return ActiveQuery the query object itself
-	 * @see orderBy()
-	 */
-	public function addOrderBy($columns)
-	{
-		$columns = $this->normalizeOrderBy($columns);
-		if ($this->orderBy === null) {
-			$this->orderBy = $columns;
-		} else {
-			$this->orderBy = array_merge($this->orderBy, $columns);
-		}
-		return $this;
-	}
-
-	protected function normalizeOrderBy($columns)
-	{
-		throw new NotSupportedException('orderBy is currently not supported');
-		if (is_array($columns)) {
-			return $columns;
-		} else {
-			$columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-			$result = array();
-			foreach ($columns as $column) {
-				if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
-					$result[$matches[1]] = strcasecmp($matches[2], 'desc') ? self::SORT_ASC : self::SORT_DESC;
-				} else {
-					$result[$column] = self::SORT_ASC;
 				}
-			}
-			return $result;
-		}
-	}
-
-	/**
-	 * Sets the LIMIT part of the query.
-	 * @param integer $limit the limit
-	 * @return ActiveQuery the query object itself
-	 */
-	public function limit($limit)
-	{
-		$this->limit = $limit;
-		return $this;
-	}
-
-	/**
-	 * Sets the OFFSET part of the query.
-	 * @param integer $offset the offset
-	 * @return ActiveQuery the query object itself
-	 */
-	public function offset($offset)
-	{
-		$this->offset = $offset;
-		return $this;
-	}
-
-	/**
-	 * Specifies the relations with which this query should be performed.
-	 *
-	 * The parameters to this method can be either one or multiple strings, or a single array
-	 * of relation names and the optional callbacks to customize the relations.
-	 *
-	 * The followings are some usage examples:
-	 *
-	 * ~~~
-	 * // find customers together with their orders and country
-	 * Customer::find()->with('orders', 'country')->all();
-	 * // find customers together with their country and orders of status 1
-	 * Customer::find()->with(array(
-	 *     'orders' => function($query) {
-	 *         $query->andWhere('status = 1');
-	 *     },
-	 *     'country',
-	 * ))->all();
-	 * ~~~
-	 *
-	 * @return ActiveQuery the query object itself
-	 */
-	public function with()
-	{
-		$this->with = func_get_args();
-		if (isset($this->with[0]) && is_array($this->with[0])) {
-			// the parameter is given as an array
-			$this->with = $this->with[0];
-		}
-		return $this;
-	}
-
-	/**
-	 * Sets the [[indexBy]] property.
-	 * @param string|callable $column the name of the column by which the query results should be indexed by.
-	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
-	 * row or model data. The signature of the callable should be:
-	 *
-	 * ~~~
-	 * // $model is an AR instance when `asArray` is false,
-	 * // or an array of column values when `asArray` is true.
-	 * function ($model)
-	 * {
-	 *     // return the index value corresponding to $model
-	 * }
-	 * ~~~
-	 *
-	 * @return ActiveQuery the query object itself
-	 */
-	public function indexBy($column)
-	{
-		$this->indexBy = $column;
-		return $this;
-	}
-
-	/**
-	 * Sets the WHERE part of the query.
-	 *
-	 * The method requires a $condition parameter, and optionally a $params parameter
-	 * specifying the values to be bound to the query.
-	 *
-	 * The $condition parameter should be either a string (e.g. 'id=1') or an array.
-	 * If the latter, it must be in one of the following two formats:
-	 *
-	 * - hash format: `array('column1' => value1, 'column2' => value2, ...)`
-	 * - operator format: `array(operator, operand1, operand2, ...)`
-	 *
-	 * A condition in hash format represents the following SQL expression in general:
-	 * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array,
-	 * an `IN` expression will be generated. And if a value is null, `IS NULL` will be used
-	 * in the generated expression. Below are some examples:
-	 *
-	 * - `array('type' => 1, 'status' => 2)` generates `(type = 1) AND (status = 2)`.
-	 * - `array('id' => array(1, 2, 3), 'status' => 2)` generates `(id IN (1, 2, 3)) AND (status = 2)`.
-	 * - `array('status' => null) generates `status IS NULL`.
-	 *
-	 * A condition in operator format generates the SQL expression according to the specified operator, which
-	 * can be one of the followings:
-	 *
-	 * - `and`: the operands should be concatenated together using `AND`. For example,
-	 * `array('and', 'id=1', 'id=2')` will generate `id=1 AND id=2`. If an operand is an array,
-	 * it will be converted into a string using the rules described here. For example,
-	 * `array('and', 'type=1', array('or', 'id=1', 'id=2'))` will generate `type=1 AND (id=1 OR id=2)`.
-	 * The method will NOT do any quoting or escaping.
-	 *
-	 * - `or`: similar to the `and` operator except that the operands are concatenated using `OR`.
-	 *
-	 * - `between`: operand 1 should be the column name, and operand 2 and 3 should be the
-	 * starting and ending values of the range that the column is in.
-	 * For example, `array('between', 'id', 1, 10)` will generate `id BETWEEN 1 AND 10`.
-	 *
-	 * - `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
-	 * in the generated condition.
-	 *
-	 * - `in`: operand 1 should be a column or DB expression, and operand 2 be an array representing
-	 * the range of the values that the column or DB expression should be in. For example,
-	 * `array('in', 'id', array(1, 2, 3))` will generate `id IN (1, 2, 3)`.
-	 * The method will properly quote the column name and escape values in the range.
-	 *
-	 * - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
-	 *
-	 * - `like`: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
-	 * the values that the column or DB expression should be like.
-	 * For example, `array('like', 'name', '%tester%')` will generate `name LIKE '%tester%'`.
-	 * When the value range is given as an array, multiple `LIKE` predicates will be generated and concatenated
-	 * using `AND`. For example, `array('like', 'name', array('%test%', '%sample%'))` will generate
-	 * `name LIKE '%test%' AND name LIKE '%sample%'`.
-	 * The method will properly quote the column name and escape values in the range.
-	 *
-	 * - `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`
-	 * predicates when operand 2 is an array.
-	 *
-	 * - `not like`: similar to the `like` operator except that `LIKE` is replaced with `NOT LIKE`
-	 * in the generated condition.
-	 *
-	 * - `or not like`: similar to the `not like` operator except that `OR` is used to concatenate
-	 * the `NOT LIKE` predicates.
-	 *
-	 * @param string|array $condition the conditions that should be put in the WHERE part.
-	 * @return ActiveQuery the query object itself
-	 * @see andWhere()
-	 * @see orWhere()
-	 */
-	public function where($condition)
-	{
-		$this->where = $condition;
-		return $this;
-	}
-
-	/**
-	 * Adds an additional WHERE condition to the existing one.
-	 * The new condition and the existing one will be joined using the 'AND' operator.
-	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
-	 * on how to specify this parameter.
-	 * @return ActiveQuery the query object itself
-	 * @see where()
-	 * @see orWhere()
-	 */
-	public function andWhere($condition)
-	{
-		if ($this->where === null) {
-			$this->where = $condition;
-		} else {
-			$this->where = array('and', $this->where, $condition);
-		}
-		return $this;
-	}
-
-	/**
-	 * Adds an additional WHERE condition to the existing one.
-	 * The new condition and the existing one will be joined using the 'OR' operator.
-	 * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
-	 * on how to specify this parameter.
-	 * @return ActiveQuery the query object itself
-	 * @see where()
-	 * @see andWhere()
-	 */
-	public function orWhere($condition)
-	{
-		if ($this->where === null) {
-			$this->where = $condition;
-		} else {
-			$this->where = array('or', $this->where, $condition);
-		}
-		return $this;
-	}
-
-	private function createModels($rows)
-	{
-		$models = array();
-		if ($this->asArray) {
-			if ($this->indexBy === null) {
-				return $rows;
-			}
-			foreach ($rows as $row) {
-				if (is_string($this->indexBy)) {
-					$key = $row[$this->indexBy];
-				} else {
-					$key = call_user_func($this->indexBy, $row);
-				}
-				$models[$key] = $row;
-			}
-		} else {
-			/** @var $class ActiveRecord */
-			$class = $this->modelClass;
-			if ($this->indexBy === null) {
-				foreach ($rows as $row) {
-					$models[] = $class::create($row);
-				}
-			} else {
-				foreach ($rows as $row) {
-					$model = $class::create($row);
-					if (is_string($this->indexBy)) {
-						$key = $model->{$this->indexBy};
-					} else {
-						$key = call_user_func($this->indexBy, $model);
+				return $sum / $count;
+			case 'Min':
+				$min = null;
+				foreach($data as $dataRow) {
+					$c = count($dataRow);
+					for($i = 0; $i < $c; ) {
+						if ($dataRow[$i++] == $columnName && ($min == null || $dataRow[$i] < $min)) {
+							$min = $dataRow[$i];
+							break;
+						}
 					}
-					$models[$key] = $model;
 				}
-			}
+				return $min;
+			case 'Max':
+				$max = null;
+				foreach($data as $dataRow) {
+					$c = count($dataRow);
+					for($i = 0; $i < $c; ) {
+						if ($dataRow[$i++] == $columnName && ($max == null || $dataRow[$i] > $max)) {
+							$max = $dataRow[$i];
+							break;
+						}
+					}
+				}
+				return $max;
 		}
-		return $models;
-	}
-
-	private function populateRelations(&$models, $with)
-	{
-		$primaryModel = new $this->modelClass;
-		$relations = $this->normalizeRelations($primaryModel, $with);
-		foreach ($relations as $name => $relation) {
-			if ($relation->asArray === null) {
-				// inherit asArray from primary query
-				$relation->asArray = $this->asArray;
-			}
-			$relation->findWith($name, $models);
-		}
-	}
-
-	/**
-	 * @param ActiveRecord $model
-	 * @param array $with
-	 * @return ActiveRelation[]
-	 */
-	private function normalizeRelations($model, $with)
-	{
-		$relations = array();
-		foreach ($with as $name => $callback) {
-			if (is_integer($name)) {
-				$name = $callback;
-				$callback = null;
-			}
-			if (($pos = strpos($name, '.')) !== false) {
-				// with sub-relations
-				$childName = substr($name, $pos + 1);
-				$name = substr($name, 0, $pos);
-			} else {
-				$childName = null;
-			}
-
-			$t = strtolower($name);
-			if (!isset($relations[$t])) {
-				$relation = $model->getRelation($name);
-				$relation->primaryModel = null;
-				$relations[$t] = $relation;
-			} else {
-				$relation = $relations[$t];
-			}
-
-			if (isset($childName)) {
-				$relation->with[$childName] = $callback;
-			} elseif ($callback !== null) {
-				call_user_func($callback, $relation);
-			}
-		}
-		return $relations;
+		throw new InvalidParamException('Unknown fetch type: ' . $type);
 	}
 }

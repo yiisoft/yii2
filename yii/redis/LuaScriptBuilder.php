@@ -129,7 +129,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	 */
 	private function build($query, $buildResult, $return)
 	{
-		$columns = array();
+		$columns = [];
 		if ($query->where !== null) {
 			$condition = $this->buildCondition($query->where, $columns);
 		} else {
@@ -206,7 +206,7 @@ EOF;
 	 */
 	public function buildCondition($condition, &$columns)
 	{
-		static $builders = array(
+		static $builders = [
 			'and' => 'buildAndCondition',
 			'or' => 'buildAndCondition',
 			'between' => 'buildBetweenCondition',
@@ -217,7 +217,7 @@ EOF;
 			'not like' => 'buildLikeCondition',
 			'or like' => 'buildLikeCondition',
 			'or not like' => 'buildLikeCondition',
-		);
+		];
 
 		if (!is_array($condition)) {
 			throw new NotSupportedException('Where must be an array.');
@@ -238,10 +238,10 @@ EOF;
 
 	private function buildHashCondition($condition, &$columns)
 	{
-		$parts = array();
+		$parts = [];
 		foreach ($condition as $column => $value) {
 			if (is_array($value)) { // IN condition
-				$parts[] = $this->buildInCondition('in', array($column, $value), $columns);
+				$parts[] = $this->buildInCondition('in', [$column, $value], $columns);
 			} else {
 				$column = $this->addColumn($column, $columns);
 				if ($value === null) {
@@ -259,7 +259,7 @@ EOF;
 
 	private function buildAndCondition($operator, $operands, &$columns)
 	{
-		$parts = array();
+		$parts = [];
 		foreach ($operands as $operand) {
 			if (is_array($operand)) {
 				$operand = $this->buildCondition($operand, $columns);
@@ -299,7 +299,7 @@ EOF;
 
 		$values = (array)$values;
 
-		if (empty($values) || $column === array()) {
+		if (empty($values) || $column === []) {
 			return $operator === 'in' ? 'false' : 'true';
 		}
 
@@ -309,7 +309,7 @@ EOF;
 			$column = reset($column);
 		}
 		$columnAlias = $this->addColumn($column, $columns);
-		$parts = array();
+		$parts = [];
 		foreach ($values as $i => $value) {
 			if (is_array($value)) {
 				$value = isset($value[$column]) ? $value[$column] : null;
@@ -329,9 +329,9 @@ EOF;
 
 	protected function buildCompositeInCondition($operator, $inColumns, $values, &$columns)
 	{
-		$vss = array();
+		$vss = [];
 		foreach ($values as $value) {
-			$vs = array();
+			$vs = [];
 			foreach ($inColumns as $column) {
 				$column = $this->addColumn($column, $columns);
 				if (isset($value[$column])) {
@@ -370,7 +370,7 @@ EOF;
 
 		$column = $this->addColumn($column, $columns);
 
-		$parts = array();
+		$parts = [];
 		foreach ($values as $value) {
 			// TODO implement matching here correctly
 			$value = $this->quoteValue($value);
