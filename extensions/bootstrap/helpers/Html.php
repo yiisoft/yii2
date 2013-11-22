@@ -242,7 +242,7 @@ class Html extends \yii\helpers\Html
 		
 		$emails = '';
 		foreach ($email as $type => $addr) {
-			if (is_numeric($type)) {	// no keys were passed to the phone array
+			if (is_numeric($type)) {	// no keys were passed to the email array
 				$type = '<abbr title="Email">' . $emailLabel . '</abbr>: ';
 			}
 			else {
