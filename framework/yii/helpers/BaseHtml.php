@@ -376,7 +376,7 @@ class BaseHtml
 	 * @param string $prefix the css class prefix - defaults to 'glyphicon glyphicon-'
 	 * @author Kartik Visweswaran <kartikv2@gmail.com>
 	 */
-	public static function icon($icon, $options = [], $tag = 'span', $prefix = 'glyphicon glyphicon-')
+	public static function icon($icon, $options = [], $prefix = 'glyphicon glyphicon-', $tag = 'span')
 	{
 		$class = isset($options['class']) ? ' ' . $options['class'] : '';
 		$options['class'] = $prefix . $icon . $class;
