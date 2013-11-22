@@ -367,7 +367,22 @@ class BaseHtml
 	{
 		return static::tag('button', $content, $options);
 	}
-
+	
+	/**
+	 * Generates a bootstrap icon tag.
+	 * @param string $icon the bootstrap icon name without prefix (e.g. 'plus', 'pencil', 'trash')
+	 * @param array $options html options for the icon container
+	 * @param string $tag the icon container tag (usually 'span' or 'i') - defaults to 'span'
+	 * @param string $prefix the css class prefix - defaults to 'glyphicon glyphicon-'
+	 * @author Kartik Visweswaran <kartikv2@gmail.com>
+	 */
+	public static function icon($icon, $options = [], $prefix = 'glyphicon glyphicon-', $tag = 'span')
+	{
+		$class = isset($options['class']) ? ' ' . $options['class'] : '';
+		$options['class'] = $prefix . $icon . $class;
+		return static::tag($tag, '', $options);
+	}
+	
 	/**
 	 * Generates a submit button tag.
 	 * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
