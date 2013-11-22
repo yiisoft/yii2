@@ -126,7 +126,7 @@ class Html extends \yii\helpers\Html
 	 */
 	public static function pageHeader($title, $subTitle = '', $options = []) {
 		static::addCssClass($options, 'page-header');
-		if ($subTitle != '') {
+		if (!empty($subTitle)) {
 			$title = "<h1>{$title} <small>{$subTitle}</small></h1>";
 		}
 		else {
@@ -251,7 +251,7 @@ class Html extends \yii\helpers\Html
 			$emails .= $type . static::mailto($addr, $addr) . "<br>\n";
 		}
 		
-		return "<address>\n\t" .
+		return "<address>\n" .
 			"<strong>{$name}</strong><br>\n" .
 			$addresses .
 			$phones .
