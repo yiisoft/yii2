@@ -127,6 +127,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 	public function count($q = '*', $db = null)
 	{
 		if ($this->offset === null && $this->limit === null && $this->where === null) {
+			/** @var ActiveRecord $modelClass */
 			$modelClass = $this->modelClass;
 			if ($db === null) {
 				$db = $modelClass::getDb();
@@ -157,7 +158,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 	 */
 	public function column($column, $db = null)
 	{
-		// TODO add support for indexBy and orderBy
+		// TODO add support for orderBy
 		return $this->executeScript($db, 'Column', $column);
 	}
 
@@ -242,6 +243,10 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 	 */
 	protected function executeScript($db, $type, $columnName = null)
 	{
+		if (!empty($this->orderBy)) {
+			throw new NotSupportedException('orderBy is currently not supported by redis ActiveRecord.');
+		}
+
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $this->modelClass;
 
@@ -266,6 +271,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 	 * @param string $type the type of the script to generate
 	 * @param string $columnName
 	 * @return array|bool|null|string
+	 * @throws \yii\base\InvalidParamException
 	 * @throws \yii\base\NotSupportedException
 	 */
 	private function findByPk($db, $type, $columnName = null)
@@ -276,7 +282,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 			foreach($this->where as $column => $values) {
 				if (is_array($values)) {
 					// TODO support composite IN for composite PK
-					throw new NotSupportedException('find by composite PK is not yet implemented.');
+					throw new NotSupportedException('Find by composite PK is not supported by redis ActiveRecord.');
 				}
 			}
 			$pks = [$this->where];
@@ -310,7 +316,6 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 			case 'Count':
 				return count($data);
 			case 'Column':
-				// TODO support indexBy
 				$column = [];
 				foreach($data as $dataRow) {
 					$row = [];
