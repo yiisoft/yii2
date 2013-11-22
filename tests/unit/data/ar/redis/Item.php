@@ -8,15 +8,15 @@ class Item extends ActiveRecord
 {
 	public static function getRecordSchema()
 	{
-		return new RecordSchema(array(
+		return new RecordSchema([
 			'name' => 'item',
-			'primaryKey' => array('id'),
+			'primaryKey' => ['id'],
 			'sequenceName' => 'id',
-			'columns' => array(
+			'columns' => [
 				'id' => 'integer',
 				'name' => 'string',
 				'category_id' => 'integer'
-			)
-		));
+			]
+		]);
 	}
 }

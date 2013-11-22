@@ -10,6 +10,9 @@ use yiiunit\data\ar\redis\OrderItem;
 use yiiunit\data\ar\redis\Order;
 use yiiunit\data\ar\redis\Item;
 
+/**
+ * @group redis
+ */
 class ActiveRecordTest extends RedisTestCase
 {
 	public function setUp()
@@ -18,61 +21,61 @@ class ActiveRecordTest extends RedisTestCase
 		ActiveRecord::$db = $this->getConnection();
 
 		$customer = new Customer();
-		$customer->setAttributes(array('email' => 'user1@example.com', 'name' => 'user1', 'address' => 'address1', 'status' => 1), false);
+		$customer->setAttributes(['email' => 'user1@example.com', 'name' => 'user1', 'address' => 'address1', 'status' => 1], false);
 		$customer->save(false);
 		$customer = new Customer();
-		$customer->setAttributes(array('email' => 'user2@example.com', 'name' => 'user2', 'address' => 'address2', 'status' => 1), false);
+		$customer->setAttributes(['email' => 'user2@example.com', 'name' => 'user2', 'address' => 'address2', 'status' => 1], false);
 		$customer->save(false);
 		$customer = new Customer();
-		$customer->setAttributes(array('email' => 'user3@example.com', 'name' => 'user3', 'address' => 'address3', 'status' => 2), false);
+		$customer->setAttributes(['email' => 'user3@example.com', 'name' => 'user3', 'address' => 'address3', 'status' => 2], false);
 		$customer->save(false);
 
 //		INSERT INTO tbl_category (name) VALUES ('Books');
 //		INSERT INTO tbl_category (name) VALUES ('Movies');
 
 		$item = new Item();
-		$item->setAttributes(array('name' => 'Agile Web Application Development with Yii1.1 and PHP5', 'category_id' => 1), false);
+		$item->setAttributes(['name' => 'Agile Web Application Development with Yii1.1 and PHP5', 'category_id' => 1], false);
 		$item->save(false);
 		$item = new Item();
-		$item->setAttributes(array('name' => 'Yii 1.1 Application Development Cookbook', 'category_id' => 1), false);
+		$item->setAttributes(['name' => 'Yii 1.1 Application Development Cookbook', 'category_id' => 1], false);
 		$item->save(false);
 		$item = new Item();
-		$item->setAttributes(array('name' => 'Ice Age', 'category_id' => 2), false);
+		$item->setAttributes(['name' => 'Ice Age', 'category_id' => 2], false);
 		$item->save(false);
 		$item = new Item();
-		$item->setAttributes(array('name' => 'Toy Story', 'category_id' => 2), false);
+		$item->setAttributes(['name' => 'Toy Story', 'category_id' => 2], false);
 		$item->save(false);
 		$item = new Item();
-		$item->setAttributes(array('name' => 'Cars', 'category_id' => 2), false);
+		$item->setAttributes(['name' => 'Cars', 'category_id' => 2], false);
 		$item->save(false);
 
 		$order = new Order();
-		$order->setAttributes(array('customer_id' => 1, 'create_time' => 1325282384, 'total' => 110.0), false);
+		$order->setAttributes(['customer_id' => 1, 'create_time' => 1325282384, 'total' => 110.0], false);
 		$order->save(false);
 		$order = new Order();
-		$order->setAttributes(array('customer_id' => 2, 'create_time' => 1325334482, 'total' => 33.0), false);
+		$order->setAttributes(['customer_id' => 2, 'create_time' => 1325334482, 'total' => 33.0], false);
 		$order->save(false);
 		$order = new Order();
-		$order->setAttributes(array('customer_id' => 2, 'create_time' => 1325502201, 'total' => 40.0), false);
+		$order->setAttributes(['customer_id' => 2, 'create_time' => 1325502201, 'total' => 40.0], false);
 		$order->save(false);
 
 		$orderItem = new OrderItem();
-		$orderItem->setAttributes(array('order_id' => 1, 'item_id' => 1, 'quantity' => 1, 'subtotal' => 30.0), false);
+		$orderItem->setAttributes(['order_id' => 1, 'item_id' => 1, 'quantity' => 1, 'subtotal' => 30.0], false);
 		$orderItem->save(false);
 		$orderItem = new OrderItem();
-		$orderItem->setAttributes(array('order_id' => 1, 'item_id' => 2, 'quantity' => 2, 'subtotal' => 40.0), false);
+		$orderItem->setAttributes(['order_id' => 1, 'item_id' => 2, 'quantity' => 2, 'subtotal' => 40.0], false);
 		$orderItem->save(false);
 		$orderItem = new OrderItem();
-		$orderItem->setAttributes(array('order_id' => 2, 'item_id' => 4, 'quantity' => 1, 'subtotal' => 10.0), false);
+		$orderItem->setAttributes(['order_id' => 2, 'item_id' => 4, 'quantity' => 1, 'subtotal' => 10.0], false);
 		$orderItem->save(false);
 		$orderItem = new OrderItem();
-		$orderItem->setAttributes(array('order_id' => 2, 'item_id' => 5, 'quantity' => 1, 'subtotal' => 15.0), false);
+		$orderItem->setAttributes(['order_id' => 2, 'item_id' => 5, 'quantity' => 1, 'subtotal' => 15.0], false);
 		$orderItem->save(false);
 		$orderItem = new OrderItem();
-		$orderItem->setAttributes(array('order_id' => 2, 'item_id' => 3, 'quantity' => 1, 'subtotal' => 8.0), false);
+		$orderItem->setAttributes(['order_id' => 2, 'item_id' => 3, 'quantity' => 1, 'subtotal' => 8.0], false);
 		$orderItem->save(false);
 		$orderItem = new OrderItem();
-		$orderItem->setAttributes(array('order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0), false);
+		$orderItem->setAttributes(['order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0], false);
 		$orderItem->save(false);
 	}
 
@@ -97,26 +100,26 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertEquals('user2', $customer->name);
 		$customer = Customer::find(5);
 		$this->assertNull($customer);
-		$customer = Customer::find(array('id' => array(5, 6, 1)));
+		$customer = Customer::find(['id' => [5, 6, 1]]);
 		$this->assertEquals(1, count($customer));
-		$customer = Customer::find()->where(array('id' => array(5, 6, 1)))->one();
+		$customer = Customer::find()->where(['id' => [5, 6, 1]])->one();
 		$this->assertNotNull($customer);
 
 		// query scalar
-		$customerName = Customer::find()->where(array('id' => 2))->scalar('name');
+		$customerName = Customer::find()->where(['id' => 2])->scalar('name');
 		$this->assertEquals('user2', $customerName);
 
 		// find by column values
-		$customer = Customer::find(array('id' => 2, 'name' => 'user2'));
+		$customer = Customer::find(['id' => 2, 'name' => 'user2']);
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
-		$customer = Customer::find(array('id' => 2, 'name' => 'user1'));
+		$customer = Customer::find(['id' => 2, 'name' => 'user1']);
 		$this->assertNull($customer);
-		$customer = Customer::find(array('id' => 5));
+		$customer = Customer::find(['id' => 5]);
 		$this->assertNull($customer);
 
 		// find by attributes
-		$customer = Customer::find()->where(array('name' => 'user2'))->one();
+		$customer = Customer::find()->where(['name' => 'user2'])->one();
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals(2, $customer->id);
 
@@ -131,7 +134,7 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertEquals(2, Customer::find()->active()->count());
 
 		// asArray
-		$customer = Customer::find()->where(array('id' => 2))->asArray()->one();
+		$customer = Customer::find()->where(['id' => 2])->asArray()->one();
 		$this->assertEquals(array(
 			'id' => '2',
 			'email' => 'user2@example.com',
@@ -212,14 +215,14 @@ class ActiveRecordTest extends RedisTestCase
 
 	public function testFindComplexCondition()
 	{
-		$this->assertEquals(2, Customer::find()->where(array('OR', array('id' => 1), array('id' => 2)))->count());
-		$this->assertEquals(2, count(Customer::find()->where(array('OR', array('id' => 1), array('id' => 2)))->all()));
+		$this->assertEquals(2, Customer::find()->where(['OR', ['id' => 1], ['id' => 2]])->count());
+		$this->assertEquals(2, count(Customer::find()->where(['OR', ['id' => 1], ['id' => 2]])->all()));
 
-		$this->assertEquals(2, Customer::find()->where(array('id' => array(1,2)))->count());
-		$this->assertEquals(2, count(Customer::find()->where(array('id' => array(1,2)))->all()));
+		$this->assertEquals(2, Customer::find()->where(['id' => [1,2]])->count());
+		$this->assertEquals(2, count(Customer::find()->where(['id' => [1,2]])->all()));
 
-		$this->assertEquals(1, Customer::find()->where(array('AND', array('id' => array(2,3)), array('BETWEEN', 'status', 2, 4)))->count());
-		$this->assertEquals(1, count(Customer::find()->where(array('AND', array('id' => array(2,3)), array('BETWEEN', 'status', 2, 4)))->all()));
+		$this->assertEquals(1, Customer::find()->where(['AND', ['id' => [2,3]], ['BETWEEN', 'status', 2, 4]])->count());
+		$this->assertEquals(1, count(Customer::find()->where(['AND', ['id' => [2,3]], ['BETWEEN', 'status', 2, 4]])->all()));
 	}
 
 	public function testSum()
@@ -230,14 +233,14 @@ class ActiveRecordTest extends RedisTestCase
 
 	public function testFindColumn()
 	{
-		$this->assertEquals(array('user1', 'user2', 'user3'), Customer::find()->column('name'));
-//		TODO $this->assertEquals(array('user3', 'user2', 'user1'), Customer::find()->orderBy(array('name' => Query::SORT_DESC))->column('name'));
+		$this->assertEquals(['user1', 'user2', 'user3'], Customer::find()->column('name'));
+//		TODO $this->assertEquals(['user3', 'user2', 'user1'], Customer::find()->orderBy(['name' => SORT_DESC])->column('name'));
 	}
 
 	public function testExists()
 	{
-		$this->assertTrue(Customer::find()->where(array('id' => 2))->exists());
-		$this->assertFalse(Customer::find()->where(array('id' => 5))->exists());
+		$this->assertTrue(Customer::find()->where(['id' => 2])->exists());
+		$this->assertFalse(Customer::find()->where(['id' => 5])->exists());
 	}
 
 	public function testFindLazy()
@@ -247,7 +250,7 @@ class ActiveRecordTest extends RedisTestCase
 		$orders = $customer->orders;
 		$this->assertEquals(2, count($orders));
 
-		$orders = $customer->getOrders()->where(array('id' => 3))->all();
+		$orders = $customer->getOrders()->where(['id' => 3])->all();
 		$this->assertEquals(1, count($orders));
 		$this->assertEquals(3, $orders[0]->id);
 	}
@@ -271,7 +274,7 @@ class ActiveRecordTest extends RedisTestCase
 
 		$order = Order::find(1);
 		$order->id = 100;
-		$this->assertEquals(array(), $order->items);
+		$this->assertEquals([], $order->items);
 	}
 
 	public function testFindEagerViaRelation()
@@ -327,13 +330,13 @@ class ActiveRecordTest extends RedisTestCase
 		$order = Order::find(1);
 		$this->assertEquals(2, count($order->items));
 		$this->assertEquals(2, count($order->orderItems));
-		$orderItem = OrderItem::find(array('order_id' => 1, 'item_id' => 3));
+		$orderItem = OrderItem::find(['order_id' => 1, 'item_id' => 3]);
 		$this->assertNull($orderItem);
 		$item = Item::find(3);
-		$order->link('items', $item, array('quantity' => 10, 'subtotal' => 100));
+		$order->link('items', $item, ['quantity' => 10, 'subtotal' => 100]);
 		$this->assertEquals(3, count($order->items));
 		$this->assertEquals(3, count($order->orderItems));
-		$orderItem = OrderItem::find(array('order_id' => 1, 'item_id' => 3));
+		$orderItem = OrderItem::find(['order_id' => 1, 'item_id' => 3]);
 		$this->assertTrue($orderItem instanceof OrderItem);
 		$this->assertEquals(10, $orderItem->quantity);
 		$this->assertEquals(100, $orderItem->subtotal);
@@ -394,7 +397,7 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertEquals('user3', $customer->name);
 		$ret = Customer::updateAll(array(
 			'name' => 'temp',
-		), array('id' => 3));
+		), ['id' => 3]);
 		$this->assertEquals(1, $ret);
 		$customer = Customer::find(3);
 		$this->assertEquals('temp', $customer->name);
@@ -403,17 +406,17 @@ class ActiveRecordTest extends RedisTestCase
 	public function testUpdateCounters()
 	{
 		// updateCounters
-		$pk = array('order_id' => 2, 'item_id' => 4);
+		$pk = ['order_id' => 2, 'item_id' => 4];
 		$orderItem = OrderItem::find($pk);
 		$this->assertEquals(1, $orderItem->quantity);
-		$ret = $orderItem->updateCounters(array('quantity' => -1));
+		$ret = $orderItem->updateCounters(['quantity' => -1]);
 		$this->assertTrue($ret);
 		$this->assertEquals(0, $orderItem->quantity);
 		$orderItem = OrderItem::find($pk);
 		$this->assertEquals(0, $orderItem->quantity);
 
 		// updateAllCounters
-		$pk = array('order_id' => 1, 'item_id' => 2);
+		$pk = ['order_id' => 1, 'item_id' => 2];
 		$orderItem = OrderItem::find($pk);
 		$this->assertEquals(2, $orderItem->quantity);
 		$ret = OrderItem::updateAllCounters(array(
@@ -429,7 +432,7 @@ class ActiveRecordTest extends RedisTestCase
 	public function testUpdatePk()
 	{
 		// updateCounters
-		$pk = array('order_id' => 2, 'item_id' => 4);
+		$pk = ['order_id' => 2, 'item_id' => 4];
 		$orderItem = OrderItem::find($pk);
 		$this->assertEquals(2, $orderItem->order_id);
 		$this->assertEquals(4, $orderItem->item_id);
@@ -439,7 +442,7 @@ class ActiveRecordTest extends RedisTestCase
 		$orderItem->save();
 
 		$this->assertNull(OrderItem::find($pk));
-		$this->assertNotNull(OrderItem::find(array('order_id' => 2, 'item_id' => 10)));
+		$this->assertNotNull(OrderItem::find(['order_id' => 2, 'item_id' => 10]));
 	}
 
 	public function testDelete()

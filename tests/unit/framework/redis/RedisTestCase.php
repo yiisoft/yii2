@@ -8,7 +8,7 @@ use yiiunit\TestCase;
 /**
  * RedisTestCase is the base class for all redis related test cases
  */
-class RedisTestCase extends TestCase
+abstract class RedisTestCase extends TestCase
 {
 	protected function setUp()
 	{

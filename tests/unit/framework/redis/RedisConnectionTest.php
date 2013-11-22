@@ -4,6 +4,9 @@ namespace yiiunit\framework\redis;
 
 use yii\redis\Connection;
 
+/**
+ * @group redis
+ */
 class RedisConnectionTest extends RedisTestCase
 {
 	/**

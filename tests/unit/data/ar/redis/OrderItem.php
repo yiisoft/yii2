@@ -8,19 +8,19 @@ class OrderItem extends ActiveRecord
 {
 	public function getOrder()
 	{
-		return $this->hasOne('Order', array('id' => 'order_id'));
+		return $this->hasOne(Order::className(), ['id' => 'order_id']);
 	}
 
 	public function getItem()
 	{
-		return $this->hasOne('Item', array('id' => 'item_id'));
+		return $this->hasOne(Item::className(), ['id' => 'item_id']);
 	}
 
 	public static function getRecordSchema()
 	{
 		return new RecordSchema(array(
 			'name' => 'order_item',
-			'primaryKey' => array('order_id', 'item_id'),
+			'primaryKey' => ['order_id', 'item_id'],
 			'columns' => array(
 				'order_id' => 'integer',
 				'item_id' => 'integer',

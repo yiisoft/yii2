@@ -16,12 +16,12 @@ class Customer extends ActiveRecord
 	 */
 	public function getOrders()
 	{
-		return $this->hasMany('Order', array('customer_id' => 'id'));
+		return $this->hasMany(Order::className(), ['customer_id' => 'id']);
 	}
 
 	public static function active($query)
 	{
-		$query->andWhere(array('status' => 1));
+		$query->andWhere(['status' => 1]);
 	}
 
 	public static function getRecordSchema()

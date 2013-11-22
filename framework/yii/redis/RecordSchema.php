@@ -41,7 +41,7 @@ class RecordSchema extends TableSchema
 			throw new InvalidConfigException('primaryKey of RecordSchema must not be empty.');
 		}
 		if (!is_array($this->primaryKey)) {
-			$this->primaryKey = array($this->primaryKey);
+			$this->primaryKey = [$this->primaryKey];
 		}
 		foreach($this->primaryKey as $pk) {
 			if (!isset($this->columns[$pk])) {
