@@ -87,11 +87,11 @@ class ColumnSchema extends Object
 	 */
 	public function typecast($value)
 	{
+		if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_BINARY) {
+			return null;
+		}
 		if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression) {
 			return $value;
-		}
-		if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING) {
-			return null;
 		}
 		switch ($this->phpType) {
 			case 'string':

@@ -64,7 +64,7 @@ class Item extends Object
 	 * @param array $params the parameters to be passed to business rule evaluation
 	 * @return boolean whether the specified item is within the hierarchy starting from this item.
 	 */
-	public function checkAccess($itemName, $params = array())
+	public function checkAccess($itemName, $params = [])
 	{
 		Yii::trace('Checking permission: ' . $this->_name, __METHOD__);
 		if ($this->manager->executeBizRule($this->bizRule, $params, $this->data)) {

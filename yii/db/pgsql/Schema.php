@@ -31,9 +31,10 @@ class Schema extends \yii\db\Schema
 	 * @var array mapping from physical column types (keys) to abstract
 	 * column types (values)
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		'abstime' => self::TYPE_TIMESTAMP,
 		'bit' => self::TYPE_STRING,
+		'bool' => self::TYPE_BOOLEAN,
 		'boolean' => self::TYPE_BOOLEAN,
 		'box' => self::TYPE_STRING,
 		'character' => self::TYPE_STRING,
@@ -47,6 +48,8 @@ class Schema extends \yii\db\Schema
 		'double precision' => self::TYPE_DECIMAL,
 		'inet' => self::TYPE_STRING,
 		'smallint' => self::TYPE_SMALLINT,
+		'int4' => self::TYPE_INTEGER,
+		'int8' => self::TYPE_BIGINT,
 		'integer' => self::TYPE_INTEGER,
 		'bigint' => self::TYPE_BIGINT,
 		'interval' => self::TYPE_STRING,
@@ -70,7 +73,7 @@ class Schema extends \yii\db\Schema
 		'bit varying' => self::TYPE_STRING,
 		'character varying' => self::TYPE_STRING,
 		'xml' => self::TYPE_STRING
-	);
+	];
 
 	/**
 	 * Creates a query builder for the PostgreSQL database.
@@ -129,6 +132,28 @@ class Schema extends \yii\db\Schema
 	}
 
 	/**
+	 * Determines the PDO type for the given PHP data value.
+	 * @param mixed $data the data whose PDO type is to be determined
+	 * @return integer the PDO type
+	 * @see http://www.php.net/manual/en/pdo.constants.php
+	 */
+	public function getPdoType($data)
+	{
+		// php type => PDO type
+		static $typeMap = [
+			// https://github.com/yiisoft/yii2/issues/1115
+			// Cast boolean to integer values to work around problems with PDO casting false to string '' https://bugs.php.net/bug.php?id=33876
+			'boolean' => \PDO::PARAM_INT,
+			'integer' => \PDO::PARAM_INT,
+			'string' => \PDO::PARAM_STR,
+			'resource' => \PDO::PARAM_LOB,
+			'NULL' => \PDO::PARAM_NULL,
+		];
+		$type = gettype($data);
+		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
+	}
+
+	/**
 	 * Returns all table names in the database.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
 	 * If not empty, the returned table names will be prefixed with the schema name.
@@ -146,7 +171,7 @@ EOD;
 		$command = $this->db->createCommand($sql);
 		$command->bindParam(':schema', $schema);
 		$rows = $command->queryAll();
-		$names = array();
+		$names = [];
 		foreach ($rows as $row) {
 			if ($schema === $this->defaultSchema) {
 				$names[] = $row['table_name'];
@@ -198,7 +223,7 @@ SQL;
 			} else {
 				$foreignTable = $constraint['foreign_table_name'];
 			}
-			$citem = array($foreignTable);
+			$citem = [$foreignTable];
 			foreach ($columns as $idx => $column) {
 				$citem[$fcolumns[$idx]] = $column;
 			}
@@ -217,18 +242,17 @@ SQL;
 		$schemaName = $this->db->quoteValue($table->schemaName);
 		$sql = <<<SQL
 SELECT 
-	current_database() as table_catalog,
-	d.nspname AS table_schema,        
-        c.relname AS table_name,
-        a.attname AS column_name,
-        t.typname AS data_type,
-        a.attlen AS character_maximum_length,
-        pg_catalog.col_description(c.oid, a.attnum) AS column_comment,
-        a.atttypmod AS modifier,
-        a.attnotnull = false AS is_nullable,	
-        CAST(pg_get_expr(ad.adbin, ad.adrelid) AS varchar) AS column_default,
-        coalesce(pg_get_expr(ad.adbin, ad.adrelid) ~ 'nextval',false) AS is_autoinc,
-        array_to_string((select array_agg(enumlabel) from pg_enum where enumtypid=a.atttypid)::varchar[],',') as enum_values,
+	d.nspname AS table_schema,
+	c.relname AS table_name,
+	a.attname AS column_name,
+	t.typname AS data_type,
+	a.attlen AS character_maximum_length,
+	pg_catalog.col_description(c.oid, a.attnum) AS column_comment,
+	a.atttypmod AS modifier,
+	a.attnotnull = false AS is_nullable,
+	CAST(pg_get_expr(ad.adbin, ad.adrelid) AS varchar) AS column_default,
+	coalesce(pg_get_expr(ad.adbin, ad.adrelid) ~ 'nextval',false) AS is_autoinc,
+	array_to_string((select array_agg(enumlabel) from pg_enum where enumtypid=a.atttypid)::varchar[],',') as enum_values,
 	CASE atttypid
 		 WHEN 21 /*int2*/ THEN 16
 		 WHEN 23 /*int4*/ THEN 32
@@ -264,7 +288,7 @@ FROM
 	LEFT JOIN pg_namespace d ON d.oid = c.relnamespace
 	LEFT join pg_constraint ct on ct.conrelid=c.oid and ct.contype='p'
 WHERE
-	a.attnum > 0
+	a.attnum > 0 and t.typname != ''
 	and c.relname = {$tableName}
 	and d.nspname = {$schemaName}
 ORDER BY
@@ -280,8 +304,8 @@ SQL;
 			$table->columns[$column->name] = $column;
 			if ($column->isPrimaryKey === true) {
 				$table->primaryKey[] = $column->name;
-				if ($table->sequenceName === null && preg_match("/nextval\('\w+'(::regclass)?\)/", $column->defaultValue) === 1) {
-					$table->sequenceName = preg_replace(array('/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'), '', $column->defaultValue);
+				if ($table->sequenceName === null && preg_match("/nextval\\('\"?\\w+\"?'(::regclass)?\\)/", $column->defaultValue) === 1) {
+					$table->sequenceName = preg_replace(['/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'], '', $column->defaultValue);
 				}
 			}
 		}
@@ -301,8 +325,8 @@ SQL;
 		$column->comment = $info['column_comment'];
 		$column->dbType = $info['data_type'];
 		$column->defaultValue = $info['column_default'];
-		$column->enumValues = explode(',', str_replace(array("''"), array("'"), $info['enum_values']));
-		$column->unsigned = false; // has no meanining in PG
+		$column->enumValues = explode(',', str_replace(["''"], ["'"], $info['enum_values']));
+		$column->unsigned = false; // has no meaning in PG
 		$column->isPrimaryKey = $info['is_pkey'];
 		$column->name = $info['column_name'];
 		$column->precision = $info['numeric_precision'];

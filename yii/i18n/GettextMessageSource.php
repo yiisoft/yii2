@@ -68,18 +68,18 @@ class GettextMessageSource extends MessageSource
 
 		if (is_file($messageFile)) {
 			if ($this->useMoFile) {
-				$gettextFile = new GettextMoFile(array('useBigEndian' => $this->useBigEndian));
+				$gettextFile = new GettextMoFile(['useBigEndian' => $this->useBigEndian]);
 			} else {
 				$gettextFile = new GettextPoFile();
 			}
 			$messages = $gettextFile->load($messageFile, $category);
 			if (!is_array($messages)) {
-				$messages = array();
+				$messages = [];
 			}
 			return $messages;
 		} else {
 			Yii::error("The message file for category '$category' does not exist: $messageFile", __METHOD__);
-			return array();
+			return [];
 		}
 	}
 }

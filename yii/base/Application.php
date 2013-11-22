@@ -15,12 +15,13 @@ use yii\web\HttpException;
  * Application is the base class for all application classes.
  *
  * @property \yii\rbac\Manager $authManager The auth manager for this application. This property is read-only.
+ * @property string $basePath The root directory of the application.
  * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
  * This property is read-only.
  * @property \yii\db\Connection $db The database connection. This property is read-only.
  * @property ErrorHandler $errorHandler The error handler application component. This property is read-only.
  * @property \yii\base\Formatter $formatter The formatter application component. This property is read-only.
- * @property \yii\i18n\I18N $i18N The internationalization component. This property is read-only.
+ * @property \yii\i18n\I18N $i18n The internationalization component. This property is read-only.
  * @property \yii\log\Logger $log The log component. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property string $runtimePath The directory that stores runtime files. Defaults to the "runtime"
@@ -30,7 +31,8 @@ use yii\web\HttpException;
  * @property \yii\web\UrlManager $urlManager The URL manager for this application. This property is read-only.
  * @property string $vendorPath The directory that stores vendor files. Defaults to "vendor" directory under
  * [[basePath]].
- * @property View $view The view object that is used to render various view files. This property is read-only.
+ * @property View|\yii\web\View $view The view object that is used to render various view files. This property
+ * is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -54,6 +56,13 @@ abstract class Application extends Module
 	 * @event ActionEvent an event raised after executing a controller action.
 	 */
 	const EVENT_AFTER_ACTION = 'afterAction';
+
+	/**
+	 * @var string the namespace that controller classes are in. If not set,
+	 * it will use the "app\controllers" namespace.
+	 */
+	public $controllerNamespace = 'app\\controllers';
+
 	/**
 	 * @var string the application name.
 	 */
@@ -70,17 +79,13 @@ abstract class Application extends Module
 	 * @var string the language that is meant to be used for end users.
 	 * @see sourceLanguage
 	 */
-	public $language = 'en_US';
+	public $language = 'en-US';
 	/**
 	 * @var string the language that the application is written in. This mainly refers to
 	 * the language that the messages and view files are written in.
 	 * @see language
 	 */
-	public $sourceLanguage = 'en_US';
-	/**
-	 * @var array IDs of the components that need to be loaded when the application starts.
-	 */
-	public $preload = array();
+	public $sourceLanguage = 'en-US';
 	/**
 	 * @var Controller the currently active controller instance
 	 */
@@ -109,6 +114,19 @@ abstract class Application extends Module
 	 * @var array the parameters supplied to the requested action.
 	 */
 	public $requestedParams;
+	/**
+	 * @var array list of installed Yii extensions. Each array element represents a single extension
+	 * with the following structure:
+	 *
+	 * ~~~
+	 * [
+	 *     'name' => 'extension name',
+	 *     'version' => 'version number',
+	 *     'bootstrap' => 'BootstrapClassName',
+	 * ]
+	 * ~~~
+	 */
+	public $extensions = [];
 
 	/**
 	 * @var string Used to reserve memory for fatal error handler.
@@ -121,9 +139,27 @@ abstract class Application extends Module
 	 * Note that the configuration must contain both [[id]] and [[basePath]].
 	 * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
 	 */
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		Yii::$app = $this;
+
+		$this->preInit($config);
+		$this->registerErrorHandlers();
+		$this->registerCoreComponents();
+
+		Component::__construct($config);
+	}
+
+	/**
+	 * Pre-initializes the application.
+	 * This method is called at the beginning of the application constructor.
+	 * It initializes several important application properties.
+	 * If you override this method, please make sure you call the parent implementation.
+	 * @param array $config the application configuration
+	 * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
+	 */
+	public function preInit(&$config)
+	{
 		if (!isset($config['id'])) {
 			throw new InvalidConfigException('The "id" configuration is required.');
 		}
@@ -134,21 +170,6 @@ abstract class Application extends Module
 			throw new InvalidConfigException('The "basePath" configuration is required.');
 		}
 
-		$this->preInit($config);
-
-		$this->registerErrorHandlers();
-		$this->registerCoreComponents();
-
-		Component::__construct($config);
-	}
-
-	/**
-	 * Pre-initializes the application.
-	 * This method is called at the beginning of the application constructor.
-	 * @param array $config the application configuration
-	 */
-	public function preInit(&$config)
-	{
 		if (isset($config['vendorPath'])) {
 			$this->setVendorPath($config['vendorPath']);
 			unset($config['vendorPath']);
@@ -163,11 +184,42 @@ abstract class Application extends Module
 			// set "@runtime"
 			$this->getRuntimePath();
 		}
+
 		if (isset($config['timeZone'])) {
 			$this->setTimeZone($config['timeZone']);
 			unset($config['timeZone']);
 		} elseif (!ini_get('date.timezone')) {
 			$this->setTimeZone('UTC');
+		}
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function init()
+	{
+		parent::init();
+		$this->initExtensions($this->extensions);
+	}
+
+	/**
+	 * Initializes the extensions.
+	 * @param array $extensions the extensions to be initialized. Please refer to [[extensions]]
+	 * for the structure of the extension array.
+	 */
+	protected function initExtensions($extensions)
+	{
+		foreach ($extensions as $extension) {
+			if (!empty($extension['alias'])) {
+				foreach ($extension['alias'] as $name => $path) {
+					Yii::setAlias($name, $path);
+				}
+			}
+			if (isset($extension['bootstrap'])) {
+				/** @var Extension $class */
+				$class = $extension['bootstrap'];
+				$class::init();
+			}
 		}
 	}
 
@@ -188,12 +240,12 @@ abstract class Application extends Module
 	{
 		if (YII_ENABLE_ERROR_HANDLER) {
 			ini_set('display_errors', 0);
-			set_exception_handler(array($this, 'handleException'));
-			set_error_handler(array($this, 'handleError'), error_reporting());
+			set_exception_handler([$this, 'handleException']);
+			set_error_handler([$this, 'handleError'], error_reporting());
 			if ($this->memoryReserveSize > 0) {
 				$this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
 			}
-			register_shutdown_function(array($this, 'handleFatalError'));
+			register_shutdown_function([$this, 'handleFatalError']);
 		}
 	}
 
@@ -205,6 +257,19 @@ abstract class Application extends Module
 	public function getUniqueId()
 	{
 		return '';
+	}
+
+	/**
+	 * Sets the root directory of the application and the @app alias.
+	 * This method can only be invoked at the beginning of the constructor.
+	 * @param string $path the root directory of the application.
+	 * @property string the root directory of the application.
+	 * @throws InvalidParamException if the directory does not exist.
+	 */
+	public function setBasePath($path)
+	{
+		parent::setBasePath($path);
+		Yii::setAlias('@app', $this->getBasePath());
 	}
 
 	/**
@@ -363,7 +428,7 @@ abstract class Application extends Module
 
 	/**
 	 * Returns the view object.
-	 * @return View the view object that is used to render various view files.
+	 * @return View|\yii\web\View the view object that is used to render various view files.
 	 */
 	public function getView()
 	{
@@ -383,7 +448,7 @@ abstract class Application extends Module
 	 * Returns the internationalization (i18n) component
 	 * @return \yii\i18n\I18N the internationalization component
 	 */
-	public function getI18N()
+	public function getI18n()
 	{
 		return $this->getComponent('i18n');
 	}
@@ -403,26 +468,14 @@ abstract class Application extends Module
 	 */
 	public function registerCoreComponents()
 	{
-		$this->setComponents(array(
-			'log' => array(
-				'class' => 'yii\log\Logger',
-			),
-			'errorHandler' => array(
-				'class' => 'yii\base\ErrorHandler',
-			),
-			'formatter' => array(
-				'class' => 'yii\base\Formatter',
-			),
-			'i18n' => array(
-				'class' => 'yii\i18n\I18N',
-			),
-			'urlManager' => array(
-				'class' => 'yii\web\UrlManager',
-			),
-			'view' => array(
-				'class' => 'yii\base\View',
-			),
-		));
+		$this->setComponents([
+			'log' => ['class' => 'yii\log\Logger'],
+			'errorHandler' => ['class' => 'yii\base\ErrorHandler'],
+			'formatter' => ['class' => 'yii\base\Formatter'],
+			'i18n' => ['class' => 'yii\i18n\I18N'],
+			'urlManager' => ['class' => 'yii\web\UrlManager'],
+			'view' => ['class' => 'yii\web\View'],
+		]);
 	}
 
 	/**
@@ -450,7 +503,11 @@ abstract class Application extends Module
 			$msg .= "\nPrevious exception:\n";
 			$msg .= (string)$exception;
 			if (YII_DEBUG) {
-				echo $msg;
+				if (PHP_SAPI === 'cli') {
+					echo $msg . "\n";
+				} else {
+					echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, $this->charset) . '</pre>';
+				}
 			}
 			$msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
 			error_log($msg);
@@ -560,10 +617,8 @@ abstract class Application extends Module
 	{
 		$category = get_class($exception);
 		if ($exception instanceof HttpException) {
-			/** @var $exception HttpException */
 			$category .= '\\' . $exception->statusCode;
 		} elseif ($exception instanceof \ErrorException) {
-			/** @var $exception \ErrorException */
 			$category .= '\\' . $exception->getSeverity();
 		}
 		Yii::error((string)$exception, $category);

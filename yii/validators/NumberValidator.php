@@ -91,10 +91,10 @@ class NumberValidator extends Validator
 			$this->addError($object, $attribute, $this->message);
 		}
 		if ($this->min !== null && $value < $this->min) {
-			$this->addError($object, $attribute, $this->tooSmall, array('{min}' => $this->min));
+			$this->addError($object, $attribute, $this->tooSmall, ['min' => $this->min]);
 		}
 		if ($this->max !== null && $value > $this->max) {
-			$this->addError($object, $attribute, $this->tooBig, array('{max}' => $this->max));
+			$this->addError($object, $attribute, $this->tooBig, ['max' => $this->max]);
 		}
 	}
 
@@ -114,38 +114,34 @@ class NumberValidator extends Validator
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
 	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
 		$label = $object->getAttributeLabel($attribute);
-		$value = $object->$attribute;
 
-		$options = array(
+		$options = [
 			'pattern' => new JsExpression($this->integerOnly ? $this->integerPattern : $this->numberPattern),
-			'message' => Html::encode(strtr($this->message, array(
+			'message' => Html::encode(strtr($this->message, [
 				'{attribute}' => $label,
-				'{value}' => $value,
-			))),
-		);
+			])),
+		];
 
 		if ($this->min !== null) {
 			$options['min'] = $this->min;
-			$options['tooSmall'] = Html::encode(strtr($this->tooSmall, array(
+			$options['tooSmall'] = Html::encode(strtr($this->tooSmall, [
 				'{attribute}' => $label,
-				'{value}' => $value,
 				'{min}' => $this->min,
-			)));
+			]));
 		}
 		if ($this->max !== null) {
 			$options['max'] = $this->max;
-			$options['tooBig'] = Html::encode(strtr($this->tooBig, array(
+			$options['tooBig'] = Html::encode(strtr($this->tooBig, [
 				'{attribute}' => $label,
-				'{value}' => $value,
 				'{max}' => $this->max,
-			)));
+			]));
 		}
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;

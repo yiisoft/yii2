@@ -35,7 +35,7 @@ class LinkSorter extends Widget
 	/**
 	 * @var array HTML attributes for the sorter container tag.
 	 */
-	public $options = array('class' => 'sorter');
+	public $options = ['class' => 'sorter'];
 
 
 	/**
@@ -64,10 +64,10 @@ class LinkSorter extends Widget
 	protected function renderSortLinks()
 	{
 		$attributes = empty($this->atttributes) ? array_keys($this->sort->attributes) : $this->attributes;
-		$links = array();
+		$links = [];
 		foreach ($attributes as $name) {
 			$links[] = $this->sort->link($name);
 		}
-		return Html::ul($links, array('encode' => false));
+		return Html::ul($links, ['encode' => false]);
 	}
 }

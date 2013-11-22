@@ -8,6 +8,10 @@
 namespace yii\console;
 
 /**
+ * The console Request represents the environment information for a console application.
+ *
+ * It is a wrapper for the PHP `$_SERVER` variable which holds information about the
+ * currently running PHP script and the command line arguments given to it.
  *
  * @property array $params The command line arguments. It does not include the entry script name.
  *
@@ -29,7 +33,7 @@ class Request extends \yii\base\Request
 				$this->_params = $_SERVER['argv'];
 				array_shift($this->_params);
 			} else {
-				$this->_params = array();
+				$this->_params = [];
 			}
 		}
 		return $this->_params;
@@ -58,7 +62,7 @@ class Request extends \yii\base\Request
 			$route = '';
 		}
 
-		$params = array();
+		$params = [];
 		foreach ($rawParams as $param) {
 			if (preg_match('/^--(\w+)(=(.*))?$/', $param, $matches)) {
 				$name = $matches[1];
@@ -68,6 +72,6 @@ class Request extends \yii\base\Request
 			}
 		}
 
-		return array($route, $params);
+		return [$route, $params];
 	}
 }

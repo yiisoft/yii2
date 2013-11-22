@@ -29,17 +29,15 @@ use yii\helpers\ArrayHelper;
  *
  * ~~~
  * $query = new Query;
- * $provider = new ArrayDataProvider(array(
+ * $provider = new ArrayDataProvider([
  *     'allModels' => $query->from('tbl_post')->all(),
- *     'sort' => array(
- *         'attributes' => array(
- *              'id', 'username', 'email',
- *         ),
- *     ),
- *     'pagination' => array(
+ *     'sort' => [
+ *         'attributes' => ['id', 'username', 'email'],
+ *     ],
+ *     'pagination' => [
  *         'pageSize' => 10,
- *     ),
- * ));
+ *     ],
+ * ]);
  * // get the posts in the current page
  * $posts = $provider->getModels();
  * ~~~
@@ -47,15 +45,10 @@ use yii\helpers\ArrayHelper;
  * Note: if you want to use the sorting feature, you must configure the [[sort]] property
  * so that the provider knows which columns can be sorted.
  *
- * @property array $keys The list of key values corresponding to [[models]]. Each data model in [[models]] is
- * uniquely identified by the corresponding key value in this array.
- * @property array $models The list of data models in the current page.
- * @property integer $totalCount Total number of possible data models.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ArrayDataProvider extends DataProvider
+class ArrayDataProvider extends BaseDataProvider
 {
 	/**
 	 * @var string|callable the column that is used as the key of the data models.
@@ -71,101 +64,54 @@ class ArrayDataProvider extends DataProvider
 	 */
 	public $allModels;
 
-	private $_totalCount;
 
 	/**
-	 * Returns the total number of data models.
-	 * @return integer total number of possible data models.
+	 * @inheritdoc
 	 */
-	public function getTotalCount()
+	protected function prepareModels()
 	{
-		if ($this->getPagination() === false) {
-			return $this->getCount();
-		} elseif ($this->_totalCount === null) {
-			$this->_totalCount = count($this->allModels);
+		if (($models = $this->allModels) === null) {
+			return [];
 		}
-		return $this->_totalCount;
-	}
 
-	/**
-	 * Sets the total number of data models.
-	 * @param integer $value the total number of data models.
-	 */
-	public function setTotalCount($value)
-	{
-		$this->_totalCount = $value;
-	}
-
-	private $_models;
-
-	/**
-	 * Returns the data models in the current page.
-	 * @return array the list of data models in the current page.
-	 */
-	public function getModels()
-	{
-		if ($this->_models === null) {
-			if (($models = $this->allModels) === null) {
-				return array();
-			}
-
-			if (($sort = $this->getSort()) !== false) {
-				$models = $this->sortModels($models, $sort);
-			}
-
-			if (($pagination = $this->getPagination()) !== false) {
-				$pagination->totalCount = $this->getTotalCount();
-				$models = array_slice($models, $pagination->getOffset(), $pagination->getLimit());
-			}
-
-			$this->_models = $models;
+		if (($sort = $this->getSort()) !== false) {
+			$models = $this->sortModels($models, $sort);
 		}
-		return $this->_models;
+
+		if (($pagination = $this->getPagination()) !== false) {
+			$pagination->totalCount = $this->getTotalCount();
+			$models = array_slice($models, $pagination->getOffset(), $pagination->getLimit());
+		}
+
+		return $models;
 	}
 
 	/**
-	 * Sets the data models in the current page.
-	 * @param array $models the models in the current page
+	 * @inheritdoc
 	 */
-	public function setModels($models)
+	protected function prepareKeys($models)
 	{
-		$this->_models = $models;
-	}
-
-	private $_keys;
-
-	/**
-	 * Returns the key values associated with the data models.
-	 * @return array the list of key values corresponding to [[models]]. Each data model in [[models]]
-	 * is uniquely identified by the corresponding key value in this array.
-	 */
-	public function getKeys()
-	{
-		if ($this->_keys === null) {
-			$this->_keys = array();
-			$models = $this->getModels();
-			if ($this->key !== null) {
-				foreach ($models as $model) {
-					if (is_string($this->key)) {
-						$this->_keys[] = $model[$this->key];
-					} else {
-						$this->_keys[] = call_user_func($this->key, $model);
-					}
+		if ($this->key !== null) {
+			$keys = [];
+			foreach ($models as $model) {
+				if (is_string($this->key)) {
+					$keys[] = $model[$this->key];
+				} else {
+					$keys[] = call_user_func($this->key, $model);
 				}
-			} else {
-				$this->_keys = array_keys($models);
 			}
+			return $keys;
+		} else {
+			return array_keys($models);
 		}
-		return $this->_keys;
 	}
 
 	/**
-	 * Sets the key values associated with the data models.
-	 * @param array $keys the list of key values corresponding to [[models]].
+	 * @inheritdoc
 	 */
-	public function setKeys($keys)
+	protected function prepareTotalCount()
 	{
-		$this->_keys = $keys;
+		return count($this->allModels);
 	}
 
 	/**

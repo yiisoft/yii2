@@ -8,6 +8,11 @@
 namespace yii\base;
 
 /**
+ * ActionFilter provides a base implementation for action filters that can be added to a controller
+ * to handle the `beforeAction` event.
+ *
+ * Check implementation of [[AccessControl]], [[PageCache]] and [[HttpCache]] as examples on how to use it.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -24,7 +29,7 @@ class ActionFilter extends Behavior
 	 * @var array list of action IDs that this filter should not apply to.
 	 * @see only
 	 */
-	public $except = array();
+	public $except = [];
 
 	/**
 	 * Declares event handlers for the [[owner]]'s events.
@@ -32,10 +37,10 @@ class ActionFilter extends Behavior
 	 */
 	public function events()
 	{
-		return array(
+		return [
 			Controller::EVENT_BEFORE_ACTION => 'beforeFilter',
 			Controller::EVENT_AFTER_ACTION => 'afterFilter',
-		);
+		];
 	}
 
 	/**

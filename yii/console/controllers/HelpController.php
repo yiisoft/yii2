@@ -57,9 +57,9 @@ class HelpController extends Controller
 		if ($command !== null) {
 			$result = Yii::$app->createController($command);
 			if ($result === false) {
-				throw new Exception(Yii::t('yii', 'No help for unknown command "{command}".', array(
-					'{command}' => $this->ansiFormat($command, Console::FG_YELLOW),
-				)));
+				throw new Exception(Yii::t('yii', 'No help for unknown command "{command}".', [
+					'command' => $this->ansiFormat($command, Console::FG_YELLOW),
+				]));
 			}
 
 			list($controller, $actionID) = $result;
@@ -114,7 +114,7 @@ class HelpController extends Controller
 	{
 		$prefix = $module instanceof Application ? '' : $module->getUniqueID() . '/';
 
-		$commands = array();
+		$commands = [];
 		foreach (array_keys($module->controllerMap) as $id) {
 			$commands[] = $prefix . $id;
 		}
@@ -124,7 +124,7 @@ class HelpController extends Controller
 				continue;
 			}
 			foreach ($this->getModuleCommands($child) as $command) {
-				$commands[] = $prefix . $id . '/' . $command;
+				$commands[] = $command;
 			}
 		}
 
@@ -242,9 +242,9 @@ class HelpController extends Controller
 	{
 		$action = $controller->createAction($actionID);
 		if ($action === null) {
-			throw new Exception(Yii::t('yii', 'No help for unknown sub-command "{command}".', array(
-				'{command}' => rtrim($controller->getUniqueId() . '/' . $actionID, '/'),
-			)));
+			throw new Exception(Yii::t('yii', 'No help for unknown sub-command "{command}".', [
+				'command' => rtrim($controller->getUniqueId() . '/' . $actionID, '/'),
+			]));
 		}
 		if ($action instanceof InlineAction) {
 			$method = new \ReflectionMethod($controller, $action->actionMethod);
@@ -266,7 +266,7 @@ class HelpController extends Controller
 		} else {
 			echo 'yii ' . $this->ansiFormat($action->getUniqueId(), Console::FG_YELLOW);
 		}
-		list ($required, $optional) = $this->getArgHelps($method, isset($tags['param']) ? $tags['param'] : array());
+		list ($required, $optional) = $this->getArgHelps($method, isset($tags['param']) ? $tags['param'] : []);
 		foreach ($required as $arg => $description) {
 			$this->stdout(' <' . $arg . '>', Console::FG_CYAN);
 		}
@@ -298,10 +298,10 @@ class HelpController extends Controller
 	protected function getArgHelps($method, $tags)
 	{
 		if (is_string($tags)) {
-			$tags = array($tags);
+			$tags = [$tags];
 		}
 		$params = $method->getParameters();
-		$optional = $required = array();
+		$optional = $required = [];
 		foreach ($params as $i => $param) {
 			$name = $param->getName();
 			$tag = isset($tags[$i]) ? $tags[$i] : '';
@@ -319,7 +319,7 @@ class HelpController extends Controller
 			}
 		}
 
-		return array($required, $optional);
+		return [$required, $optional];
 	}
 
 	/**
@@ -331,11 +331,11 @@ class HelpController extends Controller
 	{
 		$optionNames = $controller->globalOptions();
 		if (empty($optionNames)) {
-			return array();
+			return [];
 		}
 
 		$class = new \ReflectionClass($controller);
-		$options = array();
+		$options = [];
 		foreach ($class->getProperties() as $property) {
 			$name = $property->getName();
 			if (!in_array($name, $optionNames, true)) {
@@ -371,7 +371,7 @@ class HelpController extends Controller
 	 */
 	protected function parseComment($comment)
 	{
-		$tags = array();
+		$tags = [];
 		$comment = "@description \n" . strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($comment, '/'))), "\r", '');
 		$parts = preg_split('/^\s*@/m', $comment, -1, PREG_SPLIT_NO_EMPTY);
 		foreach ($parts as $part) {
@@ -382,7 +382,7 @@ class HelpController extends Controller
 				} elseif (is_array($tags[$name])) {
 					$tags[$name][] = trim($matches[2]);
 				} else {
-					$tags[$name] = array($tags[$name], trim($matches[2]));
+					$tags[$name] = [$tags[$name], trim($matches[2])];
 				}
 			}
 		}

@@ -34,7 +34,7 @@ class Expression extends \yii\base\Object
 	 * The keys are placeholders appearing in [[expression]] and the values
 	 * are the corresponding parameter values.
 	 */
-	public $params = array();
+	public $params = [];
 
 	/**
 	 * Constructor.
@@ -42,7 +42,7 @@ class Expression extends \yii\base\Object
 	 * @param array $params parameters
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($expression, $params = array(), $config = array())
+	public function __construct($expression, $params = [], $config = [])
 	{
 		$this->expression = $expression;
 		$this->params = $params;

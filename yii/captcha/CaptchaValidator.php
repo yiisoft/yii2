@@ -18,8 +18,6 @@ use yii\validators\Validator;
  *
  * CaptchaValidator should be used together with [[CaptchaAction]].
  *
- * @property \yii\captcha\CaptchaAction $captchaAction The action object. This property is read-only.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -71,16 +69,16 @@ class CaptchaValidator extends Validator
 	 */
 	public function validateValue($value)
 	{
-		$captcha = $this->getCaptchaAction();
+		$captcha = $this->createCaptchaAction();
 		return !is_array($value) && $captcha->validate($value, $this->caseSensitive);
 	}
 
 	/**
-	 * Returns the CAPTCHA action object.
-	 * @throws InvalidConfigException
+	 * Creates the CAPTCHA action object from the route specified by [[captchaAction]].
 	 * @return \yii\captcha\CaptchaAction the action object
+	 * @throws InvalidConfigException
 	 */
-	public function getCaptchaAction()
+	public function createCaptchaAction()
 	{
 		$ca = Yii::$app->createController($this->captchaAction);
 		if ($ca !== false) {
@@ -98,24 +96,23 @@ class CaptchaValidator extends Validator
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
 	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
-		$captcha = $this->getCaptchaAction();
+		$captcha = $this->createCaptchaAction();
 		$code = $captcha->getVerifyCode(false);
 		$hash = $captcha->generateValidationHash($this->caseSensitive ? $code : strtolower($code));
-		$options = array(
+		$options = [
 			'hash' => $hash,
 			'hashKey' => 'yiiCaptcha/' . $this->captchaAction,
 			'caseSensitive' => $this->caseSensitive,
-			'message' => Html::encode(strtr($this->message, array(
+			'message' => Html::encode(strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
-				'{value}' => $object->$attribute,
-			))),
-		);
+			])),
+		];
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
 		}

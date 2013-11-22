@@ -23,11 +23,11 @@ use yii\db\Query;
  * The following example shows how you can configure the application to use DbCache:
  *
  * ~~~
- * 'cache' => array(
+ * 'cache' => [
  *     'class' => 'yii\caching\DbCache',
  *     // 'db' => 'mydb',
  *     // 'cacheTable' => 'my_cache',
- * )
+ * ]
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -103,9 +103,9 @@ class DbCache extends Cache
 		$key = $this->buildKey($key);
 
 		$query = new Query;
-		$query->select(array('COUNT(*)'))
+		$query->select(['COUNT(*)'])
 			->from($this->cacheTable)
-			->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', array(':id' => $key));
+			->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
 		if ($this->db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
 			$this->db->enableQueryCache = false;
@@ -126,9 +126,9 @@ class DbCache extends Cache
 	protected function getValue($key)
 	{
 		$query = new Query;
-		$query->select(array('data'))
+		$query->select(['data'])
 			->from($this->cacheTable)
-			->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', array(':id' => $key));
+			->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
 		if ($this->db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
 			$this->db->enableQueryCache = false;
@@ -148,12 +148,12 @@ class DbCache extends Cache
 	protected function getValues($keys)
 	{
 		if (empty($keys)) {
-			return array();
+			return [];
 		}
 		$query = new Query;
-		$query->select(array('id', 'data'))
+		$query->select(['id', 'data'])
 			->from($this->cacheTable)
-			->where(array('id' => $keys))
+			->where(['id' => $keys])
 			->andWhere('([[expire]] = 0 OR [[expire]] > ' . time() . ')');
 
 		if ($this->db->enableQueryCache) {
@@ -164,7 +164,7 @@ class DbCache extends Cache
 			$rows = $query->createCommand($this->db)->queryAll();
 		}
 
-		$results = array();
+		$results = [];
 		foreach ($keys as $key) {
 			$results[$key] = false;
 		}
@@ -186,12 +186,10 @@ class DbCache extends Cache
 	protected function setValue($key, $value, $expire)
 	{
 		$command = $this->db->createCommand()
-			->update($this->cacheTable, array(
+			->update($this->cacheTable, [
 				'expire' => $expire > 0 ? $expire + time() : 0,
-				'data' => array($value, \PDO::PARAM_LOB),
-			), array(
-				'id' => $key,
-			));
+				'data' => [$value, \PDO::PARAM_LOB],
+			], ['id' => $key]);
 
 		if ($command->execute()) {
 			$this->gc();
@@ -222,11 +220,11 @@ class DbCache extends Cache
 
 		try {
 			$this->db->createCommand()
-				->insert($this->cacheTable, array(
+				->insert($this->cacheTable, [
 					'id' => $key,
 					'expire' => $expire,
-					'data' => array($value, \PDO::PARAM_LOB),
-				))->execute();
+					'data' => [$value, \PDO::PARAM_LOB],
+				])->execute();
 			return true;
 		} catch (\Exception $e) {
 			return false;
@@ -242,7 +240,7 @@ class DbCache extends Cache
 	protected function deleteValue($key)
 	{
 		$this->db->createCommand()
-			->delete($this->cacheTable, array('id' => $key))
+			->delete($this->cacheTable, ['id' => $key])
 			->execute();
 		return true;
 	}

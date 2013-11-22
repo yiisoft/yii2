@@ -10,7 +10,6 @@ namespace yii\web;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 
 /**
  * User is the class for the "user" application component that manages the user authentication status.
@@ -21,10 +20,25 @@ use yii\base\InvalidParamException;
  * User works with a class implementing the [[IdentityInterface]]. This class implements
  * the actual user authentication logic and is often backed by a user database table.
  *
+ * User is configured as an application component in [[yii\web\Application]] by default.
+ * You can access that instance via `Yii::$app->user`.
+ *
+ * You can modify its configuration by adding an array to your application config under `components`
+ * as it is shown in the following example:
+ *
+ * ~~~
+ * 'user' => [
+ *     'identityClass' => 'app\models\User', // User must implement the IdentityInterface
+ *     'enableAutoLogin' => true,
+ *     // 'loginUrl' => ['user/login'],
+ *     // ...
+ * ]
+ * ~~~
+ *
  * @property string|integer $id The unique identifier for the user. If null, it means the user is a guest.
  * This property is read-only.
- * @property IdentityInterface $identity The identity object associated with the currently logged user. Null is
- * returned if the user is not logged in (not authenticated).
+ * @property IdentityInterface $identity The identity object associated with the currently logged user. Null
+ * is returned if the user is not logged in (not authenticated).
  * @property boolean $isGuest Whether the current user is a guest. This property is read-only.
  * @property string $returnUrl The URL that the user should be redirected to after login. Note that the type
  * of this property differs in getter and setter. See [[getReturnUrl()]] and [[setReturnUrl()]] for details.
@@ -54,17 +68,17 @@ class User extends Component
 	 * the name-value pairs are GET parameters used to construct the login URL. For example,
 	 *
 	 * ~~~
-	 * array('site/login', 'ref' => 1)
+	 * ['site/login', 'ref' => 1]
 	 * ~~~
 	 *
 	 * If this property is null, a 403 HTTP exception will be raised when [[loginRequired()]] is called.
 	 */
-	public $loginUrl = array('site/login');
+	public $loginUrl = ['site/login'];
 	/**
 	 * @var array the configuration of the identity cookie. This property is used only when [[enableAutoLogin]] is true.
 	 * @see Cookie
 	 */
-	public $identityCookie = array('name' => '_identity', 'httpOnly' => true);
+	public $identityCookie = ['name' => '_identity', 'httpOnly' => true];
 	/**
 	 * @var integer the number of seconds in which the user will be logged out automatically if he
 	 * remains inactive. If this property is not set, the user will be logged out after
@@ -94,7 +108,7 @@ class User extends Component
 	 */
 	public $returnUrlVar = '__returnUrl';
 
-	private $_access = array();
+	private $_access = [];
 
 
 	/**
@@ -130,8 +144,8 @@ class User extends Component
 	 * Returns the identity object associated with the currently logged user.
 	 * @return IdentityInterface the identity object associated with the currently logged user.
 	 * Null is returned if the user is not logged in (not authenticated).
-	 * @see login
-	 * @see logout
+	 * @see login()
+	 * @see logout()
 	 */
 	public function getIdentity()
 	{
@@ -140,7 +154,7 @@ class User extends Component
 			if ($id === null) {
 				$this->_identity = null;
 			} else {
-				/** @var $class IdentityInterface */
+				/** @var IdentityInterface $class */
 				$class = $this->identityClass;
 				$this->_identity = $class::findIdentity($id);
 			}
@@ -181,6 +195,9 @@ class User extends Component
 	{
 		if ($this->beforeLogin($identity, false)) {
 			$this->switchIdentity($identity, $duration);
+			$id = $identity->getId();
+			$ip = Yii::$app->getRequest()->getUserIP();
+			Yii::info("User '$id' logged in from $ip.", __METHOD__);
 			$this->afterLogin($identity, false);
 		}
 		return !$this->getIsGuest();
@@ -200,12 +217,14 @@ class User extends Component
 			$data = json_decode($value, true);
 			if (count($data) === 3 && isset($data[0], $data[1], $data[2])) {
 				list ($id, $authKey, $duration) = $data;
-				/** @var $class IdentityInterface */
+				/** @var IdentityInterface $class */
 				$class = $this->identityClass;
 				$identity = $class::findIdentity($id);
 				if ($identity !== null && $identity->validateAuthKey($authKey)) {
 					if ($this->beforeLogin($identity, true)) {
 						$this->switchIdentity($identity, $this->autoRenewCookie ? $duration : 0);
+						$ip = Yii::$app->getRequest()->getUserIP();
+						Yii::info("User '$id' logged in from $ip via cookie.", __METHOD__);
 						$this->afterLogin($identity, true);
 					}
 				} elseif ($identity !== null) {
@@ -226,6 +245,9 @@ class User extends Component
 		$identity = $this->getIdentity();
 		if ($identity !== null && $this->beforeLogout($identity)) {
 			$this->switchIdentity(null);
+			$id = $identity->getId();
+			$ip = Yii::$app->getRequest()->getUserIP();
+			Yii::info("User '$id' logged out from $ip.", __METHOD__);
 			if ($destroySession) {
 				Yii::$app->getSession()->destroy();
 			}
@@ -259,7 +281,7 @@ class User extends Component
 	 * If this is null and the return URL was not set previously, [[Application::homeUrl]] will be redirected to.
 	 * Please refer to [[setReturnUrl()]] on accepted format of the URL.
 	 * @return string the URL that the user should be redirected to after login.
-	 * @see loginRequired
+	 * @see loginRequired()
 	 */
 	public function getReturnUrl($defaultUrl = null)
 	{
@@ -282,7 +304,7 @@ class User extends Component
 	 * the name-value pairs are GET parameters used to construct the URL. For example,
 	 *
 	 * ~~~
-	 * array('admin/index', 'ref' => 1)
+	 * ['admin/index', 'ref' => 1]
 	 * ~~~
 	 */
 	public function setReturnUrl($url)
@@ -324,10 +346,10 @@ class User extends Component
 	 */
 	protected function beforeLogin($identity, $cookieBased)
 	{
-		$event = new UserEvent(array(
+		$event = new UserEvent([
 			'identity' => $identity,
 			'cookieBased' => $cookieBased,
-		));
+		]);
 		$this->trigger(self::EVENT_BEFORE_LOGIN, $event);
 		return $event->isValid;
 	}
@@ -342,10 +364,10 @@ class User extends Component
 	 */
 	protected function afterLogin($identity, $cookieBased)
 	{
-		$this->trigger(self::EVENT_AFTER_LOGIN, new UserEvent(array(
+		$this->trigger(self::EVENT_AFTER_LOGIN, new UserEvent([
 			'identity' => $identity,
 			'cookieBased' => $cookieBased,
-		)));
+		]));
 	}
 
 	/**
@@ -358,9 +380,9 @@ class User extends Component
 	 */
 	protected function beforeLogout($identity)
 	{
-		$event = new UserEvent(array(
+		$event = new UserEvent([
 			'identity' => $identity,
-		));
+		]);
 		$this->trigger(self::EVENT_BEFORE_LOGOUT, $event);
 		return $event->isValid;
 	}
@@ -374,9 +396,9 @@ class User extends Component
 	 */
 	protected function afterLogout($identity)
 	{
-		$this->trigger(self::EVENT_AFTER_LOGOUT, new UserEvent(array(
+		$this->trigger(self::EVENT_AFTER_LOGOUT, new UserEvent([
 			'identity' => $identity,
-		)));
+		]));
 	}
 
 	/**
@@ -406,16 +428,16 @@ class User extends Component
 	 * information in the cookie.
 	 * @param IdentityInterface $identity
 	 * @param integer $duration number of seconds that the user can remain in logged-in status.
-	 * @see loginByCookie
+	 * @see loginByCookie()
 	 */
 	protected function sendIdentityCookie($identity, $duration)
 	{
 		$cookie = new Cookie($this->identityCookie);
-		$cookie->value = json_encode(array(
+		$cookie->value = json_encode([
 			$identity->getId(),
 			$identity->getAuthKey(),
 			$duration,
-		));
+		]);
 		$cookie->expire = time() + $duration;
 		Yii::$app->getResponse()->getCookies()->add($cookie);
 	}
@@ -487,10 +509,10 @@ class User extends Component
 	 * before, its result will be directly returned when calling this method to check the same
 	 * operation. If this parameter is false, this method will always call
 	 * [[AuthManager::checkAccess()]] to obtain the up-to-date access result. Note that this
-	 * caching is effective only within the same request and only works when `$params = array()`.
+	 * caching is effective only within the same request and only works when `$params = []`.
 	 * @return boolean whether the operations can be performed by this user.
 	 */
-	public function checkAccess($operation, $params = array(), $allowCaching = true)
+	public function checkAccess($operation, $params = [], $allowCaching = true)
 	{
 		$auth = Yii::$app->getAuthManager();
 		if ($auth === null) {

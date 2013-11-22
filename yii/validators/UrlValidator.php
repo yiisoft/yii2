@@ -31,7 +31,7 @@ class UrlValidator extends Validator
 	 * @var array list of URI schemes which should be considered valid. By default, http and https
 	 * are considered to be valid schemes.
 	 **/
-	public $validSchemes = array('http', 'https');
+	public $validSchemes = ['http', 'https'];
 	/**
 	 * @var string the default URI scheme. If the input doesn't contain the scheme part, the default
 	 * scheme will be prepended to it (thus changing the input). Defaults to null, meaning a URL must
@@ -115,7 +115,7 @@ class UrlValidator extends Validator
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
 	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 * @see \yii\Web\ActiveForm::enableClientValidation
@@ -128,14 +128,13 @@ class UrlValidator extends Validator
 			$pattern = $this->pattern;
 		}
 
-		$options = array(
+		$options = [
 			'pattern' => new JsExpression($pattern),
-			'message' => Html::encode(strtr($this->message, array(
+			'message' => Html::encode(strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
-				'{value}' => $object->$attribute,
-			))),
+			])),
 			'enableIDN' => (boolean)$this->enableIDN,
-		);
+		];
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
 		}

@@ -24,18 +24,18 @@ use yii\base\Behavior;
  * ~~~
  * public function behaviors()
  * {
- *     return array(
- *         'verbs' => array(
+ *     return [
+ *         'verbs' => [
  *             'class' => \yii\web\VerbFilter::className(),
- *             'actions' => array(
- *                 'index'  => array('get'),
- *                 'view'   => array('get'),
- *                 'create' => array('get', 'post'),
- *                 'update' => array('get', 'put', 'post'),
- *                 'delete' => array('post', 'delete'),
- *             ),
- *         ),
- *     );
+ *             'actions' => [
+ *                 'index'  => ['get'],
+ *                 'view'   => ['get'],
+ *                 'create' => ['get', 'post'],
+ *                 'update' => ['get', 'put', 'post'],
+ *                 'delete' => ['post', 'delete'],
+ *             ],
+ *         ],
+ *     ];
  * }
  * ~~~
  *
@@ -52,7 +52,7 @@ class VerbFilter extends Behavior
 	 * allowed methods (e.g. GET, HEAD, PUT) as the value.
 	 * If an action is not listed all request methods are considered allowed.
 	 */
-	public $actions = array();
+	public $actions = [];
 
 
 	/**
@@ -61,9 +61,7 @@ class VerbFilter extends Behavior
 	 */
 	public function events()
 	{
-		return array(
-			Controller::EVENT_BEFORE_ACTION => 'beforeAction',
-		);
+		return [Controller::EVENT_BEFORE_ACTION => 'beforeAction'];
 	}
 
 	/**

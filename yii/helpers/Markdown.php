@@ -19,9 +19,9 @@ namespace yii\helpers;
  * If you want to configure the parser:
  *
  * ```php
- * $myHtml = Markdown::process($myText, array(
+ * $myHtml = Markdown::process($myText, [
  *     'fn_id_prefix' => 'footnote_',
- * ));
+ * ]);
  * ```
  *
  * Note that in order to use this helper you need to install "michelf/php-markdown" Composer package.
@@ -30,6 +30,6 @@ namespace yii\helpers;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class Markdown extends MarkdownBase
+class Markdown extends BaseMarkdown
 {
 }

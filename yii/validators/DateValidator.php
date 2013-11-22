@@ -70,6 +70,8 @@ class DateValidator extends Validator
 	 */
 	public function validateValue($value)
 	{
-		return DateTime::createFromFormat($this->format, $value) !== false;
+		DateTime::createFromFormat($this->format, $value);
+		$errors = DateTime::getLastErrors();
+		return $errors['error_count'] === 0 && $errors['warning_count'] === 0;
 	}
 }
