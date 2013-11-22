@@ -14,9 +14,9 @@ class FooClass extends Component
 {
 	public function behaviors()
 	{
-		return array(
+		return [
 			'foo' => __NAMESPACE__ . '\BarBehavior',
-		);
+		];
 	}
 }
 
@@ -67,7 +67,7 @@ class BehaviorTest extends TestCase
 		$this->assertEquals('behavior property', $bar->getBehavior('bar')->behaviorProperty);
 		$this->assertEquals('behavior method', $bar->getBehavior('bar')->behaviorMethod());
 
-		$behavior = new BarBehavior(array('behaviorProperty' => 'reattached'));
+		$behavior = new BarBehavior(['behaviorProperty' => 'reattached']);
 		$bar->attachBehavior('bar', $behavior);
 		$this->assertEquals('reattached', $bar->behaviorProperty);
 	}

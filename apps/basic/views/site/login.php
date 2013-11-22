@@ -3,7 +3,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /**
- * @var yii\base\View $this
+ * @var yii\web\View $this
  * @var yii\widgets\ActiveForm $form
  * @var app\models\LoginForm $model
  */
@@ -11,30 +11,30 @@ $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-login">
-	<h1><?php echo Html::encode($this->title); ?></h1>
+	<h1><?= Html::encode($this->title) ?></h1>
 
 	<p>Please fill out the following fields to login:</p>
 
-	<?php $form = ActiveForm::begin(array(
+	<?php $form = ActiveForm::begin([
 		'id' => 'login-form',
-		'options' => array('class' => 'form-horizontal'),
-		'fieldConfig' => array(
+		'options' => ['class' => 'form-horizontal'],
+		'fieldConfig' => [
 			'template' => "{label}\n<div class=\"col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
-			'labelOptions' => array('class' => 'col-lg-1 control-label'),
-		),
-	)); ?>
+			'labelOptions' => ['class' => 'col-lg-1 control-label'],
+		],
+	]); ?>
 
-	<?php echo $form->field($model, 'username'); ?>
+	<?= $form->field($model, 'username') ?>
 
-	<?php echo $form->field($model, 'password')->passwordInput(); ?>
+	<?= $form->field($model, 'password')->passwordInput() ?>
 
-	<?php echo $form->field($model, 'rememberMe', array(
+	<?= $form->field($model, 'rememberMe', [
 		'template' => "<div class=\"col-lg-offset-1 col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
-	))->checkbox(); ?>
+	])->checkbox() ?>
 
 	<div class="form-group">
 		<div class="col-lg-offset-1 col-lg-11">
-			<?php echo Html::submitButton('Login', array('class' => 'btn btn-primary')); ?>
+			<?= Html::submitButton('Login', ['class' => 'btn btn-primary']) ?>
 		</div>
 	</div>
 

@@ -38,14 +38,14 @@ class Application extends \yii\base\Application
 	 * to the action. For example,
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *     'offline/notice',
 	 *     'param1' => 'value1',
 	 *     'param2' => 'value2',
-	 * )
+	 * ]
 	 * ~~~
 	 *
-	 * Defaults to null, meaning catch-all is not effective.
+	 * Defaults to null, meaning catch-all is not used.
 	 */
 	public $catchAll;
 	/**
@@ -167,22 +167,12 @@ class Application extends \yii\base\Application
 	public function registerCoreComponents()
 	{
 		parent::registerCoreComponents();
-		$this->setComponents(array(
-			'request' => array(
-				'class' => 'yii\web\Request',
-			),
-			'response' => array(
-				'class' => 'yii\web\Response',
-			),
-			'session' => array(
-				'class' => 'yii\web\Session',
-			),
-			'user' => array(
-				'class' => 'yii\web\User',
-			),
-			'assetManager' => array(
-				'class' => 'yii\web\AssetManager',
-			),
-		));
+		$this->setComponents([
+			'request' => ['class' => 'yii\web\Request'],
+			'response' => ['class' => 'yii\web\Response'],
+			'session' => ['class' => 'yii\web\Session'],
+			'user' => ['class' => 'yii\web\User'],
+			'assetManager' => ['class' => 'yii\web\AssetManager'],
+		]);
 	}
 }

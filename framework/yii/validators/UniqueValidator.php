@@ -12,7 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 
 /**
- * CUniqueValidator validates that the attribute value is unique in the corresponding database table.
+ * UniqueValidator validates that the attribute value is unique in the corresponding database table.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -60,7 +60,7 @@ class UniqueValidator extends Validator
 			return;
 		}
 
-		/** @var $className \yii\db\ActiveRecord */
+		/** @var \yii\db\ActiveRecord $className */
 		$className = $this->className === null ? get_class($object) : $this->className;
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
 
@@ -70,7 +70,7 @@ class UniqueValidator extends Validator
 		}
 
 		$query = $className::find();
-		$query->where(array($column->name => $value));
+		$query->where([$column->name => $value]);
 
 		if (!$object instanceof ActiveRecord || $object->getIsNewRecord()) {
 			// if current $object isn't in the database yet then it's OK just to call exists()

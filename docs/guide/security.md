@@ -1,35 +1,36 @@
 Security
 ========
 
+Good security is vital to the health and success of many websites. Unfortunately, many developers may cut corners when it comes to security due to a lack of understanding or too large of an implementation hurdle. To make your Yii-based site as secure as possible, the Yii framework has baked in several excellent, and easy to use, security features. 
+
 Hashing and verifying passwords
-------------------------------
+-------------------------------
 
 Most developers know that you cannot store passwords in plain text, but many believe it's safe to hash passwords using `md5` or `sha1`. There was a time when those hashing algorithms were sufficient, but modern hardware makes it possible to break those hashes very quickly using a brute force attack.
 
-In order to truly secure user passwords, even in the worst case scenario (your database is broken into), you need to use a hashing algorithm that is resistant to brute force attacks. The best current choice is bcrypt. In PHP, you can create a bcrypt hash by using [crypt function](http://php.net/manual/en/function.crypt.php). However, this function is not easy to use properly, so Yii provides two helper functions for generating hash from
-password and verifying existing hash.
+In order to truly secure user passwords, even in the worst case scenario (your database is broken into), you need to use a hashing algorithm that is resistant to brute force attacks. The best current choice is `bcrypt`. In PHP, you can create a `bcrypt` hash by using the [crypt function](http://php.net/manual/en/function.crypt.php). However, this function is not easy to use properly, so Yii provides two helper functions to make securely generating and verifying hashes easier.
 
-When user sets his password we're taking password string from POST and then getting a hash:
+When a user provides a password for the first time (e.g., upon registration), the password needs to be hashed:
 
 ```php
 $hash = \yii\helpers\Security::generatePasswordHash($password);
 ```
 
-The hash we've got is persisted to database to be used later.
+The hash would then be associated with the model, so that it will be stored in the database for later use.
 
-Then when user is trying to log in we're verifying the password he entered against a hash that we've previously persisted:
+When user attempts to log in, the submitted log in password must be verified against the previously hashed and stored password:
 
 ```php
-if(Security::validatePassword($password, $hash)) {
+use \yii\helpers;
+if (Security::validatePassword($password, $hash)) {
 	// all good, logging user in
-}
-else {
+} else {
 	// wrong password
 }
 ```
 
 
-Random data
+Creating random data
 -----------
 
 Random data is useful in many cases. For example, when resetting a password via email you need to generate a token,
@@ -64,8 +65,10 @@ Then when user want to read it:
 $data = \yii\helpers\Security::decrypt($encryptedData, $secretWord);
 ```
 
-Making sure data wasn't modified
+Confirming data integrity
 --------------------------------
+
+Making sure data wasn't modified
 
 hashData()
 validateData()

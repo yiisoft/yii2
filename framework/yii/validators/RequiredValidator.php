@@ -74,9 +74,9 @@ class RequiredValidator extends Validator
 			if ($this->requiredValue === null) {
 				$this->addError($object, $attribute, $this->message);
 			} else {
-				$this->addError($object, $attribute, $this->message, array(
-					'{requiredValue}' => $this->requiredValue,
-				));
+				$this->addError($object, $attribute, $this->message, [
+					'requiredValue' => $this->requiredValue,
+				]);
 			}
 		}
 	}
@@ -102,17 +102,17 @@ class RequiredValidator extends Validator
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
 	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
-		$options = array();
+		$options = [];
 		if ($this->requiredValue !== null) {
-			$options['message'] = strtr($this->message, array(
+			$options['message'] = strtr($this->message, [
 				'{requiredValue}' => $this->requiredValue,
-			));
+			]);
 			$options['requiredValue'] = $this->requiredValue;
 		} else {
 			$options['message'] = $this->message;
@@ -121,10 +121,9 @@ class RequiredValidator extends Validator
 			$options['strict'] = 1;
 		}
 
-		$options['message'] = Html::encode(strtr($options['message'], array(
+		$options['message'] = Html::encode(strtr($options['message'], [
 			'{attribute}' => $object->getAttributeLabel($attribute),
-			'{value}' => $object->$attribute,
-		)));
+		]));
 
 		ValidationAsset::register($view);
 		return 'yii.validation.required(value, messages, ' . json_encode($options) . ');';

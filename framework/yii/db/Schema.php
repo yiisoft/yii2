@@ -58,11 +58,11 @@ abstract class Schema extends Object
 	/**
 	 * @var array list of ALL table names in the database
 	 */
-	private $_tableNames = array();
+	private $_tableNames = [];
 	/**
 	 * @var array list of loaded table metadata (table name => TableSchema)
 	 */
-	private $_tables = array();
+	private $_tables = [];
 	/**
 	 * @var QueryBuilder the query builder for this database
 	 */
@@ -92,14 +92,16 @@ abstract class Schema extends Object
 		$realName = $this->getRawTableName($name);
 
 		if ($db->enableSchemaCache && !in_array($name, $db->schemaCacheExclude, true)) {
-			/** @var $cache Cache */
+			/** @var Cache $cache */
 			$cache = is_string($db->schemaCache) ? Yii::$app->getComponent($db->schemaCache) : $db->schemaCache;
 			if ($cache instanceof Cache) {
 				$key = $this->getCacheKey($name);
 				if ($refresh || ($table = $cache->get($key)) === false) {
 					$table = $this->loadTableSchema($realName);
 					if ($table !== null) {
-						$cache->set($key, $table, $db->schemaCacheDuration, new GroupDependency($this->getCacheGroup()));
+						$cache->set($key, $table, $db->schemaCacheDuration, new GroupDependency([
+							'group' => $this->getCacheGroup(),
+						]));
 					}
 				}
 				return $this->_tables[$name] = $table;
@@ -115,12 +117,12 @@ abstract class Schema extends Object
 	 */
 	protected function getCacheKey($name)
 	{
-		return array(
+		return [
 			__CLASS__,
 			$this->db->dsn,
 			$this->db->username,
 			$name,
-		);
+		];
 	}
 
 	/**
@@ -130,11 +132,11 @@ abstract class Schema extends Object
 	 */
 	protected function getCacheGroup()
 	{
-		return md5(serialize(array(
+		return md5(serialize([
 			__CLASS__,
 			$this->db->dsn,
 			$this->db->username,
-		)));
+		]));
 	}
 
 	/**
@@ -147,7 +149,7 @@ abstract class Schema extends Object
 	 */
 	public function getTableSchemas($schema = '', $refresh = false)
 	{
-		$tables = array();
+		$tables = [];
 		foreach ($this->getTableNames($schema, $refresh) as $name) {
 			if ($schema !== '') {
 				$name = $schema . '.' . $name;
@@ -187,19 +189,39 @@ abstract class Schema extends Object
 	}
 
 	/**
+	 * Determines the PDO type for the given PHP data value.
+	 * @param mixed $data the data whose PDO type is to be determined
+	 * @return integer the PDO type
+	 * @see http://www.php.net/manual/en/pdo.constants.php
+	 */
+	public function getPdoType($data)
+	{
+		static $typeMap = [
+			// php type => PDO type
+			'boolean' => \PDO::PARAM_BOOL,
+			'integer' => \PDO::PARAM_INT,
+			'string' => \PDO::PARAM_STR,
+			'resource' => \PDO::PARAM_LOB,
+			'NULL' => \PDO::PARAM_NULL,
+		];
+		$type = gettype($data);
+		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
+	}
+
+	/**
 	 * Refreshes the schema.
 	 * This method cleans up all cached table schemas so that they can be re-created later
 	 * to reflect the database schema change.
 	 */
 	public function refresh()
 	{
-		/** @var $cache Cache */
+		/** @var Cache $cache */
 		$cache = is_string($this->db->schemaCache) ? Yii::$app->getComponent($this->db->schemaCache) : $this->db->schemaCache;
 		if ($this->db->enableSchemaCache && $cache instanceof Cache) {
 			GroupDependency::invalidate($cache, $this->getCacheGroup());
 		}
-		$this->_tableNames = array();
-		$this->_tables = array();
+		$this->_tableNames = [];
+		$this->_tables = [];
 	}
 
 	/**
@@ -269,7 +291,7 @@ abstract class Schema extends Object
 	 * then this method will do nothing.
 	 * @param string $name table name
 	 * @return string the properly quoted table name
-	 * @see quoteSimpleTableName
+	 * @see quoteSimpleTableName()
 	 */
 	public function quoteTableName($name)
 	{
@@ -294,7 +316,7 @@ abstract class Schema extends Object
 	 * then this method will do nothing.
 	 * @param string $name column name
 	 * @return string the properly quoted column name
-	 * @see quoteSimpleColumnName
+	 * @see quoteSimpleColumnName()
 	 */
 	public function quoteColumnName($name)
 	{
@@ -358,13 +380,13 @@ abstract class Schema extends Object
 	 */
 	protected function getColumnPhpType($column)
 	{
-		static $typeMap = array( // abstract type => php type
+		static $typeMap = [ // abstract type => php type
 			'smallint' => 'integer',
 			'integer' => 'integer',
 			'bigint' => 'integer',
 			'boolean' => 'boolean',
 			'float' => 'double',
-		);
+		];
 		if (isset($typeMap[$column->type])) {
 			if ($column->type === 'bigint') {
 				return PHP_INT_SIZE == 8 && !$column->unsigned ? 'integer' : 'string';

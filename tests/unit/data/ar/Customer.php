@@ -1,8 +1,6 @@
 <?php
 namespace yiiunit\data\ar;
 
-use yii\db\ActiveQuery;
-
 /**
  * Class Customer
  *
@@ -19,6 +17,9 @@ class Customer extends ActiveRecord
 
 	public $status2;
 
+	public static $afterSaveInsert = null;
+	public static $afterSaveNewRecord = null;
+
 	public static function tableName()
 	{
 		return 'tbl_customer';
@@ -26,11 +27,18 @@ class Customer extends ActiveRecord
 
 	public function getOrders()
 	{
-		return $this->hasMany('Order', array('customer_id' => 'id'))->orderBy('id');
+		return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('id');
 	}
 
 	public static function active($query)
 	{
 		$query->andWhere('status=1');
+	}
+
+	public function afterSave($insert)
+	{
+		static::$afterSaveInsert = $insert;
+		static::$afterSaveNewRecord = $this->isNewRecord;
+		parent::afterSave($insert);
 	}
 }

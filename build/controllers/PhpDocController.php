@@ -44,7 +44,7 @@ class PhpDocController extends Controller
 			$root = YII_PATH;
 		}
 		$root = FileHelper::normalizePath($root);
-		$options = array(
+		$options = [
 			'filter' => function ($path) {
 				if (is_file($path)) {
 					$file = basename($path);
@@ -54,16 +54,16 @@ class PhpDocController extends Controller
 				}
 				return null;
 			},
-			'only' => array('.php'),
-			'except' => array(
-				'YiiBase.php',
+			'only' => ['.php'],
+			'except' => [
+				'BaseYii.php',
 				'Yii.php',
 				'/debug/views/',
 				'/requirements/',
 				'/gii/views/',
 				'/gii/generators/',
-			),
-		);
+			],
+		];
 		$files = FileHelper::findFiles($root, $options);
 		$nFilesTotal = 0;
 		$nFilesUpdated = 0;
@@ -89,7 +89,7 @@ class PhpDocController extends Controller
 
 	public function globalOptions()
 	{
-		return array_merge(parent::globalOptions(), array('updateFiles'));
+		return array_merge(parent::globalOptions(), ['updateFiles']);
 	}
 
 	protected function updateClassPropertyDocs($file, $className, $propertyDoc)
@@ -115,7 +115,7 @@ class PhpDocController extends Controller
 		if (trim($lines[1]) == '*' || substr(trim($lines[1]), 0, 3) == '* @') {
 			$this->stderr("[WARN] Class $className has no short description.\n", Console::FG_YELLOW, Console::BOLD);
 		}
-		foreach($lines as $line) {
+		foreach ($lines as $line) {
 			if (substr(trim($line), 0, 9) == '* @since ') {
 				$seenSince = true;
 			} elseif (substr(trim($line), 0, 10) == '* @author ') {
@@ -136,9 +136,9 @@ class PhpDocController extends Controller
 			$start = $ref->getStartLine() - 2;
 			$docStart = $start - count(explode("\n", $oldDoc)) + 1;
 
-			$newFileContent = array();
+			$newFileContent = [];
 			$n = count($fileContent);
-			for($i = 0; $i < $n; $i++) {
+			for ($i = 0; $i < $n; $i++) {
 				if ($i > $start || $i < $docStart) {
 					$newFileContent[] = $fileContent[$i];
 				} else {
@@ -164,7 +164,7 @@ class PhpDocController extends Controller
 	{
 		$lines = explode("\n", $doc);
 		$n = count($lines);
-		for($i = 0; $i < $n; $i++) {
+		for ($i = 0; $i < $n; $i++) {
 			$lines[$i] = rtrim($lines[$i]);
 			if (trim($lines[$i]) == '*' && trim($lines[$i + 1]) == '*') {
 				unset($lines[$i]);
@@ -184,7 +184,7 @@ class PhpDocController extends Controller
 		$lines = explode("\n", $doc);
 		$propertyPart = false;
 		$propertyPosition = false;
-		foreach($lines as $i => $line) {
+		foreach ($lines as $i => $line) {
 			if (substr(trim($line), 0, 12) == '* @property ') {
 				$propertyPart = true;
 			} elseif ($propertyPart && trim($line) == '*') {
@@ -200,7 +200,7 @@ class PhpDocController extends Controller
 			}
 		}
 		$finalDoc = '';
-		foreach($lines as $i => $line) {
+		foreach ($lines as $i => $line) {
 			$finalDoc .= $line . "\n";
 			if ($i == $propertyPosition) {
 				$finalDoc .= $properties;
@@ -253,16 +253,15 @@ class PhpDocController extends Controller
 				'[\s\n]{2,}public function [g|s]et(?<name>\w+)\(((?:,? ?\$\w+ ?= ?[^,]+)*|\$\w+(?:, ?\$\w+ ?= ?[^,]+)*)\)#',
 				$class['content']);
 			$acrs = array_merge($properties, $gets, $sets);
-			//print_r($acrs); continue;
 
-			$props = array();
+			$props = [];
 			foreach ($acrs as &$acr) {
 				$acr['name'] = lcfirst($acr['name']);
 				$acr['comment'] = trim(preg_replace('#(^|\n)\s+\*\s?#', '$1 * ', $acr['comment']));
-				$props[$acr['name']][$acr['kind']] = array(
+				$props[$acr['name']][$acr['kind']] = [
 					'type' => $acr['type'],
 					'comment' => $this->fixSentence($acr['comment']),
-				);
+				];
 			}
 
 			ksort($props);
@@ -279,11 +278,35 @@ class PhpDocController extends Controller
 								  . ' See [[get'.ucfirst($propName).'()]] and [[set'.ucfirst($propName).'()]] for details.';
 						}
 					} elseif (isset($prop['get'])) {
-						$note = ' This property is read-only.';
-//						$docline .= '-read';
+						// check if parent class has setter defined
+						$c = $className;
+						$parentSetter = false;
+						while($parent = get_parent_class($c)) {
+							if (method_exists($parent, 'set' . ucfirst($propName))) {
+								$parentSetter = true;
+								break;
+							}
+							$c = $parent;
+						}
+						if (!$parentSetter) {
+							$note = ' This property is read-only.';
+//							$docline .= '-read';
+						}
 					} elseif (isset($prop['set'])) {
-						$note = ' This property is write-only.';
-//						$docline .= '-write';
+						// check if parent class has getter defined
+						$c = $className;
+						$parentGetter = false;
+						while($parent = get_parent_class($c)) {
+							if (method_exists($parent, 'set' . ucfirst($propName))) {
+								$parentGetter = true;
+								break;
+							}
+							$c = $parent;
+						}
+						if (!$parentGetter) {
+							$note = ' This property is write-only.';
+//							$docline .= '-write';
+						}
 					} else {
 						continue;
 					}
@@ -299,12 +322,12 @@ class PhpDocController extends Controller
 				$phpdoc .= " *\n";
 			}
 		}
-		return array($className, $phpdoc);
+		return [$className, $phpdoc];
 	}
 
 	protected function match($pattern, $subject)
 	{
-		$sets = array();
+		$sets = [];
 		preg_match_all($pattern . 'suU', $subject, $sets, PREG_SET_ORDER);
 		foreach ($sets as &$set)
 			foreach ($set as $i => $match)

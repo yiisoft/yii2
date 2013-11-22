@@ -52,7 +52,7 @@ environments/                contains environment-based overrides
 REQUIREMENTS
 ------------
 
-The minimum requirement by Yii is that your Web server supports PHP 5.3.?.
+The minimum requirement by Yii is that your Web server supports PHP 5.4.0.
 
 In order for captcha to work you need either GD2 extension or ImageMagick PHP extension.
 
@@ -75,6 +75,13 @@ php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced yii-a
 ~~~
 
 Note that in order to install some dependencies you must have `php_openssl` extension enabled.
+
+After the application is installed, switch to the project folder and run the following command
+to initialize the application:
+
+~~~
+./init         (init on Windows)
+~~~
 
 
 ### Install from an Archive File
@@ -103,9 +110,11 @@ GETTING STARTED
 After you install the application, you have to conduct the following steps to initialize
 the installed application. You only need to do these once for all.
 
-1. Execute the `init` command and select `dev` as environment.
+1. Execute the `init` command and select `dev` as environment. Alternatively you can execute it as `init --env=Development`
+or `init --env=Production`.
 2. Create a new database. It is assumed that MySQL InnoDB is used. If not, adjust `console/migrations/m130524_201442_init.php`.
 3. In `common/config/params.php` set your database details in `components.db` values.
+4. Apply migrations with `yii migrate`.
 
 Now you should be able to access:
 

@@ -78,7 +78,7 @@ class FileTarget extends Target
 	}
 
 	/**
-	 * Sends log messages to specified email addresses.
+	 * Writes log messages to a file.
 	 * @throws InvalidConfigException if unable to open the log file for writing
 	 */
 	public function export()

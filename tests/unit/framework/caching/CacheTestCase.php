@@ -53,7 +53,7 @@ abstract class CacheTestCase extends TestCase
 		$cache->flush();
 		$cache->set('string_test', 'string_test');
 		$cache->set('number_test', 42);
-		$cache->set('array_test', array('array_test' => 'array_test'));
+		$cache->set('array_test', ['array_test' => 'array_test']);
 		$cache['arrayaccess_test'] = new \stdClass();
 
 		return $cache;
@@ -75,12 +75,43 @@ abstract class CacheTestCase extends TestCase
 
 		$this->assertTrue($cache->set('string_test', 'string_test'));
 		$this->assertTrue($cache->set('number_test', 42));
-		$this->assertTrue($cache->set('array_test', array('array_test' => 'array_test')));
+		$this->assertTrue($cache->set('array_test', ['array_test' => 'array_test']));
 	}
 
 	public function testGet()
 	{
 		$cache = $this->prepare();
+
+		$this->assertEquals('string_test', $cache->get('string_test'));
+
+		$this->assertEquals(42, $cache->get('number_test'));
+
+		$array = $cache->get('array_test');
+		$this->assertArrayHasKey('array_test', $array);
+		$this->assertEquals('array_test', $array['array_test']);
+	}
+
+	/**
+	 * @return array testing mset with and without expiry
+	 */
+	public function msetExpiry()
+	{
+		return [[0], [2]];
+	}
+
+	/**
+	 * @dataProvider msetExpiry
+	 */
+	public function testMset($expiry)
+	{
+		$cache = $this->getCacheInstance();
+		$cache->flush();
+
+		$cache->mset([
+			'string_test' => 'string_test',
+			'number_test' => 42,
+			'array_test' => ['array_test' => 'array_test'],
+		], $expiry);
 
 		$this->assertEquals('string_test', $cache->get('string_test'));
 
@@ -133,10 +164,10 @@ abstract class CacheTestCase extends TestCase
 	{
 		$cache = $this->prepare();
 
-		$this->assertEquals(array('string_test' => 'string_test', 'number_test' => 42), $cache->mget(array('string_test', 'number_test')));
+		$this->assertEquals(['string_test' => 'string_test', 'number_test' => 42], $cache->mget(['string_test', 'number_test']));
 		// ensure that order does not matter
-		$this->assertEquals(array('number_test' => 42, 'string_test' => 'string_test'), $cache->mget(array('number_test', 'string_test')));
-		$this->assertEquals(array('number_test' => 42, 'non_existent_key' => null), $cache->mget(array('number_test', 'non_existent_key')));
+		$this->assertEquals(['number_test' => 42, 'string_test' => 'string_test'], $cache->mget(['number_test', 'string_test']));
+		$this->assertEquals(['number_test' => 42, 'non_existent_key' => null], $cache->mget(['number_test', 'non_existent_key']));
 	}
 
 	public function testExpire()
@@ -144,11 +175,21 @@ abstract class CacheTestCase extends TestCase
 		$cache = $this->getCacheInstance();
 
 		$this->assertTrue($cache->set('expire_test', 'expire_test', 2));
-		sleep(1);
+		usleep(500000);
 		$this->assertEquals('expire_test', $cache->get('expire_test'));
-		// wait a bit more than 2 sec to avoid random test failure
 		usleep(2500000);
 		$this->assertFalse($cache->get('expire_test'));
+	}
+
+	public function testExpireAdd()
+	{
+		$cache = $this->getCacheInstance();
+
+		$this->assertTrue($cache->add('expire_testa', 'expire_testa', 2));
+		usleep(500000);
+		$this->assertEquals('expire_testa', $cache->get('expire_testa'));
+		usleep(2500000);
+		$this->assertFalse($cache->get('expire_testa'));
 	}
 
 	public function testAdd()
@@ -162,6 +203,21 @@ abstract class CacheTestCase extends TestCase
 		// should store data if it's not there yet
 		$this->assertFalse($cache->get('add_test'));
 		$this->assertTrue($cache->add('add_test', 13));
+		$this->assertEquals(13, $cache->get('add_test'));
+	}
+
+	public function testMadd()
+	{
+		$cache = $this->prepare();
+
+		$this->assertFalse($cache->get('add_test'));
+
+		$cache->madd([
+			'number_test' => 13,
+			'add_test' => 13,
+		]);
+
+		$this->assertEquals(42, $cache->get('number_test'));
 		$this->assertEquals(13, $cache->get('add_test'));
 	}
 

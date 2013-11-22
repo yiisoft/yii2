@@ -18,6 +18,9 @@ use yii\helpers\Security;
  * Also it provides an interface to retrieve request parameters from $_POST, $_GET, $_COOKIES and REST
  * parameters sent via other HTTP methods like PUT or DELETE.
  *
+ * Request is configured as an application component in [[yii\web\Application]] by default.
+ * You can access that instance via `Yii::$app->request`.
+ *
  * @property string $absoluteUrl The currently requested absolute URL. This property is read-only.
  * @property string $acceptTypes User browser accept types, null if not present. This property is read-only.
  * @property array $acceptedContentTypes The content types ordered by the preference level. The first element
@@ -29,6 +32,9 @@ use yii\helpers\Security;
  * previously, a random key will be generated and used.
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
  * @property string $csrfToken The random token for CSRF validation. This property is read-only.
+ * @property string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned
+ * if no such header is sent. This property is read-only.
+ * @property array $delete The DELETE request parameter values. This property is read-only.
  * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
  * `http://www.yiiframework.com`).
  * @property boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
@@ -45,11 +51,14 @@ use yii\helpers\Security;
  * read-only.
  * @property string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value returned is
  * turned into upper case. This property is read-only.
+ * @property array $patch The PATCH request parameter values. This property is read-only.
  * @property string $pathInfo Part of the request URL that is after the entry script and before the question
  * mark. Note, the returned path info is already URL-decoded.
  * @property integer $port Port number for insecure requests.
+ * @property array $post The POST request parameter values. This property is read-only.
  * @property string $preferredLanguage The language that the application should use. Null is returned if both
  * [[getAcceptedLanguages()]] and `$languages` are empty. This property is read-only.
+ * @property array $put The PUT request parameter values. This property is read-only.
  * @property string $queryString Part of the request URL that is after the question mark. This property is
  * read-only.
  * @property string $rawBody The request body. This property is read-only.
@@ -74,6 +83,7 @@ class Request extends \yii\base\Request
 	 * The name of the HTTP header for sending CSRF token.
 	 */
 	const CSRF_HEADER = 'X-CSRF-Token';
+
 
 	/**
 	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
@@ -100,7 +110,7 @@ class Request extends \yii\base\Request
 	 * @var array the configuration of the CSRF cookie. This property is used only when [[enableCsrfValidation]] is true.
 	 * @see Cookie
 	 */
-	public $csrfCookie = array('httpOnly' => true);
+	public $csrfCookie = ['httpOnly' => true];
 	/**
 	 * @var boolean whether cookies should be validated to ensure they are not tampered. Defaults to true.
 	 */
@@ -108,8 +118,8 @@ class Request extends \yii\base\Request
 	/**
 	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
 	 * request tunneled through POST. Default to '_method'.
-	 * @see getMethod
-	 * @see getRestParams
+	 * @see getMethod()
+	 * @see getRestParams()
 	 */
 	public $restVar = '_method';
 
@@ -127,7 +137,7 @@ class Request extends \yii\base\Request
 		if ($result !== false) {
 			list ($route, $params) = $result;
 			$_GET = array_merge($_GET, $params);
-			return array($route, $_GET);
+			return [$route, $_GET];
 		} else {
 			throw new HttpException(404, Yii::t('yii', 'Page not found.'));
 		}
@@ -234,7 +244,7 @@ class Request extends \yii\base\Request
 	/**
 	 * Returns the request parameters for the RESTful request.
 	 * @return array the RESTful request parameters
-	 * @see getMethod
+	 * @see getMethod()
 	 */
 	public function getRestParams()
 	{
@@ -242,12 +252,8 @@ class Request extends \yii\base\Request
 			if (isset($_POST[$this->restVar])) {
 				$this->_restParams = $_POST;
 			} else {
-				$this->_restParams = array();
-				if (function_exists('mb_parse_str')) {
-					mb_parse_str($this->getRawBody(), $this->_restParams);
-				} else {
-					parse_str($this->getRawBody(), $this->_restParams);
-				}
+				$this->_restParams = [];
+				mb_parse_str($this->getRawBody(), $this->_restParams);
 			}
 		}
 		return $this->_restParams;
@@ -291,59 +297,78 @@ class Request extends \yii\base\Request
 	/**
 	 * Returns the named GET parameter value.
 	 * If the GET parameter does not exist, the second parameter to this method will be returned.
-	 * @param string $name the GET parameter name
+	 * @param string $name the GET parameter name. If not specified, whole $_GET is returned.
 	 * @param mixed $defaultValue the default parameter value if the GET parameter does not exist.
 	 * @return mixed the GET parameter value
-	 * @see getPost
+	 * @see getPost()
 	 */
-	public function get($name, $defaultValue = null)
+	public function get($name = null, $defaultValue = null)
 	{
+		if ($name === null) {
+			return $_GET;
+		}
 		return isset($_GET[$name]) ? $_GET[$name] : $defaultValue;
 	}
 
 	/**
 	 * Returns the named POST parameter value.
 	 * If the POST parameter does not exist, the second parameter to this method will be returned.
-	 * @param string $name the POST parameter name
+	 * @param string $name the POST parameter name. If not specified, whole $_POST is returned.
 	 * @param mixed $defaultValue the default parameter value if the POST parameter does not exist.
+	 * @property array the POST request parameter values
 	 * @return mixed the POST parameter value
-	 * @see getParam
+	 * @see get()
 	 */
-	public function getPost($name, $defaultValue = null)
+	public function getPost($name = null, $defaultValue = null)
 	{
+		if ($name === null) {
+			return $_POST;
+		}
 		return isset($_POST[$name]) ? $_POST[$name] : $defaultValue;
 	}
 
 	/**
 	 * Returns the named DELETE parameter value.
-	 * @param string $name the DELETE parameter name
+	 * @param string $name the DELETE parameter name. If not specified, an array of DELETE parameters is returned.
 	 * @param mixed $defaultValue the default parameter value if the DELETE parameter does not exist.
+	 * @property array the DELETE request parameter values
 	 * @return mixed the DELETE parameter value
 	 */
-	public function getDelete($name, $defaultValue = null)
+	public function getDelete($name = null, $defaultValue = null)
 	{
+		if ($name === null) {
+			return $this->getRestParams();
+		}
 		return $this->getIsDelete() ? $this->getRestParam($name, $defaultValue) : null;
 	}
 
 	/**
 	 * Returns the named PUT parameter value.
-	 * @param string $name the PUT parameter name
+	 * @param string $name the PUT parameter name. If not specified, an array of PUT parameters is returned.
 	 * @param mixed $defaultValue the default parameter value if the PUT parameter does not exist.
+	 * @property array the PUT request parameter values
 	 * @return mixed the PUT parameter value
 	 */
-	public function getPut($name, $defaultValue = null)
+	public function getPut($name = null, $defaultValue = null)
 	{
+		if ($name === null) {
+			return $this->getRestParams();
+		}
 		return $this->getIsPut() ? $this->getRestParam($name, $defaultValue) : null;
 	}
 
 	/**
 	 * Returns the named PATCH parameter value.
-	 * @param string $name the PATCH parameter name
+	 * @param string $name the PATCH parameter name. If not specified, an array of PATCH parameters is returned.
 	 * @param mixed $defaultValue the default parameter value if the PATCH parameter does not exist.
+	 * @property array the PATCH request parameter values
 	 * @return mixed the PATCH parameter value
 	 */
-	public function getPatch($name, $defaultValue = null)
+	public function getPatch($name = null, $defaultValue = null)
 	{
+		if ($name === null) {
+			return $this->getRestParams();
+		}
 		return $this->getIsPatch() ? $this->getRestParam($name, $defaultValue) : null;
 	}
 
@@ -355,7 +380,7 @@ class Request extends \yii\base\Request
 	 * By default this is determined based on the user request information.
 	 * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.
 	 * @return string schema and hostname part (with port number if needed) of the request URL (e.g. `http://www.yiiframework.com`)
-	 * @see setHostInfo
+	 * @see setHostInfo()
 	 */
 	public function getHostInfo()
 	{
@@ -394,7 +419,7 @@ class Request extends \yii\base\Request
 	 * This is similar to [[scriptUrl]] except that it does not include the script file name,
 	 * and the ending slashes are removed.
 	 * @return string the relative URL for the application
-	 * @see setScriptUrl
+	 * @see setScriptUrl()
 	 */
 	public function getBaseUrl()
 	{
@@ -711,7 +736,7 @@ class Request extends \yii\base\Request
 	 * Defaults to 80, or the port specified by the server if the current
 	 * request is insecure.
 	 * @return integer port number for insecure requests.
-	 * @see setPort
+	 * @see setPort()
 	 */
 	public function getPort()
 	{
@@ -742,7 +767,7 @@ class Request extends \yii\base\Request
 	 * Defaults to 443, or the port specified by the server if the current
 	 * request is secure.
 	 * @return integer port number for secure requests.
-	 * @see setSecurePort
+	 * @see setSecurePort()
 	 */
 	public function getSecurePort()
 	{
@@ -780,7 +805,7 @@ class Request extends \yii\base\Request
 			if (isset($_SERVER['HTTP_ACCEPT'])) {
 				$this->_contentTypes = $this->parseAcceptHeader($_SERVER['HTTP_ACCEPT']);
 			} else {
-				$this->_contentTypes = array();
+				$this->_contentTypes = [];
 			}
 		}
 		return $this->_contentTypes;
@@ -809,7 +834,7 @@ class Request extends \yii\base\Request
 			if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 				$this->_languages = $this->parseAcceptHeader($_SERVER['HTTP_ACCEPT_LANGUAGE']);
 			} else {
-				$this->_languages = array();
+				$this->_languages = [];
 			}
 		}
 		return $this->_languages;
@@ -832,11 +857,11 @@ class Request extends \yii\base\Request
 	 */
 	protected function parseAcceptHeader($header)
 	{
-		$accepts = array();
+		$accepts = [];
 		$n = preg_match_all('/\s*([\w\/\-\*]+)\s*(?:;\s*q\s*=\s*([\d\.]+))?[^,]*/', $header, $matches, PREG_SET_ORDER);
 		for ($i = 0; $i < $n; ++$i) {
 			if (!empty($matches[$i][1])) {
-				$accepts[] = array($matches[$i][1], isset($matches[$i][2]) ? (float)$matches[$i][2] : 1, $i);
+				$accepts[] = [$matches[$i][1], isset($matches[$i][2]) ? (float)$matches[$i][2] : 1, $i];
 			}
 		}
 		usort($accepts, function ($a, $b) {
@@ -860,7 +885,7 @@ class Request extends \yii\base\Request
 				}
 			}
 		});
-		$result = array();
+		$result = [];
 		foreach ($accepts as $accept) {
 			$result[] = $accept[0];
 		}
@@ -876,18 +901,18 @@ class Request extends \yii\base\Request
 	 * @return string the language that the application should use. Null is returned if both [[getAcceptedLanguages()]]
 	 * and `$languages` are empty.
 	 */
-	public function getPreferredLanguage($languages = array())
+	public function getPreferredLanguage($languages = [])
 	{
 		$acceptedLanguages = $this->getAcceptedLanguages();
 		if (empty($languages)) {
 			return isset($acceptedLanguages[0]) ? $acceptedLanguages[0] : null;
 		}
 		foreach ($acceptedLanguages as $acceptedLanguage) {
-			$acceptedLanguage = str_replace('-', '_', strtolower($acceptedLanguage));
+			$acceptedLanguage = str_replace('_', '-', strtolower($acceptedLanguage));
 			foreach ($languages as $language) {
-				$language = str_replace('-', '_', strtolower($language));
-				// en_us==en_us, en==en_us, en_us==en
-				if ($language === $acceptedLanguage || strpos($acceptedLanguage, $language . '_') === 0 || strpos($language, $acceptedLanguage . '_') === 0) {
+				$language = str_replace('_', '-', strtolower($language));
+				// en-us==en-us, en==en-us, en-us==en
+				if ($language === $acceptedLanguage || strpos($acceptedLanguage, $language . '-') === 0 || strpos($language, $acceptedLanguage . '-') === 0) {
 					return $language;
 				}
 			}
@@ -914,9 +939,9 @@ class Request extends \yii\base\Request
 	public function getCookies()
 	{
 		if ($this->_cookies === null) {
-			$this->_cookies = new CookieCollection($this->loadCookies(), array(
+			$this->_cookies = new CookieCollection($this->loadCookies(), [
 				'readOnly' => true,
-			));
+			]);
 		}
 		return $this->_cookies;
 	}
@@ -927,23 +952,23 @@ class Request extends \yii\base\Request
 	 */
 	protected function loadCookies()
 	{
-		$cookies = array();
+		$cookies = [];
 		if ($this->enableCookieValidation) {
 			$key = $this->getCookieValidationKey();
 			foreach ($_COOKIE as $name => $value) {
 				if (is_string($value) && ($value = Security::validateData($value, $key)) !== false) {
-					$cookies[$name] = new Cookie(array(
+					$cookies[$name] = new Cookie([
 						'name' => $name,
 						'value' => @unserialize($value),
-					));
+					]);
 				}
 			}
 		} else {
 			foreach ($_COOKIE as $name => $value) {
-				$cookies[$name] = new Cookie(array(
+				$cookies[$name] = new Cookie([
 					'name' => $name,
 					'value' => $value,
-				));
+				]);
 			}
 		}
 		return $cookies;
@@ -1029,7 +1054,7 @@ class Request extends \yii\base\Request
 	public function validateCsrfToken()
 	{
 		$method = $this->getMethod();
-		if (!$this->enableCsrfValidation || !in_array($method, array('POST', 'PUT', 'PATCH', 'DELETE'), true)) {
+		if (!$this->enableCsrfValidation || !in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'], true)) {
 			return true;
 		}
 		$trueToken = $this->getCookies()->getValue($this->csrfVar);

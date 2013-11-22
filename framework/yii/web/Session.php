@@ -15,7 +15,7 @@ use yii\base\InvalidParamException;
  * Session provides session data management and the related configurations.
  *
  * Session is a Web application component that can be accessed via `Yii::$app->session`.
-
+ *
  * To start the session, call [[open()]]; To complete and send out session data, call [[close()]];
  * To destroy the session, call [[destroy()]].
  *
@@ -46,7 +46,7 @@ use yii\base\InvalidParamException;
  * call methods such as [[setFlash()]], [[getFlash()]].
  *
  * @property array $allFlashes Flash messages (key => message). This property is read-only.
- * @property array $cookieParams The session cookie parameters.
+ * @property array $cookieParams The session cookie parameters. This property is read-only.
  * @property integer $count The number of session variables. This property is read-only.
  * @property string $flash The key identifying the flash message. Note that flash messages and normal session
  * variables share the same name space. If you have a normal session variable using the same name, its value will
@@ -80,13 +80,12 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 * @var string the name of the session variable that stores the flash message data.
 	 */
 	public $flashVar = '__flash';
-
 	/**
-	 * @var array parameter-value pairs to override default session cookie parameters
+	 * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
+	 * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httpOnly'
+	 * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
 	 */
-	public $cookieParams = array(
-		'httpOnly' => true
-	);
+	private $_cookieParams = ['httpOnly' => true];
 
 	/**
 	 * Initializes the application component.
@@ -98,7 +97,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 		if ($this->autoStart) {
 			$this->open();
 		}
-		register_shutdown_function(array($this, 'close'));
+		register_shutdown_function([$this, 'close']);
 	}
 
 	/**
@@ -120,27 +119,24 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function open()
 	{
-		// this is available in PHP 5.4.0+
-		if (function_exists('session_status')) {
-			if (session_status() == PHP_SESSION_ACTIVE) {
-				$this->_opened = true;
-				return;
-			}
+		if (session_status() == PHP_SESSION_ACTIVE) {
+			$this->_opened = true;
+			return;
 		}
 
 		if (!$this->_opened) {
 			if ($this->getUseCustomStorage()) {
 				@session_set_save_handler(
-					array($this, 'openSession'),
-					array($this, 'closeSession'),
-					array($this, 'readSession'),
-					array($this, 'writeSession'),
-					array($this, 'destroySession'),
-					array($this, 'gcSession')
+					[$this, 'openSession'],
+					[$this, 'closeSession'],
+					[$this, 'readSession'],
+					[$this, 'writeSession'],
+					[$this, 'destroySession'],
+					[$this, 'gcSession']
 				);
 			}
 
-			$this->setCookieParams($this->cookieParams);
+			$this->setCookieParamsInternal();
 
 			@session_start();
 
@@ -268,26 +264,36 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 			$params['httpOnly'] = $params['httponly'];
 			unset($params['httponly']);
 		}
-		return $params;
+		return array_merge($params, $this->_cookieParams);
 	}
 
 	/**
 	 * Sets the session cookie parameters.
-	 * The effect of this method only lasts for the duration of the script.
-	 * Call this method before the session starts.
+	 * The cookie parameters passed to this method will be merged with the result
+	 * of `session_get_cookie_params()`.
 	 * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httpOnly`.
 	 * @throws InvalidParamException if the parameters are incomplete.
 	 * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
 	 */
-	public function setCookieParams($value)
+	public function setCookieParams(array $value)
+	{
+		$this->_cookieParams = $value;
+	}
+
+	/**
+	 * Sets the session cookie parameters.
+	 * This method is called by [[open()]] when it is about to open the session.
+	 * @throws InvalidParamException if the parameters are incomplete.
+	 * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
+	 */
+	private function setCookieParamsInternal()
 	{
 		$data = $this->getCookieParams();
 		extract($data);
-		extract($value);
 		if (isset($lifetime, $path, $domain, $secure, $httpOnly)) {
 			session_set_cookie_params($lifetime, $path, $domain, $secure, $httpOnly);
 		} else {
-			throw new InvalidParamException('Please make sure these parameters are provided: lifetime, path, domain, secure and httpOnly.');
+			throw new InvalidParamException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httpOnly.');
 		}
 	}
 
@@ -561,7 +567,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	protected function updateFlashCounters()
 	{
-		$counters = $this->get($this->flashVar, array());
+		$counters = $this->get($this->flashVar, []);
 		if (is_array($counters)) {
 			foreach ($counters as $key => $count) {
 				if ($count) {
@@ -588,7 +594,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function getFlash($key, $defaultValue = null, $delete = false)
 	{
-		$counters = $this->get($this->flashVar, array());
+		$counters = $this->get($this->flashVar, []);
 		if (isset($counters[$key])) {
 			$value = $this->get($key, $defaultValue);
 			if ($delete) {
@@ -606,8 +612,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function getAllFlashes()
 	{
-		$counters = $this->get($this->flashVar, array());
-		$flashes = array();
+		$counters = $this->get($this->flashVar, []);
+		$flashes = [];
 		foreach (array_keys($counters) as $key) {
 			if (isset($_SESSION[$key])) {
 				$flashes[$key] = $_SESSION[$key];
@@ -626,7 +632,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function setFlash($key, $value = true)
 	{
-		$counters = $this->get($this->flashVar, array());
+		$counters = $this->get($this->flashVar, []);
 		$counters[$key] = 0;
 		$_SESSION[$key] = $value;
 		$_SESSION[$this->flashVar] = $counters;
@@ -642,7 +648,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function removeFlash($key)
 	{
-		$counters = $this->get($this->flashVar, array());
+		$counters = $this->get($this->flashVar, []);
 		$value = isset($_SESSION[$key], $counters[$key]) ? $_SESSION[$key] : null;
 		unset($counters[$key], $_SESSION[$key]);
 		$_SESSION[$this->flashVar] = $counters;
@@ -657,7 +663,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function removeAllFlashes()
 	{
-		$counters = $this->get($this->flashVar, array());
+		$counters = $this->get($this->flashVar, []);
 		foreach (array_keys($counters) as $key) {
 			unset($_SESSION[$key]);
 		}

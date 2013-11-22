@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use Yii;
 use yii\base\Model;
 
 /**
@@ -20,14 +21,14 @@ class ContactForm extends Model
 	 */
 	public function rules()
 	{
-		return array(
+		return [
 			// name, email, subject and body are required
-			array('name, email, subject, body', 'required'),
+			[['name', 'email', 'subject', 'body'], 'required'],
 			// email has to be a valid email address
-			array('email', 'email'),
+			['email', 'email'],
 			// verifyCode needs to be entered correctly
-			array('verifyCode', 'captcha'),
-		);
+			['verifyCode', 'captcha'],
+		];
 	}
 
 	/**
@@ -35,9 +36,9 @@ class ContactForm extends Model
 	 */
 	public function attributeLabels()
 	{
-		return array(
+		return [
 			'verifyCode' => 'Verification Code',
-		);
+		];
 	}
 
 	/**
@@ -48,13 +49,12 @@ class ContactForm extends Model
 	public function contact($email)
 	{
 		if ($this->validate()) {
-			$name = '=?UTF-8?B?' . base64_encode($this->name) . '?=';
-			$subject = '=?UTF-8?B?' . base64_encode($this->subject) . '?=';
-			$headers = "From: $name <{$this->email}>\r\n" .
-				"Reply-To: {$this->email}\r\n" .
-				"MIME-Version: 1.0\r\n" .
-				"Content-type: text/plain; charset=UTF-8";
-			mail($email, $subject, $this->body, $headers);
+			Yii::$app->mail->compose()
+				->setTo($email)
+				->setFrom([$this->email => $this->name])
+				->setSubject($this->subject)
+				->setTextBody($this->body)
+				->send();
 			return true;
 		} else {
 			return false;

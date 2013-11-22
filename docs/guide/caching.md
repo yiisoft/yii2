@@ -13,23 +13,23 @@ two cache servers. Note, this configuration should be done in file located at `@
 in case you're using basic sample application.
 
 ```php
-'components' => array(
-	'cache' => array(
+'components' => [
+	'cache' => [
 		'class' => '\yii\caching\MemCache',
-		'servers' => array(
-			array(
+		'servers' => [
+			[
 				'host' => 'server1',
 				'port' => 11211,
 				'weight' => 100,
-			),
-			array(
+			],
+			[
 				'host' => 'server2',
 				'port' => 11211,
 				'weight' => 50,
-			),
-		),
-	),
-),
+			],
+		],
+	],
+],
 ```
 
 When the application is running, the cache component can be accessed through `Yii::$app->cache` call.
@@ -60,7 +60,8 @@ is a summary of the available cache components:
   the fastest one when dealing with cache in a distributed applications (e.g. with several servers, load
   balancers, etc.)
 
-* [[\yii\caching\RedisCache]]: implements a cache component based on [Redis](http://redis.io/) NoSQL database.
+* [[\yii\caching\RedisCache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
+  (redis version 2.6 or higher is required).
 
 * [[\yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
   ([see also](http://php.net/manual/en/book.wincache.php)) extension.

@@ -41,7 +41,7 @@ abstract class Target extends Component
 	 * match those categories sharing the same common prefix. For example, 'yii\db\*' will match
 	 * categories starting with 'yii\db\', such as 'yii\db\Connection'.
 	 */
-	public $categories = array();
+	public $categories = [];
 	/**
 	 * @var array list of message categories that this target is NOT interested in. Defaults to empty, meaning no uninteresting messages.
 	 * If this property is not empty, then any category listed here will be excluded from [[categories]].
@@ -50,7 +50,7 @@ abstract class Target extends Component
 	 * categories starting with 'yii\db\', such as 'yii\db\Connection'.
 	 * @see categories
 	 */
-	public $except = array();
+	public $except = [];
 	/**
 	 * @var boolean whether to log a message containing the current user name and ID. Defaults to false.
 	 * @see \yii\web\User
@@ -59,9 +59,9 @@ abstract class Target extends Component
 	/**
 	 * @var array list of the PHP predefined variables that should be logged in a message.
 	 * Note that a variable must be accessible via `$GLOBALS`. Otherwise it won't be logged.
-	 * Defaults to `array('_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER')`.
+	 * Defaults to `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER']`.
 	 */
-	public $logVars = array('_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER');
+	public $logVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER'];
 	/**
 	 * @var integer how many messages should be accumulated before they are exported.
 	 * Defaults to 1000. Note that messages will always be exported when the application terminates.
@@ -72,7 +72,7 @@ abstract class Target extends Component
 	 * @var array the messages that are retrieved from the logger so far by this log target.
 	 * Please refer to [[Logger::messages]] for the details about the message structure.
 	 */
-	public $messages = array();
+	public $messages = [];
 
 	private $_levels = 0;
 
@@ -96,10 +96,10 @@ abstract class Target extends Component
 		$count = count($this->messages);
 		if ($count > 0 && ($final || $this->exportInterval > 0 && $count >= $this->exportInterval)) {
 			if (($context = $this->getContextMessage()) !== '') {
-				$this->messages[] = array($context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME);
+				$this->messages[] = [$context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME];
 			}
 			$this->export();
-			$this->messages = array();
+			$this->messages = [];
 		}
 	}
 
@@ -110,9 +110,9 @@ abstract class Target extends Component
 	 */
 	protected function getContextMessage()
 	{
-		$context = array();
+		$context = [];
 		if ($this->logUser && ($user = Yii::$app->getComponent('user', false)) !== null) {
-			/** @var $user \yii\web\User */
+			/** @var \yii\web\User $user */
 			$context[] = 'User: ' . $user->getId();
 		}
 
@@ -146,7 +146,7 @@ abstract class Target extends Component
 	 * For example,
 	 *
 	 * ~~~
-	 * array('error', 'warning')
+	 * ['error', 'warning']
 	 * // which is equivalent to:
 	 * Logger::LEVEL_ERROR | Logger::LEVEL_WARNING
 	 * ~~~
@@ -156,13 +156,13 @@ abstract class Target extends Component
 	 */
 	public function setLevels($levels)
 	{
-		static $levelMap = array(
+		static $levelMap = [
 			'error' => Logger::LEVEL_ERROR,
 			'warning' => Logger::LEVEL_WARNING,
 			'info' => Logger::LEVEL_INFO,
 			'trace' => Logger::LEVEL_TRACE,
 			'profile' => Logger::LEVEL_PROFILE,
-		);
+		];
 		if (is_array($levels)) {
 			$this->_levels = 0;
 			foreach ($levels as $level) {
@@ -186,7 +186,7 @@ abstract class Target extends Component
 	 * @param array $except the message categories to exclude. If empty, it means all categories are allowed.
 	 * @return array the filtered messages.
 	 */
-	public static function filterMessages($messages, $levels = 0, $categories = array(), $except = array())
+	public static function filterMessages($messages, $levels = 0, $categories = [], $except = [])
 	{
 		foreach ($messages as $i => $message) {
 			if ($levels && !($levels & $message[1])) {

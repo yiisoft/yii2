@@ -67,4 +67,27 @@ class SchemaTest extends DatabaseTestCase
 		$this->assertEquals('order_id', $table->foreignKeys[0]['order_id']);
 		$this->assertEquals('item_id', $table->foreignKeys[0]['item_id']);
 	}
+
+	public function testGetPDOType()
+	{
+		$values = [
+			[null, \PDO::PARAM_NULL],
+			['', \PDO::PARAM_STR],
+			['hello', \PDO::PARAM_STR],
+			[0, \PDO::PARAM_INT],
+			[1, \PDO::PARAM_INT],
+			[1337, \PDO::PARAM_INT],
+			[true, \PDO::PARAM_BOOL],
+			[false, \PDO::PARAM_BOOL],
+			[$fp=fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
+		];
+
+		/** @var Schema $schema */
+		$schema = $this->getConnection()->schema;
+
+		foreach($values as $value) {
+			$this->assertEquals($value[1], $schema->getPdoType($value[0]));
+		}
+		fclose($fp);
+	}
 }

@@ -20,11 +20,13 @@ use Yii;
  * - Within each PHP script, the message translations are returned as an array like the following:
  *
  * ~~~
- * return array(
+ * return [
  *     'original message 1' => 'translated message 1',
  *     'original message 2' => 'translated message 2',
- * );
+ * ];
  * ~~~
+ *
+ * You may use [[fileMap]] to customize the association between category names and the file names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -41,10 +43,10 @@ class PhpMessageSource extends MessageSource
 	 * The file paths are relative to [[basePath]]. For example,
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *     'core' => 'core.php',
 	 *     'ext' => 'extensions.php',
-	 * )
+	 * ]
 	 * ~~~
 	 */
 	public $fileMap;
@@ -60,20 +62,18 @@ class PhpMessageSource extends MessageSource
 		$messageFile = Yii::getAlias($this->basePath) . "/$language/";
 		if (isset($this->fileMap[$category])) {
 			$messageFile .= $this->fileMap[$category];
-		} elseif (($pos = strrpos($category, '\\')) !== false) {
-			$messageFile .= (substr($category, $pos) . '.php');
 		} else {
-			$messageFile .= "$category.php";
+			$messageFile .= str_replace('\\', '/', $category) . '.php';
 		}
 		if (is_file($messageFile)) {
 			$messages = include($messageFile);
 			if (!is_array($messages)) {
-				$messages = array();
+				$messages = [];
 			}
 			return $messages;
 		} else {
 			Yii::error("The message file for category '$category' does not exist: $messageFile", __METHOD__);
-			return array();
+			return [];
 		}
 	}
 }

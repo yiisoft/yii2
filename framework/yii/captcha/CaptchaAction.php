@@ -119,13 +119,13 @@ class CaptchaAction extends Action
 			$code = $this->getVerifyCode(true);
 			/** @var \yii\web\Controller $controller */
 			$controller = $this->controller;
-			return json_encode(array(
+			return json_encode([
 				'hash1' => $this->generateValidationHash($code),
 				'hash2' => $this->generateValidationHash(strtolower($code)),
 				// we add a random 'v' parameter so that FireFox can refresh the image
 				// when src attribute of image tag is changed
-				'url' => $controller->createUrl($this->id, array('v' => uniqid())),
-			));
+				'url' => $controller->createUrl($this->id, ['v' => uniqid()]),
+			]);
 		} else {
 			$this->setHttpHeaders();
 			return $this->renderImage($this->getVerifyCode());

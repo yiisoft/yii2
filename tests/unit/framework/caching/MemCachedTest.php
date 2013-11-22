@@ -22,10 +22,24 @@ class MemCachedTest extends CacheTestCase
 		}
 
 		if ($this->_cacheInstance === null) {
-			$this->_cacheInstance = new MemCache(array(
-				'useMemcached' => true,
-			));
+			$this->_cacheInstance = new MemCache(['useMemcached' => true]);
 		}
 		return $this->_cacheInstance;
+	}
+
+	public function testExpire()
+	{
+		if (getenv('TRAVIS') == 'true') {
+			$this->markTestSkipped('Can not reliably test memcached expiry on travis-ci.');
+		}
+		parent::testExpire();
+	}
+
+	public function testExpireAdd()
+	{
+		if (getenv('TRAVIS') == 'true') {
+			$this->markTestSkipped('Can not reliably test memcached expiry on travis-ci.');
+		}
+		parent::testExpireAdd();
 	}
 }

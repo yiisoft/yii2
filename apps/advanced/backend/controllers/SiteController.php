@@ -10,32 +10,31 @@ class SiteController extends Controller
 {
 	public function behaviors()
 	{
-		return array(
-			'access' => array(
+		return [
+			'access' => [
 				'class' => \yii\web\AccessControl::className(),
-				'rules' => array(
-					array(
-						'actions' => array('login'),
+				'rules' => [
+					[
+						'actions' => ['login', 'error'],
 						'allow' => true,
-						'roles' => array('?'),
-					),
-					array(
-						'actions' => array('logout', 'index'),
+					],
+					[
+						'actions' => ['logout', 'index'],
 						'allow' => true,
-						'roles' => array('@'),
-					),
-				),
-			),
-		);
+						'roles' => ['@'],
+					],
+				],
+			],
+		];
 	}
 
 	public function actions()
 	{
-		return array(
-			'error' => array(
+		return [
+			'error' => [
 				'class' => 'yii\web\ErrorAction',
-			),
-		);
+			],
+		];
 	}
 
 	public function actionIndex()
@@ -45,13 +44,17 @@ class SiteController extends Controller
 
 	public function actionLogin()
 	{
+		if (!\Yii::$app->user->isGuest) {
+			$this->goHome();
+		}
+
 		$model = new LoginForm();
 		if ($model->load($_POST) && $model->login()) {
-			return $this->goHome();
+			return $this->goBack();
 		} else {
-			return $this->render('login', array(
+			return $this->render('login', [
 				'model' => $model,
-			));
+			]);
 		}
 	}
 

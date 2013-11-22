@@ -27,7 +27,7 @@ use yii\helpers\Html;
 class CheckboxColumn extends Column
 {
 	public $name = 'selection';
-	public $checkboxOptions = array();
+	public $checkboxOptions = [];
 	public $multiple = true;
 
 
@@ -52,17 +52,17 @@ class CheckboxColumn extends Column
 	{
 		$name = rtrim($this->name, '[]') . '_all';
 		$id = $this->grid->options['id'];
-		$options = json_encode(array(
+		$options = json_encode([
 			'name' => $this->name,
 			'multiple' => $this->multiple,
 			'checkAll' => $name,
-		));
+		]);
 		$this->grid->getView()->registerJs("jQuery('#$id').yiiGridView('setSelectionColumn', $options);");
 
 		if ($this->header !== null || !$this->multiple) {
 			return parent::renderHeaderCellContent();
 		} else {
-			return Html::checkBox($name, false, array('class' => 'select-on-check-all'));
+			return Html::checkBox($name, false, ['class' => 'select-on-check-all']);
 		}
 	}
 

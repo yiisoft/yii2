@@ -57,10 +57,10 @@ class BooleanValidator extends Validator
 	{
 		$value = $object->$attribute;
 		if (!$this->validateValue($value)) {
-			$this->addError($object, $attribute, $this->message, array(
-				'{true}' => $this->trueValue,
-				'{false}' => $this->falseValue,
-			));
+			$this->addError($object, $attribute, $this->message, [
+				'true' => $this->trueValue,
+				'false' => $this->falseValue,
+			]);
 		}
 	}
 
@@ -79,22 +79,21 @@ class BooleanValidator extends Validator
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
 	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
-		$options = array(
+		$options = [
 			'trueValue' => $this->trueValue,
 			'falseValue' => $this->falseValue,
-			'message' => Html::encode(strtr($this->message, array(
+			'message' => Html::encode(strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
-				'{value}' => $object->$attribute,
 				'{true}' => $this->trueValue,
 				'{false}' => $this->falseValue,
-			))),
-		);
+			])),
+		];
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
 		}

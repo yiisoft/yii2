@@ -1,33 +1,37 @@
 <?php
 $params = require(__DIR__ . '/params.php');
-$config = array(
-	'id' => 'bootstrap',
+$config = [
+	'id' => 'basic',
 	'basePath' => dirname(__DIR__),
-	'components' => array(
-		'request' => array(
+	'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+	'components' => [
+		'request' => [
 			'enableCsrfValidation' => true,
-		),
-		'cache' => array(
+		],
+		'cache' => [
 			'class' => 'yii\caching\FileCache',
-		),
-		'user' => array(
+		],
+		'user' => [
 			'identityClass' => 'app\models\User',
-		),
-		'errorHandler' => array(
+		],
+		'errorHandler' => [
 			'errorAction' => 'site/error',
-		),
-		'log' => array(
+		],
+		'mail' => [
+			'class' => 'yii\swiftmailer\Mailer',
+		],
+		'log' => [
 			'traceLevel' => YII_DEBUG ? 3 : 0,
-			'targets' => array(
-				array(
+			'targets' => [
+				[
 					'class' => 'yii\log\FileTarget',
-					'levels' => array('error', 'warning'),
-				),
-			),
-		),
-	),
+					'levels' => ['error', 'warning'],
+				],
+			],
+		],
+	],
 	'params' => $params,
-);
+];
 
 if (YII_ENV_DEV) {
 	$config['preload'][] = 'debug';

@@ -7,8 +7,6 @@
 
 namespace yiiunit\data\ar;
 
-use yii\db\Connection;
-
 /**
  * ActiveRecord is ...
  *

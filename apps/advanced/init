@@ -1,27 +1,49 @@
 #!/usr/bin/env php
 <?php
+$params = getParams();
 $root = str_replace('\\', '/', __DIR__);
 $envs = require("$root/environments/index.php");
 $envNames = array_keys($envs);
 
-echo "Yii Application Init Tool v1.0\n\n";
-echo "Which environment do you want the application to be initialized in?\n\n";
-foreach ($envNames as $i => $name) {
-	echo "  [$i] $name\n";
+echo "Yii Application Initialization Tool v1.0\n\n";
+
+$envName = null;
+if (empty($params['env'])) {
+	echo "Which environment do you want the application to be initialized in?\n\n";
+	foreach ($envNames as $i => $name) {
+		echo "  [$i] $name\n";
+	}
+	echo "\n  Your choice [0-" . (count($envs) - 1) . ', or "q" to quit] ';
+	$answer = trim(fgets(STDIN));
+
+	if (!ctype_digit($answer) || !in_array($answer, range(0, count($envs) - 1))) {
+		echo "\n  Quit initialization.\n";
+		exit(0);
+	}
+
+	if (isset($envNames[$answer])) {
+		$envName = $envNames[$answer];
+	}
 }
-echo "\n  Your choice [0-" . (count($envs) - 1) . ', or "q" to quit] ';
-$answer = trim(fgets(STDIN));
-if (!ctype_digit($answer) || !isset($envNames[$answer])) {
-	echo "\n  Quit initialization.\n";
-	return;
+else {
+	$envName = $params['env'];
 }
 
-$env = $envs[$envNames[$answer]];
-echo "\n  Initialize the application under '{$envNames[$answer]}' environment? [yes|no] ";
-$answer = trim(fgets(STDIN));
-if (strncasecmp($answer, 'y', 1)) {
-	echo "\n  Quit initialization.\n";
-	return;
+if (!in_array($envName, $envNames)) {
+	$envsList = implode(', ', $envNames);
+	echo "\n  $envName is not a valid environment. Try one of the following: $envsList. \n";
+	exit(2);
+}
+
+$env = $envs[$envName];
+
+if (empty($params['env'])) {
+	echo "\n  Initialize the application under '{$envNames[$answer]}' environment? [yes|no] ";
+	$answer = trim(fgets(STDIN));
+	if (strncasecmp($answer, 'y', 1)) {
+		echo "\n  Quit initialization.\n";
+		exit(0);
+	}
 }
 
 echo "\n  Start initialization ...\n\n";
@@ -51,7 +73,7 @@ echo "\n  ... initialization completed.\n\n";
 
 function getFileList($root, $basePath = '')
 {
-	$files = array();
+	$files = [];
 	$handle = opendir($root);
 	while (($path = readdir($handle)) !== false) {
 		if ($path === '.svn' || $path === '.' || $path === '..') {
@@ -109,4 +131,24 @@ function copyFile($root, $source, $target, &$all)
 	@mkdir(dirname($root . '/' . $target), 0777, true);
 	file_put_contents($root . '/' . $target, file_get_contents($root . '/' . $source));
 	return true;
+}
+
+function getParams()
+{
+	$rawParams = [];
+	if (isset($_SERVER['argv'])) {
+		$rawParams = $_SERVER['argv'];
+		array_shift($rawParams);
+	}
+
+	$params = [];
+	foreach ($rawParams as $param) {
+		if (preg_match('/^--(\w+)(=(.*))?$/', $param, $matches)) {
+			$name = $matches[1];
+			$params[$name] = isset($matches[3]) ? $matches[3] : true;
+		} else {
+			$params[] = $param;
+		}
+	}
+	return $params;
 }

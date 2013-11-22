@@ -41,11 +41,11 @@ class Captcha extends InputWidget
 	/**
 	 * @var array HTML attributes to be applied to the text input field.
 	 */
-	public $options = array();
+	public $options = [];
 	/**
 	 * @var array HTML attributes to be applied to the CAPTCHA image tag.
 	 */
-	public $imageOptions = array();
+	public $imageOptions = [];
 	/**
 	 * @var string the template for arranging the CAPTCHA image tag and the text input tag.
 	 * In this template, the token `{image}` will be replaced with the actual image tag,
@@ -81,12 +81,12 @@ class Captcha extends InputWidget
 		} else {
 			$input = Html::textInput($this->name, $this->value, $this->options);
 		}
-		$url = Yii::$app->getUrlManager()->createUrl($this->captchaAction, array('v' => uniqid()));
+		$url = Yii::$app->getUrlManager()->createUrl($this->captchaAction, ['v' => uniqid()]);
 		$image = Html::img($url, $this->imageOptions);
-		echo strtr($this->template, array(
+		echo strtr($this->template, [
 			'{input}' => $input,
 			'{image}' => $image,
-		));
+		]);
 	}
 
 	/**
@@ -108,10 +108,10 @@ class Captcha extends InputWidget
 	 */
 	protected function getClientOptions()
 	{
-		$options = array(
-			'refreshUrl' => Html::url(array($this->captchaAction, CaptchaAction::REFRESH_GET_VAR => 1)),
+		$options = [
+			'refreshUrl' => Html::url([$this->captchaAction, CaptchaAction::REFRESH_GET_VAR => 1]),
 			'hashKey' => "yiiCaptcha/{$this->captchaAction}",
-		);
+		];
 		return $options;
 	}
 

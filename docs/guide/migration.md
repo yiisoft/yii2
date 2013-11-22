@@ -82,11 +82,11 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 {
 	public function up()
 	{
-		$this->db->createCommand()->createTable('tbl_news', array(
+		$this->db->createCommand()->createTable('tbl_news', [
 			'id' => 'pk',
 			'title' => 'string(128) NOT NULL',
 			'content' => 'text',
-		))->execute();
+		])->execute();
 	}
 
 	public function down()
@@ -128,11 +128,11 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 		$transaction=$this->getDbConnection()->beginTransaction();
 		try
 		{
-			$this->db->createCommand()->createTable('tbl_news', array(
+			$this->db->createCommand()->createTable('tbl_news', [
 				'id' => 'pk',
 				'title' => 'string NOT NULL',
 				'content' => 'text',
-			))->execute();
+			])->execute();
 			$transaction->commit();
 		}
 		catch(Exception $e)
