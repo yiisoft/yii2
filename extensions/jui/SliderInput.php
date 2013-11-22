@@ -17,7 +17,7 @@ use yii\helpers\Html;
  * ```
  * echo Slider::widget([
  *     'model' => $model,
- *     'attrbute' => 'amount',
+ *     'attribute' => 'amount',
  *     'clientOptions' => [
  *         'min' => 1,
  *         'max' => 10,
