@@ -2,8 +2,7 @@
 
 namespace yiiunit\extensions\sphinx;
 
-use yii\sphinx\DataReader;
-use yii\db\Expression;
+use yii\db\DataReader;
 
 /**
  * @group sphinx
