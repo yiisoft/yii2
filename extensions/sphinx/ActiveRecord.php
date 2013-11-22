@@ -1297,9 +1297,6 @@ class ActiveRecord extends Model
 				$column = $columns[$name];
 				if ($column->isMva) {
 					$value = explode(',', $value);
-					$value = array_map([$column, 'typecast'], $value);
-				} else {
-					$value = $column->typecast($value);
 				}
 				$record->_attributes[$name] = $value;
 			} else {

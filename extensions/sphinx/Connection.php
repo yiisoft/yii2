@@ -124,6 +124,6 @@ class Connection extends \yii\db\Connection
 	 */
 	public function getLastInsertID($sequenceName = '')
 	{
-		throw new NotSupportedException('"' . $this->className() . '::getLastInsertID" is not supported.');
+		throw new NotSupportedException('"' . __METHOD__ . '" is not supported.');
 	}
 }
