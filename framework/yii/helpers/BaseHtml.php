@@ -377,8 +377,8 @@ class BaseHtml
 	 */
 	public static function icon($icon, $options = [], $tag = 'i', $prefix = 'glyphicon glyphicon-')
 	{
-		Html::addCssClass($options, $prefix . $icon);
-		return Html::tag($tag, '', $options);
+		static::addCssClass($options, $prefix . $icon);
+		return static::tag($tag, '', $options);
 	}
 	
 	/**
