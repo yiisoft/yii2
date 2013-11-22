@@ -65,12 +65,12 @@ class UniqueValidator extends Validator
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
 
 		$attributes = $className::attributes();
-		if (!in_array($attribute, $attributes)) {
+		if (!in_array($attributeName, $attributes)) {
 			throw new InvalidConfigException("'$className' does not have an attribute named '$attributeName'.");
 		}
 
 		$query = $className::find();
-		$query->where([$attribute => $value]);
+		$query->where([$attributeName => $value]);
 
 		if (!$object instanceof ActiveRecord || $object->getIsNewRecord()) {
 			// if current $object isn't in the database yet then it's OK just to call exists()
@@ -82,7 +82,7 @@ class UniqueValidator extends Validator
 
 			$n = count($objects);
 			if ($n === 1) {
-				if (in_array($attribute, $className::primaryKey())) {
+				if (in_array($attributeName, $className::primaryKey())) {
 					// primary key is modified and not unique
 					$exists = $object->getOldPrimaryKey() != $object->getPrimaryKey();
 				} else {
