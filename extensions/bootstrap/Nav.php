@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
- * Nav renders a nav HTML component. 
+ * Nav renders a nav HTML component.
  * 
  * For example:
  *
