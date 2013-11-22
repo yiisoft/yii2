@@ -370,10 +370,11 @@ class BaseHtml
 	
 	/**
 	 * Generates a bootstrap icon tag.
-	 * @param string $icon the name of the bootstrap icon (without any prefix)
+	 * @param string $icon the bootstrap icon name without prefix (e.g. 'plus', 'pencil', 'trash')
 	 * @param array $options html options for the icon container
-	 * @param string $tag the icon container tag - defaults to 'i'
+	 * @param string $tag the icon container tag (usually 'span' or 'i') - defaults to 'i'
 	 * @param string $prefix the css class prefix - defaults to 'glyphicon glyphicon-'
+	 * @author Kartik Visweswaran <kartikv2@gmail.com>
 	 */
 	public static function icon($icon, $options = [], $tag = 'i', $prefix = 'glyphicon glyphicon-')
 	{
