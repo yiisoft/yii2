@@ -2,7 +2,7 @@
 	"name": "yiisoft/yii2-jui",
 	"description": "The Jquery UI extension for the Yii framework",
 	"keywords": ["yii", "Jquery UI", "renderer"],
-	"type": "library",
+	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {
 		"issues": "https://github.com/yiisoft/yii2/issues?state=open",
@@ -11,11 +11,17 @@
 		"irc": "irc://irc.freenode.net/yii",
 		"source": "https://github.com/yiisoft/yii2"
 	},
-	"minimum-stability": "dev",
+	"authors": [
+		{
+			"name": "Qiang Xue",
+			"email": "qiang.xue@gmail.com"
+		}
+	],
 	"require": {
 		"yiisoft/yii2": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\jui": "" }
-	}
+		"psr-0": { "yii\\jui\\": "" }
+	},
+	"target-dir": "yii/jui"
 }

@@ -19,6 +19,9 @@ use yii\helpers\Html;
  * The behavior of some of them may be configured via the properties of Formatter. For example,
  * by configuring [[dateFormat]], one may control how [[asDate()]] formats the value into a date string.
  *
+ * Formatter is configured as an application component in [[yii\base\Application]] by default.
+ * You can access that instance via `Yii::$app->formatter`.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -42,7 +45,7 @@ class Formatter extends Component
 	public $nullDisplay;
 	/**
 	 * @var array the text to be displayed when formatting a boolean value. The first element corresponds
-	 * to the text display for false, the second element for true. Defaults to `array('No', 'Yes')`.
+	 * to the text display for false, the second element for true. Defaults to `['No', 'Yes']`.
 	 */
 	public $booleanFormat;
 	/**
@@ -63,7 +66,7 @@ class Formatter extends Component
 	public function init()
 	{
 		if (empty($this->booleanFormat)) {
-			$this->booleanFormat = array(Yii::t('yii', 'No'), Yii::t('yii', 'Yes'));
+			$this->booleanFormat = [Yii::t('yii', 'No'), Yii::t('yii', 'Yes')];
 		}
 		if ($this->nullDisplay === null) {
 			$this->nullDisplay = Yii::t('yii', '(not set)');
@@ -79,7 +82,7 @@ class Formatter extends Component
 	 * @param string|array $format the format of the value, e.g., "html", "text". To specify additional
 	 * parameters of the formatting method, you may use an array. The first element of the array
 	 * specifies the format name, while the rest of the elements will be used as the parameters to the formatting
-	 * method. For example, a format of `array('date', 'Y-m-d')` will cause the invocation of `asDate($value, 'Y-m-d')`.
+	 * method. For example, a format of `['date', 'Y-m-d']` will cause the invocation of `asDate($value, 'Y-m-d')`.
 	 * @return string the formatting result
 	 * @throws InvalidParamException if the type is not supported by this class.
 	 */
@@ -94,11 +97,11 @@ class Formatter extends Component
 			$params = $format;
 			$format = $f;
 		} else {
-			$params = array($value);
+			$params = [$value];
 		}
 		$method = 'as' . $format;
 		if (method_exists($this, $method)) {
-			return call_user_func_array(array($this, $method), $params);
+			return call_user_func_array([$this, $method], $params);
 		} else {
 			throw new InvalidParamException("Unknown type: $format");
 		}
@@ -187,7 +190,7 @@ class Formatter extends Component
 		if ($value === null) {
 			return $this->nullDisplay;
 		}
-		return Html::mailto($value);
+		return Html::mailto(Html::encode($value), $value);
 	}
 
 	/**

@@ -62,13 +62,13 @@ class XmlResponseFormatterTest extends \yiiunit\TestCase
 	
 	public function formatScalarDataProvider()
 	{
-		return array(
-			array(null, "<response></response>\n"),
-			array(1, "<response>1</response>\n"),
-			array('abc', "<response>abc</response>\n"),
-			array(true, "<response>1</response>\n"),
-			array("<>", "<response>&lt;&gt;</response>\n"),
-		);
+		return [
+			[null, "<response></response>\n"],
+			[1, "<response>1</response>\n"],
+			['abc', "<response>abc</response>\n"],
+			[true, "<response>1</response>\n"],
+			["<>", "<response>&lt;&gt;</response>\n"],
+		];
 	}
 
 	/**
@@ -86,26 +86,26 @@ class XmlResponseFormatterTest extends \yiiunit\TestCase
 
 	public function formatArrayDataProvider()
 	{
-		return array(
-			array(array(), "<response/>\n"),
-			array(array(1, 'abc'), "<response><item>1</item><item>abc</item></response>\n"),
-			array(array(
+		return [
+			[[], "<response/>\n"],
+			[[1, 'abc'], "<response><item>1</item><item>abc</item></response>\n"],
+			[[
 				'a' => 1,
 				'b' => 'abc',
-			), "<response><a>1</a><b>abc</b></response>\n"),
-			array(array(
+			], "<response><a>1</a><b>abc</b></response>\n"],
+			[[
 				1,
 				'abc',
-				array(2, 'def'),
+				[2, 'def'],
 				true,
-			), "<response><item>1</item><item>abc</item><item><item>2</item><item>def</item></item><item>1</item></response>\n"),
-			array(array(
+			], "<response><item>1</item><item>abc</item><item><item>2</item><item>def</item></item><item>1</item></response>\n"],
+			[[
 				'a' => 1,
 				'b' => 'abc',
-				'c' => array(2, '<>'),
+				'c' => [2, '<>'],
 				true,
-			), "<response><a>1</a><b>abc</b><c><item>2</item><item>&lt;&gt;</item></c><item>1</item></response>\n"),
-		);
+			], "<response><a>1</a><b>abc</b><c><item>2</item><item>&lt;&gt;</item></c><item>1</item></response>\n"],
+		];
 	}
 
 	/**
@@ -123,16 +123,16 @@ class XmlResponseFormatterTest extends \yiiunit\TestCase
 
 	public function formatObjectDataProvider()
 	{
-		return array(
-			array(new Post(123, 'abc'), "<response><Post><id>123</id><title>abc</title></Post></response>\n"),
-			array(array(
+		return [
+			[new Post(123, 'abc'), "<response><Post><id>123</id><title>abc</title></Post></response>\n"],
+			[[
 				new Post(123, 'abc'),
 				new Post(456, 'def'),
-			), "<response><Post><id>123</id><title>abc</title></Post><Post><id>456</id><title>def</title></Post></response>\n"),
-			array(array(
+			], "<response><Post><id>123</id><title>abc</title></Post><Post><id>456</id><title>def</title></Post></response>\n"],
+			[[
 				new Post(123, '<>'),
 				'a' => new Post(456, 'def'),
-			), "<response><Post><id>123</id><title>&lt;&gt;</title></Post><a><Post><id>456</id><title>def</title></Post></a></response>\n"),
-		);
+			], "<response><Post><id>123</id><title>&lt;&gt;</title></Post><a><Post><id>456</id><title>def</title></Post></a></response>\n"],
+		];
 	}
 }

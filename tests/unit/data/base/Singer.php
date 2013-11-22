@@ -13,10 +13,10 @@ class Singer extends Model
 
 	public function rules()
 	{
-		return array(
-			array('lastName', 'default', 'value' => 'Lennon'),
-			array('lastName', 'required'),
-			array('underscore_style', 'yii\captcha\CaptchaValidator'),
-		);
+		return [
+			[['lastName'], 'default', 'value' => 'Lennon'],
+			[['lastName'], 'required'],
+			[['underscore_style'], 'yii\captcha\CaptchaValidator'],
+		];
 	}
 }

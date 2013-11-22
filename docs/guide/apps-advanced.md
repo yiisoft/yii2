@@ -121,7 +121,7 @@ Configuring Composer
 After application template is installed it's a good idea to adjust default `composer.json` that can be found in the root
 directory:
 
-```javascript
+```json
 {
 	"name": "yiisoft/yii2-app-advanced",
 	"description": "Yii 2 Advanced Application Template",
@@ -138,17 +138,20 @@ directory:
 	},
 	"minimum-stability": "dev",
 	"require": {
-		"php": ">=5.3.0",
+		"php": ">=5.4.0",
 		"yiisoft/yii2": "dev-master",
-		"yiisoft/yii2-composer": "dev-master"
+		"yiisoft/yii2-swiftmailer": "dev-master",
+		"yiisoft/yii2-bootstrap": "dev-master",
+		"yiisoft/yii2-debug": "dev-master",
+		"yiisoft/yii2-gii": "dev-master"
 	},
 	"scripts": {
 		"post-create-project-cmd": [
-			"yii\\composer\\InstallHandler::setPermissions"
+			"yii\\composer\\Installer::setPermission"
 		]
 	},
 	"extra": {
-		"yii-install-writable": [
+		"writable": [
 			"backend/runtime",
 			"backend/web/assets",
 
@@ -160,15 +163,13 @@ directory:
 		]
 	}
 }
-
 ```
 
 First we're updating basic information. Change `name`, `description`, `keywords`, `homepage` and `support` to match
 your project.
 
 Now the interesting part. You can add more packages your application needs to `require` section.
-For example, to use markdown helper you need to add `michelf/php-markdown`. All these packages are coming from
-[packagist.org](https://packagist.org/) so feel free to browse the website for useful code.
+All these packages are coming from [packagist.org](https://packagist.org/) so feel free to browse the website for useful code.
 
 After your `composer.json` is changed you can run `php composer.phar update`, wait till packages are downloaded and
 installed and then just use them. Autoloading of classes will be handled automatically.

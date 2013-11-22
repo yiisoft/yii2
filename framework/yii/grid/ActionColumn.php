@@ -10,17 +10,17 @@ namespace yii\grid;
 use Yii;
 use Closure;
 use yii\helpers\Html;
-use yii\helpers\Inflector;
-use yii\helpers\StringHelper;
 
 /**
+ * ActionColumn is a column for the [[GridView]] widget that displays buttons for viewing and manipulating the items.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class ActionColumn extends Column
 {
 	public $template = '{view} {update} {delete}';
-	public $buttons = array();
+	public $buttons = [];
 	public $urlCreator;
 
 	public function init()
@@ -35,29 +35,29 @@ class ActionColumn extends Column
 			$this->buttons['view'] = function ($model, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, 'view');
-				return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, array(
+				return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
 					'title' => Yii::t('yii', 'View'),
-				));
+				]);
 			};
 		}
 		if (!isset($this->buttons['update'])) {
 			$this->buttons['update'] = function ($model, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, 'update');
-				return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, array(
+				return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
 					'title' => Yii::t('yii', 'Update'),
-				));
+				]);
 			};
 		}
 		if (!isset($this->buttons['delete'])) {
 			$this->buttons['delete'] = function ($model, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, 'delete');
-				return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, array(
+				return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
 					'title' => Yii::t('yii', 'Delete'),
 					'data-confirm' => Yii::t('yii', 'Are you sure to delete this item?'),
 					'data-method' => 'post',
-				));
+				]);
 			};
 		}
 	}
@@ -72,12 +72,11 @@ class ActionColumn extends Column
 		if ($this->urlCreator instanceof Closure) {
 			return call_user_func($this->urlCreator, $model, $action);
 		} else {
-			$route = Inflector::camel2id(StringHelper::basename(get_class($model))) . '/' . $action;
 			$params = $model->getPrimaryKey(true);
 			if (count($params) === 1) {
-				$params = array('id' => reset($params));
+				$params = ['id' => reset($params)];
 			}
-			return Yii::$app->getUrlManager()->createUrl($route, $params);
+			return Yii::$app->controller->createUrl($action, $params);
 		}
 	}
 
@@ -89,11 +88,10 @@ class ActionColumn extends Column
 	 */
 	protected function renderDataCellContent($model, $index)
 	{
-		$column = $this;
-		return preg_replace_callback('/\\{(\w+)\\}/', function ($matches) use ($model, $column) {
+		return preg_replace_callback('/\\{(\w+)\\}/', function ($matches) use ($model) {
 			$name = $matches[1];
-			if (isset($column->buttons[$name])) {
-				return call_user_func($column->buttons[$name], $model, $column);
+			if (isset($this->buttons[$name])) {
+				return call_user_func($this->buttons[$name], $model, $this);
 			} else {
 				return '';
 			}

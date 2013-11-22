@@ -23,7 +23,7 @@ class BaseInflector
 	 * @var array the rules for converting a word into its plural form.
 	 * The keys are the regular expressions and the values are the corresponding replacements.
 	 */
-	public static $plurals = array(
+	public static $plurals = [
 		'/([nrlm]ese|deer|fish|sheep|measles|ois|pox|media)$/i' => '\1',
 		'/^(sea[- ]bass)$/i' => '\1',
 		'/(m)ove$/i' => '\1oves',
@@ -53,12 +53,12 @@ class BaseInflector
 		'/s$/' => 's',
 		'/^$/' => '',
 		'/$/' => 's',
-	);
+	];
 	/**
 	 * @var array the rules for converting a word into its singular form.
 	 * The keys are the regular expressions and the values are the corresponding replacements.
 	 */
-	public static $singulars = array(
+	public static $singulars = [
 		'/([nrlm]ese|deer|fish|sheep|measles|ois|pox|media|ss)$/i' => '\1',
 		'/^(sea[- ]bass)$/i' => '\1',
 		'/(s)tatuses$/i' => '\1tatus',
@@ -97,12 +97,12 @@ class BaseInflector
 		'/eaus$/' => 'eau',
 		'/^(.*us)$/' => '\\1',
 		'/s$/i' => '',
-	);
+	];
 	/**
 	 * @var array the special rules for converting a word between its plural form and singular form.
 	 * The keys are the special words in singular form, and the values are the corresponding plural form.
 	 */
-	public static $specials = array(
+	public static $specials = [
 		'atlas' => 'atlases',
 		'beef' => 'beefs',
 		'brother' => 'brothers',
@@ -214,11 +214,11 @@ class BaseInflector
 		'whiting' => 'whiting',
 		'wildebeest' => 'wildebeest',
 		'Yengeese' => 'Yengeese',
-	);
+	];
 	/**
 	 * @var array map of special chars and its translation. This is used by [[slug()]].
 	 */
-	public static $transliteration = array(
+	public static $transliteration = [
 		'/ä|æ|ǽ/' => 'ae',
 		'/ö|œ/' => 'oe',
 		'/ü/' => 'ue',
@@ -269,7 +269,7 @@ class BaseInflector
 		'/ĳ/' => 'ij',
 		'/Œ/' => 'OE',
 		'/ƒ/' => 'f'
-	);
+	];
 
 	/**
 	 * Converts a word to its plural form.
@@ -280,8 +280,8 @@ class BaseInflector
 	 */
 	public static function pluralize($word)
 	{
-		if (isset(self::$specials[$word])) {
-			return self::$specials[$word];
+		if (isset(static::$specials[$word])) {
+			return static::$specials[$word];
 		}
 		foreach (static::$plurals as $rule => $replacement) {
 			if (preg_match($rule, $word)) {
@@ -298,7 +298,7 @@ class BaseInflector
 	 */
 	public static function singularize($word)
 	{
-		$result = array_search($word, self::$specials, true);
+		$result = array_search($word, static::$specials, true);
 		if ($result !== false) {
 			return $result;
 		}
@@ -328,7 +328,7 @@ class BaseInflector
 	 * Converts a word like "send_email" to "SendEmail". It
 	 * will remove non alphanumeric character from the word, so
 	 * "who's online" will be converted to "WhoSOnline"
-	 * @see variablize
+	 * @see variablize()
 	 * @param string $word the word to CamelCase
 	 * @return string
 	 */
@@ -346,11 +346,11 @@ class BaseInflector
 	 */
 	public static function camel2words($name, $ucwords = true)
 	{
-		$label = trim(strtolower(str_replace(array(
+		$label = trim(strtolower(str_replace([
 			'-',
 			'_',
 			'.'
-		), ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name))));
+		], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name))));
 		return $ucwords ? ucwords($label) : $label;
 	}
 
@@ -441,12 +441,12 @@ class BaseInflector
 	 */
 	public static function slug($string, $replacement = '-')
 	{
-		$map = static::$transliteration + array(
+		$map = static::$transliteration + [
 				'/[^\w\s]/' => ' ',
 				'/\\s+/' => $replacement,
 				'/(?<=[a-z])([A-Z])/' => $replacement . '\\1',
 				str_replace(':rep', preg_quote($replacement, '/'), '/^[:rep]+|[:rep]+$/') => ''
-			);
+			];
 		return preg_replace(array_keys($map), array_values($map), $string);
 	}
 

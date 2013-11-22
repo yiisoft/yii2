@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use ReflectionClass;
 
 /**
  * Widget is the base class for widgets.
@@ -20,19 +21,19 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Widget extends Component
+class Widget extends Component implements ViewContextInterface
 {
 	/**
 	 * @var integer a counter used to generate [[id]] for widgets.
 	 * @internal
 	 */
-	public static $_counter = 0;
+	public static $counter = 0;
 	/**
 	 * @var Widget[] the widgets that are currently being rendered (not ended). This property
 	 * is maintained by [[begin()]] and [[end()]] methods.
 	 * @internal
 	 */
-	public static $_stack = array();
+	public static $stack = [];
 
 	
 	/**
@@ -40,27 +41,27 @@ class Widget extends Component
 	 * This method creates an instance of the calling class. It will apply the configuration
 	 * to the created instance. A matching [[end()]] call should be called later.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 * @return Widget the newly created widget instance
+	 * @return static the newly created widget instance
 	 */
-	public static function begin($config = array())
+	public static function begin($config = [])
 	{
 		$config['class'] = get_called_class();
 		/** @var Widget $widget */
 		$widget = Yii::createObject($config);
-		self::$_stack[] = $widget;
+		self::$stack[] = $widget;
 		return $widget;
 	}
 
 	/**
 	 * Ends a widget.
 	 * Note that the rendering result of the widget is directly echoed out.
-	 * @return Widget the widget instance that is ended.
+	 * @return static the widget instance that is ended.
 	 * @throws InvalidCallException if [[begin()]] and [[end()]] calls are not properly nested
 	 */
 	public static function end()
 	{
-		if (!empty(self::$_stack)) {
-			$widget = array_pop(self::$_stack);
+		if (!empty(self::$stack)) {
+			$widget = array_pop(self::$stack);
 			if (get_class($widget) === get_called_class()) {
 				$widget->run();
 				return $widget;
@@ -78,7 +79,7 @@ class Widget extends Component
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 * @return string the rendering result of the widget.
 	 */
-	public static function widget($config = array())
+	public static function widget($config = [])
 	{
 		ob_start();
 		ob_implicit_flush(false);
@@ -99,7 +100,7 @@ class Widget extends Component
 	public function getId($autoGenerate = true)
 	{
 		if ($autoGenerate && $this->_id === null) {
-			$this->_id = 'w' . self::$_counter++;
+			$this->_id = 'w' . self::$counter++;
 		}
 		return $this->_id;
 	}
@@ -165,10 +166,9 @@ class Widget extends Component
 	 * @return string the rendering result.
 	 * @throws InvalidParamException if the view file does not exist.
 	 */
-	public function render($view, $params = array())
+	public function render($view, $params = [])
 	{
-		$viewFile = $this->findViewFile($view);
-		return $this->getView()->renderFile($viewFile, $params, $this);
+		return $this->getView()->render($view, $params, $this);
 	}
 
 	/**
@@ -178,7 +178,7 @@ class Widget extends Component
 	 * @return string the rendering result.
 	 * @throws InvalidParamException if the view file does not exist.
 	 */
-	public function renderFile($file, $params = array())
+	public function renderFile($file, $params = [])
 	{
 		return $this->getView()->renderFile($file, $params, $this);
 	}
@@ -190,32 +190,18 @@ class Widget extends Component
 	 */
 	public function getViewPath()
 	{
-		$className = get_class($this);
-		$class = new \ReflectionClass($className);
+		$class = new ReflectionClass($this);
 		return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
 	}
 
 	/**
 	 * Finds the view file based on the given view name.
-	 * @param string $view the view name or the path alias of the view file. Please refer to [[render()]]
-	 * on how to specify this parameter.
+	 * File will be searched under [[viewPath]] directory.
+	 * @param string $view the view name.
 	 * @return string the view file path. Note that the file may not exist.
 	 */
-	protected function findViewFile($view)
+	public function findViewFile($view)
 	{
-		if (strncmp($view, '@', 1) === 0) {
-			// e.g. "@app/views/main"
-			$file = Yii::getAlias($view);
-		} elseif (strncmp($view, '//', 2) === 0) {
-			// e.g. "//layouts/main"
-			$file = Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		} elseif (strncmp($view, '/', 1) === 0 && Yii::$app->controller !== null) {
-			// e.g. "/site/index"
-			$file = Yii::$app->controller->module->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		} else {
-			$file = $this->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		}
-
-		return pathinfo($file, PATHINFO_EXTENSION) === '' ? $file . '.php' : $file;
+		return $this->getViewPath() . DIRECTORY_SEPARATOR . $view;
 	}
 }

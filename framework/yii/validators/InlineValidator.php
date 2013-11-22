@@ -26,8 +26,11 @@ class InlineValidator extends Validator
 {
 	/**
 	 * @var string|\Closure an anonymous function or the name of a model class method that will be
-	 * called to perform the actual validation. Note that if you use anonymous function, you cannot
-	 * use `$this` in it unless you are using PHP 5.4 or above.
+	 * called to perform the actual validation. The signature of the method should be like the following:
+	 *
+	 * ~~~
+	 * function foo($attribute, $params)
+	 * ~~~
 	 */
 	public $method;
 	/**
@@ -39,7 +42,7 @@ class InlineValidator extends Validator
 	 * The signature of the method should be like the following:
 	 *
 	 * ~~~
-	 * function foo($attribute)
+	 * function foo($attribute, $params)
 	 * {
 	 *     return "javascript";
 	 * }
@@ -60,7 +63,7 @@ class InlineValidator extends Validator
 	{
 		$method = $this->method;
 		if (is_string($method)) {
-			$method = array($object, $method);
+			$method = [$object, $method];
 		}
 		call_user_func($method, $attribute, $this->params);
 	}
@@ -79,7 +82,7 @@ class InlineValidator extends Validator
 	 *
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
 	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script. Null if the validator does not support
 	 * client-side validation.
@@ -91,9 +94,9 @@ class InlineValidator extends Validator
 		if ($this->clientValidate !== null) {
 			$method = $this->clientValidate;
 			if (is_string($method)) {
-				$method = array($object, $method);
+				$method = [$object, $method];
 			}
-			return call_user_func($method, $attribute);
+			return call_user_func($method, $attribute, $this->params);
 		} else {
 			return null;
 		}

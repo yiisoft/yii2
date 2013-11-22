@@ -52,7 +52,7 @@ environments/                contains environment-based overrides
 REQUIREMENTS
 ------------
 
-The minimum requirement by Yii is that your Web server supports PHP 5.3.?.
+The minimum requirement by Yii is that your Web server supports PHP 5.4.0.
 
 In order for captcha to work you need either GD2 extension or ImageMagick PHP extension.
 
@@ -75,6 +75,13 @@ php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced yii-a
 ~~~
 
 Note that in order to install some dependencies you must have `php_openssl` extension enabled.
+
+After the application is installed, switch to the project folder and run the following command
+to initialize the application:
+
+~~~
+./init         (init on Windows)
+~~~
 
 
 ### Install from an Archive File

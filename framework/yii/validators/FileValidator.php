@@ -26,6 +26,7 @@ class FileValidator extends Validator
 	 * separated by space or comma (e.g. "gif, jpg").
 	 * Extension names are case-insensitive. Defaults to null, meaning all file name
 	 * extensions are allowed.
+	 * @see wrongType
 	 */
 	public $types;
 	/**
@@ -46,6 +47,7 @@ class FileValidator extends Validator
 	 * @var integer the maximum file count the given attribute can hold.
 	 * It defaults to 1, meaning single file upload. By defining a higher number,
 	 * multiple uploads become possible.
+	 * @see tooMany
 	 */
 	public $maxFiles = 1;
 	/**
@@ -76,9 +78,10 @@ class FileValidator extends Validator
 	public $tooSmall;
 	/**
 	 * @var string the error message used when the uploaded file has an extension name
-	 * that is not listed in [[extensions]]. You may use the following tokens in the message:
+	 * that is not listed in [[types]]. You may use the following tokens in the message:
 	 *
 	 * - {attribute}: the attribute name
+	 * - {file}: the uploaded file name
 	 * - {extensions}: the list of the allowed extensions.
 	 */
 	public $wrongType;
@@ -87,7 +90,6 @@ class FileValidator extends Validator
 	 * You may use the following tokens in the message:
 	 *
 	 * - {attribute}: the attribute name
-	 * - {file}: the uploaded file name
 	 * - {limit}: the value of [[maxFiles]]
 	 */
 	public $tooMany;
@@ -144,7 +146,7 @@ class FileValidator extends Validator
 				$this->addError($object, $attribute, $this->uploadRequired);
 			}
 			if (count($files) > $this->maxFiles) {
-				$this->addError($object, $attribute, $this->tooMany, array('{attribute}' => $attribute, '{limit}' => $this->maxFiles));
+				$this->addError($object, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
 			} else {
 				foreach ($files as $file) {
 					$this->validateFile($object, $attribute, $file);
@@ -166,23 +168,23 @@ class FileValidator extends Validator
 	 * @param string $attribute the attribute being validated
 	 * @param UploadedFile $file uploaded file passed to check against a set of rules
 	 */
-	protected function validateFile($object, $attribute, $file)
+	public function validateFile($object, $attribute, $file)
 	{
 		switch ($file->error) {
 			case UPLOAD_ERR_OK:
 				if ($this->maxSize !== null && $file->size > $this->maxSize) {
-					$this->addError($object, $attribute, $this->tooBig, array('{file}' => $file->name, '{limit}' => $this->getSizeLimit()));
+					$this->addError($object, $attribute, $this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]);
 				}
 				if ($this->minSize !== null && $file->size < $this->minSize) {
-					$this->addError($object, $attribute, $this->tooSmall, array('{file}' => $file->name, '{limit}' => $this->minSize));
+					$this->addError($object, $attribute, $this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]);
 				}
 				if (!empty($this->types) && !in_array(strtolower(pathinfo($file->name, PATHINFO_EXTENSION)), $this->types, true)) {
-					$this->addError($object, $attribute, $this->wrongType, array('{file}' => $file->name, '{extensions}' => implode(', ', $this->types)));
+					$this->addError($object, $attribute, $this->wrongType, ['file' => $file->name, 'extensions' => implode(', ', $this->types)]);
 				}
 				break;
 			case UPLOAD_ERR_INI_SIZE:
 			case UPLOAD_ERR_FORM_SIZE:
-				$this->addError($object, $attribute, $this->tooBig, array('{file}' => $file->name, '{limit}' => $this->getSizeLimit()));
+				$this->addError($object, $attribute, $this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]);
 				break;
 			case UPLOAD_ERR_PARTIAL:
 				$this->addError($object, $attribute, $this->message);

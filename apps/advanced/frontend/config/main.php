@@ -8,35 +8,37 @@ $params = array_merge(
 	require(__DIR__ . '/params-local.php')
 );
 
-return array(
+return [
 	'id' => 'app-frontend',
 	'basePath' => dirname(__DIR__),
-	'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
+	'vendorPath' => $rootDir . '/vendor',
 	'controllerNamespace' => 'frontend\controllers',
-	'modules' => array(
+	'modules' => [
 		'gii' => 'yii\gii\Module'
-	),
-	'components' => array(
-		'request' => array(
+	],
+	'extensions' => require($rootDir . '/vendor/yiisoft/extensions.php'),
+	'components' => [
+		'request' => [
 			'enableCsrfValidation' => true,
-		),
+		],
 		'db' => $params['components.db'],
 		'cache' => $params['components.cache'],
-		'user' => array(
+		'mail' => $params['components.mail'],
+		'user' => [
 			'identityClass' => 'common\models\User',
-		),
-		'log' => array(
+		],
+		'log' => [
 			'traceLevel' => YII_DEBUG ? 3 : 0,
-			'targets' => array(
-				array(
+			'targets' => [
+				[
 					'class' => 'yii\log\FileTarget',
-					'levels' => array('error', 'warning'),
-				),
-			),
-		),
-		'errorHandler' => array(
+					'levels' => ['error', 'warning'],
+				],
+			],
+		],
+		'errorHandler' => [
 			'errorAction' => 'site/error',
-		),
-	),
+		],
+	],
 	'params' => $params,
-);
+];

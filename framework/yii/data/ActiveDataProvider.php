@@ -8,11 +8,11 @@
 namespace yii\data;
 
 use Yii;
+use yii\db\ActiveQueryInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
-use yii\db\Query;
-use yii\db\ActiveQuery;
 use yii\db\Connection;
+use yii\db\QueryInterface;
 
 /**
  * ActiveDataProvider implements a data provider based on [[Query]] and [[ActiveQuery]].
@@ -22,12 +22,12 @@ use yii\db\Connection;
  * The following is an example of using ActiveDataProvider to provide ActiveRecord instances:
  *
  * ~~~
- * $provider = new ActiveDataProvider(array(
+ * $provider = new ActiveDataProvider([
  *     'query' => Post::find(),
- *     'pagination' => array(
+ *     'pagination' => [
  *         'pageSize' => 20,
- *     ),
- * ));
+ *     ],
+ * ]);
  *
  * // get the posts in the current page
  * $posts = $provider->getModels();
@@ -37,30 +37,24 @@ use yii\db\Connection;
  *
  * ~~~
  * $query = new Query;
- * $provider = new ActiveDataProvider(array(
+ * $provider = new ActiveDataProvider([
  *     'query' => $query->from('tbl_post'),
- *     'pagination' => array(
+ *     'pagination' => [
  *         'pageSize' => 20,
- *     ),
- * ));
+ *     ],
+ * ]);
  *
  * // get the posts in the current page
  * $posts = $provider->getModels();
  * ~~~
  *
- * @property integer $count The number of data models in the current page. This property is read-only.
- * @property array $keys The list of key values corresponding to [[models]]. Each data model in [[models]] is
- * uniquely identified by the corresponding key value in this array. This property is read-only.
- * @property array $models The list of data models in the current page. This property is read-only.
- * @property integer $totalCount Total number of possible data models.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ActiveDataProvider extends DataProvider
+class ActiveDataProvider extends BaseDataProvider
 {
 	/**
-	 * @var Query the query that is used to fetch data models and [[totalCount]]
+	 * @var QueryInterface the query that is used to fetch data models and [[totalCount]]
 	 * if it is not explicitly set.
 	 */
 	public $query;
@@ -82,12 +76,8 @@ class ActiveDataProvider extends DataProvider
 	 */
 	public $db;
 
-	private $_models;
-	private $_keys;
-	private $_totalCount;
-
 	/**
-	 * Initializes the DbCache component.
+	 * Initializes the DB connection component.
 	 * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
 	 * @throws InvalidConfigException if [[db]] is invalid.
 	 */
@@ -103,122 +93,72 @@ class ActiveDataProvider extends DataProvider
 	}
 
 	/**
-	 * Returns the number of data models in the current page.
-	 * This is equivalent to `count($provider->models)`.
-	 * When [[pagination]] is false, this is the same as [[totalCount]].
-	 * @return integer the number of data models in the current page.
+	 * @inheritdoc
 	 */
-	public function getCount()
+	protected function prepareModels()
 	{
-		return count($this->getModels());
-	}
-
-	/**
-	 * Returns the total number of data models.
-	 * When [[pagination]] is false, this returns the same value as [[count]].
-	 * If [[totalCount]] is not explicitly set, it will be calculated
-	 * using [[query]] with a COUNT query.
-	 * @return integer total number of possible data models.
-	 * @throws InvalidConfigException
-	 */
-	public function getTotalCount()
-	{
-		if ($this->getPagination() === false) {
-			return $this->getCount();
-		} elseif ($this->_totalCount === null) {
-			if (!$this->query instanceof Query) {
-				throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
-			}
-			$query = clone $this->query;
-			$this->_totalCount = $query->limit(-1)->offset(-1)->count('*', $this->db);
+		if (!$this->query instanceof QueryInterface) {
+			throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
 		}
-		return $this->_totalCount;
-	}
-
-	/**
-	 * Sets the total number of data models.
-	 * @param integer $value the total number of data models.
-	 */
-	public function setTotalCount($value)
-	{
-		$this->_totalCount = $value;
-	}
-
-	/**
-	 * Returns the data models in the current page.
-	 * @return array the list of data models in the current page.
-	 * @throws InvalidConfigException if [[query]] is not set or invalid.
-	 */
-	public function getModels()
-	{
-		if ($this->_models === null) {
-			if (!$this->query instanceof Query) {
-				throw new InvalidConfigException('The "query" property must be an instance of Query or its subclass.');
-			}
-			if (($pagination = $this->getPagination()) !== false) {
-				$this->query->limit($pagination->getLimit())->offset($pagination->getOffset());
-			}
-			if (($sort = $this->getSort()) !== false) {
-				$this->query->addOrderBy($sort->getOrders());
-			}
-			$this->_models = $this->query->all($this->db);
+		if (($pagination = $this->getPagination()) !== false) {
+			$pagination->totalCount = $this->getTotalCount();
+			$this->query->limit($pagination->getLimit())->offset($pagination->getOffset());
 		}
-		return $this->_models;
+		if (($sort = $this->getSort()) !== false) {
+			$this->query->addOrderBy($sort->getOrders());
+		}
+		return $this->query->all($this->db);
 	}
 
 	/**
-	 * Returns the key values associated with the data models.
-	 * @return array the list of key values corresponding to [[models]]. Each data model in [[models]]
-	 * is uniquely identified by the corresponding key value in this array.
+	 * @inheritdoc
 	 */
-	public function getKeys()
+	protected function prepareKeys($models)
 	{
-		if ($this->_keys === null) {
-			$this->_keys = array();
-			$models = $this->getModels();
-			if ($this->key !== null) {
-				foreach ($models as $model) {
-					if (is_string($this->key)) {
-						$this->_keys[] = $model[$this->key];
-					} else {
-						$this->_keys[] = call_user_func($this->key, $model);
-					}
-				}
-			} elseif ($this->query instanceof ActiveQuery) {
-				/** @var \yii\db\ActiveRecord $class */
-				$class = $this->query->modelClass;
-				$pks = $class::primaryKey();
-				if (count($pks) === 1) {
-					$pk = $pks[0];
-					foreach ($models as $model) {
-						$this->_keys[] = $model[$pk];
-					}
+		$keys = [];
+		if ($this->key !== null) {
+			foreach ($models as $model) {
+				if (is_string($this->key)) {
+					$keys[] = $model[$this->key];
 				} else {
-					foreach ($models as $model) {
-						$keys = array();
-						foreach ($pks as $pk) {
-							$keys[] = $model[$pk];
-						}
-						$this->_keys[] = json_encode($keys);
-					}
+					$keys[] = call_user_func($this->key, $model);
+				}
+			}
+			return $keys;
+		} elseif ($this->query instanceof ActiveQueryInterface) {
+			/** @var \yii\db\ActiveRecord $class */
+			$class = $this->query->modelClass;
+			$pks = $class::primaryKey();
+			if (count($pks) === 1) {
+				$pk = $pks[0];
+				foreach ($models as $model) {
+					$keys[] = $model[$pk];
 				}
 			} else {
-				$this->_keys = array_keys($models);
+				foreach ($models as $model) {
+					$kk = [];
+					foreach ($pks as $pk) {
+						$kk[] = $model[$pk];
+					}
+					$keys[] = json_encode($kk);
+				}
 			}
+			return $keys;
+		} else {
+			return array_keys($models);
 		}
-		return $this->_keys;
 	}
 
 	/**
-	 * Refreshes the data provider.
-	 * After calling this method, if [[getModels()]], [[getKeys()]] or [[getTotalCount()]] is called again,
-	 * they will re-execute the query and return the latest data available.
+	 * @inheritdoc
 	 */
-	public function refresh()
+	protected function prepareTotalCount()
 	{
-		$this->_models = null;
-		$this->_totalCount = null;
-		$this->_keys = null;
+		if (!$this->query instanceof QueryInterface) {
+			throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
+		}
+		$query = clone $this->query;
+		return (int) $query->limit(-1)->offset(-1)->orderBy([])->count('*', $this->db);
 	}
 
 	/**
@@ -227,17 +167,15 @@ class ActiveDataProvider extends DataProvider
 	public function setSort($value)
 	{
 		parent::setSort($value);
-		if (($sort = $this->getSort()) !== false && empty($sort->attributes) &&
-			$this->query instanceof ActiveQuery) {
-
+		if (($sort = $this->getSort()) !== false && empty($sort->attributes) && $this->query instanceof ActiveQueryInterface) {
 			/** @var Model $model */
 			$model = new $this->query->modelClass;
-			foreach($model->attributes() as $attribute) {
-				$sort->attributes[$attribute] = array(
-					'asc' => array($attribute => Sort::ASC),
-					'desc' => array($attribute => Sort::DESC),
+			foreach ($model->attributes() as $attribute) {
+				$sort->attributes[$attribute] = [
+					'asc' => [$attribute => SORT_ASC],
+					'desc' => [$attribute => SORT_DESC],
 					'label' => $model->getAttributeLabel($attribute),
-				);
+				];
 			}
 		}
 	}

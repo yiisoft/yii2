@@ -26,25 +26,25 @@ use yii\base\ActionFilter;
  * ~~~
  * public function behaviors()
  * {
- *     return array(
- *         'access' => array(
+ *     return [
+ *         'access' => [
  *             'class' => \yii\web\AccessControl::className(),
- *             'only' => array('create', 'update'),
- *             'rules' => array(
+ *             'only' => ['create', 'update'],
+ *             'rules' => [
  *                 // deny all POST requests
- *                 array(
+ *                 [
  *                     'allow' => false,
- *                     'verbs' => array('POST')
- *                 ),
+ *                     'verbs' => ['POST']
+ *                 ],
  *                 // allow authenticated users
- *                 array(
+ *                 [
  *                     'allow' => true,
- *                     'roles' => array('@'),
- *                 ),
+ *                     'roles' => ['@'],
+ *                 ],
  *                 // everything else is denied
- *             ),
- *         ),
- *     );
+ *             ],
+ *         ],
+ *     ];
  * }
  * ~~~
  *
@@ -70,16 +70,14 @@ class AccessControl extends ActionFilter
 	 * @var array the default configuration of access rules. Individual rule configurations
 	 * specified via [[rules]] will take precedence when the same property of the rule is configured.
 	 */
-	public $ruleConfig = array(
-		'class' => 'yii\web\AccessRule',
-	);
+	public $ruleConfig = ['class' => 'yii\web\AccessRule'];
 	/**
 	 * @var array a list of access rule objects or configuration arrays for creating the rule objects.
 	 * If a rule is specified via a configuration array, it will be merged with [[ruleConfig]] first
 	 * before it is used for creating the rule object.
 	 * @see ruleConfig
 	 */
-	public $rules = array();
+	public $rules = [];
 
 	/**
 	 * Initializes the [[rules]] array by instantiating rule objects from configurations.
@@ -104,7 +102,7 @@ class AccessControl extends ActionFilter
 	{
 		$user = Yii::$app->getUser();
 		$request = Yii::$app->getRequest();
-		/** @var $rule AccessRule */
+		/** @var AccessRule $rule */
 		foreach ($this->rules as $rule) {
 			if ($allow = $rule->allows($action, $user, $request)) {
 				return true;
@@ -118,6 +116,12 @@ class AccessControl extends ActionFilter
 				}
 				return false;
 			}
+		}
+		if (isset($this->denyCallback)) {
+			call_user_func($this->denyCallback, $rule);
+		}
+		else {
+			$this->denyAccess($user);
 		}
 		return false;
 	}

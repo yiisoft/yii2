@@ -18,10 +18,10 @@ if (empty($params['env'])) {
 
 	if (!ctype_digit($answer) || !in_array($answer, range(0, count($envs) - 1))) {
 		echo "\n  Quit initialization.\n";
-		exit(1);
+		exit(0);
 	}
 
-	if(isset($envNames[$answer])) {
+	if (isset($envNames[$answer])) {
 		$envName = $envNames[$answer];
 	}
 }
@@ -42,7 +42,7 @@ if (empty($params['env'])) {
 	$answer = trim(fgets(STDIN));
 	if (strncasecmp($answer, 'y', 1)) {
 		echo "\n  Quit initialization.\n";
-		exit(1);
+		exit(0);
 	}
 }
 
@@ -73,7 +73,7 @@ echo "\n  ... initialization completed.\n\n";
 
 function getFileList($root, $basePath = '')
 {
-	$files = array();
+	$files = [];
 	$handle = opendir($root);
 	while (($path = readdir($handle)) !== false) {
 		if ($path === '.svn' || $path === '.' || $path === '..') {
@@ -135,13 +135,13 @@ function copyFile($root, $source, $target, &$all)
 
 function getParams()
 {
-	$rawParams = array();
+	$rawParams = [];
 	if (isset($_SERVER['argv'])) {
 		$rawParams = $_SERVER['argv'];
 		array_shift($rawParams);
 	}
 
-	$params = array();
+	$params = [];
 	foreach ($rawParams as $param) {
 		if (preg_match('/^--(\w+)(=(.*))?$/', $param, $matches)) {
 			$name = $matches[1];

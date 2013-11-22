@@ -14,18 +14,20 @@
 	},
 	"minimum-stability": "dev",
 	"require": {
-		"php": ">=5.3.0",
+		"php": ">=5.4.0",
 		"yiisoft/yii2": "dev-master",
-		"yiisoft/yii2-composer": "dev-master"
+		"yiisoft/yii2-swiftmailer": "dev-master",
+		"yiisoft/yii2-bootstrap": "dev-master",
+		"yiisoft/yii2-debug": "dev-master",
+		"yiisoft/yii2-gii": "dev-master"
 	},
 	"scripts": {
 		"post-create-project-cmd": [
-			"yii\\composer\\InstallHandler::setPermissions",
-			"./init"
+			"yii\\composer\\Installer::setPermission"
 		]
 	},
 	"extra": {
-		"yii-install-writable": [
+		"writable": [
 			"backend/runtime",
 			"backend/web/assets",
 

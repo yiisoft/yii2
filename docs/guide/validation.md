@@ -8,7 +8,7 @@ Standard Yii validators
 -----------------------
 
 Standard Yii validators could be specified using aliases instead of referring to class names. Here's the list of all
-validators budled with Yii with their most useful properties:
+validators bundled with Yii with their most useful properties:
 
 ### `boolean`: [[BooleanValidator]]
 
@@ -38,7 +38,7 @@ Compares the specified attribute value with another value and validates if they 
 
 Verifies if the attribute represents a date, time or datetime in a proper format.
 
-- `format` the date format that the value being validated should follow accodring to [[http://www.php.net/manual/en/datetime.createfromformat.php]]. _('Y-m-d')_
+- `format` the date format that the value being validated should follow according to [[http://www.php.net/manual/en/datetime.createfromformat.php]]. _('Y-m-d')_
 - `timestampAttribute` the name of the attribute to receive the parsing result.
 
 ### `default`: [[DefaultValueValidator]]
@@ -90,16 +90,16 @@ Converts the attribute value according to a filter.
 Typically a callback is either the name of PHP function:
 
 ```php
-array('password', 'filter', 'filter' => 'trim'),
+['password', 'filter', 'filter' => 'trim'],
 ```
 
 Or an anonymous function:
 
 ```php
-array('text', 'filter', 'filter' => function ($value) {
+['text', 'filter', 'filter' => function ($value) {
 	// here we are removing all swear words from text
 	return $newValue;
-}),
+}],
 ```
 
 ### `in`: [[RangeValidator]]
@@ -139,7 +139,7 @@ Serves as a dummy validator whose main purpose is to mark the attributes to be s
 
 Validates that the attribute value is of certain length.
 
-- `length` specifies the length limit of the value to be validated. Can be `exactly X`, `array(min X)`, `array(min X, max Y)`.
+- `length` specifies the length limit of the value to be validated. Can be `exactly X`, `[min X]`, `[min X, max Y]`.
 - `max`  maximum length. If not set, it means no maximum length limit.
 - `min` minimum length. If not set, it means no minimum length limit.
 - `encoding` the encoding of the string value to be validated. _([[\yii\base\Application::charset]])_
@@ -157,7 +157,7 @@ Validates that the attribute value is unique in the corresponding database table
 
 Validates that the attribute value is a valid http or https URL.
 
-- `validSchemes` list of URI schemes which should be considered valid. _array('http', 'https')_
+- `validSchemes` list of URI schemes which should be considered valid. _['http', 'https']_
 - `defaultScheme` the default URI scheme. If the input doesn't contain the scheme part, the default scheme will be
   prepended to it. _(null)_
 - `enableIDN` whether validation process should take into account IDN (internationalized domain names). _(false)_

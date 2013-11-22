@@ -37,4 +37,9 @@ class ApcCacheTest extends CacheTestCase
 	{
 		$this->markTestSkipped("APC keys are expiring only on the next request.");
 	}
+
+	public function testExpireAdd()
+	{
+		$this->markTestSkipped("APC keys are expiring only on the next request.");
+	}
 }

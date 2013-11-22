@@ -25,10 +25,10 @@ class StringValidator extends Validator
 	 * This can be specified in one of the following forms:
 	 *
 	 * - an integer: the exact length that the value should be of;
-	 * - an array of one element: the minimum length that the value should be of. For example, `array(8)`.
+	 * - an array of one element: the minimum length that the value should be of. For example, `[8]`.
 	 *   This will overwrite [[min]].
 	 * - an array of two elements: the minimum and maximum lengths that the value should be of.
-	 *   For example, `array(8, 128)`. This will overwrite both [[min]] and [[max]].
+	 *   For example, `[8, 128]`. This will overwrite both [[min]] and [[max]].
 	 */
 	public $length;
 	/**
@@ -112,13 +112,13 @@ class StringValidator extends Validator
 		$length = mb_strlen($value, $this->encoding);
 
 		if ($this->min !== null && $length < $this->min) {
-			$this->addError($object, $attribute, $this->tooShort, array('{min}' => $this->min));
+			$this->addError($object, $attribute, $this->tooShort, ['min' => $this->min]);
 		}
 		if ($this->max !== null && $length > $this->max) {
-			$this->addError($object, $attribute, $this->tooLong, array('{max}' => $this->max));
+			$this->addError($object, $attribute, $this->tooLong, ['max' => $this->max]);
 		}
 		if ($this->length !== null && $length !== $this->length) {
-			$this->addError($object, $attribute, $this->notEqual, array('{length}' => $this->length));
+			$this->addError($object, $attribute, $this->notEqual, ['length' => $this->length]);
 		}
 	}
 
@@ -142,45 +142,40 @@ class StringValidator extends Validator
 	 * Returns the JavaScript needed for performing client-side validation.
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
 	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script.
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
 		$label = $object->getAttributeLabel($attribute);
-		$value = $object->$attribute;
 
-		$options = array(
-			'message' => Html::encode(strtr($this->message, array(
+		$options = [
+			'message' => Html::encode(strtr($this->message, [
 				'{attribute}' => $label,
-				'{value}' => $value,
-			))),
-		);
+			])),
+		];
 
 		if ($this->min !== null) {
 			$options['min'] = $this->min;
-			$options['tooShort'] = Html::encode(strtr($this->tooShort, array(
+			$options['tooShort'] = Html::encode(strtr($this->tooShort, [
 				'{attribute}' => $label,
-				'{value}' => $value,
 				'{min}' => $this->min,
-			)));
+			]));
 		}
 		if ($this->max !== null) {
 			$options['max'] = $this->max;
-			$options['tooLong'] = Html::encode(strtr($this->tooLong, array(
+			$options['tooLong'] = Html::encode(strtr($this->tooLong, [
 				'{attribute}' => $label,
-				'{value}' => $value,
 				'{max}' => $this->max,
-			)));
+			]));
 		}
 		if ($this->length !== null) {
 			$options['is'] = $this->length;
-			$options['notEqual'] = Html::encode(strtr($this->notEqual, array(
+			$options['notEqual'] = Html::encode(strtr($this->notEqual, [
 				'{attribute}' => $label,
-				'{value}' => $value,
 				'{length}' => $this->is,
-			)));
+			]));
 		}
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;

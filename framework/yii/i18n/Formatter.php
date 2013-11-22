@@ -19,6 +19,15 @@ use yii\base\InvalidConfigException;
  * Formatter requires the PHP "intl" extension to be installed. Formatter supports localized
  * formatting of date, time and numbers, based on the current [[locale]].
  *
+ * This Formatter can replace the `formatter` application component that is configured by default.
+ * To do so, add the following to your application config under `components`:
+ *
+ * ```php
+ * 'formatter' => [
+ *     'class' => 'yii\i18n\Formatter',
+ * ]
+ * ```
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -53,7 +62,7 @@ class Formatter extends \yii\base\Formatter
 	 * for the possible options. This property is used by [[createNumberFormatter]] when
 	 * creating a new number formatter to format decimals, currencies, etc.
 	 */
-	public $numberFormatOptions = array();
+	public $numberFormatOptions = [];
 	/**
 	 * @var string the character displayed as the decimal point when formatting a number.
 	 * If not set, the decimal separator corresponding to [[locale]] will be used.
@@ -93,12 +102,12 @@ class Formatter extends \yii\base\Formatter
 		parent::init();
 	}
 
-	private $_dateFormats = array(
+	private $_dateFormats = [
 		'short' => IntlDateFormatter::SHORT,
 		'medium' => IntlDateFormatter::MEDIUM,
 		'long' => IntlDateFormatter::LONG,
 		'full' => IntlDateFormatter::FULL,
-	);
+	];
 
 	/**
 	 * Formats the value as a date.
@@ -131,7 +140,12 @@ class Formatter extends \yii\base\Formatter
 			$formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE);
 		} else {
 			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
-			$formatter->setPattern($format);
+			if ($formatter !== null) {
+				$formatter->setPattern($format);
+			}
+		}
+		if ($formatter === null) {
+			throw new InvalidConfigException(intl_get_error_message());
 		}
 		return $formatter->format($value);
 	}
@@ -167,7 +181,12 @@ class Formatter extends \yii\base\Formatter
 			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format]);
 		} else {
 			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
-			$formatter->setPattern($format);
+			if ($formatter !== null) {
+				$formatter->setPattern($format);
+			}
+		}
+		if ($formatter === null) {
+			throw new InvalidConfigException(intl_get_error_message());
 		}
 		return $formatter->format($value);
 	}
@@ -203,7 +222,12 @@ class Formatter extends \yii\base\Formatter
 			$formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format]);
 		} else {
 			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
-			$formatter->setPattern($format);
+			if ($formatter !== null) {
+				$formatter->setPattern($format);
+			}
+		}
+		if ($formatter === null) {
+			throw new InvalidConfigException(intl_get_error_message());
 		}
 		return $formatter->format($value);
 	}

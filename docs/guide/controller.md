@@ -35,6 +35,9 @@ class SiteController extends Controller
 ```
 
 As you can see, typical controller contains actions that are public class methods named as `actionSomething`.
+The output of an action is what the method returns. The return value will be handled by the `response` application
+component which can convert the output to differnet formats such as JSON for example. The default behavior
+is to output the value unchanged though.
 
 Routes
 ------
@@ -86,14 +89,14 @@ class BlogController extends Controller
 		$post = Post::find($id);
 		$text = $post->text;
 
-		if($version) {
+		if ($version) {
 			$text = $post->getHistory($version);
 		}
 
-		return $this->render('view', array(
+		return $this->render('view', [
 			'post' => $post,
 			'text' => $text,
-		));
+		]);
 	}
 }
 ```
@@ -118,20 +121,18 @@ class BlogController extends Controller
 	public function actionUpdate($id)
 	{
 		$post = Post::find($id);
-		if(!$post) {
+		if (!$post) {
 			throw new HttpException(404);
 		}
 
-		if(\Yii::$app->request->isPost)) {
+		if (\Yii::$app->request->isPost)) {
 			$post->load($_POST);
-			if($post->save()) {
-				$this->redirect(array('view', 'id' => $post->id));
+			if ($post->save()) {
+				$this->redirect(['view', 'id' => $post->id]);
 			}
 		}
 
-		return $this->render('update', array(
-			'post' => $post,
-		));
+		return $this->render('update', ['post' => $post]);
 	}
 }
 ```
@@ -164,25 +165,47 @@ public SiteController extends \yii\web\Controller
 {
 	public function actions()
 	{
-		return array(
-			'about' => array(
+		return [
+			'about' => [
 				'class' => '@app/actions/Page',
-					'view' => 'about',
-				),
-			),
-		);
+				'view' => 'about',
+			],
+		];
 	}
 }
 ```
 
 After doing so you can access your action as `http://example.com/?r=site/about`.
 
-Filters
--------
+
+Action Filters
+--------------
+
+Action filters are implemented via behaviors. You should extend from `ActionFilter` to
+define a new filter. To use a filter, you should attach the filter class to the controller
+as a behavior. For example, to use the `AccessControl` filter, you should have the following
+code in a controller:
+
+```php
+public function behaviors()
+{
+    return [
+        'access' => [
+            'class' => 'yii\web\AccessControl',
+            'rules' => [
+                ['allow' => true, 'actions' => ['admin'], 'roles' => ['@']],
+            ),
+        ),
+    );
+}
+```
+
+more TDB
 
 Catching all incoming requests
 ------------------------------
 
+TDB
 
 See also
 --------

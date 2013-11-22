@@ -21,96 +21,96 @@ class SortTest extends TestCase
 {
 	public function testGetOrders()
 	{
-		$sort = new Sort(array(
-			'attributes' => array(
+		$sort = new Sort([
+			'attributes' => [
 				'age',
-				'name' => array(
-					'asc' => array('first_name' => Sort::ASC, 'last_name' => Sort::ASC),
-					'desc' => array('first_name' => Sort::DESC, 'last_name' => Sort::DESC),
-				),
-			),
-			'params' => array(
+				'name' => [
+					'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
+					'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+				],
+			],
+			'params' => [
 				'sort' => 'age.name-desc'
-			),
+			],
 			'enableMultiSort' => true,
-		));
+		]);
 
 		$orders = $sort->getOrders();
 		$this->assertEquals(3, count($orders));
-		$this->assertEquals(Sort::ASC, $orders['age']);
-		$this->assertEquals(Sort::DESC, $orders['first_name']);
-		$this->assertEquals(Sort::DESC, $orders['last_name']);
+		$this->assertEquals(SORT_ASC, $orders['age']);
+		$this->assertEquals(SORT_DESC, $orders['first_name']);
+		$this->assertEquals(SORT_DESC, $orders['last_name']);
 
 		$sort->enableMultiSort = false;
 		$orders = $sort->getOrders(true);
 		$this->assertEquals(1, count($orders));
-		$this->assertEquals(Sort::ASC, $orders['age']);
+		$this->assertEquals(SORT_ASC, $orders['age']);
 	}
 
 	public function testGetAttributeOrders()
 	{
-		$sort = new Sort(array(
-			'attributes' => array(
+		$sort = new Sort([
+			'attributes' => [
 				'age',
-				'name' => array(
-					'asc' => array('first_name' => Sort::ASC, 'last_name' => Sort::ASC),
-					'desc' => array('first_name' => Sort::DESC, 'last_name' => Sort::DESC),
-				),
-			),
-			'params' => array(
+				'name' => [
+					'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
+					'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+				],
+			],
+			'params' => [
 				'sort' => 'age.name-desc'
-			),
+			],
 			'enableMultiSort' => true,
-		));
+		]);
 
 		$orders = $sort->getAttributeOrders();
 		$this->assertEquals(2, count($orders));
-		$this->assertEquals(Sort::ASC, $orders['age']);
-		$this->assertEquals(Sort::DESC, $orders['name']);
+		$this->assertEquals(SORT_ASC, $orders['age']);
+		$this->assertEquals(SORT_DESC, $orders['name']);
 
 		$sort->enableMultiSort = false;
 		$orders = $sort->getAttributeOrders(true);
 		$this->assertEquals(1, count($orders));
-		$this->assertEquals(Sort::ASC, $orders['age']);
+		$this->assertEquals(SORT_ASC, $orders['age']);
 	}
 
 	public function testGetAttributeOrder()
 	{
-		$sort = new Sort(array(
-			'attributes' => array(
+		$sort = new Sort([
+			'attributes' => [
 				'age',
-				'name' => array(
-					'asc' => array('first_name' => Sort::ASC, 'last_name' => Sort::ASC),
-					'desc' => array('first_name' => Sort::DESC, 'last_name' => Sort::DESC),
-				),
-			),
-			'params' => array(
+				'name' => [
+					'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
+					'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+				],
+			],
+			'params' => [
 				'sort' => 'age.name-desc'
-			),
+			],
 			'enableMultiSort' => true,
-		));
+		]);
 
-		$this->assertEquals(Sort::ASC, $sort->getAttributeOrder('age'));
-		$this->assertEquals(Sort::DESC, $sort->getAttributeOrder('name'));
+		$this->assertEquals(SORT_ASC, $sort->getAttributeOrder('age'));
+		$this->assertEquals(SORT_DESC, $sort->getAttributeOrder('name'));
 		$this->assertNull($sort->getAttributeOrder('xyz'));
 	}
 
 	public function testCreateSortVar()
 	{
-		$sort = new Sort(array(
-			'attributes' => array(
+		$sort = new Sort([
+			'attributes' => [
 				'age',
-				'name' => array(
-					'asc' => array('first_name' => Sort::ASC, 'last_name' => Sort::ASC),
-					'desc' => array('first_name' => Sort::DESC, 'last_name' => Sort::DESC),
-				),
-			),
-			'params' => array(
+				'name' => [
+					'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
+					'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+				],
+			],
+			'params' => [
 				'sort' => 'age.name-desc'
-			),
+			],
 			'enableMultiSort' => true,
 			'route' => 'site/index',
-		));
+		]);
 
 		$this->assertEquals('age-desc.name-desc', $sort->createSortVar('age'));
 		$this->assertEquals('name.age', $sort->createSortVar('name'));
@@ -118,26 +118,26 @@ class SortTest extends TestCase
 
 	public function testCreateUrl()
 	{
-		$manager = new UrlManager(array(
+		$manager = new UrlManager([
 			'baseUrl' => '/index.php',
 			'cache' => null,
-		));
+		]);
 
-		$sort = new Sort(array(
-			'attributes' => array(
+		$sort = new Sort([
+			'attributes' => [
 				'age',
-				'name' => array(
-					'asc' => array('first_name' => Sort::ASC, 'last_name' => Sort::ASC),
-					'desc' => array('first_name' => Sort::DESC, 'last_name' => Sort::DESC),
-				),
-			),
-			'params' => array(
+				'name' => [
+					'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
+					'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+				],
+			],
+			'params' => [
 				'sort' => 'age.name-desc'
-			),
+			],
 			'enableMultiSort' => true,
 			'urlManager' => $manager,
 			'route' => 'site/index',
-		));
+		]);
 
 		$this->assertEquals('/index.php?r=site/index&sort=age-desc.name-desc', $sort->createUrl('age'));
 		$this->assertEquals('/index.php?r=site/index&sort=name.age', $sort->createUrl('name'));
@@ -146,26 +146,26 @@ class SortTest extends TestCase
 	public function testLink()
 	{
 		$this->mockApplication();
-		$manager = new UrlManager(array(
+		$manager = new UrlManager([
 			'baseUrl' => '/index.php',
 			'cache' => null,
-		));
+		]);
 
-		$sort = new Sort(array(
-			'attributes' => array(
+		$sort = new Sort([
+			'attributes' => [
 				'age',
-				'name' => array(
-					'asc' => array('first_name' => Sort::ASC, 'last_name' => Sort::ASC),
-					'desc' => array('first_name' => Sort::DESC, 'last_name' => Sort::DESC),
-				),
-			),
-			'params' => array(
+				'name' => [
+					'asc' => ['first_name' => SORT_ASC, 'last_name' => SORT_ASC],
+					'desc' => ['first_name' => SORT_DESC, 'last_name' => SORT_DESC],
+				],
+			],
+			'params' => [
 				'sort' => 'age.name-desc'
-			),
+			],
 			'enableMultiSort' => true,
 			'urlManager' => $manager,
 			'route' => 'site/index',
-		));
+		]);
 
 		$this->assertEquals('<a class="asc" href="/index.php?r=site/index&amp;sort=age-desc.name-desc" data-sort="age-desc.name-desc">Age</a>', $sort->link('age'));
 	}

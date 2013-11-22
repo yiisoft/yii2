@@ -39,14 +39,14 @@ class QueryBuilder extends \yii\base\Object
 	 * This is mainly used to support creating/modifying tables using DB-independent data type specifications.
 	 * Child classes should override this property to declare supported type mappings.
 	 */
-	public $typeMap = array();
+	public $typeMap = [];
 
 	/**
 	 * Constructor.
 	 * @param Connection $connection the database connection.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($connection, $config = array())
+	public function __construct($connection, $config = [])
 	{
 		$this->db = $connection;
 		parent::__construct($config);
@@ -61,7 +61,7 @@ class QueryBuilder extends \yii\base\Object
 	public function build($query)
 	{
 		$params = $query->params;
-		$clauses = array(
+		$clauses = [
 			$this->buildSelect($query->select, $query->distinct, $query->selectOption),
 			$this->buildFrom($query->from),
 			$this->buildJoin($query->join, $params),
@@ -71,8 +71,8 @@ class QueryBuilder extends \yii\base\Object
 			$this->buildUnion($query->union, $params),
 			$this->buildOrderBy($query->orderBy),
 			$this->buildLimit($query->limit, $query->offset),
-		);
-		return array(implode($this->separator, array_filter($clauses)), $params);
+		];
+		return [implode($this->separator, array_filter($clauses)), $params];
 	}
 
 	/**
@@ -80,10 +80,10 @@ class QueryBuilder extends \yii\base\Object
 	 * For example,
 	 *
 	 * ~~~
-	 * $sql = $queryBuilder->insert('tbl_user', array(
+	 * $sql = $queryBuilder->insert('tbl_user', [
 	 *	 'name' => 'Sam',
 	 *	 'age' => 30,
-	 * ), $params);
+	 * ], $params);
 	 * ~~~
 	 *
 	 * The method will properly escape the table and column names.
@@ -99,10 +99,10 @@ class QueryBuilder extends \yii\base\Object
 		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
 			$columnSchemas = $tableSchema->columns;
 		} else {
-			$columnSchemas = array();
+			$columnSchemas = [];
 		}
-		$names = array();
-		$placeholders = array();
+		$names = [];
+		$placeholders = [];
 		foreach ($columns as $name => $value) {
 			$names[] = $this->db->quoteColumnName($name);
 			if ($value instanceof Expression) {
@@ -127,11 +127,11 @@ class QueryBuilder extends \yii\base\Object
 	 * For example,
 	 *
 	 * ~~~
-	 * $connection->createCommand()->batchInsert('tbl_user', array('name', 'age'), array(
-	 *     array('Tom', 30),
-	 *     array('Jane', 20),
-	 *     array('Linda', 25),
-	 * ))->execute();
+	 * $connection->createCommand()->batchInsert('tbl_user', ['name', 'age'], [
+	 *     ['Tom', 30],
+	 *     ['Jane', 20],
+	 *     ['Linda', 25],
+	 * ])->execute();
 	 * ~~~
 	 *
 	 * Note that the values in each row must match the corresponding column names.
@@ -153,10 +153,8 @@ class QueryBuilder extends \yii\base\Object
 	 * For example,
 	 *
 	 * ~~~
-	 * $params = array();
-	 * $sql = $queryBuilder->update('tbl_user', array(
-	 *	 'status' => 1,
-	 * ), 'age > 30', $params);
+	 * $params = [];
+	 * $sql = $queryBuilder->update('tbl_user', ['status' => 1], 'age > 30', $params);
 	 * ~~~
 	 *
 	 * The method will properly escape the table and column names.
@@ -174,10 +172,10 @@ class QueryBuilder extends \yii\base\Object
 		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
 			$columnSchemas = $tableSchema->columns;
 		} else {
-			$columnSchemas = array();
+			$columnSchemas = [];
 		}
 
-		$lines = array();
+		$lines = [];
 		foreach ($columns as $name => $value) {
 			if ($value instanceof Expression) {
 				$lines[] = $this->db->quoteColumnName($name) . '=' . $value->expression;
@@ -234,11 +232,11 @@ class QueryBuilder extends \yii\base\Object
 	 * For example,
 	 *
 	 * ~~~
-	 * $sql = $queryBuilder->createTable('tbl_user', array(
+	 * $sql = $queryBuilder->createTable('tbl_user', [
 	 *	 'id' => 'pk',
 	 *	 'name' => 'string',
 	 *	 'age' => 'integer',
-	 * ));
+	 * ]);
 	 * ~~~
 	 *
 	 * @param string $table the name of the table to be created. The name will be properly quoted by the method.
@@ -248,7 +246,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function createTable($table, $columns, $options = null)
 	{
-		$cols = array();
+		$cols = [];
 		foreach ($columns as $name => $type) {
 			if (is_string($name)) {
 				$cols[] = "\t" . $this->db->quoteColumnName($name) . ' ' . $this->getColumnType($type);
@@ -680,12 +678,12 @@ class QueryBuilder extends \yii\base\Object
 		if (empty($columns)) {
 			return '';
 		}
-		$orders = array();
+		$orders = [];
 		foreach ($columns as $name => $direction) {
 			if (is_object($direction)) {
 				$orders[] = (string)$direction;
 			} else {
-				$orders[] = $this->db->quoteColumnName($name) . ($direction === Query::SORT_DESC ? ' DESC' : '');
+				$orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
 			}
 		}
 
@@ -767,7 +765,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function buildCondition($condition, &$params)
 	{
-		static $builders = array(
+		static $builders = [
 			'AND' => 'buildAndCondition',
 			'OR' => 'buildAndCondition',
 			'BETWEEN' => 'buildBetweenCondition',
@@ -778,7 +776,7 @@ class QueryBuilder extends \yii\base\Object
 			'NOT LIKE' => 'buildLikeCondition',
 			'OR LIKE' => 'buildLikeCondition',
 			'OR NOT LIKE' => 'buildLikeCondition',
-		);
+		];
 
 		if (!is_array($condition)) {
 			return (string)$condition;
@@ -799,12 +797,18 @@ class QueryBuilder extends \yii\base\Object
 		}
 	}
 
-	private function buildHashCondition($condition, &$params)
+	/**
+	 * Creates a condition based on column-value pairs.
+	 * @param array $condition the condition specification.
+	 * @param array $params the binding parameters to be populated
+	 * @return string the generated SQL expression
+	 */
+	public function buildHashCondition($condition, &$params)
 	{
-		$parts = array();
+		$parts = [];
 		foreach ($condition as $column => $value) {
 			if (is_array($value)) { // IN condition
-				$parts[] = $this->buildInCondition('IN', array($column, $value), $params);
+				$parts[] = $this->buildInCondition('IN', [$column, $value], $params);
 			} else {
 				if (strpos($column, '(') === false) {
 					$column = $this->db->quoteColumnName($column);
@@ -826,9 +830,16 @@ class QueryBuilder extends \yii\base\Object
 		return count($parts) === 1 ? $parts[0] : '(' . implode(') AND (', $parts) . ')';
 	}
 
-	private function buildAndCondition($operator, $operands, &$params)
+	/**
+	 * Connects two or more SQL expressions with the `AND` or `OR` operator.
+	 * @param string $operator the operator to use for connecting the given operands
+	 * @param array $operands the SQL expressions to connect.
+	 * @param array $params the binding parameters to be populated
+	 * @return string the generated SQL expression
+	 */
+	public function buildAndCondition($operator, $operands, &$params)
 	{
-		$parts = array();
+		$parts = [];
 		foreach ($operands as $operand) {
 			if (is_array($operand)) {
 				$operand = $this->buildCondition($operand, $params);
@@ -844,7 +855,16 @@ class QueryBuilder extends \yii\base\Object
 		}
 	}
 
-	private function buildBetweenCondition($operator, $operands, &$params)
+	/**
+	 * Creates an SQL expressions with the `BETWEEN` operator.
+	 * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
+	 * @param array $operands the first operand is the column name. The second and third operands
+	 * describe the interval that column value should be in.
+	 * @param array $params the binding parameters to be populated
+	 * @return string the generated SQL expression
+	 * @throws Exception if wrong number of operands have been given.
+	 */
+	public function buildBetweenCondition($operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1], $operands[2])) {
 			throw new Exception("Operator '$operator' requires three operands.");
@@ -863,7 +883,19 @@ class QueryBuilder extends \yii\base\Object
 		return "$column $operator $phName1 AND $phName2";
 	}
 
-	private function buildInCondition($operator, $operands, &$params)
+	/**
+	 * Creates an SQL expressions with the `IN` operator.
+	 * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
+	 * @param array $operands the first operand is the column name. If it is an array
+	 * a composite IN condition will be generated.
+	 * The second operand is an array of values that column value should be among.
+	 * If it is an empty array the generated expression will be a `false` value if
+	 * operator is `IN` and empty if operator is `NOT IN`.
+	 * @param array $params the binding parameters to be populated
+	 * @return string the generated SQL expression
+	 * @throws Exception if wrong number of operands have been given.
+	 */
+	public function buildInCondition($operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1])) {
 			throw new Exception("Operator '$operator' requires two operands.");
@@ -873,7 +905,7 @@ class QueryBuilder extends \yii\base\Object
 
 		$values = (array)$values;
 
-		if (empty($values) || $column === array()) {
+		if (empty($values) || $column === []) {
 			return $operator === 'IN' ? '0=1' : '';
 		}
 
@@ -913,9 +945,9 @@ class QueryBuilder extends \yii\base\Object
 
 	protected function buildCompositeInCondition($operator, $columns, $values, &$params)
 	{
-		$vss = array();
+		$vss = [];
 		foreach ($values as $value) {
-			$vs = array();
+			$vs = [];
 			foreach ($columns as $column) {
 				if (isset($value[$column])) {
 					$phName = self::PARAM_PREFIX . count($params);
@@ -935,7 +967,19 @@ class QueryBuilder extends \yii\base\Object
 		return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
 	}
 
-	private function buildLikeCondition($operator, $operands, &$params)
+	/**
+	 * Creates an SQL expressions with the `LIKE` operator.
+	 * @param string $operator the operator to use (e.g. `LIKE`, `NOT LIKE`, `OR LIKE` or `OR NOT LIKE`)
+	 * @param array $operands the first operand is the column name.
+	 * The second operand is a single value or an array of values that column value
+	 * should be compared with.
+	 * If it is an empty array the generated expression will be a `false` value if
+	 * operator is `LIKE` or `OR LIKE` and empty if operator is `NOT LIKE` or `OR NOT LIKE`.
+	 * @param array $params the binding parameters to be populated
+	 * @return string the generated SQL expression
+	 * @throws Exception if wrong number of operands have been given.
+	 */
+	public function buildLikeCondition($operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1])) {
 			throw new Exception("Operator '$operator' requires two operands.");
@@ -960,7 +1004,7 @@ class QueryBuilder extends \yii\base\Object
 			$column = $this->db->quoteColumnName($column);
 		}
 
-		$parts = array();
+		$parts = [];
 		foreach ($values as $value) {
 			$phName = self::PARAM_PREFIX . count($params);
 			$params[$phName] = $value;

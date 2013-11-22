@@ -1,60 +1,60 @@
 <?php
-use backend\config\AppAsset;
+use backend\assets\AppAsset;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 
 /**
- * @var $this \yii\base\View
- * @var $content string
+ * @var \yii\web\View $this
+ * @var string $content
  */
 AppAsset::register($this);
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= Yii::$app->language ?>">
 <head>
-	<meta charset="<?php echo Yii::$app->charset; ?>"/>
-	<title><?php echo Html::encode($this->title); ?></title>
+	<meta charset="<?= Yii::$app->charset ?>"/>
+	<title><?= Html::encode($this->title) ?></title>
 	<?php $this->head(); ?>
 </head>
 <body>
 	<?php $this->beginBody(); ?>
 	<?php
-		NavBar::begin(array(
+		NavBar::begin([
 			'brandLabel' => 'My Company',
 			'brandUrl' => Yii::$app->homeUrl,
-			'options' => array(
+			'options' => [
 				'class' => 'navbar-inverse navbar-fixed-top',
-			),
-		));
-		$menuItems = array(
-			array('label' => 'Home', 'url' => array('/site/index')),
-		);
+			],
+		]);
+		$menuItems = [
+			['label' => 'Home', 'url' => ['/site/index']],
+		];
 		if (Yii::$app->user->isGuest) {
-			$menuItems[] = array('label' => 'Login', 'url' => array('/site/login'));
+			$menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
 		} else {
-			$menuItems[] = array('label' => 'Logout (' . Yii::$app->user->identity->username .')' , 'url' => array('/site/logout'));
+			$menuItems[] = ['label' => 'Logout (' . Yii::$app->user->identity->username .')' , 'url' => ['/site/logout']];
 		}
-		echo Nav::widget(array(
-			'options' => array('class' => 'navbar-nav pull-right'),
+		echo Nav::widget([
+			'options' => ['class' => 'navbar-nav navbar-right'],
 			'items' => $menuItems,
-		));
+		]);
 		NavBar::end();
 	?>
 
 	<div class="container">
-	<?php echo Breadcrumbs::widget(array(
-		'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : array(),
-	)); ?>
-	<?php echo $content; ?>
+	<?= Breadcrumbs::widget([
+		'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+	]) ?>
+	<?= $content ?>
 	</div>
 
 	<footer class="footer">
 		<div class="container">
-		<p class="pull-left">&copy; My Company <?php echo date('Y'); ?></p>
-		<p class="pull-right"><?php echo Yii::powered(); ?></p>
+		<p class="pull-left">&copy; My Company <?= date('Y') ?></p>
+		<p class="pull-right"><?= Yii::powered() ?></p>
 		</div>
 	</footer>
 

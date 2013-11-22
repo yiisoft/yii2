@@ -8,6 +8,8 @@
 namespace yii\console;
 
 /**
+ * The console Response represents the result of a console application by holding the [[exitCode]].
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

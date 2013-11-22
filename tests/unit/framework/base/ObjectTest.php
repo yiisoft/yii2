@@ -118,11 +118,11 @@ class ObjectTest extends TestCase
 
 	public function testArrayProperty()
 	{
-		$this->assertEquals(array(), $this->object->items);
+		$this->assertEquals([], $this->object->items);
 		// the following won't work
 		/*
 		$this->object->items[] = 1;
-		$this->assertEquals(array(1), $this->object->items);
+		$this->assertEquals([1], $this->object->items);
 		*/
 	}
 
@@ -136,7 +136,7 @@ class ObjectTest extends TestCase
 
 	public function testConstruct()
 	{
-		$object = new NewObject(array('text' => 'test text'));
+		$object = new NewObject(['text' => 'test text']);
 		$this->assertEquals('test text', $object->getText());
 	}
 }
@@ -146,7 +146,7 @@ class NewObject extends Object
 {
 	private $_object = null;
 	private $_text = 'default';
-	private $_items = array();
+	private $_items = [];
 	public $content;
 
 	public function getText()

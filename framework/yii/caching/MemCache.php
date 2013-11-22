@@ -28,25 +28,25 @@ use yii\base\InvalidConfigException;
  * To use MemCache as the cache application component, configure the application as follows,
  *
  * ~~~
- * array(
- *     'components' => array(
- *         'cache' => array(
- *             'class' => 'MemCache',
- *             'servers' => array(
- *                 array(
+ * [
+ *     'components' => [
+ *         'cache' => [
+ *             'class' => 'yii\caching\MemCache',
+ *             'servers' => [
+ *                 [
  *                     'host' => 'server1',
  *                     'port' => 11211,
  *                     'weight' => 60,
- *                 ),
- *                 array(
+ *                 ],
+ *                 [
  *                     'host' => 'server2',
  *                     'port' => 11211,
  *                     'weight' => 40,
- *                 ),
- *             ),
- *         ),
- *     ),
- * )
+ *                 ],
+ *             ],
+ *         ],
+ *     ],
+ * ]
  * ~~~
  *
  * In the above, two memcache servers are used: server1 and server2. You can configure more properties of
@@ -76,7 +76,7 @@ class MemCache extends Cache
 	/**
 	 * @var array list of memcache server configurations
 	 */
-	private $_servers = array();
+	private $_servers = [];
 
 	/**
 	 * Initializes this application component.
@@ -199,6 +199,27 @@ class MemCache extends Cache
 		}
 
 		return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $expire);
+	}
+
+	/**
+	 * Stores multiple key-value pairs in cache.
+	 * @param array $data array where key corresponds to cache key while value is the value stored
+	 * @param integer $expire the number of seconds in which the cached values will expire. 0 means never expire.
+	 * @return array array of failed keys. Always empty in case of using memcached.
+	 */
+	protected function setValues($data, $expire)
+	{
+		if ($this->useMemcached) {
+			if ($expire > 0) {
+				$expire += time();
+			} else {
+				$expire = 0;
+			}
+			$this->_cache->setMulti($data, $expire);
+			return [];
+		} else {
+			return parent::setValues($data, $expire);
+		}
 	}
 
 	/**

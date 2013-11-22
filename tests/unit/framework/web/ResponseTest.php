@@ -34,11 +34,11 @@ class ResponseTest extends \yiiunit\TestCase
 	{
 		// TODO test more cases for range requests and check for rfc compatibility
 		// http://www.w3.org/Protocols/rfc2616/rfc2616.txt
-		return array(
-			array('0-5', '0-5', 6, '12ёж'),
-			array('2-', '2-66', 65, 'ёжик3456798áèabcdefghijklmnopqrstuvwxyz!"§$%&/(ёжик)=?'),
-			array('-12', '55-66', 12, '(ёжик)=?'),
-		);
+		return [
+			['0-5', '0-5', 6, '12ёж'],
+			['2-', '2-66', 65, 'ёжик3456798áèabcdefghijklmnopqrstuvwxyz!"§$%&/(ёжик)=?'],
+			['-12', '55-66', 12, '(ёжик)=?'],
+		];
 	}
 
 	/**
@@ -66,12 +66,12 @@ class ResponseTest extends \yiiunit\TestCase
 	{
 		// TODO test more cases for range requests and check for rfc compatibility
 		// http://www.w3.org/Protocols/rfc2616/rfc2616.txt
-		return array(
-			array('1-2,3-5,6-10'),	// multiple range request not supported
-			array('5-1'),			// last-byte-pos value is less than its first-byte-pos value
-			array('-100000'),		// last-byte-pos bigger then content length
-			array('10000-'),			// first-byte-pos bigger then content length
-		);
+		return [
+			['1-2,3-5,6-10'],	// multiple range request not supported
+			['5-1'],			// last-byte-pos value is less than its first-byte-pos value
+			['-100000'],		// last-byte-pos bigger then content length
+			['10000-'],			// first-byte-pos bigger then content length
+		];
 	}
 
 	/**

@@ -23,10 +23,10 @@ use yii\web\JsExpression;
  * shows how to use MaskedInput to collect phone numbers:
  *
  * ~~~
- * echo MaskedInput::widget(array(
+ * echo MaskedInput::widget([
  *     'name' => 'phone',
  *     'mask' => '999-999-9999',
- * ));
+ * ]);
  * ~~~
  *
  * The masked text field is implemented based on the [jQuery masked input plugin](http://digitalbush.com/projects/masked-input-plugin).
@@ -49,7 +49,7 @@ class MaskedInput extends InputWidget
 	public $mask;
 	/**
 	 * @var array the mapping between mask characters and the corresponding patterns.
-	 * For example, `array('~' => '[+-]')` specifies that the '~' character expects '+' or '-' input.
+	 * For example, `['~' => '[+-]']` specifies that the '~' character expects '+' or '-' input.
 	 * Defaults to null, meaning using the map as described in [[mask]].
 	 */
 	public $charMap;
@@ -64,7 +64,7 @@ class MaskedInput extends InputWidget
 	/**
 	 * @var array the HTML attributes for the input tag.
 	 */
-	public $options = array();
+	public $options = [];
 
 
 	/**
@@ -119,7 +119,7 @@ class MaskedInput extends InputWidget
 	 */
 	protected function getClientOptions()
 	{
-		$options = array();
+		$options = [];
 		if ($this->placeholder !== null) {
 			$options['placeholder'] = $this->placeholder;
 		}

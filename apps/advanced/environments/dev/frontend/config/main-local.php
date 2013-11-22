@@ -1,11 +1,11 @@
 <?php
-return array(
-	'preload' => array(
+return [
+	'preload' => [
 		//'debug',
-	),
-	'modules' => array(
-//			'debug' => array(
+	],
+	'modules' => [
+//			'debug' => [
 //				'class' => 'yii\debug\Module',
-//			),
-	),
-);
+//			],
+	],
+];

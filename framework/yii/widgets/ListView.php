@@ -23,7 +23,7 @@ class ListView extends BaseListView
 	 * The "tag" element specifies the tag name of the container element and defaults to "div".
 	 * If "tag" is false, it means no container element will be rendered.
 	 */
-	public $itemOptions = array();
+	public $itemOptions = [];
 	/**
 	 * @var string|callback the name of the view for rendering each data item, or a callback (e.g. an anonymous function)
 	 * for rendering each data item. If it specifies a view name, the following variables will
@@ -57,7 +57,7 @@ class ListView extends BaseListView
 	{
 		$models = $this->dataProvider->getModels();
 		$keys = $this->dataProvider->getKeys();
-		$rows = array();
+		$rows = [];
 		foreach (array_values($models) as $index => $model) {
 			$rows[] = $this->renderItem($model, $keys[$index], $index);
 		}
@@ -76,12 +76,12 @@ class ListView extends BaseListView
 		if ($this->itemView === null) {
 			$content = $key;
 		} elseif (is_string($this->itemView)) {
-			$content = $this->getView()->render($this->itemView, array(
+			$content = $this->getView()->render($this->itemView, [
 				'model' => $model,
 				'key' => $key,
 				'index' => $index,
 				'widget' => $this,
-			));
+			]);
 		} else {
 			$content = call_user_func($this->itemView, $model, $key, $index, $this);
 		}

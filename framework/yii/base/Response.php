@@ -8,6 +8,8 @@
 namespace yii\base;
 
 /**
+ * Response represents the response of an [[Application]] to a [[Request]].
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS tbl_order CASCADE;
 DROP TABLE IF EXISTS tbl_category CASCADE;
 DROP TABLE IF EXISTS tbl_customer CASCADE;
 DROP TABLE IF EXISTS tbl_type CASCADE;
+DROP TABLE IF EXISTS tbl_null_values CASCADE;
 DROP TABLE IF EXISTS tbl_constraints CASCADE;
 
 CREATE TABLE tbl_constraints
@@ -54,6 +55,15 @@ CREATE TABLE tbl_order_item (
   PRIMARY KEY (order_id,item_id)
 );
 
+CREATE TABLE tbl_null_values (
+  id INT NOT NULL,
+  var1 INT NULL,
+  var2 INT NULL,
+  var3 INT DEFAULT NULL,
+  stringcol VARCHAR(32) DEFAULT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE tbl_type (
   int_col integer NOT NULL,
   int_col2 integer DEFAULT '1',
@@ -92,3 +102,32 @@ INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 4,
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+
+/**
+ * (Postgres-)Database Schema for validator tests
+ */
+
+DROP TABLE IF EXISTS tbl_validator_main CASCADE;
+DROP TABLE IF EXISTS tbl_validator_ref CASCADE;
+
+CREATE TABLE tbl_validator_main (
+  id integer not null primary key,
+  field1 VARCHAR(255)
+);
+
+CREATE TABLE tbl_validator_ref (
+  id integer not null primary key,
+  a_field VARCHAR(255),
+  ref     integer
+);
+
+INSERT INTO tbl_validator_main (id, field1) VALUES (1, 'just a string1');
+INSERT INTO tbl_validator_main (id, field1) VALUES (2, 'just a string2');
+INSERT INTO tbl_validator_main (id, field1) VALUES (3, 'just a string3');
+INSERT INTO tbl_validator_main (id, field1) VALUES (4, 'just a string4');
+INSERT INTO tbl_validator_ref (id, a_field, ref) VALUES (1, 'ref_to_2', 2);
+INSERT INTO tbl_validator_ref (id, a_field, ref) VALUES (2, 'ref_to_2', 2);
+INSERT INTO tbl_validator_ref (id, a_field, ref) VALUES (3, 'ref_to_3', 3);
+INSERT INTO tbl_validator_ref (id, a_field, ref) VALUES (4, 'ref_to_4', 4);
+INSERT INTO tbl_validator_ref (id, a_field, ref) VALUES (5, 'ref_to_4', 4);
+INSERT INTO tbl_validator_ref (id, a_field, ref) VALUES (6, 'ref_to_5', 5);
