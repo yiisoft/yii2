@@ -36,7 +36,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function getDb()
 	{
-		return \Yii::$app->elasticsearch;
+		return \Yii::$app->getComponent('elasticsearch');
 	}
 
 	/**
