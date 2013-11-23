@@ -59,9 +59,9 @@ class Html extends \yii\helpers\Html
 	 *
 	 * Example(s): 
 	 * ```php
-	 * echo Html::icon('trash');
-	 * echo Html::icon('pencil', ['style' => 'color: red; font-size: 2em']);
-	 * echo Html::icon('pencil', ['class' => 'text-success']);
+	 * echo Html::icon('pencil');
+	 * echo Html::icon('trash', ['style' => 'color: red; font-size: 2em']);
+	 * echo Html::icon('plus', ['class' => 'text-success']);
 	 * ```
 	 *
 	 * @see http://getbootstrap.com/components/#glyphicons
@@ -84,18 +84,14 @@ class Html extends \yii\helpers\Html
 	 *
 	 * Example(s): 
 	 * ```php
-	 * echo Html::label('Default');
-	 * echo Html::label('Primary', Html::TYPE_PRIMARY);
-	 * echo Html::label('Success', Html::TYPE_SUCCESS);
-	 * ```
-	 * Styling:
-	 * ```php
-	 * echo Html::icon('trash', ['style' => 'color: red; font-size: 2em']);
+	 * echo Html::bsLabel('Default');
+	 * echo Html::bsLabel('Primary', Html::TYPE_PRIMARY);
+	 * echo Html::bsLabel('Success', Html::TYPE_SUCCESS);
 	 * ```
 	 *
 	 * @see http://getbootstrap.com/components/#labels
 	 */
-	public static function label($content, $type = '', $options = [], $prefix = 'label label-', $tag = 'span')
+	public static function bsLabel($content, $type = '', $options = [], $prefix = 'label label-', $tag = 'span')
 	{
 		if (empty($type)) {
 			$type = static::TYPE_DEFAULT;
