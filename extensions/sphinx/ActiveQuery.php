@@ -67,15 +67,29 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	public $sql;
 
 	/**
-	 * Sets the [[snippetCallback]] to [[fetchSnippetSourceFromModels]], which allows to
+	 * Sets the [[snippetCallback]] to [[fetchSnippetSourceFromModels()]], which allows to
 	 * fetch the snippet source strings from the Active Record models, using method
 	 * [[ActiveRecord::getSnippetSource()]].
+	 * For example:
+	 *
+	 * ~~~
+	 * class Article extends ActiveRecord
+	 * {
+	 *     public function getSnippetSource()
+	 *     {
+	 *         return file_get_contents('/path/to/source/files/' . $this->id . '.txt');;
+	 *     }
+	 * }
+	 *
+	 * $articles = Article::find()->snippetByModel()->all();
+	 * ~~~
+	 *
 	 * Warning: this option should NOT be used with [[asArray]] at the same time!
 	 * @return static the query object itself
 	 */
 	public function snippetByModel()
 	{
-		$this->snippetCallback(array($this, 'fetchSnippetSourceFromModels'));
+		$this->snippetCallback([$this, 'fetchSnippetSourceFromModels']);
 		return $this;
 	}
 

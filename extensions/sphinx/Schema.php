@@ -317,13 +317,8 @@ class Schema extends Object
 		if (!is_string($str)) {
 			return $str;
 		}
-
 		$this->db->open();
-		if (($value = $this->db->pdo->quote($str)) !== false) {
-			return $value;
-		} else { // the driver doesn't support quote (e.g. oci)
-			return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
-		}
+		return $this->db->pdo->quote($str);
 	}
 
 	/**

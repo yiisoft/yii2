@@ -361,9 +361,9 @@ abstract class ActiveRecord extends Model
 	 * (because another user has modified the data), a [[StaleObjectException]] exception will be thrown,
 	 * and the update or deletion is skipped.
 	 *
-	 * Optimized locking is only supported by [[update()]] and [[delete()]].
+	 * Optimistic locking is only supported by [[update()]] and [[delete()]].
 	 *
-	 * To use optimized locking:
+	 * To use optimistic locking:
 	 *
 	 * 1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
 	 *    Override this method to return the name of this column.
