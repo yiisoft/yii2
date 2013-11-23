@@ -1,7 +1,7 @@
 Using RBAC
 ===========
 
-Lacking proper documentation, this guide is a stub copied from a topic on the forum.
+Lacking proper documentation, this guide is a stub copied from a [topic on the forum](http://www.yiiframework.com/forum/index.php/topic/49104-does-anyone-have-a-working-example-of-rbac/page__view__findpost__p__229098).
 
 
 First af all, you modify your config (web.php or main.php), 
