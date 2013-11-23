@@ -1,9 +1,7 @@
 <?php
 /**
- * Connection class file
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -22,8 +20,7 @@ use yii\helpers\Inflector;
  *
  * @property string $driverName Name of the DB driver. This property is read-only.
  * @property boolean $isActive Whether the DB connection is established. This property is read-only.
- * @property Transaction $transaction The currently active transaction. Null if no active transaction. This
- * property is read-only.
+ * @property LuaScriptBuilder $luaScriptBuilder This property is read-only.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -203,10 +200,6 @@ class Connection extends Component
 		'ZUNIONSTORE', // destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX] Add multiple sorted sets and store the resulting sorted set in a new key
 	];
 	/**
-	 * @var Transaction the currently active transaction
-	 */
-	private $_transaction;
-	/**
 	 * @var resource redis socket connection
 	 */
 	private $_socket;
@@ -283,7 +276,6 @@ class Connection extends Component
 			$this->executeCommand('QUIT');
 			stream_socket_shutdown($this->_socket, STREAM_SHUT_RDWR);
 			$this->_socket = null;
-			$this->_transaction = null;
 		}
 	}
 
@@ -298,27 +290,6 @@ class Connection extends Component
 	}
 
 	/**
-	 * Returns the currently active transaction.
-	 * @return Transaction the currently active transaction. Null if no active transaction.
-	 */
-	public function getTransaction()
-	{
-		return $this->_transaction && $this->_transaction->isActive ? $this->_transaction : null;
-	}
-
-	/**
-	 * Starts a transaction.
-	 * @return Transaction the transaction initiated
-	 */
-	public function beginTransaction()
-	{
-		$this->open();
-		$this->_transaction = new Transaction(['db' => $this]);
-		$this->_transaction->begin();
-		return $this->_transaction;
-	}
-
-	/**
 	 * Returns the name of the DB driver for the current [[dsn]].
 	 * @return string name of the DB driver
 	 */
@@ -329,6 +300,14 @@ class Connection extends Component
 		} else {
 			return 'redis';
 		}
+	}
+
+	/**
+	 * @return LuaScriptBuilder
+	 */
+	public function getLuaScriptBuilder()
+	{
+		return new LuaScriptBuilder();
 	}
 
 	/**
