@@ -274,7 +274,7 @@ class Command extends Component
 	/**
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-flush.html
 	 */
-	public function flushIndex($index)
+	public function flushIndex($index = '_all')
 	{
 		$response = $this->db->http()->post($this->createUrl([$index, '_flush']))->send();
 		return $response->getStatusCode() == 200;
