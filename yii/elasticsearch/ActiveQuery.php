@@ -85,7 +85,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	{
 		$command = $this->createCommand($db);
 		$result = $command->queryAll();
-		if ($result['total'] == 0) {
+		if (empty($result['hits'])) {
 			return [];
 		}
 		$models = $this->createModels($result['hits']);
@@ -111,19 +111,16 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 */
 	public function one($db = null)
 	{
-		$command = $this->createCommand($db);
-		$result = $command->queryOne();
-		if ($result['total'] == 0 || empty($result['hits'])) {
+		if (($result = parent::one($db)) === false) {
 			return null;
 		}
 		if ($this->asArray) {
-			$first = reset($result['hits']);
-			$model = $first['_source'];
-			$model['primaryKey'] = $first['_id'];
+			$model = $result['_source'];
+			$model['primaryKey'] = $result['_id'];
 		} else {
 			/** @var ActiveRecord $class */
 			$class = $this->modelClass;
-			$model = $class::create(reset($result['hits']));
+			$model = $class::create($result);
 		}
 		if (!empty($this->with)) {
 			$models = [$model];
@@ -132,24 +129,4 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 		return $model;
 	}
-
-	/**
-	 * Returns the query result as a scalar value.
-	 * The value returned will be the specified attribute in the first record of the query results.
-	 * @param string $attribute name of the attribute to select
-	 * @param Connection $db the database connection used to execute the query.
-	 * If this parameter is not given, the `db` application component will be used.
-	 * @return string the value of the specified attribute in the first record of the query result.
-	 * Null is returned if the query result is empty.
-	 */
-	public function scalar($attribute, $db = null)
-	{
-		$record = $this->one($db);
-		if ($record !== null) {
-			return $record->$attribute;
-		} else {
-			return null;
-		}
-	}
-
 }

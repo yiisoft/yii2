@@ -59,12 +59,6 @@ class Command extends Component
 		return Json::decode($response->getBody(true))['hits'];
 	}
 
-	public function queryOne($options = [])
-	{
-		$options['size'] = 1;
-		return $this->queryAll($options);
-	}
-
 	public function queryCount($options = [])
 	{
 		$options['search_type'] = 'count';
