@@ -17,6 +17,9 @@ class ActiveRecord extends \yii\elasticsearch\ActiveRecord
 {
 	public static $db;
 
+	/**
+	 * @return \yii\elasticsearch\Connection
+	 */
 	public static function getDb()
 	{
 		return self::$db;

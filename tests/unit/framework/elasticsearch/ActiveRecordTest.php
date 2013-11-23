@@ -92,16 +92,18 @@ class ActiveRecordTest extends ElasticSearchTestCase
 //		$orderItem->setAttributes(array('order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0), false);
 //		$orderItem->save(false);
 
-		for($n = 0; $n < 20; $n++) {
-			$r = $db->http()->post('_count')->send();
-			$c = Json::decode($r->getBody(true));
-			if ($c['count'] != 11) {
-				usleep(100000);
-			} else {
-				return;
-			}
-		}
-		throw new \Exception('Unable to initialize elasticsearch data.');
+		Customer::getDb()->createCommand()->flushIndex();
+
+//		for($n = 0; $n < 20; $n++) {
+//			$r = $db->http()->post('_count')->send();
+//			$c = Json::decode($r->getBody(true));
+//			if ($c['count'] != 11) {
+//				usleep(100000);
+//			} else {
+//				return;
+//			}
+//		}
+//		throw new \Exception('Unable to initialize elasticsearch data.');
 	}
 
 	public function testFind()
@@ -127,22 +129,24 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertNull($customer);
 
 		// query scalar
-		$customerName = Customer::find()->where(array('id' => 2))->scalar('name');
-		$this->assertEquals('user2', $customerName);
+		$customerName = Customer::find()->where(array('status' => 2))->scalar('name');
+		$this->assertEquals('user3', $customerName);
 
 		// find by column values
-		$customer = Customer::find(array('id' => 2, 'name' => 'user2'));
+		$customer = Customer::find(array('name' => 'user2'));
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
-		$customer = Customer::find(array('id' => 2, 'name' => 'user1'));
+		$customer = Customer::find(array('name' => 'user1', 'id' => 2));
 		$this->assertNull($customer);
-		$customer = Customer::find(array('id' => 5));
+		$customer = Customer::find(array('primaryKey' => 5));
+		$this->assertNull($customer);
+		$customer = Customer::find(array('name' => 'user5'));
 		$this->assertNull($customer);
 
 		// find by attributes
 		$customer = Customer::find()->where(array('name' => 'user2'))->one();
 		$this->assertTrue($customer instanceof Customer);
-		$this->assertEquals(2, $customer->id);
+		$this->assertEquals('user2', $customer->name);
 
 		// find count, sum, average, min, max, scalar
 		$this->assertEquals(3, Customer::find()->count());
@@ -156,13 +160,13 @@ class ActiveRecordTest extends ElasticSearchTestCase
 //		$this->assertEquals(2, Customer::find()->active()->count());
 
 		// asArray
-		$customer = Customer::find()->where(array('id' => 2))->asArray()->one();
+		$customer = Customer::find()->where(array('name' => 'user2'))->asArray()->one();
 		$this->assertEquals(array(
-			'id' => '2',
 			'email' => 'user2@example.com',
 			'name' => 'user2',
 			'address' => 'address2',
 			'status' => '1',
+			'primaryKey' => 2,
 		), $customer);
 
 		// indexBy
@@ -174,13 +178,13 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 		// indexBy callable
 		$customers = Customer::find()->indexBy(function ($customer) {
-			return $customer->id . '-' . $customer->name;
+			return $customer->status . '-' . $customer->name;
 //		})->orderBy('id')->all();
 		})->all();
 		$this->assertEquals(3, count($customers));
 		$this->assertTrue($customers['1-user1'] instanceof Customer);
-		$this->assertTrue($customers['2-user2'] instanceof Customer);
-		$this->assertTrue($customers['3-user3'] instanceof Customer);
+		$this->assertTrue($customers['1-user2'] instanceof Customer);
+		$this->assertTrue($customers['2-user3'] instanceof Customer);
 	}
 
 	public function testFindCount()
