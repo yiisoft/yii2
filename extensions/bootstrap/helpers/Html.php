@@ -18,7 +18,7 @@ namespace yii\bootstrap\helpers;
 class Html extends \yii\helpers\Html
 {
 	/**
-	 * CSS Class constants that can be used directly
+	 * Bootstrap CSS helpers
 	 */
 	const FLOAT_LEFT         = 'pull-left';
 	const FLOAT_RIGHT        = 'pull-right';
@@ -33,11 +33,38 @@ class Html extends \yii\helpers\Html
 	const IMAGE_REPLACER     = 'text-hide';
 	
 	/**
+	 * Bootstrap size modifier suffixes
+	 */
+	const TINY   = 'xs';
+	const SMALL  = 'sm';
+	const MEDIUM = 'md';
+	const LARGE  = 'lg';
+
+	/**
+	 * Bootstrap color modifier classes
+	 */
+	const TYPE_DEFAULT = 'default';
+	const TYPE_PRIMARY = 'primary';
+	const TYPE_SUCCESS = 'success';
+	const TYPE_INFO    = 'info';
+	const TYPE_WARNING = 'warning';
+	const TYPE_DANGER  = 'danger';
+	
+	/**
 	 * Generates an icon.
 	 * @param string $icon the bootstrap icon name without prefix (e.g. 'plus', 'pencil', 'trash')
 	 * @param array $options html options for the icon container
 	 * @param string $prefix the css class prefix - defaults to 'glyphicon glyphicon-'
 	 * @param string $tag the icon container tag (usually 'span' or 'i') - defaults to 'span'
+	 *
+	 * Example(s): 
+	 * ```php
+	 * echo Html::icon('trash');
+	 * echo Html::icon('pencil', ['style' => 'color: red; font-size: 2em']);
+	 * echo Html::icon('pencil', ['class' => 'text-success']);
+	 * ```
+	 *
+	 * @see http://getbootstrap.com/components/#glyphicons
 	 */
 	public static function icon($icon, $options = [], $prefix = 'glyphicon glyphicon-', $tag = 'span')
 	{
@@ -54,9 +81,25 @@ class Html extends \yii\helpers\Html
 	 * @param array $options html options for the label container
 	 * @param string $prefix the css class prefix - defaults to 'label label-'
 	 * @param string $tag the label container tag - defaults to 'span'
+	 *
+	 * Example(s): 
+	 * ```php
+	 * echo Html::label('Default');
+	 * echo Html::label('Primary', Html::TYPE_PRIMARY);
+	 * echo Html::label('Success', Html::TYPE_SUCCESS);
+	 * ```
+	 * Styling:
+	 * ```php
+	 * echo Html::icon('trash', ['style' => 'color: red; font-size: 2em']);
+	 * ```
+	 *
+	 * @see http://getbootstrap.com/components/#labels
 	 */
-	public static function label($content, $type, $options = [], $prefix = 'label label-', $tag = 'span')
+	public static function label($content, $type = '', $options = [], $prefix = 'label label-', $tag = 'span')
 	{
+		if (empty($type)) {
+			$type = static::TYPE_DEFAULT;
+		}
 		$class = isset($options['class']) ? ' ' . $options['class'] : '';
 		$options['class'] = $prefix . $type . $class;
 		return static::tag($tag, $content, $options);
@@ -122,6 +165,14 @@ class Html extends \yii\helpers\Html
 	 * @param string $title the title to be shown
 	 * @param string $subTitle the subtitle to be shown as subtext within the title
 	 * @param array $options html options for the page header
+	 *
+	 * Example: 
+	 * ```php
+	 * echo Html::pageHeader(
+	 * 		'Example page header',
+	 * 		'Subtext for header',
+	 * );
+	 * ```
 	 * @see http://getbootstrap.com/components/#page-header
 	 */
 	public static function pageHeader($title, $subTitle = '', $options = []) {
@@ -134,6 +185,165 @@ class Html extends \yii\helpers\Html
 		}
 		return static::tag('div', $title, $options);
 	}
+
+	/**
+	 * Generates a well container.
+	 * @param string $content the content
+	 * @param string $size the well size - one of the size constants
+	 * - TINY   = 'xs';
+	 * - SMALL  = 'sm';
+	 * - MEDIUM = 'md';
+	 * - LARGE  = 'lg';
+	 * @param array $options html options for the well container.
+	 *
+	 * Example: 
+	 * ```php
+	 * echo Html::well(
+	 * 		'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo.',
+	 * 		Html::LARGE,
+	 * );
+	 * ```
+	 *
+	 * @see http://getbootstrap.com/components/#wells
+	 */
+	public static function well($content, $size = '', $options = []) {
+		static::addCssClass($options, 'well');
+		if (!empty($size)) {
+			static::addCssClass($options, 'well-' . $size);
+		}
+		return static::tag('div', $content, $options);
+	}	
+	
+	/**
+	 * Generates a media object. Abstract object styles for building various types of 
+	 * components (like blog comments, Tweets, etc) that feature a left-aligned or 
+	 * right-aligned  image alongside textual content.
+	 * @param string $heading the media heading
+	 * @param string $body the media content
+	 * @param string $src URL for the media article source 
+	 * @param string $img URL for the media image source 
+	 * @param array $srcOptions html options for the media article link
+	 * @param array $imgOptions html options for the media image
+	 * @param array $options html options for the media object container
+	 * @param string $tag the media container tag - defaults to 'div'
+	 *
+	 * Example: 
+	 * ```php
+	 * echo Html::media(
+	 * 		'Media heading 1', 
+	 * 		'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo.',
+	 * 		'#',
+	 * 		'http://placehold.it/64x64'
+	 * );
+	 * ```
+	 *
+	 * @see http://getbootstrap.com/components/#media
+	 */
+	public static function media($heading = '', $body = '', $src = '', $img = '', $srcOptions = [], $imgOptions = [], $options = [], $tag = 'div') {
+		static::addCssClass($options, 'media');
+		
+		if (!isset($srcOptions['class'])) {
+			static::addCssClass($srcOptions, 'pull-left');
+		}
+		
+		static::addCssClass($imgOptions, 'media-object');
+		
+		$source = static::a(static::img($img, $imgOptions), $src, $srcOptions);
+		$heading = (!empty($heading)) ? static::tag('h4', $heading, ['class'=>'media-heading']) : '';
+		$content = (!empty($body)) ? static::tag('div', $heading . "\n" . $body, ['class'=>'media-body']) : $heading;
+		
+		return static::tag($tag, $source . "\n" . $content, $options);
+	}
+
+	/**
+	 * Generates list of media (useful for comment threads or articles lists).
+	 * @param array $items the media items - each element in the array must contain these keys:
+	 * - @param string $items the sub media items
+	 * - @param string $heading the media heading
+	 * - @param string $body the media content
+	 * - @param string $src URL for the media article source 
+	 * - @param string $img URL for the media image source 
+	 * - @param array $srcOptions html options for the media article link (optional)
+	 * - @param array $imgOptions html options for the media image (optional)
+	 * - @param array $itemOptions html options for each media item (optional)
+	 * @param array $options html options for the media list container
+	 *
+	 * Example: 
+	 * ```php
+	 * echo Html::mediaList([
+	 * 	[
+	 * 		'heading' => 'Media heading 1', 
+	 * 		'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. '.
+	 *                'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
+	 * 		'src' => '#',
+	 * 		'img' => 'http://placehold.it/64x64',
+	 * 		'items' => [
+	 * 			[
+	 * 				'heading' => 'Media heading 1.1', 
+	 * 				'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. ' .
+	 *                        'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
+	 * 				'src' => '#',
+	 * 				'img' => 'http://placehold.it/64x64'
+	 * 			],
+	 * 			[
+	 * 				'heading' => 'Media heading 1.2', 
+	 * 				'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. ' .
+	 *                        'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
+	 * 				'src' => '#',
+	 * 				'img' => 'http://placehold.it/64x64'
+	 * 			],
+	 * 		]
+	 * 	],
+	 * 	[
+	 * 		'heading' => 'Media heading 2', 
+	 * 		'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. '.
+	 *                'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
+	 * 		'src' => '#',
+	 * 		'img' => $img
+	 * 	],
+	 * ]);
+	 * ```
+	 *
+	 * @see http://getbootstrap.com/components/#media
+	 */
+	public static function mediaList($items = [], $options = []) {
+		static::addCssClass($options, 'media-list');
+		$content = static::generateMediaList($items);
+		return static::tag('ul', $content, $options);
+	}
+	
+	/**
+	 * Processes media items array to generate a recursive list.
+	 * @param array $items the media items
+	 * @param boolean $top whether item is the topmost parent
+	 */
+	 protected static function generateMediaList($items, $top = true) {
+		$content = '';
+		foreach ($items as $item) {
+			$tag = ($top) ? 'li' : 'div';
+			if (isset($item['items'])) {
+				$item['body'] .= static::generateMediaList($item['items'], false);
+			}
+			$content .= static::generateMediaItem($item, $tag) . "\n";
+		}
+		return $content;
+	}
+	
+	/**
+	 * Processes and generates each media item
+	 * @param array $item the media item configuration
+	 * @param string $tag the media item container tag
+	 */	
+	protected static function generateMediaItem($item, $tag) {
+		$heading = isset($item['heading']) ? $item['heading'] : '';
+		$body = isset($item['body']) ? $item['body'] : '';
+		$src = isset($item['src']) ? $item['src'] : '#';
+		$img = isset($item['img']) ? $item['img'] : '';
+		$srcOptions = isset($item['srcOptions']) ? $item['srcOptions'] : [];
+		$imgOptions = isset($item['imgOptions']) ? $item['imgOptions'] : [];
+		$itemOptions = isset($item['itemOptions']) ? $item['itemOptions'] : [];
+		return static::media($heading, $body, $src, $img, $srcOptions, $imgOptions, $itemOptions, $tag);
+	}
 	
 	/**
 	 * Generates a generic close icon button for 
@@ -141,6 +351,12 @@ class Html extends \yii\helpers\Html
 	 * @param array $options html options for the close icon button
 	 * @param string $label the close icon label - defaults to '&times;'
 	 * @param string $tag the html tag for rendering the close icon - defaults to 'button'
+	 *
+	 * Example: 
+	 * ```php
+	 * echo Html::closeButton();
+	 * ```
+	 *
 	 * @see http://getbootstrap.com/css/#helper-classes-close
 	 */
 	public static function closeButton($options = [], $label = '&times;', $tag = 'button')
@@ -155,6 +371,12 @@ class Html extends \yii\helpers\Html
 	 * Generates a caret.
 	 * @param array $options html options for the caret container.
 	 * @param string $tag the html tag for rendering the caret - defaults to 'span'
+	 *
+	 * Example: 
+	 * ```php
+	 * echo Html::caret();
+	 * ```
+	 *
 	 * @see http://getbootstrap.com/css/#helper-classes-carets
 	 */
 	public static function caret($options = [], $tag = 'span')
@@ -164,11 +386,40 @@ class Html extends \yii\helpers\Html
 	}
 	
 	/**
+	 * Generates a lead body copy - makes a paragraph stand out.
+	 * @param string $content the content to be formatted
+	 * @param array $options html options.
+	 * @param string $tag the html tag for rendering - defaults to 'p'
+	 *
+	 * Example: 
+	 * ```php
+	 * echo Html::lead('Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus.');
+	 * ```
+	 *
+	 * @see http://getbootstrap.com/css/#type-body-copy
+	 */
+	public static function lead($content, $options = [], $tag = 'p')
+	{
+		static::addCssClass($options, 'lead');
+		return static::tag($tag, $content, $options);
+	}
+
+	/**
 	 * Generates an abbreviation.
 	 * @param string $title the abbreviation title
 	 * @param string $content the abbreviation content
 	 * @param boolean $initialism if set to true, will display a slightly smaller font-size.
 	 * @param array $options html options for the abbreviation
+	 *
+	 * Example: 
+	 * ```php
+	 * echo Html::abbr(
+	 *	'HyperText Markup Language'
+	 *	'HTML',
+	 *	true
+	 * );
+	 * ```
+	 *
 	 * @see http://getbootstrap.com/css/#type-abbreviations
 	 */
 	public static function abbr($title, $content, $initialism = false, $options = [])
@@ -189,15 +440,17 @@ class Html extends \yii\helpers\Html
 	 * @param string $citeSource the cite source (optional)
 	 * 
 	 * Example: 
+	 * ```php
 	 *		Html::blockquote(
 	 *			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.',
 	 *			'Someone famous in {source}',
 	 *			'International Premier League',
 	 *			'IPL'
 	 *		);
+	 * ```
 	 *			
-	 * @param array $options html options for the abbreviation
-	 * @see http://getbootstrap.com/css/#type-abbreviations
+	 * @param array $options html options for the blockquote
+	 * @see http://getbootstrap.com/css/#type-blockquotes
 	 */
 	public static function blockquote($content, $citeContent = '', $citeTitle = '', $citeSource = '', $options = [])
 	{
@@ -221,6 +474,17 @@ class Html extends \yii\helpers\Html
 	 * - $value is the email address
 	 * @param string $phoneLabel the prefix label for each phone - defaults to '(P)'
 	 * @param string $emailLabel the prefix label for each email - defaults to '(E)'
+	 *
+	 * Example: 
+	 * ```php
+	 *		Html::address(
+	 *			'Twitter, Inc.',
+	 *			['795 Folsom Ave, Suite 600', 'San Francisco, CA 94107'],
+	 *			['Res' => '(123) 456-7890', 'Off'=> '(456) 789-0123'],
+	 *			['Res' => 'first.last@example.com', 'Off' => 'last.first@example.com']
+	 *		);
+	 * ```
+	 *
 	 * @see http://getbootstrap.com/css/#type-addresses
 	 */	
 	public static function address($name, $lines = [], $phone = [], $email = [], $phoneLabel = '(P)', $emailLabel = '(E)') {
@@ -264,6 +528,17 @@ class Html extends \yii\helpers\Html
 	 * @param string $value the static input value
 	 * @param array $options html options for the static input
 	 * @param string $tag the html tag for rendering the static input - defaults to 'p'
+	 *
+	 * Example(s): 
+	 * ```php
+	 * echo Html::staticInput('email@example.com');
+	 * ```
+	 * With model
+	 * ```php
+	 * echo Html::activeLabel($model, email);
+	 * echo Html::staticInput($model->email);
+	 * ```
+	 *
 	 * @see http://getbootstrap.com/css/#forms-controls-static
 	 */
 	public static function staticInput($value, $options = [], $tag = 'p')
