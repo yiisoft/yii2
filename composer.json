@@ -1,9 +1,9 @@
 {
-	"name": "yiisoft/yii2",
-	"description": "Yii2 Web Programming Framework",
+	"name": "yiisoft/yii2-dev",
+	"description": "Yii2 Web Programming Framework - Development Package",
 	"keywords": ["yii", "framework"],
 	"homepage": "http://www.yiiframework.com/",
-	"type": "library",
+	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"authors": [
 		{
@@ -63,17 +63,40 @@
 		"irc": "irc://irc.freenode.net/yii",
 		"source": "https://github.com/yiisoft/yii2"
 	},
+    "replace": {
+        "yiisoft/yii2-bootstrap": "self.version",
+        "yiisoft/yii2-debug": "self.version",
+        "yiisoft/yii2-gii": "self.version",
+        "yiisoft/yii2-jui": "self.version",
+        "yiisoft/yii2-smarty": "self.version",
+        "yiisoft/yii2-swiftmailer": "self.version",
+        "yiisoft/yii2-twig": "self.version",
+	    "yiisoft/yii2": "self.version"
+    },
 	"require": {
 		"php": ">=5.4.0",
 		"ext-mbstring": "*",
 		"lib-pcre": "*",
-		"yiisoft/yii2-composer": "*",
 		"yiisoft/jquery": "1.10.*",
+		"yiisoft/yii2-composer": "self.version",
 		"phpspec/php-diff": ">=1.0.2",
 		"ezyang/htmlpurifier": "4.5.*",
-		"michelf/php-markdown": "1.3.*"
+		"michelf/php-markdown": "1.3.*",
+		"twbs/bootstrap": "3.0.*",
+		"smarty/smarty": "*",
+		"swiftmailer/swiftmailer": "*",
+		"twig/twig": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\": "" }
-	}
+		"psr-0": {
+            "yii\\bootstrap\\": "extensions/bootstrap/",
+			"yii\\debug\\": "extensions/debug/",
+			"yii\\gii\\": "extensions/gii/",
+			"yii\\jui\\": "extensions/jui/",
+			"yii\\smarty\\": "extensions/smarty/",
+			"yii\\swiftmailer\\": "extensions/swiftmailer/",
+			"yii\\twig\\": "extensions/twig/",
+			"yii\\": "framework/yii/"
+        }
+    }
 }

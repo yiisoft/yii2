@@ -192,7 +192,7 @@ class Mailer extends BaseMailer
 				}
 			}
 			unset($config['constructArgs']);
-			array_unshift($args, ['class' => $className]);
+			array_unshift($args, $className);
 			$object = call_user_func_array(['Yii', 'createObject'], $args);
 		} else {
 			$object = new $className;

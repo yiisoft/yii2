@@ -32,5 +32,9 @@ return [
 		'elasticsearch' => [
 			'dsn' => 'elasticsearch://localhost:9200'
 		],
+		'redis' => [
+			'dsn' => 'redis://localhost:6379/0',
+			'password' => null,
+		],
 	],
 ];

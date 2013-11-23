@@ -38,8 +38,14 @@ class Installer extends LibraryInstaller
 	 */
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
 	{
+		// install the package the normal composer way
 		parent::install($repo, $package);
+		// add the package to yiisoft/extensions.php
 		$this->addPackage($package);
+		// ensure the yii2-dev package also provides Yii.php in the same place as yii2 does
+		if ($package->getName() == 'yiisoft/yii2-dev') {
+			$this->linkYiiBaseFiles();
+		}
 	}
 
 	/**
@@ -50,6 +56,10 @@ class Installer extends LibraryInstaller
 		parent::update($repo, $initial, $target);
 		$this->removePackage($initial);
 		$this->addPackage($target);
+		// ensure the yii2-dev package also provides Yii.php in the same place as yii2 does
+		if ($initial->getName() == 'yiisoft/yii2-dev') {
+			$this->linkYiiBaseFiles();
+		}
 	}
 
 	/**
@@ -57,8 +67,14 @@ class Installer extends LibraryInstaller
 	 */
 	public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
 	{
+		// uninstall the package the normal composer way
 		parent::uninstall($repo, $package);
+		// remove the package from yiisoft/extensions.php
 		$this->removePackage($package);
+		// remove links for Yii.php
+		if ($package->getName() == 'yiisoft/yii2-dev') {
+			$this->removeYiiBaseFiles();
+		}
 	}
 
 	protected function addPackage(PackageInterface $package)
@@ -145,6 +161,42 @@ class Installer extends LibraryInstaller
 		file_put_contents($file, "<?php\n\n\$vendorDir = dirname(__DIR__);\n\nreturn $array;\n");
 	}
 
+	protected function linkYiiBaseFiles()
+	{
+		$yiiDir = $this->vendorDir . '/yiisoft/yii2/yii';
+		if (!file_exists($yiiDir)) {
+			mkdir($yiiDir, 0777, true);
+		}
+		foreach(['Yii.php', 'YiiBase.php', 'classes.php'] as $file) {
+			file_put_contents($yiiDir . '/' . $file, <<<EOF
+<?php
+/**
+* This is a link provided by the yiisoft/yii2-dev package via yii2-composer plugin.
+*
+* @link http://www.yiiframework.com/
+* @copyright Copyright (c) 2008 Yii Software LLC
+* @license http://www.yiiframework.com/license/
+*/
+
+return require(__DIR__ . '/../../yii2-dev/framework/yii/$file');
+
+EOF
+			);
+		}
+	}
+
+	protected function removeYiiBaseFiles()
+	{
+		$yiiDir = $this->vendorDir . '/yiisoft/yii2/yii';
+		foreach(['Yii.php', 'YiiBase.php', 'classes.php'] as $file) {
+			if (file_exists($yiiDir . '/' . $file)) {
+				unlink($yiiDir . '/' . $file);
+			}
+		}
+		if (file_exists($yiiDir)) {
+			rmdir($yiiDir);
+		}
+	}
 
 	/**
 	 * Sets the correct permission for the files and directories listed in the extra section.
