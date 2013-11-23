@@ -132,7 +132,7 @@ class ActiveRecord extends Model
 	 *  - an array of name-value pairs: query by a set of column values and return a single record matching all of them.
 	 *  - null: return a new [[ActiveQuery]] object for further query purpose.
 	 *
-	 * @return ActiveQuery|ActiveQueryInterface|static|null When `$q` is null, a new [[ActiveQuery]] instance
+	 * @return ActiveQuery|ActiveRecord|null When `$q` is null, a new [[ActiveQuery]] instance
 	 * is returned; when `$q` is a scalar or an array, an ActiveRecord object matching it will be
 	 * returned (null will be returned if there is no matching).
 	 * @throws InvalidConfigException if the AR class does not have a primary key

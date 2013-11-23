@@ -7,6 +7,7 @@
 
 namespace yii\db;
 
+use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 
 /**
@@ -761,7 +762,7 @@ class QueryBuilder extends \yii\base\Object
 	 * on how to specify a condition.
 	 * @param array $params the binding parameters to be populated
 	 * @return string the generated SQL expression
-	 * @throws \yii\db\Exception if the condition is in bad format
+	 * @throws InvalidParamException if the condition is in bad format
 	 */
 	public function buildCondition($condition, &$params)
 	{
@@ -790,7 +791,7 @@ class QueryBuilder extends \yii\base\Object
 				array_shift($condition);
 				return $this->$method($operator, $condition, $params);
 			} else {
-				throw new Exception('Found unknown operator in query: ' . $operator);
+				throw new InvalidParamException('Found unknown operator in query: ' . $operator);
 			}
 		} else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
 			return $this->buildHashCondition($condition, $params);

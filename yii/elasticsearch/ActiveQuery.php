@@ -71,8 +71,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			$this->index = $modelClass::index();
 			$this->type = $modelClass::type();
 		}
-		$query = $db->getQueryBuilder()->build($this);
-		return $db->createCommand($query, $this->index, $this->type);
+		$commandConfig = $db->getQueryBuilder()->build($this);
+		return $db->createCommand($commandConfig);
 	}
 
 	/**
