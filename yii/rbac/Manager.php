@@ -269,6 +269,12 @@ abstract class Manager extends Component
 	 */
 	abstract public function revoke($userId, $itemName);
 	/**
+	 * Revokes all authorization assignments from a user.
+	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @return boolean whether removal is successful
+	 */
+	abstract public function revokeAll($userId);
+	/**
 	 * Returns a value indicating whether the item has been assigned to the user.
 	 * @param mixed $userId the user ID (see [[User::id]])
 	 * @param string $itemName the item name
