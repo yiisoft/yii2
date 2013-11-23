@@ -63,6 +63,7 @@
 		"irc": "irc://irc.freenode.net/yii",
 		"source": "https://github.com/yiisoft/yii2"
 	},
+    "minimum-stability": "dev",
     "replace": {
         "yiisoft/yii2-bootstrap": "self.version",
         "yiisoft/yii2-debug": "self.version",
