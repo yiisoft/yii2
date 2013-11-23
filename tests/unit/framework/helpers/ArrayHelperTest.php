@@ -40,6 +40,12 @@ class Post3 extends Object
  */
 class ArrayHelperTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testToArray()
 	{
 		$object = new Post1;

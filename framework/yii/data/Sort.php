@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Object;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
+use yii\web\Request;
 
 /**
  * Sort represents information relevant to sorting.
@@ -240,7 +241,10 @@ class Sort extends Object
 	{
 		if ($this->_attributeOrders === null || $recalculate) {
 			$this->_attributeOrders = [];
-			$params = $this->params === null ? $_GET : $this->params;
+			if (($params = $this->params) === null) {
+				$request = Yii::$app->getRequest();
+				$params = $request instanceof Request ? $request->get() : [];
+			}
 			if (isset($params[$this->sortVar]) && is_scalar($params[$this->sortVar])) {
 				$attributes = explode($this->separators[0], $params[$this->sortVar]);
 				foreach ($attributes as $attribute) {
@@ -332,7 +336,10 @@ class Sort extends Object
 	 */
 	public function createUrl($attribute)
 	{
-		$params = $this->params === null ? $_GET : $this->params;
+		if (($params = $this->params) === null) {
+			$request = Yii::$app->getRequest();
+			$params = $request instanceof Request ? $request->get() : [];
+		}
 		$params[$this->sortVar] = $this->createSortVar($attribute);
 		$route = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
 		$urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;

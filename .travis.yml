@@ -10,8 +10,8 @@ services:
 
 before_script:
   - composer self-update && composer --version
-  - composer require satooshi/php-coveralls 0.6.* --dev
-  - composer require guzzle/http v3.7.3 --dev
+  - composer require satooshi/php-coveralls 0.6.* --dev --prefer-dist
+  - composer require guzzle/http v3.7.3 --dev --prefer-dist
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
   - tests/unit/data/travis/apc-setup.sh

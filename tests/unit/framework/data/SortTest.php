@@ -19,6 +19,12 @@ use yii\data\Sort;
  */
 class SortTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testGetOrders()
 	{
 		$sort = new Sort([

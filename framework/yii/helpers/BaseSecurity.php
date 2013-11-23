@@ -75,6 +75,9 @@ class BaseSecurity
 	 */
 	public static function decrypt($data, $password)
 	{
+		if ($data === null) {
+			return null;
+		}
 		$module = static::openCryptModule();
 		$ivSize = mcrypt_enc_get_iv_size($module);
 		$iv = StringHelper::substr($data, 0, $ivSize);
