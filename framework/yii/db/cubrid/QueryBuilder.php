@@ -8,6 +8,7 @@
 namespace yii\db\cubrid;
 
 use yii\base\InvalidParamException;
+use yii\db\BatchInsertTrait;
 
 /**
  * QueryBuilder is the query builder for CUBRID databases (version 9.1.x and higher).
@@ -17,6 +18,8 @@ use yii\base\InvalidParamException;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
+	use BatchInsertTrait;
+
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
@@ -66,52 +69,5 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		} else {
 			throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
 		}
-	}
-
-	/**
-	 * Generates a batch INSERT SQL statement.
-	 * For example,
-	 *
-	 * ~~~
-	 * $connection->createCommand()->batchInsert('tbl_user', ['name', 'age'], [
-	 *     ['Tom', 30],
-	 *     ['Jane', 20],
-	 *     ['Linda', 25],
-	 * ])->execute();
-	 * ~~~
-	 *
-	 * Note that the values in each row must match the corresponding column names.
-	 *
-	 * @param string $table the table that new rows will be inserted into.
-	 * @param array $columns the column names
-	 * @param array $rows the rows to be batch inserted into the table
-	 * @return string the batch INSERT SQL statement
-	 */
-	public function batchInsert($table, $columns, $rows)
-	{
-		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
-			$columnSchemas = $tableSchema->columns;
-		} else {
-			$columnSchemas = [];
-		}
-
-		foreach ($columns as $i => $name) {
-			$columns[$i] = $this->db->quoteColumnName($name);
-		}
-
-		$values = [];
-		foreach ($rows as $row) {
-			$vs = [];
-			foreach ($row as $i => $value) {
-				if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
-					$value = $columnSchemas[$columns[$i]]->typecast($value);
-				}
-				$vs[] = is_string($value) ? $this->db->quoteValue($value) : $value;
-			}
-			$values[] = '(' . implode(', ', $vs) . ')';
-		}
-
-		return 'INSERT INTO ' . $this->db->quoteTableName($table)
-			. ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
 	}
 }
