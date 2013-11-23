@@ -213,6 +213,9 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function updateAll($attributes, $condition = [], $params = [])
 	{
+		if (empty($condition)) {
+			return 0;
+		}
 		$bulk = '';
 		foreach((array) $condition as $pk) {
 			$action = Json::encode([
@@ -258,8 +261,11 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 * @param array $params this parameter is ignored in redis implementation.
 	 * @return integer the number of rows deleted
 	 */
-	public static function deleteAll($condition = null, $params = [])
+	public static function deleteAll($condition = [], $params = [])
 	{
+		if (empty($condition)) {
+			return 0;
+		}
 		$bulk = '';
 		foreach((array) $condition as $pk) {
 			$bulk = Json::encode([

@@ -132,4 +132,24 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 		return $model;
 	}
+
+	/**
+	 * Returns the query result as a scalar value.
+	 * The value returned will be the specified attribute in the first record of the query results.
+	 * @param string $attribute name of the attribute to select
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return string the value of the specified attribute in the first record of the query result.
+	 * Null is returned if the query result is empty.
+	 */
+	public function scalar($attribute, $db = null)
+	{
+		$record = $this->one($db);
+		if ($record !== null) {
+			return $record->$attribute;
+		} else {
+			return null;
+		}
+	}
+
 }
