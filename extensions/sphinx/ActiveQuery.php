@@ -7,6 +7,7 @@
 
 namespace yii\sphinx;
 
+use yii\base\InvalidCallException;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
 
@@ -186,10 +187,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	/**
 	 * Fetches the source for the snippets using [[ActiveRecord::getSnippetSource()]] method.
 	 * @param ActiveRecord[] $models raw query result rows.
+	 * @throws \yii\base\InvalidCallException if [[asArray]] enabled.
 	 * @return array snippet source strings
 	 */
 	protected function fetchSnippetSourceFromModels($models)
 	{
+		if ($this->asArray) {
+			throw new InvalidCallException('"' . __METHOD__ . '" unable to determine snippet source from plain array. Either disable "asArray" option or use regular "snippetCallback"');
+		}
 		$result = [];
 		foreach ($models as $model) {
 			$result[] = $model->getSnippetSource();
