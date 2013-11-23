@@ -221,6 +221,22 @@ class PhpManager extends Manager
 	}
 
 	/**
+	 * Revokes all authorization assignments from a user.
+	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @return boolean whether removal is successful
+	 */
+	public function revokeAll($userId)
+	{
+		if (isset($this->_assignments[$userId]) && is_array($this->_assignments[$userId])) {
+			foreach ($this->_assignments[$userId] as $itemName => $value)
+				unset($this->_assignments[$userId][$itemName]);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * Returns a value indicating whether the item has been assigned to the user.
 	 * @param mixed $userId the user ID (see [[User::id]])
 	 * @param string $itemName the item name
