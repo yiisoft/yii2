@@ -104,6 +104,39 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertTrue($customers['3-user3'] instanceof Customer);
 	}
 
+	public function testRefresh()
+	{
+		$customer = new Customer();
+		$this->assertFalse($customer->refresh());
+
+		$customer = Customer::find(1);
+		$customer->name = 'to be refreshed';
+		$this->assertTrue($customer->refresh());
+		$this->assertEquals('user1', $customer->name);
+	}
+
+	public function testEquals()
+	{
+		$customerA = new Customer();
+		$customerB = new Customer();
+		$this->assertFalse($customerA->equals($customerB));
+
+		$customerA = new Customer();
+		$customerB = new Item();
+		$this->assertFalse($customerA->equals($customerB));
+
+		$customerA = Customer::find(1);
+		$customerB = Customer::find(2);
+		$this->assertFalse($customerA->equals($customerB));
+
+		$customerB = Customer::find(1);
+		$this->assertTrue($customerA->equals($customerB));
+
+		$customerA = Customer::find(1);
+		$customerB = Item::find(1);
+		$this->assertFalse($customerA->equals($customerB));
+	}
+
 	public function testFindBySql()
 	{
 		// find one

@@ -116,6 +116,36 @@ class Command extends Component
 	}
 
 	/**
+	 * gets multiple documents from the index
+	 *
+	 * TODO allow specifying type and index + fields
+	 * @param $index
+	 * @param $type
+	 * @param $id
+	 * @param array $options
+	 * @return mixed
+	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html
+	 */
+	public function mget($index, $type, $ids, $options = [])
+	{
+		$httpOptions = [
+			'exceptions' => false,
+		];
+		$body = Json::encode(['ids' => array_values($ids)]);
+		$response = $this->db->http()->post( // TODO guzzle does not manage to send get request with content
+			$this->createUrl([$index, $type, '_mget'], $options),
+			null,
+			$body,
+			$httpOptions
+		)->send();
+		if ($response->getStatusCode() == 200) {
+			return Json::decode($response->getBody(true));
+		} else {
+			throw new Exception('Elasticsearch request failed.');
+		}
+	}
+
+	/**
 	 * gets a documents _source from the index (>=v0.90.1)
 	 * @param $index
 	 * @param $type

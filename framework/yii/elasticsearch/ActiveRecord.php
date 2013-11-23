@@ -25,7 +25,7 @@ use yii\helpers\StringHelper;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-abstract class ActiveRecord extends \yii\db\ActiveRecord
+class ActiveRecord extends \yii\db\ActiveRecord
 {
 	private $_id;
 	private $_version;
@@ -48,7 +48,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	{
 		$query = static::createQuery();
 		if (is_array($q)) {
-			if (count($q) == 1 && isset($q['primaryKey'])) {
+			if (count($q) == 1 && (array_key_exists('primaryKey', $q))) {
 				return static::get($q['primaryKey']);
 			}
 			return $query->where($q)->one();
@@ -58,14 +58,57 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 		return $query;
 	}
 
+	/**
+	 * Gets a record by its primary key.
+	 *
+	 * @param mixed $primaryKey the primaryKey value
+	 * @param array $options options given in this parameter are passed to elasticsearch
+	 * as request URI parameters.
+	 *
+	 * Please refer to the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html)
+	 * for more details on these options.
+	 * @return static|null The record instance or null if it was not found.
+	 */
+
 	public static function get($primaryKey, $options = [])
 	{
+		if ($primaryKey === null) {
+			return null;
+		}
 		$command = static::getDb()->createCommand();
 		$result = $command->get(static::index(), static::type(), $primaryKey, $options);
 		if ($result['exists']) {
 			return static::create($result);
 		}
 		return null;
+	}
+
+	/**
+	 * Gets a list of records by its primary keys.
+	 *
+	 * @param array $primaryKeys an array of primaryKey values
+	 * @param array $options options given in this parameter are passed to elasticsearch
+	 * as request URI parameters.
+	 *
+	 * Please refer to the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html)
+	 * for more details on these options.
+	 * @return static|null The record instance or null if it was not found.
+	 */
+
+	public static function mget($primaryKeys, $options = [])
+	{
+		if (empty($primaryKeys)) {
+			return [];
+		}
+		$command = static::getDb()->createCommand();
+		$result = $command->mget(static::index(), static::type(), $primaryKeys, $options);
+		$models = [];
+		foreach($result['docs'] as $doc) {
+			if ($doc['exists']) {
+				$models[] = static::create($doc);
+			}
+		}
+		return $models;
 	}
 
 	/**
@@ -117,7 +160,12 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public function getOldPrimaryKey($asArray = false)
 	{
-		return $this->getPrimaryKey($asArray);
+		$id = $this->isNewRecord ? null : $this->_id;
+		if ($asArray) {
+			return ['primaryKey' => $id];
+		} else {
+			return $this->_id;
+		}
 	}
 
 	/**
@@ -142,12 +190,17 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 		throw new InvalidConfigException('The attributes() method of elasticsearch ActiveRecord has to be implemented by child classes.');
 	}
 
-	// TODO index and type definition
+	/**
+	 * @return string the name of the index this record is stored in.
+	 */
 	public static function index()
 	{
 		return Inflector::pluralize(Inflector::camel2id(StringHelper::basename(get_called_class()), '-'));
 	}
 
+	/**
+	 * @return string the name of the type of this record.
+	 */
 	public static function type()
 	{
 		return Inflector::camel2id(StringHelper::basename(get_called_class()), '-');
@@ -168,9 +221,56 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * @inheritDocs
+	 * Inserts a document into the associated index using the attribute values of this record.
+	 *
+	 * This method performs the following steps in order:
+	 *
+	 * 1. call [[beforeValidate()]] when `$runValidation` is true. If validation
+	 *    fails, it will skip the rest of the steps;
+	 * 2. call [[afterValidate()]] when `$runValidation` is true.
+	 * 3. call [[beforeSave()]]. If the method returns false, it will skip the
+	 *    rest of the steps;
+	 * 4. insert the record into database. If this fails, it will skip the rest of the steps;
+	 * 5. call [[afterSave()]];
+	 *
+	 * In the above step 1, 2, 3 and 5, events [[EVENT_BEFORE_VALIDATE]],
+	 * [[EVENT_BEFORE_INSERT]], [[EVENT_AFTER_INSERT]] and [[EVENT_AFTER_VALIDATE]]
+	 * will be raised by the corresponding methods.
+	 *
+	 * Only the [[dirtyAttributes|changed attribute values]] will be inserted into database.
+	 *
+	 * If the [[primaryKey|primary key]] is not set (null) during insertion,
+	 * it will be populated with a
+	 * [randomly generated value](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-index_.html#_automatic_id_generation)
+	 * after insertion.
+	 *
+	 * For example, to insert a customer record:
+	 *
+	 * ~~~
+	 * $customer = new Customer;
+	 * $customer->name = $name;
+	 * $customer->email = $email;
+	 * $customer->insert();
+	 * ~~~
+	 *
+	 * @param boolean $runValidation whether to perform validation before saving the record.
+	 * If the validation fails, the record will not be inserted into the database.
+	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
+	 * meaning all attributes will be saved.
+	 * @param array $options options given in this parameter are passed to elasticsearch
+	 * as request URI parameters. These are among others:
+	 *
+	 * - `routing` define shard placement of this record.
+	 * - `parent` by giving the primaryKey of another record this defines a parent-child relation
+	 * - `timestamp` specifies the timestamp to store along with the document. Default is indexing time.
+	 *
+	 * Please refer to the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-index_.html)
+	 * for more details on these options.
+	 *
+	 * By default the `op_type` is set to `create`.
+	 * @return boolean whether the attributes are valid and the record is inserted successfully.
 	 */
-	public function insert($runValidation = true, $attributes = null)
+	public function insert($runValidation = true, $attributes = null, $options = ['op_type' => 'create'])
 	{
 		if ($runValidation && !$this->validate($attributes)) {
 			return false;
@@ -182,7 +282,8 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 				static::index(),
 				static::type(),
 				$values,
-				$this->getPrimaryKey()
+				$this->getPrimaryKey(),
+				$options
 			);
 
 			if (!$response['ok']) {
@@ -268,7 +369,7 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 		}
 		$bulk = '';
 		foreach((array) $condition as $pk) {
-			$bulk = Json::encode([
+			$bulk .= Json::encode([
 				"delete" => [
 					"_id" => $pk,
 					"_type" => static::type(),
@@ -283,10 +384,9 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
 		$body = Json::decode($response->getBody(true));
 		$n=0;
 		foreach($body['items'] as $item) {
-			if ($item['delete']['ok']) {
+			if ($item['delete']['found'] && $item['delete']['ok']) {
 				$n++;
 			}
-			// TODO might want to update the _version in update()
 		}
 		return $n;
 	}

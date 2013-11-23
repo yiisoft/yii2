@@ -93,17 +93,6 @@ class ActiveRecordTest extends ElasticSearchTestCase
 //		$orderItem->save(false);
 
 		Customer::getDb()->createCommand()->flushIndex();
-
-//		for($n = 0; $n < 20; $n++) {
-//			$r = $db->http()->post('_count')->send();
-//			$c = Json::decode($r->getBody(true));
-//			if ($c['count'] != 11) {
-//				usleep(100000);
-//			} else {
-//				return;
-//			}
-//		}
-//		throw new \Exception('Unable to initialize elasticsearch data.');
 	}
 
 	public function testFind()
@@ -185,6 +174,62 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertTrue($customers['1-user1'] instanceof Customer);
 		$this->assertTrue($customers['1-user2'] instanceof Customer);
 		$this->assertTrue($customers['2-user3'] instanceof Customer);
+	}
+
+	public function testGet()
+	{
+		$this->assertInstanceOf(Customer::className(), Customer::get(1));
+		$this->assertNull(Customer::get(5));
+	}
+
+	public function testMget()
+	{
+		$this->assertEquals([], Customer::mget([]));
+
+		$records = Customer::mget([1]);
+		$this->assertEquals(1, count($records));
+		$this->assertInstanceOf(Customer::className(), reset($records));
+
+		$records = Customer::mget([5]);
+		$this->assertEquals(0, count($records));
+
+		$records = Customer::mget([1,3,5]);
+		$this->assertEquals(2, count($records));
+		$this->assertInstanceOf(Customer::className(), $records[0]);
+		$this->assertInstanceOf(Customer::className(), $records[1]);
+	}
+
+	public function testRefresh()
+	{
+		$customer = new Customer();
+		$this->assertFalse($customer->refresh());
+
+		$customer = Customer::get(1);
+		$customer->name = 'to be refreshed';
+		$this->assertTrue($customer->refresh());
+		$this->assertEquals('user1', $customer->name);
+	}
+
+	public function testEquals()
+	{
+		$customerA = new Customer();
+		$customerB = new Customer();
+		$this->assertFalse($customerA->equals($customerB));
+
+		$customerA = new Customer();
+		$customerB = new Item();
+		$this->assertFalse($customerA->equals($customerB));
+
+		$customerA = Customer::find(1);
+		$customerB = Customer::find(2);
+		$this->assertFalse($customerA->equals($customerB));
+
+		$customerB = Customer::find(1);
+		$this->assertTrue($customerA->equals($customerB));
+
+		$customerA = Customer::find(1);
+		$customerB = Item::find(1);
+		$this->assertFalse($customerA->equals($customerB));
 	}
 
 	public function testFindCount()
@@ -388,6 +433,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 	public function testInsertNoPk()
 	{
+		$this->assertEquals(['primaryKey'], Customer::primaryKey());
+
 		$customer = new Customer;
 		$customer->email = 'user4@example.com';
 		$customer->name = 'user4';
@@ -435,17 +482,20 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		// updateAll
 		$customer = Customer::find(3);
 		$this->assertEquals('user3', $customer->name);
-		$ret = Customer::updateAll(array(
+		$ret = Customer::updateAll([
 			'name' => 'temp',
-		), array('id' => 3));
+		], ['id' => 3]);
 		$this->assertEquals(1, $ret);
 		$customer = Customer::find(3);
 		$this->assertEquals('temp', $customer->name);
+
+		$ret = Customer::updateAll(['name' => 'temp']);
+		$this->assertEquals(0, $ret);
 	}
 
 	public function testUpdatePk()
 	{
-		$this->setExpectedException('yii\base\NotSupportedException');
+		$this->setExpectedException('yii\base\InvalidCallException');
 
 		$pk = array('primaryKey' => 2);
 		$orderItem = Order::find($pk);
@@ -472,7 +522,13 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertEquals(2, count($customers));
 		$ret = Customer::deleteAll([1,2,3]);
 		$this->assertEquals(2, $ret);
+
+		Customer::getDb()->createCommand()->flushIndex('customers');
+
 		$customers = Customer::find()->all();
 		$this->assertEquals(0, count($customers));
+
+		$ret = Customer::deleteAll();
+		$this->assertEquals(0, $ret);
 	}
 }
