@@ -94,7 +94,7 @@ few sections, the concept of scenarios is mainly used for data validation and ma
 
 Associated with each scenario is a list of attributes that are *active* in that particular scenario. For example,
 in the `login` scenario, only the `username` and `password` attributes are active; while in the `register` scenario,
-additional attributes such as `email` are *active*.
+additional attributes such as `email` are *active*. When an attribute is *active* this means that it is subject to validation.
 
 Possible scenarios should be listed in the `scenarios()` method. This method returns an array whose keys are the scenario
 names and whose values are lists of attributes that should be active in that scenario:
@@ -119,6 +119,9 @@ We may do so by prefixing an exclamation character to the attribute name when de
 ['username', 'password', '!secret']
 ```
 
+In this example `username`, `password` and `secret` are *active* attributes but only `username` and `password` are
+considered safe for massive assignment.
+
 Identifying the active model scenario can be done using one of the following approaches:
 
 ```php
@@ -136,13 +139,17 @@ class EmployeeController extends \yii\web\Controller
 		// third way
 		$employee = Employee::find()->where('id = :id', [':id' => $id])->one();
 		if ($employee !== null) {
-			$employee->setScenario('managementPanel');
+			$employee->scenario = 'managementPanel';
 		}
 	}
 }
 ```
 
-The example above presumes that the model is based upon [Active Record](active-record.md). For basic form models, scenarios are rarely needed, as the basic form model is normally tied directly to a single form.
+The example above presumes that the model is based upon [Active Record](active-record.md). For basic form models,
+scenarios are rarely needed, as the basic form model is normally tied directly to a single form.
+The default implementation of the `scenarios()`-method will return all scenarios found in the `rules()`
+declaration (explained in the next section) so in simple cases you do not need to define scenarios.
+
 
 Validation
 ----------
@@ -170,11 +177,11 @@ instance of a [[\yii\validators\Validator]] child class, or an array with the fo
 
 ```php
 [
-	'attribute1, attribute2, ...',
+	['attribute1', 'attribute2', ...],
 	'validator class or alias',
 	// specifies in which scenario(s) this rule is active.
 	// if not given, it means it is active in all scenarios
-	'on' => 'scenario1, scenario2, ...',
+	'on' => ['scenario1', 'scenario2', ...],
 	// the following name-value pairs will be used
 	// to initialize the validator properties
 	'property1' => 'value1',
