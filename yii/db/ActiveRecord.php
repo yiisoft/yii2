@@ -475,7 +475,8 @@ class ActiveRecord extends Model
 	 */
 	public function hasOne($class, $link)
 	{
-		return $this->createActiveRelation([
+		/** @var ActiveRecord $class */
+		return $class::createActiveRelation([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
@@ -513,7 +514,8 @@ class ActiveRecord extends Model
 	 */
 	public function hasMany($class, $link)
 	{
-		return $this->createActiveRelation([
+		/** @var ActiveRecord $class */
+		return $class::createActiveRelation([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
@@ -528,7 +530,7 @@ class ActiveRecord extends Model
 	 * @param array $config the configuration passed to the ActiveRelation class.
 	 * @return ActiveRelation the newly created [[ActiveRelation]] instance.
 	 */
-	protected function createActiveRelation($config = [])
+	public static function createActiveRelation($config = [])
 	{
 		return new ActiveRelation($config);
 	}
