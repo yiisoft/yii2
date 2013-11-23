@@ -7,15 +7,14 @@
 
 namespace yii\elasticsearch;
 
+use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 
 /**
- * QueryBuilder builds a SELECT SQL statement based on the specification given as a [[Query]] object.
+ * QueryBuilder builds an elasticsearch query based on the specification given as a [[Query]] object.
  *
- * QueryBuilder can also be used to build SQL statements such as INSERT, UPDATE, DELETE, CREATE TABLE,
- * from a [[Query]] object.
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
 class QueryBuilder extends \yii\base\Object
@@ -30,105 +29,51 @@ class QueryBuilder extends \yii\base\Object
 	 * @param Connection $connection the database connection.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($connection, $config = array())
+	public function __construct($connection, $config = [])
 	{
 		$this->db = $connection;
 		parent::__construct($config);
 	}
 
 	/**
-	 * Generates a SELECT SQL statement from a [[Query]] object.
-	 * @param Query $query the [[Query]] object from which the SQL statement will be generated
+	 * Generates query from a [[Query]] object.
+	 * @param Query $query the [[Query]] object from which the query will be generated
 	 * @return array the generated SQL statement (the first array element) and the corresponding
 	 * parameters to be bound to the SQL statement (the second array element).
 	 */
 	public function build($query)
 	{
-		$searchQuery = array();
-		$this->buildFields($searchQuery, $query->fields);
-//		$this->buildFrom($searchQuery, $query->from);
-		$this->buildCondition($searchQuery, $query->where);
-		$this->buildOrderBy($searchQuery, $query->orderBy);
-		$this->buildLimit($searchQuery, $query->limit, $query->offset);
+		$parts = [];
 
-		return $searchQuery;
+		if ($query->fields !== null) {
+			$parts['fields'] = (array) $query->fields;
+		}
+		if ($query->limit !== null && $query->limit >= 0) {
+			$parts['size'] = $query->limit;
+		}
+		if ($query->offset > 0) {
+			$parts['from'] = (int) $query->offset;
+		}
+
+		$this->buildCondition($parts, $query->where);
+		$this->buildOrderBy($parts, $query->orderBy);
+
+		if (empty($parts['query'])) {
+			$parts['query'] = ["match_all" => (object)[]];
+		}
+
+		return [
+			'queryParts' => $parts,
+			'index' => $query->index,
+			'type' => $query->type,
+			'options' => [
+				'timeout' => $query->timeout
+			],
+		];
 	}
 
 	/**
-	 * Converts an abstract column type into a physical column type.
-	 * The conversion is done using the type map specified in [[typeMap]].
-	 * The following abstract column types are supported (using MySQL as an example to explain the corresponding
-	 * physical types):
-	 *
-	 * - `pk`: an auto-incremental primary key type, will be converted into "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY"
-	 * - `bigpk`: an auto-incremental primary key type, will be converted into "bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY"
-	 * - `string`: string type, will be converted into "varchar(255)"
-	 * - `text`: a long string type, will be converted into "text"
-	 * - `smallint`: a small integer type, will be converted into "smallint(6)"
-	 * - `integer`: integer type, will be converted into "int(11)"
-	 * - `bigint`: a big integer type, will be converted into "bigint(20)"
-	 * - `boolean`: boolean type, will be converted into "tinyint(1)"
-	 * - `float``: float number type, will be converted into "float"
-	 * - `decimal`: decimal number type, will be converted into "decimal"
-	 * - `datetime`: datetime type, will be converted into "datetime"
-	 * - `timestamp`: timestamp type, will be converted into "timestamp"
-	 * - `time`: time type, will be converted into "time"
-	 * - `date`: date type, will be converted into "date"
-	 * - `money`: money type, will be converted into "decimal(19,4)"
-	 * - `binary`: binary data type, will be converted into "blob"
-	 *
-	 * If the abstract type contains two or more parts separated by spaces (e.g. "string NOT NULL"), then only
-	 * the first part will be converted, and the rest of the parts will be appended to the converted result.
-	 * For example, 'string NOT NULL' is converted to 'varchar(255) NOT NULL'.
-	 *
-	 * For some of the abstract types you can also specify a length or precision constraint
-	 * by prepending it in round brackets directly to the type.
-	 * For example `string(32)` will be converted into "varchar(32)" on a MySQL database.
-	 * If the underlying DBMS does not support these kind of constraints for a type it will
-	 * be ignored.
-	 *
-	 * If a type cannot be found in [[typeMap]], it will be returned without any change.
-	 * @param string $type abstract column type
-	 * @return string physical column type.
-	 */
-	public function getColumnType($type)
-	{
-		if (isset($this->typeMap[$type])) {
-			return $this->typeMap[$type];
-		} elseif (preg_match('/^(\w+)\((.+?)\)(.*)$/', $type, $matches)) {
-			if (isset($this->typeMap[$matches[1]])) {
-				return preg_replace('/\(.+\)/', '(' . $matches[2] . ')', $this->typeMap[$matches[1]]) . $matches[3];
-			}
-		} elseif (preg_match('/^(\w+)\s+/', $type, $matches)) {
-			if (isset($this->typeMap[$matches[1]])) {
-				return preg_replace('/^\w+/', $this->typeMap[$matches[1]], $type);
-			}
-		}
-		return $type;
-	}
-
-	/**
-	 * @param array $columns
-	 * @param boolean $distinct
-	 * @param string $selectOption
-	 * @return string the SELECT clause built from [[query]].
-	 */
-	public function buildFields(&$query, $columns)
-	{
-		if ($columns === null) {
-			return;
-		}
-		foreach ($columns as $i => $column) {
-			if (is_object($column)) {
-				$columns[$i] = (string)$column;
-			}
-		}
-		$query['fields'] = $columns;
-	}
-
-	/**
-	 * @param array $columns
-	 * @return string the ORDER BY clause built from [[query]].
+	 * adds order by condition to the query
 	 */
 	public function buildOrderBy(&$query, $columns)
 	{
@@ -143,25 +88,10 @@ class QueryBuilder extends \yii\base\Object
 			} elseif (is_string($direction)) {
 				$orders[] = $direction;
 			} else {
-				$orders[] = array($name => ($direction === Query::SORT_DESC ? 'desc' : 'asc'));
+				$orders[] = array($name => ($direction === SORT_DESC ? 'desc' : 'asc'));
 			}
 		}
 		$query['sort'] = $orders;
-	}
-
-	/**
-	 * @param integer $limit
-	 * @param integer $offset
-	 * @return string the LIMIT and OFFSET clauses built from [[query]].
-	 */
-	public function buildLimit(&$query, $limit, $offset)
-	{
-		if ($limit !== null && $limit >= 0) {
-			$query['size'] = $limit;
-		}
-		if ($offset > 0) {
-			$query['from'] = (int) $offset;
-		}
 	}
 
 	/**
@@ -191,7 +121,7 @@ class QueryBuilder extends \yii\base\Object
 			return;
 		}
 		if (!is_array($condition)) {
-			throw new NotSupportedException('String conditions are not supported by elasticsearch.');
+			throw new NotSupportedException('String conditions in where() are not supported by elasticsearch.');
 		}
 		if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
 			$operator = strtoupper($condition[0]);
@@ -200,7 +130,7 @@ class QueryBuilder extends \yii\base\Object
 				array_shift($condition);
 				$this->$method($query, $operator, $condition);
 			} else {
-				throw new Exception('Found unknown operator in query: ' . $operator);
+				throw new InvalidParamException('Found unknown operator in query: ' . $operator);
 			}
 		} else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
 			$this->buildHashCondition($query, $condition);

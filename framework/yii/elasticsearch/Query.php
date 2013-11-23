@@ -50,6 +50,16 @@ class Query extends Component implements QueryInterface
 	 */
 	public $timeout;
 
+	public $query;
+
+	public $filter;
+
+	public $facets = [];
+
+	public $facetResults = [];
+
+	public $totalCount;
+
 	/**
 	 * Creates a DB command that can be used to execute this query.
 	 * @param Connection $db the database connection used to execute the query.
@@ -62,8 +72,8 @@ class Query extends Component implements QueryInterface
 			$db = Yii::$app->getComponent('elasticsearch');
 		}
 
-		$query = $db->getQueryBuilder()->build($this);
-		return $db->createCommand($query, $this->index, $this->type);
+		$commandConfig = $db->getQueryBuilder()->build($this);
+		return $db->createCommand($commandConfig);
 	}
 
 	/**
@@ -74,11 +84,13 @@ class Query extends Component implements QueryInterface
 	 */
 	public function all($db = null)
 	{
-		$rows = $this->createCommand($db)->queryAll()['hits'];
+		$result = $this->createCommand($db)->queryAll();
+		// TODO publish facet results
+		$rows = $result['hits'];
 		if ($this->indexBy === null && $this->fields === null) {
 			return $rows;
 		}
-		$result = [];
+		$models = [];
 		foreach ($rows as $key => $row) {
 			if ($this->fields !== null) {
 				$row['_source'] = isset($row['fields']) ? $row['fields'] : [];
@@ -91,9 +103,9 @@ class Query extends Component implements QueryInterface
 					$key = call_user_func($this->indexBy, $row);
 				}
 			}
-			$result[$key] = $row;
+			$models[$key] = $row;
 		}
-		return $result;
+		return $models;
 	}
 
 	/**
@@ -107,6 +119,7 @@ class Query extends Component implements QueryInterface
 	{
 		$options['size'] = 1;
 		$result = $this->createCommand($db)->queryAll($options);
+		// TODO publish facet results
 		if (empty($result['hits'])) {
 			return false;
 		}
@@ -116,6 +129,20 @@ class Query extends Component implements QueryInterface
 			unset($record['fields']);
 		}
 		return $record;
+	}
+
+	/**
+	 * Executes the query and deletes all matching documents.
+	 *
+	 * This will not run facet queries.
+	 *
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `elasticsearch` application component will be used.
+	 * @return array the query results. If the query results in nothing, an empty array will be returned.
+	 */
+	public function delete($db = null)
+	{
+		// TODO http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete-by-query.html
 	}
 
 	/**
@@ -146,11 +173,12 @@ class Query extends Component implements QueryInterface
 	 */
 	public function column($field, $db = null)
 	{
-		$query = clone $this;
-		$rows = $query->fields([$field])->createCommand($db)->queryAll()['hits'];
+		$command = $this->createCommand($db);
+		$command->queryParts['fields'] = [$field];
+		$rows = $command->queryAll()['hits'];
 		$result = [];
 		foreach ($rows as $row) {
-			$result[] = $row['fields'][$field];
+			$result[] = isset($row['fields'][$field]) ? $row['fields'][$field] : null;
 		}
 		return $result;
 	}
@@ -164,6 +192,10 @@ class Query extends Component implements QueryInterface
 	 */
 	public function count($q = '*', $db = null)
 	{
+		// TODO consider sending to _count api instead of _search for performance
+		// only when no facety are registerted.
+		// http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-count.html
+
 		$count = $this->createCommand($db)->queryCount()['total'];
 		if ($this->limit === null && $this->offset === null) {
 			return $count;
@@ -171,63 +203,6 @@ class Query extends Component implements QueryInterface
 			$count = $this->offset < $count ? $count - $this->offset : 0;
 		}
 		return $this->limit === null ? $count : ($this->limit > $count ? $count : $this->limit);
-	}
-
-
-	/**
-	 * Returns the sum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names in the expression.
-	 * @param Connection $db the database connection used to execute the query.
-	 * If this parameter is not given, the `elasticsearch` application component will be used.
-	 * @return integer the sum of the specified column values
-	 */
-	public function sum($q, $db = null)
-	{
-		$this->select = ["SUM($q)"];
-		return $this->createCommand($db)->queryScalar();
-	}
-
-	/**
-	 * Returns the average of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names in the expression.
-	 * @param Connection $db the database connection used to execute the query.
-	 * If this parameter is not given, the `elasticsearch` application component will be used.
-	 * @return integer the average of the specified column values.
-	 */
-	public function average($q, $db = null)
-	{
-		$this->select = ["AVG($q)"];
-		return $this->createCommand($db)->queryScalar();
-	}
-
-	/**
-	 * Returns the minimum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names in the expression.
-	 * @param Connection $db the database connection used to execute the query.
-	 * If this parameter is not given, the `elasticsearch` application component will be used.
-	 * @return integer the minimum of the specified column values.
-	 */
-	public function min($q, $db = null)
-	{
-		$this->select = ["MIN($q)"];
-		return $this->createCommand($db)->queryScalar();
-	}
-
-	/**
-	 * Returns the maximum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names in the expression.
-	 * @param Connection $db the database connection used to execute the query.
-	 * If this parameter is not given, the `elasticsearch` application component will be used.
-	 * @return integer the maximum of the specified column values.
-	 */
-	public function max($q, $db = null)
-	{
-		$this->select = ["MAX($q)"];
-		return $this->createCommand($db)->queryScalar();
 	}
 
 	/**
@@ -238,19 +213,148 @@ class Query extends Component implements QueryInterface
 	 */
 	public function exists($db = null)
 	{
-		// TODO check for exists
-		return $this->one($db) !== null;
+		return self::one($db) !== false;
 	}
 
 	/**
-	 * Executes the query and returns all results as an array.
-	 * @param Connection $db the database connection used to execute the query.
-	 * If this parameter is not given, the `elasticsearch` application component will be used.
-	 * @return array the query results. If the query results in nothing, an empty array will be returned.
+	 * Adds a facet search to this query.
+	 * @param string $name the name of this facet
+	 * @param string $type the facet type. e.g. `terms`, `range`, `histogram`...
+	 * @param string|array $options the configuration options for this facet. Can be an array or a json string.
+	 * @return static
+	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-query-facet.html
 	 */
-	public function delete($db = null)
+	public function addFacet($name, $type, $options)
 	{
-		// TODO http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete-by-query.html
+		$this->facets[$name] = [$type => $options];
+		return $this;
+	}
+
+	/**
+	 * The `terms facet` allow to specify field facets that return the N most frequent terms.
+	 * @param string $name the name of this facet
+	 * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+	 * @return static
+	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-terms-facet.html
+	 */
+	public function addTermFacet($name, $options)
+	{
+		return $this->addFacet($name, 'terms', $options);
+	}
+
+	/**
+	 * Range facet allows to specify a set of ranges and get both the number of docs (count) that fall
+	 * within each range, and aggregated data either based on the field, or using another field.
+	 * @param string $name the name of this facet
+	 * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+	 * @return static
+	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-range-facet.html
+	 */
+	public function addRangeFacet($name, $options)
+	{
+		return $this->addFacet($name, 'range', $options);
+	}
+
+	/**
+	 * The histogram facet works with numeric data by building a histogram across intervals of the field values.
+	 * Each value is "rounded" into an interval (or placed in a bucket), and statistics are provided per
+	 * interval/bucket (count and total).
+	 * @param string $name the name of this facet
+	 * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+	 * @return static
+	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-histogram-facet.html
+	 */
+	public function addHistogramFacet($name, $options)
+	{
+		return $this->addFacet($name, 'histogram', $options);
+	}
+
+	/**
+	 * A specific histogram facet that can work with date field types enhancing it over the regular histogram facet.
+	 * @param string $name the name of this facet
+	 * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+	 * @return static
+	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-date-histogram-facet.html
+	 */
+	public function addDateHistogramFacet($name, $options)
+	{
+		return $this->addFacet($name, 'date_histogram', $options);
+	}
+
+	/**
+	 * A filter facet (not to be confused with a facet filter) allows you to return a count of the hits matching the filter.
+	 * The filter itself can be expressed using the Query DSL.
+	 * @param string $name the name of this facet
+	 * @param string $filter the query in Query DSL
+	 * @return static
+	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-filter-facet.html
+	 */
+	public function addFilterFacet($name, $filter)
+	{
+		return $this->addFacet($name, 'filter', $filter);
+	}
+
+	/**
+	 * A facet query allows to return a count of the hits matching the facet query.
+	 * The query itself can be expressed using the Query DSL.
+	 * @param string $name the name of this facet
+	 * @param string $query the query in Query DSL
+	 * @return static
+	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-query-facet.html
+	 */
+	public function addQueryFacet($name, $query)
+	{
+		return $this->addFacet($name, 'query', $query);
+	}
+
+	/**
+	 * Statistical facet allows to compute statistical data on a numeric fields. The statistical data include count,
+	 * total, sum of squares, mean (average), minimum, maximum, variance, and standard deviation.
+	 * @param string $name the name of this facet
+	 * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+	 * @return static
+	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-statistical-facet.html
+	 */
+	public function addStatisticalFacet($name, $options)
+	{
+		return $this->addFacet($name, 'statistical', $options);
+	}
+
+	/**
+	 * The `terms_stats` facet combines both the terms and statistical allowing to compute stats computed on a field,
+	 * per term value driven by another field.
+	 * @param string $name the name of this facet
+	 * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+	 * @return static
+	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-terms-stats-facet.html
+	 */
+	public function addTermsStatsFacet($name, $options)
+	{
+		return $this->addFacet($name, 'terms_stats', $options);
+	}
+
+	/**
+	 * The `geo_distance` facet is a facet providing information for ranges of distances from a provided `geo_point`
+	 * including count of the number of hits that fall within each range, and aggregation information (like `total`).
+	 * @param string $name the name of this facet
+	 * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+	 * @return static
+	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-geo-distance-facet.html
+	 */
+	public function addGeoDistanceFacet($name, $options)
+	{
+		return $this->addFacet($name, 'geo_distance', $options);
+	}
+
+	// TODO add suggesters http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-suggesters.html
+
+	// TODO add validate query http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-validate.html
+
+	// TODO support multi query via static method http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-multi-search.html
+
+	public function query()
+	{
+
 	}
 
 	/**

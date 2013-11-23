@@ -6,6 +6,7 @@
 namespace yii\elasticsearch;
 
 
+use Guzzle\Http\Exception\ClientErrorResponseException;
 use yii\base\Component;
 use yii\db\Exception;
 use yii\helpers\Json;
@@ -35,15 +36,16 @@ class Command extends Component
 	 * @var string|array the types to execute the query on. Defaults to null meaning all types
 	 */
 	public $type;
-
 	/**
-	 * @var array|string array or json
+	 * @var array list of arrays or json strings that become parts of a query
 	 */
-	public $query;
+	public $queryParts;
+
+	public $options = [];
 
 	public function queryAll($options = [])
 	{
-		$query = $this->query;
+		$query = $this->queryParts;
 		if (empty($query)) {
 			$query = '{}';
 		}
@@ -55,7 +57,11 @@ class Command extends Component
 			$this->type !== null ? $this->type : '_all',
 			'_search'
 		];
-		$response = $this->db->http()->post($this->createUrl($url, $options), null, $query)->send();
+		try {
+			$response = $this->db->http()->post($this->createUrl($url, $options), null, $query)->send();
+		} catch(ClientErrorResponseException $e) {
+			throw new Exception("elasticsearch error:\n\n" . $query . "\n\n" . $e->getMessage() . $e->getResponse()->getBody(true), [], 0, $e);
+		}
 		return Json::decode($response->getBody(true))['hits'];
 	}
 
@@ -405,7 +411,8 @@ class Command extends Component
 			return urlencode(is_array($a) ? implode(',', $a) : $a);
 		}, $path));
 
-		if (!empty($options)) {
+		if (!empty($options) || !empty($this->options)) {
+			$options = array_merge($this->options, $options);
 			$url .= '?' . http_build_query($options);
 		}
 

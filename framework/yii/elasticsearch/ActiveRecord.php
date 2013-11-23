@@ -110,6 +110,10 @@ class ActiveRecord extends \yii\db\ActiveRecord
 		return $models;
 	}
 
+	// TODO add more like this feature http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-more-like-this.html
+
+	// TODO add percolate functionality http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-percolate.html
+
 	/**
 	 * @inheritDoc
 	 */

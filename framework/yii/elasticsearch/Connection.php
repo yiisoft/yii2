@@ -58,15 +58,11 @@ class Connection extends Component
 	 * @param string $query the SQL statement to be executed
 	 * @return Command the DB command
 	 */
-	public function createCommand($query = null, $index = null, $type = null)
+	public function createCommand($config = [])
 	{
 		$this->open();
-		$command = new Command(array(
-			'db' => $this,
-			'query' => $query,
-			'index' => $index,
-			'type' => $type,
-		));
+		$config['db'] = $this;
+		$command = new Command($config);
 		return $command;
 	}
 

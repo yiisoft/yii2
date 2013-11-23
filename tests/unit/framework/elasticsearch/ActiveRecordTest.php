@@ -296,17 +296,22 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertEquals(1, count(Customer::find()->where(array('AND', array('name' => array('user2','user3')), array('BETWEEN', 'status', 2, 4)))->all()));
 	}
 
-//	public function testSum()
-//	{
-//		$this->assertEquals(6, OrderItem::find()->count());
-//		$this->assertEquals(7, OrderItem::find()->sum('quantity'));
-//	}
+	public function testFindNullValues()
+	{
+		$customer = Customer::find(2);
+		$customer->name = null;
+		$customer->save(false);
 
-//	public function testFindColumn()
-//	{
-//		$this->assertEquals(array('user1', 'user2', 'user3'), Customer::find()->column('name'));
-////		TODO $this->assertEquals(array('user3', 'user2', 'user1'), Customer::find()->orderBy(array('name' => Query::SORT_DESC))->column('name'));
-//	}
+		$result = Customer::find()->where(['name' => null])->all();
+		$this->assertEquals(1, count($result));
+		$this->assertEquals(2, reset($result)->primaryKey);
+	}
+
+	public function testFindColumn()
+	{
+		$this->assertEquals(array('user1', 'user2', 'user3'), Customer::find()->column('name'));
+		$this->assertEquals(array('user3', 'user2', 'user1'), Customer::find()->orderBy(array('name' => SORT_DESC))->column('name'));
+	}
 
 	public function testExists()
 	{
