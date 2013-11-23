@@ -661,12 +661,11 @@ class Html extends \yii\helpers\Html
 	 *
 	 * Example(s): 
 	 * ```php
+	 * // with ActiveRecord model
+	 * echo Html::activeLabel($model, 'email') . '<br>' . Html::staticInput($model->email);
+	 *
+	 * // without model
 	 * echo Html::staticInput('email@example.com');
-	 * ```
-	 * With model
-	 * ```php
-	 * echo Html::activeLabel($model, email);
-	 * echo Html::staticInput($model->email);
 	 * ```
 	 *
 	 * @see http://getbootstrap.com/css/#forms-controls-static
