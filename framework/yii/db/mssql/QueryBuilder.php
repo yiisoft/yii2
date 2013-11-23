@@ -7,16 +7,20 @@
 
 namespace yii\db\mssql;
 
+use yii\db\BatchInsertTrait;
 use yii\base\InvalidParamException;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
  *
  * @author Timur Ruziev <resurtm@gmail.com>
+ * @author Panagiotis Moustafellos <pmoust@gmail.com>
  * @since 2.0
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
+	use BatchInsertTrait;
+	
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
