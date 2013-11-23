@@ -89,6 +89,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			return [];
 		}
 		$models = $this->createModels($result['hits']);
+		if ($this->asArray) {
+			foreach($models as $key => $model) {
+				$models[$key] = $model['_source'];
+				$models[$key]['primaryKey'] = $model['_id'];
+			}
+		}
 		if (!empty($this->with)) {
 			$this->findWith($this->with, $models);
 		}
@@ -107,11 +113,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	{
 		$command = $this->createCommand($db);
 		$result = $command->queryOne();
-		if ($result['total'] == 0) {
+		if ($result['total'] == 0 || empty($result['hits'])) {
 			return null;
 		}
 		if ($this->asArray) {
-			$model = reset($result['hits']);
+			$first = reset($result['hits']);
+			$model = $first['_source'];
+			$model['primaryKey'] = $first['_id'];
 		} else {
 			/** @var ActiveRecord $class */
 			$class = $this->modelClass;

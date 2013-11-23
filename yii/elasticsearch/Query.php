@@ -117,16 +117,20 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Returns the number of records.
-	 * @param string $q the COUNT expression. Defaults to '*'.
-	 * Make sure you properly quote column names in the expression.
+	 * @param string $q the COUNT expression. This parameter is ignored by this implementation.
 	 * @param Connection $db the database connection used to generate the SQL statement.
 	 * If this parameter is not given (or null), the `db` application component will be used.
 	 * @return integer number of records
 	 */
 	public function count($q = '*', $db = null)
 	{
-		$this->select = ["COUNT($q)"];
-		return $this->createCommand($db)->queryScalar();
+		$count = $this->createCommand($db)->queryCount()['total'];
+		if ($this->limit === null && $this->offset === null) {
+			return $count;
+		} elseif ($this->offset !== null) {
+			$count = $this->offset < $count ? $count - $this->offset : 0;
+		}
+		return $this->limit === null ? $count : ($this->limit > $count ? $count : $this->limit);
 	}
 
 
