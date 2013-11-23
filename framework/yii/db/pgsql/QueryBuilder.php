@@ -8,6 +8,8 @@
 
 namespace yii\db\pgsql;
 
+use yii\db\BatchInsertTrait;
+
 /**
  * QueryBuilder is the query builder for PostgreSQL databases.
  *
@@ -16,6 +18,7 @@ namespace yii\db\pgsql;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
+	use BatchInsertTrait;
 
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
