@@ -64,13 +64,13 @@ class UniqueValidator extends Validator
 		$className = $this->className === null ? get_class($object) : $this->className;
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
 
-		$table = $className::getTableSchema();
-		if (($column = $table->getColumn($attributeName)) === null) {
-			throw new InvalidConfigException("Table '{$table->name}' does not have a column named '$attributeName'.");
+		$attributes = $className::attributes();
+		if (!in_array($attributeName, $attributes)) {
+			throw new InvalidConfigException("'$className' does not have an attribute named '$attributeName'.");
 		}
 
 		$query = $className::find();
-		$query->where([$column->name => $value]);
+		$query->where([$attributeName => $value]);
 
 		if (!$object instanceof ActiveRecord || $object->getIsNewRecord()) {
 			// if current $object isn't in the database yet then it's OK just to call exists()
@@ -82,7 +82,7 @@ class UniqueValidator extends Validator
 
 			$n = count($objects);
 			if ($n === 1) {
-				if ($column->isPrimaryKey) {
+				if (in_array($attributeName, $className::primaryKey())) {
 					// primary key is modified and not unique
 					$exists = $object->getOldPrimaryKey() != $object->getPrimaryKey();
 				} else {
