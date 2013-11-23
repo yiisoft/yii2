@@ -288,7 +288,7 @@ class UrlRule extends Object
 
 		// match params in the pattern
 		foreach ($this->_paramRules as $name => $rule) {
-			if (isset($params[$name]) && ($rule === '' || preg_match($rule, $params[$name]))) {
+			if (isset($params[$name]) && !is_array($params[$name]) && ($rule === '' || preg_match($rule, $params[$name]))) {
 				$tr["<$name>"] = urlencode($params[$name]);
 				unset($params[$name]);
 			} elseif (!isset($this->defaults[$name]) || isset($params[$name])) {
