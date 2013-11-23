@@ -17,15 +17,9 @@ class Customer extends ActiveRecord
 
 	public $status2;
 
-	public static function columns()
+	public static function attributes()
 	{
-		return array(
-			'id' => 'integer',
-			'name' => 'string',
-			'email' => 'string',
-			'address' => 'string',
-			'status' => 'integer',
-		);
+		return ['name', 'email', 'address', 'status'];
 	}
 
 	public function getOrders()

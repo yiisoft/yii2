@@ -58,31 +58,21 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 */
 	public function createCommand($db = null)
 	{
-		/** @var $modelClass ActiveRecord */
+		/** @var ActiveRecord $modelClass */
 		$modelClass = $this->modelClass;
 		if ($db === null) {
 			$db = $modelClass::getDb();
 		}
 
-		$index = $modelClass::indexName();
-		$type = $modelClass::indexType();
-		if (is_array($this->where) && Activerecord::isPrimaryKey(array_keys($this->where))) {
-			// TODO what about mixed queries?
-			$query = array();
-			foreach((array) reset($this->where) as $pk) {
-				 $doc = array(
-					'_id' => $pk,
-				);
-				$db->getQueryBuilder()->buildSelect($doc, $this->select);
-				$query['docs'][] = $doc;
-			}
-			$command = $db->createCommand($query, $index, $type);
-			$command->api = '_mget';
-			return $command;
-		} else {
-			$query = $db->getQueryBuilder()->build($this);
-			return $db->createCommand($query, $index, $type);
+		if ($this->type === null) {
+			$this->type = $modelClass::type();
 		}
+		if ($this->index === null) {
+			$this->index = $modelClass::index();
+			$this->type = $modelClass::type();
+		}
+		$query = $db->getQueryBuilder()->build($this);
+		return $db->createCommand($query, $this->index, $this->type);
 	}
 
 	/**
@@ -94,16 +84,15 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	public function all($db = null)
 	{
 		$command = $this->createCommand($db);
-		$rows = $command->queryAll();
-		if (!empty($rows)) {
-			$models = $this->createModels($rows);
-			if (!empty($this->with)) {
-				$this->populateRelations($models, $this->with);
-			}
-			return $models;
-		} else {
-			return array();
+		$result = $command->queryAll();
+		if ($result['total'] == 0) {
+			return [];
 		}
+		$models = $this->createModels($result['hits']);
+		if (!empty($this->with)) {
+			$this->findWith($this->with, $models);
+		}
+		return $models;
 	}
 
 	/**
@@ -117,23 +106,22 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	public function one($db = null)
 	{
 		$command = $this->createCommand($db);
-		$row = $command->queryOne();
-		if ($row !== false) {
-			if ($this->asArray) {
-				$model = $row;
-			} else {
-				/** @var $class ActiveRecord */
-				$class = $this->modelClass;
-				$model = $class::create($row);
-			}
-			if (!empty($this->with)) {
-				$models = array($model);
-				$this->populateRelations($models, $this->with);
-				$model = $models[0];
-			}
-			return $model;
-		} else {
+		$result = $command->queryOne();
+		if ($result['total'] == 0) {
 			return null;
 		}
+		if ($this->asArray) {
+			$model = reset($result['hits']);
+		} else {
+			/** @var ActiveRecord $class */
+			$class = $this->modelClass;
+			$model = $class::create(reset($result['hits']));
+		}
+		if (!empty($this->with)) {
+			$models = [$model];
+			$this->findWith($this->with, $models);
+			$model = $models[0];
+		}
+		return $model;
 	}
 }

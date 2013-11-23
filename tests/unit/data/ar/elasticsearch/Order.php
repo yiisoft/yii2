@@ -12,29 +12,24 @@ namespace yiiunit\data\ar\elasticsearch;
  */
 class Order extends ActiveRecord
 {
-	public static function columns()
+	public static function attributes()
 	{
-		return array(
-			'id' => 'integer',
-			'customer_id' => 'integer',
-			'create_time' => 'integer',
-			'total' => 'integer',
-		);
+		return ['customer_id', 'create_time', 'total'];
 	}
 
 	public function getCustomer()
 	{
-		return $this->hasOne('Customer', array('id' => 'customer_id'));
+		return $this->hasOne('Customer', ['id' => 'customer_id']);
 	}
 
 	public function getOrderItems()
 	{
-		return $this->hasMany('OrderItem', array('order_id' => 'id'));
+		return $this->hasMany('OrderItem', ['order_id' => 'id']);
 	}
 
 	public function getItems()
 	{
-		return $this->hasMany('Item', array('id' => 'item_id'))
+		return $this->hasMany('Item', ['id' => 'item_id'])
 			->via('orderItems', function ($q) {
 				// additional query configuration
 			})->orderBy('id');
@@ -42,9 +37,9 @@ class Order extends ActiveRecord
 
 	public function getBooks()
 	{
-		return $this->hasMany('Item', array('id' => 'item_id'))
-			->viaTable('tbl_order_item', array('order_id' => 'id'))
-			->where(array('category_id' => 1));
+		return $this->hasMany('Item', ['id' => 'item_id'])
+			->viaTable('tbl_order_item', ['order_id' => 'id'])
+			->where(['category_id' => 1]);
 	}
 
 	public function beforeSave($insert)

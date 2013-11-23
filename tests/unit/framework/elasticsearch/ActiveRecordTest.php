@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\elasticsearch;
 
-use yii\db\Query;
 use yii\elasticsearch\Connection;
 use yii\elasticsearch\ActiveQuery;
 use yii\helpers\Json;
@@ -25,42 +24,53 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$db->http()->delete('_all')->send();
 
 		$customer = new Customer();
-		$customer->setAttributes(array('id' => 1, 'email' => 'user1@example.com', 'name' => 'user1', 'address' => 'address1', 'status' => 1), false);
+		$customer->primaryKey = 1;
+		$customer->setAttributes(array('email' => 'user1@example.com', 'name' => 'user1', 'address' => 'address1', 'status' => 1), false);
 		$customer->save(false);
 		$customer = new Customer();
-		$customer->setAttributes(array('id' => 2, 'email' => 'user2@example.com', 'name' => 'user2', 'address' => 'address2', 'status' => 1), false);
+		$customer->primaryKey = 2;
+		$customer->setAttributes(array('email' => 'user2@example.com', 'name' => 'user2', 'address' => 'address2', 'status' => 1), false);
 		$customer->save(false);
 		$customer = new Customer();
-		$customer->setAttributes(array('id' => 3, 'email' => 'user3@example.com', 'name' => 'user3', 'address' => 'address3', 'status' => 2), false);
+		$customer->primaryKey = 3;
+		$customer->setAttributes(array('email' => 'user3@example.com', 'name' => 'user3', 'address' => 'address3', 'status' => 2), false);
 		$customer->save(false);
 
 //		INSERT INTO tbl_category (name) VALUES ('Books');
 //		INSERT INTO tbl_category (name) VALUES ('Movies');
 
 		$item = new Item();
-		$item->setAttributes(array('id' => 1, 'name' => 'Agile Web Application Development with Yii1.1 and PHP5', 'category_id' => 1), false);
+		$item->primaryKey = 1;
+		$item->setAttributes(array('name' => 'Agile Web Application Development with Yii1.1 and PHP5', 'category_id' => 1), false);
 		$item->save(false);
 		$item = new Item();
-		$item->setAttributes(array('id' => 2, 'name' => 'Yii 1.1 Application Development Cookbook', 'category_id' => 1), false);
+		$item->primaryKey = 2;
+		$item->setAttributes(array('name' => 'Yii 1.1 Application Development Cookbook', 'category_id' => 1), false);
 		$item->save(false);
 		$item = new Item();
-		$item->setAttributes(array('id' => 3, 'name' => 'Ice Age', 'category_id' => 2), false);
+		$item->primaryKey = 3;
+		$item->setAttributes(array('name' => 'Ice Age', 'category_id' => 2), false);
 		$item->save(false);
 		$item = new Item();
-		$item->setAttributes(array('id' => 4, 'name' => 'Toy Story', 'category_id' => 2), false);
+		$item->primaryKey = 4;
+		$item->setAttributes(array('name' => 'Toy Story', 'category_id' => 2), false);
 		$item->save(false);
 		$item = new Item();
-		$item->setAttributes(array('id' => 5, 'name' => 'Cars', 'category_id' => 2), false);
+		$item->primaryKey = 5;
+		$item->setAttributes(array('name' => 'Cars', 'category_id' => 2), false);
 		$item->save(false);
 
 		$order = new Order();
-		$order->setAttributes(array('id' => 1, 'customer_id' => 1, 'create_time' => 1325282384, 'total' => 110.0), false);
+		$order->primaryKey = 1;
+		$order->setAttributes(array('customer_id' => 1, 'create_time' => 1325282384, 'total' => 110.0), false);
 		$order->save(false);
 		$order = new Order();
-		$order->setAttributes(array('id' => 2, 'customer_id' => 2, 'create_time' => 1325334482, 'total' => 33.0), false);
+		$order->primaryKey = 2;
+		$order->setAttributes(array('customer_id' => 2, 'create_time' => 1325334482, 'total' => 33.0), false);
 		$order->save(false);
 		$order = new Order();
-		$order->setAttributes(array('id' => 3, 'customer_id' => 2, 'create_time' => 1325502201, 'total' => 40.0), false);
+		$order->primaryKey = 3;
+		$order->setAttributes(array('customer_id' => 2, 'create_time' => 1325502201, 'total' => 40.0), false);
 		$order->save(false);
 
 //		$orderItem = new OrderItem();

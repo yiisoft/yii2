@@ -12,23 +12,18 @@ namespace yiiunit\data\ar\elasticsearch;
  */
 class OrderItem extends ActiveRecord
 {
-	public static function columns()
+	public static function attributes()
 	{
-		return array(
-			'order_id' => 'integer',
-			'item_id' => 'integer',
-			'quantity' => 'integer',
-			'subtotal' => 'integer',
-		);
+		return ['order_id', 'item_id', 'quantity', 'subtotal'];
 	}
 
 	public function getOrder()
 	{
-		return $this->hasOne('Order', array('id' => 'order_id'));
+		return $this->hasOne('Order', ['id' => 'order_id']);
 	}
 
 	public function getItem()
 	{
-		return $this->hasOne('Item', array('id' => 'item_id'));
+		return $this->hasOne('Item', ['id' => 'item_id']);
 	}
 }

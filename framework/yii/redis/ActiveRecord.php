@@ -298,7 +298,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function getTableSchema()
 	{
-		throw new NotSupportedException('getTableSchema() is not supported by redis ActiveRecord');
+		throw new NotSupportedException('getTableSchema() is not supported by redis ActiveRecord.');
 	}
 
 	/**
@@ -306,7 +306,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function findBySql($sql, $params = [])
 	{
-		throw new NotSupportedException('findBySql() is not supported by redis ActiveRecord');
+		throw new NotSupportedException('findBySql() is not supported by redis ActiveRecord.');
 	}
 
 	/**

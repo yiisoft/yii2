@@ -11,12 +11,8 @@ namespace yiiunit\data\ar\elasticsearch;
  */
 class Item extends ActiveRecord
 {
-	public static function columns()
+	public static function attributes()
 	{
-		return array(
-			'id' => 'integer',
-			'name' => 'string',
-			'category_id' => 'integer',
-		);
+		return ['name', 'category_id'];
 	}
 }
