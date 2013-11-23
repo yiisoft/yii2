@@ -119,6 +119,12 @@ abstract class ManagerTestCase extends TestCase
 		$this->assertFalse($this->auth->revoke('author B', 'author'));
 	}
 
+	public function testRevokeAll()
+	{
+		$this->assertTrue($this->auth->revokeAll('reader E'));
+		$this->assertFalse($this->auth->isAssigned('reader E', 'reader'));
+	}
+
 	public function testGetAssignments()
 	{
 		$this->auth->assign('author B', 'deletePost');
@@ -201,6 +207,13 @@ abstract class ManagerTestCase extends TestCase
 				'updateOwnPost' => false,
 				'deletePost' => true,
 			],
+			'reader E' => [
+				'createPost' => false,
+				'readPost' => false,
+				'updatePost' => false,
+				'updateOwnPost' => false,
+				'deletePost' => false,
+			],
 		];
 
 		$params = ['authorID' => 'author B'];
@@ -245,5 +258,6 @@ abstract class ManagerTestCase extends TestCase
 		$this->auth->assign('author B', 'author');
 		$this->auth->assign('editor C', 'editor');
 		$this->auth->assign('admin D', 'admin');
+		$this->auth->assign('reader E', 'reader');
 	}
 }

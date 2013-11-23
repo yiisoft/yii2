@@ -277,6 +277,18 @@ class DbManager extends Manager
 	}
 
 	/**
+	 * Revokes all authorization assignments from a user.
+	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @return boolean whether removal is successful
+	 */
+	public function revokeAll($userId)
+	{
+		return $this->db->createCommand()
+						->delete($this->assignmentTable, ['user_id' => $userId])
+						->execute() > 0;
+	}
+
+	/**
 	 * Returns a value indicating whether the item has been assigned to the user.
 	 * @param mixed $userId the user ID (see [[User::id]])
 	 * @param string $itemName the item name
