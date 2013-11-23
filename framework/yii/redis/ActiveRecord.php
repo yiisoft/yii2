@@ -58,7 +58,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	/**
 	 * @inheritDoc
 	 */
-	protected function createActiveRelation($config = [])
+	public static function createActiveRelation($config = [])
 	{
 		return new ActiveRelation($config);
 	}
