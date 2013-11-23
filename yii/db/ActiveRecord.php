@@ -132,7 +132,7 @@ class ActiveRecord extends Model
 	 *  - an array of name-value pairs: query by a set of column values and return a single record matching all of them.
 	 *  - null: return a new [[ActiveQuery]] object for further query purpose.
 	 *
-	 * @return ActiveQuery|ActiveRecord|null When `$q` is null, a new [[ActiveQuery]] instance
+	 * @return ActiveQuery|ActiveQueryInterface|static|null When `$q` is null, a new [[ActiveQuery]] instance
 	 * is returned; when `$q` is a scalar or an array, an ActiveRecord object matching it will be
 	 * returned (null will be returned if there is no matching).
 	 * @throws InvalidConfigException if the AR class does not have a primary key
@@ -754,7 +754,7 @@ class ActiveRecord extends Model
 	 * [[EVENT_BEFORE_INSERT]], [[EVENT_AFTER_INSERT]] and [[EVENT_AFTER_VALIDATE]]
 	 * will be raised by the corresponding methods.
 	 *
-	 * Only the [[changedAttributes|changed attribute values]] will be inserted into database.
+	 * Only the [[dirtyAttributes|changed attribute values]] will be inserted into database.
 	 *
 	 * If the table's primary key is auto-incremental and is null during insertion,
 	 * it will be populated with the actual value after insertion.
@@ -1179,11 +1179,15 @@ class ActiveRecord extends Model
 	/**
 	 * Returns a value indicating whether the given active record is the same as the current one.
 	 * The comparison is made by comparing the table names and the primary key values of the two active records.
+	 * If one of the records [[isNewRecord|is new]] they are also considered not equal.
 	 * @param ActiveRecord $record record to compare to
 	 * @return boolean whether the two active records refer to the same row in the same database table.
 	 */
 	public function equals($record)
 	{
+		if ($this->isNewRecord || $record->isNewRecord) {
+			return false;
+		}
 		return $this->tableName() === $record->tableName() && $this->getPrimaryKey() === $record->getPrimaryKey();
 	}
 
