@@ -110,11 +110,128 @@ class Html extends \yii\helpers\Html
 	 * @param string $content the badge content
 	 * @param array $options html options for the badge container
 	 * @param string $tag the badge container tag - defaults to 'span'
+	 *
+	 * Example(s): 
+	 * ```php
+	 * echo Html::badge('1');
+	 * ```
+	 *
+	 * @see http://getbootstrap.com/components/#badges
 	 */
 	public static function badge($content, $options = [], $tag = 'span')
 	{
 		static::addCssClass($options, 'badge');
 		return static::tag($tag, $content, $options);
+	}
+
+	/**
+	 * Generates a list group. Flexible and powerful component for displaying not only 
+	 * simple lists of elements, but complex ones with custom content.
+	 * @param array $items the list group items - each element in the array must contain these keys:
+	 *     - @param mixed $content the list item content 
+	 *         - when passed as a string, it will be displayed as is
+	 *         - when passed as an array, it requires these keys
+	 *             - @param string $heading the content heading
+	 *             - @param string $body the content body
+	 *     - @param string $url the url for linking the list item content(optional)
+	 *     - @param string $badge a badge component to be displayed for this list item (optional)
+	 *     - @param boolean $active to highlight the item as active (applicable only if $url is passed) - default false
+	 * @param array $options html options for the list group container
+	 * @param string $tag the list group container tag - defaults to 'div'
+	 * @param string $itemTag the list item container tag - defaults to 'div'
+	 *
+	 * Example(s): 
+	 * ```php
+	 * echo Html::listGroup([
+	 * 		[
+	 * 			'content' => 'Cras justo odio',
+	 * 			'url' => '#',
+	 * 			'badge' => '14',
+	 *	 		'active' => true
+	 * 		],
+	 * 		[
+	 * 			'content' => 'Dapibus ac facilisis in',
+	 * 			'url' => '#',
+	 * 			'badge' => '2'
+	 * 		],
+	 * 		[
+	 * 			'content' => 'Morbi leo risus',
+	 *	 		'url' => '#',
+	 * 			'badge' => '1'
+	 * 		],
+	 * ]);
+	 *
+	 * echo Html::listGroup([
+	 * 		[
+	 * 			'content' => ['heading' => 'Heading 1', 'body' => 'Cras justo odio'],
+	 * 			'url' => '#',
+	 * 			'badge' => '14',
+	 *	 		'active' => true
+	 * 		],
+	 * 		[
+	 * 			'content' => ['heading' => 'Heading 2', 'body' => 'Dapibus ac facilisis in'],
+	 * 			'url' => '#',
+	 * 			'badge' => '2'
+	 * 		],
+	 * 		[
+	 * 			'content' => ['heading' => 'Heading 2', 'body' => 'Morbi leo risus'],
+	 *	 		'url' => '#',
+	 * 			'badge' => '1'
+	 * 		],
+	 * ]);
+	 * ```
+	 *
+	 * @see http://getbootstrap.com/components/#list-group
+	 */
+	public static function listGroup($items = [], $options = [], $tag = 'div', $itemTag = 'div') {
+		static::addCssClass($options, 'list-group');
+		$content = '';
+		foreach ($items as $item) {
+			$content .= static::generateListGroupItem($item, $itemTag) . "\n";
+		}
+		return static::tag($tag, $content, $options);
+	}
+	
+	/**
+	 * Processes and generates each list group item
+	 * @param array $item the list item configuration
+	 * @param string $tag the list item container tag
+	 */	
+	protected static function generateListGroupItem($item, $tag) {
+		static::addCssClass($item['options'], 'list-group-item');
+		
+		/* Parse item content */
+		$content = isset($item['content']) ? $item['content'] : '';
+		if (is_array($content)) {
+			$heading = isset($content['heading']) ? $content['heading'] : '';
+			$body = isset($content['body']) ? $content['body'] : '';
+			if (!empty($heading)) {
+				$heading = static::tag('h4', $heading, ['class' => 'list-group-item-heading']);
+			}
+			if (!empty($body)) {
+				$body = static::tag('p', $body, ['class' => 'list-group-item-text']);
+			}
+			$content = $heading . "\n" . $body;
+		}
+		
+		/* Parse item badge component */
+		$badge = isset($item['badge']) ? $item['badge'] : '';
+		if (!empty($badge)) {
+			$content = static::badge($badge) . $content;
+		}
+		
+		/* Parse item url */
+		$url = isset($item['url']) ? $item['url'] : '';
+		if (!empty($url)) {
+			/* Parse if item is active */
+			if (isset($item['active']) && $item['active']) {
+				static::addCssClass($item['options'], 'active');
+			}		
+			return static::a($content, $url, $item['options']);
+		}
+		else {
+			return static::tag($tag, $content, $item['options']);
+		}
 	}
 	
 	/**
@@ -124,6 +241,19 @@ class Html extends \yii\helpers\Html
 	 * @param string $content the content below the heading in the jumbotron
 	 * @param boolean $fullWidth whether this is a full width jumbotron without any corners - defaults to false
 	 * @param array $options html options for the jumbotron
+	 *
+	 * Example(s): 
+	 * ```php
+	 * echo Html::jumbotron(
+	 * 		'Hello, world!',
+	 *		'This is a simple jumbotron-style component for calling extra attention to featured content or information.'
+	 * );
+	 * echo Html::jumbotron(
+	 * 		'Hello, world!',
+	 *		'This is a simple jumbotron-style component with a button.<br>' . Html::a('Learn more', '#', ['class'=>'btn btn-primary btn-lg']) 
+	 * );
+	 * ```
+	 *
 	 * @see http://getbootstrap.com/components/#jumbotron
 	 */
 	public static function jumbotron($title, $content, $fullWidth = false, $options = []) {
@@ -148,7 +278,7 @@ class Html extends \yii\helpers\Html
 	 * @param string $content other/additional content not embedded in panel-body (optional)
 	 * @param string $footer the panel footer (optional)
 	 * @param string $type the panel type - defaults to 'default'
-	 *  - is one of 'default, 'primary', 'success', 'info', 'danger', 'warning'
+	 *     - is one of 'default, 'primary', 'success', 'info', 'danger', 'warning'
 	 * @param array $options html options for the panel
 	 * @see http://getbootstrap.com/components/#panels
 	 */
@@ -166,7 +296,7 @@ class Html extends \yii\helpers\Html
 	 * @param string $subTitle the subtitle to be shown as subtext within the title
 	 * @param array $options html options for the page header
 	 *
-	 * Example: 
+	 * Example(s): 
 	 * ```php
 	 * echo Html::pageHeader(
 	 * 		'Example page header',
@@ -190,13 +320,13 @@ class Html extends \yii\helpers\Html
 	 * Generates a well container.
 	 * @param string $content the content
 	 * @param string $size the well size - one of the size constants
-	 * - TINY   = 'xs';
-	 * - SMALL  = 'sm';
-	 * - MEDIUM = 'md';
-	 * - LARGE  = 'lg';
+	 *    - TINY   = 'xs';
+	 *    - SMALL  = 'sm';
+	 *    - MEDIUM = 'md';
+	 *    - LARGE  = 'lg';
 	 * @param array $options html options for the well container.
 	 *
-	 * Example: 
+	 * Example(s): 
 	 * ```php
 	 * echo Html::well(
 	 * 		'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo.',
@@ -227,7 +357,7 @@ class Html extends \yii\helpers\Html
 	 * @param array $options html options for the media object container
 	 * @param string $tag the media container tag - defaults to 'div'
 	 *
-	 * Example: 
+	 * Example(s): 
 	 * ```php
 	 * echo Html::media(
 	 * 		'Media heading 1', 
@@ -257,50 +387,50 @@ class Html extends \yii\helpers\Html
 
 	/**
 	 * Generates list of media (useful for comment threads or articles lists).
-	 * @param array $items the media items - each element in the array must contain these keys:
-	 * - @param string $items the sub media items
-	 * - @param string $heading the media heading
-	 * - @param string $body the media content
-	 * - @param string $src URL for the media article source 
-	 * - @param string $img URL for the media image source 
-	 * - @param array $srcOptions html options for the media article link (optional)
-	 * - @param array $imgOptions html options for the media image (optional)
-	 * - @param array $itemOptions html options for each media item (optional)
+	 * @param array $items the media items - each element in the array will contain these keys:
+	 *    - @param string $items the sub media items (optional)
+	 *    - @param string $heading the media heading
+	 *    - @param string $body the media content
+	 *    - @param string $src URL for the media article source 
+	 *    - @param string $img URL for the media image source 
+	 *    - @param array $srcOptions html options for the media article link (optional)
+	 *    - @param array $imgOptions html options for the media image (optional)
+	 *    - @param array $itemOptions html options for each media item (optional)
 	 * @param array $options html options for the media list container
 	 *
-	 * Example: 
+	 * Example(s): 
 	 * ```php
 	 * echo Html::mediaList([
-	 * 	[
-	 * 		'heading' => 'Media heading 1', 
-	 * 		'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. '.
-	 *                'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
-	 * 		'src' => '#',
-	 * 		'img' => 'http://placehold.it/64x64',
-	 * 		'items' => [
-	 * 			[
-	 * 				'heading' => 'Media heading 1.1', 
-	 * 				'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. ' .
-	 *                        'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
-	 * 				'src' => '#',
-	 * 				'img' => 'http://placehold.it/64x64'
-	 * 			],
-	 * 			[
-	 * 				'heading' => 'Media heading 1.2', 
-	 * 				'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. ' .
-	 *                        'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
-	 * 				'src' => '#',
-	 * 				'img' => 'http://placehold.it/64x64'
-	 * 			],
-	 * 		]
-	 * 	],
-	 * 	[
-	 * 		'heading' => 'Media heading 2', 
-	 * 		'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. '.
-	 *                'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
-	 * 		'src' => '#',
-	 * 		'img' => $img
-	 * 	],
+	 * 		[
+	 * 			'heading' => 'Media heading 1', 
+	 * 			'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. '.
+	 *          	      'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
+	 * 			'src' => '#',
+	 * 			'img' => 'http://placehold.it/64x64',
+	 * 			'items' => [
+	 * 				[
+	 * 					'heading' => 'Media heading 1.1', 
+	 *	 				'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. ' .
+	 *  	                      'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
+	 * 					'src' => '#',
+	 * 					'img' => 'http://placehold.it/64x64'
+	 * 				],
+	 *	 			[
+	 * 					'heading' => 'Media heading 1.2', 
+	 * 					'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. ' .
+	 *          	              'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
+	 * 					'src' => '#',
+	 * 					'img' => 'http://placehold.it/64x64'
+	 * 				],
+	 * 			]
+	 * 		],
+	 * 		[
+	 * 			'heading' => 'Media heading 2', 
+	 * 			'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. '.
+	 *          	      'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
+	 * 			'src' => '#',
+	 * 			'img' => $img
+	 * 		],
 	 * ]);
 	 * ```
 	 *
@@ -352,7 +482,7 @@ class Html extends \yii\helpers\Html
 	 * @param string $label the close icon label - defaults to '&times;'
 	 * @param string $tag the html tag for rendering the close icon - defaults to 'button'
 	 *
-	 * Example: 
+	 * Example(s): 
 	 * ```php
 	 * echo Html::closeButton();
 	 * ```
@@ -372,7 +502,7 @@ class Html extends \yii\helpers\Html
 	 * @param array $options html options for the caret container.
 	 * @param string $tag the html tag for rendering the caret - defaults to 'span'
 	 *
-	 * Example: 
+	 * Example(s): 
 	 * ```php
 	 * echo Html::caret();
 	 * ```
@@ -391,7 +521,7 @@ class Html extends \yii\helpers\Html
 	 * @param array $options html options.
 	 * @param string $tag the html tag for rendering - defaults to 'p'
 	 *
-	 * Example: 
+	 * Example(s): 
 	 * ```php
 	 * echo Html::lead('Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus.');
 	 * ```
@@ -411,12 +541,12 @@ class Html extends \yii\helpers\Html
 	 * @param boolean $initialism if set to true, will display a slightly smaller font-size.
 	 * @param array $options html options for the abbreviation
 	 *
-	 * Example: 
+	 * Example(s): 
 	 * ```php
 	 * echo Html::abbr(
-	 *	'HyperText Markup Language'
-	 *	'HTML',
-	 *	true
+	 *		'HyperText Markup Language'
+	 *		'HTML',
+	 *		true
 	 * );
 	 * ```
 	 *
@@ -439,14 +569,14 @@ class Html extends \yii\helpers\Html
 	 * @param string $citeTitle the cite source title (optional)
 	 * @param string $citeSource the cite source (optional)
 	 * 
-	 * Example: 
+	 * Example(s): 
 	 * ```php
-	 *		Html::blockquote(
-	 *			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.',
-	 *			'Someone famous in {source}',
-	 *			'International Premier League',
-	 *			'IPL'
-	 *		);
+	 * Html::blockquote(
+	 *		'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.',
+	 *		'Someone famous in {source}',
+	 *		'International Premier League',
+	 *		'IPL'
+	 * );
 	 * ```
 	 *			
 	 * @param array $options html options for the blockquote
@@ -467,22 +597,22 @@ class Html extends \yii\helpers\Html
 	 * @param string $name the addressee name
 	 * @param array $lines the lines of address information
 	 * @param array $phone the list of phone numbers - passed as $key => $value, where:
-	 * - $key is the phone type could be 'Res', 'Off', 'Cell', 'Fax'
-	 * - $value is the phone number
+	 *    - $key is the phone type could be 'Res', 'Off', 'Cell', 'Fax'
+	 *    - $value is the phone number
 	 * @param array $email the list of email addresses - passed as $key => $value, where:
-	 * - $key is the email type could be 'Res', 'Off'
-	 * - $value is the email address
+	 *    - $key is the email type could be 'Res', 'Off'
+	 *    - $value is the email address
 	 * @param string $phoneLabel the prefix label for each phone - defaults to '(P)'
 	 * @param string $emailLabel the prefix label for each email - defaults to '(E)'
 	 *
-	 * Example: 
+	 * Example(s): 
 	 * ```php
-	 *		Html::address(
-	 *			'Twitter, Inc.',
-	 *			['795 Folsom Ave, Suite 600', 'San Francisco, CA 94107'],
-	 *			['Res' => '(123) 456-7890', 'Off'=> '(456) 789-0123'],
-	 *			['Res' => 'first.last@example.com', 'Off' => 'last.first@example.com']
-	 *		);
+	 * Html::address(
+	 *		'Twitter, Inc.',
+	 *		['795 Folsom Ave, Suite 600', 'San Francisco, CA 94107'],
+	 *		['Res' => '(123) 456-7890', 'Off'=> '(456) 789-0123'],
+	 *		['Res' => 'first.last@example.com', 'Off' => 'last.first@example.com']
+	 * );
 	 * ```
 	 *
 	 * @see http://getbootstrap.com/css/#type-addresses
