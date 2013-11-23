@@ -119,11 +119,11 @@ abstract class ManagerTestCase extends TestCase
 		$this->assertFalse($this->auth->revoke('author B', 'author'));
 	}
 
-    public function testRevokeAll()
-    {
-        $this->assertTrue($this->auth->revokeAll('reader E'));
-        $this->assertFalse($this->auth->isAssigned('reader E', 'reader'));
-    }
+	public function testRevokeAll()
+	{
+		$this->assertTrue($this->auth->revokeAll('reader E'));
+		$this->assertFalse($this->auth->isAssigned('reader E', 'reader'));
+	}
 
 	public function testGetAssignments()
 	{
@@ -258,6 +258,6 @@ abstract class ManagerTestCase extends TestCase
 		$this->auth->assign('author B', 'author');
 		$this->auth->assign('editor C', 'editor');
 		$this->auth->assign('admin D', 'admin');
-        $this->auth->assign('reader E', 'reader');
+		$this->auth->assign('reader E', 'reader');
 	}
 }
