@@ -45,7 +45,7 @@ class QueryBuilder extends \yii\base\Object
 	public function build($query)
 	{
 		$searchQuery = array();
-		$this->buildSelect($searchQuery, $query->select);
+		$this->buildFields($searchQuery, $query->fields);
 //		$this->buildFrom($searchQuery, $query->from);
 		$this->buildCondition($searchQuery, $query->where);
 		$this->buildOrderBy($searchQuery, $query->orderBy);
@@ -113,9 +113,9 @@ class QueryBuilder extends \yii\base\Object
 	 * @param string $selectOption
 	 * @return string the SELECT clause built from [[query]].
 	 */
-	public function buildSelect(&$query, $columns)
+	public function buildFields(&$query, $columns)
 	{
-		if (empty($columns)) {
+		if ($columns === null) {
 			return;
 		}
 		foreach ($columns as $i => $column) {

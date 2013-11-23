@@ -64,7 +64,6 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	 * @param mixed $primaryKey the primaryKey value
 	 * @param array $options options given in this parameter are passed to elasticsearch
 	 * as request URI parameters.
-	 *
 	 * Please refer to the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html)
 	 * for more details on these options.
 	 * @return static|null The record instance or null if it was not found.
