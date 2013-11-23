@@ -1,43 +1,122 @@
-What is Yii
+Using RBAC
 ===========
 
-Yii is a high-performance, component-based PHP framework for rapidly developing large-scale Web applications. Yii enables maximum reusability in Web
-programming and can significantly accelerate your Web application development
-process. The name Yii (pronounced `Yee` or `[ji:]`) is an acronym for
-**Yes It Is!**.
+Lacking proper documentation, this guide is a stub copied from a topic on the forum.
 
 
-Requirements
-------------
+First af all, you modify your config (web.php or main.php), 
+```php
+'authManager' => [
+    'class' => 'app\components\PhpManager', // THIS IS YOUR AUTH MANAGER
+    'defaultRoles' => ['guest'],
+],
+```
 
-To run a Yii-powered Web application, you need a Web server that supports
-PHP 5.4.0 or greater.
+Next, create the manager itself (app/components/PhpManager.php)
+```php
+<?php
+namespace app\components;
 
-For developers who want to use Yii, understanding object-oriented
-programming (OOP) is very helpful, because Yii is a pure OOP framework.
-Yii 2.0 also makes use of the latest features of PHP such as [namespaces](http://www.php.net/manual/en/language.namespaces.php)
-so you should be familiar with how they work.
+use Yii;
 
+class PhpManager extends \yii\rbac\PhpManager
+{
+    public function init()
+    {
+        if ($this->authFile === NULL)
+            $this->authFile = Yii::getAlias('@app/data/rbac') . '.php'; // HERE GOES YOUR RBAC TREE FILE
 
-What is Yii Best for?
----------------------
+        parent::init();
 
-Yii is a generic Web programming framework that can be used for developing
-virtually any type of Web application. Because it is light-weight and
-equipped with sophisticated caching mechanisms, it is especially suited
-to high-traffic applications, such as portals, forums, content
-management systems (CMS), e-commerce projects, etc.
+        if (!Yii::$app->user->isGuest) {
+            $this->assign(Yii::$app->user->identity->id, Yii::$app->user->identity->role); // we suppose that user's role is stored in identity
+        }
+    }
+}
+```
 
+Now, the rules tree (@app/data/rbac.php):
+```php
+<?php
+use yii\rbac\Item;
 
-How does Yii Compare with Other Frameworks?
--------------------------------------------
+return [
+    // HERE ARE YOUR MANAGEMENT TASKS
+    'manageThing0' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'bizRule' => NULL, 'data' => NULL],
+    'manageThing1' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'bizRule' => NULL, 'data' => NULL],
+    'manageThing2' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'bizRule' => NULL, 'data' => NULL],
+    'manageThing2' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'bizRule' => NULL, 'data' => NULL],
 
-- Like most PHP frameworks, Yii is uses the MVC (Model-View-Controller) design approach.
-- Yii is a fullstack framework providing many solutions and components, such as logging, session management, caching etc.
-- Yii strikes a good balance between simplicity and features.
-- Syntax and overall development usability are taken seriously by the Yii development team.
-- Performance is one of the key goals for the Yii framework.
-- The Yii development team is constantly watching what other Web frameworks are doing to see what best practices and
-  features should be incorporated into Yii. The initial Yii release was heavily influenced by Ruby on Rails.
-  Still, no framework or feature is being blindly copied into Yii; all decisions are based upon what's best
-  for Web developers and in keeping with Yii's philosophy.
+    // AND THE ROLES
+    'guest' => [
+        'type' => Item::TYPE_ROLE,
+        'description' => 'Guest',
+        'bizRule' => NULL,
+        'data' => NULL
+    ],
+
+    'user' => [
+        'type' => Item::TYPE_ROLE,
+        'description' => 'User',
+        'children' => [
+            'guest',
+            'manageThing0', // User can edit thing0
+        ],
+        'bizRule' => 'return !Yii::$app->user->isGuest;',
+        'data' => NULL
+    ],
+
+    'moderator' => [
+        'type' => Item::TYPE_ROLE,
+        'description' => 'Moderator',
+        'children' => [
+            'user',         // Can manage all that user can
+            'manageThing1', // and also thing1
+        ],
+        'bizRule' => NULL,
+        'data' => NULL
+    ],
+
+    'admin' => [
+        'type' => Item::TYPE_ROLE,
+        'description' => 'Admin',
+        'children' => [
+            'moderator',    // can do all the stuff that moderator can
+            'manageThing2', // and also manage thing2
+        ],
+        'bizRule' => NULL,
+        'data' => NULL
+    ],
+
+    'godmode' => [
+        'type' => Item::TYPE_ROLE,
+        'description' => 'Super admin',
+        'children' => [
+            'admin',        // can do all that admin can
+            'manageThing3', // and also thing3
+        ],
+        'bizRule' => NULL,
+        'data' => NULL
+    ],
+
+];
+```
+
+As a result, you can now add access control filters to controllers
+```php
+public function behaviors()
+{
+    return [
+        'access' => [
+            'class' => 'yii\web\AccessControl',
+            'except' => ['something'],            
+            'rules' => [
+                [
+                    'allow' => true,
+                    'roles' => ['manageThing1'],
+                ],
+            ],
+        ],
+    ];
+}
+```
