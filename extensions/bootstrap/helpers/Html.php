@@ -52,7 +52,7 @@ class Html extends \yii\helpers\Html
 
 	/**
 	 * Check if a variable is empty or not set
-	 * @param string $var variable to check
+	 * @param reference $var variable to perform the check
 	 */
 	public static function isEmpty(&$var) {
 		return (!isset($var) || (strlen($var) == 0));
@@ -151,7 +151,7 @@ class Html extends \yii\helpers\Html
 	 * 		'content' => 'Cras justo odio',
 	 * 		'url' => '#',
 	 * 		'badge' => '14',
-	 *	 		'active' => true
+	 *	 	'active' => true
 	 * 	],
 	 * 	[
 	 * 		'content' => 'Dapibus ac facilisis in',
@@ -160,7 +160,7 @@ class Html extends \yii\helpers\Html
 	 * 	],
 	 * 	[
 	 * 		'content' => 'Morbi leo risus',
-	 *	 		'url' => '#',
+	 *	 	'url' => '#',
 	 * 		'badge' => '1'
 	 * 	],
 	 * ]);
@@ -170,7 +170,7 @@ class Html extends \yii\helpers\Html
 	 * 		'content' => ['heading' => 'Heading 1', 'body' => 'Cras justo odio'],
 	 * 		'url' => '#',
 	 * 		'badge' => '14',
-	 *	 		'active' => true
+	 *	 	'active' => true
 	 * 	],
 	 * 	[
 	 * 		'content' => ['heading' => 'Heading 2', 'body' => 'Dapibus ac facilisis in'],
@@ -179,7 +179,7 @@ class Html extends \yii\helpers\Html
 	 * 	],
 	 * 	[
 	 * 		'content' => ['heading' => 'Heading 2', 'body' => 'Morbi leo risus'],
-	 *	 		'url' => '#',
+	 *	 	'url' => '#',
 	 * 		'badge' => '1'
 	 * 	],
 	 * ]);
@@ -250,11 +250,11 @@ class Html extends \yii\helpers\Html
 	 * ```php
 	 * echo Html::jumbotron(
 	 * 	'Hello, world!',
-	 *		'This is a simple jumbotron-style component for calling extra attention to featured content or information.'
+	 *	'This is a simple jumbotron-style component for calling extra attention to featured content or information.'
 	 * );
 	 * echo Html::jumbotron(
 	 * 	'Hello, world!',
-	 *		'This is a simple jumbotron-style component with a button.<br>' . Html::a('Learn more', '#', ['class'=>'btn btn-primary btn-lg']) 
+	 *	'This is a simple jumbotron-style component with a button.<br>' . Html::a('Learn more', '#', ['class'=>'btn btn-primary btn-lg']) 
 	 * );
 	 * ```
 	 *
@@ -306,7 +306,7 @@ class Html extends \yii\helpers\Html
 	 * 	[
 	 * 		'heading' => 'Panel Heading',
 	 * 		'body' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, ' .
-	 * 				  'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+	 * 			'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 	 * 		'postBody' => Html::listGroup([
 	 * 			[
 	 * 				'content' => 'Cras justo odio',
@@ -490,15 +490,15 @@ class Html extends \yii\helpers\Html
 	 * 		'items' => [
 	 * 			[
 	 * 				'heading' => 'Media heading 1.1', 
-	 *	 				'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. ' .
-	 *  	                      'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
+	 *	 			'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. ' .
+	 *	 				'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
 	 * 				'src' => '#',
 	 * 				'img' => 'http://placehold.it/64x64'
 	 * 			],
 	 *	 			[
 	 * 				'heading' => 'Media heading 1.2', 
 	 * 				'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. ' .
-	 *          	              'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
+	 *	 				'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
 	 * 				'src' => '#',
 	 * 				'img' => 'http://placehold.it/64x64'
 	 * 			],
@@ -507,7 +507,7 @@ class Html extends \yii\helpers\Html
 	 * 	[
 	 * 		'heading' => 'Media heading 2', 
 	 * 		'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. '.
-	 *          	      'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
+	 * 			'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
 	 * 		'src' => '#',
 	 * 		'img' => $img
 	 * 	],
