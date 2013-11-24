@@ -34,6 +34,9 @@ class Connection extends Component
 		)
 	);
 
+	// http://www.elasticsearch.org/guide/en/elasticsearch/client/php-api/current/_configuration.html#_example_configuring_http_basic_auth
+	public $auth = [];
+
 	// TODO use timeouts
 	/**
 	 * @var float timeout to use for connection to redis. If not set the timeout set in php.ini will be used: ini_get("default_socket_timeout")
@@ -92,6 +95,9 @@ class Connection extends Component
 	 */
 	public function open()
 	{
+		// TODO select one node to be the active one.
+
+
 		foreach($this->nodes as $key => $node) {
 			if (is_array($node)) {
 				$this->nodes[$key] = new Node($node);
