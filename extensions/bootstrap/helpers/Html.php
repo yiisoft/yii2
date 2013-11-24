@@ -303,31 +303,31 @@ class Html extends \yii\helpers\Html
 	 * 	Html::TYPE_SUCCESS
 	 * );
 	 * echo Html::panel(
-	 * 		[
-	 * 			'heading' => 'Panel Heading',
-	 * 			'body' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, ' .
-	 * 					  'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-	 * 			'postBody' => Html::listGroup([
-	 * 				[
-	 * 					'content' => 'Cras justo odio',
-	 * 					'url' => '#',
-	 * 					'badge' => '14'
-	 * 				],
-	 * 				[
-	 * 					'content' => 'Dapibus ac facilisis in',
-	 * 					'url' => '#',
-	 * 					'badge' => '2'
-	 * 				],
-	 * 				[
-	 * 					'content' => 'Morbi leo risus',
-	 * 					'url' => '#',
-	 * 					'badge' => '1'
-	 * 				],
-	 * 			], [], 'ul', 'li'),
-	 * 			'footer'=> 'Panel Footer',
-	 * 			'headingTitle' => true,
-	 * 			'footerTitle' => true,
-	 * 		]
+	 * 	[
+	 * 		'heading' => 'Panel Heading',
+	 * 		'body' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, ' .
+	 * 				  'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+	 * 		'postBody' => Html::listGroup([
+	 * 			[
+	 * 				'content' => 'Cras justo odio',
+	 * 				'url' => '#',
+	 * 				'badge' => '14'
+	 * 			],
+	 * 			[
+	 * 				'content' => 'Dapibus ac facilisis in',
+	 * 				'url' => '#',
+	 * 				'badge' => '2'
+	 * 			],
+	 * 			[
+	 * 				'content' => 'Morbi leo risus',
+	 * 				'url' => '#',
+	 * 				'badge' => '1'
+	 * 			],
+	 * 		], [], 'ul', 'li'),
+	 * 		'footer'=> 'Panel Footer',
+	 * 		'headingTitle' => true,
+	 * 		'footerTitle' => true,
+	 * 	]
 	 * );
 	 * ```
 	 *
