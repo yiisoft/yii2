@@ -358,11 +358,11 @@ class Html extends \yii\helpers\Html
 	 */
 	 protected function generatePanelTitle($content, $type) {
 		if (!static::isEmpty($content[$type])) {
-			${$type} = $content[$type];
+			$title = $content[$type];
 			if (isset($content["{$type}Title"]) && $content["{$type}Title"]) {
-				${$type} = static::tag("h3", $content["{$type}"], ["class" => "panel-title"]);
+				$title = static::tag("h3", $title, ["class" => "panel-title"]);
 			}
-			return static::tag("div", ${$type}, ["class"=>"panel-{$type}"]) . "\n";
+			return static::tag("div", $title, ["class"=>"panel-{$type}"]) . "\n";
 		}
 		else {
 			return '';
@@ -484,7 +484,7 @@ class Html extends \yii\helpers\Html
 	 * 	[
 	 * 		'heading' => 'Media heading 1', 
 	 * 		'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. '.
-	 *          	      'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
+	 * 			'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
 	 * 		'src' => '#',
 	 * 		'img' => 'http://placehold.it/64x64',
 	 * 		'items' => [
