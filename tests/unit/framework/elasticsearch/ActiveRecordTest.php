@@ -44,15 +44,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$db->http()->delete('_all')->send();
 
 		$customer = new Customer();
-		$customer->primaryKey = 1;
+		$customer->id = 1;
 		$customer->setAttributes(['email' => 'user1@example.com', 'name' => 'user1', 'address' => 'address1', 'status' => 1], false);
 		$customer->save(false);
 		$customer = new Customer();
-		$customer->primaryKey = 2;
+		$customer->id = 2;
 		$customer->setAttributes(['email' => 'user2@example.com', 'name' => 'user2', 'address' => 'address2', 'status' => 1], false);
 		$customer->save(false);
 		$customer = new Customer();
-		$customer->primaryKey = 3;
+		$customer->id = 3;
 		$customer->setAttributes(['email' => 'user3@example.com', 'name' => 'user3', 'address' => 'address3', 'status' => 2], false);
 		$customer->save(false);
 
@@ -60,36 +60,36 @@ class ActiveRecordTest extends ElasticSearchTestCase
 //		INSERT INTO tbl_category (name) VALUES ('Movies');
 
 		$item = new Item();
-		$item->primaryKey = 1;
+		$item->id = 1;
 		$item->setAttributes(['name' => 'Agile Web Application Development with Yii1.1 and PHP5', 'category_id' => 1], false);
 		$item->save(false);
 		$item = new Item();
-		$item->primaryKey = 2;
+		$item->id = 2;
 		$item->setAttributes(['name' => 'Yii 1.1 Application Development Cookbook', 'category_id' => 1], false);
 		$item->save(false);
 		$item = new Item();
-		$item->primaryKey = 3;
+		$item->id = 3;
 		$item->setAttributes(['name' => 'Ice Age', 'category_id' => 2], false);
 		$item->save(false);
 		$item = new Item();
-		$item->primaryKey = 4;
+		$item->id = 4;
 		$item->setAttributes(['name' => 'Toy Story', 'category_id' => 2], false);
 		$item->save(false);
 		$item = new Item();
-		$item->primaryKey = 5;
+		$item->id = 5;
 		$item->setAttributes(['name' => 'Cars', 'category_id' => 2], false);
 		$item->save(false);
 
 		$order = new Order();
-		$order->primaryKey = 1;
+		$order->id = 1;
 		$order->setAttributes(['customer_id' => 1, 'create_time' => 1325282384, 'total' => 110.0], false);
 		$order->save(false);
 		$order = new Order();
-		$order->primaryKey = 2;
+		$order->id = 2;
 		$order->setAttributes(['customer_id' => 2, 'create_time' => 1325334482, 'total' => 33.0], false);
 		$order->save(false);
 		$order = new Order();
-		$order->primaryKey = 3;
+		$order->id = 3;
 		$order->setAttributes(['customer_id' => 2, 'create_time' => 1325502201, 'total' => 40.0], false);
 		$order->save(false);
 
@@ -133,17 +133,17 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		// find all asArray
 		$customers = Customer::find()->asArray()->all();
 		$this->assertEquals(3, count($customers));
-		$this->assertArrayHasKey('primaryKey', $customers[0]);
+		$this->assertArrayHasKey(ActiveRecord::PRIMARY_KEY_NAME, $customers[0]);
 		$this->assertArrayHasKey('name', $customers[0]);
 		$this->assertArrayHasKey('email', $customers[0]);
 		$this->assertArrayHasKey('address', $customers[0]);
 		$this->assertArrayHasKey('status', $customers[0]);
-		$this->assertArrayHasKey('primaryKey', $customers[1]);
+		$this->assertArrayHasKey(ActiveRecord::PRIMARY_KEY_NAME, $customers[1]);
 		$this->assertArrayHasKey('name', $customers[1]);
 		$this->assertArrayHasKey('email', $customers[1]);
 		$this->assertArrayHasKey('address', $customers[1]);
 		$this->assertArrayHasKey('status', $customers[1]);
-		$this->assertArrayHasKey('primaryKey', $customers[2]);
+		$this->assertArrayHasKey(ActiveRecord::PRIMARY_KEY_NAME, $customers[2]);
 		$this->assertArrayHasKey('name', $customers[2]);
 		$this->assertArrayHasKey('email', $customers[2]);
 		$this->assertArrayHasKey('address', $customers[2]);
@@ -161,16 +161,16 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertEquals('user3', $customerName);
 		$customerName = Customer::find()->where(['status' => 2])->scalar('noname');
 		$this->assertNull($customerName);
-		$customerId = Customer::find()->where(['status' => 2])->scalar('primaryKey');
+		$customerId = Customer::find()->where(['status' => 2])->scalar(ActiveRecord::PRIMARY_KEY_NAME);
 		$this->assertEquals(3, $customerId);
 
 		// find by column values
 		$customer = Customer::find(['name' => 'user2']);
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
-		$customer = Customer::find(['name' => 'user1', 'primaryKey' => 2]);
+		$customer = Customer::find(['name' => 'user1', ActiveRecord::PRIMARY_KEY_NAME => 2]);
 		$this->assertNull($customer);
-		$customer = Customer::find(['primaryKey' => 5]);
+		$customer = Customer::find([ActiveRecord::PRIMARY_KEY_NAME => 5]);
 		$this->assertNull($customer);
 		$customer = Customer::find(['name' => 'user5']);
 		$this->assertNull($customer);
@@ -182,7 +182,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 		// find count
 		$this->assertEquals(3, Customer::find()->count());
-		$this->assertEquals(2, Customer::find()->where(['or', ['primaryKey' => 1], ['primaryKey' => 2]])->count());
+		$this->assertEquals(2, Customer::find()->where(['or', [ActiveRecord::PRIMARY_KEY_NAME => 1], [ActiveRecord::PRIMARY_KEY_NAME => 2]])->count());
 //		$this->assertEquals(6, Customer::find()->sum('id'));
 //		$this->assertEquals(2, Customer::find()->average('id'));
 //		$this->assertEquals(1, Customer::find()->min('id'));
@@ -199,7 +199,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 			'name' => 'user2',
 			'address' => 'address2',
 			'status' => '1',
-			'primaryKey' => 2,
+			ActiveRecord::PRIMARY_KEY_NAME => 2,
 		), $customer);
 
 		// indexBy
@@ -257,7 +257,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 		$orders = $customer->getOrders()->where(['between', 'create_time', 1325334000, 1325400000])->all();
 		$this->assertEquals(1, count($orders));
-		$this->assertEquals(2, $orders[0]->primaryKey);
+		$this->assertEquals(2, $orders[0]->id);
 	}
 
 	public function testFindEagerViaRelation()
@@ -266,16 +266,16 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$orders = Order::find()->with('items')->orderBy('create_time')->all();
 		$this->assertEquals(3, count($orders));
 		$order = $orders[0];
-		$this->assertEquals(1, $order->primaryKey);
+		$this->assertEquals(1, $order->id);
 		$this->assertEquals(2, count($order->items));
-		$this->assertEquals(1, $order->items[0]->primaryKey);
-		$this->assertEquals(2, $order->items[1]->primaryKey);
+		$this->assertEquals(1, $order->items[0]->id);
+		$this->assertEquals(2, $order->items[1]->id);
 	}
-
 
 	public function testInsertNoPk()
 	{
-		$this->assertEquals(['primaryKey'], Customer::primaryKey());
+		$this->assertEquals([ActiveRecord::PRIMARY_KEY_NAME], Customer::primaryKey());
+		$pkName = ActiveRecord::PRIMARY_KEY_NAME;
 
 		$customer = new Customer;
 		$customer->email = 'user4@example.com';
@@ -284,20 +284,25 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 		$this->assertNull($customer->primaryKey);
 		$this->assertNull($customer->oldPrimaryKey);
+		$this->assertNull($customer->$pkName);
 		$this->assertTrue($customer->isNewRecord);
 
 		$customer->save();
 
 		$this->assertNotNull($customer->primaryKey);
 		$this->assertNotNull($customer->oldPrimaryKey);
+		$this->assertNotNull($customer->$pkName);
 		$this->assertEquals($customer->primaryKey, $customer->oldPrimaryKey);
+		$this->assertEquals($customer->primaryKey, $customer->$pkName);
 		$this->assertFalse($customer->isNewRecord);
 	}
 
 	public function testInsertPk()
 	{
+		$pkName = ActiveRecord::PRIMARY_KEY_NAME;
+
 		$customer = new Customer;
-		$customer->primaryKey = 5;
+		$customer->$pkName = 5;
 		$customer->email = 'user5@example.com';
 		$customer->name = 'user5';
 		$customer->address = 'address5';
@@ -307,17 +312,23 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$customer->save();
 
 		$this->assertEquals(5, $customer->primaryKey);
+		$this->assertEquals(5, $customer->oldPrimaryKey);
+		$this->assertEquals(5, $customer->$pkName);
 		$this->assertFalse($customer->isNewRecord);
 	}
 
 	public function testUpdatePk()
 	{
-		$pk = ['primaryKey' => 2];
+		$pkName = ActiveRecord::PRIMARY_KEY_NAME;
+
+		$pk = [$pkName => 2];
 		$orderItem = Order::find($pk);
 		$this->assertEquals(2, $orderItem->primaryKey);
+		$this->assertEquals(2, $orderItem->oldPrimaryKey);
+		$this->assertEquals(2, $orderItem->$pkName);
 
 		$this->setExpectedException('yii\base\InvalidCallException');
-		$orderItem->primaryKey = 13;
+		$orderItem->$pkName = 13;
 		$orderItem->save();
 	}
 }

@@ -19,17 +19,17 @@ class Order extends ActiveRecord
 
 	public function getCustomer()
 	{
-		return $this->hasOne(Customer::className(), ['primaryKey' => 'customer_id']);
+		return $this->hasOne(Customer::className(), [ActiveRecord::PRIMARY_KEY_NAME => 'customer_id']);
 	}
 
 	public function getOrderItems()
 	{
-		return $this->hasMany(OrderItem::className(), ['order_id' => 'primaryKey']);
+		return $this->hasMany(OrderItem::className(), ['order_id' => ActiveRecord::PRIMARY_KEY_NAME]);
 	}
 
 	public function getItems()
 	{
-		return $this->hasMany(Item::className(), ['primaryKey' => 'item_id'])
+		return $this->hasMany(Item::className(), [ActiveRecord::PRIMARY_KEY_NAME => 'item_id'])
 			->via('orderItems')->orderBy('name');
 	}
 
@@ -51,8 +51,8 @@ class Order extends ActiveRecord
 
 //	public function getBooks()
 //	{
-//		return $this->hasMany('Item', ['primaryKey' => 'item_id'])
-//			->viaTable('tbl_order_item', ['order_id' => 'primaryKey'])
+//		return $this->hasMany('Item', [ActiveRecord::PRIMARY_KEY_NAME => 'item_id'])
+//			->viaTable('tbl_order_item', ['order_id' => ActiveRecord::PRIMARY_KEY_NAME])
 //			->where(['category_id' => 1]);
 //	}
 

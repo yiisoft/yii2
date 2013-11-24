@@ -19,11 +19,11 @@ class OrderItem extends ActiveRecord
 
 	public function getOrder()
 	{
-		return $this->hasOne(Order::className(), ['primaryKey' => 'order_id']);
+		return $this->hasOne(Order::className(), [ActiveRecord::PRIMARY_KEY_NAME => 'order_id']);
 	}
 
 	public function getItem()
 	{
-		return $this->hasOne(Item::className(), ['primaryKey' => 'item_id']);
+		return $this->hasOne(Item::className(), [ActiveRecord::PRIMARY_KEY_NAME => 'item_id']);
 	}
 }

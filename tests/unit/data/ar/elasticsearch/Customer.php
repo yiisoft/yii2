@@ -26,7 +26,7 @@ class Customer extends ActiveRecord
 
 	public function getOrders()
 	{
-		return $this->hasMany(Order::className(), array('customer_id' => 'primaryKey'))->orderBy('create_time');
+		return $this->hasMany(Order::className(), array('customer_id' => ActiveRecord::PRIMARY_KEY_NAME))->orderBy('create_time');
 	}
 
 	public static function active($query)

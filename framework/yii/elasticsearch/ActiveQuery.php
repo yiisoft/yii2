@@ -92,7 +92,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		if ($this->asArray) {
 			foreach($models as $key => $model) {
 				$models[$key] = $model['_source'];
-				$models[$key]['primaryKey'] = $model['_id'];
+				$models[$key][ActiveRecord::PRIMARY_KEY_NAME] = $model['_id'];
 			}
 		}
 		if (!empty($this->with)) {
@@ -116,7 +116,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 		if ($this->asArray) {
 			$model = $result['_source'];
-			$model['primaryKey'] = $result['_id'];
+			$model[ActiveRecord::PRIMARY_KEY_NAME] = $result['_id'];
 		} else {
 			/** @var ActiveRecord $class */
 			$class = $this->modelClass;
@@ -137,7 +137,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	{
 		$record = parent::one($db);
 		if ($record !== false) {
-			if ($field == 'primaryKey') {
+			if ($field == ActiveRecord::PRIMARY_KEY_NAME) {
 				return $record['_id'];
 			} elseif (isset($record['_source'][$field])) {
 				return $record['_source'][$field];
@@ -151,7 +151,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 */
 	public function column($field, $db = null)
 	{
-		if ($field == 'primaryKey') {
+		if ($field == ActiveRecord::PRIMARY_KEY_NAME) {
 			$command = $this->createCommand($db);
 			$command->queryParts['fields'] = [];
 			$rows = $command->queryAll()['hits'];

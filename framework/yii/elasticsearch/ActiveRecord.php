@@ -27,6 +27,8 @@ use yii\helpers\StringHelper;
  */
 class ActiveRecord extends \yii\db\ActiveRecord
 {
+	const PRIMARY_KEY_NAME = 'id';
+
 	private $_id;
 	private $_version;
 
@@ -48,8 +50,8 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	{
 		$query = static::createQuery();
 		if (is_array($q)) {
-			if (count($q) == 1 && (array_key_exists('primaryKey', $q))) {
-				return static::get($q['primaryKey']);
+			if (count($q) == 1 && (array_key_exists(ActiveRecord::PRIMARY_KEY_NAME, $q))) {
+				return static::get($q[ActiveRecord::PRIMARY_KEY_NAME]);
 			}
 			return $query->where($q)->one();
 		} elseif ($q !== null) {
@@ -68,7 +70,6 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	 * for more details on these options.
 	 * @return static|null The record instance or null if it was not found.
 	 */
-
 	public static function get($primaryKey, $options = [])
 	{
 		if ($primaryKey === null) {
@@ -132,12 +133,17 @@ class ActiveRecord extends \yii\db\ActiveRecord
 
 	// TODO implement copy and move as pk change is not possible
 
+	public function getId()
+	{
+		return $this->_id;
+	}
+
 	/**
 	 * Sets the primary key
 	 * @param mixed $value
 	 * @throws \yii\base\InvalidCallException when record is not new
 	 */
-	public function setPrimaryKey($value)
+	public function setId($value)
 	{
 		if ($this->isNewRecord) {
 			$this->_id = $value;
@@ -152,7 +158,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	public function getPrimaryKey($asArray = false)
 	{
 		if ($asArray) {
-			return ['primaryKey' => $this->_id];
+			return [ActiveRecord::PRIMARY_KEY_NAME => $this->_id];
 		} else {
 			return $this->_id;
 		}
@@ -165,7 +171,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	{
 		$id = $this->isNewRecord ? null : $this->_id;
 		if ($asArray) {
-			return ['primaryKey' => $id];
+			return [ActiveRecord::PRIMARY_KEY_NAME => $id];
 		} else {
 			return $this->_id;
 		}
@@ -180,7 +186,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function primaryKey()
 	{
-		return ['primaryKey'];
+		return [ActiveRecord::PRIMARY_KEY_NAME];
 	}
 
 	/**
@@ -218,7 +224,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function create($row)
 	{
-		$row['_source']['primaryKey'] = $row['_id'];
+		$row['_source'][ActiveRecord::PRIMARY_KEY_NAME] = $row['_id'];
 		$record = parent::create($row['_source']);
 		return $record;
 	}
@@ -317,10 +323,10 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function updateAll($attributes, $condition = [], $params = [])
 	{
-		if (count($condition) == 1 && isset($condition['primaryKey'])) {
-			$primaryKeys = (array) $condition['primaryKey'];
+		if (count($condition) == 1 && isset($condition[ActiveRecord::PRIMARY_KEY_NAME])) {
+			$primaryKeys = (array) $condition[ActiveRecord::PRIMARY_KEY_NAME];
 		} else {
-			$primaryKeys = static::find()->where($condition)->column('primaryKey');
+			$primaryKeys = static::find()->where($condition)->column(ActiveRecord::PRIMARY_KEY_NAME);
 		}
 		if (empty($primaryKeys)) {
 			return 0;
@@ -372,10 +378,10 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	 */
 	public static function deleteAll($condition = [], $params = [])
 	{
-		if (count($condition) == 1 && isset($condition['primaryKey'])) {
-			$primaryKeys = (array) $condition['primaryKey'];
+		if (count($condition) == 1 && isset($condition[ActiveRecord::PRIMARY_KEY_NAME])) {
+			$primaryKeys = (array) $condition[ActiveRecord::PRIMARY_KEY_NAME];
 		} else {
-			$primaryKeys = static::find()->where($condition)->column('primaryKey');
+			$primaryKeys = static::find()->where($condition)->column(ActiveRecord::PRIMARY_KEY_NAME);
 		}
 		if (empty($primaryKeys)) {
 			return 0;
