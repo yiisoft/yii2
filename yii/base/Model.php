@@ -214,17 +214,13 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 		}
 
 		foreach ($scenarios as $scenario => $attributes) {
-			if (empty($attributes)) {
+			if (empty($attributes) && $scenario !== self::DEFAULT_SCENARIO) {
 				unset($scenarios[$scenario]);
 			} else {
 				$scenarios[$scenario] = array_keys($attributes);
 			}
 		}
 
-		if (empty($scenarios[self::DEFAULT_SCENARIO])) {
-			// keep the default scenario so that models without any rules defined can work properly
-			$scenarios[self::DEFAULT_SCENARIO] = [];
-		}
 		return $scenarios;
 	}
 
