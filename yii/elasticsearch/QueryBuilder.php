@@ -96,13 +96,21 @@ class QueryBuilder extends \yii\base\Object
 		}
 		$orders = [];
 		foreach ($columns as $name => $direction) {
+			if (is_string($direction)) {
+				$column = $direction;
+				$direction = SORT_ASC;
+			} else {
+				$column = $name;
+			}
+			if ($column == ActiveRecord::PRIMARY_KEY_NAME) {
+				$column = '_id';
+			}
+
 			// allow elasticsearch extended syntax as described in http://www.elasticsearch.org/guide/reference/api/search/sort/
 			if (is_array($direction)) {
-				$orders[] = array($name => $direction);
-			} elseif (is_string($direction)) {
-				$orders[] = $direction;
+				$orders[] = [$column => $direction];
 			} else {
-				$orders[] = array($name => ($direction === SORT_DESC ? 'desc' : 'asc'));
+				$orders[] = [$column => ($direction === SORT_DESC ? 'desc' : 'asc')];
 			}
 		}
 		return $orders;
@@ -155,7 +163,7 @@ class QueryBuilder extends \yii\base\Object
 	{
 		$parts = [];
 		foreach($condition as $attribute => $value) {
-			if ($attribute == 'primaryKey') {
+			if ($attribute == ActiveRecord::PRIMARY_KEY_NAME) {
 				if ($value == null) { // there is no null pk
 					$parts[] = ['script' => ['script' => '0==1']];
 				} else {
@@ -201,7 +209,7 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		list($column, $value1, $value2) = $operands;
-		if ($column == 'primaryKey') {
+		if ($column == ActiveRecord::PRIMARY_KEY_NAME) {
 			throw new NotSupportedException('Between condition is not supported for primaryKey.');
 		}
 		$filter = ['range' => [$column => ['gte' => $value1, 'lte' => $value2]]];
@@ -240,7 +248,7 @@ class QueryBuilder extends \yii\base\Object
 				unset($values[$i]);
 			}
 		}
-		if ($column == 'primaryKey') {
+		if ($column == ActiveRecord::PRIMARY_KEY_NAME) {
 			if (empty($values) && $canBeNull) { // there is no null pk
 				$filter = ['script' => ['script' => '0==1']];
 			} else {
