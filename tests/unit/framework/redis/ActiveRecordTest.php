@@ -105,6 +105,15 @@ class ActiveRecordTest extends RedisTestCase
 		$this->markTestSkipped('Redis does not store/find boolean values correctly.');
 	}
 
+	public function testFindEagerViaRelationPreserveOrder()
+	{
+		$this->markTestSkipped('Redis does not support orderBy.');
+	}
+
+	public function testFindEagerViaRelationPreserveOrderB()
+	{
+		$this->markTestSkipped('Redis does not support orderBy.');
+	}
 
 	public function testSatisticalFind()
 	{

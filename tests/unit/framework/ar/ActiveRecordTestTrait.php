@@ -428,10 +428,11 @@ trait ActiveRecordTestTrait
 		$this->assertEquals(3, $order->itemsInOrder1[1]->id);
 		$this->assertEquals(4, $order->itemsInOrder1[2]->id);
 
-		$order = $orders[3];
+		$order = $orders[2];
 		$this->assertEquals(3, $order->id);
 		$this->assertTrue($order->isRelationPopulated('itemsInOrder1'));
-		$this->assertEquals(0, count($order->itemsInOrder1));
+		$this->assertEquals(1, count($order->itemsInOrder1));
+		$this->assertEquals(2, $order->itemsInOrder1[0]->id);
 	}
 
 	// different order in via table
@@ -455,10 +456,11 @@ trait ActiveRecordTestTrait
 		$this->assertEquals(3, $order->itemsInOrder2[1]->id);
 		$this->assertEquals(4, $order->itemsInOrder2[2]->id);
 
-		$order = $orders[3];
+		$order = $orders[2];
 		$this->assertEquals(3, $order->id);
 		$this->assertTrue($order->isRelationPopulated('itemsInOrder2'));
-		$this->assertEquals(0, count($order->itemsInOrder2));
+		$this->assertEquals(1, count($order->itemsInOrder2));
+		$this->assertEquals(2, $order->itemsInOrder2[0]->id);
 	}
 
 	public function testLink()
