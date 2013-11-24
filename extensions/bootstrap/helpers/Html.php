@@ -294,6 +294,7 @@ class Html extends \yii\helpers\Html
 	 *     - TYPE_INFO    = 'info'
 	 *     - TYPE_WARNING = 'warning'
 	 *     - TYPE_DANGER  = 'danger'
+	 * @param array $options html options for the panel container
 	 *
 	 * Example(s): 
 	 * ```php
@@ -305,23 +306,23 @@ class Html extends \yii\helpers\Html
 	 * 		[
 	 * 			'heading' => 'Panel Heading',
 	 * 			'body' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, ' .
-	 * 				   'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+	 * 					  'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 	 * 			'postBody' => Html::listGroup([
-	 * 					[
-	 * 						'content' => 'Cras justo odio',
-	 * 						'url' => '#',
-	 * 						'badge' => '14'
-	 * 					],
-	 * 					[
-	 * 						'content' => 'Dapibus ac facilisis in',
-	 * 						'url' => '#',
-	 * 						'badge' => '2'
-	 * 					],
-	 * 					[
-	 * 						'content' => 'Morbi leo risus',
-	 * 						'url' => '#',
-	 * 						'badge' => '1'
-	 * 					],
+	 * 				[
+	 * 					'content' => 'Cras justo odio',
+	 * 					'url' => '#',
+	 * 					'badge' => '14'
+	 * 				],
+	 * 				[
+	 * 					'content' => 'Dapibus ac facilisis in',
+	 * 					'url' => '#',
+	 * 					'badge' => '2'
+	 * 				],
+	 * 				[
+	 * 					'content' => 'Morbi leo risus',
+	 * 					'url' => '#',
+	 * 					'badge' => '1'
+	 * 				],
 	 * 			], [], 'ul', 'li'),
 	 * 			'footer'=> 'Panel Footer',
 	 * 			'headingTitle' => true,
