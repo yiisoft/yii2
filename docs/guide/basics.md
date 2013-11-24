@@ -63,9 +63,9 @@ Path Aliases
 
 Yii 2.0 expands the usage of path aliases to both file/directory paths and URLs. An alias
 must start with a `@` character so that it can be differentiated from file/directory paths and URLs.
-For example, the alias `@yii` refers to the Yii installation directory. Path aliases are
-supported in most places in the Yii core code. For example, `FileCache::cachePath` can take
-both a path alias and a normal directory path.
+For example, the alias `@yii` refers to the Yii installation directory while `@web` contains base URL for currently
+running web application. Path aliases are supported in most places in the Yii core code. For example,
+`FileCache::cachePath` can take both a path alias and a normal directory path.
 
 Path alias is also closely related with class namespaces. It is recommended that a path
 alias be defined for each root namespace so that you can use Yii the class autoloader without
