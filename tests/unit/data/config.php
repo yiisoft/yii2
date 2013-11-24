@@ -34,4 +34,17 @@ return [
 			'password' => null,
 		],
 	],
+	'sphinx' => [
+		'sphinx' => [
+			'dsn' => 'mysql:host=127.0.0.1;port=9306;',
+			'username' => '',
+			'password' => '',
+		],
+		'db' => [
+			'dsn' => 'mysql:host=127.0.0.1;dbname=yiitest',
+			'username' => 'travis',
+			'password' => '',
+			'fixture' => __DIR__ . '/sphinx/source.sql',
+		],
+	]
 ];
