@@ -141,12 +141,33 @@ class QueryBuilder extends \yii\base\Object
 	 * @param array $columns the column names
 	 * @param array $rows the rows to be batch inserted into the table
 	 * @return string the batch INSERT SQL statement
-	 * @throws NotSupportedException if this is not supported by the underlying DBMS
 	 */
 	public function batchInsert($table, $columns, $rows)
 	{
-		throw new NotSupportedException($this->db->getDriverName() . ' does not support batch insert.');
+		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
+			$columnSchemas = $tableSchema->columns;
+		} else {
+			$columnSchemas = [];
+		}
 
+		foreach ($columns as $i => $name) {
+			$columns[$i] = $this->db->quoteColumnName($name);
+		}
+
+		$values = [];
+		foreach ($rows as $row) {
+			$vs = [];
+			foreach ($row as $i => $value) {
+				if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
+					$value = $columnSchemas[$columns[$i]]->typecast($value);
+				}
+				$vs[] = is_string($value) ? $this->db->quoteValue($value) : $value;
+			}
+			$values[] = '(' . implode(', ', $vs) . ')';
+		}
+
+		return 'INSERT INTO ' . $this->db->quoteTableName($table)
+		. ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
 	}
 
 	/**
