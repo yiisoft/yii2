@@ -129,4 +129,38 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 		return $model;
 	}
+
+	/**
+	 * @inheritDocs
+	 */
+	public function scalar($field, $db = null)
+	{
+		$record = parent::one($db);
+		if ($record !== false) {
+			if ($field == 'primaryKey') {
+				return $record['_id'];
+			} elseif (isset($record['_source'][$field])) {
+				return $record['_source'][$field];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @inheritDocs
+	 */
+	public function column($field, $db = null)
+	{
+		if ($field == 'primaryKey') {
+			$command = $this->createCommand($db);
+			$command->queryParts['fields'] = [];
+			$rows = $command->queryAll()['hits'];
+			$result = [];
+			foreach ($rows as $row) {
+				$result[] = $row['_id'];
+			}
+			return $result;
+		}
+		return parent::column($field, $db);
+	}
 }

@@ -312,16 +312,21 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	 * @param array $attributes attribute values (name-value pairs) to be saved into the table
 	 * @param array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
 	 * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
-	 * @param array $params this parameter is ignored in redis implementation.
+	 * @param array $params this parameter is ignored in elasticsearch implementation.
 	 * @return integer the number of rows updated
 	 */
 	public static function updateAll($attributes, $condition = [], $params = [])
 	{
-		if (empty($condition)) {
+		if (count($condition) == 1 && isset($condition['primaryKey'])) {
+			$primaryKeys = (array) $condition['primaryKey'];
+		} else {
+			$primaryKeys = static::find()->where($condition)->column('primaryKey');
+		}
+		if (empty($primaryKeys)) {
 			return 0;
 		}
 		$bulk = '';
-		foreach((array) $condition as $pk) {
+		foreach((array) $primaryKeys as $pk) {
 			$action = Json::encode([
 				"update" => [
 					"_id" => $pk,
@@ -362,16 +367,21 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	 *
 	 * @param array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
 	 * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
-	 * @param array $params this parameter is ignored in redis implementation.
+	 * @param array $params this parameter is ignored in elasticsearch implementation.
 	 * @return integer the number of rows deleted
 	 */
 	public static function deleteAll($condition = [], $params = [])
 	{
-		if (empty($condition)) {
+		if (count($condition) == 1 && isset($condition['primaryKey'])) {
+			$primaryKeys = (array) $condition['primaryKey'];
+		} else {
+			$primaryKeys = static::find()->where($condition)->column('primaryKey');
+		}
+		if (empty($primaryKeys)) {
 			return 0;
 		}
 		$bulk = '';
-		foreach((array) $condition as $pk) {
+		foreach((array) $primaryKeys as $pk) {
 			$bulk .= Json::encode([
 				"delete" => [
 					"_id" => $pk,

@@ -19,33 +19,31 @@ class Order extends ActiveRecord
 
 	public function getCustomer()
 	{
-		return $this->hasOne('Customer', ['id' => 'customer_id']);
+		return $this->hasOne(Customer::className(), ['primaryKey' => 'customer_id']);
 	}
 
 	public function getOrderItems()
 	{
-		return $this->hasMany('OrderItem', ['order_id' => 'id']);
+		return $this->hasMany(OrderItem::className(), ['order_id' => 'primaryKey']);
 	}
 
 	public function getItems()
 	{
-		return $this->hasMany('Item', ['id' => 'item_id'])
-			->via('orderItems', function ($q) {
-				// additional query configuration
-			})->orderBy('id');
+		return $this->hasMany(Item::className(), ['primaryKey' => 'item_id'])
+			->via('orderItems')->orderBy('name');
 	}
 
-	public function getBooks()
-	{
-		return $this->hasMany('Item', ['id' => 'item_id'])
-			->viaTable('tbl_order_item', ['order_id' => 'id'])
-			->where(['category_id' => 1]);
-	}
+//	public function getBooks()
+//	{
+//		return $this->hasMany('Item', ['primaryKey' => 'item_id'])
+//			->viaTable('tbl_order_item', ['order_id' => 'primaryKey'])
+//			->where(['category_id' => 1]);
+//	}
 
 	public function beforeSave($insert)
 	{
 		if (parent::beforeSave($insert)) {
-			$this->create_time = time();
+//			$this->create_time = time();
 			return true;
 		} else {
 			return false;

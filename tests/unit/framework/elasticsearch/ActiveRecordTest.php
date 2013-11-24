@@ -25,15 +25,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 		$customer = new Customer();
 		$customer->primaryKey = 1;
-		$customer->setAttributes(array('email' => 'user1@example.com', 'name' => 'user1', 'address' => 'address1', 'status' => 1), false);
+		$customer->setAttributes(['email' => 'user1@example.com', 'name' => 'user1', 'address' => 'address1', 'status' => 1], false);
 		$customer->save(false);
 		$customer = new Customer();
 		$customer->primaryKey = 2;
-		$customer->setAttributes(array('email' => 'user2@example.com', 'name' => 'user2', 'address' => 'address2', 'status' => 1), false);
+		$customer->setAttributes(['email' => 'user2@example.com', 'name' => 'user2', 'address' => 'address2', 'status' => 1], false);
 		$customer->save(false);
 		$customer = new Customer();
 		$customer->primaryKey = 3;
-		$customer->setAttributes(array('email' => 'user3@example.com', 'name' => 'user3', 'address' => 'address3', 'status' => 2), false);
+		$customer->setAttributes(['email' => 'user3@example.com', 'name' => 'user3', 'address' => 'address3', 'status' => 2], false);
 		$customer->save(false);
 
 //		INSERT INTO tbl_category (name) VALUES ('Books');
@@ -41,56 +41,56 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 		$item = new Item();
 		$item->primaryKey = 1;
-		$item->setAttributes(array('name' => 'Agile Web Application Development with Yii1.1 and PHP5', 'category_id' => 1), false);
+		$item->setAttributes(['name' => 'Agile Web Application Development with Yii1.1 and PHP5', 'category_id' => 1], false);
 		$item->save(false);
 		$item = new Item();
 		$item->primaryKey = 2;
-		$item->setAttributes(array('name' => 'Yii 1.1 Application Development Cookbook', 'category_id' => 1), false);
+		$item->setAttributes(['name' => 'Yii 1.1 Application Development Cookbook', 'category_id' => 1], false);
 		$item->save(false);
 		$item = new Item();
 		$item->primaryKey = 3;
-		$item->setAttributes(array('name' => 'Ice Age', 'category_id' => 2), false);
+		$item->setAttributes(['name' => 'Ice Age', 'category_id' => 2], false);
 		$item->save(false);
 		$item = new Item();
 		$item->primaryKey = 4;
-		$item->setAttributes(array('name' => 'Toy Story', 'category_id' => 2), false);
+		$item->setAttributes(['name' => 'Toy Story', 'category_id' => 2], false);
 		$item->save(false);
 		$item = new Item();
 		$item->primaryKey = 5;
-		$item->setAttributes(array('name' => 'Cars', 'category_id' => 2), false);
+		$item->setAttributes(['name' => 'Cars', 'category_id' => 2], false);
 		$item->save(false);
 
 		$order = new Order();
 		$order->primaryKey = 1;
-		$order->setAttributes(array('customer_id' => 1, 'create_time' => 1325282384, 'total' => 110.0), false);
+		$order->setAttributes(['customer_id' => 1, 'create_time' => 1325282384, 'total' => 110.0], false);
 		$order->save(false);
 		$order = new Order();
 		$order->primaryKey = 2;
-		$order->setAttributes(array('customer_id' => 2, 'create_time' => 1325334482, 'total' => 33.0), false);
+		$order->setAttributes(['customer_id' => 2, 'create_time' => 1325334482, 'total' => 33.0], false);
 		$order->save(false);
 		$order = new Order();
 		$order->primaryKey = 3;
-		$order->setAttributes(array('customer_id' => 2, 'create_time' => 1325502201, 'total' => 40.0), false);
+		$order->setAttributes(['customer_id' => 2, 'create_time' => 1325502201, 'total' => 40.0], false);
 		$order->save(false);
 
-//		$orderItem = new OrderItem();
-//		$orderItem->setAttributes(array('order_id' => 1, 'item_id' => 1, 'quantity' => 1, 'subtotal' => 30.0), false);
-//		$orderItem->save(false);
-//		$orderItem = new OrderItem();
-//		$orderItem->setAttributes(array('order_id' => 1, 'item_id' => 2, 'quantity' => 2, 'subtotal' => 40.0), false);
-//		$orderItem->save(false);
-//		$orderItem = new OrderItem();
-//		$orderItem->setAttributes(array('order_id' => 2, 'item_id' => 4, 'quantity' => 1, 'subtotal' => 10.0), false);
-//		$orderItem->save(false);
-//		$orderItem = new OrderItem();
-//		$orderItem->setAttributes(array('order_id' => 2, 'item_id' => 5, 'quantity' => 1, 'subtotal' => 15.0), false);
-//		$orderItem->save(false);
-//		$orderItem = new OrderItem();
-//		$orderItem->setAttributes(array('order_id' => 2, 'item_id' => 3, 'quantity' => 1, 'subtotal' => 8.0), false);
-//		$orderItem->save(false);
-//		$orderItem = new OrderItem();
-//		$orderItem->setAttributes(array('order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0), false);
-//		$orderItem->save(false);
+		$orderItem = new OrderItem();
+		$orderItem->setAttributes(['order_id' => 1, 'item_id' => 1, 'quantity' => 1, 'subtotal' => 30.0], false);
+		$orderItem->save(false);
+		$orderItem = new OrderItem();
+		$orderItem->setAttributes(['order_id' => 1, 'item_id' => 2, 'quantity' => 2, 'subtotal' => 40.0], false);
+		$orderItem->save(false);
+		$orderItem = new OrderItem();
+		$orderItem->setAttributes(['order_id' => 2, 'item_id' => 4, 'quantity' => 1, 'subtotal' => 10.0], false);
+		$orderItem->save(false);
+		$orderItem = new OrderItem();
+		$orderItem->setAttributes(['order_id' => 2, 'item_id' => 5, 'quantity' => 1, 'subtotal' => 15.0], false);
+		$orderItem->save(false);
+		$orderItem = new OrderItem();
+		$orderItem->setAttributes(['order_id' => 2, 'item_id' => 3, 'quantity' => 1, 'subtotal' => 8.0], false);
+		$orderItem->save(false);
+		$orderItem = new OrderItem();
+		$orderItem->setAttributes(['order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0], false);
+		$orderItem->save(false);
 
 		Customer::getDb()->createCommand()->flushIndex();
 	}
@@ -118,22 +118,22 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertNull($customer);
 
 		// query scalar
-		$customerName = Customer::find()->where(array('status' => 2))->scalar('name');
+		$customerName = Customer::find()->where(['status' => 2])->scalar('name');
 		$this->assertEquals('user3', $customerName);
 
 		// find by column values
-		$customer = Customer::find(array('name' => 'user2'));
+		$customer = Customer::find(['name' => 'user2']);
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
-		$customer = Customer::find(array('name' => 'user1', 'id' => 2));
+		$customer = Customer::find(['name' => 'user1', 'id' => 2]);
 		$this->assertNull($customer);
-		$customer = Customer::find(array('primaryKey' => 5));
+		$customer = Customer::find(['primaryKey' => 5]);
 		$this->assertNull($customer);
-		$customer = Customer::find(array('name' => 'user5'));
+		$customer = Customer::find(['name' => 'user5']);
 		$this->assertNull($customer);
 
 		// find by attributes
-		$customer = Customer::find()->where(array('name' => 'user2'))->one();
+		$customer = Customer::find()->where(['name' => 'user2'])->one();
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
 
@@ -149,7 +149,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 //		$this->assertEquals(2, Customer::find()->active()->count());
 
 		// asArray
-		$customer = Customer::find()->where(array('name' => 'user2'))->asArray()->one();
+		$customer = Customer::find()->where(['name' => 'user2'])->asArray()->one();
 		$this->assertEquals(array(
 			'email' => 'user2@example.com',
 			'name' => 'user2',
@@ -286,14 +286,14 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 	public function testFindComplexCondition()
 	{
-		$this->assertEquals(2, Customer::find()->where(array('OR', array('name' => 'user1'), array('name' => 'user2')))->count());
-		$this->assertEquals(2, count(Customer::find()->where(array('OR', array('name' => 'user1'), array('name' => 'user2')))->all()));
+		$this->assertEquals(2, Customer::find()->where(['OR', ['name' => 'user1'], ['name' => 'user2']])->count());
+		$this->assertEquals(2, count(Customer::find()->where(['OR', ['name' => 'user1'], ['name' => 'user2']])->all()));
 
-		$this->assertEquals(2, Customer::find()->where(array('name' => array('user1','user2')))->count());
-		$this->assertEquals(2, count(Customer::find()->where(array('name' => array('user1','user2')))->all()));
+		$this->assertEquals(2, Customer::find()->where(['name' => ['user1','user2']])->count());
+		$this->assertEquals(2, count(Customer::find()->where(['name' => ['user1','user2']])->all()));
 
-		$this->assertEquals(1, Customer::find()->where(array('AND', array('name' => array('user2','user3')), array('BETWEEN', 'status', 2, 4)))->count());
-		$this->assertEquals(1, count(Customer::find()->where(array('AND', array('name' => array('user2','user3')), array('BETWEEN', 'status', 2, 4)))->all()));
+		$this->assertEquals(1, Customer::find()->where(['AND', ['name' => ['user2','user3']], ['BETWEEN', 'status', 2, 4]])->count());
+		$this->assertEquals(1, count(Customer::find()->where(['AND', ['name' => ['user2','user3']], ['BETWEEN', 'status', 2, 4]])->all()));
 	}
 
 	public function testFindNullValues()
@@ -301,6 +301,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$customer = Customer::find(2);
 		$customer->name = null;
 		$customer->save(false);
+		Customer::getDb()->createCommand()->flushIndex('customers');
 
 		$result = Customer::find()->where(['name' => null])->all();
 		$this->assertEquals(1, count($result));
@@ -309,132 +310,136 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 	public function testFindColumn()
 	{
-		$this->assertEquals(array('user1', 'user2', 'user3'), Customer::find()->column('name'));
-		$this->assertEquals(array('user3', 'user2', 'user1'), Customer::find()->orderBy(array('name' => SORT_DESC))->column('name'));
+		$this->assertEquals(['user1', 'user2', 'user3'], Customer::find()->column('name'));
+		$this->assertEquals(['user3', 'user2', 'user1'], Customer::find()->orderBy(['name' => SORT_DESC])->column('name'));
 	}
 
 	public function testExists()
 	{
-		$this->assertTrue(Customer::find()->where(array('name' => 'user1'))->exists());
-		$this->assertFalse(Customer::find()->where(array('name' => 'user5'))->exists());
+		$this->assertTrue(Customer::find()->where(['name' => 'user1'])->exists());
+		$this->assertFalse(Customer::find()->where(['name' => 'user5'])->exists());
 	}
 
-//	public function testFindLazy()
-//	{
-//		/** @var $customer Customer */
-//		$customer = Customer::find(2);
-//		$orders = $customer->orders;
-//		$this->assertEquals(2, count($orders));
-//
-//		$orders = $customer->getOrders()->where(array('id' => 3))->all();
-//		$this->assertEquals(1, count($orders));
-//		$this->assertEquals(3, $orders[0]->id);
-//	}
-//
-//	public function testFindEager()
-//	{
-//		$customers = Customer::find()->with('orders')->all();
-//		$this->assertEquals(3, count($customers));
-//		$this->assertEquals(1, count($customers[0]->orders));
-//		$this->assertEquals(2, count($customers[1]->orders));
-//	}
-//
-//	public function testFindLazyVia()
-//	{
-//		/** @var $order Order */
-//		$order = Order::find(1);
-//		$this->assertEquals(1, $order->id);
-//		$this->assertEquals(2, count($order->items));
-//		$this->assertEquals(1, $order->items[0]->id);
-//		$this->assertEquals(2, $order->items[1]->id);
-//
-//		$order = Order::find(1);
-//		$order->id = 100;
-//		$this->assertEquals(array(), $order->items);
-//	}
-//
-//	public function testFindEagerViaRelation()
-//	{
-//		$orders = Order::find()->with('items')->all();
-//		$this->assertEquals(3, count($orders));
-//		$order = $orders[0];
-//		$this->assertEquals(1, $order->id);
-//		$this->assertEquals(2, count($order->items));
-//		$this->assertEquals(1, $order->items[0]->id);
-//		$this->assertEquals(2, $order->items[1]->id);
-//	}
-//
-//	public function testFindNestedRelation()
-//	{
-//		$customers = Customer::find()->with('orders', 'orders.items')->all();
-//		$this->assertEquals(3, count($customers));
-//		$this->assertEquals(1, count($customers[0]->orders));
-//		$this->assertEquals(2, count($customers[1]->orders));
-//		$this->assertEquals(0, count($customers[2]->orders));
-//		$this->assertEquals(2, count($customers[0]->orders[0]->items));
-//		$this->assertEquals(3, count($customers[1]->orders[0]->items));
-//		$this->assertEquals(1, count($customers[1]->orders[1]->items));
-//	}
-//
-//	public function testLink()
-//	{
-//		$customer = Customer::find(2);
-//		$this->assertEquals(2, count($customer->orders));
-//
-//		// has many
-//		$order = new Order;
-//		$order->total = 100;
-//		$this->assertTrue($order->isNewRecord);
-//		$customer->link('orders', $order);
-//		$this->assertEquals(3, count($customer->orders));
-//		$this->assertFalse($order->isNewRecord);
-//		$this->assertEquals(3, count($customer->getOrders()->all()));
-//		$this->assertEquals(2, $order->customer_id);
-//
-//		// belongs to
-//		$order = new Order;
-//		$order->total = 100;
-//		$this->assertTrue($order->isNewRecord);
-//		$customer = Customer::find(1);
-//		$this->assertNull($order->customer);
-//		$order->link('customer', $customer);
-//		$this->assertFalse($order->isNewRecord);
-//		$this->assertEquals(1, $order->customer_id);
-//		$this->assertEquals(1, $order->customer->id);
-//
-//		// via model
-//		$order = Order::find(1);
-//		$this->assertEquals(2, count($order->items));
-//		$this->assertEquals(2, count($order->orderItems));
-//		$orderItem = OrderItem::find(array('order_id' => 1, 'item_id' => 3));
-//		$this->assertNull($orderItem);
-//		$item = Item::find(3);
-//		$order->link('items', $item, array('quantity' => 10, 'subtotal' => 100));
-//		$this->assertEquals(3, count($order->items));
-//		$this->assertEquals(3, count($order->orderItems));
-//		$orderItem = OrderItem::find(array('order_id' => 1, 'item_id' => 3));
-//		$this->assertTrue($orderItem instanceof OrderItem);
-//		$this->assertEquals(10, $orderItem->quantity);
-//		$this->assertEquals(100, $orderItem->subtotal);
-//	}
-//
-//	public function testUnlink()
-//	{
-//		// has many
-//		$customer = Customer::find(2);
-//		$this->assertEquals(2, count($customer->orders));
-//		$customer->unlink('orders', $customer->orders[1], true);
-//		$this->assertEquals(1, count($customer->orders));
-//		$this->assertNull(Order::find(3));
-//
-//		// via model
-//		$order = Order::find(2);
-//		$this->assertEquals(3, count($order->items));
-//		$this->assertEquals(3, count($order->orderItems));
-//		$order->unlink('items', $order->items[2], true);
-//		$this->assertEquals(2, count($order->items));
-//		$this->assertEquals(2, count($order->orderItems));
-//	}
+	public function testFindLazy()
+	{
+		/** @var $customer Customer */
+		$customer = Customer::find(2);
+		$orders = $customer->orders;
+		$this->assertEquals(2, count($orders));
+
+		$orders = $customer->getOrders()->where(['between', 'create_time', 1325334000, 1325400000])->all();
+		$this->assertEquals(1, count($orders));
+		$this->assertEquals(2, $orders[0]->primaryKey);
+	}
+
+	public function testFindEager()
+	{
+		$customers = Customer::find()->with('orders')->all();
+		$this->assertEquals(3, count($customers));
+		$this->assertEquals(1, count($customers[0]->orders));
+		$this->assertEquals(2, count($customers[1]->orders));
+	}
+
+	public function testFindLazyVia()
+	{
+		/** @var $order Order */
+		$order = Order::find(1);
+		$this->assertEquals(1, $order->primaryKey);
+		$this->assertEquals(2, count($order->items));
+		$this->assertEquals(2, $order->items[0]->primaryKey);
+		$this->assertEquals(1, $order->items[1]->primaryKey);
+
+		$order = new Order();
+		$order->primaryKey = 100;
+		$this->assertEquals([], $order->items);
+	}
+
+	public function testFindEagerViaRelation()
+	{
+		$orders = Order::find()->with('items')->all();
+		$this->assertEquals(3, count($orders));
+		$order = $orders[0];
+		$this->assertEquals(1, $order->primaryKey);
+		$this->assertEquals(2, count($order->items));
+		$this->assertEquals(2, $order->items[0]->primaryKey);
+		$this->assertEquals(1, $order->items[1]->primaryKey);
+	}
+
+	public function testFindNestedRelation()
+	{
+		$customers = Customer::find()->with('orders', 'orders.items')->all();
+		$this->assertEquals(3, count($customers));
+		$this->assertEquals(1, count($customers[0]->orders));
+		$this->assertEquals(2, count($customers[1]->orders));
+		$this->assertEquals(0, count($customers[2]->orders));
+		$this->assertEquals(2, count($customers[0]->orders[0]->items));
+		$this->assertEquals(3, count($customers[1]->orders[0]->items));
+		$this->assertEquals(1, count($customers[1]->orders[1]->items));
+	}
+
+	public function testLink()
+	{
+		$customer = Customer::find(2);
+		$this->assertEquals(2, count($customer->orders));
+
+		// has many
+		$order = new Order;
+		$order->total = 100;
+		$this->assertTrue($order->isNewRecord);
+		$customer->link('orders', $order);
+		$this->assertEquals(3, count($customer->orders));
+		$this->assertFalse($order->isNewRecord);
+		Customer::getDb()->createCommand()->flushIndex();
+		$this->assertEquals(3, count($customer->getOrders()->all()));
+		$this->assertEquals(2, $order->customer_id);
+
+		// belongs to
+		$order = new Order;
+		$order->total = 100;
+		$this->assertTrue($order->isNewRecord);
+		$customer = Customer::find(1);
+		$this->assertNull($order->customer);
+		$order->link('customer', $customer);
+		$this->assertFalse($order->isNewRecord);
+		$this->assertEquals(1, $order->customer_id);
+		$this->assertEquals(1, $order->customer->primaryKey);
+
+		// via model
+		$order = Order::find(1);
+		$this->assertEquals(2, count($order->items));
+		$this->assertEquals(2, count($order->orderItems));
+		$orderItem = OrderItem::find(['order_id' => 1, 'item_id' => 3]);
+		$this->assertNull($orderItem);
+		$item = Item::find(3);
+		$order->link('items', $item, ['quantity' => 10, 'subtotal' => 100]);
+		Customer::getDb()->createCommand()->flushIndex();
+		$this->assertEquals(3, count($order->items));
+		$this->assertEquals(3, count($order->orderItems));
+		$orderItem = OrderItem::find(['order_id' => 1, 'item_id' => 3]);
+		$this->assertTrue($orderItem instanceof OrderItem);
+		$this->assertEquals(10, $orderItem->quantity);
+		$this->assertEquals(100, $orderItem->subtotal);
+	}
+
+	public function testUnlink()
+	{
+		// has many
+		$customer = Customer::find(2);
+		$this->assertEquals(2, count($customer->orders));
+		$customer->unlink('orders', $customer->orders[1], true);
+		Customer::getDb()->createCommand()->flushIndex();
+		$this->assertEquals(1, count($customer->orders));
+		$this->assertNull(Order::find(3));
+
+		// via model
+		$order = Order::find(2);
+		$this->assertEquals(3, count($order->items));
+		$this->assertEquals(3, count($order->orderItems));
+		$order->unlink('items', $order->items[2], true);
+		Customer::getDb()->createCommand()->flushIndex();
+		$this->assertEquals(2, count($order->items));
+		$this->assertEquals(2, count($order->orderItems));
+	}
 
 	public function testInsertNoPk()
 	{
@@ -489,20 +494,20 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertEquals('user3', $customer->name);
 		$ret = Customer::updateAll([
 			'name' => 'temp',
-		], ['id' => 3]);
+		], ['name' => 'user3']);
 		$this->assertEquals(1, $ret);
 		$customer = Customer::find(3);
 		$this->assertEquals('temp', $customer->name);
 
 		$ret = Customer::updateAll(['name' => 'temp']);
-		$this->assertEquals(0, $ret);
+		$this->assertEquals(3, $ret);
 	}
 
 	public function testUpdatePk()
 	{
 		$this->setExpectedException('yii\base\InvalidCallException');
 
-		$pk = array('primaryKey' => 2);
+		$pk = ['primaryKey' => 2];
 		$orderItem = Order::find($pk);
 		$this->assertEquals(2, $orderItem->primaryKey);
 
@@ -525,7 +530,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		// deleteAll
 		$customers = Customer::find()->all();
 		$this->assertEquals(2, count($customers));
-		$ret = Customer::deleteAll([1,2,3]);
+		$ret = Customer::deleteAll(['name' => ['user1','user3']]);
 		$this->assertEquals(2, $ret);
 
 		Customer::getDb()->createCommand()->flushIndex('customers');
