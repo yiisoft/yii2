@@ -165,7 +165,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * ]
 	 * ~~~
 	 *
-	 * By default, an active attribute that is considered safe and can be massively assigned.
+	 * By default, an active attribute is considered safe and can be massively assigned.
 	 * If an attribute should NOT be massively assigned (thus considered unsafe),
 	 * please prefix the attribute with an exclamation character (e.g. '!rank').
 	 *
@@ -178,29 +178,48 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 */
 	public function scenarios()
 	{
-		$scenarios = [];
-		$defaults = [];
-		/** @var $validator Validator */
+		$scenarios = [self::DEFAULT_SCENARIO => []];
 		foreach ($this->getValidators() as $validator) {
-			if (empty($validator->on)) {
-				foreach ($validator->attributes as $attribute) {
-					$defaults[$attribute] = true;
+			foreach ($validator->on as $scenario) {
+				$scenarios[$scenario] = [];
+			}
+			foreach ($validator->except as $scenario) {
+				$scenarios[$scenario] = [];
+			}
+		}
+		$names = array_keys($scenarios);
+
+		foreach ($this->getValidators() as $validator) {
+			if (empty($validator->on) && empty($validator->except)) {
+				foreach ($names as $name) {
+					foreach ($validator->attributes as $attribute) {
+						$scenarios[$name][$attribute] = true;
+					}
+				}
+			} elseif (empty($validator->on)) {
+				foreach ($names as $name) {
+					if (!in_array($name, $validator->except, true)) {
+						foreach ($validator->attributes as $attribute) {
+							$scenarios[$name][$attribute] = true;
+						}
+					}
 				}
 			} else {
-				foreach ($validator->on as $scenario) {
+				foreach ($validator->on as $name) {
 					foreach ($validator->attributes as $attribute) {
-						$scenarios[$scenario][$attribute] = true;
+						$scenarios[$name][$attribute] = true;
 					}
 				}
 			}
 		}
+
 		foreach ($scenarios as $scenario => $attributes) {
-			foreach (array_keys($defaults) as $attribute) {
-				$attributes[$attribute] = true;
+			if (empty($attributes)) {
+				unset($scenarios[$scenario]);
+			} else {
+				$scenarios[$scenario] = array_keys($attributes);
 			}
-			$scenarios[$scenario] = array_keys($attributes);
 		}
-		$scenarios[self::DEFAULT_SCENARIO] = array_keys($defaults);
 		return $scenarios;
 	}
 
