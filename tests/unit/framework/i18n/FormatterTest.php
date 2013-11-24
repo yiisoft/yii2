@@ -78,7 +78,7 @@ class FormatterTest extends TestCase
 		$value = '123.456';
 		$this->assertSame("$123.46", $this->formatter->asCurrency($value));
 		$value = '-123456.123';
-		$this->assertSame("($123,456.12)", $this->formatter->asCurrency($value));
+		$this->assertSame("-$123,456.12", $this->formatter->asCurrency($value));
 		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
 	}
 
