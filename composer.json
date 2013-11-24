@@ -71,6 +71,7 @@
         "yiisoft/yii2-jui": "self.version",
         "yiisoft/yii2-smarty": "self.version",
         "yiisoft/yii2-swiftmailer": "self.version",
+		"yiisoft/yii2-sphinx": "self.version",
         "yiisoft/yii2-twig": "self.version",
 	    "yiisoft/yii2": "self.version"
     },
@@ -96,6 +97,7 @@
 			"yii\\jui\\": "extensions/jui/",
 			"yii\\smarty\\": "extensions/smarty/",
 			"yii\\swiftmailer\\": "extensions/swiftmailer/",
+			"yii\\sphinx\\": "extensions/sphinx/",
 			"yii\\twig\\": "extensions/twig/",
 			"yii\\": "framework/yii/"
         }
