@@ -623,7 +623,7 @@ abstract class Module extends Component
 
 		if (isset($this->controllerMap[$id])) {
 			$controller = Yii::createObject($this->controllerMap[$id], $id, $this);
-		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
+		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id) && strpos($id, '--') === false && trim($id, '-') === $id) {
 			$className = str_replace(' ', '', ucwords(str_replace('-', ' ', $id))) . 'Controller';
 			$classFile = $this->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
 			if (!is_file($classFile)) {
