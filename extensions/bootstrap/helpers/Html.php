@@ -49,6 +49,14 @@ class Html extends \yii\helpers\Html
 	const TYPE_INFO    = 'info';
 	const TYPE_WARNING = 'warning';
 	const TYPE_DANGER  = 'danger';
+
+	/**
+	 * Check if a variable is empty or not set
+	 * @param string $var variable to check
+	 */
+	public static function isEmpty(&$var) {
+		return (!isset($var) || (strlen($var) == 0));
+	}
 	
 	/**
 	 * Generates an icon.
@@ -93,7 +101,7 @@ class Html extends \yii\helpers\Html
 	 */
 	public static function bsLabel($content, $type = '', $options = [], $prefix = 'label label-', $tag = 'span')
 	{
-		if (empty($type)) {
+		if (static::isEmpty($type)) {
 			$type = static::TYPE_DEFAULT;
 		}
 		$class = isset($options['class']) ? ' ' . $options['class'] : '';
@@ -129,7 +137,7 @@ class Html extends \yii\helpers\Html
 	 *         - when passed as an array, it requires these keys
 	 *             - @param string $heading the content heading
 	 *             - @param string $body the content body
-	 *     - @param string $url the url for linking the list item content(optional)
+	 *     - @param string $url the url for linking the list item content (optional)
 	 *     - @param string $badge a badge component to be displayed for this list item (optional)
 	 *     - @param boolean $active to highlight the item as active (applicable only if $url is passed) - default false
 	 * @param array $options html options for the list group container
@@ -139,41 +147,41 @@ class Html extends \yii\helpers\Html
 	 * Example(s): 
 	 * ```php
 	 * echo Html::listGroup([
-	 * 		[
-	 * 			'content' => 'Cras justo odio',
-	 * 			'url' => '#',
-	 * 			'badge' => '14',
+	 * 	[
+	 * 		'content' => 'Cras justo odio',
+	 * 		'url' => '#',
+	 * 		'badge' => '14',
 	 *	 		'active' => true
-	 * 		],
-	 * 		[
-	 * 			'content' => 'Dapibus ac facilisis in',
-	 * 			'url' => '#',
-	 * 			'badge' => '2'
-	 * 		],
-	 * 		[
-	 * 			'content' => 'Morbi leo risus',
+	 * 	],
+	 * 	[
+	 * 		'content' => 'Dapibus ac facilisis in',
+	 * 		'url' => '#',
+	 * 		'badge' => '2'
+	 * 	],
+	 * 	[
+	 * 		'content' => 'Morbi leo risus',
 	 *	 		'url' => '#',
-	 * 			'badge' => '1'
-	 * 		],
+	 * 		'badge' => '1'
+	 * 	],
 	 * ]);
 	 *
 	 * echo Html::listGroup([
-	 * 		[
-	 * 			'content' => ['heading' => 'Heading 1', 'body' => 'Cras justo odio'],
-	 * 			'url' => '#',
-	 * 			'badge' => '14',
+	 * 	[
+	 * 		'content' => ['heading' => 'Heading 1', 'body' => 'Cras justo odio'],
+	 * 		'url' => '#',
+	 * 		'badge' => '14',
 	 *	 		'active' => true
-	 * 		],
-	 * 		[
-	 * 			'content' => ['heading' => 'Heading 2', 'body' => 'Dapibus ac facilisis in'],
-	 * 			'url' => '#',
-	 * 			'badge' => '2'
-	 * 		],
-	 * 		[
-	 * 			'content' => ['heading' => 'Heading 2', 'body' => 'Morbi leo risus'],
+	 * 	],
+	 * 	[
+	 * 		'content' => ['heading' => 'Heading 2', 'body' => 'Dapibus ac facilisis in'],
+	 * 		'url' => '#',
+	 * 		'badge' => '2'
+	 * 	],
+	 * 	[
+	 * 		'content' => ['heading' => 'Heading 2', 'body' => 'Morbi leo risus'],
 	 *	 		'url' => '#',
-	 * 			'badge' => '1'
-	 * 		],
+	 * 		'badge' => '1'
+	 * 	],
 	 * ]);
 	 * ```
 	 *
@@ -201,10 +209,10 @@ class Html extends \yii\helpers\Html
 		if (is_array($content)) {
 			$heading = isset($content['heading']) ? $content['heading'] : '';
 			$body = isset($content['body']) ? $content['body'] : '';
-			if (!empty($heading)) {
+			if (!static::isEmpty($heading)) {
 				$heading = static::tag('h4', $heading, ['class' => 'list-group-item-heading']);
 			}
-			if (!empty($body)) {
+			if (!static::isEmpty($body)) {
 				$body = static::tag('p', $body, ['class' => 'list-group-item-text']);
 			}
 			$content = $heading . "\n" . $body;
@@ -212,13 +220,13 @@ class Html extends \yii\helpers\Html
 		
 		/* Parse item badge component */
 		$badge = isset($item['badge']) ? $item['badge'] : '';
-		if (!empty($badge)) {
+		if (!static::isEmpty($badge)) {
 			$content = static::badge($badge) . $content;
 		}
 		
 		/* Parse item url */
 		$url = isset($item['url']) ? $item['url'] : '';
-		if (!empty($url)) {
+		if (!static::isEmpty($url)) {
 			/* Parse if item is active */
 			if (isset($item['active']) && $item['active']) {
 				static::addCssClass($item['options'], 'active');
@@ -241,11 +249,11 @@ class Html extends \yii\helpers\Html
 	 * Example(s): 
 	 * ```php
 	 * echo Html::jumbotron(
-	 * 		'Hello, world!',
+	 * 	'Hello, world!',
 	 *		'This is a simple jumbotron-style component for calling extra attention to featured content or information.'
 	 * );
 	 * echo Html::jumbotron(
-	 * 		'Hello, world!',
+	 * 	'Hello, world!',
 	 *		'This is a simple jumbotron-style component with a button.<br>' . Html::a('Learn more', '#', ['class'=>'btn btn-primary btn-lg']) 
 	 * );
 	 * ```
@@ -269,21 +277,95 @@ class Html extends \yii\helpers\Html
 	
 	/**
 	 * Generates a panel for boxing content.
-	 * @param string $heading the panel box heading (optional)
-	 * @param string $body the panel body content (either this or $content must be passed)
-	 * @param string $content other/additional content not embedded in panel-body (optional)
-	 * @param string $footer the panel footer (optional)
-	 * @param string $type the panel type - defaults to 'default'
-	 *     - is one of 'default, 'primary', 'success', 'info', 'danger', 'warning'
+	 * @param array $content the panel content consisting of these components:
+	 * 	- @param string $preHeading raw content that will be placed before $heading (optional)
+	 * 	- @param string $heading the panel box heading (optional)
+	 * 	- @param string $preBody raw content that will be placed before $body (optional)
+	 * 	- @param string $body the panel body content - this will be wrapped in a "panel-body" container (optional)
+	 * 	- @param string $postBody raw content that will be placed after $body (optional)
+	 * 	- @param string $footer the panel box footer (optional)
+	 * 	- @param string $postFooter raw content that will be placed after $footer (optional)
+	 * 	- @param boolean $headingTitle whether to pre-style heading content with a '.panel-title' class.
+	 * 	- @param boolean $footerTitle whether to pre-style footer content with a '.panel-title' class.
+	 * @param string $type the panel type one of the color modifier constants - defaults to 'default'
+	 *     - TYPE_DEFAULT = 'default'
+	 *     - TYPE_PRIMARY = 'primary'
+	 *     - TYPE_SUCCESS = 'success'
+	 *     - TYPE_INFO    = 'info'
+	 *     - TYPE_WARNING = 'warning'
+	 *     - TYPE_DANGER  = 'danger'
+	 *
+	 * Example(s): 
+	 * ```php
+	 * echo Html::panel(
+	 * 	['heading' => 'Panel Heading', 'body' => 'Panel Content'],
+	 * 	Html::TYPE_SUCCESS
+	 * );
+	 * echo Html::panel(
+	 * 		[
+	 * 			'heading' => 'Panel Heading',
+	 * 			'body' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, ' .
+	 * 				   'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+	 * 			'postBody' => Html::listGroup([
+	 * 					[
+	 * 						'content' => 'Cras justo odio',
+	 * 						'url' => '#',
+	 * 						'badge' => '14'
+	 * 					],
+	 * 					[
+	 * 						'content' => 'Dapibus ac facilisis in',
+	 * 						'url' => '#',
+	 * 						'badge' => '2'
+	 * 					],
+	 * 					[
+	 * 						'content' => 'Morbi leo risus',
+	 * 						'url' => '#',
+	 * 						'badge' => '1'
+	 * 					],
+	 * 			], [], 'ul', 'li'),
+	 * 			'footer'=> 'Panel Footer',
+	 * 			'headingTitle' => true,
+	 * 			'footerTitle' => true,
+	 * 		]
+	 * );
+	 * ```
+	 *
 	 * @param array $options html options for the panel
 	 * @see http://getbootstrap.com/components/#panels
 	 */
-	public static function panel($heading = '', $body = '', $content = '', $footer = '', $type = 'default', $options = []) {
-		static::addCssClass($options, 'panel panel-' . $type);
-		$heading = (!empty($heading)) ? static::tag('div', $heading, ['class'=>'panel-heading']) : '';
-		$body = (!empty($body)) ? static::tag('div', $body, ['class'=>'panel-body']) : '';
-		$footer = (!empty($footer)) ? static::tag('div', $footer, ['class'=>'panel-footer']) : '';
-		return static::tag('div', $heading . $body . $content . $footer, $options);
+	public static function panel($content = [], $type = 'default', $options = []) {
+		if (!is_array($content)) {
+			return '';
+		}
+		else {
+			static::addCssClass($options, 'panel panel-' . $type);
+			$panel = (!static::isEmpty($content['preHeading'])) ? $content['preHeading'] . "\n" : '';
+			$panel .= static::generatePanelTitle($content, 'heading');
+			$panel .= (!static::isEmpty($content['preBody'])) ? $content['preBody'] . "\n" : '';
+			$panel .= (!static::isEmpty($content['body'])) ? static::tag('div', $content['body'], ['class'=>'panel-body']) . "\n" : '';
+			$panel .= (!static::isEmpty($content['postBody'])) ? $content['postBody'] . "\n" : '';
+			$panel .= static::generatePanelTitle($content, 'footer');			
+			$panel .= (!static::isEmpty($content['postFooter'])) ? $content['postFooter'] . "\n" : '';
+			return static::tag('div', $panel, $options);
+		}
+	}
+	
+	/**
+	 * Generates panel title for heading and footer.
+	 * @param array $content the panel content components.
+	 * @param string $type whether 'heading' or 'footer'
+	 */
+	 protected function generatePanelTitle(&$content, $type) {
+		if (!static::isEmpty($content[$type])) {
+			${$type} = $content[$type];
+			if (isset($content["{$type}Title"]) && $content["{$type}Title"]) {
+				${$type} = static::tag("h3", $content["{$type}"], ["class" => "panel-title"]);
+			}
+			return static::tag("div", ${$type}, ["class"=>"panel-{$type}"]) . "\n";
+		}
+		else {
+			return '';
+		}
 	}
 	
 	/**
@@ -295,15 +377,16 @@ class Html extends \yii\helpers\Html
 	 * Example(s): 
 	 * ```php
 	 * echo Html::pageHeader(
-	 * 		'Example page header',
-	 * 		'Subtext for header',
+	 * 	'Example page header',
+	 * 	'Subtext for header',
 	 * );
 	 * ```
+	 *
 	 * @see http://getbootstrap.com/components/#page-header
 	 */
 	public static function pageHeader($title, $subTitle = '', $options = []) {
 		static::addCssClass($options, 'page-header');
-		if (!empty($subTitle)) {
+		if (!static::isEmpty($subTitle)) {
 			$title = "<h1>{$title} <small>{$subTitle}</small></h1>";
 		}
 		else {
@@ -325,8 +408,8 @@ class Html extends \yii\helpers\Html
 	 * Example(s): 
 	 * ```php
 	 * echo Html::well(
-	 * 		'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo.',
-	 * 		Html::LARGE,
+	 * 	'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo.',
+	 * 	Html::LARGE,
 	 * );
 	 * ```
 	 *
@@ -334,7 +417,7 @@ class Html extends \yii\helpers\Html
 	 */
 	public static function well($content, $size = '', $options = []) {
 		static::addCssClass($options, 'well');
-		if (!empty($size)) {
+		if (!static::isEmpty($size)) {
 			static::addCssClass($options, 'well-' . $size);
 		}
 		return static::tag('div', $content, $options);
@@ -356,10 +439,10 @@ class Html extends \yii\helpers\Html
 	 * Example(s): 
 	 * ```php
 	 * echo Html::media(
-	 * 		'Media heading 1', 
-	 * 		'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo.',
-	 * 		'#',
-	 * 		'http://placehold.it/64x64'
+	 * 	'Media heading 1', 
+	 * 	'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo.',
+	 * 	'#',
+	 * 	'http://placehold.it/64x64'
 	 * );
 	 * ```
 	 *
@@ -375,8 +458,8 @@ class Html extends \yii\helpers\Html
 		static::addCssClass($imgOptions, 'media-object');
 		
 		$source = static::a(static::img($img, $imgOptions), $src, $srcOptions);
-		$heading = (!empty($heading)) ? static::tag('h4', $heading, ['class'=>'media-heading']) : '';
-		$content = (!empty($body)) ? static::tag('div', $heading . "\n" . $body, ['class'=>'media-body']) : $heading;
+		$heading = (!static::isEmpty($heading)) ? static::tag('h4', $heading, ['class'=>'media-heading']) : '';
+		$content = (!static::isEmpty($body)) ? static::tag('div', $heading . "\n" . $body, ['class'=>'media-body']) : $heading;
 		
 		return static::tag($tag, $source . "\n" . $content, $options);
 	}
@@ -397,36 +480,36 @@ class Html extends \yii\helpers\Html
 	 * Example(s): 
 	 * ```php
 	 * echo Html::mediaList([
-	 * 		[
-	 * 			'heading' => 'Media heading 1', 
-	 * 			'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. '.
+	 * 	[
+	 * 		'heading' => 'Media heading 1', 
+	 * 		'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. '.
 	 *          	      'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
-	 * 			'src' => '#',
-	 * 			'img' => 'http://placehold.it/64x64',
-	 * 			'items' => [
-	 * 				[
-	 * 					'heading' => 'Media heading 1.1', 
+	 * 		'src' => '#',
+	 * 		'img' => 'http://placehold.it/64x64',
+	 * 		'items' => [
+	 * 			[
+	 * 				'heading' => 'Media heading 1.1', 
 	 *	 				'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. ' .
 	 *  	                      'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
-	 * 					'src' => '#',
-	 * 					'img' => 'http://placehold.it/64x64'
-	 * 				],
+	 * 				'src' => '#',
+	 * 				'img' => 'http://placehold.it/64x64'
+	 * 			],
 	 *	 			[
-	 * 					'heading' => 'Media heading 1.2', 
-	 * 					'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. ' .
+	 * 				'heading' => 'Media heading 1.2', 
+	 * 				'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. ' .
 	 *          	              'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
-	 * 					'src' => '#',
-	 * 					'img' => 'http://placehold.it/64x64'
-	 * 				],
-	 * 			]
-	 * 		],
-	 * 		[
-	 * 			'heading' => 'Media heading 2', 
-	 * 			'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. '.
+	 * 				'src' => '#',
+	 * 				'img' => 'http://placehold.it/64x64'
+	 * 			],
+	 * 		]
+	 * 	],
+	 * 	[
+	 * 		'heading' => 'Media heading 2', 
+	 * 		'body' => 'Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. '.
 	 *          	      'Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.', 
-	 * 			'src' => '#',
-	 * 			'img' => $img
-	 * 		],
+	 * 		'src' => '#',
+	 * 		'img' => $img
+	 * 	],
 	 * ]);
 	 * ```
 	 *
@@ -581,7 +664,7 @@ class Html extends \yii\helpers\Html
 	public static function blockquote($content, $citeContent = '', $citeTitle = '', $citeSource = '', $options = [])
 	{
 		$content = static::tag('p', $content);
-		if ($citeContent != '') {
+		if (static::isEmpty($citeContent)) {
 			$source = static::tag('cite', $citeSource, ['title'=>$citeTitle]);
 			$content .= "\n<small>" . str_replace('{source}', $source, $citeContent) . "</small>";
 		}
@@ -615,7 +698,7 @@ class Html extends \yii\helpers\Html
 	 */	
 	public static function address($name, $lines = [], $phone = [], $email = [], $phoneLabel = '(P)', $emailLabel = '(E)') {
 		$addresses = '';
-		if (!empty($lines)) {
+		if (!static::isEmpty($lines)) {
 			$addresses = implode('<br>', $lines) . "<br>\n";
 		}
 		
@@ -655,7 +738,7 @@ class Html extends \yii\helpers\Html
 	 * @param array $options html options for the static input
 	 * @param string $tag the html tag for rendering the static input - defaults to 'p'
 	 *
-	 * Example(s): 
+	 * Example(s):
 	 * ```php
 	 * // with ActiveRecord model
 	 * echo Html::activeLabel($model, 'email') . '<br>' . Html::staticInput($model->email);
