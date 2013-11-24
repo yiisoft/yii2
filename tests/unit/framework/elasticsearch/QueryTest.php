@@ -5,8 +5,7 @@ namespace yiiunit\framework\elasticsearch;
 use yii\elasticsearch\Query;
 
 /**
- * @group db
- * @group mysql
+ * @group elasticsearch
  */
 class QueryTest extends ElasticSearchTestCase
 {

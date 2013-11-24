@@ -4,6 +4,7 @@ namespace yiiunit\framework\elasticsearch;
 
 use yii\elasticsearch\Connection;
 use yii\elasticsearch\ActiveQuery;
+use yii\helpers\Json;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\data\ar\elasticsearch\ActiveRecord;
 use yiiunit\data\ar\elasticsearch\Customer;
@@ -11,6 +12,9 @@ use yiiunit\data\ar\elasticsearch\OrderItem;
 use yiiunit\data\ar\elasticsearch\Order;
 use yiiunit\data\ar\elasticsearch\Item;
 
+/**
+ * @group elasticsearch
+ */
 class ActiveRecordTest extends ElasticSearchTestCase
 {
 	use ActiveRecordTestTrait;
@@ -42,6 +46,30 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 		// delete all indexes
 		$db->http()->delete('_all')->send();
+
+		$db->http()->post('items', null, Json::encode([
+			'mappings' => [
+				"item" => [
+		            "_source" => [ "enabled" => true ],
+		            "properties" => [
+						// allow proper sorting by name
+		                "name" => ["type" => "string", "index" => "not_analyzed"],
+		            ]
+		        ]
+			],
+		]))->send();
+
+		$db->http()->post('customers', null, Json::encode([
+			'mappings' => [
+				"item" => [
+		            "_source" => [ "enabled" => true ],
+		            "properties" => [
+						// this is for the boolean test
+		                "status" => ["type" => "boolean"],
+		            ]
+		        ]
+			],
+		]))->send();
 
 		$customer = new Customer();
 		$customer->id = 1;
@@ -113,110 +141,6 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$orderItem->save(false);
 
 		Customer::getDb()->createCommand()->flushIndex();
-	}
-
-	public function testFind()
-	{
-		// find one
-		$result = Customer::find();
-		$this->assertTrue($result instanceof ActiveQuery);
-		$customer = $result->one();
-		$this->assertTrue($customer instanceof Customer);
-
-		// find all
-		$customers = Customer::find()->all();
-		$this->assertEquals(3, count($customers));
-		$this->assertTrue($customers[0] instanceof Customer);
-		$this->assertTrue($customers[1] instanceof Customer);
-		$this->assertTrue($customers[2] instanceof Customer);
-
-		// find all asArray
-		$customers = Customer::find()->asArray()->all();
-		$this->assertEquals(3, count($customers));
-		$this->assertArrayHasKey(ActiveRecord::PRIMARY_KEY_NAME, $customers[0]);
-		$this->assertArrayHasKey('name', $customers[0]);
-		$this->assertArrayHasKey('email', $customers[0]);
-		$this->assertArrayHasKey('address', $customers[0]);
-		$this->assertArrayHasKey('status', $customers[0]);
-		$this->assertArrayHasKey(ActiveRecord::PRIMARY_KEY_NAME, $customers[1]);
-		$this->assertArrayHasKey('name', $customers[1]);
-		$this->assertArrayHasKey('email', $customers[1]);
-		$this->assertArrayHasKey('address', $customers[1]);
-		$this->assertArrayHasKey('status', $customers[1]);
-		$this->assertArrayHasKey(ActiveRecord::PRIMARY_KEY_NAME, $customers[2]);
-		$this->assertArrayHasKey('name', $customers[2]);
-		$this->assertArrayHasKey('email', $customers[2]);
-		$this->assertArrayHasKey('address', $customers[2]);
-		$this->assertArrayHasKey('status', $customers[2]);
-
-		// find by a single primary key
-		$customer = Customer::find(2);
-		$this->assertTrue($customer instanceof Customer);
-		$this->assertEquals('user2', $customer->name);
-		$customer = Customer::find(5);
-		$this->assertNull($customer);
-
-		// query scalar
-		$customerName = Customer::find()->where(['status' => 2])->scalar('name');
-		$this->assertEquals('user3', $customerName);
-		$customerName = Customer::find()->where(['status' => 2])->scalar('noname');
-		$this->assertNull($customerName);
-		$customerId = Customer::find()->where(['status' => 2])->scalar(ActiveRecord::PRIMARY_KEY_NAME);
-		$this->assertEquals(3, $customerId);
-
-		// find by column values
-		$customer = Customer::find(['name' => 'user2']);
-		$this->assertTrue($customer instanceof Customer);
-		$this->assertEquals('user2', $customer->name);
-		$customer = Customer::find(['name' => 'user1', ActiveRecord::PRIMARY_KEY_NAME => 2]);
-		$this->assertNull($customer);
-		$customer = Customer::find([ActiveRecord::PRIMARY_KEY_NAME => 5]);
-		$this->assertNull($customer);
-		$customer = Customer::find(['name' => 'user5']);
-		$this->assertNull($customer);
-
-		// find by attributes
-		$customer = Customer::find()->where(['name' => 'user2'])->one();
-		$this->assertTrue($customer instanceof Customer);
-		$this->assertEquals('user2', $customer->name);
-
-		// find count
-		$this->assertEquals(3, Customer::find()->count());
-		$this->assertEquals(2, Customer::find()->where(['or', [ActiveRecord::PRIMARY_KEY_NAME => 1], [ActiveRecord::PRIMARY_KEY_NAME => 2]])->count());
-//		$this->assertEquals(6, Customer::find()->sum('id'));
-//		$this->assertEquals(2, Customer::find()->average('id'));
-//		$this->assertEquals(1, Customer::find()->min('id'));
-//		$this->assertEquals(3, Customer::find()->max('id'));
-
-		// scope
-		$this->assertEquals(2, count(Customer::find()->active()->all()));
-//		$this->assertEquals(2, Customer::find()->active()->count());
-
-		// asArray
-		$customer = Customer::find()->where(['name' => 'user2'])->asArray()->one();
-		$this->assertEquals(array(
-			'email' => 'user2@example.com',
-			'name' => 'user2',
-			'address' => 'address2',
-			'status' => '1',
-			ActiveRecord::PRIMARY_KEY_NAME => 2,
-		), $customer);
-
-		// indexBy
-		$customers = Customer::find()->indexBy('name')->all();
-		$this->assertEquals(3, count($customers));
-		$this->assertTrue($customers['user1'] instanceof Customer);
-		$this->assertTrue($customers['user2'] instanceof Customer);
-		$this->assertTrue($customers['user3'] instanceof Customer);
-
-		// indexBy callable
-		$customers = Customer::find()->indexBy(function ($customer) {
-			return $customer->status . '-' . $customer->name;
-		})->orderBy('name')->all();
-		$this->assertEquals(3, count($customers));
-		$this->assertTrue($customers['1-user1'] instanceof Customer);
-		$this->assertTrue($customers['1-user2'] instanceof Customer);
-		$this->assertTrue($customers['2-user3'] instanceof Customer);
 	}
 
 	public function testGetDb()
@@ -330,5 +254,75 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->setExpectedException('yii\base\InvalidCallException');
 		$orderItem->$pkName = 13;
 		$orderItem->save();
+	}
+
+	public function testFindLazyVia2()
+	{
+		/** @var TestCase|ActiveRecordTestTrait $this */
+		/** @var Order $order */
+		$orderClass = $this->getOrderClass();
+		$pkName = ActiveRecord::PRIMARY_KEY_NAME;
+
+		$order = new $orderClass();
+		$order->$pkName = 100;
+		$this->assertEquals([], $order->items);
+	}
+
+	public function testUpdateCounters()
+	{
+		// Update Counters is not supported by elasticsearch
+//		$this->setExpectedException('yii\base\NotSupportedException');
+//		ActiveRecordTestTrait::testUpdateCounters();
+	}
+
+	/**
+	 * Some PDO implementations(e.g. cubrid) do not support boolean values.
+	 * Make sure this does not affect AR layer.
+	 */
+	public function testBooleanAttribute()
+	{
+		$db = $this->getConnection();
+		$db->createCommand()->deleteIndex('customers');
+		$db->http()->post('customers', null, Json::encode([
+			'mappings' => [
+				"item" => [
+		            "_source" => [ "enabled" => true ],
+		            "properties" => [
+						// this is for the boolean test
+		                "status" => ["type" => "boolean"],
+		            ]
+		        ]
+			],
+		]))->send();
+
+		$customerClass = $this->getCustomerClass();
+		$customer = new $customerClass();
+		$customer->name = 'boolean customer';
+		$customer->email = 'mail@example.com';
+		$customer->status = true;
+		$customer->save(false);
+
+		$customer->refresh();
+		$this->assertEquals(true, $customer->status);
+
+		$customer->status = false;
+		$customer->save(false);
+
+		$customer->refresh();
+		$this->assertEquals(false, $customer->status);
+
+		$customer = new Customer();
+		$customer->setAttributes(['email' => 'user2b@example.com', 'name' => 'user2b', 'status' => true], false);
+		$customer->save(false);
+		$customer = new Customer();
+		$customer->setAttributes(['email' => 'user3b@example.com', 'name' => 'user3b', 'status' => false], false);
+		$customer->save(false);
+		$this->afterSave();
+
+		$customers = $this->callCustomerFind()->where(['status' => true])->all();
+		$this->assertEquals(1, count($customers));
+
+		$customers = $this->callCustomerFind()->where(['status' => false])->all();
+		$this->assertEquals(2, count($customers));
 	}
 }

@@ -134,6 +134,8 @@ trait ActiveRecordTestTrait
 		$this->assertNull($customer);
 		$customer = $this->callCustomerFind(['id' => 5]);
 		$this->assertNull($customer);
+		$customer = $this->callCustomerFind(['name' => 'user5']);
+		$this->assertNull($customer);
 
 		// find by attributes
 		$customer = $this->callCustomerFind()->where(['name' => 'user2'])->one();
@@ -141,6 +143,7 @@ trait ActiveRecordTestTrait
 		$this->assertEquals(2, $customer->id);
 
 		// scope
+		$this->assertEquals(2, count($this->callCustomerFind()->active()->all()));
 		$this->assertEquals(2, $this->callCustomerFind()->active()->count());
 
 		// asArray
@@ -158,8 +161,14 @@ trait ActiveRecordTestTrait
 	{
 		/** @var TestCase|ActiveRecordTestTrait $this */
 		// query scalar
-		$customerName = $this->callCustomerFind()->where(array('id' => 2))->scalar('name');
+		$customerName = $this->callCustomerFind()->where(['id' => 2])->scalar('name');
 		$this->assertEquals('user2', $customerName);
+		$customerName = $this->callCustomerFind()->where(['status' => 2])->scalar('name');
+		$this->assertEquals('user3', $customerName);
+		$customerName = $this->callCustomerFind()->where(['status' => 2])->scalar('noname');
+		$this->assertNull($customerName);
+		$customerId = $this->callCustomerFind()->where(['status' => 2])->scalar('id');
+		$this->assertEquals(3, $customerId);
 	}
 
 	public function testFindColumn()
@@ -365,7 +374,12 @@ trait ActiveRecordTestTrait
 		$this->assertEquals(2, count($order->items));
 		$this->assertEquals(1, $order->items[0]->id);
 		$this->assertEquals(2, $order->items[1]->id);
+	}
 
+	public function testFindLazyVia2()
+	{
+		/** @var TestCase|ActiveRecordTestTrait $this */
+		/** @var Order $order */
 		$order = $this->callOrderFind(1);
 		$order->id = 100;
 		$this->assertEquals([], $order->items);
@@ -551,7 +565,7 @@ trait ActiveRecordTestTrait
 		$customer->save();
 		$this->afterSave();
 
-		$this->assertEquals(4, $customer->id);
+		$this->assertNotNull($customer->id);
 		$this->assertFalse(static::$afterSaveNewRecord);
 		$this->assertTrue(static::$afterSaveInsert);
 		$this->assertFalse($customer->isNewRecord);

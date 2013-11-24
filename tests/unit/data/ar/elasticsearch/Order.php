@@ -30,7 +30,7 @@ class Order extends ActiveRecord
 	public function getItems()
 	{
 		return $this->hasMany(Item::className(), [ActiveRecord::PRIMARY_KEY_NAME => 'item_id'])
-			->via('orderItems')->orderBy('name');
+			->via('orderItems')->orderBy('id');
 	}
 
 	public function getItemsInOrder1()

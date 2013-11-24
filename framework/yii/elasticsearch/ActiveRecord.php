@@ -51,7 +51,12 @@ class ActiveRecord extends \yii\db\ActiveRecord
 		$query = static::createQuery();
 		if (is_array($q)) {
 			if (count($q) == 1 && (array_key_exists(ActiveRecord::PRIMARY_KEY_NAME, $q))) {
-				return static::get($q[ActiveRecord::PRIMARY_KEY_NAME]);
+				$pk = $q[ActiveRecord::PRIMARY_KEY_NAME];
+				if (is_array($pk)) {
+					return  static::mget($pk);
+				} else {
+					return static::get($pk);
+				}
 			}
 			return $query->where($q)->one();
 		} elseif ($q !== null) {

@@ -6,7 +6,7 @@ use yii\elasticsearch\Connection;
 use yiiunit\TestCase;
 
 /**
- * RedisTestCase is the base class for all redis related test cases
+ * ElasticSearchTestCase is the base class for all elasticsearch related test cases
  */
 class ElasticSearchTestCase extends TestCase
 {

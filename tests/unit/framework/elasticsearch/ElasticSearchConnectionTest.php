@@ -4,6 +4,9 @@ namespace yiiunit\framework\elasticsearch;
 
 use yii\redis\Connection;
 
+/**
+ * @group elasticsearch
+ */
 class ElasticSearchConnectionTest extends ElasticSearchTestCase
 {
 	/**

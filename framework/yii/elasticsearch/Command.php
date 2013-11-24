@@ -87,10 +87,17 @@ class Command extends Component
 	public function insert($index, $type, $data, $id = null, $options = [])
 	{
 		$body = is_array($data) ? Json::encode($data) : $data;
-		if ($id !== null) {
-			$response = $this->db->http()->put($this->createUrl([$index, $type, $id], $options), null, $body)->send();
-		} else {
-			$response = $this->db->http()->post($this->createUrl([$index, $type], $options), null, $body)->send();
+
+		try {
+			if ($id !== null) {
+				$response = $this->db->http()->put($this->createUrl([$index, $type, $id], $options), null, $body)->send();
+			} else {
+				$response = $this->db->http()->post($this->createUrl([$index, $type], $options), null, $body)->send();
+			}
+		} catch(ClientErrorResponseException $e) {
+			throw new Exception("elasticsearch error:\n\n"
+				. $body . "\n\n" . $e->getMessage()
+				. print_r(Json::decode($e->getResponse()->getBody(true)), true), [], 0, $e);
 		}
 		return Json::decode($response->getBody(true));
 	}
