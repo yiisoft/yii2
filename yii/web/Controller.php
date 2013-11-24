@@ -91,7 +91,7 @@ class Controller extends \yii\base\Controller
 	public function beforeAction($action)
 	{
 		if (parent::beforeAction($action)) {
-			if ($this->enableCsrfValidation && !Yii::$app->getRequest()->validateCsrfToken()) {
+			if ($this->enableCsrfValidation && Yii::$app->exception === null && !Yii::$app->getRequest()->validateCsrfToken()) {
 				throw new HttpException(400, Yii::t('yii', 'Unable to verify your data submission.'));
 			}
 			return true;
