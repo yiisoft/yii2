@@ -73,13 +73,16 @@ class QueryBuilder extends \yii\base\Object
 			$parts['query'] = ["match_all" => (object)[]];
 		}
 
+		$options = [];
+		if ($query->timeout !== null) {
+			$options['timeout'] = $query->timeout;
+		}
+
 		return [
 			'queryParts' => $parts,
 			'index' => $query->index,
 			'type' => $query->type,
-			'options' => [
-				'timeout' => $query->timeout
-			],
+			'options' => $options,
 		];
 	}
 

@@ -1169,7 +1169,7 @@ class ActiveRecord extends Model
 			return false;
 		}
 		foreach ($this->attributes() as $name) {
-			$this->_attributes[$name] = $record->_attributes[$name];
+			$this->_attributes[$name] = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
 		}
 		$this->_oldAttributes = $this->_attributes;
 		$this->_related = [];
