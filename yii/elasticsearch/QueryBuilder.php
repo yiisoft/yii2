@@ -55,8 +55,19 @@ class QueryBuilder extends \yii\base\Object
 			$parts['from'] = (int) $query->offset;
 		}
 
-		$this->buildCondition($parts, $query->where);
-		$this->buildOrderBy($parts, $query->orderBy);
+		$filters = empty($query->filter) ? [] : [$query->filter];
+		$whereFilter = $this->buildCondition($query->where);
+		if (!empty($whereFilter)) {
+			$filters[] = $whereFilter;
+		}
+		if (!empty($filters)) {
+			$parts['filter'] = count($filters) > 1 ? ['and' => $filters] : $filters[0];
+		}
+
+		$sort = $this->buildOrderBy($query->orderBy);
+		if (!empty($sort)) {
+			$parts['sort'] = $sort;
+		}
 
 		if (empty($parts['query'])) {
 			$parts['query'] = ["match_all" => (object)[]];
@@ -75,12 +86,12 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * adds order by condition to the query
 	 */
-	public function buildOrderBy(&$query, $columns)
+	public function buildOrderBy($columns)
 	{
 		if (empty($columns)) {
-			return;
+			return [];
 		}
-		$orders = array();
+		$orders = [];
 		foreach ($columns as $name => $direction) {
 			// allow elasticsearch extended syntax as described in http://www.elasticsearch.org/guide/reference/api/search/sort/
 			if (is_array($direction)) {
@@ -91,7 +102,7 @@ class QueryBuilder extends \yii\base\Object
 				$orders[] = array($name => ($direction === SORT_DESC ? 'desc' : 'asc'));
 			}
 		}
-		$query['sort'] = $orders;
+		return $orders;
 	}
 
 	/**
@@ -102,121 +113,102 @@ class QueryBuilder extends \yii\base\Object
 	 * @return string the generated SQL expression
 	 * @throws \yii\db\Exception if the condition is in bad format
 	 */
-	public function buildCondition(&$query, $condition)
+	public function buildCondition($condition)
 	{
 		static $builders = array(
-			'AND' => 'buildAndCondition',
-			'OR' => 'buildAndCondition',
-			'BETWEEN' => 'buildBetweenCondition',
-			'NOT BETWEEN' => 'buildBetweenCondition',
-			'IN' => 'buildInCondition',
-			'NOT IN' => 'buildInCondition',
-			'LIKE' => 'buildLikeCondition',
-			'NOT LIKE' => 'buildLikeCondition',
-			'OR LIKE' => 'buildLikeCondition',
-			'OR NOT LIKE' => 'buildLikeCondition',
+			'and' => 'buildAndCondition',
+			'or' => 'buildAndCondition',
+			'between' => 'buildBetweenCondition',
+			'not between' => 'buildBetweenCondition',
+			'in' => 'buildInCondition',
+			'not in' => 'buildInCondition',
+			'like' => 'buildLikeCondition',
+			'not like' => 'buildLikeCondition',
+			'or like' => 'buildLikeCondition',
+			'or not like' => 'buildLikeCondition',
 		);
 
 		if (empty($condition)) {
-			return;
+			return [];
 		}
 		if (!is_array($condition)) {
 			throw new NotSupportedException('String conditions in where() are not supported by elasticsearch.');
 		}
 		if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
-			$operator = strtoupper($condition[0]);
+			$operator = strtolower($condition[0]);
 			if (isset($builders[$operator])) {
 				$method = $builders[$operator];
 				array_shift($condition);
-				$this->$method($query, $operator, $condition);
+				return $this->$method($operator, $condition);
 			} else {
 				throw new InvalidParamException('Found unknown operator in query: ' . $operator);
 			}
 		} else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
-			$this->buildHashCondition($query, $condition);
+			return $this->buildHashCondition($condition);
 		}
 	}
 
-	private function buildHashCondition(&$query, $condition)
+	private function buildHashCondition($condition)
 	{
+		$parts = [];
 		foreach($condition as $attribute => $value) {
-			// ['query']['filteredQuery']
-			$query['filter']['bool']['must'][] = array(
-				'term' => array($attribute => $value),
-			);
-		}
-		return; // TODO more
-		$parts = array();
-		foreach ($condition as $column => $value) {
 			if (is_array($value)) { // IN condition
-				$parts[] = $this->buildInCondition('IN', array($column, $value), $params);
+				$parts[] = ['in' => [$attribute => $value]];
 			} else {
 				if ($value === null) {
-					$parts[] = "$column IS NULL"; // TODO null
-				} elseif ($value instanceof Expression) {
-					$parts[] = "$column=" . $value->expression;
-					foreach ($value->params as $n => $v) {
-						$params[$n] = $v;
-					}
+					$parts[] = ['missing' => ['field' => $attribute, 'existence' => true, 'null_value' => true]];
 				} else {
-					$phName = self::PARAM_PREFIX . count($params);
-					$parts[] = "$column=$phName";
-					$params[$phName] = $value;
+					$parts[] = ['term' => [$attribute => $value]];
 				}
 			}
 		}
-		return count($parts) === 1 ? $parts[0] : '(' . implode(') AND (', $parts) . ')';
+		return count($parts) === 1 ? $parts[0] : ['and' => $parts];
 	}
 
-	private function buildAndCondition($operator, $operands, &$params)
+	private function buildAndCondition($operator, $operands)
 	{
-		$parts = array();
+		$parts = [];
 		foreach ($operands as $operand) {
 			if (is_array($operand)) {
-				$operand = $this->buildCondition($operand, $params);
+				$operand = $this->buildCondition($operand);
 			}
-			if ($operand !== '') {
+			if (!empty($operand)) {
 				$parts[] = $operand;
 			}
 		}
 		if (!empty($parts)) {
-			return '(' . implode(") $operator (", $parts) . ')';
+			return [$operator => $parts];
 		} else {
-			return '';
+			return [];
 		}
 	}
 
-	private function buildBetweenCondition($operator, $operands, &$params)
+	private function buildBetweenCondition($operator, $operands)
 	{
 		if (!isset($operands[0], $operands[1], $operands[2])) {
-			throw new Exception("Operator '$operator' requires three operands.");
+			throw new InvalidParamException("Operator '$operator' requires three operands.");
 		}
 
 		list($column, $value1, $value2) = $operands;
-
-		if (strpos($column, '(') === false) {
-			$column = $this->db->quoteColumnName($column);
+		$filter = ['range' => [$column => ['gte' => $value1, 'lte' => $value2]]];
+		if ($operator == 'not between') {
+			$filter = ['not' => $filter];
 		}
-		$phName1 = self::PARAM_PREFIX . count($params);
-		$params[$phName1] = $value1;
-		$phName2 = self::PARAM_PREFIX . count($params);
-		$params[$phName2] = $value2;
-
-		return "$column $operator $phName1 AND $phName2";
+		return $filter;
 	}
 
 	private function buildInCondition($operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1])) {
-			throw new Exception("Operator '$operator' requires two operands.");
+			throw new InvalidParamException("Operator '$operator' requires two operands.");
 		}
 
 		list($column, $values) = $operands;
 
 		$values = (array)$values;
 
-		if (empty($values) || $column === array()) {
-			return $operator === 'IN' ? '0=1' : '';
+		if (empty($values) || $column === []) {
+			return $operator === 'in' ? ['script' => ['script' => '0=1']] : [];
 		}
 
 		if (count($column) > 1) {
@@ -224,37 +216,33 @@ class QueryBuilder extends \yii\base\Object
 		} elseif (is_array($column)) {
 			$column = reset($column);
 		}
+		$canBeNull = false;
 		foreach ($values as $i => $value) {
 			if (is_array($value)) {
-				$value = isset($value[$column]) ? $value[$column] : null;
+				$values[$i] = $value = isset($value[$column]) ? $value[$column] : null;
 			}
 			if ($value === null) {
-				$values[$i] = 'NULL';
-			} elseif ($value instanceof Expression) {
-				$values[$i] = $value->expression;
-				foreach ($value->params as $n => $v) {
-					$params[$n] = $v;
-				}
-			} else {
-				$phName = self::PARAM_PREFIX . count($params);
-				$params[$phName] = $value;
-				$values[$i] = $phName;
+				$canBeNull = true;
+				unset($values[$i]);
 			}
 		}
-		if (strpos($column, '(') === false) {
-			$column = $this->db->quoteColumnName($column);
-		}
-
-		if (count($values) > 1) {
-			return "$column $operator (" . implode(', ', $values) . ')';
+		if (empty($values) && $canBeNull) {
+			return ['missing' => ['field' => $column, 'existence' => true, 'null_value' => true]];
 		} else {
-			$operator = $operator === 'IN' ? '=' : '<>';
-			return "$column$operator{$values[0]}";
+			$filter = ['in' => [$column => $values]];
+			if ($canBeNull) {
+				$filter = ['or' => [$filter, ['missing' => ['field' => $column, 'existence' => true, 'null_value' => true]]]];
+			}
+			if ($operator == 'not in') {
+				$filter = ['not' => $filter];
+			}
+			return $filter;
 		}
 	}
 
 	protected function buildCompositeInCondition($operator, $columns, $values, &$params)
 	{
+		throw new NotSupportedException('composite in is not supported by elasticsearch.');
 		$vss = array();
 		foreach ($values as $value) {
 			$vs = array();

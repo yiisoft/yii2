@@ -60,7 +60,9 @@ class Command extends Component
 		try {
 			$response = $this->db->http()->post($this->createUrl($url, $options), null, $query)->send();
 		} catch(ClientErrorResponseException $e) {
-			throw new Exception("elasticsearch error:\n\n" . $query . "\n\n" . $e->getMessage() . $e->getResponse()->getBody(true), [], 0, $e);
+			throw new Exception("elasticsearch error:\n\n"
+				. $query . "\n\n" . $e->getMessage()
+				. print_r(Json::decode($e->getResponse()->getBody(true)), true), [], 0, $e);
 		}
 		return Json::decode($response->getBody(true))['hits'];
 	}
