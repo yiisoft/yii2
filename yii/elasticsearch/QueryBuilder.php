@@ -152,13 +152,21 @@ class QueryBuilder extends \yii\base\Object
 	{
 		$parts = [];
 		foreach($condition as $attribute => $value) {
-			if (is_array($value)) { // IN condition
-				$parts[] = ['in' => [$attribute => $value]];
-			} else {
-				if ($value === null) {
-					$parts[] = ['missing' => ['field' => $attribute, 'existence' => true, 'null_value' => true]];
+			if ($attribute == 'primaryKey') {
+				if ($value == null) { // there is no null pk
+					$parts[] = ['script' => ['script' => '0==1']];
 				} else {
-					$parts[] = ['term' => [$attribute => $value]];
+					$parts[] = ['ids' => ['values' => is_array($value) ? $value : [$value]]];
+				}
+			} else {
+				if (is_array($value)) { // IN condition
+					$parts[] = ['in' => [$attribute => $value]];
+				} else {
+					if ($value === null) {
+						$parts[] = ['missing' => ['field' => $attribute, 'existence' => true, 'null_value' => true]];
+					} else {
+						$parts[] = ['term' => [$attribute => $value]];
+					}
 				}
 			}
 		}
@@ -190,6 +198,9 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		list($column, $value1, $value2) = $operands;
+		if ($column == 'primaryKey') {
+			throw new NotSupportedException('Between condition is not supported for primaryKey.');
+		}
 		$filter = ['range' => [$column => ['gte' => $value1, 'lte' => $value2]]];
 		if ($operator == 'not between') {
 			$filter = ['not' => $filter];
@@ -197,7 +208,7 @@ class QueryBuilder extends \yii\base\Object
 		return $filter;
 	}
 
-	private function buildInCondition($operator, $operands, &$params)
+	private function buildInCondition($operator, $operands)
 	{
 		if (!isset($operands[0], $operands[1])) {
 			throw new InvalidParamException("Operator '$operator' requires two operands.");
@@ -208,7 +219,7 @@ class QueryBuilder extends \yii\base\Object
 		$values = (array)$values;
 
 		if (empty($values) || $column === []) {
-			return $operator === 'in' ? ['script' => ['script' => '0=1']] : [];
+			return $operator === 'in' ? ['script' => ['script' => '0==1']] : [];
 		}
 
 		if (count($column) > 1) {
@@ -226,21 +237,32 @@ class QueryBuilder extends \yii\base\Object
 				unset($values[$i]);
 			}
 		}
-		if (empty($values) && $canBeNull) {
-			return ['missing' => ['field' => $column, 'existence' => true, 'null_value' => true]];
+		if ($column == 'primaryKey') {
+			if (empty($values) && $canBeNull) { // there is no null pk
+				$filter = ['script' => ['script' => '0==1']];
+			} else {
+				$filter = ['ids' => ['values' => array_values($values)]];
+				if ($canBeNull) {
+					$filter = ['or' => [$filter, ['missing' => ['field' => $column, 'existence' => true, 'null_value' => true]]]];
+				}
+			}
 		} else {
-			$filter = ['in' => [$column => $values]];
-			if ($canBeNull) {
-				$filter = ['or' => [$filter, ['missing' => ['field' => $column, 'existence' => true, 'null_value' => true]]]];
+			if (empty($values) && $canBeNull) {
+				$filter = ['missing' => ['field' => $column, 'existence' => true, 'null_value' => true]];
+			} else {
+				$filter = ['in' => [$column => array_values($values)]];
+				if ($canBeNull) {
+					$filter = ['or' => [$filter, ['missing' => ['field' => $column, 'existence' => true, 'null_value' => true]]]];
+				}
 			}
-			if ($operator == 'not in') {
-				$filter = ['not' => $filter];
-			}
-			return $filter;
 		}
+		if ($operator == 'not in') {
+			$filter = ['not' => $filter];
+		}
+		return $filter;
 	}
 
-	protected function buildCompositeInCondition($operator, $columns, $values, &$params)
+	protected function buildCompositeInCondition($operator, $columns, $values)
 	{
 		throw new NotSupportedException('composite in is not supported by elasticsearch.');
 		$vss = array();
@@ -265,8 +287,9 @@ class QueryBuilder extends \yii\base\Object
 		return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
 	}
 
-	private function buildLikeCondition($operator, $operands, &$params)
+	private function buildLikeCondition($operator, $operands)
 	{
+		throw new NotSupportedException('like conditions is not supported by elasticsearch.');
 		if (!isset($operands[0], $operands[1])) {
 			throw new Exception("Operator '$operator' requires two operands.");
 		}
@@ -276,7 +299,7 @@ class QueryBuilder extends \yii\base\Object
 		$values = (array)$values;
 
 		if (empty($values)) {
-			return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0=1' : '';
+			return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0==1' : '';
 		}
 
 		if ($operator === 'LIKE' || $operator === 'NOT LIKE') {
