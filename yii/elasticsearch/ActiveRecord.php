@@ -15,12 +15,29 @@ use yii\helpers\Inflector;
 use yii\helpers\Json;
 use yii\helpers\StringHelper;
 
-// TODO handle optimistic lock
-
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
  *
+ * This class implements the ActiveRecord pattern for the fulltext search and data storage
+ * [elasticsearch](http://www.elasticsearch.org/).
  *
+ * For defining a record a subclass should at least implement the [[attributes()]] method to define
+ * attributes.
+ * The primary key (the `_id` field in elasticsearch terms) is represented by `getId()` and `setId()`.
+ *
+ * The following is an example model called `Customer`:
+ *
+ * ```php
+ * class Customer extends \yii\elasticsearch\ActiveRecord
+ * {
+ *     public function attributes()
+ *     {
+ *         return ['id', 'name', 'address', 'registration_date'];
+ *     }
+ * }
+ * ```
+ *
+ * You may override [[index()]] and [[type()]] to define the index and type this record represents.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
