@@ -140,4 +140,24 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	{
 		return 'SET FOREIGN_KEY_CHECKS = ' . ($check ? 1 : 0);
 	}
+
+	/**
+	 * @inheritDocs
+	 */
+	public function buildLimit($limit, $offset)
+	{
+		$sql = '';
+		// limit is not optional in MySQL
+		// http://stackoverflow.com/a/271650/1106908
+		// http://dev.mysql.com/doc/refman/5.0/en/select.html#idm47619502796240
+		if ($limit !== null && $limit >= 0) {
+			$sql = 'LIMIT ' . (int)$limit;
+			if ($offset > 0) {
+				$sql .= ' OFFSET ' . (int)$offset;
+			}
+		} elseif ($offset > 0) {
+			$sql = 'LIMIT ' . (int)$offset . ', 18446744073709551615'; // 2^64-1
+		}
+		return $sql;
+	}
 }
