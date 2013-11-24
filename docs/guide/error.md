@@ -22,14 +22,14 @@ return [
     ],
 ```
 
-After it is done in case of error Yii will launch `SiteController::actionError()`. Since errors are converted to
-exceptions we can get exception from error handler:
+After it is done in case of error, Yii will launch `SiteController::actionError()`:
 
 ```php
 public function actionError()
 {
-    $exception = \Yii::$app->getErrorHandler()->exception;
-    $this->render('myerror', ['message' => $exception->getMessage()]);
+    if (\Yii::$app->exception !== null) {
+        return $this->render('error', ['exception' => \Yii::$app->exception]);
+    }
 }
 ```
 
@@ -48,7 +48,7 @@ public function actions()
 ```
 
 After defining `actions` in `SiteController` as shown above you can create `views/site/error.php`. In the view there
-are three varialbes available:
+are three variables available:
 
 - `$name`: the error name
 - `$message`: the error message

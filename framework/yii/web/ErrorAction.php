@@ -69,7 +69,7 @@ class ErrorAction extends Action
 
 	public function run()
 	{
-		if (!($exception = Yii::$app->getErrorHandler()->exception)) {
+		if (($exception = Yii::$app->exception) === null) {
 			return '';
 		}
 
