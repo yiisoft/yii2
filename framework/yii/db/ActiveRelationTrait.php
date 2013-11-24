@@ -142,35 +142,42 @@ trait ActiveRelationTrait
 	 */
 	private function buildBuckets($models, $link, $viaModels = null, $viaLink = null)
 	{
-		$buckets = [];
-		$linkKeys = array_keys($link);
-		foreach ($models as $i => $model) {
-			$key = $this->getModelKey($model, $linkKeys);
-			if ($this->indexBy !== null) {
-				$buckets[$key][$i] = $model;
-			} else {
-				$buckets[$key][] = $model;
-			}
-		}
-
 		if ($viaModels !== null) {
-			$viaBuckets = [];
+			$map = [];
 			$viaLinkKeys = array_keys($viaLink);
 			$linkValues = array_values($link);
 			foreach ($viaModels as $viaModel) {
 				$key1 = $this->getModelKey($viaModel, $viaLinkKeys);
 				$key2 = $this->getModelKey($viaModel, $linkValues);
-				if (isset($buckets[$key2])) {
-					foreach ($buckets[$key2] as $i => $bucket) {
+				$map[$key2][$key1] = true;
+			}
+		}
+
+		$buckets = [];
+		$linkKeys = array_keys($link);
+
+		if (isset($map)) {
+			foreach ($models as $i => $model) {
+				$key = $this->getModelKey($model, $linkKeys);
+				if (isset($map[$key])) {
+					foreach (array_keys($map[$key]) as $key2) {
 						if ($this->indexBy !== null) {
-							$viaBuckets[$key1][$i] = $bucket;
+							$buckets[$key2][$i] = $model;
 						} else {
-							$viaBuckets[$key1][] = $bucket;
+							$buckets[$key2][] = $model;
 						}
 					}
 				}
 			}
-			$buckets = $viaBuckets;
+		} else {
+			foreach ($models as $i => $model) {
+				$key = $this->getModelKey($model, $linkKeys);
+				if ($this->indexBy !== null) {
+					$buckets[$key][$i] = $model;
+				} else {
+					$buckets[$key][] = $model;
+				}
+			}
 		}
 
 		if (!$this->multiple) {
