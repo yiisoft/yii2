@@ -165,8 +165,8 @@ trait ActiveRecordTestTrait
 	public function testFindColumn()
 	{
 		/** @var TestCase|ActiveRecordTestTrait $this */
-		$this->assertEquals(['user1', 'user2', 'user3'], Customer::find()->column('name'));
-		$this->assertEquals(['user3', 'user2', 'user1'], Customer::find()->orderBy(['name' => SORT_DESC])->column('name'));
+		$this->assertEquals(['user1', 'user2', 'user3'], $this->callCustomerFind()->column('name'));
+		$this->assertEquals(['user3', 'user2', 'user1'], $this->callCustomerFind()->orderBy(['name' => SORT_DESC])->column('name'));
 	}
 
 	public function testfindIndexBy()
@@ -378,6 +378,7 @@ trait ActiveRecordTestTrait
 		$this->assertEquals(3, count($orders));
 		$order = $orders[0];
 		$this->assertEquals(1, $order->id);
+		$this->assertTrue($order->isRelationPopulated('items'));
 		$this->assertEquals(2, count($order->items));
 		$this->assertEquals(1, $order->items[0]->id);
 		$this->assertEquals(2, $order->items[1]->id);
@@ -388,12 +389,76 @@ trait ActiveRecordTestTrait
 		/** @var TestCase|ActiveRecordTestTrait $this */
 		$customers = $this->callCustomerFind()->with('orders', 'orders.items')->all();
 		$this->assertEquals(3, count($customers));
+		$this->assertTrue($customers[0]->isRelationPopulated('orders'));
+		$this->assertTrue($customers[1]->isRelationPopulated('orders'));
+		$this->assertTrue($customers[2]->isRelationPopulated('orders'));
 		$this->assertEquals(1, count($customers[0]->orders));
-		$this->assertEquals(2, count($customers[1]->orders)); // TODO check is populated
+		$this->assertEquals(2, count($customers[1]->orders));
 		$this->assertEquals(0, count($customers[2]->orders));
+		$this->assertTrue($customers[0]->orders[0]->isRelationPopulated('items'));
+		$this->assertTrue($customers[1]->orders[0]->isRelationPopulated('items'));
+		$this->assertTrue($customers[1]->orders[1]->isRelationPopulated('items'));
 		$this->assertEquals(2, count($customers[0]->orders[0]->items));
 		$this->assertEquals(3, count($customers[1]->orders[0]->items));
 		$this->assertEquals(1, count($customers[1]->orders[1]->items));
+	}
+
+	/**
+	 * Ensure ActiveRelation does preserve order of items on find via()
+	 * https://github.com/yiisoft/yii2/issues/1310
+	 */
+	public function testFindEagerViaRelationPreserveOrder()
+	{
+		/** @var TestCase|ActiveRecordTestTrait $this */
+		$orders = $this->callOrderFind()->with('itemsInOrder1')->orderBy('create_time')->all();
+		$this->assertEquals(3, count($orders));
+
+		$order = $orders[0];
+		$this->assertEquals(1, $order->id);
+		$this->assertTrue($order->isRelationPopulated('itemsInOrder1'));
+		$this->assertEquals(2, count($order->itemsInOrder1));
+		$this->assertEquals(1, $order->itemsInOrder1[0]->id);
+		$this->assertEquals(2, $order->itemsInOrder1[1]->id);
+
+		$order = $orders[1];
+		$this->assertEquals(2, $order->id);
+		$this->assertTrue($order->isRelationPopulated('itemsInOrder1'));
+		$this->assertEquals(3, count($order->itemsInOrder1));
+		$this->assertEquals(5, $order->itemsInOrder1[0]->id);
+		$this->assertEquals(3, $order->itemsInOrder1[1]->id);
+		$this->assertEquals(4, $order->itemsInOrder1[2]->id);
+
+		$order = $orders[3];
+		$this->assertEquals(3, $order->id);
+		$this->assertTrue($order->isRelationPopulated('itemsInOrder1'));
+		$this->assertEquals(0, count($order->itemsInOrder1));
+	}
+
+	// different order in via table
+	public function testFindEagerViaRelationPreserveOrderB()
+	{
+		$orders = $this->callOrderFind()->with('itemsInOrder2')->orderBy('create_time')->all();
+		$this->assertEquals(3, count($orders));
+
+		$order = $orders[0];
+		$this->assertEquals(1, $order->id);
+		$this->assertTrue($order->isRelationPopulated('itemsInOrder2'));
+		$this->assertEquals(2, count($order->itemsInOrder2));
+		$this->assertEquals(1, $order->itemsInOrder2[0]->id);
+		$this->assertEquals(2, $order->itemsInOrder2[1]->id);
+
+		$order = $orders[1];
+		$this->assertEquals(2, $order->id);
+		$this->assertTrue($order->isRelationPopulated('itemsInOrder2'));
+		$this->assertEquals(3, count($order->itemsInOrder2));
+		$this->assertEquals(5, $order->itemsInOrder2[0]->id);
+		$this->assertEquals(3, $order->itemsInOrder2[1]->id);
+		$this->assertEquals(4, $order->itemsInOrder2[2]->id);
+
+		$order = $orders[3];
+		$this->assertEquals(3, $order->id);
+		$this->assertTrue($order->isRelationPopulated('itemsInOrder2'));
+		$this->assertEquals(0, count($order->itemsInOrder2));
 	}
 
 	public function testLink()

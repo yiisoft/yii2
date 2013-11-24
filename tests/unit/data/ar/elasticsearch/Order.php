@@ -33,6 +33,22 @@ class Order extends ActiveRecord
 			->via('orderItems')->orderBy('name');
 	}
 
+	public function getItemsInOrder1()
+	{
+		return $this->hasMany(Item::className(), ['id' => 'item_id'])
+			->via('orderItems', function ($q) {
+				$q->orderBy(['subtotal' => SORT_ASC]);
+			})->orderBy('name');
+	}
+
+	public function getItemsInOrder2()
+	{
+		return $this->hasMany(Item::className(), ['id' => 'item_id'])
+			->via('orderItems', function ($q) {
+				$q->orderBy(['subtotal' => SORT_DESC]);
+			})->orderBy('name');
+	}
+
 //	public function getBooks()
 //	{
 //		return $this->hasMany('Item', ['primaryKey' => 'item_id'])

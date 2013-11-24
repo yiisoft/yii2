@@ -121,7 +121,6 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertEquals(2, $order->books[0]->id);
 	}
 
-
 	public function testStoreNull()
 	{
 		$record = new NullValues();
