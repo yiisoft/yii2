@@ -586,7 +586,8 @@ abstract class Module extends Component
 			Yii::$app->controller = $oldController;
 			return $result;
 		} else {
-			throw new InvalidRouteException('Unable to resolve the request "' . trim($this->getUniqueId() . '/' . $route, '/') . '".');
+			$id = $this->getUniqueId();
+			throw new InvalidRouteException('Unable to resolve the request "' . ($id === '' ? $route : $id . '/' . $route) . '".');
 		}
 	}
 
@@ -608,9 +609,8 @@ abstract class Module extends Component
 		if ($route === '') {
 			$route = $this->defaultRoute;
 		}
-		if (($pos = strpos($route, '/')) !== false) {
-			$id = substr($route, 0, $pos);
-			$route = substr($route, $pos + 1);
+		if (strpos($route, '/') !== false) {
+			list ($id, $route) = explode('/', $route, 2);
 		} else {
 			$id = $route;
 			$route = '';
