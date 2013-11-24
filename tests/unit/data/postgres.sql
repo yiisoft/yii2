@@ -22,7 +22,7 @@ CREATE TABLE tbl_constraints
 CREATE TABLE tbl_customer (
   id serial not null primary key,
   email varchar(128) NOT NULL,
-  name varchar(128) NOT NULL,
+  name varchar(128),
   address text,
   status integer DEFAULT 0
 );

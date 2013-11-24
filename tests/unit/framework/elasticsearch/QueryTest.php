@@ -146,6 +146,9 @@ class QueryTest extends ElasticSearchTestCase
 
 	}
 
+	// TODO test facets
+
+	// TODO test complex where() every edge of QueryBuilder
 
 	public function testOrder()
 	{

@@ -9,7 +9,7 @@ IF OBJECT_ID('[dbo].[tbl_null_values]', 'U') IS NOT NULL DROP TABLE [dbo].[tbl_n
 CREATE TABLE [dbo].[tbl_customer] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[email] [varchar](128) NOT NULL,
-	[name] [varchar](128) NOT NULL,
+	[name] [varchar](128),
 	[address] [text],
 	[status] [int] DEFAULT 0,
 	CONSTRAINT [PK_customer] PRIMARY KEY CLUSTERED (

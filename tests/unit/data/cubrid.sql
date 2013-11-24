@@ -23,7 +23,7 @@ CREATE TABLE `tbl_constraints`
 CREATE TABLE `tbl_customer` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(128) NOT NULL,
-  `name` varchar(128) NOT NULL,
+  `name` varchar(128),
   `address` string,
   `status` int (11) DEFAULT 0,
   PRIMARY KEY (`id`)

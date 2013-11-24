@@ -1,6 +1,8 @@
 <?php
 namespace yiiunit\data\ar\elasticsearch;
 
+use yiiunit\framework\elasticsearch\ActiveRecordTest;
+
 /**
  * Class Customer
  *
@@ -30,5 +32,12 @@ class Customer extends ActiveRecord
 	public static function active($query)
 	{
 		$query->andWhere(array('status' => 1));
+	}
+
+	public function afterSave($insert)
+	{
+		ActiveRecordTest::$afterSaveInsert = $insert;
+		ActiveRecordTest::$afterSaveNewRecord = $this->isNewRecord;
+		parent::afterSave($insert);
 	}
 }

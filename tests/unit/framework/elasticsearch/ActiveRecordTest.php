@@ -4,7 +4,7 @@ namespace yiiunit\framework\elasticsearch;
 
 use yii\elasticsearch\Connection;
 use yii\elasticsearch\ActiveQuery;
-use yii\helpers\Json;
+use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\data\ar\elasticsearch\ActiveRecord;
 use yiiunit\data\ar\elasticsearch\Customer;
 use yiiunit\data\ar\elasticsearch\OrderItem;
@@ -13,6 +13,26 @@ use yiiunit\data\ar\elasticsearch\Item;
 
 class ActiveRecordTest extends ElasticSearchTestCase
 {
+	use ActiveRecordTestTrait;
+
+	public function callCustomerFind($q = null)	 { return Customer::find($q); }
+	public function callOrderFind($q = null)     { return Order::find($q); }
+	public function callOrderItemFind($q = null) { return OrderItem::find($q); }
+	public function callItemFind($q = null)      { return Item::find($q); }
+
+	public function getCustomerClass() { return Customer::className(); }
+	public function getItemClass() { return Item::className(); }
+	public function getOrderClass() { return Order::className(); }
+	public function getOrderItemClass() { return OrderItem::className(); }
+
+	/**
+	 * can be overridden to do things after save()
+	 */
+	public function afterSave()
+	{
+		$this->getConnection()->createCommand()->flushIndex();
+	}
+
 	public function setUp()
 	{
 		parent::setUp();
@@ -110,6 +130,25 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertTrue($customers[1] instanceof Customer);
 		$this->assertTrue($customers[2] instanceof Customer);
 
+		// find all asArray
+		$customers = Customer::find()->asArray()->all();
+		$this->assertEquals(3, count($customers));
+		$this->assertArrayHasKey('primaryKey', $customers[0]);
+		$this->assertArrayHasKey('name', $customers[0]);
+		$this->assertArrayHasKey('email', $customers[0]);
+		$this->assertArrayHasKey('address', $customers[0]);
+		$this->assertArrayHasKey('status', $customers[0]);
+		$this->assertArrayHasKey('primaryKey', $customers[1]);
+		$this->assertArrayHasKey('name', $customers[1]);
+		$this->assertArrayHasKey('email', $customers[1]);
+		$this->assertArrayHasKey('address', $customers[1]);
+		$this->assertArrayHasKey('status', $customers[1]);
+		$this->assertArrayHasKey('primaryKey', $customers[2]);
+		$this->assertArrayHasKey('name', $customers[2]);
+		$this->assertArrayHasKey('email', $customers[2]);
+		$this->assertArrayHasKey('address', $customers[2]);
+		$this->assertArrayHasKey('status', $customers[2]);
+
 		// find by a single primary key
 		$customer = Customer::find(2);
 		$this->assertTrue($customer instanceof Customer);
@@ -120,12 +159,16 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		// query scalar
 		$customerName = Customer::find()->where(['status' => 2])->scalar('name');
 		$this->assertEquals('user3', $customerName);
+		$customerName = Customer::find()->where(['status' => 2])->scalar('noname');
+		$this->assertNull($customerName);
+		$customerId = Customer::find()->where(['status' => 2])->scalar('primaryKey');
+		$this->assertEquals(3, $customerId);
 
 		// find by column values
 		$customer = Customer::find(['name' => 'user2']);
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
-		$customer = Customer::find(['name' => 'user1', 'id' => 2]);
+		$customer = Customer::find(['name' => 'user1', 'primaryKey' => 2]);
 		$this->assertNull($customer);
 		$customer = Customer::find(['primaryKey' => 5]);
 		$this->assertNull($customer);
@@ -137,8 +180,9 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals('user2', $customer->name);
 
-		// find count, sum, average, min, max, scalar
+		// find count
 		$this->assertEquals(3, Customer::find()->count());
+		$this->assertEquals(2, Customer::find()->where(['or', ['primaryKey' => 1], ['primaryKey' => 2]])->count());
 //		$this->assertEquals(6, Customer::find()->sum('id'));
 //		$this->assertEquals(2, Customer::find()->average('id'));
 //		$this->assertEquals(1, Customer::find()->min('id'));
@@ -168,12 +212,17 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		// indexBy callable
 		$customers = Customer::find()->indexBy(function ($customer) {
 			return $customer->status . '-' . $customer->name;
-//		})->orderBy('id')->all();
-		})->all();
+		})->orderBy('name')->all();
 		$this->assertEquals(3, count($customers));
 		$this->assertTrue($customers['1-user1'] instanceof Customer);
 		$this->assertTrue($customers['1-user2'] instanceof Customer);
 		$this->assertTrue($customers['2-user3'] instanceof Customer);
+	}
+
+	public function testGetDb()
+	{
+		$this->mockApplication(['components' => ['elasticsearch' => Connection::className()]]);
+		$this->assertInstanceOf(Connection::className(), ActiveRecord::getDb());
 	}
 
 	public function testGet()
@@ -199,127 +248,6 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertInstanceOf(Customer::className(), $records[1]);
 	}
 
-	public function testRefresh()
-	{
-		$customer = new Customer();
-		$this->assertFalse($customer->refresh());
-
-		$customer = Customer::get(1);
-		$customer->name = 'to be refreshed';
-		$this->assertTrue($customer->refresh());
-		$this->assertEquals('user1', $customer->name);
-	}
-
-	public function testEquals()
-	{
-		$customerA = new Customer();
-		$customerB = new Customer();
-		$this->assertFalse($customerA->equals($customerB));
-
-		$customerA = new Customer();
-		$customerB = new Item();
-		$this->assertFalse($customerA->equals($customerB));
-
-		$customerA = Customer::find(1);
-		$customerB = Customer::find(2);
-		$this->assertFalse($customerA->equals($customerB));
-
-		$customerB = Customer::find(1);
-		$this->assertTrue($customerA->equals($customerB));
-
-		$customerA = Customer::find(1);
-		$customerB = Item::find(1);
-		$this->assertFalse($customerA->equals($customerB));
-	}
-
-	public function testFindCount()
-	{
-		$this->assertEquals(3, Customer::find()->count());
-		$this->assertEquals(1, Customer::find()->limit(1)->count());
-		$this->assertEquals(2, Customer::find()->limit(2)->count());
-		$this->assertEquals(1, Customer::find()->offset(2)->limit(2)->count());
-	}
-
-	public function testFindLimit()
-	{
-		// all()
-		$customers = Customer::find()->all();
-		$this->assertEquals(3, count($customers));
-
-		$customers = Customer::find()->limit(1)->all();
-		$this->assertEquals(1, count($customers));
-		$this->assertEquals('user1', $customers[0]->name);
-
-		$customers = Customer::find()->limit(1)->offset(1)->all();
-		$this->assertEquals(1, count($customers));
-		$this->assertEquals('user2', $customers[0]->name);
-
-		$customers = Customer::find()->limit(1)->offset(2)->all();
-		$this->assertEquals(1, count($customers));
-		$this->assertEquals('user3', $customers[0]->name);
-
-		$customers = Customer::find()->limit(2)->offset(1)->all();
-		$this->assertEquals(2, count($customers));
-		$this->assertEquals('user2', $customers[0]->name);
-		$this->assertEquals('user3', $customers[1]->name);
-
-		$customers = Customer::find()->limit(2)->offset(3)->all();
-		$this->assertEquals(0, count($customers));
-
-		// one()
-		$customer = Customer::find()->one();
-		$this->assertEquals('user1', $customer->name);
-
-		$customer = Customer::find()->offset(0)->one();
-		$this->assertEquals('user1', $customer->name);
-
-		$customer = Customer::find()->offset(1)->one();
-		$this->assertEquals('user2', $customer->name);
-
-		$customer = Customer::find()->offset(2)->one();
-		$this->assertEquals('user3', $customer->name);
-
-		$customer = Customer::find()->offset(3)->one();
-		$this->assertNull($customer);
-
-	}
-
-	public function testFindComplexCondition()
-	{
-		$this->assertEquals(2, Customer::find()->where(['OR', ['name' => 'user1'], ['name' => 'user2']])->count());
-		$this->assertEquals(2, count(Customer::find()->where(['OR', ['name' => 'user1'], ['name' => 'user2']])->all()));
-
-		$this->assertEquals(2, Customer::find()->where(['name' => ['user1','user2']])->count());
-		$this->assertEquals(2, count(Customer::find()->where(['name' => ['user1','user2']])->all()));
-
-		$this->assertEquals(1, Customer::find()->where(['AND', ['name' => ['user2','user3']], ['BETWEEN', 'status', 2, 4]])->count());
-		$this->assertEquals(1, count(Customer::find()->where(['AND', ['name' => ['user2','user3']], ['BETWEEN', 'status', 2, 4]])->all()));
-	}
-
-	public function testFindNullValues()
-	{
-		$customer = Customer::find(2);
-		$customer->name = null;
-		$customer->save(false);
-		Customer::getDb()->createCommand()->flushIndex('customers');
-
-		$result = Customer::find()->where(['name' => null])->all();
-		$this->assertEquals(1, count($result));
-		$this->assertEquals(2, reset($result)->primaryKey);
-	}
-
-	public function testFindColumn()
-	{
-		$this->assertEquals(['user1', 'user2', 'user3'], Customer::find()->column('name'));
-		$this->assertEquals(['user3', 'user2', 'user1'], Customer::find()->orderBy(['name' => SORT_DESC])->column('name'));
-	}
-
-	public function testExists()
-	{
-		$this->assertTrue(Customer::find()->where(['name' => 'user1'])->exists());
-		$this->assertFalse(Customer::find()->where(['name' => 'user5'])->exists());
-	}
-
 	public function testFindLazy()
 	{
 		/** @var $customer Customer */
@@ -332,114 +260,18 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertEquals(2, $orders[0]->primaryKey);
 	}
 
-	public function testFindEager()
-	{
-		$customers = Customer::find()->with('orders')->all();
-		$this->assertEquals(3, count($customers));
-		$this->assertEquals(1, count($customers[0]->orders));
-		$this->assertEquals(2, count($customers[1]->orders));
-	}
-
-	public function testFindLazyVia()
-	{
-		/** @var $order Order */
-		$order = Order::find(1);
-		$this->assertEquals(1, $order->primaryKey);
-		$this->assertEquals(2, count($order->items));
-		$this->assertEquals(2, $order->items[0]->primaryKey);
-		$this->assertEquals(1, $order->items[1]->primaryKey);
-
-		$order = new Order();
-		$order->primaryKey = 100;
-		$this->assertEquals([], $order->items);
-	}
-
 	public function testFindEagerViaRelation()
 	{
-		$orders = Order::find()->with('items')->all();
+		// this test is currently failing randomly because of https://github.com/yiisoft/yii2/issues/1310
+		$orders = Order::find()->with('items')->orderBy('create_time')->all();
 		$this->assertEquals(3, count($orders));
 		$order = $orders[0];
 		$this->assertEquals(1, $order->primaryKey);
 		$this->assertEquals(2, count($order->items));
-		$this->assertEquals(2, $order->items[0]->primaryKey);
-		$this->assertEquals(1, $order->items[1]->primaryKey);
+		$this->assertEquals(1, $order->items[0]->primaryKey);
+		$this->assertEquals(2, $order->items[1]->primaryKey);
 	}
 
-	public function testFindNestedRelation()
-	{
-		$customers = Customer::find()->with('orders', 'orders.items')->all();
-		$this->assertEquals(3, count($customers));
-		$this->assertEquals(1, count($customers[0]->orders));
-		$this->assertEquals(2, count($customers[1]->orders));
-		$this->assertEquals(0, count($customers[2]->orders));
-		$this->assertEquals(2, count($customers[0]->orders[0]->items));
-		$this->assertEquals(3, count($customers[1]->orders[0]->items));
-		$this->assertEquals(1, count($customers[1]->orders[1]->items));
-	}
-
-	public function testLink()
-	{
-		$customer = Customer::find(2);
-		$this->assertEquals(2, count($customer->orders));
-
-		// has many
-		$order = new Order;
-		$order->total = 100;
-		$this->assertTrue($order->isNewRecord);
-		$customer->link('orders', $order);
-		$this->assertEquals(3, count($customer->orders));
-		$this->assertFalse($order->isNewRecord);
-		Customer::getDb()->createCommand()->flushIndex();
-		$this->assertEquals(3, count($customer->getOrders()->all()));
-		$this->assertEquals(2, $order->customer_id);
-
-		// belongs to
-		$order = new Order;
-		$order->total = 100;
-		$this->assertTrue($order->isNewRecord);
-		$customer = Customer::find(1);
-		$this->assertNull($order->customer);
-		$order->link('customer', $customer);
-		$this->assertFalse($order->isNewRecord);
-		$this->assertEquals(1, $order->customer_id);
-		$this->assertEquals(1, $order->customer->primaryKey);
-
-		// via model
-		$order = Order::find(1);
-		$this->assertEquals(2, count($order->items));
-		$this->assertEquals(2, count($order->orderItems));
-		$orderItem = OrderItem::find(['order_id' => 1, 'item_id' => 3]);
-		$this->assertNull($orderItem);
-		$item = Item::find(3);
-		$order->link('items', $item, ['quantity' => 10, 'subtotal' => 100]);
-		Customer::getDb()->createCommand()->flushIndex();
-		$this->assertEquals(3, count($order->items));
-		$this->assertEquals(3, count($order->orderItems));
-		$orderItem = OrderItem::find(['order_id' => 1, 'item_id' => 3]);
-		$this->assertTrue($orderItem instanceof OrderItem);
-		$this->assertEquals(10, $orderItem->quantity);
-		$this->assertEquals(100, $orderItem->subtotal);
-	}
-
-	public function testUnlink()
-	{
-		// has many
-		$customer = Customer::find(2);
-		$this->assertEquals(2, count($customer->orders));
-		$customer->unlink('orders', $customer->orders[1], true);
-		Customer::getDb()->createCommand()->flushIndex();
-		$this->assertEquals(1, count($customer->orders));
-		$this->assertNull(Order::find(3));
-
-		// via model
-		$order = Order::find(2);
-		$this->assertEquals(3, count($order->items));
-		$this->assertEquals(3, count($order->orderItems));
-		$order->unlink('items', $order->items[2], true);
-		Customer::getDb()->createCommand()->flushIndex();
-		$this->assertEquals(2, count($order->items));
-		$this->assertEquals(2, count($order->orderItems));
-	}
 
 	public function testInsertNoPk()
 	{
@@ -451,11 +283,14 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$customer->address = 'address4';
 
 		$this->assertNull($customer->primaryKey);
+		$this->assertNull($customer->oldPrimaryKey);
 		$this->assertTrue($customer->isNewRecord);
 
 		$customer->save();
 
 		$this->assertNotNull($customer->primaryKey);
+		$this->assertNotNull($customer->oldPrimaryKey);
+		$this->assertEquals($customer->primaryKey, $customer->oldPrimaryKey);
 		$this->assertFalse($customer->isNewRecord);
 	}
 
@@ -475,70 +310,14 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertFalse($customer->isNewRecord);
 	}
 
-	public function testUpdate()
-	{
-		// save
-		$customer = Customer::find(2);
-		$this->assertTrue($customer instanceof Customer);
-		$this->assertEquals('user2', $customer->name);
-		$this->assertFalse($customer->isNewRecord);
-		$customer->name = 'user2x';
-		$customer->save();
-		$this->assertEquals('user2x', $customer->name);
-		$this->assertFalse($customer->isNewRecord);
-		$customer2 = Customer::find(2);
-		$this->assertEquals('user2x', $customer2->name);
-
-		// updateAll
-		$customer = Customer::find(3);
-		$this->assertEquals('user3', $customer->name);
-		$ret = Customer::updateAll([
-			'name' => 'temp',
-		], ['name' => 'user3']);
-		$this->assertEquals(1, $ret);
-		$customer = Customer::find(3);
-		$this->assertEquals('temp', $customer->name);
-
-		$ret = Customer::updateAll(['name' => 'temp']);
-		$this->assertEquals(3, $ret);
-	}
-
 	public function testUpdatePk()
 	{
-		$this->setExpectedException('yii\base\InvalidCallException');
-
 		$pk = ['primaryKey' => 2];
 		$orderItem = Order::find($pk);
 		$this->assertEquals(2, $orderItem->primaryKey);
 
+		$this->setExpectedException('yii\base\InvalidCallException');
 		$orderItem->primaryKey = 13;
 		$orderItem->save();
-	}
-
-	public function testDelete()
-	{
-		// delete
-		$customer = Customer::find(2);
-		$this->assertTrue($customer instanceof Customer);
-		$this->assertEquals('user2', $customer->name);
-		$customer->delete();
-		$customer = Customer::find(2);
-		$this->assertNull($customer);
-
-		Customer::getDb()->createCommand()->flushIndex('customers');
-
-		// deleteAll
-		$customers = Customer::find()->all();
-		$this->assertEquals(2, count($customers));
-		$ret = Customer::deleteAll(['name' => ['user1','user3']]);
-		$this->assertEquals(2, $ret);
-
-		Customer::getDb()->createCommand()->flushIndex('customers');
-
-		$customers = Customer::find()->all();
-		$this->assertEquals(0, count($customers));
-
-		$ret = Customer::deleteAll();
-		$this->assertEquals(0, $ret);
 	}
 }

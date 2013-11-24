@@ -39,11 +39,7 @@ class ActiveRelation extends ActiveQuery implements ActiveRelationInterface
 	{
 		if ($this->primaryModel !== null) {
 			// lazy loading
-			if ($this->via instanceof ActiveRelationInterface) {
-				// via pivot table
-				$viaModels = $this->via->findPivotRows([$this->primaryModel]);
-				$this->filterByModels($viaModels);
-			} elseif (is_array($this->via)) {
+			if (is_array($this->via)) {
 				// via relation
 				/** @var ActiveRelation $viaQuery */
 				list($viaName, $viaQuery) = $this->via;
