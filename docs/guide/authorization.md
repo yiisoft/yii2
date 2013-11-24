@@ -76,6 +76,8 @@ Role based access control (RBAC)
 Role based access control is very flexible approach to controlling access that is a perfect match for complex systems
 where permissions are customizable.
 
+### Using file-based config for RBAC
+
 In order to start using it some extra steps are required. First of all we need to configure `authManager` application
 component in application config file (`web.php` or `main.php` depending on template you've used):
 
@@ -197,6 +199,26 @@ public function behaviors()
 ```
 
 Another way is to call [[User::checkAccess()]] where appropriate.
+
+### Using DB-based storage for RBAC
+
+Storing RBAC hierarchy in database is less efficient performancewise but is much more flexible. It is easier to create
+a good management UI for it so in case you need permissions structure that is managed by end user DB is your choice.
+
+In order to get started you need to configure database connection in `db` component. After it is done [get `schema-*.sql`
+file for your database](https://github.com/yiisoft/yii2/tree/master/framework/yii/rbac) and execute it.
+
+Next step is to configure `authManager` application component in application config file (`web.php` or `main.php`
+depending on template you've used):
+
+```php
+'authManager' => [
+    'class' => 'yii\rbac\DbManager',
+    'defaultRoles' => ['guest'],
+],
+```
+
+TBD
 
 ### How it works
 
