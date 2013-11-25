@@ -30,13 +30,25 @@ use yii\base\InvalidConfigException;
  *     'components' => [
  *         'cache' => [
  *             'class' => 'yii\redis\Cache',
+ *             'redis' => [
+ *                 'hostname' => 'localhost',
+ *                 'port' => 6379,
+ *                 'database' => 0,
+ *             ]
  *         ],
- *         'redis' => [
- *             'class' => 'yii\redis\Connection',
- *             'hostname' => 'localhost',
- *             'port' => 6379,
- *             'database' => 0,
- *         ]
+ *     ],
+ * ]
+ * ~~~
+ *
+ * Or if you have configured the redis connection as an application component, the following is sufficient:
+ *
+ * ~~~
+ * [
+ *     'components' => [
+ *         'cache' => [
+ *             'class' => 'yii\redis\Cache',
+ *             // 'redis' => 'redis' // id of the connection application component
+ *         ],
  *     ],
  * ]
  * ~~~
@@ -49,7 +61,9 @@ use yii\base\InvalidConfigException;
 class Cache extends \yii\caching\Cache
 {
 	/**
-	 * @var Connection|string the Redis [[Connection]] object or the application component ID of the Redis [[Connection]].
+	 * @var Connection|string|array the Redis [[Connection]] object or the application component ID of the Redis [[Connection]].
+	 * This can also be an array that is used to create a redis [[Connection]] instance in case you do not want do configure
+	 * redis connection as an application component.
 	 * After the Cache object is created, if you want to change this property, you should only assign it
 	 * with a Redis [[Connection]] object.
 	 */
@@ -57,15 +71,20 @@ class Cache extends \yii\caching\Cache
 
 
 	/**
-	 * Initializes the DbCache component.
-	 * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
-	 * @throws InvalidConfigException if [[db]] is invalid.
+	 * Initializes the redis Cache component.
+	 * This method will initialize the [[redis]] property to make sure it refers to a valid redis connection.
+	 * @throws InvalidConfigException if [[redis]] is invalid.
 	 */
 	public function init()
 	{
 		parent::init();
 		if (is_string($this->redis)) {
 			$this->redis = Yii::$app->getComponent($this->redis);
+		} else if (is_array($this->redis)) {
+			if (!isset($this->redis['class'])) {
+				$this->redis['class'] = Connection::className();
+			}
+			$this->redis = Yii::createObject($this->redis);
 		}
 		if (!$this->redis instanceof Connection) {
 			throw new InvalidConfigException("Cache::redis must be either a Redis connection instance or the application component ID of a Redis connection.");

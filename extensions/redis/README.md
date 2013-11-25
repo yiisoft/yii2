@@ -35,6 +35,26 @@ return [
 ];
 ```
 
+If you only use the redis cache, you can also configure the parameters of the connection within the
+cache component:
+
+```php
+return [
+	//....
+	'components' => [
+	    // ...
+        'cache' => [
+            'class' => 'yii\redis\Cache',
+            'redis' => [
+                'hostname' => 'localhost',
+                'port' => 6379,
+                'database' => 0,
+            ],
+        ],
+	]
+];
+```
+
 
 Installation
 ------------
