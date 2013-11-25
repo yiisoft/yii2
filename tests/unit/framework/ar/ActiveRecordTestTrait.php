@@ -352,14 +352,17 @@ trait ActiveRecordTestTrait
 	public function testFindEager()
 	{
 		/** @var TestCase|ActiveRecordTestTrait $this */
-		$customers = $this->callCustomerFind()->with('orders')->all();
+		$customers = $this->callCustomerFind()->with('orders')->indexBy('id')->all();
+		ksort($customers);
 		$this->assertEquals(3, count($customers));
-		$this->assertTrue($customers[0]->isRelationPopulated('orders'));
 		$this->assertTrue($customers[1]->isRelationPopulated('orders'));
-		$this->assertEquals(1, count($customers[0]->orders));
-		$this->assertEquals(2, count($customers[1]->orders));
+		$this->assertTrue($customers[2]->isRelationPopulated('orders'));
+		$this->assertTrue($customers[3]->isRelationPopulated('orders'));
+		$this->assertEquals(1, count($customers[1]->orders));
+		$this->assertEquals(2, count($customers[2]->orders));
+		$this->assertEquals(0, count($customers[3]->orders));
 
-		$customer = $this->callCustomerFind()->with('orders')->one();
+		$customer = $this->callCustomerFind()->where(['id' => 1])->with('orders')->one();
 		$this->assertTrue($customer->isRelationPopulated('orders'));
 		$this->assertEquals(1, count($customer->orders));
 		$this->assertEquals(1, count($customer->populatedRelations));

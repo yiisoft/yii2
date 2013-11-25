@@ -33,7 +33,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 	 */
 	public function afterSave()
 	{
-		$this->getConnection()->createCommand()->flushIndex();
+		$this->getConnection()->createCommand()->flushIndex('yiitest');
 	}
 
 	public function setUp()
@@ -129,7 +129,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$orderItem->setAttributes(['order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0], false);
 		$orderItem->save(false);
 
-		Customer::getDb()->createCommand()->flushIndex();
+		$db->createCommand()->flushIndex('yiitest');
 	}
 
 	public function testGetDb()
