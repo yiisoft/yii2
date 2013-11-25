@@ -1,6 +1,8 @@
 <?php
 /**
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\elasticsearch;
@@ -16,10 +18,13 @@ use yii\helpers\Json;
 
 
 /**
- * Class Command
+ * The Command class implements the API for accessing the elasticsearch REST API.
  *
- * http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/glossary.html
+ * Check the [elasticsearch guide](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/index.html)
+ * for details on these commands.
  *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
  */
 class Command extends Component
 {
@@ -61,7 +66,7 @@ class Command extends Component
 			$this->type !== null ? $this->type : '_all',
 			'_search'
 		];
-		return $this->db->get($url, array_merge($this->options, $options), $query)['hits'];
+		return $this->db->get($url, array_merge($this->options, $options), $query);
 	}
 
 	/**

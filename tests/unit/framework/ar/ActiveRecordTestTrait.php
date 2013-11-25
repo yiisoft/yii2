@@ -199,6 +199,51 @@ trait ActiveRecordTestTrait
 		$this->assertTrue($customers['3-user3'] instanceof $customerClass);
 	}
 
+	public function testfindIndexByAsArray()
+	{
+		$customerClass = $this->getCustomerClass();
+		/** @var TestCase|ActiveRecordTestTrait $this */
+		// indexBy + asArray
+		$customers = $this->callCustomerFind()->asArray()->indexBy('name')->all();
+		$this->assertEquals(3, count($customers));
+		$this->assertArrayHasKey('id', $customers['user1']);
+		$this->assertArrayHasKey('name', $customers['user1']);
+		$this->assertArrayHasKey('email', $customers['user1']);
+		$this->assertArrayHasKey('address', $customers['user1']);
+		$this->assertArrayHasKey('status', $customers['user1']);
+		$this->assertArrayHasKey('id', $customers['user2']);
+		$this->assertArrayHasKey('name', $customers['user2']);
+		$this->assertArrayHasKey('email', $customers['user2']);
+		$this->assertArrayHasKey('address', $customers['user2']);
+		$this->assertArrayHasKey('status', $customers['user2']);
+		$this->assertArrayHasKey('id', $customers['user3']);
+		$this->assertArrayHasKey('name', $customers['user3']);
+		$this->assertArrayHasKey('email', $customers['user3']);
+		$this->assertArrayHasKey('address', $customers['user3']);
+		$this->assertArrayHasKey('status', $customers['user3']);
+
+		// indexBy callable + asArray
+		$customers = $this->callCustomerFind()->indexBy(function ($customer) {
+			return $customer['id'] . '-' . $customer['name'];
+		})->asArray()->all();
+		$this->assertEquals(3, count($customers));
+		$this->assertArrayHasKey('id', $customers['1-user1']);
+		$this->assertArrayHasKey('name', $customers['1-user1']);
+		$this->assertArrayHasKey('email', $customers['1-user1']);
+		$this->assertArrayHasKey('address', $customers['1-user1']);
+		$this->assertArrayHasKey('status', $customers['1-user1']);
+		$this->assertArrayHasKey('id', $customers['2-user2']);
+		$this->assertArrayHasKey('name', $customers['2-user2']);
+		$this->assertArrayHasKey('email', $customers['2-user2']);
+		$this->assertArrayHasKey('address', $customers['2-user2']);
+		$this->assertArrayHasKey('status', $customers['2-user2']);
+		$this->assertArrayHasKey('id', $customers['3-user3']);
+		$this->assertArrayHasKey('name', $customers['3-user3']);
+		$this->assertArrayHasKey('email', $customers['3-user3']);
+		$this->assertArrayHasKey('address', $customers['3-user3']);
+		$this->assertArrayHasKey('status', $customers['3-user3']);
+	}
+
 	public function testRefresh()
 	{
 		$customerClass = $this->getCustomerClass();

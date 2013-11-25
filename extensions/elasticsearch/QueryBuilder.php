@@ -9,6 +9,7 @@ namespace yii\elasticsearch;
 
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\helpers\Json;
 
 /**
  * QueryBuilder builds an elasticsearch query based on the specification given as a [[Query]] object.
@@ -55,13 +56,25 @@ class QueryBuilder extends \yii\base\Object
 			$parts['from'] = (int) $query->offset;
 		}
 
-		$filters = empty($query->filter) ? [] : [$query->filter];
-		$whereFilter = $this->buildCondition($query->where);
-		if (!empty($whereFilter)) {
-			$filters[] = $whereFilter;
+		if (empty($parts['query'])) {
+			$parts['query'] = ["match_all" => (object)[]];
 		}
-		if (!empty($filters)) {
-			$parts['filter'] = count($filters) > 1 ? ['and' => $filters] : $filters[0];
+
+		$whereFilter = $this->buildCondition($query->where);
+		if (is_string($query->filter)) {
+			if (empty($whereFilter)) {
+				$parts['filter'] = $query->filter;
+			} else {
+				$parts['filter'] = '{"and": [' . $query->filter . ', ' . Json::encode($whereFilter) . ']}';
+			}
+		} elseif ($query->filter !== null) {
+			if (empty($whereFilter)) {
+				$parts['filter'] = $query->filter;
+			} else {
+				$parts['filter'] = ['and' => [$query->filter, $whereFilter]];
+			}
+		} elseif (!empty($whereFilter)) {
+			$parts['filter'] = $whereFilter;
 		}
 
 		$sort = $this->buildOrderBy($query->orderBy);
@@ -69,8 +82,8 @@ class QueryBuilder extends \yii\base\Object
 			$parts['sort'] = $sort;
 		}
 
-		if (empty($parts['query'])) {
-			$parts['query'] = ["match_all" => (object)[]];
+		if (!empty($query->facets)) {
+			$parts['facets'] = $query->facets;
 		}
 
 		$options = [];

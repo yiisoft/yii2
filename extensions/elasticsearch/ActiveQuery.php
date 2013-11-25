@@ -12,24 +12,21 @@ use yii\db\ActiveQueryTrait;
 use yii\helpers\Json;
 
 /**
- * ActiveQuery represents a query associated with an Active Record class.
+ * ActiveQuery represents a [[Query]] associated with an [[ActiveRecord]] class.
  *
- * ActiveQuery instances are usually created by [[ActiveRecord::find()]]
- * and [[ActiveRecord::count()]].
+ * ActiveQuery instances are usually created by [[ActiveRecord::find()]].
  *
  * ActiveQuery mainly provides the following methods to retrieve the query results:
  *
  * - [[one()]]: returns a single record populated with the first row of data.
  * - [[all()]]: returns all records based on the query results.
  * - [[count()]]: returns the number of records.
- * - [[sum()]]: returns the sum over the specified column.
- * - [[average()]]: returns the average over the specified column.
- * - [[min()]]: returns the min over the specified column.
- * - [[max()]]: returns the max over the specified column.
  * - [[scalar()]]: returns the value of the first column in the first row of the query result.
+ * - [[column()]]: returns the value of the first column in the query result.
  * - [[exists()]]: returns a value indicating whether the query result has data or not.
  *
- * You can use query methods, such as [[where()]], [[limit()]] and [[orderBy()]] to customize the query options.
+ * Because ActiveQuery extends from [[Query]], one can use query methods, such as [[where()]],
+ * [[orderBy()]] to customize the query options.
  *
  * ActiveQuery also provides the following additional query options:
  *
@@ -83,16 +80,28 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 */
 	public function all($db = null)
 	{
-		$command = $this->createCommand($db);
-		$result = $command->search();
-		if (empty($result['hits'])) {
+		$result = $this->createCommand($db)->search();
+		if (empty($result['hits']['hits'])) {
 			return [];
 		}
-		$models = $this->createModels($result['hits']);
-		if ($this->asArray) {
+		if ($this->fields !== null) {
+			foreach ($result['hits']['hits'] as &$row) {
+				$row['_source'] = isset($row['fields']) ? $row['fields'] : [];
+				unset($row['fields']);
+			}
+			unset($row);
+		}
+		if ($this->asArray && $this->indexBy) {
+			foreach ($result['hits']['hits'] as &$row) {
+				$row['_source'][ActiveRecord::PRIMARY_KEY_NAME] = $row['_id'];
+				$row = $row['_source'];
+			}
+		}
+		$models = $this->createModels($result['hits']['hits']);
+		if ($this->asArray && !$this->indexBy) {
 			foreach($models as $key => $model) {
+				$model['_source'][ActiveRecord::PRIMARY_KEY_NAME] = $model['_id'];
 				$models[$key] = $model['_source'];
-				$models[$key][ActiveRecord::PRIMARY_KEY_NAME] = $model['_id'];
 			}
 		}
 		if (!empty($this->with)) {
@@ -133,6 +142,28 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	/**
 	 * @inheritDocs
 	 */
+	public function search($db = null, $options = [])
+	{
+		$result = $this->createCommand($db)->search($options);
+		if (!empty($result['hits']['hits'])) {
+			$models = $this->createModels($result['hits']['hits']);
+			if ($this->asArray) {
+				foreach($models as $key => $model) {
+					$model['_source'][ActiveRecord::PRIMARY_KEY_NAME] = $model['_id'];
+					$models[$key] = $model['_source'];
+				}
+			}
+			if (!empty($this->with)) {
+				$this->findWith($this->with, $models);
+			}
+			$result['hits']['hits'] = $models;
+		}
+		return $result;
+	}
+
+	/**
+	 * @inheritDocs
+	 */
 	public function scalar($field, $db = null)
 	{
 		$record = parent::one($db);
@@ -154,12 +185,15 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		if ($field == ActiveRecord::PRIMARY_KEY_NAME) {
 			$command = $this->createCommand($db);
 			$command->queryParts['fields'] = [];
-			$rows = $command->search()['hits'];
-			$result = [];
-			foreach ($rows as $row) {
-				$result[] = $row['_id'];
+			$result = $command->search();
+			if (empty($result['hits']['hits'])) {
+				return [];
 			}
-			return $result;
+			$column = [];
+			foreach ($result['hits']['hits'] as $row) {
+				$column[] = $row['_id'];
+			}
+			return $column;
 		}
 		return parent::column($field, $db);
 	}

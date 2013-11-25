@@ -9,6 +9,7 @@ namespace yii\elasticsearch;
 
 use Yii;
 use yii\base\Component;
+use yii\base\NotSupportedException;
 use yii\db\QueryInterface;
 use yii\db\QueryTrait;
 
@@ -49,16 +50,28 @@ class Query extends Component implements QueryInterface
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-body.html#_parameters_3
 	 */
 	public $timeout;
-
+	/**
+	 * @var array|string The query part of this search query. This is an array or json string that follows the format of
+	 * the elasticsearch [Query DSL](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html).
+	 */
 	public $query;
-
+	/**
+	 * @var array|string The filter part of this search query. This is an array or json string that follows the format of
+	 * the elasticsearch [Query DSL](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html).
+	 */
 	public $filter;
 
 	public $facets = [];
 
-	public $facetResults = [];
-
-	public $totalCount;
+	public function init()
+	{
+		parent::init();
+		// setting the default limit according to elasticsearch defaults
+		// http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-body.html#_parameters_3
+		if ($this->limit === null) {
+			$this->limit = 10;
+		}
+	}
 
 	/**
 	 * Creates a DB command that can be used to execute this query.
@@ -85,8 +98,10 @@ class Query extends Component implements QueryInterface
 	public function all($db = null)
 	{
 		$result = $this->createCommand($db)->search();
-		// TODO publish facet results
-		$rows = $result['hits'];
+		if (empty($result['hits']['hits'])) {
+			return [];
+		}
+		$rows = $result['hits']['hits'];
 		if ($this->indexBy === null && $this->fields === null) {
 			return $rows;
 		}
@@ -119,17 +134,53 @@ class Query extends Component implements QueryInterface
 	{
 		$options['size'] = 1;
 		$result = $this->createCommand($db)->search($options);
-		// TODO publish facet results
-		if (empty($result['hits'])) {
+		if (empty($result['hits']['hits'])) {
 			return false;
 		}
-		$record = reset($result['hits']);
+		$record = reset($result['hits']['hits']);
 		if ($this->fields !== null) {
 			$record['_source'] = isset($record['fields']) ? $record['fields'] : [];
 			unset($record['fields']);
 		}
 		return $record;
 	}
+
+	/**
+	 * Executes the query and returns the complete search result including e.g. hits, facets, totalCount.
+	 * @param Connection $db the database connection used to execute the query.
+	 * If this parameter is not given, the `elasticsearch` application component will be used.
+	 * @param array $options The options given with this query. Possible options are:
+	 * - [routing](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search.html#search-routing)
+	 * - [search_type](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-search-type.html)
+	 * @return array the query results.
+	 */
+	public function search($db = null, $options = [])
+	{
+		$result = $this->createCommand($db)->search($options);
+		if (!empty($result['hits']['hits']) && ($this->indexBy === null || $this->fields === null)) {
+			$rows = [];
+			foreach ($result['hits']['hits'] as $key => $row) {
+				if ($this->fields !== null) {
+					$row['_source'] = isset($row['fields']) ? $row['fields'] : [];
+					unset($row['fields']);
+				}
+				if ($this->indexBy !== null) {
+					if (is_string($this->indexBy)) {
+						$key = $row['_source'][$this->indexBy];
+					} else {
+						$key = call_user_func($this->indexBy, $row);
+					}
+				}
+				$rows[$key] = $row;
+			}
+			$result['hits']['hits'] = $rows;
+		}
+		return $result;
+	}
+
+	// TODO add query stats http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search.html#stats-groups
+
+	// TODO add scroll/scan http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-search-type.html#scan
 
 	/**
 	 * Executes the query and deletes all matching documents.
@@ -142,7 +193,8 @@ class Query extends Component implements QueryInterface
 	 */
 	public function delete($db = null)
 	{
-		// TODO http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete-by-query.html
+		// TODO implement http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete-by-query.html
+		throw new NotSupportedException('Delete by query is not implemented yet.');
 	}
 
 	/**
@@ -156,7 +208,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function scalar($field, $db = null)
 	{
-		$record = self::one($db);
+		$record = self::one($db); // TODO limit fields to the one required
 		if ($record !== false && isset($record['_source'][$field])) {
 			return $record['_source'][$field];
 		} else {
@@ -175,12 +227,15 @@ class Query extends Component implements QueryInterface
 	{
 		$command = $this->createCommand($db);
 		$command->queryParts['fields'] = [$field];
-		$rows = $command->search()['hits'];
-		$result = [];
-		foreach ($rows as $row) {
-			$result[] = isset($row['fields'][$field]) ? $row['fields'][$field] : null;
+		$result = $command->search();
+		if (empty($result['hits']['hits'])) {
+			return [];
 		}
-		return $result;
+		$column = [];
+		foreach ($result['hits']['hits'] as $row) {
+			$column[] = isset($row['fields'][$field]) ? $row['fields'][$field] : null;
+		}
+		return $column;
 	}
 
 	/**
@@ -198,7 +253,7 @@ class Query extends Component implements QueryInterface
 
 		$options = [];
 		$options['search_type'] = 'count';
-		$count = $this->createCommand($db)->search($options)['total'];
+		$count = $this->createCommand($db)->search($options)['hits']['total'];
 		if ($this->limit === null && $this->offset === null) {
 			return $count;
 		} elseif ($this->offset !== null) {
@@ -354,9 +409,26 @@ class Query extends Component implements QueryInterface
 
 	// TODO support multi query via static method http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-multi-search.html
 
-	public function query()
+	/**
+	 * Sets the querypart of this search query.
+	 * @param string $query
+	 * @return static
+	 */
+	public function query($query)
 	{
+		$this->query = $query;
+		return $this;
+	}
 
+	/**
+	 * Sets the filter part of this search query.
+	 * @param string $filter
+	 * @return static
+	 */
+	public function filter($filter)
+	{
+		$this->filter = $filter;
+		return $this;
 	}
 
 	/**
@@ -381,7 +453,11 @@ class Query extends Component implements QueryInterface
 	 */
 	public function fields($fields)
 	{
-		$this->fields = $fields;
+		if (is_array($fields)) {
+			$this->fields = $fields;
+		} else {
+			$this->fields = func_get_args();
+		}
 		return $this;
 	}
 
@@ -397,5 +473,4 @@ class Query extends Component implements QueryInterface
 		$this->timeout = $timeout;
 		return $this;
 	}
-
 }

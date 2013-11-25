@@ -1,17 +1,22 @@
 <?php
 /**
- * 
- * 
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\elasticsearch;
-
 
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use yii\base\Exception;
 use yii\helpers\Json;
 
+/**
+ * Class GuzzleConnection
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
+ */
 class GuzzleConnection extends Connection
 {
 	/**
