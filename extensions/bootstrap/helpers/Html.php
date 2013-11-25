@@ -706,6 +706,7 @@ class Html extends \yii\helpers\Html {
      * include the wildtag '{source}' to embed the cite source 
      * @param string $citeTitle the cite source title (optional)
      * @param string $citeSource the cite source (optional)
+     * @param array $options html options for the blockquote
      * 
      * Example(s): 
      * ```php
@@ -739,6 +740,7 @@ class Html extends \yii\helpers\Html {
      * @param array $email the list of email addresses - passed as $key => $value, where:
      *    - $key is the email type could be 'Res', 'Off'
      *    - $value is the email address
+     * @param array $options html options for the address
      * @param string $phoneLabel the prefix label for each phone - defaults to '(P)'
      * @param string $emailLabel the prefix label for each email - defaults to '(E)'
      *
@@ -750,7 +752,7 @@ class Html extends \yii\helpers\Html {
      *      ['Res' => '(123) 456-7890', 'Off'=> '(456) 789-0123'],
      *      ['Res' => 'first.last@example.com', 'Off' => 'last.first@example.com']
      * );
-     * echo Html::address(
+     * $address = Html::address(
      *      'Twitter, Inc.',
      *      ['795 Folsom Ave, Suite 600', 'San Francisco, CA 94107'],
      *      ['Res' => '(123) 456-7890', 'Off'=> '(456) 789-0123'],
@@ -758,11 +760,12 @@ class Html extends \yii\helpers\Html {
      *      Html::icon('phone'),
      *      Html::icon('envelope')
      * );
+     * echo Html::well($address, Html::TINY);
      * ```
      *
      * @see http://getbootstrap.com/css/#type-addresses
      */
-    public static function address($name, $lines = [], $phone = [], $email = [], $phoneLabel = '(P)', $emailLabel = '(E)') {
+    public static function address($name, $lines = [], $phone = [], $email = [], $options = [], $phoneLabel = '(P)', $emailLabel = '(E)') {
         $addresses = '';
         if (!empty($lines)) {
             $addresses = implode('<br>', $lines) . "<br>\n";
@@ -771,10 +774,10 @@ class Html extends \yii\helpers\Html {
         $phones = '';
         foreach ($phone as $type => $number) {
             if (is_numeric($type)) { // no keys were passed to the phone array
-                $type = Html::tag('abbr', $phoneLabel, ['title' => Yii::t('app', 'Phone')]) . ': ';
+                $type = static::tag('abbr', $phoneLabel, ['title' => Yii::t('app', 'Phone')]) . ': ';
             }
             else {
-                $type = Html::tag('abbr', $phoneLabel . ' ' . $type, ['title' => Yii::t('app', 'Phone')]) . ': ';
+                $type = static::tag('abbr', $phoneLabel . ' ' . $type, ['title' => Yii::t('app', 'Phone')]) . ': ';
             }
             $phones .= "{$type}{$number}<br>\n";
         }
@@ -789,13 +792,7 @@ class Html extends \yii\helpers\Html {
             }
             $emails .= $type . static::mailto($addr, $addr) . "<br>\n";
         }
-
-        return "<address>\n" .
-                "<strong>{$name}</strong><br>\n" .
-                $addresses .
-                $phones .
-                $emails .
-                "</address>";
+        return static::tag('address', "<strong>{$name}</strong><br>\n" . $addresses . $phones . $emails, $options);
     }
 
     /**
