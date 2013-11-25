@@ -58,7 +58,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * if you don't want to use key prefix. It is recommended that you explicitly set this property to some
 	 * static value if the cached data needs to be shared among multiple applications.
 	 *
-	 * To ensure interoperability, only use alphanumeric characters should be used.
+	 * To ensure interoperability, only alphanumeric characters should be used.
 	 */
 	public $keyPrefix;
 	/**
