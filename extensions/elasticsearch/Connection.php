@@ -9,8 +9,8 @@ namespace yii\elasticsearch;
 
 use Yii;
 use yii\base\Component;
-use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use yii\helpers\Json;
 
 /**
  * elasticsearch Connection is used to connect to an elasticsearch cluster version 0.20 or higher
@@ -18,7 +18,7 @@ use yii\base\InvalidConfigException;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-abstract class Connection extends Component
+class Connection extends Component
 {
 	/**
 	 * @event Event an event that is triggered after a DB connection is established
@@ -44,6 +44,19 @@ abstract class Connection extends Component
 
 	// TODO http://www.elasticsearch.org/guide/en/elasticsearch/client/php-api/current/_configuration.html#_example_configuring_http_basic_auth
 	public $auth = [];
+	/**
+	 * @var float timeout to use for connecting to an elasticsearch node.
+	 * This value will be used to configure the curl `CURLOPT_CONNECTTIMEOUT` option.
+	 * If not set, no explicit timeout will be set for curl.
+	 */
+	public $connectionTimeout = null;
+	/**
+	 * @var float timeout to use when reading the response from an elasticsearch node.
+	 * This value will be used to configure the curl `CURLOPT_TIMEOUT` option.
+	 * If not set, no explicit timeout will be set for curl.
+	 */
+	public $dataTimeout = null;
+
 
 	public function init()
 	{
@@ -92,7 +105,7 @@ abstract class Connection extends Component
 			if (strncmp($host, 'inet[/', 6) == 0) {
 				$host = substr($host, 6, -1);
 			}
-			$response = $this->httpRequest('get', 'http://' . $host . '/_cluster/nodes');
+			$response = $this->httpRequest('GET', 'http://' . $host . '/_cluster/nodes');
 			$this->nodes = $response['nodes'];
 			if (empty($this->nodes)) {
 				throw new Exception('cluster autodetection did not find any active node.');
@@ -161,34 +174,34 @@ abstract class Connection extends Component
 		return new QueryBuilder($this);
 	}
 
-	public function get($url, $options = [], $body = null, $validCodes = [])
+	public function get($url, $options = [], $body = null)
 	{
 		$this->open();
-		return $this->httpRequest('get', $this->createUrl($url, $options), $body);
+		return $this->httpRequest('GET', $this->createUrl($url, $options), $body);
 	}
 
 	public function head($url, $options = [], $body = null)
 	{
 		$this->open();
-		return $this->httpRequest('head', $this->createUrl($url, $options), $body);
+		return $this->httpRequest('HEAD', $this->createUrl($url, $options), $body);
 	}
 
 	public function post($url, $options = [], $body = null)
 	{
 		$this->open();
-		return $this->httpRequest('post', $this->createUrl($url, $options), $body);
+		return $this->httpRequest('POST', $this->createUrl($url, $options), $body);
 	}
 
 	public function put($url, $options = [], $body = null)
 	{
 		$this->open();
-		return $this->httpRequest('put', $this->createUrl($url, $options), $body);
+		return $this->httpRequest('PUT', $this->createUrl($url, $options), $body);
 	}
 
 	public function delete($url, $options = [], $body = null)
 	{
 		$this->open();
-		return $this->httpRequest('delete', $this->createUrl($url, $options), $body);
+		return $this->httpRequest('DELETE', $this->createUrl($url, $options), $body);
 	}
 
 	private function createUrl($path, $options = [])
@@ -201,10 +214,102 @@ abstract class Connection extends Component
 			$url .= '?' . http_build_query($options);
 		}
 
-		return $url;
+		$host = $this->nodes[$this->activeNode]['http_address'];
+		if (strncmp($host, 'inet[/', 6) == 0) {
+			$host = substr($host, 6, -1);
+		}
+		return 'http://' . $host . '/' . $url;
 	}
 
-	protected abstract function httpRequest($type, $url, $body = null);
+	protected function httpRequest($method, $url, $requestBody = null)
+	{
+		$method = strtoupper($method);
+
+		// response body and headers
+		$headers = [];
+		$body = '';
+
+		$options = [
+			CURLOPT_USERAGENT      => 'Yii2 Framework ' . __CLASS__,
+			CURLOPT_RETURNTRANSFER => false,
+			CURLOPT_HEADER         => false,
+			// http://www.php.net/manual/en/function.curl-setopt.php#82418
+			CURLOPT_HTTPHEADER     => ['Expect:'],
+
+			CURLOPT_WRITEFUNCTION  => function($curl, $data) use (&$body) {
+				$body .= $data;
+				return mb_strlen($data, '8bit');
+			},
+			CURLOPT_HEADERFUNCTION => function($curl, $data) use (&$headers) {
+				foreach(explode("\r\n", $data) as $row) {
+					if (($pos = strpos($row, ':')) !== false) {
+						$headers[strtolower(substr($row, 0, $pos))] = trim(substr($row, $pos + 1));
+					}
+				}
+				return mb_strlen($data, '8bit');
+			},
+			CURLOPT_CUSTOMREQUEST  => $method,
+		];
+		if ($this->connectionTimeout !== null) {
+			$options[CURLOPT_CONNECTTIMEOUT] = $this->connectionTimeout;
+		}
+		if ($this->dataTimeout !== null) {
+			$options[CURLOPT_TIMEOUT] = $this->dataTimeout;
+		}
+		if ($requestBody !== null) {
+			$options[CURLOPT_POSTFIELDS] = $requestBody;
+		}
+		if ($method == 'HEAD') {
+			$options[CURLOPT_NOBODY] = true;
+			unset($options[CURLOPT_WRITEFUNCTION]);
+		}
+
+		$curl = curl_init($url);
+		curl_setopt_array($curl, $options);
+		curl_exec($curl);
+
+		$responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+		curl_close($curl);
+
+		if ($responseCode >= 200 && $responseCode < 300) {
+			if ($method == 'HEAD') {
+				return true;
+			} else {
+				if (isset($headers['content-length']) && ($len = mb_strlen($body, '8bit')) < $headers['content-length']) {
+					throw new Exception("Incomplete data received from elasticsearch: $len < {$headers['content-length']}", [
+						'requestMethod' => $method,
+						'requestUrl' => $url,
+						'requestBody' => $requestBody,
+						'responseCode' => $responseCode,
+						'responseHeaders' => $headers,
+						'responseBody' => $body,
+					]);
+				}
+				if (isset($headers['content-type']) && !strncmp($headers['content-type'], 'application/json', 16)) {
+					return Json::decode($body);
+				}
+				throw new Exception('Unsupported data received from elasticsearch: ' . $headers['content-type'], [
+					'requestMethod' => $method,
+					'requestUrl' => $url,
+					'requestBody' => $requestBody,
+					'responseCode' => $responseCode,
+					'responseHeaders' => $headers,
+					'responseBody' => $body,
+				]);
+			}
+		} elseif ($responseCode == 404) {
+			return false;
+		} else {
+			throw new Exception("Elasticsearch request failed with code $responseCode.", [
+				'requestMethod' => $method,
+				'requestUrl' => $url,
+				'requestBody' => $requestBody,
+				'responseCode' => $responseCode,
+				'responseHeaders' => $headers,
+				'responseBody' => $body,
+			]);
+		}
+	}
 
 	public function getNodeInfo()
 	{

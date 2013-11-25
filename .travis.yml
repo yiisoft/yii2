@@ -12,7 +12,6 @@ services:
 before_script:
   - composer self-update && composer --version
   - composer require satooshi/php-coveralls 0.6.* --dev --prefer-dist
-  - composer require guzzle/http v3.7.3 --dev --prefer-dist
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
   - echo 'elasticsearch version ' && curl http://localhost:9200/

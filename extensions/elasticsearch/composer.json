@@ -18,7 +18,8 @@
 		}
 	],
 	"require": {
-		"yiisoft/yii2": "*"
+		"yiisoft/yii2": "*",
+		"ext-curl": "*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\elasticsearch\\": "" }

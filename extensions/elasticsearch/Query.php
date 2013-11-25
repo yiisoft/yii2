@@ -483,7 +483,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function fields($fields)
 	{
-		if (is_array($fields)) {
+		if (is_array($fields) || $fields === null) {
 			$this->fields = $fields;
 		} else {
 			$this->fields = func_get_args();

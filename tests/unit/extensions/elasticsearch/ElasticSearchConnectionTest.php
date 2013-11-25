@@ -3,7 +3,6 @@
 namespace yiiunit\extensions\elasticsearch;
 
 use yii\elasticsearch\Connection;
-use yii\elasticsearch\GuzzleConnection;
 
 /**
  * @group elasticsearch
@@ -12,7 +11,7 @@ class ElasticSearchConnectionTest extends ElasticSearchTestCase
 {
 	public function testOpen()
 	{
-		$connection = new GuzzleConnection();
+		$connection = new Connection();
 		$connection->autodetectCluster;
 		$connection->nodes = [
 			['http_address' => 'inet[/127.0.0.1:9200]'],
