@@ -132,14 +132,14 @@ class Html extends \yii\helpers\Html
 	 * Generates a list group. Flexible and powerful component for displaying not only 
 	 * simple lists of elements, but complex ones with custom content.
 	 * @param array $items the list group items - each element in the array must contain these keys:
-	 *     - @param mixed $content the list item content 
-	 *         - when passed as a string, it will be displayed as is
-	 *         - when passed as an array, it requires these keys
-	 *             - @param string $heading the content heading
-	 *             - @param string $body the content body
-	 *     - @param string $url the url for linking the list item content (optional)
-	 *     - @param string $badge a badge component to be displayed for this list item (optional)
-	 *     - @param boolean $active to highlight the item as active (applicable only if $url is passed) - default false
+	 * 		- @param mixed $content the list item content 
+	 * 			- when passed as a string, it will display this directly as a raw content
+	 *			- when passed as an array, it requires these keys
+	 * 				- @param string $heading the content heading
+	 * 				- @param string $body the content body
+	 * 		- @param string $url the url for linking the list item content (optional)
+	 * 		- @param string $badge a badge component to be displayed for this list item (optional)
+	 * 		- @param boolean $active to highlight the item as active (applicable only if $url is passed) - default false
 	 * @param array $options html options for the list group container
 	 * @param string $tag the list group container tag - defaults to 'div'
 	 * @param string $itemTag the list item container tag - defaults to 'div'
@@ -241,37 +241,86 @@ class Html extends \yii\helpers\Html
 	/**
 	 * Generates a jumbotron - a lightweight, flexible component that can optionally 
 	 * extend the entire viewport to showcase key content on your site.
-	 * @param string $title the title heading shown in the jumbotron
-	 * @param string $content the content below the heading in the jumbotron
+	 * @param mixed $content the list item content 
+	 * 		- when passed as a string, it will display this directly as a raw content
+	 *      - when passed as an array, it requires these keys
+	 *			- @param string $heading the jumbotron content title
+	 *			- @param string $body the jumbotron content body
+	 *			- @param array $buttons the jumbotron buttons
+	 *				- @param string $label the button label
+	 *				- @param string $icon the icon to place before the label
+	 *				- @param string $url the button url
+	 *				- @param string $type the button type - one of the color modifier constants - defaults to static::TYPE_DEFAULT
+	 *				- @param array $options the button html options
 	 * @param boolean $fullWidth whether this is a full width jumbotron without any corners - defaults to false
 	 * @param array $options html options for the jumbotron
 	 *
 	 * Example(s): 
 	 * ```php
 	 * echo Html::jumbotron(
-	 * 	'Hello, world!',
-	 *	'This is a simple jumbotron-style component for calling extra attention to featured content or information.'
+	 * 		'<h1>Hello, world</h1><p>This is a simple jumbotron-style component for calling extra attention to featured content or information.</p>'
 	 * );
 	 * echo Html::jumbotron(
-	 * 	'Hello, world!',
-	 *	'This is a simple jumbotron-style component with a button.<br>' . Html::a('Learn more', '#', ['class'=>'btn btn-primary btn-lg']) 
+	 * 		[
+	 * 			'heading' => 'Hello, world!', 
+	 *			'body' => 'This is a simple jumbotron-style component for calling extra attention to featured content or information.'
+	 *		]
+	 * );
+	 * echo Html::jumbotron(
+	 * 		[
+	 * 			'heading' => 'Hello, world!', 
+	 * 			'body' => 'This is a simple jumbotron-style component for calling extra attention to featured content or information.',
+	 * 			'buttons' => [
+	 * 				[
+	 * 					'label' => 'Learn More',
+	 * 					'icon' => 'book',
+	 * 					'url' => '#',
+	 * 					'type' => Html::TYPE_PRIMARY
+	 * 				],
+	 * 				[
+	 * 					'label' => 'Contact Us',
+	 * 					'icon' => 'phone',
+	 * 					'url' => '#',
+	 * 					'type' => Html::TYPE_DANGER
+	 * 				]
+	 * 			]
+	 * 		]
 	 * );
 	 * ```
 	 *
 	 * @see http://getbootstrap.com/components/#jumbotron
 	 */
-	public static function jumbotron($title, $content, $fullWidth = false, $options = []) {
+	public static function jumbotron($content = [], $fullWidth = false, $options = []) {
 		static::addCssClass($options, 'jumbotron');
-		$title = "<h1>{$title}</h1>\n";
-		$chkPara = preg_replace('/\s+/', '', $content);
-		if (substr($chkPara, 0, 3) != '<p>') {
-			$content = static::tag('p', $content);
-		}
-		if ($fullWidth) {
-			return static::tag('div', $title . static::tag('div', $content, ['class'=>'container']), $options);
+		if (is_string($content)) {
+			$html = $content;
 		}
 		else {
-			return static::tag('div', $title . $content, $options);
+			$html = isset($content['heading']) ? "<h1>" . $content['heading'] . "</h1>\n" : '';
+			$body = isset($content['body']) ? $content['body'] . "\n" : '';
+			if (substr(preg_replace('/\s+/', '', $body), 0, 3) != '<p>') {
+				$body = static::tag('p', $body);
+			}
+			$html .= $body;
+			$buttons = '';
+			if (isset($content['buttons'])) {
+				foreach ($content['buttons'] as $btn) {
+					$label = (isset($btn['icon']) ? Html::icon($btn['icon']) . ' ' : '') . (isset($btn['label']) ? $btn['label'] : '');
+					$url = isset($btn['url']) ? $btn['url'] : '#';
+					$btnOptions = isset($btn['options']) ? $btn['options'] : [];
+					$class = 'btn' . (isset($btn['type']) ? ' btn-' . $btn['type'] : ' btn-' . static::TYPE_DEFAULT);
+					static::addCssClass($btnOptions, $class);
+					$buttons .= Html::a($label, $url, $btnOptions) . " ";
+				}
+			}
+			$html .= Html::tag('p', $buttons);
+		}
+		
+		if ($fullWidth) {
+			return static::tag('div', static::tag('div', $html, ['class' => 'container']), $options);
+		}
+		else {
+			return static::tag('div', $html, $options);
 		}
 	}
 	
@@ -343,7 +392,7 @@ class Html extends \yii\helpers\Html
 			$panel = (!static::isEmpty($content['preHeading'])) ? $content['preHeading'] . "\n" : '';
 			$panel .= static::generatePanelTitle($content, 'heading');
 			$panel .= (!static::isEmpty($content['preBody'])) ? $content['preBody'] . "\n" : '';
-			$panel .= (!static::isEmpty($content['body'])) ? static::tag('div', $content['body'], ['class'=>'panel-body']) . "\n" : '';
+			$panel .= (!static::isEmpty($content['body'])) ? static::tag('div', $content['body'], ['class' => 'panel-body']) . "\n" : '';
 			$panel .= (!static::isEmpty($content['postBody'])) ? $content['postBody'] . "\n" : '';
 			$panel .= static::generatePanelTitle($content, 'footer');			
 			$panel .= (!static::isEmpty($content['postFooter'])) ? $content['postFooter'] . "\n" : '';
@@ -459,8 +508,8 @@ class Html extends \yii\helpers\Html
 		static::addCssClass($imgOptions, 'media-object');
 		
 		$source = static::a(static::img($img, $imgOptions), $src, $srcOptions);
-		$heading = (!static::isEmpty($heading)) ? static::tag('h4', $heading, ['class'=>'media-heading']) : '';
-		$content = (!static::isEmpty($body)) ? static::tag('div', $heading . "\n" . $body, ['class'=>'media-body']) : $heading;
+		$heading = (!static::isEmpty($heading)) ? static::tag('h4', $heading, ['class' => 'media-heading']) : '';
+		$content = (!static::isEmpty($body)) ? static::tag('div', $heading . "\n" . $body, ['class' => 'media-body']) : $heading;
 		
 		return static::tag($tag, $source . "\n" . $content, $options);
 	}
@@ -579,20 +628,37 @@ class Html extends \yii\helpers\Html
 	
 	/**
 	 * Generates a caret.
+	 * @param string $direction whether to display as 'up' or 'down' direction - defaults to 'down'
+	 * @param boolean $disabled if the caret is to be displayed as disabled - defaults to false
 	 * @param array $options html options for the caret container.
 	 * @param string $tag the html tag for rendering the caret - defaults to 'span'
 	 *
 	 * Example(s): 
 	 * ```php
-	 * echo Html::caret();
+	 * echo 'Down Caret ' . Html::caret();
+	 * echo 'Up Caret ' . Html::caret('up');
+	 * echo 'Disabled Caret ' . Html::caret('down', true);
 	 * ```
 	 *
 	 * @see http://getbootstrap.com/css/#helper-classes-carets
 	 */
-	public static function caret($options = [], $tag = 'span')
+	public static function caret($direction = 'down', $disabled = false, $options = [], $tag = 'span')
 	{
 		static::addCssClass($options, 'caret');
-		return static::tag($tag, '', $options);
+		$padding = 'margin-bottom: 3px;';
+		$options['style'] =  isset($options['style']) ? ($options['style'] . '; ' . $padding) : $padding;
+		$disabledClass = 'border-top-color: #bbb; border-bottom-color: #bbb;';
+		
+		if ($disabled) {
+			$options['style'] = isset($options['style']) ? $options['style'] . '; ' . $disabledClass : $disabledClass;
+		}
+		
+		if ($direction == 'up') {
+			return static::tag($tag, static::tag($tag, '', $options), ['class' => 'dropup']);
+		}
+		else {
+			return static::tag($tag, '', $options);
+		}
 	}
 	
 	/**
@@ -616,23 +682,20 @@ class Html extends \yii\helpers\Html
 
 	/**
 	 * Generates an abbreviation.
-	 * @param string $title the abbreviation title
 	 * @param string $content the abbreviation content
+	 * @param string $title the abbreviation title
 	 * @param boolean $initialism if set to true, will display a slightly smaller font-size.
 	 * @param array $options html options for the abbreviation
 	 *
 	 * Example(s): 
 	 * ```php
-	 * echo Html::abbr(
-	 *		'HyperText Markup Language'
-	 *		'HTML',
-	 *		true
-	 * );
+	 * echo Html::abbr('HTML', 'HyperText Markup Language')  . ' is the best thing since sliced bread';
+	 * echo Html::abbr('HTML', 'HyperText Markup Language', true);
 	 * ```
 	 *
 	 * @see http://getbootstrap.com/css/#type-abbreviations
 	 */
-	public static function abbr($title, $content, $initialism = false, $options = [])
+	public static function abbr($content, $title, $initialism = false, $options = [])
 	{
 		$options['title'] = $title;
 		if ($initialism) {
