@@ -53,8 +53,6 @@ use yii\base\InvalidConfigException;
  * ]
  * ~~~
  *
- * @property Connection $connection The redis connection object. This property is read-only.
- *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */

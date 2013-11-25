@@ -7,6 +7,7 @@
 
 namespace yii\build\controllers;
 
+use Yii;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
@@ -38,10 +39,30 @@ class PhpDocController extends Controller
 	 *
 	 * @param null $root the directory to parse files from. Defaults to YII_PATH.
 	 */
-	public function actionProperty($root=null)
+	public function actionProperty($root = null)
 	{
+		$except = [];
 		if ($root === null) {
-			$root = YII_PATH;
+			$root = dirname(dirname(YII_PATH));
+			Yii::setAlias('@yii/bootstrap', $root . '/extensions/bootstrap');
+			Yii::setAlias('@yii/debug', $root . '/extensions/debug');
+			Yii::setAlias('@yii/elasticsearch', $root . '/extensions/elasticsearch');
+			Yii::setAlias('@yii/gii', $root . '/extensions/gii');
+			Yii::setAlias('@yii/jui', $root . '/extensions/jui');
+			Yii::setAlias('@yii/redis', $root . '/extensions/redis');
+			Yii::setAlias('@yii/smarty', $root . '/extensions/smarty');
+			Yii::setAlias('@yii/sphinx', $root . '/extensions/sphinx');
+			Yii::setAlias('@yii/swiftmailer', $root . '/extensions/swiftmailer');
+			Yii::setAlias('@yii/twig', $root . '/extensions/twig');
+
+			$except = [
+				'/apps/',
+				'/build/',
+				'/docs/',
+				'/extensions/composer/',
+				'/tests/',
+				'/vendor/',
+			];
 		}
 		$root = FileHelper::normalizePath($root);
 		$options = [
@@ -55,14 +76,13 @@ class PhpDocController extends Controller
 				return null;
 			},
 			'only' => ['.php'],
-			'except' => [
+			'except' => array_merge($except, [
 				'BaseYii.php',
 				'Yii.php',
-				'/debug/views/',
+				'/views/',
 				'/requirements/',
-				'/gii/views/',
 				'/gii/generators/',
-			],
+			]),
 		];
 		$files = FileHelper::findFiles($root, $options);
 		$nFilesTotal = 0;
@@ -216,20 +236,27 @@ class PhpDocController extends Controller
 		$ns = $this->match('#\nnamespace (?<name>[\w\\\\]+);\n#', $file);
 		$namespace = reset($ns);
 		$namespace = $namespace['name'];
-		$classes = $this->match('#\n(?:abstract )?class (?<name>\w+)( |\n)(extends )?.+\{(?<content>.*)\n\}(\n|$)#', $file);
+		$classes = $this->match('#\n(?:abstract )?class (?<name>\w+)( extends .+)?( implements .+)?\n\{(?<content>.*)\n\}(\n|$)#', $file);
 
 		if (count($classes) > 1) {
 			$this->stderr("[ERR] There should be only one class in a file: $fileName\n", Console::FG_RED);
 			return false;
 		}
 		if (count($classes) < 1) {
-			$interfaces = $this->match('#\ninterface (?<name>\w+)\n\{(?<content>.+)\n\}(\n|$)#', $file);
+			$interfaces = $this->match('#\ninterface (?<name>\w+)( extends .+)?\n\{(?<content>.+)\n\}(\n|$)#', $file);
 			if (count($interfaces) == 1) {
 				return false;
 			} elseif (count($interfaces) > 1) {
 				$this->stderr("[ERR] There should be only one interface in a file: $fileName\n", Console::FG_RED);
 			} else {
-				$this->stderr("[ERR] No class in file: $fileName\n", Console::FG_RED);
+				$traits = $this->match('#\ntrait (?<name>\w+)\n\{(?<content>.+)\n\}(\n|$)#', $file);
+				if (count($traits) == 1) {
+					return false;
+				} elseif (count($traits) > 1) {
+					$this->stderr("[ERR] There should be only one class/trait/interface in a file: $fileName\n", Console::FG_RED);
+				} else {
+					$this->stderr("[ERR] No class in file: $fileName\n", Console::FG_RED);
+				}
 			}
 			return false;
 		}

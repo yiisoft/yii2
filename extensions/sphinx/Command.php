@@ -39,13 +39,16 @@ use yii\base\NotSupportedException;
  *
  * To build SELECT SQL statements, please use [[Query]] and [[QueryBuilder]] instead.
  *
- * @property \yii\sphinx\Connection $db the Sphinx connection that this command is associated with.
- *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
 class Command extends \yii\db\Command
 {
+	/**
+	 * @var \yii\sphinx\Connection the Sphinx connection that this command is associated with.
+	 */
+	public $db;
+
 	/**
 	 * Creates a batch INSERT command.
 	 * For example,
