@@ -27,13 +27,13 @@ use yii\helpers\Inflector;
  * @property boolean $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
  * @property array $oldAttributes The old attribute values (name-value pairs).
  * @property mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
- * returned if the primary key is composite or `$asArray` is true. A string is returned otherwise (null will be
- * returned if the key value is null). This property is read-only.
+ * returned if the primary key is composite. A string is returned otherwise (null will be returned if the key
+ * value is null). This property is read-only.
  * @property array $populatedRelations An array of relation data indexed by relation names. This property is
  * read-only.
  * @property mixed $primaryKey The primary key value. An array (column name => column value) is returned if
- * the primary key is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
- * the key value is null). This property is read-only.
+ * the primary key is composite. A string is returned otherwise (null will be returned if the key value is null).
+ * This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -1196,6 +1196,9 @@ class ActiveRecord extends Model
 	 * @param boolean $asArray whether to return the primary key value as an array. If true,
 	 * the return value will be an array with column names as keys and column values as values.
 	 * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
+	 * @property mixed The primary key value. An array (column name => column value) is returned if
+	 * the primary key is composite. A string is returned otherwise (null will be returned if
+	 * the key value is null).
 	 * @return mixed the primary key value. An array (column name => column value) is returned if the primary key
 	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
 	 * the key value is null).
@@ -1222,6 +1225,9 @@ class ActiveRecord extends Model
 	 * @param boolean $asArray whether to return the primary key value as an array. If true,
 	 * the return value will be an array with column name as key and column value as value.
 	 * If this is false (default), a scalar value will be returned for non-composite primary key.
+	 * @property mixed The old primary key value. An array (column name => column value) is
+	 * returned if the primary key is composite. A string is returned otherwise (null will be
+	 * returned if the key value is null).
 	 * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
 	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
 	 * the key value is null).

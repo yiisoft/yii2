@@ -15,12 +15,12 @@ use yii\caching\GroupDependency;
 /**
  * Schema represents the Sphinx schema information.
  *
- * @property QueryBuilder $queryBuilder The query builder for this connection. This property is read-only.
  * @property string[] $indexNames All index names in the Sphinx. This property is read-only.
- * @property string[] $indexTypes ALL index types in the Sphinx (index name => index type).
- * This property is read-only.
- * @property IndexSchema[] $tableSchemas The metadata for all indexes in the Sphinx. Each array element is an
+ * @property IndexSchema[] $indexSchemas The metadata for all indexes in the Sphinx. Each array element is an
  * instance of [[IndexSchema]] or its child class. This property is read-only.
+ * @property array $indexTypes All index types in the Sphinx in format: index name => index type. This
+ * property is read-only.
+ * @property QueryBuilder $queryBuilder The query builder for this connection. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

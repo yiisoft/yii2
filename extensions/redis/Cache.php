@@ -7,6 +7,9 @@
 
 namespace yii\redis;
 
+use Yii;
+use yii\base\InvalidConfigException;
+
 /**
  * Redis Cache implements a cache application component based on [redis](http://redis.io/) key-value store.
  *
@@ -27,18 +30,28 @@ namespace yii\redis;
  *     'components' => [
  *         'cache' => [
  *             'class' => 'yii\redis\Cache',
+ *             'redis' => [
+ *                 'hostname' => 'localhost',
+ *                 'port' => 6379,
+ *                 'database' => 0,
+ *             ]
  *         ],
- *         'redis' => [
- *             'class' => 'yii\redis\Connection',
- *             'hostname' => 'localhost',
- *             'port' => 6379,
- *             'database' => 0,
- *         ]
  *     ],
  * ]
  * ~~~
  *
- * @property Connection $connection The redis connection object. This property is read-only.
+ * Or if you have configured the redis [[Connection]] as an application component, the following is sufficient:
+ *
+ * ~~~
+ * [
+ *     'components' => [
+ *         'cache' => [
+ *             'class' => 'yii\redis\Cache',
+ *             // 'redis' => 'redis' // id of the connection application component
+ *         ],
+ *     ],
+ * ]
+ * ~~~
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -46,11 +59,35 @@ namespace yii\redis;
 class Cache extends \yii\caching\Cache
 {
 	/**
-	 * @var string the id of the application component to use as the redis connection.
-	 * It should be configured as a [[yii\redis\Connection]]. Defaults to `redis`.
+	 * @var Connection|string|array the Redis [[Connection]] object or the application component ID of the Redis [[Connection]].
+	 * This can also be an array that is used to create a redis [[Connection]] instance in case you do not want do configure
+	 * redis connection as an application component.
+	 * After the Cache object is created, if you want to change this property, you should only assign it
+	 * with a Redis [[Connection]] object.
 	 */
-	public $connectionId = 'redis';
+	public $redis = 'redis';
 
+
+	/**
+	 * Initializes the redis Cache component.
+	 * This method will initialize the [[redis]] property to make sure it refers to a valid redis connection.
+	 * @throws InvalidConfigException if [[redis]] is invalid.
+	 */
+	public function init()
+	{
+		parent::init();
+		if (is_string($this->redis)) {
+			$this->redis = Yii::$app->getComponent($this->redis);
+		} else if (is_array($this->redis)) {
+			if (!isset($this->redis['class'])) {
+				$this->redis['class'] = Connection::className();
+			}
+			$this->redis = Yii::createObject($this->redis);
+		}
+		if (!$this->redis instanceof Connection) {
+			throw new InvalidConfigException("Cache::redis must be either a Redis connection instance or the application component ID of a Redis connection.");
+		}
+	}
 
 	/**
 	 * Checks whether a specified key exists in the cache.
@@ -64,9 +101,7 @@ class Cache extends \yii\caching\Cache
 	 */
 	public function exists($key)
 	{
-		/** @var Connection $connection */
-		$connection = \Yii::$app->getComponent($this->connectionId);
-		return (bool) $connection->executeCommand('EXISTS', [$this->buildKey($key)]);
+		return (bool) $this->redis->executeCommand('EXISTS', [$this->buildKey($key)]);
 	}
 
 	/**
@@ -74,9 +109,7 @@ class Cache extends \yii\caching\Cache
 	 */
 	protected function getValue($key)
 	{
-		/** @var Connection $connection */
-		$connection = \Yii::$app->getComponent($this->connectionId);
-		return $connection->executeCommand('GET', [$key]);
+		return $this->redis->executeCommand('GET', [$key]);
 	}
 
 	/**
@@ -84,9 +117,7 @@ class Cache extends \yii\caching\Cache
 	 */
 	protected function getValues($keys)
 	{
-		/** @var Connection $connection */
-		$connection = \Yii::$app->getComponent($this->connectionId);
-		$response = $connection->executeCommand('MGET', $keys);
+		$response = $this->redis->executeCommand('MGET', $keys);
 		$result = [];
 		$i = 0;
 		foreach ($keys as $key) {
@@ -100,13 +131,11 @@ class Cache extends \yii\caching\Cache
 	 */
 	protected function setValue($key, $value, $expire)
 	{
-		/** @var Connection $connection */
-		$connection = \Yii::$app->getComponent($this->connectionId);
 		if ($expire == 0) {
-			return (bool) $connection->executeCommand('SET', [$key, $value]);
+			return (bool) $this->redis->executeCommand('SET', [$key, $value]);
 		} else {
 			$expire = (int) ($expire * 1000);
-			return (bool) $connection->executeCommand('SET', [$key, $value, 'PX', $expire]);
+			return (bool) $this->redis->executeCommand('SET', [$key, $value, 'PX', $expire]);
 		}
 	}
 
@@ -115,9 +144,6 @@ class Cache extends \yii\caching\Cache
 	 */
 	protected function setValues($data, $expire)
 	{
-		/** @var Connection $connection */
-		$connection = \Yii::$app->getComponent($this->connectionId);
-
 		$args = [];
 		foreach($data as $key => $value) {
 			$args[] = $key;
@@ -126,17 +152,17 @@ class Cache extends \yii\caching\Cache
 
 		$failedKeys = [];
 		if ($expire == 0) {
-			$connection->executeCommand('MSET', $args);
+			$this->redis->executeCommand('MSET', $args);
 		} else {
 			$expire = (int) ($expire * 1000);
-			$connection->executeCommand('MULTI');
-			$connection->executeCommand('MSET', $args);
+			$this->redis->executeCommand('MULTI');
+			$this->redis->executeCommand('MSET', $args);
 			$index = [];
 			foreach ($data as $key => $value) {
-				$connection->executeCommand('PEXPIRE', [$key, $expire]);
+				$this->redis->executeCommand('PEXPIRE', [$key, $expire]);
 				$index[] = $key;
 			}
-			$result = $connection->executeCommand('EXEC');
+			$result = $this->redis->executeCommand('EXEC');
 			array_shift($result);
 			foreach($result as $i => $r) {
 				if ($r != 1) {
@@ -152,13 +178,11 @@ class Cache extends \yii\caching\Cache
 	 */
 	protected function addValue($key, $value, $expire)
 	{
-		/** @var Connection $connection */
-		$connection = \Yii::$app->getComponent($this->connectionId);
 		if ($expire == 0) {
-			return (bool) $connection->executeCommand('SET', [$key, $value, 'NX']);
+			return (bool) $this->redis->executeCommand('SET', [$key, $value, 'NX']);
 		} else {
 			$expire = (int) ($expire * 1000);
-			return (bool) $connection->executeCommand('SET', [$key, $value, 'PX', $expire, 'NX']);
+			return (bool) $this->redis->executeCommand('SET', [$key, $value, 'PX', $expire, 'NX']);
 		}
 	}
 
@@ -167,9 +191,7 @@ class Cache extends \yii\caching\Cache
 	 */
 	protected function deleteValue($key)
 	{
-		/** @var Connection $connection */
-		$connection = \Yii::$app->getComponent($this->connectionId);
-		return (bool) $connection->executeCommand('DEL', [$key]);
+		return (bool) $this->redis->executeCommand('DEL', [$key]);
 	}
 
 	/**
@@ -177,8 +199,6 @@ class Cache extends \yii\caching\Cache
 	 */
 	protected function flushValues()
 	{
-		/** @var Connection $connection */
-		$connection = \Yii::$app->getComponent($this->connectionId);
-		return $connection->executeCommand('FLUSHDB');
+		return $this->redis->executeCommand('FLUSHDB');
 	}
 }

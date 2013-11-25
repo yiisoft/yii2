@@ -16,7 +16,8 @@ use yii\mail\BaseMessage;
  * @see Mailer
  *
  * @method Mailer getMailer() returns mailer instance.
- * @property \Swift_Message $swiftMessage vendor message instance.
+ *
+ * @property \Swift_Message $swiftMessage Swift message instance. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

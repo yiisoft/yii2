@@ -41,6 +41,8 @@ use yii\db\QueryTrait;
  *
  * Warning: even if you do not set any query limit, implicit LIMIT 0,20 is present by default!
  *
+ * @property Connection $connection Sphinx connection instance.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */

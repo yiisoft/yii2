@@ -1,9 +1,9 @@
-Redis Cache and ActiveRecord for Yii 2
-======================================
+Redis Cache, Session and ActiveRecord for Yii 2
+===============================================
 
 This extension provides the [redis](http://redis.io/) key-value store support for the Yii2 framework.
-It includes a `Cache` class and implements the `ActiveRecord` pattern that allows you to store active
-records in redis.
+It includes a `Cache` and `Session` storage handler and implents the `ActiveRecord` pattern that allows
+you to store active records in redis.
 
 To use this extension, you have to configure the Connection class in your application configuration:
 
@@ -20,21 +20,6 @@ return [
 	]
 ];
 ```
-
-To use the `Cache` component, you also have to configure the `cache` component to be `yii\redis\Cache`:
-
-```php
-return [
-	//....
-	'components' => [
-	    // ...
-        'cache' => [
-            'class' => 'yii\redis\Cache',
-        ],
-	]
-];
-```
-
 
 Installation
 ------------
@@ -56,6 +41,83 @@ or add
 to the require section of your composer.json.
 
 
+Using the Cache component
+-------------------------
+
+To use the `Cache` component, in addtition to configuring the connection as described above,
+you also have to configure the `cache` component to be `yii\redis\Cache`:
+
+```php
+return [
+	//....
+	'components' => [
+	    // ...
+        'cache' => [
+            'class' => 'yii\redis\Cache',
+        ],
+	]
+];
+```
+
+If you only use the redis cache, you can also configure the parameters of the connection within the
+cache component (no connection application component needs to be configured in this case):
+
+```php
+return [
+	//....
+	'components' => [
+	    // ...
+        'cache' => [
+            'class' => 'yii\redis\Cache',
+            'redis' => [
+                'hostname' => 'localhost',
+                'port' => 6379,
+                'database' => 0,
+            ],
+        ],
+	]
+];
+```
+
+Using the Session component
+---------------------------
+
+To use the `Session` component, in addtition to configuring the connection as described above,
+you also have to configure the `session` component to be `yii\redis\Session`:
+
+```php
+return [
+	//....
+	'components' => [
+	    // ...
+        'session' => [
+            'class' => 'yii\redis\Session',
+        ],
+	]
+];
+```
+
+If you only use the redis session, you can also configure the parameters of the connection within the
+cache component (no connection application component needs to be configured in this case):
+
+```php
+return [
+	//....
+	'components' => [
+	    // ...
+        'session' => [
+            'class' => 'yii\redis\Session',
+            'redis' => [
+                'hostname' => 'localhost',
+                'port' => 6379,
+                'database' => 0,
+            ],
+        ],
+	]
+];
+```
+
+
 Using the redis ActiveRecord
 ----------------------------
 
@@ -72,10 +134,29 @@ The following is an example model called `Customer`:
 ```php
 class Customer extends \yii\redis\ActiveRecord
 {
-    public function attributes()
-    {
-        return ['id', 'name', 'address', 'registration_date'];
-    }
+     /**
+      * @return array the list of attributes for this record
+      */
+     public function attributes()
+     {
+         return ['id', 'name', 'address', 'registration_date'];
+     }
+
+     /**
+      * @return ActiveRelation defines a relation to the Order record (can be in other database, e.g. elasticsearch or sql)
+      */
+     public function getOrders()
+     {
+         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+     }
+
+     /**
+      * Defines a scope that modifies the `$query` to return only active(status = 1) customers
+      */
+     public static function active($query)
+     {
+         $query->andWhere(array('status' => 1));
+     }
 }
 ```
 
@@ -89,3 +170,15 @@ It supports the same interface and features except the following limitations:
 - `via`-relations can not be defined via a table as there are not tables in redis. You can only define relations via other records.
 
 It is also possible to define relations from redis ActiveRecords to normal ActiveRecord classes and vice versa.
+
+Usage example:
+
+```php
+$customer = new Customer();
+$customer->attributes = ['name' => 'test'];
+$customer->save();
+echo $customer->id; // id will automatically be incremented if not set explicitly
+
+$customer = Customer::find()->where(['name' => 'test'])->one(); // find by query
+$customer = Customer::find()->active()->all(); // find all by query (using the `active` scope)
+```
