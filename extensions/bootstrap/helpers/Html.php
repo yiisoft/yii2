@@ -250,6 +250,7 @@ class Html extends \yii\helpers\Html {
      *              - @param string $icon the icon to place before the label
      *              - @param string $url the button url
      *              - @param string $type the button type - one of the color modifier constants - defaults to static::TYPE_DEFAULT
+     *              - @param string $size the button type - one of the size modifier constants
      *              - @param array $options the button html options
      * @param boolean $fullWidth whether this is a full width jumbotron without any corners - defaults to false
      * @param array $options html options for the jumbotron
@@ -273,13 +274,15 @@ class Html extends \yii\helpers\Html {
      *              'label' => 'Learn More',
      *              'icon' => 'book',
      *              'url' => '#',
-     *              'type' => Html::TYPE_PRIMARY
+     *              'type' => Html::TYPE_PRIMARY,
+     *              'size' => Html::LARGE
      *          ],
      *          [
      *              'label' => 'Contact Us',
      *              'icon' => 'phone',
      *              'url' => '#',
-     *              'type' => Html::TYPE_DANGER
+     *              'type' => Html::TYPE_DANGER,
+     *              'size' => Html::LARGE
      *          ]
      *      ]
      * ]);
@@ -306,6 +309,7 @@ class Html extends \yii\helpers\Html {
                     $url = isset($btn['url']) ? $btn['url'] : '#';
                     $btnOptions = isset($btn['options']) ? $btn['options'] : [];
                     $class = 'btn' . (isset($btn['type']) ? ' btn-' . $btn['type'] : ' btn-' . static::TYPE_DEFAULT);
+                    $class .= isset($btn['size']) ? ' btn-' . $btn['size'] : '';
                     static::addCssClass($btnOptions, $class);
                     $buttons .= Html::a($label, $url, $btnOptions) . " ";
                 }
