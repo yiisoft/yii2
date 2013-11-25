@@ -638,9 +638,9 @@ abstract class ActiveRecord extends Model
 	 * The default implementation will return all column names of the table associated with this AR class.
 	 * @return array list of attribute names.
 	 */
-	public function attributes()
+	public static function attributes()
 	{
-		return array_keys($this->getIndexSchema()->columns);
+		return array_keys(static::getIndexSchema()->columns);
 	}
 
 	/**
