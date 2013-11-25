@@ -17,9 +17,6 @@ return [
 	'modules' => [],
 	'extensions' => require($rootDir . '/vendor/yiisoft/extensions.php'),
 	'components' => [
-		'request' => [
-			'enableCsrfValidation' => true,
-		],
 		'db' => $params['components.db'],
 		'cache' => $params['components.cache'],
 		'mail' => $params['components.mail'],
