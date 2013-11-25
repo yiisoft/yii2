@@ -107,7 +107,7 @@ abstract class Connection extends Component
 	/**
 	 * select active node randomly
 	 */
-	public function selectActiveNode()
+	protected function selectActiveNode()
 	{
 		$keys = array_keys($this->nodes);
 		$this->activeNode = $keys[rand(0, count($keys) - 1)];
