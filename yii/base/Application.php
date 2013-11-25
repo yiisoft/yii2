@@ -127,6 +127,11 @@ abstract class Application extends Module
 	 * ~~~
 	 */
 	public $extensions = [];
+	/**
+	 * @var \Exception the exception that is being handled currently. When this is not null,
+	 * it means the application is handling some exception and extra care should be taken.
+	 */
+	public $exception;
 
 	/**
 	 * @var string Used to reserve memory for fatal error handler.
@@ -487,6 +492,8 @@ abstract class Application extends Module
 	 */
 	public function handleException($exception)
 	{
+		$this->exception = $exception;
+
 		// disable error capturing to avoid recursive errors while handling exceptions
 		restore_error_handler();
 		restore_exception_handler();
@@ -574,6 +581,7 @@ abstract class Application extends Module
 
 		if (ErrorException::isFatalError($error)) {
 			$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
+			$this->exception = $exception;
 			// use error_log because it's too late to use Yii log
 			error_log($exception);
 
