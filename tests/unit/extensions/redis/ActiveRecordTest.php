@@ -148,6 +148,51 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertTrue($customers['3-user3'] instanceof $customerClass);
 	}
 
+	public function testFindLimit()
+	{
+		// TODO this test is duplicated because of missing orderBy support in redis
+		/** @var TestCase|ActiveRecordTestTrait $this */
+		// all()
+		$customers = $this->callCustomerFind()->all();
+		$this->assertEquals(3, count($customers));
+
+		$customers = $this->callCustomerFind()/*->orderBy('id')*/->limit(1)->all();
+		$this->assertEquals(1, count($customers));
+		$this->assertEquals('user1', $customers[0]->name);
+
+		$customers = $this->callCustomerFind()/*->orderBy('id')*/->limit(1)->offset(1)->all();
+		$this->assertEquals(1, count($customers));
+		$this->assertEquals('user2', $customers[0]->name);
+
+		$customers = $this->callCustomerFind()/*->orderBy('id')*/->limit(1)->offset(2)->all();
+		$this->assertEquals(1, count($customers));
+		$this->assertEquals('user3', $customers[0]->name);
+
+		$customers = $this->callCustomerFind()/*->orderBy('id')*/->limit(2)->offset(1)->all();
+		$this->assertEquals(2, count($customers));
+		$this->assertEquals('user2', $customers[0]->name);
+		$this->assertEquals('user3', $customers[1]->name);
+
+		$customers = $this->callCustomerFind()->limit(2)->offset(3)->all();
+		$this->assertEquals(0, count($customers));
+
+		// one()
+		$customer = $this->callCustomerFind()/*->orderBy('id')*/->one();
+		$this->assertEquals('user1', $customer->name);
+
+		$customer = $this->callCustomerFind()/*->orderBy('id')*/->offset(0)->one();
+		$this->assertEquals('user1', $customer->name);
+
+		$customer = $this->callCustomerFind()/*->orderBy('id')*/->offset(1)->one();
+		$this->assertEquals('user2', $customer->name);
+
+		$customer = $this->callCustomerFind()/*->orderBy('id')*/->offset(2)->one();
+		$this->assertEquals('user3', $customer->name);
+
+		$customer = $this->callCustomerFind()->offset(3)->one();
+		$this->assertNull($customer);
+	}
+
 	public function testFindEagerViaRelation()
 	{
 		/** @var TestCase|ActiveRecordTestTrait $this */

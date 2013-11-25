@@ -174,7 +174,7 @@ trait ActiveRecordTestTrait
 	public function testFindColumn()
 	{
 		/** @var TestCase|ActiveRecordTestTrait $this */
-		$this->assertEquals(['user1', 'user2', 'user3'], $this->callCustomerFind()->column('name'));
+		$this->assertEquals(['user1', 'user2', 'user3'], $this->callCustomerFind()->orderBy(['name' => SORT_ASC])->column('name'));
 		$this->assertEquals(['user3', 'user2', 'user1'], $this->callCustomerFind()->orderBy(['name' => SORT_DESC])->column('name'));
 	}
 
@@ -255,19 +255,19 @@ trait ActiveRecordTestTrait
 		$customers = $this->callCustomerFind()->all();
 		$this->assertEquals(3, count($customers));
 
-		$customers = $this->callCustomerFind()->limit(1)->all();
+		$customers = $this->callCustomerFind()->orderBy('id')->limit(1)->all();
 		$this->assertEquals(1, count($customers));
 		$this->assertEquals('user1', $customers[0]->name);
 
-		$customers = $this->callCustomerFind()->limit(1)->offset(1)->all();
+		$customers = $this->callCustomerFind()->orderBy('id')->limit(1)->offset(1)->all();
 		$this->assertEquals(1, count($customers));
 		$this->assertEquals('user2', $customers[0]->name);
 
-		$customers = $this->callCustomerFind()->limit(1)->offset(2)->all();
+		$customers = $this->callCustomerFind()->orderBy('id')->limit(1)->offset(2)->all();
 		$this->assertEquals(1, count($customers));
 		$this->assertEquals('user3', $customers[0]->name);
 
-		$customers = $this->callCustomerFind()->limit(2)->offset(1)->all();
+		$customers = $this->callCustomerFind()->orderBy('id')->limit(2)->offset(1)->all();
 		$this->assertEquals(2, count($customers));
 		$this->assertEquals('user2', $customers[0]->name);
 		$this->assertEquals('user3', $customers[1]->name);
@@ -276,16 +276,16 @@ trait ActiveRecordTestTrait
 		$this->assertEquals(0, count($customers));
 
 		// one()
-		$customer = $this->callCustomerFind()->one();
+		$customer = $this->callCustomerFind()->orderBy('id')->one();
 		$this->assertEquals('user1', $customer->name);
 
-		$customer = $this->callCustomerFind()->offset(0)->one();
+		$customer = $this->callCustomerFind()->orderBy('id')->offset(0)->one();
 		$this->assertEquals('user1', $customer->name);
 
-		$customer = $this->callCustomerFind()->offset(1)->one();
+		$customer = $this->callCustomerFind()->orderBy('id')->offset(1)->one();
 		$this->assertEquals('user2', $customer->name);
 
-		$customer = $this->callCustomerFind()->offset(2)->one();
+		$customer = $this->callCustomerFind()->orderBy('id')->offset(2)->one();
 		$this->assertEquals('user3', $customer->name);
 
 		$customer = $this->callCustomerFind()->offset(3)->one();
