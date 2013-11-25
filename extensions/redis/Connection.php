@@ -13,6 +13,15 @@ use yii\db\Exception;
 use yii\helpers\Inflector;
 
 /**
+ * The redis connection class is used to establish a connection to a [redis](http://redis.io/) server.
+ *
+ * By default it assumes there is a redis server running on localhost at port 6379 and uses the database number 0.
+ *
+ * It also supports [the AUTH command](http://redis.io/commands/auth) of redis.
+ * When the server needs authentication, you can set the [[password]] property to
+ * authenticate with the server after connect.
+ *
+ * The ecexution of [redis commands](http://redis.io/commands) is possible with via [[executeCommand()]].
  *
  * @method mixed set($key, $value) Set the string value of a key
  * @method mixed get($key) Set the string value of a key
@@ -33,19 +42,22 @@ class Connection extends Component
 	const EVENT_AFTER_OPEN = 'afterOpen';
 
 	/**
-	 * @var string the Data Source Name, or DSN, contains the information required to connect to the database.
-	 * DSN format: redis://server:port[/db]
-	 * Where db is a zero based integer which refers to the DB to use.
-	 * If no DB is given, ID 0 is used.
-	 *
-	 * Example: redis://localhost:6379/2
+	 * @var string the hostname or ip address to use for connecting to the redis server. Defaults to 'localhost'.
 	 */
-	public $dsn;
+	public $hostname = 'localhost';
+	/**
+	 * @var int the port to use for connecting to the redis server. Default port is 6379.
+	 */
+	public $port = 6379;
 	/**
 	 * @var string the password for establishing DB connection. Defaults to null meaning no AUTH command is send.
 	 * See http://redis.io/commands/auth
 	 */
 	public $password;
+	/**
+	 * @var int the redis database to use. This is an integer value starting from 0. Defaults to 0.
+	 */
+	public $database = 0;
 	/**
 	 * @var float timeout to use for connection to redis. If not set the timeout set in php.ini will be used: ini_get("default_socket_timeout")
 	 */
@@ -230,38 +242,30 @@ class Connection extends Component
 	 */
 	public function open()
 	{
-		if ($this->_socket === null) {
-			if (empty($this->dsn)) {
-				throw new InvalidConfigException('Connection.dsn cannot be empty.');
+		if ($this->_socket !== null) {
+			return;
+		}
+		$connection = $this->hostname . ':' . $this->port . ', database=' . $this->database;
+		\Yii::trace('Opening redis DB connection: ' . $connection, __CLASS__);
+		$this->_socket = @stream_socket_client(
+			'tcp://' . $this->hostname . ':' . $this->port,
+			$errorNumber,
+			$errorDescription,
+			$this->connectionTimeout ? $this->connectionTimeout : ini_get("default_socket_timeout")
+		);
+		if ($this->_socket) {
+			if ($this->dataTimeout !== null) {
+				stream_set_timeout($this->_socket, $timeout=(int)$this->dataTimeout, (int) (($this->dataTimeout - $timeout) * 1000000));
 			}
-			$dsn = explode('/', $this->dsn);
-			$host = $dsn[2];
-			if (strpos($host, ':')===false) {
-				$host .= ':6379';
+			if ($this->password !== null) {
+				$this->executeCommand('AUTH', [$this->password]);
 			}
-			$db = isset($dsn[3]) ? $dsn[3] : 0;
-
-			\Yii::trace('Opening DB connection: ' . $this->dsn, __CLASS__);
-			$this->_socket = @stream_socket_client(
-				$host,
-				$errorNumber,
-				$errorDescription,
-				$this->connectionTimeout ? $this->connectionTimeout : ini_get("default_socket_timeout")
-			);
-			if ($this->_socket) {
-				if ($this->dataTimeout !== null) {
-					stream_set_timeout($this->_socket, $timeout=(int)$this->dataTimeout, (int) (($this->dataTimeout - $timeout) * 1000000));
-				}
-				if ($this->password !== null) {
-					$this->executeCommand('AUTH', [$this->password]);
-				}
-				$this->executeCommand('SELECT', [$db]);
-				$this->initConnection();
-			} else {
-				\Yii::error("Failed to open DB connection ({$this->dsn}): " . $errorNumber . ' - ' . $errorDescription, __CLASS__);
-				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $errorNumber . ' - ' . $errorDescription : 'Failed to open DB connection.';
-				throw new Exception($message, $errorDescription, (int)$errorNumber);
-			}
+			$this->executeCommand('SELECT', [$this->database]);
+			$this->initConnection();
+		} else {
+			\Yii::error("Failed to open DB connection ($connection): " . $errorNumber . ' - ' . $errorDescription, __CLASS__);
+			$message = YII_DEBUG ? 'Failed to open DB connection: ' . $errorNumber . ' - ' . $errorDescription : 'Failed to open DB connection.';
+			throw new Exception($message, $errorDescription, (int)$errorNumber);
 		}
 	}
 
@@ -272,7 +276,8 @@ class Connection extends Component
 	public function close()
 	{
 		if ($this->_socket !== null) {
-			\Yii::trace('Closing DB connection: ' . $this->dsn, __CLASS__);
+			$connection = $this->hostname . ':' . $this->port . ', database=' . $this->database;
+			\Yii::trace('Closing DB connection: ' . $connection, __CLASS__);
 			$this->executeCommand('QUIT');
 			stream_socket_shutdown($this->_socket, STREAM_SHUT_RDWR);
 			$this->_socket = null;
@@ -295,11 +300,7 @@ class Connection extends Component
 	 */
 	public function getDriverName()
 	{
-		if (($pos = strpos($this->dsn, ':')) !== false) {
-			return strtolower(substr($this->dsn, 0, $pos));
-		} else {
-			return 'redis';
-		}
+		return 'redis';
 	}
 
 	/**

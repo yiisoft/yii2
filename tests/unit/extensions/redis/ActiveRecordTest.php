@@ -1,8 +1,7 @@
 <?php
 
-namespace yiiunit\framework\redis;
+namespace yiiunit\extensions\redis;
 
-use yii\db\Query;
 use yii\redis\ActiveQuery;
 use yiiunit\data\ar\redis\ActiveRecord;
 use yiiunit\data\ar\redis\Customer;

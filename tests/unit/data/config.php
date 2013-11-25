@@ -30,7 +30,9 @@ return [
 			'fixture' => __DIR__ . '/postgres.sql',
 		],
 		'redis' => [
-			'dsn' => 'redis://localhost:6379/0',
+			'hostname' => 'localhost',
+			'port' => 6379,
+			'database' => 0,
 			'password' => null,
 		],
 	],

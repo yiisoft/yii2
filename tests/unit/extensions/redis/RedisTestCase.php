@@ -1,9 +1,12 @@
 <?php
 
-namespace yiiunit\framework\redis;
+namespace yiiunit\extensions\redis;
 
+use Yii;
 use yii\redis\Connection;
 use yiiunit\TestCase;
+
+Yii::setAlias('@yii/redis', __DIR__ . '/../../../../extensions/redis');
 
 /**
  * RedisTestCase is the base class for all redis related test cases
@@ -12,21 +15,17 @@ abstract class RedisTestCase extends TestCase
 {
 	protected function setUp()
 	{
-		$this->mockApplication();
-
 		$databases = $this->getParam('databases');
 		$params = isset($databases['redis']) ? $databases['redis'] : null;
-		if ($params === null || !isset($params['dsn'])) {
+		if ($params === null) {
 			$this->markTestSkipped('No redis server connection configured.');
 		}
-		$dsn = explode('/', $params['dsn']);
-		$host = $dsn[2];
-		if (strpos($host, ':')===false) {
-			$host .= ':6379';
+		$connection = new Connection($params);
+		if(!@stream_socket_client($connection->hostname . ':' . $connection->port, $errorNumber, $errorDescription, 0.5)) {
+			$this->markTestSkipped('No redis server running at ' . $connection->hostname . ':' . $connection->port . ' : ' . $errorNumber . ' - ' . $errorDescription);
 		}
-		if(!@stream_socket_client($host, $errorNumber, $errorDescription, 0.5)) {
-			$this->markTestSkipped('No redis server running at ' . $params['dsn'] . ' : ' . $errorNumber . ' - ' . $errorDescription);
-		}
+
+		$this->mockApplication(['components' => ['redis' => $connection]]);
 
 		parent::setUp();
 	}
@@ -38,13 +37,11 @@ abstract class RedisTestCase extends TestCase
 	public function getConnection($reset = true)
 	{
 		$databases = $this->getParam('databases');
-		$params = isset($databases['redis']) ? $databases['redis'] : array();
-		$db = new Connection;
-		$db->dsn = $params['dsn'];
-		$db->password = $params['password'];
+		$params = isset($databases['redis']) ? $databases['redis'] : [];
+		$db = new Connection($params);
 		if ($reset) {
 			$db->open();
-			$db->flushall();
+			$db->flushdb();
 		}
 		return $db;
 	}

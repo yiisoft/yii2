@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-sphinx",
 	"description": "Sphinx full text search engine extension for the Yii framework",
-	"keywords": ["yii", "sphinx", "search", "fulltext"],
+	"keywords": ["yii", "sphinx", "active-record", "search", "fulltext"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {
