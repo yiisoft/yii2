@@ -213,7 +213,7 @@ class Connection extends Component
 		if (!empty($options)) {
 			$url .= '?' . http_build_query($options);
 		}
-		return $url;
+		return [$this->nodes[$this->activeNode]['http_address'], $url];
 	}
 
 	protected function httpRequest($method, $url, $requestBody = null)
@@ -259,22 +259,40 @@ class Connection extends Component
 			unset($options[CURLOPT_WRITEFUNCTION]);
 		}
 
-		$host = $this->nodes[$this->activeNode]['http_address'];
-		if (strncmp($host, 'inet[/', 6) == 0) {
-			$host = substr($host, 6, -1);
+		if (is_array($url)) {
+			list($host, $q) = $url;
+			if (strncmp($host, 'inet[/', 6) == 0) {
+				$host = substr($host, 6, -1);
+			}
+			$profile = $q . $requestBody;
+			$url = 'http://' . $host . '/' . $q;
+		} else {
+			$profile = false;
 		}
 
-		Yii::trace("Sending request to elasticsearch node '$host' $url\n$requestBody", __METHOD__);
-		Yii::beginProfile($url . $requestBody, __METHOD__);
+		Yii::trace("Sending request to elasticsearch node: $url\n$requestBody", __METHOD__);
+		if ($profile !== false) {
+			Yii::beginProfile($profile, __METHOD__);
+		}
 
-		$curl = curl_init('http://' . $host . '/' . $url);
+		$curl = curl_init($url);
 		curl_setopt_array($curl, $options);
-		curl_exec($curl);
+		if (curl_exec($curl) === false) {
+			throw new Exception('Elasticsearch request failed: ' . curl_errno($curl) . ' - ' . curl_error($curl), [
+				'requestMethod' => $method,
+				'requestUrl' => $url,
+				'requestBody' => $requestBody,
+				'responseHeaders' => $headers,
+				'responseBody' => $body,
+			]);
+		}
 
 		$responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 		curl_close($curl);
 
-		Yii::endProfile($url . $requestBody, __METHOD__);
+		if ($profile !== false) {
+			Yii::endProfile($profile, __METHOD__);
+		}
 
 		if ($responseCode >= 200 && $responseCode < 300) {
 			if ($method == 'HEAD') {
@@ -283,7 +301,7 @@ class Connection extends Component
 				if (isset($headers['content-length']) && ($len = mb_strlen($body, '8bit')) < $headers['content-length']) {
 					throw new Exception("Incomplete data received from elasticsearch: $len < {$headers['content-length']}", [
 						'requestMethod' => $method,
-						'requestUrl' => 'http://' . $host . '/' . $url,
+						'requestUrl' => $url,
 						'requestBody' => $requestBody,
 						'responseCode' => $responseCode,
 						'responseHeaders' => $headers,
@@ -295,7 +313,7 @@ class Connection extends Component
 				}
 				throw new Exception('Unsupported data received from elasticsearch: ' . $headers['content-type'], [
 					'requestMethod' => $method,
-					'requestUrl' => 'http://' . $host . '/' . $url,
+					'requestUrl' => $url,
 					'requestBody' => $requestBody,
 					'responseCode' => $responseCode,
 					'responseHeaders' => $headers,
@@ -307,7 +325,7 @@ class Connection extends Component
 		} else {
 			throw new Exception("Elasticsearch request failed with code $responseCode.", [
 				'requestMethod' => $method,
-				'requestUrl' => 'http://' . $host . '/' . $url,
+				'requestUrl' => $url,
 				'requestBody' => $requestBody,
 				'responseCode' => $responseCode,
 				'responseHeaders' => $headers,
