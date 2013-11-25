@@ -15,6 +15,8 @@ use Yii;
 /**
  * Class Connection
  *
+ * @property boolean $isActive Whether the Mongo connection is established. This property is read-only.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
@@ -48,6 +50,15 @@ class Connection extends Component
 	 * @var string name of the Mongo database to use
 	 */
 	public $dbName;
+
+	/**
+	 * Returns a value indicating whether the Mongo connection is established.
+	 * @return boolean whether the Mongo connection is established
+	 */
+	public function getIsActive()
+	{
+		return is_object($this->client) && $this->client->connected;
+	}
 
 	/**
 	 * Establishes a Mongo connection.
