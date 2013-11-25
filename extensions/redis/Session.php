@@ -81,7 +81,6 @@ class Session extends \yii\web\Session
 	 */
 	public function init()
 	{
-		parent::init();
 		if (is_string($this->redis)) {
 			$this->redis = Yii::$app->getComponent($this->redis);
 		} else if (is_array($this->redis)) {
@@ -98,6 +97,7 @@ class Session extends \yii\web\Session
 		} elseif (!ctype_alnum($this->keyPrefix)) {
 			throw new InvalidConfigException(get_class($this) . '::keyPrefix should only contain alphanumeric characters.');
 		}
+		parent::init();
 	}
 
 	/**
