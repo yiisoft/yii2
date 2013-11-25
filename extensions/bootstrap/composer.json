@@ -5,7 +5,7 @@
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {
-		"issues": "https://github.com/yiisoft/yii2/issues?state=open",
+		"issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Abootstrap",
 		"forum": "http://www.yiiframework.com/forum/",
 		"wiki": "http://www.yiiframework.com/wiki/",
 		"irc": "irc://irc.freenode.net/yii",
