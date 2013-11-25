@@ -40,7 +40,7 @@ use yii\base\InvalidConfigException;
  * ]
  * ~~~
  *
- * Or if you have configured the redis connection as an application component, the following is sufficient:
+ * Or if you have configured the redis [[Connection]] as an application component, the following is sufficient:
  *
  * ~~~
  * [
