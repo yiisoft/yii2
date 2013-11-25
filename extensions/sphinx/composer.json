@@ -1,11 +1,11 @@
 {
-	"name": "yiisoft/yii2-swiftmailer",
-	"description": "The SwiftMailer integration for the Yii framework",
-	"keywords": ["yii", "swift", "swiftmailer", "mail", "email", "mailer"],
+	"name": "yiisoft/yii2-sphinx",
+	"description": "Sphinx full text search engine extension for the Yii framework",
+	"keywords": ["yii", "sphinx", "active-record", "search", "fulltext"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {
-		"issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aswiftmailer",
+		"issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Asphinx",
 		"forum": "http://www.yiiframework.com/forum/",
 		"wiki": "http://www.yiiframework.com/wiki/",
 		"irc": "irc://irc.freenode.net/yii",
@@ -17,12 +17,13 @@
 			"email": "klimov.paul@gmail.com"
 		}
 	],
+	"minimum-stability": "dev",
 	"require": {
 		"yiisoft/yii2": "*",
-		"swiftmailer/swiftmailer": "*"
+		"ext-pdo": "*",
+		"ext-pdo_mysql": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\swiftmailer\\": "" }
-	},
-	"target-dir": "yii/swiftmailer"
+		"psr-0": { "yii\\sphinx\\": "" }
+	}
 }

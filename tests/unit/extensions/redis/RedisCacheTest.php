@@ -1,7 +1,12 @@
 <?php
-namespace yiiunit\framework\caching;
-use yii\caching\MemCache;
-use yii\caching\RedisCache;
+namespace yiiunit\extensions\redis;
+
+use Yii;
+use yii\redis\Cache;
+use yii\redis\Connection;
+use yiiunit\framework\caching\CacheTestCase;
+
+Yii::setAlias('@yii/redis', __DIR__ . '/../../../../extensions/redis');
 
 /**
  * Class for testing redis cache backend
@@ -13,23 +18,24 @@ class RedisCacheTest extends CacheTestCase
 	private $_cacheInstance = null;
 
 	/**
-	 * @return MemCache
+	 * @return Cache
 	 */
 	protected function getCacheInstance()
 	{
-		$config = [
-			'hostname' => 'localhost',
-			'port' => 6379,
-			'database' => 0,
-			'dataTimeout' => 0.1,
-		];
-		$dsn = $config['hostname'] . ':' .$config['port'];
-		if (!@stream_socket_client($dsn, $errorNumber, $errorDescription, 0.5)) {
-			$this->markTestSkipped('No redis server running at ' . $dsn .' : ' . $errorNumber . ' - ' . $errorDescription);
+		$databases = $this->getParam('databases');
+		$params = isset($databases['redis']) ? $databases['redis'] : null;
+		if ($params === null) {
+			$this->markTestSkipped('No redis server connection configured.');
+		}
+		$connection = new Connection($params);
+		if(!@stream_socket_client($connection->hostname . ':' . $connection->port, $errorNumber, $errorDescription, 0.5)) {
+			$this->markTestSkipped('No redis server running at ' . $connection->hostname . ':' . $connection->port . ' : ' . $errorNumber . ' - ' . $errorDescription);
 		}
 
+		$this->mockApplication(['components' => ['redis' => $connection]]);
+
 		if ($this->_cacheInstance === null) {
-			$this->_cacheInstance = new RedisCache($config);
+			$this->_cacheInstance = new Cache();
 		}
 		return $this->_cacheInstance;
 	}

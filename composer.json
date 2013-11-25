@@ -63,17 +63,19 @@
 		"irc": "irc://irc.freenode.net/yii",
 		"source": "https://github.com/yiisoft/yii2"
 	},
-    "minimum-stability": "dev",
-    "replace": {
-        "yiisoft/yii2-bootstrap": "self.version",
-        "yiisoft/yii2-debug": "self.version",
-        "yiisoft/yii2-gii": "self.version",
-        "yiisoft/yii2-jui": "self.version",
-        "yiisoft/yii2-smarty": "self.version",
-        "yiisoft/yii2-swiftmailer": "self.version",
-        "yiisoft/yii2-twig": "self.version",
-	    "yiisoft/yii2": "self.version"
-    },
+	"minimum-stability": "dev",
+	"replace": {
+		"yiisoft/yii2-bootstrap": "self.version",
+		"yiisoft/yii2-debug": "self.version",
+		"yiisoft/yii2-gii": "self.version",
+		"yiisoft/yii2-jui": "self.version",
+		"yiisoft/yii2-redis": "self.version",
+		"yiisoft/yii2-smarty": "self.version",
+		"yiisoft/yii2-swiftmailer": "self.version",
+		"yiisoft/yii2-sphinx": "self.version",
+		"yiisoft/yii2-twig": "self.version",
+		"yiisoft/yii2": "self.version"
+	},
 	"require": {
 		"php": ">=5.4.0",
 		"ext-mbstring": "*",
@@ -90,14 +92,16 @@
 	},
 	"autoload": {
 		"psr-0": {
-            "yii\\bootstrap\\": "extensions/bootstrap/",
+			"yii\\bootstrap\\": "extensions/bootstrap/",
 			"yii\\debug\\": "extensions/debug/",
 			"yii\\gii\\": "extensions/gii/",
 			"yii\\jui\\": "extensions/jui/",
+			"yii\\redis\\": "extensions/redis/",
 			"yii\\smarty\\": "extensions/smarty/",
 			"yii\\swiftmailer\\": "extensions/swiftmailer/",
+			"yii\\sphinx\\": "extensions/sphinx/",
 			"yii\\twig\\": "extensions/twig/",
 			"yii\\": "framework/yii/"
-        }
-    }
+		}
+	}
 }

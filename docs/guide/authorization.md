@@ -76,16 +76,149 @@ Role based access control (RBAC)
 Role based access control is very flexible approach to controlling access that is a perfect match for complex systems
 where permissions are customizable.
 
+### Using file-based config for RBAC
+
 In order to start using it some extra steps are required. First of all we need to configure `authManager` application
-component:
+component in application config file (`web.php` or `main.php` depending on template you've used):
 
 ```php
-
+'authManager' => [
+    'class' => 'app\components\PhpManager',
+    'defaultRoles' => ['guest'],
+],
 ```
 
-Then create permissions hierarchy.
+Often use role is stored in the same database table as other user data. In this case we may defined it by creating our
+own component (`app/components/PhpManager.php`):
 
-Specify roles from RBAC in controller's access control configuration or call [[User::checkAccess()]] where appropriate.
+```php
+<?php
+namespace app\components;
+
+use Yii;
+
+class PhpManager extends \yii\rbac\PhpManager
+{
+    public function init()
+    {
+        parent::init();
+        if (!Yii::$app->user->isGuest) {
+            // we suppose that user's role is stored in identity
+            $this->assign(Yii::$app->user->identity->id, Yii::$app->user->identity->role);
+        }
+    }
+}
+```
+
+Then create permissions hierarchy in `@app/data/rbac.php`:
+
+```php
+<?php
+use yii\rbac\Item;
+
+return [
+    // HERE ARE YOUR MANAGEMENT TASKS
+    'manageThing0' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'bizRule' => NULL, 'data' => NULL],
+    'manageThing1' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'bizRule' => NULL, 'data' => NULL],
+    'manageThing2' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'bizRule' => NULL, 'data' => NULL],
+    'manageThing2' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'bizRule' => NULL, 'data' => NULL],
+
+    // AND THE ROLES
+    'guest' => [
+        'type' => Item::TYPE_ROLE,
+        'description' => 'Guest',
+        'bizRule' => NULL,
+        'data' => NULL
+    ],
+
+    'user' => [
+        'type' => Item::TYPE_ROLE,
+        'description' => 'User',
+        'children' => [
+            'guest',
+            'manageThing0', // User can edit thing0
+        ],
+        'bizRule' => 'return !Yii::$app->user->isGuest;',
+        'data' => NULL
+    ],
+
+    'moderator' => [
+        'type' => Item::TYPE_ROLE,
+        'description' => 'Moderator',
+        'children' => [
+            'user',         // Can manage all that user can
+            'manageThing1', // and also thing1
+        ],
+        'bizRule' => NULL,
+        'data' => NULL
+    ],
+
+    'admin' => [
+        'type' => Item::TYPE_ROLE,
+        'description' => 'Admin',
+        'children' => [
+            'moderator',    // can do all the stuff that moderator can
+            'manageThing2', // and also manage thing2
+        ],
+        'bizRule' => NULL,
+        'data' => NULL
+    ],
+
+    'godmode' => [
+        'type' => Item::TYPE_ROLE,
+        'description' => 'Super admin',
+        'children' => [
+            'admin',        // can do all that admin can
+            'manageThing3', // and also thing3
+        ],
+        'bizRule' => NULL,
+        'data' => NULL
+    ],
+
+];
+```
+
+Now you can specify roles from RBAC in controller's access control configuration:
+
+```php
+public function behaviors()
+{
+    return [
+        'access' => [
+            'class' => 'yii\web\AccessControl',
+            'except' => ['something'],
+            'rules' => [
+                [
+                    'allow' => true,
+                    'roles' => ['manageThing1'],
+                ],
+            ],
+        ],
+    ];
+}
+```
+
+Another way is to call [[User::checkAccess()]] where appropriate.
+
+### Using DB-based storage for RBAC
+
+Storing RBAC hierarchy in database is less efficient performancewise but is much more flexible. It is easier to create
+a good management UI for it so in case you need permissions structure that is managed by end user DB is your choice.
+
+In order to get started you need to configure database connection in `db` component. After it is done [get `schema-*.sql`
+file for your database](https://github.com/yiisoft/yii2/tree/master/framework/yii/rbac) and execute it.
+
+Next step is to configure `authManager` application component in application config file (`web.php` or `main.php`
+depending on template you've used):
+
+```php
+'authManager' => [
+    'class' => 'yii\rbac\DbManager',
+    'defaultRoles' => ['guest'],
+],
+```
+
+TBD
 
 ### How it works
 

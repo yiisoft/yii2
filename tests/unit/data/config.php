@@ -33,8 +33,23 @@ return [
 			'dsn' => 'elasticsearch://localhost:9200'
 		],
 		'redis' => [
-			'dsn' => 'redis://localhost:6379/0',
+			'hostname' => 'localhost',
+			'port' => 6379,
+			'database' => 0,
 			'password' => null,
 		],
 	],
+	'sphinx' => [
+		'sphinx' => [
+			'dsn' => 'mysql:host=127.0.0.1;port=9306;',
+			'username' => '',
+			'password' => '',
+		],
+		'db' => [
+			'dsn' => 'mysql:host=127.0.0.1;dbname=yiitest',
+			'username' => 'travis',
+			'password' => '',
+			'fixture' => __DIR__ . '/sphinx/source.sql',
+		],
+	]
 ];
