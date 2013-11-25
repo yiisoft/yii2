@@ -29,14 +29,23 @@ class ConnectionTest extends MongoTestCase
 		$connection->open();
 		$this->assertTrue($connection->isActive);
 		$this->assertTrue(is_object($connection->client));
+		$this->assertTrue(is_object($connection->db));
 
 		$connection->close();
 		$this->assertFalse($connection->isActive);
 		$this->assertEquals(null, $connection->client);
+		$this->assertEquals(null, $connection->db);
 
 		$connection = new Connection;
 		$connection->dsn = 'unknown::memory:';
 		$this->setExpectedException('yii\db\Exception');
 		$connection->open();
+	}
+
+	public function testGetCollection()
+	{
+		$connection = $this->getConnection(false);
+		$collection = $connection->getCollection('customer');
+		$this->assertTrue($collection instanceof \MongoCollection);
 	}
 }
