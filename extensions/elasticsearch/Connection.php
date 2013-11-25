@@ -8,65 +8,53 @@
 namespace yii\elasticsearch;
 
 
+use Guzzle\Http\Exception\ClientErrorResponseException;
+use Yii;
 use yii\base\Component;
+use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use yii\helpers\Json;
 
 /**
  * elasticsearch Connection is used to connect to an elasticsearch cluster version 0.20 or higher
  *
- *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class Connection extends Component
+abstract class Connection extends Component
 {
 	/**
 	 * @event Event an event that is triggered after a DB connection is established
 	 */
 	const EVENT_AFTER_OPEN = 'afterOpen';
 
-	// TODO add autodetection of cluster nodes
-	// http://localhost:9200/_cluster/nodes
-	public $nodes = array(
-		array(
-			'host' => 'localhost',
-			'port' => 9200,
-		)
-	);
+	/**
+	 * @var bool whether to autodetect available cluster nodes on [[open()]]
+	 */
+	public $autodetectCluster = true;
+	/**
+	 * @var array cluster nodes
+	 * This is populated with the result of a cluster nodes request when [[autodetectCluster]] is true.
+	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/cluster-nodes-info.html#cluster-nodes-info
+	 */
+	public $nodes = [
+		['http_address' => 'inet[/127.0.0.1:9200]'],
+	];
+	/**
+	 * @var array the active node. key of [[nodes]]. Will be randomly selected on [[open()]].
+	 */
+	public $activeNode;
 
-	// http://www.elasticsearch.org/guide/en/elasticsearch/client/php-api/current/_configuration.html#_example_configuring_http_basic_auth
+	// TODO http://www.elasticsearch.org/guide/en/elasticsearch/client/php-api/current/_configuration.html#_example_configuring_http_basic_auth
 	public $auth = [];
-
-	// TODO use timeouts
-	/**
-	 * @var float timeout to use for connection to redis. If not set the timeout set in php.ini will be used: ini_get("default_socket_timeout")
-	 */
-	public $connectionTimeout = null;
-	/**
-	 * @var float timeout to use for redis socket when reading and writing data. If not set the php default value will be used.
-	 */
-	public $dataTimeout = null;
-
-
 
 	public function init()
 	{
-		if ($this->nodes === array()) {
-			throw new InvalidConfigException('elasticsearch needs at least one node.');
+		foreach($this->nodes as $node) {
+			if (!isset($node['http_address'])) {
+				throw new InvalidConfigException('Elasticsearch node needs at least a http_address configured.');
+			}
 		}
-	}
-
-	/**
-	 * Creates a command for execution.
-	 * @param string $query the SQL statement to be executed
-	 * @return Command the DB command
-	 */
-	public function createCommand($config = [])
-	{
-		$this->open();
-		$config['db'] = $this;
-		$command = new Command($config);
-		return $command;
 	}
 
 	/**
@@ -85,7 +73,7 @@ class Connection extends Component
 	 */
 	public function getIsActive()
 	{
-		return false; // TODO implement
+		return $this->activeNode !== null;
 	}
 
 	/**
@@ -95,48 +83,37 @@ class Connection extends Component
 	 */
 	public function open()
 	{
-		// TODO select one node to be the active one.
-
-
-		foreach($this->nodes as $key => $node) {
-			if (is_array($node)) {
-				$this->nodes[$key] = new Node($node);
+		if ($this->activeNode !== null) {
+			return;
+		}
+		if (empty($this->nodes)) {
+			throw new InvalidConfigException('elasticsearch needs at least one node to operate.');
+		}
+		if ($this->autodetectCluster) {
+			$node = reset($this->nodes);
+			$host = $node['http_address'];
+			if (strncmp($host, 'inet[/', 6) == 0) {
+				$host = substr($host, 6, -1);
+			}
+			$response = $this->httpRequest('get', 'http://' . $host . '/_cluster/nodes');
+			$this->nodes = $response['nodes'];
+			if (empty($this->nodes)) {
+				throw new Exception('cluster autodetection did not find any active node.');
 			}
 		}
-/*		if ($this->_socket === null) {
-			if (empty($this->dsn)) {
-				throw new InvalidConfigException('Connection.dsn cannot be empty.');
-			}
-			$dsn = explode('/', $this->dsn);
-			$host = $dsn[2];
-			if (strpos($host, ':')===false) {
-				$host .= ':6379';
-			}
-			$db = isset($dsn[3]) ? $dsn[3] : 0;
+		$this->selectActiveNode();
+		Yii::trace('Opening connection to elasticsearch. Nodes in cluster: ' . count($this->nodes)
+			. ', active node: ' . $this->nodes[$this->activeNode]['http_address'], __CLASS__);
+		$this->initConnection();
+	}
 
-			\Yii::trace('Opening DB connection: ' . $this->dsn, __CLASS__);
-			$this->_socket = @stream_socket_client(
-				$host,
-				$errorNumber,
-				$errorDescription,
-				$this->connectionTimeout ? $this->connectionTimeout : ini_get("default_socket_timeout")
-			);
-			if ($this->_socket) {
-				if ($this->dataTimeout !== null) {
-					stream_set_timeout($this->_socket, $timeout=(int)$this->dataTimeout, (int) (($this->dataTimeout - $timeout) * 1000000));
-				}
-				if ($this->password !== null) {
-					$this->executeCommand('AUTH', array($this->password));
-				}
-				$this->executeCommand('SELECT', array($db));
-				$this->initConnection();
-			} else {
-				\Yii::error("Failed to open DB connection ({$this->dsn}): " . $errorNumber . ' - ' . $errorDescription, __CLASS__);
-				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $errorNumber . ' - ' . $errorDescription : 'Failed to open DB connection.';
-				throw new Exception($message, $errorDescription, (int)$errorNumber);
-			}
-		}*/
-		// TODO implement
+	/**
+	 * select active node randomly
+	 */
+	public function selectActiveNode()
+	{
+		$keys = array_keys($this->nodes);
+		$this->activeNode = $keys[rand(0, count($keys) - 1)];
 	}
 
 	/**
@@ -145,14 +122,9 @@ class Connection extends Component
 	 */
 	public function close()
 	{
-		// TODO implement
-/*		if ($this->_socket !== null) {
-			\Yii::trace('Closing DB connection: ' . $this->dsn, __CLASS__);
-			$this->executeCommand('QUIT');
-			stream_socket_shutdown($this->_socket, STREAM_SHUT_RDWR);
-			$this->_socket = null;
-			$this->_transaction = null;
-		}*/
+		Yii::trace('Closing connection to elasticsearch. Active node was: '
+			. $this->nodes[$this->activeNode]['http_address'], __CLASS__);
+		$this->activeNode = null;
 	}
 
 	/**
@@ -174,9 +146,17 @@ class Connection extends Component
 		return 'elasticsearch';
 	}
 
-	public function getNodeInfo()
+	/**
+	 * Creates a command for execution.
+	 * @param array $config the configuration for the Command class
+	 * @return Command the DB command
+	 */
+	public function createCommand($config = [])
 	{
-		// TODO HTTP request to localhost:9200/
+		$this->open();
+		$config['db'] = $this;
+		$command = new Command($config);
+		return $command;
 	}
 
 	public function getQueryBuilder()
@@ -184,13 +164,58 @@ class Connection extends Component
 		return new QueryBuilder($this);
 	}
 
-	/**
-	 * @return \Guzzle\Http\Client
-	 */
-	public function http()
+	public function get($url, $options = [], $body = null, $validCodes = [])
 	{
-		$guzzle = new \Guzzle\Http\Client('http://localhost:9200/');
-		//$guzzle->setDefaultOption()
-		return $guzzle;
+		$this->open();
+		return $this->httpRequest('get', $this->createUrl($url, $options), $body);
+	}
+
+	public function head($url, $options = [], $body = null)
+	{
+		$this->open();
+		return $this->httpRequest('head', $this->createUrl($url, $options), $body);
+	}
+
+	public function post($url, $options = [], $body = null)
+	{
+		$this->open();
+		return $this->httpRequest('post', $this->createUrl($url, $options), $body);
+	}
+
+	public function put($url, $options = [], $body = null)
+	{
+		$this->open();
+		return $this->httpRequest('put', $this->createUrl($url, $options), $body);
+	}
+
+	public function delete($url, $options = [], $body = null)
+	{
+		$this->open();
+		return $this->httpRequest('delete', $this->createUrl($url, $options), $body);
+	}
+
+	private function createUrl($path, $options = [])
+	{
+		$url = implode('/', array_map(function($a) {
+			return urlencode(is_array($a) ? implode(',', $a) : $a);
+		}, $path));
+
+		if (!empty($options)) {
+			$url .= '?' . http_build_query($options);
+		}
+
+		return $url;
+	}
+
+	protected abstract function httpRequest($type, $url, $body = null);
+
+	public function getNodeInfo()
+	{
+		return $this->get([]);
+	}
+
+	public function getClusterState()
+	{
+		return $this->get(['_cluster', 'state']);
 	}
 }

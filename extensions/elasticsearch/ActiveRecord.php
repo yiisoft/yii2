@@ -370,11 +370,10 @@ class ActiveRecord extends \yii\db\ActiveRecord
 		}
 
 		// TODO do this via command
-		$url = '/' . static::index() . '/' . static::type() . '/_bulk';
-		$response = static::getDb()->http()->post($url, null, $bulk)->send();
-		$body = Json::decode($response->getBody(true));
+		$url = [static::index(), static::type(), '_bulk'];
+		$response = static::getDb()->post($url, [], $bulk);
 		$n=0;
-		foreach($body['items'] as $item) {
+		foreach($response['items'] as $item) {
 			if ($item['update']['ok']) {
 				$n++;
 			}
@@ -421,11 +420,10 @@ class ActiveRecord extends \yii\db\ActiveRecord
 		}
 
 		// TODO do this via command
-		$url = '/' . static::index() . '/' . static::type() . '/_bulk';
-		$response = static::getDb()->http()->post($url, null, $bulk)->send();
-		$body = Json::decode($response->getBody(true));
+		$url = [static::index(), static::type(), '_bulk'];
+		$response = static::getDb()->post($url, [], $bulk);
 		$n=0;
-		foreach($body['items'] as $item) {
+		foreach($response['items'] as $item) {
 			if ($item['delete']['found'] && $item['delete']['ok']) {
 				$n++;
 			}

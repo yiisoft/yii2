@@ -4,6 +4,7 @@ namespace yiiunit\extensions\elasticsearch;
 
 use Yii;
 use yii\elasticsearch\Connection;
+use yii\elasticsearch\GuzzleConnection;
 use yiiunit\TestCase;
 
 Yii::setAlias('@yii/elasticsearch', __DIR__ . '/../../../../extensions/elasticsearch');
@@ -42,7 +43,7 @@ class ElasticSearchTestCase extends TestCase
 	{
 		$databases = $this->getParam('databases');
 		$params = isset($databases['elasticsearch']) ? $databases['elasticsearch'] : array();
-		$db = new Connection;
+		$db = new GuzzleConnection();
 		if ($reset) {
 			$db->open();
 		}

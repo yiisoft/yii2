@@ -84,7 +84,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	public function all($db = null)
 	{
 		$command = $this->createCommand($db);
-		$result = $command->queryAll();
+		$result = $command->search();
 		if (empty($result['hits'])) {
 			return [];
 		}
@@ -154,7 +154,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		if ($field == ActiveRecord::PRIMARY_KEY_NAME) {
 			$command = $this->createCommand($db);
 			$command->queryParts['fields'] = [];
-			$rows = $command->queryAll()['hits'];
+			$rows = $command->search()['hits'];
 			$result = [];
 			foreach ($rows as $row) {
 				$result[] = $row['_id'];

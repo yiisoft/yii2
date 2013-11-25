@@ -43,10 +43,12 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		/** @var Connection $db */
 		$db = ActiveRecord::$db = $this->getConnection();
 
-		// delete all indexes
-		$db->http()->delete('_all')->send();
+		// delete index
+		if ($db->createCommand()->indexExists('yiitest')) {
+			$db->createCommand()->deleteIndex('yiitest');
+		}
 
-		$db->http()->post('items', null, Json::encode([
+		$db->post(['yiitest'], [], Json::encode([
 			'mappings' => [
 				"item" => [
 		            "_source" => [ "enabled" => true ],
@@ -56,19 +58,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		            ]
 		        ]
 			],
-		]))->send();
-
-		$db->http()->post('customers', null, Json::encode([
-			'mappings' => [
-				"item" => [
-		            "_source" => [ "enabled" => true ],
-		            "properties" => [
-						// this is for the boolean test
-		                "status" => ["type" => "boolean"],
-		            ]
-		        ]
-			],
-		]))->send();
+		]));
 
 		$customer = new Customer();
 		$customer->id = 1;
@@ -281,10 +271,10 @@ class ActiveRecordTest extends ElasticSearchTestCase
 	public function testBooleanAttribute()
 	{
 		$db = $this->getConnection();
-		$db->createCommand()->deleteIndex('customers');
-		$db->http()->post('customers', null, Json::encode([
+		$db->createCommand()->deleteIndex('yiitest');
+		$db->post(['yiitest'], [], Json::encode([
 			'mappings' => [
-				"item" => [
+				"customer" => [
 		            "_source" => [ "enabled" => true ],
 		            "properties" => [
 						// this is for the boolean test
@@ -292,7 +282,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		            ]
 		        ]
 			],
-		]))->send();
+		]));
 
 		$customerClass = $this->getCustomerClass();
 		$customer = new $customerClass();

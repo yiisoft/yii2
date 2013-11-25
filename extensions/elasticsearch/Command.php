@@ -43,7 +43,11 @@ class Command extends Component
 
 	public $options = [];
 
-	public function queryAll($options = [])
+	/**
+	 * @param array $options
+	 * @return mixed
+	 */
+	public function search($options = [])
 	{
 		$query = $this->queryParts;
 		if (empty($query)) {
@@ -57,22 +61,8 @@ class Command extends Component
 			$this->type !== null ? $this->type : '_all',
 			'_search'
 		];
-		try {
-			$response = $this->db->http()->post($this->createUrl($url, $options), null, $query)->send();
-		} catch(ClientErrorResponseException $e) {
-			throw new Exception("elasticsearch error:\n\n"
-				. $query . "\n\n" . $e->getMessage()
-				. print_r(Json::decode($e->getResponse()->getBody(true)), true), [], 0, $e);
-		}
-		return Json::decode($response->getBody(true))['hits'];
+		return $this->db->get($url, array_merge($this->options, $options), $query)['hits'];
 	}
-
-	public function queryCount($options = [])
-	{
-		$options['search_type'] = 'count';
-		return $this->queryAll($options);
-	}
-
 
 	/**
 	 * Inserts a document into an index
@@ -88,18 +78,11 @@ class Command extends Component
 	{
 		$body = is_array($data) ? Json::encode($data) : $data;
 
-		try {
-			if ($id !== null) {
-				$response = $this->db->http()->put($this->createUrl([$index, $type, $id], $options), null, $body)->send();
-			} else {
-				$response = $this->db->http()->post($this->createUrl([$index, $type], $options), null, $body)->send();
-			}
-		} catch(ClientErrorResponseException $e) {
-			throw new Exception("elasticsearch error:\n\n"
-				. $body . "\n\n" . $e->getMessage()
-				. print_r(Json::decode($e->getResponse()->getBody(true)), true), [], 0, $e);
+		if ($id !== null) {
+			return $this->db->put([$index, $type, $id], $options, $body);
+		} else {
+			return $this->db->post([$index, $type], $options, $body);
 		}
-		return Json::decode($response->getBody(true));
 	}
 
 	/**
@@ -113,15 +96,7 @@ class Command extends Component
 	 */
 	public function get($index, $type, $id, $options = [])
 	{
-		$httpOptions = [
-			'exceptions' => false,
-		];
-		$response = $this->db->http()->get($this->createUrl([$index, $type, $id], $options), null, $httpOptions)->send();
-		if ($response->getStatusCode() == 200 || $response->getStatusCode() == 404) {
-			return Json::decode($response->getBody(true));
-		} else {
-			throw new Exception('Elasticsearch request failed.');
-		}
+		return $this->db->get([$index, $type, $id], $options, null, [200, 404]);
 	}
 
 	/**
@@ -133,25 +108,12 @@ class Command extends Component
 	 * @param $id
 	 * @param array $options
 	 * @return mixed
-	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html
+	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-multi-get.html
 	 */
 	public function mget($index, $type, $ids, $options = [])
 	{
-		$httpOptions = [
-			'exceptions' => false,
-		];
 		$body = Json::encode(['ids' => array_values($ids)]);
-		$response = $this->db->http()->post( // TODO guzzle does not manage to send get request with content
-			$this->createUrl([$index, $type, '_mget'], $options),
-			null,
-			$body,
-			$httpOptions
-		)->send();
-		if ($response->getStatusCode() == 200) {
-			return Json::decode($response->getBody(true));
-		} else {
-			throw new Exception('Elasticsearch request failed.');
-		}
+		return $this->db->get([$index, $type, '_mget'], $options, $body);
 	}
 
 	/**
@@ -164,11 +126,8 @@ class Command extends Component
 	 */
 	public function getSource($index, $type, $id)
 	{
-		$response = $this->db->http()->head($this->createUrl([$index, $type, $id]))->send();
-		return Json::decode($response->getBody(true));
+		return $this->db->get([$index, $type, $id]);
 	}
-
-	// TODO mget http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-multi-get.html
 
 	/**
 	 * gets a document from the index
@@ -180,8 +139,7 @@ class Command extends Component
 	 */
 	public function exists($index, $type, $id)
 	{
-		$response = $this->db->http()->head($this->createUrl([$index, $type, $id]))->send();
-		return $response->getStatusCode() == 200;
+		return $this->db->head([$index, $type, $id]);
 	}
 
 	/**
@@ -195,8 +153,7 @@ class Command extends Component
 	 */
 	public function delete($index, $type, $id, $options = [])
 	{
-		$response = $this->db->http()->delete($this->createUrl([$index, $type, $id], $options))->send();
-		return Json::decode($response->getBody(true));
+		return $this->db->delete([$index, $type, $id], $options);
 	}
 
 	/**
@@ -211,12 +168,10 @@ class Command extends Component
 	public function update($index, $type, $id, $data, $options = [])
 	{
 		// TODO
-		$response = $this->db->http()->delete($this->createUrl([$index, $type, $id], $options))->send();
-		return Json::decode($response->getBody(true));
+//		return $this->db->delete([$index, $type, $id], $options);
 	}
 
 	// TODO bulk http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-bulk.html
-
 
 	/**
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-create-index.html
@@ -224,8 +179,7 @@ class Command extends Component
 	public function createIndex($index, $configuration = null)
 	{
 		$body = $configuration !== null ? Json::encode($configuration) : null;
-		$response = $this->db->http()->put($this->createUrl([$index]), null, $body)->send();
-		return Json::decode($response->getBody(true));
+		return $this->db->put([$index], $body);
 	}
 
 	/**
@@ -233,8 +187,7 @@ class Command extends Component
 	 */
 	public function deleteIndex($index)
 	{
-		$response = $this->db->http()->delete($this->createUrl([$index]))->send();
-		return Json::decode($response->getBody(true));
+		return $this->db->delete([$index]);
 	}
 
 	/**
@@ -242,8 +195,7 @@ class Command extends Component
 	 */
 	public function deleteAllIndexes()
 	{
-		$response = $this->db->http()->delete($this->createUrl(['_all']))->send();
-		return Json::decode($response->getBody(true));
+		return $this->db->delete(['_all']);
 	}
 
 	/**
@@ -251,8 +203,7 @@ class Command extends Component
 	 */
 	public function indexExists($index)
 	{
-		$response = $this->db->http()->head($this->createUrl([$index]))->send();
-		return $response->getStatusCode() == 200;
+		return $this->db->head([$index]);
 	}
 
 	/**
@@ -260,8 +211,7 @@ class Command extends Component
 	 */
 	public function typeExists($index, $type)
 	{
-		$response = $this->db->http()->head($this->createUrl([$index, $type]))->send();
-		return $response->getStatusCode() == 200;
+		return $this->db->head([$index, $type]);
 	}
 
 	// TODO http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-aliases.html
@@ -276,8 +226,7 @@ class Command extends Component
 	 */
 	public function openIndex($index)
 	{
-		$response = $this->db->http()->post($this->createUrl([$index, '_open']))->send();
-		return $response->getStatusCode() == 200;
+		return $this->db->post([$index, '_open']);
 	}
 
 	/**
@@ -285,8 +234,7 @@ class Command extends Component
 	 */
 	public function closeIndex($index)
 	{
-		$response = $this->db->http()->post($this->createUrl([$index, '_close']))->send();
-		return $response->getStatusCode() == 200;
+		return $this->db->post([$index, '_close']);
 	}
 
 	/**
@@ -294,8 +242,7 @@ class Command extends Component
 	 */
 	public function getIndexStatus($index = '_all')
 	{
-		$response = $this->db->http()->get($this->createUrl([$index, '_status']))->send();
-		return Json::decode($response->getBody(true));
+		return $this->db->get([$index, '_status']);
 	}
 
 	// TODO http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-stats.html
@@ -306,8 +253,7 @@ class Command extends Component
 	 */
 	public function clearIndexCache($index)
 	{
-		$response = $this->db->http()->post($this->createUrl([$index, '_cache', 'clear']))->send();
-		return $response->getStatusCode() == 200;
+		return $this->db->post([$index, '_cache', 'clear']);
 	}
 
 	/**
@@ -315,8 +261,7 @@ class Command extends Component
 	 */
 	public function flushIndex($index = '_all')
 	{
-		$response = $this->db->http()->post($this->createUrl([$index, '_flush']))->send();
-		return $response->getStatusCode() == 200;
+		return $this->db->post([$index, '_flush']);
 	}
 
 	/**
@@ -324,8 +269,7 @@ class Command extends Component
 	 */
 	public function refreshIndex($index)
 	{
-		$response = $this->db->http()->post($this->createUrl([$index, '_refresh']))->send();
-		return $response->getStatusCode() == 200;
+		return $this->db->post([$index, '_refresh']);
 	}
 
 	// TODO http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-optimize.html
@@ -338,8 +282,7 @@ class Command extends Component
 	public function setMapping($index, $type, $mapping)
 	{
 		$body = $mapping !== null ? Json::encode($mapping) : null;
-		$response = $this->db->http()->put($this->createUrl([$index, $type, '_mapping']), null, $body)->send();
-		return $response->getStatusCode() == 200;
+		return $this->db->put([$index, $type, '_mapping'], $body);
 	}
 
 	/**
@@ -347,8 +290,7 @@ class Command extends Component
 	 */
 	public function getMapping($index = '_all', $type = '_all')
 	{
-		$response = $this->db->http()->get($this->createUrl([$index, $type, '_mapping']))->send();
-		return Json::decode($response->getBody(true));
+		return $this->db->get([$index, $type, '_mapping']);
 	}
 
 	/**
@@ -356,8 +298,7 @@ class Command extends Component
 	 */
 	public function deleteMapping($index, $type)
 	{
-		$response = $this->db->http()->delete($this->createUrl([$index, $type]))->send();
-		return $response->getStatusCode() == 200;
+		return $this->db->delete([$index, $type]);
 	}
 
 	/**
@@ -365,9 +306,7 @@ class Command extends Component
 	 */
 	public function getFieldMapping($index, $type = '_all')
 	{
-		// TODO
-		$response = $this->db->http()->put($this->createUrl([$index, $type, '_mapping']))->send();
-		return Json::decode($response->getBody(true));
+		return $this->db->put([$index, $type, '_mapping']);
 	}
 
 	/**
@@ -375,10 +314,8 @@ class Command extends Component
 	 */
 	public function analyze($options, $index = null)
 	{
-		// TODO
-		$response = $this->db->http()->put($this->createUrl([$index, $type, '_mapping']))->send();
-		return Json::decode($response->getBody(true));
-
+		// TODO implement
+//		return $this->db->put([$index]);
 	}
 
 	/**
@@ -390,10 +327,10 @@ class Command extends Component
 			'template' => $pattern,
 			'order' => $order,
 			'settings' => (object) $settings,
-			'mappings' => (object) $settings,
+			'mappings' => (object) $mappings,
 		]);
-		$response = $this->db->http()->put($this->createUrl(['_template', $name]), null, $body)->send();
-		return $response->getStatusCode() == 200;
+		return $this->db->put(['_template', $name], $body);
+
 	}
 
 	/**
@@ -401,8 +338,8 @@ class Command extends Component
 	 */
 	public function deleteTemplate($name)
 	{
-		$response = $this->db->http()->delete($this->createUrl(['_template', $name]))->send();
-		return $response->getStatusCode() == 200;
+		return $this->db->delete(['_template', $name]);
+
 	}
 
 	/**
@@ -410,21 +347,6 @@ class Command extends Component
 	 */
 	public function getTemplate($name)
 	{
-		$response = $this->db->http()->get($this->createUrl(['_template', $name]))->send();
-		return Json::decode($response->getBody(true));
-	}
-
-	private function createUrl($path, $options = [])
-	{
-		$url = implode('/', array_map(function($a) {
-			return urlencode(is_array($a) ? implode(',', $a) : $a);
-		}, $path));
-
-		if (!empty($options) || !empty($this->options)) {
-			$options = array_merge($this->options, $options);
-			$url .= '?' . http_build_query($options);
-		}
-
-		return $url;
+		return $this->db->get(['_template', $name]);
 	}
 }

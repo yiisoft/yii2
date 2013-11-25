@@ -24,4 +24,9 @@ class ActiveRecord extends \yii\elasticsearch\ActiveRecord
 	{
 		return self::$db;
 	}
+
+	public static function index()
+	{
+		return 'yiitest';
+	}
 }

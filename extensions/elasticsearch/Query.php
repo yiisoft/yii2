@@ -84,7 +84,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function all($db = null)
 	{
-		$result = $this->createCommand($db)->queryAll();
+		$result = $this->createCommand($db)->search();
 		// TODO publish facet results
 		$rows = $result['hits'];
 		if ($this->indexBy === null && $this->fields === null) {
@@ -118,7 +118,7 @@ class Query extends Component implements QueryInterface
 	public function one($db = null)
 	{
 		$options['size'] = 1;
-		$result = $this->createCommand($db)->queryAll($options);
+		$result = $this->createCommand($db)->search($options);
 		// TODO publish facet results
 		if (empty($result['hits'])) {
 			return false;
@@ -175,7 +175,7 @@ class Query extends Component implements QueryInterface
 	{
 		$command = $this->createCommand($db);
 		$command->queryParts['fields'] = [$field];
-		$rows = $command->queryAll()['hits'];
+		$rows = $command->search()['hits'];
 		$result = [];
 		foreach ($rows as $row) {
 			$result[] = isset($row['fields'][$field]) ? $row['fields'][$field] : null;
@@ -196,7 +196,9 @@ class Query extends Component implements QueryInterface
 		// only when no facety are registerted.
 		// http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-count.html
 
-		$count = $this->createCommand($db)->queryCount()['total'];
+		$options = [];
+		$options['search_type'] = 'count';
+		$count = $this->createCommand($db)->search($options)['total'];
 		if ($this->limit === null && $this->offset === null) {
 			return $count;
 		} elseif ($this->offset !== null) {
