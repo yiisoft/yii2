@@ -1,9 +1,12 @@
 <?php
 
-namespace yiiunit\framework\elasticsearch;
+namespace yiiunit\extensions\elasticsearch;
 
+use Yii;
 use yii\elasticsearch\Connection;
 use yiiunit\TestCase;
+
+Yii::setAlias('@yii/elasticsearch', __DIR__ . '/../../../../extensions/elasticsearch');
 
 /**
  * ElasticSearchTestCase is the base class for all elasticsearch related test cases

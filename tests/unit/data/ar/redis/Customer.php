@@ -2,7 +2,7 @@
 
 namespace yiiunit\data\ar\redis;
 
-use yiiunit\framework\redis\ActiveRecordTest;
+use yiiunit\extensions\redis\ActiveRecordTest;
 
 class Customer extends ActiveRecord
 {

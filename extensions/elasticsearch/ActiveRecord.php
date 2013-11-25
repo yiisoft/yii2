@@ -24,6 +24,7 @@ use yii\helpers\StringHelper;
  * For defining a record a subclass should at least implement the [[attributes()]] method to define
  * attributes.
  * The primary key (the `_id` field in elasticsearch terms) is represented by `getId()` and `setId()`.
+ * The primary key is not part of the attributes.
  *
  * The following is an example model called `Customer`:
  *

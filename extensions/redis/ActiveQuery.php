@@ -226,7 +226,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 	{
 		$record = $this->one($db);
 		if ($record !== null) {
-			return $record->$attribute;
+			return $record->hasAttribute($attribute) ? $record->$attribute : null;
 		} else {
 			return null;
 		}

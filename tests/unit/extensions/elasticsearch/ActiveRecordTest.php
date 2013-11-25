@@ -1,9 +1,8 @@
 <?php
 
-namespace yiiunit\framework\elasticsearch;
+namespace yiiunit\extensions\elasticsearch;
 
 use yii\elasticsearch\Connection;
-use yii\elasticsearch\ActiveQuery;
 use yii\helpers\Json;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\data\ar\elasticsearch\ActiveRecord;

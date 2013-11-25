@@ -1,7 +1,7 @@
 <?php
 namespace yiiunit\data\ar\elasticsearch;
 
-use yiiunit\framework\elasticsearch\ActiveRecordTest;
+use yiiunit\extensions\elasticsearch\ActiveRecordTest;
 
 /**
  * Class Customer
