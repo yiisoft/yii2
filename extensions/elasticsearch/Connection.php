@@ -7,13 +7,10 @@
 
 namespace yii\elasticsearch;
 
-
-use Guzzle\Http\Exception\ClientErrorResponseException;
 use Yii;
 use yii\base\Component;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
-use yii\helpers\Json;
 
 /**
  * elasticsearch Connection is used to connect to an elasticsearch cluster version 0.20 or higher

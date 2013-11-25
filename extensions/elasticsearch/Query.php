@@ -14,7 +14,37 @@ use yii\db\QueryInterface;
 use yii\db\QueryTrait;
 
 /**
- * Class Query
+ * Query represents a query to the search API of elasticsearch.
+ *
+ * Query provides a set of methods to facilitate the specification of different parameters of the query.
+ * These methods can be chained together.
+ *
+ * By calling [[createCommand()]], we can get a [[Command]] instance which can be further
+ * used to perform/execute the DB query against a database.
+ *
+ * For example,
+ *
+ * ~~~
+ * $query = new Query;
+ * $query->fields('id, name')
+ *     ->from('myindex', 'users')
+ *     ->limit(10);
+ * // build and execute the query
+ * $command = $query->createCommand();
+ * $rows = $command->search(); // this way you get the raw output of elasticsearch.
+ * ~~~
+ *
+ * You would normally call `$query->search()` instead of creating a command as this method
+ * adds the `indexBy()` feature and also removes some inconsistencies from the response.
+ *
+ * Query also provides some methods to easier get some parts of the result only:
+ *
+ * - [[one()]]: returns a single record populated with the first row of data.
+ * - [[all()]]: returns all records based on the query results.
+ * - [[count()]]: returns the number of records.
+ * - [[scalar()]]: returns the value of the first column in the first row of the query result.
+ * - [[column()]]: returns the value of the first column in the query result.
+ * - [[exists()]]: returns a value indicating whether the query result has data or not.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

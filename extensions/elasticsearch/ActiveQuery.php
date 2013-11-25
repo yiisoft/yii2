@@ -6,10 +6,9 @@
  */
 
 namespace yii\elasticsearch;
-use Guzzle\Http\Client;
+
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
-use yii\helpers\Json;
 
 /**
  * ActiveQuery represents a [[Query]] associated with an [[ActiveRecord]] class.

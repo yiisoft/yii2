@@ -7,15 +7,8 @@
 
 namespace yii\elasticsearch;
 
-
-use Guzzle\Http\Exception\ClientErrorResponseException;
 use yii\base\Component;
-use yii\db\Exception;
 use yii\helpers\Json;
-
-// camelCase vs. _
-// http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/common-options.html#_result_casing
-
 
 /**
  * The Command class implements the API for accessing the elasticsearch REST API.
