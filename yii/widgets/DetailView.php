@@ -70,7 +70,7 @@ class DetailView extends Widget
 	 *   according to the "format" option.
 	 * - format: the type of the value that determines how the value would be formatted into a displayable text.
 	 *   Please refer to [[Formatter]] for supported types.
-	 * - visible: whether the attribute is visible. If set to `false`, the attribute will be displayed.
+	 * - visible: whether the attribute is visible. If set to `false`, the attribute will NOT be displayed.
 	 */
 	public $attributes;
 	/**
