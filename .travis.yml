@@ -7,12 +7,14 @@ php:
 services:
   - redis-server
   - memcached
+  - elasticsearch
 
 before_script:
   - composer self-update && composer --version
   - composer require satooshi/php-coveralls 0.6.* --dev --prefer-dist
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
+  - echo 'elasticsearch version ' && curl http://localhost:9200/
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh

@@ -7,6 +7,7 @@
 
 namespace yii\db;
 
+use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 
 /**
@@ -782,7 +783,7 @@ class QueryBuilder extends \yii\base\Object
 	 * on how to specify a condition.
 	 * @param array $params the binding parameters to be populated
 	 * @return string the generated SQL expression
-	 * @throws \yii\db\Exception if the condition is in bad format
+	 * @throws InvalidParamException if the condition is in bad format
 	 */
 	public function buildCondition($condition, &$params)
 	{
@@ -811,7 +812,7 @@ class QueryBuilder extends \yii\base\Object
 				array_shift($condition);
 				return $this->$method($operator, $condition, $params);
 			} else {
-				throw new Exception('Found unknown operator in query: ' . $operator);
+				throw new InvalidParamException('Found unknown operator in query: ' . $operator);
 			}
 		} else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
 			return $this->buildHashCondition($condition, $params);
@@ -883,12 +884,12 @@ class QueryBuilder extends \yii\base\Object
 	 * describe the interval that column value should be in.
 	 * @param array $params the binding parameters to be populated
 	 * @return string the generated SQL expression
-	 * @throws Exception if wrong number of operands have been given.
+	 * @throws InvalidParamException if wrong number of operands have been given.
 	 */
 	public function buildBetweenCondition($operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1], $operands[2])) {
-			throw new Exception("Operator '$operator' requires three operands.");
+			throw new InvalidParamException("Operator '$operator' requires three operands.");
 		}
 
 		list($column, $value1, $value2) = $operands;
@@ -1003,7 +1004,7 @@ class QueryBuilder extends \yii\base\Object
 	public function buildLikeCondition($operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1])) {
-			throw new Exception("Operator '$operator' requires two operands.");
+			throw new InvalidParamException("Operator '$operator' requires two operands.");
 		}
 
 		list($column, $values) = $operands;

@@ -1,6 +1,6 @@
 <?php
 
-namespace yiiunit\data\ar;
+namespace yiiunit\data\ar\elasticsearch;
 
 /**
  * Class Order
@@ -12,27 +12,25 @@ namespace yiiunit\data\ar;
  */
 class Order extends ActiveRecord
 {
-	public static function tableName()
+	public static function attributes()
 	{
-		return 'tbl_order';
+		return ['customer_id', 'create_time', 'total'];
 	}
 
 	public function getCustomer()
 	{
-		return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+		return $this->hasOne(Customer::className(), [ActiveRecord::PRIMARY_KEY_NAME => 'customer_id']);
 	}
 
 	public function getOrderItems()
 	{
-		return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+		return $this->hasMany(OrderItem::className(), ['order_id' => ActiveRecord::PRIMARY_KEY_NAME]);
 	}
 
 	public function getItems()
 	{
-		return $this->hasMany(Item::className(), ['id' => 'item_id'])
-			->via('orderItems', function ($q) {
-				// additional query configuration
-			})->orderBy('id');
+		return $this->hasMany(Item::className(), [ActiveRecord::PRIMARY_KEY_NAME => 'item_id'])
+			->via('orderItems')->orderBy('id');
 	}
 
 	public function getItemsInOrder1()
@@ -51,17 +49,17 @@ class Order extends ActiveRecord
 			})->orderBy('name');
 	}
 
-	public function getBooks()
-	{
-		return $this->hasMany(Item::className(), ['id' => 'item_id'])
-			->viaTable('tbl_order_item', ['order_id' => 'id'])
-			->where(['category_id' => 1]);
-	}
+//	public function getBooks()
+//	{
+//		return $this->hasMany('Item', [ActiveRecord::PRIMARY_KEY_NAME => 'item_id'])
+//			->viaTable('tbl_order_item', ['order_id' => ActiveRecord::PRIMARY_KEY_NAME])
+//			->where(['category_id' => 1]);
+//	}
 
 	public function beforeSave($insert)
 	{
 		if (parent::beforeSave($insert)) {
-			$this->create_time = time();
+//			$this->create_time = time();
 			return true;
 		} else {
 			return false;

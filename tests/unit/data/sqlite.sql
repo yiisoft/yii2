@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS tbl_null_values;
 CREATE TABLE tbl_customer (
   id INTEGER NOT NULL,
   email varchar(128) NOT NULL,
-  name varchar(128) NOT NULL,
+  name varchar(128),
   address text,
   status INTEGER DEFAULT 0,
   PRIMARY KEY (id)

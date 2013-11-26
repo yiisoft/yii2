@@ -1,7 +1,7 @@
 <?php
-namespace yiiunit\data\ar;
+namespace yiiunit\data\ar\elasticsearch;
 
-use yiiunit\framework\db\ActiveRecordTest;
+use yiiunit\extensions\elasticsearch\ActiveRecordTest;
 
 /**
  * Class Customer
@@ -19,19 +19,19 @@ class Customer extends ActiveRecord
 
 	public $status2;
 
-	public static function tableName()
+	public static function attributes()
 	{
-		return 'tbl_customer';
+		return ['name', 'email', 'address', 'status'];
 	}
 
 	public function getOrders()
 	{
-		return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('id');
+		return $this->hasMany(Order::className(), array('customer_id' => ActiveRecord::PRIMARY_KEY_NAME))->orderBy('create_time');
 	}
 
 	public static function active($query)
 	{
-		$query->andWhere('status=1');
+		$query->andWhere(array('status' => 1));
 	}
 
 	public function afterSave($insert)

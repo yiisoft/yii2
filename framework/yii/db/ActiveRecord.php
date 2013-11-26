@@ -754,7 +754,7 @@ class ActiveRecord extends Model
 	 * [[EVENT_BEFORE_INSERT]], [[EVENT_AFTER_INSERT]] and [[EVENT_AFTER_VALIDATE]]
 	 * will be raised by the corresponding methods.
 	 *
-	 * Only the [[changedAttributes|changed attribute values]] will be inserted into database.
+	 * Only the [[dirtyAttributes|changed attribute values]] will be inserted into database.
 	 *
 	 * If the table's primary key is auto-incremental and is null during insertion,
 	 * it will be populated with the actual value after insertion.
@@ -1169,7 +1169,7 @@ class ActiveRecord extends Model
 			return false;
 		}
 		foreach ($this->attributes() as $name) {
-			$this->_attributes[$name] = $record->_attributes[$name];
+			$this->_attributes[$name] = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
 		}
 		$this->_oldAttributes = $this->_attributes;
 		$this->_related = [];
@@ -1179,11 +1179,15 @@ class ActiveRecord extends Model
 	/**
 	 * Returns a value indicating whether the given active record is the same as the current one.
 	 * The comparison is made by comparing the table names and the primary key values of the two active records.
+	 * If one of the records [[isNewRecord|is new]] they are also considered not equal.
 	 * @param ActiveRecord $record record to compare to
 	 * @return boolean whether the two active records refer to the same row in the same database table.
 	 */
 	public function equals($record)
 	{
+		if ($this->isNewRecord || $record->isNewRecord) {
+			return false;
+		}
 		return $this->tableName() === $record->tableName() && $this->getPrimaryKey() === $record->getPrimaryKey();
 	}
 
