@@ -7,6 +7,7 @@
 
 namespace yii\sphinx;
 
+use yii\base\InvalidParamException;
 use yii\base\Object;
 use yii\db\Exception;
 use yii\db\Expression;
@@ -760,12 +761,12 @@ class QueryBuilder extends Object
 	 * operator is `LIKE` or `OR LIKE` and empty if operator is `NOT LIKE` or `OR NOT LIKE`.
 	 * @param array $params the binding parameters to be populated
 	 * @return string the generated SQL expression
-	 * @throws Exception if wrong number of operands have been given.
+	 * @throws InvalidParamException if wrong number of operands have been given.
 	 */
 	public function buildLikeCondition($indexes, $operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1])) {
-			throw new Exception("Operator '$operator' requires two operands.");
+			throw new InvalidParamException("Operator '$operator' requires two operands.");
 		}
 
 		list($column, $values) = $operands;
