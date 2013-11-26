@@ -93,14 +93,14 @@ This will create all the `<label>`, `<input>` and other tags according to the te
 To add these tags yourself you can use the `Html` helper class. The following is equivalent to the code above:
 
 ```php
-<?= Html::activeLabel($model, 'password'); ?>
-<?= Html::activePasswordInput($model, 'password'); ?>
-<?= Html::error($model, 'password'); ?>
+<?= Html::activeLabel($model, 'password') ?>
+<?= Html::activePasswordInput($model, 'password') ?>
+<?= Html::error($model, 'password') ?>
 
 or
 
-<?= Html::activeLabel($model, 'username', ['label' => 'name']); ?>
-<?= Html::activeTextInput($model, 'username'); ?>
-<?= Html::error($model, 'username'); ?>
+<?= Html::activeLabel($model, 'username', ['label' => 'name']) ?>
+<?= Html::activeTextInput($model, 'username') ?>
+<?= Html::error($model, 'username') ?>
 <div class="hint-block">Please enter your name</div>
 ```
