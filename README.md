@@ -12,6 +12,7 @@ without prior notices. **Yii 2.0 is not ready for production use yet.**
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2/v/stable.png)](https://packagist.org/packages/yiisoft/yii2)
 [![Total Downloads](https://poser.pugx.org/yiisoft/yii2/downloads.png)](https://packagist.org/packages/yiisoft/yii2)
 [![Build Status](https://secure.travis-ci.org/yiisoft/yii2.png)](http://travis-ci.org/yiisoft/yii2) 
+[![Coverage Status](https://coveralls.io/repos/yiisoft/yii2/badge.png?branch=master)](https://coveralls.io/r/yiisoft/yii2)
 [![Dependency Status](https://www.versioneye.com/php/yiisoft:yii2/dev-master/badge.png)](https://www.versioneye.com/php/yiisoft:yii2/dev-master)
 
 
