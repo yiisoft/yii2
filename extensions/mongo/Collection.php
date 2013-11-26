@@ -7,61 +7,48 @@
 
 namespace yii\mongo;
 
-use \yii\base\Component;
+use yii\base\Object;
 use Yii;
 
 /**
- * Class Command
+ * Collection represents the Mongo collection information.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class Command extends Component
+class Collection extends Object
 {
 	/**
-	 * @var Connection the Mongo connection that this command is associated with
+	 * @var \MongoCollection Mongo collection instance.
 	 */
-	public $db;
+	public $mongoCollection;
 
 	/**
-	 * Drops the current database
+	 * Drops this collection.
 	 */
-	public function dropDb()
+	public function drop()
 	{
-		$this->db->db->drop();
+		$this->mongoCollection->drop();
 	}
 
 	/**
-	 * Drops the specified collection.
-	 * @param string $name collection name.
-	 */
-	public function dropCollection($name)
-	{
-		$collection = $this->db->getCollection($name);
-		$collection->drop();
-	}
-
-	/**
-	 * @param $collection
 	 * @param array $query
 	 * @param array $fields
 	 * @return \MongoCursor
 	 */
-	public function find($collection, $query = [], $fields = [])
+	public function find($query = [], $fields = [])
 	{
-		$collection = $this->db->getCollection($collection);
-		return $collection->find($query, $fields);
+		return $this->mongoCollection->find($query, $fields);
 	}
 
 	/**
-	 * @param $collection
 	 * @param array $query
 	 * @param array $fields
 	 * @return array
 	 */
-	public function findAll($collection, $query = [], $fields = [])
+	public function findAll($query = [], $fields = [])
 	{
-		$cursor = $this->find($collection, $query, $fields);
+		$cursor = $this->find($query, $fields);
 		$result = [];
 		foreach ($cursor as $data) {
 			$result[] = $data;
@@ -71,20 +58,18 @@ class Command extends Component
 
 	/**
 	 * Inserts new data into collection.
-	 * @param string $collection name of the collection.
 	 * @param array|object $data data to be inserted.
 	 * @param array $options list of options in format: optionName => optionValue.
 	 * @return \MongoId new record id instance.
 	 * @throws Exception on failure.
 	 */
-	public function insert($collection, $data, $options = [])
+	public function insert($data, $options = [])
 	{
-		$token = 'Inserting data into ' . $collection;
+		$token = 'Inserting data into ' . $this->mongoCollection->getName();
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-			$collection = $this->db->getCollection($collection);
-			$this->tryResultError($collection->insert($data, $options));
+			$this->tryResultError($this->mongoCollection->insert($data, $options));
 			Yii::endProfile($token, __METHOD__);
 			return is_array($data) ? $data['_id'] : $data->_id;
 		} catch (\Exception $e) {
@@ -95,20 +80,18 @@ class Command extends Component
 
 	/**
 	 * Update the existing database data, otherwise insert this data
-	 * @param string $collection name of the collection.
 	 * @param array|object $data data to be updated/inserted.
 	 * @param array $options list of options in format: optionName => optionValue.
 	 * @return \MongoId updated/new record id instance.
 	 * @throws Exception on failure.
 	 */
-	public function save($collection, $data, $options = [])
+	public function save($data, $options = [])
 	{
-		$token = 'Saving data into ' . $collection;
+		$token = 'Saving data into ' . $this->mongoCollection->getName();
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-			$collection = $this->db->getCollection($collection);
-			$this->tryResultError($collection->save($data, $options));
+			$this->tryResultError($this->mongoCollection->save($data, $options));
 			Yii::endProfile($token, __METHOD__);
 			return is_array($data) ? $data['_id'] : $data->_id;
 		} catch (\Exception $e) {
@@ -119,20 +102,18 @@ class Command extends Component
 
 	/**
 	 * Removes data from the collection.
-	 * @param string $collection name of the collection.
 	 * @param array $criteria description of records to remove.
 	 * @param array $options list of options in format: optionName => optionValue.
 	 * @return boolean whether operation was successful.
 	 * @throws Exception on failure.
 	 */
-	public function remove($collection, $criteria = [], $options = [])
+	public function remove($criteria = [], $options = [])
 	{
-		$token = 'Removing data from ' . $collection;
+		$token = 'Removing data from ' . $this->mongoCollection->getName();
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-			$collection = $this->db->getCollection($collection);
-			$this->tryResultError($collection->remove($criteria, $options));
+			$this->tryResultError($this->mongoCollection->remove($criteria, $options));
 			Yii::endProfile($token, __METHOD__);
 			return true;
 		} catch (\Exception $e) {

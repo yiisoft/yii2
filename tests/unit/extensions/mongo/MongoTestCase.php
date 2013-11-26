@@ -14,7 +14,7 @@ class MongoTestCase extends TestCase
 	 */
 	protected $mongoConfig = [
 		'dsn' => 'mongodb://localhost:27017',
-		'dbName' => 'yii2test',
+		'defaultDatabaseName' => 'yii2test',
 	];
 	/**
 	 * @var Connection Mongo connection instance.
@@ -76,8 +76,8 @@ class MongoTestCase extends TestCase
 		}
 		$db = new Connection;
 		$db->dsn = $this->mongoConfig['dsn'];
-		if (isset($this->mongoConfig['dbName'])) {
-			$db->dbName = $this->mongoConfig['dbName'];
+		if (isset($this->mongoConfig['defaultDatabaseName'])) {
+			$db->defaultDatabaseName = $this->mongoConfig['defaultDatabaseName'];
 		}
 		if (isset($this->mongoConfig['options'])) {
 			$db->options = $this->mongoConfig['options'];

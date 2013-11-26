@@ -24,14 +24,16 @@ use Yii;
 class Connection extends Component
 {
 	/**
-	 * @var \MongoCollection[] list of Mongo collection available in database.
+	 * @var string host:port
+	 *
+	 * Correct syntax is:
+	 * mongodb://[username:password@]host1[:port1][,host2[:port2:],...][/dbname]
+	 * For example:
+	 * mongodb://localhost:27017
+	 * mongodb://developer:somepassword@localhost:27017
+	 * mongodb://developer:somepassword@localhost:27017/mydatabase
 	 */
-	private $_collections = [];
-
-	/**
-	 * @var \MongoClient mongo client instance.
-	 */
-	public $client;
+	public $dsn;
 	/**
 	 * @var array connection options.
 	 * for example:
@@ -45,34 +47,83 @@ class Connection extends Component
 	 */
 	public $options = [];
 	/**
-	 * @var string host:port
-	 *
-	 * Correct syntax is:
-	 * mongodb://[username:password@]host1[:port1][,host2[:port2:],...]
-	 * For example: mongodb://localhost:27017
+	 * @var string name of the Mongo database to use by default.
 	 */
-	public $dsn;
+	public $defaultDatabaseName;
 	/**
-	 * @var string name of the Mongo database to use
+	 * @var \MongoClient mongo client instance.
 	 */
-	public $dbName;
+	public $mongoClient;
 	/**
-	 * @var \MongoDb Mongo database instance.
+	 * @var Database[] list of Mongo databases
 	 */
-	public $db;
+	private $_databases = [];
 
 	/**
 	 * Returns the Mongo collection with the given name.
-	 * @param string $name collection name
+	 * @param string|null $name collection name, if null default one will be used.
 	 * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
-	 * @return \MongoCollection mongo collection instance.
+	 * @return Database database instance.
+	 */
+	public function getDatabase($name = null, $refresh = false)
+	{
+		if ($name === null) {
+			$name = $this->fetchDefaultDatabaseName();
+		}
+		if ($refresh || !array_key_exists($name, $this->_databases)) {
+			$this->_databases[$name] = $this->selectDatabase($name);
+		}
+		return $this->_databases[$name];
+	}
+
+	/**
+	 * Returns [[defaultDatabaseName]] value, if it is not set,
+	 * attempts to determine it from [[dsn]] value.
+	 * @return string default database name
+	 * @throws \yii\base\InvalidConfigException if unable to determine default database name.
+	 */
+	protected function fetchDefaultDatabaseName()
+	{
+		if ($this->defaultDatabaseName === null) {
+			if (preg_match('/^mongodb:\\/\\/.+\\/(.+)$/s', $this->dsn, $matches)) {
+				$this->defaultDatabaseName = $matches[1];
+			} else {
+				throw new InvalidConfigException("Unable to determine default database name from dsn.");
+			}
+		}
+		return $this->defaultDatabaseName;
+	}
+
+	/**
+	 * Selects the database with given name.
+	 * @param string $name database name.
+	 * @return Database database instance.
+	 */
+	protected function selectDatabase($name)
+	{
+		$this->open();
+		return Yii::createObject([
+			'class' => 'yii\mongo\Database',
+			'mongoDb' => $this->mongoClient->selectDB($name)
+		]);
+	}
+
+	/**
+	 * Returns the Mongo collection with the given name.
+	 * @param string|array $name collection name. If string considered as  the name of the collection
+	 * inside the default database. If array - first element considered as the name of the database,
+	 * second - as name of collection inside that database
+	 * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
+	 * @return Collection Mongo collection instance.
 	 */
 	public function getCollection($name, $refresh = false)
 	{
-		if ($refresh || !array_key_exists($name, $this->_collections)) {
-			$this->_collections[$name] = $this->client->selectCollection($this->dbName, $name);
+		if (is_array($name)) {
+			list ($dbName, $collectionName) = $name;
+			return $this->getDatabase($dbName)->getCollection($collectionName, $refresh);
+		} else {
+			return $this->getDatabase()->getCollection($name, $refresh);
 		}
-		return $this->_collections[$name];
 	}
 
 	/**
@@ -81,7 +132,7 @@ class Connection extends Component
 	 */
 	public function getIsActive()
 	{
-		return is_object($this->client) && $this->client->connected;
+		return is_object($this->mongoClient) && $this->mongoClient->connected;
 	}
 
 	/**
@@ -91,7 +142,7 @@ class Connection extends Component
 	 */
 	public function open()
 	{
-		if ($this->client === null) {
+		if ($this->mongoClient === null) {
 			if (empty($this->dsn)) {
 				throw new InvalidConfigException($this->className() . '::dsn cannot be empty.');
 			}
@@ -101,9 +152,10 @@ class Connection extends Component
 				Yii::beginProfile($token, __METHOD__);
 				$options = $this->options;
 				$options['connect'] = true;
-				$options['db'] = $this->dbName;
-				$this->client = new \MongoClient($this->dsn, $options);
-				$this->db = $this->client->selectDB($this->dbName);
+				if ($this->defaultDatabaseName !== null) {
+					$options['db'] = $this->defaultDatabaseName;
+				}
+				$this->mongoClient = new \MongoClient($this->dsn, $options);
 				Yii::endProfile($token, __METHOD__);
 			} catch (\Exception $e) {
 				Yii::endProfile($token, __METHOD__);
@@ -118,32 +170,10 @@ class Connection extends Component
 	 */
 	public function close()
 	{
-		if ($this->client !== null) {
+		if ($this->mongoClient !== null) {
 			Yii::trace('Closing Mongo connection: ' . $this->dsn, __METHOD__);
-			$this->client = null;
-			$this->db = null;
+			$this->mongoClient = null;
+			$this->_databases = [];
 		}
-	}
-
-	/**
-	 * Returns the query builder for the current DB connection.
-	 * @return QueryBuilder the query builder for the current DB connection.
-	 */
-	public function getQueryBuilder()
-	{
-		return new QueryBuilder($this);
-	}
-
-	/**
-	 * Creates a command for execution.
-	 * @return Command the Mongo command
-	 */
-	public function createCommand()
-	{
-		$this->open();
-		$command = new Command([
-			'db' => $this,
-		]);
-		return $command;
 	}
 }

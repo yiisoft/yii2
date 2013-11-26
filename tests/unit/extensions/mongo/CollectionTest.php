@@ -5,7 +5,7 @@ namespace yiiunit\extensions\mongo;
 /**
  * @group mongo
  */
-class CommandTest extends MongoTestCase
+class CollectionTest extends MongoTestCase
 {
 	protected function tearDown()
 	{
@@ -17,12 +17,12 @@ class CommandTest extends MongoTestCase
 
 	public function testInsert()
 	{
-		$command = $this->getConnection()->createCommand();
+		$collection = $this->getConnection()->getCollection('customer');
 		$data = [
 			'name' => 'customer 1',
 			'address' => 'customer 1 address',
 		];
-		$id = $command->insert('customer', $data);
+		$id = $collection->insert($data);
 		$this->assertTrue($id instanceof \MongoId);
 		$this->assertNotEmpty($id->__toString());
 	}
@@ -32,26 +32,26 @@ class CommandTest extends MongoTestCase
 	 */
 	public function testFindAll()
 	{
-		$command = $this->getConnection()->createCommand();
+		$collection = $this->getConnection()->getCollection('customer');
 		$data = [
 			'name' => 'customer 1',
 			'address' => 'customer 1 address',
 		];
-		$id = $command->insert('customer', $data);
+		$id = $collection->insert($data);
 
-		$rows = $command->findAll('customer');
+		$rows = $collection->findAll();
 		$this->assertEquals(1, count($rows));
 		$this->assertEquals($id, $rows[0]['_id']);
 	}
 
 	public function testSave()
 	{
-		$command = $this->getConnection()->createCommand();
+		$collection = $this->getConnection()->getCollection('customer');
 		$data = [
 			'name' => 'customer 1',
 			'address' => 'customer 1 address',
 		];
-		$id = $command->save('customer', $data);
+		$id = $collection->save($data);
 		$this->assertTrue($id instanceof \MongoId);
 		$this->assertNotEmpty($id->__toString());
 	}
@@ -61,18 +61,18 @@ class CommandTest extends MongoTestCase
 	 */
 	public function testUpdate()
 	{
-		$command = $this->getConnection()->createCommand();
+		$collection = $this->getConnection()->getCollection('customer');
 		$data = [
 			'name' => 'customer 1',
 			'address' => 'customer 1 address',
 		];
-		$newId = $command->save('customer', $data);
+		$newId = $collection->save($data);
 
-		$updatedId = $command->save('customer', $data);
+		$updatedId = $collection->save($data);
 		$this->assertEquals($newId, $updatedId, 'Unable to update data!');
 
 		$data['_id'] = $newId->__toString();
-		$updatedId = $command->save('customer', $data);
+		$updatedId = $collection->save($data);
 		$this->assertEquals($newId, $updatedId, 'Unable to updated data by string id!');
 	}
 
@@ -81,16 +81,16 @@ class CommandTest extends MongoTestCase
 	 */
 	public function testRemove()
 	{
-		$command = $this->getConnection()->createCommand();
+		$collection = $this->getConnection()->getCollection('customer');
 		$data = [
 			'name' => 'customer 1',
 			'address' => 'customer 1 address',
 		];
-		$id = $command->insert('customer', $data);
+		$id = $collection->insert($data);
 
-		$command->remove('customer', ['_id' => $id]);
+		$collection->remove(['_id' => $id]);
 
-		$rows = $command->findAll('customer');
+		$rows = $collection->findAll();
 		$this->assertEquals(0, count($rows));
 	}
 }

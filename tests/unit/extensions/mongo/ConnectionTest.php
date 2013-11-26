@@ -2,7 +2,9 @@
 
 namespace yiiunit\extensions\mongo;
 
+use yii\mongo\Collection;
 use yii\mongo\Connection;
+use yii\mongo\Database;
 
 /**
  * @group mongo
@@ -17,7 +19,7 @@ class ConnectionTest extends MongoTestCase
 		$connection->open();
 
 		$this->assertEquals($params['dsn'], $connection->dsn);
-		$this->assertEquals($params['dbName'], $connection->dbName);
+		$this->assertEquals($params['defaultDatabaseName'], $connection->defaultDatabaseName);
 		$this->assertEquals($params['options'], $connection->options);
 	}
 
@@ -26,17 +28,15 @@ class ConnectionTest extends MongoTestCase
 		$connection = $this->getConnection(false, false);
 
 		$this->assertFalse($connection->isActive);
-		$this->assertEquals(null, $connection->client);
+		$this->assertEquals(null, $connection->mongoClient);
 
 		$connection->open();
 		$this->assertTrue($connection->isActive);
-		$this->assertTrue(is_object($connection->client));
-		$this->assertTrue(is_object($connection->db));
+		$this->assertTrue(is_object($connection->mongoClient));
 
 		$connection->close();
 		$this->assertFalse($connection->isActive);
-		$this->assertEquals(null, $connection->client);
-		$this->assertEquals(null, $connection->db);
+		$this->assertEquals(null, $connection->mongoClient);
 
 		$connection = new Connection;
 		$connection->dsn = 'unknown::memory:';
@@ -44,10 +44,52 @@ class ConnectionTest extends MongoTestCase
 		$connection->open();
 	}
 
+	public function testGetDatabase()
+	{
+		$connection = $this->getConnection();
+
+		$database = $connection->getDatabase($connection->defaultDatabaseName);
+		$this->assertTrue($database instanceof Database);
+		$this->assertTrue($database->mongoDb instanceof \MongoDB);
+
+		$database2 = $connection->getDatabase($connection->defaultDatabaseName);
+		$this->assertTrue($database === $database2);
+
+		$databaseRefreshed = $connection->getDatabase($connection->defaultDatabaseName, true);
+		$this->assertFalse($database === $databaseRefreshed);
+	}
+
+	/**
+	 * @depends testGetDatabase
+	 */
+	public function testGetDefaultDatabase()
+	{
+		$connection = new Connection();
+		$connection->dsn = $this->mongoConfig['dsn'];
+		$connection->defaultDatabaseName = $this->mongoConfig['defaultDatabaseName'];
+		$database = $connection->getDatabase();
+		$this->assertTrue($database instanceof Database, 'Unable to get default database!');
+
+		$connection = new Connection();
+		$connection->dsn = $this->mongoConfig['dsn'] . '/' . $this->mongoConfig['defaultDatabaseName'];
+		$database = $connection->getDatabase();
+		$this->assertTrue($database instanceof Database, 'Unable to determine default database from dsn!');
+	}
+
+	/**
+	 * @depends testGetDefaultDatabase
+	 */
 	public function testGetCollection()
 	{
-		$connection = $this->getConnection(false);
+		$connection = $this->getConnection();
+
 		$collection = $connection->getCollection('customer');
-		$this->assertTrue($collection instanceof \MongoCollection);
+		$this->assertTrue($collection instanceof Collection);
+
+		$collection2 = $connection->getCollection('customer');
+		$this->assertTrue($collection === $collection2);
+
+		$collection2 = $connection->getCollection('customer', true);
+		$this->assertFalse($collection === $collection2);
 	}
 }
