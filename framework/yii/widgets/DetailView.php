@@ -186,6 +186,10 @@ class DetailView extends Widget
 				throw new InvalidConfigException('The attribute configuration must be an array.');
 			}
 
+			if (isset($attribute['visible']) && !$attribute['visible']) {
+				continue;
+			}
+
 			if (!isset($attribute['format'])) {
 				$attribute['format'] = 'text';
 			}
