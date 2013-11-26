@@ -107,7 +107,9 @@ It supports the same interface and features except the following limitations and
   It defines the fields to retrieve from a document.
 - `via`-relations can not be defined via a table as there are not tables in elasticsearch. You can only define relations via other records.
 - As elasticsearch is a data storage and search engine there is of course support added for search your records.
-  TBD ...
+  There are `query()`, `filter()` and `addFacets()` methods that allows to compose an elasticsearch query.
+  See the usage example below on how they work and check out the [Query DSL](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html)
+  on how to compose `query` and `filter` parts.
 - It is also possible to define relations from elasticsearch ActiveRecords to normal ActiveRecord classes and vice versa.
 
 Elasticsearch separates primary key from attributes. You need to set the `id` property of the record to set its primary key.
@@ -123,5 +125,24 @@ $customer->save();
 $customer = Customer::get(1); // get a record by pk
 $customers = Customer::get([1,2,3]); // get a records multiple by pk
 $customer = Customer::find()->where(['name' => 'test'])->one(); // find by query
-$customer = Customer::find()->active()->all(); // find all by query (using the `active` scope)
+$customers = Customer::find()->active()->all(); // find all by query (using the `active` scope)
+
+// http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-field-query.html
+$result = Article::find()->query(["field" => ["title" => "yii"]])->all(); // articles whose title contains "yii"
+
+// http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-flt-query.html
+$query = Article::find()->query([
+	"fuzzy_like_this" => [
+		"fields" => ["title", "description"],
+		"like_text" => "This query will return articles that are similar to this text :-)",
+        "max_query_terms" : 12
+	]
+]);
+
+$query->all(); // gives you all the documents
+// you can add facets to your search:
+$query->addStatisticalFacet('click_stats', ['field' => 'visit_count']);
+$query->search(); // gives you all the records + stats about the visit_count field. e.g. mean, sum, min, max etc...
 ```
+
+And there is so much more in it. "it’s endless what you can build"[¹](http://www.elasticsearch.org/)
