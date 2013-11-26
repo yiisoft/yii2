@@ -102,7 +102,7 @@ class NavBar extends Widget
 		return Html::button("{$screenReader}\n{$bar}\n{$bar}\n{$bar}", [
 			'class' => 'navbar-toggle',
 			'data-toggle' => 'collapse',
-			'data-target' => '.navbar-ex1-collapse',
+			'data-target' => '#'. $this->options['id'] .' .navbar-ex1-collapse',
 		]);
 	}
 }
