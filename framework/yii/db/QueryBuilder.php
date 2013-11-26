@@ -300,7 +300,7 @@ class QueryBuilder extends \yii\base\Object
 	{
 		return "DROP TABLE " . $this->db->quoteTableName($table);
 	}
-	
+
 	/**
 	 * Builds a SQL statement for adding a primary key constraint to an existing table.
 	 * @param string $name the name of the primary key constraint.
@@ -317,12 +317,12 @@ class QueryBuilder extends \yii\base\Object
 		foreach ($columns as $i => $col) {
 			$columns[$i] = $this->db->quoteColumnName($col);
 		}
-		
+
 		return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
 			. $this->db->quoteColumnName($name) . '  PRIMARY KEY ('
 			. implode(', ', $columns). ' )';
 	}
-	
+
 	/**
 	 * Builds a SQL statement for removing a primary key constraint to an existing table.
 	 * @param string $name the name of the primary key constraint to be removed.
@@ -999,7 +999,7 @@ class QueryBuilder extends \yii\base\Object
 	 * operator is `LIKE` or `OR LIKE` and empty if operator is `NOT LIKE` or `OR NOT LIKE`.
 	 * @param array $params the binding parameters to be populated
 	 * @return string the generated SQL expression
-	 * @throws Exception if wrong number of operands have been given.
+	 * @throws InvalidParamException if wrong number of operands have been given.
 	 */
 	public function buildLikeCondition($operator, $operands, &$params)
 	{
