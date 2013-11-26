@@ -228,7 +228,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	{
 		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
 	}
-	
+
 	/**
 	 * Builds a SQL statement for adding a primary key constraint to an existing table.
 	 * @param string $name the name of the primary key constraint.
@@ -255,7 +255,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	}
 
 	/**
-	 * @inheritDocs
+	 * {@inheritdoc}
 	 */
 	public function buildLimit($limit, $offset)
 	{
