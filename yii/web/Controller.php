@@ -79,14 +79,14 @@ class Controller extends \yii\base\Controller
 				'params' => implode(', ', $missing),
 			]));
 		}
-		
+
 		$this->actionParams = $actionParams;
 
 		return $args;
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function beforeAction($action)
 	{

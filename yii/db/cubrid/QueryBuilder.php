@@ -69,7 +69,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	}
 
 	/**
-	 * @inheritDocs
+	 * {@inheritdoc}
 	 */
 	public function buildLimit($limit, $offset)
 	{
