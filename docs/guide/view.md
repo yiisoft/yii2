@@ -254,24 +254,24 @@ basic one without any widgets or extra markup.
 <?php
 use yii\helpers\Html;
 ?>
-<?php $this->beginPage(); ?>
+<?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
 	<meta charset="<?= Yii::$app->charset ?>"/>
 	<title><?= Html::encode($this->title) ?></title>
-	<?php $this->head(); ?>
+	<?php $this->head() ?>
 </head>
 <body>
-<?php $this->beginBody(); ?>
+<?php $this->beginBody() ?>
 	<div class="container">
 		<?= $content ?>
 	</div>
 	<footer class="footer">© 2013 me :)</footer>
-<?php $this->endBody(); ?>
+<?php $this->endBody() ?>
 </body>
 </html>
-<?php $this->endPage(); ?>
+<?php $this->endPage() ?>
 ```
 
 In the markup above there's some code. First of all, `$content` is a variable that will contain result of views rendered
