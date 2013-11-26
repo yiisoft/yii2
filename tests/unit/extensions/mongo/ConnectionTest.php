@@ -2,9 +2,11 @@
 
 namespace yiiunit\extensions\mongo;
 
-
 use yii\mongo\Connection;
 
+/**
+ * @group mongo
+ */
 class ConnectionTest extends MongoTestCase
 {
 	public function testConstruct()
@@ -38,7 +40,7 @@ class ConnectionTest extends MongoTestCase
 
 		$connection = new Connection;
 		$connection->dsn = 'unknown::memory:';
-		$this->setExpectedException('yii\db\Exception');
+		$this->setExpectedException('yii\mongo\Exception');
 		$connection->open();
 	}
 

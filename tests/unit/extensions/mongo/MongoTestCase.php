@@ -88,4 +88,15 @@ class MongoTestCase extends TestCase
 		$this->mongo = $db;
 		return $db;
 	}
+
+	/**
+	 * Drops the specified collection.
+	 * @param string $name collection name.
+	 */
+	protected function dropCollection($name)
+	{
+		if ($this->mongo) {
+			$this->mongo->getCollection($name)->drop();
+		}
+	}
 }

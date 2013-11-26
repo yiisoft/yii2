@@ -9,7 +9,6 @@ namespace yii\mongo;
 
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\db\Exception;
 use Yii;
 
 /**
@@ -102,12 +101,13 @@ class Connection extends Component
 				Yii::beginProfile($token, __METHOD__);
 				$options = $this->options;
 				$options['connect'] = true;
+				$options['db'] = $this->dbName;
 				$this->client = new \MongoClient($this->dsn, $options);
 				$this->db = $this->client->selectDB($this->dbName);
 				Yii::endProfile($token, __METHOD__);
 			} catch (\Exception $e) {
 				Yii::endProfile($token, __METHOD__);
-				throw new Exception($e->getMessage(), [], (int)$e->getCode(), $e);
+				throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
 			}
 		}
 	}
