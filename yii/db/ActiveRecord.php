@@ -316,9 +316,9 @@ class ActiveRecord extends Model
 	 * (because another user has modified the data), a [[StaleObjectException]] exception will be thrown,
 	 * and the update or deletion is skipped.
 	 *
-	 * Optimized locking is only supported by [[update()]] and [[delete()]].
+	 * Optimistic locking is only supported by [[update()]] and [[delete()]].
 	 *
-	 * To use optimized locking:
+	 * To use Optimistic locking:
 	 *
 	 * 1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
 	 *    Override this method to return the name of this column.
@@ -469,9 +469,9 @@ class ActiveRecord extends Model
 	 *
 	 * @param string $class the class name of the related record
 	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
-	 * the columns in the table associated with the `$class` model, while the values of the
-	 * array refer to the corresponding columns in the table associated with this AR class.
-	 * @return ActiveRelation the relation object.
+	 * the attributes of the record associated with the `$class` model, while the values of the
+	 * array refer to the corresponding attributes in **this** AR class.
+	 * @return ActiveRelationInterface the relation object.
 	 */
 	public function hasOne($class, $link)
 	{
@@ -508,9 +508,9 @@ class ActiveRecord extends Model
 	 *
 	 * @param string $class the class name of the related record
 	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
-	 * the columns in the table associated with the `$class` model, while the values of the
-	 * array refer to the corresponding columns in the table associated with this AR class.
-	 * @return ActiveRelation the relation object.
+	 * the attributes of the record associated with the `$class` model, while the values of the
+	 * array refer to the corresponding attributes in **this** AR class.
+	 * @return ActiveRelationInterface the relation object.
 	 */
 	public function hasMany($class, $link)
 	{
