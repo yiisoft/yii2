@@ -105,7 +105,7 @@ class Cache extends \yii\caching\Cache
 	}
 
 	/**
-	 * @inheritDocs
+	 * {@inheritdoc}
 	 */
 	protected function getValue($key)
 	{
@@ -113,7 +113,7 @@ class Cache extends \yii\caching\Cache
 	}
 
 	/**
-	 * @inheritDocs
+	 * {@inheritdoc}
 	 */
 	protected function getValues($keys)
 	{
@@ -127,7 +127,7 @@ class Cache extends \yii\caching\Cache
 	}
 
 	/**
-	 * @inheritDocs
+	 * {@inheritdoc}
 	 */
 	protected function setValue($key, $value, $expire)
 	{
@@ -140,7 +140,7 @@ class Cache extends \yii\caching\Cache
 	}
 
 	/**
-	 * @inheritDocs
+	 * {@inheritdoc}
 	 */
 	protected function setValues($data, $expire)
 	{
@@ -174,7 +174,7 @@ class Cache extends \yii\caching\Cache
 	}
 
 	/**
-	 * @inheritDocs
+	 * {@inheritdoc}
 	 */
 	protected function addValue($key, $value, $expire)
 	{
@@ -187,7 +187,7 @@ class Cache extends \yii\caching\Cache
 	}
 
 	/**
-	 * @inheritDocs
+	 * {@inheritdoc}
 	 */
 	protected function deleteValue($key)
 	{
@@ -195,7 +195,7 @@ class Cache extends \yii\caching\Cache
 	}
 
 	/**
-	 * @inheritDocs
+	 * {@inheritdoc}
 	 */
 	protected function flushValues()
 	{

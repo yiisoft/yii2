@@ -63,7 +63,7 @@ abstract class Generator extends Model
 	abstract public function generate();
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function init()
 	{
@@ -164,7 +164,7 @@ abstract class Generator extends Model
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 *
 	 * Child classes should override this method like the following so that the parent
 	 * rules are included:

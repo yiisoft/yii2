@@ -40,7 +40,7 @@ class <?= $searchModelClass ?> extends Model
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function attributeLabels()
 	{
