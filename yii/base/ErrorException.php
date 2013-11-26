@@ -20,7 +20,7 @@ class ErrorException extends Exception
 	protected $severity;
 
 	/**
-	 * Constructs the exception
+	 * Constructs the exception.
 	 * @link http://php.net/manual/en/errorexception.construct.php
 	 * @param $message [optional]
 	 * @param $code [optional]
@@ -51,7 +51,6 @@ class ErrorException extends Exception
 				}
 
 				// XDebug has a different key name
-				$frame['args'] = [];
 				if (isset($frame['params']) && !isset($frame['args'])) {
 					$frame['args'] = $frame['params'];
 				}
@@ -64,17 +63,7 @@ class ErrorException extends Exception
 	}
 
 	/**
-	 * Gets the exception severity
-	 * @link http://php.net/manual/en/errorexception.getseverity.php
-	 * @return int the severity level of the exception.
-	 */
-	final public function getSeverity()
-	{
-		return $this->severity;
-	}
-
-	/**
-	 * Returns if error is one of fatal type
+	 * Returns if error is one of fatal type.
 	 *
 	 * @param array $error error got from error_get_last()
 	 * @return bool if error is one of fatal type
@@ -82,6 +71,16 @@ class ErrorException extends Exception
 	public static function isFatalError($error)
 	{
 		return isset($error['type']) && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING]);
+	}
+
+	/**
+	 * Gets the exception severity.
+	 * @link http://php.net/manual/en/errorexception.getseverity.php
+	 * @return int the severity level of the exception.
+	 */
+	final public function getSeverity()
+	{
+		return $this->severity;
 	}
 
 	/**
