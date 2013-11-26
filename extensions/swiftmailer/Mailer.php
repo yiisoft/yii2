@@ -123,7 +123,7 @@ class Mailer extends BaseMailer
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	protected function sendMessage($message)
 	{
