@@ -1,10 +1,11 @@
 Using template engines
 ======================
 
-By default Yii uses PHP as template language, but you can configure it to support other rendering engines, such as [Twig](http://twig.sensiolabs.org/) or [Smarty](http://www.smarty.net/).
+By default Yii uses PHP as template language, but you can configure it to support other rendering engines, such as
+[Twig](http://twig.sensiolabs.org/) or [Smarty](http://www.smarty.net/).
 
-The `view` component is responsible for rendering views. You can add
-a custom template engines by reconfiguring this component's behavior:
+The `view` component is responsible for rendering views. You can add a custom template engines by reconfiguring this
+component's behavior:
 
 ```php
 [
@@ -13,11 +14,13 @@ a custom template engines by reconfiguring this component's behavior:
 			'class' => 'yii\web\View',
 			'renderers' => [
 				'tpl' => [
-					'class' => 'yii\renderers\SmartyViewRenderer',
+					'class' => 'yii\smarty\ViewRenderer',
+					//'cachePath' => '@runtime/Smarty/cache',
 				],
 				'twig' => [
-					'class' => 'yii\renderers\TwigViewRenderer',
-					'twigPath' => '@app/vendors/Twig',
+					'class' => 'yii\twig\ViewRenderer',
+					//'cachePath' => '@runtime/Twig/cache',
+					//'options' => [], /*  Array of twig options */
 				],
 				// ...
 			],
@@ -26,7 +29,15 @@ a custom template engines by reconfiguring this component's behavior:
 ]
 ```
 
-Note that the Smarty and Twig packages themselves are not bundled with Yii. You must download them yourself. Then unpack the packages and place the resulting files in a logical location, such as the application's `protected/vendor` folder. Finally, specify the correct `smartyPath` or `twigPath`, as in the code above (for Twig).
+In the config above we're using Smarty and Twig. In order to get these extensions in your project you need to modify
+your `composer.json` to include
+
+```
+"yiisoft/yii2-smarty": "*",
+"yiisoft/yii2-twig": "*",
+```
+
+in `require` section and then run `composer update`.
 
 Twig
 ----
