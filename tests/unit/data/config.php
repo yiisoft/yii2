@@ -50,7 +50,7 @@ return [
 		],
 	],
 	'mongo' => [
-		'dsn' => 'mongodb://localhost:27017',
+		'dsn' => 'mongodb://travis:test@localhost:27017',
 		'dbName' => 'yii2test',
 		'options' => [],
 	]

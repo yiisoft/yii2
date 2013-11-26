@@ -15,6 +15,7 @@ class MongoTestCase extends TestCase
 	protected $mongoConfig = [
 		'dsn' => 'mongodb://localhost:27017',
 		'defaultDatabaseName' => 'yii2test',
+		'options' => [],
 	];
 	/**
 	 * @var Connection Mongo connection instance.
