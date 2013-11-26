@@ -15,6 +15,7 @@ return [
 
 	'components.mail' => [
 		'class' => 'yii\swiftmailer\Mailer',
+		'viewPath' => '@common/mails',
 	],
 
 	'components.db' => [
