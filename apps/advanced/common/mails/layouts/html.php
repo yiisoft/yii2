@@ -4,7 +4,7 @@ use yii\mail\BaseMessage;
 
 /**
  * @var \yii\web\View $this
- * @var BaseMessage $message
+ * @var BaseMessage $content
  */
 ?>
 <?php $this->beginPage() ?>
