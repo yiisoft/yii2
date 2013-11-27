@@ -31,7 +31,8 @@ use yii\web\HttpException;
  * @property \yii\web\UrlManager $urlManager The URL manager for this application. This property is read-only.
  * @property string $vendorPath The directory that stores vendor files. Defaults to "vendor" directory under
  * [[basePath]].
- * @property View $view The view object that is used to render various view files. This property is read-only.
+ * @property View|\yii\web\View $view The view object that is used to render various view files. This property
+ * is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -78,13 +79,13 @@ abstract class Application extends Module
 	 * @var string the language that is meant to be used for end users.
 	 * @see sourceLanguage
 	 */
-	public $language = 'en_US';
+	public $language = 'en-US';
 	/**
 	 * @var string the language that the application is written in. This mainly refers to
 	 * the language that the messages and view files are written in.
 	 * @see language
 	 */
-	public $sourceLanguage = 'en_US';
+	public $sourceLanguage = 'en-US';
 	/**
 	 * @var Controller the currently active controller instance
 	 */
@@ -126,6 +127,11 @@ abstract class Application extends Module
 	 * ~~~
 	 */
 	public $extensions = [];
+	/**
+	 * @var \Exception the exception that is being handled currently. When this is not null,
+	 * it means the application is handling some exception and extra care should be taken.
+	 */
+	public $exception;
 
 	/**
 	 * @var string Used to reserve memory for fatal error handler.
@@ -193,7 +199,7 @@ abstract class Application extends Module
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function init()
 	{
@@ -259,7 +265,7 @@ abstract class Application extends Module
 	}
 
 	/**
-	 * Sets the root directory of the applicaition and the @app alias.
+	 * Sets the root directory of the application and the @app alias.
 	 * This method can only be invoked at the beginning of the constructor.
 	 * @param string $path the root directory of the application.
 	 * @property string the root directory of the application.
@@ -427,7 +433,7 @@ abstract class Application extends Module
 
 	/**
 	 * Returns the view object.
-	 * @return View the view object that is used to render various view files.
+	 * @return View|\yii\web\View the view object that is used to render various view files.
 	 */
 	public function getView()
 	{
@@ -486,6 +492,8 @@ abstract class Application extends Module
 	 */
 	public function handleException($exception)
 	{
+		$this->exception = $exception;
+
 		// disable error capturing to avoid recursive errors while handling exceptions
 		restore_error_handler();
 		restore_exception_handler();
@@ -573,6 +581,7 @@ abstract class Application extends Module
 
 		if (ErrorException::isFatalError($error)) {
 			$exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
+			$this->exception = $exception;
 			// use error_log because it's too late to use Yii log
 			error_log($exception);
 
@@ -616,10 +625,8 @@ abstract class Application extends Module
 	{
 		$category = get_class($exception);
 		if ($exception instanceof HttpException) {
-			/** @var $exception HttpException */
 			$category .= '\\' . $exception->statusCode;
 		} elseif ($exception instanceof \ErrorException) {
-			/** @var $exception \ErrorException */
 			$category .= '\\' . $exception->getSeverity();
 		}
 		Yii::error((string)$exception, $category);

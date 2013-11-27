@@ -48,7 +48,7 @@ EOD;
 	public function getDetail()
 	{
 		$timings = $this->calculateTimings();
-		ArrayHelper::multisort($timings, 3, true);
+		ArrayHelper::multisort($timings, 3, SORT_DESC);
 		$rows = [];
 		foreach ($timings as $timing) {
 			$duration = sprintf('%.1f ms', $timing[3] * 1000);

@@ -138,11 +138,15 @@ class Schema extends \yii\db\Schema
 			foreach ($columns as $info) {
 				$column = $this->loadColumnSchema($info);
 				$table->columns[$column->name] = $column;
-				if ($column->isPrimaryKey) {
-					$table->primaryKey[] = $column->name;
-					if ($column->autoIncrement) {
-						$table->sequenceName = '';
-					}
+			}
+
+			$primaryKeys = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $table->name);
+			foreach ($primaryKeys as $key) {
+				$column = $table->columns[$key['ATTR_NAME']];
+				$column->isPrimaryKey = true;
+				$table->primaryKey[] = $column->name;
+				if ($column->autoIncrement) {
+					$table->sequenceName = '';
 				}
 			}
 
@@ -176,7 +180,7 @@ class Schema extends \yii\db\Schema
 
 		$column->name = $info['Field'];
 		$column->allowNull = $info['Null'] === 'YES';
-		$column->isPrimaryKey = strpos($info['Key'], 'PRI') !== false;
+		$column->isPrimaryKey = false; // primary key will be set by loadTableSchema() later
 		$column->autoIncrement = stripos($info['Extra'], 'auto_increment') !== false;
 
 		$column->dbType = strtolower($info['Type']);

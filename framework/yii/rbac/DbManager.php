@@ -277,6 +277,18 @@ class DbManager extends Manager
 	}
 
 	/**
+	 * Revokes all authorization assignments from a user.
+	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @return boolean whether removal is successful
+	 */
+	public function revokeAll($userId)
+	{
+		return $this->db->createCommand()
+						->delete($this->assignmentTable, ['user_id' => $userId])
+						->execute() > 0;
+	}
+
+	/**
 	 * Returns a value indicating whether the item has been assigned to the user.
 	 * @param mixed $userId the user ID (see [[User::id]])
 	 * @param string $itemName the item name
@@ -392,7 +404,7 @@ class DbManager extends Manager
 				->where(['user_id' => $userId, 'name' => new Expression('item_name')])
 				->createCommand($this->db);
 		} else {
-			$command = $query->select('name', 'type', 'description', 't1.biz_rule', 't1.data')
+			$command = $query->select(['name', 'type', 'description', 't1.biz_rule', 't1.data'])
 				->from([$this->itemTable . ' t1', $this->assignmentTable . ' t2'])
 				->where(['user_id' => $userId, 'type' => $type, 'name' => new Expression('item_name')])
 				->createCommand($this->db);

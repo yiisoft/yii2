@@ -14,6 +14,9 @@ use yii\base\InvalidConfigException;
 /**
  * I18N provides features related with internationalization (I18N) and localization (L10N).
  *
+ * I18N is configured as an application component in [[yii\base\Application]] by default.
+ * You can access that instance via `Yii::$app->i18n`.
+ *
  * @property MessageFormatter $messageFormatter The message formatter to be used to format message via ICU
  * message format. Note that the type of this property differs in getter and setter. See
  * [[getMessageFormatter()]] and [[setMessageFormatter()]] for details.
@@ -50,14 +53,14 @@ class I18N extends Component
 		if (!isset($this->translations['yii'])) {
 			$this->translations['yii'] = [
 				'class' => 'yii\i18n\PhpMessageSource',
-				'sourceLanguage' => 'en_US',
+				'sourceLanguage' => 'en-US',
 				'basePath' => '@yii/messages',
 			];
 		}
 		if (!isset($this->translations['app'])) {
 			$this->translations['app'] = [
 				'class' => 'yii\i18n\PhpMessageSource',
-				'sourceLanguage' => 'en_US',
+				'sourceLanguage' => 'en-US',
 				'basePath' => '@app/messages',
 			];
 		}
@@ -72,7 +75,7 @@ class I18N extends Component
 	 * @param string $category the message category.
 	 * @param string $message the message to be translated.
 	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
-	 * @param string $language the language code (e.g. `en_US`, `en`).
+	 * @param string $language the language code (e.g. `en-US`, `en`).
 	 * @return string the translated and formatted message.
 	 */
 	public function translate($category, $message, $params, $language)
@@ -86,7 +89,7 @@ class I18N extends Component
 	 *
 	 * @param string $message the message to be formatted.
 	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
-	 * @param string $language the language code (e.g. `en_US`, `en`).
+	 * @param string $language the language code (e.g. `en-US`, `en`).
 	 * @return string the formatted message.
 	 */
 	public function format($message, $params, $language)

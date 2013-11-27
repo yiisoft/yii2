@@ -16,6 +16,22 @@ use yii\helpers\FileHelper;
 /**
  * AssetManager manages asset bundles and asset publishing.
  *
+ * AssetManager is configured as an application component in [[yii\web\Application]] by default.
+ * You can access that instance via `Yii::$app->assetManager`.
+ *
+ * You can modify its configuration by adding an array to your application config under `components`
+ * as it is shown in the following example:
+ *
+ * ~~~
+ * 'assetManager' => [
+ *     'bundles' => [
+ *         // you can override AssetBundle configs here
+ *     ],
+ *     //'linkAssets' => true,
+ *     // ...
+ * ]
+ * ~~~
+ *
  * @property AssetConverterInterface $converter The asset converter. Note that the type of this property
  * differs in getter and setter. See [[getConverter()]] and [[setConverter()]] for details.
  *
@@ -25,9 +41,18 @@ use yii\helpers\FileHelper;
 class AssetManager extends Component
 {
 	/**
-	 * @var array list of available asset bundles. The keys are the class names of the asset bundles,
-	 * and the values are either the configuration arrays for creating the [[AssetBundle]] objects
-	 * or the corresponding asset bundle instances.
+	 * @var array list of available asset bundles. The keys are the class names (without leading backslash)
+	 * of the asset bundles, and the values are either the configuration arrays for creating the [[AssetBundle]]
+	 * objects or the corresponding asset bundle instances. For example, the following code disables
+	 * the bootstrap css file used by Bootstrap widgets (because you want to use your own styles):
+	 *
+	 * ~~~
+	 * [
+	 *     'yii\bootstrap\BootstrapAsset' => [
+	 *         'css' => [],
+	 *     ],
+	 * ]
+	 * ~~~
 	 */
 	public $bundles = [];
 	/**

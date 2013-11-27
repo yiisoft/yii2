@@ -31,7 +31,7 @@ use yii\base\InvalidConfigException;
  * [
  *     'components' => [
  *         'cache' => [
- *             'class' => 'MemCache',
+ *             'class' => 'yii\caching\MemCache',
  *             'servers' => [
  *                 [
  *                     'host' => 'server1',
@@ -199,6 +199,27 @@ class MemCache extends Cache
 		}
 
 		return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $expire);
+	}
+
+	/**
+	 * Stores multiple key-value pairs in cache.
+	 * @param array $data array where key corresponds to cache key while value is the value stored
+	 * @param integer $expire the number of seconds in which the cached values will expire. 0 means never expire.
+	 * @return array array of failed keys. Always empty in case of using memcached.
+	 */
+	protected function setValues($data, $expire)
+	{
+		if ($this->useMemcached) {
+			if ($expire > 0) {
+				$expire += time();
+			} else {
+				$expire = 0;
+			}
+			$this->_cache->setMulti($data, $expire);
+			return [];
+		} else {
+			return parent::setValues($data, $expire);
+		}
 	}
 
 	/**

@@ -22,6 +22,20 @@ use yii\helpers\StringHelper;
  * It holds the [[headers]], [[cookies]] and [[content]] that is to be sent to the client.
  * It also controls the HTTP [[statusCode|status code]].
  *
+ * Response is configured as an application component in [[yii\web\Application]] by default.
+ * You can access that instance via `Yii::$app->response`.
+ *
+ * You can modify its configuration by adding an array to your application config under `components`
+ * as it is shown in the following example:
+ *
+ * ~~~
+ * 'response' => [
+ *     'format' => yii\web\Response::FORMAT_JSON,
+ *     'charset' => 'UTF-8',
+ *     // ...
+ * ]
+ * ~~~
+ *
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
  * @property boolean $isClientError Whether this response indicates a client error. This property is
@@ -112,9 +126,10 @@ class Response extends \yii\base\Response
 	 */
 	public $charset;
 	/**
-	 * @var string
+	 * @var string the HTTP status description that comes together with the status code.
+	 * @see [[httpStatuses]]
 	 */
-	public $statusText;
+	public $statusText = 'OK';
 	/**
 	 * @var string the version of the HTTP protocol to use. If not set, it will be determined via `$_SERVER['SERVER_PROTOCOL']`,
 	 * or '1.1' if that is not available.
@@ -194,7 +209,7 @@ class Response extends \yii\base\Response
 	/**
 	 * @var integer the HTTP status code to send with the response.
 	 */
-	private $_statusCode;
+	private $_statusCode = 200;
 	/**
 	 * @var HeaderCollection
 	 */
@@ -235,16 +250,14 @@ class Response extends \yii\base\Response
 	public function setStatusCode($value, $text = null)
 	{
 		if ($value === null) {
-			$this->_statusCode = null;
-			$this->statusText = null;
-			return;
+			$value = 200;
 		}
 		$this->_statusCode = (int)$value;
 		if ($this->getIsInvalid()) {
 			throw new InvalidParamException("The HTTP status code is invalid: $value");
 		}
 		if ($text === null) {
-			$this->statusText = isset(self::$httpStatuses[$this->_statusCode]) ? self::$httpStatuses[$this->_statusCode] : '';
+			$this->statusText = isset(static::$httpStatuses[$this->_statusCode]) ? static::$httpStatuses[$this->_statusCode] : '';
 		} else {
 			$this->statusText = $text;
 		}
@@ -283,10 +296,10 @@ class Response extends \yii\base\Response
 	{
 		$this->_headers = null;
 		$this->_cookies = null;
-		$this->_statusCode = null;
+		$this->_statusCode = 200;
+		$this->statusText = 'OK';
 		$this->data = null;
 		$this->content = null;
-		$this->statusText = null;
 	}
 
 	/**
@@ -298,9 +311,7 @@ class Response extends \yii\base\Response
 			return;
 		}
 		$statusCode = $this->getStatusCode();
-		if ($statusCode !== null) {
-			header("HTTP/{$this->version} $statusCode {$this->statusText}");
-		}
+		header("HTTP/{$this->version} $statusCode {$this->statusText}");
 		if ($this->_headers) {
 			$headers = $this->getHeaders();
 			foreach ($headers as $name => $values) {

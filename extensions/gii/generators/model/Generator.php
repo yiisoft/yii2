@@ -32,7 +32,7 @@ class Generator extends \yii\gii\Generator
 
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function getName()
 	{
@@ -40,7 +40,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function getDescription()
 	{
@@ -48,27 +48,27 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function rules()
 	{
 		return array_merge(parent::rules(), [
-			['db, ns, tableName, modelClass, baseClass', 'filter', 'filter' => 'trim'],
-			['db, ns, tableName, baseClass', 'required'],
-			['db, modelClass', 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
-			['ns, baseClass', 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'],
-			['tableName', 'match', 'pattern' => '/^(\w+\.)?([\w\*]+)$/', 'message' => 'Only word characters, and optionally an asterisk and/or a dot are allowed.'],
-			['db', 'validateDb'],
-			['ns', 'validateNamespace'],
-			['tableName', 'validateTableName'],
-			['modelClass', 'validateModelClass', 'skipOnEmpty' => false],
-			['baseClass', 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
-			['generateRelations, generateLabelsFromComments', 'boolean'],
+			[['db', 'ns', 'tableName', 'modelClass', 'baseClass'], 'filter', 'filter' => 'trim'],
+			[['db', 'ns', 'tableName', 'baseClass'], 'required'],
+			[['db', 'modelClass'], 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
+			[['ns', 'baseClass'], 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'],
+			[['tableName'], 'match', 'pattern' => '/^(\w+\.)?([\w\*]+)$/', 'message' => 'Only word characters, and optionally an asterisk and/or a dot are allowed.'],
+			[['db'], 'validateDb'],
+			[['ns'], 'validateNamespace'],
+			[['tableName'], 'validateTableName'],
+			[['modelClass'], 'validateModelClass', 'skipOnEmpty' => false],
+			[['baseClass'], 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
+			[['generateRelations', 'generateLabelsFromComments'], 'boolean'],
 		]);
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function attributeLabels()
 	{
@@ -84,7 +84,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function hints()
 	{
@@ -111,19 +111,24 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function autoCompleteData()
 	{
-		return [
-			'tableName' => function () {
-				return $this->getDbConnection()->getSchema()->getTableNames();
-			},
-		];
+		$db = $this->getDbConnection();
+		if ($db !== null) {
+			return [
+				'tableName' => function () use ($db) {
+					return $db->getSchema()->getTableNames();
+				},
+			];
+		} else {
+			return [];
+		}
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function requiredTemplates()
 	{
@@ -131,7 +136,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function stickyAttributes()
 	{
@@ -139,7 +144,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function generate()
 	{
@@ -237,10 +242,10 @@ class Generator extends \yii\gii\Generator
 
 		$rules = [];
 		foreach ($types as $type => $columns) {
-			$rules[] = "['" . implode(', ', $columns) . "', '$type']";
+			$rules[] = "[['" . implode("', '", $columns) . "'], '$type']";
 		}
 		foreach ($lengths as $length => $columns) {
-			$rules[] = "['" . implode(', ', $columns) . "', 'string', 'max' => $length]";
+			$rules[] = "[['" . implode("', '", $columns) . "'], 'string', 'max' => $length]";
 		}
 
 		return $rules;

@@ -63,8 +63,7 @@ class BaseYii
 	 * The array keys are the class names (without leading backslashes), and the array values
 	 * are the corresponding class file paths (or path aliases). This property mainly affects
 	 * how [[autoload()]] works.
-	 * @see import
-	 * @see autoload
+	 * @see autoload()
 	 */
 	public static $classMap = [];
 	/**
@@ -73,8 +72,8 @@ class BaseYii
 	public static $app;
 	/**
 	 * @var array registered path aliases
-	 * @see getAlias
-	 * @see setAlias
+	 * @see getAlias()
+	 * @see setAlias()
 	 */
 	public static $aliases = ['@yii' => __DIR__];
 	/**
@@ -95,7 +94,7 @@ class BaseYii
 	 * ]
 	 * ~~~
 	 *
-	 * @see createObject
+	 * @see createObject()
 	 */
 	public static $objectConfig = [];
 
@@ -136,7 +135,7 @@ class BaseYii
 	 * If this is false and an invalid alias is given, false will be returned by this method.
 	 * @return string|boolean the path corresponding to the alias, false if the root alias is not previously registered.
 	 * @throws InvalidParamException if the alias is invalid while $throwException is true.
-	 * @see setAlias
+	 * @see setAlias()
 	 */
 	public static function getAlias($alias, $throwException = true)
 	{
@@ -148,11 +147,11 @@ class BaseYii
 		$pos = strpos($alias, '/');
 		$root = $pos === false ? $alias : substr($alias, 0, $pos);
 
-		if (isset(self::$aliases[$root])) {
-			if (is_string(self::$aliases[$root])) {
-				return $pos === false ? self::$aliases[$root] : self::$aliases[$root] . substr($alias, $pos);
+		if (isset(static::$aliases[$root])) {
+			if (is_string(static::$aliases[$root])) {
+				return $pos === false ? static::$aliases[$root] : static::$aliases[$root] . substr($alias, $pos);
 			} else {
-				foreach (self::$aliases[$root] as $name => $path) {
+				foreach (static::$aliases[$root] as $name => $path) {
 					if (strpos($alias . '/', $name . '/') === 0) {
 						return $path . substr($alias, strlen($name));
 					}
@@ -179,11 +178,11 @@ class BaseYii
 		$pos = strpos($alias, '/');
 		$root = $pos === false ? $alias : substr($alias, 0, $pos);
 
-		if (isset(self::$aliases[$root])) {
-			if (is_string(self::$aliases[$root])) {
+		if (isset(static::$aliases[$root])) {
+			if (is_string(static::$aliases[$root])) {
 				return $root;
 			} else {
-				foreach (self::$aliases[$root] as $name => $path) {
+				foreach (static::$aliases[$root] as $name => $path) {
 					if (strpos($alias . '/', $name . '/') === 0) {
 						return $name;
 					}
@@ -219,7 +218,7 @@ class BaseYii
 	 *   actual path first by calling [[getAlias()]].
 	 *
 	 * @throws InvalidParamException if $path is an invalid alias.
-	 * @see getAlias
+	 * @see getAlias()
 	 */
 	public static function setAlias($alias, $path)
 	{
@@ -230,30 +229,30 @@ class BaseYii
 		$root = $pos === false ? $alias : substr($alias, 0, $pos);
 		if ($path !== null) {
 			$path = strncmp($path, '@', 1) ? rtrim($path, '\\/') : static::getAlias($path);
-			if (!isset(self::$aliases[$root])) {
+			if (!isset(static::$aliases[$root])) {
 				if ($pos === false) {
-					self::$aliases[$root] = $path;
+					static::$aliases[$root] = $path;
 				} else {
-					self::$aliases[$root] = [$alias => $path];
+					static::$aliases[$root] = [$alias => $path];
 				}
-			} elseif (is_string(self::$aliases[$root])) {
+			} elseif (is_string(static::$aliases[$root])) {
 				if ($pos === false) {
-					self::$aliases[$root] = $path;
+					static::$aliases[$root] = $path;
 				} else {
-					self::$aliases[$root] = [
+					static::$aliases[$root] = [
 						$alias => $path,
-						$root => self::$aliases[$root],
+						$root => static::$aliases[$root],
 					];
 				}
 			} else {
-				self::$aliases[$root][$alias] = $path;
-				krsort(self::$aliases[$root]);
+				static::$aliases[$root][$alias] = $path;
+				krsort(static::$aliases[$root]);
 			}
-		} elseif (isset(self::$aliases[$root])) {
-			if (is_array(self::$aliases[$root])) {
-				unset(self::$aliases[$root][$alias]);
+		} elseif (isset(static::$aliases[$root])) {
+			if (is_array(static::$aliases[$root])) {
+				unset(static::$aliases[$root][$alias]);
 			} elseif ($pos === false) {
-				unset(self::$aliases[$root]);
+				unset(static::$aliases[$root]);
 			}
 		}
 	}
@@ -279,8 +278,8 @@ class BaseYii
 	 */
 	public static function autoload($className)
 	{
-		if (isset(self::$classMap[$className])) {
-			$classFile = self::$classMap[$className];
+		if (isset(static::$classMap[$className])) {
+			$classFile = static::$classMap[$className];
 			if ($classFile[0] === '@') {
 				$classFile = static::getAlias($classFile);
 			}
@@ -363,12 +362,12 @@ class BaseYii
 
 		$class = ltrim($class, '\\');
 
-		if (isset(self::$objectConfig[$class])) {
-			$config = array_merge(self::$objectConfig[$class], $config);
+		if (isset(static::$objectConfig[$class])) {
+			$config = array_merge(static::$objectConfig[$class], $config);
 		}
 
 		if (($n = func_num_args()) > 1) {
-			/** @var $reflection \ReflectionClass */
+			/** @var \ReflectionClass $reflection */
 			if (isset($reflections[$class])) {
 				$reflection = $reflections[$class];
 			} else {
@@ -395,7 +394,7 @@ class BaseYii
 	public static function trace($message, $category = 'application')
 	{
 		if (YII_DEBUG) {
-			self::$app->getLog()->log($message, Logger::LEVEL_TRACE, $category);
+			static::$app->getLog()->log($message, Logger::LEVEL_TRACE, $category);
 		}
 	}
 
@@ -408,7 +407,7 @@ class BaseYii
 	 */
 	public static function error($message, $category = 'application')
 	{
-		self::$app->getLog()->log($message, Logger::LEVEL_ERROR, $category);
+		static::$app->getLog()->log($message, Logger::LEVEL_ERROR, $category);
 	}
 
 	/**
@@ -420,7 +419,7 @@ class BaseYii
 	 */
 	public static function warning($message, $category = 'application')
 	{
-		self::$app->getLog()->log($message, Logger::LEVEL_WARNING, $category);
+		static::$app->getLog()->log($message, Logger::LEVEL_WARNING, $category);
 	}
 
 	/**
@@ -432,7 +431,7 @@ class BaseYii
 	 */
 	public static function info($message, $category = 'application')
 	{
-		self::$app->getLog()->log($message, Logger::LEVEL_INFO, $category);
+		static::$app->getLog()->log($message, Logger::LEVEL_INFO, $category);
 	}
 
 	/**
@@ -450,11 +449,11 @@ class BaseYii
 	 * ~~~
 	 * @param string $token token for the code block
 	 * @param string $category the category of this log message
-	 * @see endProfile
+	 * @see endProfile()
 	 */
 	public static function beginProfile($token, $category = 'application')
 	{
-		self::$app->getLog()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
+		static::$app->getLog()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
 	}
 
 	/**
@@ -462,11 +461,11 @@ class BaseYii
 	 * This has to be matched with a previous call to [[beginProfile]] with the same category name.
 	 * @param string $token token for the code block
 	 * @param string $category the category of this log message
-	 * @see beginProfile
+	 * @see beginProfile()
 	 */
 	public static function endProfile($token, $category = 'application')
 	{
-		self::$app->getLog()->log($token, Logger::LEVEL_PROFILE_END, $category);
+		static::$app->getLog()->log($token, Logger::LEVEL_PROFILE_END, $category);
 	}
 
 	/**
@@ -499,14 +498,14 @@ class BaseYii
 	 * @param string $category the message category.
 	 * @param string $message the message to be translated.
 	 * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
-	 * @param string $language the language code (e.g. `en_US`, `en`). If this is null, the current
+	 * @param string $language the language code (e.g. `en-US`, `en`). If this is null, the current
 	 * [[\yii\base\Application::language|application language]] will be used.
 	 * @return string the translated message.
 	 */
 	public static function t($category, $message, $params = [], $language = null)
 	{
-		if (self::$app !== null) {
-			return self::$app->getI18n()->translate($category, $message, $params, $language ?: self::$app->language);
+		if (static::$app !== null) {
+			return static::$app->getI18n()->translate($category, $message, $params, $language ?: static::$app->language);
 		} else {
 			$p = [];
 			foreach ((array) $params as $name => $value) {

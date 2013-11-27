@@ -250,7 +250,7 @@ _MSG_
 					1 => 123,
 					2 => 37.073
 				],
-				'en_US'
+				'en-US'
 			],
 
 			[
@@ -272,7 +272,7 @@ _MSG_
 					'trees' => 123,
 					'monkeysPerTree' => 37.073
 				],
-				'en_US'
+				'en-US'
 			],
 
 			[
@@ -297,14 +297,14 @@ _MSG_
 			$this->markTestSkipped($skipMessage);
 		}
 		$formatter = new MessageFormatter();
-		$result = $formatter->format($pattern, $args, 'en_US');
+		$result = $formatter->format($pattern, $args, 'en-US');
 		$this->assertEquals($expected, $result, $formatter->getErrorMessage());
 	}
 
 	/**
 	 * @dataProvider parsePatterns
 	 */
-	public function testParseNamedArguments($pattern, $expected, $args, $locale = 'en_US')
+	public function testParseNamedArguments($pattern, $expected, $args, $locale = 'en-US')
 	{
 		if (!extension_loaded("intl")) {
 			$this->markTestSkipped("intl not installed. Skipping.");
@@ -322,7 +322,7 @@ _MSG_
 		$formatter = new MessageFormatter();
 		$result = $formatter->format('{'.self::SUBJECT.'} is {'.self::N.', number}', [
 			self::N => self::N_VALUE,
-		], 'en_US');
+		], 'en-US');
 
 		$this->assertEquals($expected, $result, $formatter->getErrorMessage());
 	}
@@ -331,7 +331,7 @@ _MSG_
 	{
 		$pattern = '{'.self::SUBJECT.'} is '.self::N;
 		$formatter = new MessageFormatter();
-		$result = $formatter->format($pattern, [], 'en_US');
+		$result = $formatter->format($pattern, [], 'en-US');
 		$this->assertEquals($pattern, $result, $formatter->getErrorMessage());
 	}
 }

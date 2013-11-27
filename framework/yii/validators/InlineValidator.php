@@ -26,8 +26,11 @@ class InlineValidator extends Validator
 {
 	/**
 	 * @var string|\Closure an anonymous function or the name of a model class method that will be
-	 * called to perform the actual validation. Note that if you use anonymous function, you cannot
-	 * use `$this` in it unless you are using PHP 5.4 or above.
+	 * called to perform the actual validation. The signature of the method should be like the following:
+	 *
+	 * ~~~
+	 * function foo($attribute, $params)
+	 * ~~~
 	 */
 	public $method;
 	/**
@@ -39,7 +42,7 @@ class InlineValidator extends Validator
 	 * The signature of the method should be like the following:
 	 *
 	 * ~~~
-	 * function foo($attribute)
+	 * function foo($attribute, $params)
 	 * {
 	 *     return "javascript";
 	 * }
@@ -93,7 +96,7 @@ class InlineValidator extends Validator
 			if (is_string($method)) {
 				$method = [$object, $method];
 			}
-			return call_user_func($method, $attribute);
+			return call_user_func($method, $attribute, $this->params);
 		} else {
 			return null;
 		}

@@ -217,6 +217,20 @@ class ModelTest extends TestCase
 	{
 		$singer = new Singer();
 		$this->assertEquals(['default' => ['lastName', 'underscore_style']], $singer->scenarios());
+
+		$scenarios = [
+			'default' => ['id', 'name', 'description'],
+			'administration' => ['name', 'description', 'is_disabled'],
+		];
+		$model = new ComplexModel1();
+		$this->assertEquals($scenarios, $model->scenarios());
+		$scenarios = [
+			'default' => ['id', 'name', 'description'],
+			'suddenlyUnexpectedScenario' => ['name', 'description'],
+			'administration' => ['id', 'name', 'description', 'is_disabled'],
+		];
+		$model = new ComplexModel2();
+		$this->assertEquals($scenarios, $model->scenarios());
 	}
 
 	public function testIsAttributeRequired()
@@ -232,5 +246,29 @@ class ModelTest extends TestCase
 
 		$invalid = new InvalidRulesModel();
 		$invalid->createValidators();
+	}
+}
+
+class ComplexModel1 extends Model
+{
+	public function rules()
+	{
+		return [
+			[['id'], 'required', 'except' => 'administration'],
+			[['name', 'description'], 'filter', 'filter' => 'trim'],
+			[['is_disabled'], 'boolean', 'on' => 'administration'],
+		];
+	}
+}
+
+class ComplexModel2 extends Model
+{
+	public function rules()
+	{
+		return [
+			[['id'], 'required', 'except' => 'suddenlyUnexpectedScenario'],
+			[['name', 'description'], 'filter', 'filter' => 'trim'],
+			[['is_disabled'], 'boolean', 'on' => 'administration'],
+		];
 	}
 }

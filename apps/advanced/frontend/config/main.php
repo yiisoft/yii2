@@ -11,16 +11,13 @@ $params = array_merge(
 return [
 	'id' => 'app-frontend',
 	'basePath' => dirname(__DIR__),
-	'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
+	'vendorPath' => $rootDir . '/vendor',
 	'controllerNamespace' => 'frontend\controllers',
 	'modules' => [
 		'gii' => 'yii\gii\Module'
 	],
-	'extensions' => require(__DIR__ . '/../../vendor/yiisoft/extensions.php'),
+	'extensions' => require($rootDir . '/vendor/yiisoft/extensions.php'),
 	'components' => [
-		'request' => [
-			'enableCsrfValidation' => true,
-		],
 		'db' => $params['components.db'],
 		'cache' => $params['components.cache'],
 		'mail' => $params['components.mail'],

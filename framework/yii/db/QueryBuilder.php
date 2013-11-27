@@ -7,6 +7,7 @@
 
 namespace yii\db;
 
+use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 
 /**
@@ -140,12 +141,33 @@ class QueryBuilder extends \yii\base\Object
 	 * @param array $columns the column names
 	 * @param array $rows the rows to be batch inserted into the table
 	 * @return string the batch INSERT SQL statement
-	 * @throws NotSupportedException if this is not supported by the underlying DBMS
 	 */
 	public function batchInsert($table, $columns, $rows)
 	{
-		throw new NotSupportedException($this->db->getDriverName() . ' does not support batch insert.');
+		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
+			$columnSchemas = $tableSchema->columns;
+		} else {
+			$columnSchemas = [];
+		}
 
+		foreach ($columns as $i => $name) {
+			$columns[$i] = $this->db->quoteColumnName($name);
+		}
+
+		$values = [];
+		foreach ($rows as $row) {
+			$vs = [];
+			foreach ($row as $i => $value) {
+				if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
+					$value = $columnSchemas[$columns[$i]]->typecast($value);
+				}
+				$vs[] = is_string($value) ? $this->db->quoteValue($value) : $value;
+			}
+			$values[] = '(' . implode(', ', $vs) . ')';
+		}
+
+		return 'INSERT INTO ' . $this->db->quoteTableName($table)
+		. ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
 	}
 
 	/**
@@ -278,7 +300,7 @@ class QueryBuilder extends \yii\base\Object
 	{
 		return "DROP TABLE " . $this->db->quoteTableName($table);
 	}
-	
+
 	/**
 	 * Builds a SQL statement for adding a primary key constraint to an existing table.
 	 * @param string $name the name of the primary key constraint.
@@ -295,12 +317,12 @@ class QueryBuilder extends \yii\base\Object
 		foreach ($columns as $i => $col) {
 			$columns[$i] = $this->db->quoteColumnName($col);
 		}
-		
+
 		return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
 			. $this->db->quoteColumnName($name) . '  PRIMARY KEY ('
 			. implode(', ', $columns). ' )';
 	}
-	
+
 	/**
 	 * Builds a SQL statement for removing a primary key constraint to an existing table.
 	 * @param string $name the name of the primary key constraint to be removed.
@@ -683,7 +705,7 @@ class QueryBuilder extends \yii\base\Object
 			if (is_object($direction)) {
 				$orders[] = (string)$direction;
 			} else {
-				$orders[] = $this->db->quoteColumnName($name) . ($direction === Query::SORT_DESC ? ' DESC' : '');
+				$orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
 			}
 		}
 
@@ -761,7 +783,7 @@ class QueryBuilder extends \yii\base\Object
 	 * on how to specify a condition.
 	 * @param array $params the binding parameters to be populated
 	 * @return string the generated SQL expression
-	 * @throws \yii\db\Exception if the condition is in bad format
+	 * @throws InvalidParamException if the condition is in bad format
 	 */
 	public function buildCondition($condition, &$params)
 	{
@@ -790,7 +812,7 @@ class QueryBuilder extends \yii\base\Object
 				array_shift($condition);
 				return $this->$method($operator, $condition, $params);
 			} else {
-				throw new Exception('Found unknown operator in query: ' . $operator);
+				throw new InvalidParamException('Found unknown operator in query: ' . $operator);
 			}
 		} else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
 			return $this->buildHashCondition($condition, $params);
@@ -862,12 +884,12 @@ class QueryBuilder extends \yii\base\Object
 	 * describe the interval that column value should be in.
 	 * @param array $params the binding parameters to be populated
 	 * @return string the generated SQL expression
-	 * @throws Exception if wrong number of operands have been given.
+	 * @throws InvalidParamException if wrong number of operands have been given.
 	 */
 	public function buildBetweenCondition($operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1], $operands[2])) {
-			throw new Exception("Operator '$operator' requires three operands.");
+			throw new InvalidParamException("Operator '$operator' requires three operands.");
 		}
 
 		list($column, $value1, $value2) = $operands;
@@ -977,12 +999,12 @@ class QueryBuilder extends \yii\base\Object
 	 * operator is `LIKE` or `OR LIKE` and empty if operator is `NOT LIKE` or `OR NOT LIKE`.
 	 * @param array $params the binding parameters to be populated
 	 * @return string the generated SQL expression
-	 * @throws Exception if wrong number of operands have been given.
+	 * @throws InvalidParamException if wrong number of operands have been given.
 	 */
 	public function buildLikeCondition($operator, $operands, &$params)
 	{
 		if (!isset($operands[0], $operands[1])) {
-			throw new Exception("Operator '$operator' requires two operands.");
+			throw new InvalidParamException("Operator '$operator' requires two operands.");
 		}
 
 		list($column, $values) = $operands;

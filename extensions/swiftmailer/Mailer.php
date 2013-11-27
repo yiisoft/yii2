@@ -17,9 +17,9 @@ use yii\mail\BaseMailer;
  * To use Mailer, you should configure it in the application configuration like the following,
  *
  * ~~~
- * 'components' => array(
+ * 'components' => [
  *     ...
- *     'email' => array(
+ *     'email' => [
  *         'class' => 'yii\swiftmailer\Mailer',
  *         'transport' => [
  *             'class' => 'Swift_SmtpTransport',
@@ -29,13 +29,30 @@ use yii\mail\BaseMailer;
  *             'port' => '587',
  *             'encryption' => 'tls',
  *         ],
- *     ),
+ *     ],
  *     ...
- * ),
+ * ],
  * ~~~
  *
  * You may also skip the configuration of the [[transport]] property. In that case, the default
  * PHP `mail()` function will be used to send emails.
+ *
+ * You specify the transport constructor arguments using 'constructArgs' key in the config.
+ * You can also specify the list of plugins, which should be registered to the transport using
+ * 'plugins' key. For example:
+ *
+ * ~~~
+ * 'transport' => [
+ *     'class' => 'Swift_SmtpTransport',
+ *     'constructArgs' => ['localhost', 25]
+ *     'plugins' => [
+ *         [
+ *             'class' => 'Swift_Plugins_ThrottlerPlugin',
+ *             'constructArgs' => [20],
+ *         ],
+ *     ],
+ * ],
+ * ~~~
  *
  * To send an email, you may use the following code:
  *
@@ -48,6 +65,10 @@ use yii\mail\BaseMailer;
  * ~~~
  *
  * @see http://swiftmailer.org
+ *
+ * @property array|\Swift_Mailer $swiftMailer Swift mailer instance or array configuration. This property is
+ * read-only.
+ * @property array|\Swift_Transport $transport This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -102,7 +123,7 @@ class Mailer extends BaseMailer
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	protected function sendMessage($message)
 	{
@@ -110,7 +131,7 @@ class Mailer extends BaseMailer
 		if (is_array($address)) {
 			$address = implode(', ', array_keys($address));
 		}
-		Yii::trace('Sending email "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
+		Yii::info('Sending email "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
 		return $this->getSwiftMailer()->send($message->getSwiftMessage()) > 0;
 	}
 
@@ -131,28 +152,69 @@ class Mailer extends BaseMailer
 	 */
 	protected function createTransport(array $config)
 	{
+		if (!isset($config['class'])) {
+			$config['class'] = 'Swift_MailTransport';
+		}
+		if (isset($config['plugins'])) {
+			$plugins = $config['plugins'];
+			unset($config['plugins']);
+		}
+		/** @var \Swift_MailTransport $transport */
+		$transport = $this->createSwiftObject($config);
+		if (isset($plugins)) {
+			foreach ($plugins as $plugin) {
+				if (is_array($plugin) && isset($plugin['class'])) {
+					$plugin = $this->createSwiftObject($plugin);
+				}
+				$transport->registerPlugin($plugin);
+			}
+		}
+		return $transport;
+	}
+
+	/**
+	 * Creates Swift library object, from given array configuration.
+	 * @param array $config object configuration
+	 * @return Object created object
+	 * @throws \yii\base\InvalidConfigException on invalid configuration.
+	 */
+	protected function createSwiftObject(array $config)
+	{
 		if (isset($config['class'])) {
 			$className = $config['class'];
 			unset($config['class']);
 		} else {
-			$className = 'Swift_MailTransport';
+			throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
 		}
-		/** @var \Swift_MailTransport $transport */
-		$transport = $className::newInstance();
+		if (isset($config['constructArgs'])) {
+			$args = [];
+			foreach ($config['constructArgs'] as $arg) {
+				if (is_array($arg) && isset($arg['class'])) {
+					$args[] = $this->createSwiftObject($arg);
+				} else {
+					$args[] = $arg;
+				}
+			}
+			unset($config['constructArgs']);
+			array_unshift($args, $className);
+			$object = call_user_func_array(['Yii', 'createObject'], $args);
+		} else {
+			$object = new $className;
+		}
 		if (!empty($config)) {
 			foreach ($config as $name => $value) {
-				if (property_exists($transport, $name)) {
-					$transport->$name = $value;
+				if (property_exists($object, $name)) {
+					$object->$name = $value;
 				} else {
 					$setter = 'set' . $name;
-					if (method_exists($transport, $setter) || method_exists($transport, '__call')) {
-						$transport->$setter($value);
+					if (method_exists($object, $setter) || method_exists($object, '__call')) {
+						$object->$setter($value);
 					} else {
-						throw new InvalidConfigException('Setting unknown property: ' . get_class($transport) . '::' . $name);
+						throw new InvalidConfigException('Setting unknown property: ' . $className . '::' . $name);
 					}
 				}
 			}
 		}
-		return $transport;
+		return $object;
 	}
 }

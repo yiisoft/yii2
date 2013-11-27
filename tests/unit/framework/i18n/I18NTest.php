@@ -40,16 +40,16 @@ class I18NTest extends TestCase
 	public function testTranslate()
 	{
 		$msg = 'The dog runs fast.';
-		$this->assertEquals('The dog runs fast.', $this->i18n->translate('test', $msg, [], 'en_US'));
-		$this->assertEquals('Der Hund rennt schnell.', $this->i18n->translate('test', $msg, [], 'de_DE'));
+		$this->assertEquals('The dog runs fast.', $this->i18n->translate('test', $msg, [], 'en-US'));
+		$this->assertEquals('Der Hund rennt schnell.', $this->i18n->translate('test', $msg, [], 'de-DE'));
 	}
 
 	public function testTranslateParams()
 	{
 		$msg = 'His speed is about {n} km/h.';
 		$params = ['n' => 42];
-		$this->assertEquals('His speed is about 42 km/h.', $this->i18n->translate('test', $msg, $params, 'en_US'));
-		$this->assertEquals('Seine Geschwindigkeit beträgt 42 km/h.', $this->i18n->translate('test', $msg, $params, 'de_DE'));
+		$this->assertEquals('His speed is about 42 km/h.', $this->i18n->translate('test', $msg, $params, 'en-US'));
+		$this->assertEquals('Seine Geschwindigkeit beträgt 42 km/h.', $this->i18n->translate('test', $msg, $params, 'de-DE'));
 	}
 
 	public function testTranslateParams2()
@@ -62,22 +62,22 @@ class I18NTest extends TestCase
 			'n' => 42,
 			'name' => 'DA VINCI', // http://petrix.com/dognames/d.html
 		];
-		$this->assertEquals('His name is DA VINCI and his speed is about 42 km/h.', $this->i18n->translate('test', $msg, $params, 'en_US'));
-		$this->assertEquals('Er heißt DA VINCI und ist 42 km/h schnell.', $this->i18n->translate('test', $msg, $params, 'de_DE'));
+		$this->assertEquals('His name is DA VINCI and his speed is about 42 km/h.', $this->i18n->translate('test', $msg, $params, 'en-US'));
+		$this->assertEquals('Er heißt DA VINCI und ist 42 km/h schnell.', $this->i18n->translate('test', $msg, $params, 'de-DE'));
 	}
 
 	public function testSpecialParams()
 	{
 		$msg = 'His speed is about {0} km/h.';
 
-		$this->assertEquals('His speed is about 0 km/h.', $this->i18n->translate('test', $msg, 0, 'en_US'));
-		$this->assertEquals('His speed is about 42 km/h.', $this->i18n->translate('test', $msg, 42, 'en_US'));
-		$this->assertEquals('His speed is about {0} km/h.', $this->i18n->translate('test', $msg, null, 'en_US'));
-		$this->assertEquals('His speed is about {0} km/h.', $this->i18n->translate('test', $msg, [], 'en_US'));
+		$this->assertEquals('His speed is about 0 km/h.', $this->i18n->translate('test', $msg, 0, 'en-US'));
+		$this->assertEquals('His speed is about 42 km/h.', $this->i18n->translate('test', $msg, 42, 'en-US'));
+		$this->assertEquals('His speed is about {0} km/h.', $this->i18n->translate('test', $msg, null, 'en-US'));
+		$this->assertEquals('His speed is about {0} km/h.', $this->i18n->translate('test', $msg, [], 'en-US'));
 
 		$msg = 'His name is {name} and he is {age} years old.';
 		$model = new ParamModel();
-		$this->assertEquals('His name is peer and he is 5 years old.', $this->i18n->translate('test', $msg, $model, 'en_US'));
+		$this->assertEquals('His name is peer and he is 5 years old.', $this->i18n->translate('test', $msg, $model, 'en-US'));
 	}
 }
 

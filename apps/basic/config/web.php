@@ -5,9 +5,6 @@ $config = [
 	'basePath' => dirname(__DIR__),
 	'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
 	'components' => [
-		'request' => [
-			'enableCsrfValidation' => true,
-		],
 		'cache' => [
 			'class' => 'yii\caching\FileCache',
 		],

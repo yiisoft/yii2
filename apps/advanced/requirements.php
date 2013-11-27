@@ -59,7 +59,7 @@ $requirements = [
 	[
 		'name' => 'APC extension',
 		'mandatory' => false,
-		'condition' => extension_loaded('apc') || extension_loaded('apc'),
+		'condition' => extension_loaded('apc'),
 		'by' => '<a href="http://www.yiiframework.com/doc/api/CApcCache">CApcCache</a>',
 	],
 	// Additional PHP extensions :

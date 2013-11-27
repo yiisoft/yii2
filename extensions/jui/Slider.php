@@ -7,18 +7,12 @@
 
 namespace yii\jui;
 
-use Yii;
 use yii\helpers\Html;
 
 /**
  * Slider renders a slider jQuery UI widget.
  *
- * For example:
- *
- * ```php
  * echo Slider::widget([
- *     'model' => $model,
- *     'attribute' => 'amount',
  *     'clientOptions' => [
  *         'min' => 1,
  *         'max' => 10,
@@ -26,43 +20,26 @@ use yii\helpers\Html;
  * ]);
  * ```
  *
- * The following example will use the name property instead:
- *
- * ```php
- * echo Slider::widget([
- *     'name'  => 'amount',
- *     'clientOptions' => [
- *         'min' => 1,
- *         'max' => 10,
- *     ],
- * ]);
- *```
- *
  * @see http://api.jqueryui.com/slider/
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class Slider extends InputWidget
+class Slider extends Widget
 {
+	protected $clientEventsMap = [
+		'change' => 'slidechange',
+		'create' => 'slidecreate',
+		'slide' => 'slide',
+		'start' => 'slidestart',
+		'stop' => 'slidestop',
+	];
+
 	/**
-	 * Renders the widget.
+	 * Executes the widget.
 	 */
 	public function run()
 	{
-		echo $this->renderWidget();
+		echo Html::tag('div', '', $this->options);
 		$this->registerWidget('slider', SliderAsset::className());
-	}
-
-	/**
-	 * Renders the Slider widget.
-	 * @return string the rendering result.
-	 */
-	public function renderWidget()
-	{
-		if ($this->hasModel()) {
-			return Html::activeTextInput($this->model, $this->attribute, $this->options);
-		} else {
-			return Html::textInput($this->name, $this->value, $this->options);
-		}
 	}
 }

@@ -333,28 +333,25 @@ class BaseArrayHelper
 	 * elements, a property name of the objects, or an anonymous function returning the values for comparison
 	 * purpose. The anonymous function signature should be: `function($item)`.
 	 * To sort by multiple keys, provide an array of keys here.
-	 * @param boolean|array $descending whether to sort in descending or ascending order. When
-	 * sorting by multiple keys with different descending orders, use an array of descending flags.
+	 * @param integer|array $direction the sorting direction. It can be either `SORT_ASC` or `SORT_DESC`.
+	 * When sorting by multiple keys with different sorting directions, use an array of sorting directions.
 	 * @param integer|array $sortFlag the PHP sort flag. Valid values include
 	 * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, `SORT_LOCALE_STRING`, `SORT_NATURAL` and `SORT_FLAG_CASE`.
 	 * Please refer to [PHP manual](http://php.net/manual/en/function.sort.php)
 	 * for more details. When sorting by multiple keys with different sort flags, use an array of sort flags.
-	 * @param boolean|array $caseSensitive whether to sort string in case-sensitive manner. This parameter
-	 * is used only when `$sortFlag` is `SORT_STRING`.
-	 * When sorting by multiple keys with different case sensitivities, use an array of boolean values.
 	 * @throws InvalidParamException if the $descending or $sortFlag parameters do not have
 	 * correct number of elements as that of $key.
 	 */
-	public static function multisort(&$array, $key, $descending = false, $sortFlag = SORT_REGULAR, $caseSensitive = true)
+	public static function multisort(&$array, $key, $direction = SORT_ASC, $sortFlag = SORT_REGULAR)
 	{
 		$keys = is_array($key) ? $key : [$key];
 		if (empty($keys) || empty($array)) {
 			return;
 		}
 		$n = count($keys);
-		if (is_scalar($descending)) {
-			$descending = array_fill(0, $n, $descending);
-		} elseif (count($descending) !== $n) {
+		if (is_scalar($direction)) {
+			$direction = array_fill(0, $n, $direction);
+		} elseif (count($direction) !== $n) {
 			throw new InvalidParamException('The length of $descending parameter must be the same as that of $keys.');
 		}
 		if (is_scalar($sortFlag)) {
@@ -362,22 +359,11 @@ class BaseArrayHelper
 		} elseif (count($sortFlag) !== $n) {
 			throw new InvalidParamException('The length of $sortFlag parameter must be the same as that of $keys.');
 		}
-		if (is_scalar($caseSensitive)) {
-			$caseSensitive = array_fill(0, $n, $caseSensitive);
-		} elseif (count($caseSensitive) !== $n) {
-			throw new InvalidParamException('The length of $caseSensitive parameter must be the same as that of $keys.');
-		}
 		$args = [];
 		foreach ($keys as $i => $key) {
 			$flag = $sortFlag[$i];
-			$cs = $caseSensitive[$i];
-			if (!$cs && ($flag === SORT_STRING)) {
-				$flag = $flag | SORT_FLAG_CASE;
-				$args[] = static::getColumn($array, $key);
-			} else {
-				$args[] = static::getColumn($array, $key);
-			}
-			$args[] = $descending[$i] ? SORT_DESC : SORT_ASC;
+			$args[] = static::getColumn($array, $key);
+			$args[] = $direction[$i];
 			$args[] = $flag;
 		}
 		$args[] = &$array;

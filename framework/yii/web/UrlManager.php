@@ -14,6 +14,22 @@ use yii\caching\Cache;
 /**
  * UrlManager handles HTTP request parsing and creation of URLs based on a set of rules.
  *
+ * UrlManager is configured as an application component in [[yii\base\Application]] by default.
+ * You can access that instance via `Yii::$app->urlManager`.
+ *
+ * You can modify its configuration by adding an array to your application config under `components`
+ * as it is shown in the following example:
+ *
+ * ~~~
+ * 'urlManager' => [
+ *     'enablePrettyUrl' => true,
+ *     'rules' => [
+ *         // your rules go here
+ *     ],
+ *     // ...
+ * ]
+ * ~~~
+ *
  * @property string $baseUrl The base URL that is used by [[createUrl()]] to prepend URLs it creates.
  * @property string $hostInfo The host info (e.g. "http://www.example.com") that is used by
  * [[createAbsoluteUrl()]] to prepend URLs it creates.
@@ -169,7 +185,7 @@ class UrlManager extends Component
 	{
 		if ($this->enablePrettyUrl) {
 			$pathInfo = $request->getPathInfo();
-			/** @var $rule UrlRule */
+			/** @var UrlRule $rule */
 			foreach ($this->rules as $rule) {
 				if (($result = $rule->parseRequest($this, $request)) !== false) {
 					Yii::trace("Request parsed with URL rule: {$rule->name}", __METHOD__);
@@ -180,6 +196,8 @@ class UrlManager extends Component
 			if ($this->enableStrictParsing) {
 				return false;
 			}
+
+			Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
 
 			$suffix = (string)$this->suffix;
 			if ($suffix !== '' && $pathInfo !== '') {
@@ -196,14 +214,13 @@ class UrlManager extends Component
 				}
 			}
 
-			Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
 			return [$pathInfo, []];
 		} else {
+			Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
 			$route = $request->get($this->routeVar);
 			if (is_array($route)) {
 				$route = '';
 			}
-			Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
 			return [(string)$route, []];
 		}
 	}
@@ -224,7 +241,7 @@ class UrlManager extends Component
 		$baseUrl = $this->getBaseUrl();
 
 		if ($this->enablePrettyUrl) {
-			/** @var $rule UrlRule */
+			/** @var UrlRule $rule */
 			foreach ($this->rules as $rule) {
 				if (($url = $rule->createUrl($this, $route, $params)) !== false) {
 					if ($rule->host !== null) {
@@ -282,7 +299,7 @@ class UrlManager extends Component
 	public function getBaseUrl()
 	{
 		if ($this->_baseUrl === null) {
-			/** @var $request \yii\web\Request */
+			/** @var \yii\web\Request $request */
 			$request = Yii::$app->getRequest();
 			$this->_baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $request->getScriptUrl() : $request->getBaseUrl();
 		}

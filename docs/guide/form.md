@@ -1,7 +1,7 @@
 Working with forms
 ==================
 
-The primary way of using forms in Yii is through [[\yii\widgets\ActiveForm]]. This approach should be preferred when the form is based upon  a model. Additionally, there are some useful methods in [[\yii\helpers\Html]] that are typically used for adding buttons and help text to any form.
+The primary way of using forms in Yii is through [[yii\widgets\ActiveForm]]. This approach should be preferred when the form is based upon  a model. Additionally, there are some useful methods in [[\yii\helpers\Html]] that are typically used for adding buttons and help text to any form.
 
 When creating model-based forms, the first step is to define the model itself. The model can be either based upon the Active Record class, or the more generic Model class. For this login example, a generic model will be used:
 
@@ -87,4 +87,20 @@ customize the output, you can chain additional methods to this call:
 // or
 
 <?= $form->field($model, 'username')->textInput()->hint('Please enter your name')->label('Name') ?>
+```
+
+This will create all the `<label>`, `<input>` and other tags according to the template defined by the form field.
+To add these tags yourself you can use the `Html` helper class. The following is equivalent to the code above:
+
+```php
+<?= Html::activeLabel($model, 'password') ?>
+<?= Html::activePasswordInput($model, 'password') ?>
+<?= Html::error($model, 'password') ?>
+
+or
+
+<?= Html::activeLabel($model, 'username', ['label' => 'name']) ?>
+<?= Html::activeTextInput($model, 'username') ?>
+<?= Html::error($model, 'username') ?>
+<div class="hint-block">Please enter your name</div>
 ```

@@ -1,6 +1,8 @@
 <?php
 namespace yiiunit\data\ar;
 
+use yiiunit\framework\db\ActiveRecordTest;
+
 /**
  * Class Customer
  *
@@ -16,9 +18,6 @@ class Customer extends ActiveRecord
 	const STATUS_INACTIVE = 2;
 
 	public $status2;
-
-	public static $afterSaveInsert = null;
-	public static $afterSaveNewRecord = null;
 
 	public static function tableName()
 	{
@@ -37,8 +36,8 @@ class Customer extends ActiveRecord
 
 	public function afterSave($insert)
 	{
-		static::$afterSaveInsert = $insert;
-		static::$afterSaveNewRecord = $this->isNewRecord;
+		ActiveRecordTest::$afterSaveInsert = $insert;
+		ActiveRecordTest::$afterSaveNewRecord = $this->isNewRecord;
 		parent::afterSave($insert);
 	}
 }

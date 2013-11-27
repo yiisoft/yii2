@@ -280,8 +280,8 @@ class BaseInflector
 	 */
 	public static function pluralize($word)
 	{
-		if (isset(self::$specials[$word])) {
-			return self::$specials[$word];
+		if (isset(static::$specials[$word])) {
+			return static::$specials[$word];
 		}
 		foreach (static::$plurals as $rule => $replacement) {
 			if (preg_match($rule, $word)) {
@@ -298,7 +298,7 @@ class BaseInflector
 	 */
 	public static function singularize($word)
 	{
-		$result = array_search($word, self::$specials, true);
+		$result = array_search($word, static::$specials, true);
 		if ($result !== false) {
 			return $result;
 		}
@@ -328,7 +328,7 @@ class BaseInflector
 	 * Converts a word like "send_email" to "SendEmail". It
 	 * will remove non alphanumeric character from the word, so
 	 * "who's online" will be converted to "WhoSOnline"
-	 * @see variablize
+	 * @see variablize()
 	 * @param string $word the word to CamelCase
 	 * @return string
 	 */

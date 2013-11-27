@@ -65,6 +65,10 @@ class View extends Component
 	 */
 	public $renderers;
 	/**
+	 * @var string the default view file extension. This will be appended to view file names if they don't have file extensions.
+	 */
+	public $defaultExtension = '.php';
+	/**
 	 * @var Theme|array the theme object or the configuration array for creating the theme object.
 	 * If not set, it means theming is not enabled.
 	 */
@@ -123,7 +127,7 @@ class View extends Component
 	 * existing [[context]] will be used.
 	 * @return string the rendering result
 	 * @throws InvalidParamException if the view cannot be resolved or the view file does not exist.
-	 * @see renderFile
+	 * @see renderFile()
 	 */
 	public function render($view, $params = [], $context = null)
 	{
@@ -167,7 +171,7 @@ class View extends Component
 			}
 		}
 
-		return pathinfo($file, PATHINFO_EXTENSION) === '' ? $file . '.php' : $file;
+		return pathinfo($file, PATHINFO_EXTENSION) === '' ? $file . $this->defaultExtension : $file;
 	}
 
 	/**
@@ -356,10 +360,10 @@ class View extends Component
 	/**
 	 * Begins the rendering of content that is to be decorated by the specified view.
 	 * This method can be used to implement nested layout. For example, a layout can be embedded
-	 * in another layout file specified as '@app/view/layouts/base.php' like the following:
+	 * in another layout file specified as '@app/views/layouts/base.php' like the following:
 	 *
 	 * ~~~
-	 * <?php $this->beginContent('@app/view/layouts/base.php'); ?>
+	 * <?php $this->beginContent('@app/views/layouts/base.php'); ?>
 	 * ...layout content here...
 	 * <?php $this->endContent(); ?>
 	 * ~~~
@@ -410,7 +414,7 @@ class View extends Component
 	{
 		$properties['id'] = $id;
 		$properties['view'] = $this;
-		/** @var $cache FragmentCache */
+		/** @var FragmentCache $cache */
 		$cache = FragmentCache::begin($properties);
 		if ($cache->getCachedContent() !== false) {
 			$this->endCache();

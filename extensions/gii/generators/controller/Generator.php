@@ -38,7 +38,7 @@ class Generator extends \yii\gii\Generator
 	public $actions = 'index';
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function init()
 	{
@@ -47,7 +47,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function getName()
 	{
@@ -55,7 +55,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function getDescription()
 	{
@@ -64,22 +64,22 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function rules()
 	{
 		return array_merge(parent::rules(), [
-			['controller, actions, baseClass, ns', 'filter', 'filter' => 'trim'],
-			['controller, baseClass', 'required'],
-			['controller', 'match', 'pattern' => '/^[a-z\\-\\/]*$/', 'message' => 'Only a-z, dashes (-) and slashes (/) are allowed.'],
-			['actions', 'match', 'pattern' => '/^[a-z\\-,\\s]*$/', 'message' => 'Only a-z, dashes (-), spaces and commas are allowed.'],
-			['baseClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
-			['ns', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
+			[['controller', 'actions', 'baseClass', 'ns'], 'filter', 'filter' => 'trim'],
+			[['controller', 'baseClass'], 'required'],
+			[['controller'], 'match', 'pattern' => '/^[a-z\\-\\/]*$/', 'message' => 'Only a-z, dashes (-) and slashes (/) are allowed.'],
+			[['actions'], 'match', 'pattern' => '/^[a-z\\-,\\s]*$/', 'message' => 'Only a-z, dashes (-), spaces and commas are allowed.'],
+			[['baseClass'], 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
+			[['ns'], 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
 		]);
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function attributeLabels()
 	{
@@ -92,7 +92,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function requiredTemplates()
 	{
@@ -103,7 +103,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function stickyAttributes()
 	{
@@ -111,7 +111,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function hints()
 	{
@@ -134,7 +134,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function successMessage()
 	{
@@ -149,7 +149,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function generate()
 	{

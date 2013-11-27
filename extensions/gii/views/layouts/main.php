@@ -4,8 +4,8 @@ use yii\bootstrap\Nav;
 use yii\helpers\Html;
 
 /**
- * @var $this \yii\web\View
- * @var $content string
+ * @var \yii\web\View $this
+ * @var string $content
  */
 $asset = yii\gii\GiiAsset::register($this);
 ?>
@@ -26,7 +26,7 @@ NavBar::begin([
 	'options' => ['class' => 'navbar-inverse navbar-fixed-top'],
 ]);
 echo Nav::widget([
-	'options' => ['class' => 'nav navbar-nav pull-right'],
+	'options' => ['class' => 'nav navbar-nav navbar-right'],
 	'items' => [
 		['label' => 'Home', 'url' => ['default/index']],
 		['label' => 'Help', 'url' => 'http://www.yiiframework.com/doc/guide/topics.gii'],

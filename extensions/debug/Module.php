@@ -85,7 +85,7 @@ class Module extends \yii\base\Module
 
 	public function renderToolbar($event)
 	{
-		if (!$this->checkAccess()) {
+		if (!$this->checkAccess() || Yii::$app->getRequest()->getIsAjax()) {
 			return;
 		}
 		$url = Yii::$app->getUrlManager()->createUrl($this->id . '/default/toolbar', [
@@ -106,6 +106,7 @@ class Module extends \yii\base\Module
 				return true;
 			}
 		}
+		Yii::warning('Access to debugger is denied due to IP address restriction. The requested IP is ' . $ip, __METHOD__);
 		return false;
 	}
 

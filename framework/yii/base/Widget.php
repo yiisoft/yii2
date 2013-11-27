@@ -27,13 +27,13 @@ class Widget extends Component implements ViewContextInterface
 	 * @var integer a counter used to generate [[id]] for widgets.
 	 * @internal
 	 */
-	public static $_counter = 0;
+	public static $counter = 0;
 	/**
 	 * @var Widget[] the widgets that are currently being rendered (not ended). This property
 	 * is maintained by [[begin()]] and [[end()]] methods.
 	 * @internal
 	 */
-	public static $_stack = [];
+	public static $stack = [];
 
 	
 	/**
@@ -41,27 +41,27 @@ class Widget extends Component implements ViewContextInterface
 	 * This method creates an instance of the calling class. It will apply the configuration
 	 * to the created instance. A matching [[end()]] call should be called later.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 * @return Widget the newly created widget instance
+	 * @return static the newly created widget instance
 	 */
 	public static function begin($config = [])
 	{
 		$config['class'] = get_called_class();
 		/** @var Widget $widget */
 		$widget = Yii::createObject($config);
-		self::$_stack[] = $widget;
+		self::$stack[] = $widget;
 		return $widget;
 	}
 
 	/**
 	 * Ends a widget.
 	 * Note that the rendering result of the widget is directly echoed out.
-	 * @return Widget the widget instance that is ended.
+	 * @return static the widget instance that is ended.
 	 * @throws InvalidCallException if [[begin()]] and [[end()]] calls are not properly nested
 	 */
 	public static function end()
 	{
-		if (!empty(self::$_stack)) {
-			$widget = array_pop(self::$_stack);
+		if (!empty(self::$stack)) {
+			$widget = array_pop(self::$stack);
 			if (get_class($widget) === get_called_class()) {
 				$widget->run();
 				return $widget;
@@ -100,7 +100,7 @@ class Widget extends Component implements ViewContextInterface
 	public function getId($autoGenerate = true)
 	{
 		if ($autoGenerate && $this->_id === null) {
-			$this->_id = 'w' . self::$_counter++;
+			$this->_id = 'w' . self::$counter++;
 		}
 		return $this->_id;
 	}

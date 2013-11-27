@@ -34,4 +34,12 @@ class MemCachedTest extends CacheTestCase
 		}
 		parent::testExpire();
 	}
+
+	public function testExpireAdd()
+	{
+		if (getenv('TRAVIS') == 'true') {
+			$this->markTestSkipped('Can not reliably test memcached expiry on travis-ci.');
+		}
+		parent::testExpireAdd();
+	}
 }

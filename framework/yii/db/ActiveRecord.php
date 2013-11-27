@@ -27,15 +27,16 @@ use yii\helpers\Inflector;
  * @property boolean $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
  * @property array $oldAttributes The old attribute values (name-value pairs).
  * @property mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
- * returned if the primary key is composite or `$asArray` is true. A string is returned otherwise (null will be
- * returned if the key value is null). This property is read-only.
+ * returned if the primary key is composite. A string is returned otherwise (null will be returned if the key
+ * value is null). This property is read-only.
  * @property array $populatedRelations An array of relation data indexed by relation names. This property is
  * read-only.
  * @property mixed $primaryKey The primary key value. An array (column name => column value) is returned if
- * the primary key is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
- * the key value is null). This property is read-only.
+ * the primary key is composite. A string is returned otherwise (null will be returned if the key value is null).
+ * This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
 class ActiveRecord extends Model
@@ -252,7 +253,7 @@ class ActiveRecord extends Model
 
 	/**
 	 * Creates an [[ActiveQuery]] instance.
-	 * This method is called by [[find()]], [[findBySql()]] and [[count()]] to start a SELECT query.
+	 * This method is called by [[find()]], [[findBySql()]] to start a SELECT query.
 	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
 	 * written for querying `Customer` purpose.)
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
@@ -315,9 +316,9 @@ class ActiveRecord extends Model
 	 * (because another user has modified the data), a [[StaleObjectException]] exception will be thrown,
 	 * and the update or deletion is skipped.
 	 *
-	 * Optimized locking is only supported by [[update()]] and [[delete()]].
+	 * Optimistic locking is only supported by [[update()]] and [[delete()]].
 	 *
-	 * To use optimized locking:
+	 * To use Optimistic locking:
 	 *
 	 * 1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
 	 *    Override this method to return the name of this column.
@@ -372,7 +373,7 @@ class ActiveRecord extends Model
 	 * This method is overridden so that attributes and related objects can be accessed like properties.
 	 * @param string $name property name
 	 * @return mixed property value
-	 * @see getAttribute
+	 * @see getAttribute()
 	 */
 	public function __get($name)
 	{
@@ -385,7 +386,7 @@ class ActiveRecord extends Model
 				return $this->_related[$name];
 			}
 			$value = parent::__get($name);
-			if ($value instanceof ActiveRelation) {
+			if ($value instanceof ActiveRelationInterface) {
 				return $this->_related[$name] = $value->multiple ? $value->all() : $value->one();
 			} else {
 				return $value;
@@ -468,13 +469,14 @@ class ActiveRecord extends Model
 	 *
 	 * @param string $class the class name of the related record
 	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
-	 * the columns in the table associated with the `$class` model, while the values of the
-	 * array refer to the corresponding columns in the table associated with this AR class.
-	 * @return ActiveRelation the relation object.
+	 * the attributes of the record associated with the `$class` model, while the values of the
+	 * array refer to the corresponding attributes in **this** AR class.
+	 * @return ActiveRelationInterface the relation object.
 	 */
 	public function hasOne($class, $link)
 	{
-		return new ActiveRelation([
+		/** @var ActiveRecord $class */
+		return $class::createActiveRelation([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
@@ -506,18 +508,31 @@ class ActiveRecord extends Model
 	 *
 	 * @param string $class the class name of the related record
 	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
-	 * the columns in the table associated with the `$class` model, while the values of the
-	 * array refer to the corresponding columns in the table associated with this AR class.
-	 * @return ActiveRelation the relation object.
+	 * the attributes of the record associated with the `$class` model, while the values of the
+	 * array refer to the corresponding attributes in **this** AR class.
+	 * @return ActiveRelationInterface the relation object.
 	 */
 	public function hasMany($class, $link)
 	{
-		return new ActiveRelation([
+		/** @var ActiveRecord $class */
+		return $class::createActiveRelation([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
 			'multiple' => true,
 		]);
+	}
+
+	/**
+	 * Creates an [[ActiveRelation]] instance.
+	 * This method is called by [[hasOne()]] and [[hasMany()]] to create a relation instance.
+	 * You may override this method to return a customized relation.
+	 * @param array $config the configuration passed to the ActiveRelation class.
+	 * @return ActiveRelation the newly created [[ActiveRelation]] instance.
+	 */
+	public static function createActiveRelation($config = [])
+	{
+		return new ActiveRelation($config);
 	}
 
 	/**
@@ -555,9 +570,9 @@ class ActiveRecord extends Model
 	 * The default implementation will return all column names of the table associated with this AR class.
 	 * @return array list of attribute names.
 	 */
-	public function attributes()
+	public static function attributes()
 	{
-		return array_keys($this->getTableSchema()->columns);
+		return array_keys(static::getTableSchema()->columns);
 	}
 
 	/**
@@ -567,7 +582,7 @@ class ActiveRecord extends Model
 	 */
 	public function hasAttribute($name)
 	{
-		return isset($this->_attributes[$name]) || isset($this->getTableSchema()->columns[$name]);
+		return isset($this->_attributes[$name]) || in_array($name, $this->attributes());
 	}
 
 	/**
@@ -576,7 +591,7 @@ class ActiveRecord extends Model
 	 * null will be returned.
 	 * @param string $name the attribute name
 	 * @return mixed the attribute value. Null if the attribute is not set or does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function getAttribute($name)
 	{
@@ -588,7 +603,7 @@ class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @param mixed $value the attribute value.
 	 * @throws InvalidParamException if the named attribute does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function setAttribute($name, $value)
 	{
@@ -625,7 +640,7 @@ class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @return mixed the old attribute value. Null if the attribute is not loaded before
 	 * or does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function getOldAttribute($name)
 	{
@@ -637,7 +652,7 @@ class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @param mixed $value the old attribute value.
 	 * @throws InvalidParamException if the named attribute does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function setOldAttribute($name, $value)
 	{
@@ -739,7 +754,7 @@ class ActiveRecord extends Model
 	 * [[EVENT_BEFORE_INSERT]], [[EVENT_AFTER_INSERT]] and [[EVENT_AFTER_VALIDATE]]
 	 * will be raised by the corresponding methods.
 	 *
-	 * Only the [[changedAttributes|changed attribute values]] will be inserted into database.
+	 * Only the [[dirtyAttributes|changed attribute values]] will be inserted into database.
 	 *
 	 * If the table's primary key is auto-incremental and is null during insertion,
 	 * it will be populated with the actual value after insertion.
@@ -1030,7 +1045,7 @@ class ActiveRecord extends Model
 	/**
 	 * Sets the value indicating whether the record is new.
 	 * @param boolean $value whether the record is new and should be inserted when calling [[save()]].
-	 * @see getIsNewRecord
+	 * @see getIsNewRecord()
 	 */
 	public function setIsNewRecord($value)
 	{
@@ -1154,7 +1169,7 @@ class ActiveRecord extends Model
 			return false;
 		}
 		foreach ($this->attributes() as $name) {
-			$this->_attributes[$name] = $record->_attributes[$name];
+			$this->_attributes[$name] = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
 		}
 		$this->_oldAttributes = $this->_attributes;
 		$this->_related = [];
@@ -1164,11 +1179,15 @@ class ActiveRecord extends Model
 	/**
 	 * Returns a value indicating whether the given active record is the same as the current one.
 	 * The comparison is made by comparing the table names and the primary key values of the two active records.
+	 * If one of the records [[isNewRecord|is new]] they are also considered not equal.
 	 * @param ActiveRecord $record record to compare to
 	 * @return boolean whether the two active records refer to the same row in the same database table.
 	 */
 	public function equals($record)
 	{
+		if ($this->isNewRecord || $record->isNewRecord) {
+			return false;
+		}
 		return $this->tableName() === $record->tableName() && $this->getPrimaryKey() === $record->getPrimaryKey();
 	}
 
@@ -1177,6 +1196,9 @@ class ActiveRecord extends Model
 	 * @param boolean $asArray whether to return the primary key value as an array. If true,
 	 * the return value will be an array with column names as keys and column values as values.
 	 * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
+	 * @property mixed The primary key value. An array (column name => column value) is returned if
+	 * the primary key is composite. A string is returned otherwise (null will be returned if
+	 * the key value is null).
 	 * @return mixed the primary key value. An array (column name => column value) is returned if the primary key
 	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
 	 * the key value is null).
@@ -1203,6 +1225,9 @@ class ActiveRecord extends Model
 	 * @param boolean $asArray whether to return the primary key value as an array. If true,
 	 * the return value will be an array with column name as key and column value as value.
 	 * If this is false (default), a scalar value will be returned for non-composite primary key.
+	 * @property mixed The old primary key value. An array (column name => column value) is
+	 * returned if the primary key is composite. A string is returned otherwise (null will be
+	 * returned if the key value is null).
 	 * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
 	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
 	 * the key value is null).
@@ -1231,7 +1256,7 @@ class ActiveRecord extends Model
 	public static function create($row)
 	{
 		$record = static::instantiate($row);
-		$columns = static::getTableSchema()->columns;
+		$columns = array_flip(static::attributes());
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
 				$record->_attributes[$name] = $value;
@@ -1283,10 +1308,10 @@ class ActiveRecord extends Model
 		$getter = 'get' . $name;
 		try {
 			$relation = $this->$getter();
-			if ($relation instanceof ActiveRelation) {
+			if ($relation instanceof ActiveRelationInterface) {
 				return $relation;
 			} else {
-				return null;
+				throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
 			}
 		} catch (UnknownMethodException $e) {
 			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);
@@ -1321,11 +1346,9 @@ class ActiveRecord extends Model
 				throw new InvalidCallException('Unable to link models: both models must NOT be newly created.');
 			}
 			if (is_array($relation->via)) {
-				/** @var $viaRelation ActiveRelation */
+				/** @var ActiveRelation $viaRelation */
 				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
 				$viaClass = $viaRelation->modelClass;
-				$viaTable = $viaClass::tableName();
 				// unset $viaName so that it can be reloaded to reflect the change
 				unset($this->_related[$viaName]);
 			} else {
@@ -1342,8 +1365,19 @@ class ActiveRecord extends Model
 			foreach ($extraColumns as $k => $v) {
 				$columns[$k] = $v;
 			}
-			static::getDb()->createCommand()
-				->insert($viaTable, $columns)->execute();
+			if (is_array($relation->via)) {
+				/** @var $viaClass ActiveRecord */
+				/** @var $record ActiveRecord */
+				$record = new $viaClass();
+				foreach($columns as $column => $value) {
+					$record->$column = $value;
+				}
+				$record->insert(false);
+			} else {
+				/** @var $viaTable string */
+				static::getDb()->createCommand()
+					->insert($viaTable, $columns)->execute();
+			}
 		} else {
 			$p1 = $model->isPrimaryKey(array_keys($relation->link));
 			$p2 = $this->isPrimaryKey(array_values($relation->link));
@@ -1396,11 +1430,9 @@ class ActiveRecord extends Model
 
 		if ($relation->via !== null) {
 			if (is_array($relation->via)) {
-				/** @var $viaRelation ActiveRelation */
+				/** @var ActiveRelation $viaRelation */
 				list($viaName, $viaRelation) = $relation->via;
-				/** @var $viaClass ActiveRecord */
 				$viaClass = $viaRelation->modelClass;
-				$viaTable = $viaClass::tableName();
 				unset($this->_related[$viaName]);
 			} else {
 				$viaRelation = $relation->via;
@@ -1413,15 +1445,29 @@ class ActiveRecord extends Model
 			foreach ($relation->link as $a => $b) {
 				$columns[$b] = $model->$a;
 			}
-			$command = static::getDb()->createCommand();
-			if ($delete) {
-				$command->delete($viaTable, $columns)->execute();
-			} else {
-				$nulls = [];
-				foreach (array_keys($columns) as $a) {
-					$nulls[$a] = null;
+			if (is_array($relation->via)) {
+				/** @var $viaClass ActiveRecord */
+				if ($delete) {
+					$viaClass::deleteAll($columns);
+				} else {
+					$nulls = [];
+					foreach (array_keys($columns) as $a) {
+						$nulls[$a] = null;
+					}
+					$viaClass::updateAll($nulls, $columns);
 				}
-				$command->update($viaTable, $nulls, $columns)->execute();
+			} else {
+				/** @var $viaTable string */
+				$command = static::getDb()->createCommand();
+				if ($delete) {
+					$command->delete($viaTable, $columns)->execute();
+				} else {
+					$nulls = [];
+					foreach (array_keys($columns) as $a) {
+						$nulls[$a] = null;
+					}
+					$command->update($viaTable, $nulls, $columns)->execute();
+				}
 			}
 		} else {
 			$p1 = $model->isPrimaryKey(array_keys($relation->link));
@@ -1444,7 +1490,7 @@ class ActiveRecord extends Model
 		if (!$relation->multiple) {
 			unset($this->_related[$name]);
 		} elseif (isset($this->_related[$name])) {
-			/** @var $b ActiveRecord */
+			/** @var ActiveRecord $b */
 			foreach ($this->_related[$name] as $a => $b) {
 				if ($model->getPrimaryKey() == $b->getPrimaryKey()) {
 					unset($this->_related[$name][$a]);
@@ -1472,18 +1518,19 @@ class ActiveRecord extends Model
 	}
 
 	/**
-	 * @param array $keys
-	 * @return boolean
+	 * Returns a value indicating whether the given set of attributes represents the primary key for this model
+	 * @param array $keys the set of attributes to check
+	 * @return boolean whether the given set of attributes represents the primary key for this model
 	 */
-	private function isPrimaryKey($keys)
+	public static function isPrimaryKey($keys)
 	{
-		$pks = $this->primaryKey();
+		$pks = static::primaryKey();
 		foreach ($keys as $key) {
 			if (!in_array($key, $pks, true)) {
 				return false;
 			}
 		}
-		return true;
+		return count($keys) === count($pks);
 	}
 
 	/**

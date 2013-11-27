@@ -16,6 +16,10 @@ use yii\helpers\Json;
 use yii\widgets\BaseListView;
 
 /**
+ * The GridView widget is used to display data in a grid.
+ *
+ * It provides features like sorting, paging and also filtering the data.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

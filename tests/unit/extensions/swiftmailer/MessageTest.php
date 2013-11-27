@@ -306,7 +306,7 @@ class MessageTest extends VendorTestCase
 		$htmlPresent = false;
 		foreach ($messageParts as $part) {
 			if (!($part instanceof \Swift_Mime_Attachment)) {
-				/* @var $part \Swift_Mime_MimePart */
+				/* @var \Swift_Mime_MimePart $part */
 				if ($part->getContentType() == 'text/plain') {
 					$textPresent = true;
 				}

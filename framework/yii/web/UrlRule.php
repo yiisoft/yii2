@@ -11,7 +11,17 @@ use yii\base\Object;
 use yii\base\InvalidConfigException;
 
 /**
- * UrlRule represents a rule used for parsing and generating URLs.
+ * UrlRule represents a rule used by [[UrlManager]] for parsing and generating URLs.
+ *
+ * To define your own URL parsing and creation logic you can extend from this class
+ * and add it to [[UrlManager::rules]] like this:
+ *
+ * ~~~
+ * 'rules' => [
+ *     ['class' => 'MyUrlRule', 'pattern' => '...', 'route' => 'site/index', ...],
+ *     // ...
+ * ]
+ * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -278,7 +288,7 @@ class UrlRule extends Object
 
 		// match params in the pattern
 		foreach ($this->_paramRules as $name => $rule) {
-			if (isset($params[$name]) && ($rule === '' || preg_match($rule, $params[$name]))) {
+			if (isset($params[$name]) && !is_array($params[$name]) && ($rule === '' || preg_match($rule, $params[$name]))) {
 				$tr["<$name>"] = urlencode($params[$name]);
 				unset($params[$name]);
 			} elseif (!isset($this->defaults[$name]) || isset($params[$name])) {

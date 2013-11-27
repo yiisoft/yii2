@@ -54,7 +54,7 @@ use yii\web\HttpException;
 class Module extends \yii\base\Module
 {
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public $controllerNamespace = 'yii\gii\controllers';
 	/**
@@ -92,7 +92,7 @@ class Module extends \yii\base\Module
 
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function init()
 	{
@@ -103,7 +103,7 @@ class Module extends \yii\base\Module
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function beforeAction($action)
 	{
@@ -125,6 +125,7 @@ class Module extends \yii\base\Module
 				return true;
 			}
 		}
+		Yii::warning('Access to Gii is denied due to IP address restriction. The requested IP is ' . $ip, __METHOD__);
 		return false;
 	}
 

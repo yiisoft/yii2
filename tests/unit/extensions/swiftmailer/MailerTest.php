@@ -63,6 +63,58 @@ class MailerTest extends VendorTestCase
 		$this->assertEquals($transportConfig['host'], $transport->getHost(), 'Invalid transport host!');
 	}
 
+	/**
+	 * @depends testConfigureTransport
+	 */
+	public function testConfigureTransportConstruct()
+	{
+		$mailer = new Mailer();
+
+		$class = 'Swift_SmtpTransport';
+		$host = 'some.test.host';
+		$port = 999;
+		$transportConfig = [
+			'class' => $class,
+			'constructArgs' => [
+				$host,
+				$port,
+			],
+		];
+		$mailer->setTransport($transportConfig);
+		$transport = $mailer->getTransport();
+		$this->assertTrue(is_object($transport), 'Unable to setup transport via config!');
+		$this->assertEquals($class, get_class($transport), 'Invalid transport class!');
+		$this->assertEquals($host, $transport->getHost(), 'Invalid transport host!');
+		$this->assertEquals($port, $transport->getPort(), 'Invalid transport host!');
+	}
+
+	/**
+	 * @depends testConfigureTransportConstruct
+	 */
+	public function testConfigureTransportWithPlugins()
+	{
+		$mailer = new Mailer();
+
+		$pluginClass = 'Swift_Plugins_ThrottlerPlugin';
+		$rate = 10;
+
+		$transportConfig = [
+			'class' => 'Swift_SmtpTransport',
+			'plugins' => [
+				[
+					'class' => $pluginClass,
+					'constructArgs' => [
+						$rate,
+					],
+				],
+			],
+		];
+		$mailer->setTransport($transportConfig);
+		$transport = $mailer->getTransport();
+		$this->assertTrue(is_object($transport), 'Unable to setup transport via config!');
+		$this->assertContains(':' . $pluginClass . ':', print_r($transport, true), 'Plugin not added');
+	}
+
 	public function testGetSwiftMailer()
 	{
 		$mailer = new Mailer();
