@@ -1292,7 +1292,7 @@ abstract class ActiveRecord extends Model
 	public static function create($row)
 	{
 		$record = static::instantiate($row);
-		$columns = array_flip(static::attributes());
+		$columns = static::getIndexSchema()->columns;
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
 				$column = $columns[$name];
