@@ -174,7 +174,7 @@ class Request extends \yii\base\Request
 	{
 		return $this->getMethod() === 'OPTIONS';
 	}
-  
+
 	/**
 	 * Returns whether this is a HEAD request.
 	 * @return boolean whether this is a HEAD request.
@@ -183,7 +183,7 @@ class Request extends \yii\base\Request
 	{
 		return $this->getMethod() === 'HEAD';
 	}
-  
+
 	/**
 	 * Returns whether this is a POST request.
 	 * @return boolean whether this is a POST request.

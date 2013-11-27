@@ -3,7 +3,7 @@ Active Record
 
 Active Record implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
 The premise behind Active Record is that an individual [[ActiveRecord]] object is associated with a specific row in a database table. The object's attributes are mapped to the columns of the corresponding table. Referencing an Active Record attribute is equivalent to accessing
-the corresponding table column for that record. 
+the corresponding table column for that record.
 
 As an example, say that the `Customer` ActiveRecord class is associated with the
 `tbl_customer` table. This would mean that the class's `name` attribute is automatically mapped to the `name` column in `tbl_customer`.
