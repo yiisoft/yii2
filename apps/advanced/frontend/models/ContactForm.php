@@ -37,7 +37,11 @@ class ContactForm extends Model
 	public function attributeLabels()
 	{
 		return [
-			'verifyCode' => 'Verification Code',
+			'name' => \Yii::t('base','Name'), 
+                        'email' => \Yii::t('base','Email'), 
+                        'subject' => \Yii::t('base','Subject'), 
+                        'body' => \Yii::t('base', 'Body'),
+			'verifyCode' => \Yii::t('base','Verification Code'),
 		];
 	}
 

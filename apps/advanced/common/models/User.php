@@ -107,15 +107,28 @@ class User extends ActiveRecord implements IdentityInterface
 			['username', 'filter', 'filter' => 'trim'],
 			['username', 'required'],
 			['username', 'string', 'min' => 2, 'max' => 255],
+			['username', 'unique', 'message' => \Yii::t('common','This email address has already been taken.'), 'on' => 'signup'],
 
 			['email', 'filter', 'filter' => 'trim'],
 			['email', 'required'],
 			['email', 'email'],
-			['email', 'unique', 'message' => 'This email address has already been taken.', 'on' => 'signup'],
-			['email', 'exist', 'message' => 'There is no user with such email.', 'on' => 'requestPasswordResetToken'],
+			['email', 'unique', 'message' => \Yii::t('common','This email address has already been taken.'), 'on' => 'signup'],
+			['email', 'exist', 'message' => \Yii::t('common','There is no user with such email.'), 'on' => 'requestPasswordResetToken'],
 
 			['password', 'required'],
 			['password', 'string', 'min' => 6],
+		];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function attributeLabels()
+	{
+		return [
+			'username' => \Yii::t('common','Username'),
+			'email' => \Yii::t('common','Email'),
+			'password' => \Yii::t('common','Password'),
 		];
 	}
 

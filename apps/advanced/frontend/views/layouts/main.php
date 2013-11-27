@@ -31,15 +31,15 @@ AppAsset::register($this);
 			],
 		]);
 		$menuItems = [
-			['label' => 'Home', 'url' => ['/site/index']],
-			['label' => 'About', 'url' => ['/site/about']],
-			['label' => 'Contact', 'url' => ['/site/contact']],
+			['label' => \Yii::t('base','Home'), 'url' => ['/site/index']],
+			['label' => \Yii::t('base','About'), 'url' => ['/site/about']],
+			['label' => \Yii::t('base','Contact'), 'url' => ['/site/contact']],
 		];
 		if (Yii::$app->user->isGuest) {
-			$menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-			$menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+			$menuItems[] = ['label' => \Yii::t('base','Signup'), 'url' => ['/site/signup']];
+			$menuItems[] = ['label' => \Yii::t('base','Login'), 'url' => ['/site/login']];
 		} else {
-			$menuItems[] = ['label' => 'Logout (' . Yii::$app->user->identity->username .')' , 'url' => ['/site/logout']];
+			$menuItems[] = ['label' => \Yii::t('base','Logout').' (' . Yii::$app->user->identity->username .')' , 'url' => ['/site/logout']];
 		}
 		echo Nav::widget([
 			'options' => ['class' => 'navbar-nav navbar-right'],

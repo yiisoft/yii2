@@ -78,7 +78,7 @@ class SiteController extends Controller
 	{
 		$model = new ContactForm;
 		if ($model->load($_POST) && $model->contact(Yii::$app->params['adminEmail'])) {
-			Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
+			Yii::$app->session->setFlash('success', \Yii::t('base','Thank you for contacting us. We will respond to you as soon as possible.'));
 			return $this->refresh();
 		} else {
 			return $this->render('contact', [
@@ -113,10 +113,10 @@ class SiteController extends Controller
 		$model->scenario = 'requestPasswordResetToken';
 		if ($model->load($_POST) && $model->validate()) {
 			if ($this->sendPasswordResetEmail($model->email)) {
-				Yii::$app->getSession()->setFlash('success', 'Check your email for further instructions.');
+				Yii::$app->getSession()->setFlash('success', \Yii::t('base','Check your email for further instructions.'));
 				return $this->goHome();
 			} else {
-				Yii::$app->getSession()->setFlash('error', 'There was an error sending email.');
+				Yii::$app->getSession()->setFlash('error', \Yii::t('base','There was an error sending email.'));
 			}
 		}
 		return $this->render('requestPasswordResetToken', [
@@ -132,12 +132,12 @@ class SiteController extends Controller
 		]);
 
 		if (!$model) {
-			throw new HttpException(400, 'Wrong password reset token.');
+			throw new HttpException(400, \Yii::t('base','Wrong password reset token.'));
 		}
 
 		$model->scenario = 'resetPassword';
 		if ($model->load($_POST) && $model->save()) {
-			Yii::$app->getSession()->setFlash('success', 'New password was saved.');
+			Yii::$app->getSession()->setFlash('success', \Yii::t('base','New password was saved.'));
 			return $this->goHome();
 		}
 
@@ -162,13 +162,13 @@ class SiteController extends Controller
 			// todo: refactor it with mail component. pay attention to the arrangement of mail view files
 			$fromEmail = \Yii::$app->params['supportEmail'];
 			$name = '=?UTF-8?B?' . base64_encode(\Yii::$app->name . ' robot') . '?=';
-			$subject = '=?UTF-8?B?' . base64_encode('Password reset for ' . \Yii::$app->name) . '?=';
+			$subject = '=?UTF-8?B?' . base64_encode(\Yii::t('base','Password reset for ') . \Yii::$app->name) . '?=';
 			$body = $this->renderPartial('/emails/passwordResetToken', [
 				'user' => $user,
 			]);
 			$headers = "From: $name <{$fromEmail}>\r\n" .
 				"MIME-Version: 1.0\r\n" .
-				"Content-type: text/plain; charset=UTF-8";
+				"Content-type: text/html; charset=UTF-8"; // Mime Type needs to be text/html since the view contains HTML tags
 			return mail($email, $subject, $body, $headers);
 		}
 

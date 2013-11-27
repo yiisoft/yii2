@@ -7,13 +7,13 @@ use yii\widgets\ActiveForm;
  * @var yii\widgets\ActiveForm $form
  * @var common\models\User $model
  */
-$this->title = 'Signup';
+$this->title = \Yii::t('base','Signup');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-signup">
 	<h1><?= Html::encode($this->title) ?></h1>
 
-	<p>Please fill out the following fields to signup:</p>
+	<p><?= \Yii::t('base','Please fill out the following fields to signup:') ?></p>
 
 	<div class="row">
 		<div class="col-lg-5">
@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				<?= $form->field($model, 'email') ?>
 				<?= $form->field($model, 'password')->passwordInput() ?>
 				<div class="form-group">
-					<?= Html::submitButton('Signup', ['class' => 'btn btn-primary']) ?>
+					<?= Html::submitButton(\Yii::t('base','Signup'), ['class' => 'btn btn-primary']) ?>
 				</div>
 			<?php ActiveForm::end(); ?>
 		</div>
