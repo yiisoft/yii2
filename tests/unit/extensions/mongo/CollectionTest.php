@@ -15,6 +15,13 @@ class CollectionTest extends MongoTestCase
 
 	// Tests :
 
+	public function testFind()
+	{
+		$collection = $this->getConnection()->getCollection('customer');
+		$cursor = $collection->find();
+		$this->assertTrue($cursor instanceof \MongoCursor);
+	}
+
 	public function testInsert()
 	{
 		$collection = $this->getConnection()->getCollection('customer');
@@ -44,6 +51,28 @@ class CollectionTest extends MongoTestCase
 		$this->assertEquals($id, $rows[0]['_id']);
 	}
 
+	/**
+	 * @depends testFind
+	 */
+	public function testBatchInsert()
+	{
+		$collection = $this->getConnection()->getCollection('customer');
+		$rows = [
+			[
+				'name' => 'customer 1',
+				'address' => 'customer 1 address',
+			],
+			[
+				'name' => 'customer 2',
+				'address' => 'customer 2 address',
+			],
+		];
+		$insertedRows = $collection->batchInsert($rows);
+		$this->assertTrue($insertedRows[0]['_id'] instanceof \MongoId);
+		$this->assertTrue($insertedRows[1]['_id'] instanceof \MongoId);
+		$this->assertEquals(count($rows), $collection->find()->count());
+	}
+
 	public function testSave()
 	{
 		$collection = $this->getConnection()->getCollection('customer');
@@ -59,7 +88,7 @@ class CollectionTest extends MongoTestCase
 	/**
 	 * @depends testSave
 	 */
-	public function testUpdate()
+	public function testUpdateBySave()
 	{
 		$collection = $this->getConnection()->getCollection('customer');
 		$data = [
@@ -92,5 +121,26 @@ class CollectionTest extends MongoTestCase
 
 		$rows = $collection->findAll();
 		$this->assertEquals(0, count($rows));
+	}
+
+	/**
+	 * @depends testFindAll
+	 */
+	public function testUpdate()
+	{
+		$collection = $this->getConnection()->getCollection('customer');
+		$data = [
+			'name' => 'customer 1',
+			'address' => 'customer 1 address',
+		];
+		$id = $collection->insert($data);
+
+		$newData = [
+			'name' => 'new name'
+		];
+		$collection->update(['_id' => $id], $newData);
+
+		list($row) = $collection->findAll();
+		$this->assertEquals($newData['name'], $row['name']);
 	}
 }

@@ -79,6 +79,51 @@ class Collection extends Object
 	}
 
 	/**
+	 * Inserts several new rows into collection.
+	 * @param array $rows array of arrays or objects to be inserted.
+	 * @param array $options list of options in format: optionName => optionValue.
+	 * @return array inserted data, each row will have "_id" key assigned to it.
+	 * @throws Exception on failure.
+	 */
+	public function batchInsert($rows, $options = [])
+	{
+		$token = 'Inserting batch data into ' . $this->mongoCollection->getName();
+		Yii::info($token, __METHOD__);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$this->tryResultError($this->mongoCollection->batchInsert($rows, $options));
+			Yii::endProfile($token, __METHOD__);
+			return $rows;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
+	}
+
+	/**
+	 * Updates the rows, which matches given criteria by given data.
+	 * @param array $criteria description of the objects to update.
+	 * @param array $newData the object with which to update the matching records.
+	 * @param array $options list of options in format: optionName => optionValue.
+	 * @return boolean whether operation was successful.
+	 * @throws Exception on failure.
+	 */
+	public function update($criteria, $newData, $options = [])
+	{
+		$token = 'Updating data in ' . $this->mongoCollection->getName();
+		Yii::info($token, __METHOD__);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$this->mongoCollection->update($criteria, $newData, $options);
+			Yii::endProfile($token, __METHOD__);
+			return true;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
+	}
+
+	/**
 	 * Update the existing database data, otherwise insert this data
 	 * @param array|object $data data to be updated/inserted.
 	 * @param array $options list of options in format: optionName => optionValue.

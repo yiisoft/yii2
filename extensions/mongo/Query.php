@@ -91,7 +91,7 @@ class Query extends Component implements QueryInterface
 		if (!empty($this->orderBy)) {
 			$sort = [];
 			foreach ($this->orderBy as $fieldName => $sortOrder) {
-				$sort[$fieldName] = $sortOrder === SORT_DESC ? -1 : 1;
+				$sort[$fieldName] = $sortOrder === SORT_DESC ? \MongoCollection::DESCENDING : \MongoCollection::ASCENDING;
 			}
 			$cursor->sort($this->orderBy);
 		}
