@@ -17,7 +17,7 @@ use yii\mail\BaseMessage;
 </head>
 <body>
 	<?php $this->beginBody() ?>
-	<?= $message ?>
+	<?= $content ?>
 	<?php $this->endBody() ?>
 </body>
 </html>
