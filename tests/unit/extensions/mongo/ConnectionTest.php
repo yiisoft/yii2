@@ -71,6 +71,12 @@ class ConnectionTest extends MongoTestCase
 		$this->assertTrue($database instanceof Database, 'Unable to get default database!');
 
 		$connection = new Connection();
+		$connection->dsn = $this->mongoConfig['dsn'];
+		$connection->options = ['db' => $this->mongoConfig['defaultDatabaseName']];
+		$database = $connection->getDatabase();
+		$this->assertTrue($database instanceof Database, 'Unable to determine default database from options!');
+
+		$connection = new Connection();
 		$connection->dsn = $this->mongoConfig['dsn'] . '/' . $this->mongoConfig['defaultDatabaseName'];
 		$database = $connection->getDatabase();
 		$this->assertTrue($database instanceof Database, 'Unable to determine default database from dsn!');
