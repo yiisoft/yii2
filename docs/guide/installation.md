@@ -19,7 +19,7 @@ curl -s http://getcomposer.org/installer | php
 
 For problems or more information, see the official Composer guide:
 
-* [Linux](http://getcomposer.org/doc/00-intro.md#installation-nix) 
+* [Linux](http://getcomposer.org/doc/00-intro.md#installation-nix)
 * [Windows](http://getcomposer.org/doc/00-intro.md#installation-windows)
 
 With Composer installed, you can create a new Yii site using one of Yii's ready-to-use application templates.

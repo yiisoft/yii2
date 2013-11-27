@@ -135,7 +135,7 @@ Path alias is also closely related with class namespaces. It is recommended that
 alias be defined for each root namespace so that you can use Yii the class autoloader without
 any further configuration. For example, because `@yii` refers to the Yii installation directory,
 a class like `yii\web\Request` can be autoloaded by Yii. If you use a third party library
-such as Zend Framework, you may define a path alias `@Zend` which refers to its installation 
+such as Zend Framework, you may define a path alias `@Zend` which refers to its installation
 directory and Yii will be able to autoload any class in this library.
 
 More on path aliases can be found in the [Basic concepts section](basics.md).

@@ -1,7 +1,7 @@
 Security
 ========
 
-Good security is vital to the health and success of many websites. Unfortunately, many developers may cut corners when it comes to security due to a lack of understanding or too large of an implementation hurdle. To make your Yii-based site as secure as possible, the Yii framework has baked in several excellent, and easy to use, security features. 
+Good security is vital to the health and success of many websites. Unfortunately, many developers may cut corners when it comes to security due to a lack of understanding or too large of an implementation hurdle. To make your Yii-based site as secure as possible, the Yii framework has baked in several excellent, and easy to use, security features.
 
 Hashing and verifying passwords
 -------------------------------
