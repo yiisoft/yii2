@@ -513,8 +513,8 @@ class Response extends \yii\base\Response
 	 * specified by that header using web server internals including all optimizations like caching-headers.
 	 *
 	 * As this header directive is non-standard different directives exists for different web servers applications:
-	 * 
-	 * - Apache: [X-Sendfile](http://tn123.org/mod_xsendfile) 
+	 *
+	 * - Apache: [X-Sendfile](http://tn123.org/mod_xsendfile)
 	 * - Lighttpd v1.4: [X-LIGHTTPD-send-file](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
 	 * - Lighttpd v1.5: [X-Sendfile](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
 	 * - Nginx: [X-Accel-Redirect](http://wiki.nginx.org/XSendfile)
@@ -524,23 +524,23 @@ class Response extends \yii\base\Response
 	 * a proper xHeader should be sent.
 	 *
 	 * **Note**
-	 * 
-	 * This option allows to download files that are not under web folders, and even files that are otherwise protected 
+	 *
+	 * This option allows to download files that are not under web folders, and even files that are otherwise protected
 	 * (deny from all) like `.htaccess`.
 	 *
 	 * **Side effects**
-	 * 
+	 *
 	 * If this option is disabled by the web server, when this method is called a download configuration dialog
 	 * will open but the downloaded file will have 0 bytes.
 	 *
 	 * **Known issues**
-	 * 
+	 *
 	 * There is a Bug with Internet Explorer 6, 7 and 8 when X-SENDFILE is used over an SSL connection, it will show
-	 * an error message like this: "Internet Explorer was not able to open this Internet site. The requested site 
+	 * an error message like this: "Internet Explorer was not able to open this Internet site. The requested site
 	 * is either unavailable or cannot be found.". You can work around this problem by removing the `Pragma`-header.
 	 *
 	 * **Example**
-	 * 
+	 *
 	 * ~~~
 	 * Yii::$app->request->xSendFile('/home/user/Pictures/picture1.jpg');
 	 * ~~~

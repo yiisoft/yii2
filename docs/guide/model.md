@@ -59,7 +59,7 @@ Attribute Labels
 ----------------
 
 Attribute labels are mainly used for display purpose. For example, given an attribute `firstName`, we can declare
-a label `First Name` that is more user-friendly when displayed to end users in places such as form labels and 
+a label `First Name` that is more user-friendly when displayed to end users in places such as form labels and
 error messages. Given an attribute name, you can obtain its label by calling [[\yii\base\Model::getAttributeLabel()]].
 
 To declare attribute labels, override the [[\yii\base\Model::attributeLabels()]] method. The overridden method returns a mapping of attribute names to attribute labels, as shown in the example below. If an attribute is not found
@@ -86,7 +86,7 @@ Scenarios
 ---------
 
 A model may be used in different *scenarios*. For example, a `User` model may be used to collect user login inputs,
-but it may also be used for user registration purposes. In the one scenario, every piece of data is required; in the other, only the username and password would be. 
+but it may also be used for user registration purposes. In the one scenario, every piece of data is required; in the other, only the username and password would be.
 
 To easily implement the business logic for different scenarios, each model has a property named `scenario`
 that stores the name of the scenario that the model is currently being used in. As will be explained in the next

@@ -27,13 +27,13 @@ class Alert extends \yii\bootstrap\Widget
 	 * - $value is the bootstrap alert type (i.e. danger, success, info, warning)
 	 */
 	public $alertTypes = [
-		'error'   => 'danger', 
-		'danger'  => 'danger', 
-		'success' => 'success', 
-		'info'    => 'info', 
+		'error'   => 'danger',
+		'danger'  => 'danger',
+		'success' => 'success',
+		'info'    => 'info',
 		'warning' => 'warning'
 	];
-	 
+	
 	/**
 	 * @var array the options for rendering the close button tag.
 	 */
@@ -49,7 +49,7 @@ class Alert extends \yii\bootstrap\Widget
 		
 		foreach ($flashes as $type => $message) {
 			/* initialize css class for each alert box */
-			$this->options['class'] = 'alert-' . $this->alertTypes[$type] . $appendCss; 
+			$this->options['class'] = 'alert-' . $this->alertTypes[$type] . $appendCss;
 
 			/* assign unique id to each alert box */
 			$this->options['id'] = $this->getId() . '-' . $type;
