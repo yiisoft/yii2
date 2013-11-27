@@ -29,7 +29,6 @@ return [
 				],
 			],
 		],
-	],
 		'i18n' => [
 			'translations' => [
 				'yii' => [
@@ -51,5 +50,6 @@ return [
 				//],
 			],
 		],
+	],
 	'params' => $params,
 ];
