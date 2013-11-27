@@ -9,16 +9,16 @@ use yii\helpers\Html;
  */
 $asset = yii\gii\GiiAsset::register($this);
 ?>
-<?php $this->beginPage(); ?>
+<?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8"/>
 	<title><?= Html::encode($this->title) ?></title>
-	<?php $this->head(); ?>
+	<?php $this->head() ?>
 </head>
 <body>
-<?php $this->beginBody(); ?>
+<?php $this->beginBody() ?>
 <?php
 NavBar::begin([
 	'brandLabel' => Html::img($asset->baseUrl . '/logo.png'),
@@ -47,7 +47,7 @@ NavBar::end();
 	</div>
 </footer>
 
-<?php $this->endBody(); ?>
+<?php $this->endBody() ?>
 </body>
 </html>
-<?php $this->endPage(); ?>
+<?php $this->endPage() ?>
