@@ -18,7 +18,7 @@ class VendorTestCase extends TestCase
 	 */
 	public static function setUpBeforeClass()
 	{
-		$vendorDir = __DIR__ . '/vendor';
+		$vendorDir = __DIR__ . '/../../vendor';
 		Yii::setAlias('@vendor', $vendorDir);
 		$vendorAutoload = $vendorDir . '/autoload.php';
 		if (file_exists($vendorAutoload)) {
