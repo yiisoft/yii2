@@ -74,6 +74,11 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 */
 	public $useFileTransport = false;
 	/**
+	 * @var boolean whether to save the html content instead of the raw email data. This will also save to a .html
+	 * file instead of a .eml file
+	 */
+	public $fileTransportHtml = false;
+	/**
 	 * @var string the directory where the email messages are saved when [[useFileTransport]] is true.
 	 */
 	public $fileTransportPath = '@runtime/mail';
@@ -281,9 +286,17 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 			$file = $path . '/' . call_user_func($this->fileTransportCallback, $this, $message);
 		} else {
 			$time = microtime(true);
-			$file = $path . '/' . date('Ymd-His-', $time) . sprintf('%04d', (int)(($time - (int)$time) * 10000)) . '-' . sprintf('%04d', mt_rand(0, 10000)) . '.eml';
+			$extension = $this->fileTransportHtml ? '.html' : '.eml';
+			$file = $path . '/' . date('Ymd-His-') . sprintf('%04d', (int)(($time - (int)$time) * 10000)) . '-' . sprintf('%04d', mt_rand(0, 10000)) . $extension;
 		}
-		file_put_contents($file, $message->toString());
+
+		$content = $message->toString();
+		if ($this->fileTransportHtml) {
+			$children = $message->getSwiftMessage()->getChildren();
+			$content = $children[0]->getBody();
+		}
+
+		file_put_contents($file, $content);
 		return true;
 	}
 
