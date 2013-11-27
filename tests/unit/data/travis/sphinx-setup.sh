@@ -18,6 +18,10 @@ sudo chmod -R 777 /var/log/sphinx # ugly (for travis)
 sudo mkdir /var/lib/sphinx
 sudo chmod 777 /var/lib/sphinx # ugly (for travis)
 
+# run dir pid
+sudo mkdir /var/run/sphinx
+sudo chmod 777 /var/run/sphinx # ugly (for travis)
+
 # setup test Sphinx indexes:
 indexer --config $CWD/../sphinx/sphinx.conf --all
 
