@@ -167,7 +167,7 @@ public SiteController extends \yii\web\Controller
 	{
 		return [
 			'about' => [
-				'class' => '@app/actions/Page',
+				'class' => 'app\actions\Page',
 				'view' => 'about',
 			],
 		];
