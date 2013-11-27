@@ -225,7 +225,7 @@ SQL;
 			}
 			$citem = [$foreignTable];
 			foreach ($columns as $idx => $column) {
-				$citem[$fcolumns[$idx]] = $column;
+				$citem[$column] = $fcolumns[$idx];
 			}
 			$table->foreignKeys[] = $citem;
 		}
