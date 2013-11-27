@@ -295,11 +295,6 @@ trait ActiveRecordTestTrait
 
 	public function testFindLimit()
 	{
-		if (getenv('TRAVIS') == 'true' && $this instanceof \yiiunit\extensions\elasticsearch\ActiveRecordTest) {
-			// https://github.com/yiisoft/yii2/issues/1317
-			$this->markTestSkipped('This test is unreproduceable failing on travis-ci, locally it is passing.');
-		}
-
 		/** @var TestCase|ActiveRecordTestTrait $this */
 		// all()
 		$customers = $this->callCustomerFind()->all();
@@ -420,11 +415,6 @@ trait ActiveRecordTestTrait
 
 	public function testFindLazyVia()
 	{
-		if (getenv('TRAVIS') == 'true' && $this instanceof \yiiunit\extensions\elasticsearch\ActiveRecordTest) {
-			// https://github.com/yiisoft/yii2/issues/1317
-			$this->markTestSkipped('This test is unreproduceable failing on travis-ci, locally it is passing.');
-		}
-
 		/** @var TestCase|ActiveRecordTestTrait $this */
 		/** @var Order $order */
 		$order = $this->callOrderFind(1);
