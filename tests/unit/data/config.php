@@ -51,7 +51,7 @@ return [
 	],
 	'mongo' => [
 		'dsn' => 'mongodb://travis:test@localhost:27017',
-		'dbName' => 'yii2test',
+		'defaultDatabaseName' => 'yii2test',
 		'options' => [],
 	]
 ];
