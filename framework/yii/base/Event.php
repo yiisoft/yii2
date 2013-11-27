@@ -74,7 +74,7 @@ class Event extends Object
 	 * When the event handler is invoked, this data can be accessed via [[Event::data]].
 	 * @see off()
 	 */
-	public static function on($class, $name, $handler, $data = null)
+	public static function on($class, $name, callable $handler, $data = null)
 	{
 		self::$_events[$name][ltrim($class, '\\')][] = [$handler, $data];
 	}
@@ -91,7 +91,7 @@ class Event extends Object
 	 * @return boolean if a handler is found and detached
 	 * @see on()
 	 */
-	public static function off($class, $name, $handler = null)
+	public static function off($class, $name, callable $handler = null)
 	{
 		$class = ltrim($class, '\\');
 		if (empty(self::$_events[$name][$class])) {

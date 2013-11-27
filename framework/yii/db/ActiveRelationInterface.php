@@ -25,5 +25,5 @@ interface ActiveRelationInterface extends ActiveQueryInterface
 	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
 	 * @return static the relation object itself.
 	 */
-	public function via($relationName, $callable = null);
+	public function via($relationName, callable $callable = null);
 }

@@ -390,7 +390,7 @@ class Component extends Object
 	 * When the event handler is invoked, this data can be accessed via [[Event::data]].
 	 * @see off()
 	 */
-	public function on($name, $handler, $data = null)
+	public function on($name, callable $handler, $data = null)
 	{
 		$this->ensureBehaviors();
 		$this->_events[$name][] = [$handler, $data];
@@ -405,7 +405,7 @@ class Component extends Object
 	 * @return boolean if a handler is found and detached
 	 * @see on()
 	 */
-	public function off($name, $handler = null)
+	public function off($name, callable $handler = null)
 	{
 		$this->ensureBehaviors();
 		if (empty($this->_events[$name])) {

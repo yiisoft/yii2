@@ -17,6 +17,8 @@ function globalEventHandler2($event)
 	$event->handled = true;
 }
 
+function globalEventHandler3($event){}
+
 /**
  * @group base
  */
@@ -46,7 +48,7 @@ class ComponentTest extends TestCase
 		$behavior = new NewBehavior();
 		$component->attachBehavior('a', $behavior);
 		$this->assertSame($behavior, $component->getBehavior('a'));
-		$component->on('test', 'fake');
+		$component->on('test', 'yiiunit\framework\base\globalEventHandler');
 		$this->assertTrue($component->hasEventHandlers('test'));
 
 		$clone = clone $component;
@@ -158,28 +160,28 @@ class ComponentTest extends TestCase
 	public function testOn()
 	{
 		$this->assertFalse($this->component->hasEventHandlers('click'));
-		$this->component->on('click', 'foo');
+		$this->component->on('click', 'yiiunit\framework\base\globalEventHandler');
 		$this->assertTrue($this->component->hasEventHandlers('click'));
 
 		$this->assertFalse($this->component->hasEventHandlers('click2'));
 		$p = 'on click2';
-		$this->component->$p = 'foo2';
+		$this->component->$p = 'yiiunit\framework\base\globalEventHandler2';
 		$this->assertTrue($this->component->hasEventHandlers('click2'));
 	}
 
 	public function testOff()
 	{
 		$this->assertFalse($this->component->hasEventHandlers('click'));
-		$this->component->on('click', 'foo');
+		$this->component->on('click', 'yiiunit\framework\base\globalEventHandler');
 		$this->assertTrue($this->component->hasEventHandlers('click'));
-		$this->component->off('click', 'foo');
+		$this->component->off('click', 'yiiunit\framework\base\globalEventHandler');
 		$this->assertFalse($this->component->hasEventHandlers('click'));
 
-		$this->component->on('click2', 'foo');
-		$this->component->on('click2', 'foo2');
-		$this->component->on('click2', 'foo3');
+		$this->component->on('click2', 'yiiunit\framework\base\globalEventHandler');
+		$this->component->on('click2', 'yiiunit\framework\base\globalEventHandler2');
+		$this->component->on('click2', 'yiiunit\framework\base\globalEventHandler3');
 		$this->assertTrue($this->component->hasEventHandlers('click2'));
-		$this->component->off('click2', 'foo3');
+		$this->component->off('click2', 'yiiunit\framework\base\globalEventHandler');
 		$this->assertTrue($this->component->hasEventHandlers('click2'));
 		$this->component->off('click2');
 		$this->assertFalse($this->component->hasEventHandlers('click2'));
@@ -215,7 +217,7 @@ class ComponentTest extends TestCase
 	public function testHasEventHandlers()
 	{
 		$this->assertFalse($this->component->hasEventHandlers('click'));
-		$this->component->on('click', 'foo');
+		$this->component->on('click', 'yiiunit\framework\base\globalEventHandler');
 		$this->assertTrue($this->component->hasEventHandlers('click'));
 	}
 

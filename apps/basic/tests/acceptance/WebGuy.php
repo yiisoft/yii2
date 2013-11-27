@@ -278,7 +278,7 @@ class WebGuy extends \Codeception\AbstractGuy
      * @see Codeception\Module\PhpBrowser::executeInGuzzle()
      * @return \Codeception\Maybe
      */
-    public function executeInGuzzle($function) {
+    public function executeInGuzzle(callable $function) {
         $this->scenario->addStep(new \Codeception\Step\Action('executeInGuzzle', func_get_args()));
         if ($this->scenario->running()) {
             $result = $this->scenario->runStep();
