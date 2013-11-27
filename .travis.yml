@@ -18,6 +18,7 @@ before_script:
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
+  - tests/unit/data/travis/sphinx-setup.sh
 
 #script:
 #  - phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor,sphinx
