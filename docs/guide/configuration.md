@@ -21,7 +21,11 @@ console applications it's `yii`. Both are doing nearly the same job:
 5. Creating new application instance using `$config` and running it.
 
 The Bootstrap file is not the part of framework but your application so it's OK to adjust it to fit your application. Typical
-adjustments are the value of `YII_DEBUG` that should never be `true` on production and the way config is read.
+adjustments are the value of `YII_DEBUG` that should never be `true` on production and the way config is read:
+
+```php
+defined('YII_DEBUG') or define('YII_DEBUG', false);
+```
 
 Configuring application instance
 --------------------------------
