@@ -80,7 +80,7 @@ class UniqueValidatorTest extends DatabaseTestCase
 
 	public function testValidateAttributeAttributeNotInTableException()
 	{
-		$this->setExpectedException('yii\base\InvalidConfigException');
+		$this->setExpectedException('yii\db\Exception');
 		$val = new UniqueValidator();
 		$m = new ValidatorTestMainModel();
 		$val->validateAttribute($m, 'testMainVal');
