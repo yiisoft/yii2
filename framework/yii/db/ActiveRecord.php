@@ -570,7 +570,7 @@ class ActiveRecord extends Model
 	 * The default implementation will return all column names of the table associated with this AR class.
 	 * @return array list of attribute names.
 	 */
-	public static function attributes()
+	public function attributes()
 	{
 		return array_keys(static::getTableSchema()->columns);
 	}
@@ -1256,7 +1256,7 @@ class ActiveRecord extends Model
 	public static function create($row)
 	{
 		$record = static::instantiate($row);
-		$columns = array_flip(static::attributes());
+		$columns = array_flip($record->attributes());
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
 				$record->_attributes[$name] = $value;

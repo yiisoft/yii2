@@ -2,8 +2,6 @@
 
 namespace yiiunit\data\ar\redis;
 
-use yii\redis\RecordSchema;
-
 class OrderItem extends ActiveRecord
 {
 	public static function primaryKey()
@@ -11,7 +9,7 @@ class OrderItem extends ActiveRecord
 		return ['order_id', 'item_id'];
 	}
 
-	public static function attributes()
+	public function attributes()
 	{
 		return ['order_id', 'item_id', 'quantity', 'subtotal'];
 	}
