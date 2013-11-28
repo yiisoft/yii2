@@ -7,6 +7,7 @@
 
 namespace yii\mongo;
 
+use yii\base\InvalidParamException;
 use yii\base\Object;
 use Yii;
 
@@ -32,23 +33,23 @@ class Collection extends Object
 	}
 
 	/**
-	 * @param array $query
+	 * @param array $condition
 	 * @param array $fields
 	 * @return \MongoCursor
 	 */
-	public function find($query = [], $fields = [])
+	public function find($condition = [], $fields = [])
 	{
-		return $this->mongoCollection->find($query, $fields);
+		return $this->mongoCollection->find($this->buildCondition($condition), $fields);
 	}
 
 	/**
-	 * @param array $query
+	 * @param array $condition
 	 * @param array $fields
 	 * @return array
 	 */
-	public function findAll($query = [], $fields = [])
+	public function findAll($condition = [], $fields = [])
 	{
-		$cursor = $this->find($query, $fields);
+		$cursor = $this->find($condition, $fields);
 		$result = [];
 		foreach ($cursor as $data) {
 			$result[] = $data;
@@ -102,19 +103,19 @@ class Collection extends Object
 
 	/**
 	 * Updates the rows, which matches given criteria by given data.
-	 * @param array $criteria description of the objects to update.
+	 * @param array $condition description of the objects to update.
 	 * @param array $newData the object with which to update the matching records.
 	 * @param array $options list of options in format: optionName => optionValue.
 	 * @return boolean whether operation was successful.
 	 * @throws Exception on failure.
 	 */
-	public function update($criteria, $newData, $options = [])
+	public function update($condition, $newData, $options = [])
 	{
 		$token = 'Updating data in ' . $this->mongoCollection->getName();
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-			$this->mongoCollection->update($criteria, $newData, $options);
+			$this->mongoCollection->update($this->buildCondition($condition), $newData, $options);
 			Yii::endProfile($token, __METHOD__);
 			return true;
 		} catch (\Exception $e) {
@@ -147,18 +148,18 @@ class Collection extends Object
 
 	/**
 	 * Removes data from the collection.
-	 * @param array $criteria description of records to remove.
+	 * @param array $condition description of records to remove.
 	 * @param array $options list of options in format: optionName => optionValue.
 	 * @return boolean whether operation was successful.
 	 * @throws Exception on failure.
 	 */
-	public function remove($criteria = [], $options = [])
+	public function remove($condition = [], $options = [])
 	{
 		$token = 'Removing data from ' . $this->mongoCollection->getName();
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-			$this->tryResultError($this->mongoCollection->remove($criteria, $options));
+			$this->tryResultError($this->mongoCollection->remove($this->buildCondition($condition), $options));
 			Yii::endProfile($token, __METHOD__);
 			return true;
 		} catch (\Exception $e) {
@@ -181,5 +182,69 @@ class Collection extends Object
 		} elseif (!$result) {
 			throw new Exception('Unknown error, use "w=1" option to enable error tracking');
 		}
+	}
+
+	/**
+	 * Converts user friendly condition keyword into actual Mongo condition keyword.
+	 * @param string $key raw condition key.
+	 * @return string actual key.
+	 */
+	protected function normalizeConditionKeyword($key)
+	{
+		static $map = [
+			'or' => '$or',
+			'>' => '$gt',
+			'>=' => '$gte',
+			'<' => '$lt',
+			'<=' => '$lte',
+			'!=' => '$ne',
+			'<>' => '$ne',
+			'in' => '$in',
+			'not in' => '$nin',
+			'all' => '$all',
+			'size' => '$size',
+			'type' => '$type',
+			'exists' => '$exists',
+			'notexists' => '$exists',
+			'elemmatch' => '$elemMatch',
+			'mod' => '$mod',
+			'%' => '$mod',
+			'=' => '$$eq',
+			'==' => '$$eq',
+			'where' => '$where'
+		];
+		$key = strtolower($key);
+		if (array_key_exists($key, $map)) {
+			return $map[$key];
+		} else {
+			return $key;
+		}
+	}
+
+	/**
+	 * Builds up Mongo condition from user friendly condition.
+	 * @param array $condition raw condition.
+	 * @return array normalized Mongo condition.
+	 * @throws \yii\base\InvalidParamException on invalid condition given.
+	 */
+	public function buildCondition($condition)
+	{
+		if (!is_array($condition)) {
+			throw new InvalidParamException('Condition should be an array.');
+		}
+		$result = [];
+		foreach ($condition as $key => $value) {
+			if (is_array($value)) {
+				$actualValue = $this->buildCondition($value);
+			} else {
+				$actualValue = $value;
+			}
+			if (is_numeric($key)) {
+				$result[] = $actualValue;
+			} else {
+				$result[$this->normalizeConditionKeyword($key)] = $actualValue;
+			}
+		}
+		return $result;
 	}
 }

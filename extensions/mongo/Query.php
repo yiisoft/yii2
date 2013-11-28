@@ -74,26 +74,72 @@ class Query extends Component implements QueryInterface
 	}
 
 	/**
+	 * Adds an additional WHERE condition to the existing one.
+	 * The new condition and the existing one will be joined using the 'AND' operator.
+	 * @param array $condition the new WHERE condition. Please refer to [[where()]]
+	 * on how to specify this parameter.
+	 * @return static the query object itself
+	 * @see where()
+	 * @see orWhere()
+	 */
+	public function andWhere($condition)
+	{
+		if (is_array($this->where)) {
+			$this->where = array_merge($this->where, $condition);
+		} else {
+			$this->where = $condition;
+		}
+		return $this;
+	}
+
+	/**
+	 * Adds an additional WHERE condition to the existing one.
+	 * The new condition and the existing one will be joined using the 'OR' operator.
+	 * @param array $condition the new WHERE condition. Please refer to [[where()]]
+	 * on how to specify this parameter.
+	 * @return static the query object itself
+	 * @see where()
+	 * @see andWhere()
+	 */
+	public function orWhere($condition)
+	{
+		if (is_array($this->where)) {
+			if (array_key_exists('or', $this->where) && count($this->where) == 1) {
+				$this->where['or'][] = $condition;
+			} else {
+				$this->where = [
+					'or' => [$this->where, $condition]
+				];
+			}
+		} else {
+			$this->where = $condition;
+		}
+		return $this;
+	}
+
+	/**
 	 * @param Connection $db the database connection used to execute the query.
 	 * @return \MongoCursor mongo cursor instance.
 	 */
 	protected function buildCursor($db = null)
 	{
-		// TODO: compose query
-		$query = [];
+		$where = $this->where;
+		if (!is_array($where)) {
+			$where = [];
+		}
 		$selectFields = [];
 		if (!empty($this->select)) {
 			foreach ($this->select as $fieldName) {
 				$selectFields[$fieldName] = true;
 			}
 		}
-		$cursor = $this->getCollection($db)->find($query, $selectFields);
+		$cursor = $this->getCollection($db)->find($where, $selectFields);
 		if (!empty($this->orderBy)) {
 			$sort = [];
 			foreach ($this->orderBy as $fieldName => $sortOrder) {
 				$sort[$fieldName] = $sortOrder === SORT_DESC ? \MongoCollection::DESCENDING : \MongoCollection::ASCENDING;
 			}
-			$cursor->sort($this->orderBy);
+			$cursor->sort($sort);
 		}
 		$cursor->limit($this->limit);
 		$cursor->skip($this->offset);
@@ -109,17 +155,17 @@ class Query extends Component implements QueryInterface
 	public function all($db = null)
 	{
 		$cursor = $this->buildCursor($db);
-		if ($this->indexBy === null) {
-			return iterator_to_array($cursor);
-		} else {
-			$result = [];
-			foreach ($cursor as $row) {
+		$result = [];
+		foreach ($cursor as $row) {
+			if ($this->indexBy !== null) {
 				if (is_string($this->indexBy)) {
 					$key = $row[$this->indexBy];
 				} else {
 					$key = call_user_func($this->indexBy, $row);
 				}
 				$result[$key] = $row;
+			} else {
+				$result[] = $row;
 			}
 		}
 		return $result;

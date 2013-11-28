@@ -36,6 +36,88 @@ class QueryTest extends MongoTestCase
 		$this->assertEquals($from, $query->from);
 	}
 
+	public function testWhere()
+	{
+		$query = new Query;
+		$query->where(['name' => 'name1']);
+		$this->assertEquals(['name' => 'name1'], $query->where);
+
+		$query->andWhere(['address' => 'address1']);
+		$this->assertEquals(
+			[
+				'name' => 'name1',
+				'address' => 'address1'
+			],
+			$query->where
+		);
+
+		$query->orWhere(['name' => 'name2']);
+		$this->assertEquals(
+			[
+				'or' => [
+					[
+						'name' => 'name1',
+						'address' => 'address1'
+					],
+					['name' => 'name2']
+				]
+			],
+			$query->where
+		);
+
+		$query->orWhere(['name' => 'name3']);
+		$this->assertEquals(
+			[
+				'or' => [
+					[
+						'name' => 'name1',
+						'address' => 'address1'
+					],
+					['name' => 'name2'],
+					['name' => 'name3']
+				]
+			],
+			$query->where
+		);
+
+		$query->andWhere(['address' => 'address2']);
+		$this->assertEquals(
+			[
+				'or' => [
+					[
+						'name' => 'name1',
+						'address' => 'address1'
+					],
+					['name' => 'name2'],
+					['name' => 'name3']
+				],
+				'address' => 'address2'
+			],
+			$query->where
+		);
+
+		$query->orWhere(['name' => 'name4']);
+		$this->assertEquals(
+			[
+				'or' => [
+					[
+						'or' => [
+							[
+								'name' => 'name1',
+								'address' => 'address1'
+							],
+							['name' => 'name2'],
+							['name' => 'name3']
+						],
+						'address' => 'address2'
+					],
+					['name' => 'name4']
+				],
+			],
+			$query->where
+		);
+	}
+
 	public function testOrder()
 	{
 		$query = new Query;
