@@ -459,6 +459,15 @@ abstract class Application extends Module
 	}
 
 	/**
+	 * Returns the mailer component.
+	 * @return \yii\mail\MailerInterface the mailer interface
+	 */
+	public function getMail()
+	{
+		return $this->getComponent('mail');
+	}
+
+	/**
 	 * Returns the auth manager for this application.
 	 * @return \yii\rbac\Manager the auth manager for this application.
 	 */

@@ -33,7 +33,7 @@ use yii\helpers\ArrayHelper;
  *
  * ~~~
  * CREATE TABLE tbl_migration (
- *     version varchar(255) PRIMARY KEY,
+ *     version varchar(180) PRIMARY KEY,
  *     apply_time integer
  * )
  * ~~~

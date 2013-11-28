@@ -17,6 +17,6 @@ class SqliteCommandTest extends CommandTest
 
 		$sql = 'SELECT [[id]], [[t.name]] FROM {{tbl_customer}} t';
 		$command = $db->createCommand($sql);
-		$this->assertEquals("SELECT \"id\", 't'.\"name\" FROM 'tbl_customer' t", $command->sql);
+		$this->assertEquals("SELECT `id`, `t`.`name` FROM `tbl_customer` t", $command->sql);
 	}
 }
