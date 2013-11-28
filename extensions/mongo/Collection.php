@@ -242,7 +242,13 @@ class Collection extends Object
 			if (is_numeric($key)) {
 				$result[] = $actualValue;
 			} else {
-				$result[$this->normalizeConditionKeyword($key)] = $actualValue;
+				$key = $this->normalizeConditionKeyword($key);
+				if (strncmp('$', $key, 1) !== 0 && array_key_exists(0, $actualValue)) {
+					// shortcut for IN condition
+					$result[$key]['$in'] = $actualValue;
+				} else {
+					$result[$key] = $actualValue;
+				}
 			}
 		}
 		return $result;

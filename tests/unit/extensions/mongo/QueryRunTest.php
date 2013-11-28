@@ -75,9 +75,7 @@ class QueryRunTest extends MongoTestCase
 		$query = new Query;
 		$rows = $query->from('customer')
 			->where([
-				'name' => [
-					'in' => ['name1', 'name5']
-				]
+				'name' => ['name1', 'name5']
 			])
 			->all($connection);
 		$this->assertEquals(2, count($rows));
