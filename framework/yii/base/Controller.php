@@ -87,9 +87,9 @@ class Controller extends Component implements ViewContextInterface
 	 *
 	 * ~~~
 	 * return [
-	 *     'action1' => '@app/components/Action1',
+	 *     'action1' => 'app\components\Action1',
 	 *     'action2' => [
-	 *         'class' => '@app/components/Action2',
+	 *         'class' => 'app\components\Action2',
 	 *         'property1' => 'value1',
 	 *         'property2' => 'value2',
 	 *     ],
@@ -305,7 +305,7 @@ class Controller extends Component implements ViewContextInterface
 	public function render($view, $params = [])
 	{
 		$output = $this->getView()->render($view, $params, $this);
-		$layoutFile = $this->findLayoutFile();
+		$layoutFile = $this->findLayoutFile($this->getView());
 		if ($layoutFile !== false) {
 			return $this->getView()->renderFile($layoutFile, ['content' => $output], $this);
 		} else {
@@ -386,38 +386,39 @@ class Controller extends Component implements ViewContextInterface
 
 	/**
 	 * Finds the applicable layout file.
+	 * @param View $view the view object to render the layout file
 	 * @return string|boolean the layout file path, or false if layout is not needed.
 	 * Please refer to [[render()]] on how to specify this parameter.
 	 * @throws InvalidParamException if an invalid path alias is used to specify the layout
 	 */
-	protected function findLayoutFile()
+	protected function findLayoutFile($view)
 	{
 		$module = $this->module;
 		if (is_string($this->layout)) {
-			$view = $this->layout;
+			$layout = $this->layout;
 		} elseif ($this->layout === null) {
 			while ($module !== null && $module->layout === null) {
 				$module = $module->module;
 			}
 			if ($module !== null && is_string($module->layout)) {
-				$view = $module->layout;
+				$layout = $module->layout;
 			}
 		}
 
-		if (!isset($view)) {
+		if (!isset($layout)) {
 			return false;
 		}
 
-		if (strncmp($view, '@', 1) === 0) {
-			$file = Yii::getAlias($view);
-		} elseif (strncmp($view, '/', 1) === 0) {
-			$file = Yii::$app->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
+		if (strncmp($layout, '@', 1) === 0) {
+			$file = Yii::getAlias($layout);
+		} elseif (strncmp($layout, '/', 1) === 0) {
+			$file = Yii::$app->getLayoutPath() . DIRECTORY_SEPARATOR . $layout;
 		} else {
-			$file = $module->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
+			$file = $module->getLayoutPath() . DIRECTORY_SEPARATOR . $layout;
 		}
 
 		if (pathinfo($file, PATHINFO_EXTENSION) === '') {
-			$file .= '.php';
+			$file .= $view->defaultExtension;
 		}
 		return $file;
 	}

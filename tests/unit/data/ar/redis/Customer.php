@@ -2,6 +2,8 @@
 
 namespace yiiunit\data\ar\redis;
 
+use yiiunit\extensions\redis\ActiveRecordTest;
+
 class Customer extends ActiveRecord
 {
 	const STATUS_ACTIVE = 1;
@@ -9,7 +11,7 @@ class Customer extends ActiveRecord
 
 	public $status2;
 
-	public static function attributes()
+	public function attributes()
 	{
 		return ['id', 'email', 'name', 'address', 'status'];
 	}
@@ -25,5 +27,12 @@ class Customer extends ActiveRecord
 	public static function active($query)
 	{
 		$query->andWhere(['status' => 1]);
+	}
+
+	public function afterSave($insert)
+	{
+		ActiveRecordTest::$afterSaveInsert = $insert;
+		ActiveRecordTest::$afterSaveNewRecord = $this->isNewRecord;
+		parent::afterSave($insert);
 	}
 }

@@ -191,7 +191,9 @@ class BaseHtml
 	 */
 	public static function cssFile($url, $options = [])
 	{
-		$options['rel'] = 'stylesheet';
+		if (!isset($options['rel'])) {
+			$options['rel'] = 'stylesheet';
+		}
 		$options['href'] = static::url($url);
 		return static::tag('link', '', $options);
 	}

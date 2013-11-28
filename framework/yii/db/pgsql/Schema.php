@@ -196,13 +196,13 @@ EOD;
 		//http://www.postgresql.org/message-id/26677.1086673982@sss.pgh.pa.us
 
 		$sql = <<<SQL
-select 
+select
 	(select string_agg(attname,',') attname from pg_attribute where attrelid=ct.conrelid and attnum = any(ct.conkey)) as columns,
 	fc.relname as foreign_table_name,
 	fns.nspname as foreign_table_schema,
 	(select string_agg(attname,',') attname from pg_attribute where attrelid=ct.confrelid and attnum = any(ct.confkey)) as foreign_columns
 from
-	pg_constraint ct 
+	pg_constraint ct
 	inner join pg_class c on c.oid=ct.conrelid
 	inner join pg_namespace ns on c.relnamespace=ns.oid
 	left join pg_class fc on fc.oid=ct.confrelid
@@ -225,7 +225,7 @@ SQL;
 			}
 			$citem = [$foreignTable];
 			foreach ($columns as $idx => $column) {
-				$citem[$fcolumns[$idx]] = $column;
+				$citem[$column] = $fcolumns[$idx];
 			}
 			$table->foreignKeys[] = $citem;
 		}
@@ -241,7 +241,7 @@ SQL;
 		$tableName = $this->db->quoteValue($table->name);
 		$schemaName = $this->db->quoteValue($table->schemaName);
 		$sql = <<<SQL
-SELECT 
+SELECT
 	d.nspname AS table_schema,
 	c.relname AS table_name,
 	a.attname AS column_name,
@@ -266,11 +266,11 @@ SELECT
 		 WHEN 701 /*float8*/ THEN 53 /*DBL_MANT_DIG*/
 		 ELSE null
 	  END   AS numeric_precision,
-	  CASE 
+	  CASE
 	    WHEN atttypid IN (21, 23, 20) THEN 0
-	    WHEN atttypid IN (1700) THEN            
-		CASE 
-		    WHEN atttypmod = -1 THEN null       
+	    WHEN atttypid IN (1700) THEN
+		CASE
+		    WHEN atttypmod = -1 THEN null
 		    ELSE (atttypmod - 4) & 65535
 		END
 	       ELSE null

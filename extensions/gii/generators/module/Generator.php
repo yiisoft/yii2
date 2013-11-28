@@ -24,7 +24,7 @@ class Generator extends \yii\gii\Generator
 	public $moduleID;
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function getName()
 	{
@@ -32,7 +32,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function getDescription()
 	{
@@ -40,7 +40,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function rules()
 	{
@@ -54,7 +54,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function attributeLabels()
 	{
@@ -65,7 +65,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function hints()
 	{
@@ -76,7 +76,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function successMessage()
 	{
@@ -104,7 +104,7 @@ EOD;
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function requiredTemplates()
 	{
@@ -112,7 +112,7 @@ EOD;
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function generate()
 	{

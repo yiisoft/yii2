@@ -26,11 +26,16 @@ use Yii;
  * read-only.
  * @property boolean $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
  * @property array $oldAttributes The old attribute values (name-value pairs).
- * @property integer $oldPrimaryKey The old primary key value. This property is read-only.
+ * @property mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
+ * returned if the primary key is composite. A string is returned otherwise (null will be returned if the key
+ * value is null). This property is read-only.
  * @property array $populatedRelations An array of relation data indexed by relation names. This property is
  * read-only.
- * @property integer $primaryKey The primary key value. This property is read-only.
- * @property string $snippet current snippet value for this Active Record instance..
+ * @property mixed $primaryKey The primary key value. An array (column name => column value) is returned if
+ * the primary key is composite. A string is returned otherwise (null will be returned if the key value is null).
+ * This property is read-only.
+ * @property string $snippet Snippet value.
+ * @property string $snippetSource Snippet source string. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -421,7 +426,7 @@ abstract class ActiveRecord extends Model
 	 * This method is overridden so that attributes and related objects can be accessed like properties.
 	 * @param string $name property name
 	 * @return mixed property value
-	 * @see getAttribute
+	 * @see getAttribute()
 	 */
 	public function __get($name)
 	{
@@ -493,7 +498,7 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Declares a `has-one` relation.
-	 * The declaration is returned in terms of an [[ActiveRelationInterface]] instance
+	 * The declaration is returned in terms of an [[ActiveRelation]] instance
 	 * through which the related record can be queried and retrieved back.
 	 *
 	 * A `has-one` relation means that there is at most one related record matching
@@ -513,21 +518,18 @@ abstract class ActiveRecord extends Model
 	 * in the related class `ArticleContent`, while the 'id' value refers to an attribute name
 	 * in the current AR class.
 	 *
-	 * @param string $type relation type or class name.
-	 *  - if value contains backslash ("\"), it is treated as full active relation class name,
-	 * for example: "app\mydb\ActiveRelation"
-	 *  - if value does not contain backslash ("\"), the active relation class name will be composed
-	 * by pattern: "yii\{type}\ActiveRelation", for example: type "db" refers "yii\db\ActiveRelation",
-	 * type "sphinx" - "yii\sphinx\ActiveRelation"
+	 * Call methods declared in [[ActiveRelation]] to further customize the relation.
+	 *
 	 * @param string $class the class name of the related record
 	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
 	 * the attributes in the `$class` model, while the values of the array refer to the corresponding
 	 * attributes in the index associated with this AR class.
 	 * @return ActiveRelationInterface the relation object.
 	 */
-	public function hasOne($type, $class, $link)
+	public function hasOne($class, $link)
 	{
-		return $this->createActiveRelation($type, [
+		/** @var ActiveRecord $class */
+		return $class::createActiveRelation([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
@@ -557,21 +559,16 @@ abstract class ActiveRecord extends Model
 	 * an attribute name in the related class `Tag`, while the 'tag_id' value refers to
 	 * a multi value attribute name in the current AR class.
 	 *
-	 * @param string $type relation type or class name.
-	 *  - if value contains backslash ("\"), it is treated as full active relation class name,
-	 * for example: "app\mydb\ActiveRelation"
-	 *  - if value does not contain backslash ("\"), the active relation class name will be composed
-	 * by pattern: "yii\{type}\ActiveRelation", for example: type "db" refers "yii\db\ActiveRelation",
-	 * type "sphinx" - "yii\sphinx\ActiveRelation"
 	 * @param string $class the class name of the related record
 	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
 	 * the columns in the table associated with the `$class` model, while the values of the
 	 * array refer to the corresponding columns in the table associated with this AR class.
 	 * @return ActiveRelationInterface the relation object.
 	 */
-	public function hasMany($type, $class, $link)
+	public function hasMany($class, $link)
 	{
-		return $this->createActiveRelation($type, [
+		/** @var ActiveRecord $class */
+		return $class::createActiveRelation([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
@@ -583,19 +580,12 @@ abstract class ActiveRecord extends Model
 	 * Creates an [[ActiveRelationInterface]] instance.
 	 * This method is called by [[hasOne()]] and [[hasMany()]] to create a relation instance.
 	 * You may override this method to return a customized relation.
-	 * @param string $type relation type or class name.
 	 * @param array $config the configuration passed to the ActiveRelation class.
 	 * @return ActiveRelationInterface the newly created [[ActiveRelation]] instance.
 	 */
-	protected function createActiveRelation($type, $config = [])
+	public static function createActiveRelation($config = [])
 	{
-		if (strpos($type, '\\') === false) {
-			$class = "yii\\{$type}\\ActiveRelation";
-		} else {
-			$class = $type;
-		}
-		$config['class'] = $class;
-		return Yii::createObject($config);
+		return new ActiveRelation($config);
 	}
 
 	/**
@@ -635,7 +625,7 @@ abstract class ActiveRecord extends Model
 	 */
 	public function attributes()
 	{
-		return array_keys($this->getIndexSchema()->columns);
+		return array_keys(static::getIndexSchema()->columns);
 	}
 
 	/**
@@ -645,7 +635,7 @@ abstract class ActiveRecord extends Model
 	 */
 	public function hasAttribute($name)
 	{
-		return isset($this->_attributes[$name]) || isset($this->getIndexSchema()->columns[$name]);
+		return isset($this->_attributes[$name]) || in_array($name, $this->attributes());
 	}
 
 	/**
@@ -654,7 +644,7 @@ abstract class ActiveRecord extends Model
 	 * null will be returned.
 	 * @param string $name the attribute name
 	 * @return mixed the attribute value. Null if the attribute is not set or does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function getAttribute($name)
 	{
@@ -666,7 +656,7 @@ abstract class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @param mixed $value the attribute value.
 	 * @throws InvalidParamException if the named attribute does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function setAttribute($name, $value)
 	{
@@ -703,7 +693,7 @@ abstract class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @return mixed the old attribute value. Null if the attribute is not loaded before
 	 * or does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function getOldAttribute($name)
 	{
@@ -715,7 +705,7 @@ abstract class ActiveRecord extends Model
 	 * @param string $name the attribute name
 	 * @param mixed $value the old attribute value.
 	 * @throws InvalidParamException if the named attribute does not exist.
-	 * @see hasAttribute
+	 * @see hasAttribute()
 	 */
 	public function setOldAttribute($name, $value)
 	{
@@ -1091,7 +1081,7 @@ abstract class ActiveRecord extends Model
 	/**
 	 * Sets the value indicating whether the record is new.
 	 * @param boolean $value whether the record is new and should be inserted when calling [[save()]].
-	 * @see getIsNewRecord
+	 * @see getIsNewRecord()
 	 */
 	public function setIsNewRecord($value)
 	{
@@ -1215,7 +1205,7 @@ abstract class ActiveRecord extends Model
 			return false;
 		}
 		foreach ($this->attributes() as $name) {
-			$this->_attributes[$name] = $record->_attributes[$name];
+			$this->_attributes[$name] = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
 		}
 		$this->_oldAttributes = $this->_attributes;
 		$this->_related = [];
@@ -1225,20 +1215,28 @@ abstract class ActiveRecord extends Model
 	/**
 	 * Returns a value indicating whether the given active record is the same as the current one.
 	 * The comparison is made by comparing the index names and the primary key values of the two active records.
+	 * If one of the records [[isNewRecord|is new]] they are also considered not equal.
 	 * @param ActiveRecord $record record to compare to
 	 * @return boolean whether the two active records refer to the same row in the same index.
 	 */
 	public function equals($record)
 	{
+		if ($this->isNewRecord || $record->isNewRecord) {
+			return false;
+		}
 		return $this->indexName() === $record->indexName() && $this->getPrimaryKey() === $record->getPrimaryKey();
 	}
 
 	/**
-	 * Returns the primary key value.
+	 * Returns the primary key value(s).
 	 * @param boolean $asArray whether to return the primary key value as an array. If true,
 	 * the return value will be an array with column names as keys and column values as values.
-	 * @return mixed the primary key value. An array (column name => column value) is returned
-	 * if `$asArray` is true. A string is returned otherwise (null will be returned if
+	 * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
+	 * @property mixed The primary key value. An array (column name => column value) is returned if
+	 * the primary key is composite. A string is returned otherwise (null will be returned if
+	 * the key value is null).
+	 * @return mixed the primary key value. An array (column name => column value) is returned if the primary key
+	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
 	 * the key value is null).
 	 */
 	public function getPrimaryKey($asArray = false)
@@ -1256,15 +1254,18 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Returns the old primary key value.
+	 * Returns the old primary key value(s).
 	 * This refers to the primary key value that is populated into the record
 	 * after executing a find method (e.g. find(), findAll()).
 	 * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
 	 * @param boolean $asArray whether to return the primary key value as an array. If true,
 	 * the return value will be an array with column name as key and column value as value.
-	 * If this is false (default), a scalar value will be returned.
-	 * @return mixed the old primary key value. An array (column name => column value) is returned if
-	 * `$asArray` is true. A string is returned otherwise (null will be returned if
+	 * If this is false (default), a scalar value will be returned for non-composite primary key.
+	 * @property mixed The old primary key value. An array (column name => column value) is
+	 * returned if the primary key is composite. A string is returned otherwise (null will be
+	 * returned if the key value is null).
+	 * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
+	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
 	 * the key value is null).
 	 */
 	public function getOldPrimaryKey($asArray = false)
@@ -1348,7 +1349,7 @@ abstract class ActiveRecord extends Model
 			if ($relation instanceof ActiveRelationInterface) {
 				return $relation;
 			} else {
-				return null;
+				throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
 			}
 		} catch (UnknownMethodException $e) {
 			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);

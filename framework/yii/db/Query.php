@@ -42,7 +42,7 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * @var array the columns being selected. For example, `['id', 'name']`.
-	 * This is used to construct the SELECT clause in a SQL statement. If not set, if means selecting all columns.
+	 * This is used to construct the SELECT clause in a SQL statement. If not set, it means selecting all columns.
 	 * @see select()
 	 */
 	public $select;

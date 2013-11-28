@@ -64,11 +64,6 @@ class UniqueValidator extends Validator
 		$className = $this->className === null ? get_class($object) : $this->className;
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
 
-		$attributes = $className::attributes();
-		if (!in_array($attributeName, $attributes)) {
-			throw new InvalidConfigException("'$className' does not have an attribute named '$attributeName'.");
-		}
-
 		$query = $className::find();
 		$query->where([$attributeName => $value]);
 

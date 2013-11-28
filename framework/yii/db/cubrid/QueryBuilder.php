@@ -69,7 +69,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	}
 
 	/**
-	 * @inheritDocs
+	 * {@inheritdoc}
 	 */
 	public function buildLimit($limit, $offset)
 	{
@@ -83,7 +83,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 				$sql .= ' OFFSET ' . (int)$offset;
 			}
 		} elseif ($offset > 0) {
-			$sql = 'LIMIT ' . (int)$offset . ', 18446744073709551615'; // 2^64-1
+			$sql = 'LIMIT 9223372036854775807 OFFSET ' . (int)$offset; // 2^63-1
 		}
 		return $sql;
 	}

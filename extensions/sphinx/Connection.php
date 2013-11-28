@@ -47,11 +47,14 @@ use yii\base\NotSupportedException;
  *
  * Note: while this class extends "yii\db\Connection" some of its methods are not supported.
  *
+ * @method \yii\sphinx\Schema getSchema() The schema information for this Sphinx connection
+ * @method \yii\sphinx\QueryBuilder getQueryBuilder() the query builder for this Sphinx connection
+ *
+ * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
+ * sequence object. This property is read-only.
  * @property Schema $schema The schema information for this Sphinx connection. This property is read-only.
  * @property \yii\sphinx\QueryBuilder $queryBuilder The query builder for this Sphinx connection. This property is
  * read-only.
- * @method \yii\sphinx\Schema getSchema() The schema information for this Sphinx connection
- * @method \yii\sphinx\QueryBuilder getQueryBuilder() the query builder for this Sphinx connection
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -59,7 +62,7 @@ use yii\base\NotSupportedException;
 class Connection extends \yii\db\Connection
 {
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public $schemaMap = [
 		'mysqli' => 'yii\sphinx\Schema',   // MySQL

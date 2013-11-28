@@ -27,13 +27,13 @@ use yii\helpers\Inflector;
  * @property boolean $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
  * @property array $oldAttributes The old attribute values (name-value pairs).
  * @property mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
- * returned if the primary key is composite or `$asArray` is true. A string is returned otherwise (null will be
- * returned if the key value is null). This property is read-only.
+ * returned if the primary key is composite. A string is returned otherwise (null will be returned if the key
+ * value is null). This property is read-only.
  * @property array $populatedRelations An array of relation data indexed by relation names. This property is
  * read-only.
  * @property mixed $primaryKey The primary key value. An array (column name => column value) is returned if
- * the primary key is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
- * the key value is null). This property is read-only.
+ * the primary key is composite. A string is returned otherwise (null will be returned if the key value is null).
+ * This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -316,9 +316,9 @@ class ActiveRecord extends Model
 	 * (because another user has modified the data), a [[StaleObjectException]] exception will be thrown,
 	 * and the update or deletion is skipped.
 	 *
-	 * Optimized locking is only supported by [[update()]] and [[delete()]].
+	 * Optimistic locking is only supported by [[update()]] and [[delete()]].
 	 *
-	 * To use optimized locking:
+	 * To use Optimistic locking:
 	 *
 	 * 1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
 	 *    Override this method to return the name of this column.
@@ -469,9 +469,9 @@ class ActiveRecord extends Model
 	 *
 	 * @param string $class the class name of the related record
 	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
-	 * the columns in the table associated with the `$class` model, while the values of the
-	 * array refer to the corresponding columns in the table associated with this AR class.
-	 * @return ActiveRelation the relation object.
+	 * the attributes of the record associated with the `$class` model, while the values of the
+	 * array refer to the corresponding attributes in **this** AR class.
+	 * @return ActiveRelationInterface the relation object.
 	 */
 	public function hasOne($class, $link)
 	{
@@ -508,9 +508,9 @@ class ActiveRecord extends Model
 	 *
 	 * @param string $class the class name of the related record
 	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
-	 * the columns in the table associated with the `$class` model, while the values of the
-	 * array refer to the corresponding columns in the table associated with this AR class.
-	 * @return ActiveRelation the relation object.
+	 * the attributes of the record associated with the `$class` model, while the values of the
+	 * array refer to the corresponding attributes in **this** AR class.
+	 * @return ActiveRelationInterface the relation object.
 	 */
 	public function hasMany($class, $link)
 	{
@@ -570,7 +570,7 @@ class ActiveRecord extends Model
 	 * The default implementation will return all column names of the table associated with this AR class.
 	 * @return array list of attribute names.
 	 */
-	public static function attributes()
+	public function attributes()
 	{
 		return array_keys(static::getTableSchema()->columns);
 	}
@@ -754,7 +754,7 @@ class ActiveRecord extends Model
 	 * [[EVENT_BEFORE_INSERT]], [[EVENT_AFTER_INSERT]] and [[EVENT_AFTER_VALIDATE]]
 	 * will be raised by the corresponding methods.
 	 *
-	 * Only the [[changedAttributes|changed attribute values]] will be inserted into database.
+	 * Only the [[dirtyAttributes|changed attribute values]] will be inserted into database.
 	 *
 	 * If the table's primary key is auto-incremental and is null during insertion,
 	 * it will be populated with the actual value after insertion.
@@ -1169,7 +1169,7 @@ class ActiveRecord extends Model
 			return false;
 		}
 		foreach ($this->attributes() as $name) {
-			$this->_attributes[$name] = $record->_attributes[$name];
+			$this->_attributes[$name] = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
 		}
 		$this->_oldAttributes = $this->_attributes;
 		$this->_related = [];
@@ -1179,11 +1179,15 @@ class ActiveRecord extends Model
 	/**
 	 * Returns a value indicating whether the given active record is the same as the current one.
 	 * The comparison is made by comparing the table names and the primary key values of the two active records.
+	 * If one of the records [[isNewRecord|is new]] they are also considered not equal.
 	 * @param ActiveRecord $record record to compare to
 	 * @return boolean whether the two active records refer to the same row in the same database table.
 	 */
 	public function equals($record)
 	{
+		if ($this->isNewRecord || $record->isNewRecord) {
+			return false;
+		}
 		return $this->tableName() === $record->tableName() && $this->getPrimaryKey() === $record->getPrimaryKey();
 	}
 
@@ -1192,6 +1196,9 @@ class ActiveRecord extends Model
 	 * @param boolean $asArray whether to return the primary key value as an array. If true,
 	 * the return value will be an array with column names as keys and column values as values.
 	 * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
+	 * @property mixed The primary key value. An array (column name => column value) is returned if
+	 * the primary key is composite. A string is returned otherwise (null will be returned if
+	 * the key value is null).
 	 * @return mixed the primary key value. An array (column name => column value) is returned if the primary key
 	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
 	 * the key value is null).
@@ -1218,6 +1225,9 @@ class ActiveRecord extends Model
 	 * @param boolean $asArray whether to return the primary key value as an array. If true,
 	 * the return value will be an array with column name as key and column value as value.
 	 * If this is false (default), a scalar value will be returned for non-composite primary key.
+	 * @property mixed The old primary key value. An array (column name => column value) is
+	 * returned if the primary key is composite. A string is returned otherwise (null will be
+	 * returned if the key value is null).
 	 * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
 	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
 	 * the key value is null).
@@ -1246,7 +1256,7 @@ class ActiveRecord extends Model
 	public static function create($row)
 	{
 		$record = static::instantiate($row);
-		$columns = array_flip(static::attributes());
+		$columns = array_flip($record->attributes());
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
 				$record->_attributes[$name] = $value;

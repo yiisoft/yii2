@@ -66,6 +66,10 @@ use yii\mail\BaseMailer;
  *
  * @see http://swiftmailer.org
  *
+ * @property array|\Swift_Mailer $swiftMailer Swift mailer instance or array configuration. This property is
+ * read-only.
+ * @property array|\Swift_Transport $transport This property is read-only.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
@@ -119,7 +123,7 @@ class Mailer extends BaseMailer
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	protected function sendMessage($message)
 	{

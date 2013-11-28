@@ -8,6 +8,8 @@ use yii\swiftmailer\Mailer;
 use yii\swiftmailer\Message;
 use yiiunit\VendorTestCase;
 
+Yii::setAlias('@yii/swiftmailer', __DIR__ . '/../../../../extensions/swiftmailer');
+
 /**
  * @group vendor
  * @group mail

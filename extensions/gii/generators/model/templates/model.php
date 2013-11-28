@@ -33,7 +33,7 @@ namespace <?= $generator->ns ?>;
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public static function tableName()
 	{
@@ -41,7 +41,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function rules()
 	{
@@ -49,7 +49,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function attributeLabels()
 	{

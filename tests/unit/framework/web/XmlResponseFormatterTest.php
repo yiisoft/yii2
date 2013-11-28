@@ -48,7 +48,7 @@ class XmlResponseFormatterTest extends \yiiunit\TestCase
 	}
 
 	/**
-	 * @param mixed $data the data to be formatted 
+	 * @param mixed $data the data to be formatted
 	 * @param string $xml the expected XML body
 	 * @dataProvider formatScalarDataProvider
 	 */

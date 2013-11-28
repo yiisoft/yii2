@@ -34,7 +34,7 @@ abstract class BaseMessage extends Object implements MessageInterface
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function send()
 	{

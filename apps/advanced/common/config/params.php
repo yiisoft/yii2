@@ -3,6 +3,7 @@
 Yii::setAlias('common', realpath(__DIR__ . '/../'));
 Yii::setAlias('frontend', realpath(__DIR__ . '/../../frontend'));
 Yii::setAlias('backend', realpath(__DIR__ . '/../../backend'));
+Yii::setAlias('console', realpath(__DIR__ . '/../../console'));
 
 return [
 	'adminEmail' => 'admin@example.com',
@@ -14,6 +15,7 @@ return [
 
 	'components.mail' => [
 		'class' => 'yii\swiftmailer\Mailer',
+		'viewPath' => '@common/mails',
 	],
 
 	'components.db' => [

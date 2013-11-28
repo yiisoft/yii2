@@ -12,16 +12,16 @@ use frontend\widgets\Alert;
  */
 AppAsset::register($this);
 ?>
-<?php $this->beginPage(); ?>
+<?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
 	<meta charset="<?= Yii::$app->charset ?>"/>
 	<title><?= Html::encode($this->title) ?></title>
-	<?php $this->head(); ?>
+	<?php $this->head() ?>
 </head>
 <body>
-	<?php $this->beginBody(); ?>
+	<?php $this->beginBody() ?>
 	<?php
 		NavBar::begin([
 			'brandLabel' => 'My Company',
@@ -63,7 +63,7 @@ AppAsset::register($this);
 		</div>
 	</footer>
 
-	<?php $this->endBody(); ?>
+	<?php $this->endBody() ?>
 </body>
 </html>
-<?php $this->endPage(); ?>
+<?php $this->endPage() ?>

@@ -249,9 +249,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * You may override this method to change the default behavior.
 	 * @return array list of attribute names.
 	 */
-	public static function attributes()
+	public function attributes()
 	{
-		$class = new ReflectionClass(get_called_class());
+		$class = new ReflectionClass($this);
 		$names = [];
 		foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
 			if (!$property->isStatic()) {

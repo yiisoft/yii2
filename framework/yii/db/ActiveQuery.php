@@ -23,6 +23,7 @@ namespace yii\db;
  * - [[min()]]: returns the min over the specified column.
  * - [[max()]]: returns the max over the specified column.
  * - [[scalar()]]: returns the value of the first column in the first row of the query result.
+ * - [[column()]]: returns the value of the first column in the query result.
  * - [[exists()]]: returns a value indicating whether the query result has data or not.
  *
  * Because ActiveQuery extends from [[Query]], one can use query methods, such as [[where()]],

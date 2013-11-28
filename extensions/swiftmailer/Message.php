@@ -16,7 +16,8 @@ use yii\mail\BaseMessage;
  * @see Mailer
  *
  * @method Mailer getMailer() returns mailer instance.
- * @property \Swift_Message $swiftMessage vendor message instance.
+ *
+ * @property \Swift_Message $swiftMessage Swift message instance. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -40,7 +41,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function getCharset()
 	{
@@ -48,7 +49,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function setCharset($charset)
 	{
@@ -57,7 +58,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function getFrom()
 	{
@@ -65,7 +66,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function setFrom($from)
 	{
@@ -74,7 +75,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function getReplyTo()
 	{
@@ -82,7 +83,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function setReplyTo($replyTo)
 	{
@@ -91,7 +92,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function getTo()
 	{
@@ -99,7 +100,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function setTo($to)
 	{
@@ -108,7 +109,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function getCc()
 	{
@@ -116,7 +117,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function setCc($cc)
 	{
@@ -125,7 +126,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function getBcc()
 	{
@@ -133,7 +134,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function setBcc($bcc)
 	{
@@ -142,7 +143,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function getSubject()
 	{
@@ -150,7 +151,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function setSubject($subject)
 	{
@@ -159,7 +160,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function setTextBody($text)
 	{
@@ -168,7 +169,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function setHtmlBody($html)
 	{
@@ -221,7 +222,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function attach($fileName, array $options = [])
 	{
@@ -237,7 +238,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function attachContent($content, array $options = [])
 	{
@@ -253,7 +254,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function embed($fileName, array $options = [])
 	{
@@ -268,7 +269,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function embedContent($content, array $options = [])
 	{
@@ -283,7 +284,7 @@ class Message extends BaseMessage
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function toString()
 	{

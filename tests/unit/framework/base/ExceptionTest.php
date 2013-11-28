@@ -8,7 +8,7 @@ use yii\base\InvalidCallException;
 
 class ExceptionTest extends TestCase
 {
-	public function testToArrayWithPrevious() 
+	public function testToArrayWithPrevious()
 	{
 		$e = new InvalidCallException('bar', 0 ,new InvalidCallException('foo'));
 		$array = $e->toArray();

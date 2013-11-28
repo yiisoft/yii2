@@ -26,7 +26,7 @@ class Installer extends LibraryInstaller
 	const EXTENSION_FILE = 'yiisoft/extensions.php';
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function supports($packageType)
 	{
@@ -34,7 +34,7 @@ class Installer extends LibraryInstaller
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
 	{
@@ -49,7 +49,7 @@ class Installer extends LibraryInstaller
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target)
 	{
@@ -63,7 +63,7 @@ class Installer extends LibraryInstaller
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
 	{

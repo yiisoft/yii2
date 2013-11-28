@@ -48,7 +48,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritdoc}
 	 */
 	public static function createQuery()
 	{
@@ -56,7 +56,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritdoc}
 	 */
 	public static function createActiveRelation($config = [])
 	{
@@ -81,13 +81,13 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	 * This method must be overridden by child classes to define available attributes.
 	 * @return array list of attribute names.
 	 */
-	public static function attributes()
+	public function attributes()
 	{
 		throw new InvalidConfigException('The attributes() method of redis ActiveRecord has to be implemented by child classes.');
 	}
 
 	/**
-	 * @inheritDocs
+	 * {@inheritdoc}
 	 */
 	public function insert($runValidation = true, $attributes = null)
 	{
@@ -294,19 +294,19 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public static function getTableSchema()
 	{
-		throw new NotSupportedException('getTableSchema() is not supported by redis ActiveRecord');
+		throw new NotSupportedException('getTableSchema() is not supported by redis ActiveRecord.');
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public static function findBySql($sql, $params = [])
 	{
-		throw new NotSupportedException('findBySql() is not supported by redis ActiveRecord');
+		throw new NotSupportedException('findBySql() is not supported by redis ActiveRecord.');
 	}
 
 	/**

@@ -9,15 +9,15 @@ yii\debug\DebugAsset::register($this);
 ?>
 <!DOCTYPE html>
 <html>
-<?php $this->beginPage(); ?>
+<?php $this->beginPage() ?>
 <head>
 	<title><?= Html::encode($this->title) ?></title>
-	<?php $this->head(); ?>
+	<?php $this->head() ?>
 </head>
 <body>
-<?php $this->beginBody(); ?>
+<?php $this->beginBody() ?>
 <?= $content ?>
-<?php $this->endBody(); ?>
+<?php $this->endBody() ?>
 </body>
-<?php $this->endPage(); ?>
+<?php $this->endPage() ?>
 </html>
