@@ -32,7 +32,7 @@ use yii\caching\Cache;
  *
  * @property string $baseUrl The base URL that is used by [[createUrl()]] to prepend URLs it creates.
  * @property string $hostInfo The host info (e.g. "http://www.example.com") that is used by
- * [[createAbsoluteUrl()]] to prepend URLs it creates.
+ * [[createCanonicalUrl()]] to prepend URLs it creates.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -227,7 +227,7 @@ class UrlManager extends Component
 
 	/**
 	 * Creates a URL using the given route and parameters.
-	 * The URL created is a relative one. Use [[createAbsoluteUrl()]] to create an absolute URL.
+	 * The URL created is a relative one. Use [[createCanonicalUrl()]] to create an absolute URL.
 	 * @param string $route the route
 	 * @param array $params the parameters (name-value pairs)
 	 * @return string the created URL
@@ -273,14 +273,14 @@ class UrlManager extends Component
 	}
 
 	/**
-	 * Creates an absolute URL using the given route and parameters.
+	 * Creates an canonical URL using the given route and parameters.
 	 * This method prepends the URL created by [[createUrl()]] with the [[hostInfo]].
 	 * @param string $route the route
 	 * @param array $params the parameters (name-value pairs)
 	 * @return string the created URL
 	 * @see createUrl()
 	 */
-	public function createAbsoluteUrl($route, $params = [])
+	public function createCanonicalUrl($route, $params = [])
 	{
 		$url = $this->createUrl($route, $params);
 		if (strpos($url, '://') !== false) {
@@ -316,8 +316,8 @@ class UrlManager extends Component
 	}
 
 	/**
-	 * Returns the host info that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
-	 * @return string the host info (e.g. "http://www.example.com") that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
+	 * Returns the host info that is used by [[createCanonicalUrl()]] to prepend URLs it creates.
+	 * @return string the host info (e.g. "http://www.example.com") that is used by [[createCanonicalUrl()]] to prepend URLs it creates.
 	 */
 	public function getHostInfo()
 	{
@@ -328,8 +328,8 @@ class UrlManager extends Component
 	}
 
 	/**
-	 * Sets the host info that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
-	 * @param string $value the host info (e.g. "http://www.example.com") that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
+	 * Sets the host info that is used by [[createCanonicalUrl()]] to prepend URLs it creates.
+	 * @param string $value the host info (e.g. "http://www.example.com") that is used by [[createCanonicalUrl()]] to prepend URLs it creates.
 	 */
 	public function setHostInfo($value)
 	{

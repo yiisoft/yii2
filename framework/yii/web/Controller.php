@@ -143,7 +143,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function getCanonicalUrl()
 	{
-		return Yii::$app->getUrlManager()->createAbsoluteUrl($this->getRoute(), $this->actionParams);
+		return Yii::$app->getUrlManager()->createCanonicalUrl($this->getRoute(), $this->actionParams);
 	}
 
 	/**
