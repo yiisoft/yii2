@@ -7,6 +7,10 @@
 
 namespace yii\log;
 
+use Yii;
+use yii\base\InvalidConfigException;
+use yii\mail\MailerInterface;
+
 /**
  * EmailTarget sends selected log messages to the specified email addresses.
  *
@@ -20,51 +24,57 @@ namespace yii\log;
 class EmailTarget extends Target
 {
 	/**
-	 * @var array list of destination email addresses.
+	 * @var array the configuration array for creating a [[\yii\mail\MessageInterface|message]] object.
+	 * Note that the "to" option must be set, which specifies the destination email address(es).
 	 */
-	public $emails = [];
+	public $message = [];
 	/**
-	 * @var string email subject
+	 * @var MailerInterface|string the mailer object or the application component ID of the mailer object.
+	 * After the EmailTarget object is created, if you want to change this property, you should only assign it
+	 * with a mailer object.
 	 */
-	public $subject;
+	public $mail = 'mail';
+
 	/**
-	 * @var string email sent-from address
+	 * @inheritdoc
 	 */
-	public $sentFrom;
-	/**
-	 * @var array list of additional headers to use when sending an email.
-	 */
-	public $headers = [];
+	public function init()
+	{
+		parent::init();
+		if (empty($this->message['to'])) {
+			throw new InvalidConfigException('The "to" option must be set for EmailTarget::message.');
+		}
+		if (empty($this->message['subject'])) {
+			$this->message['subject'] = Yii::t('yii', 'Application Log');
+		}
+		if (is_string($this->mail)) {
+			$this->mail = Yii::$app->getComponent($this->mail);
+		}
+		if (!$this->mail instanceof MailerInterface) {
+			throw new InvalidConfigException("EmailTarget::mailer must be either a mailer object or the application component ID of a mailer object.");
+		}
+	}
 
 	/**
 	 * Sends log messages to specified email addresses.
 	 */
 	public function export()
 	{
-		$body = '';
-		foreach ($this->messages as $message) {
-			$body .= $this->formatMessage($message);
-		}
-		$body = wordwrap($body, 70);
-		$subject = $this->subject === null ? \Yii::t('yii', 'Application Log') : $this->subject;
-		foreach ($this->emails as $email) {
-			$this->sendEmail($subject, $body, $email, $this->sentFrom, $this->headers);
-		}
+		$message = $this->mail->compose();
+		Yii::configure($message, $this->message);
+		$this->composeMessage($message);
+		$this->mail->send($message);
 	}
 
 	/**
-	 * Sends an email.
-	 * @param string $subject email subject
-	 * @param string $body email body
-	 * @param string $sentTo sent-to email address
-	 * @param string $sentFrom sent-from email address
-	 * @param array $headers additional headers to be used when sending the email
+	 * Composes the given mail message with body content.
+	 * The default implementation fills the text body of the message with the log messages.
+	 * @param \yii\mail\MessageInterface $message
 	 */
-	protected function sendEmail($subject, $body, $sentTo, $sentFrom, $headers)
+	protected function composeMessage($message)
 	{
-		if ($sentFrom !== null) {
-			$headers[] = "From:  {$sentFrom}";
-		}
-		mail($sentTo, $subject, $body, implode("\r\n", $headers));
+		$messages = array_map([$this, 'formatMessage'], $this->messages);
+		$body = wordwrap(implode("\n", $messages), 70);
+		$message->setTextBody($body);
 	}
 }
