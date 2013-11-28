@@ -106,7 +106,7 @@ class Collection extends Object
 	 * @param array $condition description of the objects to update.
 	 * @param array $newData the object with which to update the matching records.
 	 * @param array $options list of options in format: optionName => optionValue.
-	 * @return boolean whether operation was successful.
+	 * @return integer|boolean number of updated documents or whether operation was successful.
 	 * @throws Exception on failure.
 	 */
 	public function update($condition, $newData, $options = [])
@@ -115,9 +115,14 @@ class Collection extends Object
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-			$this->mongoCollection->update($this->buildCondition($condition), $newData, $options);
+			$result = $this->mongoCollection->update($this->buildCondition($condition), $newData, $options);
+			$this->tryResultError($result);
 			Yii::endProfile($token, __METHOD__);
-			return true;
+			if (is_array($result) && array_key_exists('n', $result)) {
+				return $result['n'];
+			} else {
+				return true;
+			}
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
 			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
@@ -150,7 +155,7 @@ class Collection extends Object
 	 * Removes data from the collection.
 	 * @param array $condition description of records to remove.
 	 * @param array $options list of options in format: optionName => optionValue.
-	 * @return boolean whether operation was successful.
+	 * @return integer|boolean number of updated documents or whether operation was successful.
 	 * @throws Exception on failure.
 	 */
 	public function remove($condition = [], $options = [])
@@ -159,9 +164,14 @@ class Collection extends Object
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-			$this->tryResultError($this->mongoCollection->remove($this->buildCondition($condition), $options));
+			$result = $this->mongoCollection->remove($this->buildCondition($condition), $options);
+			$this->tryResultError($result);
 			Yii::endProfile($token, __METHOD__);
-			return true;
+			if (is_array($result) && array_key_exists('n', $result)) {
+				return $result['n'];
+			} else {
+				return true;
+			}
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
 			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
