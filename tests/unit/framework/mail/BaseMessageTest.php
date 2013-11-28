@@ -40,18 +40,11 @@ class BaseMessageTest extends TestCase
 
 	// Tests :
 
-	public function testGetMailer()
-	{
-		$mailer = $this->getMailer();
-		$message = $mailer->compose();
-		$this->assertEquals($mailer, $message->getMailer());
-	}
-
 	public function testSend()
 	{
 		$mailer = $this->getMailer();
 		$message = $mailer->compose();
-		$message->send();
+		$message->send($mailer);
 		$this->assertEquals($message, $mailer->sentMessages[0], 'Unable to send message!');
 	}
 

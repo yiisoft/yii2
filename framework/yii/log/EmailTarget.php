@@ -60,21 +60,21 @@ class EmailTarget extends Target
 	 */
 	public function export()
 	{
-		$message = $this->mail->compose();
-		Yii::configure($message, $this->message);
-		$this->composeMessage($message);
-		$this->mail->send($message);
+		$messages = array_map([$this, 'formatMessage'], $this->messages);
+		$body = wordwrap(implode("\n", $messages), 70);
+		$this->composeMessage($body)->send($this->mail);
 	}
 
 	/**
-	 * Composes the given mail message with body content.
-	 * The default implementation fills the text body of the message with the log messages.
-	 * @param \yii\mail\MessageInterface $message
+	 * Composes a mail message with the given body content.
+	 * @param string $body the body content
+	 * @return \yii\mail\MessageInterface $message
 	 */
-	protected function composeMessage($message)
+	protected function composeMessage($body)
 	{
-		$messages = array_map([$this, 'formatMessage'], $this->messages);
-		$body = wordwrap(implode("\n", $messages), 70);
+		$message = $this->mail->compose();
+		Yii::configure($message, $this->message);
 		$message->setTextBody($body);
+		return $message;
 	}
 }
