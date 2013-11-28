@@ -1385,6 +1385,8 @@ abstract class ActiveRecord extends Model
 				$this->populateRelation($offset, $item);
 				return;
 			}
+		} catch (InvalidParamException $e) {
+			// shut down exception : has getter, but not relation
 		} catch (UnknownMethodException $e) {
 			throw $e->getPrevious();
 		}

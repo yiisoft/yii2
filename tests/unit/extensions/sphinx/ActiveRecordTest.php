@@ -79,10 +79,10 @@ class ActiveRecordTest extends SphinxTestCase
 
 		// asArray
 		$article = ArticleIndex::find()->where('id=2')->asArray()->one();
+		unset($article['add_date']);
 		$this->assertEquals([
 			'id' => '2',
 			'author_id' => '2',
-			'add_date' => '1384466400',
 			'tag' => '3,4',
 		], $article);
 
