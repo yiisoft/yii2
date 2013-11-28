@@ -18,9 +18,9 @@ application component with the `urlManager` ID. This component is accessible bot
 `\Yii::$app->urlManager`. The component makes availabe the two following URL creation methods:
 
 - `createUrl($route, $params = [])`
-- `createAbsoluteUrl($route, $params = [])`
+- `createCanonicalUrl($route, $params = [])`
 
-The `createUrl` method creates a URL relative to the application root, such as `/index.php/site/index/`. The `createAbsoluteUrl` method creates URL prefixed with the proper protocol and
+The `createUrl` method creates a URL relative to the application root, such as `/index.php/site/index/`. The `createCanonicalUrl` method creates URL prefixed with the proper protocol and
 hostname: `http://www.example.com/index.php/site/index`. The former is suitable for internal application URLs, while the latter is used when you need to create rules for outside the website, such as when sending emails or generating an RSS feed.
 
 Some examples:
@@ -28,7 +28,7 @@ Some examples:
 ```php
 echo \Yii::$app->urlManager->createUrl('site/page', ['id' => 'about']);
 // /index.php/site/page/id/about/
-echo \Yii::$app->urlManager->createAbsoluteUrl('blog/post/index');
+echo \Yii::$app->urlManager->createCanonicalUrl('blog/post/index');
 // http://www.example.com/index.php/blog/post/index/
 ```
 

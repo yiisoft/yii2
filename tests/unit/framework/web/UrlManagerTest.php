@@ -115,14 +115,14 @@ class UrlManagerTest extends TestCase
 		$this->assertEquals('/test/post/index?page=1', $url);
 	}
 
-	public function testCreateAbsoluteUrl()
+	public function testCreateCanonicalUrl()
 	{
 		$manager = new UrlManager([
 			'baseUrl' => '/',
 			'hostInfo' => 'http://www.example.com',
 			'cache' => null,
 		]);
-		$url = $manager->createAbsoluteUrl('post/view', ['id' => 1, 'title' => 'sample post']);
+		$url = $manager->createCanonicalUrl('post/view', ['id' => 1, 'title' => 'sample post']);
 		$this->assertEquals('http://www.example.com?r=post/view&id=1&title=sample+post', $url);
 	}
 
