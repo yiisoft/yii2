@@ -278,9 +278,13 @@ class Command extends \yii\base\Component
 			return $n;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			$message = $e->getMessage() . "\nThe SQL being executed was: $rawSql";
-			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-			throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
+			if ($e instanceof Exception) {
+				throw $e;
+			} else {
+				$message = $e->getMessage() . "\nThe SQL being executed was: $rawSql";
+				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+				throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
+			}
 		}
 	}
 
@@ -411,9 +415,13 @@ class Command extends \yii\base\Component
 			return $result;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			$message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
-			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-			throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
+			if ($e instanceof Exception) {
+				throw $e;
+			} else {
+				$message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
+				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+				throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
+			}
 		}
 	}
 
