@@ -623,7 +623,7 @@ abstract class ActiveRecord extends Model
 	 * The default implementation will return all column names of the table associated with this AR class.
 	 * @return array list of attribute names.
 	 */
-	public static function attributes()
+	public function attributes()
 	{
 		return array_keys(static::getIndexSchema()->columns);
 	}
@@ -1292,7 +1292,7 @@ abstract class ActiveRecord extends Model
 	public static function create($row)
 	{
 		$record = static::instantiate($row);
-		$columns = array_flip(static::attributes());
+		$columns = static::getIndexSchema()->columns;
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
 				$column = $columns[$name];
@@ -1385,6 +1385,8 @@ abstract class ActiveRecord extends Model
 				$this->populateRelation($offset, $item);
 				return;
 			}
+		} catch (InvalidParamException $e) {
+			// shut down exception : has getter, but not relation
 		} catch (UnknownMethodException $e) {
 			throw $e->getPrevious();
 		}

@@ -92,6 +92,8 @@ return [
 
 ### Handling REST
 
+TBD: [[\yii\web\VerbFiler]]
+
 
 URL parsing
 -----------
@@ -118,3 +120,5 @@ return [
 
 Creating your own rule classes
 ------------------------------
+
+TBD

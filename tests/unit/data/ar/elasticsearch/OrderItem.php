@@ -12,7 +12,7 @@ namespace yiiunit\data\ar\elasticsearch;
  */
 class OrderItem extends ActiveRecord
 {
-	public static function attributes()
+	public function attributes()
 	{
 		return ['order_id', 'item_id', 'quantity', 'subtotal'];
 	}

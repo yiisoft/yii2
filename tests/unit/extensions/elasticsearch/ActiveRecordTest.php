@@ -231,11 +231,11 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 	public function testFindEagerViaRelation()
 	{
-		// this test is currently failing randomly because of https://github.com/yiisoft/yii2/issues/1310
 		$orders = Order::find()->with('items')->orderBy('create_time')->all();
 		$this->assertEquals(3, count($orders));
 		$order = $orders[0];
 		$this->assertEquals(1, $order->id);
+		$this->assertTrue($order->isRelationPopulated('items'));
 		$this->assertEquals(2, count($order->items));
 		$this->assertEquals(1, $order->items[0]->id);
 		$this->assertEquals(2, $order->items[1]->id);

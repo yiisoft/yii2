@@ -11,7 +11,7 @@
 			</testsuite>
 		</testsuites>
 		<filter>
-			<blacklist>				
+			<blacklist>
 				<file>framework/yii/helpers/Json.php</file>
 				<file>framework/yii/helpers/StringHelper.php</file>
 				<file>framework/yii/helpers/VarDumper.php</file>
@@ -20,7 +20,7 @@
 				<file>framework/yii/helpers/FileHelper.php</file>
 				<file>framework/yii/helpers/ArrayHelper.php</file>
 				<file>framework/yii/helpers/Console.php</file>
-				<file>framework/yii/i18n/GettextFile.php</file>		
+				<file>framework/yii/i18n/GettextFile.php</file>
 				<file>framework/yii/web/ResponseFormatterInterface.php</file>
 				<directory suffix="Exception.php">framework/yii/base</directory>
 				<directory suffix=".php">framework/yii/db/mssql</directory>

@@ -116,7 +116,7 @@ class QueryBuilder extends \yii\base\Object
 				$column = $name;
 			}
 			if ($column == ActiveRecord::PRIMARY_KEY_NAME) {
-				$column = '_id';
+				$column = '_uid';
 			}
 
 			// allow elasticsearch extended syntax as described in http://www.elasticsearch.org/guide/reference/api/search/sort/

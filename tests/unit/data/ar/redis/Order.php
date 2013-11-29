@@ -4,7 +4,7 @@ namespace yiiunit\data\ar\redis;
 
 class Order extends ActiveRecord
 {
-	public static function attributes()
+	public function attributes()
 	{
 		return ['id', 'customer_id', 'create_time', 'total'];
 	}

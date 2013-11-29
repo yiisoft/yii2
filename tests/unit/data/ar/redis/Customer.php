@@ -11,7 +11,7 @@ class Customer extends ActiveRecord
 
 	public $status2;
 
-	public static function attributes()
+	public function attributes()
 	{
 		return ['id', 'email', 'name', 'address', 'status'];
 	}

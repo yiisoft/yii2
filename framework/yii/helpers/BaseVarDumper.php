@@ -111,10 +111,9 @@ class BaseVarDumper
 				} else {
 					$id = array_push(self::$_objects, $var);
 					$className = get_class($var);
-					$members = (array)$var;
 					$spaces = str_repeat(' ', $level * 4);
 					self::$_output .= "$className#$id\n" . $spaces . '(';
-					foreach ($members as $key => $value) {
+					foreach ((array)$var as $key => $value) {
 						$keyDisplay = strtr(trim($key), ["\0" => ':']);
 						self::$_output .= "\n" . $spaces . "    [$keyDisplay] => ";
 						self::dumpInternal($value, $level + 1);

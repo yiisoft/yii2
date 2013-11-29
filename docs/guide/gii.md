@@ -7,16 +7,16 @@ as well as complete CRUD controllers.
 Installing and configuring
 --------------------------
 
-How to use it
--------------
-
 Add these lines to your config file:
 
 ```php
-    'modules' => [
-            'gii' => ['yii\gii\Module']
-        ]
+'modules' => [
+	'gii' => ['yii\gii\Module']
+]
 ```
+
+How to use it
+-------------
 
 Creating your own templates
 ---------------------------

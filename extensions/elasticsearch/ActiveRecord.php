@@ -216,7 +216,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	 * This method must be overridden by child classes to define available attributes.
 	 * @return array list of attribute names.
 	 */
-	public static function attributes()
+	public function attributes()
 	{
 		throw new InvalidConfigException('The attributes() method of elasticsearch ActiveRecord has to be implemented by child classes.');
 	}

@@ -8,6 +8,8 @@ use yii\swiftmailer\Mailer;
 use yii\swiftmailer\Message;
 use yiiunit\VendorTestCase;
 
+Yii::setAlias('@yii/swiftmailer', __DIR__ . '/../../../../extensions/swiftmailer');
+
 /**
  * @group vendor
  * @group mail
@@ -54,7 +56,9 @@ class MessageTest extends VendorTestCase
 	 */
 	protected function createTestEmailComponent()
 	{
-		$component = new Mailer();
+		$component = new Mailer([
+			'useFileTransport' => true,
+		]);
 		return $component;
 	}
 
