@@ -67,7 +67,7 @@ class View extends Component
 	/**
 	 * @var string the default view file extension. This will be appended to view file names if they don't have file extensions.
 	 */
-	public $defaultExtension = '.php';
+	public $defaultExtension = 'php';
 	/**
 	 * @var Theme|array the theme object or the configuration array for creating the theme object.
 	 * If not set, it means theming is not enabled.
@@ -171,7 +171,14 @@ class View extends Component
 			}
 		}
 
-		return pathinfo($file, PATHINFO_EXTENSION) === '' ? $file . $this->defaultExtension : $file;
+		if (pathinfo($file, PATHINFO_EXTENSION) !== '') {
+			return $file;
+		}
+		$path = $file . '.' . $this->defaultExtension;
+		if ($this->defaultExtension !== 'php' && !is_file($path)) {
+			$path = $file . '.php';
+		}
+		return $path;
 	}
 
 	/**

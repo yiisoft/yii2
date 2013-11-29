@@ -417,9 +417,13 @@ class Controller extends Component implements ViewContextInterface
 			$file = $module->getLayoutPath() . DIRECTORY_SEPARATOR . $layout;
 		}
 
-		if (pathinfo($file, PATHINFO_EXTENSION) === '') {
-			$file .= $view->defaultExtension;
+		if (pathinfo($file, PATHINFO_EXTENSION) !== '') {
+			return $file;
 		}
-		return $file;
+		$path = $file . '.' . $view->defaultExtension;
+		if ($view->defaultExtension !== 'php' && !is_file($path)) {
+			$path = $file . '.php';
+		}
+		return $path;
 	}
 }
