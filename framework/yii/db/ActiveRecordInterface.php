@@ -93,6 +93,15 @@ interface ActiveRecordInterface
 	public static function find($q = null);
 
 	/**
+	 * Creates an [[ActiveQueryInterface|ActiveQuery]] instance.
+	 * This method is called by [[find()]] to start a SELECT query.
+	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
+	 * written for querying `Customer` purpose.)
+	 * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
+	 */
+	public static function createQuery();
+
+	/**
 	 * Updates records using the provided attribute values and conditions.
 	 * For example, to change the status to be 1 for all customers whose status is 2:
 	 *
