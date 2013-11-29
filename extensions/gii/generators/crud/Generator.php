@@ -69,7 +69,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function hints()
 	{
@@ -95,7 +95,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function stickyAttributes()
 	{
@@ -123,7 +123,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function generate()
 	{

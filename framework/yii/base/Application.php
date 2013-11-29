@@ -199,7 +199,7 @@ abstract class Application extends Module
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function init()
 	{

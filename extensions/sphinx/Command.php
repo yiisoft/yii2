@@ -197,7 +197,7 @@ class Command extends \yii\db\Command
 	// Not Supported :
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function createTable($table, $columns, $options = null)
 	{
@@ -205,7 +205,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function renameTable($table, $newName)
 	{
@@ -213,7 +213,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function dropTable($table)
 	{
@@ -221,7 +221,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function truncateTable($table)
 	{
@@ -229,7 +229,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function addColumn($table, $column, $type)
 	{
@@ -237,7 +237,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function dropColumn($table, $column)
 	{
@@ -245,7 +245,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function renameColumn($table, $oldName, $newName)
 	{
@@ -253,7 +253,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function alterColumn($table, $column, $type)
 	{
@@ -261,7 +261,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function addPrimaryKey($name, $table, $columns)
 	{
@@ -269,7 +269,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function dropPrimaryKey($name, $table)
 	{
@@ -277,7 +277,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
 	{
@@ -285,7 +285,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function dropForeignKey($name, $table)
 	{
@@ -293,7 +293,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function createIndex($name, $table, $columns, $unique = false)
 	{
@@ -301,7 +301,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function dropIndex($name, $table)
 	{
@@ -309,7 +309,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function resetSequence($table, $value = null)
 	{
@@ -317,7 +317,7 @@ class Command extends \yii\db\Command
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function checkIntegrity($check = true, $schema = '')
 	{

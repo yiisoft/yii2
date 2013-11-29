@@ -20,7 +20,7 @@ use Composer\Plugin\PluginInterface;
 class Plugin implements PluginInterface
 {
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function activate(Composer $composer, IOInterface $io)
 	{

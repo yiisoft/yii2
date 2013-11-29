@@ -61,7 +61,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public static function find($q = null)
 	{
@@ -138,7 +138,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	// TODO add percolate functionality http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-percolate.html
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public static function createQuery()
 	{
@@ -146,7 +146,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public static function createActiveRelation($config = [])
 	{
@@ -175,7 +175,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function getPrimaryKey($asArray = false)
 	{
@@ -187,7 +187,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function getOldPrimaryKey($asArray = false)
 	{
@@ -430,7 +430,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public static function updateAllCounters($counters, $condition = null, $params = [])
 	{
@@ -438,7 +438,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public static function getTableSchema()
 	{
@@ -446,7 +446,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public static function tableName()
 	{
@@ -454,7 +454,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public static function findBySql($sql, $params = [])
 	{

@@ -38,7 +38,7 @@ class Generator extends \yii\gii\Generator
 	public $actions = 'index';
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -47,7 +47,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function getName()
 	{
@@ -55,7 +55,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function getDescription()
 	{
@@ -64,7 +64,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function rules()
 	{
@@ -79,7 +79,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function attributeLabels()
 	{
@@ -92,7 +92,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function requiredTemplates()
 	{
@@ -103,7 +103,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function stickyAttributes()
 	{
@@ -111,7 +111,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function hints()
 	{
@@ -134,7 +134,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function successMessage()
 	{
@@ -149,7 +149,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function generate()
 	{
