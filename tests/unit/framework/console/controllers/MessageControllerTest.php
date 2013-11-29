@@ -108,7 +108,7 @@ class MessageControllerTest extends TestCase
 	}
 
 	/**
-	 * Creates message command config file at {@link configFileName}
+	 * Creates message command config file named as [[configFileName]].
 	 * @param array $config message command config.
 	 */
 	protected function composeConfigFile(array $config)

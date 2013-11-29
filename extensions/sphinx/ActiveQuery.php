@@ -176,7 +176,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	protected function defaultConnection()
 	{

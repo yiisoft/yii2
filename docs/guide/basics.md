@@ -78,9 +78,43 @@ directory and Yii will be able to autoload any class in this library.
 Autoloading
 -----------
 
-TBD
+All classes, interfaces and traits are loaded automatically at the moment they are used. There's no need to use
+`include` or `require`. It is, as well, true for Composer-loaded packages and Yii extensions.
+
+Autoloader works according to [PSR-0](). That means namespaces and class, interface and trait
+names should correspond to file system paths except root namespace path that is defined by an alias.
+
+For example, if standard alias `@app` refers to `/var/www/example.com/` then `\app\models\User` will be loaded from
+`/var/www/example.com/app/models/User.php`.
+
+Custom alias may be added using the following code:
+
+```php
+Yii::setAlias('shared', realpath('~/src/shared'));
+```
+
+Additional autoloaders may be registered using standard PHP `spl_autoload_register`.
 
 Helper classes
 --------------
 
-TDB
+Helper class typically contains static methods only and used as follows:
+
+```php
+use \yii\helpers\Html;
+echo Html::encode('Test > test');
+```
+
+There are several classes provided by framework:
+
+- ArrayHelper
+- Console
+- FileHelper
+- Html
+- HtmlPurifier
+- Inflector
+- Json
+- Markdown
+- Security
+- StringHelper
+- VarDumper

@@ -26,19 +26,14 @@ use Yii;
 abstract class BaseMessage extends Object implements MessageInterface
 {
 	/**
-	 * @return MailerInterface the mailer component
+	 * @inheritdoc
 	 */
-	public function getMailer()
+	public function send(MailerInterface $mailer = null)
 	{
-		return Yii::$app->getComponent('mail');
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function send()
-	{
-		return $this->getMailer()->send($this);
+		if ($mailer === null) {
+			$mailer = Yii::$app->getMail();
+		}
+		return $mailer->send($this);
 	}
 
 	/**

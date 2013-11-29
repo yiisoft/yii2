@@ -518,5 +518,8 @@ TBD
 Integration with Composer
 -------------------------
 
-TBD
+Yii is fully inegrated with the package manager for PHP named Composer that resolves dependencies, keeps your code
+up to date updating it semi-automatically and manages autoloading for third party libraries no matter which autoloading
+these are using.
 
+In order to learn more refer to [composer](composer.md) and [installation](installation.md) sections of the guide.

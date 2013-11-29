@@ -48,7 +48,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public static function createQuery()
 	{
@@ -56,7 +56,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public static function createActiveRelation($config = [])
 	{
@@ -87,7 +87,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function insert($runValidation = true, $attributes = null)
 	{
@@ -294,7 +294,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public static function getTableSchema()
 	{
@@ -302,7 +302,7 @@ class ActiveRecord extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public static function findBySql($sql, $params = [])
 	{

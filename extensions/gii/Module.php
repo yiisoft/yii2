@@ -54,7 +54,7 @@ use yii\web\HttpException;
 class Module extends \yii\base\Module
 {
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public $controllerNamespace = 'yii\gii\controllers';
 	/**
@@ -92,7 +92,7 @@ class Module extends \yii\base\Module
 
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -103,7 +103,7 @@ class Module extends \yii\base\Module
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function beforeAction($action)
 	{

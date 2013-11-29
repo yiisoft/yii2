@@ -142,7 +142,7 @@ class BaseConsole
 
 	/**
 	 * Saves the current cursor position by sending ANSI control code SCP to the terminal.
-	 * Position can then be restored with {@link restoreCursorPosition}.
+	 * Position can then be restored with [[restoreCursorPosition()]].
 	 */
 	public static function saveCursorPosition()
 	{
@@ -150,7 +150,7 @@ class BaseConsole
 	}
 
 	/**
-	 * Restores the cursor position saved with {@link saveCursorPosition} by sending ANSI control code RCP to the terminal.
+	 * Restores the cursor position saved with [[saveCursorPosition()]] by sending ANSI control code RCP to the terminal.
 	 */
 	public static function restoreCursorPosition()
 	{
@@ -159,7 +159,7 @@ class BaseConsole
 
 	/**
 	 * Hides the cursor by sending ANSI DECTCEM code ?25l to the terminal.
-	 * Use {@link showCursor} to bring it back.
+	 * Use [[showCursor()]] to bring it back.
 	 * Do not forget to show cursor when your application exits. Cursor might stay hidden in terminal after exit.
 	 */
 	public static function hideCursor()
@@ -168,7 +168,7 @@ class BaseConsole
 	}
 
 	/**
-	 * Will show a cursor again when it has been hidden by {@link hideCursor}  by sending ANSI DECTCEM code ?25h to the terminal.
+	 * Will show a cursor again when it has been hidden by [[hideCursor()]]  by sending ANSI DECTCEM code ?25h to the terminal.
 	 */
 	public static function showCursor()
 	{

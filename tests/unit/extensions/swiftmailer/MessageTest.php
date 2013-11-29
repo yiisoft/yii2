@@ -56,7 +56,9 @@ class MessageTest extends VendorTestCase
 	 */
 	protected function createTestEmailComponent()
 	{
-		$component = new Mailer();
+		$component = new Mailer([
+			'useFileTransport' => true,
+		]);
 		return $component;
 	}
 

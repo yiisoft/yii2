@@ -93,7 +93,7 @@ class ActiveDataProvider extends BaseDataProvider
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	protected function prepareModels()
 	{
@@ -111,7 +111,7 @@ class ActiveDataProvider extends BaseDataProvider
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	protected function prepareKeys($models)
 	{
@@ -138,9 +138,9 @@ class ActiveDataProvider extends BaseDataProvider
 				foreach ($models as $model) {
 					$kk = [];
 					foreach ($pks as $pk) {
-						$kk[] = $model[$pk];
+						$kk[$pk] = $model[$pk];
 					}
-					$keys[] = json_encode($kk);
+					$keys[] = $kk;
 				}
 			}
 			return $keys;
@@ -150,7 +150,7 @@ class ActiveDataProvider extends BaseDataProvider
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	protected function prepareTotalCount()
 	{
@@ -162,7 +162,7 @@ class ActiveDataProvider extends BaseDataProvider
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function setSort($value)
 	{
