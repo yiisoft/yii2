@@ -24,4 +24,9 @@ class Customer extends ActiveRecord
 	{
 		$query->andWhere(['status' => 2]);
 	}
+
+	public function getOrders()
+	{
+		return $this->hasMany(CustomerOrder::className(), ['customer_id' => 'id']);
+	}
 }
