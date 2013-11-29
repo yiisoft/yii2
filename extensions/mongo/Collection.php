@@ -70,6 +70,7 @@ class Collection extends Object
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
+			$options = array_merge(['w' => 1], $options);
 			$this->tryResultError($this->mongoCollection->insert($data, $options));
 			Yii::endProfile($token, __METHOD__);
 			return is_array($data) ? $data['_id'] : $data->_id;
@@ -92,6 +93,7 @@ class Collection extends Object
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
+			$options = array_merge(['w' => 1], $options);
 			$this->tryResultError($this->mongoCollection->batchInsert($rows, $options));
 			Yii::endProfile($token, __METHOD__);
 			return $rows;
@@ -115,7 +117,15 @@ class Collection extends Object
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-			$result = $this->mongoCollection->update($this->buildCondition($condition), $newData, $options);
+			$options = array_merge(['w' => 1, 'multiple' => true], $options);
+			if ($options['multiple']) {
+				$keys = array_keys($newData);
+				if (!empty($keys) && strncmp('$', $keys[0], 1) !== 0) {
+					$newData = ['$set' => $newData];
+				}
+			}
+			$condition = $this->buildCondition($condition);
+			$result = $this->mongoCollection->update($condition, $newData, $options);
 			$this->tryResultError($result);
 			Yii::endProfile($token, __METHOD__);
 			if (is_array($result) && array_key_exists('n', $result)) {
@@ -142,6 +152,7 @@ class Collection extends Object
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
+			$options = array_merge(['w' => 1], $options);
 			$this->tryResultError($this->mongoCollection->save($data, $options));
 			Yii::endProfile($token, __METHOD__);
 			return is_array($data) ? $data['_id'] : $data->_id;
@@ -164,6 +175,7 @@ class Collection extends Object
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
+			$options = array_merge(['w' => 1, 'multiple' => true], $options);
 			$result = $this->mongoCollection->remove($this->buildCondition($condition), $options);
 			$this->tryResultError($result);
 			Yii::endProfile($token, __METHOD__);

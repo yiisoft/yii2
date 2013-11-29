@@ -117,7 +117,8 @@ class CollectionTest extends MongoTestCase
 		];
 		$id = $collection->insert($data);
 
-		$collection->remove(['_id' => $id]);
+		$count = $collection->remove(['_id' => $id]);
+		$this->assertEquals(1, $count);
 
 		$rows = $collection->findAll();
 		$this->assertEquals(0, count($rows));
@@ -138,7 +139,8 @@ class CollectionTest extends MongoTestCase
 		$newData = [
 			'name' => 'new name'
 		];
-		$collection->update(['_id' => $id], $newData);
+		$count = $collection->update(['_id' => $id], $newData);
+		$this->assertEquals(1, $count);
 
 		list($row) = $collection->findAll();
 		$this->assertEquals($newData['name'], $row['name']);

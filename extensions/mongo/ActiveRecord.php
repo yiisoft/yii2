@@ -134,10 +134,6 @@ abstract class ActiveRecord extends Model
 	 */
 	public static function updateAll($attributes, $condition = [], $options = [])
 	{
-		$options['w'] = 1;
-		if (!array_key_exists('multiple', $options)) {
-			$options['multiple'] = true;
-		}
 		return static::getCollection()->update($condition, $attributes, $options);
 	}
 
@@ -158,10 +154,6 @@ abstract class ActiveRecord extends Model
 	 */
 	public static function updateAllCounters($counters, $condition = [], $options = [])
 	{
-		$options['w'] = 1;
-		if (!array_key_exists('multiple', $options)) {
-			$options['multiple'] = true;
-		}
 		return static::getCollection()->update($condition, ['$inc' => $counters], $options);
 	}
 
@@ -798,7 +790,7 @@ abstract class ActiveRecord extends Model
 		}
 		// We do not check the return value of update() because it's possible
 		// that it doesn't change anything and thus returns 0.
-		$rows = static::getCollection()->update($condition, $values, ['w' => 1]);
+		$rows = static::getCollection()->update($condition, $values);
 
 		if ($lock !== null && !$rows) {
 			throw new StaleObjectException('The object being updated is outdated.');
@@ -871,7 +863,7 @@ abstract class ActiveRecord extends Model
 			if ($lock !== null) {
 				$condition[$lock] = $this->$lock;
 			}
-			$result = static::getCollection()->remove($condition, ['w' => 1]);
+			$result = static::getCollection()->remove($condition);
 			if ($lock !== null && !$result) {
 				throw new StaleObjectException('The object being deleted is outdated.');
 			}
