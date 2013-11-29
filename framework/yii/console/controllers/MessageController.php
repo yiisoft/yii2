@@ -107,11 +107,13 @@ class MessageController extends Controller
 				@mkdir($dir);
 			}
 			foreach ($messages as $category => $msgs) {
+				$file = str_replace("\\", '/', "$dir/$category.php");
+				$path = dirname($file);
+				if (!is_dir($path)) {
+					mkdir($path, 0755, true);
+				}
 				$msgs = array_values(array_unique($msgs));
-				$this->generateMessageFile($msgs, $dir . DIRECTORY_SEPARATOR . $category . '.php',
-					$config['overwrite'],
-					$config['removeUnused'],
-					$config['sort']);
+				$this->generateMessageFile($msgs, $file, $config['overwrite'], $config['removeUnused'], $config['sort']);
 			}
 		}
 	}
