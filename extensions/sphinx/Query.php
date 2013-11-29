@@ -644,7 +644,7 @@ class Query extends Component implements QueryInterface
 	 * @return static the query object itself
 	 * @see snippetCallback
 	 */
-	public function snippetCallback($callback)
+	public function snippetCallback(callable $callback)
 	{
 		$this->snippetCallback = $callback;
 		return $this;

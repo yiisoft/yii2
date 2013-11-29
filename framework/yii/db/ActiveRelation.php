@@ -38,7 +38,7 @@ class ActiveRelation extends ActiveQuery implements ActiveRelationInterface
 	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
 	 * @return static
 	 */
-	public function viaTable($tableName, $link, $callable = null)
+	public function viaTable($tableName, $link, callable $callable = null)
 	{
 		$relation = new ActiveRelation([
 			'modelClass' => get_class($this->primaryModel),
