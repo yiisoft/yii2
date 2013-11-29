@@ -194,7 +194,7 @@ class Controller extends Component implements ViewContextInterface
 		$actionMap = $this->actions();
 		if (isset($actionMap[$id])) {
 			return Yii::createObject($actionMap[$id], $id, $this);
-		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
+		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id) && strpos($id, '--') === false && trim($id, '-') === $id) {
 			$methodName = 'action' . str_replace(' ', '', ucwords(implode(' ', explode('-', $id))));
 			if (method_exists($this, $methodName)) {
 				$method = new \ReflectionMethod($this, $methodName);
@@ -417,9 +417,13 @@ class Controller extends Component implements ViewContextInterface
 			$file = $module->getLayoutPath() . DIRECTORY_SEPARATOR . $layout;
 		}
 
-		if (pathinfo($file, PATHINFO_EXTENSION) === '') {
-			$file .= $view->defaultExtension;
+		if (pathinfo($file, PATHINFO_EXTENSION) !== '') {
+			return $file;
 		}
-		return $file;
+		$path = $file . '.' . $view->defaultExtension;
+		if ($view->defaultExtension !== 'php' && !is_file($path)) {
+			$path = $file . '.php';
+		}
+		return $path;
 	}
 }

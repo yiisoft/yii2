@@ -94,7 +94,7 @@ class FragmentCache extends Widget
 
 	/**
 	 * Marks the end of content to be cached.
-	 * Content displayed before this method call and after {@link init()}
+	 * Content displayed before this method call and after [[init()]]
 	 * will be captured and saved in cache.
 	 * This method does nothing if valid content is already found in cache.
 	 */

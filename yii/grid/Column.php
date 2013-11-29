@@ -94,7 +94,7 @@ class Column extends Object
 
 	/**
 	 * Renders the header cell content.
-	 * The default implementation simply renders {@link header}.
+	 * The default implementation simply renders [[header]].
 	 * This method may be overridden to customize the rendering of the header cell.
 	 * @return string the rendering result
 	 */
@@ -105,7 +105,7 @@ class Column extends Object
 
 	/**
 	 * Renders the footer cell content.
-	 * The default implementation simply renders {@link footer}.
+	 * The default implementation simply renders [[footer]].
 	 * This method may be overridden to customize the rendering of the footer cell.
 	 * @return string the rendering result
 	 */

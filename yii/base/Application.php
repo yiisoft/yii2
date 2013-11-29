@@ -199,7 +199,7 @@ abstract class Application extends Module
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -456,6 +456,15 @@ abstract class Application extends Module
 	public function getI18n()
 	{
 		return $this->getComponent('i18n');
+	}
+
+	/**
+	 * Returns the mailer component.
+	 * @return \yii\mail\MailerInterface the mailer interface
+	 */
+	public function getMail()
+	{
+		return $this->getComponent('mail');
 	}
 
 	/**

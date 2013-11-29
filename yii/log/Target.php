@@ -233,6 +233,6 @@ abstract class Target extends Component
 			$text = var_export($text, true);
 		}
 		$ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
-		return date('Y/m/d H:i:s', $timestamp) . " [$ip] [$level] [$category] $text\n";
+		return date('Y/m/d H:i:s', $timestamp) . " [$ip] [$level] [$category] $text";
 	}
 }
