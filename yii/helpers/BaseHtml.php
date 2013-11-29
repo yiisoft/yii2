@@ -797,7 +797,7 @@ class BaseHtml
 	 * @param string $name the name attribute of each radio button.
 	 * @param string|array $selection the selected value(s).
 	 * @param array $items the data item used to generate the radio buttons.
-	 * The array keys are the labels, while the array values are the corresponding radio button values.
+	 * The array values are the labels, while the array keys are the corresponding radio button values.
 	 * @param array $options options (name => config) for the radio button list. The following options are supported:
 	 *
 	 * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
