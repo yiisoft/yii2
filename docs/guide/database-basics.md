@@ -9,8 +9,8 @@ uniform API and solves some inconsistencies between different DBMS. By default Y
 - [SQLite](http://sqlite.org/)
 - [PostgreSQL](http://www.postgresql.org/)
 - [CUBRID](http://www.cubrid.org/) (version 9.1.0 and higher).
-- Oracle
-- MSSQL
+- [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
+- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx)
 
 
 Configuration
@@ -42,6 +42,7 @@ return [
 	// ...
 ];
 ```
+
 Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) for more details
 on the format of the DSN string.
 
