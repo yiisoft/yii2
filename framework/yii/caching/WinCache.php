@@ -13,7 +13,7 @@ namespace yii\caching;
  * To use this application component, the [WinCache PHP extension](http://www.iis.net/expand/wincacheforphp)
  * must be loaded. Also note that "wincache.ucenabled" should be set to "On" in your php.ini file.
  *
- * See {@link CCache} manual for common cache operations that are supported by WinCache.
+ * See [[Cache]] manual for common cache operations that are supported by WinCache.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
