@@ -162,7 +162,7 @@ class GridView extends BaseListView
 
 	/**
 	 * Initializes the grid view.
-	 * This method will initialize required property values and instantiate {@link columns} objects.
+	 * This method will initialize required property values and instantiate [[columns]] objects.
 	 */
 	public function init()
 	{
