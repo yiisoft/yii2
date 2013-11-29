@@ -28,9 +28,10 @@ logger may record additional debug information for every message being logged.
 ### Enabling PHP opcode cache
 
 Enabling the PHP opcode cache improves any PHP application performance and lowers
-memory usage significantly. Yii is no exception. It was tested with
-[APC PHP extension](http://php.net/manual/en/book.apc.php) that caches
-and optimizes PHP intermediate code and avoids the time spent in parsing PHP
+memory usage significantly. Yii is no exception. It was tested with both
+[PHP 5.5 OPcache](http://php.net/manual/en/book.opcache.php) and
+[APC PHP extension](http://php.net/manual/en/book.apc.php). Both cache
+and optimize PHP intermediate code and avoid the time spent in parsing PHP
 scripts for every incoming request.
 
 ### Turning on ActiveRecord database schema caching
@@ -69,7 +70,10 @@ Note that `cache` application component should be configured.
 
 ### Combining and Minimizing Assets
 
-TBD
+It is possible to combine and minimize assets, typically JavaScript and CSS, in order to slightly improve page load
+time and therefore deliver better experience for end user of your application.
+
+In order to learn how it can be achieved, refer to [assets](assets.md) guide section.
 
 ### Using better storage for sessions
 
@@ -118,7 +122,38 @@ save the rendering cost for the whole page.
 
 ### Leveraging HTTP to save processing time and bandwidth
 
-TBD
+Leveraging HTTP caching saves both processing time, bandwidth and resources significantly. It can be implemented by
+sending either `ETag` or `Last-Modified` header in your application response. If browser is implemented according to
+HTTP specification (most browsers are), content will be fetched only if it is different from what it was prevously.
+
+Forming proper headers is time consuming task so Yii provides a shortcut in form of controller filter
+[[\yii\web\HttpCache]]. Using it is very easy. In a controller you need to implement `behaviors` method like
+the following:
+
+```php
+public function behaviors()
+{
+	return [
+		'httpCache' => [
+			'class' => \yii\web\HttpCache::className(),
+			'only' => ['list'],
+			'lastModified' => function ($action, $params) {
+				$q = new Query();
+				return strtotime($q->from('users')->max('updated_timestamp'));
+			},
+			// 'etagSeed' => function ($action, $params) {
+				// return // generate etag seed here
+			//}
+		],
+	];
+}
+```
+
+In the code above one can use either `etagSeed` or `lastModified`. Implementing both isn't necessary. The goal is to
+determine if content was modified in a way that is cheaper than fetching and rendering that content. `lastModified`
+should return unix timestamp of the last content modification while `etagSeed` should return a string that is then
+used to generate `ETag` header value.
+
 
 ### Database Optimization
 
@@ -140,7 +175,7 @@ to create one or several objects to represent each row of query result. For data
 intensive applications, using DAO or database APIs at lower level could be
 a better choice.
 
-Last but not least, use LIMIT in your SELECT queries. This avoids fetching
+Last but not least, use `LIMIT` in your `SELECT` queries. This avoids fetching
 overwhelming data from database and exhausting the memory allocated to PHP.
 
 ### Using asArray
