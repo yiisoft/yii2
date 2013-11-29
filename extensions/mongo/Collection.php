@@ -253,7 +253,7 @@ class Collection extends Object
 				$result[] = $actualValue;
 			} else {
 				$key = $this->normalizeConditionKeyword($key);
-				if (strncmp('$', $key, 1) !== 0 && array_key_exists(0, $actualValue)) {
+				if (strncmp('$', $key, 1) !== 0 && is_array($actualValue) && array_key_exists(0, $actualValue)) {
 					// shortcut for IN condition
 					$result[$key]['$in'] = $actualValue;
 				} else {

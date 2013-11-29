@@ -123,9 +123,10 @@ class Query extends Component implements QueryInterface
 	 */
 	protected function buildCursor($db = null)
 	{
-		$where = $this->where;
-		if (!is_array($where)) {
+		if ($this->where === null) {
 			$where = [];
+		} else {
+			$where = $this->where;
 		}
 		$selectFields = [];
 		if (!empty($this->select)) {
