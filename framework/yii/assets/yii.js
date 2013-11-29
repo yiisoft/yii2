@@ -53,14 +53,14 @@ yii = (function ($) {
 		changeableSelector: 'select, input, textarea',
 
 		/**
-		 * @return string|undefined the CSRF variable name. Undefined is returned is CSRF validation is not enabled.
+		 * @return string|undefined the CSRF variable name. Undefined is returned if CSRF validation is not enabled.
 		 */
 		getCsrfVar: function () {
 			return $('meta[name=csrf-var]').prop('content');
 		},
 
 		/**
-		 * @return string|undefined the CSRF token. Undefined is returned is CSRF validation is not enabled.
+		 * @return string|undefined the CSRF token. Undefined is returned if CSRF validation is not enabled.
 		 */
 		getCsrfToken: function () {
 			return $('meta[name=csrf-token]').prop('content');
