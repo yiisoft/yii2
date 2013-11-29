@@ -1157,4 +1157,29 @@ abstract class ActiveRecord extends Model
 			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);
 		}
 	}
+
+	/**
+	 * Sets the element at the specified offset.
+	 * This method is required by the SPL interface `ArrayAccess`.
+	 * It is implicitly called when you use something like `$model[$offset] = $item;`.
+	 * @param integer $offset the offset to set element
+	 * @param mixed $item the element value
+	 * @throws \Exception on failure
+	 */
+	public function offsetSet($offset, $item)
+	{
+		// Bypass relation owner restriction to 'yii\db\ActiveRecord' at [[yii\db\ActiveRelationTrait::findWith()]]:
+		try {
+			$relation = $this->getRelation($offset);
+			if (is_object($relation)) {
+				$this->populateRelation($offset, $item);
+				return;
+			}
+		} catch (InvalidParamException $e) {
+			// shut down exception : has getter, but not relation
+		} catch (UnknownMethodException $e) {
+			throw $e->getPrevious();
+		}
+		parent::offsetSet($offset, $item);
+	}
 }

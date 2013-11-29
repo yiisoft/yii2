@@ -77,7 +77,7 @@ class ActiveRelationTest extends MongoTestCase
 		$this->assertEquals(10, count($orders));
 		$this->assertTrue($orders[0]->isRelationPopulated('customer'));
 		$this->assertTrue($orders[1]->isRelationPopulated('customer'));
-		$this->assertTrue($orders[0]->index instanceof ArticleIndex);
-		$this->assertTrue($orders[1]->index instanceof ArticleIndex);
+		$this->assertTrue($orders[0]->customer instanceof Customer);
+		$this->assertTrue($orders[1]->customer instanceof Customer);
 	}
 }

@@ -267,8 +267,18 @@ class Collection extends Object
 				$key = $this->normalizeConditionKeyword($key);
 				if (strncmp('$', $key, 1) !== 0 && is_array($actualValue) && array_key_exists(0, $actualValue)) {
 					// shortcut for IN condition
+					if ($key == '_id') {
+						foreach ($actualValue as &$actualValuePart) {
+							if (!is_object($actualValuePart)) {
+								$actualValuePart = new \MongoId($actualValuePart);
+							}
+						}
+					}
 					$result[$key]['$in'] = $actualValue;
 				} else {
+					if ($key == '_id' && !is_object($actualValue)) {
+						$actualValue = new \MongoId($actualValue);
+					}
 					$result[$key] = $actualValue;
 				}
 			}

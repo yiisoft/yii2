@@ -105,4 +105,16 @@ class QueryRunTest extends MongoTestCase
 			->all($connection);
 		$this->assertEquals('name9', $rows[0]['name']);
 	}
+
+	public function testMatchPlainId()
+	{
+		$connection = $this->getConnection();
+		$query = new Query;
+		$row = $query->from('customer')->one($connection);
+		$query = new Query;
+		$rows = $query->from('customer')
+			->where(['_id' => $row['_id']->__toString()])
+			->all($connection);
+		$this->assertEquals(1, count($rows));
+	}
 }
