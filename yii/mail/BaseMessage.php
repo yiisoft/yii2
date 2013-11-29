@@ -26,7 +26,7 @@ use Yii;
 abstract class BaseMessage extends Object implements MessageInterface
 {
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function send(MailerInterface $mailer = null)
 	{
