@@ -182,7 +182,11 @@ class Query extends Component implements QueryInterface
 	public function one($db = null)
 	{
 		$cursor = $this->buildCursor($db);
-		return $cursor->getNext();
+		if ($cursor->hasNext()) {
+			return $cursor->getNext();
+		} else {
+			return false;
+		}
 	}
 
 	/**

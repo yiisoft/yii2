@@ -162,11 +162,7 @@ abstract class ActiveRecord extends Model
 		if (!array_key_exists('multiple', $options)) {
 			$options['multiple'] = true;
 		}
-		$data = [];
-		foreach ($counters as $name => $value) {
-			$data[$name]['$inc'] = $value;
-		}
-		return static::getCollection()->update($condition, $data, $options);
+		return static::getCollection()->update($condition, ['$inc' => $counters], $options);
 	}
 
 	/**
@@ -470,13 +466,20 @@ abstract class ActiveRecord extends Model
 
 	/**
 	 * Returns the list of all attribute names of the model.
-	 * The default implementation will return all column names of the table associated with this AR class.
+	 * This method must be overridden by child classes to define available attributes.
+	 * Note: primary key attribute "_id" should be always present in returned array.
+	 * For example:
+	 * ~~~
+	 * public function attributes()
+	 * {
+	 *     return ['_id', 'name', 'address', 'status'];
+	 * }
+	 * ~~~
 	 * @return array list of attribute names.
 	 */
 	public function attributes()
 	{
-		// TODO: declare attributes
-		return [];
+		throw new InvalidConfigException('The attributes() method of mongo ActiveRecord has to be implemented by child classes.');
 	}
 
 	/**
