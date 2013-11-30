@@ -331,7 +331,7 @@ class User extends Component
 			Yii::$app->getResponse()->redirect($this->loginUrl)->send();
 			exit();
 		} else {
-			throw new HttpException(403, Yii::t('yii', 'Login Required'));
+			throw new AccessDeniedHttpException(Yii::t('yii', 'Login Required'));
 		}
 	}
 

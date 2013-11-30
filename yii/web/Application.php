@@ -58,7 +58,7 @@ class Application extends \yii\base\Application
 	 * Handles the specified request.
 	 * @param Request $request the request to be handled
 	 * @return Response the resulting response
-	 * @throws HttpException if the requested route is invalid
+	 * @throws NotFoundHttpException if the requested route is invalid
 	 */
 	public function handleRequest($request)
 	{
@@ -85,7 +85,7 @@ class Application extends \yii\base\Application
 				return $response;
 			}
 		} catch (InvalidRouteException $e) {
-			throw new HttpException(404, $e->getMessage(), $e->getCode(), $e);
+			throw new NotFoundHttpException($e->getMessage(), $e->getCode(), $e);
 		}
 	}
 

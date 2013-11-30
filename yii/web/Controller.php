@@ -62,7 +62,7 @@ class Controller extends \yii\base\Controller
 				} elseif (!is_array($params[$name])) {
 					$args[] = $actionParams[$name] = $params[$name];
 				} else {
-					throw new HttpException(400, Yii::t('yii', 'Invalid data received for parameter "{param}".', [
+					throw new BadRequestHttpException(Yii::t('yii', 'Invalid data received for parameter "{param}".', [
 						'param' => $name,
 					]));
 				}
@@ -75,7 +75,7 @@ class Controller extends \yii\base\Controller
 		}
 
 		if (!empty($missing)) {
-			throw new HttpException(400, Yii::t('yii', 'Missing required parameters: {params}', [
+			throw new BadRequestHttpException(Yii::t('yii', 'Missing required parameters: {params}', [
 				'params' => implode(', ', $missing),
 			]));
 		}
@@ -92,7 +92,7 @@ class Controller extends \yii\base\Controller
 	{
 		if (parent::beforeAction($action)) {
 			if ($this->enableCsrfValidation && Yii::$app->exception === null && !Yii::$app->getRequest()->validateCsrfToken()) {
-				throw new HttpException(400, Yii::t('yii', 'Unable to verify your data submission.'));
+				throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
 			}
 			return true;
 		} else {
