@@ -139,7 +139,7 @@ class Request extends \yii\base\Request
 			$_GET = array_merge($_GET, $params);
 			return [$route, $_GET];
 		} else {
-			throw new HttpException(404, Yii::t('yii', 'Page not found.'));
+			throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
 		}
 	}
 

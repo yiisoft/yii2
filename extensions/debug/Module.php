@@ -10,7 +10,7 @@ namespace yii\debug;
 use Yii;
 use yii\base\Application;
 use yii\web\View;
-use yii\web\HttpException;
+use yii\web\AccessDeniedHttpException;
 
 /**
  * The Yii Debug Module provides the debug toolbar and debugger
@@ -79,7 +79,7 @@ class Module extends \yii\base\Module
 		} elseif ($action->id === 'toolbar') {
 			return false;
 		} else {
-			throw new HttpException(403, 'You are not allowed to access this page.');
+			throw new AccessDeniedHttpException('You are not allowed to access this page.');
 		}
 	}
 

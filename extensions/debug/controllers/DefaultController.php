@@ -9,7 +9,7 @@ namespace yii\debug\controllers;
 
 use Yii;
 use yii\web\Controller;
-use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -99,7 +99,7 @@ class DefaultController extends Controller
 			}
 			$this->summary = $data['summary'];
 		} else {
-			throw new HttpException(404, "Unable to find debug data tagged with '$tag'.");
+			throw new NotFoundHttpException("Unable to find debug data tagged with '$tag'.");
 		}
 	}
 }
