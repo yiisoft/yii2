@@ -292,31 +292,4 @@ class ActiveRecord extends \yii\db\ActiveRecord
 		}
 		return md5(json_encode($key));
 	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public static function getTableSchema()
-	{
-		throw new NotSupportedException('getTableSchema() is not supported by redis ActiveRecord.');
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public static function findBySql($sql, $params = [])
-	{
-		throw new NotSupportedException('findBySql() is not supported by redis ActiveRecord.');
-	}
-
-	/**
-	 * Returns a value indicating whether the specified operation is transactional in the current [[scenario]].
-	 * This method will always return false as transactional operations are not supported by redis.
-	 * @param integer $operation the operation to check. Possible values are [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]].
-	 * @return boolean whether the specified operation is transactional in the current [[scenario]].
-	 */
-	public function isTransactional($operation)
-	{
-		return false;
-	}
 }
