@@ -266,6 +266,10 @@ class Query extends Component implements QueryInterface
 	 * Columns can contain table prefixes (e.g. "tbl_user.id") and/or column aliases (e.g. "tbl_user.id AS user_id").
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
+	 *
+	 * Note that if you are selecting an expression like `CONCAT(first_name, ' ', last_name)`, you should
+	 * use an array to specify the columns. Otherwise, the expression may be incorrectly split into several parts.
+	 * 
 	 * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
 	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
 	 * @return static the query object itself
