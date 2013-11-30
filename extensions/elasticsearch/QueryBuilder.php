@@ -14,7 +14,6 @@ use yii\helpers\Json;
 /**
  * QueryBuilder builds an elasticsearch query based on the specification given as a [[Query]] object.
  *
- *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
@@ -247,7 +246,7 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		if (count($column) > 1) {
-			return $this->buildCompositeInCondition($operator, $column, $values, $params);
+			return $this->buildCompositeInCondition($operator, $column, $values);
 		} elseif (is_array($column)) {
 			$column = reset($column);
 		}
@@ -289,61 +288,10 @@ class QueryBuilder extends \yii\base\Object
 	protected function buildCompositeInCondition($operator, $columns, $values)
 	{
 		throw new NotSupportedException('composite in is not supported by elasticsearch.');
-		$vss = array();
-		foreach ($values as $value) {
-			$vs = array();
-			foreach ($columns as $column) {
-				if (isset($value[$column])) {
-					$phName = self::PARAM_PREFIX . count($params);
-					$params[$phName] = $value[$column];
-					$vs[] = $phName;
-				} else {
-					$vs[] = 'NULL';
-				}
-			}
-			$vss[] = '(' . implode(', ', $vs) . ')';
-		}
-		foreach ($columns as $i => $column) {
-			if (strpos($column, '(') === false) {
-				$columns[$i] = $this->db->quoteColumnName($column);
-			}
-		}
-		return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
 	}
 
 	private function buildLikeCondition($operator, $operands)
 	{
 		throw new NotSupportedException('like conditions is not supported by elasticsearch.');
-		if (!isset($operands[0], $operands[1])) {
-			throw new Exception("Operator '$operator' requires two operands.");
-		}
-
-		list($column, $values) = $operands;
-
-		$values = (array)$values;
-
-		if (empty($values)) {
-			return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0==1' : '';
-		}
-
-		if ($operator === 'LIKE' || $operator === 'NOT LIKE') {
-			$andor = ' AND ';
-		} else {
-			$andor = ' OR ';
-			$operator = $operator === 'OR LIKE' ? 'LIKE' : 'NOT LIKE';
-		}
-
-		if (strpos($column, '(') === false) {
-			$column = $this->db->quoteColumnName($column);
-		}
-
-		$parts = array();
-		foreach ($values as $value) {
-			$phName = self::PARAM_PREFIX . count($params);
-			$params[$phName] = $value;
-			$parts[] = "$column $operator $phName";
-		}
-
-		return implode($andor, $parts);
 	}
 }

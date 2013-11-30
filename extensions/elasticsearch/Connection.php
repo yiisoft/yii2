@@ -15,6 +15,9 @@ use yii\helpers\Json;
 /**
  * elasticsearch Connection is used to connect to an elasticsearch cluster version 0.20 or higher
  *
+ * @property string $driverName Name of the DB driver. This property is read-only.
+ * @property boolean $isActive Whether the DB connection is established. This property is read-only.
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */

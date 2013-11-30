@@ -23,6 +23,7 @@ use yii\web\HttpException;
  * @property \yii\base\Formatter $formatter The formatter application component. This property is read-only.
  * @property \yii\i18n\I18N $i18n The internationalization component. This property is read-only.
  * @property \yii\log\Logger $log The log component. This property is read-only.
+ * @property \yii\mail\MailerInterface $mail The mailer interface. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property string $runtimePath The directory that stores runtime files. Defaults to the "runtime"
  * subdirectory under [[basePath]].
