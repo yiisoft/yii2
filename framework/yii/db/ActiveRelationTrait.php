@@ -104,7 +104,7 @@ trait ActiveRelationTrait
 		if (count($primaryModels) === 1 && !$this->multiple) {
 			$model = $this->one();
 			foreach ($primaryModels as $i => $primaryModel) {
-				if ($primaryModel instanceof ActiveRecord) {
+				if ($primaryModel instanceof ActiveRecordInterface) {
 					$primaryModel->populateRelation($name, $model);
 				} else {
 					$primaryModels[$i][$name] = $model;
@@ -123,7 +123,7 @@ trait ActiveRelationTrait
 			foreach ($primaryModels as $i => $primaryModel) {
 				$key = $this->getModelKey($primaryModel, $link);
 				$value = isset($buckets[$key]) ? $buckets[$key] : ($this->multiple ? [] : null);
-				if ($primaryModel instanceof ActiveRecord) {
+				if ($primaryModel instanceof ActiveRecordInterface) {
 					$primaryModel->populateRelation($name, $value);
 				} else {
 					$primaryModels[$i][$name] = $value;

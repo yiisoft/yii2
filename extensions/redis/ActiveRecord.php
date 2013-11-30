@@ -9,6 +9,7 @@ namespace yii\redis;
 
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
+use yii\db\BaseActiveRecord;
 use yii\helpers\StringHelper;
 
 /**
@@ -34,7 +35,7 @@ use yii\helpers\StringHelper;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ActiveRecord extends \yii\db\ActiveRecord
+class ActiveRecord extends BaseActiveRecord
 {
 	/**
 	 * Returns the database connection used by this AR class.
