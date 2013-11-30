@@ -18,12 +18,9 @@ class SerialColumn extends Column
 	public $header = '#';
 
 	/**
-	 * Renders the data cell content.
-	 * @param mixed $model the data model
-	 * @param integer $index the zero-based index of the data model among the models array returned by [[dataProvider]].
-	 * @return string the rendering result
+	 * @inheritdoc
 	 */
-	protected function renderDataCellContent($model, $index)
+	protected function renderDataCellContent($model, $key, $index)
 	{
 		$pagination = $this->grid->dataProvider->getPagination();
 		if ($pagination !== false) {

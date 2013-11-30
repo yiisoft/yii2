@@ -121,7 +121,7 @@ class Widget extends Component implements ViewContextInterface
 	 * The [[render()]] and [[renderFile()]] methods will use
 	 * this view object to implement the actual view rendering.
 	 * If not set, it will default to the "view" application component.
-	 * @return View the view object that can be used to render views or view files.
+	 * @return \yii\web\View the view object that can be used to render views or view files.
 	 */
 	public function getView()
 	{
