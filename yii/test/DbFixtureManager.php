@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
+use yii\db\ActiveRecordInterface;
 use yii\db\Connection;
 
 /**
@@ -92,7 +93,7 @@ class DbFixtureManager extends Component
 		foreach ($fixtures as $name => $fixture) {
 			if (strpos($fixture, '\\') !== false) {
 				$model = new $fixture;
-				if ($model instanceof ActiveRecord) {
+				if ($model instanceof ActiveRecordInterface) {
 					$this->_modelClasses[$name] = $fixture;
 					$fixtures[$name] = $model->getTableSchema()->name;
 				} else {
