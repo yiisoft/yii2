@@ -132,7 +132,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 			if ($db === null) {
 				$db = $modelClass::getDb();
 			}
-			return $db->executeCommand('LLEN', [$modelClass::tableName()]);
+			return $db->executeCommand('LLEN', [$modelClass::keyPrefix()]);
 		} else {
 			return $this->executeScript($db, 'Count');
 		}
@@ -296,7 +296,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		$data = [];
 		foreach($pks as $pk) {
 			if (++$i > $start && ($this->limit === null || $i <= $start + $this->limit)) {
-				$key = $modelClass::tableName() . ':a:' . $modelClass::buildKey($pk);
+				$key = $modelClass::keyPrefix() . ':a:' . $modelClass::buildKey($pk);
 				$result = $db->executeCommand('HGETALL', [$key]);
 				if (!empty($result)) {
 					$data[] = $result;

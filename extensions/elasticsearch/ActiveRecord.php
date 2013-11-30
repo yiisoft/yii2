@@ -10,6 +10,8 @@ namespace yii\elasticsearch;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
+use yii\db\ActiveRecordInterface;
+use yii\db\BaseActiveRecord;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
 use yii\helpers\StringHelper;
@@ -42,7 +44,7 @@ use yii\helpers\StringHelper;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ActiveRecord extends \yii\db\ActiveRecord
+class ActiveRecord extends BaseActiveRecord
 {
 	const PRIMARY_KEY_NAME = 'id';
 
@@ -427,48 +429,5 @@ class ActiveRecord extends \yii\db\ActiveRecord
 			}
 		}
 		return $n;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public static function updateAllCounters($counters, $condition = null, $params = [])
-	{
-		throw new NotSupportedException('Update Counters is not supported by elasticsearch ActiveRecord.');
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public static function getTableSchema()
-	{
-		throw new NotSupportedException('getTableSchema() is not supported by elasticsearch ActiveRecord.');
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public static function tableName()
-	{
-		return static::index() . '/' . static::type();
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public static function findBySql($sql, $params = [])
-	{
-		throw new NotSupportedException('findBySql() is not supported by elasticsearch ActiveRecord.');
-	}
-
-	/**
-	 * Returns a value indicating whether the specified operation is transactional in the current [[scenario]].
-	 * This method will always return false as transactional operations are not supported by elasticsearch.
-	 * @param integer $operation the operation to check. Possible values are [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]].
-	 * @return boolean whether the specified operation is transactional in the current [[scenario]].
-	 */
-	public function isTransactional($operation)
-	{
-		return false;
 	}
 }
