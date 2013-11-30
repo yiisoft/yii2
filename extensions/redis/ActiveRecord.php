@@ -10,6 +10,7 @@ namespace yii\redis;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\db\BaseActiveRecord;
+use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
@@ -88,6 +89,18 @@ class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
+	 * Declares prefix of the key that represents the keys that store this records in redis.
+	 * By default this method returns the class name as the table name by calling [[Inflector::camel2id()]].
+	 * For example, 'Customer' becomes 'customer', and 'OrderItem' becomes
+	 * 'order_item'. You may override this method if you want different key naming.
+	 * @return string the prefix to apply to all AR keys
+	 */
+	public static function keyPrefix()
+	{
+		return Inflector::camel2id(StringHelper::basename(get_called_class()), '_');
+	}
+
+	/**
 	 * @inheritdoc
 	 */
 	public function insert($runValidation = true, $attributes = null)
@@ -103,15 +116,15 @@ class ActiveRecord extends BaseActiveRecord
 			foreach ($this->primaryKey() as $key) {
 				$pk[$key] = $values[$key] = $this->getAttribute($key);
 				if ($pk[$key] === null) {
-					$pk[$key] = $values[$key] = $db->executeCommand('INCR', [static::tableName() . ':s:' . $key]);
+					$pk[$key] = $values[$key] = $db->executeCommand('INCR', [static::keyPrefix() . ':s:' . $key]);
 					$this->setAttribute($key, $values[$key]);
 				}
 			}
 //			}
 			// save pk in a findall pool
-			$db->executeCommand('RPUSH', [static::tableName(), static::buildKey($pk)]);
+			$db->executeCommand('RPUSH', [static::keyPrefix(), static::buildKey($pk)]);
 
-			$key = static::tableName() . ':a:' . static::buildKey($pk);
+			$key = static::keyPrefix() . ':a:' . static::buildKey($pk);
 			// save attributes
 			$args = [$key];
 			foreach($values as $attribute => $value) {
@@ -151,7 +164,7 @@ class ActiveRecord extends BaseActiveRecord
 		foreach(static::fetchPks($condition) as $pk) {
 			$newPk = $pk;
 			$pk = static::buildKey($pk);
-			$key = static::tableName() . ':a:' . $pk;
+			$key = static::keyPrefix() . ':a:' . $pk;
 			// save attributes
 			$args = [$key];
 			foreach($attributes as $attribute => $value) {
@@ -162,13 +175,13 @@ class ActiveRecord extends BaseActiveRecord
 				$args[] = $value;
 			}
 			$newPk = static::buildKey($newPk);
-			$newKey = static::tableName() . ':a:' . $newPk;
+			$newKey = static::keyPrefix() . ':a:' . $newPk;
 			// rename index if pk changed
 			if ($newPk != $pk) {
 				$db->executeCommand('MULTI');
 				$db->executeCommand('HMSET', $args);
-				$db->executeCommand('LINSERT', [static::tableName(), 'AFTER', $pk, $newPk]);
-				$db->executeCommand('LREM', [static::tableName(), 0, $pk]);
+				$db->executeCommand('LINSERT', [static::keyPrefix(), 'AFTER', $pk, $newPk]);
+				$db->executeCommand('LREM', [static::keyPrefix(), 0, $pk]);
 				$db->executeCommand('RENAME', [$key, $newKey]);
 				$db->executeCommand('EXEC');
 			} else {
@@ -202,7 +215,7 @@ class ActiveRecord extends BaseActiveRecord
 		$db = static::getDb();
 		$n=0;
 		foreach(static::fetchPks($condition) as $pk) {
-			$key = static::tableName() . ':a:' . static::buildKey($pk);
+			$key = static::keyPrefix() . ':a:' . static::buildKey($pk);
 			foreach($counters as $attribute => $value) {
 				$db->executeCommand('HINCRBY', [$key, $attribute, $value]);
 			}
@@ -234,8 +247,8 @@ class ActiveRecord extends BaseActiveRecord
 		$db->executeCommand('MULTI');
 		foreach($pks as $pk) {
 			$pk = static::buildKey($pk);
-			$db->executeCommand('LREM', [static::tableName(), 0, $pk]);
-			$attributeKeys[] = static::tableName() . ':a:' . $pk;
+			$db->executeCommand('LREM', [static::keyPrefix(), 0, $pk]);
+			$attributeKeys[] = static::keyPrefix() . ':a:' . $pk;
 		}
 		if (empty($attributeKeys)) {
 			$db->executeCommand('EXEC');

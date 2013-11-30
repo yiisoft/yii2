@@ -29,7 +29,7 @@ class LuaScriptBuilder extends \yii\base\Object
 		// TODO add support for orderBy
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
-		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		$key = $this->quoteValue($modelClass::keyPrefix() . ':a:');
 		return $this->build($query, "n=n+1 pks[n]=redis.call('HGETALL',$key .. pk)", 'pks');
 	}
 
@@ -43,7 +43,7 @@ class LuaScriptBuilder extends \yii\base\Object
 		// TODO add support for orderBy
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
-		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		$key = $this->quoteValue($modelClass::keyPrefix() . ':a:');
 		return $this->build($query, "do return redis.call('HGETALL',$key .. pk) end", 'pks');
 	}
 
@@ -58,7 +58,7 @@ class LuaScriptBuilder extends \yii\base\Object
 		// TODO add support for orderBy and indexBy
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
-		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		$key = $this->quoteValue($modelClass::keyPrefix() . ':a:');
 		return $this->build($query, "n=n+1 pks[n]=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'pks');
 	}
 
@@ -82,7 +82,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	{
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
-		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		$key = $this->quoteValue($modelClass::keyPrefix() . ':a:');
 		return $this->build($query, "n=n+redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'n');
 	}
 
@@ -96,7 +96,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	{
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
-		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		$key = $this->quoteValue($modelClass::keyPrefix() . ':a:');
 		return $this->build($query, "n=n+1 if v==nil then v=0 end v=v+redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ")", 'v/n');
 	}
 
@@ -110,7 +110,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	{
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
-		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		$key = $this->quoteValue($modelClass::keyPrefix() . ':a:');
 		return $this->build($query, "n=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ") if v==nil or n<v then v=n end", 'v');
 	}
 
@@ -124,7 +124,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	{
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
-		$key = $this->quoteValue($modelClass::tableName() . ':a:');
+		$key = $this->quoteValue($modelClass::keyPrefix() . ':a:');
 		return $this->build($query, "n=redis.call('HGET',$key .. pk," . $this->quoteValue($column) . ") if v==nil or n>v then v=n end", 'v');
 	}
 
@@ -152,7 +152,7 @@ class LuaScriptBuilder extends \yii\base\Object
 
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $query->modelClass;
-		$key = $this->quoteValue($modelClass::tableName());
+		$key = $this->quoteValue($modelClass::keyPrefix());
 		$loadColumnValues = '';
 		foreach($columns as $column => $alias) {
 			$loadColumnValues .= "local $alias=redis.call('HGET',$key .. ':a:' .. pk, '$column')\n";
