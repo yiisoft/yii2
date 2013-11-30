@@ -71,17 +71,18 @@ class Column extends Object
 	/**
 	 * Renders a data cell.
 	 * @param mixed $model the data model being rendered
+	 * @param mixed $key the key associated with the data model
 	 * @param integer $index the zero-based index of the data item among the item array returned by [[dataProvider]].
 	 * @return string the rendering result
 	 */
-	public function renderDataCell($model, $index)
+	public function renderDataCell($model, $key, $index)
 	{
 		if ($this->contentOptions instanceof Closure) {
-			$options = call_user_func($this->contentOptions, $model, $index, $this);
+			$options = call_user_func($this->contentOptions, $model, $key, $index, $this);
 		} else {
 			$options = $this->contentOptions;
 		}
-		return Html::tag('td', $this->renderDataCellContent($model, $index), $options);
+		return Html::tag('td', $this->renderDataCellContent($model, $key, $index), $options);
 	}
 
 	/**
@@ -117,13 +118,14 @@ class Column extends Object
 	/**
 	 * Renders the data cell content.
 	 * @param mixed $model the data model
+	 * @param mixed $key the key associated with the data model
 	 * @param integer $index the zero-based index of the data model among the models array returned by [[dataProvider]].
 	 * @return string the rendering result
 	 */
-	protected function renderDataCellContent($model, $index)
+	protected function renderDataCellContent($model, $key, $index)
 	{
 		if ($this->content !== null) {
-			return call_user_func($this->content, $model, $index, $this);
+			return call_user_func($this->content, $model, $key, $index, $this);
 		} else {
 			return $this->grid->emptyCell;
 		}

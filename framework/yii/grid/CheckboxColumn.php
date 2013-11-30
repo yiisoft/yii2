@@ -67,15 +67,12 @@ class CheckboxColumn extends Column
 	}
 
 	/**
-	 * Renders the data cell content.
-	 * @param mixed $model the data model
-	 * @param integer $index the zero-based index of the data model among the models array returned by [[dataProvider]].
-	 * @return string the rendering result
+	 * @inheritdoc
 	 */
-	protected function renderDataCellContent($model, $index)
+	protected function renderDataCellContent($model, $key, $index)
 	{
 		if ($this->checkboxOptions instanceof Closure) {
-			$options = call_user_func($this->checkboxOptions, $model, $index, $this);
+			$options = call_user_func($this->checkboxOptions, $model, $key, $index, $this);
 		} else {
 			$options = $this->checkboxOptions;
 		}

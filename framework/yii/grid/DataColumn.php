@@ -133,14 +133,17 @@ class DataColumn extends Column
 		}
 	}
 
-	protected function renderDataCellContent($model, $index)
+	/**
+	 * @inheritdoc
+	 */
+	protected function renderDataCellContent($model, $key, $index)
 	{
 		if ($this->value !== null) {
 			$value = call_user_func($this->value, $model, $index, $this);
 		} elseif ($this->content === null && $this->attribute !== null) {
 			$value = ArrayHelper::getValue($model, $this->attribute);
 		} else {
-			return parent::renderDataCellContent($model, $index);
+			return parent::renderDataCellContent($model, $key, $index);
 		}
 		return $this->grid->formatter->format($value, $this->format);
 	}

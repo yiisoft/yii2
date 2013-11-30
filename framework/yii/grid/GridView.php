@@ -366,7 +366,7 @@ class GridView extends BaseListView
 		$cells = [];
 		/** @var Column $column */
 		foreach ($this->columns as $column) {
-			$cells[] = $column->renderDataCell($model, $index);
+			$cells[] = $column->renderDataCell($model, $key, $index);
 		}
 		if ($this->rowOptions instanceof Closure) {
 			$options = call_user_func($this->rowOptions, $model, $key, $index, $this);
