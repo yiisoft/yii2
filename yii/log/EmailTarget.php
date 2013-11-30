@@ -14,9 +14,8 @@ use yii\mail\MailerInterface;
 /**
  * EmailTarget sends selected log messages to the specified email addresses.
  *
- * The target email addresses may be specified via [[emails]] property.
- * Optionally, you may set the email [[subject]], [[sentFrom]] address and
- * additional [[headers]].
+ * You may configure the email to be sent by setting the [[message]] property, through which
+ * you can set the target email addresses, subject, etc.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

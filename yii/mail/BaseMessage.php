@@ -18,8 +18,6 @@ use Yii;
  *
  * @see BaseMailer
  *
- * @property MailerInterface $mailer The mailer component. This property is read-only.
- *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */

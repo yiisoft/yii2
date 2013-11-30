@@ -22,19 +22,6 @@ use yii\helpers\Inflector;
  *
  * @include @yii/db/ActiveRecord.md
  *
- * @property array $dirtyAttributes The changed attribute values (name-value pairs). This property is
- * read-only.
- * @property boolean $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
- * @property array $oldAttributes The old attribute values (name-value pairs).
- * @property mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
- * returned if the primary key is composite. A string is returned otherwise (null will be returned if the key
- * value is null). This property is read-only.
- * @property array $populatedRelations An array of relation data indexed by relation names. This property is
- * read-only.
- * @property mixed $primaryKey The primary key value. An array (column name => column value) is returned if
- * the primary key is composite. A string is returned otherwise (null will be returned if the key value is null).
- * This property is read-only.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
