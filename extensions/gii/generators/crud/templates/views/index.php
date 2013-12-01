@@ -45,12 +45,22 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php
 $count = 0;
-foreach ($generator->getTableSchema()->columns as $column) {
-	$format = $generator->generateColumnFormat($column);
-	if (++$count < 6) {
-		echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
-	} else {
-		echo "\t\t\t// '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+if (($tableSchema = $generator->getTableSchema()) === false) {
+	foreach ($generator->getColumnNames() as $name) {
+		if (++$count < 6) {
+			echo "\t\t\t'" . $name . "',\n";
+		} else {
+			echo "\t\t\t// '" . $name . "',\n";
+		}
+	}
+} else {
+	foreach ($tableSchema->columns as $column) {
+		$format = $generator->generateColumnFormat($column);
+		if (++$count < 6) {
+			echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+		} else {
+			echo "\t\t\t// '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+		}
 	}
 }
 ?>

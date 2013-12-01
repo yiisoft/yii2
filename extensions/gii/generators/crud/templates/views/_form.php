@@ -12,7 +12,7 @@ use yii\helpers\StringHelper;
 $model = new $generator->modelClass;
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
-	$safeAttributes = $model->getTableSchema()->columnNames;
+	$safeAttributes = $model->attributes();
 }
 
 echo "<?php\n";

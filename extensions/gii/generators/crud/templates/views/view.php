@@ -42,9 +42,15 @@ $this->params['breadcrumbs'][] = $this->title;
 		'model' => $model,
 		'attributes' => [
 <?php
-foreach ($generator->getTableSchema()->columns as $column) {
-	$format = $generator->generateColumnFormat($column);
-	echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+if (($tableSchema = $generator->getTableSchema()) === false) {
+	foreach ($generator->getColumnNames() as $name) {
+		echo "\t\t\t'" . $name . "',\n";
+	}
+} else {
+	foreach ($generator->getTableSchema()->columns as $column) {
+		$format = $generator->generateColumnFormat($column);
+		echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+	}
 }
 ?>
 		],

@@ -1,5 +1,6 @@
 <?php
 
+use yii\db\ActiveRecordInterface;
 use yii\helpers\StringHelper;
 
 /**
@@ -16,7 +17,9 @@ if ($modelClass === $searchModelClass) {
 	$searchModelAlias = $searchModelClass.'Search';
 }
 
-$pks = $generator->getTableSchema()->primaryKey;
+/** @var ActiveRecordInterface $class */
+$class = $generator->modelClass;
+$pks = $class::primaryKey();
 $urlParams = $generator->generateUrlParams();
 $actionParams = $generator->generateActionParams();
 $actionParamComments = $generator->generateActionParamComments();
