@@ -267,7 +267,7 @@ class Connection extends Component
 			if (strncmp($host, 'inet[/', 6) == 0) {
 				$host = substr($host, 6, -1);
 			}
-			$profile = $q . $requestBody;
+			$profile = $method . ' ' . $q . '#' . $requestBody;
 			$url = 'http://' . $host . '/' . $q;
 		} else {
 			$profile = false;
