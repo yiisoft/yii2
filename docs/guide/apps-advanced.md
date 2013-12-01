@@ -139,11 +139,11 @@ directory:
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.4.0",
-		"yiisoft/yii2": "dev-master",
-		"yiisoft/yii2-swiftmailer": "dev-master",
-		"yiisoft/yii2-bootstrap": "dev-master",
-		"yiisoft/yii2-debug": "dev-master",
-		"yiisoft/yii2-gii": "dev-master"
+		"yiisoft/yii2": "*",
+		"yiisoft/yii2-swiftmailer": "*",
+		"yiisoft/yii2-bootstrap": "*",
+		"yiisoft/yii2-debug": "*",
+		"yiisoft/yii2-gii": "*"
 	},
 	"scripts": {
 		"post-create-project-cmd": [
