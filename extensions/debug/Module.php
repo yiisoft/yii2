@@ -61,7 +61,8 @@ class Module extends \yii\base\Module
 			Yii::$app->getView()->on(View::EVENT_END_BODY, [$this, 'renderToolbar']);
 		});
 
-		foreach (array_merge($this->corePanels(), $this->panels) as $id => $config) {
+		$this->panels = array_merge($this->corePanels(), $this->panels);
+		foreach ($this->panels as $id => $config) {
 			$config['module'] = $this;
 			$config['id'] = $id;
 			$this->panels[$id] = Yii::createObject($config);
