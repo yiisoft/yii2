@@ -283,6 +283,11 @@ class BaseFileHelper
 				return $result;
 			}
 		}
+
+		if (empty($options['except']) && empty($options['only'])) {
+			return true;
+		}
+
 		$path = str_replace('\\', '/', $path);
 		if ($isDir = is_dir($path)) {
 			$path .= '/';
