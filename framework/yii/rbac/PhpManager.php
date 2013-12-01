@@ -33,13 +33,12 @@ class PhpManager extends Manager
 {
 	/**
 	 * @var string the path of the PHP script that contains the authorization data.
-	 * If not set, it will be using 'protected/data/rbac.php' as the data file.
-	 * Make sure this file is writable by the Web server process if the authorization
-	 * needs to be changed.
+	 * This can be either a file path or a path alias to the file.
+	 * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
 	 * @see loadFromFile()
 	 * @see saveToFile()
 	 */
-	public $authFile;
+	public $authFile = '@app/data/rbac.php';
 
 	private $_items = []; // itemName => item
 	private $_children = []; // itemName, childName => child
@@ -53,9 +52,7 @@ class PhpManager extends Manager
 	public function init()
 	{
 		parent::init();
-		if ($this->authFile === null) {
-			$this->authFile = Yii::getAlias('@app/data/rbac') . '.php';
-		}
+		$this->authFile = Yii::getAlias($this->authFile);
 		$this->load();
 	}
 

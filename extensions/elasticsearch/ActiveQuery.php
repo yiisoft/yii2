@@ -139,7 +139,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function search($db = null, $options = [])
 	{
@@ -161,7 +161,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function scalar($field, $db = null)
 	{
@@ -177,7 +177,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function column($field, $db = null)
 	{

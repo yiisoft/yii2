@@ -234,10 +234,10 @@ public function editArticle($id)
 {
   $article = Article::find($id);
   if (!$article) {
-    throw new HttpException(404);
+    throw new NotFoundHttpException;
   }
   if (!\Yii::$app->user->checkAccess('edit_article', ['article' => $article])) {
-    throw new HttpException(403);
+    throw new AccessDeniedHttpException;
   }
   // ...
 }
@@ -250,7 +250,7 @@ public function editArticle($id)
 {
     $article = Article::find(['id' => $id, 'author_id' => \Yii::$app->user->id]);
     if (!$article) {
-      throw new HttpException(404);
+      throw new NotFoundHttpException;
     }
     // ...
 }

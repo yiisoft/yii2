@@ -18,25 +18,25 @@ use yii\web\AssetBundle;
 class GiiAsset extends AssetBundle
 {
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public $sourcePath = '@yii/gii/assets';
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public $css = [
 		'main.css',
 		'typeahead.js-bootstrap.css',
 	];
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public $js = [
 		'gii.js',
 		'typeahead.js',
 	];
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public $depends = [
 		'yii\web\YiiAsset',

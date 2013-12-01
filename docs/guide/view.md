@@ -277,7 +277,12 @@ use yii\helpers\Html;
 In the markup above there's some code. First of all, `$content` is a variable that will contain result of views rendered
 with controller's `$this->render()` method.
 
-TBD
+We are importing `Html` helper via standard PHP `use` statement. This helper is typically used for almost all views
+where one need to escape outputted data.
+
+Several special methods such as `beginPage`/`endPage`, `head`, `beginBody`/`endBody` are triggering page rendering events
+that are used for registering scripts, links and process page in many other ways. Always include these in your layout in
+order for rendering to work correctly.
 
 ### Partials
 

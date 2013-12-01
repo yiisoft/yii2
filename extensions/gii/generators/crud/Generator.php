@@ -9,6 +9,7 @@ namespace yii\gii\generators\crud;
 
 use Yii;
 use yii\db\ActiveRecord;
+use yii\db\BaseActiveRecord;
 use yii\db\Schema;
 use yii\gii\CodeFile;
 use yii\helpers\Inflector;
@@ -46,7 +47,7 @@ class Generator extends \yii\gii\Generator
 			[['modelClass', 'searchModelClass', 'controllerClass', 'baseControllerClass', 'indexWidgetType'], 'required'],
 			[['searchModelClass'], 'compare', 'compareAttribute' => 'modelClass', 'operator' => '!==', 'message' => 'Search Model Class must not be equal to Model Class.'],
 			[['modelClass', 'controllerClass', 'baseControllerClass', 'searchModelClass'], 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
-			[['modelClass'], 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
+			[['modelClass'], 'validateClass', 'params' => ['extends' => BaseActiveRecord::className()]],
 			[['baseControllerClass'], 'validateClass', 'params' => ['extends' => Controller::className()]],
 			[['controllerClass'], 'match', 'pattern' => '/Controller$/', 'message' => 'Controller class name must be suffixed with "Controller".'],
 			[['controllerClass', 'searchModelClass'], 'validateNewClass'],
@@ -69,7 +70,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function hints()
 	{
@@ -95,7 +96,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function stickyAttributes()
 	{
@@ -123,7 +124,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function generate()
 	{
@@ -167,13 +168,13 @@ class Generator extends \yii\gii\Generator
 
 	public function getNameAttribute()
 	{
-		/** @var \yii\db\ActiveRecord $class */
-		$class = $this->modelClass;
-		foreach ($class::getTableSchema()->columnNames as $name) {
+		foreach ($this->getColumnNames() as $name) {
 			if (!strcasecmp($name, 'name') || !strcasecmp($name, 'title')) {
 				return $name;
 			}
 		}
+		/** @var \yii\db\ActiveRecord $class */
+		$class = $this->modelClass;
 		$pk = $class::primaryKey();
 		return $pk[0];
 	}
@@ -185,8 +186,12 @@ class Generator extends \yii\gii\Generator
 	public function generateActiveField($attribute)
 	{
 		$tableSchema = $this->getTableSchema();
-		if (!isset($tableSchema->columns[$attribute])) {
-			return "\$form->field(\$model, '$attribute');";
+		if ($tableSchema === false || !isset($tableSchema->columns[$attribute])) {
+			if (preg_match('/^(password|pass|passwd|passcode)$/i', $attribute)) {
+				return "\$form->field(\$model, '$attribute')->passwordInput();";
+			} else {
+				return "\$form->field(\$model, '$attribute');";
+			}
 		}
 		$column = $tableSchema->columns[$attribute];
 		if ($column->phpType === 'boolean') {
@@ -214,6 +219,9 @@ class Generator extends \yii\gii\Generator
 	public function generateActiveSearchField($attribute)
 	{
 		$tableSchema = $this->getTableSchema();
+		if ($tableSchema === false) {
+			return "\$form->field(\$model, '$attribute')";
+		}
 		$column = $tableSchema->columns[$attribute];
 		if ($column->phpType === 'boolean') {
 			return "\$form->field(\$model, '$attribute')->checkbox()";
@@ -249,7 +257,9 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function generateSearchRules()
 	{
-		$table = $this->getTableSchema();
+		if (($table = $this->getTableSchema()) === false) {
+			return ["[['" . implode("', '", $this->getColumnNames()) . "'], 'safe']"];
+		}
 		$types = [];
 		foreach ($table->columns as $column) {
 			switch ($column->type) {
@@ -286,7 +296,7 @@ class Generator extends \yii\gii\Generator
 
 	public function getSearchAttributes()
 	{
-		return $this->getTableSchema()->getColumnNames();
+		return $this->getColumnNames();
 	}
 
 	/**
@@ -295,17 +305,16 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function generateSearchLabels()
 	{
-		$table = $this->getTableSchema();
 		$labels = [];
-		foreach ($table->columns as $column) {
-			if (!strcasecmp($column->name, 'id')) {
-				$labels[$column->name] = 'ID';
+		foreach ($this->getColumnNames() as $name) {
+			if (!strcasecmp($name, 'id')) {
+				$labels[$name] = 'ID';
 			} else {
-				$label = Inflector::camel2words($column->name);
+				$label = Inflector::camel2words($name);
 				if (strcasecmp(substr($label, -3), ' id') === 0) {
 					$label = substr($label, 0, -3) . ' ID';
 				}
-				$labels[$column->name] = $label;
+				$labels[$name] = $label;
 			}
 		}
 		return $labels;
@@ -313,10 +322,21 @@ class Generator extends \yii\gii\Generator
 
 	public function generateSearchConditions()
 	{
-		$table = $this->getTableSchema();
+		$columns = [];
+		if (($table = $this->getTableSchema()) === false) {
+			$class = $this->modelClass;
+			$model = new $class();
+			foreach ($model->attributes() as $attribute) {
+				$columns[$attribute] = 'unknown';
+			}
+		} else {
+			foreach ($table->columns as $column) {
+				$columns[$column->name] = $column->type;
+			}
+		}
 		$conditions = [];
-		foreach ($table->columns as $column) {
-			switch ($column->type) {
+		foreach ($columns as $column => $type) {
+			switch ($type) {
 				case Schema::TYPE_SMALLINT:
 				case Schema::TYPE_INTEGER:
 				case Schema::TYPE_BIGINT:
@@ -328,10 +348,11 @@ class Generator extends \yii\gii\Generator
 				case Schema::TYPE_TIME:
 				case Schema::TYPE_DATETIME:
 				case Schema::TYPE_TIMESTAMP:
-					$conditions[] = "\$this->addCondition(\$query, '{$column->name}');";
+				case
+					$conditions[] = "\$this->addCondition(\$query, '{$column}');";
 					break;
 				default:
-					$conditions[] = "\$this->addCondition(\$query, '{$column->name}', true);";
+					$conditions[] = "\$this->addCondition(\$query, '{$column}', true);";
 					break;
 			}
 		}
@@ -369,10 +390,16 @@ class Generator extends \yii\gii\Generator
 
 	public function generateActionParamComments()
 	{
-		$table = $this->getTableSchema();
 		/** @var ActiveRecord $class */
 		$class = $this->modelClass;
 		$pks = $class::primaryKey();
+		if (($table = $this->getTableSchema()) === false) {
+			$params = [];
+			foreach ($pks as $pk) {
+				$params[] = '@param ' . (substr(strtolower($pk), -2) == 'id' ? 'integer' : 'string') . ' $' . $pk;
+			}
+			return $params;
+		}
 		if (count($pks) === 1) {
 			return ['@param ' . $table->columns[$pks[0]]->phpType . ' $id'];
 		} else {
@@ -388,6 +415,23 @@ class Generator extends \yii\gii\Generator
 	{
 		/** @var ActiveRecord $class */
 		$class = $this->modelClass;
-		return $class::getTableSchema();
+		if (is_subclass_of($class, 'yii\db\ActiveRecord')) {
+			return $class::getTableSchema();
+		} else {
+			return false;
+		}
 	}
+
+	public function getColumnNames()
+	{
+		/** @var ActiveRecord $class */
+		$class = $this->modelClass;
+		if (is_subclass_of($class, 'yii\db\ActiveRecord')) {
+			return $class::getTableSchema()->getColumnNames();
+		} else {
+			$model = new $class();
+			return $model->attributes();
+		}
+	}
+
 }

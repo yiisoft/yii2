@@ -92,6 +92,8 @@ return [
 
 ### Handling REST
 
+TBD: [[\yii\web\VerbFiler]]
+
 
 URL parsing
 -----------
@@ -118,3 +120,72 @@ return [
 
 Creating your own rule classes
 ------------------------------
+
+[[\yii\web\UrlRule]] class is used for both parsing URL into parameters and creating URL based on parameters. Despite
+the fact that default implementation is flexible enough for majority of projects, there could be a situation when using
+your own rule class is the best choice. For example, in a car dealer website, we may want to support the URL format like
+`/Manufacturer/Model`, where `Manufacturer` and `Model` must both match some data in a database table. The default rule
+class will not work because it mostly relies on statically declared regular expressions which have no database knowledge.
+
+We can write a new URL rule class by extending from [[\yii\web\UrlRule]] and use it in one or multiple URL rules. Using
+the above car dealer website as an example, we may declare the following URL rules in application config:
+
+```php
+// ...
+'components' => [
+	'urlManager' => [
+		'rules' => [
+			'<action:(login|logout|about)>' => 'site/<action>',
+
+			// ...
+
+			['class' => 'app\components\CarUrlRule', 'connectionID' => 'db', ...],
+		],
+	],
+],
+```
+
+In the above, we use the custom URL rule class `CarUrlRule` to handle
+the URL format `/Manufacturer/Model`. The class can be written like the following:
+
+```php
+namespace \app\components;
+
+use \yii\web\UrlRule;
+
+class CarUrlRule extends UrlRule
+{
+	public $connectionID = 'db';
+
+	public function createUrl($manager, $route, $params)
+	{
+		if ($route === 'car/index') {
+			if (isset($params['manufacturer'], $params['model'])) {
+				return $params['manufacturer'] . '/' . $params['model'];
+			} elseif (isset($params['manufacturer'])) {
+				return $params['manufacturer'];
+			}
+		}
+		return false;  // this rule does not apply
+	}
+
+	public function parseRequest($manager, $request)
+	{
+		$pathInfo = $request->getPathInfo();
+		if (preg_match('%^(\w+)(/(\w+))?$%', $pathInfo, $matches)) {
+			// check $matches[1] and $matches[3] to see
+			// if they match a manufacturer and a model in the database
+			// If so, set $_GET['manufacturer'] and/or $_GET['model']
+			// and return 'car/index'
+		}
+		return false;  // this rule does not apply
+	}
+}
+```
+
+Besides the above usage, custom URL rule classes can also be implemented
+for many other purposes. For example, we can write a rule class to log the URL parsing
+and creation requests. This may be useful during development stage. We can also
+write a rule class to display a special 404 error page in case all other URL rules fail
+to resolve the current request. Note that in this case, the rule of this special class
+must be declared as the last rule.

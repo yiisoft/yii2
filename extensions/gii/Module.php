@@ -8,7 +8,7 @@
 namespace yii\gii;
 
 use Yii;
-use yii\web\HttpException;
+use yii\web\AccessDeniedHttpException;
 
 /**
  * This is the main module class for the Gii module.
@@ -54,7 +54,7 @@ use yii\web\HttpException;
 class Module extends \yii\base\Module
 {
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public $controllerNamespace = 'yii\gii\controllers';
 	/**
@@ -92,7 +92,7 @@ class Module extends \yii\base\Module
 
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -103,14 +103,14 @@ class Module extends \yii\base\Module
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function beforeAction($action)
 	{
 		if ($this->checkAccess()) {
 			return parent::beforeAction($action);
 		} else {
-			throw new HttpException(403, 'You are not allowed to access this page.');
+			throw new AccessDeniedHttpException('You are not allowed to access this page.');
 		}
 	}
 

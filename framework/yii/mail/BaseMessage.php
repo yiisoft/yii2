@@ -18,15 +18,13 @@ use Yii;
  *
  * @see BaseMailer
  *
- * @property MailerInterface $mailer The mailer component. This property is read-only.
- *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
 abstract class BaseMessage extends Object implements MessageInterface
 {
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function send(MailerInterface $mailer = null)
 	{

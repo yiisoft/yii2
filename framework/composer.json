@@ -1,6 +1,6 @@
 {
 	"name": "yiisoft/yii2",
-	"description": "Yii2 Web Programming Framework",
+	"description": "Yii PHP Framework Version 2",
 	"keywords": ["yii", "framework"],
 	"homepage": "http://www.yiiframework.com/",
 	"type": "library",
@@ -39,21 +39,6 @@
 			"name": "Paul Klimov",
 			"email": "klimov.paul@gmail.com",
 			"role": "Core framework development"
-		},
-		{
-			"name": "Wei Zhuo",
-			"email": "weizhuo@gmail.com",
-			"role": "Project site maintenance and development"
-		},
-		{
-			"name": "Sebastián Thierer",
-			"email": "sebas@artfos.com",
-			"role": "Component development"
-		},
-		{
-			"name": "Jeffrey Winesett",
-			"email": "jefftulsa@gmail.com",
-			"role": "Documentation and marketing"
 		}
 	],
 	"support": {

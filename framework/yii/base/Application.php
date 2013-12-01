@@ -23,6 +23,7 @@ use yii\web\HttpException;
  * @property \yii\base\Formatter $formatter The formatter application component. This property is read-only.
  * @property \yii\i18n\I18N $i18n The internationalization component. This property is read-only.
  * @property \yii\log\Logger $log The log component. This property is read-only.
+ * @property \yii\mail\MailerInterface $mail The mailer interface. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property string $runtimePath The directory that stores runtime files. Defaults to the "runtime"
  * subdirectory under [[basePath]].
@@ -199,12 +200,12 @@ abstract class Application extends Module
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function init()
 	{
-		parent::init();
 		$this->initExtensions($this->extensions);
+		parent::init();
 	}
 
 	/**
@@ -634,9 +635,9 @@ abstract class Application extends Module
 	{
 		$category = get_class($exception);
 		if ($exception instanceof HttpException) {
-			$category .= '\\' . $exception->statusCode;
+			$category = 'yii\\web\\HttpException:' . $exception->statusCode;
 		} elseif ($exception instanceof \ErrorException) {
-			$category .= '\\' . $exception->getSeverity();
+			$category .= ':' . $exception->getSeverity();
 		}
 		Yii::error((string)$exception, $category);
 	}

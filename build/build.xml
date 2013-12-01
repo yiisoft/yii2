@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Phing build file for Yii.
+ * Phing build file for Yii 2.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
- * @copyright 2008-2009 Yii Software LLC
+ * @copyright 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 -->
@@ -21,7 +21,7 @@
 
   <!-- these are required external commands -->
   <property name="php" value="php" /> <!-- PHP parser -->
-  <property name="hhc" value="hhc" /> <!-- compile phpdoc into CHM -->
+  <property name="composer" value="composer" /> <!-- composer -->
   <property name="pdflatex" value="pdflatex" />  <!-- generates PDF from LaTex -->
 
   <property name="pkgname" value="${phing.project.name}-${yii.version}.${yii.revision}"/>

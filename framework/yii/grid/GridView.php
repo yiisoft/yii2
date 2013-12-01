@@ -162,7 +162,7 @@ class GridView extends BaseListView
 
 	/**
 	 * Initializes the grid view.
-	 * This method will initialize required property values and instantiate {@link columns} objects.
+	 * This method will initialize required property values and instantiate [[columns]] objects.
 	 */
 	public function init()
 	{
@@ -366,14 +366,14 @@ class GridView extends BaseListView
 		$cells = [];
 		/** @var Column $column */
 		foreach ($this->columns as $column) {
-			$cells[] = $column->renderDataCell($model, $index);
+			$cells[] = $column->renderDataCell($model, $key, $index);
 		}
 		if ($this->rowOptions instanceof Closure) {
 			$options = call_user_func($this->rowOptions, $model, $key, $index, $this);
 		} else {
 			$options = $this->rowOptions;
 		}
-		$options['data-key'] = $key;
+		$options['data-key'] = is_array($key) ? json_encode($key) : $key;
 		return Html::tag('tr', implode('', $cells), $options);
 	}
 

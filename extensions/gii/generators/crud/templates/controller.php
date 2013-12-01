@@ -1,5 +1,6 @@
 <?php
 
+use yii\db\ActiveRecordInterface;
 use yii\helpers\StringHelper;
 
 /**
@@ -16,7 +17,9 @@ if ($modelClass === $searchModelClass) {
 	$searchModelAlias = $searchModelClass.'Search';
 }
 
-$pks = $generator->getTableSchema()->primaryKey;
+/** @var ActiveRecordInterface $class */
+$class = $generator->modelClass;
+$pks = $class::primaryKey();
 $urlParams = $generator->generateUrlParams();
 $actionParams = $generator->generateActionParams();
 $actionParamComments = $generator->generateActionParamComments();
@@ -29,7 +32,7 @@ namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>
 use <?= ltrim($generator->modelClass, '\\') ?>;
 use <?= ltrim($generator->searchModelClass, '\\') ?><?php if (isset($searchModelAlias)):?> as <?= $searchModelAlias ?><?php endif ?>;
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
-use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\VerbFilter;
 
 /**
@@ -130,7 +133,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	 * If the model is not found, a 404 HTTP exception will be thrown.
 	 * <?= implode("\n\t * ", $actionParamComments) . "\n" ?>
 	 * @return <?= $modelClass ?> the loaded model
-	 * @throws HttpException if the model cannot be found
+	 * @throws NotFoundHttpException if the model cannot be found
 	 */
 	protected function findModel(<?= $actionParams ?>)
 	{
@@ -148,7 +151,7 @@ if (count($pks) === 1) {
 		if (($model = <?= $modelClass ?>::find(<?= $condition ?>)) !== null) {
 			return $model;
 		} else {
-			throw new HttpException(404, 'The requested page does not exist.');
+			throw new NotFoundHttpException('The requested page does not exist.');
 		}
 	}
 }

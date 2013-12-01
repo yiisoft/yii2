@@ -86,14 +86,14 @@ class ActiveDataProvider extends BaseDataProvider
 		parent::init();
 		if (is_string($this->db)) {
 			$this->db = Yii::$app->getComponent($this->db);
-			if (!$this->db instanceof Connection) {
+			if ($this->db === null) {
 				throw new InvalidConfigException('The "db" property must be a valid DB Connection application component.');
 			}
 		}
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	protected function prepareModels()
 	{
@@ -111,7 +111,7 @@ class ActiveDataProvider extends BaseDataProvider
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	protected function prepareKeys($models)
 	{
@@ -138,9 +138,9 @@ class ActiveDataProvider extends BaseDataProvider
 				foreach ($models as $model) {
 					$kk = [];
 					foreach ($pks as $pk) {
-						$kk[] = $model[$pk];
+						$kk[$pk] = $model[$pk];
 					}
-					$keys[] = json_encode($kk);
+					$keys[] = $kk;
 				}
 			}
 			return $keys;
@@ -150,7 +150,7 @@ class ActiveDataProvider extends BaseDataProvider
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	protected function prepareTotalCount()
 	{
@@ -162,7 +162,7 @@ class ActiveDataProvider extends BaseDataProvider
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function setSort($value)
 	{

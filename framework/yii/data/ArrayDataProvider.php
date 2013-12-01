@@ -66,7 +66,7 @@ class ArrayDataProvider extends BaseDataProvider
 
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	protected function prepareModels()
 	{
@@ -87,7 +87,7 @@ class ArrayDataProvider extends BaseDataProvider
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	protected function prepareKeys($models)
 	{
@@ -107,7 +107,7 @@ class ArrayDataProvider extends BaseDataProvider
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	protected function prepareTotalCount()
 	{

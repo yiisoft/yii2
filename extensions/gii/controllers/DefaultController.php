@@ -9,7 +9,7 @@ namespace yii\gii\controllers;
 
 use Yii;
 use yii\web\Controller;
-use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -69,7 +69,7 @@ class DefaultController extends Controller
 				}
 			}
 		}
-		throw new HttpException(404, "Code file not found: $file");
+		throw new NotFoundHttpException("Code file not found: $file");
 	}
 
 	public function actionDiff($id, $file)
@@ -84,7 +84,7 @@ class DefaultController extends Controller
 				}
 			}
 		}
-		throw new HttpException(404, "Code file not found: $file");
+		throw new NotFoundHttpException("Code file not found: $file");
 	}
 
 	/**
@@ -94,7 +94,7 @@ class DefaultController extends Controller
 	 * @param string $id the ID of the generator
 	 * @param string $name the action name
 	 * @return mixed the result of the action.
-	 * @throws HttpException if the action method does not exist.
+	 * @throws NotFoundHttpException if the action method does not exist.
 	 */
 	public function actionAction($id, $name)
 	{
@@ -103,7 +103,7 @@ class DefaultController extends Controller
 		if (method_exists($generator, $method)) {
 			return $generator->$method();
 		} else {
-			throw new HttpException(400, "Unknown generator action: $name");
+			throw new NotFoundHttpException("Unknown generator action: $name");
 		}
 	}
 
@@ -136,7 +136,7 @@ class DefaultController extends Controller
 	 * Loads the generator with the specified ID.
 	 * @param string $id the ID of the generator to be loaded.
 	 * @return \yii\gii\Generator the loaded generator
-	 * @throws \yii\web\HttpException
+	 * @throws NotFoundHttpException
 	 */
 	protected function loadGenerator($id)
 	{
@@ -146,7 +146,7 @@ class DefaultController extends Controller
 			$this->generator->load($_POST);
 			return $this->generator;
 		} else {
-			throw new HttpException(404, "Code generator not found: $id");
+			throw new NotFoundHttpException("Code generator not found: $id");
 		}
 	}
 }

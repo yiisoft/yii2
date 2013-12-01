@@ -146,3 +146,29 @@ $query->search(); // gives you all the records + stats about the visit_count fie
 ```
 
 And there is so much more in it. "it’s endless what you can build"[¹](http://www.elasticsearch.org/)
+
+
+Using the elasticsearch DebugPanel
+----------------------------------
+
+The yii2 elasticsearch extensions provides a `DebugPanel` that can be integrated with the yii debug module
+an shows the executed elasticsearch queries. It also allows to run these queries on different cluster nodes
+an view the results.
+
+Add the following to you application config to enable it:
+
+```php
+	// ...
+	'preload' => 'debug',
+	'modules' => [
+		'debug' => [
+			'class' => 'yii\\debug\\Module',
+			'panels' => [
+				'elasticsearch' => [
+					'class' => 'yii\\elasticsearch\\DebugPanel',
+				],
+			],
+		],
+	],
+	// ...
+```

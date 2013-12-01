@@ -30,7 +30,7 @@ use yii\widgets\ActiveForm;
 
 <?php
 $count = 0;
-foreach ($generator->getTableSchema()->getColumnNames() as $attribute) {
+foreach ($generator->getColumnNames() as $attribute) {
 	if (++$count < 6) {
 		echo "\t\t<?= " . $generator->generateActiveSearchField($attribute) . " ?>\n\n";
 	} else {

@@ -88,7 +88,7 @@ class ListView extends BaseListView
 		$options = $this->itemOptions;
 		$tag = ArrayHelper::remove($options, 'tag', 'div');
 		if ($tag !== false) {
-			$options['data-key'] = $key;
+			$options['data-key'] = is_array($key) ? json_encode($key) : $key;
 			return Html::tag($tag, $content, $options);
 		} else {
 			return $content;

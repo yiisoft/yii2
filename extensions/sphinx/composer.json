@@ -17,7 +17,6 @@
 			"email": "klimov.paul@gmail.com"
 		}
 	],
-	"minimum-stability": "dev",
 	"require": {
 		"yiisoft/yii2": "*",
 		"ext-pdo": "*",
@@ -25,5 +24,6 @@
 	},
 	"autoload": {
 		"psr-0": { "yii\\sphinx\\": "" }
-	}
+	},
+	"target-dir": "yii/sphinx"
 }

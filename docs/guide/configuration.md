@@ -96,4 +96,18 @@ not be instantiated and configured at all.
 Setting component defaults classwide
 ------------------------------------
 
-TBD
+For each component you can specifiy classwide defaults. For example, if we want to change class for all `LinkPager`
+widgets without specifying it over and over again when widget is called we can do it like the following:
+
+```php
+\Yii::$objectConfig = [
+	'yii\widgets\LinkPager' => [
+		'options' => [
+			'class' => 'pagination',
+		],
+	],
+];
+```
+
+The code above should be executed once before `LinkPager` widget is used. It can be done in `index.php`, application
+config or anywhere else.

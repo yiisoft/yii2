@@ -1,6 +1,6 @@
 {
 	"name": "yiisoft/yii2-dev",
-	"description": "Yii2 Web Programming Framework - Development Package",
+	"description": "Yii PHP Framework Version 2 - Development Package",
 	"keywords": ["yii", "framework"],
 	"homepage": "http://www.yiiframework.com/",
 	"type": "yii2-extension",
@@ -39,21 +39,6 @@
 			"name": "Paul Klimov",
 			"email": "klimov.paul@gmail.com",
 			"role": "Core framework development"
-		},
-		{
-			"name": "Wei Zhuo",
-			"email": "weizhuo@gmail.com",
-			"role": "Project site maintenance and development"
-		},
-		{
-			"name": "Sebastián Thierer",
-			"email": "sebas@artfos.com",
-			"role": "Component development"
-		},
-		{
-			"name": "Jeffrey Winesett",
-			"email": "jefftulsa@gmail.com",
-			"role": "Documentation and marketing"
 		}
 	],
 	"support": {
@@ -67,6 +52,7 @@
 	"replace": {
 		"yiisoft/yii2-bootstrap": "self.version",
 		"yiisoft/yii2-debug": "self.version",
+		"yiisoft/yii2-elasticsearch": "self.version",
 		"yiisoft/yii2-gii": "self.version",
 		"yiisoft/yii2-jui": "self.version",
 		"yiisoft/yii2-redis": "self.version",
@@ -94,6 +80,7 @@
 		"psr-0": {
 			"yii\\bootstrap\\": "extensions/bootstrap/",
 			"yii\\debug\\": "extensions/debug/",
+			"yii\\elasticsearch\\": "extensions/elasticsearch/",
 			"yii\\gii\\": "extensions/gii/",
 			"yii\\jui\\": "extensions/jui/",
 			"yii\\redis\\": "extensions/redis/",

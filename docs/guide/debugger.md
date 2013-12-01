@@ -7,19 +7,21 @@ about currently opened page while using debugger you can analyze data collected 
 Installing and configuring
 --------------------------
 
-How to use it
--------------
-
 Add these lines to your config file:
 
 ```
-    'preload' => ['debug'],
-    'modules' => [
-            'debug' => ['yii\debug\Module']
-        ]
+'preload' => ['debug'],
+'modules' => [
+	'debug' => ['yii\debug\Module']
+]
 ```
 
-**Watch out: by default the debug module only works when browsing the website from the localhost. If you want to use it on a remote (staging) server, add the parameter allowedIPs to the config to whitelist your IP.**
+**Watch out: by default the debug module only works when browsing the website from the localhost. If you want to use it
+on a remote (staging) server, add the parameter allowedIPs to the config to whitelist your IP.**
+
+How to use it
+-------------
+
 
 Creating your own panels
 ------------------------

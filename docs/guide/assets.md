@@ -115,3 +115,156 @@ return [
 
 There are two main benefits in enabling it. First it is faster since no copying is required and second is that assets
 will always be up to date with source files.
+
+Compressing and combining assets
+--------------------------------
+
+To improve application performance you can compress and then combine several CSS or JS files into lesser number of files
+therefore reducing number of HTTP requests and overall download size needed to load a web page.  Yii provides a console
+command that allows you to do both.
+
+### Preparing configuration
+
+In order to use `asset` command you should prepare a configuration first. A template for it can be generated using
+
+```
+yii asset/template /path/to/myapp/config.php
+```
+
+The template itself looks like the following:
+
+```php
+<?php
+/**
+ * Configuration file for the "yii asset" console command.
+ * Note that in the console environment, some path aliases like '@webroot' and '@web' may not exist.
+ * Please define these missing path aliases.
+ */
+return [
+	// The list of asset bundles to compress:
+	'bundles' => [
+		// 'yii\web\YiiAsset',
+		// 'yii\web\JqueryAsset',
+	],
+	// Asset bundle for compression output:
+	'targets' => [
+		'app\config\AllAsset' => [
+			'basePath' => 'path/to/web',
+			'baseUrl' => '',
+			'js' => 'js/all-{ts}.js',
+			'css' => 'css/all-{ts}.css',
+		],
+	],
+	// Asset manager configuration:
+	'assetManager' => [
+		'basePath' => __DIR__,
+		'baseUrl' => '',
+	],
+];
+```
+
+In the above keys are `properties` of `AssetController`. `bundles` list contains bundles that should be compressed. These are typically what's used by application.
+`targets` contains a list of bundles that define how resulting files will be written. In our case we're writing
+everything to `path/to/web` that can be accessed like `http://example.com/` i.e. it is website root directory.
+
+> Note: in the console environment some path aliases like '@webroot' and '@web' may not exist,
+  so corresponding paths inside the configuration should be specified directly.
+
+JavaScript files are combined, compressed and written to `js/all-{ts}.js` where {ts} is replaced with current UNIX
+timestamp.
+
+### Providing compression tools
+
+The command relies on external compression tools that are not bundled with Yii so you need to provide CSS and JS
+compressors which are correspondingly specified via `cssCompressor` and `jsCompression` properties. If compressor is
+specified as a string it is treated as a shell command template which should contain two placeholders: `{from}` that
+is replaced by source file name and `{to}` that is replaced by output file name. Another way to specify compressor is
+to use any valid PHP callback.
+
+By default for JavaScript compression Yii tries to use
+[Google Closure compiler](https://developers.google.com/closure/compiler/) that is expected to be in a file named
+`compiler.jar`.
+
+For CSS compression Yii assumes that [YUI Compressor](https://github.com/yui/yuicompressor/) is looked up in a file
+named `yuicompressor.jar`.
+
+In order to compress resources with these two you need to download both and place where your `yii` console bootstrap
+file is using named mentioned above. Since both are Java tools you need JRE installed.
+
+### Performing compression
+
+After configuration is adjusted you can run the `compress` action, using created config:
+
+```
+yii asset /path/to/myapp/config.php /path/to/myapp/config/assets_compressed.php
+```
+
+Now processing takes some time and finally finished. You need to adjust your web application config to use compressed
+assets file like the following:
+
+```php
+'components' => [
+	// ...
+	'assetManager' => [
+		'bundles' => require /path/to/myapp/config/assets_compressed.php,
+	],
+],
+```
+
+Using asset converter
+---------------------
+
+Instead of using CSS and JavaScript directly often developers are using their improved versions such as LESS or SCSS
+for CSS or Microsoft TypeScript for JavaScript. Using these with Yii is easy.
+
+First of all, corresponding compression tools should be installed and should be availabe from where `yii` console
+bootstrap file is. The following lists file extensions and their corresponding conversion tool names that Yii converter
+recognizes:
+
+- LESS: `less` - `lessc`
+- SCSS: `scss`, `sass` - `sass`
+- Stylus: `styl` - `stylus`
+- CoffeeScript: `coffee` - `coffee`
+- TypeScript: `ts` - `tsc`
+
+So if the corresponding tool is installed you can specify any of these in asset bundle:
+
+```php
+class AppAsset extends AssetBundle
+{
+	public $basePath = '@webroot';
+	public $baseUrl = '@web';
+	public $css = [
+		'css/site.less',
+	];
+	public $js = [
+		'js/site.ts',
+	];
+	public $depends = [
+		'yii\web\YiiAsset',
+		'yii\bootstrap\BootstrapAsset',
+	];
+}
+```
+
+In order to adjust conversion tool call parameters or add new ones you can use application config:
+
+```php
+// ...
+'components' => [
+	'assetManager' => [
+		'converter' => [
+			'class' => 'yii\web\AssetConverter',
+			'commands' => [
+				'less' => ['css', 'lessc {from} {to} --no-color'],
+				'ts' => ['js', 'tsc --out {to} {from}'],
+			],
+		],
+	],
+],
+```
+
+In the above we've left two types of extra file extensions. First one is `less` that can be specified in `css` part
+of an asset bundle. Conversion is performed via running `lessc {from} {to} --no-color` where `{from}` is replaced with
+LESS file path while `{to}` is replaced with target CSS file path. Second one is `ts` that can be specified in `js` part
+of an asset bundle. The command that is run during conversion is in the same format that is used for `less`.
