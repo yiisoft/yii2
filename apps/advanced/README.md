@@ -73,20 +73,6 @@ You can then install the application using the following command:
 php composer.phar create-project --stability=alpha yiisoft/yii2-app-advanced advanced
 ~~~
 
-After the application is installed, switch to the project folder and run the following command
-to initialize the application:
-
-~~~
-./init         (or "init" on Windows)
-~~~
-
-You can then access the application through the following URLs,
-
-~~~
-http://localhost/advanced/frontend/web/
-http://localhost/advanced/backend/web/
-~~~
-
 
 GETTING STARTED
 ---------------
