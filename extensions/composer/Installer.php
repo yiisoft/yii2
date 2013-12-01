@@ -113,10 +113,11 @@ class Installer extends LibraryInstaller
 				$path = $this->vendorDir . '/' . $package->getName() . '/' . $path;
 			}
 			$path = $fs->normalizePath($path);
+			$targetDir = $package->getTargetDir();
 			if (strpos($path . '/', $vendorDir . '/') === 0) {
-				$aliases["@$name"] = '<vendor-dir>' . substr($path, strlen($vendorDir)) . '/' . $name;
+				$aliases["@$name"] = '<vendor-dir>' . ($targetDir === null ? '': '/' . $targetDir) . substr($path, strlen($vendorDir));
 			} else {
-				$aliases["@$name"] = $path . '/' . $name;
+				$aliases["@$name"] = $path . ($targetDir === null ? '': '/' . $targetDir);
 			}
 		}
 		return $aliases;
