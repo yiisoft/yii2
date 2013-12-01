@@ -74,50 +74,6 @@ class Query extends Component implements QueryInterface
 	}
 
 	/**
-	 * Adds an additional WHERE condition to the existing one.
-	 * The new condition and the existing one will be joined using the 'AND' operator.
-	 * @param array $condition the new WHERE condition. Please refer to [[where()]]
-	 * on how to specify this parameter.
-	 * @return static the query object itself
-	 * @see where()
-	 * @see orWhere()
-	 */
-	public function andWhere($condition)
-	{
-		if (is_array($this->where)) {
-			$this->where = array_merge($this->where, $condition);
-		} else {
-			$this->where = $condition;
-		}
-		return $this;
-	}
-
-	/**
-	 * Adds an additional WHERE condition to the existing one.
-	 * The new condition and the existing one will be joined using the 'OR' operator.
-	 * @param array $condition the new WHERE condition. Please refer to [[where()]]
-	 * on how to specify this parameter.
-	 * @return static the query object itself
-	 * @see where()
-	 * @see andWhere()
-	 */
-	public function orWhere($condition)
-	{
-		if (is_array($this->where)) {
-			if (array_key_exists('or', $this->where) && count($this->where) == 1) {
-				$this->where['or'][] = $condition;
-			} else {
-				$this->where = [
-					'or' => [$this->where, $condition]
-				];
-			}
-		} else {
-			$this->where = $condition;
-		}
-		return $this;
-	}
-
-	/**
 	 * @param Connection $db the database connection used to execute the query.
 	 * @return \MongoCursor mongo cursor instance.
 	 */
