@@ -283,28 +283,30 @@ class BaseFileHelper
 				return $result;
 			}
 		}
-		$path = str_replace('\\', '/', $path);
-		if ($isDir = is_dir($path)) {
-			$path .= '/';
-		}
-		$n = StringHelper::strlen($path);
-
-		if (!empty($options['except'])) {
-			foreach ($options['except'] as $name) {
-				if (StringHelper::substr($path, -StringHelper::strlen($name), $n) === $name) {
-					return false;
+        	if (!empty($options['only']) || !empty($options['except'])) {
+	        	$path = str_replace('\\', '/', $path);
+			if ($isDir = is_dir($path)) {
+				$path .= '/';
+			}
+			$n = StringHelper::strlen($path);
+	
+			if (!empty($options['except'])) {
+				foreach ($options['except'] as $name) {
+					if (StringHelper::substr($path, -StringHelper::strlen($name), $n) === $name) {
+						return false;
+					}
 				}
 			}
-		}
-
-		if (!$isDir && !empty($options['only'])) {
-			foreach ($options['only'] as $name) {
-				if (StringHelper::substr($path, -StringHelper::strlen($name), $n) === $name) {
-					return true;
+	
+			if (!$isDir && !empty($options['only'])) {
+				foreach ($options['only'] as $name) {
+					if (StringHelper::substr($path, -StringHelper::strlen($name), $n) === $name) {
+						return true;
+					}
 				}
+				return false;
 			}
-			return false;
-		}
+        	}
 		return true;
 	}
 
