@@ -13,7 +13,6 @@ before_script:
   - composer self-update && composer --version
   - composer require satooshi/php-coveralls 0.6.* --dev --prefer-dist
   - mysql -e 'CREATE DATABASE yiitest;';
-  - mysql -D yiitest -u travis < /home/travis/build/yiisoft/yii2/tests/unit/data/sphinx/source.sql
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
   - echo 'elasticsearch version ' && curl http://localhost:9200/
   - tests/unit/data/travis/apc-setup.sh
