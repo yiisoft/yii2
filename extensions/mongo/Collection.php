@@ -191,6 +191,46 @@ class Collection extends Object
 	}
 
 	/**
+	 * Returns a list of distinct values for the given column across a collection.
+	 * @param string $column column to use.
+	 * @param array $condition query parameters.
+	 * @return array|boolean array of distinct values, or "false" on failure.
+	 */
+	public function distinct($column, $condition = [])
+	{
+		return $this->mongoCollection->distinct($column, $this->buildCondition($condition));
+	}
+
+	/**
+	 * @param $pipeline
+	 * @param array $pipelineOperator
+	 * @return array
+	 */
+	public function aggregate($pipeline, $pipelineOperator = [])
+	{
+		$args = func_get_args();
+		return call_user_func_array([$this->mongoCollection, 'aggregate'], $args);
+	}
+
+	/**
+	 * @param mixed $keys
+	 * @param array $initial
+	 * @param \MongoCode|string $reduce
+	 * @param array $options
+	 * @return array
+	 */
+	public function mapReduce($keys, $initial, $reduce, $options = [])
+	{
+		if (!($reduce instanceof \MongoCode)) {
+			$reduce = new \MongoCode($reduce);
+		}
+		if (array_key_exists('condition', $options)) {
+			$options['condition'] = $this->buildCondition($options['condition']);
+		}
+		return $this->mongoCollection->group($keys, $initial, $reduce, $options);
+	}
+
+	/**
 	 * Checks if command execution result ended with an error.
 	 * @param mixed $result raw command execution result.
 	 * @throws Exception if an error occurred.
