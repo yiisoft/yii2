@@ -204,8 +204,8 @@ abstract class Application extends Module
 	 */
 	public function init()
 	{
-		parent::init();
 		$this->initExtensions($this->extensions);
+		parent::init();
 	}
 
 	/**
