@@ -27,6 +27,6 @@ class Customer extends ActiveRecord
 
 	public function getOrders()
 	{
-		return $this->hasMany(CustomerOrder::className(), ['customer_id' => 'id']);
+		return $this->hasMany(CustomerOrder::className(), ['customer_id' => '_id']);
 	}
 }
