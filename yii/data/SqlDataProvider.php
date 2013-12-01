@@ -25,7 +25,10 @@ use yii\db\Connection;
  * SqlDataProvider may be used in the following way:
  *
  * ~~~
- * $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM tbl_user')->queryScalar();
+ * $count = Yii::$app->db->createCommand('
+ *     SELECT COUNT(*) FROM tbl_user WHERE status=:status
+ * ', [':status' => 1])->queryScalar();
+ *
  * $dataProvider = new SqlDataProvider([
  *     'sql' => 'SELECT * FROM tbl_user WHERE status=:status',
  *     'params' => [':status' => 1],
@@ -45,6 +48,7 @@ use yii\db\Connection;
  *         'pageSize' => 20,
  *     ],
  * ]);
+ *
  * // get the user records in the current page
  * $models = $dataProvider->getModels();
  * ~~~
