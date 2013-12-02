@@ -128,7 +128,6 @@
 				data = $form.data('yiiActiveForm');
 			if (data.validated) {
 				// continue submitting the form since validation passes
-				data.validated = false;
 				return true;
 			}
 
