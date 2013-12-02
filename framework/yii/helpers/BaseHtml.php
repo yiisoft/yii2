@@ -551,7 +551,7 @@ class BaseHtml
 	 *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
 	 *   When this option is specified, the radio button will be enclosed by a label tag.
 	 * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
-	 * - isEnclosed: boolean, whether the radio will be enclosed in a container.
+	 * - hasContainer: boolean, whether the radio will be enclosed in a container.
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -570,10 +570,10 @@ class BaseHtml
 			$hidden = '';
 		}
 		if (isset($options['label'])) {
-			$enclosed = (isset($options['isEnclosed']) && $options['isEnclosed'] === false) ? false : true;
+			$enclosed = (isset($options['hasContainer']) && $options['hasContainer'] === false) ? false : true;
 			$label = $options['label'];
 			$labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : [];
-			unset($options['label'], $options['labelOptions']);
+			unset($options['hasContainer'], $options['label'], $options['labelOptions']);
 			$content = static::label(static::input('radio', $name, $value, $options) . ' ' . $label, null, $labelOptions);
 			return $hidden . ($enclosed ? static::tag('div', $content, ['class' => 'radio']) : $content);
 		} else {
@@ -594,7 +594,7 @@ class BaseHtml
 	 *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
 	 *   When this option is specified, the checkbox will be enclosed by a label tag.
 	 * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
-	 * - isEnclosed: boolean, whether the checkbox will be enclosed in a container.
+	 * - hasContainer: boolean, whether the checkbox will be enclosed in a container.
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -613,10 +613,10 @@ class BaseHtml
 			$hidden = '';
 		}
 		if (isset($options['label'])) {
-			$enclosed = (isset($options['isEnclosed']) && $options['isEnclosed'] === false) ? false : true;
+			$enclosed = (isset($options['hasContainer']) && $options['hasContainer'] === false) ? false : true;
 			$label = $options['label'];
 			$labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : [];
-			unset($options['label'], $options['labelOptions']);
+			unset($options['hasContainer'], $options['label'], $options['labelOptions']);
 			$content = static::label(static::input('checkbox', $name, $value, $options) . ' ' . $label, null, $labelOptions);
 			return $hidden . ($enclosed ? static::tag('div', $content, ['class' => 'checkbox']) : $content);
 		} else {
