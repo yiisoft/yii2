@@ -23,10 +23,13 @@ use yii\base\Component;
  *
  * ~~~
  * $query = new Query;
+ * // compose the query
  * $query->select('id, name')
  *     ->from('tbl_user')
  *     ->limit(10);
  * // build and execute the query
+ * $rows = $query->all();
+ * // alternatively, you can create DB command and execute it
  * $command = $query->createCommand();
  * // $command->sql returns the actual SQL
  * $rows = $command->queryAll();
