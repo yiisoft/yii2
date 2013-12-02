@@ -216,7 +216,9 @@ class Collection extends Object
 
 	/**
 	 * Performs aggregation using Mongo Map Reduce mechanism.
-	 * @param mixed $keys
+	 * @param mixed $keys fields to group by. If an array or non-code object is passed,
+	 * it will be the key used to group results. If instance of [[\MongoCode]] passed,
+	 * it will be treated as a function that returns the key to group by.
 	 * @param array $initial Initial value of the aggregation counter object.
 	 * @param \MongoCode|string $reduce function that takes two arguments (the current
 	 * document and the aggregation to this point) and does the aggregation.
@@ -225,6 +227,7 @@ class Collection extends Object
 	 *  - condition - criteria for including a document in the aggregation.
 	 *  - finalize - function called once per unique key that takes the final output of the reduce function.
 	 * @return array the result of the aggregation.
+	 * @see http://docs.mongodb.org/manual/core/map-reduce/
 	 */
 	public function mapReduce($keys, $initial, $reduce, $options = [])
 	{
@@ -239,7 +242,17 @@ class Collection extends Object
 				$options['finalize'] = new \MongoCode((string)$options['finalize']);
 			}
 		}
-		return $this->mongoCollection->group($keys, $initial, $reduce, $options);
+		// Avoid possible E_DEPRECATED for $options:
+		if (empty($options)) {
+			$result = $this->mongoCollection->group($keys, $initial, $reduce);
+		} else {
+			$result = $this->mongoCollection->group($keys, $initial, $reduce, $options);
+		}
+		if (array_key_exists('retval', $result)) {
+			return $result['retval'];
+		} else {
+			return [];
+		}
 	}
 
 	/**

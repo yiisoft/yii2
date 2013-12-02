@@ -145,4 +145,31 @@ class CollectionTest extends MongoTestCase
 		list($row) = $collection->findAll();
 		$this->assertEquals($newData['name'], $row['name']);
 	}
+
+	/**
+	 * @depends testBatchInsert
+	 */
+	public function testMapReduce()
+	{
+		$collection = $this->getConnection()->getCollection('customer');
+		$rows = [
+			[
+				'name' => 'customer 1',
+				'address' => 'customer 1 address',
+			],
+			[
+				'name' => 'customer 2',
+				'address' => 'customer 2 address',
+			],
+		];
+		$collection->batchInsert($rows);
+
+		$keys = ['address' => 1];
+		$initial = ['items' => []];
+		$reduce = "function (obj, prev) { prev.items.push(obj.name); }";
+		$result = $collection->mapReduce($keys, $initial, $reduce);
+		$this->assertEquals(2, count($result));
+		$this->assertNotEmpty($result[0]['address']);
+		$this->assertNotEmpty($result[0]['items']);
+	}
 }
