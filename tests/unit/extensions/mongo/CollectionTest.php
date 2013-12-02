@@ -172,4 +172,14 @@ class CollectionTest extends MongoTestCase
 		$this->assertNotEmpty($result[0]['address']);
 		$this->assertNotEmpty($result[0]['items']);
 	}
+
+	public function testCreateIndex()
+	{
+		$collection = $this->getConnection()->getCollection('customer');
+		$columns = [
+			'name',
+			'status' => \MongoCollection::DESCENDING,
+		];
+		$this->assertTrue($collection->createIndex($columns));
+	}
 }

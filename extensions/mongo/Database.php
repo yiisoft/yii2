@@ -61,4 +61,18 @@ class Database extends Object
 	{
 		$this->mongoDb->drop();
 	}
+
+	/**
+	 * Creates new collection.
+	 * Note: Mongo creates new collections automatically on the first demand,
+	 * this method makes sense only for the migration script or for the case
+	 * you need to create collection with the specific options.
+	 * @param string $name name of the collection
+	 * @param array $options collection options in format: "name" => "value"
+	 * @return \MongoCollection new mongo collection instance.
+	 */
+	public function createCollection($name, $options = [])
+	{
+		return $this->mongoDb->createCollection($name, $options);
+	}
 }

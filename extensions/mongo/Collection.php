@@ -33,6 +33,72 @@ class Collection extends Object
 	}
 
 	/**
+	 * Creates an index on the collection and the specified fields
+	 * @param array|string $columns column name or list of column names.
+	 * If array is given, each element in the array has as key the field name, and as
+	 * value either 1 for ascending sort, or -1 for descending sort.
+	 * You can specify field using native numeric key with the field name as a value,
+	 * in this case ascending sort will be used.
+	 * For example:
+	 * ~~~
+	 * [
+	 *     'name',
+	 *     'status' => -1,
+	 * ]
+	 * ~~~
+	 * @param array $options list of options in format: optionName => optionValue.
+	 * @throws Exception on failure.
+	 * @return boolean whether the operation successful.
+	 */
+	public function createIndex($columns, $options = [])
+	{
+		if (!is_array($columns)) {
+			$columns = [$columns];
+		}
+		$token = 'Creating index at ' . $this->mongoCollection->getName() . ' on ' . implode(',', $columns);
+		Yii::info($token, __METHOD__);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$keys = [];
+			foreach ($columns as $key => $value) {
+				if (is_numeric($key)) {
+					$keys[$value] = \MongoCollection::ASCENDING;
+				} else {
+					$keys[$key] = $value;
+				}
+			}
+			$options = array_merge(['w' => 1], $options);
+			$result = $this->mongoCollection->ensureIndex($keys, $options);
+			$this->tryResultError($result);
+			Yii::endProfile($token, __METHOD__);
+			return true;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
+	}
+
+	/**
+	 * Drop indexes for specified column(s).
+	 * @param string|array $columns column name or list of column names.
+	 * @return array result.
+	 */
+	public function dropIndex($columns)
+	{
+		return $this->mongoCollection->deleteIndex($columns);
+	}
+
+	/**
+	 * Drops all indexes for this collection
+	 * @return boolean whether the operation successful.
+	 */
+	public function dropAllIndexes()
+	{
+		$result = $this->mongoCollection->deleteIndexes();
+		return !empty($result['ok']);
+	}
+
+	/**
 	 * @param array $condition
 	 * @param array $fields
 	 * @return \MongoCursor
