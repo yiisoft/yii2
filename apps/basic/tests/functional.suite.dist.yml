@@ -5,11 +5,11 @@
 # (tip: better to use with frameworks).
 
 # RUN `build` COMMAND AFTER ADDING/REMOVING MODULES.
-
+#basic/web/index-test-func.php
 class_name: TestGuy
 modules:
     enabled: [Filesystem, TestHelper, Yii2]
     config:
         Yii2:
-            entryScript: 'web/index-test.php'
+            entryScript: 'web/index-test-func.php'
             url: 'http://localhost/'
