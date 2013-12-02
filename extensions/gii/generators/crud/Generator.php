@@ -348,7 +348,6 @@ class Generator extends \yii\gii\Generator
 				case Schema::TYPE_TIME:
 				case Schema::TYPE_DATETIME:
 				case Schema::TYPE_TIMESTAMP:
-				case
 					$conditions[] = "\$this->addCondition(\$query, '{$column}');";
 					break;
 				default:
