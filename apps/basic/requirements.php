@@ -49,12 +49,12 @@ $requirements = [
 		'memo' => 'Required for MySQL database.',
 	],
 	[
-                'name' => 'PDO PostgreSQL extension',
-                'mandatory' => false,
-                'condition' => extension_loaded('pdo_pgsql'),
-                'by' => 'All <a href="http://www.yiiframework.com/doc/api/#system.db">DB-related classes</a>',
-                'memo' => 'Required for PostgreSQL database.',
-        ],
+		'name' => 'PDO PostgreSQL extension',
+		'mandatory' => false,
+		'condition' => extension_loaded('pdo_pgsql'),
+		'by' => 'All <a href="http://www.yiiframework.com/doc/api/#system.db">DB-related classes</a>',
+		'memo' => 'Required for PostgreSQL database.',
+	],
 	// Cache :
 	[
 		'name' => 'Memcache extension',
