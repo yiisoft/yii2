@@ -125,7 +125,7 @@ class BlogController extends Controller
 			throw new NotFoundHttpException;
 		}
 
-		if (\Yii::$app->request->isPost)) {
+		if (\Yii::$app->request->isPost) {
 			$post->load($_POST);
 			if ($post->save()) {
 				$this->redirect(['view', 'id' => $post->id]);
