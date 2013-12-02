@@ -5,6 +5,7 @@ namespace yiiunit\extensions\mongo;
 use yii\helpers\FileHelper;
 use yii\mongo\Connection;
 use Yii;
+use yii\mongo\Exception;
 use yiiunit\TestCase;
 
 class MongoTestCase extends TestCase
@@ -95,7 +96,11 @@ class MongoTestCase extends TestCase
 	protected function dropCollection($name)
 	{
 		if ($this->mongo) {
-			$this->mongo->getCollection($name)->drop();
+			try {
+				$this->mongo->getCollection($name)->drop();
+			} catch (Exception $e) {
+				// shut down exception
+			}
 		}
 	}
 }

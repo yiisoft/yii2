@@ -15,6 +15,14 @@ class CollectionTest extends MongoTestCase
 
 	// Tests :
 
+	public function testGetName()
+	{
+		$collectionName = 'customer';
+		$collection = $this->getConnection()->getCollection($collectionName);
+		$this->assertEquals($collectionName, $collection->getName());
+		$this->assertEquals($this->mongoConfig['defaultDatabaseName'] . '.' . $collectionName, $collection->getFullName());
+	}
+
 	public function testFind()
 	{
 		$collection = $this->getConnection()->getCollection('customer');
@@ -181,5 +189,35 @@ class CollectionTest extends MongoTestCase
 			'status' => \MongoCollection::DESCENDING,
 		];
 		$this->assertTrue($collection->createIndex($columns));
+		$indexInfo = $collection->mongoCollection->getIndexInfo();
+		$this->assertEquals(2, count($indexInfo));
+	}
+
+	/**
+	 * @depends testCreateIndex
+	 */
+	public function testDropIndex()
+	{
+		$collection = $this->getConnection()->getCollection('customer');
+
+		$collection->createIndex('name');
+		$this->assertTrue($collection->dropIndex('name'));
+		$indexInfo = $collection->mongoCollection->getIndexInfo();
+		$this->assertEquals(1, count($indexInfo));
+
+		$this->setExpectedException('\yii\mongo\Exception');
+		$collection->dropIndex('name');
+	}
+
+	/**
+	 * @depends testCreateIndex
+	 */
+	public function testDropAllIndexes()
+	{
+		$collection = $this->getConnection()->getCollection('customer');
+		$collection->createIndex('name');
+		$this->assertEquals(1, $collection->dropAllIndexes());
+		$indexInfo = $collection->mongoCollection->getIndexInfo();
+		$this->assertEquals(1, count($indexInfo));
 	}
 }

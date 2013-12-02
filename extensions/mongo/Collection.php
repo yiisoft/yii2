@@ -25,11 +25,40 @@ class Collection extends Object
 	public $mongoCollection;
 
 	/**
+	 * @return string name of this collection.
+	 */
+	public function getName()
+	{
+		return $this->mongoCollection->getName();
+	}
+
+	/**
+	 * @return string full name of this collection, including database name.
+	 */
+	public function getFullName()
+	{
+		return $this->mongoCollection->__toString();
+	}
+
+	/**
 	 * Drops this collection.
+	 * @throws Exception on failure.
+	 * @return boolean whether the operation successful.
 	 */
 	public function drop()
 	{
-		$this->mongoCollection->drop();
+		$token = 'Drop collection ' . $this->getFullName();
+		Yii::info($token, __METHOD__);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$result = $this->mongoCollection->drop();
+			$this->tryResultError($result);
+			Yii::endProfile($token, __METHOD__);
+			return true;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
 	}
 
 	/**
@@ -55,18 +84,11 @@ class Collection extends Object
 		if (!is_array($columns)) {
 			$columns = [$columns];
 		}
-		$token = 'Creating index at ' . $this->mongoCollection->getName() . ' on ' . implode(',', $columns);
+		$token = 'Creating index at ' . $this->getFullName() . ' on ' . implode(',', $columns);
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-			$keys = [];
-			foreach ($columns as $key => $value) {
-				if (is_numeric($key)) {
-					$keys[$value] = \MongoCollection::ASCENDING;
-				} else {
-					$keys[$key] = $value;
-				}
-			}
+			$keys = $this->normalizeIndexKeys($columns);
 			$options = array_merge(['w' => 1], $options);
 			$result = $this->mongoCollection->ensureIndex($keys, $options);
 			$this->tryResultError($result);
@@ -81,21 +103,73 @@ class Collection extends Object
 	/**
 	 * Drop indexes for specified column(s).
 	 * @param string|array $columns column name or list of column names.
-	 * @return array result.
+	 * If array is given, each element in the array has as key the field name, and as
+	 * value either 1 for ascending sort, or -1 for descending sort.
+	 * You can specify field using native numeric key with the field name as a value,
+	 * in this case ascending sort will be used.
+	 * For example:
+	 * ~~~
+	 * [
+	 *     'name',
+	 *     'status' => -1,
+	 * ]
+	 * ~~~
+	 * @throws Exception on failure.
+	 * @return boolean whether the operation successful.
 	 */
 	public function dropIndex($columns)
 	{
-		return $this->mongoCollection->deleteIndex($columns);
+		if (!is_array($columns)) {
+			$columns = [$columns];
+		}
+		$token = 'Drop index at ' . $this->getFullName() . ' on ' . implode(',', $columns);
+		Yii::info($token, __METHOD__);
+		try {
+			$keys = $this->normalizeIndexKeys($columns);
+			$result = $this->mongoCollection->deleteIndex($keys);
+			$this->tryResultError($result);
+			return true;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
 	}
 
 	/**
-	 * Drops all indexes for this collection
-	 * @return boolean whether the operation successful.
+	 * Compose index keys from given columns/keys list.
+	 * @param array $columns raw columns/keys list.
+	 * @return array normalizes index keys array.
+	 */
+	protected function normalizeIndexKeys($columns)
+	{
+		$keys = [];
+		foreach ($columns as $key => $value) {
+			if (is_numeric($key)) {
+				$keys[$value] = \MongoCollection::ASCENDING;
+			} else {
+				$keys[$key] = $value;
+			}
+		}
+		return $keys;
+	}
+
+	/**
+	 * Drops all indexes for this collection.
+	 * @throws Exception on failure.
+	 * @return integer count of dropped indexes.
 	 */
 	public function dropAllIndexes()
 	{
-		$result = $this->mongoCollection->deleteIndexes();
-		return !empty($result['ok']);
+		$token = 'Drop ALL indexes at ' . $this->getFullName();
+		Yii::info($token, __METHOD__);
+		try {
+			$result = $this->mongoCollection->deleteIndexes();
+			$this->tryResultError($result);
+			return $result['nIndexesWas'] - 1;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
 	}
 
 	/**
@@ -132,7 +206,7 @@ class Collection extends Object
 	 */
 	public function insert($data, $options = [])
 	{
-		$token = 'Inserting data into ' . $this->mongoCollection->getName();
+		$token = 'Inserting data into ' . $this->getFullName();
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
@@ -155,7 +229,7 @@ class Collection extends Object
 	 */
 	public function batchInsert($rows, $options = [])
 	{
-		$token = 'Inserting batch data into ' . $this->mongoCollection->getName();
+		$token = 'Inserting batch data into ' . $this->getFullName();
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
@@ -179,7 +253,7 @@ class Collection extends Object
 	 */
 	public function update($condition, $newData, $options = [])
 	{
-		$token = 'Updating data in ' . $this->mongoCollection->getName();
+		$token = 'Updating data in ' . $this->getFullName();
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
@@ -214,7 +288,7 @@ class Collection extends Object
 	 */
 	public function save($data, $options = [])
 	{
-		$token = 'Saving data into ' . $this->mongoCollection->getName();
+		$token = 'Saving data into ' . $this->getFullName();
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
@@ -237,7 +311,7 @@ class Collection extends Object
 	 */
 	public function remove($condition = [], $options = [])
 	{
-		$token = 'Removing data from ' . $this->mongoCollection->getName();
+		$token = 'Removing data from ' . $this->getFullName();
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
@@ -264,7 +338,12 @@ class Collection extends Object
 	 */
 	public function distinct($column, $condition = [])
 	{
-		return $this->mongoCollection->distinct($column, $this->buildCondition($condition));
+		$token = 'Get distinct ' . $column . ' from ' . $this->getFullName();
+		Yii::info($token, __METHOD__);
+		Yii::beginProfile($token, __METHOD__);
+		$result = $this->mongoCollection->distinct($column, $this->buildCondition($condition));
+		Yii::endProfile($token, __METHOD__);
+		return $result;
 	}
 
 	/**
@@ -276,8 +355,13 @@ class Collection extends Object
 	 */
 	public function aggregate($pipeline, $pipelineOperator = [])
 	{
+		$token = 'Aggregating from ' . $this->getFullName();
+		Yii::info($token, __METHOD__);
+		Yii::beginProfile($token, __METHOD__);
 		$args = func_get_args();
-		return call_user_func_array([$this->mongoCollection, 'aggregate'], $args);
+		$result = call_user_func_array([$this->mongoCollection, 'aggregate'], $args);
+		Yii::endProfile($token, __METHOD__);
+		return $result;
 	}
 
 	/**
@@ -297,6 +381,10 @@ class Collection extends Object
 	 */
 	public function mapReduce($keys, $initial, $reduce, $options = [])
 	{
+		$token = 'Map reduce from ' . $this->getFullName();
+		Yii::info($token, __METHOD__);
+		Yii::beginProfile($token, __METHOD__);
+
 		if (!($reduce instanceof \MongoCode)) {
 			$reduce = new \MongoCode((string)$reduce);
 		}
@@ -314,6 +402,8 @@ class Collection extends Object
 		} else {
 			$result = $this->mongoCollection->group($keys, $initial, $reduce, $options);
 		}
+
+		Yii::endProfile($token, __METHOD__);
 		if (array_key_exists('retval', $result)) {
 			return $result['retval'];
 		} else {
@@ -329,8 +419,20 @@ class Collection extends Object
 	protected function tryResultError($result)
 	{
 		if (is_array($result)) {
-			if (!empty($result['err'])) {
-				throw new Exception($result['errmsg'], (int)$result['code']);
+			if (!empty($result['errmsg'])) {
+				$errorMessage = $result['errmsg'];
+			} elseif (!empty($result['err'])) {
+				$errorMessage = $result['err'];
+			}
+			if (isset($errorMessage)) {
+				if (array_key_exists('code', $result)) {
+					$errorCode = (int)$result['code'];
+				} elseif (array_key_exists('ok', $result)) {
+					$errorCode = (int)$result['ok'];
+				} else {
+					$errorCode = 0;
+				}
+				throw new Exception($errorMessage, $errorCode);
 			}
 		} elseif (!$result) {
 			throw new Exception('Unknown error, use "w=1" option to enable error tracking');
