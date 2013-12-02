@@ -83,13 +83,14 @@ class ActiveRecordTest extends MongoTestCase
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals(4, $customer->status);
 
-		// find count, sum, average, min, max, scalar
+		// find count, sum, average, min, max, distinct
 		$this->assertEquals(10, Customer::find()->count());
 		$this->assertEquals(1, Customer::find()->where(['status' => 2])->count());
-		/*$this->assertEquals((1+10)/2*10, Customer::find()->sum('status'));
+		$this->assertEquals((1+10)/2*10, Customer::find()->sum('status'));
 		$this->assertEquals((1+10)/2, Customer::find()->average('status'));
 		$this->assertEquals(1, Customer::find()->min('status'));
-		$this->assertEquals(10, Customer::find()->max('status'));*/
+		$this->assertEquals(10, Customer::find()->max('status'));
+		$this->assertEquals(range(1, 10), Customer::find()->distinct('status'));
 
 		// scope
 		$this->assertEquals(1, Customer::find()->activeOnly()->count());

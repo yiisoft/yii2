@@ -105,8 +105,8 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Executes the query and returns all results as an array.
-	 * @param Connection $db the database connection used to execute the query.
-	 * If this parameter is not given, the `db` application component will be used.
+	 * @param Connection $db the Mongo connection used to execute the query.
+	 * If this parameter is not given, the `mongo` application component will be used.
 	 * @return array the query results. If the query results in nothing, an empty array will be returned.
 	 */
 	public function all($db = null)
@@ -130,8 +130,8 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Executes the query and returns a single row of result.
-	 * @param Connection $db the database connection used to execute the query.
-	 * If this parameter is not given, the `db` application component will be used.
+	 * @param Connection $db the Mongo connection used to execute the query.
+	 * If this parameter is not given, the `mongo` application component will be used.
 	 * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
 	 * results in nothing.
 	 */
@@ -148,8 +148,8 @@ class Query extends Component implements QueryInterface
 	/**
 	 * Returns the number of records.
 	 * @param string $q the COUNT expression. Defaults to '*'.
-	 * @param Connection $db the database connection used to execute the query.
-	 * If this parameter is not given, the `db` application component will be used.
+	 * @param Connection $db the Mongo connection used to execute the query.
+	 * If this parameter is not given, the `mongo` application component will be used.
 	 * @return integer number of records
 	 */
 	public function count($q = '*', $db = null)
@@ -160,12 +160,117 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Returns a value indicating whether the query result contains any row of data.
-	 * @param Connection $db the database connection used to execute the query.
-	 * If this parameter is not given, the `db` application component will be used.
+	 * @param Connection $db the Mongo connection used to execute the query.
+	 * If this parameter is not given, the `mongo` application component will be used.
 	 * @return boolean whether the query result contains any row of data.
 	 */
 	public function exists($db = null)
 	{
 		return $this->one($db) !== null;
+	}
+
+	/**
+	 * Returns the sum of the specified column values.
+	 * @param string $q the column name or expression.
+	 * Make sure you properly quote column names in the expression.
+	 * @param Connection $db the Mongo connection used to execute the query.
+	 * If this parameter is not given, the `mongo` application component will be used.
+	 * @return integer the sum of the specified column values
+	 */
+	public function sum($q, $db = null)
+	{
+		return $this->aggregate($q, 'sum', $db);
+	}
+
+	/**
+	 * Returns the average of the specified column values.
+	 * @param string $q the column name or expression.
+	 * Make sure you properly quote column names in the expression.
+	 * @param Connection $db the Mongo connection used to execute the query.
+	 * If this parameter is not given, the `mongo` application component will be used.
+	 * @return integer the average of the specified column values.
+	 */
+	public function average($q, $db = null)
+	{
+		return $this->aggregate($q, 'avg', $db);
+	}
+
+	/**
+	 * Returns the minimum of the specified column values.
+	 * @param string $q the column name or expression.
+	 * Make sure you properly quote column names in the expression.
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return integer the minimum of the specified column values.
+	 */
+	public function min($q, $db = null)
+	{
+		return $this->aggregate($q, 'min', $db);
+	}
+
+	/**
+	 * Returns the maximum of the specified column values.
+	 * @param string $q the column name or expression.
+	 * Make sure you properly quote column names in the expression.
+	 * @param Connection $db the Mongo connection used to execute the query.
+	 * If this parameter is not given, the `mongo` application component will be used.
+	 * @return integer the maximum of the specified column values.
+	 */
+	public function max($q, $db = null)
+	{
+		return $this->aggregate($q, 'max', $db);
+	}
+
+	/**
+	 * Performs the aggregation for the given column.
+	 * @param string $column column name.
+	 * @param string $operator aggregation operator.
+	 * @param Connection $db the database connection used to execute the query.
+	 * @return integer aggregation result.
+	 */
+	protected function aggregate($column, $operator, $db)
+	{
+		$collection = $this->getCollection($db);
+		$pipelines = [];
+		if ($this->where !== null) {
+			$pipelines[] = ['$match' => $collection->buildCondition($this->where)];
+		}
+		$pipelines[] = [
+			'$group' => [
+				'_id' => '1',
+				'total' => [
+					'$' . $operator => '$' . $column
+				],
+			]
+		];
+		$result = $collection->aggregate($pipelines);
+		if (!empty($result['ok'])) {
+			return $result['result'][0]['total'];
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * Returns a list of distinct values for the given column across a collection.
+	 * @param string $q column to use.
+	 * @param Connection $db the Mongo connection used to execute the query.
+	 * If this parameter is not given, the `mongo` application component will be used.
+	 * @return array array of distinct values
+	 */
+	public function distinct($q, $db = null)
+	{
+		$collection = $this->getCollection($db);
+		if ($this->where !== null) {
+			$condition = $this->where;
+		} else {
+			$condition = [];
+		}
+		$result = $collection->distinct($q, $condition);
+		if ($result === false) {
+			return [];
+		} else {
+			return $result;
+		}
 	}
 }

@@ -202,9 +202,11 @@ class Collection extends Object
 	}
 
 	/**
-	 * @param $pipeline
-	 * @param array $pipelineOperator
-	 * @return array
+	 * Performs aggregation using Mongo Aggregation Framework.
+	 * @param array $pipeline list of pipeline operators, or just the first operator
+	 * @param array $pipelineOperator Additional pipeline operators
+	 * @return array the result of the aggregation.
+	 * @see http://docs.mongodb.org/manual/applications/aggregation/
 	 */
 	public function aggregate($pipeline, $pipelineOperator = [])
 	{
@@ -213,19 +215,29 @@ class Collection extends Object
 	}
 
 	/**
+	 * Performs aggregation using Mongo Map Reduce mechanism.
 	 * @param mixed $keys
-	 * @param array $initial
-	 * @param \MongoCode|string $reduce
-	 * @param array $options
-	 * @return array
+	 * @param array $initial Initial value of the aggregation counter object.
+	 * @param \MongoCode|string $reduce function that takes two arguments (the current
+	 * document and the aggregation to this point) and does the aggregation.
+	 * Argument will be automatically cast to [[\MongoCode]].
+	 * @param array $options optional parameters to the group command. Valid options include:
+	 *  - condition - criteria for including a document in the aggregation.
+	 *  - finalize - function called once per unique key that takes the final output of the reduce function.
+	 * @return array the result of the aggregation.
 	 */
 	public function mapReduce($keys, $initial, $reduce, $options = [])
 	{
 		if (!($reduce instanceof \MongoCode)) {
-			$reduce = new \MongoCode($reduce);
+			$reduce = new \MongoCode((string)$reduce);
 		}
 		if (array_key_exists('condition', $options)) {
 			$options['condition'] = $this->buildCondition($options['condition']);
+		}
+		if (array_key_exists('finalize', $options)) {
+			if (!($options['finalize'] instanceof \MongoCode)) {
+				$options['finalize'] = new \MongoCode((string)$options['finalize']);
+			}
 		}
 		return $this->mongoCollection->group($keys, $initial, $reduce, $options);
 	}
