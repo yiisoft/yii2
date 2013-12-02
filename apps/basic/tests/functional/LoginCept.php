@@ -1,23 +1,25 @@
 <?php
+use tests\functional\_pages\LoginPage;
+
 $I = new TestGuy($scenario);
 $I->wantTo('ensure that login works');
-$I->amOnPage('?r=site/login');
+$loginPage = LoginPage::of($I);
+
+$I->amOnPage(LoginPage::$URL);
 $I->see('Login', 'h1');
 
-$I->submitForm('#login-form', []);
-$I->dontSee('Logout (admin)');
-$I->see('Username cannot be blank');
-$I->see('Password cannot be blank');
+$I->amGoingTo('try to login with empty credentials');
+$loginPage->login('', '');
+$I->expectTo('see validations errors');
+$I->see('Username cannot be blank.');
+$I->see('Password cannot be blank.');
 
-$I->submitForm('#login-form', [
-	'LoginForm[username]' => 'admin',
-	'LoginForm[password]' => 'wrong',
-]);
-$I->dontSee('Logout (admin)');
-$I->see('Incorrect username or password');
+$I->amGoingTo('try to login with wrong credentials');
+$loginPage->login('admin', 'wrong');
+$I->expectTo('see validations errors');
+$I->see('Incorrect username or password.');
 
-$I->submitForm('#login-form', [
-	'LoginForm[username]' => 'admin',
-	'LoginForm[password]' => 'admin',
-]);
+$I->amGoingTo('try to login with correct credentials');
+$loginPage->login('admin', 'admin');
+$I->expectTo('see user info');
 $I->see('Logout (admin)');

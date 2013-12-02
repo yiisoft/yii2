@@ -11,8 +11,9 @@
 class_name: WebGuy
 modules:
     enabled:
-        - PhpBrowser
         - WebHelper
+        - WebDriver
     config:
-        PhpBrowser:
-            url: 'http://localhost/index-test.php'
+        WebDriver:
+            url: 'http://localhost/basic/web/index-test-accept.php'
+            browser: firefox

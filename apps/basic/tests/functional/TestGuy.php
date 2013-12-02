@@ -27,7 +27,7 @@ use Codeception\Module\Yii2;
 
 class TestGuy extends \Codeception\AbstractGuy
 {
-
+    
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -49,7 +49,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -79,7 +79,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -106,7 +106,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -133,7 +133,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -161,7 +161,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -220,7 +220,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -281,7 +281,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -336,7 +336,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -355,7 +355,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -412,7 +412,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -439,13 +439,32 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
      * ----------------------------------------------
      *
-     * Authenticates user for HTTP_AUTH
+     *
+     * @see Codeception\Module::getName()
+     * @return \Codeception\Maybe
+     */
+    public function getName() {
+        $this->scenario->addStep(new \Codeception\Step\Action('getName', func_get_args()));
+        if ($this->scenario->running()) {
+            $result = $this->scenario->runStep();
+            return new Maybe($result);
+        }
+        return new Maybe();
+    }
+
+ 
+    /**
+     * This method is generated.
+     * Documentation taken from corresponding module.
+     * ----------------------------------------------
+     *
+     * Authenticates user for HTTP_AUTH 
      *
      * @param $username
      * @param $password
@@ -461,7 +480,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -494,7 +513,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -540,7 +559,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -605,7 +624,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -670,7 +689,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -733,7 +752,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -794,7 +813,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -853,7 +872,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -906,7 +925,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -963,7 +982,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1020,7 +1039,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1075,7 +1094,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1130,7 +1149,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1161,7 +1180,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1224,7 +1243,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1285,7 +1304,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1354,7 +1373,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1421,7 +1440,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1477,16 +1496,16 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
      * ----------------------------------------------
      *
      * Fills a text field or textarea with value.
-     *
+     * 
      * Example:
-     *
+     * 
      * ``` php
      * <?php
      * $I->fillField("//input[@type='text']", "Hello World!");
@@ -1507,7 +1526,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1547,7 +1566,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1577,7 +1596,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1606,7 +1625,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1637,7 +1656,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1662,7 +1681,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1698,7 +1717,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1731,7 +1750,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1764,7 +1783,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1817,7 +1836,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1826,7 +1845,7 @@ class TestGuy extends \Codeception\AbstractGuy
      * Checks if element does not exist (or is visible) on a page, matching it by CSS or XPath
      *
      * Example:
-     *
+     * 
      * ``` php
      * <?php
      * $I->dontSeeElement('.error');
@@ -1854,7 +1873,7 @@ class TestGuy extends \Codeception\AbstractGuy
      * Checks if element does not exist (or is visible) on a page, matching it by CSS or XPath
      *
      * Example:
-     *
+     * 
      * ``` php
      * <?php
      * $I->dontSeeElement('.error');
@@ -1874,7 +1893,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1931,7 +1950,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -1988,7 +2007,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -2025,7 +2044,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -2068,7 +2087,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
@@ -2123,7 +2142,7 @@ class TestGuy extends \Codeception\AbstractGuy
         return new Maybe();
     }
 
-
+ 
     /**
      * This method is generated.
      * Documentation taken from corresponding module.
