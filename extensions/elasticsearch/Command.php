@@ -94,7 +94,7 @@ class Command extends Component
 	 */
 	public function get($index, $type, $id, $options = [])
 	{
-		return $this->db->get([$index, $type, $id], $options, null, [200, 404]);
+		return $this->db->get([$index, $type, $id], $options, null);
 	}
 
 	/**

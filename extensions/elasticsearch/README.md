@@ -172,3 +172,5 @@ Add the following to you application config to enable it:
 	],
 	// ...
 ```
+
+![elasticsearch DebugPanel](README-debug.png)

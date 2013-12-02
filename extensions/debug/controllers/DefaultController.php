@@ -27,6 +27,15 @@ class DefaultController extends Controller
 	 */
 	public $summary;
 
+	public function actions()
+	{
+		$actions = [];
+		foreach($this->module->panels as $panel) {
+			$actions = array_merge($actions, $panel->actions);
+		}
+		return $actions;
+	}
+
 	public function actionIndex()
 	{
 		return $this->render('index', ['manifest' => $this->getManifest()]);
@@ -82,7 +91,7 @@ class DefaultController extends Controller
 		return $this->_manifest;
 	}
 
-	protected function loadData($tag)
+	public function loadData($tag)
 	{
 		$manifest = $this->getManifest();
 		if (isset($manifest[$tag])) {

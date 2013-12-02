@@ -8,6 +8,7 @@
 namespace yii\elasticsearch;
 
 use yii\debug\Panel;
+use yii\helpers\ArrayHelper;
 use yii\log\Logger;
 use yii\helpers\Html;
 use yii\web\View;
@@ -20,6 +21,17 @@ use yii\web\View;
  */
 class DebugPanel extends Panel
 {
+	public $db = 'elasticsearch';
+
+	public function init()
+	{
+		$this->actions['elasticsearch-query'] = [
+			'class' => 'yii\\elasticsearch\\DebugAction',
+			'panel' => $this,
+			'db' => $this->db,
+		];
+	}
+
 	public function getName()
 	{
 		return 'Elasticsearch';
@@ -47,13 +59,14 @@ EOD;
 
 	public function getDetail()
 	{
+		$timings = $this->calculateTimings();
+		ArrayHelper::multisort($timings, 3, SORT_DESC);
 		$rows = [];
 		$i = 0;
-		foreach ($this->data['messages'] as $log) {
-			list ($message, $level, $category, $time, $traces) = $log;
-			if ($level == Logger::LEVEL_PROFILE_BEGIN) {
-				continue;
-			}
+		foreach ($timings as $logId => $timing) {
+			$duration = sprintf('%.1f ms', $timing[3] * 1000);
+			$message = $timing[1];
+			$traces = $timing[4];
 			if (($pos = mb_strpos($message, "#")) !== false) {
 				$url = mb_substr($message, 0, $pos);
 				$body = mb_substr($message, $pos + 1);
@@ -66,48 +79,43 @@ EOD;
 				$traceString .= Html::ul($traces, [
 					'class' => 'trace',
 					'item' => function ($trace) {
-							return "<li>{$trace['file']}({$trace['line']})</li>";
-						},
+						return "<li>{$trace['file']}({$trace['line']})</li>";
+					},
 				]);
 			}
-			$runLinks = '';
-			$c = 0;
-			\Yii::$app->elasticsearch->open();
-			foreach(\Yii::$app->elasticsearch->nodes as $node) {
-				$pos = mb_strpos($url, ' ');
-				$type = mb_substr($url, 0, $pos);
-				if ($type == 'GET' && !empty($body)) {
-					$type = 'POST';
-				}
-				$host = $node['http_address'];
-				if (strncmp($host, 'inet[/', 6) == 0) {
-					$host = substr($host, 6, -1);
-				}
-				$nodeUrl = 'http://' . $host . '/' . mb_substr($url, $pos + 1);
-				$nodeUrl .= (strpos($nodeUrl, '?') === false) ? '?pretty=true' : '&pretty=true';
-				$nodeBody = json_encode($body);
-				\Yii::$app->view->registerJs(<<<JS
-$('#elastic-link-$i-$c').on('click', function() {
-	$('#elastic-result-$i').html('Sending $type request to $nodeUrl...');
-	$('#elastic-result-$i').parent('tr').show();
+			$ajaxUrl = Html::url(['elasticsearch-query', 'logId' => $logId, 'tag' => $this->tag]);
+			\Yii::$app->view->registerJs(<<<JS
+$('#elastic-link-$i').on('click', function() {
+	var result = $('#elastic-result-$i');
+	result.html('Sending request...');
+	result.parent('tr').show();
 	$.ajax({
-		type: "$type",
-		url: "$nodeUrl",
-		body: $nodeBody,
+		type: "POST",
+		url: "$ajaxUrl",
 		success: function( data ) {
-			$('#elastic-result-$i').html(data);
+			$('#elastic-time-$i').html(data.time);
+			$('#elastic-result-$i').html(data.result);
 		},
-		dataType: "text"
+		error: function(jqXHR, textStatus, errorThrown) {
+			$('#elastic-time-$i').html('');
+			$('#elastic-result-$i').html('<span style="color: #c00;">Error: ' + errorThrown + ' - ' + textStatus + '</span><br />' + jqXHR.responseText);
+		},
+		dataType: "json"
 	});
 
 	return false;
 });
 JS
 , View::POS_READY);
-				$runLinks .= Html::a(isset($node['name']) ? $node['name'] : $node['http_address'], '#', ['id' => "elastic-link-$i-$c"]) . '<br/>';
-				$c++;
-			}
-			$rows[] = "<tr><td style=\"width: 80%;\"><div><b>$url</b><br/><p>$body</p>$traceString</div></td><td style=\"width: 20%;\">$runLinks</td></tr><tr style=\"display: none;\"><td colspan=\"2\" id=\"elastic-result-$i\"></td></tr>";
+			$runLink = Html::a('run query', '#', ['id' => "elastic-link-$i"]) . '<br/>';
+			$rows[] = <<<HTML
+<tr>
+	<td style="width: 10%;">$duration</td>
+	<td style="width: 75%;"><div><b>$url</b><br/><p>$body</p>$traceString</div></td>
+	<td style="width: 15%;">$runLink</td>
+</tr>
+<tr style="display: none;"><td id="elastic-time-$i"></td><td colspan="3" id="elastic-result-$i"></td></tr>
+HTML;
 			$i++;
 		}
 		$rows = implode("\n", $rows);
@@ -117,8 +125,9 @@ JS
 <table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
 <thead>
 <tr>
-	<th style="width: 80%;">Url / Query</th>
-	<th style="width: 20%;">Run Query on node</th>
+	<th style="width: 10%;">Time</th>
+	<th style="width: 75%;">Url / Query</th>
+	<th style="width: 15%;">Run Query on node</th>
 </tr>
 </thead>
 <tbody>
@@ -130,7 +139,7 @@ HTML;
 
 	private $_timings;
 
-	protected function calculateTimings()
+	public function calculateTimings()
 	{
 		if ($this->_timings !== null) {
 			return $this->_timings;
