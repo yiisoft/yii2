@@ -1,5 +1,9 @@
 <?php
+
+Yii::setAlias('tests', realpath(__DIR__ . '/../tests'));
+
 $params = require(__DIR__ . '/params.php');
+
 $config = [
 	'id' => 'basic',
 	'basePath' => dirname(__DIR__),
@@ -25,6 +29,13 @@ $config = [
 					'levels' => ['error', 'warning'],
 				],
 			],
+		],
+		'db' => [
+			'class' => 'yii\db\Connection',
+			'dsn' => 'mysql:host=localhost;dbname=yii2basic',
+			'username' => 'root',
+			'password' => '',
+			'charset' => 'utf8',
 		],
 	],
 	'params' => $params,
