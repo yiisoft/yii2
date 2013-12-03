@@ -75,4 +75,15 @@ class Database extends Object
 	{
 		return $this->mongoDb->createCollection($name, $options);
 	}
+
+	/**
+	 * Executes Mongo command.
+	 * @param array $command command specification.
+	 * @param array $options options in format: "name" => "value"
+	 * @return array database response.
+	 */
+	public function execute($command, $options = [])
+	{
+		return $this->mongoDb->command($command, $options);
+	}
 }
