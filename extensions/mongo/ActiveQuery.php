@@ -11,7 +11,23 @@ use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
 
 /**
- * Class ActiveQuery
+ * ActiveQuery represents a Mongo query associated with an Active Record class.
+ *
+ * ActiveQuery instances are usually created by [[ActiveRecord::find()]].
+ *
+ * Because ActiveQuery extends from [[Query]], one can use query methods, such as [[where()]],
+ * [[orderBy()]] to customize the query options.
+ *
+ * ActiveQuery also provides the following additional query options:
+ *
+ * - [[with()]]: list of relations that this query should be performed with.
+ * - [[asArray()]]: whether to return each record as an array.
+ *
+ * These options can be configured using methods of the same name. For example:
+ *
+ * ~~~
+ * $customers = Customer::find()->with('orders')->asArray()->all();
+ * ~~~
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -22,8 +38,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
 	/**
 	 * Executes query and returns all results as an array.
-	 * @param Connection $db the DB connection used to create the DB command.
-	 * If null, the DB connection returned by [[modelClass]] will be used.
+	 * @param Connection $db the Mongo connection used to execute the query.
+	 * If null, the Mongo connection returned by [[modelClass]] will be used.
 	 * @return array the query results. If the query results in nothing, an empty array will be returned.
 	 */
 	public function all($db = null)
@@ -43,8 +59,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
 	/**
 	 * Executes query and returns a single row of result.
-	 * @param Connection $db the DB connection used to create the DB command.
-	 * If null, the DB connection returned by [[modelClass]] will be used.
+	 * @param Connection $db the Mongo connection used to execute the query.
+	 * If null, the Mongo connection returned by [[modelClass]] will be used.
 	 * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
 	 * the query result may be either an array or an ActiveRecord object. Null will be returned
 	 * if the query results in nothing.

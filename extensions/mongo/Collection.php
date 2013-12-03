@@ -24,26 +24,38 @@ use Yii;
  * $collection->insert(['name' => 'John Smith', 'status' => 1]);
  * ~~~
  *
+ * To perform "find" queries, please use [[Query]] instead.
+ *
  * Mongo uses JSON format to specify query conditions with quite specific syntax.
  * However Collection class provides the ability of "translating" common condition format used "yii\db\*"
  * into Mongo condition.
  * For example:
  * ~~~
  * $condition = [
- *     ['AND', 'name', 'John'],
- *     ['OR', 'status', [1, 2, 3]],
+ *     [
+ *         'OR',
+ *         ['AND', ['first_name' => 'John'], ['last_name' => 'Smith']],
+ *         ['status' => [1, 2, 3]]
+ *     ],
  * ];
  * print_r($collection->buildCondition($condition));
  * // outputs :
  * [
  *     '$or' => [
- *         'name' => 'John',
- *         'status' => ['$in' => [1, 2, 3]],
+ *         [
+ *             'first_name' => 'John',
+ *             'last_name' => 'John',
+ *         ],
+ *         [
+ *             'status' => ['$in' => [1, 2, 3]],
+ *         ]
  *     ]
  * ]
  * ~~~
  *
- * To perform "find" queries, please use [[Query]] instead.
+ * Note: condition values for the key '_id' will be automatically cast to [[\MongoId]] instance,
+ * even if they are plain strings. However if you have other columns, containing [[\MongoId]], you
+ * should take care of possible typecast on your own.
  *
  * @property string $name name of this collection. This property is read-only.
  * @property string $fullName full name of this collection, including database name. This property is read-only.

@@ -14,7 +14,22 @@ use yii\helpers\Json;
 use Yii;
 
 /**
- * Class Query
+ * Query represents Mongo "find" operation.
+ *
+ * Query provides a set of methods to facilitate the specification of "find" command.
+ * These methods can be chained together.
+ *
+ * For example,
+ *
+ * ~~~
+ * $query = new Query;
+ * // compose the query
+ * $query->select(['name', 'status'])
+ *     ->from('customer')
+ *     ->limit(10);
+ * // execute the query
+ * $rows = $query->all();
+ * ~~~
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -75,6 +90,7 @@ class Query extends Component implements QueryInterface
 	}
 
 	/**
+	 * Builds the Mongo cursor for this query.
 	 * @param Connection $db the database connection used to execute the query.
 	 * @return \MongoCursor mongo cursor instance.
 	 */
@@ -105,11 +121,13 @@ class Query extends Component implements QueryInterface
 	}
 
 	/**
+	 * Fetches rows from the given Mongo cursor.
 	 * @param \MongoCursor $cursor Mongo cursor instance to fetch data from.
 	 * @param boolean $all whether to fetch all rows or only first one.
-	 * @param string|callable $indexBy
-	 * @throws Exception
-	 * @return array|boolean
+	 * @param string|callable $indexBy the column name or PHP callback,
+	 * by which the query results should be indexed by.
+	 * @throws Exception on failure.
+	 * @return array|boolean result.
 	 */
 	protected function fetchRows(\MongoCursor $cursor, $all = true, $indexBy = null)
 	{
@@ -173,7 +191,7 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Returns the number of records.
-	 * @param string $q the COUNT expression. Defaults to '*'.
+	 * @param string $q kept to match [[QueryInterface]], its value is ignored.
 	 * @param Connection $db the Mongo connection used to execute the query.
 	 * If this parameter is not given, the `mongo` application component will be used.
 	 * @return integer number of records
@@ -208,7 +226,7 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Returns the sum of the specified column values.
-	 * @param string $q the column name or expression.
+	 * @param string $q the column name.
 	 * Make sure you properly quote column names in the expression.
 	 * @param Connection $db the Mongo connection used to execute the query.
 	 * If this parameter is not given, the `mongo` application component will be used.
@@ -221,7 +239,7 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Returns the average of the specified column values.
-	 * @param string $q the column name or expression.
+	 * @param string $q the column name.
 	 * Make sure you properly quote column names in the expression.
 	 * @param Connection $db the Mongo connection used to execute the query.
 	 * If this parameter is not given, the `mongo` application component will be used.
@@ -234,7 +252,7 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Returns the minimum of the specified column values.
-	 * @param string $q the column name or expression.
+	 * @param string $q the column name.
 	 * Make sure you properly quote column names in the expression.
 	 * @param Connection $db the database connection used to generate the SQL statement.
 	 * If this parameter is not given, the `db` application component will be used.
@@ -247,7 +265,7 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Returns the maximum of the specified column values.
-	 * @param string $q the column name or expression.
+	 * @param string $q the column name.
 	 * Make sure you properly quote column names in the expression.
 	 * @param Connection $db the Mongo connection used to execute the query.
 	 * If this parameter is not given, the `mongo` application component will be used.

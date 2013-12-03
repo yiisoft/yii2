@@ -16,7 +16,7 @@ use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
- * Class ActiveRecord
+ * ActiveRecord is the base class for classes representing Mongo documents in terms of objects.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -24,8 +24,8 @@ use yii\helpers\StringHelper;
 abstract class ActiveRecord extends BaseActiveRecord
 {
 	/**
-	 * Returns the database connection used by this AR class.
-	 * By default, the "db" application component is used as the database connection.
+	 * Returns the Mongo connection used by this AR class.
+	 * By default, the "mongo" application component is used as the Mongo connection.
 	 * You may override this method if you want to use a different database connection.
 	 * @return Connection the database connection used by this AR class.
 	 */
@@ -35,18 +35,18 @@ abstract class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
-	 * Updates the whole table using the provided attribute values and conditions.
+	 * Updates all documents in the collection using the provided attribute values and conditions.
 	 * For example, to change the status to be 1 for all customers whose status is 2:
 	 *
 	 * ~~~
 	 * Customer::updateAll(['status' => 1], ['status' = 2]);
 	 * ~~~
 	 *
-	 * @param array $attributes attribute values (name-value pairs) to be saved into the table
-	 * @param array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+	 * @param array $attributes attribute values (name-value pairs) to be saved into the collection
+	 * @param array $condition description of the objects to update.
 	 * Please refer to [[Query::where()]] on how to specify this parameter.
 	 * @param array $options list of options in format: optionName => optionValue.
-	 * @return integer the number of rows updated.
+	 * @return integer the number of documents updated.
 	 */
 	public static function updateAll($attributes, $condition = [], $options = [])
 	{
@@ -54,7 +54,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
-	 * Updates the whole table using the provided counter changes and conditions.
+	 * Updates all documents in the collection using the provided counter changes and conditions.
 	 * For example, to increment all customers' age by 1,
 	 *
 	 * ~~~
@@ -63,10 +63,10 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 *
 	 * @param array $counters the counters to be updated (attribute name => increment value).
 	 * Use negative values if you want to decrement the counters.
-	 * @param array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+	 * @param array $condition description of the objects to update.
 	 * Please refer to [[Query::where()]] on how to specify this parameter.
 	 * @param array $options list of options in format: optionName => optionValue.
-	 * @return integer the number of rows updated.
+	 * @return integer the number of documents updated.
 	 */
 	public static function updateAllCounters($counters, $condition = [], $options = [])
 	{
@@ -74,8 +74,8 @@ abstract class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
-	 * Deletes rows in the table using the provided conditions.
-	 * WARNING: If you do not specify any condition, this method will delete ALL rows in the table.
+	 * Deletes documents in the collection using the provided conditions.
+	 * WARNING: If you do not specify any condition, this method will delete documents rows in the collection.
 	 *
 	 * For example, to delete all customers whose status is 3:
 	 *
@@ -83,10 +83,10 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 * Customer::deleteAll('status = 3');
 	 * ~~~
 	 *
-	 * @param array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
+	 * @param array $condition description of the objects to delete.
 	 * Please refer to [[Query::where()]] on how to specify this parameter.
 	 * @param array $options list of options in format: optionName => optionValue.
-	 * @return integer the number of rows updated.
+	 * @return integer the number of documents deleted.
 	 */
 	public static function deleteAll($condition = [], $options = [])
 	{
@@ -99,7 +99,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 
 	/**
 	 * Creates an [[ActiveQuery]] instance.
-	 * This method is called by [[find()]] to start a SELECT query.
+	 * This method is called by [[find()]] to start a "find" command.
 	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
 	 * written for querying `Customer` purpose.)
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
@@ -118,7 +118,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 * By default this method returns the class name as the collection name by calling [[Inflector::camel2id()]].
 	 * For example, 'Customer' becomes 'customer', and 'OrderItem' becomes
 	 * 'order_item'. You may override this method if the table is not named after this convention.
-	 * @return string the table name
+	 * @return string|array the collection name
 	 */
 	public static function collectionName()
 	{
@@ -138,9 +138,9 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 * Returns the primary key name(s) for this AR class.
 	 * The default implementation will return ['_id'].
 	 *
-	 * Note that an array should be returned even for a table with single primary key.
+	 * Note that an array should be returned even for a collection with single primary key.
 	 *
-	 * @return string[] the primary keys of the associated database table.
+	 * @return string[] the primary keys of the associated Mongo collection.
 	 */
 	public static function primaryKey()
 	{
@@ -178,7 +178,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
-	 * Inserts a row into the associated database table using the attribute values of this record.
+	 * Inserts a row into the associated Mongo collection using the attribute values of this record.
 	 *
 	 * This method performs the following steps in order:
 	 *
@@ -187,7 +187,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 * 2. call [[afterValidate()]] when `$runValidation` is true.
 	 * 3. call [[beforeSave()]]. If the method returns false, it will skip the
 	 *    rest of the steps;
-	 * 4. insert the record into database. If this fails, it will skip the rest of the steps;
+	 * 4. insert the record into collection. If this fails, it will skip the rest of the steps;
 	 * 5. call [[afterSave()]];
 	 *
 	 * In the above step 1, 2, 3 and 5, events [[EVENT_BEFORE_VALIDATE]],
@@ -196,8 +196,8 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 *
 	 * Only the [[dirtyAttributes|changed attribute values]] will be inserted into database.
 	 *
-	 * If the table's primary key is auto-incremental and is null during insertion,
-	 * it will be populated with the actual value after insertion.
+	 * If the primary key  is null during insertion, it will be populated with the actual
+	 * value after insertion.
 	 *
 	 * For example, to insert a customer record:
 	 *
@@ -209,9 +209,9 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 * ~~~
 	 *
 	 * @param boolean $runValidation whether to perform validation before saving the record.
-	 * If the validation fails, the record will not be inserted into the database.
+	 * If the validation fails, the record will not be inserted into the collection.
 	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
-	 * meaning all attributes that are loaded from DB will be saved.
+	 * meaning all attributes that are loaded will be saved.
 	 * @return boolean whether the attributes are valid and the record is inserted successfully.
 	 * @throws \Exception in case insert failed.
 	 */
@@ -287,20 +287,20 @@ abstract class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
-	 * Deletes the table row corresponding to this active record.
+	 * Deletes the document corresponding to this active record from the collection.
 	 *
 	 * This method performs the following steps in order:
 	 *
 	 * 1. call [[beforeDelete()]]. If the method returns false, it will skip the
 	 *    rest of the steps;
-	 * 2. delete the record from the database;
+	 * 2. delete the document from the collection;
 	 * 3. call [[afterDelete()]].
 	 *
 	 * In the above step 1 and 3, events named [[EVENT_BEFORE_DELETE]] and [[EVENT_AFTER_DELETE]]
 	 * will be raised by the corresponding methods.
 	 *
-	 * @return integer|boolean the number of rows deleted, or false if the deletion is unsuccessful for some reason.
-	 * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
+	 * @return integer|boolean the number of documents deleted, or false if the deletion is unsuccessful for some reason.
+	 * Note that it is possible the number of documents deleted is 0, even though the deletion execution is successful.
 	 * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
 	 * being deleted is outdated.
 	 * @throws \Exception in case delete failed.
@@ -331,7 +331,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 * The comparison is made by comparing the table names and the primary key values of the two active records.
 	 * If one of the records [[isNewRecord|is new]] they are also considered not equal.
 	 * @param ActiveRecord $record record to compare to
-	 * @return boolean whether the two active records refer to the same row in the same database table.
+	 * @return boolean whether the two active records refer to the same row in the same Mongo collection.
 	 */
 	public function equals($record)
 	{
