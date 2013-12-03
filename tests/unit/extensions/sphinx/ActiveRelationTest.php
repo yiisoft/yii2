@@ -2,10 +2,10 @@
 
 namespace yiiunit\extensions\sphinx;
 
-use yiiunit\data\sphinx\ar\ActiveRecord;
+use yiiunit\data\ar\sphinx\ActiveRecord;
 use yiiunit\data\ar\ActiveRecord as ActiveRecordDb;
-use yiiunit\data\sphinx\ar\ArticleIndex;
-use yiiunit\data\sphinx\ar\ArticleDb;
+use yiiunit\data\ar\sphinx\ArticleIndex;
+use yiiunit\data\ar\sphinx\ArticleDb;
 
 /**
  * @group sphinx

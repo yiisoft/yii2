@@ -3,9 +3,9 @@
 namespace yiiunit\extensions\sphinx;
 
 use yii\sphinx\ActiveQuery;
-use yiiunit\data\sphinx\ar\ActiveRecord;
-use yiiunit\data\sphinx\ar\ArticleIndex;
-use yiiunit\data\sphinx\ar\RuntimeIndex;
+use yiiunit\data\ar\sphinx\ActiveRecord;
+use yiiunit\data\ar\sphinx\ArticleIndex;
+use yiiunit\data\ar\sphinx\RuntimeIndex;
 
 /**
  * @group sphinx

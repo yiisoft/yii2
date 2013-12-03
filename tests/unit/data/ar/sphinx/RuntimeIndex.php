@@ -1,6 +1,6 @@
 <?php
 
-namespace yiiunit\data\sphinx\ar;
+namespace yiiunit\data\ar\sphinx;
 
 class RuntimeIndex extends ActiveRecord
 {

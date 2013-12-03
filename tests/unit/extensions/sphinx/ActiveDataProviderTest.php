@@ -4,8 +4,8 @@ namespace yiiunit\extensions\sphinx;
 
 use yii\data\ActiveDataProvider;
 use yii\sphinx\Query;
-use yiiunit\data\sphinx\ar\ActiveRecord;
-use yiiunit\data\sphinx\ar\ArticleIndex;
+use yiiunit\data\ar\sphinx\ActiveRecord;
+use yiiunit\data\ar\sphinx\ArticleIndex;
 
 /**
  * @group sphinx
