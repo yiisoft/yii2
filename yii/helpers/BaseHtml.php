@@ -551,8 +551,11 @@ class BaseHtml
 	 *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
 	 *   When this option is specified, the radio button will be enclosed by a label tag.
 	 * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
+	 * - container: array|boolean, the HTML attributes for the container tag. This is only used when the "label" option is specified.
+	 *   If it is false, no container will be rendered. If it is an array or not, a "div" container will be rendered
+	 *   around the the radio button.
 	 *
-	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
+	 * The rest of the options will be rendered as the attributes of the resulting radio button tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
 	 *
 	 * @return string the generated radio button tag
@@ -571,9 +574,14 @@ class BaseHtml
 		if (isset($options['label'])) {
 			$label = $options['label'];
 			$labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : [];
-			unset($options['label'], $options['labelOptions']);
+			$container = isset($options['container']) ? $options['container'] : ['class' => 'radio'];
+			unset($options['label'], $options['labelOptions'], $options['container']);
 			$content = static::label(static::input('radio', $name, $value, $options) . ' ' . $label, null, $labelOptions);
-			return $hidden . static::tag('div', $content, ['class' => 'radio']);
+			if (is_array($container)) {
+				return $hidden . static::tag('div', $content, $container);
+			} else {
+				return $hidden . $content;
+			}
 		} else {
 			return $hidden . static::input('radio', $name, $value, $options);
 		}
@@ -592,8 +600,11 @@ class BaseHtml
 	 *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
 	 *   When this option is specified, the checkbox will be enclosed by a label tag.
 	 * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
+	 * - container: array|boolean, the HTML attributes for the container tag. This is only used when the "label" option is specified.
+	 *   If it is false, no container will be rendered. If it is an array or not, a "div" container will be rendered
+	 *   around the the radio button.
 	 *
-	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
+	 * The rest of the options will be rendered as the attributes of the resulting checkbox tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
 	 *
 	 * @return string the generated checkbox tag
@@ -612,9 +623,14 @@ class BaseHtml
 		if (isset($options['label'])) {
 			$label = $options['label'];
 			$labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : [];
-			unset($options['label'], $options['labelOptions']);
+			$container = isset($options['container']) ? $options['container'] : ['class' => 'checkbox'];
+			unset($options['label'], $options['labelOptions'], $options['container']);
 			$content = static::label(static::input('checkbox', $name, $value, $options) . ' ' . $label, null, $labelOptions);
-			return $hidden . static::tag('div', $content, ['class' => 'checkbox']);
+			if (is_array($container)) {
+				return $hidden . static::tag('div', $content, $container);
+			} else {
+				return $hidden . $content;
+			}
 		} else {
 			return $hidden . static::input('checkbox', $name, $value, $options);
 		}
