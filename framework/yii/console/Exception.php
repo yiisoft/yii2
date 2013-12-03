@@ -25,4 +25,3 @@ class Exception extends UserException
 		return \Yii::t('yii', 'Error');
 	}
 }
-

@@ -2,15 +2,17 @@
 
 namespace yiiunit\framework\db\mssql;
 
-class MssqlCommandTest extends \yiiunit\framework\db\CommandTest
-{
-    public function setUp()
-    {
-        $this->driverName = 'sqlsrv';
-        parent::setUp();
-    }
+use yiiunit\framework\db\CommandTest;
 
-	function testAutoQuoting()
+/**
+ * @group db
+ * @group mssql
+ */
+class MssqlCommandTest extends CommandTest
+{
+	protected $driverName = 'sqlsrv';
+
+	public function testAutoQuoting()
 	{
 		$db = $this->getConnection(false);
 
@@ -19,12 +21,12 @@ class MssqlCommandTest extends \yiiunit\framework\db\CommandTest
 		$this->assertEquals("SELECT [id], [t].[name] FROM [tbl_customer] t", $command->sql);
 	}
 
-	function testPrepareCancel()
+	public function testPrepareCancel()
 	{
 		$this->markTestSkipped('MSSQL driver does not support this feature.');
 	}
 
-	function testBindParamValue()
+	public function testBindParamValue()
 	{
 		$db = $this->getConnection();
 
@@ -61,7 +63,7 @@ class MssqlCommandTest extends \yiiunit\framework\db\CommandTest
 		$this->assertEquals(1, $command->execute());
 
 		$sql = 'SELECT int_col, char_col, float_col, CONVERT([nvarchar], blob_col) AS blob_col, numeric_col FROM tbl_type';
-		$row = $db->createCommand($sql)->queryRow();
+		$row = $db->createCommand($sql)->queryOne();
 		$this->assertEquals($intCol, $row['int_col']);
 		$this->assertEquals($charCol, trim($row['char_col']));
 		$this->assertEquals($floatCol, $row['float_col']);

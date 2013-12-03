@@ -1,11 +1,14 @@
 <?php
 namespace yiiunit\framework\helpers;
-use \yii\helpers\StringHelper as StringHelper;
+
+use yii\helpers\StringHelper;
+use yiiunit\TestCase;
 
 /**
  * StringHelperTest
+ * @group helpers
  */
-class StringHelperTest extends \yii\test\TestCase
+class StringHelperTest extends TestCase
 {
 	public function testStrlen()
 	{

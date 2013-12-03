@@ -23,4 +23,3 @@ class InvalidCallException extends Exception
 		return \Yii::t('yii', 'Invalid Call');
 	}
 }
-

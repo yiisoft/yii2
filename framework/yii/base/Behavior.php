@@ -37,25 +37,25 @@ class Behavior extends \yii\base\Object
 	 *
 	 * The callbacks can be any of the followings:
 	 *
-	 * - method in this behavior: `'handleClick'`, equivalent to `array($this, 'handleClick')`
-	 * - object method: `array($object, 'handleClick')`
-	 * - static method: `array('Page', 'handleClick')`
+	 * - method in this behavior: `'handleClick'`, equivalent to `[$this, 'handleClick']`
+	 * - object method: `[$object, 'handleClick']`
+	 * - static method: `['Page', 'handleClick']`
 	 * - anonymous function: `function($event) { ... }`
 	 *
 	 * The following is an example:
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *	 'beforeValidate' => 'myBeforeValidate',
 	 *	 'afterValidate' => 'myAfterValidate',
-	 * )
+	 * ]
 	 * ~~~
 	 *
 	 * @return array events (array keys) and the corresponding event handler methods (array values).
 	 */
 	public function events()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -69,7 +69,7 @@ class Behavior extends \yii\base\Object
 	{
 		$this->owner = $owner;
 		foreach ($this->events() as $event => $handler) {
-			$owner->on($event, is_string($handler) ? array($this, $handler) : $handler);
+			$owner->on($event, is_string($handler) ? [$this, $handler] : $handler);
 		}
 	}
 
@@ -83,7 +83,7 @@ class Behavior extends \yii\base\Object
 	{
 		if ($this->owner) {
 			foreach ($this->events() as $event => $handler) {
-				$this->owner->off($event, is_string($handler) ? array($this, $handler) : $handler);
+				$this->owner->off($event, is_string($handler) ? [$this, $handler] : $handler);
 			}
 			$this->owner = null;
 		}

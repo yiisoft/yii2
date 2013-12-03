@@ -10,12 +10,14 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Object;
+use yii\web\View;
 
 /**
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
  *
- * Each asset bundle has a unique name that globally identifies it among all asset bundles
- * used in an application.
+ * Each asset bundle has a unique name that globally identifies it among all asset bundles used in an application.
+ * The name is the [fully qualified class name](http://php.net/manual/en/language.namespaces.rules.php)
+ * of the class representing it.
  *
  * An asset bundle can depend on other asset bundles. When registering an asset bundle
  * with a view, all its dependent asset bundles will be automatically registered.
@@ -45,7 +47,7 @@ class AssetBundle extends Object
 	 * when it publishes the asset files from [[sourcePath]].
 	 *
 	 * If the bundle contains any assets that are specified in terms of relative file path,
-	 * then this property must be set either manually or automatically (by asset manager via
+	 * then this property must be set either manually or automatically (by [[AssetManager]] via
 	 * asset publishing).
 	 *
 	 * You can use either a directory or an alias of the directory.
@@ -66,9 +68,18 @@ class AssetBundle extends Object
 	 */
 	public $baseUrl;
 	/**
-	 * @var array list of the bundle names that this bundle depends on
+	 * @var array list of bundle class names that this bundle depends on.
+	 *
+	 * For example:
+	 *
+	 * ```php
+	 * public $depends = [
+	 *    'yii\web\YiiAsset',
+	 *    'yii\bootstrap\BootstrapAsset',
+	 * ];
+	 * ```
 	 */
-	public $depends = array();
+	public $depends = [];
 	/**
 	 * @var array list of JavaScript files that this bundle contains. Each JavaScript file can
 	 * be either a file path (without leading slash) relative to [[basePath]] or a URL representing
@@ -76,7 +87,7 @@ class AssetBundle extends Object
 	 *
 	 * Note that only forward slash "/" can be used as directory separator.
 	 */
-	public $js = array();
+	public $js = [];
 	/**
 	 * @var array list of CSS files that this bundle contains. Each CSS file can
 	 * be either a file path (without leading slash) relative to [[basePath]] or a URL representing
@@ -84,25 +95,35 @@ class AssetBundle extends Object
 	 *
 	 * Note that only forward slash "/" can be used as directory separator.
 	 */
-	public $css = array();
+	public $css = [];
 	/**
-	 * @var array the options that will be passed to [[\yii\base\View::registerJsFile()]]
+	 * @var array the options that will be passed to [[\yii\web\View::registerJsFile()]]
 	 * when registering the JS files in this bundle.
 	 */
-	public $jsOptions = array();
+	public $jsOptions = [];
 	/**
-	 * @var array the options that will be passed to [[\yii\base\View::registerCssFile()]]
+	 * @var array the options that will be passed to [[\yii\web\View::registerCssFile()]]
 	 * when registering the CSS files in this bundle.
 	 */
-	public $cssOptions = array();
+	public $cssOptions = [];
 	/**
 	 * @var array the options to be passed to [[AssetManager::publish()]] when the asset bundle
 	 * is being published.
 	 */
-	public $publishOptions = array();
+	public $publishOptions = [];
+
+	/**
+	 * @param View $view
+	 * @return AssetBundle the registered asset bundle instance
+	 */
+	public static function register($view)
+	{
+		return $view->registerAssetBundle(get_called_class());
+	}
 
 	/**
 	 * Initializes the bundle.
+	 * If you override this method, make sure you call the parent implementation in the last.
 	 */
 	public function init()
 	{
@@ -119,38 +140,37 @@ class AssetBundle extends Object
 
 	/**
 	 * Registers the CSS and JS files with the given view.
-	 * This method will first register all dependent asset bundles.
-	 * It will then try to convert non-CSS or JS files (e.g. LESS, Sass) into the corresponding
-	 * CSS or JS files using [[AssetManager::converter|asset converter]].
-	 * @param \yii\base\View $view the view that the asset files to be registered with.
-	 * @throws InvalidConfigException if [[baseUrl]] or [[basePath]] is not set when the bundle
-	 * contains internal CSS or JS files.
+	 * @param \yii\web\View $view the view that the asset files are to be registered with.
 	 */
-	public function registerAssets($view)
+	public function registerAssetFiles($view)
 	{
-		foreach ($this->depends as $name) {
-			$view->registerAssetBundle($name);
-		}
-
-		$this->publish($view->getAssetManager());
-
 		foreach ($this->js as $js) {
-			$view->registerJsFile($this->baseUrl . '/' . $js, $this->jsOptions);
+			if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
+				$view->registerJsFile($this->baseUrl . '/' . $js, $this->jsOptions);
+			} else {
+				$view->registerJsFile($js, $this->jsOptions);
+			}
 		}
 		foreach ($this->css as $css) {
-			$view->registerCssFile($this->baseUrl . '/' . $css, $this->cssOptions);
+			if (strpos($css, '/') !== 0 && strpos($css, '://') === false) {
+				$view->registerCssFile($this->baseUrl . '/' . $css, $this->cssOptions);
+			} else {
+				$view->registerCssFile($css, $this->cssOptions);
+			}
 		}
 	}
 
 	/**
 	 * Publishes the asset bundle if its source code is not under Web-accessible directory.
+	 * It will also try to convert non-CSS or JS files (e.g. LESS, Sass) into the corresponding
+	 * CSS or JS files using [[AssetManager::converter|asset converter]].
 	 * @param AssetManager $am the asset manager to perform the asset publishing
 	 * @throws InvalidConfigException if [[baseUrl]] or [[basePath]] is not set when the bundle
 	 * contains internal CSS or JS files.
 	 */
 	public function publish($am)
 	{
-		if ($this->sourcePath !== null) {
+		if ($this->sourcePath !== null && !isset($this->basePath, $this->baseUrl)) {
 			list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
 		}
 		$converter = $am->getConverter();

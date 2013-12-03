@@ -1,5 +1,6 @@
 <?php
 namespace yiiunit\data\base;
+
 use yii\base\Model;
 
 /**
@@ -16,24 +17,29 @@ class Speaker extends Model
 	protected $protectedProperty;
 	private $_privateProperty;
 
+	public static $formName = 'Speaker';
+
+	public function formName()
+	{
+		return static::$formName;
+	}
+
 	public function attributeLabels()
 	{
-		return array(
+		return [
 			'customLabel' => 'This is the custom label',
-		);
+		];
 	}
 
 	public function rules()
 	{
-		return array(
-
-		);
+		return [];
 	}
 
 	public function scenarios()
 	{
-		return array(
-			'test' => array('firstName', 'lastName', '!underscore_style'),
-		);
+		return [
+			'test' => ['firstName', 'lastName', '!underscore_style'],
+		];
 	}
 }

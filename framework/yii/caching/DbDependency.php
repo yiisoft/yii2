@@ -34,41 +34,32 @@ class DbDependency extends Dependency
 	/**
 	 * @var array the parameters (name => value) to be bound to the SQL statement specified by [[sql]].
 	 */
-	public $params;
-
-	/**
-	 * Constructor.
-	 * @param string $sql the SQL query whose result is used to determine if the dependency has been changed.
-	 * @param array $params the parameters (name => value) to be bound to the SQL statement specified by [[sql]].
-	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 */
-	public function __construct($sql, $params = array(), $config = array())
-	{
-		$this->sql = $sql;
-		$this->params = $params;
-		parent::__construct($config);
-	}
+	public $params = [];
 
 	/**
 	 * Generates the data needed to determine if dependency has been changed.
 	 * This method returns the value of the global state.
-	 * @throws InvalidConfigException
+	 * @param Cache $cache the cache component that is currently evaluating this dependency
 	 * @return mixed the data needed to determine if dependency has been changed.
+	 * @throws InvalidConfigException if [[db]] is not a valid application component ID
 	 */
-	protected function generateDependencyData()
+	protected function generateDependencyData($cache)
 	{
 		$db = Yii::$app->getComponent($this->db);
 		if (!$db instanceof Connection) {
 			throw new InvalidConfigException("DbDependency::db must be the application component ID of a DB connection.");
 		}
+		if ($this->sql === null) {
+			throw new InvalidConfigException("DbDependency::sql must be set.");
+		}
 
 		if ($db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
 			$db->enableQueryCache = false;
-			$result = $db->createCommand($this->sql, $this->params)->queryRow();
+			$result = $db->createCommand($this->sql, $this->params)->queryOne();
 			$db->enableQueryCache = true;
 		} else {
-			$result = $db->createCommand($this->sql, $this->params)->queryRow();
+			$result = $db->createCommand($this->sql, $this->params)->queryOne();
 		}
 		return $result;
 	}

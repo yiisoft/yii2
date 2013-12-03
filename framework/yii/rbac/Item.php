@@ -18,6 +18,9 @@ use yii\base\Object;
  * A user may be assigned one or several authorization items (called [[Assignment]] assignments).
  * He can perform an operation only when it is among his assigned items.
  *
+ * @property Item[] $children All child items of this item. This property is read-only.
+ * @property string $name The item name.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
@@ -61,7 +64,7 @@ class Item extends Object
 	 * @param array $params the parameters to be passed to business rule evaluation
 	 * @return boolean whether the specified item is within the hierarchy starting from this item.
 	 */
-	public function checkAccess($itemName, $params = array())
+	public function checkAccess($itemName, $params = [])
 	{
 		Yii::trace('Checking permission: ' . $this->_name, __METHOD__);
 		if ($this->manager->executeBizRule($this->bizRule, $params, $this->data)) {

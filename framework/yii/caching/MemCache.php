@@ -28,32 +28,34 @@ use yii\base\InvalidConfigException;
  * To use MemCache as the cache application component, configure the application as follows,
  *
  * ~~~
- * array(
- *     'components' => array(
- *         'cache' => array(
- *             'class' => 'MemCache',
- *             'servers' => array(
- *                 array(
+ * [
+ *     'components' => [
+ *         'cache' => [
+ *             'class' => 'yii\caching\MemCache',
+ *             'servers' => [
+ *                 [
  *                     'host' => 'server1',
  *                     'port' => 11211,
  *                     'weight' => 60,
- *                 ),
- *                 array(
+ *                 ],
+ *                 [
  *                     'host' => 'server2',
  *                     'port' => 11211,
  *                     'weight' => 40,
- *                 ),
- *             ),
- *         ),
- *     ),
- * )
+ *                 ],
+ *             ],
+ *         ],
+ *     ],
+ * ]
  * ~~~
  *
  * In the above, two memcache servers are used: server1 and server2. You can configure more properties of
  * each server, such as `persistent`, `weight`, `timeout`. Please see [[MemCacheServer]] for available options.
  *
- * @property \Memcache|\Memcached $memCache The memcache instance (or memcached if [[useMemcached]] is true) used by this component.
- * @property MemCacheServer[] $servers List of memcache server configurations.
+ * @property \Memcache|\Memcached $memcache The memcache (or memcached) object used by this cache component.
+ * This property is read-only.
+ * @property MemCacheServer[] $servers List of memcache server configurations. Note that the type of this
+ * property differs in getter and setter. See [[getServers()]] and [[setServers()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -74,7 +76,7 @@ class MemCache extends Cache
 	/**
 	 * @var array list of memcache server configurations
 	 */
-	private $_servers = array();
+	private $_servers = [];
 
 	/**
 	 * Initializes this application component.
@@ -85,7 +87,14 @@ class MemCache extends Cache
 		parent::init();
 		$servers = $this->getServers();
 		$cache = $this->getMemCache();
-		if (count($servers)) {
+		if (empty($servers)) {
+			$cache->addServer('127.0.0.1', 11211);
+		} else {
+			if (!$this->useMemcached) {
+				// different version of memcache may have different number of parameters for the addServer method.
+				$class = new \ReflectionClass($cache);
+				$paramCount = $class->getMethod('addServer')->getNumberOfParameters();
+			}
 			foreach ($servers as $server) {
 				if ($server->host === null) {
 					throw new InvalidConfigException("The 'host' property must be specified for every memcache server.");
@@ -93,12 +102,23 @@ class MemCache extends Cache
 				if ($this->useMemcached) {
 					$cache->addServer($server->host, $server->port, $server->weight);
 				} else {
-					$cache->addServer($server->host, $server->port, $server->persistent,
-						$server->weight, $server->timeout, $server->retryInterval, $server->status);
+					// $timeout is used for memcache versions that do not have timeoutms parameter
+					$timeout = (int) ($server->timeout / 1000) + (($server->timeout % 1000 > 0) ? 1 : 0);
+					if ($paramCount === 9) {
+						$cache->addServer(
+							$server->host, $server->port, $server->persistent,
+							$server->weight, $timeout, $server->retryInterval,
+							$server->status, $server->failureCallback, $server->timeout
+						);
+					} else {
+						$cache->addServer(
+							$server->host, $server->port, $server->persistent,
+							$server->weight, $timeout, $server->retryInterval,
+							$server->status, $server->failureCallback
+						);
+					}
 				}
 			}
-		} else {
-			$cache->addServer('127.0.0.1', 11211);
 		}
 	}
 
@@ -179,6 +199,27 @@ class MemCache extends Cache
 		}
 
 		return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $expire);
+	}
+
+	/**
+	 * Stores multiple key-value pairs in cache.
+	 * @param array $data array where key corresponds to cache key while value is the value stored
+	 * @param integer $expire the number of seconds in which the cached values will expire. 0 means never expire.
+	 * @return array array of failed keys. Always empty in case of using memcached.
+	 */
+	protected function setValues($data, $expire)
+	{
+		if ($this->useMemcached) {
+			if ($expire > 0) {
+				$expire += time();
+			} else {
+				$expire = 0;
+			}
+			$this->_cache->setMulti($data, $expire);
+			return [];
+		} else {
+			return parent::setValues($data, $expire);
+		}
 	}
 
 	/**

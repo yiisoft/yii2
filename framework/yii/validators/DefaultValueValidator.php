@@ -40,4 +40,3 @@ class DefaultValueValidator extends Validator
 		}
 	}
 }
-

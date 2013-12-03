@@ -12,6 +12,33 @@ use yii\base\ActionFilter;
 use yii\base\Action;
 
 /**
+ * The HttpCache provides functionality for caching via HTTP Last-Modified and Etag headers.
+ *
+ * It is an action filter that can be added to a controller and handles the `beforeAction` event.
+ *
+ * To use AccessControl, declare it in the `behaviors()` method of your controller class.
+ * In the following example the filter will be applied to the `list`-action and
+ * the Last-Modified header will contain the date of the last update to the user table in the database.
+ *
+ * ~~~
+ * public function behaviors()
+ * {
+ *     return [
+ *         'httpCache' => [
+ *             'class' => \yii\web\HttpCache::className(),
+ *             'only' => ['list'],
+ *             'lastModified' => function ($action, $params) {
+ *                 $q = new Query();
+ *                 return strtotime($q->from('users')->max('updated_timestamp'));
+ *             },
+ * //            'etagSeed' => function ($action, $params) {
+ * //                return // generate etag seed here
+ * //            }
+ *         ],
+ *     ];
+ * }
+ * ~~~
+ *
  * @author Da:Sourcerer <webmaster@dasourcerer.net>
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -50,7 +77,7 @@ class HttpCache extends ActionFilter
 	/**
 	 * @var string HTTP cache control header. If null, the header will not be sent.
 	 */
-	public $cacheControlHeader = 'Cache-Control: max-age=3600, public';
+	public $cacheControlHeader = 'max-age=3600, public';
 
 	/**
 	 * This method is invoked right before an action is to be executed (after all possible filters.)
@@ -60,7 +87,7 @@ class HttpCache extends ActionFilter
 	 */
 	public function beforeAction($action)
 	{
-		$verb = Yii::$app->request->getRequestMethod();
+		$verb = Yii::$app->getRequest()->getMethod();
 		if ($verb !== 'GET' && $verb !== 'HEAD' || $this->lastModified === null && $this->etagSeed === null) {
 			return true;
 		}
@@ -75,17 +102,18 @@ class HttpCache extends ActionFilter
 		}
 
 		$this->sendCacheControlHeader();
+		$response = Yii::$app->getResponse();
 		if ($etag !== null) {
-			header("ETag: $etag");
+			$response->getHeaders()->set('Etag', $etag);
 		}
 
 		if ($this->validateCache($lastModified, $etag)) {
-			header('HTTP/1.1 304 Not Modified');
+			$response->setStatusCode(304);
 			return false;
 		}
 
 		if ($lastModified !== null) {
-			header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $lastModified) . ' GMT');
+			$response->getHeaders()->set('Last-Modified', gmdate('D, d M Y H:i:s', $lastModified) . ' GMT');
 		}
 		return true;
 	}
@@ -113,9 +141,10 @@ class HttpCache extends ActionFilter
 	protected function sendCacheControlHeader()
 	{
 		session_cache_limiter('public');
-		header('Pragma:', true);
+		$headers = Yii::$app->getResponse()->getHeaders();
+		$headers->set('Pragma');
 		if ($this->cacheControlHeader !== null) {
-			header($this->cacheControlHeader, true);
+			$headers->set('Cache-Control', $this->cacheControlHeader);
 		}
 	}
 

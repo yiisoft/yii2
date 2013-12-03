@@ -23,4 +23,3 @@ class UnknownPropertyException extends Exception
 		return \Yii::t('yii', 'Unknown Property');
 	}
 }
-

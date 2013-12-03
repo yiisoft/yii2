@@ -63,7 +63,7 @@ class YiiRequirementChecker
 	 * @param array|string $requirements requirements to be checked.
 	 * If an array, it is treated as the set of requirements;
 	 * If a string, it is treated as the path of the file, which contains the requirements;
-	 * @return YiiRequirementChecker self instance.
+	 * @return static self instance.
 	 */
 	function check($requirements)
 	{
@@ -177,6 +177,9 @@ class YiiRequirementChecker
 		$extensionVersion = phpversion($extensionName);
 		if (empty($extensionVersion)) {
 			return false;
+		}
+		if (strncasecmp($extensionVersion, 'PECL-', 5) == 0) {
+			$extensionVersion = substr($extensionVersion, 5);
 		}
 		return version_compare($extensionVersion, $version, $compare);
 	}

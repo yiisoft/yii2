@@ -23,4 +23,3 @@ class InvalidRouteException extends UserException
 		return \Yii::t('yii', 'Invalid Route');
 	}
 }
-

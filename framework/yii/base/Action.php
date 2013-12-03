@@ -7,6 +7,8 @@
 
 namespace yii\base;
 
+use Yii;
+
 /**
  * Action is the base class for all controller action classes.
  *
@@ -23,8 +25,11 @@ namespace yii\base;
  * public function run($id, $type = 'book') { ... }
  * ~~~
  *
- * And the parameters provided for the action are: `array('id' => 1)`.
+ * And the parameters provided for the action are: `['id' => 1]`.
  * Then the `run()` method will be invoked as `run(1)` automatically.
+ *
+ * @property string $uniqueId The unique ID of this action among the whole application. This property is
+ * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -46,7 +51,7 @@ class Action extends Component
 	 * @param Controller $controller the controller that owns this action
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($id, $controller, $config = array())
+	public function __construct($id, $controller, $config = [])
 	{
 		$this->id = $id;
 		$this->controller = $controller;
@@ -66,7 +71,7 @@ class Action extends Component
 	 * Runs this action with the specified parameters.
 	 * This method is mainly invoked by the controller.
 	 * @param array $params the parameters to be bound to the action's run() method.
-	 * @return integer the exit status (0 means normal, non-zero means abnormal).
+	 * @return mixed the result of the action
 	 * @throws InvalidConfigException if the action class does not have a run() method
 	 */
 	public function runWithParams($params)
@@ -75,6 +80,10 @@ class Action extends Component
 			throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
 		}
 		$args = $this->controller->bindActionParams($this, $params);
-		return (int)call_user_func_array(array($this, 'run'), $args);
+		Yii::trace('Running action: ' . get_class($this) . '::run()', __METHOD__);
+		if (Yii::$app->requestedParams === null) {
+			Yii::$app->requestedParams = $args;
+		}
+		return call_user_func_array([$this, 'run'], $args);
 	}
 }

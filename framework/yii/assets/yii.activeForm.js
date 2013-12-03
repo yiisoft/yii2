@@ -41,6 +41,9 @@
 		// a callback that is called before validating each attribute. The signature of the callback should be:
 		// function ($form, attribute, messages) { ...return false to cancel the validation...}
 		beforeValidate: undefined,
+		// a callback that is called after an attribute is validated. The signature of the callback should be:
+		// function ($form, attribute, messages)
+		afterValidate: undefined,
 		// the GET parameter name indicating an AJAX-based validation
 		ajaxVar: 'ajax'
 	};
@@ -80,7 +83,7 @@
 
 				var settings = $.extend({}, defaults, options || {});
 				if (settings.validationUrl === undefined) {
-					settings.validationUrl = $form.attr('action');
+					settings.validationUrl = $form.prop('action');
 				}
 				$.each(attributes, function (i) {
 					attributes[i] = $.extend({value: getValue($form, this)}, attributeDefaults, this);
@@ -125,7 +128,6 @@
 				data = $form.data('yiiActiveForm');
 			if (data.validated) {
 				// continue submitting the form since validation passes
-				data.validated = false;
 				return true;
 			}
 
@@ -135,12 +137,20 @@
 			data.submitting = true;
 			if (!data.settings.beforeSubmit || data.settings.beforeSubmit($form)) {
 				validate($form, function (messages) {
-					var hasError = false;
+					var errors = [];
 					$.each(data.attributes, function () {
-						hasError = updateInput($form, this, messages) || hasError;
+						if (updateInput($form, this, messages)) {
+							errors.push(this.input);
+						}
 					});
 					updateSummary($form, messages);
-					if (!hasError) {
+					if (errors.length) {
+						var top = $form.find(errors.join(',')).first().offset().top;
+						var wtop = $(window).scrollTop();
+						if (top < wtop || top > wtop + $(window).height) {
+							$(window).scrollTop(top);
+						}
+					} else {
 						data.validated = true;
 						var $button = data.submitObject || $form.find(':submit:first');
 						// TODO: if the submission is caused by "change" event, it will not work
@@ -280,13 +290,13 @@
 			// If the validation is triggered by form submission, ajax validation
 			// should be done only when all inputs pass client validation
 			var $button = data.submitObject,
-				extData = '&' + data.settings.ajaxVar + '=' + $form.attr('id');
-			if ($button && $button.length && $button.attr('name')) {
-				extData += '&' + $button.attr('name') + '=' + $button.attr('value');
+				extData = '&' + data.settings.ajaxVar + '=' + $form.prop('id');
+			if ($button && $button.length && $button.prop('name')) {
+				extData += '&' + $button.prop('name') + '=' + $button.prop('value');
 			}
 			$.ajax({
 				url: data.settings.validationUrl,
-				type: $form.attr('method'),
+				type: $form.prop('method'),
 				data: $form.serialize() + extData,
 				dataType: 'json',
 				success: function (msgs) {
@@ -325,13 +335,16 @@
 			$input = findInput($form, attribute),
 			hasError = false;
 
+		if (data.settings.afterValidate) {
+			data.settings.afterValidate($form, attribute, messages);
+		}
 		attribute.status = 1;
 		if ($input.length) {
 			hasError = messages && $.isArray(messages[attribute.name]) && messages[attribute.name].length;
 			var $container = $form.find(attribute.container);
 			var $error = $container.find(attribute.error);
 			if (hasError) {
-				$error.html(messages[attribute.name][0]);
+				$error.text(messages[attribute.name][0]);
 				$container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
 					.addClass(data.settings.errorCssClass);
 			} else {
@@ -366,7 +379,7 @@
 
 	var getValue = function ($form, attribute) {
 		var $input = findInput($form, attribute);
-		var type = $input.attr('type');
+		var type = $input.prop('type');
 		if (type === 'checkbox' || type === 'radio') {
 			return $input.filter(':checked').val();
 		} else {

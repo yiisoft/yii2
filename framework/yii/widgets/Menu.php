@@ -9,6 +9,7 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\Widget;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -16,31 +17,31 @@ use yii\helpers\Html;
  *
  * The main property of Menu is [[items]], which specifies the possible items in the menu.
  * A menu item can contain sub-items which specify the sub-menu under that menu item.
- * 
+ *
  * Menu checks the current route and request parameters to toggle certain menu items
  * with active state.
- * 
+ *
  * Note that Menu only renders the HTML tags about the menu. It does do any styling.
  * You are responsible to provide CSS styles to make it look like a real menu.
  *
  * The following example shows how to use Menu:
- * 
+ *
  * ~~~
- * echo Menu::widget(array(
- *     'items' => array(
+ * echo Menu::widget([
+ *     'items' => [
  *         // Important: you need to specify url as 'controller/action',
  *         // not just as 'controller' even if default action is used.
- *         array('label' => 'Home', 'url' => array('site/index')),
+ *         ['label' => 'Home', 'url' => ['site/index']],
  *         // 'Products' menu item will be selected as long as the route is 'product/index'
- *         array('label' => 'Products', 'url' => array('product/index'), 'items' => array(
- *             array('label' => 'New Arrivals', 'url' => array('product/index', 'tag' => 'new')),
- *             array('label' => 'Most Popular', 'url' => array('product/index', 'tag' => 'popular')),
- *         )),
- *         array('label' => 'Login', 'url' => array('site/login'), 'visible' => Yii::app()->user->isGuest),
- *     ),
- * ));
+ *         ['label' => 'Products', 'url' => ['product/index'], 'items' => [
+ *             ['label' => 'New Arrivals', 'url' => ['product/index', 'tag' => 'new']],
+ *             ['label' => 'Most Popular', 'url' => ['product/index', 'tag' => 'popular']],
+ *         ]],
+ *         ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
+ *     ],
+ * ]);
  * ~~~
- * 
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -63,9 +64,17 @@ class Menu extends Widget
 	 * - template: string, optional, the template used to render the content of this menu item.
 	 *   The token `{url}` will be replaced by the URL associated with this menu item,
 	 *   and the token `{label}` will be replaced by the label of the menu item.
-	 *   If this option is not set, [[linkTemplate]] or [[labelTemplate]] will be used instead. 
+	 *   If this option is not set, [[linkTemplate]] or [[labelTemplate]] will be used instead.
+	 * - options: array, optional, the HTML attributes for the menu container tag.
 	 */
-	public $items = array();
+	public $items = [];
+	/**
+	 * @var array list of HTML attributes for the menu container tag. This will be overwritten
+	 * by the "options" set in individual [[items]]. The following special options are recognized:
+	 *
+	 * - tag: string, defaults to "li", the tag name of the item container tags.
+	 */
+	public $itemOptions = [];
 	/**
 	 * @var string the template used to render the body of a menu which is a link.
 	 * In this template, the token `{url}` will be replaced with the corresponding link URL;
@@ -95,7 +104,7 @@ class Menu extends Widget
 	/**
 	 * @var boolean whether to automatically activate items according to whether their route setting
 	 * matches the currently requested route.
-	 * @see isItemActive
+	 * @see isItemActive()
 	 */
 	public $activateItems = true;
 	/**
@@ -109,9 +118,11 @@ class Menu extends Widget
 	 */
 	public $hideEmptyItems = true;
 	/**
-	 * @var array the HTML attributes for the menu's container tag.
+	 * @var array the HTML attributes for the menu's container tag. The following special options are recognized:
+	 *
+	 * - tag: string, defaults to "ul", the tag name of the item container tags.
 	 */
-	public $options = array();
+	public $options = [];
 	/**
 	 * @var string the CSS class that will be assigned to the first item in the main menu or each submenu.
 	 * Defaults to null, meaning no such CSS class will be assigned.
@@ -124,16 +135,16 @@ class Menu extends Widget
 	public $lastItemCssClass;
 	/**
 	 * @var string the route used to determine if a menu item is active or not.
-	 * If not set, it will use the route of the current request. 
+	 * If not set, it will use the route of the current request.
 	 * @see params
-	 * @see isItemActive
+	 * @see isItemActive()
 	 */
 	public $route;
 	/**
 	 * @var array the parameters used to determine if a menu item is active or not.
 	 * If not set, it will use `$_GET`.
 	 * @see route
-	 * @see isItemActive
+	 * @see isItemActive()
 	 */
 	public $params;
 
@@ -150,7 +161,9 @@ class Menu extends Widget
 			$this->params = $_GET;
 		}
 		$items = $this->normalizeItems($this->items, $hasActiveChild);
-		echo Html::tag('ul', $this->renderItems($items), $this->options);
+		$options = $this->options;
+		$tag = ArrayHelper::remove($options, 'tag', 'ul');
+		echo Html::tag($tag, $this->renderItems($items), $options);
 	}
 
 	/**
@@ -161,10 +174,11 @@ class Menu extends Widget
 	protected function renderItems($items)
 	{
 		$n = count($items);
-		$lines = array();
+		$lines = [];
 		foreach ($items as $i => $item) {
-			$options = isset($item['itemOptions']) ? $item['itemOptions'] : array();
-			$class = array();
+			$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
+			$tag = ArrayHelper::remove($options, 'tag', 'li');
+			$class = [];
 			if ($item['active']) {
 				$class[] = $this->activeCssClass;
 			}
@@ -184,11 +198,11 @@ class Menu extends Widget
 
 			$menu = $this->renderItem($item);
 			if (!empty($item['items'])) {
-				$menu .= strtr($this->submenuTemplate, array(
+				$menu .= strtr($this->submenuTemplate, [
 					'{items}' => $this->renderItems($item['items']),
-				));
+				]);
 			}
-			$lines[] = Html::tag('li', $menu, $options);
+			$lines[] = Html::tag($tag, $menu, $options);
 		}
 		return implode("\n", $lines);
 	}
@@ -202,16 +216,16 @@ class Menu extends Widget
 	protected function renderItem($item)
 	{
 		if (isset($item['url'])) {
-			$template = isset($item['template']) ? $item['template'] : $this->linkTemplate;
-			return strtr($template, array(
+			$template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
+			return strtr($template, [
 				'{url}' => Html::url($item['url']),
 				'{label}' => $item['label'],
-			));
+			]);
 		} else {
-			$template = isset($item['template']) ? $item['template'] : $this->labelTemplate;
-			return strtr($template, array(
+			$template = ArrayHelper::getValue($item, 'template', $this->labelTemplate);
+			return strtr($template, [
 				'{label}' => $item['label'],
-			));
+			]);
 		}
 	}
 
@@ -236,7 +250,7 @@ class Menu extends Widget
 			}
 			$hasActiveChild = false;
 			if (isset($item['items'])) {
-				$items[$i]['items'] = $this->normalizeItems($item['items'], $route, $hasActiveChild);
+				$items[$i]['items'] = $this->normalizeItems($item['items'], $hasActiveChild);
 				if (empty($items[$i]['items']) && $this->hideEmptyItems) {
 					unset($items[$i]['items']);
 					if (!isset($item['url'])) {
@@ -270,7 +284,14 @@ class Menu extends Widget
 	 */
 	protected function isItemActive($item)
 	{
-		if (isset($item['url']) && is_array($item['url']) && trim($item['url'][0], '/') === $this->route) {
+		if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
+			$route = $item['url'][0];
+			if ($route[0] !== '/' && Yii::$app->controller) {
+				$route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
+			}
+			if (ltrim($route, '/') !== $this->route) {
+				return false;
+			}
 			unset($item['url']['#']);
 			if (count($item['url']) > 1) {
 				foreach (array_splice($item['url'], 1) as $name => $value) {
@@ -283,5 +304,4 @@ class Menu extends Widget
 		}
 		return false;
 	}
-
 }

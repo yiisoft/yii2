@@ -11,8 +11,10 @@ use yii\base\Object;
 
 /**
  * JsExpression marks a string as a JavaScript expression.
- * When using [[Json::encode()]] to encode a value, JsonExpression objects
+ *
+ * When using [[yii\helpers\Json::encode()]] to encode a value, JsonExpression objects
  * will be specially handled and encoded as a JavaScript expression instead of a string.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -28,7 +30,7 @@ class JsExpression extends Object
 	 * @param string $expression the JavaScript expression represented by this object
 	 * @param array $config additional configurations for this object
 	 */
-	public function __construct($expression, $config = array())
+	public function __construct($expression, $config = [])
 	{
 		$this->expression = $expression;
 		parent::__construct($config);

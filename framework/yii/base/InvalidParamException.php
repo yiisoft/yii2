@@ -23,4 +23,3 @@ class InvalidParamException extends Exception
 		return \Yii::t('yii', 'Invalid Parameter');
 	}
 }
-

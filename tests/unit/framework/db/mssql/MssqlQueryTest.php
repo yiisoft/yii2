@@ -2,11 +2,13 @@
 
 namespace yiiunit\framework\db\mssql;
 
-class MssqlQueryTest extends \yiiunit\framework\db\QueryTest
+use yiiunit\framework\db\QueryTest;
+
+/**
+ * @group db
+ * @group mssql
+ */
+class MssqlQueryTest extends QueryTest
 {
-    public function setUp()
-    {
-        $this->driverName = 'sqlsrv';
-        parent::setUp();
-    }
+	protected $driverName = 'sqlsrv';
 }

@@ -10,9 +10,43 @@ namespace yii\web;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
-use yii\base\HttpException;
 
 /**
+ * AccessControl provides simple access control based on a set of rules.
+ *
+ * AccessControl is an action filter. It will check its [[rules]] to find
+ * the first rule that matches the current context variables (such as user IP address, user role).
+ * The matching rule will dictate whether to allow or deny the access to the requested controller
+ * action. If no rule matches, the access will be denied.
+ *
+ * To use AccessControl, declare it in the `behaviors()` method of your controller class.
+ * For example, the following declarations will allow authenticated users to access the "create"
+ * and "update" actions and deny all other users from accessing these two actions.
+ *
+ * ~~~
+ * public function behaviors()
+ * {
+ *     return [
+ *         'access' => [
+ *             'class' => \yii\web\AccessControl::className(),
+ *             'only' => ['create', 'update'],
+ *             'rules' => [
+ *                 // deny all POST requests
+ *                 [
+ *                     'allow' => false,
+ *                     'verbs' => ['POST']
+ *                 ],
+ *                 // allow authenticated users
+ *                 [
+ *                     'allow' => true,
+ *                     'roles' => ['@'],
+ *                 ],
+ *                 // everything else is denied
+ *             ],
+ *         ],
+ *     ];
+ * }
+ * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -36,16 +70,14 @@ class AccessControl extends ActionFilter
 	 * @var array the default configuration of access rules. Individual rule configurations
 	 * specified via [[rules]] will take precedence when the same property of the rule is configured.
 	 */
-	public $ruleConfig = array(
-		'class' => 'yii\web\AccessRule',
-	);
+	public $ruleConfig = ['class' => 'yii\web\AccessRule'];
 	/**
 	 * @var array a list of access rule objects or configuration arrays for creating the rule objects.
 	 * If a rule is specified via a configuration array, it will be merged with [[ruleConfig]] first
 	 * before it is used for creating the rule object.
 	 * @see ruleConfig
 	 */
-	public $rules = array();
+	public $rules = [];
 
 	/**
 	 * Initializes the [[rules]] array by instantiating rule objects from configurations.
@@ -70,10 +102,10 @@ class AccessControl extends ActionFilter
 	{
 		$user = Yii::$app->getUser();
 		$request = Yii::$app->getRequest();
-		/** @var $rule AccessRule */
+		/** @var AccessRule $rule */
 		foreach ($this->rules as $rule) {
 			if ($allow = $rule->allows($action, $user, $request)) {
-				break;
+				return true;
 			} elseif ($allow === false) {
 				if (isset($rule->denyCallback)) {
 					call_user_func($rule->denyCallback, $rule);
@@ -85,7 +117,13 @@ class AccessControl extends ActionFilter
 				return false;
 			}
 		}
-		return true;
+		if (isset($this->denyCallback)) {
+			call_user_func($this->denyCallback, $rule);
+		}
+		else {
+			$this->denyAccess($user);
+		}
+		return false;
 	}
 
 	/**
@@ -93,14 +131,14 @@ class AccessControl extends ActionFilter
 	 * The default implementation will redirect the user to the login page if he is a guest;
 	 * if the user is already logged, a 403 HTTP exception will be thrown.
 	 * @param User $user the current user
-	 * @throws HttpException if the user is already logged in.
+	 * @throws AccessDeniedHttpException if the user is already logged in.
 	 */
 	protected function denyAccess($user)
 	{
 		if ($user->getIsGuest()) {
 			$user->loginRequired();
 		} else {
-			throw new HttpException(403, Yii::t('yii', 'You are not allowed to perform this action.'));
+			throw new AccessDeniedHttpException(Yii::t('yii', 'You are not allowed to perform this action.'));
 		}
 	}
 }

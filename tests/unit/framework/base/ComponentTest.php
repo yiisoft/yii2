@@ -17,6 +17,9 @@ function globalEventHandler2($event)
 	$event->handled = true;
 }
 
+/**
+ * @group base
+ */
 class ComponentTest extends TestCase
 {
 	/**
@@ -27,6 +30,7 @@ class ComponentTest extends TestCase
 	protected function setUp()
 	{
 		parent::setUp();
+		$this->mockApplication();
 		$this->component = new NewComponent();
 	}
 
@@ -183,7 +187,7 @@ class ComponentTest extends TestCase
 
 	public function testTrigger()
 	{
-		$this->component->on('click', array($this->component, 'myEventHandler'));
+		$this->component->on('click', [$this->component, 'myEventHandler']);
 		$this->assertFalse($this->component->eventHandled);
 		$this->assertNull($this->component->event);
 		$this->component->raiseEvent();
@@ -193,7 +197,7 @@ class ComponentTest extends TestCase
 		$this->assertFalse($this->component->event->handled);
 
 		$eventRaised = false;
-		$this->component->on('click', function($event) use (&$eventRaised) {
+		$this->component->on('click', function ($event) use (&$eventRaised) {
 			$eventRaised = true;
 		});
 		$this->component->raiseEvent();
@@ -201,7 +205,7 @@ class ComponentTest extends TestCase
 
 		// raise event w/o parameters
 		$eventRaised = false;
-		$this->component->on('test', function($event) use (&$eventRaised) {
+		$this->component->on('test', function ($event) use (&$eventRaised) {
 			$eventRaised = true;
 		});
 		$this->component->trigger('test');
@@ -219,7 +223,7 @@ class ComponentTest extends TestCase
 	{
 		$component = new NewComponent;
 		$component->on('click', 'yiiunit\framework\base\globalEventHandler2');
-		$component->on('click', array($this->component, 'myEventHandler'));
+		$component->on('click', [$this->component, 'myEventHandler']);
 		$component->raiseEvent();
 		$this->assertTrue($component->eventHandled);
 		$this->assertFalse($this->component->eventHandled);
@@ -246,7 +250,7 @@ class ComponentTest extends TestCase
 
 		$p = 'as b';
 		$component = new NewComponent;
-		$component->$p = array('class' => 'NewBehavior');
+		$component->$p = ['class' => 'NewBehavior'];
 		$this->assertSame($behavior, $component->getBehavior('a'));
 		$this->assertTrue($component->hasProperty('p'));
 		$component->test();
@@ -261,12 +265,12 @@ class ComponentTest extends TestCase
 
 		$behavior = new NewBehavior;
 
-		$component->attachBehaviors(array(
+		$component->attachBehaviors([
 			'a' => $behavior,
 			'b' => $behavior,
-		));
+		]);
 
-		$this->assertSame(array('a' => $behavior, 'b' => $behavior), $component->getBehaviors());
+		$this->assertSame(['a' => $behavior, 'b' => $behavior], $component->getBehaviors());
 	}
 
 	public function testDetachBehavior()
@@ -298,7 +302,6 @@ class ComponentTest extends TestCase
 		$component->detachBehaviors();
 		$this->assertNull($component->getBehavior('a'));
 		$this->assertNull($component->getBehavior('b'));
-
 	}
 }
 
@@ -306,7 +309,7 @@ class NewComponent extends Component
 {
 	private $_object = null;
 	private $_text = 'default';
-	private $_items = array();
+	private $_items = [];
 	public $content;
 
 	public function getText()
@@ -330,7 +333,7 @@ class NewComponent extends Component
 
 	public function getExecute()
 	{
-		return function($param) {
+		return function ($param) {
 			return $param * 2;
 		};
 	}

@@ -23,4 +23,3 @@ class InvalidConfigException extends Exception
 		return \Yii::t('yii', 'Invalid Configuration');
 	}
 }
-

@@ -33,7 +33,7 @@ use yii\helpers\ArrayHelper;
  *
  * ~~~
  * CREATE TABLE tbl_migration (
- *     version varchar(255) PRIMARY KEY,
+ *     version varchar(180) PRIMARY KEY,
  *     apply_time integer
  * )
  * ~~~
@@ -96,7 +96,9 @@ class MigrateController extends Controller
 	 */
 	public function globalOptions()
 	{
-		return array('migrationPath', 'migrationTable', 'db', 'templateFile', 'interactive');
+		return array_merge(parent::globalOptions(), [
+			'migrationPath', 'migrationTable', 'db', 'templateFile', 'interactive', 'color'
+		]);
 	}
 
 	/**
@@ -115,11 +117,13 @@ class MigrateController extends Controller
 			}
 			$this->migrationPath = $path;
 
-			if (is_string($this->db)) {
-				$this->db = Yii::$app->getComponent($this->db);
-			}
-			if (!$this->db instanceof Connection) {
-				throw new Exception("The 'db' option must refer to the application component ID of a DB connection.");
+			if ($action->id !== 'create') {
+				if (is_string($this->db)) {
+					$this->db = Yii::$app->getComponent($this->db);
+				}
+				if (!$this->db instanceof Connection) {
+					throw new Exception("The 'db' option must refer to the application component ID of a DB connection.");
+				}
 			}
 
 			$version = Yii::getVersion();
@@ -147,7 +151,7 @@ class MigrateController extends Controller
 		$migrations = $this->getNewMigrations();
 		if (empty($migrations)) {
 			echo "No new migration found. Your system is up-to-date.\n";
-			Yii::$app->end();
+			return;
 		}
 
 		$total = count($migrations);
@@ -356,10 +360,10 @@ class MigrateController extends Controller
 				if ($this->confirm("Set migration history at $originalVersion?")) {
 					$command = $this->db->createCommand();
 					for ($j = 0; $j <= $i; ++$j) {
-						$command->insert($this->migrationTable, array(
+						$command->insert($this->migrationTable, [
 							'version' => $migrations[$j],
 							'apply_time' => time(),
-						))->execute();
+						])->execute();
 					}
 					echo "The migration history is set at $originalVersion.\nNo actual migration was performed.\n";
 				}
@@ -377,9 +381,9 @@ class MigrateController extends Controller
 					if ($this->confirm("Set migration history at $originalVersion?")) {
 						$command = $this->db->createCommand();
 						for ($j = 0; $j < $i; ++$j) {
-							$command->delete($this->migrationTable, array(
+							$command->delete($this->migrationTable, [
 								'version' => $migrations[$j],
-							))->execute();
+							])->execute();
 						}
 						echo "The migration history is set at $originalVersion.\nNo actual migration was performed.\n";
 					}
@@ -486,9 +490,7 @@ class MigrateController extends Controller
 		$file = $this->migrationPath . DIRECTORY_SEPARATOR . $name . '.php';
 
 		if ($this->confirm("Create new migration '$file'?")) {
-			$content = $this->renderFile(Yii::getAlias($this->templateFile), array(
-				'className' => $name,
-			));
+			$content = $this->renderFile(Yii::getAlias($this->templateFile), ['className' => $name]);
 			file_put_contents($file, $content);
 			echo "New migration created successfully.\n";
 		}
@@ -509,10 +511,10 @@ class MigrateController extends Controller
 		$start = microtime(true);
 		$migration = $this->createMigration($class);
 		if ($migration->up() !== false) {
-			$this->db->createCommand()->insert($this->migrationTable, array(
+			$this->db->createCommand()->insert($this->migrationTable, [
 				'version' => $class,
 				'apply_time' => time(),
-			))->execute();
+			])->execute();
 			$time = microtime(true) - $start;
 			echo "*** applied $class (time: " . sprintf("%.3f", $time) . "s)\n\n";
 			return true;
@@ -538,9 +540,9 @@ class MigrateController extends Controller
 		$start = microtime(true);
 		$migration = $this->createMigration($class);
 		if ($migration->down() !== false) {
-			$this->db->createCommand()->delete($this->migrationTable, array(
+			$this->db->createCommand()->delete($this->migrationTable, [
 				'version' => $class,
-			))->execute();
+			])->execute();
 			$time = microtime(true) - $start;
 			echo "*** reverted $class (time: " . sprintf("%.3f", $time) . "s)\n\n";
 			return true;
@@ -560,9 +562,7 @@ class MigrateController extends Controller
 	{
 		$file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
 		require_once($file);
-		return new $class(array(
-			'db' => $this->db,
-		));
+		return new $class(['db' => $this->db]);
 	}
 
 	/**
@@ -572,15 +572,15 @@ class MigrateController extends Controller
 	 */
 	protected function getMigrationHistory($limit)
 	{
-		if ($this->db->schema->getTableSchema($this->migrationTable) === null) {
+		if ($this->db->schema->getTableSchema($this->migrationTable, true) === null) {
 			$this->createMigrationHistoryTable();
 		}
 		$query = new Query;
-		$rows = $query->select(array('version', 'apply_time'))
+		$rows = $query->select(['version', 'apply_time'])
 			->from($this->migrationTable)
 			->orderBy('version DESC')
 			->limit($limit)
-			->createCommand()
+			->createCommand($this->db)
 			->queryAll();
 		$history = ArrayHelper::map($rows, 'version', 'apply_time');
 		unset($history[self::BASE_MIGRATION]);
@@ -593,14 +593,14 @@ class MigrateController extends Controller
 	protected function createMigrationHistoryTable()
 	{
 		echo 'Creating migration history table "' . $this->migrationTable . '"...';
-		$this->db->createCommand()->createTable($this->migrationTable, array(
-			'version' => 'varchar(255) NOT NULL PRIMARY KEY',
+		$this->db->createCommand()->createTable($this->migrationTable, [
+			'version' => 'varchar(180) NOT NULL PRIMARY KEY',
 			'apply_time' => 'integer',
-		))->execute();
-		$this->db->createCommand()->insert($this->migrationTable, array(
+		])->execute();
+		$this->db->createCommand()->insert($this->migrationTable, [
 			'version' => self::BASE_MIGRATION,
 			'apply_time' => time(),
-		))->execute();
+		])->execute();
 		echo "done.\n";
 	}
 
@@ -610,12 +610,12 @@ class MigrateController extends Controller
 	 */
 	protected function getNewMigrations()
 	{
-		$applied = array();
+		$applied = [];
 		foreach ($this->getMigrationHistory(-1) as $version => $time) {
 			$applied[substr($version, 1, 13)] = true;
 		}
 
-		$migrations = array();
+		$migrations = [];
 		$handle = opendir($this->migrationPath);
 		while (($file = readdir($handle)) !== false) {
 			if ($file === '.' || $file === '..') {

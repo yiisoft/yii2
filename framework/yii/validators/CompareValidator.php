@@ -58,7 +58,7 @@ class CompareValidator extends Validator
 	 * - `<`: validates to see if the value being validated is less than the value being compared with.
 	 * - `<=`: validates to see if the value being validated is less than or equal to the value being compared with.
 	 */
-	public $operator = '=';
+	public $operator = '==';
 	/**
 	 * @var string the user-defined error message. It may contain the following placeholders which
 	 * will be replaced accordingly by the validator:
@@ -142,10 +142,10 @@ class CompareValidator extends Validator
 			default: $valid = false; break;
 		}
 		if (!$valid) {
-			$this->addError($object, $attribute, $this->message, array(
-				'{compareAttribute}' => $compareLabel,
-				'{compareValue}' => $compareValue,
-			));
+			$this->addError($object, $attribute, $this->message, [
+				'compareAttribute' => $compareLabel,
+				'compareValue' => $compareValue,
+			]);
 		}
 	}
 
@@ -170,6 +170,7 @@ class CompareValidator extends Validator
 			case '>=': return $value >= $this->compareValue;
 			case '<': return $value < $this->compareValue;
 			case '<=': return $value <= $this->compareValue;
+			default: return false;
 		}
 	}
 
@@ -178,13 +179,13 @@ class CompareValidator extends Validator
 	 * @param \yii\base\Model $object the data object being validated
 	 * @param string $attribute the name of the attribute to be validated
 	 * @return string the client-side validation script
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
+	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
 	 * containing a model form with this validator applied.
 	 * @throws InvalidConfigException if CompareValidator::operator is invalid
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
-		$options = array('operator' => $this->operator);
+		$options = ['operator' => $this->operator];
 
 		if ($this->compareValue !== null) {
 			$options['compareValue'] = $this->compareValue;
@@ -199,13 +200,13 @@ class CompareValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
-		$options['message'] = Html::encode(strtr($this->message, array(
+		$options['message'] = Html::encode(strtr($this->message, [
 			'{attribute}' => $object->getAttributeLabel($attribute),
-			'{value}' => $object->$attribute,
+			'{compareAttribute}' => $compareValue,
 			'{compareValue}' => $compareValue,
-		)));
+		]));
 
-		$view->registerAssetBundle('yii/validation');
+		ValidationAsset::register($view);
 		return 'yii.validation.compare(value, messages, ' . json_encode($options) . ');';
 	}
 }
