@@ -365,7 +365,7 @@ class Collection extends Object
 	}
 
 	/**
-	 * Performs aggregation using Mongo Map Reduce mechanism.
+	 * Performs aggregation using Mongo "group" command.
 	 * @param mixed $keys fields to group by. If an array or non-code object is passed,
 	 * it will be the key used to group results. If instance of [[\MongoCode]] passed,
 	 * it will be treated as a function that returns the key to group by.
@@ -377,37 +377,92 @@ class Collection extends Object
 	 *  - condition - criteria for including a document in the aggregation.
 	 *  - finalize - function called once per unique key that takes the final output of the reduce function.
 	 * @return array the result of the aggregation.
-	 * @see http://docs.mongodb.org/manual/core/map-reduce/
+	 * @see http://docs.mongodb.org/manual/reference/command/group/
+	 * @throws Exception on failure.
 	 */
-	public function mapReduce($keys, $initial, $reduce, $options = [])
+	public function group($keys, $initial, $reduce, $options = [])
+	{
+		$token = 'Grouping from ' . $this->getFullName();
+		Yii::info($token, __METHOD__);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+
+			if (!($reduce instanceof \MongoCode)) {
+				$reduce = new \MongoCode((string)$reduce);
+			}
+			if (array_key_exists('condition', $options)) {
+				$options['condition'] = $this->buildCondition($options['condition']);
+			}
+			if (array_key_exists('finalize', $options)) {
+				if (!($options['finalize'] instanceof \MongoCode)) {
+					$options['finalize'] = new \MongoCode((string)$options['finalize']);
+				}
+			}
+			// Avoid possible E_DEPRECATED for $options:
+			if (empty($options)) {
+				$result = $this->mongoCollection->group($keys, $initial, $reduce);
+			} else {
+				$result = $this->mongoCollection->group($keys, $initial, $reduce, $options);
+			}
+			$this->tryResultError($result);
+
+			Yii::endProfile($token, __METHOD__);
+			if (array_key_exists('retval', $result)) {
+				return $result['retval'];
+			} else {
+				return [];
+			}
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
+	}
+
+	/**
+	 * Performs aggregation using Mongo "map reduce" mechanism.
+	 * Note: this function will not return the aggregation result, instead it will
+	 * write it inside the another Mongo collection specified by "out" parameter.
+	 * @param \MongoCode|string $map function, which emits map data from collection.
+	 * Argument will be automatically cast to [[\MongoCode]].
+	 * @param \MongoCode|string $reduce function that takes two arguments (the map key
+	 * and the map values) and does the aggregation.
+	 * Argument will be automatically cast to [[\MongoCode]].
+	 * @param string|array $out output collection name. It could be a string for simple output
+	 * ('outputCollection'), or an array for parametrized output (['merge' => 'outputCollection'])
+	 * @param array $condition criteria for including a document in the aggregation.
+	 * @return string the map reduce output collection name.
+	 * @throws Exception on failure.
+	 */
+	public function mapReduce($map, $reduce, $out, $condition = [])
 	{
 		$token = 'Map reduce from ' . $this->getFullName();
 		Yii::info($token, __METHOD__);
-		Yii::beginProfile($token, __METHOD__);
 
-		if (!($reduce instanceof \MongoCode)) {
-			$reduce = new \MongoCode((string)$reduce);
-		}
-		if (array_key_exists('condition', $options)) {
-			$options['condition'] = $this->buildCondition($options['condition']);
-		}
-		if (array_key_exists('finalize', $options)) {
-			if (!($options['finalize'] instanceof \MongoCode)) {
-				$options['finalize'] = new \MongoCode((string)$options['finalize']);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			if (!($map instanceof \MongoCode)) {
+				$map = new \MongoCode((string)$map);
 			}
-		}
-		// Avoid possible E_DEPRECATED for $options:
-		if (empty($options)) {
-			$result = $this->mongoCollection->group($keys, $initial, $reduce);
-		} else {
-			$result = $this->mongoCollection->group($keys, $initial, $reduce, $options);
-		}
+			if (!($reduce instanceof \MongoCode)) {
+				$reduce = new \MongoCode((string)$reduce);
+			}
+			$command = [
+				'mapReduce' => $this->getName(),
+				'map' => $map,
+				'reduce' => $reduce,
+				'out' => $out
+			];
+			if (!empty($condition)) {
+				$command['query'] = $this->buildCondition($condition);
+			}
 
-		Yii::endProfile($token, __METHOD__);
-		if (array_key_exists('retval', $result)) {
-			return $result['retval'];
-		} else {
-			return [];
+			$result = $this->mongoCollection->db->command($command);
+			$this->tryResultError($result);
+			Yii::endProfile($token, __METHOD__);
+			return $result['result'];
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
 		}
 	}
 

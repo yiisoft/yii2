@@ -10,6 +10,7 @@ class CollectionTest extends MongoTestCase
 	protected function tearDown()
 	{
 		$this->dropCollection('customer');
+		$this->dropCollection('mapReduceOut');
 		parent::tearDown();
 	}
 
@@ -157,7 +158,7 @@ class CollectionTest extends MongoTestCase
 	/**
 	 * @depends testBatchInsert
 	 */
-	public function testMapReduce()
+	public function testGroup()
 	{
 		$collection = $this->getConnection()->getCollection('customer');
 		$rows = [
@@ -175,10 +176,63 @@ class CollectionTest extends MongoTestCase
 		$keys = ['address' => 1];
 		$initial = ['items' => []];
 		$reduce = "function (obj, prev) { prev.items.push(obj.name); }";
-		$result = $collection->mapReduce($keys, $initial, $reduce);
+		$result = $collection->group($keys, $initial, $reduce);
 		$this->assertEquals(2, count($result));
 		$this->assertNotEmpty($result[0]['address']);
 		$this->assertNotEmpty($result[0]['items']);
+	}
+
+	/**
+	 * @depends testBatchInsert
+	 */
+	public function testMapReduce()
+	{
+		$collection = $this->getConnection()->getCollection('customer');
+		$rows = [
+			[
+				'name' => 'customer 1',
+				'status' => 1,
+				'amount' => 100,
+			],
+			[
+				'name' => 'customer 2',
+				'status' => 1,
+				'amount' => 200,
+			],
+			[
+				'name' => 'customer 2',
+				'status' => 2,
+				'amount' => 400,
+			],
+			[
+				'name' => 'customer 2',
+				'status' => 3,
+				'amount' => 500,
+			],
+		];
+		$collection->batchInsert($rows);
+
+		$result = $collection->mapReduce(
+			'function () {emit(this.status, this.amount)}',
+			'function (key, values) {return Array.sum(values)}',
+			'mapReduceOut',
+			['status' => ['$lt' => 3]]
+		);
+		$this->assertEquals('mapReduceOut', $result);
+
+		$outputCollection = $this->getConnection()->getCollection($result);
+		$rows = $outputCollection->findAll();
+		$expectedRows = [
+			[
+				'_id' => 1,
+				'value' => 300,
+			],
+			[
+				'_id' => 2,
+				'value' => 400,
+			],
+		];
+		$this->assertEquals($expectedRows, $rows);
 	}
 
 	public function testCreateIndex()
