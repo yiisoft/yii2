@@ -20,9 +20,9 @@ You can then send an email as follows:
 
 ```php
 Yii::$app->mail->compose('contact/html')
-     ->from('from@domain.com')
-     ->to($form->email)
-     ->subject($form->subject)
+     ->setFrom('from@domain.com')
+     ->setTo($form->email)
+     ->setSubject($form->subject)
      ->send();
 ```
 
