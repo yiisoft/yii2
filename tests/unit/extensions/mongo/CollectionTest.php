@@ -270,7 +270,7 @@ class CollectionTest extends MongoTestCase
 	{
 		$collection = $this->getConnection()->getCollection('customer');
 		$collection->createIndex('name');
-		$this->assertEquals(1, $collection->dropAllIndexes());
+		$this->assertEquals(2, $collection->dropAllIndexes());
 		$indexInfo = $collection->mongoCollection->getIndexInfo();
 		$this->assertEquals(1, count($indexInfo));
 	}

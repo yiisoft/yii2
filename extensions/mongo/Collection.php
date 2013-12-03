@@ -165,7 +165,7 @@ class Collection extends Object
 		try {
 			$result = $this->mongoCollection->deleteIndexes();
 			$this->tryResultError($result);
-			return $result['nIndexesWas'] - 1;
+			return $result['nIndexesWas'];
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
 			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
