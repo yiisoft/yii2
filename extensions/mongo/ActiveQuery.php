@@ -29,10 +29,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	public function all($db = null)
 	{
 		$cursor = $this->buildCursor($db);
-		$rows = [];
-		foreach ($cursor as $row) {
-			$rows[] = $row;
-		}
+		$rows = $this->fetchRows($cursor);
 		if (!empty($rows)) {
 			$models = $this->createModels($rows);
 			if (!empty($this->with)) {

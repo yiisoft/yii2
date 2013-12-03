@@ -103,4 +103,21 @@ class MongoTestCase extends TestCase
 			}
 		}
 	}
+
+	/**
+	 * Finds all records in collection.
+	 * @param \yii\mongo\Collection $collection
+	 * @param array $condition
+	 * @param array $fields
+	 * @return array rows
+	 */
+	protected function findAll($collection, $condition = [], $fields = [])
+	{
+		$cursor = $collection->find($condition, $fields);
+		$result = [];
+		foreach ($cursor as $data) {
+			$result[] = $data;
+		}
+		return $result;
+	}
 }

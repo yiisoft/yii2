@@ -173,28 +173,16 @@ class Collection extends Object
 	}
 
 	/**
-	 * @param array $condition
-	 * @param array $fields
-	 * @return \MongoCursor
+	 * Returns a cursor for the search results.
+	 * In order to perform "find" queries use [[Query]] class.
+	 * @param array $condition query condition
+	 * @param array $fields fields to be selected
+	 * @return \MongoCursor cursor for the search results
+	 * @see Query
 	 */
 	public function find($condition = [], $fields = [])
 	{
 		return $this->mongoCollection->find($this->buildCondition($condition), $fields);
-	}
-
-	/**
-	 * @param array $condition
-	 * @param array $fields
-	 * @return array
-	 */
-	public function findAll($condition = [], $fields = [])
-	{
-		$cursor = $this->find($condition, $fields);
-		$result = [];
-		foreach ($cursor as $data) {
-			$result[] = $data;
-		}
-		return $result;
 	}
 
 	/**

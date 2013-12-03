@@ -45,6 +45,7 @@ class CollectionTest extends MongoTestCase
 
 	/**
 	 * @depends testInsert
+	 * @depends testFind
 	 */
 	public function testFindAll()
 	{
@@ -55,7 +56,11 @@ class CollectionTest extends MongoTestCase
 		];
 		$id = $collection->insert($data);
 
-		$rows = $collection->findAll();
+		$cursor = $collection->find();
+		$rows = [];
+		foreach ($cursor as $row) {
+			$rows[] = $row;
+		}
 		$this->assertEquals(1, count($rows));
 		$this->assertEquals($id, $rows[0]['_id']);
 	}
@@ -129,7 +134,7 @@ class CollectionTest extends MongoTestCase
 		$count = $collection->remove(['_id' => $id]);
 		$this->assertEquals(1, $count);
 
-		$rows = $collection->findAll();
+		$rows = $this->findAll($collection);
 		$this->assertEquals(0, count($rows));
 	}
 
@@ -151,7 +156,7 @@ class CollectionTest extends MongoTestCase
 		$count = $collection->update(['_id' => $id], $newData);
 		$this->assertEquals(1, $count);
 
-		list($row) = $collection->findAll();
+		list($row) = $this->findAll($collection);
 		$this->assertEquals($newData['name'], $row['name']);
 	}
 
@@ -221,7 +226,7 @@ class CollectionTest extends MongoTestCase
 		$this->assertEquals('mapReduceOut', $result);
 
 		$outputCollection = $this->getConnection()->getCollection($result);
-		$rows = $outputCollection->findAll();
+		$rows = $this->findAll($outputCollection);
 		$expectedRows = [
 			[
 				'_id' => 1,

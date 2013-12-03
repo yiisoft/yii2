@@ -10,6 +10,7 @@ namespace yii\mongo;
 use yii\base\Component;
 use yii\db\QueryInterface;
 use yii\db\QueryTrait;
+use yii\helpers\Json;
 use Yii;
 
 /**
@@ -104,6 +105,48 @@ class Query extends Component implements QueryInterface
 	}
 
 	/**
+	 * @param \MongoCursor $cursor Mongo cursor instance to fetch data from.
+	 * @param boolean $all whether to fetch all rows or only first one.
+	 * @param string|callable $indexBy
+	 * @throws Exception
+	 * @return array|boolean
+	 */
+	protected function fetchRows(\MongoCursor $cursor, $all = true, $indexBy = null)
+	{
+		$token = 'Querying: ' . Json::encode($cursor->info());
+		Yii::info($token, __METHOD__);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$result = [];
+			if ($all) {
+				foreach ($cursor as $row) {
+					if ($indexBy !== null) {
+						if (is_string($indexBy)) {
+							$key = $row[$indexBy];
+						} else {
+							$key = call_user_func($indexBy, $row);
+						}
+						$result[$key] = $row;
+					} else {
+						$result[] = $row;
+					}
+				}
+			} else {
+				if ($cursor->hasNext()) {
+					$result = $cursor->getNext();
+				} else {
+					$result = false;
+				}
+			}
+			Yii::endProfile($token, __METHOD__);
+			return $result;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
+	}
+
+	/**
 	 * Executes the query and returns all results as an array.
 	 * @param Connection $db the Mongo connection used to execute the query.
 	 * If this parameter is not given, the `mongo` application component will be used.
@@ -112,20 +155,7 @@ class Query extends Component implements QueryInterface
 	public function all($db = null)
 	{
 		$cursor = $this->buildCursor($db);
-		$result = [];
-		foreach ($cursor as $row) {
-			if ($this->indexBy !== null) {
-				if (is_string($this->indexBy)) {
-					$key = $row[$this->indexBy];
-				} else {
-					$key = call_user_func($this->indexBy, $row);
-				}
-				$result[$key] = $row;
-			} else {
-				$result[] = $row;
-			}
-		}
-		return $result;
+		return $this->fetchRows($cursor, true, $this->indexBy);
 	}
 
 	/**
@@ -138,11 +168,7 @@ class Query extends Component implements QueryInterface
 	public function one($db = null)
 	{
 		$cursor = $this->buildCursor($db);
-		if ($cursor->hasNext()) {
-			return $cursor->getNext();
-		} else {
-			return false;
-		}
+		return $this->fetchRows($cursor, false);
 	}
 
 	/**
@@ -151,11 +177,22 @@ class Query extends Component implements QueryInterface
 	 * @param Connection $db the Mongo connection used to execute the query.
 	 * If this parameter is not given, the `mongo` application component will be used.
 	 * @return integer number of records
+	 * @throws Exception on failure.
 	 */
 	public function count($q = '*', $db = null)
 	{
 		$cursor = $this->buildCursor($db);
-		return $cursor->count();
+		$token = 'Counting: ' . Json::encode($cursor->info());
+		Yii::info($token, __METHOD__);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$result = $cursor->count();
+			Yii::endProfile($token, __METHOD__);
+			return $result;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
 	}
 
 	/**
