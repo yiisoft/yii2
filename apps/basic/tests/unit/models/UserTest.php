@@ -4,7 +4,7 @@ namespace tests\unit\models;
 
 #use yii\test\DbTestTrait;
 
-class UserTest extends \PHPUnit_Framework_TestCase
+class UserTest extends \tests\_helpers\TestCase
 {
 
 	use DbTestTrait;
@@ -12,16 +12,14 @@ class UserTest extends \PHPUnit_Framework_TestCase
 	protected function setUp()
 	{
 		/*
+		 *
 		 * you can load fixtures in this way
 		 *
+		parent::setUp();
 		$this->loadFixtures([
 			'tbl_user',
 		]);
 		 */
-	}
-
-	protected function tearDown()
-	{
 	}
 
 }

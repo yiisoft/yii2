@@ -2,15 +2,7 @@
 
 namespace tests\unit\models;
 
-class LoginFormTest extends \PHPUnit_Framework_TestCase
+class LoginFormTest extends \tests\_helpers\TestCase
 {
-
-    protected function setUp()
-    {
-    }
-
-    protected function tearDown()
-    {
-    }
 
 }
