@@ -349,19 +349,27 @@ class Collection extends Object
 	/**
 	 * Performs aggregation using Mongo Aggregation Framework.
 	 * @param array $pipeline list of pipeline operators, or just the first operator
-	 * @param array $pipelineOperator Additional pipeline operators
+	 * @param array $pipelineOperator additional pipeline operator. You can specify additional
+	 * pipelines via third argument, fourth argument etc.
 	 * @return array the result of the aggregation.
+	 * @throws Exception on failure.
 	 * @see http://docs.mongodb.org/manual/applications/aggregation/
 	 */
 	public function aggregate($pipeline, $pipelineOperator = [])
 	{
 		$token = 'Aggregating from ' . $this->getFullName();
 		Yii::info($token, __METHOD__);
-		Yii::beginProfile($token, __METHOD__);
-		$args = func_get_args();
-		$result = call_user_func_array([$this->mongoCollection, 'aggregate'], $args);
-		Yii::endProfile($token, __METHOD__);
-		return $result;
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$args = func_get_args();
+			$result = call_user_func_array([$this->mongoCollection, 'aggregate'], $args);
+			$this->tryResultError($result);
+			Yii::endProfile($token, __METHOD__);
+			return $result['result'];
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
 	}
 
 	/**
@@ -377,8 +385,8 @@ class Collection extends Object
 	 *  - condition - criteria for including a document in the aggregation.
 	 *  - finalize - function called once per unique key that takes the final output of the reduce function.
 	 * @return array the result of the aggregation.
-	 * @see http://docs.mongodb.org/manual/reference/command/group/
 	 * @throws Exception on failure.
+	 * @see http://docs.mongodb.org/manual/reference/command/group/
 	 */
 	public function group($keys, $initial, $reduce, $options = [])
 	{

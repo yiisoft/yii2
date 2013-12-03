@@ -244,8 +244,8 @@ class Query extends Component implements QueryInterface
 			]
 		];
 		$result = $collection->aggregate($pipelines);
-		if (!empty($result['ok'])) {
-			return $result['result'][0]['total'];
+		if (array_key_exists(0, $result)) {
+			return $result[0]['total'];
 		} else {
 			return 0;
 		}
