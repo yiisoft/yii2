@@ -55,14 +55,6 @@ class Database extends Object
 	}
 
 	/**
-	 * Drops this database.
-	 */
-	public function drop()
-	{
-		$this->mongoDb->drop();
-	}
-
-	/**
 	 * Creates new collection.
 	 * Note: Mongo creates new collections automatically on the first demand,
 	 * this method makes sense only for the migration script or for the case

@@ -12,10 +12,58 @@ use yii\base\InvalidConfigException;
 use Yii;
 
 /**
- * Class Connection
+ * Connection represents a connection to a MongoDb server.
+ *
+ * Connection works together with [[Database]] and [[Collection]] to provide data access
+ * to the Mongo database. They are wrappers of the [[MongoDB PHP extension]](http://us1.php.net/manual/en/book.mongo.php).
+ *
+ * To establish a DB connection, set [[dsn]] and then call [[open()]] to be true.
+ *
+ * The following example shows how to create a Connection instance and establish
+ * the DB connection:
+ *
+ * ~~~
+ * $connection = new \yii\mongo\Connection([
+ *     'dsn' => $dsn,
+ * ]);
+ * $connection->open();
+ * ~~~
+ *
+ * After the Mongo connection is established, one can access Mongo databases and collections:
+ *
+ * ~~~
+ * $database = $connection->getDatabase('my_mongo_db');
+ * $collection = $database->getCollection('customer');
+ * $collection->insert(['name' => 'John Smith', 'status' => 1]);
+ * ~~~
+ *
+ * You can work with several different databases at the same server using this class.
+ * However, while it is unlikely your application will actually need it, the Connection class
+ * provides ability to use [[defaultDatabaseName]] as well as a shortcut method [[getCollection()]]
+ * to retrieve a particular collection instance:
+ *
+ * ~~~
+ * // get collection 'customer' from default database:
+ * $collection = $connection->getCollection('customer');
+ * // get collection 'customer' from database 'mydatabase':
+ * $collection = $connection->getCollection(['mydatabase', 'customer']);
+ * ~~~
+ *
+ * Connection is often used as an application component and configured in the application
+ * configuration like the following:
+ *
+ * ~~~
+ * [
+ *	 'components' => [
+ *		 'mongo' => [
+ *			 'class' => '\yii\mongo\Connection',
+ *			 'dsn' => 'mongodb://developer:password@localhost:27017/mydatabase',
+ *		 ],
+ *	 ],
+ * ]
+ * ~~~
  *
  * @property boolean $isActive Whether the Mongo connection is established. This property is read-only.
- * @property QueryBuilder $queryBuilder The query builder for the current Mongo connection. This property
  * is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -30,8 +78,8 @@ class Connection extends Component
 	 * mongodb://[username:password@]host1[:port1][,host2[:port2:],...][/dbname]
 	 * For example:
 	 * mongodb://localhost:27017
-	 * mongodb://developer:somepassword@localhost:27017
-	 * mongodb://developer:somepassword@localhost:27017/mydatabase
+	 * mongodb://developer:password@localhost:27017
+	 * mongodb://developer:password@localhost:27017/mydatabase
 	 */
 	public $dsn;
 	/**
@@ -48,6 +96,8 @@ class Connection extends Component
 	public $options = [];
 	/**
 	 * @var string name of the Mongo database to use by default.
+	 * If this field left blank, connection instance will attempt to determine it from
+	 * [[options]] and [[dsn]] automatically, if needed.
 	 */
 	public $defaultDatabaseName;
 	/**

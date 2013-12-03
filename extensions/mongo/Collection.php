@@ -14,6 +14,40 @@ use Yii;
 /**
  * Collection represents the Mongo collection information.
  *
+ * A collection object is usually created by calling [[Database::getCollection()]] or [[Connection::getCollection()]].
+ *
+ * Collection provides the basic interface for the Mongo queries, mostly: insert, update, delete operations.
+ * For example:
+ *
+ * ~~~
+ * $collection = Yii::$app->mongo->getCollection('customer');
+ * $collection->insert(['name' => 'John Smith', 'status' => 1]);
+ * ~~~
+ *
+ * Mongo uses JSON format to specify query conditions with quite specific syntax.
+ * However Collection class provides the ability of "translating" common condition format used "yii\db\*"
+ * into Mongo condition.
+ * For example:
+ * ~~~
+ * $condition = [
+ *     ['AND', 'name', 'John'],
+ *     ['OR', 'status', [1, 2, 3]],
+ * ];
+ * print_r($collection->buildCondition($condition));
+ * // outputs :
+ * [
+ *     '$or' => [
+ *         'name' => 'John',
+ *         'status' => ['$in' => [1, 2, 3]],
+ *     ]
+ * ]
+ * ~~~
+ *
+ * To perform "find" queries, please use [[Query]] instead.
+ *
+ * @property string $name name of this collection. This property is read-only.
+ * @property string $fullName full name of this collection, including database name. This property is read-only.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
@@ -62,7 +96,7 @@ class Collection extends Object
 	}
 
 	/**
-	 * Creates an index on the collection and the specified fields
+	 * Creates an index on the collection and the specified fields.
 	 * @param array|string $columns column name or list of column names.
 	 * If array is given, each element in the array has as key the field name, and as
 	 * value either 1 for ascending sort, or -1 for descending sort.
@@ -233,6 +267,8 @@ class Collection extends Object
 
 	/**
 	 * Updates the rows, which matches given criteria by given data.
+	 * Note: for "multiple" mode Mongo requires explicit strategy "$set" or "$inc"
+	 * to be specified for the "newData". If no strategy is passed "$set" will be used.
 	 * @param array $condition description of the objects to update.
 	 * @param array $newData the object with which to update the matching records.
 	 * @param array $options list of options in format: optionName => optionValue.
@@ -418,6 +454,20 @@ class Collection extends Object
 	 * Performs aggregation using Mongo "map reduce" mechanism.
 	 * Note: this function will not return the aggregation result, instead it will
 	 * write it inside the another Mongo collection specified by "out" parameter.
+	 * For example:
+	 *
+	 * ~~~
+	 * $customerCollection = Yii::$app->mongo->getCollection('customer');
+	 * $resultCollectionName = $customerCollection->mapReduce(
+	 *     'function () {emit(this.status, this.amount)}',
+	 *     'function (key, values) {return Array.sum(values)}',
+	 *     'mapReduceOut',
+	 *     ['status' => 3]
+	 * );
+	 * $query = new Query();
+	 * $results = $query->from($resultCollectionName)->all();
+	 * ~~~
+	 *
 	 * @param \MongoCode|string $map function, which emits map data from collection.
 	 * Argument will be automatically cast to [[\MongoCode]].
 	 * @param \MongoCode|string $reduce function that takes two arguments (the map key
