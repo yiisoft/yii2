@@ -8,11 +8,8 @@
 namespace yii\sphinx;
 
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
-use yii\base\Model;
-use yii\base\ModelEvent;
+use yii\db\BaseActiveRecord;
 use yii\base\NotSupportedException;
-use yii\base\UnknownMethodException;
 use yii\db\ActiveRelationInterface;
 use yii\db\StaleObjectException;
 use yii\helpers\Inflector;
@@ -21,6 +18,9 @@ use Yii;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
+ *
+ * Warning: optimistic lock will NOT work in case of updating fields (not attributes) for the
+ * runtime indexes!
  *
  * @property array $dirtyAttributes The changed attribute values (name-value pairs). This property is
  * read-only.
@@ -40,44 +40,8 @@ use Yii;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-abstract class ActiveRecord extends Model
+abstract class ActiveRecord extends BaseActiveRecord
 {
-	/**
-	 * @event Event an event that is triggered when the record is initialized via [[init()]].
-	 */
-	const EVENT_INIT = 'init';
-	/**
-	 * @event Event an event that is triggered after the record is created and populated with query result.
-	 */
-	const EVENT_AFTER_FIND = 'afterFind';
-	/**
-	 * @event ModelEvent an event that is triggered before inserting a record.
-	 * You may set [[ModelEvent::isValid]] to be false to stop the insertion.
-	 */
-	const EVENT_BEFORE_INSERT = 'beforeInsert';
-	/**
-	 * @event Event an event that is triggered after a record is inserted.
-	 */
-	const EVENT_AFTER_INSERT = 'afterInsert';
-	/**
-	 * @event ModelEvent an event that is triggered before updating a record.
-	 * You may set [[ModelEvent::isValid]] to be false to stop the update.
-	 */
-	const EVENT_BEFORE_UPDATE = 'beforeUpdate';
-	/**
-	 * @event Event an event that is triggered after a record is updated.
-	 */
-	const EVENT_AFTER_UPDATE = 'afterUpdate';
-	/**
-	 * @event ModelEvent an event that is triggered before deleting a record.
-	 * You may set [[ModelEvent::isValid]] to be false to stop the deletion.
-	 */
-	const EVENT_BEFORE_DELETE = 'beforeDelete';
-	/**
-	 * @event Event an event that is triggered after a record is deleted.
-	 */
-	const EVENT_AFTER_DELETE = 'afterDelete';
-
 	/**
 	 * The insert operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
 	 */
@@ -96,18 +60,6 @@ abstract class ActiveRecord extends Model
 	 */
 	const OP_ALL = 0x07;
 
-	/**
-	 * @var array attribute values indexed by attribute names
-	 */
-	private $_attributes = [];
-	/**
-	 * @var array old attribute values indexed by attribute names.
-	 */
-	private $_oldAttributes;
-	/**
-	 * @var array related models indexed by the relation names
-	 */
-	private $_related = [];
 	/**
 	 * @var string current snippet value for this Active Record instance.
 	 * It will be filled up automatically when instance found using [[Query::snippetCallback]]
@@ -359,37 +311,6 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Returns the name of the column that stores the lock version for implementing optimistic locking.
-	 *
-	 * Optimistic locking allows multiple users to access the same record for edits and avoids
-	 * potential conflicts. In case when a user attempts to save the record upon some staled data
-	 * (because another user has modified the data), a [[StaleObjectException]] exception will be thrown,
-	 * and the update or deletion is skipped.
-	 *
-	 * Optimistic locking is only supported by [[update()]] and [[delete()]].
-	 *
-	 * To use optimistic locking:
-	 *
-	 * 1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
-	 *    Override this method to return the name of this column.
-	 * 2. In the Web form that collects the user input, add a hidden field that stores
-	 *    the lock version of the recording being updated.
-	 * 3. In the controller action that does the data updating, try to catch the [[StaleObjectException]]
-	 *    and implement necessary business logic (e.g. merging the changes, prompting stated data)
-	 *    to resolve the conflict.
-	 *
-	 * Warning: optimistic lock will NOT work in case of updating fields (not attributes) for the
-	 * runtime indexes!
-	 *
-	 * @return string the column name that stores the lock version of a table row.
-	 * If null is returned (default implemented), optimistic locking will not be supported.
-	 */
-	public function optimisticLock()
-	{
-		return null;
-	}
-
-	/**
 	 * Declares which operations should be performed within a transaction in different scenarios.
 	 * The supported DB operations are: [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]],
 	 * which correspond to the [[insert()]], [[update()]] and [[delete()]] methods, respectively.
@@ -422,161 +343,6 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * PHP getter magic method.
-	 * This method is overridden so that attributes and related objects can be accessed like properties.
-	 * @param string $name property name
-	 * @return mixed property value
-	 * @see getAttribute()
-	 */
-	public function __get($name)
-	{
-		if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
-			return $this->_attributes[$name];
-		} elseif ($this->hasAttribute($name)) {
-			return null;
-		} else {
-			if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
-				return $this->_related[$name];
-			}
-			$value = parent::__get($name);
-			if ($value instanceof ActiveRelationInterface) {
-				return $this->_related[$name] = $value->multiple ? $value->all() : $value->one();
-			} else {
-				return $value;
-			}
-		}
-	}
-
-	/**
-	 * PHP setter magic method.
-	 * This method is overridden so that AR attributes can be accessed like properties.
-	 * @param string $name property name
-	 * @param mixed $value property value
-	 */
-	public function __set($name, $value)
-	{
-		if ($this->hasAttribute($name)) {
-			$this->_attributes[$name] = $value;
-		} else {
-			parent::__set($name, $value);
-		}
-	}
-
-	/**
-	 * Checks if a property value is null.
-	 * This method overrides the parent implementation by checking if the named attribute is null or not.
-	 * @param string $name the property name or the event name
-	 * @return boolean whether the property value is null
-	 */
-	public function __isset($name)
-	{
-		try {
-			return $this->__get($name) !== null;
-		} catch (\Exception $e) {
-			return false;
-		}
-	}
-
-	/**
-	 * Sets a component property to be null.
-	 * This method overrides the parent implementation by clearing
-	 * the specified attribute value.
-	 * @param string $name the property name or the event name
-	 */
-	public function __unset($name)
-	{
-		if ($this->hasAttribute($name)) {
-			unset($this->_attributes[$name]);
-		} else {
-			if (isset($this->_related[$name])) {
-				unset($this->_related[$name]);
-			} else {
-				parent::__unset($name);
-			}
-		}
-	}
-
-	/**
-	 * Declares a `has-one` relation.
-	 * The declaration is returned in terms of an [[ActiveRelation]] instance
-	 * through which the related record can be queried and retrieved back.
-	 *
-	 * A `has-one` relation means that there is at most one related record matching
-	 * the criteria set by this relation, e.g., a particular index has one source.
-	 *
-	 * For example, to declare the `source` relation for `ArticleIndex` class, we can write
-	 * the following code in the `ArticleIndex` class:
-	 *
-	 * ~~~
-	 * public function getSource()
-	 * {
-	 *     return $this->hasOne('db', ArticleContent::className(), ['article_id' => 'id']);
-	 * }
-	 * ~~~
-	 *
-	 * Note that in the above, the 'article_id' key in the `$link` parameter refers to an attribute name
-	 * in the related class `ArticleContent`, while the 'id' value refers to an attribute name
-	 * in the current AR class.
-	 *
-	 * Call methods declared in [[ActiveRelation]] to further customize the relation.
-	 *
-	 * @param string $class the class name of the related record
-	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
-	 * the attributes in the `$class` model, while the values of the array refer to the corresponding
-	 * attributes in the index associated with this AR class.
-	 * @return ActiveRelationInterface the relation object.
-	 */
-	public function hasOne($class, $link)
-	{
-		/** @var ActiveRecord $class */
-		return $class::createActiveRelation([
-			'modelClass' => $class,
-			'primaryModel' => $this,
-			'link' => $link,
-			'multiple' => false,
-		]);
-	}
-
-	/**
-	 * Declares a `has-many` relation.
-	 * The declaration is returned in terms of an [[ActiveRelationInterface]] instance
-	 * through which the related record can be queried and retrieved back.
-	 *
-	 * A `has-many` relation means that there are multiple related records matching
-	 * the criteria set by this relation, e.g., an article has many tags.
-	 *
-	 * For example, to declare the `tags` relation for `ArticleIndex` class, we can write
-	 * the following code in the `ArticleIndex` class:
-	 *
-	 * ~~~
-	 * public function getOrders()
-	 * {
-	 *     return $this->hasMany('db', Tag::className(), ['id' => 'tag_id']);
-	 * }
-	 * ~~~
-	 *
-	 * Note that in the above, the 'id' key in the `$link` parameter refers to
-	 * an attribute name in the related class `Tag`, while the 'tag_id' value refers to
-	 * a multi value attribute name in the current AR class.
-	 *
-	 * @param string $class the class name of the related record
-	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
-	 * the columns in the table associated with the `$class` model, while the values of the
-	 * array refer to the corresponding columns in the table associated with this AR class.
-	 * @return ActiveRelationInterface the relation object.
-	 */
-	public function hasMany($class, $link)
-	{
-		/** @var ActiveRecord $class */
-		return $class::createActiveRelation([
-			'modelClass' => $class,
-			'primaryModel' => $this,
-			'link' => $link,
-			'multiple' => true,
-		]);
-	}
-
-	/**
 	 * Creates an [[ActiveRelationInterface]] instance.
 	 * This method is called by [[hasOne()]] and [[hasMany()]] to create a relation instance.
 	 * You may override this method to return a customized relation.
@@ -589,36 +355,6 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Populates the named relation with the related records.
-	 * Note that this method does not check if the relation exists or not.
-	 * @param string $name the relation name (case-sensitive)
-	 * @param ActiveRecord|array|null the related records to be populated into the relation.
-	 */
-	public function populateRelation($name, $records)
-	{
-		$this->_related[$name] = $records;
-	}
-
-	/**
-	 * Check whether the named relation has been populated with records.
-	 * @param string $name the relation name (case-sensitive)
-	 * @return bool whether relation has been populated with records.
-	 */
-	public function isRelationPopulated($name)
-	{
-		return array_key_exists($name, $this->_related);
-	}
-
-	/**
-	 * Returns all populated relations.
-	 * @return array an array of relation data indexed by relation names.
-	 */
-	public function getPopulatedRelations()
-	{
-		return $this->_related;
-	}
-
-	/**
 	 * Returns the list of all attribute names of the model.
 	 * The default implementation will return all column names of the table associated with this AR class.
 	 * @return array list of attribute names.
@@ -626,169 +362,6 @@ abstract class ActiveRecord extends Model
 	public function attributes()
 	{
 		return array_keys(static::getIndexSchema()->columns);
-	}
-
-	/**
-	 * Returns a value indicating whether the model has an attribute with the specified name.
-	 * @param string $name the name of the attribute
-	 * @return boolean whether the model has an attribute with the specified name.
-	 */
-	public function hasAttribute($name)
-	{
-		return isset($this->_attributes[$name]) || in_array($name, $this->attributes());
-	}
-
-	/**
-	 * Returns the named attribute value.
-	 * If this record is the result of a query and the attribute is not loaded,
-	 * null will be returned.
-	 * @param string $name the attribute name
-	 * @return mixed the attribute value. Null if the attribute is not set or does not exist.
-	 * @see hasAttribute()
-	 */
-	public function getAttribute($name)
-	{
-		return isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
-	}
-
-	/**
-	 * Sets the named attribute value.
-	 * @param string $name the attribute name
-	 * @param mixed $value the attribute value.
-	 * @throws InvalidParamException if the named attribute does not exist.
-	 * @see hasAttribute()
-	 */
-	public function setAttribute($name, $value)
-	{
-		if ($this->hasAttribute($name)) {
-			$this->_attributes[$name] = $value;
-		} else {
-			throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
-		}
-	}
-
-	/**
-	 * Returns the old attribute values.
-	 * @return array the old attribute values (name-value pairs)
-	 */
-	public function getOldAttributes()
-	{
-		return $this->_oldAttributes === null ? [] : $this->_oldAttributes;
-	}
-
-	/**
-	 * Sets the old attribute values.
-	 * All existing old attribute values will be discarded.
-	 * @param array $values old attribute values to be set.
-	 */
-	public function setOldAttributes($values)
-	{
-		$this->_oldAttributes = $values;
-	}
-
-	/**
-	 * Returns the old value of the named attribute.
-	 * If this record is the result of a query and the attribute is not loaded,
-	 * null will be returned.
-	 * @param string $name the attribute name
-	 * @return mixed the old attribute value. Null if the attribute is not loaded before
-	 * or does not exist.
-	 * @see hasAttribute()
-	 */
-	public function getOldAttribute($name)
-	{
-		return isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
-	}
-
-	/**
-	 * Sets the old value of the named attribute.
-	 * @param string $name the attribute name
-	 * @param mixed $value the old attribute value.
-	 * @throws InvalidParamException if the named attribute does not exist.
-	 * @see hasAttribute()
-	 */
-	public function setOldAttribute($name, $value)
-	{
-		if (isset($this->_oldAttributes[$name]) || $this->hasAttribute($name)) {
-			$this->_oldAttributes[$name] = $value;
-		} else {
-			throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
-		}
-	}
-
-	/**
-	 * Returns a value indicating whether the named attribute has been changed.
-	 * @param string $name the name of the attribute
-	 * @return boolean whether the attribute has been changed
-	 */
-	public function isAttributeChanged($name)
-	{
-		if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
-			return $this->_attributes[$name] !== $this->_oldAttributes[$name];
-		} else {
-			return isset($this->_attributes[$name]) || isset($this->_oldAttributes[$name]);
-		}
-	}
-
-	/**
-	 * Returns the attribute values that have been modified since they are loaded or saved most recently.
-	 * @param string[]|null $names the names of the attributes whose values may be returned if they are
-	 * changed recently. If null, [[attributes()]] will be used.
-	 * @return array the changed attribute values (name-value pairs)
-	 */
-	public function getDirtyAttributes($names = null)
-	{
-		if ($names === null) {
-			$names = $this->attributes();
-		}
-		$names = array_flip($names);
-		$attributes = [];
-		if ($this->_oldAttributes === null) {
-			foreach ($this->_attributes as $name => $value) {
-				if (isset($names[$name])) {
-					$attributes[$name] = $value;
-				}
-			}
-		} else {
-			foreach ($this->_attributes as $name => $value) {
-				if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $value !== $this->_oldAttributes[$name])) {
-					$attributes[$name] = $value;
-				}
-			}
-		}
-		return $attributes;
-	}
-
-	/**
-	 * Saves the current record.
-	 *
-	 * This method will call [[insert()]] when [[isNewRecord]] is true, or [[update()]]
-	 * when [[isNewRecord]] is false.
-	 *
-	 * For example, to save an article record:
-	 *
-	 * ~~~
-	 * $customer = new Article;  // or $customer = Article::find(['id' => $id]);
-	 * $customer->id = $id;
-	 * $customer->genre_id = $genreId;
-	 * $customer->content = $email;
-	 * $customer->save();
-	 * ~~~
-	 *
-	 *
-	 * @param boolean $runValidation whether to perform validation before saving the record.
-	 * If the validation fails, the record will not be saved.
-	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
-	 * meaning all attributes that are loaded from index will be saved.
-	 * @return boolean whether the saving succeeds
-	 */
-	public function save($runValidation = true, $attributes = null)
-	{
-		if ($this->getIsNewRecord()) {
-			return $this->insert($runValidation, $attributes);
-		} else {
-			return $this->update($runValidation, $attributes) !== false;
-		}
 	}
 
 	/**
@@ -862,8 +435,8 @@ abstract class ActiveRecord extends Model
 		}
 		$values = $this->getDirtyAttributes($attributes);
 		if (empty($values)) {
-			foreach ($this->primaryKey() as $key) {
-				$values[$key] = isset($this->_attributes[$key]) ? $this->_attributes[$key] : null;
+			foreach ($this->getPrimaryKey(true) as $key => $value) {
+				$values[$key] = $value;
 			}
 		}
 		$db = static::getDb();
@@ -872,7 +445,7 @@ abstract class ActiveRecord extends Model
 			return false;
 		}
 		foreach ($values as $name => $value) {
-			$this->_oldAttributes[$name] = $value;
+			$this->setOldAttribute($name, $value);
 		}
 		$this->afterSave(true);
 		return true;
@@ -957,7 +530,7 @@ abstract class ActiveRecord extends Model
 	 * @see CActiveRecord::update()
 	 * @throws StaleObjectException
 	 */
-	private function updateInternal($attributes = null)
+	protected function updateInternal($attributes = null)
 	{
 		if (!$this->beforeSave(false)) {
 			return false;
@@ -1007,7 +580,7 @@ abstract class ActiveRecord extends Model
 		}
 
 		foreach ($values as $name => $value) {
-			$this->_oldAttributes[$name] = $this->_attributes[$name];
+			$this->setOldAttribute($name, $this->getAttribute($name));
 		}
 		$this->afterSave(false);
 		return $rows;
@@ -1050,7 +623,7 @@ abstract class ActiveRecord extends Model
 				if ($lock !== null && !$result) {
 					throw new StaleObjectException('The object being deleted is outdated.');
 				}
-				$this->_oldAttributes = null;
+				$this->setOldAttributes(null);
 				$this->afterDelete();
 			}
 			if ($transaction !== null) {
@@ -1070,149 +643,6 @@ abstract class ActiveRecord extends Model
 	}
 
 	/**
-	 * Returns a value indicating whether the current record is new.
-	 * @return boolean whether the record is new and should be inserted when calling [[save()]].
-	 */
-	public function getIsNewRecord()
-	{
-		return $this->_oldAttributes === null;
-	}
-
-	/**
-	 * Sets the value indicating whether the record is new.
-	 * @param boolean $value whether the record is new and should be inserted when calling [[save()]].
-	 * @see getIsNewRecord()
-	 */
-	public function setIsNewRecord($value)
-	{
-		$this->_oldAttributes = $value ? null : $this->_attributes;
-	}
-
-	/**
-	 * Initializes the object.
-	 * This method is called at the end of the constructor.
-	 * The default implementation will trigger an [[EVENT_INIT]] event.
-	 * If you override this method, make sure you call the parent implementation at the end
-	 * to ensure triggering of the event.
-	 */
-	public function init()
-	{
-		parent::init();
-		$this->trigger(self::EVENT_INIT);
-	}
-
-	/**
-	 * This method is called when the AR object is created and populated with the query result.
-	 * The default implementation will trigger an [[EVENT_AFTER_FIND]] event.
-	 * When overriding this method, make sure you call the parent implementation to ensure the
-	 * event is triggered.
-	 */
-	public function afterFind()
-	{
-		$this->trigger(self::EVENT_AFTER_FIND);
-	}
-
-	/**
-	 * This method is called at the beginning of inserting or updating a record.
-	 * The default implementation will trigger an [[EVENT_BEFORE_INSERT]] event when `$insert` is true,
-	 * or an [[EVENT_BEFORE_UPDATE]] event if `$insert` is false.
-	 * When overriding this method, make sure you call the parent implementation like the following:
-	 *
-	 * ~~~
-	 * public function beforeSave($insert)
-	 * {
-	 *     if (parent::beforeSave($insert)) {
-	 *         // ...custom code here...
-	 *         return true;
-	 *     } else {
-	 *         return false;
-	 *     }
-	 * }
-	 * ~~~
-	 *
-	 * @param boolean $insert whether this method called while inserting a record.
-	 * If false, it means the method is called while updating a record.
-	 * @return boolean whether the insertion or updating should continue.
-	 * If false, the insertion or updating will be cancelled.
-	 */
-	public function beforeSave($insert)
-	{
-		$event = new ModelEvent;
-		$this->trigger($insert ? self::EVENT_BEFORE_INSERT : self::EVENT_BEFORE_UPDATE, $event);
-		return $event->isValid;
-	}
-
-	/**
-	 * This method is called at the end of inserting or updating a record.
-	 * The default implementation will trigger an [[EVENT_AFTER_INSERT]] event when `$insert` is true,
-	 * or an [[EVENT_AFTER_UPDATE]] event if `$insert` is false.
-	 * When overriding this method, make sure you call the parent implementation so that
-	 * the event is triggered.
-	 * @param boolean $insert whether this method called while inserting a record.
-	 * If false, it means the method is called while updating a record.
-	 */
-	public function afterSave($insert)
-	{
-		$this->trigger($insert ? self::EVENT_AFTER_INSERT : self::EVENT_AFTER_UPDATE);
-	}
-
-	/**
-	 * This method is invoked before deleting a record.
-	 * The default implementation raises the [[EVENT_BEFORE_DELETE]] event.
-	 * When overriding this method, make sure you call the parent implementation like the following:
-	 *
-	 * ~~~
-	 * public function beforeDelete()
-	 * {
-	 *     if (parent::beforeDelete()) {
-	 *         // ...custom code here...
-	 *         return true;
-	 *     } else {
-	 *         return false;
-	 *     }
-	 * }
-	 * ~~~
-	 *
-	 * @return boolean whether the record should be deleted. Defaults to true.
-	 */
-	public function beforeDelete()
-	{
-		$event = new ModelEvent;
-		$this->trigger(self::EVENT_BEFORE_DELETE, $event);
-		return $event->isValid;
-	}
-
-	/**
-	 * This method is invoked after deleting a record.
-	 * The default implementation raises the [[EVENT_AFTER_DELETE]] event.
-	 * You may override this method to do postprocessing after the record is deleted.
-	 * Make sure you call the parent implementation so that the event is raised properly.
-	 */
-	public function afterDelete()
-	{
-		$this->trigger(self::EVENT_AFTER_DELETE);
-	}
-
-	/**
-	 * Repopulates this active record with the latest data.
-	 * @return boolean whether the row still exists in the database. If true, the latest data
-	 * will be populated to this active record. Otherwise, this record will remain unchanged.
-	 */
-	public function refresh()
-	{
-		$record = $this->find($this->getPrimaryKey(true));
-		if ($record === null) {
-			return false;
-		}
-		foreach ($this->attributes() as $name) {
-			$this->_attributes[$name] = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
-		}
-		$this->_oldAttributes = $this->_attributes;
-		$this->_related = [];
-		return true;
-	}
-
-	/**
 	 * Returns a value indicating whether the given active record is the same as the current one.
 	 * The comparison is made by comparing the index names and the primary key values of the two active records.
 	 * If one of the records [[isNewRecord|is new]] they are also considered not equal.
@@ -1225,61 +655,6 @@ abstract class ActiveRecord extends Model
 			return false;
 		}
 		return $this->indexName() === $record->indexName() && $this->getPrimaryKey() === $record->getPrimaryKey();
-	}
-
-	/**
-	 * Returns the primary key value(s).
-	 * @param boolean $asArray whether to return the primary key value as an array. If true,
-	 * the return value will be an array with column names as keys and column values as values.
-	 * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
-	 * @property mixed The primary key value. An array (column name => column value) is returned if
-	 * the primary key is composite. A string is returned otherwise (null will be returned if
-	 * the key value is null).
-	 * @return mixed the primary key value. An array (column name => column value) is returned if the primary key
-	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
-	 * the key value is null).
-	 */
-	public function getPrimaryKey($asArray = false)
-	{
-		$keys = $this->primaryKey();
-		if (count($keys) === 1 && !$asArray) {
-			return isset($this->_attributes[$keys[0]]) ? $this->_attributes[$keys[0]] : null;
-		} else {
-			$values = [];
-			foreach ($keys as $name) {
-				$values[$name] = isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
-			}
-			return $values;
-		}
-	}
-
-	/**
-	 * Returns the old primary key value(s).
-	 * This refers to the primary key value that is populated into the record
-	 * after executing a find method (e.g. find(), findAll()).
-	 * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
-	 * @param boolean $asArray whether to return the primary key value as an array. If true,
-	 * the return value will be an array with column name as key and column value as value.
-	 * If this is false (default), a scalar value will be returned for non-composite primary key.
-	 * @property mixed The old primary key value. An array (column name => column value) is
-	 * returned if the primary key is composite. A string is returned otherwise (null will be
-	 * returned if the key value is null).
-	 * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
-	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
-	 * the key value is null).
-	 */
-	public function getOldPrimaryKey($asArray = false)
-	{
-		$keys = $this->primaryKey();
-		if (count($keys) === 1 && !$asArray) {
-			return isset($this->_oldAttributes[$keys[0]]) ? $this->_oldAttributes[$keys[0]] : null;
-		} else {
-			$values = [];
-			foreach ($keys as $name) {
-				$values[$name] = isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
-			}
-			return $values;
-		}
 	}
 
 	/**
@@ -1299,61 +674,14 @@ abstract class ActiveRecord extends Model
 				if ($column->isMva) {
 					$value = explode(',', $value);
 				}
-				$record->_attributes[$name] = $value;
+				$record->setAttribute($name, $value);
 			} else {
 				$record->$name = $value;
 			}
 		}
-		$record->_oldAttributes = $record->_attributes;
+		$record->setOldAttributes($record->getAttributes());
 		$record->afterFind();
 		return $record;
-	}
-
-	/**
-	 * Creates an active record instance.
-	 * This method is called by [[create()]].
-	 * You may override this method if the instance being created
-	 * depends on the row data to be populated into the record.
-	 * @param array $row row data to be populated into the record.
-	 * @return ActiveRecord the newly created active record
-	 */
-	public static function instantiate($row)
-	{
-		return new static;
-	}
-
-	/**
-	 * Returns whether there is an element at the specified offset.
-	 * This method is required by the interface ArrayAccess.
-	 * @param mixed $offset the offset to check on
-	 * @return boolean whether there is an element at the specified offset.
-	 */
-	public function offsetExists($offset)
-	{
-		return $this->__isset($offset);
-	}
-
-	/**
-	 * Returns the relation object with the specified name.
-	 * A relation is defined by a getter method which returns an [[ActiveRelationInterface]] object.
-	 * It can be declared in either the Active Record class itself or one of its behaviors.
-	 * @param string $name the relation name
-	 * @return ActiveRelationInterface the relation object
-	 * @throws InvalidParamException if the named relation does not exist.
-	 */
-	public function getRelation($name)
-	{
-		$getter = 'get' . $name;
-		try {
-			$relation = $this->$getter();
-			if ($relation instanceof ActiveRelationInterface) {
-				return $relation;
-			} else {
-				throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
-			}
-		} catch (UnknownMethodException $e) {
-			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);
-		}
 	}
 
 	/**
@@ -1366,30 +694,5 @@ abstract class ActiveRecord extends Model
 		$scenario = $this->getScenario();
 		$transactions = $this->transactions();
 		return isset($transactions[$scenario]) && ($transactions[$scenario] & $operation);
-	}
-
-	/**
-	 * Sets the element at the specified offset.
-	 * This method is required by the SPL interface `ArrayAccess`.
-	 * It is implicitly called when you use something like `$model[$offset] = $item;`.
-	 * @param integer $offset the offset to set element
-	 * @param mixed $item the element value
-	 * @throws \Exception on failure
-	 */
-	public function offsetSet($offset, $item)
-	{
-		// Bypass relation owner restriction to 'yii\db\ActiveRecord' at [[yii\db\ActiveRelationTrait::findWith()]]:
-		try {
-			$relation = $this->getRelation($offset);
-			if (is_object($relation)) {
-				$this->populateRelation($offset, $item);
-				return;
-			}
-		} catch (InvalidParamException $e) {
-			// shut down exception : has getter, but not relation
-		} catch (UnknownMethodException $e) {
-			throw $e->getPrevious();
-		}
-		parent::offsetSet($offset, $item);
 	}
 }
