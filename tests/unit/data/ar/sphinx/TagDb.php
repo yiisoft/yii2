@@ -1,13 +1,12 @@
 <?php
-
-namespace yiiunit\data\sphinx\ar;
+namespace yiiunit\data\ar\sphinx;
 
 use yiiunit\data\ar\ActiveRecord as ActiveRecordDb;
 
-class ItemDb extends ActiveRecordDb
+class TagDb extends ActiveRecordDb
 {
 	public static function tableName()
 	{
-		return 'yii2_test_item';
+		return 'yii2_test_tag';
 	}
 }

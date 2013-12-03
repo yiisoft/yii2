@@ -31,6 +31,12 @@ class Panel extends Component
 	 */
 	public $module;
 	public $data;
+	/**
+	 * @var array array of actions to add to the debug modules default controller.
+	 * This array will be merged with all other panels actions property.
+	 * See [[yii\base\Controller::actions()]] for the format.
+	 */
+	public $actions = [];
 
 	/**
 	 * @return string name of the panel

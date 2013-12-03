@@ -397,10 +397,10 @@ class Generator extends \yii\gii\Generator
 		}
 		$name = $rawName = Inflector::id2camel($key, '_');
 		$i = 0;
-		while (isset($table->columns[$name])) {
+		while (isset($table->columns[lcfirst($name)])) {
 			$name = $rawName . ($i++);
 		}
-		while (isset($relations[$className][$name])) {
+		while (isset($relations[$className][lcfirst($name)])) {
 			$name = $rawName . ($i++);
 		}
 

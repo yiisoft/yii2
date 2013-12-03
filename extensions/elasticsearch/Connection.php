@@ -177,10 +177,10 @@ class Connection extends Component
 		return new QueryBuilder($this);
 	}
 
-	public function get($url, $options = [], $body = null)
+	public function get($url, $options = [], $body = null, $raw = false)
 	{
 		$this->open();
-		return $this->httpRequest('GET', $this->createUrl($url, $options), $body);
+		return $this->httpRequest('GET', $this->createUrl($url, $options), $body, $raw);
 	}
 
 	public function head($url, $options = [], $body = null)
@@ -189,37 +189,43 @@ class Connection extends Component
 		return $this->httpRequest('HEAD', $this->createUrl($url, $options), $body);
 	}
 
-	public function post($url, $options = [], $body = null)
+	public function post($url, $options = [], $body = null, $raw = false)
 	{
 		$this->open();
-		return $this->httpRequest('POST', $this->createUrl($url, $options), $body);
+		return $this->httpRequest('POST', $this->createUrl($url, $options), $body, $raw);
 	}
 
-	public function put($url, $options = [], $body = null)
+	public function put($url, $options = [], $body = null, $raw = false)
 	{
 		$this->open();
-		return $this->httpRequest('PUT', $this->createUrl($url, $options), $body);
+		return $this->httpRequest('PUT', $this->createUrl($url, $options), $body, $raw);
 	}
 
-	public function delete($url, $options = [], $body = null)
+	public function delete($url, $options = [], $body = null, $raw = false)
 	{
 		$this->open();
-		return $this->httpRequest('DELETE', $this->createUrl($url, $options), $body);
+		return $this->httpRequest('DELETE', $this->createUrl($url, $options), $body, $raw);
 	}
 
 	private function createUrl($path, $options = [])
 	{
-		$url = implode('/', array_map(function($a) {
-			return urlencode(is_array($a) ? implode(',', $a) : $a);
-		}, $path));
-
-		if (!empty($options)) {
-			$url .= '?' . http_build_query($options);
+		if (!is_string($path)) {
+			$url = implode('/', array_map(function($a) {
+				return urlencode(is_array($a) ? implode(',', $a) : $a);
+			}, $path));
+			if (!empty($options)) {
+				$url .= '?' . http_build_query($options);
+			}
+		} else {
+			$url = $path;
+			if (!empty($options)) {
+				$url .= (strpos($url, '?') === false ? '?' : '&') . http_build_query($options);
+			}
 		}
 		return [$this->nodes[$this->activeNode]['http_address'], $url];
 	}
 
-	protected function httpRequest($method, $url, $requestBody = null)
+	protected function httpRequest($method, $url, $requestBody = null, $raw = false)
 	{
 		$method = strtoupper($method);
 
@@ -228,7 +234,7 @@ class Connection extends Component
 		$body = '';
 
 		$options = [
-			CURLOPT_USERAGENT      => 'Yii2 Framework ' . __CLASS__,
+			CURLOPT_USERAGENT      => 'Yii Framework 2 ' . __CLASS__,
 			CURLOPT_RETURNTRANSFER => false,
 			CURLOPT_HEADER         => false,
 			// http://www.php.net/manual/en/function.curl-setopt.php#82418
@@ -264,8 +270,11 @@ class Connection extends Component
 
 		if (is_array($url)) {
 			list($host, $q) = $url;
-			if (strncmp($host, 'inet[/', 6) == 0) {
-				$host = substr($host, 6, -1);
+			if (strncmp($host, 'inet[', 5) == 0) {
+				$host = substr($host, 5, -1);
+				if (($pos = strpos($host, '/')) !== false) {
+					$host = substr($host, $pos + 1);
+				}
 			}
 			$profile = $method . ' ' . $q . '#' . $requestBody;
 			$url = 'http://' . $host . '/' . $q;
@@ -312,7 +321,7 @@ class Connection extends Component
 					]);
 				}
 				if (isset($headers['content-type']) && !strncmp($headers['content-type'], 'application/json', 16)) {
-					return Json::decode($body);
+					return $raw ? $body : Json::decode($body);
 				}
 				throw new Exception('Unsupported data received from elasticsearch: ' . $headers['content-type'], [
 					'requestMethod' => $method,
