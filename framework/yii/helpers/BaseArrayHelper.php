@@ -327,6 +327,29 @@ class BaseArrayHelper
 	}
 
 	/**
+	 * Checks if the given array contains the specified key.
+	 * This method enhances the `array_key_exists()` function by supporting case-insensitive
+	 * key comparison.
+	 * @param string $key the key to check
+	 * @param array $array the array with keys to check
+	 * @param boolean $caseSensitive whether the key comparison should be case-sensitive
+	 * @return boolean whether the array contains the specified key
+	 */
+	public static function keyExists($key, $array, $caseSensitive = true)
+	{
+		if ($caseSensitive) {
+			return array_key_exists($key, $array);
+		} else {
+			foreach (array_keys($array) as $k) {
+				if (strcasecmp($key, $k) === 0) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	/**
 	 * Sorts an array of objects or arrays (with the same structure) by one or several keys.
 	 * @param array $array the array to be sorted. The array will be modified after calling this method.
 	 * @param string|\Closure|array $key the key(s) to be sorted by. This refers to a key name of the sub-array

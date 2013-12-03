@@ -303,4 +303,21 @@ class ArrayHelperTest extends TestCase
 			],
 		], $result);
 	}
+
+	public function testKeyExists()
+	{
+		$array = [
+			'a' => 1,
+			'B' => 2,
+		];
+		$this->assertTrue(ArrayHelper::keyExists('a', $array));
+		$this->assertFalse(ArrayHelper::keyExists('b', $array));
+		$this->assertTrue(ArrayHelper::keyExists('B', $array));
+		$this->assertFalse(ArrayHelper::keyExists('c', $array));
+
+		$this->assertTrue(ArrayHelper::keyExists('a', $array, false));
+		$this->assertTrue(ArrayHelper::keyExists('b', $array, false));
+		$this->assertTrue(ArrayHelper::keyExists('B', $array, false));
+		$this->assertFalse(ArrayHelper::keyExists('c', $array, false));
+	}
 }
