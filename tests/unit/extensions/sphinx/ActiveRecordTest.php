@@ -41,10 +41,9 @@ class ActiveRecordTest extends SphinxTestCase
 		$this->assertTrue($articles[1] instanceof ArticleIndex);
 
 		// find fulltext
-		$articles = ArticleIndex::find('cats');
-		$this->assertEquals(1, count($articles));
-		$this->assertTrue($articles[0] instanceof ArticleIndex);
-		$this->assertEquals(1, $articles[0]->id);
+		$article = ArticleIndex::find(2);
+		$this->assertTrue($article instanceof ArticleIndex);
+		$this->assertEquals(2, $article->id);
 
 		// find by column values
 		$article = ArticleIndex::find(['id' => 2, 'author_id' => 2]);
@@ -168,7 +167,7 @@ class ActiveRecordTest extends SphinxTestCase
 		$record = RuntimeIndex::find(['id' => 2]);
 		$record->content = 'Test content with ' . $query;
 		$record->save();
-		$rows = RuntimeIndex::find($query);
+		$rows = RuntimeIndex::find()->match($query);
 		$this->assertNotEmpty($rows);
 
 		// updateAll

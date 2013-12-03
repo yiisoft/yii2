@@ -79,33 +79,6 @@ abstract class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
-	 * Creates an [[ActiveQuery]] instance for query purpose.
-	 *
-	 * @param mixed $q the query parameter. This can be one of the followings:
-	 *
-	 *  - a string: fulltext query by a query string and return the list
-	 *    of matching records.
-	 *  - an array of name-value pairs: query by a set of column values and return a single record matching all of them.
-	 *  - null: return a new [[ActiveQuery]] object for further query purpose.
-	 *
-	 * @return ActiveQuery|ActiveRecord[]|ActiveRecord|null When `$q` is null, a new [[ActiveQuery]] instance
-	 * is returned; when `$q` is a string, an array of ActiveRecord objects matching it will be returned;
-	 * when `$q` is an array, an ActiveRecord object matching it will be returned (null
-	 * will be returned if there is no matching).
-	 * @see createQuery()
-	 */
-	public static function find($q = null)
-	{
-		$query = static::createQuery();
-		if (is_array($q)) {
-			return $query->where($q)->one();
-		} elseif ($q !== null) {
-			return $query->match($q)->all();
-		}
-		return $query;
-	}
-
-	/**
 	 * Creates an [[ActiveQuery]] instance with a given SQL statement.
 	 *
 	 * Note that because the SQL statement is already specified, calling additional
