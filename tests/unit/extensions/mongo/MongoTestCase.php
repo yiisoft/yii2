@@ -108,7 +108,7 @@ class MongoTestCase extends TestCase
 	 * Drops the specified file collection.
 	 * @param string $name file collection name.
 	 */
-	protected function dropFileCollection($name)
+	protected function dropFileCollection($name = 'fs')
 	{
 		if ($this->mongo) {
 			try {

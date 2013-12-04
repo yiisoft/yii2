@@ -4,6 +4,9 @@ namespace yiiunit\extensions\mongo\file;
 
 use yiiunit\extensions\mongo\MongoTestCase;
 
+/**
+ * @group mongo
+ */
 class CollectionTest extends MongoTestCase
 {
 	protected function tearDown()
