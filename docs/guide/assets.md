@@ -3,7 +3,7 @@ Managing assets
 
 An asset in Yii is a file that is included into the page. It could be CSS, JavaScript or
 any other file. Framework provides many ways to work with assets from basics such as adding `<script src="` tag
-for a file that is [handled by View](view.md) section to advanced usage such as pusblishing files that are not
+for a file that is [handled by View](view.md) section to advanced usage such as publishing files that are not
 under webserve document root, resolving JavaScript dependencies or minifying CSS.
 
 Declaring asset bundle
@@ -13,7 +13,7 @@ In order to publish some assets you should declare an asset bundle first. The bu
 directories to be published and their dependencies on other asset bundles.
 
 Both basic and advanced application templates contain `AppAsset` asset bundle class that defines assets required
-applicationwide. Let's review basic application asset bundle class:
+application wide. Let's review basic application asset bundle class:
 
 ```php
 class AppAsset extends AssetBundle
@@ -41,7 +41,7 @@ is an alias that corresponds to your website base URL such as `http://example.co
 
 In case you have asset files under non web accessible directory, that is the case for any extension, you need
 to additionally specify `$sourcePath`. Files will be copied or symlinked from source bath to base path prior to being
-registered. In case source path is used `baseUrl` is generated automatically at the time of publising asset bundle.
+registered. In case source path is used `baseUrl` is generated automatically at the time of publishing asset bundle.
 
 Dependencies on other asset bundles are specified via `$depends` property. It is an array that contains fully qualified
 names of bundle classes that should be published in order for this bundle to work properly.
@@ -50,7 +50,7 @@ Here `yii\web\YiiAsset` adds Yii's JavaScript library while `yii\bootstrap\Boots
 [Bootstrap](http://getbootstrap.com) frontend framework.
 
 Asset bundles are regular classes so if you need to define another one, just create alike class with unique name. This
-class can be placed anywhere but the convention for it is to be under `assets` directory of the applicaiton.
+class can be placed anywhere but the convention for it is to be under `assets` directory of the application.
 
 Registering asset bundle
 ------------------------
@@ -88,7 +88,7 @@ return [
 ];
 ```
 
-In the above we're adding asset bundle definitions to `bunldes` property of asset manager. Keys there are fully
+In the above we're adding asset bundle definitions to `bundles` property of asset manager. Keys there are fully
 qualified class paths to asset bundle classes we want to override while values are key-value arrays of class properties
 and corresponding values to set.
 
@@ -217,7 +217,7 @@ Using asset converter
 Instead of using CSS and JavaScript directly often developers are using their improved versions such as LESS or SCSS
 for CSS or Microsoft TypeScript for JavaScript. Using these with Yii is easy.
 
-First of all, corresponding compression tools should be installed and should be availabe from where `yii` console
+First of all, corresponding compression tools should be installed and should be available from where `yii` console
 bootstrap file is. The following lists file extensions and their corresponding conversion tool names that Yii converter
 recognizes:
 
