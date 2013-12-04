@@ -9,12 +9,7 @@
 namespace yii\db;
 
 use yii\base\InvalidConfigException;
-use yii\base\Model;
-use yii\base\InvalidParamException;
-use yii\base\ModelEvent;
-use yii\base\UnknownMethodException;
-use yii\base\InvalidCallException;
-use yii\helpers\StringHelper;
+use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 
 /**
@@ -174,7 +169,7 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function tableName()
 	{
-		return 'tbl_' . Inflector::camel2id(StringHelper::basename(get_called_class()), '_');
+		return 'tbl_' . Inflector::camel2id(FileHelper::basename(get_called_class()), '_');
 	}
 
 	/**

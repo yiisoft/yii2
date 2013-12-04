@@ -100,7 +100,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	protected function buildKey($key)
 	{
 		if (is_string($key)) {
-			$key = ctype_alnum($key) && StringHelper::strlen($key) <= 32 ? $key : md5($key);
+			$key = ctype_alnum($key) && StringHelper::byteLen($key) <= 32 ? $key : md5($key);
 		} else {
 			$key = md5(json_encode($key));
 		}
