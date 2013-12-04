@@ -7,6 +7,10 @@
 
 namespace yii\mongo\file;
 
+use yii\base\InvalidParamException;
+use yii\db\StaleObjectException;
+use yii\web\UploadedFile;
+
 /**
  * ActiveRecord is the base class for classes representing Mongo GridFS files in terms of objects.
  *
@@ -15,11 +19,6 @@ namespace yii\mongo\file;
  */
 class ActiveRecord extends \yii\mongo\ActiveRecord
 {
-	/**
-	 * @var \MongoGridFSFile|string
-	 */
-	public $file;
-
 	/**
 	 * Creates an [[ActiveQuery]] instance.
 	 * This method is called by [[find()]] to start a "find" command.
@@ -54,29 +53,6 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 	}
 
 	/**
-	 * Creates an active record object using a row of data.
-	 * This method is called by [[ActiveQuery]] to populate the query results
-	 * into Active Records. It is not meant to be used to create new records.
-	 * @param \MongoGridFSFile $row attribute values (name => value)
-	 * @return ActiveRecord the newly created active record.
-	 */
-	public static function create($row)
-	{
-		$record = static::instantiate($row);
-		$columns = array_flip($record->attributes());
-		foreach ($row->file as $name => $value) {
-			if (isset($columns[$name])) {
-				$record->setAttribute($name, $value);
-			} else {
-				$record->$name = $value;
-			}
-		}
-		$record->setOldAttributes($record->getAttributes());
-		$record->afterFind();
-		return $record;
-	}
-
-	/**
 	 * Returns the list of all attribute names of the model.
 	 * This method could be overridden by child classes to define available attributes.
 	 * Note: primary key attribute "_id" should be always present in returned array.
@@ -84,7 +60,16 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 	 */
 	public function attributes()
 	{
-		return ['id', 'filename'];
+		return [
+			'_id',
+			'filename',
+			'uploadDate',
+			'length',
+			'chunkSize',
+			'md5',
+			'file',
+			'newFileContent'
+		];
 	}
 
 	/**
@@ -103,7 +88,30 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 			}
 		}
 		$collection = static::getCollection();
-		$newId = $collection->insert($values);
+		if (array_key_exists('newFileContent', $values)) {
+			$fileContent = $values['newFileContent'];
+			unset($values['newFileContent']);
+			unset($values['file']);
+			$newId = $collection->storeBytes($fileContent, $values);
+		} elseif (array_key_exists('file', $values)) {
+			$file = $values['file'];
+			if ($file instanceof UploadedFile) {
+				$fileName = $file->tempName;
+			} elseif (is_string($file)) {
+				if (file_exists($file)) {
+					$fileName = $file;
+				} else {
+					throw new InvalidParamException("File '{$file}' does not exist.");
+				}
+			} else {
+				throw new InvalidParamException('Unsupported type of "file" attribute.');
+			}
+			unset($values['newFileContent']);
+			unset($values['file']);
+			$newId = $collection->storeFile($fileName, $values);
+		} else {
+			$newId = $collection->insert($values);
+		}
 		$this->setAttribute('_id', $newId);
 		foreach ($values as $name => $value) {
 			$this->setOldAttribute($name, $value);
@@ -113,7 +121,7 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 	}
 
 	/**
-	 * @see CActiveRecord::update()
+	 * @see ActiveRecord::update()
 	 * @throws StaleObjectException
 	 */
 	protected function updateInternal($attributes = null)
@@ -126,20 +134,50 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 			$this->afterSave(false);
 			return 0;
 		}
-		$condition = $this->getOldPrimaryKey(true);
-		$lock = $this->optimisticLock();
-		if ($lock !== null) {
-			if (!isset($values[$lock])) {
-				$values[$lock] = $this->$lock + 1;
-			}
-			$condition[$lock] = $this->$lock;
-		}
-		// We do not check the return value of update() because it's possible
-		// that it doesn't change anything and thus returns 0.
-		$rows = static::getCollection()->update($condition, $values);
 
-		if ($lock !== null && !$rows) {
-			throw new StaleObjectException('The object being updated is outdated.');
+		$collection = static::getCollection();
+		if (array_key_exists('newFileContent', $values)) {
+			$fileContent = $values['newFileContent'];
+			unset($values['newFileContent']);
+			unset($values['file']);
+			$values['_id'] = $this->getAttribute('_id');
+			$this->deleteInternal();
+			$collection->storeBytes($fileContent, $values);
+			$rows = 1;
+		} elseif (array_key_exists('file', $values)) {
+			$file = $values['file'];
+			if ($file instanceof UploadedFile) {
+				$fileName = $file->tempName;
+			} elseif (is_string($file)) {
+				if (file_exists($file)) {
+					$fileName = $file;
+				} else {
+					throw new InvalidParamException("File '{$file}' does not exist.");
+				}
+			} else {
+				throw new InvalidParamException('Unsupported type of "file" attribute.');
+			}
+			unset($values['newFileContent']);
+			unset($values['file']);
+			$values['_id'] = $this->getAttribute('_id');
+			$this->deleteInternal();
+			$collection->storeFile($fileName, $values);
+			$rows = 1;
+		} else {
+			$condition = $this->getOldPrimaryKey(true);
+			$lock = $this->optimisticLock();
+			if ($lock !== null) {
+				if (!isset($values[$lock])) {
+					$values[$lock] = $this->$lock + 1;
+				}
+				$condition[$lock] = $this->$lock;
+			}
+			// We do not check the return value of update() because it's possible
+			// that it doesn't change anything and thus returns 0.
+			$rows = $collection->update($condition, $values);
+			if ($lock !== null && !$rows) {
+				throw new StaleObjectException('The object being updated is outdated.');
+			}
 		}
 
 		foreach ($values as $name => $value) {
@@ -149,26 +187,26 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 		return $rows;
 	}
 
-	public function getContent()
+	/**
+	 * Returns the associated file content.
+	 * @return null|string file content.
+	 * @throws \yii\base\InvalidParamException on invalid file value.
+	 */
+	public function getFileContent()
 	{
 		$file = $this->getAttribute('file');
 		if (empty($file)) {
 			return null;
-		}
-		if ($file instanceof \MongoGridFSFile) {
+		} elseif ($file instanceof \MongoGridFSFile) {
 			return $file->getBytes();
+		} elseif ($file instanceof UploadedFile) {
+			return file_get_contents($file->tempName);
+		} elseif (is_string($file)) {
+			if (file_exists($file)) {
+				return file_get_contents($file);
+			}
+		} else {
+			throw new InvalidParamException('Unsupported type of "file" attribute.');
 		}
 	}
-
-	public function getFileName()
-	{
-		$file = $this->getAttribute('file');
-		if (empty($file)) {
-			return null;
-		}
-		if ($file instanceof \MongoGridFSFile) {
-			return $file->getFilename();
-		}
-	}
-
 }

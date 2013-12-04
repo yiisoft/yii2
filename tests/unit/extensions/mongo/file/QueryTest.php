@@ -51,7 +51,8 @@ class QueryTest extends MongoTestCase
 		$connection = $this->getConnection();
 		$query = new Query;
 		$row = $query->from('fs')->one($connection);
-		$this->assertTrue($row instanceof \MongoGridFSFile);
+		$this->assertTrue(is_array($row));
+		$this->assertTrue($row['file'] instanceof \MongoGridFSFile);
 	}
 
 	public function testDirectMatch()
@@ -64,6 +65,6 @@ class QueryTest extends MongoTestCase
 		$this->assertEquals(1, count($rows));
 		/** @var $file \MongoGridFSFile */
 		$file = $rows[0];
-		$this->assertEquals('name5', $file->file['filename']);
+		$this->assertEquals('name5', $file['filename']);
 	}
 }

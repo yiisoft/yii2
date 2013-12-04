@@ -250,7 +250,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
-	 * @see CActiveRecord::update()
+	 * @see ActiveRecord::update()
 	 * @throws StaleObjectException
 	 */
 	protected function updateInternal($attributes = null)
@@ -309,20 +309,30 @@ abstract class ActiveRecord extends BaseActiveRecord
 	{
 		$result = false;
 		if ($this->beforeDelete()) {
-			// we do not check the return value of deleteAll() because it's possible
-			// the record is already deleted in the database and thus the method will return 0
-			$condition = $this->getOldPrimaryKey(true);
-			$lock = $this->optimisticLock();
-			if ($lock !== null) {
-				$condition[$lock] = $this->$lock;
-			}
-			$result = static::getCollection()->remove($condition);
-			if ($lock !== null && !$result) {
-				throw new StaleObjectException('The object being deleted is outdated.');
-			}
-			$this->setOldAttributes(null);
+			$result = $this->deleteInternal();
 			$this->afterDelete();
 		}
+		return $result;
+	}
+
+	/**
+	 * @see ActiveRecord::delete()
+	 * @throws StaleObjectException
+	 */
+	protected function deleteInternal()
+	{
+		// we do not check the return value of deleteAll() because it's possible
+		// the record is already deleted in the database and thus the method will return 0
+		$condition = $this->getOldPrimaryKey(true);
+		$lock = $this->optimisticLock();
+		if ($lock !== null) {
+			$condition[$lock] = $this->$lock;
+		}
+		$result = static::getCollection()->remove($condition);
+		if ($lock !== null && !$result) {
+			throw new StaleObjectException('The object being deleted is outdated.');
+		}
+		$this->setOldAttributes(null);
 		return $result;
 	}
 
