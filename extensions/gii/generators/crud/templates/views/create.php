@@ -19,7 +19,7 @@ use yii\helpers\Html;
  */
 
 $this->title = 'Create <?= Inflector::camel2words(StringHelper::basename($generator->modelClass)) ?>';
-$this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(Inflector::camel2words(BaseFileHelper::basename($generator->modelClass))) ?>', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-create">
