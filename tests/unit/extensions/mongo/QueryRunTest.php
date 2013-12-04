@@ -32,6 +32,11 @@ class QueryRunTest extends MongoTestCase
 			$rows[] = [
 				'name' => 'name' . $i,
 				'address' => 'address' . $i,
+				'avatar' => [
+					'width' => 50 + $i,
+					'height' => 100 + $i,
+					'url' => 'http://some.url/' . $i,
+				],
 			];
 		}
 		$collection->batchInsert($rows);
@@ -99,11 +104,18 @@ class QueryRunTest extends MongoTestCase
 	public function testOrder()
 	{
 		$connection = $this->getConnection();
+
 		$query = new Query;
 		$rows = $query->from('customer')
 			->orderBy(['name' => SORT_DESC])
 			->all($connection);
 		$this->assertEquals('name9', $rows[0]['name']);
+
+		$query = new Query;
+		$rows = $query->from('customer')
+			->orderBy(['avatar.height' => SORT_DESC])
+			->all($connection);
+		$this->assertEquals('name10', $rows[0]['name']);
 	}
 
 	public function testMatchPlainId()

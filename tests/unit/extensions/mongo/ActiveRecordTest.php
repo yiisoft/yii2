@@ -218,4 +218,30 @@ class ActiveRecordTest extends MongoTestCase
 		$refreshedRecord = Customer::find($record->_id);
 		$this->assertEquals($originalCounter + $counterIncrement, $refreshedRecord->status);
 	}
+
+	/**
+	 * @depends testUpdate
+	 */
+	public function testUpdateNestedAttribute()
+	{
+		$record = new Customer;
+		$record->name = 'new name';
+		$record->email = 'new email';
+		$record->address = [
+			'city' => 'SomeCity',
+			'street' => 'SomeStreet',
+		];
+		$record->status = 7;
+		$record->save();
+
+		// save
+		$record = Customer::find($record->_id);
+		$newAddress = [
+			'city' => 'AnotherCity'
+		];
+		$record->address = $newAddress;
+		$record->save();
+		$record2 = Customer::find($record->_id);
+		$this->assertEquals($newAddress, $record2->address);
+	}
 }
