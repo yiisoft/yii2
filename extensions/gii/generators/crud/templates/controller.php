@@ -1,7 +1,7 @@
 <?php
 
 use yii\db\ActiveRecordInterface;
-use yii\helpers\FileHelper;
+use yii\helpers\StringHelper;
 
 /**
  * This is the template for generating a CRUD controller class file.
@@ -10,9 +10,9 @@ use yii\helpers\FileHelper;
  * @var yii\gii\generators\crud\Generator $generator
  */
 
-$controllerClass = FileHelper::basename($generator->controllerClass);
-$modelClass = FileHelper::basename($generator->modelClass);
-$searchModelClass = FileHelper::basename($generator->searchModelClass);
+$controllerClass = StringHelper::basename($generator->controllerClass);
+$modelClass = StringHelper::basename($generator->modelClass);
+$searchModelClass = StringHelper::basename($generator->searchModelClass);
 if ($modelClass === $searchModelClass) {
 	$searchModelAlias = $searchModelClass.'Search';
 }
@@ -27,7 +27,7 @@ $actionParamComments = $generator->generateActionParamComments();
 echo "<?php\n";
 ?>
 
-namespace <?= FileHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>;
+namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>;
 
 use <?= ltrim($generator->modelClass, '\\') ?>;
 use <?= ltrim($generator->searchModelClass, '\\') ?><?php if (isset($searchModelAlias)):?> as <?= $searchModelAlias ?><?php endif ?>;
@@ -38,7 +38,7 @@ use yii\web\VerbFilter;
 /**
  * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
  */
-class <?= $controllerClass ?> extends <?= FileHelper::basename($generator->baseControllerClass) . "\n" ?>
+class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->baseControllerClass) . "\n" ?>
 {
 	public function behaviors()
 	{

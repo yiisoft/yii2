@@ -9,8 +9,8 @@
 namespace yii\db;
 
 use yii\base\InvalidConfigException;
-use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
@@ -169,7 +169,7 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function tableName()
 	{
-		return 'tbl_' . Inflector::camel2id(FileHelper::basename(get_called_class()), '_');
+		return 'tbl_' . Inflector::camel2id(StringHelper::basename(get_called_class()), '_');
 	}
 
 	/**

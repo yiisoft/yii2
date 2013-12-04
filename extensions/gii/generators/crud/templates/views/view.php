@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 
 /**
  * @var yii\web\View $this
@@ -22,10 +22,10 @@ use yii\widgets\DetailView;
  */
 
 $this->title = $model-><?= $generator->getNameAttribute() ?>;
-$this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(Inflector::camel2words(FileHelper::basename($generator->modelClass))) ?>', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="<?= Inflector::camel2id(FileHelper::basename($generator->modelClass)) ?>-view">
+<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-view">
 
 	<h1><?= "<?= " ?>Html::encode($this->title) ?></h1>
 

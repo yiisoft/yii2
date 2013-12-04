@@ -9,7 +9,6 @@ namespace yii\redis;
 
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
-use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
@@ -97,7 +96,7 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function keyPrefix()
 	{
-		return Inflector::camel2id(FileHelper::basename(get_called_class()), '_');
+		return Inflector::camel2id(StringHelper::basename(get_called_class()), '_');
 	}
 
 	/**
@@ -288,7 +287,7 @@ class ActiveRecord extends BaseActiveRecord
 		if (is_numeric($key)) {
 			return $key;
 		} elseif (is_string($key)) {
-			return ctype_alnum($key) && StringHelper::byteLen($key) <= 32 ? $key : md5($key);
+			return ctype_alnum($key) && StringHelper::byteLength($key) <= 32 ? $key : md5($key);
 		} elseif (is_array($key)) {
 			if (count($key) == 1) {
 				return self::buildKey(reset($key));

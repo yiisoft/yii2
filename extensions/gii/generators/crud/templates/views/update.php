@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 
 /**
  * @var yii\web\View $this
@@ -20,12 +20,12 @@ use yii\helpers\Html;
  * @var <?= ltrim($generator->modelClass, '\\') ?> $model
  */
 
-$this->title = 'Update <?= Inflector::camel2words(FileHelper::basename($generator->modelClass)) ?>: ' . $model-><?= $generator->getNameAttribute() ?>;
+$this->title = 'Update <?= Inflector::camel2words(StringHelper::basename($generator->modelClass)) ?>: ' . $model-><?= $generator->getNameAttribute() ?>;
 $this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(Inflector::camel2words(BaseFileHelper::basename($generator->modelClass))) ?>', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="<?= Inflector::camel2id(FileHelper::basename($generator->modelClass)) ?>-update">
+<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-update">
 
 	<h1><?= "<?= " ?>Html::encode($this->title) ?></h1>
 
