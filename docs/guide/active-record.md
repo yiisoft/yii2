@@ -607,7 +607,7 @@ class Product extends \yii\db\ActiveRecord
 
 	public function afterSave($insert)
 	{
-		parent::afterSave();
+		parent::afterSave($insert);
 		if ($this->getScenario() === 'userCreates') {
 			// FIXME: TODO: WIP, TBD
 		}
