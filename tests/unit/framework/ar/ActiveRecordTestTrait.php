@@ -411,10 +411,6 @@ trait ActiveRecordTestTrait
 		$this->assertTrue($customer->isRelationPopulated('orders'));
 		$this->assertEquals(1, count($customer->orders));
 		$this->assertEquals(1, count($customer->populatedRelations));
-
-		// https://github.com/yiisoft/yii2/issues/1402
-		$orders = $this->callOrderFind()->with('books')->asArray()->all();
-		$this->assertEquals(3, count($orders));
 	}
 
 	public function testFindLazyVia()
