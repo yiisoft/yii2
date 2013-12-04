@@ -12,7 +12,7 @@ use DOMElement;
 use DOMText;
 use yii\base\Arrayable;
 use yii\base\Component;
-use yii\helpers\FileHelper;
+use yii\helpers\StringHelper;
 
 /**
  * XmlResponseFormatter formats the given data into an XML response content.
@@ -66,7 +66,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
 	protected function buildXml($element, $data)
 	{
 		if (is_object($data)) {
-			$child = new DOMElement(FileHelper::basename(get_class($data)));
+			$child = new DOMElement(StringHelper::basename(get_class($data)));
 			$element->appendChild($child);
 			if ($data instanceof Arrayable) {
 				$this->buildXml($child, $data->toArray());

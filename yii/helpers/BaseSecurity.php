@@ -83,7 +83,7 @@ class BaseSecurity
 		$iv = StringHelper::byteSubstr($data, 0, $ivSize);
 		$key = static::deriveKey($password, $iv);
 		mcrypt_generic_init($module, $key, $iv);
-		$decrypted = mdecrypt_generic($module, StringHelper::byteSubstr($data, $ivSize, StringHelper::byteLen($data)));
+		$decrypted = mdecrypt_generic($module, StringHelper::byteSubstr($data, $ivSize, StringHelper::byteLength($data)));
 		mcrypt_generic_deinit($module);
 		mcrypt_module_close($module);
 		return static::stripPadding($decrypted);
@@ -96,7 +96,7 @@ class BaseSecurity
 	*/
 	protected static function addPadding($data)
 	{
-		$pad = self::CRYPT_BLOCK_SIZE - (StringHelper::byteLen($data) % self::CRYPT_BLOCK_SIZE);
+		$pad = self::CRYPT_BLOCK_SIZE - (StringHelper::byteLength($data) % self::CRYPT_BLOCK_SIZE);
 		return $data . str_repeat(chr($pad), $pad);
 	}
 
@@ -109,7 +109,7 @@ class BaseSecurity
 	{
 		$end = StringHelper::byteSubstr($data, -1, NULL);
 		$last = ord($end);
-		$n = StringHelper::byteLen($data) - $last;
+		$n = StringHelper::byteLength($data) - $last;
 		if (StringHelper::byteSubstr($data, $n, NULL) == str_repeat($end, $last)) {
 			return StringHelper::byteSubstr($data, 0, $n);
 		}
@@ -164,8 +164,8 @@ class BaseSecurity
 	 */
 	public static function validateData($data, $key, $algorithm = 'sha256')
 	{
-		$hashSize = StringHelper::byteLen(hash_hmac($algorithm, 'test', $key));
-		$n = StringHelper::byteLen($data);
+		$hashSize = StringHelper::byteLength(hash_hmac($algorithm, 'test', $key));
+		$n = StringHelper::byteLength($data);
 		if ($n >= $hashSize) {
 			$hash = StringHelper::byteSubstr($data, 0, $hashSize);
 			$data2 = StringHelper::byteSubstr($data, $hashSize, $n - $hashSize);

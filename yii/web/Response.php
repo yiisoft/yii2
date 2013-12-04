@@ -382,7 +382,7 @@ class Response extends \yii\base\Response
 	public function sendContentAsFile($content, $attachmentName, $mimeType = 'application/octet-stream')
 	{
 		$headers = $this->getHeaders();
-		$contentLength = StringHelper::byteLen($content);
+		$contentLength = StringHelper::byteLength($content);
 		$range = $this->getHttpRange($contentLength);
 		if ($range === false) {
 			$headers->set('Content-Range', "bytes */$contentLength");
@@ -395,7 +395,7 @@ class Response extends \yii\base\Response
 			->setDefault('Content-Type', $mimeType)
 			->setDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
 			->setDefault('Content-Transfer-Encoding', 'binary')
-			->setDefault('Content-Length', StringHelper::byteLen($content))
+			->setDefault('Content-Length', StringHelper::byteLength($content))
 			->setDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
 
 		list($begin, $end) = $range;
