@@ -9,13 +9,8 @@
 namespace yii\db;
 
 use yii\base\InvalidConfigException;
-use yii\base\Model;
-use yii\base\InvalidParamException;
-use yii\base\ModelEvent;
-use yii\base\UnknownMethodException;
-use yii\base\InvalidCallException;
-use yii\helpers\StringHelper;
 use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.

@@ -9,8 +9,6 @@ namespace yii\elasticsearch;
 
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
-use yii\base\NotSupportedException;
-use yii\db\ActiveRecordInterface;
 use yii\db\BaseActiveRecord;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
