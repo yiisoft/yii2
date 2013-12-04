@@ -29,7 +29,10 @@ class QueryTest extends MongoTestCase
 	{
 		$collection = $this->getConnection()->getFileCollection();
 		for ($i = 1; $i <= 10; $i++) {
-			$collection->storeBytes('content' . $i, ['filename' => 'name' . $i]);
+			$collection->storeBytes('content' . $i, [
+				'filename' => 'name' . $i,
+				'file_index' => $i,
+			]);
 		}
 	}
 
@@ -49,5 +52,18 @@ class QueryTest extends MongoTestCase
 		$query = new Query;
 		$row = $query->from('fs')->one($connection);
 		$this->assertTrue($row instanceof \MongoGridFSFile);
+	}
+
+	public function testDirectMatch()
+	{
+		$connection = $this->getConnection();
+		$query = new Query;
+		$rows = $query->from('fs')
+			->where(['file_index' => 5])
+			->all($connection);
+		$this->assertEquals(1, count($rows));
+		/** @var $file \MongoGridFSFile */
+		$file = $rows[0];
+		$this->assertEquals('name5', $file->file['filename']);
 	}
 }

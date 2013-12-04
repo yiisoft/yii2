@@ -16,6 +16,11 @@ namespace yii\mongo\file;
 class ActiveRecord extends \yii\mongo\ActiveRecord
 {
 	/**
+	 * @var \MongoGridFSFile|string
+	 */
+	public $file;
+
+	/**
 	 * Creates an [[ActiveQuery]] instance.
 	 * This method is called by [[find()]] to start a "find" command.
 	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
@@ -49,6 +54,29 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 	}
 
 	/**
+	 * Creates an active record object using a row of data.
+	 * This method is called by [[ActiveQuery]] to populate the query results
+	 * into Active Records. It is not meant to be used to create new records.
+	 * @param \MongoGridFSFile $row attribute values (name => value)
+	 * @return ActiveRecord the newly created active record.
+	 */
+	public static function create($row)
+	{
+		$record = static::instantiate($row);
+		$columns = array_flip($record->attributes());
+		foreach ($row->file as $name => $value) {
+			if (isset($columns[$name])) {
+				$record->setAttribute($name, $value);
+			} else {
+				$record->$name = $value;
+			}
+		}
+		$record->setOldAttributes($record->getAttributes());
+		$record->afterFind();
+		return $record;
+	}
+
+	/**
 	 * Returns the list of all attribute names of the model.
 	 * This method could be overridden by child classes to define available attributes.
 	 * Note: primary key attribute "_id" should be always present in returned array.
@@ -56,7 +84,7 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 	 */
 	public function attributes()
 	{
-		return ['id', 'file'];
+		return ['id', 'filename'];
 	}
 
 	/**

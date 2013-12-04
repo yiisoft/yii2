@@ -17,6 +17,14 @@ class CollectionTest extends MongoTestCase
 
 	// Tests :
 
+	public function testGetChunkCollection()
+	{
+		$collection = $this->getConnection()->getFileCollection();
+		$chunkCollection = $collection->getChunkCollection();
+		$this->assertTrue($chunkCollection instanceof \yii\mongo\Collection);
+		$this->assertTrue($chunkCollection->mongoCollection instanceof \MongoCollection);
+	}
+
 	public function testFind()
 	{
 		$collection = $this->getConnection()->getFileCollection();

@@ -8,10 +8,12 @@
 namespace yii\mongo\file;
 
 use yii\mongo\Exception;
+use Yii;
 
 /**
  * Collection represents the Mongo GridFS collection information.
  *
+ * @property \yii\mongo\Collection $chunkCollection file chunks Mongo collection. This property is read-only.
  * @method \MongoGridFSCursor find() returns a cursor for the search results.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -23,6 +25,26 @@ class Collection extends \yii\mongo\Collection
 	 * @var \MongoGridFS Mongo GridFS collection instance.
 	 */
 	public $mongoCollection;
+	/**
+	 * @var \yii\mongo\Collection file chunks Mongo collection.
+	 */
+	private $_chunkCollection;
+
+	/**
+	 * Returns the Mongo collection for the file chunks.
+	 * @param boolean $refresh whether to reload the collection instance even if it is found in the cache.
+	 * @return \yii\mongo\Collection mongo collection instance.
+	 */
+	public function getChunkCollection($refresh = false)
+	{
+		if ($refresh || !is_object($this->_chunkCollection)) {
+			$this->_chunkCollection = Yii::createObject([
+				'class' => 'yii\mongo\Collection',
+				'mongoCollection' => $this->mongoCollection->chunks
+			]);
+		}
+		return $this->_chunkCollection;
+	}
 
 	/**
 	 * Removes data from the collection.

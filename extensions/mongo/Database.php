@@ -34,7 +34,7 @@ class Database extends Object
 	/**
 	 * Returns the Mongo collection with the given name.
 	 * @param string $name collection name
-	 * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
+	 * @param boolean $refresh whether to reload the collection instance even if it is found in the cache.
 	 * @return Collection mongo collection instance.
 	 */
 	public function getCollection($name, $refresh = false)
@@ -48,7 +48,7 @@ class Database extends Object
 	/**
 	 * Returns Mongo GridFS collection with given prefix.
 	 * @param string $prefix collection prefix.
-	 * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
+	 * @param boolean $refresh whether to reload the collection instance even if it is found in the cache.
 	 * @return file\Collection mongo GridFS collection.
 	 */
 	public function getFileCollection($prefix = 'fs', $refresh = false)
