@@ -43,7 +43,7 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertEquals(4, $customer->status2);
 	}
 
-	public function testSatisticalFind()
+	public function testStatisticalFind()
 	{
 		// find count, sum, average, min, max, scalar
 		$this->assertEquals(3, $this->callCustomerFind()->count());
@@ -105,10 +105,6 @@ class ActiveRecordTest extends DatabaseTestCase
 		$orders = Order::find()->with('books')->orderBy('id')->all();
 		$this->assertEquals(3, count($orders));
 
-		// https://github.com/yiisoft/yii2/issues/1402
-		$orders = Order::find()->with('books')->orderBy('id')->asArray()->all();
-		$this->assertEquals(3, count($orders));
-
 		$order = $orders[0];
 		$this->assertEquals(1, $order->id);
 		$this->assertEquals(2, count($order->books));
@@ -123,6 +119,17 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertEquals(3, $order->id);
 		$this->assertEquals(1, count($order->books));
 		$this->assertEquals(2, $order->books[0]->id);
+
+		// https://github.com/yiisoft/yii2/issues/1402
+		$orders = Order::find()->with('books')->orderBy('id')->asArray()->all();
+		$this->assertEquals(3, count($orders));
+
+		$order = $orders[0];
+		$this->assertTrue(is_array($order));
+		$this->assertEquals(1, $order['id']);
+		$this->assertEquals(2, count($order['books']));
+		$this->assertEquals(1, $order['books'][0]['id']);
+		$this->assertEquals(2, $order['books'][1]['id']);
 	}
 
 	public function testStoreNull()
