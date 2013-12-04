@@ -1,7 +1,7 @@
 <?php
 
+use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
-use yii\helpers\StringHelper;
 
 /**
  * @var yii\web\View $this
@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
  */
 ?>
 
-<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-search">
+<div class="<?= Inflector::camel2id(FileHelper::basename($generator->modelClass)) ?>-search">
 
 	<?= "<?php " ?>$form = ActiveForm::begin([
 		'action' => ['index'],

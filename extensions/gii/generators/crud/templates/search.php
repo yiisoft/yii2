@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\StringHelper;
+use yii\helpers\FileHelper;
 
 /**
  * This is the template for generating a CRUD controller class file.
@@ -9,8 +9,8 @@ use yii\helpers\StringHelper;
  * @var yii\gii\generators\crud\Generator $generator
  */
 
-$modelClass = StringHelper::basename($generator->modelClass);
-$searchModelClass = StringHelper::basename($generator->searchModelClass);
+$modelClass = FileHelper::basename($generator->modelClass);
+$searchModelClass = FileHelper::basename($generator->searchModelClass);
 $rules = $generator->generateSearchRules();
 $labels = $generator->generateSearchLabels();
 $searchAttributes = $generator->getSearchAttributes();
@@ -19,7 +19,7 @@ $searchConditions = $generator->generateSearchConditions();
 echo "<?php\n";
 ?>
 
-namespace <?= StringHelper::dirname(ltrim($generator->searchModelClass, '\\')) ?>;
+namespace <?= FileHelper::dirname(ltrim($generator->searchModelClass, '\\')) ?>;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;

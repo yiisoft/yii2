@@ -12,8 +12,8 @@ use yii\db\BaseActiveRecord;
 use yii\base\NotSupportedException;
 use yii\db\ActiveRelationInterface;
 use yii\db\StaleObjectException;
+use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
-use yii\helpers\StringHelper;
 use Yii;
 
 /**
@@ -166,7 +166,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function indexName()
 	{
-		return Inflector::camel2id(StringHelper::basename(get_called_class()), '_');
+		return Inflector::camel2id(FileHelper::basename(get_called_class()), '_');
 	}
 
 	/**

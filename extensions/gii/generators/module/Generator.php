@@ -10,7 +10,7 @@ namespace yii\gii\generators\module;
 use Yii;
 use yii\gii\CodeFile;
 use yii\helpers\Html;
-use yii\helpers\StringHelper;
+use yii\helpers\FileHelper;
 
 /**
  * This generator will generate the skeleton code needed by a module.
@@ -119,7 +119,7 @@ EOD;
 		$files = [];
 		$modulePath = $this->getModulePath();
 		$files[] = new CodeFile(
-			$modulePath . '/' . StringHelper::basename($this->moduleClass) . '.php',
+			$modulePath . '/' . FileHelper::basename($this->moduleClass) . '.php',
 			$this->render("module.php")
 		);
 		$files[] = new CodeFile(

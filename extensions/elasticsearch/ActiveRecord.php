@@ -9,12 +9,10 @@ namespace yii\elasticsearch;
 
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
-use yii\base\NotSupportedException;
-use yii\db\ActiveRecordInterface;
 use yii\db\BaseActiveRecord;
+use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
-use yii\helpers\StringHelper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
@@ -228,7 +226,7 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function index()
 	{
-		return Inflector::pluralize(Inflector::camel2id(StringHelper::basename(get_called_class()), '-'));
+		return Inflector::pluralize(Inflector::camel2id(FileHelper::basename(get_called_class()), '-'));
 	}
 
 	/**
@@ -236,7 +234,7 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function type()
 	{
-		return Inflector::camel2id(StringHelper::basename(get_called_class()), '-');
+		return Inflector::camel2id(FileHelper::basename(get_called_class()), '-');
 	}
 
 	/**
