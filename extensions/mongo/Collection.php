@@ -59,6 +59,7 @@ use Yii;
  *
  * @property string $name name of this collection. This property is read-only.
  * @property string $fullName full name of this collection, including database name. This property is read-only.
+ * @property array $lastError last error information. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -84,6 +85,14 @@ class Collection extends Object
 	public function getFullName()
 	{
 		return $this->mongoCollection->__toString();
+	}
+
+	/**
+	 * @return array last error information.
+	 */
+	public function getLastError()
+	{
+		return $this->mongoCollection->db->lastError();
 	}
 
 	/**
@@ -550,6 +559,15 @@ class Collection extends Object
 		} elseif (!$result) {
 			throw new Exception('Unknown error, use "w=1" option to enable error tracking');
 		}
+	}
+
+	/**
+	 * Throws an exception if there was an error on the last operation.
+	 * @throws Exception if an error occurred.
+	 */
+	protected function tryLastError()
+	{
+		$this->tryResultError($this->getLastError());
 	}
 
 	/**

@@ -26,6 +26,10 @@ class Database extends Object
 	 * @var Collection[] list of collections.
 	 */
 	private $_collections = [];
+	/**
+	 * @var file\Collection[] list of GridFS collections.
+	 */
+	private $_fileCollections = [];
 
 	/**
 	 * Returns the Mongo collection with the given name.
@@ -42,6 +46,20 @@ class Database extends Object
 	}
 
 	/**
+	 * Returns Mongo GridFS collection with given prefix.
+	 * @param string $prefix collection prefix.
+	 * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
+	 * @return file\Collection mongo GridFS collection.
+	 */
+	public function getFileCollection($prefix = 'fs', $refresh = false)
+	{
+		if ($refresh || !array_key_exists($prefix, $this->_fileCollections)) {
+			$this->_fileCollections[$prefix] = $this->selectFileCollection($prefix);
+		}
+		return $this->_fileCollections[$prefix];
+	}
+
+	/**
 	 * Selects collection with given name.
 	 * @param string $name collection name.
 	 * @return Collection collection instance.
@@ -51,6 +69,19 @@ class Database extends Object
 		return Yii::createObject([
 			'class' => 'yii\mongo\Collection',
 			'mongoCollection' => $this->mongoDb->selectCollection($name)
+		]);
+	}
+
+	/**
+	 * Selects GridFS collection with given prefix.
+	 * @param string $prefix file collection prefix.
+	 * @return file\Collection file collection instance.
+	 */
+	protected function selectFileCollection($prefix)
+	{
+		return Yii::createObject([
+			'class' => 'yii\mongo\file\Collection',
+			'mongoCollection' => $this->mongoDb->getGridFS($prefix)
 		]);
 	}
 

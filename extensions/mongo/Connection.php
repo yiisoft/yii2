@@ -162,10 +162,10 @@ class Connection extends Component
 
 	/**
 	 * Returns the Mongo collection with the given name.
-	 * @param string|array $name collection name. If string considered as  the name of the collection
+	 * @param string|array $name collection name. If string considered as the name of the collection
 	 * inside the default database. If array - first element considered as the name of the database,
 	 * second - as name of collection inside that database
-	 * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
+	 * @param boolean $refresh whether to reload the collection instance even if it is found in the cache.
 	 * @return Collection Mongo collection instance.
 	 */
 	public function getCollection($name, $refresh = false)
@@ -175,6 +175,28 @@ class Connection extends Component
 			return $this->getDatabase($dbName)->getCollection($collectionName, $refresh);
 		} else {
 			return $this->getDatabase()->getCollection($name, $refresh);
+		}
+	}
+
+	/**
+	 * Returns the Mongo GridFS collection.
+	 * @param string|array $prefix collection prefix. If string considered as the prefix of the GridFS
+	 * collection inside the default database. If array - first element considered as the name of the database,
+	 * second - as prefix of the GridFS collection inside that database, if no second element present
+	 * default "fs" prefix will be used.
+	 * @param boolean $refresh whether to reload the collection instance even if it is found in the cache.
+	 * @return file\Collection Mongo GridFS collection instance.
+	 */
+	public function getFileCollection($prefix = 'fs', $refresh = false)
+	{
+		if (is_array($prefix)) {
+			list ($dbName, $collectionPrefix) = $prefix;
+			if (!isset($collectionPrefix)) {
+				$collectionPrefix = 'fs';
+			}
+			return $this->getDatabase($dbName)->getFileCollection($collectionPrefix, $refresh);
+		} else {
+			return $this->getDatabase()->getFileCollection($prefix, $refresh);
 		}
 	}
 

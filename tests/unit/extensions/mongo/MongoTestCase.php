@@ -105,6 +105,21 @@ class MongoTestCase extends TestCase
 	}
 
 	/**
+	 * Drops the specified file collection.
+	 * @param string $name file collection name.
+	 */
+	protected function dropFileCollection($name)
+	{
+		if ($this->mongo) {
+			try {
+				$this->mongo->getFileCollection($name)->drop();
+			} catch (Exception $e) {
+				// shut down exception
+			}
+		}
+	}
+
+	/**
 	 * Finds all records in collection.
 	 * @param \yii\mongo\Collection $collection
 	 * @param array $condition

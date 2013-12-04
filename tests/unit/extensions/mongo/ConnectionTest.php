@@ -3,6 +3,7 @@
 namespace yiiunit\extensions\mongo;
 
 use yii\mongo\Collection;
+use yii\mongo\file\Collection as FileCollection;
 use yii\mongo\Connection;
 use yii\mongo\Database;
 
@@ -96,6 +97,23 @@ class ConnectionTest extends MongoTestCase
 		$this->assertTrue($collection === $collection2);
 
 		$collection2 = $connection->getCollection('customer', true);
+		$this->assertFalse($collection === $collection2);
+	}
+
+	/**
+	 * @depends testGetDefaultDatabase
+	 */
+	public function testGetFileCollection()
+	{
+		$connection = $this->getConnection();
+
+		$collection = $connection->getFileCollection('testfs');
+		$this->assertTrue($collection instanceof FileCollection);
+
+		$collection2 = $connection->getFileCollection('testfs');
+		$this->assertTrue($collection === $collection2);
+
+		$collection2 = $connection->getFileCollection('testfs', true);
 		$this->assertFalse($collection === $collection2);
 	}
 }
