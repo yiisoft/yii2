@@ -10,6 +10,7 @@ namespace yii\mongo;
 use yii\base\InvalidParamException;
 use yii\base\Object;
 use Yii;
+use yii\helpers\Json;
 
 /**
  * Collection represents the Mongo collection information.
@@ -96,13 +97,28 @@ class Collection extends Object
 	}
 
 	/**
+	 * Composes log/profile token.
+	 * @param string $command command name
+	 * @param array $arguments command arguments.
+	 * @return string token.
+	 */
+	protected function composeLogToken($command, $arguments = [])
+	{
+		$parts = [];
+		foreach ($arguments as $argument) {
+			$parts[] = is_scalar($argument) ? $argument : Json::encode($argument);
+		}
+		return $this->getFullName() . '.' . $command . '(' . implode(', ', $parts) . ')';
+	}
+
+	/**
 	 * Drops this collection.
 	 * @throws Exception on failure.
 	 * @return boolean whether the operation successful.
 	 */
 	public function drop()
 	{
-		$token = 'Drop collection ' . $this->getFullName();
+		$token = $this->composeLogToken('drop');
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
@@ -139,12 +155,12 @@ class Collection extends Object
 		if (!is_array($columns)) {
 			$columns = [$columns];
 		}
-		$token = 'Creating index at ' . $this->getFullName() . ' on ' . implode(',', $columns);
+		$keys = $this->normalizeIndexKeys($columns);
+		$token = $this->composeLogToken('createIndex', [$keys, $options]);
+		$options = array_merge(['w' => 1], $options);
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-			$keys = $this->normalizeIndexKeys($columns);
-			$options = array_merge(['w' => 1], $options);
 			$result = $this->mongoCollection->ensureIndex($keys, $options);
 			$this->tryResultError($result);
 			Yii::endProfile($token, __METHOD__);
@@ -177,10 +193,10 @@ class Collection extends Object
 		if (!is_array($columns)) {
 			$columns = [$columns];
 		}
-		$token = 'Drop index at ' . $this->getFullName() . ' on ' . implode(',', $columns);
+		$keys = $this->normalizeIndexKeys($columns);
+		$token = $this->composeLogToken('dropIndex', [$keys]);
 		Yii::info($token, __METHOD__);
 		try {
-			$keys = $this->normalizeIndexKeys($columns);
 			$result = $this->mongoCollection->deleteIndex($keys);
 			$this->tryResultError($result);
 			return true;
@@ -215,7 +231,7 @@ class Collection extends Object
 	 */
 	public function dropAllIndexes()
 	{
-		$token = 'Drop ALL indexes at ' . $this->getFullName();
+		$token = $this->composeLogToken('dropIndexes');
 		Yii::info($token, __METHOD__);
 		try {
 			$result = $this->mongoCollection->deleteIndexes();
@@ -249,7 +265,7 @@ class Collection extends Object
 	 */
 	public function insert($data, $options = [])
 	{
-		$token = 'Inserting data into ' . $this->getFullName();
+		$token = $this->composeLogToken('insert', [$data]);
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
@@ -272,7 +288,7 @@ class Collection extends Object
 	 */
 	public function batchInsert($rows, $options = [])
 	{
-		$token = 'Inserting batch data into ' . $this->getFullName();
+		$token = $this->composeLogToken('batchInsert', [$rows]);
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
@@ -298,18 +314,18 @@ class Collection extends Object
 	 */
 	public function update($condition, $newData, $options = [])
 	{
-		$token = 'Updating data in ' . $this->getFullName();
+		$condition = $this->buildCondition($condition);
+		$options = array_merge(['w' => 1, 'multiple' => true], $options);
+		if ($options['multiple']) {
+			$keys = array_keys($newData);
+			if (!empty($keys) && strncmp('$', $keys[0], 1) !== 0) {
+				$newData = ['$set' => $newData];
+			}
+		}
+		$token = $this->composeLogToken('update', [$condition, $newData, $options]);
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-			$options = array_merge(['w' => 1, 'multiple' => true], $options);
-			if ($options['multiple']) {
-				$keys = array_keys($newData);
-				if (!empty($keys) && strncmp('$', $keys[0], 1) !== 0) {
-					$newData = ['$set' => $newData];
-				}
-			}
-			$condition = $this->buildCondition($condition);
 			$result = $this->mongoCollection->update($condition, $newData, $options);
 			$this->tryResultError($result);
 			Yii::endProfile($token, __METHOD__);
@@ -333,7 +349,7 @@ class Collection extends Object
 	 */
 	public function save($data, $options = [])
 	{
-		$token = 'Saving data into ' . $this->getFullName();
+		$token = $this->composeLogToken('save', [$data]);
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
@@ -356,12 +372,13 @@ class Collection extends Object
 	 */
 	public function remove($condition = [], $options = [])
 	{
-		$token = 'Removing data from ' . $this->getFullName();
+		$condition = $this->buildCondition($condition);
+		$options = array_merge(['w' => 1, 'multiple' => true], $options);
+		$token = $this->composeLogToken('remove', [$condition, $options]);
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-			$options = array_merge(['w' => 1, 'multiple' => true], $options);
-			$result = $this->mongoCollection->remove($this->buildCondition($condition), $options);
+			$result = $this->mongoCollection->remove($condition, $options);
 			$this->tryResultError($result);
 			Yii::endProfile($token, __METHOD__);
 			if (is_array($result) && array_key_exists('n', $result)) {
@@ -380,15 +397,22 @@ class Collection extends Object
 	 * @param string $column column to use.
 	 * @param array $condition query parameters.
 	 * @return array|boolean array of distinct values, or "false" on failure.
+	 * @throws Exception on failure.
 	 */
 	public function distinct($column, $condition = [])
 	{
-		$token = 'Get distinct ' . $column . ' from ' . $this->getFullName();
+		$condition = $this->buildCondition($condition);
+		$token = $this->composeLogToken('distinct', [$column, $condition]);
 		Yii::info($token, __METHOD__);
-		Yii::beginProfile($token, __METHOD__);
-		$result = $this->mongoCollection->distinct($column, $this->buildCondition($condition));
-		Yii::endProfile($token, __METHOD__);
-		return $result;
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$result = $this->mongoCollection->distinct($column, $condition);
+			Yii::endProfile($token, __METHOD__);
+			return $result;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
 	}
 
 	/**
@@ -435,22 +459,21 @@ class Collection extends Object
 	 */
 	public function group($keys, $initial, $reduce, $options = [])
 	{
-		$token = 'Grouping from ' . $this->getFullName();
+		if (!($reduce instanceof \MongoCode)) {
+			$reduce = new \MongoCode((string)$reduce);
+		}
+		if (array_key_exists('condition', $options)) {
+			$options['condition'] = $this->buildCondition($options['condition']);
+		}
+		if (array_key_exists('finalize', $options)) {
+			if (!($options['finalize'] instanceof \MongoCode)) {
+				$options['finalize'] = new \MongoCode((string)$options['finalize']);
+			}
+		}
+		$token = $this->composeLogToken('group', [$keys, $initial, $reduce, $options]);
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-
-			if (!($reduce instanceof \MongoCode)) {
-				$reduce = new \MongoCode((string)$reduce);
-			}
-			if (array_key_exists('condition', $options)) {
-				$options['condition'] = $this->buildCondition($options['condition']);
-			}
-			if (array_key_exists('finalize', $options)) {
-				if (!($options['finalize'] instanceof \MongoCode)) {
-					$options['finalize'] = new \MongoCode((string)$options['finalize']);
-				}
-			}
 			// Avoid possible E_DEPRECATED for $options:
 			if (empty($options)) {
 				$result = $this->mongoCollection->group($keys, $initial, $reduce);
@@ -502,27 +525,27 @@ class Collection extends Object
 	 */
 	public function mapReduce($map, $reduce, $out, $condition = [])
 	{
-		$token = 'Map reduce from ' . $this->getFullName();
-		Yii::info($token, __METHOD__);
+		if (!($map instanceof \MongoCode)) {
+			$map = new \MongoCode((string)$map);
+		}
+		if (!($reduce instanceof \MongoCode)) {
+			$reduce = new \MongoCode((string)$reduce);
+		}
+		$command = [
+			'mapReduce' => $this->getName(),
+			'map' => $map,
+			'reduce' => $reduce,
+			'out' => $out
+		];
+		if (!empty($condition)) {
+			$command['query'] = $this->buildCondition($condition);
+		}
 
+		$token = $this->composeLogToken('mapReduce', [$map, $reduce, $out]);
+		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-			if (!($map instanceof \MongoCode)) {
-				$map = new \MongoCode((string)$map);
-			}
-			if (!($reduce instanceof \MongoCode)) {
-				$reduce = new \MongoCode((string)$reduce);
-			}
-			$command = [
-				'mapReduce' => $this->getName(),
-				'map' => $map,
-				'reduce' => $reduce,
-				'out' => $out
-			];
-			if (!empty($condition)) {
-				$command['query'] = $this->buildCondition($condition);
-			}
-
+			$command = array_merge(['mapReduce' => $this->getName()], $command);
 			$result = $this->mongoCollection->db->command($command);
 			$this->tryResultError($result);
 			Yii::endProfile($token, __METHOD__);
