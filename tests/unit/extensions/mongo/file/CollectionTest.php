@@ -32,12 +32,12 @@ class CollectionTest extends MongoTestCase
 		$this->assertTrue($cursor instanceof \MongoGridFSCursor);
 	}
 
-	public function testStoreFile()
+	public function testInsertFile()
 	{
 		$collection = $this->getConnection()->getFileCollection();
 
 		$filename = __FILE__;
-		$id = $collection->storeFile($filename);
+		$id = $collection->insertFile($filename);
 		$this->assertTrue($id instanceof \MongoId);
 
 		$files = $this->findAll($collection);
@@ -49,12 +49,12 @@ class CollectionTest extends MongoTestCase
 		$this->assertEquals(file_get_contents($filename), $file->getBytes());
 	}
 
-	public function testStoreBytes()
+	public function testInsertFileContent()
 	{
 		$collection = $this->getConnection()->getFileCollection();
 
 		$bytes = 'Test file content';
-		$id = $collection->storeBytes($bytes);
+		$id = $collection->insertFileContent($bytes);
 		$this->assertTrue($id instanceof \MongoId);
 
 		$files = $this->findAll($collection);
@@ -66,14 +66,14 @@ class CollectionTest extends MongoTestCase
 	}
 
 	/**
-	 * @depends testStoreBytes
+	 * @depends testInsertFileContent
 	 */
 	public function testGet()
 	{
 		$collection = $this->getConnection()->getFileCollection();
 
 		$bytes = 'Test file content';
-		$id = $collection->storeBytes($bytes);
+		$id = $collection->insertFileContent($bytes);
 
 		$file = $collection->get($id);
 		$this->assertTrue($file instanceof \MongoGridFSFile);
@@ -88,7 +88,7 @@ class CollectionTest extends MongoTestCase
 		$collection = $this->getConnection()->getFileCollection();
 
 		$bytes = 'Test file content';
-		$id = $collection->storeBytes($bytes);
+		$id = $collection->insertFileContent($bytes);
 
 		$this->assertTrue($collection->delete($id));
 

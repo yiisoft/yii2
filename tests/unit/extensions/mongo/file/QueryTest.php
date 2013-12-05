@@ -29,7 +29,7 @@ class QueryTest extends MongoTestCase
 	{
 		$collection = $this->getConnection()->getFileCollection();
 		for ($i = 1; $i <= 10; $i++) {
-			$collection->storeBytes('content' . $i, [
+			$collection->insertFileContent('content' . $i, [
 				'filename' => 'name' . $i,
 				'file_index' => $i,
 			]);

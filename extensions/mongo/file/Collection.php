@@ -63,12 +63,14 @@ class Collection extends \yii\mongo\Collection
 	/**
 	 * @param string $filename name of the file to store.
 	 * @param array $metadata other metadata fields to include in the file document.
+	 * @param array $options list of options in format: optionName => optionValue
 	 * @return mixed the "_id" of the saved file document. This will be a generated [[\MongoId]]
 	 * unless an "_id" was explicitly specified in the metadata.
 	 */
-	public function put($filename, $metadata = [])
+	public function insertFile($filename, $metadata = [], $options = [])
 	{
-		return $this->mongoCollection->put($filename, $metadata);
+		$options = array_merge(['w' => 1], $options);
+		return $this->mongoCollection->storeFile($filename, $metadata, $options);
 	}
 
 	/**
@@ -78,23 +80,10 @@ class Collection extends \yii\mongo\Collection
 	 * @return mixed the "_id" of the saved file document. This will be a generated [[\MongoId]]
 	 * unless an "_id" was explicitly specified in the metadata.
 	 */
-	public function storeBytes($bytes, $metadata = [], $options = [])
+	public function insertFileContent($bytes, $metadata = [], $options = [])
 	{
 		$options = array_merge(['w' => 1], $options);
 		return $this->mongoCollection->storeBytes($bytes, $metadata, $options);
-	}
-
-	/**
-	 * @param string $filename name of the file to store.
-	 * @param array $metadata other metadata fields to include in the file document.
-	 * @param array $options list of options in format: optionName => optionValue
-	 * @return mixed the "_id" of the saved file document. This will be a generated [[\MongoId]]
-	 * unless an "_id" was explicitly specified in the metadata.
-	 */
-	public function storeFile($filename, $metadata = [], $options = [])
-	{
-		$options = array_merge(['w' => 1], $options);
-		return $this->mongoCollection->storeFile($filename, $metadata, $options);
 	}
 
 	/**
@@ -104,7 +93,7 @@ class Collection extends \yii\mongo\Collection
 	 * @return mixed the "_id" of the saved file document. This will be a generated [[\MongoId]]
 	 * unless an "_id" was explicitly specified in the metadata.
 	 */
-	public function storeUploads($name, $metadata = [])
+	public function insertUploads($name, $metadata = [])
 	{
 		return $this->mongoCollection->storeUpload($name, $metadata);
 	}

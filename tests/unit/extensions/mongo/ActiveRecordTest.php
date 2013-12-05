@@ -156,8 +156,7 @@ class ActiveRecordTest extends MongoTestCase
 
 		// updateAll
 		$pk = ['_id' => $record->_id];
-		//$ret = Customer::updateAll(['status' => 55], $pk);
-		$ret = Customer::updateAll(['$set' => ['status' => 55]], $pk);
+		$ret = Customer::updateAll(['status' => 55], $pk);
 		$this->assertEquals(1, $ret);
 		$record = Customer::find($pk);
 		$this->assertEquals(55, $record->status);

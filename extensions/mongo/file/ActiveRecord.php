@@ -92,7 +92,7 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 			$fileContent = $values['newFileContent'];
 			unset($values['newFileContent']);
 			unset($values['file']);
-			$newId = $collection->storeBytes($fileContent, $values);
+			$newId = $collection->insertFileContent($fileContent, $values);
 		} elseif (array_key_exists('file', $values)) {
 			$file = $values['file'];
 			if ($file instanceof UploadedFile) {
@@ -108,7 +108,7 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 			}
 			unset($values['newFileContent']);
 			unset($values['file']);
-			$newId = $collection->storeFile($fileName, $values);
+			$newId = $collection->insertFile($fileName, $values);
 		} else {
 			$newId = $collection->insert($values);
 		}
@@ -142,8 +142,10 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 			unset($values['file']);
 			$values['_id'] = $this->getAttribute('_id');
 			$this->deleteInternal();
-			$collection->storeBytes($fileContent, $values);
+			$collection->insertFileContent($fileContent, $values);
 			$rows = 1;
+			$this->setAttribute('newFileContent', null);
+			$this->setAttribute('file', null);
 		} elseif (array_key_exists('file', $values)) {
 			$file = $values['file'];
 			if ($file instanceof UploadedFile) {
@@ -161,8 +163,10 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 			unset($values['file']);
 			$values['_id'] = $this->getAttribute('_id');
 			$this->deleteInternal();
-			$collection->storeFile($fileName, $values);
+			$collection->insertFile($fileName, $values);
 			$rows = 1;
+			$this->setAttribute('newFileContent', null);
+			$this->setAttribute('file', null);
 		} else {
 			$condition = $this->getOldPrimaryKey(true);
 			$lock = $this->optimisticLock();
@@ -188,6 +192,17 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 	}
 
 	/**
+	 * Refreshes the [[file]] attribute from file collection, using current primary key.
+	 * @return \MongoGridFSFile|null refreshed file value.
+	 */
+	public function refreshFile()
+	{
+		$mongoFile = $this->getCollection()->get($this->getPrimaryKey());
+		$this->setAttribute('file', $mongoFile);
+		return $mongoFile;
+	}
+
+	/**
 	 * Returns the associated file content.
 	 * @return null|string file content.
 	 * @throws \yii\base\InvalidParamException on invalid file value.
@@ -195,10 +210,18 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 	public function getFileContent()
 	{
 		$file = $this->getAttribute('file');
+		if (empty($file) && !$this->getIsNewRecord()) {
+			$file = $this->refreshFile();
+		}
 		if (empty($file)) {
 			return null;
 		} elseif ($file instanceof \MongoGridFSFile) {
-			return $file->getBytes();
+			$fileSize = $file->getSize();
+			if (empty($fileSize)) {
+				return null;
+			} else {
+				return $file->getBytes();
+			}
 		} elseif ($file instanceof UploadedFile) {
 			return file_get_contents($file->tempName);
 		} elseif (is_string($file)) {
