@@ -348,12 +348,6 @@ FROM [information_schema].[tables] AS [t]
 WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'BASE TABLE'
 SQL;
 
-		$names = $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
-		if ($schema !== static::DEFAULT_SCHEMA) {
-			foreach ($names as $index => $name) {
-				$names[$index] = $schema . '.' . $name;
-			}
-		}
-		return $names;
+		return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
 	}
 }
