@@ -44,6 +44,11 @@ class ListView extends BaseListView
 	 */
 	public $itemView;
 	/**
+	 * @var array additional parameters to be passed to [[itemView]] when it is being rendered.
+	 * This property is used only when [[itemView]] is a string representing a view name.
+	 */
+	public $viewParams = [];
+	/**
 	 * @var string the HTML code to be displayed between any two consecutive items.
 	 */
 	public $separator = "\n";
@@ -76,12 +81,12 @@ class ListView extends BaseListView
 		if ($this->itemView === null) {
 			$content = $key;
 		} elseif (is_string($this->itemView)) {
-			$content = $this->getView()->render($this->itemView, [
+			$content = $this->getView()->render($this->itemView, array_merge([
 				'model' => $model,
 				'key' => $key,
 				'index' => $index,
 				'widget' => $this,
-			]);
+			], $this->viewParams));
 		} else {
 			$content = call_user_func($this->itemView, $model, $key, $index, $this);
 		}
