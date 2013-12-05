@@ -205,7 +205,7 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 	/**
 	 * Returns the associated file content.
 	 * @return null|string file content.
-	 * @throws \yii\base\InvalidParamException on invalid file value.
+	 * @throws \yii\base\InvalidParamException on invalid file attribute value.
 	 */
 	public function getFileContent()
 	{
@@ -227,6 +227,67 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 		} elseif (is_string($file)) {
 			if (file_exists($file)) {
 				return file_get_contents($file);
+			} else {
+				throw new InvalidParamException("File '{$file}' does not exist.");
+			}
+		} else {
+			throw new InvalidParamException('Unsupported type of "file" attribute.');
+		}
+	}
+
+	/**
+	 * Writes the the internal file content into the given filename.
+	 * @param string $filename full filename to be written.
+	 * @return boolean whether the operation was successful.
+	 * @throws \yii\base\InvalidParamException on invalid file attribute value.
+	 */
+	public function writeFile($filename)
+	{
+		$file = $this->getAttribute('file');
+		if (empty($file) && !$this->getIsNewRecord()) {
+			$file = $this->refreshFile();
+		}
+		if (empty($file)) {
+			throw new InvalidParamException('There is no file associated with this object.');
+		} elseif ($file instanceof \MongoGridFSFile) {
+			return ($file->write($filename) == $file->getSize());
+		} elseif ($file instanceof UploadedFile) {
+			return copy($file->tempName, $filename);
+		} elseif (is_string($file)) {
+			if (file_exists($file)) {
+				return copy($file, $filename);
+			} else {
+				throw new InvalidParamException("File '{$file}' does not exist.");
+			}
+		} else {
+			throw new InvalidParamException('Unsupported type of "file" attribute.');
+		}
+	}
+
+	/**
+	 * This method returns a stream resource that can be used with all file functions in PHP,
+	 * which deal with reading files. The contents of the file are pulled out of MongoDB on the fly,
+	 * so that the whole file does not have to be loaded into memory first.
+	 * @return resource file stream resource.
+	 * @throws \yii\base\InvalidParamException on invalid file attribute value.
+	 */
+	public function getFileResource()
+	{
+		$file = $this->getAttribute('file');
+		if (empty($file) && !$this->getIsNewRecord()) {
+			$file = $this->refreshFile();
+		}
+		if (empty($file)) {
+			throw new InvalidParamException('There is no file associated with this object.');
+		} elseif ($file instanceof \MongoGridFSFile) {
+			return $file->getResource();
+		} elseif ($file instanceof UploadedFile) {
+			return fopen($file->tempName, 'r');
+		} elseif (is_string($file)) {
+			if (file_exists($file)) {
+				return fopen($file, 'r');
+			} else {
+				throw new InvalidParamException("File '{$file}' does not exist.");
 			}
 		} else {
 			throw new InvalidParamException('Unsupported type of "file" attribute.');

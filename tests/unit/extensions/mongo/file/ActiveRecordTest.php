@@ -2,6 +2,8 @@
 
 namespace yiiunit\extensions\mongo\file;
 
+use Yii;
+use yii\helpers\FileHelper;
 use yiiunit\extensions\mongo\MongoTestCase;
 use yii\mongo\file\ActiveQuery;
 use yiiunit\data\ar\mongo\file\ActiveRecord;
@@ -22,12 +24,28 @@ class ActiveRecordTest extends MongoTestCase
 		parent::setUp();
 		ActiveRecord::$db = $this->getConnection();
 		$this->setUpTestRows();
+		$filePath = $this->getTestFilePath();
+		if (!file_exists($filePath)) {
+			FileHelper::createDirectory($filePath);
+		}
 	}
 
 	protected function tearDown()
 	{
+		$filePath = $this->getTestFilePath();
+		if (file_exists($filePath)) {
+			FileHelper::removeDirectory($filePath);
+		}
 		$this->dropFileCollection(CustomerFile::collectionName());
 		parent::tearDown();
+	}
+
+	/**
+	 * @return string test file path.
+	 */
+	protected function getTestFilePath()
+	{
+		return Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . basename(get_class($this)) . '_' . getmypid();
 	}
 
 	/**
@@ -255,5 +273,51 @@ class ActiveRecordTest extends MongoTestCase
 		$record2 = CustomerFile::find($record->_id);
 		$this->assertEquals($record->status, $record2->status);
 		$this->assertEquals($updateFileContent, $record2->getFileContent());
+	}
+
+	/**
+	 * @depends testInsertFileContent
+	 */
+	public function testWriteFile()
+	{
+		$record = new CustomerFile;
+		$record->tag = 'new new';
+		$record->status = 7;
+		$newFileContent = 'Test new file content';
+		$record->setAttribute('newFileContent', $newFileContent);
+		$record->save();
+
+		$outputFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . 'out.txt';
+		$this->assertTrue($record->writeFile($outputFileName));
+		$this->assertEquals($newFileContent, file_get_contents($outputFileName));
+
+		$record2 = CustomerFile::find($record->_id);
+		$outputFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . 'out_refreshed.txt';
+		$this->assertTrue($record2->writeFile($outputFileName));
+		$this->assertEquals($newFileContent, file_get_contents($outputFileName));
+	}
+
+	/**
+	 * @depends testInsertFileContent
+	 */
+	public function testGetFileResource()
+	{
+		$record = new CustomerFile;
+		$record->tag = 'new new';
+		$record->status = 7;
+		$newFileContent = 'Test new file content';
+		$record->setAttribute('newFileContent', $newFileContent);
+		$record->save();
+
+		$fileResource = $record->getFileResource();
+		$contents = stream_get_contents($fileResource);
+		fclose($fileResource);
+		$this->assertEquals($newFileContent, $contents);
+
+		$record2 = CustomerFile::find($record->_id);
+		$fileResource = $record2->getFileResource();
+		$contents = stream_get_contents($fileResource);
+		fclose($fileResource);
+		$this->assertEquals($newFileContent, $contents);
 	}
 }
