@@ -156,8 +156,7 @@ class Schema extends \yii\db\Schema
 	/**
 	 * Returns all table names in the database.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-	 * If not empty, the returned table names will be prefixed with the schema name.
-	 * @return array all table names in the database.
+	 * @return array all table names in the database. The names have NO schema name prefix.
 	 */
 	protected function findTableNames($schema = '')
 	{
@@ -173,11 +172,7 @@ EOD;
 		$rows = $command->queryAll();
 		$names = [];
 		foreach ($rows as $row) {
-			if ($schema === $this->defaultSchema) {
-				$names[] = $row['table_name'];
-			} else {
-				$names[] = $row['table_schema'] . '.' . $row['table_name'];
-			}
+			$names[] = $row['table_name'];
 		}
 		return $names;
 	}
