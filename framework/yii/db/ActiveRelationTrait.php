@@ -203,7 +203,8 @@ trait ActiveRelationTrait
 			return serialize($key);
 		} else {
 			$attribute = reset($attributes);
-			return $model[$attribute];
+			$key = $model[$attribute];
+			return is_scalar($key) ? $key : serialize($key);
 		}
 	}
 
