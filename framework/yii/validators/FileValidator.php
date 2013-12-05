@@ -149,62 +149,91 @@ class FileValidator extends Validator
 				$this->addError($object, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
 			} else {
 				foreach ($files as $file) {
-					$this->validateFile($object, $attribute, $file);
+					$this->validateHelper($object, $attribute, $file);
 				}
 			}
 		} else {
 			$file = $object->$attribute;
 			if ($file instanceof UploadedFile && $file->error != UPLOAD_ERR_NO_FILE) {
-				$this->validateFile($object, $attribute, $file);
+				$this->validateHelper($object, $attribute, $file);
 			} else {
 				$this->addError($object, $attribute, $this->uploadRequired);
 			}
 		}
 	}
 
+
 	/**
-	 * Internally validates a file object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
-	 * @param UploadedFile $file uploaded file passed to check against a set of rules
+	 * Validates the given file.
+	 * @param UploadedFile $file the file to be validated.
+	 * @return array If file is valid then empty array. If file is invalid then the array with the error message and with the values for the placeholders in the error message. 
 	 */
-	public function validateFile($object, $attribute, $file)
+	public function validateFile(UploadedFile $file)
 	{
 		switch ($file->error) {
 			case UPLOAD_ERR_OK:
 				if ($this->maxSize !== null && $file->size > $this->maxSize) {
-					$this->addError($object, $attribute, $this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]);
+					return [
+						'message'=>$this->tooBig,
+						'params'=>['file' => $file->name, 'limit' => $this->getSizeLimit()]
+					];
 				}
 				if ($this->minSize !== null && $file->size < $this->minSize) {
-					$this->addError($object, $attribute, $this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]);
+					return [
+						'message'=>$this->tooSmall,
+						'params'=>['file' => $file->name, 'limit' => $this->minSize]
+					];
 				}
 				if (!empty($this->types) && !in_array(strtolower(pathinfo($file->name, PATHINFO_EXTENSION)), $this->types, true)) {
-					$this->addError($object, $attribute, $this->wrongType, ['file' => $file->name, 'extensions' => implode(', ', $this->types)]);
+					return [
+						'message'=>$this->wrongType,
+						'params'=>['file' => $file->name, 'extensions' => implode(', ', $this->types)]
+					];
 				}
+				return [];
 				break;
 			case UPLOAD_ERR_INI_SIZE:
 			case UPLOAD_ERR_FORM_SIZE:
-				$this->addError($object, $attribute, $this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]);
+					return [
+						'message'=>$this->tooBig,
+						'params'=>['file' => $file->name, 'limit' => $this->getSizeLimit()]
+					];
 				break;
 			case UPLOAD_ERR_PARTIAL:
-				$this->addError($object, $attribute, $this->message);
 				Yii::warning('File was only partially uploaded: ' . $file->name, __METHOD__);
+					return [
+						'message'=>$this->message,
+						'params'=>[]
+					];
 				break;
 			case UPLOAD_ERR_NO_TMP_DIR:
-				$this->addError($object, $attribute, $this->message);
 				Yii::warning('Missing the temporary folder to store the uploaded file: ' . $file->name, __METHOD__);
+					return [
+						'message'=>$this->message,
+						'params'=>[]
+					];
 				break;
 			case UPLOAD_ERR_CANT_WRITE:
-				$this->addError($object, $attribute, $this->message);
 				Yii::warning('Failed to write the uploaded file to disk: ' . $file->name, __METHOD__);
+					return [
+						'message'=>$this->message,
+						'params'=>[]
+					];
 				break;
 			case UPLOAD_ERR_EXTENSION:
-				$this->addError($object, $attribute, $this->message);
 				Yii::warning('File upload was stopped by some PHP extension: ' . $file->name, __METHOD__);
+					return [
+						'message'=>$this->message,
+						'params'=>[]
+					];
 				break;
 			default:
 				break;
 		}
+		return [
+			'message'=>$this->message,
+			'params'=>[]
+		];
 	}
 
 	/**
@@ -228,6 +257,22 @@ class FileValidator extends Validator
 			$limit = (int)$_POST['MAX_FILE_SIZE'];
 		}
 		return $limit;
+	}
+
+	/**
+	 * Internally validates a file object.
+	 * @param \yii\base\Model $object the object being validated
+	 * @param string $attribute the attribute being validated
+	 * @param UploadedFile $file uploaded file passed to check against a set of rules
+	 */
+	private function validateHelper($object, $attribute, $file)
+	{
+		$error = $this->validateFile($file);
+		if ( empty($error) ) {
+			return;
+		} else {
+			$this->addError($object, $attribute, $error['message'], $error['params']);
+		}
 	}
 
 	/**
