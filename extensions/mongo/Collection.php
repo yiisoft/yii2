@@ -426,11 +426,11 @@ class Collection extends Object
 	 */
 	public function aggregate($pipeline, $pipelineOperator = [])
 	{
-		$token = 'Aggregating from ' . $this->getFullName();
+		$args = func_get_args();
+		$token = $this->composeLogToken('aggregate', $args);
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
-			$args = func_get_args();
 			$result = call_user_func_array([$this->mongoCollection, 'aggregate'], $args);
 			$this->tryResultError($result);
 			Yii::endProfile($token, __METHOD__);

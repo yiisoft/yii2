@@ -49,15 +49,22 @@ class DatabaseTest extends MongoTestCase
 		$this->assertFalse($collection === $collectionRefreshed);
 	}
 
-	public function testCommand()
+	public function testExecuteCommand()
 	{
 		$database = $connection = $this->getConnection()->getDatabase();
 
-		$result = $database->execute([
+		$result = $database->executeCommand([
 			'distinct' => 'customer',
 			'key' => 'name'
 		]);
 		$this->assertTrue(array_key_exists('ok', $result));
 		$this->assertTrue(array_key_exists('values', $result));
+	}
+
+	public function testCreateCollection()
+	{
+		$database = $connection = $this->getConnection()->getDatabase();
+		$collection = $database->createCollection('customer');
+		$this->assertTrue($collection instanceof \MongoCollection);
 	}
 }

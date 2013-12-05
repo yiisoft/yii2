@@ -131,7 +131,7 @@ class Query extends Component implements QueryInterface
 	 */
 	protected function fetchRows($cursor, $all = true, $indexBy = null)
 	{
-		$token = 'Querying: ' . Json::encode($cursor->info());
+		$token = 'find(' . Json::encode($cursor->info()) . ')';
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
@@ -213,7 +213,7 @@ class Query extends Component implements QueryInterface
 	public function count($q = '*', $db = null)
 	{
 		$cursor = $this->buildCursor($db);
-		$token = 'Counting: ' . Json::encode($cursor->info());
+		$token = 'find.count(' . Json::encode($cursor->info()) . ')';
 		Yii::info($token, __METHOD__);
 		try {
 			Yii::beginProfile($token, __METHOD__);
