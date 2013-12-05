@@ -5,7 +5,7 @@ Basic concepts of Yii
 Component and Object
 --------------------
 
-Classes of the Yii framework usually extend from one of the two base classes [[Object]] and [[Component]].
+Classes of the Yii framework usually extend from one of the two base classes [Object](../api/base/Object.md) and [Component](../api/base/Component.md).
 These classes provide useful features that are added automatically to all classes extending from them.
 
 The `Object` class provides the [configuration and property feature](../api/base/Object.md).
@@ -18,8 +18,8 @@ application components and other classes that implement higher logic.
 Object Configuration
 --------------------
 
-The [[Object]] class introduces a uniform way of configuring objects. Any descendant class
-of [[Object]] should declare its constructor (if needed) in the following way so that
+The [Object](../api/base/Object.md) class introduces a uniform way of configuring objects. Any descendant class
+of [Component](../api/base/Component.md) should declare its constructor (if needed) in the following way so that
 it can be properly configured:
 
 ```php
@@ -81,7 +81,7 @@ Autoloading
 All classes, interfaces and traits are loaded automatically at the moment they are used. There's no need to use
 `include` or `require`. It is, as well, true for Composer-loaded packages and Yii extensions.
 
-Autoloader works according to [PSR-0](). That means namespaces and class, interface and trait
+Autoloader works according to [PSR-0](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md). That means namespaces and class, interface and trait
 names should correspond to file system paths except root namespace path that is defined by an alias.
 
 For example, if standard alias `@app` refers to `/var/www/example.com/` then `\app\models\User` will be loaded from
