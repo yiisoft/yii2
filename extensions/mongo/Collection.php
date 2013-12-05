@@ -176,6 +176,7 @@ class Collection extends Object
 	 * @param string|array $columns column name or list of column names.
 	 * If array is given, each element in the array has as key the field name, and as
 	 * value either 1 for ascending sort, or -1 for descending sort.
+	 * Use value 'text' to specify text index.
 	 * You can specify field using native numeric key with the field name as a value,
 	 * in this case ascending sort will be used.
 	 * For example:
@@ -183,6 +184,7 @@ class Collection extends Object
 	 * [
 	 *     'name',
 	 *     'status' => -1,
+	 *     'description' => 'text',
 	 * ]
 	 * ~~~
 	 * @throws Exception on failure.
@@ -540,7 +542,6 @@ class Collection extends Object
 		if (!empty($condition)) {
 			$command['query'] = $this->buildCondition($condition);
 		}
-
 		$token = $this->composeLogToken('mapReduce', [$map, $reduce, $out]);
 		Yii::info($token, __METHOD__);
 		try {
@@ -550,6 +551,49 @@ class Collection extends Object
 			$this->tryResultError($result);
 			Yii::endProfile($token, __METHOD__);
 			return $result['result'];
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
+	}
+
+	/**
+	 * Performs full text search.
+	 * @param string $search string of terms that MongoDB parses and uses to query the text index.
+	 * @param array $condition criteria for filtering a results list.
+	 * @param array $fields list of fields to be returned in result.
+	 * @param integer $limit the maximum number of documents to include in the response (by default 100).
+	 * @param string $language he language that determines the list of stop words for the search
+	 * and the rules for the stemmer and tokenizer. If not specified, the search uses the default
+	 * language of the index.
+	 * @return array the highest scoring documents, in descending order by score.
+	 * @throws Exception on failure.
+	 */
+	public function fullTextSearch($search, $condition = [], $fields = [], $limit = null, $language = null) {
+		$command = [
+			'search' => $search
+		];
+		if (!empty($condition)) {
+			$command['filter'] = $this->buildCondition($condition);
+		}
+		if (!empty($fields)) {
+			$command['project'] = $fields;
+		}
+		if ($limit !== null) {
+			$command['limit'] = $limit;
+		}
+		if ($language !== null) {
+			$command['language'] = $language;
+		}
+		$token = $this->composeLogToken('text', $command);
+		Yii::info($token, __METHOD__);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$command = array_merge(['text' => $this->getName()], $command);
+			$result = $this->mongoCollection->db->command($command);
+			$this->tryResultError($result);
+			Yii::endProfile($token, __METHOD__);
+			return $result['results'];
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
 			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);

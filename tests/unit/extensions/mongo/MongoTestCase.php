@@ -135,4 +135,15 @@ class MongoTestCase extends TestCase
 		}
 		return $result;
 	}
+
+	/**
+	 * Returns the Mongo server version.
+	 * @return string Mongo server version.
+	 */
+	protected function getServerVersion()
+	{
+		$connection = $this->getConnection();
+		$buildInfo = $connection->getDatabase()->executeCommand(['buildinfo' => true]);
+		return $buildInfo['version'];
+	}
 }

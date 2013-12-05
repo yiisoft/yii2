@@ -279,4 +279,35 @@ class CollectionTest extends MongoTestCase
 		$indexInfo = $collection->mongoCollection->getIndexInfo();
 		$this->assertEquals(1, count($indexInfo));
 	}
+
+	/**
+	 * @depends testBatchInsert
+	 * @depends testCreateIndex
+	 */
+	public function testFullTextSearch()
+	{
+		if (version_compare('2.4', $this->getServerVersion(), '>')) {
+			$this->markTestSkipped("Mongo Server 2.4 required.");
+		}
+
+		$collection = $this->getConnection()->getCollection('customer');
+
+		$rows = [
+			[
+				'name' => 'customer 1',
+				'status' => 1,
+				'amount' => 100,
+			],
+			[
+				'name' => 'some customer',
+				'status' => 1,
+				'amount' => 200,
+			],
+		];
+		$collection->batchInsert($rows);
+		$collection->createIndex(['name' => 'text']);
+
+		$result = $collection->fullTextSearch('some');
+		$this->assertNotEmpty($result);
+	}
 }
