@@ -17,7 +17,17 @@ Add these lines to your config file:
 ```
 
 **Watch out: by default the debug module only works when browsing the website from the localhost. If you want to use it
-on a remote (staging) server, add the parameter allowedIPs to the config to whitelist your IP.**
+on a remote (staging) server, add the parameter allowedIPs to the config to whitelist your IP, e.g. :**
+
+```
+'preload' => ['debug'],
+'modules' => [
+	'debug' => [
+		'class'=>'yii\debug\Module',
+		'allowedIPs'=>['1.2.3.4', '127.0.0.1', '::1']
+	]
+]
+```
 
 How to use it
 -------------
