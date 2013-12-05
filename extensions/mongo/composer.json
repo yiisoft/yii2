@@ -20,7 +20,7 @@
 	"minimum-stability": "dev",
 	"require": {
 		"yiisoft/yii2": "*",
-		"ext-mongo": "*"
+		"ext-mongo": ">=1.3.0"
 	},
 	"autoload": {
 		"psr-0": { "yii\\mongo\\": "" }

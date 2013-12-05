@@ -37,4 +37,80 @@ to the require section of your composer.json.
 Usage & Documentation
 ---------------------
 
-This extension adds [MongoDb](http://www.mongodb.org/) data storage support for the Yii2 framework.
+This extension adds [MongoDB](http://www.mongodb.org/) data storage support for the Yii2 framework.
+
+Note: extension requires [MongoDB PHP Extension](http://us1.php.net/manual/en/book.mongo.php) version 1.3.0 or higher.
+
+To use this extension, simply add the following code in your application configuration:
+
+```php
+return [
+	//....
+	'components' => [
+		'mongo' => [
+			'class' => '\yii\mongo\Connection',
+			'dsn' => 'mongodb://developer:password@localhost:27017/mydatabase',
+		],
+	],
+];
+```
+
+This extension provides ActiveRecord solution similar ot the [[\yii\db\ActiveRecord]].
+To declare an ActiveRecord class you need to extend [[\yii\mongo\ActiveRecord]] and
+implement the `collectionName` and 'attributes' methods:
+
+```php
+use yii\mongo\ActiveRecord;
+
+class Customer extends ActiveRecord
+{
+	/**
+	 * @return string the name of the index associated with this ActiveRecord class.
+	 */
+	public static function collectionName()
+	{
+		return 'customer';
+	}
+
+	/**
+	 * @return array list of attribute names.
+	 */
+	public function attributes()
+	{
+		return ['name', 'email', 'address', 'status'];
+	}
+}
+```
+
+You can use [[\yii\data\ActiveDataProvider]] with the [[\yii\mongo\Query]] and [[\yii\mongo\ActiveQuery]]:
+
+```php
+use yii\data\ActiveDataProvider;
+use yii\mongo\Query;
+
+$query = new Query;
+$query->from('customer')->where(['status' => 2]);
+$provider = new ActiveDataProvider([
+	'query' => $query,
+	'pagination' => [
+		'pageSize' => 10,
+	]
+]);
+$models = $provider->getModels();
+```
+
+```php
+use yii\data\ActiveDataProvider;
+use app\models\Customer;
+
+$provider = new ActiveDataProvider([
+	'query' => Customer::find(),
+	'pagination' => [
+		'pageSize' => 10,
+	]
+]);
+$models = $provider->getModels();
+```
+
+This extension supports [MongoGridFS](http://docs.mongodb.org/manual/core/gridfs/) via
+classes at namespace "\yii\mongo\file".
