@@ -67,15 +67,20 @@ class <?= $searchModelClass ?> extends Model
 		return $dataProvider;
 	}
 
-	protected function addCondition($query, $attribute, $partialMatch = false)
+	protected function addCondition($query, $attribute, $partialMatch = false, $caseSensitive = false)
 	{
 		$value = $this->$attribute;
 		if (trim($value) === '') {
 			return;
 		}
 		if ($partialMatch) {
-			$value = '%' . strtr($value, ['%'=>'\%', '_'=>'\_', '\\'=>'\\\\']) . '%';
-			$query->andWhere(['like', $attribute, $value]);
+            if ($caseSensitive) {
+                $value = '%' . strtr($value, ['%'=>'\%', '_'=>'\_', '\\'=>'\\\\']) . '%';
+                $query->andWhere(['like', $attribute , $value]);
+            } else {
+                $value = '%' . strtolower(strtr($value, ['%'=>'\%', '_'=>'\_', '\\'=>'\\\\'])) . '%';
+                $query->andWhere(['like', 'lower('.$attribute.')', $value]);
+            }
 		} else {
 			$query->andWhere([$attribute => $value]);
 		}
