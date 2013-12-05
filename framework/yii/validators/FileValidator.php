@@ -237,51 +237,6 @@ class FileValidator extends Validator
 	}
 
 	/**
-	 * Internally validates a file object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
-	 * @param UploadedFile $file uploaded file passed to check against a set of rules
-	 */
-	public function validateFile($object, $attribute, $file)
-	{
-		switch ($file->error) {
-			case UPLOAD_ERR_OK:
-				if ($this->maxSize !== null && $file->size > $this->maxSize) {
-					$this->addError($object, $attribute, $this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]);
-				}
-				if ($this->minSize !== null && $file->size < $this->minSize) {
-					$this->addError($object, $attribute, $this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]);
-				}
-				if (!empty($this->types) && !in_array(strtolower(pathinfo($file->name, PATHINFO_EXTENSION)), $this->types, true)) {
-					$this->addError($object, $attribute, $this->wrongType, ['file' => $file->name, 'extensions' => implode(', ', $this->types)]);
-				}
-				break;
-			case UPLOAD_ERR_INI_SIZE:
-			case UPLOAD_ERR_FORM_SIZE:
-				$this->addError($object, $attribute, $this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]);
-				break;
-			case UPLOAD_ERR_PARTIAL:
-				$this->addError($object, $attribute, $this->message);
-				Yii::warning('File was only partially uploaded: ' . $file->name, __METHOD__);
-				break;
-			case UPLOAD_ERR_NO_TMP_DIR:
-				$this->addError($object, $attribute, $this->message);
-				Yii::warning('Missing the temporary folder to store the uploaded file: ' . $file->name, __METHOD__);
-				break;
-			case UPLOAD_ERR_CANT_WRITE:
-				$this->addError($object, $attribute, $this->message);
-				Yii::warning('Failed to write the uploaded file to disk: ' . $file->name, __METHOD__);
-				break;
-			case UPLOAD_ERR_EXTENSION:
-				$this->addError($object, $attribute, $this->message);
-				Yii::warning('File upload was stopped by some PHP extension: ' . $file->name, __METHOD__);
-				break;
-			default:
-				break;
-		}
-	}
-
-	/**
 	 * Returns the maximum size allowed for uploaded files.
 	 * This is determined based on three factors:
 	 *
