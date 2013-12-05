@@ -88,26 +88,18 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 			}
 		}
 		$collection = static::getCollection();
-		if (array_key_exists('newFileContent', $values)) {
-			$fileContent = $values['newFileContent'];
+		if (isset($values['newFileContent'])) {
+			$newFileContent = $values['newFileContent'];
 			unset($values['newFileContent']);
+		}
+		if (isset($values['file'])) {
+			$newFile = $values['file'];
 			unset($values['file']);
-			$newId = $collection->insertFileContent($fileContent, $values);
-		} elseif (array_key_exists('file', $values)) {
-			$file = $values['file'];
-			if ($file instanceof UploadedFile) {
-				$fileName = $file->tempName;
-			} elseif (is_string($file)) {
-				if (file_exists($file)) {
-					$fileName = $file;
-				} else {
-					throw new InvalidParamException("File '{$file}' does not exist.");
-				}
-			} else {
-				throw new InvalidParamException('Unsupported type of "file" attribute.');
-			}
-			unset($values['newFileContent']);
-			unset($values['file']);
+		}
+		if (isset($newFileContent)) {
+			$newId = $collection->insertFileContent($newFileContent, $values);
+		} elseif (isset($newFile)) {
+			$fileName = $this->extractFileName($newFile);
 			$newId = $collection->insertFile($fileName, $values);
 		} else {
 			$newId = $collection->insert($values);
@@ -136,35 +128,24 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 		}
 
 		$collection = static::getCollection();
-		if (array_key_exists('newFileContent', $values)) {
-			$fileContent = $values['newFileContent'];
+		if (isset($values['newFileContent'])) {
+			$newFileContent = $values['newFileContent'];
 			unset($values['newFileContent']);
+		}
+		if (isset($values['file'])) {
+			$newFile = $values['file'];
 			unset($values['file']);
-			$values['_id'] = $this->getAttribute('_id');
-			$this->deleteInternal();
-			$collection->insertFileContent($fileContent, $values);
-			$rows = 1;
-			$this->setAttribute('newFileContent', null);
-			$this->setAttribute('file', null);
-		} elseif (array_key_exists('file', $values)) {
-			$file = $values['file'];
-			if ($file instanceof UploadedFile) {
-				$fileName = $file->tempName;
-			} elseif (is_string($file)) {
-				if (file_exists($file)) {
-					$fileName = $file;
-				} else {
-					throw new InvalidParamException("File '{$file}' does not exist.");
-				}
+		}
+		if (isset($newFileContent) || isset($newFile)) {
+			$rows = $this->deleteInternal();
+			$insertValues = $values;
+			$insertValues['_id'] = $this->getAttribute('_id');
+			if (isset($newFileContent)) {
+				$collection->insertFileContent($newFileContent, $insertValues);
 			} else {
-				throw new InvalidParamException('Unsupported type of "file" attribute.');
+				$fileName = $this->extractFileName($newFile);
+				$collection->insertFile($fileName, $insertValues);
 			}
-			unset($values['newFileContent']);
-			unset($values['file']);
-			$values['_id'] = $this->getAttribute('_id');
-			$this->deleteInternal();
-			$collection->insertFile($fileName, $values);
-			$rows = 1;
 			$this->setAttribute('newFileContent', null);
 			$this->setAttribute('file', null);
 		} else {
@@ -189,6 +170,27 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 		}
 		$this->afterSave(false);
 		return $rows;
+	}
+
+	/**
+	 * Extracts filename from given raw file value.
+	 * @param mixed $file raw file value.
+	 * @return string file name.
+	 * @throws \yii\base\InvalidParamException on invalid file value.
+	 */
+	protected function extractFileName($file)
+	{
+		if ($file instanceof UploadedFile) {
+			return $file->tempName;
+		} elseif (is_string($file)) {
+			if (file_exists($file)) {
+				return $file;
+			} else {
+				throw new InvalidParamException("File '{$file}' does not exist.");
+			}
+		} else {
+			throw new InvalidParamException('Unsupported type of "file" attribute.');
+		}
 	}
 
 	/**
