@@ -66,11 +66,22 @@ class Collection extends \yii\mongo\Collection
 	 * @param array $options list of options in format: optionName => optionValue
 	 * @return mixed the "_id" of the saved file document. This will be a generated [[\MongoId]]
 	 * unless an "_id" was explicitly specified in the metadata.
+	 * @throws Exception on failure.
 	 */
 	public function insertFile($filename, $metadata = [], $options = [])
 	{
-		$options = array_merge(['w' => 1], $options);
-		return $this->mongoCollection->storeFile($filename, $metadata, $options);
+		$token = 'Inserting file into ' . $this->getFullName();
+		Yii::info($token, __METHOD__);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$options = array_merge(['w' => 1], $options);
+			$result = $this->mongoCollection->storeFile($filename, $metadata, $options);
+			Yii::endProfile($token, __METHOD__);
+			return $result;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
 	}
 
 	/**
@@ -79,11 +90,22 @@ class Collection extends \yii\mongo\Collection
 	 * @param array $options list of options in format: optionName => optionValue
 	 * @return mixed the "_id" of the saved file document. This will be a generated [[\MongoId]]
 	 * unless an "_id" was explicitly specified in the metadata.
+	 * @throws Exception on failure.
 	 */
 	public function insertFileContent($bytes, $metadata = [], $options = [])
 	{
-		$options = array_merge(['w' => 1], $options);
-		return $this->mongoCollection->storeBytes($bytes, $metadata, $options);
+		$token = 'Inserting file content into ' . $this->getFullName();
+		Yii::info($token, __METHOD__);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$options = array_merge(['w' => 1], $options);
+			$result = $this->mongoCollection->storeBytes($bytes, $metadata, $options);
+			Yii::endProfile($token, __METHOD__);
+			return $result;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
 	}
 
 	/**
@@ -92,29 +114,63 @@ class Collection extends \yii\mongo\Collection
 	 * @param array $metadata other metadata fields to include in the file document.
 	 * @return mixed the "_id" of the saved file document. This will be a generated [[\MongoId]]
 	 * unless an "_id" was explicitly specified in the metadata.
+	 * @throws Exception on failure.
 	 */
 	public function insertUploads($name, $metadata = [])
 	{
-		return $this->mongoCollection->storeUpload($name, $metadata);
+		$token = 'Inserting file uploads into ' . $this->getFullName();
+		Yii::info($token, __METHOD__);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$result = $this->mongoCollection->storeUpload($name, $metadata);
+			Yii::endProfile($token, __METHOD__);
+			return $result;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
 	}
 
 	/**
+	 * Retrieves the file with given _id.
 	 * @param mixed $id _id of the file to find.
 	 * @return \MongoGridFSFile|null found file, or null if file does not exist
+	 * @throws Exception on failure.
 	 */
 	public function get($id)
 	{
-		return $this->mongoCollection->get($id);
+		$token = 'Inserting file uploads into ' . $this->getFullName();
+		Yii::info($token, __METHOD__);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$result = $this->mongoCollection->get($id);
+			Yii::endProfile($token, __METHOD__);
+			return $result;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
 	}
 
 	/**
+	 * Deletes the file with given _id.
 	 * @param mixed $id _id of the file to find.
 	 * @return boolean whether the operation was successful.
+	 * @throws Exception on failure.
 	 */
 	public function delete($id)
 	{
-		$result = $this->mongoCollection->delete($id);
-		$this->tryResultError($result);
-		return true;
+		$token = 'Inserting file uploads into ' . $this->getFullName();
+		Yii::info($token, __METHOD__);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$result = $this->mongoCollection->delete($id);
+			$this->tryResultError($result);
+			Yii::endProfile($token, __METHOD__);
+			return true;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
 	}
 }
