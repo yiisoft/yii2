@@ -308,7 +308,7 @@ class Query extends Component implements QueryInterface
 	 * @param string $name the name of this facet
 	 * @param string $type the facet type. e.g. `terms`, `range`, `histogram`...
 	 * @param string|array $options the configuration options for this facet. Can be an array or a json string.
-	 * @return static
+	 * @return static the query object itself
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-query-facet.html
 	 */
 	public function addFacet($name, $type, $options)
@@ -321,7 +321,7 @@ class Query extends Component implements QueryInterface
 	 * The `terms facet` allow to specify field facets that return the N most frequent terms.
 	 * @param string $name the name of this facet
 	 * @param array $options additional option. Please refer to the elasticsearch documentation for details.
-	 * @return static
+	 * @return static the query object itself
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-terms-facet.html
 	 */
 	public function addTermFacet($name, $options)
@@ -334,7 +334,7 @@ class Query extends Component implements QueryInterface
 	 * within each range, and aggregated data either based on the field, or using another field.
 	 * @param string $name the name of this facet
 	 * @param array $options additional option. Please refer to the elasticsearch documentation for details.
-	 * @return static
+	 * @return static the query object itself
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-range-facet.html
 	 */
 	public function addRangeFacet($name, $options)
@@ -348,7 +348,7 @@ class Query extends Component implements QueryInterface
 	 * interval/bucket (count and total).
 	 * @param string $name the name of this facet
 	 * @param array $options additional option. Please refer to the elasticsearch documentation for details.
-	 * @return static
+	 * @return static the query object itself
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-histogram-facet.html
 	 */
 	public function addHistogramFacet($name, $options)
@@ -360,7 +360,7 @@ class Query extends Component implements QueryInterface
 	 * A specific histogram facet that can work with date field types enhancing it over the regular histogram facet.
 	 * @param string $name the name of this facet
 	 * @param array $options additional option. Please refer to the elasticsearch documentation for details.
-	 * @return static
+	 * @return static the query object itself
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-date-histogram-facet.html
 	 */
 	public function addDateHistogramFacet($name, $options)
@@ -373,7 +373,7 @@ class Query extends Component implements QueryInterface
 	 * The filter itself can be expressed using the Query DSL.
 	 * @param string $name the name of this facet
 	 * @param string $filter the query in Query DSL
-	 * @return static
+	 * @return static the query object itself
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-filter-facet.html
 	 */
 	public function addFilterFacet($name, $filter)
@@ -386,7 +386,7 @@ class Query extends Component implements QueryInterface
 	 * The query itself can be expressed using the Query DSL.
 	 * @param string $name the name of this facet
 	 * @param string $query the query in Query DSL
-	 * @return static
+	 * @return static the query object itself
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-query-facet.html
 	 */
 	public function addQueryFacet($name, $query)
@@ -399,7 +399,7 @@ class Query extends Component implements QueryInterface
 	 * total, sum of squares, mean (average), minimum, maximum, variance, and standard deviation.
 	 * @param string $name the name of this facet
 	 * @param array $options additional option. Please refer to the elasticsearch documentation for details.
-	 * @return static
+	 * @return static the query object itself
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-statistical-facet.html
 	 */
 	public function addStatisticalFacet($name, $options)
@@ -412,7 +412,7 @@ class Query extends Component implements QueryInterface
 	 * per term value driven by another field.
 	 * @param string $name the name of this facet
 	 * @param array $options additional option. Please refer to the elasticsearch documentation for details.
-	 * @return static
+	 * @return static the query object itself
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-terms-stats-facet.html
 	 */
 	public function addTermsStatsFacet($name, $options)
@@ -425,7 +425,7 @@ class Query extends Component implements QueryInterface
 	 * including count of the number of hits that fall within each range, and aggregation information (like `total`).
 	 * @param string $name the name of this facet
 	 * @param array $options additional option. Please refer to the elasticsearch documentation for details.
-	 * @return static
+	 * @return static the query object itself
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-geo-distance-facet.html
 	 */
 	public function addGeoDistanceFacet($name, $options)
@@ -442,7 +442,7 @@ class Query extends Component implements QueryInterface
 	/**
 	 * Sets the querypart of this search query.
 	 * @param string $query
-	 * @return static
+	 * @return static the query object itself
 	 */
 	public function query($query)
 	{
@@ -453,7 +453,7 @@ class Query extends Component implements QueryInterface
 	/**
 	 * Sets the filter part of this search query.
 	 * @param string $filter
-	 * @return static
+	 * @return static the query object itself
 	 */
 	public function filter($filter)
 	{
@@ -467,12 +467,14 @@ class Query extends Component implements QueryInterface
 	 * or a an array of multiple indexes. If this is `null` it means that all indexes are being queried.
 	 * @param string|array $type The type to retrieve data from. This can be a string representing a single type
 	 * or a an array of multiple types. If this is `null` it means that all types are being queried.
+	 * @return static the query object itself
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-search.html#search-multi-index-type
 	 */
 	public function from($index, $type = null)
 	{
 		$this->index = $index;
 		$this->type = $type;
+		return $this;
 	}
 
 	/**
