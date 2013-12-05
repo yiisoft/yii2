@@ -14,7 +14,7 @@ use yii\web\AssetBundle;
  */
 class DebugAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/debug/assets';
+	public $sourcePath = '@vendor/yiisoft/yii2-debug/yii/debug/assets';
 	public $css = [
 		'main.css',
 	];
