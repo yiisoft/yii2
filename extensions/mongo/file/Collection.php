@@ -13,6 +13,10 @@ use Yii;
 /**
  * Collection represents the Mongo GridFS collection information.
  *
+ * A file collection object is usually created by calling [[Database::getFileCollection()]] or [[Connection::getFileCollection()]].
+ *
+ * File collection inherits all interface from regular [[\yii\mongo\Collection]], adding methods to store files.
+ *
  * @property \yii\mongo\Collection $chunkCollection file chunks Mongo collection. This property is read-only.
  * @method \MongoGridFSCursor find() returns a cursor for the search results.
  *
@@ -61,6 +65,8 @@ class Collection extends \yii\mongo\Collection
 	}
 
 	/**
+	 * Creates new file in GridFS collection from given local filesystem file.
+	 * Additional attributes can be added file document using $metadata.
 	 * @param string $filename name of the file to store.
 	 * @param array $metadata other metadata fields to include in the file document.
 	 * @param array $options list of options in format: optionName => optionValue
@@ -85,6 +91,8 @@ class Collection extends \yii\mongo\Collection
 	}
 
 	/**
+	 * Creates new file in GridFS collection with specified content.
+	 * Additional attributes can be added file document using $metadata.
 	 * @param string $bytes string of bytes to store.
 	 * @param array $metadata other metadata fields to include in the file document.
 	 * @param array $options list of options in format: optionName => optionValue
@@ -109,6 +117,8 @@ class Collection extends \yii\mongo\Collection
 	}
 
 	/**
+	 * Creates new file in GridFS collection from uploaded file.
+	 * Additional attributes can be added file document using $metadata.
 	 * @param string $name name of the uploaded file to store. This should correspond to
 	 * the file field's name attribute in the HTML form.
 	 * @param array $metadata other metadata fields to include in the file document.

@@ -12,7 +12,11 @@ use yii\helpers\Json;
 use yii\mongo\Exception;
 
 /**
- * Class Query
+ * Query represents Mongo "find" operation for GridFS collection.
+ *
+ * Query behaves exactly as regular [[\yii\mongo\Query]].
+ * Found files will be represented as arrays of file document attributes with
+ * additional 'file' key, which stores [[\MongoGridFSFile]] instance.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

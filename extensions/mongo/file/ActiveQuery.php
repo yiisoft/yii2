@@ -11,7 +11,23 @@ use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
 
 /**
- * Class ActiveQuery
+ * ActiveQuery represents a Mongo query associated with an file Active Record class.
+ *
+ * ActiveQuery instances are usually created by [[ActiveRecord::find()]].
+ *
+ * Because ActiveQuery extends from [[Query]], one can use query methods, such as [[where()]],
+ * [[orderBy()]] to customize the query options.
+ *
+ * ActiveQuery also provides the following additional query options:
+ *
+ * - [[with()]]: list of relations that this query should be performed with.
+ * - [[asArray()]]: whether to return each record as an array.
+ *
+ * These options can be configured using methods of the same name. For example:
+ *
+ * ~~~
+ * $images = ImageFile::find()->with('tags')->asArray()->all();
+ * ~~~
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

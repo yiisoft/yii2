@@ -14,16 +14,47 @@ use yii\web\UploadedFile;
 /**
  * ActiveRecord is the base class for classes representing Mongo GridFS files in terms of objects.
  *
+ * To specify source file use the [[file]] attribute. It can be specified in one of the following ways:
+ *  - string - full name of the file, which content should be stored in GridFS
+ *  - \yii\web\UploadedFile - uploaded file instance, which content should be stored in GridFS
+ *
+ * For example:
+ *
+ * ~~~
+ * $record = new ImageFile();
+ * $record->file = '/path/to/some/file.jpg';
+ * $record->save();
+ * ~~~
+ *
+ * You can also specify file content via [[newFileContent]] attribute:
+ *
+ * ~~~
+ * $record = new ImageFile();
+ * $record->newFileContent = 'New file content';
+ * $record->save();
+ * ~~~
+ *
+ * Note: [[newFileContent]] always takes precedence over [[file]].
+ *
+ * @property \MongoId|string $_id primary key.
+ * @property string $filename name of stored file.
+ * @property \MongoDate $uploadDate file upload date.
+ * @property integer $length file size.
+ * @property integer $chunkSize file chunk size.
+ * @property string $md5 file md5 hash.
+ * @property \MongoGridFSFile|\yii\web\UploadedFile|string $file associated file.
+ * @property string $newFileContent new file content.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class ActiveRecord extends \yii\mongo\ActiveRecord
+abstract class ActiveRecord extends \yii\mongo\ActiveRecord
 {
 	/**
 	 * Creates an [[ActiveQuery]] instance.
 	 * This method is called by [[find()]] to start a "find" command.
-	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
-	 * written for querying `Customer` purpose.)
+	 * You may override this method to return a customized query (e.g. `ImageFileQuery` specified
+	 * written for querying `ImageFile` purpose.)
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
 	 */
 	public static function createQuery()
@@ -55,7 +86,18 @@ class ActiveRecord extends \yii\mongo\ActiveRecord
 	/**
 	 * Returns the list of all attribute names of the model.
 	 * This method could be overridden by child classes to define available attributes.
-	 * Note: primary key attribute "_id" should be always present in returned array.
+	 * Note: all attributes defined in base Active Record class should be always present
+	 * in returned array.
+	 * For example:
+	 * ~~~
+	 * public function attributes()
+	 * {
+	 *     return array_merge(
+	 *         parent::attributes(),
+	 *         ['tags', 'status']
+	 *     );
+	 * }
+	 * ~~~
 	 * @return array list of attribute names.
 	 */
 	public function attributes()
