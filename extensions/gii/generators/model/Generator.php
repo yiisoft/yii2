@@ -486,7 +486,7 @@ class Generator extends \yii\gii\Generator
 		if (strpos($this->tableName, '*') !== false) {
 			if (($pos = strrpos($this->tableName, '.')) !== false) {
 				$schema = substr($this->tableName, 0, $pos);
-				$pattern = '/^' . str_replace('*', '\w+', substr($this->tableName, $pos + 1)) . '$/';
+				$pattern = '/^' . $schema . '.' . str_replace('*', '\w+', substr($this->tableName, $pos + 1)) . '$/';
 			} else {
 				$schema = '';
 				$pattern = '/^' . str_replace('*', '\w+', $this->tableName) . '$/';
@@ -494,7 +494,7 @@ class Generator extends \yii\gii\Generator
 
 			foreach ($db->schema->getTableNames($schema) as $table) {
 				if (preg_match($pattern, $table)) {
-					$tableNames[] = $schema === '' ? $table : ($schema . '.' . $table);
+					$tableNames[] = $table;
 				}
 			}
 		} elseif (($table = $db->getTableSchema($this->tableName, true)) !== null) {
