@@ -907,6 +907,9 @@ class Collection extends Object
 			throw new InvalidParamException("Operator '$operator' requires two operands.");
 		}
 		list($column, $value) = $operands;
-		return [$column => '/' . $value . '/'];
+		if (!($value instanceof \MongoRegex)) {
+			$value = new \MongoRegex($value);
+		}
+		return [$column => $value];
 	}
 }
