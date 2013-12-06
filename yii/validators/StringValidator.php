@@ -63,7 +63,7 @@ class StringValidator extends Validator
 
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -95,10 +95,7 @@ class StringValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{
@@ -123,28 +120,31 @@ class StringValidator extends Validator
 	}
 
 	/**
-	 * Validates the given value.
-	 * @param mixed $value the value to be validated.
-	 * @return boolean whether the value is valid.
+	 * @inheritdoc
 	 */
-	public function validateValue($value)
+	protected function validateValue($value)
 	{
 		if (!is_string($value)) {
-			return false;
+			return [$this->message, []];
 		}
+
 		$length = mb_strlen($value, $this->encoding);
-		return ($this->min === null || $length >= $this->min)
-			&& ($this->max === null || $length <= $this->max)
-			&& ($this->length === null || $length === $this->length);
+
+		if ($this->min !== null && $length < $this->min) {
+			return [$this->tooShort, ['min' => $this->min]];
+		}
+		if ($this->max !== null && $length > $this->max) {
+			return [$this->tooLong, ['max' => $this->max]];
+		}
+		if ($this->length !== null && $length !== $this->length) {
+			return [$this->notEqual, ['length' => $this->length]];
+		}
+
+		return null;
 	}
 
 	/**
-	 * Returns the JavaScript needed for performing client-side validation.
-	 * @param \yii\base\Model $object the data object being validated
-	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
-	 * containing a model form with this validator applied.
-	 * @return string the client-side validation script.
+	 * @inheritdoc
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{

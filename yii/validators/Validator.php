@@ -14,7 +14,7 @@ use yii\base\NotSupportedException;
 /**
  * Validator is the base class for all validators.
  *
- * Child classes should override the [[validateAttribute()]] method to provide the actual
+ * Child classes should override the [[validateValue()]] and/or [[validateAttribute()]] methods to provide the actual
  * logic of performing data validation. Child classes may also override [[clientValidateAttribute()]]
  * to provide client-side validation support.
  *
@@ -38,13 +38,14 @@ use yii\base\NotSupportedException;
  * - `required`: [[RequiredValidator]]
  * - `safe`: [[SafeValidator]]
  * - `string`: [[StringValidator]]
+ * - `trim`: [[FilterValidator]]
  * - `unique`: [[UniqueValidator]]
  * - `url`: [[UrlValidator]]
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Validator extends Component
+class Validator extends Component
 {
 	/**
 	 * @var array list of built-in validators (name => class or configuration)
@@ -71,6 +72,10 @@ abstract class Validator extends Component
 		'required' => 'yii\validators\RequiredValidator',
 		'safe' => 'yii\validators\SafeValidator',
 		'string' => 'yii\validators\StringValidator',
+		'trim' => [
+			'class' => 'yii\validators\FilterValidator',
+			'filter' => 'trim',
+		],
 		'unique' => 'yii\validators\UniqueValidator',
 		'url' => 'yii\validators\UrlValidator',
 	];
@@ -116,13 +121,6 @@ abstract class Validator extends Component
 	 */
 	public $enableClientValidation = true;
 
-	/**
-	 * Validates a single attribute.
-	 * Child classes must implement this method to provide the actual validation logic.
-	 * @param \yii\base\Model $object the data object to be validated
-	 * @param string $attribute the name of the attribute to be validated.
-	 */
-	abstract public function validateAttribute($object, $attribute);
 
 	/**
 	 * Creates a validator object.
@@ -177,7 +175,7 @@ abstract class Validator extends Component
 	 * it will be ignored.
 	 * If this parameter is null, every attribute listed in [[attributes]] will be validated.
 	 */
-	public function validate($object, $attributes = null)
+	public function validateAttributes($object, $attributes = null)
 	{
 		if (is_array($attributes)) {
 			$attributes = array_intersect($this->attributes, $attributes);
@@ -194,12 +192,49 @@ abstract class Validator extends Component
 	}
 
 	/**
+	 * Validates a single attribute.
+	 * Child classes must implement this method to provide the actual validation logic.
+	 * @param \yii\base\Model $object the data object to be validated
+	 * @param string $attribute the name of the attribute to be validated.
+	 */
+	public function validateAttribute($object, $attribute)
+	{
+		$result = $this->validateValue($object->$attribute);
+		if (!empty($result)) {
+			$this->addError($object, $attribute, $result[0], $result[1]);
+		}
+	}
+
+	/**
+	 * Validates a given value.
+	 * You may use this method to validate a value out of the context of a data model.
+	 * @param mixed $value the data value to be validated.
+	 * @param string $error the error message to be returned, if the validation fails.
+	 * @return boolean whether the data is valid.
+	 */
+	public function validate($value, &$error = null)
+	{
+		$result = $this->validateValue($value);
+		if (empty($result)) {
+			return true;
+		} else {
+			list($message, $params) = $result;
+			$params['attribute'] = Yii::t('yii', 'the input value');
+			$params['value'] = is_array($value) ? 'array()' : $value;
+			$error = Yii::$app->getI18n()->format($message, $params, Yii::$app->language);
+			return false;
+		}
+	}
+
+	/**
 	 * Validates a value.
 	 * A validator class can implement this method to support data validation out of the context of a data model.
 	 * @param mixed $value the data value to be validated.
-	 * @throws NotSupportedException if data validation without a model is not supported
+	 * @return array|null the error message and the parameters to be inserted into the error message.
+	 * Null should be returned if the data is valid.
+	 * @throws NotSupportedException if the validator does not supporting data validation without a model
 	 */
-	public function validateValue($value)
+	protected function validateValue($value)
 	{
 		throw new NotSupportedException(get_class($this) . ' does not support validateValue().');
 	}

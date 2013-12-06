@@ -39,7 +39,7 @@ class ExistValidator extends Validator
 
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -50,11 +50,7 @@ class ExistValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 *
-	 * @param \yii\db\ActiveRecord $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{
@@ -76,15 +72,12 @@ class ExistValidator extends Validator
 	}
 
 	/**
-	 * Validates the given value.
-	 * @param mixed $value the value to be validated.
-	 * @return boolean whether the value is valid.
-	 * @throws InvalidConfigException if either [[className]] or [[attributeName]] is not set.
+	 * @inheritdoc
 	 */
-	public function validateValue($value)
+	protected function validateValue($value)
 	{
 		if (is_array($value)) {
-			return false;
+			return [$this->message, []];
 		}
 		if ($this->className === null) {
 			throw new InvalidConfigException('The "className" property must be set.');
@@ -96,6 +89,6 @@ class ExistValidator extends Validator
 		$className = $this->className;
 		$query = $className::find();
 		$query->where([$this->attributeName => $value]);
-		return $query->exists();
+		return $query->exists() ? null : [$this->message, []];
 	}
 }

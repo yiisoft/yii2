@@ -46,8 +46,7 @@ class FilterValidator extends Validator
 	public $skipOnEmpty = false;
 
 	/**
-	 * Initializes the validator.
-	 * @throws InvalidConfigException if [[filter]] is not set.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -58,11 +57,7 @@ class FilterValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
-	 * @throws InvalidConfigException if filter property is not a valid callback
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{

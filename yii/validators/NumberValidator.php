@@ -56,7 +56,7 @@ class NumberValidator extends Validator
 
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -74,10 +74,7 @@ class NumberValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{
@@ -99,24 +96,27 @@ class NumberValidator extends Validator
 	}
 
 	/**
-	 * Validates the given value.
-	 * @param mixed $value the value to be validated.
-	 * @return boolean whether the value is valid.
+	 * @inheritdoc
 	 */
-	public function validateValue($value)
+	protected function validateValue($value)
 	{
-		return preg_match($this->integerOnly ? $this->integerPattern : $this->numberPattern, "$value")
-			&& ($this->min === null || $value >= $this->min)
-			&& ($this->max === null || $value <= $this->max);
+		if (is_array($value)) {
+			return [Yii::t('yii', '{attribute} is invalid.'), []];
+		}
+		$pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
+		if (!preg_match($pattern, "$value")) {
+			return [$this->message, []];
+		} elseif ($this->min !== null && $value < $this->min) {
+			return [$this->tooSmall, ['min' => $this->min]];
+		} elseif ($this->max !== null && $value > $this->max) {
+			return [$this->tooBig, ['max' => $this->max]];
+		} else {
+			return null;
+		}
 	}
 
 	/**
-	 * Returns the JavaScript needed for performing client-side validation.
-	 * @param \yii\base\Model $object the data object being validated
-	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
-	 * containing a model form with this validator applied.
-	 * @return string the client-side validation script.
+	 * @inheritdoc
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
