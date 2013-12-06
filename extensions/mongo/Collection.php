@@ -577,14 +577,15 @@ class Collection extends Object
 	 * @param string $search string of terms that MongoDB parses and uses to query the text index.
 	 * @param array $condition criteria for filtering a results list.
 	 * @param array $fields list of fields to be returned in result.
-	 * @param integer $limit the maximum number of documents to include in the response (by default 100).
-	 * @param string $language he language that determines the list of stop words for the search
+	 * @param array $options additional optional parameters to the mapReduce command. Valid options include:
+	 *  - limit - the maximum number of documents to include in the response (by default 100).
+	 *  - language - the language that determines the list of stop words for the search
 	 * and the rules for the stemmer and tokenizer. If not specified, the search uses the default
 	 * language of the index.
 	 * @return array the highest scoring documents, in descending order by score.
 	 * @throws Exception on failure.
 	 */
-	public function fullTextSearch($search, $condition = [], $fields = [], $limit = null, $language = null) {
+	public function fullTextSearch($search, $condition = [], $fields = [], $options = []) {
 		$command = [
 			'search' => $search
 		];
@@ -594,11 +595,8 @@ class Collection extends Object
 		if (!empty($fields)) {
 			$command['project'] = $fields;
 		}
-		if ($limit !== null) {
-			$command['limit'] = $limit;
-		}
-		if ($language !== null) {
-			$command['language'] = $language;
+		if (!empty($options)) {
+			$command = array_merge($command, $options);
 		}
 		$token = $this->composeLogToken('text', $command);
 		Yii::info($token, __METHOD__);
