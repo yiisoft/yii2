@@ -95,7 +95,7 @@ class FileValidator extends Validator
 	public $tooMany;
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -124,9 +124,7 @@ class FileValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{
@@ -149,62 +147,57 @@ class FileValidator extends Validator
 				$this->addError($object, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
 			} else {
 				foreach ($files as $file) {
-					$this->validateFile($object, $attribute, $file);
+					$result = $this->validateValue($file);
+					if (!empty($result)) {
+						$this->addError($object, $attribute, $result[0], $result[1]);
+					}
 				}
 			}
 		} else {
-			$file = $object->$attribute;
-			if ($file instanceof UploadedFile && $file->error != UPLOAD_ERR_NO_FILE) {
-				$this->validateFile($object, $attribute, $file);
-			} else {
-				$this->addError($object, $attribute, $this->uploadRequired);
+			$result = $this->validateValue($object->$attribute);
+			if (!empty($result)) {
+				$this->addError($object, $attribute, $result[0], $result[1]);
 			}
 		}
 	}
 
 	/**
-	 * Internally validates a file object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
-	 * @param UploadedFile $file uploaded file passed to check against a set of rules
+	 * @inheritdoc
 	 */
-	public function validateFile($object, $attribute, $file)
+	protected function validateValue($file)
 	{
+		if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
+			return [$this->uploadRequired, []];
+		}
 		switch ($file->error) {
 			case UPLOAD_ERR_OK:
 				if ($this->maxSize !== null && $file->size > $this->maxSize) {
-					$this->addError($object, $attribute, $this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]);
-				}
-				if ($this->minSize !== null && $file->size < $this->minSize) {
-					$this->addError($object, $attribute, $this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]);
-				}
-				if (!empty($this->types) && !in_array(strtolower(pathinfo($file->name, PATHINFO_EXTENSION)), $this->types, true)) {
-					$this->addError($object, $attribute, $this->wrongType, ['file' => $file->name, 'extensions' => implode(', ', $this->types)]);
+					return [$this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]];
+				} elseif ($this->minSize !== null && $file->size < $this->minSize) {
+					return [$this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]];
+				} elseif (!empty($this->types) && !in_array(strtolower(pathinfo($file->name, PATHINFO_EXTENSION)), $this->types, true)) {
+					return [$this->wrongType, ['file' => $file->name, 'extensions' => implode(', ', $this->types)]];
 				}
 				break;
 			case UPLOAD_ERR_INI_SIZE:
 			case UPLOAD_ERR_FORM_SIZE:
-				$this->addError($object, $attribute, $this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]);
-				break;
+				return [$this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]];
 			case UPLOAD_ERR_PARTIAL:
-				$this->addError($object, $attribute, $this->message);
 				Yii::warning('File was only partially uploaded: ' . $file->name, __METHOD__);
-				break;
+				return [$this->message, []];
 			case UPLOAD_ERR_NO_TMP_DIR:
-				$this->addError($object, $attribute, $this->message);
 				Yii::warning('Missing the temporary folder to store the uploaded file: ' . $file->name, __METHOD__);
-				break;
+				return [$this->message, []];
 			case UPLOAD_ERR_CANT_WRITE:
-				$this->addError($object, $attribute, $this->message);
 				Yii::warning('Failed to write the uploaded file to disk: ' . $file->name, __METHOD__);
-				break;
+				return [$this->message, []];
 			case UPLOAD_ERR_EXTENSION:
-				$this->addError($object, $attribute, $this->message);
 				Yii::warning('File upload was stopped by some PHP extension: ' . $file->name, __METHOD__);
-				break;
+				return [$this->message, []];
 			default:
 				break;
 		}
+		return null;
 	}
 
 	/**

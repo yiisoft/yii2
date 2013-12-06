@@ -25,17 +25,17 @@ class DateValidatorTest extends TestCase
 	public function testValidateValue()
 	{
 		$val = new DateValidator;
-		$this->assertFalse($val->validateValue('3232-32-32'));
-		$this->assertTrue($val->validateValue('2013-09-13'));
-		$this->assertFalse($val->validateValue('31.7.2013'));
-		$this->assertFalse($val->validateValue('31-7-2013'));
-		$this->assertFalse($val->validateValue(time()));
+		$this->assertFalse($val->validate('3232-32-32'));
+		$this->assertTrue($val->validate('2013-09-13'));
+		$this->assertFalse($val->validate('31.7.2013'));
+		$this->assertFalse($val->validate('31-7-2013'));
+		$this->assertFalse($val->validate(time()));
 		$val->format = 'U';
-		$this->assertTrue($val->validateValue(time()));
+		$this->assertTrue($val->validate(time()));
 		$val->format = 'd.m.Y';
-		$this->assertTrue($val->validateValue('31.7.2013'));
+		$this->assertTrue($val->validate('31.7.2013'));
 		$val->format = 'Y-m-!d H:i:s';
-		$this->assertTrue($val->validateValue('2009-02-15 15:16:17'));
+		$this->assertTrue($val->validate('2009-02-15 15:16:17'));
 	}
 
 	public function testValidateAttribute()

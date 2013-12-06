@@ -172,10 +172,10 @@ operate without model do. In our case to validate an email we can do the followi
 ```php
 $email = 'test@example.com';
 $validator = new yii\validators\EmailValidator();
-if ($validator->validateValue($email)) {
+if ($validator->validate($email, $error)) {
 	echo 'Email is valid.';
 } else {
-	echo 'Email is not valid.'
+	echo $error;
 }
 ```
 

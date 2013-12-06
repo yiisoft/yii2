@@ -32,7 +32,7 @@ class DateValidator extends Validator
 	public $timestampAttribute;
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -43,36 +43,31 @@ class DateValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if (is_array($value)) {
-			$this->addError($object, $attribute, $this->message);
-			return;
-		}
-		$date = DateTime::createFromFormat($this->format, $value);
-		$errors = DateTime::getLastErrors();
-		if ($date === false || $errors['error_count'] || $errors['warning_count']) {
-			$this->addError($object, $attribute, $this->message);
+		$result = $this->validateValue($value);
+		if (!empty($result)) {
+			$this->addError($object, $attribute, $result[0], $result[1]);
 		} elseif ($this->timestampAttribute !== null) {
+			$date = DateTime::createFromFormat($this->format, $value);
 			$object->{$this->timestampAttribute} = $date->getTimestamp();
 		}
 	}
 
 	/**
-	 * Validates the given value.
-	 * @param mixed $value the value to be validated.
-	 * @return boolean whether the value is valid.
+	 * @inheritdoc
 	 */
-	public function validateValue($value)
+	protected function validateValue($value)
 	{
-		DateTime::createFromFormat($this->format, $value);
+		if (is_array($value)) {
+			return [$this->message, []];
+		}
+		$date = DateTime::createFromFormat($this->format, $value);
 		$errors = DateTime::getLastErrors();
-		return $errors['error_count'] === 0 && $errors['warning_count'] === 0;
+		$invalid = $date === false || $errors['error_count'] || $errors['warning_count'];
+		return $invalid ? [$this->message, []] : null;
 	}
 }

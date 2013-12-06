@@ -37,7 +37,7 @@ class BooleanValidator extends Validator
 	public $strict = false;
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -48,40 +48,24 @@ class BooleanValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
-	public function validateAttribute($object, $attribute)
+	protected function validateValue($value)
 	{
-		$value = $object->$attribute;
-		if (!$this->validateValue($value)) {
-			$this->addError($object, $attribute, $this->message, [
+		$valid = !$this->strict && ($value == $this->trueValue || $value == $this->falseValue)
+			|| $this->strict && ($value === $this->trueValue || $value === $this->falseValue);
+		if (!$valid) {
+			return [$this->message, [
 				'true' => $this->trueValue,
 				'false' => $this->falseValue,
-			]);
+			]];
+		} else {
+			return null;
 		}
 	}
 
 	/**
-	 * Validates the given value.
-	 * @param mixed $value the value to be validated.
-	 * @return boolean whether the value is valid.
-	 */
-	public function validateValue($value)
-	{
-		return !$this->strict && ($value == $this->trueValue || $value == $this->falseValue)
-			|| $this->strict && ($value === $this->trueValue || $value === $this->falseValue);
-	}
-
-	/**
-	 * Returns the JavaScript needed for performing client-side validation.
-	 * @param \yii\base\Model $object the data object being validated
-	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
-	 * containing a model form with this validator applied.
-	 * @return string the client-side validation script.
+	 * @inheritdoc
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{

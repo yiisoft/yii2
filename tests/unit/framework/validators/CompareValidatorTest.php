@@ -20,7 +20,7 @@ class CompareValidatorTest extends TestCase
 	{
 		$this->setExpectedException('yii\base\InvalidConfigException');
 		$val = new CompareValidator;
-		$val->validateValue('val');
+		$val->validate('val');
 	}
 
 	public function testValidateValue()
@@ -28,14 +28,14 @@ class CompareValidatorTest extends TestCase
 		$value = 18449;
 		// default config
 		$val = new CompareValidator(['compareValue' => $value]);
-		$this->assertTrue($val->validateValue($value));
-		$this->assertTrue($val->validateValue((string)$value));
-		$this->assertFalse($val->validateValue($value + 1));
+		$this->assertTrue($val->validate($value));
+		$this->assertTrue($val->validate((string)$value));
+		$this->assertFalse($val->validate($value + 1));
 		foreach ($this->getOperationTestData($value) as $op => $tests) {
 			$val = new CompareValidator(['compareValue' => $value]);
 			$val->operator = $op;
 			foreach ($tests as $test) {
-				$this->assertEquals($test[1], $val->validateValue($test[0]));
+				$this->assertEquals($test[1], $val->validate($test[0]));
 			}
 		}
 	}

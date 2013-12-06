@@ -35,7 +35,7 @@ class UniqueValidator extends Validator
 	public $attributeName;
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -46,11 +46,7 @@ class UniqueValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 * @param \yii\db\ActiveRecord $object the object being validated
-	 * @param string $attribute the attribute being validated
-	 * @throws InvalidConfigException if table doesn't have column specified
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{

@@ -19,23 +19,23 @@ class BooleanValidatorTest extends TestCase
 	public function testValidateValue()
 	{
 		$val = new BooleanValidator;
-		$this->assertTrue($val->validateValue(true));
-		$this->assertTrue($val->validateValue(false));
-		$this->assertTrue($val->validateValue('0'));
-		$this->assertTrue($val->validateValue('1'));
-		$this->assertFalse($val->validateValue(null));
-		$this->assertFalse($val->validateValue([]));
+		$this->assertTrue($val->validate(true));
+		$this->assertTrue($val->validate(false));
+		$this->assertTrue($val->validate('0'));
+		$this->assertTrue($val->validate('1'));
+		$this->assertFalse($val->validate(null));
+		$this->assertFalse($val->validate([]));
 		$val->strict = true;
-		$this->assertTrue($val->validateValue('0'));
-		$this->assertTrue($val->validateValue('1'));
-		$this->assertFalse($val->validateValue(true));
-		$this->assertFalse($val->validateValue(false));
+		$this->assertTrue($val->validate('0'));
+		$this->assertTrue($val->validate('1'));
+		$this->assertFalse($val->validate(true));
+		$this->assertFalse($val->validate(false));
 		$val->trueValue = true;
 		$val->falseValue = false;
-		$this->assertFalse($val->validateValue('0'));
-		$this->assertFalse($val->validateValue([]));
-		$this->assertTrue($val->validateValue(true));
-		$this->assertTrue($val->validateValue(false));
+		$this->assertFalse($val->validate('0'));
+		$this->assertFalse($val->validate([]));
+		$this->assertTrue($val->validate(true));
+		$this->assertTrue($val->validate(false));
 	}
 
 	public function testValidateAttributeAndError()

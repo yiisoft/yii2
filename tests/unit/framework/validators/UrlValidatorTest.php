@@ -18,28 +18,28 @@ class UrlValidatorTest extends TestCase
 	public function testValidateValue()
 	{
 		$val = new UrlValidator;
-		$this->assertFalse($val->validateValue('google.de'));
-		$this->assertTrue($val->validateValue('http://google.de'));
-		$this->assertTrue($val->validateValue('https://google.de'));
-		$this->assertFalse($val->validateValue('htp://yiiframework.com'));
-		$this->assertTrue($val->validateValue('https://www.google.de/search?q=yii+framework&ie=utf-8&oe=utf-8'
+		$this->assertFalse($val->validate('google.de'));
+		$this->assertTrue($val->validate('http://google.de'));
+		$this->assertTrue($val->validate('https://google.de'));
+		$this->assertFalse($val->validate('htp://yiiframework.com'));
+		$this->assertTrue($val->validate('https://www.google.de/search?q=yii+framework&ie=utf-8&oe=utf-8'
 										.'&rls=org.mozilla:de:official&client=firefox-a&gws_rd=cr'));
-		$this->assertFalse($val->validateValue('ftp://ftp.ruhr-uni-bochum.de/'));
-		$this->assertFalse($val->validateValue('http://invalid,domain'));
-		$this->assertFalse($val->validateValue('http://äüö?=!"§$%&/()=}][{³²€.edu'));
+		$this->assertFalse($val->validate('ftp://ftp.ruhr-uni-bochum.de/'));
+		$this->assertFalse($val->validate('http://invalid,domain'));
+		$this->assertFalse($val->validate('http://äüö?=!"§$%&/()=}][{³²€.edu'));
 	}
 	
 	public function testValidateValueWithDefaultScheme()
 	{
 		$val = new UrlValidator(['defaultScheme' => 'https']);
-		$this->assertTrue($val->validateValue('yiiframework.com'));
-		$this->assertTrue($val->validateValue('http://yiiframework.com'));
+		$this->assertTrue($val->validate('yiiframework.com'));
+		$this->assertTrue($val->validate('http://yiiframework.com'));
 	}
 
 	public function testValidateValueWithoutScheme()
 	{
 		$val = new UrlValidator(['pattern' => '/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i']);
-		$this->assertTrue($val->validateValue('yiiframework.com'));
+		$this->assertTrue($val->validate('yiiframework.com'));
 	}
 	
 	public function testValidateWithCustomScheme()
@@ -48,13 +48,13 @@ class UrlValidatorTest extends TestCase
 			'validSchemes' => ['http', 'https', 'ftp', 'ftps'],
 			'defaultScheme' => 'http',
 		]);
-		$this->assertTrue($val->validateValue('ftp://ftp.ruhr-uni-bochum.de/'));
-		$this->assertTrue($val->validateValue('google.de'));
-		$this->assertTrue($val->validateValue('http://google.de'));
-		$this->assertTrue($val->validateValue('https://google.de'));
-		$this->assertFalse($val->validateValue('htp://yiiframework.com'));
+		$this->assertTrue($val->validate('ftp://ftp.ruhr-uni-bochum.de/'));
+		$this->assertTrue($val->validate('google.de'));
+		$this->assertTrue($val->validate('http://google.de'));
+		$this->assertTrue($val->validate('https://google.de'));
+		$this->assertFalse($val->validate('htp://yiiframework.com'));
 		// relative urls not supported
-		$this->assertFalse($val->validateValue('//yiiframework.com'));
+		$this->assertFalse($val->validate('//yiiframework.com'));
 	}
 	
 	public function testValidateWithIdn()
@@ -66,16 +66,16 @@ class UrlValidatorTest extends TestCase
 		$val = new UrlValidator([
 			'enableIDN' => true,
 		]);
-		$this->assertTrue($val->validateValue('http://äüößìà.de'));
+		$this->assertTrue($val->validate('http://äüößìà.de'));
 		// converted via http://mct.verisign-grs.com/convertServlet
-		$this->assertTrue($val->validateValue('http://xn--zcack7ayc9a.de'));
+		$this->assertTrue($val->validate('http://xn--zcack7ayc9a.de'));
 	}
 	
 	public function testValidateLength()
 	{
 		$url = 'http://' . str_pad('base', 2000, 'url') . '.de';
 		$val = new UrlValidator;
-		$this->assertFalse($val->validateValue($url));
+		$this->assertFalse($val->validate($url));
 	}
 	
 	public function testValidateAttributeAndError()

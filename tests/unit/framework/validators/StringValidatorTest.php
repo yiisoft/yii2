@@ -18,47 +18,47 @@ class StringValidatorTest extends TestCase
 	public function testValidateValue()
 	{
 		$val = new StringValidator();
-		$this->assertFalse($val->validateValue(['not a string']));
-		$this->assertTrue($val->validateValue('Just some string'));
+		$this->assertFalse($val->validate(['not a string']));
+		$this->assertTrue($val->validate('Just some string'));
 	}
 
 	public function testValidateValueLength()
 	{
 		$val = new StringValidator(['length' => 25]);
-		$this->assertTrue($val->validateValue(str_repeat('x', 25)));
-		$this->assertTrue($val->validateValue(str_repeat('€', 25)));
-		$this->assertFalse($val->validateValue(str_repeat('x', 125)));
-		$this->assertFalse($val->validateValue(''));
+		$this->assertTrue($val->validate(str_repeat('x', 25)));
+		$this->assertTrue($val->validate(str_repeat('€', 25)));
+		$this->assertFalse($val->validate(str_repeat('x', 125)));
+		$this->assertFalse($val->validate(''));
 		$val = new StringValidator(['length' => [25]]);
-		$this->assertTrue($val->validateValue(str_repeat('x', 25)));
-		$this->assertTrue($val->validateValue(str_repeat('x', 1250)));
-		$this->assertFalse($val->validateValue(str_repeat('Ä', 24)));
-		$this->assertFalse($val->validateValue(''));
+		$this->assertTrue($val->validate(str_repeat('x', 25)));
+		$this->assertTrue($val->validate(str_repeat('x', 1250)));
+		$this->assertFalse($val->validate(str_repeat('Ä', 24)));
+		$this->assertFalse($val->validate(''));
 		$val = new StringValidator(['length' => [10, 20]]);
-		$this->assertTrue($val->validateValue(str_repeat('x', 15)));
-		$this->assertTrue($val->validateValue(str_repeat('x', 10)));
-		$this->assertTrue($val->validateValue(str_repeat('x', 20)));
-		$this->assertFalse($val->validateValue(str_repeat('x', 5)));
-		$this->assertFalse($val->validateValue(str_repeat('x', 25)));
-		$this->assertFalse($val->validateValue(''));
+		$this->assertTrue($val->validate(str_repeat('x', 15)));
+		$this->assertTrue($val->validate(str_repeat('x', 10)));
+		$this->assertTrue($val->validate(str_repeat('x', 20)));
+		$this->assertFalse($val->validate(str_repeat('x', 5)));
+		$this->assertFalse($val->validate(str_repeat('x', 25)));
+		$this->assertFalse($val->validate(''));
 		// make sure min/max are overridden
 		$val = new StringValidator(['length' => [10, 20], 'min' => 25, 'max' => 35]);
-		$this->assertTrue($val->validateValue(str_repeat('x', 15)));
-		$this->assertFalse($val->validateValue(str_repeat('x', 30)));
+		$this->assertTrue($val->validate(str_repeat('x', 15)));
+		$this->assertFalse($val->validate(str_repeat('x', 30)));
 	}
 
 	public function testValidateValueMinMax()
 	{
 		$val = new StringValidator(['min' => 10]);
-		$this->assertTrue($val->validateValue(str_repeat('x', 10)));
-		$this->assertFalse($val->validateValue('xxxx'));
+		$this->assertTrue($val->validate(str_repeat('x', 10)));
+		$this->assertFalse($val->validate('xxxx'));
 		$val = new StringValidator(['max' => 10]);
-		$this->assertTrue($val->validateValue('xxxx'));
-		$this->assertFalse($val->validateValue(str_repeat('y', 20)));
+		$this->assertTrue($val->validate('xxxx'));
+		$this->assertFalse($val->validate(str_repeat('y', 20)));
 		$val = new StringValidator(['min' => 10, 'max' => 20]);
-		$this->assertTrue($val->validateValue(str_repeat('y', 15)));
-		$this->assertFalse($val->validateValue('abc'));
-		$this->assertFalse($val->validateValue(str_repeat('b', 25)));
+		$this->assertTrue($val->validate(str_repeat('y', 15)));
+		$this->assertFalse($val->validate('abc'));
+		$this->assertFalse($val->validate(str_repeat('b', 25)));
 	}
 
 	public function testValidateAttribute()

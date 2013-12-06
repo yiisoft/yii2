@@ -41,7 +41,7 @@ class CompareValidator extends Validator
 	 */
 	public $compareAttribute;
 	/**
-	 * @var string the constant value to be compared with. When both this property
+	 * @var mixed the constant value to be compared with. When both this property
 	 * and [[compareAttribute]] are set, this property takes precedence.
 	 * @see compareAttribute
 	 */
@@ -66,12 +66,13 @@ class CompareValidator extends Validator
 	 * - `{attribute}`: the label of the attribute being validated
 	 * - `{value}`: the value of the attribute being validated
 	 * - `{compareValue}`: the value or the attribute label to be compared with
+	 * - `{compareAttribute}`: the label of the attribute to be compared with
 	 */
 	public $message;
 
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -109,11 +110,7 @@ class CompareValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
-	 * @throws InvalidConfigException if CompareValidator::operator is invalid
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{
@@ -130,18 +127,7 @@ class CompareValidator extends Validator
 			$compareLabel = $object->getAttributeLabel($compareAttribute);
 		}
 
-		switch ($this->operator) {
-			case '==': $valid = $value == $compareValue; break;
-			case '===': $valid = $value === $compareValue; break;
-			case '!=': $valid = $value != $compareValue; break;
-			case '!==': $valid = $value !== $compareValue; break;
-			case '>': $valid = $value > $compareValue; break;
-			case '>=': $valid = $value >= $compareValue; break;
-			case '<': $valid = $value < $compareValue; break;
-			case '<=': $valid = $value <= $compareValue; break;
-			default: $valid = false; break;
-		}
-		if (!$valid) {
+		if (!$this->compareValues($this->operator, $value, $compareValue)) {
 			$this->addError($object, $attribute, $this->message, [
 				'compareAttribute' => $compareLabel,
 				'compareValue' => $compareValue,
@@ -150,38 +136,47 @@ class CompareValidator extends Validator
 	}
 
 	/**
-	 * Validates the given value.
-	 * @param mixed $value the value to be validated.
-	 * @return boolean whether the value is valid.
-	 * @throws InvalidConfigException if [[compareValue]] is not set.
+	 * @inheritdoc
 	 */
-	public function validateValue($value)
+	protected function validateValue($value)
 	{
 		if ($this->compareValue === null) {
 			throw new InvalidConfigException('CompareValidator::compareValue must be set.');
 		}
+		if (!$this->compareValues($this->operator, $value, $this->compareValue)) {
+			return [$this->message, [
+				'compareAttribute' => $this->compareValue,
+				'compareValue' => $this->compareValue,
+			]];
+		} else {
+			return null;
+		}
+	}
 
-		switch ($this->operator) {
-			case '==': return $value == $this->compareValue;
-			case '===': return $value === $this->compareValue;
-			case '!=': return $value != $this->compareValue;
-			case '!==': return $value !== $this->compareValue;
-			case '>': return $value > $this->compareValue;
-			case '>=': return $value >= $this->compareValue;
-			case '<': return $value < $this->compareValue;
-			case '<=': return $value <= $this->compareValue;
+	/**
+	 * Compares two values with the specified operator.
+	 * @param string $operator the comparison operator
+	 * @param mixed $value the value being compared
+	 * @param mixed $compareValue another value being compared
+	 * @return boolean whether the comparison using the specified operator is true.
+	 */
+	protected function compareValues($operator, $value, $compareValue)
+	{
+		switch ($operator) {
+			case '==': return $value == $compareValue;
+			case '===': return $value === $compareValue;
+			case '!=': return $value != $compareValue;
+			case '!==': return $value !== $compareValue;
+			case '>': return $value > $compareValue;
+			case '>=': return $value >= $compareValue;
+			case '<': return $value < $compareValue;
+			case '<=': return $value <= $compareValue;
 			default: return false;
 		}
 	}
 
 	/**
-	 * Returns the JavaScript needed for performing client-side validation.
-	 * @param \yii\base\Model $object the data object being validated
-	 * @param string $attribute the name of the attribute to be validated
-	 * @return string the client-side validation script
-	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
-	 * containing a model form with this validator applied.
-	 * @throws InvalidConfigException if CompareValidator::operator is invalid
+	 * @inheritdoc
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{

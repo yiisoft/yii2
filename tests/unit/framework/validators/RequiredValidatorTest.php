@@ -17,26 +17,26 @@ class RequiredValidatorTest extends TestCase
 	public function testValidateValueWithDefaults()
 	{
 		$val = new RequiredValidator();
-		$this->assertFalse($val->validateValue(null));
-		$this->assertFalse($val->validateValue([]));
-		$this->assertTrue($val->validateValue('not empty'));
-		$this->assertTrue($val->validateValue(['with', 'elements']));
+		$this->assertFalse($val->validate(null));
+		$this->assertFalse($val->validate([]));
+		$this->assertTrue($val->validate('not empty'));
+		$this->assertTrue($val->validate(['with', 'elements']));
 	}
 
 	public function testValidateValueWithValue()
 	{
 		$val = new RequiredValidator(['requiredValue' => 55]);
-		$this->assertTrue($val->validateValue(55));
-		$this->assertTrue($val->validateValue("55"));
-		$this->assertTrue($val->validateValue("0x37"));
-		$this->assertFalse($val->validateValue("should fail"));
-		$this->assertTrue($val->validateValue(true));
+		$this->assertTrue($val->validate(55));
+		$this->assertTrue($val->validate("55"));
+		$this->assertTrue($val->validate("0x37"));
+		$this->assertFalse($val->validate("should fail"));
+		$this->assertTrue($val->validate(true));
 		$val->strict = true;
-		$this->assertTrue($val->validateValue(55));
-		$this->assertFalse($val->validateValue("55"));
-		$this->assertFalse($val->validateValue("0x37"));
-		$this->assertFalse($val->validateValue("should fail"));
-		$this->assertFalse($val->validateValue(true));
+		$this->assertTrue($val->validate(55));
+		$this->assertFalse($val->validate("55"));
+		$this->assertFalse($val->validate("0x37"));
+		$this->assertFalse($val->validate("should fail"));
+		$this->assertFalse($val->validate(true));
 	}
 
 	public function testValidateAttribute()
