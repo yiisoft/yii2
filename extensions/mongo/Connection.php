@@ -64,7 +64,6 @@ use Yii;
  * ~~~
  *
  * @property boolean $isActive Whether the Mongo connection is established. This property is read-only.
- * is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
