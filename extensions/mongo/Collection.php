@@ -522,10 +522,17 @@ class Collection extends Object
 	 * @param string|array $out output collection name. It could be a string for simple output
 	 * ('outputCollection'), or an array for parametrized output (['merge' => 'outputCollection'])
 	 * @param array $condition criteria for including a document in the aggregation.
+	 * @param array $options additional optional parameters to the mapReduce command. Valid options include:
+	 *  - sort - array - key to sort the input documents. The sort key must be in an existing index for this collection.
+	 *  - limit - the maximum number of documents to return in the collection.
+	 *  - finalize - function, which follows the reduce method and modifies the output.
+	 *  - scope - array - specifies global variables that are accessible in the map, reduce and finalize functions.
+	 *  - jsMode - boolean -Specifies whether to convert intermediate data into BSON format between the execution of the map and reduce functions.
+	 *  - verbose - boolean - specifies whether to include the timing information in the result information.
 	 * @return string the map reduce output collection name.
 	 * @throws Exception on failure.
 	 */
-	public function mapReduce($map, $reduce, $out, $condition = [])
+	public function mapReduce($map, $reduce, $out, $condition = [], $options = [])
 	{
 		if (!($map instanceof \MongoCode)) {
 			$map = new \MongoCode((string)$map);
@@ -541,6 +548,14 @@ class Collection extends Object
 		];
 		if (!empty($condition)) {
 			$command['query'] = $this->buildCondition($condition);
+		}
+		if (array_key_exists('finalize', $options)) {
+			if (!($options['finalize'] instanceof \MongoCode)) {
+				$options['finalize'] = new \MongoCode((string)$options['finalize']);
+			}
+		}
+		if (!empty($options)) {
+			$command = array_merge($command, $options);
 		}
 		$token = $this->composeLogToken('mapReduce', [$map, $reduce, $out]);
 		Yii::info($token, __METHOD__);
