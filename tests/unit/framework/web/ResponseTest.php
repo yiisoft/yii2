@@ -57,7 +57,7 @@ class ResponseTest extends \yiiunit\TestCase
 		$this->assertEquals(206, $this->response->statusCode);
 		$headers = $this->response->headers;
 		$this->assertEquals("bytes", $headers->get('Accept-Ranges'));
-		$this->assertEquals("bytes " . $expectedHeader . '/' . StringHelper::strlen($fullContent), $headers->get('Content-Range'));
+		$this->assertEquals("bytes " . $expectedHeader . '/' . StringHelper::byteLength($fullContent), $headers->get('Content-Range'));
 		$this->assertEquals('text/plain', $headers->get('Content-Type'));
 		$this->assertEquals("$length", $headers->get('Content-Length'));
 	}

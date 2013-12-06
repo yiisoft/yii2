@@ -43,9 +43,6 @@ class EmailTarget extends Target
 		if (empty($this->message['to'])) {
 			throw new InvalidConfigException('The "to" option must be set for EmailTarget::message.');
 		}
-		if (empty($this->message['subject'])) {
-			$this->message['subject'] = Yii::t('yii', 'Application Log');
-		}
 		if (is_string($this->mail)) {
 			$this->mail = Yii::$app->getComponent($this->mail);
 		}
@@ -59,6 +56,11 @@ class EmailTarget extends Target
 	 */
 	public function export()
 	{
+		// moved initialization of subject here because of the following issue
+		// https://github.com/yiisoft/yii2/issues/1446
+		if (empty($this->message['subject'])) {
+			$this->message['subject'] = Yii::t('yii', 'Application Log');
+		}
 		$messages = array_map([$this, 'formatMessage'], $this->messages);
 		$body = wordwrap(implode("\n", $messages), 70);
 		$this->composeMessage($body)->send($this->mail);

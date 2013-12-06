@@ -145,7 +145,7 @@ class DbFixtureManager extends Component
 			throw new InvalidConfigException("Table does not exist: $tableName");
 		}
 
-		$this->db->createCommand()->truncateTable($tableName);
+		$this->db->createCommand()->truncateTable($tableName)->execute();
 
 		$fileName = $this->basePath . '/' . $tableName . '.php';
 		if (!is_file($fileName)) {
@@ -214,7 +214,7 @@ class DbFixtureManager extends Component
 	public function checkIntegrity($check)
 	{
 		foreach ($this->schemas as $schema) {
-			$this->db->createCommand()->checkIntegrity($check, $schema);
+			$this->db->createCommand()->checkIntegrity($check, $schema)->execute();
 		}
 	}
 }

@@ -308,10 +308,10 @@ class Command extends Component
 	 * @return mixed
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-put-mapping.html
 	 */
-	public function setMapping($index, $type, $mapping)
+	public function setMapping($index, $type, $mapping, $options = [])
 	{
-		$body = $mapping !== null ? Json::encode($mapping) : null;
-		return $this->db->put([$index, $type, '_mapping'], $body);
+		$body = $mapping !== null ? (is_string($mapping) ? $mapping : Json::encode($mapping)) : null;
+		return $this->db->put([$index, $type, '_mapping'], $options, $body);
 	}
 
 	/**

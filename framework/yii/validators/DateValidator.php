@@ -56,7 +56,8 @@ class DateValidator extends Validator
 			return;
 		}
 		$date = DateTime::createFromFormat($this->format, $value);
-		if ($date === false) {
+		$errors = DateTime::getLastErrors();
+		if ($date === false || $errors['error_count'] || $errors['warning_count']) {
 			$this->addError($object, $attribute, $this->message);
 		} elseif ($this->timestampAttribute !== null) {
 			$object->{$this->timestampAttribute} = $date->getTimestamp();

@@ -64,9 +64,8 @@ class SqlDataProvider extends BaseDataProvider
 {
 	/**
 	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
-	 * If not set, the default DB connection will be used.
 	 */
-	public $db;
+	public $db = 'db';
 	/**
 	 * @var string the SQL statement to be used for fetching data rows.
 	 */

@@ -203,7 +203,8 @@ trait ActiveRelationTrait
 			return serialize($key);
 		} else {
 			$attribute = reset($attributes);
-			return $model[$attribute];
+			$key = $model[$attribute];
+			return is_scalar($key) ? $key : serialize($key);
 		}
 	}
 
@@ -236,7 +237,7 @@ trait ActiveRelationTrait
 	}
 
 	/**
-	 * @param ActiveRecord[] $primaryModels
+	 * @param array $primaryModels either array of AR instances or arrays
 	 * @return array
 	 */
 	private function findPivotRows($primaryModels)
@@ -247,6 +248,10 @@ trait ActiveRelationTrait
 		$this->filterByModels($primaryModels);
 		/** @var ActiveRecord $primaryModel */
 		$primaryModel = reset($primaryModels);
+		if (!$primaryModel instanceof ActiveRecordInterface) {
+			// when primaryModels are array of arrays (asArray case)
+			$primaryModel = new $this->modelClass;
+		}
 		return $this->asArray()->all($primaryModel->getDb());
 	}
 }

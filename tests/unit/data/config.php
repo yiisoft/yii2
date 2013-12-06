@@ -51,5 +51,10 @@ return [
 			'password' => '',
 			'fixture' => __DIR__ . '/sphinx/source.sql',
 		],
+	],
+	'mongodb' => [
+		'dsn' => 'mongodb://travis:test@localhost:27017',
+		'defaultDatabaseName' => 'yii2test',
+		'options' => [],
 	]
 ];

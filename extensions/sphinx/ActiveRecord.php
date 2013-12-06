@@ -8,13 +8,13 @@
 namespace yii\sphinx;
 
 use yii\base\InvalidConfigException;
-use yii\db\BaseActiveRecord;
 use yii\base\NotSupportedException;
 use yii\db\ActiveRelationInterface;
+use yii\db\BaseActiveRecord;
 use yii\db\StaleObjectException;
 use yii\helpers\Inflector;
-use yii\helpers\StringHelper;
 use Yii;
+use yii\helpers\StringHelper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.

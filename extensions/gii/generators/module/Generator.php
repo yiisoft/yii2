@@ -7,9 +7,9 @@
 
 namespace yii\gii\generators\module;
 
-use Yii;
 use yii\gii\CodeFile;
 use yii\helpers\Html;
+use Yii;
 use yii\helpers\StringHelper;
 
 /**

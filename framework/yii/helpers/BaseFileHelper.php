@@ -292,11 +292,11 @@ class BaseFileHelper
 		if ($isDir = is_dir($path)) {
 			$path .= '/';
 		}
-		$n = StringHelper::strlen($path);
+		$n = StringHelper::byteLength($path);
 
 		if (!empty($options['except'])) {
 			foreach ($options['except'] as $name) {
-				if (StringHelper::substr($path, -StringHelper::strlen($name), $n) === $name) {
+				if (StringHelper::byteSubstr($path, -StringHelper::byteLength($name), $n) === $name) {
 					return false;
 				}
 			}
@@ -304,7 +304,7 @@ class BaseFileHelper
 
 		if (!$isDir && !empty($options['only'])) {
 			foreach ($options['only'] as $name) {
-				if (StringHelper::substr($path, -StringHelper::strlen($name), $n) === $name) {
+				if (StringHelper::byteSubstr($path, -StringHelper::byteLength($name), $n) === $name) {
 					return true;
 				}
 			}
