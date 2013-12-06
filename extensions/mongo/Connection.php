@@ -84,13 +84,15 @@ class Connection extends Component
 	/**
 	 * @var array connection options.
 	 * for example:
+	 *
 	 * ~~~
 	 * [
-	 *     'persist' => true, // use persistent connection
 	 *     'socketTimeoutMS' => 1000, // how long a send or receive on a socket can take before timing out
 	 *     'journal' => true // block write operations until the journal be flushed the to disk
 	 * ]
 	 * ~~~
+	 *
+	 * @see http://www.php.net/manual/en/mongoclient.construct.php
 	 */
 	public $options = [];
 	/**
@@ -111,7 +113,7 @@ class Connection extends Component
 	/**
 	 * Returns the Mongo collection with the given name.
 	 * @param string|null $name collection name, if null default one will be used.
-	 * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
+	 * @param boolean $refresh whether to reestablish the database connection even if it is found in the cache.
 	 * @return Database database instance.
 	 */
 	public function getDatabase($name = null, $refresh = false)
