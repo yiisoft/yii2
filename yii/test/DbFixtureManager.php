@@ -214,7 +214,7 @@ class DbFixtureManager extends Component
 	public function checkIntegrity($check)
 	{
 		foreach ($this->schemas as $schema) {
-			$this->db->createCommand()->checkIntegrity($check, $schema);
+			$this->db->createCommand()->checkIntegrity($check, $schema)->execute();
 		}
 	}
 }
