@@ -15,4 +15,10 @@ namespace yii\validators;
  */
 class SafeValidator extends Validator
 {
+	/**
+	 * @inheritdoc
+	 */
+	public function validateAttribute($object, $attribute)
+	{
+	}
 }
