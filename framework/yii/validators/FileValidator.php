@@ -178,6 +178,7 @@ class FileValidator extends Validator
 				} elseif (!empty($this->types) && !in_array(strtolower(pathinfo($file->name, PATHINFO_EXTENSION)), $this->types, true)) {
 					return [$this->wrongType, ['file' => $file->name, 'extensions' => implode(', ', $this->types)]];
 				}
+				return [];
 				break;
 			case UPLOAD_ERR_INI_SIZE:
 			case UPLOAD_ERR_FORM_SIZE:
@@ -197,7 +198,7 @@ class FileValidator extends Validator
 			default:
 				break;
 		}
-		return null;
+		return [$this->message, []];
 	}
 
 	/**
