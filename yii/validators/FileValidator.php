@@ -177,27 +177,28 @@ class FileValidator extends Validator
 					return [$this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]];
 				} elseif (!empty($this->types) && !in_array(strtolower(pathinfo($file->name, PATHINFO_EXTENSION)), $this->types, true)) {
 					return [$this->wrongType, ['file' => $file->name, 'extensions' => implode(', ', $this->types)]];
+				} else {
+					return null;
 				}
-				break;
 			case UPLOAD_ERR_INI_SIZE:
 			case UPLOAD_ERR_FORM_SIZE:
 				return [$this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]];
 			case UPLOAD_ERR_PARTIAL:
 				Yii::warning('File was only partially uploaded: ' . $file->name, __METHOD__);
-				return [$this->message, []];
+				break;
 			case UPLOAD_ERR_NO_TMP_DIR:
 				Yii::warning('Missing the temporary folder to store the uploaded file: ' . $file->name, __METHOD__);
-				return [$this->message, []];
+				break;
 			case UPLOAD_ERR_CANT_WRITE:
 				Yii::warning('Failed to write the uploaded file to disk: ' . $file->name, __METHOD__);
-				return [$this->message, []];
+				break;
 			case UPLOAD_ERR_EXTENSION:
 				Yii::warning('File upload was stopped by some PHP extension: ' . $file->name, __METHOD__);
-				return [$this->message, []];
+				break;
 			default:
 				break;
 		}
-		return null;
+		return [$this->message, []];
 	}
 
 	/**
