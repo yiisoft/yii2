@@ -9,6 +9,7 @@ namespace yii\helpers;
 
 use Yii;
 use yii\base\InvalidParamException;
+use yii\db\ActiveRecordInterface;
 use yii\web\Request;
 use yii\base\Model;
 
@@ -1208,11 +1209,11 @@ class BaseHtml
 	public static function activeDropDownList($model, $attribute, $items, $options = [])
 	{
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-		$checked = static::getAttributeValue($model, $attribute);
+		$selection = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
 		}
-		return static::dropDownList($name, $checked, $items, $options);
+		return static::dropDownList($name, $selection, $items, $options);
 	}
 
 	/**
@@ -1256,14 +1257,14 @@ class BaseHtml
 	public static function activeListBox($model, $attribute, $items, $options = [])
 	{
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-		$checked = static::getAttributeValue($model, $attribute);
+		$selection = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('unselect', $options)) {
 			$options['unselect'] = '0';
 		}
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
 		}
-		return static::listBox($name, $checked, $items, $options);
+		return static::listBox($name, $selection, $items, $options);
 	}
 
 	/**
@@ -1297,14 +1298,14 @@ class BaseHtml
 	public static function activeCheckboxList($model, $attribute, $items, $options = [])
 	{
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-		$checked = static::getAttributeValue($model, $attribute);
+		$selection = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('unselect', $options)) {
 			$options['unselect'] = '0';
 		}
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
 		}
-		return static::checkboxList($name, $checked, $items, $options);
+		return static::checkboxList($name, $selection, $items, $options);
 	}
 
 	/**
@@ -1337,14 +1338,14 @@ class BaseHtml
 	public static function activeRadioList($model, $attribute, $items, $options = [])
 	{
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-		$checked = static::getAttributeValue($model, $attribute);
+		$selection = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('unselect', $options)) {
 			$options['unselect'] = '0';
 		}
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
 		}
-		return static::radioList($name, $checked, $items, $options);
+		return static::radioList($name, $selection, $items, $options);
 	}
 
 	/**
@@ -1546,9 +1547,12 @@ class BaseHtml
 	 * For an attribute expression like `[0]dates[0]`, this method will return the value of `$model->dates[0]`.
 	 * See [[getAttributeName()]] for more details about attribute expression.
 	 *
+	 * If an attribute value is an instance of [[ActiveRecordInterface]] or an array of such instances,
+	 * the primary value(s) of the AR instance(s) will be returned instead.
+	 *
 	 * @param Model $model the model object
 	 * @param string $attribute the attribute name or expression
-	 * @return mixed the corresponding attribute value
+	 * @return string|array the corresponding attribute value
 	 * @throws InvalidParamException if the attribute name contains non-word characters.
 	 */
 	public static function getAttributeValue($model, $attribute)
@@ -1557,20 +1561,30 @@ class BaseHtml
 			throw new InvalidParamException('Attribute name must contain word characters only.');
 		}
 		$attribute = $matches[2];
-		$index = $matches[3];
-		if ($index === '') {
-			return $model->$attribute;
-		} else {
-			$value = $model->$attribute;
-			foreach (explode('][', trim($index, '[]')) as $id) {
+		$value = $model->$attribute;
+		if ($matches[3] !== '') {
+			foreach (explode('][', trim($matches[3], '[]')) as $id) {
 				if ((is_array($value) || $value instanceof \ArrayAccess) && isset($value[$id])) {
 					$value = $value[$id];
 				} else {
 					return null;
 				}
 			}
-			return $value;
 		}
+
+		// https://github.com/yiisoft/yii2/issues/1457
+		if (is_array($value)) {
+			foreach ($value as $i => $v) {
+				if ($v instanceof ActiveRecordInterface) {
+					$v = $v->getPrimaryKey(false);
+					$value[$i] = is_array($v) ? json_encode($v) : $v;
+				}
+			}
+		} elseif ($value instanceof ActiveRecordInterface) {
+			$value = $value->getPrimaryKey(false);
+			return is_array($value) ? json_encode($value) : $value;
+		}
+		return $value;
 	}
 
 	/**

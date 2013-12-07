@@ -93,17 +93,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
 
 	/**
-	 * Returns the string representation of this AR instance.
-	 * The default implementation will return the primary key (or JSON representation of the primary key if it is composite).
-	 * @return string the string representation of this AR instance.
-	 */
-	public function __toString()
-	{
-		$pk = $this->getPrimaryKey();
-		return is_array($pk) ? json_encode($pk) : $pk;
-	}
-
-	/**
 	 * Creates an [[ActiveQuery]] instance for query purpose.
 	 *
 	 * @include @yii/db/ActiveRecord-find.md
