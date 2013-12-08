@@ -1,13 +1,14 @@
 Caching
 =======
 
-Overview and Base Concepts
+Caching is a cheap and effective way to improve the performance of a web application. By storing relatively
+static data in cache and serving it from cache when requested, the application saves the time required to generate the data from scratch. Caching is one of the best ways to improve the performance of your application, almost mandatory on any large-scale site.
+
+
+Base Concepts
 --------------------------
 
-Caching is a cheap and effective way to improve the performance of a web application. By storing relatively
-static data in cache and serving it from cache when requested, we save the time needed to generate the data.
-
-Using cache in Yii mainly involves configuring and accessing a cache application component. The following
+Using cache in Yii involves configuring and accessing a cache application component. The following
 application configuration specifies a cache component that uses [memcached](http://memcached.org/) with
 two cache servers. Note, this configuration should be done in file located at `@app/config/web.php` alias
 in case you're using basic sample application.
