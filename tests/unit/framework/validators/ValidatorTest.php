@@ -63,7 +63,7 @@ class ValidatorTest extends TestCase
 	{
 		$val = new TestValidator(['attributes' => ['attr_runMe1', 'attr_runMe2']]);
 		$model = $this->getTestModel();
-		$val->validate($model);
+		$val->validateAttributes($model);
 		$this->assertTrue($val->isAttributeValidated('attr_runMe1'));
 		$this->assertTrue($val->isAttributeValidated('attr_runMe2'));
 		$this->assertFalse($val->isAttributeValidated('attr_skip'));
@@ -73,7 +73,7 @@ class ValidatorTest extends TestCase
 	{
 		$val = new TestValidator(['attributes' => ['attr_runMe1', 'attr_runMe2']]);
 		$model = $this->getTestModel();
-		$val->validate($model, ['attr_runMe1']);
+		$val->validateAttributes($model, ['attr_runMe1']);
 		$this->assertTrue($val->isAttributeValidated('attr_runMe1'));
 		$this->assertFalse($val->isAttributeValidated('attr_runMe2'));
 		$this->assertFalse($val->isAttributeValidated('attr_skip'));
@@ -83,11 +83,11 @@ class ValidatorTest extends TestCase
 	{
 		$val = new TestValidator();
 		$model = $this->getTestModel();
-		$val->validate($model, ['attr_runMe1']);
+		$val->validateAttributes($model, ['attr_runMe1']);
 		$this->assertFalse($val->isAttributeValidated('attr_runMe1'));
 		$this->assertFalse($val->isAttributeValidated('attr_runMe2'));
 		$this->assertFalse($val->isAttributeValidated('attr_skip'));
-		$val->validate($model);
+		$val->validateAttributes($model);
 		$this->assertFalse($val->isAttributeValidated('attr_runMe1'));
 		$this->assertFalse($val->isAttributeValidated('attr_runMe2'));
 		$this->assertFalse($val->isAttributeValidated('attr_skip'));
@@ -97,27 +97,27 @@ class ValidatorTest extends TestCase
 	{
 		$val = new TestValidator(['attributes' => ['attr_runMe1', 'attr_runMe2'], 'skipOnError' => false]);
 		$model = $this->getTestModel();
-		$val->validate($model);
+		$val->validateAttributes($model);
 		$this->assertTrue($val->isAttributeValidated('attr_runMe1'));
 		$this->assertTrue($val->isAttributeValidated('attr_runMe2'));
 		$this->assertFalse($val->isAttributeValidated('attr_skip'));
 		$this->assertEquals(1, $val->countAttributeValidations('attr_runMe2'));
 		$this->assertEquals(1, $val->countAttributeValidations('attr_runMe1'));
-		$val->validate($model, ['attr_runMe2']);
+		$val->validateAttributes($model, ['attr_runMe2']);
 		$this->assertEquals(2, $val->countAttributeValidations('attr_runMe2'));
 		$this->assertEquals(1, $val->countAttributeValidations('attr_runMe1'));
 		$this->assertEquals(0, $val->countAttributeValidations('attr_skip'));
 		$val = new TestValidator(['attributes' => ['attr_runMe1', 'attr_runMe2'], 'skipOnError' => true]);
 		$model = $this->getTestModel();
 		$val->enableErrorOnValidateAttribute();
-		$val->validate($model);
+		$val->validateAttributes($model);
 		$this->assertTrue($val->isAttributeValidated('attr_runMe1'));
 		$this->assertTrue($val->isAttributeValidated('attr_runMe2'));
 		$this->assertFalse($val->isAttributeValidated('attr_skip'));
 		$this->assertEquals(1, $val->countAttributeValidations('attr_runMe1'));
 		$this->assertEquals(1, $val->countAttributeValidations('attr_runMe1'));
 		$this->assertEquals(0, $val->countAttributeValidations('attr_skip'));
-		$val->validate($model, ['attr_runMe2']);
+		$val->validateAttributes($model, ['attr_runMe2']);
 		$this->assertEquals(1, $val->countAttributeValidations('attr_runMe2'));
 		$this->assertEquals(1, $val->countAttributeValidations('attr_runMe1'));
 		$this->assertEquals(0, $val->countAttributeValidations('attr_skip'));
@@ -135,13 +135,13 @@ class ValidatorTest extends TestCase
 			'skipOnEmpty' => true,
 		]);
 		$model = $this->getTestModel(['attr_empty1' => '', 'attr_emtpy2' => ' ']);
-		$val->validate($model);
+		$val->validateAttributes($model);
 		$this->assertTrue($val->isAttributeValidated('attr_runMe1'));
 		$this->assertTrue($val->isAttributeValidated('attr_runMe2'));
 		$this->assertFalse($val->isAttributeValidated('attr_empty1'));
 		$this->assertFalse($val->isAttributeValidated('attr_empty2'));
 		$model->attr_empty1 = 'not empty anymore';
-		$val->validate($model);
+		$val->validateAttributes($model);
 		$this->assertTrue($val->isAttributeValidated('attr_empty1'));
 		$this->assertFalse($val->isAttributeValidated('attr_empty2'));
 		$val = new TestValidator([
@@ -154,7 +154,7 @@ class ValidatorTest extends TestCase
 			'skipOnEmpty' => false,
 		]);
 		$model = $this->getTestModel(['attr_empty1' => '', 'attr_emtpy2' => ' ']);
-		$val->validate($model);
+		$val->validateAttributes($model);
 		$this->assertTrue($val->isAttributeValidated('attr_runMe1'));
 		$this->assertTrue($val->isAttributeValidated('attr_runMe2'));
 		$this->assertTrue($val->isAttributeValidated('attr_empty1'));
@@ -188,7 +188,7 @@ class ValidatorTest extends TestCase
 			TestValidator::className() . ' does not support validateValue().'
 		);
 		$val = new TestValidator();
-		$val->validateValue('abc');
+		$val->validate('abc');
 	}
 
 	public function testClientValidateAttribute()

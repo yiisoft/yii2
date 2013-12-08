@@ -55,9 +55,7 @@ class InlineValidator extends Validator
 	public $clientValidate;
 
 	/**
-	 * Validates the attribute of the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{
@@ -69,25 +67,7 @@ class InlineValidator extends Validator
 	}
 
 	/**
-	 * Returns the JavaScript needed for performing client-side validation.
-	 *
-	 * You may override this method to return the JavaScript validation code if
-	 * the validator can support client-side validation.
-	 *
-	 * The following JavaScript variables are predefined and can be used in the validation code:
-	 *
-	 * - `attribute`: the name of the attribute being validated.
-	 * - `value`: the value being validated.
-	 * - `messages`: an array used to hold the validation error messages for the attribute.
-	 *
-	 * @param \yii\base\Model $object the data object being validated
-	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
-	 * containing a model form with this validator applied.
-	 * @return string the client-side validation script. Null if the validator does not support
-	 * client-side validation.
-	 * @see enableClientValidation
-	 * @see \yii\web\ActiveForm::enableClientValidation
+	 * @inheritdoc
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{

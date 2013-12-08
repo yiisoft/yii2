@@ -110,7 +110,7 @@ class ImageValidator extends FileValidator
 	public $wrongMimeType;
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -140,58 +140,51 @@ class ImageValidator extends FileValidator
 	}
 
 	/**
-	 * Internally validates a file object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
-	 * @param UploadedFile $file uploaded file passed to check against a set of rules
+	 * @inheritdoc
 	 */
-	public function validateFile($object, $attribute, $file)
+	protected function validateValue($file)
 	{
-		parent::validateFile($object, $attribute, $file);
-		
-		if (!$object->hasErrors($attribute)) {
-			$this->validateImage($object, $attribute, $file);
-		}
+		$result = parent::validateValue($file);
+		return empty($result) ? $this->validateImage($file) : $result;
 	}
 	
 	/**
-	 * Internally validates a file object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * Validates an image file.
 	 * @param UploadedFile $image uploaded file passed to check against a set of rules
+	 * @return array|null the error message and the parameters to be inserted into the error message.
+	 * Null should be returned if the data is valid.
 	 */
-	public function validateImage($object, $attribute, $image)
+	protected function validateImage($image)
 	{
 		if (!empty($this->mimeTypes) && !in_array(FileHelper::getMimeType($image->tempName), $this->mimeTypes, true)) {
-			$this->addError($object, $attribute, $this->wrongMimeType, ['file' => $image->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]);
+			return [$this->wrongMimeType, ['file' => $image->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
 		}
 		
 		if (false === ($imageInfo = getimagesize($image->tempName))) {
-			$this->addError($object, $attribute, $this->notImage, ['file' => $image->name]);
-			return;
+			return [$this->notImage, ['file' => $image->name]];
 		}
 		
 		list($width, $height, $type) = $imageInfo;
 		
 		if ($width == 0 || $height == 0) {
-			$this->addError($object, $attribute, $this->notImage, ['file' => $image->name]);
-			return;
+			return [$this->notImage, ['file' => $image->name]];
 		}
 		
 		if ($this->minWidth !== null && $width < $this->minWidth) {
-			$this->addError($object, $attribute, $this->underWidth, ['file' => $image->name, 'limit' => $this->minWidth]);
+			return [$this->underWidth, ['file' => $image->name, 'limit' => $this->minWidth]];
 		}
 		
 		if ($this->minHeight !== null && $height < $this->minHeight) {
-			$this->addError($object, $attribute, $this->underHeight, ['file' => $image->name, 'limit' => $this->minHeight]);
+			return [$this->underHeight, ['file' => $image->name, 'limit' => $this->minHeight]];
 		}
 		
 		if ($this->maxWidth !== null && $width > $this->maxWidth) {
-			$this->addError($object, $attribute, $this->overWidth, ['file' => $image->name, 'limit' => $this->maxWidth]);
+			return [$this->overWidth, ['file' => $image->name, 'limit' => $this->maxWidth]];
 		}
 		
 		if ($this->maxHeight !== null && $height > $this->maxHeight) {
-			$this->addError($object, $attribute, $this->overHeight, ['file' => $image->name, 'limit' => $this->maxHeight]);
+			return [$this->overHeight, ['file' => $image->name, 'limit' => $this->maxHeight]];
 		}
+		return null;
 	}
 }

@@ -1,45 +1,33 @@
-Yii 2.0 Public Preview - MongoDb Extension
-==========================================
+MongoDb Extension for Yii 2
+===========================
 
-Thank you for choosing Yii - a high-performance component-based PHP framework.
-
-If you are looking for a production-ready PHP framework, please use
-[Yii v1.1](https://github.com/yiisoft/yii).
-
-Yii 2.0 is still under heavy development. We may make significant changes
-without prior notices. **Yii 2.0 is not ready for production use yet.**
-
-[![Build Status](https://secure.travis-ci.org/yiisoft/yii2.png)](http://travis-ci.org/yiisoft/yii2)
-
-This is the yii2-sphinx extension.
+This extension provides the [MongoDB](http://www.mongodb.org/) integration for the Yii2 framework.
 
 
 Installation
 ------------
 
+This extension requires [MongoDB PHP Extension](http://us1.php.net/manual/en/book.mongo.php) version 1.3.0 or higher.
+
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
 Either run
+
 ```
 php composer.phar require yiisoft/yii2-mongodb "*"
 ```
 
 or add
+
 ```
 "yiisoft/yii2-mongodb": "*"
 ```
+
 to the require section of your composer.json.
-
-
-*Note: You might have to run `php composer.phar selfupdate`*
 
 
 Usage & Documentation
 ---------------------
-
-This extension adds [MongoDB](http://www.mongodb.org/) data storage support for the Yii2 framework.
-
-Note: extension requires [MongoDB PHP Extension](http://us1.php.net/manual/en/book.mongo.php) version 1.3.0 or higher.
 
 To use this extension, simply add the following code in your application configuration:
 
@@ -82,7 +70,7 @@ class Customer extends ActiveRecord
 }
 ```
 
-You can use [[\yii\data\ActiveDataProvider]] with the [[\yii\mongodb\Query]] and [[\yii\mongodb\ActiveQuery]]:
+You can use [[\yii\data\ActiveDataProvider]] with [[\yii\mongodb\Query]] and [[\yii\mongodb\ActiveQuery]]:
 
 ```php
 use yii\data\ActiveDataProvider;
@@ -113,4 +101,4 @@ $models = $provider->getModels();
 ```
 
 This extension supports [MongoGridFS](http://docs.mongodb.org/manual/core/gridfs/) via
-classes at namespace "\yii\mongo\file".
+classes under namespace "\yii\mongodb\file".

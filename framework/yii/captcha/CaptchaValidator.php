@@ -18,6 +18,10 @@ use yii\validators\Validator;
  *
  * CaptchaValidator should be used together with [[CaptchaAction]].
  *
+ * Note that once CAPTCHA validation succeeds, a new CAPTCHA will be generated automatically. As a result,
+ * CAPTCHA validation should not be used in AJAX validation mode because it may fail the validation
+ * even if a user enters the same code as shown in the CAPTCHA image which is actually different from the latest CAPTCHA code.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -38,7 +42,7 @@ class CaptchaValidator extends Validator
 
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -49,28 +53,13 @@ class CaptchaValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
-	public function validateAttribute($object, $attribute)
-	{
-		$value = $object->$attribute;
-		if (!$this->validateValue($value)) {
-			$this->addError($object, $attribute, $this->message);
-		}
-	}
-
-	/**
-	 * Validates the given value.
-	 * @param mixed $value the value to be validated.
-	 * @return boolean whether the value is valid.
-	 */
-	public function validateValue($value)
+	protected function validateValue($value)
 	{
 		$captcha = $this->createCaptchaAction();
-		return !is_array($value) && $captcha->validate($value, $this->caseSensitive);
+		$valid = !is_array($value) && $captcha->validate($value, $this->caseSensitive);
+		return $valid ? null : [$this->message, []];
 	}
 
 	/**
@@ -93,12 +82,7 @@ class CaptchaValidator extends Validator
 	}
 
 	/**
-	 * Returns the JavaScript needed for performing client-side validation.
-	 * @param \yii\base\Model $object the data object being validated
-	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
-	 * containing a model form with this validator applied.
-	 * @return string the client-side validation script.
+	 * @inheritdoc
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{

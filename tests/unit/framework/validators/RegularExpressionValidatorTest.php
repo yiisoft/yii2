@@ -18,13 +18,13 @@ class RegularExpressionValidatorTest extends TestCase
 	public function testValidateValue()
 	{
 		$val = new RegularExpressionValidator(['pattern' => '/^[a-zA-Z0-9](\.)?([^\/]*)$/m']);
-		$this->assertTrue($val->validateValue('b.4'));
-		$this->assertFalse($val->validateValue('b./'));
-		$this->assertFalse($val->validateValue(['a', 'b']));
+		$this->assertTrue($val->validate('b.4'));
+		$this->assertFalse($val->validate('b./'));
+		$this->assertFalse($val->validate(['a', 'b']));
 		$val->not = true;
-		$this->assertFalse($val->validateValue('b.4'));
-		$this->assertTrue($val->validateValue('b./'));
-		$this->assertFalse($val->validateValue(['a', 'b']));
+		$this->assertFalse($val->validate('b.4'));
+		$this->assertTrue($val->validate('b./'));
+		$this->assertFalse($val->validate(['a', 'b']));
 	}
 
 	public function testValidateAttribute()
@@ -48,7 +48,7 @@ class RegularExpressionValidatorTest extends TestCase
 	{
 		$this->setExpectedException('yii\base\InvalidConfigException');
 		$val = new RegularExpressionValidator();
-		$val->validateValue('abc');
+		$val->validate('abc');
 	}
 
 }

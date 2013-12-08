@@ -29,9 +29,7 @@ class DefaultValueValidator extends Validator
 	public $skipOnEmpty = false;
 
 	/**
-	 * Validates the attribute of the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{

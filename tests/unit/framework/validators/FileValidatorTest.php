@@ -215,8 +215,6 @@ class FileValidatorTest extends TestCase
 		$val->validateAttribute($m, 'attr_err_part');
 		$this->assertTrue($m->hasErrors('attr_err_part'));
 		$this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_part')));
-		$log = Yii::$app->getLog()->toArray();
-		$this->assertSame(FileValidator::className() . '::validateFile', $log['messages'][0][2]);
 	}
 
 	public function testValidateAttributeType()
@@ -261,8 +259,6 @@ class FileValidatorTest extends TestCase
 		$this->assertTrue($m->hasErrors('attr_err_part'));
 		$this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_part')));
 		$log = Yii::$app->getLog()->toArray();
-		$this->assertSame(FileValidator::className() . '::validateFile', $log['messages'][0][2]);
-		$this->assertContains('File was only', $log['messages'][0][0]);
 	}
 
 	public function testValidateAttributeErrCantWrite()
@@ -273,8 +269,6 @@ class FileValidatorTest extends TestCase
 		$this->assertTrue($m->hasErrors('attr_err_write'));
 		$this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_write')));
 		$log = Yii::$app->getLog()->toArray();
-		$this->assertSame(FileValidator::className() . '::validateFile', $log['messages'][0][2]);
-		$this->assertContains('Failed to write', $log['messages'][0][0]);
 	}
 
 	public function testValidateAttributeErrExtension()
@@ -285,8 +279,6 @@ class FileValidatorTest extends TestCase
 		$this->assertTrue($m->hasErrors('attr_err_ext'));
 		$this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_ext')));
 		$log = Yii::$app->getLog()->toArray();
-		$this->assertSame(FileValidator::className() . '::validateFile', $log['messages'][0][2]);
-		$this->assertContains('PHP extension', $log['messages'][0][0]);
 	}
 
 	public function testValidateAttributeErrNoTmpDir()
@@ -297,7 +289,5 @@ class FileValidatorTest extends TestCase
 		$this->assertTrue($m->hasErrors('attr_err_tmp'));
 		$this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_tmp')));
 		$log = Yii::$app->getLog()->toArray();
-		$this->assertSame(FileValidator::className() . '::validateFile', $log['messages'][0][2]);
-		$this->assertContains('Missing the temporary folder', $log['messages'][0][0]);
 	}
 }

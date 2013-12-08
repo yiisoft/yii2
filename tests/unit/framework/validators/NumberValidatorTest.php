@@ -29,84 +29,84 @@ class NumberValidatorTest extends TestCase
 	public function testValidateValueSimple()
 	{
 		$val = new NumberValidator();
-		$this->assertTrue($val->validateValue(20));
-		$this->assertTrue($val->validateValue(0));
-		$this->assertTrue($val->validateValue(-20));
-		$this->assertTrue($val->validateValue('20'));
-		$this->assertTrue($val->validateValue(25.45));
-		$this->assertFalse($val->validateValue('25,45'));
-		$this->assertFalse($val->validateValue('12:45'));
+		$this->assertTrue($val->validate(20));
+		$this->assertTrue($val->validate(0));
+		$this->assertTrue($val->validate(-20));
+		$this->assertTrue($val->validate('20'));
+		$this->assertTrue($val->validate(25.45));
+		$this->assertFalse($val->validate('25,45'));
+		$this->assertFalse($val->validate('12:45'));
 		$val = new NumberValidator(['integerOnly' => true]);
-		$this->assertTrue($val->validateValue(20));
-		$this->assertTrue($val->validateValue(0));
-		$this->assertFalse($val->validateValue(25.45));
-		$this->assertTrue($val->validateValue('20'));
-		$this->assertFalse($val->validateValue('25,45'));
-		$this->assertTrue($val->validateValue('020'));
-		$this->assertTrue($val->validateValue(0x14));
-		$this->assertFalse($val->validateValue('0x14')); // todo check this
+		$this->assertTrue($val->validate(20));
+		$this->assertTrue($val->validate(0));
+		$this->assertFalse($val->validate(25.45));
+		$this->assertTrue($val->validate('20'));
+		$this->assertFalse($val->validate('25,45'));
+		$this->assertTrue($val->validate('020'));
+		$this->assertTrue($val->validate(0x14));
+		$this->assertFalse($val->validate('0x14')); // todo check this
 	}
 
 	public function testValidateValueAdvanced()
 	{
 		$val = new NumberValidator();
-		$this->assertTrue($val->validateValue('-1.23')); // signed float
-		$this->assertTrue($val->validateValue('-4.423e-12')); // signed float + exponent
-		$this->assertTrue($val->validateValue('12E3')); // integer + exponent
-		$this->assertFalse($val->validateValue('e12')); // just exponent
-		$this->assertFalse($val->validateValue('-e3'));
-		$this->assertFalse($val->validateValue('-4.534-e-12')); // 'signed' exponent
-		$this->assertFalse($val->validateValue('12.23^4')); // expression instead of value
+		$this->assertTrue($val->validate('-1.23')); // signed float
+		$this->assertTrue($val->validate('-4.423e-12')); // signed float + exponent
+		$this->assertTrue($val->validate('12E3')); // integer + exponent
+		$this->assertFalse($val->validate('e12')); // just exponent
+		$this->assertFalse($val->validate('-e3'));
+		$this->assertFalse($val->validate('-4.534-e-12')); // 'signed' exponent
+		$this->assertFalse($val->validate('12.23^4')); // expression instead of value
 		$val = new NumberValidator(['integerOnly' => true]);
-		$this->assertFalse($val->validateValue('-1.23'));
-		$this->assertFalse($val->validateValue('-4.423e-12'));
-		$this->assertFalse($val->validateValue('12E3'));
-		$this->assertFalse($val->validateValue('e12'));
-		$this->assertFalse($val->validateValue('-e3'));
-		$this->assertFalse($val->validateValue('-4.534-e-12'));
-		$this->assertFalse($val->validateValue('12.23^4'));
+		$this->assertFalse($val->validate('-1.23'));
+		$this->assertFalse($val->validate('-4.423e-12'));
+		$this->assertFalse($val->validate('12E3'));
+		$this->assertFalse($val->validate('e12'));
+		$this->assertFalse($val->validate('-e3'));
+		$this->assertFalse($val->validate('-4.534-e-12'));
+		$this->assertFalse($val->validate('12.23^4'));
 	}
 
 	public function testValidateValueMin()
 	{
 		$val = new NumberValidator(['min' => 1]);
-		$this->assertTrue($val->validateValue(1));
-		$this->assertFalse($val->validateValue(-1));
-		$this->assertFalse($val->validateValue('22e-12'));
-		$this->assertTrue($val->validateValue(PHP_INT_MAX + 1));
+		$this->assertTrue($val->validate(1));
+		$this->assertFalse($val->validate(-1));
+		$this->assertFalse($val->validate('22e-12'));
+		$this->assertTrue($val->validate(PHP_INT_MAX + 1));
 		$val = new NumberValidator(['min' => 1], ['integerOnly' => true]);
-		$this->assertTrue($val->validateValue(1));
-		$this->assertFalse($val->validateValue(-1));
-		$this->assertFalse($val->validateValue('22e-12'));
-		$this->assertTrue($val->validateValue(PHP_INT_MAX + 1));
+		$this->assertTrue($val->validate(1));
+		$this->assertFalse($val->validate(-1));
+		$this->assertFalse($val->validate('22e-12'));
+		$this->assertTrue($val->validate(PHP_INT_MAX + 1));
 	}
 
 	public function testValidateValueMax()
 	{
 		$val = new NumberValidator(['max' => 1.25]);
-		$this->assertTrue($val->validateValue(1));
-		$this->assertFalse($val->validateValue(1.5));
-		$this->assertTrue($val->validateValue('22e-12'));
-		$this->assertTrue($val->validateValue('125e-2'));
+		$this->assertTrue($val->validate(1));
+		$this->assertFalse($val->validate(1.5));
+		$this->assertTrue($val->validate('22e-12'));
+		$this->assertTrue($val->validate('125e-2'));
 		$val = new NumberValidator(['max' => 1.25, 'integerOnly' => true]);
-		$this->assertTrue($val->validateValue(1));
-		$this->assertFalse($val->validateValue(1.5));
-		$this->assertFalse($val->validateValue('22e-12'));
-		$this->assertFalse($val->validateValue('125e-2'));
+		$this->assertTrue($val->validate(1));
+		$this->assertFalse($val->validate(1.5));
+		$this->assertFalse($val->validate('22e-12'));
+		$this->assertFalse($val->validate('125e-2'));
 	}
 
 	public function testValidateValueRange()
 	{
 		$val = new NumberValidator(['min' => -10, 'max' => 20]);
-		$this->assertTrue($val->validateValue(0));
-		$this->assertTrue($val->validateValue(-10));
-		$this->assertFalse($val->validateValue(-11));
-		$this->assertFalse($val->validateValue(21));
+		$this->assertTrue($val->validate(0));
+		$this->assertTrue($val->validate(-10));
+		$this->assertFalse($val->validate(-11));
+		$this->assertFalse($val->validate(21));
 		$val = new NumberValidator(['min' => -10, 'max' => 20, 'integerOnly' => true]);
-		$this->assertTrue($val->validateValue(0));
-		$this->assertFalse($val->validateValue(-11));
-		$this->assertFalse($val->validateValue(22));
-		$this->assertFalse($val->validateValue('20e-1'));
+		$this->assertTrue($val->validate(0));
+		$this->assertFalse($val->validate(-11));
+		$this->assertFalse($val->validate(22));
+		$this->assertFalse($val->validate('20e-1'));
 	}
 
 	public function testValidateAttribute()

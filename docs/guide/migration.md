@@ -1,49 +1,43 @@
 Database Migration
 ==================
 
-Like source code, the structure of a database is evolving as we develop and maintain
-a database-driven application. For example, during development, we may want to
-add a new table; or after the application is put into production, we may realize
-the need of adding an index on a column. It is important to keep track of these
-structural database changes (called **migration**) like we do with our source
-code. If the source code and the database are out of sync, it is very likely
-the whole system may break. For this reason, Yii provides a database migration
-tool that can keep track of database migration history, apply new migrations,
-or revert existing ones.
+Like source code, the structure of a database evolves as a database-driven application is developed and maintained. For example, during development, a new table may be added; Or, after the application goes live, it may be discovered that an additional index is required. It is important to keep track of these structural database changes (called **migration**), just as changes to the source code is tracked using version control. If the source code and the database become out of sync, bugs will occur, or the whole application might break. For this reason, Yii provides a database migration
+tool that can keep track of database migration history, apply new migrations, or revert existing ones.
 
-The following steps show how we can use database migration during development:
+The following steps show how database migration is used by a team during development:
 
-1. Tim creates a new migration (e.g. create a new table)
-2. Tim commits the new migration into source control system (e.g. GIT, Mercurial)
-3. Doug updates from source control system and receives the new migration
-4. Doug applies the migration to his local development database
+1. Tim creates a new migration (e.g. creates a new table, changes a column definition, etc.).
+2. Tim commits the new migration into the source control system (e.g. Git, Mercurial).
+3. Doug updates his repository from the source control system and receives the new migration.
+4. Doug applies the migration to his local development database, thereby syncing his database to reflect the changes Tim made.
 
+Yii supports database migration via the `yii migrate` command line tool. This tool supports:
 
-Yii supports database migration via the `yii migrate` command line tool. This
-tool supports creating new migrations, applying/reverting/redoing migrations, and
-showing migration history and new migrations.
+* Creating new migrations
+* Applying, reverting, and redoing migrations
+* Showing migration history and new migrations
 
 Creating Migrations
 -------------------
 
-To create a new migration (e.g. create a news table), we run the following command:
+To create a new migration, run the following command:
 
 ```
 yii migrate/create <name>
 ```
 
-The required `name` parameter specifies a very brief description of the migration
-(e.g. `create_news_table`). As we will show in the following, the `name` parameter
-is used as part of a PHP class name. Therefore, it should only contain letters,
-digits and/or underscore characters.
+The required `name` parameter specifies a very brief description of the migration. For example, if the migration creates a new table named *news*, you'd use the command:
 
 ```
 yii migrate/create create_news_table
 ```
 
-The above command will create under the `protected/migrations` directory a new
-file named `m101129_185401_create_news_table.php` which contains the following
-initial code:
+As you'll shortly see, the `name` parameter
+is used as part of a PHP class name in the migration. Therefore, it should only contain letters,
+digits and/or underscore characters.
+
+The above command will create a new
+file named `m101129_185401_create_news_table.php`. This file will be created within the `protected/migrations` directory. Initially, the migration file will be generated with the following code:
 
 ```php
 class m101129_185401_create_news_table extends \yii\db\Migration
@@ -60,19 +54,20 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 }
 ```
 
-Notice that the class name is the same as the file name which is of the pattern
-`m<timestamp>_<name>`, where `<timestamp>` refers to the UTC timestamp (in the
-format of `yymmdd_hhmmss`) when the migration is created, and `<name>` is taken
-from the command's `name` parameter.
+Notice that the class name is the same as the file name, and follows the pattern
+`m<timestamp>_<name>`, where:
 
-The `up()` method should contain the code implementing the actual database
-migration, while the `down()` method may contain the code reverting what is
-done in `up()`.
+* `<timestamp>` refers to the UTC timestamp (in the
+format of `yymmdd_hhmmss`) when the migration is created,
+* `<name>` is taken from the command's `name` parameter.
 
-Sometimes, it is impossible to implement `down()`. For example, if we delete
-table rows in `up()`, we will not be able to recover them in `down()`. In this
-case, the migration is called irreversible, meaning we cannot roll back to
-a previous state of the database. In the above generated code, the `down()`
+In the class, the `up()` method should contain the code implementing the actual database
+migration. In other words, the `up()` method executes code that actually changes the database. The `down()` method may contain code that reverts the changes made by `up()`.
+
+Sometimes, it is impossible for the `down()` to undo the database migration. For example, if the migration deletes
+table rows or an entire table, that data cannot be recovered in the `down()` method. In such
+cases, the migration is called irreversible, meaning the database cannot be rolled back to
+a previous state. When a migration is irreversible, as in the above generated code, the `down()`
 method returns `false` to indicate that the migration cannot be reverted.
 
 As an example, let's show the migration about creating a news table.

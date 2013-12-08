@@ -321,7 +321,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 		}
 		if ($this->beforeValidate()) {
 			foreach ($this->getActiveValidators() as $validator) {
-				$validator->validate($this, $attributes);
+				$validator->validateAttributes($this, $attributes);
 			}
 			$this->afterValidate();
 			return !$this->hasErrors();

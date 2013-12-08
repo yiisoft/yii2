@@ -26,7 +26,7 @@ class ExistValidatorTest extends DatabaseTestCase
 	{
 		try {
 			$val = new ExistValidator();
-			$result = $val->validateValue('ref');
+			$result = $val->validate('ref');
 			$this->fail('Exception should have been thrown at this time');
 		} catch (Exception $e) {
 			$this->assertInstanceOf('yii\base\InvalidConfigException', $e);
@@ -35,7 +35,7 @@ class ExistValidatorTest extends DatabaseTestCase
 		// combine to save the time creating a new db-fixture set (likely ~5 sec)
 		try {
 			$val = new ExistValidator(['className' => ValidatorTestMainModel::className()]);
-			$val->validateValue('ref');
+			$val->validate('ref');
 			$this->fail('Exception should have been thrown at this time');
 		} catch (Exception $e) {
 			$this->assertInstanceOf('yii\base\InvalidConfigException', $e);
@@ -46,10 +46,10 @@ class ExistValidatorTest extends DatabaseTestCase
 	public function testValidateValue()
 	{
 		$val = new ExistValidator(['className' => ValidatorTestRefModel::className(), 'attributeName' => 'id']);
-		$this->assertTrue($val->validateValue(2));
-		$this->assertTrue($val->validateValue(5));
-		$this->assertFalse($val->validateValue(99));
-		$this->assertFalse($val->validateValue(['1']));
+		$this->assertTrue($val->validate(2));
+		$this->assertTrue($val->validate(5));
+		$this->assertFalse($val->validate(99));
+		$this->assertFalse($val->validate(['1']));
 	}
 
 	public function testValidateAttribute()

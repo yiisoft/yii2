@@ -48,7 +48,7 @@ class UrlValidator extends Validator
 
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -62,29 +62,23 @@ class UrlValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->validateValue($value)) {
-			if ($this->defaultScheme !== null && strpos($value, '://') === false) {
-				$object->$attribute = $this->defaultScheme . '://' . $value;
-			}
-		} else {
-			$this->addError($object, $attribute, $this->message);
+		$result = $this->validateValue($value);
+		if (!empty($result)) {
+			$this->addError($object, $attribute, $result[0], $result[1]);
+		} elseif ($this->defaultScheme !== null && strpos($value, '://') === false) {
+			$object->$attribute = $this->defaultScheme . '://' . $value;
 		}
 	}
 
 	/**
-	 * Validates the given value.
-	 * @param mixed $value the value to be validated.
-	 * @return boolean whether the value is valid.
+	 * @inheritdoc
 	 */
-	public function validateValue($value)
+	protected function validateValue($value)
 	{
 		// make sure the length is limited to avoid DOS attacks
 		if (is_string($value) && strlen($value) < 2000) {
@@ -105,20 +99,14 @@ class UrlValidator extends Validator
 			}
 
 			if (preg_match($pattern, $value)) {
-				return true;
+				return null;
 			}
 		}
-		return false;
+		return [$this->message, []];
 	}
 
 	/**
-	 * Returns the JavaScript needed for performing client-side validation.
-	 * @param \yii\base\Model $object the data object being validated
-	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\web\View $view the view object that is going to be used to render views or view files
-	 * containing a model form with this validator applied.
-	 * @return string the client-side validation script.
-	 * @see \yii\Web\ActiveForm::enableClientValidation
+	 * @inheritdoc
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
