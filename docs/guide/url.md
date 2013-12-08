@@ -149,9 +149,9 @@ In the above, we use the custom URL rule class `CarUrlRule` to handle
 the URL format `/Manufacturer/Model`. The class can be written like the following:
 
 ```php
-namespace \app\components;
+namespace app\components;
 
-use \yii\web\UrlRule;
+use yii\web\UrlRule;
 
 class CarUrlRule extends UrlRule
 {
