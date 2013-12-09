@@ -107,16 +107,17 @@ class Installer extends LibraryInstaller
 		$fs = new Filesystem;
 		$vendorDir = $fs->normalizePath($this->vendorDir);
 		$aliases = [];
+		$targetDir = $package->getTargetDir();
 		foreach ($autoload['psr-0'] as $name => $path) {
 			$name = str_replace('\\', '/', trim($name, '\\'));
 			if (!$fs->isAbsolutePath($path)) {
-				$path = $this->vendorDir . '/' . $package->getName() . '/' . $path;
+				$path = $this->vendorDir . '/' . $package->getName() . ($targetDir === null ? '': '/' . $targetDir) . '/' . $path;
 			}
 			$path = $fs->normalizePath($path);
 			if (strpos($path . '/', $vendorDir . '/') === 0) {
-				$aliases["@$name"] = '<vendor-dir>' . substr($path, strlen($vendorDir)) . '/' . $name;
+				$aliases["@$name"] = '<vendor-dir>' . substr($path, strlen($vendorDir));
 			} else {
-				$aliases["@$name"] = $path . '/' . $name;
+				$aliases["@$name"] = $path;
 			}
 		}
 		return $aliases;
