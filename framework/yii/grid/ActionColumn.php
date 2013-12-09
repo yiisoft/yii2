@@ -53,7 +53,6 @@ class ActionColumn extends Column
 		'data-method' => 'post'
 	];
 	
-
 	public function init()
 	{
 		parent::init();
