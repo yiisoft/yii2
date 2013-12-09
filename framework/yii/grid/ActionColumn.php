@@ -76,7 +76,7 @@ class ActionColumn extends Column
 		} else {
 			$params = is_array($key) ? $key : ['id' => $key];
 			$controller = Yii::$app->controller;
-			if (isset($controller->module) && $controller->module instanceof Application) {
+			if (!isset($controller->module) || $controller->module instanceof Application) {
 				return Yii::$app->controller->createUrl($action, $params);
 			}
 			else {
