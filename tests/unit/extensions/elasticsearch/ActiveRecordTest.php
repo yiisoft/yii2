@@ -313,13 +313,6 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertEquals([], $order->items);
 	}
 
-	public function testUpdateCounters()
-	{
-		// Update Counters is not supported by elasticsearch
-//		$this->setExpectedException('yii\base\NotSupportedException');
-//		ActiveRecordTestTrait::testUpdateCounters();
-	}
-
 	/**
 	 * Some PDO implementations(e.g. cubrid) do not support boolean values.
 	 * Make sure this does not affect AR layer.

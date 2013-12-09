@@ -150,10 +150,9 @@ class ActiveRecord extends BaseActiveRecord
 	 * @param array $attributes attribute values (name-value pairs) to be saved into the table
 	 * @param array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
 	 * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
-	 * @param array $params this parameter is ignored in redis implementation.
 	 * @return integer the number of rows updated
 	 */
-	public static function updateAll($attributes, $condition = null, $params = [])
+	public static function updateAll($attributes, $condition = null)
 	{
 		if (empty($attributes)) {
 			return 0;
@@ -203,10 +202,9 @@ class ActiveRecord extends BaseActiveRecord
 	 * Use negative values if you want to decrement the counters.
 	 * @param array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
 	 * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
-	 * @param array $params this parameter is ignored in redis implementation.
 	 * @return integer the number of rows updated
 	 */
-	public static function updateAllCounters($counters, $condition = null, $params = [])
+	public static function updateAllCounters($counters, $condition = null)
 	{
 		if (empty($counters)) {
 			return 0;
@@ -235,10 +233,9 @@ class ActiveRecord extends BaseActiveRecord
 	 *
 	 * @param array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
 	 * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
-	 * @param array $params this parameter is ignored in redis implementation.
 	 * @return integer the number of rows deleted
 	 */
-	public static function deleteAll($condition = null, $params = [])
+	public static function deleteAll($condition = null)
 	{
 		$db = static::getDb();
 		$attributeKeys = [];

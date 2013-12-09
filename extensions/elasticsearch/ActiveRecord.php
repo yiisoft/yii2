@@ -340,10 +340,9 @@ class ActiveRecord extends BaseActiveRecord
 	 * @param array $attributes attribute values (name-value pairs) to be saved into the table
 	 * @param array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
 	 * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
-	 * @param array $params this parameter is ignored in elasticsearch implementation.
 	 * @return integer the number of rows updated
 	 */
-	public static function updateAll($attributes, $condition = [], $params = [])
+	public static function updateAll($attributes, $condition = [])
 	{
 		if (count($condition) == 1 && isset($condition[ActiveRecord::PRIMARY_KEY_NAME])) {
 			$primaryKeys = (array) $condition[ActiveRecord::PRIMARY_KEY_NAME];
@@ -362,9 +361,9 @@ class ActiveRecord extends BaseActiveRecord
 					"_index" => static::index(),
 				],
 			]);
-			$data = Json::encode(array(
+			$data = Json::encode([
 				"doc" => $attributes
-			));
+			]);
 			$bulk .= $action . "\n" . $data . "\n";
 		}
 
@@ -380,6 +379,62 @@ class ActiveRecord extends BaseActiveRecord
 		return $n;
 	}
 
+	/**
+	 * Updates all matching records using the provided counter changes and conditions.
+	 * For example, to increment all customers' age by 1,
+	 *
+	 * ~~~
+	 * Customer::updateAllCounters(['age' => 1]);
+	 * ~~~
+	 *
+	 * @param array $counters the counters to be updated (attribute name => increment value).
+	 * Use negative values if you want to decrement the counters.
+	 * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+	 * Please refer to [[Query::where()]] on how to specify this parameter.
+	 * @return integer the number of rows updated
+	 */
+	public static function updateAllCounters($counters, $condition = [])
+	{
+		if (count($condition) == 1 && isset($condition[ActiveRecord::PRIMARY_KEY_NAME])) {
+			$primaryKeys = (array) $condition[ActiveRecord::PRIMARY_KEY_NAME];
+		} else {
+			$primaryKeys = static::find()->where($condition)->column(ActiveRecord::PRIMARY_KEY_NAME);
+		}
+		if (empty($primaryKeys) || empty($counters)) {
+			return 0;
+		}
+		$bulk = '';
+		foreach((array) $primaryKeys as $pk) {
+			$action = Json::encode([
+				"update" => [
+					"_id" => $pk,
+					"_type" => static::type(),
+					"_index" => static::index(),
+				],
+			]);
+			$script = '';
+			foreach($counters as $counter => $value) {
+				$script .= "ctx._source.$counter += $counter;\n";
+			}
+			$data = Json::encode([
+				"script" => $script,
+                "params" => $counters
+			]);
+			$bulk .= $action . "\n" . $data . "\n";
+		}
+
+		// TODO do this via command
+		$url = [static::index(), static::type(), '_bulk'];
+		$response = static::getDb()->post($url, [], $bulk);
+
+		$n=0;
+		foreach($response['items'] as $item) {
+			if ($item['update']['ok']) {
+				$n++;
+			}
+		}
+		return $n;
+	}
 
 	/**
 	 * Deletes rows in the table using the provided conditions.
@@ -393,10 +448,9 @@ class ActiveRecord extends BaseActiveRecord
 	 *
 	 * @param array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
 	 * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
-	 * @param array $params this parameter is ignored in elasticsearch implementation.
 	 * @return integer the number of rows deleted
 	 */
-	public static function deleteAll($condition = [], $params = [])
+	public static function deleteAll($condition = [])
 	{
 		if (count($condition) == 1 && isset($condition[ActiveRecord::PRIMARY_KEY_NAME])) {
 			$primaryKeys = (array) $condition[ActiveRecord::PRIMARY_KEY_NAME];

@@ -670,7 +670,7 @@ trait ActiveRecordTestTrait
 		$this->assertEquals(1, $orderItem->quantity);
 		$ret = $orderItem->updateCounters(['quantity' => -1]);
 		$this->afterSave();
-		$this->assertTrue($ret);
+		$this->assertEquals(1, $ret);
 		$this->assertEquals(0, $orderItem->quantity);
 		$orderItem = $this->callOrderItemFind($pk);
 		$this->assertEquals(0, $orderItem->quantity);
