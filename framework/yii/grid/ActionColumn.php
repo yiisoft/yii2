@@ -75,12 +75,12 @@ class ActionColumn extends Column
 			return call_user_func($this->urlCreator, $model, $key, $index, $action);
 		} else {
 			$params = is_array($key) ? $key : ['id' => $key];
-			$module = Yii::$app->controller->module;
-			if ($module instanceof Application) {
+			$controller = Yii::$app->controller;
+			if (isset($controller->module) && $controller->module instanceof Application) {
 				return Yii::$app->controller->createUrl($action, $params);
 			}
 			else {
-				return Yii::$app->controller->createUrl('/' . $module->id . '/' . $action, $params);
+				return Yii::$app->controller->createUrl('/' . $controller->module->id . '/' . $controller->id . '/' . $action, $params);
 			}
 		}
 	}
