@@ -80,7 +80,7 @@ class ActionColumn extends Column
 				return Yii::$app->controller->createUrl($action, $params);
 			}
 			else {
-				return Yii::$app->controller->createUrl($module->id . '/' . $action, $params);
+				return Yii::$app->controller->createUrl('/' . $module->id . '/' . $action, $params);
 			}
 		}
 	}
