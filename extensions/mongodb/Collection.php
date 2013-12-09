@@ -651,7 +651,7 @@ class Collection extends Object
 	}
 
 	/**
-	 * Converts user friendly condition keyword into actual Mongo condition keyword.
+	 * Converts "\yii\db\*" quick condition keyword into actual Mongo condition keyword.
 	 * @param string $key raw condition key.
 	 * @return string actual key.
 	 */
@@ -659,25 +659,8 @@ class Collection extends Object
 	{
 		static $map = [
 			'OR' => '$or',
-			'>' => '$gt',
-			'>=' => '$gte',
-			'<' => '$lt',
-			'<=' => '$lte',
-			'!=' => '$ne',
-			'<>' => '$ne',
 			'IN' => '$in',
 			'NOT IN' => '$nin',
-			'ALL' => '$all',
-			'SIZE' => '$size',
-			'TYPE' => '$type',
-			'EXISTS' => '$exists',
-			'NOTEXISTS' => '$exists',
-			'ELEMMATCH' => '$elemMatch',
-			'MOD' => '$mod',
-			'%' => '$mod',
-			'=' => '$$eq',
-			'==' => '$$eq',
-			'WHERE' => '$where'
 		];
 		$matchKey = strtoupper($key);
 		if (array_key_exists($matchKey, $map)) {
@@ -759,7 +742,6 @@ class Collection extends Object
 	{
 		$result = [];
 		foreach ($condition as $name => $value) {
-			$name = $this->normalizeConditionKeyword($name);
 			if (strncmp('$', $name, 1) === 0) {
 				// Native Mongo condition:
 				$result[$name] = $value;
@@ -769,12 +751,8 @@ class Collection extends Object
 						// Quick IN condition:
 						$result = array_merge($result, $this->buildInCondition('IN', [$name, $value]));
 					} else {
-						// Normalize possible verbose condition:
-						$actualValue = [];
-						foreach ($value as $k => $v) {
-							$actualValue[$this->normalizeConditionKeyword($k)] = $v;
-						}
-						$result[$name] = $actualValue;
+						// Mongo complex condition:
+						$result[$name] = $value;
 					}
 				} else {
 					// Direct match:
