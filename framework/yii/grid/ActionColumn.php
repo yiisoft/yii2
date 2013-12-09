@@ -24,26 +24,35 @@ class ActionColumn extends Column
 	public $buttons = [];
 	public $urlCreator;
 	
-	/* Action button options */
+	/* Options for view button */
 	public $viewOptions = [];
+
+	/* Options for update button */
 	public $updateOptions = [];
+
+	/* Options for delete button */
 	public $deleteOptions = [];
 	
-	/* Default button options */
-	private $_viewOptions = [
+	/* Default view button options */
+	private static $_defaultView = [
 		'label' => '<span class="glyphicon glyphicon-eye-open"></span>',
 		'title' => 'View'
 	];
-	private $_updateOptions = [
+
+	/* Default update button options */
+	private static $_defaultUpdate = [
 		'label' => '<span class="glyphicon glyphicon-pencil"></span>',
 		'title' => 'Update'
 	];
-	private $_deleteOptions = [
+
+	/* Default delete button options */
+	private static $_defaultDelete = [
 		'label' => '<span class="glyphicon glyphicon-trash"></span>',
 		'title' => 'Delete',
 		'data-confirm' => 'Are you sure to delete this item?',
 		'data-method' => 'post'
 	];
+	
 
 	public function init()
 	{
@@ -64,21 +73,21 @@ class ActionColumn extends Column
 			$this->buttons['view'] = function ($model, $key, $index, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, $key, $index, 'view');
-				return $this->renderButton($this->viewOptions, $this->_viewOptions, $url);
+				return $this->renderButton($this->viewOptions, static::$_defaultView, $url);
 			};
 		}
 		if (!isset($this->buttons['update'])) {
 			$this->buttons['update'] = function ($model, $key, $index, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, $key, $index, 'update');
-				return $this->renderButton($this->updateOptions, $this->_updateOptions, $url);
+				return $this->renderButton($this->updateOptions, static::$_defaultUpdate, $url);
 			};
 		}
 		if (!isset($this->buttons['delete'])) {
 			$this->buttons['delete'] = function ($model, $key, $index, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, $key, $index, 'delete');
-				return $this->renderButton($this->deleteOptions, $this->_deleteOptions, $url);
+				return $this->renderButton($this->deleteOptions, static::$_defaultDelete, $url);
 			};
 		}
 	}
