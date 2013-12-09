@@ -10,7 +10,7 @@ use yiiunit\data\ar\mongodb\file\ActiveRecord;
 use yiiunit\data\ar\mongodb\file\CustomerFile;
 
 /**
- * @group mongo
+ * @group mongodb
  */
 class ActiveRecordTest extends MongoDbTestCase
 {

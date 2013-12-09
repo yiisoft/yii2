@@ -3,7 +3,7 @@
 namespace yiiunit\extensions\mongodb;
 
 /**
- * @group mongo
+ * @group mongodb
  */
 class CollectionTest extends MongoDbTestCase
 {

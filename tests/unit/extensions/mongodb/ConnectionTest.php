@@ -8,7 +8,7 @@ use yii\mongodb\Connection;
 use yii\mongodb\Database;
 
 /**
- * @group mongo
+ * @group mongodb
  */
 class ConnectionTest extends MongoDbTestCase
 {

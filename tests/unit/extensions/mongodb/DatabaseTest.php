@@ -6,7 +6,7 @@ use yii\mongodb\Collection;
 use yii\mongodb\file\Collection as FileCollection;
 
 /**
- * @group mongo
+ * @group mongodb
  */
 class DatabaseTest extends MongoDbTestCase
 {

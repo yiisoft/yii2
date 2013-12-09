@@ -5,7 +5,7 @@ namespace yiiunit\extensions\mongodb\file;
 use yiiunit\extensions\mongodb\MongoDbTestCase;
 
 /**
- * @group mongo
+ * @group mongodb
  */
 class CollectionTest extends MongoDbTestCase
 {
