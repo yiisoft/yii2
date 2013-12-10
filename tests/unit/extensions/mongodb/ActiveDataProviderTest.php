@@ -8,7 +8,7 @@ use yiiunit\data\ar\mongodb\ActiveRecord;
 use yiiunit\data\ar\mongodb\Customer;
 
 /**
- * @group mongo
+ * @group mongodb
  */
 class ActiveDataProviderTest extends MongoDbTestCase
 {

@@ -6,7 +6,7 @@ use Yii;
 use yii\swiftmailer\Mailer;
 use yiiunit\VendorTestCase;
 
-Yii::setAlias('@yii/swiftmailer', __DIR__ . '/../../../../extensions/swiftmailer');
+Yii::setAlias('@yii/swiftmailer', __DIR__ . '/../../../../extensions/yii/swiftmailer');
 
 /**
  * @group vendor

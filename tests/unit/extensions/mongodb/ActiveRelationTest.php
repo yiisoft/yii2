@@ -7,7 +7,7 @@ use yiiunit\data\ar\mongodb\Customer;
 use yiiunit\data\ar\mongodb\CustomerOrder;
 
 /**
- * @group mongo
+ * @group mongodb
  */
 class ActiveRelationTest extends MongoDbTestCase
 {

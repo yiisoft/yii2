@@ -57,7 +57,7 @@ class MongoDbTestCase extends TestCase
 	protected static function loadClassMap()
 	{
 		$baseNameSpace = 'yii/mongodb';
-		$basePath = realpath(__DIR__. '/../../../../extensions/mongodb');
+		$basePath = realpath(__DIR__. '/../../../../extensions/yii/mongodb');
 		$files = FileHelper::findFiles($basePath);
 		foreach ($files as $file) {
 			$classRelativePath = str_replace($basePath, '', $file);

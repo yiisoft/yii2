@@ -6,7 +6,7 @@ use yii\mongodb\file\Query;
 use yiiunit\extensions\mongodb\MongoDbTestCase;
 
 /**
- * @group mongo
+ * @group mongodb
  */
 class QueryTest extends MongoDbTestCase
 {

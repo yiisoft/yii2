@@ -542,7 +542,7 @@ class Response extends \yii\base\Response
 	 * **Example**
 	 *
 	 * ~~~
-	 * Yii::$app->request->xSendFile('/home/user/Pictures/picture1.jpg');
+	 * Yii::$app->response->xSendFile('/home/user/Pictures/picture1.jpg');
 	 * ~~~
 	 *
 	 * @param string $filePath file name with full path
