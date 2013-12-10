@@ -41,6 +41,7 @@ class DataColumn extends Column
 	public $label;
 	/**
 	 * @var \Closure an anonymous function that returns the value to be displayed for every data model.
+	 * The signature of this function is `function ($model, $index, $widget)`.
 	 * If this is not set, `$model[$attribute]` will be used to obtain the value.
 	 */
 	public $value;
