@@ -188,9 +188,9 @@ class Generator extends \yii\gii\Generator
 		$tableSchema = $this->getTableSchema();
 		if ($tableSchema === false || !isset($tableSchema->columns[$attribute])) {
 			if (preg_match('/^(password|pass|passwd|passcode)$/i', $attribute)) {
-				return "\$form->field(\$model, '$attribute')->passwordInput();";
+				return "\$form->field(\$model, '$attribute')->passwordInput()";
 			} else {
-				return "\$form->field(\$model, '$attribute');";
+				return "\$form->field(\$model, '$attribute')";
 			}
 		}
 		$column = $tableSchema->columns[$attribute];
