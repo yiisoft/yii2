@@ -24,8 +24,9 @@ Distribution
 
 - There should be a `readme.md` file clearly describing what extension does in English, its requirements, how to install
   and use it. It should be written using markdown. If you want to provide translated readme, name it as `readme_ru.md`
-  where `ru` is your language code.
+  where `ru` is your language code. If extension provides a widget it is a good idea to include some screenshots.
 - TBD: composer.json
+- It is recommended to host your extensions at github.com.
 
 Working with database
 ---------------------
