@@ -161,6 +161,9 @@ class Event extends Object
 		$event->name = $name;
 
 		if (is_object($class)) {
+			if ($event->sender === null) {
+				$event->sender = $class;
+			}
 			$class = get_class($class);
 		} else {
 			$class = ltrim($class, '\\');
