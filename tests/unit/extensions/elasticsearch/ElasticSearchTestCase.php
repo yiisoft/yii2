@@ -6,7 +6,7 @@ use Yii;
 use yii\elasticsearch\Connection;
 use yiiunit\TestCase;
 
-Yii::setAlias('@yii/elasticsearch', __DIR__ . '/../../../../extensions/elasticsearch');
+Yii::setAlias('@yii/elasticsearch', __DIR__ . '/../../../../extensions/yii/elasticsearch');
 
 /**
  * ElasticSearchTestCase is the base class for all elasticsearch related test cases

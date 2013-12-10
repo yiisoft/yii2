@@ -6,7 +6,7 @@ use yii\redis\Cache;
 use yii\redis\Connection;
 use yiiunit\framework\caching\CacheTestCase;
 
-Yii::setAlias('@yii/redis', __DIR__ . '/../../../../extensions/redis');
+Yii::setAlias('@yii/redis', __DIR__ . '/../../../../extensions/yii/redis');
 
 /**
  * Class for testing redis cache backend
