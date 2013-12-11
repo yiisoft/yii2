@@ -766,9 +766,9 @@ class BaseConsole
 		$input = static::stdin();
 		if ($input === '?') {
 			foreach ($options as $key => $value) {
-				echo " $key - $value\n";
+				static::output(" $key - $value");
 			}
-			echo " ? - Show help\n";
+			static::output(" ? - Show help");
 			goto top;
 		} elseif (!in_array($input, array_keys($options))) {
 			goto top;
