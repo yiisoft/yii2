@@ -67,7 +67,7 @@ interface ProviderInterface
 
 	/**
 	 * Authenticate the user.
-	 * @return boolean whether user was successfully authenticated.
+	 * @return \yii\web\Response|boolean response instance or whether user was successfully authenticated.
 	 */
 	public function authenticate();
 }

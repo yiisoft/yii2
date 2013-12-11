@@ -10,16 +10,11 @@ use Yii;
  */
 class TestCase extends \yiiunit\TestCase
 {
-	public static function setUpBeforeClass()
-	{
-		static::loadClassMap();
-	}
-
 	/**
 	 * Adds sphinx extension files to [[Yii::$classPath]],
 	 * avoiding the necessity of usage Composer autoloader.
 	 */
-	protected static function loadClassMap()
+	public static function loadClassMap()
 	{
 		$baseNameSpace = 'yii/authclient';
 		$basePath = realpath(__DIR__. '/../../../../extensions/yii/authclient');
@@ -31,3 +26,5 @@ class TestCase extends \yiiunit\TestCase
 		}
 	}
 }
+
+TestCase::loadClassMap();

@@ -173,4 +173,49 @@ trait ProviderTrait
 	{
 		return Yii::$app->getRequest()->getAbsoluteUrl();
 	}
+
+	/**
+	 * Redirect to the given URL or simply close the popup window.
+	 * @param mixed $url URL to redirect, could be a string or array config to generate a valid URL.
+	 * @param boolean $enforceRedirect indicates if redirect should be performed even in case of popup window.
+	 * @return \yii\web\Response response instance.
+	 */
+	public function redirect($url, $enforceRedirect = true)
+	{
+		$viewData = [
+			'url' => $url,
+			'enforceRedirect' => $enforceRedirect,
+		];
+		$viewFile = __DIR__ . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'redirect.php';
+
+		$response = Yii::$app->getResponse();
+		$response->content = Yii::$app->getView()->renderFile($viewFile, $viewData);
+		return $response;
+	}
+
+	/**
+	 * Redirect to the URL. If URL is null, {@link successUrl} will be used.
+	 * @param string $url URL to redirect.
+	 * @return \yii\web\Response response instance.
+	 */
+	public function redirectSuccess($url = null)
+	{
+		if ($url === null) {
+			$url = $this->getSuccessUrl();
+		}
+		return $this->redirect($url);
+	}
+
+	/**
+	 * Redirect to the {@link cancelUrl} or simply close the popup window.
+	 * @param string $url URL to redirect.
+	 * @return \yii\web\Response response instance.
+	 */
+	public function redirectCancel($url = null)
+	{
+		if ($url === null) {
+			$url = $this->getCancelUrl();
+		}
+		return $this->redirect($url, false);
+	}
 }
