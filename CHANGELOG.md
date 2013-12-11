@@ -22,7 +22,7 @@ Yii Framework 2 Change Log
 
   - [Elasticsearch integration](https://github.com/yiisoft/yii2-elasticsearch): ActiveRecord and Query
   - [Redis integration](https://github.com/yiisoft/yii2-redis): ActiveRecord, Cache and Session
-  - [Sphinx integration](https://github.com/yiisoft/yii2-redis): ActiveRecord and Query
+  - [Sphinx integration](https://github.com/yiisoft/yii2-sphinx): ActiveRecord and Query
 
   - [Swiftmailer](https://github.com/yiisoft/yii2-swiftmailer)
 
