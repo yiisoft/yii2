@@ -2,10 +2,10 @@
 
 namespace yiiunit\extensions\authclient\oauth;
 
-use yii\authclient\oauth\Client2;
+use yii\authclient\OAuth2;
 use yiiunit\extensions\authclient\TestCase;
 
-class Client2Test extends TestCase
+class OAuth2Test extends TestCase
 {
 	protected function setUp()
 	{
@@ -16,7 +16,7 @@ class Client2Test extends TestCase
 
 	public function testBuildAuthUrl()
 	{
-		$oauthClient = new Client2();
+		$oauthClient = new OAuth2();
 		$authUrl = 'http://test.auth.url';
 		$oauthClient->authUrl = $authUrl;
 		$clientId = 'test_client_id';

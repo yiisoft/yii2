@@ -5,20 +5,20 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\authclient\oauth;
+namespace yii\authclient;
 
 use yii\base\Exception;
 use Yii;
 
 /**
- * Client1 serves as a client for the OAuth 1/1.0a flow.
+ * OAuth1 serves as a client for the OAuth 1/1.0a flow.
  *
  * In oder to acquire access token perform following sequence:
  *
  * ~~~
- * use yii\authclient\oauth\Client1;
+ * use yii\authclient\OAuth1;
  *
- * $oauthClient = new Client1();
+ * $oauthClient = new OAuth1();
  * $requestToken = $oauthClient->fetchRequestToken(); // Get request token
  * $url = $oauthClient->buildAuthUrl($requestToken); // Get authorization URL
  * Yii::$app->getResponse()->redirect($url); // Redirect to authorization URL
@@ -31,7 +31,7 @@ use Yii;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class Client1 extends BaseClient
+class OAuth1 extends BaseOAuth
 {
 	/**
 	 * @var string protocol version.
@@ -65,7 +65,7 @@ class Client1 extends BaseClient
 	/**
 	 * Fetches the OAuth request token.
 	 * @param array $params additional request params.
-	 * @return Token request token.
+	 * @return OAuthToken request token.
 	 */
 	public function fetchRequestToken(array $params = [])
 	{
@@ -88,12 +88,12 @@ class Client1 extends BaseClient
 
 	/**
 	 * Composes user authorization URL.
-	 * @param Token $requestToken OAuth request token.
+	 * @param OAuthToken $requestToken OAuth request token.
 	 * @param array $params additional request params.
 	 * @return string authorize URL
 	 * @throws Exception on failure.
 	 */
-	public function buildAuthUrl(Token $requestToken = null, array $params = [])
+	public function buildAuthUrl(OAuthToken $requestToken = null, array $params = [])
 	{
 		if (!is_object($requestToken)) {
 			$requestToken = $this->getState('requestToken');
@@ -107,13 +107,13 @@ class Client1 extends BaseClient
 
 	/**
 	 * Fetches OAuth access token.
-	 * @param Token $requestToken OAuth request token.
+	 * @param OAuthToken $requestToken OAuth request token.
 	 * @param string $oauthVerifier OAuth verifier.
 	 * @param array $params additional request params.
-	 * @return Token OAuth access token.
+	 * @return OAuthToken OAuth access token.
 	 * @throws Exception on failure.
 	 */
-	public function fetchAccessToken(Token $requestToken = null, $oauthVerifier = null, array $params = [])
+	public function fetchAccessToken(OAuthToken $requestToken = null, $oauthVerifier = null, array $params = [])
 	{
 		if (!is_object($requestToken)) {
 			$requestToken = $this->getState('requestToken');
@@ -202,7 +202,7 @@ class Client1 extends BaseClient
 
 	/**
 	 * Performs request to the OAuth API.
-	 * @param Token $accessToken actual access token.
+	 * @param OAuthToken $accessToken actual access token.
 	 * @param string $url absolute API URL.
 	 * @param string $method request method.
 	 * @param array $params request parameters.
@@ -219,10 +219,10 @@ class Client1 extends BaseClient
 
 	/**
 	 * Gets new auth token to replace expired one.
-	 * @param Token $token expired auth token.
-	 * @return Token new auth token.
+	 * @param OAuthToken $token expired auth token.
+	 * @return OAuthToken new auth token.
 	 */
-	public function refreshAccessToken(Token $token)
+	public function refreshAccessToken(OAuthToken $token)
 	{
 		// @todo
 		return null;

@@ -2,7 +2,7 @@
 
 namespace yiiunit\extensions\authclient\oauth;
 
-use yii\authclient\oauth\Token;
+use yii\authclient\OAuthToken;
 use yiiunit\extensions\authclient\TestCase;
 
 class TokenTest extends TestCase
@@ -13,7 +13,7 @@ class TokenTest extends TestCase
 			'tokenParamKey' => 'test_token_param_key',
 			'tokenSecretParamKey' => 'test_token_secret_param_key',
 		];
-		$oauthToken = new Token($config);
+		$oauthToken = new OAuthToken($config);
 		$this->assertTrue(is_object($oauthToken), 'Unable to create access token!');
 		foreach ($config as $name => $value) {
 			$this->assertEquals($value, $oauthToken->$name, 'Unable to setup attributes by constructor!');
@@ -23,7 +23,7 @@ class TokenTest extends TestCase
 
 	public function testSetupParams()
 	{
-		$oauthToken = new Token();
+		$oauthToken = new OAuthToken();
 
 		$params = [
 			'name_1' => 'value_1',
@@ -43,7 +43,7 @@ class TokenTest extends TestCase
 	 */
 	public function testSetupParamsShortcuts()
 	{
-		$oauthToken = new Token();
+		$oauthToken = new OAuthToken();
 
 		$token = 'test_token_value';
 		$oauthToken->setToken($token);
@@ -93,7 +93,7 @@ class TokenTest extends TestCase
 	 */
 	public function testAutoFetchExpireDuration(array $params, $expectedExpireDuration)
 	{
-		$oauthToken = new Token();
+		$oauthToken = new OAuthToken();
 		$oauthToken->setParams($params);
 		$this->assertEquals($expectedExpireDuration, $oauthToken->getExpireDuration());
 	}
@@ -103,7 +103,7 @@ class TokenTest extends TestCase
 	 */
 	public function testGetIsExpired()
 	{
-		$oauthToken = new Token();
+		$oauthToken = new OAuthToken();
 		$expireDuration = 3600;
 		$oauthToken->setExpireDuration($expireDuration);
 
@@ -118,7 +118,7 @@ class TokenTest extends TestCase
 	 */
 	public function testGetIsValid()
 	{
-		$oauthToken = new Token();
+		$oauthToken = new OAuthToken();
 		$expireDuration = 3600;
 		$oauthToken->setExpireDuration($expireDuration);
 
