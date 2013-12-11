@@ -135,6 +135,10 @@ class Installer extends LibraryInstaller
 		if (!is_file($file)) {
 			return [];
 		}
+		// invalidate opcache of extensions.php if exists
+		if (function_exists('opcache_invalidate')) {
+			opcache_invalidate($file, true);
+		}
 		$extensions = require($file);
 
 		$vendorDir = str_replace('\\', '/', $this->vendorDir);
@@ -159,6 +163,10 @@ class Installer extends LibraryInstaller
 		$file = $this->vendorDir . '/' . self::EXTENSION_FILE;
 		$array = str_replace("'<vendor-dir>", '$vendorDir . \'', var_export($extensions, true));
 		file_put_contents($file, "<?php\n\n\$vendorDir = dirname(__DIR__);\n\nreturn $array;\n");
+		// invalidate opcache of extensions.php if exists
+		if (function_exists('opcache_invalidate')) {
+			opcache_invalidate($file, true);
+		}
 	}
 
 	protected function linkYiiBaseFiles()
