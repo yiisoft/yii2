@@ -2,12 +2,12 @@
 
 namespace yiiunit\extensions\authclient\oauth;
 
-use yii\authclient\oauth\Client1;
-use yii\authclient\oauth\signature\PlainText;
-use yii\authclient\oauth\Token;
+use yii\authclient\OAuth1;
+use yii\authclient\signature\PlainText;
+use yii\authclient\OAuthToken;
 use yiiunit\extensions\authclient\TestCase;
 
-class Client1Test extends TestCase
+class OAuth1Test extends TestCase
 {
 	protected function setUp()
 	{
@@ -16,7 +16,7 @@ class Client1Test extends TestCase
 
 	/**
 	 * Invokes the OAuth client method even if it is protected.
-	 * @param Client1 $oauthClient OAuth client instance.
+	 * @param OAuth1 $oauthClient OAuth client instance.
 	 * @param string $methodName name of the method to be invoked.
 	 * @param array $arguments method arguments.
 	 * @return mixed method invoke result.
@@ -35,7 +35,7 @@ class Client1Test extends TestCase
 
 	public function testSignRequest()
 	{
-		$oauthClient = new Client1();
+		$oauthClient = new OAuth1();
 
 		$oauthSignatureMethod = new PlainText();
 		$oauthClient->setSignatureMethod($oauthSignatureMethod);
@@ -87,18 +87,18 @@ class Client1Test extends TestCase
 	 */
 	public function testComposeAuthorizationHeader($realm, array $params, $expectedAuthorizationHeader)
 	{
-		$oauthClient = new Client1();
+		$oauthClient = new OAuth1();
 		$authorizationHeader = $this->invokeOAuthClientMethod($oauthClient, 'composeAuthorizationHeader', [$params, $realm]);
 		$this->assertEquals($expectedAuthorizationHeader, $authorizationHeader);
 	}
 
 	public function testBuildAuthUrl() {
-		$oauthClient = new Client1();
+		$oauthClient = new OAuth1();
 		$authUrl = 'http://test.auth.url';
 		$oauthClient->authUrl = $authUrl;
 
 		$requestTokenToken = 'test_request_token';
-		$requestToken = new Token();
+		$requestToken = new OAuthToken();
 		$requestToken->setToken($requestTokenToken);
 
 		$builtAuthUrl = $oauthClient->buildAuthUrl($requestToken);

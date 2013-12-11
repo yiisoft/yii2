@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\authclient\oauth\signature;
+namespace yii\authclient\signature;
 
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;

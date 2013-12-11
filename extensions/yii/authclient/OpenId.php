@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\authclient\openid;
+namespace yii\authclient;
 
 use yii\base\Component;
 use yii\base\Exception;
@@ -25,7 +25,7 @@ use yii\base\NotSupportedException;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class Client extends Component
+class OpenId extends Component
 {
 	public $required = [];
 	public $optional = [];

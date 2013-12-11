@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\authclient\oauth;
+namespace yii\authclient;
 
 use yii\base\Component;
 use yii\base\Exception;
@@ -21,7 +21,7 @@ use yii\helpers\Json;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-abstract class BaseClient extends Component
+abstract class BaseOAuth extends Component
 {
 	const CONTENT_TYPE_JSON = 'json'; // JSON format
 	const CONTENT_TYPE_URLENCODED = 'urlencoded'; // urlencoded query string, like name1=value1&name2=value2
@@ -56,7 +56,7 @@ abstract class BaseClient extends Component
 	 */
 	private $_curlOptions = [];
 	/**
-	 * @var Token|array access token instance or its array configuration.
+	 * @var OAuthToken|array access token instance or its array configuration.
 	 */
 	private $_accessToken = null;
 	/**
@@ -100,7 +100,7 @@ abstract class BaseClient extends Component
 	}
 
 	/**
-	 * @param array|Token $token
+	 * @param array|OAuthToken $token
 	 */
 	public function setAccessToken($token)
 	{
@@ -112,7 +112,7 @@ abstract class BaseClient extends Component
 	}
 
 	/**
-	 * @return Token auth token instance.
+	 * @return OAuthToken auth token instance.
 	 */
 	public function getAccessToken()
 	{
@@ -129,7 +129,7 @@ abstract class BaseClient extends Component
 	public function setSignatureMethod($signatureMethod)
 	{
 		if (!is_object($signatureMethod) && !is_array($signatureMethod)) {
-			throw new InvalidParamException('"'.get_class($this).'::signatureMethod" should be instance of "\yii\autclient\oauth\signature\BaseMethod" or its array configuration. "' . gettype($signatureMethod) . '" has been given.');
+			throw new InvalidParamException('"' . get_class($this) . '::signatureMethod" should be instance of "\yii\autclient\signature\BaseMethod" or its array configuration. "' . gettype($signatureMethod) . '" has been given.');
 		}
 		$this->_signatureMethod = $signatureMethod;
 	}
@@ -224,7 +224,7 @@ abstract class BaseClient extends Component
 	protected function defaultCurlOptions()
 	{
 		return [
-			CURLOPT_USERAGENT => Yii::$app->name . ' OAuth Client',
+			CURLOPT_USERAGENT => Yii::$app->name . ' OAuth ' . $this->version . ' Client',
 			CURLOPT_CONNECTTIMEOUT => 30,
 			CURLOPT_TIMEOUT => 30,
 			CURLOPT_SSL_VERIFYPEER => false,
@@ -350,12 +350,12 @@ abstract class BaseClient extends Component
 	/**
 	 * Creates token from its configuration.
 	 * @param array $tokenConfig token configuration.
-	 * @return Token token instance.
+	 * @return OAuthToken token instance.
 	 */
 	protected function createToken(array $tokenConfig = [])
 	{
 		if (!array_key_exists('class', $tokenConfig)) {
-			$tokenConfig['class'] = Token::className();
+			$tokenConfig['class'] = OAuthToken::className();
 		}
 		return Yii::createObject($tokenConfig);
 	}
@@ -379,23 +379,23 @@ abstract class BaseClient extends Component
 
 	/**
 	 * Saves token as persistent state.
-	 * @param Token $token auth token
+	 * @param OAuthToken $token auth token
 	 * @return static self reference.
 	 */
-	protected function saveAccessToken(Token $token)
+	protected function saveAccessToken(OAuthToken $token)
 	{
 		return $this->setState('token', $token);
 	}
 
 	/**
 	 * Restores access token.
-	 * @return Token auth token.
+	 * @return OAuthToken auth token.
 	 */
 	protected function restoreAccessToken()
 	{
 		$token = $this->getState('token');
 		if (is_object($token)) {
-			/* @var $token Token */
+			/* @var $token OAuthToken */
 			if ($token->getIsExpired()) {
 				$token = $this->refreshAccessToken($token);
 			}
@@ -486,14 +486,14 @@ abstract class BaseClient extends Component
 
 	/**
 	 * Gets new auth token to replace expired one.
-	 * @param Token $token expired auth token.
-	 * @return Token new auth token.
+	 * @param OAuthToken $token expired auth token.
+	 * @return OAuthToken new auth token.
 	 */
-	abstract public function refreshAccessToken(Token $token);
+	abstract public function refreshAccessToken(OAuthToken $token);
 
 	/**
 	 * Performs request to the OAuth API.
-	 * @param Token $accessToken actual access token.
+	 * @param OAuthToken $accessToken actual access token.
 	 * @param string $url absolute API URL.
 	 * @param string $method request method.
 	 * @param array $params request parameters.

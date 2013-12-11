@@ -5,20 +5,20 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\authclient\oauth;
+namespace yii\authclient;
 
 use Yii;
 use yii\base\Exception;
 
 /**
- * Client2 serves as a client for the OAuth 2 flow.
+ * OAuth2 serves as a client for the OAuth 2 flow.
  *
  * In oder to acquire access token perform following sequence:
  *
  * ~~~
- * use yii\authclient\oauth\Client2;
+ * use yii\authclient\OAuth2;
  *
- * $oauthClient = new Client2();
+ * $oauthClient = new OAuth2();
  * $url = $oauthClient->buildAuthUrl(); // Build authorization URL
  * Yii::$app->getResponse()->redirect($url); // Redirect to authorization URL.
  * // After user returns at our site:
@@ -31,7 +31,7 @@ use yii\base\Exception;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class Client2 extends BaseClient
+class OAuth2 extends BaseOAuth
 {
 	/**
 	 * @var string protocol version.
@@ -73,7 +73,7 @@ class Client2 extends BaseClient
 	 * Fetches access token from authorization code.
 	 * @param string $authCode authorization code, usually comes at $_GET['code'].
 	 * @param array $params additional request params.
-	 * @return Token access token.
+	 * @return OAuthToken access token.
 	 */
 	public function fetchAccessToken($authCode, array $params = [])
 	{
@@ -130,7 +130,7 @@ class Client2 extends BaseClient
 
 	/**
 	 * Performs request to the OAuth API.
-	 * @param Token $accessToken actual access token.
+	 * @param OAuthToken $accessToken actual access token.
 	 * @param string $url absolute API URL.
 	 * @param string $method request method.
 	 * @param array $params request parameters.
@@ -145,10 +145,10 @@ class Client2 extends BaseClient
 
 	/**
 	 * Gets new auth token to replace expired one.
-	 * @param Token $token expired auth token.
-	 * @return Token new auth token.
+	 * @param OAuthToken $token expired auth token.
+	 * @return OAuthToken new auth token.
 	 */
-	public function refreshAccessToken(Token $token)
+	public function refreshAccessToken(OAuthToken $token)
 	{
 		$params = [
 			'client_id' => $this->clientId,
@@ -174,7 +174,7 @@ class Client2 extends BaseClient
 	/**
 	 * Creates token from its configuration.
 	 * @param array $tokenConfig token configuration.
-	 * @return Token token instance.
+	 * @return OAuthToken token instance.
 	 */
 	protected function createToken(array $tokenConfig = [])
 	{

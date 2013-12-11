@@ -2,14 +2,14 @@
 
 namespace yiiunit\extensions\authclient\oauth\signature;
 
-use yii\authclient\oauth\signature\HmacSha1;
+use yii\authclient\signature\PlainText;
 use yiiunit\extensions\authclient\TestCase;
 
-class HmacSha1Test extends TestCase
+class PlainTextTest extends TestCase
 {
 	public function testGenerateSignature()
 	{
-		$signatureMethod = new HmacSha1();
+		$signatureMethod = new PlainText();
 
 		$baseString = 'test_base_string';
 		$key = 'test_key';

@@ -1,21 +1,21 @@
 <?php
 
-namespace yiiunit\extensions\authclient\oauth;
+namespace yiiunit\extensions\authclient;
 
-use yii\authclient\oauth\signature\PlainText;
-use yii\authclient\oauth\Token;
+use yii\authclient\signature\PlainText;
+use yii\authclient\OAuthToken;
 use yiiunit\extensions\authclient\TestCase;
-use yii\authclient\oauth\BaseClient;
+use yii\authclient\BaseOAuth;
 
-class BaseClientTest extends TestCase
+class BaseOAuthTest extends TestCase
 {
 	/**
 	 * Creates test OAuth client instance.
-	 * @return BaseClient oauth client.
+	 * @return BaseOAuth oauth client.
 	 */
 	protected function createOAuthClient()
 	{
-		$oauthClient = $this->getMock(BaseClient::className(), ['setState', 'getState', 'composeRequestCurlOptions', 'refreshAccessToken', 'apiInternal']);
+		$oauthClient = $this->getMock(BaseOAuth::className(), ['setState', 'getState', 'composeRequestCurlOptions', 'refreshAccessToken', 'apiInternal']);
 		$oauthClient->expects($this->any())->method('setState')->will($this->returnValue($oauthClient));
 		$oauthClient->expects($this->any())->method('getState')->will($this->returnValue(null));
 		return $oauthClient;
@@ -23,7 +23,7 @@ class BaseClientTest extends TestCase
 
 	/**
 	 * Invokes the OAuth client method even if it is protected.
-	 * @param BaseClient $oauthClient OAuth client instance.
+	 * @param BaseOAuth $oauthClient OAuth client instance.
 	 * @param string $methodName name of the method to be invoked.
 	 * @param array $arguments method arguments.
 	 * @return mixed method invoke result.
@@ -60,7 +60,7 @@ class BaseClientTest extends TestCase
 	{
 		$oauthClient = $this->createOAuthClient();
 
-		$oauthToken = new Token();
+		$oauthToken = new OAuthToken();
 		$oauthClient->setAccessToken($oauthToken);
 		$this->assertEquals($oauthToken, $oauthClient->getAccessToken(), 'Unable to setup token!');
 
@@ -84,7 +84,7 @@ class BaseClientTest extends TestCase
 		$this->assertEquals($oauthToken['token'], $oauthClient->getAccessToken()->getToken(), 'Unable to setup token as config!');
 
 		$oauthSignatureMethod = [
-			'class' => 'yii\authclient\oauth\signature\PlainText'
+			'class' => 'yii\authclient\signature\PlainText'
 		];
 		$oauthClient->setSignatureMethod($oauthSignatureMethod);
 		$returnedSignatureMethod = $oauthClient->getSignatureMethod();
@@ -239,7 +239,7 @@ class BaseClientTest extends TestCase
 		$oauthClient = $this->createOAuthClient();
 		$oauthClient->expects($this->any())->method('apiInternal')->will($this->returnArgument(1));
 
-		$accessToken = new Token();
+		$accessToken = new OAuthToken();
 		$accessToken->setToken('test_access_token');
 		$accessToken->setExpireDuration(1000);
 		$oauthClient->setAccessToken($accessToken);

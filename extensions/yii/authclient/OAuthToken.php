@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\authclient\oauth;
+namespace yii\authclient;
 
 use yii\base\Object;
 
@@ -19,7 +19,7 @@ use yii\base\Object;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class Token extends Object
+class OAuthToken extends Object
 {
 	/**
 	 * @var string key in {@link _params} array, which stores token key.
