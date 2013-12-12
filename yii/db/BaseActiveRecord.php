@@ -114,12 +114,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	{
 		$query = static::createQuery();
 		if (is_array($q)) {
-			return $query->where($q)->one();
+			return $query->andWhere($q)->one();
 		} elseif ($q !== null) {
 			// query by primary key
 			$primaryKey = static::primaryKey();
 			if (isset($primaryKey[0])) {
-				return $query->where([$primaryKey[0] => $q])->one();
+				return $query->andWhere([$primaryKey[0] => $q])->one();
 			} else {
 				throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
 			}

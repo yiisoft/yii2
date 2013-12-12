@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Enh #1293: Replaced Console::showProgress() with a better approach. See Console::startProgress() for details (cebe)
 - Enh #1406: DB Schema support for Oracle Database (p0larbeer, qiangxue)
 - Enh #1437: Added ListView::viewParams (qiangxue)
+- Enh #1469: ActiveRecord::find() now works with default conditions (default scope) applied by createQuery (cebe)
 - New extension #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
 
 2.0.0 alpha, December 1, 2013
