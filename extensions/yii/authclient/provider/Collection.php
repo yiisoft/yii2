@@ -97,7 +97,7 @@ class Collection extends Component
 	 * @param array $config auth provider instance configuration.
 	 * @return ProviderInterface auth provider instance.
 	 */
-	protected function createProvider($id, array $config)
+	protected function createProvider($id, $config)
 	{
 		$config['id'] = $id;
 		return Yii::createObject($config);
