@@ -25,11 +25,6 @@ use ReflectionClass;
 class Widget extends Component implements ViewContextInterface
 {
 	/**
-	 * @var integer a counter used to generate [[id]] for widgets.
-	 * @internal
-	 */
-	public static $counter = 0;
-	/**
 	 * @var Widget[] the widgets that are currently being rendered (not ended). This property
 	 * is maintained by [[begin()]] and [[end()]] methods.
 	 * @internal
@@ -101,7 +96,7 @@ class Widget extends Component implements ViewContextInterface
 	public function getId($autoGenerate = true)
 	{
 		if ($autoGenerate && $this->_id === null) {
-			$this->_id = 'w' . self::$counter++;
+			$this->_id = 'w-' . str_replace('.', '-', uniqid('', true));
 		}
 		return $this->_id;
 	}
