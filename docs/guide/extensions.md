@@ -10,9 +10,34 @@ Code style
 using the following syntax: e.g. `[[name()]]`, `[[name\space\MyClass::name()]]`.
 - If you're displaying errors to developers do not translate these (i.e. do not use `\Yii::t()`). Errors should be
   translated only if they're displayed to end users.
-- Extension SHOULD NOT use class prefixes.  
-- Extension SHOULD provide a valid PSR-0 autoloading configuration in `composer.json`  
-- Especially for core components (eg. `WebUser`) additional functionality SHOULD be implemented using behaviors or traits instead subclassing.
+- Extension SHOULD NOT use class prefixes (i.e. `TbNavBar`, `EMyWidget`, etc.)
+- Extension SHOULD provide a valid PSR-0 autoloading configuration in `composer.json`
+
+    **Example 1: Code in repository root**
+
+    ```
+    ./Class.php
+    ```
+    
+    ```
+    "autoload": {
+        "psr-0": { "vendor\\package\\": "" }
+    },
+    ```
+
+    **Example 2: Code in repository subfolder `./src`**
+
+    ```
+    ./src/vendor/package/Class.php
+    ```
+    
+    ```
+    "autoload": {
+        "psr-0": { "vendor\\package\\": "./src" }
+    },
+    ```
+
+
 
 ### Namespace and package names
 
