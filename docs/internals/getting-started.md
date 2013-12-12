@@ -7,7 +7,7 @@ Composer package. Here's how to do it:
 1. `git clone git@github.com:yiisoft/yii2-app-basic.git`.
 2. Remove `.git` directory from cloned directory.
 3. Change `composer.json`. Instead of all stable requirements add just one `"yiisoft/yii2-dev": "*"`.
-4. Execute `composer install`.
+4. Execute `composer create-project`.
 5. Now you have working playground that uses latest code.
 
 If you're core developer there's no extra step needed. You can change framework code under
@@ -23,3 +23,5 @@ If you're not core developer or want to use your own fork for pull requests:
 [remote "origin"]
   url = git://github.com/username/yii2.git
 ```
+
+> Hint: The workflow of forking a package and pushing changes back into your fork and then sending a pull-request to the maintainer is the same for all extensions you require via composer.
