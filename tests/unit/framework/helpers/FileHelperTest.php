@@ -313,4 +313,29 @@ class FileHelperTest extends TestCase
 	{
 		$this->assertEquals(DIRECTORY_SEPARATOR.'home'.DIRECTORY_SEPARATOR.'demo', FileHelper::normalizePath('/home\demo/'));
 	}
+
+	public function testLocalizedDirectory()
+	{
+		$this->createFileStructure([
+			'views' => [
+				'faq.php' => 'English FAQ',
+				'de-DE' => [
+					'faq.php' => 'German FAQ',
+				],
+			],
+		]);
+		$viewFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'faq.php';
+		$sourceLanguage = 'en-US';
+
+		// Source language and target language are same. The view path should be unchanged.
+		$currentLanguage = $sourceLanguage;
+		$this->assertSame($viewFile, FileHelper::localize($viewFile, $currentLanguage, $sourceLanguage));
+
+		// Source language and target language are different. The view path should be changed.
+		$currentLanguage = 'de-DE';
+		$this->assertSame(
+			$this->testFilePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $currentLanguage . DIRECTORY_SEPARATOR . 'faq.php',
+			FileHelper::localize($viewFile, $currentLanguage, $sourceLanguage)
+		);
+	}
 }
