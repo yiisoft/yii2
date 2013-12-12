@@ -15,6 +15,9 @@ use yii\authclient\provider\ProviderInterface;
 /**
  * Class Choice
  *
+ * @property ProviderInterface[] $providers auth providers list.
+ * @property array $baseAuthUrl configuration for the external services base authentication URL.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
@@ -23,7 +26,7 @@ class Choice extends Widget
 	/**
 	 * @var ProviderInterface[] auth providers list.
 	 */
-	protected $_providers;
+	private $_providers;
 	/**
 	 * @var string name of the auth provider collection application component.
 	 * This component will be used to fetch {@link services} value if it is not set.
@@ -32,7 +35,7 @@ class Choice extends Widget
 	/**
 	 * @var array configuration for the external services base authentication URL.
 	 */
-	protected $_baseAuthUrl;
+	private $_baseAuthUrl;
 	/**
 	 * @var string name of the GET param , which should be used to passed auth provider id to URL
 	 * defined by {@link baseAuthUrl}.
