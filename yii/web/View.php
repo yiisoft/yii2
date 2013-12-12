@@ -184,10 +184,12 @@ class View extends \yii\base\View
 			return;
 		}
 		$bundle = $this->assetBundles[$name];
-		foreach ($bundle->depends as $dep) {
-			$this->registerAssetFiles($dep);
+		if ($bundle) {
+			foreach ($bundle->depends as $dep) {
+				$this->registerAssetFiles($dep);
+			}
+			$bundle->registerAssetFiles($this);
 		}
-		$bundle->registerAssetFiles($this);
 		unset($this->assetBundles[$name]);
 	}
 
