@@ -58,7 +58,7 @@ Assets
 Events
 ------
 
-- Extension SHOULD make use of the event system, in favor of providing too complex configuration options.
+TBD
 
 i18n
 ----
