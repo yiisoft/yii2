@@ -432,7 +432,7 @@ class Component extends Object
 	/**
 	 * Triggers an event.
 	 * This method represents the happening of an event. It invokes
-	 * all attached handlers for the event.
+	 * all attached handlers for the event including 'class-level' handlers
 	 * @param string $name the event name
 	 * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
 	 */
@@ -457,6 +457,7 @@ class Component extends Object
 				}
 			}
 		}
+		//invoke 'class-level' attached handlers
 		Event::trigger($this, $name, $event);
 	}
 
