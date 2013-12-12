@@ -50,7 +50,7 @@ using the following syntax: e.g. `[[name()]]`, `[[name\space\MyClass::name()]]`.
 ### Dependencies
 
 - Additional code, eg. libraries, SHOULD be required in your `composer.json` file.
-- Requirements SHOULD NOT include `dev` packages without a `stable` release.
+- When extension is released in a stable version, its requirements SHOULD NOT include `dev` packages that do not have a `stable` release.
 - Use appropriate version constraints, eg. `1.*`, `@stable` for requirements.
 
 ### Versioning
@@ -100,4 +100,4 @@ Authorization
 Testing your extension
 ----------------------
 
-- Extension SHOULD be testable with *Codeception*.
+- Extension SHOULD be testable with *PHPUnit*.
