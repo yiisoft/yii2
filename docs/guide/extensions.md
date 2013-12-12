@@ -36,6 +36,8 @@ using the following syntax: e.g. `[[name()]]`, `[[name\space\MyClass::name()]]`.
         "psr-0": { "vendor\\package\\": "./src" }
     },
     ```
+    
+    Details about autoloading configuration can be found in the [composer documentation](http://getcomposer.org/doc/04-schema.md#autoload).
 
 
 
