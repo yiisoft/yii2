@@ -68,7 +68,7 @@ class BaseFileHelper
 		if ($language === $sourceLanguage) {
 			return $file;
 		}
-		$desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $sourceLanguage . DIRECTORY_SEPARATOR . basename($file);
+		$desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
 		return is_file($desiredFile) ? $desiredFile : $file;
 	}
 
