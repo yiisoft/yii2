@@ -125,7 +125,7 @@ class Controller extends Component implements ViewContextInterface
 			$this->action = $action;
 			$result = null;
 			$event = new ActionEvent($action);
-			Yii::$app->trigger(Application::EVENT_BEFORE_ACTION, $event);
+			Yii::$app->trigger('beforeAction', $event);
 			if ($event->isValid && $this->module->beforeAction($action) && $this->beforeAction($action)) {
 				$result = $action->runWithParams($params);
 				$this->afterAction($action, $result);
