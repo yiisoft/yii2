@@ -1,2 +1,8 @@
 <?php
-// Here you can initialize variables that will for your tests
+
+$config = require(__DIR__.'/../yii_bootstrap.php');
+
+return yii\helpers\ArrayHelper::merge(
+	$config,
+	require(__DIR__ . '/../../config/codeception/unit.php')
+);
