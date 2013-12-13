@@ -51,6 +51,7 @@
 	"minimum-stability": "dev",
 	"replace": {
 		"yiisoft/yii2-bootstrap": "self.version",
+		"yiisoft/yii2-codeception": "self.version",
 		"yiisoft/yii2-debug": "self.version",
 		"yiisoft/yii2-elasticsearch": "self.version",
 		"yiisoft/yii2-gii": "self.version",
@@ -79,6 +80,7 @@
 	"autoload": {
 		"psr-0": {
 			"yii\\bootstrap\\": "extensions/bootstrap/",
+			"yii\\codeception\\": "extensions/codeception/",
 			"yii\\debug\\": "extensions/debug/",
 			"yii\\elasticsearch\\": "extensions/elasticsearch/",
 			"yii\\gii\\": "extensions/gii/",
