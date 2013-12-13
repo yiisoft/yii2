@@ -30,7 +30,7 @@ class Controller extends \yii\base\Controller
 	/**
 	 * @var array the parameters bound to the current action. This is mainly used by [[getCanonicalUrl()]].
 	 */
-	public $actionParams = [];
+	protected $_actionParams = [];
 
 	/**
 	 * Binds the parameters to the action.
@@ -143,7 +143,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function getCanonicalUrl()
 	{
-		return Yii::$app->getUrlManager()->createAbsoluteUrl($this->getRoute(), $this->actionParams);
+		return Yii::$app->getUrlManager()->createAbsoluteUrl($this->getRoute(), $this->_actionParams);
 	}
 
 	/**
