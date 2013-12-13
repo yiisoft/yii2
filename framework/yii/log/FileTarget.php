@@ -87,7 +87,7 @@ class FileTarget extends Target
 		foreach ($this->messages as $message) {
 			$text[] = $this->formatMessage($message);
 		}
-		$text = implode("\n",$text);
+		$text = implode("\n", $text);
 		if (($fp = @fopen($this->logFile, 'a')) === false) {
 			throw new InvalidConfigException("Unable to append to log file: {$this->logFile}");
 		}
