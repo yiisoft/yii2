@@ -2,7 +2,7 @@
 
 namespace tests\_pages;
 
-class LoginPage extends BasePage
+class LoginPage extends \yii\codeception\BasePage
 {
 
 	public static $URL = '?r=site/login';

@@ -2,7 +2,7 @@
 
 namespace tests\_pages;
 
-class ContactPage extends BasePage
+class ContactPage extends \yii\codeception\BasePage
 {
 
 	public static $URL = '?r=site/contact';
