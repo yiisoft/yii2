@@ -2,7 +2,7 @@
 
 namespace tests\unit\models;
 
-class LoginFormTest extends \tests\_helpers\TestCase
+class LoginFormTest extends \yii\codeception\TestCase
 {
 
 }
