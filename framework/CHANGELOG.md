@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Enh: Added `favicon.ico` and `robots.txt` to defauly application templates (samdark)
 - Enh: Widget IDs are now always unique no matter if it's the same request or new one (samdark)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
+- Enh: #2500 String concatenation in FileTarget::export() function replaced with array join
 
 2.0.0 alpha, December 1, 2013
 ---------------------------
