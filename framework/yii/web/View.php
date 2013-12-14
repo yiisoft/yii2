@@ -188,7 +188,22 @@ class View extends \yii\base\View
 			foreach ($bundle->depends as $dep) {
 				$this->registerAssetFiles($dep);
 			}
-			$bundle->registerAssetFiles($this);
+			$jsFiles = $bundle->getJsFiles();
+			foreach ($jsFiles as $js) {
+				if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
+					$this->registerJsFile($bundle->baseUrl . '/' . $js, $bundle->jsOptions);
+				} else {
+					$this->registerJsFile($js, $bundle->jsOptions);
+				}
+			}
+			$cssFiles = $bundle->getCssFiles();
+			foreach ($cssFiles as $css) {
+				if (strpos($css, '/') !== 0 && strpos($css, '://') === false) {
+					$view->registerCssFile($bundle->baseUrl . '/' . $css, $bundle->cssOptions);
+				} else {
+					$view->registerCssFile($css, $bundle->cssOptions);
+				}
+			}
 		}
 		unset($this->assetBundles[$name]);
 	}
