@@ -20,9 +20,10 @@ create table "tbl_auth_item"
    "description"          text,
    "biz_rule"              text,
    "data"                 text,
-   primary key ("name"),
-   key "type" ("type")
+   primary key ("name")
 );
+
+create index tbl_auth_item_type_idx on "tbl_auth_item" ("type");
 
 create table "tbl_auth_item_child"
 (
