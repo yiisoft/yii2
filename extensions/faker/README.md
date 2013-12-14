@@ -16,11 +16,11 @@ To start using this command you need to be familiar (read guide) for the Faker l
 generate fixtures template files, according to the given format:
 
 ```php
-#users.php file under template path (by default ```@tests/unit/fixtures/templates```)
+#users.php file under template path (by default @tests/unit/fixtures/templates)
 return [
 	'table_column0'	=>	'faker_formatter',
 	...
-	'table_columnN'	=>	'other_faker_formatter
+	'table_columnN'	=>	'other_faker_formatter'
 ];
 ```
 
