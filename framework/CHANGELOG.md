@@ -12,7 +12,7 @@ Yii Framework 2 Change Log
 - Enh #1437: Added ListView::viewParams (qiangxue)
 - Enh #1469: ActiveRecord::find() now works with default conditions (default scope) applied by createQuery (cebe)
 - Enh: Added `favicon.ico` and `robots.txt` to defauly application templates (samdark)
-- Enh: Widget IDs are now always unique no matter if it's the same request or new one (samdark)
+- Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
 
 2.0.0 alpha, December 1, 2013
