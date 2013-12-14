@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Enh #1469: ActiveRecord::find() now works with default conditions (default scope) applied by createQuery (cebe)
 - Enh: Added `favicon.ico` and `robots.txt` to defauly application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
+- Enh: Support for file aliases in console command 'message' (omnilight)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
 
 2.0.0 alpha, December 1, 2013
