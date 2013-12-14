@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #1500: Log messages exported to files are not separated by newlines (omnilight, qiangxue)
 - Bug #1509: The SQL for creating Postgres RBAC tables is incorrect (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
+- Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Enh #1293: Replaced Console::showProgress() with a better approach. See Console::startProgress() for details (cebe)
 - Enh #1406: DB Schema support for Oracle Database (p0larbeer, qiangxue)
 - Enh #1437: Added ListView::viewParams (qiangxue)
