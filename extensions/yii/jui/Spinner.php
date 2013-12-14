@@ -38,6 +38,10 @@ use yii\helpers\Html;
  */
 class Spinner extends InputWidget
 {
+	protected $clientEventsMap = [
+		'spin' => 'spin',
+	];
+
 	/**
 	 * Renders the widget.
 	 */
