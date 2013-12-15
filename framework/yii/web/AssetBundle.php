@@ -139,25 +139,21 @@ class AssetBundle extends Object
 	}
 
 	/**
-	 * Registers the CSS and JS files with the given view.
-	 * @param \yii\web\View $view the view that the asset files are to be registered with.
+	 * Get the list of JavaScript files that this bundle contains
+	 * @return array the list of JavaScript files
 	 */
-	public function registerAssetFiles($view)
+	public function getJsFiles()
 	{
-		foreach ($this->js as $js) {
-			if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
-				$view->registerJsFile($this->baseUrl . '/' . $js, $this->jsOptions);
-			} else {
-				$view->registerJsFile($js, $this->jsOptions);
-			}
-		}
-		foreach ($this->css as $css) {
-			if (strpos($css, '/') !== 0 && strpos($css, '://') === false) {
-				$view->registerCssFile($this->baseUrl . '/' . $css, $this->cssOptions);
-			} else {
-				$view->registerCssFile($css, $this->cssOptions);
-			}
-		}
+		return $this->js;
+	}
+
+	/**
+	 * Get the list of CSS files that this bundle contains
+	 * @return array the list of CSS files
+	 */
+	public function getCssFiles()
+	{
+		return $this->css;
 	}
 
 	/**
