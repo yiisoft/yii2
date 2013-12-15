@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Enh: Added `favicon.ico` and `robots.txt` to defauly application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
 - Enh: Support for file aliases in console command 'message' (omnilight)
+- Chg: Renamed yii\jui\Widget::clientEventsMap to clientEventMap (qiangxue)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
 
 2.0.0 alpha, December 1, 2013

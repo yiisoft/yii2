@@ -46,7 +46,7 @@ class Widget extends \yii\base\Widget
 	 * @var array event names mapped to what should be specified in .on(
 	 * If empty, it is assumed that event passed to clientEvents is prefixed with widget name.
 	 */
-	protected $clientEventsMap = [];
+	protected $clientEventMap = [];
 
 	/**
 	 * Initializes the widget.
@@ -97,8 +97,8 @@ class Widget extends \yii\base\Widget
 			$id = $this->options['id'];
 			$js = [];
 			foreach ($this->clientEvents as $event => $handler) {
-				if (isset($this->clientEventsMap[$event])) {
-					$eventName = $this->clientEventsMap[$event];
+				if (isset($this->clientEventMap[$event])) {
+					$eventName = $this->clientEventMap[$event];
 				} else {
 					$eventName = $name.$event;
 				}
