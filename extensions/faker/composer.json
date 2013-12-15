@@ -17,7 +17,8 @@
 		}
 	],
 	"require": {
-		"yiisoft/yii2": "*"
+		"yiisoft/yii2": "*",
+		"fzaninotto/faker": "*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\faker\\": "" }
