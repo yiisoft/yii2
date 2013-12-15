@@ -38,7 +38,7 @@ use yii\helpers\Html;
  */
 class Spinner extends InputWidget
 {
-	protected $clientEventsMap = [
+	protected $clientEventMap = [
 		'spin' => 'spin',
 	];
 

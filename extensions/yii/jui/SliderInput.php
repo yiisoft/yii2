@@ -43,7 +43,7 @@ use yii\helpers\Html;
  */
 class SliderInput extends InputWidget
 {
-	protected $clientEventsMap = [
+	protected $clientEventMap = [
 		'change' => 'slidechange',
 		'create' => 'slidecreate',
 		'slide' => 'slide',
