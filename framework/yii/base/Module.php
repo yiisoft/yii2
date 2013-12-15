@@ -166,8 +166,8 @@ abstract class Module extends Component
 	/**
 	 * Initializes the module.
 	 * This method is called after the module is created and initialized with property values
-	 * given in configuration. The default implementation will create a path alias using the module [[id]]
-	 * and then call [[preloadComponents()]] to load components that are declared in [[preload]].
+	 * given in configuration. The default implementation will call [[preloadComponents()]] to
+	 * load components that are declared in [[preload]].
 	 *
 	 * If you override this method, please make sure you call the parent implementation.
 	 */
