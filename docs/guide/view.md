@@ -1,17 +1,15 @@
 View
 ====
 
-View is an important part of MVC and is responsible for presenting data to end users.
+The view component is an important part of MVC. The view acts as the interface to the application, making it responsible for presenting data to end users, displaying forms, and so forth. 
 
 
 Basics
 ------
 
-Yii uses PHP in view templates by default so in a web application a view typically contains some HTML, `echo`, `foreach`
-and such basic constructs. It may also contain widget calls. Using complex code in views is considered a bad practice.
-Such code should be moved to controller or widgets.
+By default, Yii uses PHP in view templates to generate content and elements. A web application view typically contains some combination of HTML, along with PHP `echo`, `foreach`, `if`, and other basic constructs. Using complex PHP code in views is considered to be bad practice. When complex logic and functionality is needed, such code should either be moved to a controller or a widget.
 
-View is typically called from controller action like the following:
+The view is typically called from controller action using the `render()` method:
 
 ```php
 public function actionIndex()
@@ -20,28 +18,35 @@ public function actionIndex()
 }
 ```
 
-First argument is the view name. In context of the controller Yii will search for its views in `views/site/` where `site`
-is controller ID. For details on how view name is resolved please refer to [yii\base\Controller::render] method.
-Second argument is data array that contains key-value pairs. Value is available in the view as a variable named the same
-as the corresponding key.
+The first argument to `render()` is the name of the view to display. In the context of the controller, Yii will search for its views in `views/site/` where `site`
+is the controller ID. For details on how the view name is resolved, refer to the [yii\base\Controller::render] method.
 
-So the view for the action above should be in `views/site/index.php` and can be something like:
+
+The second argument to `render()` is a data array of key-value pairs. Through this array, data can be passed to the view, making the value available in the view as a variable named the same as the corresponding key.
+
+The view for the action above would be `views/site/index.php` and can be something like:
 
 ```php
 <p>Hello, <?= $username ?>!</p>
 ```
 
-Instead of just scalar values you can pass anything else such as arrays or objects.
+Any data type can be passed to the view, including arrays or objects.
 
 Widgets
 -------
 
-Widgets are a self-contained building blocks for your views. A widget may contain advanced logic, typically takes some
-configuration and data and returns HTML. There is a good number of widgets bundled with Yii such as [active form](form.md),
-breadcrumbs, menu or [wrappers around bootstrap component framework](bootstrap-widgets.md). Additionally there are
-extensions providing additional widgets such as official one for jQueryUI components.
+Widgets are self-contained building blocks for your views, a way to combine complex logic, display, and functionality into a single component. A widget:
 
-In order to use widget you need to do the following:
+* May contain advanced PHP programming
+* Is typically configurable
+* Is often provided data to be displayed
+* Returns HTML to be shown within the context of the view
+
+There are a good number of widgets bundled with Yii, such as [active form](form.md),
+breadcrumbs, dmenu, and [wrappers around bootstrap component framework](bootstrap-widgets.md). Additionally there are
+extensions that provide more widgets, such as the official widget for [jQueryUI](http://www.jqueryui.com) components.
+
+In order to use a widget, your view file would do the following:
 
 ```php
 // Note that you have to "echo" the result to display it
@@ -56,7 +61,7 @@ $form = \yii\widgets\ActiveForm::begin([
 \yii\widgets\ActiveForm::end();
 ```
 
-In the code above `widget` method is used for a widget that just outputs content while `begin` and `end` are used for a
+In the first example in the code above, the `widget` method is used to invoke a widget that just outputs content. In the second example, `begin` and `end` are used for a
 widget that wraps content between method calls with its own output. In case of the form this output is the `<form>` tag
 with some properties set.
 
