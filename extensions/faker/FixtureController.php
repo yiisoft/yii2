@@ -13,7 +13,7 @@ use yii\helpers\FileHelper;
 
 /**
  * This command manage fixtures creations based on given template.
- * 
+ *
  * Fixtures are one of the important paths in unit testing. To speed up developers
  * work this fixtures can be generated automatically, based on prepared template.
  * This command is a simple wrapper for the fixtures library Faker (https://github.com/fzaninotto/Faker).
@@ -116,7 +116,7 @@ use yii\helpers\FileHelper;
  * 
  * @since 2.0.0
  */
-class FixtureController extends \yii\console\Controller
+class FixtureController extends \yii\console\controllers\FixtureController
 {
 
 	/**
@@ -124,12 +124,6 @@ class FixtureController extends \yii\console\Controller
 	 * @var string
 	 */
 	public $templatePath = '@tests/unit/fixtures/templates';
-
-	/**
-	 * Alias to the path, where all fixtures are stored.
-	 * @var string
-	 */
-	public $fixturesPath = '@tests/unit/fixtures';
 
 	/**
 	 * Language to use when generating fixtures data.
@@ -157,7 +151,7 @@ class FixtureController extends \yii\console\Controller
 	public function globalOptions()
 	{
 		return array_merge(parent::globalOptions(), [
-			'templatePath','fixturesPath','language'
+			'templatePath','language'
 		]);
 	}
 
@@ -207,7 +201,7 @@ class FixtureController extends \yii\console\Controller
 			}
 
 			$content .= "\n];";
-			file_put_contents($fixturesPath.'/'.$fixtureFileName.'.php', $content);
+			file_put_contents($fixturesPath.'/'.$fixtureFileName, $content);
 		}
 	}
 
@@ -235,11 +229,6 @@ class FixtureController extends \yii\console\Controller
 
 		if (!is_dir($path))
 			throw new Exception("The template path \"{$this->templatePath}\" not exist");
-
-		$path = Yii::getAlias($this->fixturesPath);
-
-		if (!is_dir($path) || !is_writable($path))
-			throw new Exception("The fixtures path \"{$this->templatePath}\" not exist or is not writable");
 	}
 
 	/**

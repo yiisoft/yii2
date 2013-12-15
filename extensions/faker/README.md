@@ -8,7 +8,7 @@ To use this extension,  simply add the following code in your application config
 ```php
 'controllerMap'	=>  [
 	'faker:fixture' =>	[
-	'class'	    =>	'yii\faker\FixtureController',
+		'class'	    =>	'yii\faker\FixtureController',
 	],
 ],
 ```
