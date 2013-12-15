@@ -29,6 +29,9 @@ After you prepared needed templates for tables you can simply generate your fixt
 ```php
 #generate fixtures for the users table based on users fixture template
 php yii faker:fixture/generate users
+
+#also a short version of this command ("generate" action is default)
+php yii faker:fixture users
 ```
 
 In the code above "users" is template name, after this command run, new file named same as template

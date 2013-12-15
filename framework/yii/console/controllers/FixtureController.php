@@ -34,6 +34,9 @@ use yii\console\Exception;
  * #load fixtures under $fixturesPath to the "users" table
  * php yii fixture/apply users
  * 
+ * #also a short version of this command (generate action is default)
+ * php yii fixture users
+ * 
  * #load fixtures under $fixturesPath to the "users" table to the different connection
  * php yii fixture/apply users --db='someOtherDbConneciton'
  * 
@@ -47,6 +50,11 @@ class FixtureController extends Controller
 {
 
 	use \yii\test\DbTestTrait;
+
+	/**
+	 * @var string controller default action ID.
+	 */
+	public $defaultAction = 'apply';
 
 	/**
 	 * Alias to the path, where all fixtures are stored.

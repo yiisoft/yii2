@@ -46,6 +46,9 @@ use yii\helpers\FileHelper;
  * 
  * ~~~
  * php yii faker:fixture/generate users
+ * 
+ * #also a short version of this command (generate action is default)
+ * php yii faker:fixture users
  * ~~~
  * 
  * In the code above "users" is template name, after this command run, new file named same as template
@@ -118,6 +121,11 @@ use yii\helpers\FileHelper;
  */
 class FixtureController extends \yii\console\controllers\FixtureController
 {
+
+	/**
+	 * @var string controller default action ID.
+	 */
+	public $defaultAction = 'generate';
 
 	/**
 	 * Alias to the template path, where all tables templates are stored.
