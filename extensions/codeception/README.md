@@ -13,7 +13,7 @@ and application destroy after each test. You can configure your application by t
 methods and assertions are available.
 
 ```php
-SomeConsoleTestTest extends yii\codeception\TestCase
+SomeConsoleTest extends yii\codeception\TestCase
 {
 	# by default it is @tests/unit/_bootstrap.php which holds some basic things like: 
 	# including composer autoload, include BaseYii class.
@@ -51,7 +51,7 @@ SomeDebugTest extends yii\codeception\TestCase
 
 	public function testSmth()
 	{
-		Debug::debug('some my string);
+		Debug::debug('some my string');
 		Debug::debug($someArray);
 		Debug::debug($someObject);
 	}
@@ -62,7 +62,7 @@ SomeDebugTest extends yii\codeception\TestCase
 Then run command ```php codecept.phar run --debug unit/SomeDebugTest``` (Codeception also available through composer) and you will see in output:
 
 ```html
-  some string
+  some my string
 
   Array
   (
