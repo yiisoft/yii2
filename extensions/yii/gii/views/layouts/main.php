@@ -29,7 +29,7 @@ echo Nav::widget([
 	'options' => ['class' => 'nav navbar-nav navbar-right'],
 	'items' => [
 		['label' => 'Home', 'url' => ['default/index']],
-		['label' => 'Help', 'url' => 'http://www.yiiframework.com/doc/guide/topics.gii'],
+		['label' => 'Help', 'url' => 'https://github.com/yiisoft/yii2/blob/master/docs/guide/gii.md'],
 		['label' => 'Application', 'url' => Yii::$app->homeUrl],
 	],
 ]);

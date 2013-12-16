@@ -3,6 +3,7 @@ language: php
 php:
   - 5.4
   - 5.5
+#  - hhvm # commented until composer or hhvm get fixed: https://github.com/facebook/hhvm/issues/1347
 
 services:
   - redis-server

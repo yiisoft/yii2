@@ -40,7 +40,7 @@ class Formatter extends Component
 	 */
 	public $datetimeFormat = 'Y/m/d h:i:s A';
 	/**
-	 * @var string the text to be displayed when formatting a null. Defaults to '(not set)'.
+	 * @var string the text to be displayed when formatting a null. Defaults to '<span class="not-set">(not set)</span>'.
 	 */
 	public $nullDisplay;
 	/**
@@ -69,7 +69,7 @@ class Formatter extends Component
 			$this->booleanFormat = [Yii::t('yii', 'No'), Yii::t('yii', 'Yes')];
 		}
 		if ($this->nullDisplay === null) {
-			$this->nullDisplay = Yii::t('yii', '(not set)');
+			$this->nullDisplay = '<span class="not-set">' . Yii::t('yii', '(not set)') . '</span>';
 		}
 	}
 

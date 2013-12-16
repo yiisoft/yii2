@@ -30,6 +30,12 @@ class Widget extends Component implements ViewContextInterface
 	 */
 	public static $counter = 0;
 	/**
+	 * @var string the prefix to the automatically generated widget IDs.
+	 * @see [[getId()]]
+	 */
+	public static $autoIdPrefix = 'w';
+
+	/**
 	 * @var Widget[] the widgets that are currently being rendered (not ended). This property
 	 * is maintained by [[begin()]] and [[end()]] methods.
 	 * @internal
@@ -101,7 +107,7 @@ class Widget extends Component implements ViewContextInterface
 	public function getId($autoGenerate = true)
 	{
 		if ($autoGenerate && $this->_id === null) {
-			$this->_id = 'w' . self::$counter++;
+			$this->_id = self::$autoIdPrefix . self::$counter++;
 		}
 		return $this->_id;
 	}

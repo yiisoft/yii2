@@ -150,9 +150,23 @@ class ActiveRecord extends BaseActiveRecord
 
 	/**
 	 * Creates an [[ActiveQuery]] instance.
+	 *
 	 * This method is called by [[find()]], [[findBySql()]] to start a SELECT query.
 	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
 	 * written for querying `Customer` purpose.)
+	 *
+	 * You may also define default conditions that should apply to all queries unless overridden:
+	 *
+	 * ```php
+	 * public static function createQuery()
+	 * {
+	 *     return parent::createQuery()->where(['deleted' => false]);
+	 * }
+	 * ```
+	 *
+	 * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
+	 * default condition. Using [[Query::where()]] will override the default condition.
+	 *
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
 	 */
 	public static function createQuery()

@@ -143,7 +143,16 @@ class UrlRule extends Object
 			}
 		}
 
-		$tr = $tr2 = [];
+		$tr = [
+			'.' => '\\.',
+			'*' => '\\*',
+			'$' => '\\$',
+			'[' => '\\[',
+			']' => '\\]',
+			'(' => '\\(',
+			')' => '\\)',
+		];
+		$tr2 = [];
 		if (preg_match_all('/<(\w+):?([^>]+)?>/', $this->pattern, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
 			foreach ($matches as $match) {
 				$name = $match[1][0];
@@ -166,7 +175,6 @@ class UrlRule extends Object
 				}
 			}
 		}
-		$tr['.'] = '\\.';
 
 		$this->_template = preg_replace('/<(\w+):?([^>]+)?>/', '<$1>', $this->pattern);
 		$this->pattern = '#^' . trim(strtr($this->_template, $tr), '/') . '$#u';

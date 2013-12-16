@@ -112,43 +112,36 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 		return false;
 	}
 
-	private $_opened = false;
-
 	/**
 	 * Starts the session.
 	 */
 	public function open()
 	{
 		if (session_status() == PHP_SESSION_ACTIVE) {
-			$this->_opened = true;
 			return;
 		}
 
-		if (!$this->_opened) {
-			if ($this->getUseCustomStorage()) {
-				@session_set_save_handler(
-					[$this, 'openSession'],
-					[$this, 'closeSession'],
-					[$this, 'readSession'],
-					[$this, 'writeSession'],
-					[$this, 'destroySession'],
-					[$this, 'gcSession']
-				);
-			}
+		if ($this->getUseCustomStorage()) {
+			@session_set_save_handler(
+				[$this, 'openSession'],
+				[$this, 'closeSession'],
+				[$this, 'readSession'],
+				[$this, 'writeSession'],
+				[$this, 'destroySession'],
+				[$this, 'gcSession']
+			);
+		}
 
-			$this->setCookieParamsInternal();
+		$this->setCookieParamsInternal();
 
-			@session_start();
+		@session_start();
 
-			if (session_id() == '') {
-				$this->_opened = false;
-				$error = error_get_last();
-				$message = isset($error['message']) ? $error['message'] : 'Failed to start session.';
-				Yii::error($message, __METHOD__);
-			} else {
-				$this->_opened = true;
-				$this->updateFlashCounters();
-			}
+		if (session_id() == '') {
+			$error = error_get_last();
+			$message = isset($error['message']) ? $error['message'] : 'Failed to start session.';
+			Yii::error($message, __METHOD__);
+		} else {
+			$this->updateFlashCounters();
 		}
 	}
 
@@ -157,7 +150,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function close()
 	{
-		$this->_opened = false;
 		if (session_id() !== '') {
 			@session_write_close();
 		}
@@ -179,13 +171,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function getIsActive()
 	{
-		if (function_exists('session_status')) {
-			// available in PHP 5.4.0+
-			return session_status() == PHP_SESSION_ACTIVE;
-		} else {
-			// this is not very reliable
-			return $this->_opened && session_id() !== '';
-		}
+		return session_status() == PHP_SESSION_ACTIVE;
 	}
 
 	/**

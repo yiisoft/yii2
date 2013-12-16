@@ -39,7 +39,7 @@ class AutoTimestamp extends Behavior
 	/**
 	 * @var array list of attributes that are to be automatically filled with timestamps.
 	 * The array keys are the ActiveRecord events upon which the attributes are to be filled with timestamps,
-	 * and the array values are the corresponding attribute to be updated. You can use a string to represent
+	 * and the array values are the corresponding attribute(s) to be updated. You can use a string to represent
 	 * a single attribute, or an array to represent a list of attributes.
 	 * The default setting is to update the `create_time` attribute upon AR insertion,
 	 * and update the `update_time` attribute upon AR updating.
