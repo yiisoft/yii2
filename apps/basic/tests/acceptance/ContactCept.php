@@ -1,4 +1,5 @@
 <?php
+
 use tests\_pages\ContactPage;
 
 $I = new WebGuy($scenario);

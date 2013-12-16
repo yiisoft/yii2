@@ -1,5 +1,7 @@
 <?php
 
+// configuration adjustments for codeception functional tests. Will be merged with web.php config.
+
 return [
 	'components' => [
 		'db' => [

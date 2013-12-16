@@ -1,4 +1,5 @@
 <?php
+
 use tests\_pages\LoginPage;
 
 $I = new WebGuy($scenario);

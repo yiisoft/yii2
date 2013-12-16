@@ -1,4 +1,5 @@
 <?php
+
 use tests\functional\_pages\LoginPage;
 
 $I = new TestGuy($scenario);

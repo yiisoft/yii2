@@ -2,24 +2,19 @@
 
 namespace tests\unit\models;
 
-#use yii\test\DbTestTrait;
+use yii\codeception\TestCase;
+use yii\test\DbTestTrait;
 
-class UserTest extends \yii\codeception\TestCase
+class UserTest extends TestCase
 {
-
 	use DbTestTrait;
 
 	protected function setUp()
 	{
-		/*
-		 *
-		 * you can load fixtures in this way
-		 *
 		parent::setUp();
-		$this->loadFixtures([
-			'tbl_user',
-		]);
-		 */
+		// uncomment the following to load fixtures for table tbl_user
+		//$this->loadFixtures(['tbl_user']);
 	}
 
+	// TODO add test methods here
 }

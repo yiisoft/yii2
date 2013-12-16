@@ -2,9 +2,9 @@
 
 namespace tests\_pages;
 
-class AboutPage extends \yii\codeception\BasePage
+use yii\codeception\BasePage;
+
+class AboutPage extends BasePage
 {
-
 	public static $URL = '?r=site/about';
-
 }

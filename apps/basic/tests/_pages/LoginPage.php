@@ -2,9 +2,10 @@
 
 namespace tests\_pages;
 
-class LoginPage extends \yii\codeception\BasePage
-{
+use yii\codeception\BasePage;
 
+class LoginPage extends BasePage
+{
 	public static $URL = '?r=site/login';
 
 	/**
@@ -12,13 +13,11 @@ class LoginPage extends \yii\codeception\BasePage
 	 * @var string
 	 */
 	public $username = 'input[name="LoginForm[username]"]';
-
 	/**
 	 * login form password text field locator
 	 * @var string
 	 */
 	public $password = 'input[name="LoginForm[password]"]';
-
 	/**
 	 * login form submit button locator
 	 * @var string
@@ -32,9 +31,8 @@ class LoginPage extends \yii\codeception\BasePage
 	 */
 	public function login($username, $password)
 	{
-		$this->guy->fillField($this->username,$username);
-		$this->guy->fillField($this->password,$password);
+		$this->guy->fillField($this->username, $username);
+		$this->guy->fillField($this->password, $password);
 		$this->guy->click($this->button);
 	}
-
 }
