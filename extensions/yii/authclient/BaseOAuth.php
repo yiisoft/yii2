@@ -21,8 +21,10 @@ use yii\helpers\Json;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-abstract class BaseOAuth extends Component
+abstract class BaseOAuth extends Component implements ClientInterface
 {
+	use ClientTrait;
+
 	const CONTENT_TYPE_JSON = 'json'; // JSON format
 	const CONTENT_TYPE_URLENCODED = 'urlencoded'; // urlencoded query string, like name1=value1&name2=value2
 	const CONTENT_TYPE_XML = 'xml'; // XML format

@@ -25,8 +25,10 @@ use yii\base\NotSupportedException;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class OpenId extends Component
+class OpenId extends Component implements ClientInterface
 {
+	use ClientTrait;
+
 	/**
 	 * @var array list of attributes, which should be requested from server.
 	 */
