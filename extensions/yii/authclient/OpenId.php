@@ -27,7 +27,10 @@ use yii\base\NotSupportedException;
  */
 class OpenId extends Component
 {
-	public $required = [];
+	/**
+	 * @var array list of attributes, which should be requested from server.
+	 */
+	public $requiredAttributes = [];
 	public $optional = [];
 	public $verify_peer;
 	public $capath;
@@ -501,9 +504,9 @@ class OpenId extends Component
 		# That's because it's fully backwards compatibile with 1.0, and some providers
 		# advertise 1.0 even if they accept only 1.1. One such provider is myopenid.com
 		$params['openid.ns.sreg'] = 'http://openid.net/extensions/sreg/1.1';
-		if ($this->required) {
+		if ($this->requiredAttributes) {
 			$params['openid.sreg.required'] = [];
-			foreach ($this->required as $required) {
+			foreach ($this->requiredAttributes as $required) {
 				if (!isset(self::$axToSregMap[$required])) {
 					continue;
 				}
@@ -528,7 +531,7 @@ class OpenId extends Component
 	protected function axParams()
 	{
 		$params = [];
-		if ($this->required || $this->optional) {
+		if ($this->requiredAttributes || $this->optional) {
 			$params['openid.ns.ax'] = 'http://openid.net/srv/ax/1.0';
 			$params['openid.ax.mode'] = 'fetch_request';
 			$this->aliases = [];

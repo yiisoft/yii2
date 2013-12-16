@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\authclient\provider;
+namespace yii\authclient;
 
 /**
  * Class ProviderInterface
@@ -13,7 +13,7 @@ namespace yii\authclient\provider;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-interface ProviderInterface
+interface ClientInterface
 {
 	/**
 	 * @param string $id service id.
@@ -46,28 +46,7 @@ interface ProviderInterface
 	public function setTitle($title);
 
 	/**
-	 * @param string $url successful URL.
+	 * @return array list of user attributes
 	 */
-	public function setSuccessUrl($url);
-
-	/**
-	 * @return string successful URL.
-	 */
-	public function getSuccessUrl();
-
-	/**
-	 * @param string $url cancel URL.
-	 */
-	public function setCancelUrl($url);
-
-	/**
-	 * @return string cancel URL.
-	 */
-	public function getCancelUrl();
-
-	/**
-	 * Authenticate the user.
-	 * @return \yii\web\Response|boolean response instance or whether user was successfully authenticated.
-	 */
-	public function authenticate();
+	public function getUserAttributes();
 }
