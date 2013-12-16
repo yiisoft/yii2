@@ -52,7 +52,7 @@ class ActiveRelationTest extends MongoDbTestCase
 			];
 			$customerOrders[] = [
 				'customer_id' => $customer['_id'],
-				'number' => $customer['status'] + 1,
+				'number' => $customer['status'] + 100,
 			];
 		}
 		$customerOrderCollection->batchInsert($customerOrders);
@@ -65,9 +65,10 @@ class ActiveRelationTest extends MongoDbTestCase
 		/** @var CustomerOrder $order */
 		$order = CustomerOrder::find(['number' => 2]);
 		$this->assertFalse($order->isRelationPopulated('customer'));
-		$index = $order->customer;
+		$customer = $order->customer;
 		$this->assertTrue($order->isRelationPopulated('customer'));
-		$this->assertTrue($index instanceof Customer);
+		$this->assertTrue($customer instanceof Customer);
+		$this->assertEquals((string)$customer->_id, (string)$order->customer_id);
 		$this->assertEquals(1, count($order->populatedRelations));
 	}
 
@@ -78,6 +79,8 @@ class ActiveRelationTest extends MongoDbTestCase
 		$this->assertTrue($orders[0]->isRelationPopulated('customer'));
 		$this->assertTrue($orders[1]->isRelationPopulated('customer'));
 		$this->assertTrue($orders[0]->customer instanceof Customer);
+		$this->assertEquals((string)$orders[0]->customer->_id, (string)$orders[0]->customer_id);
 		$this->assertTrue($orders[1]->customer instanceof Customer);
+		$this->assertEquals((string)$orders[1]->customer->_id, (string)$orders[1]->customer_id);
 	}
 }
