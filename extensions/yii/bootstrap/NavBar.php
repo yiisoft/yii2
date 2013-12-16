@@ -76,7 +76,7 @@ class NavBar extends Widget
 		}
 		echo Html::endTag('div');
 
-		echo Html::beginTag('div', ['class' => 'collapse navbar-collapse navbar-ex1-collapse']);
+		echo Html::beginTag('div', ['class' => "collapse navbar-collapse navbar-{$this->options['id']}-collapse"]);
 	}
 
 	/**
@@ -102,7 +102,7 @@ class NavBar extends Widget
 		return Html::button("{$screenReader}\n{$bar}\n{$bar}\n{$bar}", [
 			'class' => 'navbar-toggle',
 			'data-toggle' => 'collapse',
-			'data-target' => '.navbar-ex1-collapse',
+			'data-target' => ".navbar-{$this->options['id']}-collapse",
 		]);
 	}
 }
