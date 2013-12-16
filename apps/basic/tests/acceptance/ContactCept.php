@@ -42,6 +42,8 @@ $contactPage->submit([
 	'body'			=>	'test content',
 	'verifyCode'	=>	'testme',
 ]);
-$I->wait(3);
+if (method_exists($I, 'wait')) {
+	$I->wait(3); // only for selenium
+}
 $I->dontSeeElement('#contact-form');
 $I->see('Thank you for contacting us. We will respond to you as soon as possible.');
