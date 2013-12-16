@@ -18,6 +18,7 @@
 		"yiisoft/yii2": "*",
 		"yiisoft/yii2-swiftmailer": "*",
 		"yiisoft/yii2-bootstrap": "*",
+		"yiisoft/yii2-codeception": "*",
 		"yiisoft/yii2-debug": "*",
 		"yiisoft/yii2-gii": "*"
 	},
