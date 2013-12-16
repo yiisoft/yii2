@@ -1,4 +1,5 @@
 <?php
+
 $I = new TestGuy($scenario);
 $I->wantTo('ensure that home page works');
 $I->amOnPage('');

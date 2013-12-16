@@ -2,7 +2,9 @@
 
 namespace tests\unit\models;
 
-class ContactFormTest extends \yii\codeception\TestCase
-{
+use yii\codeception\TestCase;
 
+class ContactFormTest extends TestCase
+{
+	// TODO add test methods here
 }

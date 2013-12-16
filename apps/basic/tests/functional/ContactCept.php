@@ -1,4 +1,5 @@
 <?php
+
 use tests\functional\_pages\ContactPage;
 
 $I = new TestGuy($scenario);

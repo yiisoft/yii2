@@ -1,7 +1,5 @@
 <?php
 
-Yii::setAlias('tests', realpath(__DIR__ . '/../tests'));
-
 $params = require(__DIR__ . '/params.php');
 
 $config = [
@@ -41,10 +39,20 @@ $config = [
 	'params' => $params,
 ];
 
-if (YII_ENV_DEV) {
+if (YII_ENV_DEV)
+{
+	// configuration adjustments for 'dev' environment
 	$config['preload'][] = 'debug';
 	$config['modules']['debug'] = 'yii\debug\Module';
 	$config['modules']['gii'] = 'yii\gii\Module';
+}
+
+if (YII_ENV_TEST)
+{
+	// configuration adjustments for 'test' environment.
+	// configuration for codeception test environments can be found in codeception folder.
+
+	// if needed, customize $config here.
 }
 
 return $config;
