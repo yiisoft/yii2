@@ -13,7 +13,7 @@ namespace yii\mail;
  * A message represents the settings and content of an email, such as the sender, recipient,
  * subject, body, etc.
  *
- * Messages are sent by a [[MailerInterface||mailer]], like the following,
+ * Messages are sent by a [[\yii\mail\MailerInterface|mailer]], like the following,
  *
  * ~~~
  * Yii::$app->mail->compose()
