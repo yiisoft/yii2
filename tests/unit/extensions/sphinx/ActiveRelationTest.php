@@ -30,6 +30,7 @@ class ActiveRelationTest extends SphinxTestCase
 		$this->assertTrue($article->isRelationPopulated('index'));
 		$this->assertTrue($index instanceof ArticleIndex);
 		$this->assertEquals(1, count($article->populatedRelations));
+		$this->assertEquals($article->id, $index->id);
 	}
 
 	public function testFindEager()
