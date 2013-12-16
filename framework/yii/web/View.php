@@ -147,33 +147,6 @@ class View extends \yii\base\View
 	}
 
 	/**
-	 * Marks the ending of an HTML page.
-	 */
-	public function endPage()
-	{
-		$this->trigger(self::EVENT_END_PAGE);
-
-		$content = ob_get_clean();
-		foreach (array_keys($this->assetBundles) as $bundle) {
-			$this->registerAssetFiles($bundle);
-		}
-		echo strtr($content, [
-			self::PH_HEAD => $this->renderHeadHtml(),
-			self::PH_BODY_BEGIN => $this->renderBodyBeginHtml(),
-			self::PH_BODY_END => $this->renderBodyEndHtml(),
-		]);
-
-		unset(
-			$this->metaTags,
-			$this->linkTags,
-			$this->css,
-			$this->cssFiles,
-			$this->js,
-			$this->jsFiles
-		);
-	}
-
-	/**
 	 * Registers all files provided by an asset bundle including depending bundles files.
 	 * Removes a bundle from [[assetBundles]] once files are registered.
 	 * @param string $name name of the bundle to register
