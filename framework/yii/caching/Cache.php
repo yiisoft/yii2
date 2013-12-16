@@ -71,7 +71,10 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * you are using [[Dependency|cache dependency]], because it relies on data serialization.
 	 */
 	public $serializer;
-
+	/**
+	 * @var int Default number of seconds in which the cached value will expire
+	 */
+	public $expire=0;
 
 	/**
 	 * Initializes the application component.
@@ -201,8 +204,11 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * This parameter is ignored if [[serializer]] is false.
 	 * @return boolean whether the value is successfully stored into cache
 	 */
-	public function set($key, $value, $expire = 0, $dependency = null)
+	public function set($key, $value, $expire = null, $dependency = null)
 	{
+		if ($expire === null) {
+			$expire = abs((int)$this->expire);
+		}
 		if ($dependency !== null && $this->serializer !== false) {
 			$dependency->evaluateDependency($this);
 		}
