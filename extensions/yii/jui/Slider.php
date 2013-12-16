@@ -26,7 +26,7 @@ use yii\helpers\Html;
  */
 class Slider extends Widget
 {
-	protected $clientEventsMap = [
+	protected $clientEventMap = [
 		'change' => 'slidechange',
 		'create' => 'slidecreate',
 		'slide' => 'slide',

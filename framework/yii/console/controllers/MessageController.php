@@ -43,11 +43,12 @@ class MessageController extends Controller
 	 * how to customize it to fit for your needs. After customization,
 	 * you may use this configuration file with the "extract" command.
 	 *
-	 * @param string $filePath output file name.
+	 * @param string $filePath output file name or alias.
 	 * @throws Exception on failure.
 	 */
 	public function actionConfig($filePath)
 	{
+		$filePath = Yii::getAlias($filePath);
 		if (file_exists($filePath)) {
 			if (!$this->confirm("File '{$filePath}' already exists. Do you wish to overwrite it?")) {
 				return;
@@ -63,13 +64,14 @@ class MessageController extends Controller
 	 * This command will search through source code files and extract
 	 * messages that need to be translated in different languages.
 	 *
-	 * @param string $configFile the path of the configuration file.
+	 * @param string $configFile the path or alias of the configuration file.
 	 * You may use the "yii message/config" command to generate
 	 * this file and then customize it for your needs.
 	 * @throws Exception on failure.
 	 */
 	public function actionExtract($configFile)
 	{
+		$configFile = Yii::getAlias($configFile);
 		if (!is_file($configFile)) {
 			throw new Exception("The configuration file does not exist: $configFile");
 		}

@@ -220,8 +220,7 @@ are used to model the many-one relationship and one-one relationship in a relati
 For example, a customer has many orders, and an order has one customer.
 Both methods take two parameters and return an [[ActiveRelation]] object:
 
- - `$class`: the name of the class of the related model(s). If specified without
-   a namespace, the namespace of the related model class will be taken from the declaring class.
+ - `$class`: the name of the class of the related model(s). This should be a fully qualified class name.
  - `$link`: the association between columns from the two tables. This should be given as an array.
    The keys of the array are the names of the columns from the table associated with `$class`,
    while the values of the array are the names of the columns from the declaring class.

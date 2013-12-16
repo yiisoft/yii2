@@ -43,7 +43,9 @@ use yii\base\InvalidConfigException;
  *                 'email' => [
  *                     'class' => 'yii\log\EmailTarget',
  *                     'levels' => ['error', 'warning'],
- *                     'emails' => ['admin@example.com'],
+ *                     'message' => [
+ *                         'to' => 'admin@example.com',
+ *                     ],
  *                 ],
  *             ],
  *         ],

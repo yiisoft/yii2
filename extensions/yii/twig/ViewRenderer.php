@@ -28,6 +28,11 @@ class ViewRenderer extends BaseViewRenderer
 	public $cachePath = '@runtime/Twig/cache';
 
 	/**
+	 * @var array extentions list.
+	 */
+	public $extensions = [];
+
+	/**
 	 * @var array Twig options
 	 * @see http://twig.sensiolabs.org/doc/api.html#environment-options
 	 */
@@ -45,6 +50,12 @@ class ViewRenderer extends BaseViewRenderer
 		$this->twig = new \Twig_Environment($loader, array_merge([
 			'cache' => Yii::getAlias($this->cachePath),
 		], $this->options));
+		
+		if (!empty($this->extensions)) {
+			foreach ($this->extensions as $extension) {
+				$this->twig->addExtension(new $extension());
+			}
+		}
 
 		$this->twig->addFunction('path', new \Twig_Function_Function(function ($path, $args = []) {
 			return Html::url(array_merge([$path], $args));

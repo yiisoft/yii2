@@ -714,11 +714,13 @@ class Model extends Component implements IteratorAggregate, ArrayAccess
 	 * The data being populated is subject to the safety check by [[setAttributes()]].
 	 * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
 	 * supplied by end user.
+	 * @param string $formName the form name to be used for loading the data into the model.
+	 * If not set, [[formName()]] will be used.
 	 * @return boolean whether the model is successfully populated with some data.
 	 */
-	public function load($data)
+	public function load($data, $formName = null)
 	{
-		$scope = $this->formName();
+		$scope = $formName === null ? $this->formName() : $formName;
 		if ($scope == '') {
 			$this->setAttributes($data);
 			return true;

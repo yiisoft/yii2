@@ -618,7 +618,7 @@ class BaseConsole
 	 * Gets input from STDIN and returns a string right-trimmed for EOLs.
 	 *
 	 * @param bool $raw If set to true, returns the raw string without trimming
-	 * @return string
+	 * @return string the string read from stdin
 	 */
 	public static function stdin($raw = false)
 	{
@@ -651,7 +651,7 @@ class BaseConsole
 	 * Asks the user for input. Ends when the user types a carriage return (PHP_EOL). Optionally, It also provides a
 	 * prompt.
 	 *
-	 * @param string $prompt the prompt (optional)
+	 * @param string $prompt the prompt to display before waiting for input (optional)
 	 * @return string the user's input
 	 */
 	public static function input($prompt = null)
@@ -766,9 +766,9 @@ class BaseConsole
 		$input = static::stdin();
 		if ($input === '?') {
 			foreach ($options as $key => $value) {
-				echo " $key - $value\n";
+				static::output(" $key - $value");
 			}
-			echo " ? - Show help\n";
+			static::output(" ? - Show help");
 			goto top;
 		} elseif (!in_array($input, array_keys($options))) {
 			goto top;
@@ -776,60 +776,147 @@ class BaseConsole
 		return $input;
 	}
 
+	private static $_progressStart;
+	private static $_progressWidth;
+	private static $_progressPrefix;
+
 	/**
-	 * Displays and updates a simple progress bar on screen.
+	 * Starts display of a progress bar on screen.
 	 *
-	 * @param integer $done the number of items that are completed
-	 * @param integer $total the total value of items that are to be done
-	 * @param integer $size the size of the status bar (optional)
-	 * @see http://snipplr.com/view/29548/
+	 * This bar will be updated by [[updateProgress()]] and my be ended by [[endProgress()]].
+	 *
+	 * The following example shows a simple usage of a progress bar:
+	 *
+	 * ```php
+	 * Console::startProgress(0, 1000);
+	 * for ($n = 1; $n <= 1000; $n++) {
+	 *     usleep(1000);
+	 *     Console::updateProgress($n, 1000);
+	 * }
+	 * Console::endProgress();
+	 * ```
+	 *
+	 * Git clone like progress (showing only status information):
+	 * ```php
+	 * Console::startProgress(0, 1000, 'Counting objects: ', false);
+	 * for ($n = 1; $n <= 1000; $n++) {
+	 *     usleep(1000);
+	 *     Console::updateProgress($n, 1000);
+	 * }
+	 * Console::endProgress("done." . PHP_EOL);
+	 * ```
+	 *
+	 * @param integer $done the number of items that are completed.
+	 * @param integer $total the total value of items that are to be done.
+	 * @param string $prefix an optional string to display before the progress bar.
+	 * Default to empty string which results in no prefix to be displayed.
+	 * @param integer|boolean $width optional width of the progressbar. This can be an integer representing
+	 * the number of characters to display for the progress bar or a float between 0 and 1 representing the
+	 * percentage of screen with the progress bar may take. It can also be set to false to disable the
+	 * bar and only show progress information like percent, number of items and ETA.
+	 * If not set, the bar will be as wide as the screen. Screen size will be detected using [[getScreenSize()]].
+	 * @see startProgress
+	 * @see updateProgress
+	 * @see endProgress
 	 */
-	public static function showProgress($done, $total, $size = 30)
+	public static function startProgress($done, $total, $prefix = '', $width = null)
 	{
-		static $start;
+		self::$_progressStart = time();
+		self::$_progressWidth = $width;
+		self::$_progressPrefix = $prefix;
 
-		// if we go over our bound, just ignore it
-		if ($done > $total) {
-			return;
-		}
+		static::updateProgress($done, $total);
+	}
 
-		if (empty($start)) {
-			$start = time();
-		}
-
-		$now = time();
-
-		$percent = (double)($done / $total);
-		$bar     = floor($percent * $size);
-
-		$status = "\r[";
-		$status .= str_repeat("=", $bar);
-		if ($bar < $size) {
-			$status .= ">";
-			$status .= str_repeat(" ", $size - $bar);
+	/**
+	 * Updates a progress bar that has been started by [[startProgress()]].
+	 *
+	 * @param integer $done the number of items that are completed.
+	 * @param integer $total the total value of items that are to be done.
+	 * @param string $prefix an optional string to display before the progress bar.
+	 * Defaults to null meaning the prefix specified by [[startProgress()]] will be used.
+	 * If prefix is specified it will update the prefix that will be used by later calls.
+	 * @see startProgress
+	 * @see endProgress
+	 */
+	public static function updateProgress($done, $total, $prefix = null)
+	{
+		$width = self::$_progressWidth;
+		if ($width === false) {
+			$width = 0;
 		} else {
-			$status .= "=";
+			$screenSize = static::getScreenSize(true);
+			if ($screenSize === false && $width < 1) {
+				$width = 0;
+			} elseif ($width === null) {
+				$width = $screenSize[0];
+			} elseif ($width > 0 && $width < 1) {
+				$width = floor($screenSize[0] * $width);
+			}
+		}
+		if ($prefix === null) {
+			$prefix = self::$_progressPrefix;
+		} else {
+			self::$_progressPrefix = $prefix;
+		}
+		$width -= mb_strlen($prefix);
+
+		$percent = $done / $total;
+		$info = sprintf("%d%% (%d/%d)", $percent * 100, $done, $total);
+
+		if ($done > $total || $done == 0) {
+			$info .= ' ETA: n/a';
+		} elseif ($done < $total) {
+			$rate = (time() - self::$_progressStart) / $done;
+			$info .= sprintf(' ETA: %d sec.', $rate * ($total - $done));
 		}
 
-		$display = number_format($percent * 100, 0);
+		$width -= 3 + mb_strlen($info);
+		// skipping progress bar on very small display or if forced to skip
+		if ($width < 5) {
+			static::stdout("\r$prefix$info   ");
+		} else {
+			if ($percent < 0) {
+				$percent = 0;
+			} elseif ($percent > 1) {
+				$percent = 1;
+			}
+			$bar = floor($percent * $width);
+			$status = str_repeat("=", $bar);
+			if ($bar < $width) {
+				$status .= ">";
+				$status .= str_repeat(" ", $width - $bar - 1);
+			}
+			static::stdout("\r$prefix" . "[$status] $info");
+		}
+		flush();
+	}
 
-		$status .= "] $display%  $done/$total";
-
-		$rate = ($now - $start) / $done;
-		$left = $total - $done;
-		$eta  = round($rate * $left, 2);
-
-		$elapsed = $now - $start;
-
-		$status .= " remaining: " . number_format($eta) . " sec.  elapsed: " . number_format($elapsed) . " sec.";
-
-		static::stdout("$status  ");
-
+	/**
+	 * Ends a progress bar that has been started by [[startProgress()]].
+	 *
+	 * @param string|boolean $remove This can be `false` to leave the progress bar on screen and just print a newline.
+	 * If set to `true`, the line of the progress bar will be cleared. This may also be a string to be displayed instead
+	 * of the progress bar.
+	 * @param bool $keepPrefix whether to keep the prefix that has been specified for the progressbar when progressbar
+	 * gets removed. Defaults to true.
+	 * @see startProgress
+	 * @see updateProgress
+	 */
+	public static function endProgress($remove = false, $keepPrefix = true)
+	{
+		if ($remove === false) {
+			static::stdout(PHP_EOL);
+		} else {
+			if (static::streamSupportsAnsiColors(STDOUT)) {
+				static::clearLine();
+			}
+			static::stdout("\r" . ($keepPrefix ? self::$_progressPrefix : '') . (is_string($remove) ? $remove : ''));
+		}
 		flush();
 
-		// when done, send a newline
-		if ($done == $total) {
-			echo "\n";
-		}
+		self::$_progressStart = null;
+		self::$_progressWidth = null;
+		self::$_progressPrefix = '';
 	}
 }

@@ -302,7 +302,7 @@ class BaseSecurity
 
 		$test = crypt($password, $hash);
 		$n = strlen($test);
-		if (strlen($test) < 32 || $n !== strlen($hash)) {
+		if ($n < 32 || $n !== strlen($hash)) {
 			return false;
 		}
 
