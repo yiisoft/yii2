@@ -159,7 +159,7 @@ class AuthAction extends Action
 			'url' => $url,
 			'enforceRedirect' => $enforceRedirect,
 		];
-		$viewFile = __DIR__ . DIRECTORY_SEPARATOR . 'provider' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'redirect.php';
+		$viewFile = __DIR__ . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'redirect.php';
 
 		$response = Yii::$app->getResponse();
 		$response->content = Yii::$app->getView()->renderFile($viewFile, $viewData);
@@ -208,7 +208,7 @@ class AuthAction extends Action
 							'id' => $provider->identity
 						);
 						$rawAttributes = $provider->getAttributes();
-						foreach ($provider->getRequiredAttributes() as $openIdAttributeName) {
+						foreach ($provider->requiredAttributes as $openIdAttributeName) {
 							if (isset($rawAttributes[$openIdAttributeName])) {
 								$attributes[$openIdAttributeName] = $rawAttributes[$openIdAttributeName];
 							} else {
@@ -216,7 +216,6 @@ class AuthAction extends Action
 							}
 						}
 						$provider->setAttributes($attributes);
-						$provider->isAuthenticated = true;
 						return $this->authenticateSuccess($provider);
 					} else {
 						throw new Exception('Unable to complete the authentication because the required data was not received.');
@@ -231,10 +230,6 @@ class AuthAction extends Action
 			}
 		} else {
 			$provider->identity = $provider->authUrl; // Setting identifier
-			$provider->required = []; // Try to get info from openid provider
-			foreach ($provider->getRequiredAttributes() as $openIdAttributeName) {
-				$this->required[] = $openIdAttributeName;
-			}
 			$request = Yii::$app->getRequest();
 			$provider->realm = $request->getHostInfo();
 			$provider->returnUrl = $provider->realm . $request->getUrl(); // getting return URL
@@ -270,7 +265,6 @@ class AuthAction extends Action
 		} else {
 			// Upgrade to access token.
 			$accessToken = $provider->fetchAccessToken();
-			$provider->isAuthenticated = true;
 			return $this->authenticateSuccess($provider);
 		}
 	}
@@ -304,7 +298,6 @@ class AuthAction extends Action
 			$code = $_GET['code'];
 			$token = $provider->fetchAccessToken($code);
 			if (!empty($token)) {
-				$provider->isAuthenticated = true;
 				return $this->authenticateSuccess($provider);
 			} else {
 				return $this->redirectCancel();
