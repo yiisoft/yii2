@@ -51,7 +51,10 @@ You may configure the targets in application configuration, like the following:
 				'email' => [
 					'class' => 'yii\log\EmailTarget',
 					'levels' => ['error', 'warning'],
-					'emails' => ['admin@example.com'],
+					'message' => [
+						'to' => ['admin@example.com', 'developer@example.com'],
+						'subject' => 'New example.com log message',
+					],
 				],
 			],
 		],
@@ -59,9 +62,9 @@ You may configure the targets in application configuration, like the following:
 ]
 ```
 
-In the config above we are defining two log targets: file and email. In both cases we are filtering messages handles by
-these targets by severity. In case of file target we're additionally filter by category. `yii\*` means all categories
-starting with `yii\`.
+In the config above we are defining two log targets: [[\yii\log\FileTarget|file]] and [[\yii\log\EmailTarget|email]].
+In both cases we are filtering messages handles by these targets by severity. In case of file target we're
+additionally filter by category. `yii\*` means all categories starting with `yii\`.
 
 Each log target can have a name and can be referenced via the [[targets]] property as follows:
 
