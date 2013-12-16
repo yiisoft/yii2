@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Enh #1406: DB Schema support for Oracle Database (p0larbeer, qiangxue)
 - Enh #1437: Added ListView::viewParams (qiangxue)
 - Enh #1469: ActiveRecord::find() now works with default conditions (default scope) applied by createQuery (cebe)
+- Enh #1552: It is now possible to use multiple bootstrap NavBar in a single page (Alex-Code)
 - Enh: Added `favicon.ico` and `robots.txt` to defauly application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
 - Enh: Support for file aliases in console command 'message' (omnilight)
