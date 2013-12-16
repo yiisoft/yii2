@@ -23,15 +23,13 @@ use Yii;
 class AuthAction extends Action
 {
 	/**
-	 * @var string name of the auth provider collection application component.
-	 * This component will be used to fetch {@link services} value if it is not set.
+	 * @var string name of the auth client collection application component.
 	 */
-	public $providerCollection;
+	public $clientCollection;
 	/**
-	 * @var string name of the GET param , which should be used to passed auth provider id to URL
-	 * defined by {@link baseAuthUrl}.
+	 * @var string name of the GET param, which is used to passed auth client id to this action.
 	 */
-	public $providerIdGetParamName = 'provider';
+	public $clientIdGetParamName = 'client_id';
 	/**
 	 * @var callable PHP callback, which should be triggered in case of successful authentication.
 	 */
@@ -106,15 +104,15 @@ class AuthAction extends Action
 	 */
 	public function run()
 	{
-		if (!empty($_GET[$this->providerIdGetParamName])) {
-			$providerId = $_GET[$this->providerIdGetParamName];
-			/** @var \yii\authclient\provider\Collection $providerCollection */
-			$providerCollection = Yii::$app->getComponent($this->providerCollection);
-			if (!$providerCollection->hasProvider($providerId)) {
-				throw new NotFoundHttpException("Unknown auth provider '{$providerId}'");
+		if (!empty($_GET[$this->clientIdGetParamName])) {
+			$clientId = $_GET[$this->clientIdGetParamName];
+			/** @var \yii\authclient\Collection $collection */
+			$collection = Yii::$app->getComponent($this->clientCollection);
+			if (!$collection->hasClient($clientId)) {
+				throw new NotFoundHttpException("Unknown auth client '{$clientId}'");
 			}
-			$provider = $providerCollection->getProvider($providerId);
-			return $this->authenticate($provider);
+			$client = $collection->getClient($clientId);
+			return $this->auth($client);
 		} else {
 			throw new NotFoundHttpException();
 		}
@@ -124,14 +122,14 @@ class AuthAction extends Action
 	 * @param mixed $provider
 	 * @throws \yii\base\NotSupportedException
 	 */
-	protected function authenticate($provider)
+	protected function auth($provider)
 	{
 		if ($provider instanceof OpenId) {
-			return $this->authenticateOpenId($provider);
+			return $this->authOpenId($provider);
 		} elseif ($provider instanceof OAuth2) {
-			return $this->authenticateOAuth2($provider);
+			return $this->authOAuth2($provider);
 		} elseif ($provider instanceof OAuth1) {
-			return $this->authenticateOAuth1($provider);
+			return $this->authOAuth1($provider);
 		} else {
 			throw new NotSupportedException('Provider "' . get_class($provider) . '" is not supported.');
 		}
@@ -141,7 +139,7 @@ class AuthAction extends Action
 	 * @param mixed $provider
 	 * @return \yii\web\Response
 	 */
-	protected function authenticateSuccess($provider)
+	protected function authSuccess($provider)
 	{
 		call_user_func($this->successCallback, $provider);
 		return $this->redirectSuccess();
@@ -198,7 +196,7 @@ class AuthAction extends Action
 	 * @throws Exception on failure
 	 * @throws \yii\web\HttpException
 	 */
-	protected function authenticateOpenId($provider)
+	protected function authOpenId($provider)
 	{
 		if (!empty($_REQUEST['openid_mode'])) {
 			switch ($_REQUEST['openid_mode']) {
@@ -215,8 +213,8 @@ class AuthAction extends Action
 								throw new Exception('Unable to complete the authentication because the required data was not received.');
 							}
 						}
-						$provider->setAttributes($attributes);
-						return $this->authenticateSuccess($provider);
+						$provider->setUserAttributes($attributes);
+						return $this->authSuccess($provider);
 					} else {
 						throw new Exception('Unable to complete the authentication because the required data was not received.');
 					}
@@ -244,7 +242,7 @@ class AuthAction extends Action
 	 * @param OAuth1 $provider
 	 * @return \yii\web\Response
 	 */
-	protected function authenticateOAuth1($provider)
+	protected function authOAuth1($provider)
 	{
 		// user denied error
 		if (isset($_GET['denied'])) {
@@ -265,7 +263,7 @@ class AuthAction extends Action
 		} else {
 			// Upgrade to access token.
 			$accessToken = $provider->fetchAccessToken();
-			return $this->authenticateSuccess($provider);
+			return $this->authSuccess($provider);
 		}
 	}
 
@@ -274,7 +272,7 @@ class AuthAction extends Action
 	 * @return \yii\web\Response
 	 * @throws \yii\base\Exception
 	 */
-	protected function authenticateOAuth2($provider)
+	protected function authOAuth2($provider)
 	{
 		if (isset($_GET['error'])) {
 			if ($_GET['error'] == 'access_denied') {
@@ -298,7 +296,7 @@ class AuthAction extends Action
 			$code = $_GET['code'];
 			$token = $provider->fetchAccessToken($code);
 			if (!empty($token)) {
-				return $this->authenticateSuccess($provider);
+				return $this->authSuccess($provider);
 			} else {
 				return $this->redirectCancel();
 			}
