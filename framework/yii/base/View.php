@@ -240,6 +240,46 @@ class View extends Component
 	}
 
 	/**
+	 * Renders a layout file.
+	 * 
+	 * @param string $viewFile the layout file. This can be either a file path or a path alias.
+	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+	 * @param object $context the context that the view should use for rendering the view. If null,
+	 * existing [[context]] will be used.
+	 * @return string the rendering result
+	 */
+	public function renderLayoutFile($layoutFile, $params = [], $context = null)
+	{
+		ob_start();
+		ob_implicit_flush(false);
+		$this->trigger(self::EVENT_BEGIN_PAGE);
+
+		echo $this->renderFile($layoutFile, $params, $context);
+
+		$this->trigger(self::EVENT_END_PAGE);
+
+		$content = ob_get_clean();
+		foreach (array_keys($this->assetBundles) as $bundle) {
+			$this->registerAssetFiles($bundle);
+		}
+		echo strtr($content, [
+			self::PH_HEAD => $this->renderHeadHtml(),
+			self::PH_BODY_BEGIN => $this->renderBodyBeginHtml(),
+			self::PH_BODY_END => $this->renderBodyEndHtml(),
+		]);
+
+		unset(
+			$this->metaTags,
+			$this->linkTags,
+			$this->css,
+			$this->cssFiles,
+			$this->js,
+			$this->jsFiles
+		);
+		return $content;
+	}
+
+	/**
 	 * This method is invoked right before [[renderFile()]] renders a view file.
 	 * The default implementation will trigger the [[EVENT_BEFORE_RENDER]] event.
 	 * If you override this method, make sure you call the parent implementation first.
@@ -437,25 +477,5 @@ class View extends Component
 	public function endCache()
 	{
 		FragmentCache::end();
-	}
-
-	/**
-	 * Marks the beginning of a page.
-	 */
-	public function beginPage()
-	{
-		ob_start();
-		ob_implicit_flush(false);
-
-		$this->trigger(self::EVENT_BEGIN_PAGE);
-	}
-
-	/**
-	 * Marks the ending of a page.
-	 */
-	public function endPage()
-	{
-		$this->trigger(self::EVENT_END_PAGE);
-		ob_end_flush();
 	}
 }

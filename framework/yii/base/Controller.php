@@ -307,7 +307,7 @@ class Controller extends Component implements ViewContextInterface
 		$output = $this->getView()->render($view, $params, $this);
 		$layoutFile = $this->findLayoutFile($this->getView());
 		if ($layoutFile !== false) {
-			return $this->getView()->renderFile($layoutFile, ['content' => $output], $this);
+			return $this->getView()->renderLayoutFile($layoutFile, ['content' => $output], $this);
 		} else {
 			return $output;
 		}
