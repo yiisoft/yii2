@@ -1,33 +1,78 @@
 Codeception Extension for Yii 2
 ===============================
 
-This extension provides a `Codeception` mail solution for Yii 2. It includes some classes that are useful
-for unit-testing (```TestCase```) or for codeception page-objects (```BasePage```).
+This extension provides [Codeception](http://codeception.com/) integration for the Yii Framework 2.0.
 
-When using codeception page-objects they have some similar code, this code was extracted and put into the ```BasePage```
-class to reduce code duplication. Simply extend your page object from this class, like it is done in ```yii2-basic``` and 
-```yii2-advanced``` boilerplates.
+It provides classes that help with testing with codeception:
 
-For unit testing there is a ```TestCase``` class which holds some common features like application creation before each test
-and application destroy after each test. You can configure your application by this class. ```TestCase``` is extended from ```PHPUnit_Framework_TestCase``` so all
-methods and assertions are available.
+- a base class for unit-tests: `yii\codeception\TestCase
+- a base class for codeception page-objects: `yii\codeception\BasePage`.
+- a solution for testing emails
+
+
+Installation
+------------
+
+The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
+
+Either run
+
+```
+php composer.phar require yiisoft/yii2-codeception "*"
+```
+
+or add
+
+```json
+"yiisoft/yii2-codeception": "*"
+```
+
+to the require section of your composer.json.
+
+
+Usage
+-----
+
+When using codeception page-objects they have some similar code, this code was extracted and put into the `BasePage`
+class to reduce code duplication. Simply extend your page object from this class, like it is done in `yii2-app-basic` and
+`yii2-app-advanced` boilerplates.
+
+For unit testing there is a `TestCase` class which holds some common features like application creation before each test
+and application destroy after each test. You can configure a mock application using this class.
+`TestCase` is extended from `PHPUnit_Framework_TestCase` so all methods and assertions are available.
 
 ```php
-SomeConsoleTest extends yii\codeception\TestCase
-{
-	# by default it is @tests/unit/_bootstrap.php which holds some basic things like: 
-	# including composer autoload, include BaseYii class.
-	public $baseConfig = '@app/config/console.php';
+<?php
 
-	public $applicationClass = 'yii\console\Application';
+SomeConsoleTest extends \yii\codeception\TestCase
+{
+	// this is the config file to load as application config
+	public static $applicationConfig = '@app/config/web.php';
+
+	// this defines the application class to use for mock applications
+	protected $applicationClass = 'yii\web\Application';
 }
 ```
-Dont forget that you still need to include autoload and BaseYii class, like in the _bootstrap.php file (comments above).
 
-You also can reconfigure some components for tests, for this purpose there is a ```$config``` property in the testcase.
+The `$applicationConfig` property may be set for all tests in a `_bootstrap.php` file like this:
 
 ```php
-SomeOtherTest extends yii\codeception\TestCase
+<?php
+
+yii\codeception\TestCase::$applicationConfig = yii\helpers\ArrayHelper::merge(
+	require(__DIR__ . '/../../config/web.php'),
+	require(__DIR__ . '/../../config/codeception/unit.php')
+);
+```
+
+Don't forget that you have to include autoload and Yii class in the `_bootstrap.php` file.
+
+You also can reconfigure some components for tests, for this purpose there is a `$config` property in the `TestCase` class.
+
+```php
+<?php
+
+SomeOtherTest extends \yii\codeception\TestCase
 {
 	public $config = [
 		'components' => [
@@ -39,19 +84,19 @@ SomeOtherTest extends yii\codeception\TestCase
 }
 ```
 
-Because of Codeception buffers all output you cant make simple ```var_dump()``` in the TestCase, instead you need to use
-```Codeception\Util\Debug::debug()``` function and then run test with ```--debug``` key, for example:
+Because of Codeception buffers all output you can't make simple `var_dump()` in the TestCase, instead you need to use
+`Codeception\Util\Debug::debug()` function and then run test with `--debug` key, for example:
 
 ```php
+<?php
 
-use \Codeception\Util\Debug;
+use Codeception\Util\Debug;
 
-SomeDebugTest extends yii\codeception\TestCase
+SomeDebugTest extends \yii\codeception\TestCase
 {
-
 	public function testSmth()
 	{
-		Debug::debug('some my string');
+		Debug::debug('some string');
 		Debug::debug($someArray);
 		Debug::debug($someObject);
 	}
@@ -59,10 +104,10 @@ SomeDebugTest extends yii\codeception\TestCase
 }
 ```
 
-Then run command ```php codecept.phar run --debug unit/SomeDebugTest``` (Codeception also available through composer) and you will see in output:
+Then run command `php codecept.phar run --debug unit/SomeDebugTest` and you will see in output:
 
 ```html
-  some my string
+  some string
 
   Array
   (
@@ -104,25 +149,4 @@ Then run command ```php codecept.phar run --debug unit/SomeDebugTest``` (Codecep
 
 ```
 
-
-For further instructions refer to the related section in the Yii Definitive Guide (https://github.com/yiisoft/yii2/blob/master/docs/guide/testing.md).
-
-
-Installation
-------------
-
-The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
-
-Either run
-
-```
-php composer.phar require yiisoft/yii2-codeception "*"
-```
-
-or add
-
-```json
-"yiisoft/yii2-codeception": "*"
-```
-
-to the require section of your composer.json.
+For further instructions refer to the testing section in the [Yii Definitive Guide](https://github.com/yiisoft/yii2/blob/master/docs/guide/testing.md).
