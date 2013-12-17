@@ -12,7 +12,7 @@ Composer package. Here's how to do it:
 
 Note that requirements of extensions that come with `yii2-dev` are not loaded automatically.
 If you want to use an extension, check if there are dependencies suggested for it and add them
-to your `composer.json`.
+to your `composer.json`. You can see suggested packages by running `composer show yiisoft/yii2-dev`.
 
 If you're core developer there's no extra step needed. You can change framework code under
 `vendor/yiisoft/yii2-dev` and push it to main repository.
