@@ -190,8 +190,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function count($q = '*', $db = null)
 	{
-		$this->select = ["COUNT($q)"];
-		return $this->createCommand($db)->queryScalar();
+		return $this->queryScalar("COUNT($q)", $db);
 	}
 
 	/**
@@ -204,8 +203,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function sum($q, $db = null)
 	{
-		$this->select = ["SUM($q)"];
-		return $this->createCommand($db)->queryScalar();
+		return $this->queryScalar("SUM($q)", $db);
 	}
 
 	/**
@@ -218,8 +216,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function average($q, $db = null)
 	{
-		$this->select = ["AVG($q)"];
-		return $this->createCommand($db)->queryScalar();
+		return $this->queryScalar("AVG($q)", $db);
 	}
 
 	/**
@@ -232,8 +229,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function min($q, $db = null)
 	{
-		$this->select = ["MIN($q)"];
-		return $this->createCommand($db)->queryScalar();
+		return $this->queryScalar("MIN($q)", $db);
 	}
 
 	/**
@@ -246,8 +242,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function max($q, $db = null)
 	{
-		$this->select = ["MAX($q)"];
-		return $this->createCommand($db)->queryScalar();
+		return $this->queryScalar("MAX($q)", $db);
 	}
 
 	/**
@@ -258,8 +253,23 @@ class Query extends Component implements QueryInterface
 	 */
 	public function exists($db = null)
 	{
-		$this->select = [new Expression('1')];
-		return $this->scalar($db) !== false;
+		return $this->queryScalar(new Expression('1'), $db) !== false;
+	}
+
+	/**
+	 * Queries a scalar value by setting [[select]] first.
+	 * Restores the value of select to make this query reusable.
+	 * @param string|Expression $selectExpression
+	 * @param Connection $db
+	 * @return bool|string
+	 */
+	private function queryScalar($selectExpression, $db)
+	{
+		$select = $this->select;
+		$this->select = [$selectExpression];
+		$command = $this->createCommand($db);
+		$this->select = $select;
+		return $command->queryScalar();
 	}
 
 	/**
