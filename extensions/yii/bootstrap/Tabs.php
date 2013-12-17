@@ -144,7 +144,8 @@ class Tabs extends Widget
 					Html::addCssClass($options, 'active');
 					Html::addCssClass($headerOptions, 'active');
 				}
-				$header = Html::a($label, '#' . $options['id'], ['data-toggle' => 'tab']);
+				$item['linkOptions']['data-toggle'] = 'tab';
+				$header = Html::a($label, '#' . $options['id'], $item['linkOptions']);
 				$panes[] = Html::tag('div', $item['content'], $options);
 			} else {
 				throw new InvalidConfigException("Either the 'content' or 'items' option must be set.");
