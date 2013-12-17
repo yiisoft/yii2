@@ -8,7 +8,8 @@ as well as complete CRUD controllers.
 Installing and configuring
 --------------------------
 
-Gii comes as an offical extension and the preferred way to install this extension is through [composer](http://getcomposer.org/download/).
+Gii comes as an offical extension and the preferred way to install this extension is through
+[composer](http://getcomposer.org/download/).
 
 Either run
 
@@ -42,13 +43,44 @@ http://localhost/path/to/index.php?r=gii
 
 > Note: if you are accessing gii from another IP than localhost, access will be denied by default.
   You have to add allowed IPs to the configuration in this case:
-  ```php
-      'gii' => [
-          'class' => 'yii\gii\Module',
-          'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'] // adjust this to your needs
-      ],
-  ```
 
+```php
+'gii' => [
+	'class' => 'yii\gii\Module',
+	'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'] // adjust this to your needs
+],
+```
+
+### Basic application
+
+In basic application template configuration structure is a bit different so Gii should be configured in
+`config/web.php`:
+
+```php
+// ...
+if (YII_ENV_DEV)
+{
+	// configuration adjustments for 'dev' environment
+	$config['preload'][] = 'debug';
+	$config['modules']['debug'] = 'yii\debug\Module';
+	$config['modules']['gii'] = 'yii\gii\Module'; // <--- here
+}
+```
+
+So in order to adjust IP address you need to do it like the following:
+
+```php
+if (YII_ENV_DEV)
+{
+	// configuration adjustments for 'dev' environment
+	$config['preload'][] = 'debug';
+	$config['modules']['debug'] = 'yii\debug\Module';
+	$config['modules']['gii'] = [
+		'class' => 'yii\gii\Module',
+		'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'],
+	];
+}
+```
 
 How to use it
 -------------
