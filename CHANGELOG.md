@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #1497: Localized view files are not correctly returned (mintao)
 - Bug #1500: Log messages exported to files are not separated by newlines (omnilight, qiangxue)
 - Bug #1509: The SQL for creating Postgres RBAC tables is incorrect (qiangxue)
+- Bug #1545: It was not possible to execute db Query twice, params where missing (cebe)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Enh #1293: Replaced Console::showProgress() with a better approach. See Console::startProgress() for details (cebe)
