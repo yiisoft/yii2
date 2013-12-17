@@ -9,17 +9,21 @@ services:
   - redis-server
   - memcached
   - elasticsearch
+  - mongodb
 
-before_script:
+install:
+  - pecl -q install mongo && echo "extension=mongo.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   - composer self-update && composer --version
-  - composer require satooshi/php-coveralls 0.6.* --dev --prefer-dist
-  - mysql -e 'CREATE DATABASE yiitest;';
-  - psql -U postgres -c 'CREATE DATABASE yiitest;';
+#  - composer require satooshi/php-coveralls 0.6.* --dev --prefer-dist
   - echo 'elasticsearch version ' && curl http://localhost:9200/
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
   - tests/unit/data/travis/sphinx-setup.sh
+
+before_script:
+  - mysql -e 'CREATE DATABASE yiitest;';
+  - psql -U postgres -c 'CREATE DATABASE yiitest;';
 
 script:
   - phpunit --coverage-text --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
