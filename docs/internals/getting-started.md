@@ -10,6 +10,10 @@ Composer package. Here's how to do it:
 4. Execute `composer install`.
 5. Now you have working playground that uses latest code.
 
+Note that requirements of extensions that come with `yii2-dev` are not loaded automatically.
+If you want to use an extension, check if there are dependencies suggested for it and add them
+to your `composer.json`.
+
 If you're core developer there's no extra step needed. You can change framework code under
 `vendor/yiisoft/yii2-dev` and push it to main repository.
 
