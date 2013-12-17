@@ -43,7 +43,7 @@ http://localhost/path/to/index.php?r=gii
 
 > Note: if you are accessing gii from another IP than localhost, access will be denied by default.
   You have to add allowed IPs to the configuration in this case:
-
+>
 ```php
 'gii' => [
 	'class' => 'yii\gii\Module',
