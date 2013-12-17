@@ -178,7 +178,7 @@ class BaseSecurity
 	/**
 	 * Returns a secret key associated with the specified name.
 	 * If the secret key does not exist, a random key will be generated
-	 * and saved in the file "keys.data" under the application's runtime directory
+	 * and saved in the file "keys.json" under the application's runtime directory
 	 * so that the same secret key can be returned in future requests.
 	 * @param string $name the name that is associated with the secret key
 	 * @param integer $length the length of the key that should be generated if not exists

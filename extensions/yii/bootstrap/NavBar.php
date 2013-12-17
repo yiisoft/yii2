@@ -50,8 +50,15 @@ class NavBar extends Widget
 	 * @var array the HTML attributes of the brand link.
 	 */
 	public $brandOptions = [];
-
+	/**
+	 * @var string text to show for screen readers for the button to toggle the navbar.
+	 */
 	public $screenReaderToggleText = 'Toggle navigation';
+	/**
+	 * @var bool whether the navbar content should be included in a `container` div which adds left and right padding.
+	 * Set this to false for a 100% width navbar.
+	 */
+	public $padded = true;
 
 	/**
 	 * Initializes the widget.
@@ -60,14 +67,19 @@ class NavBar extends Widget
 	{
 		parent::init();
 		$this->clientOptions = false;
-		Html::addCssClass($this->options, 'navbar navbar-default');
+		Html::addCssClass($this->options, 'navbar');
+		if ($this->options['class'] == 'navbar') {
+			Html::addCssClass($this->options, 'navbar-default');
+		}
 		Html::addCssClass($this->brandOptions, 'navbar-brand');
 		if (empty($this->options['role'])) {
 			$this->options['role'] = 'navigation';
 		}
 
 		echo Html::beginTag('nav', $this->options);
-		echo Html::beginTag('div', ['class' => 'container']);
+		if ($this->padded) {
+			echo Html::beginTag('div', ['class' => 'container']);
+		}
 
 		echo Html::beginTag('div', ['class' => 'navbar-header']);
 		echo $this->renderToggleButton();
@@ -76,7 +88,7 @@ class NavBar extends Widget
 		}
 		echo Html::endTag('div');
 
-		echo Html::beginTag('div', ['class' => 'collapse navbar-collapse navbar-ex1-collapse']);
+		echo Html::beginTag('div', ['class' => "collapse navbar-collapse navbar-{$this->options['id']}-collapse"]);
 	}
 
 	/**
@@ -86,7 +98,9 @@ class NavBar extends Widget
 	{
 
 		echo Html::endTag('div');
-		echo Html::endTag('div');
+		if ($this->padded) {
+			echo Html::endTag('div');
+		}
 		echo Html::endTag('nav');
 		BootstrapPluginAsset::register($this->getView());
 	}
@@ -102,7 +116,7 @@ class NavBar extends Widget
 		return Html::button("{$screenReader}\n{$bar}\n{$bar}\n{$bar}", [
 			'class' => 'navbar-toggle',
 			'data-toggle' => 'collapse',
-			'data-target' => '.navbar-ex1-collapse',
+			'data-target' => ".navbar-{$this->options['id']}-collapse",
 		]);
 	}
 }

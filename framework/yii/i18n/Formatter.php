@@ -39,6 +39,15 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public $locale;
 	/**
+	 * @var string|\IntlTimeZone|\DateTimeZone the timezone to use for formatting time and date values.
+	 * This can be any value that may be passed to [date_default_timezone_set()](http://www.php.net/manual/en/function.date-default-timezone-set.php)
+	 * e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
+	 * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available timezones.
+	 * This can also be an IntlTimeZone or a DateTimeZone object.
+	 * If not set, [[\yii\base\Application::timezone]] will be used.
+	 */
+	public $timeZone;
+	/**
 	 * @var string the default format string to be used to format a date.
 	 * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
 	 * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
@@ -84,10 +93,13 @@ class Formatter extends \yii\base\Formatter
 	public function init()
 	{
 		if (!extension_loaded('intl')) {
-			throw new InvalidConfigException('The "intl" PHP extension is not install. It is required to format data values in localized formats.');
+			throw new InvalidConfigException('The "intl" PHP extension is not installed. It is required to format data values in localized formats.');
 		}
 		if ($this->locale === null) {
 			$this->locale = Yii::$app->language;
+		}
+		if ($this->timeZone === null) {
+			$this->timeZone = Yii::$app->timeZone;
 		}
 		if ($this->decimalSeparator === null || $this->thousandSeparator === null) {
 			$formatter = new NumberFormatter($this->locale, NumberFormatter::DECIMAL);
@@ -125,6 +137,7 @@ class Formatter extends \yii\base\Formatter
 	 * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
 	 *
 	 * @return string the formatted result
+	 * @throws InvalidConfigException when formatting fails due to invalid parameters.
 	 * @see dateFormat
 	 */
 	public function asDate($value, $format = null)
@@ -137,9 +150,9 @@ class Formatter extends \yii\base\Formatter
 			$format = $this->dateFormat;
 		}
 		if (isset($this->_dateFormats[$format])) {
-			$formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE);
+			$formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, $this->timeZone);
 		} else {
-			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
+			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $this->timeZone);
 			if ($formatter !== null) {
 				$formatter->setPattern($format);
 			}
@@ -166,6 +179,7 @@ class Formatter extends \yii\base\Formatter
 	 * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
 	 *
 	 * @return string the formatted result
+	 * @throws InvalidConfigException when formatting fails due to invalid parameters.
 	 * @see timeFormat
 	 */
 	public function asTime($value, $format = null)
@@ -178,9 +192,9 @@ class Formatter extends \yii\base\Formatter
 			$format = $this->timeFormat;
 		}
 		if (isset($this->_dateFormats[$format])) {
-			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format]);
+			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format], $this->timeZone);
 		} else {
-			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
+			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $this->timeZone);
 			if ($formatter !== null) {
 				$formatter->setPattern($format);
 			}
@@ -207,6 +221,7 @@ class Formatter extends \yii\base\Formatter
 	 * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
 	 *
 	 * @return string the formatted result
+	 * @throws InvalidConfigException when formatting fails due to invalid parameters.
 	 * @see datetimeFormat
 	 */
 	public function asDatetime($value, $format = null)
@@ -219,9 +234,9 @@ class Formatter extends \yii\base\Formatter
 			$format = $this->datetimeFormat;
 		}
 		if (isset($this->_dateFormats[$format])) {
-			$formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format]);
+			$formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format], $this->timeZone);
 		} else {
-			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
+			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $this->timeZone);
 			if ($formatter !== null) {
 				$formatter->setPattern($format);
 			}

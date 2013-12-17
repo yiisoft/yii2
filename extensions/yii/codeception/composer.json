@@ -1,0 +1,26 @@
+{
+	"name": "yiisoft/yii2-codeception",
+	"description": "The Codeception integration for the Yii framework",
+	"keywords": ["yii", "codeception"],
+	"type": "yii2-extension",
+	"license": "BSD-3-Clause",
+	"support": {
+		"forum": "http://www.yiiframework.com/forum/",
+		"wiki": "http://www.yiiframework.com/wiki/",
+		"irc": "irc://irc.freenode.net/yii",
+		"source": "https://github.com/yiisoft/yii2"
+	},
+	"authors": [
+		{
+			"name": "Mark Jebri",
+			"email": "mark.github@yandex.ru"
+		}
+	],
+	"require": {
+		"yiisoft/yii2": "*"
+	},
+	"autoload": {
+		"psr-0": { "yii\\codeception\\": "" }
+	},
+	"target-dir": "yii/codeception"
+}
