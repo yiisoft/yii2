@@ -122,7 +122,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			$db = $modelClass::getDb();
 		}
 
-		$params = $this->params;
 		if ($this->sql === null) {
 			if ($this->from === null) {
 				$tableName = $modelClass::tableName();
@@ -131,8 +130,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 				}
 				$this->from = [$tableName];
 			}
-			list ($this->sql, $params) = $db->getQueryBuilder()->build($this);
+			list ($this->sql, $this->params) = $db->getQueryBuilder()->build($this);
 		}
-		return $db->createCommand($this->sql, $params);
+		return $db->createCommand($this->sql, $this->params);
 	}
 }
