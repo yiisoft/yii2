@@ -2,13 +2,18 @@
 
 namespace yii\codeception;
 
-use Codeception\AbstractGuy;
-
 /**
+ * Represents a web page to test
  *
- * Declare UI map for this page here. CSS or XPath allowed.
+ * Pages extend from this class and declare UI map for this page via
+ * static properties. CSS or XPath allowed.
+ *
+ * Here is an example:
+ *
+ * ```php
  * public static $usernameField = '#username';
  * public static $formSubmitButton = "#mainForm input[type=submit]";
+ * ```
  *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
@@ -20,7 +25,7 @@ abstract class BasePage
 	 */
 	public static $URL = '';
 	/**
-	 * @var AbstractGuy
+	 * @var \Codeception\AbstractGuy
 	 */
 	protected $guy;
 
