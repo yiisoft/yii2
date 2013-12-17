@@ -47,7 +47,7 @@ Working with database
 ---------------------
 
 - If extension creates or modifies database schema always use Yii migrations instead of SQL files or custom scripts.
-- Migrations SHOULD be database agnostic.
+- Migrations SHOULD be DBMS agnostic.
 - You MUST NOT make use of active-record model classes in your migrations.
 
 Assets
