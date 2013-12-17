@@ -190,11 +190,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function count($q = '*', $db = null)
 	{
-		$select = $this->select;
-		$this->select = ["COUNT($q)"];
-		$command = $this->createCommand($db);
-		$this->select = $select;
-		return $command->queryScalar();
+		return $this->queryScalar("COUNT($q)", $db);
 	}
 
 	/**
@@ -207,11 +203,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function sum($q, $db = null)
 	{
-		$select = $this->select;
-		$this->select = ["SUM($q)"];
-		$command = $this->createCommand($db);
-		$this->select = $select;
-		return $command->queryScalar();
+		return $this->queryScalar("SUM($q)", $db);
 	}
 
 	/**
@@ -224,11 +216,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function average($q, $db = null)
 	{
-		$select = $this->select;
-		$this->select = ["AVG($q)"];
-		$command = $this->createCommand($db);
-		$this->select = $select;
-		return $command->queryScalar();
+		return $this->queryScalar("AVG($q)", $db);
 	}
 
 	/**
@@ -241,11 +229,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function min($q, $db = null)
 	{
-		$select = $this->select;
-		$this->select = ["MIN($q)"];
-		$command = $this->createCommand($db);
-		$this->select = $select;
-		return $command->queryScalar();
+		return $this->queryScalar("MIN($q)", $db);
 	}
 
 	/**
@@ -258,11 +242,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function max($q, $db = null)
 	{
-		$select = $this->select;
-		$this->select = ["MAX($q)"];
-		$command = $this->createCommand($db);
-		$this->select = $select;
-		return $command->queryScalar();
+		return $this->queryScalar("MAX($q)", $db);
 	}
 
 	/**
@@ -273,11 +253,23 @@ class Query extends Component implements QueryInterface
 	 */
 	public function exists($db = null)
 	{
+		return $this->queryScalar(new Expression('1'), $db) !== false;
+	}
+
+	/**
+	 * Queries a scalar value by setting [[select]] first.
+	 * Restores the value of select to make this query reusable.
+	 * @param string|Expression $selectExpression
+	 * @param Connection $db
+	 * @return bool|string
+	 */
+	private function queryScalar($selectExpression, $db)
+	{
 		$select = $this->select;
-		$this->select = [new Expression('1')];
+		$this->select = [$selectExpression];
 		$command = $this->createCommand($db);
 		$this->select = $select;
-		return $command->queryScalar() !== false;
+		return $command->queryScalar();
 	}
 
 	/**
