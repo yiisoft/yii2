@@ -788,6 +788,7 @@ class QueryBuilder extends \yii\base\Object
 	public function buildCondition($condition, &$params)
 	{
 		static $builders = [
+			'NOT' => 'buildNotCondition',
 			'AND' => 'buildAndCondition',
 			'OR' => 'buildAndCondition',
 			'BETWEEN' => 'buildBetweenCondition',
@@ -875,6 +876,30 @@ class QueryBuilder extends \yii\base\Object
 		} else {
 			return '';
 		}
+	}
+
+	/**
+	 * Inverts an SQL expressions with `NOT` operator.
+	 * @param string $operator the operator to use for connecting the given operands
+	 * @param array $operands the SQL expressions to connect.
+	 * @param array $params the binding parameters to be populated
+	 * @return string the generated SQL expression
+	 * @throws InvalidParamException if wrong number of operands have been given.
+	 */
+	public function buildNotCondition($operator, $operands, &$params)
+	{
+		if (count($operands) != 1) {
+			throw new InvalidParamException("Operator '$operator' requires exactly one operand.");
+		}
+
+		$operand = reset($operands);
+		if (is_array($operand)) {
+			$operand = $this->buildCondition($operand, $params);
+		}
+		if ($operand === '') {
+			return '';
+		}
+		return "$operator ($operand)";
 	}
 
 	/**
