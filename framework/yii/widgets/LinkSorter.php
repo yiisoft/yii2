@@ -34,6 +34,7 @@ class LinkSorter extends Widget
 	public $attributes;
 	/**
 	 * @var array HTML attributes for the sorter container tag.
+	 * See [[yii\helpers\Html::ul()]] for special attributes.
 	 */
 	public $options = ['class' => 'sorter'];
 
@@ -68,6 +69,6 @@ class LinkSorter extends Widget
 		foreach ($attributes as $name) {
 			$links[] = $this->sort->link($name);
 		}
-		return Html::ul($links, ['encode' => false]);
+		return Html::ul($links, array_merge($this->options, ['encode' => false]));
 	}
 }
