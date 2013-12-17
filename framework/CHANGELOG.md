@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Enh: Support for file aliases in console command 'message' (omnilight)
 - Chg: Renamed yii\jui\Widget::clientEventsMap to clientEventMap (qiangxue)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
+- New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
 
 2.0.0 alpha, December 1, 2013
 ---------------------------
