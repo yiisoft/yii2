@@ -15,7 +15,10 @@ To run the tests, follow these steps:
    ```
    php codecept.phar build    // rebuild test scripts, only need to be run once
    ```
-4. Run the tests:
+4. If you want to run acceptance tests, you need to download [selenium standalone] (http://www.seleniumhq.org/download/)
+and then run it with command ```java -jar {selenium-standalone-name}.jar```. After that you can use ```WebDriver``` codeception module that will
+connect to selenium and launch browser. You also can use Xvfb in your tests.
+5. Run the tests:
    ```
    php codecept.phar run      // run all available tests
    // you can also run a test suite alone:

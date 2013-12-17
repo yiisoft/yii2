@@ -17,12 +17,11 @@ SomeConsoleTest extends yii\codeception\TestCase
 {
 	# by default it is @tests/unit/_bootstrap.php which holds some basic things like: 
 	# including composer autoload, include BaseYii class.
-	public $baseConfig = '@app/config/console.php';
+	public static $baseConfig = '@tests/unit/console_bootstrap.php';
 
 	public $applicationClass = 'yii\console\Application';
 }
 ```
-Dont forget that you still need to include autoload and BaseYii class, like in the _bootstrap.php file (comments above).
 
 You also can reconfigure some components for tests, for this purpose there is a ```$config``` property in the testcase.
 
