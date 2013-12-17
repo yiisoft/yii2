@@ -83,10 +83,10 @@ class Tabs extends Widget
 	public $headerOptions = [];
 	/**
 	 * @var array list of HTML attributes for the tab item link tags. This will be overwritten
-	 * by the "linkOptions" set in individual [[items]].
+	 * by the "linkOptions" set in individual [[items]]. Note this will only control the options for
+	 * the tab item links and not the links in the dropdown.
 	 */
 	public $linkOptions = [];
-	/**
 	/**
 	 * @var boolean whether the labels for header items should be HTML-encoded.
 	 */
