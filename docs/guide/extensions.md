@@ -10,33 +10,7 @@ using the following syntax: e.g. `[[name()]]`, `[[name\space\MyClass::name()]]`.
 - If you're displaying errors to developers do not translate these (i.e. do not use `\Yii::t()`). Errors should be
   translated only if they're displayed to end users.
 - Extension SHOULD NOT use class prefixes (i.e. `TbNavBar`, `EMyWidget`, etc.)
-- Extension SHOULD provide a valid PSR-0 autoloading configuration in `composer.json`
-
-    **Example 1: Code in repository root**
-
-    ```
-    ./Class.php
-    ```
-    
-    ```
-    "autoload": {
-        "psr-0": { "vendor\\package\\": "" }
-    },
-    ```
-
-    **Example 2: Code in repository subfolder `./src`**
-
-    ```
-    ./src/vendor/package/Class.php
-    ```
-    
-    ```
-    "autoload": {
-        "psr-0": { "vendor\\package\\": "./src" }
-    },
-    ```
-    
-    Details about autoloading configuration can be found in the [composer documentation](http://getcomposer.org/doc/04-schema.md#autoload).
+- Extension MUST provide a valid autoloading configuration in `composer.json`. Details can be found in the [composer documentation](http://getcomposer.org/doc/04-schema.md#autoload) or see all [official Yii2 extensions](https://github.com/yiisoft/yii2/tree/master/extensions/yii) for example.
 
 
 
