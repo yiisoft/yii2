@@ -72,6 +72,26 @@ $connection->open();
 ```
 
 
+> **Tip**: if you need to execute additional SQL queries right after establishing a connection you can add the
+> following to your application configuration file:
+>
+```php
+return [
+	// ...
+	'components' => [
+		// ...
+		'db' => [
+			'class' => 'yii\db\Connection',
+			// ...
+			'on afterOpen' => function($event) {
+				$event->sender->createCommand("SET time_zone = 'UTC'")->execute();
+			}
+		],
+	],
+	// ...
+];
+```
+
 Basic SQL queries
 -----------------
 
