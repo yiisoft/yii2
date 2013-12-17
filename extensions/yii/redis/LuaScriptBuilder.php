@@ -219,6 +219,7 @@ EOF;
 	public function buildCondition($condition, &$columns)
 	{
 		static $builders = [
+			'not' => 'buildNotCondition',
 			'and' => 'buildAndCondition',
 			'or' => 'buildAndCondition',
 			'between' => 'buildBetweenCondition',
@@ -267,6 +268,19 @@ EOF;
 			}
 		}
 		return count($parts) === 1 ? $parts[0] : '(' . implode(') and (', $parts) . ')';
+	}
+
+	private function buildNotCondition($operator, $operands, &$params)
+	{
+		if (count($operands) != 1) {
+			throw new InvalidParamException("Operator '$operator' requires exactly one operand.");
+		}
+
+		$operand = reset($operands);
+		if (is_array($operand)) {
+			$operand = $this->buildCondition($operand, $params);
+		}
+		return "!($operand)";
 	}
 
 	private function buildAndCondition($operator, $operands, &$columns)
