@@ -125,9 +125,10 @@ class User extends Component
 			throw new InvalidConfigException('User::identityCookie must contain the "name" element.');
 		}
 
-		Yii::$app->getSession()->open();
-
-		$this->renewAuthStatus();
+		if (Yii::$app->getSession()->sessionIdReceived()) {
+			Yii::$app->getSession()->open();
+			$this->renewAuthStatus();
+		}
 
 		if ($this->enableAutoLogin) {
 			if ($this->getIsGuest()) {
@@ -193,6 +194,7 @@ class User extends Component
 	 */
 	public function login($identity, $duration = 0)
 	{
+		Yii::$app->getSession()->open();
 		if ($this->beforeLogin($identity, false)) {
 			$this->switchIdentity($identity, $duration);
 			$id = $identity->getId();

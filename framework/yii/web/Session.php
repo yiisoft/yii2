@@ -580,6 +580,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function getFlash($key, $defaultValue = null, $delete = false)
 	{
+		$this->open();
 		$counters = $this->get($this->flashVar, []);
 		if (isset($counters[$key])) {
 			$value = $this->get($key, $defaultValue);
@@ -618,6 +619,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function setFlash($key, $value = true)
 	{
+		$this->open();
 		$counters = $this->get($this->flashVar, []);
 		$counters[$key] = 0;
 		$_SESSION[$key] = $value;
@@ -703,5 +705,17 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	public function offsetUnset($offset)
 	{
 		unset($_SESSION[$offset]);
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function sessionIdReceived()
+	{
+		if (isset($_COOKIE[$this->getName()]) || isset($_GET[$this->getName()]) || isset($_POST[$this->getName()])) {
+			return true;
+		}
+
+		return false;
 	}
 }
