@@ -67,7 +67,10 @@ class NavBar extends Widget
 	{
 		parent::init();
 		$this->clientOptions = false;
-		Html::addCssClass($this->options, 'navbar navbar-default');
+		Html::addCssClass($this->options, 'navbar');
+		if ($this->options['class'] == 'navbar') {
+			Html::addCssClass($this->options, 'navbar-default');
+		}
 		Html::addCssClass($this->brandOptions, 'navbar-brand');
 		if (empty($this->options['role'])) {
 			$this->options['role'] = 'navigation';
