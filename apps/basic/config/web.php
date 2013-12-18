@@ -39,16 +39,14 @@ $config = [
 	'params' => $params,
 ];
 
-if (YII_ENV_DEV)
-{
+if (YII_ENV_DEV) {
 	// configuration adjustments for 'dev' environment
 	$config['preload'][] = 'debug';
 	$config['modules']['debug'] = 'yii\debug\Module';
 	$config['modules']['gii'] = 'yii\gii\Module';
 }
 
-if (YII_ENV_TEST)
-{
+if (YII_ENV_TEST) {
 	// configuration adjustments for 'test' environment.
 	// configuration for codeception test environments can be found in codeception folder.
 
