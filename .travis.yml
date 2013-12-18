@@ -20,6 +20,8 @@ install:
   - tests/unit/data/travis/cubrid-setup.sh
   - tests/unit/data/travis/sphinx-setup.sh
   - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "textSearchEnabled=true" >> /etc/mongodb.conf
+  - sudo service restart mongodb
 
 before_script:
   - mysql -e 'CREATE DATABASE yiitest;';
