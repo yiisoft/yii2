@@ -15,12 +15,15 @@ class QueryTest extends ElasticSearchTestCase
 
 		$command = $this->getConnection()->createCommand();
 
-		$command->deleteAllIndexes();
+		// delete index
+		if ($command->indexExists('yiitest')) {
+			$command->deleteIndex('yiitest');
+		}
 
-		$command->insert('test', 'user', ['name' => 'user1', 'email' => 'user1@example.com', 'status' => 1], 1);
-		$command->insert('test', 'user', ['name' => 'user2', 'email' => 'user2@example.com', 'status' => 1], 2);
-		$command->insert('test', 'user', ['name' => 'user3', 'email' => 'user3@example.com', 'status' => 2], 3);
-		$command->insert('test', 'user', ['name' => 'user4', 'email' => 'user4@example.com', 'status' => 1], 4);
+		$command->insert('yiitest', 'user', ['name' => 'user1', 'email' => 'user1@example.com', 'status' => 1], 1);
+		$command->insert('yiitest', 'user', ['name' => 'user2', 'email' => 'user2@example.com', 'status' => 1], 2);
+		$command->insert('yiitest', 'user', ['name' => 'user3', 'email' => 'user3@example.com', 'status' => 2], 3);
+		$command->insert('yiitest', 'user', ['name' => 'user4', 'email' => 'user4@example.com', 'status' => 1], 4);
 
 		$command->flushIndex();
 	}
@@ -28,7 +31,7 @@ class QueryTest extends ElasticSearchTestCase
 	public function testFields()
 	{
 		$query = new Query;
-		$query->from('test', 'user');
+		$query->from('yiitest', 'user');
 
 		$query->fields(['name', 'status']);
 		$this->assertEquals(['name', 'status'], $query->fields);
@@ -63,7 +66,7 @@ class QueryTest extends ElasticSearchTestCase
 	public function testOne()
 	{
 		$query = new Query;
-		$query->from('test', 'user');
+		$query->from('yiitest', 'user');
 
 		$result = $query->one($this->getConnection());
 		$this->assertEquals(3, count($result['_source']));
@@ -87,7 +90,7 @@ class QueryTest extends ElasticSearchTestCase
 	public function testAll()
 	{
 		$query = new Query;
-		$query->from('test', 'user');
+		$query->from('yiitest', 'user');
 
 		$results = $query->all($this->getConnection());
 		$this->assertEquals(4, count($results));
@@ -99,7 +102,7 @@ class QueryTest extends ElasticSearchTestCase
 		$this->assertArrayHasKey('_id', $result);
 
 		$query = new Query;
-		$query->from('test', 'user');
+		$query->from('yiitest', 'user');
 
 		$results = $query->where(['name' => 'user1'])->all($this->getConnection());
 		$this->assertEquals(1, count($results));
@@ -113,7 +116,7 @@ class QueryTest extends ElasticSearchTestCase
 
 		// indexBy
 		$query = new Query;
-		$query->from('test', 'user');
+		$query->from('yiitest', 'user');
 
 		$results = $query->indexBy('name')->all($this->getConnection());
 		$this->assertEquals(4, count($results));
@@ -124,7 +127,7 @@ class QueryTest extends ElasticSearchTestCase
 	public function testScalar()
 	{
 		$query = new Query;
-		$query->from('test', 'user');
+		$query->from('yiitest', 'user');
 
 		$result = $query->where(['name' => 'user1'])->scalar('name', $this->getConnection());
 		$this->assertEquals('user1', $result);
@@ -137,7 +140,7 @@ class QueryTest extends ElasticSearchTestCase
 	public function testColumn()
 	{
 		$query = new Query;
-		$query->from('test', 'user');
+		$query->from('yiitest', 'user');
 
 		$result = $query->orderBy(['name' => SORT_ASC])->column('name', $this->getConnection());
 		$this->assertEquals(['user1', 'user2', 'user3', 'user4'], $result);
