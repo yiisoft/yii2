@@ -329,12 +329,13 @@ class Sort extends Object
 	 * For example, if the current page already sorts the data by the specified attribute in ascending order,
 	 * then the URL created will lead to a page that sorts the data by the specified attribute in descending order.
 	 * @param string $attribute the attribute name
+	 * @param boolean $absolute whether to create an absolute URL. Defaults to `false`.
 	 * @return string the URL for sorting. False if the attribute is invalid.
 	 * @throws InvalidConfigException if the attribute is unknown
 	 * @see attributeOrders
 	 * @see params
 	 */
-	public function createUrl($attribute)
+	public function createUrl($attribute, $absolute = false)
 	{
 		if (($params = $this->params) === null) {
 			$request = Yii::$app->getRequest();
@@ -343,7 +344,11 @@ class Sort extends Object
 		$params[$this->sortVar] = $this->createSortVar($attribute);
 		$route = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
 		$urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
-		return $urlManager->createUrl($route, $params);
+		if ($absolute) {
+			return $urlManager->createAbsoluteUrl($route, $params);
+		} else {
+			return $urlManager->createUrl($route, $params);
+		}
 	}
 
 	/**
