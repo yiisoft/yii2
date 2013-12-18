@@ -1,6 +1,6 @@
 <?php
 
-// NOTE: Make sure this file is not accessable when deployed to production
+// NOTE: Make sure this file is not accessible when deployed to production
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'test');
@@ -13,5 +13,4 @@ $config = yii\helpers\ArrayHelper::merge(
 	require(__DIR__ . '/../config/codeception/acceptance.php')
 );
 
-$application = new yii\web\Application($config);
-$application->run();
+(new yii\web\Application($config))->run();
