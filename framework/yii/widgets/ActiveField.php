@@ -371,7 +371,8 @@ class ActiveField extends Component
 	{
 		if ($enclosedByLabel) {
 			if (!isset($options['label'])) {
-				$options['label'] = Html::encode($this->model->getAttributeLabel($this->attribute));
+				$attribute = Html::getAttributeName($this->attribute);
+				$options['label'] = Html::encode($this->model->getAttributeLabel($attribute));
 			}
 			$this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
 			$this->parts['{label}'] = '';
@@ -406,7 +407,8 @@ class ActiveField extends Component
 	{
 		if ($enclosedByLabel) {
 			if (!isset($options['label'])) {
-				$options['label'] = Html::encode($this->model->getAttributeLabel($this->attribute));
+				$attribute = Html::getAttributeName($this->attribute);
+				$options['label'] = Html::encode($this->model->getAttributeLabel($attribute));
 			}
 			$this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
 			$this->parts['{label}'] = '';
