@@ -287,10 +287,17 @@ trait ActiveRecordTestTrait
 	{
 		/** @var TestCase|ActiveRecordTestTrait $this */
 		$this->assertEquals(3, $this->callCustomerFind()->count());
-		// TODO should limit have effect on count()
-//		$this->assertEquals(1, $this->callCustomerFind()->limit(1)->count());
-//		$this->assertEquals(2, $this->callCustomerFind()->limit(2)->count());
-//		$this->assertEquals(1, $this->callCustomerFind()->offset(2)->limit(2)->count());
+
+		$this->assertEquals(1, $this->callCustomerFind()->where(['id' => 1])->count());
+		$this->assertEquals(2, $this->callCustomerFind()->where(['id' => [1, 2]])->count());
+		$this->assertEquals(2, $this->callCustomerFind()->where(['id' => [1, 2]])->offset(1)->count());
+		$this->assertEquals(2, $this->callCustomerFind()->where(['id' => [1, 2]])->offset(2)->count());
+
+		// limit should have no effect on count()
+		$this->assertEquals(3, $this->callCustomerFind()->limit(1)->count());
+		$this->assertEquals(3, $this->callCustomerFind()->limit(2)->count());
+		$this->assertEquals(3, $this->callCustomerFind()->limit(10)->count());
+		$this->assertEquals(3, $this->callCustomerFind()->offset(2)->limit(2)->count());
 	}
 
 	public function testFindLimit()
@@ -371,6 +378,10 @@ trait ActiveRecordTestTrait
 		$this->assertFalse($this->callCustomerFind()->where(['id' => 5])->exists());
 		$this->assertTrue($this->callCustomerFind()->where(['name' => 'user1'])->exists());
 		$this->assertFalse($this->callCustomerFind()->where(['name' => 'user5'])->exists());
+
+		$this->assertTrue($this->callCustomerFind()->where(['id' => [2,3]])->exists());
+		$this->assertTrue($this->callCustomerFind()->where(['id' => [2,3]])->offset(1)->exists());
+		$this->assertFalse($this->callCustomerFind()->where(['id' => [2,3]])->offset(2)->exists());
 	}
 
 	public function testFindLazy()

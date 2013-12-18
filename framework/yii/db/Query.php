@@ -253,7 +253,11 @@ class Query extends Component implements QueryInterface
 	 */
 	public function exists($db = null)
 	{
-		return $this->queryScalar(new Expression('1'), $db) !== false;
+		$select = $this->select;
+		$this->select = [new Expression('1')];
+		$command = $this->createCommand($db);
+		$this->select = $select;
+		return $command->queryScalar() !== false;
 	}
 
 	/**
@@ -266,9 +270,18 @@ class Query extends Component implements QueryInterface
 	private function queryScalar($selectExpression, $db)
 	{
 		$select = $this->select;
+		$limit = $this->limit;
+		$offset = $this->offset;
+
 		$this->select = [$selectExpression];
+		$this->limit = null;
+		$this->offset = null;
 		$command = $this->createCommand($db);
+
 		$this->select = $select;
+		$this->limit = $limit;
+		$this->offset = $offset;
+
 		return $command->queryScalar();
 	}
 
