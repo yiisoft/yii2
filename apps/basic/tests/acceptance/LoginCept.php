@@ -4,9 +4,9 @@ use tests\_pages\LoginPage;
 
 $I = new WebGuy($scenario);
 $I->wantTo('ensure that login works');
-$loginPage = LoginPage::of($I);
 
-$I->amOnPage(LoginPage::$URL);
+$loginPage = LoginPage::openBy($I);
+
 $I->see('Login', 'h1');
 
 $I->amGoingTo('try to login with empty credentials');

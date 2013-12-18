@@ -6,7 +6,7 @@ use yii\codeception\BasePage;
 
 class LoginPage extends BasePage
 {
-	public static $URL = '?r=site/login';
+	public $route = 'site/login';
 
 	/**
 	 * login form username text field locator
