@@ -13,27 +13,36 @@ use yii\db\Query;
 use yii\base\InvalidConfigException;
 
 /**
- * DbSession extends Session and provides a database session data storage.
+ * DbSessionHandler implements SessionHandlerInterface and provides a database session data storage.
  *
- * By default, DbSession stores session data in a DB table named 'tbl_session'. This table
+ * By default, DbSessionHandler stores session data in a DB table named 'tbl_session'. This table
  * must be pre-created. The table name can be changed by setting [[sessionTable]].
  *
- * The following example shows how you can configure the application to use DbSession:
+ * The following example shows how you can configure the application to use DbSessionHandler:
  * Add the following to your application config under `components`:
  *
  * ~~~
  * 'session' => [
- *     'class' => 'yii\web\DbSession',
- *     // 'db' => 'mydb',
- *     // 'sessionTable' => 'my_session',
+ *     'class' => 'yii\web\Session',
+ *     'handler' => [
+ *	       'class' => 'yii\web\DbSessionHandler',
+ *         // 'db' => 'mydb',
+ *         // 'sessionTable' => 'my_session',
+ *     ]
  * ]
  * ~~~
+ *
+ * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class DbSession extends Session
+class DbSessionHandler implements \SessionHandlerInterface
 {
+	/**
+	 * @var Component the owner of this behavior
+	 */
+	public $owner;
 	/**
 	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
 	 * After the DbSession object is created, if you want to change this property, you should only assign it

@@ -81,6 +81,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public $flashVar = '__flash';
 	/**
+	 * @var string|SessionHandlerInterface the name of class or an object implementing the session handler
+	 */
+	public $handler;
+	/**
 	 * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
 	 * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httpOnly'
 	 * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
@@ -94,22 +98,15 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	public function init()
 	{
 		parent::init();
+		if ($this->handler !== null) {
+			if (is_string($this->handler)) {
+				$this->handler = new $this->handler;
+			}
+		}
 		if ($this->autoStart) {
 			$this->open();
 		}
 		register_shutdown_function([$this, 'close']);
-	}
-
-	/**
-	 * Returns a value indicating whether to use custom session storage.
-	 * This method should be overridden to return true by child classes that implement custom session storage.
-	 * To implement custom session storage, override these methods: [[openSession()]], [[closeSession()]],
-	 * [[readSession()]], [[writeSession()]], [[destroySession()]] and [[gcSession()]].
-	 * @return boolean whether to use custom storage.
-	 */
-	public function getUseCustomStorage()
-	{
-		return false;
 	}
 
 	/**
@@ -121,15 +118,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 			return;
 		}
 
-		if ($this->getUseCustomStorage()) {
-			@session_set_save_handler(
-				[$this, 'openSession'],
-				[$this, 'closeSession'],
-				[$this, 'readSession'],
-				[$this, 'writeSession'],
-				[$this, 'destroySession'],
-				[$this, 'gcSession']
-			);
+		if ($this->handler !== null) {
+			@session_set_save_handler($handler, false);
 		}
 
 		$this->setCookieParamsInternal();
