@@ -3,6 +3,7 @@
 namespace yii\codeception;
 
 use Yii;
+use yii\base\InvalidConfigException;
 
 /**
  * TestCase is the base class for all codeception unit tests
@@ -13,7 +14,8 @@ use Yii;
 class TestCase extends \PHPUnit_Framework_TestCase
 {
 	/**
-	 * @var array the application configuration that will be used for creating an application instance for each test.
+	 * @var array|string the application configuration that will be used for creating an application instance for each test.
+	 * You can use a string to represent the file path or path alias of a configuration file.
 	 */
 	public static $appConfig = [];
 	/**
@@ -21,6 +23,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
 	 */
 	public static $appClass = 'yii\web\Application';
 
+	/**
+	 * @inheritdoc
+	 */
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
 
 	/**
 	 * @inheritdoc
@@ -39,7 +49,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
 	 */
 	protected function mockApplication($config = null)
 	{
-		return new static::$appClass($config === null ? static::$appConfig : $config);
+		$config = $config === null ? static::$appConfig : $config;
+		if (is_string($config)) {
+			$config = Yii::getAlias($config);
+		}
+		if (!is_array($config)) {
+			throw new InvalidConfigException('Please provide a configuration for creating application.');
+		}
+		return new static::$appClass($config);
 	}
 
 	/**
