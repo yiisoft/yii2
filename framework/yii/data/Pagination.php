@@ -91,6 +91,11 @@ class Pagination extends Object
 	 */
 	public $params;
 	/**
+	 * @var \yii\web\UrlManager the URL manager used for creating pagination URLs. If not set,
+	 * the "urlManager" application component will be used.
+	 */
+	public $urlManager;
+	/**
 	 * @var boolean whether to check if [[page]] is within valid range.
 	 * When this property is true, the value of [[page]] will always be between 0 and ([[pageCount]]-1).
 	 * Because [[pageCount]] relies on the correct value of [[totalCount]] which may not be available
@@ -167,11 +172,12 @@ class Pagination extends Object
 	 * Creates the URL suitable for pagination with the specified page number.
 	 * This method is mainly called by pagers when creating URLs used to perform pagination.
 	 * @param integer $page the zero-based page number that the URL should point to.
+	 * @param boolean $absolute whether to create an absolute URL. Defaults to `false`.
 	 * @return string the created URL
 	 * @see params
 	 * @see forcePageVar
 	 */
-	public function createUrl($page)
+	public function createUrl($page, $absolute = false)
 	{
 		if (($params = $this->params) === null) {
 			$request = Yii::$app->getRequest();
@@ -183,7 +189,12 @@ class Pagination extends Object
 			unset($params[$this->pageVar]);
 		}
 		$route = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
-		return Yii::$app->getUrlManager()->createUrl($route, $params);
+		$urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
+		if ($absolute) {
+			return $urlManager->createAbsoluteUrl($route, $params);
+		} else {
+			return $urlManager->createUrl($route, $params);
+		}
 	}
 
 	/**
