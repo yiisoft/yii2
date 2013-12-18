@@ -24,6 +24,7 @@ install:
 before_script:
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
+  - mongo yii2test --eval 'db.addUser("travis", "test");'
 
 script:
   - phpunit --coverage-text --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
