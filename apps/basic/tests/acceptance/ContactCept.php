@@ -4,9 +4,9 @@ use tests\_pages\ContactPage;
 
 $I = new WebGuy($scenario);
 $I->wantTo('ensure that contact works');
-$contactPage = ContactPage::of($I);
 
-$I->amOnPage(ContactPage::$URL);
+$contactPage = ContactPage::openBy($I);
+
 $I->see('Contact', 'h1');
 
 $I->amGoingTo('submit contact form with no data');

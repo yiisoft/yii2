@@ -3,7 +3,7 @@
 namespace yii\codeception;
 
 use Yii;
-use yii\helpers\ArrayHelper;
+use yii\base\InvalidConfigException;
 
 /**
  * TestCase is the base class for all codeception unit tests
@@ -14,22 +14,27 @@ use yii\helpers\ArrayHelper;
 class TestCase extends \PHPUnit_Framework_TestCase
 {
 	/**
-	 * @var array|string Your application base config that will be used for creating application each time before test.
-	 * This can be an array or alias, pointing to the config file. For example for console application it can be
-	 * '@tests/unit/console_bootstrap.php' that can be similar to existing unit tests bootstrap file.
+	 * @var array|string the application configuration that will be used for creating an application instance for each test.
+	 * You can use a string to represent the file path or path alias of a configuration file.
 	 */
-	public static $applicationConfig = '@app/config/web.php';
+	public static $appConfig = [];
 	/**
-	 * @var array|string Your application config, will be merged with base config when creating application. Can be an alias too.
+	 * @var string the application class that [[mockApplication()]] should use
 	 */
-	protected $config = [];
+	public static $appClass = 'yii\web\Application';
 
 	/**
-	 * Created application class
-	 * @var string
+	 * @inheritdoc
 	 */
-	protected $applicationClass = 'yii\web\Application';
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
 
+	/**
+	 * @inheritdoc
+	 */
 	protected function tearDown()
 	{
 		$this->destroyApplication();
@@ -37,20 +42,28 @@ class TestCase extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * Sets up `Yii::$app`.
+	 * Mocks up the application instance.
+	 * @param array $config the configuration that should be used to generate the application instance.
+	 * If null, [[appConfig]] will be used.
+	 * @return \yii\web\Application|\yii\console\Application the application instance
 	 */
-	protected function mockApplication()
+	protected function mockApplication($config = null)
 	{
-		$baseConfig = is_array(static::$applicationConfig) ? static::$applicationConfig : require(Yii::getAlias(static::$applicationConfig));
-		$config = is_array($this->config)? $this->config : require(Yii::getAlias($this->config));
-		new $this->applicationClass(ArrayHelper::merge($baseConfig,$config));
+		$config = $config === null ? static::$appConfig : $config;
+		if (is_string($config)) {
+			$config = Yii::getAlias($config);
+		}
+		if (!is_array($config)) {
+			throw new InvalidConfigException('Please provide a configuration for creating application.');
+		}
+		return new static::$appClass($config);
 	}
 
 	/**
-	 * Destroys an application created via [[mockApplication]].
+	 * Destroys the application instance created by [[mockApplication]].
 	 */
 	protected function destroyApplication()
 	{
-		\Yii::$app = null;
+		Yii::$app = null;
 	}
 }

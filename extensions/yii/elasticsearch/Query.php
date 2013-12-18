@@ -283,13 +283,7 @@ class Query extends Component implements QueryInterface
 
 		$options = [];
 		$options['search_type'] = 'count';
-		$count = $this->createCommand($db)->search($options)['hits']['total'];
-		if ($this->limit === null && $this->offset === null) {
-			return $count;
-		} elseif ($this->offset !== null) {
-			$count = $this->offset < $count ? $count - $this->offset : 0;
-		}
-		return $this->limit === null ? $count : ($this->limit > $count ? $count : $this->limit);
+		return $this->createCommand($db)->search($options)['hits']['total'];
 	}
 
 	/**

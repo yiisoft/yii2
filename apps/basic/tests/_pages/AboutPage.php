@@ -6,5 +6,5 @@ use yii\codeception\BasePage;
 
 class AboutPage extends BasePage
 {
-	public static $URL = '?r=site/about';
+	public $route = 'site/about';
 }

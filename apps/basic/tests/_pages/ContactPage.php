@@ -6,7 +6,7 @@ use yii\codeception\BasePage;
 
 class ContactPage extends BasePage
 {
-	public static $URL = '?r=site/contact';
+	public $route = 'site/contact';
 
 	/**
 	 * contact form name text field locator
