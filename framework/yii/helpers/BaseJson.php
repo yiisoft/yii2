@@ -81,6 +81,10 @@ class BaseJson
 	 */
 	protected static function processData($data, &$expressions, $expPrefix)
 	{
+		if ($data instanceof \JsonSerializable) {
+			return $data;
+		}
+
 		if (is_object($data)) {
 			if ($data instanceof JsExpression) {
 				$token = "!{[$expPrefix=" . count($expressions) . ']}!';
