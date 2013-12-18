@@ -45,7 +45,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		if (($limit < 0) && ($offset < 0)) {
 			return $this->sql;
 		}
-		$filters = array();
+		$filters = [];
 		if ($offset > 0) {
 			$filters[] = 'rowNumId > ' . (int)$offset;
 		}
