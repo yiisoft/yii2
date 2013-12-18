@@ -2,54 +2,72 @@
 
 namespace yii\codeception;
 
+use Yii;
+use yii\base\Component;
+use yii\base\InvalidConfigException;
+
 /**
- * Represents a web page to test
+ * BasePage is the base class for page classes that represent Web pages to be tested.
  *
- * Pages extend from this class and declare UI map for this page via
- * static properties. CSS or XPath allowed.
- *
- * Here is an example:
- *
- * ```php
- * public static $usernameField = '#username';
- * public static $formSubmitButton = "#mainForm input[type=submit]";
- * ```
+ * @property string $url the URL to this page
  *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
  */
-abstract class BasePage
+abstract class BasePage extends Component
 {
 	/**
-	 * @var string include url of current page. This property has to be overwritten by subclasses
+	 * @var string|array the route (controller ID and action ID, e.g. `site/about`) to this page.
+	 * Use array to represent a route with GET parameters. The first element of the array represents
+	 * the route and the rest of the name-value pairs are treated as GET parameters, e.g. `array('site/page', 'name' => 'about')`.
 	 */
-	public static $URL = '';
+	public $route;
 	/**
-	 * @var \Codeception\AbstractGuy
+	 * @var \Codeception\AbstractGuy the testing guy object
 	 */
 	protected $guy;
 
+	/**
+	 * Constructor.
+	 * @param \Codeception\AbstractGuy the testing guy object
+	 */
 	public function __construct($I)
 	{
 		$this->guy = $I;
 	}
 
 	/**
-	 * Basic route example for your current URL
-	 * You can append any additional parameter to URL
-	 * and use it in tests like: EditPage::route('/123-post');
+	 * Returns the URL to this page.
+	 * The URL will be returned by calling the URL manager of the application
+	 * with [[route]] and the provided parameters.
+	 * @param array $params the GET parameters for creating the URL
+	 * @return string the URL to this page
+	 * @throws InvalidConfigException if [[route]] is not set or invalid
 	 */
-	public static function route($param)
+	public function getUrl($params = [])
 	{
-		return static::$URL.$param;
+		if (is_string($this->route)) {
+			return Yii::$app->getUrlManager()->createUrl($this->route, $params);
+		} elseif (is_array($this->route) && isset($this->route[0])) {
+			$route = $this->route[0];
+			$ps = $this->route;
+			unset($this->route[0]);
+			return Yii::$app->getUrlManager()->createUrl($route, array_merge($ps, $params));
+		} else {
+			throw new InvalidConfigException('The "route" property must be set.');
+		}
 	}
 
 	/**
-	 * @param $I
-	 * @return static
+	 * Creates a page instance and sets the test guy to use [[url]].
+	 * @param \Codeception\AbstractGuy $I the test guy instance
+	 * @param array $params the GET parameters to be used to generate [[url]]
+	 * @return static the page instance
 	 */
-	public static function of($I)
+	public static function openBy($I, $params = [])
 	{
-		return new static($I);
+		$page = new static($I);
+		$I->amOnPage($page->getUrl($params));
+		return $page;
 	}
 }
