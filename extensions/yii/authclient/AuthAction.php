@@ -25,7 +25,7 @@ class AuthAction extends Action
 	/**
 	 * @var string name of the auth client collection application component.
 	 */
-	public $clientCollection;
+	public $clientCollection = 'auth';
 	/**
 	 * @var string name of the GET param, which is used to passed auth client id to this action.
 	 */
@@ -227,7 +227,7 @@ class AuthAction extends Action
 					break;
 			}
 		} else {
-			$provider->identity = $provider->authUrl; // Setting identifier
+			//$provider->identity = $provider->authUrl; // Setting identifier
 			$request = Yii::$app->getRequest();
 			$provider->realm = $request->getHostInfo();
 			$provider->returnUrl = $provider->realm . $request->getUrl(); // getting return URL
