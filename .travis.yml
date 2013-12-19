@@ -14,13 +14,13 @@ services:
 install:
   - composer self-update && composer --version
 #  - composer require satooshi/php-coveralls 0.6.* --dev --prefer-dist
-  - echo 'elasticsearch version ' && curl http://localhost:9200/
   - tests/unit/data/travis/mongodb-setup.sh
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
 
 before_script:
+  - echo 'elasticsearch version ' && curl http://localhost:9200/
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
   - tests/unit/data/travis/sphinx-setup.sh
