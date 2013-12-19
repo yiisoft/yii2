@@ -450,7 +450,7 @@ in the ActiveRecord classes. They can be invoked through the [[ActiveQuery]] obj
 via [[find()]] or [[findBySql()]]. The following is an example:
 
 ```php
-class Customer extends \yii\db\ActiveRecord
+class Comment extends \yii\db\ActiveRecord
 {
 	// ...
 
@@ -463,11 +463,34 @@ class Customer extends \yii\db\ActiveRecord
 	}
 }
 
-$customers = Customer::find()->active()->all();
+$comments = Comment::find()->active()->all();
 ```
 
-In the above, the `active()` method is defined in `Customer` while we are calling it
-through `ActiveQuery` returned by `Customer::find()`.
+In the above, the `active()` method is defined in `Comment` while we are calling it
+through `ActiveQuery` returned by `Comment::find()`.
+
+You can also use scopes when defining relations. For example,
+
+```php
+class Post extends \yii\db\ActiveRecord
+{
+	public function getComments()
+	{
+		return $this->hasMany(Comment::className(), ['post_id' => 'id'])->active();
+
+	}
+}
+```
+
+Or use the scopes on-the-fly when performing relational query:
+
+```php
+$posts = Post::find()->with([
+	'comments' => function($q) {
+		$q->active();
+	}
+])->all();
+```
 
 Scopes can be parameterized. For example, we can define and use the following `olderThan` scope:
 
