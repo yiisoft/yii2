@@ -17,5 +17,15 @@ use yii\authclient\OpenId;
  */
 class GoogleOpenId extends OpenId
 {
-
+	public function init()
+	{
+		parent::init();
+		$this->setIdentity('https://www.google.com/accounts/o8/id');
+		$this->requiredAttributes = [
+			'namePerson/first',
+			'namePerson/last',
+			'contact/email',
+			'pref/language',
+		];
+	}
 }

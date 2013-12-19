@@ -540,7 +540,7 @@ class OpenId extends Component implements ClientInterface
 			$counts = [];
 			$required = [];
 			$optional = [];
-			foreach (['required', 'optional'] as $type) {
+			foreach (['requiredAttributes', 'optional'] as $type) {
 				foreach ($this->$type as $alias => $field) {
 					if (is_int($alias)) {
 						$alias = strtr($field, '/', '_');
@@ -626,7 +626,6 @@ class OpenId extends Component implements ClientInterface
 			$params['openid.identity'] = $this->identity;
 			$params['openid.claimed_id'] = $this->claimed_id;
 		}
-
 		return $this->buildUrl(parse_url($this->server), ['query' => http_build_query($params, '', '&')]);
 	}
 
@@ -747,7 +746,7 @@ class OpenId extends Component implements ClientInterface
 
 	protected function getSregAttributes()
 	{
-		$attributes = array();
+		$attributes = [];
 		$sregToAx = array_flip(self::$axToSregMap);
 		foreach ($this->data as $key => $value) {
 			$keyMatch = 'openid_sreg_';
