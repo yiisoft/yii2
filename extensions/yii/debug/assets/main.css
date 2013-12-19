@@ -148,6 +148,6 @@ ul.trace {
 }
 
 td, th {
-	white-space: pre;
+	white-space: pre-line;
 	word-wrap: break-word;
 }
