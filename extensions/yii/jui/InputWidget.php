@@ -10,6 +10,7 @@ namespace yii\jui;
 use Yii;
 use yii\base\Model;
 use yii\base\InvalidConfigException;
+use yii\helpers\Html;
 
 /**
  * InputWidget is the base class for all jQuery UI input widgets.
@@ -45,6 +46,9 @@ class InputWidget extends Widget
 	{
 		if (!$this->hasModel() && $this->name === null) {
 			throw new InvalidConfigException("Either 'name' or 'model' and 'attribute' properties must be specified.");
+		}
+		if($this->hasModel() && !array_key_exists('id', $this->options)) {
+			$this->options['id'] = Html::getInputId($this->model, $this->attribute);
 		}
 		parent::init();
 	}
