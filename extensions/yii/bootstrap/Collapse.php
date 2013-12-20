@@ -66,7 +66,7 @@ class Collapse extends Widget
 	public function init()
 	{
 		parent::init();
-		Html::addCssClass($this->options, 'accordion');
+		Html::addCssClass($this->options, 'panel-group');
 	}
 
 	/**
@@ -90,7 +90,7 @@ class Collapse extends Widget
 		$index = 0;
 		foreach ($this->items as $header => $item) {
 			$options = ArrayHelper::getValue($item, 'options', []);
-			Html::addCssClass($options, 'accordion-group');
+			Html::addCssClass($options, 'panel panel-default');
 			$items[] = Html::tag('div', $this->renderItem($header, $item, ++$index), $options);
 		}
 
@@ -111,21 +111,23 @@ class Collapse extends Widget
 			$id = $this->options['id'] . '-collapse' . $index;
 			$options = ArrayHelper::getValue($item, 'contentOptions', []);
 			$options['id'] = $id;
-			Html::addCssClass($options, 'accordion-body collapse');
+			Html::addCssClass($options, 'panel-collapse collapse');
 
-			$header = Html::a($header, '#' . $id, [
+			$headerToggle = Html::a($header, '#' . $id, [
 					'class' => 'accordion-toggle',
 					'data-toggle' => 'collapse',
 					'data-parent' => '#' . $this->options['id']
 				]) . "\n";
 
-			$content = Html::tag('div', $item['content'], ['class' => 'accordion-inner']) . "\n";
+			$header = Html::tag('h4', $headerToggle, ['class' => 'panel-title']);
+
+			$content = Html::tag('div', $item['content'], ['class' => 'panel-body']) . "\n";
 		} else {
 			throw new InvalidConfigException('The "content" option is required.');
 		}
 		$group = [];
 
-		$group[] = Html::tag('div', $header, ['class' => 'accordion-heading']);
+		$group[] = Html::tag('div', $header, ['class' => 'panel-heading']);
 		$group[] = Html::tag('div', $content, $options);
 
 		return implode("\n", $group);
