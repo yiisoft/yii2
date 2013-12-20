@@ -39,6 +39,10 @@ trait ClientTrait
 	 * @var array authenticated user attributes.
 	 */
 	private $_userAttributes;
+	/**
+	 * @var array view options in format: optionName => optionValue
+	 */
+	private $_viewOptions;
 
 	/**
 	 * @param string $id service id.
@@ -111,9 +115,28 @@ trait ClientTrait
 	/**
 	 * @param array $userAttributes list of user attributes
 	 */
-	public function setUserAttributes(array $userAttributes)
+	public function setUserAttributes($userAttributes)
 	{
 		$this->_userAttributes = $userAttributes;
+	}
+
+	/**
+	 * @param array $viewOptions view options in format: optionName => optionValue
+	 */
+	public function setViewOptions($viewOptions)
+	{
+		$this->_viewOptions = $viewOptions;
+	}
+
+	/**
+	 * @return array view options in format: optionName => optionValue
+	 */
+	public function getViewOptions()
+	{
+		if ($this->_viewOptions === null) {
+			$this->_viewOptions = $this->defaultViewOptions();
+		}
+		return $this->_viewOptions;
 	}
 
 	/**
@@ -141,5 +164,15 @@ trait ClientTrait
 	protected function initUserAttributes()
 	{
 		throw new NotSupportedException('Method "' . get_class($this) . '::' . __FUNCTION__ . '" not implemented.');
+	}
+
+	/**
+	 * Returns the default [[viewOptions]] value.
+	 * Particular client may override this method in order to provide specific default view options.
+	 * @return array list of default [[viewOptions]]
+	 */
+	protected function defaultViewOptions()
+	{
+		return [];
 	}
 }

@@ -17,6 +17,9 @@ use yii\authclient\OpenId;
  */
 class YandexOpenId extends OpenId
 {
+	/**
+	 * @inheritdoc
+	 */
 	public function init()
 	{
 		parent::init();
@@ -24,6 +27,17 @@ class YandexOpenId extends OpenId
 		$this->requiredAttributes = [
 			'namePerson',
 			'contact/email',
+		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultViewOptions()
+	{
+		return [
+			'popupWidth' => 900,
+			'popupHeight' => 550,
 		];
 	}
 }

@@ -17,6 +17,9 @@ use yii\authclient\OpenId;
  */
 class GoogleOpenId extends OpenId
 {
+	/**
+	 * @inheritdoc
+	 */
 	public function init()
 	{
 		parent::init();
@@ -26,6 +29,17 @@ class GoogleOpenId extends OpenId
 			'namePerson/last',
 			'contact/email',
 			'pref/language',
+		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultViewOptions()
+	{
+		return [
+			'popupWidth' => 880,
+			'popupHeight' => 520,
 		];
 	}
 }
