@@ -10,12 +10,12 @@ namespace yii\authclient\widgets;
 use yii\base\Widget;
 use Yii;
 use yii\helpers\Html;
-use yii\authclient\provider\ProviderInterface;
+use yii\authclient\ClientInterface;
 
 /**
  * Class Choice
  *
- * @property ProviderInterface[] $providers auth providers list.
+ * @property ClientInterface[] $providers auth providers list.
  * @property array $baseAuthUrl configuration for the external services base authentication URL.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -24,28 +24,28 @@ use yii\authclient\provider\ProviderInterface;
 class Choice extends Widget
 {
 	/**
-	 * @var ProviderInterface[] auth providers list.
+	 * @var ClientInterface[] auth providers list.
 	 */
-	private $_providers;
+	private $_clients;
 	/**
-	 * @var string name of the auth provider collection application component.
+	 * @var string name of the auth client collection application component.
 	 * This component will be used to fetch {@link services} value if it is not set.
 	 */
-	public $providerCollection;
+	public $clientCollection = 'auth';
 	/**
-	 * @var array configuration for the external services base authentication URL.
+	 * @var array configuration for the external clients base authentication URL.
 	 */
 	private $_baseAuthUrl;
 	/**
-	 * @var string name of the GET param , which should be used to passed auth provider id to URL
+	 * @var string name of the GET param , which should be used to passed auth client id to URL
 	 * defined by {@link baseAuthUrl}.
 	 */
-	public $providerIdGetParamName = 'provider';
+	public $clientIdGetParamName = 'client_id';
 	/**
 	 * @var array the HTML attributes that should be rendered in the div HTML tag representing the container element.
 	 */
 	public $mainContainerHtmlOptions = [
-		'class' => 'services'
+		'class' => 'auth-clients'
 	];
 	/**
 	 * @var boolean indicates if popup window should be used instead of direct links.
@@ -58,22 +58,22 @@ class Choice extends Widget
 	public $autoRender = true;
 
 	/**
-	 * @param ProviderInterface[] $providers auth providers
+	 * @param ClientInterface[] $clients auth providers
 	 */
-	public function setProviders(array $providers)
+	public function setClients(array $clients)
 	{
-		$this->_providers = $providers;
+		$this->_clients = $clients;
 	}
 
 	/**
-	 * @return ProviderInterface[] auth providers
+	 * @return ClientInterface[] auth providers
 	 */
-	public function getProviders()
+	public function getClients()
 	{
-		if ($this->_providers === null) {
-			$this->_providers = $this->defaultProviders();
+		if ($this->_clients === null) {
+			$this->_clients = $this->defaultClients();
 		}
-		return $this->_providers;
+		return $this->_clients;
 	}
 
 	/**
@@ -96,14 +96,14 @@ class Choice extends Widget
 	}
 
 	/**
-	 * Returns default auth providers list.
-	 * @return ProviderInterface[] auth providers list.
+	 * Returns default auth clients list.
+	 * @return ClientInterface[] auth clients list.
 	 */
-	protected function defaultProviders()
+	protected function defaultClients()
 	{
-		/** @var $collection \yii\authclient\provider\Collection */
-		$collection = Yii::$app->getComponent($this->providerCollection);
-		return $collection->getProviders();
+		/** @var $collection \yii\authclient\Collection */
+		$collection = Yii::$app->getComponent($this->clientCollection);
+		return $collection->getClients();
 	}
 
 	/**
@@ -116,47 +116,48 @@ class Choice extends Widget
 			Yii::$app->controller->getRoute()
 		];
 		$params = $_GET;
-		unset($params[$this->providerIdGetParamName]);
+		unset($params[$this->clientIdGetParamName]);
 		$baseAuthUrl = array_merge($baseAuthUrl, $params);
 		return $baseAuthUrl;
 	}
 
 	/**
 	 * Outputs external service auth link.
-	 * @param ProviderInterface $service external auth service instance.
+	 * @param ClientInterface $client external auth client instance.
 	 * @param string $text link text, if not set - default value will be generated.
 	 * @param array $htmlOptions link HTML options.
 	 */
-	public function providerLink($service, $text = null, array $htmlOptions = [])
+	public function providerLink($client, $text = null, array $htmlOptions = [])
 	{
 		if ($text === null) {
-			$text = Html::tag('span', ['class' => 'auth-icon ' . $service->getName()], '');
-			$text .= Html::tag('span', ['class' => 'auth-title'], $service->getTitle());
+			$text = Html::tag('span', '', ['class' => 'auth-icon ' . $client->getName()]);
+			$text .= Html::tag('span', $client->getTitle(), ['class' => 'auth-title']);
 		}
 		if (!array_key_exists('class', $htmlOptions)) {
-			$htmlOptions['class'] = 'auth-link ' . $service->getName();
+			$htmlOptions['class'] = 'auth-link ' . $client->getName();
 		}
 		if ($this->popupMode) {
-			if (isset($service->popupWidth)) {
-				$htmlOptions['data-popup-width'] = $service->popupWidth;
+			$viewOptions = $client->getViewOptions();
+			if (isset($viewOptions['popupWidth'])) {
+				$htmlOptions['data-popup-width'] = $viewOptions['popupWidth'];
 			}
-			if (isset($service->popupHeight)) {
-				$htmlOptions['data-popup-height'] = $service->popupHeight;
+			if (isset($viewOptions['popupHeight'])) {
+				$htmlOptions['data-popup-height'] = $viewOptions['popupHeight'];
 			}
 		}
-		echo Html::a($text, $this->createProviderUrl($service), $htmlOptions);
+		echo Html::a($text, $this->createProviderUrl($client), $htmlOptions);
 	}
 
 	/**
 	 * Composes external service auth URL.
-	 * @param ProviderInterface $provider external auth service instance.
+	 * @param ClientInterface $provider external auth service instance.
 	 * @return string auth URL.
 	 */
 	public function createProviderUrl($provider)
 	{
 		$this->autoRender = false;
 		$url = $this->getBaseAuthUrl();
-		$url[$this->providerIdGetParamName] = $provider->getId();
+		$url[$this->clientIdGetParamName] = $provider->getId();
 		return Html::url($url);
 	}
 
@@ -166,7 +167,7 @@ class Choice extends Widget
 	protected function renderMainContent()
 	{
 		echo Html::beginTag('ul', ['class' => 'auth-services clear']);
-		foreach ($this->getProviders() as $externalService) {
+		foreach ($this->getClients() as $externalService) {
 			echo Html::beginTag('li', ['class' => 'auth-service']);
 			$this->providerLink($externalService);
 			echo Html::endTag('li');

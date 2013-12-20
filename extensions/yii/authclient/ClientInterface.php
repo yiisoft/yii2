@@ -49,4 +49,9 @@ interface ClientInterface
 	 * @return array list of user attributes
 	 */
 	public function getUserAttributes();
+
+	/**
+	 * @return array view options in format: optionName => optionValue
+	 */
+	public function getViewOptions();
 }

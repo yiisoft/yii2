@@ -26,33 +26,46 @@ class ClientTraitTest extends TestCase
 
 	public function testSetGet()
 	{
-		$provider = new Client();
+		$client = new Client();
 
 		$id = 'test_id';
-		$provider->setId($id);
-		$this->assertEquals($id, $provider->getId(), 'Unable to setup id!');
+		$client->setId($id);
+		$this->assertEquals($id, $client->getId(), 'Unable to setup id!');
 
 		$name = 'test_name';
-		$provider->setName($name);
-		$this->assertEquals($name, $provider->getName(), 'Unable to setup name!');
+		$client->setName($name);
+		$this->assertEquals($name, $client->getName(), 'Unable to setup name!');
 
 		$title = 'test_title';
-		$provider->setTitle($title);
-		$this->assertEquals($title, $provider->getTitle(), 'Unable to setup title!');
+		$client->setTitle($title);
+		$this->assertEquals($title, $client->getTitle(), 'Unable to setup title!');
+
+		$userAttributes = [
+			'attribute1' => 'value1',
+			'attribute2' => 'value2',
+		];
+		$client->setUserAttributes($userAttributes);
+		$this->assertEquals($userAttributes, $client->getUserAttributes(), 'Unable to setup user attributes!');
+
+		$viewOptions = [
+			'option1' => 'value1',
+			'option2' => 'value2',
+		];
+		$client->setViewOptions($viewOptions);
+		$this->assertEquals($viewOptions, $client->getViewOptions(), 'Unable to setup view options!');
 	}
 
-	public function testGetDescriptiveData()
+	public function testGetDefaults()
 	{
 		$provider = new Client();
 
-		$this->assertNotEmpty($provider->getName(), 'Unable to get name!');
-		$this->assertNotEmpty($provider->getTitle(), 'Unable to get title!');
+		$this->assertNotEmpty($provider->getName(), 'Unable to get default name!');
+		$this->assertNotEmpty($provider->getTitle(), 'Unable to get default title!');
+		$this->assertNotNull($provider->getViewOptions(), 'Unable to get default view options!');
 	}
 }
 
 class Client extends Object implements ClientInterface
 {
 	use ClientTrait;
-
-	public function authenticate() {}
 }
