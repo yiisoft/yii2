@@ -114,7 +114,7 @@ class Collapse extends Widget
 			Html::addCssClass($options, 'panel-collapse collapse');
 
 			$headerToggle = Html::a($header, '#' . $id, [
-					'class' => 'accordion-toggle',
+					'class' => 'collapse-toggle',
 					'data-toggle' => 'collapse',
 					'data-parent' => '#' . $this->options['id']
 				]) . "\n";
