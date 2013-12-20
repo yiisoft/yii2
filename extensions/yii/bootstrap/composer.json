@@ -19,7 +19,7 @@
 	],
 	"require": {
 		"yiisoft/yii2": "*",
-		"twbs/bootstrap": "v3.0.*"
+		"twbs/bootstrap": "3.0.*"
 	},
 	"autoload": {
 		"psr-0": { "yii\\bootstrap\\": "" }
