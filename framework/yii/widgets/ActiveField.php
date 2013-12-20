@@ -185,9 +185,13 @@ class ActiveField extends Component
 			$this->form->attributes[$this->attribute] = $clientOptions;
 		}
 
+		$options = $this->options;
+		$tag = ArrayHelper::remove($options, 'tag', 'div');
+		if (empty($tag)) {
+			return '';
+		}
 		$inputID = Html::getInputId($this->model, $this->attribute);
 		$attribute = Html::getAttributeName($this->attribute);
-		$options = $this->options;
 		$class = isset($options['class']) ? [$options['class']] : [];
 		$class[] = "field-$inputID";
 		if ($this->model->isAttributeRequired($attribute)) {
@@ -197,7 +201,6 @@ class ActiveField extends Component
 			$class[] = $this->form->errorCssClass;
 		}
 		$options['class'] = implode(' ', $class);
-		$tag = ArrayHelper::remove($options, 'tag', 'div');
 
 		return Html::beginTag($tag, $options);
 	}
@@ -208,7 +211,8 @@ class ActiveField extends Component
 	 */
 	public function end()
 	{
-		return Html::endTag(isset($this->options['tag']) ? $this->options['tag'] : 'div');
+		$tag = ArrayHelper::getValue($this->options, 'tag', 'div');
+		return $tag ? Html::endTag($tag) : '';
 	}
 
 	/**
@@ -296,6 +300,23 @@ class ActiveField extends Component
 	{
 		$options = array_merge($this->inputOptions, $options);
 		$this->parts['{input}'] = Html::activeTextInput($this->model, $this->attribute, $options);
+		return $this;
+	}
+
+	/**
+	 * Renders a field containing a hidden input.
+	 * This method will generate the "name" and "value" tag attributes automatically for the model attribute
+	 * unless they are explicitly specified in `$options`.
+	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * @return string the rendering result
+	 */
+	public function hiddenInput($options = [])
+	{
+		$this->template = '{input}';
+		$this->options = ['tag' => null];
+		$options = array_merge($this->inputOptions, $options);
+		$this->parts['{input}'] = Html::activeHiddenInput($this->model, $this->attribute, $options);
 		return $this;
 	}
 
