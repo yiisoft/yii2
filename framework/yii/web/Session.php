@@ -94,7 +94,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	public function init()
 	{
 		parent::init();
-		if ($this->autoStart) {
+		if ($this->autoStart || $this->getHasSessionId()) {
 			$this->open();
 		}
 		register_shutdown_function([$this, 'close']);
@@ -501,6 +501,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function set($key, $value)
 	{
+		$this->open();
 		$_SESSION[$key] = $value;
 	}
 
@@ -580,7 +581,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function getFlash($key, $defaultValue = null, $delete = false)
 	{
-		$this->open();
 		$counters = $this->get($this->flashVar, []);
 		if (isset($counters[$key])) {
 			$value = $this->get($key, $defaultValue);
@@ -707,15 +707,16 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 		unset($_SESSION[$offset]);
 	}
 
+
 	/**
 	 * @return boolean
 	 */
-	public function sessionIdReceived()
+	public function getHasSessionId()
 	{
-		if (isset($_COOKIE[$this->getName()]) || isset($_GET[$this->getName()]) || isset($_POST[$this->getName()])) {
+		$sessionName = $this->getName();
+		if (isset($_COOKIE[$sessionName]) || isset($_GET[$sessionName]) || isset($_POST[$sessionName])) {
 			return true;
 		}
-
 		return false;
 	}
 }
