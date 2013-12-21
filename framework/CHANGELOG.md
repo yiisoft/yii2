@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #1500: Log messages exported to files are not separated by newlines (omnilight, qiangxue)
 - Bug #1509: The SQL for creating Postgres RBAC tables is incorrect (qiangxue)
 - Bug #1545: It was not possible to execute db Query twice, params where missing (cebe)
+- Bug #1550: fixed the issue that JUI input widgets did not property input IDs.
 - Bug #1591: StringValidator is accessing undefined property (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
@@ -24,7 +25,8 @@ Yii Framework 2 Change Log
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
 - Enh: Support for file aliases in console command 'message' (omnilight)
 - Enh: Sort and Paginiation can now create absolute URLs (cebe)
-- Chg: Renamed yii\jui\Widget::clientEventsMap to clientEventMap (qiangxue)
+- Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
+- Chg: Added `yii\widgets\InputWidget::options` (qiangxue)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
 

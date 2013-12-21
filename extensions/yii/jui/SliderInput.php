@@ -50,30 +50,42 @@ class SliderInput extends InputWidget
 		'start' => 'slidestart',
 		'stop' => 'slidestop',
 	];
+	/**
+	 * @var array the HTML attributes for the container tag.
+	 */
+	public $containerOptions = [];
+
+	/**
+	 * @inheritdoc
+	 */
+	public function init()
+	{
+		parent::init();
+		if (!isset($this->containerOptions['id'])) {
+			$this->containerOptions['id'] = $this->options['id'] . '-container';
+		}
+	}
 
 	/**
 	 * Executes the widget.
 	 */
 	public function run()
 	{
-		echo Html::tag('div', '', $this->options);
+		echo Html::tag('div', '', $this->containerOptions);
 
-		$inputId = $this->id.'-input';
-		$inputOptions = $this->options;
-		$inputOptions['id'] = $inputId;
 		if ($this->hasModel()) {
-			echo Html::activeHiddenInput($this->model, $this->attribute, $inputOptions);
+			echo Html::activeHiddenInput($this->model, $this->attribute, $this->options);
 		} else {
-			echo Html::hiddenInput($this->name, $this->value, $inputOptions);
+			echo Html::hiddenInput($this->name, $this->value, $this->options);
 		}
 
 		if (!isset($this->clientEvents['slide'])) {
 			$this->clientEvents['slide'] = 'function(event, ui) {
-				$("#'.$inputId.'").val(ui.value);
+				$("#' . $this->options['id'] . '").val(ui.value);
 			}';
 		}
 
-		$this->registerWidget('slider', SliderAsset::className());
-		$this->getView()->registerJs('$("#'.$inputId.'").val($("#'.$this->id.'").slider("value"));');
+		$this->registerWidget('slider', SliderAsset::className(), $this->containerOptions['id']);
+		$this->getView()->registerJs('$("#' . $this->options['id'] . '").val($("#' . $this->id . '").slider("value"));');
 	}
 }
