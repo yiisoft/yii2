@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Widget;
 use yii\base\Model;
 use yii\base\InvalidConfigException;
+use yii\helpers\Html;
 
 /**
  * InputWidget is the base class for widgets that collect user inputs.
@@ -40,6 +41,10 @@ class InputWidget extends Widget
 	 * @var string the input value.
 	 */
 	public $value;
+	/**
+	 * @var array the HTML attributes for the input tag.
+	 */
+	public $options = [];
 
 
 	/**
@@ -49,7 +54,10 @@ class InputWidget extends Widget
 	public function init()
 	{
 		if (!$this->hasModel() && $this->name === null) {
-			throw new InvalidConfigException("Either 'name' or 'model' and 'attribute' properties must be specified.");
+			throw new InvalidConfigException("Either 'name', or 'model' and 'attribute' properties must be specified.");
+		}
+		if (!isset($this->options['id'])) {
+			$this->options['id'] = $this->hasModel() ? Html::getInputId($this->model, $this->attribute) : $this->getId();
 		}
 		parent::init();
 	}

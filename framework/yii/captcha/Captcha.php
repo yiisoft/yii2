@@ -39,10 +39,6 @@ class Captcha extends InputWidget
 	 */
 	public $captchaAction = 'site/captcha';
 	/**
-	 * @var array HTML attributes to be applied to the text input field.
-	 */
-	public $options = [];
-	/**
 	 * @var array HTML attributes to be applied to the CAPTCHA image tag.
 	 */
 	public $imageOptions = [];
@@ -62,9 +58,6 @@ class Captcha extends InputWidget
 
 		$this->checkRequirements();
 
-		if (!isset($this->options['id'])) {
-			$this->options['id'] = $this->hasModel() ? Html::getInputId($this->model, $this->attribute) : $this->getId();
-		}
 		if (!isset($this->imageOptions['id'])) {
 			$this->imageOptions['id'] = $this->options['id'] . '-image';
 		}
