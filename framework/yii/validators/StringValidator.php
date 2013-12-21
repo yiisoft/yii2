@@ -174,7 +174,7 @@ class StringValidator extends Validator
 			$options['is'] = $this->length;
 			$options['notEqual'] = Html::encode(strtr($this->notEqual, [
 				'{attribute}' => $label,
-				'{length}' => $this->is,
+				'{length}' => $this->length,
 			]));
 		}
 		if ($this->skipOnEmpty) {
