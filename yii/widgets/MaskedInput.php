@@ -61,10 +61,6 @@ class MaskedInput extends InputWidget
 	 * @var string a JavaScript function callback that will be invoked when user finishes the input.
 	 */
 	public $completed;
-	/**
-	 * @var array the HTML attributes for the input tag.
-	 */
-	public $options = [];
 
 
 	/**
@@ -76,10 +72,6 @@ class MaskedInput extends InputWidget
 		parent::init();
 		if (empty($this->mask)) {
 			throw new InvalidConfigException('The "mask" property must be set.');
-		}
-
-		if (!isset($this->options['id'])) {
-			$this->options['id'] = $this->hasModel() ? Html::getInputId($this->model, $this->attribute) : $this->getId();
 		}
 	}
 
