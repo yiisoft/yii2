@@ -101,9 +101,9 @@ class RequiredValidator extends Validator
 			$options['strict'] = 1;
 		}
 
-		$options['message'] = Html::encode(strtr($options['message'], [
+		$options['message'] = strtr($options['message'], [
 			'{attribute}' => $object->getAttributeLabel($attribute),
-		]));
+		]);
 
 		ValidationAsset::register($view);
 		return 'yii.validation.required(value, messages, ' . json_encode($options) . ');';
