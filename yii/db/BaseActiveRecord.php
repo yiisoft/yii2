@@ -1234,11 +1234,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	public static function isPrimaryKey($keys)
 	{
 		$pks = static::primaryKey();
-		foreach ($keys as $key) {
-			if (!in_array($key, $pks, true)) {
-				return false;
-			}
+		if (count($keys) === count($pks)) {
+			return count(array_intersect($keys, $pks)) === count($pks);
+		} else {
+			return false;
 		}
-		return count($keys) === count($pks);
 	}
 }
