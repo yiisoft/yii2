@@ -8,8 +8,6 @@
 namespace yii\validators;
 
 use Yii;
-use yii\base\InvalidConfigException;
-use yii\db\ActiveRecord;
 use yii\db\ActiveRecordInterface;
 
 /**
@@ -57,7 +55,7 @@ class UniqueValidator extends Validator
 			return;
 		}
 
-		/** @var \yii\db\ActiveRecord $className */
+		/** @var \yii\db\ActiveRecordInterface $className */
 		$className = $this->className === null ? get_class($object) : $this->className;
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
 
@@ -69,9 +67,7 @@ class UniqueValidator extends Validator
 			$exists = $query->exists();
 		} else {
 			// if current $object is in the database already we can't use exists()
-			$query->limit(2);
-			$objects = $query->all();
-
+			$objects = $query->limit(2)->all();
 			$n = count($objects);
 			if ($n === 1) {
 				if (in_array($attributeName, $className::primaryKey())) {
