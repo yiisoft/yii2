@@ -32,7 +32,7 @@ class ExternalActiveRelationTest extends SphinxTestCase
 		$source = $article->source;
 		$this->assertTrue($article->isRelationPopulated('source'));
 		$this->assertTrue($source instanceof ArticleDb);
-		$this->assertEquals(1, count($article->populatedRelations));
+		$this->assertEquals(1, count($article->relatedRecords));
 
 		// has many :
 		/*$this->assertFalse($article->isRelationPopulated('tags'));
