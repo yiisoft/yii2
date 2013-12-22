@@ -80,9 +80,9 @@ class RegularExpressionValidator extends Validator
 		$options = [
 			'pattern' => new JsExpression($pattern),
 			'not' => $this->not,
-			'message' => Html::encode(strtr($this->message, [
+			'message' => strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
-			])),
+			]),
 		];
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;

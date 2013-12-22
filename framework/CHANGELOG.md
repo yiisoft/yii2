@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #1509: The SQL for creating Postgres RBAC tables is incorrect (qiangxue)
 - Bug #1545: It was not possible to execute db Query twice, params where missing (cebe)
 - Bug #1550: fixed the issue that JUI input widgets did not property input IDs.
+- Bug #1582: Error messages shown via client-side validation should not be double encoded (qiangxue)
 - Bug #1591: StringValidator is accessing undefined property (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
