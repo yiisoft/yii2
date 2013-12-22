@@ -1,86 +1,98 @@
 Query Builder and Query
 =======================
 
-Yii provides a basic database access layer as was described in [Database basics](database-basics.md) section. Still it's
-a bit too much to use SQL directly all the time. To solve the issue Yii provides a query builder that allows you to
-work with the database in object-oriented style.
+Yii provides a basic database access layer as described in the [Database basics](database-basics.md) section. The database access layer provides a low-level way to interact with the database. While useful in some situations, it can be tedious to rely too much upon direct SQL. An alternative approach that Yii provides is the Query Builder. The Query Builder provides an object-oriented vehicle for generating queries to be executed.
 
-Basic query builder usage is the following:
+Here's a basic example:
 
 ```php
 $query = new Query;
 
-// Define query
+// Define the query:
 $query->select('id, name')
- 	->from('tbl_user')
- 	->limit(10);
+	->from('tbl_user')
+	->limit(10);
 
-// Create a command. You can get the actual SQL using $command->sql
+// Create a command. 
 $command = $query->createCommand();
-// Execute command
+// You can get the actual SQL using $command->sql
+
+// Execute the command:
 $rows = $command->queryAll();
 ```
 
-Basic selects and joins
------------------------
+Basic selects
+-------------
 
-In order to form a `SELECT` query you need to specify what to select and where to select it from.
+In order to form a basic `SELECT` query, you need to specify what columns to select and from what table:
 
 ```php
 $query->select('id, name')
 	->from('tbl_user');
 ```
 
-If you want to get IDs of all users with posts you can use `DISTINCT`. With query builder it will look like the following:
+Select options can be specified as a comma-separated string, as in the above, or as an array. The array syntax is especially useful when forming the selection dynamically:
 
 ```php
-$query->select('user_id')->distinct()->from('tbl_post');
+$columns = [];
+$columns[] = 'id';
+$columns[] = 'name';
+$query->select($columns)
+	->from('tbl_user');
 ```
 
-Select options can be specified as array. It's especially useful when these are formed dynamically.
+Joins
+-----
 
-```php
-$query->select(['tbl_user.name AS author', 'tbl_post.title as title']) // <-- specified as array
-	->from('tbl_user')
-	->leftJoin('tbl_post', 'tbl_post.user_id = tbl_user.id'); // <-- join with another table
-```
-
-In the code above we've used `leftJoin` method to select from two related tables at the same time. First parameter
-specifies table name and the second is the join condition. Query builder has the following methods to join tables:
+Joins are generated in the Query Builder by using the applicable join method:
 
 - `innerJoin`
 - `leftJoin`
 - `rightJoin`
 
-If your data storage supports more types you can use generic `join` method:
+This left join selects data from two related tables in one query:
+
+```php
+$query->select(['tbl_user.name AS author', 'tbl_post.title as title'])	->from('tbl_user')
+	->leftJoin('tbl_post', 'tbl_post.user_id = tbl_user.id'); 
+```
+
+In the code, the `leftJion` method's first parameter
+specifies the table to join to. The second paramter defines the join condition.
+
+If your database application supports other join types, you can use those via the  generic `join` method:
 
 ```php
 $query->join('FULL OUTER JOIN', 'tbl_post', 'tbl_post.user_id = tbl_user.id');
 ```
 
-Specifying conditions
+The first argument is the join type to perform. The second is the table to join to, and the third is the condition.
+
+Specifying SELECT conditions
 ---------------------
 
-Usually you need data that matches some conditions. There are some useful methods to specify these and the most powerful
-is `where`. There are multiple ways to use it.
+Usually data is selected based upon certain criteria. Query Builder has some useful methods to specify these, the most powerful of which being `where`. It can be used in multiple ways.
 
-The simplest is to specify condition in a string:
+The simplest way to apply a condition is to use a string:
 
 ```php
 $query->where('status=:status', [':status' => $status]);
 ```
 
-When using this format make sure you're binding parameters and not creating a query by string concatenation.
+When using strings, make sure you're binding the query parameters, not creating a query by string concatenation. The above approach is safe to use, the following is not:
 
-Instead of binding status value immediately you can do it using `params` or `addParams`:
+```php
+$query->where("status=$status"); // Dangerous!
+```
+
+Instead of binding the status value immediately, you can do so using `params` or `addParams`:
 
 ```php
 $query->where('status=:status');
-
 $query->addParams([':status' => $status]);
 ```
 
-There is another convenient way to use the method called hash format:
+Multiple conditions can simultaneously be set in `where` using the *hash format*:
 
 ```php
 $query->where([
@@ -90,19 +102,19 @@ $query->where([
 ]);
 ```
 
-It will generate the following SQL:
+That code will generate the following SQL:
 
 ```sql
 WHERE (`status` = 10) AND (`type` = 2) AND (`id` IN (4, 8, 15, 16, 23, 42))
 ```
 
-If you'll specify value as `null` such as the following:
+NULL is a special value in databases, and is handled smartly by the Query Builder. This code:
 
 ```php
 $query->where(['status' => null]);
 ```
 
-SQL generated will be:
+results in this WHERE clause:
 
 ```sql
 WHERE (`status` IS NULL)
@@ -173,6 +185,15 @@ $query->orderBy([
 ```
 
 Here we are ordering by `id` ascending and then by `name` descending.
+
+Distinct
+--------
+
+If you want to get IDs of all users with posts you can use `DISTINCT`. With query builder it will look like the following:
+
+```php
+$query->select('user_id')->distinct()->from('tbl_post');
+```
 
 Group and Having
 ----------------
