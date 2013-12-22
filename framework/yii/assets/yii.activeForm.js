@@ -348,7 +348,7 @@
 				$container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
 					.addClass(data.settings.errorCssClass);
 			} else {
-				$error.html('');
+				$error.text('');
 				$container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.errorCssClass + ' ')
 					.addClass(data.settings.successCssClass);
 			}
@@ -365,15 +365,15 @@
 	var updateSummary = function ($form, messages) {
 		var data = $form.data('yiiActiveForm'),
 			$summary = $form.find(data.settings.errorSummary),
-			content = '';
+			$ul = $summary.find('ul');
 
 		if ($summary.length && messages) {
 			$.each(data.attributes, function () {
 				if ($.isArray(messages[this.name]) && messages[this.name].length) {
-					content += '<li>' + messages[this.name][0] + '</li>';
+					$ul.append($('<li/>').text(messages[this.name][0]));
 				}
 			});
-			$summary.toggle(content !== '').find('ul').html(content);
+			$summary.toggle($ul.find('li').length > 0);
 		}
 	};
 

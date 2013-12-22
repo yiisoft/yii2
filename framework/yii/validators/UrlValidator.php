@@ -121,9 +121,9 @@ class UrlValidator extends Validator
 
 		$options = [
 			'pattern' => new JsExpression($pattern),
-			'message' => Html::encode(strtr($this->message, [
+			'message' => strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
-			])),
+			]),
 			'enableIDN' => (boolean)$this->enableIDN,
 		];
 		if ($this->skipOnEmpty) {

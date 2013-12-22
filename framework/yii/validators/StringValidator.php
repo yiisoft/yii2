@@ -151,31 +151,31 @@ class StringValidator extends Validator
 		$label = $object->getAttributeLabel($attribute);
 
 		$options = [
-			'message' => Html::encode(strtr($this->message, [
+			'message' => strtr($this->message, [
 				'{attribute}' => $label,
-			])),
+			]),
 		];
 
 		if ($this->min !== null) {
 			$options['min'] = $this->min;
-			$options['tooShort'] = Html::encode(strtr($this->tooShort, [
+			$options['tooShort'] = strtr($this->tooShort, [
 				'{attribute}' => $label,
 				'{min}' => $this->min,
-			]));
+			]);
 		}
 		if ($this->max !== null) {
 			$options['max'] = $this->max;
-			$options['tooLong'] = Html::encode(strtr($this->tooLong, [
+			$options['tooLong'] = strtr($this->tooLong, [
 				'{attribute}' => $label,
 				'{max}' => $this->max,
-			]));
+			]);
 		}
 		if ($this->length !== null) {
 			$options['is'] = $this->length;
-			$options['notEqual'] = Html::encode(strtr($this->notEqual, [
+			$options['notEqual'] = strtr($this->notEqual, [
 				'{attribute}' => $label,
 				'{length}' => $this->length,
-			]));
+			]);
 		}
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
