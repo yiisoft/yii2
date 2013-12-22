@@ -11,7 +11,25 @@ use Yii;
 use yii\db\ActiveRecordInterface;
 
 /**
- * UniqueValidator validates that the attribute value is unique in the corresponding database table.
+ * UniqueValidator validates that the attribute value is unique in the specified database table.
+ *
+ * UniqueValidator checks if the value being validated is unique in the table column specified by
+ * the ActiveRecord class [[targetClass]] and the attribute [[targetAttribute]].
+ *
+ * The followings are examples of validation rules using this validator:
+ *
+ * ```php
+ * // a1 needs to be unique
+ * ['a1', 'unique']
+ * // a1 needs to be unique, but column a2 will be used to check the uniqueness of the a1 value
+ * ['a1', 'unique', 'targetAttribute' => 'a2']
+ * // a1 and a2 need to unique together, and they both will receive error message
+ * ['a1, a2', 'unique', 'targetAttribute' => ['a1', 'a2']]
+ * // a1 and a2 need to unique together, only a1 will receive error message
+ * ['a1', 'unique', 'targetAttribute' => ['a1', 'a2']]
+ * // a1 needs to be unique by checking the uniqueness of both a2 and a3 (using a1 value)
+ * ['a1', 'unique', 'targetAttribute' => ['a2', 'a1' => 'a3']]
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -19,34 +37,20 @@ use yii\db\ActiveRecordInterface;
 class UniqueValidator extends Validator
 {
 	/**
-	 * @var string the ActiveRecord class name or alias of the class
-	 * that should be used to look for the attribute value being validated.
-	 * Defaults to null, meaning using the ActiveRecord class of the attribute being validated.
-	 * @see attributeName
+	 * @var string the name of the ActiveRecord class that should be used to validate the uniqueness
+	 * of the current attribute value. It not set, it will use the ActiveRecord class of the attribute being validated.
+	 * @see targetAttribute
 	 */
-	public $className;
+	public $targetClass;
 	/**
-	 * @var string|array the ActiveRecord class attribute name that should be
-	 * used to look for the attribute value being validated. Defaults to null,
-	 * meaning using the name of the attribute being validated. Use a string
-	 * to specify the attribute that is different from the attribute being validated
-	 * (often used together with [[className]]). Use an array to validate uniqueness about
-	 * multiple columns. For example,
-	 *
-	 * ```php
-	 * // a1 needs to be unique
-	 * array('a1', 'unique')
-	 * // a1 needs to be unique, but its value will use a2 to check for the uniqueness
-	 * array('a1', 'unique', 'attributeName' => 'a2')
-	 * // a1 and a2 need to unique together, and they both will receive error message
-	 * array('a1, a2', 'unique', 'attributeName' => array('a1', 'a2'))
-	 * // a1 and a2 need to unique together, only a1 will receive error message
-	 * array('a1', 'unique', 'attributeName' => array('a1', 'a2'))
-	 * // a1 and a2 need to unique together, a2 will take value 10, only a1 will receive error message
-	 * array('a1', 'unique', 'attributeName' => array('a1', 'a2' => 10))
-	 * ```
+	 * @var string|array the name of the ActiveRecord attribute that should be used to
+	 * validate the uniqueness of the current attribute value. If not set, it will use the name
+	 * of the attribute currently being validated. You may use an array to validate the uniqueness
+	 * of multiple columns at the same time. The array values are the attributes that will be
+	 * used to validate the uniqueness, while the array keys are the attributes whose values are to be validated.
+	 * If the key and the value are the same, you can just specify the value.
 	 */
-	public $attributeName;
+	public $targetAttribute;
 
 	/**
 	 * @inheritdoc
@@ -64,31 +68,27 @@ class UniqueValidator extends Validator
 	 */
 	public function validateAttribute($object, $attribute)
 	{
-		$value = $object->$attribute;
+		/** @var ActiveRecordInterface $targetClass */
+		$targetClass = $this->targetClass === null ? get_class($object) : $this->targetClass;
+		$targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
 
-		if (is_array($value)) {
-			$this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
-			return;
-		}
-
-		/** @var ActiveRecordInterface $className */
-		$className = $this->className === null ? get_class($object) : $this->className;
-		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
-
-		$query = $className::find();
-
-		if (is_array($attributeName)) {
+		if (is_array($targetAttribute)) {
 			$params = [];
-			foreach ($attributeName as $k => $v) {
-				if (is_integer($k)) {
-					$params[$v] = $this->className === null ? $object->$v : $value;
-				} else {
-					$params[$k] = $v;
-				}
+			foreach ($targetAttribute as $k => $v) {
+				$params[$v] = is_integer($k) ? $object->$v : $object->$k;
 			}
 		} else {
-			$params = [$attributeName => $value];
+			$params = [$targetAttribute => $object->$attribute];
 		}
+
+		foreach ($params as $value) {
+			if (is_array($value)) {
+				$this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
+				return;
+			}
+		}
+
+		$query = $targetClass::find();
 		$query->where($params);
 
 		if (!$object instanceof ActiveRecordInterface || $object->getIsNewRecord()) {
@@ -101,7 +101,7 @@ class UniqueValidator extends Validator
 			$n = count($objects);
 			if ($n === 1) {
 				$keys = array_keys($params);
-				$pks = $className::primaryKey();
+				$pks = $targetClass::primaryKey();
 				sort($keys);
 				sort($pks);
 				if ($keys === $pks) {
