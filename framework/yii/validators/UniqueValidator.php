@@ -55,7 +55,7 @@ class UniqueValidator extends Validator
 			return;
 		}
 
-		/** @var \yii\db\ActiveRecordInterface $className */
+		/** @var ActiveRecordInterface $className */
 		$className = $this->className === null ? get_class($object) : $this->className;
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
 
@@ -67,6 +67,7 @@ class UniqueValidator extends Validator
 			$exists = $query->exists();
 		} else {
 			// if current $object is in the database already we can't use exists()
+			/** @var ActiveRecordInterface[] $objects */
 			$objects = $query->limit(2)->all();
 			$n = count($objects);
 			if ($n === 1) {
@@ -75,7 +76,7 @@ class UniqueValidator extends Validator
 					$exists = $object->getOldPrimaryKey() != $object->getPrimaryKey();
 				} else {
 					// non-primary key, need to exclude the current record based on PK
-					$exists = array_shift($objects)->getPrimaryKey() != $object->getOldPrimaryKey();
+					$exists = $objects[0]->getPrimaryKey() != $object->getOldPrimaryKey();
 				}
 			} else {
 				$exists = $n > 1;
