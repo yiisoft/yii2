@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #1550: fixed the issue that JUI input widgets did not property input IDs.
 - Bug #1582: Error messages shown via client-side validation should not be double encoded (qiangxue)
 - Bug #1591: StringValidator is accessing undefined property (qiangxue)
+- Bug #1597: Added `enableAutoLogin` to basic and advanced application templates so "remember me" now works properly (samdark)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
