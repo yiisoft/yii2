@@ -7,6 +7,8 @@ use Yii;
 use yii\base\Exception;
 use yii\validators\ExistValidator;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Order;
+use yiiunit\data\ar\OrderItem;
 use yiiunit\data\validators\models\ValidatorTestMainModel;
 use yiiunit\data\validators\models\ValidatorTestRefModel;
 use yiiunit\framework\db\DatabaseTestCase;
@@ -91,5 +93,45 @@ class ExistValidatorTest extends DatabaseTestCase
 		$m->test_val = [1,2,3];
 		$val->validateAttribute($m, 'test_val');
 		$this->assertTrue($m->hasErrors('test_val'));
+	}
+
+	public function testValidateCompositeKeys()
+	{
+		$val = new ExistValidator([
+			'className' => OrderItem::className(),
+			'attributeName' => ['order_id', 'item_id'],
+		]);
+		// validate old record
+		$m = OrderItem::find(['order_id' => 1, 'item_id' => 2]);
+		$val->validateAttribute($m, 'order_id');
+		$this->assertFalse($m->hasErrors('order_id'));
+
+		// validate new record
+		$m = new OrderItem(['order_id' => 1, 'item_id' => 2]);
+		$val->validateAttribute($m, 'order_id');
+		$this->assertFalse($m->hasErrors('order_id'));
+		$m = new OrderItem(['order_id' => 10, 'item_id' => 2]);
+		$val->validateAttribute($m, 'order_id');
+		$this->assertTrue($m->hasErrors('order_id'));
+
+		$val = new ExistValidator([
+			'className' => OrderItem::className(),
+			'attributeName' => ['order_id', 'item_id' => 2],
+		]);
+		// validate old record
+		$m = Order::find(1);
+		$val->validateAttribute($m, 'id');
+		$this->assertFalse($m->hasErrors('id'));
+		$m = Order::find(1);
+		$m->id = 10;
+		$val->validateAttribute($m, 'id');
+		$this->assertTrue($m->hasErrors('id'));
+
+		$m = new Order(['id' => 1]);
+		$val->validateAttribute($m, 'id');
+		$this->assertFalse($m->hasErrors('id'));
+		$m = new Order(['id' => 10]);
+		$val->validateAttribute($m, 'id');
+		$this->assertTrue($m->hasErrors('id'));
 	}
 }

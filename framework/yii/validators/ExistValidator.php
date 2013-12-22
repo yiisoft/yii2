@@ -30,10 +30,25 @@ class ExistValidator extends Validator
 	 */
 	public $className;
 	/**
-	 * @var string the yii\db\ActiveRecord class attribute name that should be
+	 * @var string|array the ActiveRecord class attribute name that should be
 	 * used to look for the attribute value being validated. Defaults to null,
-	 * meaning using the name of the attribute being validated.
-	 * @see className
+	 * meaning using the name of the attribute being validated. Use a string
+	 * to specify the attribute that is different from the attribute being validated
+	 * (often used together with [[className]]). Use an array to validate the existence about
+	 * multiple columns. For example,
+	 *
+	 * ```php
+	 * // a1 needs to exist
+	 * array('a1', 'exist')
+	 * // a1 needs to exist, but its value will use a2 to check for the existence
+	 * array('a1', 'exist', 'attributeName' => 'a2')
+	 * // a1 and a2 need to exist together, and they both will receive error message
+	 * array('a1, a2', 'exist', 'attributeName' => array('a1', 'a2'))
+	 * // a1 and a2 need to exist together, only a1 will receive error message
+	 * array('a1', 'exist', 'attributeName' => array('a1', 'a2'))
+	 * // a1 and a2 need to exist together, a2 will take value 10, only a1 will receive error message
+	 * array('a1', 'exist', 'attributeName' => array('a1', 'a2' => 10))
+	 * ```
 	 */
 	public $attributeName;
 
@@ -64,9 +79,7 @@ class ExistValidator extends Validator
 		/** @var \yii\db\ActiveRecordInterface $className */
 		$className = $this->className === null ? get_class($object) : $this->className;
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
-		$query = $className::find();
-		$query->where([$attributeName => $value]);
-		if (!$query->exists()) {
+		if (!$this->exists($className, $attributeName, $object, $value)) {
 			$this->addError($object, $attribute, $this->message);
 		}
 	}
@@ -85,10 +98,33 @@ class ExistValidator extends Validator
 		if ($this->attributeName === null) {
 			throw new InvalidConfigException('The "attributeName" property must be set.');
 		}
+		return $this->exists($this->className, $this->attributeName, null, $value) ? null : [$this->message, []];
+	}
+
+	/**
+	 * Performs existence check.
+	 * @param string $className the AR class name to be checked against
+	 * @param string|array $attributeName the attribute(s) to be checked
+	 * @param \yii\db\ActiveRecordInterface $object the object whose value is being validated
+	 * @param mixed $value the attribute value currently being validated
+	 * @return boolean whether the data being validated exists in the database already
+	 */
+	protected function exists($className, $attributeName, $object, $value)
+	{
 		/** @var \yii\db\ActiveRecordInterface $className */
-		$className = $this->className;
 		$query = $className::find();
-		$query->where([$this->attributeName => $value]);
-		return $query->exists() ? null : [$this->message, []];
+		if (is_array($attributeName)) {
+			$params = [];
+			foreach ($attributeName as $k => $v) {
+				if (is_integer($k)) {
+					$params[$v] = $this->className === null && $object !== null ? $object->$v : $value;
+				} else {
+					$params[$k] = $v;
+				}
+			}
+		} else {
+			$params = [$attributeName => $value];
+		}
+		return $query->where($params)->exists();
 	}
 }
