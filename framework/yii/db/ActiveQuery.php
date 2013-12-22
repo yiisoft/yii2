@@ -143,4 +143,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 		return $db->createCommand($sql, $params);
 	}
+
+	public function joinWith($name)
+	{
+
+	}
 }

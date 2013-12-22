@@ -60,7 +60,7 @@ class UniqueValidatorTest extends DatabaseTestCase
 
 	public function testValidateAttributeOfNonARModel()
 	{
-		$val = new UniqueValidator(['className' => ValidatorTestRefModel::className(), 'attributeName' => 'ref']);
+		$val = new UniqueValidator(['targetClass' => ValidatorTestRefModel::className(), 'targetAttribute' => 'ref']);
 		$m = FakedValidationModel::createWithAttributes(['attr_1' => 5, 'attr_2' => 1313]);
 		$val->validateAttribute($m, 'attr_1');
 		$this->assertTrue($m->hasErrors('attr_1'));
@@ -70,7 +70,7 @@ class UniqueValidatorTest extends DatabaseTestCase
 
 	public function testValidateNonDatabaseAttribute()
 	{
-		$val = new UniqueValidator(['className' => ValidatorTestRefModel::className(), 'attributeName' => 'ref']);
+		$val = new UniqueValidator(['targetClass' => ValidatorTestRefModel::className(), 'targetAttribute' => 'ref']);
 		$m = ValidatorTestMainModel::find(1);
 		$val->validateAttribute($m, 'testMainVal');
 		$this->assertFalse($m->hasErrors('testMainVal'));
@@ -91,8 +91,8 @@ class UniqueValidatorTest extends DatabaseTestCase
 	public function testValidateCompositeKeys()
 	{
 		$val = new UniqueValidator([
-			'className' => OrderItem::className(),
-			'attributeName' => ['order_id', 'item_id'],
+			'targetClass' => OrderItem::className(),
+			'targetAttribute' => ['order_id', 'item_id'],
 		]);
 		// validate old record
 		$m = OrderItem::find(['order_id' => 1, 'item_id' => 2]);
@@ -111,19 +111,21 @@ class UniqueValidatorTest extends DatabaseTestCase
 		$this->assertFalse($m->hasErrors('order_id'));
 
 		$val = new UniqueValidator([
-			'className' => OrderItem::className(),
-			'attributeName' => ['order_id', 'item_id' => 2],
+			'targetClass' => OrderItem::className(),
+			'targetAttribute' => ['id' => 'order_id'],
 		]);
 		// validate old record
 		$m = Order::find(1);
 		$val->validateAttribute($m, 'id');
-		$this->assertFalse($m->hasErrors('id'));
+		$this->assertTrue($m->hasErrors('id'));
+		$m = Order::find(1);
 		$m->id = 2;
 		$val->validateAttribute($m, 'id');
-		$this->assertFalse($m->hasErrors('id'));
-		$m->id = 3;
-		$val->validateAttribute($m, 'id');
 		$this->assertTrue($m->hasErrors('id'));
+		$m = Order::find(1);
+		$m->id = 10;
+		$val->validateAttribute($m, 'id');
+		$this->assertFalse($m->hasErrors('id'));
 
 		$m = new Order(['id' => 1]);
 		$val->validateAttribute($m, 'id');
