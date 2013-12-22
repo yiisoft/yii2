@@ -26,9 +26,25 @@ class UniqueValidator extends Validator
 	 */
 	public $className;
 	/**
-	 * @var string the ActiveRecord class attribute name that should be
+	 * @var string|array the ActiveRecord class attribute name that should be
 	 * used to look for the attribute value being validated. Defaults to null,
-	 * meaning using the name of the attribute being validated.
+	 * meaning using the name of the attribute being validated. Use a string
+	 * to specify the attribute that is different from the attribute being validated
+	 * (often used together with [[className]]). Use an array to validate uniqueness about
+	 * multiple columns. For example,
+	 *
+	 * ```php
+	 * // a1 needs to be unique
+	 * array('a1', 'unique')
+	 * // a1 needs to be unique, but its value will use a2 to check for the uniqueness
+	 * array('a1', 'unique', 'attributeName' => 'a2')
+	 * // a1 and a2 need to unique together, and they both will receive error message
+	 * array('a1, a2', 'unique', 'attributeName' => array('a1', 'a2'))
+	 * // a1 and a2 need to unique together, only a1 will receive error message
+	 * array('a1', 'unique', 'attributeName' => array('a1', 'a2'))
+	 * // a1 and a2 need to unique together, a2 will take value 10, only a1 will receive error message
+	 * array('a1', 'unique', 'attributeName' => array('a1', 'a2' => 10))
+	 * ```
 	 */
 	public $attributeName;
 
@@ -60,7 +76,20 @@ class UniqueValidator extends Validator
 		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
 
 		$query = $className::find();
-		$query->where([$attributeName => $value]);
+
+		if (is_array($attributeName)) {
+			$params = [];
+			foreach ($attributeName as $k => $v) {
+				if (is_integer($k)) {
+					$params[$v] = $this->className === null ? $object->$v : $value;
+				} else {
+					$params[$k] = $v;
+				}
+			}
+		} else {
+			$params = [$attributeName => $value];
+		}
+		$query->where($params);
 
 		if (!$object instanceof ActiveRecordInterface || $object->getIsNewRecord()) {
 			// if current $object isn't in the database yet then it's OK just to call exists()
@@ -71,7 +100,11 @@ class UniqueValidator extends Validator
 			$objects = $query->limit(2)->all();
 			$n = count($objects);
 			if ($n === 1) {
-				if (in_array($attributeName, $className::primaryKey())) {
+				$keys = array_keys($params);
+				$pks = $className::primaryKey();
+				sort($keys);
+				sort($pks);
+				if ($keys === $pks) {
 					// primary key is modified and not unique
 					$exists = $object->getOldPrimaryKey() != $object->getPrimaryKey();
 				} else {

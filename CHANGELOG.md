@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
 - Bug: Fixed issue with tabular input on ActiveField::radio() and ActiveField::checkbox() (jom)
+- Enh #797: Added support for validating multiple columns by `UniqueValidator` and `ExistValidator` (qiangxue)
 - Enh #1293: Replaced Console::showProgress() with a better approach. See Console::startProgress() for details (cebe)
 - Enh #1406: DB Schema support for Oracle Database (p0larbeer, qiangxue)
 - Enh #1437: Added ListView::viewParams (qiangxue)
