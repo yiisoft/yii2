@@ -7,7 +7,6 @@
 
 namespace yii\authclient;
 
-use yii\base\Component;
 use yii\base\Exception;
 use yii\base\NotSupportedException;
 
@@ -25,10 +24,8 @@ use yii\base\NotSupportedException;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class OpenId extends Component implements ClientInterface
+class OpenId extends BaseClient implements ClientInterface
 {
-	use ClientTrait;
-
 	/**
 	 * @var array list of attributes, which should be requested from server.
 	 */
