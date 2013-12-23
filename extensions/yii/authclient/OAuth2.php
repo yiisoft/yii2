@@ -40,15 +40,15 @@ class OAuth2 extends BaseOAuth
 	/**
 	 * @var string OAuth client ID.
 	 */
-	public $clientId = '';
+	public $clientId;
 	/**
 	 * @var string OAuth client secret.
 	 */
-	public $clientSecret = '';
+	public $clientSecret;
 	/**
 	 * @var string token request URL endpoint.
 	 */
-	public $tokenUrl = '';
+	public $tokenUrl;
 
 	/**
 	 * Composes user authorization URL.
