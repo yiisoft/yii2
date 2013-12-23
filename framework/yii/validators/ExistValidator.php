@@ -30,8 +30,8 @@ use yii\base\InvalidConfigException;
  * ['a1, a2', 'exist', 'targetAttribute' => ['a1', 'a2']]
  * // a1 and a2 need to exist together, only a1 will receive error message
  * ['a1', 'exist', 'targetAttribute' => ['a1', 'a2']]
- * // a1 needs to be unique by checking the existence of both a2 and a3 (using a1 value)
- * ['a1', 'unique', 'targetAttribute' => ['a2', 'a1' => 'a3']]
+ * // a1 needs to exist by checking the existence of both a2 and a3 (using a1 value)
+ * ['a1', 'exist', 'targetAttribute' => ['a2', 'a1' => 'a3']]
  * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
