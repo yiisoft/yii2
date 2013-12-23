@@ -29,7 +29,7 @@ class AuthAction extends Action
 	/**
 	 * @var string name of the GET param, which is used to passed auth client id to this action.
 	 */
-	public $clientIdGetParamName = 'client_id';
+	public $clientIdGetParamName = 'authclient';
 	/**
 	 * @var callable PHP callback, which should be triggered in case of successful authentication.
 	 */
@@ -119,19 +119,20 @@ class AuthAction extends Action
 	}
 
 	/**
-	 * @param mixed $provider
-	 * @throws \yii\base\NotSupportedException
+	 * @param mixed $client auth client instance.
+	 * @return \yii\web\Response response instance.
+	 * @throws \yii\base\NotSupportedException on invalid client.
 	 */
-	protected function auth($provider)
+	protected function auth($client)
 	{
-		if ($provider instanceof OpenId) {
-			return $this->authOpenId($provider);
-		} elseif ($provider instanceof OAuth2) {
-			return $this->authOAuth2($provider);
-		} elseif ($provider instanceof OAuth1) {
-			return $this->authOAuth1($provider);
+		if ($client instanceof OpenId) {
+			return $this->authOpenId($client);
+		} elseif ($client instanceof OAuth2) {
+			return $this->authOAuth2($client);
+		} elseif ($client instanceof OAuth1) {
+			return $this->authOAuth1($client);
 		} else {
-			throw new NotSupportedException('Provider "' . get_class($provider) . '" is not supported.');
+			throw new NotSupportedException('Provider "' . get_class($client) . '" is not supported.');
 		}
 	}
 
