@@ -8,22 +8,6 @@ use yii\base\Object;
 
 class ClientTraitTest extends TestCase
 {
-	protected function setUp()
-	{
-		$config = [
-			'components' => [
-				'user' => [
-					'identityClass' => '\yii\web\IdentityInterface'
-				],
-				'request' => [
-					'hostInfo' => 'http://testdomain.com',
-					'scriptUrl' => '/index.php',
-				],
-			]
-		];
-		$this->mockApplication($config, '\yii\web\Application');
-	}
-
 	public function testSetGet()
 	{
 		$client = new Client();
@@ -47,6 +31,13 @@ class ClientTraitTest extends TestCase
 		$client->setUserAttributes($userAttributes);
 		$this->assertEquals($userAttributes, $client->getUserAttributes(), 'Unable to setup user attributes!');
 
+		$normalizeUserAttributeMap = [
+			'name' => 'some/name',
+			'email' => 'some/email',
+		];
+		$client->setNormalizeUserAttributeMap($normalizeUserAttributeMap);
+		$this->assertEquals($normalizeUserAttributeMap, $client->getNormalizeUserAttributeMap(), 'Unable to setup normalize user attribute map!');
+
 		$viewOptions = [
 			'option1' => 'value1',
 			'option2' => 'value2',
@@ -57,11 +48,34 @@ class ClientTraitTest extends TestCase
 
 	public function testGetDefaults()
 	{
-		$provider = new Client();
+		$client = new Client();
 
-		$this->assertNotEmpty($provider->getName(), 'Unable to get default name!');
-		$this->assertNotEmpty($provider->getTitle(), 'Unable to get default title!');
-		$this->assertNotNull($provider->getViewOptions(), 'Unable to get default view options!');
+		$this->assertNotEmpty($client->getName(), 'Unable to get default name!');
+		$this->assertNotEmpty($client->getTitle(), 'Unable to get default title!');
+		$this->assertNotNull($client->getViewOptions(), 'Unable to get default view options!');
+		$this->assertNotNull($client->getNormalizeUserAttributeMap(), 'Unable to get default normalize user attribute map!');
+	}
+
+	/**
+	 * @depends testSetGet
+	 */
+	public function testNormalizeUserAttributes()
+	{
+		$client = new Client();
+
+		$normalizeUserAttributeMap = [
+			'raw/name' => 'name',
+			'raw/email' => 'email',
+		];
+		$client->setNormalizeUserAttributeMap($normalizeUserAttributeMap);
+		$rawUserAttributes = [
+			'raw/name' => 'name value',
+			'raw/email' => 'email value',
+		];
+		$client->setUserAttributes($rawUserAttributes);
+		$normalizedUserAttributes = $client->getUserAttributes();
+		$expectedNormalizedUserAttributes = array_combine(array_keys($normalizeUserAttributeMap), array_values($rawUserAttributes));
+		$this->assertEquals($expectedNormalizedUserAttributes, $normalizedUserAttributes);
 	}
 }
 
