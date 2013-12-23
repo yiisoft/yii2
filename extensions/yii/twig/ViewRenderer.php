@@ -39,7 +39,7 @@ class ViewRenderer extends BaseViewRenderer
      * Example: array('html'=>'\yii\helpers\Html')
      * Than in template: {{ html.link('Login', 'site/login') }}
      */
-    public $globals = array();
+    public $globals = [];
 
     /**
      * @var array Custom functions
@@ -47,7 +47,7 @@ class ViewRenderer extends BaseViewRenderer
      * Example: array('rot13'=>'str_rot13', 'link'=>'\yii\helpers\Html::link')
      * Than in template: {{ rot13('test') }} or {{ link('Login', 'site/login') }}
      */
-    public $functions = array();
+    public $functions = [];
 
     /**
      * @var array Custom filters
@@ -55,13 +55,13 @@ class ViewRenderer extends BaseViewRenderer
      * Example: array('rot13'=>'str_rot13', 'jsonEncode'=>'\yii\helpers\Json::encode')
      * Then in template: {{ 'test'|rot13 }} or {{ model|jsonEncode }}
      */
-    public $filters = array();
+    public $filters = [];
 
     /**
      * @var array Custom extensions
      * Example: array('Twig_Extension_Sandbox', 'Twig_Extension_Text')
      */
-    public $extensions = array();
+    public $extensions = [];
 
     /**
      * @var array Twig lexer options
@@ -73,7 +73,7 @@ class ViewRenderer extends BaseViewRenderer
      *     'tag_variable' => array('{$', '}')
      * )
      */
-    public $lexerOptions = array();
+    public $lexerOptions = [];
 
     /**
 	 * @var \Twig_Environment
