@@ -40,7 +40,7 @@ class Choice extends Widget
 	 * @var string name of the GET param , which should be used to passed auth client id to URL
 	 * defined by {@link baseAuthUrl}.
 	 */
-	public $clientIdGetParamName = 'client_id';
+	public $clientIdGetParamName = 'authclient';
 	/**
 	 * @var array the HTML attributes that should be rendered in the div HTML tag representing the container element.
 	 */
