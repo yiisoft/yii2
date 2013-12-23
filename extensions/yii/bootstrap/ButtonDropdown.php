@@ -49,6 +49,14 @@ class ButtonDropdown extends Widget
 	 * @var boolean whether to display a group of split-styled button group.
 	 */
 	public $split = false;
+	/**
+	 * @var string the tag to use to render the button
+	 */
+	public $tagName = 'button';
+	/**
+	 * @var boolean whether the label should be HTML-encoded.
+	 */
+	public $encodeLabel = true;
 
 
 	/**
@@ -68,7 +76,6 @@ class ButtonDropdown extends Widget
 	{
 		Html::addCssClass($this->options, 'btn');
 		if ($this->split) {
-			$tag = 'button';
 			$options = $this->options;
 			$this->options['data-toggle'] = 'dropdown';
 			Html::addCssClass($this->options, 'dropdown-toggle');
@@ -78,7 +85,6 @@ class ButtonDropdown extends Widget
 				'options' => $this->options,
 			]);
 		} else {
-			$tag = 'a';
 			$this->label .= ' <span class="caret"></span>';
 			$options = $this->options;
 			if (!isset($options['href'])) {
@@ -89,10 +95,10 @@ class ButtonDropdown extends Widget
 			$splitButton = '';
 		}
 		return Button::widget([
-			'tagName' => $tag,
+			'tagName' => $this->tagName,
 			'label' => $this->label,
 			'options' => $options,
-			'encodeLabel' => false,
+			'encodeLabel' => $this->encodeLabel,
 		]) . "\n" . $splitButton;
 	}
 
