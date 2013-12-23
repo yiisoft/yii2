@@ -12,9 +12,17 @@ use yii\base\NotSupportedException;
 use yii\helpers\StringHelper;
 
 /**
- * Class ProviderTrait
+ * ProviderTrait can be used to satisfy [[ClientInterface]] interface.
  *
  * @see ClientInterface
+ *
+ * @property string $id auth service id.
+ * @property string $name auth service name.
+ * @property string $title auth service title.
+ * @property array $userAttributes authenticated user attributes.
+ * @property array $normalizeUserAttributeMap map used to normalize user attributes fetched from
+ * external auth service in format: rawAttributeName => normalizedAttributeName.
+ * @property array $viewOptions view options in format: optionName => optionValue.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -22,23 +30,28 @@ use yii\helpers\StringHelper;
 trait ClientTrait
 {
 	/**
-	 * @var string service id.
+	 * @var string auth service id.
 	 * This value mainly used as HTTP request parameter.
 	 */
 	private $_id;
 	/**
-	 * @var string service unique name.
+	 * @var string auth service name.
 	 * This value may be used in database records, CSS files and so on.
 	 */
 	private $_name;
 	/**
-	 * @var string service title to display in views.
+	 * @var string auth service title to display in views.
 	 */
 	private $_title;
 	/**
 	 * @var array authenticated user attributes.
 	 */
 	private $_userAttributes;
+	/**
+	 * @var array map used to normalize user attributes fetched from external auth service
+	 * in format: rawAttributeName => normalizedAttributeName
+	 */
+	private $_normalizeUserAttributeMap;
 	/**
 	 * @var array view options in format: optionName => optionValue
 	 */
@@ -64,6 +77,14 @@ trait ClientTrait
 	}
 
 	/**
+	 * @param string $name service name.
+	 */
+	public function setName($name)
+	{
+		$this->_name = $name;
+	}
+
+	/**
 	 * @return string service name.
 	 */
 	public function getName()
@@ -75,11 +96,11 @@ trait ClientTrait
 	}
 
 	/**
-	 * @param string $name service name.
+	 * @param string $title service title.
 	 */
-	public function setName($name)
+	public function setTitle($title)
 	{
-		$this->_name = $name;
+		$this->_title = $title;
 	}
 
 	/**
@@ -94,11 +115,11 @@ trait ClientTrait
 	}
 
 	/**
-	 * @param string $title service title.
+	 * @param array $userAttributes list of user attributes
 	 */
-	public function setTitle($title)
+	public function setUserAttributes($userAttributes)
 	{
-		$this->_title = $title;
+		$this->_userAttributes = $this->normalizeUserAttributes($userAttributes);
 	}
 
 	/**
@@ -107,17 +128,28 @@ trait ClientTrait
 	public function getUserAttributes()
 	{
 		if ($this->_userAttributes === null) {
-			$this->_userAttributes = $this->initUserAttributes();
+			$this->_userAttributes = $this->normalizeUserAttributes($this->initUserAttributes());
 		}
 		return $this->_userAttributes;
 	}
 
 	/**
-	 * @param array $userAttributes list of user attributes
+	 * @param array $normalizeUserAttributeMap normalize user attribute map.
 	 */
-	public function setUserAttributes($userAttributes)
+	public function setNormalizeUserAttributeMap($normalizeUserAttributeMap)
 	{
-		$this->_userAttributes = $userAttributes;
+		$this->_normalizeUserAttributeMap = $normalizeUserAttributeMap;
+	}
+
+	/**
+	 * @return array normalize user attribute map.
+	 */
+	public function getNormalizeUserAttributeMap()
+	{
+		if ($this->_normalizeUserAttributeMap === null) {
+			$this->_normalizeUserAttributeMap = $this->defaultNormalizeUserAttributeMap();
+		}
+		return $this->_normalizeUserAttributeMap;
 	}
 
 	/**
@@ -167,6 +199,16 @@ trait ClientTrait
 	}
 
 	/**
+	 * Returns the default [[normalizeUserAttributeMap]] value.
+	 * Particular client may override this method in order to provide specific default map.
+	 * @return array normalize attribute map.
+	 */
+	public function defaultNormalizeUserAttributeMap()
+	{
+		return [];
+	}
+
+	/**
 	 * Returns the default [[viewOptions]] value.
 	 * Particular client may override this method in order to provide specific default view options.
 	 * @return array list of default [[viewOptions]]
@@ -174,5 +216,20 @@ trait ClientTrait
 	protected function defaultViewOptions()
 	{
 		return [];
+	}
+
+	/**
+	 * Normalize given user attributes according to {@link normalizeUserAttributeMap}.
+	 * @param array $attributes raw attributes.
+	 * @return array normalized attributes.
+	 */
+	protected function normalizeUserAttributes($attributes)
+	{
+		foreach ($this->getNormalizeUserAttributeMap() as $normalizedName => $actualName) {
+			if (array_key_exists($actualName, $attributes)) {
+				$attributes[$normalizedName] = $attributes[$actualName];
+			}
+		}
+		return $attributes;
 	}
 }
