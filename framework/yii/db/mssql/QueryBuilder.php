@@ -39,6 +39,80 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		Schema::TYPE_MONEY => 'decimal(19,4)',
 	];
 
+  /**
+   * Builds a SQL statement for renaming a DB table.
+   * @param string $table the table to be renamed. The name will be properly quoted by the method.
+   * @param string $newName the new table name. The name will be properly quoted by the method.
+   * @return string the SQL statement for renaming a DB table.
+   * @since 1.1.6
+   */
+  public function renameTable($table, $newName)
+  {
+    $quotedTable = $this->db->quoteTableName($table);
+    return "sp_rename '$quotedTable', '$newName'";
+  }
+
+  /**
+   * Builds a SQL statement for renaming a column.
+   * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
+   * @param string $name the old name of the column. The name will be properly quoted by the method.
+   * @param string $newName the new name of the column. The name will be properly quoted by the method.
+   * @return string the SQL statement for renaming a DB column by build-in stored procedure defined by MS SQL.
+   * @since 1.1.6
+   */
+  public function renameColumn($table, $oldName, $newName)
+  {
+    $quotedTable = $this->db->quoteTableName($table);
+    return "sp_rename '$quotedTable.$oldName', '$newName', 'COLUMN'";
+  }
+
+  /**
+   * Builds a SQL statement for changing the definition of a column.
+   * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+   * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+   * @param string $type the new column type. The [[getColumnType()]] method will be invoked to convert abstract
+   * column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept
+   * in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
+   * will become 'varchar(255) not null'.
+   * @return string the SQL statement for changing the definition of a column.
+   */
+  public function alterColumn($table, $column, $type)
+  {
+    $sql='ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
+      . $this->db->quoteColumnName($column) . ' '
+      . $this->db->quoteColumnName($column) . ' '
+      . $this->getColumnType($type);
+    return $sql;
+  }
+
+  /**
+	 * @param integer $limit
+	 * @param integer $offset
+	 * @return string the LIMIT and OFFSET clauses built from [[query]].
+	 */
+	public function buildLimit($limit, $offset)
+	{
+		$sql = '';
+		if ($limit !== null && $limit >= 0) {
+			$sql = 'LIMIT ' . (int)$limit;
+		}
+		if ($offset > 0) {
+			$sql .= ' OFFSET ' . (int)$offset;
+		}
+		return ltrim($sql);
+	}
+
+	public function applyLimit($sql, $limit, $offset)
+  {
+    $limit = $limit!==null ? (int)$limit : -1;
+    $offset = $offset!==null ? (int)$offset : -1;
+    if ($limit > 0 && $offset <= 0) //just limit
+            $sql = preg_replace('/^([\s(])*SELECT( DISTINCT)?(?!\s*TOP\s*\()/i',"\\1SELECT\\2 TOP $limit", $sql);
+    elseif($limit > 0 && $offset > 0)
+            $sql = $this->rewriteLimitOffsetSql($sql, $limit,$offset);
+    return $sql;
+  }
+
 //	public function update($table, $columns, $condition, &$params)
 //	{
 //		return '';

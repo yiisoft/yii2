@@ -116,7 +116,7 @@ class Schema extends \yii\db\Schema
 		$this->resolveTableNames($table, $name);
 		$this->findPrimaryKeys($table);
 		if ($this->findColumns($table)) {
-			$this->findForeignKeys($table);
+			$this->findConstraints($table);
 			return $table;
 		} else {
 			return null;
@@ -209,26 +209,26 @@ class Schema extends \yii\db\Schema
 	 */
 	protected function findColumns($table)
 	{
-		$columnsTableName = 'information_schema.columns';
-		$whereSql = "[t1].[table_name] = '{$table->name}'";
+		$columnsTableName = 'INFORMATION_SCHEMA.COLUMNS';
+		$whereSql = "[t1].[TABE_NAME] = '{$table->name}'";
 		if ($table->catalogName !== null) {
 			$columnsTableName = "{$table->catalogName}.{$columnsTableName}";
-			$whereSql .= " AND [t1].[table_catalog] = '{$table->catalogName}'";
+			$whereSql .= " AND [t1].[TABLE_CATALOG] = '{$table->catalogName}'";
 		}
 		if ($table->schemaName !== null) {
-			$whereSql .= " AND [t1].[table_schema] = '{$table->schemaName}'";
+			$whereSql .= " AND [t1].[TABLE_SCHEMA] = '{$table->schemaName}'";
 		}
 		$columnsTableName = $this->quoteTableName($columnsTableName);
 
 		$sql = <<<SQL
 SELECT
 	[t1].[column_name], [t1].[is_nullable], [t1].[data_type], [t1].[column_default],
-	COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS is_identity,
+	COLUMNPROPERTY(OBJECT_ID([t1].[TABLE_SCHEMA] + '.' + [t1].[TABE_NAME]), [t1].[column_name], 'IsIdentity') AS is_identity,
 	CONVERT(VARCHAR, [t2].[value]) AS comment
 FROM {$columnsTableName} AS [t1]
 LEFT OUTER JOIN [sys].[extended_properties] AS [t2] ON
 	[t1].[ordinal_position] = [t2].[minor_id] AND
-	OBJECT_NAME([t2].[major_id]) = [t1].[table_name] AND
+	OBJECT_NAME([t2].[major_id]) = [t1].[TABE_NAME] AND
 	[t2].[class] = 1 AND
 	[t2].[class_desc] = 'OBJECT_OR_COLUMN' AND
 	[t2].[name] = 'MS_Description'
@@ -276,12 +276,12 @@ SELECT
 	[kcu].[column_name] AS [field_name]
 FROM {$keyColumnUsageTableName} AS [kcu]
 LEFT JOIN {$tableConstraintsTableName} AS [tc] ON
-	[kcu].[table_name] = [tc].[table_name] AND
+	[kcu].[TABE_NAME] = [tc].[TABE_NAME] AND
 	[kcu].[constraint_name] = [tc].[constraint_name]
 WHERE
 	[tc].[constraint_type] = 'PRIMARY KEY' AND
-	[kcu].[table_name] = :tableName AND
-	[kcu].[table_schema] = :schemaName
+	[kcu].[TABE_NAME] = :tableName AND
+	[kcu].[TABLE_SCHEMA] = :schemaName
 SQL;
 
 		$table->primaryKey = $this->db
@@ -293,7 +293,7 @@ SQL;
 	 * Collects the foreign key column details for the given table.
 	 * @param TableSchema $table the table metadata
 	 */
-	protected function findForeignKeys($table)
+	protected function findConstraints($table)
 	{
 		$referentialConstraintsTableName = 'information_schema.referential_constraints';
 		$keyColumnUsageTableName = 'information_schema.key_column_usage';
@@ -309,7 +309,7 @@ SQL;
 		$sql = <<<SQL
 SELECT
 	[kcu1].[column_name] AS [fk_column_name],
-	[kcu2].[table_name] AS [uq_table_name],
+	[kcu2].[TABE_NAME] AS [uq_table_name],
 	[kcu2].[column_name] AS [uq_column_name]
 FROM {$referentialConstraintsTableName} AS [rc]
 JOIN {$keyColumnUsageTableName} AS [kcu1] ON
@@ -321,7 +321,7 @@ JOIN {$keyColumnUsageTableName} AS [kcu2] ON
 	[kcu2].[constraint_schema] = [rc].[constraint_schema] AND
 	[kcu2].[constraint_name] = [rc].[constraint_name] AND
 	[kcu2].[ordinal_position] = [kcu1].[ordinal_position]
-WHERE [kcu1].[table_name] = :tableName
+WHERE [kcu1].[TABE_NAME] = :tableName
 SQL;
 
 		$rows = $this->db->createCommand($sql, [':tableName' => $table->name])->queryAll();
@@ -336,16 +336,21 @@ SQL;
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
 	 * @return array all table names in the database. The names have NO schema name prefix.
 	 */
-	protected function findTableNames($schema = '')
+	protected function findTableNames($schema = '',$includeViews=true)
 	{
 		if ($schema === '') {
 			$schema = static::DEFAULT_SCHEMA;
 		}
 
+		if($includeViews)
+    	$condition=" in ('BASE TABLE','VIEW')";
+    else
+      $condition=" = 'BASE TABLE'";
+
 		$sql = <<<SQL
 SELECT [t].[table]
 FROM [information_schema].[tables] AS [t]
-WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'BASE TABLE'
+WHERE [t].[TABLE_SCHEMA] = :schema AND [t].[table_type] $condition
 SQL;
 
 		return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
