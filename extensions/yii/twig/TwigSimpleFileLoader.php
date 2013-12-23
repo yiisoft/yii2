@@ -12,7 +12,7 @@ class TwigSimpleFileLoader implements \Twig_LoaderInterface {
 
     /**
      * Path to directory where all file exists
-     * @param $view string
+     * @var string
      */
     private $dir;
 
