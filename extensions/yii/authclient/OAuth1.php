@@ -40,15 +40,15 @@ class OAuth1 extends BaseOAuth
 	/**
 	 * @var string OAuth consumer key.
 	 */
-	public $consumerKey = '';
+	public $consumerKey;
 	/**
 	 * @var string OAuth consumer secret.
 	 */
-	public $consumerSecret = '';
+	public $consumerSecret;
 	/**
 	 * @var string OAuth request token URL.
 	 */
-	public $requestTokenUrl = '';
+	public $requestTokenUrl;
 	/**
 	 * @var string request token HTTP method.
 	 */
@@ -56,7 +56,7 @@ class OAuth1 extends BaseOAuth
 	/**
 	 * @var string OAuth access token URL.
 	 */
-	public $accessTokenUrl = '';
+	public $accessTokenUrl;
 	/**
 	 * @var string access token HTTP method.
 	 */
@@ -179,7 +179,7 @@ class OAuth1 extends BaseOAuth
 					$curlOptions[CURLOPT_POSTFIELDS] = $params;
 				}
 				$authorizationHeader = $this->composeAuthorizationHeader($params);
-				if (!empty($authorizationHeader)/* && $this->curlAuthHeader*/) {
+				if (!empty($authorizationHeader)) {
 					$curlOptions[CURLOPT_HTTPHEADER] = ['Content-Type: application/atom+xml', $authorizationHeader];
 				}
 				break;

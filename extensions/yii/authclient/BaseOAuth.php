@@ -36,19 +36,19 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 	 * Note: this should be absolute URL (with http:// or https:// leading).
 	 * By default current URL will be used.
 	 */
-	private $_returnUrl = '';
+	private $_returnUrl;
 	/**
 	 * @var string API base URL.
 	 */
-	public $apiBaseUrl = '';
+	public $apiBaseUrl;
 	/**
 	 * @var string authorize URL.
 	 */
-	public $authUrl = '';
+	public $authUrl;
 	/**
 	 * @var string auth request scope.
 	 */
-	public $scope = '';
+	public $scope;
 	/**
 	 * @var array cURL request options. Option values from this field will overwrite corresponding
 	 * values from {@link defaultCurlOptions()}.
@@ -57,7 +57,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 	/**
 	 * @var OAuthToken|array access token instance or its array configuration.
 	 */
-	private $_accessToken = null;
+	private $_accessToken;
 	/**
 	 * @var signature\BaseMethod|array signature method instance or its array configuration.
 	 */
@@ -76,7 +76,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 	 */
 	public function getReturnUrl()
 	{
-		if (empty($this->_returnUrl)) {
+		if ($this->_returnUrl === null) {
 			$this->_returnUrl = $this->defaultReturnUrl();
 		}
 		return $this->_returnUrl;

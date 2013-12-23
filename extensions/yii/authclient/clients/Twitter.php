@@ -24,24 +24,27 @@ class Twitter extends OAuth1
 	/**
 	 * @inheritdoc
 	 */
-	public function __construct($config = [])
-	{
-		$config = array_merge(
-			[
-				'consumerKey' => 'anonymous',
-				'consumerSecret' => 'anonymous',
-				'requestTokenUrl' => 'https://api.twitter.com/oauth/request_token',
-				'requestTokenMethod' => 'POST',
-				'accessTokenUrl' => 'https://api.twitter.com/oauth/access_token',
-				'accessTokenMethod' => 'POST',
-				'authUrl' => 'https://api.twitter.com/oauth/authorize',
-				'scope' => '',
-				'apiBaseUrl' => 'https://api.twitter.com/1.1',
-			],
-			$config
-		);
-		parent::__construct($config);
-	}
+	public $authUrl = 'https://api.twitter.com/oauth/authorize';
+	/**
+	 * @inheritdoc
+	 */
+	public $requestTokenUrl = 'https://api.twitter.com/oauth/request_token';
+	/**
+	 * @inheritdoc
+	 */
+	public $requestTokenMethod = 'POST';
+	/**
+	 * @inheritdoc
+	 */
+	public $accessTokenUrl = 'https://api.twitter.com/oauth/access_token';
+	/**
+	 * @inheritdoc
+	 */
+	public $accessTokenMethod = 'POST';
+	/**
+	 * @inheritdoc
+	 */
+	public $apiBaseUrl = 'https://api.twitter.com/1.1';
 
 	/**
 	 * @inheritdoc

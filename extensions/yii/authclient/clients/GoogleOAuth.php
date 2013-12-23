@@ -24,23 +24,27 @@ class GoogleOAuth extends OAuth2
 	/**
 	 * @inheritdoc
 	 */
-	public function __construct($config = [])
+	public $authUrl = 'https://accounts.google.com/o/oauth2/auth';
+	/**
+	 * @inheritdoc
+	 */
+	public $tokenUrl = 'https://accounts.google.com/o/oauth2/token';
+	/**
+	 * @inheritdoc
+	 */
+	public $apiBaseUrl = 'https://www.googleapis.com/oauth2/v1';
+
+	/**
+	 * @inheritdoc
+	 */
+	public function init()
 	{
-		$config = array_merge(
-			[
-				'clientId' => 'anonymous',
-				'clientSecret' => 'anonymous',
-				'authUrl' => 'https://accounts.google.com/o/oauth2/auth',
-				'tokenUrl' => 'https://accounts.google.com/o/oauth2/token',
-				'apiBaseUrl' => 'https://www.googleapis.com/oauth2/v1',
-				'scope' => implode(' ', [
-					'https://www.googleapis.com/auth/userinfo.profile',
-					'https://www.googleapis.com/auth/userinfo.email',
-				]),
-			],
-			$config
-		);
-		parent::__construct($config);
+		if ($this->scope === null) {
+			$this->scope = implode(' ', [
+				'https://www.googleapis.com/auth/userinfo.profile',
+				'https://www.googleapis.com/auth/userinfo.email',
+			]);
+		}
 	}
 
 	/**
