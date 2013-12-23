@@ -2,11 +2,9 @@
 
 namespace yiiunit\extensions\authclient;
 
-use yii\authclient\ClientInterface;
-use yii\authclient\ClientTrait;
-use yii\base\Object;
+use yii\authclient\BaseClient;
 
-class ClientTraitTest extends TestCase
+class BaseClientTest extends TestCase
 {
 	public function testSetGet()
 	{
@@ -79,7 +77,6 @@ class ClientTraitTest extends TestCase
 	}
 }
 
-class Client extends Object implements ClientInterface
+class Client extends BaseClient
 {
-	use ClientTrait;
 }

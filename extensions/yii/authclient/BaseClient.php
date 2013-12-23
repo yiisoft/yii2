@@ -8,11 +8,12 @@
 namespace yii\authclient;
 
 use Yii;
+use yii\base\Component;
 use yii\base\NotSupportedException;
 use yii\helpers\StringHelper;
 
 /**
- * ProviderTrait can be used to satisfy [[ClientInterface]] interface.
+ * BaseClient is a base Auth Client class.
  *
  * @see ClientInterface
  *
@@ -27,7 +28,7 @@ use yii\helpers\StringHelper;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-trait ClientTrait
+abstract class BaseClient extends Component implements ClientInterface
 {
 	/**
 	 * @var string auth service id.

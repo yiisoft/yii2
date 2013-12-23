@@ -3,9 +3,7 @@
 namespace yiiunit\extensions\authclient;
 
 use yii\authclient\Collection;
-use yii\authclient\ClientInterface;
-use yii\authclient\ClientTrait;
-use yii\base\Object;
+use yii\authclient\BaseClient;
 use yiiunit\extensions\authclient\TestCase;
 
 class CollectionTest extends TestCase
@@ -82,9 +80,6 @@ class CollectionTest extends TestCase
 	}
 }
 
-class TestClient extends Object implements ClientInterface
+class TestClient extends BaseClient
 {
-	use ClientTrait;
-
-	public function authenticate() {}
 }
