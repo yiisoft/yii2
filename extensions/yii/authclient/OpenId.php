@@ -27,12 +27,27 @@ use yii\base\NotSupportedException;
 class OpenId extends BaseClient implements ClientInterface
 {
 	/**
-	 * @var array list of attributes, which should be requested from server.
+	 * @var array list of attributes, which always should be returned from server.
 	 */
 	public $requiredAttributes = [];
-	public $optional = [];
-	public $verify_peer;
+	/**
+	 * @var array list of attributes, which could be returned from server.
+	 */
+	public $optionalAttributes = [];
+
+	/**
+	 * @var boolean whether to verify the peer's certificate.
+	 */
+	public $verifyPeer;
+	/**
+	 * @var string directory that holds multiple CA certificates.
+	 * This value will take effect only if [[verifyPeer]] is set.
+	 */
 	public $capath;
+	/**
+	 * @var string the name of a file holding one or more certificates to verify the peer with.
+	 * This value will take effect only if [[verifyPeer]] is set.
+	 */
 	public $cainfo;
 
 	private $_returnUrl;
@@ -41,24 +56,33 @@ class OpenId extends BaseClient implements ClientInterface
 	private $_trustRoot;
 
 	protected $server;
+	/**
+	 * @var string protocol version.
+	 */
 	protected $version;
 
 	protected $aliases;
-	protected $identifier_select = false;
+	/**
+	 * @var boolean whether to request OP to select identity for an user in OpenID 2. Does not affect OpenID 1.
+	 */
+	protected $identifierSelect = false;
 	protected $ax = false;
 	protected $sreg = false;
 	protected $data;
 
-	public static $axToSregMap = [
-		'namePerson/friendly'     => 'nickname',
-		'contact/email'           => 'email',
-		'namePerson'              => 'fullname',
-		'birthDate'               => 'dob',
-		'person/gender'           => 'gender',
+	/**
+	 * @var array map of matches between AX and SREG attribute names in format: axAttributeName => sregAttributeName
+	 */
+	public $axToSregMap = [
+		'namePerson/friendly' => 'nickname',
+		'contact/email' => 'email',
+		'namePerson' => 'fullname',
+		'birthDate' => 'dob',
+		'person/gender' => 'gender',
 		'contact/postalCode/home' => 'postcode',
-		'contact/country/home'    => 'country',
-		'pref/language'           => 'language',
-		'pref/timezone'           => 'timezone',
+		'contact/country/home' => 'country',
+		'pref/language' => 'language',
+		'pref/timezone' => 'timezone',
 	];
 
 	/**
@@ -66,7 +90,7 @@ class OpenId extends BaseClient implements ClientInterface
 	 */
 	public function init()
 	{
-		$this->data = $_POST + $_GET; # OPs may send data as POST or GET.
+		$this->data = $_POST + $_GET; // OPs may send data as POST or GET.
 	}
 
 	public function setIdentity($value)
@@ -85,6 +109,14 @@ class OpenId extends BaseClient implements ClientInterface
 		$this->claimed_id = $value;
 	}
 
+	public function getIdentity()
+	{
+		/* We return claimed_id instead of identity,
+		because the developer should see the claimed identifier,
+		i.e. what he set as identity, not the op-local identifier (which is what we verify)*/
+		return $this->claimed_id;
+	}
+
 	public function setReturnUrl($returnUrl)
 	{
 		$this->_returnUrl = $returnUrl;
@@ -97,14 +129,6 @@ class OpenId extends BaseClient implements ClientInterface
 			$this->_returnUrl = $this->getTrustRoot() . $uri;
 		}
 		return $this->_returnUrl;
-	}
-
-	public function getIdentity()
-	{
-		# We return claimed_id instead of identity,
-		# because the developer should see the claimed identifier,
-		# i.e. what he set as identity, not the op-local identifier (which is what we verify)
-		return $this->claimed_id;
 	}
 
 	public function setTrustRoot($value)
@@ -154,6 +178,14 @@ class OpenId extends BaseClient implements ClientInterface
 		return !empty($ips);
 	}
 
+	/**
+	 * Sends HTTP request.
+	 * @param string $url request URL.
+	 * @param string $method request method.
+	 * @param array $params request params.
+	 * @return array|string response.
+	 * @throws \yii\base\Exception on failure.
+	 */
 	protected function sendCurlRequest($url, $method = 'GET', $params = [])
 	{
 		$params = http_build_query($params, '', '&');
@@ -164,8 +196,8 @@ class OpenId extends BaseClient implements ClientInterface
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/xrds+xml, */*'));
 
-		if ($this->verify_peer !== null) {
-			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->verify_peer);
+		if ($this->verifyPeer !== null) {
+			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->verifyPeer);
 			if($this->capath) {
 				curl_setopt($curl, CURLOPT_CAPATH, $this->capath);
 			}
@@ -209,6 +241,15 @@ class OpenId extends BaseClient implements ClientInterface
 		return $response;
 	}
 
+	/**
+	 * Sends HTTP request.
+	 * @param string $url request URL.
+	 * @param string $method request method.
+	 * @param array $params request params.
+	 * @return array|string response.
+	 * @throws \yii\base\Exception on failure.
+	 * @throws \yii\base\NotSupportedException if request method is not supported.
+	 */
 	protected function sendStreamRequest($url, $method = 'GET', $params = [])
 	{
 		if (!$this->hostExists($url)) {
@@ -238,9 +279,9 @@ class OpenId extends BaseClient implements ClientInterface
 				];
 				break;
 			case 'HEAD':
-				# We want to send a HEAD request,
-				# but since get_headers doesn't accept $context parameter,
-				# we have to change the defaults.
+				/* We want to send a HEAD request,
+				but since get_headers doesn't accept $context parameter,
+				we have to change the defaults.*/
 				$default = stream_context_get_options(stream_context_get_default());
 				stream_context_get_default([
 					'http' => [
@@ -256,18 +297,18 @@ class OpenId extends BaseClient implements ClientInterface
 					return [];
 				}
 
-				# Parsing headers.
+				// Parsing headers.
 				$headers = [];
 				foreach ($headers_tmp as $header) {
 					$pos = strpos($header, ':');
 					$name = strtolower(trim(substr($header, 0, $pos)));
 					$headers[$name] = trim(substr($header, $pos+1));
 
-					# Following possible redirections. The point is just to have
-					# claimed_id change with them, because get_headers() will
-					# follow redirections automatically.
-					# We ignore redirections with relative paths.
-					# If any known provider uses them, file a bug report.
+					/* Following possible redirections. The point is just to have
+					claimed_id change with them, because get_headers() will
+					follow redirections automatically.
+					We ignore redirections with relative paths.
+					If any known provider uses them, file a bug report.*/
 					if ($name == 'location') {
 						if (strpos($headers[$name], 'http') === 0) {
 							$this->identity = $this->claimed_id = $headers[$name];
@@ -281,14 +322,14 @@ class OpenId extends BaseClient implements ClientInterface
 					}
 				}
 
-				# And restore them.
+				// and restore them
 				stream_context_get_default($default);
 				return $headers;
 			default:
 				throw new NotSupportedException("Method {$method} not supported");
 		}
 
-		if ($this->verify_peer) {
+		if ($this->verifyPeer) {
 			$options = array_merge(
 				$options,
 				[
@@ -305,6 +346,13 @@ class OpenId extends BaseClient implements ClientInterface
 		return file_get_contents($url, false, $context);
 	}
 
+	/**
+	 * Sends request to the server
+	 * @param string $url request URL.
+	 * @param string $method request method.
+	 * @param array $params request parameters.
+	 * @return array|string response.
+	 */
 	protected function sendRequest($url, $method = 'GET', $params = [])
 	{
 		if (function_exists('curl_init') && !ini_get('safe_mode')) {
@@ -340,7 +388,6 @@ class OpenId extends BaseClient implements ClientInterface
 	{
 		preg_match_all("#<{$tag}[^>]*$attrName=['\"].*?$attrValue.*?['\"][^>]*$valueName=['\"](.+?)['\"][^>]*/?>#i", $content, $matches1);
 		preg_match_all("#<{$tag}[^>]*$valueName=['\"](.+?)['\"][^>]*$attrName=['\"].*?$attrValue.*?['\"][^>]*/?>#i", $content, $matches2);
-
 		$result = array_merge($matches1[1], $matches2[1]);
 		return empty($result) ? false : $result[0];
 	}
@@ -349,27 +396,27 @@ class OpenId extends BaseClient implements ClientInterface
 	 * Performs Yadis and HTML discovery. Normally not used.
 	 * @param string $url Identity URL.
 	 * @return string OP Endpoint (i.e. OpenID provider address).
-	 * @throws Exception
+	 * @throws Exception on failure.
 	 */
 	public function discover($url)
 	{
 		if (!$url) {
 			throw new Exception('No identity supplied.');
 		}
-		# Use xri.net proxy to resolve i-name identities
+		// Use xri.net proxy to resolve i-name identities
 		if (!preg_match('#^https?:#', $url)) {
 			$url = "https://xri.net/$url";
 		}
 
-		# We save the original url in case of Yadis discovery failure.
-		# It can happen when we'll be lead to an XRDS document
-		# which does not have any OpenID2 services.
+		/* We save the original url in case of Yadis discovery failure.
+		It can happen when we'll be lead to an XRDS document
+		which does not have any OpenID2 services.*/
 		$originalUrl = $url;
 
-		# A flag to disable yadis discovery in case of failure in headers.
+		// A flag to disable yadis discovery in case of failure in headers.
 		$yadis = true;
 
-		# We'll jump a maximum of 5 times, to avoid endless redirections.
+		// We'll jump a maximum of 5 times, to avoid endless redirections.
 		for ($i = 0; $i < 5; $i ++) {
 			if ($yadis) {
 				$headers = $this->sendRequest($url, 'HEAD');
@@ -384,22 +431,22 @@ class OpenId extends BaseClient implements ClientInterface
 					&& (strpos($headers['content-type'], 'application/xrds+xml') !== false
 						|| strpos($headers['content-type'], 'text/xml') !== false)
 				) {
-					# Apparently, some providers return XRDS documents as text/html.
-					# While it is against the spec, allowing this here shouldn't break
-					# compatibility with anything.
-					# ---
-					# Found an XRDS document, now let's find the server, and optionally delegate.
+					/* Apparently, some providers return XRDS documents as text/html.
+					While it is against the spec, allowing this here shouldn't break
+					compatibility with anything.
+					---
+					Found an XRDS document, now let's find the server, and optionally delegate.*/
 					$content = $this->sendRequest($url, 'GET');
 
 					preg_match_all('#<Service.*?>(.*?)</Service>#s', $content, $m);
 					foreach ($m[1] as $content) {
-						$content = ' ' . $content; # The space is added, so that strpos doesn't return 0.
+						$content = ' ' . $content; // The space is added, so that strpos doesn't return 0.
 
-						# OpenID 2
+						// OpenID 2
 						$ns = preg_quote('http://specs.openid.net/auth/2.0/');
 						if (preg_match('#<Type>\s*'.$ns.'(server|signon)\s*</Type>#s', $content, $type)) {
 							if ($type[1] == 'server') {
-								$this->identifier_select = true;
+								$this->identifierSelect = true;
 							}
 
 							preg_match('#<URI.*?>(.*)</URI>#', $content, $server);
@@ -407,7 +454,7 @@ class OpenId extends BaseClient implements ClientInterface
 							if (empty($server)) {
 								return false;
 							}
-							# Does the server advertise support for either AX or SREG?
+							// Does the server advertise support for either AX or SREG?
 							$this->ax   = (bool) strpos($content, '<Type>http://openid.net/srv/ax/1.0</Type>');
 							$this->sreg = strpos($content, '<Type>http://openid.net/sreg/1.0</Type>')
 								|| strpos($content, '<Type>http://openid.net/extensions/sreg/1.1</Type>');
@@ -422,16 +469,15 @@ class OpenId extends BaseClient implements ClientInterface
 							return $server;
 						}
 
-						# OpenID 1.1
+						// OpenID 1.1
 						$ns = preg_quote('http://openid.net/signon/1.1');
 						if (preg_match('#<Type>\s*'.$ns.'\s*</Type>#s', $content)) {
-
 							preg_match('#<URI.*?>(.*)</URI>#', $content, $server);
 							preg_match('#<.*?Delegate>(.*)</.*?Delegate>#', $content, $delegate);
 							if (empty($server)) {
 								return false;
 							}
-							# AX can be used only with OpenID 2.0, so checking only SREG
+							// AX can be used only with OpenID 2.0, so checking only SREG
 							$this->sreg = strpos($content, '<Type>http://openid.net/sreg/1.0</Type>')
 								|| strpos($content, '<Type>http://openid.net/extensions/sreg/1.1</Type>');
 
@@ -456,7 +502,7 @@ class OpenId extends BaseClient implements ClientInterface
 					continue;
 				}
 
-				# There are no relevant information in headers, so we search the body.
+				// There are no relevant information in headers, so we search the body.
 				$content = $this->sendRequest($url, 'GET');
 				$location = $this->extractHtmlTagValue($content, 'meta', 'http-equiv', 'X-XRDS-Location', 'content');
 				if ($location) {
@@ -469,23 +515,22 @@ class OpenId extends BaseClient implements ClientInterface
 				$content = $this->sendRequest($url, 'GET');
 			}
 
-			# At this point, the YADIS Discovery has failed, so we'll switch
-			# to openid2 HTML discovery, then fallback to openid 1.1 discovery.
+			// At this point, the YADIS Discovery has failed, so we'll switch to openid2 HTML discovery, then fallback to openid 1.1 discovery.
 			$server = $this->extractHtmlTagValue($content, 'link', 'rel', 'openid2.provider', 'href');
 			$delegate = $this->extractHtmlTagValue($content, 'link', 'rel', 'openid2.local_id', 'href');
 			$this->version = 2;
 
 			if (!$server) {
-				# The same with openid 1.1
+				// The same with openid 1.1
 				$server   = $this->extractHtmlTagValue($content, 'link', 'rel', 'openid.server', 'href');
 				$delegate = $this->extractHtmlTagValue($content, 'link', 'rel', 'openid.delegate', 'href');
 				$this->version = 1;
 			}
 
 			if ($server) {
-				# We found an OpenID2 OP Endpoint
+				// We found an OpenID2 OP Endpoint
 				if ($delegate) {
-					# We have also found an OP-Local ID.
+					// We have also found an OP-Local ID.
 					$this->identity = $delegate;
 				}
 				$this->server = $server;
@@ -499,28 +544,28 @@ class OpenId extends BaseClient implements ClientInterface
 	protected function sregParams()
 	{
 		$params = [];
-		# We always use SREG 1.1, even if the server is advertising only support for 1.0.
-		# That's because it's fully backwards compatibile with 1.0, and some providers
-		# advertise 1.0 even if they accept only 1.1. One such provider is myopenid.com
+		/* We always use SREG 1.1, even if the server is advertising only support for 1.0.
+		That's because it's fully backwards compatibile with 1.0, and some providers
+		advertise 1.0 even if they accept only 1.1. One such provider is myopenid.com*/
 		$params['openid.ns.sreg'] = 'http://openid.net/extensions/sreg/1.1';
 		if ($this->requiredAttributes) {
 			$params['openid.sreg.required'] = [];
 			foreach ($this->requiredAttributes as $required) {
-				if (!isset(self::$axToSregMap[$required])) {
+				if (!isset($this->axToSregMap[$required])) {
 					continue;
 				}
-				$params['openid.sreg.required'][] = self::$axToSregMap[$required];
+				$params['openid.sreg.required'][] = $this->axToSregMap[$required];
 			}
 			$params['openid.sreg.required'] = implode(',', $params['openid.sreg.required']);
 		}
 
-		if ($this->optional) {
+		if ($this->optionalAttributes) {
 			$params['openid.sreg.optional'] = [];
-			foreach ($this->optional as $optional) {
-				if (!isset(self::$axToSregMap[$optional])) {
+			foreach ($this->optionalAttributes as $optional) {
+				if (!isset($this->axToSregMap[$optional])) {
 					continue;
 				}
-				$params['openid.sreg.optional'][] = self::$axToSregMap[$optional];
+				$params['openid.sreg.optional'][] = $this->axToSregMap[$optional];
 			}
 			$params['openid.sreg.optional'] = implode(',', $params['openid.sreg.optional']);
 		}
@@ -530,14 +575,14 @@ class OpenId extends BaseClient implements ClientInterface
 	protected function axParams()
 	{
 		$params = [];
-		if ($this->requiredAttributes || $this->optional) {
+		if ($this->requiredAttributes || $this->optionalAttributes) {
 			$params['openid.ns.ax'] = 'http://openid.net/srv/ax/1.0';
 			$params['openid.ax.mode'] = 'fetch_request';
 			$this->aliases = [];
 			$counts = [];
 			$required = [];
 			$optional = [];
-			foreach (['requiredAttributes', 'optional'] as $type) {
+			foreach (['requiredAttributes', 'optionalAttributes'] as $type) {
 				foreach ($this->$type as $alias => $field) {
 					if (is_int($alias)) {
 						$alias = strtr($field, '/', '_');
@@ -560,8 +605,8 @@ class OpenId extends BaseClient implements ClientInterface
 				$params['openid.ax.count.' . $alias] = $count;
 			}
 
-			# Don't send empty ax.requied and ax.if_available.
-			# Google and possibly other providers refuse to support ax when one of these is empty.
+			// Don't send empty ax.requied and ax.if_available.
+			// Google and possibly other providers refuse to support ax when one of these is empty.
 			if ($required) {
 				$params['openid.ax.required'] = implode(',', $required);
 			}
@@ -572,12 +617,16 @@ class OpenId extends BaseClient implements ClientInterface
 		return $params;
 	}
 
-	protected function authUrlV1()
+	/**
+	 * Builds authentication URL for the protocol version 1.
+	 * @return string authentication URL.
+	 */
+	protected function buildAuthUrlV1()
 	{
 		$returnUrl = $this->returnUrl;
-		# If we have an openid.delegate that is different from our claimed id,
-		# we need to somehow preserve the claimed id between requests.
-		# The simplest way is to just send it along with the return_to url.
+		/* If we have an openid.delegate that is different from our claimed id,
+		we need to somehow preserve the claimed id between requests.
+		The simplest way is to just send it along with the return_to url.*/
 		if ($this->identity != $this->claimed_id) {
 			$returnUrl .= (strpos($returnUrl, '?') ? '&' : '?') . 'openid.claimed_id=' . $this->claimed_id;
 		}
@@ -595,7 +644,12 @@ class OpenId extends BaseClient implements ClientInterface
 		return $this->buildUrl(parse_url($this->server), ['query' => http_build_query($params, '', '&')]);
 	}
 
-	protected function authUrlV2($identifierSelect)
+	/**
+	 * Builds authentication URL for the protocol version 2.
+	 * @param boolean $identifierSelect whether to request OP to select identity for an user.
+	 * @return string authentication URL.
+	 */
+	protected function buildAuthUrlV2($identifierSelect)
 	{
 		$params = [
 			'openid.ns' => 'http://specs.openid.net/auth/2.0',
@@ -610,8 +664,7 @@ class OpenId extends BaseClient implements ClientInterface
 			$params = array_merge($this->sregParams(), $params);
 		}
 		if (!$this->ax && !$this->sreg) {
-			# If OP doesn't advertise either SREG, nor AX, let's send them both
-			# in worst case we don't get anything in return.
+			// If OP doesn't advertise either SREG, nor AX, let's send them both in worst case we don't get anything in return.
 			$params = array_merge($this->sregParams(), $this->axParams(), $params);
 		}
 
@@ -628,22 +681,22 @@ class OpenId extends BaseClient implements ClientInterface
 
 	/**
 	 * Returns authentication URL. Usually, you want to redirect your user to it.
-	 * @param string $identifier_select Whether to request OP to select identity for an user in OpenID 2. Does not affect OpenID 1.
+	 * @param boolean $identifierSelect whether to request OP to select identity for an user in OpenID 2. Does not affect OpenID 1.
 	 * @return string the authentication URL.
-	 * @throws Exception
+	 * @throws Exception on failure.
 	 */
-	public function authUrl($identifier_select = null)
+	public function buildAuthUrl($identifierSelect = null)
 	{
 		if (!$this->server) {
 			$this->discover($this->identity);
 		}
 		if ($this->version == 2) {
-			if ($identifier_select === null) {
-				return $this->authUrlV2($this->identifier_select);
+			if ($identifierSelect === null) {
+				$identifierSelect = $this->identifierSelect;
 			}
-			return $this->authUrlV2($identifier_select);
+			return $this->buildAuthUrlV2($identifierSelect);
 		}
-		return $this->authUrlV1();
+		return $this->buildAuthUrlV1();
 	}
 
 	/**
@@ -661,34 +714,33 @@ class OpenId extends BaseClient implements ClientInterface
 		];
 
 		if (isset($this->data['openid_ns'])) {
-			# We're dealing with an OpenID 2.0 server, so let's set an ns
-			# Even though we should know location of the endpoint,
-			# we still need to verify it by discovery, so $server is not set here
+			/* We're dealing with an OpenID 2.0 server, so let's set an ns
+			Even though we should know location of the endpoint,
+			we still need to verify it by discovery, so $server is not set here*/
 			$params['openid.ns'] = 'http://specs.openid.net/auth/2.0';
 		} elseif (isset($this->data['openid_claimed_id'])
 			&& $this->data['openid_claimed_id'] != $this->data['openid_identity']
 		) {
-			# If it's an OpenID 1 provider, and we've got claimed_id,
-			# we have to append it to the returnUrl, like authUrl_v1 does.
-			$this->returnUrl .= (strpos($this->returnUrl, '?') ? '&' : '?')
-				. 'openid.claimed_id=' . $this->claimed_id;
+			// If it's an OpenID 1 provider, and we've got claimed_id,
+			// we have to append it to the returnUrl, like authUrl_v1 does.
+			$this->returnUrl .= (strpos($this->returnUrl, '?') ? '&' : '?') . 'openid.claimed_id=' . $this->claimed_id;
 		}
 
 		if ($this->data['openid_return_to'] != $this->returnUrl) {
-			# The return_to url must match the url of current request.
-			# I'm assuing that noone will set the returnUrl to something that doesn't make sense.
+			// The return_to url must match the url of current request.
+			// I'm assuing that noone will set the returnUrl to something that doesn't make sense.
 			return false;
 		}
 
 		$server = $this->discover($this->claimed_id);
 
 		foreach (explode(',', $this->data['openid_signed']) as $item) {
-			# Checking whether magic_quotes_gpc is turned on, because
-			# the function may fail if it is. For example, when fetching
-			# AX namePerson, it might containg an apostrophe, which will be escaped.
-			# In such case, validation would fail, since we'd send different data than OP
-			# wants to verify. stripslashes() should solve that problem, but we can't
-			# use it when magic_quotes is off.
+			/* Checking whether magic_quotes_gpc is turned on, because
+			the function may fail if it is. For example, when fetching
+			AX namePerson, it might containg an apostrophe, which will be escaped.
+			In such case, validation would fail, since we'd send different data than OP
+			wants to verify. stripslashes() should solve that problem, but we can't
+			use it when magic_quotes is off.*/
 			$value = $this->data['openid_' . str_replace('.', '_', $item)];
 			$params['openid.' . $item] = get_magic_quotes_gpc() ? stripslashes($value) : $value;
 		}
@@ -704,11 +756,10 @@ class OpenId extends BaseClient implements ClientInterface
 	{
 		$alias = null;
 		if (isset($this->data['openid_ns_ax']) && $this->data['openid_ns_ax'] != 'http://openid.net/srv/ax/1.0') {
-			# It's the most likely case, so we'll check it before
+			// It's the most likely case, so we'll check it before
 			$alias = 'ax';
 		} else {
-			# 'ax' prefix is either undefined, or points to another extension,
-			# so we search for another prefix
+			// 'ax' prefix is either undefined, or points to another extension, so we search for another prefix
 			foreach ($this->data as $key => $value) {
 				if (substr($key, 0, strlen('openid_ns_')) == 'openid_ns_' && $value == 'http://openid.net/srv/ax/1.0') {
 					$alias = substr($key, strlen('openid_ns_'));
@@ -717,8 +768,7 @@ class OpenId extends BaseClient implements ClientInterface
 			}
 		}
 		if (!$alias) {
-			# An alias for AX schema has not been found,
-			# so there is no AX data in the OP's response
+			// An alias for AX schema has not been found, so there is no AX data in the OP's response
 			return [];
 		}
 
@@ -730,9 +780,9 @@ class OpenId extends BaseClient implements ClientInterface
 			}
 			$key = substr($key, strlen($keyMatch));
 			if (!isset($this->data['openid_' . $alias . '_type_' . $key])) {
-				# OP is breaking the spec by returning a field without
-				# associated ns. This shouldn't happen, but it's better
-				# to check, than cause an E_NOTICE.
+				/* OP is breaking the spec by returning a field without
+				associated ns. This shouldn't happen, but it's better
+				to check, than cause an E_NOTICE.*/
 				continue;
 			}
 			$key = substr($this->data['openid_' . $alias . '_type_' . $key], strlen('http://axschema.org/'));
@@ -744,7 +794,7 @@ class OpenId extends BaseClient implements ClientInterface
 	protected function getSregAttributes()
 	{
 		$attributes = [];
-		$sregToAx = array_flip(self::$axToSregMap);
+		$sregToAx = array_flip($this->axToSregMap);
 		foreach ($this->data as $key => $value) {
 			$keyMatch = 'openid_sreg_';
 			if (substr($key, 0, strlen($keyMatch)) != $keyMatch) {
@@ -752,7 +802,7 @@ class OpenId extends BaseClient implements ClientInterface
 			}
 			$key = substr($key, strlen($keyMatch));
 			if (!isset($sregToAx[$key])) {
-				# The field name isn't part of the SREG spec, so we ignore it.
+				// The field name isn't part of the SREG spec, so we ignore it.
 				continue;
 			}
 			$attributes[$sregToAx[$key]] = $value;
@@ -761,7 +811,7 @@ class OpenId extends BaseClient implements ClientInterface
 	}
 
 	/**
-	 * Gets AX/SREG attributes provided by OP. should be used only after successful validaton.
+	 * Gets AX/SREG attributes provided by OP. should be used only after successful validation.
 	 * Note that it does not guarantee that any of the required/optional parameters will be present,
 	 * or that there will be no other attributes besides those specified.
 	 * In other words. OP may provide whatever information it wants to.
@@ -772,8 +822,8 @@ class OpenId extends BaseClient implements ClientInterface
 	public function getAttributes()
 	{
 		if (isset($this->data['openid_ns']) && $this->data['openid_ns'] == 'http://specs.openid.net/auth/2.0') {
-			# OpenID 2.0
-			# We search for both AX and SREG attributes, with AX taking precedence.
+			// OpenID 2.0
+			// We search for both AX and SREG attributes, with AX taking precedence.
 			return array_merge($this->getSregAttributes(), $this->getAxAttributes());
 		}
 		return $this->getSregAttributes();
