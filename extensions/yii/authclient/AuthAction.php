@@ -233,7 +233,7 @@ class AuthAction extends Action
 			$provider->realm = $request->getHostInfo();
 			$provider->returnUrl = $provider->realm . $request->getUrl(); // getting return URL
 
-			$url = $provider->authUrl();
+			$url = $provider->buildAuthUrl();
 			return Yii::$app->getResponse()->redirect($url);
 		}
 		return $this->redirectCancel();
