@@ -10,3 +10,4 @@ Yii Framework 2 twig extension Change Log
 -----------------------------
 
 - Initial release.
+- Add more features like in old and file based loader for twig files
