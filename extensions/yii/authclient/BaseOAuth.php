@@ -263,7 +263,7 @@ abstract class BaseOAuth extends Component implements ClientInterface
 			}
 			case self::CONTENT_TYPE_URLENCODED: {
 				$response = [];
-				parse_url($rawResponse, $response);
+				parse_str($rawResponse, $response);
 				break;
 			}
 			case self::CONTENT_TYPE_XML: {
