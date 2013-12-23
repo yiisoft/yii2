@@ -92,6 +92,8 @@ class Schema extends \yii\db\Schema
 
 		if ($this->findColumns($table)) {
 			$this->findConstraints($table);
+			$this->findIndexes($table);
+			$this->findUniqueIndexes($table);
 			return $table;
 		} else {
 			return null;
@@ -230,6 +232,54 @@ class Schema extends \yii\db\Schema
 					$constraint[$name] = $pks[$k];
 				}
 				$table->foreignKeys[] = $constraint;
+			}
+		}
+	}
+
+	/**
+	 * Collects the index details for the given table.
+	 * @param TableSchema $table the table metadata
+	 */
+	protected function findIndexes($table)
+	{
+		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryOne();
+		if (isset($row['Create Table'])) {
+			$sql = $row['Create Table'];
+		} else {
+			$row = array_values($row);
+			$sql = $row[1];
+		}
+
+		$regexp = '/^\s*KEY\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
+		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				$indexName = str_replace('`', '', $match[1]);
+				$indexColumns = array_map('trim', explode(',', str_replace('`', '', $match[2])));
+				$table->indexes[$indexName] = $indexColumns;
+			}
+		}
+	}
+
+	/**
+	 * Collects the unique index details for the given table.
+	 * @param TableSchema $table the table metadata
+	 */
+	protected function findUniqueIndexes($table)
+	{
+		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryOne();
+		if (isset($row['Create Table'])) {
+			$sql = $row['Create Table'];
+		} else {
+			$row = array_values($row);
+			$sql = $row[1];
+		}
+
+		$regexp = '/UNIQUE KEY\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
+		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				$uniqueIndexName = str_replace('`', '', $match[1]);
+				$uniqueIndexColumns = array_map('trim', explode(',', str_replace('`', '', $match[2])));
+				$table->uniqueIndexes[$uniqueIndexName] = $uniqueIndexColumns;
 			}
 		}
 	}
