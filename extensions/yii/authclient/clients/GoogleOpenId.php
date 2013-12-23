@@ -35,6 +35,19 @@ class GoogleOpenId extends OpenId
 	/**
 	 * @inheritdoc
 	 */
+	protected function defaultNormalizeUserAttributeMap()
+	{
+		return [
+			'first_name' => 'namePerson/first',
+			'last_name' => 'namePerson/last',
+			'email' => 'contact/email',
+			'language' => 'pref/language',
+		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	protected function defaultViewOptions()
 	{
 		return [

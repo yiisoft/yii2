@@ -33,6 +33,17 @@ class YandexOpenId extends OpenId
 	/**
 	 * @inheritdoc
 	 */
+	protected function defaultNormalizeUserAttributeMap()
+	{
+		return [
+			'name' => 'namePerson',
+			'email' => 'contact/email',
+		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	protected function defaultViewOptions()
 	{
 		return [
