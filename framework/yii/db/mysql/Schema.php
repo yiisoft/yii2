@@ -209,10 +209,11 @@ class Schema extends \yii\db\Schema
 	}
 
 	/**
-	 * Collects the foreign key column details for the given table.
+	 * Gets the CREATE TABLE sql string.
 	 * @param TableSchema $table the table metadata
+	 * @return string $sql the result of 'SHOW CREATE TABLE'
 	 */
-	protected function findConstraints($table)
+	protected function getCreateTableSql($table)
 	{
 		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryOne();
 		if (isset($row['Create Table'])) {
@@ -221,6 +222,16 @@ class Schema extends \yii\db\Schema
 			$row = array_values($row);
 			$sql = $row[1];
 		}
+		return $sql;
+	}
+
+	/**
+	 * Collects the foreign key column details for the given table.
+	 * @param TableSchema $table the table metadata
+	 */
+	protected function findConstraints($table)
+	{
+		$sql = $this->getCreateTableSql($table);
 
 		$regexp = '/FOREIGN KEY\s+\(([^\)]+)\)\s+REFERENCES\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
 		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
@@ -242,13 +253,7 @@ class Schema extends \yii\db\Schema
 	 */
 	protected function findIndexes($table)
 	{
-		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryOne();
-		if (isset($row['Create Table'])) {
-			$sql = $row['Create Table'];
-		} else {
-			$row = array_values($row);
-			$sql = $row[1];
-		}
+		$sql = $this->getCreateTableSql($table);
 
 		$regexp = '/^\s*KEY\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
 		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
@@ -266,13 +271,7 @@ class Schema extends \yii\db\Schema
 	 */
 	protected function findUniqueIndexes($table)
 	{
-		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryOne();
-		if (isset($row['Create Table'])) {
-			$sql = $row['Create Table'];
-		} else {
-			$row = array_values($row);
-			$sql = $row[1];
-		}
+		$sql = $this->getCreateTableSql($table);
 
 		$regexp = '/UNIQUE KEY\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
 		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
