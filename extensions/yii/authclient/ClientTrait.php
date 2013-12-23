@@ -203,7 +203,7 @@ trait ClientTrait
 	 * Particular client may override this method in order to provide specific default map.
 	 * @return array normalize attribute map.
 	 */
-	public function defaultNormalizeUserAttributeMap()
+	protected function defaultNormalizeUserAttributeMap()
 	{
 		return [];
 	}
