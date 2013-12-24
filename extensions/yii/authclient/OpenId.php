@@ -408,28 +408,30 @@ class OpenId extends BaseClient implements ClientInterface
 	 * @return array OpenID provider info, following keys will be available:
 	 * - 'url' - string OP Endpoint (i.e. OpenID provider address).
 	 * - 'version' - integer OpenID protocol version used by provider.
-	 * - 'identifierSelect' - boolean whether to request OP to select identity for an user in OpenID 2, does not affect OpenID 1.
+	 * - 'identity' - string identity value.
+	 * - 'identifier_select' - boolean whether to request OP to select identity for an user in OpenID 2, does not affect OpenID 1.
 	 * - 'ax' - boolean whether AX attributes should be used.
 	 * - 'sreg' - boolean whether SREG attributes should be used.
 	 * @throws Exception on failure.
 	 */
 	public function discover($url)
 	{
-		if (!$url) {
+		if (empty($url)) {
 			throw new Exception('No identity supplied.');
 		}
+		$result = [
+			'url' => null,
+			'version' => null,
+			'identity' => $url,
+			'identifier_select' => false,
+			'ax' => false,
+			'sreg' => false,
+		];
+
 		// Use xri.net proxy to resolve i-name identities
 		if (!preg_match('#^https?:#', $url)) {
 			$url = 'https://xri.net/' . $url;
 		}
-
-		$result = [
-			'url' => null,
-			'version' => null,
-			'identifierSelect' => false,
-			'ax' => false,
-			'sreg' => false,
-		];
 
 		/* We save the original url in case of Yadis discovery failure.
 		It can happen when we'll be lead to an XRDS document
@@ -469,7 +471,7 @@ class OpenId extends BaseClient implements ClientInterface
 						$ns = preg_quote('http://specs.openid.net/auth/2.0/');
 						if (preg_match('#<Type>\s*'.$ns.'(server|signon)\s*</Type>#s', $content, $type)) {
 							if ($type[1] == 'server') {
-								$result['identifierSelect'] = true;
+								$result['identifier_select'] = true;
 							}
 
 							preg_match('#<URI.*?>(.*)</URI>#', $content, $server);
@@ -483,7 +485,7 @@ class OpenId extends BaseClient implements ClientInterface
 
 							$server = $server[1];
 							if (isset($delegate[2])) {
-								$this->_identity = trim($delegate[2]);
+								$result['identity'] = trim($delegate[2]);
 							}
 
 							$result['url'] = $server;
@@ -504,7 +506,7 @@ class OpenId extends BaseClient implements ClientInterface
 
 							$server = $server[1];
 							if (isset($delegate[1])) {
-								$this->_identity = $delegate[1];
+								$result['identity'] = $delegate[1];
 							}
 
 							$result['url'] = $server;
@@ -552,7 +554,7 @@ class OpenId extends BaseClient implements ClientInterface
 				// We found an OpenID2 OP Endpoint
 				if ($delegate) {
 					// We have also found an OP-Local ID.
-					$this->_identity = $delegate;
+					$result['identity'] = $delegate;
 				}
 				$result['url'] = $server;
 				$result['version'] = $version;
@@ -658,7 +660,7 @@ class OpenId extends BaseClient implements ClientInterface
 		/* If we have an openid.delegate that is different from our claimed id,
 		we need to somehow preserve the claimed id between requests.
 		The simplest way is to just send it along with the return_to url.*/
-		if ($this->_identity != $this->_claimedId) {
+		if ($serverInfo['identity'] != $this->_claimedId) {
 			$returnUrl .= (strpos($returnUrl, '?') ? '&' : '?') . 'openid.claimed_id=' . $this->_claimedId;
 		}
 
@@ -667,7 +669,7 @@ class OpenId extends BaseClient implements ClientInterface
 			[
 				'openid.return_to' => $returnUrl,
 				'openid.mode' => 'checkid_setup',
-				'openid.identity' => $this->_identity,
+				'openid.identity' => $serverInfo['identity'],
 				'openid.trust_root' => $this->trustRoot,
 			]
 		);
@@ -699,12 +701,12 @@ class OpenId extends BaseClient implements ClientInterface
 			$params = array_merge($this->buildSregParams(), $this->buildAxParams(), $params);
 		}
 
-		if ($serverInfo['identifierSelect']) {
+		if ($serverInfo['identifier_select']) {
 			$url = 'http://specs.openid.net/auth/2.0/identifier_select';
 			$params['openid.identity'] = $url;
 			$params['openid.claimed_id']= $url;
 		} else {
-			$params['openid.identity'] = $this->_identity;
+			$params['openid.identity'] = $serverInfo['identity'];
 			$params['openid.claimed_id'] = $this->_claimedId;
 		}
 		return $this->buildUrl(parse_url($serverInfo['url']), ['query' => http_build_query($params, '', '&')]);
@@ -721,7 +723,7 @@ class OpenId extends BaseClient implements ClientInterface
 		$serverInfo = $this->discover($this->_identity);
 		if ($serverInfo['version'] == 2) {
 			if ($identifierSelect !== null) {
-				$serverInfo['identifierSelect'] = $identifierSelect;
+				$serverInfo['identifier_select'] = $identifierSelect;
 			}
 			return $this->buildAuthUrlV2($serverInfo);
 		}
