@@ -52,8 +52,9 @@ class OpenIdTest extends TestCase
 		$info = $client->discover($url);
 		$this->assertNotEmpty($info);
 		$this->assertNotEmpty($info['url']);
+		$this->assertNotEmpty($info['identity']);
 		$this->assertEquals(2, $info['version']);
-		$this->assertArrayHasKey('identifierSelect', $info);
+		$this->assertArrayHasKey('identifier_select', $info);
 		$this->assertArrayHasKey('ax', $info);
 		$this->assertArrayHasKey('sreg', $info);
 	}
