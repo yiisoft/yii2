@@ -217,4 +217,31 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertTrue(OrderItem::isPrimaryKey(['order_id', 'item_id']));
 		$this->assertFalse(OrderItem::isPrimaryKey(['order_id', 'item_id', 'quantity']));
 	}
+
+	public function testJoinWith()
+	{
+		// inner join filtering and eager loading
+		$orders = Order::find()->joinWith([
+			'customer' => function ($query) {
+				$query->where('tbl_customer.id=2');
+			},
+		])->orderBy('tbl_order.id')->all();
+		$this->assertEquals(2, count($orders));
+		$this->assertEquals(2, $orders[0]->id);
+		$this->assertEquals(3, $orders[1]->id);
+		$this->assertTrue($orders[0]->isRelationPopulated('customer'));
+		$this->assertTrue($orders[1]->isRelationPopulated('customer'));
+
+		// inner join filtering without eager loading
+		$orders = Order::find()->joinWith([
+			'customer' => function ($query) {
+				$query->where('tbl_customer.id=2');
+			},
+		], false)->orderBy('tbl_order.id')->all();
+		$this->assertEquals(2, count($orders));
+		$this->assertEquals(2, $orders[0]->id);
+		$this->assertEquals(3, $orders[1]->id);
+		$this->assertFalse($orders[0]->isRelationPopulated('customer'));
+		$this->assertFalse($orders[1]->isRelationPopulated('customer'));
+	}
 }
