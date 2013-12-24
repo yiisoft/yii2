@@ -400,14 +400,53 @@ $orders = Order::find()->joinWith('books')->all();
 // find all orders that contain books, and sort the orders by the book names.
 $orders = Order::find()->joinWith([
     'books' => function ($query) {
-        $query->orderBy('tbl_item.name');
+        $query->orderBy('tbl_item.id');
     }
 ])->all();
 ```
 
 Note that [[ActiveQuery::joinWith()]] differs from [[ActiveQuery::with()]] in that the former will build up
-and execute a JOIN SQL statement. For example, `Order::find()->joinWith('books')->all()` returns all orders that
-contain books, while `Order::find()->with('books')->all()` returns all orders regardless they contain books or not.
+and execute a JOIN SQL statement for the primary model class. For example, `Order::find()->joinWith('books')->all()`
+returns all orders that contain books, while `Order::find()->with('books')->all()` returns all orders
+regardless they contain books or not.
+
+Because `joinWith()` will cause generating a JOIN SQL statement, you are responsible to disambiguate column
+names. For example, we use `tbl_item.id` to disambiguate the `id` column reference because both of the order table
+and the item table contain a column named `id`.
+
+You may join with one or multiple relations. You may also join with sub-relations. For example,
+
+```php
+// join with multiple relations
+// find out the orders that contain books and are placed by customers who registered within the past 24 hours
+$orders = Order::find()->joinWith([
+	'books',
+	'customer' => function ($query) {
+		$query->where('tbl_customer.create_time > ' . (time() - 24 * 3600));
+	}
+])->all();
+// join with sub-relations: join with books and books' authors
+$orders = Order::find()->joinWith('books.author')->all();
+```
+
+By default, when you join with a relation, the relation will also be eagerly loaded. You may change this behavior
+by passing the `$eagerLoading` parameter which specifies whether to eager load the specified relations.
+
+Also, when the relations are joined with the primary table, the default join type is `INNER JOIN`. You may change
+to use other type of joins, such as `LEFT JOIN`.
+
+Below are some more examples,
+
+```php
+// find all orders that contain books, but do not eager loading "books".
+$orders = Order::find()->joinWith('books', false)->all();
+// find all orders and sort them by the customer IDs. Do not eager loading "customer".
+$orders = Order::find()->joinWith([
+	'customer' => function ($query) {
+		$query->orderBy('tbl_customer.id');
+	},
+], false, 'LEFT JOIN')->all();
+```
 
 
 Working with Relationships
