@@ -105,6 +105,7 @@ class Schema extends \yii\db\Schema
 
 		if ($this->findColumns($table)) {
 			$this->findConstraints($table);
+			$this->findIndexes($table);
 			return $table;
 		} else {
 			return null;
@@ -155,6 +156,33 @@ class Schema extends \yii\db\Schema
 				// composite FK
 				$table->foreignKeys[$id][$key['from']] = $key['to'];
 			}
+		}
+	}
+
+	/**
+	 * Collects the index details for the given table.
+	 * @param TableSchema $table the table metadata
+	 */
+	protected function findIndexes($table)
+	{
+		$sql = "PRAGMA index_list(" . $this->quoteSimpleTableName($table->name) . ')';
+		$indexes = $this->db->createCommand($sql)->queryAll();
+		foreach ($indexes as $index) {
+			$indexName = $index['name'];
+			$indexInfo = $this->db->createCommand("PRAGMA index_info(" . $this->quoteValue($index['name']) . ")")->queryAll();
+
+			if ($index['unique']) {
+				$table->uniqueIndexes[$indexName] = [];
+				foreach ($indexInfo as $row) {
+					$table->uniqueIndexes[$indexName][] = $row['name'];
+				}
+			} else {
+				// normal index
+				foreach ($indexInfo as $row) {
+					$table->indexes[$indexName][] = $row['name'];
+				}
+			}
+
 		}
 	}
 
