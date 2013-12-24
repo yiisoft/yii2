@@ -143,4 +143,141 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 		return $db->createCommand($sql, $params);
 	}
+
+	public function joinWith($with, $eagerLoading = true, $joinType = 'INNER JOIN')
+	{
+		$with = (array)$with;
+		$this->joinWithRelations(new $this->modelClass, $with, $joinType);
+
+		if (is_array($eagerLoading)) {
+			foreach ($with as $name => $callback) {
+				if (is_integer($name)) {
+					if (!in_array($callback, $eagerLoading, true)) {
+						unset($with[$name]);
+					}
+				} elseif (!in_array($name, $eagerLoading, true)) {
+					unset($with[$name]);
+				}
+			}
+			$this->with($with);
+		} elseif ($eagerLoading) {
+			$this->with($with);
+		}
+		return $this;
+	}
+
+	/**
+	 * @param ActiveRecord $model
+	 * @param array $with
+	 * @param string|array $joinType
+	 */
+	private function joinWithRelations($model, $with, $joinType)
+	{
+		$relations = [];
+
+		foreach ($with as $name => $callback) {
+			if (is_integer($name)) {
+				$name = $callback;
+				$callback = null;
+			}
+
+			$primaryModel = $model;
+			$parent = $this;
+			$prefix = '';
+			while (($pos = strpos($name, '.')) !== false) {
+				$childName = substr($name, $pos + 1);
+				$name = substr($name, 0, $pos);
+				$fullName = $prefix === '' ? $name : "$prefix.$name";
+				if (!isset($relations[$fullName])) {
+					$relations[$fullName] = $relation = $primaryModel->getRelation($name);
+					$this->joinWithRelation($parent, $relation, $this->getJoinType($joinType, $fullName));
+				} else {
+					$relation = $relations[$fullName];
+				}
+				$primaryModel = new $relation->modelClass;
+				$parent = $relation;
+				$prefix = $fullName;
+				$name = $childName;
+			}
+
+			$fullName = $prefix === '' ? $name : "$prefix.$name";
+			if (!isset($relations[$fullName])) {
+				$relations[$fullName] = $relation = $primaryModel->getRelation($name);
+				if ($callback !== null) {
+					call_user_func($callback, $relation);
+				}
+				$this->joinWithRelation($parent, $relation, $this->getJoinType($joinType, $fullName));
+			}
+		}
+	}
+
+	private function getJoinType($joinType, $name)
+	{
+		if (is_array($joinType) && isset($joinType[$name])) {
+			return $joinType[$name];
+		} else {
+			return is_string($joinType) ? $joinType : 'INNER JOIN';
+		}
+	}
+
+	/**
+	 * @param ActiveQuery $query
+	 * @return string
+	 */
+	private function getQueryTableName($query)
+	{
+		if (empty($query->from)) {
+			/** @var ActiveRecord $modelClass */
+			$modelClass = $query->modelClass;
+			return $modelClass::tableName();
+		} else {
+			return reset($query->from);
+		}
+	}
+
+	/**
+	 * @param ActiveQuery $parent
+	 * @param ActiveRelation $child
+	 * @param string $joinType
+	 */
+	private function joinWithRelation($parent, $child, $joinType)
+	{
+		$parentTable = $this->getQueryTableName($parent);
+		$childTable = $this->getQueryTableName($child);
+		if (!empty($child->link)) {
+			$on = [];
+			foreach ($child->link as $childColumn => $parentColumn) {
+				$on[] = '{{' . $parentTable . "}}.[[$parentColumn]] = {{" . $childTable . "}}.[[$childColumn]]";
+			}
+			$on = implode(' AND ', $on);
+		} else {
+			$on = '';
+		}
+		$this->join($joinType, $childTable, $on);
+		if (!empty($child->where)) {
+			$this->andWhere($child->where);
+		}
+		if (!empty($child->having)) {
+			$this->andHaving($child->having);
+		}
+		if (!empty($child->orderBy)) {
+			$this->addOrderBy($child->orderBy);
+		}
+		if (!empty($child->groupBy)) {
+			$this->addGroupBy($child->groupBy);
+		}
+		if (!empty($child->params)) {
+			$this->addParams($child->params);
+		}
+		if (!empty($child->join)) {
+			foreach ($child->join as $join) {
+				$this->join[] = $join;
+			}
+		}
+		if (!empty($child->union)) {
+			foreach ($child->union as $union) {
+				$this->union[] = $union;
+			}
+		}
+	}
 }
