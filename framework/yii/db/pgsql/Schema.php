@@ -125,7 +125,6 @@ class Schema extends \yii\db\Schema
 		$this->resolveTableNames($table, $name);
 		if ($this->findColumns($table)) {
 			$this->findConstraints($table);
-			$this->findIndexes($table);
 			return $table;
 		} else {
 			return null;

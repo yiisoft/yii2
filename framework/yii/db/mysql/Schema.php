@@ -92,7 +92,6 @@ class Schema extends \yii\db\Schema
 
 		if ($this->findColumns($table)) {
 			$this->findConstraints($table);
-			$this->findIndexes($table);
 			return $table;
 		} else {
 			return null;
