@@ -93,7 +93,6 @@ class Schema extends \yii\db\Schema
 		if ($this->findColumns($table)) {
 			$this->findConstraints($table);
 			$this->findIndexes($table);
-			$this->findUniqueIndexes($table);
 			return $table;
 		} else {
 			return null;
@@ -255,30 +254,16 @@ class Schema extends \yii\db\Schema
 	{
 		$sql = $this->getCreateTableSql($table);
 
-		$regexp = '/^\s*KEY\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
+		$regexp = '/(UNIQUE)?\s+KEY\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
 		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
 			foreach ($matches as $match) {
-				$indexName = str_replace('`', '', $match[1]);
-				$indexColumns = array_map('trim', explode(',', str_replace('`', '', $match[2])));
-				$table->indexes[$indexName] = $indexColumns;
-			}
-		}
-	}
-
-	/**
-	 * Collects the unique index details for the given table.
-	 * @param TableSchema $table the table metadata
-	 */
-	protected function findUniqueIndexes($table)
-	{
-		$sql = $this->getCreateTableSql($table);
-
-		$regexp = '/UNIQUE KEY\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
-		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
-			foreach ($matches as $match) {
-				$uniqueIndexName = str_replace('`', '', $match[1]);
-				$uniqueIndexColumns = array_map('trim', explode(',', str_replace('`', '', $match[2])));
-				$table->uniqueIndexes[$uniqueIndexName] = $uniqueIndexColumns;
+				$indexName = str_replace('`', '', $match[2]);
+				$indexColumns = array_map('trim', explode(',', str_replace('`', '', $match[3])));
+				if (strtolower($match[1]) == 'unique') {
+					$table->uniqueIndexes[$indexName] = $indexColumns;
+				} else {
+					$table->indexes[$indexName] = $indexColumns;
+				}
 			}
 		}
 	}
