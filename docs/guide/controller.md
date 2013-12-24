@@ -194,9 +194,9 @@ public function behaviors()
             'class' => 'yii\web\AccessControl',
             'rules' => [
                 ['allow' => true, 'actions' => ['admin'], 'roles' => ['@']],
-            ),
-        ),
-    );
+            ],
+        ],
+    ];
 }
 ```
 
