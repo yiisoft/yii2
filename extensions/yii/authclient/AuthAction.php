@@ -206,7 +206,7 @@ class AuthAction extends Action
 						$attributes = array(
 							'id' => $provider->identity
 						);
-						$rawAttributes = $provider->getAttributes();
+						$rawAttributes = $provider->fetchAttributes();
 						foreach ($provider->requiredAttributes as $openIdAttributeName) {
 							if (isset($rawAttributes[$openIdAttributeName])) {
 								$attributes[$openIdAttributeName] = $rawAttributes[$openIdAttributeName];
@@ -229,10 +229,6 @@ class AuthAction extends Action
 			}
 		} else {
 			//$provider->identity = $provider->authUrl; // Setting identifier
-			$request = Yii::$app->getRequest();
-			$provider->realm = $request->getHostInfo();
-			$provider->returnUrl = $provider->realm . $request->getUrl(); // getting return URL
-
 			$url = $provider->buildAuthUrl();
 			return Yii::$app->getResponse()->redirect($url);
 		}
