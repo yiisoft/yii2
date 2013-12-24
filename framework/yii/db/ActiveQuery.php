@@ -220,9 +220,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 * ])->all();
 	 * ```
 	 *
-	 * @param bool $eagerLoading
-	 * @param string $joinType
-	 * @return $this
+	 * @param boolean|array $eagerLoading whether to eager load the relations specified in `$with`.
+	 * When this is a boolean, it applies to all relations specified in `$with`. Use an array
+	 * to explicitly list which relations in `$with` need to be eagerly loaded.
+	 * @param string|array $joinType the join type of the relations specified in `$with`.
+	 * When this is a string, it applies to all relations specified in `$with`. Use an array
+	 * in the format of `relationName => joinType` to specify different join types for different relations.
+	 * @return static the query object itself
 	 */
 	public function joinWith($with, $eagerLoading = true, $joinType = 'INNER JOIN')
 	{
