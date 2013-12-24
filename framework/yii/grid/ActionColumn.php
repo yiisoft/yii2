@@ -21,17 +21,34 @@ use yii\helpers\ArrayHelper;
  */
 class ActionColumn extends Column
 {
+	/**
+	 * @var string template for displaying the column content
+	 */
 	public $template = '{view} {update} {delete}';
+	
+	/**
+	 * @var array action buttons configuration
+	 */
 	public $buttons = [];
+	
+	/**
+	 * @var Closure callback for the button url
+	 */
 	public $urlCreator;
 	
-	/* Options for view button */
+	/**
+	 * @var array options for the view button 
+	 */
 	public $viewOptions = [];
 
-	/* Options for update button */
+	/**
+	 * @var array options for the update button 
+	 */
 	public $updateOptions = [];
 
-	/* Options for delete button */
+	/**
+	 * @var array options for the delete button 
+	 */
 	public $deleteOptions = [];
 	
 	public function init()
