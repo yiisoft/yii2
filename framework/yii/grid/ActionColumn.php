@@ -10,11 +10,13 @@ namespace yii\grid;
 use Yii;
 use Closure;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 
 /**
  * ActionColumn is a column for the [[GridView]] widget that displays buttons for viewing and manipulating the items.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 2.0
  */
 class ActionColumn extends Column
@@ -29,7 +31,16 @@ class ActionColumn extends Column
 	public $template = '{view} {update} {delete}';
 	public $buttons = [];
 	public $urlCreator;
+	
+	/* Options for view button */
+	public $viewOptions = [];
 
+	/* Options for update button */
+	public $updateOptions = [];
+
+	/* Options for delete button */
+	public $deleteOptions = [];
+	
 	public function init()
 	{
 		parent::init();
@@ -42,29 +53,31 @@ class ActionColumn extends Column
 			$this->buttons['view'] = function ($model, $key, $index, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, $key, $index, 'view');
-				return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
-					'title' => Yii::t('yii', 'View'),
-				]);
+				$label = ArrayHelper::remove($this->viewOptions, 'label', '<span class="glyphicon glyphicon-eye-open"></span>'); 
+				$options = array_replace(['title' => Yii::t('yii', 'View')], $this->viewOptions); 
+				return Html::a($label, $url, $options);
 			};
 		}
 		if (!isset($this->buttons['update'])) {
 			$this->buttons['update'] = function ($model, $key, $index, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, $key, $index, 'update');
-				return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
-					'title' => Yii::t('yii', 'Update'),
-				]);
+				$label = ArrayHelper::remove($this->updateOptions, 'label', '<span class="glyphicon glyphicon-pencil"></span>'); 
+				$options = array_replace(['title' => Yii::t('yii', 'Update')], $this->updateOptions); 
+				return Html::a($label, $url, $options);
 			};
 		}
 		if (!isset($this->buttons['delete'])) {
 			$this->buttons['delete'] = function ($model, $key, $index, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, $key, $index, 'delete');
-				return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
+				$label = ArrayHelper::remove($this->deleteOptions, 'label', '<span class="glyphicon glyphicon-trash"></span>'); 
+				$options = array_replace([
 					'title' => Yii::t('yii', 'Delete'),
 					'data-confirm' => Yii::t('yii', 'Are you sure to delete this item?'),
-					'data-method' => 'post',
-				]);
+					'data-method' => 'post'
+				], $this->deleteOptions); 
+				return Html::a($label, $url, $options);
 			};
 		}
 	}
