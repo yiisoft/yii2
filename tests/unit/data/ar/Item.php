@@ -15,4 +15,9 @@ class Item extends ActiveRecord
 	{
 		return 'tbl_item';
 	}
+
+	public function getCategory()
+	{
+		return $this->hasOne(Category::className(), ['id' => 'category_id']);
+	}
 }
