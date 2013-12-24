@@ -44,4 +44,17 @@ class OpenIdTest extends TestCase
 		$this->assertNotEmpty($client->getTrustRoot(), 'Unable to get default trust root!');
 		$this->assertNotEmpty($client->getReturnUrl(), 'Unable to get default return URL!');
 	}
+
+	public function testDiscover()
+	{
+		$url = 'https://www.google.com/accounts/o8/id';
+		$client = new OpenId();
+		$info = $client->discover($url);
+		$this->assertNotEmpty($info);
+		$this->assertNotEmpty($info['url']);
+		$this->assertEquals(2, $info['version']);
+		$this->assertArrayHasKey('identifierSelect', $info);
+		$this->assertArrayHasKey('ax', $info);
+		$this->assertArrayHasKey('sreg', $info);
+	}
 }
