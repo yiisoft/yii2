@@ -61,8 +61,13 @@ class ActionColumn extends Column
 	
 	protected function renderButton($options, $default, $url) {
 		$options = array_replace($default, $options);
-		$label = $options['label'];
-		unset($options['label']);
+		$label = ArrayHelper::remove($options, 'label', '');
+		if (!empty($options['title'])) {
+			$options['title'] = Yii::t('yii', $options['title']);
+		}
+		if (!empty($options['data-confirm'])) {
+			$options['data-confirm'] = Yii::t('yii', $options['data-confirm']);
+		}		
 		return Html::a($label, $url, $options);
 	}
 
