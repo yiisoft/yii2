@@ -68,6 +68,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		$rows = $command->queryAll();
 		if (!empty($rows)) {
 			$models = $this->createModels($rows);
+			if (!empty($this->join) && $this->indexBy === null) {
+				$models = $this->removeDuplicatedModels($models);
+			}
 			if (!empty($this->with)) {
 				$this->findWith($this->with, $models);
 			}
@@ -75,6 +78,47 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		} else {
 			return [];
 		}
+	}
+
+	/**
+	 * Removes duplicated models by checking their primary key values.
+	 * This method is mainly called when a join query is performed, which may cause duplicated rows being returned.
+	 * @param array $models the models to be checked
+	 * @return array the distinctive models
+	 */
+	private function removeDuplicatedModels($models)
+	{
+		$hash = [];
+		/** @var ActiveRecord $class */
+		$class = $this->modelClass;
+		$pks = $class::primaryKey();
+
+		if (count($pks) > 1) {
+			foreach ($models as $i => $model) {
+				$key = [];
+				foreach ($pks as $pk) {
+					$key[] = $model[$pk];
+				}
+				$key = serialize($key);
+				if (isset($hash[$key])) {
+					unset($models[$i]);
+				} else {
+					$hash[$key] = true;
+				}
+			}
+		} else {
+			$pk = reset($pks);
+			foreach ($models as $i => $model) {
+				$key = $model[$pk];
+				if (isset($hash[$key])) {
+					unset($models[$i]);
+				} else {
+					$hash[$key] = true;
+				}
+			}
+		}
+
+		return array_values($models);
 	}
 
 	/**
@@ -144,6 +188,42 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		return $db->createCommand($sql, $params);
 	}
 
+	/**
+	 * Joins with the specified relations.
+	 *
+	 * This method allows you to reuse existing relation definitions to perform JOIN queries.
+	 * Based on the definition of the specified relation(s), the method will append one or multiple
+	 * JOIN statements to the current query.
+	 *
+	 * If the `$eagerLoading` parameter is true, the method will also eager loading the specified relations,
+	 * which is equivalent to calling [[with()]] using the specified relations.
+	 *
+	 * Note that because a JOIN query will be performed, you are responsible to disambiguate column names.
+	 *
+	 * This method differs from [[with()]] in that it will build up and execute a JOIN SQL statement.
+	 * When `$eagerLoading` is true, it will call [[with()]] in addition with the specified relations.
+	 *
+	 * @param array $with the relations to be joined. Each array element represents a single relation.
+	 * The array keys are relation names, and the array values are the corresponding anonymous functions that
+	 * can be used to modify the relation queries on-the-fly. If a relation query does not need modification,
+	 * you may use the relation name as the array value. Sub-relations can also be specified (see [[with()]]).
+	 * For example,
+	 *
+	 * ```php
+	 * // find all orders that contain books, and eager loading "books"
+	 * Order::find()->joinWith('books')->all();
+	 * // find all orders that contain books, and sort the orders by the book names.
+	 * Order::find()->joinWith([
+	 *     'books' => function ($query) {
+	 *         $query->orderBy('tbl_item.name');
+	 *     }
+	 * ])->all();
+	 * ```
+	 *
+	 * @param bool $eagerLoading
+	 * @param string $joinType
+	 * @return $this
+	 */
 	public function joinWith($with, $eagerLoading = true, $joinType = 'INNER JOIN')
 	{
 		$with = (array)$with;
@@ -167,9 +247,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	}
 
 	/**
-	 * @param ActiveRecord $model
-	 * @param array $with
-	 * @param string|array $joinType
+	 * Modifies the current query by adding join fragments based on the given relations.
+	 * @param ActiveRecord $model the primary model
+	 * @param array $with the relations to be joined
+	 * @param string|array $joinType the join type
 	 */
 	private function joinWithRelations($model, $with, $joinType)
 	{
@@ -211,6 +292,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 	}
 
+	/**
+	 * Returns the join type based on the given join type parameter and the relation name.
+	 * @param string|array $joinType the given join type(s)
+	 * @param string $name relation name
+	 * @return string the real join type
+	 */
 	private function getJoinType($joinType, $name)
 	{
 		if (is_array($joinType) && isset($joinType[$name])) {
@@ -221,8 +308,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	}
 
 	/**
+	 * Returns the table name used by the specified active query.
 	 * @param ActiveQuery $query
-	 * @return string
+	 * @return string the table name
 	 */
 	private function getQueryTableName($query)
 	{
@@ -236,14 +324,32 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	}
 
 	/**
+	 * Joins a parent query with a child query.
+	 * The current query object will be modified accordingly.
 	 * @param ActiveQuery $parent
 	 * @param ActiveRelation $child
 	 * @param string $joinType
 	 */
 	private function joinWithRelation($parent, $child, $joinType)
 	{
+		$via = $child->via;
+		$child->via = null;
+		if ($via instanceof ActiveRelation) {
+			// via table
+			$this->joinWithRelation($parent, $via, $joinType);
+			$this->joinWithRelation($via, $child, $joinType);
+			return;
+		} elseif (is_array($via)) {
+			// via relation
+			$this->joinWithRelation($parent, $via[1], $joinType);
+			$this->joinWithRelation($via[1], $child, $joinType);
+			return;
+		}
+
 		$parentTable = $this->getQueryTableName($parent);
 		$childTable = $this->getQueryTableName($child);
+
+
 		if (!empty($child->link)) {
 			$on = [];
 			foreach ($child->link as $childColumn => $parentColumn) {
@@ -254,6 +360,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			$on = '';
 		}
 		$this->join($joinType, $childTable, $on);
+
+
 		if (!empty($child->where)) {
 			$this->andWhere($child->where);
 		}
