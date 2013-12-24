@@ -386,6 +386,30 @@ $customers = Customer::find()->limit(100)->with([
 ```
 
 
+Joining with Relations
+----------------------
+
+When working with relational databases, a common task is to join multiple tables and apply various
+query conditions and parameters to the JOIN SQL statement. Instead of calling [[ActiveQuery::join()]]
+explicitly to build up the JOIN query, you may reuse the existing relation definitions and call [[ActiveQuery::joinWith()]]
+to achieve the same goal. For example,
+
+```php
+// find all orders that contain books, and eager loading "books"
+$orders = Order::find()->joinWith('books')->all();
+// find all orders that contain books, and sort the orders by the book names.
+$orders = Order::find()->joinWith([
+    'books' => function ($query) {
+        $query->orderBy('tbl_item.name');
+    }
+])->all();
+```
+
+Note that [[ActiveQuery::joinWith()]] differs from [[ActiveQuery::with()]] in that the former will build up
+and execute a JOIN SQL statement. For example, `Order::find()->joinWith('books')->all()` returns all orders that
+contain books, while `Order::find()->with('books')->all()` returns all orders regardless they contain books or not.
+
+
 Working with Relationships
 --------------------------
 
