@@ -34,42 +34,10 @@ class ActionColumn extends Column
 	/* Options for delete button */
 	public $deleteOptions = [];
 	
-	/* Default view button options */
-	private static $_defaultView = [
-		'label' => '<span class="glyphicon glyphicon-eye-open"></span>',
-		'title' => 'View'
-	];
-
-	/* Default update button options */
-	private static $_defaultUpdate = [
-		'label' => '<span class="glyphicon glyphicon-pencil"></span>',
-		'title' => 'Update'
-	];
-
-	/* Default delete button options */
-	private static $_defaultDelete = [
-		'label' => '<span class="glyphicon glyphicon-trash"></span>',
-		'title' => 'Delete',
-		'data-confirm' => 'Are you sure to delete this item?',
-		'data-method' => 'post'
-	];
-	
 	public function init()
 	{
 		parent::init();
 		$this->initDefaultButtons();
-	}
-	
-	protected function renderButton($options, $default, $url) {
-		$options = array_replace($default, $options);
-		$label = ArrayHelper::remove($options, 'label', '');
-		if (!empty($options['title'])) {
-			$options['title'] = Yii::t('yii', $options['title']);
-		}
-		if (!empty($options['data-confirm'])) {
-			$options['data-confirm'] = Yii::t('yii', $options['data-confirm']);
-		}		
-		return Html::a($label, $url, $options);
 	}
 
 	protected function initDefaultButtons()
@@ -78,21 +46,31 @@ class ActionColumn extends Column
 			$this->buttons['view'] = function ($model, $key, $index, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, $key, $index, 'view');
-				return $this->renderButton($this->viewOptions, self::$_defaultView, $url);
+				$label = ArrayHelper::remove($this->viewOptions, 'label', '<span class="glyphicon glyphicon-eye-open"></span>'); 
+				$options = array_replace(['title' => Yii::t('yii', 'View')], $this->viewOptions); 
+				return Html::a($label, $url, $options);
 			};
 		}
 		if (!isset($this->buttons['update'])) {
 			$this->buttons['update'] = function ($model, $key, $index, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, $key, $index, 'update');
-				return $this->renderButton($this->updateOptions, self::$_defaultUpdate, $url);
+				$label = ArrayHelper::remove($this->updateOptions, 'label', '<span class="glyphicon glyphicon-pencil"></span>'); 
+				$options = array_replace(['title' => Yii::t('yii', 'Update')], $this->updateOptions); 
+				return Html::a($label, $url, $options);
 			};
 		}
 		if (!isset($this->buttons['delete'])) {
 			$this->buttons['delete'] = function ($model, $key, $index, $column) {
 				/** @var ActionColumn $column */
 				$url = $column->createUrl($model, $key, $index, 'delete');
-				return $this->renderButton($this->deleteOptions, self::$_defaultDelete, $url);
+				$label = ArrayHelper::remove($this->deleteOptions, 'label', '<span class="glyphicon glyphicon-trash"></span>'); 
+				$options = array_replace([
+					'title' => Yii::t('yii', 'Delete'),
+					'data-confirm' => Yii::t('yii', 'Are you sure to delete this item?'),
+					'data-method' => 'post'
+				], $this->deleteOptions); 
+				return Html::a($label, $url, $options);
 			};
 		}
 	}
