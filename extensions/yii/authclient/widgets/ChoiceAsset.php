@@ -21,6 +21,9 @@ class ChoiceAsset extends AssetBundle
 	public $js = [
 		'authchoice.js',
 	];
+	public $css = [
+		'authchoice.css',
+	];
 	public $depends = [
 		'yii\web\YiiAsset',
 	];

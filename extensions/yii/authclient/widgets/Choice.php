@@ -166,9 +166,9 @@ class Choice extends Widget
 	 */
 	protected function renderMainContent()
 	{
-		echo Html::beginTag('ul', ['class' => 'auth-services clear']);
+		echo Html::beginTag('ul', ['class' => 'auth-clients clear']);
 		foreach ($this->getClients() as $externalService) {
-			echo Html::beginTag('li', ['class' => 'auth-service']);
+			echo Html::beginTag('li', ['class' => 'auth-client']);
 			$this->providerLink($externalService);
 			echo Html::endTag('li');
 		}
