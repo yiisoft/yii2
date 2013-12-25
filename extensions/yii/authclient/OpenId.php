@@ -382,13 +382,18 @@ class OpenId extends BaseClient implements ClientInterface
 	}
 
 	/**
-	 * Helper function used to scan for <meta>/<link> tags and extract information
-	 * from them
+	 * Scans content for <meta>/<link> tags and extract information from them.
+	 * @param string $content HTML content to be be parsed.
+	 * @param string $tag name of the source tag.
+	 * @param string $matchAttributeName name of the source tag attribute, which should contain $matchAttributeValue
+	 * @param string $matchAttributeValue required value of $matchAttributeName
+	 * @param string $valueAttributeName name of the source tag attribute, which should contain searched value.
+	 * @return string|boolean searched value, "false" on failure.
 	 */
-	protected function extractHtmlTagValue($content, $tag, $attrName, $attrValue, $valueName)
+	protected function extractHtmlTagValue($content, $tag, $matchAttributeName, $matchAttributeValue, $valueAttributeName)
 	{
-		preg_match_all("#<{$tag}[^>]*$attrName=['\"].*?$attrValue.*?['\"][^>]*$valueName=['\"](.+?)['\"][^>]*/?>#i", $content, $matches1);
-		preg_match_all("#<{$tag}[^>]*$valueName=['\"](.+?)['\"][^>]*$attrName=['\"].*?$attrValue.*?['\"][^>]*/?>#i", $content, $matches2);
+		preg_match_all("#<{$tag}[^>]*$matchAttributeName=['\"].*?$matchAttributeValue.*?['\"][^>]*$valueAttributeName=['\"](.+?)['\"][^>]*/?>#i", $content, $matches1);
+		preg_match_all("#<{$tag}[^>]*$valueAttributeName=['\"](.+?)['\"][^>]*$matchAttributeName=['\"].*?$matchAttributeValue.*?['\"][^>]*/?>#i", $content, $matches2);
 		$result = array_merge($matches1[1], $matches2[1]);
 		return empty($result) ? false : $result[0];
 	}
@@ -728,9 +733,10 @@ class OpenId extends BaseClient implements ClientInterface
 
 	/**
 	 * Performs OpenID verification with the OP.
+	 * @param boolean $validateRequiredAttributes whether to validate required attributes.
 	 * @return boolean whether the verification was successful.
 	 */
-	public function validate()
+	public function validate($validateRequiredAttributes = true)
 	{
 		$claimedId = $this->getClaimedId();
 		if (empty($claimedId)) {
@@ -769,7 +775,32 @@ class OpenId extends BaseClient implements ClientInterface
 
 		$response = $this->sendRequest($serverInfo['url'], 'POST', $params);
 
-		return preg_match('/is_valid\s*:\s*true/i', $response);
+		if (preg_match('/is_valid\s*:\s*true/i', $response)) {
+			if ($validateRequiredAttributes) {
+				return $this->validateRequiredAttributes();
+			} else {
+				return true;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Checks if all required attributes are present in the server response.
+	 * @return boolean whether all required attributes are present.
+	 */
+	protected function validateRequiredAttributes()
+	{
+		if (!empty($this->requiredAttributes)) {
+			$attributes = $this->fetchAttributes();
+			foreach ($this->requiredAttributes as $openIdAttributeName) {
+				if (!isset($attributes[$openIdAttributeName])) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -855,5 +886,13 @@ class OpenId extends BaseClient implements ClientInterface
 			return array_merge($this->fetchSregAttributes(), $this->fetchAxAttributes());
 		}
 		return $this->fetchSregAttributes();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function initUserAttributes()
+	{
+		return array_merge(['id' => $this->getClaimedId()], $this->fetchAttributes());
 	}
 }
