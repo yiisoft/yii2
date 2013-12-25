@@ -192,30 +192,30 @@ class AuthAction extends Action
 	}
 
 	/**
-	 * @param OpenId $provider provider instance.
+	 * @param OpenId $client provider instance.
 	 * @return \yii\web\Response action response.
 	 * @throws Exception on failure
 	 * @throws \yii\web\HttpException
 	 */
-	protected function authOpenId($provider)
+	protected function authOpenId($client)
 	{
 		if (!empty($_REQUEST['openid_mode'])) {
 			switch ($_REQUEST['openid_mode']) {
 				case 'id_res':
-					if ($provider->validate()) {
-						$attributes = array(
-							'id' => $provider->identity
-						);
-						$rawAttributes = $provider->fetchAttributes();
-						foreach ($provider->requiredAttributes as $openIdAttributeName) {
+					if ($client->validate()) {
+						$attributes = [
+							'id' => $client->getClaimedId()
+						];
+						$rawAttributes = $client->fetchAttributes();
+						foreach ($client->requiredAttributes as $openIdAttributeName) {
 							if (isset($rawAttributes[$openIdAttributeName])) {
 								$attributes[$openIdAttributeName] = $rawAttributes[$openIdAttributeName];
 							} else {
 								throw new Exception('Unable to complete the authentication because the required data was not received.');
 							}
 						}
-						$provider->setUserAttributes($attributes);
-						return $this->authSuccess($provider);
+						$client->setUserAttributes($attributes);
+						return $this->authSuccess($client);
 					} else {
 						throw new Exception('Unable to complete the authentication because the required data was not received.');
 					}
@@ -228,8 +228,7 @@ class AuthAction extends Action
 					break;
 			}
 		} else {
-			//$provider->identity = $provider->authUrl; // Setting identifier
-			$url = $provider->buildAuthUrl();
+			$url = $client->buildAuthUrl();
 			return Yii::$app->getResponse()->redirect($url);
 		}
 		return $this->redirectCancel();

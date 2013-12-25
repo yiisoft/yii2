@@ -20,15 +20,14 @@ class YandexOpenId extends OpenId
 	/**
 	 * @inheritdoc
 	 */
-	public function init()
-	{
-		parent::init();
-		$this->setIdentity('http://openid.yandex.ru');
-		$this->requiredAttributes = [
-			'namePerson',
-			'contact/email',
-		];
-	}
+	public $authUrl = 'http://openid.yandex.ru';
+	/**
+	 * @inheritdoc
+	 */
+	public $requiredAttributes = [
+		'namePerson',
+		'contact/email',
+	];
 
 	/**
 	 * @inheritdoc

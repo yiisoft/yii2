@@ -20,17 +20,16 @@ class GoogleOpenId extends OpenId
 	/**
 	 * @inheritdoc
 	 */
-	public function init()
-	{
-		parent::init();
-		$this->setIdentity('https://www.google.com/accounts/o8/id');
-		$this->requiredAttributes = [
-			'namePerson/first',
-			'namePerson/last',
-			'contact/email',
-			'pref/language',
-		];
-	}
+	public $authUrl = 'https://www.google.com/accounts/o8/id';
+	/**
+	 * @inheritdoc
+	 */
+	public $requiredAttributes = [
+		'namePerson/first',
+		'namePerson/last',
+		'contact/email',
+		'pref/language',
+	];
 
 	/**
 	 * @inheritdoc
