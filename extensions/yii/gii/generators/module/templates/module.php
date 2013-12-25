@@ -15,8 +15,9 @@ echo "<?php\n";
 
 namespace <?= $ns ?>;
 
+use yii\base\Module
 
-class <?= $className ?> extends \yii\base\Module
+class <?= $className ?> extends Module
 {
 	public $controllerNamespace = '<?= $generator->getControllerNamespace() ?>';
 
