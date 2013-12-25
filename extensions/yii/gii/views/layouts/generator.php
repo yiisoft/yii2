@@ -12,7 +12,7 @@ $activeGenerator = Yii::$app->controller->generator;
 ?>
 <?php $this->beginContent('@yii/gii/views/layouts/main.php'); ?>
 <div class="row">
-	<div class="col-sm-3">
+	<div class="col-md-3 col-sm-4">
 		<div class="list-group">
 			<?php
 			foreach ($generators as $id => $generator) {
@@ -24,7 +24,7 @@ $activeGenerator = Yii::$app->controller->generator;
 			?>
 		</div>
 	</div>
-	<div class="col-sm-9">
+	<div class="col-md-9 col-sm-8">
 		<?= $content ?>
 	</div>
 </div>
