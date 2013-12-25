@@ -200,8 +200,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 *
 	 * Note that because a JOIN query will be performed, you are responsible to disambiguate column names.
 	 *
-	 * This method differs from [[with()]] in that it will build up and execute a JOIN SQL statement.
-	 * When `$eagerLoading` is true, it will call [[with()]] in addition with the specified relations.
+	 * This method differs from [[with()]] in that it will build up and execute a JOIN SQL statement
+	 * for the primary table. And when `$eagerLoading` is true, it will call [[with()]] in addition with the specified relations.
 	 *
 	 * @param array $with the relations to be joined. Each array element represents a single relation.
 	 * The array keys are relation names, and the array values are the corresponding anonymous functions that
@@ -211,8 +211,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 *
 	 * ```php
 	 * // find all orders that contain books, and eager loading "books"
-	 * Order::find()->joinWith('books')->all();
-	 * // find all orders that contain books, and sort the orders by the book names.
+	 * Order::find()->joinWith('books', true, 'INNER JOIN')->all();
+	 * // find all orders, eager loading "books", and sort the orders and books by the book names.
 	 * Order::find()->joinWith([
 	 *     'books' => function ($query) {
 	 *         $query->orderBy('tbl_item.name');
@@ -228,7 +228,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 * in the format of `relationName => joinType` to specify different join types for different relations.
 	 * @return static the query object itself
 	 */
-	public function joinWith($with, $eagerLoading = true, $joinType = 'INNER JOIN')
+	public function joinWith($with, $eagerLoading = true, $joinType = 'LEFT JOIN')
 	{
 		$with = (array)$with;
 		$this->joinWithRelations(new $this->modelClass, $with, $joinType);
@@ -248,6 +248,20 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			$this->with($with);
 		}
 		return $this;
+	}
+
+	/**
+	 * Inner joins with the specified relations.
+	 * This is a shortcut method to [[joinWith()]] with the join type set as "INNER JOIN".
+	 * Please refer to [[joinWith()]] for detailed usage of this method.
+	 * @param array $with the relations to be joined with
+	 * @param boolean|array $eagerLoading whether to eager loading the relations
+	 * @return static the query object itself
+	 * @see joinWith()
+	 */
+	public function innerJoinWith($with, $eagerLoading = true)
+	{
+		return $this->joinWith($with, $eagerLoading, 'INNER JOIN');
 	}
 
 	/**
