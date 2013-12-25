@@ -27,7 +27,7 @@ Yii Framework 2 Change Log
 - Enh #1552: It is now possible to use multiple bootstrap NavBar in a single page (Alex-Code)
 - Enh #1572: Added `yii\web\Controller::createAbsoluteUrl()` (samdark)
 - Enh #1579: throw exception when the given AR relation name does not match in a case sensitive manner (qiangxue)
-- Enh #1581: Added `ActiveQuery::joinWith()` to support joining with relations (qiangxue)
+- Enh #1581: Added `ActiveQuery::joinWith()` and `ActiveQuery::innerJoinWith()` to support joining with relations (qiangxue)
 - Enh #1601: Added support for tagName and encodeLabel parameters in ButtonDropdown (omnilight)
 - Enh: Added `favicon.ico` and `robots.txt` to defauly application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
