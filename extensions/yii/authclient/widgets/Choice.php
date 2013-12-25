@@ -13,7 +13,30 @@ use yii\helpers\Html;
 use yii\authclient\ClientInterface;
 
 /**
- * Class Choice
+ * Choice prints buttons for authentication via various auth clients.
+ * By default this widget relies on presence of [[\yii\authclient\Collection]] among application components
+ * to get auth clients information.
+ *
+ * Example:
+ * ~~~
+ * <?= yii\authclient\Choice::widget([
+ *     'baseAuthUrl' => ['site/auth']
+ * ]); ?>
+ * ~~~
+ *
+ * You can customize the widget appearance by using [[beginWidget()]] and [[endWidget()]] syntax
+ * along with using method {@link clientLink()} or {@link createClientUrl()}.
+ * For example:
+ *
+ * ~~~
+ * <?php $authChoice = yii\authclient\Choice::beginWidget(); ?>
+ * <ul>
+ * <?php foreach ($authChoice->getClients() as $client): ?>
+ *     <li><?= $authChoice->clientLink($client); ?></li>
+ * <?php endforeach; ?>
+ * </ul>
+ * <?php yii\authclient\Choice::endWidget(); ?>
+ * ~~~
  *
  * @property ClientInterface[] $providers auth providers list.
  * @property array $baseAuthUrl configuration for the external services base authentication URL.
@@ -122,12 +145,12 @@ class Choice extends Widget
 	}
 
 	/**
-	 * Outputs external service auth link.
+	 * Outputs client auth link.
 	 * @param ClientInterface $client external auth client instance.
 	 * @param string $text link text, if not set - default value will be generated.
 	 * @param array $htmlOptions link HTML options.
 	 */
-	public function providerLink($client, $text = null, array $htmlOptions = [])
+	public function clientLink($client, $text = null, array $htmlOptions = [])
 	{
 		if ($text === null) {
 			$text = Html::tag('span', '', ['class' => 'auth-icon ' . $client->getName()]);
@@ -145,15 +168,15 @@ class Choice extends Widget
 				$htmlOptions['data-popup-height'] = $viewOptions['popupHeight'];
 			}
 		}
-		echo Html::a($text, $this->createProviderUrl($client), $htmlOptions);
+		echo Html::a($text, $this->createClientUrl($client), $htmlOptions);
 	}
 
 	/**
-	 * Composes external service auth URL.
-	 * @param ClientInterface $provider external auth service instance.
+	 * Composes client auth URL.
+	 * @param ClientInterface $provider external auth client instance.
 	 * @return string auth URL.
 	 */
-	public function createProviderUrl($provider)
+	public function createClientUrl($provider)
 	{
 		$this->autoRender = false;
 		$url = $this->getBaseAuthUrl();
@@ -169,7 +192,7 @@ class Choice extends Widget
 		echo Html::beginTag('ul', ['class' => 'auth-clients clear']);
 		foreach ($this->getClients() as $externalService) {
 			echo Html::beginTag('li', ['class' => 'auth-client']);
-			$this->providerLink($externalService);
+			$this->clientLink($externalService);
 			echo Html::endTag('li');
 		}
 		echo Html::endTag('ul');

@@ -10,7 +10,7 @@ namespace yii\authclient\widgets;
 use yii\web\AssetBundle;
 
 /**
- * Class ChoiceAsset
+ * ChoiceAsset is an asset bundle for [[Choice]] widget.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
