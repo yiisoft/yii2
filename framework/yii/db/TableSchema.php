@@ -49,6 +49,26 @@ class TableSchema extends Object
 	 */
 	public $foreignKeys = [];
 	/**
+	 * @var array indexes of this table. Each array element has the following structure:
+	 *
+	 * ~~~
+	 * [
+	 *	 'IndexName' => ['col1' [, ...]]
+	 * ]
+	 * ~~~
+	 */
+	public $indexes = [];
+	/**
+	 * @var array unique indexes of this table. Each array element has the following structure:
+	 *
+	 * ~~~
+	 * [
+	 *	 'UniqueIndexName' => ['col1' [, ...]]
+	 * ]
+	 * ~~~
+	 */
+	public $uniqueIndexes = [];
+	/**
 	 * @var ColumnSchema[] column metadata of this table. Each array element is a [[ColumnSchema]] object, indexed by column names.
 	 */
 	public $columns = [];

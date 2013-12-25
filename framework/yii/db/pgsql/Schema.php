@@ -225,6 +225,64 @@ SQL;
 			$table->foreignKeys[] = $citem;
 		}
 	}
+	/**
+	 * Gets information about given table indexes.
+	 * @param TableSchema $table the table metadata
+	 * @return array with index names, columns, if it is unique and if it is an expression tree
+	 */
+	protected function getIndexInformation($table)
+	{
+		$tableName = $this->quoteValue($table->name);
+		$tableSchema = $this->quoteValue($table->schemaName);
+
+		$sql = <<<SQL
+SELECT
+	i.relname as indexname,
+	ARRAY(
+		SELECT pg_get_indexdef(idx.indexrelid, k + 1, True)
+		FROM generate_subscripts(idx.indkey, 1) AS k
+		ORDER BY k
+	) AS indexcolumns,
+	idx.indisunique,
+	idx.indexprs IS NOT NULL AS indexprs
+FROM pg_index idx
+INNER JOIN pg_class i ON i.oid = idx.indexrelid
+INNER JOIN pg_class c ON c.oid = idx.indrelid
+INNER JOIN pg_namespace ns ON c.relnamespace = ns.oid
+WHERE idx.indisprimary != True
+AND c.relname = {$tableName}
+AND ns.nspname = {$tableSchema}
+;
+SQL;
+
+		return $this->db->createCommand($sql)->queryAll();
+	}
+
+	/**
+	 * Collects the index details for the given table.
+	 * @param TableSchema $table the table metadata
+	 */
+	protected function findIndexes($table)
+	{
+		$indexes = $this->getIndexInformation($table);
+
+		foreach ($indexes as $index) {
+			$indexName = $index['indexname'];
+
+			if ($index['indexprs']) {
+				// Index is an expression like "lower(colname::text)"
+				$indexColumns = preg_replace("/.*\(([^\:]+).*/mi", "$1", $index['indexcolumns']);
+			} else {
+				$indexColumns = array_map('trim', explode(',', str_replace(['{', '}'], '', $index['indexcolumns'])));
+			}
+
+			if ($index['indisunique']) {
+				$table->uniqueIndexes[$indexName] = $indexColumns;
+			} else {
+				$table->indexes[$indexName] = $indexColumns;
+			}
+		}
+	}
 
 	/**
 	 * Collects the metadata of table columns.

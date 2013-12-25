@@ -207,10 +207,11 @@ class Schema extends \yii\db\Schema
 	}
 
 	/**
-	 * Collects the foreign key column details for the given table.
+	 * Gets the CREATE TABLE sql string.
 	 * @param TableSchema $table the table metadata
+	 * @return string $sql the result of 'SHOW CREATE TABLE'
 	 */
-	protected function findConstraints($table)
+	protected function getCreateTableSql($table)
 	{
 		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryOne();
 		if (isset($row['Create Table'])) {
@@ -219,6 +220,16 @@ class Schema extends \yii\db\Schema
 			$row = array_values($row);
 			$sql = $row[1];
 		}
+		return $sql;
+	}
+
+	/**
+	 * Collects the foreign key column details for the given table.
+	 * @param TableSchema $table the table metadata
+	 */
+	protected function findConstraints($table)
+	{
+		$sql = $this->getCreateTableSql($table);
 
 		$regexp = '/FOREIGN KEY\s+\(([^\)]+)\)\s+REFERENCES\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
 		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
@@ -230,6 +241,28 @@ class Schema extends \yii\db\Schema
 					$constraint[$name] = $pks[$k];
 				}
 				$table->foreignKeys[] = $constraint;
+			}
+		}
+	}
+
+	/**
+	 * Collects the index details for the given table.
+	 * @param TableSchema $table the table metadata
+	 */
+	protected function findIndexes($table)
+	{
+		$sql = $this->getCreateTableSql($table);
+
+		$regexp = '/(UNIQUE)?\s+KEY\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
+		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				$indexName = str_replace('`', '', $match[2]);
+				$indexColumns = array_map('trim', explode(',', str_replace('`', '', $match[3])));
+				if (strtolower($match[1]) == 'unique') {
+					$table->uniqueIndexes[$indexName] = $indexColumns;
+				} else {
+					$table->indexes[$indexName] = $indexColumns;
+				}
 			}
 		}
 	}
