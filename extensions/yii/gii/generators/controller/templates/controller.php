@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 
 /**
  * This is the template for generating a controller class file.
@@ -16,7 +17,9 @@ echo "<?php\n";
 namespace <?= $generator->ns ?>;
 <?php endif; ?>
 
-class <?= $generator->getControllerClass() ?> extends <?= '\\' . trim($generator->baseClass, '\\') . "\n" ?>
+use <?= $generator->baseClass ?>;
+
+class <?= $generator->getControllerClass() ?> extends <?= StringHelper::basename($generator->baseClass) . "\n" ?>
 {
 <?php foreach($generator->getActionIDs() as $action): ?>
 	public function action<?= Inflector::id2camel($action) ?>()

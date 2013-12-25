@@ -1,4 +1,7 @@
 <?php
+
+use yii\helpers\StringHelper;
+
 /**
  * This is the template for generating the model class of a specified table.
  *
@@ -17,6 +20,11 @@ echo "<?php\n";
 
 namespace <?= $generator->ns ?>;
 
+use <?= $generator->baseClass ?>;
+<?php if (!empty($relations)): ?>
+use yii\db\ActiveRelation;
+<?php endif; ?>
+
 /**
  * This is the model class for table "<?= $tableName ?>".
  *
@@ -30,7 +38,7 @@ namespace <?= $generator->ns ?>;
 <?php endforeach; ?>
 <?php endif; ?>
  */
-class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
+class <?= $className ?> extends <?= StringHelper::basename($generator->baseClass) . "\n" ?>
 {
 	/**
 	 * @inheritdoc
@@ -62,7 +70,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 <?php foreach ($relations as $name => $relation): ?>
 
 	/**
-	 * @return \yii\db\ActiveRelation
+	 * @return ActiveRelation
 	 */
 	public function get<?= $name ?>()
 	{
