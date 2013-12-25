@@ -9,13 +9,44 @@ namespace yii\authclient;
 
 use yii\base\Action;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
+use yii\web\Response;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use Yii;
 
 /**
- * Class AuthAction
+ * AuthAction performs authentication via different auth clients.
+ * It supports [[OpenId]], [[OAuth1] and [[OAuth2]] client types.
+ *
+ * Usage:
+ * ~~~
+ * class SiteController extends Controller
+ * {
+ *     public function actions()
+ *     {
+ *         return [
+ *             'auth' => [
+ *                 'class' => 'yii\authclient\AuthAction',
+ *                 'successCallback' => [$this, 'successCallback'],
+ *             ],
+ *         ]
+ *     }
+ *
+ *     public function successCallback($client)
+ *     {
+ *         $atributes = $client->getUserAttributes();
+ *         // user login or signup comes here
+ *     }
+ * }
+ * ~~~
+ *
+ * Usually authentication via external services is performed inside the popup window.
+ * This action handles the redirection and closing of popup window correctly.
+ *
+ * @see Collection
+ * @see \yii\authclient\widgets\Choice
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -24,14 +55,30 @@ class AuthAction extends Action
 {
 	/**
 	 * @var string name of the auth client collection application component.
+	 * It should point to [[Collection]] instance.
 	 */
-	public $clientCollection = 'auth';
+	public $clientCollection = 'authClientCollection';
 	/**
 	 * @var string name of the GET param, which is used to passed auth client id to this action.
+	 * Note: watch for the naming, make sure you do not choose name used in some auth protocol.
 	 */
 	public $clientIdGetParamName = 'authclient';
 	/**
 	 * @var callable PHP callback, which should be triggered in case of successful authentication.
+	 * This callback should accept [[ClientInterface]] instance as an argument.
+	 * For example:
+	 *
+	 * ~~~
+	 * public function onAuthSuccess($client)
+	 * {
+	 *     $atributes = $client->getUserAttributes();
+	 *     // user login or signup comes here
+	 * }
+	 * ~~~
+	 *
+	 * If this callback returns [[Response]] instance, it will be used as action response,
+	 * otherwise redirection to [[successUrl]] will be performed.
+	 *
 	 */
 	public $successCallback;
 	/**
@@ -42,6 +89,11 @@ class AuthAction extends Action
 	 * @var string the redirect url after unsuccessful authorization (e.g. user canceled).
 	 */
 	private $_cancelUrl = '';
+	/**
+	 * @var string name or alias of the view file, which should be rendered in order to perform redirection.
+	 * If not set default one will be used.
+	 */
+	public $redirectView;
 
 	/**
 	 * @param string $url successful URL.
@@ -120,7 +172,7 @@ class AuthAction extends Action
 
 	/**
 	 * @param mixed $client auth client instance.
-	 * @return \yii\web\Response response instance.
+	 * @return Response response instance.
 	 * @throws \yii\base\NotSupportedException on invalid client.
 	 */
 	protected function auth($client)
@@ -137,12 +189,20 @@ class AuthAction extends Action
 	}
 
 	/**
-	 * @param mixed $provider
-	 * @return \yii\web\Response
+	 * This method is invoked in case of successful authentication via auth client.
+	 * @param ClientInterface $client auth client instance.
+	 * @throws InvalidConfigException on invalid success callback.
+	 * @return Response response instance.
 	 */
-	protected function authSuccess($provider)
+	protected function authSuccess($client)
 	{
-		call_user_func($this->successCallback, $provider);
+		if (!is_callable($this->successCallback)) {
+			throw new InvalidConfigException('"' . get_class($this) . '::successCallback" should be a valid callback.');
+		}
+		$response = call_user_func($this->successCallback, $client);
+		if ($response instanceof Response) {
+			return $response;
+		}
 		return $this->redirectSuccess();
 	}
 
@@ -154,12 +214,16 @@ class AuthAction extends Action
 	 */
 	public function redirect($url, $enforceRedirect = true)
 	{
+		$viewFile = $this->redirectView;
+		if ($viewFile === null) {
+			$viewFile = __DIR__ . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'redirect.php';
+		} else {
+			$viewFile = Yii::getAlias($viewFile);
+		}
 		$viewData = [
 			'url' => $url,
 			'enforceRedirect' => $enforceRedirect,
 		];
-		$viewFile = __DIR__ . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'redirect.php';
-
 		$response = Yii::$app->getResponse();
 		$response->content = Yii::$app->getView()->renderFile($viewFile, $viewData);
 		return $response;
@@ -192,10 +256,11 @@ class AuthAction extends Action
 	}
 
 	/**
-	 * @param OpenId $client provider instance.
-	 * @return \yii\web\Response action response.
-	 * @throws Exception on failure
-	 * @throws \yii\web\HttpException
+	 * Performs OpenID auth flow.
+	 * @param OpenId $client auth client instance.
+	 * @return Response action response.
+	 * @throws Exception on failure.
+	 * @throws HttpException on failure.
 	 */
 	protected function authOpenId($client)
 	{
@@ -223,10 +288,11 @@ class AuthAction extends Action
 	}
 
 	/**
-	 * @param OAuth1 $provider
-	 * @return \yii\web\Response
+	 * Performs OAuth1 auth flow.
+	 * @param OAuth1 $client auth client instance.
+	 * @return Response action response.
 	 */
-	protected function authOAuth1($provider)
+	protected function authOAuth1($client)
 	{
 		// user denied error
 		if (isset($_GET['denied'])) {
@@ -239,24 +305,25 @@ class AuthAction extends Action
 
 		if (!isset($oauthToken)) {
 			// Get request token.
-			$requestToken = $provider->fetchRequestToken();
+			$requestToken = $client->fetchRequestToken();
 			// Get authorization URL.
-			$url = $provider->buildAuthUrl($requestToken);
+			$url = $client->buildAuthUrl($requestToken);
 			// Redirect to authorization URL.
 			return Yii::$app->getResponse()->redirect($url);
 		} else {
 			// Upgrade to access token.
-			$accessToken = $provider->fetchAccessToken();
-			return $this->authSuccess($provider);
+			$accessToken = $client->fetchAccessToken();
+			return $this->authSuccess($client);
 		}
 	}
 
 	/**
-	 * @param OAuth2 $provider
-	 * @return \yii\web\Response
-	 * @throws \yii\base\Exception
+	 * Performs OAuth2 auth flow.
+	 * @param OAuth2 $client auth client instance.
+	 * @return Response action response.
+	 * @throws \yii\base\Exception on failure.
 	 */
-	protected function authOAuth2($provider)
+	protected function authOAuth2($client)
 	{
 		if (isset($_GET['error'])) {
 			if ($_GET['error'] == 'access_denied') {
@@ -278,14 +345,14 @@ class AuthAction extends Action
 		// Get the access_token and save them to the session.
 		if (isset($_GET['code'])) {
 			$code = $_GET['code'];
-			$token = $provider->fetchAccessToken($code);
+			$token = $client->fetchAccessToken($code);
 			if (!empty($token)) {
-				return $this->authSuccess($provider);
+				return $this->authSuccess($client);
 			} else {
 				return $this->redirectCancel();
 			}
 		} else {
-			$url = $provider->buildAuthUrl();
+			$url = $client->buildAuthUrl();
 			return Yii::$app->getResponse()->redirect($url);
 		}
 	}
