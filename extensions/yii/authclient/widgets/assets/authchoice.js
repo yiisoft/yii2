@@ -1,6 +1,4 @@
 jQuery(function($) {
-	var authChoicePopup;
-
 	$.fn.authchoice = function(options) {
 		options = $.extend({
 			popup: {
@@ -17,13 +15,17 @@ jQuery(function($) {
 		}, options);
 
 		return this.each(function() {
-			var container = $(this);
+			var $container = $(this);
 
-			container.find('a').on('click', function(e) {
+			$container.find('a').on('click', function(e) {
 				e.preventDefault();
-				if (authChoicePopup !== undefined) {
+
+				var authChoicePopup = null;
+
+				if (authChoicePopup = $container.data('authChoicePopup')) {
 					authChoicePopup.close();
 				}
+
 				var url = this.href;
 				var popupOptions = options.popup;
 
@@ -47,6 +49,8 @@ jQuery(function($) {
 
 				authChoicePopup = window.open(url, 'yii_auth_choice', popupFeature);
 				authChoicePopup.focus();
+
+				$container.data('authChoicePopup', authChoicePopup);
 			});
 		});
 	};
