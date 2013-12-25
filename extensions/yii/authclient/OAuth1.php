@@ -21,7 +21,7 @@ use Yii;
  * $oauthClient = new OAuth1();
  * $requestToken = $oauthClient->fetchRequestToken(); // Get request token
  * $url = $oauthClient->buildAuthUrl($requestToken); // Get authorization URL
- * Yii::$app->getResponse()->redirect($url); // Redirect to authorization URL
+ * return Yii::$app->getResponse()->redirect($url); // Redirect to authorization URL
  * // After user returns at our site:
  * $accessToken = $oauthClient->fetchAccessToken($requestToken); // Upgrade to access token
  * ~~~
