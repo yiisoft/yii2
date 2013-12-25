@@ -172,7 +172,7 @@ class Schema extends \yii\db\Schema
 	 * @param TableSchema $table the table metadata
 	 * @return array all unique indexes for the given table.
 	 */
-	protected function findUniqueIndexes($table)
+	public function findUniqueIndexes($table)
 	{
 		$sql = "PRAGMA index_list(" . $this->quoteSimpleTableName($table->name) . ')';
 		$indexes = $this->db->createCommand($sql)->queryAll();

@@ -259,7 +259,7 @@ class Schema extends \yii\db\Schema
 	 * @param TableSchema $table the table metadata
 	 * @return array all unique indexes for the given table.
 	 */
-	protected function findUniqueIndexes($table)
+	public function findUniqueIndexes($table)
 	{
 		$sql = $this->getCreateTableSql($table);
 		$uniqueIndexes = [];
