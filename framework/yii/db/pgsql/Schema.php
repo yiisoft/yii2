@@ -273,7 +273,7 @@ SQL;
 	 * @param TableSchema $table the table metadata
 	 * @return array all unique indexes for the given table.
 	 */
-	protected function findUniqueIndexes($table)
+	public function findUniqueIndexes($table)
 	{
 		$indexes = $this->getUniqueIndexInformation($table);
 		$uniqueIndexes = [];
