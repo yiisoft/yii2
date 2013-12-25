@@ -96,7 +96,8 @@ By default, requests for pages in a Yii-based site go through the bootstrap file
 in the application's `web` directory. The result will be URLs in the format `http://hostname/index.php/controller/action/param/value`.
 
 To hide the bootstrap file in your URLs, add `mod_rewrite` instructions to the `.htaccess` file in your web document root
-(or add the instructions to the virtual host configuration in Apache's `httpd.conf` file). The applicable instructions are:
+(or add the instructions to the virtual host configuration in Apache's `httpd.conf` file, `Directory` section for your webroot).
+The applicable instructions are:
 
 ~~~
 RewriteEngine on

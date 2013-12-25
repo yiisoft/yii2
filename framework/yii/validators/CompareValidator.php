@@ -195,11 +195,11 @@ class CompareValidator extends Validator
 			$options['skipOnEmpty'] = 1;
 		}
 
-		$options['message'] = Html::encode(strtr($this->message, [
+		$options['message'] = strtr($this->message, [
 			'{attribute}' => $object->getAttributeLabel($attribute),
 			'{compareAttribute}' => $compareValue,
 			'{compareValue}' => $compareValue,
-		]));
+		]);
 
 		ValidationAsset::register($view);
 		return 'yii.validation.compare(value, messages, ' . json_encode($options) . ');';

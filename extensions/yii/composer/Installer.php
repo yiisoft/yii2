@@ -44,7 +44,7 @@ class Installer extends LibraryInstaller
 		$this->addPackage($package);
 		// ensure the yii2-dev package also provides Yii.php in the same place as yii2 does
 		if ($package->getName() == 'yiisoft/yii2-dev') {
-			$this->linkYiiBaseFiles();
+			$this->linkBaseYiiFiles();
 		}
 	}
 
@@ -58,7 +58,7 @@ class Installer extends LibraryInstaller
 		$this->addPackage($target);
 		// ensure the yii2-dev package also provides Yii.php in the same place as yii2 does
 		if ($initial->getName() == 'yiisoft/yii2-dev') {
-			$this->linkYiiBaseFiles();
+			$this->linkBaseYiiFiles();
 		}
 	}
 
@@ -73,7 +73,7 @@ class Installer extends LibraryInstaller
 		$this->removePackage($package);
 		// remove links for Yii.php
 		if ($package->getName() == 'yiisoft/yii2-dev') {
-			$this->removeYiiBaseFiles();
+			$this->removeBaseYiiFiles();
 		}
 	}
 
@@ -169,13 +169,13 @@ class Installer extends LibraryInstaller
 		}
 	}
 
-	protected function linkYiiBaseFiles()
+	protected function linkBaseYiiFiles()
 	{
 		$yiiDir = $this->vendorDir . '/yiisoft/yii2/yii';
 		if (!file_exists($yiiDir)) {
 			mkdir($yiiDir, 0777, true);
 		}
-		foreach(['Yii.php', 'YiiBase.php', 'classes.php'] as $file) {
+		foreach(['Yii.php', 'BaseYii.php', 'classes.php'] as $file) {
 			file_put_contents($yiiDir . '/' . $file, <<<EOF
 <?php
 /**
@@ -193,10 +193,10 @@ EOF
 		}
 	}
 
-	protected function removeYiiBaseFiles()
+	protected function removeBaseYiiFiles()
 	{
 		$yiiDir = $this->vendorDir . '/yiisoft/yii2/yii';
-		foreach(['Yii.php', 'YiiBase.php', 'classes.php'] as $file) {
+		foreach(['Yii.php', 'BaseYii.php', 'classes.php'] as $file) {
 			if (file_exists($yiiDir . '/' . $file)) {
 				unlink($yiiDir . '/' . $file);
 			}

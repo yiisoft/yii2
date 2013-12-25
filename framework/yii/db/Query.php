@@ -148,7 +148,7 @@ class Query extends Component implements QueryInterface
 	 * Executes the query and returns a single row of result.
 	 * @param Connection $db the database connection used to generate the SQL statement.
 	 * If this parameter is not given, the `db` application component will be used.
-	 * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
+	 * @return array|boolean the first row (in terms of an array) of the query result. Null is returned if the query
 	 * results in nothing.
 	 */
 	public function one($db = null)
@@ -190,8 +190,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function count($q = '*', $db = null)
 	{
-		$this->select = ["COUNT($q)"];
-		return $this->createCommand($db)->queryScalar();
+		return $this->queryScalar("COUNT($q)", $db);
 	}
 
 	/**
@@ -204,8 +203,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function sum($q, $db = null)
 	{
-		$this->select = ["SUM($q)"];
-		return $this->createCommand($db)->queryScalar();
+		return $this->queryScalar("SUM($q)", $db);
 	}
 
 	/**
@@ -218,8 +216,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function average($q, $db = null)
 	{
-		$this->select = ["AVG($q)"];
-		return $this->createCommand($db)->queryScalar();
+		return $this->queryScalar("AVG($q)", $db);
 	}
 
 	/**
@@ -232,8 +229,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function min($q, $db = null)
 	{
-		$this->select = ["MIN($q)"];
-		return $this->createCommand($db)->queryScalar();
+		return $this->queryScalar("MIN($q)", $db);
 	}
 
 	/**
@@ -246,8 +242,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function max($q, $db = null)
 	{
-		$this->select = ["MAX($q)"];
-		return $this->createCommand($db)->queryScalar();
+		return $this->queryScalar("MAX($q)", $db);
 	}
 
 	/**
@@ -258,8 +253,36 @@ class Query extends Component implements QueryInterface
 	 */
 	public function exists($db = null)
 	{
+		$select = $this->select;
 		$this->select = [new Expression('1')];
-		return $this->scalar($db) !== false;
+		$command = $this->createCommand($db);
+		$this->select = $select;
+		return $command->queryScalar() !== false;
+	}
+
+	/**
+	 * Queries a scalar value by setting [[select]] first.
+	 * Restores the value of select to make this query reusable.
+	 * @param string|Expression $selectExpression
+	 * @param Connection $db
+	 * @return bool|string
+	 */
+	private function queryScalar($selectExpression, $db)
+	{
+		$select = $this->select;
+		$limit = $this->limit;
+		$offset = $this->offset;
+
+		$this->select = [$selectExpression];
+		$this->limit = null;
+		$this->offset = null;
+		$command = $this->createCommand($db);
+
+		$this->select = $select;
+		$this->limit = $limit;
+		$this->offset = $offset;
+
+		return $command->queryScalar();
 	}
 
 	/**

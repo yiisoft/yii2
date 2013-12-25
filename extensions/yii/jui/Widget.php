@@ -76,11 +76,11 @@ class Widget extends \yii\base\Widget
 	/**
 	 * Registers a specific jQuery UI widget options
 	 * @param string $name the name of the jQuery UI widget
+	 * @param string $id the ID of the widget
 	 */
-	protected function registerClientOptions($name)
+	protected function registerClientOptions($name, $id)
 	{
 		if ($this->clientOptions !== false) {
-			$id = $this->options['id'];
 			$options = empty($this->clientOptions) ? '' : Json::encode($this->clientOptions);
 			$js = "jQuery('#$id').$name($options);";
 			$this->getView()->registerJs($js);
@@ -90,11 +90,11 @@ class Widget extends \yii\base\Widget
 	/**
 	 * Registers a specific jQuery UI widget events
 	 * @param string $name the name of the jQuery UI widget
+	 * @param string $id the ID of the widget
 	 */
-	protected function registerClientEvents($name)
+	protected function registerClientEvents($name, $id)
 	{
 		if (!empty($this->clientEvents)) {
-			$id = $this->options['id'];
 			$js = [];
 			foreach ($this->clientEvents as $event => $handler) {
 				if (isset($this->clientEventMap[$event])) {
@@ -112,11 +112,15 @@ class Widget extends \yii\base\Widget
 	 * Registers a specific jQuery UI widget asset bundle, initializes it with client options and registers related events
 	 * @param string $name the name of the jQuery UI widget
 	 * @param string $assetBundle the asset bundle for the widget
+	 * @param string $id the ID of the widget. If null, it will use the `id` value of [[options]].
 	 */
-	protected function registerWidget($name, $assetBundle)
+	protected function registerWidget($name, $assetBundle, $id = null)
 	{
+		if ($id === null) {
+			$id = $this->options['id'];
+		}
 		$this->registerAssets($assetBundle);
-		$this->registerClientOptions($name);
-		$this->registerClientEvents($name);
+		$this->registerClientOptions($name, $id);
+		$this->registerClientEvents($name, $id);
 	}
 }

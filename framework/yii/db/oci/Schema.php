@@ -221,7 +221,7 @@ EOD;
 		}
 
 		$rows = $command->queryAll();
-		$names = array();
+		$names = [];
 		foreach ($rows as $row) {
 			$names[] = $row['TABLE_NAME'];
 		}

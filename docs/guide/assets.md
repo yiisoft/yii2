@@ -40,7 +40,7 @@ application's `web` directory.
 is an alias that corresponds to your website base URL such as `http://example.com/`.
 
 In case you have asset files under non web accessible directory, that is the case for any extension, you need
-to additionally specify `$sourcePath`. Files will be copied or symlinked from source bath to base path prior to being
+to additionally specify `$sourcePath`. Files will be copied or symlinked from source path to base path prior to being
 registered. In case source path is used `baseUrl` is generated automatically at the time of publishing asset bundle.
 
 Dependencies on other asset bundles are specified via `$depends` property. It is an array that contains fully qualified

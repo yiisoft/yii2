@@ -303,11 +303,17 @@ class CollectionTest extends MongoDbTestCase
 				'status' => 1,
 				'amount' => 200,
 			],
+			[
+				'name' => 'no search keyword',
+				'status' => 1,
+				'amount' => 200,
+			],
 		];
 		$collection->batchInsert($rows);
 		$collection->createIndex(['name' => 'text']);
 
-		$result = $collection->fullTextSearch('some');
+		$result = $collection->fullTextSearch('customer');
 		$this->assertNotEmpty($result);
+		$this->assertCount(2, $result);
 	}
 }

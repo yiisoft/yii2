@@ -189,26 +189,6 @@ trait ActiveRelationTrait
 	}
 
 	/**
-	 * @param ActiveRecord|array $model
-	 * @param array $attributes
-	 * @return string
-	 */
-	private function getModelKey($model, $attributes)
-	{
-		if (count($attributes) > 1) {
-			$key = [];
-			foreach ($attributes as $attribute) {
-				$key[] = $model[$attribute];
-			}
-			return serialize($key);
-		} else {
-			$attribute = reset($attributes);
-			$key = $model[$attribute];
-			return is_scalar($key) ? $key : serialize($key);
-		}
-	}
-
-	/**
 	 * @param array $models
 	 */
 	private function filterByModels($models)
@@ -234,6 +214,26 @@ trait ActiveRelationTrait
 			}
 		}
 		$this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
+	}
+
+	/**
+	 * @param ActiveRecord|array $model
+	 * @param array $attributes
+	 * @return string
+	 */
+	private function getModelKey($model, $attributes)
+	{
+		if (count($attributes) > 1) {
+			$key = [];
+			foreach ($attributes as $attribute) {
+				$key[] = $model[$attribute];
+			}
+			return serialize($key);
+		} else {
+			$attribute = reset($attributes);
+			$key = $model[$attribute];
+			return is_scalar($key) ? $key : serialize($key);
+		}
 	}
 
 	/**

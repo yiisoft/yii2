@@ -54,7 +54,22 @@ class DatePicker extends InputWidget
 	 * @var boolean If true, shows the widget as an inline calendar and the input as a hidden field.
 	 */
 	public $inline = false;
+	/**
+	 * @var array the HTML attributes for the container tag. This is only used when [[inline]] is true.
+	 */
+	public $containerOptions = [];
 
+
+	/**
+	 * @inheritdoc
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->inline && !isset($this->containerOptions['id'])) {
+			$this->containerOptions['id'] = $this->options['id'] . '-container';
+		}
+	}
 
 	/**
 	 * Renders the widget.
@@ -62,6 +77,7 @@ class DatePicker extends InputWidget
 	public function run()
 	{
 		echo $this->renderWidget() . "\n";
+		$containerID = $this->inline ? $this->containerOptions['id'] : $this->options['id'];
 		if ($this->language !== false) {
 			$view = $this->getView();
 			DatePickerRegionalAsset::register($view);
@@ -71,10 +87,10 @@ class DatePicker extends InputWidget
 
 			$options = $this->clientOptions;
 			$this->clientOptions = false;  // the datepicker js widget is already registered
-			$this->registerWidget('datepicker', DatePickerAsset::className());
+			$this->registerWidget('datepicker', DatePickerAsset::className(), $containerID);
 			$this->clientOptions = $options;
 		} else {
-			$this->registerWidget('datepicker', DatePickerAsset::className());
+			$this->registerWidget('datepicker', DatePickerAsset::className(), $containerID);
 		}
 	}
 
@@ -101,8 +117,7 @@ class DatePicker extends InputWidget
 				$this->clientOptions['defaultDate'] = $this->value;
 			}
 			$this->clientOptions['altField'] = '#' . $this->options['id'];
-			$this->options['id'] .= '-container';
-			$contents[] = Html::tag('div', null, $this->options);
+			$contents[] = Html::tag('div', null, $this->containerOptions);
 		}
 
 		return implode("\n", $contents);
