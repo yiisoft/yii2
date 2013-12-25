@@ -351,22 +351,33 @@ class OpenId extends BaseClient implements ClientInterface
 		return $this->sendStreamRequest($url, $method, $params);
 	}
 
-	protected function buildUrl($url, $parts)
+	/**
+	 * Combines given URLs into single one.
+	 * @param string $baseUrl base URL.
+	 * @param string|array $additionalUrl additional URL string or information array.
+	 * @return string composed URL.
+	 */
+	protected function buildUrl($baseUrl, $additionalUrl)
 	{
-		if (isset($url['query'], $parts['query'])) {
-			$parts['query'] = $url['query'] . '&' . $parts['query'];
+		$baseUrl = parse_url($baseUrl);
+		if (!is_array($additionalUrl)) {
+			$additionalUrl = parse_url($additionalUrl);
 		}
 
-		$url = $parts + $url;
-		$url = $url['scheme'] . '://'
-			. (empty($url['username']) ? ''
-				:(empty($url['password']) ? "{$url['username']}@"
-					:"{$url['username']}:{$url['password']}@"))
-			. $url['host']
-			. (empty($url['port']) ? '' : ":{$url['port']}")
-			. (empty($url['path']) ? '' : $url['path'])
-			. (empty($url['query']) ? '' : "?{$url['query']}")
-			. (empty($url['fragment']) ? '' : "#{$url['fragment']}");
+		if (isset($baseUrl['query'], $additionalUrl['query'])) {
+			$additionalUrl['query'] = $baseUrl['query'] . '&' . $additionalUrl['query'];
+		}
+
+		$urlInfo = array_merge($baseUrl, $additionalUrl);
+		$url = $urlInfo['scheme'] . '://'
+			. (empty($urlInfo['username']) ? ''
+				:(empty($urlInfo['password']) ? "{$urlInfo['username']}@"
+					:"{$urlInfo['username']}:{$urlInfo['password']}@"))
+			. $urlInfo['host']
+			. (empty($urlInfo['port']) ? '' : ":{$urlInfo['port']}")
+			. (empty($urlInfo['path']) ? '' : $urlInfo['path'])
+			. (empty($urlInfo['query']) ? '' : "?{$urlInfo['query']}")
+			. (empty($urlInfo['fragment']) ? '' : "#{$urlInfo['fragment']}");
 		return $url;
 	}
 
@@ -428,7 +439,7 @@ class OpenId extends BaseClient implements ClientInterface
 
 				$next = false;
 				if (isset($headers['x-xrds-location'])) {
-					$url = $this->buildUrl(parse_url($url), parse_url(trim($headers['x-xrds-location'])));
+					$url = $this->buildUrl($url, trim($headers['x-xrds-location']));
 					$next = true;
 				}
 
@@ -509,7 +520,7 @@ class OpenId extends BaseClient implements ClientInterface
 				$content = $this->sendRequest($url, 'GET');
 				$location = $this->extractHtmlTagValue($content, 'meta', 'http-equiv', 'X-XRDS-Location', 'content');
 				if ($location) {
-					$url = $this->buildUrl(parse_url($url), parse_url($location));
+					$url = $this->buildUrl($url, $location);
 					continue;
 				}
 			}
@@ -654,7 +665,7 @@ class OpenId extends BaseClient implements ClientInterface
 			]
 		);
 
-		return $this->buildUrl(parse_url($serverInfo['url']), ['query' => http_build_query($params, '', '&')]);
+		return $this->buildUrl($serverInfo['url'], ['query' => http_build_query($params, '', '&')]);
 	}
 
 	/**
@@ -689,7 +700,7 @@ class OpenId extends BaseClient implements ClientInterface
 			$params['openid.identity'] = $serverInfo['identity'];
 			$params['openid.claimed_id'] = $this->getClaimedId();
 		}
-		return $this->buildUrl(parse_url($serverInfo['url']), ['query' => http_build_query($params, '', '&')]);
+		return $this->buildUrl($serverInfo['url'], ['query' => http_build_query($params, '', '&')]);
 	}
 
 	/**
