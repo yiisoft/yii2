@@ -17,7 +17,7 @@ use Yii;
  * @see http://openid.net/
  *
  * @property string $returnUrl authentication return URL.
- * @property mixed $identity ???
+ * @property string $claimedId  claimed identifier (identity).
  * @property string $trustRoot client trust root (realm), by default [[\yii\web\Request::hostInfo]] value will be used.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -25,6 +25,11 @@ use Yii;
  */
 class OpenId extends BaseClient implements ClientInterface
 {
+	/**
+	 * @var string authentication base URL, which should be used to compose actual authentication URL
+	 * by [[buildAuthUrl()]] method.
+	 */
+	public $authUrl;
 	/**
 	 * @var array list of attributes, which always should be returned from server.
 	 */
@@ -53,9 +58,9 @@ class OpenId extends BaseClient implements ClientInterface
 	 * @var string authentication return URL.
 	 */
 	private $_returnUrl;
-
-	private $_identity;
-
+	/**
+	 * @var string claimed identifier (identity)
+	 */
 	private $_claimedId;
 	/**
 	 * @var string client trust root (realm), by default [[\yii\web\Request::hostInfo]] value will be used.
@@ -91,27 +96,26 @@ class OpenId extends BaseClient implements ClientInterface
 		}
 	}
 
-	public function setIdentity($value)
+	/**
+	 * @param string $claimedId claimed identifier (identity).
+	 */
+	public function setClaimedId($claimedId)
 	{
-		if (strlen($value = trim((String) $value))) {
-			if (preg_match('#^xri:/*#i', $value, $m)) {
-				$value = substr($value, strlen($m[0]));
-			} elseif (!preg_match('/^(?:[=@+\$!\(]|https?:)/i', $value)) {
-				$value = "http://$value";
-			}
-			if (preg_match('#^https?://[^/]+$#i', $value, $m)) {
-				$value .= '/';
-			}
-		}
-		$this->_identity = $value;
-		$this->_claimedId = $value;
+		$this->_claimedId = $claimedId;
 	}
 
-	public function getIdentity()
+	/**
+	 * @return string claimed identifier (identity).
+	 */
+	public function getClaimedId()
 	{
-		/* We return claimed_id instead of identity,
-		because the developer should see the claimed identifier,
-		i.e. what he set as identity, not the op-local identifier (which is what we verify)*/
+		if ($this->_claimedId === null) {
+			if (isset($this->data['openid_claimed_id'])) {
+				$this->_claimedId = $this->data['openid_claimed_id'];
+			} elseif (isset($this->data['openid_identity'])) {
+				$this->_claimedId = $this->data['openid_identity'];
+			}
+		}
 		return $this->_claimedId;
 	}
 
@@ -234,13 +238,6 @@ class OpenId extends BaseClient implements ClientInterface
 				$name = strtolower(trim(substr($header, 0, $pos)));
 				$headers[$name] = trim(substr($header, $pos+1));
 			}
-
-			// Updating claimed_id in case of redirections.
-			$effectiveUrl = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
-			if ($effectiveUrl != $url) {
-				$this->_identity = $this->_claimedId = $effectiveUrl;
-			}
-
 			return $headers;
 		}
 
@@ -313,23 +310,6 @@ class OpenId extends BaseClient implements ClientInterface
 					$pos = strpos($header, ':');
 					$name = strtolower(trim(substr($header, 0, $pos)));
 					$headers[$name] = trim(substr($header, $pos + 1));
-
-					/* Following possible redirections. The point is just to have
-					claimed_id change with them, because get_headers() will
-					follow redirections automatically.
-					We ignore redirections with relative paths.
-					If any known provider uses them, file a bug report.*/
-					if ($name == 'location') {
-						if (strpos($headers[$name], 'http') === 0) {
-							$this->_identity = $this->_claimedId = $headers[$name];
-						} elseif($headers[$name][0] == '/') {
-							$parsedUrl = parse_url($this->_claimedId);
-							$this->_identity =
-							$this->_claimedId = $parsedUrl['scheme'] . '://'
-								. $parsedUrl['host']
-								. $headers[$name];
-						}
-					}
 				}
 
 				// and restore them
@@ -660,8 +640,8 @@ class OpenId extends BaseClient implements ClientInterface
 		/* If we have an openid.delegate that is different from our claimed id,
 		we need to somehow preserve the claimed id between requests.
 		The simplest way is to just send it along with the return_to url.*/
-		if ($serverInfo['identity'] != $this->_claimedId) {
-			$returnUrl .= (strpos($returnUrl, '?') ? '&' : '?') . 'openid.claimed_id=' . $this->_claimedId;
+		if ($serverInfo['identity'] != $this->getClaimedId()) {
+			$returnUrl .= (strpos($returnUrl, '?') ? '&' : '?') . 'openid.claimed_id=' . $this->getClaimedId();
 		}
 
 		$params = array_merge(
@@ -707,7 +687,7 @@ class OpenId extends BaseClient implements ClientInterface
 			$params['openid.claimed_id']= $url;
 		} else {
 			$params['openid.identity'] = $serverInfo['identity'];
-			$params['openid.claimed_id'] = $this->_claimedId;
+			$params['openid.claimed_id'] = $this->getClaimedId();
 		}
 		return $this->buildUrl(parse_url($serverInfo['url']), ['query' => http_build_query($params, '', '&')]);
 	}
@@ -720,7 +700,12 @@ class OpenId extends BaseClient implements ClientInterface
 	 */
 	public function buildAuthUrl($identifierSelect = null)
 	{
-		$serverInfo = $this->discover($this->_identity);
+		$authUrl = $this->authUrl;
+		$claimedId = $this->getClaimedId();
+		if (empty($claimedId)) {
+			$this->setClaimedId($authUrl);
+		}
+		$serverInfo = $this->discover($authUrl);
 		if ($serverInfo['version'] == 2) {
 			if ($identifierSelect !== null) {
 				$serverInfo['identifier_select'] = $identifierSelect;
@@ -733,11 +718,13 @@ class OpenId extends BaseClient implements ClientInterface
 	/**
 	 * Performs OpenID verification with the OP.
 	 * @return boolean whether the verification was successful.
-	 * @throws Exception
 	 */
 	public function validate()
 	{
-		$this->_claimedId = isset($this->data['openid_claimed_id']) ? $this->data['openid_claimed_id'] : $this->data['openid_identity'];
+		$claimedId = $this->getClaimedId();
+		if (empty($claimedId)) {
+			return false;
+		}
 		$params = [
 			'openid.assoc_handle' => $this->data['openid_assoc_handle'],
 			'openid.signed' => $this->data['openid_signed'],
@@ -751,27 +738,20 @@ class OpenId extends BaseClient implements ClientInterface
 			$params['openid.ns'] = 'http://specs.openid.net/auth/2.0';
 		} elseif (isset($this->data['openid_claimed_id']) && $this->data['openid_claimed_id'] != $this->data['openid_identity']) {
 			// If it's an OpenID 1 provider, and we've got claimed_id,
-			// we have to append it to the returnUrl, like authUrl_v1 does.
-			$this->returnUrl .= (strpos($this->returnUrl, '?') ? '&' : '?') . 'openid.claimed_id=' . $this->_claimedId;
+			// we have to append it to the returnUrl, like authUrlV1 does.
+			$this->returnUrl .= (strpos($this->returnUrl, '?') ? '&' : '?') . 'openid.claimed_id=' . $claimedId;
 		}
 
 		if ($this->data['openid_return_to'] != $this->returnUrl) {
 			// The return_to url must match the url of current request.
-			// I'm assuing that noone will set the returnUrl to something that doesn't make sense.
 			return false;
 		}
 
-		$serverInfo = $this->discover($this->_claimedId);
+		$serverInfo = $this->discover($claimedId);
 
 		foreach (explode(',', $this->data['openid_signed']) as $item) {
-			/* Checking whether magic_quotes_gpc is turned on, because
-			the function may fail if it is. For example, when fetching
-			AX namePerson, it might containg an apostrophe, which will be escaped.
-			In such case, validation would fail, since we'd send different data than OP
-			wants to verify. stripslashes() should solve that problem, but we can't
-			use it when magic_quotes is off.*/
 			$value = $this->data['openid_' . str_replace('.', '_', $item)];
-			$params['openid.' . $item] = get_magic_quotes_gpc() ? stripslashes($value) : $value;
+			$params['openid.' . $item] = $value;
 		}
 
 		$params['openid.mode'] = 'check_authentication';
