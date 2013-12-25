@@ -203,21 +203,9 @@ class AuthAction extends Action
 			switch ($_REQUEST['openid_mode']) {
 				case 'id_res':
 					if ($client->validate()) {
-						$attributes = [
-							'id' => $client->getClaimedId()
-						];
-						$rawAttributes = $client->fetchAttributes();
-						foreach ($client->requiredAttributes as $openIdAttributeName) {
-							if (isset($rawAttributes[$openIdAttributeName])) {
-								$attributes[$openIdAttributeName] = $rawAttributes[$openIdAttributeName];
-							} else {
-								throw new Exception('Unable to complete the authentication because the required data was not received.');
-							}
-						}
-						$client->setUserAttributes($attributes);
 						return $this->authSuccess($client);
 					} else {
-						throw new Exception('Unable to complete the authentication because the required data was not received.');
+						throw new HttpException(400, 'Unable to complete the authentication because the required data was not received.');
 					}
 					break;
 				case 'cancel':
