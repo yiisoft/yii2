@@ -1281,7 +1281,8 @@ class BaseHtml
 	 * @param array $options options (name => config) for the checkbox list. The following options are specially handled:
 	 *
 	 * - unselect: string, the value that should be submitted when none of the checkboxes is selected.
-	 *   By setting this option, a hidden input will be generated.
+	 *   You may set this option to be null to prevent default value submission.
+	 *   If this option is not set, an empty string will be submitted.
 	 * - separator: string, the HTML code that separates items.
 	 * - item: callable, a callback that can be used to customize the generation of the HTML code
 	 *   corresponding to a single item in $items. The signature of this callback must be:
@@ -1300,7 +1301,7 @@ class BaseHtml
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
 		$selection = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('unselect', $options)) {
-			$options['unselect'] = '0';
+			$options['unselect'] = '';
 		}
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
@@ -1321,7 +1322,8 @@ class BaseHtml
 	 * @param array $options options (name => config) for the radio button list. The following options are specially handled:
 	 *
 	 * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
-	 *   By setting this option, a hidden input will be generated.
+	 *   You may set this option to be null to prevent default value submission.
+	 *   If this option is not set, an empty string will be submitted.
 	 * - separator: string, the HTML code that separates items.
 	 * - item: callable, a callback that can be used to customize the generation of the HTML code
 	 *   corresponding to a single item in $items. The signature of this callback must be:
@@ -1340,7 +1342,7 @@ class BaseHtml
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
 		$selection = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('unselect', $options)) {
-			$options['unselect'] = '0';
+			$options['unselect'] = '';
 		}
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
