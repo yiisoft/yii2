@@ -70,6 +70,23 @@ interface ActiveRecordInterface
 	public function getPrimaryKey($asArray = false);
 
 	/**
+	 * Returns the old primary key value(s).
+	 * This refers to the primary key value that is populated into the record
+	 * after executing a find method (e.g. find(), findAll()).
+	 * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
+	 * @param boolean $asArray whether to return the primary key value as an array. If true,
+	 * the return value will be an array with column name as key and column value as value.
+	 * If this is false (default), a scalar value will be returned for non-composite primary key.
+	 * @property mixed The old primary key value. An array (column name => column value) is
+	 * returned if the primary key is composite. A string is returned otherwise (null will be
+	 * returned if the key value is null).
+	 * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
+	 * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
+	 * the key value is null).
+	 */
+	public function getOldPrimaryKey($asArray = false);
+
+	/**
 	 * Creates an [[ActiveQueryInterface|ActiveQuery]] instance for query purpose.
 	 *
 	 * This method is usually ment to be used like this:

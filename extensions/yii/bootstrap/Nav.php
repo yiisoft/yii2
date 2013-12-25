@@ -164,7 +164,7 @@ class Nav extends Widget
 		if ($items !== null) {
 			$linkOptions['data-toggle'] = 'dropdown';
 			Html::addCssClass($options, 'dropdown');
-			Html::addCssClass($urlOptions, 'dropdown-toggle');
+			Html::addCssClass($linkOptions, 'dropdown-toggle');
 			$label .= ' ' . Html::tag('b', '', ['class' => 'caret']);
 			if (is_array($items)) {
 				$items = Dropdown::widget([

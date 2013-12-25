@@ -386,6 +386,74 @@ $customers = Customer::find()->limit(100)->with([
 ```
 
 
+Joining with Relations
+----------------------
+
+When working with relational databases, a common task is to join multiple tables and apply various
+query conditions and parameters to the JOIN SQL statement. Instead of calling [[ActiveQuery::join()]]
+explicitly to build up the JOIN query, you may reuse the existing relation definitions and call
+[[ActiveQuery::joinWith()]] to achieve this goal. For example,
+
+```php
+// find all orders and sort the orders by the customer id and the order id. also eager loading "customer"
+$orders = Order::find()->joinWith('customer')->orderBy('tbl_customer.id, tbl_order.id')->all();
+// find all orders that contain books, and eager loading "books"
+$orders = Order::find()->innerJoinWith('books')->all();
+```
+
+In the above, the method [[ActiveQuery::innerJoinWith()|innerJoinWith()]] is a shortcut to [[ActiveQuery::joinWith()|joinWith()]]
+with the join type set as `INNER JOIN`.
+
+You may join with one or multiple relations; you may apply query conditions to the relations on-the-fly;
+and you may also join with sub-relations. For example,
+
+```php
+// join with multiple relations
+// find out the orders that contain books and are placed by customers who registered within the past 24 hours
+$orders = Order::find()->innerJoinWith([
+	'books',
+	'customer' => function ($query) {
+		$query->where('tbl_customer.create_time > ' . (time() - 24 * 3600));
+	}
+])->all();
+// join with sub-relations: join with books and books' authors
+$orders = Order::find()->joinWith('books.author')->all();
+```
+
+Behind the scene, Yii will first execute a JOIN SQL statement to bring back the primary models
+satisfying the conditions applied to the JOIN SQL. It will then execute a query for each relation
+and populate the corresponding related records.
+
+The difference between [[ActiveQuery::joinWith()|joinWith()]] and [[ActiveQuery::with()|with()]] is that
+the former joins the tables for the primary model class and the related model classes to retrieve
+the primary models, while the latter just queries against the table for the primary model class to
+retrieve the primary models.
+
+Because of this difference, you may apply query conditions that are only available to a JOIN SQL statement.
+For example, you may filter the primary models by the conditions on the related models, like the example
+above. You may also sort the primary models using columns from the related tables.
+
+When using [[ActiveQuery::joinWith()|joinWith()]], you are responsible to disambiguate column names.
+In the above examples, we use `tbl_item.id` and `tbl_order.id` to disambiguate the `id` column references
+because both of the order table and the item table contain a column named `id`.
+
+By default, when you join with a relation, the relation will also be eagerly loaded. You may change this behavior
+by passing the `$eagerLoading` parameter which specifies whether to eager load the specified relations.
+
+And also by default, [[ActiveQuery::joinWith()|joinWith()]] uses `LEFT JOIN` to join the related tables.
+You may pass it with the `$joinType` parameter to customize the join type. As a shortcut to the `INNER JOIN` type,
+you may use [[ActiveQuery::innerJoinWith()|innerJoinWith()]].
+
+Below are some more examples,
+
+```php
+// find all orders that contain books, but do not eager loading "books".
+$orders = Order::find()->innerJoinWith('books', false)->all();
+// equivalent to the above
+$orders = Order::find()->joinWith('books', false, 'INNER JOIN')->all();
+```
+
+
 Working with Relationships
 --------------------------
 

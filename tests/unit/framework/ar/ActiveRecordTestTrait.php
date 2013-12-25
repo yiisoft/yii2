@@ -392,14 +392,14 @@ trait ActiveRecordTestTrait
 		$orders = $customer->orders;
 		$this->assertTrue($customer->isRelationPopulated('orders'));
 		$this->assertEquals(2, count($orders));
-		$this->assertEquals(1, count($customer->populatedRelations));
+		$this->assertEquals(1, count($customer->relatedRecords));
 
 		/** @var Customer $customer */
 		$customer = $this->callCustomerFind(2);
 		$this->assertFalse($customer->isRelationPopulated('orders'));
 		$orders = $customer->getOrders()->where(['id' => 3])->all();
 		$this->assertFalse($customer->isRelationPopulated('orders'));
-		$this->assertEquals(0, count($customer->populatedRelations));
+		$this->assertEquals(0, count($customer->relatedRecords));
 
 		$this->assertEquals(1, count($orders));
 		$this->assertEquals(3, $orders[0]->id);
@@ -421,7 +421,7 @@ trait ActiveRecordTestTrait
 		$customer = $this->callCustomerFind()->where(['id' => 1])->with('orders')->one();
 		$this->assertTrue($customer->isRelationPopulated('orders'));
 		$this->assertEquals(1, count($customer->orders));
-		$this->assertEquals(1, count($customer->populatedRelations));
+		$this->assertEquals(1, count($customer->relatedRecords));
 	}
 
 	public function testFindLazyVia()

@@ -69,7 +69,7 @@ class ActiveRelationTest extends MongoDbTestCase
 		$this->assertTrue($order->isRelationPopulated('customer'));
 		$this->assertTrue($customer instanceof Customer);
 		$this->assertEquals((string)$customer->_id, (string)$order->customer_id);
-		$this->assertEquals(1, count($order->populatedRelations));
+		$this->assertEquals(1, count($order->relatedRecords));
 	}
 
 	public function testFindEager()

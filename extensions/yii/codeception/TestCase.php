@@ -4,6 +4,7 @@ namespace yii\codeception;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use Codeception\TestCase\Test;
 
 /**
  * TestCase is the base class for all codeception unit tests
@@ -11,7 +12,7 @@ use yii\base\InvalidConfigException;
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
  */
-class TestCase extends \PHPUnit_Framework_TestCase
+class TestCase extends Test
 {
 	/**
 	 * @var array|string the application configuration that will be used for creating an application instance for each test.

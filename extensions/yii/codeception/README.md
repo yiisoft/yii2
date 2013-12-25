@@ -5,9 +5,8 @@ This extension provides [Codeception](http://codeception.com/) integration for t
 
 It provides classes that help with testing with codeception:
 
-- a base class for unit-tests: `yii\codeception\TestCase
+- a base class for unit-tests: `yii\codeception\TestCase`;
 - a base class for codeception page-objects: `yii\codeception\BasePage`.
-- a solution for testing emails
 
 
 Installation
@@ -39,7 +38,55 @@ class to reduce code duplication. Simply extend your page object from this class
 
 For unit testing there is a `TestCase` class which holds some common features like application creation before each test
 and application destroy after each test. You can configure a mock application using this class.
-`TestCase` is extended from `PHPUnit_Framework_TestCase` so all methods and assertions are available.
+`TestCase` is extended from `Codeception\TestCase\Case` so all methods and assertions are available.
+You may use codeception modules and fire events in your test, just use methods:
+
+```php
+<?php
+#in your unit-test
+$this->getModule('CodeHelper'); #or some other module
+```
+
+You also can use all guy methods by accessing guy instance like:
+
+```php
+<?php
+$this->codeGuy->someMethodFromModule();
+```
+
+to fire event do this:
+
+```php
+<?php
+use Codeception\Event\TestEvent;
+
+public function testSomething()
+{
+	$this->fire('myevent', new TestEvent($this));
+}
+```
+this event can be catched in modules and helpers. If your test is in the group, then event name will be followed by the groupname, 
+for example ```myevent.somegroup```.
+
+Execution of special tests methods is (for example on ```UserTest``` class):
+
+```
+tests\unit\models\UserTest::setUpBeforeClass();
+
+	tests\unit\models\UserTest::_before();
+
+		tests\unit\models\UserTest::setUp();
+
+			tests\unit\models\UserTest::testSomething();
+
+		tests\unit\models\UserTest::tearDown();
+
+	tests\unit\models\UserTest::_after();
+
+tests\unit\models\UserTest::tearDownAfterClass();
+```
+
+If you use special methods dont forget to call its parent.
 
 ```php
 <?php

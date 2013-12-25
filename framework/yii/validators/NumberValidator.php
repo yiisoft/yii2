@@ -124,24 +124,24 @@ class NumberValidator extends Validator
 
 		$options = [
 			'pattern' => new JsExpression($this->integerOnly ? $this->integerPattern : $this->numberPattern),
-			'message' => Html::encode(strtr($this->message, [
+			'message' => strtr($this->message, [
 				'{attribute}' => $label,
-			])),
+			]),
 		];
 
 		if ($this->min !== null) {
 			$options['min'] = $this->min;
-			$options['tooSmall'] = Html::encode(strtr($this->tooSmall, [
+			$options['tooSmall'] = strtr($this->tooSmall, [
 				'{attribute}' => $label,
 				'{min}' => $this->min,
-			]));
+			]);
 		}
 		if ($this->max !== null) {
 			$options['max'] = $this->max;
-			$options['tooBig'] = Html::encode(strtr($this->tooBig, [
+			$options['tooBig'] = strtr($this->tooBig, [
 				'{attribute}' => $label,
 				'{max}' => $this->max,
-			]));
+			]);
 		}
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;

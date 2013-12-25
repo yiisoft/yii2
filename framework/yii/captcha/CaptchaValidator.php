@@ -93,9 +93,9 @@ class CaptchaValidator extends Validator
 			'hash' => $hash,
 			'hashKey' => 'yiiCaptcha/' . $this->captchaAction,
 			'caseSensitive' => $this->caseSensitive,
-			'message' => Html::encode(strtr($this->message, [
+			'message' => strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
-			])),
+			]),
 		];
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;

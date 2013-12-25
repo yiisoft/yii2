@@ -30,7 +30,7 @@ use yii\helpers\Inflector;
  * @property mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
  * returned if the primary key is composite. A string is returned otherwise (null will be returned if the key
  * value is null). This property is read-only.
- * @property array $populatedRelations An array of relation data indexed by relation names. This property is
+ * @property array $relatedRecords An array of the populated related records indexed by relation names. This property is
  * read-only.
  * @property mixed $primaryKey The primary key value. An array (column name => column value) is returned if
  * the primary key is composite. A string is returned otherwise (null will be returned if the key value is null).
@@ -232,6 +232,13 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 			}
 			$value = parent::__get($name);
 			if ($value instanceof ActiveRelationInterface) {
+				if (method_exists($this, 'get' . $name)) {
+					$method = new \ReflectionMethod($this, 'get' . $name);
+					$realName = lcfirst(substr($method->getName(), 3));
+					if ($realName !== $name) {
+						throw new InvalidParamException('Relation names are case sensitive. ' . get_class($this) . " has a relation named \"$realName\" instead of \"$name\".");
+					}
+				}
 				return $this->_related[$name] = $value->multiple ? $value->all() : $value->one();
 			} else {
 				return $value;
@@ -390,10 +397,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	}
 
 	/**
-	 * Returns all populated relations.
-	 * @return array an array of relation data indexed by relation names.
+	 * Returns all populated related records.
+	 * @return array an array of related records indexed by relation names.
 	 */
-	public function getPopulatedRelations()
+	public function getRelatedRecords()
 	{
 		return $this->_related;
 	}
@@ -999,15 +1006,25 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	{
 		$getter = 'get' . $name;
 		try {
+			// the relation could be defined in a behavior
 			$relation = $this->$getter();
-			if ($relation instanceof ActiveRelationInterface) {
-				return $relation;
-			} else {
-				throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
-			}
 		} catch (UnknownMethodException $e) {
 			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);
 		}
+		if (!$relation instanceof ActiveRelationInterface) {
+			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
+		}
+
+		if (method_exists($this, $getter)) {
+			// relation name is case sensitive, trying to validate it when the relation is defined within this class
+			$method = new \ReflectionMethod($this, $getter);
+			$realName = lcfirst(substr($method->getName(), 3));
+			if ($realName !== $name) {
+				throw new InvalidParamException('Relation names are case sensitive. ' . get_class($this) . " has a relation named \"$realName\" instead of \"$name\".");
+			}
+		}
+
+		return $relation;
 	}
 
 	/**
@@ -1217,11 +1234,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	public static function isPrimaryKey($keys)
 	{
 		$pks = static::primaryKey();
-		foreach ($keys as $key) {
-			if (!in_array($key, $pks, true)) {
-				return false;
-			}
+		if (count($keys) === count($pks)) {
+			return count(array_intersect($keys, $pks)) === count($pks);
+		} else {
+			return false;
 		}
-		return count($keys) === count($pks);
 	}
 }

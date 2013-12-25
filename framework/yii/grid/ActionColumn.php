@@ -19,6 +19,13 @@ use yii\helpers\Html;
  */
 class ActionColumn extends Column
 {
+	/**
+	 * @var string the ID of the controller that should handle the actions specified here.
+	 * If not set, it will use the currently active controller. This property is mainly used by
+	 * [[urlCreator]] to create URLs for different actions. The value of this property will be prefixed
+	 * to each action name to form the route of the action.
+	 */
+	public $controller;
 	public $template = '{view} {update} {delete}';
 	public $buttons = [];
 	public $urlCreator;
@@ -75,7 +82,8 @@ class ActionColumn extends Column
 			return call_user_func($this->urlCreator, $model, $key, $index, $action);
 		} else {
 			$params = is_array($key) ? $key : ['id' => $key];
-			return Yii::$app->controller->createUrl($action, $params);
+			$route = $this->controller ? $this->controller . '/' . $action : $action;
+			return Yii::$app->controller->createUrl($route, $params);
 		}
 	}
 

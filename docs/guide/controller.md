@@ -194,9 +194,9 @@ public function behaviors()
             'class' => 'yii\web\AccessControl',
             'rules' => [
                 ['allow' => true, 'actions' => ['admin'], 'roles' => ['@']],
-            ),
-        ),
-    );
+            ],
+        ],
+    ];
 }
 ```
 
@@ -206,7 +206,7 @@ Two other filters, [[PageCache]] and [[HttpCache]] are described in [caching](ca
 Catching all incoming requests
 ------------------------------
 
-TDB
+TBD
 
 See also
 --------

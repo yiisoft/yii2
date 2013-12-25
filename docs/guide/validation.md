@@ -67,9 +67,9 @@ Validates that the attribute value is a valid email address.
 
 Validates that the attribute value exists in a table.
 
-- `className` the ActiveRecord class name or alias of the class that should be used to look for the attribute value being
+- `targetClass` the ActiveRecord class name or alias of the class that should be used to look for the attribute value being
   validated. _(ActiveRecord class of the attribute being validated)_
-- `attributeName` the ActiveRecord attribute name that should be used to look for the attribute value being validated.
+- `targetAttribute` the ActiveRecord attribute name that should be used to look for the attribute value being validated.
   _(name of the attribute being validated)_
 
 ### `file`: [[FileValidator]]
@@ -112,7 +112,9 @@ Validates that the attribute value is among a list of values.
 
 ### `inline`: [[InlineValidator]]
 
-Uses a custom function to validate the attribute. You need to define a public method in your model class which will evaluate the validity of the attribute. For example, if an attribute needs to be divisible by 10. In the rules you would define: `['attributeName', 'myValidationMethod'],`.
+Uses a custom function to validate the attribute. You need to define a public method in your
+model class which will evaluate the validity of the attribute. For example, if an attribute
+needs to be divisible by 10. In the rules you would define: `['attributeName', 'myValidationMethod'],`.
 
 Then, your own method could look like this:
 ```php
@@ -161,9 +163,9 @@ Validates that the attribute value is of certain length.
 
 Validates that the attribute value is unique in the corresponding database table.
 
-- `className` the ActiveRecord class name or alias of the class that should be used to look for the attribute value being
+- `targetClass` the ActiveRecord class name or alias of the class that should be used to look for the attribute value being
   validated. _(ActiveRecord class of the attribute being validated)_
-- `attributeName` the ActiveRecord attribute name that should be used to look for the attribute value being validated.
+- `targetAttribute` the ActiveRecord attribute name that should be used to look for the attribute value being validated.
   _(name of the attribute being validated)_
 
 ### `url`: [[UrlValidator]]

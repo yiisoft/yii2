@@ -6,6 +6,8 @@ namespace yiiunit\framework\validators;
 use yii\validators\UniqueValidator;
 use Yii;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Order;
+use yiiunit\data\ar\OrderItem;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\ValidatorTestMainModel;
 use yiiunit\data\validators\models\ValidatorTestRefModel;
@@ -58,7 +60,7 @@ class UniqueValidatorTest extends DatabaseTestCase
 
 	public function testValidateAttributeOfNonARModel()
 	{
-		$val = new UniqueValidator(['className' => ValidatorTestRefModel::className(), 'attributeName' => 'ref']);
+		$val = new UniqueValidator(['targetClass' => ValidatorTestRefModel::className(), 'targetAttribute' => 'ref']);
 		$m = FakedValidationModel::createWithAttributes(['attr_1' => 5, 'attr_2' => 1313]);
 		$val->validateAttribute($m, 'attr_1');
 		$this->assertTrue($m->hasErrors('attr_1'));
@@ -68,7 +70,7 @@ class UniqueValidatorTest extends DatabaseTestCase
 
 	public function testValidateNonDatabaseAttribute()
 	{
-		$val = new UniqueValidator(['className' => ValidatorTestRefModel::className(), 'attributeName' => 'ref']);
+		$val = new UniqueValidator(['targetClass' => ValidatorTestRefModel::className(), 'targetAttribute' => 'ref']);
 		$m = ValidatorTestMainModel::find(1);
 		$val->validateAttribute($m, 'testMainVal');
 		$this->assertFalse($m->hasErrors('testMainVal'));
@@ -84,5 +86,52 @@ class UniqueValidatorTest extends DatabaseTestCase
 		$val = new UniqueValidator();
 		$m = new ValidatorTestMainModel();
 		$val->validateAttribute($m, 'testMainVal');
+	}
+
+	public function testValidateCompositeKeys()
+	{
+		$val = new UniqueValidator([
+			'targetClass' => OrderItem::className(),
+			'targetAttribute' => ['order_id', 'item_id'],
+		]);
+		// validate old record
+		$m = OrderItem::find(['order_id' => 1, 'item_id' => 2]);
+		$val->validateAttribute($m, 'order_id');
+		$this->assertFalse($m->hasErrors('order_id'));
+		$m->item_id = 1;
+		$val->validateAttribute($m, 'order_id');
+		$this->assertTrue($m->hasErrors('order_id'));
+
+		// validate new record
+		$m = new OrderItem(['order_id' => 1, 'item_id' => 2]);
+		$val->validateAttribute($m, 'order_id');
+		$this->assertTrue($m->hasErrors('order_id'));
+		$m = new OrderItem(['order_id' => 10, 'item_id' => 2]);
+		$val->validateAttribute($m, 'order_id');
+		$this->assertFalse($m->hasErrors('order_id'));
+
+		$val = new UniqueValidator([
+			'targetClass' => OrderItem::className(),
+			'targetAttribute' => ['id' => 'order_id'],
+		]);
+		// validate old record
+		$m = Order::find(1);
+		$val->validateAttribute($m, 'id');
+		$this->assertTrue($m->hasErrors('id'));
+		$m = Order::find(1);
+		$m->id = 2;
+		$val->validateAttribute($m, 'id');
+		$this->assertTrue($m->hasErrors('id'));
+		$m = Order::find(1);
+		$m->id = 10;
+		$val->validateAttribute($m, 'id');
+		$this->assertFalse($m->hasErrors('id'));
+
+		$m = new Order(['id' => 1]);
+		$val->validateAttribute($m, 'id');
+		$this->assertTrue($m->hasErrors('id'));
+		$m = new Order(['id' => 10]);
+		$val->validateAttribute($m, 'id');
+		$this->assertFalse($m->hasErrors('id'));
 	}
 }
