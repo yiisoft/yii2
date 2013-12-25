@@ -39,6 +39,7 @@ class GoogleOAuth extends OAuth2
 	 */
 	public function init()
 	{
+		parent::init();
 		if ($this->scope === null) {
 			$this->scope = implode(' ', [
 				'https://www.googleapis.com/auth/userinfo.profile',
@@ -52,7 +53,22 @@ class GoogleOAuth extends OAuth2
 	 */
 	protected function initUserAttributes()
 	{
-		$attributes = $this->api('userinfo', 'GET');
-		return $attributes;
+		return $this->api('userinfo', 'GET');
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultName()
+	{
+		return 'google';
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultTitle()
+	{
+		return 'Google';
 	}
 }
