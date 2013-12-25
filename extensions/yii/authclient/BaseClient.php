@@ -10,6 +10,7 @@ namespace yii\authclient;
 use Yii;
 use yii\base\Component;
 use yii\base\NotSupportedException;
+use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
@@ -178,7 +179,7 @@ abstract class BaseClient extends Component implements ClientInterface
 	 */
 	protected function defaultName()
 	{
-		return StringHelper::basename(get_class($this));
+		return Inflector::camel2id(StringHelper::basename(get_class($this)));
 	}
 
 	/**
