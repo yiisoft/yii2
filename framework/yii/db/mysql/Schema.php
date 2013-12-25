@@ -267,8 +267,8 @@ class Schema extends \yii\db\Schema
 		$regexp = '/UNIQUE KEY\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
 		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
 			foreach ($matches as $match) {
-				$indexName = str_replace('`', '', $match[2]);
-				$indexColumns = array_map('trim', explode(',', str_replace('`', '', $match[3])));
+				$indexName = str_replace('`', '', $match[1]);
+				$indexColumns = array_map('trim', explode(',', str_replace('`', '', $match[2])));
 				$uniqueIndexes[$indexName] = $indexColumns;
 			}
 		}
