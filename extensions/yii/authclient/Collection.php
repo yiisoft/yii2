@@ -18,7 +18,7 @@ use Yii;
  *
  * ~~~
  * 'components' => [
- *     'auth' => [
+ *     'authClientCollection' => [
  *         'class' => 'yii\authclient\Collection',
  *         'clients' => [
  *             'google' => [

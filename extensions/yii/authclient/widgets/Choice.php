@@ -29,7 +29,9 @@ use yii\authclient\ClientInterface;
  * For example:
  *
  * ~~~
- * <?php $authChoice = yii\authclient\Choice::beginWidget(); ?>
+ * <?php $authChoice = yii\authclient\Choice::beginWidget([
+ *     'baseAuthUrl' => ['site/auth']
+ * ]); ?>
  * <ul>
  * <?php foreach ($authChoice->getClients() as $client): ?>
  *     <li><?= $authChoice->clientLink($client); ?></li>
@@ -37,6 +39,8 @@ use yii\authclient\ClientInterface;
  * </ul>
  * <?php yii\authclient\Choice::endWidget(); ?>
  * ~~~
+ *
+ * @see \yii\authclient\AuthAction
  *
  * @property ClientInterface[] $providers auth providers list.
  * @property array $baseAuthUrl configuration for the external services base authentication URL.
@@ -54,7 +58,7 @@ class Choice extends Widget
 	 * @var string name of the auth client collection application component.
 	 * This component will be used to fetch {@link services} value if it is not set.
 	 */
-	public $clientCollection = 'auth';
+	public $clientCollection = 'authClientCollection';
 	/**
 	 * @var array configuration for the external clients base authentication URL.
 	 */
