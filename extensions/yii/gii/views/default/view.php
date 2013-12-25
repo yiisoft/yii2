@@ -33,7 +33,7 @@ foreach ($generator->templates as $name => $path) {
 		'fieldConfig' => ['class' => ActiveField::className()],
 	]); ?>
 		<div class="row">
-			<div class="col-lg-8">
+			<div class="col-lg-8 col-md-10">
 				<?= $this->renderFile($generator->formView(), [
 					'generator' => $generator,
 					'form' => $form,
