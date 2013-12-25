@@ -8,7 +8,7 @@
 namespace yii\authclient;
 
 /**
- * Class ProviderInterface
+ * ClientInterface declares basic interface all Auth clients should follow.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

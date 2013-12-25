@@ -12,7 +12,27 @@ use yii\base\NotSupportedException;
 use Yii;
 
 /**
- * Class Client
+ * OpenId provides a simple interface for OpenID (1.1 and 2.0) authentication.
+ * Supports Yadis and HTML discovery.
+ *
+ * Usage:
+ *
+ * ~~~
+ * use yii\authclient\OpenId;
+ *
+ * $client = new OpenId();
+ * $client->authUrl = 'https://open.id.provider.url'; // Setup provider endpoint
+ * $url = $client->buildAuthUrl(); // Get authentication URL
+ * return Yii::$app->getResponse()->redirect($url); // Redirect to authentication URL
+ * // After user returns at our site:
+ * if ($client->validate()) { // validate response
+ *     $userAttributes = $client->getUserAttributes(); // get account info
+ *     ...
+ * }
+ * ~~~
+ *
+ * AX and SREG extensions are supported.
+ * To use them, specify [[requiredAttributes]] and/or [[optionalAttributes]].
  *
  * @see http://openid.net/
  *
@@ -32,10 +52,20 @@ class OpenId extends BaseClient implements ClientInterface
 	public $authUrl;
 	/**
 	 * @var array list of attributes, which always should be returned from server.
+	 * Attribute names should be always specified in AX format.
+	 * For example:
+	 * ~~~
+	 * ['namePerson/friendly', 'contact/email']
+	 * ~~~
 	 */
 	public $requiredAttributes = [];
 	/**
 	 * @var array list of attributes, which could be returned from server.
+	 * Attribute names should be always specified in AX format.
+	 * For example:
+	 * ~~~
+	 * ['namePerson/first', 'namePerson/last']
+	 * ~~~
 	 */
 	public $optionalAttributes = [];
 
