@@ -13,6 +13,22 @@ use yii\authclient\OpenId;
  * GoogleOpenId allows authentication via Google OpenId.
  * Unlike Google OAuth you do not need to register your application anywhere in order to use Google OpenId.
  *
+ * Example application configuration:
+ *
+ * ~~~
+ * 'components' => [
+ *     'authClientCollection' => [
+ *         'class' => 'yii\authclient\Collection',
+ *         'clients' => [
+ *             'google' => [
+ *                 'class' => 'yii\authclient\clients\GoogleOpenId'
+ *             ],
+ *         ],
+ *     ]
+ *     ...
+ * ]
+ * ~~~
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */

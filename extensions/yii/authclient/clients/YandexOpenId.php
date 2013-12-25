@@ -13,6 +13,22 @@ use yii\authclient\OpenId;
  * YandexOpenId allows authentication via Yandex OpenId.
  * Unlike Yandex OAuth you do not need to register your application anywhere in order to use Yandex OpenId.
  *
+ * Example application configuration:
+ *
+ * ~~~
+ * 'components' => [
+ *     'authClientCollection' => [
+ *         'class' => 'yii\authclient\Collection',
+ *         'clients' => [
+ *             'yandex' => [
+ *                 'class' => 'yii\authclient\clients\YandexOpenId'
+ *             ],
+ *         ],
+ *     ]
+ *     ...
+ * ]
+ * ~~~
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */

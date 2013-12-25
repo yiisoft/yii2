@@ -1,3 +1,14 @@
+/**
+ * Yii auth choice widget.
+ *
+ * This is the JavaScript widget used by the yii\authclient\widgets\Choice widget.
+ *
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ * @author Paul Klimov <klimov.paul@gmail.com>
+ * @since 2.0
+ */
 jQuery(function($) {
 	$.fn.authchoice = function(options) {
 		options = $.extend({
