@@ -10,7 +10,8 @@ namespace yii\authclient\clients;
 use yii\authclient\OpenId;
 
 /**
- * Class YandexOpenId
+ * YandexOpenId allows authentication via Yandex OpenId.
+ * Unlike Yandex OAuth you do not need to register your application anywhere in order to use Yandex OpenId.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -49,5 +50,21 @@ class YandexOpenId extends OpenId
 			'popupWidth' => 900,
 			'popupHeight' => 550,
 		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultName()
+	{
+		return 'yandex';
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultTitle()
+	{
+		return 'Yandex';
 	}
 }

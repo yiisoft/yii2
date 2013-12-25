@@ -10,7 +10,8 @@ namespace yii\authclient\clients;
 use yii\authclient\OpenId;
 
 /**
- * Class GoogleOpenId
+ * GoogleOpenId allows authentication via Google OpenId.
+ * Unlike Google OAuth you do not need to register your application anywhere in order to use Google OpenId.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -53,5 +54,21 @@ class GoogleOpenId extends OpenId
 			'popupWidth' => 880,
 			'popupHeight' => 520,
 		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultName()
+	{
+		return 'google';
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultTitle()
+	{
+		return 'Google';
 	}
 }
