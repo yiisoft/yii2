@@ -15,6 +15,24 @@ use Yii;
  * LinkedIn allows authentication via LinkedIn OAuth.
  * In order to use linkedIn OAuth you must register your application at [[https://www.linkedin.com/secure/developer]].
  *
+ * Example application configuration:
+ *
+ * ~~~
+ * 'components' => [
+ *     'authClientCollection' => [
+ *         'class' => 'yii\authclient\Collection',
+ *         'clients' => [
+ *             'linkedin' => [
+ *                 'class' => 'yii\authclient\clients\LinkedIn',
+ *                 'clientId' => 'linkedin_client_id',
+ *                 'clientSecret' => 'linkedin_client_secret',
+ *             ],
+ *         ],
+ *     ]
+ *     ...
+ * ]
+ * ~~~
+ *
  * @see http://developer.linkedin.com/documents/authentication
  * @see https://www.linkedin.com/secure/developer
  * @see http://developer.linkedin.com/apis
@@ -129,5 +147,21 @@ class LinkedIn extends OAuth2
 	 */
 	protected function generateAuthState() {
 		return sha1(uniqid(get_class($this), true));
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultName()
+	{
+		return 'linkedin';
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultTitle()
+	{
+		return 'LinkedIn';
 	}
 }

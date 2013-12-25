@@ -27,4 +27,57 @@ to the require section of your composer.json.
 Usage & Documentation
 ---------------------
 
-This extension...
+This extension provides the ability of the authentication via external credentials providers.
+It covers OpenID, OAuth1 and OAuth2 protocols.
+
+You need to setup auth client collection application component:
+
+```
+'components' => [
+    'authClientCollection' => [
+        'class' => 'yii\authclient\Collection',
+        'clients' => [
+            'google' => [
+                'class' => 'yii\authclient\clients\GoogleOpenId'
+            ],
+            'facebook' => [
+                'class' => 'yii\authclient\clients\Facebook',
+                'clientId' => 'facebook_client_id',
+                'clientSecret' => 'facebook_client_secret',
+            ],
+        ],
+    ]
+    ...
+]
+```
+
+Then you need to apply [[yii\authclient\AuthAction]] to some of your web controllers:
+
+```
+class SiteController extends Controller
+{
+    public function actions()
+    {
+        return [
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'successCallback'],
+            ],
+        ]
+    }
+
+    public function successCallback($client)
+    {
+        $atributes = $client->getUserAttributes();
+        // user login or signup comes here
+    }
+}
+```
+
+You may use [[yii\authclient\widgets\Choice]] to compose auth client selection:
+
+```
+<?= yii\authclient\Choice::widget([
+     'baseAuthUrl' => ['site/auth']
+]); ?>
+```
