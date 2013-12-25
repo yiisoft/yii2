@@ -220,8 +220,18 @@ class ActiveRecordTest extends DatabaseTestCase
 
 	public function testJoinWith()
 	{
+		// left join and eager loading
+		$orders = Order::find()->joinWith('customer')->orderBy('tbl_customer.id DESC, tbl_order.id')->all();
+		$this->assertEquals(3, count($orders));
+		$this->assertEquals(2, $orders[0]->id);
+		$this->assertEquals(3, $orders[1]->id);
+		$this->assertEquals(1, $orders[2]->id);
+		$this->assertTrue($orders[0]->isRelationPopulated('customer'));
+		$this->assertTrue($orders[1]->isRelationPopulated('customer'));
+		$this->assertTrue($orders[2]->isRelationPopulated('customer'));
+
 		// inner join filtering and eager loading
-		$orders = Order::find()->joinWith([
+		$orders = Order::find()->innerJoinWith([
 			'customer' => function ($query) {
 				$query->where('tbl_customer.id=2');
 			},
@@ -233,7 +243,7 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertTrue($orders[1]->isRelationPopulated('customer'));
 
 		// inner join filtering without eager loading
-		$orders = Order::find()->joinWith([
+		$orders = Order::find()->innerJoinWith([
 			'customer' => function ($query) {
 				$query->where('tbl_customer.id=2');
 			},
@@ -245,7 +255,7 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertFalse($orders[1]->isRelationPopulated('customer'));
 
 		// join with via-relation
-		$orders = Order::find()->joinWith('books')->orderBy('tbl_order.id')->all();
+		$orders = Order::find()->innerJoinWith('books')->orderBy('tbl_order.id')->all();
 		$this->assertEquals(2, count($orders));
 		$this->assertEquals(1, $orders[0]->id);
 		$this->assertEquals(3, $orders[1]->id);
@@ -255,7 +265,7 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertEquals(1, count($orders[1]->books));
 
 		// join with sub-relation
-		$orders = Order::find()->joinWith([
+		$orders = Order::find()->innerJoinWith([
 			'items.category' => function ($q) {
 				$q->where('tbl_category.id = 2');
 			},
