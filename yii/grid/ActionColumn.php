@@ -41,7 +41,7 @@ class ActionColumn extends Column
 		if (!isset($this->buttons['view'])) {
 			$this->buttons['view'] = function ($model, $key, $index, $column) {
 				/** @var ActionColumn $column */
-				$url = $column->createUrl($model, $key, $index, 'view');
+				$url = $column->createUrl('view', $model, $key, $index);
 				return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
 					'title' => Yii::t('yii', 'View'),
 				]);
@@ -50,7 +50,7 @@ class ActionColumn extends Column
 		if (!isset($this->buttons['update'])) {
 			$this->buttons['update'] = function ($model, $key, $index, $column) {
 				/** @var ActionColumn $column */
-				$url = $column->createUrl($model, $key, $index, 'update');
+				$url = $column->createUrl('update', $model, $key, $index);
 				return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
 					'title' => Yii::t('yii', 'Update'),
 				]);
@@ -59,7 +59,7 @@ class ActionColumn extends Column
 		if (!isset($this->buttons['delete'])) {
 			$this->buttons['delete'] = function ($model, $key, $index, $column) {
 				/** @var ActionColumn $column */
-				$url = $column->createUrl($model, $key, $index, 'delete');
+				$url = $column->createUrl('delete', $model, $key, $index);
 				return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
 					'title' => Yii::t('yii', 'Delete'),
 					'data-confirm' => Yii::t('yii', 'Are you sure to delete this item?'),
