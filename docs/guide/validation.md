@@ -139,6 +139,13 @@ Validates that the attribute value matches the specified pattern defined by regu
 - `pattern` the regular expression to be matched with.
 - `not` whether to invert the validation logic. _(false)_
 
+### `number`: [[NumberValidator]]
+
+Validates that the attribute value is a number.
+
+- `max` limit of the number. _(null)_
+- `min` lower limit of the number. _(null)_
+
 ### `required`: [[RequiredValidator]]
 
 Validates that the specified attribute does not have null or empty value.
