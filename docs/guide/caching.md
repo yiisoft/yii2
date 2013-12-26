@@ -152,7 +152,33 @@ $value2 = $cache['var2'];  // equivalent to: $value2 = $cache->get('var2');
 
 ### Cache Dependency
 
-TBD: http://www.yiiframework.com/doc/guide/1.1/en/caching.data#cache-dependency
+Besides expiration setting, cached data may also be invalidated according to some dependency changes. For example, if we
+are caching the content of some file and the file is changed, we should invalidate the cached copy and read the latest
+content from the file instead of the cache.
+
+We represent a dependency as an instance of [[\yii\caching\Dependency]] or its child class. We pass the dependency
+instance along with the data to be cached when calling `set()`.
+
+```php
+use yii\cache\FileDependency;
+
+// the value will expire in 30 seconds
+// it may also be invalidated earlier if the dependent file is changed
+Yii::$app->cache->set($id, $value, 30, new FileDependency(['fileName' => 'example.txt']));
+```
+
+Now if we retrieve $value from cache by calling `get()`, the dependency will be evaluated and if it is changed, we will
+get a false value, indicating the data needs to be regenerated.
+
+Below is a summary of the available cache dependencies:
+
+- [[\yii\cache\FileDependency]]: the dependency is changed if the file's last modification time is changed.
+- [[\yii\cache\GroupDependency]]: marks a cached data item with a group name. You may invalidate the cached data items
+  with the same group name all at once by calling [[\yii\cache\GroupDependency::invalidate()]].
+- [[\yii\cache\DbDependency]]: the dependency is changed if the query result of the specified SQL statement is changed.
+- [[\yii\cache\ChainedDependency]]: the dependency is changed if any of the dependencies on the chain is changed.
+- [[\yii\cache\ExpressionDependency]]: the dependency is changed if the result of the specified PHP expression is
+  changed.
 
 ### Query Caching
 

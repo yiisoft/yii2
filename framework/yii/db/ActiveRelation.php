@@ -63,6 +63,7 @@ class ActiveRelation extends ActiveQuery implements ActiveRelationInterface
 	public function createCommand($db = null)
 	{
 		if ($this->primaryModel !== null) {
+			$where = $this->where;
 			// lazy loading
 			if ($this->via instanceof self) {
 				// via pivot table
@@ -84,6 +85,9 @@ class ActiveRelation extends ActiveQuery implements ActiveRelationInterface
 			} else {
 				$this->filterByModels([$this->primaryModel]);
 			}
+			$command = parent::createCommand($db);
+			$this->where = $where;
+			return $command;
 		}
 		return parent::createCommand($db);
 	}

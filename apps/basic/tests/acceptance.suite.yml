@@ -11,8 +11,14 @@
 class_name: WebGuy
 modules:
     enabled:
-        - PhpBrowser
         - WebHelper
+        - PhpBrowser
+# you can use WebDriver instead of PhpBrowser to test javascript and ajax.
+# This will require you to install selenium. See http://codeception.com/docs/04-AcceptanceTests#Selenium
+#        - WebDriver
     config:
         PhpBrowser:
-            url: 'http://localhost/index-test.php'
+            url: 'http://localhost/basic-app/web/index-test-acceptance.php'
+#        WebDriver:
+#            url: 'http://localhost/basic-app/web/index-test-acceptance.php'
+#            browser: firefox

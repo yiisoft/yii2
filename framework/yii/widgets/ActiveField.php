@@ -112,8 +112,8 @@ class ActiveField extends Component
 	/**
 	 * @var array different parts of the field (e.g. input, label). This will be used together with
 	 * [[template]] to generate the final field HTML code. The keys are the token names in [[template]],
-	 * while the values are the corresponding HTML code. Valid tokens include `{input}`, `{label}`,
-	 * `{error}`, and `{error}`. Note that you normally don't need to access this property directly as
+	 * while the values are the corresponding HTML code. Valid tokens include `{input}`, `{label}` and `{error}`. 
+	 * Note that you normally don't need to access this property directly as
 	 * it is maintained by various methods of this class.
 	 */
 	public $parts = [];
@@ -371,7 +371,8 @@ class ActiveField extends Component
 	{
 		if ($enclosedByLabel) {
 			if (!isset($options['label'])) {
-				$options['label'] = Html::encode($this->model->getAttributeLabel($this->attribute));
+				$attribute = Html::getAttributeName($this->attribute);
+				$options['label'] = Html::encode($this->model->getAttributeLabel($attribute));
 			}
 			$this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
 			$this->parts['{label}'] = '';
@@ -406,7 +407,8 @@ class ActiveField extends Component
 	{
 		if ($enclosedByLabel) {
 			if (!isset($options['label'])) {
-				$options['label'] = Html::encode($this->model->getAttributeLabel($this->attribute));
+				$attribute = Html::getAttributeName($this->attribute);
+				$options['label'] = Html::encode($this->model->getAttributeLabel($attribute));
 			}
 			$this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
 			$this->parts['{label}'] = '';

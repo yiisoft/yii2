@@ -72,11 +72,11 @@ class BooleanValidator extends Validator
 		$options = [
 			'trueValue' => $this->trueValue,
 			'falseValue' => $this->falseValue,
-			'message' => Html::encode(strtr($this->message, [
+			'message' => strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
 				'{true}' => $this->trueValue,
 				'{false}' => $this->falseValue,
-			])),
+			]),
 		];
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;

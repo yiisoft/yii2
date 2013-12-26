@@ -98,9 +98,9 @@ class EmailValidator extends Validator
 			'pattern' => new JsExpression($this->pattern),
 			'fullPattern' => new JsExpression($this->fullPattern),
 			'allowName' => $this->allowName,
-			'message' => Html::encode(strtr($this->message, [
+			'message' => strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
-			])),
+			]),
 			'enableIDN' => (boolean)$this->enableIDN,
 		];
 		if ($this->skipOnEmpty) {

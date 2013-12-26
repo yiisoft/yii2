@@ -126,7 +126,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 	 */
 	public function count($q = '*', $db = null)
 	{
-		if ($this->offset === null && $this->limit === null && $this->where === null) {
+		if ($this->where === null) {
 			/** @var ActiveRecord $modelClass */
 			$modelClass = $this->modelClass;
 			if ($db === null) {
@@ -291,11 +291,17 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $this->modelClass;
 
-		$start = $this->offset === null ? 0 : $this->offset;
+		if ($type == 'Count') {
+			$start = 0;
+			$limit = null;
+		} else {
+			$start = $this->offset === null ? 0 : $this->offset;
+			$limit = $this->limit;
+		}
 		$i = 0;
 		$data = [];
 		foreach($pks as $pk) {
-			if (++$i > $start && ($this->limit === null || $i <= $start + $this->limit)) {
+			if (++$i > $start && ($limit === null || $i <= $start + $limit)) {
 				$key = $modelClass::keyPrefix() . ':a:' . $modelClass::buildKey($pk);
 				$result = $db->executeCommand('HGETALL', [$key]);
 				if (!empty($result)) {

@@ -144,7 +144,7 @@ If action is generic enough it makes sense to implement it in a separate class t
 Create `actions/Page.php`
 
 ```php
-namespace \app\actions;
+namespace app\actions;
 
 class Page extends \yii\base\Action
 {
@@ -152,7 +152,7 @@ class Page extends \yii\base\Action
 
 	public function run()
 	{
-		$this->controller->render($view);
+		return $this->controller->render($view);
 	}
 }
 ```
@@ -194,9 +194,9 @@ public function behaviors()
             'class' => 'yii\web\AccessControl',
             'rules' => [
                 ['allow' => true, 'actions' => ['admin'], 'roles' => ['@']],
-            ),
-        ),
-    );
+            ],
+        ],
+    ];
 }
 ```
 
@@ -206,7 +206,7 @@ Two other filters, [[PageCache]] and [[HttpCache]] are described in [caching](ca
 Catching all incoming requests
 ------------------------------
 
-TDB
+TBD
 
 See also
 --------

@@ -139,6 +139,7 @@ class QueryBuilder extends \yii\base\Object
 	public function buildCondition($condition)
 	{
 		static $builders = array(
+			'not' => 'buildNotCondition',
 			'and' => 'buildAndCondition',
 			'or' => 'buildAndCondition',
 			'between' => 'buildBetweenCondition',
@@ -194,6 +195,19 @@ class QueryBuilder extends \yii\base\Object
 			}
 		}
 		return count($parts) === 1 ? $parts[0] : ['and' => $parts];
+	}
+
+	private function buildNotCondition($operator, $operands, &$params)
+	{
+		if (count($operands) != 1) {
+			throw new InvalidParamException("Operator '$operator' requires exactly one operand.");
+		}
+
+		$operand = reset($operands);
+		if (is_array($operand)) {
+			$operand = $this->buildCondition($operand, $params);
+		}
+		return [$operator => $operand];
 	}
 
 	private function buildAndCondition($operator, $operands)

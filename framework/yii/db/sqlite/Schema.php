@@ -159,6 +159,40 @@ class Schema extends \yii\db\Schema
 	}
 
 	/**
+	 * Returns all unique indexes for the given table.
+	 * Each array element is of the following structure:
+	 *
+	 * ~~~
+	 * [
+	 *	 'IndexName1' => ['col1' [, ...]],
+	 *	 'IndexName2' => ['col2' [, ...]],
+	 * ]
+	 * ~~~
+	 *
+	 * @param TableSchema $table the table metadata
+	 * @return array all unique indexes for the given table.
+	 */
+	public function findUniqueIndexes($table)
+	{
+		$sql = "PRAGMA index_list(" . $this->quoteSimpleTableName($table->name) . ')';
+		$indexes = $this->db->createCommand($sql)->queryAll();
+		$uniqueIndexes = [];
+
+		foreach ($indexes as $index) {
+			$indexName = $index['name'];
+			$indexInfo = $this->db->createCommand("PRAGMA index_info(" . $this->quoteValue($index['name']) . ")")->queryAll();
+
+			if ($index['unique']) {
+				$uniqueIndexes[$indexName] = [];
+				foreach ($indexInfo as $row) {
+					$uniqueIndexes[$indexName][] = $row['name'];
+				}
+			}
+		}
+		return $uniqueIndexes;
+	}
+
+	/**
 	 * Loads the column information into a [[ColumnSchema]] object.
 	 * @param array $info column information
 	 * @return ColumnSchema the column schema object

@@ -205,14 +205,6 @@ class ActiveRecordTest extends RedisTestCase
 		$this->assertEquals(2, $order->items[1]->id);
 	}
 
-	public function testFindCount()
-	{
-		$this->assertEquals(3, Customer::find()->count());
-		$this->assertEquals(1, Customer::find()->limit(1)->count());
-		$this->assertEquals(2, Customer::find()->limit(2)->count());
-		$this->assertEquals(1, Customer::find()->offset(2)->limit(2)->count());
-	}
-
 	public function testFindColumn()
 	{
 		$this->assertEquals(['user1', 'user2', 'user3'], Customer::find()->column('name'));

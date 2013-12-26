@@ -8,6 +8,7 @@ settings:
     suite_class: \PHPUnit_Framework_TestSuite
     memory_limit: 1024M
     log: true
+    colors: true
 modules:
     config:
         Db:

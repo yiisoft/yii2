@@ -28,7 +28,9 @@ class FormatterTest extends TestCase
 		if (!extension_loaded('intl')) {
 			$this->markTestSkipped('intl extension is required.');
 		}
-		$this->mockApplication();
+		$this->mockApplication([
+			'timeZone' => 'UTC',
+		]);
 		$this->formatter = new Formatter(['locale' => 'en-US']);
 	}
 

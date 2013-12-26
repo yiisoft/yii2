@@ -10,7 +10,7 @@ namespace app\commands;
 use yii\console\Controller;
 
 /**
- * This command echoes what the first argument that you have entered.
+ * This command echoes the first argument that you have entered.
  *
  * This command is provided as an example for you to learn how to create console commands.
  *
@@ -25,6 +25,6 @@ class HelloController extends Controller
 	 */
 	public function actionIndex($message = 'hello world')
 	{
-		echo $message."\n";
+		echo $message . "\n";
 	}
 }
