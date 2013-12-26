@@ -65,10 +65,12 @@ class Customer extends ActiveRecord
 	 */
 	public function attributes()
 	{
-		return ['name', 'email', 'address', 'status'];
+		return ['_id', 'name', 'email', 'address', 'status'];
 	}
 }
 ```
+
+Note: collection primary key name ('_id') should be always explicitly setup as an attribute.
 
 You can use [[\yii\data\ActiveDataProvider]] with [[\yii\mongodb\Query]] and [[\yii\mongodb\ActiveQuery]]:
 
@@ -102,3 +104,8 @@ $models = $provider->getModels();
 
 This extension supports [MongoGridFS](http://docs.mongodb.org/manual/core/gridfs/) via
 classes under namespace "\yii\mongodb\file".
+
+This extension supports logging and profiling, however log messages does not contain
+actual text of the performed queries, they contains only a “close approximation” of it
+composed on the values which can be extracted from PHP Mongo extension classes.
+If you need to see actual query text, you should use specific tools for that.
