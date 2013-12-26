@@ -240,7 +240,6 @@ class Generator extends \yii\gii\Generator
 					}
 			}
 		}
-
 		$rules = [];
 		foreach ($types as $type => $columns) {
 			$rules[] = "[['" . implode("', '", $columns) . "'], '$type']";
@@ -248,19 +247,24 @@ class Generator extends \yii\gii\Generator
 		foreach ($lengths as $length => $columns) {
 			$rules[] = "[['" . implode("', '", $columns) . "'], 'string', 'max' => $length]";
 		}
+
 		// Unique indexes rules
 		try {
 			$db = $this->getDbConnection();
 			$uniqueIndexes = $db->getSchema()->findUniqueIndexes($table);
 			foreach ($uniqueIndexes as $indexName => $uniqueColumns) {
-				$attributesCount = count($uniqueColumns);
-				if ($attributesCount == 1) {
-					$rules[] = "[['" . $uniqueColumns[0] . "'], 'unique']";
-				} elseif ($attributesCount > 1) {
-					$labels = array_intersect_key($this->generateLabels($table), array_flip($uniqueColumns));
-					$lastLabel = array_pop($labels);
-					$columnsList = implode("', '", $uniqueColumns);
-					$rules[] = "[['" . $columnsList . "'], 'unique', 'targetAttribute' => ['" . $columnsList . "'], 'message' => 'The combination of " . implode(', ', $labels) . " and " . $lastLabel . " has already been taken.']";
+				// Avoid validating auto incrementable columns
+				if (!$this->isUniqueColumnAutoIncrementable($table, $uniqueColumns)) {
+					$attributesCount = count($uniqueColumns);
+
+					if ($attributesCount == 1) {
+						$rules[] = "[['" . $uniqueColumns[0] . "'], 'unique']";
+					} elseif ($attributesCount > 1) {
+						$labels = array_intersect_key($this->generateLabels($table), array_flip($uniqueColumns));
+						$lastLabel = array_pop($labels);
+						$columnsList = implode("', '", $uniqueColumns);
+						$rules[] = "[['" . $columnsList . "'], 'unique', 'targetAttribute' => ['" . $columnsList . "'], 'message' => 'The combination of " . implode(', ', $labels) . " and " . $lastLabel . " has already been taken.']";
+					}
 				}
 			}
 		} catch (NotSupportedException $e) {
@@ -569,5 +573,21 @@ class Generator extends \yii\gii\Generator
 	protected function getDbConnection()
 	{
 		return Yii::$app->{$this->db};
+	}
+
+	/**
+	 * Checks if any of the specified columns of an unique index is auto incrementable.
+	 * @param \yii\db\TableSchema $table the table schema
+	 * @param array $columns columns to check for autoIncrement property
+	 * @return boolean whether any of the specified columns is auto incrementable.
+	 */
+	protected function isUniqueColumnAutoIncrementable($table, $columns)
+	{
+		foreach ($columns as $column) {
+			if ($table->columns[$column]->autoIncrement) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
