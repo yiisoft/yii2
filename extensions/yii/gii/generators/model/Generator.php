@@ -255,7 +255,7 @@ class Generator extends \yii\gii\Generator
 			foreach ($uniqueIndexes as $indexName => $uniqueColumns) {
 				$attributesCount = count($uniqueColumns);
 				if ($attributesCount == 1) {
-					$rules[] = "['" . $uniqueColumns[0] . "', 'unique']";
+					$rules[] = "[['" . $uniqueColumns[0] . "'], 'unique']";
 				} elseif ($attributesCount > 1) {
 					$labels = array_intersect_key($this->generateLabels($table), array_flip($uniqueColumns));
 					$lastLabel = array_pop($labels);
