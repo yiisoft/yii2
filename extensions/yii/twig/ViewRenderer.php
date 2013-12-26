@@ -13,6 +13,7 @@ use Yii;
 use yii\base\View;
 use yii\base\ViewRenderer as BaseViewRenderer;
 use yii\helpers\Html;
+use yii\twig\TwigSimpleFileLoader;
 
 /**
  * TwigViewRenderer allows you to use Twig templates in views.
@@ -76,7 +77,7 @@ class ViewRenderer extends BaseViewRenderer
     public $lexerOptions = [];
 
     /**
-	 * @var \Twig_Environment
+	 * @var \Twig_Environment twig environment object that do all rendering twig templates
 	 */
 	public $twig;
 
@@ -85,40 +86,40 @@ class ViewRenderer extends BaseViewRenderer
 
 		$this->twig = new \Twig_Environment(null, array_merge([
 			'cache' => Yii::getAlias($this->cachePath),
-            'auto_reload' => true,
-            'charset' => Yii::$app->charset,
+			'charset' => Yii::$app->charset,
 		], $this->options));
 
-        // Adding custom extensions
+		// Adding custom extensions
 		if (!empty($this->extensions)) {
 			foreach ($this->extensions as $extension) {
 				$this->twig->addExtension(new $extension());
 			}
 		}
-        // Adding custom globals (objects or static classes)
-        if (!empty($this->globals)) {
-            $this->addGlobals($this->globals);
-        }
-        // Adding custom functions
-        if (!empty($this->functions)) {
-            $this->addFunctions($this->functions);
-        }
-        // Adding custom filters
-        if (!empty($this->filters)) {
-            $this->addFilters($this->filters);
-        }
-        // Adding custom extensions
-        if (!empty($this->extensions)) {
-            $this->addExtensions($this->extensions);
-        }
-        // Change lexer syntax
-        if (!empty($this->lexerOptions)) {
-            $this->setLexerOptions($this->lexerOptions);
-        }
+
+		// Adding custom globals (objects or static classes)
+		if (!empty($this->globals)) {
+			$this->addGlobals($this->globals);
+		}
+		// Adding custom functions
+		if (!empty($this->functions)) {
+			$this->addFunctions($this->functions);
+		}
+		// Adding custom filters
+		if (!empty($this->filters)) {
+			$this->addFilters($this->filters);
+		}
+		// Adding custom extensions
+		if (!empty($this->extensions)) {
+			$this->addExtensions($this->extensions);
+		}
+		// Change lexer syntax
+		if (!empty($this->lexerOptions)) {
+			$this->setLexerOptions($this->lexerOptions);
+		}
 
 
-        // Adding global 'void' function (usage: {{void(App.clientScript.registerScriptFile(...))}})
-        $this->twig->addFunction('void', new \Twig_Function_Function(function($argument){
+		// Adding global 'void' function (usage: {{void(App.clientScript.registerScriptFile(...))}})
+		$this->twig->addFunction('void', new \Twig_Function_Function(function($argument){
 
         }));
 
@@ -145,31 +146,31 @@ class ViewRenderer extends BaseViewRenderer
 	public function render($view, $file, $params)
 	{
 		$this->twig->addGlobal('this', $view);
-        $this->twig->setLoader(new TwigSimpleFileLoader(dirname($file)));
+		$this->twig->setLoader(new TwigSimpleFileLoader(dirname($file)));
 		return $this->twig->render(pathinfo($file,PATHINFO_BASENAME), $params);
 	}
 
-    /**
-     * Adds global objects or static classes
-     * @param array $globals @see self::$globals
-     */
+	/**
+ 	 * Adds global objects or static classes
+ 	 * @param array $globals @see self::$globals
+	 */
     public function addGlobals($globals)
     {
-        foreach ($globals as $name => $value) {
-            if (!is_object($value)) {
-                $value = new ViewRendererStaticClassProxy($value);
-            }
-            $this->twig->addGlobal($name, $value);
-        }
+		foreach ($globals as $name => $value) {
+			if (!is_object($value)) {
+				$value = new ViewRendererStaticClassProxy($value);
+			}
+			$this->twig->addGlobal($name, $value);
+		}
     }
 
-    /**
-     * Adds custom functions
-     * @param array $functions @see self::$functions
-     */
+	/**
+ 	 * Adds custom functions
+	 * @param array $functions @see self::$functions
+	 */
     public function addFunctions($functions)
     {
-        $this->_addCustom('Function', $functions);
+		$this->_addCustom('Function', $functions);
     }
 
     /**
@@ -178,7 +179,7 @@ class ViewRenderer extends BaseViewRenderer
      */
     public function addFilters($filters)
     {
-        $this->_addCustom('Filter', $filters);
+		$this->_addCustom('Filter', $filters);
     }
 
     /**
@@ -187,9 +188,9 @@ class ViewRenderer extends BaseViewRenderer
      */
     public function addExtensions($extensions)
     {
-        foreach ($extensions as $extName) {
-            $this->twig->addExtension(new $extName());
-        }
+		foreach ($extensions as $extName) {
+			$this->twig->addExtension(new $extName());
+		}
     }
 
     /**
@@ -198,8 +199,8 @@ class ViewRenderer extends BaseViewRenderer
      */
     public function setLexerOptions($options)
     {
-        $lexer = new \Twig_Lexer($this->twig, $options);
-        $this->twig->setLexer($lexer);
+		$lexer = new \Twig_Lexer($this->twig, $options);
+		$this->twig->setLexer($lexer);
     }
 
     /**
@@ -210,30 +211,30 @@ class ViewRenderer extends BaseViewRenderer
      */
     private function _addCustom($classType, $elements)
     {
-        $classFunction = 'Twig_'.$classType.'_Function';
+		$classFunction = 'Twig_'.$classType.'_Function';
 
-        foreach ($elements as $name => $func) {
-            $twigElement = null;
+		foreach ($elements as $name => $func) {
+			$twigElement = null;
 
-            switch ($func) {
-                // Just a name of function
-                case is_string($func):
-                    $twigElement = new $classFunction($func);
-                    break;
-                // Name of function + options array
-                case is_array($func) && is_string($func[0]) && isset($func[1]) && is_array($func[1]):
-                    $twigElement = new $classFunction($func[0], $func[1]);
-                    break;
-            }
+			switch ($func) {
+				// Just a name of function
+				case is_string($func):
+					$twigElement = new $classFunction($func);
+					break;
+				// Name of function + options array
+				case is_array($func) && is_string($func[0]) && isset($func[1]) && is_array($func[1]):
+					$twigElement = new $classFunction($func[0], $func[1]);
+					break;
+			}
 
-            if ($twigElement !== null) {
-                $this->twig->{'add'.$classType}($name, $twigElement);
-            } else {
-                throw new \Exception(Yii::t('yiiext',
-                    'Incorrect options for "{classType}" [{name}]',
-                    array('{classType}'=>$classType, '{name}'=>$name)));
-            }
-        }
-    }
+			if ($twigElement !== null) {
+				$this->twig->{'add'.$classType}($name, $twigElement);
+			} else {
+				throw new \Exception(Yii::t('yiiext',
+					'Incorrect options for "{classType}" [{name}]',
+					array('{classType}'=>$classType, '{name}'=>$name)));
+			}
+		}
+	}
 }
 
