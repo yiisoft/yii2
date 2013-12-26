@@ -637,7 +637,36 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	}
 
 	/**
-	 * @see CActiveRecord::update()
+	 * Updates the specified attributes.
+	 *
+	 * This method is a shortcut to [[update()]] when data validation is not needed
+	 * and only a list of attributes need to be updated.
+	 *
+	 * You may specify the attributes to be updated as name list or name-value pairs.
+	 * If the latter, the corresponding attribute values will be modified accordingly.
+	 * The method will then save the specified attributes into database.
+	 *
+	 * Note that this method will NOT perform data validation.
+	 *
+	 * @param array $attributes the attributes (names or name-value pairs) to be updated
+	 * @return integer|boolean the number of rows affected, or false if [[beforeSave()]] stops the updating process.
+	 */
+	public function updateAttributes($attributes)
+	{
+		$attrs = [];
+		foreach ($attributes as $name => $value) {
+			if (is_integer($name)) {
+				$attrs[] = $value;
+			} else {
+				$this->$name = $value;
+				$attrs[] = $name;
+			}
+		}
+		return $this->update(false, $attrs);
+	}
+
+	/**
+	 * @see update()
 	 * @throws StaleObjectException
 	 */
 	protected function updateInternal($attributes = null)
