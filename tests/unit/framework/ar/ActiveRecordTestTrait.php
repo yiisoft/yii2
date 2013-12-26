@@ -671,6 +671,40 @@ trait ActiveRecordTestTrait
 		$this->assertEquals(0, $ret);
 	}
 
+	public function testUpdateAttributes()
+	{
+		$customerClass = $this->getCustomerClass();
+		/** @var TestCase|ActiveRecordTestTrait $this */
+		// save
+		$customer = $this->callCustomerFind(2);
+		$this->assertTrue($customer instanceof $customerClass);
+		$this->assertEquals('user2', $customer->name);
+		$this->assertFalse($customer->isNewRecord);
+		static::$afterSaveNewRecord = null;
+		static::$afterSaveInsert = null;
+
+		$customer->updateAttributes(['name' => 'user2x']);
+		$this->afterSave();
+		$this->assertEquals('user2x', $customer->name);
+		$this->assertFalse($customer->isNewRecord);
+		$this->assertFalse(static::$afterSaveNewRecord);
+		$this->assertFalse(static::$afterSaveInsert);
+		$customer2 = $this->callCustomerFind(2);
+		$this->assertEquals('user2x', $customer2->name);
+
+		$customer = $this->callCustomerFind(1);
+		$this->assertEquals('user1', $customer->name);
+		$this->assertEquals(1, $customer->status);
+		$customer->name = 'user1x';
+		$customer->status = 2;
+		$customer->updateAttributes(['name']);
+		$this->assertEquals('user1x', $customer->name);
+		$this->assertEquals(2, $customer->status);
+		$customer = $this->callCustomerFind(1);
+		$this->assertEquals('user1x', $customer->name);
+		$this->assertEquals(1, $customer->status);
+	}
+
 	public function testUpdateCounters()
 	{
 		$orderItemClass = $this->getOrderItemClass();
