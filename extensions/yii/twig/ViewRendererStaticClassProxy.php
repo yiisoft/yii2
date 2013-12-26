@@ -1,4 +1,11 @@
 <?php
+/**
+ * Twig view renderer class file.
+ *
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\twig;
 
@@ -11,27 +18,27 @@ namespace yii\twig;
  */
 class ViewRendererStaticClassProxy
 {
-    private $_staticClassName;
+	private $_staticClassName;
 
     public function __construct($staticClassName) {
-        $this->_staticClassName = $staticClassName;
-    }
+		$this->_staticClassName = $staticClassName;
+	}
 
-    public function __get($property)
-    {
-        $class = new \ReflectionClass($this->_staticClassName);
-        return $class->getStaticPropertyValue($property);
-    }
+	public function __get($property)
+	{
+		$class = new \ReflectionClass($this->_staticClassName);
+		return $class->getStaticPropertyValue($property);
+	}
 
-    public function __set($property, $value)
-    {
-        $class = new \ReflectionClass($this->_staticClassName);
-        $class->setStaticPropertyValue($property, $value);
-        return $value;
-    }
+	public function __set($property, $value)
+	{
+		$class = new \ReflectionClass($this->_staticClassName);
+		$class->setStaticPropertyValue($property, $value);
+		return $value;
+	}
 
-    public function __call($method, $arguments)
-    {
-        return call_user_func_array(array($this->_staticClassName, $method), $arguments);
-    }
+	public function __call($method, $arguments)
+	{
+		return call_user_func_array(array($this->_staticClassName, $method), $arguments);
+	}
 }
