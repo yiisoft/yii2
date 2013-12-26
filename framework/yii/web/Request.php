@@ -1040,7 +1040,7 @@ class Request extends \yii\base\Request
 	{
 		$options = $this->csrfCookie;
 		$options['name'] = $this->csrfVar;
-		$options['value'] = sha1(uniqid(mt_rand(), true));
+		$options['value'] = Security::generateRandomKey();
 		return new Cookie($options);
 	}
 
