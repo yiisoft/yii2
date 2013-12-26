@@ -116,6 +116,7 @@ class DefaultController extends Controller
 				$this->summary = $data['summary'];
 				return;
 			}
+			sleep(2);
 		}
 
 		throw new NotFoundHttpException("Unable to find debug data tagged with '$tag'.");
