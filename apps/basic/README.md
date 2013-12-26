@@ -1,17 +1,12 @@
 Yii 2 Basic Application Template
 ================================
 
-**NOTE** Yii 2 and the relevant applications and extensions are still under heavy
-development. We may make significant changes without prior notices. Please do not
-use them for production. Please consider using [Yii v1.1](https://github.com/yiisoft/yii)
-if you have a project to be deployed for production soon.
+Yii 2 Basic Application Template is a skeleton Yii 2 application best for
+rapidly developing small Websites containing mainly informational pages.
 
-
-Thank you for using Yii 2 Basic Application Template - an application template
-that works out-of-box and can be easily customized to fit for your needs.
-
-Yii 2 Basic Application Template is best suitable for small Websites which mainly contain
-a few informational pages.
+The template contains the basic features including user login/logout and a contact page.
+It includes all commonly used configurations that would allow you to focus on adding new
+features to your application.
 
 
 DIRECTORY STRUCTURE
@@ -24,53 +19,46 @@ DIRECTORY STRUCTURE
       runtime/            contains files generated during runtime
       vendor/             contains dependent 3rd-party packages
       views/              contains view files for the Web application
-      www/                contains the entry script and Web resources
+      web/                contains the entry script and Web resources
 
 
 
 REQUIREMENTS
 ------------
 
-The minimum requirement by Yii is that your Web server supports PHP 5.3.?.
+The minimum requirement by this application template that your Web server supports PHP 5.4.0.
 
 
 INSTALLATION
 ------------
 
-### Install via Composer
-
-If you do not have [Composer](http://getcomposer.org/), you may download it from
-[http://getcomposer.org/](http://getcomposer.org/) or run the following command on Linux/Unix/MacOS:
-
-~~~
-curl -s http://getcomposer.org/installer | php
-~~~
-
-You can then install the Bootstrap Application using the following command:
-
-~~~
-php composer.phar create-project --stability=dev yiisoft/yii2-app-basic yii-basic
-~~~
-
-Now you should be able to access the application using the URL `http://localhost/yii-basic/www/`,
-assuming `yii-basic` is directly under the document root of your Web server.
-
-
 ### Install from an Archive File
 
-This is not currently available. We will provide it when Yii 2 is formally released.
+Extract the archive file downloaded from [yiiframework.com](http://www.yiiframework.com/download/) to
+a directory named `basic` that is directly under the Web root.
 
-
-### Install from development repository
-
-If you've cloned the [Yii 2 framework main development repository](https://github.com/yiisoft/yii2) you
-can bootstrap your application with:
+You can then access the application through the following URL:
 
 ~~~
-cd yii2/apps/basic
-php composer.phar create-project
+http://localhost/basic/web/
 ~~~
 
-*Note: If the above command fails with `[RuntimeException] Not enough arguments.` run
-`php composer.phar self-update` to obtain an updated version of composer which supports creating projects
-from local packages.*
+
+### Install via Composer
+
+If you do not have [Composer](http://getcomposer.org/), you may install it by following the instructions
+at [getcomposer.org](http://getcomposer.org/doc/00-intro.md#installation-nix).
+
+You can then install this application template using the following command:
+
+~~~
+php composer.phar create-project --stability=dev yiisoft/yii2-app-basic basic
+~~~
+
+Now you should be able to access the application through the following URL, assuming `basic` is the directory
+directly under the Web root.
+
+~~~
+http://localhost/basic/web/
+~~~
+

@@ -20,23 +20,24 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		Schema::TYPE_PK => 'int IDENTITY PRIMARY KEY',
+		Schema::TYPE_BIGPK => 'bigint IDENTITY PRIMARY KEY',
 		Schema::TYPE_STRING => 'varchar(255)',
 		Schema::TYPE_TEXT => 'text',
-		Schema::TYPE_SMALLINT => 'smallint(6)',
-		Schema::TYPE_INTEGER => 'int(11)',
-		Schema::TYPE_BIGINT => 'bigint(20)',
+		Schema::TYPE_SMALLINT => 'smallint',
+		Schema::TYPE_INTEGER => 'int',
+		Schema::TYPE_BIGINT => 'bigint',
 		Schema::TYPE_FLOAT => 'float',
-		Schema::TYPE_DECIMAL => 'decimal(10,0)',
+		Schema::TYPE_DECIMAL => 'decimal',
 		Schema::TYPE_DATETIME => 'datetime',
 		Schema::TYPE_TIMESTAMP => 'timestamp',
 		Schema::TYPE_TIME => 'time',
 		Schema::TYPE_DATE => 'date',
 		Schema::TYPE_BINARY => 'binary',
-		Schema::TYPE_BOOLEAN => 'tinyint(1)',
+		Schema::TYPE_BOOLEAN => 'bit',
 		Schema::TYPE_MONEY => 'decimal(19,4)',
-	);
+	];
 
 //	public function update($table, $columns, $condition, &$params)
 //	{
@@ -57,6 +58,47 @@ class QueryBuilder extends \yii\db\QueryBuilder
 //	{
 //		return '';
 //	}
+
+	/**
+	 * Builds a SQL statement for renaming a DB table.
+	 * @param string $table the table to be renamed. The name will be properly quoted by the method.
+	 * @param string $newName the new table name. The name will be properly quoted by the method.
+	 * @return string the SQL statement for renaming a DB table.
+	 */
+	public function renameTable($table, $newName)
+	{
+		return "sp_rename '$table', '$newName'";
+	}
+
+	/**
+	 * Builds a SQL statement for renaming a column.
+	 * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
+	 * @param string $name the old name of the column. The name will be properly quoted by the method.
+	 * @param string $newName the new name of the column. The name will be properly quoted by the method.
+	 * @return string the SQL statement for renaming a DB column.
+	 */
+	public function renameColumn($table, $name, $newName)
+	{
+		return "sp_rename '$table.$name', '$newName', 'COLUMN'";
+	}
+
+	/**
+	 * Builds a SQL statement for changing the definition of a column.
+	 * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+	 * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+	 * @param string $type the new column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
+	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
+	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
+	 * @return string the SQL statement for changing the definition of a column.
+	 */
+	public function alterColumn($table, $column, $type)
+	{
+		$type=$this->getColumnType($type);
+		$sql='ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
+			. $this->db->quoteColumnName($column) . ' '
+			. $this->getColumnType($type);
+		return $sql;
+	}
 
 	/**
 	 * Builds a SQL statement for enabling or disabling integrity check.

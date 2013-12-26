@@ -27,7 +27,7 @@ DIRECTORY STRUCTURE
 REQUIREMENTS
 ------------
 
-The minimum requirement by Yii is that your Web server supports PHP 5.3.?.
+The minimum requirement by Yii is that your Web server supports PHP 5.4.0.
 
 
 INSTALLATION
@@ -53,4 +53,6 @@ http://localhost/yii-benchmark/index.php/site/hello
 ~~~
 
 In the above, we assume `yii-benchmark` is directly under the document root of your Web server.
+
+Note that in order to install some dependencies you must have `php_openssl` extension enabled.
 

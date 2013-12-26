@@ -33,9 +33,9 @@ use yii\base\InvalidParamException;
  * at appropriate places in the application code to check if the current user
  * has the needed permission for an operation.
  *
- * @property array $roles Roles (name => Item).
- * @property array $tasks Tasks (name => Item).
- * @property array $operations Operations (name => Item).
+ * @property Item[] $operations Operations (name => AuthItem). This property is read-only.
+ * @property Item[] $roles Roles (name => AuthItem). This property is read-only.
+ * @property Item[] $tasks Tasks (name => AuthItem). This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
@@ -58,7 +58,7 @@ abstract class Manager extends Component
 	 * And then declare 'authenticated' in this property so that it can be applied to
 	 * every authenticated user.
 	 */
-	public $defaultRoles = array();
+	public $defaultRoles = [];
 
 	/**
 	 * Creates a role.
@@ -159,7 +159,7 @@ abstract class Manager extends Component
 	 */
 	protected function checkItemChildType($parentType, $childType)
 	{
-		static $types = array('operation', 'task', 'role');
+		static $types = ['operation', 'task', 'role'];
 		if ($parentType < $childType) {
 			throw new InvalidParamException("Cannot add an item of type '{$types[$childType]}' to an item of type '{$types[$parentType]}'.");
 		}
@@ -174,7 +174,7 @@ abstract class Manager extends Component
 	 * with the tasks and roles assigned to the user.
 	 * @return boolean whether the operations can be performed by the user.
 	 */
-	abstract public function checkAccess($userId, $itemName, $params = array());
+	abstract public function checkAccess($userId, $itemName, $params = []);
 
 	/**
 	 * Creates an authorization item.
@@ -268,6 +268,12 @@ abstract class Manager extends Component
 	 * @return boolean whether removal is successful
 	 */
 	abstract public function revoke($userId, $itemName);
+	/**
+	 * Revokes all authorization assignments from a user.
+	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @return boolean whether removal is successful
+	 */
+	abstract public function revokeAll($userId);
 	/**
 	 * Returns a value indicating whether the item has been assigned to the user.
 	 * @param mixed $userId the user ID (see [[User::id]])

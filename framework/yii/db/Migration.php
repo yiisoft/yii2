@@ -135,7 +135,7 @@ class Migration extends \yii\base\Component
 	 * @param array $params input parameters (name => value) for the SQL execution.
 	 * See [[Command::execute()]] for more details.
 	 */
-	public function execute($sql, $params = array())
+	public function execute($sql, $params = [])
 	{
 		echo "    > execute SQL: $sql ...";
 		$time = microtime(true);
@@ -158,15 +158,30 @@ class Migration extends \yii\base\Component
 	}
 
 	/**
+	 * Creates and executes an batch INSERT SQL statement.
+	 * The method will properly escape the column names, and bind the values to be inserted.
+	 * @param string $table the table that new rows will be inserted into.
+	 * @param array $columns the column names.
+	 * @param array $rows the rows to be batch inserted into the table
+	 */
+	public function batchInsert($table, $columns, $rows)
+	{
+		echo "    > insert into $table ...";
+		$time = microtime(true);
+		$this->db->createCommand()->batchInsert($table, $columns, $rows)->execute();
+		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+	}
+
+	/**
 	 * Creates and executes an UPDATE SQL statement.
 	 * The method will properly escape the column names and bind the values to be updated.
 	 * @param string $table the table to be updated.
 	 * @param array $columns the column data (name => value) to be updated.
-	 * @param mixed $condition the conditions that will be put in the WHERE part. Please
+	 * @param array|string $condition the conditions that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
 	 */
-	public function update($table, $columns, $condition = '', $params = array())
+	public function update($table, $columns, $condition = '', $params = [])
 	{
 		echo "    > update $table ...";
 		$time = microtime(true);
@@ -177,11 +192,11 @@ class Migration extends \yii\base\Component
 	/**
 	 * Creates and executes a DELETE SQL statement.
 	 * @param string $table the table where the data will be deleted from.
-	 * @param mixed $condition the conditions that will be put in the WHERE part. Please
+	 * @param array|string $condition the conditions that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify conditions.
 	 * @param array $params the parameters to be bound to the query.
 	 */
-	public function delete($table, $condition = '', $params = array())
+	public function delete($table, $condition = '', $params = [])
 	{
 		echo "    > delete from $table ...";
 		$time = microtime(true);
@@ -297,7 +312,7 @@ class Migration extends \yii\base\Component
 	 * Builds and executes a SQL statement for changing the definition of a column.
 	 * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
 	 * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-	 * @param string $type the new column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
+	 * @param string $type the new column type. The [[getColumnType()]] method will be invoked to convert abstract column type (if any)
 	 * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
 	 * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
 	 */
@@ -306,6 +321,35 @@ class Migration extends \yii\base\Component
 		echo "    > alter column $column in table $table to $type ...";
 		$time = microtime(true);
 		$this->db->createCommand()->alterColumn($table, $column, $type)->execute();
+		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+	}
+
+	/**
+	 * Builds and executes a SQL statement for creating a primary key.
+	 * The method will properly quote the table and column names.
+	 * @param string $name the name of the primary key constraint.
+	 * @param string $table the table that the primary key constraint will be added to.
+	 * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
+	 */
+	public function addPrimaryKey($name, $table, $columns)
+	{
+		echo "    > add primary key $name on $table (".(is_array($columns) ? implode(',', $columns) : $columns).") ...";
+		$time = microtime(true);
+		$this->db->createCommand()->addPrimaryKey($name, $table, $columns)->execute();
+		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+	}
+
+	/**
+	 * Builds and executes a SQL statement for dropping a primary key.
+	 * @param string $name the name of the primary key constraint to be removed.
+	 * @param string $table the table that the primary key constraint will be removed from.
+	 * @return Command the command object itself
+	 */
+	public function dropPrimaryKey($name, $table)
+	{
+		echo "    > drop primary key $name ...";
+		$time = microtime(true);
+		$this->db->createCommand()->dropPrimaryKey($name, $table)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 

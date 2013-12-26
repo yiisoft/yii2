@@ -8,12 +8,22 @@
 
 namespace yii\console\controllers;
 
+use Yii;
 use yii\console\Controller;
+use yii\console\Exception;
+use yii\helpers\FileHelper;
 
 /**
  * This command extracts messages to be translated from source files.
  * The extracted messages are saved as PHP message source files
  * under the specified directory.
+ *
+ * Usage:
+ * 1. Create a configuration file using the 'message/config' command:
+ *    yii message/config /path/to/myapp/messages/config.php
+ * 2. Edit the created config file, adjusting it for your web application needs.
+ * 3. Run the 'message/extract' extract, using created config:
+ *    yii message /path/to/myapp/messages/config.php
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -21,96 +31,91 @@ use yii\console\Controller;
 class MessageController extends Controller
 {
 	/**
-	 * Searches for messages to be translated in the specified
-	 * source files and compiles them into PHP arrays as message source.
-	 *
-	 * @param string $config the path of the configuration file. You can find
-	 * an example in framework/messages/config.php.
-	 *
-	 * The file can be placed anywhere and must be a valid PHP script which
-	 * returns an array of name-value pairs. Each name-value pair represents
-	 * a configuration option.
-	 *
-	 * The following options are available:
-	 *
-	 *  - sourcePath: string, root directory of all source files.
-	 *  - messagePath: string, root directory containing message translations.
-	 *  - languages: array, list of language codes that the extracted messages
-	 *    should be translated to. For example, array('zh_cn', 'en_au').
-	 *  - fileTypes: array, a list of file extensions (e.g. 'php', 'xml').
-	 *    Only the files whose extension name can be found in this list
-	 *    will be processed. If empty, all files will be processed.
-	 *  - exclude: array, a list of directory and file exclusions. Each
-	 *    exclusion can be either a name or a path. If a file or directory name
-	 *    or path matches the exclusion, it will not be copied. For example,
-	 *    an exclusion of '.svn' will exclude all files and directories whose
-	 *    name is '.svn'. And an exclusion of '/a/b' will exclude file or
-	 *    directory 'sourcePath/a/b'.
-	 *  - translator: the name of the function for translating messages.
-	 *    Defaults to 'Yii::t'. This is used as a mark to find messages to be
-	 *    translated.
-	 *  - overwrite: if message file must be overwritten with the merged messages.
-	 *  - removeOld: if message no longer needs translation it will be removed,
-	 *    instead of being enclosed between a pair of '@@' marks.
-	 *  - sort: sort messages by key when merging, regardless of their translation
-	 *    state (new, obsolete, translated.)
+	 * @var string controller default action ID.
 	 */
-	public function actionIndex($config)
+	public $defaultAction = 'extract';
+
+
+	/**
+	 * Creates a configuration file for the "extract" command.
+	 *
+	 * The generated configuration file contains detailed instructions on
+	 * how to customize it to fit for your needs. After customization,
+	 * you may use this configuration file with the "extract" command.
+	 *
+	 * @param string $filePath output file name or alias.
+	 * @throws Exception on failure.
+	 */
+	public function actionConfig($filePath)
 	{
-		if (!is_file($config)) {
-			$this->usageError("the configuration file {$config} does not exist.");
+		$filePath = Yii::getAlias($filePath);
+		if (file_exists($filePath)) {
+			if (!$this->confirm("File '{$filePath}' already exists. Do you wish to overwrite it?")) {
+				return;
+			}
+		}
+		copy(Yii::getAlias('@yii/views/messageConfig.php'), $filePath);
+		echo "Configuration file template created at '{$filePath}'.\n\n";
+	}
+
+	/**
+	 * Extracts messages to be translated from source code.
+	 *
+	 * This command will search through source code files and extract
+	 * messages that need to be translated in different languages.
+	 *
+	 * @param string $configFile the path or alias of the configuration file.
+	 * You may use the "yii message/config" command to generate
+	 * this file and then customize it for your needs.
+	 * @throws Exception on failure.
+	 */
+	public function actionExtract($configFile)
+	{
+		$configFile = Yii::getAlias($configFile);
+		if (!is_file($configFile)) {
+			throw new Exception("The configuration file does not exist: $configFile");
 		}
 
-		$config = require_once($config);
+		$config = array_merge([
+			'translator' => 'Yii::t',
+			'overwrite' => false,
+			'removeUnused' => false,
+			'sort' => false,
+		], require($configFile));
 
-		$translator='Yii::t';
-		extract($config);
-
-		if (!isset($sourcePath, $messagePath, $languages)) {
-			$this->usageError('The configuration file must specify "sourcePath", "messagePath" and "languages".');
+		if (!isset($config['sourcePath'], $config['messagePath'], $config['languages'])) {
+			throw new Exception('The configuration file must specify "sourcePath", "messagePath" and "languages".');
 		}
-		if (!is_dir($sourcePath)) {
-			$this->usageError("The source path $sourcePath is not a valid directory.");
+		if (!is_dir($config['sourcePath'])) {
+			throw new Exception("The source path {$config['sourcePath']} is not a valid directory.");
 		}
-		if (!is_dir($messagePath)) {
-			$this->usageError("The message path $messagePath is not a valid directory.");
+		if (!is_dir($config['messagePath'])) {
+			throw new Exception("The message path {$config['messagePath']} is not a valid directory.");
 		}
-		if (empty($languages)) {
-			$this->usageError("Languages cannot be empty.");
-		}
-
-		if (!isset($overwrite)) {
-			$overwrite = false;
-		}
-		if (!isset($removeOld)) {
-			$removeOld = false;
-		}
-		if (!isset($sort)) {
-			$sort = false;
+		if (empty($config['languages'])) {
+			throw new Exception("Languages cannot be empty.");
 		}
 
-		$options = array();
-		if (isset($fileTypes)) {
-			$options['fileTypes'] = $fileTypes;
-		}
-		if (isset($exclude)) {
-			$options['exclude'] = $exclude;
-		}
-		$files = CFileHelper::findFiles(realpath($sourcePath), $options);
+		$files = FileHelper::findFiles(realpath($config['sourcePath']), $config);
 
-		$messages = array();
+		$messages = [];
 		foreach ($files as $file) {
-			$messages = array_merge_recursive($messages, $this->extractMessages($file, $translator));
+			$messages = array_merge_recursive($messages, $this->extractMessages($file, $config['translator']));
 		}
 
-		foreach ($languages as $language) {
-			$dir = $messagePath . DIRECTORY_SEPARATOR . $language;
+		foreach ($config['languages'] as $language) {
+			$dir = $config['messagePath'] . DIRECTORY_SEPARATOR . $language;
 			if (!is_dir($dir)) {
 				@mkdir($dir);
 			}
 			foreach ($messages as $category => $msgs) {
+				$file = str_replace("\\", '/', "$dir/$category.php");
+				$path = dirname($file);
+				if (!is_dir($path)) {
+					mkdir($path, 0755, true);
+				}
 				$msgs = array_values(array_unique($msgs));
-				$this->generateMessageFile($msgs, $dir . DIRECTORY_SEPARATOR . $category . '.php', $overwrite, $removeOld, $sort);
+				$this->generateMessageFile($msgs, $file, $config['overwrite'], $config['removeUnused'], $config['sort']);
 			}
 		}
 	}
@@ -126,18 +131,23 @@ class MessageController extends Controller
 	{
 		echo "Extracting messages from $fileName...\n";
 		$subject = file_get_contents($fileName);
-		$n = preg_match_all(
-			'/\b' . $translator . '\s*\(\s*(\'.*?(?<!\\\\)\'|".*?(?<!\\\\)")\s*,\s*(\'.*?(?<!\\\\)\'|".*?(?<!\\\\)")\s*[,\)]/s',
-			$subject, $matches, PREG_SET_ORDER);
-		$messages = array();
-		for ($i = 0; $i < $n; ++$i) {
-			if (($pos = strpos($matches[$i][1], '.')) !== false) {
-				$category=substr($matches[$i][1], $pos + 1, -1);
-			} else {
-				$category=substr($matches[$i][1], 1, -1);
+		$messages = [];
+		if (!is_array($translator)) {
+			$translator = [$translator];
+		}
+		foreach ($translator as $currentTranslator) {
+			$n = preg_match_all(
+				'/\b' . $currentTranslator . '\s*\(\s*(\'.*?(?<!\\\\)\'|".*?(?<!\\\\)")\s*,\s*(\'.*?(?<!\\\\)\'|".*?(?<!\\\\)")\s*[,\)]/s',
+				$subject, $matches, PREG_SET_ORDER);
+			for ($i = 0; $i < $n; ++$i) {
+				if (($pos = strpos($matches[$i][1], '.')) !== false) {
+					$category = substr($matches[$i][1], $pos + 1, -1);
+				} else {
+					$category = substr($matches[$i][1], 1, -1);
+				}
+				$message = $matches[$i][2];
+				$messages[$category][] = eval("return $message;"); // use eval to eliminate quote escape
 			}
-			$message = $matches[$i][2];
-			$messages[$category][] = eval("return $message;"); // use eval to eliminate quote escape
 		}
 		return $messages;
 	}
@@ -148,10 +158,10 @@ class MessageController extends Controller
 	 * @param array $messages
 	 * @param string $fileName name of the file to write to
 	 * @param boolean $overwrite if existing file should be overwritten without backup
-	 * @param boolean $removeOld if obsolete translations should be removed
+	 * @param boolean $removeUnused if obsolete translations should be removed
 	 * @param boolean $sort if translations should be sorted
 	 */
-	protected function generateMessageFile($messages, $fileName, $overwrite, $removeOld, $sort)
+	protected function generateMessageFile($messages, $fileName, $overwrite, $removeUnused, $sort)
 	{
 		echo "Saving messages to $fileName...";
 		if (is_file($fileName)) {
@@ -162,10 +172,10 @@ class MessageController extends Controller
 				echo "nothing new...skipped.\n";
 				return;
 			}
-			$merged = array();
-			$untranslated = array();
+			$merged = [];
+			$untranslated = [];
 			foreach ($messages as $message) {
-				if (!empty($translated[$message])) {
+				if (array_key_exists($message, $translated) && strlen($translated[$message]) > 0) {
 					$merged[$message] = $translated[$message];
 				} else {
 					$untranslated[] = $message;
@@ -173,15 +183,15 @@ class MessageController extends Controller
 			}
 			ksort($merged);
 			sort($untranslated);
-			$todo = array();
+			$todo = [];
 			foreach ($untranslated as $message) {
 				$todo[$message] = '';
 			}
 			ksort($translated);
 			foreach ($translated as $message => $translation) {
-				if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeOld) {
+				if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeUnused) {
 					if (substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
-						$todo[$message]=$translation;
+						$todo[$message] = $translation;
 					} else {
 						$todo[$message] = '@@' . $translation . '@@';
 					}
@@ -196,7 +206,7 @@ class MessageController extends Controller
 			}
 			echo "translation merged.\n";
 		} else {
-			$merged = array();
+			$merged = [];
 			foreach ($messages as $message) {
 				$merged[$message] = '';
 			}
@@ -209,7 +219,7 @@ class MessageController extends Controller
 /**
  * Message translations.
  *
- * This file is automatically generated by 'yii message' command.
+ * This file is automatically generated by 'yii {$this->id}' command.
  * It contains the localizable messages extracted from source code.
  * You may modify this file by translating the extracted messages.
  *
@@ -221,7 +231,7 @@ class MessageController extends Controller
  * Message string can be used with plural forms format. Check i18n section
  * of the guide for details.
  *
- * NOTE, this file must be saved in UTF-8 encoding.
+ * NOTE: this file must be saved in UTF-8 encoding.
  */
 return $array;
 

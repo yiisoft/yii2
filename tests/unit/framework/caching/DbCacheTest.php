@@ -6,6 +6,8 @@ use yii\caching\DbCache;
 
 /**
  * Class for testing file cache backend
+ * @group db
+ * @group caching
  */
 class DbCacheTest extends CacheTestCase
 {
@@ -35,11 +37,11 @@ class DbCacheTest extends CacheTestCase
 	 * @param bool $reset whether to clean up the test database
 	 * @return \yii\db\Connection
 	 */
-	function getConnection($reset = true)
+	public function getConnection($reset = true)
 	{
 		if ($this->_connection === null) {
 			$databases = $this->getParam('databases');
-            $params = $databases['mysql'];
+			$params = $databases['mysql'];
 			$db = new \yii\db\Connection;
 			$db->dsn = $params['dsn'];
 			$db->username = $params['username'];
@@ -65,9 +67,7 @@ class DbCacheTest extends CacheTestCase
 	protected function getCacheInstance()
 	{
 		if ($this->_cacheInstance === null) {
-			$this->_cacheInstance = new DbCache(array(
-				'db' => $this->getConnection(),
-			));
+			$this->_cacheInstance = new DbCache(['db' => $this->getConnection()]);
 		}
 		return $this->_cacheInstance;
 	}
@@ -82,5 +82,17 @@ class DbCacheTest extends CacheTestCase
 		$this->assertEquals('expire_test', $cache->get('expire_test'));
 		static::$time++;
 		$this->assertFalse($cache->get('expire_test'));
+	}
+
+	public function testExpireAdd()
+	{
+		$cache = $this->getCacheInstance();
+
+		static::$time = \time();
+		$this->assertTrue($cache->add('expire_testa', 'expire_testa', 2));
+		static::$time++;
+		$this->assertEquals('expire_testa', $cache->get('expire_testa'));
+		static::$time++;
+		$this->assertFalse($cache->get('expire_testa'));
 	}
 }

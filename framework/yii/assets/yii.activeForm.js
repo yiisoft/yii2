@@ -41,6 +41,9 @@
 		// a callback that is called before validating each attribute. The signature of the callback should be:
 		// function ($form, attribute, messages) { ...return false to cancel the validation...}
 		beforeValidate: undefined,
+		// a callback that is called after an attribute is validated. The signature of the callback should be:
+		// function ($form, attribute, messages)
+		afterValidate: undefined,
 		// the GET parameter name indicating an AJAX-based validation
 		ajaxVar: 'ajax'
 	};
@@ -80,7 +83,7 @@
 
 				var settings = $.extend({}, defaults, options || {});
 				if (settings.validationUrl === undefined) {
-					settings.validationUrl = $form.attr('action');
+					settings.validationUrl = $form.prop('action');
 				}
 				$.each(attributes, function (i) {
 					attributes[i] = $.extend({value: getValue($form, this)}, attributeDefaults, this);
@@ -125,7 +128,6 @@
 				data = $form.data('yiiActiveForm');
 			if (data.validated) {
 				// continue submitting the form since validation passes
-				data.validated = false;
 				return true;
 			}
 
@@ -288,13 +290,13 @@
 			// If the validation is triggered by form submission, ajax validation
 			// should be done only when all inputs pass client validation
 			var $button = data.submitObject,
-				extData = '&' + data.settings.ajaxVar + '=' + $form.attr('id');
-			if ($button && $button.length && $button.attr('name')) {
-				extData += '&' + $button.attr('name') + '=' + $button.attr('value');
+				extData = '&' + data.settings.ajaxVar + '=' + $form.prop('id');
+			if ($button && $button.length && $button.prop('name')) {
+				extData += '&' + $button.prop('name') + '=' + $button.prop('value');
 			}
 			$.ajax({
 				url: data.settings.validationUrl,
-				type: $form.attr('method'),
+				type: $form.prop('method'),
 				data: $form.serialize() + extData,
 				dataType: 'json',
 				success: function (msgs) {
@@ -333,17 +335,20 @@
 			$input = findInput($form, attribute),
 			hasError = false;
 
+		if (data.settings.afterValidate) {
+			data.settings.afterValidate($form, attribute, messages);
+		}
 		attribute.status = 1;
 		if ($input.length) {
 			hasError = messages && $.isArray(messages[attribute.name]) && messages[attribute.name].length;
 			var $container = $form.find(attribute.container);
 			var $error = $container.find(attribute.error);
 			if (hasError) {
-				$error.html(messages[attribute.name][0]);
+				$error.text(messages[attribute.name][0]);
 				$container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
 					.addClass(data.settings.errorCssClass);
 			} else {
-				$error.html('');
+				$error.text('');
 				$container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.errorCssClass + ' ')
 					.addClass(data.settings.successCssClass);
 			}
@@ -360,21 +365,21 @@
 	var updateSummary = function ($form, messages) {
 		var data = $form.data('yiiActiveForm'),
 			$summary = $form.find(data.settings.errorSummary),
-			content = '';
+			$ul = $summary.find('ul');
 
 		if ($summary.length && messages) {
 			$.each(data.attributes, function () {
 				if ($.isArray(messages[this.name]) && messages[this.name].length) {
-					content += '<li>' + messages[this.name][0] + '</li>';
+					$ul.append($('<li/>').text(messages[this.name][0]));
 				}
 			});
-			$summary.toggle(content !== '').find('ul').html(content);
+			$summary.toggle($ul.find('li').length > 0);
 		}
 	};
 
 	var getValue = function ($form, attribute) {
 		var $input = findInput($form, attribute);
-		var type = $input.attr('type');
+		var type = $input.prop('type');
 		if (type === 'checkbox' || type === 'radio') {
 			return $input.filter(':checked').val();
 		} else {

@@ -29,7 +29,8 @@ use yii\base\InvalidConfigException;
  * }
  * ~~~
  *
- * @property boolean $isActive Whether the transaction is active. This property is read-only.
+ * @property boolean $isActive Whether this transaction is active. Only an active transaction can [[commit()]]
+ * or [[rollback()]]. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

@@ -16,24 +16,53 @@ use yii\helpers\FileHelper;
 /**
  * AssetManager manages asset bundles and asset publishing.
  *
+ * AssetManager is configured as an application component in [[yii\web\Application]] by default.
+ * You can access that instance via `Yii::$app->assetManager`.
+ *
+ * You can modify its configuration by adding an array to your application config under `components`
+ * as it is shown in the following example:
+ *
+ * ~~~
+ * 'assetManager' => [
+ *     'bundles' => [
+ *         // you can override AssetBundle configs here
+ *     ],
+ *     //'linkAssets' => true,
+ *     // ...
+ * ]
+ * ~~~
+ *
+ * @property AssetConverterInterface $converter The asset converter. Note that the type of this property
+ * differs in getter and setter. See [[getConverter()]] and [[setConverter()]] for details.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class AssetManager extends Component
 {
 	/**
-	 * @var array list of available asset bundles. The keys are the bundle names, and the values are the configuration
-	 * arrays for creating the [[AssetBundle]] objects.
+	 * @var array list of available asset bundles. The keys are the class names (without leading backslash)
+	 * of the asset bundles, and the values are either the configuration arrays for creating the [[AssetBundle]]
+	 * objects or the corresponding asset bundle instances. For example, the following code disables
+	 * the bootstrap css file used by Bootstrap widgets (because you want to use your own styles):
+	 *
+	 * ~~~
+	 * [
+	 *     'yii\bootstrap\BootstrapAsset' => [
+	 *         'css' => [],
+	 *     ],
+	 * ]
+	 * ~~~
 	 */
-	public $bundles;
+	public $bundles = [];
 	/**
 	 * @return string the root directory storing the published asset files.
 	 */
-	public $basePath = '@wwwroot/assets';
+	public $basePath = '@webroot/assets';
 	/**
 	 * @return string the base URL through which the published asset files can be accessed.
 	 */
-	public $baseUrl = '@www/assets';
+	public $baseUrl = '@web/assets';
 	/**
 	 * @var boolean whether to use symbolic link to publish asset files. Defaults to false, meaning
 	 * asset files are copied to [[basePath]]. Using symbolic links has the benefit that the published
@@ -54,16 +83,17 @@ class AssetManager extends Component
 	public $linkAssets = false;
 	/**
 	 * @var integer the permission to be set for newly published asset files.
-	 * This value will be used by PHP chmod() function.
+	 * This value will be used by PHP chmod() function. No umask will be applied.
 	 * If not set, the permission will be determined by the current environment.
 	 */
 	public $fileMode;
 	/**
 	 * @var integer the permission to be set for newly generated asset directories.
-	 * This value will be used by PHP chmod() function.
-	 * Defaults to 0777, meaning the directory can be read, written and executed by all users.
+	 * This value will be used by PHP chmod() function. No umask will be applied.
+	 * Defaults to 0775, meaning the directory is read-writable by owner and group,
+	 * but read-only for other users.
 	 */
-	public $dirMode = 0777;
+	public $dirMode = 0775;
 
 	/**
 	 * Initializes the component.
@@ -81,70 +111,50 @@ class AssetManager extends Component
 			$this->basePath = realpath($this->basePath);
 		}
 		$this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
-
-		foreach (require(YII_PATH . '/assets.php') as $name => $bundle) {
-			if (!isset($this->bundles[$name])) {
-				$this->bundles[$name] = $bundle;
-			}
-		}
 	}
 
 	/**
-	 * Returns the named bundle.
+	 * Returns the named asset bundle.
+	 *
 	 * This method will first look for the bundle in [[bundles]]. If not found,
-	 * it will attempt to find the bundle from an installed extension using the following procedure:
+	 * it will treat `$name` as the class of the asset bundle and create a new instance of it.
 	 *
-	 * 1. Convert the bundle into a path alias;
-	 * 2. Determine the root alias and use it to locate the bundle manifest file "assets.php";
-	 * 3. Look for the bundle in the manifest file.
-	 *
-	 * For example, given the bundle name "foo/button", the method will first convert it
-	 * into the path alias "@foo/button"; since "@foo" is the root alias, it will look
-	 * for the bundle manifest file "@foo/assets.php". The manifest file should return an array
-	 * that lists the bundles used by the "foo/button" extension. The array format is the same as [[bundles]].
-	 *
-	 * @param string $name the bundle name
-	 * @return AssetBundle the loaded bundle object. Null is returned if the bundle does not exist.
+	 * @param string $name the class name of the asset bundle
+	 * @param boolean $publish whether to publish the asset files in the asset bundle before it is returned.
+	 * If you set this false, you must manually call `AssetBundle::publish()` to publish the asset files.
+	 * @return AssetBundle the asset bundle instance
+	 * @throws InvalidConfigException if $name does not refer to a valid asset bundle
 	 */
-	public function getBundle($name)
+	public function getBundle($name, $publish = true)
 	{
-		if (!isset($this->bundles[$name])) {
-			$rootAlias = Yii::getRootAlias("@$name");
-			if ($rootAlias !== false) {
-				$manifest = Yii::getAlias("$rootAlias/assets.php", false);
-				if ($manifest !== false && is_file($manifest)) {
-					foreach (require($manifest) as $bn => $config) {
-						$this->bundles[$bn] = $config;
-					}
-				}
+		if (isset($this->bundles[$name])) {
+			if ($this->bundles[$name] instanceof AssetBundle) {
+				return $this->bundles[$name];
+			} elseif (is_array($this->bundles[$name])) {
+				$bundle = Yii::createObject(array_merge(['class' => $name], $this->bundles[$name]));
+			} else {
+				throw new InvalidConfigException("Invalid asset bundle: $name");
 			}
-			if (!isset($this->bundles[$name])) {
-				return null;
-			}
+		} else {
+			$bundle = Yii::createObject($name);
 		}
-		if (is_array($this->bundles[$name])) {
-			$config = $this->bundles[$name];
-			if (!isset($config['class'])) {
-				$config['class'] = 'yii\\web\\AssetBundle';
-				$this->bundles[$name] = Yii::createObject($config);
-			}
+		if ($publish) {
+			/** @var AssetBundle $bundle */
+			$bundle->publish($this);
 		}
-
-		return $this->bundles[$name];
+		return $this->bundles[$name] = $bundle;
 	}
 
 	private $_converter;
 
 	/**
 	 * Returns the asset converter.
-	 * @return IAssetConverter the asset converter.
+	 * @return AssetConverterInterface the asset converter.
 	 */
 	public function getConverter()
 	{
 		if ($this->_converter === null) {
-			$this->_converter = Yii::createObject(array(
-				'class' => 'yii\\web\\AssetConverter',
-			));
+			$this->_converter = Yii::createObject(AssetConverter::className());
 		} elseif (is_array($this->_converter) || is_string($this->_converter)) {
 			$this->_converter = Yii::createObject($this->_converter);
 		}
@@ -153,8 +163,8 @@ class AssetManager extends Component
 
 	/**
 	 * Sets the asset converter.
-	 * @param array|IAssetConverter $value the asset converter. This can be either
-	 * an object implementing the [[IAssetConverter]] interface, or a configuration
+	 * @param array|AssetConverterInterface $value the asset converter. This can be either
+	 * an object implementing the [[AssetConverterInterface]], or a configuration
 	 * array that can be used to create the asset converter object.
 	 */
 	public function setConverter($value)
@@ -165,7 +175,7 @@ class AssetManager extends Component
 	/**
 	 * @var array published assets
 	 */
-	private $_published = array();
+	private $_published = [];
 
 	/**
 	 * Publishes a file or a directory.
@@ -211,7 +221,7 @@ class AssetManager extends Component
 	 * @return array the path (directory or file path) and the URL that the asset is published as.
 	 * @throws InvalidParamException if the asset to be published does not exist.
 	 */
-	public function publish($path, $options = array())
+	public function publish($path, $options = [])
 	{
 		if (isset($this->_published[$path])) {
 			return $this->_published[$path];
@@ -229,7 +239,7 @@ class AssetManager extends Component
 			$dstFile = $dstDir . DIRECTORY_SEPARATOR . $fileName;
 
 			if (!is_dir($dstDir)) {
-				mkdir($dstDir, $this->dirMode, true);
+				FileHelper::createDirectory($dstDir, $this->dirMode, true);
 			}
 
 			if ($this->linkAssets) {
@@ -243,7 +253,7 @@ class AssetManager extends Component
 				}
 			}
 
-			return $this->_published[$path] = array($dstFile, $this->baseUrl . "/$dir/$fileName");
+			return $this->_published[$path] = [$dstFile, $this->baseUrl . "/$dir/$fileName"];
 		} else {
 			$dir = $this->hash($src . filemtime($src));
 			$dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
@@ -252,10 +262,10 @@ class AssetManager extends Component
 					symlink($src, $dstDir);
 				}
 			} elseif (!is_dir($dstDir) || !empty($options['forceCopy'])) {
-				$opts = array(
+				$opts = [
 					'dirMode' => $this->dirMode,
 					'fileMode' => $this->fileMode,
-				);
+				];
 				if (isset($options['beforeCopy'])) {
 					$opts['beforeCopy'] = $options['beforeCopy'];
 				} else {
@@ -269,7 +279,7 @@ class AssetManager extends Component
 				FileHelper::copyDirectory($src, $dstDir, $opts);
 			}
 
-			return $this->_published[$path] = array($dstDir, $this->baseUrl . '/' . $dir);
+			return $this->_published[$path] = [$dstDir, $this->baseUrl . '/' . $dir];
 		}
 	}
 

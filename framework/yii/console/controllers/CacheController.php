@@ -25,7 +25,7 @@ class CacheController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$caches = array();
+		$caches = [];
 		$components = Yii::$app->getComponents();
 		foreach ($components as $name => $component) {
 			if ($component instanceof Cache) {
@@ -52,7 +52,7 @@ class CacheController extends Controller
 	 */
 	public function actionFlush($component = 'cache')
 	{
-		/** @var $cache Cache */
+		/** @var Cache $cache */
 		$cache = Yii::$app->getComponent($component);
 		if (!$cache || !$cache instanceof Cache) {
 			throw new Exception('Application component "'.$component.'" is not defined or not a cache.');

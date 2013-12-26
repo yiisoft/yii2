@@ -2,10 +2,15 @@
 
 namespace yiiunit;
 
+require_once('PHPUnit/Runner/Version.php');
+spl_autoload_unregister(['Yii', 'autoload']);
+require_once('PHPUnit/Autoload.php');
+spl_autoload_register(['Yii', 'autoload']); // put yii's autoloader at the end
+
 /**
  * This is the base class for all yii framework unit tests.
  */
-abstract class TestCase extends \yii\test\TestCase
+abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
 	public static $params;
 
@@ -27,25 +32,26 @@ abstract class TestCase extends \yii\test\TestCase
 	 */
 	public function getParam($name, $default = null)
 	{
-		if (self::$params === null) {
-			self::$params = require(__DIR__ . '/data/config.php');
+		if (static::$params === null) {
+			static::$params = require(__DIR__ . '/data/config.php');
 		}
-		return isset(self::$params[$name]) ? self::$params[$name] : $default;
+		return isset(static::$params[$name]) ? static::$params[$name] : $default;
 	}
 
 	/**
 	 * Populates Yii::$app with a new application
 	 * The application will be destroyed on tearDown() automatically.
 	 * @param array $config The application configuration, if needed
+	 * @param string $appClass name of the application class to create
 	 */
-	protected function mockApplication($config = array(), $appClass = '\yii\console\Application')
+	protected function mockApplication($config = [], $appClass = '\yii\console\Application')
 	{
-		static $defaultConfig = array(
+		static $defaultConfig = [
 			'id' => 'testapp',
 			'basePath' => __DIR__,
-		);
+		];
 
-		new $appClass(array_merge($defaultConfig,$config));
+		new $appClass(array_merge($defaultConfig, $config));
 	}
 
 	/**

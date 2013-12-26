@@ -8,6 +8,11 @@
 namespace yii\base;
 
 /**
+ * ActionFilter provides a base implementation for action filters that can be added to a controller
+ * to handle the `beforeAction` event.
+ *
+ * Check implementation of [[AccessControl]], [[PageCache]] and [[HttpCache]] as examples on how to use it.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -16,12 +21,15 @@ class ActionFilter extends Behavior
 	/**
 	 * @var array list of action IDs that this filter should apply to. If this property is not set,
 	 * then the filter applies to all actions, unless they are listed in [[except]].
+	 * If an action ID appears in both [[only]] and [[except]], this filter will NOT apply to it.
+	 * @see except
 	 */
 	public $only;
 	/**
 	 * @var array list of action IDs that this filter should not apply to.
+	 * @see only
 	 */
-	public $except = array();
+	public $except = [];
 
 	/**
 	 * Declares event handlers for the [[owner]]'s events.
@@ -29,10 +37,10 @@ class ActionFilter extends Behavior
 	 */
 	public function events()
 	{
-		return array(
+		return [
 			Controller::EVENT_BEFORE_ACTION => 'beforeFilter',
 			Controller::EVENT_AFTER_ACTION => 'afterFilter',
-		);
+		];
 	}
 
 	/**
@@ -54,7 +62,7 @@ class ActionFilter extends Behavior
 	public function afterFilter($event)
 	{
 		if ($this->isActive($event->action)) {
-			$this->afterAction($event->action);
+			$this->afterAction($event->action, $event->result);
 		}
 	}
 
@@ -73,8 +81,9 @@ class ActionFilter extends Behavior
 	 * This method is invoked right after an action is executed.
 	 * You may override this method to do some postprocessing for the action.
 	 * @param Action $action the action just executed.
+	 * @param mixed $result the action execution result
 	 */
-	public function afterAction($action)
+	public function afterAction($action, &$result)
 	{
 	}
 

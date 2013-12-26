@@ -1,28 +1,30 @@
 <?php
-
 namespace yiiunit\framework\db\pgsql;
 
 use yiiunit\framework\db\ConnectionTest;
 
-class PostgreSQLConnectionTest extends ConnectionTest {
+/**
+ * @group db
+ * @group pgsql
+ */
+class PostgreSQLConnectionTest extends ConnectionTest
+{
+	protected $driverName = 'pgsql';
 
-	public function setUp() {
-		$this->driverName = 'pgsql';
-		parent::setUp();
-	}
-
-	public function testConnection() {
+	public function testConnection()
+	{
 		$connection = $this->getConnection(true);
 	}
 
-	function testQuoteValue() {
+	public function testQuoteValue()
+	{
 		$connection = $this->getConnection(false);
 		$this->assertEquals(123, $connection->quoteValue(123));
 		$this->assertEquals("'string'", $connection->quoteValue('string'));
 		$this->assertEquals("'It''s interesting'", $connection->quoteValue("It's interesting"));
 	}
-	
-	function testQuoteTableName()
+
+	public function testQuoteTableName()
 	{
 		$connection = $this->getConnection(false);
 		$this->assertEquals('"table"', $connection->quoteTableName('table'));
@@ -33,8 +35,8 @@ class PostgreSQLConnectionTest extends ConnectionTest {
 		$this->assertEquals('{{table}}', $connection->quoteTableName('{{table}}'));
 		$this->assertEquals('(table)', $connection->quoteTableName('(table)'));
 	}
-	
-	function testQuoteColumnName()
+
+	public function testQuoteColumnName()
 	{
 		$connection = $this->getConnection(false);
 		$this->assertEquals('"column"', $connection->quoteColumnName('column'));
@@ -46,6 +48,4 @@ class PostgreSQLConnectionTest extends ConnectionTest {
 		$this->assertEquals('{{column}}', $connection->quoteColumnName('{{column}}'));
 		$this->assertEquals('(column)', $connection->quoteColumnName('(column)'));
 	}
-	
-	
 }

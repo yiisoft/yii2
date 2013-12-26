@@ -36,7 +36,7 @@ class LinkPager extends Widget
 	/**
 	 * @var array HTML attributes for the pager container tag.
 	 */
-	public $options = array('class' => 'pagination');
+	public $options = ['class' => 'pagination'];
 	/**
 	 * @var string the CSS class for the "first" page button.
 	 */
@@ -85,11 +85,6 @@ class LinkPager extends Widget
 	 * If this property is null, the "last" page button will not be displayed.
 	 */
 	public $lastPageLabel;
-	/**
-	 * @var string the template used to render the content within the pager container.
-	 * The token "{buttons}" will be replaced with the actual page buttons.
-	 */
-	public $template = '{buttons}';
 
 
 	/**
@@ -108,26 +103,23 @@ class LinkPager extends Widget
 	 */
 	public function run()
 	{
-		$buttons = strtr($this->template, array(
-			'{buttons}' => Html::tag('ul', implode("\n", $this->createPageButtons())),
-		));
-		echo Html::tag('div', $buttons, $this->options);
+		echo $this->renderPageButtons();
 	}
 
 	/**
-	 * Creates the page buttons.
-	 * @return array a list of page buttons (in HTML code).
+	 * Renders the page buttons.
+	 * @return string the rendering result
 	 */
-	protected function createPageButtons()
+	protected function renderPageButtons()
 	{
-		$buttons = array();
+		$buttons = [];
 
 		$pageCount = $this->pagination->getPageCount();
 		$currentPage = $this->pagination->getPage();
 
 		// first page
 		if ($this->firstPageLabel !== null) {
-			$buttons[] = $this->createPageButton($this->firstPageLabel, 0, $this->firstPageCssClass, $currentPage <= 0, false);
+			$buttons[] = $this->renderPageButton($this->firstPageLabel, 0, $this->firstPageCssClass, $currentPage <= 0, false);
 		}
 
 		// prev page
@@ -135,13 +127,13 @@ class LinkPager extends Widget
 			if (($page = $currentPage - 1) < 0) {
 				$page = 0;
 			}
-			$buttons[] = $this->createPageButton($this->prevPageLabel, $page, $this->prevPageCssClass, $currentPage <= 0, false);
+			$buttons[] = $this->renderPageButton($this->prevPageLabel, $page, $this->prevPageCssClass, $currentPage <= 0, false);
 		}
 
 		// internal pages
 		list($beginPage, $endPage) = $this->getPageRange();
 		for ($i = $beginPage; $i <= $endPage; ++$i) {
-			$buttons[] = $this->createPageButton($i + 1, $i, null, false, $i == $currentPage);
+			$buttons[] = $this->renderPageButton($i + 1, $i, null, false, $i == $currentPage);
 		}
 
 		// next page
@@ -149,38 +141,38 @@ class LinkPager extends Widget
 			if (($page = $currentPage + 1) >= $pageCount - 1) {
 				$page = $pageCount - 1;
 			}
-			$buttons[] = $this->createPageButton($this->nextPageLabel, $page, $this->nextPageCssClass, $currentPage >= $pageCount - 1, false);
+			$buttons[] = $this->renderPageButton($this->nextPageLabel, $page, $this->nextPageCssClass, $currentPage >= $pageCount - 1, false);
 		}
 
 		// last page
 		if ($this->lastPageLabel !== null) {
-			$buttons[] = $this->createPageButton($this->lastPageLabel, $pageCount - 1, $this->lastPageCssClass, $currentPage >= $pageCount - 1, false);
+			$buttons[] = $this->renderPageButton($this->lastPageLabel, $pageCount - 1, $this->lastPageCssClass, $currentPage >= $pageCount - 1, false);
 		}
 
-		return $buttons;
+		return Html::tag('ul', implode("\n", $buttons), $this->options);
 	}
 
 	/**
-	 * Creates a page button.
+	 * Renders a page button.
 	 * You may override this method to customize the generation of page buttons.
 	 * @param string $label the text label for the button
 	 * @param integer $page the page number
 	 * @param string $class the CSS class for the page button.
 	 * @param boolean $disabled whether this page button is disabled
 	 * @param boolean $active whether this page button is active
-	 * @return string the generated button
+	 * @return string the rendering result
 	 */
-	protected function createPageButton($label, $page, $class, $disabled, $active)
+	protected function renderPageButton($label, $page, $class, $disabled, $active)
 	{
+		$options = ['class' => $class === '' ? null : $class];
 		if ($active) {
-			$class .= ' ' . $this->activePageCssClass;
+			Html::addCssClass($options, $this->activePageCssClass);
 		}
 		if ($disabled) {
-			$class .= ' ' . $this->disabledPageCssClass;
+			Html::addCssClass($options, $this->disabledPageCssClass);
+			return Html::tag('li', Html::tag('span', $label), $options);
 		}
-		$class = trim($class);
-		$options = array('class' => $class === '' ? null : $class);
-		return Html::tag('li', Html::a($label, $this->pagination->createUrl($page)), $options);
+		return Html::tag('li', Html::a($label, $this->pagination->createUrl($page), ['data-page' => $page]), $options);
 	}
 
 	/**
@@ -196,6 +188,6 @@ class LinkPager extends Widget
 			$endPage = $pageCount - 1;
 			$beginPage = max(0, $endPage - $this->maxButtonCount + 1);
 		}
-		return array($beginPage, $endPage);
+		return [$beginPage, $endPage];
 	}
 }

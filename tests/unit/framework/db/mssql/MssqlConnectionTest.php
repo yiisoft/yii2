@@ -4,15 +4,15 @@ namespace yiiunit\framework\db\mssql;
 
 use yiiunit\framework\db\ConnectionTest;
 
+/**
+ * @group db
+ * @group mssql
+ */
 class MssqlConnectionTest extends ConnectionTest
 {
-    public function setUp()
-    {
-        $this->driverName = 'sqlsrv';
-        parent::setUp();
-    }
+	protected $driverName = 'sqlsrv';
 
-	function testQuoteValue()
+	public function testQuoteValue()
 	{
 		$connection = $this->getConnection(false);
 		$this->assertEquals(123, $connection->quoteValue(123));
@@ -20,7 +20,7 @@ class MssqlConnectionTest extends ConnectionTest
 		$this->assertEquals("'It''s interesting'", $connection->quoteValue("It's interesting"));
 	}
 
-	function testQuoteTableName()
+	public function testQuoteTableName()
 	{
 		$connection = $this->getConnection(false);
 		$this->assertEquals('[table]', $connection->quoteTableName('table'));
@@ -31,7 +31,7 @@ class MssqlConnectionTest extends ConnectionTest
 		$this->assertEquals('(table)', $connection->quoteTableName('(table)'));
 	}
 
-	function testQuoteColumnName()
+	public function testQuoteColumnName()
 	{
 		$connection = $this->getConnection(false);
 		$this->assertEquals('[column]', $connection->quoteColumnName('column'));

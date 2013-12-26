@@ -56,7 +56,7 @@ class NumberValidator extends Validator
 
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -74,10 +74,7 @@ class NumberValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{
@@ -91,67 +88,66 @@ class NumberValidator extends Validator
 			$this->addError($object, $attribute, $this->message);
 		}
 		if ($this->min !== null && $value < $this->min) {
-			$this->addError($object, $attribute, $this->tooSmall, array('{min}' => $this->min));
+			$this->addError($object, $attribute, $this->tooSmall, ['min' => $this->min]);
 		}
 		if ($this->max !== null && $value > $this->max) {
-			$this->addError($object, $attribute, $this->tooBig, array('{max}' => $this->max));
+			$this->addError($object, $attribute, $this->tooBig, ['max' => $this->max]);
 		}
 	}
 
 	/**
-	 * Validates the given value.
-	 * @param mixed $value the value to be validated.
-	 * @return boolean whether the value is valid.
+	 * @inheritdoc
 	 */
-	public function validateValue($value)
+	protected function validateValue($value)
 	{
-		return preg_match($this->integerOnly ? $this->integerPattern : $this->numberPattern, "$value")
-			&& ($this->min === null || $value >= $this->min)
-			&& ($this->max === null || $value <= $this->max);
+		if (is_array($value)) {
+			return [Yii::t('yii', '{attribute} is invalid.'), []];
+		}
+		$pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
+		if (!preg_match($pattern, "$value")) {
+			return [$this->message, []];
+		} elseif ($this->min !== null && $value < $this->min) {
+			return [$this->tooSmall, ['min' => $this->min]];
+		} elseif ($this->max !== null && $value > $this->max) {
+			return [$this->tooBig, ['max' => $this->max]];
+		} else {
+			return null;
+		}
 	}
 
 	/**
-	 * Returns the JavaScript needed for performing client-side validation.
-	 * @param \yii\base\Model $object the data object being validated
-	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
-	 * containing a model form with this validator applied.
-	 * @return string the client-side validation script.
+	 * @inheritdoc
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
 		$label = $object->getAttributeLabel($attribute);
-		$value = $object->$attribute;
 
-		$options = array(
+		$options = [
 			'pattern' => new JsExpression($this->integerOnly ? $this->integerPattern : $this->numberPattern),
-			'message' => Html::encode(strtr($this->message, array(
+			'message' => strtr($this->message, [
 				'{attribute}' => $label,
-				'{value}' => $value,
-			))),
-		);
+			]),
+		];
 
 		if ($this->min !== null) {
 			$options['min'] = $this->min;
-			$options['tooSmall'] = Html::encode(strtr($this->tooSmall, array(
+			$options['tooSmall'] = strtr($this->tooSmall, [
 				'{attribute}' => $label,
-				'{value}' => $value,
 				'{min}' => $this->min,
-			)));
+			]);
 		}
 		if ($this->max !== null) {
 			$options['max'] = $this->max;
-			$options['tooBig'] = Html::encode(strtr($this->tooBig, array(
+			$options['tooBig'] = strtr($this->tooBig, [
 				'{attribute}' => $label,
-				'{value}' => $value,
 				'{max}' => $this->max,
-			)));
+			]);
 		}
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
 		}
 
-		$view->registerAssetBundle('yii/validation');
+		ValidationAsset::register($view);
 		return 'yii.validation.number(value, messages, ' . Json::encode($options) . ');';
 	}
 }

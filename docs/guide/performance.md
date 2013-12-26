@@ -1,7 +1,7 @@
 Performance Tuning
 ==================
 
-Application performance consists of two parts. First is the framework performance
+The performance of your web application is based upon two parts. First is the framework performance
 and the second is the application itself. Yii has a pretty low performance impact
 on your application out of the box and can be fine-tuned further for production
 environment. As for the application, we'll provide some of the best practices
@@ -28,9 +28,10 @@ logger may record additional debug information for every message being logged.
 ### Enabling PHP opcode cache
 
 Enabling the PHP opcode cache improves any PHP application performance and lowers
-memory usage significantly. Yii is no exception. It was tested with
-[APC PHP extension](http://php.net/manual/en/book.apc.php) that caches
-and optimizes PHP intermediate code and avoids the time spent in parsing PHP
+memory usage significantly. Yii is no exception. It was tested with both
+[PHP 5.5 OPcache](http://php.net/manual/en/book.opcache.php) and
+[APC PHP extension](http://php.net/manual/en/book.apc.php). Both cache
+and optimize PHP intermediate code and avoid the time spent in parsing PHP
 scripts for every incoming request.
 
 ### Turning on ActiveRecord database schema caching
@@ -41,11 +42,11 @@ to save the time of parsing database schema. This can be done by setting the
 `protected/config/main.php`:
 
 ```php
-return array(
+return [
 	// ...
-	'components' => array(
+	'components' => [
 		// ...
-		'db' => array(
+		'db' => [
 			'class' => 'yii\db\Connection',
 			'dsn' => 'mysql:host=localhost;dbname=mydatabase',
 			'username' => 'root',
@@ -57,19 +58,22 @@ return array(
 
 			// Name of the cache component used. Default is 'cache'.
 			//'schemaCache' => 'cache',
-		),
-		'cache' => array(
+		],
+		'cache' => [
 			'class' => 'yii\caching\FileCache',
-		),
-	),
-);
+		],
+	],
+];
 ```
 
 Note that `cache` application component should be configured.
 
 ### Combining and Minimizing Assets
 
-TBD
+It is possible to combine and minimize assets, typically JavaScript and CSS, in order to slightly improve page load
+time and therefore deliver better experience for end user of your application.
+
+In order to learn how it can be achieved, refer to [assets](assets.md) guide section.
 
 ### Using better storage for sessions
 
@@ -79,10 +83,10 @@ switch to another storage such as database. You can do so by configuring your
 application via `protected/config/main.php`:
 
 ```php
-return array(
+return [
 	// ...
-	'components' => array(
-		'session' => array(
+	'components' => [
+		'session' => [
 			'class' => 'yii\web\DbSession',
 
 			// Set the following if want to use DB component other than
@@ -91,14 +95,16 @@ return array(
 
 			// To override default session table set the following
 			// 'sessionTable' => 'my_session',
-		),
-	),
-);
+		],
+	],
+];
 ```
 
 You can use `CacheSession` to store sessions using cache. Note that some
-cache storages such as memcached has no guaranteee that session data will not
+cache storage such as memcached has no guarantee that session data will not
 be lost leading to unexpected logouts.
+
+If you have [Redis](http://redis.io/) on your server, it's highly recommended as session storage.
 
 Improving application
 ---------------------
@@ -114,9 +120,40 @@ If a whole page remains relative static, we can use the page caching approach to
 save the rendering cost for the whole page.
 
 
-### Leveraging HTTP to save procesing time and bandwidth
+### Leveraging HTTP to save processing time and bandwidth
 
-TBD
+Leveraging HTTP caching saves both processing time, bandwidth and resources significantly. It can be implemented by
+sending either `ETag` or `Last-Modified` header in your application response. If browser is implemented according to
+HTTP specification (most browsers are), content will be fetched only if it is different from what it was prevously.
+
+Forming proper headers is time consuming task so Yii provides a shortcut in form of controller filter
+[[\yii\web\HttpCache]]. Using it is very easy. In a controller you need to implement `behaviors` method like
+the following:
+
+```php
+public function behaviors()
+{
+	return [
+		'httpCache' => [
+			'class' => \yii\web\HttpCache::className(),
+			'only' => ['list'],
+			'lastModified' => function ($action, $params) {
+				$q = new Query();
+				return strtotime($q->from('users')->max('updated_timestamp'));
+			},
+			// 'etagSeed' => function ($action, $params) {
+				// return // generate etag seed here
+			//}
+		],
+	];
+}
+```
+
+In the code above one can use either `etagSeed` or `lastModified`. Implementing both isn't necessary. The goal is to
+determine if content was modified in a way that is cheaper than fetching and rendering that content. `lastModified`
+should return unix timestamp of the last content modification while `etagSeed` should return a string that is then
+used to generate `ETag` header value.
+
 
 ### Database Optimization
 
@@ -132,13 +169,13 @@ but it may slow down INSERT, UPDATE or DELETE queries.
 For complex queries, it is recommended to create a database view for it instead
 of issuing the queries inside the PHP code and asking DBMS to parse them repetitively.
 
-Do not overuse Active Record. Although Active Record is good at modelling data
+Do not overuse Active Record. Although Active Record is good at modeling data
 in an OOP fashion, it actually degrades performance due to the fact that it needs
 to create one or several objects to represent each row of query result. For data
 intensive applications, using DAO or database APIs at lower level could be
 a better choice.
 
-Last but not least, use LIMIT in your SELECT queries. This avoids fetching
+Last but not least, use `LIMIT` in your `SELECT` queries. This avoids fetching
 overwhelming data from database and exhausting the memory allocated to PHP.
 
 ### Using asArray
@@ -152,14 +189,12 @@ class PostController extends Controller
 	public function actionIndex()
 	{
 		$posts = Post::find()->orderBy('id DESC')->limit(100)->asArray()->all();
-		echo $this->render('index', array(
-			'posts' => $posts,
-		));
+		return $this->render('index', ['posts' => $posts]);
 	}
 }
 ```
 
-In the view you should access fields of each invidual record from `$posts` as array:
+In the view you should access fields of each individual record from `$posts` as array:
 
 ```php
 foreach ($posts as $post) {

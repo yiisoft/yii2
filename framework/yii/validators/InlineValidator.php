@@ -26,8 +26,11 @@ class InlineValidator extends Validator
 {
 	/**
 	 * @var string|\Closure an anonymous function or the name of a model class method that will be
-	 * called to perform the actual validation. Note that if you use anonymous function, you cannot
-	 * use `$this` in it unless you are using PHP 5.4 or above.
+	 * called to perform the actual validation. The signature of the method should be like the following:
+	 *
+	 * ~~~
+	 * function foo($attribute, $params)
+	 * ~~~
 	 */
 	public $method;
 	/**
@@ -39,7 +42,7 @@ class InlineValidator extends Validator
 	 * The signature of the method should be like the following:
 	 *
 	 * ~~~
-	 * function foo($attribute)
+	 * function foo($attribute, $params)
 	 * {
 	 *     return "javascript";
 	 * }
@@ -52,48 +55,28 @@ class InlineValidator extends Validator
 	public $clientValidate;
 
 	/**
-	 * Validates the attribute of the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{
 		$method = $this->method;
 		if (is_string($method)) {
-			$method = array($object, $method);
+			$method = [$object, $method];
 		}
 		call_user_func($method, $attribute, $this->params);
 	}
 
 	/**
-	 * Returns the JavaScript needed for performing client-side validation.
-	 *
-	 * You may override this method to return the JavaScript validation code if
-	 * the validator can support client-side validation.
-	 *
-	 * The following JavaScript variables are predefined and can be used in the validation code:
-	 *
-	 * - `attribute`: the name of the attribute being validated.
-	 * - `value`: the value being validated.
-	 * - `messages`: an array used to hold the validation error messages for the attribute.
-	 *
-	 * @param \yii\base\Model $object the data object being validated
-	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
-	 * containing a model form with this validator applied.
-	 * @return string the client-side validation script. Null if the validator does not support
-	 * client-side validation.
-	 * @see enableClientValidation
-	 * @see \yii\web\ActiveForm::enableClientValidation
+	 * @inheritdoc
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
 		if ($this->clientValidate !== null) {
 			$method = $this->clientValidate;
 			if (is_string($method)) {
-				$method = array($object, $method);
+				$method = [$object, $method];
 			}
-			return call_user_func($method, $attribute);
+			return call_user_func($method, $attribute, $this->params);
 		} else {
 			return null;
 		}

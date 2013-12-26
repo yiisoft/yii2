@@ -8,6 +8,7 @@
 namespace yii\behaviors;
 
 use yii\base\Behavior;
+use yii\base\Event;
 use yii\db\Expression;
 use yii\db\ActiveRecord;
 
@@ -20,11 +21,9 @@ use yii\db\ActiveRecord;
  * ~~~
  * public function behaviors()
  * {
- *     return array(
- *         'timestamp' => array(
- *             'class' => 'yii\behaviors\AutoTimestamp',
- *         ),
- *     );
+ *     return [
+ *         'timestamp' => ['class' => 'yii\behaviors\AutoTimestamp'],
+ *     ];
  * }
  * ~~~
  *
@@ -40,15 +39,15 @@ class AutoTimestamp extends Behavior
 	/**
 	 * @var array list of attributes that are to be automatically filled with timestamps.
 	 * The array keys are the ActiveRecord events upon which the attributes are to be filled with timestamps,
-	 * and the array values are the corresponding attribute to be updated. You can use a string to represent
+	 * and the array values are the corresponding attribute(s) to be updated. You can use a string to represent
 	 * a single attribute, or an array to represent a list of attributes.
 	 * The default setting is to update the `create_time` attribute upon AR insertion,
 	 * and update the `update_time` attribute upon AR updating.
 	 */
-	public $attributes = array(
+	public $attributes = [
 		ActiveRecord::EVENT_BEFORE_INSERT => 'create_time',
 		ActiveRecord::EVENT_BEFORE_UPDATE => 'update_time',
-	);
+	];
 	/**
 	 * @var \Closure|Expression The expression that will be used for generating the timestamp.
 	 * This can be either an anonymous function that returns the timestamp value,
@@ -64,28 +63,25 @@ class AutoTimestamp extends Behavior
 	 */
 	public function events()
 	{
-		$events = array();
-		$behavior = $this;
-		foreach ($this->attributes as $event => $attributes) {
-			if (!is_array($attributes)) {
-				$attributes = array($attributes);
-			}
-			$events[$event] = function () use ($behavior, $attributes) {
-				$behavior->updateTimestamp($attributes);
-			};
+		$events = $this->attributes;
+		foreach ($events as $i => $event) {
+			$events[$i] = 'updateTimestamp';
 		}
 		return $events;
 	}
 
 	/**
 	 * Updates the attributes with the current timestamp.
-	 * @param array $attributes list of attributes to be updated.
+	 * @param Event $event
 	 */
-	public function updateTimestamp($attributes)
+	public function updateTimestamp($event)
 	{
-		$timestamp = $this->evaluateTimestamp();
-		foreach ($attributes as $attribute) {
-			$this->owner->$attribute = $timestamp;
+		$attributes = isset($this->attributes[$event->name]) ? (array)$this->attributes[$event->name] : [];
+		if (!empty($attributes)) {
+			$timestamp = $this->evaluateTimestamp();
+			foreach ($attributes as $attribute) {
+				$this->owner->$attribute = $timestamp;
+			}
 		}
 	}
 

@@ -1,7 +1,7 @@
 <?php
-/* @var $this YiiRequirementChecker */
-/* @var $summary array */
-/* @var $requirements array[] */
+/* @var YiiRequirementChecker $this */
+/* @var array $summary */
+/* @var array[] $requirements */
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,18 +52,18 @@
 		<table class="table table-bordered">
 			<tr><th>Name</th><th>Result</th><th>Required By</th><th>Memo</th></tr>
 			<?php foreach($requirements as $requirement): ?>
-			<tr class="<?php echo $requirement['condition'] ? 'success' : ($requirement['mandatory'] ? 'error' : 'warning'); ?>">
+			<tr class="<?php echo $requirement['condition'] ? 'success' : ($requirement['mandatory'] ? 'error' : 'warning') ?>">
 				<td>
-				<?php echo $requirement['name']; ?>
+				<?php echo $requirement['name'] ?>
 				</td>
 				<td>
-				<span class="result"><?php echo $requirement['condition'] ? 'Passed' : ($requirement['mandatory'] ? 'Failed' : 'Warning'); ?></span>
+				<span class="result"><?php echo $requirement['condition'] ? 'Passed' : ($requirement['mandatory'] ? 'Failed' : 'Warning') ?></span>
 				</td>
 				<td>
-				<?php echo $requirement['by']; ?>
+				<?php echo $requirement['by'] ?>
 				</td>
 				<td>
-				<?php echo $requirement['memo']; ?>
+				<?php echo $requirement['memo'] ?>
 				</td>
 			</tr>
 			<?php endforeach; ?>
@@ -74,7 +74,7 @@
 	<hr>
 
 	<div class="footer">
-		<p>Server: <?php echo $this->getServerInfo() . ' ' . $this->getNowDate(); ?></p>
+		<p>Server: <?php echo $this->getServerInfo() . ' ' . $this->getNowDate() ?></p>
 		<p>Powered by <a href="http://www.yiiframework.com/" rel="external">Yii Framework</a></p>
 	</div>
 </div>

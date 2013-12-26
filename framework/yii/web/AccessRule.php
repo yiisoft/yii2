@@ -11,6 +11,7 @@ use yii\base\Component;
 use yii\base\Action;
 
 /**
+ * This class represents an access rule defined by the [[AccessControl]] action filter
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -39,7 +40,7 @@ class AccessRule extends Component
 	 * - `@`: matches an authenticated user
 	 *
 	 * Using additional role names requires RBAC (Role-Based Access Control), and
-	 * [[User::hasAccess()]] will be called.
+	 * [[User::checkAccess()]] will be called.
 	 *
 	 * If this property is not set or empty, it means this rule applies to all roles.
 	 */

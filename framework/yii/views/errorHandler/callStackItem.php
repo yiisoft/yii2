@@ -1,6 +1,5 @@
 <?php
 /**
- * @var \yii\base\View $this
  * @var string|null $file
  * @var integer|null $line
  * @var string|null $class
@@ -9,20 +8,19 @@
  * @var string[] $lines
  * @var integer $begin
  * @var integer $end
- * @var \yii\base\ErrorHandler $context
+ * @var \yii\base\ErrorHandler $handler
  */
-$context = $this->context;
 ?>
-<li class="<?php if (!$context->isCoreFile($file) || $index === 1) echo 'application'; ?> call-stack-item"
-	data-line="<?php echo (int)($line - $begin); ?>">
+<li class="<?php if (!$handler->isCoreFile($file) || $index === 1) echo 'application'; ?> call-stack-item"
+	data-line="<?= (int)($line - $begin) ?>">
 	<div class="element-wrap">
 		<div class="element">
-			<span class="item-number"><?php echo (int)$index; ?>.</span>
-			<span class="text"><?php if ($file !== null) echo 'in ' . $context->htmlEncode($file); ?></span>
+			<span class="item-number"><?= (int)$index ?>.</span>
+			<span class="text"><?php if ($file !== null) echo 'in ' . $handler->htmlEncode($file); ?></span>
 			<?php if ($method !== null): ?>
 				<span class="call">
 					<?php if ($file !== null) echo '&ndash;' ?>
-					<?php if ($class !== null) echo $context->addTypeLinks($class) . '→'; ?><?php echo $context->addTypeLinks($method . '()'); ?>
+					<?php if ($class !== null) echo $handler->addTypeLinks($class) . '::'; ?><?= $handler->addTypeLinks($method . '()') ?>
 				</span>
 			<?php endif; ?>
 			<span class="at"><?php if ($line !== null) echo 'at line'; ?></span>
@@ -34,11 +32,11 @@ $context = $this->context;
 			<div class="error-line"></div>
 			<?php for ($i = $begin; $i <= $end; ++$i): ?><div class="hover-line"></div><?php endfor; ?>
 			<div class="code">
-				<?php for ($i = $begin; $i <= $end; ++$i): ?><span class="lines-item"><?php echo (int)($i + 1); ?></span><?php endfor; ?>
+				<?php for ($i = $begin; $i <= $end; ++$i): ?><span class="lines-item"><?= (int)($i + 1) ?></span><?php endfor; ?>
 				<pre><?php
 					// fill empty lines with a whitespace to avoid rendering problems in opera
 					for ($i = $begin; $i <= $end; ++$i) {
-						echo (trim($lines[$i]) == '') ? " \n" : $context->htmlEncode($lines[$i]);
+						echo (trim($lines[$i]) == '') ? " \n" : $handler->htmlEncode($lines[$i]);
 					}
 				?></pre>
 			</div>

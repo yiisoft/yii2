@@ -121,11 +121,11 @@ class DbMessageSource extends MessageSource
 	protected function loadMessages($category, $language)
 	{
 		if ($this->enableCaching) {
-			$key = array(
+			$key = [
 				__CLASS__,
 				$category,
 				$language,
-			);
+			];
 			$messages = $this->cache->get($key);
 			if ($messages === false) {
 				$messages = $this->loadMessagesFromDb($category, $language);
@@ -147,10 +147,10 @@ class DbMessageSource extends MessageSource
 	protected function loadMessagesFromDb($category, $language)
 	{
 		$query = new Query();
-		$messages = $query->select(array('t1.message message', 't2.translation translation'))
-			->from(array($this->sourceMessageTable . ' t1', $this->messageTable . ' t2'))
+		$messages = $query->select(['t1.message message', 't2.translation translation'])
+			->from([$this->sourceMessageTable . ' t1', $this->messageTable . ' t2'])
 			->where('t1.id = t2.id AND t1.category = :category AND t2.language = :language')
-			->params(array(':category' => $category, ':language' => $language))
+			->params([':category' => $category, ':language' => $language])
 			->createCommand($this->db)
 			->queryAll();
 		return ArrayHelper::map($messages, 'message', 'translation');

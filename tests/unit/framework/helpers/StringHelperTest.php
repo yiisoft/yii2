@@ -1,23 +1,25 @@
 <?php
 namespace yiiunit\framework\helpers;
-use \yii\helpers\StringHelper as StringHelper;
-use yii\test\TestCase;
+
+use yii\helpers\StringHelper;
+use yiiunit\TestCase;
 
 /**
  * StringHelperTest
+ * @group helpers
  */
 class StringHelperTest extends TestCase
 {
 	public function testStrlen()
 	{
-		$this->assertEquals(4, StringHelper::strlen('this'));
-		$this->assertEquals(6, StringHelper::strlen('это'));
+		$this->assertEquals(4, StringHelper::byteLength('this'));
+		$this->assertEquals(6, StringHelper::byteLength('это'));
 	}
 
 	public function testSubstr()
 	{
-		$this->assertEquals('th', StringHelper::substr('this', 0, 2));
-		$this->assertEquals('э', StringHelper::substr('это', 0, 2));
+		$this->assertEquals('th', StringHelper::byteSubstr('this', 0, 2));
+		$this->assertEquals('э', StringHelper::byteSubstr('это', 0, 2));
 	}
 
 	public function testBasename()

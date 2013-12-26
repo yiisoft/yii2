@@ -16,6 +16,9 @@ use yii\helpers\Json;
 /**
  * UrlValidator validates that the attribute value is a valid http or https URL.
  *
+ * Note that this validator only checks if the URL scheme and host part are correct.
+ * It does not check the rest part of a URL.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -31,7 +34,7 @@ class UrlValidator extends Validator
 	 * @var array list of URI schemes which should be considered valid. By default, http and https
 	 * are considered to be valid schemes.
 	 **/
-	public $validSchemes = array('http', 'https');
+	public $validSchemes = ['http', 'https'];
 	/**
 	 * @var string the default URI scheme. If the input doesn't contain the scheme part, the default
 	 * scheme will be prepended to it (thus changing the input). Defaults to null, meaning a URL must
@@ -48,7 +51,7 @@ class UrlValidator extends Validator
 
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -62,29 +65,23 @@ class UrlValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{
 		$value = $object->$attribute;
-		if ($this->validateValue($value)) {
-			if ($this->defaultScheme !== null && strpos($value, '://') === false) {
-				$object->$attribute = $this->defaultScheme . '://' . $value;
-			}
-		} else {
-			$this->addError($object, $attribute, $this->message);
+		$result = $this->validateValue($value);
+		if (!empty($result)) {
+			$this->addError($object, $attribute, $result[0], $result[1]);
+		} elseif ($this->defaultScheme !== null && strpos($value, '://') === false) {
+			$object->$attribute = $this->defaultScheme . '://' . $value;
 		}
 	}
 
 	/**
-	 * Validates the given value.
-	 * @param mixed $value the value to be validated.
-	 * @return boolean whether the value is valid.
+	 * @inheritdoc
 	 */
-	public function validateValue($value)
+	protected function validateValue($value)
 	{
 		// make sure the length is limited to avoid DOS attacks
 		if (is_string($value) && strlen($value) < 2000) {
@@ -105,20 +102,14 @@ class UrlValidator extends Validator
 			}
 
 			if (preg_match($pattern, $value)) {
-				return true;
+				return null;
 			}
 		}
-		return false;
+		return [$this->message, []];
 	}
 
 	/**
-	 * Returns the JavaScript needed for performing client-side validation.
-	 * @param \yii\base\Model $object the data object being validated
-	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
-	 * containing a model form with this validator applied.
-	 * @return string the client-side validation script.
-	 * @see \yii\Web\ActiveForm::enableClientValidation
+	 * @inheritdoc
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
@@ -128,14 +119,13 @@ class UrlValidator extends Validator
 			$pattern = $this->pattern;
 		}
 
-		$options = array(
+		$options = [
 			'pattern' => new JsExpression($pattern),
-			'message' => Html::encode(strtr($this->message, array(
+			'message' => strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
-				'{value}' => $object->$attribute,
-			))),
+			]),
 			'enableIDN' => (boolean)$this->enableIDN,
-		);
+		];
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
 		}
@@ -143,9 +133,9 @@ class UrlValidator extends Validator
 			$options['defaultScheme'] = $this->defaultScheme;
 		}
 
-		$view->registerAssetBundle('yii/validation');
+		ValidationAsset::register($view);
 		if ($this->enableIDN) {
-			$view->registerAssetBundle('yii/punycode');
+			PunycodeAsset::register($view);
 		}
 		return 'yii.validation.url(value, messages, ' . Json::encode($options) . ');';
 	}

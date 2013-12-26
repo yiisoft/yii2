@@ -3,60 +3,92 @@
 namespace app\controllers;
 
 use Yii;
+use yii\web\AccessControl;
 use yii\web\Controller;
+use yii\web\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 
 class SiteController extends Controller
 {
+	public function behaviors()
+	{
+		return [
+			'access' => [
+				'class' => AccessControl::className(),
+				'only' => ['logout'],
+				'rules' => [
+					[
+						'actions' => ['logout'],
+						'allow' => true,
+						'roles' => ['@'],
+					],
+				],
+			],
+			'verbs' => [
+				'class' => VerbFilter::className(),
+				'actions' => [
+					'logout' => ['post'],
+				],
+			],
+		];
+	}
+
 	public function actions()
 	{
-		return array(
-			'captcha' => array(
-				'class' => 'yii\web\CaptchaAction',
-			),
-		);
+		return [
+			'error' => [
+				'class' => 'yii\web\ErrorAction',
+			],
+			'captcha' => [
+				'class' => 'yii\captcha\CaptchaAction',
+				'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+			],
+		];
 	}
 
 	public function actionIndex()
 	{
-		Yii::$app->end(0, false);
-		echo $this->render('index');
+		return $this->render('index');
 	}
 
 	public function actionLogin()
 	{
+		if (!\Yii::$app->user->isGuest) {
+			$this->goHome();
+		}
+
 		$model = new LoginForm();
-		if ($this->populate($_POST, $model) && $model->login()) {
-			Yii::$app->response->redirect(array('site/index'));
+		if ($model->load($_POST) && $model->login()) {
+			return $this->goBack();
 		} else {
-			echo $this->render('login', array(
+			return $this->render('login', [
 				'model' => $model,
-			));
+			]);
 		}
 	}
 
 	public function actionLogout()
 	{
-		Yii::$app->getUser()->logout();
-		Yii::$app->getResponse()->redirect(array('site/index'));
+		Yii::$app->user->logout();
+		return $this->goHome();
 	}
 
 	public function actionContact()
 	{
 		$model = new ContactForm;
-		if ($this->populate($_POST, $model) && $model->contact(Yii::$app->params['adminEmail'])) {
+		if ($model->load($_POST) && $model->contact(Yii::$app->params['adminEmail'])) {
 			Yii::$app->session->setFlash('contactFormSubmitted');
-			Yii::$app->response->refresh();
+			return $this->refresh();
 		} else {
-			echo $this->render('contact', array(
+			return $this->render('contact', [
 				'model' => $model,
-			));
+			]);
 		}
 	}
 
 	public function actionAbout()
 	{
-		echo $this->render('about');
+		return $this->render('about');
 	}
 }

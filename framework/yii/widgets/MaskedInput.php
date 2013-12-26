@@ -18,17 +18,17 @@ use yii\web\JsExpression;
  * MaskedInput is similar to [[Html::textInput()]] except that
  * an input mask will be used to force users to enter properly formatted data,
  * such as phone numbers, social security numbers.
- * 
+ *
  * To use MaskedInput, you must set the [[mask]] property. The following example
  * shows how to use MaskedInput to collect phone numbers:
- * 
+ *
  * ~~~
- * echo MaskedInput::widget(array(
+ * echo MaskedInput::widget([
  *     'name' => 'phone',
  *     'mask' => '999-999-9999',
- * ));
+ * ]);
  * ~~~
- * 
+ *
  * The masked text field is implemented based on the [jQuery masked input plugin](http://digitalbush.com/projects/masked-input-plugin).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -49,7 +49,7 @@ class MaskedInput extends InputWidget
 	public $mask;
 	/**
 	 * @var array the mapping between mask characters and the corresponding patterns.
-	 * For example, `array('~' => '[+-]')` specifies that the '~' character expects '+' or '-' input.
+	 * For example, `['~' => '[+-]']` specifies that the '~' character expects '+' or '-' input.
 	 * Defaults to null, meaning using the map as described in [[mask]].
 	 */
 	public $charMap;
@@ -61,10 +61,6 @@ class MaskedInput extends InputWidget
 	 * @var string a JavaScript function callback that will be invoked when user finishes the input.
 	 */
 	public $completed;
-	/**
-	 * @var array the HTML attributes for the input tag.
-	 */
-	public $options = array();
 
 
 	/**
@@ -76,10 +72,6 @@ class MaskedInput extends InputWidget
 		parent::init();
 		if (empty($this->mask)) {
 			throw new InvalidConfigException('The "mask" property must be set.');
-		}
-
-		if (!isset($this->options['id'])) {
-			$this->options['id'] = $this->hasModel() ? Html::getInputId($this->model, $this->attribute) : $this->getId();
 		}
 	}
 
@@ -109,8 +101,9 @@ class MaskedInput extends InputWidget
 		}
 		$id = $this->options['id'];
 		$js .= "jQuery(\"#{$id}\").mask(\"{$this->mask}\"{$options});";
-		$this->getView()->registerAssetBundle('yii/maskedinput');
-		$this->getView()->registerJs($js);
+		$view = $this->getView();
+		MaskedInputAsset::register($view);
+		$view->registerJs($js);
 	}
 
 	/**
@@ -118,7 +111,7 @@ class MaskedInput extends InputWidget
 	 */
 	protected function getClientOptions()
 	{
-		$options = array();
+		$options = [];
 		if ($this->placeholder !== null) {
 			$options['placeholder'] = $this->placeholder;
 		}

@@ -8,14 +8,16 @@
 namespace yii\base;
 
 use Yii;
-use yii\helpers\Json;
 
 /**
+ * Object is the base class that implements the *property* feature.
+ *
  * @include @yii/base/Object.md
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Object implements Jsonable
+class Object implements Arrayable
 {
 	/**
 	 * @return string the fully qualified name of this class.
@@ -39,7 +41,7 @@ class Object implements Jsonable
 	 *
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($config = array())
+	public function __construct($config = [])
 	{
 		if (!empty($config)) {
 			Yii::configure($this, $config);
@@ -62,16 +64,18 @@ class Object implements Jsonable
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when executing `$value = $object->property;`.
 	 * @param string $name the property name
-	 * @return mixed the property value, event handlers attached to the event,
-	 * the named behavior, or the value of a behavior's property
+	 * @return mixed the property value
 	 * @throws UnknownPropertyException if the property is not defined
-	 * @see __set
+	 * @throws InvalidCallException if the property is write-only
+	 * @see __set()
 	 */
 	public function __get($name)
 	{
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) {
 			return $this->$getter();
+		} elseif (method_exists($this, 'set' . $name)) {
+			throw new InvalidCallException('Getting write-only property: ' . get_class($this) . '::' . $name);
 		} else {
 			throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
 		}
@@ -85,8 +89,8 @@ class Object implements Jsonable
 	 * @param string $name the property name or the event name
 	 * @param mixed $value the property value
 	 * @throws UnknownPropertyException if the property is not defined
-	 * @throws InvalidCallException if the property is read-only.
-	 * @see __get
+	 * @throws InvalidCallException if the property is read-only
+	 * @see __get()
 	 */
 	public function __set($name, $value)
 	{
@@ -143,8 +147,6 @@ class Object implements Jsonable
 
 	/**
 	 * Calls the named method which is not a class method.
-	 * If the name refers to a component property whose value is
-	 * an anonymous function, the method will execute the function.
 	 *
 	 * Do not call this method directly as it is a PHP magic method that
 	 * will be implicitly called when an unknown method is being invoked.
@@ -155,13 +157,6 @@ class Object implements Jsonable
 	 */
 	public function __call($name, $params)
 	{
-		$getter = 'get' . $name;
-		if (method_exists($this, $getter)) {
-			$func = $this->$getter();
-			if ($func instanceof \Closure) {
-				return call_user_func_array($func, $params);
-			}
-		}
 		throw new UnknownMethodException('Unknown method: ' . get_class($this) . "::$name()");
 	}
 
@@ -171,17 +166,17 @@ class Object implements Jsonable
 	 *
 	 * - the class has a getter or setter method associated with the specified name
 	 *   (in this case, property name is case-insensitive);
-	 * - the class has a member variable with the specified name (when `$checkVar` is true);
+	 * - the class has a member variable with the specified name (when `$checkVars` is true);
 	 *
 	 * @param string $name the property name
-	 * @param boolean $checkVar whether to treat member variables as properties
+	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @return boolean whether the property is defined
-	 * @see canGetProperty
-	 * @see canSetProperty
+	 * @see canGetProperty()
+	 * @see canSetProperty()
 	 */
-	public function hasProperty($name, $checkVar = true)
+	public function hasProperty($name, $checkVars = true)
 	{
-		return $this->canGetProperty($name, $checkVar) || $this->canSetProperty($name, false);
+		return $this->canGetProperty($name, $checkVars) || $this->canSetProperty($name, false);
 	}
 
 	/**
@@ -190,16 +185,16 @@ class Object implements Jsonable
 	 *
 	 * - the class has a getter method associated with the specified name
 	 *   (in this case, property name is case-insensitive);
-	 * - the class has a member variable with the specified name (when `$checkVar` is true);
+	 * - the class has a member variable with the specified name (when `$checkVars` is true);
 	 *
 	 * @param string $name the property name
-	 * @param boolean $checkVar whether to treat member variables as properties
+	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @return boolean whether the property can be read
-	 * @see canSetProperty
+	 * @see canSetProperty()
 	 */
-	public function canGetProperty($name, $checkVar = true)
+	public function canGetProperty($name, $checkVars = true)
 	{
-		return method_exists($this, 'get' . $name) || $checkVar && property_exists($this, $name);
+		return method_exists($this, 'get' . $name) || $checkVars && property_exists($this, $name);
 	}
 
 	/**
@@ -208,25 +203,38 @@ class Object implements Jsonable
 	 *
 	 * - the class has a setter method associated with the specified name
 	 *   (in this case, property name is case-insensitive);
-	 * - the class has a member variable with the specified name (when `$checkVar` is true);
+	 * - the class has a member variable with the specified name (when `$checkVars` is true);
 	 *
 	 * @param string $name the property name
-	 * @param boolean $checkVar whether to treat member variables as properties
+	 * @param boolean $checkVars whether to treat member variables as properties
 	 * @return boolean whether the property can be written
-	 * @see canGetProperty
+	 * @see canGetProperty()
 	 */
-	public function canSetProperty($name, $checkVar = true)
+	public function canSetProperty($name, $checkVars = true)
 	{
-		return method_exists($this, 'set' . $name) || $checkVar && property_exists($this, $name);
+		return method_exists($this, 'set' . $name) || $checkVars && property_exists($this, $name);
 	}
 
 	/**
-	 * Returns the JSON representation of this object.
-	 * The default implementation will return all public member variables.
-	 * @return string the JSON representation of this object.
+	 * Returns a value indicating whether a method is defined.
+	 *
+	 * The default implementation is a call to php function `method_exists()`.
+	 * You may override this method when you implemented the php magic method `__call()`.
+	 * @param string $name the property name
+	 * @return boolean whether the property is defined
 	 */
-	public function toJson()
+	public function hasMethod($name)
 	{
-		return Json::encode(Yii::getObjectVars($this));
+		return method_exists($this, $name);
+	}
+
+	/**
+	 * Converts the object into an array.
+	 * The default implementation will return all public property values as an array.
+	 * @return array the array representation of the object
+	 */
+	public function toArray()
+	{
+		return Yii::getObjectVars($this);
 	}
 }

@@ -7,7 +7,6 @@
 
 namespace yii\db\mssql;
 
-use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
 /**
@@ -26,7 +25,7 @@ class Schema extends \yii\db\Schema
 	/**
 	 * @var array mapping from physical column types (keys) to abstract column types (values)
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		// exact numerics
 		'bigint' => self::TYPE_BIGINT,
 		'numeric' => self::TYPE_DECIMAL,
@@ -73,7 +72,7 @@ class Schema extends \yii\db\Schema
 		'sql_variant' => self::TYPE_STRING,
 		'xml' => self::TYPE_STRING,
 		'table' => self::TYPE_STRING,
-	);
+	];
 
 	/**
 	 * Quotes a table name for use in a query.
@@ -119,6 +118,8 @@ class Schema extends \yii\db\Schema
 		if ($this->findColumns($table)) {
 			$this->findForeignKeys($table);
 			return $table;
+		} else {
+			return null;
 		}
 	}
 
@@ -129,7 +130,7 @@ class Schema extends \yii\db\Schema
 	 */
 	protected function resolveTableNames($table, $name)
 	{
-		$parts = explode('.', str_replace(array('[', ']'), '', $name));
+		$parts = explode('.', str_replace(['[', ']'], '', $name));
 		$partCount = count($parts);
 		if ($partCount == 3) {
 			// catalog name, schema name and table name passed
@@ -159,7 +160,7 @@ class Schema extends \yii\db\Schema
 		$column->name = $info['column_name'];
 		$column->allowNull = $info['is_nullable'] == 'YES';
 		$column->dbType = $info['data_type'];
-		$column->enumValues = array(); // mssql has only vague equivalents to enum
+		$column->enumValues = []; // mssql has only vague equivalents to enum
 		$column->isPrimaryKey = null; // primary key will be determined in findColumns() method
 		$column->autoIncrement = $info['is_identity'] == 1;
 		$column->unsigned = stripos($column->dbType, 'unsigned') !== false;
@@ -284,7 +285,7 @@ WHERE
 SQL;
 
 		$table->primaryKey = $this->db
-			->createCommand($sql, array(':tableName' => $table->name, ':schemaName' => $table->schemaName))
+			->createCommand($sql, [':tableName' => $table->name, ':schemaName' => $table->schemaName])
 			->queryColumn();
 	}
 
@@ -323,19 +324,17 @@ JOIN {$keyColumnUsageTableName} AS [kcu2] ON
 WHERE [kcu1].[table_name] = :tableName
 SQL;
 
-		$rows = $this->db->createCommand($sql, array(':tableName' => $table->name))->queryAll();
-		$table->foreignKeys = array();
+		$rows = $this->db->createCommand($sql, [':tableName' => $table->name])->queryAll();
+		$table->foreignKeys = [];
 		foreach ($rows as $row) {
-			$table->foreignKeys[] = array($row['uq_table_name'], $row['fk_column_name'] => $row['uq_column_name']);
+			$table->foreignKeys[] = [$row['uq_table_name'], $row['fk_column_name'] => $row['uq_column_name']];
 		}
 	}
 
 	/**
 	 * Returns all table names in the database.
-	 * This method should be overridden by child classes in order to support this feature
-	 * because the default implementation simply throws an exception.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-	 * @return array all table names in the database. The names have NO the schema name prefix.
+	 * @return array all table names in the database. The names have NO schema name prefix.
 	 */
 	protected function findTableNames($schema = '')
 	{
@@ -349,12 +348,6 @@ FROM [information_schema].[tables] AS [t]
 WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'BASE TABLE'
 SQL;
 
-		$names = $this->db->createCommand($sql, array(':schema' => $schema))->queryColumn();
-		if ($schema !== static::DEFAULT_SCHEMA) {
-			foreach ($names as $index => $name) {
-				$names[$index] = $schema . '.' . $name;
-			}
-		}
-		return $names;
+		return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
 	}
 }

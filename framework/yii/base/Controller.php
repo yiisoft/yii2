@@ -12,10 +12,20 @@ use Yii;
 /**
  * Controller is the base class for classes containing controller logic.
  *
+ * @property array $actionParams The request parameters (name-value pairs) to be used for action parameter
+ * binding. This property is read-only.
+ * @property string $route The route (module ID, controller ID and action ID) of the current request. This
+ * property is read-only.
+ * @property string $uniqueId The controller ID that is prefixed with the module ID (if any). This property is
+ * read-only.
+ * @property View $view The view object that can be used to render views or view files.
+ * @property string $viewPath The directory containing the view files for this controller. This property is
+ * read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Controller extends Component
+class Controller extends Component implements ViewContextInterface
 {
 	/**
 	 * @event ActionEvent an event raised right before executing a controller action.
@@ -26,7 +36,6 @@ class Controller extends Component
 	 * @event ActionEvent an event raised right after executing a controller action.
 	 */
 	const EVENT_AFTER_ACTION = 'afterAction';
-
 	/**
 	 * @var string the ID of this controller
 	 */
@@ -63,7 +72,7 @@ class Controller extends Component
 	 * @param Module $module the module that this controller belongs to.
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($id, $module, $config = array())
+	public function __construct($id, $module, $config = [])
 	{
 		$this->id = $id;
 		$this->module = $module;
@@ -77,14 +86,14 @@ class Controller extends Component
 	 * action class names or action configuration arrays. For example,
 	 *
 	 * ~~~
-	 * return array(
-	 *     'action1' => '@app/components/Action1',
-	 *     'action2' => array(
-	 *         'class' => '@app/components/Action2',
+	 * return [
+	 *     'action1' => 'app\components\Action1',
+	 *     'action2' => [
+	 *         'class' => 'app\components\Action2',
 	 *         'property1' => 'value1',
 	 *         'property2' => 'value2',
-	 *     ),
-	 * );
+	 *     ],
+	 * ];
 	 * ~~~
 	 *
 	 * [[\Yii::createObject()]] will be used later to create the requested action
@@ -92,34 +101,41 @@ class Controller extends Component
 	 */
 	public function actions()
 	{
-		return array();
+		return [];
 	}
 
 	/**
-	 * Runs an action with the specified action ID and parameters.
+	 * Runs an action within this controller with the specified action ID and parameters.
 	 * If the action ID is empty, the method will use [[defaultAction]].
 	 * @param string $id the ID of the action to be executed.
 	 * @param array $params the parameters (name-value pairs) to be passed to the action.
-	 * @return integer the status of the action execution. 0 means normal, other values mean abnormal.
+	 * @return mixed the result of the action
 	 * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
-	 * @see createAction
+	 * @see createAction()
 	 */
-	public function runAction($id, $params = array())
+	public function runAction($id, $params = [])
 	{
 		$action = $this->createAction($id);
 		if ($action !== null) {
+			Yii::trace("Route to run: " . $action->getUniqueId(), __METHOD__);
+			if (Yii::$app->requestedAction === null) {
+				Yii::$app->requestedAction = $action;
+			}
 			$oldAction = $this->action;
 			$this->action = $action;
-			$status = 1;
-			if ($this->module->beforeAction($action)) {
-				if ($this->beforeAction($action)) {
-					$status = $action->runWithParams($params);
-					$this->afterAction($action);
-				}
-				$this->module->afterAction($action);
+			$result = null;
+			$event = new ActionEvent($action);
+			Yii::$app->trigger(Application::EVENT_BEFORE_ACTION, $event);
+			if ($event->isValid && $this->module->beforeAction($action) && $this->beforeAction($action)) {
+				$result = $action->runWithParams($params);
+				$this->afterAction($action, $result);
+				$this->module->afterAction($action, $result);
+				$event = new ActionEvent($action);
+				$event->result = &$result;
+				Yii::$app->trigger(Application::EVENT_AFTER_ACTION, $event);
 			}
 			$this->action = $oldAction;
-			return $status;
+			return $result;
 		} else {
 			throw new InvalidRouteException('Unable to resolve the request: ' . $this->getUniqueId() . '/' . $id);
 		}
@@ -132,11 +148,10 @@ class Controller extends Component
 	 * the route will start from the application; otherwise, it will start from the parent module of this controller.
 	 * @param string $route the route to be handled, e.g., 'view', 'comment/view', '/admin/comment/view'.
 	 * @param array $params the parameters to be passed to the action.
-	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
-	 * @see runAction
-	 * @see forward
+	 * @return mixed the result of the action
+	 * @see runAction()
 	 */
-	public function run($route, $params = array())
+	public function run($route, $params = [])
 	{
 		$pos = strpos($route, '/');
 		if ($pos === false) {
@@ -157,22 +172,7 @@ class Controller extends Component
 	 */
 	public function bindActionParams($action, $params)
 	{
-		return array();
-	}
-
-	/**
-	 * Forwards the current execution flow to handle a new request specified by a route.
-	 * The only difference between this method and [[run()]] is that after calling this method,
-	 * the application will exit.
-	 * @param string $route the route to be handled, e.g., 'view', 'comment/view', '/admin/comment/view'.
-	 * @param array $params the parameters to be passed to the action.
-	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
-	 * @see run
-	 */
-	public function forward($route, $params = array())
-	{
-		$status = $this->run($route, $params);
-		Yii::$app->end($status);
+		return [];
 	}
 
 	/**
@@ -194,7 +194,7 @@ class Controller extends Component
 		$actionMap = $this->actions();
 		if (isset($actionMap[$id])) {
 			return Yii::createObject($actionMap[$id], $id, $this);
-		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
+		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id) && strpos($id, '--') === false && trim($id, '-') === $id) {
 			$methodName = 'action' . str_replace(' ', '', ucwords(implode(' ', explode('-', $id))));
 			if (method_exists($this, $methodName)) {
 				$method = new \ReflectionMethod($this, $methodName);
@@ -209,6 +209,7 @@ class Controller extends Component
 	/**
 	 * This method is invoked right before an action is to be executed (after all possible filters.)
 	 * You may override this method to do last-minute preparation for the action.
+	 * If you override this method, please make sure you call the parent implementation first.
 	 * @param Action $action the action to be executed.
 	 * @return boolean whether the action should continue to be executed.
 	 */
@@ -222,11 +223,15 @@ class Controller extends Component
 	/**
 	 * This method is invoked right after an action is executed.
 	 * You may override this method to do some postprocessing for the action.
+	 * If you override this method, please make sure you call the parent implementation first.
 	 * @param Action $action the action just executed.
+	 * @param mixed $result the action return result.
 	 */
-	public function afterAction($action)
+	public function afterAction($action, &$result)
 	{
-		$this->trigger(self::EVENT_AFTER_ACTION, new ActionEvent($action));
+		$event = new ActionEvent($action);
+		$event->result = & $result;
+		$this->trigger(self::EVENT_AFTER_ACTION, $event);
 	}
 
 	/**
@@ -238,7 +243,7 @@ class Controller extends Component
 	 */
 	public function getActionParams()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -256,34 +261,6 @@ class Controller extends Component
 	public function getRoute()
 	{
 		return $this->action !== null ? $this->action->getUniqueId() : $this->getUniqueId();
-	}
-
-	/**
-	 * Populates one or multiple models from the given data array.
-	 * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array.
-	 * @param Model $model the model to be populated. If there are more than one model to be populated,
-	 * you may supply them as additional parameters.
-	 * @return boolean whether at least one model is successfully populated with the data.
-	 */
-	public function populate($data, $model)
-	{
-		$success = false;
-		if (!empty($data) && is_array($data)) {
-			$models = func_get_args();
-			array_shift($models);
-			foreach ($models as $model) {
-				/** @var Model $model */
-				$scope = $model->formName();
-				if ($scope == '') {
-					$model->setAttributes($data);
-					$success = true;
-				} elseif (isset($data[$scope])) {
-					$model->setAttributes($data[$scope]);
-					$success = true;
-				}
-			}
-		}
-		return $success;
 	}
 
 	/**
@@ -315,7 +292,7 @@ class Controller extends Component
 	 * - an absolute path (e.g. "/main"): the layout name starts with a slash. The actual layout file will be
 	 *   looked for under the [[Application::layoutPath|layout path]] of the application;
 	 * - a relative path (e.g. "main"): the actual layout layout file will be looked for under the
-	 *   [[Module::viewPath|view path]] of the context module.
+	 *   [[Module::layoutPath|layout path]] of the context module.
 	 *
 	 * If the layout name does not contain a file extension, it will use the default one `.php`.
 	 *
@@ -325,13 +302,12 @@ class Controller extends Component
 	 * @return string the rendering result.
 	 * @throws InvalidParamException if the view file or the layout file does not exist.
 	 */
-	public function render($view, $params = array())
+	public function render($view, $params = [])
 	{
-		$viewFile = $this->findViewFile($view);
-		$output = $this->getView()->renderFile($viewFile, $params, $this);
-		$layoutFile = $this->findLayoutFile();
+		$output = $this->getView()->render($view, $params, $this);
+		$layoutFile = $this->findLayoutFile($this->getView());
 		if ($layoutFile !== false) {
-			return $this->getView()->renderFile($layoutFile, array('content' => $output), $this);
+			return $this->getView()->renderFile($layoutFile, ['content' => $output], $this);
 		} else {
 			return $output;
 		}
@@ -345,10 +321,9 @@ class Controller extends Component
 	 * @return string the rendering result.
 	 * @throws InvalidParamException if the view file does not exist.
 	 */
-	public function renderPartial($view, $params = array())
+	public function renderPartial($view, $params = [])
 	{
-		$viewFile = $this->findViewFile($view);
-		return $this->getView()->renderFile($viewFile, $params, $this);
+		return $this->getView()->render($view, $params, $this);
 	}
 
 	/**
@@ -358,7 +333,7 @@ class Controller extends Component
 	 * @return string the rendering result.
 	 * @throws InvalidParamException if the view file does not exist.
 	 */
-	public function renderFile($file, $params = array())
+	public function renderFile($file, $params = [])
 	{
 		return $this->getView()->renderFile($file, $params, $this);
 	}
@@ -404,59 +379,51 @@ class Controller extends Component
 	 * on how to specify this parameter.
 	 * @return string the view file path. Note that the file may not exist.
 	 */
-	protected function findViewFile($view)
+	public function findViewFile($view)
 	{
-		if (strncmp($view, '@', 1) === 0) {
-			// e.g. "@app/views/main"
-			$file = Yii::getAlias($view);
-		} elseif (strncmp($view, '//', 2) === 0) {
-			// e.g. "//layouts/main"
-			$file = Yii::$app->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		} elseif (strncmp($view, '/', 1) === 0) {
-			// e.g. "/site/index"
-			$file = $this->module->getViewPath() . DIRECTORY_SEPARATOR . ltrim($view, '/');
-		} else {
-			$file = $this->getViewPath() . DIRECTORY_SEPARATOR . $view;
-		}
-
-		return pathinfo($file, PATHINFO_EXTENSION) === '' ? $file . '.php' : $file;
+		return $this->getViewPath() . DIRECTORY_SEPARATOR . $view;
 	}
 
 	/**
 	 * Finds the applicable layout file.
+	 * @param View $view the view object to render the layout file
 	 * @return string|boolean the layout file path, or false if layout is not needed.
 	 * Please refer to [[render()]] on how to specify this parameter.
 	 * @throws InvalidParamException if an invalid path alias is used to specify the layout
 	 */
-	protected function findLayoutFile()
+	protected function findLayoutFile($view)
 	{
 		$module = $this->module;
 		if (is_string($this->layout)) {
-			$view = $this->layout;
+			$layout = $this->layout;
 		} elseif ($this->layout === null) {
 			while ($module !== null && $module->layout === null) {
 				$module = $module->module;
 			}
 			if ($module !== null && is_string($module->layout)) {
-				$view = $module->layout;
+				$layout = $module->layout;
 			}
 		}
 
-		if (!isset($view)) {
+		if (!isset($layout)) {
 			return false;
 		}
 
-		if (strncmp($view, '@', 1) === 0) {
-			$file = Yii::getAlias($view);
-		} elseif (strncmp($view, '/', 1) === 0) {
-			$file = Yii::$app->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
+		if (strncmp($layout, '@', 1) === 0) {
+			$file = Yii::getAlias($layout);
+		} elseif (strncmp($layout, '/', 1) === 0) {
+			$file = Yii::$app->getLayoutPath() . DIRECTORY_SEPARATOR . $layout;
 		} else {
-			$file = $module->getLayoutPath() . DIRECTORY_SEPARATOR . $view;
+			$file = $module->getLayoutPath() . DIRECTORY_SEPARATOR . $layout;
 		}
 
-		if (pathinfo($file, PATHINFO_EXTENSION) === '') {
-			$file .= '.php';
+		if (pathinfo($file, PATHINFO_EXTENSION) !== '') {
+			return $file;
 		}
-		return $file;
+		$path = $file . '.' . $view->defaultExtension;
+		if ($view->defaultExtension !== 'php' && !is_file($path)) {
+			$path = $file . '.php';
+		}
+		return $path;
 	}
 }

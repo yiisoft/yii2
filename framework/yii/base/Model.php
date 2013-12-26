@@ -7,10 +7,13 @@
 
 namespace yii\base;
 
+use Yii;
+use ArrayAccess;
 use ArrayObject;
 use ArrayIterator;
+use ReflectionClass;
+use IteratorAggregate;
 use yii\helpers\Inflector;
-use yii\helpers\Json;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
 
@@ -33,17 +36,29 @@ use yii\validators\Validator;
  * You may directly use Model to store model data, or extend it with customization.
  * You may also customize Model by attaching [[ModelBehavior|model behaviors]].
  *
- * @property ArrayObject $validators All the validators declared in the model.
- * @property array $activeValidators The validators applicable to the current [[scenario]].
- * @property array $errors Errors for all attributes or the specified attribute. Empty array is returned if no error.
+ * @property \yii\validators\Validator[] $activeValidators The validators applicable to the current
+ * [[scenario]]. This property is read-only.
  * @property array $attributes Attribute values (name => value).
- * @property string $scenario The scenario that this model is in.
+ * @property array $errors An array of errors for all attributes. Empty array is returned if no error. The
+ * result is a two-dimensional array. See [[getErrors()]] for detailed description. This property is read-only.
+ * @property array $firstErrors The first errors. An empty array will be returned if there is no error. This
+ * property is read-only.
+ * @property ArrayIterator $iterator An iterator for traversing the items in the list. This property is
+ * read-only.
+ * @property string $scenario The scenario that this model is in. Defaults to [[DEFAULT_SCENARIO]].
+ * @property ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the model.
+ * This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsonable
+class Model extends Component implements IteratorAggregate, ArrayAccess
 {
+	/**
+	 * The name of the default scenario.
+	 */
+	const DEFAULT_SCENARIO = 'default';
+
 	/**
 	 * @event ModelEvent an event raised at the beginning of [[validate()]]. You may set
 	 * [[ModelEvent::isValid]] to be false to stop the validation.
@@ -65,7 +80,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	/**
 	 * @var string current scenario
 	 */
-	private $_scenario = 'default';
+	private $_scenario = self::DEFAULT_SCENARIO;
 
 	/**
 	 * Returns the validation rules for attributes.
@@ -76,20 +91,20 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 * Each rule is an array with the following structure:
 	 *
 	 * ~~~
-	 * array(
-	 *     'attribute list',
+	 * [
+	 *     ['attribute1', 'attribute2'],
 	 *     'validator type',
-	 *     'on' => 'scenario name',
+	 *     'on' => ['scenario1', 'scenario2'],
 	 *     ...other parameters...
-	 * )
+	 * ]
 	 * ~~~
 	 *
 	 * where
 	 *
-	 *  - attribute list: required, specifies the attributes (separated by commas) to be validated;
+	 *  - attribute list: required, specifies the attributes array to be validated, for single attribute you can pass string;
 	 *  - validator type: required, specifies the validator to be used. It can be the name of a model
 	 *    class method, the name of a built-in validator, or a validator class name (or its path alias).
-	 *  - on: optional, specifies the [[scenario|scenarios]] (separated by commas) when the validation
+	 *  - on: optional, specifies the [[scenario|scenarios]] array when the validation
 	 *    rule can be applied. If this option is not set, the rule will apply to all scenarios.
 	 *  - additional name-value pairs can be specified to initialize the corresponding validator properties.
 	 *    Please refer to individual validator class API for possible properties.
@@ -102,35 +117,39 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 * function validatorName($attribute, $params)
 	 * ~~~
 	 *
+	 * In the above `$attribute` refers to currently validated attribute name while `$params` contains an array of
+	 * validator configuration options such as `max` in case of `string` validator. Currently validate attribute value
+	 * can be accessed as `$this->[$attribute]`.
+	 *
 	 * Yii also provides a set of [[Validator::builtInValidators|built-in validators]].
 	 * They each has an alias name which can be used when specifying a validation rule.
 	 *
 	 * Below are some examples:
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *     // built-in "required" validator
-	 *     array('username', 'required'),
-	 *     // built-in "length" validator customized with "min" and "max" properties
-	 *     array('username', 'length', 'min' => 3, 'max' => 12),
+	 *     [['username', 'password'], 'required'],
+	 *     // built-in "string" validator customized with "min" and "max" properties
+	 *     ['username', 'string', 'min' => 3, 'max' => 12],
 	 *     // built-in "compare" validator that is used in "register" scenario only
-	 *     array('password', 'compare', 'compareAttribute' => 'password2', 'on' => 'register'),
+	 *     ['password', 'compare', 'compareAttribute' => 'password2', 'on' => 'register'],
 	 *     // an inline validator defined via the "authenticate()" method in the model class
-	 *     array('password', 'authenticate', 'on' => 'login'),
-	 *     // a validator of class "CaptchaValidator"
-	 *     array('captcha', 'CaptchaValidator'),
-	 * );
+	 *     ['password', 'authenticate', 'on' => 'login'],
+	 *     // a validator of class "DateRangeValidator"
+	 *     ['dateRange', 'DateRangeValidator'],
+	 * ];
 	 * ~~~
 	 *
 	 * Note, in order to inherit rules defined in the parent class, a child class needs to
 	 * merge the parent rules with child rules using functions such as `array_merge()`.
 	 *
 	 * @return array validation rules
-	 * @see scenarios
+	 * @see scenarios()
 	 */
 	public function rules()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -139,36 +158,70 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 * The returned array should be in the following format:
 	 *
 	 * ~~~
-	 * array(
-	 *     'scenario1' => array('attribute11', 'attribute12', ...),
-	 *     'scenario2' => array('attribute21', 'attribute22', ...),
+	 * [
+	 *     'scenario1' => ['attribute11', 'attribute12', ...],
+	 *     'scenario2' => ['attribute21', 'attribute22', ...],
 	 *     ...
-	 * )
+	 * ]
 	 * ~~~
 	 *
-	 * By default, an active attribute that is considered safe and can be massively assigned.
+	 * By default, an active attribute is considered safe and can be massively assigned.
 	 * If an attribute should NOT be massively assigned (thus considered unsafe),
 	 * please prefix the attribute with an exclamation character (e.g. '!rank').
 	 *
-	 * The default implementation of this method will return a 'default' scenario
-	 * which corresponds to all attributes listed in the validation rules applicable
-	 * to the 'default' scenario.
+	 * The default implementation of this method will return all scenarios found in the [[rules()]]
+	 * declaration. A special scenario named [[DEFAULT_SCENARIO]] will contain all attributes
+	 * found in the [[rules()]]. Each scenario will be associated with the attributes that
+	 * are being validated by the validation rules that apply to the scenario.
 	 *
 	 * @return array a list of scenarios and the corresponding active attributes.
 	 */
 	public function scenarios()
 	{
-		$attributes = array();
-		foreach ($this->getActiveValidators() as $validator) {
-			if ($validator->isActive('default')) {
-				foreach ($validator->attributes as $name) {
-					$attributes[$name] = true;
+		$scenarios = [self::DEFAULT_SCENARIO => []];
+		foreach ($this->getValidators() as $validator) {
+			foreach ($validator->on as $scenario) {
+				$scenarios[$scenario] = [];
+			}
+			foreach ($validator->except as $scenario) {
+				$scenarios[$scenario] = [];
+			}
+		}
+		$names = array_keys($scenarios);
+
+		foreach ($this->getValidators() as $validator) {
+			if (empty($validator->on) && empty($validator->except)) {
+				foreach ($names as $name) {
+					foreach ($validator->attributes as $attribute) {
+						$scenarios[$name][$attribute] = true;
+					}
+				}
+			} elseif (empty($validator->on)) {
+				foreach ($names as $name) {
+					if (!in_array($name, $validator->except, true)) {
+						foreach ($validator->attributes as $attribute) {
+							$scenarios[$name][$attribute] = true;
+						}
+					}
+				}
+			} else {
+				foreach ($validator->on as $name) {
+					foreach ($validator->attributes as $attribute) {
+						$scenarios[$name][$attribute] = true;
+					}
 				}
 			}
 		}
-		return array(
-			'default' => array_keys($attributes),
-		);
+
+		foreach ($scenarios as $scenario => $attributes) {
+			if (empty($attributes) && $scenario !== self::DEFAULT_SCENARIO) {
+				unset($scenarios[$scenario]);
+			} else {
+				$scenarios[$scenario] = array_keys($attributes);
+			}
+		}
+
+		return $scenarios;
 	}
 
 	/**
@@ -186,9 +239,8 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 */
 	public function formName()
 	{
-		$class = get_class($this);
-		$pos = strrpos($class, '\\');
-		return $pos === false ? $class : substr($class, $pos + 1);
+		$reflector = new ReflectionClass($this);
+		return $reflector->getShortName();
 	}
 
 	/**
@@ -199,12 +251,11 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 */
 	public function attributes()
 	{
-		$class = new \ReflectionClass($this);
-		$names = array();
+		$class = new ReflectionClass($this);
+		$names = [];
 		foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
-			$name = $property->getName();
 			if (!$property->isStatic()) {
-				$names[] = $name;
+				$names[] = $property->getName();
 			}
 		}
 		return $names;
@@ -224,11 +275,11 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 * merge the parent labels with child labels using functions such as `array_merge()`.
 	 *
 	 * @return array attribute labels (name => label)
-	 * @see generateAttributeLabel
+	 * @see generateAttributeLabel()
 	 */
 	public function attributeLabels()
 	{
-		return array();
+		return [];
 	}
 
 	/**
@@ -244,17 +295,24 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 * after the actual validation, respectively. If [[beforeValidate()]] returns false,
 	 * the validation will be cancelled and [[afterValidate()]] will not be called.
 	 *
-	 * Errors found during the validation can be retrieved via [[getErrors()]]
-	 * and [[getError()]].
+	 * Errors found during the validation can be retrieved via [[getErrors()]],
+	 * [[getFirstErrors()]] and [[getFirstError()]].
 	 *
 	 * @param array $attributes list of attributes that should be validated.
 	 * If this parameter is empty, it means any attribute listed in the applicable
 	 * validation rules should be validated.
 	 * @param boolean $clearErrors whether to call [[clearErrors()]] before performing validation
 	 * @return boolean whether the validation is successful without any error.
+	 * @throws InvalidParamException if the current scenario is unknown.
 	 */
 	public function validate($attributes = null, $clearErrors = true)
 	{
+		$scenarios = $this->scenarios();
+		$scenario = $this->getScenario();
+		if (!isset($scenarios[$scenario])) {
+			throw new InvalidParamException("Unknown scenario: $scenario");
+		}
+
 		if ($clearErrors) {
 			$this->clearErrors();
 		}
@@ -263,7 +321,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 		}
 		if ($this->beforeValidate()) {
 			foreach ($this->getActiveValidators() as $validator) {
-				$validator->validate($this, $attributes);
+				$validator->validateAttributes($this, $attributes);
 			}
 			$this->afterValidate();
 			return !$this->hasErrors();
@@ -311,7 +369,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 * $model->validators[] = $newValidator;
 	 * ~~~
 	 *
-	 * @return ArrayObject all the validators declared in the model.
+	 * @return ArrayObject|\yii\validators\Validator[] all the validators declared in the model.
 	 */
 	public function getValidators()
 	{
@@ -329,9 +387,8 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 */
 	public function getActiveValidators($attribute = null)
 	{
-		$validators = array();
+		$validators = [];
 		$scenario = $this->getScenario();
-		/** @var $validator Validator */
 		foreach ($this->getValidators() as $validator) {
 			if ($validator->isActive($scenario) && ($attribute === null || in_array($attribute, $validator->attributes, true))) {
 				$validators[] = $validator;
@@ -353,7 +410,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 			if ($rule instanceof Validator) {
 				$validators->append($rule);
 			} elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
-				$validator = Validator::createValidator($rule[1], $this, $rule[0], array_slice($rule, 2));
+				$validator = Validator::createValidator($rule[1], $this, (array) $rule[0], array_slice($rule, 2));
 				$validators->append($validator);
 			} else {
 				throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
@@ -384,6 +441,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 * Returns a value indicating whether the attribute is safe for massive assignments.
 	 * @param string $attribute attribute name
 	 * @return boolean whether the attribute is safe for massive assignments
+	 * @see safeAttributes()
 	 */
 	public function isAttributeSafe($attribute)
 	{
@@ -391,11 +449,22 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	}
 
 	/**
+	 * Returns a value indicating whether the attribute is active in the current scenario.
+	 * @param string $attribute attribute name
+	 * @return boolean whether the attribute is active in the current scenario
+	 * @see activeAttributes()
+	 */
+	public function isAttributeActive($attribute)
+	{
+		return in_array($attribute, $this->activeAttributes(), true);
+	}
+
+	/**
 	 * Returns the text label for the specified attribute.
 	 * @param string $attribute the attribute name
 	 * @return string the attribute label
-	 * @see generateAttributeLabel
-	 * @see attributeLabels
+	 * @see generateAttributeLabel()
+	 * @see attributeLabels()
 	 */
 	public function getAttributeLabel($attribute)
 	{
@@ -416,42 +485,47 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	/**
 	 * Returns the errors for all attribute or a single attribute.
 	 * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
+	 * @property array An array of errors for all attributes. Empty array is returned if no error.
+	 * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
 	 * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
 	 * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
 	 *
 	 * ~~~
-	 * array(
-	 *     'username' => array(
+	 * [
+	 *     'username' => [
 	 *         'Username is required.',
 	 *         'Username must contain only word characters.',
-	 *     ),
-	 *     'email' => array(
+	 *     ],
+	 *     'email' => [
 	 *         'Email address is invalid.',
-	 *     )
-	 * )
+	 *     ]
+	 * ]
 	 * ~~~
 	 *
-	 * @see getError
+	 * @see getFirstErrors()
+	 * @see getFirstError()
 	 */
 	public function getErrors($attribute = null)
 	{
 		if ($attribute === null) {
-			return $this->_errors === null ? array() : $this->_errors;
+			return $this->_errors === null ? [] : $this->_errors;
 		} else {
-			return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : array();
+			return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : [];
 		}
 	}
 
 	/**
 	 * Returns the first error of every attribute in the model.
 	 * @return array the first errors. An empty array will be returned if there is no error.
+	 * @see getErrors()
+	 * @see getFirstError()
 	 */
 	public function getFirstErrors()
 	{
 		if (empty($this->_errors)) {
-			return array();
+			return [];
 		} else {
-			$errors = array();
+			$errors = [];
 			foreach ($this->_errors as $attributeErrors) {
 				if (isset($attributeErrors[0])) {
 					$errors[] = $attributeErrors[0];
@@ -465,7 +539,8 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 * Returns the first error of the specified attribute.
 	 * @param string $attribute attribute name.
 	 * @return string the error message. Null is returned if no error.
-	 * @see getErrors
+	 * @see getErrors()
+	 * @see getFirstErrors()
 	 */
 	public function getFirstError($attribute)
 	{
@@ -477,7 +552,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 * @param string $attribute attribute name
 	 * @param string $error new error message
 	 */
-	public function addError($attribute, $error)
+	public function addError($attribute, $error = '')
 	{
 		$this->_errors[$attribute][] = $error;
 	}
@@ -489,7 +564,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	public function clearErrors($attribute = null)
 	{
 		if ($attribute === null) {
-			$this->_errors = array();
+			$this->_errors = [];
 		} else {
 			unset($this->_errors[$attribute]);
 		}
@@ -516,9 +591,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 * @param array $except list of attributes whose value should NOT be returned.
 	 * @return array attribute values (name => value).
 	 */
-	public function getAttributes($names = null, $except = array())
+	public function getAttributes($names = null, $except = [])
 	{
-		$values = array();
+		$values = [];
 		if ($names === null) {
 			$names = $this->attributes();
 		}
@@ -564,7 +639,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	public function onUnsafeAttribute($name, $value)
 	{
 		if (YII_DEBUG) {
-			\Yii::info("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
+			Yii::trace("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
 		}
 	}
 
@@ -574,7 +649,7 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	 * Scenario affects how validation is performed and which attributes can
 	 * be massively assigned.
 	 *
-	 * @return string the scenario that this model is in. Defaults to 'default'.
+	 * @return string the scenario that this model is in. Defaults to [[DEFAULT_SCENARIO]].
 	 */
 	public function getScenario()
 	{
@@ -583,8 +658,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 
 	/**
 	 * Sets the scenario for the model.
+	 * Note that this method does not check if the scenario exists or not.
+	 * The method [[validate()]] will perform this check.
 	 * @param string $value the scenario that this model is in.
-	 * @see getScenario
 	 */
 	public function setScenario($value)
 	{
@@ -600,12 +676,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
 		if (!isset($scenarios[$scenario])) {
-			return array();
+			return [];
 		}
-		$attributes = array();
-		if (isset($scenarios[$scenario]['attributes']) && is_array($scenarios[$scenario]['attributes'])) {
-			$scenarios[$scenario] = $scenarios[$scenario]['attributes'];
-		}
+		$attributes = [];
 		foreach ($scenarios[$scenario] as $attribute) {
 			if ($attribute[0] !== '!') {
 				$attributes[] = $attribute;
@@ -623,13 +696,9 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 		$scenario = $this->getScenario();
 		$scenarios = $this->scenarios();
 		if (!isset($scenarios[$scenario])) {
-			return array();
+			return [];
 		}
-		if (isset($scenarios[$scenario]['attributes']) && is_array($scenarios[$scenario]['attributes'])) {
-			$attributes = $scenarios[$scenario]['attributes'];
-		} else {
-			$attributes = $scenarios[$scenario];
-		}
+		$attributes = $scenarios[$scenario];
 		foreach ($attributes as $i => $attribute) {
 			if ($attribute[0] === '!') {
 				$attributes[$i] = substr($attribute, 1);
@@ -639,13 +708,94 @@ class Model extends Component implements \IteratorAggregate, \ArrayAccess, Jsona
 	}
 
 	/**
-	 * Returns the JSON representation of this object.
-	 * The default implementation will return [[attributes]].
-	 * @return string the JSON representation of this object.
+	 * Populates the model with the data from end user.
+	 * The data to be loaded is `$data[formName]`, where `formName` refers to the value of [[formName()]].
+	 * If [[formName()]] is empty, the whole `$data` array will be used to populate the model.
+	 * The data being populated is subject to the safety check by [[setAttributes()]].
+	 * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
+	 * supplied by end user.
+	 * @param string $formName the form name to be used for loading the data into the model.
+	 * If not set, [[formName()]] will be used.
+	 * @return boolean whether the model is successfully populated with some data.
 	 */
-	public function toJson()
+	public function load($data, $formName = null)
 	{
-		return Json::encode($this->getAttributes());
+		$scope = $formName === null ? $this->formName() : $formName;
+		if ($scope == '') {
+			$this->setAttributes($data);
+			return true;
+		} elseif (isset($data[$scope])) {
+			$this->setAttributes($data[$scope]);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Populates a set of models with the data from end user.
+	 * This method is mainly used to collect tabular data input.
+	 * The data to be loaded for each model is `$data[formName][index]`, where `formName`
+	 * refers to the value of [[formName()]], and `index` the index of the model in the `$models` array.
+	 * If [[formName()]] is empty, `$data[index]` will be used to populate each model.
+	 * The data being populated to each model is subject to the safety check by [[setAttributes()]].
+	 * @param array $models the models to be populated. Note that all models should have the same class.
+	 * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
+	 * supplied by end user.
+	 * @return boolean whether the model is successfully populated with some data.
+	 */
+	public static function loadMultiple($models, $data)
+	{
+		/** @var Model $model */
+		$model = reset($models);
+		if ($model === false) {
+			return false;
+		}
+		$success = false;
+		$scope = $model->formName();
+		foreach ($models as $i => $model) {
+			if ($scope == '') {
+				if (isset($data[$i])) {
+					$model->setAttributes($data[$i]);
+					$success = true;
+				}
+			} elseif (isset($data[$scope][$i])) {
+				$model->setAttributes($data[$scope][$i]);
+				$success = true;
+			}
+		}
+		return $success;
+	}
+
+	/**
+	 * Validates multiple models.
+	 * This method will validate every model. The models being validated may
+	 * be of the same or different types.
+	 * @param array $models the models to be validated
+	 * @param array $attributes list of attributes that should be validated.
+	 * If this parameter is empty, it means any attribute listed in the applicable
+	 * validation rules should be validated.
+	 * @return boolean whether all models are valid. False will be returned if one
+	 * or multiple models have validation error.
+	 */
+	public static function validateMultiple($models, $attributes = null)
+	{
+		$valid = true;
+		/** @var Model $model */
+		foreach ($models as $model) {
+			$valid = $model->validate($attributes) && $valid;
+		}
+		return $valid;
+	}
+
+	/**
+	 * Converts the object into an array.
+	 * The default implementation will return [[attributes]].
+	 * @return array the array representation of the object
+	 */
+	public function toArray()
+	{
+		return $this->getAttributes();
 	}
 
 	/**

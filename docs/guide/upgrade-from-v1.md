@@ -29,6 +29,8 @@ If your class does not need the event or behavior feature, you should consider u
 `Object` as the base class. This is usually the case for classes that represent basic
 data structures.
 
+More details about Object and component can be found in the [Basic concepts section](basics.md).
+
 
 Object Configuration
 --------------------
@@ -38,9 +40,9 @@ of `Object` should declare its constructor (if needed) in the following way so t
 it can be properly configured:
 
 ```php
-class MyClass extends \yii\Object
+class MyClass extends \yii\base\Object
 {
-    public function __construct($param1, $param2, $config = array())
+    public function __construct($param1, $param2, $config = [])
     {
         // ... initialization before configuration is applied
 
@@ -65,13 +67,14 @@ By following this convention, you will be able to create and configure a new obj
 using a configuration array like the following:
 
 ```php
-$object = Yii::createObject(array(
+$object = Yii::createObject([
     'class' => 'MyClass',
     'property1' => 'abc',
     'property2' => 'cde',
-), $param1, $param2);
+], $param1, $param2);
 ```
 
+More on configuration can be found in the [Basic concepts section](basics.md).
 
 
 Events
@@ -106,6 +109,18 @@ Yii::$app->on($eventName, $handler);
 Yii::$app->trigger($eventName);
 ```
 
+If you need to handle all instances of a class instead of the object you can attach a handler like the following:
+
+```php
+Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+	Yii::trace(get_class($event->sender) . ' is inserted.');
+});
+```
+
+The code above defines a handler that will be triggered for every Active Record object's `EVENT_AFTER_INSERT` event.
+
+See [Event handling section](events.md) for more details.
+
 
 Path Alias
 ----------
@@ -120,8 +135,10 @@ Path alias is also closely related with class namespaces. It is recommended that
 alias be defined for each root namespace so that you can use Yii the class autoloader without
 any further configuration. For example, because `@yii` refers to the Yii installation directory,
 a class like `yii\web\Request` can be autoloaded by Yii. If you use a third party library
-such as Zend Framework, you may define a path alias `@Zend` which refers to its installation 
+such as Zend Framework, you may define a path alias `@Zend` which refers to its installation
 directory and Yii will be able to autoload any class in this library.
+
+More on path aliases can be found in the [Basic concepts section](basics.md).
 
 
 View
@@ -149,11 +166,14 @@ $content = Yii::$app->view->renderFile($viewFile, $params);
 Also, there is no more `CClientScript` in Yii 2.0. The `View` class has taken over its role
 with significant improvements. For more details, please see the "assets" subsection.
 
-While Yii 2.0 continues to use PHP as its main template language, it comes with built-in
-support for two popular template engines: Smarty and Twig. The Prado template engine is
+While Yii 2.0 continues to use PHP as its main template language, it comes with two official extensions
+adding support for two popular template engines: Smarty and Twig. The Prado template engine is
 no longer supported. To use these template engines, you just need to use `tpl` as the file
 extension for your Smarty views, or `twig` for Twig views. You may also configure the
-`View::renderers` property to use other template engines.
+`View::renderers` property to use other template engines. See [Using template engines](template.md) section
+of the guide for more details.
+
+See [View section](view.md) for more details.
 
 
 Models
@@ -163,6 +183,26 @@ A model is now associated with a form name returned by its `formName()` method. 
 mainly used when using HTML forms to collect user inputs for a model. Previously in 1.1,
 this is usually hardcoded as the class name of the model.
 
+A new methods called `load()` and `Model::loadMultiple()` is introduced to simplify the data population from user inputs
+to a model. For example,
+
+```php
+$model = new Post;
+if ($model->load($_POST)) {...}
+// which is equivalent to:
+if (isset($_POST['Post'])) {
+    $model->attributes = $_POST['Post'];
+}
+
+$model->save();
+
+$postTags = [];
+$tagsCount = count($_POST['PostTag']);
+while ($tagsCount-- > 0) {
+    $postTags[] = new PostTag(['post_id' => $model->id]);
+}
+Model::loadMultiple($postTags, $_POST);
+```
 
 Yii 2.0 introduces a new method called `scenarios()` to declare which attributes require
 validation under which scenario. Child classes should overwrite `scenarios()` to return
@@ -172,10 +212,10 @@ a list of scenarios and the corresponding attributes that need to be validated w
 ```php
 public function scenarios()
 {
-    return array(
-        'backend' => array('email', 'role'),
-        'frontend' => array('email', '!name'),
-    );
+    return [
+        'backend' => ['email', 'role'],
+        'frontend' => ['email', '!name'],
+    ];
 }
 ```
 
@@ -189,6 +229,8 @@ Because of the above change, Yii 2.0 no longer has "safe" and "unsafe" validator
 If your model only has one scenario (very common), you do not have to overwrite `scenarios()`,
 and everything will still work like the 1.1 way.
 
+To learn more about Yii 2.0 models refer to [Models](model.md) section of the guide.
+
 
 Controllers
 -----------
@@ -196,17 +238,7 @@ Controllers
 The `render()` and `renderPartial()` methods now return the rendering results instead of directly
 sending them out. You have to `echo` them explicitly, e.g., `echo $this->render(...);`.
 
-A new method called `populate()` is introduced to simplify the data population from user inputs
-to a model. For example,
-
-```php
-$model = new Post;
-if ($this->populate($_POST, $model)) {...}
-// which is equivalent to:
-if (isset($_POST['Post'])) {
-    $model->attributes = $_POST['Post'];
-}
-```
+To learn more about Yii 2.0 controllers refer to [Controller](controller.md) section of the guide.
 
 
 Widgets
@@ -217,13 +249,13 @@ methods of the `Widget` class. For example,
 
 ```php
 // Note that you have to "echo" the result to display it
-echo \yii\widgets\Menu::widget(array('items' => $items));
+echo \yii\widgets\Menu::widget(['items' => $items]);
 
 // Passing an array to initialize the object properties
-$form = \yii\widgets\ActiveForm::begin(array(
-	'options' => array('class' => 'form-horizontal'),
-	'fieldConfig' => array('inputOptions' => array('class' => 'input-xlarge')),
-));
+$form = \yii\widgets\ActiveForm::begin([
+	'options' => ['class' => 'form-horizontal'],
+	'fieldConfig' => ['inputOptions' => ['class' => 'input-xlarge']],
+]);
 ... form inputs here ...
 \yii\widgets\ActiveForm::end();
 ```
@@ -231,20 +263,24 @@ $form = \yii\widgets\ActiveForm::begin(array(
 Previously in 1.1, you would have to enter the widget class names as strings via the `beginWidget()`,
 `endWidget()` and `widget()` methods of `CBaseController`. The approach above gets better IDE support.
 
+For more on widgets see the [View section](view.md#widgets).
+
 
 Themes
 ------
 
 Themes work completely different in 2.0. They are now based on a path map to "translate" a source
 view into a themed view. For example, if the path map for a theme is
-`array('/www/views' => '/www/themes/basic')`, then the themed version for a view file
-`/www/views/site/index.php` will be `/www/themes/basic/site/index.php`.
+`['/web/views' => '/web/themes/basic']`, then the themed version for a view file
+`/web/views/site/index.php` will be `/web/themes/basic/site/index.php`.
 
 For this reason, theme can now be applied to any view file, even if a view rendered outside
 of the context of a controller or a widget.
 
 There is no more `CThemeManager`. Instead, `theme` is a configurable property of the "view"
 application component.
+
+For more on themes see the [Theming section](theming.md).
 
 
 Console Applications
@@ -261,6 +297,8 @@ are treated as global options declared in `globalOptions()`.
 
 Yii 2.0 supports automatic generation of command help information from comment blocks.
 
+For more on console applications see the [Console section](console.md).
+
 
 I18N
 ----
@@ -269,7 +307,7 @@ Yii 2.0 removes date formatter and number formatter in favor of the PECL intl PH
 
 Message translation is still supported, but managed via the "i18n" application component.
 The component manages a set of message sources, which allows you to use different message
-sources based on message categories. For more information, see the class documentation for `I18N`.
+sources based on message categories. For more information, see the class documentation for [I18N](i18n.md).
 
 
 Action Filters
@@ -283,18 +321,18 @@ code in a controller:
 ```php
 public function behaviors()
 {
-    return array(
-        'access' => array(
+    return [
+        'access' => [
             'class' => 'yii\web\AccessControl',
-            'rules' => array(
-                array('allow' => true, 'actions' => array('admin'), 'roles' => array('@')),
-                array('allow' => false),
+            'rules' => [
+                ['allow' => true, 'actions' => ['admin'], 'roles' => ['@']],
             ),
         ),
     );
 }
 ```
 
+For more on action filters see the [Controller section](controller.md#action-filters).
 
 
 Assets
@@ -304,11 +342,12 @@ Yii 2.0 introduces a new concept called *asset bundle*. It is similar to script
 packages (managed by `CClientScript`) in 1.1, but with better support.
 
 An asset bundle is a collection of asset files (e.g. JavaScript files, CSS files, image files, etc.)
-under a directory. By registering an asset bundle via `View::registerAssetBundle()`, you
-will be able to make the assets in that bundle accessible via Web, and the current page
-will automatically contain references to the JavaScript and CSS files in that bundle.
+under a directory. Each asset bundle is represented as a class extending `AssetBundle`.
+By registering an asset bundle via `AssetBundle::register()`, you will be able to make
+the assets in that bundle accessible via Web, and the current page will automatically
+contain the references to the JavaScript and CSS files specified in that bundle.
 
-
+To learn more about assets see the [asset manager documentation](assets.md).
 
 Static Helpers
 --------------
@@ -323,15 +362,15 @@ introduces the class map (via `Yii::$classMap`) to overcome this difficulty.
 ------------
 
 Yii 2.0 introduces the *field* concept for building a form using `ActiveForm`. A field
-is a container consisting of a label, an input, and an error message. It is represented
-as an `ActiveField` object. Using fields, you can build a form more cleanly than before:
+is a container consisting of a label, an input, an error message, and/or a hint text.
+It is represented as an `ActiveField` object. Using fields, you can build a form more cleanly than before:
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
-	<?php echo $form->field($model, 'username')->textInput(); ?>
-	<?php echo $form->field($model, 'password')->passwordInput(); ?>
-	<div class="form-actions">
-		<?php echo Html::submitButton('Login'); ?>
+	<?= $form->field($model, 'username') ?>
+	<?= $form->field($model, 'password')->passwordInput() ?>
+	<div class="form-group">
+		<?= Html::submitButton('Login') ?>
 	</div>
 <?php yii\widgets\ActiveForm::end(); ?>
 ```
@@ -374,7 +413,7 @@ class Customer extends \yii\db\ActiveRecord
 {
 	public function getOrders()
 	{
-		return $this->hasMany('Order', array('customer_id' => 'id'));
+		return $this->hasMany('Order', ['customer_id' => 'id']);
 	}
 }
 ```
@@ -397,7 +436,7 @@ use the `find()` method:
 ```php
 // to retrieve all *active* customers and order them by their ID:
 $customers = Customer::find()
-	->where(array('status' => $active))
+	->where(['status' => $active])
 	->orderBy('id')
 	->all();
 // return the customer whose PK is 1
@@ -420,6 +459,8 @@ By default, ActiveRecord now only saves dirty attributes. In 1.1, all attributes
 are saved to database when you call `save()`, regardless of having changed or not,
 unless you explicitly list the attributes to save.
 
+See [active record docs](active-record.md) for more details.
+
 
 Auto-quoting Table and Column Names
 ------------------------------------
@@ -438,11 +479,11 @@ This feature is especially useful if you are developing an application that supp
 different DBMS.
 
 
-User and Identity
------------------
+User and IdentityInterface
+--------------------------
 
 The `CWebUser` class in 1.1 is now replaced by `\yii\Web\User`, and there is no more
-`CUserIdentity` class. Instead, you should implement the `Identity` interface which
+`CUserIdentity` class. Instead, you should implement the `IdentityInterface` which
 is much more straightforward to implement. The bootstrap application provides such an example.
 
 
@@ -455,23 +496,30 @@ both `post/popular` and `post/1/popular`. In 1.1, you would have to use two rule
 the same goal.
 
 ```php
-array(
+[
 	'pattern' => 'post/<page:\d+>/<tag>',
 	'route' => 'post/index',
-	'defaults' => array('page' => 1),
-)
+	'defaults' => ['page' => 1],
+]
 ```
 
-
+More details in the [Url manager docs](url.md).
 
 Response
 --------
 
+TBD
+
 Extensions
 ----------
+
+TBD
 
 Integration with Composer
 -------------------------
 
-TBD
+Yii is fully inegrated with the package manager for PHP named Composer that resolves dependencies, keeps your code
+up to date updating it semi-automatically and manages autoloading for third party libraries no matter which autoloading
+these are using.
 
+In order to learn more refer to [composer](composer.md) and [installation](installation.md) sections of the guide.

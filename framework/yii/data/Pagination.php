@@ -9,12 +9,13 @@ namespace yii\data;
 
 use Yii;
 use yii\base\Object;
+use yii\web\Request;
 
 /**
  * Pagination represents information relevant to pagination of data items.
  *
  * When data needs to be rendered in multiple pages, Pagination can be used to
- * represent information such as [[itemCount|total item count]], [[pageSize|page size]],
+ * represent information such as [[totalCount|total item count]], [[pageSize|page size]],
  * [[page|current page]], etc. These information can be passed to [[yii\widgets\Pager|pagers]]
  * to render pagination buttons or links.
  *
@@ -26,17 +27,17 @@ use yii\base\Object;
  * ~~~
  * function actionIndex()
  * {
- *     $query = Article::find()->where(array('status' => 1));
+ *     $query = Article::find()->where(['status' => 1]);
  *     $countQuery = clone $query;
- *     $pages = new Pagination($countQuery->count());
+ *     $pages = new Pagination(['totalCount' => $countQuery->count()]);
  *     $models = $query->offset($pages->offset)
  *         ->limit($pages->limit)
  *         ->all();
  *
- *     $this->render('index', array(
+ *     return $this->render('index', [
  *          'models' => $models,
  *          'pages' => $pages,
- *     ));
+ *     ]);
  * }
  * ~~~
  *
@@ -48,17 +49,18 @@ use yii\base\Object;
  * }
  *
  * // display pagination
- * LinkPager::widget(array(
+ * echo LinkPager::widget([
  *     'pagination' => $pages,
- * ));
+ * ]);
  * ~~~
  *
- * @property integer $pageCount Number of pages.
- * @property integer $page The zero-based index of the current page.
- * @property integer $offset The offset of the data. This may be used to set the
- * OFFSET value for a SQL statement for fetching the current page of data.
- * @property integer $limit The limit of the data. This may be used to set the
- * LIMIT value for a SQL statement for fetching the current page of data.
+ * @property integer $limit The limit of the data. This may be used to set the LIMIT value for a SQL statement
+ * for fetching the current page of data. Note that if the page size is infinite, a value -1 will be returned.
+ * This property is read-only.
+ * @property integer $offset The offset of the data. This may be used to set the OFFSET value for a SQL
+ * statement for fetching the current page of data. This property is read-only.
+ * @property integer $page The zero-based current page number.
+ * @property integer $pageCount Number of pages. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -82,40 +84,35 @@ class Pagination extends Object
 	public $route;
 	/**
 	 * @var array parameters (name => value) that should be used to obtain the current page number
-	 * and to create new pagination URLs. If not set, $_GET will be used instead.
+	 * and to create new pagination URLs. If not set, all parameters from $_GET will be used instead.
 	 *
 	 * The array element indexed by [[pageVar]] is considered to be the current page number.
 	 * If the element does not exist, the current page number is considered 0.
 	 */
 	public $params;
 	/**
+	 * @var \yii\web\UrlManager the URL manager used for creating pagination URLs. If not set,
+	 * the "urlManager" application component will be used.
+	 */
+	public $urlManager;
+	/**
 	 * @var boolean whether to check if [[page]] is within valid range.
 	 * When this property is true, the value of [[page]] will always be between 0 and ([[pageCount]]-1).
-	 * Because [[pageCount]] relies on the correct value of [[itemCount]] which may not be available
+	 * Because [[pageCount]] relies on the correct value of [[totalCount]] which may not be available
 	 * in some cases (e.g. MongoDB), you may want to set this property to be false to disable the page
 	 * number validation. By doing so, [[page]] will return the value indexed by [[pageVar]] in [[params]].
 	 */
 	public $validatePage = true;
 	/**
-	 * @var integer number of items on each page. Defaults to 10.
+	 * @var integer number of items on each page. Defaults to 20.
 	 * If it is less than 1, it means the page size is infinite, and thus a single page contains all items.
 	 */
-	public $pageSize = 10;
+	public $pageSize = 20;
 	/**
 	 * @var integer total number of items.
 	 */
-	public $itemCount;
+	public $totalCount = 0;
 
-	/**
-	 * Constructor.
-	 * @param integer $itemCount total number of items.
-	 * @param array $config name-value pairs that will be used to initialize the object properties
-	 */
-	public function __construct($itemCount, $config = array())
-	{
-		$this->itemCount = $itemCount;
-		parent::__construct($config);
-	}
 
 	/**
 	 * @return integer number of pages
@@ -123,10 +120,10 @@ class Pagination extends Object
 	public function getPageCount()
 	{
 		if ($this->pageSize < 1) {
-			return $this->itemCount > 0 ? 1 : 0;
+			return $this->totalCount > 0 ? 1 : 0;
 		} else {
-			$itemCount = $this->itemCount < 0 ? 0 : (int)$this->itemCount;
-			return (int)(($itemCount + $this->pageSize - 1) / $this->pageSize);
+			$totalCount = $this->totalCount < 0 ? 0 : (int)$this->totalCount;
+			return (int)(($totalCount + $this->pageSize - 1) / $this->pageSize);
 		}
 	}
 
@@ -140,7 +137,10 @@ class Pagination extends Object
 	public function getPage($recalculate = false)
 	{
 		if ($this->_page === null || $recalculate) {
-			$params = $this->params === null ? $_GET : $this->params;
+			if (($params = $this->params) === null) {
+				$request = Yii::$app->getRequest();
+				$params = $request instanceof Request ? $request->get() : [];
+			}
 			if (isset($params[$this->pageVar]) && is_scalar($params[$this->pageVar])) {
 				$this->_page = (int)$params[$this->pageVar] - 1;
 				if ($this->validatePage) {
@@ -172,20 +172,29 @@ class Pagination extends Object
 	 * Creates the URL suitable for pagination with the specified page number.
 	 * This method is mainly called by pagers when creating URLs used to perform pagination.
 	 * @param integer $page the zero-based page number that the URL should point to.
+	 * @param boolean $absolute whether to create an absolute URL. Defaults to `false`.
 	 * @return string the created URL
 	 * @see params
 	 * @see forcePageVar
 	 */
-	public function createUrl($page)
+	public function createUrl($page, $absolute = false)
 	{
-		$params = $this->params === null ? $_GET : $this->params;
+		if (($params = $this->params) === null) {
+			$request = Yii::$app->getRequest();
+			$params = $request instanceof Request ? $request->get() : [];
+		}
 		if ($page > 0 || $page >= 0 && $this->forcePageVar) {
 			$params[$this->pageVar] = $page + 1;
 		} else {
 			unset($params[$this->pageVar]);
 		}
-		$route = $this->route === null ? Yii::$app->controller->route : $this->route;
-		return Yii::$app->getUrlManager()->createUrl($route, $params);
+		$route = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
+		$urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
+		if ($absolute) {
+			return $urlManager->createAbsoluteUrl($route, $params);
+		} else {
+			return $urlManager->createUrl($route, $params);
+		}
 	}
 
 	/**

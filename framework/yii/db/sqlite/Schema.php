@@ -21,7 +21,7 @@ class Schema extends \yii\db\Schema
 	/**
 	 * @var array mapping from physical column types (keys) to abstract column types (values)
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		'tinyint' => self::TYPE_SMALLINT,
 		'bit' => self::TYPE_SMALLINT,
 		'smallint' => self::TYPE_SMALLINT,
@@ -47,7 +47,29 @@ class Schema extends \yii\db\Schema
 		'time' => self::TYPE_TIME,
 		'timestamp' => self::TYPE_TIMESTAMP,
 		'enum' => self::TYPE_STRING,
-	);
+	];
+
+	/**
+	 * Quotes a table name for use in a query.
+	 * A simple table name has no schema prefix.
+	 * @param string $name table name
+	 * @return string the properly quoted table name
+	 */
+	public function quoteSimpleTableName($name)
+	{
+		return strpos($name, "`") !== false ? $name : "`" . $name . "`";
+	}
+
+	/**
+	 * Quotes a column name for use in a query.
+	 * A simple column name has no prefix.
+	 * @param string $name column name
+	 * @return string the properly quoted column name
+	 */
+	public function quoteSimpleColumnName($name)
+	{
+		return strpos($name, '`') !== false || $name === '*' ? $name : '`' . $name . '`';
+	}
 
 	/**
 	 * Creates a query builder for the MySQL database.
@@ -126,8 +148,48 @@ class Schema extends \yii\db\Schema
 		$sql = "PRAGMA foreign_key_list(" . $this->quoteSimpleTableName($table->name) . ')';
 		$keys = $this->db->createCommand($sql)->queryAll();
 		foreach ($keys as $key) {
-			$table->foreignKeys[] = array($key['table'], $key['from'] => $key['to']);
+			$id = (int)$key['id'];
+			if (!isset($table->foreignKeys[$id])) {
+				$table->foreignKeys[$id] = [$key['table'], $key['from'] => $key['to']];
+			} else {
+				// composite FK
+				$table->foreignKeys[$id][$key['from']] = $key['to'];
+			}
 		}
+	}
+
+	/**
+	 * Returns all unique indexes for the given table.
+	 * Each array element is of the following structure:
+	 *
+	 * ~~~
+	 * [
+	 *	 'IndexName1' => ['col1' [, ...]],
+	 *	 'IndexName2' => ['col2' [, ...]],
+	 * ]
+	 * ~~~
+	 *
+	 * @param TableSchema $table the table metadata
+	 * @return array all unique indexes for the given table.
+	 */
+	public function findUniqueIndexes($table)
+	{
+		$sql = "PRAGMA index_list(" . $this->quoteSimpleTableName($table->name) . ')';
+		$indexes = $this->db->createCommand($sql)->queryAll();
+		$uniqueIndexes = [];
+
+		foreach ($indexes as $index) {
+			$indexName = $index['name'];
+			$indexInfo = $this->db->createCommand("PRAGMA index_info(" . $this->quoteValue($index['name']) . ")")->queryAll();
+
+			if ($index['unique']) {
+				$uniqueIndexes[$indexName] = [];
+				foreach ($indexInfo as $row) {
+					$uniqueIndexes[$indexName][] = $row['name'];
+				}
+			}
+		}
+		return $uniqueIndexes;
 	}
 
 	/**
@@ -147,7 +209,7 @@ class Schema extends \yii\db\Schema
 
 		$column->type = self::TYPE_STRING;
 		if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
-			$type = $matches[1];
+			$type = strtolower($matches[1]);
 			if (isset($this->typeMap[$type])) {
 				$column->type = $this->typeMap[$type];
 			}

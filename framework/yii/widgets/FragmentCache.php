@@ -13,6 +13,10 @@ use yii\caching\Cache;
 use yii\caching\Dependency;
 
 /**
+ *
+ * @property string|boolean $cachedContent The cached content. False is returned if valid content is not found
+ * in the cache. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -35,10 +39,10 @@ class FragmentCache extends Widget
 	 * For example,
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *     'class' => 'yii\caching\DbDependency',
 	 *     'sql' => 'SELECT MAX(lastModified) FROM Post',
-	 * )
+	 * ]
 	 * ~~~
 	 *
 	 * would make the output cache depends on the last modified time of all posts.
@@ -52,9 +56,9 @@ class FragmentCache extends Widget
 	 * according to the current application language:
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *     Yii::$app->language,
-	 * )
+	 * ]
 	 */
 	public $variations;
 	/**
@@ -82,7 +86,7 @@ class FragmentCache extends Widget
 		}
 
 		if ($this->getCachedContent() === false) {
-			$this->view->cacheStack[] = $this;
+			$this->getView()->cacheStack[] = $this;
 			ob_start();
 			ob_implicit_flush(false);
 		}
@@ -90,7 +94,7 @@ class FragmentCache extends Widget
 
 	/**
 	 * Marks the end of content to be cached.
-	 * Content displayed before this method call and after {@link init()}
+	 * Content displayed before this method call and after [[init()]]
 	 * will be captured and saved in cache.
 	 * This method does nothing if valid content is already found in cache.
 	 */
@@ -100,14 +104,14 @@ class FragmentCache extends Widget
 			echo $content;
 		} elseif ($this->cache instanceof Cache) {
 			$content = ob_get_clean();
-			array_pop($this->view->cacheStack);
+			array_pop($this->getView()->cacheStack);
 			if (is_array($this->dependency)) {
 				$this->dependency = Yii::createObject($this->dependency);
 			}
-			$data = array($content, $this->dynamicPlaceholders);
+			$data = [$content, $this->dynamicPlaceholders];
 			$this->cache->set($this->calculateKey(), $data, $this->duration, $this->dependency);
 
-			if (empty($this->view->cacheStack) && !empty($this->dynamicPlaceholders)) {
+			if (empty($this->getView()->cacheStack) && !empty($this->dynamicPlaceholders)) {
 				$content = $this->updateDynamicContent($content, $this->dynamicPlaceholders);
 			}
 			echo $content;
@@ -133,12 +137,12 @@ class FragmentCache extends Widget
 				if (is_array($data) && count($data) === 2) {
 					list ($content, $placeholders) = $data;
 					if (is_array($placeholders) && count($placeholders) > 0) {
-						if (empty($this->view->cacheStack)) {
+						if (empty($this->getView()->cacheStack)) {
 							// outermost cache: replace placeholder with dynamic content
 							$content = $this->updateDynamicContent($content, $placeholders);
 						}
 						foreach ($placeholders as $name => $statements) {
-							$this->view->addDynamicPlaceholder($name, $statements);
+							$this->getView()->addDynamicPlaceholder($name, $statements);
 						}
 					}
 					$this->_content = $content;
@@ -151,7 +155,7 @@ class FragmentCache extends Widget
 	protected function updateDynamicContent($content, $placeholders)
 	{
 		foreach ($placeholders as $name => $statements) {
-			$placeholders[$name] = $this->view->evaluateDynamicContent($statements);
+			$placeholders[$name] = $this->getView()->evaluateDynamicContent($statements);
 		}
 		return strtr($content, $placeholders);
 	}
@@ -163,7 +167,7 @@ class FragmentCache extends Widget
 	 */
 	protected function calculateKey()
 	{
-		$factors = array(__CLASS__, $this->getId());
+		$factors = [__CLASS__, $this->getId()];
 		if (is_array($this->variations)) {
 			foreach ($this->variations as $factor) {
 				$factors[] = $factor;

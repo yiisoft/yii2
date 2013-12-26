@@ -22,8 +22,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		Schema::TYPE_PK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
+		Schema::TYPE_BIGPK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
 		Schema::TYPE_STRING => 'varchar(255)',
 		Schema::TYPE_TEXT => 'text',
 		Schema::TYPE_SMALLINT => 'smallint',
@@ -38,7 +39,54 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		Schema::TYPE_BINARY => 'blob',
 		Schema::TYPE_BOOLEAN => 'boolean',
 		Schema::TYPE_MONEY => 'decimal(19,4)',
-	);
+	];
+
+	/**
+	 * Generates a batch INSERT SQL statement.
+	 * For example,
+	 *
+	 * ~~~
+	 * $connection->createCommand()->batchInsert('tbl_user', ['name', 'age'], [
+	 *     ['Tom', 30],
+	 *     ['Jane', 20],
+	 *     ['Linda', 25],
+	 * ])->execute();
+	 * ~~~
+	 *
+	 * Note that the values in each row must match the corresponding column names.
+	 *
+	 * @param string $table the table that new rows will be inserted into.
+	 * @param array $columns the column names
+	 * @param array $rows the rows to be batch inserted into the table
+	 * @return string the batch INSERT SQL statement
+	 */
+	public function batchInsert($table, $columns, $rows)
+	{
+		if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
+			$columnSchemas = $tableSchema->columns;
+		} else {
+			$columnSchemas = [];
+		}
+
+		foreach ($columns as $i => $name) {
+			$columns[$i] = $this->db->quoteColumnName($name);
+		}
+
+		$values = [];
+		foreach ($rows as $row) {
+			$vs = [];
+			foreach ($row as $i => $value) {
+				if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
+					$value = $columnSchemas[$columns[$i]]->typecast($value);
+				}
+				$vs[] = is_string($value) ? $this->db->quoteValue($value) : $value;
+			}
+			$values[] = implode(', ', $vs);
+		}
+
+		return 'INSERT INTO ' . $this->db->quoteTableName($table)
+		. ' (' . implode(', ', $columns) . ') SELECT ' . implode(' UNION ALL ', $values);
+	}
 
 	/**
 	 * Creates a SQL statement for resetting the sequence value of a table's primary key.
@@ -79,6 +127,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 * @param boolean $check whether to turn on or off the integrity check.
 	 * @param string $schema the schema of the tables. Meaningless for SQLite.
 	 * @param string $table the table name. Meaningless for SQLite.
+	 * @return string the SQL statement for checking integrity
 	 * @throws NotSupportedException this is not supported by SQLite
 	 */
 	public function checkIntegrity($check = true, $schema = '', $table = '')
@@ -178,5 +227,49 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	public function alterColumn($table, $column, $type)
 	{
 		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+	}
+
+	/**
+	 * Builds a SQL statement for adding a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint.
+	 * @param string $table the table that the primary key constraint will be added to.
+	 * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
+	 * @return string the SQL statement for adding a primary key constraint to an existing table.
+	 * @throws NotSupportedException this is not supported by SQLite
+	 */
+	public function addPrimaryKey($name, $table, $columns)
+	{
+		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+	}
+
+	/**
+	 * Builds a SQL statement for removing a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint to be removed.
+	 * @param string $table the table that the primary key constraint will be removed from.
+	 * @return string the SQL statement for removing a primary key constraint from an existing table.
+	 * @throws NotSupportedException this is not supported by SQLite	 *
+	 */
+	public function dropPrimaryKey($name, $table)
+	{
+		throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function buildLimit($limit, $offset)
+	{
+		$sql = '';
+		// limit is not optional in SQLite
+		// http://www.sqlite.org/syntaxdiagrams.html#select-stmt
+		if ($limit !== null && $limit >= 0) {
+			$sql = 'LIMIT ' . (int)$limit;
+			if ($offset > 0) {
+				$sql .= ' OFFSET ' . (int)$offset;
+			}
+		} elseif ($offset > 0) {
+			$sql = 'LIMIT 9223372036854775807 OFFSET ' . (int)$offset; // 2^63-1
+		}
+		return $sql;
 	}
 }

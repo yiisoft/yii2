@@ -54,6 +54,7 @@ class GettextMoFile extends GettextFile
 	 * @param string $context message context
 	 * @return array message translations. Array keys are source messages and array values are translated messages:
 	 * source message => translated message.
+	 * @throws Exception if unable to read the MO file
 	 */
 	public function load($filePath, $context)
 	{
@@ -85,23 +86,23 @@ class GettextMoFile extends GettextFile
 		$sourceOffset = $this->readInteger($fileHandle);
 		$targetOffset = $this->readInteger($fileHandle);
 
-		$sourceLengths = array();
-		$sourceOffsets = array();
+		$sourceLengths = [];
+		$sourceOffsets = [];
 		fseek($fileHandle, $sourceOffset);
 		for ($i = 0; $i < $count; ++$i) {
 			$sourceLengths[] = $this->readInteger($fileHandle);
 			$sourceOffsets[] = $this->readInteger($fileHandle);
 		}
 
-		$targetLengths = array();
-		$targetOffsets = array();
+		$targetLengths = [];
+		$targetOffsets = [];
 		fseek($fileHandle, $targetOffset);
 		for ($i = 0; $i < $count; ++$i) {
 			$targetLengths[] = $this->readInteger($fileHandle);
 			$targetOffsets[] = $this->readInteger($fileHandle);
 		}
 
-		$messages = array();
+		$messages = [];
 		for ($i = 0; $i < $count; ++$i) {
 			$id = $this->readString($fileHandle, $sourceLengths[$i], $sourceOffsets[$i]);
 			$separatorPosition = strpos($id, chr(4));
@@ -128,6 +129,7 @@ class GettextMoFile extends GettextFile
 	 * @param array $messages message translations. Array keys are source messages and array values are
 	 * translated messages: source message => translated message. Note if the message has a context,
 	 * the message ID must be prefixed with the context with chr(4) as the separator.
+	 * @throws Exception if unable to save the MO file
 	 */
 	public function save($filePath, $messages)
 	{
@@ -203,6 +205,8 @@ class GettextMoFile extends GettextFile
 	{
 		if ($byteCount > 0) {
 			return fread($fileHandle, $byteCount);
+		} else {
+			return null;
 		}
 	}
 

@@ -9,6 +9,23 @@ namespace yii\i18n;
 
 use Yii;
 
+/**
+ * GettextMessageSource represents a message source that is based on GNU Gettext.
+ *
+ * Each GettextMessageSource instance represents the message tranlations
+ * for a single domain. And each message category represents a message context
+ * in Gettext. Translated messages are stored as either a MO or PO file,
+ * depending on the [[useMoFile]] property value.
+ *
+ * All translations are saved under the [[basePath]] directory.
+ *
+ * Translations in one language are kept as MO or PO files under an individual
+ * subdirectory whose name is the language ID. The file name is specified via
+ * [[catalog]] property, which defaults to 'messages'.
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @since 2.0
+ */
 class GettextMessageSource extends MessageSource
 {
 	const MO_FILE_EXT = '.mo';
@@ -51,18 +68,18 @@ class GettextMessageSource extends MessageSource
 
 		if (is_file($messageFile)) {
 			if ($this->useMoFile) {
-				$gettextFile = new GettextMoFile(array('useBigEndian' => $this->useBigEndian));
+				$gettextFile = new GettextMoFile(['useBigEndian' => $this->useBigEndian]);
 			} else {
 				$gettextFile = new GettextPoFile();
 			}
 			$messages = $gettextFile->load($messageFile, $category);
 			if (!is_array($messages)) {
-				$messages = array();
+				$messages = [];
 			}
 			return $messages;
 		} else {
 			Yii::error("The message file for category '$category' does not exist: $messageFile", __METHOD__);
-			return array();
+			return [];
 		}
 	}
 }

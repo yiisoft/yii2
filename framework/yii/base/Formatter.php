@@ -19,6 +19,9 @@ use yii\helpers\Html;
  * The behavior of some of them may be configured via the properties of Formatter. For example,
  * by configuring [[dateFormat]], one may control how [[asDate()]] formats the value into a date string.
  *
+ * Formatter is configured as an application component in [[yii\base\Application]] by default.
+ * You can access that instance via `Yii::$app->formatter`.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -37,8 +40,12 @@ class Formatter extends Component
 	 */
 	public $datetimeFormat = 'Y/m/d h:i:s A';
 	/**
+	 * @var string the text to be displayed when formatting a null. Defaults to '<span class="not-set">(not set)</span>'.
+	 */
+	public $nullDisplay;
+	/**
 	 * @var array the text to be displayed when formatting a boolean value. The first element corresponds
-	 * to the text display for false, the second element for true. Defaults to `array('No', 'Yes')`.
+	 * to the text display for false, the second element for true. Defaults to `['No', 'Yes']`.
 	 */
 	public $booleanFormat;
 	/**
@@ -59,7 +66,44 @@ class Formatter extends Component
 	public function init()
 	{
 		if (empty($this->booleanFormat)) {
-			$this->booleanFormat = array(Yii::t('yii', 'No'), Yii::t('yii', 'Yes'));
+			$this->booleanFormat = [Yii::t('yii', 'No'), Yii::t('yii', 'Yes')];
+		}
+		if ($this->nullDisplay === null) {
+			$this->nullDisplay = '<span class="not-set">' . Yii::t('yii', '(not set)') . '</span>';
+		}
+	}
+
+	/**
+	 * Formats the value based on the given format type.
+	 * This method will call one of the "as" methods available in this class to do the formatting.
+	 * For type "xyz", the method "asXyz" will be used. For example, if the format is "html",
+	 * then [[asHtml()]] will be used. Format names are case insensitive.
+	 * @param mixed $value the value to be formatted
+	 * @param string|array $format the format of the value, e.g., "html", "text". To specify additional
+	 * parameters of the formatting method, you may use an array. The first element of the array
+	 * specifies the format name, while the rest of the elements will be used as the parameters to the formatting
+	 * method. For example, a format of `['date', 'Y-m-d']` will cause the invocation of `asDate($value, 'Y-m-d')`.
+	 * @return string the formatting result
+	 * @throws InvalidParamException if the type is not supported by this class.
+	 */
+	public function format($value, $format)
+	{
+		if (is_array($format)) {
+			if (!isset($format[0])) {
+				throw new InvalidParamException('The $format array must contain at least one element.');
+			}
+			$f = $format[0];
+			$format[0] = $value;
+			$params = $format;
+			$format = $f;
+		} else {
+			$params = [$value];
+		}
+		$method = 'as' . $format;
+		if (method_exists($this, $method)) {
+			return call_user_func_array([$this, $method], $params);
+		} else {
+			throw new InvalidParamException("Unknown type: $format");
 		}
 	}
 
@@ -71,6 +115,9 @@ class Formatter extends Component
 	 */
 	public function asRaw($value)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return $value;
 	}
 
@@ -81,6 +128,9 @@ class Formatter extends Component
 	 */
 	public function asText($value)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return Html::encode($value);
 	}
 
@@ -91,6 +141,9 @@ class Formatter extends Component
 	 */
 	public function asNtext($value)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return nl2br(Html::encode($value));
 	}
 
@@ -103,6 +156,9 @@ class Formatter extends Component
 	 */
 	public function asParagraphs($value)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return str_replace('<p></p>', '',
 			'<p>' . preg_replace('/[\r\n]{2,}/', "</p>\n<p>", Html::encode($value)) . '</p>'
 		);
@@ -118,6 +174,9 @@ class Formatter extends Component
 	 */
 	public function asHtml($value, $config = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return HtmlPurifier::process($value, $config);
 	}
 
@@ -128,7 +187,10 @@ class Formatter extends Component
 	 */
 	public function asEmail($value)
 	{
-		return Html::mailto($value);
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
+		return Html::mailto(Html::encode($value), $value);
 	}
 
 	/**
@@ -138,6 +200,9 @@ class Formatter extends Component
 	 */
 	public function asImage($value)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return Html::img($value);
 	}
 
@@ -148,6 +213,9 @@ class Formatter extends Component
 	 */
 	public function asUrl($value)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		$url = $value;
 		if (strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0) {
 			$url = 'http://' . $url;
@@ -163,6 +231,9 @@ class Formatter extends Component
 	 */
 	public function asBoolean($value)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return $value ? $this->booleanFormat[1] : $this->booleanFormat[0];
 	}
 
@@ -183,6 +254,9 @@ class Formatter extends Component
 	 */
 	public function asDate($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		$value = $this->normalizeDatetimeValue($value);
 		return date($format === null ? $this->dateFormat : $format, $value);
 	}
@@ -204,6 +278,9 @@ class Formatter extends Component
 	 */
 	public function asTime($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		$value = $this->normalizeDatetimeValue($value);
 		return date($format === null ? $this->timeFormat : $format, $value);
 	}
@@ -225,6 +302,9 @@ class Formatter extends Component
 	 */
 	public function asDatetime($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		$value = $this->normalizeDatetimeValue($value);
 		return date($format === null ? $this->datetimeFormat : $format, $value);
 	}
@@ -232,16 +312,12 @@ class Formatter extends Component
 	/**
 	 * Normalizes the given datetime value as one that can be taken by various date/time formatting methods.
 	 * @param mixed $value the datetime value to be normalized.
-	 * @return mixed the normalized datetime value
+	 * @return integer the normalized datetime value
 	 */
 	protected function normalizeDatetimeValue($value)
 	{
 		if (is_string($value)) {
-			if (ctype_digit($value) || $value[0] === '-' && ctype_digit(substr($value, 1))) {
-				return (int)$value;
-			} else {
-				return strtotime($value);
-			}
+			return is_numeric($value) || $value === '' ? (int)$value : strtotime($value);
 		} elseif ($value instanceof DateTime) {
 			return $value->getTimestamp();
 		} else {
@@ -256,6 +332,9 @@ class Formatter extends Component
 	 */
 	public function asInteger($value)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		if (is_string($value) && preg_match('/^(-?\d+)/', $value, $matches)) {
 			return $matches[1];
 		} else {
@@ -274,6 +353,9 @@ class Formatter extends Component
 	 */
 	public function asDouble($value, $decimals = 2)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		if ($this->decimalSeparator === null) {
 			return sprintf("%.{$decimals}f", $value);
 		} else {
@@ -292,6 +374,9 @@ class Formatter extends Component
 	 */
 	public function asNumber($value, $decimals = 0)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		$ds = isset($this->decimalSeparator) ? $this->decimalSeparator: '.';
 		$ts = isset($this->thousandSeparator) ? $this->thousandSeparator: ',';
 		return number_format($value, $decimals, $ds, $ts);

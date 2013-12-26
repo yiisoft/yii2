@@ -1,9 +1,12 @@
 <?php
 namespace yiiunit\framework\caching;
+
 use yii\caching\ApcCache;
 
 /**
  * Class for testing APC cache backend
+ * @group apc
+ * @group caching
  */
 class ApcCacheTest extends CacheTestCase
 {
@@ -20,7 +23,7 @@ class ApcCacheTest extends CacheTestCase
 			$this->markTestSkipped("APC cli is not enabled. Skipping.");
 		}
 
-		if(!ini_get("apc.enabled") || !ini_get("apc.enable_cli")) {
+		if (!ini_get("apc.enabled") || !ini_get("apc.enable_cli")) {
 			$this->markTestSkipped("APC is installed but not enabled. Skipping.");
 		}
 
@@ -31,6 +34,11 @@ class ApcCacheTest extends CacheTestCase
 	}
 
 	public function testExpire()
+	{
+		$this->markTestSkipped("APC keys are expiring only on the next request.");
+	}
+
+	public function testExpireAdd()
 	{
 		$this->markTestSkipped("APC keys are expiring only on the next request.");
 	}

@@ -23,7 +23,7 @@ use yii\base\InvalidParamException;
  * (for example, the authorization data for a personal blog system).
  * Use [[DbManager]] for more complex authorization data.
  *
- * @property array $authItems The authorization items of the specific type.
+ * @property Item[] $items The authorization items of the specific type. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
@@ -33,17 +33,16 @@ class PhpManager extends Manager
 {
 	/**
 	 * @var string the path of the PHP script that contains the authorization data.
-	 * If not set, it will be using 'protected/data/rbac.php' as the data file.
-	 * Make sure this file is writable by the Web server process if the authorization
-	 * needs to be changed.
-	 * @see loadFromFile
-	 * @see saveToFile
+	 * This can be either a file path or a path alias to the file.
+	 * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
+	 * @see loadFromFile()
+	 * @see saveToFile()
 	 */
-	public $authFile;
+	public $authFile = '@app/data/rbac.php';
 
-	private $_items = array(); // itemName => item
-	private $_children = array(); // itemName, childName => child
-	private $_assignments = array(); // userId, itemName => assignment
+	private $_items = []; // itemName => item
+	private $_children = []; // itemName, childName => child
+	private $_assignments = []; // userId, itemName => assignment
 
 	/**
 	 * Initializes the application component.
@@ -53,9 +52,7 @@ class PhpManager extends Manager
 	public function init()
 	{
 		parent::init();
-		if ($this->authFile === null) {
-			$this->authFile = Yii::getAlias('@app/data/rbac') . '.php';
-		}
+		$this->authFile = Yii::getAlias($this->authFile);
 		$this->load();
 	}
 
@@ -69,12 +66,12 @@ class PhpManager extends Manager
 	 * this array, which holds the value of `$userId`.
 	 * @return boolean whether the operations can be performed by the user.
 	 */
-	public function checkAccess($userId, $itemName, $params = array())
+	public function checkAccess($userId, $itemName, $params = [])
 	{
 		if (!isset($this->_items[$itemName])) {
 			return false;
 		}
-		/** @var $item Item */
+		/** @var Item $item */
 		$item = $this->_items[$itemName];
 		Yii::trace('Checking permission: ' . $item->getName(), __METHOD__);
 		if (!isset($params['userId'])) {
@@ -85,7 +82,7 @@ class PhpManager extends Manager
 				return true;
 			}
 			if (isset($this->_assignments[$userId][$itemName])) {
-				/** @var $assignment Assignment */
+				/** @var Assignment $assignment */
 				$assignment = $this->_assignments[$userId][$itemName];
 				if ($this->executeBizRule($assignment->bizRule, $params, $assignment->data)) {
 					return true;
@@ -113,9 +110,9 @@ class PhpManager extends Manager
 		if (!isset($this->_items[$childName], $this->_items[$itemName])) {
 			throw new Exception("Either '$itemName' or '$childName' does not exist.");
 		}
-		/** @var $child Item */
+		/** @var Item $child */
 		$child = $this->_items[$childName];
-		/** @var $item Item */
+		/** @var Item $item */
 		$item = $this->_items[$itemName];
 		$this->checkItemChildType($item->type, $child->type);
 		if ($this->detectLoop($itemName, $childName)) {
@@ -165,10 +162,10 @@ class PhpManager extends Manager
 	public function getItemChildren($names)
 	{
 		if (is_string($names)) {
-			return isset($this->_children[$names]) ? $this->_children[$names] : array();
+			return isset($this->_children[$names]) ? $this->_children[$names] : [];
 		}
 
-		$children = array();
+		$children = [];
 		foreach ($names as $name) {
 			if (isset($this->_children[$name])) {
 				$children = array_merge($children, $this->_children[$name]);
@@ -194,13 +191,13 @@ class PhpManager extends Manager
 		} elseif (isset($this->_assignments[$userId][$itemName])) {
 			throw new InvalidParamException("Authorization item '$itemName' has already been assigned to user '$userId'.");
 		} else {
-			return $this->_assignments[$userId][$itemName] = new Assignment(array(
+			return $this->_assignments[$userId][$itemName] = new Assignment([
 				'manager' => $this,
 				'userId' => $userId,
 				'itemName' => $itemName,
 				'bizRule' => $bizRule,
 				'data' => $data,
-			));
+			]);
 		}
 	}
 
@@ -214,6 +211,22 @@ class PhpManager extends Manager
 	{
 		if (isset($this->_assignments[$userId][$itemName])) {
 			unset($this->_assignments[$userId][$itemName]);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Revokes all authorization assignments from a user.
+	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @return boolean whether removal is successful
+	 */
+	public function revokeAll($userId)
+	{
+		if (isset($this->_assignments[$userId]) && is_array($this->_assignments[$userId])) {
+			foreach ($this->_assignments[$userId] as $itemName => $value)
+				unset($this->_assignments[$userId][$itemName]);
 			return true;
 		} else {
 			return false;
@@ -251,7 +264,7 @@ class PhpManager extends Manager
 	 */
 	public function getAssignments($userId)
 	{
-		return isset($this->_assignments[$userId]) ? $this->_assignments[$userId] : array();
+		return isset($this->_assignments[$userId]) ? $this->_assignments[$userId] : [];
 	}
 
 	/**
@@ -267,17 +280,17 @@ class PhpManager extends Manager
 		if ($userId === null && $type === null) {
 			return $this->_items;
 		}
-		$items = array();
+		$items = [];
 		if ($userId === null) {
 			foreach ($this->_items as $name => $item) {
-				/** @var $item Item */
+				/** @var Item $item */
 				if ($item->type == $type) {
 					$items[$name] = $item;
 				}
 			}
 		} elseif (isset($this->_assignments[$userId])) {
 			foreach ($this->_assignments[$userId] as $assignment) {
-				/** @var $assignment Assignment */
+				/** @var Assignment $assignment */
 				$name = $assignment->itemName;
 				if (isset($this->_items[$name]) && ($type === null || $this->_items[$name]->type == $type)) {
 					$items[$name] = $this->_items[$name];
@@ -307,14 +320,14 @@ class PhpManager extends Manager
 		if (isset($this->_items[$name])) {
 			throw new Exception('Unable to add an item whose name is the same as an existing item.');
 		}
-		return $this->_items[$name] = new Item(array(
+		return $this->_items[$name] = new Item([
 			'manager' => $this,
 			'name' => $name,
 			'type' => $type,
 			'description' => $description,
 			'bizRule' => $bizRule,
 			'data' => $data,
-		));
+		]);
 	}
 
 	/**
@@ -356,8 +369,7 @@ class PhpManager extends Manager
 	 */
 	public function saveItem($item, $oldName = null)
 	{
-		if ($oldName !== null && ($newName = $item->getName()) !== $oldName) // name changed
-		{
+		if ($oldName !== null && ($newName = $item->getName()) !== $oldName) { // name changed
 			if (isset($this->_items[$newName])) {
 				throw new InvalidParamException("Unable to change the item name. The name '$newName' is already used by another item.");
 			}
@@ -399,18 +411,18 @@ class PhpManager extends Manager
 	 */
 	public function save()
 	{
-		$items = array();
+		$items = [];
 		foreach ($this->_items as $name => $item) {
-			/** @var $item Item */
-			$items[$name] = array(
+			/** @var Item $item */
+			$items[$name] = [
 				'type' => $item->type,
 				'description' => $item->description,
 				'bizRule' => $item->bizRule,
 				'data' => $item->data,
-			);
+			];
 			if (isset($this->_children[$name])) {
 				foreach ($this->_children[$name] as $child) {
-					/** @var $child Item */
+					/** @var Item $child */
 					$items[$name]['children'][] = $child->getName();
 				}
 			}
@@ -418,12 +430,12 @@ class PhpManager extends Manager
 
 		foreach ($this->_assignments as $userId => $assignments) {
 			foreach ($assignments as $name => $assignment) {
-				/** @var $assignment Assignment */
+				/** @var Assignment $assignment */
 				if (isset($items[$name])) {
-					$items[$name]['assignments'][$userId] = array(
+					$items[$name]['assignments'][$userId] = [
 						'bizRule' => $assignment->bizRule,
 						'data' => $assignment->data,
-					);
+					];
 				}
 			}
 		}
@@ -441,14 +453,14 @@ class PhpManager extends Manager
 		$items = $this->loadFromFile($this->authFile);
 
 		foreach ($items as $name => $item) {
-			$this->_items[$name] = new Item(array(
+			$this->_items[$name] = new Item([
 				'manager' => $this,
 				'name' => $name,
 				'type' => $item['type'],
 				'description' => $item['description'],
 				'bizRule' => $item['bizRule'],
 				'data' => $item['data'],
-			));
+			]);
 		}
 
 		foreach ($items as $name => $item) {
@@ -461,13 +473,13 @@ class PhpManager extends Manager
 			}
 			if (isset($item['assignments'])) {
 				foreach ($item['assignments'] as $userId => $assignment) {
-					$this->_assignments[$userId][$name] = new Assignment(array(
+					$this->_assignments[$userId][$name] = new Assignment([
 						'manager' => $this,
 						'userId' => $userId,
 						'itemName' => $name,
 						'bizRule' => $assignment['bizRule'],
 						'data' => $assignment['data'],
-					));
+					]);
 				}
 			}
 		}
@@ -479,8 +491,8 @@ class PhpManager extends Manager
 	public function clearAll()
 	{
 		$this->clearAssignments();
-		$this->_children = array();
-		$this->_items = array();
+		$this->_children = [];
+		$this->_items = [];
 	}
 
 	/**
@@ -488,7 +500,7 @@ class PhpManager extends Manager
 	 */
 	public function clearAssignments()
 	{
-		$this->_assignments = array();
+		$this->_assignments = [];
 	}
 
 	/**
@@ -506,7 +518,7 @@ class PhpManager extends Manager
 			return false;
 		}
 		foreach ($this->_children[$childName] as $child) {
-			/** @var $child Item */
+			/** @var Item $child */
 			if ($this->detectLoop($itemName, $child->getName())) {
 				return true;
 			}
@@ -518,14 +530,14 @@ class PhpManager extends Manager
 	 * Loads the authorization data from a PHP script file.
 	 * @param string $file the file path.
 	 * @return array the authorization data
-	 * @see saveToFile
+	 * @see saveToFile()
 	 */
 	protected function loadFromFile($file)
 	{
 		if (is_file($file)) {
 			return require($file);
 		} else {
-			return array();
+			return [];
 		}
 	}
 
@@ -533,7 +545,7 @@ class PhpManager extends Manager
 	 * Saves the authorization data to a PHP script file.
 	 * @param array $data the authorization data
 	 * @param string $file the file path.
-	 * @see loadFromFile
+	 * @see loadFromFile()
 	 */
 	protected function saveToFile($data, $file)
 	{

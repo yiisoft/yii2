@@ -21,7 +21,7 @@ class Schema extends \yii\db\Schema
 	/**
 	 * @var array mapping from physical column types (keys) to abstract column types (values)
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		'tinyint' => self::TYPE_SMALLINT,
 		'bit' => self::TYPE_SMALLINT,
 		'smallint' => self::TYPE_SMALLINT,
@@ -47,7 +47,7 @@ class Schema extends \yii\db\Schema
 		'time' => self::TYPE_TIME,
 		'timestamp' => self::TYPE_TIMESTAMP,
 		'enum' => self::TYPE_STRING,
-	);
+	];
 
 	/**
 	 * Quotes a table name for use in a query.
@@ -207,25 +207,36 @@ class Schema extends \yii\db\Schema
 	}
 
 	/**
-	 * Collects the foreign key column details for the given table.
+	 * Gets the CREATE TABLE sql string.
 	 * @param TableSchema $table the table metadata
+	 * @return string $sql the result of 'SHOW CREATE TABLE'
 	 */
-	protected function findConstraints($table)
+	protected function getCreateTableSql($table)
 	{
-		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryRow();
+		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryOne();
 		if (isset($row['Create Table'])) {
 			$sql = $row['Create Table'];
 		} else {
 			$row = array_values($row);
 			$sql = $row[1];
 		}
+		return $sql;
+	}
+
+	/**
+	 * Collects the foreign key column details for the given table.
+	 * @param TableSchema $table the table metadata
+	 */
+	protected function findConstraints($table)
+	{
+		$sql = $this->getCreateTableSql($table);
 
 		$regexp = '/FOREIGN KEY\s+\(([^\)]+)\)\s+REFERENCES\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
 		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
 			foreach ($matches as $match) {
 				$fks = array_map('trim', explode(',', str_replace('`', '', $match[1])));
 				$pks = array_map('trim', explode(',', str_replace('`', '', $match[3])));
-				$constraint = array(str_replace('`', '', $match[2]));
+				$constraint = [str_replace('`', '', $match[2])];
 				foreach ($fks as $k => $name) {
 					$constraint[$name] = $pks[$k];
 				}
@@ -235,11 +246,39 @@ class Schema extends \yii\db\Schema
 	}
 
 	/**
+	 * Returns all unique indexes for the given table.
+	 * Each array element is of the following structure:
+	 *
+	 * ~~~
+	 * [
+	 *	 'IndexName1' => ['col1' [, ...]],
+	 *	 'IndexName2' => ['col2' [, ...]],
+	 * ]
+	 * ~~~
+	 *
+	 * @param TableSchema $table the table metadata
+	 * @return array all unique indexes for the given table.
+	 */
+	public function findUniqueIndexes($table)
+	{
+		$sql = $this->getCreateTableSql($table);
+		$uniqueIndexes = [];
+
+		$regexp = '/UNIQUE KEY\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
+		if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				$indexName = str_replace('`', '', $match[1]);
+				$indexColumns = array_map('trim', explode(',', str_replace('`', '', $match[2])));
+				$uniqueIndexes[$indexName] = $indexColumns;
+			}
+		}
+		return $uniqueIndexes;
+	}
+
+	/**
 	 * Returns all table names in the database.
-	 * This method should be overridden by child classes in order to support this feature
-	 * because the default implementation simply throws an exception.
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-	 * @return array all table names in the database. The names have NO the schema name prefix.
+	 * @return array all table names in the database. The names have NO schema name prefix.
 	 */
 	protected function findTableNames($schema = '')
 	{

@@ -1,17 +1,14 @@
 Yii 2 Advanced Application Template
 ===================================
 
-**NOTE** Yii 2 and the relevant applications and extensions are still under heavy
-development. We may make significant changes without prior notices. Please do not
-use them for production. Please consider using [Yii v1.1](https://github.com/yiisoft/yii)
-if you have a project to be deployed for production soon.
+Yii 2 Advanced Application Template is a skeleton Yii 2 application best for
+developing complex Web applications with multiple tiers.
 
+The template includes three tiers: front end, back end, and console, each of which
+is a separate Yii application.
 
-Thank you for using Yii 2 Advanced Application Template - an application template
-that works out-of-box and can be easily customized to fit for your needs.
-
-Yii 2 Advanced Application Template is best suitable for large projects requiring frontend and backend separation,
-deployment in different environments, configuration nesting etc.
+The template is designed to work in a team development environment. It supports
+deploying the application in different environments.
 
 
 DIRECTORY STRUCTURE
@@ -34,7 +31,7 @@ backend
 	models/             contains backend-specific model classes
 	runtime/            contains files generated during runtime
 	views/              contains view files for the Web application
-	www/                contains the entry script and Web resources
+	web/                contains the entry script and Web resources
 frontend
 	assets/             contains application assets such as JavaScript and CSS
 	config/             contains frontend configurations
@@ -42,56 +39,39 @@ frontend
 	models/             contains frontend-specific model classes
 	runtime/            contains files generated during runtime
 	views/              contains view files for the Web application
-	www/                contains the entry script and Web resources
+	web/                contains the entry script and Web resources
 vendor/                 contains dependent 3rd-party packages
 environments/                contains environment-based overrides
 ```
 
 
-
 REQUIREMENTS
 ------------
 
-The minimum requirement by Yii is that your Web server supports PHP 5.3.?.
+The minimum requirement by this application template that your Web server supports PHP 5.4.0.
 
 
 INSTALLATION
 ------------
 
+### Install from an Archive File
+
+Extract the archive file downloaded from [yiiframework.com](http://www.yiiframework.com/download/) to
+a directory named `advanced` that is directly under the Web root.
+
+Then follow the instructions given in "GETTING STARTED".
+
+
 ### Install via Composer
 
-If you do not have [Composer](http://getcomposer.org/), you may download it from
-[http://getcomposer.org/](http://getcomposer.org/) or run the following command on Linux/Unix/MacOS:
-
-~~~
-curl -s http://getcomposer.org/installer | php
-~~~
+If you do not have [Composer](http://getcomposer.org/), you may install it by following the instructions
+at [getcomposer.org](http://getcomposer.org/doc/00-intro.md#installation-nix).
 
 You can then install the application using the following command:
 
 ~~~
-php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced yii-advanced
+php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced advanced
 ~~~
-
-
-### Install from an Archive File
-
-This is not currently available. We will provide it when Yii 2 is formally released.
-
-
-### Install from development repository
-
-If you've cloned the [Yii 2 framework main development repository](https://github.com/yiisoft/yii2) you
-can bootstrap your application with:
-
-~~~
-cd yii2/apps/advanced
-php composer.phar create-project
-~~~
-
-*Note: If the above command fails with `[RuntimeException] Not enough arguments.` run
-`php composer.phar self-update` to obtain an updated version of composer which supports creating projects
-from local packages.*
 
 
 GETTING STARTED
@@ -100,14 +80,11 @@ GETTING STARTED
 After you install the application, you have to conduct the following steps to initialize
 the installed application. You only need to do these once for all.
 
-1. Execute the `init` command and select `dev` as environment.
-2. Create a new database. It is assumed that MySQL InnoDB is used. If not, adjust `console/migrations/m130524_201442_init.php`.
-3. In `common/config/params.php` set your database details in `components.db` values.
+1. Run command `init` to initialize the application with a specific environment.
+2. Create a new database and adjust the `components.db` configuration in `common/config/params.php` accordingly.
+3. Run command `yii migrate` to apply DB migrations.
 
 Now you should be able to access:
 
-- the frontend using the URL `http://localhost/yii-advanced/frontend/www/`
-- the backend using the URL `http://localhost/yii-advanced/backend/www/`
-
-assuming `yii-advanced` is directly under the document root of your Web server.
-
+- the frontend using the URL `http://localhost/advanced/frontend/web/`
+- the backend using the URL `http://localhost/advanced/backend/web/`

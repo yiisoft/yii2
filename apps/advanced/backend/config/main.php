@@ -1,5 +1,5 @@
 <?php
-$rootDir = __DIR__ . '/../..';
+$rootDir = dirname(dirname(__DIR__));
 
 $params = array_merge(
 	require($rootDir . '/common/config/params.php'),
@@ -8,33 +8,34 @@ $params = array_merge(
 	require(__DIR__ . '/params-local.php')
 );
 
-return array(
+return [
 	'id' => 'app-backend',
 	'basePath' => dirname(__DIR__),
-	'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
-	'preload' => array('log'),
+	'vendorPath' => $rootDir . '/vendor',
+	'preload' => ['log'],
 	'controllerNamespace' => 'backend\controllers',
-	'modules' => array(
-	),
-	'components' => array(
+	'modules' => [],
+	'extensions' => require($rootDir . '/vendor/yiisoft/extensions.php'),
+	'components' => [
 		'db' => $params['components.db'],
 		'cache' => $params['components.cache'],
-		'user' => array(
-			'class' => 'yii\web\User',
+		'mail' => $params['components.mail'],
+		'user' => [
 			'identityClass' => 'common\models\User',
-		),
-		'assetManager' => array(
-			'bundles' => require(__DIR__ . '/assets.php'),
-		),
-		'log' => array(
-			'class' => 'yii\logging\Router',
-			'targets' => array(
-				array(
-					'class' => 'yii\logging\FileTarget',
-					'levels' => array('error', 'warning'),
-				),
-			),
-		),
-	),
+			'enableAutoLogin' => true,
+		],
+		'log' => [
+			'traceLevel' => YII_DEBUG ? 3 : 0,
+			'targets' => [
+				[
+					'class' => 'yii\log\FileTarget',
+					'levels' => ['error', 'warning'],
+				],
+			],
+		],
+		'errorHandler' => [
+			'errorAction' => 'site/error',
+		],
+	],
 	'params' => $params,
-);
+];

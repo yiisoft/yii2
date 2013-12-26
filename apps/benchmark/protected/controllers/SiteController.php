@@ -1,5 +1,7 @@
 <?php
 
+namespace app\controllers;
+
 use yii\web\Controller;
 
 class SiteController extends Controller
@@ -8,6 +10,6 @@ class SiteController extends Controller
 
 	public function actionHello()
 	{
-		echo 'hello world';
+		return 'hello world';
 	}
 }

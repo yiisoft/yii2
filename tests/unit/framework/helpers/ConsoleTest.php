@@ -6,6 +6,10 @@ use Yii;
 use yii\helpers\Console;
 use yiiunit\TestCase;
 
+/**
+ * @group helpers
+ * @group console
+ */
 class ConsoleTest extends TestCase
 {
 	public function testStripAnsiFormat()
@@ -53,11 +57,11 @@ class ConsoleTest extends TestCase
 		echo 'a';
 		Console::restoreCursorPosition();
 		echo 'a';
-		Console::beginAnsiFormat(array(Console::FG_GREEN, Console::BG_BLUE, Console::UNDERLINE));
+		Console::beginAnsiFormat([Console::FG_GREEN, Console::BG_BLUE, Console::UNDERLINE]);
 		echo 'a';
 		Console::endAnsiFormat();
 		echo 'a';
-		Console::beginAnsiFormat(array(Console::xtermBgColor(128), Console::xtermFgColor(55)));
+		Console::beginAnsiFormat([Console::xtermBgColor(128), Console::xtermFgColor(55)]);
 		echo 'a';
 		Console::endAnsiFormat();
 		echo 'a';
@@ -69,11 +73,10 @@ class ConsoleTest extends TestCase
 
 /*	public function testScreenSize()
 	{
-		for($i = 1; $i < 20; $i++) {
+		for ($i = 1; $i < 20; $i++) {
 			echo implode(', ', Console::getScreenSize(true)) . "\n";
 			ob_flush();
 			sleep(1);
 		}
 	}*/
-
 }

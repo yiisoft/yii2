@@ -7,24 +7,19 @@
 
 namespace yii\db;
 
+use yii\base\Object;
 use yii\base\InvalidParamException;
 
 /**
  * TableSchema represents the metadata of a database table.
  *
- * @property array $columnNames list of column names
+ * @property array $columnNames List of column names. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class TableSchema extends \yii\base\Object
+class TableSchema extends Object
 {
-	/**
-	 * @var string name of the catalog (database) that this table belongs to.
-	 * Defaults to null, meaning no catalog (or the current database).
-	 * This property is only meaningful for MSSQL.
-	 */
-	public $catalogName;
 	/**
 	 * @var string name of the schema that this table belongs to.
 	 */
@@ -36,7 +31,7 @@ class TableSchema extends \yii\base\Object
 	/**
 	 * @var string[] primary keys of this table.
 	 */
-	public $primaryKey = array();
+	public $primaryKey = [];
 	/**
 	 * @var string sequence name for the primary key. Null if no sequence.
 	 */
@@ -45,18 +40,18 @@ class TableSchema extends \yii\base\Object
 	 * @var array foreign keys of this table. Each array element is of the following structure:
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *	 'ForeignTableName',
 	 *	 'fk1' => 'pk1',  // pk1 is in foreign table
 	 *	 'fk2' => 'pk2',  // if composite foreign key
-	 * )
+	 * ]
 	 * ~~~
 	 */
-	public $foreignKeys = array();
+	public $foreignKeys = [];
 	/**
 	 * @var ColumnSchema[] column metadata of this table. Each array element is a [[ColumnSchema]] object, indexed by column names.
 	 */
-	public $columns = array();
+	public $columns = [];
 
 	/**
 	 * Gets the named column metadata.
@@ -86,7 +81,7 @@ class TableSchema extends \yii\base\Object
 	public function fixPrimaryKey($keys)
 	{
 		if (!is_array($keys)) {
-			$keys = array($keys);
+			$keys = [$keys];
 		}
 		$this->primaryKey = $keys;
 		foreach ($this->columns as $column) {

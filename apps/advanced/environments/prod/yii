@@ -9,12 +9,13 @@
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', false);
+defined('YII_ENV') or define('YII_ENV', 'prod');
 
 // fcgi doesn't have STDIN defined by default
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 
-require(__DIR__ . '/vendor/yiisoft/yii2/yii/Yii.php');
 require(__DIR__ . '/vendor/autoload.php');
+require(__DIR__ . '/vendor/yiisoft/yii2/yii/Yii.php');
 
 $config = yii\helpers\ArrayHelper::merge(
 	require(__DIR__ . '/console/config/main.php'),
@@ -22,4 +23,5 @@ $config = yii\helpers\ArrayHelper::merge(
 );
 
 $application = new yii\console\Application($config);
-$application->run();
+$exitCode = $application->run();
+exit($exitCode);

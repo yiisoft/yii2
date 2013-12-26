@@ -1,12 +1,16 @@
 <?php
 namespace yiiunit\framework\db;
 
+use yii\db\Connection;
 use yiiunit\TestCase as TestCase;
 
 abstract class DatabaseTestCase extends TestCase
 {
 	protected $database;
 	protected $driverName = 'mysql';
+	/**
+	 * @var Connection
+	 */
 	protected $db;
 
 	protected function setUp()
@@ -17,8 +21,17 @@ abstract class DatabaseTestCase extends TestCase
 		$pdo_database = 'pdo_'.$this->driverName;
 
 		if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
-			$this->markTestSkipped('pdo and pdo_'.$pdo_database.' extension are required.');
+			$this->markTestSkipped('pdo and '.$pdo_database.' extension are required.');
 		}
+		$this->mockApplication();
+	}
+
+	protected function tearDown()
+	{
+		if ($this->db) {
+			$this->db->close();
+		}
+		$this->destroyApplication();
 	}
 
 	/**

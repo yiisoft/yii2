@@ -21,8 +21,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	/**
 	 * @var array mapping from abstract column types (keys) to physical column types (values).
 	 */
-	public $typeMap = array(
+	public $typeMap = [
 		Schema::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+		Schema::TYPE_BIGPK => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
 		Schema::TYPE_STRING => 'varchar(255)',
 		Schema::TYPE_TEXT => 'text',
 		Schema::TYPE_SMALLINT => 'smallint(6)',
@@ -37,7 +38,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		Schema::TYPE_BINARY => 'blob',
 		Schema::TYPE_BOOLEAN => 'tinyint(1)',
 		Schema::TYPE_MONEY => 'decimal(19,4)',
-	);
+	];
 
 	/**
 	 * Builds a SQL statement for renaming a column.
@@ -50,7 +51,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	public function renameColumn($table, $oldName, $newName)
 	{
 		$quotedTable = $this->db->quoteTableName($table);
-		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryRow();
+		$row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryOne();
 		if ($row === false) {
 			throw new Exception("Unable to find column '$oldName' in table '$table'.");
 		}
@@ -89,6 +90,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	}
 
 	/**
+	 * Builds a SQL statement for removing a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint to be removed.
+	 * @param string $table the table that the primary key constraint will be removed from.
+	 * @return string the SQL statement for removing a primary key constraint from an existing table.
+	 */
+	public function dropPrimaryKey($name, $table)
+	{
+		return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' DROP PRIMARY KEY';
+	}
+
+	/**
 	 * Creates a SQL statement for resetting the sequence value of a table's primary key.
 	 * The sequence will be reset such that the primary key of the next new row inserted
 	 * will have the specified value or 1.
@@ -113,7 +125,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		} elseif ($table === null) {
 			throw new InvalidParamException("Table not found: $tableName");
 		} else {
-			throw new InvalidParamException("There is not sequence associated with table '$tableName'.'");
+			throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
 		}
 	}
 
@@ -130,40 +142,22 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	}
 
 	/**
-	 * Generates a batch INSERT SQL statement.
-	 * For example,
-	 *
-	 * ~~~
-	 * $connection->createCommand()->batchInsert('tbl_user', array('name', 'age'), array(
-	 *     array('Tom', 30),
-	 *     array('Jane', 20),
-	 *     array('Linda', 25),
-	 * ))->execute();
-	 * ~~~
-	 *
-	 * Not that the values in each row must match the corresponding column names.
-	 *
-	 * @param string $table the table that new rows will be inserted into.
-	 * @param array $columns the column names
-	 * @param array $rows the rows to be batch inserted into the table
-	 * @return string the batch INSERT SQL statement
+	 * @inheritdoc
 	 */
-	public function batchInsert($table, $columns, $rows)
+	public function buildLimit($limit, $offset)
 	{
-		foreach ($columns as $i => $name) {
-			$columns[$i] = $this->db->quoteColumnName($name);
-		}
-
-		$values = array();
-		foreach ($rows as $row) {
-			$vs = array();
-			foreach ($row as $value) {
-				$vs[] = is_string($value) ? $this->db->quoteValue($value) : $value;
+		$sql = '';
+		// limit is not optional in MySQL
+		// http://stackoverflow.com/a/271650/1106908
+		// http://dev.mysql.com/doc/refman/5.0/en/select.html#idm47619502796240
+		if ($limit !== null && $limit >= 0) {
+			$sql = 'LIMIT ' . (int)$limit;
+			if ($offset > 0) {
+				$sql .= ' OFFSET ' . (int)$offset;
 			}
-			$values[] = '(' . implode(', ', $vs) . ')';
+		} elseif ($offset > 0) {
+			$sql = 'LIMIT ' . (int)$offset . ', 18446744073709551615'; // 2^64-1
 		}
-
-		return 'INSERT INTO ' . $this->db->quoteTableName($table)
-			. ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
+		return $sql;
 	}
 }

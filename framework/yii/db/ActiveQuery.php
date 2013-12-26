@@ -8,16 +8,10 @@
 
 namespace yii\db;
 
-use yii\db\Connection;
-use yii\db\Command;
-use yii\db\QueryBuilder;
-use yii\db\Expression;
-
 /**
  * ActiveQuery represents a DB query associated with an Active Record class.
  *
- * ActiveQuery instances are usually created by [[ActiveRecord::find()]], [[ActiveRecord::findBySql()]]
- * and [[ActiveRecord::count()]].
+ * ActiveQuery instances are usually created by [[ActiveRecord::find()]] and [[ActiveRecord::findBySql()]].
  *
  * ActiveQuery mainly provides the following methods to retrieve the query results:
  *
@@ -29,6 +23,7 @@ use yii\db\Expression;
  * - [[min()]]: returns the min over the specified column.
  * - [[max()]]: returns the max over the specified column.
  * - [[scalar()]]: returns the value of the first column in the first row of the query result.
+ * - [[column()]]: returns the value of the first column in the query result.
  * - [[exists()]]: returns a value indicating whether the query result has data or not.
  *
  * Because ActiveQuery extends from [[Query]], one can use query methods, such as [[where()]],
@@ -47,28 +42,13 @@ use yii\db\Expression;
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ActiveQuery extends Query
+class ActiveQuery extends Query implements ActiveQueryInterface
 {
-	/**
-	 * @var string the name of the ActiveRecord class.
-	 */
-	public $modelClass;
-	/**
-	 * @var array list of relations that this query should be performed with
-	 */
-	public $with;
-	/**
-	 * @var string the name of the column by which query results should be indexed by.
-	 * This is only used when the query result is returned as an array when calling [[all()]].
-	 */
-	public $indexBy;
-	/**
-	 * @var boolean whether to return each record as an array. If false (default), an object
-	 * of [[modelClass]] will be created to represent each record.
-	 */
-	public $asArray;
+	use ActiveQueryTrait;
+
 	/**
 	 * @var string the SQL statement to be executed for retrieving AR records.
 	 * This is set by [[ActiveRecord::findBySql()]].
@@ -77,147 +57,99 @@ class ActiveQuery extends Query
 
 
 	/**
-	 * PHP magic method.
-	 * This method allows calling static method defined in [[modelClass]] via this query object.
-	 * It is mainly implemented for supporting the feature of scope.
-	 * @param string $name the method name to be called
-	 * @param array $params the parameters passed to the method
-	 * @return mixed the method return result
+	 * Executes query and returns all results as an array.
+	 * @param Connection $db the DB connection used to create the DB command.
+	 * If null, the DB connection returned by [[modelClass]] will be used.
+	 * @return array the query results. If the query results in nothing, an empty array will be returned.
 	 */
-	public function __call($name, $params)
+	public function all($db = null)
 	{
-		if (method_exists($this->modelClass, $name)) {
-			array_unshift($params, $this);
-			call_user_func_array(array($this->modelClass, $name), $params);
-			return $this;
+		$command = $this->createCommand($db);
+		$rows = $command->queryAll();
+		if (!empty($rows)) {
+			$models = $this->createModels($rows);
+			if (!empty($this->join) && $this->indexBy === null) {
+				$models = $this->removeDuplicatedModels($models);
+			}
+			if (!empty($this->with)) {
+				$this->findWith($this->with, $models);
+			}
+			return $models;
 		} else {
-			return parent::__call($name, $params);
+			return [];
 		}
 	}
 
 	/**
-	 * Executes query and returns all results as an array.
-	 * @return array the query results. If the query results in nothing, an empty array will be returned.
+	 * Removes duplicated models by checking their primary key values.
+	 * This method is mainly called when a join query is performed, which may cause duplicated rows being returned.
+	 * @param array $models the models to be checked
+	 * @return array the distinctive models
 	 */
-	public function all()
+	private function removeDuplicatedModels($models)
 	{
-		$command = $this->createCommand();
-		$rows = $command->queryAll();
-		if (!empty($rows)) {
-			$models = $this->createModels($rows);
-			if (!empty($this->with)) {
-				$this->populateRelations($models, $this->with);
+		$hash = [];
+		/** @var ActiveRecord $class */
+		$class = $this->modelClass;
+		$pks = $class::primaryKey();
+
+		if (count($pks) > 1) {
+			foreach ($models as $i => $model) {
+				$key = [];
+				foreach ($pks as $pk) {
+					$key[] = $model[$pk];
+				}
+				$key = serialize($key);
+				if (isset($hash[$key])) {
+					unset($models[$i]);
+				} else {
+					$hash[$key] = true;
+				}
 			}
-			return $models;
 		} else {
-			return array();
+			$pk = reset($pks);
+			foreach ($models as $i => $model) {
+				$key = $model[$pk];
+				if (isset($hash[$key])) {
+					unset($models[$i]);
+				} else {
+					$hash[$key] = true;
+				}
+			}
 		}
+
+		return array_values($models);
 	}
 
 	/**
 	 * Executes query and returns a single row of result.
+	 * @param Connection $db the DB connection used to create the DB command.
+	 * If null, the DB connection returned by [[modelClass]] will be used.
 	 * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
 	 * the query result may be either an array or an ActiveRecord object. Null will be returned
 	 * if the query results in nothing.
 	 */
-	public function one()
+	public function one($db = null)
 	{
-		$command = $this->createCommand();
-		$row = $command->queryRow();
-		if ($row !== false && !$this->asArray) {
-			/** @var $class ActiveRecord */
-			$class = $this->modelClass;
-			$model = $class::create($row);
+		$command = $this->createCommand($db);
+		$row = $command->queryOne();
+		if ($row !== false) {
+			if ($this->asArray) {
+				$model = $row;
+			} else {
+				/** @var ActiveRecord $class */
+				$class = $this->modelClass;
+				$model = $class::create($row);
+			}
 			if (!empty($this->with)) {
-				$models = array($model);
-				$this->populateRelations($models, $this->with);
+				$models = [$model];
+				$this->findWith($this->with, $models);
 				$model = $models[0];
 			}
 			return $model;
 		} else {
-			return $row === false ? null : $row;
+			return null;
 		}
-	}
-
-	/**
-	 * Returns the number of records.
-	 * @param string $q the COUNT expression. Defaults to '*'.
-	 * Make sure you properly quote column names.
-	 * @return integer number of records
-	 */
-	public function count($q = '*')
-	{
-		$this->select = array("COUNT($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the sum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the sum of the specified column values
-	 */
-	public function sum($q)
-	{
-		$this->select = array("SUM($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the average of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the average of the specified column values.
-	 */
-	public function average($q)
-	{
-		$this->select = array("AVG($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the minimum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the minimum of the specified column values.
-	 */
-	public function min($q)
-	{
-		$this->select = array("MIN($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the maximum of the specified column values.
-	 * @param string $q the column name or expression.
-	 * Make sure you properly quote column names.
-	 * @return integer the maximum of the specified column values.
-	 */
-	public function max($q)
-	{
-		$this->select = array("MAX($q)");
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns the query result as a scalar value.
-	 * The value returned will be the first column in the first row of the query results.
-	 * @return string|boolean the value of the first column in the first row of the query result.
-	 * False is returned if the query result is empty.
-	 */
-	public function scalar()
-	{
-		return $this->createCommand()->queryScalar();
-	}
-
-	/**
-	 * Returns a value indicating whether the query result contains any row of data.
-	 * @return boolean whether the query result contains any row of data.
-	 */
-	public function exists()
-	{
-		$this->select = array(new Expression('1'));
-		return $this->scalar() !== false;
 	}
 
 	/**
@@ -228,156 +160,250 @@ class ActiveQuery extends Query
 	 */
 	public function createCommand($db = null)
 	{
-		/** @var $modelClass ActiveRecord */
+		/** @var ActiveRecord $modelClass */
 		$modelClass = $this->modelClass;
 		if ($db === null) {
 			$db = $modelClass::getDb();
 		}
+
 		if ($this->sql === null) {
+			$select = $this->select;
+			$from = $this->from;
+
 			if ($this->from === null) {
 				$tableName = $modelClass::tableName();
 				if ($this->select === null && !empty($this->join)) {
-					$this->select = array("$tableName.*");
+					$this->select = ["$tableName.*"];
 				}
-				$this->from = array($tableName);
+				$this->from = [$tableName];
 			}
-			/** @var $qb QueryBuilder */
-			$qb = $db->getQueryBuilder();
-			$this->sql = $qb->build($this);
-		}
-		return $db->createCommand($this->sql, $this->params);
-	}
+			list ($sql, $params) = $db->getQueryBuilder()->build($this);
 
-	/**
-	 * Sets the [[asArray]] property.
-	 * @param boolean $value whether to return the query results in terms of arrays instead of Active Records.
-	 * @return ActiveQuery the query object itself
-	 */
-	public function asArray($value = true)
-	{
-		$this->asArray = $value;
-		return $this;
-	}
-
-	/**
-	 * Specifies the relations with which this query should be performed.
-	 *
-	 * The parameters to this method can be either one or multiple strings, or a single array
-	 * of relation names and the optional callbacks to customize the relations.
-	 *
-	 * The followings are some usage examples:
-	 *
-	 * ~~~
-	 * // find customers together with their orders and country
-	 * Customer::find()->with('orders', 'country')->all();
-	 * // find customers together with their country and orders of status 1
-	 * Customer::find()->with(array(
-	 *     'orders' => function($query) {
-	 *         $query->andWhere('status = 1');
-	 *     },
-	 *     'country',
-	 * ))->all();
-	 * ~~~
-	 *
-	 * @return ActiveQuery the query object itself
-	 */
-	public function with()
-	{
-		$this->with = func_get_args();
-		if (isset($this->with[0]) && is_array($this->with[0])) {
-			// the parameter is given as an array
-			$this->with = $this->with[0];
-		}
-		return $this;
-	}
-
-	/**
-	 * Sets the [[indexBy]] property.
-	 * @param string $column the name of the column by which the query results should be indexed by.
-	 * @return ActiveQuery the query object itself
-	 */
-	public function indexBy($column)
-	{
-		$this->indexBy = $column;
-		return $this;
-	}
-
-	private function createModels($rows)
-	{
-		$models = array();
-		if ($this->asArray) {
-			if ($this->indexBy === null) {
-				return $rows;
-			}
-			foreach ($rows as $row) {
-				$models[$row[$this->indexBy]] = $row;
-			}
+			$this->select = $select;
+			$this->from = $from;
 		} else {
-			/** @var $class ActiveRecord */
-			$class = $this->modelClass;
-			if ($this->indexBy === null) {
-				foreach ($rows as $row) {
-					$models[] = $class::create($row);
-				}
-			} else {
-				foreach ($rows as $row) {
-					$model = $class::create($row);
-					$models[$model->{$this->indexBy}] = $model;
-				}
-			}
+			$sql = $this->sql;
+			$params = $this->params;
 		}
-		return $models;
-	}
-
-	private function populateRelations(&$models, $with)
-	{
-		$primaryModel = new $this->modelClass;
-		$relations = $this->normalizeRelations($primaryModel, $with);
-		foreach ($relations as $name => $relation) {
-			if ($relation->asArray === null) {
-				// inherit asArray from primary query
-				$relation->asArray = $this->asArray;
-			}
-			$relation->findWith($name, $models);
-		}
+		return $db->createCommand($sql, $params);
 	}
 
 	/**
-	 * @param ActiveRecord $model
-	 * @param array $with
-	 * @return ActiveRelation[]
+	 * Joins with the specified relations.
+	 *
+	 * This method allows you to reuse existing relation definitions to perform JOIN queries.
+	 * Based on the definition of the specified relation(s), the method will append one or multiple
+	 * JOIN statements to the current query.
+	 *
+	 * If the `$eagerLoading` parameter is true, the method will also eager loading the specified relations,
+	 * which is equivalent to calling [[with()]] using the specified relations.
+	 *
+	 * Note that because a JOIN query will be performed, you are responsible to disambiguate column names.
+	 *
+	 * This method differs from [[with()]] in that it will build up and execute a JOIN SQL statement
+	 * for the primary table. And when `$eagerLoading` is true, it will call [[with()]] in addition with the specified relations.
+	 *
+	 * @param array $with the relations to be joined. Each array element represents a single relation.
+	 * The array keys are relation names, and the array values are the corresponding anonymous functions that
+	 * can be used to modify the relation queries on-the-fly. If a relation query does not need modification,
+	 * you may use the relation name as the array value. Sub-relations can also be specified (see [[with()]]).
+	 * For example,
+	 *
+	 * ```php
+	 * // find all orders that contain books, and eager loading "books"
+	 * Order::find()->joinWith('books', true, 'INNER JOIN')->all();
+	 * // find all orders, eager loading "books", and sort the orders and books by the book names.
+	 * Order::find()->joinWith([
+	 *     'books' => function ($query) {
+	 *         $query->orderBy('tbl_item.name');
+	 *     }
+	 * ])->all();
+	 * ```
+	 *
+	 * @param boolean|array $eagerLoading whether to eager load the relations specified in `$with`.
+	 * When this is a boolean, it applies to all relations specified in `$with`. Use an array
+	 * to explicitly list which relations in `$with` need to be eagerly loaded.
+	 * @param string|array $joinType the join type of the relations specified in `$with`.
+	 * When this is a string, it applies to all relations specified in `$with`. Use an array
+	 * in the format of `relationName => joinType` to specify different join types for different relations.
+	 * @return static the query object itself
 	 */
-	private function normalizeRelations($model, $with)
+	public function joinWith($with, $eagerLoading = true, $joinType = 'LEFT JOIN')
 	{
-		$relations = array();
+		$with = (array)$with;
+		$this->joinWithRelations(new $this->modelClass, $with, $joinType);
+
+		if (is_array($eagerLoading)) {
+			foreach ($with as $name => $callback) {
+				if (is_integer($name)) {
+					if (!in_array($callback, $eagerLoading, true)) {
+						unset($with[$name]);
+					}
+				} elseif (!in_array($name, $eagerLoading, true)) {
+					unset($with[$name]);
+				}
+			}
+			$this->with($with);
+		} elseif ($eagerLoading) {
+			$this->with($with);
+		}
+		return $this;
+	}
+
+	/**
+	 * Inner joins with the specified relations.
+	 * This is a shortcut method to [[joinWith()]] with the join type set as "INNER JOIN".
+	 * Please refer to [[joinWith()]] for detailed usage of this method.
+	 * @param array $with the relations to be joined with
+	 * @param boolean|array $eagerLoading whether to eager loading the relations
+	 * @return static the query object itself
+	 * @see joinWith()
+	 */
+	public function innerJoinWith($with, $eagerLoading = true)
+	{
+		return $this->joinWith($with, $eagerLoading, 'INNER JOIN');
+	}
+
+	/**
+	 * Modifies the current query by adding join fragments based on the given relations.
+	 * @param ActiveRecord $model the primary model
+	 * @param array $with the relations to be joined
+	 * @param string|array $joinType the join type
+	 */
+	private function joinWithRelations($model, $with, $joinType)
+	{
+		$relations = [];
+
 		foreach ($with as $name => $callback) {
 			if (is_integer($name)) {
 				$name = $callback;
 				$callback = null;
 			}
-			if (($pos = strpos($name, '.')) !== false) {
-				// with sub-relations
+
+			$primaryModel = $model;
+			$parent = $this;
+			$prefix = '';
+			while (($pos = strpos($name, '.')) !== false) {
 				$childName = substr($name, $pos + 1);
 				$name = substr($name, 0, $pos);
-			} else {
-				$childName = null;
+				$fullName = $prefix === '' ? $name : "$prefix.$name";
+				if (!isset($relations[$fullName])) {
+					$relations[$fullName] = $relation = $primaryModel->getRelation($name);
+					$this->joinWithRelation($parent, $relation, $this->getJoinType($joinType, $fullName));
+				} else {
+					$relation = $relations[$fullName];
+				}
+				$primaryModel = new $relation->modelClass;
+				$parent = $relation;
+				$prefix = $fullName;
+				$name = $childName;
 			}
 
-			$t = strtolower($name);
-			if (!isset($relations[$t])) {
-				$relation = $model->getRelation($name);
-				$relation->primaryModel = null;
-				$relations[$t] = $relation;
-			} else {
-				$relation = $relations[$t];
-			}
-
-			if (isset($childName)) {
-				$relation->with[$childName] = $callback;
-			} elseif ($callback !== null) {
-				call_user_func($callback, $relation);
+			$fullName = $prefix === '' ? $name : "$prefix.$name";
+			if (!isset($relations[$fullName])) {
+				$relations[$fullName] = $relation = $primaryModel->getRelation($name);
+				if ($callback !== null) {
+					call_user_func($callback, $relation);
+				}
+				$this->joinWithRelation($parent, $relation, $this->getJoinType($joinType, $fullName));
 			}
 		}
-		return $relations;
+	}
+
+	/**
+	 * Returns the join type based on the given join type parameter and the relation name.
+	 * @param string|array $joinType the given join type(s)
+	 * @param string $name relation name
+	 * @return string the real join type
+	 */
+	private function getJoinType($joinType, $name)
+	{
+		if (is_array($joinType) && isset($joinType[$name])) {
+			return $joinType[$name];
+		} else {
+			return is_string($joinType) ? $joinType : 'INNER JOIN';
+		}
+	}
+
+	/**
+	 * Returns the table name used by the specified active query.
+	 * @param ActiveQuery $query
+	 * @return string the table name
+	 */
+	private function getQueryTableName($query)
+	{
+		if (empty($query->from)) {
+			/** @var ActiveRecord $modelClass */
+			$modelClass = $query->modelClass;
+			return $modelClass::tableName();
+		} else {
+			return reset($query->from);
+		}
+	}
+
+	/**
+	 * Joins a parent query with a child query.
+	 * The current query object will be modified accordingly.
+	 * @param ActiveQuery $parent
+	 * @param ActiveRelation $child
+	 * @param string $joinType
+	 */
+	private function joinWithRelation($parent, $child, $joinType)
+	{
+		$via = $child->via;
+		$child->via = null;
+		if ($via instanceof ActiveRelation) {
+			// via table
+			$this->joinWithRelation($parent, $via, $joinType);
+			$this->joinWithRelation($via, $child, $joinType);
+			return;
+		} elseif (is_array($via)) {
+			// via relation
+			$this->joinWithRelation($parent, $via[1], $joinType);
+			$this->joinWithRelation($via[1], $child, $joinType);
+			return;
+		}
+
+		$parentTable = $this->getQueryTableName($parent);
+		$childTable = $this->getQueryTableName($child);
+
+
+		if (!empty($child->link)) {
+			$on = [];
+			foreach ($child->link as $childColumn => $parentColumn) {
+				$on[] = '{{' . $parentTable . "}}.[[$parentColumn]] = {{" . $childTable . "}}.[[$childColumn]]";
+			}
+			$on = implode(' AND ', $on);
+		} else {
+			$on = '';
+		}
+		$this->join($joinType, $childTable, $on);
+
+
+		if (!empty($child->where)) {
+			$this->andWhere($child->where);
+		}
+		if (!empty($child->having)) {
+			$this->andHaving($child->having);
+		}
+		if (!empty($child->orderBy)) {
+			$this->addOrderBy($child->orderBy);
+		}
+		if (!empty($child->groupBy)) {
+			$this->addGroupBy($child->groupBy);
+		}
+		if (!empty($child->params)) {
+			$this->addParams($child->params);
+		}
+		if (!empty($child->join)) {
+			foreach ($child->join as $join) {
+				$this->join[] = $join;
+			}
+		}
+		if (!empty($child->union)) {
+			foreach ($child->union as $union) {
+				$this->union[] = $union;
+			}
+		}
 	}
 }

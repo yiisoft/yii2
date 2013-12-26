@@ -19,7 +19,7 @@ use yii\caching\Cache;
  *
  * To execute a non-query SQL (such as INSERT, DELETE, UPDATE), call [[execute()]].
  * To execute a SQL statement that returns result data set (such as SELECT),
- * use [[queryAll()]], [[queryRow()]], [[queryColumn()]], [[queryScalar()]], or [[query()]].
+ * use [[queryAll()]], [[queryOne()]], [[queryColumn()]], [[queryScalar()]], or [[query()]].
  * For example,
  *
  * ~~~
@@ -36,15 +36,17 @@ use yii\caching\Cache;
  * [[update()]], etc. For example,
  *
  * ~~~
- * $connection->createCommand()->insert('tbl_user', array(
+ * $connection->createCommand()->insert('tbl_user', [
  *     'name' => 'Sam',
  *     'age' => 30,
- * ))->execute();
+ * ])->execute();
  * ~~~
  *
  * To build SELECT SQL statements, please use [[QueryBuilder]] instead.
  *
- * @property string $sql the SQL statement to be executed
+ * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
+ * [[sql]]. This property is read-only.
+ * @property string $sql The SQL statement to be executed.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -60,18 +62,20 @@ class Command extends \yii\base\Component
 	 */
 	public $pdoStatement;
 	/**
-	 * @var mixed the default fetch mode for this command.
+	 * @var integer the default fetch mode for this command.
 	 * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
 	 */
 	public $fetchMode = \PDO::FETCH_ASSOC;
 	/**
+	 * @var array the parameters (name => value) that are bound to the current PDO statement.
+	 * This property is maintained by methods such as [[bindValue()]].
+	 * Do not modify it directly.
+	 */
+	public $params = [];
+	/**
 	 * @var string the SQL statement that this command represents
 	 */
 	private $_sql;
-	/**
-	 * @var array the parameter log information (name => value)
-	 */
-	private $_params = array();
 
 	/**
 	 * Returns the SQL statement for this command.
@@ -86,14 +90,14 @@ class Command extends \yii\base\Component
 	 * Specifies the SQL statement to be executed.
 	 * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well.
 	 * @param string $sql the SQL statement to be set.
-	 * @return Command this command instance
+	 * @return static this command instance
 	 */
 	public function setSql($sql)
 	{
 		if ($sql !== $this->_sql) {
 			$this->cancel();
 			$this->_sql = $this->db->quoteSql($sql);
-			$this->_params = array();
+			$this->params = [];
 		}
 		return $this;
 	}
@@ -102,15 +106,15 @@ class Command extends \yii\base\Component
 	 * Returns the raw SQL by inserting parameter values into the corresponding placeholders in [[sql]].
 	 * Note that the return value of this method should mainly be used for logging purpose.
 	 * It is likely that this method returns an invalid SQL due to improper replacement of parameter placeholders.
-	 * @return string the raw SQL
+	 * @return string the raw SQL with parameter values inserted into the corresponding placeholders in [[sql]].
 	 */
 	public function getRawSql()
 	{
-		if (empty($this->_params)) {
+		if (empty($this->params)) {
 			return $this->_sql;
 		} else {
-			$params = array();
-			foreach ($this->_params as $name => $value) {
+			$params = [];
+			foreach ($this->params as $name => $value) {
 				if (is_string($value)) {
 					$params[$name] = $this->db->quoteValue($value);
 				} elseif ($value === null) {
@@ -146,9 +150,9 @@ class Command extends \yii\base\Component
 			try {
 				$this->pdoStatement = $this->db->pdo->prepare($sql);
 			} catch (\Exception $e) {
-				Yii::error($e->getMessage() . "\nFailed to prepare SQL: $sql", __METHOD__);
+				$message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
 				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-				throw new Exception($e->getMessage(), $errorInfo, (int)$e->getCode(), $e);
+				throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
 			}
 		}
 	}
@@ -172,22 +176,23 @@ class Command extends \yii\base\Component
 	 * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
 	 * @param integer $length length of the data type
 	 * @param mixed $driverOptions the driver-specific options
-	 * @return Command the current command being executed
+	 * @return static the current command being executed
 	 * @see http://www.php.net/manual/en/function.PDOStatement-bindParam.php
 	 */
 	public function bindParam($name, &$value, $dataType = null, $length = null, $driverOptions = null)
 	{
 		$this->prepare();
 		if ($dataType === null) {
-			$this->pdoStatement->bindParam($name, $value, $this->getPdoType($value));
-		} elseif ($length === null) {
+			$dataType = $this->db->getSchema()->getPdoType($value);
+		}
+		if ($length === null) {
 			$this->pdoStatement->bindParam($name, $value, $dataType);
 		} elseif ($driverOptions === null) {
 			$this->pdoStatement->bindParam($name, $value, $dataType, $length);
 		} else {
 			$this->pdoStatement->bindParam($name, $value, $dataType, $length, $driverOptions);
 		}
-		$this->_params[$name] =& $value;
+		$this->params[$name] =& $value;
 		return $this;
 	}
 
@@ -199,18 +204,17 @@ class Command extends \yii\base\Component
 	 * placeholders, this will be the 1-indexed position of the parameter.
 	 * @param mixed $value The value to bind to the parameter
 	 * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
-	 * @return Command the current command being executed
+	 * @return static the current command being executed
 	 * @see http://www.php.net/manual/en/function.PDOStatement-bindValue.php
 	 */
 	public function bindValue($name, $value, $dataType = null)
 	{
 		$this->prepare();
 		if ($dataType === null) {
-			$this->pdoStatement->bindValue($name, $value, $this->getPdoType($value));
-		} else {
-			$this->pdoStatement->bindValue($name, $value, $dataType);
+			$dataType = $this->db->getSchema()->getPdoType($value);
 		}
-		$this->_params[$name] = $value;
+		$this->pdoStatement->bindValue($name, $value, $dataType);
+		$this->params[$name] = $value;
 		return $this;
 	}
 
@@ -220,10 +224,10 @@ class Command extends \yii\base\Component
 	 * Note that the SQL data type of each value is determined by its PHP type.
 	 * @param array $values the values to be bound. This must be given in terms of an associative
 	 * array with array keys being the parameter names, and array values the corresponding parameter values,
-	 * e.g. `array(':name' => 'John', ':age' => 25)`. By default, the PDO type of each value is determined
-	 * by its PHP type. You may explicitly specify the PDO type by using an array: `array(value, type)`,
-	 * e.g. `array(':name' => 'John', ':profile' => array($profile, \PDO::PARAM_LOB))`.
-	 * @return Command the current command being executed
+	 * e.g. `[':name' => 'John', ':age' => 25]`. By default, the PDO type of each value is determined
+	 * by its PHP type. You may explicitly specify the PDO type by using an array: `[value, type]`,
+	 * e.g. `[':name' => 'John', ':profile' => [$profile, \PDO::PARAM_LOB]]`.
+	 * @return static the current command being executed
 	 */
 	public function bindValues($values)
 	{
@@ -234,32 +238,13 @@ class Command extends \yii\base\Component
 					$type = $value[1];
 					$value = $value[0];
 				} else {
-					$type = $this->getPdoType($value);
+					$type = $this->db->getSchema()->getPdoType($value);
 				}
 				$this->pdoStatement->bindValue($name, $value, $type);
-				$this->_params[$name] = $value;
+				$this->params[$name] = $value;
 			}
 		}
 		return $this;
-	}
-
-	/**
-	 * Determines the PDO type for the give PHP data value.
-	 * @param mixed $data the data whose PDO type is to be determined
-	 * @return integer the PDO type
-	 * @see http://www.php.net/manual/en/pdo.constants.php
-	 */
-	private function getPdoType($data)
-	{
-		static $typeMap = array(
-			'boolean' => \PDO::PARAM_BOOL,
-			'integer' => \PDO::PARAM_INT,
-			'string' => \PDO::PARAM_STR,
-			'resource' => \PDO::PARAM_LOB,
-			'NULL' => \PDO::PARAM_NULL,
-		);
-		$type = gettype($data);
-		return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
 	}
 
 	/**
@@ -275,14 +260,14 @@ class Command extends \yii\base\Component
 
 		$rawSql = $this->getRawSql();
 
-		Yii::trace("Executing SQL: $rawSql", __METHOD__);
+		Yii::info($rawSql, __METHOD__);
 
 		if ($sql == '') {
 			return 0;
 		}
 
+		$token = $rawSql;
 		try {
-			$token = "SQL: $sql";
 			Yii::beginProfile($token, __METHOD__);
 
 			$this->prepare();
@@ -293,12 +278,13 @@ class Command extends \yii\base\Component
 			return $n;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			$message = $e->getMessage();
-
-			Yii::error("$message\nFailed to execute SQL: $rawSql", __METHOD__);
-
-			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-			throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
+			if ($e instanceof Exception) {
+				throw $e;
+			} else {
+				$message = $e->getMessage() . "\nThe SQL being executed was: $rawSql";
+				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+				throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
+			}
 		}
 	}
 
@@ -315,7 +301,7 @@ class Command extends \yii\base\Component
 
 	/**
 	 * Executes the SQL statement and returns ALL rows at once.
-	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+	 * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
 	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
 	 * @return array all rows of the query result. Each array element is an array representing a row of data.
 	 * An empty array is returned if the query results in nothing.
@@ -329,13 +315,13 @@ class Command extends \yii\base\Component
 	/**
 	 * Executes the SQL statement and returns the first row of the result.
 	 * This method is best used when only the first row of result is needed for a query.
-	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+	 * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
 	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
 	 * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
 	 * results in nothing.
 	 * @throws Exception execution failed
 	 */
-	public function queryRow($fetchMode = null)
+	public function queryOne($fetchMode = null)
 	{
 		return $this->queryInternal('fetch', $fetchMode);
 	}
@@ -372,7 +358,7 @@ class Command extends \yii\base\Component
 	/**
 	 * Performs the actual DB query of a SQL statement.
 	 * @param string $method method of PDOStatement to be called
-	 * @param mixed $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+	 * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
 	 * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
 	 * @return mixed the method execution result
 	 * @throws Exception if the query causes any problem
@@ -380,31 +366,30 @@ class Command extends \yii\base\Component
 	private function queryInternal($method, $fetchMode = null)
 	{
 		$db = $this->db;
-		$sql = $this->getSql();
 		$rawSql = $this->getRawSql();
 
-		Yii::trace("Querying SQL: $rawSql", __METHOD__);
+		Yii::info($rawSql, __METHOD__);
 
-		/** @var $cache \yii\caching\Cache */
+		/** @var \yii\caching\Cache $cache */
 		if ($db->enableQueryCache && $method !== '') {
 			$cache = is_string($db->queryCache) ? Yii::$app->getComponent($db->queryCache) : $db->queryCache;
 		}
 
 		if (isset($cache) && $cache instanceof Cache) {
-			$cacheKey = array(
+			$cacheKey = [
 				__CLASS__,
 				$db->dsn,
 				$db->username,
 				$rawSql,
-			);
+			];
 			if (($result = $cache->get($cacheKey)) !== false) {
 				Yii::trace('Query result served from cache', __METHOD__);
 				return $result;
 			}
 		}
 
+		$token = $rawSql;
 		try {
-			$token = "SQL: $sql";
 			Yii::beginProfile($token, __METHOD__);
 
 			$this->prepare();
@@ -416,7 +401,7 @@ class Command extends \yii\base\Component
 				if ($fetchMode === null) {
 					$fetchMode = $this->fetchMode;
 				}
-				$result = call_user_func_array(array($this->pdoStatement, $method), (array)$fetchMode);
+				$result = call_user_func_array([$this->pdoStatement, $method], (array)$fetchMode);
 				$this->pdoStatement->closeCursor();
 			}
 
@@ -430,10 +415,13 @@ class Command extends \yii\base\Component
 			return $result;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			$message = $e->getMessage();
-			Yii::error("$message\nCommand::$method() failed: $rawSql", __METHOD__);
-			$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-			throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
+			if ($e instanceof Exception) {
+				throw $e;
+			} else {
+				$message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
+				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+				throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
+			}
 		}
 	}
 
@@ -442,10 +430,10 @@ class Command extends \yii\base\Component
 	 * For example,
 	 *
 	 * ~~~
-	 * $connection->createCommand()->insert('tbl_user', array(
+	 * $connection->createCommand()->insert('tbl_user', [
 	 *     'name' => 'Sam',
 	 *     'age' => 30,
-	 * ))->execute();
+	 * ])->execute();
 	 * ~~~
 	 *
 	 * The method will properly escape the column names, and bind the values to be inserted.
@@ -458,7 +446,7 @@ class Command extends \yii\base\Component
 	 */
 	public function insert($table, $columns)
 	{
-		$params = array();
+		$params = [];
 		$sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
 		return $this->setSql($sql)->bindValues($params);
 	}
@@ -468,14 +456,14 @@ class Command extends \yii\base\Component
 	 * For example,
 	 *
 	 * ~~~
-	 * $connection->createCommand()->batchInsert('tbl_user', array('name', 'age'), array(
-	 *     array('Tom', 30),
-	 *     array('Jane', 20),
-	 *     array('Linda', 25),
-	 * ))->execute();
+	 * $connection->createCommand()->batchInsert('tbl_user', ['name', 'age'], [
+	 *     ['Tom', 30],
+	 *     ['Jane', 20],
+	 *     ['Linda', 25],
+	 * ])->execute();
 	 * ~~~
 	 *
-	 * Not that the values in each row must match the corresponding column names.
+	 * Note that the values in each row must match the corresponding column names.
 	 *
 	 * @param string $table the table that new rows will be inserted into.
 	 * @param array $columns the column names
@@ -493,9 +481,7 @@ class Command extends \yii\base\Component
 	 * For example,
 	 *
 	 * ~~~
-	 * $connection->createCommand()->update('tbl_user', array(
-	 *     'status' => 1,
-	 * ), 'age > 30')->execute();
+	 * $connection->createCommand()->update('tbl_user', ['status' => 1], 'age > 30')->execute();
 	 * ~~~
 	 *
 	 * The method will properly escape the column names and bind the values to be updated.
@@ -504,12 +490,12 @@ class Command extends \yii\base\Component
 	 *
 	 * @param string $table the table to be updated.
 	 * @param array $columns the column data (name => value) to be updated.
-	 * @param mixed $condition the condition that will be put in the WHERE part. Please
+	 * @param string|array $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the parameters to be bound to the command
 	 * @return Command the command object itself
 	 */
-	public function update($table, $columns, $condition = '', $params = array())
+	public function update($table, $columns, $condition = '', $params = [])
 	{
 		$sql = $this->db->getQueryBuilder()->update($table, $columns, $condition, $params);
 		return $this->setSql($sql)->bindValues($params);
@@ -528,12 +514,12 @@ class Command extends \yii\base\Component
 	 * Note that the created command is not executed until [[execute()]] is called.
 	 *
 	 * @param string $table the table where the data will be deleted from.
-	 * @param mixed $condition the condition that will be put in the WHERE part. Please
+	 * @param string|array $condition the condition that will be put in the WHERE part. Please
 	 * refer to [[Query::where()]] on how to specify condition.
 	 * @param array $params the parameters to be bound to the command
 	 * @return Command the command object itself
 	 */
-	public function delete($table, $condition = '', $params = array())
+	public function delete($table, $condition = '', $params = [])
 	{
 		$sql = $this->db->getQueryBuilder()->delete($table, $condition, $params);
 		return $this->setSql($sql)->bindValues($params);
@@ -650,6 +636,32 @@ class Command extends \yii\base\Component
 	public function alterColumn($table, $column, $type)
 	{
 		$sql = $this->db->getQueryBuilder()->alterColumn($table, $column, $type);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for adding a primary key constraint to an existing table.
+	 * The method will properly quote the table and column names.
+	 * @param string $name the name of the primary key constraint.
+	 * @param string $table the table that the primary key constraint will be added to.
+	 * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
+	 * @return Command the command object itself.
+	 */
+	public function addPrimaryKey($name, $table, $columns)
+	{
+		$sql = $this->db->getQueryBuilder()->addPrimaryKey($name, $table, $columns);
+		return $this->setSql($sql);
+	}
+
+	/**
+	 * Creates a SQL command for removing a primary key constraint to an existing table.
+	 * @param string $name the name of the primary key constraint to be removed.
+	 * @param string $table the table that the primary key constraint will be removed from.
+	 * @return Command the command object itself
+	 */
+	public function dropPrimaryKey($name, $table)
+	{
+		$sql = $this->db->getQueryBuilder()->dropPrimaryKey($name, $table);
 		return $this->setSql($sql);
 	}
 

@@ -19,7 +19,19 @@ use yii\base\InvalidConfigException;
  *
  * Beware, by definition cache storage are volatile, which means the data stored on them
  * may be swapped out and get lost. Therefore, you must make sure the cache used by this component
- * is NOT volatile. If you want to use database as storage medium, use [[DbSession]] is a better choice.
+ * is NOT volatile. If you want to use database as storage medium, [[DbSession]] is a better choice.
+ *
+ * The following example shows how you can configure the application to use CacheSession:
+ * Add the following to your application config under `components`:
+ *
+ * ~~~
+ * 'session' => [
+ *     'class' => 'yii\web\CacheSession',
+ *     // 'cache' => 'mycache',
+ * ]
+ * ~~~
+ *
+ * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -40,13 +52,13 @@ class CacheSession extends Session
 	 */
 	public function init()
 	{
-		parent::init();
 		if (is_string($this->cache)) {
 			$this->cache = Yii::$app->getComponent($this->cache);
 		}
 		if (!$this->cache instanceof Cache) {
 			throw new InvalidConfigException('CacheSession::cache must refer to the application component ID of a cache object.');
 		}
+		parent::init();
 	}
 
 	/**
@@ -101,6 +113,6 @@ class CacheSession extends Session
 	 */
 	protected function calculateKey($id)
 	{
-		return array(__CLASS__, $id);
+		return [__CLASS__, $id];
 	}
 }

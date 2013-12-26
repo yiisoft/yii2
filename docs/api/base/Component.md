@@ -25,8 +25,8 @@ In the above, an anonymous function is attached to the "update" event of the pos
 the following types of event handlers:
 
 - anonymous function: `function($event) { ... }`
-- object method: `array($object, 'handleAdd')`
-- static class method: `array('Page', 'handleAdd')`
+- object method: `[$object, 'handleAdd']`
+- static class method: `['Page', 'handleAdd']`
 - global function: `'handleAdd'`
 
 The signature of an event handler should be like the following:
@@ -41,9 +41,9 @@ You can also attach a handler to an event when configuring a component with a co
 The syntax is like the following:
 
 ~~~
-array(
+[
     'on add' => function($event) { ... }
-)
+]
 ~~~
 
 where `on add` stands for attaching an event to the `add` event.
@@ -69,11 +69,11 @@ One can also attach a behavior to a component when configuring it with a configu
 following:
 
 ~~~
-array(
-    'as tree' => array(
+[
+    'as tree' => [
         'class' => 'Tree',
-    ),
-)
+    ],
+]
 ~~~
 
 where `as tree` stands for attaching a behavior named `tree`, and the array will be passed to [[\Yii::createObject()]]

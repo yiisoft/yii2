@@ -13,8 +13,26 @@ use yii\base\InvalidConfigException;
 /**
  * ExistValidator validates that the attribute value exists in a table.
  *
+ * ExistValidator checks if the value being validated can be found in the table column specified by
+ * the ActiveRecord class [[targetClass]] and the attribute [[targetAttribute]].
+ *
  * This validator is often used to verify that a foreign key contains a value
  * that can be found in the foreign table.
+ *
+ * The followings are examples of validation rules using this validator:
+ *
+ * ```php
+ * // a1 needs to exist
+ * ['a1', 'exist']
+ * // a1 needs to exist, but its value will use a2 to check for the existence
+ * ['a1', 'exist', 'targetAttribute' => 'a2']
+ * // a1 and a2 need to exist together, and they both will receive error message
+ * [['a1', 'a2'], 'exist', 'targetAttribute' => ['a1', 'a2']]
+ * // a1 and a2 need to exist together, only a1 will receive error message
+ * ['a1', 'exist', 'targetAttribute' => ['a1', 'a2']]
+ * // a1 needs to exist by checking the existence of both a2 and a3 (using a1 value)
+ * ['a1', 'exist', 'targetAttribute' => ['a2', 'a1' => 'a3']]
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -22,24 +40,24 @@ use yii\base\InvalidConfigException;
 class ExistValidator extends Validator
 {
 	/**
-	 * @var string the ActiveRecord class name or alias of the class
-	 * that should be used to look for the attribute value being validated.
-	 * Defaults to null, meaning using the ActiveRecord class of
-	 * the attribute being validated.
-	 * @see attributeName
+	 * @var string the name of the ActiveRecord class that should be used to validate the existence
+	 * of the current attribute value. It not set, it will use the ActiveRecord class of the attribute being validated.
+	 * @see targetAttribute
 	 */
-	public $className;
+	public $targetClass;
 	/**
-	 * @var string the yii\db\ActiveRecord class attribute name that should be
-	 * used to look for the attribute value being validated. Defaults to null,
-	 * meaning using the name of the attribute being validated.
-	 * @see className
+	 * @var string|array the name of the ActiveRecord attribute that should be used to
+	 * validate the existence of the current attribute value. If not set, it will use the name
+	 * of the attribute currently being validated. You may use an array to validate the existence
+	 * of multiple columns at the same time. The array values are the attributes that will be
+	 * used to validate the existence, while the array keys are the attributes whose values are to be validated.
+	 * If the key and the value are the same, you can just specify the value.
 	 */
-	public $attributeName;
+	public $targetAttribute;
 
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -50,52 +68,55 @@ class ExistValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 *
-	 * @param \yii\db\ActiveRecord $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
 	public function validateAttribute($object, $attribute)
 	{
-		$value = $object->$attribute;
+		/** @var \yii\db\ActiveRecordInterface $targetClass */
+		$targetClass = $this->targetClass === null ? get_class($object) : $this->targetClass;
+		$targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
 
-		if (is_array($value)) {
-			$this->addError($object, $attribute, $this->message);
-			return;
+		if (is_array($targetAttribute)) {
+			$params = [];
+			foreach ($targetAttribute as $k => $v) {
+				$params[$v] = is_integer($k) ? $object->$v : $object->$k;
+			}
+		} else {
+			$params = [$targetAttribute => $object->$attribute];
 		}
 
-		/** @var $className \yii\db\ActiveRecord */
-		$className = $this->className === null ? get_class($object) : Yii::import($this->className);
-		$attributeName = $this->attributeName === null ? $attribute : $this->attributeName;
-		$query = $className::find();
-		$query->where(array($attributeName => $value));
-		if (!$query->exists()) {
+		foreach ($params as $value) {
+			if (is_array($value)) {
+				$this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
+				return;
+			}
+		}
+
+		/** @var \yii\db\ActiveRecordInterface $className */
+		if (!$targetClass::find()->where($params)->exists()) {
 			$this->addError($object, $attribute, $this->message);
 		}
 	}
 
 	/**
-	 * Validates the given value.
-	 * @param mixed $value the value to be validated.
-	 * @return boolean whether the value is valid.
-	 * @throws InvalidConfigException if either [[className]] or [[attributeName]] is not set.
+	 * @inheritdoc
 	 */
-	public function validateValue($value)
+	protected function validateValue($value)
 	{
 		if (is_array($value)) {
-			return false;
+			return [$this->message, []];
 		}
-		if ($this->className === null) {
+		if ($this->targetClass === null) {
 			throw new InvalidConfigException('The "className" property must be set.');
 		}
-		if ($this->attributeName === null) {
-			throw new InvalidConfigException('The "attributeName" property must be set.');
+		if (!is_string($this->targetAttribute)) {
+			throw new InvalidConfigException('The "attributeName" property must be configured as a string.');
 		}
-		/** @var $className \yii\db\ActiveRecord */
-		$className = $this->className;
-		$query = $className::find();
-		$query->where(array($this->attributeName => $value));
-		return $query->exists();
+
+		/** @var \yii\db\ActiveRecordInterface $targetClass */
+		$targetClass = $this->targetClass;
+		$query = $targetClass::find();
+		$query->where([$this->targetAttribute => $value]);
+		return $query->exists() ? null : [$this->message, []];
 	}
 }

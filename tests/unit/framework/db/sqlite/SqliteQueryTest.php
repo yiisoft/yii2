@@ -3,11 +3,11 @@ namespace yiiunit\framework\db\sqlite;
 
 use yiiunit\framework\db\QueryTest;
 
+/**
+ * @group db
+ * @group sqlite
+ */
 class SqliteQueryTest extends QueryTest
 {
-    protected function setUp()
-    {
-        $this->driverName = 'sqlite';
-        parent::setUp();
-    }
+	protected $driverName = 'sqlite';
 }

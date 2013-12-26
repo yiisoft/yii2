@@ -14,6 +14,10 @@ use ArrayIterator;
 /**
  * HeaderCollection is used by [[Response]] to maintain the currently registered HTTP headers.
  *
+ * @property integer $count The number of headers in the collection. This property is read-only.
+ * @property ArrayIterator $iterator An iterator for traversing the headers in the collection. This property
+ * is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -22,7 +26,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	/**
 	 * @var array the headers in this collection (indexed by the header names)
 	 */
-	private $_headers = array();
+	private $_headers = [];
 
 	/**
 	 * Returns an iterator for traversing the headers in the collection.
@@ -79,7 +83,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	 * If there is already a header with the same name, it will be replaced.
 	 * @param string $name the name of the header
 	 * @param string $value the value of the header
-	 * @return HeaderCollection the collection object itself
+	 * @return static the collection object itself
 	 */
 	public function set($name, $value = '')
 	{
@@ -94,12 +98,28 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	 * be appended to it instead of replacing it.
 	 * @param string $name the name of the header
 	 * @param string $value the value of the header
-	 * @return HeaderCollection the collection object itself
+	 * @return static the collection object itself
 	 */
 	public function add($name, $value)
 	{
 		$name = strtolower($name);
 		$this->_headers[$name][] = $value;
+		return $this;
+	}
+
+	/**
+	 * Sets a new header only if it does not exist yet.
+	 * If there is already a header with the same name, the new one will be ignored.
+	 * @param string $name the name of the header
+	 * @param string $value the value of the header
+	 * @return static the collection object itself
+	 */
+	public function setDefault($name, $value)
+	{
+		$name = strtolower($name);
+		if (empty($this->_headers[$name])) {
+			$this->_headers[$name][] = $value;
+		}
 		return $this;
 	}
 
@@ -136,7 +156,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	 */
 	public function removeAll()
 	{
-		$this->_headers = array();
+		$this->_headers = [];
 	}
 
 	/**

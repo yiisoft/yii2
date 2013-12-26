@@ -1,52 +1,45 @@
 Database Migration
 ==================
 
-Like source code, the structure of a database is evolving as we develop and maintain
-a database-driven application. For example, during development, we may want to
-add a new table; or after the application is put into production, we may realize
-the need of adding an index on a column. It is important to keep track of these
-structural database changes (called **migration**) like we do with our source
-code. If the source code and the database are out of sync, it is very likely
-the whole system may break. For this reason, Yii provides a database migration
-tool that can keep track of database migration history, apply new migrations,
-or revert existing ones.
+Like source code, the structure of a database evolves as a database-driven application is developed and maintained. For example, during development, a new table may be added; Or, after the application goes live, it may be discovered that an additional index is required. It is important to keep track of these structural database changes (called **migration**), just as changes to the source code is tracked using version control. If the source code and the database become out of sync, bugs will occur, or the whole application might break. For this reason, Yii provides a database migration
+tool that can keep track of database migration history, apply new migrations, or revert existing ones.
 
-The following steps show how we can use database migration during development:
+The following steps show how database migration is used by a team during development:
 
-1. Tim creates a new migration (e.g. create a new table)
-2. Tim commits the new migration into source control system (e.g. GIT, Mercurial)
-3. Doug updates from source control system and receives the new migration
-4. Doug applies the migration to his local development database
+1. Tim creates a new migration (e.g. creates a new table, changes a column definition, etc.).
+2. Tim commits the new migration into the source control system (e.g. Git, Mercurial).
+3. Doug updates his repository from the source control system and receives the new migration.
+4. Doug applies the migration to his local development database, thereby syncing his database to reflect the changes Tim made.
 
+Yii supports database migration via the `yii migrate` command line tool. This tool supports:
 
-Yii supports database migration via the `yii migrate` command line tool. This
-tool supports creating new migrations, applying/reverting/redoing migrations, and
-showing migration history and new migrations.
+* Creating new migrations
+* Applying, reverting, and redoing migrations
+* Showing migration history and new migrations
 
 Creating Migrations
 -------------------
 
-To create a new migration (e.g. create a news table), we run the following command:
+To create a new migration, run the following command:
 
-~~~
+```
 yii migrate/create <name>
-~~~
+```
 
-The required `name` parameter specifies a very brief description of the migration
-(e.g. `create_news_table`). As we will show in the following, the `name` parameter
-is used as part of a PHP class name. Therefore, it should only contain letters,
+The required `name` parameter specifies a very brief description of the migration. For example, if the migration creates a new table named *news*, you'd use the command:
+
+```
+yii migrate/create create_news_table
+```
+
+As you'll shortly see, the `name` parameter
+is used as part of a PHP class name in the migration. Therefore, it should only contain letters,
 digits and/or underscore characters.
 
-~~~
-yii migrate/create create_news_table
-~~~
+The above command will create a new
+file named `m101129_185401_create_news_table.php`. This file will be created within the `protected/migrations` directory. Initially, the migration file will be generated with the following code:
 
-The above command will create under the `protected/migrations` directory a new
-file named `m101129_185401_create_news_table.php` which contains the following
-initial code:
-
-~~~
-[php]
+```php
 class m101129_185401_create_news_table extends \yii\db\Migration
 {
 	public function up()
@@ -59,36 +52,36 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 		return false;
 	}
 }
-~~~
+```
 
-Notice that the class name is the same as the file name which is of the pattern
-`m<timestamp>_<name>`, where `<timestamp>` refers to the UTC timestamp (in the
-format of `yymmdd_hhmmss`) when the migration is created, and `<name>` is taken
-from the command's `name` parameter.
+Notice that the class name is the same as the file name, and follows the pattern
+`m<timestamp>_<name>`, where:
 
-The `up()` method should contain the code implementing the actual database
-migration, while the `down()` method may contain the code reverting what is
-done in `up()`.
+* `<timestamp>` refers to the UTC timestamp (in the
+format of `yymmdd_hhmmss`) when the migration is created,
+* `<name>` is taken from the command's `name` parameter.
 
-Sometimes, it is impossible to implement `down()`. For example, if we delete
-table rows in `up()`, we will not be able to recover them in `down()`. In this
-case, the migration is called irreversible, meaning we cannot roll back to
-a previous state of the database. In the above generated code, the `down()`
+In the class, the `up()` method should contain the code implementing the actual database
+migration. In other words, the `up()` method executes code that actually changes the database. The `down()` method may contain code that reverts the changes made by `up()`.
+
+Sometimes, it is impossible for the `down()` to undo the database migration. For example, if the migration deletes
+table rows or an entire table, that data cannot be recovered in the `down()` method. In such
+cases, the migration is called irreversible, meaning the database cannot be rolled back to
+a previous state. When a migration is irreversible, as in the above generated code, the `down()`
 method returns `false` to indicate that the migration cannot be reverted.
 
 As an example, let's show the migration about creating a news table.
 
-~~~
-[php]
+```php
 class m101129_185401_create_news_table extends \yii\db\Migration
 {
 	public function up()
 	{
-		$this->db->createCommand()->createTable('tbl_news, array(
+		$this->db->createCommand()->createTable('tbl_news', [
 			'id' => 'pk',
-			'title' => 'string NOT NULL',
+			'title' => 'string(128) NOT NULL',
 			'content' => 'text',
-		))->execute();
+		])->execute();
 	}
 
 	public function down()
@@ -96,10 +89,20 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 		$this->db->createCommand()->dropTable('tbl_news')->execute();
 	}
 }
-~~~
+```
 
 The base class [\yii\db\Migration] exposes a database connection via `db`
 property. You can use it for manipulating data and schema of a database.
+
+The column types used in this example are abstract types that will be replaced
+by Yii with the corresponding types depended on your database management system.
+You can use them to write database independent migrations.
+For example `pk` will be replaced by `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`
+for MySQL and `integer PRIMARY KEY AUTOINCREMENT NOT NULL` for sqlite.
+See documentation of [[QueryBuilder::getColumnType()]] for more details and a list
+of available types. You may also use the constants defined in [[\yii\db\Schema]] to
+define column types.
+
 
 Transactional Migrations
 ------------------------
@@ -112,8 +115,7 @@ DB transactions.
 We could explicitly start a DB transaction and enclose the rest of the DB-related
 code within the transaction, like the following:
 
-~~~
-[php]
+```php
 class m101129_185401_create_news_table extends \yii\db\Migration
 {
 	public function up()
@@ -121,11 +123,11 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 		$transaction=$this->getDbConnection()->beginTransaction();
 		try
 		{
-			$this->db->createCommand()->createTable('tbl_news, array(
+			$this->db->createCommand()->createTable('tbl_news', [
 				'id' => 'pk',
 				'title' => 'string NOT NULL',
 				'content' => 'text',
-			))->execute();
+			])->execute();
 			$transaction->commit();
 		}
 		catch(Exception $e)
@@ -138,7 +140,7 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 
 	// ...similar code for down()
 }
-~~~
+```
 
 > Note: Not all DBMS support transactions. And some DB queries cannot be put
 > into a transaction. In this case, you will have to implement `up()` and
@@ -152,9 +154,9 @@ Applying Migrations
 To apply all available new migrations (i.e., make the local database up-to-date),
 run the following command:
 
-~~~
+```
 yii migrate
-~~~
+```
 
 The command will show the list of all new migrations. If you confirm to apply
 the migrations, it will run the `up()` method in every new migration class, one
@@ -169,18 +171,18 @@ application component.
 Sometimes, we may only want to apply one or a few new migrations. We can use the
 following command:
 
-~~~
+```
 yii migrate/up 3
-~~~
+```
 
 This command will apply the 3 new migrations. Changing the value 3 will allow
 us to change the number of migrations to be applied.
 
 We can also migrate the database to a specific version with the following command:
 
-~~~
+```
 yii migrate/to 101129_185401
-~~~
+```
 
 That is, we use the timestamp part of a migration name to specify the version
 that we want to migrate the database to. If there are multiple migrations between
@@ -195,9 +197,9 @@ Reverting Migrations
 To revert the last one or several applied migrations, we can use the following
 command:
 
-~~~
+```
 yii migrate/down [step]
-~~~
+```
 
 where the optional `step` parameter specifies how many migrations to be reverted
 back. It defaults to 1, meaning reverting back the last applied migration.
@@ -212,9 +214,9 @@ Redoing Migrations
 Redoing migrations means first reverting and then applying the specified migrations.
 This can be done with the following command:
 
-~~~
+```
 yii migrate/redo [step]
-~~~
+```
 
 where the optional `step` parameter specifies how many migrations to be redone.
 It defaults to 1, meaning redoing the last migration.
@@ -226,10 +228,10 @@ Showing Migration Information
 Besides applying and reverting migrations, the migration tool can also display
 the migration history and the new migrations to be applied.
 
-~~~
+```
 yii migrate/history [limit]
 yii migrate/new [limit]
-~~~
+```
 
 where the optional parameter `limit` specifies the number of migrations to be
 displayed. If `limit` is not specified, all available migrations will be displayed.
@@ -246,9 +248,9 @@ version without actually applying or reverting the relevant migrations. This
 often happens when developing a new migration. We can use the following command
 to achieve this goal.
 
-~~~
+```
 yii migrate/mark 101129_185401
-~~~
+```
 
 This command is very similar to `yii migrate/to` command, except that it only
 modifies the migration history table to the specified version without applying
@@ -290,17 +292,17 @@ line:
 
 To specify these options, execute the migrate command using the following format
 
-~~~
+```
 yii migrate/up --option1=value1 --option2=value2 ...
-~~~
+```
 
 For example, if we want to migrate for a `forum` module whose migration files
 are located within the module's `migrations` directory, we can use the following
 command:
 
-~~~
+```
 yii migrate/up --migrationPath=ext.forum.migrations
-~~~
+```
 
 
 ### Configure Command Globally

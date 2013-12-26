@@ -8,12 +8,16 @@
 namespace yii\base;
 
 use Yii;
+use yii\web\HttpException;
 
 /**
  * ErrorHandler handles uncaught PHP errors and exceptions.
  *
  * ErrorHandler displays these errors using appropriate views based on the
  * nature of the errors and the mode the application runs at.
+ *
+ * ErrorHandler is configured as an application component in [[yii\base\Application]] by default.
+ * You can access that instance via `Yii::$app->errorHandler`.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Timur Ruziev <resurtm@gmail.com>
@@ -36,14 +40,18 @@ class ErrorHandler extends Component
 	/**
 	 * @var string the route (e.g. 'site/error') to the controller action that will be used
 	 * to display external errors. Inside the action, it can retrieve the error information
-	 * by Yii::$app->errorHandler->error. This property defaults to null, meaning ErrorHandler
+	 * by Yii::$app->exception. This property defaults to null, meaning ErrorHandler
 	 * will handle the error display.
 	 */
 	public $errorAction;
 	/**
-	 * @var string the path of the view file for rendering exceptions and errors.
+	 * @var string the path of the view file for rendering exceptions without call stack information.
 	 */
-	public $mainView = '@yii/views/errorHandler/main.php';
+	public $errorView = '@yii/views/errorHandler/error.php';
+	/**
+	 * @var string the path of the view file for rendering exceptions.
+	 */
+	public $exceptionView = '@yii/views/errorHandler/exception.php';
 	/**
 	 * @var string the path of the view file for rendering exceptions and errors call stack element.
 	 */
@@ -72,47 +80,61 @@ class ErrorHandler extends Component
 	}
 
 	/**
-	 * Renders exception.
-	 * @param \Exception $exception to be handled.
+	 * Renders the exception.
+	 * @param \Exception $exception the exception to be handled.
 	 */
 	protected function renderException($exception)
 	{
-		if ($this->errorAction !== null) {
-			Yii::$app->runAction($this->errorAction);
-		} elseif (!(Yii::$app instanceof \yii\web\Application)) {
-			Yii::$app->renderException($exception);
-		} else {
-			$response = Yii::$app->getResponse();
-			if (!headers_sent()) {
-				if ($exception instanceof HttpException) {
-					$response->setStatusCode($exception->statusCode);
-				} else {
-					$response->setStatusCode(500);
-				}
+		if (Yii::$app instanceof \yii\console\Application || YII_ENV_TEST) {
+			echo Yii::$app->renderException($exception);
+			return;
+		}
+
+		$useErrorView = !YII_DEBUG || $exception instanceof UserException;
+
+		$response = Yii::$app->getResponse();
+		$response->getHeaders()->removeAll();
+
+		if ($useErrorView && $this->errorAction !== null) {
+			$result = Yii::$app->runAction($this->errorAction);
+			if ($result instanceof Response) {
+				$response = $result;
+			} else {
+				$response->data = $result;
 			}
+		} elseif ($response->format === \yii\web\Response::FORMAT_HTML) {
 			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
-				Yii::$app->renderException($exception);
+				// AJAX request
+				$response->data = Yii::$app->renderException($exception);
 			} else {
 				// if there is an error during error rendering it's useful to
 				// display PHP error in debug mode instead of a blank screen
 				if (YII_DEBUG) {
 					ini_set('display_errors', 1);
 				}
-
-				$view = new View();
-				$request = '';
-				foreach (array('_GET', '_POST', '_SERVER', '_FILES', '_COOKIE', '_SESSION', '_ENV') as $name) {
-					if (!empty($GLOBALS[$name])) {
-						$request .= '$' . $name . ' = ' . var_export($GLOBALS[$name], true) . ";\n\n";
-					}
-				}
-				$request = rtrim($request, "\n\n");
-				$response->content = $view->renderFile($this->mainView, array(
+				$file = $useErrorView ? $this->errorView : $this->exceptionView;
+				$response->data = $this->renderFile($file, [
 					'exception' => $exception,
-					'request' => $request,
-				), $this);
+				]);
 			}
+		} elseif ($exception instanceof Arrayable) {
+			$response->data = $exception;
+		} else {
+			$response->data = [
+				'type' => get_class($exception),
+				'name' => 'Exception',
+				'message' => $exception->getMessage(),
+				'code' => $exception->getCode(),
+			];
 		}
+
+		if ($exception instanceof HttpException) {
+			$response->setStatusCode($exception->statusCode);
+		} else {
+			$response->setStatusCode(500);
+		}
+
+		$response->send();
 	}
 
 	/**
@@ -132,7 +154,9 @@ class ErrorHandler extends Component
 	{
 		// the following manual level counting is to deal with zlib.output_compression set to On
 		for ($level = ob_get_level(); $level > 0; --$level) {
-			@ob_end_clean();
+			if (!@ob_end_clean()) {
+				ob_clean();
+			}
 		}
 	}
 
@@ -152,13 +176,109 @@ class ErrorHandler extends Component
 			$html = rtrim($html, '\\');
 		} elseif (strpos($code, '()') !== false) {
 			// method/function call
-			$self = $this;
-			$html = preg_replace_callback('/^(.*)\(\)$/', function ($matches) use ($self) {
-				return '<a href="http://yiiframework.com/doc/api/2.0/' . $self->htmlEncode($matches[1]) . '" target="_blank">' .
-					$self->htmlEncode($matches[1]) . '</a>()';
+			$html = preg_replace_callback('/^(.*)\(\)$/', function ($matches) {
+				return '<a href="http://yiiframework.com/doc/api/2.0/' . $this->htmlEncode($matches[1]) . '" target="_blank">' .
+					$this->htmlEncode($matches[1]) . '</a>()';
 			}, $code);
 		}
 		return $html;
+	}
+
+	/**
+	 * Renders a view file as a PHP script.
+	 * @param string $_file_ the view file.
+	 * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
+	 * @return string the rendering result
+	 */
+	public function renderFile($_file_, $_params_)
+	{
+		$_params_['handler'] = $this;
+		if ($this->exception instanceof ErrorException) {
+			ob_start();
+			ob_implicit_flush(false);
+			extract($_params_, EXTR_OVERWRITE);
+			require(Yii::getAlias($_file_));
+			return ob_get_clean();
+		} else {
+			return Yii::$app->getView()->renderFile($_file_, $_params_, $this);
+		}
+	}
+
+	/**
+	 * Renders the previous exception stack for a given Exception.
+	 * @param \Exception $exception the exception whose precursors should be rendered.
+	 * @return string HTML content of the rendered previous exceptions.
+	 * Empty string if there are none.
+	 */
+	public function renderPreviousExceptions($exception)
+	{
+		if (($previous = $exception->getPrevious()) !== null) {
+			return $this->renderFile($this->previousExceptionView, ['exception' => $previous]);
+		} else {
+			return '';
+		}
+	}
+
+	/**
+	 * Renders a single call stack element.
+	 * @param string|null $file name where call has happened.
+	 * @param integer|null $line number on which call has happened.
+	 * @param string|null $class called class name.
+	 * @param string|null $method called function/method name.
+	 * @param integer $index number of the call stack element.
+	 * @return string HTML content of the rendered call stack element.
+	 */
+	public function renderCallStackItem($file, $line, $class, $method, $index)
+	{
+		$lines = [];
+		$begin = $end = 0;
+		if ($file !== null && $line !== null) {
+			$line--; // adjust line number from one-based to zero-based
+			$lines = @file($file);
+			if ($line < 0 || $lines === false || ($lineCount = count($lines)) < $line + 1) {
+				return '';
+			}
+
+			$half = (int)(($index == 0 ? $this->maxSourceLines : $this->maxTraceSourceLines) / 2);
+			$begin = $line - $half > 0 ? $line - $half : 0;
+			$end = $line + $half < $lineCount ? $line + $half : $lineCount - 1;
+		}
+
+		return $this->renderFile($this->callStackItemView, [
+			'file' => $file,
+			'line' => $line,
+			'class' => $class,
+			'method' => $method,
+			'index' => $index,
+			'lines' => $lines,
+			'begin' => $begin,
+			'end' => $end,
+		]);
+	}
+
+	/**
+	 * Renders the request information.
+	 * @return string the rendering result
+	 */
+	public function renderRequest()
+	{
+		$request = '';
+		foreach (['_GET', '_POST', '_SERVER', '_FILES', '_COOKIE', '_SESSION', '_ENV'] as $name) {
+			if (!empty($GLOBALS[$name])) {
+				$request .= '$' . $name . ' = ' . var_export($GLOBALS[$name], true) . ";\n\n";
+			}
+		}
+		return '<pre>' . rtrim($request, "\n") . '</pre>';
+	}
+
+	/**
+	 * Determines whether given name of the file belongs to the framework.
+	 * @param string $file name to be checked.
+	 * @return boolean whether given name of the file belongs to the framework.
+	 */
+	public function isCoreFile($file)
+	{
+		return $file === null || strpos(realpath($file), YII_PATH . DIRECTORY_SEPARATOR) === 0;
 	}
 
 	/**
@@ -173,86 +293,20 @@ class ErrorHandler extends Component
 	}
 
 	/**
-	 * Renders the previous exception stack for a given Exception.
-	 * @param \Exception $exception the exception whose precursors should be rendered.
-	 * @return string HTML content of the rendered previous exceptions.
-	 * Empty string if there are none.
-	 */
-	public function renderPreviousExceptions($exception)
-	{
-		if (($previous = $exception->getPrevious()) === null) {
-			return '';
-		}
-		$view = new View();
-		return $view->renderFile($this->previousExceptionView, array(
-			'exception' => $previous,
-			'previousHtml' => $this->renderPreviousExceptions($previous),
-		), $this);
-	}
-
-	/**
-	 * Renders a single call stack element.
-	 * @param string|null $file name where call has happened.
-	 * @param integer|null $line number on which call has happened.
-	 * @param string|null $class called class name.
-	 * @param string|null $method called function/method name.
-	 * @param integer $index number of the call stack element.
-	 * @return string HTML content of the rendered call stack element.
-	 */
-	public function renderCallStackItem($file, $line, $class, $method, $index)
-	{
-		$lines = array();
-		$begin = $end = 0;
-		if ($file !== null && $line !== null) {
-			$line--; // adjust line number from one-based to zero-based
-			$lines = @file($file);
-			if ($line < 0 || $lines === false || ($lineCount = count($lines)) < $line + 1) {
-				return '';
-			}
-
-			$half = (int)(($index == 0 ? $this->maxSourceLines : $this->maxTraceSourceLines) / 2);
-			$begin = $line - $half > 0 ? $line - $half : 0;
-			$end = $line + $half < $lineCount ? $line + $half : $lineCount - 1;
-		}
-
-		$view = new View();
-		return $view->renderFile($this->callStackItemView, array(
-			'file' => $file,
-			'line' => $line,
-			'class' => $class,
-			'method' => $method,
-			'index' => $index,
-			'lines' => $lines,
-			'begin' => $begin,
-			'end' => $end,
-		), $this);
-	}
-
-	/**
-	 * Determines whether given name of the file belongs to the framework.
-	 * @param string $file name to be checked.
-	 * @return boolean whether given name of the file belongs to the framework.
-	 */
-	public function isCoreFile($file)
-	{
-		return $file === null || strpos(realpath($file), YII_PATH . DIRECTORY_SEPARATOR) === 0;
-	}
-
-	/**
 	 * Creates string containing HTML link which refers to the home page of determined web-server software
 	 * and its full name.
 	 * @return string server software information hyperlink.
 	 */
 	public function createServerInformationLink()
 	{
-		static $serverUrls = array(
-			'http://httpd.apache.org/' => array('apache'),
-			'http://nginx.org/' => array('nginx'),
-			'http://lighttpd.net/' => array('lighttpd'),
-			'http://gwan.com/' => array('g-wan', 'gwan'),
-			'http://iis.net/' => array('iis', 'services'),
-			'http://php.net/manual/en/features.commandline.webserver.php' => array('development'),
-		);
+		static $serverUrls = [
+			'http://httpd.apache.org/' => ['apache'],
+			'http://nginx.org/' => ['nginx'],
+			'http://lighttpd.net/' => ['lighttpd'],
+			'http://gwan.com/' => ['g-wan', 'gwan'],
+			'http://iis.net/' => ['iis', 'services'],
+			'http://php.net/manual/en/features.commandline.webserver.php' => ['development'],
+		];
 		if (isset($_SERVER['SERVER_SOFTWARE'])) {
 			foreach ($serverUrls as $url => $keywords) {
 				foreach ($keywords as $keyword) {

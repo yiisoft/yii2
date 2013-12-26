@@ -9,6 +9,7 @@
 
 namespace yii\console;
 
+use Yii;
 use yii\base\InvalidRouteException;
 
 /**
@@ -45,6 +46,8 @@ use yii\base\InvalidRouteException;
  * yii help
  * ~~~
  *
+ * @property Response $response The response component. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -60,6 +63,10 @@ class Application extends \yii\base\Application
 	 * Defaults to true.
 	 */
 	public $enableCoreCommands = true;
+	/**
+	 * @var Controller the currently active controller instance
+	 */
+	public $controller;
 
 	/**
 	 * Initialize the application.
@@ -81,21 +88,31 @@ class Application extends \yii\base\Application
 	}
 
 	/**
-	 * Processes the request.
-	 * The request is represented in terms of a controller route and action parameters.
-	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
-	 * @throws Exception if the script is not running from the command line
+	 * Handles the specified request.
+	 * @param Request $request the request to be handled
+	 * @return Response the resulting response
 	 */
-	public function processRequest()
+	public function handleRequest($request)
 	{
-		/** @var $request Request */
-		$request = $this->getRequest();
-		if ($request->getIsConsoleRequest()) {
-			list ($route, $params) = $request->resolve();
-			return $this->runAction($route, $params);
+		list ($route, $params) = $request->resolve();
+		$this->requestedRoute = $route;
+		$result = $this->runAction($route, $params);
+		if ($result instanceof Response) {
+			return $result;
 		} else {
-			throw new Exception(\Yii::t('yii', 'This script must be run from the command line.'));
+			$response = $this->getResponse();
+			$response->exitStatus = (int)$result;
+			return $response;
 		}
+	}
+
+	/**
+	 * Returns the response component.
+	 * @return Response the response component
+	 */
+	public function getResponse()
+	{
+		return $this->getComponent('response');
 	}
 
 	/**
@@ -108,12 +125,12 @@ class Application extends \yii\base\Application
 	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
 	 * @throws Exception if the route is invalid
 	 */
-	public function runAction($route, $params = array())
+	public function runAction($route, $params = [])
 	{
 		try {
 			return parent::runAction($route, $params);
 		} catch (InvalidRouteException $e) {
-			throw new Exception(\Yii::t('yii', 'Unknown command "{command}".', array('{command}' => $route)), 0, $e);
+			throw new Exception(Yii::t('yii', 'Unknown command "{command}".', ['command' => $route]), 0, $e);
 		}
 	}
 
@@ -123,13 +140,13 @@ class Application extends \yii\base\Application
 	 */
 	public function coreCommands()
 	{
-		return array(
+		return [
 			'message' => 'yii\console\controllers\MessageController',
 			'help' => 'yii\console\controllers\HelpController',
 			'migrate' => 'yii\console\controllers\MigrateController',
 			'cache' => 'yii\console\controllers\CacheController',
 			'asset' => 'yii\console\controllers\AssetController',
-		);
+		];
 	}
 
 	/**
@@ -139,13 +156,9 @@ class Application extends \yii\base\Application
 	public function registerCoreComponents()
 	{
 		parent::registerCoreComponents();
-		$this->setComponents(array(
-			'request' => array(
-				'class' => 'yii\console\Request',
-			),
-			'response' => array(
-				'class' => 'yii\console\Response',
-			),
-		));
+		$this->setComponents([
+			'request' => ['class' => 'yii\console\Request'],
+			'response' => ['class' => 'yii\console\Response'],
+		]);
 	}
 }

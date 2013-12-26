@@ -10,9 +10,7 @@ use yii\base\Formatter;
 use yiiunit\TestCase;
 
 /**
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @group base
  */
 class FormatterTest extends TestCase
 {
@@ -42,6 +40,7 @@ class FormatterTest extends TestCase
 		$this->assertSame($value, $this->formatter->asRaw($value));
 		$value = '<>';
 		$this->assertSame($value, $this->formatter->asRaw($value));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asRaw(null));
 	}
 
 	public function testAsText()
@@ -52,6 +51,7 @@ class FormatterTest extends TestCase
 		$this->assertSame("$value", $this->formatter->asText($value));
 		$value = '<>';
 		$this->assertSame('&lt;&gt;', $this->formatter->asText($value));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asText(null));
 	}
 
 	public function testAsNtext()
@@ -64,6 +64,7 @@ class FormatterTest extends TestCase
 		$this->assertSame('&lt;&gt;', $this->formatter->asNtext($value));
 		$value = "123\n456";
 		$this->assertSame("123<br />\n456", $this->formatter->asNtext($value));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asNtext(null));
 	}
 
 	public function testAsParagraphs()
@@ -80,6 +81,7 @@ class FormatterTest extends TestCase
 		$this->assertSame("<p>123</p>\n<p>456</p>", $this->formatter->asParagraphs($value));
 		$value = "123\n\n\n456";
 		$this->assertSame("<p>123</p>\n<p>456</p>", $this->formatter->asParagraphs($value));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asParagraphs(null));
 	}
 
 	public function testAsHtml()
@@ -91,12 +93,14 @@ class FormatterTest extends TestCase
 	{
 		$value = 'test@sample.com';
 		$this->assertSame("<a href=\"mailto:$value\">$value</a>", $this->formatter->asEmail($value));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asEmail(null));
 	}
 
 	public function testAsImage()
 	{
 		$value = 'http://sample.com/img.jpg';
-		$this->assertSame("<img src=\"$value\" alt=\"\" />", $this->formatter->asImage($value));
+		$this->assertSame("<img src=\"$value\" alt=\"\">", $this->formatter->asImage($value));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asImage(null));
 	}
 
 	public function testAsBoolean()
@@ -109,6 +113,7 @@ class FormatterTest extends TestCase
 		$this->assertSame('Yes', $this->formatter->asBoolean($value));
 		$value = "";
 		$this->assertSame('No', $this->formatter->asBoolean($value));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asBoolean(null));
 	}
 
 	public function testAsDate()
@@ -116,6 +121,7 @@ class FormatterTest extends TestCase
 		$value = time();
 		$this->assertSame(date('Y/m/d', $value), $this->formatter->asDate($value));
 		$this->assertSame(date('Y-m-d', $value), $this->formatter->asDate($value, 'Y-m-d'));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asDate(null));
 	}
 
 	public function testAsTime()
@@ -123,6 +129,7 @@ class FormatterTest extends TestCase
 		$value = time();
 		$this->assertSame(date('h:i:s A', $value), $this->formatter->asTime($value));
 		$this->assertSame(date('h:i:s', $value), $this->formatter->asTime($value, 'h:i:s'));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asTime(null));
 	}
 
 	public function testAsDatetime()
@@ -130,6 +137,7 @@ class FormatterTest extends TestCase
 		$value = time();
 		$this->assertSame(date('Y/m/d h:i:s A', $value), $this->formatter->asDatetime($value));
 		$this->assertSame(date('Y-m-d h:i:s', $value), $this->formatter->asDatetime($value, 'Y-m-d h:i:s'));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asDatetime(null));
 	}
 
 	public function testAsInteger()
@@ -144,6 +152,7 @@ class FormatterTest extends TestCase
 		$this->assertSame("-123", $this->formatter->asInteger($value));
 		$value = "-123abc";
 		$this->assertSame("-123", $this->formatter->asInteger($value));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asInteger(null));
 	}
 
 	public function testAsDouble()
@@ -161,6 +170,7 @@ class FormatterTest extends TestCase
 		$this->assertSame("123", $this->formatter->asDouble($value, 0));
 		$value = 123123.123;
 		$this->assertSame("123123,12", $this->formatter->asDouble($value));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asDouble(null));
 	}
 
 	public function testAsNumber()
@@ -175,5 +185,16 @@ class FormatterTest extends TestCase
 		$this->formatter->thousandSeparator = '';
 		$this->assertSame("123123", $this->formatter->asNumber($value));
 		$this->assertSame("123123,12", $this->formatter->asNumber($value, 2));
+		$this->assertSame($this->formatter->nullDisplay, $this->formatter->asNumber(null));
+	}
+
+	public function testFormat()
+	{
+		$value = time();
+		$this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, 'date'));
+		$this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, 'DATE'));
+		$this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, ['date', 'Y-m-d']));
+		$this->setExpectedException('\yii\base\InvalidParamException');
+		$this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'data'));
 	}
 }

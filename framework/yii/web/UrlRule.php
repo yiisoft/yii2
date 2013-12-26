@@ -11,7 +11,17 @@ use yii\base\Object;
 use yii\base\InvalidConfigException;
 
 /**
- * UrlRule represents a rule used for parsing and generating URLs.
+ * UrlRule represents a rule used by [[UrlManager]] for parsing and generating URLs.
+ *
+ * To define your own URL parsing and creation logic you can extend from this class
+ * and add it to [[UrlManager::rules]] like this:
+ *
+ * ~~~
+ * 'rules' => [
+ *     ['class' => 'MyUrlRule', 'pattern' => '...', 'route' => 'site/index', ...],
+ *     // ...
+ * ]
+ * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -27,6 +37,10 @@ class UrlRule extends Object
 	 */
 	const CREATION_ONLY = 2;
 
+	/**
+	 * @var string the name of this rule. If not set, it will use [[pattern]] as the name.
+	 */
+	public $name;
 	/**
 	 * @var string the pattern used to parse and create the path info part of a URL.
 	 * @see host
@@ -46,7 +60,7 @@ class UrlRule extends Object
 	 * When this rule is used to parse the incoming request, the values declared in this property
 	 * will be injected into $_GET.
 	 */
-	public $defaults = array();
+	public $defaults = [];
 	/**
 	 * @var string the URL suffix used for this rule.
 	 * For example, ".html" can be used so that the URL looks like pointing to a static HTML page.
@@ -80,11 +94,11 @@ class UrlRule extends Object
 	/**
 	 * @var array list of regex for matching parameters. This is used in generating URL.
 	 */
-	private $_paramRules = array();
+	private $_paramRules = [];
 	/**
 	 * @var array list of parameters used in the route.
 	 */
-	private $_routeParams = array();
+	private $_routeParams = [];
 
 	/**
 	 * Initializes this rule.
@@ -103,8 +117,11 @@ class UrlRule extends Object
 					$this->verb[$i] = strtoupper($verb);
 				}
 			} else {
-				$this->verb = array(strtoupper($this->verb));
+				$this->verb = [strtoupper($this->verb)];
 			}
+		}
+		if ($this->name === null) {
+			$this->name = $this->pattern;
 		}
 
 		$this->pattern = trim($this->pattern, '/');
@@ -126,7 +143,16 @@ class UrlRule extends Object
 			}
 		}
 
-		$tr = $tr2 = array();
+		$tr = [
+			'.' => '\\.',
+			'*' => '\\*',
+			'$' => '\\$',
+			'[' => '\\[',
+			']' => '\\]',
+			'(' => '\\(',
+			')' => '\\)',
+		];
+		$tr2 = [];
 		if (preg_match_all('/<(\w+):?([^>]+)?>/', $this->pattern, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
 			foreach ($matches as $match) {
 				$name = $match[1][0];
@@ -185,8 +211,7 @@ class UrlRule extends Object
 					// suffix alone is not allowed
 					return false;
 				}
-			} elseif ($suffix !== '/') {
-				// we allow the ending '/' to be optional if it is a suffix
+			} else {
 				return false;
 			}
 		}
@@ -204,7 +229,7 @@ class UrlRule extends Object
 			}
 		}
 		$params = $this->defaults;
-		$tr = array();
+		$tr = [];
 		foreach ($matches as $name => $value) {
 			if (isset($this->_routeParams[$name])) {
 				$tr[$this->_routeParams[$name]] = $value;
@@ -218,7 +243,7 @@ class UrlRule extends Object
 		} else {
 			$route = $this->route;
 		}
-		return array($route, $params);
+		return [$route, $params];
 	}
 
 	/**
@@ -234,7 +259,7 @@ class UrlRule extends Object
 			return false;
 		}
 
-		$tr = array();
+		$tr = [];
 
 		// match the route part first
 		if ($route !== $this->route) {
@@ -271,7 +296,7 @@ class UrlRule extends Object
 
 		// match params in the pattern
 		foreach ($this->_paramRules as $name => $rule) {
-			if (isset($params[$name]) && ($rule === '' || preg_match($rule, $params[$name]))) {
+			if (isset($params[$name]) && !is_array($params[$name]) && ($rule === '' || preg_match($rule, $params[$name]))) {
 				$tr["<$name>"] = urlencode($params[$name]);
 				unset($params[$name]);
 			} elseif (!isset($this->defaults[$name]) || isset($params[$name])) {

@@ -17,7 +17,7 @@ abstract class ManagerTestCase extends TestCase
 		$name = 'editUser';
 		$description = 'edit a user';
 		$bizRule = 'checkUserIdentity()';
-		$data = array(1, 2, 3);
+		$data = [1, 2, 3];
 		$item = $this->auth->createItem($name, $type, $description, $bizRule, $data);
 		$this->assertTrue($item instanceof Item);
 		$this->assertEquals($item->type, $type);
@@ -90,7 +90,7 @@ abstract class ManagerTestCase extends TestCase
 
 	public function testGetItemChildren()
 	{
-		$this->assertEquals(array(), $this->auth->getItemChildren('readPost'));
+		$this->assertEquals([], $this->auth->getItemChildren('readPost'));
 		$children = $this->auth->getItemChildren('author');
 		$this->assertEquals(3, count($children));
 		$this->assertTrue(reset($children) instanceof Item);
@@ -117,6 +117,12 @@ abstract class ManagerTestCase extends TestCase
 		$this->assertTrue($this->auth->revoke('author B', 'author'));
 		$this->assertFalse($this->auth->isAssigned('author B', 'author'));
 		$this->assertFalse($this->auth->revoke('author B', 'author'));
+	}
+
+	public function testRevokeAll()
+	{
+		$this->assertTrue($this->auth->revokeAll('reader E'));
+		$this->assertFalse($this->auth->isAssigned('reader E', 'reader'));
 	}
 
 	public function testGetAssignments()
@@ -164,50 +170,57 @@ abstract class ManagerTestCase extends TestCase
 
 	public function testExecuteBizRule()
 	{
-		$this->assertTrue($this->auth->executeBizRule(null, array(), null));
-		$this->assertTrue($this->auth->executeBizRule('return 1 == true;', array(), null));
-		$this->assertTrue($this->auth->executeBizRule('return $params[0] == $params[1];', array(1, '1'), null));
-		$this->assertFalse($this->auth->executeBizRule('invalid;', array(), null));
+		$this->assertTrue($this->auth->executeBizRule(null, [], null));
+		$this->assertTrue($this->auth->executeBizRule('return 1 == true;', [], null));
+		$this->assertTrue($this->auth->executeBizRule('return $params[0] == $params[1];', [1, '1'], null));
+		$this->assertFalse($this->auth->executeBizRule('invalid;', [], null));
 	}
 
 	public function testCheckAccess()
 	{
-		$results = array(
-			'reader A' => array(
+		$results = [
+			'reader A' => [
 				'createPost' => false,
 				'readPost' => true,
 				'updatePost' => false,
 				'updateOwnPost' => false,
 				'deletePost' => false,
-			),
-			'author B' => array(
+			],
+			'author B' => [
 				'createPost' => true,
 				'readPost' => true,
 				'updatePost' => true,
 				'updateOwnPost' => true,
 				'deletePost' => false,
-			),
-			'editor C' => array(
+			],
+			'editor C' => [
 				'createPost' => false,
 				'readPost' => true,
 				'updatePost' => true,
 				'updateOwnPost' => false,
 				'deletePost' => false,
-			),
-			'admin D' => array(
+			],
+			'admin D' => [
 				'createPost' => true,
 				'readPost' => true,
 				'updatePost' => true,
 				'updateOwnPost' => false,
 				'deletePost' => true,
-			),
-		);
+			],
+			'reader E' => [
+				'createPost' => false,
+				'readPost' => false,
+				'updatePost' => false,
+				'updateOwnPost' => false,
+				'deletePost' => false,
+			],
+		];
 
-		$params = array('authorID' => 'author B');
+		$params = ['authorID' => 'author B'];
 
-		foreach (array('reader A', 'author B', 'editor C', 'admin D') as $user) {
+		foreach (['reader A', 'author B', 'editor C', 'admin D'] as $user) {
 			$params['userID'] = $user;
-			foreach (array('createPost', 'readPost', 'updatePost', 'updateOwnPost', 'deletePost') as $operation) {
+			foreach (['createPost', 'readPost', 'updatePost', 'updateOwnPost', 'deletePost'] as $operation) {
 				$result = $this->auth->checkAccess($user, $operation, $params);
 				$this->assertEquals($results[$user][$operation], $result);
 			}
@@ -245,5 +258,6 @@ abstract class ManagerTestCase extends TestCase
 		$this->auth->assign('author B', 'author');
 		$this->auth->assign('editor C', 'editor');
 		$this->auth->assign('admin D', 'admin');
+		$this->auth->assign('reader E', 'reader');
 	}
 }

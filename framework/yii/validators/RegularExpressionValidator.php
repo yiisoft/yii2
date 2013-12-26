@@ -30,13 +30,11 @@ class RegularExpressionValidator extends Validator
 	/**
 	 * @var boolean whether to invert the validation logic. Defaults to false. If set to true,
 	 * the regular expression defined via [[pattern]] should NOT match the attribute value.
-	 * @throws InvalidConfigException if the "pattern" is not a valid regular expression
 	 **/
 	public $not = false;
 
 	/**
-	 * Initializes the validator.
-	 * @throws InvalidConfigException if [[pattern]] is not set.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -50,39 +48,18 @@ class RegularExpressionValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
-	public function validateAttribute($object, $attribute)
+	protected function validateValue($value)
 	{
-		$value = $object->$attribute;
-		if (!$this->validateValue($value)) {
-			$this->addError($object, $attribute, $this->message);
-		}
-	}
-
-	/**
-	 * Validates the given value.
-	 * @param mixed $value the value to be validated.
-	 * @return boolean whether the value is valid.
-	 */
-	public function validateValue($value)
-	{
-		return !is_array($value) &&
+		$valid = !is_array($value) &&
 			(!$this->not && preg_match($this->pattern, $value)
 			|| $this->not && !preg_match($this->pattern, $value));
+		return $valid ? null : [$this->message, []];
 	}
 
 	/**
-	 * Returns the JavaScript needed for performing client-side validation.
-	 * @param \yii\base\Model $object the data object being validated
-	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
-	 * containing a model form with this validator applied.
-	 * @return string the client-side validation script.
-	 * @throws InvalidConfigException if the "pattern" is not a valid regular expression
+	 * @inheritdoc
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
@@ -100,19 +77,18 @@ class RegularExpressionValidator extends Validator
 			$pattern .= preg_replace('/[^igm]/', '', $flag);
 		}
 
-		$options = array(
+		$options = [
 			'pattern' => new JsExpression($pattern),
 			'not' => $this->not,
-			'message' => Html::encode(strtr($this->message, array(
+			'message' => strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
-				'{value}' => $object->$attribute,
-			))),
-		);
+			]),
+		];
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
 		}
 
-		$view->registerAssetBundle('yii/validation');
+		ValidationAsset::register($view);
 		return 'yii.validation.regularExpression(value, messages, ' . Json::encode($options) . ');';
 	}
 }

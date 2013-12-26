@@ -28,11 +28,11 @@ use yii\caching\Cache;
  * the DB connection:
  *
  * ~~~
- * $connection = new \yii\db\Connection(array(
+ * $connection = new \yii\db\Connection([
  *     'dsn' => $dsn,
  *     'username' => $username,
  *     'password' => $password,
- * ));
+ * ]);
  * $connection->open();
  * ~~~
  *
@@ -76,26 +76,29 @@ use yii\caching\Cache;
  * configuration like the following:
  *
  * ~~~
- * array(
- *	 'components' => array(
- *		 'db' => array(
+ * [
+ *	 'components' => [
+ *		 'db' => [
  *			 'class' => '\yii\db\Connection',
  *			 'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
  *			 'username' => 'root',
  *			 'password' => '',
  *			 'charset' => 'utf8',
- *		 ),
- *	 ),
- * )
+ *		 ],
+ *	 ],
+ * ]
  * ~~~
  *
+ * @property string $driverName Name of the DB driver. This property is read-only.
  * @property boolean $isActive Whether the DB connection is established. This property is read-only.
- * @property Transaction $transaction The currently active transaction. Null if no active transaction.
- * @property Schema $schema The database schema information for the current connection.
- * @property QueryBuilder $queryBuilder The query builder.
- * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the sequence object.
- * @property string $driverName Name of the DB driver currently being used.
- * @property array $querySummary The statistical results of SQL queries.
+ * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
+ * sequence object. This property is read-only.
+ * @property QueryBuilder $queryBuilder The query builder for the current DB connection. This property is
+ * read-only.
+ * @property Schema $schema The schema information for the database opened by this connection. This property
+ * is read-only.
+ * @property Transaction $transaction The currently active transaction. Null if no active transaction. This
+ * property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -156,7 +159,7 @@ class Connection extends Component
 	 * The table names may contain schema prefix, if any. Do not quote the table names.
 	 * @see enableSchemaCache
 	 */
-	public $schemaCacheExclude = array();
+	public $schemaCacheExclude = [];
 	/**
 	 * @var Cache|string the cache object or the ID of the cache application component that
 	 * is used to cache the table metadata.
@@ -198,12 +201,11 @@ class Connection extends Component
 	public $queryCache = 'cache';
 	/**
 	 * @var string the charset used for database connection. The property is only used
-	 * for MySQL and PostgreSQL databases. Defaults to null, meaning using default charset
+	 * for MySQL, PostgreSQL and CUBRID databases. Defaults to null, meaning using default charset
 	 * as specified by the database.
 	 *
 	 * Note that if you're using GBK or BIG5 then it's highly recommended to
-	 * update to PHP 5.3.6+ and to specify charset via DSN like
-	 * 'mysql:dbname=mydatabase;host=127.0.0.1;charset=GBK;'.
+	 * specify charset via DSN like 'mysql:dbname=mydatabase;host=127.0.0.1;charset=GBK;'.
 	 */
 	public $charset;
 	/**
@@ -231,7 +233,7 @@ class Connection extends Component
 	 * You normally do not need to set this property unless you want to use your own
 	 * [[Schema]] class to support DBMS that is not supported by Yii.
 	 */
-	public $schemaMap = array(
+	public $schemaMap = [
 		'pgsql' => 'yii\db\pgsql\Schema',    // PostgreSQL
 		'mysqli' => 'yii\db\mysql\Schema',   // MySQL
 		'mysql' => 'yii\db\mysql\Schema',    // MySQL
@@ -241,7 +243,8 @@ class Connection extends Component
 		'oci' => 'yii\db\oci\Schema',        // Oracle driver
 		'mssql' => 'yii\db\mssql\Schema',    // older MSSQL driver on MS Windows hosts
 		'dblib' => 'yii\db\mssql\Schema',    // dblib drivers on GNU/Linux (and maybe other OSes) hosts
-	);
+		'cubrid' => 'yii\db\cubrid\Schema',  // CUBRID
+	];
 	/**
 	 * @var Transaction the currently active transaction
 	 */
@@ -307,9 +310,7 @@ class Connection extends Component
 				Yii::endProfile($token, __METHOD__);
 			} catch (\PDOException $e) {
 				Yii::endProfile($token, __METHOD__);
-				Yii::error("Failed to open DB connection ({$this->dsn}): " . $e->getMessage(), __METHOD__);
-				$message = YII_DEBUG ? 'Failed to open DB connection: ' . $e->getMessage() : 'Failed to open DB connection.';
-				throw new Exception($message, $e->errorInfo, (int)$e->getCode(), $e);
+				throw new Exception($e->getMessage(), $e->errorInfo, (int)$e->getCode(), $e);
 			}
 		}
 	}
@@ -360,7 +361,7 @@ class Connection extends Component
 		if ($this->emulatePrepare !== null && constant('PDO::ATTR_EMULATE_PREPARES')) {
 			$this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
 		}
-		if ($this->charset !== null && in_array($this->getDriverName(), array('pgsql', 'mysql', 'mysqli'))) {
+		if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'])) {
 			$this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
 		}
 		$this->trigger(self::EVENT_AFTER_OPEN);
@@ -372,13 +373,13 @@ class Connection extends Component
 	 * @param array $params the parameters to be bound to the SQL statement
 	 * @return Command the DB command
 	 */
-	public function createCommand($sql = null, $params = array())
+	public function createCommand($sql = null, $params = [])
 	{
 		$this->open();
-		$command = new Command(array(
+		$command = new Command([
 			'db' => $this,
 			'sql' => $sql,
-		));
+		]);
 		return $command->bindValues($params);
 	}
 
@@ -398,9 +399,7 @@ class Connection extends Component
 	public function beginTransaction()
 	{
 		$this->open();
-		$this->_transaction = new Transaction(array(
-			'db' => $this,
-		));
+		$this->_transaction = new Transaction(['db' => $this]);
 		$this->_transaction->begin();
 		return $this->_transaction;
 	}
@@ -499,19 +498,19 @@ class Connection extends Component
 	 * Processes a SQL statement by quoting table and column names that are enclosed within double brackets.
 	 * Tokens enclosed within double curly brackets are treated as table names, while
 	 * tokens enclosed within double square brackets are column names. They will be quoted accordingly.
-	 * Also, the percentage character "%" in a table name will be replaced with [[tablePrefix]].
+	 * Also, the percentage character "%" at the beginning or ending of a table name will be replaced
+	 * with [[tablePrefix]].
 	 * @param string $sql the SQL to be quoted
 	 * @return string the quoted SQL
 	 */
 	public function quoteSql($sql)
 	{
-		$db = $this;
-		return preg_replace_callback('/(\\{\\{([%\w\-\. ]+)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
-			function ($matches) use ($db) {
+		return preg_replace_callback('/(\\{\\{(%?[\w\-\. ]+%?)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
+			function ($matches) {
 				if (isset($matches[3])) {
-					return $db->quoteColumnName($matches[3]);
+					return $this->quoteColumnName($matches[3]);
 				} else {
-					return str_replace('%', $db->tablePrefix, $db->quoteTableName($matches[2]));
+					return str_replace('%', $this->tablePrefix, $this->quoteTableName($matches[2]));
 				}
 			}, $sql);
 	}
@@ -525,6 +524,7 @@ class Connection extends Component
 		if (($pos = strpos($this->dsn, ':')) !== false) {
 			return strtolower(substr($this->dsn, 0, $pos));
 		} else {
+			$this->open();
 			return strtolower($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
 		}
 	}

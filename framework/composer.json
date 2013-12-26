@@ -1,6 +1,6 @@
 {
 	"name": "yiisoft/yii2",
-	"description": "Yii2 Web Programming Framework",
+	"description": "Yii PHP Framework Version 2",
 	"keywords": ["yii", "framework"],
 	"homepage": "http://www.yiiframework.com/",
 	"type": "library",
@@ -39,21 +39,6 @@
 			"name": "Paul Klimov",
 			"email": "klimov.paul@gmail.com",
 			"role": "Core framework development"
-		},
-		{
-			"name": "Wei Zhuo",
-			"email": "weizhuo@gmail.com",
-			"role": "Project site maintenance and development"
-		},
-		{
-			"name": "Sebastián Thierer",
-			"email": "sebas@artfos.com",
-			"role": "Component development"
-		},
-		{
-			"name": "Jeffrey Winesett",
-			"email": "jefftulsa@gmail.com",
-			"role": "Documentation and marketing"
 		}
 	],
 	"support": {
@@ -64,17 +49,16 @@
 		"source": "https://github.com/yiisoft/yii2"
 	},
 	"require": {
-		"php": ">=5.3.7",
+		"php": ">=5.4.0",
 		"ext-mbstring": "*",
-		"lib-pcre": "*"
+		"lib-pcre": "*",
+		"yiisoft/yii2-composer": "*",
+		"yiisoft/jquery": "1.10.*",
+		"phpspec/php-diff": ">=1.0.2",
+		"ezyang/htmlpurifier": "4.5.*",
+		"michelf/php-markdown": "1.3.*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\": "/" }
-	},
-	"suggest": {
-		"michelf/php-markdown": "Required by Markdown.",
-		"twig/twig": "Required by TwigViewRenderer.",
-		"smarty/smarty": "Required by SmartyViewRenderer.",
-		"ezyang/htmlpurifier": "Required by HtmlPurifier."
+		"psr-0": { "yii\\": "" }
 	}
 }

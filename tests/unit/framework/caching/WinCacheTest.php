@@ -1,9 +1,12 @@
 <?php
 namespace yiiunit\framework\caching;
+
 use yii\caching\WinCache;
 
 /**
  * Class for testing wincache backend
+ * @group wincache
+ * @group caching
  */
 class WinCacheTest extends CacheTestCase
 {

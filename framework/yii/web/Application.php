@@ -8,11 +8,17 @@
 namespace yii\web;
 
 use Yii;
-use yii\base\HttpException;
 use yii\base\InvalidRouteException;
 
 /**
- * Application is the base class for all application classes.
+ * Application is the base class for all web application classes.
+ *
+ * @property AssetManager $assetManager The asset manager component. This property is read-only.
+ * @property string $homeUrl The homepage URL.
+ * @property Request $request The request component. This property is read-only.
+ * @property Response $response The response component. This property is read-only.
+ * @property Session $session The session component. This property is read-only.
+ * @property User $user The user component. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -32,28 +38,33 @@ class Application extends \yii\base\Application
 	 * to the action. For example,
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *     'offline/notice',
 	 *     'param1' => 'value1',
 	 *     'param2' => 'value2',
-	 * )
+	 * ]
 	 * ~~~
 	 *
-	 * Defaults to null, meaning catch-all is not effective.
+	 * Defaults to null, meaning catch-all is not used.
 	 */
 	public $catchAll;
+	/**
+	 * @var Controller the currently active controller instance
+	 */
+	public $controller;
 
 
 	/**
-	 * Processes the request.
-	 * @return integer the exit status of the controller action (0 means normal, non-zero values mean abnormal)
-	 * @throws HttpException if the request cannot be resolved.
+	 * Handles the specified request.
+	 * @param Request $request the request to be handled
+	 * @return Response the resulting response
+	 * @throws NotFoundHttpException if the requested route is invalid
 	 */
-	public function processRequest()
+	public function handleRequest($request)
 	{
-		$request = $this->getRequest();
-		Yii::setAlias('@wwwroot', dirname($request->getScriptFile()));
-		Yii::setAlias('@www', $request->getBaseUrl());
+		Yii::setAlias('@webroot', dirname($request->getScriptFile()));
+		Yii::setAlias('@web', $request->getBaseUrl());
+
 		if (empty($this->catchAll)) {
 			list ($route, $params) = $request->resolve();
 		} else {
@@ -61,9 +72,20 @@ class Application extends \yii\base\Application
 			$params = array_splice($this->catchAll, 1);
 		}
 		try {
-			return $this->runAction($route, $params);
+			Yii::trace("Route requested: '$route'", __METHOD__);
+			$this->requestedRoute = $route;
+			$result = $this->runAction($route, $params);
+			if ($result instanceof Response) {
+				return $result;
+			} else {
+				$response = $this->getResponse();
+				if ($result !== null) {
+					$response->data = $result;
+				}
+				return $response;
+			}
 		} catch (InvalidRouteException $e) {
-			throw new HttpException(404, $e->getMessage(), $e->getCode(), $e);
+			throw new NotFoundHttpException($e->getMessage(), $e->getCode(), $e);
 		}
 	}
 
@@ -145,22 +167,12 @@ class Application extends \yii\base\Application
 	public function registerCoreComponents()
 	{
 		parent::registerCoreComponents();
-		$this->setComponents(array(
-			'request' => array(
-				'class' => 'yii\web\Request',
-			),
-			'response' => array(
-				'class' => 'yii\web\Response',
-			),
-			'session' => array(
-				'class' => 'yii\web\Session',
-			),
-			'user' => array(
-				'class' => 'yii\web\User',
-			),
-			'assetManager' => array(
-				'class' => 'yii\web\AssetManager',
-			),
-		));
+		$this->setComponents([
+			'request' => ['class' => 'yii\web\Request'],
+			'response' => ['class' => 'yii\web\Response'],
+			'session' => ['class' => 'yii\web\Session'],
+			'user' => ['class' => 'yii\web\User'],
+			'assetManager' => ['class' => 'yii\web\AssetManager'],
+		]);
 	}
 }

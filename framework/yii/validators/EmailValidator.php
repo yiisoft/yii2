@@ -38,16 +38,11 @@ class EmailValidator extends Validator
 	 */
 	public $allowName = false;
 	/**
-	 * @var boolean whether to check the MX record for the email address.
-	 * Defaults to false. To enable it, you need to make sure the PHP function 'checkdnsrr'
-	 * exists in your PHP installation.
+	 * @var boolean whether to check whether the emails domain exists and has either an A or MX record.
+	 * Be aware of the fact that this check can fail due to temporary DNS problems even if the email address is
+	 * valid and an email would be deliverable. Defaults to false.
 	 */
-	public $checkMX = false;
-	/**
-	 * @var boolean whether to check port 25 for the email address.
-	 * Defaults to false.
-	 */
-	public $checkPort = false;
+	public $checkDNS = false;
 	/**
 	 * @var boolean whether validation process should take into account IDN (internationalized domain
 	 * names). Defaults to false meaning that validation of emails containing IDN will always fail.
@@ -58,7 +53,7 @@ class EmailValidator extends Validator
 
 
 	/**
-	 * Initializes the validator.
+	 * @inheritdoc
 	 */
 	public function init()
 	{
@@ -72,76 +67,49 @@ class EmailValidator extends Validator
 	}
 
 	/**
-	 * Validates the attribute of the object.
-	 * If there is any error, the error message is added to the object.
-	 * @param \yii\base\Model $object the object being validated
-	 * @param string $attribute the attribute being validated
+	 * @inheritdoc
 	 */
-	public function validateAttribute($object, $attribute)
-	{
-		$value = $object->$attribute;
-		if (!$this->validateValue($value)) {
-			$this->addError($object, $attribute, $this->message);
-		}
-	}
-
-	/**
-	 * Validates the given value.
-	 * @param mixed $value the value to be validated.
-	 * @return boolean whether the value is valid.
-	 */
-	public function validateValue($value)
+	protected function validateValue($value)
 	{
 		// make sure string length is limited to avoid DOS attacks
-		if (!is_string($value) || strlen($value) >= 255) {
-			return false;
-		}
-		if (($atPosition = strpos($value, '@')) === false) {
-			return false;
-		}
-		$domain = rtrim(substr($value, $atPosition + 1), '>');
-		if ($this->enableIDN) {
-			$value = idn_to_ascii(ltrim(substr($value, 0, $atPosition), '<')) . '@' . idn_to_ascii($domain);
-		}
-		$valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
-		if ($valid) {
-			if ($this->checkMX && function_exists('checkdnsrr')) {
-				$valid = checkdnsrr($domain, 'MX');
+		if (!is_string($value) || strlen($value) >= 320) {
+			$valid = false;
+		} elseif (!preg_match('/^(.*<?)(.*)@(.*)(>?)$/', $value, $matches)) {
+			$valid = false;
+		} else {
+			$domain = $matches[3];
+			if ($this->enableIDN) {
+				$value = $matches[1] . idn_to_ascii($matches[2]) . '@' . idn_to_ascii($domain) . $matches[4];
 			}
-			if ($valid && $this->checkPort && function_exists('fsockopen')) {
-				$valid = fsockopen($domain, 25) !== false;
+			$valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
+			if ($valid && $this->checkDNS) {
+				$valid = checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A');
 			}
 		}
-		return $valid;
+		return $valid ? null : [$this->message, []];
 	}
 
 	/**
-	 * Returns the JavaScript needed for performing client-side validation.
-	 * @param \yii\base\Model $object the data object being validated
-	 * @param string $attribute the name of the attribute to be validated.
-	 * @param \yii\base\View $view the view object that is going to be used to render views or view files
-	 * containing a model form with this validator applied.
-	 * @return string the client-side validation script.
+	 * @inheritdoc
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{
-		$options = array(
+		$options = [
 			'pattern' => new JsExpression($this->pattern),
 			'fullPattern' => new JsExpression($this->fullPattern),
 			'allowName' => $this->allowName,
-			'message' => Html::encode(strtr($this->message, array(
+			'message' => strtr($this->message, [
 				'{attribute}' => $object->getAttributeLabel($attribute),
-				'{value}' => $object->$attribute,
-			))),
+			]),
 			'enableIDN' => (boolean)$this->enableIDN,
-		);
+		];
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
 		}
 
-		$view->registerAssetBundle('yii/validation');
+		ValidationAsset::register($view);
 		if ($this->enableIDN) {
-			$view->registerAssetBundle('yii/punycode');
+			PunycodeAsset::register($view);
 		}
 		return 'yii.validation.email(value, messages, ' . Json::encode($options) . ');';
 	}

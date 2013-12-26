@@ -1,17 +1,11 @@
 <?php
-return array(
-	'modules' => array(
-//			'debug' => array(
+return [
+	'preload' => [
+		//'debug',
+	],
+	'modules' => [
+//			'debug' => [
 //				'class' => 'yii\debug\Module',
-//			),
-	),
-	'components' => array(
-		'log' => array(
-			'targets' => array(
-//				array(
-//					'class' => 'yii\logging\DebugTarget',
-//				)
-			),
-		),
-	),
-);
+//			],
+	],
+];

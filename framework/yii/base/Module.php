@@ -20,16 +20,16 @@ use Yii;
  * [[components|Components]] may be registered with the module so that they are globally
  * accessible within the module.
  *
- * @property string $uniqueId An ID that uniquely identifies this module among all modules within
- * the current application.
- * @property string $basePath The root directory of the module. Defaults to the directory containing the module class.
- * @property string $controllerPath The directory containing the controller classes. Defaults to "[[basePath]]/controllers".
- * @property string $viewPath The directory containing the view files within this module. Defaults to "[[basePath]]/views".
- * @property string $layoutPath The directory containing the layout view files within this module. Defaults to "[[viewPath]]/layouts".
- * @property array $modules The configuration of the currently installed modules (module ID => configuration).
- * @property array $components The components (indexed by their IDs) registered within this module.
- * @property array $import List of aliases to be imported. This property is write-only.
- * @property array $aliases List of aliases to be defined. This property is write-only.
+ * @property array $aliases List of path aliases to be defined. The array keys are alias names (must start
+ * with '@') and the array values are the corresponding paths or aliases. See [[setAliases()]] for an example.
+ * This property is write-only.
+ * @property string $basePath The root directory of the module.
+ * @property array $components The components (indexed by their IDs).
+ * @property string $controllerPath The directory that contains the controller classes.
+ * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
+ * @property array $modules The modules (indexed by their IDs).
+ * @property string $uniqueId The unique ID of the module. This property is read-only.
+ * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/view".
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -37,22 +37,13 @@ use Yii;
 abstract class Module extends Component
 {
 	/**
-	 * @event ActionEvent an event raised before executing a controller action.
-	 * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
-	 */
-	const EVENT_BEFORE_ACTION = 'beforeAction';
-	/**
-	 * @event ActionEvent an event raised after executing a controller action.
-	 */
-	const EVENT_AFTER_ACTION = 'afterAction';
-	/**
 	 * @var array custom module parameters (name => value).
 	 */
-	public $params = array();
+	public $params = [];
 	/**
-	 * @var array the IDs of the components that should be preloaded when this module is created.
+	 * @var array the IDs of the components or modules that should be preloaded right after initialization.
 	 */
-	public $preload = array();
+	public $preload = [];
 	/**
 	 * @var string an ID that uniquely identifies this module among other modules which have the same [[module|parent]].
 	 */
@@ -71,28 +62,27 @@ abstract class Module extends Component
 	 * @var array mapping from controller ID to controller configurations.
 	 * Each name-value pair specifies the configuration of a single controller.
 	 * A controller configuration can be either a string or an array.
-	 * If the former, the string should be the class name or path alias of the controller.
+	 * If the former, the string should be the fully qualified class name of the controller.
 	 * If the latter, the array must contain a 'class' element which specifies
-	 * the controller's class name or path alias, and the rest of the name-value pairs
+	 * the controller's fully qualified class name, and the rest of the name-value pairs
 	 * in the array are used to initialize the corresponding controller properties. For example,
 	 *
 	 * ~~~
-	 * array(
-	 *   'account' => '@app/controllers/UserController',
-	 *   'article' => array(
-	 *      'class' => '@app/controllers/PostController',
+	 * [
+	 *   'account' => 'app\controllers\UserController',
+	 *   'article' => [
+	 *      'class' => 'app\controllers\PostController',
 	 *      'pageTitle' => 'something new',
-	 *   ),
-	 * )
+	 *   ],
+	 * ]
 	 * ~~~
 	 */
-	public $controllerMap = array();
+	public $controllerMap = [];
 	/**
 	 * @var string the namespace that controller classes are in. If not set,
 	 * it will use the "controllers" sub-namespace under the namespace of this module.
 	 * For example, if the namespace of this module is "foo\bar", then the default
 	 * controller namespace would be "foo\bar\controllers".
-	 * If the module is an application, it will default to "app\controllers".
 	 */
 	public $controllerNamespace;
 	/**
@@ -122,11 +112,11 @@ abstract class Module extends Component
 	/**
 	 * @var array child modules of this module
 	 */
-	private $_modules = array();
+	private $_modules = [];
 	/**
 	 * @var array components registered under this module
 	 */
-	private $_components = array();
+	private $_components = [];
 
 	/**
 	 * Constructor.
@@ -134,7 +124,7 @@ abstract class Module extends Component
 	 * @param Module $parent the parent module (if any)
 	 * @param array $config name-value pairs that will be used to initialize the object properties
 	 */
-	public function __construct($id, $parent = null, $config = array())
+	public function __construct($id, $parent = null, $config = [])
 	{
 		$this->id = $id;
 		$this->module = $parent;
@@ -176,22 +166,20 @@ abstract class Module extends Component
 	/**
 	 * Initializes the module.
 	 * This method is called after the module is created and initialized with property values
-	 * given in configuration. The default implement will create a path alias using the module [[id]]
-	 * and then call [[preloadComponents()]] to load components that are declared in [[preload]].
+	 * given in configuration. The default implementation will call [[preloadComponents()]] to
+	 * load components that are declared in [[preload]].
+	 *
+	 * If you override this method, please make sure you call the parent implementation.
 	 */
 	public function init()
 	{
-		$this->preloadComponents();
 		if ($this->controllerNamespace === null) {
-			if ($this instanceof Application) {
-				$this->controllerNamespace = 'app\\controllers';
-			} else {
-				$class = get_class($this);
-				if (($pos = strrpos($class, '\\')) !== false) {
-					$this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
-				}
+			$class = get_class($this);
+			if (($pos = strrpos($class, '\\')) !== false) {
+				$this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
 			}
 		}
+		$this->preloadComponents();
 	}
 
 	/**
@@ -201,13 +189,7 @@ abstract class Module extends Component
 	 */
 	public function getUniqueId()
 	{
-		if ($this instanceof Application) {
-			return '';
-		} elseif ($this->module) {
-			return $this->module->getUniqueId() . '/' . $this->id;
-		} else {
-			return $this->id;
-		}
+		return $this->module ? ltrim($this->module->getUniqueId() . '/' . $this->id, '/') : $this->id;
 	}
 
 	/**
@@ -236,9 +218,6 @@ abstract class Module extends Component
 		$p = realpath($path);
 		if ($p !== false && is_dir($p)) {
 			$this->_basePath = $p;
-			if ($this instanceof Application) {
-				Yii::setAlias('@app', $p);
-			}
 		} else {
 			throw new InvalidParamException("The directory does not exist: $path");
 		}
@@ -262,7 +241,7 @@ abstract class Module extends Component
 	 * Sets the directory that contains the controller classes.
 	 * @param string $path the directory that contains the controller classes.
 	 * This can be either a directory name or a path alias.
-	 * @throws Exception if the directory is invalid
+	 * @throws InvalidParamException if the directory is invalid
 	 */
 	public function setControllerPath($path)
 	{
@@ -285,7 +264,7 @@ abstract class Module extends Component
 	/**
 	 * Sets the directory that contains the view files.
 	 * @param string $path the root directory of view files.
-	 * @throws Exception if the directory is invalid
+	 * @throws InvalidParamException if the directory is invalid
 	 */
 	public function setViewPath($path)
 	{
@@ -308,7 +287,7 @@ abstract class Module extends Component
 	/**
 	 * Sets the directory that contains the layout files.
 	 * @param string $path the root directory of layout files.
-	 * @throws Exception if the directory is invalid
+	 * @throws InvalidParamException if the directory is invalid
 	 */
 	public function setLayoutPath($path)
 	{
@@ -319,15 +298,18 @@ abstract class Module extends Component
 	 * Defines path aliases.
 	 * This method calls [[Yii::setAlias()]] to register the path aliases.
 	 * This method is provided so that you can define path aliases when configuring a module.
+	 * @property array list of path aliases to be defined. The array keys are alias names
+	 * (must start with '@') and the array values are the corresponding paths or aliases.
+	 * See [[setAliases()]] for an example.
 	 * @param array $aliases list of path aliases to be defined. The array keys are alias names
 	 * (must start with '@') and the array values are the corresponding paths or aliases.
 	 * For example,
 	 *
 	 * ~~~
-	 * array(
+	 * [
 	 *	'@models' => '@app/models', // an existing alias
 	 *	'@backend' => __DIR__ . '/../backend',  // a directory
-	 * )
+	 * ]
 	 * ~~~
 	 */
 	public function setAliases($aliases)
@@ -338,26 +320,40 @@ abstract class Module extends Component
 	}
 
 	/**
-	 * Checks whether the named module exists.
-	 * @param string $id module ID
+	 * Checks whether the child module of the specified ID exists.
+	 * This method supports checking the existence of both child and grand child modules.
+	 * @param string $id module ID. For grand child modules, use ID path relative to this module (e.g. `admin/content`).
 	 * @return boolean whether the named module exists. Both loaded and unloaded modules
 	 * are considered.
 	 */
 	public function hasModule($id)
 	{
-		return isset($this->_modules[$id]);
+		if (($pos = strpos($id, '/')) !== false) {
+			// sub-module
+			$module = $this->getModule(substr($id, 0, $pos));
+			return $module === null ? false : $module->hasModule(substr($id, $pos + 1));
+		} else {
+			return isset($this->_modules[$id]);
+		}
 	}
 
 	/**
-	 * Retrieves the named module.
-	 * @param string $id module ID (case-sensitive)
+	 * Retrieves the child module of the specified ID.
+	 * This method supports retrieving both child modules and grand child modules.
+	 * @param string $id module ID (case-sensitive). To retrieve grand child modules,
+	 * use ID path relative to this module (e.g. `admin/content`).
 	 * @param boolean $load whether to load the module if it is not yet loaded.
-	 * @return Module|null the module instance, null if the module
-	 * does not exist.
+	 * @return Module|null the module instance, null if the module does not exist.
 	 * @see hasModule()
 	 */
 	public function getModule($id, $load = true)
 	{
+		if (($pos = strpos($id, '/')) !== false) {
+			// sub-module
+			$module = $this->getModule(substr($id, 0, $pos));
+			return $module === null ? null : $module->getModule(substr($id, $pos + 1), $load);
+		}
+
 		if (isset($this->_modules[$id])) {
 			if ($this->_modules[$id] instanceof Module) {
 				return $this->_modules[$id];
@@ -399,7 +395,7 @@ abstract class Module extends Component
 	public function getModules($loadedOnly = false)
 	{
 		if ($loadedOnly) {
-			$modules = array();
+			$modules = [];
 			foreach ($this->_modules as $module) {
 				if ($module instanceof Module) {
 					$modules[] = $module;
@@ -424,15 +420,13 @@ abstract class Module extends Component
 	 * The following is an example for registering two sub-modules:
 	 *
 	 * ~~~
-	 * array(
-	 *     'comment' => array(
+	 * [
+	 *     'comment' => [
 	 *         'class' => 'app\modules\comment\CommentModule',
 	 *         'db' => 'db',
-	 *     ),
-	 *     'booking' => array(
-	 *         'class' => 'app\modules\booking\BookingModule',
-	 *     ),
-	 * )
+	 *     ],
+	 *     'booking' => ['class' => 'app\modules\booking\BookingModule'],
+	 * ]
 	 * ~~~
 	 *
 	 * @param array $modules modules (id => module configuration or instances)
@@ -468,7 +462,6 @@ abstract class Module extends Component
 			if ($this->_components[$id] instanceof Object) {
 				return $this->_components[$id];
 			} elseif ($load) {
-				Yii::trace("Loading component: $id", __METHOD__);
 				return $this->_components[$id] = Yii::createObject($this->_components[$id]);
 			}
 		}
@@ -505,7 +498,7 @@ abstract class Module extends Component
 	public function getComponents($loadedOnly = false)
 	{
 		if ($loadedOnly) {
-			$components = array();
+			$components = [];
 			foreach ($this->_components as $component) {
 				if ($component instanceof Component) {
 					$components[] = $component;
@@ -530,16 +523,16 @@ abstract class Module extends Component
 	 * The following is an example for setting two components:
 	 *
 	 * ~~~
-	 * array(
-	 *     'db' => array(
+	 * [
+	 *     'db' => [
 	 *         'class' => 'yii\db\Connection',
 	 *         'dsn' => 'sqlite:path/to/file.db',
-	 *     ),
-	 *     'cache' => array(
+	 *     ],
+	 *     'cache' => [
 	 *         'class' => 'yii\caching\DbCache',
 	 *         'db' => 'db',
-	 *     ),
-	 * )
+	 *     ],
+	 * ]
 	 * ~~~
 	 *
 	 * @param array $components components (id => component configuration or instance)
@@ -556,11 +549,18 @@ abstract class Module extends Component
 
 	/**
 	 * Loads components that are declared in [[preload]].
+	 * @throws InvalidConfigException if a component or module to be preloaded is unknown
 	 */
 	public function preloadComponents()
 	{
 		foreach ($this->preload as $id) {
-			$this->getComponent($id);
+			if ($this->hasComponent($id)) {
+				$this->getComponent($id);
+			} elseif ($this->hasModule($id)) {
+				$this->getModule($id);
+			} else {
+				throw new InvalidConfigException("Unknown component or module: $id");
+			}
 		}
 	}
 
@@ -571,22 +571,23 @@ abstract class Module extends Component
 	 * If the route is empty, the method will use [[defaultRoute]].
 	 * @param string $route the route that specifies the action.
 	 * @param array $params the parameters to be passed to the action
-	 * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
+	 * @return mixed the result of the action.
 	 * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully
 	 */
-	public function runAction($route, $params = array())
+	public function runAction($route, $params = [])
 	{
-		$result = $this->createController($route);
-		if (is_array($result)) {
-			/** @var $controller Controller */
-			list($controller, $actionID) = $result;
+		$parts = $this->createController($route);
+		if (is_array($parts)) {
+			/** @var Controller $controller */
+			list($controller, $actionID) = $parts;
 			$oldController = Yii::$app->controller;
 			Yii::$app->controller = $controller;
-			$status = $controller->runAction($actionID, $params);
+			$result = $controller->runAction($actionID, $params);
 			Yii::$app->controller = $oldController;
-			return $status;
+			return $result;
 		} else {
-			throw new InvalidRouteException('Unable to resolve the request "' . trim($this->getUniqueId() . '/' . $route, '/') . '".');
+			$id = $this->getUniqueId();
+			throw new InvalidRouteException('Unable to resolve the request "' . ($id === '' ? $route : $id . '/' . $route) . '".');
 		}
 	}
 
@@ -608,10 +609,8 @@ abstract class Module extends Component
 		if ($route === '') {
 			$route = $this->defaultRoute;
 		}
-		$route = trim($route, '/');
-		if (($pos = strpos($route, '/')) !== false) {
-			$id = substr($route, 0, $pos);
-			$route = substr($route, $pos + 1);
+		if (strpos($route, '/') !== false) {
+			list ($id, $route) = explode('/', $route, 2);
 		} else {
 			$id = $route;
 			$route = '';
@@ -624,8 +623,8 @@ abstract class Module extends Component
 
 		if (isset($this->controllerMap[$id])) {
 			$controller = Yii::createObject($this->controllerMap[$id], $id, $this);
-		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id)) {
-			$className = str_replace(' ', '', ucwords(implode(' ', explode('-', $id)))) . 'Controller';
+		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id) && strpos($id, '--') === false && trim($id, '-') === $id) {
+			$className = str_replace(' ', '', ucwords(str_replace('-', ' ', $id))) . 'Controller';
 			$classFile = $this->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
 			if (!is_file($classFile)) {
 				return false;
@@ -639,29 +638,29 @@ abstract class Module extends Component
 			}
 		}
 
-		return isset($controller) ? array($controller, $route) : false;
+		return isset($controller) ? [$controller, $route] : false;
 	}
 
 	/**
-	 * This method is invoked right before an action is to be executed (after all possible filters.)
+	 * This method is invoked right before an action of this module is to be executed (after all possible filters.)
 	 * You may override this method to do last-minute preparation for the action.
+	 * Make sure you call the parent implementation so that the relevant event is triggered.
 	 * @param Action $action the action to be executed.
 	 * @return boolean whether the action should continue to be executed.
 	 */
 	public function beforeAction($action)
 	{
-		$event = new ActionEvent($action);
-		$this->trigger(self::EVENT_BEFORE_ACTION, $event);
-		return $event->isValid;
+		return true;
 	}
 
 	/**
-	 * This method is invoked right after an action is executed.
+	 * This method is invoked right after an action of this module has been executed.
 	 * You may override this method to do some postprocessing for the action.
+	 * Make sure you call the parent implementation so that the relevant event is triggered.
 	 * @param Action $action the action just executed.
+	 * @param mixed $result the action return result.
 	 */
-	public function afterAction($action)
+	public function afterAction($action, &$result)
 	{
-		$this->trigger(self::EVENT_AFTER_ACTION, new ActionEvent($action));
 	}
 }

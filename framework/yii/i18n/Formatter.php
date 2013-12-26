@@ -19,6 +19,15 @@ use yii\base\InvalidConfigException;
  * Formatter requires the PHP "intl" extension to be installed. Formatter supports localized
  * formatting of date, time and numbers, based on the current [[locale]].
  *
+ * This Formatter can replace the `formatter` application component that is configured by default.
+ * To do so, add the following to your application config under `components`:
+ *
+ * ```php
+ * 'formatter' => [
+ *     'class' => 'yii\i18n\Formatter',
+ * ]
+ * ```
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -29,6 +38,15 @@ class Formatter extends \yii\base\Formatter
 	 * If not set, [[\yii\base\Application::language]] will be used.
 	 */
 	public $locale;
+	/**
+	 * @var string|\IntlTimeZone|\DateTimeZone the timezone to use for formatting time and date values.
+	 * This can be any value that may be passed to [date_default_timezone_set()](http://www.php.net/manual/en/function.date-default-timezone-set.php)
+	 * e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
+	 * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available timezones.
+	 * This can also be an IntlTimeZone or a DateTimeZone object.
+	 * If not set, [[\yii\base\Application::timezone]] will be used.
+	 */
+	public $timeZone;
 	/**
 	 * @var string the default format string to be used to format a date.
 	 * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
@@ -53,7 +71,7 @@ class Formatter extends \yii\base\Formatter
 	 * for the possible options. This property is used by [[createNumberFormatter]] when
 	 * creating a new number formatter to format decimals, currencies, etc.
 	 */
-	public $numberFormatOptions = array();
+	public $numberFormatOptions = [];
 	/**
 	 * @var string the character displayed as the decimal point when formatting a number.
 	 * If not set, the decimal separator corresponding to [[locale]] will be used.
@@ -75,10 +93,13 @@ class Formatter extends \yii\base\Formatter
 	public function init()
 	{
 		if (!extension_loaded('intl')) {
-			throw new InvalidConfigException('The "intl" PHP extension is not install. It is required to format data values in localized formats.');
+			throw new InvalidConfigException('The "intl" PHP extension is not installed. It is required to format data values in localized formats.');
 		}
 		if ($this->locale === null) {
 			$this->locale = Yii::$app->language;
+		}
+		if ($this->timeZone === null) {
+			$this->timeZone = Yii::$app->timeZone;
 		}
 		if ($this->decimalSeparator === null || $this->thousandSeparator === null) {
 			$formatter = new NumberFormatter($this->locale, NumberFormatter::DECIMAL);
@@ -93,12 +114,12 @@ class Formatter extends \yii\base\Formatter
 		parent::init();
 	}
 
-	private $_dateFormats = array(
+	private $_dateFormats = [
 		'short' => IntlDateFormatter::SHORT,
 		'medium' => IntlDateFormatter::MEDIUM,
 		'long' => IntlDateFormatter::LONG,
 		'full' => IntlDateFormatter::FULL,
-	);
+	];
 
 	/**
 	 * Formats the value as a date.
@@ -116,19 +137,28 @@ class Formatter extends \yii\base\Formatter
 	 * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
 	 *
 	 * @return string the formatted result
+	 * @throws InvalidConfigException when formatting fails due to invalid parameters.
 	 * @see dateFormat
 	 */
 	public function asDate($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		$value = $this->normalizeDatetimeValue($value);
 		if ($format === null) {
 			$format = $this->dateFormat;
 		}
 		if (isset($this->_dateFormats[$format])) {
-			$formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE);
+			$formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, $this->timeZone);
 		} else {
-			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
-			$formatter->setPattern($format);
+			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $this->timeZone);
+			if ($formatter !== null) {
+				$formatter->setPattern($format);
+			}
+		}
+		if ($formatter === null) {
+			throw new InvalidConfigException(intl_get_error_message());
 		}
 		return $formatter->format($value);
 	}
@@ -149,19 +179,28 @@ class Formatter extends \yii\base\Formatter
 	 * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
 	 *
 	 * @return string the formatted result
+	 * @throws InvalidConfigException when formatting fails due to invalid parameters.
 	 * @see timeFormat
 	 */
 	public function asTime($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		$value = $this->normalizeDatetimeValue($value);
 		if ($format === null) {
 			$format = $this->timeFormat;
 		}
 		if (isset($this->_dateFormats[$format])) {
-			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format]);
+			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format], $this->timeZone);
 		} else {
-			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
-			$formatter->setPattern($format);
+			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $this->timeZone);
+			if ($formatter !== null) {
+				$formatter->setPattern($format);
+			}
+		}
+		if ($formatter === null) {
+			throw new InvalidConfigException(intl_get_error_message());
 		}
 		return $formatter->format($value);
 	}
@@ -182,19 +221,28 @@ class Formatter extends \yii\base\Formatter
 	 * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
 	 *
 	 * @return string the formatted result
+	 * @throws InvalidConfigException when formatting fails due to invalid parameters.
 	 * @see datetimeFormat
 	 */
 	public function asDatetime($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		$value = $this->normalizeDatetimeValue($value);
 		if ($format === null) {
 			$format = $this->datetimeFormat;
 		}
 		if (isset($this->_dateFormats[$format])) {
-			$formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format]);
+			$formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format], $this->timeZone);
 		} else {
-			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
-			$formatter->setPattern($format);
+			$formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $this->timeZone);
+			if ($formatter !== null) {
+				$formatter->setPattern($format);
+			}
+		}
+		if ($formatter === null) {
+			throw new InvalidConfigException(intl_get_error_message());
 		}
 		return $formatter->format($value);
 	}
@@ -208,6 +256,9 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asDecimal($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return $this->createNumberFormatter(NumberFormatter::DECIMAL, $format)->format($value);
 	}
 
@@ -221,6 +272,9 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asCurrency($value, $currency = 'USD', $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return $this->createNumberFormatter(NumberFormatter::CURRENCY, $format)->formatCurrency($value, $currency);
 	}
 
@@ -233,6 +287,9 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asPercent($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return $this->createNumberFormatter(NumberFormatter::PERCENT, $format)->format($value);
 	}
 
@@ -245,6 +302,9 @@ class Formatter extends \yii\base\Formatter
 	 */
 	public function asScientific($value, $format = null)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
 		return $this->createNumberFormatter(NumberFormatter::SCIENTIFIC, $format)->format($value);
 	}
 
