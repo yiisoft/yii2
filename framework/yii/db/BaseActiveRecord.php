@@ -494,6 +494,17 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	}
 
 	/**
+	 * Marks an attribute dirty.
+	 * This method may be called to force updating a record when calling [[update()]],
+	 * even if there is no change being made to the record.
+	 * @param string $name the attribute name
+	 */
+	public function markAttributeDirty($name)
+	{
+		unset($this->_oldAttributes[$name]);
+	}
+
+	/**
 	 * Returns a value indicating whether the named attribute has been changed.
 	 * @param string $name the name of the attribute
 	 * @return boolean whether the attribute has been changed
