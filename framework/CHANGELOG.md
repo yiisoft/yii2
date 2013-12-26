@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #1446: Logging while logs are processed causes infinite loop (qiangxue)
 - Bug #1497: Localized view files are not correctly returned (mintao)
 - Bug #1500: Log messages exported to files are not separated by newlines (omnilight, qiangxue)
+- Bug #1504: Debug toolbar isn't loaded successfully in some environments when xdebug is enabled (qiangxue)
 - Bug #1509: The SQL for creating Postgres RBAC tables is incorrect (qiangxue)
 - Bug #1545: It was not possible to execute db Query twice, params where missing (cebe)
 - Bug #1550: fixed the issue that JUI input widgets did not property input IDs.

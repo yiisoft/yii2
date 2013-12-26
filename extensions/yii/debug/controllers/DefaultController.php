@@ -64,7 +64,7 @@ class DefaultController extends Controller
 
 	public function actionToolbar($tag)
 	{
-		$this->loadData($tag);
+		$this->loadData($tag, 3);
 		return $this->renderPartial('toolbar', [
 			'tag' => $tag,
 			'panels' => $this->module->panels,
@@ -78,9 +78,12 @@ class DefaultController extends Controller
 
 	private $_manifest;
 
-	protected function getManifest()
+	protected function getManifest($forceReload = false)
 	{
-		if ($this->_manifest === null) {
+		if ($this->_manifest === null || $forceReload) {
+			if ($forceReload)  {
+				clearstatcache();
+			}
 			$indexFile = $this->module->dataPath . '/index.data';
 			if (is_file($indexFile)) {
 				$this->_manifest = array_reverse(unserialize(file_get_contents($indexFile)), true);
@@ -91,24 +94,30 @@ class DefaultController extends Controller
 		return $this->_manifest;
 	}
 
-	public function loadData($tag)
+	public function loadData($tag, $maxRetry = 0)
 	{
-		$manifest = $this->getManifest();
-		if (isset($manifest[$tag])) {
-			$dataFile = $this->module->dataPath . "/$tag.data";
-			$data = unserialize(file_get_contents($dataFile));
-			foreach ($this->module->panels as $id => $panel) {
-				if (isset($data[$id])) {
-					$panel->tag = $tag;
-					$panel->load($data[$id]);
-				} else {
-					// remove the panel since it has not received any data
-					unset($this->module->panels[$id]);
+		// retry loading debug data because the debug data is logged in shutdown function
+		// which may be delayed in some environment if xdebug is enabled.
+		// See: https://github.com/yiisoft/yii2/issues/1504
+		for ($retry = 0; $retry <= $maxRetry; ++$retry) {
+			$manifest = $this->getManifest($retry > 0);
+			if (isset($manifest[$tag])) {
+				$dataFile = $this->module->dataPath . "/$tag.data";
+				$data = unserialize(file_get_contents($dataFile));
+				foreach ($this->module->panels as $id => $panel) {
+					if (isset($data[$id])) {
+						$panel->tag = $tag;
+						$panel->load($data[$id]);
+					} else {
+						// remove the panel since it has not received any data
+						unset($this->module->panels[$id]);
+					}
 				}
+				$this->summary = $data['summary'];
+				return;
 			}
-			$this->summary = $data['summary'];
-		} else {
-			throw new NotFoundHttpException("Unable to find debug data tagged with '$tag'.");
 		}
+
+		throw new NotFoundHttpException("Unable to find debug data tagged with '$tag'.");
 	}
 }
