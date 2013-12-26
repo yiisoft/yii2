@@ -264,7 +264,7 @@ abstract class Schema extends Object
 	 * @return array all unique indexes for the given table.
 	 * @throws NotSupportedException if this method is called
 	 */
-	public function findUniqueIndexes($schema = '')
+	public function findUniqueIndexes($table)
 	{
 		throw new NotSupportedException(get_class($this) . ' does not support getting unique indexes information.');
 	}
