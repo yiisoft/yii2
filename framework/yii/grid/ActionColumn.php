@@ -70,16 +70,16 @@ class ActionColumn extends Column
 	}
 
 	/**
+	 * @param string $action
 	 * @param \yii\db\ActiveRecord $model
 	 * @param mixed $key the key associated with the data model
 	 * @param integer $index
-	 * @param string $action
 	 * @return string
 	 */
-	public function createUrl($model, $key, $index, $action)
+	public function createUrl($action, $model, $key, $index)
 	{
 		if ($this->urlCreator instanceof Closure) {
-			return call_user_func($this->urlCreator, $model, $key, $index, $action);
+			return call_user_func($this->urlCreator, $action, $model, $key, $index);
 		} else {
 			$params = is_array($key) ? $key : ['id' => $key];
 			$route = $this->controller ? $this->controller . '/' . $action : $action;
