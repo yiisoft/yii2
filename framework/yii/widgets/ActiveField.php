@@ -579,6 +579,7 @@ class ActiveField extends Component
 		$config['model'] = $this->model;
 		$config['attribute'] = $this->attribute;
 		$config['view'] = $this->form->getView();
+		$config['options'] = $this->inputOptions;
 		$this->parts['{input}'] = $class::widget($config);
 		return $this;
 	}
