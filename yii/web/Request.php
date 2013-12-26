@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Security;
+use yii\helpers\StringHelper;
 
 /**
  * The web Request class represents an HTTP request
@@ -83,6 +84,10 @@ class Request extends \yii\base\Request
 	 * The name of the HTTP header for sending CSRF token.
 	 */
 	const CSRF_HEADER = 'X-CSRF-Token';
+	/**
+	 * The length of the CSRF token mask.
+	 */
+	const CSRF_MASK_LENGTH = 8;
 
 
 	/**
@@ -1021,6 +1026,43 @@ class Request extends \yii\base\Request
 		return $this->_csrfCookie->value;
 	}
 
+	private $_maskedCsrfToken;
+
+	/**
+	 * Returns the masked CSRF token.
+	 * This method will apply a mask to [[csrfToken]] so that the resulting CSRF token
+	 * will not be exploited by [BREACH attacks](http://breachattack.com/).
+	 * @return string the masked CSRF token.
+	 */
+	public function getMaskedCsrfToken()
+	{
+		if ($this->_maskedCsrfToken === null) {
+			$token = $this->getCsrfToken();
+			$mask = Security::generateRandomKey(self::CSRF_MASK_LENGTH);
+			$this->_maskedCsrfToken = base64_encode($mask . $this->xorTokens($token, $mask));
+		}
+		return $this->_maskedCsrfToken;
+	}
+
+	/**
+	 * Returns the XOR result of two strings.
+	 * If the two strings are of different lengths, the shorter one will be padded to the length of the longer one.
+	 * @param string $token1
+	 * @param string $token2
+	 * @return string the XOR result
+	 */
+	private function xorTokens($token1, $token2)
+	{
+		$n1 = StringHelper::byteLength($token1);
+		$n2 = StringHelper::byteLength($token2);
+		if ($n1 > $n2) {
+			$token2 = str_pad($token2, $n1, $token2);
+		} elseif ($n1 < $n2) {
+			$token1 = str_pad($token1, $n2, $token1);
+		}
+		return $token1 ^ $token2;
+	}
+
 	/**
 	 * @return string the CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned if no such header is sent.
 	 */
@@ -1072,6 +1114,20 @@ class Request extends \yii\base\Request
 				$token = $this->getPost($this->csrfVar);
 				break;
 		}
-		return $token === $trueToken || $this->getCsrfTokenFromHeader() === $trueToken;
+		return $this->validateCsrfTokenInternal($token, $trueToken)
+			|| $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
+	}
+
+	private function validateCsrfTokenInternal($token, $trueToken)
+	{
+		$token = base64_decode($token);
+		$n = StringHelper::byteLength($token);
+		if ($n <= self::CSRF_MASK_LENGTH) {
+			return false;
+		}
+		$mask = StringHelper::byteSubstr($token, 0, self::CSRF_MASK_LENGTH);
+		$token = StringHelper::byteSubstr($token, self::CSRF_MASK_LENGTH, $n - self::CSRF_MASK_LENGTH);
+		$token = $this->xorTokens($mask, $token);
+		return $token === $trueToken;
 	}
 }
