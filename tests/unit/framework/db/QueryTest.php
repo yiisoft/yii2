@@ -112,4 +112,15 @@ class QueryTest extends DatabaseTestCase
 	public function testUnion()
 	{
 	}
+
+	public function testOne()
+	{
+		$db = $this->getConnection();
+
+		$result = (new Query)->from('tbl_customer')->where(['status' => 2])->one($db);
+		$this->assertEquals('user3', $result['name']);
+
+		$result = (new Query)->from('tbl_customer')->where(['status' => 3])->one($db);
+		$this->assertFalse($result);
+	}
 }
