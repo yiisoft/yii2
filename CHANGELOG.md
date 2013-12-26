@@ -38,7 +38,7 @@ Yii Framework 2 Change Log
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
 - Chg: Added `yii\widgets\InputWidget::options` (qiangxue)
-- Chg: The signature for `yii\gridview\ActionColumn::urlCreator` is changed - the `$action` parameter is moved to the first (qiangxue)
+- Chg: Changed the signature of `urlCreator` and button creators for `yii\gridview\ActionColumn` (qiangxue)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
 
