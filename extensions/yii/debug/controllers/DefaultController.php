@@ -64,7 +64,7 @@ class DefaultController extends Controller
 
 	public function actionToolbar($tag)
 	{
-		$this->loadData($tag, 3);
+		$this->loadData($tag, 5);
 		return $this->renderPartial('toolbar', [
 			'tag' => $tag,
 			'panels' => $this->module->panels,
@@ -116,7 +116,7 @@ class DefaultController extends Controller
 				$this->summary = $data['summary'];
 				return;
 			}
-			sleep(2);
+			sleep(1);
 		}
 
 		throw new NotFoundHttpException("Unable to find debug data tagged with '$tag'.");
