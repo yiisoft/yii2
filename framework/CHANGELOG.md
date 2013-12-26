@@ -41,6 +41,7 @@ Yii Framework 2 Change Log
 - Chg: Changed the signature of `urlCreator` and button creators for `yii\gridview\ActionColumn` (qiangxue)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
+- Enh #364: Added `TransliteratorHelper` (tonydspaniard)
 
 2.0.0 alpha, December 1, 2013
 ---------------------------
