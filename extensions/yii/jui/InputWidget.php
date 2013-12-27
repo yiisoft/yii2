@@ -50,6 +50,9 @@ class InputWidget extends Widget
 		if ($this->hasModel() && !isset($this->options['id'])) {
 			$this->options['id'] = Html::getInputId($this->model, $this->attribute);
 		}
+		if($this->hasModel() && !array_key_exists('id', $this->options)) {
+			$this->options['id'] = Html::getInputId($this->model, $this->attribute);
+		}
 		parent::init();
 	}
 
