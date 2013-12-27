@@ -1,8 +1,4 @@
 <?php
 
-$config = yii\helpers\ArrayHelper::merge(
-	require(__DIR__ . '/../../config/web.php'),
-	require(__DIR__ . '/../../config/codeception/functional.php')
-);
-
-$application = new yii\web\Application($config);
+// create an application instance to support URL creation before running any test
+Yii::createObject(require(__DIR__ . '/../../web/index-test-functional.php'));
