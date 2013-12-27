@@ -56,7 +56,7 @@ class Choice extends Widget
 	private $_clients;
 	/**
 	 * @var string name of the auth client collection application component.
-	 * This component will be used to fetch {@link services} value if it is not set.
+	 * This component will be used to fetch services value if it is not set.
 	 */
 	public $clientCollection = 'authClientCollection';
 	/**
