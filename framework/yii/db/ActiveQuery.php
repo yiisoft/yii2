@@ -366,12 +366,18 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
 		$parentTable = $this->getQueryTableName($parent);
 		$childTable = $this->getQueryTableName($child);
+		if (strpos($parentTable, '{{') === false) {
+			$parentTable = '{{' . $parentTable . '}}';
+		}
+		if (strpos($childTable, '{{') === false) {
+			$childTable = '{{' . $childTable . '}}';
+		}
 
 
 		if (!empty($child->link)) {
 			$on = [];
 			foreach ($child->link as $childColumn => $parentColumn) {
-				$on[] = '{{' . $parentTable . "}}.[[$parentColumn]] = {{" . $childTable . "}}.[[$childColumn]]";
+				$on[] = "$parentTable.[[$parentColumn]] = $childTable.[[$childColumn]]";
 			}
 			$on = implode(' AND ', $on);
 		} else {
