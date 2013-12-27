@@ -7,5 +7,11 @@ return [
 		'db' => [
 			'dsn' => 'mysql:host=localhost;dbname=yii2basic_functional',
 		],
+		'request' => [
+			'enableCsrfValidation' => false,
+		],
+		'urlManager' => [
+			'baseUrl' => '/web/index.php',
+		],
 	],
 ];
