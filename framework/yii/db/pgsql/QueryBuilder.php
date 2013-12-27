@@ -7,6 +7,7 @@
  */
 
 namespace yii\db\pgsql;
+
 use yii\base\InvalidParamException;
 
 /**
@@ -76,16 +77,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	{
 		$table = $this->db->getTableSchema($tableName);
 		if ($table !== null && $table->sequenceName !== null) {
-			$sequence='"'.$table->sequenceName.'"';
-			
-			if (strpos($sequence,'.')!==false) {
-				$sequence=str_replace('.','"."',$sequence);
+			$sequence = '"' . $table->sequenceName . '"';
+
+			if (strpos($sequence, '.') !== false) {
+				$sequence = str_replace('.', '"."', $sequence);
 			}
-			
+
 			$tableName = $this->db->quoteTableName($tableName);
 			if ($value === null) {
 				$key = reset($table->primaryKey);
-				$value="(SELECT COALESCE(MAX(\"{$key}\"),0) FROM {$tableName})+1";
+				$value = "(SELECT COALESCE(MAX(\"{$key}\"),0) FROM {$tableName})+1";
 			} else {
 				$value = (int)$value;
 			}
@@ -111,9 +112,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		$tableNames = $table ? [$table] : $this->db->schema->findTableNames($schema);
 		$command = '';
 
-		foreach($tableNames as $tableName)
-		{
-			$tableName='"'.$schema.'"."'.$tableName.'"';
+		foreach ($tableNames as $tableName) {
+			$tableName = '"' . $schema . '"."' . $tableName . '"';
 			$command .= "ALTER TABLE $tableName $enable TRIGGER ALL; ";
 		}
 
