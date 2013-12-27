@@ -319,7 +319,7 @@ class Command extends \yii\db\Command
 	/**
 	 * @inheritdoc
 	 */
-	public function checkIntegrity($check = true, $schema = '')
+	public function checkIntegrity($check = true, $schema = '', $table = '')
 	{
 		throw new NotSupportedException('"' . __METHOD__ . '" is not supported.');
 	}
