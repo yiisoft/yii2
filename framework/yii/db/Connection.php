@@ -253,7 +253,10 @@ class Connection extends Component
 	 * @var Schema the database schema
 	 */
 	private $_schema;
-
+	/**
+     * @var string Custom PDO wrapper class. If not set, it will use "PDO" or "yii\db\mssql\PDO" when MSSQL is used.
+	 */
+	public $pdoClass;
 
 	/**
 	 * Returns a value indicating whether the DB connection is established.
@@ -338,13 +341,17 @@ class Connection extends Component
 	 */
 	protected function createPdoInstance()
 	{
-		$pdoClass = 'PDO';
-		if (($pos = strpos($this->dsn, ':')) !== false) {
-			$driver = strtolower(substr($this->dsn, 0, $pos));
-			if ($driver === 'mssql' || $driver === 'dblib' || $driver === 'sqlsrv') {
-				$pdoClass = 'yii\db\mssql\PDO';
+		$pdoClass = $this->pdoClass;
+		if ($pdoClass === null) {
+			$pdoClass = 'PDO';
+			if (($pos = strpos($this->dsn, ':')) !== false) {
+				$driver = strtolower(substr($this->dsn, 0, $pos));
+				if ($driver === 'mssql' || $driver === 'dblib' || $driver === 'sqlsrv') {
+					$pdoClass = 'yii\db\mssql\PDO';
+				}
 			}
 		}
+
 		return new $pdoClass($this->dsn, $this->username, $this->password, $this->attributes);
 	}
 

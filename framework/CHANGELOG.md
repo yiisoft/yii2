@@ -35,6 +35,7 @@ Yii Framework 2 Change Log
 - Enh #1634: Use masked CSRF tokens to prevent BREACH exploits (qiangxue)
 - Enh #1641: Added `BaseActiveRecord::updateAttributes()` (qiangxue)
 - Enh #1646: Added postgresql `QueryBuilder::checkIntegrity` and `QueryBuilder::resetSequence` (Ragazzo)
+- Enh #1645: Added `Connection::$pdoClass` property (Ragazzo)
 - Enh: Added `favicon.ico` and `robots.txt` to defauly application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
 - Enh: Support for file aliases in console command 'message' (omnilight)
