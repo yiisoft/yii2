@@ -105,7 +105,7 @@ class MessageSource extends Component
 		}
 		if (isset($this->_messages[$key][$message]) && $this->_messages[$key][$message] !== '') {
 			return $this->_messages[$key][$message];
-		} elseif ($this->hasEventHandlers('missingTranslation')) {
+		} elseif ($this->hasEventHandlers(self::EVENT_MISSING_TRANSLATION)) {
 			$event = new MissingTranslationEvent([
 				'category' => $category,
 				'message' => $message,

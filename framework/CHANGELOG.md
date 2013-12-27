@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #1509: The SQL for creating Postgres RBAC tables is incorrect (qiangxue)
 - Bug #1545: It was not possible to execute db Query twice, params where missing (cebe)
 - Bug #1550: fixed the issue that JUI input widgets did not property input IDs.
+- Bug #1654: Fixed the issue that a new message source object is generated for every new message being translated (qiangxue)
 - Bug #1582: Error messages shown via client-side validation should not be double encoded (qiangxue)
 - Bug #1591: StringValidator is accessing undefined property (qiangxue)
 - Bug #1597: Added `enableAutoLogin` to basic and advanced application templates so "remember me" now works properly (samdark)
