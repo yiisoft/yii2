@@ -87,7 +87,7 @@ class Schema extends \yii\db\Schema
 	 * If not empty, the returned table names will be prefixed with the schema name.
 	 * @return array all table names in the database.
 	 */
-	protected function findTableNames($schema = '')
+	public function findTableNames($schema = '')
 	{
 		$sql = "SELECT DISTINCT tbl_name FROM sqlite_master WHERE tbl_name<>'sqlite_sequence'";
 		return $this->db->createCommand($sql)->queryColumn();
