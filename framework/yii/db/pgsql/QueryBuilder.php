@@ -78,8 +78,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		if ($table !== null && $table->sequenceName !== null) {
 			$sequence='"'.$table->sequenceName.'"';
 			
-			if(strpos($sequence,'.')!==false)
+			if (strpos($sequence,'.')!==false) {
 				$sequence=str_replace('.','"."',$sequence);
+			}
 			
 			$tableName = $this->db->quoteTableName($tableName);
 			if ($value === null) {
