@@ -167,9 +167,11 @@ class I18N extends Component
 			}
 		}
 		if (isset($source)) {
-			return $source instanceof MessageSource ? $source : Yii::createObject($source);
+			$this->translations[$category] = $source instanceof MessageSource ? $source : Yii::createObject($source);
 		} else {
 			throw new InvalidConfigException("Unable to locate message source for category '$category'.");
 		}
+		
+		return $this->translations[$category];
 	}
 }
