@@ -48,6 +48,10 @@ class Captcha extends InputWidget
 	 * while `{input}` will be replaced with the text input tag.
 	 */
 	public $template = '{image} {input}';
+	/**
+	 * @var array the HTML attributes for the input tag.
+	 */
+	public $options = ['class' => 'form-control'];
 
 	/**
 	 * Initializes the widget.

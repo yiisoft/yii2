@@ -26,7 +26,6 @@ $this->params['breadcrumbs'][] = $this->title;
 				<?= $form->field($model, 'subject') ?>
 				<?= $form->field($model, 'body')->textArea(['rows' => 6]) ?>
 				<?= $form->field($model, 'verifyCode')->widget(Captcha::className(), [
-					'options' => ['class' => 'form-control'],
 					'template' => '<div class="row"><div class="col-lg-3">{image}</div><div class="col-lg-6">{input}</div></div>',
 				]) ?>
 				<div class="form-group">
