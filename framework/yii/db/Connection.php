@@ -254,6 +254,10 @@ class Connection extends Component
 	 */
 	private $_schema;
 
+	/**
+     * @var string Custom PDO wrapper class. If you use mssql|dblib|sqlsrv it should be "yii\db\mssql\PDO".
+	 */
+	public $pdoClass = 'PDO';
 
 	/**
 	 * Returns a value indicating whether the DB connection is established.
@@ -338,13 +342,7 @@ class Connection extends Component
 	 */
 	protected function createPdoInstance()
 	{
-		$pdoClass = 'PDO';
-		if (($pos = strpos($this->dsn, ':')) !== false) {
-			$driver = strtolower(substr($this->dsn, 0, $pos));
-			if ($driver === 'mssql' || $driver === 'dblib' || $driver === 'sqlsrv') {
-				$pdoClass = 'yii\db\mssql\PDO';
-			}
-		}
+		$pdoClass = $this->pdoClass;
 		return new $pdoClass($this->dsn, $this->username, $this->password, $this->attributes);
 	}
 
