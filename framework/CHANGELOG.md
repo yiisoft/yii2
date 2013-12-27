@@ -39,6 +39,7 @@ Yii Framework 2 Change Log
 - Enh: Support for file aliases in console command 'message' (omnilight)
 - Enh: Sort and Pagination can now create absolute URLs (cebe)
 - Chg #1610: `Html::activeCheckboxList()` and `Html::activeRadioList()` will submit an empty string if no checkbox/radio is selected (qiangxue)
+- Chg #1643: Added default value for `Captcha::options` (qiangxue)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
