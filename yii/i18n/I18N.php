@@ -157,19 +157,24 @@ class I18N extends Component
 	{
 		if (isset($this->translations[$category])) {
 			$source = $this->translations[$category];
+			if ($source instanceof MessageSource) {
+				return $source;
+			} else {
+				return $this->translations[$category] = Yii::createObject($source);
+			}
 		} else {
 			// try wildcard matching
 			foreach ($this->translations as $pattern => $config) {
 				if ($pattern === '*' || substr($pattern, -1) === '*' && strpos($category, rtrim($pattern, '*')) === 0) {
-					$source = $config;
-					break;
+					if ($config instanceof MessageSource) {
+						return $config;
+					} else {
+						return $this->translations[$category] = $this->translations[$pattern] = Yii::createObject($config);
+					}
 				}
 			}
 		}
-		if (isset($source)) {
-			return $source instanceof MessageSource ? $source : Yii::createObject($source);
-		} else {
-			throw new InvalidConfigException("Unable to locate message source for category '$category'.");
-		}
+
+		throw new InvalidConfigException("Unable to locate message source for category '$category'.");
 	}
 }
