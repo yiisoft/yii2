@@ -50,6 +50,7 @@
 	},
 	"minimum-stability": "dev",
 	"replace": {
+		"yiisoft/yii2-authclient": "self.version",
 		"yiisoft/yii2-bootstrap": "self.version",
 		"yiisoft/yii2-codeception": "self.version",
 		"yiisoft/yii2-debug": "self.version",
@@ -96,6 +97,7 @@
 	},
 	"autoload": {
 		"psr-0": {
+			"yii\\authclient\\": "extensions/",
 			"yii\\bootstrap\\": "extensions/",
 			"yii\\codeception\\": "extensions/",
 			"yii\\debug\\": "extensions/",
