@@ -115,7 +115,11 @@ class Image extends Component
 	 */
 	public function getAvailableDrivers()
 	{
-		return [static::DRIVER_GD2, static::DRIVER_GMAGICK, static::DRIVER_IMAGICK];
+		static $drivers;
+		if ($drivers === null) {
+			$drivers = [static::DRIVER_GD2, static::DRIVER_GMAGICK, static::DRIVER_IMAGICK];
+		}
+		return $drivers;
 	}
 
 	/**
@@ -142,10 +146,10 @@ class Image extends Component
 	/**
 	 * Crops an image
 	 * @param string $filename the full path to the image file
-	 * @param int $width the crop width
-	 * @param int $height the crop height
-	 * @param int $startX the x starting point to crop from. Defaults to 0.
-	 * @param int $startY the y starting point to crop from. Defaults to 0.
+	 * @param integer $width the crop width
+	 * @param integer $height the crop height
+	 * @param integer $startX the x starting point to crop from. Defaults to 0.
+	 * @param integer $startY the y starting point to crop from. Defaults to 0.
 	 * @return \Imagine\Image\ManipulatorInterface
 	 */
 	public function crop($filename, $width, $height, $startX = 0, $startY = 0)
@@ -160,8 +164,8 @@ class Image extends Component
 	 * Creates a thumbnail image. The function differs from [[\Imagine\Image\ImageInterface::thumbnail()]] function that
 	 * it keeps the aspect ratio of the image.
 	 * @param string $filename the full path to the image file
-	 * @param int $width the width to create the thumbnail
-	 * @param int $height the height in pixels to create the thumbnail
+	 * @param integer $width the width to create the thumbnail
+	 * @param integer $height the height in pixels to create the thumbnail
 	 * @param string $mode
 	 * @return \Imagine\Image\ImageInterface|ManipulatorInterface
 	 */
@@ -252,5 +256,30 @@ class Image extends Component
 		$font = $this->getImagine()->font($font, $fontSize, new Color($fontColor));
 		$img->draw()->text($text, $font, new Point($fontPosX, $fontPosY), $fontAngle);
 		return $img;
+	}
+
+	/**
+	 * Adds a frame around of the image. Please note that the image will increase `$margin` x 2.
+	 * @param string $filename the full path to the image file
+	 * @param integer $margin the frame size to add around the image
+	 * @param string $color the frame color
+	 * @param integer $alpha
+	 * @return \Imagine\Image\ImageInterface
+	 */
+	public function frame($filename, $margin, $color='000', $alpha = 100)
+	{
+		$img = $this->getImagine()->open($filename);
+
+		$size = $img->getSize();
+
+		$pasteTo = new Point($margin, $margin);
+		$padColor = new Color($color, $alpha);
+
+		$box = new Box($size->getWidth() + ceil($margin * 2), $size->getHeight() + ceil($margin * 2));
+
+		$image = $this->getImagine()->create( $box, $padColor);
+		$image->paste($img, $pasteTo);
+
+		return $image;
 	}
 }
