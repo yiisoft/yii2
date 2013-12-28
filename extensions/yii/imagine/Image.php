@@ -148,16 +148,16 @@ class Image extends Component
 	 * @param string $filename the full path to the image file
 	 * @param integer $width the crop width
 	 * @param integer $height the crop height
-	 * @param integer $startX the x starting point to crop from. Defaults to 0.
-	 * @param integer $startY the y starting point to crop from. Defaults to 0.
+	 * @param integer $x position on image to crop from. Defaults to 0.
+	 * @param integer $y position on image to crop from. Defaults to 0.
 	 * @return \Imagine\Image\ManipulatorInterface
 	 */
-	public function crop($filename, $width, $height, $startX = 0, $startY = 0)
+	public function crop($filename, $width, $height, $x = 0, $y = 0)
 	{
 		return $this->getImagine()
 			->open($filename)
 			->copy()
-			->crop(new Point($startX, $startY), new Box($width, $height));
+			->crop(new Point($x, $y), new Box($width, $height));
 	}
 
 	/**
@@ -169,7 +169,7 @@ class Image extends Component
 	 * @param string $mode
 	 * @return \Imagine\Image\ImageInterface|ManipulatorInterface
 	 */
-	public function thumb($filename, $width, $height, $mode = ManipulatorInterface::THUMBNAIL_OUTBOUND)
+	public function thumbnail($filename, $width, $height, $mode = ManipulatorInterface::THUMBNAIL_OUTBOUND)
 	{
 		$box = new Box($width, $height);
 		$img = $this->getImagine()
@@ -204,12 +204,14 @@ class Image extends Component
 
 	/**
 	 * Paste a watermark image onto another.
+	 * Note: If any of `$x` or `$y` parameters are null, bottom right position will be default.
 	 * @param string $filename the full path to the image file to apply the watermark to
 	 * @param string $watermarkFilename the full path to the image file to apply as watermark
-	 * @param Point $pos the pixel position where to apply the watermark. If null, bottomRight will be default.
+	 * @param integer $x position on image to apply watermark. Defaults to null.
+	 * @param integer $y position on image to apply watermark. Defaults to null
 	 * @return ManipulatorInterface
 	 */
-	public function watermark($filename, $watermarkFilename, Point $pos = null)
+	public function watermark($filename, $watermarkFilename, $x = null, $y = null)
 	{
 		$img = $this->getImagine()->open($filename);
 		$watermark = $this->getImagine()->open($watermarkFilename);
@@ -217,10 +219,10 @@ class Image extends Component
 		$size = $img->getSize();
 		$wSize = $watermark->getSize();
 
-		// if no Point position was given, set its bottom right by default
-		$pos = $pos === null ?
-			new Point($size->getWidth() - $wSize->getWidth() , $size->getHeight() - $wSize->getHeight())
-			: $pos;
+		// if x or y position was not given, set its bottom right by default
+		$pos = $x === null || $y === null
+			? new Point($size->getWidth() - $wSize->getWidth() , $size->getHeight() - $wSize->getHeight())
+			: new Point($x, $y);
 
 		return $img->paste($watermark, $pos);
 	}
