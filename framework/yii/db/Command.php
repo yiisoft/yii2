@@ -368,7 +368,7 @@ class Command extends \yii\base\Component
 		$db = $this->db;
 		$rawSql = $this->getRawSql();
 
-		Yii::info($rawSql, __METHOD__);
+		Yii::info($rawSql, 'yii\db\Command::query');
 
 		/** @var \yii\caching\Cache $cache */
 		if ($db->enableQueryCache && $method !== '') {
@@ -383,14 +383,14 @@ class Command extends \yii\base\Component
 				$rawSql,
 			];
 			if (($result = $cache->get($cacheKey)) !== false) {
-				Yii::trace('Query result served from cache', __METHOD__);
+				Yii::trace('Query result served from cache', 'yii\db\Command::query');
 				return $result;
 			}
 		}
 
 		$token = $rawSql;
 		try {
-			Yii::beginProfile($token, __METHOD__);
+			Yii::beginProfile($token, 'yii\db\Command::query');
 
 			$this->prepare();
 			$this->pdoStatement->execute();
@@ -405,16 +405,16 @@ class Command extends \yii\base\Component
 				$this->pdoStatement->closeCursor();
 			}
 
-			Yii::endProfile($token, __METHOD__);
+			Yii::endProfile($token, 'yii\db\Command::query');
 
 			if (isset($cache, $cacheKey) && $cache instanceof Cache) {
 				$cache->set($cacheKey, $result, $db->queryCacheDuration, $db->queryCacheDependency);
-				Yii::trace('Saved query result in cache', __METHOD__);
+				Yii::trace('Saved query result in cache', 'yii\db\Command::query');
 			}
 
 			return $result;
 		} catch (\Exception $e) {
-			Yii::endProfile($token, __METHOD__);
+			Yii::endProfile($token, 'yii\db\Command::query');
 			if ($e instanceof Exception) {
 				throw $e;
 			} else {
