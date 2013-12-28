@@ -6,6 +6,7 @@
  */
 
 namespace yii\db;
+use yii\base\InvalidCallException;
 
 /**
  * ActiveQueryTrait implements the common methods and properties for active record query classes.
@@ -42,6 +43,10 @@ trait ActiveQueryTrait
 	public function __call($name, $params)
 	{
 		if (method_exists($this->modelClass, $name)) {
+			$method = new \ReflectionMethod($this->modelClass, $name);
+			if (!$method->isStatic() || !$method->isPublic()) {
+				throw new InvalidCallException("The scope method \"{$this->modelClass}::$name()\" must be public and static.");
+			}
 			array_unshift($params, $this);
 			call_user_func_array([$this->modelClass, $name], $params);
 			return $this;

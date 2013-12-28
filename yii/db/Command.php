@@ -743,12 +743,13 @@ class Command extends \yii\base\Component
 	 * @param boolean $check whether to turn on or off the integrity check.
 	 * @param string $schema the schema name of the tables. Defaults to empty string, meaning the current
 	 * or default schema.
+	 * @param string $table the table name.
 	 * @return Command the command object itself
 	 * @throws NotSupportedException if this is not supported by the underlying DBMS
 	 */
-	public function checkIntegrity($check = true, $schema = '')
+	public function checkIntegrity($check = true, $schema = '', $table = '')
 	{
-		$sql = $this->db->getQueryBuilder()->checkIntegrity($check, $schema);
+		$sql = $this->db->getQueryBuilder()->checkIntegrity($check, $schema, $table);
 		return $this->setSql($sql);
 	}
 }
