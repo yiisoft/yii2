@@ -69,10 +69,6 @@ echo GridView::widget([
 		[
 			'attribute' => 'status_code',
 			'filter' => [200=>200, 404=>404, 403=>403, 500=>500],
-			'value' => function ($data)
-			{ 
-				return '<span class="danger">' . $data['status_code'] . '</span>';
-			},
 			'format' => 'html',
 		],
 	],
