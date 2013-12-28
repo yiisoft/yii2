@@ -53,7 +53,10 @@ echo GridView::widget([
 			},
 		],
 		'ip',
-		'sqlCount',
+		[
+			'attribute' => 'sqlCount',
+			'label' => 'Total queries count'
+		],
 		[
 			'attribute' => 'method',
 			'filter' => ['get' => 'GET', 'post' => 'POST', 'delete' => 'DELETE', 'put' => 'PUT', 'head' => 'HEAD']
@@ -70,7 +73,7 @@ echo GridView::widget([
 		[
 			'attribute' => 'statusCode',
 			'filter' => [200=>200, 404=>404, 403=>403, 500=>500],
-			'format' => 'html',
+			'label' => 'Status code'
 		],
 	],
 ]); ?>
