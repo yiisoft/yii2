@@ -1039,7 +1039,8 @@ class Request extends \yii\base\Request
 		if ($this->_maskedCsrfToken === null) {
 			$token = $this->getCsrfToken();
 			$mask = Security::generateRandomKey(self::CSRF_MASK_LENGTH);
-			$this->_maskedCsrfToken = base64_encode($mask . $this->xorTokens($token, $mask));
+			// The + sign may be decoded as blank space later, which will fail the validation
+			$this->_maskedCsrfToken = str_replace('+', '.', base64_encode($mask . $this->xorTokens($token, $mask)));
 		}
 		return $this->_maskedCsrfToken;
 	}
@@ -1120,7 +1121,7 @@ class Request extends \yii\base\Request
 
 	private function validateCsrfTokenInternal($token, $trueToken)
 	{
-		$token = base64_decode($token);
+		$token = str_replace('.', '+', base64_decode($token));
 		$n = StringHelper::byteLength($token);
 		if ($n <= self::CSRF_MASK_LENGTH) {
 			return false;
