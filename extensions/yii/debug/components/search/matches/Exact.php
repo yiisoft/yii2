@@ -8,7 +8,7 @@
 namespace yii\debug\components\search\matches;
 
 /**
- * 
+ *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
  */
@@ -27,7 +27,7 @@ class Exact extends Base
 	public function check($value)
 	{
 		if (!$this->partial) {
-			return (mb_strtolower($this->value,'utf8') == mb_strtolower($value,'utf8'));
+			return (mb_strtolower($this->value, 'utf8') == mb_strtolower($value, 'utf8'));
 		} else {
 			return (mb_strpos($value, $this->value) !== false);
 		}

@@ -1,6 +1,5 @@
 <?php
 
-use Yii;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\data\ArrayDataProvider;
@@ -8,6 +7,8 @@ use yii\data\ArrayDataProvider;
 /**
  * @var \yii\web\View $this
  * @var array $manifest
+ * @var \yii\debug\models\search\Debug $searchModel
+ * @var ArrayDataProvider $dataProvider
  */
 
 $this->title = 'Yii Debugger';
@@ -30,10 +31,12 @@ $timeFormatter = extension_loaded('intl') ? Yii::createObject(['class' => 'yii\i
 echo GridView::widget([
 	'dataProvider' => $dataProvider,
 	'filterModel' => $searchModel,
-	'rowOptions' => function ($model, $key, $index, $grid) use ($searchModel)
-	{
-		if ($searchModel->isCodeCritical($model['statusCode']))
+	'rowOptions' => function ($model, $key, $index, $grid) use ($searchModel) {
+		if ($searchModel->isCodeCritical($model['statusCode'])) {
 			return ['class'=>'danger'];
+		} else {
+			return [];
+		}
 	},
 	'columns' => [
 		['class' => 'yii\grid\SerialColumn'],
@@ -72,7 +75,7 @@ echo GridView::widget([
 		'url',
 		[
 			'attribute' => 'statusCode',
-			'filter' => [200=>200, 404=>404, 403=>403, 500=>500],
+			'filter' => [200 => 200, 404 => 404, 403 => 403, 500 => 500],
 			'label' => 'Status code'
 		],
 	],

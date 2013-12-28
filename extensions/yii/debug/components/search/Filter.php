@@ -35,8 +35,7 @@ class Filter extends Component
 	{
 		$filtered = [];
 
-		foreach($data as $row)
-		{
+		foreach ($data as $row) {
 			if ($this->checkFilter($row)) {
 				$filtered[] = $row;
 			}
@@ -53,14 +52,12 @@ class Filter extends Component
 	{
 		$matched = true;
 
-		foreach ($row as $name=>$value)
-		{
+		foreach ($row as $name => $value) {
 			if (isset($this->rules[$name])) {
 
 				#check all rules for given attribute
 
-				foreach($this->rules[$name] as $rule)
-				{
+				foreach ($this->rules[$name] as $rule) {
 					if (!$rule->check($value)) {
 						$matched = false;
 					}

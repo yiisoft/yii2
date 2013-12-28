@@ -38,7 +38,7 @@ class Debug extends Model
 	public $url;
 
 	/**
-	 * @var string status code attribute input search value 
+	 * @var string status code attribute input search value
 	 */
 	public $statusCode;
 
@@ -56,7 +56,7 @@ class Debug extends Model
 	public function rules()
 	{
 		return [
-			[['tag', 'ip', 'method', 'ajax', 'url','statusCode','sqlCount'], 'safe'],
+			[['tag', 'ip', 'method', 'ajax', 'url', 'statusCode', 'sqlCount'], 'safe'],
 		];
 	}
 
@@ -78,8 +78,8 @@ class Debug extends Model
 
 	/**
 	 * Returns data provider with filled models. Filter applied if needed.
-	 * @param type $params
-	 * @param type $models
+	 * @param array $params
+	 * @param array $models
 	 * @return \yii\data\ArrayDataProvider
 	 */
 	public function search($params, $models)
@@ -87,7 +87,7 @@ class Debug extends Model
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $models,
 			'sort' => [
-				'attributes' => ['method', 'ip','tag','time','statusCode','sqlCount'],
+				'attributes' => ['method', 'ip', 'tag', 'time', 'statusCode', 'sqlCount'],
 			],
 			'pagination' => [
 				'pageSize' => 10,
@@ -121,25 +121,29 @@ class Debug extends Model
 		return in_array($code, $this->criticalCodes);
 	}
 
-	public function addCondition($filter,$attribute,$partial=false)
+	/**
+	 * @param Filter $filter
+	 * @param string $attribute
+	 * @param boolean $partial
+	 */
+	public function addCondition($filter, $attribute, $partial = false)
 	{
 		$value = $this->$attribute;
 
-		if (mb_strpos($value, '>') !== false)
-		{
+		if (mb_strpos($value, '>') !== false) {
 
 			$value = intval(str_replace('>', '', $value));
-			$filter->addMatch($attribute,new matches\Greater(['value' => $value]));
+			$filter->addMatch($attribute, new matches\Greater(['value' => $value]));
 
 		} elseif (mb_strpos($value, '<') !== false) {
 
 			$value = intval(str_replace('<', '', $value));
-			$filter->addMatch($attribute,new matches\Lower(['value' => $value]));
+			$filter->addMatch($attribute, new matches\Lower(['value' => $value]));
 
 		} else {
-			$filter->addMatch($attribute,new matches\Exact(['value' => $value, 'partial' => $partial]));
+			$filter->addMatch($attribute, new matches\Exact(['value' => $value, 'partial' => $partial]));
 		}
 
 	}
-	
+
 }
