@@ -49,7 +49,7 @@ echo GridView::widget([
 			'attribute' => 'time',
 			'value' => function ($data) use ($timeFormatter)
 			{
-				return $timeFormatter->asDateTime($data['time'],'long');
+				return $timeFormatter->asDateTime($data['time'], 'long');
 			},
 		],
 		'ip',
@@ -65,7 +65,7 @@ echo GridView::widget([
 			'attribute'=>'ajax',
 			'value' => function ($data)
 			{
-				return ($data['ajax']) ? 'Yes' : 'No';
+				return $data['ajax'] ? 'Yes' : 'No';
 			},
 			'filter' => ['No', 'Yes'],
 		],
