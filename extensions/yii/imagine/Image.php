@@ -115,11 +115,7 @@ class Image extends Component
 	 */
 	public function getAvailableDrivers()
 	{
-		static $drivers;
-		if ($drivers === null) {
-			$drivers = [static::DRIVER_GD2, static::DRIVER_GMAGICK, static::DRIVER_IMAGICK];
-		}
-		return $drivers;
+		return [static::DRIVER_GD2, static::DRIVER_GMAGICK, static::DRIVER_IMAGICK];
 	}
 
 	/**
