@@ -25,8 +25,9 @@ class Filter extends Component
 	 */
 	public function addMatch($name, $value, $partialMatch=false)
 	{
-		if ($value == '')
-				return;
+		if ($value == '') {
+			return;
+		}
 
 		if ($partialMatch) {
 			$this->partialMatch[$name] = $value;
@@ -47,8 +48,9 @@ class Filter extends Component
 
 		foreach($data as $row)
 		{
-			if ($this->checkFilter($row))
+			if ($this->checkFilter($row)) {
 				$filtered[] = $row;
+			}
 		}
 
 		return $filtered;
@@ -61,6 +63,7 @@ class Filter extends Component
 	public function checkFilter(array $row)
 	{
 		$matched = true;
+
 		foreach ($row as $name=>$value)
 		{
 			if (isset($this->partialMatch[$name]) && (mb_strpos($value, $this->partialMatch[$name]) === false)) {
@@ -70,6 +73,7 @@ class Filter extends Component
 				$matched = false;
 			}
 		}
+
 		return $matched;
 	}
 

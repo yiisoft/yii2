@@ -32,8 +32,9 @@ echo GridView::widget([
 	'filterModel' => $searchModel,
 	'rowOptions' => function ($model, $key, $index, $grid) use ($searchModel)
 	{
-		if ($searchModel->isCodeCritical($model['statusCode']))
+		if ($searchModel->isCodeCritical($model['statusCode'])) {
 			return ['class'=>'danger'];
+		}
 	},
 	'columns' => [
 		['class' => 'yii\grid\SerialColumn'],
@@ -71,7 +72,7 @@ echo GridView::widget([
 			'filter' => [200=>200, 404=>404, 403=>403, 500=>500],
 			'value' => function ($data)
 			{ 
-				return '<span class="danger">' . $data['statusCode'] . '</span>';
+				return $data['statusCode'];
 			},
 			'format' => 'html',
 		],
