@@ -17,9 +17,11 @@ using the following syntax: e.g. `[[name()]]`, `[[name\space\MyClass::name()]]`.
 ### Namespace and package names
 
 - Extension MUST use the type `yii2-extension` in `composer.json` file.
-- Extension MUST NOT use `yii` or `yii2` in the composer package name or in the namespaces used in the package.
+- Extension MUST NOT use `yiisoft` in the composer package name, the composer vendor name or in the namespaces used in the package.
+- Additionally extensions MUST NOT use `yii` or `yii2` in their composer vendor name.
+- Extension MUST NOT have a root-namespace named `\yii`, `\yii2` or `\yiisoft`.
 - Extension SHOULD use namespaces in this format `vendor-name\package` (all lowercase).
-- Extension MAY use a `yii2-` prefix in the composer vendor name (URL).
+- Extension MAY use `yii2-` in the composer package name (e.g `vendor\yii2-api-adapter` or `vendor\my-yii2-package` (URL).
 - Extension MAY use a `yii2-` prefix in the repository name (URL).
 
 ### Dependencies

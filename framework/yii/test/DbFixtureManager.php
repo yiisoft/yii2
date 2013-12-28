@@ -146,6 +146,7 @@ class DbFixtureManager extends Component
 		}
 
 		$this->db->createCommand()->truncateTable($tableName)->execute();
+		$this->db->createCommand()->resetSequence($tableName,1)->execute();
 
 		$fileName = $this->basePath . '/' . $tableName . '.php';
 		if (!is_file($fileName)) {

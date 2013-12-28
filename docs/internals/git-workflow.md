@@ -18,10 +18,10 @@ then you must [setup your GIT installation to work with GitHub](http://help.gith
 
 ### 2. Add the main Yii repository as an additional git remote called "upstream"
 
-Change to the directory where you cloned Yii, normally, "yii". Then enter the following command:
+Change to the directory where you cloned Yii, normally, "yii2". Then enter the following command:
 
 ```
-git remote add upstream git://github.com/yiisoft/yii.git
+git remote add upstream git://github.com/yiisoft/yii2.git
 ```
 
 ### 3. Make sure there is an issue created for the thing you are working on.
