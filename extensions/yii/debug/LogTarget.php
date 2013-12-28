@@ -52,6 +52,7 @@ class LogTarget extends Target
 			$manifest = unserialize(file_get_contents($indexFile));
 		}
 		$request = Yii::$app->getRequest();
+		$response = Yii::$app->getResponse();
 		$manifest[$this->tag] = $summary = [
 			'tag' => $this->tag,
 			'url' => $request->getAbsoluteUrl(),
@@ -59,6 +60,7 @@ class LogTarget extends Target
 			'method' => $request->getMethod(),
 			'ip' => $request->getUserIP(),
 			'time' => time(),
+			'statusCode' => $response->statusCode,
 		];
 		$this->gc($manifest);
 
