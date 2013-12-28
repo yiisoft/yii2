@@ -449,8 +449,6 @@ class BaseInflector
 	 */
 	public static function slug($string, $replacement = '-', $lowercase = true)
 	{
-		// ensure UTF-8 and remove invalid UTF-8 chars.
-		$string = mb_convert_encoding((string) $string, 'UTF-8', mb_list_encodings());
 		if (extension_loaded('intl') === true) {
 			$options = 'Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove;';
 			$string = transliterator_transliterate($options, $string);
