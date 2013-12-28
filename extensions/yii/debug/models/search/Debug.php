@@ -63,7 +63,8 @@ class Debug extends Model
 			'ip' => 'Ip',
 			'method' => 'Method',
 			'ajax' => 'Ajax',
-			'url' => 'url'
+			'url' => 'url',
+			'status_code' => 'Status code',
 		];
 	}
 
@@ -78,7 +79,7 @@ class Debug extends Model
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $models,
 			'sort' => [
-				'attributes' => ['method', 'ip','tag','time'],
+				'attributes' => ['method', 'ip','tag','time','status_code'],
 			],
 			'pagination' => [
 				'pageSize' => 10,
@@ -95,7 +96,7 @@ class Debug extends Model
 		$filter->addMatch('method', $this->method);
 		$filter->addMatch('ajax', $this->ajax);
 		$filter->addMatch('url', $this->url, true);
-		$filter->addMatch('statusCode', $this->status_code);
+		$filter->addMatch('status_code', $this->status_code);
 		$dataProvider->allModels = $filter->filter($models);
 
 		return $dataProvider;
