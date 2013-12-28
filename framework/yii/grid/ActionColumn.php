@@ -122,7 +122,7 @@ class ActionColumn extends Column
 	 */
 	protected function renderDataCellContent($model, $key, $index)
 	{
-		return preg_replace_callback('/\\{(\w+)\\}/', function ($matches) use ($model, $key, $index) {
+		return preg_replace_callback('/\\{([\w\-]+)\\}/', function ($matches) use ($model, $key, $index) {
 			$name = $matches[1];
 			if (isset($this->buttons[$name])) {
 				$url = $this->createUrl($name, $model, $key, $index);

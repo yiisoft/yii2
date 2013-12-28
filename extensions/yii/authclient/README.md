@@ -21,7 +21,7 @@ or add
 "yiisoft/yii2-authclient": "*"
 ```
 
-to the require section of your composer.json.
+to the `require` section of your composer.json.
 
 
 Usage & Documentation
@@ -51,7 +51,7 @@ You need to setup auth client collection application component:
 ]
 ```
 
-Then you need to apply [[yii\authclient\AuthAction]] to some of your web controllers:
+Then you need to add [[yii\authclient\AuthAction]] to some of your web controllers:
 
 ```
 class SiteController extends Controller
@@ -68,7 +68,7 @@ class SiteController extends Controller
 
     public function successCallback($client)
     {
-        $atributes = $client->getUserAttributes();
+        $attributes = $client->getUserAttributes();
         // user login or signup comes here
     }
 }
@@ -79,5 +79,5 @@ You may use [[yii\authclient\widgets\Choice]] to compose auth client selection:
 ```
 <?= yii\authclient\Choice::widget([
      'baseAuthUrl' => ['site/auth']
-]); ?>
+]) ?>
 ```
