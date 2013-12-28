@@ -32,7 +32,7 @@ echo GridView::widget([
 	'filterModel' => $searchModel,
 	'rowOptions' => function ($model, $key, $index, $grid) use ($searchModel)
 	{
-		if ($searchModel->isCodeCritical($model['status_code']))
+		if ($searchModel->isCodeCritical($model['statusCode']))
 			return ['class'=>'danger'];
 	},
 	'columns' => [
@@ -67,7 +67,7 @@ echo GridView::widget([
 		],
 		'url',
 		[
-			'attribute' => 'status_code',
+			'attribute' => 'statusCode',
 			'filter' => [200=>200, 404=>404, 403=>403, 500=>500],
 			'format' => 'html',
 		],

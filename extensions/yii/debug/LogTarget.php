@@ -60,7 +60,7 @@ class LogTarget extends Target
 			'method' => $request->getMethod(),
 			'ip' => $request->getUserIP(),
 			'time' => time(),
-			'status_code' => $response->statusCode,
+			'statusCode' => $response->statusCode,
 		];
 		$this->gc($manifest);
 

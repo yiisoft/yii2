@@ -8,33 +8,22 @@ class Filter extends Component
 {
 
 	/**
-	 * @var array attributes and its values that should be partially
+	 * @var array rules for matching filters in the way: [:fieldName => [rule1, rule2,..]]
 	 */
-	protected $partialMatch = [];
-
-	/**
-	 * @var array attributes and its values that should match exactly
-	 */
-	protected $fullMatch = [];
+	protected $rules = [];
 
 	/**
 	 * Adds rules for filtering data. Match can be partial or exactly.
-	 * @param type $name
-	 * @param type $value
-	 * @param type $partialMatch
+	 * @param string $name attribute name
+	 * @param \yii\debug\components\search\matches\Base $rule
 	 */
-	public function addMatch($name, $value, $partialMatch=false)
+	public function addMatch($name, $rule)
 	{
-		if ($value == '') {
+		if (empty($rule->value)) {
 			return;
 		}
 
-		if ($partialMatch) {
-			$this->partialMatch[$name] = $value;
-		}
-		else {
-			$this->fullMatch[$name] = $value;
-		}
+		$this->rules[$name][] = $rule;
 	}
 
 	/**
@@ -66,11 +55,17 @@ class Filter extends Component
 
 		foreach ($row as $name=>$value)
 		{
-			if (isset($this->partialMatch[$name]) && (mb_strpos($value, $this->partialMatch[$name]) === false)) {
-				$matched = false;
-			}
-			if (isset($this->fullMatch[$name]) && (mb_strtolower($this->fullMatch[$name],'utf8') != mb_strtolower($value,'utf8'))) {
-				$matched = false;
+			if (isset($this->rules[$name])) {
+
+				#check all rules for given attribute
+
+				foreach($this->rules[$name] as $rule)
+				{
+					if (!$rule->check($value)) {
+						$matched = false;
+					}
+				}
+
 			}
 		}
 

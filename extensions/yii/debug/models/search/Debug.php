@@ -5,6 +5,7 @@ namespace yii\debug\models\search;
 use yii\base\Model;
 use yii\data\ArrayDataProvider;
 use yii\debug\components\search\Filter;
+use yii\debug\components\search\matches;
 
 /**
  * Debug represents the model behind the search form about requests manifest data.
@@ -39,17 +40,17 @@ class Debug extends Model
 	/**
 	 * @var string status code attribute input search value 
 	 */
-	public $status_code;
+	public $statusCode;
 
 	/**
 	 * @var array critical codes, used to determine grid row options.
 	 */
-	protected $criticalCodes = [400,404,500];
+	public $criticalCodes = [400, 404, 500];
 
 	public function rules()
 	{
 		return [
-			[['tag', 'ip', 'method', 'ajax', 'url','status_code'], 'safe'],
+			[['tag', 'ip', 'method', 'ajax', 'url','statusCode'], 'safe'],
 		];
 	}
 
@@ -64,7 +65,7 @@ class Debug extends Model
 			'method' => 'Method',
 			'ajax' => 'Ajax',
 			'url' => 'url',
-			'status_code' => 'Status code',
+			'statusCode' => 'Status code',
 		];
 	}
 
@@ -79,7 +80,7 @@ class Debug extends Model
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $models,
 			'sort' => [
-				'attributes' => ['method', 'ip','tag','time','status_code'],
+				'attributes' => ['method', 'ip','tag','time','statusCode'],
 			],
 			'pagination' => [
 				'pageSize' => 10,
@@ -91,12 +92,12 @@ class Debug extends Model
 		}
 
 		$filter = new Filter();
-		$filter->addMatch('tag', $this->tag, true);
-		$filter->addMatch('ip', $this->ip);
-		$filter->addMatch('method', $this->method);
-		$filter->addMatch('ajax', $this->ajax);
-		$filter->addMatch('url', $this->url, true);
-		$filter->addMatch('status_code', $this->status_code);
+		$filter->addMatch('tag', new matches\Exact(['value' => $this->tag, 'partial' => true]));
+		$filter->addMatch('ip', new matches\Exact(['value' => $this->ip, 'partial' => true]));
+		$filter->addMatch('method', new matches\Exact(['value' => $this->method]));
+		$filter->addMatch('ajax', new matches\Exact(['value' => $this->ajax]));
+		$filter->addMatch('url', new matches\Exact(['value' => $this->url]));
+		$filter->addMatch('statusCode', new matches\Exact(['value' => $this->statusCode]));
 		$dataProvider->allModels = $filter->filter($models);
 
 		return $dataProvider;
