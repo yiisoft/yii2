@@ -3,7 +3,7 @@ Git workflow for Yii 2 contributors
 
 So you want to contribute to Yii? Great! But to increase the chances of your changes being accepted quickly, please
 follow the following steps (the first 2 steps only need to be done the first time you contribute). If you are new to git
-and github, you might want to first check out [github help](http://help.github.com/), [learn git](http://gitref.org/)
+and github, you might want to first check out [github help](http://help.github.com/), [try git](https://try.github.com)
 or learn something about [git internal data model](http://nfarina.com/post/9868516270/git-is-simpler).
 
 ### 1. [Fork](http://help.github.com/fork-a-repo/) the Yii repository on github and clone your fork to your development
