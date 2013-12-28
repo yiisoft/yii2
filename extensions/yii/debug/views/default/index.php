@@ -53,6 +53,7 @@ echo GridView::widget([
 			},
 		],
 		'ip',
+		'sqlCount',
 		[
 			'attribute' => 'method',
 			'filter' => ['get' => 'GET', 'post' => 'POST', 'delete' => 'DELETE', 'put' => 'PUT', 'head' => 'HEAD']

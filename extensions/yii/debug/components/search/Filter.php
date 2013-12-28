@@ -19,7 +19,7 @@ class Filter extends Component
 	 */
 	public function addMatch($name, $rule)
 	{
-		if (empty($rule->value)) {
+		if (empty($rule->value) && $rule->value !== 0) {
 			return;
 		}
 

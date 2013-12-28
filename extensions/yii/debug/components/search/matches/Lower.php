@@ -12,13 +12,8 @@ namespace yii\debug\components\search\matches;
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
  */
-class Exact extends Base
+class Lower extends Base
 {
-
-	/**
-	 * @var boolean if current matcher should consider partial mathc of given value.
-	 */
-	public $partial = false;
 
 	/**
 	 * Checks if the given value is the same as base one or has partial match with base one.
@@ -26,11 +21,7 @@ class Exact extends Base
 	 */
 	public function check($value)
 	{
-		if (!$this->partial) {
-			return (mb_strtolower($this->value,'utf8') == mb_strtolower($value,'utf8'));
-		} else {
-			return (mb_strpos($value, $this->value) !== false);
-		}
+		return ($value < $this->value);
 	}
 
 }

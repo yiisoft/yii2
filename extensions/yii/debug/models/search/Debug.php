@@ -43,6 +43,12 @@ class Debug extends Model
 	public $statusCode;
 
 	/**
+	 *
+	 * @var integer sql count attribute input search value
+	 */
+	public $sqlCount;
+
+	/**
 	 * @var array critical codes, used to determine grid row options.
 	 */
 	public $criticalCodes = [400, 404, 500];
@@ -50,7 +56,7 @@ class Debug extends Model
 	public function rules()
 	{
 		return [
-			[['tag', 'ip', 'method', 'ajax', 'url','statusCode'], 'safe'],
+			[['tag', 'ip', 'method', 'ajax', 'url','statusCode','sqlCount'], 'safe'],
 		];
 	}
 
@@ -66,6 +72,7 @@ class Debug extends Model
 			'ajax' => 'Ajax',
 			'url' => 'url',
 			'statusCode' => 'Status code',
+			'sqlCount' => 'Total queries count',
 		];
 	}
 
@@ -80,7 +87,7 @@ class Debug extends Model
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $models,
 			'sort' => [
-				'attributes' => ['method', 'ip','tag','time','statusCode'],
+				'attributes' => ['method', 'ip','tag','time','statusCode','sqlCount'],
 			],
 			'pagination' => [
 				'pageSize' => 10,
@@ -92,12 +99,13 @@ class Debug extends Model
 		}
 
 		$filter = new Filter();
-		$filter->addMatch('tag', new matches\Exact(['value' => $this->tag, 'partial' => true]));
-		$filter->addMatch('ip', new matches\Exact(['value' => $this->ip, 'partial' => true]));
-		$filter->addMatch('method', new matches\Exact(['value' => $this->method]));
-		$filter->addMatch('ajax', new matches\Exact(['value' => $this->ajax]));
-		$filter->addMatch('url', new matches\Exact(['value' => $this->url]));
-		$filter->addMatch('statusCode', new matches\Exact(['value' => $this->statusCode]));
+		$this->addCondition($filter, 'tag', true);
+		$this->addCondition($filter, 'ip', true);
+		$this->addCondition($filter, 'method');
+		$this->addCondition($filter, 'ajax');
+		$this->addCondition($filter, 'url', true);
+		$this->addCondition($filter, 'statusCode');
+		$this->addCondition($filter, 'sqlCount');
 		$dataProvider->allModels = $filter->filter($models);
 
 		return $dataProvider;
@@ -113,5 +121,25 @@ class Debug extends Model
 		return in_array($code, $this->criticalCodes);
 	}
 
-}
+	public function addCondition($filter,$attribute,$partial=false)
+	{
+		$value = $this->$attribute;
 
+		if (mb_strpos($value, '>') !== false)
+		{
+
+			$value = intval(str_replace('>', '', $value));
+			$filter->addMatch($attribute,new matches\Greater(['value' => $value]));
+
+		} elseif (mb_strpos($value, '<') !== false) {
+
+			$value = intval(str_replace('<', '', $value));
+			$filter->addMatch($attribute,new matches\Lower(['value' => $value]));
+
+		} else {
+			$filter->addMatch($attribute,new matches\Exact(['value' => $value, 'partial' => $partial]));
+		}
+
+	}
+	
+}
