@@ -11,7 +11,10 @@ namespace yii\base;
  * ActionEvent represents the event parameter used for an action event.
  *
  * By setting the [[isValid]] property, one may control whether to continue running the action.
- *
+ * @property boolean $isValid Event handlers of
+ * [[Controller::EVENT_BEFORE_ACTION]] may set this property to decide whether
+ * to continue running the current action.
+ * 
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -25,12 +28,6 @@ class ActionEvent extends Event
 	 * @var mixed the action result. Event handlers may modify this property to change the action result.
 	 */
 	public $result;
-	/**
-	 * @var boolean whether to continue running the action. Event handlers of
-	 * [[Controller::EVENT_BEFORE_ACTION]] may set this property to decide whether
-	 * to continue running the current action.
-	 */
-	public $isValid = true;
 
 	/**
 	 * Constructor.
