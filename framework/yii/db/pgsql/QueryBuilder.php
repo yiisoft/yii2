@@ -109,7 +109,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	{
 		$enable = $check ? 'ENABLE' : 'DISABLE';
 		$schema = $schema ? $schema : $this->db->schema->defaultSchema;
-		$tableNames = $table ? [$table] : $this->db->schema->findTableNames($schema);
+		$tableNames = $table ? [$table] : $this->db->schema->getTableNames($schema);
 		$command = '';
 
 		foreach ($tableNames as $tableName) {

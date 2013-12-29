@@ -117,7 +117,7 @@ EOD;
 	public function save()
 	{
 		$target = $this->module->logTarget;
-		$messages = $target->filterMessages($target->messages, Logger::LEVEL_PROFILE, ['yii\db\Command::queryInternal']);
+		$messages = $target->filterMessages($target->messages, Logger::LEVEL_PROFILE, ['yii\db\Command::query', 'yii\db\Command::execute']);
 		return ['messages' => $messages];
 	}
 }

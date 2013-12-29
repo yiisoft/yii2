@@ -577,7 +577,7 @@ class Request extends \yii\base\Request
 			$pathInfo = substr($pathInfo, strlen($scriptUrl));
 		} elseif ($baseUrl === '' || strpos($pathInfo, $baseUrl) === 0) {
 			$pathInfo = substr($pathInfo, strlen($baseUrl));
-		} elseif (strpos($_SERVER['PHP_SELF'], $scriptUrl) === 0) {
+		} elseif (isset($_SERVER['PHP_SELF']) && strpos($_SERVER['PHP_SELF'], $scriptUrl) === 0) {
 			$pathInfo = substr($_SERVER['PHP_SELF'], strlen($scriptUrl));
 		} else {
 			throw new InvalidConfigException('Unable to determine the path info of the current request.');
@@ -1121,7 +1121,7 @@ class Request extends \yii\base\Request
 
 	private function validateCsrfTokenInternal($token, $trueToken)
 	{
-		$token = str_replace('.', '+', base64_decode($token));
+		$token = base64_decode(str_replace('.', '+', $token));
 		$n = StringHelper::byteLength($token);
 		if ($n <= self::CSRF_MASK_LENGTH) {
 			return false;

@@ -387,11 +387,13 @@ class Query extends Component implements QueryInterface
 	 *
 	 * - `like`: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
 	 * the values that the column or DB expression should be like.
-	 * For example, `['like', 'name', '%tester%']` will generate `name LIKE '%tester%'`.
+	 * For example, `['like', 'name', 'tester']` will generate `name LIKE '%tester%'`.
 	 * When the value range is given as an array, multiple `LIKE` predicates will be generated and concatenated
-	 * using `AND`. For example, `['like', 'name', ['%test%', '%sample%']]` will generate
+	 * using `AND`. For example, `['like', 'name', ['test', 'sample']]` will generate
 	 * `name LIKE '%test%' AND name LIKE '%sample%'`.
-	 * The method will properly quote the column name and escape values in the range.
+	 * The method will properly quote the column name and escape special characters in the values.
+	 * Sometimes, you may want to add the percentage characters to the matching value by yourself, you may supply
+	 * a third operand `false` to do so. For example, `['like', 'name', '%tester', false]` will generate `name LIKE '%tester'`.
 	 *
 	 * - `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`
 	 * predicates when operand 2 is an array.

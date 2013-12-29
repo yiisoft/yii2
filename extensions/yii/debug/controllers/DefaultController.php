@@ -10,6 +10,7 @@ namespace yii\debug\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\debug\models\search\Debug;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -38,7 +39,13 @@ class DefaultController extends Controller
 
 	public function actionIndex()
 	{
-		return $this->render('index', ['manifest' => $this->getManifest()]);
+		$searchModel = new Debug();
+		$dataProvider = $searchModel->search($_GET, $this->getManifest());
+
+		return $this->render('index', [
+			'dataProvider' => $dataProvider,
+			'searchModel' => $searchModel,
+		]);
 	}
 
 	public function actionView($tag = null, $panel = null)
