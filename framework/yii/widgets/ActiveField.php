@@ -280,6 +280,7 @@ class ActiveField extends Component
 	public function input($type, $options = [])
 	{
 		$options = array_merge($this->inputOptions, $options);
+		$this->adjustLabelFor($options);
 		$this->parts['{input}'] = Html::activeInput($type, $this->model, $this->attribute, $options);
 		return $this;
 	}
@@ -295,6 +296,7 @@ class ActiveField extends Component
 	public function textInput($options = [])
 	{
 		$options = array_merge($this->inputOptions, $options);
+		$this->adjustLabelFor($options);
 		$this->parts['{input}'] = Html::activeTextInput($this->model, $this->attribute, $options);
 		return $this;
 	}
@@ -310,6 +312,7 @@ class ActiveField extends Component
 	public function passwordInput($options = [])
 	{
 		$options = array_merge($this->inputOptions, $options);
+		$this->adjustLabelFor($options);
 		$this->parts['{input}'] = Html::activePasswordInput($this->model, $this->attribute, $options);
 		return $this;
 	}
@@ -328,6 +331,7 @@ class ActiveField extends Component
 		if ($this->inputOptions !== ['class' => 'form-control']) {
 			$options = array_merge($this->inputOptions, $options);
 		}
+		$this->adjustLabelFor($options);
 		$this->parts['{input}'] = Html::activeFileInput($this->model, $this->attribute, $options);
 		return $this;
 	}
@@ -342,6 +346,7 @@ class ActiveField extends Component
 	public function textarea($options = [])
 	{
 		$options = array_merge($this->inputOptions, $options);
+		$this->adjustLabelFor($options);
 		$this->parts['{input}'] = Html::activeTextarea($this->model, $this->attribute, $options);
 		return $this;
 	}
@@ -379,6 +384,7 @@ class ActiveField extends Component
 		} else {
 			$this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
 		}
+		$this->adjustLabelFor($options);
 		return $this;
 	}
 
@@ -415,6 +421,7 @@ class ActiveField extends Component
 		} else {
 			$this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
 		}
+		$this->adjustLabelFor($options);
 		return $this;
 	}
 
@@ -453,6 +460,7 @@ class ActiveField extends Component
 	public function dropDownList($items, $options = [])
 	{
 		$options = array_merge($this->inputOptions, $options);
+		$this->adjustLabelFor($options);
 		$this->parts['{input}'] = Html::activeDropDownList($this->model, $this->attribute, $items, $options);
 		return $this;
 	}
@@ -495,6 +503,7 @@ class ActiveField extends Component
 	public function listBox($items, $options = [])
 	{
 		$options = array_merge($this->inputOptions, $options);
+		$this->adjustLabelFor($options);
 		$this->parts['{input}'] = Html::activeListBox($this->model, $this->attribute, $items, $options);
 		return $this;
 	}
@@ -526,6 +535,7 @@ class ActiveField extends Component
 	 */
 	public function checkboxList($items, $options = [])
 	{
+		$this->adjustLabelFor($options);
 		$this->parts['{input}'] = Html::activeCheckboxList($this->model, $this->attribute, $items, $options);
 		return $this;
 	}
@@ -556,6 +566,7 @@ class ActiveField extends Component
 	 */
 	public function radioList($items, $options = [])
 	{
+		$this->adjustLabelFor($options);
 		$this->parts['{input}'] = Html::activeRadioList($this->model, $this->attribute, $items, $options);
 		return $this;
 	}
@@ -581,6 +592,17 @@ class ActiveField extends Component
 		$config['view'] = $this->form->getView();
 		$this->parts['{input}'] = $class::widget($config);
 		return $this;
+	}
+
+	/**
+	 * Adjusts the "for" attribute for the label based on the input options.
+	 * @param array $options the input options
+	 */
+	protected function adjustLabelFor($options)
+	{
+		if (isset($options['id']) && !isset($this->labelOptions['id'])) {
+			$this->labelOptions['id'] = $options['id'];
+		}
 	}
 
 	/**
