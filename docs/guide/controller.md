@@ -247,9 +247,6 @@ Catching all incoming requests
 
 TBD
 
-See also
---------
-
 Custom response class
 ---------------------
 
@@ -272,5 +269,8 @@ class SiteController extends Controller
 	}
 }
 ```
+
+See also
+--------
 
 - [Console](console.md)
