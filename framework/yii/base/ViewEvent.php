@@ -10,6 +10,11 @@ namespace yii\base;
 /**
  * ViewEvent represents events triggered by the [[View]] component.
  *
+ * @property boolean $isValid whether to continue rendering the view file. Event handlers of
+ *[[View::EVENT_BEFORE_RENDER]] may set this property to decide whether
+ * to continue rendering the current view file.
+ * 
+ * 
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -26,12 +31,6 @@ class ViewEvent extends Event
 	 * @var string the view file path that is being rendered by [[View::renderFile()]].
 	 */
 	public $viewFile;
-	/**
-	 * @var boolean whether to continue rendering the view file. Event handlers of
-	 * [[View::EVENT_BEFORE_RENDER]] may set this property to decide whether
-	 * to continue rendering the current view file.
-	 */
-	public $isValid = true;
 
 	/**
 	 * Constructor.
