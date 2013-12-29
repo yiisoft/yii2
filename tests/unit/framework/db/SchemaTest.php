@@ -11,7 +11,7 @@ use yii\db\Schema;
  */
 class SchemaTest extends DatabaseTestCase
 {
-	public function testFindTableNames()
+	public function testGetTableNames()
 	{
 		/** @var Schema $schema */
 		$schema = $this->getConnection()->schema;
