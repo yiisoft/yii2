@@ -21,6 +21,9 @@ component's behavior:
 					'class' => 'yii\twig\ViewRenderer',
 					//'cachePath' => '@runtime/Twig/cache',
 					//'options' => [], /*  Array of twig options */
+					'globals' => ['html' => '\yii\helpers\Html'],
+					* Example:
+                         * Than in template: {{ html.link('Login', 'site/login') }}
 				],
 				// ...
 			],
@@ -66,6 +69,41 @@ Within Twig templates, you can also make use of these variables:
 
 - `app`, which equates to `\Yii::$app`
 - `this`, which equates to the current `View` object
+
+### Globals
+
+You can add global helpers or values via config's `globals`. It allows both using Yii helpers and setting your own
+values:
+
+```php
+'globals' => [
+	'html' => '\yii\helpers\Html',
+	'name' => 'Carsten',
+],
+```
+
+Then in your template you can use it the following way:
+
+```
+Hello, {{name}}! {{ html.link('Please login', 'site/login') }}.
+```
+
+### Additional filters
+
+Additional filters may be added via config's `filters` option:
+
+```php
+'filters' => [
+	'jsonEncode' => '\yii\helpers\Json::encode',
+],
+```
+
+Then in the template you can use
+
+```
+{{ model|jsonEncode }}
+```
+
 
 Smarty
 ------
