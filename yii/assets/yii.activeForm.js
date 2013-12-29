@@ -365,7 +365,7 @@
 	var updateSummary = function ($form, messages) {
 		var data = $form.data('yiiActiveForm'),
 			$summary = $form.find(data.settings.errorSummary),
-			$ul = $summary.find('ul');
+			$ul = $summary.find('ul').html('');
 
 		if ($summary.length && messages) {
 			$.each(data.attributes, function () {
