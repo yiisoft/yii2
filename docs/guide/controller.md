@@ -35,7 +35,8 @@ class SiteController extends Controller
 ```
 
 As you can see, typical controller contains actions that are public class methods named as `actionSomething`.
-The output of an action is what the method returns. The return value will be handled by the `response` application
+The output of an action is what the method returns, it could be rendered result or it can be instance of ```yii\web\Response```, for [example](#custom-response-class).
+The return value will be handled by the `response` application
 component which can convert the output to differnet formats such as JSON for example. The default behavior
 is to output the value unchanged though.
 
@@ -245,6 +246,29 @@ Catching all incoming requests
 ------------------------------
 
 TBD
+
+Custom response class
+---------------------
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+use app\components\web\MyCustomResponse; #extended from yii\web\Response
+
+class SiteController extends Controller
+{
+	public function actionCustom()
+	{
+		/*
+		 * do your things here
+		 * since Response in extended from yii\base\Object, you can initialize its values by passing in 
+		 * __constructor() simple array.
+		 */
+		return new MyCustomResponse(['data' => $myCustomData]);
+	}
+}
+```
 
 See also
 --------
