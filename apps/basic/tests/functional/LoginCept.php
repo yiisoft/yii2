@@ -1,6 +1,6 @@
 <?php
 
-use tests\functional\_pages\LoginPage;
+use tests\_pages\LoginPage;
 
 $I = new TestGuy($scenario);
 $I->wantTo('ensure that login works');
