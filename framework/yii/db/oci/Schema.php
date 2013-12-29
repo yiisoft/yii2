@@ -204,7 +204,7 @@ EOD;
 	/**
 	 * @inheritdoc
 	 */
-	protected function findTableNames($schema = '')
+	public function findTableNames($schema = '')
 	{
 		if ($schema === '') {
 			$sql = <<<EOD

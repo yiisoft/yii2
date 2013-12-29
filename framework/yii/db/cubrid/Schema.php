@@ -229,7 +229,7 @@ class Schema extends \yii\db\Schema
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
 	 * @return array all table names in the database. The names have NO schema name prefix.
 	 */
-	protected function findTableNames($schema = '')
+	public function findTableNames($schema = '')
 	{
 		$this->db->open();
 		$tables = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
