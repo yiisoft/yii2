@@ -16,7 +16,7 @@ Yii Framework 2 Change Log
 - Bug #1591: StringValidator is accessing undefined property (qiangxue)
 - Bug #1597: Added `enableAutoLogin` to basic and advanced application templates so "remember me" now works properly (samdark)
 - Bug #1631: Charset is now explicitly set to UTF-8 when serving JSON (samdark)
-- Bug #1688: ActiveForm is creating duplicated messages in error summary (qiangxue)
+- Bug #1686: ActiveForm is creating duplicated messages in error summary (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
