@@ -157,6 +157,7 @@ class Image extends Component
 	 * $point = new \Imagine\Image\Point(5, 5);
 	 * $obj->crop('path\to\image.jpg', 200, 200, $point);
 	 * ~~~
+	 * If null, it will crop from 0,0 pixel position
 	 * @return \Imagine\Image\ManipulatorInterface
 	 * @throws \InvalidArgumentException
 	 */
