@@ -1,6 +1,6 @@
 <?php
 /**
- * Twig view renderer class file.
+ * Twig ViewRendererStaticClassProxy class file.
  *
  * @link http://www.yiiframework.com/
  * @copyright Copyright &copy; 2008 Yii Software LLC
@@ -14,7 +14,6 @@ namespace yii\twig;
  * Needed because you can't pass static class to Twig other way
  *
  * @author Leonid Svyatov <leonid@svyatov.ru>
- * @version 1.0.0
  */
 class ViewRendererStaticClassProxy
 {
