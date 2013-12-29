@@ -142,11 +142,16 @@ Operator can be one of the following:
 - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
 - `like`: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
   the values that the column or DB expression should be like.
-  For example, `['like', 'name', '%tester%']` will generate `name LIKE '%tester%'`.
+  For example, `['like', 'name', 'tester']` will generate `name LIKE '%tester%'`.
   When the value range is given as an array, multiple `LIKE` predicates will be generated and concatenated
-  using `AND`. For example, `['like', 'name', ['%test%', '%sample%']]` will generate
+  using `AND`. For example, `['like', 'name', ['test', 'sample']]` will generate
   `name LIKE '%test%' AND name LIKE '%sample%'`.
-  The method will properly quote the column name and escape values in the range.
+  You may also provide an optional third operand to specify how to escape special characters in the values.
+  The operand should be an array of mappings from the special characters to their
+  escaped counterparts. If this operand is not provided, a default escape mapping will be used.
+  You may use `false` or an empty array to indicate the values are already escaped and no escape
+  should be applied. Note that when using an escape mapping (or the third operand is not provided),
+  the values will be automatically enclosed within a pair of percentage characters.
 - `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`
   predicates when operand 2 is an array.
 - `not like`: similar to the `like` operator except that `LIKE` is replaced with `NOT LIKE`
@@ -162,7 +167,7 @@ $search = 'yii';
 
 $query->where(['status' => $status]);
 if (!empty($search)) {
-	$query->addWhere('like', 'title', $search);
+	$query->addWhere(['like', 'title', $search]);
 }
 ```
 
