@@ -600,8 +600,8 @@ class ActiveField extends Component
 	 */
 	protected function adjustLabelFor($options)
 	{
-		if (isset($options['id']) && !isset($this->labelOptions['id'])) {
-			$this->labelOptions['id'] = $options['id'];
+		if (isset($options['id']) && !isset($this->labelOptions['for'])) {
+			$this->labelOptions['for'] = $options['id'];
 		}
 	}
 
