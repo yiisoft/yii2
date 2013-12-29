@@ -46,6 +46,11 @@ class Event extends Object
 	 */
 	public $data;
 
+	/**
+	 * @var boolean whether to continue execution of process or not.
+	 */
+	public $isValid = true;
+
 	private static $_events = [];
 
 	/**

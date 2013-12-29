@@ -12,6 +12,7 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\ViewContextInterface;
 use yii\web\View;
+use yii\base\MailEvent;
 
 /**
  * BaseMailer serves as a base class that implements the basic functions required by [[MailerInterface]].
@@ -28,6 +29,16 @@ use yii\web\View;
  */
 abstract class BaseMailer extends Component implements MailerInterface, ViewContextInterface
 {
+
+	/**
+	 * @event ActionEvent an event raised right before executing a controller action.
+	 * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
+	 */
+	const EVENT_BEFORE_SEND = 'beforeSend';
+	/**
+	 * @event ActionEvent an event raised right after executing a controller action.
+	 */
+	const EVENT_AFTER_SEND = 'afterSend';
 	/**
 	 * @var string directory containing view files for this email messages.
 	 * This can be specified as an absolute path or path alias.
@@ -206,6 +217,10 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 */
 	public function send($message)
 	{
+		if (!$this->beforeSend($message)) {
+			return false;
+		}
+
 		$address = $message->getTo();
 		if (is_array($address)) {
 			$address = implode(', ', array_keys($address));
@@ -213,10 +228,12 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 		Yii::info('Sending email "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
 
 		if ($this->useFileTransport) {
-			return $this->saveMessage($message);
+			$isSuccessful = $this->saveMessage($message);
 		} else {
-			return $this->sendMessage($message);
+			$isSuccessful = $this->sendMessage($message);
 		}
+		$this->afterSend($message, $isSuccessful);
+		return $isSuccessful;
 	}
 
 	/**
@@ -297,4 +314,31 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	{
 		return Yii::getAlias($this->viewPath) . DIRECTORY_SEPARATOR . $view;
 	}
+
+	/**
+	 * This method is invoked right before mail send.
+	 * You may override this method to do last-minute preparation for the message.
+	 * If you override this method, please make sure you call the parent implementation first.
+	 * @param MessageInterface $message
+	 */
+	public function beforeSend($message)
+	{
+		$event = new MailEvent(['message' => $message]);
+		$this->trigger(self::EVENT_BEFORE_SEND, $event);
+		return $event->isValid;
+	}
+
+	/**
+	 * This method is invoked right after mail was send.
+	 * You may override this method to do some postprocessing or logging based on mail send status.
+	 * If you override this method, please make sure you call the parent implementation first.
+	 * @param MessageInterface $message
+	 * @param boolean $isSuccessful
+	 */
+	public function afterSend($message, $isSuccessful)
+	{
+		$event = new MailEvent(['message' => $message, 'isSuccessful' => $isSuccessful]);
+		$this->trigger(self::EVENT_AFTER_SEND, $event);
+	}
+
 }
