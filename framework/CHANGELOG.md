@@ -44,6 +44,7 @@ Yii Framework 2 Change Log
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
 - Enh: Support for file aliases in console command 'message' (omnilight)
 - Enh: Sort and Pagination can now create absolute URLs (cebe)
+- Chg #1586: `QueryBuilder::buildLikeCondition()` will now escape special characters and use percentage characters by default (qiangxue)
 - Chg #1610: `Html::activeCheckboxList()` and `Html::activeRadioList()` will submit an empty string if no checkbox/radio is selected (qiangxue)
 - Chg #1643: Added default value for `Captcha::options` (qiangxue)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
