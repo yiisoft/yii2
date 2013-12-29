@@ -378,6 +378,7 @@ class Command extends \yii\base\Component
 		if (isset($cache) && $cache instanceof Cache) {
 			$cacheKey = [
 				__CLASS__,
+				$method,
 				$db->dsn,
 				$db->username,
 				$rawSql,
