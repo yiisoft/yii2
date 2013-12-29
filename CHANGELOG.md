@@ -36,6 +36,7 @@ Yii Framework 2 Change Log
 - Enh #1581: Added `ActiveQuery::joinWith()` and `ActiveQuery::innerJoinWith()` to support joining with relations (qiangxue)
 - Enh #1601: Added support for tagName and encodeLabel parameters in ButtonDropdown (omnilight)
 - Enh #1611: Added `BaseActiveRecord::markAttributeDirty()` (qiangxue)
+- Enh #1633: Advanced application template now works with MongoDB by default (samdark)
 - Enh #1634: Use masked CSRF tokens to prevent BREACH exploits (qiangxue)
 - Enh #1641: Added `BaseActiveRecord::updateAttributes()` (qiangxue)
 - Enh #1646: Added postgresql `QueryBuilder::checkIntegrity` and `QueryBuilder::resetSequence` (Ragazzo)
