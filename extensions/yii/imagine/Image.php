@@ -77,11 +77,11 @@ class Image extends Component
 	private $_imagine;
 	/**
 	 * @var string the driver to use. These can be:
-	 * - gd2
-	 * - imagick
-	 * - gmagick
+	 * - [[DRIVER_GD2]]
+	 * - [[DRIVER_IMAGICK]]
+	 * - [[DRIVER_GMAGICK]]
 	 */
-	private $_driver = "gd2";
+	private $_driver = self::DRIVER_GD2;
 
 	/**
 	 * Sets the driver.
@@ -94,7 +94,7 @@ class Image extends Component
 			throw new InvalidConfigException(
 				strtr('"{class}::driver" should be string of these possible options "{drivers}", "{driver}" given.', [
 					'{class}' => get_class($this),
-					'{drivers}' => implode(', ', $this->getAvailableDrivers()),
+					'{drivers}' => implode('", "', $this->getAvailableDrivers()),
 					'{driver}' => $driver
 				]));
 		}
@@ -148,16 +148,36 @@ class Image extends Component
 	 * @param string $filename the full path to the image file
 	 * @param integer $width the crop width
 	 * @param integer $height the crop height
-	 * @param integer $x position on image to crop from. Defaults to 0.
-	 * @param integer $y position on image to crop from. Defaults to 0.
+	 * @param mixed $point. This argument can be both an array or an \Imagine\Image\Point type class, containing both
+	 * `x` and `y` coordinates. For example:
+	 * ~~~
+	 * // as array
+	 * $obj->crop('path\to\image.jpg', 200, 200, [5, 5]);
+	 * // as  \Imagine\Image\Point
+	 * $point = new \Imagine\Image\Point(5, 5);
+	 * $obj->crop('path\to\image.jpg', 200, 200, $point);
+	 * ~~~
 	 * @return \Imagine\Image\ManipulatorInterface
+	 * @throws \InvalidArgumentException
 	 */
-	public function crop($filename, $width, $height, $x = 0, $y = 0)
+	public function crop($filename, $width, $height, $point = null)
 	{
+		if(is_array($point)) {
+			list($x, $y) = $point;
+			$point = new Point($x, $y);
+		} elseif ($point === null) {
+			$point = new Point(0, 0);
+		} elseif (!$point instanceof Point ) {
+			throw new \InvalidArgumentException(
+				strtr('"{class}::crop()" "$point" if not null, should be an "array" or a "{type}" class type, containing both "x" and "y" coordinates.', [
+					'{class}' => get_class($this),
+					'{type}' => 'Imagine\\Image\\Point'
+				]));
+		}
 		return $this->getImagine()
 			->open($filename)
 			->copy()
-			->crop(new Point($x, $y), new Box($width, $height));
+			->crop($point, new Box($width, $height));
 	}
 
 	/**
@@ -207,11 +227,19 @@ class Image extends Component
 	 * Note: If any of `$x` or `$y` parameters are null, bottom right position will be default.
 	 * @param string $filename the full path to the image file to apply the watermark to
 	 * @param string $watermarkFilename the full path to the image file to apply as watermark
-	 * @param integer $x position on image to apply watermark. Defaults to null.
-	 * @param integer $y position on image to apply watermark. Defaults to null
+	 * @param mixed $point. This argument can be both an array or an \Imagine\Image\Point type class, containing both
+	 * `x` and `y` coordinates. For example:
+	 * ~~~
+	 * // as array
+	 * $obj->watermark('path\to\image.jpg', 'path\to\watermark.jpg', [5, 5]);
+	 * // as  \Imagine\Image\Point
+	 * $point = new \Imagine\Image\Point(5, 5);
+	 * $obj->watermark('path\to\image.jpg', 'path\to\watermark.jpg', $point);
+	 * ~~~
 	 * @return ManipulatorInterface
+	 * @throws \InvalidArgumentException
 	 */
-	public function watermark($filename, $watermarkFilename, $x = null, $y = null)
+	public function watermark($filename, $watermarkFilename, $point = null)
 	{
 		$img = $this->getImagine()->open($filename);
 		$watermark = $this->getImagine()->open($watermarkFilename);
@@ -220,11 +248,22 @@ class Image extends Component
 		$wSize = $watermark->getSize();
 
 		// if x or y position was not given, set its bottom right by default
-		$pos = $x === null || $y === null
-			? new Point($size->getWidth() - $wSize->getWidth() , $size->getHeight() - $wSize->getHeight())
-			: new Point($x, $y);
+		if(is_array($point)) {
+			list($x, $y) = $point;
+			$point = new Point($x, $y);
+		} elseif ($point === null) {
+			$x = $size->getWidth() - $wSize->getWidth();
+			$y = $size->getHeight() - $wSize->getHeight();
+			$point = new Point($x, $y);
+		} elseif (!$point instanceof Point) {
+			throw new \InvalidArgumentException(
+				strtr('"{class}::watermark()" "$point" if not null, should be an "array" or a "{type}" class type, containing both "x" and "y" coordinates.', [
+					'{class}' => get_class($this),
+					'{type}' => 'Imagine\\Image\\Point'
+				]));
+		}
 
-		return $img->paste($watermark, $pos);
+		return $img->paste($watermark, $point);
 	}
 
 	/**
