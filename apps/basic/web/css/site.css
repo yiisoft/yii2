@@ -44,3 +44,11 @@ a.desc:after { content: /*"\e114"*/"\e152"; }
 
 .sort-ordinal a.asc:after { content: "\e155"; }
 .sort-ordinal a.desc:after { content: "\e156"; }
+
+.error-summary {
+	color: #b94a48;
+	background: #fdf7f7;
+	border-left: 3px solid #eed3d7;
+	padding: 10px 20px;
+	margin: 0 0 15px 0;
+}

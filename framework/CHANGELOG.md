@@ -16,10 +16,12 @@ Yii Framework 2 Change Log
 - Bug #1591: StringValidator is accessing undefined property (qiangxue)
 - Bug #1597: Added `enableAutoLogin` to basic and advanced application templates so "remember me" now works properly (samdark)
 - Bug #1631: Charset is now explicitly set to UTF-8 when serving JSON (samdark)
+- Bug #1688: ActiveForm is creating duplicated messages in error summary (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
 - Bug: Fixed issue with tabular input on ActiveField::radio() and ActiveField::checkbox() (jom)
+- Enh #364: Improve Inflector::slug with `intl` transliteration. Improved transliteration char map. (tonydspaniard)
 - Enh #797: Added support for validating multiple columns by `UniqueValidator` and `ExistValidator` (qiangxue)
 - Enh #1293: Replaced Console::showProgress() with a better approach. See Console::startProgress() for details (cebe)
 - Enh #1406: DB Schema support for Oracle Database (p0larbeer, qiangxue)
@@ -51,7 +53,6 @@ Yii Framework 2 Change Log
 - Chg: Changed the signature of `urlCreator` and button creators for `yii\gridview\ActionColumn` (qiangxue)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
-- Enh #364: Improve Inflector::slug with `intl` transliteration. Improved transliteration char map. (tonydspaniard)
 
 2.0.0 alpha, December 1, 2013
 ---------------------------
