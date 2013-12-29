@@ -31,12 +31,12 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 {
 
 	/**
-	 * @event ActionEvent an event raised right before executing a controller action.
-	 * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
+	 * @event \yii\base\MailEvent an event raised right before send.
+	 * You may set [[\yii\base\MailEvent::isValid]] to be false to cancel the send.
 	 */
 	const EVENT_BEFORE_SEND = 'beforeSend';
 	/**
-	 * @event ActionEvent an event raised right after executing a controller action.
+	 * @event \yii\base\MailEvent an event raised right after send.
 	 */
 	const EVENT_AFTER_SEND = 'afterSend';
 	/**
