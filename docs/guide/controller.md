@@ -39,6 +39,44 @@ The output of an action is what the method returns. The return value will be han
 component which can convert the output to differnet formats such as JSON for example. The default behavior
 is to output the value unchanged though.
 
+You also can disable CSRF validation per controller and/or action, by setting its property:
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+
+class SiteController extends Controller
+{
+
+	public $enableCsrfValidation = false;
+
+	public function actionIndex()
+	{
+		#CSRF validation will no be applied on this and other actions
+	}
+
+}
+```
+
+To disable CSRF validation per custom actions you can do:
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+
+class SiteController extends Controller
+{
+	public function beforeAction($action)
+	{
+		// ...set `$this->enableCsrfValidation` here based on some conditions...
+		// call parent method that will check CSRF if such property is true.
+		return parent::beforeAction($action);
+	}
+}
+```
+
 Routes
 ------
 
