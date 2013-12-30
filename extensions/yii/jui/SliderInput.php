@@ -15,7 +15,7 @@ use yii\helpers\Html;
  * For example,
  *
  * ```
- * echo Slider::widget([
+ * echo SliderInput::widget([
  *     'model' => $model,
  *     'attribute' => 'amount',
  *     'clientOptions' => [
@@ -28,7 +28,7 @@ use yii\helpers\Html;
  * The following example will use the name property instead:
  *
  * ```
- * echo Slider::widget([
+ * echo SliderInput::widget([
  *     'name' => 'amount',
  *     'clientOptions' => [
  *         'min' => 1,
@@ -75,8 +75,10 @@ class SliderInput extends InputWidget
 
 		if ($this->hasModel()) {
 			echo Html::activeHiddenInput($this->model, $this->attribute, $this->options);
+			$this->clientOptions['value'] = $this->model{$this->attribute};
 		} else {
 			echo Html::hiddenInput($this->name, $this->value, $this->options);
+			$this->clientOptions['value'] = $this->value;
 		}
 
 		if (!isset($this->clientEvents['slide'])) {
@@ -86,6 +88,5 @@ class SliderInput extends InputWidget
 		}
 
 		$this->registerWidget('slider', SliderAsset::className(), $this->containerOptions['id']);
-		$this->getView()->registerJs('$("#' . $this->options['id'] . '").val($("#' . $this->id . '").slider("value"));');
 	}
 }
