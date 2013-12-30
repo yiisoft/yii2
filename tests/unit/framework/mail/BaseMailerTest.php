@@ -230,6 +230,17 @@ class BaseMailerTest extends TestCase
 		$this->assertTrue(is_file($file));
 		$this->assertEquals($message->toString(), file_get_contents($file));
 	}
+
+	public function testBeforeSendEvent()
+	{
+		$message = new Message();
+
+		$mailerMock = $this->getMockBuilder('yiiunit\framework\mail\Mailer')->setMethods(['beforeSend','afterSend'])->getMock();
+		$mailerMock->expects($this->once())->method('beforeSend')->with($message)->will($this->returnValue(true));
+		$mailerMock->expects($this->once())->method('afterSend')->with($message,true);
+		$mailerMock->send($message);
+	}
+
 }
 
 /**
@@ -243,6 +254,7 @@ class Mailer extends BaseMailer
 	protected function sendMessage($message)
 	{
 		$this->sentMessages[] = $message;
+		return true;
 	}
 }
 
