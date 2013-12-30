@@ -24,7 +24,7 @@ class Component extends Object
 	/**
 	 * @var array the attached event handlers (event name => handlers)
 	 */
-	private $_events;
+	private $_events = [];
 	/**
 	 * @var Behavior[] the attached behaviors (behavior name => behavior)
 	 */
@@ -210,7 +210,7 @@ class Component extends Object
 	 */
 	public function __clone()
 	{
-		$this->_events = null;
+		$this->_events = [];
 		$this->_behaviors = null;
 	}
 
