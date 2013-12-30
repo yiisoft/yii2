@@ -10,7 +10,6 @@ namespace yii\test;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\db\ActiveRecord;
 use yii\db\ActiveRecordInterface;
 use yii\db\Connection;
 
@@ -185,7 +184,7 @@ class DbFixtureManager extends Component
 	 * Returns the specified ActiveRecord instance in the fixture data.
 	 * @param string $fixtureName the fixture name
 	 * @param string $modelName the alias for the fixture data row
-	 * @return \yii\db\ActiveRecord the ActiveRecord instance. Null is returned if there is no such fixture row.
+	 * @return ActiveRecordInterface the ActiveRecord instance. Null is returned if there is no such fixture row.
 	 */
 	public function getModel($fixtureName, $modelName)
 	{
@@ -196,9 +195,9 @@ class DbFixtureManager extends Component
 			return $this->_models[$fixtureName][$modelName];
 		}
 		$row = $this->_rows[$fixtureName][$modelName];
-		/** @var \yii\db\ActiveRecord $modelClass */
+		/** @var ActiveRecordInterface $modelClass */
 		$modelClass = $this->_models[$fixtureName];
-		/** @var \yii\db\ActiveRecord $model */
+		/** @var ActiveRecordInterface $model */
 		$model = new $modelClass;
 		$keys = [];
 		foreach ($model->primaryKey() as $key) {
