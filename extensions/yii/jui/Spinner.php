@@ -7,7 +7,6 @@
 
 namespace yii\jui;
 
-use Yii;
 use yii\helpers\Html;
 
 /**
