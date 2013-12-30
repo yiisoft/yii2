@@ -543,12 +543,9 @@ class Component extends Object
 	public function detachBehaviors()
 	{
 		$this->ensureBehaviors();
-		if ($this->_behaviors !== null) {
-			foreach ($this->_behaviors as $name => $behavior) {
-				$this->detachBehavior($name);
-			}
+		foreach ($this->_behaviors as $name => $behavior) {
+			$this->detachBehavior($name);
 		}
-		$this->_behaviors = [];
 	}
 
 	/**
