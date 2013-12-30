@@ -77,10 +77,6 @@
 	},
 	"require-dev": {
 		"twbs/bootstrap": "3.0.*",
-		"ext-curl": "*",
-		"ext-mongo": ">=1.3.0",
-		"ext-pdo": "*",
-		"ext-pdo_mysql": "*",
 		"smarty/smarty": "*",
 		"swiftmailer/swiftmailer": "*",
 		"twig/twig": "*",
