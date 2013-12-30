@@ -17,12 +17,10 @@ class TestCase extends Test
 	/**
 	 * @var array|string the application configuration that will be used for creating an application instance for each test.
 	 * You can use a string to represent the file path or path alias of a configuration file.
+	 * The application configuration array may contain an optional `class` element which specifies the class
+	 * name of the application instance to be created. By default, a [[yii\web\Application]] instance will be created.
 	 */
-	public static $appConfig = [];
-	/**
-	 * @var string the application class that [[mockApplication()]] should use
-	 */
-	public static $appClass = 'yii\web\Application';
+	public $appConfig = '@tests/unit/_config.php';
 
 	/**
 	 * @inheritdoc
@@ -47,17 +45,26 @@ class TestCase extends Test
 	 * @param array $config the configuration that should be used to generate the application instance.
 	 * If null, [[appConfig]] will be used.
 	 * @return \yii\web\Application|\yii\console\Application the application instance
+	 * @throws InvalidConfigException if the application configuration is invalid
 	 */
 	protected function mockApplication($config = null)
 	{
-		$config = $config === null ? static::$appConfig : $config;
+		$config = $config === null ? $this->appConfig : $config;
 		if (is_string($config)) {
-			$config = Yii::getAlias($config);
+			$configFile = Yii::getAlias($config);
+			if (!is_file($configFile)) {
+				throw new InvalidConfigException("The application configuration file does not exist: $config");
+			}
+			$config = require($configFile);
 		}
-		if (!is_array($config)) {
-			throw new InvalidConfigException('Please provide a configuration for creating application.');
+		if (is_array($config)) {
+			if (!isset($config['class'])) {
+				$config['class'] = 'yii\web\Application';
+			}
+			return Yii::createObject($config);
+		} else {
+			throw new InvalidConfigException('Please provide a configuration array to mock up an application.');
 		}
-		return new static::$appClass($config);
 	}
 
 	/**
