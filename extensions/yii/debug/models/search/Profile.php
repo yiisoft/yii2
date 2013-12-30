@@ -53,7 +53,7 @@ class Profile extends Base
 				'pageSize' => 10,
 			],
 			'sort' => [
-				'attributes' => ['category','info','duration'],
+				'attributes' => ['category', 'info', 'duration'],
 				'defaultOrder' => [
 					'duration' => SORT_DESC,
 				],

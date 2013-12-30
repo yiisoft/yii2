@@ -13,16 +13,14 @@ echo GridView::widget([
 		['class' => 'yii\grid\SerialColumn'],
 		[
 			'attribute' => 'duration',
-			'value' => function ($data)
-			{
+			'value' => function ($data) {
 				return sprintf('%.1f ms',$data['duration']);
 			},
 		],
 		'category',
 		[
 			'attribute' => 'info',
-			'value' => function ($data)
-			{
+			'value' => function ($data) {
 				return str_repeat('<span class="indent">→</span>', $data['level']) . $data['info'];
 			},
 			'options' => [

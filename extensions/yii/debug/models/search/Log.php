@@ -59,7 +59,7 @@ class Log extends Base
 				'pageSize' => 10,
 			],
 			'sort' => [
-				'attributes' => ['time','level','category','message'],
+				'attributes' => ['time', 'level', 'category', 'message'],
 			],
 		]);
 

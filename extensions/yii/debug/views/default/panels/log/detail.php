@@ -12,7 +12,7 @@ echo GridView::widget([
 	'id' => 'log-panel-detailed-grid',
 	'filterModel' => $searchModel,
 	'filterUrl' => $panel->getUrl(),
-	'rowOptions' => function ($model, $key, $index, $grid){
+	'rowOptions' => function ($model, $key, $index, $grid) {
 		switch($model['level']) {
 			case Logger::LEVEL_ERROR : return ['class' => 'danger'];
 			case Logger::LEVEL_WARNING : return ['class' => 'warning'];
@@ -24,8 +24,7 @@ echo GridView::widget([
 		['class' => 'yii\grid\SerialColumn'],
 		[
 			'attribute' => 'time',
-			'value' => function ($data)
-			{
+			'value' => function ($data) {
 				$timeInSeconds = $data['time'] / 1000;
 				$millisecondsDiff = (int)(($timeInSeconds - (int)$timeInSeconds) * 1000);
 				return date('H:i:s.',$timeInSeconds) . sprintf('%03d',$millisecondsDiff);
@@ -33,8 +32,7 @@ echo GridView::widget([
 		],
 		[
 			'attribute' => 'level',
-			'value' => function ($data)
-			{
+			'value' => function ($data) {
 				return Logger::getLevelName($data['level']);
 			},
 			'filter' => [
@@ -47,15 +45,13 @@ echo GridView::widget([
 		'category',
 		[
 			'attribute' => 'message',
-			'value' => function ($data)
-			{
+			'value' => function ($data) {
 				$message = nl2br(Html::encode($data['message']));
 
 				if (!empty($data['trace'])) {
 					$message .= Html::ul($data['trace'], [
 						'class' => 'trace',
-						'item' => function ($trace)
-						{
+						'item' => function ($trace) {
 							return "<li>{$trace['file']} ({$trace['line']})</li>";
 						}
 					]);
