@@ -36,14 +36,8 @@ use yii\web\UploadedFile;
  *
  * Note: [[newFileContent]] always takes precedence over [[file]].
  *
- * @property \MongoId|string $_id primary key.
- * @property string $filename name of stored file.
- * @property \MongoDate $uploadDate file upload date.
- * @property integer $length file size.
- * @property integer $chunkSize file chunk size.
- * @property string $md5 file md5 hash.
- * @property \MongoGridFSFile|\yii\web\UploadedFile|string $file associated file.
- * @property string $newFileContent new file content.
+ * @property null|string $fileContent File content. This property is read-only.
+ * @property resource $fileResource File stream resource. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

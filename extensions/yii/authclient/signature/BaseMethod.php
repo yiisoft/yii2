@@ -12,8 +12,6 @@ use yii\base\Object;
 /**
  * BaseMethod is a base class for the OAuth signature methods.
  *
- * @property string $name method canonical name. This property is read-only.
- *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */

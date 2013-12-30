@@ -63,6 +63,8 @@ use Yii;
  * ]
  * ~~~
  *
+ * @property Database $database Database instance. This property is read-only.
+ * @property file\Collection $fileCollection Mongo GridFS collection instance. This property is read-only.
  * @property boolean $isActive Whether the Mongo connection is established. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>

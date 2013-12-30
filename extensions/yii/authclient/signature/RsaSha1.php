@@ -15,8 +15,8 @@ use yii\base\NotSupportedException;
  *
  * Note: This class require PHP "OpenSSL" extension({@link http://php.net/manual/en/book.openssl.php}).
  *
- * @property string $privateCertificate OpenSSL private key certificate content.
- * @property string $publicCertificate OpenSSL public key certificate content.
+ * @property string $privateCertificate Private key certificate content.
+ * @property string $publicCertificate Public key certificate content.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

@@ -36,9 +36,9 @@ use Yii;
  *
  * @see http://openid.net/
  *
- * @property string $returnUrl authentication return URL.
- * @property string $claimedId  claimed identifier (identity).
- * @property string $trustRoot client trust root (realm), by default [[\yii\web\Request::hostInfo]] value will be used.
+ * @property string $claimedId Claimed identifier (identity).
+ * @property string $returnUrl Authentication return URL.
+ * @property string $trustRoot Client trust root (realm).
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

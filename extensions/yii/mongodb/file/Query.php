@@ -16,6 +16,8 @@ use Yii;
  * Found files will be represented as arrays of file document attributes with
  * additional 'file' key, which stores [[\MongoGridFSFile]] instance.
  *
+ * @property Collection $collection Collection instance. This property is read-only.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */

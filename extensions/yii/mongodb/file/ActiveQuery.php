@@ -29,6 +29,8 @@ use yii\db\ActiveQueryTrait;
  * $images = ImageFile::find()->with('tags')->asArray()->all();
  * ~~~
  *
+ * @property Collection $collection Collection instance. This property is read-only.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */

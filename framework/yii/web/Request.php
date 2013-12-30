@@ -50,6 +50,7 @@ use yii\helpers\StringHelper;
  * @property boolean $isPut Whether this is a PUT request. This property is read-only.
  * @property boolean $isSecureConnection If the request is sent via secure channel (https). This property is
  * read-only.
+ * @property string $maskedCsrfToken The masked CSRF token. This property is read-only.
  * @property string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value returned is
  * turned into upper case. This property is read-only.
  * @property array $patch The PATCH request parameter values. This property is read-only.

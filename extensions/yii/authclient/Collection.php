@@ -35,7 +35,7 @@ use Yii;
  * ]
  * ~~~
  *
- * @property array $clients list of Auth clients with their configuration in format: 'clientId' => [...]
+ * @property ClientInterface[] $clients List of auth clients. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

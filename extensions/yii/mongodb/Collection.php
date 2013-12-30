@@ -58,9 +58,10 @@ use yii\helpers\Json;
  * even if they are plain strings. However if you have other columns, containing [[\MongoId]], you
  * should take care of possible typecast on your own.
  *
- * @property string $name name of this collection. This property is read-only.
- * @property string $fullName full name of this collection, including database name. This property is read-only.
- * @property array $lastError last error information. This property is read-only.
+ * @property string $fullName Full name of this collection, including database name. This property is
+ * read-only.
+ * @property array $lastError Last error information. This property is read-only.
+ * @property string $name Name of this collection. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

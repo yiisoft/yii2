@@ -48,6 +48,9 @@ use Yii;
  * @see Collection
  * @see \yii\authclient\widgets\Choice
  *
+ * @property string $cancelUrl Cancel URL.
+ * @property string $successUrl Successful URL.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
