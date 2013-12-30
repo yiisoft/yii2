@@ -12,9 +12,6 @@ return yii\helpers\ArrayHelper::merge(
 			'db' => [
 				'dsn' => 'mysql:host=localhost;dbname=yii2_basic_functional',
 			],
-			'mail' => [
-				'useFileTransport' => true,
-			],
 			'urlManager' => [
 				'showScriptName' => true,
 			],
