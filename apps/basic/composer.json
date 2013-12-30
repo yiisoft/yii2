@@ -20,7 +20,10 @@
 		"yiisoft/yii2-codeception": "*",
 		"yiisoft/yii2-debug": "*",
 		"yiisoft/yii2-gii": "*",
-		"yiisoft/yii2-swiftmailer": "*"
+		"yiisoft/yii2-swiftmailer": "*",
+		"codeception/codeception": "*",
+		"codeception/aspect-mock": "*",
+		"codeception/specify": "*"
 	},
 	"scripts": {
 		"post-create-project-cmd": [
