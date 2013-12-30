@@ -47,11 +47,4 @@ if (YII_ENV_DEV) {
 	$config['modules']['gii'] = 'yii\gii\Module';
 }
 
-if (YII_ENV_TEST) {
-	// configuration adjustments for 'test' environment.
-	// configuration for codeception test environments can be found in codeception folder.
-
-	// if needed, customize $config here.
-}
-
 return $config;
