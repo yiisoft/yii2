@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #1635: `yii\jui\SliderInput` wasn't properly initialized (samdark)
 - Bug #1686: ActiveForm is creating duplicated messages in error summary (qiangxue)
 - Bug #1704: Incorrect regexp is used in `Inflector::camelize()` (qiangxue)
+- Bug #1712: Fix javascript function declaration (tonydspaniard)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)

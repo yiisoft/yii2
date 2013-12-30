@@ -7,7 +7,8 @@ use yii\helpers\Json;
 /* @var $enforceRedirect boolean */
 
 $redirectJavaScript = <<<EOL
-function popupWindowRedirect(url, enforceRedirect = true) {
+function popupWindowRedirect(url, enforceRedirect) {
+	enforceRedirect = typeof enforceRedirect !== 'undefined' ? enforceRedirect : true;
 	if (window.opener) {
 		window.close();
 		if (enforceRedirect) {
