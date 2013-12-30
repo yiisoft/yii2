@@ -46,8 +46,8 @@ class Behavior extends \yii\base\Object
 	 *
 	 * ~~~
 	 * [
-	 *	 'beforeValidate' => 'myBeforeValidate',
-	 *	 'afterValidate' => 'myAfterValidate',
+	 *	 Model::EVENT_BEFORE_VALIDATE => 'myBeforeValidate',
+	 *	 Model::EVENT_AFTER_VALIDATE => 'myAfterValidate',
 	 * ]
 	 * ~~~
 	 *
