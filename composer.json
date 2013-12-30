@@ -83,7 +83,8 @@
 		"ext-pdo_mysql": "*",
 		"smarty/smarty": "*",
 		"swiftmailer/swiftmailer": "*",
-		"twig/twig": "*"
+		"twig/twig": "*",
+		"phpunit/phpunit": "3.7.*"
 	},
 	"suggest": {
 		"twbs/bootstrap": "required by yii2-bootstrap, yii2-debug, yii2-gii extension",
