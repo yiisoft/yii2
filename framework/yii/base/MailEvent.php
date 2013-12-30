@@ -15,7 +15,6 @@ namespace yii\base;
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
  */
-
 class MailEvent extends Event
 {
 
