@@ -24,7 +24,7 @@ class LogPanel extends Panel
 	/**
 	 * @var array log messages extracted to array as models, to use with data provider.
 	 */
-	private $_models ;
+	private $_models;
 
 	public function getName()
 	{
