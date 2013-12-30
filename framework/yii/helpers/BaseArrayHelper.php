@@ -10,7 +10,7 @@ namespace yii\helpers;
 use Yii;
 use yii\base\Arrayable;
 use yii\base\InvalidParamException;
-
+use yii\base\UnknownPropertyException;
 /**
  * BaseArrayHelper provides concrete implementation for [[ArrayHelper]].
  *
@@ -138,7 +138,7 @@ class BaseArrayHelper
 	 * });
 	 * ~~~
 	 *
-	 * @param array|object $array array or object to extract value from
+	 * @param array|\yii\base\Object $array array or object to extract value from
 	 * @param string|\Closure $key key name of the array element, or property name of the object,
 	 * or an anonymous function returning the value. The anonymous function signature should be:
 	 * `function($array, $defaultValue)`.
@@ -149,10 +149,40 @@ class BaseArrayHelper
 	{
 		if ($key instanceof \Closure) {
 			return $key($array, $default);
-		} elseif (is_array($array)) {
-			return isset($array[$key]) || array_key_exists($key, $array) ? $array[$key] : $default;
+		}
+
+		$keys = explode('.', $key);
+		$key = $keys[0];
+		unset($keys[0]);
+		$allKey = implode('.', $keys);
+
+		if (is_array($array)) {
+
+			if (isset($array[$key]) || array_key_exists($key, $array)) {
+
+				#if current element is array and key is multidimentional, then keep on searching
+
+				if (is_array($array[$key]) && $allKey) {
+					return static::getValue($array[$key], $allKey, $default);
+				} 
+				else {
+					#current element is not an array and last part of multidimentional key exists
+					#then check current array for existance of the last part of the key. If there is no
+					#parts of multidimentional key and element with given key exists then return it.
+					return $allKey ? static::getValue($array,$allKey,$default) : $array[$key];
+				}
+
+			} else {
+				return $default;
+			}
+
 		} else {
-			return $array->$key;
+			#same as above, but for object.
+			if ($array->hasProperty($key) && $allKey) {
+				return static::getValue($array->$key, $allKey, $default);
+			} else {
+				return $array->hasProperty($key) ? $array->$key : $default;
+			}
 		}
 	}
 
