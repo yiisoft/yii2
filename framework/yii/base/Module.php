@@ -540,7 +540,8 @@ abstract class Module extends Component
 	public function setComponents($components)
 	{
 		foreach ($components as $id => $component) {
-			if (isset($this->_components[$id]['class']) && !isset($component['class'])) {
+			if (!is_object($component) && isset($this->_components[$id]['class']) && !isset($component['class'])) {
+				// set default component class
 				$component['class'] = $this->_components[$id]['class'];
 			}
 			$this->_components[$id] = $component;
