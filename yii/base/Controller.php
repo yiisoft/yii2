@@ -37,7 +37,7 @@ class Controller extends Component implements ViewContextInterface
 	 */
 	const EVENT_AFTER_ACTION = 'afterAction';
 	/**
-	 * @var string the ID of this controller
+	 * @var string the ID of this controller.
 	 */
 	public $id;
 	/**
@@ -68,9 +68,9 @@ class Controller extends Component implements ViewContextInterface
 
 
 	/**
-	 * @param string $id the ID of this controller
+	 * @param string $id the ID of this controller.
 	 * @param Module $module the module that this controller belongs to.
-	 * @param array $config name-value pairs that will be used to initialize the object properties
+	 * @param array $config name-value pairs that will be used to initialize the object properties.
 	 */
 	public function __construct($id, $module, $config = [])
 	{
@@ -109,7 +109,7 @@ class Controller extends Component implements ViewContextInterface
 	 * If the action ID is empty, the method will use [[defaultAction]].
 	 * @param string $id the ID of the action to be executed.
 	 * @param array $params the parameters (name-value pairs) to be passed to the action.
-	 * @return mixed the result of the action
+	 * @return mixed the result of the action.
 	 * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
 	 * @see createAction()
 	 */
@@ -148,7 +148,7 @@ class Controller extends Component implements ViewContextInterface
 	 * the route will start from the application; otherwise, it will start from the parent module of this controller.
 	 * @param string $route the route to be handled, e.g., 'view', 'comment/view', '/admin/comment/view'.
 	 * @param array $params the parameters to be passed to the action.
-	 * @return mixed the result of the action
+	 * @return mixed the result of the action.
 	 * @see runAction()
 	 */
 	public function run($route, $params = [])
@@ -166,8 +166,8 @@ class Controller extends Component implements ViewContextInterface
 	/**
 	 * Binds the parameters to the action.
 	 * This method is invoked by [[Action]] when it begins to run with the given parameters.
-	 * @param Action $action the action to be bound with parameters
-	 * @param array $params the parameters to be bound to the action
+	 * @param Action $action the action to be bound with parameters.
+	 * @param array $params the parameters to be bound to the action.
 	 * @return array the valid parameters that the action can run with.
 	 */
 	public function bindActionParams($action, $params)
@@ -182,7 +182,7 @@ class Controller extends Component implements ViewContextInterface
 	 * If not, it will look for a controller method whose name is in the format of `actionXyz`
 	 * where `Xyz` stands for the action ID. If found, an [[InlineAction]] representing that
 	 * method will be created and returned.
-	 * @param string $id the action ID
+	 * @param string $id the action ID.
 	 * @return Action the newly created action instance. Null if the ID doesn't resolve into any action.
 	 */
 	public function createAction($id)
@@ -207,7 +207,7 @@ class Controller extends Component implements ViewContextInterface
 	}
 
 	/**
-	 * This method is invoked right before an action is to be executed (after all possible filters.)
+	 * This method is invoked right before an action is to be executed (after all possible filters).
 	 * You may override this method to do last-minute preparation for the action.
 	 * If you override this method, please make sure you call the parent implementation first.
 	 * @param Action $action the action to be executed.
@@ -230,7 +230,7 @@ class Controller extends Component implements ViewContextInterface
 	public function afterAction($action, &$result)
 	{
 		$event = new ActionEvent($action);
-		$event->result = & $result;
+		$event->result = &$result;
 		$this->trigger(self::EVENT_AFTER_ACTION, $event);
 	}
 
@@ -239,7 +239,7 @@ class Controller extends Component implements ViewContextInterface
 	 * Default implementation simply returns an empty array.
 	 * Child classes may override this method to customize the parameters to be provided
 	 * for action parameter binding (e.g. `$_GET`).
-	 * @return array the request parameters (name-value pairs) to be used for action parameter binding
+	 * @return array the request parameters (name-value pairs) to be used for action parameter binding.
 	 */
 	public function getActionParams()
 	{
@@ -286,7 +286,7 @@ class Controller extends Component implements ViewContextInterface
 	 *   or the corresponding layout is not a string, it will return false, meaning no applicable layout.
 	 *
 	 * 2. In the second step, it determines the actual layout file according to the previously found layout name
-	 *    and context module. The layout name can be
+	 *    and context module. The layout name can be:
 	 *
 	 * - a path alias (e.g. "@app/views/layouts/main");
 	 * - an absolute path (e.g. "/main"): the layout name starts with a slash. The actual layout file will be
@@ -386,10 +386,10 @@ class Controller extends Component implements ViewContextInterface
 
 	/**
 	 * Finds the applicable layout file.
-	 * @param View $view the view object to render the layout file
+	 * @param View $view the view object to render the layout file.
 	 * @return string|boolean the layout file path, or false if layout is not needed.
 	 * Please refer to [[render()]] on how to specify this parameter.
-	 * @throws InvalidParamException if an invalid path alias is used to specify the layout
+	 * @throws InvalidParamException if an invalid path alias is used to specify the layout.
 	 */
 	protected function findLayoutFile($view)
 	{
