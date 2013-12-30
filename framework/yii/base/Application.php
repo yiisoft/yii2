@@ -489,6 +489,7 @@ abstract class Application extends Module
 			'errorHandler' => ['class' => 'yii\base\ErrorHandler'],
 			'formatter' => ['class' => 'yii\base\Formatter'],
 			'i18n' => ['class' => 'yii\i18n\I18N'],
+			'mail' => ['class' => 'yii\swiftmailer\Mailer'],
 			'urlManager' => ['class' => 'yii\web\UrlManager'],
 			'view' => ['class' => 'yii\web\View'],
 		]);
