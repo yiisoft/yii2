@@ -14,6 +14,7 @@ services:
 install:
   - composer self-update && composer --version
 #  - composer require satooshi/php-coveralls 0.6.* --dev --prefer-dist
+  - composer install --prefer-dist
   - tests/unit/data/travis/mongodb-setup.sh
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
@@ -27,7 +28,7 @@ before_script:
   - mongo yii2test --eval 'db.addUser("travis", "test");'
 
 script:
-  - phpunit --coverage-text --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
+  - vendor/bin/phpunit --coverage-text --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
 
 #after_script:
 #  - php vendor/bin/coveralls

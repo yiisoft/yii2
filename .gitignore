@@ -16,7 +16,7 @@ Thumbs.db
 /vendor
 
 # composer itself is not needed
-/composer.phar
+composer.phar
 # composer.lock should not be committed as we always want the latest versions
 /composer.lock
 
@@ -24,6 +24,6 @@ Thumbs.db
 .DS_Store
 
 # phpunit itself is not needed
-/phpunit.phar
+phpunit.phar
 # local phpunit config
 /phpunit.xml
