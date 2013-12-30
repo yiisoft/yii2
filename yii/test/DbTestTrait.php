@@ -19,15 +19,18 @@ use Yii;
  *
  * ~~~
  * use yii\test\DbTestTrait;
+ * use yii\codeception\TestCase;
  * use app\models\Post;
  * use app\models\User;
  *
- * class PostTestCase extends \PHPUnit_Framework_TestCase
+ * class PostTestCase extends TestCase
  * {
  *     use DbTestTrait;
  *
- *     public function setUp()
+ *     protected function setUp()
  *     {
+ *         parent::setUp();
+ *
  *         $this->loadFixtures([
  *             'posts' => Post::className(),
  *             'users' => User::className(),
