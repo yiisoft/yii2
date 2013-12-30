@@ -7,6 +7,7 @@
 
 namespace yii\jui;
 
+use Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
 
@@ -82,7 +83,7 @@ class DatePicker extends InputWidget
 			DatePickerRegionalAsset::register($view);
 
 			$options = Json::encode($this->clientOptions);
-			$view->registerJs("$('#{$containerID}').datepicker($.extend({}, $.datepicker.regional['{$this->language}'], $options));");
+			$view->registerJs("$('#{$this->options['id']}').datepicker($.extend({}, $.datepicker.regional['{$this->language}'], $options));");
 
 			$options = $this->clientOptions;
 			$this->clientOptions = false;  // the datepicker js widget is already registered
