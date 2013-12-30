@@ -44,22 +44,26 @@ class PhpDocController extends Controller
 		$except = [];
 		if ($root === null) {
 			$root = dirname(dirname(YII_PATH));
-			Yii::setAlias('@yii/bootstrap', $root . '/extensions/bootstrap');
-			Yii::setAlias('@yii/debug', $root . '/extensions/debug');
-			Yii::setAlias('@yii/elasticsearch', $root . '/extensions/elasticsearch');
-			Yii::setAlias('@yii/gii', $root . '/extensions/gii');
-			Yii::setAlias('@yii/jui', $root . '/extensions/jui');
-			Yii::setAlias('@yii/redis', $root . '/extensions/redis');
-			Yii::setAlias('@yii/smarty', $root . '/extensions/smarty');
-			Yii::setAlias('@yii/sphinx', $root . '/extensions/sphinx');
-			Yii::setAlias('@yii/swiftmailer', $root . '/extensions/swiftmailer');
-			Yii::setAlias('@yii/twig', $root . '/extensions/twig');
+			$extension = "$root/extensions/yii";
+			Yii::setAlias('@yii/authclient', "$extension/authclient");
+			Yii::setAlias('@yii/bootstrap', "$extension/bootstrap");
+			Yii::setAlias('@yii/debug', "$extension/debug");
+			Yii::setAlias('@yii/elasticsearch', "$extension/elasticsearch");
+			Yii::setAlias('@yii/gii', "$extension/gii");
+			Yii::setAlias('@yii/jui', "$extension/jui");
+			Yii::setAlias('@yii/mongodb', "$extension/mongodb");
+			Yii::setAlias('@yii/redis', "$extension/redis");
+			Yii::setAlias('@yii/smarty', "$extension/smarty");
+			Yii::setAlias('@yii/sphinx', "$extension/sphinx");
+			Yii::setAlias('@yii/swiftmailer', "$extension/swiftmailer");
 
 			$except = [
 				'/apps/',
 				'/build/',
 				'/docs/',
-				'/extensions/composer/',
+				'/extensions/yii/codeception/',
+				'/extensions/yii/composer/',
+				'/extensions/yii/twig/',
 				'/tests/',
 				'/vendor/',
 			];

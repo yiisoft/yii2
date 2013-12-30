@@ -12,9 +12,14 @@ use yii\base\Object;
 /**
  * Token represents OAuth token.
  *
- * @property array $params token parameters.
- * @property string $token token value.
- * @property string $tokenSecret token secret value.
+ * @property integer $expireDuration Token expiration duration. Note that the type of this property differs in
+ * getter and setter. See [[getExpireDuration()]] and [[setExpireDuration()]] for details.
+ * @property string $expireDurationParamKey Expire duration param key.
+ * @property boolean $isExpired Is token expired. This property is read-only.
+ * @property boolean $isValid Is token valid. This property is read-only.
+ * @property array $params This property is read-only.
+ * @property string $token Token value.
+ * @property string $tokenSecret Token secret value.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

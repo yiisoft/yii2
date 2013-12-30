@@ -77,7 +77,7 @@ class SiteController extends Controller
 You may use [[yii\authclient\widgets\Choice]] to compose auth client selection:
 
 ```
-<?= yii\authclient\Choice::widget([
+<?= yii\authclient\widgets\Choice::widget([
      'baseAuthUrl' => ['site/auth']
 ]) ?>
 ```

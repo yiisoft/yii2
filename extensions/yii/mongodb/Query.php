@@ -31,6 +31,8 @@ use Yii;
  * $rows = $query->all();
  * ~~~
  *
+ * @property Collection $collection Collection instance. This property is read-only.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */

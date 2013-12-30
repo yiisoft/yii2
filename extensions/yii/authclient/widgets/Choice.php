@@ -42,8 +42,8 @@ use yii\authclient\ClientInterface;
  *
  * @see \yii\authclient\AuthAction
  *
- * @property ClientInterface[] $providers auth providers list.
- * @property array $baseAuthUrl configuration for the external services base authentication URL.
+ * @property array $baseAuthUrl Base auth URL configuration. This property is read-only.
+ * @property ClientInterface[] $clients Auth providers. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

@@ -35,9 +35,48 @@ class SiteController extends Controller
 ```
 
 As you can see, typical controller contains actions that are public class methods named as `actionSomething`.
-The output of an action is what the method returns. The return value will be handled by the `response` application
+The output of an action is what the method returns, it could be rendered result or it can be instance of ```yii\web\Response```, for [example](#custom-response-class).
+The return value will be handled by the `response` application
 component which can convert the output to differnet formats such as JSON for example. The default behavior
 is to output the value unchanged though.
+
+You also can disable CSRF validation per controller and/or action, by setting its property:
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+
+class SiteController extends Controller
+{
+
+	public $enableCsrfValidation = false;
+
+	public function actionIndex()
+	{
+		#CSRF validation will no be applied on this and other actions
+	}
+
+}
+```
+
+To disable CSRF validation per custom actions you can do:
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+
+class SiteController extends Controller
+{
+	public function beforeAction($action)
+	{
+		// ...set `$this->enableCsrfValidation` here based on some conditions...
+		// call parent method that will check CSRF if such property is true.
+		return parent::beforeAction($action);
+	}
+}
+```
 
 Routes
 ------
@@ -207,6 +246,29 @@ Catching all incoming requests
 ------------------------------
 
 TBD
+
+Custom response class
+---------------------
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+use app\components\web\MyCustomResponse; #extended from yii\web\Response
+
+class SiteController extends Controller
+{
+	public function actionCustom()
+	{
+		/*
+		 * do your things here
+		 * since Response in extended from yii\base\Object, you can initialize its values by passing in 
+		 * __constructor() simple array.
+		 */
+		return new MyCustomResponse(['data' => $myCustomData]);
+	}
+}
+```
 
 See also
 --------

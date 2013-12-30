@@ -73,6 +73,7 @@ class InflectorTest extends TestCase
 	public function testCamelize()
 	{
 		$this->assertEquals("MeMySelfAndI", Inflector::camelize('me my_self-andI'));
+		$this->assertEquals("QweQweEwq", Inflector::camelize('qwe qwe^ewq'));
 	}
 
 	public function testUnderscore()
@@ -123,6 +124,8 @@ class InflectorTest extends TestCase
 
 	public function testSlug()
 	{
+		$this->assertEquals("privet-hello-jii-framework-kak-dela-how-it-goes", Inflector::slug('Привет Hello Йии-- Framework !--- Как дела ? How it goes ?'));
+
 		$this->assertEquals("this-is-a-title", Inflector::slug('this is a title'));
 	}
 

@@ -14,7 +14,8 @@ use yii\helpers\Json;
 /**
  * Database represents the Mongo database information.
  *
- * @property string $name name of this database. This property is read-only.
+ * @property file\Collection $fileCollection Mongo GridFS collection. This property is read-only.
+ * @property string $name Name of this database. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

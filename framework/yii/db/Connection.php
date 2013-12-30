@@ -246,6 +246,10 @@ class Connection extends Component
 		'cubrid' => 'yii\db\cubrid\Schema',  // CUBRID
 	];
 	/**
+	 * @var string Custom PDO wrapper class. If not set, it will use "PDO" or "yii\db\mssql\PDO" when MSSQL is used.
+	 */
+	public $pdoClass;
+	/**
 	 * @var Transaction the currently active transaction
 	 */
 	private $_transaction;
@@ -253,10 +257,7 @@ class Connection extends Component
 	 * @var Schema the database schema
 	 */
 	private $_schema;
-	/**
-     * @var string Custom PDO wrapper class. If not set, it will use "PDO" or "yii\db\mssql\PDO" when MSSQL is used.
-	 */
-	public $pdoClass;
+
 
 	/**
 	 * Returns a value indicating whether the DB connection is established.

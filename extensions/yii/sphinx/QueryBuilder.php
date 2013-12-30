@@ -754,11 +754,19 @@ class QueryBuilder extends Object
 	 * Creates an SQL expressions with the `LIKE` operator.
 	 * @param IndexSchema[] $indexes list of indexes, which affected by query
 	 * @param string $operator the operator to use (e.g. `LIKE`, `NOT LIKE`, `OR LIKE` or `OR NOT LIKE`)
-	 * @param array $operands the first operand is the column name.
-	 * The second operand is a single value or an array of values that column value
-	 * should be compared with.
-	 * If it is an empty array the generated expression will be a `false` value if
-	 * operator is `LIKE` or `OR LIKE` and empty if operator is `NOT LIKE` or `OR NOT LIKE`.
+	 * @param array $operands an array of two or three operands
+	 *
+	 * - The first operand is the column name.
+	 * - The second operand is a single value or an array of values that column value
+	 *   should be compared with. If it is an empty array the generated expression will
+	 *   be a `false` value if operator is `LIKE` or `OR LIKE`, and empty if operator
+	 *   is `NOT LIKE` or `OR NOT LIKE`.
+	 * - An optional third operand can also be provided to specify how to escape special characters
+	 *   in the value(s). The operand should be an array of mappings from the special characters to their
+	 *   escaped counterparts. If this operand is not provided, a default escape mapping will be used.
+	 *   You may use `false` or an empty array to indicate the values are already escaped and no escape
+	 *   should be applied. Note that when using an escape mapping (or the third operand is not provided),
+	 *   the values will be automatically enclosed within a pair of percentage characters.
 	 * @param array $params the binding parameters to be populated
 	 * @return string the generated SQL expression
 	 * @throws InvalidParamException if wrong number of operands have been given.
@@ -768,6 +776,9 @@ class QueryBuilder extends Object
 		if (!isset($operands[0], $operands[1])) {
 			throw new InvalidParamException("Operator '$operator' requires two operands.");
 		}
+
+		$escape = isset($operands[2]) ? $operands[2] : ['%'=>'\%', '_'=>'\_', '\\'=>'\\\\'];
+		unset($operands[2]);
 
 		list($column, $values) = $operands;
 
@@ -791,7 +802,7 @@ class QueryBuilder extends Object
 		$parts = [];
 		foreach ($values as $value) {
 			$phName = self::PARAM_PREFIX . count($params);
-			$params[$phName] = $value;
+			$params[$phName] = empty($escape) ? $value : ('%' . strtr($value, $escape) . '%');
 			$parts[] = "$column $operator $phName";
 		}
 
