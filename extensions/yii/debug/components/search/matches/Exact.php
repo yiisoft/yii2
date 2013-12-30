@@ -29,7 +29,7 @@ class Exact extends Base
 		if (!$this->partial) {
 			return (mb_strtolower($this->value, 'utf8') == mb_strtolower($value, 'utf8'));
 		} else {
-			return (mb_strpos($value, $this->value) !== false);
+			return (mb_strpos(mb_strtolower($value, 'utf8'), mb_strtolower($this->value,'utf8')) !== false);
 		}
 	}
 
