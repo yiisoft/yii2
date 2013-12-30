@@ -19,7 +19,7 @@ use yii\authclient\ClientInterface;
  *
  * Example:
  * ~~~
- * <?= yii\authclient\Choice::widget([
+ * <?= yii\authclient\widgets\Choice::widget([
  *     'baseAuthUrl' => ['site/auth']
  * ]); ?>
  * ~~~
@@ -29,7 +29,7 @@ use yii\authclient\ClientInterface;
  * For example:
  *
  * ~~~
- * <?php $authChoice = yii\authclient\Choice::beginWidget([
+ * <?php $authChoice = yii\authclient\widgets\Choice::beginWidget([
  *     'baseAuthUrl' => ['site/auth']
  * ]); ?>
  * <ul>
@@ -37,7 +37,7 @@ use yii\authclient\ClientInterface;
  *     <li><?= $authChoice->clientLink($client); ?></li>
  * <?php endforeach; ?>
  * </ul>
- * <?php yii\authclient\Choice::endWidget(); ?>
+ * <?php yii\authclient\widgets\Choice::endWidget(); ?>
  * ~~~
  *
  * @see \yii\authclient\AuthAction
