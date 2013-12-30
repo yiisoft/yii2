@@ -8,7 +8,7 @@
 namespace yii\debug\components\search\matches;
 
 /**
- * 
+ *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
  */

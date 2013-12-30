@@ -30,11 +30,11 @@ use yii\helpers\Inflector;
  * @property mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
  * returned if the primary key is composite. A string is returned otherwise (null will be returned if the key
  * value is null). This property is read-only.
- * @property array $relatedRecords An array of the populated related records indexed by relation names. This property is
- * read-only.
  * @property mixed $primaryKey The primary key value. An array (column name => column value) is returned if
  * the primary key is composite. A string is returned otherwise (null will be returned if the key value is null).
  * This property is read-only.
+ * @property array $relatedRecords An array of related records indexed by relation names. This property is
+ * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>

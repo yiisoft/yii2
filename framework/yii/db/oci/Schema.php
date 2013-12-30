@@ -15,6 +15,8 @@ use yii\db\ColumnSchema;
  *
  * @todo mapping from physical types to abstract types
  *
+ * @property string $defaultSchema Default schema.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

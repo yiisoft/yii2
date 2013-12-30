@@ -18,13 +18,12 @@ use yii\helpers\StringHelper;
  *
  * @see ClientInterface
  *
- * @property string $id auth service id.
- * @property string $name auth service name.
- * @property string $title auth service title.
- * @property array $userAttributes authenticated user attributes.
- * @property array $normalizeUserAttributeMap map used to normalize user attributes fetched from
- * external auth service in format: rawAttributeName => normalizedAttributeName.
- * @property array $viewOptions view options in format: optionName => optionValue.
+ * @property string $id Service id.
+ * @property string $name Service name.
+ * @property array $normalizeUserAttributeMap Normalize user attribute map.
+ * @property string $title Service title.
+ * @property array $userAttributes List of user attributes.
+ * @property array $viewOptions View options in format: optionName => optionValue.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

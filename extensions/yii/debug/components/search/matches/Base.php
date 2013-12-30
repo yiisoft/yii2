@@ -11,7 +11,7 @@ use yii\base\Component;
 
 /**
  * Base mathcer class for all matchers that will be used with filter.
- * 
+ *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
  */
