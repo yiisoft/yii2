@@ -33,13 +33,13 @@ class LogPanel extends Panel
 
 	public function getSummary()
 	{
-		return  Yii::$app->view->render('panels/log/summary',['data' => $this->data, 'panel' => $this]);
+		return  Yii::$app->view->render('panels/log/summary', ['data' => $this->data, 'panel' => $this]);
 	}
 
 	public function getDetail()
 	{
 		$searchModel = new Log();
-		$dataProvider = $searchModel->search($_GET, $this->getModels());
+		$dataProvider = $searchModel->search(Yii::$app->request->get(), $this->getModels());
 
 		return  Yii::$app->view->render('panels/log/detail',[
 			'dataProvider' => $dataProvider, 
