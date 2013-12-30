@@ -50,8 +50,8 @@ if (YII_ENV_DEV) {
 if (YII_ENV_TEST) {
 	// configuration adjustments for 'test' environment.
 	// configuration for codeception test environments can be found in codeception folder.
-
 	// if needed, customize $config here.
+	$config['components']['mail']['useFileTransport'] = true;
 }
 
 return $config;
