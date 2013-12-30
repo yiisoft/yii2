@@ -1,16 +1,19 @@
 <?php
 
-use yii\helpers\ArrayHelper;
-
-$config = require(__DIR__ . '/../../config/web.php');
-
-return ArrayHelper::merge($config, [
-	'components' => [
-		'db' => [
-			'dsn' => 'mysql:host=localhost;dbname=yii2_basic_acceptance',
+return yii\helpers\ArrayHelper::merge(
+	require(__DIR__ . '/../../config/web.php'),
+	require(__DIR__ . '/../_config.php'),
+	[
+		'components' => [
+			'db' => [
+				'dsn' => 'mysql:host=localhost;dbname=yii2_basic_acceptance',
+			],
+			'mail' => [
+				'useFileTransport' => true,
+			],
+			'urlManager' => [
+				'showScriptName' => true,
+			],
 		],
-		'urlManager' => [
-			'showScriptName' => true,
-		],
-	],
-]);
+	]
+);
