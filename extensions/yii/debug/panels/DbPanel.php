@@ -121,7 +121,7 @@ class DbPanel extends Panel
 	 */
 	protected function getModels()
 	{
-		if ($this->_models === null || $refresh) {
+		if ($this->_models === null) {
 			$this->_models = [];
 			$timings = $this->calculateTimings();
 
