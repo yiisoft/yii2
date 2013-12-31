@@ -13,8 +13,7 @@ class ContactFormTest extends TestCase
 	protected function setUp()
 	{
 		parent::setUp();
-		Yii::$app->mail->fileTransportCallback = function ($mailer, $message)
-		{
+		Yii::$app->mail->fileTransportCallback = function ($mailer, $message) {
 			return 'testing_message.eml';
 		};
 	}
