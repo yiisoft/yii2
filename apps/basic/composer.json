@@ -22,7 +22,6 @@
 		"yiisoft/yii2-gii": "*",
 		"yiisoft/yii2-swiftmailer": "*",
 		"codeception/codeception": "*",
-		"codeception/aspect-mock": "*",
 		"codeception/specify": "*"
 	},
 	"scripts": {
