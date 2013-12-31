@@ -406,6 +406,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	public function hasProperty($name, $checkVars = true, $checkBehaviors = true)
+	{
+		return parent::hasProperty($name, $checkVars, $checkBehaviors) || $this->hasAttribute($name);
+	}
+
+	/**
 	 * Returns a value indicating whether the model has an attribute with the specified name.
 	 * @param string $name the name of the attribute
 	 * @return boolean whether the model has an attribute with the specified name.
