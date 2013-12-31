@@ -14,15 +14,27 @@ echo GridView::widget([
 	'columns' => [
 		['class' => 'yii\grid\SerialColumn'],
 		[
+			'attribute' => 'seq',
+			'label' => 'Time',
+			'value' => function ($data) {
+				$timeInSeconds = $data['timestamp'] / 1000;
+				$millisecondsDiff = (int)(($timeInSeconds - (int)$timeInSeconds) * 1000);
+				return date('H:i:s.', $timeInSeconds) . sprintf('%03d', $millisecondsDiff);
+			},
+		],
+		[
 			'attribute' => 'duration',
 			'value' => function ($data) {
-				return sprintf('%.1f ms',$data['duration']);
+				return sprintf('%.1f ms', $data['duration']);
 			},
+			'options' => [
+				'width' => '10%',
+			],
 		],
 		[
 			'attribute' => 'type',
 			'value' => function ($data) {
-				return Html::encode(mb_strtoupper($data['type'],'utf8'));
+				return Html::encode(mb_strtoupper($data['type'], 'utf8'));
 			},
 		],
 		[
@@ -42,7 +54,7 @@ echo GridView::widget([
 			},
 			'format' => 'html',
 			'options' => [
-				'width' => '70%',
+				'width' => '60%',
 			],
 		]
 	],
