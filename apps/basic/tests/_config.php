@@ -7,5 +7,8 @@ return [
 		'mail' => [
 			'useFileTransport' => true,
 		],
+		'urlManager' => [
+			'showScriptName' => true,
+		],
 	],
 ];
