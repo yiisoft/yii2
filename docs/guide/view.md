@@ -182,10 +182,8 @@ Same as with meta tags you can specify additional argument to make sure there's 
 
 ### Registering CSS
 
-You can register CSS using `registerCss` or `registerCssFile`. Former is for outputting code in `<style>` tags directly
-to the page which is not recommended in most cases (but still valid). Latter is for registering CSS file. In Yii it's
-much better to [use asset manager](assets.md) to deal with these since it provides extra features so `registerCssFile`
-is manly useful for external CSS files.
+You can register CSS using `registerCss()` or `registerCssFile()`. The former registers a block of CSS code while
+the latter registers an external CSS file. For example,
 
 ```php
 $this->registerCss("body { background: #f00; }");
@@ -199,44 +197,64 @@ body { background: #f00; }
 </style>
 ```
 
-If you want to specify additional properties of the style tag, pass array of name-values to the second argument. If you
-need to make sure there's only a single style tag use third argument as was mentioned in meta tags description.
+If you want to specify additional properties of the style tag, pass an array of name-values to the second argument.
+If you need to make sure there's only a single style tag use third argument as was mentioned in meta tags description.
 
 ```php
-$this->registerCssFile("http://example.com/css/themes/black-and-white.css", ['media' => 'print'], 'css-print-theme');
+$this->registerCssFile("http://example.com/css/themes/black-and-white.css", [BootstrapAsset::className()], ['media' => 'print'], 'css-print-theme');
 ```
 
-The code above will add a link to CSS file to the head section of the page. The CSS will be used only when printing the
-page. We're using third argument so one of the views could override it.
+The code above will add a link to CSS file to the head section of the page.
+
+* The first argument specifies the CSS file to be registered.
+* The second argument specifies that this CSS file depends on `BootstrapAsset`, meaning it will be added
+  AFTER the CSS files in `BootstrapAsset`. Without this dependency specification, the relative order
+  between this CSS file and the `BootstrapAsset` CSS files would be undefined.
+* The third argument specifies the attributes for the resulting `<link>` tag.
+* The last argument specifies an ID identifying this CSS file. If it is not provided, the URL of the CSS file will be
+  used instead.
+
+
+It is highly recommended that you use [asset bundles](assets.md) to register external CSS files rather than
+using `registerCssFile()`. Using asset bundles allows you to combine and compress multiple CSS files, which
+is desirable for high traffic websites.
+
 
 ### Registering scripts
 
-With View object you can register scripts. There are two dedicated methods for it: `registerJs` for inline scripts
-and `registerJsFile` for external scripts. Inline scripts are useful for configuration and dynamically generated code.
+With `View` object you can register scripts. There are two dedicated methods for it: `registerJs()` for inline scripts
+and `registerJsFile()` for external scripts. Inline scripts are useful for configuration and dynamically generated code.
 The method for adding these can be used as follows:
 
 ```php
 $this->registerJs("var options = ".json_encode($options).";", View::POS_END, 'my-options');
 ```
 
-First argument is the actual code where we're converting a PHP array of options to JavaScript one. Second argument
-determines where script should be in the page. Possible values are:
+The first argument is the actual JS code we want to insert into the page. The second argument
+determines where script should be inserted into the page. Possible values are:
 
 - `View::POS_HEAD` for head section.
 - `View::POS_BEGIN` for right after opening `<body>`.
 - `View::POS_END` for right before closing `</body>`.
 - `View::POS_READY` for executing code on document `ready` event. This one registers jQuery automatically.
 
-The last argument is unique script ID that is used to identify code block and replace existing one with the same ID
-instead of adding a new one.
+The last argument is a unique script ID that is used to identify code block and replace existing one with the same ID
+instead of adding a new one. If you don't provide it, the JS code itself will be used as the ID.
 
-External script can be added like the following:
+An external script can be added like the following:
 
 ```php
-$this->registerJsFile('http://example.com/js/main.js');
+$this->registerJsFile('http://example.com/js/main.js', [JqueryAsset::className()]);
 ```
 
-Same as with external CSS it's preferred to use asset bundles for external scripts.
+The arguments for `registerJsFile()` are similar to those for `registerCssFile()`. In the above example,
+we register the `main.js` file with the dependency on `JqueryAsset`. This means the `main.js` file
+will be added AFTER `jquery.js`. Without this dependency specification, the relative order between
+`main.js` and `jquery.js` would be undefined.
+
+Like `registerCssFile()`, it is also highly recommended that you use [asset bundles](assets.md) to
+register external JS files rather than using `registerJsFile()`.
+
 
 ### Registering asset bundles
 
