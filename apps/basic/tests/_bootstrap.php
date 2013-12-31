@@ -13,6 +13,10 @@ defined('YII_ENV') or define('YII_ENV', 'test');
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
+require_once(__DIR__ . '/../vendor/yiisoft/yii2/yii/Yii.php');
+
 // set correct script paths
 $_SERVER['SCRIPT_FILENAME'] = TEST_ENTRY_FILE;
 $_SERVER['SCRIPT_NAME'] = TEST_ENTRY_URL;
+
+Yii::setAlias('@tests', __DIR__);

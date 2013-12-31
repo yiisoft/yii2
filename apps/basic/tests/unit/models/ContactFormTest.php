@@ -4,8 +4,6 @@ namespace tests\unit\models;
 
 use Yii;
 use yii\codeception\TestCase;
-use app\models\ContactForm;
-use AspectMock\Test as test;
 
 class ContactFormTest extends TestCase
 {
@@ -23,16 +21,15 @@ class ContactFormTest extends TestCase
 
 	protected function tearDown()
 	{
-		unlink(Yii::getAlias(Yii::$app->mail->fileTransportPath) . '/testing_message.eml');
-		test::clean();
+		unlink($this->getMessageFile());
 		parent::tearDown();
 	}
 
 	public function testContact()
 	{
-		test::double('app\models\ContactForm',['validate' => true]);
+		$model = $this->getMock('app\models\ContactForm', ['validate']);
+		$model->expects($this->once())->method('validate')->will($this->returnValue(true));
 
-		$model = new ContactForm();
 		$model->attributes = [
 			'name' => 'Tester',
 			'email' => 'tester@example.com',
