@@ -165,8 +165,6 @@ class AssetBundle extends Object
 	 * It will also try to convert non-CSS or JS files (e.g. LESS, Sass) into the corresponding
 	 * CSS or JS files using [[AssetManager::converter|asset converter]].
 	 * @param AssetManager $am the asset manager to perform the asset publishing
-	 * @throws InvalidConfigException if [[baseUrl]] or [[basePath]] is not set when the bundle
-	 * contains internal CSS or JS files.
 	 */
 	public function publish($am)
 	{
@@ -179,7 +177,7 @@ class AssetBundle extends Object
 				if (isset($this->basePath, $this->baseUrl)) {
 					$this->js[$i] = $converter->convert($js, $this->basePath, $this->baseUrl);
 				} else {
-					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
+					$this->js[$i] = '/' . $js;
 				}
 			}
 		}
@@ -188,7 +186,7 @@ class AssetBundle extends Object
 				if (isset($this->basePath, $this->baseUrl)) {
 					$this->css[$i] = $converter->convert($css, $this->basePath, $this->baseUrl);
 				} else {
-					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
+					$this->css[$i] = '/' . $css;
 				}
 			}
 		}
