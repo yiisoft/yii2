@@ -55,6 +55,7 @@
 		"yiisoft/yii2-codeception": "self.version",
 		"yiisoft/yii2-debug": "self.version",
 		"yiisoft/yii2-elasticsearch": "self.version",
+		"yiisoft/yii2-imagine": "self.version",
 		"yiisoft/yii2-gii": "self.version",
 		"yiisoft/yii2-jui": "self.version",
 		"yiisoft/yii2-mongodb": "self.version",
@@ -76,10 +77,6 @@
 		"michelf/php-markdown": "1.3.*"
 	},
 	"require-dev": {
-		"twbs/bootstrap": "3.0.*",
-		"smarty/smarty": "*",
-		"swiftmailer/swiftmailer": "*",
-		"twig/twig": "*",
 		"phpunit/phpunit": "3.7.*"
 	},
 	"suggest": {
@@ -88,6 +85,7 @@
 		"ext-mongo": "required by yii2-mongo extension",
 		"ext-pdo": "required by yii2-sphinx extension",
 		"ext-pdo_mysql": "required by yii2-sphinx extension",
+		"imagine/imagine": "required by yii2-imagine extension",
 		"smarty/smarty": "required by yii2-smarty extension",
 		"swiftmailer/swiftmailer": "required by yii2-swiftmailer extension",
 		"twig/twig": "required by yii2-twig extension"
@@ -100,6 +98,7 @@
 			"yii\\debug\\": "extensions/",
 			"yii\\elasticsearch\\": "extensions/",
 			"yii\\gii\\": "extensions/",
+			"yii\\imagine\\" : "extensions/",
 			"yii\\jui\\": "extensions/",
 			"yii\\mongodb\\": "extensions/",
 			"yii\\redis\\": "extensions/",
