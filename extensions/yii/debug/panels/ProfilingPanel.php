@@ -61,7 +61,7 @@ class ProfilingPanel extends Panel
 
 	/**
 	 * Calculates given request profile messages timings.
-	 * @return array timings
+	 * @return array timings [token, category, timestamp, traces, nesting level, elapsed time]
 	 */
 	protected function calculateTimings()
 	{
@@ -75,21 +75,19 @@ class ProfilingPanel extends Panel
 
 		foreach ($messages as $i => $log) {
 			list($token, $level, $category, $timestamp, $traces) = $log;
+			$log[5] = $i;
 			if ($level == Logger::LEVEL_PROFILE_BEGIN) {
 				$stack[] = $log;
 			} elseif ($level == Logger::LEVEL_PROFILE_END) {
 				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
-					$timings[] = [count($stack), $token, $category, $timestamp - $last[3], $traces];
+					$timings[$last[5]] = [$last[0], $last[2], $last[3], $last[4], count($stack), $timestamp - $last[3]];
 				}
 			}
 		}
 
-		$now = microtime(true);
-		while (($last = array_pop($stack)) !== null) {
-			$timings[] = [count($stack), $last[0], $last[2], $now - $last[3], $last[4]];
-		}
+		ksort($timings);
 
-		return $this->_timings = $timings;
+		return $this->_timings = array_values($timings);
 	}
 
 	public function save()
@@ -113,12 +111,14 @@ class ProfilingPanel extends Panel
 			$this->_models = [];
 			$timings = $this->calculateTimings();
 
-			foreach($timings as $profileTiming) {
+			foreach($timings as $seq => $profileTiming) {
 				$this->_models[] = 	[
-					'duration' => $profileTiming[3] * 1000, #in milliseconds
-					'category' => $profileTiming[2],
-					'info' => $profileTiming[1],
-					'level' => $profileTiming[0],
+					'duration' => $profileTiming[5] * 1000, // in milliseconds
+					'category' => $profileTiming[1],
+					'info' => $profileTiming[0],
+					'level' => $profileTiming[4],
+					'timestamp' => $profileTiming[2],
+					'seq' => $seq,
 				];
 			}
 		}

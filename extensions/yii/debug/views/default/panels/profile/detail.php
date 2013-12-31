@@ -1,4 +1,4 @@
-<?php 
+<?php
 use yii\grid\GridView;
 use yii\helpers\Html;
 ?>
@@ -13,10 +13,22 @@ echo GridView::widget([
 	'columns' => [
 		['class' => 'yii\grid\SerialColumn'],
 		[
+			'attribute' => 'seq',
+			'label' => 'Time',
+			'value' => function ($data) {
+				$timeInSeconds = $data['timestamp'] / 1000;
+				$millisecondsDiff = (int)(($timeInSeconds - (int)$timeInSeconds) * 1000);
+				return date('H:i:s.',$timeInSeconds) . sprintf('%03d',$millisecondsDiff);
+			},
+		],
+		[
 			'attribute' => 'duration',
 			'value' => function ($data) {
 				return sprintf('%.1f ms',$data['duration']);
 			},
+			'options' => [
+				'width' => '10%',
+			],
 		],
 		'category',
 		[
