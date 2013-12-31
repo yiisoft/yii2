@@ -312,15 +312,26 @@ class View extends \yii\base\View
 	/**
 	 * Registers a CSS file.
 	 * @param string $url the CSS file to be registered.
+	 * @param array $depends the names of the asset bundles that this CSS file depends on
 	 * @param array $options the HTML attributes for the link tag.
 	 * @param string $key the key that identifies the CSS script file. If null, it will use
 	 * $url as the key. If two CSS files are registered with the same key, the latter
 	 * will overwrite the former.
 	 */
-	public function registerCssFile($url, $options = [], $key = null)
+	public function registerCssFile($url, $depends = [], $options = [], $key = null)
 	{
 		$key = $key ?: $url;
-		$this->cssFiles[$key] = Html::cssFile($url, $options);
+		if (empty($depends)) {
+			$this->cssFiles[$key] = Html::cssFile($url, $options);
+		} else {
+			$am = Yii::$app->getAssetManager();
+			$am->bundles[$key] = new AssetBundle([
+				'css' => [$url],
+				'cssOptions' => $options,
+				'depends' => (array)$depends,
+			]);
+			$this->registerAssetBundle($key);
+		}
 	}
 
 	/**
@@ -350,9 +361,8 @@ class View extends \yii\base\View
 
 	/**
 	 * Registers a JS file.
-	 * Please note that when this file depends on other JS files to be registered before,
-	 * for example jQuery, you should use [[registerAssetBundle]] instead.
 	 * @param string $url the JS file to be registered.
+	 * @param array $depends the names of the asset bundles that this JS file depends on
 	 * @param array $options the HTML attributes for the script tag. A special option
 	 * named "position" is supported which specifies where the JS script tag should be inserted
 	 * in a page. The possible values of "position" are:
@@ -365,12 +375,22 @@ class View extends \yii\base\View
 	 * $url as the key. If two JS files are registered with the same key, the latter
 	 * will overwrite the former.
 	 */
-	public function registerJsFile($url, $options = [], $key = null)
+	public function registerJsFile($url, $depends = [], $options = [], $key = null)
 	{
-		$position = isset($options['position']) ? $options['position'] : self::POS_END;
-		unset($options['position']);
 		$key = $key ?: $url;
-		$this->jsFiles[$position][$key] = Html::jsFile($url, $options);
+		if (empty($depends)) {
+			$position = isset($options['position']) ? $options['position'] : self::POS_END;
+			unset($options['position']);
+			$this->jsFiles[$position][$key] = Html::jsFile($url, $options);
+		} else {
+			$am = Yii::$app->getAssetManager();
+			$am->bundles[$key] = new AssetBundle([
+				'js' => [$url],
+				'jsOptions' => $options,
+				'depends' => (array)$depends,
+			]);
+			$this->registerAssetBundle($key);
+		}
 	}
 
 	/**
