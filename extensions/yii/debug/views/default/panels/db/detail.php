@@ -15,29 +15,26 @@ echo GridView::widget([
 		['class' => 'yii\grid\SerialColumn'],
 		[
 			'attribute' => 'duration',
-			'value' => function ($data)
-			{
+			'value' => function ($data) {
 				return sprintf('%.1f ms',$data['duration']);
 			},
 		],
 		[
 			'attribute' => 'type',
-			'value' => function ($data)
-			{
+			'value' => function ($data) {
 				return Html::encode(mb_strtoupper($data['type'],'utf8'));
 			},
 		],
 		[
 			'attribute' => 'query',
-			'value' => function ($data)
-			{
+			'value' => function ($data) {
 				$query = Html::encode($data['query']);
 
 				if (!empty($data['trace'])) {
 					$query .= Html::ul($data['trace'], [
 						'class' => 'trace',
 						'item' => function ($trace) {
-							return "<li>{$trace['file']}({$trace['line']})</li>";
+							return "<li>{$trace['file']} ({$trace['line']})</li>";
 						},
 					]);
 				}

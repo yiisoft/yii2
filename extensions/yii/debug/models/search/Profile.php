@@ -6,15 +6,10 @@ use yii\data\ArrayDataProvider;
 use yii\debug\components\search\Filter;
 
 /**
- * Log represents the model behind the search form about current request log.
+ * Profile represents the model behind the search form about current request profiling log.
  */
-class Log extends Base
+class Profile extends Base
 {
-
-	/**
-	 * @var string ip attribute input search value
-	 */
-	public $level;
 
 	/**
 	 * @var string method attribute input search value
@@ -22,14 +17,14 @@ class Log extends Base
 	public $category;
 
 	/**
-	 * @var integer message attribute input search value
+	 * @var integer info attribute input search value
 	 */
-	public $message;
+	public $info;
 
 	public function rules()
 	{
 		return [
-			[['level', 'message', 'category'], 'safe'],
+			[['category', 'info'], 'safe'],
 		];
 	}
 
@@ -39,9 +34,8 @@ class Log extends Base
 	public function attributeLabels()
 	{
 		return [
-			'level' => 'Level',
 			'category' => 'Category',
-			'message' => 'Message',
+			'info' => 'Info',
 		];
 	}
 
@@ -59,7 +53,10 @@ class Log extends Base
 				'pageSize' => 10,
 			],
 			'sort' => [
-				'attributes' => ['time', 'level', 'category', 'message'],
+				'attributes' => ['category', 'info', 'duration'],
+				'defaultOrder' => [
+					'duration' => SORT_DESC,
+				],
 			],
 		]);
 
@@ -68,9 +65,8 @@ class Log extends Base
 		}
 
 		$filter = new Filter();
-		$this->addCondition($filter, 'level');
 		$this->addCondition($filter, 'category', true);
-		$this->addCondition($filter, 'message', true);
+		$this->addCondition($filter, 'info', true);
 		$dataProvider->allModels = $filter->filter($models);
 
 		return $dataProvider;
