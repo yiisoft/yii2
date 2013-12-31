@@ -320,4 +320,62 @@ class ArrayHelperTest extends TestCase
 		$this->assertTrue(ArrayHelper::keyExists('B', $array, false));
 		$this->assertFalse(ArrayHelper::keyExists('c', $array, false));
 	}
+
+	public function valueProvider()
+	{
+		return [
+			['name', 'test'],
+			['noname', null],
+			['noname', 'test', 'test'],
+			['post.id', 5],
+			['post.id', 5, 'test'],
+			['nopost.id', null],
+			['nopost.id', 'test', 'test'],
+			['post.author.name', 'cebe'],
+			['post.author.noname', null],
+			['post.author.noname', 'test', 'test'],
+			['post.author.profile.title', '1337'],
+			['admin.firstname', 'Qiang'],
+			['admin.firstname', 'Qiang', 'test'],
+			['admin.lastname', 'Xue'],
+			[
+				function ($array, $defaultValue) {
+					return $array['date'] . $defaultValue;
+				},
+				'31-12-2113test',
+				'test'
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider valueProvider
+	 *
+	 * @param $key
+	 * @param $expected
+	 * @param null $default
+	 */
+	public function testGetValue($key, $expected, $default = null)
+	{
+		$array = [
+			'name' => 'test',
+			'date' => '31-12-2113',
+			'post' => [
+				'id' => 5,
+				'author' => [
+					'name' => 'cebe',
+					'profile' => [
+						'title' => '1337',
+					],
+				],
+			],
+			'admin.firstname' => 'Qiang',
+			'admin.lastname' => 'Xue',
+			'admin' => [
+				'lastname' => 'cebe',
+			],
+		];
+
+		$this->assertEquals($expected, ArrayHelper::getValue($array, $key, $default));
+	}
 }
