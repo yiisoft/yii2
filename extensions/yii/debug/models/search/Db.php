@@ -53,7 +53,7 @@ class Db extends Base
 				'pageSize' => 10,
 			],
 			'sort' => [
-				'attributes' => ['duration', 'type', 'query'],
+				'attributes' => ['duration', 'seq', 'type', 'query'],
 				'defaultOrder' => [
 					'duration' => SORT_DESC,
 				],

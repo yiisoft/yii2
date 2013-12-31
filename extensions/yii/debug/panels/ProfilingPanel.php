@@ -20,12 +20,6 @@ use yii\debug\models\search\Profile;
  */
 class ProfilingPanel extends Panel
 {
-
-	/**
-	 * @var array profile messages timings
-	 */
-	private $_timings;
-
 	/**
 	 * @var array current request profile timings
 	 */
@@ -59,37 +53,6 @@ class ProfilingPanel extends Panel
 		]);
 	}
 
-	/**
-	 * Calculates given request profile messages timings.
-	 * @return array timings [token, category, timestamp, traces, nesting level, elapsed time]
-	 */
-	protected function calculateTimings()
-	{
-		if ($this->_timings !== null) {
-			return $this->_timings;
-		}
-
-		$messages = $this->data['messages'];
-		$timings = [];
-		$stack = [];
-
-		foreach ($messages as $i => $log) {
-			list($token, $level, $category, $timestamp, $traces) = $log;
-			$log[5] = $i;
-			if ($level == Logger::LEVEL_PROFILE_BEGIN) {
-				$stack[] = $log;
-			} elseif ($level == Logger::LEVEL_PROFILE_END) {
-				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
-					$timings[$last[5]] = [$last[0], $last[2], $last[3], $last[4], count($stack), $timestamp - $last[3]];
-				}
-			}
-		}
-
-		ksort($timings);
-
-		return $this->_timings = array_values($timings);
-	}
-
 	public function save()
 	{
 		$target = $this->module->logTarget;
@@ -109,15 +72,15 @@ class ProfilingPanel extends Panel
 	{
 		if ($this->_models === null) {
 			$this->_models = [];
-			$timings = $this->calculateTimings();
+			$timings = Yii::$app->getLog()->calculateTimings($this->data['messages']);
 
 			foreach($timings as $seq => $profileTiming) {
 				$this->_models[] = 	[
-					'duration' => $profileTiming[5] * 1000, // in milliseconds
-					'category' => $profileTiming[1],
-					'info' => $profileTiming[0],
-					'level' => $profileTiming[4],
-					'timestamp' => $profileTiming[2],
+					'duration' => $profileTiming['duration'] * 1000, // in milliseconds
+					'category' => $profileTiming['category'],
+					'info' => $profileTiming['info'],
+					'level' => $profileTiming['level'],
+					'timestamp' => $profileTiming['timestamp'],
 					'seq' => $seq,
 				];
 			}

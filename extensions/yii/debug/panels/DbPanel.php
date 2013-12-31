@@ -62,33 +62,16 @@ class DbPanel extends Panel
 		]);
 	}
 
+	/**
+	 * Calculates given request profile messages timings.
+	 * @return array timings [token, category, timestamp, traces, nesting level, elapsed time]
+	 */
 	protected function calculateTimings()
 	{
-		if ($this->_timings !== null) {
-			return $this->_timings;
+		if ($this->_timings === null) {
+			$this->_timings = Yii::$app->getLog()->calculateTimings($this->data['messages']);
 		}
-		$messages = $this->data['messages'];
-		$timings = [];
-		$stack = [];
-		foreach ($messages as $i => $log) {
-			list($token, $level, $category, $timestamp) = $log;
-			$log[5] = $i;
-			if ($level == Logger::LEVEL_PROFILE_BEGIN) {
-				$stack[] = $log;
-			} elseif ($level == Logger::LEVEL_PROFILE_END) {
-				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
-					$timings[$last[5]] = [count($stack), $token, $last[3], $timestamp - $last[3], $last[4]];
-				}
-			}
-		}
-
-		$now = microtime(true);
-		while (($last = array_pop($stack)) !== null) {
-			$delta = $now - $last[3];
-			$timings[$last[5]] = [count($stack), $last[0], $last[2], $delta, $last[4]];
-		}
-		ksort($timings);
-		return $this->_timings = $timings;
+		return $this->_timings;
 	}
 
 	public function save()
@@ -108,7 +91,7 @@ class DbPanel extends Panel
 		$queryTime = 0;
 
 		foreach ($timings as $timing) {
-			$queryTime += $timing[3];
+			$queryTime += $timing['duration'];
 		}
 
 		return $queryTime;
@@ -125,12 +108,14 @@ class DbPanel extends Panel
 			$this->_models = [];
 			$timings = $this->calculateTimings();
 
-			foreach($timings as $dbTiming) {
+			foreach($timings as $seq => $dbTiming) {
 				$this->_models[] = 	[
-					'type' => $this->detectQueryType($dbTiming[1]),
-					'query' => $dbTiming[1],
-					'duration' => ($dbTiming[3] * 1000), #in milliseconds
-					'trace' => $dbTiming[4],
+					'type' => $this->detectQueryType($dbTiming['info']),
+					'query' => $dbTiming['info'],
+					'duration' => ($dbTiming['duration'] * 1000), #in milliseconds
+					'trace' => $dbTiming['trace'],
+					'timestamp' => $dbTiming['timestamp'],
+					'seq' => $seq,
 				];
 			}
 		}
