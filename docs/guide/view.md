@@ -90,7 +90,7 @@ When you want to render HTML it becomes complex so we're delegating the task to 
 adding the following to `require`:
 
 ```javascript
-"ezyang/htmlpurifier": "v4.5.0"
+"ezyang/htmlpurifier": "v4.6.0"
 ```
 
 After it's done run `php composer.phar install` and wait till package is downloaded. Now everything is prepared to use

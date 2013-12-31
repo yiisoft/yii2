@@ -28,7 +28,7 @@ In this file you list the packages that your application requires. For Yii sites
 {
     "require": {
         "Michelf/php-markdown": ">=1.3",
-        "ezyang/htmlpurifier": ">=4.5.0"
+        "ezyang/htmlpurifier": ">=4.6.0"
     }
 }
 ```

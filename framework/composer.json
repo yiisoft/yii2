@@ -55,7 +55,7 @@
 		"yiisoft/yii2-composer": "*",
 		"yiisoft/jquery": "1.10.*",
 		"phpspec/php-diff": ">=1.0.2",
-		"ezyang/htmlpurifier": "4.5.*",
+		"ezyang/htmlpurifier": "4.6.*",
 		"michelf/php-markdown": "1.3.*"
 	},
 	"autoload": {
