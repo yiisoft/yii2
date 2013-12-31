@@ -53,9 +53,9 @@ class Profile extends Base
 				'pageSize' => 10,
 			],
 			'sort' => [
-				'attributes' => ['category', 'info', 'duration'],
+				'attributes' => ['category', 'seq', 'duration', 'info'],
 				'defaultOrder' => [
-					'duration' => SORT_DESC,
+					'seq' => SORT_ASC,
 				],
 			],
 		]);
