@@ -26,27 +26,59 @@ body {
 
 /* add sorting icons to gridview sort links */
 a.asc:after, a.desc:after {
-    position: relative;
-    top: 1px;
-    display: inline-block;
-    font-family: 'Glyphicons Halflings';
-    font-style: normal;
-    font-weight: normal;
-    line-height: 1;
-    padding-left: 5px;
+	position: relative;
+	top: 1px;
+	display: inline-block;
+	font-family: 'Glyphicons Halflings';
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	padding-left: 5px;
 }
 
-a.asc:after  { content: /*"\e113"*/"\e151"; }
-a.desc:after { content: /*"\e114"*/"\e152"; }
+a.asc:after {
+	content: /*"\e113"*/ "\e151";
+}
 
-.sort-numerical a.asc:after { content: "\e153"; }
-.sort-numerical a.desc:after { content: "\e154"; }
+a.desc:after {
+	content: /*"\e114"*/ "\e152";
+}
 
-.sort-ordinal a.asc:after { content: "\e155"; }
-.sort-ordinal a.desc:after { content: "\e156"; }
+.sort-numerical a.asc:after {
+	content: "\e153";
+}
+
+.sort-numerical a.desc:after {
+	content: "\e154";
+}
+
+.sort-ordinal a.asc:after {
+	content: "\e155";
+}
+
+.sort-ordinal a.desc:after {
+	content: "\e156";
+}
+
+.hint-block {
+	display: block;
+	margin-top: 5px;
+	color: #999;
+}
+
+.error-block {
+	display: none;
+	margin-top: 5px;
+	margin-bottom: 10px;
+	color: #a94442;
+}
+
+.has-error .error-block {
+	display: block;
+}
 
 .error-summary {
-	color: #b94a48;
+	color: #a94442;
 	background: #fdf7f7;
 	border-left: 3px solid #eed3d7;
 	padding: 10px 20px;
