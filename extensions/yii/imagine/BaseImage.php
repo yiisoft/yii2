@@ -59,10 +59,10 @@ class BaseImage
 	 */
 	public static function getImagine()
 	{
-		if (static::$_imagine === null) {
-			static::$_imagine = static::createImagine();
+		if (self::$_imagine === null) {
+			self::$_imagine = static::createImagine();
 		}
-		return static::$_imagine;
+		return self::$_imagine;
 	}
 
 	/**
@@ -70,7 +70,7 @@ class BaseImage
 	 */
 	public static function setImagine($imagine)
 	{
-		static::$_imagine = $imagine;
+		self::$_imagine = $imagine;
 	}
 
 	/**
@@ -88,12 +88,12 @@ class BaseImage
 					}
 					break;
 				case self::DRIVER_IMAGICK:
-					if (!class_exists('Imagick', false)) {
+					if (class_exists('Imagick', false)) {
 						return new \Imagine\Imagick\Imagine();
 					}
 					break;
 				case self::DRIVER_GD2:
-					if (!function_exists('gd_info')) {
+					if (function_exists('gd_info')) {
 						return new \Imagine\Gd\Imagine();
 					}
 					break;
