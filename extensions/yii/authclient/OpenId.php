@@ -691,13 +691,13 @@ class OpenId extends BaseClient implements ClientInterface
 		}
 
 		$params = array_merge(
-			$this->buildSregParams(),
 			[
 				'openid.return_to' => $returnUrl,
 				'openid.mode' => 'checkid_setup',
 				'openid.identity' => $serverInfo['identity'],
 				'openid.trust_root' => $this->trustRoot,
-			]
+			],
+			$this->buildSregParams()
 		);
 
 		return $this->buildUrl($serverInfo['url'], ['query' => http_build_query($params, '', '&')]);
@@ -717,10 +717,10 @@ class OpenId extends BaseClient implements ClientInterface
 			'openid.realm' => $this->getTrustRoot(),
 		];
 		if ($serverInfo['ax']) {
-			$params = array_merge($this->buildAxParams(), $params);
+			$params = array_merge($params, $this->buildAxParams());
 		}
 		if ($serverInfo['sreg']) {
-			$params = array_merge($this->buildSregParams(), $params);
+			$params = array_merge($params, $this->buildSregParams());
 		}
 		if (!$serverInfo['ax'] && !$serverInfo['sreg']) {
 			// If OP doesn't advertise either SREG, nor AX, let's send them both in worst case we don't get anything in return.
