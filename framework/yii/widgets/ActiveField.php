@@ -130,7 +130,7 @@ class ActiveField extends Component
 		try {
 			return $this->render();
 		} catch (\Exception $e) {
-			trigger_error($e->getMessage());
+			trigger_error($e->getMessage() . "\n\n" . $e->getTraceAsString());
 			return '';
 		}
 	}
