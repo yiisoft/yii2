@@ -9,7 +9,6 @@ namespace yii\debug\panels;
 
 use Yii;
 use yii\debug\Panel;
-use yii\helpers\Html;
 
 /**
  * Debugger panel that collects and displays application configuration and environment.
@@ -31,79 +30,48 @@ class ConfigPanel extends Panel
 
 	public function getSummary()
 	{
-		$yiiLogo = $this->getYiiLogo();
-		$url = $this->getUrl();
-		$phpUrl = Yii::$app->getUrlManager()->createUrl($this->module->id . '/default/phpinfo');
-		return <<<EOD
-<div class="yii-debug-toolbar-block">
-	<a href="$url">
-		<img width="29" height="30" alt="" src="$yiiLogo">
-		<span>{$this->data['application']['yii']}</span>
-	</a>
-</div>
-<div class="yii-debug-toolbar-block">
-	<a href="$phpUrl" title="Show phpinfo()">PHP {$this->data['php']['version']}</a>
-</div>
-EOD;
+		return  Yii::$app->view->render('panels/config/summary', [
+			'panel' => $this,
+			'data' => $this->data,
+		]);
 	}
 
 	public function getDetail()
 	{
-		$app = [
-			'Yii Version' => $this->data['application']['yii'],
-			'Application Name' => $this->data['application']['name'],
-			'Environment' => $this->data['application']['env'],
-			'Debug Mode' => $this->data['application']['debug'] ? 'Yes' : 'No',
-		];
-		$php = [
-			'PHP Version' => $this->data['php']['version'],
-			'Xdebug' => $this->data['php']['xdebug'] ? 'Enabled' : 'Disabled',
-			'APC' => $this->data['php']['apc'] ? 'Enabled' : 'Disabled',
-			'Memcache' => $this->data['php']['memcache'] ? 'Enabled' : 'Disabled',
-		];
-		return "<h1>Configuration</h1>\n"
-			. $this->renderData('Application Configuration', $app) . "\n"
-			. $this->renderExtensions()
-			. $this->renderData('PHP Configuration', $php) . "\n"
-			. $this->getPhpInfo();
+		return  Yii::$app->view->render('panels/config/detail', [
+			'panel' => $this,
+			'data' => $this->data,
+			'app' => [
+				'Yii Version' => $this->data['application']['yii'],
+				'Application Name' => $this->data['application']['name'],
+				'Environment' => $this->data['application']['env'],
+				'Debug Mode' => $this->data['application']['debug'] ? 'Yes' : 'No',
+			],
+			'php' => [
+				'PHP Version' => $this->data['php']['version'],
+				'Xdebug' => $this->data['php']['xdebug'] ? 'Enabled' : 'Disabled',
+				'APC' => $this->data['php']['apc'] ? 'Enabled' : 'Disabled',
+				'Memcache' => $this->data['php']['memcache'] ? 'Enabled' : 'Disabled',
+			],
+			'extensions' => $this->getExtensions(),
+		]);
 	}
 
-	protected function getPhpInfo()
+	public function renderData($caption, $values)
 	{
-		return '<div>' . Html::a('Show phpinfo »', ['phpinfo'], ['class' => 'btn btn-primary']) . "</div>\n";
+		return  Yii::$app->view->render('panels/config/_data_table', [
+			'caption' => $caption,
+			'values' => $values,
+		]);
 	}
 
-	protected function renderData($caption, $values)
+	public function getExtensions()
 	{
-		if (empty($values)) {
-			return "<h3>$caption</h3>\n<p>Empty.</p>";
-		}
-		$rows = [];
-		foreach ($values as $name => $value) {
-			$rows[] = '<tr><th style="width:200px;">' . Html::encode($name) . '</th><td style="overflow:auto">' . Html::encode($value) . '</td></tr>';
-		}
-		$rows = implode("\n", $rows);
-		return <<<EOD
-<h3>$caption</h3>
-<table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
-<thead><tr><th style="width: 200px;">Name</th><th>Value</th></tr></thead>
-<tbody>
-$rows
-</tbody>
-</table>
-EOD;
-	}
-
-	protected function renderExtensions()
-	{
-		if (empty($this->data['extensions'])) {
-			return '';
-		}
 		$data = [];
 		foreach ($this->data['extensions'] as $extension) {
 			$data[$extension['name']] = $extension['version'];
 		}
-		return $this->renderData('Installed Extensions', $data) . "\n";
+		return $data;
 	}
 
 	public function save()
