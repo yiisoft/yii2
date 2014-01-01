@@ -16,8 +16,8 @@ class ImageGmagickTest extends AbstractImageTest
 		if (!class_exists('Gmagick')) {
 			$this->markTestSkipped('Skipping ImageGmagickTest, Gmagick is not installed');
 		} else {
-			$this->image = new Image();
-			$this->image->setDriver(Image::DRIVER_GMAGICK);
+			Image::setImagine(null);
+			Image::$driver = Image::DRIVER_GMAGICK;
 			parent::setUp();
 		}
 	}

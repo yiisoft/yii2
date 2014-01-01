@@ -2,6 +2,7 @@
 namespace yiiunit\extensions\imagine;
 
 use Yii;
+use yii\imagine\Image;
 use Imagine\Image\Point;
 use yiiunit\VendorTestCase;
 
@@ -9,10 +10,6 @@ Yii::setAlias('@yii/imagine', __DIR__ . '/../../../../extensions/yii/imagine');
 
 abstract class AbstractImageTest extends VendorTestCase
 {
-	/**
-	 * @var yii\imagine\Image
-	 */
-	protected $image;
 	protected $imageFile;
 	protected $watermarkFile;
 	protected $runtimeTextFile;
@@ -33,14 +30,15 @@ abstract class AbstractImageTest extends VendorTestCase
 		@unlink($this->runtimeWatermarkFile);
 	}
 
-	public function testText() {
-		if(!$this->isFontTestSupported()) {
+	public function testText()
+	{
+		if (!$this->isFontTestSupported()) {
 			$this->markTestSkipped('Skipping ImageGdTest Gd not installed');
 		}
 
 		$fontFile = Yii::getAlias('@yiiunit/data/imagine/GothamRnd-Light') . '.otf';
 
-		$img = $this->image->text($this->imageFile, 'Yii-2 Image', [
+		$img = Image::text($this->imageFile, 'Yii-2 Image', [
 			'font' => $fontFile,
 			'size' => 12,
 			'color' => '000'
@@ -53,14 +51,14 @@ abstract class AbstractImageTest extends VendorTestCase
 
 	public function testCrop()
 	{
-		$point = [20,20];
-		$img = $this->image->crop($this->imageFile, 100, 100, $point);
+		$point = [20, 20];
+		$img = Image::crop($this->imageFile, 100, 100, $point);
 
 		$this->assertEquals(100, $img->getSize()->getWidth());
 		$this->assertEquals(100, $img->getSize()->getHeight());
 
 		$point = new Point(20, 20);
-		$img = $this->image->crop($this->imageFile, 100, 100, $point);
+		$img = Image::crop($this->imageFile, 100, 100, $point);
 		$this->assertEquals(100, $img->getSize()->getWidth());
 		$this->assertEquals(100, $img->getSize()->getHeight());
 
@@ -68,7 +66,7 @@ abstract class AbstractImageTest extends VendorTestCase
 
 	public function testWatermark()
 	{
-		$img = $this->image->watermark($this->imageFile, $this->watermarkFile);
+		$img = Image::watermark($this->imageFile, $this->watermarkFile);
 		$img->save($this->runtimeWatermarkFile);
 		$this->assertTrue(file_exists($this->runtimeWatermarkFile));
 	}
@@ -76,9 +74,9 @@ abstract class AbstractImageTest extends VendorTestCase
 	public function testFrame()
 	{
 		$frameSize = 5;
-		$original = $this->image->getImagine()->open($this->imageFile);
+		$original = Image::getImagine()->open($this->imageFile);
 		$originalSize = $original->getSize();
-		$img = $this->image->frame($this->imageFile, $frameSize, '666', 0);
+		$img = Image::frame($this->imageFile, $frameSize, '666', 0);
 		$size = $img->getSize();
 
 		$this->assertEquals($size->getWidth(), $originalSize->getWidth() + ($frameSize * 2));
@@ -86,7 +84,7 @@ abstract class AbstractImageTest extends VendorTestCase
 
 	public function testThumbnail()
 	{
-		$img = $this->image->thumbnail($this->imageFile, 120, 120);
+		$img = Image::thumbnail($this->imageFile, 120, 120);
 
 		$this->assertEquals(120, $img->getSize()->getWidth());
 		$this->assertEquals(120, $img->getSize()->getHeight());
@@ -95,22 +93,26 @@ abstract class AbstractImageTest extends VendorTestCase
 	/**
 	 * @expectedException \yii\base\InvalidConfigException
 	 */
-	public function testShouldThrowExceptionOnDriverInvalidArgument() {
-		$this->image->setDriver('fake-driver');
+	public function testShouldThrowExceptionOnDriverInvalidArgument()
+	{
+		Image::setImagine(null);
+		Image::$driver = 'fake-driver';
 	}
 
 	/**
 	 * @expectedException \InvalidArgumentException
 	 */
-	public function testShouldThrowExceptionOnCropInvalidArgument() {
-		$this->image->crop($this->imageFile, 100, 100, new \stdClass());
+	public function testShouldThrowExceptionOnCropInvalidArgument()
+	{
+		Image::crop($this->imageFile, 100, 100, new \stdClass());
 	}
 
 	/**
 	 * @expectedException \InvalidArgumentException
 	 */
-	public function testShouldThrowExceptionOnWatermarkInvalidArgument() {
-		$this->image->watermark($this->imageFile, $this->watermarkFile, new \stdClass());
+	public function testShouldThrowExceptionOnWatermarkInvalidArgument()
+	{
+		Image::watermark($this->imageFile, $this->watermarkFile, new \stdClass());
 	}
 
 
