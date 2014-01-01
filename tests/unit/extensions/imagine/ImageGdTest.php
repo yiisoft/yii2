@@ -10,14 +10,13 @@ use yii\imagine\Image;
  */
 class ImageGdTest extends AbstractImageTest
 {
-
 	protected function setUp()
 	{
 		if (!function_exists('gd_info')) {
 			$this->markTestSkipped('Skipping ImageGdTest, Gd not installed');
 		} else {
-			$this->image = new Image();
-			$this->image->setDriver(Image::DRIVER_GD2);
+			Image::setImagine(null);
+			Image::$driver = Image::DRIVER_GD2;
 			parent::setUp();
 		}
 	}
