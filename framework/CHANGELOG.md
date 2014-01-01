@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #1635: `yii\jui\SliderInput` wasn't properly initialized (samdark)
 - Bug #1686: ActiveForm is creating duplicated messages in error summary (qiangxue)
 - Bug #1704: Incorrect regexp is used in `Inflector::camelize()` (qiangxue)
+- Bug #1710: OpenId auth client does not request required attributes correctly (klimov-paul)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
@@ -61,8 +62,9 @@ Yii Framework 2 Change Log
 - Chg: Added `yii\widgets\InputWidget::options` (qiangxue)
 - Chg: Changed the signature of `urlCreator` and button creators for `yii\gridview\ActionColumn` (qiangxue)
 - Chg: Updated HTMLPurified dependency to `4.6.*`.
-- New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
+- New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
+- New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
 
 2.0.0 alpha, December 1, 2013
 ---------------------------
