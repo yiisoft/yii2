@@ -57,14 +57,6 @@ class ConfigPanel extends Panel
 		]);
 	}
 
-	public function renderData($caption, $values)
-	{
-		return  Yii::$app->view->render('panels/config/_data_table', [
-			'caption' => $caption,
-			'values' => $values,
-		]);
-	}
-
 	public function getExtensions()
 	{
 		$data = [];
