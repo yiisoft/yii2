@@ -14,6 +14,7 @@ use yii\authclient\ClientInterface;
 
 /**
  * Choice prints buttons for authentication via various auth clients.
+ * It opens a popup window for the client authentication process.
  * By default this widget relies on presence of [[\yii\authclient\Collection]] among application components
  * to get auth clients information.
  *
@@ -40,6 +41,10 @@ use yii\authclient\ClientInterface;
  * </ul>
  * <?php yii\authclient\widgets\Choice::endWidget(); ?>
  * ~~~
+ *
+ * This widget supports following keys for [[ClientInterface::getViewOptions()]] result:
+ *  - popupWidth - integer width of the popup window in pixels.
+ *  - popupHeight - integer height of the popup window in pixels.
  *
  * @see \yii\authclient\AuthAction
  *
