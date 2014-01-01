@@ -44,7 +44,7 @@ class ActiveField extends Component
 	 * @var string the template that is used to arrange the label, the input field, the error message and the hint text.
 	 * The following tokens will be replaced when [[render()]] is called: `{label}`, `{input}`, `{error}` and `{hint}`.
 	 */
-	public $template = "{label}\n{input}\n{error}\n{hint}";
+	public $template = "{label}\n{input}\n{hint}\n{error}";
 	/**
 	 * @var array the default options for the input tags. The parameter passed to individual input methods
 	 * (e.g. [[textInput()]]) will be merged with this property when rendering the input tag.
@@ -57,7 +57,7 @@ class ActiveField extends Component
 	 *
 	 * - tag: the tag name of the container element. Defaults to "div".
 	 */
-	public $errorOptions = ['class' => 'help-block'];
+	public $errorOptions = ['class' => 'error-block'];
 	/**
 	 * @var array the default options for the label tags. The parameter passed to [[label()]] will be
 	 * merged with this property when rendering the label tag.
