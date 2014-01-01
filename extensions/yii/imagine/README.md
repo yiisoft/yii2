@@ -1,5 +1,5 @@
-Image Extension for Yii 2
-=========================
+Imagine Extension for Yii 2
+===========================
 
 This extension adds most common image functions and also acts as a wrapper to [Imagine](http://imagine.readthedocs.org/)
 image manipulation library.
