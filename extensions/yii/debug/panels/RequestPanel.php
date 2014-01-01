@@ -9,10 +9,7 @@ namespace yii\debug\panels;
 
 use Yii;
 use yii\base\InlineAction;
-use yii\bootstrap\Tabs;
 use yii\debug\Panel;
-use yii\helpers\Html;
-use yii\web\Response;
 
 /**
  * Debugger panel that collects and displays request data.
@@ -29,62 +26,20 @@ class RequestPanel extends Panel
 
 	public function getSummary()
 	{
-		$url = $this->getUrl();
-		$statusCode = $this->data['statusCode'];
-		if ($statusCode === null) {
-			$statusCode = 200;
-		}
-		if ($statusCode >= 200 && $statusCode < 300) {
-			$class = 'label-success';
-		} elseif ($statusCode >= 100 && $statusCode < 200) {
-			$class = 'label-info';
-		} else {
-			$class = 'label-important';
-		}
-		$statusText = Html::encode(isset(Response::$httpStatuses[$statusCode]) ? Response::$httpStatuses[$statusCode] : '');
-
-		return <<<EOD
-<div class="yii-debug-toolbar-block">
-	<a href="$url" title="Status code: $statusCode $statusText">Status <span class="label $class">$statusCode</span></a>
-</div>
-<div class="yii-debug-toolbar-block">
-	<a href="$url">Action <span class="label">{$this->data['action']}</span></a>
-</div>
-EOD;
+		return  Yii::$app->view->render('panels/request/summary', [
+			'panel' => $this,
+			'data' => $this->data,
+		]);
 	}
 
 	public function getDetail()
 	{
-		$data = [
-			'Route' => $this->data['route'],
-			'Action' => $this->data['action'],
-			'Parameters' => $this->data['actionParams'],
-		];
-		return Tabs::widget([
-			'items' => [
-				[
-					'label' => 'Parameters',
-					'content' => $this->renderData('Routing', $data)
-						. $this->renderData('$_GET', $this->data['GET'])
-						. $this->renderData('$_POST', $this->data['POST'])
-						. $this->renderData('$_FILES', $this->data['FILES'])
-						. $this->renderData('$_COOKIE', $this->data['COOKIE']),
-					'active' => true,
-				],
-				[
-					'label' => 'Headers',
-					'content' => $this->renderData('Request Headers', $this->data['requestHeaders'])
-						. $this->renderData('Response Headers', $this->data['responseHeaders']),
-				],
-				[
-					'label' => 'Session',
-					'content' => $this->renderData('$_SESSION', $this->data['SESSION'])
-						. $this->renderData('Flashes', $this->data['flashes']),
-				],
-				[
-					'label' => '$_SERVER',
-					'content' => $this->renderData('$_SERVER', $this->data['SERVER']),
-				],
+		return  Yii::$app->view->render('panels/request/detail', [
+			'panel' => $this,
+			'data' => [
+				'Route' => $this->data['route'],
+				'Action' => $this->data['action'],
+				'Parameters' => $this->data['actionParams'],
 			],
 		]);
 	}
@@ -136,32 +91,12 @@ EOD;
 			'action' => $action,
 			'actionParams' => Yii::$app->requestedParams,
 			'SERVER' => empty($_SERVER) ? [] : $_SERVER,
-			'GET' => empty($_GET) ? [] : $_GET,
-			'POST' => empty($_POST) ? [] : $_POST,
-			'COOKIE' => empty($_COOKIE) ? [] : $_COOKIE,
+			'GET' => empty(Yii::$app->request->get()) ? [] : Yii::$app->request->get(),
+			'POST' => empty(Yii::$app->request->post()) ? [] : Yii::$app->request->post(),
+			'COOKIE' => empty(Yii::$app->request->cookies) ? [] : Yii::$app->request->cookies,
 			'FILES' => empty($_FILES) ? [] : $_FILES,
-			'SESSION' => empty($_SESSION) ? [] : $_SESSION,
+			'SESSION' => empty(Yii::$app->session) ? [] : Yii::$app->session,
 		];
 	}
 
-	protected function renderData($caption, $values)
-	{
-		if (empty($values)) {
-			return "<h3>$caption</h3>\n<p>Empty.</p>";
-		}
-		$rows = [];
-		foreach ($values as $name => $value) {
-			$rows[] = '<tr><th style="width: 200px;">' . Html::encode($name) . '</th><td>' . htmlspecialchars(var_export($value, true), ENT_QUOTES|ENT_SUBSTITUTE, \Yii::$app->charset, TRUE) . '</td></tr>';
-		}
-		$rows = implode("\n", $rows);
-		return <<<EOD
-<h3>$caption</h3>
-<table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
-<thead><tr><th style="width: 200px;">Name</th><th>Value</th></tr></thead>
-<tbody>
-$rows
-</tbody>
-</table>
-EOD;
-	}
 }
