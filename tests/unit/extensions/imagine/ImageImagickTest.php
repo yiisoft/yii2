@@ -16,8 +16,8 @@ class ImageImagickTest extends AbstractImageTest
 		if (!class_exists('Imagick')) {
 			$this->markTestSkipped('Skipping ImageImagickTest, Imagick is not installed');
 		} else {
-			$this->image = new Image();
-			$this->image->setDriver(Image::DRIVER_IMAGICK);
+			Image::setImagine(null);
+			Image::$driver = Image::DRIVER_IMAGICK;
 			parent::setUp();
 		}
 	}
