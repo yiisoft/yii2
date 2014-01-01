@@ -638,8 +638,8 @@ class OpenId extends BaseClient implements ClientInterface
 			$params['openid.ax.mode'] = 'fetch_request';
 			$aliases = [];
 			$counts = [];
-			$required = [];
-			$optional = [];
+			$requiredAttributes = [];
+			$optionalAttributes = [];
 			foreach (['requiredAttributes', 'optionalAttributes'] as $type) {
 				foreach ($this->$type as $alias => $field) {
 					if (is_int($alias)) {
@@ -665,11 +665,11 @@ class OpenId extends BaseClient implements ClientInterface
 
 			// Don't send empty ax.requied and ax.if_available.
 			// Google and possibly other providers refuse to support ax when one of these is empty.
-			if ($required) {
-				$params['openid.ax.required'] = implode(',', $required);
+			if (!empty($requiredAttributes)) {
+				$params['openid.ax.required'] = implode(',', $requiredAttributes);
 			}
-			if ($optional) {
-				$params['openid.ax.if_available'] = implode(',', $optional);
+			if (!empty($optionalAttributes)) {
+				$params['openid.ax.if_available'] = implode(',', $optionalAttributes);
 			}
 		}
 		return $params;
