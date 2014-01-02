@@ -16,7 +16,7 @@ use yii\helpers\Console;
  * This command manage fixtures creations based on given template.
  *
  * Fixtures are one of the important paths in unit testing. To speed up developers
- * work this fixtures can be generated automatically, based on prepared template.
+ * work these fixtures can be generated automatically, based on prepared template.
  * This command is a simple wrapper for the fixtures library [Faker](https://github.com/fzaninotto/Faker).
  * 
  * You should configure this command as follows (you can use any alias, not only "faker:fixture"):
@@ -49,9 +49,9 @@ use yii\helpers\Console;
  * ~~~
  * 
  * If you use callback as a attribute value, then it will be called as shown with three parameters:
- * * $fixture - current fixture array. 
- * * $faker - faker generator instance
- * * $index - current fixture index. For example if user need to generate 3 fixtures for tbl_user, it will be 0..2
+ * - $fixture - current fixture array. 
+ * - $faker - faker generator instance
+ * - $index - current fixture index. For example if user need to generate 3 fixtures for tbl_user, it will be 0..2
  * After you set all needed fields in callback, you need to return $fixture array back from the callback.
  * 
  * After you prepared needed templates for tables you can simply generate your fixtures via command
@@ -161,7 +161,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
 	 * More info in [Faker](https://github.com/fzaninotto/Faker.) library docs.
 	 * @var array
 	 */
-	public $providers = array();
+	public $providers = [];
 
 	/**
 	 * Faker generator instance
@@ -202,13 +202,20 @@ class FixtureController extends \yii\console\controllers\FixtureController
 		$templatePath = Yii::getAlias($this->templatePath);
 		$fixturesPath = Yii::getAlias($this->fixturesPath);
 
-		if ($this->needToGenerateAll($file))
+		if ($this->needToGenerateAll($file)) {
 			$files = FileHelper::findFiles($templatePath, ['only' => ['.php']]);
-		else
+		} else {
 			$files = FileHelper::findFiles($templatePath, ['only' => [$file.'.php']]);
+		}
 
-		foreach ($files as $templateFile)
-		{
+		if (empty($files)) {
+			throw new Exception(
+					"No files were found by name: \"{$file}\". \n"
+					. "Check that template with these name exists, under template path: \n\"{$templatePath}\"."
+			);
+		}
+
+		foreach ($files as $templateFile) {
 			$fixtureFileName = basename($templateFile);
 			$template = $this->getTemplate($templateFile);
 			$fixtures = [];
@@ -229,9 +236,8 @@ class FixtureController extends \yii\console\controllers\FixtureController
 	 */
 	public function getGenerator()
 	{
-		if (is_null($this->_generator))
-		{
-			#replacing - on _ because Faker support only en_US format and not intl
+		if (is_null($this->_generator)) {
+			//replacing - on _ because Faker support only en_US format and not intl
 
 			$language = is_null($this->language) ? str_replace('-','_', Yii::$app->language) : $this->language;
 			$this->_generator = \Faker\Factory::create($language);
@@ -247,8 +253,9 @@ class FixtureController extends \yii\console\controllers\FixtureController
 	{
 		$path = Yii::getAlias($this->templatePath);
 
-		if (!is_dir($path))
+		if (!is_dir($path)) {
 			throw new Exception("The template path \"{$this->templatePath}\" not exist");
+		}
 	}
 
 	/**
@@ -256,8 +263,9 @@ class FixtureController extends \yii\console\controllers\FixtureController
 	 */
 	public function addProviders()
 	{
-		foreach($this->providers as $provider)
+		foreach($this->providers as $provider) {
 			$this->generator->addProvider(new $provider($this->generator));
+		}
 	}
 
 	/**
