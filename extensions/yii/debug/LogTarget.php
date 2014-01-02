@@ -52,6 +52,7 @@ class LogTarget extends Target
 			$manifest = unserialize(file_get_contents($indexFile));
 		}
 		$request = Yii::$app->getRequest();
+		$response = Yii::$app->getResponse();
 		$manifest[$this->tag] = $summary = [
 			'tag' => $this->tag,
 			'url' => $request->getAbsoluteUrl(),
@@ -59,6 +60,8 @@ class LogTarget extends Target
 			'method' => $request->getMethod(),
 			'ip' => $request->getUserIP(),
 			'time' => time(),
+			'statusCode' => $response->statusCode,
+			'sqlCount' => $this->getSqlTotalCount(),
 		];
 		$this->gc($manifest);
 
@@ -102,4 +105,21 @@ class LogTarget extends Target
 			}
 		}
 	}
+
+	/**
+	 * Returns total sql count executed in current request. If database panel is not configured
+	 * returns 0.
+	 * @return integer
+	 */
+	protected function getSqlTotalCount()
+	{
+		if (!isset($this->module->panels['db'])) {
+			return 0;
+		}
+		$profileLogs = $this->module->panels['db']->save();
+		
+		# / 2 because messages are in couple (begin/end)
+		return count($profileLogs['messages']) / 2;
+	}
+
 }

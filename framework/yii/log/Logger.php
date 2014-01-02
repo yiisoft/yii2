@@ -242,12 +242,12 @@ class Logger extends Component
 	 * For example, 'yii\db\*' will match categories starting with 'yii\db\',
 	 * such as 'yii\db\Connection'.
 	 * @param array $excludeCategories list of categories that you want to exclude
-	 * @return array the profiling results. Each array element has the following structure:
-	 *  `[$token, $category, $time]`.
+	 * @return array the profiling results. Each element is an array consisting of these elements:
+	 * `info`, `category`, `timestamp`, `trace`, `level`, `duration`.
 	 */
 	public function getProfiling($categories = [], $excludeCategories = [])
 	{
-		$timings = $this->calculateTimings();
+		$timings = $this->calculateTimings($this->messages);
 		if (empty($categories) && empty($excludeCategories)) {
 			return $timings;
 		}
@@ -256,7 +256,7 @@ class Logger extends Component
 			$matched = empty($categories);
 			foreach ($categories as $category) {
 				$prefix = rtrim($category, '*');
-				if (strpos($timing[1], $prefix) === 0 && ($timing[1] === $category || $prefix !== $category)) {
+				if (strpos($timing['category'], $prefix) === 0 && ($timing['category'] === $category || $prefix !== $category)) {
 					$matched = true;
 					break;
 				}
@@ -266,7 +266,7 @@ class Logger extends Component
 				foreach ($excludeCategories as $category) {
 					$prefix = rtrim($category, '*');
 					foreach ($timings as $i => $timing) {
-						if (strpos($timing[1], $prefix) === 0 && ($timing[1] === $category || $prefix !== $category)) {
+						if (strpos($timing['category'], $prefix) === 0 && ($timing['category'] === $category || $prefix !== $category)) {
 							$matched = false;
 							break;
 						}
@@ -294,36 +294,46 @@ class Logger extends Component
 		$count = count($timings);
 		$time = 0;
 		foreach ($timings as $timing) {
-			$time += $timing[1];
+			$time += $timing['duration'];
 		}
 		return [$count, $time];
 	}
 
-	private function calculateTimings()
+	/**
+	 * Calculates the elapsed time for the given log messages.
+	 * @param array $messages the log messages obtained from profiling
+	 * @return array timings. Each element is an array consisting of these elements:
+	 * `info`, `category`, `timestamp`, `trace`, `level`, `duration`.
+	 */
+	public function calculateTimings($messages)
 	{
 		$timings = [];
 		$stack = [];
-		foreach ($this->messages as $log) {
-			list($token, $level, $category, $timestamp) = $log;
-			if ($level == self::LEVEL_PROFILE_BEGIN) {
+
+		foreach ($messages as $i => $log) {
+			list($token, $level, $category, $timestamp, $traces) = $log;
+			$log[5] = $i;
+			if ($level == Logger::LEVEL_PROFILE_BEGIN) {
 				$stack[] = $log;
-			} elseif ($level == self::LEVEL_PROFILE_END) {
+			} elseif ($level == Logger::LEVEL_PROFILE_END) {
 				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
-					$timings[] = [$token, $category, $timestamp - $last[3]];
-				} else {
-					throw new InvalidConfigException("Unmatched profiling block: $token");
+					$timings[$last[5]] = [
+						'info' => $last[0],
+						'category' => $last[2],
+						'timestamp' => $last[3],
+						'trace' => $last[4],
+						'level' => count($stack),
+						'duration' => $timestamp - $last[3],
+					];
 				}
 			}
 		}
 
-		$now = microtime(true);
-		while (($last = array_pop($stack)) !== null) {
-			$delta = $now - $last[3];
-			$timings[] = [$last[0], $last[2], $delta];
-		}
+		ksort($timings);
 
-		return $timings;
+		return array_values($timings);
 	}
+
 
 	/**
 	 * Returns the text display of the specified level.

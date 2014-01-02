@@ -280,7 +280,7 @@ class Schema extends \yii\db\Schema
 	 * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
 	 * @return array all table names in the database. The names have NO schema name prefix.
 	 */
-	public function findTableNames($schema = '')
+	protected function findTableNames($schema = '')
 	{
 		$sql = 'SHOW TABLES';
 		if ($schema !== '') {

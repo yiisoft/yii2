@@ -73,6 +73,7 @@ class InflectorTest extends TestCase
 	public function testCamelize()
 	{
 		$this->assertEquals("MeMySelfAndI", Inflector::camelize('me my_self-andI'));
+		$this->assertEquals("QweQweEwq", Inflector::camelize('qwe qwe^ewq'));
 	}
 
 	public function testUnderscore()

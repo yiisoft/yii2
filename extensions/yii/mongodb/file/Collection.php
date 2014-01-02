@@ -17,8 +17,7 @@ use Yii;
  *
  * File collection inherits all interface from regular [[\yii\mongo\Collection]], adding methods to store files.
  *
- * @property \yii\mongo\Collection $chunkCollection file chunks Mongo collection. This property is read-only.
- * @method \MongoGridFSCursor find() returns a cursor for the search results.
+ * @property \yii\mongodb\Collection $chunkCollection Mongo collection instance. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

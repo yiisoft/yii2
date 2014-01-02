@@ -15,6 +15,7 @@ return [
 					'class' => 'yii\twig\ViewRenderer',
 					//'cachePath' => '@runtime/Twig/cache',
 					//'options' => [], /*  Array of twig options */
+					// ... see ViewRenderer for more options
 				],
 			],
 		],

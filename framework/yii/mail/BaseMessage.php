@@ -45,7 +45,7 @@ abstract class BaseMessage extends Object implements MessageInterface
 		try {
 			return $this->toString();
 		} catch (\Exception $e) {
-			trigger_error($e->getMessage());
+			trigger_error($e->getMessage() . "\n\n" . $e->getTraceAsString());
 			return '';
 		}
 	}

@@ -146,16 +146,16 @@ class AssetBundle extends Object
 	{
 		foreach ($this->js as $js) {
 			if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
-				$view->registerJsFile($this->baseUrl . '/' . $js, $this->jsOptions);
+				$view->registerJsFile($this->baseUrl . '/' . $js, [], $this->jsOptions);
 			} else {
-				$view->registerJsFile($js, $this->jsOptions);
+				$view->registerJsFile($js, [], $this->jsOptions);
 			}
 		}
 		foreach ($this->css as $css) {
 			if (strpos($css, '/') !== 0 && strpos($css, '://') === false) {
-				$view->registerCssFile($this->baseUrl . '/' . $css, $this->cssOptions);
+				$view->registerCssFile($this->baseUrl . '/' . $css, [], $this->cssOptions);
 			} else {
-				$view->registerCssFile($css, $this->cssOptions);
+				$view->registerCssFile($css, [], $this->cssOptions);
 			}
 		}
 	}
@@ -165,8 +165,6 @@ class AssetBundle extends Object
 	 * It will also try to convert non-CSS or JS files (e.g. LESS, Sass) into the corresponding
 	 * CSS or JS files using [[AssetManager::converter|asset converter]].
 	 * @param AssetManager $am the asset manager to perform the asset publishing
-	 * @throws InvalidConfigException if [[baseUrl]] or [[basePath]] is not set when the bundle
-	 * contains internal CSS or JS files.
 	 */
 	public function publish($am)
 	{
@@ -179,7 +177,7 @@ class AssetBundle extends Object
 				if (isset($this->basePath, $this->baseUrl)) {
 					$this->js[$i] = $converter->convert($js, $this->basePath, $this->baseUrl);
 				} else {
-					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
+					$this->js[$i] = '/' . $js;
 				}
 			}
 		}
@@ -188,7 +186,7 @@ class AssetBundle extends Object
 				if (isset($this->basePath, $this->baseUrl)) {
 					$this->css[$i] = $converter->convert($css, $this->basePath, $this->baseUrl);
 				} else {
-					throw new InvalidConfigException('Both of the "baseUrl" and "basePath" properties must be set.');
+					$this->css[$i] = '/' . $css;
 				}
 			}
 		}

@@ -7,10 +7,10 @@
 
 namespace yii\debug\panels;
 
+use Yii;
 use yii\debug\Panel;
-use yii\helpers\ArrayHelper;
 use yii\log\Logger;
-use yii\helpers\Html;
+use yii\debug\models\search\Db;
 
 /**
  * Debugger panel that collects and displays database queries performed.
@@ -20,6 +20,17 @@ use yii\helpers\Html;
  */
 class DbPanel extends Panel
 {
+
+	/**
+	 * @var array db queries info extracted to array as models, to use with data provider.
+	 */
+	private $_models;
+
+	/**
+	 * @var array current database request timings
+	 */
+	private $_timings;
+
 	public function getName()
 	{
 		return 'Database';
@@ -29,95 +40,99 @@ class DbPanel extends Panel
 	{
 		$timings = $this->calculateTimings();
 		$queryCount = count($timings);
-		$queryTime = 0;
-		foreach ($timings as $timing) {
-			$queryTime += $timing[3];
-		}
-		$queryTime = number_format($queryTime * 1000) . ' ms';
-		$url = $this->getUrl();
-		$output = <<<EOD
-<div class="yii-debug-toolbar-block">
-	<a href="$url" title="Executed $queryCount database queries which took $queryTime.">
-		DB <span class="label">$queryCount</span> <span class="label">$queryTime</span>
-	</a>
-</div>
-EOD;
-		return $queryCount > 0 ? $output : '';
+		$queryTime = number_format($this->getTotalQueryTime($timings) * 1000) . ' ms';
+
+		return  Yii::$app->view->render('panels/db/summary',[
+			'timings' => $this->calculateTimings(), 
+			'panel' => $this,
+			'queryCount' => $queryCount,
+			'queryTime' => $queryTime,
+		]);
 	}
 
 	public function getDetail()
 	{
-		$timings = $this->calculateTimings();
-		ArrayHelper::multisort($timings, 3, SORT_DESC);
-		$rows = [];
-		foreach ($timings as $timing) {
-			$duration = sprintf('%.1f ms', $timing[3] * 1000);
-			$procedure = Html::encode($timing[1]);
-			$traces = $timing[4];
-			if (!empty($traces)) {
-				$procedure .= Html::ul($traces, [
-					'class' => 'trace',
-					'item' => function ($trace) {
-						return "<li>{$trace['file']}({$trace['line']})</li>";
-					},
-				]);
-			}
-			$rows[] = "<tr><td style=\"width: 80px;\">$duration</td><td>$procedure</td>";
-		}
-		$rows = implode("\n", $rows);
+		$searchModel = new Db();
+		$dataProvider = $searchModel->search(Yii::$app->request->get(), $this->getModels());
 
-		return <<<EOD
-<h1>Database Queries</h1>
-
-<table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
-<thead>
-<tr>
-	<th style="width: 80px;">Time</th>
-	<th>Query</th>
-</tr>
-</thead>
-<tbody>
-$rows
-</tbody>
-</table>
-EOD;
+		return  Yii::$app->view->render('panels/db/detail', [
+			'panel' => $this,
+			'dataProvider' => $dataProvider,
+			'searchModel' => $searchModel,
+		]);
 	}
 
-	private $_timings;
-
+	/**
+	 * Calculates given request profile messages timings.
+	 * @return array timings [token, category, timestamp, traces, nesting level, elapsed time]
+	 */
 	protected function calculateTimings()
 	{
-		if ($this->_timings !== null) {
-			return $this->_timings;
+		if ($this->_timings === null) {
+			$this->_timings = Yii::$app->getLog()->calculateTimings($this->data['messages']);
 		}
-		$messages = $this->data['messages'];
-		$timings = [];
-		$stack = [];
-		foreach ($messages as $i => $log) {
-			list($token, $level, $category, $timestamp) = $log;
-			$log[5] = $i;
-			if ($level == Logger::LEVEL_PROFILE_BEGIN) {
-				$stack[] = $log;
-			} elseif ($level == Logger::LEVEL_PROFILE_END) {
-				if (($last = array_pop($stack)) !== null && $last[0] === $token) {
-					$timings[$last[5]] = [count($stack), $token, $last[3], $timestamp - $last[3], $last[4]];
-				}
-			}
-		}
-
-		$now = microtime(true);
-		while (($last = array_pop($stack)) !== null) {
-			$delta = $now - $last[3];
-			$timings[$last[5]] = [count($stack), $last[0], $last[2], $delta, $last[4]];
-		}
-		ksort($timings);
-		return $this->_timings = $timings;
+		return $this->_timings;
 	}
 
 	public function save()
 	{
 		$target = $this->module->logTarget;
-		$messages = $target->filterMessages($target->messages, Logger::LEVEL_PROFILE, ['yii\db\Command::queryInternal']);
+		$messages = $target->filterMessages($target->messages, Logger::LEVEL_PROFILE, ['yii\db\Command::query', 'yii\db\Command::execute']);
 		return ['messages' => $messages];
 	}
+
+	/**
+	 * Returns total queries time.
+	 * @param array $timings
+	 * @return integer total time
+	 */
+	protected function getTotalQueryTime($timings)
+	{
+		$queryTime = 0;
+
+		foreach ($timings as $timing) {
+			$queryTime += $timing['duration'];
+		}
+
+		return $queryTime;
+	}
+
+	/**
+	 * Returns array of models that represents logs of the current request. Can be used with data providers,
+	 * like yii\data\ArrayDataProvider.
+	 * @return array models
+	 */
+	protected function getModels()
+	{
+		if ($this->_models === null) {
+			$this->_models = [];
+			$timings = $this->calculateTimings();
+
+			foreach($timings as $seq => $dbTiming) {
+				$this->_models[] = 	[
+					'type' => $this->detectQueryType($dbTiming['info']),
+					'query' => $dbTiming['info'],
+					'duration' => ($dbTiming['duration'] * 1000), #in milliseconds
+					'trace' => $dbTiming['trace'],
+					'timestamp' => $dbTiming['timestamp'],
+					'seq' => $seq,
+				];
+			}
+		}
+		return $this->_models;
+	}
+
+	/**
+	 * Detects databse timing type. Detecting is produced through simple parsing to the first space|tab|new row.
+	 * First word before space is timing type. If there is no such words, timing will have empty type.
+	 * @param string $timing timing procedure string
+	 * @return string query type select|insert|delete|etc
+	 */
+	protected function detectQueryType($timing)
+	{
+		$timing = ltrim($timing);
+		preg_match('/^([a-zA-z]*)/', $timing, $matches);
+		return count($matches) ? $matches[0] : '';
+	}
+
 }

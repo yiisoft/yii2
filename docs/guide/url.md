@@ -28,6 +28,8 @@ Some examples:
 ```php
 echo \Yii::$app->urlManager->createUrl('site/page', ['id' => 'about']);
 // /index.php/site/page/id/about/
+echo \Yii::$app->urlManager->createUrl('date-time/fast-forward', ['id' => 105])
+// /index.php?r=date-time/fast-forward&id=105
 echo \Yii::$app->urlManager->createAbsoluteUrl('blog/post/index');
 // http://www.example.com/index.php/blog/post/index/
 ```
@@ -36,6 +38,8 @@ The exact format of the outputted URL will depend upon how the URL manager is co
 
 * `/site/page/id/about/`
 * `/index.php?r=site/page&id=about`
+* `/index.php?r=date-time/fast-forward&id=105`
+* `/index.php/date-time/fast-forward?id=105`
 * `http://www.example.com/blog/post/index/`
 * `http://www.example.com/index.php?r=blog/post/index`
 
@@ -46,6 +50,8 @@ echo $this->createUrl(''); // currently active route
 echo $this->createUrl('view', ['id' => 'contact']); // same controller, different action
 echo $this->createUrl('post/index'); // same module, different controller and action
 echo $this->createUrl('/site/index'); // absolute route no matter what controller is making this call
+echo $this->createurl('hi-tech'); // url for the case sensitive action `actionHiTech` of the current controller
+echo $this->createurl('/date-time/fast-forward', ['id' => 105]); // url for action the case sensitive controller, `DateTimeController::actionFastForward`
 ```
 
 > **Tip**: In order to generate URL with a hashtag, for example `/index.php?r=site/page&id=100#title`, you need to

@@ -14,12 +14,14 @@ use yii\authclient\ClientInterface;
 
 /**
  * Choice prints buttons for authentication via various auth clients.
+ * It opens a popup window for the client authentication process.
  * By default this widget relies on presence of [[\yii\authclient\Collection]] among application components
  * to get auth clients information.
  *
  * Example:
- * ~~~
- * <?= yii\authclient\Choice::widget([
+ *
+ * ~~~php
+ * <?= yii\authclient\widgets\Choice::widget([
  *     'baseAuthUrl' => ['site/auth']
  * ]); ?>
  * ~~~
@@ -28,8 +30,8 @@ use yii\authclient\ClientInterface;
  * along with using method {@link clientLink()} or {@link createClientUrl()}.
  * For example:
  *
- * ~~~
- * <?php $authChoice = yii\authclient\Choice::beginWidget([
+ * ~~~php
+ * <?php $authChoice = yii\authclient\widgets\Choice::beginWidget([
  *     'baseAuthUrl' => ['site/auth']
  * ]); ?>
  * <ul>
@@ -37,13 +39,17 @@ use yii\authclient\ClientInterface;
  *     <li><?= $authChoice->clientLink($client); ?></li>
  * <?php endforeach; ?>
  * </ul>
- * <?php yii\authclient\Choice::endWidget(); ?>
+ * <?php yii\authclient\widgets\Choice::endWidget(); ?>
  * ~~~
+ *
+ * This widget supports following keys for [[ClientInterface::getViewOptions()]] result:
+ *  - popupWidth - integer width of the popup window in pixels.
+ *  - popupHeight - integer height of the popup window in pixels.
  *
  * @see \yii\authclient\AuthAction
  *
- * @property ClientInterface[] $providers auth providers list.
- * @property array $baseAuthUrl configuration for the external services base authentication URL.
+ * @property array $baseAuthUrl Base auth URL configuration. This property is read-only.
+ * @property ClientInterface[] $clients Auth providers. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -51,27 +57,19 @@ use yii\authclient\ClientInterface;
 class Choice extends Widget
 {
 	/**
-	 * @var ClientInterface[] auth providers list.
-	 */
-	private $_clients;
-	/**
 	 * @var string name of the auth client collection application component.
 	 * This component will be used to fetch services value if it is not set.
 	 */
 	public $clientCollection = 'authClientCollection';
 	/**
-	 * @var array configuration for the external clients base authentication URL.
-	 */
-	private $_baseAuthUrl;
-	/**
 	 * @var string name of the GET param , which should be used to passed auth client id to URL
-	 * defined by {@link baseAuthUrl}.
+	 * defined by [[baseAuthUrl]].
 	 */
 	public $clientIdGetParamName = 'authclient';
 	/**
 	 * @var array the HTML attributes that should be rendered in the div HTML tag representing the container element.
 	 */
-	public $mainContainerHtmlOptions = [
+	public $options = [
 		'class' => 'auth-clients'
 	];
 	/**
@@ -83,6 +81,15 @@ class Choice extends Widget
 	 * Note: this value automatically set to 'false' at the first call of [[createProviderUrl()]]
 	 */
 	public $autoRender = true;
+
+	/**
+	 * @var array configuration for the external clients base authentication URL.
+	 */
+	private $_baseAuthUrl;
+	/**
+	 * @var ClientInterface[] auth providers list.
+	 */
+	private $_clients;
 
 	/**
 	 * @param ClientInterface[] $clients auth providers
@@ -212,8 +219,8 @@ class Choice extends Widget
 			ChoiceAsset::register($view);
 			$view->registerJs("\$('#" . $this->getId() . "').authchoice();");
 		}
-		$this->mainContainerHtmlOptions['id'] = $this->getId();
-		echo Html::beginTag('div', $this->mainContainerHtmlOptions);
+		$this->options['id'] = $this->getId();
+		echo Html::beginTag('div', $this->options);
 	}
 
 	/**
