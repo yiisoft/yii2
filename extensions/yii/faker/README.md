@@ -34,6 +34,8 @@ To use this extension,  simply add the following code in your application config
 	],
 ],
 ```
+Set valid ```test``` alias in your console config, for example for ```basic``` application template, this should be added
+to ```console.php``` config: ```Yii::setAlias('tests', __DIR__ . '/../tests');```
 To start using this command you need to be familiar (read guide) for the Faker library and
 generate fixtures template files, according to the given format:
 
