@@ -147,7 +147,7 @@ You can use it by adding it to the ```$providers``` property of the current comm
 
 ```php
 'controllerMap' => [
-	'faker:fixture' => [
+	'faker' => [
 		'class' => 'yii\faker\FixtureController',
 		'providers' => [
 			'app\tests\unit\faker\providers\Book',
