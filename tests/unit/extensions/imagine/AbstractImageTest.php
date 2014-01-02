@@ -38,8 +38,7 @@ abstract class AbstractImageTest extends VendorTestCase
 
 		$fontFile = Yii::getAlias('@yiiunit/data/imagine/GothamRnd-Light') . '.otf';
 
-		$img = Image::text($this->imageFile, 'Yii-2 Image', [
-			'font' => $fontFile,
+		$img = Image::text($this->imageFile, 'Yii-2 Image', $fontFile, [0, 0], [
 			'size' => 12,
 			'color' => '000'
 		]);
@@ -54,11 +53,6 @@ abstract class AbstractImageTest extends VendorTestCase
 		$point = [20, 20];
 		$img = Image::crop($this->imageFile, 100, 100, $point);
 
-		$this->assertEquals(100, $img->getSize()->getWidth());
-		$this->assertEquals(100, $img->getSize()->getHeight());
-
-		$point = new Point(20, 20);
-		$img = Image::crop($this->imageFile, 100, 100, $point);
 		$this->assertEquals(100, $img->getSize()->getWidth());
 		$this->assertEquals(100, $img->getSize()->getHeight());
 
@@ -97,24 +91,8 @@ abstract class AbstractImageTest extends VendorTestCase
 	{
 		Image::setImagine(null);
 		Image::$driver = 'fake-driver';
+		Image::getImagine();
 	}
-
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
-	public function testShouldThrowExceptionOnCropInvalidArgument()
-	{
-		Image::crop($this->imageFile, 100, 100, new \stdClass());
-	}
-
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
-	public function testShouldThrowExceptionOnWatermarkInvalidArgument()
-	{
-		Image::watermark($this->imageFile, $this->watermarkFile, new \stdClass());
-	}
-
 
 	abstract protected function isFontTestSupported();
 }
