@@ -21,11 +21,12 @@ class CacheSessionTest extends \yiiunit\TestCase
 	public function testCacheSession()
 	{
 		$session = new CacheSession();
+		$sessionHandler = $session->handler;
 
-		$session->writeSession('test', 'sessionData');
-		$this->assertEquals('sessionData', $session->readSession('test'));
-		$session->destroySession('test');
-		$this->assertEquals('', $session->readSession('test'));
+		$sessionHandler->write('test', 'sessionData');
+		$this->assertEquals('sessionData', $sessionHandler->read('test'));
+		$sessionHandler->destroy('test');
+		$this->assertEquals('', $sessionHandler->read('test'));
 	}
 
 	public function testInvalidCache()

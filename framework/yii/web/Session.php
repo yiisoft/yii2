@@ -125,7 +125,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 		}
 
 		if ($this->handler !== null) {
-			@session_set_save_handler($handler, false);
+			@session_set_save_handler($this->handler, false);
 		}
 
 		$this->setCookieParamsInternal();
@@ -373,79 +373,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	public function setTimeout($value)
 	{
 		ini_set('session.gc_maxlifetime', $value);
-	}
-
-	/**
-	 * Session open handler.
-	 * This method should be overridden if [[useCustomStorage()]] returns true.
-	 * Do not call this method directly.
-	 * @param string $savePath session save path
-	 * @param string $sessionName session name
-	 * @return boolean whether session is opened successfully
-	 */
-	public function openSession($savePath, $sessionName)
-	{
-		return true;
-	}
-
-	/**
-	 * Session close handler.
-	 * This method should be overridden if [[useCustomStorage()]] returns true.
-	 * Do not call this method directly.
-	 * @return boolean whether session is closed successfully
-	 */
-	public function closeSession()
-	{
-		return true;
-	}
-
-	/**
-	 * Session read handler.
-	 * This method should be overridden if [[useCustomStorage()]] returns true.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @return string the session data
-	 */
-	public function readSession($id)
-	{
-		return '';
-	}
-
-	/**
-	 * Session write handler.
-	 * This method should be overridden if [[useCustomStorage()]] returns true.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @param string $data session data
-	 * @return boolean whether session write is successful
-	 */
-	public function writeSession($id, $data)
-	{
-		return true;
-	}
-
-	/**
-	 * Session destroy handler.
-	 * This method should be overridden if [[useCustomStorage()]] returns true.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @return boolean whether session is destroyed successfully
-	 */
-	public function destroySession($id)
-	{
-		return true;
-	}
-
-	/**
-	 * Session GC (garbage collection) handler.
-	 * This method should be overridden if [[useCustomStorage()]] returns true.
-	 * Do not call this method directly.
-	 * @param integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
-	 * @return boolean whether session is GCed successfully
-	 */
-	public function gcSession($maxLifetime)
-	{
-		return true;
 	}
 
 	/**
