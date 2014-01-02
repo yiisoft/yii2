@@ -36,16 +36,17 @@ To use this extension,  simply add the following code in your application config
 ```
 Set valid ```test``` alias in your console config, for example for ```basic``` application template, this should be added
 to ```console.php``` config: ```Yii::setAlias('tests', __DIR__ . '/../tests');```
-To start using this command you need to be familiar (read guide) for the Faker library and
+To start using this command you need to be familiar (read guide) for the [Faker](https://github.com/fzaninotto/Faker) library and
 generate fixtures template files, according to the given format:
 
 ```php
+~~~
 #users.php file under template path (by default @tests/unit/fixtures/templates)
 return [
 	[
 		'table_column0' => 'faker_formatter',
 		...
-		'table_columnN' => 'other_faker_formatter
+		'table_columnN' => 'other_faker_formatter'
 		'table_columnN+1' => function ($fixture, $faker, $index) {
 			//set needed fixture fields based on different conditions
 			return $fixture;
@@ -75,7 +76,7 @@ php yii faker users
 
 In the code above "users" is template name, after this command run, new file named same as template
 will be created under the fixtures path (by default ```@tests/unit/fixtures```) folder.
-You can generate fixtures for all templates by specifying keyword "all_fixtures"
+You can generate fixtures for all templates by specifying keyword ```all_fixtures```.
 
 ```php
 php yii faker/generate all_fixtures
