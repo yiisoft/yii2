@@ -235,7 +235,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
 				$fixtures[$i] = $this->generateFixture($template, $i);
 			}
 
-			$content = $this->getExportedFormat($fixtures); 
+			$content = $this->exportFixtures($fixtures); 
 			file_put_contents($fixturesPath.'/'.$fixtureFileName, $content);
 			$this->stdout("Fixture file was generated under: " . realpath($fixturesPath . "/" . $fixtureFileName) . "\n", Console::FG_GREEN);
 		}
@@ -311,7 +311,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
 	 * @param type $fixtures
 	 * @return string exported fixtures format
 	 */
-	public function getExportedFormat($fixtures)
+	public function exportFixtures($fixtures)
 	{
 		$content = "<?php\n\nreturn [";
 
