@@ -61,6 +61,9 @@ use yii\helpers\Console;
  * 
  * //also a short version of this command (generate action is default)
  * php yii faker users
+ *
+ * //to generate fixtures for several tables, use "," as a separator, for example:
+ * php yii faker users,profile
  * ~~~
  * 
  * In the code above "users" is template name, after this command run, new file named same as template
