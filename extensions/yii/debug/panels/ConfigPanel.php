@@ -30,31 +30,12 @@ class ConfigPanel extends Panel
 
 	public function getSummary()
 	{
-		return  Yii::$app->view->render('panels/config/summary', [
-			'panel' => $this,
-			'data' => $this->data,
-		]);
+		return Yii::$app->view->render('panels/config/summary', ['panel' => $this]);
 	}
 
 	public function getDetail()
 	{
-		return  Yii::$app->view->render('panels/config/detail', [
-			'panel' => $this,
-			'data' => $this->data,
-			'app' => [
-				'Yii Version' => $this->data['application']['yii'],
-				'Application Name' => $this->data['application']['name'],
-				'Environment' => $this->data['application']['env'],
-				'Debug Mode' => $this->data['application']['debug'] ? 'Yes' : 'No',
-			],
-			'php' => [
-				'PHP Version' => $this->data['php']['version'],
-				'Xdebug' => $this->data['php']['xdebug'] ? 'Enabled' : 'Disabled',
-				'APC' => $this->data['php']['apc'] ? 'Enabled' : 'Disabled',
-				'Memcache' => $this->data['php']['memcache'] ? 'Enabled' : 'Disabled',
-			],
-			'extensions' => $this->getExtensions(),
-		]);
+		return Yii::$app->view->render('panels/config/detail', ['panel' => $this]);
 	}
 
 	public function getExtensions()

@@ -1,9 +1,17 @@
+<?php
+
+use yii\helpers\Html;
+
+/**
+ * @var yii\debug\panels\ConfigPanel $panel
+ */
+?>
 <div class="yii-debug-toolbar-block">
-	<a href="<?php echo $panel->getUrl(); ?>">
-		<img width="29" height="30" alt="" src="<?php echo $panel->getYiiLogo();?>">
-		<span><?php echo $data['application']['yii'];?></span>
+	<a href="<?= $panel->getUrl() ?>">
+		<img width="29" height="30" alt="" src="<?= $panel->getYiiLogo() ?>">
+		<span><?= $panel->data['application']['yii'] ?></span>
 	</a>
 </div>
 <div class="yii-debug-toolbar-block">
-	<a href="<?php echo $this->context->createUrl('phpinfo');?>" title="Show phpinfo()">PHP <?php echo $data['php']['version'];?></a>
+	<?= Html::a('PHP ' . $panel->data['php']['version'], ['phpinfo'], ['title' => 'Show phpinfo()']) ?>
 </div>

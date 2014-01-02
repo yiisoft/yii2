@@ -2,7 +2,11 @@
 use yii\helpers\Html;
 use yii\web\Response;
 
-$statusCode = $data['statusCode'];
+/**
+ * @var yii\debug\panels\RequestPanel $panel
+ */
+
+$statusCode = $panel->data['statusCode'];
 if ($statusCode === null) {
 	$statusCode = 200;
 }
@@ -16,8 +20,8 @@ if ($statusCode >= 200 && $statusCode < 300) {
 $statusText = Html::encode(isset(Response::$httpStatuses[$statusCode]) ? Response::$httpStatuses[$statusCode] : '');
 ?>
 <div class="yii-debug-toolbar-block">
-	<a href="<?php echo $panel->getUrl(); ?>" title="Status code: <?php echo $statusCode; ?> <?php echo $statusText; ?>">Status <span class="label <?php echo $class; ?>"><?php echo $statusCode; ?></span></a>
+	<a href="<?= $panel->getUrl() ?>" title="Status code: <?= $statusCode ?> <?= $statusText ?>">Status <span class="label <?= $class ?>"><?= $statusCode ?></span></a>
 </div>
 <div class="yii-debug-toolbar-block">
-	<a href="<?php echo $panel->getUrl(); ?>">Action <span class="label"><?php echo $data['action']; ?></span></a>
+	<a href="<?= $panel->getUrl() ?>">Action <span class="label"><?= $panel->data['action'] ?></span></a>
 </div>
