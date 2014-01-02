@@ -40,7 +40,6 @@ To start using this command you need to be familiar (read guide) for the [Faker]
 generate fixtures template files, according to the given format:
 
 ```php
-~~~
 #users.php file under template path (by default @tests/unit/fixtures/templates)
 return [
 	[
@@ -53,7 +52,6 @@ return [
 		}
 	],
 ];
-~~~
 ```
 
 If you use callback as a attribute value, then it will be called as shown with three parameters:
