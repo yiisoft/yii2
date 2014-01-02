@@ -26,6 +26,9 @@
 			"yii\\composer\\Installer::setPermission"
 		]
 	},
+	"config": {
+		"process-timeout": 1800
+	},
 	"extra": {
 		"writable": [
 			"backend/runtime",
