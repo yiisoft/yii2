@@ -136,6 +136,9 @@ trait QueryTrait
 	 * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
 	 * The method will automatically quote the column names unless a column contains some parenthesis
 	 * (which means the column contains a DB expression).
+	 * Note that if your order-by is an expression containing commas, you should always use an array
+	 * to represent the order-by information. Otherwise, the method will not be able to correctly determine
+	 * the order-by columns.
 	 * @return static the query object itself
 	 * @see addOrderBy()
 	 */
