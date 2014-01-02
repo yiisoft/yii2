@@ -26,22 +26,12 @@ class RequestPanel extends Panel
 
 	public function getSummary()
 	{
-		return  Yii::$app->view->render('panels/request/summary', [
-			'panel' => $this,
-			'data' => $this->data,
-		]);
+		return Yii::$app->view->render('panels/request/summary', ['panel' => $this]);
 	}
 
 	public function getDetail()
 	{
-		return  Yii::$app->view->render('panels/request/detail', [
-			'panel' => $this,
-			'data' => [
-				'Route' => $this->data['route'],
-				'Action' => $this->data['action'],
-				'Parameters' => $this->data['actionParams'],
-			],
-		]);
+		return Yii::$app->view->render('panels/request/detail', ['panel' => $this]);
 	}
 
 	public function save()

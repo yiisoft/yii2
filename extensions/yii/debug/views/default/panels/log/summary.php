@@ -21,8 +21,8 @@ if ($warningCount) {
 ?>
 
 <div class="yii-debug-toolbar-block">
-	<a href="<?php echo $panel->getUrl(); ?>" title="<?php echo $title ?>">Log
-		<span class="label"><?php echo count($data['messages']); ?></span>
-		<?php echo implode('&nbsp;', $output); ?>
+	<a href="<?= $panel->getUrl() ?>" title="<?= $title ?>">Log
+		<span class="label"><?= count($data['messages']) ?></span>
+		<?= implode('&nbsp;', $output) ?>
 	</a>
 </div>
