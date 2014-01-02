@@ -190,7 +190,8 @@ class BaseImage
 
 		$img = static::getImagine()->open(Yii::getAlias($filename));
 		$watermark = static::getImagine()->open(Yii::getAlias($watermarkFilename));
-		return $img->paste($watermark, new Point($start[0], $start[1]));
+		$img->paste($watermark, new Point($start[0], $start[1]));
+		return $img;
 	}
 
 	/**
@@ -221,7 +222,9 @@ class BaseImage
 		$img = static::getImagine()->open(Yii::getAlias($filename));
 		$font = static::getImagine()->font(Yii::getAlias($fontFile), $fontSize, new Color($fontColor));
 
-		return $img->draw()->text($text, $font, new Point($start[0], $start[1]), $fontAngle);
+		$img->draw()->text($text, $font, new Point($start[0], $start[1]), $fontAngle);
+
+		return $img;
 	}
 
 	/**
@@ -245,6 +248,8 @@ class BaseImage
 
 		$image = static::getImagine()->create($box, $padColor);
 
-		return $image->paste($img, $pasteTo);
+		$image->paste($img, $pasteTo);
+
+		return $image;
 	}
 }
