@@ -59,7 +59,7 @@ use yii\helpers\Console;
  * ~~~
  * php yii faker/generate users
  * 
- * #also a short version of this command (generate action is default)
+ * //also a short version of this command (generate action is default)
  * php yii faker users
  * ~~~
  * 
@@ -84,13 +84,13 @@ use yii\helpers\Console;
  * You can specify different options of this command:
  * 
  * ~~~
- * #generate fixtures in russian languge
+ * //generate fixtures in russian languge
  * php yii faker/generate users 5 --language='ru_RU'
  * 
- * #read templates from the other path
+ * //read templates from the other path
  * php yii faker/generate all_fixtures --templatePath='@app/path/to/my/custom/templates'
  * 
- * #generate fixtures into other folders, but be sure that this folders exists or you will get notice about that.
+ * //generate fixtures into other folders, but be sure that this folders exists or you will get notice about that.
  * php yii faker/generate all_fixtures --fixturesPath='@tests/unit/fixtures/subfolder1/subfolder2/subfolder3'
  * ~~~
  * 
@@ -204,8 +204,12 @@ class FixtureController extends \yii\console\controllers\FixtureController
 
 		if ($this->needToGenerateAll($file)) {
 			$files = FileHelper::findFiles($templatePath, ['only' => ['.php']]);
-		} else {
-			$files = FileHelper::findFiles($templatePath, ['only' => [$file.'.php']]);
+		}
+		else {
+			foreach(explode(',', $file) as $fileName) {
+				$filesToSearch[] = $fileName . '.php';
+			}
+			$files = FileHelper::findFiles($templatePath, ['only' => $filesToSearch]);
 		}
 
 		if (empty($files)) {
@@ -213,6 +217,10 @@ class FixtureController extends \yii\console\controllers\FixtureController
 					"No files were found by name: \"{$file}\". \n"
 					. "Check that template with these name exists, under template path: \n\"{$templatePath}\"."
 			);
+		}
+
+		if (!$this->confirmGeneration($files)) {
+			return;
 		}
 
 		foreach ($files as $templateFile) {
@@ -338,6 +346,24 @@ class FixtureController extends \yii\console\controllers\FixtureController
 		}
 
 		return $fixture;
+	}
+
+	/**
+	 * Prompts user with message if he confirm generation with given fixture templates files.
+	 * @param array $files
+	 * @return boolean
+	 */
+	public function confirmGeneration($files)
+	{
+		$this->stdout("Fixtures will be generated under the path: \n", Console::FG_YELLOW);
+		$this->stdout(realpath(Yii::getAlias($this->fixturesPath, false)) ."\n\n", Console::FG_GREEN);
+		$this->stdout("Templates will be taken from path: \n", Console::FG_YELLOW);
+		$this->stdout(realpath(Yii::getAlias($this->templatePath, false)) . "\n\n", Console::FG_GREEN);
+
+		foreach ($files as $index => $fileName) {
+			$this->stdout("    " . $index +1 . ". " . basename($fileName) . "\n",Console::FG_GREEN);
+		}
+		return $this->confirm('Generate above fixtures?');
 	}
 
 }
