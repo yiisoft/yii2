@@ -320,6 +320,8 @@ class User extends Component
 	 * so that the user browser can be redirected to the specified login URL after
 	 * calling this method.
 	 * After calling this method, the current request processing will be terminated.
+	 * @return Response the redirection response if [[loginUrl]] is set
+	 * @throws AccessDeniedHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set
 	 */
 	public function loginRequired()
 	{
@@ -328,8 +330,7 @@ class User extends Component
 			$this->setReturnUrl($request->getUrl());
 		}
 		if ($this->loginUrl !== null) {
-			Yii::$app->getResponse()->redirect($this->loginUrl)->send();
-			exit();
+			return Yii::$app->getResponse()->redirect($this->loginUrl);
 		} else {
 			throw new AccessDeniedHttpException(Yii::t('yii', 'Login Required'));
 		}
