@@ -8,7 +8,6 @@
 namespace yii\imagine;
 
 use Yii;
-use Imagine\Exception\InvalidArgumentException;
 use Imagine\Image\Box;
 use Imagine\Image\Color;
 use Imagine\Image\ImageInterface;
@@ -66,7 +65,7 @@ class BaseImage
 	}
 
 	/**
-	 * @param Imagine\Image\ImagineInterface $imagine the `Imagine` object.
+	 * @param ImagineInterface $imagine the `Imagine` object.
 	 */
 	public static function setImagine($imagine)
 	{
@@ -119,29 +118,20 @@ class BaseImage
 	 * @param string $filename the image file path or path alias.
 	 * @param integer $width the crop width
 	 * @param integer $height the crop height
-	 * @param array|Point $start the starting point. This can be either an array of `x` and `y` coordinates, or
-	 * a `Point` object.
+	 * @param array $start the starting point. This must be an array with two elements representing `x` and `y` coordinates.
 	 * @return ImageInterface
 	 * @throws InvalidParamException if the `$start` parameter is invalid
 	 */
-	public static function crop($filename, $width, $height, $start = [0, 0])
+	public static function crop($filename, $width, $height, array $start = [0, 0])
 	{
-		if (is_array($start)) {
-			if (isset($start[0], $start[1])) {
-				$start = new Point($start[0], $start[1]);
-			} else {
-				throw new InvalidParamException('$start must be an array of two elements.');
-			}
+		if (!isset($start[0], $start[1])) {
+			throw new InvalidParamException('$start must be an array of two elements.');
 		}
 
-		if ($start instanceof Point) {
-			return static::getImagine()
-				->open(Yii::getAlias($filename))
-				->copy()
-				->crop($start, new Box($width, $height));
-		} else {
-			throw new InvalidParamException('$start must be either an array or an "Imagine\\Image\\Point" object.');
-		}
+		return static::getImagine()
+			->open(Yii::getAlias($filename))
+			->copy()
+			->crop(new Point($start[0], $start[1]), new Box($width, $height));
 	}
 
 	/**
@@ -188,63 +178,50 @@ class BaseImage
 	 * Adds a watermark to an existing image.
 	 * @param string $filename the image file path or path alias.
 	 * @param string $watermarkFilename the file path or path alias of the watermark image.
-	 * @param array|Point $start the starting point. This can be either an array of `x` and `y` coordinates, or
-	 * a `Point` object.
+	 * @param array $start the starting point. This must be an array with two elements representing `x` and `y` coordinates.
 	 * @return ImageInterface
 	 * @throws InvalidParamException if `$start` is invalid
 	 */
-	public static function watermark($filename, $watermarkFilename, $start = [0, 0])
+	public static function watermark($filename, $watermarkFilename, array $start = [0, 0])
 	{
-		if (is_array($start)) {
-			if (isset($start[0], $start[1])) {
-				$start = new Point($start[0], $start[1]);
-			} else {
-				throw new InvalidParamException('$start must be an array of two elements.');
-			}
+		if (!isset($start[0], $start[1])) {
+			throw new InvalidParamException('$start must be an array of two elements.');
 		}
 
-		if ($start instanceof Point) {
-			$img = static::getImagine()->open(Yii::getAlias($filename));
-			$watermark = static::getImagine()->open(Yii::getAlias($watermarkFilename));
-			return $img->paste($watermark, $start);
-		} else {
-			throw new InvalidParamException('$start must be either an array or an "Imagine\\Image\\Point" object.');
-		}
+		$img = static::getImagine()->open(Yii::getAlias($filename));
+		$watermark = static::getImagine()->open(Yii::getAlias($watermarkFilename));
+		return $img->paste($watermark, new Point($start[0], $start[1]));
 	}
 
 	/**
 	 * Draws a text string on an existing image.
 	 * @param string $filename the image file path or path alias.
 	 * @param string $text the text to write to the image
+	 * @param string $fontFile the file path or path alias
+	 * @param array $start the starting position of the text. This must be an array with two elements representing `x` and `y` coordinates.
 	 * @param array $fontOptions the font options. The following options may be specified:
 	 *
-	 * - font: The path to the font file to use to style the text. This option is required.
 	 * - color: The font color. Defaults to "fff".
 	 * - size: The font size. Defaults to 12.
-	 * - x: The X position to write the text. Defaults to 5.
-	 * - y: The Y position to write the text. Defaults to 5.
 	 * - angle: The angle to use to write the text. Defaults to 0.
 	 *
 	 * @return ImageInterface
 	 * @throws InvalidParamException if `$fontOptions` is invalid
 	 */
-	public static function text($filename, $text, array $fontOptions)
+	public static function text($filename, $text, $fontFile, array $start = [0, 0], array $fontOptions = [])
 	{
-		$font = ArrayHelper::getValue($fontOptions, 'font');
-		if ($font === null) {
-			throw new InvalidParamException('$fontOptions must contain a "font" key specifying which font file to use.');
+		if (!isset($start[0], $start[1])) {
+			throw new InvalidParamException('$start must be an array of two elements.');
 		}
 
 		$fontSize = ArrayHelper::getValue($fontOptions, 'size', 12);
 		$fontColor = ArrayHelper::getValue($fontOptions, 'color', 'fff');
-		$fontPosX = ArrayHelper::getValue($fontOptions, 'x', 5);
-		$fontPosY = ArrayHelper::getValue($fontOptions, 'y', 5);
 		$fontAngle = ArrayHelper::getValue($fontOptions, 'angle', 0);
 
 		$img = static::getImagine()->open(Yii::getAlias($filename));
-		$font = static::getImagine()->font(Yii::getAlias($font), $fontSize, new Color($fontColor));
+		$font = static::getImagine()->font(Yii::getAlias($fontFile), $fontSize, new Color($fontColor));
 
-		return $img->draw()->text($text, $font, new Point($fontPosX, $fontPosY), $fontAngle);
+		return $img->draw()->text($text, $font, new Point($start[0], $start[1]), $fontAngle);
 	}
 
 	/**
@@ -255,7 +232,7 @@ class BaseImage
 	 * @param integer $alpha the alpha value of the frame.
 	 * @return ImageInterface
 	 */
-	public static function frame($filename, $margin = 5, $color = '000', $alpha = 100)
+	public static function frame($filename, $margin = 20, $color = '666', $alpha = 100)
 	{
 		$img = static::getImagine()->open(Yii::getAlias($filename));
 
