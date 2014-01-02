@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Bug #1686: ActiveForm is creating duplicated messages in error summary (qiangxue)
 - Bug #1704: Incorrect regexp is used in `Inflector::camelize()` (qiangxue)
 - Bug #1710: OpenId auth client does not request required attributes correctly (klimov-paul)
+- Bug #1733: Incorrect code about `$_modelClasses` in `DbFixtureManager` (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)

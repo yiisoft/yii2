@@ -10,7 +10,7 @@ namespace yii\test;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\db\ActiveRecordInterface;
+use yii\db\ActiveRecord;
 use yii\db\Connection;
 
 /**
@@ -59,7 +59,6 @@ class DbFixtureManager extends Component
 
 	private $_rows; // fixture name, row alias => row
 	private $_models; // fixture name, row alias => record (or class name)
-	private $_modelClasses;
 
 
 	/**
@@ -92,8 +91,7 @@ class DbFixtureManager extends Component
 		foreach ($fixtures as $name => $fixture) {
 			if (strpos($fixture, '\\') !== false) {
 				$model = new $fixture;
-				if ($model instanceof ActiveRecordInterface) {
-					$this->_modelClasses[$name] = $fixture;
+				if ($model instanceof ActiveRecord) {
 					$fixtures[$name] = $model->getTableSchema()->name;
 				} else {
 					throw new InvalidConfigException("Fixture '$fixture' must be an ActiveRecord class.");
@@ -101,7 +99,7 @@ class DbFixtureManager extends Component
 			}
 		}
 
-		$this->_modelClasses = $this->_rows = $this->_models = [];
+		$this->_rows = $this->_models = [];
 
 		$this->checkIntegrity(false);
 
@@ -184,20 +182,20 @@ class DbFixtureManager extends Component
 	 * Returns the specified ActiveRecord instance in the fixture data.
 	 * @param string $fixtureName the fixture name
 	 * @param string $modelName the alias for the fixture data row
-	 * @return ActiveRecordInterface the ActiveRecord instance. Null is returned if there is no such fixture row.
+	 * @return ActiveRecord the ActiveRecord instance. Null is returned if there is no such fixture row.
 	 */
 	public function getModel($fixtureName, $modelName)
 	{
-		if (!isset($this->_modelClasses[$fixtureName]) || !isset($this->_rows[$fixtureName][$modelName])) {
+		if (!isset($this->_rows[$fixtureName][$modelName])) {
 			return null;
 		}
 		if (isset($this->_models[$fixtureName][$modelName])) {
 			return $this->_models[$fixtureName][$modelName];
 		}
 		$row = $this->_rows[$fixtureName][$modelName];
-		/** @var ActiveRecordInterface $modelClass */
+		/** @var ActiveRecord $modelClass */
 		$modelClass = $this->_models[$fixtureName];
-		/** @var ActiveRecordInterface $model */
+		/** @var ActiveRecord $model */
 		$model = new $modelClass;
 		$keys = [];
 		foreach ($model->primaryKey() as $key) {
