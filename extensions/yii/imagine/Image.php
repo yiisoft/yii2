@@ -16,8 +16,8 @@ namespace yii\imagine;
  * // thumb - saved on runtime path
  * $imagePath = Yii::$app->getBasePath() . '/web/img/test-image.jpg';
  * $runtimePath = Yii::$app->getRuntimePath();
- * Image::thumb('@app/web/img/test-image.jpg', 120, 120)
- *     ->save('@runtime/thumb-test-image.jpg', ['quality' => 50]);
+ * Image::thumbnail('@app/web/img/test-image.jpg', 120, 120)
+ *     ->save('thumb-test-image.jpg', ['quality' => 50]);
  * ~~~
  *
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
