@@ -7,176 +7,57 @@
 
 namespace yii\web;
 
-use Yii;
-use yii\db\Connection;
 use yii\db\Query;
-use yii\base\InvalidConfigException;
 
 /**
  * DbSessionHandler implements SessionHandlerInterface and provides a database session data storage.
  *
- * By default, DbSessionHandler stores session data in a DB table named 'tbl_session'. This table
- * must be pre-created. The table name can be changed by setting [[sessionTable]].
- *
- * The following example shows how you can configure the application to use DbSessionHandler:
- * Add the following to your application config under `components`:
- *
- * ~~~
- * 'session' => [
- *     'class' => 'yii\web\Session',
- *     'handler' => [
- *	       'class' => 'yii\web\DbSessionHandler',
- *         // 'db' => 'mydb',
- *         // 'sessionTable' => 'my_session',
- *     ]
- * ]
- * ~~~
- *
- * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
+ * DbSessionHandler is used by DbSession.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class DbSessionHandler implements \SessionHandlerInterface
+class DbSessionHandler extends SessionHandler
 {
 	/**
-	 * @var Component the owner of this behavior
-	 */
-	public $owner;
-	/**
-	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
-	 * After the DbSession object is created, if you want to change this property, you should only assign it
-	 * with a DB connection object.
-	 */
-	public $db = 'db';
-	/**
-	 * @var string the name of the DB table that stores the session data.
-	 * The table should be pre-created as follows:
-	 *
-	 * ~~~
-	 * CREATE TABLE tbl_session
-	 * (
-	 *     id CHAR(40) NOT NULL PRIMARY KEY,
-	 *     expire INTEGER,
-	 *     data BLOB
-	 * )
-	 * ~~~
-	 *
-	 * where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB type
-	 * that can be used for some popular DBMS:
-	 *
-	 * - MySQL: LONGBLOB
-	 * - PostgreSQL: BYTEA
-	 * - MSSQL: BLOB
-	 *
-	 * When using DbSession in a production server, we recommend you create a DB index for the 'expire'
-	 * column in the session table to improve the performance.
-	 */
-	public $sessionTable = 'tbl_session';
-
-	/**
-	 * Initializes the DbSession component.
-	 * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
-	 * @throws InvalidConfigException if [[db]] is invalid.
-	 */
-	public function init()
-	{
-		if (is_string($this->db)) {
-			$this->db = Yii::$app->getComponent($this->db);
-		}
-		if (!$this->db instanceof Connection) {
-			throw new InvalidConfigException("DbSession::db must be either a DB connection instance or the application component ID of a DB connection.");
-		}
-		parent::init();
-	}
-
-	/**
-	 * Updates the current session ID with a newly generated one .
-	 * Please refer to [[http://php.net/session_regenerate_id]] for more details.
-	 * @param boolean $deleteOldSession Whether to delete the old associated session file or not.
-	 */
-	public function regenerateID($deleteOldSession = false)
-	{
-		$oldID = session_id();
-
-		// if no session is started, there is nothing to regenerate
-		if (empty($oldID)) {
-			return;
-		}
-
-		parent::regenerateID(false);
-		$newID = session_id();
-
-		$query = new Query;
-		$row = $query->from($this->sessionTable)
-			->where(['id' => $oldID])
-			->createCommand($this->db)
-			->queryOne();
-		if ($row !== false) {
-			if ($deleteOldSession) {
-				$this->db->createCommand()
-					->update($this->sessionTable, ['id' => $newID], ['id' => $oldID])
-					->execute();
-			} else {
-				$row['id'] = $newID;
-				$this->db->createCommand()
-					->insert($this->sessionTable, $row)
-					->execute();
-			}
-		} else {
-			// shouldn't reach here normally
-			$this->db->createCommand()
-				->insert($this->sessionTable, [
-					'id' => $newID,
-					'expire' => time() + $this->getTimeout(),
-				])->execute();
-		}
-	}
-
-	/**
-	 * Session read handler.
-	 * @param string $id session ID
-	 * @return string the session data
+	 * @inheritdoc
 	 */
 	public function read($id)
 	{
 		$query = new Query;
 		$data = $query->select(['data'])
-			->from($this->sessionTable)
+			->from($this->owner->sessionTable)
 			->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id])
-			->createCommand($this->db)
+			->createCommand($this->owner->db)
 			->queryScalar();
 		return $data === false ? '' : $data;
 	}
 
 	/**
-	 * Session write handler.
-	 * @param string $id session ID
-	 * @param string $data session data
-	 * @return boolean whether session write is successful
+	 * @inheritdoc
 	 */
 	public function write($id, $data)
 	{
 		// exception must be caught in session write handler
 		// http://us.php.net/manual/en/function.session-set-save-handler.php
 		try {
-			$expire = time() + $this->getTimeout();
+			$expire = time() + $this->owner->getTimeout();
 			$query = new Query;
 			$exists = $query->select(['id'])
-				->from($this->sessionTable)
+				->from($this->owner->sessionTable)
 				->where(['id' => $id])
-				->createCommand($this->db)
+				->createCommand($this->owner->db)
 				->queryScalar();
 			if ($exists === false) {
-				$this->db->createCommand()
-					->insert($this->sessionTable, [
+				$this->owner->db->createCommand()
+					->insert($this->owner->sessionTable, [
 						'id' => $id,
 						'data' => $data,
 						'expire' => $expire,
 					])->execute();
 			} else {
-				$this->db->createCommand()
-					->update($this->sessionTable, ['data' => $data, 'expire' => $expire], ['id' => $id])
+				$this->owner->db->createCommand()
+					->update($this->owner->sessionTable, ['data' => $data, 'expire' => $expire], ['id' => $id])
 					->execute();
 			}
 		} catch (\Exception $e) {
@@ -190,29 +71,23 @@ class DbSessionHandler implements \SessionHandlerInterface
 	}
 
 	/**
-	 * Session destroy handler.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @return boolean whether session is destroyed successfully
+	 * @inheritdoc
 	 */
 	public function destroy($id)
 	{
-		$this->db->createCommand()
-			->delete($this->sessionTable, ['id' => $id])
+		$this->owner->db->createCommand()
+			->delete($this->owner->sessionTable, ['id' => $id])
 			->execute();
 		return true;
 	}
 
 	/**
-	 * Session GC (garbage collection) handler.
-	 * Do not call this method directly.
-	 * @param integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
-	 * @return boolean whether session is GCed successfully
+	 * @inheritdoc
 	 */
 	public function gc($maxLifetime)
 	{
-		$this->db->createCommand()
-			->delete($this->sessionTable, '[[expire]]<:expire', [':expire' => time()])
+		$this->owner->db->createCommand()
+			->delete($this->owner->sessionTable, '[[expire]]<:expire', [':expire' => time()])
 			->execute();
 		return true;
 	}

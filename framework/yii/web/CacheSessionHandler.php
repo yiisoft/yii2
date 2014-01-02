@@ -12,98 +12,38 @@ use yii\caching\Cache;
 use yii\base\InvalidConfigException;
 
 /**
- * CacheSession implements a session component using cache as storage medium.
+ * CacheSessionHandler implements SessionHandlerInterface and provides a cache session data storage.
  *
- * The cache being used can be any cache application component.
- * The ID of the cache application component is specified via [[cache]], which defaults to 'cache'.
- *
- * Beware, by definition cache storage are volatile, which means the data stored on them
- * may be swapped out and get lost. Therefore, you must make sure the cache used by this component
- * is NOT volatile. If you want to use database as storage medium, [[DbSession]] is a better choice.
- *
- * The following example shows how you can configure the application to use CacheSession:
- * Add the following to your application config under `components`:
- *
- * ~~~
- * 'session' => [
- *     'class' => 'yii\web\CacheSession',
- *     // 'cache' => 'mycache',
- * ]
- * ~~~
- *
- * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
+ * CacheSessionHandler is used by CacheSession.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CacheSession extends Session
+class CacheSessionHandler extends SessionHandler
 {
 	/**
-	 * @var Cache|string the cache object or the application component ID of the cache object.
-	 * The session data will be stored using this cache object.
-	 *
-	 * After the CacheSession object is created, if you want to change this property,
-	 * you should only assign it with a cache object.
+	 * @inheritdoc
 	 */
-	public $cache = 'cache';
-
-	/**
-	 * Initializes the application component.
-	 */
-	public function init()
+	public function read($id)
 	{
-		if (is_string($this->cache)) {
-			$this->cache = Yii::$app->getComponent($this->cache);
-		}
-		if (!$this->cache instanceof Cache) {
-			throw new InvalidConfigException('CacheSession::cache must refer to the application component ID of a cache object.');
-		}
-		parent::init();
-	}
-
-	/**
-	 * Returns a value indicating whether to use custom session storage.
-	 * This method overrides the parent implementation and always returns true.
-	 * @return boolean whether to use custom storage.
-	 */
-	public function getUseCustomStorage()
-	{
-		return true;
-	}
-
-	/**
-	 * Session read handler.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @return string the session data
-	 */
-	public function readSession($id)
-	{
-		$data = $this->cache->get($this->calculateKey($id));
+		$data = $this->owner->cache->get($this->calculateKey($id));
 		return $data === false ? '' : $data;
 	}
 
 	/**
-	 * Session write handler.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @param string $data session data
-	 * @return boolean whether session write is successful
+	 * @inheritdoc
 	 */
-	public function writeSession($id, $data)
+	public function write($id, $data)
 	{
-		return $this->cache->set($this->calculateKey($id), $data, $this->getTimeout());
+		return $this->owner->cache->set($this->calculateKey($id), $data, $this->owner->getTimeout());
 	}
 
 	/**
-	 * Session destroy handler.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @return boolean whether session is destroyed successfully
+	 * @inheritdoc
 	 */
-	public function destroySession($id)
+	public function destroy($id)
 	{
-		return $this->cache->delete($this->calculateKey($id));
+		return $this->owner->cache->delete($this->calculateKey($id));
 	}
 
 	/**
