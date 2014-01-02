@@ -81,11 +81,11 @@ class RequestPanel extends Panel
 			'action' => $action,
 			'actionParams' => Yii::$app->requestedParams,
 			'SERVER' => empty($_SERVER) ? [] : $_SERVER,
-			'GET' => empty(Yii::$app->request->get()) ? [] : Yii::$app->request->get(),
-			'POST' => empty(Yii::$app->request->post()) ? [] : Yii::$app->request->post(),
-			'COOKIE' => empty(Yii::$app->request->cookies) ? [] : Yii::$app->request->cookies,
+			'GET' => empty($_GET) ? [] : $_GET,
+			'POST' => empty($_POST) ? [] : $_POST,
+			'COOKIE' => empty($_COOKIE) ? [] : $_COOKIE,
 			'FILES' => empty($_FILES) ? [] : $_FILES,
-			'SESSION' => empty(Yii::$app->session) ? [] : Yii::$app->session,
+			'SESSION' => empty($_SESSION) ? [] : $_SESSION,
 		];
 	}
 
