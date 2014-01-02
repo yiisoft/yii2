@@ -9,6 +9,7 @@ namespace yii\debug;
 
 use Yii;
 use yii\base\Component;
+use yii\debug\panels\PanelInterface;
 
 /**
  * Panel is a base class for debugger panel classes. It defines how data should be collected,
@@ -22,7 +23,7 @@ use yii\base\Component;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Panel extends Component
+class Panel extends Component implements PanelInterface
 {
 	public $id;
 	public $tag;
