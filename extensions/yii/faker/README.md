@@ -40,7 +40,7 @@ To start using this command you need to be familiar (read guide) for the [Faker]
 generate fixtures template files, according to the given format:
 
 ```php
-#users.php file under template path (by default @tests/unit/fixtures/templates)
+#users.php file under template path (by default @tests/unit/templates/fixtures)
 return [
 	[
 		'table_column0' => 'faker_formatter',
@@ -48,6 +48,8 @@ return [
 		'table_columnN' => 'other_faker_formatter'
 		'table_columnN+1' => function ($fixture, $faker, $index) {
 			//set needed fixture fields based on different conditions
+
+			$fixture['body] = $faker->sentence(7,true); #generate sentence exact with 7 words.
 			return $fixture;
 		}
 	],
@@ -56,11 +58,31 @@ return [
 
 If you use callback as a attribute value, then it will be called as shown with three parameters:
 
-* $fixture - current fixture array. 
-* $faker - faker generator instance
-* $index - current fixture index. For example if user need to generate 3 fixtures for tbl_user, it will be 0..2.
+* ```$fixture``` - current fixture array. 
+* ```$faker``` - faker generator instance
+* ```$index``` - current fixture index. For example if user need to generate 3 fixtures for tbl_user, it will be 0..2.
 
 After you set all needed fields in callback, you need to return $fixture array back from the callback.
+
+Another example of valid template:
+
+```php
+use yii\helpers\Security;
+
+return [
+	'name' => 'firstName',
+	'phone' => 'phoneNumber',
+	'city' => 'city',
+	'password' => function ($fixture, $faker, $index) {
+		$fixture['password'] = Security::generatePasswordHash('password_' . $index);
+		return $fixture;
+	},
+	'auth_key' => function ($fixture, $faker, $index) {
+		$fixture['auth_key'] = Security::generateRandomKey();
+		return $fixture;
+	},
+];
+```
 
 After you prepared needed templates for tables you can simply generate your fixtures via command
 
