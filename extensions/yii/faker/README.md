@@ -40,7 +40,7 @@ To start using this command you need to be familiar (read guide) for the [Faker]
 generate fixtures template files, according to the given format:
 
 ```php
-#users.php file under template path (by default @tests/unit/templates/fixtures)
+//users.php file under template path (by default @tests/unit/templates/fixtures)
 return [
 	[
 		'table_column0' => 'faker_formatter',
@@ -49,7 +49,7 @@ return [
 		'body' => function ($fixture, $faker, $index) {
 			//set needed fixture fields based on different conditions
 
-			$fixture['body'] = $faker->sentence(7,true); #generate sentence exact with 7 words.
+			$fixture['body'] = $faker->sentence(7,true); //generate sentence exact with 7 words.
 			return $fixture;
 		}
 	],
@@ -87,10 +87,10 @@ return [
 After you prepared needed templates for tables you can simply generate your fixtures via command
 
 ```php
-#generate fixtures for the users table based on users fixture template
+//generate fixtures for the users table based on users fixture template
 php yii faker/generate users
 
-#also a short version of this command ("generate" action is default)
+//also a short version of this command ("generate" action is default)
 php yii faker users
 ```
 
@@ -113,13 +113,13 @@ php yii faker/generate all_fixtures 3
 You can specify different options of this command:
 
 ```php
-#generate fixtures in russian language
+//generate fixtures in russian language
 php yii faker/generate users 5 --language='ru_RU'
 
-#read templates from the other path
+//read templates from the other path
 php yii faker/generate all_fixtures --templatePath='@app/path/to/my/custom/templates'
 
-#generate fixtures into other folders, but be sure that this folders exists or you will get notice about that.
+//generate fixtures into other folders, but be sure that this folders exists or you will get notice about that.
 php yii faker/generate all_fixtures --fixturesPath='@tests/unit/fixtures/subfolder1/subfolder2/subfolder3'
 ```
 
