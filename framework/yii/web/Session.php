@@ -102,6 +102,12 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 			if (is_string($this->handler)) {
 				$this->handler = new $this->handler;
 			}
+			if ($this->handler instanceof SessionHandler) {
+				$this->handler->owner = $this;
+			}
+			if (!$this->handler instanceof \SessionHandlerInterface) {
+				throw new InvalidConfigException("Session::handler must implement the SessionHandlerInterface.");
+			}
 		}
 		if ($this->autoStart) {
 			$this->open();

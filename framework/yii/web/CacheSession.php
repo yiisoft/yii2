@@ -41,7 +41,7 @@ class CacheSession extends Session
 	/**
 	 * @var string|SessionHandlerInterface the name of class or an object implementing the session handler
 	 */
-	public $handler = 'CacheSessionHandler';
+	public $handler = 'yii\web\CacheSessionHandler';
 	/**
 	 * @var Cache|string the cache object or the application component ID of the cache object.
 	 * The session data will be stored using this cache object.
@@ -63,8 +63,5 @@ class CacheSession extends Session
 			throw new InvalidConfigException('CacheSession::cache must refer to the application component ID of a cache object.');
 		}
 		parent::init();
-		if ($this->handler instanceof CacheSessionHandler) {
-			$this->handler->owner = $this;
-		}
 	}
 }

@@ -37,7 +37,7 @@ class DbSession extends Session
 	/**
 	 * @var string|SessionHandlerInterface the name of class or an object implementing the session handler
 	 */
-	public $handler = 'DbSessionHandler';
+	public $handler = 'yii\web\DbSessionHandler';
 	/**
 	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
 	 * After the DbSession object is created, if you want to change this property, you should only assign it
@@ -83,9 +83,6 @@ class DbSession extends Session
 			throw new InvalidConfigException("DbSession::db must be either a DB connection instance or the application component ID of a DB connection.");
 		}
 		parent::init();
-		if ($this->handler instanceof DbSessionHandler) {
-			$this->handler->owner = $this;
-		}
 	}
 
 	/**
