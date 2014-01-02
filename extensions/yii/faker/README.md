@@ -49,7 +49,7 @@ return [
 		'table_columnN+1' => function ($fixture, $faker, $index) {
 			//set needed fixture fields based on different conditions
 
-			$fixture['body] = $faker->sentence(7,true); #generate sentence exact with 7 words.
+			$fixture['body'] = $faker->sentence(7,true); #generate sentence exact with 7 words.
 			return $fixture;
 		}
 	],
@@ -143,7 +143,7 @@ class Book extends \Faker\Provider\Base
  }
 ```
 
-You can use it by adding it to the $providers property of the current command. In your console.php config:
+You can use it by adding it to the ```$providers``` property of the current command. In your console.php config:
 
 ```php
 'controllerMap' => [
