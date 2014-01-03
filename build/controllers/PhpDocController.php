@@ -44,26 +44,18 @@ class PhpDocController extends Controller
 		$except = [];
 		if ($root === null) {
 			$root = dirname(dirname(YII_PATH));
-			$extension = "$root/extensions/yii";
-			Yii::setAlias('@yii/authclient', "$extension/authclient");
-			Yii::setAlias('@yii/bootstrap', "$extension/bootstrap");
-			Yii::setAlias('@yii/debug', "$extension/debug");
-			Yii::setAlias('@yii/elasticsearch', "$extension/elasticsearch");
-			Yii::setAlias('@yii/gii', "$extension/gii");
-			Yii::setAlias('@yii/jui', "$extension/jui");
-			Yii::setAlias('@yii/mongodb', "$extension/mongodb");
-			Yii::setAlias('@yii/redis', "$extension/redis");
-			Yii::setAlias('@yii/smarty', "$extension/smarty");
-			Yii::setAlias('@yii/sphinx', "$extension/sphinx");
-			Yii::setAlias('@yii/swiftmailer', "$extension/swiftmailer");
+			$extensionPath = "$root/extensions/yii";
+			foreach (scandir($extensionPath) as $extension) {
+				if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
+					Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
+				}
+			}
 
 			$except = [
 				'/apps/',
 				'/build/',
 				'/docs/',
-				'/extensions/yii/codeception/',
 				'/extensions/yii/composer/',
-				'/extensions/yii/twig/',
 				'/tests/',
 				'/vendor/',
 			];
