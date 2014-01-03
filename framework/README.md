@@ -12,13 +12,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require yiisoft/yii2-framework "*"
+php composer.phar require "yiisoft/yii2 *"
 ```
 
 or add
 
 ```json
-"yiisoft/yii2-framework": "*"
+"yiisoft/yii2": "*"
 ```
 
 to the require section of your composer.json.
