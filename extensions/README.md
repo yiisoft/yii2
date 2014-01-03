@@ -10,4 +10,3 @@ To add a new extension named `xyz` (must be in lower case), take the following s
    * `LICENSE.md`
 3. ask Qiang to create a subsplit for `xyz` and a composer package named `yii2-xyz`;
 4. modify `/composer.json` and add `xyz` to the `replace` section;
-5. modify `/build/controllers/PhpDocController.php` about the method `actionProperty()`.

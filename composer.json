@@ -86,6 +86,7 @@
 		"ext-mongo": "required by yii2-mongo extension",
 		"ext-pdo": "required by yii2-sphinx extension",
 		"ext-pdo_mysql": "required by yii2-sphinx extension",
+		"fzaninotto/faker": "required by yii2-faker extension",
 		"imagine/imagine": "required by yii2-imagine extension",
 		"smarty/smarty": "required by yii2-smarty extension",
 		"swiftmailer/swiftmailer": "required by yii2-swiftmailer extension",
