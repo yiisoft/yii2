@@ -98,8 +98,9 @@ class FixtureController extends Controller
 	}
 
 	/**
-	 * Apply given fixture to the table. Fixture name can be the same as the table name or
-	 * you can specify table name as a second parameter.
+	 * Apply given fixture to the table. You can load several fixtures specifying
+	 * their names separated with commas, like: tbl_user,tbl_profile. Be sure there is no
+	 * whitespace between tables names.
 	 * @param array $fixtures
 	 * @throws \yii\console\Exception
 	 */
@@ -121,7 +122,9 @@ class FixtureController extends Controller
 	}
 
 	/**
-	 * Truncate given table and clear all fixtures from it.
+	 * Truncate given table and clear all fixtures from it. You can clear several tables specifying
+	 * their names separated with commas, like: tbl_user,tbl_profile. Be sure there is no
+	 * whitespace between tables names.
 	 * @param array|string $tables
 	 */
 	public function actionClear(array $tables)
