@@ -138,7 +138,6 @@ use yii\helpers\Console;
  */
 class FixtureController extends \yii\console\controllers\FixtureController
 {
-
 	/**
 	 * type of fixture generating
 	 */
@@ -148,31 +147,28 @@ class FixtureController extends \yii\console\controllers\FixtureController
 	 * @var string controller default action ID.
 	 */
 	public $defaultAction = 'generate';
-
 	/**
 	 * Alias to the template path, where all tables templates are stored.
 	 * @var string
 	 */
 	public $templatePath = '@tests/unit/templates/fixtures';
-
 	/**
 	 * Language to use when generating fixtures data.
 	 * @var string
 	 */
 	public $language;
-
 	/**
 	 * Additional data providers that can be created by user and will be added to the Faker generator.
 	 * More info in [Faker](https://github.com/fzaninotto/Faker.) library docs.
 	 * @var array
 	 */
 	public $providers = [];
-
 	/**
 	 * Faker generator instance
 	 * @var \Faker\Generator
 	 */
 	private $_generator;
+
 
 	/**
 	 * Returns the names of the global options for this command.
@@ -218,8 +214,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
 		}
 
 		if (empty($files)) {
-			throw new Exception(
-				"No files were found by name: \"" . implode(', ', $file) . "\". \n"
+			throw new Exception("No files were found by name: \"" . implode(', ', $file) . "\".\n"
 				. "Check that template with these name exists, under template path: \n\"{$templatePath}\"."
 			);
 		}
@@ -370,5 +365,4 @@ class FixtureController extends \yii\console\controllers\FixtureController
 		}
 		return $this->confirm('Generate above fixtures?');
 	}
-
 }
