@@ -1,6 +1,6 @@
 <?php
 
-Yii::setAlias('tests', __DIR__ . '/../tests');
+Yii::setAlias('@tests', dirname(__DIR__) . '/tests');
 
 $params = require(__DIR__ . '/params.php');
 return [
