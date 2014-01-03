@@ -1,4 +1,7 @@
 <?php
+
+Yii::setAlias('@tests', dirname(__DIR__) . '/tests');
+
 $params = require(__DIR__ . '/params.php');
 return [
 	'id' => 'basic-console',
@@ -18,6 +21,17 @@ return [
 					'levels' => ['error', 'warning'],
 				],
 			],
+		],
+		'db' => [
+			'class' => 'yii\db\Connection',
+			'dsn' => 'mysql:host=localhost;dbname=yii2basic',
+			'username' => 'root',
+			'password' => '',
+			'charset' => 'utf8',
+		],
+		'fixture' => [
+			'class' => 'yii\test\DbFixtureManager',
+			'basePath' => '@tests/unit/fixtures',
 		],
 	],
 	'params' => $params,
