@@ -103,11 +103,18 @@ class FixtureController extends Controller
 	 * you can specify table name as a second parameter.
 	 * @param string $fixture
 	 */
-	public function actionApply($fixture)
+	public function actionApply(array $fixture)
 	{
+		if ($this->getFixtureManager() == null) {
+			throw new Exception(
+				'Fixture manager is not configured properly. '
+				. 'Please refer to official documentation for this purposes.');
+		}
+
 		$this->getFixtureManager()->basePath = $this->fixturePath;
 		$this->getFixtureManager()->db = $this->db;
-		$this->loadFixtures([$fixture]);
+		$this->loadFixtures($fixture);
+		$this->notifySuccess($fixture);
 	}
 
 	/**
@@ -148,6 +155,20 @@ class FixtureController extends Controller
 		}
 
 		return $db;
+	}
+
+	/**
+	 * Notifies user that fixtures were successfully loaded.
+	 * @param array $fixtures
+	 */
+	private function notifySuccess($fixtures)
+	{
+		$this->stdout("Fixtures were successfully loaded from path: \n", Console::FG_YELLOW);
+		$this->stdout(realpath(Yii::getAlias($this->fixturePath)) . "\n\n", Console::FG_GREEN);
+
+		foreach($fixtures as $index => $fixture) {
+			$this->stdout($index +1 . ". " . $fixture . "\n", Console::FG_GREEN);
+		}
 	}
 
 }
