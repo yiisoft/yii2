@@ -14,4 +14,6 @@ modules:
       - Yii2
     config:
         Yii2:
+            url: 'http://localhost'
+            entryScript: 'index-test.php'
             configFile: 'tests/functional/_config.php'
