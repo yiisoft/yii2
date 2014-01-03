@@ -151,7 +151,7 @@ class HelpController extends Controller
 			}
 			$this->stdout("\nTo see the help of each command, enter:\n", Console::BOLD);
 			echo "\n  yii " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
-							. $this->ansiFormat('<command-name>', Console::FG_CYAN) . "\n\n";
+				. $this->ansiFormat('<command-name>', Console::FG_CYAN) . "\n\n";
 		} else {
 			$this->stdout("\nNo commands are found.\n\n", Console::BOLD);
 		}
@@ -179,7 +179,7 @@ class HelpController extends Controller
 			$this->stdout("\nSUB-COMMANDS\n\n", Console::BOLD);
 			$prefix = $controller->getUniqueId();
 			foreach ($actions as $action) {
-				echo '- ' . $this->ansiFormat($prefix.'/'.$action, Console::FG_YELLOW);
+				echo '- ' . $this->ansiFormat($prefix . '/' . $action, Console::FG_YELLOW);
 				if ($action === $controller->defaultAction) {
 					$this->stdout(' (default)', Console::FG_GREEN);
 				}
@@ -191,7 +191,7 @@ class HelpController extends Controller
 			}
 			echo "\nTo see the detailed information about individual sub-commands, enter:\n";
 			echo "\n  yii " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
-							. $this->ansiFormat('<sub-command>', Console::FG_CYAN) . "\n\n";
+				. $this->ansiFormat('<sub-command>', Console::FG_CYAN) . "\n\n";
 		}
 	}
 

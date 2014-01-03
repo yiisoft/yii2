@@ -148,11 +148,11 @@ class DbMessageSource extends MessageSource
 	{
 		$query = new Query();
 		$messages = $query->select(['t1.message message', 't2.translation translation'])
-			->from([$this->sourceMessageTable . ' t1', $this->messageTable . ' t2'])
-			->where('t1.id = t2.id AND t1.category = :category AND t2.language = :language')
-			->params([':category' => $category, ':language' => $language])
-			->createCommand($this->db)
-			->queryAll();
+						  ->from([$this->sourceMessageTable . ' t1', $this->messageTable . ' t2'])
+						  ->where('t1.id = t2.id AND t1.category = :category AND t2.language = :language')
+						  ->params([':category' => $category, ':language' => $language])
+						  ->createCommand($this->db)
+						  ->queryAll();
 		return ArrayHelper::map($messages, 'message', 'translation');
 	}
 }

@@ -132,6 +132,6 @@ EOD;
 			$value++;
 		}
 		return "DROP SEQUENCE \"{$tableSchema->name}_SEQ\";"
-			. "CREATE SEQUENCE \"{$tableSchema->name}_SEQ\" START WITH {$value} INCREMENT BY 1 NOMAXVALUE NOCACHE";
+		. "CREATE SEQUENCE \"{$tableSchema->name}_SEQ\" START WITH {$value} INCREMENT BY 1 NOMAXVALUE NOCACHE";
 	}
 }

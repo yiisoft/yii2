@@ -332,10 +332,10 @@ class CaptchaAction extends Action
 	protected function setHttpHeaders()
 	{
 		Yii::$app->getResponse()->getHeaders()
-			->set('Pragma', 'public')
-			->set('Expires', '0')
-			->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-			->set('Content-Transfer-Encoding', 'binary')
-			->set('Content-type', 'image/png');
+				 ->set('Pragma', 'public')
+				 ->set('Expires', '0')
+				 ->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+				 ->set('Content-Transfer-Encoding', 'binary')
+				 ->set('Content-type', 'image/png');
 	}
 }

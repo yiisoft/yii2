@@ -178,7 +178,7 @@ class ErrorHandler extends Component
 			// method/function call
 			$html = preg_replace_callback('/^(.*)\(\)$/', function ($matches) {
 				return '<a href="http://yiiframework.com/doc/api/2.0/' . $this->htmlEncode($matches[1]) . '" target="_blank">' .
-					$this->htmlEncode($matches[1]) . '</a>()';
+				$this->htmlEncode($matches[1]) . '</a>()';
 			}, $code);
 		}
 		return $html;
@@ -289,7 +289,7 @@ class ErrorHandler extends Component
 	 */
 	public function createHttpStatusLink($statusCode, $statusDescription)
 	{
-		return '<a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#' . (int)$statusCode .'" target="_blank">HTTP ' . (int)$statusCode . ' &ndash; ' . $statusDescription . '</a>';
+		return '<a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#' . (int)$statusCode . '" target="_blank">HTTP ' . (int)$statusCode . ' &ndash; ' . $statusDescription . '</a>';
 	}
 
 	/**

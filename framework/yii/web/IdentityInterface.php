@@ -51,11 +51,13 @@ interface IdentityInterface
 	 * or the identity is not in an active state (disabled, deleted, etc.)
 	 */
 	public static function findIdentity($id);
+
 	/**
 	 * Returns an ID that can uniquely identify a user identity.
 	 * @return string|integer an ID that uniquely identifies a user identity.
 	 */
 	public function getId();
+
 	/**
 	 * Returns a key that can be used to check the validity of a given identity ID.
 	 *
@@ -69,6 +71,7 @@ interface IdentityInterface
 	 * @see validateAuthKey()
 	 */
 	public function getAuthKey();
+
 	/**
 	 * Validates the given auth key.
 	 *

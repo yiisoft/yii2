@@ -49,7 +49,7 @@ class Column extends Object
 	/**
 	 * @var array the HTML attributes for the filter cell tag.
 	 */
-	public $filterOptions=[];
+	public $filterOptions = [];
 
 
 	/**

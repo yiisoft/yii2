@@ -6,6 +6,7 @@
  */
 
 namespace yii\db;
+
 use yii\base\InvalidCallException;
 
 /**

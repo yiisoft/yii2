@@ -108,7 +108,8 @@ class DataColumn extends Column
 		}
 
 		if ($this->attribute !== null && $this->enableSorting &&
-			($sort = $provider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
+			($sort = $provider->getSort()) !== false && $sort->hasAttribute($this->attribute)
+		) {
 
 			return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => Html::encode($label)]));
 		} else {
@@ -121,8 +122,8 @@ class DataColumn extends Column
 		if (is_string($this->filter)) {
 			return $this->filter;
 		} elseif ($this->filter !== false && $this->grid->filterModel instanceof Model &&
-				  $this->attribute !== null && $this->grid->filterModel->isAttributeActive($this->attribute))
-		{
+			$this->attribute !== null && $this->grid->filterModel->isAttributeActive($this->attribute)
+		) {
 			if (is_array($this->filter)) {
 				$options = array_merge(['prompt' => ''], $this->filterInputOptions);
 				return Html::activeDropDownList($this->grid->filterModel, $this->attribute, $this->filter, $options);

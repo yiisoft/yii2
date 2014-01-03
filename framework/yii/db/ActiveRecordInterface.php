@@ -1,7 +1,7 @@
 <?php
 /**
- * 
- * 
+ *
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  */
 

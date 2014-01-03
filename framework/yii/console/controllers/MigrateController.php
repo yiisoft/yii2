@@ -363,7 +363,7 @@ class MigrateController extends Controller
 						$command->insert($this->migrationTable, [
 							'version' => $migrations[$j],
 							'apply_time' => time(),
-						])->execute();
+						])      ->execute();
 					}
 					echo "The migration history is set at $originalVersion.\nNo actual migration was performed.\n";
 				}
@@ -383,7 +383,7 @@ class MigrateController extends Controller
 						for ($j = 0; $j < $i; ++$j) {
 							$command->delete($this->migrationTable, [
 								'version' => $migrations[$j],
-							])->execute();
+							])      ->execute();
 						}
 						echo "The migration history is set at $originalVersion.\nNo actual migration was performed.\n";
 					}
@@ -514,7 +514,7 @@ class MigrateController extends Controller
 			$this->db->createCommand()->insert($this->migrationTable, [
 				'version' => $class,
 				'apply_time' => time(),
-			])->execute();
+			])       ->execute();
 			$time = microtime(true) - $start;
 			echo "*** applied $class (time: " . sprintf("%.3f", $time) . "s)\n\n";
 			return true;
@@ -542,7 +542,7 @@ class MigrateController extends Controller
 		if ($migration->down() !== false) {
 			$this->db->createCommand()->delete($this->migrationTable, [
 				'version' => $class,
-			])->execute();
+			])       ->execute();
 			$time = microtime(true) - $start;
 			echo "*** reverted $class (time: " . sprintf("%.3f", $time) . "s)\n\n";
 			return true;
@@ -577,11 +577,11 @@ class MigrateController extends Controller
 		}
 		$query = new Query;
 		$rows = $query->select(['version', 'apply_time'])
-			->from($this->migrationTable)
-			->orderBy('version DESC')
-			->limit($limit)
-			->createCommand($this->db)
-			->queryAll();
+					  ->from($this->migrationTable)
+					  ->orderBy('version DESC')
+					  ->limit($limit)
+					  ->createCommand($this->db)
+					  ->queryAll();
 		$history = ArrayHelper::map($rows, 'version', 'apply_time');
 		unset($history[self::BASE_MIGRATION]);
 		return $history;
@@ -596,11 +596,11 @@ class MigrateController extends Controller
 		$this->db->createCommand()->createTable($this->migrationTable, [
 			'version' => 'varchar(180) NOT NULL PRIMARY KEY',
 			'apply_time' => 'integer',
-		])->execute();
+		])       ->execute();
 		$this->db->createCommand()->insert($this->migrationTable, [
 			'version' => self::BASE_MIGRATION,
 			'apply_time' => time(),
-		])->execute();
+		])       ->execute();
 		echo "done.\n";
 	}
 

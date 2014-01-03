@@ -192,7 +192,7 @@ interface MessageInterface
 	/**
 	 * Attach a content as file and return it's CID source.
 	 * This method should be used when embedding images or other data in a message.
-	 * @param string $content  attachment file content.
+	 * @param string $content attachment file content.
 	 * @param array $options options for embed file. Valid options are:
 	 *
 	 * - fileName: name, which should be used to attach file.

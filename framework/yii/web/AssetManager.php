@@ -202,14 +202,14 @@ class AssetManager extends Component
 	 * discussion: http://code.google.com/p/yii/issues/detail?id=2579
 	 *
 	 * @param string $path the asset (file or directory) to be published
-	 * @param array $options the options to	be applied when publishing a directory.
+	 * @param array $options the options to    be applied when publishing a directory.
 	 * The following options are supported:
 	 *
 	 * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
 	 *   This option is used only when publishing a directory. If the callback returns false, the copy
 	 *   operation for the sub-directory or file will be cancelled.
 	 *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
- 	 *   file to be copied from, while `$to` is the copy target.
+	 *   file to be copied from, while `$to` is the copy target.
 	 * - afterCopy: callback, a PHP callback that is called after a sub-directory or file is successfully copied.
 	 *   This option is used only when publishing a directory. The signature of the callback is similar to that
 	 *   of `beforeCopy`.

@@ -307,8 +307,8 @@ abstract class Module extends Component
 	 *
 	 * ~~~
 	 * [
-	 *	'@models' => '@app/models', // an existing alias
-	 *	'@backend' => __DIR__ . '/../backend',  // a directory
+	 *    '@models' => '@app/models', // an existing alias
+	 *    '@backend' => __DIR__ . '/../backend',  // a directory
 	 * ]
 	 * ~~~
 	 */

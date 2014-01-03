@@ -192,12 +192,14 @@ abstract class Manager extends Component
 	 * @return Item the authorization item
 	 */
 	abstract public function createItem($name, $type, $description = '', $bizRule = null, $data = null);
+
 	/**
 	 * Removes the specified authorization item.
 	 * @param string $name the name of the item to be removed
 	 * @return boolean whether the item exists in the storage and has been removed
 	 */
 	abstract public function removeItem($name);
+
 	/**
 	 * Returns the authorization items of the specific type and user.
 	 * @param mixed $userId the user ID. Defaults to null, meaning returning all items even if
@@ -207,12 +209,14 @@ abstract class Manager extends Component
 	 * @return Item[] the authorization items of the specific type.
 	 */
 	abstract public function getItems($userId = null, $type = null);
+
 	/**
 	 * Returns the authorization item with the specified name.
 	 * @param string $name the name of the item
 	 * @return Item the authorization item. Null if the item cannot be found.
 	 */
 	abstract public function getItem($name);
+
 	/**
 	 * Saves an authorization item to persistent storage.
 	 * @param Item $item the item to be saved.
@@ -227,6 +231,7 @@ abstract class Manager extends Component
 	 * @throws \yii\base\Exception if either parent or child doesn't exist or if a loop has been detected.
 	 */
 	abstract public function addItemChild($itemName, $childName);
+
 	/**
 	 * Removes a child from its parent.
 	 * Note, the child item is not deleted. Only the parent-child relationship is removed.
@@ -235,6 +240,7 @@ abstract class Manager extends Component
 	 * @return boolean whether the removal is successful
 	 */
 	abstract public function removeItemChild($itemName, $childName);
+
 	/**
 	 * Returns a value indicating whether a child exists within a parent.
 	 * @param string $itemName the parent item name
@@ -242,6 +248,7 @@ abstract class Manager extends Component
 	 * @return boolean whether the child exists
 	 */
 	abstract public function hasItemChild($itemName, $childName);
+
 	/**
 	 * Returns the children of the specified item.
 	 * @param mixed $itemName the parent item name. This can be either a string or an array.
@@ -261,6 +268,7 @@ abstract class Manager extends Component
 	 * @throws \yii\base\Exception if the item does not exist or if the item has already been assigned to the user
 	 */
 	abstract public function assign($userId, $itemName, $bizRule = null, $data = null);
+
 	/**
 	 * Revokes an authorization assignment from a user.
 	 * @param mixed $userId the user ID (see [[User::id]])
@@ -268,12 +276,14 @@ abstract class Manager extends Component
 	 * @return boolean whether removal is successful
 	 */
 	abstract public function revoke($userId, $itemName);
+
 	/**
 	 * Revokes all authorization assignments from a user.
 	 * @param mixed $userId the user ID (see [[User::id]])
 	 * @return boolean whether removal is successful
 	 */
 	abstract public function revokeAll($userId);
+
 	/**
 	 * Returns a value indicating whether the item has been assigned to the user.
 	 * @param mixed $userId the user ID (see [[User::id]])
@@ -281,6 +291,7 @@ abstract class Manager extends Component
 	 * @return boolean whether the item has been assigned to the user.
 	 */
 	abstract public function isAssigned($userId, $itemName);
+
 	/**
 	 * Returns the item assignment information.
 	 * @param mixed $userId the user ID (see [[User::id]])
@@ -289,6 +300,7 @@ abstract class Manager extends Component
 	 * the item is not assigned to the user.
 	 */
 	abstract public function getAssignment($userId, $itemName);
+
 	/**
 	 * Returns the item assignments for the specified user.
 	 * @param mixed $userId the user ID (see [[User::id]])
@@ -296,19 +308,23 @@ abstract class Manager extends Component
 	 * returned if there is no item assigned to the user.
 	 */
 	abstract public function getAssignments($userId);
+
 	/**
 	 * Saves the changes to an authorization assignment.
 	 * @param Assignment $assignment the assignment that has been changed.
 	 */
 	abstract public function saveAssignment($assignment);
+
 	/**
 	 * Removes all authorization data.
 	 */
 	abstract public function clearAll();
+
 	/**
 	 * Removes all authorization assignments.
 	 */
 	abstract public function clearAssignments();
+
 	/**
 	 * Saves authorization data into persistent storage.
 	 * If any change is made to the authorization data, please make

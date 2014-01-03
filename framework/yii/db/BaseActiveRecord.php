@@ -1118,14 +1118,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 				/** @var $viaClass ActiveRecord */
 				/** @var $record ActiveRecord */
 				$record = new $viaClass();
-				foreach($columns as $column => $value) {
+				foreach ($columns as $column => $value) {
 					$record->$column = $value;
 				}
 				$record->insert(false);
 			} else {
 				/** @var $viaTable string */
 				static::getDb()->createCommand()
-					->insert($viaTable, $columns)->execute();
+					  ->insert($viaTable, $columns)->execute();
 			}
 		} else {
 			$p1 = $model->isPrimaryKey(array_keys($relation->link));

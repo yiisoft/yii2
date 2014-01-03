@@ -176,7 +176,7 @@ abstract class Cache extends Component implements \ArrayAccess
 					$results[$key] = $values[$newKey];
 				} else {
 					$value = $this->serializer === null ? unserialize($values[$newKey])
-							: call_user_func($this->serializer[1], $values[$newKey]);
+						: call_user_func($this->serializer[1], $values[$newKey]);
 
 					if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->getHasChanged($this))) {
 						$results[$key] = $value[0];
@@ -400,8 +400,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	protected function setValues($data, $expire)
 	{
 		$failedKeys = [];
-		foreach ($data as $key => $value)
-		{
+		foreach ($data as $key => $value) {
 			if ($this->setValue($key, $value, $expire) === false) {
 				$failedKeys[] = $key;
 			}
@@ -420,8 +419,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	protected function addValues($data, $expire)
 	{
 		$failedKeys = [];
-		foreach ($data as $key => $value)
-		{
+		foreach ($data as $key => $value) {
 			if ($this->addValue($key, $value, $expire) === false) {
 				$failedKeys[] = $key;
 			}

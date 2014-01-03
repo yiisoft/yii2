@@ -104,8 +104,8 @@ class DbCache extends Cache
 
 		$query = new Query;
 		$query->select(['COUNT(*)'])
-			->from($this->cacheTable)
-			->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
+			  ->from($this->cacheTable)
+			  ->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
 		if ($this->db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
 			$this->db->enableQueryCache = false;
@@ -127,8 +127,8 @@ class DbCache extends Cache
 	{
 		$query = new Query;
 		$query->select(['data'])
-			->from($this->cacheTable)
-			->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
+			  ->from($this->cacheTable)
+			  ->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
 		if ($this->db->enableQueryCache) {
 			// temporarily disable and re-enable query caching
 			$this->db->enableQueryCache = false;
@@ -152,9 +152,9 @@ class DbCache extends Cache
 		}
 		$query = new Query;
 		$query->select(['id', 'data'])
-			->from($this->cacheTable)
-			->where(['id' => $keys])
-			->andWhere('([[expire]] = 0 OR [[expire]] > ' . time() . ')');
+			  ->from($this->cacheTable)
+			  ->where(['id' => $keys])
+			  ->andWhere('([[expire]] = 0 OR [[expire]] > ' . time() . ')');
 
 		if ($this->db->enableQueryCache) {
 			$this->db->enableQueryCache = false;
@@ -186,7 +186,7 @@ class DbCache extends Cache
 	protected function setValue($key, $value, $expire)
 	{
 		$command = $this->db->createCommand()
-			->update($this->cacheTable, [
+							->update($this->cacheTable, [
 				'expire' => $expire > 0 ? $expire + time() : 0,
 				'data' => [$value, \PDO::PARAM_LOB],
 			], ['id' => $key]);
@@ -240,8 +240,8 @@ class DbCache extends Cache
 	protected function deleteValue($key)
 	{
 		$this->db->createCommand()
-			->delete($this->cacheTable, ['id' => $key])
-			->execute();
+				 ->delete($this->cacheTable, ['id' => $key])
+				 ->execute();
 		return true;
 	}
 
@@ -254,8 +254,8 @@ class DbCache extends Cache
 	{
 		if ($force || mt_rand(0, 1000000) < $this->gcProbability) {
 			$this->db->createCommand()
-				->delete($this->cacheTable, '[[expire]] > 0 AND [[expire]] < ' . time())
-				->execute();
+					 ->delete($this->cacheTable, '[[expire]] > 0 AND [[expire]] < ' . time())
+					 ->execute();
 		}
 	}
 
@@ -267,8 +267,8 @@ class DbCache extends Cache
 	protected function flushValues()
 	{
 		$this->db->createCommand()
-			->delete($this->cacheTable)
-			->execute();
+				 ->delete($this->cacheTable)
+				 ->execute();
 		return true;
 	}
 }

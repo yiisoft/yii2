@@ -390,7 +390,7 @@ class GridView extends BaseListView
 				$column = $this->createDataColumn($column);
 			} else {
 				$column = Yii::createObject(array_merge([
-					'class' => $this->dataColumnClass ?: DataColumn::className(),
+					'class' => $this->dataColumnClass ? : DataColumn::className(),
 					'grid' => $this,
 				], $column));
 			}
@@ -414,7 +414,7 @@ class GridView extends BaseListView
 			throw new InvalidConfigException('The column must be specified in the format of "attribute", "attribute:format" or "attribute:format:label');
 		}
 		return Yii::createObject([
-			'class' => $this->dataColumnClass ?: DataColumn::className(),
+			'class' => $this->dataColumnClass ? : DataColumn::className(),
 			'grid' => $this,
 			'attribute' => $matches[1],
 			'format' => isset($matches[3]) ? $matches[3] : 'text',

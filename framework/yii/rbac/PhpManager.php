@@ -225,8 +225,9 @@ class PhpManager extends Manager
 	public function revokeAll($userId)
 	{
 		if (isset($this->_assignments[$userId]) && is_array($this->_assignments[$userId])) {
-			foreach ($this->_assignments[$userId] as $itemName => $value)
+			foreach ($this->_assignments[$userId] as $itemName => $value) {
 				unset($this->_assignments[$userId][$itemName]);
+			}
 			return true;
 		} else {
 			return false;

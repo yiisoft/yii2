@@ -54,7 +54,7 @@ class RegularExpressionValidator extends Validator
 	{
 		$valid = !is_array($value) &&
 			(!$this->not && preg_match($this->pattern, $value)
-			|| $this->not && !preg_match($this->pattern, $value));
+				|| $this->not && !preg_match($this->pattern, $value));
 		return $valid ? null : [$this->message, []];
 	}
 

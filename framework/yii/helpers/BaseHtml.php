@@ -251,8 +251,8 @@ class BaseHtml
 			foreach (explode('&', substr($action, $pos + 1)) as $pair) {
 				if (($pos1 = strpos($pair, '=')) !== false) {
 					$hiddenInputs[] = static::hiddenInput(
-						urldecode(substr($pair, 0, $pos1)),
-						urldecode(substr($pair, $pos1 + 1))
+											urldecode(substr($pair, 0, $pos1)),
+												urldecode(substr($pair, $pos1 + 1))
 					);
 				} else {
 					$hiddenInputs[] = static::hiddenInput(urldecode($pair), '');
@@ -1078,7 +1078,7 @@ class BaseHtml
 		// add a hidden field so that if a model only has a file field, we can
 		// still use isset($_POST[$modelClass]) to detect if the input is submitted
 		return static::activeHiddenInput($model, $attribute, ['id' => null, 'value' => ''])
-			. static::activeInput('file', $model, $attribute, $options);
+		. static::activeInput('file', $model, $attribute, $options);
 	}
 
 	/**
@@ -1391,7 +1391,7 @@ class BaseHtml
 				$attrs = isset($options[$key]) ? $options[$key] : [];
 				$attrs['value'] = (string)$key;
 				$attrs['selected'] = $selection !== null &&
-						(!is_array($selection) && !strcmp($key, $selection)
+					(!is_array($selection) && !strcmp($key, $selection)
 						|| is_array($selection) && in_array($key, $selection));
 				$lines[] = static::tag('option', str_replace(' ', '&nbsp;', static::encode($value)), $attrs);
 			}
