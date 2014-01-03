@@ -22,8 +22,6 @@ component's behavior:
 					//'cachePath' => '@runtime/Twig/cache',
 					//'options' => [], /*  Array of twig options */
 					'globals' => ['html' => '\yii\helpers\Html'],
-					* Example:
-                         * Than in template: {{ html.link('Login', 'site/login') }}
 				],
 				// ...
 			],
