@@ -219,7 +219,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
 
 		if (empty($files)) {
 			throw new Exception(
-				"No files were found by name: \"{$file}\". \n"
+				"No files were found by name: \"" . implode(', ', $file) . "\". \n"
 				. "Check that template with these name exists, under template path: \n\"{$templatePath}\"."
 			);
 		}
