@@ -118,10 +118,10 @@ class DbManager extends Manager
 			}
 			$query = new Query;
 			$parents = $query->select(['parent'])
-				->from($this->itemChildTable)
-				->where(['child' => $itemName])
-				->createCommand($this->db)
-				->queryColumn();
+							 ->from($this->itemChildTable)
+							 ->where(['child' => $itemName])
+							 ->createCommand($this->db)
+							 ->queryColumn();
 			foreach ($parents as $parent) {
 				if ($this->checkAccessRecursive($userId, $parent, $params, $assignments)) {
 					return true;
@@ -146,9 +146,9 @@ class DbManager extends Manager
 		}
 		$query = new Query;
 		$rows = $query->from($this->itemTable)
-			->where(['or', 'name=:name1', 'name=:name2'], [':name1' => $itemName,	':name2' => $childName])
-			->createCommand($this->db)
-			->queryAll();
+					  ->where(['or', 'name=:name1', 'name=:name2'], [':name1' => $itemName, ':name2' => $childName])
+					  ->createCommand($this->db)
+					  ->queryAll();
 		if (count($rows) == 2) {
 			if ($rows[0]['name'] === $itemName) {
 				$parentType = $rows[0]['type'];
@@ -162,8 +162,8 @@ class DbManager extends Manager
 				throw new InvalidCallException("Cannot add '$childName' as a child of '$itemName'. A loop has been detected.");
 			}
 			$this->db->createCommand()
-				->insert($this->itemChildTable, ['parent' => $itemName, 'child' => $childName])
-				->execute();
+					 ->insert($this->itemChildTable, ['parent' => $itemName, 'child' => $childName])
+					 ->execute();
 			return true;
 		} else {
 			throw new Exception("Either '$itemName' or '$childName' does not exist.");
@@ -180,8 +180,8 @@ class DbManager extends Manager
 	public function removeItemChild($itemName, $childName)
 	{
 		return $this->db->createCommand()
-			->delete($this->itemChildTable, ['parent' => $itemName, 'child' => $childName])
-			->execute() > 0;
+						->delete($this->itemChildTable, ['parent' => $itemName, 'child' => $childName])
+						->execute() > 0;
 	}
 
 	/**
@@ -194,10 +194,10 @@ class DbManager extends Manager
 	{
 		$query = new Query;
 		return $query->select(['parent'])
-			->from($this->itemChildTable)
-			->where(['parent' => $itemName, 'child' => $childName])
-			->createCommand($this->db)
-			->queryScalar() !== false;
+					 ->from($this->itemChildTable)
+					 ->where(['parent' => $itemName, 'child' => $childName])
+					 ->createCommand($this->db)
+					 ->queryScalar() !== false;
 	}
 
 	/**
@@ -210,10 +210,10 @@ class DbManager extends Manager
 	{
 		$query = new Query;
 		$rows = $query->select(['name', 'type', 'description', 'biz_rule', 'data'])
-			->from([$this->itemTable, $this->itemChildTable])
-			->where(['parent' => $names, 'name' => new Expression('child')])
-			->createCommand($this->db)
-			->queryAll();
+					  ->from([$this->itemTable, $this->itemChildTable])
+					  ->where(['parent' => $names, 'name' => new Expression('child')])
+					  ->createCommand($this->db)
+					  ->queryAll();
 		$children = [];
 		foreach ($rows as $row) {
 			if (($data = @unserialize($row['data'])) === false) {
@@ -247,13 +247,13 @@ class DbManager extends Manager
 			throw new InvalidParamException("The item '$itemName' does not exist.");
 		}
 		$this->db->createCommand()
-			->insert($this->assignmentTable, [
-				'user_id' => $userId,
-				'item_name' => $itemName,
-				'biz_rule' => $bizRule,
-				'data' => serialize($data),
-			])
-			->execute();
+				 ->insert($this->assignmentTable, [
+					 'user_id' => $userId,
+					 'item_name' => $itemName,
+					 'biz_rule' => $bizRule,
+					 'data' => serialize($data),
+				 ])
+				 ->execute();
 		return new Assignment([
 			'manager' => $this,
 			'userId' => $userId,
@@ -272,8 +272,8 @@ class DbManager extends Manager
 	public function revoke($userId, $itemName)
 	{
 		return $this->db->createCommand()
-			->delete($this->assignmentTable, ['user_id' => $userId, 'item_name' => $itemName])
-			->execute() > 0;
+						->delete($this->assignmentTable, ['user_id' => $userId, 'item_name' => $itemName])
+						->execute() > 0;
 	}
 
 	/**
@@ -298,10 +298,10 @@ class DbManager extends Manager
 	{
 		$query = new Query;
 		return $query->select(['item_name'])
-			->from($this->assignmentTable)
-			->where(['user_id' => $userId,	'item_name' => $itemName])
-			->createCommand($this->db)
-			->queryScalar() !== false;
+					 ->from($this->assignmentTable)
+					 ->where(['user_id' => $userId, 'item_name' => $itemName])
+					 ->createCommand($this->db)
+					 ->queryScalar() !== false;
 	}
 
 	/**
@@ -315,9 +315,9 @@ class DbManager extends Manager
 	{
 		$query = new Query;
 		$row = $query->from($this->assignmentTable)
-			->where(['user_id' => $userId,	'item_name' => $itemName])
-			->createCommand($this->db)
-			->queryOne();
+					 ->where(['user_id' => $userId, 'item_name' => $itemName])
+					 ->createCommand($this->db)
+					 ->queryOne();
 		if ($row !== false) {
 			if (($data = @unserialize($row['data'])) === false) {
 				$data = null;
@@ -344,9 +344,9 @@ class DbManager extends Manager
 	{
 		$query = new Query;
 		$rows = $query->from($this->assignmentTable)
-			->where(['user_id' => $userId])
-			->createCommand($this->db)
-			->queryAll();
+					  ->where(['user_id' => $userId])
+					  ->createCommand($this->db)
+					  ->queryAll();
 		$assignments = [];
 		foreach ($rows as $row) {
 			if (($data = @unserialize($row['data'])) === false) {
@@ -370,14 +370,14 @@ class DbManager extends Manager
 	public function saveAssignment($assignment)
 	{
 		$this->db->createCommand()
-			->update($this->assignmentTable, [
-				'biz_rule' => $assignment->bizRule,
-				'data' => serialize($assignment->data),
-			], [
-				'user_id' => $assignment->userId,
-				'item_name' => $assignment->itemName,
-			])
-			->execute();
+				 ->update($this->assignmentTable, [
+					 'biz_rule' => $assignment->bizRule,
+					 'data' => serialize($assignment->data),
+				 ], [
+					 'user_id' => $assignment->userId,
+					 'item_name' => $assignment->itemName,
+				 ])
+				 ->execute();
 	}
 
 	/**
@@ -393,21 +393,21 @@ class DbManager extends Manager
 		$query = new Query;
 		if ($userId === null && $type === null) {
 			$command = $query->from($this->itemTable)
-				->createCommand($this->db);
+							 ->createCommand($this->db);
 		} elseif ($userId === null) {
 			$command = $query->from($this->itemTable)
-				->where(['type' => $type])
-				->createCommand($this->db);
+							 ->where(['type' => $type])
+							 ->createCommand($this->db);
 		} elseif ($type === null) {
 			$command = $query->select(['name', 'type', 'description', 't1.biz_rule', 't1.data'])
-				->from([$this->itemTable . ' t1', $this->assignmentTable . ' t2'])
-				->where(['user_id' => $userId, 'name' => new Expression('item_name')])
-				->createCommand($this->db);
+							 ->from([$this->itemTable . ' t1', $this->assignmentTable . ' t2'])
+							 ->where(['user_id' => $userId, 'name' => new Expression('item_name')])
+							 ->createCommand($this->db);
 		} else {
 			$command = $query->select(['name', 'type', 'description', 't1.biz_rule', 't1.data'])
-				->from([$this->itemTable . ' t1', $this->assignmentTable . ' t2'])
-				->where(['user_id' => $userId, 'type' => $type, 'name' => new Expression('item_name')])
-				->createCommand($this->db);
+							 ->from([$this->itemTable . ' t1', $this->assignmentTable . ' t2'])
+							 ->where(['user_id' => $userId, 'type' => $type, 'name' => new Expression('item_name')])
+							 ->createCommand($this->db);
 		}
 		$items = [];
 		foreach ($command->queryAll() as $row) {
@@ -444,14 +444,14 @@ class DbManager extends Manager
 	public function createItem($name, $type, $description = '', $bizRule = null, $data = null)
 	{
 		$this->db->createCommand()
-			->insert($this->itemTable, [
-				'name' => $name,
-				'type' => $type,
-				'description' => $description,
-				'biz_rule' => $bizRule,
-				'data' => serialize($data),
-			])
-			->execute();
+				 ->insert($this->itemTable, [
+					 'name' => $name,
+					 'type' => $type,
+					 'description' => $description,
+					 'biz_rule' => $bizRule,
+					 'data' => serialize($data),
+				 ])
+				 ->execute();
 		return new Item([
 			'manager' => $this,
 			'name' => $name,
@@ -471,15 +471,15 @@ class DbManager extends Manager
 	{
 		if ($this->usingSqlite()) {
 			$this->db->createCommand()
-				->delete($this->itemChildTable, ['or', 'parent=:name', 'child=:name'], [':name' => $name])
-				->execute();
+					 ->delete($this->itemChildTable, ['or', 'parent=:name', 'child=:name'], [':name' => $name])
+					 ->execute();
 			$this->db->createCommand()
-				->delete($this->assignmentTable, ['item_name' => $name])
-				->execute();
+					 ->delete($this->assignmentTable, ['item_name' => $name])
+					 ->execute();
 		}
 		return $this->db->createCommand()
-			->delete($this->itemTable, ['name' => $name])
-			->execute() > 0;
+						->delete($this->itemTable, ['name' => $name])
+						->execute() > 0;
 	}
 
 	/**
@@ -491,9 +491,9 @@ class DbManager extends Manager
 	{
 		$query = new Query;
 		$row = $query->from($this->itemTable)
-			->where(['name' => $name])
-			->createCommand($this->db)
-			->queryOne();
+					 ->where(['name' => $name])
+					 ->createCommand($this->db)
+					 ->queryOne();
 
 		if ($row !== false) {
 			if (($data = @unserialize($row['data'])) === false) {
@@ -521,27 +521,27 @@ class DbManager extends Manager
 	{
 		if ($this->usingSqlite() && $oldName !== null && $item->getName() !== $oldName) {
 			$this->db->createCommand()
-				->update($this->itemChildTable, ['parent' => $item->getName()], ['parent' => $oldName])
-				->execute();
+					 ->update($this->itemChildTable, ['parent' => $item->getName()], ['parent' => $oldName])
+					 ->execute();
 			$this->db->createCommand()
-				->update($this->itemChildTable, ['child' => $item->getName()], ['child' => $oldName])
-				->execute();
+					 ->update($this->itemChildTable, ['child' => $item->getName()], ['child' => $oldName])
+					 ->execute();
 			$this->db->createCommand()
-				->update($this->assignmentTable, ['item_name' => $item->getName()], ['item_name' => $oldName])
-				->execute();
+					 ->update($this->assignmentTable, ['item_name' => $item->getName()], ['item_name' => $oldName])
+					 ->execute();
 		}
 
 		$this->db->createCommand()
-			->update($this->itemTable, [
-				'name' => $item->getName(),
-				'type' => $item->type,
-				'description' => $item->description,
-				'biz_rule' => $item->bizRule,
-				'data' => serialize($item->data),
-			], [
-				'name' => $oldName === null ? $item->getName() : $oldName,
-			])
-			->execute();
+				 ->update($this->itemTable, [
+					 'name' => $item->getName(),
+					 'type' => $item->type,
+					 'description' => $item->description,
+					 'biz_rule' => $item->bizRule,
+					 'data' => serialize($item->data),
+				 ], [
+					 'name' => $oldName === null ? $item->getName() : $oldName,
+				 ])
+				 ->execute();
 	}
 
 	/**

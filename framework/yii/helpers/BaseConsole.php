@@ -17,36 +17,36 @@ namespace yii\helpers;
  */
 class BaseConsole
 {
-	const FG_BLACK  = 30;
-	const FG_RED    = 31;
-	const FG_GREEN  = 32;
+	const FG_BLACK = 30;
+	const FG_RED = 31;
+	const FG_GREEN = 32;
 	const FG_YELLOW = 33;
-	const FG_BLUE   = 34;
+	const FG_BLUE = 34;
 	const FG_PURPLE = 35;
-	const FG_CYAN   = 36;
-	const FG_GREY   = 37;
+	const FG_CYAN = 36;
+	const FG_GREY = 37;
 
-	const BG_BLACK  = 40;
-	const BG_RED    = 41;
-	const BG_GREEN  = 42;
+	const BG_BLACK = 40;
+	const BG_RED = 41;
+	const BG_GREEN = 42;
 	const BG_YELLOW = 43;
-	const BG_BLUE   = 44;
+	const BG_BLUE = 44;
 	const BG_PURPLE = 45;
-	const BG_CYAN   = 46;
-	const BG_GREY   = 47;
+	const BG_CYAN = 46;
+	const BG_GREY = 47;
 
-	const RESET       = 0;
-	const NORMAL      = 0;
-	const BOLD        = 1;
-	const ITALIC      = 3;
-	const UNDERLINE   = 4;
-	const BLINK       = 5;
-	const NEGATIVE    = 7;
-	const CONCEALED   = 8;
+	const RESET = 0;
+	const NORMAL = 0;
+	const BOLD = 1;
+	const ITALIC = 3;
+	const UNDERLINE = 4;
+	const BLINK = 5;
+	const NEGATIVE = 7;
+	const CONCEALED = 8;
 	const CROSSED_OUT = 9;
-	const FRAMED      = 51;
-	const ENCIRCLED   = 52;
-	const OVERLINED   = 53;
+	const FRAMED = 51;
+	const ENCIRCLED = 52;
+	const OVERLINED = 53;
 
 	/**
 	 * Moves the terminal cursor up by sending ANSI control code CUU to the terminal.
@@ -473,8 +473,8 @@ class BaseConsole
 	 * colors should be used. It defaults to true, if set to false, the
 	 * colorcodes will just be removed (And %% will be transformed into %)
 	 *
-	 * @param string $string  String to convert
-	 * @param bool   $colored Should the string be colored?
+	 * @param string $string String to convert
+	 * @param bool $colored Should the string be colored?
 	 * @return string
 	 */
 	// TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
@@ -601,12 +601,12 @@ class BaseConsole
 			}
 
 			// fallback to tput, which may not be updated on terminal resize
-			if (($width = (int) exec('tput cols 2>&1')) > 0 && ($height = (int) exec('tput lines 2>&1')) > 0) {
+			if (($width = (int)exec('tput cols 2>&1')) > 0 && ($height = (int)exec('tput lines 2>&1')) > 0) {
 				return $size = [$width, $height];
 			}
 
 			// fallback to ENV variables, which may not be updated on terminal resize
-			if (($width = (int) getenv('COLUMNS')) > 0 && ($height = (int) getenv('LINES')) > 0) {
+			if (($width = (int)getenv('COLUMNS')) > 0 && ($height = (int)getenv('LINES')) > 0) {
 				return $size = [$width, $height];
 			}
 		}
@@ -700,16 +700,16 @@ class BaseConsole
 	public static function prompt($text, $options = [])
 	{
 		$options = ArrayHelper::merge(
-			[
-				'required'  => false,
-				'default'   => null,
-				'pattern'   => null,
-				'validator' => null,
-				'error'     => 'Invalid input.',
-			],
-			$options
+							  [
+								  'required' => false,
+								  'default' => null,
+								  'pattern' => null,
+								  'validator' => null,
+								  'error' => 'Invalid input.',
+							  ],
+								  $options
 		);
-		$error   = null;
+		$error = null;
 
 		top:
 		$input = $options['default']
@@ -755,7 +755,7 @@ class BaseConsole
 	 * a list of options to choose from and their explanations.
 	 *
 	 * @param string $prompt the prompt message
-	 * @param array  $options Key-value array of options to choose from
+	 * @param array $options Key-value array of options to choose from
 	 *
 	 * @return string An option character the user chose
 	 */

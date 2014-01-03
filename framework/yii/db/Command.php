@@ -419,7 +419,7 @@ class Command extends \yii\base\Component
 			if ($e instanceof Exception) {
 				throw $e;
 			} else {
-				$message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
+				$message = $e->getMessage() . "\nThe SQL being executed was: $rawSql";
 				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 				throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
 			}

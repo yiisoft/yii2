@@ -333,7 +333,7 @@ class Migration extends \yii\base\Component
 	 */
 	public function addPrimaryKey($name, $table, $columns)
 	{
-		echo "    > add primary key $name on $table (".(is_array($columns) ? implode(',', $columns) : $columns).") ...";
+		echo "    > add primary key $name on $table (" . (is_array($columns) ? implode(',', $columns) : $columns) . ") ...";
 		$time = microtime(true);
 		$this->db->createCommand()->addPrimaryKey($name, $table, $columns)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";

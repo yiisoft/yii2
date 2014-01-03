@@ -143,7 +143,7 @@ class MessageFormatter extends Component
 			return false;
 		}
 		$map = [];
-		foreach($tokens as $i => $token) {
+		foreach ($tokens as $i => $token) {
 			if (is_array($token)) {
 				$param = trim($token[0]);
 				if (!isset($map[$param])) {
@@ -169,7 +169,7 @@ class MessageFormatter extends Component
 			return false;
 		} else {
 			$values = [];
-			foreach($result as $key => $value) {
+			foreach ($result as $key => $value) {
 				$values[$map[$key]] = $value;
 			}
 			return $values;
@@ -188,7 +188,7 @@ class MessageFormatter extends Component
 		if (($tokens = $this->tokenizePattern($pattern)) === false) {
 			return false;
 		}
-		foreach($tokens as $i => $token) {
+		foreach ($tokens as $i => $token) {
 			if (!is_array($token)) {
 				continue;
 			}
@@ -208,7 +208,7 @@ class MessageFormatter extends Component
 			}
 			$type = isset($token[1]) ? trim($token[1]) : 'none';
 			// replace plural and select format recursively
-			if ($type == 'plural' || $type == 'select')	{
+			if ($type == 'plural' || $type == 'select') {
 				if (!isset($token[2])) {
 					return false;
 				}
@@ -242,7 +242,7 @@ class MessageFormatter extends Component
 			$this->_errorMessage = "Message pattern is invalid.";
 			return false;
 		}
-		foreach($tokens as $i => $token) {
+		foreach ($tokens as $i => $token) {
 			if (is_array($token)) {
 				if (($tokens[$i] = $this->parseToken($token, $args, $locale)) === false) {
 					$this->_errorCode = -1;
@@ -315,8 +315,7 @@ class MessageFormatter extends Component
 			return '{' . implode(',', $token) . '}';
 		}
 		$type = isset($token[1]) ? trim($token[1]) : 'none';
-		switch($type)
-		{
+		switch ($type) {
 			case 'date':
 			case 'time':
 			case 'spellout':
@@ -330,7 +329,8 @@ class MessageFormatter extends Component
 					return $arg;
 				}
 				throw new NotSupportedException("Message format 'number' is only supported for integer values. You have to install PHP intl extension to use this feature.");
-			case 'none': return $arg;
+			case 'none':
+				return $arg;
 			case 'select':
 				/* http://icu-project.org/apiref/icu4c/classicu_1_1SelectFormat.html
 				selectStyle = (selector '{' message '}')+
@@ -353,7 +353,7 @@ class MessageFormatter extends Component
 				if ($message !== false) {
 					return $this->fallbackFormat($message, $args, $locale);
 				}
-			break;
+				break;
 			case 'plural':
 				/* http://icu-project.org/apiref/icu4c/classicu_1_1PluralFormat.html
 				pluralStyle = [offsetValue] (selector '{' message '}')+
@@ -376,11 +376,11 @@ class MessageFormatter extends Component
 					}
 					$selector = trim($plural[$i++]);
 					if ($i == 1 && substr($selector, 0, 7) == 'offset:') {
-						$offset = (int) trim(mb_substr($selector, 7, ($pos = mb_strpos(str_replace(["\n", "\r", "\t"], ' ', $selector), ' ', 7)) - 7));
+						$offset = (int)trim(mb_substr($selector, 7, ($pos = mb_strpos(str_replace(["\n", "\r", "\t"], ' ', $selector), ' ', 7)) - 7));
 						$selector = trim(mb_substr($selector, $pos + 1));
 					}
 					if ($message === false && $selector == 'other' ||
-						$selector[0] == '=' && (int) mb_substr($selector, 1) == $arg ||
+						$selector[0] == '=' && (int)mb_substr($selector, 1) == $arg ||
 						$selector == 'one' && $arg - $offset == 1
 					) {
 						$message = implode(',', str_replace('#', $arg - $offset, $plural[$i]));

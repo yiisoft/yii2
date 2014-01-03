@@ -51,7 +51,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function isColorEnabled($stream = STDOUT)
 	{
-		return $this->color ===  null ? Console::streamSupportsAnsiColors($stream) : $this->color;
+		return $this->color === null ? Console::streamSupportsAnsiColors($stream) : $this->color;
 	}
 
 	/**
@@ -249,7 +249,7 @@ class Controller extends \yii\base\Controller
 	 * a list of options to choose from and their explanations.
 	 *
 	 * @param string $prompt the prompt message
-	 * @param array  $options Key-value array of options to choose from
+	 * @param array $options Key-value array of options to choose from
 	 *
 	 * @return string An option character the user chose
 	 */

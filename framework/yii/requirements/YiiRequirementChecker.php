@@ -248,20 +248,24 @@ class YiiRequirementChecker
 		}
 		switch (strtolower($sizeUnit)) {
 			case 'kb':
-			case 'k': {
+			case 'k':
+			{
 				return $size * 1024;
 			}
 			case 'mb':
-			case 'm': {
+			case 'm':
+			{
 				return $size * 1024 * 1024;
 			}
 			case 'gb':
-			case 'g': {
+			case 'g':
+			{
 				return $size * 1024 * 1024 * 1024;
 			}
-			default: {
+			default:
+				{
 				return 0;
-			}
+				}
 		}
 	}
 

@@ -164,8 +164,8 @@ class Schema extends \yii\db\Schema
 	 *
 	 * ~~~
 	 * [
-	 *	 'IndexName1' => ['col1' [, ...]],
-	 *	 'IndexName2' => ['col2' [, ...]],
+	 *     'IndexName1' => ['col1' [, ...]],
+	 *     'IndexName2' => ['col2' [, ...]],
 	 * ]
 	 * ~~~
 	 *

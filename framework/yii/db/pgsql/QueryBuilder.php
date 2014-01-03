@@ -135,7 +135,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	public function alterColumn($table, $column, $type)
 	{
 		return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
-			. $this->db->quoteColumnName($column) . ' TYPE '
-			. $this->getColumnType($type);
+		. $this->db->quoteColumnName($column) . ' TYPE '
+		. $this->getColumnType($type);
 	}
 }

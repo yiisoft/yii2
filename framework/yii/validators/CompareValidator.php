@@ -163,15 +163,24 @@ class CompareValidator extends Validator
 	protected function compareValues($operator, $value, $compareValue)
 	{
 		switch ($operator) {
-			case '==': return $value == $compareValue;
-			case '===': return $value === $compareValue;
-			case '!=': return $value != $compareValue;
-			case '!==': return $value !== $compareValue;
-			case '>': return $value > $compareValue;
-			case '>=': return $value >= $compareValue;
-			case '<': return $value < $compareValue;
-			case '<=': return $value <= $compareValue;
-			default: return false;
+			case '==':
+				return $value == $compareValue;
+			case '===':
+				return $value === $compareValue;
+			case '!=':
+				return $value != $compareValue;
+			case '!==':
+				return $value !== $compareValue;
+			case '>':
+				return $value > $compareValue;
+			case '>=':
+				return $value >= $compareValue;
+			case '<':
+				return $value < $compareValue;
+			case '<=':
+				return $value <= $compareValue;
+			default:
+				return false;
 		}
 	}
 

@@ -377,8 +377,8 @@ class Formatter extends Component
 		if ($value === null) {
 			return $this->nullDisplay;
 		}
-		$ds = isset($this->decimalSeparator) ? $this->decimalSeparator: '.';
-		$ts = isset($this->thousandSeparator) ? $this->thousandSeparator: ',';
+		$ds = isset($this->decimalSeparator) ? $this->decimalSeparator : '.';
+		$ts = isset($this->thousandSeparator) ? $this->thousandSeparator : ',';
 		return number_format($value, $decimals, $ds, $ts);
 	}
 }

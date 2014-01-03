@@ -242,7 +242,7 @@ class Request extends \yii\base\Request
 	public function getIsFlash()
 	{
 		return isset($_SERVER['HTTP_USER_AGENT']) &&
-			(stripos($_SERVER['HTTP_USER_AGENT'], 'Shockwave') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Flash') !== false);
+		(stripos($_SERVER['HTTP_USER_AGENT'], 'Shockwave') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Flash') !== false);
 	}
 
 	private $_restParams;
@@ -568,7 +568,8 @@ class Request extends \yii\base\Request
 				| \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
 				| [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
 				| \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
-				)*$%xs', $pathInfo)) {
+				)*$%xs', $pathInfo)
+		) {
 			$pathInfo = utf8_encode($pathInfo);
 		}
 
@@ -669,7 +670,7 @@ class Request extends \yii\base\Request
 	public function getIsSecureConnection()
 	{
 		return isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] === 'on' || $_SERVER['HTTPS'] == 1)
-			|| isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https';
+		|| isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https';
 	}
 
 	/**
@@ -1117,7 +1118,7 @@ class Request extends \yii\base\Request
 				break;
 		}
 		return $this->validateCsrfTokenInternal($token, $trueToken)
-			|| $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
+		|| $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
 	}
 
 	private function validateCsrfTokenInternal($token, $trueToken)

@@ -112,7 +112,7 @@ class ActiveField extends Component
 	/**
 	 * @var array different parts of the field (e.g. input, label). This will be used together with
 	 * [[template]] to generate the final field HTML code. The keys are the token names in [[template]],
-	 * while the values are the corresponding HTML code. Valid tokens include `{input}`, `{label}` and `{error}`. 
+	 * while the values are the corresponding HTML code. Valid tokens include `{input}`, `{label}` and `{error}`.
 	 * Note that you normally don't need to access this property directly as
 	 * it is maintained by various methods of this class.
 	 */

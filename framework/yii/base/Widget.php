@@ -42,7 +42,7 @@ class Widget extends Component implements ViewContextInterface
 	 */
 	public static $stack = [];
 
-	
+
 	/**
 	 * Begins a widget.
 	 * This method creates an instance of the calling class. It will apply the configuration
@@ -98,7 +98,7 @@ class Widget extends Component implements ViewContextInterface
 	}
 
 	private $_id;
-	
+
 	/**
 	 * Returns the ID of the widget.
 	 * @param boolean $autoGenerate whether to generate an ID if it is not set previously
@@ -122,7 +122,7 @@ class Widget extends Component implements ViewContextInterface
 	}
 
 	private $_view;
-	
+
 	/**
 	 * Returns the view object that can be used to render views or view files.
 	 * The [[render()]] and [[renderFile()]] methods will use
@@ -167,7 +167,6 @@ class Widget extends Component implements ViewContextInterface
 	 * - relative path (e.g. "index"): the actual view file will be looked for under [[viewPath]].
 	 *
 	 * If the view name does not contain a file extension, it will use the default one `.php`.
-
 	 * @param string $view the view name. Please refer to [[findViewFile()]] on how to specify a view name.
 	 * @param array $params the parameters (name-value pairs) that should be made available in the view.
 	 * @return string the rendering result.

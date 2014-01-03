@@ -112,19 +112,19 @@ class DbSession extends Session
 
 		$query = new Query;
 		$row = $query->from($this->sessionTable)
-			->where(['id' => $oldID])
-			->createCommand($this->db)
-			->queryOne();
+					 ->where(['id' => $oldID])
+					 ->createCommand($this->db)
+					 ->queryOne();
 		if ($row !== false) {
 			if ($deleteOldSession) {
 				$this->db->createCommand()
-					->update($this->sessionTable, ['id' => $newID], ['id' => $oldID])
-					->execute();
+						 ->update($this->sessionTable, ['id' => $newID], ['id' => $oldID])
+						 ->execute();
 			} else {
 				$row['id'] = $newID;
 				$this->db->createCommand()
-					->insert($this->sessionTable, $row)
-					->execute();
+						 ->insert($this->sessionTable, $row)
+						 ->execute();
 			}
 		} else {
 			// shouldn't reach here normally
@@ -146,10 +146,10 @@ class DbSession extends Session
 	{
 		$query = new Query;
 		$data = $query->select(['data'])
-			->from($this->sessionTable)
-			->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id])
-			->createCommand($this->db)
-			->queryScalar();
+					  ->from($this->sessionTable)
+					  ->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id])
+					  ->createCommand($this->db)
+					  ->queryScalar();
 		return $data === false ? '' : $data;
 	}
 
@@ -168,10 +168,10 @@ class DbSession extends Session
 			$expire = time() + $this->getTimeout();
 			$query = new Query;
 			$exists = $query->select(['id'])
-				->from($this->sessionTable)
-				->where(['id' => $id])
-				->createCommand($this->db)
-				->queryScalar();
+							->from($this->sessionTable)
+							->where(['id' => $id])
+							->createCommand($this->db)
+							->queryScalar();
 			if ($exists === false) {
 				$this->db->createCommand()
 					->insert($this->sessionTable, [
@@ -181,8 +181,8 @@ class DbSession extends Session
 					])->execute();
 			} else {
 				$this->db->createCommand()
-					->update($this->sessionTable, ['data' => $data, 'expire' => $expire], ['id' => $id])
-					->execute();
+						 ->update($this->sessionTable, ['data' => $data, 'expire' => $expire], ['id' => $id])
+						 ->execute();
 			}
 		} catch (\Exception $e) {
 			if (YII_DEBUG) {
@@ -203,8 +203,8 @@ class DbSession extends Session
 	public function destroySession($id)
 	{
 		$this->db->createCommand()
-			->delete($this->sessionTable, ['id' => $id])
-			->execute();
+				 ->delete($this->sessionTable, ['id' => $id])
+				 ->execute();
 		return true;
 	}
 
@@ -217,8 +217,8 @@ class DbSession extends Session
 	public function gcSession($maxLifetime)
 	{
 		$this->db->createCommand()
-			->delete($this->sessionTable, '[[expire]]<:expire', [':expire' => time()])
-			->execute();
+				 ->delete($this->sessionTable, '[[expire]]<:expire', [':expire' => time()])
+				 ->execute();
 		return true;
 	}
 }

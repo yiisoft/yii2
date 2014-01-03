@@ -12,25 +12,25 @@ echo "if appropriate PHP extensions have been loaded, and if php.ini file settin
 
 $header = 'Check conclusion:';
 echo "\n{$header}\n";
-echo str_pad('', strlen($header), '-')."\n\n";
+echo str_pad('', strlen($header), '-') . "\n\n";
 
 foreach ($requirements as $key => $requirement) {
 	if ($requirement['condition']) {
-		echo $requirement['name'].": OK\n";
+		echo $requirement['name'] . ": OK\n";
 		echo "\n";
 	} else {
-		echo $requirement['name'].': '.($requirement['mandatory'] ? 'FAILED!!!' : 'WARNING!!!')."\n";
-		echo 'Required by: '.strip_tags($requirement['by'])."\n";
+		echo $requirement['name'] . ': ' . ($requirement['mandatory'] ? 'FAILED!!!' : 'WARNING!!!') . "\n";
+		echo 'Required by: ' . strip_tags($requirement['by']) . "\n";
 		$memo = strip_tags($requirement['memo']);
 		if (!empty($memo)) {
-			echo 'Memo: '.strip_tags($requirement['memo'])."\n";
+			echo 'Memo: ' . strip_tags($requirement['memo']) . "\n";
 		}
 		echo "\n";
 	}
 }
 
-$summaryString = 'Errors: '.$summary['errors'].'   Warnings: '.$summary['warnings'].'   Total checks: '.$summary['total'];
-echo str_pad('', strlen($summaryString), '-')."\n";
+$summaryString = 'Errors: ' . $summary['errors'] . '   Warnings: ' . $summary['warnings'] . '   Total checks: ' . $summary['total'];
+echo str_pad('', strlen($summaryString), '-') . "\n";
 echo $summaryString;
 
 echo "\n\n";

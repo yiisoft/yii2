@@ -82,8 +82,8 @@ class QueryBuilder extends \yii\base\Object
 	 *
 	 * ~~~
 	 * $sql = $queryBuilder->insert('tbl_user', [
-	 *	 'name' => 'Sam',
-	 *	 'age' => 30,
+	 *     'name' => 'Sam',
+	 *     'age' => 30,
 	 * ], $params);
 	 * ~~~
 	 *
@@ -119,8 +119,8 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		return 'INSERT INTO ' . $this->db->quoteTableName($table)
-			. ' (' . implode(', ', $names) . ') VALUES ('
-			. implode(', ', $placeholders) . ')';
+		. ' (' . implode(', ', $names) . ') VALUES ('
+		. implode(', ', $placeholders) . ')';
 	}
 
 	/**
@@ -255,9 +255,9 @@ class QueryBuilder extends \yii\base\Object
 	 *
 	 * ~~~
 	 * $sql = $queryBuilder->createTable('tbl_user', [
-	 *	 'id' => 'pk',
-	 *	 'name' => 'string',
-	 *	 'age' => 'integer',
+	 *     'id' => 'pk',
+	 *     'name' => 'string',
+	 *     'age' => 'integer',
 	 * ]);
 	 * ~~~
 	 *
@@ -319,20 +319,20 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
-			. $this->db->quoteColumnName($name) . '  PRIMARY KEY ('
-			. implode(', ', $columns). ' )';
+		. $this->db->quoteColumnName($name) . '  PRIMARY KEY ('
+		. implode(', ', $columns) . ' )';
 	}
 
 	/**
 	 * Builds a SQL statement for removing a primary key constraint to an existing table.
 	 * @param string $name the name of the primary key constraint to be removed.
 	 * @param string $table the table that the primary key constraint will be removed from.
-	 * @return string the SQL statement for removing a primary key constraint from an existing table.	 *
+	 * @return string the SQL statement for removing a primary key constraint from an existing table.     *
 	 */
 	public function dropPrimaryKey($name, $table)
 	{
 		return 'ALTER TABLE ' . $this->db->quoteTableName($table)
-			. ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
+		. ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
 	}
 
 	/**
@@ -357,8 +357,8 @@ class QueryBuilder extends \yii\base\Object
 	public function addColumn($table, $column, $type)
 	{
 		return 'ALTER TABLE ' . $this->db->quoteTableName($table)
-			. ' ADD ' . $this->db->quoteColumnName($column) . ' '
-			. $this->getColumnType($type);
+		. ' ADD ' . $this->db->quoteColumnName($column) . ' '
+		. $this->getColumnType($type);
 	}
 
 	/**
@@ -370,7 +370,7 @@ class QueryBuilder extends \yii\base\Object
 	public function dropColumn($table, $column)
 	{
 		return "ALTER TABLE " . $this->db->quoteTableName($table)
-			. " DROP COLUMN " . $this->db->quoteColumnName($column);
+		. " DROP COLUMN " . $this->db->quoteColumnName($column);
 	}
 
 	/**
@@ -383,8 +383,8 @@ class QueryBuilder extends \yii\base\Object
 	public function renameColumn($table, $oldName, $newName)
 	{
 		return "ALTER TABLE " . $this->db->quoteTableName($table)
-			. " RENAME COLUMN " . $this->db->quoteColumnName($oldName)
-			. " TO " . $this->db->quoteColumnName($newName);
+		. " RENAME COLUMN " . $this->db->quoteColumnName($oldName)
+		. " TO " . $this->db->quoteColumnName($newName);
 	}
 
 	/**
@@ -400,9 +400,9 @@ class QueryBuilder extends \yii\base\Object
 	public function alterColumn($table, $column, $type)
 	{
 		return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' CHANGE '
-			. $this->db->quoteColumnName($column) . ' '
-			. $this->db->quoteColumnName($column) . ' '
-			. $this->getColumnType($type);
+		. $this->db->quoteColumnName($column) . ' '
+		. $this->db->quoteColumnName($column) . ' '
+		. $this->getColumnType($type);
 	}
 
 	/**
@@ -444,7 +444,7 @@ class QueryBuilder extends \yii\base\Object
 	public function dropForeignKey($name, $table)
 	{
 		return 'ALTER TABLE ' . $this->db->quoteTableName($table)
-			. ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
+		. ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
 	}
 
 	/**
@@ -460,9 +460,9 @@ class QueryBuilder extends \yii\base\Object
 	public function createIndex($name, $table, $columns, $unique = false)
 	{
 		return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')
-			. $this->db->quoteTableName($name) . ' ON '
-			. $this->db->quoteTableName($table)
-			. ' (' . $this->buildColumns($columns) . ')';
+		. $this->db->quoteTableName($name) . ' ON '
+		. $this->db->quoteTableName($table)
+		. ' (' . $this->buildColumns($columns) . ')';
 	}
 
 	/**
@@ -1040,7 +1040,7 @@ class QueryBuilder extends \yii\base\Object
 			throw new InvalidParamException("Operator '$operator' requires two operands.");
 		}
 
-		$escape = isset($operands[2]) ? $operands[2] : ['%'=>'\%', '_'=>'\_', '\\'=>'\\\\'];
+		$escape = isset($operands[2]) ? $operands[2] : ['%' => '\%', '_' => '\_', '\\' => '\\\\'];
 		unset($operands[2]);
 
 		list($column, $values) = $operands;

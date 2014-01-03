@@ -65,16 +65,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
 			foreach ($matches[1] as $i => $c) {
 				if ($c === $oldName) {
 					return "ALTER TABLE $quotedTable CHANGE "
-						. $this->db->quoteColumnName($oldName) . ' '
-						. $this->db->quoteColumnName($newName) . ' '
-						. $matches[2][$i];
+					. $this->db->quoteColumnName($oldName) . ' '
+					. $this->db->quoteColumnName($newName) . ' '
+					. $matches[2][$i];
 				}
 			}
 		}
 		// try to give back a SQL anyway
 		return "ALTER TABLE $quotedTable CHANGE "
-			. $this->db->quoteColumnName($oldName) . ' '
-			. $this->db->quoteColumnName($newName);
+		. $this->db->quoteColumnName($oldName) . ' '
+		. $this->db->quoteColumnName($newName);
 	}
 
 	/**
@@ -86,7 +86,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	public function dropForeignKey($name, $table)
 	{
 		return 'ALTER TABLE ' . $this->db->quoteTableName($table)
-			. ' DROP FOREIGN KEY ' . $this->db->quoteColumnName($name);
+		. ' DROP FOREIGN KEY ' . $this->db->quoteColumnName($name);
 	}
 
 	/**

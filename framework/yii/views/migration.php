@@ -12,14 +12,14 @@ use yii\db\Schema;
 
 class <?= $className ?> extends \yii\db\Migration
 {
-	public function up()
-	{
+public function up()
+{
 
-	}
+}
 
-	public function down()
-	{
-		echo "<?= $className ?> cannot be reverted.\n";
-		return false;
-	}
+public function down()
+{
+echo "<?= $className ?> cannot be reverted.\n";
+return false;
+}
 }

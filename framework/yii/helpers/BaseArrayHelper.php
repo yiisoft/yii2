@@ -412,7 +412,7 @@ class BaseArrayHelper
 			$args[] = $direction[$i];
 			$args[] = $flag;
 		}
-		$args[] = &$array;
+		$args[] = & $array;
 		call_user_func_array('array_multisort', $args);
 	}
 

@@ -131,7 +131,7 @@ class Controller extends Component implements ViewContextInterface
 				$this->afterAction($action, $result);
 				$this->module->afterAction($action, $result);
 				$event = new ActionEvent($action);
-				$event->result = &$result;
+				$event->result = & $result;
 				Yii::$app->trigger(Application::EVENT_AFTER_ACTION, $event);
 			}
 			$this->action = $oldAction;
@@ -230,7 +230,7 @@ class Controller extends Component implements ViewContextInterface
 	public function afterAction($action, &$result)
 	{
 		$event = new ActionEvent($action);
-		$event->result = &$result;
+		$event->result = & $result;
 		$this->trigger(self::EVENT_AFTER_ACTION, $event);
 	}
 

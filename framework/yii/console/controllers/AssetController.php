@@ -514,7 +514,7 @@ EOD;
 		$inputFilePathPartsCount = count($inputFilePathParts);
 		$outputFilePathParts = explode('/', $outputFilePath);
 		$outputFilePathPartsCount = count($outputFilePathParts);
-		for ($i =0; $i < $inputFilePathPartsCount && $i < $outputFilePathPartsCount; $i++) {
+		for ($i = 0; $i < $inputFilePathPartsCount && $i < $outputFilePathPartsCount; $i++) {
 			if ($inputFilePathParts[$i] == $outputFilePathParts[$i]) {
 				$sharedPathParts[] = $inputFilePathParts[$i];
 			} else {

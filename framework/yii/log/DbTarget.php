@@ -34,11 +34,11 @@ class DbTarget extends Target
 	 *
 	 * ~~~
 	 * CREATE TABLE tbl_log (
-	 *	   id       BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	 *	   level    INTEGER,
-	 *	   category VARCHAR(255),
-	 *	   log_time INTEGER,
-	 *	   message  TEXT,
+	 *       id       BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	 *       level    INTEGER,
+	 *       category VARCHAR(255),
+	 *       log_time INTEGER,
+	 *       message  TEXT,
 	 *     INDEX idx_log_level (level),
 	 *     INDEX idx_log_category (category)
 	 * )
@@ -85,7 +85,7 @@ class DbTarget extends Target
 				':category' => $message[2],
 				':log_time' => $message[3],
 				':message' => $message[0],
-			])->execute();
+			])      ->execute();
 		}
 	}
 }

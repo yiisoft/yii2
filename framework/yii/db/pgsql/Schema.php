@@ -202,7 +202,7 @@ from
 	inner join pg_namespace ns on c.relnamespace=ns.oid
 	left join pg_class fc on fc.oid=ct.confrelid
 	left join pg_namespace fns on fc.relnamespace=fns.oid
-	
+
 where
 	ct.contype='f'
 	and c.relname={$tableName}
@@ -265,8 +265,8 @@ SQL;
 	 *
 	 * ~~~
 	 * [
-	 *	 'IndexName1' => ['col1' [, ...]],
-	 *	 'IndexName2' => ['col2' [, ...]],
+	 *     'IndexName1' => ['col1' [, ...]],
+	 *     'IndexName2' => ['col2' [, ...]],
 	 * ]
 	 * ~~~
 	 *

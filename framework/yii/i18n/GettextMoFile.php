@@ -108,9 +108,10 @@ class GettextMoFile extends GettextFile
 			$separatorPosition = strpos($id, chr(4));
 
 			if (($context && $separatorPosition !== false && substr($id, 0, $separatorPosition) === $context) ||
-				(!$context && $separatorPosition === false)) {
+				(!$context && $separatorPosition === false)
+			) {
 				if ($separatorPosition !== false) {
-					$id = substr($id, $separatorPosition+1);
+					$id = substr($id, $separatorPosition + 1);
 				}
 
 				$message = $this->readString($fileHandle, $targetLengths[$i], $targetOffsets[$i]);
@@ -266,6 +267,6 @@ class GettextMoFile extends GettextFile
 	 */
 	protected function writeString($fileHandle, $string)
 	{
-		return $this->writeBytes($fileHandle, $string. "\0");
+		return $this->writeBytes($fileHandle, $string . "\0");
 	}
 }
