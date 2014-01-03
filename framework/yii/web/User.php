@@ -321,7 +321,7 @@ class User extends Component
 	 * calling this method.
 	 *
 	 * Note that when [[loginUrl]] is set, calling this method will NOT terminate the application execution.
-	 * 
+	 *
 	 * @return Response the redirection response if [[loginUrl]] is set
 	 * @throws AccessDeniedHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set
 	 */
