@@ -55,6 +55,18 @@ You can then install this application template using the following command:
 php composer.phar create-project --stability=dev yiisoft/yii2-app-basic basic
 ~~~
 
+If you want to include `dev` dependencies like:
+
+* `yiisoft/yii2-codeception`
+* `yiisoft/yii2-debug`
+* `yiisoft/yii2-gii`
+
+run this command with `--dev` flag as follows:
+
+~~~
+php composer.phar create-project --dev --stability=dev yiisoft/yii2-app-basic basic
+~~~
+
 Now you should be able to access the application through the following URL, assuming `basic` is the directory
 directly under the Web root.
 
