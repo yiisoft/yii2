@@ -69,7 +69,7 @@ use yii\helpers\Console;
  * ~~~
  *
  * In the code above "users" is template name, after this command run, new file named same as template
- * will be created under the $fixturesPath folder.
+ * will be created under the `$fixturePath` folder.
  * You can generate fixtures for all templates by specifying keyword "all"
  *
  * ~~~
@@ -90,13 +90,13 @@ use yii\helpers\Console;
  *
  * ~~~
  * //generate fixtures in russian language
- * yii fixture/generate users 5 --language='ru_RU'
+ * yii fixture/generate users 5 --language=ru_RU
  *
  * //read templates from the other path
- * yii fixture/generate all --templatePath='@app/path/to/my/custom/templates'
+ * yii fixture/generate all --templatePath=@app/path/to/my/custom/templates
  *
  * //generate fixtures into other folders, but be sure that this folders exists or you will get notice about that.
- * yii fixture/generate all --fixturePath='@tests/unit/fixtures/subfolder1/subfolder2/subfolder3'
+ * yii fixture/generate all --fixturePath=@tests/unit/fixtures/subfolder1/subfolder2/subfolder3
  * ~~~
  *
  * You also can create your own data providers for custom tables fields, see Faker library guide for more info (https://github.com/fzaninotto/Faker);

@@ -123,7 +123,7 @@ php yii fixture/generate users 5 --language='ru_RU'
 php yii fixture/generate all --templatePath='@app/path/to/my/custom/templates'
 
 //generate fixtures into other folders, but be sure that this folders exists or you will get notice about that.
-php yii fixture/generate all --fixturesPath='@tests/unit/fixtures/subfolder1/subfolder2/subfolder3'
+php yii fixture/generate all --fixturePath='@tests/unit/fixtures/subfolder1/subfolder2/subfolder3'
 ```
 
 You also can create your own data providers for custom tables fields, see [Faker]((https://github.com/fzaninotto/Faker)) library guide for more info;
