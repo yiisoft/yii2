@@ -39,10 +39,10 @@ use yii\console\Exception;
  * yii fixture users
  *
  * #load fixtures under $fixturePath to the "users" table to the different connection
- * yii fixture/apply users --db='someOtherDbConneciton'
+ * yii fixture/apply users --db=someOtherDbConneciton
  *
  * #load fixtures under different $fixturePath to the "users" table.
- * yii fixture/apply users --fixturePath='@app/some/other/path/to/fixtures'
+ * yii fixture/apply users --fixturePath=@app/some/other/path/to/fixtures
  * ~~~
  *
  * @author Mark Jebri <mark.github@yandex.ru>
