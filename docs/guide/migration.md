@@ -73,21 +73,25 @@ method returns `false` to indicate that the migration cannot be reverted.
 As an example, let's show the migration about creating a news table.
 
 ```php
+
+use yii\db\Schema;
+
 class m101129_185401_create_news_table extends \yii\db\Migration
 {
 	public function up()
 	{
-		$this->db->createCommand()->createTable('tbl_news', [
+		$this->createTable('tbl_news', [
 			'id' => 'pk',
-			'title' => 'string(128) NOT NULL',
-			'content' => 'text',
-		])->execute();
+			'title' => Schema::TYPE_STRING . ' NOT NULL',
+			'content' => Schema::TYPE_TEXT,
+		]);
 	}
 
 	public function down()
 	{
-		$this->db->createCommand()->dropTable('tbl_news')->execute();
+		$this->dropTable('tbl_news');
 	}
+
 }
 ```
 
@@ -110,37 +114,39 @@ Transactional Migrations
 While performing complex DB migrations, we usually want to make sure that each
 migration succeed or fail as a whole so that the database maintains the
 consistency and integrity. In order to achieve this goal, we can exploit
-DB transactions.
-
-We could explicitly start a DB transaction and enclose the rest of the DB-related
-code within the transaction, like the following:
+DB transactions. We could use special methods `safeUp` and `safeDown` for these purposes.
 
 ```php
+
+use yii\db\Schema;
+
 class m101129_185401_create_news_table extends \yii\db\Migration
 {
-	public function up()
+	public function safeUp()
 	{
-		$transaction=$this->getDbConnection()->beginTransaction();
-		try
-		{
-			$this->db->createCommand()->createTable('tbl_news', [
-				'id' => 'pk',
-				'title' => 'string NOT NULL',
-				'content' => 'text',
-			])->execute();
-			$transaction->commit();
-		}
-		catch(Exception $e)
-		{
-			echo "Exception: ".$e->getMessage()."\n";
-			$transaction->rollback();
-			return false;
-		}
+		$this->createTable('tbl_news', [
+			'id' => 'pk',
+			'title' => Schema::TYPE_STRING . ' NOT NULL',
+			'content' => Schema::TYPE_TEXT,
+		]);
+
+		$this->createTable('tbl_user', [
+			'id' => 'pk',
+			'login' => Schema::TYPE_STRING . ' NOT NULL',
+			'password' => Schema::TYPE_STRING . ' NOT NULL',
+		]);
 	}
 
-	// ...similar code for down()
+	public function safeDown()
+	{
+		$this->dropTable('tbl_news);
+		$this->dropTable('tbl_user');
+	}
+
 }
 ```
+
+When your code uses more then one query it is recommended to use `safeUp` and `safeDown`.
 
 > Note: Not all DBMS support transactions. And some DB queries cannot be put
 > into a transaction. In this case, you will have to implement `up()` and
@@ -301,7 +307,7 @@ are located within the module's `migrations` directory, we can use the following
 command:
 
 ```
-yii migrate/up --migrationPath=ext.forum.migrations
+yii migrate/up --migrationPath=@app.modules.forum.migrations
 ```
 
 
@@ -314,8 +320,14 @@ or we may want to use a customized migration template. We can do so by modifying
 the console application's configuration file like the following,
 
 ```php
-TBD
+'controllerMap' => [
+    'migrate' => [
+        'class' => 'yii\console\MigrateController',
+        'migrationTable' => 'my_custom_migrate_table',
+    ],
+]
 ```
 
 Now if we run the `migrate` command, the above configurations will take effect
-without requiring us to enter the command line options every time.
+without requiring us to enter the command line options every time. Other command options
+can be also configured this way.
