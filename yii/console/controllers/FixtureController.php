@@ -52,25 +52,23 @@ use yii\helpers\Console;
  */
 class FixtureController extends Controller
 {
-
 	use DbTestTrait;
 
 	/**
 	 * @var string controller default action ID.
 	 */
 	public $defaultAction = 'apply';
-
 	/**
 	 * Alias to the path, where all fixtures are stored.
 	 * @var string
 	 */
 	public $fixturePath = '@tests/unit/fixtures';
-
 	/**
 	 * Id of the database connection component of the application.
 	 * @var string
 	 */
 	public $db = 'db';
+
 
 	/**
 	 * Returns the names of the global options for this command.
@@ -102,13 +100,13 @@ class FixtureController extends Controller
 	/**
 	 * Apply given fixture to the table. Fixture name can be the same as the table name or
 	 * you can specify table name as a second parameter.
-	 * @param string $fixture
+	 * @param array $fixtures
+	 * @throws \yii\console\Exception
 	 */
 	public function actionApply(array $fixtures)
 	{
 		if ($this->getFixtureManager() == null) {
-			throw new Exception(
-				'Fixture manager is not configured properly. '
+			throw new Exception('Fixture manager is not configured properly. '
 				. 'Please refer to official documentation for this purposes.');
 		}
 
@@ -124,7 +122,7 @@ class FixtureController extends Controller
 
 	/**
 	 * Truncate given table and clear all fixtures from it.
-	 * @param string $tables
+	 * @param array|string $tables
 	 */
 	public function actionClear(array $tables)
 	{
@@ -161,7 +159,7 @@ class FixtureController extends Controller
 	{
 		$db = Yii::$app->getComponent($this->db);
 
-		if ($db == null) {
+		if ($db === null) {
 			throw new Exception("There is no database connection component with id \"{$this->db}\".");
 		}
 
@@ -174,8 +172,8 @@ class FixtureController extends Controller
 	 */
 	private function notifySuccess($fixtures)
 	{
-		$this->stdout("Fixtures were successfully loaded from path: \n", Console::FG_YELLOW);
-		$this->stdout(realpath(Yii::getAlias($this->fixturePath)) . "\n\n", Console::FG_GREEN);
+		$this->stdout("Fixtures were successfully loaded from path:\n", Console::FG_YELLOW);
+		$this->stdout(Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
 		$this->outputList($fixtures);
 	}
 
@@ -187,7 +185,7 @@ class FixtureController extends Controller
 	private function confirmApply($fixtures)
 	{
 		$this->stdout("Fixtures will be loaded from path: \n", Console::FG_YELLOW);
-		$this->stdout(realpath(Yii::getAlias($this->fixturePath)) . "\n\n", Console::FG_GREEN);
+		$this->stdout(Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
 		$this->outputList($fixtures);
 		return $this->confirm('Load to database above fixtures?');
 	}
@@ -199,7 +197,7 @@ class FixtureController extends Controller
 	 */
 	private function confirmClear($tables)
 	{
-		$this->stdout("Tables below will be cleared: \n\n", Console::FG_YELLOW);
+		$this->stdout("Tables below will be cleared:\n\n", Console::FG_YELLOW);
 		$this->outputList($tables);
 		return $this->confirm('Clear tables?');
 	}
@@ -211,8 +209,7 @@ class FixtureController extends Controller
 	private function outputList($data)
 	{
 		foreach($data as $index => $item) {
-			$this->stdout($index +1 . ". " . $item . "\n", Console::FG_GREEN);
+			$this->stdout(($index + 1) . ". {$item}\n", Console::FG_GREEN);
 		}
 	}
-
 }
