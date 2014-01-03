@@ -73,6 +73,16 @@ You can then install the application using the following command:
 php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced advanced
 ~~~
 
+If you want to include `dev` dependencies like:
+
+* `yiisoft/yii2-debug`
+* `yiisoft/yii2-gii`
+
+run this command with `--dev` flag as follows:
+
+~~~
+php composer.phar create-project --dev --stability=dev yiisoft/yii2-app-advanced advanced
+~~~
 
 GETTING STARTED
 ---------------
