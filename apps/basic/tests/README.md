@@ -3,7 +3,8 @@ These tests are developed with [Codeception PHP Testing Framework](http://codece
 
 After creating the basic application, follow these steps to prepare for the tests:
 
-1. To install `Codeception` and its dependencies through composer, run the following commands:
+1. Be sure you installed `yiisoft/yii2-codeception` dependency.
+   To install `Codeception` and its dependencies through composer, run the following commands:
 
    ```
    php composer.phar require --dev "codeception/codeception *" "codeception/specify *"
