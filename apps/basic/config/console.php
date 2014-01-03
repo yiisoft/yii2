@@ -3,6 +3,8 @@
 Yii::setAlias('@tests', dirname(__DIR__) . '/tests');
 
 $params = require(__DIR__ . '/params.php');
+$db = require(__DIR__ . '/db.php');
+
 return [
 	'id' => 'basic-console',
 	'basePath' => dirname(__DIR__),
@@ -22,13 +24,7 @@ return [
 				],
 			],
 		],
-		'db' => [
-			'class' => 'yii\db\Connection',
-			'dsn' => 'mysql:host=localhost;dbname=yii2basic',
-			'username' => 'root',
-			'password' => '',
-			'charset' => 'utf8',
-		],
+		'db' => $db,
 		'fixture' => [
 			'class' => 'yii\test\DbFixtureManager',
 			'basePath' => '@tests/unit/fixtures',
