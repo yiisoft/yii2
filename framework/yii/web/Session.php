@@ -47,6 +47,7 @@ use yii\base\InvalidParamException;
  *
  * @property array $allFlashes Flash messages (key => message). This property is read-only.
  * @property array $cookieParams The session cookie parameters. This property is read-only.
+ * @property SessionHandlerInterface $handler an object providing persistance methods implementation.
  * @property integer $count The number of session variables. This property is read-only.
  * @property string $flash The key identifying the flash message. Note that flash messages and normal session
  * variables share the same name space. If you have a normal session variable using the same name, its value will
@@ -86,6 +87,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
 	 */
 	private $_cookieParams = ['httpOnly' => true];
+	/**
+	 * @var \SessionHandlerInterface|array an object implementing the SessionHandlerInterface or a configuration array. If set, will be used to provide persistency instead of build-in methods.
+	 */
+	private $_handler;
 
 	/**
 	 * Initializes the application component.
@@ -113,6 +118,27 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	}
 
 	/**
+	 * @param array|\SessionHandlerInterface $handler handler instance or its array configuration, it will be used to
+	 * provide persistance method implementations.
+	 * @throws InvalidConfigException on invalid argument.
+	 */
+	public function setHandler($handler)
+	{
+		$this->_handler = is_object($handler) ? $handler : Yii::createObject($this->_handler);
+		if (!$this->handler instanceof \SessionHandlerInterface) {
+			throw new InvalidConfigException('"' . get_class($this) . '::handler" must implement the SessionHandlerInterface.');
+		}
+	}
+
+	/**
+	 * @return SessionHandlerInterface handler instance.
+	 */
+	public function getHandler()
+	{
+		return $this->_handler;
+	}
+
+	/**
 	 * Starts the session.
 	 */
 	public function open()
@@ -121,7 +147,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 			return;
 		}
 
-		if ($this->getUseCustomStorage()) {
+		if ($this->getHandler() !== null) {
+			@session_set_save_handler($this->getHandler(), false);
+		} elseif ($this->getUseCustomStorage()) {
 			@session_set_save_handler(
 				[$this, 'openSession'],
 				[$this, 'closeSession'],
