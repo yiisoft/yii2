@@ -15,35 +15,36 @@ use yii\console\Exception;
  * This command manages fixtures load to the database tables.
  * You can specify different options of this command to point fixture manager
  * to the specific tables of the different database connections.
- * 
+ *
  * To use this command simply configure your console.php config like this:
+ *
  * ~~~
- *	'db' => [
- *		'class' => 'yii\db\Connection',
- *		'dsn' => 'mysql:host=localhost;dbname={your_database}',
- *		'username' => '{your_db_user}',
- *		'password' => '',
- *		'charset' => 'utf8',
- *	],
- *	'fixture' => [
- *		'class' => 'yii\test\DbFixtureManager',
- *	],
+ * 'db' => [
+ *     'class' => 'yii\db\Connection',
+ *     'dsn' => 'mysql:host=localhost;dbname={your_database}',
+ *     'username' => '{your_db_user}',
+ *     'password' => '',
+ *     'charset' => 'utf8',
+ * ],
+ * 'fixture' => [
+ *     'class' => 'yii\test\DbFixtureManager',
+ * ],
  * ~~~
- * 
+ *
  * ~~~
- * #load fixtures under $fixturesPath to the "users" table
- * php yii fixture/apply users
- * 
+ * #load fixtures under $fixturePath to the "users" table
+ * yii fixture/apply users
+ *
  * #also a short version of this command (generate action is default)
- * php yii fixture users
- * 
- * #load fixtures under $fixturesPath to the "users" table to the different connection
- * php yii fixture/apply users --db='someOtherDbConneciton'
- * 
- * #load fixtures under different $fixturesPath to the "users" table.
- * php yii fixture/apply users --fixturesPath='@app/some/other/path/to/fixtures'
+ * yii fixture users
+ *
+ * #load fixtures under $fixturePath to the "users" table to the different connection
+ * yii fixture/apply users --db='someOtherDbConneciton'
+ *
+ * #load fixtures under different $fixturePath to the "users" table.
+ * yii fixture/apply users --fixturePath='@app/some/other/path/to/fixtures'
  * ~~~
- * 
+ *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
  */
@@ -61,11 +62,11 @@ class FixtureController extends Controller
 	 * Alias to the path, where all fixtures are stored.
 	 * @var string
 	 */
-	public $fixturesPath = '@tests/unit/fixtures';
+	public $fixturePath = '@tests/unit/fixtures';
 
 	/**
 	 * Id of the database connection component of the application.
-	 * @var string 
+	 * @var string
 	 */
 	public $db = 'db';
 
@@ -76,14 +77,14 @@ class FixtureController extends Controller
 	public function globalOptions()
 	{
 		return array_merge(parent::globalOptions(), [
-			'db','fixturesPath'
+			'db', 'fixturePath'
 		]);
 	}
 
 	/**
 	 * This method is invoked right before an action is to be executed (after all possible filters.)
 	 * It checks that fixtures path and database connection are available.
-	 * @param type $action
+	 * @param \yii\base\Action $action
 	 * @return boolean
 	 */
 	public function beforeAction($action)
@@ -103,7 +104,7 @@ class FixtureController extends Controller
 	 */
 	public function actionApply($fixture)
 	{
-		$this->fixtureManager->basePath = $this->fixturesPath;
+		$this->fixtureManager->basePath = $this->fixturePath;
 		$this->fixtureManager->db = $this->db;
 		$this->loadFixtures([$fixture]);
 	}
@@ -114,7 +115,7 @@ class FixtureController extends Controller
 	 */
 	public function actionClear($table)
 	{
-		$this->dbConnection->createCommand()->truncateTable($table)->execute();
+		$this->getDbConnection()->createCommand()->truncateTable($table)->execute();
 		echo "Table \"{$table}\" was successfully cleared. \n";
 	}
 
@@ -124,17 +125,17 @@ class FixtureController extends Controller
 	 */
 	public function checkRequirements()
 	{
-		$path = Yii::getAlias($this->fixturesPath, false);
+		$path = Yii::getAlias($this->fixturePath, false);
 
 		if (!is_dir($path) || !is_writable($path)) {
-			throw new Exception("The fixtures path \"{$this->fixturesPath}\" not exist or is not writable");
+			throw new Exception("The fixtures path \"{$this->fixturePath}\" not exist or is not writable");
 		}
 
 	}
 
 	/**
 	 * Returns database connection component
-	 * @return yii\db\Connection|null
+	 * @return \yii\db\Connection|null
 	 */
 	public function getDbConnection()
 	{
