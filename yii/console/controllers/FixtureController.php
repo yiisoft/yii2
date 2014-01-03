@@ -11,6 +11,7 @@ use Yii;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\test\DbTestTrait;
+use yii\helpers\Console;
 
 /**
  * This command manages fixtures load to the database tables.
@@ -103,7 +104,7 @@ class FixtureController extends Controller
 	 * you can specify table name as a second parameter.
 	 * @param string $fixture
 	 */
-	public function actionApply(array $fixture)
+	public function actionApply(array $fixtures)
 	{
 		if ($this->getFixtureManager() == null) {
 			throw new Exception(
@@ -111,20 +112,30 @@ class FixtureController extends Controller
 				. 'Please refer to official documentation for this purposes.');
 		}
 
+		if (!$this->confirmApply($fixtures)) {
+			return;
+		}
+
 		$this->getFixtureManager()->basePath = $this->fixturePath;
 		$this->getFixtureManager()->db = $this->db;
-		$this->loadFixtures($fixture);
-		$this->notifySuccess($fixture);
+		$this->loadFixtures($fixtures);
+		$this->notifySuccess($fixtures);
 	}
 
 	/**
 	 * Truncate given table and clear all fixtures from it.
-	 * @param string $table
+	 * @param string $tables
 	 */
-	public function actionClear($table)
+	public function actionClear(array $tables)
 	{
-		$this->getDbConnection()->createCommand()->truncateTable($table)->execute();
-		echo "Table \"{$table}\" was successfully cleared. \n";
+		if (!$this->confirmClear($tables)) {
+			return;
+		}
+
+		foreach($tables as $table) {
+			$this->getDbConnection()->createCommand()->truncateTable($table)->execute();
+			$this->stdout("Table \"{$table}\" was successfully cleared. \n", Console::FG_GREEN);
+		}
 	}
 
 	/**
@@ -165,9 +176,42 @@ class FixtureController extends Controller
 	{
 		$this->stdout("Fixtures were successfully loaded from path: \n", Console::FG_YELLOW);
 		$this->stdout(realpath(Yii::getAlias($this->fixturePath)) . "\n\n", Console::FG_GREEN);
+		$this->outputList($fixtures);
+	}
 
-		foreach($fixtures as $index => $fixture) {
-			$this->stdout($index +1 . ". " . $fixture . "\n", Console::FG_GREEN);
+	/**
+	 * Prompts user with confirmation if fixtures should be loaded.
+	 * @param array $fixtures
+	 * @return boolean
+	 */
+	private function confirmApply($fixtures)
+	{
+		$this->stdout("Fixtures will be loaded from path: \n", Console::FG_YELLOW);
+		$this->stdout(realpath(Yii::getAlias($this->fixturePath)) . "\n\n", Console::FG_GREEN);
+		$this->outputList($fixtures);
+		return $this->confirm('Load to database above fixtures?');
+	}
+
+	/**
+	 * Prompts user with confirmation for tables that should be cleared.
+	 * @param array $tables
+	 * @return boolean
+	 */
+	private function confirmClear($tables)
+	{
+		$this->stdout("Tables below will be cleared: \n\n", Console::FG_YELLOW);
+		$this->outputList($tables);
+		return $this->confirm('Clear tables?');
+	}
+
+	/**
+	 * Outputs data to the console as a list.
+	 * @param array $data
+	 */
+	private function outputList($data)
+	{
+		foreach($data as $index => $item) {
+			$this->stdout($index +1 . ". " . $item . "\n", Console::FG_GREEN);
 		}
 	}
 
