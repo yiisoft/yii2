@@ -29,7 +29,7 @@ To use this extension,  simply add the following code in your application config
 
 ```php
 'controllerMap' => [
-	'faker' => [
+	'fixture' => [
 		'class' => 'yii\faker\FixtureController',
 	],
 ],
@@ -88,21 +88,21 @@ After you prepared needed templates for tables you can simply generate your fixt
 
 ```php
 //generate fixtures for the users table based on users fixture template
-php yii faker/generate users
+php yii fixture/generate users
 
 //also a short version of this command ("generate" action is default)
-php yii faker users
+php yii fixture users
 
 //to generate fixtures for several tables, use "," as a separator, for example:
-php yii faker users,profile,some_other_table
+php yii fixture users,profile,some_other_table
 ```
 
 In the code above "users" is template name, after this command run, new file named same as template
 will be created under the fixtures path (by default ```@tests/unit/fixtures```) folder.
-You can generate fixtures for all templates by specifying keyword ```all_fixtures```.
+You can generate fixtures for all templates by specifying keyword ```all```.
 
 ```php
-php yii faker/generate all_fixtures
+php yii fixture/generate all_fixtures
 ```
 
 This command will generate fixtures for all template files that are stored under template path and 
@@ -111,19 +111,19 @@ You can specify how many fixtures per file you need by the second parameter. In 
 all fixtures and in each file there will be 3 rows (fixtures).
 
 ```php
-php yii faker/generate all_fixtures 3
+php yii fixture/generate all 3
 ```
 You can specify different options of this command:
 
 ```php
 //generate fixtures in russian language
-php yii faker/generate users 5 --language='ru_RU'
+php yii fixture/generate users 5 --language='ru_RU'
 
 //read templates from the other path
-php yii faker/generate all_fixtures --templatePath='@app/path/to/my/custom/templates'
+php yii fixture/generate all --templatePath='@app/path/to/my/custom/templates'
 
 //generate fixtures into other folders, but be sure that this folders exists or you will get notice about that.
-php yii faker/generate all_fixtures --fixturesPath='@tests/unit/fixtures/subfolder1/subfolder2/subfolder3'
+php yii fixture/generate all --fixturesPath='@tests/unit/fixtures/subfolder1/subfolder2/subfolder3'
 ```
 
 You also can create your own data providers for custom tables fields, see [Faker]((https://github.com/fzaninotto/Faker)) library guide for more info;
@@ -150,7 +150,7 @@ You can use it by adding it to the ```$providers``` property of the current comm
 
 ```php
 'controllerMap' => [
-	'faker' => [
+	'fixture' => [
 		'class' => 'yii\faker\FixtureController',
 		'providers' => [
 			'app\tests\unit\faker\providers\Book',

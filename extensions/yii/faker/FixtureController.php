@@ -23,7 +23,7 @@ use yii\helpers\Console;
  * 
  * ~~~
  *	'controllerMap' => [
- *		'faker' => [
+ *		'fixture' => [
  *			'class' => 'yii\faker\FixtureController',
  *		],
  *	],
@@ -57,13 +57,13 @@ use yii\helpers\Console;
  * After you prepared needed templates for tables you can simply generate your fixtures via command
  * 
  * ~~~
- * php yii faker/generate users
+ * php yii fixture/generate users
  * 
  * //also a short version of this command (generate action is default)
- * php yii faker users
+ * php yii fixture users
  *
  * //to generate fixtures for several tables, use "," as a separator, for example:
- * php yii faker users,profile
+ * php yii fixture users,profile
  * ~~~
  * 
  * In the code above "users" is template name, after this command run, new file named same as template
@@ -71,7 +71,7 @@ use yii\helpers\Console;
  * You can generate fixtures for all templates by specifying keyword "all_fixtures"
  * 
  * ~~~
- * php yii faker/generate all_fixtures
+ * php yii fixture/generate all
  * ~~~
  * 
  * This command will generate fixtures for all template files that are stored under $templatePath and 
@@ -81,20 +81,20 @@ use yii\helpers\Console;
  * all fixtures and in each file there will be 3 rows (fixtures).
  * 
  * ~~~
- * php yii faker/generate all_fixtures 3
+ * php yii fixture/generate all 3
  * ~~~
  * 
  * You can specify different options of this command:
  * 
  * ~~~
  * //generate fixtures in russian languge
- * php yii faker/generate users 5 --language='ru_RU'
+ * php yii fixture/generate users 5 --language='ru_RU'
  * 
  * //read templates from the other path
- * php yii faker/generate all_fixtures --templatePath='@app/path/to/my/custom/templates'
+ * php yii fixture/generate all --templatePath='@app/path/to/my/custom/templates'
  * 
  * //generate fixtures into other folders, but be sure that this folders exists or you will get notice about that.
- * php yii faker/generate all_fixtures --fixturesPath='@tests/unit/fixtures/subfolder1/subfolder2/subfolder3'
+ * php yii fixture/generate all --fixturesPath='@tests/unit/fixtures/subfolder1/subfolder2/subfolder3'
  * ~~~
  * 
  * You also can create your own data providers for custom tables fields, see Faker library guide for more info (https://github.com/fzaninotto/Faker);
@@ -121,7 +121,7 @@ use yii\helpers\Console;
  * 
  * ~~~
  *	'controllerMap' => [
- *		'faker' => [
+ *		'fixture' => [
  *			'class' => 'yii\faker\FixtureController',
  *			'providers' => [
  *				'app\tests\unit\faker\providers\Book',
@@ -140,7 +140,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
 	/**
 	 * type of fixture generating
 	 */
-	const GENERATE_ALL = 'all_fixtures';
+	const GENERATE_ALL = 'all';
 
 	/**
 	 * @var string controller default action ID.
@@ -197,19 +197,19 @@ class FixtureController extends \yii\console\controllers\FixtureController
 	/**
 	 * Generates fixtures and fill them with Faker data.
 	 * @param string $file filename for the table template. You can generate all fixtures for all tables
-	 * by specifiyng keyword "all_fixtures" as filename.
+	 * by specifiyng keyword "all" as filename.
 	 * @param integer $times how much fixtures do you want per table
 	 */
-	public function actionGenerate($file, $times = 2)
+	public function actionGenerate(array $file, $times = 2)
 	{
 		$templatePath = Yii::getAlias($this->templatePath);
 		$fixturesPath = Yii::getAlias($this->fixturesPath);
 
-		if ($this->needToGenerateAll($file)) {
+		if ($this->needToGenerateAll($file[0])) {
 			$files = FileHelper::findFiles($templatePath, ['only' => ['.php']]);
 		}
 		else {
-			foreach(explode(',', $file) as $fileName) {
+			foreach($file as $fileName) {
 				$filesToSearch[] = $fileName . '.php';
 			}
 			$files = FileHelper::findFiles($templatePath, ['only' => $filesToSearch]);
