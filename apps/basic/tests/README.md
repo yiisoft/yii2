@@ -3,11 +3,11 @@ These tests are developed with [Codeception PHP Testing Framework](http://codece
 
 After creating the basic application, follow these steps to prepare for the tests:
 
-1. To install `Codeception` and its dependencies through composer, run commands:
+1. To install `Codeception` and its dependencies through composer, run the following commands:
 
    ```
-   php composer.phar require "codeception/codeception": "*"
-   php composer.phar require "codeception/specify": "*"
+   php composer.phar require --dev "codeception/codeception": "*"
+   php composer.phar require --dev "codeception/specify": "*"
    ```
 
 2. In the file `_bootstrap.php`, modify the definition of the constant `TEST_ENTRY_URL` so
