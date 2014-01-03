@@ -29,13 +29,15 @@ use yii\base\InvalidConfigException;
  * ]
  * ~~~
  *
- * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class DbSession extends Session
 {
+	/**
+	 * @var string|SessionHandlerInterface the name of class or an object implementing the session handler
+	 */
+	public $handler = 'yii\web\DbSessionHandler';
 	/**
 	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
 	 * After the DbSession object is created, if you want to change this property, you should only assign it
@@ -84,16 +86,6 @@ class DbSession extends Session
 	}
 
 	/**
-	 * Returns a value indicating whether to use custom session storage.
-	 * This method overrides the parent implementation and always returns true.
-	 * @return boolean whether to use custom storage.
-	 */
-	public function getUseCustomStorage()
-	{
-		return true;
-	}
-
-	/**
 	 * Updates the current session ID with a newly generated one .
 	 * Please refer to [[http://php.net/session_regenerate_id]] for more details.
 	 * @param boolean $deleteOldSession Whether to delete the old associated session file or not.
@@ -134,91 +126,5 @@ class DbSession extends Session
 					'expire' => time() + $this->getTimeout(),
 				])->execute();
 		}
-	}
-
-	/**
-	 * Session read handler.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @return string the session data
-	 */
-	public function readSession($id)
-	{
-		$query = new Query;
-		$data = $query->select(['data'])
-			->from($this->sessionTable)
-			->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id])
-			->createCommand($this->db)
-			->queryScalar();
-		return $data === false ? '' : $data;
-	}
-
-	/**
-	 * Session write handler.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @param string $data session data
-	 * @return boolean whether session write is successful
-	 */
-	public function writeSession($id, $data)
-	{
-		// exception must be caught in session write handler
-		// http://us.php.net/manual/en/function.session-set-save-handler.php
-		try {
-			$expire = time() + $this->getTimeout();
-			$query = new Query;
-			$exists = $query->select(['id'])
-				->from($this->sessionTable)
-				->where(['id' => $id])
-				->createCommand($this->db)
-				->queryScalar();
-			if ($exists === false) {
-				$this->db->createCommand()
-					->insert($this->sessionTable, [
-						'id' => $id,
-						'data' => $data,
-						'expire' => $expire,
-					])->execute();
-			} else {
-				$this->db->createCommand()
-					->update($this->sessionTable, ['data' => $data, 'expire' => $expire], ['id' => $id])
-					->execute();
-			}
-		} catch (\Exception $e) {
-			if (YII_DEBUG) {
-				echo $e->getMessage();
-			}
-			// it is too late to log an error message here
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * Session destroy handler.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @return boolean whether session is destroyed successfully
-	 */
-	public function destroySession($id)
-	{
-		$this->db->createCommand()
-			->delete($this->sessionTable, ['id' => $id])
-			->execute();
-		return true;
-	}
-
-	/**
-	 * Session GC (garbage collection) handler.
-	 * Do not call this method directly.
-	 * @param integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
-	 * @return boolean whether session is GCed successfully
-	 */
-	public function gcSession($maxLifetime)
-	{
-		$this->db->createCommand()
-			->delete($this->sessionTable, '[[expire]]<:expire', [':expire' => time()])
-			->execute();
-		return true;
 	}
 }

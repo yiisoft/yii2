@@ -39,6 +39,10 @@ use yii\base\InvalidConfigException;
 class CacheSession extends Session
 {
 	/**
+	 * @var string|SessionHandlerInterface the name of class or an object implementing the session handler
+	 */
+	public $handler = 'yii\web\CacheSessionHandler';
+	/**
 	 * @var Cache|string the cache object or the application component ID of the cache object.
 	 * The session data will be stored using this cache object.
 	 *
@@ -59,60 +63,5 @@ class CacheSession extends Session
 			throw new InvalidConfigException('CacheSession::cache must refer to the application component ID of a cache object.');
 		}
 		parent::init();
-	}
-
-	/**
-	 * Returns a value indicating whether to use custom session storage.
-	 * This method overrides the parent implementation and always returns true.
-	 * @return boolean whether to use custom storage.
-	 */
-	public function getUseCustomStorage()
-	{
-		return true;
-	}
-
-	/**
-	 * Session read handler.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @return string the session data
-	 */
-	public function readSession($id)
-	{
-		$data = $this->cache->get($this->calculateKey($id));
-		return $data === false ? '' : $data;
-	}
-
-	/**
-	 * Session write handler.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @param string $data session data
-	 * @return boolean whether session write is successful
-	 */
-	public function writeSession($id, $data)
-	{
-		return $this->cache->set($this->calculateKey($id), $data, $this->getTimeout());
-	}
-
-	/**
-	 * Session destroy handler.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @return boolean whether session is destroyed successfully
-	 */
-	public function destroySession($id)
-	{
-		return $this->cache->delete($this->calculateKey($id));
-	}
-
-	/**
-	 * Generates a unique key used for storing session data in cache.
-	 * @param string $id session variable name
-	 * @return mixed a safe cache key associated with the session variable name
-	 */
-	protected function calculateKey($id)
-	{
-		return [__CLASS__, $id];
 	}
 }

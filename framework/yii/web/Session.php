@@ -81,6 +81,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public $flashVar = '__flash';
 	/**
+	 * @var string|SessionHandlerInterface the name of class or an object implementing the session handler
+	 */
+	public $handler;
+	/**
 	 * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
 	 * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httpOnly'
 	 * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
@@ -94,22 +98,21 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	public function init()
 	{
 		parent::init();
+		if ($this->handler !== null) {
+			if (is_string($this->handler)) {
+				$this->handler = new $this->handler;
+			}
+			if ($this->handler instanceof SessionHandler) {
+				$this->handler->owner = $this;
+			}
+			if (!$this->handler instanceof \SessionHandlerInterface) {
+				throw new InvalidConfigException("Session::handler must implement the SessionHandlerInterface.");
+			}
+		}
 		if ($this->autoStart) {
 			$this->open();
 		}
 		register_shutdown_function([$this, 'close']);
-	}
-
-	/**
-	 * Returns a value indicating whether to use custom session storage.
-	 * This method should be overridden to return true by child classes that implement custom session storage.
-	 * To implement custom session storage, override these methods: [[openSession()]], [[closeSession()]],
-	 * [[readSession()]], [[writeSession()]], [[destroySession()]] and [[gcSession()]].
-	 * @return boolean whether to use custom storage.
-	 */
-	public function getUseCustomStorage()
-	{
-		return false;
 	}
 
 	/**
@@ -121,15 +124,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 			return;
 		}
 
-		if ($this->getUseCustomStorage()) {
-			@session_set_save_handler(
-				[$this, 'openSession'],
-				[$this, 'closeSession'],
-				[$this, 'readSession'],
-				[$this, 'writeSession'],
-				[$this, 'destroySession'],
-				[$this, 'gcSession']
-			);
+		if ($this->handler !== null) {
+			@session_set_save_handler($this->handler, false);
 		}
 
 		$this->setCookieParamsInternal();
@@ -377,79 +373,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	public function setTimeout($value)
 	{
 		ini_set('session.gc_maxlifetime', $value);
-	}
-
-	/**
-	 * Session open handler.
-	 * This method should be overridden if [[useCustomStorage()]] returns true.
-	 * Do not call this method directly.
-	 * @param string $savePath session save path
-	 * @param string $sessionName session name
-	 * @return boolean whether session is opened successfully
-	 */
-	public function openSession($savePath, $sessionName)
-	{
-		return true;
-	}
-
-	/**
-	 * Session close handler.
-	 * This method should be overridden if [[useCustomStorage()]] returns true.
-	 * Do not call this method directly.
-	 * @return boolean whether session is closed successfully
-	 */
-	public function closeSession()
-	{
-		return true;
-	}
-
-	/**
-	 * Session read handler.
-	 * This method should be overridden if [[useCustomStorage()]] returns true.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @return string the session data
-	 */
-	public function readSession($id)
-	{
-		return '';
-	}
-
-	/**
-	 * Session write handler.
-	 * This method should be overridden if [[useCustomStorage()]] returns true.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @param string $data session data
-	 * @return boolean whether session write is successful
-	 */
-	public function writeSession($id, $data)
-	{
-		return true;
-	}
-
-	/**
-	 * Session destroy handler.
-	 * This method should be overridden if [[useCustomStorage()]] returns true.
-	 * Do not call this method directly.
-	 * @param string $id session ID
-	 * @return boolean whether session is destroyed successfully
-	 */
-	public function destroySession($id)
-	{
-		return true;
-	}
-
-	/**
-	 * Session GC (garbage collection) handler.
-	 * This method should be overridden if [[useCustomStorage()]] returns true.
-	 * Do not call this method directly.
-	 * @param integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
-	 * @return boolean whether session is GCed successfully
-	 */
-	public function gcSession($maxLifetime)
-	{
-		return true;
 	}
 
 	/**
