@@ -34,6 +34,7 @@ Yii Framework 2 Change Log
 - Enh #1406: DB Schema support for Oracle Database (p0larbeer, qiangxue)
 - Enh #1437: Added ListView::viewParams (qiangxue)
 - Enh #1469: ActiveRecord::find() now works with default conditions (default scope) applied by createQuery (cebe)
+- Enh #1476: Add yii\web\Session::handler property (nineinchnick)
 - Enh #1499: Added `ActionColumn::controller` property to support customizing the controller for handling GridView actions (qiangxue)
 - Enh #1523: Query conditions now allow to use the NOT operator (cebe)
 - Enh #1552: It is now possible to use multiple bootstrap NavBar in a single page (Alex-Code)
