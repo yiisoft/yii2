@@ -20,7 +20,7 @@ class DefaultController extends Controller
 {
 	public $layout = 'main';
 	/**
-	 * @var  \yii\debug\Module
+	 * @var \yii\debug\Module
 	 */
 	public $module;
 	/**
@@ -88,7 +88,7 @@ class DefaultController extends Controller
 	protected function getManifest($forceReload = false)
 	{
 		if ($this->_manifest === null || $forceReload) {
-			if ($forceReload)  {
+			if ($forceReload) {
 				clearstatcache();
 			}
 			$indexFile = $this->module->dataPath . '/index.data';

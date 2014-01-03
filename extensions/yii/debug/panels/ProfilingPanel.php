@@ -32,7 +32,7 @@ class ProfilingPanel extends Panel
 
 	public function getSummary()
 	{
-		return  Yii::$app->view->render('panels/profile/summary', [
+		return Yii::$app->view->render('panels/profile/summary', [
 			'memory' => sprintf('%.1f MB', $this->data['memory'] / 1048576),
 			'time' => number_format($this->data['time'] * 1000) . ' ms',
 			'panel' => $this
@@ -44,7 +44,7 @@ class ProfilingPanel extends Panel
 		$searchModel = new Profile();
 		$dataProvider = $searchModel->search(Yii::$app->request->get(), $this->getModels());
 
-		return  Yii::$app->view->render('panels/profile/detail', [
+		return Yii::$app->view->render('panels/profile/detail', [
 			'panel' => $this,
 			'dataProvider' => $dataProvider,
 			'searchModel' => $searchModel,

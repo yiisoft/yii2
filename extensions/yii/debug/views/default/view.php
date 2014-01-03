@@ -18,7 +18,7 @@ $this->title = 'Yii Debugger';
 <div class="default-view">
 	<div id="yii-debug-toolbar">
 		<div class="yii-debug-toolbar-block title">
-			<?php echo Html::a('Yii Debugger', ['index'],['title' => 'Back to main debug page']);?>
+			<?= Html::a('Yii Debugger', ['index'], ['title' => 'Back to main debug page']) ?>
 		</div>
 		<?php foreach ($panels as $panel): ?>
 			<?= $panel->getSummary() ?>
