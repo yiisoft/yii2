@@ -8,8 +8,9 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\console\Controller;
-use yii\console\Exception;
+use yii\test\DbTestTrait;
 
 /**
  * This command manages fixtures load to the database tables.
@@ -51,7 +52,7 @@ use yii\console\Exception;
 class FixtureController extends Controller
 {
 
-	use \yii\test\DbTestTrait;
+	use DbTestTrait;
 
 	/**
 	 * @var string controller default action ID.
@@ -104,8 +105,8 @@ class FixtureController extends Controller
 	 */
 	public function actionApply($fixture)
 	{
-		$this->fixtureManager->basePath = $this->fixturePath;
-		$this->fixtureManager->db = $this->db;
+		$this->getFixtureManager()->basePath = $this->fixturePath;
+		$this->getFixtureManager()->db = $this->db;
 		$this->loadFixtures([$fixture]);
 	}
 
@@ -121,28 +122,29 @@ class FixtureController extends Controller
 
 	/**
 	 * Checks if the database and fixtures path are available.
-	 * @throws Exception
+	 * @throws InvalidConfigException
 	 */
 	public function checkRequirements()
 	{
 		$path = Yii::getAlias($this->fixturePath, false);
 
 		if (!is_dir($path) || !is_writable($path)) {
-			throw new Exception("The fixtures path \"{$this->fixturePath}\" not exist or is not writable");
+			throw new InvalidConfigException("The fixtures path \"{$this->fixturePath}\" not exist or is not writable");
 		}
 
 	}
 
 	/**
 	 * Returns database connection component
-	 * @return \yii\db\Connection|null
+	 * @return \yii\db\Connection
+	 * @throws InvalidConfigException if [[db]] is invalid.
 	 */
 	public function getDbConnection()
 	{
 		$db = Yii::$app->getComponent($this->db);
 
 		if ($db == null) {
-			throw new Exception("There is no database connection component with id \"{$this->db}\".");
+			throw new InvalidConfigException("There is no database connection component with id \"{$this->db}\".");
 		}
 
 		return $db;
