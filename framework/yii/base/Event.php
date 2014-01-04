@@ -157,7 +157,7 @@ class Event extends Object
 			return;
 		}
 		if ($event === null) {
-			$event = new self;
+			$event = new static;
 		}
 		$event->handled = false;
 		$event->name = $name;
