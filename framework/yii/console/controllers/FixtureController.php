@@ -106,9 +106,8 @@ class FixtureController extends Controller
 	 */
 	public function actionApply(array $fixtures)
 	{
-		if ($this->getFixtureManager() == null) {
-			throw new Exception('Fixture manager is not configured properly. '
-				. 'Please refer to official documentation for this purposes.');
+		if ($this->getFixtureManager() === null) {
+			throw new Exception('Fixture manager is not configured properly. Please refer to official documentation for this purposes.');
 		}
 
 		if (!$this->confirmApply($fixtures)) {
@@ -148,7 +147,7 @@ class FixtureController extends Controller
 		$path = Yii::getAlias($this->fixturePath, false);
 
 		if (!is_dir($path) || !is_writable($path)) {
-			throw new Exception("The fixtures path \"{$this->fixturePath}\" not exist or is not writable");
+			throw new Exception("The fixtures path \"{$this->fixturePath}\" not exist or is not writable.");
 		}
 
 	}
