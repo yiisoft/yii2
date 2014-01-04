@@ -47,6 +47,7 @@ class ActiveRecord extends BaseActiveRecord
 	const PRIMARY_KEY_NAME = 'id';
 
 	private $_id;
+	private $_score;
 	private $_version;
 
 	/**
@@ -155,9 +156,12 @@ class ActiveRecord extends BaseActiveRecord
 
 	// TODO implement copy and move as pk change is not possible
 
-	public function getId()
+	/**
+	 * @return float returns the score of this record when it was retrieved via a [[find()]] query.
+	 */
+	public function getScore()
 	{
-		return $this->_id;
+		return $this->_score;
 	}
 
 	/**
@@ -165,10 +169,11 @@ class ActiveRecord extends BaseActiveRecord
 	 * @param mixed $value
 	 * @throws \yii\base\InvalidCallException when record is not new
 	 */
-	public function setId($value)
+	public function setPrimaryKey($value)
 	{
-		if ($this->isNewRecord) {
-			$this->_id = $value;
+		$pk = static::primaryKey();
+		if ($this->getIsNewRecord() || $pk != '_id') {
+			$this->$pk = $value;
 		} else {
 			throw new InvalidCallException('Changing the primaryKey of an already saved record is not allowed.');
 		}
@@ -179,10 +184,11 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public function getPrimaryKey($asArray = false)
 	{
+		$pk = static::primaryKey();
 		if ($asArray) {
-			return [ActiveRecord::PRIMARY_KEY_NAME => $this->_id];
+			return [$pk => $this->$pk];
 		} else {
-			return $this->_id;
+			return $this->$pk;
 		}
 	}
 
@@ -191,11 +197,18 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public function getOldPrimaryKey($asArray = false)
 	{
-		$id = $this->isNewRecord ? null : $this->_id;
-		if ($asArray) {
-			return [ActiveRecord::PRIMARY_KEY_NAME => $id];
+		$pk = static::primaryKey();
+		if ($this->getIsNewRecord()) {
+			$id = null;
+		} elseif ($pk == '_id') {
+			$id = $this->_id;
 		} else {
-			return $this->_id;
+			$id = $this->getOldAttribute($pk);
+		}
+		if ($asArray) {
+			return [$pk => $id];
+		} else {
+			return $id;
 		}
 	}
 
@@ -204,11 +217,11 @@ class ActiveRecord extends BaseActiveRecord
 	 *
 	 * The primaryKey for elasticsearch documents is always `primaryKey`. It can not be changed.
 	 *
-	 * @return string[] the primary keys of this record.
+	 * @return string the primary key of this record.
 	 */
 	public static function primaryKey()
 	{
-		return [ActiveRecord::PRIMARY_KEY_NAME];
+		return '_id';
 	}
 
 	/**
@@ -246,8 +259,11 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function create($row)
 	{
-		$row['_source'][ActiveRecord::PRIMARY_KEY_NAME] = $row['_id'];
 		$record = parent::create($row['_source']);
+		$pk = static::primaryKey();
+		$record->$pk = $row['_id'];
+		$record->_score = isset($row['_score']) ? $row['_score'] : null;
+		$record->_version = isset($row['_version']) ? $row['_version'] : null; // TODO version should always be available...
 		return $record;
 	}
 
@@ -317,11 +333,13 @@ class ActiveRecord extends BaseActiveRecord
 				$options
 			);
 
-			if (!$response['ok']) {
+			if (!isset($response['ok'])) {
 				return false;
 			}
-			$this->_id = $response['_id'];
+			$pk = static::primaryKey();
+			$values[$pk] = $this->$pk = $response['_id'];
 			$this->_version = $response['_version'];
+			$this->_score = null;
 			$this->setOldAttributes($values);
 			$this->afterSave(true);
 			return true;
@@ -344,10 +362,11 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function updateAll($attributes, $condition = [])
 	{
-		if (count($condition) == 1 && isset($condition[ActiveRecord::PRIMARY_KEY_NAME])) {
-			$primaryKeys = (array) $condition[ActiveRecord::PRIMARY_KEY_NAME];
+		$pkName = static::primaryKey();
+		if (count($condition) == 1 && isset($condition[$pkName])) {
+			$primaryKeys = (array) $condition[$pkName];
 		} else {
-			$primaryKeys = static::find()->where($condition)->column(ActiveRecord::PRIMARY_KEY_NAME);
+			$primaryKeys = static::find()->where($condition)->column($pkName); // TODO check whether this works with default pk _id
 		}
 		if (empty($primaryKeys)) {
 			return 0;
@@ -371,10 +390,16 @@ class ActiveRecord extends BaseActiveRecord
 		$url = [static::index(), static::type(), '_bulk'];
 		$response = static::getDb()->post($url, [], $bulk);
 		$n=0;
+		$errors = [];
 		foreach($response['items'] as $item) {
-			if ($item['update']['ok']) {
+			if (isset($item['update']['error'])) {
+				$errors[] = $item['update'];
+			} elseif ($item['update']['ok']) {
 				$n++;
 			}
+		}
+		if (!empty($errors)) {
+			throw new Exception(__METHOD__ . ' failed updating records.', $errors);
 		}
 		return $n;
 	}
@@ -395,10 +420,11 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function updateAllCounters($counters, $condition = [])
 	{
-		if (count($condition) == 1 && isset($condition[ActiveRecord::PRIMARY_KEY_NAME])) {
-			$primaryKeys = (array) $condition[ActiveRecord::PRIMARY_KEY_NAME];
+		$pkName = static::primaryKey();
+		if (count($condition) == 1 && isset($condition[$pkName])) {
+			$primaryKeys = (array) $condition[$pkName];
 		} else {
-			$primaryKeys = static::find()->where($condition)->column(ActiveRecord::PRIMARY_KEY_NAME);
+			$primaryKeys = static::find()->where($condition)->column($pkName); // TODO check whether this works with default pk _id
 		}
 		if (empty($primaryKeys) || empty($counters)) {
 			return 0;
@@ -452,10 +478,11 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function deleteAll($condition = [])
 	{
-		if (count($condition) == 1 && isset($condition[ActiveRecord::PRIMARY_KEY_NAME])) {
-			$primaryKeys = (array) $condition[ActiveRecord::PRIMARY_KEY_NAME];
+		$pkName = static::primaryKey();
+		if (count($condition) == 1 && isset($condition[$pkName])) {
+			$primaryKeys = (array) $condition[$pkName];
 		} else {
-			$primaryKeys = static::find()->where($condition)->column(ActiveRecord::PRIMARY_KEY_NAME);
+			$primaryKeys = static::find()->where($condition)->column($pkName); // TODO check whether this works with default pk _id
 		}
 		if (empty($primaryKeys)) {
 			return 0;
