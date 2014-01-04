@@ -1,3 +1,7 @@
+body {
+	padding-top: 62px;
+}
+
 span.indent {
 	color: #ccc;
 }

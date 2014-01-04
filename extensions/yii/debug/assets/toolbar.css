@@ -1,4 +1,8 @@
 #yii-debug-toolbar {
+	position: fixed;
+	left: 0;
+	right: 0;
+	z-index: 1000000;
 	padding: 0;
 	font: 11px Verdana, Arial, sans-serif;
 	text-align: left;
@@ -16,16 +20,14 @@
 }
 
 .yii-debug-toolbar-top {
-	border-bottom: 1px solid #e4e4e4;
+	top: 0;
 	margin: 0 0 20px 0;
+	height: 42px;
+	border-bottom: 1px solid #e4e4e4;
 }
 
 .yii-debug-toolbar-bottom {
-	position: fixed;
-	left: 0;
-	right: 0;
 	bottom: 0;
-	z-index: 1000000;
 	margin: 0;
 	border-top: 1px solid #ccc;
 }
