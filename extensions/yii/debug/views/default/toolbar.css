@@ -27,6 +27,7 @@
 	border-right: 1px solid #e4e4e4;
 	padding: 4px 8px;
 	line-height: 32px;
+	height: 40px;
 }
 
 .yii-debug-toolbar-block a {
