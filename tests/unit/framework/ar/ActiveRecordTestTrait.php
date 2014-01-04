@@ -145,7 +145,10 @@ trait ActiveRecordTestTrait
 		// scope
 		$this->assertEquals(2, count($this->callCustomerFind()->active()->all()));
 		$this->assertEquals(2, $this->callCustomerFind()->active()->count());
+	}
 
+	public function testFindAsArray()
+	{
 		// asArray
 		$customer = $this->callCustomerFind()->where(['id' => 2])->asArray()->one();
 		$this->assertEquals([

@@ -924,7 +924,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 */
 	public function equals($record)
 	{
-		if ($this->isNewRecord || $record->isNewRecord) {
+		if ($this->getIsNewRecord() || $record->getIsNewRecord()) {
 			return false;
 		}
 		return get_class($this) === get_class($record) && $this->getPrimaryKey() === $record->getPrimaryKey();
@@ -1273,7 +1273,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 */
 	public static function isPrimaryKey($keys)
 	{
-		$pks = static::primaryKey();
+		$pks = (array) static::primaryKey();
 		if (count($keys) === count($pks)) {
 			return count(array_intersect($keys, $pks)) === count($pks);
 		} else {

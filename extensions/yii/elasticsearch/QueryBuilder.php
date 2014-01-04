@@ -114,7 +114,7 @@ class QueryBuilder extends \yii\base\Object
 			} else {
 				$column = $name;
 			}
-			if ($column == ActiveRecord::PRIMARY_KEY_NAME) {
+			if ($column == '_id') {
 				$column = '_uid';
 			}
 
@@ -176,7 +176,7 @@ class QueryBuilder extends \yii\base\Object
 	{
 		$parts = [];
 		foreach($condition as $attribute => $value) {
-			if ($attribute == ActiveRecord::PRIMARY_KEY_NAME) {
+			if ($attribute == '_id') {
 				if ($value == null) { // there is no null pk
 					$parts[] = ['script' => ['script' => '0==1']];
 				} else {
@@ -235,8 +235,8 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		list($column, $value1, $value2) = $operands;
-		if ($column == ActiveRecord::PRIMARY_KEY_NAME) {
-			throw new NotSupportedException('Between condition is not supported for primaryKey.');
+		if ($column == '_id') {
+			throw new NotSupportedException('Between condition is not supported for the _id field.');
 		}
 		$filter = ['range' => [$column => ['gte' => $value1, 'lte' => $value2]]];
 		if ($operator == 'not between') {
@@ -274,7 +274,7 @@ class QueryBuilder extends \yii\base\Object
 				unset($values[$i]);
 			}
 		}
-		if ($column == ActiveRecord::PRIMARY_KEY_NAME) {
+		if ($column == '_id') {
 			if (empty($values) && $canBeNull) { // there is no null pk
 				$filter = ['script' => ['script' => '0==1']];
 			} else {
@@ -306,6 +306,6 @@ class QueryBuilder extends \yii\base\Object
 
 	private function buildLikeCondition($operator, $operands)
 	{
-		throw new NotSupportedException('like conditions is not supported by elasticsearch.');
+		throw new NotSupportedException('like conditions are not supported by elasticsearch.');
 	}
 }

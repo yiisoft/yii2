@@ -176,7 +176,7 @@ class Generator extends \yii\gii\Generator
 		/** @var \yii\db\ActiveRecord $class */
 		$class = $this->modelClass;
 		$pk = $class::primaryKey();
-		return $pk[0];
+		return is_array($pk) ? $pk[0] : $pk;
 	}
 
 	/**
@@ -363,7 +363,7 @@ class Generator extends \yii\gii\Generator
 	{
 		/** @var ActiveRecord $class */
 		$class = $this->modelClass;
-		$pks = $class::primaryKey();
+		$pks = (array) $class::primaryKey();
 		if (count($pks) === 1) {
 			return "'id' => \$model->{$pks[0]}";
 		} else {
@@ -379,7 +379,7 @@ class Generator extends \yii\gii\Generator
 	{
 		/** @var ActiveRecord $class */
 		$class = $this->modelClass;
-		$pks = $class::primaryKey();
+		$pks = (array) $class::primaryKey();
 		if (count($pks) === 1) {
 			return '$id';
 		} else {
@@ -391,7 +391,7 @@ class Generator extends \yii\gii\Generator
 	{
 		/** @var ActiveRecord $class */
 		$class = $this->modelClass;
-		$pks = $class::primaryKey();
+		$pks = (array) $class::primaryKey();
 		if (($table = $this->getTableSchema()) === false) {
 			$params = [];
 			foreach ($pks as $pk) {

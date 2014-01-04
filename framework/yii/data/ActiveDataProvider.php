@@ -128,7 +128,7 @@ class ActiveDataProvider extends BaseDataProvider
 		} elseif ($this->query instanceof ActiveQueryInterface) {
 			/** @var \yii\db\ActiveRecord $class */
 			$class = $this->query->modelClass;
-			$pks = $class::primaryKey();
+			$pks = (array) $class::primaryKey();
 			if (count($pks) === 1) {
 				$pk = $pks[0];
 				foreach ($models as $model) {

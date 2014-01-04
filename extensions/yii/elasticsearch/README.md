@@ -55,8 +55,10 @@ For general information on how to use yii's ActiveRecord please refer to the [gu
 
 For defining an elasticsearch ActiveRecord class your record class needs to extend from `yii\elasticsearch\ActiveRecord` and
 implement at least the `attributes()` method to define the attributes of the record.
-The primary key (the `_id` field in elasticsearch terms) is represented by `getId()` and `setId()` and can not be changed.
-The primary key is not part of the attributes.
+The handling of primary keys is different in elasticsearch as the primary key (the `_id` field in elasticsearch terms)
+is not part of the attributes by default. However it is possible to define a [mapping](TODO link to ES docs)
+for the `_id` field to be part of the attributes. See [...TODO...] on how to do this.
+The `_id` field of a document/record can be accessed using [[ActiveRecord::getPrimaryKey()]] and [[ActiveRecord::setPrimaryKey()]].
 
  primary key can be defined via [[primaryKey()]] which defaults to `id` if not specified.
 The primaryKey needs to be part of the attributes so make sure you have an `id` attribute defined if you do
@@ -152,10 +154,11 @@ Using the elasticsearch DebugPanel
 ----------------------------------
 
 The yii2 elasticsearch extensions provides a `DebugPanel` that can be integrated with the yii debug module
-an shows the executed elasticsearch queries. It also allows to run these queries on different cluster nodes
-an view the results.
+and shows the executed elasticsearch queries. It also allows to run these queries
+and view the results.
 
-Add the following to you application config to enable it:
+Add the following to you application config to enable it (if you already have the debug module
+enabled, it is sufficient to just add the panels configuration):
 
 ```php
 	// ...
