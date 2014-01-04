@@ -18,6 +18,9 @@ class DebugAsset extends AssetBundle
 	public $css = [
 		'main.css',
 	];
+	public $js = [
+		'main.js',
+	];
 	public $depends = [
 		'yii\web\YiiAsset',
 		'yii\bootstrap\BootstrapAsset',
