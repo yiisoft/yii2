@@ -80,7 +80,7 @@ class ProfilingPanel extends Panel
 					'category' => $profileTiming['category'],
 					'info' => $profileTiming['info'],
 					'level' => $profileTiming['level'],
-					'timestamp' => $profileTiming['timestamp'],
+					'timestamp' => $profileTiming['timestamp'] * 1000, //in milliseconds
 					'seq' => $seq,
 				];
 			}
