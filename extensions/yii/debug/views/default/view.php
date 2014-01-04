@@ -16,7 +16,7 @@ use yii\helpers\Html;
 $this->title = 'Yii Debugger';
 ?>
 <div class="default-view">
-	<div id="yii-debug-toolbar">
+	<div id="yii-debug-toolbar" class="yii-debug-toolbar-top">
 		<div class="yii-debug-toolbar-block title">
 			<?= Html::a('Yii Debugger', ['index'], ['title' => 'Back to main debug page']) ?>
 		</div>

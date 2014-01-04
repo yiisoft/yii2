@@ -14,7 +14,7 @@ use yii\data\ArrayDataProvider;
 $this->title = 'Yii Debugger';
 ?>
 <div class="default-index">
-	<div id="yii-debug-toolbar">
+	<div id="yii-debug-toolbar" class="yii-debug-toolbar-top">
 		<div class="yii-debug-toolbar-block title">
 			Yii Debugger
 		</div>
