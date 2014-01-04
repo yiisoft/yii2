@@ -37,15 +37,15 @@ class ViewRenderer extends BaseViewRenderer
      * @var array Objects or static classes
      * Keys of array are names to call in template, values - objects or names of static class as string
      * Example: ['html' => '\yii\helpers\Html']
-     * Than in template: {{ html.link('Login', 'site/login') }}
+     * Than in template: {{ html.a('Login', 'site/login') | raw }}
      */
     public $globals = [];
 
     /**
      * @var array Custom functions
      * Keys of array are names to call in template, values - names of functions or static methods of some class
-     * Example: ['rot13' => 'str_rot13', 'link' => '\yii\helpers\Html::link']
-     * Than in template: {{ rot13('test') }} or {{ link('Login', 'site/login') }}
+     * Example: ['rot13' => 'str_rot13', 'a' => '\yii\helpers\Html::a']
+     * Than in template: {{ rot13('test') }} or {{ a('Login', 'site/login') | raw }}
      */
     public $functions = [];
 
