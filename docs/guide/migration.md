@@ -307,7 +307,7 @@ are located within the module's `migrations` directory, we can use the following
 command:
 
 ```
-yii migrate/up --migrationPath=@app.modules.forum.migrations
+yii migrate/up --migrationPath=@app/modules/forum/migrations
 ```
 
 
