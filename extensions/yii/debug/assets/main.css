@@ -28,7 +28,47 @@ ul.trace {
 	float: right;
 }
 
-td, th {
+td {
 	white-space: pre-line;
 	word-wrap: break-word;
+}
+
+th {
+    white-space: nowrap;
+}
+
+/* add sorting icons to gridview sort links */
+a.asc:after, a.desc:after {
+	position: relative;
+	top: 1px;
+	display: inline-block;
+	font-family: 'Glyphicons Halflings';
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	padding-left: 5px;
+}
+
+a.asc:after {
+	content: /*"\e113"*/ "\e151";
+}
+
+a.desc:after {
+	content: /*"\e114"*/ "\e152";
+}
+
+.sort-numerical a.asc:after {
+	content: "\e153";
+}
+
+.sort-numerical a.desc:after {
+	content: "\e154";
+}
+
+.sort-ordinal a.asc:after {
+	content: "\e155";
+}
+
+.sort-ordinal a.desc:after {
+	content: "\e156";
 }
