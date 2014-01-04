@@ -83,7 +83,7 @@ values:
 Then in your template you can use it the following way:
 
 ```
-Hello, {{name}}! {{ html.link('Please login', 'site/login') }}.
+Hello, {{name}}! {{ html.a('Please login', 'site/login') | raw }}.
 ```
 
 ### Additional filters
