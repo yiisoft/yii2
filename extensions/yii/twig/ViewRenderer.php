@@ -26,63 +26,58 @@ class ViewRenderer extends BaseViewRenderer
 	 * @var string the directory or path alias pointing to where Twig cache will be stored.
 	 */
 	public $cachePath = '@runtime/Twig/cache';
-
 	/**
-	 * @var array Twig options
+	 * @var array Twig options.
 	 * @see http://twig.sensiolabs.org/doc/api.html#environment-options
 	 */
 	public $options = [];
-
     /**
-     * @var array Objects or static classes
-     * Keys of array are names to call in template, values - objects or names of static class as string
-     * Example: ['html' => '\yii\helpers\Html']
-     * Than in template: {{ html.link('Login', 'site/login') }}
+     * @var array Objects or static classes.
+     * Keys of the array are names to call in template, values are objects or names of static classes.
+     * Example: `['html' => '\yii\helpers\Html']`.
+     * In the template you can use it like this: `{{ html.a('Login', 'site/login') | raw }}`.
      */
     public $globals = [];
-
     /**
-     * @var array Custom functions
-     * Keys of array are names to call in template, values - names of functions or static methods of some class
-     * Example: ['rot13' => 'str_rot13', 'link' => '\yii\helpers\Html::link']
-     * Than in template: {{ rot13('test') }} or {{ link('Login', 'site/login') }}
+     * @var array Custom functions.
+     * Keys of the array are names to call in template, values are names of functions or static methods of some class.
+     * Example: `['rot13' => 'str_rot13', 'a' => '\yii\helpers\Html::a']`.
+     * In the template you can use it like this: `{{ rot13('test') }}` or `{{ a('Login', 'site/login') | raw }}`.
      */
     public $functions = [];
-
     /**
-     * @var array Custom filters
-     * Keys of array are names to call in template, values - names of functions or static methods of some class
-     * Example: ['rot13' => 'str_rot13', 'jsonEncode' => '\yii\helpers\Json::encode']
-     * Then in template: {{ 'test'|rot13 }} or {{ model|jsonEncode }}
+     * @var array Custom filters.
+     * Keys of the array are names to call in template, values are names of functions or static methods of some class.
+     * Example: `['rot13' => 'str_rot13', 'jsonEncode' => '\yii\helpers\Json::encode']`.
+     * In the template you can use it like this: `{{ 'test'|rot13 }}` or `{{ model|jsonEncode }}`.
      */
     public $filters = [];
-
     /**
-     * @var array Custom extensions
-     * Example: ['Twig_Extension_Sandbox', 'Twig_Extension_Text']
+     * @var array Custom extensions.
+     * Example: `['Twig_Extension_Sandbox', 'Twig_Extension_Text']`
      */
     public $extensions = [];
-
     /**
-     * @var array Twig lexer options
-     * @see http://twig.sensiolabs.org/doc/recipes.html#customizing-the-syntax
-     * Example: Smarty-like syntax
-     * array(
+     * @var array Twig lexer options.
+     * Example: Smarty-like syntax:
+     * ```php
+     * [
      *     'tag_comment'  => ['{*', '*}'],
      *     'tag_block'    => ['{', '}'],
      *     'tag_variable' => ['{$', '}']
-     * )
+     * ]
+     * ```
+     * @see http://twig.sensiolabs.org/doc/recipes.html#customizing-the-syntax
      */
     public $lexerOptions = [];
-
     /**
 	 * @var \Twig_Environment twig environment object that do all rendering twig templates
 	 */
 	public $twig;
 
+
 	public function init()
 	{
-
 		$this->twig = new \Twig_Environment(null, array_merge([
 			'cache' => Yii::getAlias($this->cachePath),
 			'charset' => Yii::$app->charset,
