@@ -68,8 +68,6 @@ class Session extends \yii\web\Session
 	 * it will use a prefix generated from [[Application::id]]. You may set this property to be an empty string
 	 * if you don't want to use key prefix. It is recommended that you explicitly set this property to some
 	 * static value if the cached data needs to be shared among multiple applications.
-	 *
-	 * To ensure interoperability, only alphanumeric characters should be used.
 	 */
 	public $keyPrefix;
 
@@ -94,8 +92,6 @@ class Session extends \yii\web\Session
 		}
 		if ($this->keyPrefix === null) {
 			$this->keyPrefix = substr(md5(Yii::$app->id), 0, 5);
-		} elseif (!ctype_alnum($this->keyPrefix)) {
-			throw new InvalidConfigException(get_class($this) . '::keyPrefix should only contain alphanumeric characters.');
 		}
 		parent::init();
 	}

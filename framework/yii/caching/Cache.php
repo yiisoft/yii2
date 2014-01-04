@@ -82,8 +82,6 @@ abstract class Cache extends Component implements \ArrayAccess
 		parent::init();
 		if ($this->keyPrefix === null) {
 			$this->keyPrefix = substr(md5(Yii::$app->id), 0, 5);
-		} elseif (!ctype_alnum($this->keyPrefix)) {
-			throw new InvalidConfigException(get_class($this) . '::keyPrefix should only contain alphanumeric characters.');
 		}
 	}
 
