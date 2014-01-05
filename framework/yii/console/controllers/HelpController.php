@@ -42,11 +42,6 @@ class HelpController extends Controller
 	 * Displays available commands or the detailed information
 	 * about a particular command. For example,
 	 *
-	 * ~~~
-	 * yii help          # list available commands
-	 * yii help message  # display help info about "message"
-	 * ~~~
-	 *
 	 * @param string $command The name of the command to show help about.
 	 * If not provided, all available commands will be displayed.
 	 * @return integer the exit status
@@ -149,8 +144,9 @@ class HelpController extends Controller
 			foreach ($commands as $command) {
 				echo "- " . $this->ansiFormat($command, Console::FG_YELLOW) . "\n";
 			}
+			$scriptName = $this->getScriptName();
 			$this->stdout("\nTo see the help of each command, enter:\n", Console::BOLD);
-			echo "\n  yii " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
+			echo "\n  $scriptName " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
 							. $this->ansiFormat('<command-name>', Console::FG_CYAN) . "\n\n";
 		} else {
 			$this->stdout("\nNo commands are found.\n\n", Console::BOLD);
@@ -189,8 +185,9 @@ class HelpController extends Controller
 				}
 				echo "\n";
 			}
+			$scriptName = $this->getScriptName();
 			echo "\nTo see the detailed information about individual sub-commands, enter:\n";
-			echo "\n  yii " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
+			echo "\n  $scriptName " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
 							. $this->ansiFormat('<sub-command>', Console::FG_CYAN) . "\n\n";
 		}
 	}
@@ -261,10 +258,11 @@ class HelpController extends Controller
 		}
 
 		$this->stdout("\nUSAGE\n\n", Console::BOLD);
+		$scriptName = $this->getScriptName();
 		if ($action->id === $controller->defaultAction) {
-			echo 'yii ' . $this->ansiFormat($controller->getUniqueId(), Console::FG_YELLOW);
+			echo $scriptName . ' ' . $this->ansiFormat($controller->getUniqueId(), Console::FG_YELLOW);
 		} else {
-			echo 'yii ' . $this->ansiFormat($action->getUniqueId(), Console::FG_YELLOW);
+			echo $scriptName . ' ' . $this->ansiFormat($action->getUniqueId(), Console::FG_YELLOW);
 		}
 		list ($required, $optional) = $this->getArgHelps($method, isset($tags['param']) ? $tags['param'] : []);
 		foreach ($required as $arg => $description) {
@@ -424,5 +422,13 @@ class HelpController extends Controller
 
 		$name = $required ? "$name (required)" : $name;
 		return $doc === '' ? $name : "$name: $doc";
+	}
+
+	/**
+	 * @return string the name of the cli script currently running.
+	 */
+	protected function getScriptName()
+	{
+		return basename(Yii::$app->request->scriptFile);
 	}
 }
