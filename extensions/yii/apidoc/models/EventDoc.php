@@ -10,6 +10,11 @@ namespace yii\apidoc\models;
 use phpDocumentor\Reflection\DocBlock\Tag\ParamTag;
 use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
 
+/**
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
+ */
 class EventDoc extends ConstDoc
 {
 	public $type;

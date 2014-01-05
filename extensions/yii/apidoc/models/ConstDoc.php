@@ -7,6 +7,11 @@
 
 namespace yii\apidoc\models;
 
+/**
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
+ */
 class ConstDoc extends BaseDoc
 {
 	public $definedBy;

@@ -5,33 +5,28 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\apidoc\components;
+namespace yii\apidoc\templates;
 
 use Yii;
 use yii\base\Component;
 use yii\console\Controller;
 use yii\apidoc\models\Context;
+use yii\web\AssetManager;
 use yii\web\View;
 
+/**
+ * Base class for all API documentation renderers
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
+ */
 abstract class BaseRenderer extends Component
 {
-
-	private $_view;
-
-
-	public function getView()
-	{
-		if ($this->_view === null) {
-			$this->_view = new View();
-		}
-		return $this->_view;
-	}
-
 	/**
-	 * @param Context $context
-	 * @param Controller $controller
-	 * @return mixed
+	 * Renders a given [[Context]].
+	 *
+	 * @param Context $context the api documentation context to render.
+	 * @param Controller $controller the apidoc controller instance. Can be used to control output.
 	 */
 	public abstract function render($context, $controller);
-
-} 
+}

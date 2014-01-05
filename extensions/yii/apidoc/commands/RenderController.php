@@ -8,6 +8,8 @@
 namespace yii\apidoc\commands;
 
 use phpDocumentor\Reflection\FileReflector;
+use TokenReflection\ReflectionFile;
+use yii\apidoc\templates\BaseRenderer;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
@@ -23,6 +25,8 @@ use Yii;
  */
 class RenderController extends Controller
 {
+	public $template = 'offline';
+
 	/**
 	 * Renders API documentation files
 	 * @param array $sourceDirs
@@ -31,13 +35,16 @@ class RenderController extends Controller
 	 */
 	public function actionIndex(array $sourceDirs, $targetDir)
 	{
-		$targetDir = Yii::getAlias($targetDir);
+		$targetDir = rtrim(Yii::getAlias($targetDir), '\\/');
 		if (is_dir($targetDir) && !$this->confirm('TargetDirectory already exists. Overwrite?')) {
 			return 2;
 		}
 		if (!is_dir($targetDir)) {
 			mkdir($targetDir);
 		}
+
+		$renderer = $this->findRenderer();
+		$renderer->targetDir = $targetDir;
 
 		$this->stdout('Searching files to process... ');
 		$files = [];
@@ -88,9 +95,24 @@ class RenderController extends Controller
 		$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 
 		// render models
-		$renderer = new OfflineRenderer();
-		$renderer->targetDir = $targetDir;
 		$renderer->render($context, $this);
+	}
+
+	/**
+	 * @return BaseRenderer
+	 */
+	protected function findRenderer()
+	{
+		$file = Yii::getAlias('@yii/apidoc/templates/' . $this->template . '/Renderer.php');
+		$reflection = new FileReflector($file, true);
+		$reflection->process();
+		$classes = $reflection->getClasses();
+		if (empty($classes)) {
+			$this->stderr('Renderer not found.' . PHP_EOL);
+		}
+		$rendererClass = reset($classes)->getName();
+		require($file);
+		return new $rendererClass();
 	}
 
 	protected function findFiles($path, $except = [])
@@ -114,5 +136,13 @@ class RenderController extends Controller
 			]),
 		];
 		return FileHelper::findFiles($path, $options);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function globalOptions()
+	{
+		return array_merge(parent::globalOptions(), ['template']);
 	}
 }

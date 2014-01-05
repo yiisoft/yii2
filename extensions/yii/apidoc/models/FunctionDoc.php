@@ -13,6 +13,11 @@ use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
 use phpDocumentor\Reflection\DocBlock\Tag\ThrowsTag;
 use yii\base\Exception;
 
+/**
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
+ */
 class FunctionDoc extends BaseDoc
 {
 	/**

@@ -11,6 +11,11 @@ use phpDocumentor\Reflection\DocBlock\Tag\AuthorTag;
 use yii\base\Exception;
 use yii\helpers\StringHelper;
 
+/**
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
+ */
 class TypeDoc extends BaseDoc
 {
 	public $authors = [];

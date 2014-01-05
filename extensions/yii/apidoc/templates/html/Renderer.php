@@ -5,8 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\apidoc\components;
-
+namespace yii\apidoc\templates\html;
 
 use yii\apidoc\models\BaseDoc;
 use yii\apidoc\models\ConstDoc;
@@ -14,35 +13,80 @@ use yii\apidoc\models\EventDoc;
 use yii\apidoc\models\MethodDoc;
 use yii\apidoc\models\PropertyDoc;
 use yii\apidoc\models\TypeDoc;
+use yii\apidoc\models\ClassDoc;
+use yii\apidoc\models\Context;
+use yii\apidoc\models\InterfaceDoc;
+use yii\apidoc\models\TraitDoc;
+use yii\apidoc\templates\BaseRenderer;
 use yii\base\ViewContextInterface;
 use yii\console\Controller;
 use yii\helpers\Console;
-use yii\helpers\FileHelper;
 use yii\helpers\Html;
-use yii\apidoc\models\ClassDoc;
-use yii\apidoc\models\Context;
 use Yii;
-use yii\apidoc\models\InterfaceDoc;
-use yii\apidoc\models\TraitDoc;
+use yii\web\AssetManager;
+use yii\web\View;
 
-class OfflineRenderer extends BaseRenderer implements ViewContextInterface
+/**
+ * The base class for HTML API documentation renderers.
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
+ */
+abstract class Renderer extends BaseRenderer implements ViewContextInterface
 {
-	public $targetDir;
-
-	public $layout = '@yii/apidoc/views/layouts/offline.php';
-	public $typeView = '@yii/apidoc/views/type.php';
-	public $indexView = '@yii/apidoc/views/index.php';
-
-	public $pageTitle = 'Yii Framework 2.0 API Documentation';
-
 	/**
-	 * @var Context
+	 * @var string directory to use for output of html files. Can be a path alias.
+	 */
+	public $targetDir;
+	/**
+	 * @var string string to use as the title of the generated page.
+	 */
+	public $pageTitle = 'Yii Framework 2.0 API Documentation';
+	/**
+	 * @var string path or alias of the layout file to use.
+	 */
+	public $layout;
+	/**
+	 * @var string path or alias of the view file to use for rendering types (classes, interfaces, traits).
+	 */
+	public $typeView = '@yii/apidoc/templates/html/views/type.php';
+	/**
+	 * @var string path or alias of the view file to use for rendering the index page.
+	 */
+	public $indexView = '@yii/apidoc/templates/html/views/index.php';
+	/**
+	 * @var Context the [[Context]] currently being rendered.
 	 */
 	protected $context;
+	/**
+	 * @var View
+	 */
+	private $_view;
 
 	/**
-	 * @param Context $context
-	 * @param Controller $controller
+	 * @return View the view instance
+	 */
+	public function getView()
+	{
+		if ($this->_view === null) {
+			$this->_view = new View();
+			$assetPath = Yii::getAlias($this->targetDir) . '/assets';
+			if (!is_dir($assetPath)) {
+				mkdir($assetPath);
+			}
+			$this->_view->assetManager = new AssetManager([
+				'basePath' => $assetPath,
+				'baseUrl' => '/assets',
+			]);
+		}
+		return $this->_view;
+	}
+
+	/**
+	 * Renders a given [[Context]].
+	 *
+	 * @param Context $context the api documentation context to render.
+	 * @param Controller $controller the apidoc controller instance. Can be used to control output.
 	 */
 	public function render($context, $controller)
 	{
@@ -72,11 +116,6 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 		Console::updateProgress(++$done, $typeCount);
 		Console::endProgress(true);
 		$controller->stdout('done.' . PHP_EOL, Console::FG_GREEN);
-
-		$controller->stdout('Copying asset files... ');
-		FileHelper::copyDirectory(__DIR__ . '/../assets/css', $dir . '/css');
-		$controller->stdout('done.' . PHP_EOL, Console::FG_GREEN);
-
 	}
 
 	protected function renderWithLayout($viewFile, $params)
@@ -93,7 +132,7 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 	/**
 	 * creates a link to a type (class, interface or trait)
 	 * @param ClassDoc|InterfaceDoc|TraitDoc $types
-	 * @param string $title
+	 * @param BaseDoc $context
 	 * @return string
 	 */
 	public function typeLink($types, $context = null)
@@ -161,6 +200,7 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 	 */
 	private function resolveNamespace($context)
 	{
+		// TODO use phpdoc Context for this
 		if ($context === null) {
 			return '';
 		}
@@ -285,8 +325,6 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 				. ($param->isOptional ? ' = ' . $param->defaultValue : '');
 		}
 
-		//<?php echo preg_replace('/\{\{([^\{\}]*?)\|([^\{\}]*?)\}\}\(/','$2(',$method->signature);
-
 		return ($method->isReturnByReference ? '<b>&</b>' : '')
 			. ($method->returnType === null ? 'void' : $this->typeLink($method->returnTypes))
 			. ' ' . $method->name . '( '
@@ -294,7 +332,7 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 			. ' )';
 	}
 
-	public function generateFileName($typeName)
+	protected function generateFileName($typeName)
 	{
 		return strtolower(str_replace('\\', '_', $typeName)) . '.html';
 	}
@@ -306,6 +344,6 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 	 */
 	public function findViewFile($view)
 	{
-		return Yii::getAlias('@yii/apidoc/views/' . $view);
+		return Yii::getAlias('@yii/apidoc/templates/html/views/' . $view);
 	}
 }
