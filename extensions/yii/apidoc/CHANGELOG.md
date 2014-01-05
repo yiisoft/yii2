@@ -1,4 +1,4 @@
-Yii Framework 2 phpdoc extension Change Log
+Yii Framework 2 apidoc extension Change Log
 ===========================================
 
 2.0.0 beta under development

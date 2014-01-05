@@ -1,8 +1,8 @@
 <?php
 
-use yii\phpdoc\models\ClassDoc;
-use yii\phpdoc\models\InterfaceDoc;
-use yii\phpdoc\models\TraitDoc;
+use yii\apidoc\models\ClassDoc;
+use yii\apidoc\models\InterfaceDoc;
+use yii\apidoc\models\TraitDoc;
 /**
  * @var ClassDoc|InterfaceDoc|TraitDoc $item
  * @var yii\web\View $this

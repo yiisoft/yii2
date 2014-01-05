@@ -1,25 +1,22 @@
 <?php
 /**
- * 
- * 
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\phpdoc\models;
+namespace yii\apidoc\models;
 
-class TraitDoc extends BaseDoc
+class InterfaceDoc extends BaseDoc
 {
-	// classes using the trait
-	public $usedByClasses = [];
+	public $parentInterfaces = [];
 
-	public $traits = [];
+	public $implementedBy = [];
 
-	public $properties = [];
 	public $methods = [];
 
-
 	/**
-	 * @param \phpDocumentor\Reflection\TraitReflector $reflector
+	 * @param \phpDocumentor\Reflection\InterfaceReflector $reflector
 	 * @param Context $context
 	 * @param array $config
 	 */
@@ -30,20 +27,19 @@ class TraitDoc extends BaseDoc
 		$this->startLine = $reflector->getNode()->getAttribute('startLine');
 		$this->endLine = $reflector->getNode()->getAttribute('endLine');
 
-		foreach($reflector->getTraits() as $trait) {
-			$this->traits[] = ltrim($trait, '\\');
+		foreach($reflector->getParentInterfaces() as $interface) {
+			$this->parentInterfaces[] = ltrim($interface, '\\');
 		}
 
 		// TODO methods
 
-		// TODO properties
-
 		// TODO docblock
 
 		if ($context !== null) {
-			$context->addTrait($this);
+			$context->addInterface($this);
 		}
 
 		parent::__construct($config);
 	}
+
 }

@@ -4,7 +4,7 @@ body
 
 body, div, span, p, input
 {
-    font-family: Verdana, sans-serif, Arial;
+    font-family: Verdana, Arial, sans-serif;
     font-size: 10pt;
     color: #333333;
 }
