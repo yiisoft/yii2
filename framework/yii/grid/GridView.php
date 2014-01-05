@@ -49,6 +49,11 @@ class GridView extends BaseListView
 	 */
 	public $tableOptions = ['class' => 'table table-striped table-bordered'];
 	/**
+	 * @var array the HTML attributes for the container tag of the grid view.
+	 * The "tag" element specifies the tag name of the container element and defaults to "div".
+	 */
+	public $options = ['class' => 'grid-view'];
+	/**
 	 * @var array the HTML attributes for the table header row
 	 */
 	public $headerRowOptions = [];
