@@ -34,7 +34,7 @@ class Exception extends \Exception implements Arrayable
 
 	/**
 	 * Returns the array representation of the exception and all previous exceptions recursively.
-	 * @param \Exception exception object
+	 * @param \Exception $exception object
 	 * @return array the array representation of the exception.
 	 */
 	protected function toArrayRecursive($exception)
