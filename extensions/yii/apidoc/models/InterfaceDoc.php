@@ -7,15 +7,12 @@
 
 namespace yii\apidoc\models;
 
-class InterfaceDoc extends BaseDoc
+class InterfaceDoc extends TypeDoc
 {
 	public $parentInterfaces = [];
 
 	// will be set by Context::updateReferences()
 	public $implementedBy = [];
-
-	// TODO
-	public $methods = [];
 
 	/**
 	 * @param \phpDocumentor\Reflection\InterfaceReflector $reflector
@@ -29,6 +26,7 @@ class InterfaceDoc extends BaseDoc
 			$this->parentInterfaces[] = ltrim($interface, '\\');
 		}
 
-		// TODO methods
+		// interface can not have properties
+		$this->properties = null;
 	}
 }

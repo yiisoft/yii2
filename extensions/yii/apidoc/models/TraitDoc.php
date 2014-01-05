@@ -7,18 +7,13 @@
 
 namespace yii\apidoc\models;
 
-class TraitDoc extends BaseDoc
+class TraitDoc extends TypeDoc
 {
 	// classes using the trait
 	// will be set by Context::updateReferences()
 	public $usedBy = [];
 
 	public $traits = [];
-
-	// TODO
-	public $properties = [];
-	public $methods = [];
-
 
 	/**
 	 * @param \phpDocumentor\Reflection\TraitReflector $reflector
@@ -31,10 +26,5 @@ class TraitDoc extends BaseDoc
 		foreach($reflector->getTraits() as $trait) {
 			$this->traits[] = ltrim($trait, '\\');
 		}
-
-		// TODO methods
-
-		// TODO properties
-
 	}
 }

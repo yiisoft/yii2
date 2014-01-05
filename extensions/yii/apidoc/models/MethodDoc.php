@@ -11,8 +11,26 @@ class MethodDoc extends FunctionDoc
 {
 	public $isAbstract;
 	public $isFinal;
-	public $isProtected;
+
 	public $isStatic;
-	public $isInherited;
+
+	public $visibility;
+
+	// will be set by creating class
 	public $definedBy;
+
+	/**
+	 * @param \phpDocumentor\Reflection\ClassReflector\MethodReflector $reflector
+	 * @param array $config
+	 */
+	public function __construct($reflector, $config = [])
+	{
+		parent::__construct($reflector, $config);
+
+		$this->isAbstract = $reflector->isAbstract();
+		$this->isFinal = $reflector->isFinal();
+		$this->isStatic = $reflector->isStatic();
+
+		$this->visibility = $reflector->getVisibility();
+	}
 }

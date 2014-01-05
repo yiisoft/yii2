@@ -43,17 +43,17 @@ class Context extends Component
 		$reflection->process();
 
 		foreach($reflection->getClasses() as $class) {
-			$class = new ClassDoc($class, $this);
+			$class = new ClassDoc($class);
 			$class->sourceFile = $fileName;
 			$this->addClass($class);
 		}
 		foreach($reflection->getInterfaces() as $interface) {
-			$interface = new InterfaceDoc($interface, $this);
+			$interface = new InterfaceDoc($interface);
 			$interface->sourceFile = $fileName;
 			$this->addInterface($interface);
 		}
 		foreach($reflection->getTraits() as $trait) {
-			$trait = new TraitDoc($trait, $this);
+			$trait = new TraitDoc($trait);
 			$trait->sourceFile = $fileName;
 			$this->addTrait($trait);
 		}
@@ -107,6 +107,7 @@ class Context extends Component
 		}
 		// update interfaces of subclasses
 		foreach($this->classes as $class) {
+			// TODO do the same for events, constants, methods, properties
 			$this->updateSubclassInferfacesTraits($class);
 		}
 		// update implementedBy and usedBy for interfaces and traits
