@@ -13,7 +13,8 @@ Yii supports database fixtures via the `yii fixture` command line tool. This too
 Fixtures format
 ---------------
 
-Fixtures are just plain php files returning array, as follows:
+Fixtures are just plain php files returning array. These files are usually stored under `@tests/unit/fixtures` path, but it
+can be [configured](#configure-command-globally) in other way. Example of fixture file:
 
 ```
 #users.php file under fixtures path
