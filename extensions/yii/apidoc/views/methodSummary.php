@@ -1,0 +1,40 @@
+<?php
+
+use yii\apidoc\models\ClassDoc;
+use yii\apidoc\models\InterfaceDoc;
+use yii\apidoc\models\TraitDoc;
+/**
+ * @var ClassDoc|InterfaceDoc|TraitDoc $item
+ * @var boolean $protected
+ * @var yii\web\View $this
+ */
+
+if ($protected && count($item->getProtectedMethods()) == 0 || !$protected && count($item->getPublicMethods()) == 0) {
+	return;
+} ?>
+
+<div class="summary docMethod">
+<h2><?= $protected ? 'Protected Methods' : 'Public Methods' ?></h2>
+
+<p><a href="#" class="toggle">Hide inherited methods</a></p>
+
+<table class="summaryTable">
+<colgroup>
+	<col class="col-method" />
+	<col class="col-description" />
+	<col class="col-defined" />
+</colgroup>
+<tr>
+  <th>Method</th><th>Description</th><th>Defined By</th>
+</tr>
+<?php foreach($item->methods as $method): ?>
+<?php if($protected && $method->visibility == 'protected' || !$protected && $method->visibility != 'protected'): ?>
+<tr<?= $method->definedBy != $item->name ? ' class="inherited"' : '' ?> id="<?= $method->name ?>">
+  <td><?= $this->context->subjectLink($method, $method->name.'()') ?></td>
+  <td><?= $method->shortDescription ?></td>
+  <td><?= $this->context->typeLink($method->definedBy) ?></td>
+</tr>
+<?php endif; ?>
+<?php endforeach; ?>
+</table>
+</div>

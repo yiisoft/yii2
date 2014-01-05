@@ -22,7 +22,13 @@ class ClassDoc extends TypeDoc
 	// will be set by Context::updateReferences()
 	public $subclasses = [];
 
+	/**
+	 * @var EventDoc[]
+	 */
 	public $events = [];
+	/**
+	 * @var ConstDoc[]
+	 */
 	public $constants = [];
 
 
