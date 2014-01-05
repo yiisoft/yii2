@@ -7,6 +7,7 @@
 
 namespace yii\apidoc\models;
 
-class EventDoc extends ConstDoc
+class ConstDoc extends BaseDoc
 {
+	public $definedBy;
 }

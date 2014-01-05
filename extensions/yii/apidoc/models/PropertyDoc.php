@@ -7,17 +7,58 @@
 
 namespace yii\apidoc\models;
 
+use phpDocumentor\Reflection\DocBlock\Tag\VarTag;
+
 class PropertyDoc extends BaseDoc
 {
-	public $isProtected;
+	public $visibility;
 	public $isStatic;
-	public $readOnly;
-	public $isInherited;
-	public $definedBy;
 
 	public $type;
-	public $signature;
+	public $types;
+	public $defaultValue;
 
+	// will be set by creating class
 	public $getter;
 	public $setter;
+
+	// will be set by creating class
+	public $definedBy;
+
+	public function getIsReadOnly()
+	{
+		return $this->getter !== null && $this->setter === null;
+	}
+
+	public function getIsWriteOnly()
+	{
+		return $this->getter === null && $this->setter !== null;
+	}
+
+	/**
+	 * @param \phpDocumentor\Reflection\ClassReflector\PropertyReflector $reflector
+	 * @param array $config
+	 */
+	public function __construct($reflector = null, $config = [])
+	{
+		parent::__construct($reflector, $config);
+
+		if ($reflector === null) {
+			return;
+		}
+
+		$this->visibility = $reflector->getVisibility();
+		$this->isStatic = $reflector->isStatic();
+
+		$this->defaultValue = $reflector->getDefault();
+
+		foreach($this->tags as $i => $tag) {
+			if ($tag instanceof VarTag) {
+				$this->type = $tag->getType();
+				$this->types = $tag->getTypes();
+				$this->description = $tag->getDescription();
+				// TODO set shortDescription
+			}
+		}
+	}
 }

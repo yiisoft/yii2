@@ -23,9 +23,9 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 {
 	public $targetDir;
 
-	public $layout = '@yii/phpdoc/views/layouts/offline.php';
-	public $itemView = '@yii/phpdoc/views/class.php';
-	public $indexView = '@yii/phpdoc/views/index.php';
+	public $layout = '@yii/apidoc/views/layouts/offline.php';
+	public $itemView = '@yii/apidoc/views/class.php';
+	public $indexView = '@yii/apidoc/views/index.php';
 
 	public $pageTitle = 'Yii Framework 2.0 API Documentation';
 
@@ -177,6 +177,6 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 	 */
 	public function findViewFile($view)
 	{
-		return Yii::getAlias('@yii/phpdoc/views/' . $view);
+		return Yii::getAlias('@yii/apidoc/views/' . $view);
 	}
 }

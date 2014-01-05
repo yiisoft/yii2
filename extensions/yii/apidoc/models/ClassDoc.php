@@ -10,7 +10,7 @@ namespace yii\apidoc\models;
 /**
  * Class ClassDoc
  */
-class ClassDoc extends BaseDoc
+class ClassDoc extends TypeDoc
 {
 	public $parentClass;
 
@@ -22,9 +22,6 @@ class ClassDoc extends BaseDoc
 	// will be set by Context::updateReferences()
 	public $subclasses = [];
 
-	// TODO
-	public $properties = [];
-	public $methods = [];
 	public $events = [];
 	public $constants = [];
 
@@ -50,9 +47,16 @@ class ClassDoc extends BaseDoc
 		foreach($reflector->getTraits() as $trait) {
 			$this->traits[] = ltrim($trait, '\\');
 		}
-
-		// TODO methods
-
-		// TODO properties
+		foreach($reflector->getConstants() as $constantReflector) {
+			if (strncmp($constantReflector->getShortName(), 'EVENT_', 6) == 0) {
+				$event = new EventDoc($constantReflector);
+				$event->definedBy = $this->name;
+				$this->events[] = $event;
+			} else {
+				$constant = new ConstDoc($constantReflector);
+				$constant->definedBy = $this->name;
+				$this->constants[] = $constant;
+			}
+		}
 	}
 }

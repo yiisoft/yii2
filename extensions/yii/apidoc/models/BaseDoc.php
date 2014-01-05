@@ -7,38 +7,65 @@
 
 namespace yii\apidoc\models;
 
+use phpDocumentor\Reflection\DocBlock\Tag\DeprecatedTag;
+use phpDocumentor\Reflection\DocBlock\Tag\SinceTag;
 use yii\base\Object;
 
 class BaseDoc extends Object
 {
 	public $name;
 
-	public $since;
-
-	public $shortDescription;
-	public $description;
-
 	public $sourceFile;
 	public $startLine;
 	public $endLine;
+
+	public $shortDescription;
+	public $description;
+	public $since;
+	public $deprecatedSince;
+	public $deprecatedReason;
+
+	public $tags = [];
+
 
 	/**
 	 * @param \phpDocumentor\Reflection\BaseReflector $reflector
 	 * @param array $config
 	 */
-	public function __construct($reflector, $config = [])
+	public function __construct($reflector = null, $config = [])
 	{
+		parent::__construct($config);
+
+		if ($reflector === null) {
+			return;
+		}
+
 		// base properties
 		$this->name = ltrim($reflector->getName(), '\\');
 		$this->startLine = $reflector->getNode()->getAttribute('startLine');
 		$this->endLine = $reflector->getNode()->getAttribute('endLine');
 
-		// TODO docblock
+		$docblock = $reflector->getDocBlock();
+		if ($docblock !== null) {
+			$this->shortDescription = $docblock->getShortDescription();
+			$this->description = $docblock->getLongDescription();
 
-		parent::__construct($config);
+			$this->tags = $docblock->getTags();
+			foreach($this->tags as $i => $tag) {
+				if ($tag instanceof SinceTag) {
+					$this->since = $tag->getVersion();
+					unset($this->tags[$i]);
+				} elseif ($tag instanceof DeprecatedTag) {
+					$this->deprecatedSince = $tag->getVersion();
+					$this->deprecatedReason = $tag->getDescription();
+					unset($this->tags[$i]);
+				}
+			}
+		}
 	}
 
 
+	// TODO
 	public function loadSource($reflection)
 	{
 		$this->sourcePath=str_replace('\\','/',str_replace(YII_PATH,'',$reflection->getFileName()));
