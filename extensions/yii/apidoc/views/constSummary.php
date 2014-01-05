@@ -2,11 +2,11 @@
 
 use yii\apidoc\models\ClassDoc;
 /**
- * @var ClassDoc $item
+ * @var ClassDoc $type
  * @var yii\web\View $this
  */
 
-if (empty($item->constants)) {
+if (empty($type->constants)) {
 	return;
 } ?>
 <div class="summary docConst">
@@ -23,8 +23,8 @@ if (empty($item->constants)) {
 <tr>
   <th>Constant</th><th>Description</th><th>Defined By</th>
 </tr>
-<?php foreach($item->constants as $constant): ?>
-<tr<?= $constant->definedBy != $item->name ? ' class="inherited"' : '' ?> id="<?= $constant->name ?>">
+<?php foreach($type->constants as $constant): ?>
+<tr<?= $constant->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $constant->name ?>">
   <td><?= $this->context->subjectLink($constant) ?></td>
   <td><?= $constant->shortDescription ?></td>
   <td><?= $this->context->typeLink($constant->definedBy) ?></td>

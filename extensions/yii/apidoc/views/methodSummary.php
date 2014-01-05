@@ -4,12 +4,12 @@ use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\InterfaceDoc;
 use yii\apidoc\models\TraitDoc;
 /**
- * @var ClassDoc|InterfaceDoc|TraitDoc $item
+ * @var ClassDoc|InterfaceDoc|TraitDoc $type
  * @var boolean $protected
  * @var yii\web\View $this
  */
 
-if ($protected && count($item->getProtectedMethods()) == 0 || !$protected && count($item->getPublicMethods()) == 0) {
+if ($protected && count($type->getProtectedMethods()) == 0 || !$protected && count($type->getPublicMethods()) == 0) {
 	return;
 } ?>
 
@@ -27,9 +27,9 @@ if ($protected && count($item->getProtectedMethods()) == 0 || !$protected && cou
 <tr>
   <th>Method</th><th>Description</th><th>Defined By</th>
 </tr>
-<?php foreach($item->methods as $method): ?>
+<?php foreach($type->methods as $method): ?>
 <?php if($protected && $method->visibility == 'protected' || !$protected && $method->visibility != 'protected'): ?>
-<tr<?= $method->definedBy != $item->name ? ' class="inherited"' : '' ?> id="<?= $method->name ?>">
+<tr<?= $method->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $method->name ?>">
   <td><?= $this->context->subjectLink($method, $method->name.'()') ?></td>
   <td><?= $method->shortDescription ?></td>
   <td><?= $this->context->typeLink($method->definedBy) ?></td>
