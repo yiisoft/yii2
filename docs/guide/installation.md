@@ -81,6 +81,8 @@ If you are using Linux you can create a hard link to make it accessable, using t
 ln requirements.php ../requirements.php
 ```
 
+For the advanded app the `requirements.php` is two levels up so you have to use `ln requirements.php ../../requirements.php`.
+
 Yii 2 requires PHP 5.4.0 or higher. Yii has been tested with the [Apache HTTP server](http://httpd.apache.org/) and
 [Nginx HTTP server](http://nginx.org/) on Windows and Linux.
 Yii may also be usable on other web servers and platforms, provided that PHP 5.4 or higher is supported.
