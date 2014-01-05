@@ -21,18 +21,14 @@ install:
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
 # basic application:
-  - pwd
   - composer install --dev --prefer-dist -d apps/basic
   - cd apps/basic && php vendor/bin/codecept build && cd ../..
-  - pwd
-  - cd apps/basic/web && php -S localhost:8080 &
-  - pwd
+  - cd apps && php -S localhost:8080 &
 
 before_script:
   - echo 'elasticsearch version ' && curl http://localhost:9200/
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
-  - pwd
   - tests/unit/data/travis/sphinx-setup.sh
   - mongo yii2test --eval 'db.addUser("travis", "test");'
 
