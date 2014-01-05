@@ -52,6 +52,11 @@ class ListView extends BaseListView
 	 * @var string the HTML code to be displayed between any two consecutive items.
 	 */
 	public $separator = "\n";
+	/**
+	 * @var array the HTML attributes for the container tag of the list view.
+	 * The "tag" element specifies the tag name of the container element and defaults to "div".
+	 */
+	public $options = ['class' => 'list-view'];
 
 
 	/**

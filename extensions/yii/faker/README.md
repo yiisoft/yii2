@@ -104,7 +104,7 @@ will be created under the fixtures path (by default ```@tests/unit/fixtures```) 
 You can generate fixtures for all templates by specifying keyword ```all```.
 
 ```php
-php yii fixture/generate all_fixtures
+php yii fixture/generate all
 ```
 
 This command will generate fixtures for all template files that are stored under template path and 

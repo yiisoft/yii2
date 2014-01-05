@@ -90,7 +90,7 @@ class DetailView extends Widget
 	 * @var array the HTML attributes for the container tag of this widget. The "tag" option specifies
 	 * what container tag should be used. It defaults to "table" if not set.
 	 */
-	public $options = ['class' => 'table table-striped table-bordered'];
+	public $options = ['class' => 'table table-striped table-bordered detail-view'];
 	/**
 	 * @var array|Formatter the formatter used to format model attribute values into displayable texts.
 	 * This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]]

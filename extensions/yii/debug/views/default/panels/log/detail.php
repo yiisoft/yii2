@@ -10,6 +10,7 @@ use yii\log\Logger;
 echo GridView::widget([
 	'dataProvider' => $dataProvider,
 	'id' => 'log-panel-detailed-grid',
+	'options' => ['class' => 'detail-grid-view'],
 	'filterModel' => $searchModel,
 	'filterUrl' => $panel->getUrl(),
 	'rowOptions' => function ($model, $key, $index, $grid) {
@@ -43,7 +44,6 @@ echo GridView::widget([
 				Logger::LEVEL_INFO => ' Info ',
 				Logger::LEVEL_WARNING => ' Warning ',
 				Logger::LEVEL_ERROR => ' Error ',
-				Logger::LEVEL_PROFILE => ' Profile ',
 			],
 		],
 		'category',

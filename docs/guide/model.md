@@ -112,6 +112,21 @@ class User extends \yii\db\ActiveRecord
 }
 ```
 
+If you want to keep the default scenario available besides your own scenarios, use inheritance to include it:
+```php
+class User extends \yii\db\ActiveRecord
+{
+	public function scenarios()
+	{
+		$scenarios = parent::scenarios();
+		$scenarios['login'] = ['username', 'password'];
+		$scenarios['register'] = ['username', 'email', 'password'];
+		return $scenarios;
+	}
+}
+```
+
+
 Sometimes, we want to mark an attribute as not safe for massive assignment (but we still want the attribute to be validated).
 We may do so by prefixing an exclamation character to the attribute name when declaring it in `scenarios()`. For example:
 

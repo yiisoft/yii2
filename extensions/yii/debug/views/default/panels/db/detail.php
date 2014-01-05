@@ -9,6 +9,7 @@ use yii\grid\GridView;
 echo GridView::widget([
 	'dataProvider' => $dataProvider,
 	'id' => 'db-panel-detailed-grid',
+	'options' => ['class' => 'detail-grid-view'],
 	'filterModel' => $searchModel,
 	'filterUrl' => $panel->getUrl(),
 	'columns' => [
