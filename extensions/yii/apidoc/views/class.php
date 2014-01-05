@@ -15,6 +15,12 @@ use yii\apidoc\models\TraitDoc;
 	} elseif ($item instanceof TraitDoc) {
 		echo 'Trait ';
 	} else {
+		if ($item->isFinal) {
+			echo 'Final ';
+		}
+		if ($item->isAbstract) {
+			echo 'Abstract ';
+		}
 		echo 'Class ';
 	}
 	echo $item->name;
