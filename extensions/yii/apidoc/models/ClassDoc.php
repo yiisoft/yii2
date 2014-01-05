@@ -57,11 +57,11 @@ class ClassDoc extends TypeDoc
 			if (strncmp($constantReflector->getShortName(), 'EVENT_', 6) == 0) {
 				$event = new EventDoc($constantReflector);
 				$event->definedBy = $this->name;
-				$this->events[] = $event;
+				$this->events[$event->name] = $event;
 			} else {
 				$constant = new ConstDoc($constantReflector);
 				$constant->definedBy = $this->name;
-				$this->constants[] = $constant;
+				$this->constants[$constant->name] = $constant;
 			}
 		}
 	}
