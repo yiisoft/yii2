@@ -326,19 +326,27 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	}
 
 	/**
-	 * Returns the table name used by the specified active query.
+	 * Returns the table alias (or table name) that can be used to prefix column names.
 	 * @param ActiveQuery $query
-	 * @return string the table name
+	 * @return string the table alias (or table name) enclosed within double curly brackets.
 	 */
-	private function getQueryTableName($query)
+	private function getQueryTableAlias($query)
 	{
 		if (empty($query->from)) {
 			/** @var ActiveRecord $modelClass */
 			$modelClass = $query->modelClass;
-			return $modelClass::tableName();
+			$tableName = $modelClass::tableName();
 		} else {
-			return reset($query->from);
+			$tableName = reset($query->from);
 		}
+
+		if (preg_match('/^(.*?)\s+({{\w+}}|\w+)$/', $tableName, $matches)) {
+			$tableName = $matches[2];
+		}
+		if (strpos($tableName, '{{') === false) {
+			$tableName = '{{' . $tableName . '}}';
+		}
+		return $tableName;
 	}
 
 	/**
@@ -364,15 +372,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			return;
 		}
 
-		$parentTable = $this->getQueryTableName($parent);
-		$childTable = $this->getQueryTableName($child);
-		if (strpos($parentTable, '{{') === false) {
-			$parentTable = '{{' . $parentTable . '}}';
-		}
-		if (strpos($childTable, '{{') === false) {
-			$childTable = '{{' . $childTable . '}}';
-		}
-
+		$parentTable = $this->getQueryTableAlias($parent);
+		$childTable = $this->getQueryTableAlias($child);
 
 		if (!empty($child->link)) {
 			$on = [];
