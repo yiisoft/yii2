@@ -1,0 +1,105 @@
+pre {
+    color: #000000;
+    background-color: #FFF5E6;
+    font-family: "courier new", "times new roman", monospace;
+    line-height: 1.3em;
+    /* Put a nice border around it. */
+    padding: 1px;
+    width: 90%;
+    /* Don't wrap its contents, and show scrollbars. */
+    /* white-space: nowrap;*/
+    overflow: auto;
+    /* Stop after about 24 lines, and just show a scrollbar. */
+    /* max-height: 24em; */
+    margin: 5px;
+    padding-left: 20px;
+    border: 1px solid #FFE6BF;
+    border-left: 6px solid #FFE6BF;
+}
+
+div.code {
+	display: none;
+    color: #000000;
+    background-color: #FFF5E6;
+    font-family: "courier new", "times new roman", monospace;
+    line-height: 1.3em;
+    /* Put a nice border around it. */
+    padding: 1px;
+    width: 90%;
+    /* Don't wrap its contents, and show scrollbars. */
+    /* white-space: nowrap;*/
+    overflow: auto;
+    /* Stop after about 24 lines, and just show a scrollbar. */
+    /* max-height: 24em; */
+    margin: 5px;
+    padding-left: 20px;
+    border-left: 6px solid #FFE6BF;
+}
+
+table.summaryTable {
+	background: #E6ECFF;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+table.summaryTable th, table.summaryTable td {
+	border: 1px #BFCFFF solid;
+	padding: 0.2em;
+}
+
+table.summaryTable th {
+	background: #CCD9FF;
+	text-align: left;
+}
+
+#nav {
+	padding: 3px;
+	margin: 0 0 10px 0;
+	border-top: 1px #BFCFFF solid;
+}
+
+#classDescription {
+	padding: 5px;
+	margin: 10px 0 20px 0;
+	border-bottom: 1px solid #BFCFFF;
+}
+
+.detailHeader {
+	font-weight: bold;
+	font-size: 12pt;
+	margin: 30px 0 5px 0;
+	border-bottom: 1px solid #BFCFFF;
+}
+
+.detailHeaderTag {
+	font-weight: normal;
+	font-size: 10pt;
+}
+
+.signature, .signature2 {
+	padding: 3px;
+    color: #000000;
+    font-family: "courier new", "times new roman", monospace;
+    line-height: 1.3em;
+}
+
+.signature {
+	margin: 10px 0 10px 0;
+	background: #E6ECFF;
+	border: 1px #BFCFFF solid;
+}
+
+.paramNameCol {
+	width: 12%;
+	font-weight: bold;
+}
+
+.paramTypeCol {
+	width: 12%;
+}
+
+.sourceCode {
+	margin: 5px 0;
+	padding:5px;
+	background:#FFF5E6;
+}
