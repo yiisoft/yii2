@@ -199,6 +199,6 @@ class Item extends Object
 	public function save()
 	{
 		$this->manager->saveItem($this, $this->_oldName);
-		unset($this->_oldName);
+		$this->_oldName = null;
 	}
 }
