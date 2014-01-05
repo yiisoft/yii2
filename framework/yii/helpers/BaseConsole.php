@@ -861,7 +861,7 @@ class BaseConsole
 		}
 		$width -= mb_strlen($prefix);
 
-		$percent = $done / $total;
+		$percent = ($total == 0) ? 1 : $done / $total;
 		$info = sprintf("%d%% (%d/%d)", $percent * 100, $done, $total);
 
 		if ($done > $total || $done == 0) {
