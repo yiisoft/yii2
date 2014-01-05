@@ -5,20 +5,19 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\phpdoc\commands;
+namespace yii\apidoc\commands;
 
 use phpDocumentor\Reflection\FileReflector;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
-use yii\phpdoc\components\OfflineRenderer;
-use yii\phpdoc\models\Context;
+use yii\apidoc\components\OfflineRenderer;
+use yii\apidoc\models\Context;
 use Yii;
 
 /**
  *
  * @author Carsten Brandt <mail@cebe.cc>
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class PhpdocController extends Controller

@@ -1,11 +1,11 @@
 {
-	"name": "yiisoft/yii2-phpdoc",
-	"description": "PHP Documentation generator for the Yii framework 2.0",
-	"keywords": ["yii", "phpdoc", "api", "documentation"],
+	"name": "yiisoft/yii2-apidoc",
+	"description": "API Documentation generator for the Yii framework 2.0",
+	"keywords": ["yii", "phpdoc", "apidoc", "api", "documentation"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {
-		"issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aredis",
+		"issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aapidoc",
 		"forum": "http://www.yiiframework.com/forum/",
 		"wiki": "http://www.yiiframework.com/wiki/",
 		"irc": "irc://irc.freenode.net/yii",
@@ -23,7 +23,7 @@
 		"phpdocumentor/reflection": "1.0.2"
 	},
 	"autoload": {
-		"psr-0": { "yii\\redis\\": "" }
+		"psr-0": { "yii\\apidoc\\": "" }
 	},
-	"target-dir": "yii/redis"
+	"target-dir": "yii/apidoc"
 }

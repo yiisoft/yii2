@@ -1,6 +1,11 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
-namespace yii\phpdoc\models;
+namespace yii\apidoc\models;
 
 use phpDocumentor\Reflection\FileReflector;
 use yii\base\Object;

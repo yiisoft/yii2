@@ -1,11 +1,11 @@
 <?php
 /**
- * 
- * 
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\phpdoc\components;
+namespace yii\apidoc\components;
 
 
 use yii\base\ViewContextInterface;
@@ -13,11 +13,11 @@ use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
-use yii\phpdoc\models\ClassDoc;
-use yii\phpdoc\models\Context;
+use yii\apidoc\models\ClassDoc;
+use yii\apidoc\models\Context;
 use Yii;
-use yii\phpdoc\models\InterfaceDoc;
-use yii\phpdoc\models\TraitDoc;
+use yii\apidoc\models\InterfaceDoc;
+use yii\apidoc\models\TraitDoc;
 
 class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 {

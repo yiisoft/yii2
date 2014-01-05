@@ -11,13 +11,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require yiisoft/yii2-phpdoc "*"
+php composer.phar require yiisoft/yii2-apidoc "*"
 ```
 
 or add
 
 ```json
-"yiisoft/yii2-phpdoc": "*"
+"yiisoft/yii2-apidoc": "*"
 ```
 
 to the require section of your composer.json.
