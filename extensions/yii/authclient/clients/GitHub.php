@@ -73,4 +73,20 @@ class GitHub extends OAuth2
 	{
 		return $this->api('user', 'GET');
 	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultName()
+	{
+		return 'github';
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultTitle()
+	{
+		return 'GitHub';
+	}
 }
