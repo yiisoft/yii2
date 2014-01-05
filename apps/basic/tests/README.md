@@ -6,7 +6,7 @@ After creating the basic application, follow these steps to prepare for the test
 1. To install `Codeception` and its dependencies through composer, run the following commands:
 
    ```
-   php composer.phar require --dev "codeception/codeception *" "codeception/specify *"
+   php composer.phar require --dev "codeception/codeception *" "codeception/specify *" "codeception/verify *"
    ```
 
 2. In the file `_bootstrap.php`, modify the definition of the constant `TEST_ENTRY_URL` so
