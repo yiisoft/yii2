@@ -43,7 +43,6 @@ echo GridView::widget([
 				Logger::LEVEL_INFO => ' Info ',
 				Logger::LEVEL_WARNING => ' Warning ',
 				Logger::LEVEL_ERROR => ' Error ',
-				Logger::LEVEL_PROFILE => ' Profile ',
 			],
 		],
 		'category',
