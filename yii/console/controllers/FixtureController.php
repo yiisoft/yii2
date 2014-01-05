@@ -141,13 +141,11 @@ class FixtureController extends Controller
 
 		$transaction = Yii::$app->db->beginTransaction();
 
-		try
-		{
+		try {
 			$this->loadFixtures($foundFixtures);
 			$transaction->commit();
 
-		} catch (\Exception $e)
-		{
+		} catch (\Exception $e) {
 			$transaction->rollback();
 			$this->stdout("Exception occured, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
 			throw $e;
@@ -173,8 +171,7 @@ class FixtureController extends Controller
 
 		$transaction = Yii::$app->db->beginTransaction();
 
-		try
-		{
+		try {
 			$this->getDbConnection()->createCommand()->checkIntegrity(false)->execute();
 
 			foreach($tables as $table) {
@@ -186,8 +183,7 @@ class FixtureController extends Controller
 			$this->getDbConnection()->createCommand()->checkIntegrity(true)->execute();
 			$transaction->commit();
 
-		} catch (\Exception $e)
-		{
+		} catch (\Exception $e) {
 			$transaction->rollback();
 			$this->stdout("Exception occured, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
 			throw $e;
