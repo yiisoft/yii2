@@ -26,30 +26,36 @@ use yii\apidoc\models\TraitDoc;
 	echo $item->name;
 ?></h1>
 <div id="nav">
-<a href="index.html">All Classes</a>
-<?php if(!($item instanceof InterfaceDoc) && !empty($item->properties)): ?>
-| <a href="#properties">Properties</a>
-<?php endif; ?>
-<?php if(!empty($item->methods)): ?>
-| <a href="#methods">Methods</a>
-<?php endif; ?>
-<?php if($item instanceof ClassDoc && !empty($item->events)): ?>
-| <a href="#events">Events</a>
-<?php endif; ?>
+	<a href="index.html">All Classes</a>
+	<?php if(!($item instanceof InterfaceDoc) && !empty($item->properties)): ?>
+		| <a href="#properties">Properties</a>
+	<?php endif; ?>
+	<?php if(!empty($item->methods)): ?>
+		| <a href="#methods">Methods</a>
+	<?php endif; ?>
+	<?php if($item instanceof ClassDoc && !empty($item->events)): ?>
+		| <a href="#events">Events</a>
+	<?php endif; ?>
+	<?php if($item instanceof ClassDoc && !empty($item->constants)): ?>
+		| <a href="#constants">Constants</a>
+	<?php endif; ?>
 </div>
 
-<?= $this->render('classSummary', ['item' => $item]); ?>
+<?= $this->render('classSummary', ['item' => $item]) ?>
 
 <a name="properties"></a>
-<?php //$this->renderPartial('propertySummary',array('class'=>$item,'protected'=>false)); ?>
-<?php //$this->renderPartial('propertySummary',array('class'=>$item,'protected'=>true)); ?>
+<?= $this->render('propertySummary', ['item' => $item,'protected' => false]) ?>
+<?= $this->render('propertySummary', ['item' => $item,'protected' => true]) ?>
 
 <a name="methods"></a>
-<?php //$this->renderPartial('methodSummary',array('class'=>$item,'protected'=>false)); ?>
-<?php //$this->renderPartial('methodSummary',array('class'=>$item,'protected'=>true)); ?>
+<?= $this->render('methodSummary', ['item' => $item, 'protected' => false]) ?>
+<?= $this->render('methodSummary', ['item' => $item, 'protected' => true]) ?>
 
 <a name="events"></a>
-<?php //$this->renderPartial('eventSummary',array('class'=>$item)); ?>
+<?= $this->render('eventSummary', ['item' => $item]) ?>
+
+<a name="constants"></a>
+<?= $this->render('constSummary', ['item' => $item]) ?>
 
 <?php //$this->renderPartial('propertyDetails',array('class'=>$item)); ?>
 <?php //$this->renderPartial('methodDetails',array('class'=>$item)); ?>

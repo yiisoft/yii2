@@ -13,8 +13,60 @@ use yii\base\Exception;
 class TypeDoc extends BaseDoc
 {
 	public $authors = [];
+	/**
+	 * @var MethodDoc[]
+	 */
 	public $methods = [];
+	/**
+	 * @var PropertyDoc[]
+	 */
 	public $properties = [];
+
+
+	public function getPublicMethods()
+	{
+		return $this->getFilteredMethods('public');
+	}
+
+	public function getProtectedMethods()
+	{
+		return $this->getFilteredMethods('protected');
+	}
+
+	private function getFilteredMethods($visibility)
+	{
+		$methods = [];
+		foreach($this->methods as $method) {
+			if ($method->visibility == $visibility) {
+				$methods[] = $method;
+			}
+		}
+		return $methods;
+	}
+
+	public function getPublicProperties()
+	{
+		return $this->getFilteredProperties('public');
+	}
+
+	public function getProtectedProperties()
+	{
+		return $this->getFilteredProperties('protected');
+	}
+
+	private function getFilteredProperties($visibility)
+	{
+		if ($this->properties === null) {
+			return [];
+		}
+		$properties = [];
+		foreach($this->properties as $property) {
+			if ($property->visibility == $visibility) {
+				$properties[] = $property;
+			}
+		}
+		return $properties;
+	}
 
 	/**
 	 * @param \phpDocumentor\Reflection\InterfaceReflector $reflector
@@ -48,6 +100,7 @@ class TypeDoc extends BaseDoc
 				$method = new MethodDoc($methodReflector);
 				$method->definedBy = $this->name;
 
+				// TODO only set property when subclass of Object
 				if (!strncmp($method->name, 'set', 3)) {
 					$propertyName = lcfirst(substr($method->name, 3));
 					if (isset($this->properties[$propertyName])) {

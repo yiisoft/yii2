@@ -8,6 +8,10 @@
 namespace yii\apidoc\components;
 
 
+use yii\apidoc\models\ConstDoc;
+use yii\apidoc\models\EventDoc;
+use yii\apidoc\models\MethodDoc;
+use yii\apidoc\models\PropertyDoc;
 use yii\base\ViewContextInterface;
 use yii\console\Controller;
 use yii\helpers\Console;
@@ -85,17 +89,50 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 	}
 
 	/**
-	 * creates a link to an item
-	 * @param ClassDoc|InterfaceDoc|TraitDoc $item
+	 * creates a link to a type (class, interface or trait)
+	 * @param ClassDoc|InterfaceDoc|TraitDoc $types
 	 * @param string $title
 	 * @return string
 	 */
-	public function link($item, $title = null)
+	public function typeLink($types, $title = null)
+	{
+		if (!is_array($types)) {
+			$types = [$types];
+		}
+		$links = [];
+		foreach($types as $type) {
+			if (!is_object($type) && ($t = $this->context->getType($type)) !== null) {
+				$type = $t;
+			}
+			if (!is_object($type)) {
+				$links[] = $type;
+			} else {
+				$links[] = Html::a(
+					$title !== null ? $title : $type->name,
+					null,
+					['href' => $this->generateFileName($type->name)]
+				);
+			}
+		}
+		return implode('|', $links);
+	}
+
+	/**
+	 * creates a link to a subject
+	 * @param PropertyDoc|MethodDoc|ConstDoc|EventDoc $subject
+	 * @param string $title
+	 * @return string
+	 */
+	public function subjectLink($subject, $title = null)
 	{
 		if ($title === null) {
-			$title = $item->name;
+			$title = $subject->name;
 		}
-		return Html::a($title, null, ['href' => $this->generateFileName($item->name)]);
+		if (($type = $this->context->getType($subject->definedBy)) === null) {
+			return $subject->name;
+		} else {
+			return Html::a($title, null, ['href' => $this->generateFileName($type->name) . '#' . $subject->name . '-detail']);
+		}
 	}
 
 	/**
@@ -104,11 +141,11 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 	 */
 	public function renderInheritance($class)
 	{
-		$parents[] = $this->link($class);
+		$parents[] = $this->typeLink($class);
 		while ($class->parentClass !== null) {
 			if(isset($this->context->classes[$class->parentClass])) {
 				$class = $this->context->classes[$class->parentClass];
-				$parents[] = $this->link($class);
+				$parents[] = $this->typeLink($class);
 			} else {
 				$parents[] = $class->parentClass; // TODO link to php.net
 				break;
@@ -118,15 +155,16 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 	}
 
 	/**
-	 * @param ClassDoc $class
+	 * @param array $names
 	 * @return string
 	 */
-	public function renderImplements($class)
+	public function renderInterfaces($names)
 	{
 		$interfaces = [];
-		foreach($class->interfaces as $interface) {
+		sort($names, SORT_STRING);
+		foreach($names as $interface) {
 			if(isset($this->context->interfaces[$interface])) {
-				$interfaces[] = $this->link($this->context->interfaces[$interface]);
+				$interfaces[] = $this->typeLink($this->context->interfaces[$interface]);
 			} else {
 				$interfaces[] = $interface; // TODO link to php.net
 			}
@@ -135,15 +173,16 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 	}
 
 	/**
-	 * @param ClassDoc|TraitDoc $class
+	 * @param array $names
 	 * @return string
 	 */
-	public function renderTraitUses($class)
+	public function renderTraits($names)
 	{
 		$traits = [];
-		foreach($class->traits as $trait) {
+		sort($names, SORT_STRING);
+		foreach($names as $trait) {
 			if(isset($this->context->traits[$trait])) {
-				$traits[] = $this->link($this->context->traits[$trait]);
+				$traits[] = $this->typeLink($this->context->traits[$trait]);
 			} else {
 				$traits[] = $trait; // TODO link to php.net
 			}
@@ -151,17 +190,22 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 		return implode(', ',$traits);
 	}
 
-	public function renderSubclasses($class)
+	/**
+	 * @param array $names
+	 * @return string
+	 */
+	public function renderClasses($names)
 	{
-		$subclasses = [];
-		foreach($class->subclasses as $subclass) {
-			if(isset($this->context->classes[$subclass])) {
-				$subclasses[] = $this->link($this->context->classes[$subclass]);
+		$classes = [];
+		sort($names, SORT_STRING);
+		foreach($names as $class) {
+			if(isset($this->context->classes[$class])) {
+				$classes[] = $this->typeLink($this->context->classes[$class]);
 			} else {
-				$subclasses[] = $subclass; // TODO link to php.net
+				$classes[] = $class; // TODO link to php.net
 			}
 		}
-		return implode(', ',$subclasses);
+		return implode(', ',$classes);
 	}
 
 

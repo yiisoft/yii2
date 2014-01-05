@@ -32,6 +32,18 @@ class Context extends Component
 	public $traits = [];
 
 
+	public function getType($type)
+	{
+		if (isset($this->classes[$type])) {
+			return $this->classes[$type];
+		} elseif (isset($this->interfaces[$type])) {
+			return $this->interfaces[$type];
+		} elseif (isset($this->traits[$type])) {
+			return $this->traits[$type];
+		}
+		return null;
+	}
+
 	public function addFile($fileName)
 	{
 		if (isset($this->files[$fileName])) {
@@ -107,7 +119,6 @@ class Context extends Component
 		}
 		// update interfaces of subclasses
 		foreach($this->classes as $class) {
-			// TODO do the same for events, constants, methods, properties
 			$this->updateSubclassInferfacesTraits($class);
 		}
 		// update implementedBy and usedBy for interfaces and traits
@@ -119,9 +130,16 @@ class Context extends Component
 			}
 			foreach($class->traits as $trait) {
 				if (isset($this->traits[$trait])) {
-					$this->traits[$trait]->usedBy[] = $class->name;
+					$trait = $this->traits[$trait];
+					$trait->usedBy[] = $class->name;
+					$class->properties = array_merge($trait->properties, $class->properties); // TODO make unique
+					$class->methods = array_merge($trait->methods, $class->methods); // TODO make unique
 				}
 			}
+		}
+		// update properties, methods, contants and events of subclasses
+		foreach($this->classes as $class) {
+			$this->updateSubclassInheritance($class);
 		}
 	}
 
@@ -135,7 +153,27 @@ class Context extends Component
 			$subclass = $this->classes[$subclass];
 			$subclass->interfaces = array_unique(array_merge($subclass->interfaces, $class->interfaces));
 			$subclass->traits = array_unique(array_merge($subclass->traits, $class->traits));
+			$subclass->events = array_merge($class->events, $subclass->events); // TODO make unique
+			$subclass->constants = array_merge($class->constants, $subclass->constants); // TODO make unique
+			$subclass->properties = array_merge($class->properties, $subclass->properties); // TODO make unique
+			$subclass->methods = array_merge($class->methods, $subclass->methods); // TODO make unique
 			$this->updateSubclassInferfacesTraits($subclass);
+		}
+	}
+
+	/**
+	 * Add implemented interfaces and used traits to subclasses
+	 * @param ClassDoc $class
+	 */
+	protected function updateSubclassInheritance($class)
+	{
+		foreach($class->subclasses as $subclass) {
+			$subclass = $this->classes[$subclass];
+			$subclass->events = array_merge($class->events, $subclass->events); // TODO make unique
+			$subclass->constants = array_merge($class->constants, $subclass->constants); // TODO make unique
+			$subclass->properties = array_merge($class->properties, $subclass->properties); // TODO make unique
+			$subclass->methods = array_merge($class->methods, $subclass->methods); // TODO make unique
+			$this->updateSubclassInheritance($subclass);
 		}
 	}
 }
