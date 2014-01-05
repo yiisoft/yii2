@@ -8,7 +8,9 @@
 namespace yii\apidoc\models;
 
 /**
- * Class ClassDoc
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
  */
 class ClassDoc extends TypeDoc
 {

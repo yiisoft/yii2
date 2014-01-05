@@ -11,6 +11,11 @@ use phpDocumentor\Reflection\DocBlock\Tag\DeprecatedTag;
 use phpDocumentor\Reflection\DocBlock\Tag\SinceTag;
 use yii\base\Object;
 
+/**
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
+ */
 class BaseDoc extends Object
 {
 	public $name;

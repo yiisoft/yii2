@@ -7,6 +7,11 @@
 
 namespace yii\apidoc\models;
 
+/**
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
+ */
 class TraitDoc extends TypeDoc
 {
 	// classes using the trait

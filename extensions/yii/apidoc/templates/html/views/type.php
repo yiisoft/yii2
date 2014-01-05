@@ -81,21 +81,21 @@ $renderer = $this->context;
 </div>
 
 <a name="properties"></a>
-<?= $this->render('propertySummary', ['type' => $type,'protected' => false]) ?>
-<?= $this->render('propertySummary', ['type' => $type,'protected' => true]) ?>
+<?= $this->render('@yii/apidoc/templates/html/views/propertySummary', ['type' => $type,'protected' => false]) ?>
+<?= $this->render('@yii/apidoc/templates/html/views/propertySummary', ['type' => $type,'protected' => true]) ?>
 
 <a name="methods"></a>
-<?= $this->render('methodSummary', ['type' => $type, 'protected' => false]) ?>
-<?= $this->render('methodSummary', ['type' => $type, 'protected' => true]) ?>
+<?= $this->render('@yii/apidoc/templates/html/views/methodSummary', ['type' => $type, 'protected' => false]) ?>
+<?= $this->render('@yii/apidoc/templates/html/views/methodSummary', ['type' => $type, 'protected' => true]) ?>
 
 <a name="events"></a>
-<?= $this->render('eventSummary', ['type' => $type]) ?>
+<?= $this->render('@yii/apidoc/templates/html/views/eventSummary', ['type' => $type]) ?>
 
 <a name="constants"></a>
-<?= $this->render('constSummary', ['type' => $type]) ?>
+<?= $this->render('@yii/apidoc/templates/html/views/constSummary', ['type' => $type]) ?>
 
-<?= $this->render('propertyDetails', ['type' => $type]) ?>
-<?= $this->render('methodDetails', ['type' => $type]) ?>
+<?= $this->render('@yii/apidoc/templates/html/views/propertyDetails', ['type' => $type]) ?>
+<?= $this->render('@yii/apidoc/templates/html/views/methodDetails', ['type' => $type]) ?>
 <?php if($type instanceof ClassDoc): ?>
-	<?= $this->render('eventDetails', ['type' => $type]) ?>
+	<?= $this->render('@yii/apidoc/templates/html/views/eventDetails', ['type' => $type]) ?>
 <?php endif; ?>

@@ -32,7 +32,7 @@ foreach($yiiDirs as $dir) {
 	}
 }
 if (!class_exists('Yii')) {
-	echo "\nThe Yii Framework 2.0 does not seem to be installed. Try running composer install.\n\n";
+	echo PHP_EOL . "The Yii Framework 2.0 does not seem to be installed. Try running composer install." . PHP_EOL . PHP_EOL;
 	exit(1);
 }
 

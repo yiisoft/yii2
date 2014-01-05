@@ -7,11 +7,15 @@
 
 namespace yii\apidoc\models;
 
-
 use phpDocumentor\Reflection\FileReflector;
 use yii\base\Component;
 use yii\base\Exception;
 
+/**
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
+ */
 class Context extends Component
 {
 	/**

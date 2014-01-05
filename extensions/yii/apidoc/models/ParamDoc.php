@@ -9,6 +9,11 @@ namespace yii\apidoc\models;
 
 use yii\base\Object;
 
+/**
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
+ */
 class ParamDoc extends Object
 {
 	public $name;

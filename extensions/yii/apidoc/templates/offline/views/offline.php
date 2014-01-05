@@ -35,6 +35,7 @@ $this->beginPage();
 All Rights Reserved.<br/>
 </div><!-- end of footer -->
 
+<?php \yii\web\JqueryAsset::register($this); ?>
 <script type="text/javascript">
 /*<![CDATA[*/
 $("a.toggle").toggle(function(){

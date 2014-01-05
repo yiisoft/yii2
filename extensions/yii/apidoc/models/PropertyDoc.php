@@ -9,6 +9,11 @@ namespace yii\apidoc\models;
 
 use phpDocumentor\Reflection\DocBlock\Tag\VarTag;
 
+/**
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
+ */
 class PropertyDoc extends BaseDoc
 {
 	public $visibility;
