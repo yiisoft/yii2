@@ -4,12 +4,12 @@ use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\InterfaceDoc;
 use yii\apidoc\models\TraitDoc;
 /**
- * @var ClassDoc|InterfaceDoc|TraitDoc $item
+ * @var ClassDoc|InterfaceDoc|TraitDoc $type
  * @var boolean $protected
  * @var yii\web\View $this
  */
 
-if ($protected && count($item->getProtectedProperties()) == 0 || !$protected && count($item->getPublicProperties()) == 0) {
+if ($protected && count($type->getProtectedProperties()) == 0 || !$protected && count($type->getPublicProperties()) == 0) {
 	return;
 } ?>
 
@@ -28,9 +28,9 @@ if ($protected && count($item->getProtectedProperties()) == 0 || !$protected && 
 <tr>
   <th>Property</th><th>Type</th><th>Description</th><th>Defined By</th>
 </tr>
-<?php foreach($item->properties as $property): ?>
+<?php foreach($type->properties as $property): ?>
 <?php if($protected && $property->visibility == 'protected' || !$protected && $property->visibility != 'protected'): ?>
-<tr<?= $property->definedBy != $item->name ? ' class="inherited"' : '' ?> id="<?= $property->name ?>">
+<tr<?= $property->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $property->name ?>">
   <td><?php echo $this->context->subjectLink($property); ?></td>
   <td><?php echo $this->context->typeLink($property->types); ?></td>
   <td><?php echo $property->shortDescription; ?></td>

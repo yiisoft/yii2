@@ -28,7 +28,7 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 	public $targetDir;
 
 	public $layout = '@yii/apidoc/views/layouts/offline.php';
-	public $itemView = '@yii/apidoc/views/class.php';
+	public $typeView = '@yii/apidoc/views/type.php';
 	public $indexView = '@yii/apidoc/views/index.php';
 
 	public $pageTitle = 'Yii Framework 2.0 API Documentation';
@@ -50,24 +50,24 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 			mkdir($dir);
 		}
 
-		$items = array_merge($context->classes, $context->interfaces, $context->traits);
-		$itemCount = count($items) + 1;
-		Console::startProgress(0, $itemCount, 'Rendering files: ', false);
+		$types = array_merge($context->classes, $context->interfaces, $context->traits);
+		$typeCount = count($types) + 1;
+		Console::startProgress(0, $typeCount, 'Rendering files: ', false);
 		$done = 0;
-		foreach($items as $item) {
-			$fileContent = $this->renderWithLayout($this->itemView, [
-				'item' => $item,
+		foreach($types as $type) {
+			$fileContent = $this->renderWithLayout($this->typeView, [
+				'type' => $type,
 				'docContext' => $context,
 			]);
-			file_put_contents($dir . '/' . $this->generateFileName($item->name), $fileContent);
-			Console::updateProgress(++$done, $itemCount);
+			file_put_contents($dir . '/' . $this->generateFileName($type->name), $fileContent);
+			Console::updateProgress(++$done, $typeCount);
 		}
 		$indexFileContent = $this->renderWithLayout($this->indexView, [
 			'docContext' => $context,
-			'items' => $items,
+			'types' => $types,
 		]);
 		file_put_contents($dir . '/index.html', $indexFileContent);
-		Console::updateProgress(++$done, $itemCount);
+		Console::updateProgress(++$done, $typeCount);
 		Console::endProgress(true);
 		$controller->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 
@@ -209,9 +209,9 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 	}
 
 
-	public function generateFileName($itemName)
+	public function generateFileName($typeName)
 	{
-		return strtolower(str_replace('\\', '_', $itemName)) . '.html';
+		return strtolower(str_replace('\\', '_', $typeName)) . '.html';
 	}
 
 	/**

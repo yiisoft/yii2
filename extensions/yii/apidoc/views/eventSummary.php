@@ -2,11 +2,11 @@
 
 use yii\apidoc\models\ClassDoc;
 /**
- * @var ClassDoc $item
+ * @var ClassDoc $type
  * @var yii\web\View $this
  */
 
-if (empty($item->events)) {
+if (empty($type->events)) {
 	return;
 } ?>
 <div class="summary docEvent">
@@ -23,8 +23,8 @@ if (empty($item->events)) {
 <tr>
   <th>Event</th><th>Description</th><th>Defined By</th>
 </tr>
-<?php foreach($item->events as $event): ?>
-<tr<?= $event->definedBy != $item->name ? ' class="inherited"' : '' ?> id="<?= $event->name ?>">
+<?php foreach($type->events as $event): ?>
+<tr<?= $event->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $event->name ?>">
   <td><?= $this->context->subjectLink($event) ?></td>
   <td><?= $event->shortDescription ?></td>
   <td><?= $this->context->typeLink($event->definedBy) ?></td>
