@@ -22,6 +22,23 @@ class BaseDoc extends Object
 	public $startLine;
 	public $endLine;
 
+	/**
+	 * @param \phpDocumentor\Reflection\BaseReflector $reflector
+	 * @param array $config
+	 */
+	public function __construct($reflector, $config = [])
+	{
+		// base properties
+		$this->name = ltrim($reflector->getName(), '\\');
+		$this->startLine = $reflector->getNode()->getAttribute('startLine');
+		$this->endLine = $reflector->getNode()->getAttribute('endLine');
+
+		// TODO docblock
+
+		parent::__construct($config);
+	}
+
+
 	public function loadSource($reflection)
 	{
 		$this->sourcePath=str_replace('\\','/',str_replace(YII_PATH,'',$reflection->getFileName()));
