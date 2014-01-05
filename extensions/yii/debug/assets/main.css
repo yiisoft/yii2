@@ -28,12 +28,12 @@ ul.trace {
 	float: right;
 }
 
-td {
+td, th {
 	white-space: pre-line;
 	word-wrap: break-word;
 }
 
-th {
+.detail-grid-view th {
     white-space: nowrap;
 }
 
