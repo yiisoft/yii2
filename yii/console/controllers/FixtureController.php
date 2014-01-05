@@ -10,6 +10,7 @@ namespace yii\console\controllers;
 use Yii;
 use yii\console\Controller;
 use yii\console\Exception;
+use yii\helpers\FileHelper;
 use yii\test\DbTestTrait;
 use yii\helpers\Console;
 
@@ -53,6 +54,11 @@ use yii\helpers\Console;
 class FixtureController extends Controller
 {
 	use DbTestTrait;
+	
+	/**
+	 * type of fixture apply to database
+	 */
+	const APPLY_ALL = 'all';
 
 	/**
 	 * @var string controller default action ID.
@@ -110,14 +116,41 @@ class FixtureController extends Controller
 			throw new Exception('Fixture manager is not configured properly. Please refer to official documentation for this purposes.');
 		}
 
-		if (!$this->confirmApply($fixtures)) {
+		$foundFixtures = $this->findFixtures($fixtures);
+
+		if (!$this->needToApplyAll($fixtures[0])) {
+			$notFoundFixtures = array_diff($fixtures, $foundFixtures);
+
+			if ($notFoundFixtures) {
+				$this->notifyNotFound($notFoundFixtures);
+			}
+		}
+
+		if (!$foundFixtures) {
+			throw new Exception("No files were found by name: \"" . implode(', ', $fixtures) . "\".\n"
+				. "Check that fixtures with these name exists, under fixtures path: \n\"" . Yii::getAlias($this->fixturePath) . "\"."
+			);			
+		}
+
+		if (!$this->confirmApply($foundFixtures)) {
 			return;
 		}
 
 		$this->getFixtureManager()->basePath = $this->fixturePath;
 		$this->getFixtureManager()->db = $this->db;
-		$this->loadFixtures($fixtures);
-		$this->notifySuccess($fixtures);
+
+		$transaction = Yii::$app->db->beginTransaction();
+
+		try {
+			$this->loadFixtures($foundFixtures);
+			$transaction->commit();
+
+		} catch (\Exception $e) {
+			$transaction->rollback();
+			$this->stdout("Exception occured, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
+			throw $e;
+		}
+		$this->notifySuccess($foundFixtures);
 	}
 
 	/**
@@ -127,14 +160,33 @@ class FixtureController extends Controller
 	 * @param array|string $tables
 	 */
 	public function actionClear(array $tables)
-	{
+	{		
+		if ($this->needToApplyAll($tables[0])) {
+			$tables = $this->getDbConnection()->schema->getTableNames();
+		}
+
 		if (!$this->confirmClear($tables)) {
 			return;
 		}
 
-		foreach($tables as $table) {
-			$this->getDbConnection()->createCommand()->truncateTable($table)->execute();
-			$this->stdout("Table \"{$table}\" was successfully cleared. \n", Console::FG_GREEN);
+		$transaction = Yii::$app->db->beginTransaction();
+
+		try {
+			$this->getDbConnection()->createCommand()->checkIntegrity(false)->execute();
+
+			foreach($tables as $table) {
+				$this->getDbConnection()->createCommand()->truncateTable($table)->execute();
+				$this->getDbConnection()->createCommand()->resetSequence($table)->execute();
+				$this->stdout("    Table \"{$table}\" was successfully cleared. \n", Console::FG_GREEN);
+			}
+
+			$this->getDbConnection()->createCommand()->checkIntegrity(true)->execute();
+			$transaction->commit();
+
+		} catch (\Exception $e) {
+			$transaction->rollback();
+			$this->stdout("Exception occured, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
+			throw $e;
 		}
 	}
 
@@ -180,6 +232,18 @@ class FixtureController extends Controller
 	}
 
 	/**
+	 * Notifies user that fixtures were not found under fixtures path.
+	 * @param array $fixtures
+	 */
+	private function notifyNotFound($fixtures)
+	{
+		$this->stdout("Some fixtures were not found under path:\n", Console::BG_RED);
+		$this->stdout(Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
+		$this->outputList($fixtures);
+		$this->stdout("\n");
+	}
+
+	/**
 	 * Prompts user with confirmation if fixtures should be loaded.
 	 * @param array $fixtures
 	 * @return boolean
@@ -211,7 +275,47 @@ class FixtureController extends Controller
 	private function outputList($data)
 	{
 		foreach($data as $index => $item) {
-			$this->stdout(($index + 1) . ". {$item}\n", Console::FG_GREEN);
+			$this->stdout("    " . ($index + 1) . ". {$item}\n", Console::FG_GREEN);
 		}
 	}
+
+	/**
+	 * Checks if needed to apply all fixtures.
+	 * @param string $fixture
+	 * @return bool
+	 */
+	public function needToApplyAll($fixture)
+	{
+		return $fixture == self::APPLY_ALL;
+	}
+
+	/**
+	 * Returns array of found fixtures. These may differer from input parameter as not all fixtures may exists.
+	 * @param array $fixtures
+	 */
+	private function findFixtures(array $fixtures)
+	{
+		$fixturesPath = Yii::getAlias($this->fixturePath);
+
+		$files = [];
+
+		if ($this->needToApplyAll($fixtures[0])) {
+			$files = FileHelper::findFiles($fixturesPath, ['only' => ['.php']]);
+		} else {
+			$filesToSearch = [];
+			foreach ($fixtures as $fileName) {
+				$filesToSearch[] = $fileName . '.php';
+			}
+			$files = FileHelper::findFiles($fixturesPath, ['only' => $filesToSearch]);
+		}
+		
+		$foundFixtures = [];
+
+		foreach($files as $fixture) {
+			$foundFixtures[] = basename($fixture , '.php');
+		}
+
+		return $foundFixtures;
+	}
+
 }
