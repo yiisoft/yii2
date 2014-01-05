@@ -60,6 +60,10 @@ a.desc:after {
 	content: "\e156";
 }
 
+.grid-view th {
+    white-space: nowrap;
+}
+
 .hint-block {
 	display: block;
 	margin-top: 5px;
