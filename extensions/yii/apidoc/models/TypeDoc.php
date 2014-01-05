@@ -36,9 +36,9 @@ class TypeDoc extends BaseDoc
 	private function getFilteredMethods($visibility)
 	{
 		$methods = [];
-		foreach($this->methods as $method) {
+		foreach($this->methods as $name => $method) {
 			if ($method->visibility == $visibility) {
-				$methods[] = $method;
+				$methods[$name] = $method;
 			}
 		}
 		return $methods;
@@ -60,9 +60,9 @@ class TypeDoc extends BaseDoc
 			return [];
 		}
 		$properties = [];
-		foreach($this->properties as $property) {
+		foreach($this->properties as $name => $property) {
 			if ($property->visibility == $visibility) {
-				$properties[] = $property;
+				$properties[$name] = $property;
 			}
 		}
 		return $properties;

@@ -132,8 +132,8 @@ class Context extends Component
 				if (isset($this->traits[$trait])) {
 					$trait = $this->traits[$trait];
 					$trait->usedBy[] = $class->name;
-					$class->properties = array_merge($trait->properties, $class->properties); // TODO make unique
-					$class->methods = array_merge($trait->methods, $class->methods); // TODO make unique
+					$class->properties = array_merge($trait->properties, $class->properties);
+					$class->methods = array_merge($trait->methods, $class->methods);
 				}
 			}
 		}
@@ -153,10 +153,6 @@ class Context extends Component
 			$subclass = $this->classes[$subclass];
 			$subclass->interfaces = array_unique(array_merge($subclass->interfaces, $class->interfaces));
 			$subclass->traits = array_unique(array_merge($subclass->traits, $class->traits));
-			$subclass->events = array_merge($class->events, $subclass->events); // TODO make unique
-			$subclass->constants = array_merge($class->constants, $subclass->constants); // TODO make unique
-			$subclass->properties = array_merge($class->properties, $subclass->properties); // TODO make unique
-			$subclass->methods = array_merge($class->methods, $subclass->methods); // TODO make unique
 			$this->updateSubclassInferfacesTraits($subclass);
 		}
 	}
@@ -169,10 +165,10 @@ class Context extends Component
 	{
 		foreach($class->subclasses as $subclass) {
 			$subclass = $this->classes[$subclass];
-			$subclass->events = array_merge($class->events, $subclass->events); // TODO make unique
-			$subclass->constants = array_merge($class->constants, $subclass->constants); // TODO make unique
-			$subclass->properties = array_merge($class->properties, $subclass->properties); // TODO make unique
-			$subclass->methods = array_merge($class->methods, $subclass->methods); // TODO make unique
+			$subclass->events = array_merge($class->events, $subclass->events);
+			$subclass->constants = array_merge($class->constants, $subclass->constants);
+			$subclass->properties = array_merge($class->properties, $subclass->properties);
+			$subclass->methods = array_merge($class->methods, $subclass->methods);
 			$this->updateSubclassInheritance($subclass);
 		}
 	}
