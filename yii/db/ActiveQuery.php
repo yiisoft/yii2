@@ -326,11 +326,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	}
 
 	/**
-	 * Returns the table alias (or table name) that can be used to prefix column names.
+	 * Returns the table name and the table alias for [[modelClass]].
 	 * @param ActiveQuery $query
-	 * @return string the table alias (or table name) enclosed within double curly brackets.
+	 * @return array the table name and the table alias.
 	 */
-	private function getQueryTableAlias($query)
+	private function getQueryTableName($query)
 	{
 		if (empty($query->from)) {
 			/** @var ActiveRecord $modelClass */
@@ -341,12 +341,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 
 		if (preg_match('/^(.*?)\s+({{\w+}}|\w+)$/', $tableName, $matches)) {
-			$tableName = $matches[2];
+			$alias = $matches[2];
+		} else {
+			$alias = $tableName;
 		}
-		if (strpos($tableName, '{{') === false) {
-			$tableName = '{{' . $tableName . '}}';
-		}
-		return $tableName;
+
+		return [$tableName, $alias];
 	}
 
 	/**
@@ -372,13 +372,21 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			return;
 		}
 
-		$parentTable = $this->getQueryTableAlias($parent);
-		$childTable = $this->getQueryTableAlias($child);
+		list ($parentTable, $parentAlias) = $this->getQueryTableName($parent);
+		list ($childTable, $childAlias) = $this->getQueryTableName($child);
 
 		if (!empty($child->link)) {
+
+			if (strpos($parentAlias, '{{') === false) {
+				$parentAlias = '{{' . $parentAlias . '}}';
+			}
+			if (strpos($childAlias, '{{') === false) {
+				$childAlias = '{{' . $childAlias . '}}';
+			}
+
 			$on = [];
 			foreach ($child->link as $childColumn => $parentColumn) {
-				$on[] = "$parentTable.[[$parentColumn]] = $childTable.[[$childColumn]]";
+				$on[] = "$parentAlias.[[$parentColumn]] = $childAlias.[[$childColumn]]";
 			}
 			$on = implode(' AND ', $on);
 		} else {
