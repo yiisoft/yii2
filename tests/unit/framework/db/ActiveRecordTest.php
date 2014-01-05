@@ -276,5 +276,19 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertEquals(3, count($orders[0]->items));
 		$this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
 		$this->assertEquals(2, $orders[0]->items[0]->category->id);
+
+		// join with table alias
+		$orders = Order::find()->joinWith([
+			'customer' => function ($q) {
+				$q->from('tbl_customer c');
+			}
+		])->orderBy('c.id DESC, tbl_order.id')->all();
+		$this->assertEquals(3, count($orders));
+		$this->assertEquals(2, $orders[0]->id);
+		$this->assertEquals(3, $orders[1]->id);
+		$this->assertEquals(1, $orders[2]->id);
+		$this->assertTrue($orders[0]->isRelationPopulated('customer'));
+		$this->assertTrue($orders[1]->isRelationPopulated('customer'));
+		$this->assertTrue($orders[2]->isRelationPopulated('customer'));
 	}
 }
