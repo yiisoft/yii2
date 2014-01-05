@@ -22,9 +22,8 @@ install:
   - tests/unit/data/travis/cubrid-setup.sh
 # basic application:
   - composer install --dev --prefer-dist -d apps/basic
-  - cd apps/basic && php vendor/bin/codecept build && cd ../..
+  - cd apps/basic && php vendor/bin/codecept build
   - cd apps/basic/web && php -S localhost:8080 &
-  - cd ../../..
 
 before_script:
   - echo 'elasticsearch version ' && curl http://localhost:9200/
@@ -36,7 +35,7 @@ before_script:
 script:
 #  - vendor/bin/phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
   - vendor/bin/phpunit --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
-  - cd apps/basic && php vendor/bin/codecept run && cd ../..
+  - cd apps/basic && php vendor/bin/codecept run
 
 #after_script:
 #  - php vendor/bin/coveralls
