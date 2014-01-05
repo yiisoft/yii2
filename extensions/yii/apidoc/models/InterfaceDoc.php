@@ -18,9 +18,13 @@ class InterfaceDoc extends TypeDoc
 	 * @param \phpDocumentor\Reflection\InterfaceReflector $reflector
 	 * @param array $config
 	 */
-	public function __construct($reflector, $config = [])
+	public function __construct($reflector = null, $config = [])
 	{
 		parent::__construct($reflector, $config);
+
+		if ($reflector === null) {
+			return;
+		}
 
 		foreach($reflector->getParentInterfaces() as $interface) {
 			$this->parentInterfaces[] = ltrim($interface, '\\');

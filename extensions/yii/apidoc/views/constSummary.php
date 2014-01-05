@@ -21,14 +21,15 @@ if (empty($type->constants)) {
 	<col class="col-defined" />
 </colgroup>
 <tr>
-  <th>Constant</th><th>Description</th><th>Defined By</th>
+  <th>Constant</th><th>Value</th><th>Description</th><th>Defined By</th>
 </tr>
 <?php foreach($type->constants as $constant): ?>
-<tr<?= $constant->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $constant->name ?>">
-  <td><?= $this->context->subjectLink($constant) ?></td>
-  <td><?= $constant->shortDescription ?></td>
-  <td><?= $this->context->typeLink($constant->definedBy) ?></td>
-</tr>
+	<tr<?= $constant->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $constant->name ?>">
+	  <td><?= $constant->name ?></td>
+	  <td><?= $constant->value ?></td>
+	  <td><?= nl2br($constant->shortDescription . "\n" . $constant->description) ?></td>
+	  <td><?= $this->context->typeLink($constant->definedBy) ?></td>
+	</tr>
 <?php endforeach; ?>
 </table>
 </div>

@@ -33,12 +33,31 @@ class ClassDoc extends TypeDoc
 
 
 	/**
+	 * @return EventDoc[]
+	 */
+	public function getNativeEvents()
+	{
+		$events = [];
+		foreach($this->events as $name => $event) {
+			if ($event->definedBy != $this->name) {
+				continue;
+			}
+			$events[$name] = $event;
+		}
+		return $events;
+	}
+
+	/**
 	 * @param \phpDocumentor\Reflection\ClassReflector $reflector
 	 * @param array $config
 	 */
-	public function __construct($reflector, $config = [])
+	public function __construct($reflector = null, $config = [])
 	{
 		parent::__construct($reflector, $config);
+
+		if ($reflector === null) {
+			return;
+		}
 
 		$this->parentClass = ltrim($reflector->getParentClass(), '\\');
 		if (empty($this->parentClass)) {
@@ -54,7 +73,8 @@ class ClassDoc extends TypeDoc
 			$this->traits[] = ltrim($trait, '\\');
 		}
 		foreach($reflector->getConstants() as $constantReflector) {
-			if (strncmp($constantReflector->getShortName(), 'EVENT_', 6) == 0) {
+			$docblock = $constantReflector->getDocBlock();
+			if ($docblock !== null && count($docblock->getTagsByName('event')) > 0) {
 				$event = new EventDoc($constantReflector);
 				$event->definedBy = $this->name;
 				$this->events[$event->name] = $event;

@@ -34,6 +34,7 @@ class Context extends Component
 
 	public function getType($type)
 	{
+		$type = ltrim($type, '\\');
 		if (isset($this->classes[$type])) {
 			return $this->classes[$type];
 		} elseif (isset($this->interfaces[$type])) {

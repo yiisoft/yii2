@@ -19,9 +19,13 @@ class TraitDoc extends TypeDoc
 	 * @param \phpDocumentor\Reflection\TraitReflector $reflector
 	 * @param array $config
 	 */
-	public function __construct($reflector, $config = [])
+	public function __construct($reflector = null, $config = [])
 	{
 		parent::__construct($reflector, $config);
+
+		if ($reflector === null) {
+			return;
+		}
 
 		foreach($reflector->getTraits() as $trait) {
 			$this->traits[] = ltrim($trait, '\\');

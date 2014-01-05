@@ -26,14 +26,18 @@ class ParamDoc extends Object
 	 * @param \phpDocumentor\Reflection\FunctionReflector\ArgumentReflector $reflector
 	 * @param array $config
 	 */
-	public function __construct($reflector, $config = [])
+	public function __construct($reflector = null, $config = [])
 	{
 		parent::__construct($config);
+
+		if ($reflector === null) {
+			return;
+		}
 
 		$this->name = $reflector->getName();
 		$this->typeHint = $reflector->getType();
 		$this->isOptional = $reflector->getDefault() !== null;
-		$this->defaultValue = $reflector->getDefault(); // TODO what about null value?
+		$this->defaultValue = $reflector->getDefault();
 		$this->isPassedByReference = $reflector->isByRef();
 	}
 }

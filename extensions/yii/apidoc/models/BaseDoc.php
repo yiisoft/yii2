@@ -25,6 +25,9 @@ class BaseDoc extends Object
 	public $deprecatedSince;
 	public $deprecatedReason;
 
+	/**
+	 * @var \phpDocumentor\Reflection\DocBlock\Tag[]
+	 */
 	public $tags = [];
 
 

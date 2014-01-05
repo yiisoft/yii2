@@ -8,8 +8,10 @@
 namespace yii\apidoc\models;
 
 use phpDocumentor\Reflection\DocBlock\Tag\ParamTag;
+use phpDocumentor\Reflection\DocBlock\Tag\PropertyTag;
 use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
 use phpDocumentor\Reflection\DocBlock\Tag\ThrowsTag;
+use yii\base\Exception;
 
 class FunctionDoc extends BaseDoc
 {
@@ -27,9 +29,13 @@ class FunctionDoc extends BaseDoc
 	 * @param \phpDocumentor\Reflection\FunctionReflector $reflector
 	 * @param array $config
 	 */
-	public function __construct($reflector, $config = [])
+	public function __construct($reflector = null, $config = [])
 	{
 		parent::__construct($reflector, $config);
+
+		if ($reflector === null) {
+			return;
+		}
 
 		$this->isReturnByReference = $reflector->isByRef();
 
@@ -39,19 +45,24 @@ class FunctionDoc extends BaseDoc
 		}
 
 		foreach($this->tags as $i => $tag) {
-			if ($tag instanceof ReturnTag) {
-				$this->returnType = $tag->getType();
-				$this->returnTypes = $tag->getTypes();
-				$this->return = $tag->getDescription();
+			if ($tag instanceof ThrowsTag) {
+				$this->exceptions[$tag->getType()] = $tag->getDescription();
 				unset($this->tags[$i]);
+			} elseif ($tag instanceof PropertyTag) {
+				 // TODO handle property tag
 			} elseif ($tag instanceof ParamTag) {
 				$paramName = $tag->getVariableName();
+				if (!isset($this->params[$paramName])) {
+					echo 'undefined parameter documented: ' . $paramName . ' in ' . $this->name . "\n"; // todo add this to a log file
+				}
 				$this->params[$paramName]->description = $tag->getDescription();
 				$this->params[$paramName]->type = $tag->getType();
 				$this->params[$paramName]->types = $tag->getTypes();
 				unset($this->tags[$i]);
-			} elseif ($tag instanceof ThrowsTag) {
-				$this->exceptions[$tag->getType()] = $tag->getDescription();
+			} elseif ($tag instanceof ReturnTag) {
+				$this->returnType = $tag->getType();
+				$this->returnTypes = $tag->getTypes();
+				$this->return = $tag->getDescription();
 				unset($this->tags[$i]);
 			}
 		}
