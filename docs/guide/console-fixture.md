@@ -62,6 +62,12 @@ yii fixture users
 // apply several fixtures to several tables. Note that there should not be any whitespace between ",", it should be one string.
 yii fixture users,users_profiles
 
+// apply all fixtures
+yii fixture/apply all
+
+// same as above
+yii fixture all
+
 // apply fixtures to the table users, but fixtures will be taken from different path.
 yii fixture users --fixturePath='@app/my/custom/path/to/fixtures'
 
@@ -80,6 +86,9 @@ yii fixture/clear users
 
 // clear several tables. Note that there should not be any whitespace between ",", it should be one string.
 yii fixture/clear users,users_profile
+
+// clear all tables of current connection in current schema
+yii fixture/clear all
 ```
 
 Configure Command Globally
