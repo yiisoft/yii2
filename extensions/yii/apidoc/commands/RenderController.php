@@ -16,30 +16,59 @@ use yii\apidoc\models\Context;
 use Yii;
 
 /**
+ * Command to render API Documentation files
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class PhpdocController extends Controller
+class RenderController extends Controller
 {
-	public function actionIndex($targetDir)
+	/**
+	 * Renders API documentation files
+	 * @param array $sourceDirs
+	 * @param string $targetDir
+	 * @return int
+	 */
+	public function actionIndex(array $sourceDirs, $targetDir)
 	{
-		echo "hi\n";
-
 		$targetDir = Yii::getAlias($targetDir);
 		if (is_dir($targetDir) && !$this->confirm('TargetDirectory already exists. Overwrite?')) {
 			return 2;
 		}
+		if (!is_dir($targetDir)) {
+			mkdir($targetDir);
+		}
 
-		// TODO determine files to analyze
 		$this->stdout('Searching files to process... ');
-		$files = $this->findFiles(YII_PATH);
-//		$files = array_slice($files, 0, 42); // TODO remove this line
+		$files = [];
+		foreach($sourceDirs as $source) {
+			foreach($this->findFiles($source) as $fileName) {
+				$files[$fileName] = $fileName;
+			}
+		}
+
 		$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 
-		$fileCount = count($files);
-		Console::startProgress(0, $fileCount, 'Processing files... ', false);
 		$context = new Context();
+
+		$cacheFile = $targetDir . '/cache/' . md5(serialize($files)) . '.tmp';
+		if (file_exists($cacheFile)) {
+			$this->stdout('Loading processed data from cache... ');
+			$context = unserialize(file_get_contents($cacheFile));
+			$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
+
+			$this->stdout('Checking for updated files... ');
+			foreach($context->files as $file => $sha) {
+				if (sha1_file($file) === $sha) {
+					unset($files[$file]);
+				}
+			}
+			$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
+		}
+
+		$fileCount = count($files);
+		$this->stdout($fileCount . ' file' . ($fileCount == 1 ? '' : 's') . ' to update.' . PHP_EOL);
+		Console::startProgress(0, $fileCount, 'Processing files... ', false);
 		$done = 0;
 		foreach($files as $file) {
 			$context->addFile($file);
@@ -48,19 +77,21 @@ class PhpdocController extends Controller
 		Console::endProgress(true);
 		$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 
+		// save processed data to cache
+		if (!is_dir(dirname($cacheFile))) {
+			mkdir(dirname($cacheFile));
+		}
+		file_put_contents($cacheFile, serialize($context));
+
 		$this->stdout('Updating cross references and backlinks... ');
 		$context->updateReferences();
 		$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 
-
-		// TODO LATER analyze for dead links and similar stuff
-
-		// TODO render models
+		// render models
 		$renderer = new OfflineRenderer();
 		$renderer->targetDir = $targetDir;
 		$renderer->render($context, $this);
 	}
-
 
 	protected function findFiles($path, $except = [])
 	{
@@ -84,5 +115,4 @@ class PhpdocController extends Controller
 		];
 		return FileHelper::findFiles($path, $options);
 	}
-
 }

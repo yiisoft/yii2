@@ -47,10 +47,7 @@ class Context extends Component
 
 	public function addFile($fileName)
 	{
-		if (isset($this->files[$fileName])) {
-			return;
-		}
-		$this->files[$fileName] = $fileName;
+		$this->files[$fileName] = sha1_file($fileName);
 
 		$reflection = new FileReflector($fileName, true);
 		$reflection->process();
@@ -58,54 +55,18 @@ class Context extends Component
 		foreach($reflection->getClasses() as $class) {
 			$class = new ClassDoc($class);
 			$class->sourceFile = $fileName;
-			$this->addClass($class);
+			$this->classes[$class->name] = $class;
 		}
 		foreach($reflection->getInterfaces() as $interface) {
 			$interface = new InterfaceDoc($interface);
 			$interface->sourceFile = $fileName;
-			$this->addInterface($interface);
+			$this->interfaces[$interface->name] = $interface;
 		}
 		foreach($reflection->getTraits() as $trait) {
 			$trait = new TraitDoc($trait);
 			$trait->sourceFile = $fileName;
-			$this->addTrait($trait);
+			$this->traits[$trait->name] = $trait;
 		}
-	}
-
-	/**
-	 * @param ClassDoc $class
-	 * @throws \yii\base\Exception when class is already part of this context
-	 */
-	public function addClass($class)
-	{
-		if (isset($this->classes[$class->name])) {
-			throw new Exception('Duplicate class definition: ' . $class->name . ' in file ' . $class->sourceFile . '.');
-		}
-		$this->classes[$class->name] = $class;
-	}
-
-	/**
-	 * @param InterfaceDoc $interface
-	 * @throws \yii\base\Exception when interface is already part of this context
-	 */
-	public function addInterface($interface)
-	{
-		if (isset($this->interfaces[$interface->name])) {
-			throw new Exception('Duplicate interface definition: ' . $interface->name . ' in file ' . $interface->sourceFile);
-		}
-		$this->interfaces[$interface->name] = $interface;
-	}
-
-	/**
-	 * @param TraitDoc $trait
-	 * @throws \yii\base\Exception when trait is already part of this context
-	 */
-	public function addTrait($trait)
-	{
-		if (isset($this->traits[$trait->name])) {
-			throw new Exception('Duplicate trait definition: ' . $trait->name . ' in file ' . $trait->sourceFile);
-		}
-		$this->traits[$trait->name] = $trait;
 	}
 
 	public function updateReferences()

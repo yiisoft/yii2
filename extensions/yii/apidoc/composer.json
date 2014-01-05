@@ -25,5 +25,6 @@
 	"autoload": {
 		"psr-0": { "yii\\apidoc\\": "" }
 	},
-	"target-dir": "yii/apidoc"
+	"target-dir": "yii/apidoc",
+	"bin": ["apidoc"]
 }
