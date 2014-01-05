@@ -56,8 +56,12 @@ class PropertyDoc extends BaseDoc
 			if ($tag instanceof VarTag) {
 				$this->type = $tag->getType();
 				$this->types = $tag->getTypes();
-				$this->description = $tag->getDescription();
-				// TODO set shortDescription
+				$this->description = ucfirst($tag->getDescription());
+				if (($pos = strpos($this->description, '.')) !== false) {
+					$this->shortDescription = substr($this->description, 0, $pos);
+				} else {
+					$this->shortDescription = $this->description;
+				}
 			}
 		}
 	}

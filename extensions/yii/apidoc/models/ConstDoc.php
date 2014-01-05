@@ -10,4 +10,20 @@ namespace yii\apidoc\models;
 class ConstDoc extends BaseDoc
 {
 	public $definedBy;
+	public $value;
+
+	/**
+	 * @param \phpDocumentor\Reflection\ClassReflector\ConstantReflector $reflector
+	 * @param array $config
+	 */
+	public function __construct($reflector = null, $config = [])
+	{
+		parent::__construct($reflector, $config);
+
+		if ($reflector === null) {
+			return;
+		}
+
+		$this->value = $reflector->getValue();
+	}
 }

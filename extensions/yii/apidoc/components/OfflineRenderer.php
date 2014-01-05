@@ -8,10 +8,12 @@
 namespace yii\apidoc\components;
 
 
+use yii\apidoc\models\BaseDoc;
 use yii\apidoc\models\ConstDoc;
 use yii\apidoc\models\EventDoc;
 use yii\apidoc\models\MethodDoc;
 use yii\apidoc\models\PropertyDoc;
+use yii\apidoc\models\TypeDoc;
 use yii\base\ViewContextInterface;
 use yii\console\Controller;
 use yii\helpers\Console;
@@ -94,24 +96,36 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 	 * @param string $title
 	 * @return string
 	 */
-	public function typeLink($types, $title = null)
+	public function typeLink($types, $context = null)
 	{
 		if (!is_array($types)) {
 			$types = [$types];
 		}
 		$links = [];
 		foreach($types as $type) {
-			if (!is_object($type) && ($t = $this->context->getType($type)) !== null) {
-				$type = $t;
+			$postfix = '';
+			if (!is_object($type)) {
+				if (substr($type, -2, 2) == '[]') {
+					$postfix = '[]';
+					$type = substr($type, 0, -2);
+				}
+
+				if (($t = $this->context->getType(ltrim($type, '\\'))) !== null) {
+					$type = $t;
+				} elseif ($type[0] !== '\\' && ($t = $this->context->getType($this->resolveNamespace($context) . '\\' . ltrim($type, '\\'))) !== null) {
+					$type = $t;
+				} else {
+					ltrim($type, '\\');
+				}
 			}
 			if (!is_object($type)) {
 				$links[] = $type;
 			} else {
 				$links[] = Html::a(
-					$title !== null ? $title : $type->name,
+					$type->name,
 					null,
 					['href' => $this->generateFileName($type->name)]
-				);
+				) . $postfix;
 			}
 		}
 		return implode('|', $links);
@@ -131,8 +145,35 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 		if (($type = $this->context->getType($subject->definedBy)) === null) {
 			return $subject->name;
 		} else {
-			return Html::a($title, null, ['href' => $this->generateFileName($type->name) . '#' . $subject->name . '-detail']);
+			$link = $this->generateFileName($type->name);
+			if ($subject instanceof MethodDoc) {
+				$link .= '#' . $subject->name . '()';
+			} else {
+				$link .= '#' . $subject->name;
+			}
+			$link .= '-detail';
+			return Html::a($title, null, ['href' => $link]);
 		}
+	}
+
+	/**
+	 * @param BaseDoc $context
+	 */
+	private function resolveNamespace($context)
+	{
+		if ($context === null) {
+			return '';
+		}
+		if ($context instanceof TypeDoc) {
+			return $context->namespace;
+		}
+		if ($context->hasProperty('definedBy')) {
+			$type = $this->context->getType($context);
+			if ($type !== null) {
+				return $type->namespace;
+			}
+		}
+		return '';
 	}
 
 	/**
@@ -208,6 +249,50 @@ class OfflineRenderer extends BaseRenderer implements ViewContextInterface
 		return implode(', ',$classes);
 	}
 
+	/**
+	 * @param PropertyDoc $property
+	 * @return string
+	 */
+	public function renderPropertySignature($property)
+	{
+		return $this->typeLink($property->types) . ' ' . $property->name . ' = ' . ($property->defaultValue === null ? 'null' : $property->defaultValue);
+		// TODO
+		if(!empty($property->signature))
+			return $property->signature;
+		$sig='';
+		if(!empty($property->getter))
+			$sig=$property->getter->signature;
+		if(!empty($property->setter))
+		{
+			if($sig!=='')
+				$sig.='<br/>';
+			$sig.=$property->setter->signature;
+		}
+		return $sig;
+	}
+
+	/**
+	 * @param MethodDoc $method
+	 * @return string
+	 */
+	public function renderMethodSignature($method)
+	{
+		$params = [];
+		foreach($method->params as $param) {
+			$params[] = (empty($param->typeHint) ? '' : $param->typeHint . ' ')
+				. ($param->isPassedByReference ? '<b>&</b>' : '')
+				. $param->name
+				. ($param->isOptional ? ' = ' . $param->defaultValue : '');
+		}
+
+		//<?php echo preg_replace('/\{\{([^\{\}]*?)\|([^\{\}]*?)\}\}\(/','$2(',$method->signature);
+
+		return ($method->isReturnByReference ? '<b>&</b>' : '')
+			. ($method->returnType === null ? 'void' : $this->typeLink($method->returnTypes))
+			. ' ' . $method->name . '( '
+			. implode(', ', $params)
+			. ' )';
+	}
 
 	public function generateFileName($typeName)
 	{

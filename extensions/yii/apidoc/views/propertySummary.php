@@ -1,10 +1,9 @@
 <?php
 
 use yii\apidoc\models\ClassDoc;
-use yii\apidoc\models\InterfaceDoc;
 use yii\apidoc\models\TraitDoc;
 /**
- * @var ClassDoc|InterfaceDoc|TraitDoc $type
+ * @var ClassDoc|TraitDoc $type
  * @var boolean $protected
  * @var yii\web\View $this
  */

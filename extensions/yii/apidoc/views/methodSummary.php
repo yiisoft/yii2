@@ -29,7 +29,7 @@ if ($protected && count($type->getProtectedMethods()) == 0 || !$protected && cou
 </tr>
 <?php foreach($type->methods as $method): ?>
 <?php if($protected && $method->visibility == 'protected' || !$protected && $method->visibility != 'protected'): ?>
-<tr<?= $method->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $method->name ?>">
+<tr<?= $method->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $method->name ?>()">
   <td><?= $this->context->subjectLink($method, $method->name.'()') ?></td>
   <td><?= $method->shortDescription ?></td>
   <td><?= $this->context->typeLink($method->definedBy) ?></td>

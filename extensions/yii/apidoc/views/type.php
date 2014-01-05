@@ -94,5 +94,8 @@ $renderer = $this->context;
 <a name="constants"></a>
 <?= $this->render('constSummary', ['type' => $type]) ?>
 
-<?php //$this->renderPartial('propertyDetails',array('type'=>$type)); ?>
-<?php //$this->renderPartial('methodDetails',array('type'=>$type)); ?>
+<?= $this->render('propertyDetails', ['type' => $type]) ?>
+<?= $this->render('methodDetails', ['type' => $type]) ?>
+<?php if($type instanceof ClassDoc): ?>
+	<?= $this->render('eventDetails', ['type' => $type]) ?>
+<?php endif; ?>

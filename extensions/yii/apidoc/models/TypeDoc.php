@@ -9,6 +9,7 @@ namespace yii\apidoc\models;
 
 use phpDocumentor\Reflection\DocBlock\Tag\AuthorTag;
 use yii\base\Exception;
+use yii\helpers\StringHelper;
 
 class TypeDoc extends BaseDoc
 {
@@ -22,48 +23,95 @@ class TypeDoc extends BaseDoc
 	 */
 	public $properties = [];
 
+	public $namespace;
 
+	/**
+	 * @return MethodDoc[]
+	 */
+	public function getNativeMethods()
+	{
+		return $this->getFilteredMethods(null, $this->name);
+	}
+
+	/**
+	 * @return MethodDoc[]
+	 */
 	public function getPublicMethods()
 	{
 		return $this->getFilteredMethods('public');
 	}
 
+	/**
+	 * @return MethodDoc[]
+	 */
 	public function getProtectedMethods()
 	{
 		return $this->getFilteredMethods('protected');
 	}
 
-	private function getFilteredMethods($visibility)
+	/**
+	 * @param null $visibility
+	 * @param null $definedBy
+	 * @return MethodDoc[]
+	 */
+	private function getFilteredMethods($visibility = null, $definedBy = null)
 	{
 		$methods = [];
 		foreach($this->methods as $name => $method) {
-			if ($method->visibility == $visibility) {
-				$methods[$name] = $method;
+			if ($visibility !== null && $method->visibility != $visibility) {
+				continue;
 			}
+			if ($definedBy !== null && $method->definedBy != $definedBy) {
+				continue;
+			}
+			$methods[$name] = $method;
 		}
 		return $methods;
 	}
 
+	/**
+	 * @return PropertyDoc[]
+	 */
+	public function getNativeProperties()
+	{
+		return $this->getFilteredProperties(null, $this->name);
+	}
+
+	/**
+	 * @return PropertyDoc[]
+	 */
 	public function getPublicProperties()
 	{
 		return $this->getFilteredProperties('public');
 	}
 
+	/**
+	 * @return PropertyDoc[]
+	 */
 	public function getProtectedProperties()
 	{
 		return $this->getFilteredProperties('protected');
 	}
 
-	private function getFilteredProperties($visibility)
+	/**
+	 * @param null $visibility
+	 * @param null $definedBy
+	 * @return PropertyDoc[]
+	 */
+	private function getFilteredProperties($visibility = null, $definedBy = null)
 	{
 		if ($this->properties === null) {
 			return [];
 		}
 		$properties = [];
 		foreach($this->properties as $name => $property) {
-			if ($property->visibility == $visibility) {
-				$properties[$name] = $property;
+			if ($visibility !== null && $property->visibility != $visibility) {
+				continue;
 			}
+			if ($definedBy !== null && $property->definedBy != $definedBy) {
+				continue;
+			}
+			$properties[$name] = $property;
 		}
 		return $properties;
 	}
@@ -72,9 +120,11 @@ class TypeDoc extends BaseDoc
 	 * @param \phpDocumentor\Reflection\InterfaceReflector $reflector
 	 * @param array $config
 	 */
-	public function __construct($reflector, $config = [])
+	public function __construct($reflector = null, $config = [])
 	{
 		parent::__construct($reflector, $config);
+
+		$this->namespace = StringHelper::basename($this->name);
 
 		if ($reflector === null) {
 			return;
