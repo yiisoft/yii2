@@ -14,7 +14,7 @@ Gii comes as an offical extension and the preferred way to install this extensio
 Either run
 
 ```
-php composer.phar require yiisoft/yii2-gii "*"
+php composer.phar require --prefer-dist yiisoft/yii2-gii "*"
 ```
 
 or add

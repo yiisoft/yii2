@@ -43,7 +43,7 @@ curl -s http://getcomposer.org/installer | php
 You can then install the Bootstrap Application using the following command:
 
 ~~~
-php composer.phar create-project --stability=dev yiisoft/yii2-app-benchmark yii-benchmark
+php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-benchmark yii-benchmark
 ~~~
 
 Now you should be able to access the benchmark page using the URL
