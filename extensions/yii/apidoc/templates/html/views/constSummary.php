@@ -1,5 +1,6 @@
 <?php
 
+use yii\apidoc\helpers\Markdown;
 use yii\apidoc\models\ClassDoc;
 /**
  * @var ClassDoc $type
@@ -27,7 +28,7 @@ if (empty($type->constants)) {
 	<tr<?= $constant->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $constant->name ?>">
 	  <td><?= $constant->name ?></td>
 	  <td><?= $constant->value ?></td>
-	  <td><?= nl2br($constant->shortDescription . "\n" . $constant->description) ?></td>
+	  <td><?= Markdown::process($constant->shortDescription . "\n" . $constant->description, $type) ?></td>
 	  <td><?= $this->context->typeLink($constant->definedBy) ?></td>
 	</tr>
 <?php endforeach; ?>

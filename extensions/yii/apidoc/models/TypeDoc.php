@@ -30,6 +30,30 @@ class TypeDoc extends BaseDoc
 
 	public $namespace;
 
+
+	public function findSubject($subjectName)
+	{
+		if ($subjectName[0] != '$') {
+			foreach($this->methods as $name => $method) {
+				if (rtrim($subjectName, '()') == $name) {
+					return $method;
+				}
+			}
+		}
+		if (substr($subjectName, -2, 2) == '()') {
+			return null;
+		}
+		if ($this->properties === null) {
+			return null;
+		}
+		foreach($this->properties as $name => $property) {
+			if (ltrim($subjectName, '$') == ltrim($name, '$')) {
+				return $property;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * @return MethodDoc[]
 	 */

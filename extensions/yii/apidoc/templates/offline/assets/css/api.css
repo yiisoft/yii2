@@ -17,6 +17,12 @@ pre {
     border-left: 6px solid #FFE6BF;
 }
 
+code {
+    color: #000000;
+    background-color: #FFF5E6;
+    padding: 1px;
+}
+
 div.code {
 	display: none;
     color: #000000;

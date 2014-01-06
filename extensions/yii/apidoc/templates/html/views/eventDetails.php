@@ -1,5 +1,6 @@
 <?php
 
+use yii\apidoc\helpers\Markdown;
 use yii\apidoc\models\ClassDoc;
 /**
  * @var ClassDoc $type
@@ -27,7 +28,7 @@ if (empty($events)) {
 		<?php echo $event->trigger->signature; ?>
 	</div>*/ ?>
 
-	<p><?php echo $event->description; ?></p>
+	<p><?= Markdown::process($event->description, $type); ?></p>
 
 	<?= $this->render('seeAlso', ['object' => $event]); ?>
 

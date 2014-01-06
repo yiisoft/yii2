@@ -1,5 +1,6 @@
 <?php
 
+use yii\apidoc\helpers\Markdown;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\TraitDoc;
 /**
@@ -28,14 +29,14 @@ if ($protected && count($type->getProtectedProperties()) == 0 || !$protected && 
   <th>Property</th><th>Type</th><th>Description</th><th>Defined By</th>
 </tr>
 <?php foreach($type->properties as $property): ?>
-<?php if($protected && $property->visibility == 'protected' || !$protected && $property->visibility != 'protected'): ?>
-<tr<?= $property->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $property->name ?>">
-  <td><?php echo $this->context->subjectLink($property); ?></td>
-  <td><?php echo $this->context->typeLink($property->types); ?></td>
-  <td><?php echo $property->shortDescription; ?></td>
-  <td><?php echo $this->context->typeLink($property->definedBy); ?></td>
-</tr>
-<?php endif; ?>
+	<?php if($protected && $property->visibility == 'protected' || !$protected && $property->visibility != 'protected'): ?>
+	<tr<?= $property->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $property->name ?>">
+		<td><?= $this->context->subjectLink($property) ?></td>
+		<td><?= $this->context->typeLink($property->types) ?></td>
+		<td><?= Markdown::process($property->shortDescription, $type) ?></td>
+		<td><?= $this->context->typeLink($property->definedBy) ?></td>
+	</tr>
+	<?php endif; ?>
 <?php endforeach; ?>
 </table>
 </div>

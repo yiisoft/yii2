@@ -1,5 +1,6 @@
 <?php
 
+use yii\apidoc\helpers\Markdown;
 use yii\apidoc\models\ClassDoc;
 /**
  * @var ClassDoc $type
@@ -28,7 +29,7 @@ if (empty($type->events)) {
 	<td><?= $this->context->subjectLink($event) ?></td>
 	<td><?= $this->context->typeLink($event->types) ?></td>
 	<td>
-		<?= $event->shortDescription ?>
+		<?= Markdown::process($event->shortDescription, $type) ?>
 		<?php if(!empty($event->since)): ?>
 			(available since version <?php echo $event->since; ?>)
 		<?php endif; ?>

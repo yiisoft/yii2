@@ -7,6 +7,7 @@
 
 namespace yii\apidoc\templates\html;
 
+use yii\apidoc\helpers\Markdown;
 use yii\apidoc\models\BaseDoc;
 use yii\apidoc\models\ConstDoc;
 use yii\apidoc\models\EventDoc;
@@ -55,13 +56,15 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	 */
 	public $indexView = '@yii/apidoc/templates/html/views/index.php';
 	/**
-	 * @var Context the [[Context]] currently being rendered.
-	 */
-	protected $context;
-	/**
 	 * @var View
 	 */
 	private $_view;
+
+
+	public function init()
+	{
+		Markdown::$renderer = $this;
+	}
 
 	/**
 	 * @return View the view instance
@@ -179,7 +182,11 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	public function subjectLink($subject, $title = null)
 	{
 		if ($title === null) {
-			$title = $subject->name;
+			if ($subject instanceof MethodDoc) {
+				$title = $subject->name . '()';
+			} else {
+				$title = $subject->name;
+			}
 		}
 		if (($type = $this->context->getType($subject->definedBy)) === null) {
 			return $subject->name;

@@ -1,5 +1,6 @@
 <?php
 
+use yii\apidoc\helpers\Markdown;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\TraitDoc;
 /**
@@ -31,7 +32,7 @@ if (empty($properties)) {
 	<?php echo $this->context->renderPropertySignature($property); ?>
 	</div>
 
-	<p><?= nl2br($property->description) ?></p>
+	<p><?= Markdown::process($property->description, $type) ?></p>
 
 	<?= $this->render('seeAlso', ['object' => $property]); ?>
 

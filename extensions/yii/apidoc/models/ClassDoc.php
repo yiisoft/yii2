@@ -34,6 +34,24 @@ class ClassDoc extends TypeDoc
 	public $constants = [];
 
 
+	public function findSubject($subjectName)
+	{
+		if (($subject = parent::findSubject($subjectName)) !== null) {
+			return $subject;
+		}
+		foreach($this->events as $name => $event) {
+			if ($subjectName == $name) {
+				return $event;
+			}
+		}
+		foreach($this->constants as $name => $constant) {
+			if ($subjectName == $name) {
+				return $constant;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * @return EventDoc[]
 	 */

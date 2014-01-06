@@ -1,12 +1,13 @@
 <?php
 
+use yii\apidoc\helpers\Markdown;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\InterfaceDoc;
 use yii\apidoc\models\TraitDoc;
 /**
  * @var ClassDoc|InterfaceDoc|TraitDoc $type
  * @var yii\web\View $this
- * @var \yii\apidoc\components\OfflineRenderer $renderer
+ * @var \yii\apidoc\templates\html\Renderer $renderer
  */
 
 $renderer = $this->context;
@@ -76,8 +77,8 @@ $renderer = $this->context;
 </table>
 
 <div id="classDescription">
-	<strong><?= $type->shortDescription ?></strong>
-	<p><?= nl2br($type->description) ?></p>
+	<strong><?= Markdown::process($type->shortDescription, $type) ?></strong>
+	<p><?= Markdown::process($type->description, $type) ?></p>
 </div>
 
 <a name="properties"></a>
