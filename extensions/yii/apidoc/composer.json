@@ -1,0 +1,30 @@
+{
+	"name": "yiisoft/yii2-apidoc",
+	"description": "API Documentation generator for the Yii framework 2.0",
+	"keywords": ["yii", "phpdoc", "apidoc", "api", "documentation"],
+	"type": "yii2-extension",
+	"license": "BSD-3-Clause",
+	"support": {
+		"issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aapidoc",
+		"forum": "http://www.yiiframework.com/forum/",
+		"wiki": "http://www.yiiframework.com/wiki/",
+		"irc": "irc://irc.freenode.net/yii",
+		"source": "https://github.com/yiisoft/yii2"
+	},
+	"authors": [
+		{
+			"name": "Carsten Brandt",
+			"email": "mail@cebe.cc"
+		}
+	],
+    "minimum-stability": "dev",
+	"require": {
+		"yiisoft/yii2": "*",
+		"phpdocumentor/reflection": "1.0.2"
+	},
+	"autoload": {
+		"psr-0": { "yii\\apidoc\\": "" }
+	},
+	"target-dir": "yii/apidoc",
+	"bin": ["apidoc"]
+}

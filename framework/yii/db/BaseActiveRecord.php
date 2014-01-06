@@ -138,7 +138,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * @param array $attributes attribute values (name-value pairs) to be saved into the table
 	 * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
 	 * Please refer to [[Query::where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return integer the number of rows updated
 	 */
 	public static function updateAll($attributes, $condition = '')
@@ -379,7 +378,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * Populates the named relation with the related records.
 	 * Note that this method does not check if the relation exists or not.
 	 * @param string $name the relation name (case-sensitive)
-	 * @param ActiveRecord|array|null the related records to be populated into the relation.
+	 * @param ActiveRecord|array|null $records the related records to be populated into the relation.
 	 */
 	public function populateRelation($name, $records)
 	{
