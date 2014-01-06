@@ -129,11 +129,7 @@ class RenderController extends Controller
 				return null;
 			},
 			'only' => ['.php'],
-			'except' => array_merge($except, [
-				'/views/',
-				'/requirements/',
-				'/gii/generators/',
-			]),
+			'except' => $except,
 		];
 		return FileHelper::findFiles($path, $options);
 	}

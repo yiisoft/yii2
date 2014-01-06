@@ -11,6 +11,7 @@ use yii\apidoc\helpers\PrettyPrinter;
 use yii\base\Object;
 
 /**
+ * Represents API documentation information for a [[FunctionDoc|function]] or [[MethodDoc|method]] `param`.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

@@ -12,6 +12,7 @@ use phpDocumentor\Reflection\DocBlock\Tag\SinceTag;
 use yii\base\Object;
 
 /**
+ * Base class for API documentation information.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

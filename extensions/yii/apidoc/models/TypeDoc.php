@@ -12,6 +12,7 @@ use yii\base\Exception;
 use yii\helpers\StringHelper;
 
 /**
+ * Base class for API documentation information for classes, interfaces and traits.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

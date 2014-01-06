@@ -14,6 +14,7 @@ use phpDocumentor\Reflection\DocBlock\Tag\ThrowsTag;
 use yii\base\Exception;
 
 /**
+ * Represents API documentation information for a `function`.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

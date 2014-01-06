@@ -13,6 +13,7 @@ use yii\apidoc\models\TypeDoc;
 use yii\apidoc\templates\BaseRenderer;
 
 /**
+ * A Markdown helper with support for class reference links.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

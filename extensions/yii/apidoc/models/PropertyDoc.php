@@ -11,6 +11,7 @@ use phpDocumentor\Reflection\DocBlock\Tag\VarTag;
 use yii\apidoc\helpers\PrettyPrinter;
 
 /**
+ * Represents API documentation information for a `property`.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

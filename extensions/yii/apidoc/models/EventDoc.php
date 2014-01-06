@@ -11,6 +11,7 @@ use phpDocumentor\Reflection\DocBlock\Tag\ParamTag;
 use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
 
 /**
+ * Represents API documentation information for an `event`.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
