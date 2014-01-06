@@ -961,9 +961,9 @@ class BaseHtml
 	 */
 	public static function activeLabel($model, $attribute, $options = [])
 	{
+		$for = array_key_exists('for', $options) ? $options['for'] : static::getInputId($model, $attribute);
 		$attribute = static::getAttributeName($attribute);
 		$label = isset($options['label']) ? $options['label'] : static::encode($model->getAttributeLabel($attribute));
-		$for = array_key_exists('for', $options) ? $options['for'] : static::getInputId($model, $attribute);
 		unset($options['label'], $options['for']);
 		return static::label($label, $for, $options);
 	}
