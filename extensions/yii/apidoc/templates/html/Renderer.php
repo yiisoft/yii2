@@ -302,20 +302,17 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	 */
 	public function renderPropertySignature($property)
 	{
-		return $this->typeLink($property->types) . ' ' . $property->name . ' = ' . ($property->defaultValue === null ? 'null' : $property->defaultValue);
-		// TODO
-		if(!empty($property->signature))
-			return $property->signature;
-		$sig='';
-		if(!empty($property->getter))
-			$sig=$property->getter->signature;
-		if(!empty($property->setter))
-		{
-			if($sig!=='')
-				$sig.='<br/>';
-			$sig.=$property->setter->signature;
+		if ($property->getter !== null || $property->setter !== null) {
+			$sig = [];
+			if ($property->getter !== null) {
+				$sig[] = $this->renderMethodSignature($property->getter);
+			}
+			if ($property->setter !== null) {
+				$sig[] = $this->renderMethodSignature($property->setter);
+			}
+			return implode('<br />', $sig);
 		}
-		return $sig;
+		return $this->typeLink($property->types) . ' ' . $property->name . ' = ' . ($property->defaultValue === null ? 'null' : $property->defaultValue);
 	}
 
 	/**
@@ -334,7 +331,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 
 		return ($method->isReturnByReference ? '<b>&</b>' : '')
 			. ($method->returnType === null ? 'void' : $this->typeLink($method->returnTypes))
-			. ' ' . $method->name . '( '
+			. ' ' . $this->subjectLink($method, $method->name) . '( '
 			. implode(', ', $params)
 			. ' )';
 	}
