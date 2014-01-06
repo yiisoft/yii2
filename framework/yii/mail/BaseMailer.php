@@ -105,6 +105,10 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * @var \yii\base\View|array view instance or its array configuration.
 	 */
 	private $_view = [];
+    /**
+     * @var array saved messages from debug
+     */
+    protected static $_savedMessages = [];
 
 	/**
 	 * @param array|View $view view instance or its array configuration that will be used to
@@ -301,8 +305,50 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 			$file = $path . '/' . date('Ymd-His-', $time) . sprintf('%04d', (int)(($time - (int)$time) * 10000)) . '-' . sprintf('%04d', mt_rand(0, 10000)) . '.eml';
 		}
 		file_put_contents($file, $message->toString());
+        $this->logMessage($message, $file, $time);
 		return true;
 	}
+
+    /**
+     * Logs email from debug mail panel.
+     * @param MessageInterface $message
+     * @param string $file path to saved file
+     * @param float $time file creation time
+     */
+    protected function logMessage($message, $file, $time)
+    {
+        $address = $this->convertToString($message->getTo());
+
+        Yii::info('Save email to' . $file . ' file. "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
+
+        self::$_savedMessages[] = [
+            'time' => $time,
+            'from'=> $this->convertToString($message->getFrom()),
+            'to' => $address,
+            'replyTo' => $this->convertToString($message->getReplyTo()),
+            'cc' => $this->convertToString($message->getCc()),
+            'bcc' => $this->convertToString($message->getBcc()),
+            'subject'=> $message->getSubject(),
+            'file' => $file
+        ];
+    }
+
+    /**
+     * @return array list of saved messages
+     */
+    public static function getSavedMessages()
+    {
+        return self::$_savedMessages;
+    }
+
+    private function convertToString($attr)
+    {
+        if(is_array($attr))
+        {
+            $attr = implode(', ', array_keys($attr));
+        }
+        return $attr;
+    }
 
 	/**
 	 * Finds the view file corresponding to the specified relative view name.

@@ -129,4 +129,18 @@ class DefaultController extends Controller
 
 		throw new NotFoundHttpException("Unable to find debug data tagged with '$tag'.");
 	}
+
+    public function actionDownload($path = null)
+    {
+        if(is_file($path))
+        {
+            $arr = explode(".", $path);
+            $extension = end($arr);
+            if($extension == 'eml')
+            {
+                return Yii::$app->response->sendFile($path);
+            }
+        }
+        return $this->redirect(['view', 'panel'=>'mail']);
+    }
 }
