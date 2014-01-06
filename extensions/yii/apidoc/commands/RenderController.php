@@ -115,7 +115,7 @@ class RenderController extends Controller
 		return new $rendererClass();
 	}
 
-	protected function findFiles($path, $except = [])
+	protected function findFiles($path, $except = ['/vendor/', '/tests/'])
 	{
 		$path = FileHelper::normalizePath($path);
 		$options = [
