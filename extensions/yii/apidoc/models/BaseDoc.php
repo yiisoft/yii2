@@ -18,6 +18,11 @@ use yii\base\Object;
  */
 class BaseDoc extends Object
 {
+	/**
+	 * @var \phpDocumentor\Reflection\DocBlock\Context
+	 */
+	public $phpDocContext;
+
 	public $name;
 
 	public $sourceFile;
@@ -55,8 +60,10 @@ class BaseDoc extends Object
 
 		$docblock = $reflector->getDocBlock();
 		if ($docblock !== null) {
-			$this->shortDescription = $docblock->getShortDescription();
+			$this->shortDescription = ucfirst($docblock->getShortDescription());
 			$this->description = $docblock->getLongDescription();
+
+			$this->phpDocContext = $docblock->getContext();
 
 			$this->tags = $docblock->getTags();
 			foreach($this->tags as $i => $tag) {

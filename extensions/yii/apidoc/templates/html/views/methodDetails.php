@@ -1,5 +1,6 @@
 <?php
 
+use yii\apidoc\helpers\Markdown;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\TraitDoc;
 /**
@@ -36,14 +37,14 @@ if (empty($methods)) {
 				<tr>
 				  <td class="paramNameCol"><?= $param->name ?></td>
 				  <td class="paramTypeCol"><?= $this->context->typeLink($param->types) ?></td>
-				  <td class="paramDescCol"><?= $param->description ?></td>
+				  <td class="paramDescCol"><?= Markdown::process($param->description, $type) ?></td>
 				</tr>
 			<?php endforeach; ?>
 			<?php if(!empty($method->return)): ?>
 				<tr>
 				  <td class="paramNameCol"><?= '{return}'; ?></td>
 				  <td class="paramTypeCol"><?= $this->context->typeLink($method->returnTypes); ?></td>
-				  <td class="paramDescCol"><?= $method->return; ?></td>
+				  <td class="paramDescCol"><?= Markdown::process($method->return, $type); ?></td>
 				</tr>
 			<?php endif; ?>
 		<?php endif; ?>
@@ -51,8 +52,8 @@ if (empty($methods)) {
 
 <!--	--><?php //$this->renderPartial('sourceCode',array('object'=>$method)); ?>
 
-	<p><strong><?= $method->shortDescription ?></strong></p>
-	<p><?= nl2br($method->description) ?></p>
+	<p><?= Markdown::process($method->shortDescription, $type) ?></strong></p>
+	<p><?= Markdown::process($method->description, $type) ?></p>
 
 	<?= $this->render('seeAlso', ['object' => $method]); ?>
 

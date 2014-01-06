@@ -9,7 +9,12 @@ $see = [];
 foreach($object->tags as $tag) {
 	/** @var $tag phpDocumentor\Reflection\DocBlock\Tag\SeeTag */
 	if (get_class($tag) == 'phpDocumentor\Reflection\DocBlock\Tag\SeeTag') {
-		$see[] = $tag->getReference();
+		$ref = $tag->getReference();
+		if (strpos($ref, '://') === false) {
+			$see[] = '[[' . $ref . ']]';
+		} else {
+			$see[] = $ref;
+		}
 	}
 }
 if (empty($see)) {
@@ -20,7 +25,7 @@ if (empty($see)) {
 <h4>See Also</h4>
 <ul>
 <?php foreach($see as $ref): ?>
-	<li><?= $ref ?></li>
+	<li><?= \yii\apidoc\helpers\Markdown::process($ref, $this->context->context->getType($object->definedBy)) ?></li>
 <?php endforeach; ?>
 </ul>
 </div>

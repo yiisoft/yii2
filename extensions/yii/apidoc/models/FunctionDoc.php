@@ -60,7 +60,7 @@ class FunctionDoc extends BaseDoc
 				if (!isset($this->params[$paramName])) {
 					echo 'undefined parameter documented: ' . $paramName . ' in ' . $this->name . "\n"; // todo add this to a log file
 				}
-				$this->params[$paramName]->description = $tag->getDescription();
+				$this->params[$paramName]->description = ucfirst($tag->getDescription());
 				$this->params[$paramName]->type = $tag->getType();
 				$this->params[$paramName]->types = $tag->getTypes();
 				unset($this->tags[$i]);
