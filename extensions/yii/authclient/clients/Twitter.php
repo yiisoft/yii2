@@ -11,7 +11,8 @@ use yii\authclient\OAuth1;
 
 /**
  * Twitter allows authentication via Twitter OAuth.
- * In order to use Twitter OAuth you must register your application at [[https://dev.twitter.com/apps/new]].
+ *
+ * In order to use Twitter OAuth you must register your application at <https://dev.twitter.com/apps/new>.
  *
  * Example application configuration:
  *

@@ -11,7 +11,8 @@ use yii\authclient\OAuth2;
 
 /**
  * GoogleOAuth allows authentication via Google OAuth.
- * In order to use Google OAuth you must register your application at [[https://code.google.com/apis/console#access]].
+ *
+ * In order to use Google OAuth you must register your application at <https://code.google.com/apis/console#access>.
  *
  * Example application configuration:
  *
