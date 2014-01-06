@@ -7,6 +7,7 @@
 
 namespace yii\apidoc\models;
 
+use yii\apidoc\helpers\PrettyPrinter;
 use yii\base\Object;
 
 /**
@@ -42,7 +43,11 @@ class ParamDoc extends Object
 		$this->name = $reflector->getName();
 		$this->typeHint = $reflector->getType();
 		$this->isOptional = $reflector->getDefault() !== null;
-		$this->defaultValue = $reflector->getDefault();
+
+		// bypass $reflector->getDefault() for short array syntax
+		if ($reflector->getNode()->default) {
+			$this->defaultValue = PrettyPrinter::getRepresentationOfValue($reflector->getNode()->default);
+		}
 		$this->isPassedByReference = $reflector->isByRef();
 	}
 }
