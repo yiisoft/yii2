@@ -76,7 +76,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 			}
 			$this->_view->assetManager = new AssetManager([
 				'basePath' => $assetPath,
-				'baseUrl' => '/assets',
+				'baseUrl' => './assets',
 			]);
 		}
 		return $this->_view;

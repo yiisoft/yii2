@@ -4,6 +4,8 @@
  * @var yii\web\View $this
  */
 
+\yii\apidoc\templates\offline\assets\AssetBundle::register($this);
+
 $this->beginPage();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -11,9 +13,6 @@ $this->beginPage();
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="language" content="en" />
-<link rel="stylesheet" type="text/css" href="css/style.css" />
-<link rel="stylesheet" type="text/css" href="css/api.css" />
-<script type="text/javascript" src="js/jquery.js"></script>
 <?php $this->head(); ?>
 <title><?php echo $this->context->pageTitle; ?></title>
 </head>
@@ -35,16 +34,22 @@ $this->beginPage();
 All Rights Reserved.<br/>
 </div><!-- end of footer -->
 
-<?php \yii\web\JqueryAsset::register($this); ?>
 <script type="text/javascript">
 /*<![CDATA[*/
-$("a.toggle").toggle(function(){
-	$(this).text($(this).text().replace(/Hide/,'Show'));
-	$(this).parents(".summary").find(".inherited").hide();
-},function(){
-	$(this).text($(this).text().replace(/Show/,'Hide'));
-	$(this).parents(".summary").find(".inherited").show();
+$("a.toggle").on('click', function() {
+	var $this = $(this);
+	if ($this.hasClass('properties-hidden')) {
+		$this.text($this.text().replace(/Show/,'Hide'));
+		$this.parents(".summary").find(".inherited").show();
+		$this.removeClass('properties-hidden');
+	} else {
+		$this.text($this.text().replace(/Hide/,'Show'));
+		$this.parents(".summary").find(".inherited").hide();
+		$this.addClass('properties-hidden');
+	}
+	return false;
 });
+/*
 $(".sourceCode a.show").toggle(function(){
 	$(this).text($(this).text().replace(/show/,'hide'));
 	$(this).parents(".sourceCode").find("div.code").show();
@@ -55,6 +60,7 @@ $(".sourceCode a.show").toggle(function(){
 $("a.sourceLink").click(function(){
 	$(this).attr('target','_blank');
 });
+*/
 /*]]>*/
 </script>
 
