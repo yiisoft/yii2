@@ -23,12 +23,10 @@ echo GridView::widget([
 			'value' => function($data)
 				{
 					$path = $data['file'];
-					if(!empty($path) && is_file($path))
-					{
+					if (!empty($path) && is_file($path)) {
 						$arr = explode(".", $path);
 						$extension = end($arr);
-						if($extension == 'eml')
-						{
+						if ($extension == 'eml') {
 							return Html::a('eml', ['download', 'path'=>$data['file']]);
 						}
 					}

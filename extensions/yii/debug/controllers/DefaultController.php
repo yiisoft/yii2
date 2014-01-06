@@ -132,12 +132,10 @@ class DefaultController extends Controller
 
 	public function actionDownload($path = null)
 	{
-		if(is_file($path))
-		{
+		if (is_file($path)) {
 			$arr = explode(".", $path);
 			$extension = end($arr);
-			if($extension == 'eml')
-			{
+			if ($extension == 'eml') {
 				return Yii::$app->response->sendFile($path);
 			}
 		}
