@@ -38,7 +38,7 @@ your `composer.json` to include
 "yiisoft/yii2-twig": "*",
 ```
 
-in `require` section and then run `composer update`.
+in `require` section and then run `composer update --preder-dist`.
 
 Twig
 ----

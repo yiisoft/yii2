@@ -93,7 +93,7 @@ adding the following to `require`:
 "ezyang/htmlpurifier": "v4.6.0"
 ```
 
-After it's done run `php composer.phar install` and wait till package is downloaded. Now everything is prepared to use
+After it's done run `php composer.phar install --prefer-dist` and wait till package is downloaded. Now everything is prepared to use
 Yii's HtmlPurifier helper:
 
 ```php
