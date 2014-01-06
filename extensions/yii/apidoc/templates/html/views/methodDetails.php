@@ -32,7 +32,7 @@ if (empty($methods)) {
 			<?= $this->context->renderMethodSignature($method) ?>
 			</div>
 		</td></tr>
-		<?php if(!empty($method->params) || !empty($method->return)): ?>
+		<?php if(!empty($method->params) || !empty($method->return) || !empty($method->exceptions)): ?>
 			<?php foreach($method->params as $param): ?>
 				<tr>
 				  <td class="paramNameCol"><?= $param->name ?></td>
@@ -42,11 +42,18 @@ if (empty($methods)) {
 			<?php endforeach; ?>
 			<?php if(!empty($method->return)): ?>
 				<tr>
-				  <td class="paramNameCol"><?= '{return}'; ?></td>
+				  <td class="paramNameCol"><?= 'return'; ?></td>
 				  <td class="paramTypeCol"><?= $this->context->typeLink($method->returnTypes); ?></td>
 				  <td class="paramDescCol"><?= Markdown::process($method->return, $type); ?></td>
 				</tr>
 			<?php endif; ?>
+			<?php foreach($method->exceptions as $exception => $description): ?>
+				<tr>
+				  <td class="paramNameCol"><?= 'throws' ?></td>
+				  <td class="paramTypeCol"><?= $this->context->typeLink($exception) ?></td>
+				  <td class="paramDescCol"><?= Markdown::process($description, $type) ?></td>
+				</tr>
+			<?php endforeach; ?>
 		<?php endif; ?>
 	</table>
 
