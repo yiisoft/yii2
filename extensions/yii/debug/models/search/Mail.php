@@ -11,40 +11,40 @@ use yii\debug\components\search\Filter;
 class Mail extends Base
 {
 
-    /**
-     * @var string from attribute input search value
-     */
-    public $from;
+	/**
+	 * @var string from attribute input search value
+	 */
+	public $from;
 
-    /**
-     * @var string to attribute input search value
-     */
-    public $to;
+	/**
+	 * @var string to attribute input search value
+	 */
+	public $to;
 
-    /**
-     * @var string replyTo attribute input search value
-     */
-    public $replyTo;
+	/**
+	 * @var string replyTo attribute input search value
+	 */
+	public $replyTo;
 
-    /**
-     * @var string cc attribute input search value
-     */
-    public $cc;
+	/**
+	 * @var string cc attribute input search value
+	 */
+	public $cc;
 
-    /**
-     * @var string bcc attribute input search value
-     */
-    public $bcc;
+	/**
+	 * @var string bcc attribute input search value
+	 */
+	public $bcc;
 
-    /**
-     * @var string subject attribute input search value
-     */
-    public $subject;
+	/**
+	 * @var string subject attribute input search value
+	 */
+	public $subject;
 
-    /**
-     * @var string file attribute input search value
-     */
-    public $file;
+	/**
+	 * @var string file attribute input search value
+	 */
+	public $file;
 
 	public function rules()
 	{
@@ -59,12 +59,12 @@ class Mail extends Base
 	public function attributeLabels()
 	{
 		return [
-            'from' => 'From',
-            'to' => 'To',
-            'replyTo' => 'Reply to',
-            'cc' => 'Copy receiver',
-            'bcc' => 'Hidden copy receiver',
-            'subject' => 'Subject',
+			'from' => 'From',
+			'to' => 'To',
+			'replyTo' => 'Reply to',
+			'cc' => 'Copy receiver',
+			'bcc' => 'Hidden copy receiver',
+			'subject' => 'Subject',
 		];
 	}
 
@@ -93,9 +93,9 @@ class Mail extends Base
 		$filter = new Filter();
 		$this->addCondition($filter, 'from', true);
 		$this->addCondition($filter, 'to', true);
-        $this->addCondition($filter, 'replyTo', true);
-        $this->addCondition($filter, 'cc', true);
-        $this->addCondition($filter, 'bcc', true);
+		$this->addCondition($filter, 'replyTo', true);
+		$this->addCondition($filter, 'cc', true);
+		$this->addCondition($filter, 'bcc', true);
 		$dataProvider->allModels = $filter->filter($models);
 
 		return $dataProvider;

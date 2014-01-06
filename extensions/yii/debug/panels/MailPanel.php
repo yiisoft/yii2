@@ -28,19 +28,19 @@ class MailPanel extends Panel
 
 	public function getDetail()
 	{
-        $searchModel = new Mail();
-        $dataProvider = $searchModel->search(Yii::$app->request->get(), $this->data);
+		$searchModel = new Mail();
+		$dataProvider = $searchModel->search(Yii::$app->request->get(), $this->data);
 
-        return Yii::$app->view->render('panels/mail/detail', [
-                'panel' => $this,
-                'dataProvider' => $dataProvider,
-                'searchModel' => $searchModel
-            ]);
+		return Yii::$app->view->render('panels/mail/detail', [
+			'panel' => $this,
+			'dataProvider' => $dataProvider,
+			'searchModel' => $searchModel
+		]);
 	}
 
 	public function save()
 	{
-        $mail = Yii::$app->getMail();
+		$mail = Yii::$app->getMail();
 		return $mail::getSavedMessages();
 	}
 }
