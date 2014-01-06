@@ -160,7 +160,7 @@ class Context extends Component
 				if (isset($class->properties[$propertyName])) {
 					$property = $class->properties[$propertyName];
 					if ($property->getter === null && $property->setter === null) {
-						echo "Property $propertyName conflicts with a defined getter {$method->name} in {$class->name}."; // TODO log these messages somewhere
+						echo "Property $propertyName conflicts with a defined getter {$method->name} in {$class->name}.\n"; // TODO log these messages somewhere
 					}
 					$property->getter = $method;
 				} else {
@@ -184,7 +184,7 @@ class Context extends Component
 				if (isset($class->properties[$propertyName])) {
 					$property = $class->properties[$propertyName];
 					if ($property->getter === null && $property->setter === null) {
-						echo "Property $propertyName conflicts with a defined setter {$method->name} in {$class->name}."; // TODO log these messages somewhere
+						echo "Property $propertyName conflicts with a defined setter {$method->name} in {$class->name}.\n"; // TODO log these messages somewhere
 					}
 					$property->setter = $method;
 				} else {

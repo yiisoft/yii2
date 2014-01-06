@@ -58,7 +58,8 @@ class FunctionDoc extends BaseDoc
 			} elseif ($tag instanceof ParamTag) {
 				$paramName = $tag->getVariableName();
 				if (!isset($this->params[$paramName])) {
-					echo 'undefined parameter documented: ' . $paramName . ' in ' . $this->name . "\n"; // todo add this to a log file
+					echo 'undefined parameter documented: ' . $paramName . ' in ' . $this->name . "()\n"; // TODO log these messages somewhere
+					continue;
 				}
 				$this->params[$paramName]->description = ucfirst($tag->getDescription());
 				$this->params[$paramName]->type = $tag->getType();

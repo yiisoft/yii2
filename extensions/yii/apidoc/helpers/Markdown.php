@@ -1,19 +1,22 @@
 <?php
 /**
- * 
- * 
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\apidoc\helpers;
-
 
 use phpDocumentor\Reflection\DocBlock\Type\Collection;
 use yii\apidoc\models\MethodDoc;
 use yii\apidoc\models\TypeDoc;
 use yii\apidoc\templates\BaseRenderer;
-use yii\helpers\Html;
 
+/**
+ *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
+ */
 class Markdown extends \yii\helpers\Markdown
 {
 	/**

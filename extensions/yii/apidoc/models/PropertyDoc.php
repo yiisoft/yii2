@@ -8,6 +8,7 @@
 namespace yii\apidoc\models;
 
 use phpDocumentor\Reflection\DocBlock\Tag\VarTag;
+use yii\apidoc\helpers\PrettyPrinter;
 
 /**
  *
@@ -55,7 +56,10 @@ class PropertyDoc extends BaseDoc
 		$this->visibility = $reflector->getVisibility();
 		$this->isStatic = $reflector->isStatic();
 
-		$this->defaultValue = $reflector->getDefault();
+		// bypass $reflector->getDefault() for short array syntax
+		if ($reflector->getNode()->default) {
+			$this->defaultValue = PrettyPrinter::getRepresentationOfValue($reflector->getNode()->default);
+		}
 
 		foreach($this->tags as $i => $tag) {
 			if ($tag instanceof VarTag) {
