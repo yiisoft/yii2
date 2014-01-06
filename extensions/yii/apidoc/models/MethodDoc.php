@@ -8,6 +8,7 @@
 namespace yii\apidoc\models;
 
 /**
+ * Represents API documentation information for a `method`.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

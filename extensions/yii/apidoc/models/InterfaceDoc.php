@@ -8,6 +8,7 @@
 namespace yii\apidoc\models;
 
 /**
+ * Represents API documentation information for an `interface`.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

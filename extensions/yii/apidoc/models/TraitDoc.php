@@ -8,6 +8,7 @@
 namespace yii\apidoc\models;
 
 /**
+ * Represents API documentation information for a `trait`.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
