@@ -213,7 +213,7 @@ class Controller extends \yii\base\Controller
 	 * of the current request.
 	 *
 	 * @param integer $statusCode the HTTP status code. Defaults to 302.
-	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
+	 * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
 	 * for details about HTTP status code
 	 * @return Response the current response object
 	 */

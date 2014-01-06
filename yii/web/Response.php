@@ -127,7 +127,7 @@ class Response extends \yii\base\Response
 	public $charset;
 	/**
 	 * @var string the HTTP status description that comes together with the status code.
-	 * @see [[httpStatuses]]
+	 * @see httpStatuses
 	 */
 	public $statusText = 'OK';
 	/**
@@ -614,7 +614,7 @@ class Response extends \yii\base\Response
 	 * of the current request.
 	 *
 	 * @param integer $statusCode the HTTP status code. Defaults to 302.
-	 * See [[http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html]]
+	 * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
 	 * for details about HTTP status code
 	 * @return static the response object itself
 	 */
