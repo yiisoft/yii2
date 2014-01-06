@@ -235,18 +235,6 @@ class Controller extends Component implements ViewContextInterface
 	}
 
 	/**
-	 * Returns the request parameters that will be used for action parameter binding.
-	 * Default implementation simply returns an empty array.
-	 * Child classes may override this method to customize the parameters to be provided
-	 * for action parameter binding (e.g. `$_GET`).
-	 * @return array the request parameters (name-value pairs) to be used for action parameter binding.
-	 */
-	public function getActionParams()
-	{
-		return [];
-	}
-
-	/**
 	 * @return string the controller ID that is prefixed with the module ID (if any).
 	 */
 	public function getUniqueId()
