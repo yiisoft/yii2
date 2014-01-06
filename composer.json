@@ -82,6 +82,7 @@
 		"phpunit/phpunit": "3.7.*"
 	},
 	"suggest": {
+		"phpdocumentor/reflection": "required by yii2-apidoc extension",
 		"twbs/bootstrap": "required by yii2-bootstrap, yii2-debug, yii2-gii extension",
 		"ext-curl": "required by yii2-elasticsearch extension",
 		"ext-mongo": "required by yii2-mongo extension",
