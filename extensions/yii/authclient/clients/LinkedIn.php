@@ -13,7 +13,8 @@ use Yii;
 
 /**
  * LinkedIn allows authentication via LinkedIn OAuth.
- * In order to use linkedIn OAuth you must register your application at [[https://www.linkedin.com/secure/developer]].
+ *
+ * In order to use linkedIn OAuth you must register your application at <https://www.linkedin.com/secure/developer>.
  *
  * Example application configuration:
  *

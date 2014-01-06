@@ -493,7 +493,7 @@ class BaseYii
 	 * will be replaced with the given number.
 	 *
 	 * For more details on how plural rules are applied, please refer to:
-	 * [[http://www.unicode.org/cldr/charts/supplemental/language_plural_rules.html]]
+	 * <http://www.unicode.org/cldr/charts/supplemental/language_plural_rules.html>
 	 *
 	 * @param string $category the message category.
 	 * @param string $message the message to be translated.
