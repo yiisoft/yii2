@@ -103,10 +103,16 @@ class Context extends Component
 				}
 			}
 		}
-		// update properties, methods, contants and events of subclasses
+		// inherit properties, methods, contants and events to subclasses
 		foreach($this->classes as $class) {
 			$this->updateSubclassInheritance($class);
 		}
+		// add properties from getters and setters
+		foreach($this->classes as $class) {
+			$this->handlePropertyFeature($class);
+		}
+
+		// TODO reference exceptions to methods where they are thrown
 	}
 
 	/**
@@ -137,5 +143,116 @@ class Context extends Component
 			$subclass->methods = array_merge($class->methods, $subclass->methods);
 			$this->updateSubclassInheritance($subclass);
 		}
+	}
+
+	/**
+	 * Add properties for getters and setters if class is subclass of [[yii\base\Object]].
+	 * @param ClassDoc $class
+	 */
+	protected function handlePropertyFeature($class)
+	{
+		if (!$this->isSubclassOf($class, 'yii\base\Object')) {
+			return;
+		}
+		foreach($class->getPublicMethods() as $name => $method) {
+			if (!strncmp($name, 'get', 3) && $this->paramsOptional($method)) {
+				$propertyName = '$' . lcfirst(substr($method->name, 3));
+				if (isset($class->properties[$propertyName])) {
+					$property = $class->properties[$propertyName];
+					if ($property->getter === null && $property->setter === null) {
+						echo "Property $propertyName conflicts with a defined getter {$method->name} in {$class->name}."; // TODO log these messages somewhere
+					}
+					$property->getter = $method;
+				} else {
+					$class->properties[$propertyName] = new PropertyDoc(null, [
+						'name' => $propertyName,
+						'definedBy' => $class->name,
+						'visibility' => 'public',
+						'isStatic' => false,
+						'type' => $method->returnType,
+						'types' => $method->returnTypes,
+						'shortDescription' => (($pos = strpos($method->return, '.')) !== false) ?
+								substr($method->return, 0, $pos) : $method->return,
+						'description' => $method->return,
+						'getter' => $method
+						// TODO set default value
+					]);
+				}
+			}
+			if (!strncmp($name, 'set', 3) && $this->paramsOptional($method, 1)) {
+				$propertyName = '$' . lcfirst(substr($method->name, 3));
+				if (isset($class->properties[$propertyName])) {
+					$property = $class->properties[$propertyName];
+					if ($property->getter === null && $property->setter === null) {
+						echo "Property $propertyName conflicts with a defined setter {$method->name} in {$class->name}."; // TODO log these messages somewhere
+					}
+					$property->setter = $method;
+				} else {
+					$param = $this->getFirstNotOptionalParameter($method);
+					$class->properties[$propertyName] = new PropertyDoc(null, [
+						'name' => $propertyName,
+						'definedBy' => $class->name,
+						'visibility' => 'public',
+						'isStatic' => false,
+						'type' => $param->type,
+						'types' => $param->types,
+						'shortDescription' => (($pos = strpos($param->description, '.')) !== false) ?
+								substr($param->description, 0, $pos) : $param->description,
+						'description' => $param->description,
+						'setter' => $method
+					]);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param MethodDoc $method
+	 * @param integer $number number of not optional parameters
+	 * @return bool
+	 */
+	private function paramsOptional($method, $number = 0)
+	{
+		foreach($method->params as $param) {
+			if (!$param->isOptional && $number-- <= 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * @param MethodDoc $method
+	 * @return ParamDoc
+	 */
+	private function getFirstNotOptionalParameter($method)
+	{
+		foreach($method->params as $param) {
+			if (!$param->isOptional) {
+				return $param;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @param ClassDoc $classA
+	 * @param ClassDoc $classB
+	 */
+	protected function isSubclassOf($classA, $classB)
+	{
+		if (is_object($classB)) {
+			$classB = $classB->name;
+		}
+		if ($classA->name == $classB) {
+			return true;
+		}
+		while($classA->parentClass !== null && isset($this->classes[$classA->parentClass])) {
+			$classA = $this->classes[$classA->parentClass];
+			if ($classA->name == $classB) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

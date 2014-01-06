@@ -178,25 +178,6 @@ class TypeDoc extends BaseDoc
 			if ($methodReflector->getVisibility() != 'private') {
 				$method = new MethodDoc($methodReflector);
 				$method->definedBy = $this->name;
-
-				// TODO only set property when subclass of Object
-				if (!strncmp($method->name, 'set', 3)) {
-					$propertyName = lcfirst(substr($method->name, 3));
-					if (isset($this->properties[$propertyName])) {
-						$property = $this->properties[$propertyName];
-						if ($property->getter === null && $property->setter === null) {
-							throw new Exception("Property $propertyName conflicts with a defined setter {$method->name}.");
-						}
-						$property->setter = $method;
-					} else {
-//						$this->properties[$propertyName] = new PropertyDoc(null, [
-//							'name' => $propertyName,
-//							// TODO set description and short description
-//						]);
-					}
-				} elseif (!strncmp($method->name, 'get', 3)) {
-					// TODO add property
-				}
 				$this->methods[$method->name] = $method;
 			}
 		}

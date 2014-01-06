@@ -54,7 +54,7 @@ class FunctionDoc extends BaseDoc
 				$this->exceptions[$tag->getType()] = $tag->getDescription();
 				unset($this->tags[$i]);
 			} elseif ($tag instanceof PropertyTag) {
-				 // TODO handle property tag
+				 // ignore property tag
 			} elseif ($tag instanceof ParamTag) {
 				$paramName = $tag->getVariableName();
 				if (!isset($this->params[$paramName])) {
