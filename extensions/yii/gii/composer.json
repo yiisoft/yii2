@@ -22,7 +22,7 @@
 		"yiisoft/yii2-bootstrap": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\gii\\": "" }
+		"psr-0": {"yii\\gii\\": ""}
 	},
 	"target-dir": "yii/gii"
 }

@@ -1,4 +1,5 @@
 <?php
+
 use yii\grid\GridView;
 use yii\helpers\Html;
 ?>
@@ -28,7 +29,7 @@ echo GridView::widget([
 		[
 			'attribute' => 'duration',
 			'value' => function ($data) {
-				return sprintf('%.1f ms',$data['duration']);
+				return sprintf('%.1f ms', $data['duration']);
 			},
 			'options' => [
 				'width' => '10%',

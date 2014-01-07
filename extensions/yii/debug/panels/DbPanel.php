@@ -20,12 +20,10 @@ use yii\debug\models\search\Db;
  */
 class DbPanel extends Panel
 {
-
 	/**
 	 * @var array db queries info extracted to array as models, to use with data provider.
 	 */
 	private $_models;
-
 	/**
 	 * @var array current database request timings
 	 */
@@ -43,7 +41,7 @@ class DbPanel extends Panel
 		$queryTime = number_format($this->getTotalQueryTime($timings) * 1000) . ' ms';
 
 		return Yii::$app->view->render('panels/db/summary', [
-			'timings' => $this->calculateTimings(), 
+			'timings' => $this->calculateTimings(),
 			'panel' => $this,
 			'queryCount' => $queryCount,
 			'queryTime' => $queryTime,
@@ -108,8 +106,8 @@ class DbPanel extends Panel
 			$this->_models = [];
 			$timings = $this->calculateTimings();
 
-			foreach($timings as $seq => $dbTiming) {
-				$this->_models[] = 	[
+			foreach ($timings as $seq => $dbTiming) {
+				$this->_models[] = [
 					'type' => $this->detectQueryType($dbTiming['info']),
 					'query' => $dbTiming['info'],
 					'duration' => ($dbTiming['duration'] * 1000), // in milliseconds
@@ -134,5 +132,4 @@ class DbPanel extends Panel
 		preg_match('/^([a-zA-z]*)/', $timing, $matches);
 		return count($matches) ? $matches[0] : '';
 	}
-
 }

@@ -51,10 +51,8 @@ class Item extends Object
 	 * @var integer the authorization item type. This could be 0 (operation), 1 (task) or 2 (role).
 	 */
 	public $type;
-
 	private $_name;
 	private $_oldName;
-
 
 	/**
 	 * Checks to see if the specified item is within the hierarchy starting from this item.

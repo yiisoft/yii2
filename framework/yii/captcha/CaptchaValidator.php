@@ -40,7 +40,6 @@ class CaptchaValidator extends Validator
 	 */
 	public $captchaAction = 'site/captcha';
 
-
 	/**
 	 * @inheritdoc
 	 */

@@ -90,7 +90,6 @@ class Query extends Component implements QueryInterface
 	 * the elasticsearch [Query DSL](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html).
 	 */
 	public $filter;
-
 	public $facets = [];
 
 	public function init()

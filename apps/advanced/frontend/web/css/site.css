@@ -61,7 +61,7 @@ a.desc:after {
 }
 
 .grid-view th {
-    white-space: nowrap;
+	white-space: nowrap;
 }
 
 .hint-block {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var \yii\web\View $this
  * @var \yii\debug\Panel[] $panels
@@ -27,7 +28,7 @@ $url = $panels['request']->getUrl();
 ?>
 <div id="yii-debug-toolbar" class="yii-debug-toolbar-<?= $position ?>">
 	<?php foreach ($panels as $panel): ?>
-	<?= $panel->getSummary() ?>
+		<?= $panel->getSummary() ?>
 	<?php endforeach; ?>
 	<span class="yii-debug-toolbar-toggler" onclick="<?= $minJs ?>">›</span>
 </div>

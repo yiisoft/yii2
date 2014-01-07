@@ -38,7 +38,6 @@ class Command extends Component
 	 * @var array list of arrays or json strings that become parts of a query
 	 */
 	public $queryParts;
-
 	public $options = [];
 
 	/**
@@ -358,7 +357,6 @@ class Command extends Component
 //		// TODO implement
 ////		return $this->db->put([$index]);
 //	}
-
 	/**
 	 * @param $name
 	 * @param $pattern
@@ -373,11 +371,10 @@ class Command extends Component
 		$body = Json::encode([
 			'template' => $pattern,
 			'order' => $order,
-			'settings' => (object) $settings,
-			'mappings' => (object) $mappings,
+			'settings' => (object)$settings,
+			'mappings' => (object)$mappings,
 		]);
 		return $this->db->put(['_template', $name], $body);
-
 	}
 
 	/**
@@ -388,7 +385,6 @@ class Command extends Component
 	public function deleteTemplate($name)
 	{
 		return $this->db->delete(['_template', $name]);
-
 	}
 
 	/**

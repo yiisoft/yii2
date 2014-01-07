@@ -23,24 +23,20 @@ class BaseDoc extends Object
 	 * @var \phpDocumentor\Reflection\DocBlock\Context
 	 */
 	public $phpDocContext;
-
 	public $name;
-
 	public $sourceFile;
 	public $startLine;
 	public $endLine;
-
 	public $shortDescription;
 	public $description;
 	public $since;
 	public $deprecatedSince;
 	public $deprecatedReason;
-
+	
 	/**
 	 * @var \phpDocumentor\Reflection\DocBlock\Tag[]
 	 */
 	public $tags = [];
-
 
 	/**
 	 * @param \phpDocumentor\Reflection\BaseReflector $reflector
@@ -67,7 +63,7 @@ class BaseDoc extends Object
 			$this->phpDocContext = $docblock->getContext();
 
 			$this->tags = $docblock->getTags();
-			foreach($this->tags as $i => $tag) {
+			foreach ($this->tags as $i => $tag) {
 				if ($tag instanceof SinceTag) {
 					$this->since = $tag->getVersion();
 					unset($this->tags[$i]);
@@ -80,26 +76,25 @@ class BaseDoc extends Object
 		}
 	}
 
-
 	// TODO
 	public function loadSource($reflection)
 	{
-		$this->sourcePath=str_replace('\\','/',str_replace(YII_PATH,'',$reflection->getFileName()));
-		$this->startLine=$reflection->getStartLine();
-		$this->endLine=$reflection->getEndLine();
+		$this->sourcePath = str_replace('\\', '/', str_replace(YII_PATH, '', $reflection->getFileName()));
+		$this->startLine = $reflection->getStartLine();
+		$this->endLine = $reflection->getEndLine();
 	}
 
-	public function getSourceUrl($baseUrl,$line=null)
+	public function getSourceUrl($baseUrl, $line = null)
 	{
-		if($line===null)
-			return $baseUrl.$this->sourcePath;
+		if ($line === null)
+			return $baseUrl . $this->sourcePath;
 		else
-			return $baseUrl.$this->sourcePath.'#'.$line;
+			return $baseUrl . $this->sourcePath . '#' . $line;
 	}
 
 	public function getSourceCode()
 	{
-		$lines=file(YII_PATH.$this->sourcePath);
-		return implode("",array_slice($lines,$this->startLine-1,$this->endLine-$this->startLine+1));
+		$lines = file(YII_PATH . $this->sourcePath);
+		return implode("", array_slice($lines, $this->startLine - 1, $this->endLine - $this->startLine + 1));
 	}
 }

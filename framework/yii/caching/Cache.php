@@ -72,7 +72,6 @@ abstract class Cache extends Component implements \ArrayAccess
 	 */
 	public $serializer;
 
-
 	/**
 	 * Initializes the application component.
 	 * This method overrides the parent implementation by setting default cache key prefix.
@@ -332,7 +331,6 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * @return string|boolean the value stored in cache, false if the value is not in the cache or expired.
 	 */
 	abstract protected function getValue($key);
-
 	/**
 	 * Stores a value identified by a key in cache.
 	 * This method should be implemented by child classes to store the data
@@ -343,7 +341,6 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
 	abstract protected function setValue($key, $value, $expire);
-
 	/**
 	 * Stores a value identified by a key into cache if the cache does not contain this key.
 	 * This method should be implemented by child classes to store the data
@@ -354,7 +351,6 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * @return boolean true if the value is successfully stored into cache, false otherwise
 	 */
 	abstract protected function addValue($key, $value, $expire);
-
 	/**
 	 * Deletes a value with the specified key from cache
 	 * This method should be implemented by child classes to delete the data from actual cache storage.
@@ -362,14 +358,12 @@ abstract class Cache extends Component implements \ArrayAccess
 	 * @return boolean if no error happens during deletion
 	 */
 	abstract protected function deleteValue($key);
-
 	/**
 	 * Deletes all values from cache.
 	 * Child classes may implement this method to realize the flush operation.
 	 * @return boolean whether the flush operation was successful.
 	 */
 	abstract protected function flushValues();
-
 	/**
 	 * Retrieves multiple values from cache with the specified keys.
 	 * The default implementation calls [[getValue()]] multiple times to retrieve
@@ -398,8 +392,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	protected function setValues($data, $expire)
 	{
 		$failedKeys = [];
-		foreach ($data as $key => $value)
-		{
+		foreach ($data as $key => $value) {
 			if ($this->setValue($key, $value, $expire) === false) {
 				$failedKeys[] = $key;
 			}
@@ -418,8 +411,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	protected function addValues($data, $expire)
 	{
 		$failedKeys = [];
-		foreach ($data as $key => $value)
-		{
+		foreach ($data as $key => $value) {
 			if ($this->addValue($key, $value, $expire) === false) {
 				$failedKeys[] = $key;
 			}

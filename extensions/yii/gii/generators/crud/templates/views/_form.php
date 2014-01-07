@@ -32,12 +32,12 @@ use yii\widgets\ActiveForm;
 
 	<?= "<?php " ?>$form = ActiveForm::begin(); ?>
 
-<?php foreach ($safeAttributes as $attribute) {
-	echo "\t\t<?= " . $generator->generateActiveField($attribute) . " ?>\n\n";
-} ?>
-		<div class="form-group">
-			<?= "<?= " ?>Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-		</div>
+	<?php foreach ($safeAttributes as $attribute) {
+		echo "\t\t<?= " . $generator->generateActiveField($attribute) . " ?>\n\n";
+	} ?>
+	<div class="form-group">
+		<?= "<?= " ?>Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+	</div>
 
 	<?= "<?php " ?>ActiveForm::end(); ?>
 

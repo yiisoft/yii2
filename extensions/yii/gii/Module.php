@@ -90,7 +90,6 @@ class Module extends \yii\base\Module
 	 */
 	public $newDirMode = 0777;
 
-
 	/**
 	 * @inheritdoc
 	 */

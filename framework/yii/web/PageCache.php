@@ -103,7 +103,6 @@ class PageCache extends ActionFilter
 	 */
 	public $view;
 
-
 	public function init()
 	{
 		parent::init();

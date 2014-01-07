@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\db\mssql;
 
 use yiiunit\framework\data\ActiveDataProviderTest;

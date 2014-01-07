@@ -56,10 +56,8 @@ class DbFixtureManager extends Component
 	 * so that fixture data can be populated into the database without causing problem.
 	 */
 	public $schemas = [''];
-
 	private $_rows; // fixture name, row alias => row
 	private $_models; // fixture name, row alias => record (or class name)
-
 
 	/**
 	 * Loads the specified fixtures.

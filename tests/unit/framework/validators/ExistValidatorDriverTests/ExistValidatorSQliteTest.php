@@ -1,6 +1,6 @@
 <?php
-namespace yiiunit\framework\validators\ExistValidatorDriverTests;
 
+namespace yiiunit\framework\validators\ExistValidatorDriverTests;
 
 use yiiunit\framework\validators\ExistValidatorTest;
 

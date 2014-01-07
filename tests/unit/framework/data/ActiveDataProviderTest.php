@@ -159,7 +159,7 @@ class ActiveDataProviderTest extends DatabaseTestCase
 		$provider->refresh();
 		$this->assertEquals(2, count($provider->getModels()));
 	}
-	
+
 	public function testPaginationBeforeModels()
 	{
 		$query = new Query;

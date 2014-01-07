@@ -17,7 +17,6 @@ use yii\base\Component;
  */
 abstract class Base extends Component implements MatcherInterface
 {
-
 	/**
 	 * @var mixed current value to check for the matcher
 	 */

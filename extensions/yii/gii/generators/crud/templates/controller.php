@@ -9,12 +9,11 @@ use yii\helpers\StringHelper;
  * @var yii\web\View $this
  * @var yii\gii\generators\crud\Generator $generator
  */
-
 $controllerClass = StringHelper::basename($generator->controllerClass);
 $modelClass = StringHelper::basename($generator->modelClass);
 $searchModelClass = StringHelper::basename($generator->searchModelClass);
 if ($modelClass === $searchModelClass) {
-	$searchModelAlias = $searchModelClass.'Search';
+	$searchModelAlias = $searchModelClass . 'Search';
 }
 
 /** @var ActiveRecordInterface $class */
@@ -30,7 +29,7 @@ echo "<?php\n";
 namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>;
 
 use <?= ltrim($generator->modelClass, '\\') ?>;
-use <?= ltrim($generator->searchModelClass, '\\') ?><?php if (isset($searchModelAlias)):?> as <?= $searchModelAlias ?><?php endif ?>;
+use <?= ltrim($generator->searchModelClass, '\\') ?><?php if (isset($searchModelAlias)): ?> as <?= $searchModelAlias ?><?php endif ?>;
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\NotFoundHttpException;
 use yii\web\VerbFilter;

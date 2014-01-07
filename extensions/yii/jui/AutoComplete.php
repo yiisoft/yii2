@@ -33,7 +33,7 @@ use yii\helpers\Html;
  *         'source' => ['USA', 'RUS'],
  *     ],
  * ]);
- *```
+ * ```
  *
  * @see http://api.jqueryui.com/autocomplete/
  * @author Alexander Kochetov <creocoder@gmail.com>

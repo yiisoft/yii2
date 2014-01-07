@@ -2,7 +2,6 @@
 
 namespace yiiunit\data\ar\mongodb;
 
-
 class CustomerOrder extends ActiveRecord
 {
 	public static function collectionName()

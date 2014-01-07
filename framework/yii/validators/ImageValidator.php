@@ -115,7 +115,7 @@ class ImageValidator extends FileValidator
 	public function init()
 	{
 		parent::init();
-		
+
 		if ($this->notImage === null) {
 			$this->notImage = Yii::t('yii', 'The file "{file}" is not an image.');
 		}
@@ -124,7 +124,7 @@ class ImageValidator extends FileValidator
 		}
 		if ($this->underHeight === null) {
 			$this->underHeight = Yii::t('yii', 'The file "{file}" is too small. The height cannot be smaller than {limit} pixels.');
-		}		
+		}
 		if ($this->overWidth === null) {
 			$this->overWidth = Yii::t('yii', 'The file "{file}" is too large. The width cannot be larger than {limit} pixels.');
 		}
@@ -147,7 +147,7 @@ class ImageValidator extends FileValidator
 		$result = parent::validateValue($file);
 		return empty($result) ? $this->validateImage($file) : $result;
 	}
-	
+
 	/**
 	 * Validates an image file.
 	 * @param UploadedFile $image uploaded file passed to check against a set of rules
@@ -159,29 +159,29 @@ class ImageValidator extends FileValidator
 		if (!empty($this->mimeTypes) && !in_array(FileHelper::getMimeType($image->tempName), $this->mimeTypes, true)) {
 			return [$this->wrongMimeType, ['file' => $image->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
 		}
-		
+
 		if (false === ($imageInfo = getimagesize($image->tempName))) {
 			return [$this->notImage, ['file' => $image->name]];
 		}
-		
+
 		list($width, $height, $type) = $imageInfo;
-		
+
 		if ($width == 0 || $height == 0) {
 			return [$this->notImage, ['file' => $image->name]];
 		}
-		
+
 		if ($this->minWidth !== null && $width < $this->minWidth) {
 			return [$this->underWidth, ['file' => $image->name, 'limit' => $this->minWidth]];
 		}
-		
+
 		if ($this->minHeight !== null && $height < $this->minHeight) {
 			return [$this->underHeight, ['file' => $image->name, 'limit' => $this->minHeight]];
 		}
-		
+
 		if ($this->maxWidth !== null && $width > $this->maxWidth) {
 			return [$this->overWidth, ['file' => $image->name, 'limit' => $this->maxWidth]];
 		}
-		
+
 		if ($this->maxHeight !== null && $height > $this->maxHeight) {
 			return [$this->overHeight, ['file' => $image->name, 'limit' => $this->maxHeight]];
 		}

@@ -10,12 +10,10 @@ use yii\debug\components\search\Filter;
  */
 class Db extends Base
 {
-
 	/**
 	 * @var string type attribute input search value
 	 */
 	public $type;
-
 	/**
 	 * @var integer query attribute input search value
 	 */
@@ -71,5 +69,4 @@ class Db extends Base
 
 		return $dataProvider;
 	}
-
 }

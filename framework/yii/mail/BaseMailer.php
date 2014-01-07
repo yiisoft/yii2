@@ -29,7 +29,6 @@ use yii\base\MailEvent;
  */
 abstract class BaseMailer extends Component implements MailerInterface, ViewContextInterface
 {
-
 	/**
 	 * @event \yii\base\MailEvent an event raised right before send.
 	 * You may set [[\yii\base\MailEvent::isValid]] to be false to cancel the send.
@@ -39,6 +38,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * @event \yii\base\MailEvent an event raised right after send.
 	 */
 	const EVENT_AFTER_SEND = 'afterSend';
+
 	/**
 	 * @var string directory containing view files for this email messages.
 	 * This can be specified as an absolute path or path alias.
@@ -100,7 +100,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * ~~~
 	 */
 	public $fileTransportCallback;
-
 	/**
 	 * @var \yii\base\View|array view instance or its array configuration.
 	 */
@@ -282,7 +281,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * @return boolean whether the message is sent successfully
 	 */
 	abstract protected function sendMessage($message);
-
 	/**
 	 * Saves the message as a file under [[fileTransportPath]].
 	 * @param MessageInterface $message
@@ -340,5 +338,4 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 		$event = new MailEvent(['message' => $message, 'isSuccessful' => $isSuccessful]);
 		$this->trigger(self::EVENT_AFTER_SEND, $event);
 	}
-
 }

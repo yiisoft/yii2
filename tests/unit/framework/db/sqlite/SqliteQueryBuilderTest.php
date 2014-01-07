@@ -75,7 +75,7 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
 			[Schema::TYPE_MONEY . ' NOT NULL', 'decimal(19,4) NOT NULL'],
 		];
 	}
-	
+
 	public function testAddDropPrimaryKey()
 	{
 		$this->setExpectedException('yii\base\NotSupportedException');
@@ -84,7 +84,7 @@ class SqliteQueryBuilderTest extends QueryBuilderTest
 
 	public function testBatchInsert()
 	{
-		$sql = $this->getQueryBuilder()->batchInsert('{{tbl_customer}} t', ['t.id','t.name'], array(array(1,'a'), array(2,'b')));
+		$sql = $this->getQueryBuilder()->batchInsert('{{tbl_customer}} t', ['t.id', 't.name'], array(array(1, 'a'), array(2, 'b')));
 		$this->assertEquals("INSERT INTO {{tbl_customer}} t (`t`.`id`, `t`.`name`) SELECT 1, 'a' UNION ALL 2, 'b'", $sql);
 	}
 }

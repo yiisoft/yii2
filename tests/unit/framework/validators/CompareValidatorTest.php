@@ -1,12 +1,11 @@
 <?php
+
 namespace yiiunit\framework\validators;
 
 use yii\base\InvalidConfigException;
 use yii\validators\CompareValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
-
-
 
 class CompareValidatorTest extends TestCase
 {
@@ -151,7 +150,6 @@ class CompareValidatorTest extends TestCase
 				$val->validateAttribute($model, 'attr_test');
 				$this->assertEquals($test[1], !$model->hasErrors('attr_test'));
 			}
-
 		}
 	}
 
@@ -165,8 +163,7 @@ class CompareValidatorTest extends TestCase
 			$val = new CompareValidator(['operator' => '<>']);
 		} catch (InvalidConfigException $e) {
 			return;
-		}
-		catch (\Exception $e) {
+		} catch (\Exception $e) {
 			$this->fail('InvalidConfigException expected' . get_class($e) . 'received');
 			return;
 		}

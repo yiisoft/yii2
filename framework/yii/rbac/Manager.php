@@ -47,7 +47,6 @@ abstract class Manager extends Component
 	 * @var boolean Enable error reporting for bizRules.
 	 */
 	public $showErrors = false;
-
 	/**
 	 * @var array list of role names that are assigned to all users implicitly.
 	 * These roles do not need to be explicitly assigned to any user.
@@ -175,7 +174,6 @@ abstract class Manager extends Component
 	 * @return boolean whether the operations can be performed by the user.
 	 */
 	abstract public function checkAccess($userId, $itemName, $params = []);
-
 	/**
 	 * Creates an authorization item.
 	 * An authorization item represents an action permission (e.g. creating a post).
@@ -219,7 +217,6 @@ abstract class Manager extends Component
 	 * @param string $oldName the old item name. If null, it means the item name is not changed.
 	 */
 	abstract public function saveItem($item, $oldName = null);
-
 	/**
 	 * Adds an item as a child of another item.
 	 * @param string $itemName the parent item name
@@ -249,7 +246,6 @@ abstract class Manager extends Component
 	 * @return Item[] all child items of the parent
 	 */
 	abstract public function getItemChildren($itemName);
-
 	/**
 	 * Assigns an authorization item to a user.
 	 * @param mixed $userId the user ID (see [[User::id]])

@@ -93,7 +93,6 @@ class View extends Component
 	 */
 	public $dynamicPlaceholders = [];
 
-
 	/**
 	 * Initializes the view component.
 	 */

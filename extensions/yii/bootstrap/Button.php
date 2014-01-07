@@ -39,7 +39,6 @@ class Button extends Widget
 	 */
 	public $encodeLabel = true;
 
-
 	/**
 	 * Initializes the widget.
 	 * If you override this method, make sure you call the parent implementation first.

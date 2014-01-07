@@ -16,7 +16,7 @@ $frameworkPath = dirname(__FILE__) . '/vendor/yiisoft/yii2/yii';
 if (!is_dir($frameworkPath)) {
 	echo '<h1>Error</h1>';
 	echo '<p><strong>The path to yii framework seems to be incorrect.</strong></p>';
-	echo '<p>You need to install Yii framework via composer or adjust the framework path in file <abbr title="' . __FILE__ . '">' . basename(__FILE__) .'</abbr>.</p>';
+	echo '<p>You need to install Yii framework via composer or adjust the framework path in file <abbr title="' . __FILE__ . '">' . basename(__FILE__) . '</abbr>.</p>';
 	echo '<p>Please refer to the <abbr title="' . dirname(__FILE__) . '/README.md">README</abbr> on how to install Yii.</p>';
 }
 
@@ -102,7 +102,7 @@ $requirements = array(
 	'phpSmtp' => array(
 		'name' => 'PHP mail SMTP',
 		'mandatory' => false,
-		'condition' => strlen(ini_get('SMTP'))>0,
+		'condition' => strlen(ini_get('SMTP')) > 0,
 		'by' => 'Email sending',
 		'memo' => 'PHP mail SMTP server required',
 	),

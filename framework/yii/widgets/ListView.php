@@ -58,7 +58,6 @@ class ListView extends BaseListView
 	 */
 	public $options = ['class' => 'list-view'];
 
-
 	/**
 	 * Renders all data models.
 	 * @return string the rendering result

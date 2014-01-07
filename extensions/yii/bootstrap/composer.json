@@ -22,7 +22,7 @@
 		"twbs/bootstrap": "3.0.*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\bootstrap\\": "" }
+		"psr-0": {"yii\\bootstrap\\": ""}
 	},
 	"target-dir": "yii/bootstrap"
 }

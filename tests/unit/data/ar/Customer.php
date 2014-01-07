@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\data\ar;
 
 use yiiunit\framework\db\ActiveRecordTest;

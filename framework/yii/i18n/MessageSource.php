@@ -37,7 +37,6 @@ class MessageSource extends Component
 	 * [[\yii\base\Application::sourceLanguage]].
 	 */
 	public $sourceLanguage;
-
 	private $_messages = [];
 
 	/**

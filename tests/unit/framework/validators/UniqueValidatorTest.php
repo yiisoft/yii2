@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\validators;
 
-
 use yii\validators\UniqueValidator;
 use Yii;
 use yiiunit\data\ar\ActiveRecord;

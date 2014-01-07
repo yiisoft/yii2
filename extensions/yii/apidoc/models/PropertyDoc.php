@@ -20,15 +20,12 @@ class PropertyDoc extends BaseDoc
 {
 	public $visibility;
 	public $isStatic;
-
 	public $type;
 	public $types;
 	public $defaultValue;
-
 	// will be set by creating class
 	public $getter;
 	public $setter;
-
 	// will be set by creating class
 	public $definedBy;
 
@@ -62,7 +59,7 @@ class PropertyDoc extends BaseDoc
 			$this->defaultValue = PrettyPrinter::getRepresentationOfValue($reflector->getNode()->default);
 		}
 
-		foreach($this->tags as $i => $tag) {
+		foreach ($this->tags as $i => $tag) {
 			if ($tag instanceof VarTag) {
 				$this->type = $tag->getType();
 				$this->types = $tag->getTypes();

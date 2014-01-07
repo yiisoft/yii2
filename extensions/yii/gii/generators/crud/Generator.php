@@ -163,7 +163,7 @@ class Generator extends \yii\gii\Generator
 	public function getViewPath()
 	{
 		$module = empty($this->moduleID) ? Yii::$app : Yii::$app->getModule($this->moduleID);
-		return $module->getViewPath() . '/' . $this->getControllerID() ;
+		return $module->getViewPath() . '/' . $this->getControllerID();
 	}
 
 	public function getNameAttribute()
@@ -432,5 +432,4 @@ class Generator extends \yii\gii\Generator
 			return $model->attributes();
 		}
 	}
-
 }

@@ -98,7 +98,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 		$models = $this->createModels($result['hits']['hits']);
 		if ($this->asArray && !$this->indexBy) {
-			foreach($models as $key => $model) {
+			foreach ($models as $key => $model) {
 				$model['_source'][ActiveRecord::PRIMARY_KEY_NAME] = $model['_id'];
 				$models[$key] = $model['_source'];
 			}
@@ -147,7 +147,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		if (!empty($result['hits']['hits'])) {
 			$models = $this->createModels($result['hits']['hits']);
 			if ($this->asArray) {
-				foreach($models as $key => $model) {
+				foreach ($models as $key => $model) {
 					$model['_source'][ActiveRecord::PRIMARY_KEY_NAME] = $model['_id'];
 					$models[$key] = $model['_source'];
 				}

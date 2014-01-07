@@ -2,7 +2,6 @@
 
 namespace yiiunit\data\validators;
 
-
 use yii\validators\Validator;
 
 class TestValidator extends Validator

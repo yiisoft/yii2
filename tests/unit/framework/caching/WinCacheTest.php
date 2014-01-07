@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\caching;
 
 use yii\caching\WinCache;

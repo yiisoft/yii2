@@ -117,7 +117,7 @@ class I18N extends Component
 		}
 
 		$p = [];
-		foreach($params as $name => $value) {
+		foreach ($params as $name => $value) {
 			$p['{' . $name . '}'] = $value;
 		}
 		return strtr($message, $p);

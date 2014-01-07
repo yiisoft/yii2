@@ -28,14 +28,12 @@ class TypeDoc extends BaseDoc
 	 * @var PropertyDoc[]
 	 */
 	public $properties = [];
-
 	public $namespace;
-
 
 	public function findSubject($subjectName)
 	{
 		if ($subjectName[0] != '$') {
-			foreach($this->methods as $name => $method) {
+			foreach ($this->methods as $name => $method) {
 				if (rtrim($subjectName, '()') == $name) {
 					return $method;
 				}
@@ -47,7 +45,7 @@ class TypeDoc extends BaseDoc
 		if ($this->properties === null) {
 			return null;
 		}
-		foreach($this->properties as $name => $property) {
+		foreach ($this->properties as $name => $property) {
 			if (ltrim($subjectName, '$') == ltrim($name, '$')) {
 				return $property;
 			}
@@ -87,7 +85,7 @@ class TypeDoc extends BaseDoc
 	private function getFilteredMethods($visibility = null, $definedBy = null)
 	{
 		$methods = [];
-		foreach($this->methods as $name => $method) {
+		foreach ($this->methods as $name => $method) {
 			if ($visibility !== null && $method->visibility != $visibility) {
 				continue;
 			}
@@ -134,7 +132,7 @@ class TypeDoc extends BaseDoc
 			return [];
 		}
 		$properties = [];
-		foreach($this->properties as $name => $property) {
+		foreach ($this->properties as $name => $property) {
 			if ($visibility !== null && $property->visibility != $visibility) {
 				continue;
 			}
@@ -160,14 +158,14 @@ class TypeDoc extends BaseDoc
 			return;
 		}
 
-		foreach($this->tags as $i => $tag) {
+		foreach ($this->tags as $i => $tag) {
 			if ($tag instanceof AuthorTag) {
 				$this->authors[$tag->getAuthorName()] = $tag->getAuthorEmail();
 				unset($this->tags[$i]);
 			}
 		}
 
-		foreach($reflector->getProperties() as $propertyReflector) {
+		foreach ($reflector->getProperties() as $propertyReflector) {
 			if ($propertyReflector->getVisibility() != 'private') {
 				$property = new PropertyDoc($propertyReflector);
 				$property->definedBy = $this->name;
@@ -175,7 +173,7 @@ class TypeDoc extends BaseDoc
 			}
 		}
 
-		foreach($reflector->getMethods() as $methodReflector) {
+		foreach ($reflector->getMethods() as $methodReflector) {
 			if ($methodReflector->getVisibility() != 'private') {
 				$method = new MethodDoc($methodReflector);
 				$method->definedBy = $this->name;

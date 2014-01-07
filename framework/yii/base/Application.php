@@ -63,7 +63,6 @@ abstract class Application extends Module
 	 * it will use the "app\controllers" namespace.
 	 */
 	public $controllerNamespace = 'app\\controllers';
-
 	/**
 	 * @var string the application name.
 	 */
@@ -133,7 +132,6 @@ abstract class Application extends Module
 	 * it means the application is handling some exception and extra care should be taken.
 	 */
 	public $exception;
-
 	/**
 	 * @var string Used to reserve memory for fatal error handler.
 	 */
@@ -302,8 +300,6 @@ abstract class Application extends Module
 	 * @return Response the resulting response
 	 */
 	abstract public function handleRequest($request);
-
-
 	private $_runtimePath;
 
 	/**

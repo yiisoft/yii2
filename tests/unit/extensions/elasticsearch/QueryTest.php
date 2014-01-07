@@ -148,7 +148,6 @@ class QueryTest extends ElasticSearchTestCase
 		$this->assertEquals([null, null, null, null], $result);
 		$result = $query->where(['name' => 'user5'])->scalar('name', $this->getConnection());
 		$this->assertNull($result);
-
 	}
 
 	// TODO test facets

@@ -57,7 +57,6 @@ class ActionColumn extends Column
 	 */
 	public $urlCreator;
 
-
 	/**
 	 * @inheritdoc
 	 */

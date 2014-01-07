@@ -34,7 +34,6 @@ class Widget extends Component implements ViewContextInterface
 	 * @see [[getId()]]
 	 */
 	public static $autoIdPrefix = 'w';
-
 	/**
 	 * @var Widget[] the widgets that are currently being rendered (not ended). This property
 	 * is maintained by [[begin()]] and [[end()]] methods.
@@ -42,7 +41,6 @@ class Widget extends Component implements ViewContextInterface
 	 */
 	public static $stack = [];
 
-	
 	/**
 	 * Begins a widget.
 	 * This method creates an instance of the calling class. It will apply the configuration
@@ -98,7 +96,7 @@ class Widget extends Component implements ViewContextInterface
 	}
 
 	private $_id;
-	
+
 	/**
 	 * Returns the ID of the widget.
 	 * @param boolean $autoGenerate whether to generate an ID if it is not set previously
@@ -122,7 +120,7 @@ class Widget extends Component implements ViewContextInterface
 	}
 
 	private $_view;
-	
+
 	/**
 	 * Returns the view object that can be used to render views or view files.
 	 * The [[render()]] and [[renderFile()]] methods will use

@@ -1,11 +1,11 @@
 <?php
+
 use yii\helpers\Html;
 use yii\grid\GridView;
 ?>
 <h1>Database Queries</h1>
 
 <?php
-
 echo GridView::widget([
 	'dataProvider' => $dataProvider,
 	'id' => 'db-panel-detailed-grid',

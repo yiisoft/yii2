@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\validators;
 
-
 use yii\validators\BooleanValidator;
 use yii\validators\InlineValidator;
 use yii\validators\NumberValidator;

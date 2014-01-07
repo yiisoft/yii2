@@ -18,7 +18,7 @@
 		}
 	],
 	"autoload": {
-		"psr-0": { "yii\\composer\\": "" }
+		"psr-0": {"yii\\composer\\": ""}
 	},
 	"target-dir": "yii/composer",
 	"extra": {

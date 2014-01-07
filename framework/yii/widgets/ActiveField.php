@@ -4,6 +4,7 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
 namespace yii\widgets;
 
 use Yii;
@@ -117,7 +118,6 @@ class ActiveField extends Component
 	 * it is maintained by various methods of this class.
 	 */
 	public $parts = [];
-
 
 	/**
 	 * PHP magic method that returns the string representation of this object.

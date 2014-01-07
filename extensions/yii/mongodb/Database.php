@@ -118,7 +118,7 @@ class Database extends Object
 			return $result;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -141,7 +141,7 @@ class Database extends Object
 			return $result;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -160,7 +160,7 @@ class Database extends Object
 			}
 			if (isset($errorMessage)) {
 				if (array_key_exists('ok', $result)) {
-					$errorCode = (int)$result['ok'];
+					$errorCode = (int) $result['ok'];
 				} else {
 					$errorCode = 0;
 				}

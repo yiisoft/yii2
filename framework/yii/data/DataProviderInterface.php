@@ -29,7 +29,6 @@ interface DataProviderInterface
 	 * @param boolean $forcePrepare whether to force data preparation even if it has been done before.
 	 */
 	public function prepare($forcePrepare = false);
-
 	/**
 	 * Returns the number of data models in the current page.
 	 * This is equivalent to `count($provider->getModels())`.
@@ -37,32 +36,27 @@ interface DataProviderInterface
 	 * @return integer the number of data models in the current page.
 	 */
 	public function getCount();
-
 	/**
 	 * Returns the total number of data models.
 	 * When [[pagination]] is false, this is the same as [[count]].
 	 * @return integer total number of possible data models.
 	 */
 	public function getTotalCount();
-
 	/**
 	 * Returns the data models in the current page.
 	 * @return array the list of data models in the current page.
 	 */
 	public function getModels();
-
 	/**
 	 * Returns the key values associated with the data models.
 	 * @return array the list of key values corresponding to [[models]]. Each data model in [[models]]
 	 * is uniquely identified by the corresponding key value in this array.
 	 */
 	public function getKeys();
-
 	/**
 	 * @return Sort the sorting object. If this is false, it means the sorting is disabled.
 	 */
 	public function getSort();
-
 	/**
 	 * @return Pagination the pagination object. If this is false, it means the pagination is disabled.
 	 */

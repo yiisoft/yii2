@@ -39,7 +39,6 @@ class PhpManager extends Manager
 	 * @see saveToFile()
 	 */
 	public $authFile = '@app/data/rbac.php';
-
 	private $_items = []; // itemName => item
 	private $_children = []; // itemName, childName => child
 	private $_assignments = []; // userId, itemName => assignment

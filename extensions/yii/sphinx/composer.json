@@ -23,7 +23,7 @@
 		"ext-pdo_mysql": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\sphinx\\": "" }
+		"psr-0": {"yii\\sphinx\\": ""}
 	},
 	"target-dir": "yii/sphinx"
 }

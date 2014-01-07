@@ -4,9 +4,9 @@ body
 
 body, div, span, p, input
 {
-    font-family: Verdana, Arial, sans-serif;
-    font-size: 10pt;
-    color: #333333;
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 10pt;
+	color: #333333;
 }
 
 #apiPage {

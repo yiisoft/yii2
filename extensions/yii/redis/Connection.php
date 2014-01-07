@@ -66,7 +66,6 @@ class Connection extends Component
 	 * @var float timeout to use for redis socket when reading and writing data. If not set the php default value will be used.
 	 */
 	public $dataTimeout = null;
-
 	/**
 	 * @var array List of available redis commands http://redis.io/commands
 	 */
@@ -255,7 +254,7 @@ class Connection extends Component
 		);
 		if ($this->_socket) {
 			if ($this->dataTimeout !== null) {
-				stream_set_timeout($this->_socket, $timeout=(int)$this->dataTimeout, (int) (($this->dataTimeout - $timeout) * 1000000));
+				stream_set_timeout($this->_socket, $timeout = (int) $this->dataTimeout, (int) (($this->dataTimeout - $timeout) * 1000000));
 			}
 			if ($this->password !== null) {
 				$this->executeCommand('AUTH', [$this->password]);
@@ -265,7 +264,7 @@ class Connection extends Component
 		} else {
 			\Yii::error("Failed to open redis DB connection ($connection): $errorNumber - $errorDescription", __CLASS__);
 			$message = YII_DEBUG ? "Failed to open redis DB connection ($connection): $errorNumber - $errorDescription" : 'Failed to open DB connection.';
-			throw new Exception($message, $errorDescription, (int)$errorNumber);
+			throw new Exception($message, $errorDescription, (int) $errorNumber);
 		}
 	}
 
@@ -346,13 +345,13 @@ class Connection extends Component
 	 * for details on the mentioned reply types.
 	 * @trows Exception for commands that return [error reply](http://redis.io/topics/protocol#error-reply).
 	 */
-	public function executeCommand($name, $params=[])
+	public function executeCommand($name, $params = [])
 	{
 		$this->open();
 
 		array_unshift($params, $name);
 		$command = '*' . count($params) . "\r\n";
-		foreach($params as $arg) {
+		foreach ($params as $arg) {
 			$command .= '$' . mb_strlen($arg, '8bit') . "\r\n" . $arg . "\r\n";
 		}
 
@@ -369,8 +368,7 @@ class Connection extends Component
 		}
 		$type = $line[0];
 		$line = mb_substr($line, 1, -2, '8bit');
-		switch($type)
-		{
+		switch ($type) {
 			case '+': // Status reply
 				return true;
 			case '-': // Error reply

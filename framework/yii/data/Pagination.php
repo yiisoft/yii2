@@ -113,7 +113,6 @@ class Pagination extends Object
 	 */
 	public $totalCount = 0;
 
-
 	/**
 	 * @return integer number of pages
 	 */

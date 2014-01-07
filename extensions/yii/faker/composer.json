@@ -21,7 +21,7 @@
 		"fzaninotto/faker": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\faker\\": "" }
+		"psr-0": {"yii\\faker\\": ""}
 	},
 	"target-dir": "yii/faker"
 }

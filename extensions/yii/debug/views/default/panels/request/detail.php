@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 use yii\bootstrap\Tabs;
 
 /**

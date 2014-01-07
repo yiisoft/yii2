@@ -17,13 +17,13 @@
 			"email": "mail@cebe.cc"
 		}
 	],
-    "minimum-stability": "dev",
+	"minimum-stability": "dev",
 	"require": {
 		"yiisoft/yii2": "*",
 		"phpdocumentor/reflection": "1.0.2"
 	},
 	"autoload": {
-		"psr-0": { "yii\\apidoc\\": "" }
+		"psr-0": {"yii\\apidoc\\": ""}
 	},
 	"target-dir": "yii/apidoc",
 	"bin": ["apidoc"]

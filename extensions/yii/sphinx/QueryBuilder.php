@@ -60,7 +60,7 @@ class QueryBuilder extends Object
 		$params = $query->params;
 		if ($query->match !== null) {
 			$phName = self::PARAM_PREFIX . count($params);
-			$params[$phName] = (string)$query->match;
+			$params[$phName] = (string) $query->match;
 			$query->andWhere('MATCH(' . $phName . ')');
 		}
 		$clauses = [
@@ -82,9 +82,9 @@ class QueryBuilder extends Object
 	 *
 	 * ~~~
 	 * $sql = $queryBuilder->insert('idx_user', [
-	 *	 'name' => 'Sam',
-	 *	 'age' => 30,
-	 *	 'id' => 10,
+	 * 	 'name' => 'Sam',
+	 * 	 'age' => 30,
+	 * 	 'id' => 10,
 	 * ], $params);
 	 * ~~~
 	 *
@@ -107,9 +107,9 @@ class QueryBuilder extends Object
 	 *
 	 * ~~~
 	 * $sql = $queryBuilder->replace('idx_user', [
-	 *	 'name' => 'Sam',
-	 *	 'age' => 30,
-	 *	 'id' => 10,
+	 * 	 'name' => 'Sam',
+	 * 	 'age' => 30,
+	 * 	 'id' => 10,
 	 * ], $params);
 	 * ~~~
 	 *
@@ -362,7 +362,7 @@ class QueryBuilder extends Object
 		} else {
 			$optionSql = '';
 		}
-		return 'CALL SNIPPETS(' . $dataSql. ', ' . $indexParamName . ', ' . $matchParamName . $optionSql. ')';
+		return 'CALL SNIPPETS(' . $dataSql . ', ' . $indexParamName . ', ' . $matchParamName . $optionSql . ')';
 	}
 
 	/**
@@ -403,7 +403,7 @@ class QueryBuilder extends Object
 
 		foreach ($columns as $i => $column) {
 			if (is_object($column)) {
-				$columns[$i] = (string)$column;
+				$columns[$i] = (string) $column;
 			} elseif (strpos($column, '(') === false) {
 				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
 					$columns[$i] = $this->db->quoteColumnName($matches[1]) . ' AS ' . $this->db->quoteColumnName($matches[2]);
@@ -492,7 +492,7 @@ class QueryBuilder extends Object
 		$orders = [];
 		foreach ($columns as $name => $direction) {
 			if (is_object($direction)) {
-				$orders[] = (string)$direction;
+				$orders[] = (string) $direction;
 			} else {
 				$orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : 'ASC');
 			}
@@ -510,10 +510,10 @@ class QueryBuilder extends Object
 	{
 		$sql = '';
 		if ($limit !== null && $limit >= 0) {
-			$sql = 'LIMIT ' . (int)$limit;
+			$sql = 'LIMIT ' . (int) $limit;
 		}
 		if ($offset > 0) {
-			$sql .= ' OFFSET ' . (int)$offset;
+			$sql .= ' OFFSET ' . (int) $offset;
 		}
 		return ltrim($sql);
 	}
@@ -535,7 +535,7 @@ class QueryBuilder extends Object
 		}
 		foreach ($columns as $i => $column) {
 			if (is_object($column)) {
-				$columns[$i] = (string)$column;
+				$columns[$i] = (string) $column;
 			} elseif (strpos($column, '(') === false) {
 				$columns[$i] = $this->db->quoteColumnName($column);
 			}
@@ -568,7 +568,7 @@ class QueryBuilder extends Object
 		];
 
 		if (!is_array($condition)) {
-			return (string)$condition;
+			return (string) $condition;
 		} elseif (empty($condition)) {
 			return '';
 		}
@@ -691,7 +691,7 @@ class QueryBuilder extends Object
 
 		list($column, $values) = $operands;
 
-		$values = (array)$values;
+		$values = (array) $values;
 
 		if (empty($values) || $column === []) {
 			return $operator === 'IN' ? '0=1' : '';
@@ -777,12 +777,12 @@ class QueryBuilder extends Object
 			throw new InvalidParamException("Operator '$operator' requires two operands.");
 		}
 
-		$escape = isset($operands[2]) ? $operands[2] : ['%'=>'\%', '_'=>'\_', '\\'=>'\\\\'];
+		$escape = isset($operands[2]) ? $operands[2] : ['%' => '\%', '_' => '\_', '\\' => '\\\\'];
 		unset($operands[2]);
 
 		list($column, $values) = $operands;
 
-		$values = (array)$values;
+		$values = (array) $values;
 
 		if (empty($values)) {
 			return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0=1' : '';
@@ -821,7 +821,7 @@ class QueryBuilder extends Object
 		$orders = [];
 		foreach ($columns as $name => $direction) {
 			if (is_object($direction)) {
-				$orders[] = (string)$direction;
+				$orders[] = (string) $direction;
 			} else {
 				$orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
 			}
@@ -880,7 +880,8 @@ class QueryBuilder extends Object
 	 * @param array $params the binding parameters to be populated
 	 * @return string SQL expression, which represents column value
 	 */
-	protected function composeColumnValue($indexes, $columnName, $value, &$params) {
+	protected function composeColumnValue($indexes, $columnName, $value, &$params) 
+	{
 		if ($value === null) {
 			return 'NULL';
 		} elseif ($value instanceof Expression) {

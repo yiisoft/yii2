@@ -81,7 +81,6 @@ class AssetController extends Controller
 	 * @see https://github.com/yui/yuicompressor/
 	 */
 	public $cssCompressor = 'java -jar yuicompressor.jar {from} -o {to}';
-
 	/**
 	 * @var array|\yii\web\AssetManager [[yii\web\AssetManager]] instance or its array configuration, which will be used
 	 * for assets processing.
@@ -514,7 +513,7 @@ EOD;
 		$inputFilePathPartsCount = count($inputFilePathParts);
 		$outputFilePathParts = explode('/', $outputFilePath);
 		$outputFilePathPartsCount = count($outputFilePathParts);
-		for ($i =0; $i < $inputFilePathPartsCount && $i < $outputFilePathPartsCount; $i++) {
+		for ($i = 0; $i < $inputFilePathPartsCount && $i < $outputFilePathPartsCount; $i++) {
 			if ($inputFilePathParts[$i] == $outputFilePathParts[$i]) {
 				$sharedPathParts[] = $inputFilePathParts[$i];
 			} else {

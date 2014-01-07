@@ -21,7 +21,7 @@
 		"yiisoft/yii2": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\redis\\": "" }
+		"psr-0": {"yii\\redis\\": ""}
 	},
 	"target-dir": "yii/redis"
 }

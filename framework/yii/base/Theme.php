@@ -85,7 +85,6 @@ class Theme extends Component
 	 */
 	public $pathMap;
 
-
 	/**
 	 * Initializes the theme.
 	 * @throws InvalidConfigException if [[basePath]] is not set.

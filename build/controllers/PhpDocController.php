@@ -22,7 +22,7 @@ use yii\helpers\FileHelper;
 class PhpDocController extends Controller
 {
 	public $defaultAction = 'property';
-
+	
 	/**
 	 * @var bool whether to update class docs directly. Setting this to false will just output docs
 	 * for copy and paste.
@@ -298,13 +298,13 @@ class PhpDocController extends Controller
 					if (isset($prop['get']) && isset($prop['set'])) {
 						if ($prop['get']['type'] != $prop['set']['type']) {
 							$note = ' Note that the type of this property differs in getter and setter.'
-								  . ' See [[get'.ucfirst($propName).'()]] and [[set'.ucfirst($propName).'()]] for details.';
+							. ' See [[get' . ucfirst($propName) . '()]] and [[set' . ucfirst($propName) . '()]] for details.';
 						}
 					} elseif (isset($prop['get'])) {
 						// check if parent class has setter defined
 						$c = $className;
 						$parentSetter = false;
-						while($parent = get_parent_class($c)) {
+						while ($parent = get_parent_class($c)) {
 							if (method_exists($parent, 'set' . ucfirst($propName))) {
 								$parentSetter = true;
 								break;
@@ -319,7 +319,7 @@ class PhpDocController extends Controller
 						// check if parent class has getter defined
 						$c = $className;
 						$parentGetter = false;
-						while($parent = get_parent_class($c)) {
+						while ($parent = get_parent_class($c)) {
 							if (method_exists($parent, 'set' . ucfirst($propName))) {
 								$parentGetter = true;
 								break;
@@ -354,7 +354,7 @@ class PhpDocController extends Controller
 		preg_match_all($pattern . 'suU', $subject, $sets, PREG_SET_ORDER);
 		foreach ($sets as &$set)
 			foreach ($set as $i => $match)
-				if (is_numeric($i) /*&& $i != 0*/)
+				if (is_numeric($i) /* && $i != 0 */)
 					unset($set[$i]);
 		return $sets;
 	}

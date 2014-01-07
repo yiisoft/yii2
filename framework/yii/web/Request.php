@@ -90,7 +90,6 @@ class Request extends \yii\base\Request
 	 */
 	const CSRF_MASK_LENGTH = 8;
 
-
 	/**
 	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
 	 * When CSRF validation is enabled, forms submitted to an Yii Web application must be originated
@@ -128,9 +127,7 @@ class Request extends \yii\base\Request
 	 * @see getRestParams()
 	 */
 	public $restVar = '_method';
-
 	private $_cookies;
-
 
 	/**
 	 * Resolves the current request into a route and the associated parameters.

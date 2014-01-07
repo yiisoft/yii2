@@ -22,7 +22,7 @@
 		"ext-curl": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\authclient\\": "" }
+		"psr-0": {"yii\\authclient\\": ""}
 	},
 	"target-dir": "yii/authclient"
 }

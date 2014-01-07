@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\data\ArrayDataProvider;
@@ -6,7 +7,6 @@ use yii\log\Logger;
 ?>
 <h1>Log Messages</h1>
 <?php
-
 echo GridView::widget([
 	'dataProvider' => $dataProvider,
 	'id' => 'log-panel-detailed-grid',
@@ -14,7 +14,7 @@ echo GridView::widget([
 	'filterModel' => $searchModel,
 	'filterUrl' => $panel->getUrl(),
 	'rowOptions' => function ($model, $key, $index, $grid) {
-		switch($model['level']) {
+		switch ($model['level']) {
 			case Logger::LEVEL_ERROR : return ['class' => 'danger'];
 			case Logger::LEVEL_WARNING : return ['class' => 'warning'];
 			case Logger::LEVEL_INFO : return ['class' => 'success'];
@@ -28,7 +28,7 @@ echo GridView::widget([
 			'value' => function ($data) {
 				$timeInSeconds = $data['time'] / 1000;
 				$millisecondsDiff = (int)(($timeInSeconds - (int)$timeInSeconds) * 1000);
-				return date('H:i:s.',$timeInSeconds) . sprintf('%03d',$millisecondsDiff);
+				return date('H:i:s.', $timeInSeconds) . sprintf('%03d', $millisecondsDiff);
 			},
 			'headerOptions' => [
 				'class' => 'sort-numerical'

@@ -70,11 +70,11 @@ class ColumnSchema extends Object
 		}
 		switch ($this->phpType) {
 			case 'string':
-				return (string)$value;
+				return (string) $value;
 			case 'integer':
-				return (integer)$value;
+				return (integer) $value;
 			case 'boolean':
-				return (boolean)$value;
+				return (boolean) $value;
 		}
 		return $value;
 	}

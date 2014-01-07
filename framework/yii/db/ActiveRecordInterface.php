@@ -26,13 +26,11 @@ interface ActiveRecordInterface
 	 * @return string[] the primary key name(s) for this AR class.
 	 */
 	public static function primaryKey();
-
 	/**
 	 * Returns the list of all attribute names of the record.
 	 * @return array list of attribute names.
 	 */
 	public function attributes();
-
 	/**
 	 * Returns the named attribute value.
 	 * If this record is the result of a query and the attribute is not loaded,
@@ -42,7 +40,6 @@ interface ActiveRecordInterface
 	 * @see hasAttribute()
 	 */
 	public function getAttribute($name);
-
 	/**
 	 * Sets the named attribute value.
 	 * @param string $name the attribute name.
@@ -50,14 +47,12 @@ interface ActiveRecordInterface
 	 * @see hasAttribute()
 	 */
 	public function setAttribute($name, $value);
-
 	/**
 	 * Returns a value indicating whether the record has an attribute with the specified name.
 	 * @param string $name the name of the attribute
 	 * @return boolean whether the record has an attribute with the specified name.
 	 */
 	public function hasAttribute($name);
-
 	/**
 	 * Returns the primary key value(s).
 	 * @param boolean $asArray whether to return the primary key value as an array. If true,
@@ -68,7 +63,6 @@ interface ActiveRecordInterface
 	 * the key value is null).
 	 */
 	public function getPrimaryKey($asArray = false);
-
 	/**
 	 * Returns the old primary key value(s).
 	 * This refers to the primary key value that is populated into the record
@@ -85,7 +79,6 @@ interface ActiveRecordInterface
 	 * the key value is null).
 	 */
 	public function getOldPrimaryKey($asArray = false);
-
 	/**
 	 * Creates an [[ActiveQueryInterface|ActiveQuery]] instance for query purpose.
 	 *
@@ -108,7 +101,6 @@ interface ActiveRecordInterface
 	 * returned (null will be returned if there is no matching).
 	 */
 	public static function find($q = null);
-
 	/**
 	 * Creates an [[ActiveQueryInterface|ActiveQuery]] instance.
 	 *
@@ -131,7 +123,6 @@ interface ActiveRecordInterface
 	 * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
 	 */
 	public static function createQuery();
-
 	/**
 	 * Updates records using the provided attribute values and conditions.
 	 * For example, to change the status to be 1 for all customers whose status is 2:
@@ -148,7 +139,6 @@ interface ActiveRecordInterface
 	 * @return integer the number of rows updated
 	 */
 	public static function updateAll($attributes, $condition = null);
-
 	/**
 	 * Deletes records using the provided conditions.
 	 * WARNING: If you do not specify any condition, this method will delete ALL rows in the table.
@@ -165,7 +155,6 @@ interface ActiveRecordInterface
 	 * @return integer the number of rows deleted
 	 */
 	public static function deleteAll($condition = null);
-
 	/**
 	 * Saves the current record.
 	 *
@@ -189,7 +178,6 @@ interface ActiveRecordInterface
 	 * @return boolean whether the saving succeeds
 	 */
 	public function save($runValidation = true, $attributes = null);
-
 	/**
 	 * Inserts the record into the database using the attribute values of this record.
 	 *
@@ -209,7 +197,6 @@ interface ActiveRecordInterface
 	 * @return boolean whether the attributes are valid and the record is inserted successfully.
 	 */
 	public function insert($runValidation = true, $attributes = null);
-
 	/**
 	 * Saves the changes to this active record into the database.
 	 *
@@ -232,7 +219,6 @@ interface ActiveRecordInterface
 	 * update execution is successful.
 	 */
 	public function update($runValidation = true, $attributes = null);
-
 	/**
 	 * Deletes the record from the database.
 	 *
@@ -240,13 +226,11 @@ interface ActiveRecordInterface
 	 * Note that it is possible that the number of rows deleted is 0, even though the deletion execution is successful.
 	 */
 	public function delete();
-
 	/**
 	 * Returns a value indicating whether the current record is new (not saved in the database).
 	 * @return boolean whether the record is new and should be inserted when calling [[save()]].
 	 */
 	public function getIsNewRecord();
-
 	/**
 	 * Returns a value indicating whether the given active record is the same as the current one.
 	 * Two [[isNewRecord|new]] records are considered to be not equal.
@@ -254,7 +238,6 @@ interface ActiveRecordInterface
 	 * @return boolean whether the two active records refer to the same row in the same database table.
 	 */
 	public function equals($record);
-
 	/**
 	 * Creates an [[ActiveRelationInterface|ActiveRelation]] instance.
 	 * This method is called by [[BaseActiveRecord::hasOne()]] and [[BaseActiveRecord::hasMany()]] to
@@ -264,7 +247,6 @@ interface ActiveRecordInterface
 	 * @return ActiveRelation the newly created [[ActiveRelation]] instance.
 	 */
 	public static function createActiveRelation($config = []);
-
 	/**
 	 * Returns the relation object with the specified name.
 	 * A relation is defined by a getter method which returns an [[ActiveRelationInterface|ActiveRelation]] object.
@@ -273,7 +255,6 @@ interface ActiveRecordInterface
 	 * @return ActiveRelation the relation object
 	 */
 	public function getRelation($name);
-
 	/**
 	 * Establishes the relationship between two records.
 	 *
@@ -293,7 +274,6 @@ interface ActiveRecordInterface
 	 * (i.e., a relation set with `[[ActiveRelationInterface::via()]]`.)
 	 */
 	public function link($name, $model, $extraColumns = []);
-
 	/**
 	 * Destroys the relationship between two records.
 	 *

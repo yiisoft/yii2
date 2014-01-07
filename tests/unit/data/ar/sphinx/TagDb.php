@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\data\ar\sphinx;
 
 use yiiunit\data\ar\ActiveRecord as ActiveRecordDb;

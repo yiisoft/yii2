@@ -205,7 +205,6 @@ class Response extends \yii\base\Response
 		510 => 'Not Extended',
 		511 => 'Network Authentication Required',
 	];
-
 	/**
 	 * @var integer the HTTP status code to send with the response.
 	 */
@@ -338,7 +337,7 @@ class Response extends \yii\base\Response
 		}
 		foreach ($this->getCookies() as $cookie) {
 			$value = $cookie->value;
-			if ($cookie->expire != 1  && isset($validationKey)) {
+			if ($cookie->expire != 1 && isset($validationKey)) {
 				$value = Security::hashData(serialize($value), $validationKey);
 			}
 			setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
@@ -399,7 +398,7 @@ class Response extends \yii\base\Response
 			->setDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
 
 		list($begin, $end) = $range;
-		if ($begin !=0 || $end != $contentLength - 1) {
+		if ($begin != 0 || $end != $contentLength - 1) {
 			$this->setStatusCode(206);
 			$headers->set('Content-Range', "bytes $begin-$end/$contentLength");
 			$this->content = StringHelper::byteSubstr($content, $begin, $end - $begin + 1);
@@ -432,7 +431,7 @@ class Response extends \yii\base\Response
 		}
 
 		list($begin, $end) = $range;
-		if ($begin !=0 || $end != $fileSize - 1) {
+		if ($begin != 0 || $end != $fileSize - 1) {
 			$this->setStatusCode(206);
 			$headers->set('Content-Range', "bytes $begin-$end/$fileSize");
 		} else {

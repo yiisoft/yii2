@@ -42,7 +42,7 @@ class DefaultController extends Controller
 				$generator->saveStickyAttributes();
 				$files = $generator->generate();
 				if (isset($_POST['generate']) && !empty($_POST['answers'])) {
-					$params['hasError'] = $generator->save($files, (array)$_POST['answers'], $results);
+					$params['hasError'] = $generator->save($files, (array) $_POST['answers'], $results);
 					$params['results'] = $results;
 				} else {
 					$params['files'] = $files;
@@ -62,7 +62,7 @@ class DefaultController extends Controller
 				if ($f->id === $file) {
 					$content = $f->preview();
 					if ($content !== false) {
-						return  '<div class="content">' . $content . '</content>';
+						return '<div class="content">' . $content . '</content>';
 					} else {
 						return '<div class="error">Preview is not available for this file type.</div>';
 					}

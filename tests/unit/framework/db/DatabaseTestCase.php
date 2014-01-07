@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\db;
 
 use yii\db\Connection;
@@ -18,10 +19,10 @@ abstract class DatabaseTestCase extends TestCase
 		parent::setUp();
 		$databases = $this->getParam('databases');
 		$this->database = $databases[$this->driverName];
-		$pdo_database = 'pdo_'.$this->driverName;
+		$pdo_database = 'pdo_' . $this->driverName;
 
 		if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
-			$this->markTestSkipped('pdo and '.$pdo_database.' extension are required.');
+			$this->markTestSkipped('pdo and ' . $pdo_database . ' extension are required.');
 		}
 		$this->mockApplication();
 	}

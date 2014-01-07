@@ -36,7 +36,6 @@ class InputWidget extends Widget
 	 */
 	public $value;
 
-
 	/**
 	 * Initializes the widget.
 	 * If you override this method, make sure you call the parent implementation first.

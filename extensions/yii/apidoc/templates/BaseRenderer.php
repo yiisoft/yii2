@@ -32,7 +32,6 @@ abstract class BaseRenderer extends Component
 	 */
 	public $context;
 
-
 	/**
 	 * Renders a given [[Context]].
 	 *
@@ -40,7 +39,7 @@ abstract class BaseRenderer extends Component
 	 * @param Controller $controller the apidoc controller instance. Can be used to control output.
 	 */
 	public abstract function render($context, $controller);
-
+	
 	/**
 	 * creates a link to a type (class, interface or trait)
 	 * @param ClassDoc|InterfaceDoc|TraitDoc $types
@@ -48,7 +47,7 @@ abstract class BaseRenderer extends Component
 	 * @return string
 	 */
 	public abstract function typeLink($types, $title = null);
-
+	
 	/**
 	 * creates a link to a subject
 	 * @param PropertyDoc|MethodDoc|ConstDoc|EventDoc $subject

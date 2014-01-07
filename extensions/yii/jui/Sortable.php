@@ -65,7 +65,6 @@ class Sortable extends Widget
 	 */
 	public $itemOptions = [];
 
-
 	/**
 	 * Renders the widget.
 	 */

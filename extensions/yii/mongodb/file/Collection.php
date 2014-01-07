@@ -85,7 +85,7 @@ class Collection extends \yii\mongodb\Collection
 			return $result;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -111,7 +111,7 @@ class Collection extends \yii\mongodb\Collection
 			return $result;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -136,7 +136,7 @@ class Collection extends \yii\mongodb\Collection
 			return $result;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -157,7 +157,7 @@ class Collection extends \yii\mongodb\Collection
 			return $result;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -179,7 +179,7 @@ class Collection extends \yii\mongodb\Collection
 			return true;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 }

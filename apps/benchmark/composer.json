@@ -13,7 +13,7 @@
 		"source": "https://github.com/yiisoft/yii2"
 	},
 	"config": {
-	  "vendor-dir": "protected/vendor"
+		"vendor-dir": "protected/vendor"
 	},
 	"minimum-stability": "dev",
 	"require": {

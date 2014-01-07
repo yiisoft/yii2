@@ -154,7 +154,7 @@ class LuaScriptBuilder extends \yii\base\Object
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::keyPrefix());
 		$loadColumnValues = '';
-		foreach($columns as $column => $alias) {
+		foreach ($columns as $column => $alias) {
 			$loadColumnValues .= "local $alias=redis.call('HGET',$key .. ':a:' .. pk, '$column')\n";
 		}
 
@@ -323,7 +323,7 @@ EOF;
 
 		list($column, $values) = $operands;
 
-		$values = (array)$values;
+		$values = (array) $values;
 
 		if (empty($values) || $column === []) {
 			return $operator === 'in' ? 'false' : 'true';

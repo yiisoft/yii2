@@ -79,5 +79,4 @@ class CubridQueryBuilderTest extends QueryBuilderTest
 			[Schema::TYPE_MONEY . ' NOT NULL', 'decimal(19,4) NOT NULL'],
 		];
 	}
-
 }

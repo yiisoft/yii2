@@ -28,20 +28,20 @@ use yii\widgets\ActiveForm;
 		'method' => 'get',
 	]); ?>
 
-<?php
-$count = 0;
-foreach ($generator->getColumnNames() as $attribute) {
-	if (++$count < 6) {
-		echo "\t\t<?= " . $generator->generateActiveSearchField($attribute) . " ?>\n\n";
-	} else {
-		echo "\t\t<?php // echo " . $generator->generateActiveSearchField($attribute) . " ?>\n\n";
+	<?php
+	$count = 0;
+	foreach ($generator->getColumnNames() as $attribute) {
+		if (++$count < 6) {
+			echo "\t\t<?= " . $generator->generateActiveSearchField($attribute) . " ?>\n\n";
+		} else {
+			echo "\t\t<?php // echo " . $generator->generateActiveSearchField($attribute) . " ?>\n\n";
+		}
 	}
-}
-?>
-		<div class="form-group">
-			<?= "<?= " ?>Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-			<?= "<?= " ?>Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
-		</div>
+	?>
+	<div class="form-group">
+		<?= "<?= " ?>Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+		<?= "<?= " ?>Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+	</div>
 
 	<?= "<?php " ?>ActiveForm::end(); ?>
 

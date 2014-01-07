@@ -30,7 +30,7 @@ td, th {
 }
 
 .detail-grid-view th {
-    white-space: nowrap;
+	white-space: nowrap;
 }
 
 /* add sorting icons to gridview sort links */

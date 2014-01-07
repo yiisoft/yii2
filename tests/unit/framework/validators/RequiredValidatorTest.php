@@ -1,6 +1,6 @@
 <?php
-namespace yiiunit\framework\validators;
 
+namespace yiiunit\framework\validators;
 
 use yii\validators\RequiredValidator;
 use yiiunit\data\validators\models\FakedValidationModel;

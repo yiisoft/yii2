@@ -5,7 +5,6 @@
 
 namespace yiiunit\framework\log;
 
-
 use yii\debug\LogTarget;
 use yii\log\FileTarget;
 use yii\log\Logger;
@@ -13,7 +12,6 @@ use yiiunit\TestCase;
 
 class LoggerTest extends TestCase
 {
-
 	public function testLog()
 	{
 		$logger = new Logger();

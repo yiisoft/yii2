@@ -51,12 +51,12 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$db->post(['yiitest'], [], Json::encode([
 			'mappings' => [
 				"item" => [
-		            "_source" => [ "enabled" => true ],
-		            "properties" => [
+					"_source" => [ "enabled" => true],
+					"properties" => [
 						// allow proper sorting by name
-		                "name" => ["type" => "string", "index" => "not_analyzed"],
-		            ]
-		        ]
+						"name" => ["type" => "string", "index" => "not_analyzed"],
+					]
+				]
 			],
 		]));
 
@@ -168,7 +168,6 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertArrayHasKey('status', $customers[2]);
 
 		// TODO test asArray() + fields() + indexBy()
-
 		// find by attributes
 		$result = $this->callCustomerFind()->where(['name' => 'user2'])->search()['hits'];
 		$customer = reset($result['hits']);
@@ -211,7 +210,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$records = Customer::mget([5]);
 		$this->assertEquals(0, count($records));
 
-		$records = Customer::mget([1,3,5]);
+		$records = Customer::mget([1, 3, 5]);
 		$this->assertEquals(2, count($records));
 		$this->assertInstanceOf(Customer::className(), $records[0]);
 		$this->assertInstanceOf(Customer::className(), $records[1]);
@@ -324,12 +323,12 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$db->post(['yiitest'], [], Json::encode([
 			'mappings' => [
 				"customer" => [
-		            "_source" => [ "enabled" => true ],
-		            "properties" => [
+					"_source" => [ "enabled" => true],
+					"properties" => [
 						// this is for the boolean test
-		                "status" => ["type" => "boolean"],
-		            ]
-		        ]
+						"status" => ["type" => "boolean"],
+					]
+				]
 			],
 		]));
 
@@ -483,6 +482,4 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertArrayNotHasKey('address', $customers['3-user3']);
 		$this->assertArrayNotHasKey('status', $customers['3-user3']);
 	}
-
-
 }

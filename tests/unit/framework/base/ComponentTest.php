@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\base;
 
 use yii\base\Behavior;
@@ -54,7 +55,7 @@ class ComponentTest extends TestCase
 		$this->assertNull($clone->getBehavior('a'));
 		$this->assertFalse($clone->hasEventHandlers('test'));
 	}
-	
+
 	public function testHasProperty()
 	{
 		$this->assertTrue($this->component->hasProperty('Text'));
@@ -392,4 +393,5 @@ class NewComponent2 extends Component
 		$this->b = $b;
 		$this->c = $c;
 	}
+
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\web;
 
 use yii\web\Request;
@@ -60,7 +61,6 @@ class UrlManagerTest extends TestCase
 		$this->assertEquals('/test/index.php/post/view?id=1&title=sample+post', $url);
 
 		// todo: test showScriptName
-
 		// pretty URL with rules
 		$manager = new UrlManager([
 			'enablePrettyUrl' => true,

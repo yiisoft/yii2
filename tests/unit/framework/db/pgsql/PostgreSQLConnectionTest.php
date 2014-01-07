@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\db\pgsql;
 
 use yiiunit\framework\db\ConnectionTest;

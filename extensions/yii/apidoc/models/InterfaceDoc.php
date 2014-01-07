@@ -16,7 +16,7 @@ namespace yii\apidoc\models;
 class InterfaceDoc extends TypeDoc
 {
 	public $parentInterfaces = [];
-
+	
 	// will be set by Context::updateReferences()
 	public $implementedBy = [];
 
@@ -32,7 +32,7 @@ class InterfaceDoc extends TypeDoc
 			return;
 		}
 
-		foreach($reflector->getParentInterfaces() as $interface) {
+		foreach ($reflector->getParentInterfaces() as $interface) {
 			$this->parentInterfaces[] = ltrim($interface, '\\');
 		}
 

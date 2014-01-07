@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;

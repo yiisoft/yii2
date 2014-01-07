@@ -33,7 +33,6 @@ class Controller extends \yii\base\Controller
 	 * @var boolean whether to run the command interactively.
 	 */
 	public $interactive = true;
-
 	/**
 	 * @var boolean whether to enable ANSI color in the output.
 	 * If not set, ANSI color will only be enabled for terminals that support it.
@@ -51,7 +50,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function isColorEnabled($stream = STDOUT)
 	{
-		return $this->color ===  null ? Console::streamSupportsAnsiColors($stream) : $this->color;
+		return $this->color === null ? Console::streamSupportsAnsiColors($stream) : $this->color;
 	}
 
 	/**

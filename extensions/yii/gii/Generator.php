@@ -13,7 +13,6 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\web\View;
 
-
 /**
  * This is the base class for all generator classes.
  *
@@ -61,7 +60,6 @@ abstract class Generator extends Model
 	 * @return CodeFile[] a list of code files to be created.
 	 */
 	abstract public function generate();
-
 	/**
 	 * @inheritdoc
 	 */

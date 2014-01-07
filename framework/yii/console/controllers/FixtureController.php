@@ -75,7 +75,6 @@ class FixtureController extends Controller
 	 */
 	public $db = 'db';
 
-
 	/**
 	 * Returns the names of the global options for this command.
 	 * @return array the names of the global options for this command.
@@ -144,7 +143,6 @@ class FixtureController extends Controller
 		try {
 			$this->loadFixtures($foundFixtures);
 			$transaction->commit();
-
 		} catch (\Exception $e) {
 			$transaction->rollback();
 			$this->stdout("Exception occured, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
@@ -160,7 +158,7 @@ class FixtureController extends Controller
 	 * @param array|string $tables
 	 */
 	public function actionClear(array $tables)
-	{		
+	{
 		if ($this->needToApplyAll($tables[0])) {
 			$tables = $this->getDbConnection()->schema->getTableNames();
 		}
@@ -174,7 +172,7 @@ class FixtureController extends Controller
 		try {
 			$this->getDbConnection()->createCommand()->checkIntegrity(false)->execute();
 
-			foreach($tables as $table) {
+			foreach ($tables as $table) {
 				$this->getDbConnection()->createCommand()->truncateTable($table)->execute();
 				$this->getDbConnection()->createCommand()->resetSequence($table)->execute();
 				$this->stdout("    Table \"{$table}\" was successfully cleared. \n", Console::FG_GREEN);
@@ -182,7 +180,6 @@ class FixtureController extends Controller
 
 			$this->getDbConnection()->createCommand()->checkIntegrity(true)->execute();
 			$transaction->commit();
-
 		} catch (\Exception $e) {
 			$transaction->rollback();
 			$this->stdout("Exception occured, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
@@ -201,7 +198,6 @@ class FixtureController extends Controller
 		if (!is_dir($path) || !is_writable($path)) {
 			throw new Exception("The fixtures path \"{$this->fixturePath}\" not exist or is not writable.");
 		}
-
 	}
 
 	/**
@@ -274,7 +270,7 @@ class FixtureController extends Controller
 	 */
 	private function outputList($data)
 	{
-		foreach($data as $index => $item) {
+		foreach ($data as $index => $item) {
 			$this->stdout("    " . ($index + 1) . ". {$item}\n", Console::FG_GREEN);
 		}
 	}
@@ -308,14 +304,12 @@ class FixtureController extends Controller
 			}
 			$files = FileHelper::findFiles($fixturesPath, ['only' => $filesToSearch]);
 		}
-		
 		$foundFixtures = [];
 
-		foreach($files as $fixture) {
-			$foundFixtures[] = basename($fixture , '.php');
+		foreach ($files as $fixture) {
+			$foundFixtures[] = basename($fixture, '.php');
 		}
 
 		return $foundFixtures;
 	}
-
 }

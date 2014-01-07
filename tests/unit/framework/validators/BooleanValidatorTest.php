@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\validators;
 
 use yiiunit\data\validators\models\FakedValidationModel;

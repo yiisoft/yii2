@@ -29,7 +29,7 @@ use yii\helpers\Html;
  *     'name'  => 'country',
  *     'clientOptions' => ['step' => 2],
  * ]);
- *```
+ * ```
  *
  * @see http://api.jqueryui.com/spinner/
  * @author Alexander Kochetov <creocoder@gmail.com>

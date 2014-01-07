@@ -74,7 +74,6 @@ class Modal extends Widget
 	 */
 	public $toggleButton;
 
-
 	/**
 	 * Initializes the widget.
 	 */

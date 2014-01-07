@@ -1,10 +1,10 @@
-(function() {
-	var ajax = function(url, settings) {
+(function () {
+	var ajax = function (url, settings) {
 		var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
 		settings = settings || {};
 		xhr.open(settings.method || 'GET', url, true);
 		xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-		xhr.onreadystatechange = function(state) {
+		xhr.onreadystatechange = function (state) {
 			if (xhr.readyState == 4) {
 				if (xhr.status == 200 && settings.success) {
 					settings.success(xhr);
@@ -21,7 +21,7 @@
 		e.style.display = 'block';
 		var url = e.getAttribute('data-url');
 		ajax(url, {
-			success: function(xhr) {
+			success: function (xhr) {
 				var div = document.createElement('div');
 				div.innerHTML = xhr.responseText;
 				e.parentNode.replaceChild(div, e);
@@ -33,7 +33,7 @@
 					}
 				}
 			},
-			error: function(xhr) {
+			error: function (xhr) {
 				e.innerHTML = xhr.responseText;
 			}
 		});

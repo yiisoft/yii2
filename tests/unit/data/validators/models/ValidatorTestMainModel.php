@@ -2,7 +2,6 @@
 
 namespace yiiunit\data\validators\models;
 
-
 use yiiunit\data\ar\ActiveRecord;
 
 class ValidatorTestMainModel extends ActiveRecord

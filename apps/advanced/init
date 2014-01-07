@@ -24,8 +24,7 @@ if (empty($params['env'])) {
 	if (isset($envNames[$answer])) {
 		$envName = $envNames[$answer];
 	}
-}
-else {
+} else {
 	$envName = $params['env'];
 }
 

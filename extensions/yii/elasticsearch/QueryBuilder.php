@@ -46,13 +46,13 @@ class QueryBuilder extends \yii\base\Object
 		$parts = [];
 
 		if ($query->fields !== null) {
-			$parts['fields'] = (array) $query->fields;
+			$parts['fields'] = (array)$query->fields;
 		}
 		if ($query->limit !== null && $query->limit >= 0) {
 			$parts['size'] = $query->limit;
 		}
 		if ($query->offset > 0) {
-			$parts['from'] = (int) $query->offset;
+			$parts['from'] = (int)$query->offset;
 		}
 
 		if (empty($parts['query'])) {
@@ -175,7 +175,7 @@ class QueryBuilder extends \yii\base\Object
 	private function buildHashCondition($condition)
 	{
 		$parts = [];
-		foreach($condition as $attribute => $value) {
+		foreach ($condition as $attribute => $value) {
 			if ($attribute == ActiveRecord::PRIMARY_KEY_NAME) {
 				if ($value == null) { // there is no null pk
 					$parts[] = ['script' => ['script' => '0==1']];

@@ -2,12 +2,10 @@
 
 namespace yiiunit\data\validators\models;
 
-
 use yiiunit\data\ar\ActiveRecord;
 
 class ValidatorTestRefModel extends ActiveRecord
 {
-
 	public $test_val = 2;
 	public $test_val_fail = 99;
 

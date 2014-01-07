@@ -14,7 +14,6 @@ namespace yii\debug\components\search\matches;
  */
 class Exact extends Base
 {
-
 	/**
 	 * @var boolean if current matcher should consider partial mathc of given value.
 	 */
@@ -29,7 +28,7 @@ class Exact extends Base
 		if (!$this->partial) {
 			return (mb_strtolower($this->value, 'utf8') == mb_strtolower($value, 'utf8'));
 		} else {
-			return (mb_strpos(mb_strtolower($value, 'utf8'), mb_strtolower($this->value,'utf8')) !== false);
+			return (mb_strpos(mb_strtolower($value, 'utf8'), mb_strtolower($this->value, 'utf8')) !== false);
 		}
 	}
 

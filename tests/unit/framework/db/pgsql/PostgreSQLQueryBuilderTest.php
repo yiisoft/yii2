@@ -12,7 +12,7 @@ use yiiunit\framework\db\QueryBuilderTest;
 class PostgreSQLQueryBuilderTest extends QueryBuilderTest
 {
 	public $driverName = 'pgsql';
-	
+
 	public function columnTypes()
 	{
 		return [

@@ -32,32 +32,32 @@ use yii\gii\CodeFile;
 		</thead>
 		<tbody>
 			<?php foreach ($files as $file): ?>
-			<tr class="<?= $file->operation ?>">
-				<td class="file">
-					<?= Html::a(Html::encode($file->getRelativePath()), ['preview', 'file' => $file->id], ['class' => 'preview-code', 'data-title' => $file->getRelativePath()]) ?>
-					<?php if ($file->operation === CodeFile::OP_OVERWRITE): ?>
-						<?= Html::a('diff', ['diff', 'file' => $file->id], ['class' => 'diff-code label label-warning', 'data-title' => $file->getRelativePath()]) ?>
-					<?php endif; ?>
-				</td>
-				<td class="action">
-					<?php
-					if ($file->operation === CodeFile::OP_SKIP) {
-						echo 'unchanged';
-					} else {
-						echo $file->operation;
-					}
-					?>
-				</td>
-				<td class="check">
-					<?php
-					if ($file->operation === CodeFile::OP_SKIP) {
-						echo '&nbsp;';
-					} else {
-						echo Html::checkBox("answers[{$file->id}]", isset($answers) ? isset($answers[$file->id]) : ($file->operation === CodeFile::OP_CREATE));
-					}
-					?>
-				</td>
-			</tr>
+				<tr class="<?= $file->operation ?>">
+					<td class="file">
+						<?= Html::a(Html::encode($file->getRelativePath()), ['preview', 'file' => $file->id], ['class' => 'preview-code', 'data-title' => $file->getRelativePath()]) ?>
+						<?php if ($file->operation === CodeFile::OP_OVERWRITE): ?>
+							<?= Html::a('diff', ['diff', 'file' => $file->id], ['class' => 'diff-code label label-warning', 'data-title' => $file->getRelativePath()]) ?>
+						<?php endif; ?>
+					</td>
+					<td class="action">
+						<?php
+						if ($file->operation === CodeFile::OP_SKIP) {
+							echo 'unchanged';
+						} else {
+							echo $file->operation;
+						}
+						?>
+					</td>
+					<td class="check">
+						<?php
+						if ($file->operation === CodeFile::OP_SKIP) {
+							echo '&nbsp;';
+						} else {
+							echo Html::checkBox("answers[{$file->id}]", isset($answers) ? isset($answers[$file->id]) : ($file->operation === CodeFile::OP_CREATE));
+						}
+						?>
+					</td>
+				</tr>
 			<?php endforeach; ?>
 		</tbody>
 	</table>
