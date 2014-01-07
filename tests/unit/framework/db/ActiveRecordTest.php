@@ -290,5 +290,39 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertTrue($orders[0]->isRelationPopulated('customer'));
 		$this->assertTrue($orders[1]->isRelationPopulated('customer'));
 		$this->assertTrue($orders[2]->isRelationPopulated('customer'));
+
+		// join with ON condition
+		$orders = Order::find()->joinWith('books2')->orderBy('tbl_order.id')->all();
+		$this->assertEquals(3, count($orders));
+		$this->assertEquals(1, $orders[0]->id);
+		$this->assertEquals(2, $orders[1]->id);
+		$this->assertEquals(3, $orders[2]->id);
+		$this->assertTrue($orders[0]->isRelationPopulated('books2'));
+		$this->assertTrue($orders[1]->isRelationPopulated('books2'));
+		$this->assertTrue($orders[2]->isRelationPopulated('books2'));
+		$this->assertEquals(2, count($orders[0]->books2));
+		$this->assertEquals(0, count($orders[1]->books2));
+		$this->assertEquals(1, count($orders[2]->books2));
+
+		// lazy loading with ON condition
+		$order = Order::find(1);
+		$this->assertEquals(2, count($order->books2));
+		$order = Order::find(2);
+		$this->assertEquals(0, count($order->books2));
+		$order = Order::find(3);
+		$this->assertEquals(1, count($order->books2));
+
+		// eager loading with ON condition
+		$orders = Order::find()->with('books2')->all();
+		$this->assertEquals(3, count($orders));
+		$this->assertEquals(1, $orders[0]->id);
+		$this->assertEquals(2, $orders[1]->id);
+		$this->assertEquals(3, $orders[2]->id);
+		$this->assertTrue($orders[0]->isRelationPopulated('books2'));
+		$this->assertTrue($orders[1]->isRelationPopulated('books2'));
+		$this->assertTrue($orders[2]->isRelationPopulated('books2'));
+		$this->assertEquals(2, count($orders[0]->books2));
+		$this->assertEquals(0, count($orders[1]->books2));
+		$this->assertEquals(1, count($orders[2]->books2));
 	}
 }

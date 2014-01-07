@@ -389,8 +389,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 				$on[] = "$parentAlias.[[$parentColumn]] = $childAlias.[[$childColumn]]";
 			}
 			$on = implode(' AND ', $on);
+			if (!empty($child->on)) {
+				$on = ['and', $on, $child->on];
+			}
 		} else {
-			$on = '';
+			$on = $child->on;
 		}
 		$this->join($joinType, $childTable, $on);
 

@@ -29,6 +29,28 @@ class ActiveRelation extends ActiveQuery implements ActiveRelationInterface
 	use ActiveRelationTrait;
 
 	/**
+	 * @var string|array the join condition. Please refer to [[Query::where()]] on how to specify this parameter.
+	 * The condition will be used in the ON part when [[ActiveQuery::joinRelation()]] is called.
+	 * Otherwise, the condition will be used in the WHERE part of a query.
+	 */
+	public $on;
+
+	/**
+	 * Sets the ON condition for the query.
+	 * The condition will be used in the ON part when [[ActiveQuery::joinRelation()]] is called.
+	 * Otherwise, the condition will be used in the WHERE part of a query.
+	 * @param string|array $condition the ON condition. Please refer to [[Query::where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name => value) to be bound to the query.
+	 * @return static the query object itself
+	 */
+	public function onCondition($condition, $params = [])
+	{
+		$this->on = $condition;
+		$this->addParams($params);
+		return $this;
+	}
+
+	/**
 	 * Specifies the pivot table.
 	 * @param string $tableName the name of the pivot table.
 	 * @param array $link the link between the pivot table and the table associated with [[primaryModel]].
@@ -62,33 +84,52 @@ class ActiveRelation extends ActiveQuery implements ActiveRelationInterface
 	 */
 	public function createCommand($db = null)
 	{
-		if ($this->primaryModel !== null) {
-			$where = $this->where;
-			// lazy loading
-			if ($this->via instanceof self) {
-				// via pivot table
-				$viaModels = $this->via->findPivotRows([$this->primaryModel]);
-				$this->filterByModels($viaModels);
-			} elseif (is_array($this->via)) {
-				// via relation
-				/** @var ActiveRelation $viaQuery */
-				list($viaName, $viaQuery) = $this->via;
-				if ($viaQuery->multiple) {
-					$viaModels = $viaQuery->all();
-					$this->primaryModel->populateRelation($viaName, $viaModels);
-				} else {
-					$model = $viaQuery->one();
-					$this->primaryModel->populateRelation($viaName, $model);
-					$viaModels = $model === null ? [] : [$model];
-				}
-				$this->filterByModels($viaModels);
+		if ($this->primaryModel === null) {
+			// eager loading
+			if (!empty($this->on)) {
+				$where = $this->where;
+				$this->andWhere($this->on);
+				$command = parent::createCommand($db);
+				$this->where = $where;
+				return $command;
 			} else {
-				$this->filterByModels([$this->primaryModel]);
+				return parent::createCommand($db);
 			}
-			$command = parent::createCommand($db);
-			$this->where = $where;
-			return $command;
 		}
-		return parent::createCommand($db);
+
+		// lazy loading
+
+		$where = $this->where;
+
+		if ($this->via instanceof self) {
+			// via pivot table
+			$viaModels = $this->via->findPivotRows([$this->primaryModel]);
+			$this->filterByModels($viaModels);
+		} elseif (is_array($this->via)) {
+			// via relation
+			/** @var ActiveRelation $viaQuery */
+			list($viaName, $viaQuery) = $this->via;
+			if ($viaQuery->multiple) {
+				$viaModels = $viaQuery->all();
+				$this->primaryModel->populateRelation($viaName, $viaModels);
+			} else {
+				$model = $viaQuery->one();
+				$this->primaryModel->populateRelation($viaName, $model);
+				$viaModels = $model === null ? [] : [$model];
+			}
+			$this->filterByModels($viaModels);
+		} else {
+			$this->filterByModels([$this->primaryModel]);
+		}
+
+		if (!empty($this->on)) {
+			$this->andWhere($this->on);
+		}
+
+		$command = parent::createCommand($db);
+
+		$this->where = $where;
+
+		return $command;
 	}
 }
