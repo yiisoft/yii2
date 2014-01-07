@@ -248,6 +248,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 
 		if (!empty($with)) {
+			$this->with = [];
 			foreach ($with as $name => $value) {
 				if (is_integer($name)) {
 					if (!in_array($value, $this->with, true) && !isset($this->with[$value])) {
