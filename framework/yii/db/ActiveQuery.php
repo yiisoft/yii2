@@ -60,7 +60,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 * Executes query and returns all results as an array.
 	 * @param Connection $db the DB connection used to create the DB command.
 	 * If null, the DB connection returned by [[modelClass]] will be used.
-	 * @return array the query results. If the query results in nothing, an empty array will be returned.
+	 * @return array|ActiveRecord[] the query results. If the query results in nothing, an empty array will be returned.
 	 */
 	public function all($db = null)
 	{
@@ -73,6 +73,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			}
 			if (!empty($this->with)) {
 				$this->findWith($this->with, $models);
+			}
+			if (!$this->asArray) {
+				foreach($models as $model) {
+					$model->afterFind();
+				}
 			}
 			return $models;
 		} else {
@@ -139,12 +144,16 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			} else {
 				/** @var ActiveRecord $class */
 				$class = $this->modelClass;
-				$model = $class::create($row);
+				$model = $class::instantiate($row);
+				$class::populateRecord($model, $row);
 			}
 			if (!empty($this->with)) {
 				$models = [$model];
 				$this->findWith($this->with, $models);
 				$model = $models[0];
+			}
+			if (!$this->asArray) {
+				$model->afterFind();
 			}
 			return $model;
 		} else {
@@ -247,19 +256,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			$with = [];
 		}
 
-		if (!empty($with)) {
-			foreach ($with as $name => $value) {
-				if (is_integer($name)) {
-					if (in_array($value, $this->with, true)) {
-						$this->with[] = $value;
-					}
-				} elseif (!isset($this->with[$name])) {
-					$this->with[$name] = $value;
-				}
-			}
-		}
-
-		return $this;
+		return $this->with($with);
 	}
 
 	/**
