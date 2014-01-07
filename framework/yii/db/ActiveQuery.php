@@ -251,10 +251,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			$this->with = [];
 			foreach ($with as $name => $value) {
 				if (is_integer($name)) {
-					if (!in_array($value, $this->with, true) && !isset($this->with[$value])) {
-						$this->with[] = $value;
-					}
+					// repeating relation is fine as ActiveQueryTrait::normalizeRelations() handle it well
+					$this->with[] = $value;
 				} elseif (!isset($this->with[$name])) {
+					// with() takes precedence over joinWith() when both specify the same relation with callback
 					$this->with[$name] = $value;
 				}
 			}
