@@ -93,15 +93,37 @@ trait ActiveQueryTrait
 	 * ])->all();
 	 * ~~~
 	 *
+	 * You can call `with()` multiple times. Each call will add relations to the existing ones.
+	 * For example, the following two statements are equivalent:
+	 *
+	 * ~~~
+	 * Customer::find()->with('orders', 'country')->all();
+	 * Customer::find()->with('orders')->with('country')->all();
+	 * ~~~
+	 *
 	 * @return static the query object itself
 	 */
 	public function with()
 	{
-		$this->with = func_get_args();
-		if (isset($this->with[0]) && is_array($this->with[0])) {
+		$with = func_get_args();
+		if (isset($with[0]) && is_array($with[0])) {
 			// the parameter is given as an array
-			$this->with = $this->with[0];
+			$with = $with[0];
 		}
+
+		if (empty($this->with)) {
+			$this->with = $with;
+		} elseif (!empty($with)) {
+			foreach ($with as $name => $value) {
+				if (is_integer($name)) {
+					// repeating relation is fine as normalizeRelations() handle it well
+					$this->with[] = $value;
+				} else {
+					$this->with[$name] = $value;
+				}
+			}
+		}
+
 		return $this;
 	}
 
