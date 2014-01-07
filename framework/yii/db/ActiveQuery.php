@@ -243,10 +243,16 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 					unset($with[$name]);
 				}
 			}
-			$this->with($with);
-		} elseif ($eagerLoading) {
-			$this->with($with);
+		} elseif (!$eagerLoading) {
+			$with = [];
 		}
+
+		if (!empty($with)) {
+			foreach ($with as $name => $value) {
+				$this->with[$name] = $value;
+			}
+		}
+
 		return $this;
 	}
 
