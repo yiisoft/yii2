@@ -326,7 +326,7 @@ class BaseSecurity
 	 *
 	 * @param integer $cost the cost parameter
 	 * @return string the random salt value.
-	 * @throws InvalidParamException if the cost parameter is not between 4 and 30
+	 * @throws InvalidParamException if the cost parameter is not between 4 and 31
 	 */
 	protected static function generateSalt($cost = 13)
 	{
