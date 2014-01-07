@@ -584,7 +584,11 @@ class Request extends \yii\base\Request
 			throw new InvalidConfigException('Unable to determine the path info of the current request.');
 		}
 
-		return ltrim($pathInfo, '/');
+		if ($pathInfo[0] === '/') {
+			$pathInfo = substr($pathInfo, 1);
+		}
+
+		return $pathInfo;
 	}
 
 	/**
