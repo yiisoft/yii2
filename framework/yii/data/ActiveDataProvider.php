@@ -15,7 +15,7 @@ use yii\db\Connection;
 use yii\db\QueryInterface;
 
 /**
- * ActiveDataProvider implements a data provider based on [[Query]] and [[ActiveQuery]].
+ * ActiveDataProvider implements a data provider based on [[\yii\db\Query]] and [[\yii\db\ActiveQuery]].
  *
  * ActiveDataProvider provides data by performing DB queries using [[query]].
  *

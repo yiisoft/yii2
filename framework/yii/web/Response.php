@@ -281,12 +281,12 @@ class Response extends \yii\base\Response
 	 */
 	public function send()
 	{
-		$this->trigger(self::EVENT_BEFORE_SEND, new ResponseEvent($this));
+		$this->trigger(self::EVENT_BEFORE_SEND);
 		$this->prepare();
-		$this->trigger(self::EVENT_AFTER_PREPARE, new ResponseEvent($this));
+		$this->trigger(self::EVENT_AFTER_PREPARE);
 		$this->sendHeaders();
 		$this->sendContent();
-		$this->trigger(self::EVENT_AFTER_SEND, new ResponseEvent($this));
+		$this->trigger(self::EVENT_AFTER_SEND);
 	}
 
 	/**
