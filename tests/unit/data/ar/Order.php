@@ -58,6 +58,13 @@ class Order extends ActiveRecord
 			->where(['category_id' => 1]);
 	}
 
+	public function getBooks2()
+	{
+		return $this->hasMany(Item::className(), ['id' => 'item_id'])
+			->onCondition(['category_id' => 1])
+			->viaTable('tbl_order_item', ['order_id' => 'id']);
+	}
+
 	public function beforeSave($insert)
 	{
 		if (parent::beforeSave($insert)) {
