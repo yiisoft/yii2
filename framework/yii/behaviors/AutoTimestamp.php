@@ -99,4 +99,18 @@ class AutoTimestamp extends Behavior
 			return time();
 		}
 	}
+
+	/**
+	 * Updates a timestamp attribute to the current timestamp.
+	 *
+	 * ```php
+	 * $model->touch('lastVisit');
+	 * ```
+	 * @param string $attribute the name of the attribute to update.
+	 */
+	public function touch($attribute)
+	{
+		$timestamp = $this->evaluateTimestamp();
+		$this->owner->updateAttributes([$attribute => $timestamp]);
+	}
 }
