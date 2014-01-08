@@ -59,7 +59,7 @@ class EmailTarget extends Target
 		// moved initialization of subject here because of the following issue
 		// https://github.com/yiisoft/yii2/issues/1446
 		if (empty($this->message['subject'])) {
-			$this->message['subject'] = Yii::t('yii', 'Application Log');
+			$this->message['subject'] = 'Application Log';
 		}
 		$messages = array_map([$this, 'formatMessage'], $this->messages);
 		$body = wordwrap(implode("\n", $messages), 70);

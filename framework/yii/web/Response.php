@@ -386,7 +386,7 @@ class Response extends \yii\base\Response
 		$range = $this->getHttpRange($contentLength);
 		if ($range === false) {
 			$headers->set('Content-Range', "bytes */$contentLength");
-			throw new HttpException(416, Yii::t('yii', 'Requested range not satisfiable'));
+			throw new HttpException(416, 'Requested range not satisfiable');
 		}
 
 		$headers->setDefault('Pragma', 'public')
@@ -428,7 +428,7 @@ class Response extends \yii\base\Response
 		$range = $this->getHttpRange($fileSize);
 		if ($range === false) {
 			$headers->set('Content-Range', "bytes */$fileSize");
-			throw new HttpException(416, Yii::t('yii', 'Requested range not satisfiable'));
+			throw new HttpException(416, 'Requested range not satisfiable');
 		}
 
 		list($begin, $end) = $range;
