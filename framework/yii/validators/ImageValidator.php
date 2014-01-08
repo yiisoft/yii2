@@ -120,16 +120,16 @@ class ImageValidator extends FileValidator
 			$this->notImage = Yii::t('yii', 'The file "{file}" is not an image.');
 		}
 		if ($this->underWidth === null) {
-			$this->underWidth = Yii::t('yii', 'The file "{file}" is too small. The width cannot be smaller than {limit} pixels.');
+			$this->underWidth = Yii::t('yii', 'The file "{file}" is too small. The width cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.');
 		}
 		if ($this->underHeight === null) {
-			$this->underHeight = Yii::t('yii', 'The file "{file}" is too small. The height cannot be smaller than {limit} pixels.');
+			$this->underHeight = Yii::t('yii', 'The file "{file}" is too small. The height cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.');
 		}		
 		if ($this->overWidth === null) {
-			$this->overWidth = Yii::t('yii', 'The file "{file}" is too large. The width cannot be larger than {limit} pixels.');
+			$this->overWidth = Yii::t('yii', 'The file "{file}" is too large. The width cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.');
 		}
 		if ($this->overHeight === null) {
-			$this->overHeight = Yii::t('yii', 'The file "{file}" is too large. The height cannot be larger than {limit} pixels.');
+			$this->overHeight = Yii::t('yii', 'The file "{file}" is too large. The height cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.');
 		}
 		if ($this->wrongMimeType === null) {
 			$this->wrongMimeType = Yii::t('yii', 'Only files with these mimeTypes are allowed: {mimeTypes}.');
