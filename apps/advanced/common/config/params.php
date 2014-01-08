@@ -17,9 +17,4 @@ return [
 		'class' => 'yii\swiftmailer\Mailer',
 		'viewPath' => '@common/mails',
 	],
-
-	'components.db' => [
-		'class' => 'yii\db\Connection',
-		'charset' => 'utf8',
-	],
 ];
