@@ -33,10 +33,9 @@ the installed application. You only need to do these once for all.
 ---
 php /path/to/yii-application/init
 ---
-2. Create a new database. It is assumed that MySQL InnoDB is used. If not, adjust `console/migrations/m130524_201442_init.php`.
-3. In `common/config/params.php` set your database details in `components.db` values.
-4. Apply migrations with console command 'yii migrate'.
-5. Set document roots of your Web server:
+2. Create a new database and adjust the `components.db` configuration in `common/config/params-local.php` accordingly.
+3. Apply migrations with console command `yii migrate`.
+4. Set document roots of your Web server:
 
 - for frontend `/path/to/yii-application/frontend/web/` and using the URL `http://frontend/`
 - for backend `/path/to/yii-application/backend/web/` and using the URL `http://backend/`
