@@ -36,7 +36,7 @@ use Yii;
  *
  *     public function successCallback($client)
  *     {
- *         $atributes = $client->getUserAttributes();
+ *         $attributes = $client->getUserAttributes();
  *         // user login or signup comes here
  *     }
  * }
@@ -74,7 +74,7 @@ class AuthAction extends Action
 	 * ~~~
 	 * public function onAuthSuccess($client)
 	 * {
-	 *     $atributes = $client->getUserAttributes();
+	 *     $attributes = $client->getUserAttributes();
 	 *     // user login or signup comes here
 	 * }
 	 * ~~~
