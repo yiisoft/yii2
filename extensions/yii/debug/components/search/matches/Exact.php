@@ -16,7 +16,7 @@ class Exact extends Base
 {
 
 	/**
-	 * @var boolean if current matcher should consider partial mathc of given value.
+	 * @var boolean if current matcher should consider partial match of given value.
 	 */
 	public $partial = false;
 
