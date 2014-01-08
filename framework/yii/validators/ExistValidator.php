@@ -55,7 +55,6 @@ class ExistValidator extends Validator
 	 */
 	public $targetAttribute;
 
-
 	/**
 	 * @inheritdoc
 	 */

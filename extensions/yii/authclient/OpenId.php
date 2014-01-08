@@ -68,7 +68,6 @@ class OpenId extends BaseClient implements ClientInterface
 	 * ~~~
 	 */
 	public $optionalAttributes = [];
-
 	/**
 	 * @var boolean whether to verify the peer's certificate.
 	 */
@@ -83,7 +82,6 @@ class OpenId extends BaseClient implements ClientInterface
 	 * This value will take effect only if [[verifyPeer]] is set.
 	 */
 	public $cainfo;
-
 	/**
 	 * @var string authentication return URL.
 	 */
@@ -242,10 +240,10 @@ class OpenId extends BaseClient implements ClientInterface
 
 		if ($this->verifyPeer !== null) {
 			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->verifyPeer);
-			if($this->capath) {
+			if ($this->capath) {
 				curl_setopt($curl, CURLOPT_CAPATH, $this->capath);
 			}
-			if($this->cainfo) {
+			if ($this->cainfo) {
 				curl_setopt($curl, CURLOPT_CAINFO, $this->cainfo);
 			}
 		}
@@ -266,7 +264,7 @@ class OpenId extends BaseClient implements ClientInterface
 			foreach (explode("\n", $response) as $header) {
 				$pos = strpos($header, ':');
 				$name = strtolower(trim(substr($header, 0, $pos)));
-				$headers[$name] = trim(substr($header, $pos+1));
+				$headers[$name] = trim(substr($header, $pos + 1));
 			}
 			return $headers;
 		}
@@ -309,7 +307,7 @@ class OpenId extends BaseClient implements ClientInterface
 				$options = [
 					'http' => [
 						'method' => 'POST',
-						'header'  => 'Content-type: application/x-www-form-urlencoded',
+						'header' => 'Content-type: application/x-www-form-urlencoded',
 						'content' => $params,
 						'ignore_errors' => true,
 					]
@@ -317,8 +315,8 @@ class OpenId extends BaseClient implements ClientInterface
 				break;
 			case 'HEAD':
 				/* We want to send a HEAD request,
-				but since get_headers doesn't accept $context parameter,
-				we have to change the defaults.*/
+				  but since get_headers doesn't accept $context parameter,
+				  we have to change the defaults. */
 				$default = stream_context_get_options(stream_context_get_default());
 				stream_context_get_default([
 					'http' => [
@@ -460,8 +458,8 @@ class OpenId extends BaseClient implements ClientInterface
 		}
 
 		/* We save the original url in case of Yadis discovery failure.
-		It can happen when we'll be lead to an XRDS document
-		which does not have any OpenID2 services.*/
+		  It can happen when we'll be lead to an XRDS document
+		  which does not have any OpenID2 services. */
 		$originalUrl = $url;
 
 		// A flag to disable yadis discovery in case of failure in headers.
@@ -483,10 +481,10 @@ class OpenId extends BaseClient implements ClientInterface
 						|| strpos($headers['content-type'], 'text/xml') !== false)
 				) {
 					/* Apparently, some providers return XRDS documents as text/html.
-					While it is against the spec, allowing this here shouldn't break
-					compatibility with anything.
-					---
-					Found an XRDS document, now let's find the server, and optionally delegate.*/
+					  While it is against the spec, allowing this here shouldn't break
+					  compatibility with anything.
+					  ---
+					  Found an XRDS document, now let's find the server, and optionally delegate. */
 					$content = $this->sendRequest($url, 'GET');
 
 					preg_match_all('#<Service.*?>(.*?)</Service>#s', $content, $m);
@@ -495,7 +493,7 @@ class OpenId extends BaseClient implements ClientInterface
 
 						// OpenID 2
 						$ns = preg_quote('http://specs.openid.net/auth/2.0/');
-						if (preg_match('#<Type>\s*'.$ns.'(server|signon)\s*</Type>#s', $content, $type)) {
+						if (preg_match('#<Type>\s*' . $ns . '(server|signon)\s*</Type>#s', $content, $type)) {
 							if ($type[1] == 'server') {
 								$result['identifier_select'] = true;
 							}
@@ -506,7 +504,7 @@ class OpenId extends BaseClient implements ClientInterface
 								throw new Exception('No servers found!');
 							}
 							// Does the server advertise support for either AX or SREG?
-							$result['ax'] = (bool) strpos($content, '<Type>http://openid.net/srv/ax/1.0</Type>');
+							$result['ax'] = (bool)strpos($content, '<Type>http://openid.net/srv/ax/1.0</Type>');
 							$result['sreg'] = strpos($content, '<Type>http://openid.net/sreg/1.0</Type>') || strpos($content, '<Type>http://openid.net/extensions/sreg/1.1</Type>');
 
 							$server = $server[1];
@@ -521,7 +519,7 @@ class OpenId extends BaseClient implements ClientInterface
 
 						// OpenID 1.1
 						$ns = preg_quote('http://openid.net/signon/1.1');
-						if (preg_match('#<Type>\s*'.$ns.'\s*</Type>#s', $content)) {
+						if (preg_match('#<Type>\s*' . $ns . '\s*</Type>#s', $content)) {
 							preg_match('#<URI.*?>(.*)</URI>#', $content, $server);
 							preg_match('#<.*?Delegate>(.*)</.*?Delegate>#', $content, $delegate);
 							if (empty($server)) {
@@ -599,8 +597,8 @@ class OpenId extends BaseClient implements ClientInterface
 	{
 		$params = [];
 		/* We always use SREG 1.1, even if the server is advertising only support for 1.0.
-		That's because it's fully backwards compatibile with 1.0, and some providers
-		advertise 1.0 even if they accept only 1.1. One such provider is myopenid.com */
+		  That's because it's fully backwards compatibile with 1.0, and some providers
+		  advertise 1.0 even if they accept only 1.1. One such provider is myopenid.com */
 		$params['openid.ns.sreg'] = 'http://openid.net/extensions/sreg/1.1';
 		if (!empty($this->requiredAttributes)) {
 			$params['openid.sreg.required'] = [];
@@ -684,8 +682,8 @@ class OpenId extends BaseClient implements ClientInterface
 	{
 		$returnUrl = $this->getReturnUrl();
 		/* If we have an openid.delegate that is different from our claimed id,
-		we need to somehow preserve the claimed id between requests.
-		The simplest way is to just send it along with the return_to url.*/
+		  we need to somehow preserve the claimed id between requests.
+		  The simplest way is to just send it along with the return_to url. */
 		if ($serverInfo['identity'] != $this->getClaimedId()) {
 			$returnUrl .= (strpos($returnUrl, '?') ? '&' : '?') . 'openid.claimed_id=' . $this->getClaimedId();
 		}
@@ -730,7 +728,7 @@ class OpenId extends BaseClient implements ClientInterface
 		if ($serverInfo['identifier_select']) {
 			$url = 'http://specs.openid.net/auth/2.0/identifier_select';
 			$params['openid.identity'] = $url;
-			$params['openid.claimed_id']= $url;
+			$params['openid.claimed_id'] = $url;
 		} else {
 			$params['openid.identity'] = $serverInfo['identity'];
 			$params['openid.claimed_id'] = $this->getClaimedId();
@@ -780,8 +778,8 @@ class OpenId extends BaseClient implements ClientInterface
 
 		if (isset($this->data['openid_ns'])) {
 			/* We're dealing with an OpenID 2.0 server, so let's set an ns
-			Even though we should know location of the endpoint,
-			we still need to verify it by discovery, so $server is not set here*/
+			  Even though we should know location of the endpoint,
+			  we still need to verify it by discovery, so $server is not set here */
 			$params['openid.ns'] = 'http://specs.openid.net/auth/2.0';
 		} elseif (isset($this->data['openid_claimed_id']) && $this->data['openid_claimed_id'] != $this->data['openid_identity']) {
 			// If it's an OpenID 1 provider, and we've got claimed_id,
@@ -866,8 +864,8 @@ class OpenId extends BaseClient implements ClientInterface
 			$key = substr($key, strlen($keyMatch));
 			if (!isset($this->data['openid_' . $alias . '_type_' . $key])) {
 				/* OP is breaking the spec by returning a field without
-				associated ns. This shouldn't happen, but it's better
-				to check, than cause an E_NOTICE.*/
+				  associated ns. This shouldn't happen, but it's better
+				  to check, than cause an E_NOTICE. */
 				continue;
 			}
 			$key = substr($this->data['openid_' . $alias . '_type_' . $key], strlen('http://axschema.org/'));

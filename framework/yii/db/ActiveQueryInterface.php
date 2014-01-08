@@ -24,7 +24,6 @@ interface ActiveQueryInterface extends QueryInterface
 	 * @return static the query object itself
 	 */
 	public function asArray($value = true);
-
 	/**
 	 * Sets the [[indexBy]] property.
 	 * @param string|callable $column the name of the column by which the query results should be indexed by.
@@ -43,7 +42,6 @@ interface ActiveQueryInterface extends QueryInterface
 	 * @return static the query object itself
 	 */
 	public function indexBy($column);
-
 	/**
 	 * Specifies the relations with which this query should be performed.
 	 *

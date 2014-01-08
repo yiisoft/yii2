@@ -50,7 +50,6 @@ class Module extends \yii\base\Module
 	 */
 	public $historySize = 50;
 
-
 	public function init()
 	{
 		parent::init();

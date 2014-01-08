@@ -41,12 +41,12 @@ class BaseImage
 	 * gmagick driver definition.
 	 */
 	const DRIVER_GMAGICK = 'gmagick';
+
 	/**
 	 * @var array|string the driver to use. This can be either a single driver name or an array of driver names.
 	 * If the latter, the first available driver will be used.
 	 */
 	public static $driver = [self::DRIVER_GMAGICK, self::DRIVER_IMAGICK, self::DRIVER_GD2];
-
 	/**
 	 * @var ImagineInterface instance.
 	 */
@@ -79,7 +79,7 @@ class BaseImage
 	 */
 	protected static function createImagine()
 	{
-		foreach ((array)static::$driver as $driver) {
+		foreach ((array) static::$driver as $driver) {
 			switch ($driver) {
 				case self::DRIVER_GMAGICK:
 					if (class_exists('Gmagick', false)) {
@@ -100,7 +100,7 @@ class BaseImage
 					throw new InvalidConfigException("Unknown driver: $driver");
 			}
 		}
-		throw new InvalidConfigException("Your system does not support any of these drivers: " . implode(',', (array)static::$driver));
+		throw new InvalidConfigException("Your system does not support any of these drivers: " . implode(',', (array) static::$driver));
 	}
 
 	/**

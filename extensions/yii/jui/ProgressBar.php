@@ -28,7 +28,7 @@ use yii\helpers\Html;
  * ~~~php
  * ProgressBar::widget([
  *     'clientOptions' => ['value' => 75],
-  * ]);
+ * ]);
  *
  * echo '<div class="progress-label">Loading...</div>';
  *

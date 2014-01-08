@@ -192,7 +192,7 @@ class Command extends \yii\base\Component
 		} else {
 			$this->pdoStatement->bindParam($name, $value, $dataType, $length, $driverOptions);
 		}
-		$this->params[$name] =& $value;
+		$this->params[$name] = & $value;
 		return $this;
 	}
 
@@ -419,7 +419,7 @@ class Command extends \yii\base\Component
 			if ($e instanceof Exception) {
 				throw $e;
 			} else {
-				$message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
+				$message = $e->getMessage() . "\nThe SQL being executed was: $rawSql";
 				$errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
 				throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
 			}
@@ -525,7 +525,6 @@ class Command extends \yii\base\Component
 		$sql = $this->db->getQueryBuilder()->delete($table, $condition, $params);
 		return $this->setSql($sql)->bindValues($params);
 	}
-
 
 	/**
 	 * Creates a SQL command for creating a new DB table.

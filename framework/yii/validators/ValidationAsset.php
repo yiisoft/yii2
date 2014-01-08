@@ -6,6 +6,7 @@
  */
 
 namespace yii\validators;
+
 use yii\web\AssetBundle;
 
 /**

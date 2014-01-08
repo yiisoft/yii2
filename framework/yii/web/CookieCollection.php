@@ -28,7 +28,6 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	 * @var boolean whether this collection is read only.
 	 */
 	public $readOnly = false;
-
 	/**
 	 * @var Cookie[] the cookies in this collection (indexed by the cookie names)
 	 */

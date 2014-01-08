@@ -59,7 +59,6 @@ class Collapse extends Widget
 	 */
 	public $items = [];
 
-
 	/**
 	 * Initializes the widget.
 	 */

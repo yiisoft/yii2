@@ -70,7 +70,7 @@ class ActiveRecord extends BaseActiveRecord
 			if (count($q) == 1 && (array_key_exists(ActiveRecord::PRIMARY_KEY_NAME, $q)) && $query->where === null) {
 				$pk = $q[ActiveRecord::PRIMARY_KEY_NAME];
 				if (is_array($pk)) {
-					return  static::mget($pk);
+					return static::mget($pk);
 				} else {
 					return static::get($pk);
 				}
@@ -116,7 +116,6 @@ class ActiveRecord extends BaseActiveRecord
 	 * for more details on these options.
 	 * @return static|null The record instance or null if it was not found.
 	 */
-
 	public static function mget($primaryKeys, $options = [])
 	{
 		if (empty($primaryKeys)) {
@@ -125,7 +124,7 @@ class ActiveRecord extends BaseActiveRecord
 		$command = static::getDb()->createCommand();
 		$result = $command->mget(static::index(), static::type(), $primaryKeys, $options);
 		$models = [];
-		foreach($result['docs'] as $doc) {
+		foreach ($result['docs'] as $doc) {
 			if ($doc['exists']) {
 				$models[] = static::create($doc);
 			}
@@ -345,7 +344,7 @@ class ActiveRecord extends BaseActiveRecord
 	public static function updateAll($attributes, $condition = [])
 	{
 		if (count($condition) == 1 && isset($condition[ActiveRecord::PRIMARY_KEY_NAME])) {
-			$primaryKeys = (array) $condition[ActiveRecord::PRIMARY_KEY_NAME];
+			$primaryKeys = (array)$condition[ActiveRecord::PRIMARY_KEY_NAME];
 		} else {
 			$primaryKeys = static::find()->where($condition)->column(ActiveRecord::PRIMARY_KEY_NAME);
 		}
@@ -353,7 +352,7 @@ class ActiveRecord extends BaseActiveRecord
 			return 0;
 		}
 		$bulk = '';
-		foreach((array) $primaryKeys as $pk) {
+		foreach ((array)$primaryKeys as $pk) {
 			$action = Json::encode([
 				"update" => [
 					"_id" => $pk,
@@ -370,8 +369,8 @@ class ActiveRecord extends BaseActiveRecord
 		// TODO do this via command
 		$url = [static::index(), static::type(), '_bulk'];
 		$response = static::getDb()->post($url, [], $bulk);
-		$n=0;
-		foreach($response['items'] as $item) {
+		$n = 0;
+		foreach ($response['items'] as $item) {
 			if ($item['update']['ok']) {
 				$n++;
 			}
@@ -396,7 +395,7 @@ class ActiveRecord extends BaseActiveRecord
 	public static function updateAllCounters($counters, $condition = [])
 	{
 		if (count($condition) == 1 && isset($condition[ActiveRecord::PRIMARY_KEY_NAME])) {
-			$primaryKeys = (array) $condition[ActiveRecord::PRIMARY_KEY_NAME];
+			$primaryKeys = (array)$condition[ActiveRecord::PRIMARY_KEY_NAME];
 		} else {
 			$primaryKeys = static::find()->where($condition)->column(ActiveRecord::PRIMARY_KEY_NAME);
 		}
@@ -404,7 +403,7 @@ class ActiveRecord extends BaseActiveRecord
 			return 0;
 		}
 		$bulk = '';
-		foreach((array) $primaryKeys as $pk) {
+		foreach ((array)$primaryKeys as $pk) {
 			$action = Json::encode([
 				"update" => [
 					"_id" => $pk,
@@ -413,12 +412,12 @@ class ActiveRecord extends BaseActiveRecord
 				],
 			]);
 			$script = '';
-			foreach($counters as $counter => $value) {
+			foreach ($counters as $counter => $value) {
 				$script .= "ctx._source.$counter += $counter;\n";
 			}
 			$data = Json::encode([
 				"script" => $script,
-                "params" => $counters
+				"params" => $counters
 			]);
 			$bulk .= $action . "\n" . $data . "\n";
 		}
@@ -427,8 +426,8 @@ class ActiveRecord extends BaseActiveRecord
 		$url = [static::index(), static::type(), '_bulk'];
 		$response = static::getDb()->post($url, [], $bulk);
 
-		$n=0;
-		foreach($response['items'] as $item) {
+		$n = 0;
+		foreach ($response['items'] as $item) {
 			if ($item['update']['ok']) {
 				$n++;
 			}
@@ -453,7 +452,7 @@ class ActiveRecord extends BaseActiveRecord
 	public static function deleteAll($condition = [])
 	{
 		if (count($condition) == 1 && isset($condition[ActiveRecord::PRIMARY_KEY_NAME])) {
-			$primaryKeys = (array) $condition[ActiveRecord::PRIMARY_KEY_NAME];
+			$primaryKeys = (array)$condition[ActiveRecord::PRIMARY_KEY_NAME];
 		} else {
 			$primaryKeys = static::find()->where($condition)->column(ActiveRecord::PRIMARY_KEY_NAME);
 		}
@@ -461,7 +460,7 @@ class ActiveRecord extends BaseActiveRecord
 			return 0;
 		}
 		$bulk = '';
-		foreach((array) $primaryKeys as $pk) {
+		foreach ((array)$primaryKeys as $pk) {
 			$bulk .= Json::encode([
 				"delete" => [
 					"_id" => $pk,
@@ -474,8 +473,8 @@ class ActiveRecord extends BaseActiveRecord
 		// TODO do this via command
 		$url = [static::index(), static::type(), '_bulk'];
 		$response = static::getDb()->post($url, [], $bulk);
-		$n=0;
-		foreach($response['items'] as $item) {
+		$n = 0;
+		foreach ($response['items'] as $item) {
 			if ($item['delete']['found'] && $item['delete']['ok']) {
 				$n++;
 			}

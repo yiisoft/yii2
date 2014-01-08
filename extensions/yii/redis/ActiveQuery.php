@@ -6,6 +6,7 @@
  */
 
 namespace yii\redis;
+
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\db\ActiveQueryInterface;
@@ -63,10 +64,10 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		// TODO add support for orderBy
 		$data = $this->executeScript($db, 'All');
 		$rows = [];
-		foreach($data as $dataRow) {
+		foreach ($data as $dataRow) {
 			$row = [];
 			$c = count($dataRow);
-			for($i = 0; $i < $c; ) {
+			for ($i = 0; $i < $c;) {
 				$row[$dataRow[$i++]] = $dataRow[$i++];
 			}
 			$rows[] = $row;
@@ -99,7 +100,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		}
 		$row = [];
 		$c = count($data);
-		for($i = 0; $i < $c; ) {
+		for ($i = 0; $i < $c;) {
 			$row[$data[$i++]] = $data[$i++];
 		}
 		if ($this->asArray) {
@@ -232,7 +233,6 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		}
 	}
 
-
 	/**
 	 * Executes a script created by [[LuaScriptBuilder]]
 	 * @param Connection $db the database connection used to execute the query.
@@ -279,7 +279,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		if (count($this->where) == 1) {
 			$pks = (array) reset($this->where);
 		} else {
-			foreach($this->where as $column => $values) {
+			foreach ($this->where as $column => $values) {
 				if (is_array($values)) {
 					// TODO support composite IN for composite PK
 					throw new NotSupportedException('Find by composite PK is not supported by redis ActiveRecord.');
@@ -300,7 +300,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		}
 		$i = 0;
 		$data = [];
-		foreach($pks as $pk) {
+		foreach ($pks as $pk) {
 			if (++$i > $start && ($limit === null || $i <= $start + $limit)) {
 				$key = $modelClass::keyPrefix() . ':a:' . $modelClass::buildKey($pk);
 				$result = $db->executeCommand('HGETALL', [$key]);
@@ -314,7 +314,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		}
 		// TODO support orderBy
 
-		switch($type) {
+		switch ($type) {
 			case 'All':
 				return $data;
 			case 'One':
@@ -323,10 +323,10 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 				return count($data);
 			case 'Column':
 				$column = [];
-				foreach($data as $dataRow) {
+				foreach ($data as $dataRow) {
 					$row = [];
 					$c = count($dataRow);
-					for($i = 0; $i < $c; ) {
+					for ($i = 0; $i < $c;) {
 						$row[$dataRow[$i++]] = $dataRow[$i++];
 					}
 					$column[] = $row[$columnName];
@@ -334,9 +334,9 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 				return $column;
 			case 'Sum':
 				$sum = 0;
-				foreach($data as $dataRow) {
+				foreach ($data as $dataRow) {
 					$c = count($dataRow);
-					for($i = 0; $i < $c; ) {
+					for ($i = 0; $i < $c;) {
 						if ($dataRow[$i++] == $columnName) {
 							$sum += $dataRow[$i];
 							break;
@@ -347,10 +347,10 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 			case 'Average':
 				$sum = 0;
 				$count = 0;
-				foreach($data as $dataRow) {
+				foreach ($data as $dataRow) {
 					$count++;
 					$c = count($dataRow);
-					for($i = 0; $i < $c; ) {
+					for ($i = 0; $i < $c;) {
 						if ($dataRow[$i++] == $columnName) {
 							$sum += $dataRow[$i];
 							break;
@@ -360,9 +360,9 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 				return $sum / $count;
 			case 'Min':
 				$min = null;
-				foreach($data as $dataRow) {
+				foreach ($data as $dataRow) {
 					$c = count($dataRow);
-					for($i = 0; $i < $c; ) {
+					for ($i = 0; $i < $c;) {
 						if ($dataRow[$i++] == $columnName && ($min == null || $dataRow[$i] < $min)) {
 							$min = $dataRow[$i];
 							break;
@@ -372,9 +372,9 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 				return $min;
 			case 'Max':
 				$max = null;
-				foreach($data as $dataRow) {
+				foreach ($data as $dataRow) {
 					$c = count($dataRow);
-					for($i = 0; $i < $c; ) {
+					for ($i = 0; $i < $c;) {
 						if ($dataRow[$i++] == $columnName && ($max == null || $dataRow[$i] > $max)) {
 							$max = $dataRow[$i];
 							break;

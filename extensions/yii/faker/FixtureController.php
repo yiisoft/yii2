@@ -169,7 +169,6 @@ class FixtureController extends \yii\console\controllers\FixtureController
 	 */
 	private $_generator;
 
-
 	/**
 	 * Returns the names of the global options for this command.
 	 * @return array the names of the global options for this command.
@@ -321,7 +320,6 @@ class FixtureController extends \yii\console\controllers\FixtureController
 			}
 
 			$content .= "\n\t],";
-
 		}
 		$content .= "\n];\n";
 		return $content;

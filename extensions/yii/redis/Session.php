@@ -71,7 +71,6 @@ class Session extends \yii\web\Session
 	 */
 	public $keyPrefix;
 
-
 	/**
 	 * Initializes the redis Session component.
 	 * This method will initialize the [[redis]] property to make sure it refers to a valid redis connection.

@@ -1,5 +1,7 @@
 <?php
+
 namespace yiiunit\framework\validators;
+
 use yiiunit\data\validators\models\FakedValidationModel;
 use yii\validators\UrlValidator;
 use yiiunit\TestCase;
@@ -28,7 +30,7 @@ class UrlValidatorTest extends TestCase
 		$this->assertFalse($val->validate('http://invalid,domain'));
 		$this->assertFalse($val->validate('http://äüö?=!"§$%&/()=}][{³²€.edu'));
 	}
-	
+
 	public function testValidateValueWithDefaultScheme()
 	{
 		$val = new UrlValidator(['defaultScheme' => 'https']);
@@ -41,7 +43,7 @@ class UrlValidatorTest extends TestCase
 		$val = new UrlValidator(['pattern' => '/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i']);
 		$this->assertTrue($val->validate('yiiframework.com'));
 	}
-	
+
 	public function testValidateWithCustomScheme()
 	{
 		$val = new UrlValidator([
@@ -56,7 +58,7 @@ class UrlValidatorTest extends TestCase
 		// relative urls not supported
 		$this->assertFalse($val->validate('//yiiframework.com'));
 	}
-	
+
 	public function testValidateWithIdn()
 	{
 		if (!function_exists('idn_to_ascii')) {
@@ -70,14 +72,14 @@ class UrlValidatorTest extends TestCase
 		// converted via http://mct.verisign-grs.com/convertServlet
 		$this->assertTrue($val->validate('http://xn--zcack7ayc9a.de'));
 	}
-	
+
 	public function testValidateLength()
 	{
 		$url = 'http://' . str_pad('base', 2000, 'url') . '.de';
 		$val = new UrlValidator;
 		$this->assertFalse($val->validate($url));
 	}
-	
+
 	public function testValidateAttributeAndError()
 	{
 		$obj = new FakedValidationModel;

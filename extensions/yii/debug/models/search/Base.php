@@ -8,7 +8,6 @@ use yii\debug\components\search\matches;
 
 class Base extends Model
 {
-
 	/**
 	 * @param Filter $filter
 	 * @param string $attribute
@@ -22,16 +21,12 @@ class Base extends Model
 
 			$value = intval(str_replace('>', '', $value));
 			$filter->addMatch($attribute, new matches\Greater(['value' => $value]));
-
 		} elseif (mb_strpos($value, '<') !== false) {
 
 			$value = intval(str_replace('<', '', $value));
 			$filter->addMatch($attribute, new matches\Lower(['value' => $value]));
-
 		} else {
 			$filter->addMatch($attribute, new matches\Exact(['value' => $value, 'partial' => $partial]));
 		}
-
 	}
-
 }

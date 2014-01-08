@@ -30,7 +30,6 @@ class CheckboxColumn extends Column
 	public $checkboxOptions = [];
 	public $multiple = true;
 
-
 	public function init()
 	{
 		parent::init();

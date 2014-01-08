@@ -215,7 +215,6 @@ class BaseInflector
 		'wildebeest' => 'wildebeest',
 		'Yengeese' => 'Yengeese',
 	];
-
 	/**
 	 * @var array map of special chars and its translation. This is used by [[slug()]].
 	 */

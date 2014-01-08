@@ -21,7 +21,7 @@ class DbCacheTest extends CacheTestCase
 		}
 
 		parent::setUp();
-		
+
 		$this->getConnection()->createCommand("
 			CREATE TABLE IF NOT EXISTS tbl_cache (
 				id char(128) NOT NULL,
@@ -59,7 +59,6 @@ class DbCacheTest extends CacheTestCase
 		}
 		return $this->_connection;
 	}
-
 
 	/**
 	 * @return DbCache

@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\validators;
 
 use yii\validators\EmailValidator;

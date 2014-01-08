@@ -36,46 +36,46 @@ $this->params['breadcrumbs'][] = $this->title;
 		<?= "<?= " ?>Html::a('Create <?= Inflector::camel2words(StringHelper::basename($generator->modelClass)) ?>', ['create'], ['class' => 'btn btn-success']) ?>
 	</p>
 
-<?php if ($generator->indexWidgetType === 'grid'): ?>
-	<?= "<?php " ?>echo GridView::widget([
-		'dataProvider' => $dataProvider,
-		'filterModel' => $searchModel,
-		'columns' => [
-			['class' => 'yii\grid\SerialColumn'],
+	<?php if ($generator->indexWidgetType === 'grid'): ?>
+		<?= "<?php " ?>echo GridView::widget([
+			'dataProvider' => $dataProvider,
+			'filterModel' => $searchModel,
+			'columns' => [
+				['class' => 'yii\grid\SerialColumn'],
 
-<?php
-$count = 0;
-if (($tableSchema = $generator->getTableSchema()) === false) {
-	foreach ($generator->getColumnNames() as $name) {
-		if (++$count < 6) {
-			echo "\t\t\t'" . $name . "',\n";
+		<?php
+		$count = 0;
+		if (($tableSchema = $generator->getTableSchema()) === false) {
+			foreach ($generator->getColumnNames() as $name) {
+				if (++$count < 6) {
+					echo "\t\t\t'" . $name . "',\n";
+				} else {
+					echo "\t\t\t// '" . $name . "',\n";
+				}
+			}
 		} else {
-			echo "\t\t\t// '" . $name . "',\n";
+			foreach ($tableSchema->columns as $column) {
+				$format = $generator->generateColumnFormat($column);
+				if (++$count < 6) {
+					echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+				} else {
+					echo "\t\t\t// '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+				}
+			}
 		}
-	}
-} else {
-	foreach ($tableSchema->columns as $column) {
-		$format = $generator->generateColumnFormat($column);
-		if (++$count < 6) {
-			echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
-		} else {
-			echo "\t\t\t// '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
-		}
-	}
-}
-?>
+		?>
 
-			['class' => 'yii\grid\ActionColumn'],
+		['class' => 'yii\grid\ActionColumn'],
 		],
-	]); ?>
-<?php else: ?>
-	<?= "<?php " ?>echo ListView::widget([
-		'dataProvider' => $dataProvider,
-		'itemOptions' => ['class' => 'item'],
-		'itemView' => function ($model, $key, $index, $widget) {
-			return Html::a(Html::encode($model-><?= $nameAttribute ?>), ['view', <?= $urlParams ?>]);
-		},
-	]); ?>
-<?php endif; ?>
+		]); ?>
+	<?php else: ?>
+		<?= "<?php " ?>echo ListView::widget([
+			'dataProvider' => $dataProvider,
+			'itemOptions' => ['class' => 'item'],
+			'itemView' => function ($model, $key, $index, $widget) {
+				return Html::a(Html::encode($model-><?= $nameAttribute ?>), ['view', <?= $urlParams ?>]);
+			},
+		]); ?>
+	<?php endif; ?>
 
 </div>

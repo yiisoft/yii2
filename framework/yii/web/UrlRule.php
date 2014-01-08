@@ -82,7 +82,6 @@ class UrlRule extends Object
 	 * If it is [[CREATION_ONLY]], the rule is for URL creation only.
 	 */
 	public $mode;
-
 	/**
 	 * @var string the template for generating a new URL. This is derived from [[pattern]] and is used in generating URL.
 	 */

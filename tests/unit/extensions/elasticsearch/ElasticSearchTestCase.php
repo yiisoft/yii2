@@ -24,10 +24,10 @@ class ElasticSearchTestCase extends TestCase
 		}
 		$dsn = explode('/', $params['dsn']);
 		$host = $dsn[2];
-		if (strpos($host, ':')===false) {
+		if (strpos($host, ':') === false) {
 			$host .= ':9200';
 		}
-		if(!@stream_socket_client($host, $errorNumber, $errorDescription, 0.5)) {
+		if (!@stream_socket_client($host, $errorNumber, $errorDescription, 0.5)) {
 			$this->markTestSkipped('No elasticsearch server running at ' . $params['dsn'] . ' : ' . $errorNumber . ' - ' . $errorDescription);
 		}
 

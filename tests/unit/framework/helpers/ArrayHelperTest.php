@@ -18,6 +18,7 @@ class Post2 extends Object
 	public $id = 123;
 	public $content = 'test';
 	private $secret = 's';
+
 	public function getSecret()
 	{
 		return $this->secret;
@@ -101,7 +102,6 @@ class ArrayHelperTest extends TestCase
 		$default = ArrayHelper::remove($array, 'nonExisting', 'defaultValue');
 		$this->assertEquals('defaultValue', $default);
 	}
-
 
 	public function testMultisort()
 	{

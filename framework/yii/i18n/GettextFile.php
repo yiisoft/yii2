@@ -25,7 +25,6 @@ abstract class GettextFile extends Component
 	 * source message => translated message.
 	 */
 	abstract public function load($filePath, $context);
-
 	/**
 	 * Saves messages to a file.
 	 * @param string $filePath file path

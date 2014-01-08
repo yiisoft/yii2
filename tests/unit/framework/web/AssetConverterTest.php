@@ -4,6 +4,7 @@
  */
 
 namespace yiiunit\framework\web;
+
 use yii\web\AssetConverter;
 
 /**
@@ -16,7 +17,6 @@ class AssetConverterTest extends \yiiunit\TestCase
 		parent::setUp();
 		$this->mockApplication();
 	}
-
 
 	public function testConvert()
 	{

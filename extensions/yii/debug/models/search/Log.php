@@ -10,17 +10,14 @@ use yii\debug\components\search\Filter;
  */
 class Log extends Base
 {
-
 	/**
 	 * @var string ip attribute input search value
 	 */
 	public $level;
-
 	/**
 	 * @var string method attribute input search value
 	 */
 	public $category;
-
 	/**
 	 * @var integer message attribute input search value
 	 */
@@ -75,5 +72,4 @@ class Log extends Base
 
 		return $dataProvider;
 	}
-
 }

@@ -193,7 +193,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 		curl_close($curlResource);
 
 		if ($errorNumber > 0) {
-			throw new Exception('Curl error requesting "' .  $url . '": #' . $errorNumber . ' - ' . $errorMessage);
+			throw new Exception('Curl error requesting "' . $url . '": #' . $errorNumber . ' - ' . $errorMessage);
 		}
 		if ($responseHeaders['http_code'] != 200) {
 			throw new Exception('Request failed with code: ' . $responseHeaders['http_code'] . ', message: ' . $response);
@@ -217,7 +217,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 		while (!empty($args)) {
 			$next = array_shift($args);
 			foreach ($next as $k => $v) {
-				$res[$k]=$v;
+				$res[$k] = $v;
 			}
 		}
 		return $res;
@@ -489,14 +489,12 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 	 * @throws Exception on failure.
 	 */
 	abstract protected function composeRequestCurlOptions($method, $url, array $params);
-
 	/**
 	 * Gets new auth token to replace expired one.
 	 * @param OAuthToken $token expired auth token.
 	 * @return OAuthToken new auth token.
 	 */
 	abstract public function refreshAccessToken(OAuthToken $token);
-
 	/**
 	 * Performs request to the OAuth API.
 	 * @param OAuthToken $accessToken actual access token.

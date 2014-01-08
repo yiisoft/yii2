@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\extensions\imagine;
 
 use Yii;
@@ -45,7 +46,6 @@ abstract class AbstractImageTest extends VendorTestCase
 
 		$img->save($this->runtimeTextFile);
 		$this->assertTrue(file_exists($this->runtimeTextFile));
-
 	}
 
 	public function testCrop()
@@ -55,7 +55,6 @@ abstract class AbstractImageTest extends VendorTestCase
 
 		$this->assertEquals(100, $img->getSize()->getWidth());
 		$this->assertEquals(100, $img->getSize()->getHeight());
-
 	}
 
 	public function testWatermark()

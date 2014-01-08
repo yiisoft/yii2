@@ -58,7 +58,6 @@ class Schema extends Object
 	 * @var QueryBuilder the query builder for this Sphinx connection
 	 */
 	private $_builder;
-
 	/**
 	 * @var array mapping from physical column types (keys) to abstract column types (values)
 	 */

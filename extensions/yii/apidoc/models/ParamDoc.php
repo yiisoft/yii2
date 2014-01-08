@@ -23,7 +23,6 @@ class ParamDoc extends Object
 	public $isOptional;
 	public $defaultValue;
 	public $isPassedByReference;
-
 	// will be set by creating class
 	public $description;
 	public $type;

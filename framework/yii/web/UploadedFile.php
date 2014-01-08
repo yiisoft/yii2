@@ -27,7 +27,6 @@ use yii\helpers\Html;
 class UploadedFile extends Object
 {
 	private static $_files;
-
 	/**
 	 * @var string the original name of the file being uploaded
 	 */
@@ -53,7 +52,6 @@ class UploadedFile extends Object
 	 * @see http://www.php.net/manual/en/features.file-upload.errors.php
 	 */
 	public $error;
-
 
 	/**
 	 * String output.

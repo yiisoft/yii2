@@ -22,7 +22,6 @@ abstract class BaseMethod extends Object
 	 * @return string method name.
 	 */
 	abstract public function getName();
-
 	/**
 	 * Generates OAuth request signature.
 	 * @param string $baseString signature base string.
@@ -30,7 +29,6 @@ abstract class BaseMethod extends Object
 	 * @return string signature string.
 	 */
 	abstract public function generateSignature($baseString, $key);
-
 	/**
 	 * Verifies given OAuth request.
 	 * @param string $signature signature to be verified.

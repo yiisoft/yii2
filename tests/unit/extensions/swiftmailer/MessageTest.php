@@ -254,7 +254,7 @@ class MessageTest extends VendorTestCase
 		$message->setTo($this->testEmailReceiver);
 		$message->setFrom('someuser@somedomain.com');
 		$message->setSubject('Yii Swift Embed File Test');
-		$message->setHtmlBody('Embed image: <img src="' . $cid. '" alt="pic">');
+		$message->setHtmlBody('Embed image: <img src="' . $cid . '" alt="pic">');
 
 		$this->assertTrue($message->send());
 
@@ -280,7 +280,7 @@ class MessageTest extends VendorTestCase
 		$message->setTo($this->testEmailReceiver);
 		$message->setFrom('someuser@somedomain.com');
 		$message->setSubject('Yii Swift Embed File Test');
-		$message->setHtmlBody('Embed image: <img src="' . $cid. '" alt="pic">');
+		$message->setHtmlBody('Embed image: <img src="' . $cid . '" alt="pic">');
 
 		$this->assertTrue($message->send());
 

@@ -1,5 +1,7 @@
 <?php
+
 namespace yiiunit\framework\validators;
+
 use yii\validators\DefaultValueValidator;
 use yiiunit\TestCase;
 

@@ -81,7 +81,6 @@ class Choice extends Widget
 	 * Note: this value automatically set to 'false' at the first call of [[createProviderUrl()]]
 	 */
 	public $autoRender = true;
-
 	/**
 	 * @var array configuration for the external clients base authentication URL.
 	 */

@@ -107,9 +107,7 @@ class User extends Component
 	 * @var string the session variable name used to store the value of [[returnUrl]].
 	 */
 	public $returnUrlVar = '__returnUrl';
-
 	private $_access = [];
-
 
 	/**
 	 * Initializes the application component.

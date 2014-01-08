@@ -22,7 +22,7 @@
 		"swiftmailer/swiftmailer": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\swiftmailer\\": "" }
+		"psr-0": {"yii\\swiftmailer\\": ""}
 	},
 	"target-dir": "yii/swiftmailer"
 }

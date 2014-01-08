@@ -77,15 +77,15 @@ use yii\caching\Cache;
  *
  * ~~~
  * [
- *	 'components' => [
- *		 'db' => [
- *			 'class' => '\yii\db\Connection',
- *			 'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
- *			 'username' => 'root',
- *			 'password' => '',
- *			 'charset' => 'utf8',
- *		 ],
- *	 ],
+ * 	 'components' => [
+ * 		 'db' => [
+ * 			 'class' => '\yii\db\Connection',
+ * 			 'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
+ * 			 'username' => 'root',
+ * 			 'password' => '',
+ * 			 'charset' => 'utf8',
+ * 		 ],
+ * 	 ],
  * ]
  * ~~~
  *
@@ -257,7 +257,6 @@ class Connection extends Component
 	 * @var Schema the database schema
 	 */
 	private $_schema;
-
 
 	/**
 	 * Returns a value indicating whether the DB connection is established.

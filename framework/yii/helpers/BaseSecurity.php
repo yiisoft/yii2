@@ -27,17 +27,14 @@ class BaseSecurity
 	 * Uses AES, block size is 128-bit (16 bytes).
 	 */
 	const CRYPT_BLOCK_SIZE = 16;
-
 	/**
 	 * Uses AES-192, key size is 192-bit (24 bytes).
 	 */
 	const CRYPT_KEY_SIZE = 24;
-
 	/**
 	 * Uses SHA-256.
 	 */
 	const DERIVATION_HASH = 'sha256';
-
 	/**
 	 * Uses 1000 iterations.
 	 */
@@ -90,10 +87,10 @@ class BaseSecurity
 	}
 
 	/**
-	* Adds a padding to the given data (PKCS #7).
-	* @param string $data the data to pad
-	* @return string the padded data
-	*/
+	 * Adds a padding to the given data (PKCS #7).
+	 * @param string $data the data to pad
+	 * @return string the padded data
+	 */
 	protected static function addPadding($data)
 	{
 		$pad = self::CRYPT_BLOCK_SIZE - (StringHelper::byteLength($data) % self::CRYPT_BLOCK_SIZE);
@@ -101,10 +98,10 @@ class BaseSecurity
 	}
 
 	/**
-	* Strips the padding from the given data.
-	* @param string $data the data to trim
-	* @return string the trimmed data
-	*/
+	 * Strips the padding from the given data.
+	 * @param string $data the data to trim
+	 * @return string the trimmed data
+	 */
 	protected static function stripPadding($data)
 	{
 		$end = StringHelper::byteSubstr($data, -1, NULL);
@@ -117,18 +114,18 @@ class BaseSecurity
 	}
 
 	/**
-	* Derives a key from the given password (PBKDF2).
-	* @param string $password the source password
-	* @param string $salt the random salt
-	* @return string the derived key
-	*/
+	 * Derives a key from the given password (PBKDF2).
+	 * @param string $password the source password
+	 * @param string $salt the random salt
+	 * @return string the derived key
+	 */
 	protected static function deriveKey($password, $salt)
 	{
 		if (function_exists('hash_pbkdf2')) {
 			return hash_pbkdf2(self::DERIVATION_HASH, $password, $salt, self::DERIVATION_ITERATIONS, self::CRYPT_KEY_SIZE, true);
 		}
 		$hmac = hash_hmac(self::DERIVATION_HASH, $salt . pack('N', 1), $password, true);
-		$xorsum  = $hmac;
+		$xorsum = $hmac;
 		for ($i = 1; $i < self::DERIVATION_ITERATIONS; $i++) {
 			$hmac = hash_hmac(self::DERIVATION_HASH, $hmac, $password, true);
 			$xorsum ^= $hmac;

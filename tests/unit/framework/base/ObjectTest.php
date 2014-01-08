@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\base;
 
 use yii\base\Object;
@@ -140,7 +141,6 @@ class ObjectTest extends TestCase
 		$this->assertEquals('test text', $object->getText());
 	}
 }
-
 
 class NewObject extends Object
 {

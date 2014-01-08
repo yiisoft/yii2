@@ -14,7 +14,6 @@ namespace yii\debug\components\search\matches;
  */
 class Lower extends Base
 {
-
 	/**
 	 * Checks if the given value is the same as base one or has partial match with base one.
 	 * @param mixed $value

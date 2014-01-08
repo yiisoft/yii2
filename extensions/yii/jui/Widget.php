@@ -40,7 +40,6 @@ class Widget extends \yii\base\Widget
 	 * how to use the "Accordion" widget and the supported events (e.g. "create").
 	 */
 	public $clientEvents = [];
-
 	/**
 	 * @var array event names mapped to what should be specified in .on(
 	 * If empty, it is assumed that event passed to clientEvents is prefixed with widget name.
@@ -99,7 +98,7 @@ class Widget extends \yii\base\Widget
 				if (isset($this->clientEventMap[$event])) {
 					$eventName = $this->clientEventMap[$event];
 				} else {
-					$eventName = $name.$event;
+					$eventName = $name . $event;
 				}
 				$js[] = "jQuery('#$id').on('$eventName', $handler);";
 			}

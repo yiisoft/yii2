@@ -15,7 +15,6 @@ use yii\base\InvalidParamException;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
-
 	private $sql;
 
 	public function build($query)
@@ -70,7 +69,6 @@ FROM PAGINATION
 EOD;
 		return $sql;
 	}
-
 
 	/**
 	 * Builds a SQL statement for renaming a DB table.

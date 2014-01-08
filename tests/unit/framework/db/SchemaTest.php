@@ -32,7 +32,7 @@ class SchemaTest extends DatabaseTestCase
 
 		$tables = $schema->getTableSchemas();
 		$this->assertEquals(count($schema->getTableNames()), count($tables));
-		foreach($tables as $table) {
+		foreach ($tables as $table) {
 			$this->assertInstanceOf('yii\db\TableSchema', $table);
 		}
 	}
@@ -79,13 +79,13 @@ class SchemaTest extends DatabaseTestCase
 			[1337, \PDO::PARAM_INT],
 			[true, \PDO::PARAM_BOOL],
 			[false, \PDO::PARAM_BOOL],
-			[$fp=fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
+			[$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
 		];
 
 		/** @var Schema $schema */
 		$schema = $this->getConnection()->schema;
 
-		foreach($values as $value) {
+		foreach ($values as $value) {
 			$this->assertEquals($value[1], $schema->getPdoType($value[0]));
 		}
 		fclose($fp);

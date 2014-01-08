@@ -86,7 +86,6 @@ class LinkPager extends Widget
 	 */
 	public $lastPageLabel;
 
-
 	/**
 	 * Initializes the pager.
 	 */

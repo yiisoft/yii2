@@ -195,7 +195,6 @@ class Command extends \yii\db\Command
 	}
 
 	// Not Supported :
-
 	/**
 	 * @inheritdoc
 	 */

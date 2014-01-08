@@ -112,7 +112,7 @@ class NavBar extends Widget
 	protected function renderToggleButton()
 	{
 		$bar = Html::tag('span', '', ['class' => 'icon-bar']);
-		$screenReader = '<span class="sr-only">'.$this->screenReaderToggleText.'</span>';
+		$screenReader = '<span class="sr-only">' . $this->screenReaderToggleText . '</span>';
 		return Html::button("{$screenReader}\n{$bar}\n{$bar}\n{$bar}", [
 			'class' => 'navbar-toggle',
 			'data-toggle' => 'collapse',

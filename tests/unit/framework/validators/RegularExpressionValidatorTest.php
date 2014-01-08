@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\validators;
 
-
 use yii\validators\RegularExpressionValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
@@ -50,5 +49,4 @@ class RegularExpressionValidatorTest extends TestCase
 		$val = new RegularExpressionValidator();
 		$val->validate('abc');
 	}
-
 }

@@ -36,33 +36,28 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 	 * Otherwise, the [[pagination]] and [[sort]] mainly not work properly.
 	 */
 	public $id;
-
 	private $_sort;
 	private $_pagination;
 	private $_keys;
 	private $_models;
 	private $_totalCount;
 
-
 	/**
 	 * Prepares the data models that will be made available in the current page.
 	 * @return array the available data models
 	 */
 	abstract protected function prepareModels();
-
 	/**
 	 * Prepares the keys associated with the currently available data models.
 	 * @param array $models the available data models
 	 * @return array the keys
 	 */
 	abstract protected function prepareKeys($models);
-
 	/**
 	 * Returns a value indicating the total number of data models in this data provider.
 	 * @return integer total number of data models in this data provider.
 	 */
 	abstract protected function prepareTotalCount();
-
 	/**
 	 * Prepares the data models and keys.
 	 *

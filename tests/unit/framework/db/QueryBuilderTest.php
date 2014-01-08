@@ -117,7 +117,7 @@ class QueryBuilderTest extends DatabaseTestCase
 	{
 		$tableName = 'tbl_constraints';
 		$pkeyName = $tableName . "_pkey";
-		
+
 		// ADD
 		$qb = $this->getQueryBuilder();
 		$qb->db->createCommand()->addPrimaryKey($pkeyName, $tableName, ['id'])->execute();

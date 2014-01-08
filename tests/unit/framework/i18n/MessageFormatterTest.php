@@ -26,8 +26,8 @@ class MessageFormatterTest extends TestCase
 	{
 		return [
 			[
-				'{'.self::SUBJECT.'} is {'.self::N.', number}', // pattern
-				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				'{' . self::SUBJECT . '} is {' . self::N . ', number}', // pattern
+				self::SUBJECT_VALUE . ' is ' . self::N_VALUE, // expected
 				[ // params
 					self::N => self::N_VALUE,
 					self::SUBJECT => self::SUBJECT_VALUE,
@@ -35,8 +35,8 @@ class MessageFormatterTest extends TestCase
 			],
 
 			[
-				'{'.self::SUBJECT.'} is {'.self::N.', number, integer}', // pattern
-				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				'{' . self::SUBJECT . '} is {' . self::N . ', number, integer}', // pattern
+				self::SUBJECT_VALUE . ' is ' . self::N_VALUE, // expected
 				[ // params
 					self::N => self::N_VALUE,
 					self::SUBJECT => self::SUBJECT_VALUE,
@@ -92,7 +92,7 @@ _MSG_
 				[
 					'name' => 'Alexander',
 					'gender' => 'male',
-					 // following should not be replaced
+					// following should not be replaced
 					'he' => 'wtf',
 					'she' => 'wtf',
 					'it' => 'wtf',
@@ -219,24 +219,24 @@ _MSG_
 	{
 		return [
 			[
-				self::SUBJECT_VALUE.' is {0, number}', // pattern
-				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				self::SUBJECT_VALUE . ' is {0, number}', // pattern
+				self::SUBJECT_VALUE . ' is ' . self::N_VALUE, // expected
 				[ // params
 					0 => self::N_VALUE,
 				]
 			],
 
 			[
-				self::SUBJECT_VALUE.' is {'.self::N.', number}', // pattern
-				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				self::SUBJECT_VALUE . ' is {' . self::N . ', number}', // pattern
+				self::SUBJECT_VALUE . ' is ' . self::N_VALUE, // expected
 				[ // params
 					self::N => self::N_VALUE,
 				]
 			],
 
 			[
-				self::SUBJECT_VALUE.' is {'.self::N.', number, integer}', // pattern
-				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				self::SUBJECT_VALUE . ' is {' . self::N . ', number, integer}', // pattern
+				self::SUBJECT_VALUE . ' is ' . self::N_VALUE, // expected
 				[ // params
 					self::N => self::N_VALUE,
 				]
@@ -317,10 +317,10 @@ _MSG_
 
 	public function testInsufficientArguments()
 	{
-		$expected = '{'.self::SUBJECT.'} is '.self::N_VALUE;
+		$expected = '{' . self::SUBJECT . '} is ' . self::N_VALUE;
 
 		$formatter = new MessageFormatter();
-		$result = $formatter->format('{'.self::SUBJECT.'} is {'.self::N.', number}', [
+		$result = $formatter->format('{' . self::SUBJECT . '} is {' . self::N . ', number}', [
 			self::N => self::N_VALUE,
 		], 'en-US');
 
@@ -329,7 +329,7 @@ _MSG_
 
 	public function testNoParams()
 	{
-		$pattern = '{'.self::SUBJECT.'} is '.self::N;
+		$pattern = '{' . self::SUBJECT . '} is ' . self::N;
 		$formatter = new MessageFormatter();
 		$result = $formatter->format($pattern, [], 'en-US');
 		$this->assertEquals($pattern, $result, $formatter->getErrorMessage());

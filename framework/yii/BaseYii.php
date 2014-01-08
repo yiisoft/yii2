@@ -4,6 +4,7 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
 namespace yii;
 
 use yii\base\InvalidConfigException;
@@ -45,7 +46,6 @@ defined('YII_ENV_TEST') or define('YII_ENV_TEST', YII_ENV === 'test');
  * This constant defines whether error handling should be enabled. Defaults to true.
  */
 defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
-
 
 /**
  * BaseYii is the core helper class for the Yii framework.
@@ -97,7 +97,6 @@ class BaseYii
 	 * @see createObject()
 	 */
 	public static $objectConfig = [];
-
 
 	/**
 	 * @return string the version of Yii framework
@@ -505,10 +504,10 @@ class BaseYii
 	public static function t($category, $message, $params = [], $language = null)
 	{
 		if (static::$app !== null) {
-			return static::$app->getI18n()->translate($category, $message, $params, $language ?: static::$app->language);
+			return static::$app->getI18n()->translate($category, $message, $params, $language ? : static::$app->language);
 		} else {
 			$p = [];
-			foreach ((array) $params as $name => $value) {
+			foreach ((array)$params as $name => $value) {
 				$p['{' . $name . '}'] = $value;
 			}
 			return ($p === []) ? $message : strtr($message, $p);

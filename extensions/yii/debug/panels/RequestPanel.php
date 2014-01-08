@@ -88,5 +88,4 @@ class RequestPanel extends Panel
 			'SESSION' => empty($_SESSION) ? [] : $_SESSION,
 		];
 	}
-
 }

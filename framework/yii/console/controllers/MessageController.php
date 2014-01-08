@@ -35,7 +35,6 @@ class MessageController extends Controller
 	 */
 	public $defaultAction = 'extract';
 
-
 	/**
 	 * Creates a configuration file for the "extract" command.
 	 *

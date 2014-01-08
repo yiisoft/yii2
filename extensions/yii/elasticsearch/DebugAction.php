@@ -5,7 +5,6 @@
 
 namespace yii\elasticsearch;
 
-
 use yii\base\Action;
 use yii\base\NotSupportedException;
 use yii\debug\Panel;
@@ -21,7 +20,7 @@ class DebugAction extends Action
 	 */
 	public $db;
 	/**
-     * @var Panel
+	 * @var Panel
 	 */
 	public $panel;
 

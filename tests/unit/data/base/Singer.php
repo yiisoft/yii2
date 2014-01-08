@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\data\base;
 
 use yii\base\Model;

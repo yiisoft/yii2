@@ -7,7 +7,6 @@ use yii\validators\DateValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
-
 class DateValidatorTest extends TestCase
 {
 	protected function setUp()
@@ -66,6 +65,5 @@ class DateValidatorTest extends TestCase
 		$model = FakedValidationModel::createWithAttributes(['attr_date' => []]);
 		$val->validateAttribute($model, 'attr_date');
 		$this->assertTrue($model->hasErrors('attr_date'));
-
 	}
 }

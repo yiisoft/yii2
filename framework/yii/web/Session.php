@@ -571,7 +571,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 				if ($count) {
 					unset($counters[$key], $_SESSION[$key]);
 				} else {
-					$counters[$key]++;
+					$counters[$key] ++;
 				}
 			}
 			$_SESSION[$this->flashVar] = $counters;

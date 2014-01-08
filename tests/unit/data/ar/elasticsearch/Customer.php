@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\data\ar\elasticsearch;
 
 use yiiunit\extensions\elasticsearch\ActiveRecordTest;

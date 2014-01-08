@@ -82,8 +82,8 @@ class QueryBuilder extends \yii\base\Object
 	 *
 	 * ~~~
 	 * $sql = $queryBuilder->insert('tbl_user', [
-	 *	 'name' => 'Sam',
-	 *	 'age' => 30,
+	 * 	 'name' => 'Sam',
+	 * 	 'age' => 30,
 	 * ], $params);
 	 * ~~~
 	 *
@@ -255,9 +255,9 @@ class QueryBuilder extends \yii\base\Object
 	 *
 	 * ~~~
 	 * $sql = $queryBuilder->createTable('tbl_user', [
-	 *	 'id' => 'pk',
-	 *	 'name' => 'string',
-	 *	 'age' => 'integer',
+	 * 	 'id' => 'pk',
+	 * 	 'name' => 'string',
+	 * 	 'age' => 'integer',
 	 * ]);
 	 * ~~~
 	 *
@@ -776,7 +776,6 @@ class QueryBuilder extends \yii\base\Object
 		return is_array($columns) ? implode(', ', $columns) : $columns;
 	}
 
-
 	/**
 	 * Parses the condition specification and generates the corresponding SQL expression.
 	 * @param string|array $condition the condition specification. Please refer to [[Query::where()]]
@@ -1040,7 +1039,7 @@ class QueryBuilder extends \yii\base\Object
 			throw new InvalidParamException("Operator '$operator' requires two operands.");
 		}
 
-		$escape = isset($operands[2]) ? $operands[2] : ['%'=>'\%', '_'=>'\_', '\\'=>'\\\\'];
+		$escape = isset($operands[2]) ? $operands[2] : ['%' => '\%', '_' => '\_', '\\' => '\\\\'];
 		unset($operands[2]);
 
 		list($column, $values) = $operands;

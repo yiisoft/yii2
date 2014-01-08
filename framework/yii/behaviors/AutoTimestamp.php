@@ -56,7 +56,6 @@ class AutoTimestamp extends Behavior
 	 */
 	public $timestamp;
 
-
 	/**
 	 * Declares event handlers for the [[owner]]'s events.
 	 * @return array events (array keys) and the corresponding event handler methods (array values).

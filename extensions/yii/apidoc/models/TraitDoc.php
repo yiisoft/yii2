@@ -18,7 +18,6 @@ class TraitDoc extends TypeDoc
 	// classes using the trait
 	// will be set by Context::updateReferences()
 	public $usedBy = [];
-
 	public $traits = [];
 
 	/**
@@ -33,7 +32,7 @@ class TraitDoc extends TypeDoc
 			return;
 		}
 
-		foreach($reflector->getTraits() as $trait) {
+		foreach ($reflector->getTraits() as $trait) {
 			$this->traits[] = ltrim($trait, '\\');
 		}
 	}

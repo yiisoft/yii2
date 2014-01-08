@@ -106,8 +106,8 @@ class ActiveRecordTest extends MongoDbTestCase
 		// find count, sum, average, min, max, distinct
 		$this->assertEquals(10, CustomerFile::find()->count());
 		$this->assertEquals(1, CustomerFile::find()->where(['status' => 2])->count());
-		$this->assertEquals((1+10)/2*10, CustomerFile::find()->sum('status'));
-		$this->assertEquals((1+10)/2, CustomerFile::find()->average('status'));
+		$this->assertEquals((1 + 10) / 2 * 10, CustomerFile::find()->sum('status'));
+		$this->assertEquals((1 + 10) / 2, CustomerFile::find()->average('status'));
 		$this->assertEquals(1, CustomerFile::find()->min('status'));
 		$this->assertEquals(10, CustomerFile::find()->max('status'));
 		$this->assertEquals(range(1, 10), CustomerFile::find()->distinct('status'));

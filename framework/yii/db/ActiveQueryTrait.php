@@ -6,6 +6,7 @@
  */
 
 namespace yii\db;
+
 use yii\base\InvalidCallException;
 
 /**
@@ -30,7 +31,6 @@ trait ActiveQueryTrait
 	 * of [[modelClass]] will be created to represent each record.
 	 */
 	public $asArray;
-
 
 	/**
 	 * PHP magic method.

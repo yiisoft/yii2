@@ -601,12 +601,12 @@ class BaseConsole
 			}
 
 			// fallback to tput, which may not be updated on terminal resize
-			if (($width = (int) exec('tput cols 2>&1')) > 0 && ($height = (int) exec('tput lines 2>&1')) > 0) {
+			if (($width = (int)exec('tput cols 2>&1')) > 0 && ($height = (int)exec('tput lines 2>&1')) > 0) {
 				return $size = [$width, $height];
 			}
 
 			// fallback to ENV variables, which may not be updated on terminal resize
-			if (($width = (int) getenv('COLUMNS')) > 0 && ($height = (int) getenv('LINES')) > 0) {
+			if (($width = (int)getenv('COLUMNS')) > 0 && ($height = (int)getenv('LINES')) > 0) {
 				return $size = [$width, $height];
 			}
 		}
@@ -701,15 +701,15 @@ class BaseConsole
 	{
 		$options = ArrayHelper::merge(
 			[
-				'required'  => false,
-				'default'   => null,
-				'pattern'   => null,
+				'required' => false,
+				'default' => null,
+				'pattern' => null,
 				'validator' => null,
-				'error'     => 'Invalid input.',
-			],
+				'error' => 'Invalid input.',
+			], 
 			$options
 		);
-		$error   = null;
+		$error = null;
 
 		top:
 		$input = $options['default']

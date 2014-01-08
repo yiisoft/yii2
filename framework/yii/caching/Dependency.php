@@ -30,7 +30,6 @@ abstract class Dependency extends \yii\base\Object
 	 * page without an overhead of re-evaluating dependency data each time. Defaults to false.
 	 */
 	public $reusable = false;
-
 	/**
 	 * @var array static storage of cached data for reusable dependencies.
 	 */
@@ -39,7 +38,6 @@ abstract class Dependency extends \yii\base\Object
 	 * @var string a unique hash value for this cache dependency.
 	 */
 	private $_hash;
-
 
 	/**
 	 * Evaluates the dependency by generating and saving the data related with dependency.

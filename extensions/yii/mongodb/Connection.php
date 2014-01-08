@@ -54,12 +54,12 @@ use Yii;
  *
  * ~~~
  * [
- *	 'components' => [
- *		 'mongodb' => [
- *			 'class' => '\yii\mongodb\Connection',
- *			 'dsn' => 'mongodb://developer:password@localhost:27017/mydatabase',
- *		 ],
- *	 ],
+ * 	 'components' => [
+ * 		 'mongodb' => [
+ * 			 'class' => '\yii\mongodb\Connection',
+ * 			 'dsn' => 'mongodb://developer:password@localhost:27017/mydatabase',
+ * 		 ],
+ * 	 ],
  * ]
  * ~~~
  *
@@ -236,7 +236,7 @@ class Connection extends Component
 				Yii::endProfile($token, __METHOD__);
 			} catch (\Exception $e) {
 				Yii::endProfile($token, __METHOD__);
-				throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+				throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 			}
 		}
 	}

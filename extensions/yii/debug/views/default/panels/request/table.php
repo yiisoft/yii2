@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Html;
 
 /**
@@ -12,7 +13,7 @@ use yii\helpers\Html;
 
 	<p>Empty.</p>
 
-<?php else:	?>
+<?php else: ?>
 
 	<table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
 		<thead>
@@ -22,12 +23,12 @@ use yii\helpers\Html;
 			</tr>
 		</thead>
 		<tbody>
-		<?php foreach($values as $name => $value): ?>
-			<tr>
-				<th style="width: 200px;"><?= Html::encode($name) ?></th>
-				<td><?= htmlspecialchars(var_export($value, true), ENT_QUOTES|ENT_SUBSTITUTE, \Yii::$app->charset, true) ?></td>
-			</tr>
-		<?php endforeach; ?>
+			<?php foreach ($values as $name => $value): ?>
+				<tr>
+					<th style="width: 200px;"><?= Html::encode($name) ?></th>
+					<td><?= htmlspecialchars(var_export($value, true), ENT_QUOTES | ENT_SUBSTITUTE, \Yii::$app->charset, true) ?></td>
+				</tr>
+			<?php endforeach; ?>
 		</tbody>
 	</table>
 

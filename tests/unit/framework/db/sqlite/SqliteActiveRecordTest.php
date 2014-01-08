@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\db\sqlite;
 
 use yiiunit\data\ar\Customer;

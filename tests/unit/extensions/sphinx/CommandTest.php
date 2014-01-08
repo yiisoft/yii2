@@ -222,7 +222,7 @@ class CommandTest extends SphinxTestCase
 		$this->assertEquals(1, count($rows), 'No row inserted!');
 
 		$newTypeId = 5;
-		$command = $db->createCommand()->replace('yii2_test_rt_index',[
+		$command = $db->createCommand()->replace('yii2_test_rt_index', [
 			'type_id' => $newTypeId,
 			'category' => [3, 4],
 			'id' => 1,
@@ -272,7 +272,7 @@ class CommandTest extends SphinxTestCase
 		$this->assertEquals(2, count($rows), 'No rows inserted!');
 
 		$newTypeId = 5;
-		$command = $db->createCommand()->replace('yii2_test_rt_index',[
+		$command = $db->createCommand()->replace('yii2_test_rt_index', [
 			'type_id' => $newTypeId,
 			'id' => 1,
 		]);

@@ -25,59 +25,50 @@ trait ActiveRecordTestTrait
 	 * @return mixed
 	 */
 	public abstract function callCustomerFind($q = null);
-
 	/**
 	 * This method should call Order::find($q)
 	 * @param $q
 	 * @return mixed
 	 */
 	public abstract function callOrderFind($q = null);
-
 	/**
 	 * This method should call OrderItem::find($q)
 	 * @param $q
 	 * @return mixed
 	 */
 	public abstract function callOrderItemFind($q = null);
-
 	/**
 	 * This method should call Item::find($q)
 	 * @param $q
 	 * @return mixed
 	 */
 	public abstract function callItemFind($q = null);
-
 	/**
 	 * This method should return the classname of Customer class
 	 * @return string
 	 */
 	public abstract function getCustomerClass();
-
 	/**
 	 * This method should return the classname of Order class
 	 * @return string
 	 */
 	public abstract function getOrderClass();
-
 	/**
 	 * This method should return the classname of OrderItem class
 	 * @return string
 	 */
 	public abstract function getOrderItemClass();
-
 	/**
 	 * This method should return the classname of Item class
 	 * @return string
 	 */
 	public abstract function getItemClass();
-
 	/**
 	 * can be overridden to do things after save()
 	 */
 	public function afterSave()
 	{
 	}
-
 
 	public function testFind()
 	{
@@ -342,7 +333,6 @@ trait ActiveRecordTestTrait
 
 		$customer = $this->callCustomerFind()->offset(3)->one();
 		$this->assertNull($customer);
-
 	}
 
 	public function testFindComplexCondition()
@@ -351,11 +341,11 @@ trait ActiveRecordTestTrait
 		$this->assertEquals(2, $this->callCustomerFind()->where(['OR', ['name' => 'user1'], ['name' => 'user2']])->count());
 		$this->assertEquals(2, count($this->callCustomerFind()->where(['OR', ['name' => 'user1'], ['name' => 'user2']])->all()));
 
-		$this->assertEquals(2, $this->callCustomerFind()->where(['name' => ['user1','user2']])->count());
-		$this->assertEquals(2, count($this->callCustomerFind()->where(['name' => ['user1','user2']])->all()));
+		$this->assertEquals(2, $this->callCustomerFind()->where(['name' => ['user1', 'user2']])->count());
+		$this->assertEquals(2, count($this->callCustomerFind()->where(['name' => ['user1', 'user2']])->all()));
 
-		$this->assertEquals(1, $this->callCustomerFind()->where(['AND', ['name' => ['user2','user3']], ['BETWEEN', 'status', 2, 4]])->count());
-		$this->assertEquals(1, count($this->callCustomerFind()->where(['AND', ['name' => ['user2','user3']], ['BETWEEN', 'status', 2, 4]])->all()));
+		$this->assertEquals(1, $this->callCustomerFind()->where(['AND', ['name' => ['user2', 'user3']], ['BETWEEN', 'status', 2, 4]])->count());
+		$this->assertEquals(1, count($this->callCustomerFind()->where(['AND', ['name' => ['user2', 'user3']], ['BETWEEN', 'status', 2, 4]])->all()));
 	}
 
 	public function testFindNullValues()
@@ -379,9 +369,9 @@ trait ActiveRecordTestTrait
 		$this->assertTrue($this->callCustomerFind()->where(['name' => 'user1'])->exists());
 		$this->assertFalse($this->callCustomerFind()->where(['name' => 'user5'])->exists());
 
-		$this->assertTrue($this->callCustomerFind()->where(['id' => [2,3]])->exists());
-		$this->assertTrue($this->callCustomerFind()->where(['id' => [2,3]])->offset(1)->exists());
-		$this->assertFalse($this->callCustomerFind()->where(['id' => [2,3]])->offset(2)->exists());
+		$this->assertTrue($this->callCustomerFind()->where(['id' => [2, 3]])->exists());
+		$this->assertTrue($this->callCustomerFind()->where(['id' => [2, 3]])->offset(1)->exists());
+		$this->assertFalse($this->callCustomerFind()->where(['id' => [2, 3]])->offset(2)->exists());
 	}
 
 	public function testFindLazy()

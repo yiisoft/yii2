@@ -8,7 +8,7 @@ namespace yii\caching;
  */
 function time()
 {
-	return \yiiunit\framework\caching\CacheTestCase::$time ?: \time();
+	return \yiiunit\framework\caching\CacheTestCase::$time ? : \time();
 }
 
 namespace yiiunit\framework\caching;

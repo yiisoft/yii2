@@ -85,16 +85,16 @@ class YiiRequirementChecker
 		}
 		foreach ($requirements as $key => $rawRequirement) {
 			$requirement = $this->normalizeRequirement($rawRequirement, $key);
-			$this->result['summary']['total']++;
+			$this->result['summary']['total'] ++;
 			if (!$requirement['condition']) {
 				if ($requirement['mandatory']) {
 					$requirement['error'] = true;
 					$requirement['warning'] = true;
-					$this->result['summary']['errors']++;
+					$this->result['summary']['errors'] ++;
 				} else {
 					$requirement['error'] = false;
 					$requirement['warning'] = true;
-					$this->result['summary']['warnings']++;
+					$this->result['summary']['warnings'] ++;
 				}
 			} else {
 				$requirement['error'] = false;
@@ -249,19 +249,19 @@ class YiiRequirementChecker
 		switch (strtolower($sizeUnit)) {
 			case 'kb':
 			case 'k': {
-				return $size * 1024;
-			}
+					return $size * 1024;
+				}
 			case 'mb':
 			case 'm': {
-				return $size * 1024 * 1024;
-			}
+					return $size * 1024 * 1024;
+				}
 			case 'gb':
 			case 'g': {
-				return $size * 1024 * 1024 * 1024;
-			}
+					return $size * 1024 * 1024 * 1024;
+				}
 			default: {
-				return 0;
-			}
+					return 0;
+				}
 		}
 	}
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace common\models;
 
 use yii\db\ActiveRecord;
@@ -29,7 +30,6 @@ class User extends ActiveRecord implements IdentityInterface
 
 	const STATUS_DELETED = 0;
 	const STATUS_ACTIVE = 10;
-
 	const ROLE_USER = 10;
 
 	public function behaviors()
@@ -106,20 +106,16 @@ class User extends ActiveRecord implements IdentityInterface
 		return [
 			['status', 'default', 'value' => self::STATUS_ACTIVE],
 			['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
-
 			['role', 'default', 'value' => self::ROLE_USER],
 			['role', 'in', 'range' => [self::ROLE_USER]],
-
 			['username', 'filter', 'filter' => 'trim'],
 			['username', 'required'],
 			['username', 'string', 'min' => 2, 'max' => 255],
-
 			['email', 'filter', 'filter' => 'trim'],
 			['email', 'required'],
 			['email', 'email'],
 			['email', 'unique', 'message' => 'This email address has already been taken.', 'on' => 'signup'],
 			['email', 'exist', 'message' => 'There is no user with such email.', 'on' => 'requestPasswordResetToken'],
-
 			['password', 'required'],
 			['password', 'string', 'min' => 6],
 		];

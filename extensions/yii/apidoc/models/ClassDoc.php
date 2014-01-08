@@ -16,15 +16,12 @@ namespace yii\apidoc\models;
 class ClassDoc extends TypeDoc
 {
 	public $parentClass;
-
 	public $isAbstract;
 	public $isFinal;
-
 	public $interfaces = [];
 	public $traits = [];
 	// will be set by Context::updateReferences()
 	public $subclasses = [];
-
 	/**
 	 * @var EventDoc[]
 	 */
@@ -34,18 +31,17 @@ class ClassDoc extends TypeDoc
 	 */
 	public $constants = [];
 
-
 	public function findSubject($subjectName)
 	{
 		if (($subject = parent::findSubject($subjectName)) !== null) {
 			return $subject;
 		}
-		foreach($this->events as $name => $event) {
+		foreach ($this->events as $name => $event) {
 			if ($subjectName == $name) {
 				return $event;
 			}
 		}
-		foreach($this->constants as $name => $constant) {
+		foreach ($this->constants as $name => $constant) {
 			if ($subjectName == $name) {
 				return $constant;
 			}
@@ -59,7 +55,7 @@ class ClassDoc extends TypeDoc
 	public function getNativeEvents()
 	{
 		$events = [];
-		foreach($this->events as $name => $event) {
+		foreach ($this->events as $name => $event) {
 			if ($event->definedBy != $this->name) {
 				continue;
 			}
@@ -87,13 +83,13 @@ class ClassDoc extends TypeDoc
 		$this->isAbstract = $reflector->isAbstract();
 		$this->isFinal = $reflector->isFinal();
 
-		foreach($reflector->getInterfaces() as $interface) {
+		foreach ($reflector->getInterfaces() as $interface) {
 			$this->interfaces[] = ltrim($interface, '\\');
 		}
-		foreach($reflector->getTraits() as $trait) {
+		foreach ($reflector->getTraits() as $trait) {
 			$this->traits[] = ltrim($trait, '\\');
 		}
-		foreach($reflector->getConstants() as $constantReflector) {
+		foreach ($reflector->getConstants() as $constantReflector) {
 			$docblock = $constantReflector->getDocBlock();
 			if ($docblock !== null && count($docblock->getTagsByName('event')) > 0) {
 				$event = new EventDoc($constantReflector);

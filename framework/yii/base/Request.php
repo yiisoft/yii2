@@ -26,7 +26,6 @@ abstract class Request extends Component
 	 * @return array the first element is the route, and the second is the associated parameters.
 	 */
 	abstract public function resolve();
-
 	/**
 	 * Returns a value indicating whether the current request is made via command line
 	 * @return boolean the value indicating whether the current request is made via console

@@ -22,7 +22,7 @@
 		"smarty/smarty": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\smarty\\": "" }
+		"psr-0": {"yii\\smarty\\": ""}
 	},
 	"target-dir": "yii/smarty"
 }

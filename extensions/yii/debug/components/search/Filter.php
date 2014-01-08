@@ -6,7 +6,6 @@ use yii\base\Component;
 
 class Filter extends Component
 {
-
 	/**
 	 * @var array rules for matching filters in the way: [:fieldName => [rule1, rule2,..]]
 	 */
@@ -62,7 +61,6 @@ class Filter extends Component
 						$matched = false;
 					}
 				}
-
 			}
 		}
 

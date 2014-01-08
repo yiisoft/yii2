@@ -52,7 +52,6 @@ class FileTarget extends Target
 	 */
 	public $dirMode = 0775;
 
-
 	/**
 	 * Initializes the route.
 	 * This method is invoked after the route is created by the route manager.

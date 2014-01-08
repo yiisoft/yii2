@@ -148,7 +148,6 @@ class Menu extends Widget
 	 */
 	public $params;
 
-
 	/**
 	 * Renders the menu.
 	 */

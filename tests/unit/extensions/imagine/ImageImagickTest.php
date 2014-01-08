@@ -10,7 +10,6 @@ use yii\imagine\Image;
  */
 class ImageImagickTest extends AbstractImageTest
 {
-
 	protected function setUp()
 	{
 		if (!class_exists('Imagick')) {
@@ -26,5 +25,4 @@ class ImageImagickTest extends AbstractImageTest
 	{
 		return true;
 	}
-
 }

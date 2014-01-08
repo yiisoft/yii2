@@ -142,7 +142,7 @@ class Query extends Component implements QueryInterface
 			return $result;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -224,7 +224,7 @@ class Query extends Component implements QueryInterface
 			return $result;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 

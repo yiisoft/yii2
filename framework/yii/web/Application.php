@@ -53,7 +53,6 @@ class Application extends \yii\base\Application
 	 */
 	public $controller;
 
-
 	/**
 	 * Handles the specified request.
 	 * @param Request $request the request to be handled

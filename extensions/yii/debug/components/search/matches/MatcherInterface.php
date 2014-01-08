@@ -15,11 +15,9 @@ namespace yii\debug\components\search\matches;
  */
 interface MatcherInterface
 {
-
 	/**
 	 * Check if the value is correct according current matcher.
 	 * @param mixed $value
 	 */
 	public function check($value);
-
 }

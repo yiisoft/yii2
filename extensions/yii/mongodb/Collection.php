@@ -129,7 +129,7 @@ class Collection extends Object
 			return true;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -168,7 +168,7 @@ class Collection extends Object
 			return true;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -205,7 +205,7 @@ class Collection extends Object
 			return true;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -242,7 +242,7 @@ class Collection extends Object
 			return $result['nIndexesWas'];
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -278,7 +278,7 @@ class Collection extends Object
 			return is_array($data) ? $data['_id'] : $data->_id;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -301,7 +301,7 @@ class Collection extends Object
 			return $rows;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -339,7 +339,7 @@ class Collection extends Object
 			}
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -362,7 +362,7 @@ class Collection extends Object
 			return is_array($data) ? $data['_id'] : $data->_id;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -391,7 +391,7 @@ class Collection extends Object
 			}
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -414,7 +414,7 @@ class Collection extends Object
 			return $result;
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -440,7 +440,7 @@ class Collection extends Object
 			return $result['result'];
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -463,14 +463,14 @@ class Collection extends Object
 	public function group($keys, $initial, $reduce, $options = [])
 	{
 		if (!($reduce instanceof \MongoCode)) {
-			$reduce = new \MongoCode((string)$reduce);
+			$reduce = new \MongoCode((string) $reduce);
 		}
 		if (array_key_exists('condition', $options)) {
 			$options['condition'] = $this->buildCondition($options['condition']);
 		}
 		if (array_key_exists('finalize', $options)) {
 			if (!($options['finalize'] instanceof \MongoCode)) {
-				$options['finalize'] = new \MongoCode((string)$options['finalize']);
+				$options['finalize'] = new \MongoCode((string) $options['finalize']);
 			}
 		}
 		$token = $this->composeLogToken('group', [$keys, $initial, $reduce, $options]);
@@ -493,7 +493,7 @@ class Collection extends Object
 			}
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -536,10 +536,10 @@ class Collection extends Object
 	public function mapReduce($map, $reduce, $out, $condition = [], $options = [])
 	{
 		if (!($map instanceof \MongoCode)) {
-			$map = new \MongoCode((string)$map);
+			$map = new \MongoCode((string) $map);
 		}
 		if (!($reduce instanceof \MongoCode)) {
-			$reduce = new \MongoCode((string)$reduce);
+			$reduce = new \MongoCode((string) $reduce);
 		}
 		$command = [
 			'mapReduce' => $this->getName(),
@@ -552,7 +552,7 @@ class Collection extends Object
 		}
 		if (array_key_exists('finalize', $options)) {
 			if (!($options['finalize'] instanceof \MongoCode)) {
-				$options['finalize'] = new \MongoCode((string)$options['finalize']);
+				$options['finalize'] = new \MongoCode((string) $options['finalize']);
 			}
 		}
 		if (!empty($options)) {
@@ -569,7 +569,7 @@ class Collection extends Object
 			return $result['result'];
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -586,7 +586,8 @@ class Collection extends Object
 	 * @return array the highest scoring documents, in descending order by score.
 	 * @throws Exception on failure.
 	 */
-	public function fullTextSearch($search, $condition = [], $fields = [], $options = []) {
+	public function fullTextSearch($search, $condition = [], $fields = [], $options = [])
+	{
 		$command = [
 			'search' => $search
 		];
@@ -610,7 +611,7 @@ class Collection extends Object
 			return $result['results'];
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
-			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+			throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
 		}
 	}
 
@@ -629,9 +630,9 @@ class Collection extends Object
 			}
 			if (isset($errorMessage)) {
 				if (array_key_exists('code', $result)) {
-					$errorCode = (int)$result['code'];
+					$errorCode = (int) $result['code'];
 				} elseif (array_key_exists('ok', $result)) {
-					$errorCode = (int)$result['ok'];
+					$errorCode = (int) $result['ok'];
 				} else {
 					$errorCode = 0;
 				}
@@ -689,7 +690,7 @@ class Collection extends Object
 			if ($rawId instanceof \MongoId) {
 				return $rawId;
 			} else {
-				$rawId = (string)$rawId;
+				$rawId = (string) $rawId;
 			}
 		}
 		return new \MongoId($rawId);
@@ -847,7 +848,7 @@ class Collection extends Object
 
 		list($column, $values) = $operands;
 
-		$values = (array)$values;
+		$values = (array) $values;
 
 		if (!is_array($column)) {
 			$columns = [$column];

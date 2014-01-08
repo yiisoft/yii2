@@ -82,7 +82,7 @@ class AssetConverter extends Component implements AssetConverterInterface
 		$proc = proc_open($command, $descriptor, $pipes, $basePath);
 		$stdout = stream_get_contents($pipes[1]);
 		$stderr = stream_get_contents($pipes[2]);
-		foreach($pipes as $pipe) {
+		foreach ($pipes as $pipe) {
 			fclose($pipe);
 		}
 		$status = proc_close($proc);

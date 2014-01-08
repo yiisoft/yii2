@@ -17,11 +17,8 @@ class MethodDoc extends FunctionDoc
 {
 	public $isAbstract;
 	public $isFinal;
-
 	public $isStatic;
-
 	public $visibility;
-
 	// will be set by creating class
 	public $definedBy;
 

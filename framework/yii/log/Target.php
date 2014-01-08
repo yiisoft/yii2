@@ -73,7 +73,6 @@ abstract class Target extends Component
 	 * Please refer to [[Logger::messages]] for the details about the message structure.
 	 */
 	public $messages = [];
-
 	private $_levels = 0;
 
 	/**
@@ -81,7 +80,6 @@ abstract class Target extends Component
 	 * Child classes must implement this method.
 	 */
 	abstract public function export();
-
 	/**
 	 * Processes the given log messages.
 	 * This method will filter the given messages with [[levels]] and [[categories]].

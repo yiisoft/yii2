@@ -17,7 +17,6 @@ namespace yii\base;
  */
 class MailEvent extends Event
 {
-
 	/**
 	 * @var \yii\mail\MessageInterface mail message being send
 	 */

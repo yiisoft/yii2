@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\db\cubrid;
 
 use yiiunit\framework\db\ConnectionTest;

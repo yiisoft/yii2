@@ -43,22 +43,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
 //	{
 //		return '';
 //	}
-
 //	public function delete($table, $condition, &$params)
 //	{
 //		return '';
 //	}
-
 //	public function buildLimit($limit, $offset)
 //	{
 //		return '';
 //	}
-
 //	public function resetSequence($table, $value = null)
 //	{
 //		return '';
 //	}
-
 	/**
 	 * Builds a SQL statement for renaming a DB table.
 	 * @param string $table the table to be renamed. The name will be properly quoted by the method.
@@ -93,8 +89,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function alterColumn($table, $column, $type)
 	{
-		$type=$this->getColumnType($type);
-		$sql='ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
+		$type = $this->getColumnType($type);
+		$sql = 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
 			. $this->db->quoteColumnName($column) . ' '
 			. $this->getColumnType($type);
 		return $sql;

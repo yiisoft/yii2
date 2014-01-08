@@ -92,7 +92,6 @@ class Tabs extends Widget
 	 */
 	public $encodeLabels = true;
 
-
 	/**
 	 * Renders the widget.
 	 */

@@ -74,8 +74,6 @@ abstract class Schema extends Object
 	 * @return TableSchema DBMS-dependent table metadata, null if the table does not exist.
 	 */
 	abstract protected function loadTableSchema($name);
-
-
 	/**
 	 * Obtains the metadata for the named table.
 	 * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
@@ -253,8 +251,8 @@ abstract class Schema extends Object
 	 *
 	 * ~~~
 	 * [
-	 *	 'IndexName1' => ['col1' [, ...]],
-	 *	 'IndexName2' => ['col2' [, ...]],
+	 * 	 'IndexName1' => ['col1' [, ...]],
+	 * 	 'IndexName2' => ['col2' [, ...]],
 	 * ]
 	 * ~~~
 	 *
@@ -328,7 +326,6 @@ abstract class Schema extends Object
 			$parts[$i] = $this->quoteSimpleTableName($part);
 		}
 		return implode('.', $parts);
-
 	}
 
 	/**

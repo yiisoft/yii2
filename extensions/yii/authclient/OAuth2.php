@@ -103,9 +103,9 @@ class OAuth2 extends BaseOAuth
 		$curlOptions = [];
 		switch ($method) {
 			case 'GET': {
-				$curlOptions[CURLOPT_URL] = $this->composeUrl($url, $params);
-				break;
-			}
+					$curlOptions[CURLOPT_URL] = $this->composeUrl($url, $params);
+					break;
+				}
 			case 'POST': {
 				$curlOptions[CURLOPT_POST] = true;
 				$curlOptions[CURLOPT_HTTPHEADER] = ['Content-type: application/x-www-form-urlencoded'];

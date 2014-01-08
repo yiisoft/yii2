@@ -106,11 +106,13 @@ class TestMessage extends BaseMessage
 
 	public function setSubject($subject) {}
 
-	public function setTextBody($text) {
+	public function setTextBody($text)
+	{
 		$this->text = $text;
 	}
 
-	public function setHtmlBody($html) {
+	public function setHtmlBody($html)
+	{
 		$this->html = $html;
 	}
 

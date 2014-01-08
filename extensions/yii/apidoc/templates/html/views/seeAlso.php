@@ -1,12 +1,10 @@
 <?php
-
 /**
  * @var yii\apidoc\models\BaseDoc $object
  * @var yii\web\View $this
  */
-
 $see = [];
-foreach($object->tags as $tag) {
+foreach ($object->tags as $tag) {
 	/** @var $tag phpDocumentor\Reflection\DocBlock\Tag\SeeTag */
 	if (get_class($tag) == 'phpDocumentor\Reflection\DocBlock\Tag\SeeTag') {
 		$ref = $tag->getReference();
@@ -22,10 +20,10 @@ if (empty($see)) {
 }
 ?>
 <div class="SeeAlso">
-<h4>See Also</h4>
-<ul>
-<?php foreach($see as $ref): ?>
-	<li><?= \yii\apidoc\helpers\Markdown::process($ref, $this->context->context->getType($object->definedBy)) ?></li>
-<?php endforeach; ?>
-</ul>
+	<h4>See Also</h4>
+	<ul>
+		<?php foreach ($see as $ref): ?>
+			<li><?= \yii\apidoc\helpers\Markdown::process($ref, $this->context->context->getType($object->definedBy)) ?></li>
+		<?php endforeach; ?>
+	</ul>
 </div>

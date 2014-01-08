@@ -59,7 +59,7 @@ class XmlResponseFormatterTest extends \yiiunit\TestCase
 		$this->formatter->format($this->response);
 		$this->assertEquals($head . $xml, $this->response->content);
 	}
-	
+
 	public function formatScalarDataProvider()
 	{
 		return [

@@ -62,7 +62,6 @@ class MaskedInput extends InputWidget
 	 */
 	public $completed;
 
-
 	/**
 	 * Initializes the widget.
 	 * @throws InvalidConfigException if the "mask" property is not set.

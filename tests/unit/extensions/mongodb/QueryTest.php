@@ -62,7 +62,6 @@ class QueryTest extends MongoDbTestCase
 					['address' => 'address1']
 				],
 				['name' => 'name2']
-
 			],
 			$query->where
 		);

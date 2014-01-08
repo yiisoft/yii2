@@ -9,8 +9,8 @@
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-jQuery(function($) {
-	$.fn.authchoice = function(options) {
+jQuery(function ($) {
+	$.fn.authchoice = function (options) {
 		options = $.extend({
 			popup: {
 				resizable: 'yes',
@@ -25,10 +25,10 @@ jQuery(function($) {
 			}
 		}, options);
 
-		return this.each(function() {
+		return this.each(function () {
 			var $container = $(this);
 
-			$container.find('a').on('click', function(e) {
+			$container.find('a').on('click', function (e) {
 				e.preventDefault();
 
 				var authChoicePopup = null;

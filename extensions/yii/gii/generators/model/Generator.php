@@ -31,7 +31,6 @@ class Generator extends \yii\gii\Generator
 	public $generateRelations = true;
 	public $generateLabelsFromComments = false;
 
-
 	/**
 	 * @inheritdoc
 	 */

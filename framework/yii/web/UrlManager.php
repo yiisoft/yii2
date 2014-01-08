@@ -122,7 +122,6 @@ class UrlManager extends Component
 	 * specified via [[rules]] will take precedence when the same property of the rule is configured.
 	 */
 	public $ruleConfig = ['class' => 'yii\web\UrlRule'];
-
 	private $_baseUrl;
 	private $_hostInfo;
 

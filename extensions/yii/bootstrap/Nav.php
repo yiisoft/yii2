@@ -89,7 +89,6 @@ class Nav extends Widget
 	 */
 	public $params;
 
-
 	/**
 	 * Initializes the widget.
 	 */
@@ -177,7 +176,6 @@ class Nav extends Widget
 
 		return Html::tag('li', Html::a($label, $url, $linkOptions) . $items, $options);
 	}
-
 
 	/**
 	 * Checks whether a menu item is active.

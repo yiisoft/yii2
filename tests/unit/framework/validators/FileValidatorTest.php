@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\validators;
 
-
 use yii\validators\FileValidator;
 use yii\web\UploadedFile;
 use Yii;
@@ -232,7 +231,6 @@ class FileValidatorTest extends TestCase
 		$this->assertTrue($m->hasErrors('attr_exe'));
 		$this->assertTrue(stripos(current($m->getErrors('attr_exe')), 'Only files with these extensions ') !== false);
 	}
-
 
 	protected function createModelForAttributeTest()
 	{

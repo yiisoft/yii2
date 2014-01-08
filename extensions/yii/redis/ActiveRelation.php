@@ -37,7 +37,7 @@ class ActiveRelation extends ActiveQuery implements ActiveRelationInterface
 	 * @param null $column
 	 * @return array|bool|null|string
 	 */
-	protected function executeScript($db, $type, $column=null)
+	protected function executeScript($db, $type, $column = null)
 	{
 		if ($this->primaryModel !== null) {
 			// lazy loading

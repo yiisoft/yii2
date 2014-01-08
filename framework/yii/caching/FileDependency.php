@@ -6,6 +6,7 @@
  */
 
 namespace yii\caching;
+
 use yii\base\InvalidConfigException;
 
 /**

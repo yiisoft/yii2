@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,13 +19,11 @@ use yii\db\ColumnSchema;
  */
 class Schema extends \yii\db\Schema
 {
-
 	/**
 	 * The default schema used for the current session.
 	 * @var string
 	 */
 	public $defaultSchema = 'public';
-
 	/**
 	 * @var array mapping from physical column types (keys) to abstract
 	 * column types (values)
@@ -265,8 +262,8 @@ SQL;
 	 *
 	 * ~~~
 	 * [
-	 *	 'IndexName1' => ['col1' [, ...]],
-	 *	 'IndexName2' => ['col2' [, ...]],
+	 * 	 'IndexName1' => ['col1' [, ...]],
+	 * 	 'IndexName2' => ['col2' [, ...]],
 	 * ]
 	 * ~~~
 	 *
@@ -289,7 +286,6 @@ SQL;
 			}
 
 			$uniqueIndexes[$indexName] = $indexColumns;
-
 		}
 		return $uniqueIndexes;
 	}

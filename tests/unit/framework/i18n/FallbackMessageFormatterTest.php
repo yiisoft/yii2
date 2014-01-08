@@ -26,8 +26,8 @@ class FallbackMessageFormatterTest extends TestCase
 	{
 		return [
 			[
-				'{'.self::SUBJECT.'} is {'.self::N.'}', // pattern
-				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				'{' . self::SUBJECT . '} is {' . self::N . '}', // pattern
+				self::SUBJECT_VALUE . ' is ' . self::N_VALUE, // expected
 				[ // params
 					self::N => self::N_VALUE,
 					self::SUBJECT => self::SUBJECT_VALUE,
@@ -35,8 +35,8 @@ class FallbackMessageFormatterTest extends TestCase
 			],
 
 			[
-				'{'.self::SUBJECT.'} is {'.self::N.', number}', // pattern
-				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				'{' . self::SUBJECT . '} is {' . self::N . ', number}', // pattern
+				self::SUBJECT_VALUE . ' is ' . self::N_VALUE, // expected
 				[ // params
 					self::N => self::N_VALUE,
 					self::SUBJECT => self::SUBJECT_VALUE,
@@ -44,8 +44,8 @@ class FallbackMessageFormatterTest extends TestCase
 			],
 
 			[
-				'{'.self::SUBJECT.'} is {'.self::N.', number, integer}', // pattern
-				self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+				'{' . self::SUBJECT . '} is {' . self::N . ', number, integer}', // pattern
+				self::SUBJECT_VALUE . ' is ' . self::N_VALUE, // expected
 				[ // params
 					self::N => self::N_VALUE,
 					self::SUBJECT => self::SUBJECT_VALUE,
@@ -97,7 +97,7 @@ _MSG_
 				[
 					'name' => 'Alexander',
 					'gender' => 'male',
-					 // following should not be replaced
+					// following should not be replaced
 					'he' => 'wtf',
 					'she' => 'wtf',
 					'it' => 'wtf',
@@ -142,10 +142,10 @@ _MSG_
 
 	public function testInsufficientArguments()
 	{
-		$expected = '{'.self::SUBJECT.'} is '.self::N_VALUE;
+		$expected = '{' . self::SUBJECT . '} is ' . self::N_VALUE;
 
 		$formatter = new FallbackMessageFormatter();
-		$result = $formatter->fallbackFormat('{'.self::SUBJECT.'} is {'.self::N.'}', [
+		$result = $formatter->fallbackFormat('{' . self::SUBJECT . '} is {' . self::N . '}', [
 			self::N => self::N_VALUE,
 		], 'en-US');
 
@@ -154,7 +154,7 @@ _MSG_
 
 	public function testNoParams()
 	{
-		$pattern = '{'.self::SUBJECT.'} is '.self::N;
+		$pattern = '{' . self::SUBJECT . '} is ' . self::N;
 
 		$formatter = new FallbackMessageFormatter();
 		$result = $formatter->fallbackFormat($pattern, [], 'en-US');

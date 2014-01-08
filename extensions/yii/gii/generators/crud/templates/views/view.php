@@ -7,7 +7,6 @@ use yii\helpers\StringHelper;
  * @var yii\web\View $this
  * @var yii\gii\generators\crud\Generator $generator
  */
-
 $urlParams = $generator->generateUrlParams();
 
 echo "<?php\n";
@@ -39,21 +38,21 @@ $this->params['breadcrumbs'][] = $this->title;
 	</p>
 
 	<?= "<?php " ?>echo DetailView::widget([
-		'model' => $model,
-		'attributes' => [
-<?php
-if (($tableSchema = $generator->getTableSchema()) === false) {
-	foreach ($generator->getColumnNames() as $name) {
-		echo "\t\t\t'" . $name . "',\n";
-	}
-} else {
-	foreach ($generator->getTableSchema()->columns as $column) {
-		$format = $generator->generateColumnFormat($column);
-		echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
-	}
-}
-?>
-		],
+	'model' => $model,
+	'attributes' => [
+		<?php
+		if (($tableSchema = $generator->getTableSchema()) === false) {
+			foreach ($generator->getColumnNames() as $name) {
+				echo "\t\t\t'" . $name . "',\n";
+			}
+		} else {
+			foreach ($generator->getTableSchema()->columns as $column) {
+				$format = $generator->generateColumnFormat($column);
+				echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+			}
+		}
+		?>
+	],
 	]); ?>
 
 </div>

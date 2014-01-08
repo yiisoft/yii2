@@ -90,7 +90,6 @@ class Tabs extends Widget
 	 */
 	public $navType = 'nav-tabs';
 
-
 	/**
 	 * Initializes the widget.
 	 */

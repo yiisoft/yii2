@@ -10,7 +10,6 @@ use yii\imagine\Image;
  */
 class ImageGmagickTest extends AbstractImageTest
 {
-
 	protected function setUp()
 	{
 		if (!class_exists('Gmagick')) {
@@ -26,5 +25,4 @@ class ImageGmagickTest extends AbstractImageTest
 	{
 		return true;
 	}
-
 }
