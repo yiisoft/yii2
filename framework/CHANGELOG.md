@@ -59,6 +59,7 @@ Yii Framework 2 Change Log
 - Enh: Support for file aliases in console command 'message' (omnilight)
 - Enh: Sort and Pagination can now create absolute URLs (cebe)
 - Enh: Added support for using array-typed arguments for console commands (qiangxue)
+- Enh: Added support for installing packages conforming to PSR-4 standard (qiangxue)
 - Chg #1519: `yii\web\User::loginRequired()` now returns the `Response` object instead of exiting the application (qiangxue)
 - Chg #1586: `QueryBuilder::buildLikeCondition()` will now escape special characters and use percentage characters by default (qiangxue)
 - Chg #1610: `Html::activeCheckboxList()` and `Html::activeRadioList()` will submit an empty string if no checkbox/radio is selected (qiangxue)
