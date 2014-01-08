@@ -23,6 +23,7 @@ Yii Framework 2 Change Log
 - Bug #1733: Incorrect code about `$_modelClasses` in `DbFixtureManager` (qiangxue)
 - Bug #1798: Fixed label attributes for array fields (zhuravljov)
 - Bug #1800: Better check for `$_SERVER['HTTPS']` in `yii\web\Request::getIsSecureConnection()` (ginus, samdark)
+- Bug #1827: Debugger toolbar is loaded twice if an action is calling `run()` to execute another action (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
