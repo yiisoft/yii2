@@ -84,13 +84,13 @@ class StringValidator extends Validator
 			$this->message = Yii::t('yii', '{attribute} must be a string.');
 		}
 		if ($this->min !== null && $this->tooShort === null) {
-			$this->tooShort = Yii::t('yii', '{attribute} should contain at least {min} characters.');
+			$this->tooShort = Yii::t('yii', '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.');
 		}
 		if ($this->max !== null && $this->tooLong === null) {
-			$this->tooLong = Yii::t('yii', '{attribute} should contain at most {max} characters.');
+			$this->tooLong = Yii::t('yii', '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.');
 		}
 		if ($this->length !== null && $this->notEqual === null) {
-			$this->notEqual = Yii::t('yii', '{attribute} should contain {length} characters.');
+			$this->notEqual = Yii::t('yii', '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.');
 		}
 	}
 
