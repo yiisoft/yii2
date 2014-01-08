@@ -422,6 +422,16 @@ trait ActiveRecordTestTrait
 		$this->assertTrue($customer->isRelationPopulated('orders'));
 		$this->assertEquals(1, count($customer->orders));
 		$this->assertEquals(1, count($customer->relatedRecords));
+
+		// multiple with() calls
+		$orders = $this->callOrderFind()->with('customer', 'items')->all();
+		$this->assertEquals(3, count($orders));
+		$this->assertTrue($orders[0]->isRelationPopulated('customer'));
+		$this->assertTrue($orders[0]->isRelationPopulated('items'));
+		$orders = $this->callOrderFind()->with('customer')->with('items')->all();
+		$this->assertEquals(3, count($orders));
+		$this->assertTrue($orders[0]->isRelationPopulated('customer'));
+		$this->assertTrue($orders[0]->isRelationPopulated('items'));
 	}
 
 	public function testFindLazyVia()

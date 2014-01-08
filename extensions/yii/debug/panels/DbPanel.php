@@ -42,7 +42,7 @@ class DbPanel extends Panel
 		$queryCount = count($timings);
 		$queryTime = number_format($this->getTotalQueryTime($timings) * 1000) . ' ms';
 
-		return  Yii::$app->view->render('panels/db/summary',[
+		return Yii::$app->view->render('panels/db/summary', [
 			'timings' => $this->calculateTimings(), 
 			'panel' => $this,
 			'queryCount' => $queryCount,
@@ -55,7 +55,7 @@ class DbPanel extends Panel
 		$searchModel = new Db();
 		$dataProvider = $searchModel->search(Yii::$app->request->get(), $this->getModels());
 
-		return  Yii::$app->view->render('panels/db/detail', [
+		return Yii::$app->view->render('panels/db/detail', [
 			'panel' => $this,
 			'dataProvider' => $dataProvider,
 			'searchModel' => $searchModel,
@@ -112,9 +112,9 @@ class DbPanel extends Panel
 				$this->_models[] = 	[
 					'type' => $this->detectQueryType($dbTiming['info']),
 					'query' => $dbTiming['info'],
-					'duration' => ($dbTiming['duration'] * 1000), #in milliseconds
+					'duration' => ($dbTiming['duration'] * 1000), // in milliseconds
 					'trace' => $dbTiming['trace'],
-					'timestamp' => $dbTiming['timestamp'],
+					'timestamp' => ($dbTiming['timestamp'] * 1000), // in milliseconds
 					'seq' => $seq,
 				];
 			}

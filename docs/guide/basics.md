@@ -90,7 +90,7 @@ For example, if standard alias `@app` refers to `/var/www/example.com/` then `\a
 Custom alias may be added using the following code:
 
 ```php
-Yii::setAlias('shared', realpath('~/src/shared'));
+Yii::setAlias('@shared', realpath('~/src/shared'));
 ```
 
 Additional autoloaders may be registered using standard PHP `spl_autoload_register`.

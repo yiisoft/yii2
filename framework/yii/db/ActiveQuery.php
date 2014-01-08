@@ -243,11 +243,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 					unset($with[$name]);
 				}
 			}
-			$this->with($with);
-		} elseif ($eagerLoading) {
-			$this->with($with);
+		} elseif (!$eagerLoading) {
+			$with = [];
 		}
-		return $this;
+
+		return $this->with($with);
 	}
 
 	/**
@@ -326,19 +326,27 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	}
 
 	/**
-	 * Returns the table name used by the specified active query.
+	 * Returns the table name and the table alias for [[modelClass]].
 	 * @param ActiveQuery $query
-	 * @return string the table name
+	 * @return array the table name and the table alias.
 	 */
 	private function getQueryTableName($query)
 	{
 		if (empty($query->from)) {
 			/** @var ActiveRecord $modelClass */
 			$modelClass = $query->modelClass;
-			return $modelClass::tableName();
+			$tableName = $modelClass::tableName();
 		} else {
-			return reset($query->from);
+			$tableName = reset($query->from);
 		}
+
+		if (preg_match('/^(.*?)\s+({{\w+}}|\w+)$/', $tableName, $matches)) {
+			$alias = $matches[2];
+		} else {
+			$alias = $tableName;
+		}
+
+		return [$tableName, $alias];
 	}
 
 	/**
@@ -364,24 +372,28 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			return;
 		}
 
-		$parentTable = $this->getQueryTableName($parent);
-		$childTable = $this->getQueryTableName($child);
-		if (strpos($parentTable, '{{') === false) {
-			$parentTable = '{{' . $parentTable . '}}';
-		}
-		if (strpos($childTable, '{{') === false) {
-			$childTable = '{{' . $childTable . '}}';
-		}
-
+		list ($parentTable, $parentAlias) = $this->getQueryTableName($parent);
+		list ($childTable, $childAlias) = $this->getQueryTableName($child);
 
 		if (!empty($child->link)) {
+
+			if (strpos($parentAlias, '{{') === false) {
+				$parentAlias = '{{' . $parentAlias . '}}';
+			}
+			if (strpos($childAlias, '{{') === false) {
+				$childAlias = '{{' . $childAlias . '}}';
+			}
+
 			$on = [];
 			foreach ($child->link as $childColumn => $parentColumn) {
-				$on[] = "$parentTable.[[$parentColumn]] = $childTable.[[$childColumn]]";
+				$on[] = "$parentAlias.[[$parentColumn]] = $childAlias.[[$childColumn]]";
 			}
 			$on = implode(' AND ', $on);
+			if (!empty($child->on)) {
+				$on = ['and', $on, $child->on];
+			}
 		} else {
-			$on = '';
+			$on = $child->on;
 		}
 		$this->join($joinType, $childTable, $on);
 

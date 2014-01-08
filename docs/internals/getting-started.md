@@ -7,7 +7,8 @@ Composer package. Here's how to do it:
 1. `git clone git@github.com:yiisoft/yii2-app-basic.git`.
 2. Remove `.git` directory from cloned directory.
 3. Change `composer.json`. Instead of all stable requirements add just one `"yiisoft/yii2-dev": "*"`.
-4. Execute `composer create-project`.
+4. Execute `composer create-project`. Do not add `--prefer-dist` to the command since it will not download git repository
+   then.
 5. Now you have working playground that uses latest code.
 
 Note that requirements of extensions that come with `yii2-dev` are not loaded automatically.

@@ -3,6 +3,7 @@
  * @var \yii\web\View $this
  * @var \yii\debug\Panel[] $panels
  * @var string $tag
+ * @var string $position
  */
 use yii\debug\panels\ConfigPanel;
 
@@ -24,7 +25,7 @@ EOD;
 
 $url = $panels['request']->getUrl();
 ?>
-<div id="yii-debug-toolbar">
+<div id="yii-debug-toolbar" class="yii-debug-toolbar-<?= $position ?>">
 	<?php foreach ($panels as $panel): ?>
 	<?= $panel->getSummary() ?>
 	<?php endforeach; ?>

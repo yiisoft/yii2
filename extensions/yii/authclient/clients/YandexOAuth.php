@@ -11,7 +11,8 @@ use yii\authclient\OAuth2;
 
 /**
  * YandexOAuth allows authentication via Yandex OAuth.
- * In order to use Yandex OAuth you must register your application at [[https://oauth.yandex.ru/client/new]].
+ *
+ * In order to use Yandex OAuth you must register your application at <https://oauth.yandex.ru/client/new>.
  *
  * Example application configuration:
  *

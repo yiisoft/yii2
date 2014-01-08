@@ -188,6 +188,7 @@ class Message extends BaseMessage
 	{
 		$message = $this->getSwiftMessage();
 		$oldBody = $message->getBody();
+		$charset = $message->getCharset();
 		if (empty($oldBody)) {
 			$parts = $message->getChildren();
 			$partFound = false;
@@ -195,6 +196,7 @@ class Message extends BaseMessage
 				if (!($part instanceof \Swift_Mime_Attachment)) {
 					/* @var \Swift_Mime_MimePart $part */
 					if ($part->getContentType() == $contentType) {
+						$charset = $part->getCharset();
 						unset($parts[$key]);
 						$partFound = true;
 						break;
@@ -204,7 +206,7 @@ class Message extends BaseMessage
 			if ($partFound) {
 				reset($parts);
 				$message->setChildren($parts);
-				$message->addPart($body, $contentType);
+				$message->addPart($body, $contentType, $charset);
 			} else {
 				$message->setBody($body, $contentType);
 			}
@@ -215,8 +217,8 @@ class Message extends BaseMessage
 			} else {
 				$message->setBody(null);
 				$message->setContentType(null);
-				$message->addPart($oldBody, $oldContentType);
-				$message->addPart($body, $contentType);
+				$message->addPart($oldBody, $oldContentType, $charset);
+				$message->addPart($body, $contentType, $charset);
 			}
 		}
 	}

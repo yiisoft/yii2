@@ -50,11 +50,13 @@
 	},
 	"minimum-stability": "dev",
 	"replace": {
+		"yiisoft/yii2-apidoc": "self.version",
 		"yiisoft/yii2-authclient": "self.version",
 		"yiisoft/yii2-bootstrap": "self.version",
 		"yiisoft/yii2-codeception": "self.version",
 		"yiisoft/yii2-debug": "self.version",
 		"yiisoft/yii2-elasticsearch": "self.version",
+		"yiisoft/yii2-faker": "self.version",
 		"yiisoft/yii2-imagine": "self.version",
 		"yiisoft/yii2-gii": "self.version",
 		"yiisoft/yii2-jui": "self.version",
@@ -77,14 +79,17 @@
 		"michelf/php-markdown": "1.3.*"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "3.7.*"
+		"phpunit/phpunit": "3.7.*",
+		"twig/twig": "*"
 	},
 	"suggest": {
+		"phpdocumentor/reflection": "required by yii2-apidoc extension",
 		"twbs/bootstrap": "required by yii2-bootstrap, yii2-debug, yii2-gii extension",
 		"ext-curl": "required by yii2-elasticsearch extension",
 		"ext-mongo": "required by yii2-mongo extension",
 		"ext-pdo": "required by yii2-sphinx extension",
 		"ext-pdo_mysql": "required by yii2-sphinx extension",
+		"fzaninotto/faker": "required by yii2-faker extension",
 		"imagine/imagine": "required by yii2-imagine extension",
 		"smarty/smarty": "required by yii2-smarty extension",
 		"swiftmailer/swiftmailer": "required by yii2-swiftmailer extension",
@@ -92,11 +97,13 @@
 	},
 	"autoload": {
 		"psr-0": {
+			"yii\\apidoc\\": "extensions/",
 			"yii\\authclient\\": "extensions/",
 			"yii\\bootstrap\\": "extensions/",
 			"yii\\codeception\\": "extensions/",
 			"yii\\debug\\": "extensions/",
 			"yii\\elasticsearch\\": "extensions/",
+			"yii\\faker\\": "extensions/",
 			"yii\\gii\\": "extensions/",
 			"yii\\imagine\\" : "extensions/",
 			"yii\\jui\\": "extensions/",

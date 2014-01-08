@@ -25,13 +25,15 @@ namespace yii\base;
 class Event extends Object
 {
 	/**
-	 * @var string the event name. This property is set by [[Component::trigger()]].
+	 * @var string the event name. This property is set by [[Component::trigger()]] and [[trigger()]].
 	 * Event handlers may use this property to check what event it is handling.
 	 */
 	public $name;
 	/**
 	 * @var object the sender of this event. If not set, this property will be
 	 * set as the object whose "trigger()" method is called.
+	 * This property may also be a `null` when this event is a
+	 * class-level event which is triggered in a static context.
 	 */
 	public $sender;
 	/**
@@ -67,9 +69,9 @@ class Event extends Object
 	 *
 	 * For more details about how to declare an event handler, please refer to [[Component::on()]].
 	 *
-	 * @param string $class the fully qualified class name to which the event handler needs to attach
-	 * @param string $name the event name
-	 * @param callback $handler the event handler
+	 * @param string $class the fully qualified class name to which the event handler needs to attach.
+	 * @param string $name the event name.
+	 * @param callback $handler the event handler.
 	 * @param mixed $data the data to be passed to the event handler when the event is triggered.
 	 * When the event handler is invoked, this data can be accessed via [[Event::data]].
 	 * @see off()
@@ -84,11 +86,11 @@ class Event extends Object
 	 *
 	 * This method is the opposite of [[on()]].
 	 *
-	 * @param string $class the fully qualified class name from which the event handler needs to be detached
-	 * @param string $name the event name
+	 * @param string $class the fully qualified class name from which the event handler needs to be detached.
+	 * @param string $name the event name.
 	 * @param callback $handler the event handler to be removed.
 	 * If it is null, all handlers attached to the named event will be removed.
-	 * @return boolean if a handler is found and detached
+	 * @return boolean whether a handler is found and detached.
 	 * @see on()
 	 */
 	public static function off($class, $name, $handler = null)
@@ -119,8 +121,8 @@ class Event extends Object
 	 * Returns a value indicating whether there is any handler attached to the specified class-level event.
 	 * Note that this method will also check all parent classes to see if there is any handler attached
 	 * to the named event.
-	 * @param string|object $class the object or the fully qualified class name specifying the class-level event
-	 * @param string $name the event name
+	 * @param string|object $class the object or the fully qualified class name specifying the class-level event.
+	 * @param string $name the event name.
 	 * @return boolean whether there is any handler attached to the event.
 	 */
 	public static function hasHandlers($class, $name)
@@ -145,8 +147,8 @@ class Event extends Object
 	 * Triggers a class-level event.
 	 * This method will cause invocation of event handlers that are attached to the named event
 	 * for the specified class and all its parent classes.
-	 * @param string|object $class the object or the fully qualified class name specifying the class-level event
-	 * @param string $name the event name
+	 * @param string|object $class the object or the fully qualified class name specifying the class-level event.
+	 * @param string $name the event name.
 	 * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
 	 */
 	public static function trigger($class, $name, $event = null)
@@ -155,7 +157,7 @@ class Event extends Object
 			return;
 		}
 		if ($event === null) {
-			$event = new self;
+			$event = new static;
 		}
 		$event->handled = false;
 		$event->name = $name;
@@ -173,7 +175,7 @@ class Event extends Object
 				foreach (self::$_events[$name][$class] as $handler) {
 					$event->data = $handler[1];
 					call_user_func($handler[0], $event);
-					if ($event instanceof Event && $event->handled) {
+					if ($event->handled) {
 						return;
 					}
 				}

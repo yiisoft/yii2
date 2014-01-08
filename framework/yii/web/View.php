@@ -163,14 +163,12 @@ class View extends \yii\base\View
 			self::PH_BODY_END => $this->renderBodyEndHtml(),
 		]);
 
-		unset(
-			$this->metaTags,
-			$this->linkTags,
-			$this->css,
-			$this->cssFiles,
-			$this->js,
-			$this->jsFiles
-		);
+		$this->metaTags = null;
+		$this->linkTags = null;
+		$this->css = null;
+		$this->cssFiles = null;
+		$this->js = null;
+		$this->jsFiles = null;
 	}
 
 	/**

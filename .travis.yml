@@ -13,12 +13,17 @@ services:
 
 install:
   - composer self-update && composer --version
+# core framework:
 #  - composer require satooshi/php-coveralls 0.6.* --dev --prefer-dist
   - composer install --prefer-dist
   - tests/unit/data/travis/mongodb-setup.sh
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
+# basic application:
+  - composer install --dev --prefer-dist -d apps/basic
+  - cd apps/basic && php vendor/bin/codecept build && cd ../..
+  - cd apps && php -S localhost:8080 &
 
 before_script:
   - echo 'elasticsearch version ' && curl http://localhost:9200/
@@ -28,7 +33,9 @@ before_script:
   - mongo yii2test --eval 'db.addUser("travis", "test");'
 
 script:
-  - vendor/bin/phpunit --coverage-text --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
+#  - vendor/bin/phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
+  - vendor/bin/phpunit --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
+  - cd apps/basic && php vendor/bin/codecept run
 
 #after_script:
 #  - php vendor/bin/coveralls

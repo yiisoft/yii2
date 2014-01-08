@@ -7,9 +7,9 @@ use yii\helpers\Html;
 
 yii\debug\DebugAsset::register($this);
 ?>
+<?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html>
-<?php $this->beginPage() ?>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,5 +21,5 @@ yii\debug\DebugAsset::register($this);
 <?= $content ?>
 <?php $this->endBody() ?>
 </body>
-<?php $this->endPage() ?>
 </html>
+<?php $this->endPage() ?>

@@ -50,7 +50,7 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 /**
  * BaseYii is the core helper class for the Yii framework.
  *
- * Do not use BaseYii directly. Instead, use its child class [[Yii]] where
+ * Do not use BaseYii directly. Instead, use its child class [[\Yii]] where
  * you can customize methods of BaseYii.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -266,12 +266,9 @@ class BaseYii
 	 * 2. If the class is namespaced (e.g. `yii\base\Component`), it will attempt
 	 *    to include the file associated with the corresponding path alias
 	 *    (e.g. `@yii/base/Component.php`);
-	 * 3. If the class is named in PEAR style (e.g. `PHPUnit_Framework_TestCase`),
-	 *    it will attempt to include the file associated with the corresponding path alias
-	 *    (e.g. `@PHPUnit/Framework/TestCase.php`);
 	 *
-	 * This autoloader allows loading classes that follow the [PSR-0 standard](http://www.php-fig.org/psr/0/).
-	 * Therefor a path alias has to be defined for each top-level namespace.
+	 * This autoloader allows loading classes that follow the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/)
+	 * and have its top-level namespace defined as path aliases.
 	 *
 	 * @param string $className the fully qualified class name without a leading backslash "\"
 	 * @throws UnknownClassException if the class does not exist in the class file
@@ -283,25 +280,13 @@ class BaseYii
 			if ($classFile[0] === '@') {
 				$classFile = static::getAlias($classFile);
 			}
-		} else {
-			// follow PSR-0 to determine the class file
-			if (($pos = strrpos($className, '\\')) !== false) {
-				// namespaced class, e.g. yii\base\Component
-				$path = str_replace('\\', '/', substr($className, 0, $pos + 1))
-					. str_replace('_', '/', substr($className, $pos + 1)) . '.php';
-			} else {
-				$path = str_replace('_', '/', $className) . '.php';
-			}
-
-			// try loading via path alias
-			if (strpos($path, '/') === false) {
+		} elseif (strpos($className, '\\') !== false) {
+			$classFile = static::getAlias('@' . str_replace('\\', '/', $className) . '.php', false);
+			if ($classFile === false || !is_file($classFile)) {
 				return;
-			} else {
-				$classFile = static::getAlias('@' . $path, false);
-				if ($classFile === false || !is_file($classFile)) {
-					return;
-				}
 			}
+		} else {
+			return;
 		}
 
 		include($classFile);
@@ -493,7 +478,7 @@ class BaseYii
 	 * will be replaced with the given number.
 	 *
 	 * For more details on how plural rules are applied, please refer to:
-	 * [[http://www.unicode.org/cldr/charts/supplemental/language_plural_rules.html]]
+	 * <http://www.unicode.org/cldr/charts/supplemental/language_plural_rules.html>
 	 *
 	 * @param string $category the message category.
 	 * @param string $message the message to be translated.

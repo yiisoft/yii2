@@ -599,7 +599,7 @@ class OpenId extends BaseClient implements ClientInterface
 	{
 		$params = [];
 		/* We always use SREG 1.1, even if the server is advertising only support for 1.0.
-		That's because it's fully backwards compatibile with 1.0, and some providers
+		That's because it's fully backwards compatible with 1.0, and some providers
 		advertise 1.0 even if they accept only 1.1. One such provider is myopenid.com */
 		$params['openid.ns.sreg'] = 'http://openid.net/extensions/sreg/1.1';
 		if (!empty($this->requiredAttributes)) {
@@ -663,7 +663,7 @@ class OpenId extends BaseClient implements ClientInterface
 				$params['openid.ax.count.' . $alias] = $count;
 			}
 
-			// Don't send empty ax.requied and ax.if_available.
+			// Don't send empty ax.required and ax.if_available.
 			// Google and possibly other providers refuse to support ax when one of these is empty.
 			if (!empty($requiredAttributes)) {
 				$params['openid.ax.required'] = implode(',', $requiredAttributes);

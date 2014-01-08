@@ -961,9 +961,9 @@ class BaseHtml
 	 */
 	public static function activeLabel($model, $attribute, $options = [])
 	{
+		$for = array_key_exists('for', $options) ? $options['for'] : static::getInputId($model, $attribute);
 		$attribute = static::getAttributeName($attribute);
 		$label = isset($options['label']) ? $options['label'] : static::encode($model->getAttributeLabel($attribute));
-		$for = array_key_exists('for', $options) ? $options['for'] : static::getInputId($model, $attribute);
 		unset($options['label'], $options['for']);
 		return static::label($label, $for, $options);
 	}
@@ -1471,7 +1471,7 @@ class BaseHtml
 			return Yii::$app->getRequest()->getUrl();
 		} else {
 			$url = Yii::getAlias($url);
-			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || strpos($url, '://'))) {
+			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || strpos($url, '://') || !strncmp($url, './', 2))) {
 				return $url;
 			} else {
 				return Yii::$app->getRequest()->getBaseUrl() . '/' . $url;

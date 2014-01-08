@@ -33,7 +33,7 @@ class LogPanel extends Panel
 
 	public function getSummary()
 	{
-		return  Yii::$app->view->render('panels/log/summary', ['data' => $this->data, 'panel' => $this]);
+		return Yii::$app->view->render('panels/log/summary', ['data' => $this->data, 'panel' => $this]);
 	}
 
 	public function getDetail()
@@ -41,7 +41,7 @@ class LogPanel extends Panel
 		$searchModel = new Log();
 		$dataProvider = $searchModel->search(Yii::$app->request->get(), $this->getModels());
 
-		return  Yii::$app->view->render('panels/log/detail',[
+		return Yii::$app->view->render('panels/log/detail', [
 			'dataProvider' => $dataProvider, 
 			'panel' => $this,
 			'searchModel' => $searchModel,
@@ -61,7 +61,7 @@ class LogPanel extends Panel
 	 * @param boolean $refresh if needed to build models from log messages and refresh them.
 	 * @return array models
 	 */
-	protected function getModels($refresh=false)
+	protected function getModels($refresh = false)
 	{
 		if ($this->_models === null || $refresh) {
 			$this->_models = [];
@@ -71,7 +71,7 @@ class LogPanel extends Panel
 					'message' => $message[0],
 					'level' => $message[1],
 					'category' => $message[2],
-					'time' => ($message[3] * 1000), #time in milliseconds
+					'time' => ($message[3] * 1000), // time in milliseconds
 					'trace' => $message[4]
 				];
 			}

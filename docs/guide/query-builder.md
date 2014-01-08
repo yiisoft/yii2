@@ -167,7 +167,7 @@ $search = 'yii';
 
 $query->where(['status' => $status]);
 if (!empty($search)) {
-	$query->addWhere(['like', 'title', $search]);
+	$query->andWhere(['like', 'title', $search]);
 }
 ```
 

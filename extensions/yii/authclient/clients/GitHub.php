@@ -11,7 +11,8 @@ use yii\authclient\OAuth2;
 
 /**
  * GitHub allows authentication via GitHub OAuth.
- * In order to use GitHub OAuth you must register your application at [[https://github.com/settings/applications/new]].
+ *
+ * In order to use GitHub OAuth you must register your application at <https://github.com/settings/applications/new>.
  *
  * Example application configuration:
  *
@@ -72,5 +73,21 @@ class GitHub extends OAuth2
 	protected function initUserAttributes()
 	{
 		return $this->api('user', 'GET');
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultName()
+	{
+		return 'github';
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function defaultTitle()
+	{
+		return 'GitHub';
 	}
 }

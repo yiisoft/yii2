@@ -20,7 +20,7 @@ curl -s http://getcomposer.org/installer | php
 You can then install the application using the following command:
 
 ~~~
-php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced /path/to/yii-application
+php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-advanced /path/to/yii-application
 ~~~
 
 Getting started
@@ -171,5 +171,5 @@ your project.
 Now the interesting part. You can add more packages your application needs to `require` section.
 All these packages are coming from [packagist.org](https://packagist.org/) so feel free to browse the website for useful code.
 
-After your `composer.json` is changed you can run `php composer.phar update`, wait till packages are downloaded and
+After your `composer.json` is changed you can run `php composer.phar update --prefer-dist`, wait till packages are downloaded and
 installed and then just use them. Autoloading of classes will be handled automatically.

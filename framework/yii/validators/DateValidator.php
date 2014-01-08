@@ -20,7 +20,7 @@ class DateValidator extends Validator
 {
 	/**
 	 * @var string the date format that the value being validated should follow.
-	 * Please refer to [[http://www.php.net/manual/en/datetime.createfromformat.php]] on
+	 * Please refer to <http://www.php.net/manual/en/datetime.createfromformat.php> on
 	 * supported formats.
 	 */
 	public $format = 'Y-m-d';

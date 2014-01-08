@@ -81,6 +81,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public $flashVar = '__flash';
 	/**
+	 * @var \SessionHandlerInterface|array an object implementing the SessionHandlerInterface or a configuration array. If set, will be used to provide persistency instead of build-in methods.
+	 */
+	public $handler;
+	/**
 	 * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
 	 * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httpOnly'
 	 * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
@@ -121,7 +125,15 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 			return;
 		}
 
-		if ($this->getUseCustomStorage()) {
+		if ($this->handler !== null) {
+			if (!is_object($this->handler)) {
+				$this->handler = Yii::createObject($this->handler);
+			}
+			if (!$this->handler instanceof \SessionHandlerInterface) {
+				throw new InvalidConfigException('"' . get_class($this) . '::handler" must implement the SessionHandlerInterface.');
+			}
+			@session_set_save_handler($this->handler, false);
+		} elseif ($this->getUseCustomStorage()) {
 			@session_set_save_handler(
 				[$this, 'openSession'],
 				[$this, 'closeSession'],
@@ -192,7 +204,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
 	/**
 	 * Updates the current session ID with a newly generated one .
-	 * Please refer to [[http://php.net/session_regenerate_id]] for more details.
+	 * Please refer to <http://php.net/session_regenerate_id> for more details.
 	 * @param boolean $deleteOldSession Whether to delete the old associated session file or not.
 	 */
 	public function regenerateID($deleteOldSession = false)
