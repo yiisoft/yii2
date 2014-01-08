@@ -341,4 +341,23 @@ class MessageTest extends VendorTestCase
 		$unserializedMessaage = unserialize($serializedMessage);
 		$this->assertEquals($message, $unserializedMessaage, 'Unable to unserialize message!');
 	}
+
+	/**
+	 * @depends testSendAlternativeBody
+	 */
+	public function testAlternativeBodyCharset()
+	{
+		$message = $this->createTestMessage();
+		$charset = 'windows-1251';
+		$message->setCharset($charset);
+
+		$message->setTextBody('some text');
+		$message->setHtmlBody('some html');
+		$content = $message->toString();
+		$this->assertEquals(2, substr_count($content, $charset), 'Wrong charset for alternative body.');
+
+		$message->setTextBody('some text override');
+		$content = $message->toString();
+		$this->assertEquals(2, substr_count($content, $charset), 'Wrong charset for alternative body override.');
+	}
 }
