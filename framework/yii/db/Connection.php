@@ -118,13 +118,13 @@ class Connection extends Component
 	 */
 	public $dsn;
 	/**
-	 * @var string the username for establishing DB connection. Defaults to empty string.
+	 * @var string the username for establishing DB connection. Defaults to `null` meaning no username to use.
 	 */
-	public $username = '';
+	public $username;
 	/**
-	 * @var string the password for establishing DB connection. Defaults to empty string.
+	 * @var string the password for establishing DB connection. Defaults to `null` meaning no password to use.
 	 */
-	public $password = '';
+	public $password;
 	/**
 	 * @var array PDO attributes (name => value) that should be set when calling [[open()]]
 	 * to establish a DB connection. Please refer to the
