@@ -67,7 +67,7 @@ class Command extends Component
 	 * @param string $index
 	 * @param string $type
 	 * @param string|array $data json string or array of data to store
-	 * @param null $id the documents id. If not specified Id will be automatically choosen
+	 * @param null $id the documents id. If not specified Id will be automatically chosen
 	 * @param array $options
 	 * @return mixed
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-index_.html
