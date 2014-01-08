@@ -33,11 +33,19 @@ class UploadedFile extends Object
 	 */
 	public $name;
 	/**
+	 * @var string the original base file name
+	 */
+	public $baseName;
+	/**
 	 * @var string the path of the uploaded file on the server.
 	 * Note, this is a temporary file which will be automatically deleted by PHP
 	 * after the current request is processed.
 	 */
 	public $tempName;
+	/**
+	 * @var string file extension.
+	 */
+	public $extension;
 	/**
 	 * @var string the MIME-type of the uploaded file (such as "image/gif").
 	 * Since this MIME type is not checked on the server side, do not take this value for granted.
@@ -208,7 +216,9 @@ class UploadedFile extends Object
 		} else {
 			self::$_files[$key] = new static([
 				'name' => $names,
+				'baseName' => pathinfo($names, PATHINFO_FILENAME),
 				'tempName' => $tempNames,
+				'extension' => strtolower(pathinfo($names, PATHINFO_EXTENSION)),
 				'type' => $types,
 				'size' => $sizes,
 				'error' => $errors,
