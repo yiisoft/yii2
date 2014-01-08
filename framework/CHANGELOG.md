@@ -67,6 +67,7 @@ Yii Framework 2 Change Log
 - Chg #1643: Added default value for `Captcha::options` (qiangxue)
 - Chg #1647: Changed the default CSS class of error block to be `error-block` (qiangxue)
 - Chg #1796: Removed `yii\base\Controller::getActionParams()` (samdark)
+- Chg #1835: `CheckboxColumn` now renders checkboxes whose values are the corresponding data key values (qiangxue)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
