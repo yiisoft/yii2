@@ -92,7 +92,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $this->modelClass;
-		$pk = $modelClass::primaryKey();
+		$pk = $modelClass::primaryKey()[0];
 		if ($this->asArray && $this->indexBy) {
 			foreach ($result['hits']['hits'] as &$row) {
 				if ($pk === '_id') {
@@ -136,7 +136,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			/** @var ActiveRecord $modelClass */
 			$modelClass = $this->modelClass;
 			$model = $result['_source'];
-			$pk = $modelClass::primaryKey();
+			$pk = $modelClass::primaryKey()[0];
 			if ($pk === '_id') {
 				$model['_id'] = $result['_id'];
 			}
@@ -165,7 +165,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			if ($this->asArray) {
 				/** @var ActiveRecord $modelClass */
 				$modelClass = $this->modelClass;
-				$pk = $modelClass::primaryKey();
+				$pk = $modelClass::primaryKey()[0];
 				foreach($models as $key => $model) {
 					if ($pk === '_id') {
 						$model['_source']['_id'] = $model['_id'];

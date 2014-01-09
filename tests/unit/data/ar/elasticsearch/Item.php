@@ -14,7 +14,7 @@ class Item extends ActiveRecord
 {
 	public static function primaryKey()
 	{
-		return 'id';
+		return ['id'];
 	}
 
 	public function attributes()

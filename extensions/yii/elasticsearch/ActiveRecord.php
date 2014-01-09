@@ -171,7 +171,7 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public function setPrimaryKey($value)
 	{
-		$pk = static::primaryKey();
+		$pk = static::primaryKey()[0];
 		if ($this->getIsNewRecord() || $pk != '_id') {
 			$this->$pk = $value;
 		} else {
@@ -184,7 +184,7 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public function getPrimaryKey($asArray = false)
 	{
-		$pk = static::primaryKey();
+		$pk = static::primaryKey()[0];
 		if ($asArray) {
 			return [$pk => $this->$pk];
 		} else {
@@ -197,7 +197,7 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public function getOldPrimaryKey($asArray = false)
 	{
-		$pk = static::primaryKey();
+		$pk = static::primaryKey()[0];
 		if ($this->getIsNewRecord()) {
 			$id = null;
 		} elseif ($pk == '_id') {
@@ -213,21 +213,37 @@ class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
-	 * This method defines the primary.
+	 * This method defines the attribute that uniquely identifies a record.
 	 *
-	 * The primaryKey for elasticsearch documents is always `primaryKey`. It can not be changed.
+	 * The primaryKey for elasticsearch documents is the `_id` field by default. This field is not part of the
+	 * ActiveRecord attributes so you should never add `_id` to the list of [[attributes()|attributes]].
 	 *
-	 * @return string the primary key of this record.
+	 * You may overide this method to define the primary key name when you have defined
+	 * [path mapping](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-id-field.html)
+	 * for the `_id` field so that it is part of the `_source` and thus part of the [[attributes()|attributes]].
+	 *
+	 * Note that elasticsearch only supports _one_ attribute to be the primary key. However to match the signature
+	 * of the [[\yii\db\ActiveRecordInterface|ActiveRecordInterface]] this methods returns an array instead of a
+	 * single string.
+	 *
+	 * @return string[] array of primary key attributes. Only the first element of the array will be used.
 	 */
 	public static function primaryKey()
 	{
-		return '_id';
+		return ['_id'];
 	}
 
 	/**
 	 * Returns the list of all attribute names of the model.
+	 *
 	 * This method must be overridden by child classes to define available attributes.
-	 * @return array list of attribute names.
+	 *
+	 * Attributes are names of fields of the corresponding elasticsearch document.
+	 * The primaryKey for elasticsearch documents is the `_id` field by default which is not part of the attributes.
+	 * You may define [path mapping](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-id-field.html)
+	 * for the `_id` field so that it is part of the `_source` fields and thus becomes part of the attributes.
+	 *
+	 * @return string[] list of attribute names.
 	 */
 	public function attributes()
 	{
@@ -260,7 +276,7 @@ class ActiveRecord extends BaseActiveRecord
 	public static function create($row)
 	{
 		$record = parent::create($row['_source']);
-		$pk = static::primaryKey();
+		$pk = static::primaryKey()[0];
 		$record->$pk = $row['_id'];
 		$record->_score = isset($row['_score']) ? $row['_score'] : null;
 		$record->_version = isset($row['_version']) ? $row['_version'] : null; // TODO version should always be available...
@@ -336,8 +352,11 @@ class ActiveRecord extends BaseActiveRecord
 			if (!isset($response['ok'])) {
 				return false;
 			}
-			$pk = static::primaryKey();
-			$values[$pk] = $this->$pk = $response['_id'];
+			$pk = static::primaryKey()[0];
+			$this->$pk = $response['_id'];
+			if ($pk != '_id') {
+				$values[$pk] = $response['_id'];
+			}
 			$this->_version = $response['_version'];
 			$this->_score = null;
 			$this->setOldAttributes($values);
@@ -362,9 +381,9 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function updateAll($attributes, $condition = [])
 	{
-		$pkName = static::primaryKey();
+		$pkName = static::primaryKey()[0];
 		if (count($condition) == 1 && isset($condition[$pkName])) {
-			$primaryKeys = (array) $condition[$pkName];
+			$primaryKeys = is_array($condition[$pkName]) ? $condition[$pkName] : [$condition[$pkName]];
 		} else {
 			$primaryKeys = static::find()->where($condition)->column($pkName); // TODO check whether this works with default pk _id
 		}
@@ -372,7 +391,7 @@ class ActiveRecord extends BaseActiveRecord
 			return 0;
 		}
 		$bulk = '';
-		foreach((array) $primaryKeys as $pk) {
+		foreach($primaryKeys as $pk) {
 			$action = Json::encode([
 				"update" => [
 					"_id" => $pk,
@@ -420,9 +439,9 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function updateAllCounters($counters, $condition = [])
 	{
-		$pkName = static::primaryKey();
+		$pkName = static::primaryKey()[0];
 		if (count($condition) == 1 && isset($condition[$pkName])) {
-			$primaryKeys = (array) $condition[$pkName];
+			$primaryKeys = is_array($condition[$pkName]) ? $condition[$pkName] : [$condition[$pkName]];
 		} else {
 			$primaryKeys = static::find()->where($condition)->column($pkName); // TODO check whether this works with default pk _id
 		}
@@ -430,7 +449,7 @@ class ActiveRecord extends BaseActiveRecord
 			return 0;
 		}
 		$bulk = '';
-		foreach((array) $primaryKeys as $pk) {
+		foreach($primaryKeys as $pk) {
 			$action = Json::encode([
 				"update" => [
 					"_id" => $pk,
@@ -478,9 +497,9 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function deleteAll($condition = [])
 	{
-		$pkName = static::primaryKey();
+		$pkName = static::primaryKey()[0];
 		if (count($condition) == 1 && isset($condition[$pkName])) {
-			$primaryKeys = (array) $condition[$pkName];
+			$primaryKeys = is_array($condition[$pkName]) ? $condition[$pkName] : [$condition[$pkName]];
 		} else {
 			$primaryKeys = static::find()->where($condition)->column($pkName); // TODO check whether this works with default pk _id
 		}
@@ -488,7 +507,7 @@ class ActiveRecord extends BaseActiveRecord
 			return 0;
 		}
 		$bulk = '';
-		foreach((array) $primaryKeys as $pk) {
+		foreach($primaryKeys as $pk) {
 			$bulk .= Json::encode([
 				"delete" => [
 					"_id" => $pk,
