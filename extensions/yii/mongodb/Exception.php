@@ -20,6 +20,6 @@ class Exception extends \yii\base\Exception
 	 */
 	public function getName()
 	{
-		return 'Mongo Exception';
+		return 'MongoDB Exception';
 	}
 }

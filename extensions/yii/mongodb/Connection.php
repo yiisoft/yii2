@@ -223,7 +223,7 @@ class Connection extends Component
 			if (empty($this->dsn)) {
 				throw new InvalidConfigException($this->className() . '::dsn cannot be empty.');
 			}
-			$token = 'Opening Mongo connection: ' . $this->dsn;
+			$token = 'Opening MongoDB connection: ' . $this->dsn;
 			try {
 				Yii::trace($token, __METHOD__);
 				Yii::beginProfile($token, __METHOD__);
@@ -248,7 +248,7 @@ class Connection extends Component
 	public function close()
 	{
 		if ($this->mongoClient !== null) {
-			Yii::trace('Closing Mongo connection: ' . $this->dsn, __METHOD__);
+			Yii::trace('Closing MongoDB connection: ' . $this->dsn, __METHOD__);
 			$this->mongoClient = null;
 			$this->_databases = [];
 		}
