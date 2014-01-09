@@ -184,7 +184,7 @@ class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function tableName()
 	{
-		return static::getDb()->tablePrefix . Inflector::camel2id(StringHelper::basename(get_called_class()), '_');
+		return '{{%' . Inflector::camel2id(StringHelper::basename(get_called_class()), '_') . '}}';
 	}
 
 	/**
