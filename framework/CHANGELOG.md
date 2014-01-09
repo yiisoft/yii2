@@ -80,6 +80,7 @@ Yii Framework 2 Change Log
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
+- Enh #1839: Added support for getting file extension and basename from uploaded file (anfrantic)
 
 2.0.0 alpha, December 1, 2013
 ---------------------------
