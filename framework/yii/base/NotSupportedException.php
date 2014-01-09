@@ -20,6 +20,6 @@ class NotSupportedException extends Exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii', 'Not Supported');
+		return 'Not Supported';
 	}
 }

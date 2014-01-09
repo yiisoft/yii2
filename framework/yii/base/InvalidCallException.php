@@ -20,6 +20,6 @@ class InvalidCallException extends Exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii', 'Invalid Call');
+		return 'Invalid Call';
 	}
 }
