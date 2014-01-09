@@ -219,10 +219,9 @@ class Connection extends Component
 	/**
 	 * @var string the common prefix or suffix for table names. If a table name is given
 	 * as `{{%TableName}}`, then the percentage character `%` will be replaced with this
-	 * property value. For example, `{{%post}}` becomes `{{tbl_post}}` if this property is
-	 * set as `"tbl_"`.
+	 * property value. For example, `{{%post}}` becomes `{{tbl_post}}`.
 	 */
-	public $tablePrefix;
+	public $tablePrefix = 'tbl_';
 	/**
 	 * @var array mapping between PDO driver names and [[Schema]] classes.
 	 * The keys of the array are PDO driver names while the values the corresponding
