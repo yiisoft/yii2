@@ -57,7 +57,7 @@ class ActiveField extends Component
 	 *
 	 * - tag: the tag name of the container element. Defaults to "div".
 	 */
-	public $errorOptions = ['class' => 'error-block'];
+	public $errorOptions = ['class' => 'help-block'];
 	/**
 	 * @var array the default options for the label tags. The parameter passed to [[label()]] will be
 	 * merged with this property when rendering the label tag.
@@ -647,7 +647,7 @@ class ActiveField extends Component
 			if (isset($this->errorOptions['class'])) {
 				$options['error'] = '.' . implode('.', preg_split('/\s+/', $this->errorOptions['class'], -1, PREG_SPLIT_NO_EMPTY));
 			} else {
-				$options['error'] = isset($this->errorOptions['tag']) ? $this->errorOptions['tag'] : 'div';
+				$options['error'] = isset($this->errorOptions['tag']) ? $this->errorOptions['tag'] : 'span';
 			}
 			return $options;
 		} else {

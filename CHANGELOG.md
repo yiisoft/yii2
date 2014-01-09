@@ -65,7 +65,6 @@ Yii Framework 2 Change Log
 - Chg #1586: `QueryBuilder::buildLikeCondition()` will now escape special characters and use percentage characters by default (qiangxue)
 - Chg #1610: `Html::activeCheckboxList()` and `Html::activeRadioList()` will submit an empty string if no checkbox/radio is selected (qiangxue)
 - Chg #1643: Added default value for `Captcha::options` (qiangxue)
-- Chg #1647: Changed the default CSS class of error block to be `error-block` (qiangxue)
 - Chg #1796: Removed `yii\base\Controller::getActionParams()` (samdark)
 - Chg #1835: `CheckboxColumn` now renders checkboxes whose values are the corresponding data key values (qiangxue)
 - Chg #1821: Changed default values for yii\db\Connection username and password to null (cebe)
