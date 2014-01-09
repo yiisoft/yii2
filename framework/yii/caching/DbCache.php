@@ -63,7 +63,7 @@ class DbCache extends Cache
 	 * When using DbCache in a production server, we recommend you create a DB index for the 'expire'
 	 * column in the cache table to improve the performance.
 	 */
-	public $cacheTable = 'tbl_cache';
+	public $cacheTable = '{{%cache}}';
 	/**
 	 * @var integer the probability (parts per million) that garbage collection (GC) should be performed
 	 * when storing a piece of data in the cache. Defaults to 100, meaning 0.01% chance.
