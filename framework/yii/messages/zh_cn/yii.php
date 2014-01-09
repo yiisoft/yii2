@@ -19,7 +19,7 @@
 return array (
   'the input value' => '该输入',//TODO:Not so sure
   '(not set)' => '(未设置)',
-  'An internal server error occurred.' => '发生了一次服务器内部错误。',
+  'An internal server error occurred.' => '服务器内部错误。',
   'Are you sure to delete this item?' => '确定要删除这条数据吗？',
   'Delete' => '删除',
   'Error' => '错误',
