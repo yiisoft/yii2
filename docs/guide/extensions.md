@@ -12,15 +12,38 @@ using the following syntax: e.g. `[[name()]]`, `[[name\space\MyClass::name()]]`.
 - Extension SHOULD NOT use class prefixes (i.e. `TbNavBar`, `EMyWidget`, etc.)
 
 
-### Namespace and package names
+### Namespace
 
-- Extension MUST use the type `yii2-extension` in `composer.json` file.
-- Extension MUST NOT use `yiisoft` in the composer package name, the composer vendor name or in the namespaces used in the package.
-- Additionally extensions MUST NOT use `yii` or `yii2` in their composer vendor name.
+- Extension MUST NOT use `yiisoft` in the namespaces used in the package.
 - Extension MUST NOT have a root-namespace named `\yii`, `\yii2` or `\yiisoft`.
-- Extension SHOULD use namespaces in this format `vendor-name\package` (all lowercase).
-- Extension MAY use `yii2-` in the composer package name (e.g `vendor\yii2-api-adapter` or `vendor\my-yii2-package` (URL).
-- Extension MAY use a `yii2-` prefix in the repository name (URL).
+- Extension SHOULD use namespaces in this format `vendor-name\type` (all lowercase).
+
+Distribution
+------------
+
+- There should be a `readme.md` file clearly describing what extension does in English, its requirements, how to install
+  and use it. It should be written using markdown. If you want to provide translated readme, name it as `readme_ru.md`
+  where `ru` is your language code. If extension provides a widget it is a good idea to include some screenshots.
+- It is recommended to host your extensions at [Github](github.com).
+- Extension MUST be registered at [Packagist](https://packagist.org). Choose package name wisely since changing it leads
+  to losing stats and inability to install package by the old name.
+- Extension MUST provide a valid autoloading configuration in `composer.json`.
+
+
+### Composer package name
+
+If your extension was made specifically for Yii2 (i.e. cannot be used as a standalone PHP library) it is recommended to
+name it like the following:
+
+```
+yii2-my-extension-name-type
+```
+
+In the above:
+
+- `yii2-` prefix.
+- Extension name lowecase, words separated by `-`.
+- `-type` postfix where type may be `widget`, `behavior`, `module` etc.
 
 ### Dependencies
 
@@ -33,17 +56,11 @@ using the following syntax: e.g. `[[name()]]`, `[[name\space\MyClass::name()]]`.
 - Extension SHOULD follow the rules of [semantic versioning](http://semver.org).
 - Use a consistent format for your repository tags, as they are treated as version strings by composer, eg. `0.2.4`,`0.2.5`,`0.3.0`,`1.0.0`.
 
-Distribution
-------------
-
-- There should be a `readme.md` file clearly describing what extension does in English, its requirements, how to install
-  and use it. It should be written using markdown. If you want to provide translated readme, name it as `readme_ru.md`
-  where `ru` is your language code. If extension provides a widget it is a good idea to include some screenshots.
-- It is recommended to host your extensions at [Github](github.com).
-- Extension MUST be registered at [Packagist](https://packagist.org).
-- Extension MUST provide a valid autoloading configuration in `composer.json`.
-
 ### composer.json
+
+- Extension MUST use the type `yii2-extension` in `composer.json` file.
+- Extension MUST NOT use `yii` or `yii2` in their composer vendor name.
+- Extension MUST NOT use `yiisoft` in the composer package name or the composer vendor name.
 
 If your extension classes reside directly in repository root use PSR-4 the following way in your `composer.json`:
 
@@ -73,8 +90,7 @@ If your extension classes reside directly in repository root use PSR-4 the follo
 ```
 
 In the above `samdark/yii2-iconized-menu-widget` is the package name that will be registered
-at [Packagist](https://packagist.org). It is common for it to match your github repository. `"type": "yii2-extension"`
-is mandatory in order for extension to be properly installed.
+at [Packagist](https://packagist.org). It is common for it to match your github repository.
 
 We're using `psr-4` autoloader and mapping `samdark\widgets` namespace to the root directory where our classes reside.
 
