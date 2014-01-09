@@ -42,8 +42,9 @@ In the above:
 
 ### Dependencies
 
-- Additional code, eg. libraries, SHOULD be required in your `composer.json` file.
-- When extension is released in a stable version, its requirements SHOULD NOT include `dev` packages that do not have a `stable` release.
+- Additional code, eg. libraries, should be required in your `composer.json` file.
+- When extension is released in a stable version, its requirements should not include `dev` packages that do not
+  have a `stable` release.
 - Use appropriate version constraints, eg. `1.*`, `@stable` for requirements.
 
 ### Versioning
