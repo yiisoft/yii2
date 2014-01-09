@@ -50,7 +50,7 @@ class ResponseTest extends \yiiunit\TestCase
 		$fullContent = file_get_contents($dataFile);
 		$_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
 		ob_start();
-		$this->response->sendFile($dataFile);
+		$this->response->sendFile($dataFile)->send();
 		$content = ob_get_clean();
 
 		$this->assertEquals($expectedContent, $content);
