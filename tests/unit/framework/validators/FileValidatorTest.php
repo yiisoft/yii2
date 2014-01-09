@@ -177,12 +177,7 @@ class FileValidatorTest extends TestCase
 		$val = new FileValidator(['maxSize' => 128]);
 		$val->validateAttribute($m, 'attr_files');
 		$this->assertTrue($m->hasErrors('attr_files'));
-		$this->assertTrue(
-			stripos(
-				current($m->getErrors('attr_files')),
-				str_ireplace(['{file}', '{limit}'], [$m->attr_files->name, 128], $val->tooBig)
-			) !== false
-		);
+		$this->assertTrue(stripos(current($m->getErrors('attr_files')), 'too big') !== false);
 		// to Small
 		$m = $this->createModelForAttributeTest();
 		$val = new FileValidator(['minSize' => 2048]);
