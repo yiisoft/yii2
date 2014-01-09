@@ -136,6 +136,10 @@ class Response extends \yii\base\Response
 	 */
 	public $version;
 	/**
+	 * @var boolean whether the response has been sent. If this is true, calling [[send()]] will do nothing.
+	 */
+	public $isSent = false;
+	/**
 	 * @var array list of HTTP status codes and the corresponding texts
 	 */
 	public static $httpStatuses = [
@@ -281,6 +285,11 @@ class Response extends \yii\base\Response
 	 */
 	public function send()
 	{
+		if ($this->isSent) {
+			return;
+		} else {
+			$this->isSent = true;
+		}
 		$this->trigger(self::EVENT_BEFORE_SEND);
 		$this->prepare();
 		$this->trigger(self::EVENT_AFTER_PREPARE);
@@ -300,6 +309,7 @@ class Response extends \yii\base\Response
 		$this->statusText = 'OK';
 		$this->data = null;
 		$this->content = null;
+		$this->isSent = false;
 	}
 
 	/**
