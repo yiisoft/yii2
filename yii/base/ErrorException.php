@@ -89,19 +89,19 @@ class ErrorException extends Exception
 	public function getName()
 	{
 		$names = [
-			E_ERROR => 'Fatal Error',
-			E_PARSE => 'Parse Error',
-			E_CORE_ERROR => 'Core Error',
-			E_COMPILE_ERROR => 'Compile Error',
-			E_USER_ERROR => 'User Error',
-			E_WARNING => 'Warning',
-			E_CORE_WARNING => 'Core Warning',
-			E_COMPILE_WARNING => 'Compile Warning',
-			E_USER_WARNING => 'User Warning',
-			E_STRICT => 'Strict',
-			E_NOTICE => 'Notice',
-			E_RECOVERABLE_ERROR => 'Recoverable Error',
-			E_DEPRECATED => 'Deprecated',
+			E_ERROR => 'PHP Fatal Error',
+			E_PARSE => 'PHP Parse Error',
+			E_CORE_ERROR => 'PHP Core Error',
+			E_COMPILE_ERROR => 'PHP Compile Error',
+			E_USER_ERROR => 'PHP User Error',
+			E_WARNING => 'PHP Warning',
+			E_CORE_WARNING => 'PHP Core Warning',
+			E_COMPILE_WARNING => 'PHP Compile Warning',
+			E_USER_WARNING => 'PHP User Warning',
+			E_STRICT => 'PHP Strict Warning',
+			E_NOTICE => 'PHP Notice',
+			E_RECOVERABLE_ERROR => 'PHP Recoverable Error',
+			E_DEPRECATED => 'PHP Deprecated Warning',
 		];
 		return isset($names[$this->getCode()]) ? $names[$this->getCode()] : 'Error';
 	}
