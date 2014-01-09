@@ -268,7 +268,11 @@ class BaseYii
 	 *    (e.g. `@yii/base/Component.php`);
 	 *
 	 * This autoloader allows loading classes that follow the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/)
-	 * and have its top-level namespace defined as path aliases.
+	 * and have its top-level namespace or sub-namespaces defined as path aliases.
+	 *
+	 * Example: When aliases `@yii` and `@yii/bootstrap` are defined, classes in the `yii\bootstrap` namespace
+	 * will be loaded using the `@yii/bootstrap` alias which points to the directory where bootstrap extension
+	 * files are installed and all classes from other `yii` namespaces will be loaded from the yii framework directory.
 	 *
 	 * @param string $className the fully qualified class name without a leading backslash "\"
 	 * @throws UnknownClassException if the class does not exist in the class file
