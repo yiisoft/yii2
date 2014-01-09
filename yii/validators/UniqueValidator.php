@@ -101,7 +101,7 @@ class UniqueValidator extends Validator
 			$n = count($objects);
 			if ($n === 1) {
 				$keys = array_keys($params);
-				$pks = (array) $targetClass::primaryKey();
+				$pks = $targetClass::primaryKey();
 				sort($keys);
 				sort($pks);
 				if ($keys === $pks) {
