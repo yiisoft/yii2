@@ -68,11 +68,11 @@ class DbMessageSource extends MessageSource
 	/**
 	 * @var string the name of the source message table.
 	 */
-	public $sourceMessageTable = 'tbl_source_message';
+	public $sourceMessageTable = '{{%source_message}}';
 	/**
 	 * @var string the name of the translated message table.
 	 */
-	public $messageTable = 'tbl_message';
+	public $messageTable = '{{%message}}';
 	/**
 	 * @var integer the time in seconds that the messages can remain valid in cache.
 	 * Use 0 to indicate that the cached data will never expire.
