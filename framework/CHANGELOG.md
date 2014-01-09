@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.0 beta under development
 ----------------------------
 
+- Enh #1874: Add romanian translation (vova07)
 - Bug #1446: Logging while logs are processed causes infinite loop (qiangxue)
 - Bug #1497: Localized view files are not correctly returned (mintao)
 - Bug #1500: Log messages exported to files are not separated by newlines (omnilight, qiangxue)
