@@ -44,8 +44,6 @@ use yii\helpers\StringHelper;
  */
 class ActiveRecord extends BaseActiveRecord
 {
-	const PRIMARY_KEY_NAME = 'id';
-
 	private $_id;
 	private $_score;
 	private $_version;
@@ -471,12 +469,17 @@ class ActiveRecord extends BaseActiveRecord
 		// TODO do this via command
 		$url = [static::index(), static::type(), '_bulk'];
 		$response = static::getDb()->post($url, [], $bulk);
-
 		$n=0;
+		$errors = [];
 		foreach($response['items'] as $item) {
-			if ($item['update']['ok']) {
+			if (isset($item['update']['error'])) {
+				$errors[] = $item['update'];
+			} elseif ($item['update']['ok']) {
 				$n++;
 			}
+		}
+		if (!empty($errors)) {
+			throw new Exception(__METHOD__ . ' failed updating records counters.', $errors);
 		}
 		return $n;
 	}
@@ -521,10 +524,16 @@ class ActiveRecord extends BaseActiveRecord
 		$url = [static::index(), static::type(), '_bulk'];
 		$response = static::getDb()->post($url, [], $bulk);
 		$n=0;
+		$errors = [];
 		foreach($response['items'] as $item) {
-			if ($item['delete']['found'] && $item['delete']['ok']) {
+			if (isset($item['delete']['error'])) {
+				$errors[] = $item['delete'];
+			} elseif ($item['delete']['found'] && $item['delete']['ok']) {
 				$n++;
 			}
+		}
+		if (!empty($errors)) {
+			throw new Exception(__METHOD__ . ' failed deleting records.', $errors);
 		}
 		return $n;
 	}
