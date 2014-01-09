@@ -56,7 +56,7 @@ return array (
   'View' => 'Anzeigen',
   'Yes' => 'Ja',
   'You are not allowed to perform this action.' => 'Sie dürfen diese Aktion nicht durchführen.',
-  'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Sie können maximal {limit, plural, one{eine Datei} other{# Dateien}} hochladen.',
+  'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Sie können maximal {limit, number} {limit, plural, one{eine Datei} other{# Dateien}} hochladen.',
   '{attribute} "{value}" has already been taken.' => '{attribute} "{value}" wird bereits verwendet.',
   '{attribute} cannot be blank.' => '{attribute} darf nicht leer sein.',
   '{attribute} is invalid.' => '{attribute} ist ungültig.',
