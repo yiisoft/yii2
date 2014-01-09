@@ -73,7 +73,7 @@ class MigrateController extends Controller
 	/**
 	 * @var string the name of the table for keeping applied migration information.
 	 */
-	public $migrationTable = 'tbl_migration';
+	public $migrationTable = '{{%migration}}';
 	/**
 	 * @var string the template file for generating new migrations.
 	 * This can be either a path alias (e.g. "@app/migrations/template.php")
