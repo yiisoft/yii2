@@ -189,7 +189,7 @@ class FileValidatorTest extends TestCase
 		$val = new FileValidator();
 		$val->validateAttribute($m, 'attr_err_ini');
 		$this->assertTrue($m->hasErrors('attr_err_ini'));
-		$this->assertTrue(stripos(current($m->getErrors('attr_files')), 'too big') !== false);
+		$this->assertTrue(stripos(current($m->getErrors('attr_err_ini')), 'too big') !== false);
 		// UPLOAD_ERR_PARTIAL
 		$m = $this->createModelForAttributeTest();
 		$val = new FileValidator();
