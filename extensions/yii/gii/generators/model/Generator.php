@@ -550,13 +550,8 @@ class Generator extends \yii\gii\Generator
 			}
 			$patterns[] = '/^' . str_replace('*', '(\w+)', $pattern) . '$/';
 		}
-		if (!empty($db->tablePrefix)) {
-			$patterns[] = "/^{$db->tablePrefix}(.*?)$/";
-			$patterns[] = "/^(.*?){$db->tablePrefix}$/";
-		} else {
-			$patterns[] = "/^tbl_(.*?)$/";
-		}
-
+		$patterns[] = "/^{$db->tablePrefix}(.*?)$/";
+		$patterns[] = "/^(.*?){$db->tablePrefix}$/";
 		$className = $tableName;
 		foreach ($patterns as $pattern) {
 			if (preg_match($pattern, $tableName, $matches)) {

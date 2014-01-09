@@ -52,7 +52,7 @@ class DbTarget extends Target
 	 * of some queries about message levels and categories. Depending on your actual needs, you may
 	 * want to create additional indexes (e.g. index on `log_time`).
 	 */
-	public $logTable = 'tbl_log';
+	public $logTable = '{{%log}}';
 
 	/**
 	 * Initializes the DbTarget component.

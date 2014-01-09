@@ -121,6 +121,12 @@ class Response extends \yii\base\Response
 	 */
 	public $content;
 	/**
+	 * @var resource|array the stream to be sent. This can be a stream handle or an array of stream handle,
+	 * the begin position and the end position. Note that when this property is set, the [[data]] and [[content]]
+	 * properties will be ignored by [[send()]].
+	 */
+	public $stream;
+	/**
 	 * @var string the charset of the text response. If not set, it will use
 	 * the value of [[Application::charset]].
 	 */
@@ -135,6 +141,10 @@ class Response extends \yii\base\Response
 	 * or '1.1' if that is not available.
 	 */
 	public $version;
+	/**
+	 * @var boolean whether the response has been sent. If this is true, calling [[send()]] will do nothing.
+	 */
+	public $isSent = false;
 	/**
 	 * @var array list of HTTP status codes and the corresponding texts
 	 */
@@ -281,6 +291,11 @@ class Response extends \yii\base\Response
 	 */
 	public function send()
 	{
+		if ($this->isSent) {
+			return;
+		} else {
+			$this->isSent = true;
+		}
 		$this->trigger(self::EVENT_BEFORE_SEND);
 		$this->prepare();
 		$this->trigger(self::EVENT_AFTER_PREPARE);
@@ -299,7 +314,9 @@ class Response extends \yii\base\Response
 		$this->_statusCode = 200;
 		$this->statusText = 'OK';
 		$this->data = null;
+		$this->stream = null;
 		$this->content = null;
+		$this->isSent = false;
 	}
 
 	/**
@@ -351,14 +368,44 @@ class Response extends \yii\base\Response
 	 */
 	protected function sendContent()
 	{
-		echo $this->content;
+		if ($this->stream === null) {
+			echo $this->content;
+			return;
+		}
+
+		set_time_limit(0); // Reset time limit for big files
+		$chunkSize = 8 * 1024 * 1024; // 8MB per chunk
+
+		if (is_array($this->stream)) {
+			list ($handle, $begin, $end) = $this->stream;
+			fseek($handle, $begin);
+			while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
+				if ($pos + $chunkSize > $end) {
+					$chunkSize = $end - $pos + 1;
+				}
+				echo fread($handle, $chunkSize);
+				flush(); // Free up memory. Otherwise large files will trigger PHP's memory limit.
+			}
+			fclose($handle);
+		} else {
+			while (!feof($this->stream)) {
+				echo fread($this->stream, $chunkSize);
+				flush();
+			}
+			fclose($this->stream);
+		}
 	}
 
 	/**
 	 * Sends a file to the browser.
+	 *
+	 * Note that this method only prepares the response for file sending. The file is not sent
+	 * until [[send()]] is called explicitly or implicitly. The latter is done after you return from a controller action.
+	 *
 	 * @param string $filePath the path of the file to be sent.
 	 * @param string $attachmentName the file name shown to the user. If null, it will be determined from `$filePath`.
 	 * @param string $mimeType the MIME type of the content. If null, it will be guessed based on `$filePath`
+	 * @return static the response object itself
 	 */
 	public function sendFile($filePath, $attachmentName = null, $mimeType = null)
 	{
@@ -370,13 +417,20 @@ class Response extends \yii\base\Response
 		}
 		$handle = fopen($filePath, 'rb');
 		$this->sendStreamAsFile($handle, $attachmentName, $mimeType);
+
+		return $this;
 	}
 
 	/**
 	 * Sends the specified content as a file to the browser.
+	 *
+	 * Note that this method only prepares the response for file sending. The file is not sent
+	 * until [[send()]] is called explicitly or implicitly. The latter is done after you return from a controller action.
+	 *
 	 * @param string $content the content to be sent. The existing [[content]] will be discarded.
 	 * @param string $attachmentName the file name shown to the user.
 	 * @param string $mimeType the MIME type of the content.
+	 * @return static the response object itself
 	 * @throws HttpException if the requested range is not satisfiable
 	 */
 	public function sendContentAsFile($content, $attachmentName, $mimeType = 'application/octet-stream')
@@ -386,7 +440,7 @@ class Response extends \yii\base\Response
 		$range = $this->getHttpRange($contentLength);
 		if ($range === false) {
 			$headers->set('Content-Range', "bytes */$contentLength");
-			throw new HttpException(416, Yii::t('yii', 'Requested range not satisfiable'));
+			throw new HttpException(416, 'Requested range not satisfiable');
 		}
 
 		$headers->setDefault('Pragma', 'public')
@@ -409,14 +463,20 @@ class Response extends \yii\base\Response
 		}
 
 		$this->format = self::FORMAT_RAW;
-		$this->send();
+
+		return $this;
 	}
 
 	/**
 	 * Sends the specified stream as a file to the browser.
+	 *
+	 * Note that this method only prepares the response for file sending. The file is not sent
+	 * until [[send()]] is called explicitly or implicitly. The latter is done after you return from a controller action.
+	 *
 	 * @param resource $handle the handle of the stream to be sent.
 	 * @param string $attachmentName the file name shown to the user.
 	 * @param string $mimeType the MIME type of the stream content.
+	 * @return static the response object itself
 	 * @throws HttpException if the requested range cannot be satisfied.
 	 */
 	public function sendStreamAsFile($handle, $attachmentName, $mimeType = 'application/octet-stream')
@@ -428,7 +488,7 @@ class Response extends \yii\base\Response
 		$range = $this->getHttpRange($fileSize);
 		if ($range === false) {
 			$headers->set('Content-Range', "bytes */$fileSize");
-			throw new HttpException(416, Yii::t('yii', 'Requested range not satisfiable'));
+			throw new HttpException(416, 'Requested range not satisfiable');
 		}
 
 		list($begin, $end) = $range;
@@ -450,20 +510,9 @@ class Response extends \yii\base\Response
 			->setDefault('Content-Length', $length)
 			->setDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
 		$this->format = self::FORMAT_RAW;
-		$this->data = $this->content = null;
-		$this->send();
+		$this->stream = [$handle, $begin, $end];
 
-		fseek($handle, $begin);
-		set_time_limit(0); // Reset time limit for big files
-		$chunkSize = 8 * 1024 * 1024; // 8MB per chunk
-		while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
-			if ($pos + $chunkSize > $end) {
-				$chunkSize = $end - $pos + 1;
-			}
-			echo fread($handle, $chunkSize);
-			flush(); // Free up memory. Otherwise large files will trigger PHP's memory limit.
-		}
-		fclose($handle);
+		return $this;
 	}
 
 	/**
@@ -549,6 +598,7 @@ class Response extends \yii\base\Response
 	 * @param string $mimeType the MIME type of the file. If null, it will be determined based on `$filePath`.
 	 * @param string $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
 	 * @param string $xHeader the name of the x-sendfile header.
+	 * @return static the response object itself
 	 */
 	public function xSendFile($filePath, $attachmentName = null, $mimeType = null, $xHeader = 'X-Sendfile')
 	{
@@ -564,7 +614,7 @@ class Response extends \yii\base\Response
 			->setDefault('Content-Type', $mimeType)
 			->setDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
 
-		$this->send();
+		return $this;
 	}
 
 	/**
@@ -775,7 +825,7 @@ class Response extends \yii\base\Response
 	 */
 	protected function prepare()
 	{
-		if ($this->data === null) {
+		if ($this->stream !== null || $this->data === null) {
 			return;
 		}
 

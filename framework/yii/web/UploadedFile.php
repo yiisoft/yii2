@@ -163,6 +163,22 @@ class UploadedFile extends Object
 		}
 		return false;
 	}
+	
+	/**
+	 * @return string original file base name
+	 */
+	public function getBaseName()
+	{
+		return pathinfo($this->name, PATHINFO_FILENAME);
+	}
+
+	/**
+	 * @return string file extension
+	 */
+	public function getExtension()
+	{
+		return strtolower(pathinfo($this->name, PATHINFO_EXTENSION));
+	}
 
 	/**
 	 * @return boolean whether there is an error with the uploaded file.

@@ -70,17 +70,6 @@ a.desc:after {
 	color: #999;
 }
 
-.error-block {
-	display: none;
-	margin-top: 5px;
-	margin-bottom: 10px;
-	color: #a94442;
-}
-
-.has-error .error-block {
-	display: block;
-}
-
 .error-summary {
 	color: #a94442;
 	background: #fdf7f7;

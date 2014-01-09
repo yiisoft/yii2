@@ -118,13 +118,13 @@ class Connection extends Component
 	 */
 	public $dsn;
 	/**
-	 * @var string the username for establishing DB connection. Defaults to empty string.
+	 * @var string the username for establishing DB connection. Defaults to `null` meaning no username to use.
 	 */
-	public $username = '';
+	public $username;
 	/**
-	 * @var string the password for establishing DB connection. Defaults to empty string.
+	 * @var string the password for establishing DB connection. Defaults to `null` meaning no password to use.
 	 */
-	public $password = '';
+	public $password;
 	/**
 	 * @var array PDO attributes (name => value) that should be set when calling [[open()]]
 	 * to establish a DB connection. Please refer to the
@@ -219,10 +219,9 @@ class Connection extends Component
 	/**
 	 * @var string the common prefix or suffix for table names. If a table name is given
 	 * as `{{%TableName}}`, then the percentage character `%` will be replaced with this
-	 * property value. For example, `{{%post}}` becomes `{{tbl_post}}` if this property is
-	 * set as `"tbl_"`.
+	 * property value. For example, `{{%post}}` becomes `{{tbl_post}}`.
 	 */
-	public $tablePrefix;
+	public $tablePrefix = 'tbl_';
 	/**
 	 * @var array mapping between PDO driver names and [[Schema]] classes.
 	 * The keys of the array are PDO driver names while the values the corresponding

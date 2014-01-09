@@ -20,6 +20,6 @@ class Exception extends \yii\db\Exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii', 'Elasticsearch Database Exception');
+		return 'Elasticsearch Database Exception';
 	}
 }

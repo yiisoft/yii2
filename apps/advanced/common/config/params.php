@@ -17,12 +17,4 @@ return [
 		'class' => 'yii\swiftmailer\Mailer',
 		'viewPath' => '@common/mails',
 	],
-
-	'components.db' => [
-		'class' => 'yii\db\Connection',
-		'dsn' => 'mysql:host=localhost;dbname=yii2advanced',
-		'username' => 'root',
-		'password' => '',
-		'charset' => 'utf8',
-	],
 ];

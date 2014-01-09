@@ -26,34 +26,35 @@ use yii\helpers\Html;
  * // styled
  * echo Progress::widget([
  *     'percent' => 65,
- *     'barOptions' => ['class' => 'bar-danger']
+ *     'barOptions' => ['class' => 'progress-bar-danger']
  * ]);
  *
  * // striped
  * echo Progress::widget([
  *     'percent' => 70,
- *     'barOptions' => ['class' => 'bar-warning'],
+ *     'barOptions' => ['class' => 'progress-bar-warning'],
  *     'options' => ['class' => 'progress-striped']
  * ]);
  *
  * // striped animated
  * echo Progress::widget([
  *     'percent' => 70,
- *     'barOptions' => ['class' => 'bar-success'],
+ *     'barOptions' => ['class' => 'progress-bar-success'],
  *     'options' => ['class' => 'active progress-striped']
  * ]);
  *
  * // stacked bars
  * echo Progress::widget([
  *     'bars' => [
- *         ['percent' => 30, 'options' => ['class' => 'bar-danger']],
- *         ['percent' => 30, 'label' => 'test', 'options' => ['class' => 'bar-success']],
- *         ['percent' => 35, 'options' => ['class' => 'bar-warning']],
+ *         ['percent' => 30, 'options' => ['class' => 'progress-bar-danger']],
+ *         ['percent' => 30, 'label' => 'test', 'options' => ['class' => 'progress-bar-success']],
+ *         ['percent' => 35, 'options' => ['class' => 'progress-bar-warning']],
  *     ]
  * ]);
  * ```
- * @see http://twitter.github.io/bootstrap/components.html#progress
+ * @see http://getbootstrap.com/components/#progress
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
+ * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
 class Progress extends Widget
@@ -67,7 +68,7 @@ class Progress extends Widget
 	 */
 	public $percent = 0;
 	/**
-	 * @var array the HTML attributes of the
+	 * @var array the HTML attributes of the bar
 	 */
 	public $barOptions = [];
 	/**
@@ -139,8 +140,22 @@ class Progress extends Widget
 	 */
 	protected function renderBar($percent, $label = '', $options = [])
 	{
-		Html::addCssClass($options, 'bar');
-		$options['style'] = "width:{$percent}%";
-		return Html::tag('div', $label, $options);
+		$defaultOptions = [
+			'role' => 'progressbar',
+			'aria-valuenow' => $percent,
+			'aria-valuemin' => 0,
+			'aria-valuemax' => 100,
+			'style' => "width:{$percent}%",
+		];
+		$options = array_merge($defaultOptions, $options);
+		Html::addCssClass($options, 'progress-bar');
+
+		$out = Html::beginTag('div', $options);
+		$out .= $label;
+		$out .= Html::tag('span', \Yii::t('yii', '{percent}% Complete', ['percent' => $percent]), [
+			'class' => 'sr-only'
+		]);
+		$out .= Html::endTag('div');
+		return $out;
 	}
 }
