@@ -10,8 +10,6 @@ using the following syntax: e.g. `[[name()]]`, `[[name\space\MyClass::name()]]`.
 - If you're displaying errors to developers do not translate these (i.e. do not use `\Yii::t()`). Errors should be
   translated only if they're displayed to end users.
 - Extension SHOULD NOT use class prefixes (i.e. `TbNavBar`, `EMyWidget`, etc.)
-- Extension MUST provide a valid autoloading configuration in `composer.json`. Details can be found in the [composer documentation](http://getcomposer.org/doc/04-schema.md#autoload) or see all [official Yii2 extensions](https://github.com/yiisoft/yii2/tree/master/extensions/yii) for example.
-
 
 
 ### Namespace and package names
@@ -43,7 +41,44 @@ Distribution
   where `ru` is your language code. If extension provides a widget it is a good idea to include some screenshots.
 - It is recommended to host your extensions at [Github](github.com).
 - Extension MUST be registered at [Packagist](https://packagist.org).
-- TBD: composer.json
+- Extension MUST provide a valid autoloading configuration in `composer.json`.
+
+### composer.json
+
+If your extension classes reside directly in repository root use PSR-4 the following way in your `composer.json`:
+
+```
+{
+        "name": "samdark/yii2-iconized-menu-widget",
+        "description": "IconizedMenu automatically adds favicons in front of menu links",
+        "keywords": ["yii", "extension", "favicon", "menu", "icon"],
+        "homepage": "https://github.com/samdark/yii2-iconized-menu-widget",
+        "type": "yii2-extension",
+        "license": "BSD-3-Clause",
+        "authors": [
+                {
+                        "name": "Alexander Makarov",
+                        "email": "sam@rmcreative.ru"
+                }
+        ],
+        "require": {
+                "yiisoft/yii2": "*"
+        },
+        "autoload": {
+                "psr-4": {
+                        "samdark\\widgets\\": ""
+                }
+        }
+}
+```
+
+In the above `samdark/yii2-iconized-menu-widget` is the package name that will be registered
+at [Packagist](https://packagist.org). It is common for it to match your github repository. `"type": "yii2-extension"`
+is mandatory in order for extension to be properly installed.
+
+We're using `psr-4` autoloader and mapping `samdark\widgets` namespace to the root directory where our classes reside.
+
+More details can be found in the [composer documentation](http://getcomposer.org/doc/04-schema.md#autoload).
 
 Working with database
 ---------------------
