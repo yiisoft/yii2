@@ -70,7 +70,7 @@ Yii Framework 2 Change Log
 - Chg #1835: `CheckboxColumn` now renders checkboxes whose values are the corresponding data key values (qiangxue)
 - Chg #1821: Changed default values for yii\db\Connection username and password to null (cebe)
 - Chg #1844: `Response::sendFile()` and other file sending methods will not send the response (qiangxue)
-- Cng #1852: DbConnection::tablePrefix default value now 'tbl_' (creocoder)
+- Chg #1852: DbConnection::tablePrefix default value now 'tbl_' (creocoder)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
