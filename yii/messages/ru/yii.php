@@ -17,7 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return array (
-  'View' => '',
+  'View' => 'Просмотр',
   '(not set)' => '(не задано)',
   'An internal server error occurred.' => 'Возникла внутренняя ошибка сервера.',
   'Are you sure to delete this item?' => 'Вы уверены, что хотите удалить этот элемент?',
