@@ -20,6 +20,6 @@ class InvalidParamException extends Exception
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii', 'Invalid Parameter');
+		return 'Invalid Parameter';
 	}
 }

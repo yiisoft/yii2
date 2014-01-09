@@ -20,7 +20,7 @@ class Exception extends \Exception implements Arrayable
 	 */
 	public function getName()
 	{
-		return \Yii::t('yii', 'Exception');
+		return 'Exception';
 	}
 
 	/**
