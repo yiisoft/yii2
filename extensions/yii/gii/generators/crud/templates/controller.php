@@ -19,7 +19,7 @@ if ($modelClass === $searchModelClass) {
 
 /** @var ActiveRecordInterface $class */
 $class = $generator->modelClass;
-$pks = (array) $class::primaryKey();
+$pks = $class::primaryKey();
 $urlParams = $generator->generateUrlParams();
 $actionParams = $generator->generateActionParams();
 $actionParamComments = $generator->generateActionParamComments();

@@ -251,7 +251,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 	public function testInsertNoPk()
 	{
-		$this->assertEquals('id', Customer::primaryKey());
+		$this->assertEquals(['id'], Customer::primaryKey());
 		$pkName = 'id';
 
 		$customer = new Customer;
