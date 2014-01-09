@@ -48,7 +48,7 @@ return array (
   'The image "{file}" is too small. The height cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => '图像"{file}"太小。他的高度不得小于{limit, number}像素。',
   'The image "{file}" is too small. The width cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => '图像"{file}"太小。他的宽度不得小于{limit, number}像素。',
   'The verification code is incorrect.' => '验证码不正确。',
-  'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => '总计<b>{count, number}</b>条{count, plural, one{数据} other{数据}}。',
+  'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => '总计<b>{count, number}</b>条数据。',
   'Unable to verify your data submission.' => '您提交的数据无法被验证。',
   'Unknown command "{command}".' => '未知的命令 "{command}"。',
   'Unknown option: --{name}' => '未知的选项：--{name}',
