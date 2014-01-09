@@ -65,7 +65,7 @@ class DbSession extends Session
 	 * When using DbSession in a production server, we recommend you create a DB index for the 'expire'
 	 * column in the session table to improve the performance.
 	 */
-	public $sessionTable = 'tbl_session';
+	public $sessionTable = '{{%session}}';
 
 	/**
 	 * Initializes the DbSession component.
