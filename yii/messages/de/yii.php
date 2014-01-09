@@ -17,7 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return array (
-  'the input value' => '',
+  'the input value' => 'der eingegebene Wert',
   '(not set)' => '(nicht gesetzt)',
   'An internal server error occurred.' => 'Es ist ein interner Serverfehler aufgetreten.',
   'Are you sure to delete this item?' => 'Wollen Sie den Eintrag wirklich löschen?',
