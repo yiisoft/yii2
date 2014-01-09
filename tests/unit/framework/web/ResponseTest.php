@@ -5,29 +5,16 @@ namespace yiiunit\framework\web;
 use Yii;
 use yii\helpers\StringHelper;
 
-class MockResponse extends \yii\web\Response
-{
-	public function send()
-	{
-		// does nothing to allow testing
-	}
-}
-
 /**
  * @group web
  */
 class ResponseTest extends \yiiunit\TestCase
 {
-	/**
-	 * @var MockResponse
-	 */
-	public $response;
-
 	protected function setUp()
 	{
 		parent::setUp();
 		$this->mockApplication();
-		$this->response = new MockResponse;
+		$this->response = new \yii\web\Response;
 	}
 
 	public function rightRanges()
@@ -50,7 +37,7 @@ class ResponseTest extends \yiiunit\TestCase
 		$fullContent = file_get_contents($dataFile);
 		$_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
 		ob_start();
-		$this->response->sendFile($dataFile)->send();
+		$this->response->sendFile($dataFile)->send(	);
 		$content = ob_get_clean();
 
 		$this->assertEquals($expectedContent, $content);
