@@ -90,16 +90,26 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			}
 			unset($row);
 		}
+		/** @var ActiveRecord $modelClass */
+		$modelClass = $this->modelClass;
+		$pk = $modelClass::primaryKey()[0];
 		if ($this->asArray && $this->indexBy) {
 			foreach ($result['hits']['hits'] as &$row) {
-				$row['_source'][ActiveRecord::PRIMARY_KEY_NAME] = $row['_id'];
+				if ($pk === '_id') {
+					$row['_source']['_id'] = $row['_id'];
+				}
+				$row['_source']['_score'] = $row['_score'];
 				$row = $row['_source'];
 			}
+			unset($row);
 		}
 		$models = $this->createModels($result['hits']['hits']);
 		if ($this->asArray && !$this->indexBy) {
 			foreach($models as $key => $model) {
-				$model['_source'][ActiveRecord::PRIMARY_KEY_NAME] = $model['_id'];
+				if ($pk === '_id') {
+					$model['_source']['_id'] = $model['_id'];
+				}
+				$model['_source']['_score'] = $model['_score'];
 				$models[$key] = $model['_source'];
 			}
 		}
@@ -123,8 +133,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			return null;
 		}
 		if ($this->asArray) {
+			/** @var ActiveRecord $modelClass */
+			$modelClass = $this->modelClass;
 			$model = $result['_source'];
-			$model[ActiveRecord::PRIMARY_KEY_NAME] = $result['_id'];
+			$pk = $modelClass::primaryKey()[0];
+			if ($pk === '_id') {
+				$model['_id'] = $result['_id'];
+			}
+			$model['_score'] = $result['_score'];
 		} else {
 			/** @var ActiveRecord $class */
 			$class = $this->modelClass;
@@ -147,8 +163,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		if (!empty($result['hits']['hits'])) {
 			$models = $this->createModels($result['hits']['hits']);
 			if ($this->asArray) {
+				/** @var ActiveRecord $modelClass */
+				$modelClass = $this->modelClass;
+				$pk = $modelClass::primaryKey()[0];
 				foreach($models as $key => $model) {
-					$model['_source'][ActiveRecord::PRIMARY_KEY_NAME] = $model['_id'];
+					if ($pk === '_id') {
+						$model['_source']['_id'] = $model['_id'];
+					}
+					$model['_source']['_score'] = $model['_score'];
 					$models[$key] = $model['_source'];
 				}
 			}
@@ -167,7 +189,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	{
 		$record = parent::one($db);
 		if ($record !== false) {
-			if ($field == ActiveRecord::PRIMARY_KEY_NAME) {
+			if ($field == '_id') {
 				return $record['_id'];
 			} elseif (isset($record['_source'][$field])) {
 				return $record['_source'][$field];
@@ -181,7 +203,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 */
 	public function column($field, $db = null)
 	{
-		if ($field == ActiveRecord::PRIMARY_KEY_NAME) {
+		if ($field == '_id') {
 			$command = $this->createCommand($db);
 			$command->queryParts['fields'] = [];
 			$result = $command->search();

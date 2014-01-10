@@ -145,7 +145,10 @@ trait ActiveRecordTestTrait
 		// scope
 		$this->assertEquals(2, count($this->callCustomerFind()->active()->all()));
 		$this->assertEquals(2, $this->callCustomerFind()->active()->count());
+	}
 
+	public function testFindAsArray()
+	{
 		// asArray
 		$customer = $this->callCustomerFind()->where(['id' => 2])->asArray()->one();
 		$this->assertEquals([
@@ -494,6 +497,37 @@ trait ActiveRecordTestTrait
 	public function testFindEagerViaRelationPreserveOrder()
 	{
 		/** @var TestCase|ActiveRecordTestTrait $this */
+
+		/*
+		Item (name, category_id)
+		Order (customer_id, create_time, total)
+		OrderItem (order_id, item_id, quantity, subtotal)
+
+		Result should be the following:
+
+		Order 1: 1, 1325282384, 110.0
+		- orderItems:
+			OrderItem: 1, 1, 1, 30.0
+			OrderItem: 1, 2, 2, 40.0
+		- itemsInOrder:
+			Item 1: 'Agile Web Application Development with Yii1.1 and PHP5', 1
+			Item 2: 'Yii 1.1 Application Development Cookbook', 1
+
+		Order 2: 2, 1325334482, 33.0
+		- orderItems:
+			OrderItem: 2, 3, 1, 8.0
+			OrderItem: 2, 4, 1, 10.0
+			OrderItem: 2, 5, 1, 15.0
+		- itemsInOrder:
+			Item 5: 'Cars', 2
+			Item 3: 'Ice Age', 2
+			Item 4: 'Toy Story', 2
+		Order 3: 2, 1325502201, 40.0
+		- orderItems:
+			OrderItem: 3, 2, 1, 40.0
+		- itemsInOrder:
+			Item 3: 'Ice Age', 2
+		 */
 		$orders = $this->callOrderFind()->with('itemsInOrder1')->orderBy('create_time')->all();
 		$this->assertEquals(3, count($orders));
 

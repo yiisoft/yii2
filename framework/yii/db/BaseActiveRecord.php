@@ -923,7 +923,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 */
 	public function equals($record)
 	{
-		if ($this->isNewRecord || $record->isNewRecord) {
+		if ($this->getIsNewRecord() || $record->getIsNewRecord()) {
 			return false;
 		}
 		return get_class($this) === get_class($record) && $this->getPrimaryKey() === $record->getPrimaryKey();
