@@ -41,9 +41,15 @@ class NavBar extends Widget
 	/**
 	 * @var array the HTML attributes for the widget container tag. The following special options are recognized:
 	 *
-	 * - tag: string, defaults to "nav", the tag name of the container tag of this widget
+	 * - tag: string, defaults to "nav", the name of the container tag
 	 */
 	public $options = [];
+	/**
+	 * @var array the HTML attributes for the collapse container tag. The following special options are recognized:
+	 *
+	 * - tag: string, defaults to "div", the name of the container tag
+	 */
+	public $collapseOptions = [];
 	/**
 	 * @var string the text of the brand. Note that this is not HTML-encoded.
 	 * @see http://getbootstrap.com/components/#navbar
@@ -79,8 +85,8 @@ class NavBar extends Widget
 	{
 		parent::init();
 		$this->clientOptions = false;
-		if (!isset($this->options['class'])) {
-			Html::addCssClass($this->options, 'navbar');
+		Html::addCssClass($this->options, 'navbar');
+		if ($this->options['class'] === 'navbar') {
 			Html::addCssClass($this->options, 'navbar-default');
 		}
 		if (!isset($this->options['role'])) {
@@ -98,13 +104,18 @@ class NavBar extends Widget
 		echo Html::beginTag('div', ['class' => 'navbar-header']);
 		echo $this->renderToggleButton();
 		if ($this->brandLabel !== null) {
-			if (!isset($this->brandOptions['class'])) {
-				Html::addCssClass($this->brandOptions, 'navbar-brand');
-			}
+			Html::addCssClass($this->brandOptions, 'navbar-brand');
 			echo Html::a($this->brandLabel, $this->brandUrl, $this->brandOptions);
 		}
 		echo Html::endTag('div');
-		echo Html::beginTag('div', ['class' => "collapse navbar-collapse navbar-{$this->options['id']}-collapse"]);
+		$options = $this->collapseOptions;
+		$tag = ArrayHelper::remove($options, 'tag', 'div');
+		Html::addCssClass($options, 'collapse');
+		Html::addCssClass($options, 'navbar-collapse');
+		if (!isset($options['id'])) {
+			$options['id'] = "#{$this->options['id']}-collapse";
+		}
+		echo Html::beginTag($tag, $options);
 	}
 
 	/**
@@ -112,7 +123,8 @@ class NavBar extends Widget
 	 */
 	public function run()
 	{
-		echo Html::endTag('div');
+		$tag = ArrayHelper::remove($this->collapseOptions, 'tag', 'div');
+		echo Html::endTag($tag);
 		if ($this->renderInnerContainer) {
 			echo Html::endTag('div');
 		}
@@ -132,7 +144,7 @@ class NavBar extends Widget
 		return Html::button("{$screenReader}\n{$bar}\n{$bar}\n{$bar}", [
 			'class' => 'navbar-toggle',
 			'data-toggle' => 'collapse',
-			'data-target' => ".navbar-{$this->options['id']}-collapse",
+			'data-target' => "#{$this->options['id']}-collapse",
 		]);
 	}
 }
