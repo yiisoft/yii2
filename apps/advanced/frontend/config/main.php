@@ -13,9 +13,6 @@ return [
 	'basePath' => dirname(__DIR__),
 	'vendorPath' => $rootDir . '/vendor',
 	'controllerNamespace' => 'frontend\controllers',
-	'modules' => [
-		'gii' => 'yii\gii\Module'
-	],
 	'extensions' => require($rootDir . '/vendor/yiisoft/extensions.php'),
 	'components' => [
 		'db' => $params['components.db'],
