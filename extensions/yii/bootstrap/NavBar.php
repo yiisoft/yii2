@@ -7,6 +7,7 @@
 
 namespace yii\bootstrap;
 
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -30,15 +31,22 @@ use yii\helpers\Html;
  * NavBar::end();
  * ```
  *
- * @see http://twitter.github.io/bootstrap/components.html#navbar
+ * @see http://getbootstrap.com/components/#navbar
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
+ * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
  */
 class NavBar extends Widget
 {
 	/**
+	 * @var array the HTML attributes for the widget container tag. The following special options are recognized:
+	 *
+	 * - tag: string, defaults to "nav", the tag name of the container tag of this widget
+	 */
+	public $options = [];
+	/**
 	 * @var string the text of the brand. Note that this is not HTML-encoded.
-	 * @see http://twitter.github.io/bootstrap/components.html#navbar
+	 * @see http://getbootstrap.com/components/#navbar
 	 */
 	public $brandLabel;
 	/**
@@ -55,10 +63,14 @@ class NavBar extends Widget
 	 */
 	public $screenReaderToggleText = 'Toggle navigation';
 	/**
-	 * @var bool whether the navbar content should be included in a `container` div which adds left and right padding.
-	 * Set this to false for a 100% width navbar.
+	 * @var bool whether the navbar content should be included in an inner div container which by default
+	 * adds left and right padding. Set this to false for a 100% width navbar.
 	 */
-	public $padded = true;
+	public $renderInnerContainer = true;
+	/**
+	 * @var array the HTML attributes of the inner container.
+	 */
+	public $innerContainerOptions = [];
 
 	/**
 	 * Initializes the widget.
@@ -67,27 +79,31 @@ class NavBar extends Widget
 	{
 		parent::init();
 		$this->clientOptions = false;
-		Html::addCssClass($this->options, 'navbar');
-		if ($this->options['class'] == 'navbar') {
+		if (!isset($this->options['class'])) {
+			Html::addCssClass($this->options, 'navbar');
 			Html::addCssClass($this->options, 'navbar-default');
 		}
-		Html::addCssClass($this->brandOptions, 'navbar-brand');
-		if (empty($this->options['role'])) {
+		if (!isset($this->options['role'])) {
 			$this->options['role'] = 'navigation';
 		}
-
-		echo Html::beginTag('nav', $this->options);
-		if ($this->padded) {
-			echo Html::beginTag('div', ['class' => 'container']);
+		$options = $this->options;
+		$tag = ArrayHelper::remove($options, 'tag', 'nav');
+		echo Html::beginTag($tag, $options);
+		if ($this->renderInnerContainer) {
+			if (!isset($this->innerContainerOptions['class'])) {
+				Html::addCssClass($this->innerContainerOptions, 'container');
+			}
+			echo Html::beginTag('div', $this->innerContainerOptions);
 		}
-
 		echo Html::beginTag('div', ['class' => 'navbar-header']);
 		echo $this->renderToggleButton();
 		if ($this->brandLabel !== null) {
+			if (!isset($this->brandOptions['class'])) {
+				Html::addCssClass($this->brandOptions, 'navbar-brand');
+			}
 			echo Html::a($this->brandLabel, $this->brandUrl, $this->brandOptions);
 		}
 		echo Html::endTag('div');
-
 		echo Html::beginTag('div', ['class' => "collapse navbar-collapse navbar-{$this->options['id']}-collapse"]);
 	}
 
@@ -96,12 +112,12 @@ class NavBar extends Widget
 	 */
 	public function run()
 	{
-
 		echo Html::endTag('div');
-		if ($this->padded) {
+		if ($this->renderInnerContainer) {
 			echo Html::endTag('div');
 		}
-		echo Html::endTag('nav');
+		$tag = ArrayHelper::remove($this->options, 'tag', 'nav');
+		echo Html::endTag($tag, $this->options);
 		BootstrapPluginAsset::register($this->getView());
 	}
 
@@ -112,7 +128,7 @@ class NavBar extends Widget
 	protected function renderToggleButton()
 	{
 		$bar = Html::tag('span', '', ['class' => 'icon-bar']);
-		$screenReader = '<span class="sr-only">'.$this->screenReaderToggleText.'</span>';
+		$screenReader = "<span class=\"sr-only\">{$this->screenReaderToggleText}</span>";
 		return Html::button("{$screenReader}\n{$bar}\n{$bar}\n{$bar}", [
 			'class' => 'navbar-toggle',
 			'data-toggle' => 'collapse',
