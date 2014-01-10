@@ -22,7 +22,7 @@ use yii\helpers\FileHelper;
  * 1. Create a configuration file using the 'message/config' command:
  *    yii message/config /path/to/myapp/messages/config.php
  * 2. Edit the created config file, adjusting it for your web application needs.
- * 3. Run the 'message/extract' extract, using created config:
+ * 3. Run the 'message/extract' command, using created config:
  *    yii message /path/to/myapp/messages/config.php
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
