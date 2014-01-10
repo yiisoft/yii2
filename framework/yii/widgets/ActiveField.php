@@ -55,7 +55,7 @@ class ActiveField extends Component
 	 * merged with this property when rendering the error tag.
 	 * The following special options are recognized:
 	 *
-	 * - tag: the tag name of the container element. Defaults to "div".
+	 * - tag: the tag name of the container element. Defaults to "span".
 	 */
 	public $errorOptions = ['class' => 'help-block'];
 	/**
@@ -68,9 +68,9 @@ class ActiveField extends Component
 	 * merged with this property when rendering the hint tag.
 	 * The following special options are recognized:
 	 *
-	 * - tag: the tag name of the container element. Defaults to "div".
+	 * - tag: the tag name of the container element. Defaults to "span".
 	 */
-	public $hintOptions = ['class' => 'hint-block'];
+	public $hintOptions = ['class' => 'help-block'];
 	/**
 	 * @var boolean whether to enable client-side data validation.
 	 * If not set, it will take the value of [[ActiveForm::enableClientValidation]].
@@ -112,7 +112,7 @@ class ActiveField extends Component
 	/**
 	 * @var array different parts of the field (e.g. input, label). This will be used together with
 	 * [[template]] to generate the final field HTML code. The keys are the token names in [[template]],
-	 * while the values are the corresponding HTML code. Valid tokens include `{input}`, `{label}` and `{error}`. 
+	 * while the values are the corresponding HTML code. Valid tokens include `{input}`, `{label}` and `{error}`.
 	 * Note that you normally don't need to access this property directly as
 	 * it is maintained by various methods of this class.
 	 */
@@ -239,7 +239,7 @@ class ActiveField extends Component
 	 *
 	 * The following options are specially handled:
 	 *
-	 * - tag: this specifies the tag name. If not set, "div" will be used.
+	 * - tag: this specifies the tag name. If not set, "span" will be used.
 	 *
 	 * @return static the field object itself
 	 */
@@ -258,14 +258,14 @@ class ActiveField extends Component
 	 *
 	 * The following options are specially handled:
 	 *
-	 * - tag: this specifies the tag name. If not set, "div" will be used.
+	 * - tag: this specifies the tag name. If not set, "span" will be used.
 	 *
 	 * @return static the field object itself
 	 */
 	public function hint($content, $options = [])
 	{
 		$options = array_merge($this->hintOptions, $options);
-		$tag = ArrayHelper::remove($options, 'tag', 'div');
+		$tag = ArrayHelper::remove($options, 'tag', 'span');
 		$this->parts['{hint}'] = Html::tag($tag, $content, $options);
 		return $this;
 	}
