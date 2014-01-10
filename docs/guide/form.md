@@ -102,5 +102,5 @@ or
 <?= Html::activeLabel($model, 'username', ['label' => 'name']) ?>
 <?= Html::activeTextInput($model, 'username') ?>
 <?= Html::error($model, 'username') ?>
-<div class="hint-block">Please enter your name</div>
+<span class="help-block">Please enter your name</span>
 ```
