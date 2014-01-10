@@ -47,12 +47,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		if ($db->createCommand()->indexExists('yiitest')) {
 			$db->createCommand()->deleteIndex('yiitest');
 		}
+		$db->createCommand()->createIndex('yiitest');
 
 		$command = $db->createCommand();
 		Customer::setUpMapping($command);
 		Item::setUpMapping($command);
 		Order::setUpMapping($command);
 		OrderItem::setUpMapping($command);
+
+		$db->createCommand()->flushIndex('yiitest');
 
 		$customer = new Customer();
 		$customer->id = 1;
