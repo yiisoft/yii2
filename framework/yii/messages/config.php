@@ -7,7 +7,11 @@ return [
 	'messagePath' => __DIR__,
 	// array, required, list of language codes that the extracted messages
 	// should be translated to. For example, ['zh-CN', 'de'].
+<<<<<<< HEAD
+	'languages' => ['da', 'de', 'ru', 'pl', 'pt-BR', 'it', 'ro'],
+=======
 	'languages' => ['da', 'de', 'ru', 'pl', 'pt-BR', 'it', 'es'],
+>>>>>>> 9daac9643ec9a7c7e5d01f733f1ad6928118c982
 	// string, the name of the function for translating messages.
 	// Defaults to 'Yii::t'. This is used as a mark to find the messages to be
 	// translated. You may use a string for single function name or an array for
