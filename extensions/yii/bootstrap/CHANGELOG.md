@@ -12,6 +12,7 @@ Yii Framework 2 bootstrap extension Change Log
 - Chg #1459: Update Collapse to use bootstrap 3 classes (tonydspaniard)
 - Chg #1820: Update Progress to use bootstrap 3 markup (samdark)
 - Chg #1881: NavBar padded renamed to renderInnerContainer (creocoder)
+- Chg #1881: NavBar collapseOptions added (creocoder)
 
 2.0.0 alpha, December 1, 2013
 -----------------------------
