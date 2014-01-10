@@ -26,12 +26,15 @@ use yii\authclient\ClientInterface;
  * ]); ?>
  * ~~~
  *
- * You can customize the widget appearance by using [[beginWidget()]] and [[endWidget()]] syntax
+ * You can customize the widget appearance by using [[begin()]] and [[end()]] syntax
  * along with using method {@link clientLink()} or {@link createClientUrl()}.
  * For example:
  *
  * ~~~php
- * <?php $authChoice = yii\authclient\widgets\Choice::beginWidget([
+ * <?php
+ * use yii\authclient\widgets\Choice;
+ * ?>
+ * <?php $authChoice = Choice::begin([
  *     'baseAuthUrl' => ['site/auth']
  * ]); ?>
  * <ul>
@@ -39,7 +42,7 @@ use yii\authclient\ClientInterface;
  *     <li><?= $authChoice->clientLink($client); ?></li>
  * <?php endforeach; ?>
  * </ul>
- * <?php yii\authclient\widgets\Choice::endWidget(); ?>
+ * <?php Choice::end(); ?>
  * ~~~
  *
  * This widget supports following keys for [[ClientInterface::getViewOptions()]] result:
