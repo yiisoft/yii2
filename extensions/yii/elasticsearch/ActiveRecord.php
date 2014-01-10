@@ -66,14 +66,6 @@ class ActiveRecord extends BaseActiveRecord
 	{
 		$query = static::createQuery();
 		if (is_array($q)) {
-			if (count($q) == 1 && (array_key_exists(ActiveRecord::PRIMARY_KEY_NAME, $q)) && $query->where === null) {
-				$pk = $q[ActiveRecord::PRIMARY_KEY_NAME];
-				if (is_array($pk)) {
-					return  static::mget($pk);
-				} else {
-					return static::get($pk);
-				}
-			}
 			return $query->andWhere($q)->one();
 		} elseif ($q !== null) {
 			return static::get($q);
