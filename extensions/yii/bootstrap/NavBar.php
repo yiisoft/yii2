@@ -102,19 +102,19 @@ class NavBar extends Widget
 			echo Html::beginTag('div', $this->innerContainerOptions);
 		}
 		echo Html::beginTag('div', ['class' => 'navbar-header']);
+		if (!isset($this->collapseOptions['id'])) {
+			$this->collapseOptions['id'] = "{$this->options['id']}-collapse";
+		}
 		echo $this->renderToggleButton();
 		if ($this->brandLabel !== null) {
 			Html::addCssClass($this->brandOptions, 'navbar-brand');
 			echo Html::a($this->brandLabel, $this->brandUrl, $this->brandOptions);
 		}
 		echo Html::endTag('div');
+		Html::addCssClass($this->collapseOptions, 'collapse');
+		Html::addCssClass($this->collapseOptions, 'navbar-collapse');
 		$options = $this->collapseOptions;
 		$tag = ArrayHelper::remove($options, 'tag', 'div');
-		Html::addCssClass($options, 'collapse');
-		Html::addCssClass($options, 'navbar-collapse');
-		if (!isset($options['id'])) {
-			$options['id'] = "#{$this->options['id']}-collapse";
-		}
 		echo Html::beginTag($tag, $options);
 	}
 
@@ -144,7 +144,7 @@ class NavBar extends Widget
 		return Html::button("{$screenReader}\n{$bar}\n{$bar}\n{$bar}", [
 			'class' => 'navbar-toggle',
 			'data-toggle' => 'collapse',
-			'data-target' => "#{$this->options['id']}-collapse",
+			'data-target' => "#{$this->collapseOptions['id']}",
 		]);
 	}
 }
