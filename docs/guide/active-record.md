@@ -461,7 +461,7 @@ class User extends ActiveRecord
 {
 	public function getBooks()
 	{
-		return $this->hasMany(Item::className(), ['owner_id' => 'id']->onCondition(['category_id' => 1]);
+		return $this->hasMany(Item::className(), ['owner_id' => 'id'])->onCondition(['category_id' => 1]);
 	}
 }
 ```
