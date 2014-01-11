@@ -78,10 +78,10 @@ access `http://hostname/path/to/yii-app/requirements.php` in your browser.
 If you are using Linux you can create a hard link to make it accessable, using the following command:
 
 ```
-ln requirements.php ../requirements.php
+ln -s requirements.php ../requirements.php
 ```
 
-For the advanded app the `requirements.php` is two levels up so you have to use `ln requirements.php ../../requirements.php`.
+For the advanded app the `requirements.php` is two levels up so you have to use `ln -s requirements.php ../../requirements.php`.
 
 Yii 2 requires PHP 5.4.0 or higher. Yii has been tested with the [Apache HTTP server](http://httpd.apache.org/) and
 [Nginx HTTP server](http://nginx.org/) on Windows and Linux.
