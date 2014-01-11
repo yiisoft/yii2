@@ -1,11 +1,11 @@
 {
-	"name": "yiisoft/yii2-authclient",
-	"description": "External authentication via OAuth and OpenID for the Yii framework",
-	"keywords": ["yii", "OAuth", "OpenID", "auth"],
+	"name": "yiisoft/yii2-sphinx",
+	"description": "Sphinx full text search engine extension for the Yii framework",
+	"keywords": ["yii", "sphinx", "active-record", "search", "fulltext"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {
-		"issues": "https://github.com/yiisoft/yii2/issues?state=open",
+		"issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Asphinx",
 		"forum": "http://www.yiiframework.com/forum/",
 		"wiki": "http://www.yiiframework.com/wiki/",
 		"irc": "irc://irc.freenode.net/yii",
@@ -19,10 +19,10 @@
 	],
 	"require": {
 		"yiisoft/yii2": "*",
-		"ext-curl": "*"
+		"ext-pdo": "*",
+		"ext-pdo_mysql": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\authclient\\": "" }
-	},
-	"target-dir": "yii/authclient"
+		"psr-4": { "yii\\sphinx\\": "" }
+	}
 }

@@ -1,7 +1,7 @@
 Yii2 class loader
 =================
 
-Yii 2 class loader is PSR-0 compliant. That means it can handle most of the PHP
+Yii 2 class loader is PSR-4 compliant. That means it can handle most of the PHP
 libraries and frameworks out there.
 
 In order to autoload a library you need to set a root alias for it.

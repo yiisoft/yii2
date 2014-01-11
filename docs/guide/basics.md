@@ -81,7 +81,7 @@ Autoloading
 All classes, interfaces and traits are loaded automatically at the moment they are used. There's no need to use
 `include` or `require`. It is, as well, true for Composer-loaded packages and Yii extensions.
 
-Autoloader works according to [PSR-0](). That means namespaces and class, interface and trait
+Autoloader works according to [PSR-4](). That means namespaces and class, interface and trait
 names should correspond to file system paths except root namespace path that is defined by an alias.
 
 For example, if standard alias `@app` refers to `/var/www/example.com/` then `\app\models\User` will be loaded from

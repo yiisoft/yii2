@@ -1,11 +1,11 @@
 {
-	"name": "yiisoft/yii2-debug",
-	"description": "The debugger extension for the Yii framework",
-	"keywords": ["yii", "debug", "debugger"],
+	"name": "yiisoft/yii2-bootstrap",
+	"description": "The Twitter Bootstrap extension for the Yii framework",
+	"keywords": ["yii", "bootstrap"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {
-		"issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Adebug",
+		"issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Abootstrap",
 		"forum": "http://www.yiiframework.com/forum/",
 		"wiki": "http://www.yiiframework.com/wiki/",
 		"irc": "irc://irc.freenode.net/yii",
@@ -19,10 +19,9 @@
 	],
 	"require": {
 		"yiisoft/yii2": "*",
-		"yiisoft/yii2-bootstrap": "*"
+		"twbs/bootstrap": "3.0.*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\debug\\": "" }
-	},
-	"target-dir": "yii/debug"
+		"psr-4": { "yii\\bootstrap\\": "" }
+	}
 }
