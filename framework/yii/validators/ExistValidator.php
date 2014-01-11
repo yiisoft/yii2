@@ -107,10 +107,10 @@ class ExistValidator extends Validator
 			return [$this->message, []];
 		}
 		if ($this->targetClass === null) {
-			throw new InvalidConfigException('The "className" property must be set.');
+			throw new InvalidConfigException('The "targetClass" property must be set.');
 		}
 		if (!is_string($this->targetAttribute)) {
-			throw new InvalidConfigException('The "attributeName" property must be configured as a string.');
+			throw new InvalidConfigException('The "targetAttribute" property must be configured as a string.');
 		}
 
 		/** @var \yii\db\ActiveRecordInterface $targetClass */
