@@ -82,7 +82,7 @@ class BaseJson
 	protected static function processData($data, &$expressions, $expPrefix)
 	{
 		if ($data instanceof \JsonSerializable) {
-			return $data;
+			$data = $data->jsonSerialize();
 		}
 
 		if (is_object($data)) {
