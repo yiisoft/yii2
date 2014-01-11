@@ -97,7 +97,8 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"yii\\faker\\": "extensions/faker/"
+			"yii\\faker\\": "extensions/faker/",
+			"yii\\twig\\": "extensions/twig/"
 		},
 		"psr-0": {
 			"yii\\apidoc\\": "extensions/",
@@ -114,7 +115,6 @@
 			"yii\\smarty\\": "extensions/",
 			"yii\\swiftmailer\\": "extensions/",
 			"yii\\sphinx\\": "extensions/",
-			"yii\\twig\\": "extensions/",
 			"yii\\": "framework/"
 		}
 	}
