@@ -17,7 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return array (
-  'the input value' => 'قيمة المُدخل',
+  'the input value' => 'القيمة المُدخلة',
   '(not set)' => '(لم تحدد)',
   'An internal server error occurred.' => '.حدث خطأ داخلي في الخادم',
   'Are you sure to delete this item?' => 'هل أنت متأكد من حذف هذا العنصر؟',
@@ -43,7 +43,6 @@ return array (
   'The file "{file}" is too big. Its size cannot exceed {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'الملف "{file}" كبير الحجم. حجمه لا يجب أن يتخطى {limit, number} {limit, plural, one{byte} other{bytes}}.',
   'The file "{file}" is too small. Its size cannot be smaller than {limit, number} {limit, plural, one{byte} other{bytes}}.' => 
   'الملف "{file}"  صغير جداً. حجمه لا يجب أن يكون أصغر من {limit, number} {limit, plural, one{byte} other{bytes}}.',
-  
   'The format of {attribute} is invalid.' => 'شكل {attribute} غير صالح',
   'The image "{file}" is too large. The height cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'الصورة "{file}" كبيرة جداً. ارتفاعها لا يمكن أن يتخطى {limit, number} {limit, plural, one{pixel} other{pixels}}.',
   'The image "{file}" is too large. The width cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'الصورة "{file}" كبيرة جداً. عرضها لا يمكن أن يتخطى {limit, number} {limit, plural, one{pixel} other{pixels}}.',
@@ -77,11 +76,7 @@ return array (
   '{attribute} must be no less than {min}.' => '{attribute} يجب أن لا يكون أصغر من "{compareValue}".',
   '{attribute} must be repeated exactly.' => '{attribute} يجب أن يكون متطابق.',
   '{attribute} must not be equal to "{compareValue}".' => '{attribute} يجب أن يساوي "{compareValue}"',
-  '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 
-  '{attribute} يجب أن يحتوي على أكثر من {min, number} {min, plural, one{character} other{characters}}.',
-  '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => 
-  '{attribute} يجب أن لا يحتوي على أكثر من {max, number} {max, plural, one{character} other{characters}}.',
-  
-  '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => 
-  '{attribute}  يجب أن يحتوي على {min, number} {min, plural, one{character} other{characters}}.',
+  '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} يجب أن يحتوي على أكثر من {min, number} {min, plural, one{character} other{characters}}.',
+  '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} يجب أن لا يحتوي على أكثر من {max, number} {max, plural, one{character} other{characters}}.',
+  '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute}  يجب أن يحتوي على {min, number} {min, plural, one{character} other{characters}}.',
 );
