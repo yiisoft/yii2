@@ -96,6 +96,9 @@
 		"twig/twig": "required by yii2-twig extension"
 	},
 	"autoload": {
+		"psr-4": {
+			"yii\\faker\\": "extensions/faker/"
+		},
 		"psr-0": {
 			"yii\\apidoc\\": "extensions/",
 			"yii\\authclient\\": "extensions/",
@@ -103,7 +106,6 @@
 			"yii\\codeception\\": "extensions/",
 			"yii\\debug\\": "extensions/",
 			"yii\\elasticsearch\\": "extensions/",
-			"yii\\faker\\": "extensions/",
 			"yii\\gii\\": "extensions/",
 			"yii\\imagine\\" : "extensions/",
 			"yii\\jui\\": "extensions/",
