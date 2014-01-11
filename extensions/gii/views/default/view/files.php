@@ -49,7 +49,7 @@ use yii\gii\CodeFile;
 					}
 					?>
 				</td>
-				<?php if ($fileChangeExists) { ?>
+				<?php if ($fileChangeExists): ?>
 				<td class="check">
 					<?php
 					if ($file->operation === CodeFile::OP_SKIP) {
@@ -59,7 +59,7 @@ use yii\gii\CodeFile;
 					}
 					?>
 				</td>
-				<?php } ?>
+				<?php endif; ?>
 			</tr>
 			<?php endforeach; ?>
 		</tbody>
