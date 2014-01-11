@@ -38,7 +38,7 @@ return array (
   'Page not found.' => 'Página não encontrada.',
   'Please fix the following errors:' => 'Por favor, corrija os seguintes erros:',
   'Please upload a file.' => 'Por favor faça upload de um ficheiro.',
-  'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'A exibir <b>{begin, number}-{end, number}</b> de <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.',
+  'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'A exibir <b>{begin, number}-{end, number}</b> de <b>{totalCount, number}</b> {totalCount, plural, one{item} other{itens}}.',
   'The file "{file}" is not an image.' => 'O ficheiro “{file}” não é uma imagem.',
   'The file "{file}" is too big. Its size cannot exceed {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'O ficheiro “{file}” é grande demais. O tamanho não pode exceder {limit, number} {limit, plural, one{byte} other{bytes}}.',
   'The file "{file}" is too small. Its size cannot be smaller than {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'O ficheiro “{file}” é pequeno demais. O tamanho não pode ser menor do que {limit, number} {limit, plural, one{byte} other{bytes}}.',
