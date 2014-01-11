@@ -9,6 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 
 /**
