@@ -63,6 +63,7 @@ Yii Framework 2 Change Log
 - Enh: Added support for using array-typed arguments for console commands (qiangxue)
 - Enh: Added support for installing packages conforming to PSR-4 standard (qiangxue)
 - Enh: Better exception message when class cannot be loaded (samdark)
+- Enh #1839: Added support for getting file extension and basename from uploaded file (anfrantic)
 - Chg #1519: `yii\web\User::loginRequired()` now returns the `Response` object instead of exiting the application (qiangxue)
 - Chg #1586: `QueryBuilder::buildLikeCondition()` will now escape special characters and use percentage characters by default (qiangxue)
 - Chg #1610: `Html::activeCheckboxList()` and `Html::activeRadioList()` will submit an empty string if no checkbox/radio is selected (qiangxue)
@@ -83,7 +84,7 @@ Yii Framework 2 Change Log
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
-- Enh #1839: Added support for getting file extension and basename from uploaded file (anfrantic)
+- New: Yii framework now comes with message translation for various languages including (de, de, es, it, pl, pt-BR, ro, ru, zh_cn)
 
 2.0.0 alpha, December 1, 2013
 ---------------------------
