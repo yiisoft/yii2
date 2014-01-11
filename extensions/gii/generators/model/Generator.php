@@ -339,7 +339,7 @@ class Generator extends \yii\gii\Generator
 			$relationName = $this->generateRelationName($relations, $className0, $db->getTableSchema($table0), $table->primaryKey[1], true);
 			$relations[$className0][$relationName] = [
 				"return \$this->hasMany($className1::className(), $link)->viaTable('{$table->name}', $viaLink);",
-				$className0,
+				$className1,
 				true,
 			];
 
@@ -348,7 +348,7 @@ class Generator extends \yii\gii\Generator
 			$relationName = $this->generateRelationName($relations, $className1, $db->getTableSchema($table1), $table->primaryKey[0], true);
 			$relations[$className1][$relationName] = [
 				"return \$this->hasMany($className0::className(), $link)->viaTable('{$table->name}', $viaLink);",
-				$className1,
+				$className0,
 				true,
 			];
 		}
