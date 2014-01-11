@@ -97,6 +97,7 @@
 	},
 	"autoload": {
 		"psr-4": {
+			"yii\\": "framework/",
 			"yii\\apidoc\\": "extensions/apidoc/",
 			"yii\\authclient\\": "extensions/authclient/",
 			"yii\\bootstrap\\": "extensions/bootstrap/",
@@ -113,9 +114,6 @@
 			"yii\\swiftmailer\\": "extensions/swiftmailer/",
 			"yii\\sphinx\\": "extensions/sphinx/",
 			"yii\\twig\\": "extensions/twig/"
-		},
-		"psr-0": {
-			"yii\\": "framework/"
 		}
 	}
 }
