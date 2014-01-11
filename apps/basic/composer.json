@@ -21,6 +21,7 @@
 	},
 	"require-dev": {
 		"yiisoft/yii2-codeception": "*",
+		"codeception/codeception": "*",
 		"yiisoft/yii2-debug": "*",
 		"yiisoft/yii2-gii": "*"
 	},

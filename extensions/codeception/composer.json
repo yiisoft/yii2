@@ -18,7 +18,6 @@
 	],
 	"require": {
 		"yiisoft/yii2": "*",
-		"codeception/codeception": "*",
 		"codeception/specify": "*"
 	},
 	"autoload": {
