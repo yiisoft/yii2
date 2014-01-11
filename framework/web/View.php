@@ -406,7 +406,7 @@ class View extends \yii\base\View
 		$request = Yii::$app->getRequest();
 		if ($request instanceof \yii\web\Request && $request->enableCsrfValidation) {
 			$lines[] = Html::tag('meta', '', ['name' => 'csrf-var', 'content' => $request->csrfVar]);
-			$lines[] = Html::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getMaskedCsrfToken()]);
+			$lines[] = Html::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getCsrfToken()]);
 		}
 
 		if (!empty($this->linkTags)) {
