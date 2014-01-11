@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__.'/../../../../framework/yii/requirements/YiiRequirementChecker.php');
+require_once(__DIR__.'/../../../../framework/requirements/YiiRequirementChecker.php');
 
 use yiiunit\TestCase;
 

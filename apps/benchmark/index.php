@@ -2,7 +2,7 @@
 
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 
-require(__DIR__ . '/protected/vendor/yiisoft/yii2/yii/Yii.php');
+require(__DIR__ . '/protected/vendor/yiisoft/yii2/Yii.php');
 
 $config = [
 	'id' => 'benchmark',

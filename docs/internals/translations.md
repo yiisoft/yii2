@@ -12,9 +12,9 @@ that are actually visible to end user such as validation errors.
 
 In order to start with message translation:
 
-1. Check `framework/yii/messages/config.php` and make sure your language is listed in `languages`.
-2. Go to `framework/yii` and run `yii message/extract messages/config.php`.
-3. Translate messages in `framework/yii/messages/your_language/yii.php`. Make sure file is saved using UTF-8 encoding.
+1. Check `framework/messages/config.php` and make sure your language is listed in `languages`.
+2. Go to `framework` and run `yii message/extract messages/config.php`.
+3. Translate messages in `framework/messages/your_language/yii.php`. Make sure file is saved using UTF-8 encoding.
 4. [Make a pull request](https://github.com/yiisoft/yii2/blob/master/docs/internals/git-workflow.md).
 
 In order to keep your translation up to date you may run `yii message/extract messages/config.php` again. It will

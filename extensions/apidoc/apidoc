@@ -26,8 +26,8 @@ $yiiDirs = [
 	__DIR__ . '/../../../../yiisoft/yii2', // script is installed as a composer binary
 ];
 foreach($yiiDirs as $dir) {
-	if (file_exists($dir . '/yii/Yii.php')) {
-		require($dir . '/yii/Yii.php');
+	if (file_exists($dir . '/Yii.php')) {
+		require($dir . '/Yii.php');
 		break;
 	}
 }

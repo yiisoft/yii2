@@ -17,7 +17,7 @@ class TestCase extends \yiiunit\TestCase
 	public static function loadClassMap()
 	{
 		$baseNameSpace = 'yii/authclient';
-		$basePath = realpath(__DIR__. '/../../../../extensions/yii/authclient');
+		$basePath = realpath(__DIR__. '/../../../../extensions/authclient');
 		$files = FileHelper::findFiles($basePath);
 		foreach ($files as $file) {
 			$classRelativePath = str_replace($basePath, '', $file);

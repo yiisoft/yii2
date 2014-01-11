@@ -6,7 +6,7 @@ use yii\imagine\Image;
 use Imagine\Image\Point;
 use yiiunit\VendorTestCase;
 
-Yii::setAlias('@yii/imagine', __DIR__ . '/../../../../extensions/yii/imagine');
+Yii::setAlias('@yii/imagine', __DIR__ . '/../../../../extensions/imagine');
 
 abstract class AbstractImageTest extends VendorTestCase
 {
