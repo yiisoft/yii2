@@ -50,7 +50,7 @@ use yii\helpers\StringHelper;
  * @property boolean $isPut Whether this is a PUT request. This property is read-only.
  * @property boolean $isSecureConnection If the request is sent via secure channel (https). This property is
  * read-only.
- * @property string $maskedCsrfToken The masked CSRF token. This property is read-only.
+ * @property string $rawCsrfToken The unmasked CSRF token sent via cookie. This property is read-only.
  * @property string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value returned is
  * turned into upper case. This property is read-only.
  * @property array $patch The PATCH request parameter values. This property is read-only.
@@ -1015,12 +1015,12 @@ class Request extends \yii\base\Request
 	private $_csrfCookie;
 
 	/**
-	 * Returns the random token used to perform CSRF validation.
-	 * The token will be read from cookie first. If not found, a new token will be generated.
+	 * Returns the unmasked random token used to perform CSRF validation.
+	 * This token is typically sent via a cookie. If such a cookie does not exist, a new token will be generated.
 	 * @return string the random token for CSRF validation.
 	 * @see enableCsrfValidation
 	 */
-	public function getCsrfToken()
+	public function getRawCsrfToken()
 	{
 		if ($this->_csrfCookie === null) {
 			$this->_csrfCookie = $this->getCookies()->get($this->csrfVar);
@@ -1033,23 +1033,29 @@ class Request extends \yii\base\Request
 		return $this->_csrfCookie->value;
 	}
 
-	private $_maskedCsrfToken;
+	private $_csrfToken;
 
 	/**
-	 * Returns the masked CSRF token.
-	 * This method will apply a mask to [[csrfToken]] so that the resulting CSRF token
-	 * will not be exploited by [BREACH attacks](http://breachattack.com/).
-	 * @return string the masked CSRF token.
+	 * Returns the token used to perform CSRF validation.
+	 *
+	 * This token is a masked version of [[rawCsrfToken]] to prevent [BREACH attacks](http://breachattack.com/).
+	 * This token may be passed along via a hidden field of an HTML form or an HTTP header value
+	 * to support CSRF validation.
+	 *
+	 * @return string the token used to perform CSRF validation.
 	 */
-	public function getMaskedCsrfToken()
+	public function getCsrfToken()
 	{
-		if ($this->_maskedCsrfToken === null) {
-			$token = $this->getCsrfToken();
-			$mask = Security::generateRandomKey(self::CSRF_MASK_LENGTH);
+		if ($this->_csrfToken === null) {
+			// the mask doesn't need to be very random
+			$chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
+			$mask = substr(str_shuffle(str_repeat($chars, 5)), 0, self::CSRF_MASK_LENGTH);
+
+			$token = $this->getRawCsrfToken();
 			// The + sign may be decoded as blank space later, which will fail the validation
-			$this->_maskedCsrfToken = str_replace('+', '.', base64_encode($mask . $this->xorTokens($token, $mask)));
+			$this->_csrfToken = str_replace('+', '.', base64_encode($mask . $this->xorTokens($token, $mask)));
 		}
-		return $this->_maskedCsrfToken;
+		return $this->_csrfToken;
 	}
 
 	/**
