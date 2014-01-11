@@ -13,7 +13,7 @@ defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 
 define('YII_DEBUG', true);
 
-require(__DIR__ . '/../framework/yii/Yii.php');
+require(__DIR__ . '/../framework/Yii.php');
 
 $application = new yii\console\Application([
 	'id' => 'yii-build',
