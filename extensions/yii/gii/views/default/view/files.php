@@ -18,16 +18,17 @@ use yii\gii\CodeFile;
 			<tr>
 				<th class="file">Code File</th>
 				<th class="action">Action</th>
-				<th>
-					<?php
-					foreach ($files as $file) {
-						if ($file->operation !== CodeFile::OP_SKIP) {
-							echo '<input type="checkbox" id="check-all">';
-							break;
-						}
+				<?php
+				$no_file_changes = true;
+				foreach ($files as $file) {
+					if ($file->operation !== CodeFile::OP_SKIP) {
+						$no_changes = false;
+						echo '<th><input type="checkbox" id="check-all"></th>';
+						break;
 					}
-					?>
-				</th>
+				}
+				?>
+				
 			</tr>
 		</thead>
 		<tbody>
@@ -48,6 +49,7 @@ use yii\gii\CodeFile;
 					}
 					?>
 				</td>
+				<?php if (!$no_file_changes) { ?>
 				<td class="check">
 					<?php
 					if ($file->operation === CodeFile::OP_SKIP) {
@@ -57,6 +59,7 @@ use yii\gii\CodeFile;
 					}
 					?>
 				</td>
+				<?php } ?>
 			</tr>
 			<?php endforeach; ?>
 		</tbody>
