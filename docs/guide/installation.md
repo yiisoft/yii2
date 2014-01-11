@@ -75,7 +75,7 @@ php requirements.php
 
 In order to run this script in your browser, you should ensure it is accessable by the webserver and
 access `http://hostname/path/to/yii-app/requirements.php` in your browser.
-If you are using Linux you can create a hard link to make it accessable, using the following command:
+If you are using Linux you can create a soft link to make it accessable, using the following command:
 
 ```
 ln -s requirements.php ../requirements.php
