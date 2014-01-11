@@ -132,6 +132,7 @@ class QueryBuilderTest extends DatabaseTestCase
 		$this->assertEquals(0, count($tableSchema->primaryKey));
 	}
 
+	/* qiangxue: the following tests are commented because they vary by different DB drivers. need a better test scheme.
 	public function testBuildWhereExists()
 	{
 		$expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE EXISTS (SELECT `1` FROM `Website` `w`)";
@@ -213,4 +214,5 @@ class QueryBuilderTest extends DatabaseTestCase
 		$this->assertEquals($expectedQuerySql, $actualQuerySql);
 		$this->assertEquals($expectedQueryParams, $queryParams);
 	}
+	*/
 }
