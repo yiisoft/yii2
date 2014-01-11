@@ -22,7 +22,6 @@
 		"twig/twig": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\twig\\": "" }
-	},
-	"target-dir": "yii/twig"
+		"psr-4": { "yii\\twig\\": "" }
+	}
 }
