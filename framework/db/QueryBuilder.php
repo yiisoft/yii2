@@ -799,6 +799,8 @@ class QueryBuilder extends \yii\base\Object
 			'NOT LIKE' => 'buildLikeCondition',
 			'OR LIKE' => 'buildLikeCondition',
 			'OR NOT LIKE' => 'buildLikeCondition',
+			'EXISTS' => 'buildExistsCondition',
+			'NOT EXISTS' => 'buildExistsCondition',
 		];
 
 		if (!is_array($condition)) {
@@ -1070,5 +1072,22 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		return implode($andor, $parts);
+	}
+
+	/**
+	 * Creates an SQL expressions with the `EXISTS` operator.
+	 * @param string $operator the operator to use (e.g. `EXISTS` or `NOT EXISTS`)
+	 * @param array $operands contains only the one element. It is sub-query
+	 * @param array $params the binding parameters to be populated
+	 * @return string the generated SQL expression
+	 */
+	public function buildExistsCondition($operator, $operands, &$params)
+	{
+		$subQuery = $operands[0];
+		list($subQuerySql, $subQueryParams) = $this->build($subQuery);
+		foreach ($subQueryParams as $name => $value) {
+			$params[$name] = $value;
+		}
+		return "$operator ($subQuerySql)";
 	}
 }
