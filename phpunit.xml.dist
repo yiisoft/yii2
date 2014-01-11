@@ -12,19 +12,19 @@
 		</testsuites>
 		<filter>
 			<blacklist>
-				<file>framework/yii/helpers/Json.php</file>
-				<file>framework/yii/helpers/StringHelper.php</file>
-				<file>framework/yii/helpers/VarDumper.php</file>
-				<file>framework/yii/helpers/Html.php</file>
-				<file>framework/yii/helpers/Inflector.php</file>
-				<file>framework/yii/helpers/FileHelper.php</file>
-				<file>framework/yii/helpers/ArrayHelper.php</file>
-				<file>framework/yii/helpers/Console.php</file>
-				<file>framework/yii/i18n/GettextFile.php</file>
-				<file>framework/yii/web/ResponseFormatterInterface.php</file>
-				<directory suffix="Exception.php">framework/yii/base</directory>
-				<directory suffix=".php">framework/yii/db/mssql</directory>
-				<directory suffix=".php">framework/yii/bootstrap</directory>
+				<file>framework/helpers/Json.php</file>
+				<file>framework/helpers/StringHelper.php</file>
+				<file>framework/helpers/VarDumper.php</file>
+				<file>framework/helpers/Html.php</file>
+				<file>framework/helpers/Inflector.php</file>
+				<file>framework/helpers/FileHelper.php</file>
+				<file>framework/helpers/ArrayHelper.php</file>
+				<file>framework/helpers/Console.php</file>
+				<file>framework/i18n/GettextFile.php</file>
+				<file>framework/web/ResponseFormatterInterface.php</file>
+				<directory suffix="Exception.php">framework/base</directory>
+				<directory suffix=".php">framework/db/mssql</directory>
+				<directory suffix=".php">framework/bootstrap</directory>
 			</blacklist>
 		</filter>
 </phpunit>

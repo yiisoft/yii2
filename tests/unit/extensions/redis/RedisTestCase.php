@@ -6,7 +6,7 @@ use Yii;
 use yii\redis\Connection;
 use yiiunit\TestCase;
 
-Yii::setAlias('@yii/redis', __DIR__ . '/../../../../extensions/yii/redis');
+Yii::setAlias('@yii/redis', __DIR__ . '/../../../../extensions/redis');
 
 /**
  * RedisTestCase is the base class for all redis related test cases

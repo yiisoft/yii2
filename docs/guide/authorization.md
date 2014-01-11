@@ -206,7 +206,7 @@ Storing RBAC hierarchy in database is less efficient performancewise but is much
 a good management UI for it so in case you need permissions structure that is managed by end user DB is your choice.
 
 In order to get started you need to configure database connection in `db` component. After it is done [get `schema-*.sql`
-file for your database](https://github.com/yiisoft/yii2/tree/master/framework/yii/rbac) and execute it.
+file for your database](https://github.com/yiisoft/yii2/tree/master/framework/rbac) and execute it.
 
 Next step is to configure `authManager` application component in application config file (`web.php` or `main.php`
 depending on template you've used):

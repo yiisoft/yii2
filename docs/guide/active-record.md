@@ -376,8 +376,8 @@ $customer = Customer::find(1);
 // lazy loading: SELECT * FROM tbl_order WHERE customer_id=1 AND subtotal>100
 $orders = $customer->getOrders()->where('subtotal>100')->all();
 
-// eager loading: SELECT * FROM tbl_customer LIMIT 10
-                  SELECT * FROM tbl_order WHERE customer_id IN (1,2,...) AND subtotal>100
+// eager loading: SELECT * FROM tbl_customer LIMIT 100
+//                SELECT * FROM tbl_order WHERE customer_id IN (1,2,...) AND subtotal>100
 $customers = Customer::find()->limit(100)->with([
 	'orders' => function($query) {
 		$query->andWhere('subtotal>100');
@@ -461,7 +461,7 @@ class User extends ActiveRecord
 {
 	public function getBooks()
 	{
-		return $this->hasMany(Item::className(), ['owner_id' => 'id']->onCondition(['category_id' => 1]);
+		return $this->hasMany(Item::className(), ['owner_id' => 'id'])->onCondition(['category_id' => 1]);
 	}
 }
 ```
