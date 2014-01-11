@@ -1,11 +1,11 @@
 {
-	"name": "yiisoft/yii2-jui",
-	"description": "The Jquery UI extension for the Yii framework",
-	"keywords": ["yii", "Jquery UI", "renderer"],
+	"name": "yiisoft/yii2-debug",
+	"description": "The debugger extension for the Yii framework",
+	"keywords": ["yii", "debug", "debugger"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {
-		"issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Ajui",
+		"issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Adebug",
 		"forum": "http://www.yiiframework.com/forum/",
 		"wiki": "http://www.yiiframework.com/wiki/",
 		"irc": "irc://irc.freenode.net/yii",
@@ -18,10 +18,10 @@
 		}
 	],
 	"require": {
-		"yiisoft/yii2": "*"
+		"yiisoft/yii2": "*",
+		"yiisoft/yii2-bootstrap": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\jui\\": "" }
-	},
-	"target-dir": "yii/jui"
+		"psr-4": { "yii\\debug\\": "" }
+	}
 }

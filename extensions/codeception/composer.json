@@ -20,7 +20,6 @@
 		"yiisoft/yii2": "*"
 	},
 	"autoload": {
-		"psr-0": { "yii\\codeception\\": "" }
-	},
-	"target-dir": "yii/codeception"
+		"psr-4": { "yii\\codeception\\": "" }
+	}
 }

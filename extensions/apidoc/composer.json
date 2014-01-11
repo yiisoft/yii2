@@ -23,8 +23,7 @@
 		"phpdocumentor/reflection": "1.0.2"
 	},
 	"autoload": {
-		"psr-0": { "yii\\apidoc\\": "" }
+		"psr-4": { "yii\\apidoc\\": "" }
 	},
-	"target-dir": "yii/apidoc",
 	"bin": ["apidoc"]
 }
