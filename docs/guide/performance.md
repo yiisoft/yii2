@@ -158,7 +158,8 @@ used to generate `ETag` header value.
 ### Database Optimization
 
 Fetching data from database is often the main performance bottleneck in
-a Web application. Although using caching may alleviate the performance hit,
+a Web application.
+Although using [caching](caching.md#Query-Caching) may alleviate the performance hit,
 it does not fully solve the problem. When the database contains enormous data
 and the cached data is invalid, fetching the latest data could be prohibitively
 expensive without proper database and query design.
