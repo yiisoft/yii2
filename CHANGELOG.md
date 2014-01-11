@@ -84,7 +84,7 @@ Yii Framework 2 Change Log
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
-- New: Yii framework now comes with message translation for various languages including (de, de, es, it, pl, pt-BR, ro, ru, zh_cn)
+- New: Yii framework now comes with message translation for various languages including de, es, it, pl, pt-BR, ro, ru, zh-CN
 
 2.0.0 alpha, December 1, 2013
 ---------------------------
