@@ -32,7 +32,7 @@ class Markdown extends \yii\helpers\Markdown
 	 * @param TypeDoc $context
 	 * @return string
 	 */
-	public static function process($content, $context)
+	public static function process($content, $context = null)
 	{
 		$content = trim(parent::process($content, []));
 		if (!strncmp($content, '<p>', 3) && substr($content, -4, 4) == '</p>') {

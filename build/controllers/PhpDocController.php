@@ -43,7 +43,7 @@ class PhpDocController extends Controller
 	{
 		$except = [];
 		if ($root === null) {
-			$root = dirname(dirname(YII_PATH));
+			$root = dirname(YII_PATH);
 			$extensionPath = "$root/extensions";
 			foreach (scandir($extensionPath) as $extension) {
 				if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
