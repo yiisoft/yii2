@@ -404,6 +404,11 @@ class Query extends Component implements QueryInterface
 	 * - `or not like`: similar to the `not like` operator except that `OR` is used to concatenate
 	 * the `NOT LIKE` predicates.
 	 *
+	 * - `exists`: requires one operand which must be an instance of [[Query]] representing the sub-query.
+	 * It will build a `EXISTS (sub-query)` expression.
+	 *
+	 * - `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
+	 *
 	 * @param string|array $condition the conditions that should be put in the WHERE part.
 	 * @param array $params the parameters (name => value) to be bound to the query.
 	 * @return static the query object itself
