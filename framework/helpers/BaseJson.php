@@ -81,18 +81,20 @@ class BaseJson
 	 */
 	protected static function processData($data, &$expressions, $expPrefix)
 	{
-		if ($data instanceof \JsonSerializable) {
-			$data = $data->jsonSerialize();
-		}
-
 		if (is_object($data)) {
 			if ($data instanceof JsExpression) {
 				$token = "!{[$expPrefix=" . count($expressions) . ']}!';
 				$expressions['"' . $token . '"'] = $data->expression;
 				return $token;
+			} elseif ($data instanceof \JsonSerializable) {
+				$data = $data->jsonSerialize();
+			} elseif ($data instanceof Arrayable) {
+				$data = $data->toArray();
+			} else {
+				$data = get_object_vars($data);
 			}
-			$data = $data instanceof Arrayable ? $data->toArray() : get_object_vars($data);
-			if ($data === [] && !$data instanceof Arrayable) {
+
+			if ($data === []) {
 				return new \stdClass();
 			}
 		}
