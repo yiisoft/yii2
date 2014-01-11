@@ -19,10 +19,10 @@ use yii\gii\CodeFile;
 				<th class="file">Code File</th>
 				<th class="action">Action</th>
 				<?php
-				$file_changes_exists = false;
+				$fileChangeExists = false;
 				foreach ($files as $file) {
 					if ($file->operation !== CodeFile::OP_SKIP) {
-						$file_changes_exists = true;
+						$fileChangeExists = true;
 						echo '<th><input type="checkbox" id="check-all"></th>';
 						break;
 					}
@@ -49,7 +49,7 @@ use yii\gii\CodeFile;
 					}
 					?>
 				</td>
-				<?php if ($file_changes_exists) { ?>
+				<?php if ($fileChangeExists) { ?>
 				<td class="check">
 					<?php
 					if ($file->operation === CodeFile::OP_SKIP) {
