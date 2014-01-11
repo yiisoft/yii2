@@ -17,7 +17,9 @@
 		}
 	],
 	"require": {
-		"yiisoft/yii2": "*"
+		"yiisoft/yii2": "*",
+		"codeception/codeception": "*",
+		"codeception/specify": "*"
 	},
 	"autoload": {
 		"psr-4": { "yii\\codeception\\": "" }
