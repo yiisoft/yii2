@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\db\Query;
 use yii\db\QueryBuilder;
 use yii\db\Schema;
 use yii\db\mysql\QueryBuilder as MysqlQueryBuilder;
@@ -129,5 +130,87 @@ class QueryBuilderTest extends DatabaseTestCase
 		$qb = $this->getQueryBuilder(); // resets the schema
 		$tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
 		$this->assertEquals(0, count($tableSchema->primaryKey));
+	}
+
+	public function testBuildWhereExists()
+	{
+		$expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE EXISTS (SELECT `1` FROM `Website` `w`)";
+		$expectedQueryParams = null;
+
+		$subQuery = new Query();
+		$subQuery->select('1')
+			->from('Website w');
+
+		$query = new Query();
+		$query->select('id')
+			->from('TotalExample t')
+			->where(['exists', $subQuery]);
+
+		list($actualQuerySql, $actualQueryParams) = $this->getQueryBuilder()->build($query);
+		$this->assertEquals($expectedQuerySql, $actualQuerySql);
+		$this->assertEquals($expectedQueryParams, $actualQueryParams);
+	}
+
+	public function testBuildWhereNotExists()
+	{
+		$expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE NOT EXISTS (SELECT `1` FROM `Website` `w`)";
+		$expectedQueryParams = null;
+
+		$subQuery = new Query();
+		$subQuery->select('1')
+			->from('Website w');
+
+		$query = new Query();
+		$query->select('id')
+			->from('TotalExample t')
+			->where(['not exists', $subQuery]);
+
+		list($actualQuerySql, $actualQueryParams) = $this->getQueryBuilder()->build($query);
+		$this->assertEquals($expectedQuerySql, $actualQuerySql);
+		$this->assertEquals($expectedQueryParams, $actualQueryParams);
+	}
+
+	public function testBuildWhereExistsWithParameters()
+	{
+		$expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND (w.merchant_id = :merchant_id))) AND (t.some_column = :some_value)";
+		$expectedQueryParams = [':some_value' => "asd", ':merchant_id' => 6];
+
+		$subQuery = new Query();
+		$subQuery->select('1')
+			->from('Website w')
+			->where('w.id = t.website_id')
+			->andWhere('w.merchant_id = :merchant_id', [':merchant_id' => 6]);
+
+		$query = new Query();
+		$query->select('id')
+			->from('TotalExample t')
+			->where(['exists', $subQuery])
+			->andWhere('t.some_column = :some_value', [':some_value' => "asd"]);
+
+		list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+		$this->assertEquals($expectedQuerySql, $actualQuerySql);
+		$this->assertEquals($expectedQueryParams, $queryParams);
+	}
+
+	public function testBuildWhereExistsWithArrayParameters()
+	{
+		$expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND ((`w`.`merchant_id`=:qp0) AND (`w`.`user_id`=:qp1)))) AND (`t`.`some_column`=:qp2)";
+		$expectedQueryParams = [':qp0' => 6, ':qp1' => 210, ':qp2' => 'asd'];
+
+		$subQuery = new Query();
+		$subQuery->select('1')
+			->from('Website w')
+			->where('w.id = t.website_id')
+			->andWhere(['w.merchant_id' => 6, 'w.user_id' => '210']);
+
+		$query = new Query();
+		$query->select('id')
+			->from('TotalExample t')
+			->where(['exists', $subQuery])
+			->andWhere(['t.some_column' => "asd"]);
+
+		list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+		$this->assertEquals($expectedQuerySql, $actualQuerySql);
+		$this->assertEquals($expectedQueryParams, $queryParams);
 	}
 }
