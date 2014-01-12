@@ -20,7 +20,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
 	public function build($query)
 	{
-		// var_dump($query);exit;
 		$params = $query->params;
 		$clauses = [
 			$this->buildSelect($query->select, $query->distinct, $query->selectOption),
