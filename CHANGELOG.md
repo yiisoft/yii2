@@ -82,8 +82,8 @@ Yii Framework 2 Change Log
 - Chg: Changed the signature of `urlCreator` and button creators for `yii\gridview\ActionColumn` (qiangxue)
 - Chg: Updated HTMLPurified dependency to `4.6.*`.
 - Chg: Changed Yii autoloader to support loading PSR-4 classes only (i.e. PEAR-styled classes not supported anymore) (qiangxue)
-- Chg: Changed the directory structure of the framework repository according to PSR-4.
-       You have to update your applications index.php and yii console file to point to the right location for Yii.php
+- Chg: Changed the directory structure according to PSR-4. You have to update your application `index.php`,
+       `index-test.php` and `yii` files to point to the new location of `Yii.php` (qiangxue, cebe)
 - Chg: Advanced app template: moved database connection DSN, login and password to `-local` config not to expose it to VCS (samdark)
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
