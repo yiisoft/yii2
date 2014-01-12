@@ -121,9 +121,9 @@ class UrlValidator extends Validator
 
 		$options = [
 			'pattern' => new JsExpression($pattern),
-			'message' => Yii::t('yii', $this->message, [
+			'message' =>Yii::$app->getI18n()->format($this->message, [
 				'attribute' => $object->getAttributeLabel($attribute),
-			]),
+			], Yii::$app->language),
 			'enableIDN' => (boolean)$this->enableIDN,
 		];
 		if ($this->skipOnEmpty) {
