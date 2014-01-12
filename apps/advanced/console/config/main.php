@@ -1,7 +1,10 @@
 <?php
-$rootDir = __DIR__ . '/../..';
 
-$params = array_merge(
+use yii\helpers\ArrayHelper;
+
+$rootDir = dirname(dirname(__DIR__));
+
+$params = ArrayHelper::merge(
 	require($rootDir . '/common/config/params.php'),
 	require($rootDir . '/common/config/params-local.php'),
 	require(__DIR__ . '/params.php'),
