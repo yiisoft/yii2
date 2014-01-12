@@ -13,7 +13,7 @@ Code style
 
 - Do not use `yiisoft` in the namespaces.
 - Do not use `\yii`, `\yii2` or `\yiisoft` as root namespace.
-- Use `vendor-name\type` namespace format (all lowercase) where type may be `widgets`, `behaviors`, `modules` etc.
+- Use `vendor-name` as the root namespace.
 
 Distribution
 ------------
@@ -63,16 +63,16 @@ If your extension classes reside directly in repository root use PSR-4 the follo
 
 ```
 {
-        "name": "samdark/yii2-iconized-menu-widget",
-        "description": "IconizedMenu automatically adds favicons in front of menu links",
-        "keywords": ["yii", "extension", "favicon", "menu", "icon"],
-        "homepage": "https://github.com/samdark/yii2-iconized-menu-widget",
+        "name": "myname/mywidget",
+        "description": "My widget is a cool widget that does everything",
+        "keywords": ["yii", "extension", "widget", "cool"],
+        "homepage": "https://github.com/myname/yii2-mywidget-widget",
         "type": "yii2-extension",
         "license": "BSD-3-Clause",
         "authors": [
                 {
-                        "name": "Alexander Makarov",
-                        "email": "sam@rmcreative.ru"
+                        "name": "John Doe",
+                        "email": "doe@example.com"
                 }
         ],
         "require": {
@@ -80,16 +80,16 @@ If your extension classes reside directly in repository root use PSR-4 the follo
         },
         "autoload": {
                 "psr-4": {
-                        "samdark\\widgets\\": ""
+                        "myname\\mywidget\\": ""
                 }
         }
 }
 ```
 
-In the above `samdark/yii2-iconized-menu-widget` is the package name that will be registered
+In the above `myname/mywidget` is the package name that will be registered
 at [Packagist](https://packagist.org). It is common for it to match your github repository.
 
-We're using `psr-4` autoloader and mapping `samdark\widgets` namespace to the root directory where our classes reside.
+We're using `psr-4` autoloader and mapping `myname\mywidget` namespace to the root directory where our classes reside.
 
 More details can be found in the [composer documentation](http://getcomposer.org/doc/04-schema.md#autoload).
 
