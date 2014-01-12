@@ -55,7 +55,7 @@ return array (
   'View' => 'Vis',
   'Yes' => 'Ja',
   'You are not allowed to perform this action.' => 'Du har ikke tilladelse til at udføre denne handling.',
-  'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => '',
+  'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Du kan højst uploade {limit, number} {limit, plural, one{fil} other{filer}}.',
   'the input value' => 'inputværdien',
   '{attribute} "{value}" has already been taken.' => '{attribute} "{value}" er allerede i brug.',
   '{attribute} cannot be blank.' => '{attribute} må ikke være tom.',
