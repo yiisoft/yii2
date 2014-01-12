@@ -29,4 +29,7 @@ If you're not core developer or want to use your own fork for pull requests:
   url = git://github.com/username/yii2.git
 ```
 
-> Hint: The workflow of forking a package and pushing changes back into your fork and then sending a pull-request to the maintainer is the same for all extensions you require via composer.
+> Hint: The workflow of forking a package and pushing changes back into your fork and then sending a pull-request to the
+  maintainer is the same for all extensions you require via composer.
+
+Please refer to [Git workflow for Yii 2 contributors](git-workflow.md) for details about creating pull requests.
