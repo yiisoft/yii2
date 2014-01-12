@@ -8,7 +8,7 @@ $envNames = array_keys($envs);
 echo "Yii Application Initialization Tool v1.0\n\n";
 
 $envName = null;
-if (empty($params['env'])) {
+if (empty($params['env']) || $params['env'] === '1') {
 	echo "Which environment do you want the application to be initialized in?\n\n";
 	foreach ($envNames as $i => $name) {
 		echo "  [$i] $name\n";
