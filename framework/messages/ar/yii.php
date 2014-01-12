@@ -77,5 +77,5 @@ return array(
 	'{attribute} must not be equal to "{compareValue}".' => '{attribute} يجب أن يساوي "{compareValue}"',
 	'{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} يجب أن يحتوي على أكثر من {min, number} {min, plural, one{character} other{characters}}.',
 	'{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} يجب أن لا يحتوي على أكثر من {max, number} {max, plural, one{character} other{characters}}.',
-	'{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute}  يجب أن يحتوي على {min, number} {min, plural, one{character} other{characters}}.',
+	'{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute}  يجب أن يحتوي على {length, number} {length, plural, one{character} other{characters}}.',
 );
