@@ -203,7 +203,7 @@ class Installer extends LibraryInstaller
 * @license http://www.yiiframework.com/license/
 */
 
-return require(__DIR__ . '/../../yii2-dev/framework/$file');
+return require(__DIR__ . '/../yii2-dev/framework/$file');
 
 EOF
 			);
