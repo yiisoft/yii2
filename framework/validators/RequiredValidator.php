@@ -90,8 +90,8 @@ class RequiredValidator extends Validator
 	{
 		$options = [];
 		if ($this->requiredValue !== null) {
-			$options['message'] = strtr($this->message, [
-				'{requiredValue}' => $this->requiredValue,
+			$options['message'] = Yii::t('yii', $this->message, [
+				'requiredValue' => $this->requiredValue,
 			]);
 			$options['requiredValue'] = $this->requiredValue;
 		} else {
@@ -101,8 +101,8 @@ class RequiredValidator extends Validator
 			$options['strict'] = 1;
 		}
 
-		$options['message'] = strtr($options['message'], [
-			'{attribute}' => $object->getAttributeLabel($attribute),
+		$options['message'] = Yii::t('yii', $options['message'], [
+			'attribute' => $object->getAttributeLabel($attribute),
 		]);
 
 		ValidationAsset::register($view);

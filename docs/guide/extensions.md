@@ -13,7 +13,7 @@ Code style
 
 - Do not use `yiisoft` in the namespaces.
 - Do not use `\yii`, `\yii2` or `\yiisoft` as root namespace.
-- Use `vendor-name\type` namespace format (all lowercase).
+- Use `vendor-name\type` namespace format (all lowercase) where type may be `widgets`, `behaviors`, `modules` etc.
 
 Distribution
 ------------

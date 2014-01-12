@@ -241,7 +241,7 @@ class BaseHtml
 				$method = 'post';
 			}
 			if ($request->enableCsrfValidation && !strcasecmp($method, 'post')) {
-				$hiddenInputs[] = static::hiddenInput($request->csrfVar, $request->getMaskedCsrfToken());
+				$hiddenInputs[] = static::hiddenInput($request->csrfVar, $request->getCsrfToken());
 			}
 		}
 
