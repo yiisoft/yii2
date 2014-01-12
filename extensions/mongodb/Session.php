@@ -13,19 +13,19 @@ use yii\mongodb\Query;
 use yii\base\InvalidConfigException;
 
 /**
- * MongoDBSession extends [[Session]] by using database as session data storage.
+ * Session extends [[Session]] by using database as session data storage.
  *
- * By default, MongoDBSession stores session data in a DB collection named 'session'. This collection
- * must be pre-created. The collection name can be changed by setting [[sessioncollection]].
+ * By default, Session stores session data in a DB collection named 'session'. This collection
+ * must be pre-created. The collection name can be changed by setting [[sessionCollection]].
  *
- * The following example shows how you can configure the application to use MongoDBSession:
+ * The following example shows how you can configure the application to use Session:
  * Add the following to your application config under `components`:
  *
  * ~~~
  * 'session' => [
- *     'class' => 'yii\mongodb\MongoDBSession',
- *     // 'db' => 'mongodb',
- *     // 'sessionCollection' => 'my_session',
+ *     'class' => 'yii\mongodb\Session',
+ *     'db' => 'my_mongodb', // Default mongodb
+ *     'sessionCollection' => 'my_session', // Defaut session
  * ]
  * ~~~
  *
@@ -34,15 +34,15 @@ use yii\base\InvalidConfigException;
  * @author Igogo <skliar.ihor@gmail.com>
  * @since 2.0
  */
-class MongoDBSession extends \yii\web\Session {
+class Session extends \yii\web\Session {
 	/**
 	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
-	 * After the MongoDBSession object is created, if you want to change this property, you should only assign it
+	 * After the Session object is created, if you want to change this property, you should only assign it
 	 * with a DB connection object.
 	 */
-	public $db = 'db';
+	public $db = 'mongodb';
 	/**
-	 * @var string the name of the DB colection that stores the session data.
+	 * @var string the name of the DB collection that stores the session data.
 	 * The collection should be pre-created as follows:
 	 *
 	 * ~~~
@@ -50,24 +50,24 @@ class MongoDBSession extends \yii\web\Session {
 	 * ~~~
 	 *
 	 *
-	 * When using MongoDBSession in a production server, we recommend you create a DB index for the 'expire'
+	 * When using Session in a production server, we recommend you create a DB index for the 'expire'
 	 * column in the session collection to improve the performance.
 	 */
-	public $sessioncollection = 'session';
+	public $sessionCollection = 'session';
 
 	/**
-	 * Initializes the MongoDBSession component.
+	 * Initializes the Session component.
 	 * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
 	 * @throws InvalidConfigException if [[db]] is invalid.
 	 */
 	public function init()
 	{
 		if (is_string($this->db)) {
-			$this->db = Yii::$app->{$this->db};
+			$this->db = Yii::$app->getComponent($this->db);
 		}
 
 		if (!$this->db instanceof Connection) {
-			throw new InvalidConfigException("MongoDBSession::db must be either a MongoDB connection instance or the application component ID of a MongoDB connection.");
+			throw new InvalidConfigException("Session::db must be either a MongoDB connection instance or the application component ID of a MongoDB connection.");
 		}
 		parent::init();
 	}
@@ -102,7 +102,7 @@ class MongoDBSession extends \yii\web\Session {
 		
 		$query = new Query;
 		$query->select(['data'])
-			  ->from($this->sessioncollection)
+			  ->from($this->sessionCollection)
 			  ->where( [ 'id' => $oldID ]);
 
 		$row = $query->one();
@@ -110,16 +110,16 @@ class MongoDBSession extends \yii\web\Session {
 		if ($row !== false) {
 			if ($deleteOldSession) {
 				$query = new Query;
-				$query->from( $this->sessioncollection )->collection->update( [ 'id' => $newID ], [ 'id' => $oldID ] );
+				$query->from( $this->sessionCollection )->collection->update( [ 'id' => $newID ], [ 'id' => $oldID ] );
 			} else {
 				$row['id'] = $newID;
 				$query = new Query;
-				$query->from( $this->sessioncollection )->collection->insert( $row );
+				$query->from( $this->sessionCollection )->collection->insert( $row );
 			}
 		} else {
 			// shouldn't reach here normally
 			$query = new Query;
-			$query->from( $this->sessioncollection )->collection->insert( [
+			$query->from( $this->sessionCollection )->collection->insert( [
 				'id' => $newID,
 				'expire' => time() + $this->getTimeout()
 			] );
@@ -136,7 +136,7 @@ class MongoDBSession extends \yii\web\Session {
 	{
 		$query = new Query;
 		$query->select(['data'])
-			  ->from($this->sessioncollection)
+			  ->from($this->sessionCollection)
 			  ->where( [
 				  'expire' => [
 					  '$gt' => time()
@@ -164,21 +164,21 @@ class MongoDBSession extends \yii\web\Session {
 			$expire = time() + $this->getTimeout();
 			$query = new Query;
 			$query->select(['data'])
-				  ->from($this->sessioncollection)
+				  ->from($this->sessionCollection)
 				  ->where( [ 'id' => $id ]);
 
 			$cnt = $query->count();
 
 			if ( !$cnt ) {
 				$query = new Query;
-				$query->from( $this->sessioncollection )->collection->insert( [
+				$query->from( $this->sessionCollection )->collection->insert( [
 					'id' => $id,
 					'data' => $data,
 					'expire' => $expire
 				] );
 			} else {
 				$query = new Query;
-				$query->from( $this->sessioncollection )->collection->update( [
+				$query->from( $this->sessionCollection )->collection->update( [
 					'data' => $data,
 					'expire' => $expire
 				], [ 'id' => $id ] );
@@ -203,7 +203,7 @@ class MongoDBSession extends \yii\web\Session {
 	public function destroySession($id)
 	{
 		$query = new Query;
-		$query->from( $this->sessioncollection )->collection->delete( [ 'id' => $id ] );
+		$query->from( $this->sessionCollection )->collection->delete( [ 'id' => $id ] );
 		return true;
 	}
 
@@ -216,7 +216,7 @@ class MongoDBSession extends \yii\web\Session {
 	public function gcSession($maxLifetime)
 	{
 		$query = new Query;
-		$query->from( $this->sessioncollection )->collection->delete( [ 'expire' => [ '$gt' => time() ] ] );
+		$query->from( $this->sessionCollection )->collection->delete( [ 'expire' => [ '$gt' => time() ] ] );
 		return true;
 	}
 }
