@@ -8,7 +8,6 @@
 namespace yii\validators;
 
 use Yii;
-use yii\helpers\Html;
 
 /**
  * StringValidator validates that the attribute value is of certain length.

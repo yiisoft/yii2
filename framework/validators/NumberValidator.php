@@ -8,7 +8,6 @@
 namespace yii\validators;
 
 use Yii;
-use yii\helpers\Html;
 use yii\web\JsExpression;
 use yii\helpers\Json;
 
