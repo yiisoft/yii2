@@ -9,7 +9,6 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Html;
 use yii\web\JsExpression;
 use yii\helpers\Json;
 

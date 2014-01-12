@@ -9,7 +9,6 @@ namespace yii\data;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\Model;
 use yii\db\Connection;
 
 /**

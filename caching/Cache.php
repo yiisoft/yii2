@@ -9,7 +9,6 @@ namespace yii\caching;
 
 use Yii;
 use yii\base\Component;
-use yii\base\InvalidConfigException;
 use yii\helpers\StringHelper;
 
 /**

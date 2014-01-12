@@ -9,7 +9,6 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Html;
 
 /**
  * RangeValidator validates that the attribute value is among a list of values.
