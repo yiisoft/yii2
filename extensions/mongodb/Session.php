@@ -21,7 +21,7 @@ use yii\base\InvalidConfigException;
  * ~~~
  * 'session' => [
  *     'class' => 'yii\mongodb\Session',
- *     'db' => 'my_mongodb', // Default mongodb
+ *     'connectionName' => 'my_mongodb', // Default mongodb
  *     'sessionCollection' => 'my_session', // Defaut session
  * ]
  * ~~~
@@ -33,11 +33,9 @@ use yii\base\InvalidConfigException;
  */
 class Session extends \yii\web\Session {
 	/**
-	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
-	 * After the Session object is created, if you want to change this property, you should only assign it
-	 * with a DB connection object.
+	 * @var string the name of DB connection.
 	 */
-	public $db = 'mongodb';
+	public $connectionName = 'mongodb';
 	/**
 	 * @var string the name of the DB collection that stores the session data.
 	 * The collection should be pre-created as follows:
@@ -53,20 +51,36 @@ class Session extends \yii\web\Session {
 	public $sessionCollection = 'session';
 
 	/**
+	 * @var Connection|object the DB connection object or the application component ID of the DB connection.
+	 * After the Session object is created, if you want to change this property, you should only assign it
+	 * with a DB connection object.
+	 */
+	private $db;
+
+	/**
 	 * Initializes the Session component.
 	 * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
 	 * @throws InvalidConfigException if [[db]] is invalid.
 	 */
 	public function init()
 	{
-		if (is_string($this->db)) {
-			$this->db = \Yii::$app->getComponent($this->db);
+		if (is_string($this->connectionName)) {
+			$this->db = \Yii::$app->getComponent($this->connectionName);
 		}
 
 		if (!$this->db instanceof Connection) {
 			throw new InvalidConfigException("Session::db must be either a MongoDB connection instance or the application component ID of a MongoDB connection.");
 		}
+
 		parent::init();
+	}
+
+	/**
+	 * Returns a session collection object.
+	 * @return Collection object of class yii\mongodb\Collection.
+	 */
+	public function getCollection() {
+		return $this->db->getCollection($this->sessionCollection);
 	}
 
 	/**
@@ -92,31 +106,22 @@ class Session extends \yii\web\Session {
 		if (empty($oldID)) {
 			return;
 		}
-
+	
 		parent::regenerateID(false);
 		$newID = session_id();
 
-		
-		$query = new Query;
-		$query->select(['data'])
-			  ->from($this->sessionCollection)
-			  ->where( [ 'id' => $oldID ]);
-
-		$row = $query->one();
+		$row = $this->collection->findOne([ 'id' => $oldID ], ['data']);
 
 		if ($row !== false) {
 			if ($deleteOldSession) {
-				$query = new Query;
-				$query->from( $this->sessionCollection )->collection->update( [ 'id' => $newID ], [ 'id' => $oldID ] );
+				$this->collection->update( [ 'id' => $newID ], [ 'id' => $oldID ] );
 			} else {
 				$row['id'] = $newID;
-				$query = new Query;
-				$query->from( $this->sessionCollection )->collection->insert( $row );
+				$this->collection->insert( $row );
 			}
 		} else {
 			// shouldn't reach here normally
-			$query = new Query;
-			$query->from( $this->sessionCollection )->collection->insert( [
+			$this->collection->insert( [
 				'id' => $newID,
 				'expire' => time() + $this->getTimeout()
 			] );
@@ -131,17 +136,12 @@ class Session extends \yii\web\Session {
 	 */
 	public function readSession($id)
 	{
-		$query = new Query;
-		$query->select(['data'])
-			  ->from($this->sessionCollection)
-			  ->where( [
-				  'expire' => [
-					  '$gt' => time()
-				  ], 
-				  'id' => $id
-			  ]);
-
-		$data = $query->one();
+		$data = $this->collection->findOne([
+			'expire' => [
+	    	  	'$gt' => time()
+			], 
+			'id' => $id
+		], ['data']);
 		
 		return $data === false || !isset($data['data']) ? '' : $data['data'];
 	}
@@ -159,23 +159,16 @@ class Session extends \yii\web\Session {
 		// http://us.php.net/manual/en/function.session-set-save-handler.php
 		try {
 			$expire = time() + $this->getTimeout();
-			$query = new Query;
-			$query->select(['data'])
-				  ->from($this->sessionCollection)
-				  ->where( [ 'id' => $id ]);
-
-			$cnt = $query->count();
+			$this->collection->count([ 'id' => $id ]);
 
 			if ( !$cnt ) {
-				$query = new Query;
-				$query->from( $this->sessionCollection )->collection->insert( [
+				$this->collection->insert( [
 					'id' => $id,
 					'data' => $data,
 					'expire' => $expire
 				] );
 			} else {
-				$query = new Query;
-				$query->from( $this->sessionCollection )->collection->update( [
+				$this->collection->update( [
 					'data' => $data,
 					'expire' => $expire
 				], [ 'id' => $id ] );
@@ -199,8 +192,7 @@ class Session extends \yii\web\Session {
 	 */
 	public function destroySession($id)
 	{
-		$query = new Query;
-		$query->from( $this->sessionCollection )->collection->remove( [ 'id' => $id ] );
+		$this->collection->remove( [ 'id' => $id ] );
 		return true;
 	}
 
@@ -212,8 +204,7 @@ class Session extends \yii\web\Session {
 	 */
 	public function gcSession($maxLifetime)
 	{
-		$query = new Query;
-		$query->from( $this->sessionCollection )->collection->remove( [ 'expire' => [ '$gt' => time() ] ] );
+		$this->collection->remove( [ 'expire' => [ '$gt' => time() ] ] );
 		return true;
 	}
 }
