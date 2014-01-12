@@ -158,7 +158,7 @@ Doing so will save travis from commencing testruns on changes that are not cover
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii.git
-git remote add upstream git://github.com/yiisoft/yii.github
+git remote add upstream git://github.com/yiisoft/yii.git
 ```
 
 ```
