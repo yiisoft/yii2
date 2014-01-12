@@ -180,7 +180,9 @@ class MessageFormatter extends Component
 	 * Replace named placeholders with numeric placeholders and quote unused.
 	 *
 	 * @param string $pattern The pattern string to replace things into.
-	 * @param array $args The array of values to insert into the format string.
+	 * @param array $givenParams The array of values to insert into the format string.
+	 * @param array $resultingParams Modified array of parameters.
+	 * @param array $map
 	 * @return string The pattern string with placeholders replaced.
 	 */
 	private function replaceNamedArguments($pattern, $givenParams, &$resultingParams, &$map = [])

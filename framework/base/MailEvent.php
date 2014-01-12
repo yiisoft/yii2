@@ -27,7 +27,7 @@ class MailEvent extends Event
 	 */
 	public $isSuccessful;
 	/**
-	 * @var boolean whether to continue send. Event handlers of
+	 * @var boolean whether to continue sending an email. Event handlers of
 	 * [[\yii\mail\BaseMailer::EVENT_BEFORE_SEND]] may set this property to decide whether
 	 * to continue send or not.
 	 */
