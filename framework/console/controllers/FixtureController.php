@@ -290,14 +290,12 @@ class FixtureController extends Controller
 	}
 
 	/**
-	 * Returns array of found fixtures. These may differer from input parameter as not all fixtures may exists.
 	 * @param array $fixtures
+	 * @return array Array of found fixtures. These may differer from input parameter as not all fixtures may exists.
 	 */
 	private function findFixtures(array $fixtures)
 	{
 		$fixturesPath = Yii::getAlias($this->fixturePath);
-
-		$files = [];
 
 		if ($this->needToApplyAll($fixtures[0])) {
 			$files = FileHelper::findFiles($fixturesPath, ['only' => ['.php']]);

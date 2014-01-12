@@ -36,8 +36,10 @@ trait ActiveQueryTrait
 	 * PHP magic method.
 	 * This method allows calling static method defined in [[modelClass]] via this query object.
 	 * It is mainly implemented for supporting the feature of scope.
+	 *
 	 * @param string $name the method name to be called
 	 * @param array $params the parameters passed to the method
+	 * @throws \yii\base\InvalidCallException
 	 * @return mixed the method return result
 	 */
 	public function __call($name, $params)

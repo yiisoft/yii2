@@ -320,6 +320,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * You may override this method to do last-minute preparation for the message.
 	 * If you override this method, please make sure you call the parent implementation first.
 	 * @param MessageInterface $message
+	 * @return boolean whether to continue sending an email.
 	 */
 	public function beforeSend($message)
 	{
