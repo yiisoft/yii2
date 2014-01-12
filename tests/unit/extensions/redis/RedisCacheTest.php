@@ -70,32 +70,32 @@ class RedisCacheTest extends CacheTestCase
 	{
 		$cache = $this->getCacheInstance();
 
-		$data=str_repeat('XX',8192); // http://www.php.net/manual/en/function.fread.php
-		$key='bigdata1';
+		$data = str_repeat('XX', 8192); // http://www.php.net/manual/en/function.fread.php
+		$key = 'bigdata1';
 
 		$this->assertFalse($cache->get($key));
-		$cache->set($key,$data);
-		$this->assertTrue($cache->get($key)===$data);
+		$cache->set($key, $data);
+		$this->assertTrue($cache->get($key) === $data);
 
 		// try with multibyte string
-		$data=str_repeat('ЖЫ',8192); // http://www.php.net/manual/en/function.fread.php
-		$key='bigdata2';
+		$data = str_repeat('ЖЫ', 8192); // http://www.php.net/manual/en/function.fread.php
+		$key = 'bigdata2';
 
 		$this->assertFalse($cache->get($key));
-		$cache->set($key,$data);
-		$this->assertTrue($cache->get($key)===$data);
+		$cache->set($key, $data);
+		$this->assertTrue($cache->get($key) === $data);
 	}
 
 	public function testMultiByteGetAndSet()
 	{
 		$cache = $this->getCacheInstance();
 
-		$data=['abc'=>'ежик',2=>'def'];
-		$key='data1';
+		$data = ['abc' => 'ежик', 2 => 'def'];
+		$key = 'data1';
 
 		$this->assertFalse($cache->get($key));
-		$cache->set($key,$data);
-		$this->assertTrue($cache->get($key)===$data);
+		$cache->set($key, $data);
+		$this->assertTrue($cache->get($key) === $data);
 	}
 
 }
