@@ -53,7 +53,7 @@
 		"ext-mbstring": "*",
 		"lib-pcre": "*",
 		"yiisoft/yii2-composer": "*",
-		"yiisoft/jquery": "1.10.*",
+		"yiisoft/jquery": "2.0.*",
 		"phpspec/php-diff": ">=1.0.2",
 		"ezyang/htmlpurifier": "4.6.*",
 		"michelf/php-markdown": "1.3.*"
