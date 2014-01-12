@@ -31,6 +31,20 @@ class CollectionTest extends MongoDbTestCase
 		$this->assertTrue($cursor instanceof \MongoCursor);
 	}
 
+	public function testFindOne()
+	{
+		$collection = $this->getConnection()->getCollection('customer');
+		$cursor = $collection->findOne();
+		$this->assertTrue($cursor instanceof \MongoCursor);
+	}
+
+	public function testCount()
+	{
+		$collection = $this->getConnection()->getCollection('customer');
+		$cursor = $collection->count();
+		$this->assertTrue($cursor instanceof \MongoCursor);
+	}
+
 	public function testInsert()
 	{
 		$collection = $this->getConnection()->getCollection('customer');
