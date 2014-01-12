@@ -187,6 +187,7 @@ class DetailView extends Widget
 			}
 
 			if (isset($attribute['visible']) && !$attribute['visible']) {
+				unset($this->attributes[$i]);
 				continue;
 			}
 
