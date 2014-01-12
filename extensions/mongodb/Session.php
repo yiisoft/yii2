@@ -7,9 +7,6 @@
 
 namespace yii\mongodb;
 
-use Yii;
-use yii\mongodb\Connection;
-use yii\mongodb\Query;
 use yii\base\InvalidConfigException;
 
 /**
@@ -63,7 +60,7 @@ class Session extends \yii\web\Session {
 	public function init()
 	{
 		if (is_string($this->db)) {
-			$this->db = Yii::$app->getComponent($this->db);
+			$this->db = \Yii::$app->getComponent($this->db);
 		}
 
 		if (!$this->db instanceof Connection) {
@@ -203,7 +200,7 @@ class Session extends \yii\web\Session {
 	public function destroySession($id)
 	{
 		$query = new Query;
-		$query->from( $this->sessionCollection )->collection->delete( [ 'id' => $id ] );
+		$query->from( $this->sessionCollection )->collection->remove( [ 'id' => $id ] );
 		return true;
 	}
 
@@ -216,7 +213,7 @@ class Session extends \yii\web\Session {
 	public function gcSession($maxLifetime)
 	{
 		$query = new Query;
-		$query->from( $this->sessionCollection )->collection->delete( [ 'expire' => [ '$gt' => time() ] ] );
+		$query->from( $this->sessionCollection )->collection->remove( [ 'expire' => [ '$gt' => time() ] ] );
 		return true;
 	}
 }
