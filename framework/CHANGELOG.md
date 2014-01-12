@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #1800: Better check for `$_SERVER['HTTPS']` in `yii\web\Request::getIsSecureConnection()` (ginus, samdark)
 - Bug #1827: Debugger toolbar is loaded twice if an action is calling `run()` to execute another action (qiangxue)
 - Bug #1870: Validation errors weren't properly translated when using clientside validation (samdark)
+- Bug #1937: Fixed wrong behavior or advanced app's `init --env` when called without parameter actually specified (samdark)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
