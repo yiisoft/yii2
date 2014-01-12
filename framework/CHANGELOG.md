@@ -57,6 +57,7 @@ Yii Framework 2 Change Log
 - Enh #1773: keyPrefix property of Cache is not restricted to alnum characters anymore, however it is still recommended (cebe)
 - Enh #1809: Added support for building "EXISTS" and "NOT EXISTS" query conditions (abdrasulov)
 - Enh #1852: ActiveRecord::tableName() now returns table name using DbConnection::tablePrefix (creocoder)
+- Enh #1894: The path aliases `@webroot` and `@web` are now available right after the application is initialized (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
 - Enh: Support for file aliases in console command 'message' (omnilight)
