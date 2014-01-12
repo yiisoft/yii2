@@ -9,7 +9,6 @@ namespace yii\log;
 
 use Yii;
 use yii\base\Component;
-use yii\base\InvalidConfigException;
 
 /**
  * Logger records logged messages in memory and sends them to different targets as needed.

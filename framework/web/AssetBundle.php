@@ -8,9 +8,7 @@
 namespace yii\web;
 
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\base\Object;
-use yii\web\View;
 
 /**
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
