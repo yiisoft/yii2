@@ -80,8 +80,8 @@ class RegularExpressionValidator extends Validator
 		$options = [
 			'pattern' => new JsExpression($pattern),
 			'not' => $this->not,
-			'message' => strtr($this->message, [
-				'{attribute}' => $object->getAttributeLabel($attribute),
+			'message' => Yii::t('yii', $this->message, [
+				'attribute' => $object->getAttributeLabel($attribute),
 			]),
 		];
 		if ($this->skipOnEmpty) {

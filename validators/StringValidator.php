@@ -151,30 +151,30 @@ class StringValidator extends Validator
 		$label = $object->getAttributeLabel($attribute);
 
 		$options = [
-			'message' => strtr($this->message, [
+			'message' => Yii::t('yii', $this->message, [
 				'{attribute}' => $label,
 			]),
 		];
 
 		if ($this->min !== null) {
 			$options['min'] = $this->min;
-			$options['tooShort'] = strtr($this->tooShort, [
-				'{attribute}' => $label,
-				'{min}' => $this->min,
+			$options['tooShort'] = Yii::t('yii', $this->tooShort, [
+				'attribute' => $label,
+				'min' => $this->min,
 			]);
 		}
 		if ($this->max !== null) {
 			$options['max'] = $this->max;
-			$options['tooLong'] = strtr($this->tooLong, [
-				'{attribute}' => $label,
-				'{max}' => $this->max,
+			$options['tooLong'] = Yii::t('yii', $this->tooLong, [
+				'attribute' => $label,
+				'max' => $this->max,
 			]);
 		}
 		if ($this->length !== null) {
 			$options['is'] = $this->length;
-			$options['notEqual'] = strtr($this->notEqual, [
-				'{attribute}' => $label,
-				'{length}' => $this->length,
+			$options['notEqual'] = Yii::t('yii', $this->notEqual, [
+				'attribute' => $label,
+				'length' => $this->length,
 			]);
 		}
 		if ($this->skipOnEmpty) {

@@ -124,23 +124,23 @@ class NumberValidator extends Validator
 
 		$options = [
 			'pattern' => new JsExpression($this->integerOnly ? $this->integerPattern : $this->numberPattern),
-			'message' => strtr($this->message, [
-				'{attribute}' => $label,
+			'message' => Yii::t('yii', $this->message, [
+				'attribute' => $label,
 			]),
 		];
 
 		if ($this->min !== null) {
 			$options['min'] = $this->min;
-			$options['tooSmall'] = strtr($this->tooSmall, [
-				'{attribute}' => $label,
-				'{min}' => $this->min,
+			$options['tooSmall'] = Yii::t('yii', $this->tooSmall, [
+				'attribute' => $label,
+				'min' => $this->min,
 			]);
 		}
 		if ($this->max !== null) {
 			$options['max'] = $this->max;
-			$options['tooBig'] = strtr($this->tooBig, [
-				'{attribute}' => $label,
-				'{max}' => $this->max,
+			$options['tooBig'] = Yii::t('yii', $this->tooBig, [
+				'attribute' => $label,
+				'max' => $this->max,
 			]);
 		}
 		if ($this->skipOnEmpty) {
