@@ -55,6 +55,17 @@ class Application extends \yii\base\Application
 
 
 	/**
+	 * @inheritdoc
+	 */
+	public function preloadComponents()
+	{
+		parent::preloadComponents();
+		$request = $this->getRequest();
+		Yii::setAlias('@webroot', dirname($request->getScriptFile()));
+		Yii::setAlias('@web', $request->getBaseUrl());
+	}
+
+	/**
 	 * Handles the specified request.
 	 * @param Request $request the request to be handled
 	 * @return Response the resulting response
@@ -62,9 +73,6 @@ class Application extends \yii\base\Application
 	 */
 	public function handleRequest($request)
 	{
-		Yii::setAlias('@webroot', dirname($request->getScriptFile()));
-		Yii::setAlias('@web', $request->getBaseUrl());
-
 		if (empty($this->catchAll)) {
 			list ($route, $params) = $request->resolve();
 		} else {
