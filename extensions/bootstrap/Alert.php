@@ -18,11 +18,10 @@ use yii\helpers\Html;
  *
  * ```php
  * echo Alert::widget([
- *     'body' => 'Say hello...',
- *     'closeButton' => [
- *         'label' => '&times;',
- *         'tag' => 'a',
+ *     'options' => [
+ *         'class' => 'alert-info',
  *     ],
+ *     'body' => 'Say hello...',
  * ]);
  * ```
  *
@@ -31,7 +30,9 @@ use yii\helpers\Html;
  *
  * ```php
  * Alert::begin([
- *     'closeButton' => ['label' => '&times;'],
+ *     'options' => [
+ *         'class' => 'alert-warning',
+ *     ],
  * ]);
  *
  * echo 'Say hello...';
@@ -39,7 +40,7 @@ use yii\helpers\Html;
  * Alert::end();
  * ```
  *
- * @see http://twitter.github.io/bootstrap/javascript.html#alerts
+ * @see http://getbootstrap.com/components/#alerts
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */
@@ -62,7 +63,7 @@ class Alert extends Widget
 	 * - label: string, the label of the button. Defaults to '&times;'.
 	 *
 	 * The rest of the options will be rendered as the HTML attributes of the button tag.
-	 * Please refer to the [Alert plugin help](http://twitter.github.com/bootstrap/javascript.html#alerts)
+	 * Please refer to the [Alert documentation](http://getbootstrap.com/components/#alerts)
 	 * for the supported HTML attributes.
 	 */
 	public $closeButton = [];
@@ -134,9 +135,9 @@ class Alert extends Widget
 	 */
 	protected function initOptions()
 	{
-		$this->options = array_merge(['class' => 'fade in'], $this->options);
-
 		Html::addCssClass($this->options, 'alert');
+		Html::addCssClass($this->options, 'fade');
+		Html::addCssClass($this->options, 'in');
 
 		if ($this->closeButton !== null) {
 			$this->closeButton = array_merge([
