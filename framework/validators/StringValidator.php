@@ -151,31 +151,31 @@ class StringValidator extends Validator
 		$label = $object->getAttributeLabel($attribute);
 
 		$options = [
-			'message' => Yii::t('yii', $this->message, [
+			'message' => Yii::$app->getI18n()->format($this->message, [
 				'{attribute}' => $label,
-			]),
+			], Yii::$app->language),
 		];
 
 		if ($this->min !== null) {
 			$options['min'] = $this->min;
-			$options['tooShort'] = Yii::t('yii', $this->tooShort, [
+			$options['tooShort'] = Yii::$app->getI18n()->format($this->tooShort, [
 				'attribute' => $label,
 				'min' => $this->min,
-			]);
+			], Yii::$app->language);
 		}
 		if ($this->max !== null) {
 			$options['max'] = $this->max;
-			$options['tooLong'] = Yii::t('yii', $this->tooLong, [
+			$options['tooLong'] = Yii::$app->getI18n()->format($this->tooLong, [
 				'attribute' => $label,
 				'max' => $this->max,
-			]);
+			], Yii::$app->language);
 		}
 		if ($this->length !== null) {
 			$options['is'] = $this->length;
-			$options['notEqual'] = Yii::t('yii', $this->notEqual, [
+			$options['notEqual'] = Yii::$app->getI18n()->format($this->notEqual, [
 				'attribute' => $label,
 				'length' => $this->length,
-			]);
+			], Yii::$app->language);
 		}
 		if ($this->skipOnEmpty) {
 			$options['skipOnEmpty'] = 1;
