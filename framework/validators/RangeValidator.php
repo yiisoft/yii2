@@ -73,8 +73,8 @@ class RangeValidator extends Validator
 		$options = [
 			'range' => $range,
 			'not' => $this->not,
-			'message' => strtr($this->message, [
-				'{attribute}' => $object->getAttributeLabel($attribute),
+			'message' => Yii::t('yii', $this->message, [
+				'attribute' => $object->getAttributeLabel($attribute),
 			]),
 		];
 		if ($this->skipOnEmpty) {

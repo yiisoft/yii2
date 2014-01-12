@@ -72,10 +72,10 @@ class BooleanValidator extends Validator
 		$options = [
 			'trueValue' => $this->trueValue,
 			'falseValue' => $this->falseValue,
-			'message' => strtr($this->message, [
-				'{attribute}' => $object->getAttributeLabel($attribute),
-				'{true}' => $this->trueValue,
-				'{false}' => $this->falseValue,
+			'message' => Yii::t('yii', $this->message, [
+				'attribute' => $object->getAttributeLabel($attribute),
+				'true' => $this->trueValue,
+				'false' => $this->falseValue,
 			]),
 		];
 		if ($this->skipOnEmpty) {
