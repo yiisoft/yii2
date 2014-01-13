@@ -19,20 +19,20 @@ $this->beginPage();
 
 <body>
 <?php $this->beginBody(); ?>
-<div id="apiPage">
+	<div id="apiPage">
 
-<div id="apiHeader">
-<a href="http://www.yiiframework.com">Yii Framework</a> v<?php echo Yii::getVersion(); ?> Class Reference
-</div><!-- end of header -->
+		<div id="apiHeader">
+			<a href="http://www.yiiframework.com">Yii Framework</a> v<?php echo Yii::getVersion(); ?> Class Reference
+		</div><!-- end of header -->
 
-<div id="content">
-<?php echo $content; ?>
-</div><!-- end of content -->
+		<div id="content">
+		<?php echo $content; ?>
+		</div><!-- end of content -->
 
-<div id="apiFooter">
-&copy; 2008-2013 by <a href="http://www.yiisoft.com">Yii Software LLC</a><br/>
-All Rights Reserved.<br/>
-</div><!-- end of footer -->
+		<div id="apiFooter">
+			<p>&copy; 2008-2013 by <a href="http://www.yiisoft.com">Yii Software LLC</a></p>
+			<p>All Rights Reserved.</p>
+		</div><!-- end of footer -->
 
 <script type="text/javascript">
 /*<![CDATA[*/
@@ -64,7 +64,7 @@ $("a.sourceLink").click(function(){
 /*]]>*/
 </script>
 
-</div><!-- end of page -->
+	</div><!-- end of page -->
 <?php $this->endBody(); ?>
 </body>
 </html>
