@@ -296,22 +296,20 @@ class FixtureController extends Controller
 	private function findFixtures(array $fixtures)
 	{
 		$fixturesPath = Yii::getAlias($this->fixturePath);
-
-		$files = [];
+		$filesToSearch = [];
 
 		if ($this->needToApplyAll($fixtures[0])) {
-			$files = FileHelper::findFiles($fixturesPath, ['only' => ['.php']]);
+			$filesToSearch = ['.php'];
 		} else {
-			$filesToSearch = [];
 			foreach ($fixtures as $fileName) {
 				$filesToSearch[] = $fileName . '.php';
 			}
-			$files = FileHelper::findFiles($fixturesPath, ['only' => $filesToSearch]);
 		}
-		
+
+		$files = FileHelper::findFiles($fixturesPath, ['only' => $filesToSearch]);
 		$foundFixtures = [];
 
-		foreach($files as $fixture) {
+		foreach ($files as $fixture) {
 			$foundFixtures[] = basename($fixture , '.php');
 		}
 
