@@ -159,7 +159,7 @@ class Session extends \yii\web\Session {
 		// http://us.php.net/manual/en/function.session-set-save-handler.php
 		try {
 			$expire = time() + $this->getTimeout();
-			$this->collection->count([ 'id' => $id ]);
+			$cnt = $this->collection->count([ 'id' => $id ]);
 
 			if ( !$cnt ) {
 				$this->collection->insert( [
