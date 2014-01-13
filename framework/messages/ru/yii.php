@@ -51,7 +51,7 @@ return array (
   'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => 'Всего <b>{count, number}</b> {count, plural, one{запись} few{записи} many{записей} other{записи}}.',
   'Unable to verify your data submission.' => 'Не удалось проверить переданные данные.',
   'Unknown command "{command}".' => 'Неизвестная команда "{command}".',
-  'Unknown option: --{name}' => 'Неизвестная опция : --{name}',
+  'Unknown option: --{name}' => 'Неизвестная опция: --{name}',
   'Update' => 'Редактировать',
   'Yes' => 'Да',
   'You are not allowed to perform this action.' => 'Вам не разрешено производить данное действие.',
