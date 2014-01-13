@@ -260,6 +260,33 @@ class Collection extends Object
 	}
 
 	/**
+	 * Returns a cursor for the search count of results.
+	 * In order to perform "count" queries use [[Query]] class.
+	 * @param array $condition query condition
+	 * @param int $limit Specifies an upper limit to the number returned.
+	 * @param int $skip Specifies a number of results to skip before starting the count.
+	 * @return \MongoCursor cursor for the search results
+	 * @see Query
+	 */
+	public function count($condition = [], $limit = 0, $skip = 0)
+	{
+		return $this->mongoCollection->count($this->buildCondition($condition), $limit, $skip);
+	}
+
+	/**
+	 * Returns a cursor for the search results.
+	 * In order to perform "findOne" queries use [[Query]] class.
+	 * @param array $condition query condition
+	 * @param array $fields fields to be selected
+	 * @return \MongoCursor cursor for the search results
+	 * @see Query
+	 */
+	public function findOne($condition = [], $fields = [])
+	{
+		return $this->mongoCollection->findOne($this->buildCondition($condition), $fields);
+	}
+
+	/**
 	 * Inserts new data into collection.
 	 * @param array|object $data data to be inserted.
 	 * @param array $options list of options in format: optionName => optionValue.

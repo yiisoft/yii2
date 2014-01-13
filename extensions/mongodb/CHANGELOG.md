@@ -5,3 +5,4 @@ Yii Framework 2 mongodb extension Change Log
 ----------------------------
 
 - Initial release.
+- Support session storage in mongodb.
