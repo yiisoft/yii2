@@ -11,7 +11,23 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * Class Cache
+ * Cache implements a cache application component by storing cached data in a MongoDB.
+ *
+ * By default, Cache stores session data in a MongoDB collection named 'cache' inside the default database.
+ * This collection is better to be pre-created with fields 'id' and 'expire' indexed.
+ * The table name can be changed by setting [[cacheCollection]].
+ *
+ * Please refer to [[\yii\caching\Cache]] for common cache operations that are supported by Cache.
+ *
+ * The following example shows how you can configure the application to use Cache:
+ *
+ * ~~~
+ * 'cache' => [
+ *     'class' => 'yii\mongodb\Cache',
+ *     // 'db' => 'mymongodb',
+ *     // 'cacheCollection' => 'my_cache',
+ * ]
+ * ~~~
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -26,6 +42,7 @@ class Cache extends \yii\caching\Cache
 	public $db = 'mongodb';
 	/**
 	 * @var string|array the name of the MongoDB collection that stores the cache data.
+	 * This collection is better to be pre-created with fields 'id' and 'expire' indexed.
 	 */
 	public $cacheCollection = 'cache';
 	/**
