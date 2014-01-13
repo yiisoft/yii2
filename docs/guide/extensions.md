@@ -13,7 +13,14 @@ Code style
 
 - Do not use `yiisoft` in the namespaces.
 - Do not use `\yii`, `\yii2` or `\yiisoft` as root namespace.
-- Use `vendor-name` as the root namespace.
+- Namespace should be `vendorName\type\uniqueName` or `vendorName\uniqueName` if type is hard to tell.
+
+Choosing unique namespace is important to prevent name collisions. Examples:
+
+- `samdark\wiki`
+- `samdark\modules\tester`
+- `samdark\modules\debugger`
+- `samdark\widgets\iconizedMenu`
 
 Distribution
 ------------
