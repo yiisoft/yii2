@@ -72,7 +72,7 @@ return array (
   '{attribute} must be less than "{compareValue}".' => 'Значение «{attribute}» должно быть меньше значения «{compareValue}».',
   '{attribute} must be less than or equal to "{compareValue}".' => 'Значение «{attribute}» должно быть меньше или равно значения «{compareValue}».',
   '{attribute} must be no greater than {max}.' => 'Значение «{attribute}» не должно превышать {max}.',
-  '{attribute} must be no less than {min}.' => 'Значение «{attribute}» должно быль больше {min}.',
+  '{attribute} must be no less than {min}.' => 'Значение «{attribute}» должно быть больше {min}.',
   '{attribute} must be repeated exactly.' => 'Значение «{attribute}» должно быть повторено в точности.',
   '{attribute} must not be equal to "{compareValue}".' => 'Значение «{attribute}» не должно быть равно «{compareValue}».',
   '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать минимум {min, number} {min, plural, one{символ} few{символа} many{символов} other{символа}}.',
