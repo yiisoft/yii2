@@ -44,17 +44,17 @@ to the require section of your composer.json.
 Using the Cache component
 -------------------------
 
-To use the `Cache` component, in addtition to configuring the connection as described above,
+To use the `Cache` component, in addition to configuring the connection as described above,
 you also have to configure the `cache` component to be `yii\redis\Cache`:
 
 ```php
 return [
 	//....
 	'components' => [
-	    // ...
-        'cache' => [
-            'class' => 'yii\redis\Cache',
-        ],
+		// ...
+		'cache' => [
+			'class' => 'yii\redis\Cache',
+		],
 	]
 ];
 ```
@@ -66,15 +66,15 @@ cache component (no connection application component needs to be configured in t
 return [
 	//....
 	'components' => [
-	    // ...
-        'cache' => [
-            'class' => 'yii\redis\Cache',
-            'redis' => [
-                'hostname' => 'localhost',
-                'port' => 6379,
-                'database' => 0,
-            ],
-        ],
+		// ...
+		'cache' => [
+			'class' => 'yii\redis\Cache',
+			'redis' => [
+				'hostname' => 'localhost',
+				'port' => 6379,
+				'database' => 0,
+			],
+		],
 	]
 ];
 ```
@@ -89,10 +89,10 @@ you also have to configure the `session` component to be `yii\redis\Session`:
 return [
 	//....
 	'components' => [
-	    // ...
-        'session' => [
-            'class' => 'yii\redis\Session',
-        ],
+		// ...
+		'session' => [
+			'class' => 'yii\redis\Session',
+		],
 	]
 ];
 ```
@@ -104,15 +104,15 @@ cache component (no connection application component needs to be configured in t
 return [
 	//....
 	'components' => [
-	    // ...
-        'session' => [
-            'class' => 'yii\redis\Session',
-            'redis' => [
-                'hostname' => 'localhost',
-                'port' => 6379,
-                'database' => 0,
-            ],
-        ],
+		// ...
+		'session' => [
+			'class' => 'yii\redis\Session',
+			'redis' => [
+				'hostname' => 'localhost',
+				'port' => 6379,
+				'database' => 0,
+			],
+		],
 	]
 ];
 ```
@@ -134,29 +134,29 @@ The following is an example model called `Customer`:
 ```php
 class Customer extends \yii\redis\ActiveRecord
 {
-     /**
-      * @return array the list of attributes for this record
-      */
-     public function attributes()
-     {
-         return ['id', 'name', 'address', 'registration_date'];
-     }
+	/**
+	 * @return array the list of attributes for this record
+	 */
+	public function attributes()
+	{
+		return ['id', 'name', 'address', 'registration_date'];
+	}
 
-     /**
-      * @return ActiveRelation defines a relation to the Order record (can be in other database, e.g. elasticsearch or sql)
-      */
-     public function getOrders()
-     {
-         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
-     }
+	/**
+	 * @return ActiveRelation defines a relation to the Order record (can be in other database, e.g. elasticsearch or sql)
+	 */
+	public function getOrders()
+	{
+		return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+	}
 
-     /**
-      * Defines a scope that modifies the `$query` to return only active(status = 1) customers
-      */
-     public static function active($query)
-     {
-         $query->andWhere(array('status' => 1));
-     }
+	/**
+	 * Defines a scope that modifies the `$query` to return only active(status = 1) customers
+	 */
+	public static function active($query)
+	{
+		$query->andWhere(array('status' => 1));
+	}
 }
 ```
 
