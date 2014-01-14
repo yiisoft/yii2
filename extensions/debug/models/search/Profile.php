@@ -49,9 +49,7 @@ class Profile extends Base
 	{
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $models,
-			'pagination' => [
-				'pageSize' => 10,
-			],
+			'pagination' => false,
 			'sort' => [
 				'attributes' => ['category', 'seq', 'duration', 'info'],
 				'defaultOrder' => [

@@ -55,9 +55,7 @@ class Log extends Base
 	{
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $models,
-			'pagination' => [
-				'pageSize' => 10,
-			],
+			'pagination' => false,
 			'sort' => [
 				'attributes' => ['time', 'level', 'category', 'message'],
 			],
