@@ -52,6 +52,31 @@ Here `yii\web\YiiAsset` adds Yii's JavaScript library while `yii\bootstrap\Boots
 Asset bundles are regular classes so if you need to define another one, just create alike class with unique name. This
 class can be placed anywhere but the convention for it is to be under `assets` directory of the application.
 
+Publishing options asset bundle
+------------------------
+```php
+class AppAsset extends AssetBundle
+{
+	public $publishOptions = [
+		'beforeCopy' => function($from,$to){...},
+		'afterCopy' => ...
+		'forceCopy' => true or false
+	];
+}
+```
+`beforeCopy` callback, a PHP callback that is called before copying each sub-directory or file.
+This option is used only when publishing a directory. If the callback returns false, the copy
+operation for the sub-directory or file will be cancelled.The signature of the callback should be:
+`function ($from, $to)`, where `$from` is the sub-directory or file to be copied from, while `$to` is the copy target.
+
+`afterCopy` callback, a PHP callback that is called after a sub-directory or file is successfully copied.
+This option is used only when publishing a directory. The signature of the callback is similar to that of `beforeCopy`.
+
+`forceCopy` boolean, whether the directory being published should be copied even if it is found in the target directory.
+This option is used only when publishing a directory. You may want to set this to be true during the development
+stage to make sure the published directory is always up-to-date. Do not set this to true on production servers
+as it will significantly degrade the performance.
+
 Registering asset bundle
 ------------------------
 
