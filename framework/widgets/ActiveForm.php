@@ -115,6 +115,52 @@ class ActiveForm extends Widget
 	 */
 	public $beforeSubmit;
 	/**
+	 * @var string|JsExpression a JS callback that will be called after the form is being submitted.
+	 * It runs after specialized versions (afterSuccessfulSubmit, afterUnsuccessfulSubmit).
+	 * The signature of the callback should be:
+	 *
+	 * ~~~
+	 * function ($form, data, status, xhr) {
+	 *     ...
+	 * }
+	 * ~~~
+	 */
+	public $afterSubmit;
+	/**
+	 * @var string|JsExpression a JS callback that will be called after the form is being sucessfully submitted.
+	 * The signature of the callback should be:
+	 *
+	 * ~~~
+	 * function ($form, data, status, xhr) {
+	 *     ...
+	 * }
+	 * ~~~
+	 */
+	public $afterSuccessfulSubmit;
+	/**
+	 * @var string|JsExpression a JS callback that will be called after the form is being unsucessfully submitted.
+	 * The signature of the callback should be:
+	 *
+	 * ~~~
+	 * function ($form, data, status, xhr) {
+	 *     ...
+	 * }
+	 * ~~~
+	 */
+	public $afterUnsuccessfulSubmit;
+	/**
+	 * @var string|JsExpression a JS callback that will be called immediately after the form is being submitted
+	 * (without waiting for callback).
+	 * The signature of the callback should be:
+	 *
+	 * ~~~
+	 * function ($form) {
+	 *     ...
+	 * }
+	 * ~~~
+	 */
+	public $immediatelyAfterSubmit;
+	/**
 	 * @var string|JsExpression a JS callback that is called before validating an attribute.
 	 * The signature of the callback should be:
 	 *
@@ -141,6 +187,16 @@ class ActiveForm extends Widget
 	 * @internal
 	 */
 	public $attributes = [];
+	/**
+	 * @var boolean whether to perform submit action with ajax.
+	 */
+	public $withAjaxSubmit = false;
+	/**
+	 * @var boolean additional data for ajax request (withAjaxSubmit should be true).
+	 * e.g., 'ajaxData' => [ 'ordering' => new JsExpression('$(.myClass).sortable("toArray");')]
+	 */
+	public $ajaxData = [];
+
 
 	/**
 	 * Initializes the widget.
@@ -164,8 +220,10 @@ class ActiveForm extends Widget
 	public function run()
 	{
 		if (!empty($this->attributes)) {
+			$clientOptions = $this->getClientOptions();
 			$id = $this->options['id'];
-			$options = Json::encode($this->getClientOptions());
+			$withAjaxSubmit = $clientOptions['withAjaxSubmit'];
+			$options = Json::encode($clientOptions);
 			$attributes = Json::encode($this->attributes);
 			$view = $this->getView();
 			ActiveFormAsset::register($view);
@@ -187,11 +245,13 @@ class ActiveForm extends Widget
 			'successCssClass' => $this->successCssClass,
 			'validatingCssClass' => $this->validatingCssClass,
 			'ajaxVar' => $this->ajaxVar,
+			'withAjaxSubmit' => $this->withAjaxSubmit,
+			'ajaxData' => $this->ajaxData,
 		];
 		if ($this->validationUrl !== null) {
 			$options['validationUrl'] = Html::url($this->validationUrl);
 		}
-		foreach (['beforeSubmit', 'beforeValidate', 'afterValidate'] as $name) {
+		foreach (['beforeSubmit', 'afterSubmit', 'afterSuccessfulSubmit', 'afterUnsuccessfulSubmit', 'immediatelyAfterSubmit', 'beforeValidate', 'afterValidate'] as $name) {
 			if (($value = $this->$name) !== null) {
 				$options[$name] = $value instanceof JsExpression ? $value : new JsExpression($value);
 			}

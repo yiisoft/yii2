@@ -17,6 +17,7 @@ class ActiveFormAsset extends AssetBundle
 	public $sourcePath = '@yii/assets';
 	public $js = [
 		'yii.activeForm.js',
+        'malsupform/jquery.form.js'
 	];
 	public $depends = [
 		'yii\web\YiiAsset',
