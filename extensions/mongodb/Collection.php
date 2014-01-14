@@ -21,7 +21,7 @@ use yii\helpers\Json;
  * For example:
  *
  * ~~~
- * $collection = Yii::$app->mongo->getCollection('customer');
+ * $collection = Yii::$app->mongodb->getCollection('customer');
  * $collection->insert(['name' => 'John Smith', 'status' => 1]);
  * ~~~
  *
@@ -55,7 +55,7 @@ use yii\helpers\Json;
  * ~~~
  *
  * Note: condition values for the key '_id' will be automatically cast to [[\MongoId]] instance,
- * even if they are plain strings. However if you have other columns, containing [[\MongoId]], you
+ * even if they are plain strings. However, if you have other columns, containing [[\MongoId]], you
  * should take care of possible typecast on your own.
  *
  * @property string $fullName Full name of this collection, including database name. This property is
