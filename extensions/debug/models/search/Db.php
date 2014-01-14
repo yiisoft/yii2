@@ -49,9 +49,7 @@ class Db extends Base
 	{
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $models,
-			'pagination' => [
-				'pageSize' => 10,
-			],
+			'pagination' => false,
 			'sort' => [
 				'attributes' => ['duration', 'seq', 'type', 'query'],
 				'defaultOrder' => [
