@@ -33,18 +33,18 @@ $this->title = 'Posts';
 <?php endforeach; ?>
 
 <!-- Widget declaration may or may not be exploded into multiple LOCs. -->
-<?php $form = ActiveForm::begin(array(
-	'options' => array('id' => 'contact-message-form'),
-	'fieldConfig' => array('inputOptions' => array('class' => 'common-input')),
-)); ?>
+<?php $form = ActiveForm::begin([
+	'options' => ['id' => 'contact-message-form'],
+	'fieldConfig' => ['inputOptions' => ['class' => 'common-input']],
+]); ?>
 	<!-- Note indentation level here. -->
 	<?= $form->field($contactMessage, 'name')->textInput() ?>
 	<?= $form->field($contactMessage, 'email')->textInput() ?>
 	<?= $form->field($contactMessage, 'subject')->textInput() ?>
-	<?= $form->field($contactMessage, 'body')->textArea(array('rows' => 6)) ?>
+	<?= $form->field($contactMessage, 'body')->textArea(['rows' => 6]) ?>
 
 	<div class="form-actions">
-		<?= Html::submitButton('Submit', array('class' => 'common-button')) ?>
+		<?= Html::submitButton('Submit', ['class' => 'common-button']) ?>
 	</div>
 <!-- Ending widget call should have individual PHP tag. -->
 <?php ActiveForm::end(); ?>
