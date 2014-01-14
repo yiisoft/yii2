@@ -43,6 +43,8 @@ class Session extends \yii\web\Session
 	public $db = 'mongodb';
 	/**
 	 * @var string|array the name of the MongoDB collection that stores the session data.
+	 * Please refer to [[Connection::getCollection()]] on how to specify this parameter.
+	 * This collection is better to be pre-created with fields 'id' and 'expire' indexed.
 	 */
 	public $sessionCollection = 'session';
 
