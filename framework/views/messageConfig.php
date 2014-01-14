@@ -6,7 +6,7 @@ return [
 	// string, required, root directory containing message translations.
 	'messagePath' => __DIR__ . DIRECTORY_SEPARATOR . 'messages',
 	// array, required, list of language codes that the extracted messages
-	// should be translated to. For example, ['zh_cn', 'de'].
+	// should be translated to. For example, ['zh-CN', 'de'].
 	'languages' => ['de'],
 	// string, the name of the function for translating messages.
 	// Defaults to 'Yii::t'. This is used as a mark to find the messages to be
@@ -42,4 +42,6 @@ return [
 		'.hgkeep',
 		'/messages',
 	],
+	// Generated file format. Can be either "php" or "po".
+	'format' => 'php',
 ];
