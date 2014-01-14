@@ -26,8 +26,8 @@ or add
 to the require section of your composer.json.
 
 
-Usage & Documentation
----------------------
+General Usage
+-------------
 
 To use this extension, simply add the following code in your application configuration:
 
@@ -42,6 +42,87 @@ return [
 	],
 ];
 ```
+
+Using the connection instance you may access databases and collections.
+Most of the MongoDB commands are accessible via [[\yii\mongodb\Collection]] instance:
+
+```php
+$collection = Yii::$app->mongodb->getCollection('customer');
+$collection->insert(['name' => 'John Smith', 'status' => 1]);
+```
+
+To perform "find" queries, you should use [[\yii\mongodb\Query]]:
+
+```php
+use yii\mongodb\Query;
+
+$query = new Query;
+// compose the query
+$query->select(['name', 'status'])
+	->from('customer')
+	->limit(10);
+// execute the query
+$rows = $query->all();
+```
+
+This extension supports logging and profiling, however log messages does not contain
+actual text of the performed queries, they contains only a “close approximation” of it
+composed on the values which can be extracted from PHP Mongo extension classes.
+If you need to see actual query text, you should use specific tools for that.
+
+
+Notes about MongoId
+-------------------
+
+Remember: MongoDB document id ("_id" field) is not scalar, but an instance of [[\MongoId]] class.
+To get actual Mongo ID string your should typecast [[\MongoId]] instance to string:
+
+```php
+$query = new Query;
+$row = $query->from('customer')->one();
+var_dump($row['_id']); // outputs: "object(MongoId)"
+var_dump((string)$row['_id']); // outputs "string 'acdfgdacdhcbdafa'"
+```
+
+Although this fact is very useful sometimes, it often produces some problems.
+You may face them in URL composition or attempt of saving "_id" to other storage.
+In these cases, ensure you have converted [[\MongoId]] into the string:
+
+```php
+/** @var yii\web\View $this */
+echo $this->createUrl('item/update', ['id' => (string)$row['_id']]);
+```
+
+While building condition, values for the key '_id' will be automatically cast to [[\MongoId]] instance,
+even if they are plain strings. So it is not necessary for you to perform back cast of string '_id'
+representation:
+
+```php
+use yii\web\Controller;
+use yii\mongodb\Query;
+
+class ItemController extends Controller
+{
+	/**
+	 * @param string $id MongoId string (not object)
+	 */
+	public function actionUpdate($id)
+	{
+		$query = new Query;
+		$row = $query->from('item')
+			where(['_id' => $id]) // implicit typecast to [[\MongoId]]
+			->one();
+		...
+	}
+}
+```
+
+However, if you have other columns, containing [[\MongoId]], you
+should take care of possible typecast on your own.
+
+
+Using the MongoDB ActiveRecord
+------------------------------
 
 This extension provides ActiveRecord solution similar ot the [[\yii\db\ActiveRecord]].
 To declare an ActiveRecord class you need to extend [[\yii\mongodb\ActiveRecord]] and
@@ -102,10 +183,48 @@ $provider = new ActiveDataProvider([
 $models = $provider->getModels();
 ```
 
+
+Using GridFS
+------------
+
 This extension supports [MongoGridFS](http://docs.mongodb.org/manual/core/gridfs/) via
 classes under namespace "\yii\mongodb\file".
+There you will find specific Collection, Query and ActiveRecord classes.
 
-This extension supports logging and profiling, however log messages does not contain
-actual text of the performed queries, they contains only a “close approximation” of it
-composed on the values which can be extracted from PHP Mongo extension classes.
-If you need to see actual query text, you should use specific tools for that.
+
+Using the Cache component
+-------------------------
+
+To use the `Cache` component, in addition to configuring the connection as described above,
+you also have to configure the `cache` component to be `yii\mongodb\Cache`:
+
+```php
+return [
+	//....
+	'components' => [
+		// ...
+		'cache' => [
+			'class' => 'yii\mongodb\Cache',
+		],
+	]
+];
+```
+
+
+Using the Session component
+---------------------------
+
+To use the `Session` component, in addition to configuring the connection as described above,
+you also have to configure the `session` component to be `yii\mongodb\Session`:
+
+```php
+return [
+	//....
+	'components' => [
+		// ...
+		'session' => [
+			'class' => 'yii\mongodb\Session',
+		],
+	]
+];
+```
