@@ -360,7 +360,7 @@ pre .diff .change{
 			?></h1>
 		<?php endif; ?>
 		<h2><?= nl2br($handler->htmlEncode($exception->getMessage())) ?></h2>
-		<?php if ($exception instanceof \yii\db\Exception): ?>
+		<?php if ($exception instanceof \yii\db\Exception && $exception->errorInfo !== null): ?>
 			<pre><?= var_export($exception->errorInfo, true) ?></pre>
 		<?php endif; ?>
 		<?= $handler->renderPreviousExceptions($exception) ?>
