@@ -127,6 +127,13 @@
 			var $form = $(this),
 				data = $form.data('yiiActiveForm');
 			if (data.validated) {
+				if (data.settings.beforeSubmit !== undefined) {
+					if (data.settings.beforeSubmit($form) == false) {
+						data.validated = false;
+						data.submitting = false;
+						return false;
+					}
+				}
 				// continue submitting the form since validation passes
 				return true;
 			}
@@ -135,40 +142,36 @@
 				clearTimeout(data.settings.timer);
 			}
 			data.submitting = true;
-			if (!data.settings.beforeSubmit || data.settings.beforeSubmit($form)) {
-				validate($form, function (messages) {
-					var errors = [];
-					$.each(data.attributes, function () {
-						if (updateInput($form, this, messages)) {
-							errors.push(this.input);
-						}
-					});
-					updateSummary($form, messages);
-					if (errors.length) {
-						var top = $form.find(errors.join(',')).first().offset().top;
-						var wtop = $(window).scrollTop();
-						if (top < wtop || top > wtop + $(window).height) {
-							$(window).scrollTop(top);
-						}
-					} else {
-						data.validated = true;
-						var $button = data.submitObject || $form.find(':submit:first');
-						// TODO: if the submission is caused by "change" event, it will not work
-						if ($button.length) {
-							$button.click();
-						} else {
-							// no submit button in the form
-							$form.submit();
-						}
-						return;
+			validate($form, function (messages) {
+				var errors = [];
+				$.each(data.attributes, function () {
+					if (updateInput($form, this, messages)) {
+						errors.push(this.input);
 					}
-					data.submitting = false;
-				}, function () {
-					data.submitting = false;
 				});
-			} else {
+				updateSummary($form, messages);
+				if (errors.length) {
+					var top = $form.find(errors.join(',')).first().offset().top;
+					var wtop = $(window).scrollTop();
+					if (top < wtop || top > wtop + $(window).height) {
+						$(window).scrollTop(top);
+					}
+				} else {
+					data.validated = true;
+					var $button = data.submitObject || $form.find(':submit:first');
+					// TODO: if the submission is caused by "change" event, it will not work
+					if ($button.length) {
+						$button.click();
+					} else {
+						// no submit button in the form
+						$form.submit();
+					}
+					return;
+				}
 				data.submitting = false;
-			}
+			}, function () {
+				data.submitting = false;
+			});
 			return false;
 		},
 
