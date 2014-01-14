@@ -1162,8 +1162,13 @@ class BaseHtml
 	{
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
 		$checked = static::getAttributeValue($model, $attribute);
+		if (array_key_exists('value', $options)) {
+			$checked = static::getAttributeValue($model, $attribute)===$options['value'];
+		}
 		if (!array_key_exists('uncheck', $options)) {
 			$options['uncheck'] = '0';
+		} elseif (static::getAttributeValue($model, $attribute)===$options['uncheck']) {
+			$checked = false;
 		}
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
