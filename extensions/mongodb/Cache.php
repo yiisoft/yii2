@@ -42,6 +42,7 @@ class Cache extends \yii\caching\Cache
 	public $db = 'mongodb';
 	/**
 	 * @var string|array the name of the MongoDB collection that stores the cache data.
+	 * Please refer to [[Connection::getCollection()]] on how to specify this parameter.
 	 * This collection is better to be pre-created with fields 'id' and 'expire' indexed.
 	 */
 	public $cacheCollection = 'cache';
@@ -49,7 +50,7 @@ class Cache extends \yii\caching\Cache
 	 * @var integer the probability (parts per million) that garbage collection (GC) should be performed
 	 * when storing a piece of data in the cache. Defaults to 100, meaning 0.01% chance.
 	 * This number should be between 0 and 1000000. A value 0 meaning no GC will be performed at all.
-	 **/
+	 */
 	public $gcProbability = 100;
 
 	/**
