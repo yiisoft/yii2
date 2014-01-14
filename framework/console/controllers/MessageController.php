@@ -69,7 +69,7 @@ class MessageController extends Controller
 	 * this file and then customize it for your needs.
 	 * @throws Exception on failure.
 	 */
-	public function actionExtract($configFile)
+	public function actionExtract($configFile, $out=null)
 	{
 		$configFile = Yii::getAlias($configFile);
 		if (!is_file($configFile)) {
@@ -109,13 +109,21 @@ class MessageController extends Controller
 				@mkdir($dir);
 			}
 			foreach ($messages as $category => $msgs) {
-				$file = str_replace("\\", '/', "$dir/$category.php");
+                if($out == 'po'){
+                    $file = str_replace("\\", '/', "$dir/$category.po");
+                }else if($out == null){
+                    $file = str_replace("\\", '/', "$dir/$category.php");
+                }
 				$path = dirname($file);
 				if (!is_dir($path)) {
 					mkdir($path, 0755, true);
 				}
 				$msgs = array_values(array_unique($msgs));
-				$this->generateMessageFile($msgs, $file, $config['overwrite'], $config['removeUnused'], $config['sort']);
+                if($out == 'po'){
+                    $this->generateMessageFile($msgs, $file, $config['overwrite'], $config['removeUnused'], $config['sort'], $out);
+                }else if($out == null){
+                    $this->generateMessageFile($msgs, $file, $config['overwrite'], $config['removeUnused'], $config['sort']);
+                }
 			}
 		}
 	}
@@ -161,11 +169,19 @@ class MessageController extends Controller
 	 * @param boolean $removeUnused if obsolete translations should be removed
 	 * @param boolean $sort if translations should be sorted
 	 */
-	protected function generateMessageFile($messages, $fileName, $overwrite, $removeUnused, $sort)
+	protected function generateMessageFile($messages, $fileName, $overwrite, $removeUnused, $sort, $type=null)
 	{
 		echo "Saving messages to $fileName...";
 		if (is_file($fileName)) {
-			$translated = require($fileName);
+            if($type == 'po'){
+                $translated = file_get_contents($fileName);
+                preg_match_all('/(?<=msgid ").*(?="\nmsgstr)/', $translated, $keys);
+                preg_match_all('/(?<=msgstr ").*(?="\n\n)/', $translated, $values);
+
+                $translated = array_combine($keys[0], $values[0]);
+            }else if($type == null){
+                $translated = require($fileName);
+            }
 			sort($messages);
 			ksort($translated);
 			if (array_keys($translated) == $messages) {
@@ -204,17 +220,40 @@ class MessageController extends Controller
 			if (false === $overwrite) {
 				$fileName .= '.merged';
 			}
+            if($type == 'po'){
+                $out_str = '';
+                ksort($merged);
+                foreach($merged as $k=>$v){
+                    $out_str .= "msgid \"$k\"\n";
+                    $out_str .= "msgstr \"$v\"\n";
+                    $out_str .= "\n";
+                }
+                $merged = $out_str;
+            }
 			echo "translation merged.\n";
 		} else {
-			$merged = [];
-			foreach ($messages as $message) {
-				$merged[$message] = '';
-			}
-			ksort($merged);
+            if($type == 'po'){
+                $merged = '';
+                sort($messages);
+                foreach($messages as $message){
+                    $merged .= "msgid \"$message\"\n";
+                    $merged .= "msgstr \"\"\n";
+                    $merged .= "\n";
+                }
+            }else if($type == null){
+                $merged = [];
+                foreach ($messages as $message) {
+                    $merged[$message] = '';
+                }
+                ksort($merged);
+            }
 			echo "saved.\n";
 		}
-		$array = str_replace("\r", '', var_export($merged, true));
-		$content = <<<EOD
+        if($type == 'po'){
+            $content = $merged;
+        }else if($type == null){
+            $array = str_replace("\r", '', var_export($merged, true));
+            $content = <<<EOD
 <?php
 /**
  * Message translations.
@@ -236,6 +275,7 @@ class MessageController extends Controller
 return $array;
 
 EOD;
+        }
 		file_put_contents($fileName, $content);
 	}
 }
