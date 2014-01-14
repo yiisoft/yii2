@@ -15,8 +15,9 @@ use yii\helpers\FileHelper;
 
 /**
  * This command extracts messages to be translated from source files.
- * The extracted messages are saved as PHP message source files
- * under the specified directory.
+ * The extracted messages are saved either as PHP message source files
+ * or ".po" files under the specified directory. Format depends on `format`
+ * setting in config file.
  *
  * Usage:
  * 1. Create a configuration file using the 'message/config' command:
@@ -69,7 +70,7 @@ class MessageController extends Controller
 	 * this file and then customize it for your needs.
 	 * @throws Exception on failure.
 	 */
-	public function actionExtract($configFile, $out=null)
+	public function actionExtract($configFile)
 	{
 		$configFile = Yii::getAlias($configFile);
 		if (!is_file($configFile)) {
@@ -81,6 +82,7 @@ class MessageController extends Controller
 			'overwrite' => false,
 			'removeUnused' => false,
 			'sort' => false,
+			'format' => 'php',
 		], require($configFile));
 
 		if (!isset($config['sourcePath'], $config['messagePath'], $config['languages'])) {
@@ -94,6 +96,9 @@ class MessageController extends Controller
 		}
 		if (empty($config['languages'])) {
 			throw new Exception("Languages cannot be empty.");
+		}
+		if (empty($config['format']) || !in_array($config['format'], ['php', 'po'])) {
+			throw new Exception('Format should be either "php" or "po".');
 		}
 
 		$files = FileHelper::findFiles(realpath($config['sourcePath']), $config);
@@ -109,21 +114,13 @@ class MessageController extends Controller
 				@mkdir($dir);
 			}
 			foreach ($messages as $category => $msgs) {
-                if($out == 'po'){
-                    $file = str_replace("\\", '/', "$dir/$category.po");
-                }else if($out == null){
-                    $file = str_replace("\\", '/', "$dir/$category.php");
-                }
+				$file = str_replace("\\", '/', "$dir/$category." . $config['format']);
 				$path = dirname($file);
 				if (!is_dir($path)) {
 					mkdir($path, 0755, true);
 				}
 				$msgs = array_values(array_unique($msgs));
-                if($out == 'po'){
-                    $this->generateMessageFile($msgs, $file, $config['overwrite'], $config['removeUnused'], $config['sort'], $out);
-                }else if($out == null){
-                    $this->generateMessageFile($msgs, $file, $config['overwrite'], $config['removeUnused'], $config['sort']);
-                }
+				$this->generateMessageFile($msgs, $file, $config['overwrite'], $config['removeUnused'], $config['sort'], $config['format']);
 			}
 		}
 	}
@@ -168,20 +165,21 @@ class MessageController extends Controller
 	 * @param boolean $overwrite if existing file should be overwritten without backup
 	 * @param boolean $removeUnused if obsolete translations should be removed
 	 * @param boolean $sort if translations should be sorted
+	 * @param string $format output format
 	 */
-	protected function generateMessageFile($messages, $fileName, $overwrite, $removeUnused, $sort, $type=null)
+	protected function generateMessageFile($messages, $fileName, $overwrite, $removeUnused, $sort, $format)
 	{
 		echo "Saving messages to $fileName...";
 		if (is_file($fileName)) {
-            if($type == 'po'){
-                $translated = file_get_contents($fileName);
-                preg_match_all('/(?<=msgid ").*(?="\nmsgstr)/', $translated, $keys);
-                preg_match_all('/(?<=msgstr ").*(?="\n\n)/', $translated, $values);
+			if($format === 'po'){
+				$translated = file_get_contents($fileName);
+				preg_match_all('/(?<=msgid ").*(?="\nmsgstr)/', $translated, $keys);
+				preg_match_all('/(?<=msgstr ").*(?="\n\n)/', $translated, $values);
 
-                $translated = array_combine($keys[0], $values[0]);
-            }else if($type == null){
-                $translated = require($fileName);
-            }
+				$translated = array_combine($keys[0], $values[0]);
+			} else {
+				$translated = require($fileName);
+			}
 			sort($messages);
 			ksort($translated);
 			if (array_keys($translated) == $messages) {
@@ -220,40 +218,39 @@ class MessageController extends Controller
 			if (false === $overwrite) {
 				$fileName .= '.merged';
 			}
-            if($type == 'po'){
-                $out_str = '';
-                ksort($merged);
-                foreach($merged as $k=>$v){
-                    $out_str .= "msgid \"$k\"\n";
-                    $out_str .= "msgstr \"$v\"\n";
-                    $out_str .= "\n";
-                }
-                $merged = $out_str;
-            }
+			if($format === 'po'){
+				$out_str = '';
+				foreach($merged as $k=>$v){
+					$out_str .= "msgid \"$k\"\n";
+					$out_str .= "msgstr \"$v\"\n";
+					$out_str .= "\n";
+				}
+				$merged = $out_str;
+			}
 			echo "translation merged.\n";
 		} else {
-            if($type == 'po'){
-                $merged = '';
-                sort($messages);
-                foreach($messages as $message){
-                    $merged .= "msgid \"$message\"\n";
-                    $merged .= "msgstr \"\"\n";
-                    $merged .= "\n";
-                }
-            }else if($type == null){
-                $merged = [];
-                foreach ($messages as $message) {
-                    $merged[$message] = '';
-                }
-                ksort($merged);
-            }
+			if ($format === 'po') {
+				$merged = '';
+				sort($messages);
+				foreach($messages as $message) {
+					$merged .= "msgid \"$message\"\n";
+					$merged .= "msgstr \"\"\n";
+					$merged .= "\n";
+				}
+			} else {
+				$merged = [];
+				foreach ($messages as $message) {
+					$merged[$message] = '';
+				}
+				ksort($merged);
+			}
 			echo "saved.\n";
 		}
-        if($type == 'po'){
-            $content = $merged;
-        }else if($type == null){
-            $array = str_replace("\r", '', var_export($merged, true));
-            $content = <<<EOD
+		if ($format === 'po') {
+			$content = $merged;
+		} else {
+			$array = str_replace("\r", '', var_export($merged, true));
+			$content = <<<EOD
 <?php
 /**
  * Message translations.
@@ -275,7 +272,7 @@ class MessageController extends Controller
 return $array;
 
 EOD;
-        }
+		}
 		file_put_contents($fileName, $content);
 	}
 }

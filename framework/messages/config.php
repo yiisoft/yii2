@@ -42,4 +42,6 @@ return [
 		'.hgkeep',
 		'/messages',
 	],
+	// Generated file format. Can be either "php" or "po".
+	'format' => 'php',
 ];
