@@ -64,7 +64,7 @@ class AppAsset extends AssetBundle
 	];
 }
 ```
-`boforeCopy` callback, a PHP callback that is called before copying each sub-directory or file.
+`beforeCopy` callback, a PHP callback that is called before copying each sub-directory or file.
 This option is used only when publishing a directory. If the callback returns false, the copy
 operation for the sub-directory or file will be cancelled.The signature of the callback should be:
 `function ($from, $to)`, where `$from` is the sub-directory or file to be copied from, while `$to` is the copy target.
