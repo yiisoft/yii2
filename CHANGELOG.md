@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Bug #1827: Debugger toolbar is loaded twice if an action is calling `run()` to execute another action (qiangxue)
 - Bug #1870: Validation errors weren't properly translated when using clientside validation (samdark)
 - Bug #1937: Fixed wrong behavior or advanced app's `init --env` when called without parameter actually specified (samdark)
+- Bug #1959: `Html::activeCheckbox` wasn't respecting custom values for checked/unckecked state (klevron, samdark)
 - Bug #1965: `Controller::findLayoutFile()` returns incorrect file path when layout name starts with a slash (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
