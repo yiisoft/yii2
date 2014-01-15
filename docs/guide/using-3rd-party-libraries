@@ -80,9 +80,9 @@ class Yii extends \yii\BaseYii
 {
 	public static $classMap = [];
 	public static $enableIncludePath = true;
-	private static $_aliases = ['system'=>YII_PATH,'zii'=>YII_ZII_PATH]; // alias => path
-	private static $_imports = [];										// alias => class name or directory
-	private static $_includePaths;										// list of include paths
+	private static $_aliases = ['system'=>YII_PATH,'zii'=>YII_ZII_PATH];
+	private static $_imports = [];
+	private static $_includePaths;
 	private static $_app;
 	private static $_logger;
 
@@ -108,6 +108,10 @@ class Yii extends \yii\BaseYii
 Yii::$classMap = include($yii2path . '/classes.php');
 Yii::registerAutoloader(['Yii', 'autoload']); // Register Yii2 autoloader via Yii1
 ```
+
+Note: while copying methods you should NOT copy method "autoload()"!
+Also you may avoid copying "log()", "trace()", "beginProfile()", "endProfile()"
+in case you want to use Yii2 logging instead of Yii1 one.
 
 Now we have 'Yii' class, which suites both Yii 1.x and Yii 2.x.
 So bootstrap code used by your application will looks like following:
