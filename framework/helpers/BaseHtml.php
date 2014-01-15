@@ -1135,7 +1135,7 @@ class BaseHtml
 			$options['uncheck'] = '0';
 		}
 
-		$checked = $value == $options['value'];
+		$checked = "$value" === "{$options['value']}";
 
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
@@ -1177,7 +1177,7 @@ class BaseHtml
 			$options['uncheck'] = '0';
 		}
 
-		$checked = $value == $options['value'];
+		$checked = "$value" === "{$options['value']}";
 
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
