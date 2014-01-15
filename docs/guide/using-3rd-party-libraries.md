@@ -32,7 +32,7 @@ Using Yii2 with Yii1
 Yii2 can be used along with Yii1 at the same project.
 Since Yii2 uses namespaced class names they will not conflict with any class from Yii1.
 However there is single class, which name is used both in Yii1 and Yii2, it named 'Yii'.
-In order to use both Yii1 and Yii2 you need to resolve this collition.
+In order to use both Yii1 and Yii2 you need to resolve this collision.
 To do so you need to define your own 'Yii' class, which will combine content of 'Yii' from 1.x
 and 'Yii' from 2.x.
 
