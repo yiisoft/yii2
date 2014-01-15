@@ -65,6 +65,7 @@ Yii Framework 2 Change Log
 - Enh #1894: The path aliases `@webroot` and `@web` are now available right after the application is initialized (qiangxue)
 - Enh #1921: Grid view ActionColumn now allow to name buttons like `{controller/action}` (creocoder)
 - Enh #1973: `yii message/extract` is now able to generate `.po` files (SergeiKutanov, samdark)
+- Enh #1984: ActionFilter will now mark event as handled when action run is aborted (cebe)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
 - Enh: Support for file aliases in console command 'message' (omnilight)
