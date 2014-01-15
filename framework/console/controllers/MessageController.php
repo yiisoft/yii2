@@ -204,15 +204,15 @@ class MessageController extends Controller
 				$todo[$message] = '';
 			}
 			ksort($translated);
-				foreach ($translated as $message => $translation) {
-					if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeUnused) {
-						if (substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
-							$todo[$message] = $translation;
-						} else {
-							$todo[$message] = '@@' . $translation . '@@';
-						}
+			foreach ($translated as $message => $translation) {
+				if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeUnused) {
+					if (substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
+						$todo[$message] = $translation;
+					} else {
+						$todo[$message] = '@@' . $translation . '@@';
 					}
 				}
+			}
 			$merged = array_merge($todo, $merged);
 			if ($sort) {
 				ksort($merged);
@@ -220,15 +220,15 @@ class MessageController extends Controller
 			if (false === $overwrite) {
 				$fileName .= '.merged';
 			}
-			if($format === 'po'){
+			if ($format === 'po'){
 				$out_str = '';
-				foreach($merged as $k=>$v){
+				foreach ($merged as $k => $v){
 					$k = preg_replace('/(\")|(\\\")/', "\\\"", $k);
 					$v = preg_replace('/(\")|(\\\")/', "\\\"", $v);
-					if(substr($v, 0, 2) === '@@' && substr($v, -2) === '@@'){
+					if (substr($v, 0, 2) === '@@' && substr($v, -2) === '@@') {
 						$out_str .= "#msgid \"$k\"\n";
 						$out_str .= "#msgstr \"$v\"\n";
-					}else{
+					} else {
 						$out_str .= "msgid \"$k\"\n";
 						$out_str .= "msgstr \"$v\"\n";
 					}
