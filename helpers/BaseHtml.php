@@ -1126,10 +1126,17 @@ class BaseHtml
 	public static function activeRadio($model, $attribute, $options = [])
 	{
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-		$checked = static::getAttributeValue($model, $attribute);
+		$value = static::getAttributeValue($model, $attribute);
+
+		if (!array_key_exists('value', $options)) {
+			$options['value'] = '1';
+		}
 		if (!array_key_exists('uncheck', $options)) {
 			$options['uncheck'] = '0';
 		}
+
+		$checked = $value == $options['value'];
+
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
 		}
@@ -1163,11 +1170,14 @@ class BaseHtml
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
 		$value = static::getAttributeValue($model, $attribute);
 
+		if (!array_key_exists('value', $options)) {
+			$options['value'] = '1';
+		}
 		if (!array_key_exists('uncheck', $options)) {
 			$options['uncheck'] = '0';
 		}
 
-		$checked = ($value != $options['uncheck']);
+		$checked = $value == $options['value'];
 
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
