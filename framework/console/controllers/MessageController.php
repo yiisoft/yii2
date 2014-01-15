@@ -173,9 +173,8 @@ class MessageController extends Controller
 		if (is_file($fileName)) {
 			if($format === 'po'){
 				$translated = file_get_contents($fileName);
-				preg_match_all('/(?<=msgid ").*(?="\nmsgstr)/', $translated, $keys);
+				preg_match_all('/(?<=msgid ").*(?="\n(#*)msgstr)/', $translated, $keys);
 				preg_match_all('/(?<=msgstr ").*(?="\n\n)/', $translated, $values);
-
 				$translated = array_combine($keys[0], $values[0]);
 			} else {
 				$translated = require($fileName);
@@ -189,6 +188,9 @@ class MessageController extends Controller
 			$merged = [];
 			$untranslated = [];
 			foreach ($messages as $message) {
+				if($format === 'po'){
+					$message = preg_replace('/\"/', '\"', $message);
+				}
 				if (array_key_exists($message, $translated) && strlen($translated[$message]) > 0) {
 					$merged[$message] = $translated[$message];
 				} else {
@@ -202,15 +204,15 @@ class MessageController extends Controller
 				$todo[$message] = '';
 			}
 			ksort($translated);
-			foreach ($translated as $message => $translation) {
-				if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeUnused) {
-					if (substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
-						$todo[$message] = $translation;
-					} else {
-						$todo[$message] = '@@' . $translation . '@@';
+				foreach ($translated as $message => $translation) {
+					if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeUnused) {
+						if (substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
+							$todo[$message] = $translation;
+						} else {
+							$todo[$message] = '@@' . $translation . '@@';
+						}
 					}
 				}
-			}
 			$merged = array_merge($todo, $merged);
 			if ($sort) {
 				ksort($merged);
@@ -221,8 +223,15 @@ class MessageController extends Controller
 			if($format === 'po'){
 				$out_str = '';
 				foreach($merged as $k=>$v){
-					$out_str .= "msgid \"$k\"\n";
-					$out_str .= "msgstr \"$v\"\n";
+					$k = preg_replace('/(\")|(\\\")/', "\\\"", $k);
+					$v = preg_replace('/(\")|(\\\")/', "\\\"", $v);
+					if(substr($v, 0, 2) === '@@' && substr($v, -2) === '@@'){
+						$out_str .= "#msgid \"$k\"\n";
+						$out_str .= "#msgstr \"$v\"\n";
+					}else{
+						$out_str .= "msgid \"$k\"\n";
+						$out_str .= "msgstr \"$v\"\n";
+					}
 					$out_str .= "\n";
 				}
 				$merged = $out_str;
@@ -233,6 +242,7 @@ class MessageController extends Controller
 				$merged = '';
 				sort($messages);
 				foreach($messages as $message) {
+					$message = preg_replace('/(\")|(\\\")/', '\\\"', $message);
 					$merged .= "msgid \"$message\"\n";
 					$merged .= "msgstr \"\"\n";
 					$merged .= "\n";
