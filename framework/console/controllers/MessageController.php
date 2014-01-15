@@ -173,7 +173,7 @@ class MessageController extends Controller
 		if (is_file($fileName)) {
 			if($format === 'po'){
 				$translated = file_get_contents($fileName);
-				preg_match_all('/(?<=msgid ").*(?="\nmsgstr)/', $translated, $keys);
+				preg_match_all('/(?<=msgid ").*(?="\n(#*)msgstr)/', $translated, $keys);
 				preg_match_all('/(?<=msgstr ").*(?="\n\n)/', $translated, $values);
 				$translated = array_combine($keys[0], $values[0]);
 			} else {
@@ -188,7 +188,7 @@ class MessageController extends Controller
 			$merged = [];
 			$untranslated = [];
 			foreach ($messages as $message) {
-				$message = preg_replace('/\\"/', '\"', $message);
+				$message = preg_replace('/\"/', '\"', $message);
 				if (array_key_exists($message, $translated) && strlen($translated[$message]) > 0) {
 					$merged[$message] = $translated[$message];
 				} else {
@@ -202,7 +202,6 @@ class MessageController extends Controller
 				$todo[$message] = '';
 			}
 			ksort($translated);
-			if($format === 'php'){
 				foreach ($translated as $message => $translation) {
 					if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeUnused) {
 						if (substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
@@ -212,7 +211,6 @@ class MessageController extends Controller
 						}
 					}
 				}
-			}
 			$merged = array_merge($todo, $merged);
 			if ($sort) {
 				ksort($merged);
@@ -225,8 +223,13 @@ class MessageController extends Controller
 				foreach($merged as $k=>$v){
 					$k = preg_replace('/(\")|(\\\")/', "\\\"", $k);
 					$v = preg_replace('/(\")|(\\\")/', "\\\"", $v);
-					$out_str .= "msgid \"$k\"\n";
-					$out_str .= "msgstr \"$v\"\n";
+					if(substr($v, 0, 2) === '@@' && substr($v, -2) === '@@'){
+						$out_str .= "#msgid \"$k\"\n";
+						$out_str .= "#msgstr \"$v\"\n";
+					}else{
+						$out_str .= "msgid \"$k\"\n";
+						$out_str .= "msgstr \"$v\"\n";
+					}
 					$out_str .= "\n";
 				}
 				$merged = $out_str;
