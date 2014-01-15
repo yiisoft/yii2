@@ -51,6 +51,9 @@ class ActionFilter extends Behavior
 	{
 		if ($this->isActive($event->action)) {
 			$event->isValid = $this->beforeAction($event->action);
+			if (!$event->isValid) {
+				$event->handled = true;
+			}
 		}
 		return $event->isValid;
 	}
