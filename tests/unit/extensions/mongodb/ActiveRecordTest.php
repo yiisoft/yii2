@@ -243,4 +243,24 @@ class ActiveRecordTest extends MongoDbTestCase
 		$record2 = Customer::find($record->_id);
 		$this->assertEquals($newAddress, $record2->address);
 	}
+
+	/**
+	 * @depends testFind
+	 * @depends testInsert
+	 */
+	public function testQueryByIntegerField()
+	{
+		$record = new Customer;
+		$record->name = 'new name';
+		$record->status = 7;
+		$record->save();
+
+		$row = Customer::find()->where(['status' => 7])->one();
+		$this->assertNotEmpty($row);
+		$this->assertEquals(7, $row->status);
+
+		$rowRefreshed = Customer::find()->where(['status' => $row->status])->one();
+		$this->assertNotEmpty($rowRefreshed);
+		$this->assertEquals(7, $rowRefreshed->status);
+	}
 }
