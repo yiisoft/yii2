@@ -188,7 +188,9 @@ class MessageController extends Controller
 			$merged = [];
 			$untranslated = [];
 			foreach ($messages as $message) {
-				$message = preg_replace('/\"/', '\"', $message);
+				if($format === 'po'){
+					$message = preg_replace('/\"/', '\"', $message);
+				}
 				if (array_key_exists($message, $translated) && strlen($translated[$message]) > 0) {
 					$merged[$message] = $translated[$message];
 				} else {
