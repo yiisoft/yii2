@@ -73,7 +73,7 @@ return array (
   '{attribute} must be less than or equal to "{compareValue}".' => '{attribute} doit être inférieur ou égal à « {compareValue} ».',
   '{attribute} must be no greater than {max}.' => '{attribute} ne doit pas être supérieur à {max}.',
   '{attribute} must be no less than {min}.' => '{attribute} ne doit pas être inférieur à {min}.',
-  '{attribute} must be repeated exactly.' => '{attribute} doit être répété à l\'identique.',
+  '{attribute} must be repeated exactly.' => '{attribute} doit être identique.',
   '{attribute} must not be equal to "{compareValue}".' => '{attribute} ne doit pas être égal à « {compareValue} ».',
   '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} doit comporter au moins {min, number} {min, plural, one{caractère} other{caractères}}.',
   '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} doit comporter au plus {max, number} {max, plural, one{caractère} other{caractères}}.',
