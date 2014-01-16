@@ -1001,7 +1001,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 			}
 		}
 		$record->_oldAttributes = $record->_attributes;
-		$record->afterFind();
 		return $record;
 	}
 
