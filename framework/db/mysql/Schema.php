@@ -109,8 +109,9 @@ class Schema extends \yii\db\Schema
 		if (isset($parts[1])) {
 			$table->schemaName = $parts[0];
 			$table->name = $parts[1];
+			$table->fullName = $table->schemaName . '.' . $table->name;
 		} else {
-			$table->name = $parts[0];
+			$table->fullName = $table->name = $parts[0];
 		}
 	}
 

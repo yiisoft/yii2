@@ -423,9 +423,9 @@ class Connection extends Component
 		} else {
 			$driver = $this->getDriverName();
 			if (isset($this->schemaMap[$driver])) {
-				$this->_schema = Yii::createObject($this->schemaMap[$driver]);
-				$this->_schema->db = $this;
-				return $this->_schema;
+				$config = !is_array($this->schemaMap[$driver]) ? ['class' => $this->schemaMap[$driver]] : $this->schemaMap[$driver];
+				$config['db'] = $this;
+				return $this->_schema = Yii::createObject($config);
 			} else {
 				throw new NotSupportedException("Connection does not support reading schema information for '$driver' DBMS.");
 			}

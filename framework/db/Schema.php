@@ -56,6 +56,10 @@ abstract class Schema extends Object
 	 */
 	public $db;
 	/**
+	 * @var string the default schema name used for the current session.
+	 */
+	public $defaultSchema;
+	/**
 	 * @var array list of ALL table names in the database
 	 */
 	private $_tableNames = [];
