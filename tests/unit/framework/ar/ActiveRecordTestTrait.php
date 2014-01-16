@@ -7,7 +7,9 @@
 
 namespace yiiunit\framework\ar;
 
+use yii\base\Event;
 use yii\db\ActiveQueryInterface;
+use yii\db\BaseActiveRecord;
 use yiiunit\TestCase;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Order;
@@ -835,4 +837,62 @@ trait ActiveRecordTestTrait
 		$customers = $this->callCustomerFind()->where(['status' => false])->all();
 		$this->assertEquals(1, count($customers));
 	}
+
+	public function testAfterFind()
+	{
+		/** @var BaseActiveRecord $customerClass */
+		$customerClass = $this->getCustomerClass();
+		/** @var BaseActiveRecord $orderClass */
+		$orderClass = $this->getOrderClass();
+		/** @var TestCase|ActiveRecordTestTrait $this */
+
+		$afterFindCalls = [];
+		Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND, function($event) use (&$afterFindCalls) {
+			/** @var BaseActiveRecord $ar */
+			$ar = $event->sender;
+			$afterFindCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+		});
+
+		$customer = $this->callCustomerFind(1);
+		$this->assertNotNull($customer);
+		$this->assertEquals([[$customerClass, false, 1, false]], $afterFindCalls);
+		$afterFindCalls = [];
+
+		$customer = $this->callCustomerFind()->where(['id' => 1])->one();
+		$this->assertNotNull($customer);
+		$this->assertEquals([[$customerClass, false, 1, false]], $afterFindCalls);
+		$afterFindCalls = [];
+
+		$customer = $this->callCustomerFind()->where(['id' => 1])->all();
+		$this->assertNotNull($customer);
+		$this->assertEquals([[$customerClass, false, 1, false]], $afterFindCalls);
+		$afterFindCalls = [];
+
+		$customer = $this->callCustomerFind()->where(['id' => 1])->with('orders')->all();
+		$this->assertNotNull($customer);
+		$this->assertEquals([
+			[$this->getOrderClass(), false, 1, false],
+			[$customerClass, false, 1, true],
+		], $afterFindCalls);
+		$afterFindCalls = [];
+
+		if ($this instanceof \yiiunit\extensions\redis\ActiveRecordTest) { // TODO redis does not support orderBy() yet
+			$customer = $this->callCustomerFind()->where(['id' => [1, 2]])->with('orders')->all();
+		} else {
+			// orderBy is needed to avoid random test failure
+			$customer = $this->callCustomerFind()->where(['id' => [1, 2]])->with('orders')->orderBy('name')->all();
+		}
+		$this->assertNotNull($customer);
+		$this->assertEquals([
+			[$orderClass, false, 1, false],
+			[$orderClass, false, 2, false],
+			[$orderClass, false, 3, false],
+			[$customerClass, false, 1, true],
+			[$customerClass, false, 2, true],
+		], $afterFindCalls);
+		$afterFindCalls = [];
+
+		Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND);
+	}
+
 }

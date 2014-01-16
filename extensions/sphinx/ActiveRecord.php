@@ -623,9 +623,11 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 * This method is called by [[ActiveQuery]] to populate the query results
 	 * into Active Records. It is not meant to be used to create new records.
 	 * @param array $row attribute values (name => value)
+	 * @param bool $callAfterFind whether this is a create after find and afterFind() should be called directly after create.
+	 * This may be set to false to call afterFind later.
 	 * @return ActiveRecord the newly created active record.
 	 */
-	public static function create($row)
+	public static function create($row, $callAfterFind = true)
 	{
 		$record = static::instantiate($row);
 		$columns = static::getIndexSchema()->columns;
@@ -641,7 +643,9 @@ abstract class ActiveRecord extends BaseActiveRecord
 			}
 		}
 		$record->setOldAttributes($record->getAttributes());
-		$record->afterFind();
+		if ($callAfterFind) {
+			$record->afterFind();
+		}
 		return $record;
 	}
 

@@ -72,11 +72,18 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 			$rows[] = $row;
 		}
 		if (!empty($rows)) {
-			$models = $this->createModels($rows);
 			if (!empty($this->with)) {
+				$models = $this->createModels($rows, false);
 				$this->findWith($this->with, $models);
+				if (!$this->asArray) {
+					foreach($models as $model) {
+						$model->afterFind();
+					}
+				}
+				return $models;
+			} else {
+				return $this->createModels($rows);
 			}
-			return $models;
 		} else {
 			return [];
 		}
@@ -107,12 +114,15 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		} else {
 			/** @var ActiveRecord $class */
 			$class = $this->modelClass;
-			$model = $class::create($row);
+			$model = $class::create($row, false);
 		}
 		if (!empty($this->with)) {
 			$models = [$model];
 			$this->findWith($this->with, $models);
 			$model = $models[0];
+		}
+		if (!$this->asArray) {
+			$model->afterFind();
 		}
 		return $model;
 	}

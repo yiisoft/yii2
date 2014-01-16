@@ -103,7 +103,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			}
 			unset($row);
 		}
-		$models = $this->createModels($result['hits']['hits']);
+		$models = $this->createModels($result['hits']['hits'], false);
 		if ($this->asArray && !$this->indexBy) {
 			foreach($models as $key => $model) {
 				if ($pk === '_id') {
@@ -115,6 +115,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 		if (!empty($this->with)) {
 			$this->findWith($this->with, $models);
+		}
+		if (!$this->asArray) {
+			foreach($models as $model) {
+				$model->afterFind();
+			}
 		}
 		return $models;
 	}
@@ -144,12 +149,15 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		} else {
 			/** @var ActiveRecord $class */
 			$class = $this->modelClass;
-			$model = $class::create($result);
+			$model = $class::create($result, false);
 		}
 		if (!empty($this->with)) {
 			$models = [$model];
 			$this->findWith($this->with, $models);
 			$model = $models[0];
+		}
+		if (!$this->asArray) {
+			$model->afterFind();
 		}
 		return $model;
 	}
@@ -161,7 +169,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	{
 		$result = $this->createCommand($db)->search($options);
 		if (!empty($result['hits']['hits'])) {
-			$models = $this->createModels($result['hits']['hits']);
+			$models = $this->createModels($result['hits']['hits'], false);
 			if ($this->asArray) {
 				/** @var ActiveRecord $modelClass */
 				$modelClass = $this->modelClass;
@@ -176,6 +184,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			}
 			if (!empty($this->with)) {
 				$this->findWith($this->with, $models);
+			}
+			if (!$this->asArray) {
+				foreach($models as $model) {
+					$model->afterFind();
+				}
 			}
 			$result['hits']['hits'] = $models;
 		}
