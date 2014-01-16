@@ -3,6 +3,7 @@
 namespace yiiunit\extensions\elasticsearch;
 
 use yii\base\Event;
+use yii\base\Exception;
 use yii\db\BaseActiveRecord;
 use yii\elasticsearch\Connection;
 use yii\helpers\Json;
@@ -344,8 +345,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
 	public function testBooleanAttribute()
 	{
 		$db = $this->getConnection();
-		Customer::setUpMapping($db->createCommand(), true);
 		Customer::deleteAll();
+		Customer::setUpMapping($db->createCommand(), true);
 
 		$customerClass = $this->getCustomerClass();
 		$customer = new $customerClass();
@@ -378,7 +379,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertEquals(2, count($customers));
 	}
 
-	public function testfindAsArrayFields()
+	public function testFindAsArrayFields()
 	{
 		$customerClass = $this->getCustomerClass();
 		/** @var TestCase|ActiveRecordTestTrait $this */
@@ -402,7 +403,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertArrayNotHasKey('status', $customers[2]);
 	}
 
-	public function testfindIndexByFields()
+	public function testFindIndexByFields()
 	{
 		$customerClass = $this->getCustomerClass();
 		/** @var TestCase|ActiveRecordTestTrait $this */
@@ -453,7 +454,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertNull($customers['3-user3']->status);
 	}
 
-	public function testfindIndexByAsArrayFields()
+	public function testFindIndexByAsArrayFields()
 	{
 		$customerClass = $this->getCustomerClass();
 		/** @var TestCase|ActiveRecordTestTrait $this */
