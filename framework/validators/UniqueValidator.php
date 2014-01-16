@@ -51,6 +51,13 @@ class UniqueValidator extends Validator
 	 * If the key and the value are the same, you can just specify the value.
 	 */
 	public $targetAttribute;
+	/**
+	 * @var string|array|\Closure additional filter to be applied to the DB query used to check the uniqueness of the attribute value.
+	 * This can be a string or an array representing the additional query condition (refer to [[\yii\db\Query::where()]]
+	 * on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
+	 * is the [[\yii\db\Query|Query]] object that you can modify in the function.
+	 */
+	public $filter;
 
 	/**
 	 * @inheritdoc
@@ -90,6 +97,12 @@ class UniqueValidator extends Validator
 
 		$query = $targetClass::find();
 		$query->where($params);
+
+		if ($this->filter instanceof \Closure) {
+			call_user_func($this->filter, $query);
+		} elseif ($this->filter !== null) {
+			$query->andWhere($this->filter);
+		}
 
 		if (!$object instanceof ActiveRecordInterface || $object->getIsNewRecord()) {
 			// if current $object isn't in the database yet then it's OK just to call exists()
