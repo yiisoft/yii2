@@ -103,7 +103,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			}
 			unset($row);
 		}
-		$models = $this->createModels($result['hits']['hits'], false);
+		$models = $this->createModels($result['hits']['hits']);
 		if ($this->asArray && !$this->indexBy) {
 			foreach($models as $key => $model) {
 				if ($pk === '_id') {
@@ -149,7 +149,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		} else {
 			/** @var ActiveRecord $class */
 			$class = $this->modelClass;
-			$model = $class::create($result, false);
+			$model = $class::create($result);
 		}
 		if (!empty($this->with)) {
 			$models = [$model];
@@ -169,7 +169,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	{
 		$result = $this->createCommand($db)->search($options);
 		if (!empty($result['hits']['hits'])) {
-			$models = $this->createModels($result['hits']['hits'], false);
+			$models = $this->createModels($result['hits']['hits']);
 			if ($this->asArray) {
 				/** @var ActiveRecord $modelClass */
 				$modelClass = $this->modelClass;

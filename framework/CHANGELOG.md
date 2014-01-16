@@ -29,7 +29,7 @@ Yii Framework 2 Change Log
 - Bug #1937: Fixed wrong behavior or advanced app's `init --env` when called without parameter actually specified (samdark)
 - Bug #1959: `Html::activeCheckbox` wasn't respecting custom values for checked/unchecked state (klevron, samdark)
 - Bug #1965: `Controller::findLayoutFile()` returns incorrect file path when layout name starts with a slash (qiangxue)
-- Bug #1993: afterFind event in AR is now called after relations have been populated (cebe)
+- Bug #1993: afterFind event in AR is now called after relations have been populated (cebe, creocoder)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)

@@ -91,7 +91,9 @@ class ActiveRecord extends BaseActiveRecord
 		$command = static::getDb()->createCommand();
 		$result = $command->get(static::index(), static::type(), $primaryKey, $options);
 		if ($result['exists']) {
-			return static::create($result);
+			$model = static::create($result);
+			$model->afterFind();
+			return $model;
 		}
 		return null;
 	}
@@ -118,7 +120,9 @@ class ActiveRecord extends BaseActiveRecord
 		$models = [];
 		foreach($result['docs'] as $doc) {
 			if ($doc['exists']) {
-				$models[] = static::create($doc);
+				$model = static::create($doc);
+				$model->afterFind();
+				$models[] = $model;
 			}
 		}
 		return $models;
@@ -261,22 +265,17 @@ class ActiveRecord extends BaseActiveRecord
 	 * This method is called by [[ActiveQuery]] to populate the query results
 	 * into Active Records. It is not meant to be used to create new records.
 	 * @param array $row attribute values (name => value)
-	 * @param bool $callAfterFind whether this is a create after find and afterFind() should be called directly after create.
-	 * This may be set to false to call afterFind later.
 	 * @return ActiveRecord the newly created active record.
 	 */
-	public static function create($row, $callAfterFind = true)
+	public static function create($row)
 	{
-		$record = parent::create($row['_source'], false);
+		$record = parent::create($row['_source']);
 		$pk = static::primaryKey()[0];
 		if ($pk === '_id') {
 			$record->$pk = $row['_id'];
 		}
 		$record->_score = isset($row['_score']) ? $row['_score'] : null;
 		$record->_version = isset($row['_version']) ? $row['_version'] : null; // TODO version should always be available...
-		if ($callAfterFind) {
-			$record->afterFind();
-		}
 		return $record;
 	}
 

@@ -105,7 +105,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		$command = $this->createCommand($db);
 		$rows = $command->queryAll();
 		if (!empty($rows)) {
-			$models = $this->createModels($rows, false);
+			$models = $this->createModels($rows);
 			if (!empty($this->with)) {
 				$this->findWith($this->with, $models);
 			}
@@ -139,7 +139,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			} else {
 				/** @var $class ActiveRecord */
 				$class = $this->modelClass;
-				$model = $class::create($row, false);
+				$model = $class::create($row);
 			}
 			if (!empty($this->with)) {
 				$models = [$model];
