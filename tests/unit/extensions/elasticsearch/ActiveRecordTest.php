@@ -2,6 +2,8 @@
 
 namespace yiiunit\extensions\elasticsearch;
 
+use yii\base\Event;
+use yii\db\BaseActiveRecord;
 use yii\elasticsearch\Connection;
 use yii\helpers\Json;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
@@ -10,6 +12,7 @@ use yiiunit\data\ar\elasticsearch\Customer;
 use yiiunit\data\ar\elasticsearch\OrderItem;
 use yiiunit\data\ar\elasticsearch\Order;
 use yiiunit\data\ar\elasticsearch\Item;
+use yiiunit\TestCase;
 
 /**
  * @group elasticsearch
@@ -495,5 +498,34 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertArrayNotHasKey('status', $customers['3-user3']);
 	}
 
+	public function testAfterFindGet()
+	{
+		/** @var BaseActiveRecord $customerClass */
+		$customerClass = $this->getCustomerClass();
 
+		$afterFindCalls = [];
+		Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND, function($event) use (&$afterFindCalls) {
+			/** @var BaseActiveRecord $ar */
+			$ar = $event->sender;
+			$afterFindCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+		});
+
+		$customer = Customer::get(1);
+		$this->assertNotNull($customer);
+		$this->assertEquals([[$customerClass, false, 1, false]], $afterFindCalls);
+		$afterFindCalls = [];
+
+		$customer = Customer::mget([1, 2]);
+		$this->assertNotNull($customer);
+		$this->assertEquals([
+			[$customerClass, false, 1, false],
+			[$customerClass, false, 2, false],
+		], $afterFindCalls);
+		$afterFindCalls = [];
+
+		Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND);
+	}
+
+
+	// TODO test AR with not mapped PK
 }

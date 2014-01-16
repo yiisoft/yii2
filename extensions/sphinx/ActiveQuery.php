@@ -105,11 +105,16 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		$command = $this->createCommand($db);
 		$rows = $command->queryAll();
 		if (!empty($rows)) {
-			$models = $this->createModels($rows);
+			$models = $this->createModels($rows, false);
 			if (!empty($this->with)) {
 				$this->findWith($this->with, $models);
 			}
 			$models = $this->fillUpSnippets($models);
+			if (!$this->asArray) {
+				foreach($models as $model) {
+					$model->afterFind();
+				}
+			}
 			return $models;
 		} else {
 			return [];
@@ -134,7 +139,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			} else {
 				/** @var $class ActiveRecord */
 				$class = $this->modelClass;
-				$model = $class::create($row);
+				$model = $class::create($row, false);
 			}
 			if (!empty($this->with)) {
 				$models = [$model];
@@ -142,6 +147,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 				$model = $models[0];
 			}
 			list ($model) = $this->fillUpSnippets([$model]);
+			if (!$this->asArray) {
+				$model->afterFind();
+			}
 			return $model;
 		} else {
 			return null;

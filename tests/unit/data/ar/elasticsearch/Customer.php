@@ -58,6 +58,7 @@ class Customer extends ActiveRecord
 			static::type() => [
 				"_id" => ["path" => "id", "index" => "not_analyzed", "store" => "yes"],
 				"properties" => [
+					"id" =>          ["type" => "integer"],
 					"name" =>        ["type" => "string", "index" => "not_analyzed"],
 					"email" =>       ["type" => "string", "index" => "not_analyzed"],
 					"address" =>     ["type" => "string", "index" => "analyzed"],
