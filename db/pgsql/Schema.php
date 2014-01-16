@@ -20,13 +20,10 @@ use yii\db\ColumnSchema;
  */
 class Schema extends \yii\db\Schema
 {
-
 	/**
-	 * The default schema used for the current session.
-	 * @var string
+	 * @var string the default schema used for the current session.
 	 */
 	public $defaultSchema = 'public';
-
 	/**
 	 * @var array mapping from physical column types (keys) to abstract
 	 * column types (values)
@@ -92,15 +89,16 @@ class Schema extends \yii\db\Schema
 	protected function resolveTableNames($table, $name)
 	{
 		$parts = explode('.', str_replace('"', '', $name));
+
 		if (isset($parts[1])) {
 			$table->schemaName = $parts[0];
 			$table->name = $parts[1];
 		} else {
-			$table->name = $parts[0];
-		}
-		if ($table->schemaName === null) {
 			$table->schemaName = $this->defaultSchema;
+			$table->name = $name;
 		}
+
+		$table->fullName = $table->schemaName !== $this->defaultSchema ? $table->schemaName . '.' . $table->name : $table->name;
 	}
 
 	/**

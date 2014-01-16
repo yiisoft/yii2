@@ -128,45 +128,45 @@ class Schema extends \yii\db\Schema
 		$this->db->open();
 		$tableInfo = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE, $name);
 
-		if (isset($tableInfo[0]['NAME'])) {
-			$table = new TableSchema();
-			$table->name = $tableInfo[0]['NAME'];
-
-			$sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteSimpleTableName($table->name);
-			$columns = $this->db->createCommand($sql)->queryAll();
-
-			foreach ($columns as $info) {
-				$column = $this->loadColumnSchema($info);
-				$table->columns[$column->name] = $column;
-			}
-
-			$primaryKeys = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $table->name);
-			foreach ($primaryKeys as $key) {
-				$column = $table->columns[$key['ATTR_NAME']];
-				$column->isPrimaryKey = true;
-				$table->primaryKey[] = $column->name;
-				if ($column->autoIncrement) {
-					$table->sequenceName = '';
-				}
-			}
-
-			$foreignKeys = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $table->name);
-			foreach ($foreignKeys as $key) {
-				if (isset($table->foreignKeys[$key['FK_NAME']])) {
-					$table->foreignKeys[$key['FK_NAME']][$key['FKCOLUMN_NAME']] = $key['PKCOLUMN_NAME'];
-				} else {
-					$table->foreignKeys[$key['FK_NAME']] = [
-						$key['PKTABLE_NAME'],
-						$key['FKCOLUMN_NAME'] => $key['PKCOLUMN_NAME']
-					];
-				}
-			}
-			$table->foreignKeys = array_values($table->foreignKeys);
-
-			return $table;
-		} else {
+		if (!isset($tableInfo[0]['NAME'])) {
 			return null;
 		}
+
+		$table = new TableSchema();
+		$table->fullName = $table->name = $tableInfo[0]['NAME'];
+
+		$sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteSimpleTableName($table->name);
+		$columns = $this->db->createCommand($sql)->queryAll();
+
+		foreach ($columns as $info) {
+			$column = $this->loadColumnSchema($info);
+			$table->columns[$column->name] = $column;
+		}
+
+		$primaryKeys = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $table->name);
+		foreach ($primaryKeys as $key) {
+			$column = $table->columns[$key['ATTR_NAME']];
+			$column->isPrimaryKey = true;
+			$table->primaryKey[] = $column->name;
+			if ($column->autoIncrement) {
+				$table->sequenceName = '';
+			}
+		}
+
+		$foreignKeys = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $table->name);
+		foreach ($foreignKeys as $key) {
+			if (isset($table->foreignKeys[$key['FK_NAME']])) {
+				$table->foreignKeys[$key['FK_NAME']][$key['FKCOLUMN_NAME']] = $key['PKCOLUMN_NAME'];
+			} else {
+				$table->foreignKeys[$key['FK_NAME']] = [
+					$key['PKTABLE_NAME'],
+					$key['FKCOLUMN_NAME'] => $key['PKCOLUMN_NAME']
+				];
+			}
+		}
+		$table->foreignKeys = array_values($table->foreignKeys);
+
+		return $table;
 	}
 
 	/**
