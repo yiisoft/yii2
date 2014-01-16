@@ -41,4 +41,10 @@ class Exception extends \yii\base\Exception
 	{
 		return 'Database Exception';
 	}
+
+	public function __toString()
+	{
+		return parent::__toString() . PHP_EOL
+		. 'Additional Information:' . PHP_EOL . print_r($this->errorInfo, true);
+	}
 }
