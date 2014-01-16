@@ -110,7 +110,7 @@ class FixtureController extends Controller
 	 * @param array $fixtures
 	 * @throws \yii\console\Exception
 	 */
-	public function actionApply(array $fixtures)
+	public function actionApply(array $fixtures, array $except = [])
 	{
 		if ($this->getFixtureManager() === null) {
 			throw new Exception('Fixture manager is not configured properly. Please refer to official documentation for this purposes.');
@@ -132,9 +132,11 @@ class FixtureController extends Controller
 			);			
 		}
 
-		if (!$this->confirmApply($foundFixtures)) {
+		if (!$this->confirmApply($foundFixtures, $except)) {
 			return;
 		}
+
+		$fixtures = array_diff($fixtures, $except);
 
 		$this->getFixtureManager()->basePath = $this->fixturePath;
 		$this->getFixtureManager()->db = $this->db;
@@ -159,15 +161,17 @@ class FixtureController extends Controller
 	 * whitespace between tables names.
 	 * @param array|string $tables
 	 */
-	public function actionClear(array $tables)
+	public function actionClear(array $tables, array $except = ['tbl_migration'])
 	{		
 		if ($this->needToApplyAll($tables[0])) {
 			$tables = $this->getDbConnection()->schema->getTableNames();
 		}
 
-		if (!$this->confirmClear($tables)) {
+		if (!$this->confirmClear($tables, $except)) {
 			return;
 		}
+
+		$tables = array_diff($tables, $except);
 
 		$transaction = Yii::$app->db->beginTransaction();
 
@@ -175,7 +179,7 @@ class FixtureController extends Controller
 			$this->getDbConnection()->createCommand()->checkIntegrity(false)->execute();
 
 			foreach($tables as $table) {
-				$this->getDbConnection()->createCommand()->truncateTable($table)->execute();
+				$this->getDbConnection()->createCommand()->delete($table)->execute();
 				$this->getDbConnection()->createCommand()->resetSequence($table)->execute();
 				$this->stdout("    Table \"{$table}\" was successfully cleared. \n", Console::FG_GREEN);
 			}
@@ -246,26 +250,40 @@ class FixtureController extends Controller
 	/**
 	 * Prompts user with confirmation if fixtures should be loaded.
 	 * @param array $fixtures
+	 * @param array $except
 	 * @return boolean
 	 */
-	private function confirmApply($fixtures)
+	private function confirmApply($fixtures, $except)
 	{
 		$this->stdout("Fixtures will be loaded from path: \n", Console::FG_YELLOW);
 		$this->stdout(Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
 		$this->outputList($fixtures);
-		return $this->confirm('Load to database above fixtures?');
+
+		if (count($except)) {
+			$this->stdout("\nFixtures that will NOT be loaded: \n\n", Console::FG_YELLOW);
+			$this->outputList($except);
+		}
+
+		return $this->confirm("\nLoad to database above fixtures?");
 	}
 
 	/**
 	 * Prompts user with confirmation for tables that should be cleared.
 	 * @param array $tables
+	 * @param array $except
 	 * @return boolean
 	 */
-	private function confirmClear($tables)
+	private function confirmClear($tables, $except)
 	{
 		$this->stdout("Tables below will be cleared:\n\n", Console::FG_YELLOW);
 		$this->outputList($tables);
-		return $this->confirm('Clear tables?');
+
+		if (count($except)) {
+			$this->stdout("\nTables that will NOT be cleared:\n\n", Console::FG_YELLOW);
+			$this->outputList($except);
+		}
+
+		return $this->confirm("\nClear tables?");
 	}
 
 	/**
