@@ -381,7 +381,11 @@
 		var $input = findInput($form, attribute);
 		var type = $input.prop('type');
 		if (type === 'checkbox' || type === 'radio') {
-			return $input.filter(':checked').val();
+			var $realInput = $input.filter(':checked');
+			if (!$realInput.length) {
+				$realInput = $form.find('input[type=hidden][name="'+$input.prop('name')+'"]');
+			}
+			return $realInput.val();
 		} else {
 			return $input.val();
 		}
