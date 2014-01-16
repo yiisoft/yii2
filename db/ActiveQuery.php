@@ -67,12 +67,17 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		$command = $this->createCommand($db);
 		$rows = $command->queryAll();
 		if (!empty($rows)) {
-			$models = $this->createModels($rows);
+			$models = $this->createModels($rows, false);
 			if (!empty($this->join) && $this->indexBy === null) {
 				$models = $this->removeDuplicatedModels($models);
 			}
 			if (!empty($this->with)) {
 				$this->findWith($this->with, $models);
+			}
+			if (!$this->asArray) {
+				foreach($models as $model) {
+					$model->afterFind();
+				}
 			}
 			return $models;
 		} else {
@@ -139,12 +144,15 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			} else {
 				/** @var ActiveRecord $class */
 				$class = $this->modelClass;
-				$model = $class::create($row);
+				$model = $class::create($row, false);
 			}
 			if (!empty($this->with)) {
 				$models = [$model];
 				$this->findWith($this->with, $models);
 				$model = $models[0];
+			}
+			if (!$this->asArray) {
+				$model->afterFind();
 			}
 			return $model;
 		} else {
