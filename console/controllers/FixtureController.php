@@ -136,7 +136,7 @@ class FixtureController extends Controller
 			return;
 		}
 
-		$fixtures = array_diff($fixtures, $except);
+		$fixtures = array_diff($foundFixtures, $except);
 
 		$this->getFixtureManager()->basePath = $this->fixturePath;
 		$this->getFixtureManager()->db = $this->db;
