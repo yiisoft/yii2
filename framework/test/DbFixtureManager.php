@@ -142,7 +142,7 @@ class DbFixtureManager extends Component
 			throw new InvalidConfigException("Table does not exist: $tableName");
 		}
 
-		$this->db->createCommand()->truncateTable($tableName)->execute();
+		$this->db->createCommand()->delete($tableName)->execute();
 		$this->db->createCommand()->resetSequence($tableName, 1)->execute();
 
 		$fileName = $this->basePath . '/' . $tableName . '.php';
