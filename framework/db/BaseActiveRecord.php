@@ -983,15 +983,21 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	}
 
 	/**
-	 * Creates an active record object using a row of data.
-	 * This method is called by [[ActiveQuery]] to populate the query results
-	 * into Active Records. It is not meant to be used to create new records.
+	 * Creates an active record object using a row of data from the database/storage.
+	 *
+	 * This method is *not* meant to be used to create new records.
+	 *
+	 * It is an internal method meant to be called to create active record objects after
+	 * fetching data from the database. It is mainly used by [[ActiveQuery]] to populate
+	 * the query results into Active Records.
+	 *
+	 * When calling this method manually you should call [[afterFind()]] on the created
+	 * record to trigger the [[EVENT_AFTER_FIND|afterFind Event]].
+	 *
 	 * @param array $row attribute values (name => value)
-	 * @param bool $callAfterFind whether this is a create after find and afterFind() should be called directly after create.
-	 * This may be set to false to call afterFind later.
-	 * @return ActiveRecord the newly created active record.
+	 * @return static the newly created active record.
 	 */
-	public static function create($row, $callAfterFind = true)
+	public static function create($row)
 	{
 		$record = static::instantiate($row);
 		$columns = array_flip($record->attributes());
@@ -1003,9 +1009,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 			}
 		}
 		$record->_oldAttributes = $record->_attributes;
-		if ($callAfterFind) {
-			$record->afterFind();
-		}
 		return $record;
 	}
 
@@ -1017,7 +1020,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * For example, by creating a record based on the value of a column,
 	 * you may implement the so-called single-table inheritance mapping.
 	 * @param array $row row data to be populated into the record.
-	 * @return ActiveRecord the newly created active record
+	 * @return static the newly created active record
 	 */
 	public static function instantiate($row)
 	{

@@ -135,7 +135,7 @@ trait ActiveQueryTrait
 	 * @param bool $callAfterFind
 	 * @return array|ActiveRecord[]
 	 */
-	private function createModels($rows, $callAfterFind = true)
+	private function createModels($rows)
 	{
 		$models = [];
 		if ($this->asArray) {
@@ -155,11 +155,11 @@ trait ActiveQueryTrait
 			$class = $this->modelClass;
 			if ($this->indexBy === null) {
 				foreach ($rows as $row) {
-					$models[] = $class::create($row, $callAfterFind);
+					$models[] = $class::create($row);
 				}
 			} else {
 				foreach ($rows as $row) {
-					$model = $class::create($row, $callAfterFind);
+					$model = $class::create($row);
 					if (is_string($this->indexBy)) {
 						$key = $model->{$this->indexBy};
 					} else {
