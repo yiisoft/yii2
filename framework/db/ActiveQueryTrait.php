@@ -132,7 +132,6 @@ trait ActiveQueryTrait
 	/**
 	 * Converts found rows into model instances
 	 * @param array $rows
-	 * @param bool $callAfterFind
 	 * @return array|ActiveRecord[]
 	 */
 	private function createModels($rows)
