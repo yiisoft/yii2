@@ -100,7 +100,6 @@ class ExistValidator extends Validator
 		$targetClass = $this->targetClass === null ? get_class($object) : $this->targetClass;
 		$query = $this->createQuery($targetClass, $params);
 
-		/** @var \yii\db\ActiveRecordInterface $className */
 		if (!$query->exists()) {
 			$this->addError($object, $attribute, $this->message);
 		}
@@ -126,6 +125,12 @@ class ExistValidator extends Validator
 		return $query->exists() ? null : [$this->message, []];
 	}
 
+	/**
+	 * Creates a query instance with the given condition.
+	 * @param string $targetClass the target AR class
+	 * @param mixed $condition query condition
+	 * @return \yii\db\ActiveQueryInterface the query instance
+	 */
 	protected function createQuery($targetClass, $condition)
 	{
 		/** @var \yii\db\ActiveRecordInterface $targetClass */
