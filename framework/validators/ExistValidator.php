@@ -54,6 +54,13 @@ class ExistValidator extends Validator
 	 * If the key and the value are the same, you can just specify the value.
 	 */
 	public $targetAttribute;
+	/**
+	 * @var string|array|\Closure additional filter to be applied to the DB query used to check the existence of the attribute value.
+	 * This can be a string or an array representing the additional query condition (refer to [[\yii\db\Query::where()]]
+	 * on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
+	 * is the [[\yii\db\Query|Query]] object that you can modify in the function.
+	 */
+	public $filter;
 
 
 	/**
@@ -72,8 +79,6 @@ class ExistValidator extends Validator
 	 */
 	public function validateAttribute($object, $attribute)
 	{
-		/** @var \yii\db\ActiveRecordInterface $targetClass */
-		$targetClass = $this->targetClass === null ? get_class($object) : $this->targetClass;
 		$targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
 
 		if (is_array($targetAttribute)) {
@@ -92,8 +97,11 @@ class ExistValidator extends Validator
 			}
 		}
 
+		$targetClass = $this->targetClass === null ? get_class($object) : $this->targetClass;
+		$query = $this->createQuery($targetClass, $params);
+
 		/** @var \yii\db\ActiveRecordInterface $className */
-		if (!$targetClass::find()->where($params)->exists()) {
+		if (!$query->exists()) {
 			$this->addError($object, $attribute, $this->message);
 		}
 	}
@@ -113,10 +121,20 @@ class ExistValidator extends Validator
 			throw new InvalidConfigException('The "targetAttribute" property must be configured as a string.');
 		}
 
-		/** @var \yii\db\ActiveRecordInterface $targetClass */
-		$targetClass = $this->targetClass;
-		$query = $targetClass::find();
-		$query->where([$this->targetAttribute => $value]);
+		$query = $this->createQuery($this->targetClass, [$this->targetAttribute => $value]);
+
 		return $query->exists() ? null : [$this->message, []];
+	}
+
+	protected function createQuery($targetClass, $condition)
+	{
+		/** @var \yii\db\ActiveRecordInterface $targetClass */
+		$query = $targetClass::find()->where($condition);
+		if ($this->filter instanceof \Closure) {
+			call_user_func($this->filter, $query);
+		} elseif ($this->filter !== null) {
+			$query->andWhere($this->filter);
+		}
+		return $query;
 	}
 }
