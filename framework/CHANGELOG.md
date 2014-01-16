@@ -193,4 +193,3 @@ Yii Framework 2 Change Log
 
   - [Smarty View Renderer](https://github.com/yiisoft/yii2-smarty)
   - [Twig View Renderer](https://github.com/yiisoft/yii2-twig)
-  
