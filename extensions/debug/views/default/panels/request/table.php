@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\VarDumper;
 
 /**
  * @var string $caption
@@ -25,7 +26,7 @@ use yii\helpers\Html;
 		<?php foreach($values as $name => $value): ?>
 			<tr>
 				<th style="width: 200px;"><?= Html::encode($name) ?></th>
-				<td><?= htmlspecialchars(var_export($value, true), ENT_QUOTES|ENT_SUBSTITUTE, \Yii::$app->charset, true) ?></td>
+				<td><?= htmlspecialchars(VarDumper::dumpAsString($value), ENT_QUOTES|ENT_SUBSTITUTE, \Yii::$app->charset, true) ?></td>
 			</tr>
 		<?php endforeach; ?>
 		</tbody>
