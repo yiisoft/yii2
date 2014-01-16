@@ -15,14 +15,21 @@ use yii\db\ColumnSchema;
  *
  * @todo mapping from physical types to abstract types
  *
- * @property string $defaultSchema Default schema.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Schema extends \yii\db\Schema
 {
-	private $_defaultSchema;
+	/**
+	 * @inheritdoc
+	 */
+	public function init()
+	{
+		parent::init();
+		if ($this->defaultSchema === null) {
+			$this->defaultSchema = $this->db->username;
+		}
+	}
 
 	/**
 	 * @inheritdoc
@@ -77,28 +84,11 @@ class Schema extends \yii\db\Schema
 			$table->schemaName = $parts[0];
 			$table->name = $parts[1];
 		} else {
-			$table->schemaName = $this->getDefaultSchema();
-			$table->name = $parts[0];
+			$table->schemaName = $this->defaultSchema;
+			$table->name = $name;
 		}
-	}
 
-	/**
-	 * @return string default schema.
-	 */
-	public function getDefaultSchema()
-	{
-		if ($this->_defaultSchema === null) {
-			$this->setDefaultSchema(strtoupper($this->db->username));
-		}
-		return $this->_defaultSchema;
-	}
-
-	/**
-	 * @param string $schema default schema.
-	 */
-	public function setDefaultSchema($schema)
-	{
-		$this->_defaultSchema = $schema;
+		$table->fullName = $table->schemaName !== $this->defaultSchema ? $table->schemaName . '.' . $table->name : $table->name;
 	}
 
 	/**

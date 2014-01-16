@@ -18,15 +18,14 @@ use yii\db\ColumnSchema;
 class Schema extends \yii\db\Schema
 {
 	/**
-	 * Default schema name to be used.
+	 * @var string the default schema used for the current session.
 	 */
-	const DEFAULT_SCHEMA = 'dbo';
-
+	public $defaultSchema = 'dbo';
 	/**
 	 * @var array mapping from physical column types (keys) to abstract column types (values)
 	 */
 	public $typeMap = [
-		// exact numerics
+		// exact numbers
 		'bigint' => self::TYPE_BIGINT,
 		'numeric' => self::TYPE_DECIMAL,
 		'bit' => self::TYPE_SMALLINT,
@@ -37,7 +36,7 @@ class Schema extends \yii\db\Schema
 		'tinyint' => self::TYPE_SMALLINT,
 		'money' => self::TYPE_MONEY,
 
-		// approximate numerics
+		// approximate numbers
 		'float' => self::TYPE_FLOAT,
 		'real' => self::TYPE_FLOAT,
 
@@ -137,14 +136,16 @@ class Schema extends \yii\db\Schema
 			$table->catalogName = $parts[0];
 			$table->schemaName = $parts[1];
 			$table->name = $parts[2];
+			$table->fullName = $table->catalogName . '.' . $table->schemaName . '.' . $table->name;
 		} elseif ($partCount == 2) {
 			// only schema name and table name passed
 			$table->schemaName = $parts[0];
 			$table->name = $parts[1];
+			$table->fullName = $table->schemaName !== $this->defaultSchema ? $table->schemaName . '.' . $table->name : $table->name;
 		} else {
-			// only schema name passed
-			$table->schemaName = static::DEFAULT_SCHEMA;
-			$table->name = $parts[0];
+			// only table name passed
+			$table->schemaName = $this->defaultSchema;
+			$table->fullName = $table->name = $parts[0];
 		}
 	}
 
@@ -339,7 +340,7 @@ SQL;
 	protected function findTableNames($schema = '')
 	{
 		if ($schema === '') {
-			$schema = static::DEFAULT_SCHEMA;
+			$schema = $this->defaultSchema;
 		}
 
 		$sql = <<<SQL
