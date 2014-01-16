@@ -175,7 +175,7 @@ class FixtureController extends Controller
 			$this->getDbConnection()->createCommand()->checkIntegrity(false)->execute();
 
 			foreach($tables as $table) {
-				$this->getDbConnection()->createCommand()->truncateTable($table)->execute();
+				$this->getDbConnection()->createCommand()->delete($table)->execute();
 				$this->getDbConnection()->createCommand()->resetSequence($table)->execute();
 				$this->stdout("    Table \"{$table}\" was successfully cleared. \n", Console::FG_GREEN);
 			}
