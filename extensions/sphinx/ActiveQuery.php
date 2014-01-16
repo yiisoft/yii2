@@ -110,6 +110,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 				$this->findWith($this->with, $models);
 			}
 			$models = $this->fillUpSnippets($models);
+			if (!$this->asArray) {
+				foreach($models as $model) {
+					$model->afterFind();
+				}
+			}
 			return $models;
 		} else {
 			return [];
@@ -142,6 +147,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 				$model = $models[0];
 			}
 			list ($model) = $this->fillUpSnippets([$model]);
+			if (!$this->asArray) {
+				$model->afterFind();
+			}
 			return $model;
 		} else {
 			return null;

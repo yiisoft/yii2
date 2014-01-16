@@ -76,6 +76,11 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 			if (!empty($this->with)) {
 				$this->findWith($this->with, $models);
 			}
+			if (!$this->asArray) {
+				foreach($models as $model) {
+					$model->afterFind();
+				}
+			}
 			return $models;
 		} else {
 			return [];
@@ -113,6 +118,9 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 			$models = [$model];
 			$this->findWith($this->with, $models);
 			$model = $models[0];
+		}
+		if (!$this->asArray) {
+			$model->afterFind();
 		}
 		return $model;
 	}

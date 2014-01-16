@@ -641,7 +641,6 @@ abstract class ActiveRecord extends BaseActiveRecord
 			}
 		}
 		$record->setOldAttributes($record->getAttributes());
-		$record->afterFind();
 		return $record;
 	}
 

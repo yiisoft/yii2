@@ -91,7 +91,9 @@ class ActiveRecord extends BaseActiveRecord
 		$command = static::getDb()->createCommand();
 		$result = $command->get(static::index(), static::type(), $primaryKey, $options);
 		if ($result['exists']) {
-			return static::create($result);
+			$model = static::create($result);
+			$model->afterFind();
+			return $model;
 		}
 		return null;
 	}
@@ -118,7 +120,9 @@ class ActiveRecord extends BaseActiveRecord
 		$models = [];
 		foreach($result['docs'] as $doc) {
 			if ($doc['exists']) {
-				$models[] = static::create($doc);
+				$model = static::create($doc);
+				$model->afterFind();
+				$models[] = $model;
 			}
 		}
 		return $models;
@@ -267,7 +271,9 @@ class ActiveRecord extends BaseActiveRecord
 	{
 		$record = parent::create($row['_source']);
 		$pk = static::primaryKey()[0];
-		$record->$pk = $row['_id'];
+		if ($pk === '_id') {
+			$record->$pk = $row['_id'];
+		}
 		$record->_score = isset($row['_score']) ? $row['_score'] : null;
 		$record->_version = isset($row['_version']) ? $row['_version'] : null; // TODO version should always be available...
 		return $record;

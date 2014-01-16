@@ -53,6 +53,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			if (!empty($this->with)) {
 				$this->findWith($this->with, $models);
 			}
+			if (!$this->asArray) {
+				foreach($models as $model) {
+					$model->afterFind();
+				}
+			}
 			return $models;
 		} else {
 			return [];
@@ -83,6 +88,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 				$this->findWith($this->with, $models);
 				$model = $models[0];
 			}
+			if (!$this->asArray) {
+				$model->afterFind();
+			}
 			return $model;
 		} else {
 			return null;
@@ -91,7 +99,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
 	/**
 	 * Returns the Mongo collection for this query.
-	 * @param \yii\mongo\Connection $db Mongo connection.
+	 * @param \yii\mongodb\Connection $db Mongo connection.
 	 * @return Collection collection instance.
 	 */
 	public function getCollection($db = null)
