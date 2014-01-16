@@ -22,7 +22,7 @@ use yii\db\Query;
  *
  * ~~~
  * CREATE TABLE tbl_source_message (
- *     id INTEGER PRIMARY KEY,
+ *     id INTEGER PRIMARY KEY AUTO_INCREMENT,
  *     category VARCHAR(32),
  *     message TEXT
  * );
