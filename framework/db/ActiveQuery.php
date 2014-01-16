@@ -74,6 +74,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			if (!empty($this->with)) {
 				$this->findWith($this->with, $models);
 			}
+			foreach ($models as $model) {
+				if (is_object($model)) {
+					$model->afterFind();
+				}
+			}
 			return $models;
 		} else {
 			return [];
@@ -145,6 +150,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 				$models = [$model];
 				$this->findWith($this->with, $models);
 				$model = $models[0];
+			}
+			if (is_object($model)) {
+				$model->afterFind();
 			}
 			return $model;
 		} else {
