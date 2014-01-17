@@ -8,7 +8,7 @@ use yii\helpers\Json;
 
 $redirectJavaScript = <<<EOL
 function popupWindowRedirect(url, enforceRedirect) {
-	if (window.opener) {
+	if (window.opener && window.name == 'yii_auth_choice') {
 		window.close();
 		if (enforceRedirect === undefined || enforceRedirect) {
 			window.opener.location = url;
