@@ -31,7 +31,6 @@ Yii Framework 2 Change Log
 - Bug #1959: `Html::activeCheckbox` wasn't respecting custom values for checked/unchecked state (klevron, samdark)
 - Bug #1965: `Controller::findLayoutFile()` returns incorrect file path when layout name starts with a slash (qiangxue)
 - Bug #1992: In module scenario that use 'site/captcha' will get wrong refreshUrl (callmez)
-- Bug #1999: `Controller::findLayoutFile()` returns incorrect file path when layout name starts with a slash (qiangxue)
 - Bug #1993: afterFind event in AR is now called after relations have been populated (cebe, creocoder)
 - Bug #1998: Unchecked required checkbox never pass client validation (klevron)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
