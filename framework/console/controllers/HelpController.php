@@ -123,10 +123,13 @@ class HelpController extends Controller
 			}
 		}
 
-		$files = scandir($module->getControllerPath());
-		foreach ($files as $file) {
-			if (strcmp(substr($file, -14), 'Controller.php') === 0) {
-				$commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14));
+		$controllerPath = $module->getControllerPath();
+		if (is_dir($controllerPath)) {
+			$files = scandir($controllerPath);
+			foreach ($files as $file) {
+				if (strcmp(substr($file, -14), 'Controller.php') === 0) {
+					$commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14));
+				}
 			}
 		}
 
