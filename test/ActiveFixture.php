@@ -48,6 +48,13 @@ class ActiveFixture extends Fixture
 	 */
 	public $tableName;
 	/**
+	 * @var string|boolean the file path or path alias of the data file that contains the fixture data
+	 * and will be loaded by [[loadData()]]. If this is not set, it will default to `FixturePath/data/TableName.php`,
+	 * where `FixturePath` stands for the directory containing this fixture class, and `TableName` stands for the
+	 * name of the table associated with this fixture. You may set this property to be false to disable loading data.
+	 */
+	public $dataFile;
+	/**
 	 * @var array the data rows. Each array element represents one row of data (column name => column value).
 	 */
 	public $rows;
@@ -82,9 +89,10 @@ class ActiveFixture extends Fixture
 	 */
 	public function load()
 	{
-		$table = $this->getTableSchema();
-		$this->resetTable($table);
+		$this->initSchema();
 
+ 		$table = $this->getTableSchema();
+		$this->resetTable();
 		$this->rows = [];
 		foreach ($this->loadData() as $alias => $row) {
 			$this->db->createCommand()->insert($table->fullName, $row)->execute();
@@ -158,34 +166,45 @@ class ActiveFixture extends Fixture
 	}
 
 	/**
+	 * Initializes the database schema.
+	 * This method is called by [[load()]] before loading data.
+	 * You may override this method to prepare necessary database schema changes.
+	 */
+	protected function initSchema()
+	{
+	}
+
+	/**
 	 * Loads fixture data.
 	 *
-	 * The default implementation will look for a file under the `data` sub-directory of the directory containing
-	 * the fixture class. The file name is assumed to be the same as the table name (with schema prefix if necessary).
-	 * For example, the `tbl_user` table corresponds to the `data/tbl_user.php` file; the `test.tbl_post` table (`test`
-	 * is the non-default schema name) corresponds to `data/test.tbl_user.php`. The file should return an array
-	 * of data rows (column name => column value), each corresponding to a row in the table.
+	 * The default implementation will try to load data by including the external file specified by [[dataFile]].
+	 * The file should return an array of data rows (column name => column value), each corresponding to a row in the table.
 	 *
 	 * If the data file does not exist, an empty array will be returned.
-	 *
-	 * You may override this method if you want to change the default way of data loading.
 	 *
 	 * @return array the data rows to be inserted into the database table.
 	 */
 	protected function loadData()
 	{
-		$class = new \ReflectionClass($this);
-		$dataFile = dirname($class->getFileName()) . '/data/' . $this->getTableSchema()->fullName . '.php';
+		if ($this->dataFile === false) {
+			return [];
+		}
+		if ($this->dataFile !== null) {
+			$dataFile = Yii::getAlias($this->dataFile);
+		} else {
+			$class = new \ReflectionClass($this);
+			$dataFile = dirname($class->getFileName()) . '/data/' . $this->getTableSchema()->fullName . '.php';
+		}
 		return is_file($dataFile) ? require($dataFile) : [];
 	}
 
 	/**
 	 * Removes all existing data from the specified table and resets sequence number if any.
 	 * This method is called before populating fixture data into the table associated with this fixture.
-	 * @param TableSchema $table the table to be reset.
 	 */
-	protected function resetTable($table)
+	protected function resetTable()
 	{
+		$table = $this->getTableSchema();
 		$this->db->createCommand()->delete($table->fullName)->execute();
 		if ($table->sequenceName !== null) {
 			$this->db->createCommand()->resetSequence($table->fullName, 1)->execute();
