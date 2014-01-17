@@ -588,7 +588,7 @@ class Request extends \yii\base\Request
 			$pathInfo = substr($pathInfo, 1);
 		}
 
-		return $pathInfo;
+		return (string)$pathInfo;
 	}
 
 	/**
