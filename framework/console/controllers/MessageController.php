@@ -132,12 +132,18 @@ class MessageController extends Controller
 				$this->usageError('The "connectionID" must refer to a valid database application component.');
 			}
 			$sourceMessageTable = !isset($config['sourceMessageTable']) ? 'SourceMessage' : $config['sourceMessageTable'];
+			$res = [];
 			foreach ($config['languages'] as $language) {
 				foreach ($messages as $category => $msgs) {
-					$messages[$category] = array_values(array_unique($msgs));
-					$this->saveMessagesToDb($messages, $dbConnection, $sourceMessageTable, $config['removeUnused']);
+ 					$res[$category] = $msgs;
 				}
 			}
+			$this->saveMessagesToDb(
+				$res,
+				$dbConnection,
+				$sourceMessageTable,
+				$config['removeUnused']
+			);
 		}
 	}
 
