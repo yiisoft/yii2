@@ -24,7 +24,7 @@ use yii\db\TableSchema;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ActiveFixture extends Fixture
+class ActiveFixture extends Fixture implements \IteratorAggregate, \ArrayAccess, \Countable
 {
 	/**
 	 * @inheritdoc
@@ -209,5 +209,65 @@ class ActiveFixture extends Fixture
 		if ($table->sequenceName !== null) {
 			$this->db->createCommand()->resetSequence($table->fullName, 1)->execute();
 		}
+	}
+
+	/**
+	 * Returns an iterator for traversing the cookies in the collection.
+	 * This method is required by the SPL interface `IteratorAggregate`.
+	 * It will be implicitly called when you use `foreach` to traverse the collection.
+	 * @return \ArrayIterator an iterator for traversing the cookies in the collection.
+	 */
+	public function getIterator()
+	{
+		return new \ArrayIterator($this->rows);
+	}
+
+	/**
+	 * Returns the number of items in the session.
+	 * This method is required by Countable interface.
+	 * @return integer number of items in the session.
+	 */
+	public function count()
+	{
+		return count($this->rows);
+	}
+
+	/**
+	 * This method is required by the interface ArrayAccess.
+	 * @param mixed $offset the offset to check on
+	 * @return boolean
+	 */
+	public function offsetExists($offset)
+	{
+		return isset($this->rows[$offset]);
+	}
+
+	/**
+	 * This method is required by the interface ArrayAccess.
+	 * @param integer $offset the offset to retrieve element.
+	 * @return mixed the element at the offset, null if no element is found at the offset
+	 */
+	public function offsetGet($offset)
+	{
+		return isset($this->rows[$offset]) ? $this->rows[$offset] : null;
+	}
+
+	/**
+	 * This method is required by the interface ArrayAccess.
+	 * @param integer $offset the offset to set element
+	 * @param mixed $item the element value
+	 */
+	public function offsetSet($offset, $item)
+	{
+		$this->rows[$offset] = $item;
+	}
+
+	/**
+	 * This method is required by the interface ArrayAccess.
+	 * @param mixed $offset the offset to unset element
+	 */
+	public function offsetUnset($offset)
+	{
+		unset($this->rows[$offset]);
 	}
 }

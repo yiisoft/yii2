@@ -5,6 +5,10 @@ namespace yii\codeception;
 use Yii;
 use yii\base\InvalidConfigException;
 use Codeception\TestCase\Test;
+use yii\base\UnknownMethodException;
+use yii\base\UnknownPropertyException;
+use yii\test\ActiveFixture;
+use yii\test\FixtureTrait;
 
 /**
  * TestCase is the base class for all codeception unit tests
@@ -14,6 +18,8 @@ use Codeception\TestCase\Test;
  */
 class TestCase extends Test
 {
+	use FixtureTrait;
+
 	/**
 	 * @var array|string the application configuration that will be used for creating an application instance for each test.
 	 * You can use a string to represent the file path or path alias of a configuration file.
@@ -29,6 +35,7 @@ class TestCase extends Test
 	{
 		parent::setUp();
 		$this->mockApplication();
+		$this->loadFixtures();
 	}
 
 	/**
@@ -36,8 +43,48 @@ class TestCase extends Test
 	 */
 	protected function tearDown()
 	{
+		$this->unloadFixtures();
 		$this->destroyApplication();
 		parent::tearDown();
+	}
+
+	/**
+	 * Returns the value of an object property.
+	 *
+	 * Do not call this method directly as it is a PHP magic method that
+	 * will be implicitly called when executing `$value = $object->property;`.
+	 * @param string $name the property name
+	 * @return mixed the property value
+	 * @throws UnknownPropertyException if the property is not defined
+	 */
+	public function __get($name)
+	{
+		$fixture = $this->getFixture($name);
+		if ($fixture !== null) {
+			return $fixture;
+		} else {
+			throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
+		}
+	}
+
+	/**
+	 * Calls the named method which is not a class method.
+	 *
+	 * Do not call this method directly as it is a PHP magic method that
+	 * will be implicitly called when an unknown method is being invoked.
+	 * @param string $name the method name
+	 * @param array $params method parameters
+	 * @throws UnknownMethodException when calling unknown method
+	 * @return mixed the method return value
+	 */
+	public function __call($name, $params)
+	{
+		$fixture = $this->getFixture($name);
+		if ($fixture instanceof ActiveFixture) {
+			return $fixture->getModel(reset($params));
+		} else {
+			throw new UnknownMethodException('Unknown method: ' . get_class($this) . "::$name()");
+		}
 	}
 
 	/**
