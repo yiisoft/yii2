@@ -1222,6 +1222,9 @@ class BaseHtml
 	 */
 	public static function activeDropDownList($model, $attribute, $items, $options = [])
 	{
+		if (!empty($options['multiple'])) {
+			return static::activeListBox($model, $attribute, $items, $options);
+		}
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
 		$selection = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('id', $options)) {
@@ -1273,7 +1276,7 @@ class BaseHtml
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
 		$selection = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('unselect', $options)) {
-			$options['unselect'] = '0';
+			$options['unselect'] = '';
 		}
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
