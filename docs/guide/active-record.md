@@ -545,32 +545,60 @@ Finally when calling [[delete()]] to delete an ActiveRecord, we will have the fo
 3. [[afterDelete()]]: will trigger an [[EVENT_AFTER_DELETE]] event
 
 
-Scopes
-------
+Custom scopes
+-------------
 
-A scope is a method that customizes a given [[ActiveQuery]] object. Scope methods are static and are defined
-in the ActiveRecord classes. They can be invoked through the [[ActiveQuery]] object that is created
-via [[find()]] or [[findBySql()]]. The following is an example:
+When [[find()]] or [[findBySql()]] Active Record method is being called without parameters it returns an [[ActiveQuery]]
+instance. This object holds all the parameters and conditions for a future query and also allows you to customize these
+using a set of methods that are called scopes. By deafault there is a good set of such methods some of which we've
+already used above: `where`, `orderBy`, `limit` etc.
+
+In many cases it is convenient to wrap extra conditions into custom scope methods. In order to do so you need two things.
+First is creating a custom query class for your model. For example, a `Comment` may have a `CommentQuery`:
 
 ```php
-class Comment extends \yii\db\ActiveRecord
-{
-	// ...
+namespace app\models;
 
-	/**
-	 * @param ActiveQuery $query
-	 */
-	public static function active($query)
+import yii\db\ActiveQuery;
+
+class CommentQuery extends ActiveQuery
+{
+	public function active($state = true)
 	{
-		$query->andWhere('status = 1');
+		$this->andWhere(['active' => $state]);
+		return $this;
 	}
 }
-
-$comments = Comment::find()->active()->all();
 ```
 
-In the above, the `active()` method is defined in `Comment` while we are calling it
-through `ActiveQuery` returned by `Comment::find()`.
+Important points are:
+
+1. Class should extend from `yii\db\ActiveQuery` (or another `ActiveQuery` such as `yii\mongodb\ActiveQuery`).
+2. A method should be `public` and should return `$this` in order to allow method chaining. It may accept parameters.
+3. Check `ActiveQuery` methods that are very useful for modifying query conditions.
+
+The second step is to use `CommentQuery` instead of regular `ActiveQuery` for `Comment` model:
+
+```
+namespace app\models;
+
+use yii\db\ActiveRecord;
+
+class Comment extends ActiveRecord
+{
+	public static function createQuery()
+	{
+		return new CommentQuery(['modelClass' => get_called_class()]);
+	}
+}
+```
+
+That's it. Now you can use your custom scope methods:
+
+```php
+$comments = Comment::find()->active()->all();
+$inactiveComments = Comment::find()->active(false)->all();
+```
 
 You can also use scopes when defining relations. For example,
 
@@ -595,29 +623,43 @@ $posts = Post::find()->with([
 ])->all();
 ```
 
-Scopes can be parameterized. For example, we can define and use the following `olderThan` scope:
+### Making it IDE-friendly
+
+In order to make your IDE autocomplete happy you can override return types for `one` and `all` methods like
+the following:
 
 ```php
-class Customer extends \yii\db\ActiveRecord
+namespace app\models;
+
+import yii\db\ActiveQuery;
+
+class CommentQuery extends ActiveQuery
 {
-	// ...
+	/**
+	 * Executes query and returns all results as an array.
+	 * @param Connection $db the DB connection used to create the DB command.
+	 * If null, the DB connection returned by [[modelClass]] will be used.
+	 * @return array|Comment[] the query results. If the query results in nothing, an empty array will be returned.
+	 */
+	public function all($db = null)
+	{
+		parent::all($db);
+	}
 
 	/**
-	 * @param ActiveQuery $query
-	 * @param integer $age
+	 * Executes query and returns a single row of result.
+	 * @param Connection $db the DB connection used to create the DB command.
+	 * If null, the DB connection returned by [[modelClass]] will be used.
+	 * @return Comment|array|null a single row of query result. Depending on the setting of [[asArray]],
+	 * the query result may be either an array or an ActiveRecord object. Null will be returned
+	 * if the query results in nothing.
 	 */
-	public static function olderThan($query, $age = 30)
+	public function one($db = null)
 	{
-		$query->andWhere('age > :age', [':age' => $age]);
+		parent::one($db);
 	}
 }
-
-$customers = Customer::find()->olderThan(50)->all();
 ```
-
-The parameters should follow after the `$query` parameter when defining the scope method, and they
-can take default values like shown above.
-
 
 Transactional operations
 ------------------------
