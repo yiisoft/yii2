@@ -1222,6 +1222,9 @@ class BaseHtml
 	 */
 	public static function activeDropDownList($model, $attribute, $items, $options = [])
 	{
+		if (!empty($options['multiple'])) {
+			return static::activeListBox($model, $attribute, $items, $options);
+		}
 		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
 		$selection = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('id', $options)) {
