@@ -135,9 +135,12 @@ being loaded, all its dependent fixtures will be automatically loaded first. In 
 `UserProfileFixture` depends on `UserFixture` and `DbFixture`, when running any test method in the test class,
 three fixtures will be loaded sequentially: `DbFixture`, `UserFixture` and `UserProfileFixture`.
 
-When declaring a fixture in a test class, you may assign an alias to a fixture. For example, `UserProfileFixture`
-is aliased as `profiles` in the above. In the test methods, you may then access a fixture object using its alias.
-For example, `$this->profiles` will return the `UserProfileFixture` object.
+When specifying fixtures in `fixtures()`, you may use either a class name or a configuration array to refer to
+a fixture. The configuration array will let you customize the fixture properties when the fixture is loaded.
+
+You may also assign an alias to a fixture. In the above example, the `UserProfileFixture` is aliased as `profiles`.
+In the test methods, you may then access a fixture object using its alias. For example, `$this->profiles` will
+return the `UserProfileFixture` object.
 
 Because `UserProfileFixture` extends from `ActiveFixture`, you may further use the following syntax to access
 the data provided by the fixture:
@@ -150,3 +153,6 @@ $profile = $this->profiles('user1');
 // traverse every data row in the fixture
 foreach ($this->profiles as $row) ...
 ```
+
+> Info: `$this->profiles` is still of `UserProfileFixture` type. The above access features are implemented
+> through PHP magic methods.
