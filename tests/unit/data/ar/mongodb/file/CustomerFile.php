@@ -2,6 +2,9 @@
 
 namespace yiiunit\data\ar\mongodb\file;
 
+use yii\mongodb\file\ActiveQuery;
+use yiiunit\data\ar\redis\CustomerQuery;
+
 class CustomerFile extends ActiveRecord
 {
 	public static function collectionName()
@@ -20,8 +23,8 @@ class CustomerFile extends ActiveRecord
 		);
 	}
 
-	public static function activeOnly($query)
+	public static function createQuery()
 	{
-		$query->andWhere(['status' => 2]);
+		return new CustomerQuery(['modelClass' => get_called_class()]);
 	}
 }
