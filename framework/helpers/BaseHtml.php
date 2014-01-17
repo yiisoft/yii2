@@ -718,9 +718,6 @@ class BaseHtml
 	 */
 	public static function listBox($name, $selection = null, $items = [], $options = [])
 	{
-		if (!isset($options['size'])) {
-			$options['size'] = 4;
-		}
 		if (!empty($options['multiple']) && substr($name, -2) !== '[]') {
 			$name .= '[]';
 		}
