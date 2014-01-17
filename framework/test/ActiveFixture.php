@@ -94,6 +94,7 @@ class ActiveFixture extends Fixture implements \IteratorAggregate, \ArrayAccess,
  		$table = $this->getTableSchema();
 		$this->resetTable();
 		$this->rows = [];
+		$this->_models = [];
 		foreach ($this->loadData() as $alias => $row) {
 			$this->db->createCommand()->insert($table->fullName, $row)->execute();
 			if ($table->sequenceName !== null) {
