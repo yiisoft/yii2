@@ -40,6 +40,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed issue with tabular input on ActiveField::radio() and ActiveField::checkbox() (jom)
 - Bug: Fixed the issue that query cache returns the same data for the same SQL but different query methods (qiangxue)
 - Bug: Fixed URL parsing so it's now properly giving 404 for URLs like `http://example.com//////site/about` (samdark)
+- Bug: Fixed `HelpController::getModuleCommands` issue where it attempts to scan a module's controller directory when it doesn't exist (jom)
 - Enh #46: Added Image extension based on [Imagine library](http://imagine.readthedocs.org) (tonydspaniard)
 - Enh #364: Improve Inflector::slug with `intl` transliteration. Improved transliteration char map. (tonydspaniard)
 - Enh #797: Added support for validating multiple columns by `UniqueValidator` and `ExistValidator` (qiangxue)
