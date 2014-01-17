@@ -125,7 +125,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		} elseif ($table === null) {
 			throw new InvalidParamException("Table not found: $tableName");
 		} else {
-			throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
+			throw new InvalidParamException("There is no sequence associated with table '$tableName'.");
 		}
 	}
 
