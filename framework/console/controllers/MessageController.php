@@ -92,15 +92,15 @@ class MessageController extends Controller
 			throw new Exception("The source path {$config['sourcePath']} is not a valid directory.");
 		}
 		if (in_array($config['format'], ['php', 'po'])) {
-		    if (!is_dir($config['messagePath'])) {
-			throw new Exception("The message path {$config['messagePath']} is not a valid directory.");
-		    }
+			if (!is_dir($config['messagePath'])) {
+				throw new Exception("The message path {$config['messagePath']} is not a valid directory.");
+			}
 		}
 		if (empty($config['languages'])) {
 			throw new Exception("Languages cannot be empty.");
 		}
 		if (empty($config['format']) || !in_array($config['format'], ['php', 'po', 'db'])) {
-		    throw new Exception('Format should be either "php", "po" or "db".');
+			throw new Exception('Format should be either "php", "po" or "db".');
 		}
 
 		$files = FileHelper::findFiles(realpath($config['sourcePath']), $config);
@@ -135,7 +135,7 @@ class MessageController extends Controller
 			$res = [];
 			foreach ($config['languages'] as $language) {
 				foreach ($messages as $category => $msgs) {
- 					$res[$category] = $msgs;
+					$res[$category] = $msgs;
 				}
 			}
 			$this->saveMessagesToDb(
@@ -153,8 +153,8 @@ class MessageController extends Controller
 	* @param $sourceMessageTable
 	* @param $removeUnused
 	*/
-    	protected function saveMessagesToDb($messages, $dbConnection, $sourceMessageTable, $removeUnused)
-    	{
+	protected function saveMessagesToDb($messages, $dbConnection, $sourceMessageTable, $removeUnused)
+	{
 		$q = new \yii\db\Query;
 		$current = [];
 
@@ -182,7 +182,7 @@ class MessageController extends Controller
 
 		if (!$removeUnused) {
 			foreach ($obsoleted as $pk => $m) {
-				if (substr($m, 0, 2) === '@@' && substr($m, -2) === '@@') {
+				if (mb_substr($m, 0, 2) === '@@' && mb_substr($m, -2) === '@@') {
 					unset($obsoleted[$pk]);
 				}
 			}
