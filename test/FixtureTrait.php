@@ -73,7 +73,7 @@ trait FixtureTrait
 		$this->_fixtureAliases = [];
 		foreach ($fixtures as $name => $fixture) {
 			if (!is_array($fixture)) {
-				$fixtures[$name] = ['class' => $fixture];
+				$fixtures[$name] = $fixture = ['class' => $fixture];
 			} elseif (!isset($fixture['class'])) {
 				throw new InvalidConfigException("You must specify 'class' for the fixture '$name'.");
 			}
