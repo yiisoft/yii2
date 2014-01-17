@@ -21,6 +21,11 @@ return [
 ];
 ```
 
+Requirements
+------------
+
+At least redis version 2.6.12 is required for all components to work properly.
+
 Installation
 ------------
 
