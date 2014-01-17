@@ -127,6 +127,11 @@ class MessageController extends Controller
 			}
 		}
 		if ($config['format'] === 'db') {
+			$dbConnection = \Yii::$app->getComponent(isset($config['connectionID']) ? $config['connectionID'] : 'db');
+			if (!$dbConnection instanceof \yii\db\Connection) {
+				$this->usageError('The "connectionID" must refer to a valid database application component.');
+			}
+			$sourceMessageTable = !isset($config['sourceMessageTable']) ? 'SourceMessage' : $config['sourceMessageTable'];
 			foreach ($config['languages'] as $language) {
 				foreach ($messages as $category => $msgs) {
 					$messages[$category] = array_values(array_unique($msgs));
