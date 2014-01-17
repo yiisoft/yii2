@@ -217,7 +217,7 @@ class UrlRule extends Object
 		}
 
 		if ($this->host !== null) {
-			$pathInfo = strtolower($request->getHostInfo()) . '/' . $pathInfo;
+			$pathInfo = strtolower($request->getHostInfo()) . ($pathInfo === '' ? '' : '/' . $pathInfo);
 		}
 
 		if (!preg_match($this->pattern, $pathInfo, $matches)) {
