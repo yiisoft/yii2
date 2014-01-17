@@ -459,6 +459,8 @@ By default, ActiveRecord now only saves dirty attributes. In 1.1, all attributes
 are saved to database when you call `save()`, regardless of having changed or not,
 unless you explicitly list the attributes to save.
 
+Scopes are now defined in a custom `ActiveQuery` class instead of model directly.
+
 See [active record docs](active-record.md) for more details.
 
 
