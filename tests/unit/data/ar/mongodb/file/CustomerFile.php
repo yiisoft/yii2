@@ -2,8 +2,7 @@
 
 namespace yiiunit\data\ar\mongodb\file;
 
-use yii\mongodb\file\ActiveQuery;
-use yiiunit\data\ar\redis\CustomerQuery;
+use yiiunit\data\ar\mongodb\CustomerQuery;
 
 class CustomerFile extends ActiveRecord
 {
