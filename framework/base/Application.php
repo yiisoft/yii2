@@ -339,7 +339,7 @@ abstract class Application extends Module
 	public function getVendorPath()
 	{
 		if ($this->_vendorPath === null) {
-			$this->setVendorPath($this->getBasePath() . DIRECTORY_SEPARATOR . 'vendor');
+			$this->setVendorPath(dirname(dirname(Yii::getAlias('@yii'))));
 		}
 		return $this->_vendorPath;
 	}
