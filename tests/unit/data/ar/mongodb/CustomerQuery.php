@@ -7,9 +7,10 @@ use yii\mongodb\ActiveQuery;
  */
 class CustomerQuery extends ActiveQuery
 {
-	public static function activeOnly($query)
+	public function activeOnly()
 	{
-		$query->andWhere(['status' => 2]);
+		$this->andWhere(['status' => 2]);
+		return $this;
 	}
 }
  

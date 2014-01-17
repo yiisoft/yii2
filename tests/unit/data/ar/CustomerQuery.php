@@ -7,9 +7,10 @@ use yii\db\ActiveQuery;
  */
 class CustomerQuery extends ActiveQuery
 {
-	public static function active($query)
+	public function active()
 	{
-		$query->andWhere('status=1');
+		$this->andWhere('status=1');
+		return $this;
 	}
 }
  
