@@ -625,8 +625,8 @@ $posts = Post::find()->with([
 
 ### Making it IDE-friendly
 
-In order to make your IDE autocomplete happy you can override return types for `one` and `all` methods like
-the following:
+In order to make your IDE autocomplete happy you can override return types for `one` and `all` methods of your query
+object like the following:
 
 ```php
 namespace app\models;
@@ -636,10 +636,8 @@ import yii\db\ActiveQuery;
 class CommentQuery extends ActiveQuery
 {
 	/**
-	 * Executes query and returns all results as an array.
-	 * @param Connection $db the DB connection used to create the DB command.
-	 * If null, the DB connection returned by [[modelClass]] will be used.
-	 * @return array|Comment[] the query results. If the query results in nothing, an empty array will be returned.
+	 * @inheritdoc
+	 * @return array|Comment[]
 	 */
 	public function all($db = null)
 	{
@@ -647,12 +645,8 @@ class CommentQuery extends ActiveQuery
 	}
 
 	/**
-	 * Executes query and returns a single row of result.
-	 * @param Connection $db the DB connection used to create the DB command.
-	 * If null, the DB connection returned by [[modelClass]] will be used.
-	 * @return Comment|array|null a single row of query result. Depending on the setting of [[asArray]],
-	 * the query result may be either an array or an ActiveRecord object. Null will be returned
-	 * if the query results in nothing.
+	 * @inheritdoc
+	 * @return Comment|array|null
 	 */
 	public function one($db = null)
 	{
@@ -660,6 +654,37 @@ class CommentQuery extends ActiveQuery
 	}
 }
 ```
+
+Then override your model methods:
+
+```php
+namespace app\models;
+
+use yii\db\ActiveRecord;
+
+class Comment extends ActiveRecord
+{
+	/**
+	 * @inheritdoc
+	 * @return CustomerQuery
+	 */
+	public function findBySQL($sql, $params = [])
+	{
+		return parent::findBySQL($sql, $params);
+	}
+
+	/**
+	 * @inheritdoc
+	 * @return null|static|CustomerQuery
+	 */
+	public function find($q = null)
+	{
+		return parent::find($q);
+	}
+}
+```
+
+Note that it can be done via `@method` tag but, unfortunitely [IDE support isn't good enough](http://youtrack.jetbrains.com/issue/WI-17404).
 
 Transactional operations
 ------------------------
