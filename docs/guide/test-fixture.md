@@ -105,9 +105,10 @@ Using Fixtures
 
 Yii provides [[yii\test\FixtureTrait]] which can be plugged into your test classes to let you easily load and access
 fixtures. More often you would develop your test cases by using the `yii2-codeception` extension
-which has the built-in support for the loading and accessing fixtures. In the following we will describe how to do so.
+which uses [[yii\test\FixtureTrait]] and has the built-in support for the loading and accessing fixtures.
+In the following we will describe how to write a `UserProfile` unit test class using `yii2-codeception`.
 
-In your test case class extending [[yii\codeception\TestCase]], you declare which fixtures you want to use
+In your unit test class extending [[yii\codeception\TestCase]], declare which fixtures you want to use
 in the [[yii\testFixtureTrait::fixtures()|fixtures()]] method. For example,
 
 ```php
