@@ -97,6 +97,10 @@ class AuthAction extends Action
 	 * If not set default one will be used.
 	 */
 	public $redirectView;
+	/**
+	 * @var boolean indicates if redirect trigger from popup window or in main window.
+	 */
+	public $popupMode = true;
 
 	/**
 	 * @param string $url successful URL.
@@ -219,7 +223,9 @@ class AuthAction extends Action
 	{
 		$viewFile = $this->redirectView;
 		if ($viewFile === null) {
-			$viewFile = __DIR__ . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'redirect.php';
+			$viewFile = __DIR__ . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . (
+				$this->popupMode ? 'redirect-popup.php' : 'redirect-in-window.php'
+			);
 		} else {
 			$viewFile = Yii::getAlias($viewFile);
 		}

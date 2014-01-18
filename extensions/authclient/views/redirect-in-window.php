@@ -6,20 +6,7 @@ use yii\helpers\Json;
 /* @var $url string */
 /* @var $enforceRedirect boolean */
 
-$redirectJavaScript = <<<EOL
-function popupWindowRedirect(url, enforceRedirect) {
-	if (window.opener) {
-		window.close();
-		if (enforceRedirect === undefined || enforceRedirect) {
-			window.opener.location = url;
-		}
-	} else {
-		window.location = url;
-	}
-}
-EOL;
-
-$redirectJavaScript .= 'popupWindowRedirect(' . Json::encode($url) . ', ' . Json::encode($enforceRedirect) . ');';
+$redirectJavaScript = 'window.location = ' . Json::encode($url) . ';';
 
 ?>
 <!DOCTYPE html>
