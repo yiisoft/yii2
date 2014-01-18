@@ -6,7 +6,7 @@ static data in cache and serving it from cache when requested, the application s
 
 
 Base Concepts
---------------------------
+-------------
 
 Using cache in Yii involves configuring and accessing a cache application component. The following
 application configuration specifies a cache component that uses [memcached](http://memcached.org/) with
@@ -62,7 +62,7 @@ is a summary of the available cache components:
   balancers, etc.)
 
 * [[\yii\caching\RedisCache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
-  (redis version 2.6 or higher is required).
+  (redis version 2.6.12 or higher is required).
 
 * [[\yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
   ([see also](http://php.net/manual/en/book.wincache.php)) extension.
@@ -182,7 +182,15 @@ Below is a summary of the available cache dependencies:
 
 ### Query Caching
 
-TBD: http://www.yiiframework.com/doc/guide/1.1/en/caching.data#query-caching
+For caching the result of database queries you can wrap them in calls to [[yii\db\Connection::beginCache()]]
+and [[yii\db\Connection::endCache()]]:
+
+```php
+$connection->beginCache(60); // cache all query results for 60 seconds.
+// your db query code here...
+$connection->endCache();
+```
+
 
 Fragment Caching
 ----------------

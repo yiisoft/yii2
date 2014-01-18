@@ -376,8 +376,8 @@ $customer = Customer::find(1);
 // lazy loading: SELECT * FROM tbl_order WHERE customer_id=1 AND subtotal>100
 $orders = $customer->getOrders()->where('subtotal>100')->all();
 
-// eager loading: SELECT * FROM tbl_customer LIMIT 10
-                  SELECT * FROM tbl_order WHERE customer_id IN (1,2,...) AND subtotal>100
+// eager loading: SELECT * FROM tbl_customer LIMIT 100
+//                SELECT * FROM tbl_order WHERE customer_id IN (1,2,...) AND subtotal>100
 $customers = Customer::find()->limit(100)->with([
 	'orders' => function($query) {
 		$query->andWhere('subtotal>100');
@@ -449,8 +449,43 @@ Below are some more examples,
 ```php
 // find all orders that contain books, but do not eager loading "books".
 $orders = Order::find()->innerJoinWith('books', false)->all();
-// equivalent to the above
+// which is equivalent to the above
 $orders = Order::find()->joinWith('books', false, 'INNER JOIN')->all();
+```
+
+Sometimes when joining two tables, you may need to specify some extra condition in the ON part of the JOIN query.
+This can be done by calling the [[\yii\db\ActiveRelation::onCondition()]] method like the following:
+
+```php
+class User extends ActiveRecord
+{
+	public function getBooks()
+	{
+		return $this->hasMany(Item::className(), ['owner_id' => 'id'])->onCondition(['category_id' => 1]);
+	}
+}
+```
+
+In the above, the `hasMany()` method returns an `ActiveRelation` instance, upon which `onCondition()` is called
+to specify that only items whose `category_id` is 1 should be returned.
+
+When you perform query using [[ActiveQuery::joinWith()|joinWith()]], the on-condition will be put in the ON part
+of the corresponding JOIN query. For example,
+
+```php
+// SELECT tbl_user.* FROM tbl_user LEFT JOIN tbl_item ON tbl_item.owner_id=tbl_user.id AND category_id=1
+// SELECT * FROM tbl_item WHERE owner_id IN (...) AND category_id=1
+$users = User::model()->joinWith('books')->all();
+```
+
+Note that if you use eager loading via [[ActiveQuery::with()]] or lazy loading, the on-condition will be put
+in the WHERE part of the corresponding SQL statement, because there is no JOIN query involved. For example,
+
+```php
+// SELECT * FROM tbl_user WHERE id=10
+$user = User::model(10);
+// SELECT * FROM tbl_item WHERE owner_id=10 AND category_id=1
+$books = $user->books;
 ```
 
 

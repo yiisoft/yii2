@@ -8,7 +8,7 @@ use yii\swiftmailer\Mailer;
 use yii\swiftmailer\Message;
 use yiiunit\VendorTestCase;
 
-Yii::setAlias('@yii/swiftmailer', __DIR__ . '/../../../../extensions/yii/swiftmailer');
+Yii::setAlias('@yii/swiftmailer', __DIR__ . '/../../../../extensions/swiftmailer');
 
 /**
  * @group vendor
@@ -340,5 +340,24 @@ class MessageTest extends VendorTestCase
 
 		$unserializedMessaage = unserialize($serializedMessage);
 		$this->assertEquals($message, $unserializedMessaage, 'Unable to unserialize message!');
+	}
+
+	/**
+	 * @depends testSendAlternativeBody
+	 */
+	public function testAlternativeBodyCharset()
+	{
+		$message = $this->createTestMessage();
+		$charset = 'windows-1251';
+		$message->setCharset($charset);
+
+		$message->setTextBody('some text');
+		$message->setHtmlBody('some html');
+		$content = $message->toString();
+		$this->assertEquals(2, substr_count($content, $charset), 'Wrong charset for alternative body.');
+
+		$message->setTextBody('some text override');
+		$content = $message->toString();
+		$this->assertEquals(2, substr_count($content, $charset), 'Wrong charset for alternative body override.');
 	}
 }

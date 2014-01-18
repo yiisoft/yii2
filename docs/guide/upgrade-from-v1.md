@@ -183,7 +183,7 @@ A model is now associated with a form name returned by its `formName()` method. 
 mainly used when using HTML forms to collect user inputs for a model. Previously in 1.1,
 this is usually hardcoded as the class name of the model.
 
-A new methods called `load()` and `Model::loadMultiple()` is introduced to simplify the data population from user inputs
+New methods called `load()` and `Model::loadMultiple()` are introduced to simplify the data population from user inputs
 to a model. For example,
 
 ```php

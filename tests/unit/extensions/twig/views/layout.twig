@@ -1,0 +1,14 @@
+{{ this.beginPage() }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="<?php echo Yii::$app->charset; ?>"/>
+    <title>{{ html.encode(this.title) }}</title>
+    {{ this.head() }}
+</head>
+<body>
+{{ this.beginBody() }}
+    body
+{{ this.endBody() }}
+</body>
+{{ this.endPage() }}

@@ -1,12 +1,24 @@
+html,
 body {
-	padding-top: 70px;
+	height: 100%;
+}
+
+.wrap {
+	min-height: 100%;
+	height: auto;
+	margin: 0 auto -60px;
+	padding: 0 0 60px;
+}
+
+.wrap > .container {
+    padding: 70px 15px 20px;
 }
 
 .footer {
+	height: 60px;
+	background-color: #f5f5f5;
 	border-top: 1px solid #ddd;
-	margin-top: 30px;
-	padding-top: 15px;
-	padding-bottom: 30px;
+	padding-top: 20px;
 }
 
 .jumbotron {
@@ -68,17 +80,6 @@ a.desc:after {
 	display: block;
 	margin-top: 5px;
 	color: #999;
-}
-
-.error-block {
-	display: none;
-	margin-top: 5px;
-	margin-bottom: 10px;
-	color: #a94442;
-}
-
-.has-error .error-block {
-	display: block;
 }
 
 .error-summary {

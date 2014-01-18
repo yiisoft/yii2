@@ -44,7 +44,7 @@ Once you have edited the `composer.json`, you can invoke Composer to install the
 For the first installation of the dependencies, use this command:
 
 ```
-php composer.phar install
+php composer.phar install --prefer-dist
 ```
 
 This must be executed within your Yii project's directory, where the `composer.json` file can be found.
@@ -54,7 +54,7 @@ to the `composer.phar` script.
 For an existing installation, you can have Composer update the dependencies using:
 
 ```
-php composer.phar update
+php composer.phar update --prefer-dist
 ```
 
 Again, you may need to provide specific path references.

@@ -128,7 +128,7 @@ class User extends ActiveRecord implements IdentityInterface
 	public function scenarios()
 	{
 		return [
-			'signup' => ['username', 'email', 'password'],
+			'signup' => ['username', 'email', 'password', '!status', '!role'],
 			'resetPassword' => ['password'],
 			'requestPasswordResetToken' => ['email'],
 		];

@@ -52,6 +52,10 @@ Here `yii\web\YiiAsset` adds Yii's JavaScript library while `yii\bootstrap\Boots
 Asset bundles are regular classes so if you need to define another one, just create alike class with unique name. This
 class can be placed anywhere but the convention for it is to be under `assets` directory of the application.
 
+Additionally you may specify `$jsOptions`, `$cssOptions` and `$publishOptions` that will be passed to
+[[\yii\web\View::registerJsFile()]], [[\yii\web\View::registerCssFile()]] and [[\yii\web\AssetManager::publish()]]
+respectively during registering and publising an asset.
+
 Registering asset bundle
 ------------------------
 

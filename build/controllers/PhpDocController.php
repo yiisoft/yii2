@@ -43,8 +43,8 @@ class PhpDocController extends Controller
 	{
 		$except = [];
 		if ($root === null) {
-			$root = dirname(dirname(YII_PATH));
-			$extensionPath = "$root/extensions/yii";
+			$root = dirname(YII_PATH);
+			$extensionPath = "$root/extensions";
 			foreach (scandir($extensionPath) as $extension) {
 				if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
 					Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
@@ -55,7 +55,7 @@ class PhpDocController extends Controller
 				'/apps/',
 				'/build/',
 				'/docs/',
-				'/extensions/yii/composer/',
+				'/extensions/composer/',
 				'/tests/',
 				'/vendor/',
 			];

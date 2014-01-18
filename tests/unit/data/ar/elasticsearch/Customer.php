@@ -1,6 +1,7 @@
 <?php
 namespace yiiunit\data\ar\elasticsearch;
 
+use yii\elasticsearch\Command;
 use yiiunit\extensions\elasticsearch\ActiveRecordTest;
 
 /**
@@ -19,14 +20,19 @@ class Customer extends ActiveRecord
 
 	public $status2;
 
+	public static function primaryKey()
+	{
+		return ['id'];
+	}
+
 	public function attributes()
 	{
-		return ['name', 'email', 'address', 'status'];
+		return ['id', 'name', 'email', 'address', 'status'];
 	}
 
 	public function getOrders()
 	{
-		return $this->hasMany(Order::className(), array('customer_id' => ActiveRecord::PRIMARY_KEY_NAME))->orderBy('create_time');
+		return $this->hasMany(Order::className(), array('customer_id' => 'id'))->orderBy('create_time');
 	}
 
 	public static function active($query)
@@ -39,5 +45,26 @@ class Customer extends ActiveRecord
 		ActiveRecordTest::$afterSaveInsert = $insert;
 		ActiveRecordTest::$afterSaveNewRecord = $this->isNewRecord;
 		parent::afterSave($insert);
+	}
+
+	/**
+	 * sets up the index for this record
+	 * @param Command $command
+	 */
+	public static function setUpMapping($command, $statusIsBoolean = false)
+	{
+		$command->deleteMapping(static::index(), static::type());
+		$command->setMapping(static::index(), static::type(), [
+			static::type() => [
+				"_id" => ["path" => "id", "index" => "not_analyzed", "store" => "yes"],
+				"properties" => [
+					"name" =>        ["type" => "string", "index" => "not_analyzed"],
+					"email" =>       ["type" => "string", "index" => "not_analyzed"],
+					"address" =>     ["type" => "string", "index" => "analyzed"],
+					"status" => $statusIsBoolean ? ["type" => "boolean"] : ["type" => "integer"],
+				]
+			]
+		]);
+
 	}
 }
