@@ -643,7 +643,7 @@ class CommentQuery extends ActiveQuery
 	 */
 	public function all($db = null)
 	{
-		parent::all($db);
+		return parent::all($db);
 	}
 
 	/**
@@ -656,7 +656,7 @@ class CommentQuery extends ActiveQuery
 	 */
 	public function one($db = null)
 	{
-		parent::one($db);
+		return parent::one($db);
 	}
 }
 ```
