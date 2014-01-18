@@ -8,39 +8,29 @@
 namespace yii\test;
 
 use Yii;
+use yii\base\ArrayAccessTrait;
 use yii\base\InvalidConfigException;
-use yii\db\Connection;
 use yii\db\TableSchema;
 
 /**
  * ActiveFixture represents a fixture backed up by a [[modelClass|ActiveRecord class]] or a [[tableName|database table]].
  *
- * Either [[modelClass]] or [[tableName]] must be set. When loading an ActiveFixture, the corresponding
- * database table will be [[resetTable()|reset]] first. It will then be populated with the data loaded by [[loadData()]].
+ * Either [[modelClass]] or [[tableName]] must be set. And you should normally override [[loadSchema()]]
+ * to set up the necessary database schema (e.g. creating the table, view, trigger, etc.)
+ * You should also provide fixture data in the file specified by [[dataFile]] or overriding [[loadData()]] if you want
+ * to use code to generate the fixture data.
  *
- * You can access the loaded data via the [[rows]] property. If you set [[modelClass]], you will also be able
- * to retrieve an instance of [[modelClass]] with the populated data via [[getModel()]].
+ * When the fixture is being loaded, it will first call [[loadSchema()]] to initialize the database schema.
+ * It will then call [[loadData()]] to populate the table with the fixture data.
+ *
+ * After the fixture is loaded, you can access the loaded data via the [[data]] property. If you set [[modelClass]],
+ * you will also be able to retrieve an instance of [[modelClass]] with the populated data via [[getModel()]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ActiveFixture extends Fixture implements \IteratorAggregate, \ArrayAccess, \Countable
+class ActiveFixture extends BaseActiveFixture
 {
-	/**
-	 * @inheritdoc
-	 */
-	public $depends = ['yii\test\DbFixture'];
-	/**
-	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
-	 * After the ActiveFixture object is created, if you want to change this property, you should only assign it
-	 * with a DB connection object.
-	 */
-	public $db = 'db';
-	/**
-	 * @var string the AR model class associated with this fixture.
-	 * @see tableName
-	 */
-	public $modelClass;
 	/**
 	 * @var string the name of the database table that this fixture is about. If this property is not set,
 	 * the table name will be determined via [[modelClass]].
@@ -48,24 +38,25 @@ class ActiveFixture extends Fixture implements \IteratorAggregate, \ArrayAccess,
 	 */
 	public $tableName;
 	/**
-	 * @var string|boolean the file path or path alias of the data file that contains the fixture data
+	 * @var string the file path or path alias of the data file that contains the fixture data
 	 * and will be loaded by [[loadData()]]. If this is not set, it will default to `FixturePath/data/TableName.php`,
 	 * where `FixturePath` stands for the directory containing this fixture class, and `TableName` stands for the
-	 * name of the table associated with this fixture. You may set this property to be false to disable loading data.
+	 * name of the table associated with this fixture.
 	 */
 	public $dataFile;
 	/**
-	 * @var array the data rows. Each array element represents one row of data (column name => column value).
+	 * @var boolean whether to reset the table associated with this fixture.
+	 * By setting this property to be true, when [[loadData()]] is called, all existing data in the table
+	 * will be removed and the sequence number (if any) will be reset.
+	 *
+	 * Note that you normally do not need to reset the table if you implement [[loadSchema()]] because
+	 * there will be no existing data.
 	 */
-	public $rows;
+	public $resetTable = false;
 	/**
 	 * @var TableSchema the table schema for the table associated with this fixture
 	 */
 	private $_table;
-	/**
-	 * @var \yii\db\ActiveRecord[] the loaded AR models
-	 */
-	private $_models;
 
 	/**
 	 * @inheritdoc
@@ -76,68 +67,6 @@ class ActiveFixture extends Fixture implements \IteratorAggregate, \ArrayAccess,
 		if (!isset($this->modelClass) && !isset($this->tableName)) {
 			throw new InvalidConfigException('Either "modelClass" or "tableName" must be set.');
 		}
-		if (is_string($this->db)) {
-			$this->db = Yii::$app->getComponent($this->db);
-		}
-		if (!$this->db instanceof Connection) {
-			throw new InvalidConfigException("The 'db' property must be either a DB connection instance or the application component ID of a DB connection.");
-		}
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function load()
-	{
-		$this->initSchema();
-
- 		$table = $this->getTableSchema();
-		$this->resetTable();
-		$this->rows = [];
-		$this->_models = [];
-		foreach ($this->loadData() as $alias => $row) {
-			$this->db->createCommand()->insert($table->fullName, $row)->execute();
-			if ($table->sequenceName !== null) {
-				foreach ($table->primaryKey as $pk) {
-					if (!isset($row[$pk])) {
-						$row[$pk] = $this->db->getLastInsertID($table->sequenceName);
-						break;
-					}
-				}
-			}
-			$this->rows[$alias] = $row;
-		}
-	}
-
-	/**
-	 * Returns the AR model by the specified model name.
-	 * A model name is the key of the corresponding data row returned by [[loadData()]].
-	 * @param string $name the model name.
-	 * @return null|\yii\db\ActiveRecord the AR model, or null if the model cannot be found in the database
-	 * @throws \yii\base\InvalidConfigException if [[modelClass]] is not set.
-	 */
-	public function getModel($name)
-	{
-		if (!isset($this->rows[$name])) {
-			return null;
-		}
-		if (array_key_exists($name, $this->_models)) {
-			return $this->_models[$name];
-		}
-
-		if ($this->modelClass === null) {
-			throw new InvalidConfigException('The "modelClass" property must be set.');
-		}
-		$row = $this->rows[$name];
-		/** @var \yii\db\ActiveRecord $modelClass */
-		$modelClass = $this->modelClass;
-		/** @var \yii\db\ActiveRecord $model */
-		$model = new $modelClass;
-		$keys = [];
-		foreach ($model->primaryKey() as $key) {
-			$keys[$key] = isset($row[$key]) ? $row[$key] : null;
-		}
-		return $this->_models[$name] = $modelClass::find($keys);
 	}
 
 	/**
@@ -167,25 +96,43 @@ class ActiveFixture extends Fixture implements \IteratorAggregate, \ArrayAccess,
 	}
 
 	/**
-	 * Initializes the database schema.
-	 * This method is called by [[load()]] before loading data.
-	 * You may override this method to prepare necessary database schema changes.
+	 * Loads the fixture data.
+	 * The default implementation will first reset the DB table and then populate it with the data
+	 * returned by [[getData()]].
 	 */
-	protected function initSchema()
+	protected function loadData()
 	{
+		$table = $this->getTableSchema();
+		if ($this->resetTable) {
+			$this->resetTable();
+		}
+		foreach ($this->getData() as $alias => $row) {
+			$this->db->createCommand()->insert($table->fullName, $row)->execute();
+			if ($table->sequenceName !== null) {
+				foreach ($table->primaryKey as $pk) {
+					if (!isset($row[$pk])) {
+						$row[$pk] = $this->db->getLastInsertID($table->sequenceName);
+						break;
+					}
+				}
+			}
+			$this->data[$alias] = $row;
+		}
 	}
 
 	/**
-	 * Loads fixture data.
+	 * Returns the fixture data.
+	 * 
+	 * This method is called by [[loadData()]] to get the needed fixture data.
 	 *
-	 * The default implementation will try to load data by including the external file specified by [[dataFile]].
+	 * The default implementation will try to return the fixture data by including the external file specified by [[dataFile]].
 	 * The file should return an array of data rows (column name => column value), each corresponding to a row in the table.
 	 *
 	 * If the data file does not exist, an empty array will be returned.
 	 *
 	 * @return array the data rows to be inserted into the database table.
 	 */
-	protected function loadData()
+	protected function getData()
 	{
 		if ($this->dataFile === false) {
 			return [];
@@ -210,65 +157,5 @@ class ActiveFixture extends Fixture implements \IteratorAggregate, \ArrayAccess,
 		if ($table->sequenceName !== null) {
 			$this->db->createCommand()->resetSequence($table->fullName, 1)->execute();
 		}
-	}
-
-	/**
-	 * Returns an iterator for traversing the cookies in the collection.
-	 * This method is required by the SPL interface `IteratorAggregate`.
-	 * It will be implicitly called when you use `foreach` to traverse the collection.
-	 * @return \ArrayIterator an iterator for traversing the cookies in the collection.
-	 */
-	public function getIterator()
-	{
-		return new \ArrayIterator($this->rows);
-	}
-
-	/**
-	 * Returns the number of items in the session.
-	 * This method is required by Countable interface.
-	 * @return integer number of items in the session.
-	 */
-	public function count()
-	{
-		return count($this->rows);
-	}
-
-	/**
-	 * This method is required by the interface ArrayAccess.
-	 * @param mixed $offset the offset to check on
-	 * @return boolean
-	 */
-	public function offsetExists($offset)
-	{
-		return isset($this->rows[$offset]);
-	}
-
-	/**
-	 * This method is required by the interface ArrayAccess.
-	 * @param integer $offset the offset to retrieve element.
-	 * @return mixed the element at the offset, null if no element is found at the offset
-	 */
-	public function offsetGet($offset)
-	{
-		return isset($this->rows[$offset]) ? $this->rows[$offset] : null;
-	}
-
-	/**
-	 * This method is required by the interface ArrayAccess.
-	 * @param integer $offset the offset to set element
-	 * @param mixed $item the element value
-	 */
-	public function offsetSet($offset, $item)
-	{
-		$this->rows[$offset] = $item;
-	}
-
-	/**
-	 * This method is required by the interface ArrayAccess.
-	 * @param mixed $offset the offset to unset element
-	 */
-	public function offsetUnset($offset)
-	{
-		unset($this->rows[$offset]);
 	}
 }
