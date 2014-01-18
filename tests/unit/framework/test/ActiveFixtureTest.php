@@ -21,7 +21,17 @@ class MyDbTestCase
 {
 	use FixtureTrait;
 
-	public function fixtures()
+	public function setUp()
+	{
+		$this->loadFixtures();
+	}
+
+	public function tearDown()
+	{
+		$this->unloadFixtures();
+	}
+
+	protected function fixtures()
 	{
 		return [
 			'customers' => CustomerFixture::className(),
@@ -51,8 +61,8 @@ class ActiveFixtureTest extends DatabaseTestCase
 	public function testGetRows()
 	{
 		$test = new MyDbTestCase();
-		$test->loadFixtures();
-		$fixture = $test->getFixture('customers');
+		$test->setUp();
+		$fixture = $test->customers;
 		$this->assertEquals(CustomerFixture::className(), get_class($fixture));
 		$this->assertEquals(2, count($fixture));
 		$this->assertEquals(1, $fixture['customer1']['id']);
@@ -64,8 +74,8 @@ class ActiveFixtureTest extends DatabaseTestCase
 	public function testGetModel()
 	{
 		$test = new MyDbTestCase();
-		$test->loadFixtures();
-		$fixture = $test->getFixture('customers');
+		$test->setUp();
+		$fixture = $test->customers;
 		$this->assertEquals(Customer::className(), get_class($fixture->getModel('customer1')));
 		$this->assertEquals(1, $fixture->getModel('customer1')->id);
 		$this->assertEquals('customer1@example.com', $fixture->getModel('customer1')->email);

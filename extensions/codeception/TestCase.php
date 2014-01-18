@@ -49,45 +49,6 @@ class TestCase extends Test
 	}
 
 	/**
-	 * Returns the value of an object property.
-	 *
-	 * Do not call this method directly as it is a PHP magic method that
-	 * will be implicitly called when executing `$value = $object->property;`.
-	 * @param string $name the property name
-	 * @return mixed the property value
-	 * @throws UnknownPropertyException if the property is not defined
-	 */
-	public function __get($name)
-	{
-		$fixture = $this->getFixture($name);
-		if ($fixture !== null) {
-			return $fixture;
-		} else {
-			throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
-		}
-	}
-
-	/**
-	 * Calls the named method which is not a class method.
-	 *
-	 * Do not call this method directly as it is a PHP magic method that
-	 * will be implicitly called when an unknown method is being invoked.
-	 * @param string $name the method name
-	 * @param array $params method parameters
-	 * @throws UnknownMethodException when calling unknown method
-	 * @return mixed the method return value
-	 */
-	public function __call($name, $params)
-	{
-		$fixture = $this->getFixture($name);
-		if ($fixture instanceof ActiveFixture) {
-			return $fixture->getModel(reset($params));
-		} else {
-			throw new UnknownMethodException('Unknown method: ' . get_class($this) . "::$name()");
-		}
-	}
-
-	/**
 	 * Mocks up the application instance.
 	 * @param array $config the configuration that should be used to generate the application instance.
 	 * If null, [[appConfig]] will be used.

@@ -63,7 +63,22 @@ class MyTestCase
 	public static $load;
 	public static $unload;
 
-	public function fixtures()
+	public function setUp()
+	{
+		$this->loadFixtures();
+	}
+
+	public function tearDown()
+	{
+		$this->unloadFixtures();
+	}
+
+	public function fetchFixture($name)
+	{
+		return $this->getFixture($name);
+	}
+
+	protected function fixtures()
 	{
 		switch ($this->scenario) {
 			case 0: return [];
@@ -105,9 +120,9 @@ class FixtureTest extends TestCase
 		foreach ($this->getDependencyTests() as $scenario => $result) {
 			$test = new MyTestCase();
 			$test->scenario = $scenario;
-			$test->loadFixtures();
+			$test->setUp();
 			foreach ($result as $name => $loaded) {
-				$this->assertEquals($loaded, $test->getFixture($name) !== null, "Verifying scenario $scenario fixture $name");
+				$this->assertEquals($loaded, $test->fetchFixture($name) !== null, "Verifying scenario $scenario fixture $name");
 			}
 		}
 	}
@@ -119,9 +134,9 @@ class FixtureTest extends TestCase
 			$test->scenario = $scenario;
 			MyTestCase::$load = '';
 			MyTestCase::$unload = '';
-			$test->loadFixtures();
+			$test->setUp();
 			$this->assertEquals($result[0], MyTestCase::$load, "Verifying scenario $scenario load sequence");
-			$test->unloadFixtures();
+			$test->tearDown();
 			$this->assertEquals($result[1], MyTestCase::$unload, "Verifying scenario $scenario unload sequence");
 		}
 	}

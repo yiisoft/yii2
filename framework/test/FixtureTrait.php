@@ -9,15 +9,74 @@ namespace yii\test;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\UnknownMethodException;
+use yii\base\UnknownPropertyException;
 
 /**
  * FixtureTrait provides functionalities for loading, unloading and accessing fixtures for a test case.
+ *
+ * By using FixtureTrait, a test class will be able to specify which fixtures to load by overriding
+ * the [[fixtures()]] method. It can then load and unload the fixtures using [[loadFixtures()]] and [[unloadFixtures()]].
+ * Once a fixture is loaded, it can be accessed like an object property, thanks to the PHP `__get()` magic method.
+ * Also, if the fixture is an instance of [[ActiveFixture]], you will be able to access AR models
+ * through the syntax `$this->fixtureName('model name')`.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 trait FixtureTrait
 {
+	/**
+	 * @var array the list of fixture objects available for the current test.
+	 * The array keys are the corresponding fixture class names.
+	 * The fixtures are listed in their dependency order. That is, fixture A is listed before B
+	 * if B depends on A.
+	 */
+	private $_fixtures;
+	/**
+	 * @var array the fixture class names indexed by the corresponding fixture names (aliases).
+	 */
+	private $_fixtureAliases;
+
+	/**
+	 * Returns the value of an object property.
+	 *
+	 * Do not call this method directly as it is a PHP magic method that
+	 * will be implicitly called when executing `$value = $object->property;`.
+	 * @param string $name the property name
+	 * @return mixed the property value
+	 * @throws UnknownPropertyException if the property is not defined
+	 */
+	public function __get($name)
+	{
+		$fixture = $this->getFixture($name);
+		if ($fixture !== null) {
+			return $fixture;
+		} else {
+			throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
+		}
+	}
+
+	/**
+	 * Calls the named method which is not a class method.
+	 *
+	 * Do not call this method directly as it is a PHP magic method that
+	 * will be implicitly called when an unknown method is being invoked.
+	 * @param string $name the method name
+	 * @param array $params method parameters
+	 * @throws UnknownMethodException when calling unknown method
+	 * @return mixed the method return value
+	 */
+	public function __call($name, $params)
+	{
+		$fixture = $this->getFixture($name);
+		if ($fixture instanceof ActiveFixture) {
+			return $fixture->getModel(reset($params));
+		} else {
+			throw new UnknownMethodException('Unknown method: ' . get_class($this) . "::$name()");
+		}
+	}
+
 	/**
 	 * Declares the fixtures that are needed by the current test case.
 	 * The return value of this method must be an array of fixture configurations. For example,
@@ -38,22 +97,10 @@ trait FixtureTrait
 	 *
 	 * @return array the fixtures needed by the current test case
 	 */
-	public function fixtures()
+	protected function fixtures()
 	{
 		return [];
 	}
-
-	/**
-	 * @var array the list of fixture objects available for the current test.
-	 * The array keys are the corresponding fixture class names.
-	 * The fixtures are listed in their dependency order. That is, fixture A is listed before B
-	 * if B depends on A.
-	 */
-	private $_fixtures;
-	/**
-	 * @var array the fixture class names indexed by the corresponding fixture names (aliases).
-	 */
-	private $_fixtureAliases;
 
 	/**
 	 * Loads the fixtures.
@@ -62,7 +109,7 @@ trait FixtureTrait
 	 * @throws InvalidConfigException if fixtures are not properly configured or if a circular dependency among
 	 * the fixtures is detected.
 	 */
-	public function loadFixtures($fixtures = null)
+	protected function loadFixtures($fixtures = null)
 	{
 		if ($fixtures === null) {
 			$fixtures = $this->fixtures();
@@ -120,7 +167,7 @@ trait FixtureTrait
 	/**
 	 * Unloads all existing fixtures.
 	 */
-	public function unloadFixtures()
+	protected function unloadFixtures()
 	{
 		/** @var Fixture $fixture */
 		foreach (array_reverse($this->_fixtures) as $fixture) {
@@ -131,7 +178,7 @@ trait FixtureTrait
 	/**
 	 * @return array the loaded fixtures for the current test case
 	 */
-	public function getFixtures()
+	protected function getFixtures()
 	{
 		return $this->_fixtures;
 	}
@@ -141,7 +188,7 @@ trait FixtureTrait
 	 * @param string $name the fixture alias or class name
 	 * @return Fixture the fixture object, or null if the named fixture does not exist.
 	 */
-	public function getFixture($name)
+	protected function getFixture($name)
 	{
 		$class = isset($this->_fixtureAliases[$name]) ? $this->_fixtureAliases[$name] : $name;
 		return isset($this->_fixtures[$class]) ? $this->_fixtures[$class] : null;
