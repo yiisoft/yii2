@@ -9,12 +9,36 @@ namespace yiiunit\framework\test;
 
 use yii\test\ActiveFixture;
 use yii\test\FixtureTrait;
-use yiiunit\data\ar\Customer;
+use yii\test\InitDbFixture;
+use yiiunit\data\ar\ActiveRecord;
 use yiiunit\framework\db\DatabaseTestCase;
+
+class Customer extends ActiveRecord
+{
+	public static function tableName()
+	{
+		return 'tbl_customer2';
+	}
+}
 
 class CustomerFixture extends ActiveFixture
 {
-	public $modelClass = 'yiiunit\data\ar\Customer';
+	public $modelClass = 'yiiunit\framework\test\Customer';
+
+	protected function loadSchema()
+	{
+		try {
+			$this->dropTable('tbl_customer2');
+		} catch (\Exception $e) {
+		}
+		$this->createTable('tbl_customer2', [
+			'id' => 'pk',
+			'email' => 'string',
+			'name' => 'string',
+			'address' => 'string',
+			'status' => 'integer',
+		]);
+	}
 }
 
 class MyDbTestCase
@@ -35,6 +59,13 @@ class MyDbTestCase
 	{
 		return [
 			'customers' => CustomerFixture::className(),
+		];
+	}
+
+	protected function globalFixtures()
+	{
+		return [
+			InitDbFixture::className(),
 		];
 	}
 }
@@ -58,7 +89,7 @@ class ActiveFixtureTest extends DatabaseTestCase
 		parent::tearDown();
 	}
 
-	public function testGetRows()
+	public function testGetData()
 	{
 		$test = new MyDbTestCase();
 		$test->setUp();
