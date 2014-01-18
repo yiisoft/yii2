@@ -95,6 +95,9 @@ trait FixtureTrait
 	 * ]
 	 * ```
 	 *
+	 * Note that the actual fixtures used for a test case will include both [[globalFixtures()]]
+	 * and [[fixtures()]].
+	 *
 	 * @return array the fixtures needed by the current test case
 	 */
 	protected function fixtures()
@@ -103,8 +106,20 @@ trait FixtureTrait
 	}
 
 	/**
+	 * Declares the fixtures shared required by different test cases.
+	 * The return value should be similar to that of [[fixtures()]].
+	 * You should usually override this method in a base class.
+	 * @return array the fixtures shared and required by different test cases.
+	 * @see fixtures()
+	 */
+	protected function globalFixtures()
+	{
+		return [];
+	}
+
+	/**
 	 * Loads the fixtures.
-	 * This method will load the fixtures specified by `$fixtures` or [[fixtures()]].
+	 * This method will load the fixtures specified by `$fixtures` or [[globalFixtures()]] and [[fixtures()]].
 	 * @param array $fixtures the fixtures to loaded. If not set, [[fixtures()]] will be loaded instead.
 	 * @throws InvalidConfigException if fixtures are not properly configured or if a circular dependency among
 	 * the fixtures is detected.
@@ -112,7 +127,7 @@ trait FixtureTrait
 	protected function loadFixtures($fixtures = null)
 	{
 		if ($fixtures === null) {
-			$fixtures = $this->fixtures();
+			$fixtures = array_merge($this->globalFixtures(), $this->fixtures());
 		}
 
 		// normalize fixture configurations
@@ -130,7 +145,7 @@ trait FixtureTrait
 
 		// create fixture instances
 		$this->_fixtures = [];
-		$stack = $fixtures;
+		$stack = array_reverse($fixtures);
 		while (($fixture = array_pop($stack)) !== null) {
 			if ($fixture instanceof Fixture) {
 				$class = get_class($fixture);

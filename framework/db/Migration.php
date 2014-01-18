@@ -343,7 +343,6 @@ class Migration extends \yii\base\Component
 	 * Builds and executes a SQL statement for dropping a primary key.
 	 * @param string $name the name of the primary key constraint to be removed.
 	 * @param string $table the table that the primary key constraint will be removed from.
-	 * @return Command the command object itself
 	 */
 	public function dropPrimaryKey($name, $table)
 	{

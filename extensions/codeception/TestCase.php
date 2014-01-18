@@ -5,9 +5,6 @@ namespace yii\codeception;
 use Yii;
 use yii\base\InvalidConfigException;
 use Codeception\TestCase\Test;
-use yii\base\UnknownMethodException;
-use yii\base\UnknownPropertyException;
-use yii\test\ActiveFixture;
 use yii\test\FixtureTrait;
 
 /**
