@@ -6,11 +6,10 @@ use yii\data\ArrayDataProvider;
 use yii\debug\components\search\Filter;
 
 /**
- * Profile represents the model behind the search form about current request profiling log.
+ * Mail represents the model behind the search form about current send emails.
  */
 class Mail extends Base
 {
-
 	/**
 	 * @var string from attribute input search value
 	 */
@@ -22,9 +21,9 @@ class Mail extends Base
 	public $to;
 
 	/**
-	 * @var string replyTo attribute input search value
+	 * @var string reply attribute input search value
 	 */
-	public $replyTo;
+	public $reply;
 
 	/**
 	 * @var string cc attribute input search value
@@ -42,6 +41,16 @@ class Mail extends Base
 	public $subject;
 
 	/**
+	 * @var string body attribute input search value
+	 */
+	public $body;
+
+	/**
+	 * @var string charset attribute input search value
+	 */
+	public $charset;
+
+	/**
 	 * @var string file attribute input search value
 	 */
 	public $file;
@@ -49,7 +58,7 @@ class Mail extends Base
 	public function rules()
 	{
 		return [
-			[['from', 'to', 'replyTo', 'cc', 'bcc', 'subject', 'file'], 'safe'],
+			[['from', 'to', 'reply', 'cc', 'bcc', 'subject', 'body', 'charset'], 'safe'],
 		];
 	}
 
@@ -61,10 +70,11 @@ class Mail extends Base
 		return [
 			'from' => 'From',
 			'to' => 'To',
-			'replyTo' => 'Reply to',
+			'reply' => 'Reply',
 			'cc' => 'Copy receiver',
 			'bcc' => 'Hidden copy receiver',
 			'subject' => 'Subject',
+			'charset' => 'Charset'
 		];
 	}
 
@@ -79,10 +89,10 @@ class Mail extends Base
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $models,
 			'pagination' => [
-				'pageSize' => 10,
+				'pageSize' => 5,
 			],
 			'sort' => [
-				'attributes' => ['from', 'to', 'replyTo', 'cc', 'bcc'],
+				'attributes' => ['from', 'to', 'reply', 'cc', 'bcc', 'subject', 'body', 'charset'],
 			],
 		]);
 
@@ -93,12 +103,14 @@ class Mail extends Base
 		$filter = new Filter();
 		$this->addCondition($filter, 'from', true);
 		$this->addCondition($filter, 'to', true);
-		$this->addCondition($filter, 'replyTo', true);
+		$this->addCondition($filter, 'reply', true);
 		$this->addCondition($filter, 'cc', true);
 		$this->addCondition($filter, 'bcc', true);
+		$this->addCondition($filter, 'subject', true);
+		$this->addCondition($filter, 'body', true);
+		$this->addCondition($filter, 'charset', true);
 		$dataProvider->allModels = $filter->filter($models);
 
 		return $dataProvider;
 	}
-
 }

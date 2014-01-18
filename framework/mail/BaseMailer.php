@@ -105,10 +105,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * @var \yii\base\View|array view instance or its array configuration.
 	 */
 	private $_view = [];
-	/**
-	 * @var array saved messages from debug
-	 */
-	protected static $_savedMessages = [];
 
 	/**
 	 * @param array|View $view view instance or its array configuration that will be used to
@@ -229,14 +225,20 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 		if (is_array($address)) {
 			$address = implode(', ', array_keys($address));
 		}
-		Yii::info('Sending email "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
 
 		if ($this->useFileTransport) {
-			$isSuccessful = $this->saveMessage($message);
+			$answer = $this->saveMessage($message);
+			$isSuccessful = $answer['isSuccessful'];
+			$file = $answer['file'];
+			Yii::info('Saving email "' . $message->getSubject() . '" to file:"' . $file . '"', __METHOD__);
 		} else {
+			$token = 'Sending email "' . $message->getSubject() . '" to "' . $address . '"';
+			Yii::info($token, __METHOD__);
+			Yii::beginProfile($token, __METHOD__);
 			$isSuccessful = $this->sendMessage($message);
+			Yii::endProfile($token, __METHOD__);
 		}
-		$this->afterSend($message, $isSuccessful);
+		$this->afterSend($message, $isSuccessful, $this->useFileTransport ? $file : null);
 		return $isSuccessful;
 	}
 
@@ -290,7 +292,11 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	/**
 	 * Saves the message as a file under [[fileTransportPath]].
 	 * @param MessageInterface $message
-	 * @return boolean whether the message is saved successfully
+	 * @return array
+	 * [
+	 * 	'isSuccessful' => boolean whether the message is saved successfully,
+	 * 	'file'=> path to the saved EML file
+	 * ]
 	 */
 	protected function saveMessage($message)
 	{
@@ -305,49 +311,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 			$file = $path . '/' . date('Ymd-His-', $time) . sprintf('%04d', (int)(($time - (int)$time) * 10000)) . '-' . sprintf('%04d', mt_rand(0, 10000)) . '.eml';
 		}
 		file_put_contents($file, $message->toString());
-		$this->logMessage($message, $file, $time);
-		return true;
-	}
-
-	/**
-	 * Logs email from debug mail panel.
-	 * @param MessageInterface $message
-	 * @param string $file path to saved file
-	 * @param float $time file creation time
-	 */
-	protected function logMessage($message, $file, $time)
-	{
-		$address = $this->convertToString($message->getTo());
-
-		Yii::info('Save email to' . $file . ' file. "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
-
-		self::$_savedMessages[] = [
-			'time' => $time,
-			'from'=> $this->convertToString($message->getFrom()),
-			'to' => $address,
-			'replyTo' => $this->convertToString($message->getReplyTo()),
-			'cc' => $this->convertToString($message->getCc()),
-			'bcc' => $this->convertToString($message->getBcc()),
-			'subject'=> $message->getSubject(),
-			'file' => $file
-		];
-	}
-
-	/**
-	 * @return array list of saved messages
-	 */
-	public static function getSavedMessages()
-	{
-		return self::$_savedMessages;
-	}
-
-	private function convertToString($attr)
-	{
-		if(is_array($attr))
-		{
-			$attr = implode(', ', array_keys($attr));
-		}
-		return $attr;
+		return ['isSuccessful'=>true, 'file'=>$file];
 	}
 
 	/**
@@ -381,10 +345,11 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * If you override this method, please make sure you call the parent implementation first.
 	 * @param MessageInterface $message
 	 * @param boolean $isSuccessful
+	 * @param string $file path to the saved EML file
 	 */
-	public function afterSend($message, $isSuccessful)
+	public function afterSend($message, $isSuccessful, $file = null)
 	{
-		$event = new MailEvent(['message' => $message, 'isSuccessful' => $isSuccessful]);
+		$event = new MailEvent(['message' => $message, 'isSuccessful' => $isSuccessful, 'file'=>$file]);
 		$this->trigger(self::EVENT_AFTER_SEND, $event);
 	}
 
