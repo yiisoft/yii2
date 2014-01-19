@@ -35,14 +35,14 @@ class RedisConnectionTest extends RedisTestCase
 
 	public function keyValueData()
 	{
-		return array(
+		return [
 			[123],
 			[-123],
 			[0],
 			['test'],
 			["test\r\ntest"],
 			[''],
-		);
+		];
 	}
 
 	/**
