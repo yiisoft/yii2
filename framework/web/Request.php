@@ -128,6 +128,13 @@ class Request extends \yii\base\Request
 	 * @see getRestParams()
 	 */
 	public $restVar = '_method';
+    /**
+     * @var array the parsers for converting the raw request body into [[restParams]]
+     * The array keys are the request content-types, and the array values are the
+     * corresponding configurations for creating the parser objects.
+     * @see getRestParams()
+     */
+    public $parsers = [];
 
 	private $_cookies;
 
@@ -257,8 +264,12 @@ class Request extends \yii\base\Request
 		if ($this->_restParams === null) {
 			if (isset($_POST[$this->restVar])) {
 				$this->_restParams = $_POST;
-			} elseif(strncmp($this->getContentType(), 'application/json', 16) === 0) {
-				$this->_restParams = Json::decode($this->getRawBody(), true);
+			} else if (isset($this->parsers[$this->getContentType()])) {
+				$parser = Yii::createObject($this->parsers[$this->getContentType()]);
+                if (! $parser instanceof RequestParserInterface) {
+                    throw new InvalidConfigException("The '{$this->contentType}' request parser is invalid. It must implement the RequestParserInterface.");
+                }
+                $this->_restParams = $parser->parse($this->getRawBody());
 			} else {
 				$this->_restParams = [];
 				mb_parse_str($this->getRawBody(), $this->_restParams);
