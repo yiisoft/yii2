@@ -100,15 +100,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 		$order = new Order();
 		$order->id = 1;
-		$order->setAttributes(['customer_id' => 1, 'create_time' => 1325282384, 'total' => 110.0], false);
+		$order->setAttributes(['customer_id' => 1, 'created_at' => 1325282384, 'total' => 110.0], false);
 		$order->save(false);
 		$order = new Order();
 		$order->id = 2;
-		$order->setAttributes(['customer_id' => 2, 'create_time' => 1325334482, 'total' => 33.0], false);
+		$order->setAttributes(['customer_id' => 2, 'created_at' => 1325334482, 'total' => 33.0], false);
 		$order->save(false);
 		$order = new Order();
 		$order->id = 3;
-		$order->setAttributes(['customer_id' => 2, 'create_time' => 1325502201, 'total' => 40.0], false);
+		$order->setAttributes(['customer_id' => 2, 'created_at' => 1325502201, 'total' => 40.0], false);
 		$order->save(false);
 
 		$orderItem = new OrderItem();
@@ -239,14 +239,14 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$orders = $customer->orders;
 		$this->assertEquals(2, count($orders));
 
-		$orders = $customer->getOrders()->where(['between', 'create_time', 1325334000, 1325400000])->all();
+		$orders = $customer->getOrders()->where(['between', 'created_at', 1325334000, 1325400000])->all();
 		$this->assertEquals(1, count($orders));
 		$this->assertEquals(2, $orders[0]->id);
 	}
 
 	public function testFindEagerViaRelation()
 	{
-		$orders = Order::find()->with('items')->orderBy('create_time')->all();
+		$orders = Order::find()->with('items')->orderBy('created_at')->all();
 		$this->assertEquals(3, count($orders));
 		$order = $orders[0];
 		$this->assertEquals(1, $order->id);

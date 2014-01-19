@@ -32,7 +32,7 @@ class Customer extends ActiveRecord
 
 	public function getOrders()
 	{
-		return $this->hasMany(Order::className(), array('customer_id' => 'id'))->orderBy('create_time');
+		return $this->hasMany(Order::className(), array('customer_id' => 'id'))->orderBy('created_at');
 	}
 
 	public static function active($query)

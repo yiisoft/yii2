@@ -37,7 +37,7 @@ CREATE TABLE tbl_item (
 CREATE TABLE tbl_order (
   id INTEGER NOT NULL,
   customer_id INTEGER NOT NULL,
-  create_time INTEGER NOT NULL,
+  created_at INTEGER NOT NULL,
   total decimal(10,0) NOT NULL,
   PRIMARY KEY (id)
 );
@@ -94,9 +94,9 @@ INSERT INTO tbl_item (name, category_id) VALUES ('Ice Age', 2);
 INSERT INTO tbl_item (name, category_id) VALUES ('Toy Story', 2);
 INSERT INTO tbl_item (name, category_id) VALUES ('Cars', 2);
 
-INSERT INTO tbl_order (customer_id, create_time, total) VALUES (1, 1325282384, 110.0);
-INSERT INTO tbl_order (customer_id, create_time, total) VALUES (2, 1325334482, 33.0);
-INSERT INTO tbl_order (customer_id, create_time, total) VALUES (2, 1325502201, 40.0);
+INSERT INTO tbl_order (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO tbl_order (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
+INSERT INTO tbl_order (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
 
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
