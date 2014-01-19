@@ -625,66 +625,30 @@ $posts = Post::find()->with([
 
 ### Making it IDE-friendly
 
-In order to make your IDE autocomplete happy you can override return types for `one` and `all` methods of your query
-object like the following:
+In order to make most modern IDE autocomplete happy you need to override return types for some methods of both model
+and query like the following:
 
 ```php
-namespace app\models;
-
-import yii\db\ActiveQuery;
-
-class CommentQuery extends ActiveQuery
-{
-	/**
-	 * @inheritdoc
-	 * @return array|Comment[]
-	 */
-	public function all($db = null)
-	{
-		return parent::all($db);
-	}
-
-	/**
-	 * @inheritdoc
-	 * @return Comment|array|null
-	 */
-	public function one($db = null)
-	{
-		return parent::one($db);
-	}
-}
-```
-
-Then override your model methods:
-
-```php
-namespace app\models;
-
-use yii\db\ActiveRecord;
-
+/**
+ * @method \app\models\CommentQuery|static|null find($q = null) static
+ * @method \app\models\CommentQuery findBySql($sql, $params = []) static
+ */
 class Comment extends ActiveRecord
 {
-	/**
-	 * @inheritdoc
-	 * @return CustomerQuery
-	 */
-	public function findBySQL($sql, $params = [])
-	{
-		return parent::findBySQL($sql, $params);
-	}
-
-	/**
-	 * @inheritdoc
-	 * @return null|static|CustomerQuery
-	 */
-	public function find($q = null)
-	{
-		return parent::find($q);
-	}
+	// ...
 }
 ```
 
-Note that it can be done via `@method` tag but, unfortunitely [IDE support isn't good enough](http://youtrack.jetbrains.com/issue/WI-17404).
+```php
+/**
+ * @method \app\models\Comment|array|null one($db = null)
+ * @method \app\models\Comment[]|array all($db = null)
+ */
+class CommentQuery extends ActiveQuery
+{
+	// ...
+}
+```
 
 Transactional operations
 ------------------------
