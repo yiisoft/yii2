@@ -29,6 +29,18 @@ on a remote (staging) server, add the parameter allowedIPs to the config to whit
 ]
 ```
 
+If you are using `enableStrictParsing` URL manager option, add the following to your `rules`:
+
+```php
+'urlManager' => [
+	'enableStrictParsing' => true,
+	'rules' => [
+		// ...
+		'debug/<controller>/<action>' => 'debug/<controller>/<action>',
+	],
+],
+```
+
 How to use it
 -------------
 
