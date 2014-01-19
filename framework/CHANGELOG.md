@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.0 beta under development
 ----------------------------
 
+- Enh #2063: Added `framework\web\Request::getContentType()` method wrapping `$_SERVER["CONTENT_TYPE"]` (danschmidt5189)
 - Bug #1326: The `visible` setting for `DetailView` doesn't work as expected (qiangxue)
 - Bug #1446: Logging while logs are processed causes infinite loop (qiangxue)
 - Bug #1497: Localized view files are not correctly returned (mintao)

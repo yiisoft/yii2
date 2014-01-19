@@ -29,6 +29,7 @@ use yii\helpers\StringHelper;
  * @property array $acceptedLanguages The languages ordered by the preference level. The first element
  * represents the most preferred language.
  * @property string $baseUrl The relative URL for the application.
+ * @property string $contentType The Content-Type header. This property is read-only.
  * @property string $cookieValidationKey The secret key used for cookie validation. If it was not set
  * previously, a random key will be generated and used.
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
@@ -738,6 +739,21 @@ class Request extends \yii\base\Request
 	{
 		return isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : null;
 	}
+
+    /**
+     * Returns request content-type
+     * The Content-Type header field indicates the MIME type of the data
+     * contained in [[getRawBody()]] or, in the case of the HEAD method, the
+     * media type that would have been sent had the request been a GET.
+     * For the MIME-types the user expects in response, see [[getAcceptedContentTypes()]].
+     * @return string request content-type, null if not present
+     * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17
+     * HTTP 1.1 header field definitions
+     */
+    public function getContentType()
+    {
+        return isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : null;
+    }
 
 	private $_port;
 
