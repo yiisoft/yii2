@@ -39,9 +39,9 @@ class MaskedInput extends InputWidget
 	/**
 	 * @var string the input mask (e.g. '99/99/9999' for date input). The following characters are predefined:
 	 *
-	 * - `a`: represents an alpha character (A-Z,a-z)
+	 * - `a`: represents an alpha character (A-Z, a-z)
 	 * - `9`: represents a numeric character (0-9)
-	 * - `*`: represents an alphanumeric character (A-Z,a-z,0-9)
+	 * - `*`: represents an alphanumeric character (A-Z, a-z, 0-9)
 	 * - `?`: anything listed after '?' within the mask is considered optional user input
 	 *
 	 * Additional characters can be defined by specifying the [[charMap]] property.

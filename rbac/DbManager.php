@@ -146,7 +146,7 @@ class DbManager extends Manager
 		}
 		$query = new Query;
 		$rows = $query->from($this->itemTable)
-			->where(['or', 'name=:name1', 'name=:name2'], [':name1' => $itemName,	':name2' => $childName])
+			->where(['or', 'name=:name1', 'name=:name2'], [':name1' => $itemName, ':name2' => $childName])
 			->createCommand($this->db)
 			->queryAll();
 		if (count($rows) == 2) {
@@ -299,7 +299,7 @@ class DbManager extends Manager
 		$query = new Query;
 		return $query->select(['item_name'])
 			->from($this->assignmentTable)
-			->where(['user_id' => $userId,	'item_name' => $itemName])
+			->where(['user_id' => $userId, 'item_name' => $itemName])
 			->createCommand($this->db)
 			->queryScalar() !== false;
 	}
@@ -315,7 +315,7 @@ class DbManager extends Manager
 	{
 		$query = new Query;
 		$row = $query->from($this->assignmentTable)
-			->where(['user_id' => $userId,	'item_name' => $itemName])
+			->where(['user_id' => $userId, 'item_name' => $itemName])
 			->createCommand($this->db)
 			->queryOne();
 		if ($row !== false) {
