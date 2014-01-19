@@ -449,7 +449,7 @@ class DbManager extends Manager
 				'type' => $type,
 				'description' => $description,
 				'biz_rule' => $bizRule,
-				'data' => serialize($data),
+				'data' => $data === null ? null : serialize($data),
 			])
 			->execute();
 		return new Item([
@@ -496,7 +496,7 @@ class DbManager extends Manager
 			->queryOne();
 
 		if ($row !== false) {
-			if (($data = @unserialize($row['data'])) === false) {
+			if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
 			return new Item([
