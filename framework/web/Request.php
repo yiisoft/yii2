@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\helpers\Json;
 use yii\helpers\Security;
 use yii\helpers\StringHelper;
 
@@ -256,6 +257,8 @@ class Request extends \yii\base\Request
 		if ($this->_restParams === null) {
 			if (isset($_POST[$this->restVar])) {
 				$this->_restParams = $_POST;
+			} elseif(strncmp($this->getContentType(), 'application/json', 16) === 0) {
+				$this->_restParams = Json::decode($this->getRawBody(), true);
 			} else {
 				$this->_restParams = [];
 				mb_parse_str($this->getRawBody(), $this->_restParams);
