@@ -18,29 +18,29 @@ use yii\helpers\Json;
  */
 class JsonParser implements RequestParserInterface
 {
-    /**
-     * @var boolean whether to return objects in terms of associative arrays.
-     */
-    public $asArray = true;
+	/**
+	 * @var boolean whether to return objects in terms of associative arrays.
+	 */
+	public $asArray = true;
 
-    /**
-     * @var boolean whether to throw an exception if the body is invalid json
-     */
-    public $throwException = false;
+	/**
+	 * @var boolean whether to throw an exception if the body is invalid json
+	 */
+	public $throwException = false;
 
-    /**
-     * @param string $rawBody the raw HTTP request body
-     * @return array parameters parsed from the request body
-     */
+	/**
+	 * @param string $rawBody the raw HTTP request body
+	 * @return array parameters parsed from the request body
+	 */
 	public function parse($rawBody)
-    {
-        try {
-            return Json::encode($rawBody, $this->asArray);
-        } catch (InvalidParamException $e) {
-            if ($this->throwException) {
-                throw $e;
-            }
-            return null;
-        }
-    }
+	{
+		try {
+			return Json::encode($rawBody, $this->asArray);
+		} catch (InvalidParamException $e) {
+			if ($this->throwException) {
+				throw $e;
+			}
+			return null;
+		}
+	}
 }
