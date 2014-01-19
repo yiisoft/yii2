@@ -89,7 +89,7 @@ class Customer extends \yii\elasticsearch\ActiveRecord
      */
     public static function active($query)
     {
-        $query->andWhere(array('status' => 1));
+        $query->andWhere(['status' => 1]);
     }
 }
 ```

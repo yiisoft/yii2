@@ -93,8 +93,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function alterColumn($table, $column, $type)
 	{
-		$type=$this->getColumnType($type);
-		$sql='ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
+		$type = $this->getColumnType($type);
+		$sql = 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
 			. $this->db->quoteColumnName($column) . ' '
 			. $this->getColumnType($type);
 		return $sql;
