@@ -821,8 +821,14 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * @return string the MIME type of the data contained in the request. Null is returned
-	 * if this information is not available.
+	 *  Returns request content-type
+	 * The Content-Type header field indicates the MIME type of the data
+	 * contained in [[getRawBody()]] or, in the case of the HEAD method, the
+	 * media type that would have been sent had the request been a GET.
+	 * For the MIME-types the user expects in response, see [[acceptableContentTypes]].
+	 * @return string request content-type. Null is returned if this information is not available.
+	 * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17
+	 * HTTP 1.1 header field definitions
 	 */
 	public function getContentType()
 	{
