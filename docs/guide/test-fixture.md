@@ -117,12 +117,6 @@ class UserProfileFixture extends ActiveFixture
 }
 ```
 
-Note that in the above, besides `app\tests\fixtures\UserFixture`, the dependency of `UserProfileFixture` also includes
-`yii\test\DbFixture`. This is required by all `ActiveFixture` classes which set `yii\test\DbFixture` as the default value
-of the `depends` property. The `DbFixture` class is responsible for toggling database integrity check and executing
-an initialization script. Without `DbFixture`, you may not be able to freely inserting or deleting rows in a table
-due to various DB constraints.
-
 
 Using Fixtures
 --------------
@@ -194,7 +188,9 @@ This fixture will try to execute a script located at `@app/tests/fixtures/initdb
 for example, load a basic DB dump containing the minimal set of tables, etc.
 
 Using global fixtures is similar to using non-global ones. The only difference is that you declare these fixtures
-in [[yii\codeception\TestCase::globalFixtures()]] instead of `fixtures()`. When a test case load fixtures, it will
+in [[yii\codeception\TestCase::globalFixtures()]] instead of `fixtures()`. When a test case loads fixtures, it will
 first load global fixtures and then non-global ones.
 
 By default, [[yii\codeception\DbTestCase]] already declares `InitDbFixture` in its `globalFixtures()` method.
+This means you only need to work with `@app/tests/fixtures/initdb.php` to set up your skeleton test database,
+and you can then focus on developing each individual test case and the corresponding fixtures.
