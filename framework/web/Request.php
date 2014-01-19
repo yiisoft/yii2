@@ -9,6 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 use yii\helpers\Security;
 use yii\helpers\StringHelper;
 
@@ -23,10 +24,9 @@ use yii\helpers\StringHelper;
  * You can access that instance via `Yii::$app->request`.
  *
  * @property string $absoluteUrl The currently requested absolute URL. This property is read-only.
- * @property string $acceptTypes User browser accept types, null if not present. This property is read-only.
- * @property array $acceptedContentTypes The content types ordered by the preference level. The first element
+ * @property array $acceptableContentTypes The content types ordered by the preference level. The first element
  * represents the most preferred content type.
- * @property array $acceptedLanguages The languages ordered by the preference level. The first element
+ * @property array $acceptableLanguages The languages ordered by the preference level. The first element
  * represents the most preferred language.
  * @property string $baseUrl The relative URL for the application.
  * @property string $cookieValidationKey The secret key used for cookie validation. If it was not set
@@ -58,8 +58,7 @@ use yii\helpers\StringHelper;
  * mark. Note, the returned path info is already URL-decoded.
  * @property integer $port Port number for insecure requests.
  * @property array $post The POST request parameter values. This property is read-only.
- * @property string $preferredLanguage The language that the application should use. Null is returned if both
- * [[getAcceptedLanguages()]] and `$languages` are empty. This property is read-only.
+ * @property string $preferredLanguage The language that the application should use. This property is read-only.
  * @property array $put The PUT request parameter values. This property is read-only.
  * @property string $queryString Part of the request URL that is after the question mark. This property is
  * read-only.
@@ -730,15 +729,6 @@ class Request extends \yii\base\Request
 		return isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
 	}
 
-	/**
-	 * Returns user browser accept types, null if not present.
-	 * @return string user browser accept types, null if not present
-	 */
-	public function getAcceptTypes()
-	{
-		return isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : null;
-	}
-
 	private $_port;
 
 	/**
@@ -804,12 +794,12 @@ class Request extends \yii\base\Request
 	private $_contentTypes;
 
 	/**
-	 * Returns the content types accepted by the end user.
+	 * Returns the content types acceptable by the end user.
 	 * This is determined by the `Accept` HTTP header.
 	 * @return array the content types ordered by the preference level. The first element
 	 * represents the most preferred content type.
 	 */
-	public function getAcceptedContentTypes()
+	public function getAcceptableContentTypes()
 	{
 		if ($this->_contentTypes === null) {
 			if (isset($_SERVER['HTTP_ACCEPT'])) {
@@ -822,23 +812,32 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * @param array $value the content types that are accepted by the end user. They should
+	 * @param array $value the content types that are acceptable by the end user. They should
 	 * be ordered by the preference level.
 	 */
-	public function setAcceptedContentTypes($value)
+	public function setAcceptableContentTypes($value)
 	{
 		$this->_contentTypes = $value;
+	}
+
+	/**
+	 * @return string the MIME type of the data contained in the request. Null is returned
+	 * if this information is not available.
+	 */
+	public function getContentType()
+	{
+		return isset($_SERVER["CONTENT_TYPE"]) ? $_SERVER["CONTENT_TYPE"] : null;
 	}
 
 	private $_languages;
 
 	/**
-	 * Returns the languages accepted by the end user.
+	 * Returns the languages acceptable by the end user.
 	 * This is determined by the `Accept-Language` HTTP header.
 	 * @return array the languages ordered by the preference level. The first element
 	 * represents the most preferred language.
 	 */
-	public function getAcceptedLanguages()
+	public function getAcceptableLanguages()
 	{
 		if ($this->_languages === null) {
 			if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
@@ -851,17 +850,17 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * @param array $value the languages that are accepted by the end user. They should
+	 * @param array $value the languages that are acceptable by the end user. They should
 	 * be ordered by the preference level.
 	 */
-	public function setAcceptedLanguages($value)
+	public function setAcceptableLanguages($value)
 	{
 		$this->_languages = $value;
 	}
 
 	/**
 	 * Parses the given `Accept` (or `Accept-Language`) header.
-	 * This method will return the accepted values ordered by their preference level.
+	 * This method will return the acceptable values ordered by their preference level.
 	 * @param string $header the header to be parsed
 	 * @return array the accept values ordered by their preference level.
 	 */
@@ -906,23 +905,21 @@ class Request extends \yii\base\Request
 	 * Returns the user-preferred language that should be used by this application.
 	 * The language resolution is based on the user preferred languages and the languages
 	 * supported by the application. The method will try to find the best match.
-	 * @param array $languages a list of the languages supported by the application.
-	 * If empty, this method will return the first language returned by [[getAcceptedLanguages()]].
-	 * @return string the language that the application should use. Null is returned if both [[getAcceptedLanguages()]]
-	 * and `$languages` are empty.
+	 * @param array $languages a list of the languages supported by the application. If this is empty, the current
+	 * application language will be returned without further processing.
+	 * @return string the language that the application should use.
 	 */
-	public function getPreferredLanguage($languages = [])
+	public function getPreferredLanguage(array $languages = [])
 	{
-		$acceptedLanguages = $this->getAcceptedLanguages();
 		if (empty($languages)) {
-			return isset($acceptedLanguages[0]) ? $acceptedLanguages[0] : null;
+			return Yii::$app->language;
 		}
-		foreach ($acceptedLanguages as $acceptedLanguage) {
-			$acceptedLanguage = str_replace('_', '-', strtolower($acceptedLanguage));
+		foreach ($this->getAcceptableLanguages() as $acceptableLanguage) {
+			$acceptableLanguage = str_replace('_', '-', strtolower($acceptableLanguage));
 			foreach ($languages as $language) {
 				$language = str_replace('_', '-', strtolower($language));
 				// en-us==en-us, en==en-us, en-us==en
-				if ($language === $acceptedLanguage || strpos($acceptedLanguage, $language . '-') === 0 || strpos($language, $acceptedLanguage . '-') === 0) {
+				if ($language === $acceptableLanguage || strpos($acceptableLanguage, $language . '-') === 0 || strpos($language, $acceptableLanguage . '-') === 0) {
 					return $language;
 				}
 			}
