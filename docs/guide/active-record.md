@@ -415,7 +415,7 @@ and you may also join with sub-relations. For example,
 $orders = Order::find()->innerJoinWith([
 	'books',
 	'customer' => function ($query) {
-		$query->where('tbl_customer.create_time > ' . (time() - 24 * 3600));
+		$query->where('tbl_customer.created_at > ' . (time() - 24 * 3600));
 	}
 ])->all();
 // join with sub-relations: join with books and books' authors

@@ -33,7 +33,7 @@ class BaseArrayHelper
 	 *         'id',
 	 *         'title',
 	 *         // the key name in array result => property name
-	 *         'createTime' => 'create_time',
+	 *         'createTime' => 'created_at',
 	 *         // the key name in array result => anonymous function
 	 *         'length' => function ($post) {
 	 *             return strlen($post->content);

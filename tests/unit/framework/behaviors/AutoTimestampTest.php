@@ -41,8 +41,8 @@ class AutoTimestampTest extends TestCase
 
 		$columns = [
 			'id' => 'pk',
-			'create_time' => 'integer',
-			'update_time' => 'integer',
+			'created_at' => 'integer',
+			'updated_at' => 'integer',
 		];
 		Yii::$app->getDb()->createCommand()->createTable('test_auto_timestamp', $columns)->execute();
 	}
@@ -62,8 +62,8 @@ class AutoTimestampTest extends TestCase
 		$model = new ActiveRecordAutoTimestamp();
 		$model->save(false);
 
-		$this->assertTrue($model->create_time >= $currentTime);
-		$this->assertTrue($model->update_time >= $currentTime);
+		$this->assertTrue($model->created_at >= $currentTime);
+		$this->assertTrue($model->updated_at >= $currentTime);
 	}
 
 	/**
@@ -78,12 +78,12 @@ class AutoTimestampTest extends TestCase
 
 		$enforcedTime = $currentTime - 100;
 
-		$model->create_time = $enforcedTime;
-		$model->update_time = $enforcedTime;
+		$model->created_at = $enforcedTime;
+		$model->updated_at = $enforcedTime;
 		$model->save(false);
 
-		$this->assertEquals($enforcedTime, $model->create_time, 'Create time has been set on update!');
-		$this->assertTrue($model->update_time >= $currentTime, 'Update time has NOT been set on update!');
+		$this->assertEquals($enforcedTime, $model->created_at, 'Create time has been set on update!');
+		$this->assertTrue($model->updated_at >= $currentTime, 'Update time has NOT been set on update!');
 	}
 }
 
@@ -91,8 +91,8 @@ class AutoTimestampTest extends TestCase
  * Test Active Record class with [[AutoTimestamp]] behavior attached.
  *
  * @property integer $id
- * @property integer $create_time
- * @property integer $update_time
+ * @property integer $created_at
+ * @property integer $updated_at
  */
 class ActiveRecordAutoTimestamp extends ActiveRecord
 {
@@ -102,8 +102,8 @@ class ActiveRecordAutoTimestamp extends ActiveRecord
 			'timestamp' => [
 				'class' => AutoTimestamp::className(),
 				'attributes' => [
-					static::EVENT_BEFORE_INSERT => ['create_time', 'update_time'],
-					static::EVENT_BEFORE_UPDATE => 'update_time',
+					static::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+					static::EVENT_BEFORE_UPDATE => 'updated_at',
 				],
 			],
 		];

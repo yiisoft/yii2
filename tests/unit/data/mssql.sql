@@ -37,7 +37,7 @@ CREATE TABLE [dbo].[tbl_item] (
 CREATE TABLE [dbo].[tbl_order] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[customer_id] [int] NOT NULL,
-	[create_time] [int] NOT NULL,
+	[created_at] [int] NOT NULL,
 	[total] [decimal](10,0) NOT NULL,
 	CONSTRAINT [PK_order] PRIMARY KEY CLUSTERED (
 		[id] ASC
@@ -92,9 +92,9 @@ INSERT INTO [dbo].[tbl_item] ([name], [category_id]) VALUES ('Ice Age', 2);
 INSERT INTO [dbo].[tbl_item] ([name], [category_id]) VALUES ('Toy Story', 2);
 INSERT INTO [dbo].[tbl_item] ([name], [category_id]) VALUES ('Cars', 2);
 
-INSERT INTO [dbo].[tbl_order] ([customer_id], [create_time], [total]) VALUES (1, 1325282384, 110.0);
-INSERT INTO [dbo].[tbl_order] ([customer_id], [create_time], [total]) VALUES (2, 1325334482, 33.0);
-INSERT INTO [dbo].[tbl_order] ([customer_id], [create_time], [total]) VALUES (2, 1325502201, 40.0);
+INSERT INTO [dbo].[tbl_order] ([customer_id], [created_at], [total]) VALUES (1, 1325282384, 110.0);
+INSERT INTO [dbo].[tbl_order] ([customer_id], [created_at], [total]) VALUES (2, 1325334482, 33.0);
+INSERT INTO [dbo].[tbl_order] ([customer_id], [created_at], [total]) VALUES (2, 1325502201, 40.0);
 
 INSERT INTO [dbo].[tbl_order_item] ([order_id], [item_id], [quantity], [subtotal]) VALUES (1, 1, 1, 30.0);
 INSERT INTO [dbo].[tbl_order_item] ([order_id], [item_id], [quantity], [subtotal]) VALUES (1, 2, 2, 40.0);
