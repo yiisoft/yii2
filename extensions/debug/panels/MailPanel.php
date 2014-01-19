@@ -18,41 +18,40 @@ class MailPanel extends Panel
 	public function init()
 	{
 		parent::init();
-		Event::on(BaseMailer::className(), BaseMailer::EVENT_AFTER_SEND, function($event)
-			{
-				$yiiMessage = $event->message;
-				$message = $yiiMessage->getSwiftMessage();
+		Event::on(BaseMailer::className(), BaseMailer::EVENT_AFTER_SEND, function ($event) {
+			$yiiMessage = $event->message;
+			$message = $yiiMessage->getSwiftMessage();
 
-				$textBody = $message->getBody();
-				if ($textBody === null) {
-					$children = $message->getChildren();
-					if (count($children)) {
-						foreach ($children as $swiftMimePart) {
-							if ($swiftMimePart instanceof \Swift_MimePart && $swiftMimePart->getContentType() == 'text/plain') {
-								$textBody = $swiftMimePart->getBody();
-								break;
-							}
+			$textBody = $message->getBody();
+			if ($textBody === null) {
+				$children = $message->getChildren();
+				if (count($children)) {
+					foreach ($children as $swiftMimePart) {
+						if ($swiftMimePart instanceof \Swift_MimePart && $swiftMimePart->getContentType() == 'text/plain') {
+							$textBody = $swiftMimePart->getBody();
+							break;
 						}
 					}
-				} elseif ($message->getContentType() == 'text/html') {
-					$textBody = null;
 				}
+			} elseif ($message->getContentType() == 'text/html') {
+				$textBody = null;
+			}
 
-				$this->_messages[] = [
-					'isSuccessful' => $event->isSuccessful,
-					'time' => $message->getDate(),
-					'headers' => $message->getHeaders(),
-					'from'=> $this->convertParams($message->getFrom()),
-					'to' => $this->convertParams($message->getTo()),
-					'reply' => $this->convertParams($message->getReplyTo()),
-					'cc' => $this->convertParams($message->getCc()),
-					'bcc' => $this->convertParams($message->getBcc()),
-					'subject'=> $message->getSubject(),
-					'body' => $textBody,
-					'charset' => $message->getCharset(),
-					'file' => $event->file,
-				];
-			});
+			$this->_messages[] = [
+				'isSuccessful' => $event->isSuccessful,
+				'time' => $message->getDate(),
+				'headers' => $message->getHeaders(),
+				'from' => $this->convertParams($message->getFrom()),
+				'to' => $this->convertParams($message->getTo()),
+				'reply' => $this->convertParams($message->getReplyTo()),
+				'cc' => $this->convertParams($message->getCc()),
+				'bcc' => $this->convertParams($message->getBcc()),
+				'subject' => $message->getSubject(),
+				'body' => $textBody,
+				'charset' => $message->getCharset(),
+				'file' => $event->file,
+			];
+		});
 	}
 
 	private function convertParams($attr)
