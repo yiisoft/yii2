@@ -51,6 +51,11 @@ class Mail extends Base
 	public $charset;
 
 	/**
+	 * @var string headers attribute input search value
+	 */
+	public $headers;
+
+	/**
 	 * @var string file attribute input search value
 	 */
 	public $file;

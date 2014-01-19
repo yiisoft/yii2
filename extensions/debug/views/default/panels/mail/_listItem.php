@@ -17,26 +17,15 @@ echo Html::tag('b', '#'.++$index);
 echo DetailView::widget([
 		'model' => $model,
 		'attributes' => [
-			'from',
-			'to',
 			[
-				'name' => 'reply',
-				'visible' => !empty($model['reply'])
+				'name' => 'headers',
+				'format' => 'html',
+				'body' => '<pre>' . $model['headers'] . '</pre>'
 			],
-			[
-				'name' => 'cc',
-				'visible' => !empty($model['cc'])
-			],
-			[
-				'name' => 'bcc',
-				'visible' => !empty($model['bcc'])
-			],
-			'subject',
 			[
 				'label' => 'Text body',
 				'name' => 'body',
 			],
-			'charset',
 			[
 				'name' => 'isSuccessful',
 				'value' => $model['isSuccessful'] ? 'true' : 'false'

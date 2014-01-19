@@ -38,9 +38,10 @@ class MailPanel extends Panel
 					$textBody = null;
 				}
 
-				$this->_messages[rand()] = [
+				$this->_messages[] = [
 					'isSuccessful' => $event->isSuccessful,
-					'time' => time(),
+					'time' => $message->getDate(),
+					'headers' => $message->getHeaders(),
 					'from'=> $this->convertParams($message->getFrom()),
 					'to' => $this->convertParams($message->getTo()),
 					'reply' => $this->convertParams($message->getReplyTo()),
