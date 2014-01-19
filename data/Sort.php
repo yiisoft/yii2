@@ -145,7 +145,7 @@ class Sort extends Object
 	 * ~~~
 	 * [
 	 *     'name' => SORT_ASC,
-	 *     'create_time' => SORT_DESC,
+	 *     'created_at' => SORT_DESC,
 	 * ]
 	 * ~~~
 	 *
