@@ -28,7 +28,7 @@ echo GridView::widget([
 			'value' => function ($data) {
 				$timeInSeconds = $data['time'] / 1000;
 				$millisecondsDiff = (int)(($timeInSeconds - (int)$timeInSeconds) * 1000);
-				return date('H:i:s.',$timeInSeconds) . sprintf('%03d',$millisecondsDiff);
+				return date('H:i:s.', $timeInSeconds) . sprintf('%03d', $millisecondsDiff);
 			},
 			'headerOptions' => [
 				'class' => 'sort-numerical'

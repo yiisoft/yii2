@@ -367,7 +367,7 @@ class ActiveRecord extends BaseActiveRecord
 	 * For example, to change the status to be 1 for all customers whose status is 2:
 	 *
 	 * ~~~
-	 * Customer::updateAll(array('status' => 1), array(2, 3, 4));
+	 * Customer::updateAll(['status' => 1], [2, 3, 4]);
 	 * ~~~
 	 *
 	 * @param array $attributes attribute values (name-value pairs) to be saved into the table
