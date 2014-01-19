@@ -8,7 +8,7 @@ use app\models\User;
 
 class LoginFormTest extends TestCase
 {
-	
+
 	use \Codeception\Specify;
 
 	public function testLoginNoUser()

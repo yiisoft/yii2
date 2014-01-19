@@ -58,7 +58,7 @@ class ActiveRecordTest extends DatabaseTestCase
 	public function testFindScalar()
 	{
 		// query scalar
-		$customerName = $this->callCustomerFind()->where(array('id' => 2))->select('name')->scalar();
+		$customerName = $this->callCustomerFind()->where(['id' => 2])->select('name')->scalar();
 		$this->assertEquals('user2', $customerName);
 	}
 

@@ -298,7 +298,7 @@ class PhpDocController extends Controller
 					if (isset($prop['get']) && isset($prop['set'])) {
 						if ($prop['get']['type'] != $prop['set']['type']) {
 							$note = ' Note that the type of this property differs in getter and setter.'
-								  . ' See [[get'.ucfirst($propName).'()]] and [[set'.ucfirst($propName).'()]] for details.';
+								  . ' See [[get' . ucfirst($propName) . '()]] and [[set' . ucfirst($propName) . '()]] for details.';  
 						}
 					} elseif (isset($prop['get'])) {
 						// check if parent class has setter defined

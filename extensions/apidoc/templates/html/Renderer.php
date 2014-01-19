@@ -239,7 +239,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 				break;
 			}
 		}
-		return implode(" &raquo;\n",$parents);
+		return implode(" &raquo;\n", $parents);
 	}
 
 	/**
@@ -257,7 +257,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 				$interfaces[] = $interface; // TODO link to php.net
 			}
 		}
-		return implode(', ',$interfaces);
+		return implode(', ', $interfaces);
 	}
 
 	/**
@@ -275,7 +275,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 				$traits[] = $trait; // TODO link to php.net
 			}
 		}
-		return implode(', ',$traits);
+		return implode(', ', $traits);
 	}
 
 	/**
@@ -293,7 +293,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 				$classes[] = $class; // TODO link to php.net
 			}
 		}
-		return implode(', ',$classes);
+		return implode(', ', $classes);
 	}
 
 	/**

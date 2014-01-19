@@ -140,7 +140,7 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function buildCondition($condition)
 	{
-		static $builders = array(
+		static $builders = [
 			'not' => 'buildNotCondition',
 			'and' => 'buildAndCondition',
 			'or' => 'buildAndCondition',
@@ -152,7 +152,7 @@ class QueryBuilder extends \yii\base\Object
 			'not like' => 'buildLikeCondition',
 			'or like' => 'buildLikeCondition',
 			'or not like' => 'buildLikeCondition',
-		);
+		];
 
 		if (empty($condition)) {
 			return [];
