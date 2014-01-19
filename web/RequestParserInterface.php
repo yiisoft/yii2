@@ -15,9 +15,9 @@ namespace yii\web;
  */
 interface RequestParserInterface
 {
-    /**
-     * @param string $rawBody the raw HTTP request body
-     * @return array parameters parsed from the request body
-     */
+	/**
+	 * @param string $rawBody the raw HTTP request body
+	 * @return array parameters parsed from the request body
+	 */
 	public function parse($rawBody);
 }
