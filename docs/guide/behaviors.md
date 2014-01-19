@@ -23,8 +23,8 @@ class User extends ActiveRecord
 			'timestamp' => [
 				'class' => 'yii\behaviors\AutoTimestamp',
 				'attributes' => [
-					ActiveRecord::EVENT_BEFORE_INSERT => ['create_time', 'update_time'],
-					ActiveRecord::EVENT_BEFORE_UPDATE => 'update_time',
+					ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+					ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
 				],
 			],
 		];
@@ -39,7 +39,7 @@ Creating your own behaviors
 
 [[NEEDS UPDATING FOR Yii 2]]
 
-To create your own behavior, you must define a class that implements the `IBehavior` interface. This can be accomplished by extending `CBehavior`. More specifically, you can extend `CModelBehavior` or `CActiveRecordBehavior` for behaviors to be used specifically with models or with Active Record models. 
+To create your own behavior, you must define a class that implements the `IBehavior` interface. This can be accomplished by extending `CBehavior`. More specifically, you can extend `CModelBehavior` or `CActiveRecordBehavior` for behaviors to be used specifically with models or with Active Record models.
 
 ```php
 class MyBehavior extends CActiveRecordBehavior
