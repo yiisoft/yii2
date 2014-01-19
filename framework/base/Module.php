@@ -34,7 +34,7 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Module extends Component
+class Module extends Component
 {
 	/**
 	 * @var array custom module parameters (name => value).
