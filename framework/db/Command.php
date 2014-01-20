@@ -503,6 +503,31 @@ class Command extends \yii\base\Component
 	}
 
 	/**
+	 * Creates a batch UPDATE command.
+	 * For example,
+	 *
+	 * ~~~
+	 * $connection->createCommand()->batchUpdate('tbl_user', ['name', 'age'], [
+	 *     1001 => ['Tom', 30],
+	 *     1002 => ['Jane', 20],
+	 *     1003 => ['Linda', 25],
+	 * ])->execute();
+	 * ~~~
+	 *
+	 * Note that the values in each row must match the corresponding column names.
+	 *
+	 * @param string $table the table to be updated.
+	 * @param array $columns the column names
+	 * @param array $rows the rows (pk => row) to be batch updated in the table
+	 * @return Command the command object itself
+	 */
+	public function batchUpdate($table, $columns, $rows)
+	{
+		$sql = $this->db->getQueryBuilder()->batchUpdate($table, $columns, $rows);
+		return $this->setSql($sql);
+	}
+
+	/**
 	 * Creates a DELETE command.
 	 * For example,
 	 *
