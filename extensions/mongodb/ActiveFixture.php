@@ -7,15 +7,16 @@ use yii\base\InvalidConfigException;
 
 class ActiveFixture extends \yii\test\BaseActiveFixture
 {
-
+	/**
+	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
+	 */
 	public $db = 'mongodb';
 	/**
-	 * @var string the name of the collection that this fixture is about. If this property is not set,
+	 * @var string|array the collection name that this fixture is about. If this property is not set,
 	 * the table name will be determined via [[modelClass]].
-	 * @see modelClass
+	 * @see [[yii\mongodb\Connection::getCollection()]]
 	 */
 	public $collectionName;
-
 	/**
 	 * @var string the file path or path alias of the data file that contains the fixture data
 	 * and will be loaded by [[loadData()]]. If this is not set, it will default to `FixturePath/data/TableName.php`,
@@ -24,6 +25,7 @@ class ActiveFixture extends \yii\test\BaseActiveFixture
 	 */
 	public $dataFile;
 
+	
 	/**
 	 * @inheritdoc
 	 */
@@ -35,7 +37,6 @@ class ActiveFixture extends \yii\test\BaseActiveFixture
 		}
 	}
 
-
 	/**
 	 * Loads the fixture data.
 	 * The default implementation will first reset the DB table and then populate it with the data
@@ -44,8 +45,9 @@ class ActiveFixture extends \yii\test\BaseActiveFixture
 	public function load()
 	{
 		$this->resetCollection();
-		$this->getCollection()->batchInsert($this->getData());
-		foreach ($this->getData() as $alias => $row) {
+		$data = $this->getData();
+		$this->getCollection()->batchInsert($data);
+		foreach ($data as $alias => $row) {
 			$this->data[$alias] = $row;
 		}
 	}
