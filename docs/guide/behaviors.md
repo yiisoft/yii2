@@ -37,20 +37,26 @@ In the above, the `class` value is a string representing the fully qualified beh
 Creating your own behaviors
 ---------------------------
 
-[[NEEDS UPDATING FOR Yii 2]]
-
-To create your own behavior, you must define a class that implements the `IBehavior` interface. This can be accomplished by extending `CBehavior`. More specifically, you can extend `CModelBehavior` or `CActiveRecordBehavior` for behaviors to be used specifically with models or with Active Record models.
+To create your own behavior, you must define a class that extends [[yii\base\Behavior]].
 
 ```php
-class MyBehavior extends CActiveRecordBehavior
+namespace app\components;
+
+use yii\base\Behavior;
+
+class MyBehavior extends Behavior
 {
 }
 ```
 
-To make your behavior customizable, like `AutoTimestamp`, add public properties:
+To make it customizable, like [[yii\behaviors\AutoTimestamp]], add public properties:
 
 ```php
-class MyBehavior extends CActiveRecordBehavior
+namespace app\components;
+
+use yii\base\Behavior;
+
+class MyBehavior extends Behavior
 {
 	public $attr;
 }
@@ -59,6 +65,10 @@ class MyBehavior extends CActiveRecordBehavior
 Now, when the behavior is used, you can set the attribute to which you'd want the behavior to be applied:
 
 ```php
+namespace app\models;
+
+use yii\db\ActiveRecord;
+
 class User extends ActiveRecord
 {
 	// ...
@@ -67,23 +77,42 @@ class User extends ActiveRecord
 	{
 		return [
 			'mybehavior' => [
-				'class' => 'ext\mybehavior\MyBehavior',
+				'class' => 'app\components\MyBehavior',
 				'attr' => 'member_type'
-				],
 			],
 		];
 	}
 }
 ```
 
-Behaviors are normally written to take action when certain model-related events occur, such as `beforeSave` or `afterFind`. You can write your behaviors to have the corresponding method. Within the method, you can access the model instance through `$this->getOwner()`:
+Behaviors are normally written to take action when certain events occur. Below we're implementing `events` method
+to assign event handlers:
 
 ```php
-class MyBehavior extends CActiveRecordBehavior
+namespace app\components;
+
+use yii\base\Behavior;
+use yii\db\ActiveRecord;
+
+class MyBehavior extends Behavior
 {
 	public $attr;
-	public function beforeSave() {
-		$model = $this->getOwner();
+
+	public function events()
+	{
+		return [
+			ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
+			ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
+		];
+	}
+
+	public function beforeInsert() {
+		$model = $this->owner;
+		// Use $model->$attr
+	}
+
+	public function beforeUpdate() {
+		$model = $this->owner;
 		// Use $model->$attr
 	}
 }
