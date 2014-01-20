@@ -8,37 +8,15 @@
 namespace yiiunit\framework\test;
 
 use yii\test\ActiveFixture;
+use yiiunit\data\ar\ActiveRecord;
 use yii\test\FixtureTrait;
 use yii\test\InitDbFixture;
-use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Customer;
 use yiiunit\framework\db\DatabaseTestCase;
-
-class Customer extends ActiveRecord
-{
-	public static function tableName()
-	{
-		return 'tbl_customer2';
-	}
-}
 
 class CustomerFixture extends ActiveFixture
 {
-	public $modelClass = 'yiiunit\framework\test\Customer';
-
-	protected function loadSchema()
-	{
-		try {
-			$this->dropTable('tbl_customer2');
-		} catch (\Exception $e) {
-		}
-		$this->createTable('tbl_customer2', [
-			'id' => 'pk',
-			'email' => 'string',
-			'name' => 'string',
-			'address' => 'string',
-			'status' => 'integer',
-		]);
-	}
+	public $modelClass = 'yiiunit\data\ar\Customer';
 }
 
 class MyDbTestCase
@@ -81,7 +59,7 @@ class ActiveFixtureTest extends DatabaseTestCase
 	{
 		parent::setUp();
 		\Yii::$app->setComponent('db', $this->getConnection());
-		Customer::$db = $this->getConnection();
+		ActiveRecord::$db = $this->getConnection();
 	}
 
 	public function tearDown()

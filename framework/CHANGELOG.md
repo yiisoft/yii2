@@ -21,7 +21,6 @@ Yii Framework 2 Change Log
 - Bug #1686: ActiveForm is creating duplicated messages in error summary (qiangxue)
 - Bug #1704: Incorrect regexp is used in `Inflector::camelize()` (qiangxue)
 - Bug #1710: OpenId auth client does not request required attributes correctly (klimov-paul)
-- Bug #1733: Incorrect code about `$_modelClasses` in `DbFixtureManager` (qiangxue)
 - Bug #1798: Fixed label attributes for array fields (zhuravljov)
 - Bug #1800: Better check for `$_SERVER['HTTPS']` in `yii\web\Request::getIsSecureConnection()` (ginus, samdark)
 - Bug #1827: Debugger toolbar is loaded twice if an action is calling `run()` to execute another action (qiangxue)

@@ -71,4 +71,15 @@ class InitDbFixture extends DbFixture
 			require($file);
 		}
 	}
+
+	/**
+	 * Toggles the DB integrity check.
+	 * @param boolean $check whether to turn on or off the integrity check.
+	 */
+	public function checkIntegrity($check)
+	{
+		foreach ($this->schemas as $schema) {
+			$this->db->createCommand()->checkIntegrity($check, $schema)->execute();
+		}
+	}
 }
