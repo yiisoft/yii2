@@ -129,9 +129,22 @@ class Request extends \yii\base\Request
 	 */
 	public $restVar = '_method';
 	/**
-	 * @var array the parsers for converting the raw request body into [[restParams]]
-	 * The array keys are the request content-types, and the array values are the
-	 * corresponding configurations for creating the parser objects.
+	 * @var array the parsers for converting the raw HTTP request body into [[restParams]].
+	 * The array keys are the request `Content-Types`, and the array values are the
+	 * corresponding configurations for [[Yii::createObject|creating the parser objects]].
+	 * A parser must implement the [[RequestParserInterface]].
+	 *
+	 * To enable parsing for JSON requests you can use the [[JsonParser]] class like in the following example:
+	 *
+	 * ```
+	 * [
+	 *     'application/json' => 'yii\web\JsonParser',
+	 * ]
+	 * ```
+	 *
+	 * To register a parser for parsing all request types you can use `'*'` as the array key.
+	 * This one will be used as a fallback in case no other types match.
+	 *
 	 * @see getRestParams()
 	 */
 	public $parsers = [];
@@ -256,20 +269,32 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Returns the request parameters for the RESTful request.
+	 *
+	 * Request parameters are determined using the parsers configured in [[parsers]] property.
+	 * If no parsers are configured for the current [[contentType]] it uses the PHP function [[mb_parse_str()]]
+	 * to parse the [[rawBody|request body]].
 	 * @return array the RESTful request parameters
+	 * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
 	 * @see getMethod()
 	 */
 	public function getRestParams()
 	{
 		if ($this->_restParams === null) {
+			$contentType = $this->getContentType();
 			if (isset($_POST[$this->restVar])) {
 				$this->_restParams = $_POST;
-			} else if (isset($this->parsers[$this->getContentType()])) {
-				$parser = Yii::createObject($this->parsers[$this->getContentType()]);
-				if (! $parser instanceof RequestParserInterface) {
-					throw new InvalidConfigException("The '{$this->contentType}' request parser is invalid. It must implement the RequestParserInterface.");
+			} elseif (isset($this->parsers[$contentType])) {
+				$parser = Yii::createObject($this->parsers[$contentType]);
+				if (!($parser instanceof RequestParserInterface)) {
+					throw new InvalidConfigException("The '$contentType' request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
 				}
-				$this->_restParams = $parser->parse($this->getRawBody());
+				$this->_restParams = $parser->parse($this->getRawBody(), $contentType);
+			} elseif (isset($this->parsers['*'])) {
+				$parser = Yii::createObject($this->parsers['*']);
+				if (!($parser instanceof RequestParserInterface)) {
+					throw new InvalidConfigException("The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
+				}
+				$this->_restParams = $parser->parse($this->getRawBody(), $contentType);
 			} else {
 				$this->_restParams = [];
 				mb_parse_str($this->getRawBody(), $this->_restParams);
