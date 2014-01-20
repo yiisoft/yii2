@@ -34,7 +34,7 @@ class InitDbFixture extends DbFixture
 	public $initScript = '@app/tests/fixtures/initdb.php';
 	/**
 	 * @var array list of database schemas that the test tables may reside in. Defaults to
-	 * [''], meaning using the default schema (an empty string refers to the
+	 * `['']`, meaning using the default schema (an empty string refers to the
 	 * default schema). This property is mainly used when turning on and off integrity checks
 	 * so that fixture data can be populated into the database without causing problem.
 	 */
