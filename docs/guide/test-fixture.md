@@ -5,9 +5,9 @@ Fixtures are important part of testing. Their main purpose is to set up the envi
 so that your tests are repeatable and run in an expected way. Yii provides a fixture framework that allows
 you to define your fixtures precisely and use them easily.
 
-A key concept in the Yii fixture framework is the so-called *fixture objects*. A fixture object is an instance
-of [[yii\test\Fixture]] or its child class. It represents a particular aspect of a test environment. For example,
-you may define `UserFixture` to create the user table and populate it with some known data. You load one or multiple
+A key concept in the Yii fixture framework is the so-called *fixture objects*. A fixture object represents
+a particular aspect of a test environment and is an instance of [[yii\test\Fixture]] or its child class. For example,
+you may use `UserFixture` to make sure the user DB table contains a fixed set of data. You load one or multiple
 fixture objects before running a test and unload them when finishing.
 
 A fixture may depend on other fixtures, specified via its [[yii\test\Fixture::depends]] property.
@@ -22,13 +22,7 @@ To define a fixture, create a new class by extending [[yii\test\Fixture]] or [[y
 The former is best suited for general purpose fixtures, while the latter has enhanced features specifically
 designed to work with database and ActiveRecord.
 
-If you extend from [[yii\test\Fixture]], you should normally override the [[yii\test\Fixture::load()]] method
-with your custom code of setting up the test environment (e.g. creating specific directories or files).
-In the following, we will mainly describe how to define a database fixture by extending [[yii\test\ActiveFixture]].
-
-Each `ActiveFixture` is about preparing a DB table for testing purpose. You may specify the table
-by setting either the [[yii\test\ActiveFixture::tableName]] property or the [[yii\test\ActiveFixture::modelClass]]
-property. If the latter, the table name will be taken from the `ActiveRecord` class specified by `modelClass`.
+The following code defines a fixture about the `User` ActiveRecord and the corresponding user table.
 
 ```php
 <?php
@@ -42,33 +36,12 @@ class UserFixture extends ActiveFixture
 }
 ```
 
-Next, you should override [[yii\test\ActiveFixture::loadSchema()]] to create the table. You may wonder why we need
-to create the table when loading a fixture and why we do not work with a database which already has the table. This
-is because preparing a complete test database is often very time consuming and in most test cases, only a very tiny part
-of the database is touched. So the idea here is to create the table only when it is needed by the test.
+> Tip: Each `ActiveFixture` is about preparing a DB table for testing purpose. You may specify the table
+> by setting either the [[yii\test\ActiveFixture::tableName]] property or the [[yii\test\ActiveFixture::modelClass]]
+> property. If the latter, the table name will be taken from the `ActiveRecord` class specified by `modelClass`.
 
-```php
-<?php
-namespace app\tests\fixtures;
 
-use yii\test\ActiveFixture;
-
-class UserFixture extends ActiveFixture
-{
-	public $modelClass = 'app\models\User';
-
-	protected function loadSchema()
-	{
-		$this->createTable('tbl_user', [
-			'username' => 'string not null',
-			'email' => 'string not null',
-			...
-		]);
-	}
-}
-```
-
-Lastly, you should provide the fixture data in a file located at `FixturePath/data/TableName.php`,
+The fixture data for an `ActiveFixture` fixture is usually provided in a file located at `FixturePath/data/TableName.php`,
 where `FixturePath` stands for the directory containing the fixture class file, and `TableName`
 is the name of the table associated with the fixture. In the example above, the file should be
 `@app/tests/fixtures/data/tbl_user.php`. The data file should return an array of data rows
@@ -115,20 +88,25 @@ class UserProfileFixture extends ActiveFixture
 	public $modelClass = 'app\models\UserProfile';
 	public $depends = ['app\tests\fixtures\UserFixture'];
 }
-```
+
+
+In the above, we have shown how to define a fixture about a DB table. To define a fixture not related with DB
+(e.g. a fixture about certain files and directories), you may extend from the more general base class
+[[yii\test\Fixture]] and override the [[yii\test\Fixture::load()|load()]] and [[yii\test\Fixture::unload()|unload()]] methods.
 
 
 Using Fixtures
 --------------
 
-Yii provides [[yii\test\FixtureTrait]] which can be plugged into your test classes to let you easily load and access
-fixtures. More often you would develop your test cases by using the `yii2-codeception` extension
-which uses [[yii\test\FixtureTrait]] and has the built-in support for the loading and accessing fixtures.
+If you are using [CodeCeption](http://codeception.com/) to test your code, you should consider using
+the `yii2-codeception` extension which has the built-in support for loading and accessing fixtures.
+If you are using other testing frameworks, you may use [[yii\test\FixtureTrait]] in your test cases
+to achieve the same goal.
+
 In the following we will describe how to write a `UserProfile` unit test class using `yii2-codeception`.
 
-In your unit test class extending [[yii\codeception\DbTestCase]] (or [[yii\codeception\TestCase]] if you are NOT
-testing DB-related features), declare which fixtures you want to use in the [[yii\testFixtureTrait::fixtures()|fixtures()]] method.
-For example,
+In your unit test class extending [[yii\codeception\DbTestCase]] or [[yii\codeception\TestCase]],
+declare which fixtures you want to use in the [[yii\testFixtureTrait::fixtures()|fixtures()]] method. For example,
 
 ```php
 namespace app\tests\unit\models;
@@ -182,15 +160,31 @@ Defining and Using Global Fixtures
 ----------------------------------
 
 The fixtures described above are mainly used by individual test cases. In most cases, you also need some global
-fixtures that are applied to ALL or many test cases. An example is [[yii\test\InitDbFixture]] which is used to
-set up a skeleton test database and toggle database integrity checks when applying other DB fixtures.
-This fixture will try to execute a script located at `@app/tests/fixtures/initdb.php`. In this script, you may,
-for example, load a basic DB dump containing the minimal set of tables, etc.
+fixtures that are applied to ALL or many test cases. An example is [[yii\test\InitDbFixture]] which does
+two things:
+
+* Perform some common initialization tasks by executing a script located at `@app/tests/fixtures/initdb.php`;
+* Disable the database integrity check before loading other DB fixtures, and re-enable it after other DB fixtures are unloead.
 
 Using global fixtures is similar to using non-global ones. The only difference is that you declare these fixtures
 in [[yii\codeception\TestCase::globalFixtures()]] instead of `fixtures()`. When a test case loads fixtures, it will
 first load global fixtures and then non-global ones.
 
 By default, [[yii\codeception\DbTestCase]] already declares `InitDbFixture` in its `globalFixtures()` method.
-This means you only need to work with `@app/tests/fixtures/initdb.php` to set up your skeleton test database,
-and you can then focus on developing each individual test case and the corresponding fixtures.
+This means you only need to work with `@app/tests/fixtures/initdb.php` if you want to do some initialization work
+before each test. You may otherwise simply focus on developing each individual test case and the corresponding fixtures.
+
+
+Summary
+-------
+
+In the above, we have described how to define and use fixtures. Below we summarize the typical workflow
+of running unit tests related with DB:
+
+1. Use `yii migrate` tool to upgrade your test database to the latest version;
+2. Run a test case:
+   - Load fixtures: clean up the relevant DB tables and populate them with fixture data;
+   - Perform the actual test;
+   - Unload fixtures.
+3. Repeat 2 until all tests finish.
+
