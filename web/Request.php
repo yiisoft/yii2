@@ -283,6 +283,7 @@ class Request extends \yii\base\Request
 			$contentType = $this->getContentType();
 			if (isset($_POST[$this->restVar])) {
 				$this->_restParams = $_POST;
+				unset($this->_restParams[$this->restVar]);
 			} elseif (isset($this->parsers[$contentType])) {
 				$parser = Yii::createObject($this->parsers[$contentType]);
 				if (!($parser instanceof RequestParserInterface)) {
@@ -860,7 +861,7 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 *  Returns request content-type
+	 * Returns request content-type
 	 * The Content-Type header field indicates the MIME type of the data
 	 * contained in [[getRawBody()]] or, in the case of the HEAD method, the
 	 * media type that would have been sent had the request been a GET.
