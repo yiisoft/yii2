@@ -168,6 +168,8 @@ class Sort extends Object
 	 * @var array parameters (name => value) that should be used to obtain the current sort directions
 	 * and to create new sort URLs. If not set, $_GET will be used instead.
 	 *
+	 * In order to add hash to all links use `array_merge($_GET, ['#' => 'my-hash'])`.
+	 *
 	 * The array element indexed by [[sortVar]] is considered to be the current sort directions.
 	 * If the element does not exist, the [[defaults|default order]] will be used.
 	 *
