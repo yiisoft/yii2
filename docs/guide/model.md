@@ -238,7 +238,7 @@ Using the same `attributes` property you can massively assign data from associat
 ```php
 $attributes = [
 	'title' => 'Model attributes',
-	'create_time' => time(),
+	'created_at' => time(),
 ];
 $post->attributes = $attributes;
 ```

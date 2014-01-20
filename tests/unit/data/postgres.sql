@@ -43,7 +43,7 @@ CREATE TABLE tbl_item (
 CREATE TABLE tbl_order (
   id serial not null primary key,
   customer_id integer NOT NULL references tbl_customer(id) on UPDATE CASCADE on DELETE CASCADE,
-  create_time integer NOT NULL,
+  created_at integer NOT NULL,
   total decimal(10,0) NOT NULL
 );
 
@@ -92,9 +92,9 @@ INSERT INTO tbl_item (name, category_id) VALUES ('Ice Age', 2);
 INSERT INTO tbl_item (name, category_id) VALUES ('Toy Story', 2);
 INSERT INTO tbl_item (name, category_id) VALUES ('Cars', 2);
 
-INSERT INTO tbl_order (customer_id, create_time, total) VALUES (1, 1325282384, 110.0);
-INSERT INTO tbl_order (customer_id, create_time, total) VALUES (2, 1325334482, 33.0);
-INSERT INTO tbl_order (customer_id, create_time, total) VALUES (2, 1325502201, 40.0);
+INSERT INTO tbl_order (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO tbl_order (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
+INSERT INTO tbl_order (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
 
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);

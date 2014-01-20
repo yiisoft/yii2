@@ -5,6 +5,7 @@ namespace yii\codeception;
 use Yii;
 use yii\base\InvalidConfigException;
 use Codeception\TestCase\Test;
+use yii\test\FixtureTrait;
 
 /**
  * TestCase is the base class for all codeception unit tests
@@ -14,6 +15,8 @@ use Codeception\TestCase\Test;
  */
 class TestCase extends Test
 {
+	use FixtureTrait;
+
 	/**
 	 * @var array|string the application configuration that will be used for creating an application instance for each test.
 	 * You can use a string to represent the file path or path alias of a configuration file.
@@ -29,6 +32,7 @@ class TestCase extends Test
 	{
 		parent::setUp();
 		$this->mockApplication();
+		$this->loadFixtures();
 	}
 
 	/**
@@ -36,6 +40,7 @@ class TestCase extends Test
 	 */
 	protected function tearDown()
 	{
+		$this->unloadFixtures();
 		$this->destroyApplication();
 		parent::tearDown();
 	}

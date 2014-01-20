@@ -21,7 +21,6 @@ Yii Framework 2 Change Log
 - Bug #1686: ActiveForm is creating duplicated messages in error summary (qiangxue)
 - Bug #1704: Incorrect regexp is used in `Inflector::camelize()` (qiangxue)
 - Bug #1710: OpenId auth client does not request required attributes correctly (klimov-paul)
-- Bug #1733: Incorrect code about `$_modelClasses` in `DbFixtureManager` (qiangxue)
 - Bug #1798: Fixed label attributes for array fields (zhuravljov)
 - Bug #1800: Better check for `$_SERVER['HTTPS']` in `yii\web\Request::getIsSecureConnection()` (ginus, samdark)
 - Bug #1827: Debugger toolbar is loaded twice if an action is calling `run()` to execute another action (qiangxue)
@@ -74,6 +73,8 @@ Yii Framework 2 Change Log
 - Enh #1973: `yii message/extract` is now able to generate `.po` files (SergeiKutanov, samdark)
 - Enh #1984: ActionFilter will now mark event as handled when action run is aborted (cebe)
 - Enh #2003: Added `filter` property to `ExistValidator` and `UniqueValidator` to support adding additional filtering conditions (qiangxue)
+- Enh #2043: Added support for custom request body parsers (danschmidt5189, cebe)
+- Enh #2051: Do not save null data into database when using RBAC (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
 - Enh: Support for file aliases in console command 'message' (omnilight)
@@ -84,6 +85,8 @@ Yii Framework 2 Change Log
 - Enh: `init` of advanced application now allows to specify answer for overwriting files via `init --overwrite=n` (samdark)
 - Enh: Added `TableSchema::fullName` property (qiangxue)
 - Enh #1839: Added support for getting file extension and basename from uploaded file (anfrantic)
+- Enh: yii\codeception\TestCase now supports loading and using fixtures via Yii fixture framework (qiangxue)
+- Enh: Added support to parse json request data to Request::getRestParams() (cebe)
 - Chg #1519: `yii\web\User::loginRequired()` now returns the `Response` object instead of exiting the application (qiangxue)
 - Chg #1586: `QueryBuilder::buildLikeCondition()` will now escape special characters and use percentage characters by default (qiangxue)
 - Chg #1610: `Html::activeCheckboxList()` and `Html::activeRadioList()` will submit an empty string if no checkbox/radio is selected (qiangxue)
@@ -93,6 +96,8 @@ Yii Framework 2 Change Log
 - Chg #1821: Changed default values for yii\db\Connection username and password to null (cebe)
 - Chg #1844: `Response::sendFile()` and other file sending methods will not send the response (qiangxue)
 - Chg #1852: DbConnection::tablePrefix default value now 'tbl_' (creocoder)
+- Chg #2057: AutoTimestamp attributes defaults changed from `create_time` and `update_time` to `created_at` and `updated_at` (creocoder)
+- Chg #2063: Removed `yii\web\Request::acceptTypes` and renamed `yii\web\Request::acceptedContentTypes` to `acceptableContentTypes` (qiangxue)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
@@ -103,10 +108,14 @@ Yii Framework 2 Change Log
 - Chg: Changed the directory structure according to PSR-4. You have to update your application `index.php`,
        `index-test.php` and `yii` files to point to the new location of `Yii.php` (qiangxue, cebe)
 - Chg: Advanced app template: moved database connection DSN, login and password to `-local` config not to expose it to VCS (samdark)
+- Chg: Renamed `yii\web\Request::acceptedLanguages` to `acceptableLanguages` (qiangxue)
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
+- New #1956: Implemented test fixture framework (qiangxue)
 - New: Yii framework now comes with core messages in multiple languages
+- New: Added yii\codeception\DbTestCase (qiangxue)
+
 
 2.0.0 alpha, December 1, 2013
 ---------------------------

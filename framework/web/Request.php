@@ -9,6 +9,8 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
+use yii\helpers\Json;
 use yii\helpers\Security;
 use yii\helpers\StringHelper;
 
@@ -23,10 +25,9 @@ use yii\helpers\StringHelper;
  * You can access that instance via `Yii::$app->request`.
  *
  * @property string $absoluteUrl The currently requested absolute URL. This property is read-only.
- * @property string $acceptTypes User browser accept types, null if not present. This property is read-only.
- * @property array $acceptedContentTypes The content types ordered by the preference level. The first element
+ * @property array $acceptableContentTypes The content types ordered by the preference level. The first element
  * represents the most preferred content type.
- * @property array $acceptedLanguages The languages ordered by the preference level. The first element
+ * @property array $acceptableLanguages The languages ordered by the preference level. The first element
  * represents the most preferred language.
  * @property string $baseUrl The relative URL for the application.
  * @property string $cookieValidationKey The secret key used for cookie validation. If it was not set
@@ -58,8 +59,7 @@ use yii\helpers\StringHelper;
  * mark. Note, the returned path info is already URL-decoded.
  * @property integer $port Port number for insecure requests.
  * @property array $post The POST request parameter values. This property is read-only.
- * @property string $preferredLanguage The language that the application should use. Null is returned if both
- * [[getAcceptedLanguages()]] and `$languages` are empty. This property is read-only.
+ * @property string $preferredLanguage The language that the application should use. This property is read-only.
  * @property array $put The PUT request parameter values. This property is read-only.
  * @property string $queryString Part of the request URL that is after the question mark. This property is
  * read-only.
@@ -128,6 +128,26 @@ class Request extends \yii\base\Request
 	 * @see getRestParams()
 	 */
 	public $restVar = '_method';
+	/**
+	 * @var array the parsers for converting the raw HTTP request body into [[restParams]].
+	 * The array keys are the request `Content-Types`, and the array values are the
+	 * corresponding configurations for [[Yii::createObject|creating the parser objects]].
+	 * A parser must implement the [[RequestParserInterface]].
+	 *
+	 * To enable parsing for JSON requests you can use the [[JsonParser]] class like in the following example:
+	 *
+	 * ```
+	 * [
+	 *     'application/json' => 'yii\web\JsonParser',
+	 * ]
+	 * ```
+	 *
+	 * To register a parser for parsing all request types you can use `'*'` as the array key.
+	 * This one will be used as a fallback in case no other types match.
+	 *
+	 * @see getRestParams()
+	 */
+	public $parsers = [];
 
 	private $_cookies;
 
@@ -249,14 +269,33 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Returns the request parameters for the RESTful request.
+	 *
+	 * Request parameters are determined using the parsers configured in [[parsers]] property.
+	 * If no parsers are configured for the current [[contentType]] it uses the PHP function [[mb_parse_str()]]
+	 * to parse the [[rawBody|request body]].
 	 * @return array the RESTful request parameters
+	 * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
 	 * @see getMethod()
 	 */
 	public function getRestParams()
 	{
 		if ($this->_restParams === null) {
+			$contentType = $this->getContentType();
 			if (isset($_POST[$this->restVar])) {
 				$this->_restParams = $_POST;
+				unset($this->_restParams[$this->restVar]);
+			} elseif (isset($this->parsers[$contentType])) {
+				$parser = Yii::createObject($this->parsers[$contentType]);
+				if (!($parser instanceof RequestParserInterface)) {
+					throw new InvalidConfigException("The '$contentType' request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
+				}
+				$this->_restParams = $parser->parse($this->getRawBody(), $contentType);
+			} elseif (isset($this->parsers['*'])) {
+				$parser = Yii::createObject($this->parsers['*']);
+				if (!($parser instanceof RequestParserInterface)) {
+					throw new InvalidConfigException("The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
+				}
+				$this->_restParams = $parser->parse($this->getRawBody(), $contentType);
 			} else {
 				$this->_restParams = [];
 				mb_parse_str($this->getRawBody(), $this->_restParams);
@@ -730,15 +769,6 @@ class Request extends \yii\base\Request
 		return isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
 	}
 
-	/**
-	 * Returns user browser accept types, null if not present.
-	 * @return string user browser accept types, null if not present
-	 */
-	public function getAcceptTypes()
-	{
-		return isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : null;
-	}
-
 	private $_port;
 
 	/**
@@ -804,12 +834,12 @@ class Request extends \yii\base\Request
 	private $_contentTypes;
 
 	/**
-	 * Returns the content types accepted by the end user.
+	 * Returns the content types acceptable by the end user.
 	 * This is determined by the `Accept` HTTP header.
 	 * @return array the content types ordered by the preference level. The first element
 	 * represents the most preferred content type.
 	 */
-	public function getAcceptedContentTypes()
+	public function getAcceptableContentTypes()
 	{
 		if ($this->_contentTypes === null) {
 			if (isset($_SERVER['HTTP_ACCEPT'])) {
@@ -822,23 +852,38 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * @param array $value the content types that are accepted by the end user. They should
+	 * @param array $value the content types that are acceptable by the end user. They should
 	 * be ordered by the preference level.
 	 */
-	public function setAcceptedContentTypes($value)
+	public function setAcceptableContentTypes($value)
 	{
 		$this->_contentTypes = $value;
+	}
+
+	/**
+	 * Returns request content-type
+	 * The Content-Type header field indicates the MIME type of the data
+	 * contained in [[getRawBody()]] or, in the case of the HEAD method, the
+	 * media type that would have been sent had the request been a GET.
+	 * For the MIME-types the user expects in response, see [[acceptableContentTypes]].
+	 * @return string request content-type. Null is returned if this information is not available.
+	 * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17
+	 * HTTP 1.1 header field definitions
+	 */
+	public function getContentType()
+	{
+		return isset($_SERVER["CONTENT_TYPE"]) ? $_SERVER["CONTENT_TYPE"] : null;
 	}
 
 	private $_languages;
 
 	/**
-	 * Returns the languages accepted by the end user.
+	 * Returns the languages acceptable by the end user.
 	 * This is determined by the `Accept-Language` HTTP header.
 	 * @return array the languages ordered by the preference level. The first element
 	 * represents the most preferred language.
 	 */
-	public function getAcceptedLanguages()
+	public function getAcceptableLanguages()
 	{
 		if ($this->_languages === null) {
 			if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
@@ -851,17 +896,17 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * @param array $value the languages that are accepted by the end user. They should
+	 * @param array $value the languages that are acceptable by the end user. They should
 	 * be ordered by the preference level.
 	 */
-	public function setAcceptedLanguages($value)
+	public function setAcceptableLanguages($value)
 	{
 		$this->_languages = $value;
 	}
 
 	/**
 	 * Parses the given `Accept` (or `Accept-Language`) header.
-	 * This method will return the accepted values ordered by their preference level.
+	 * This method will return the acceptable values ordered by their preference level.
 	 * @param string $header the header to be parsed
 	 * @return array the accept values ordered by their preference level.
 	 */
@@ -906,23 +951,21 @@ class Request extends \yii\base\Request
 	 * Returns the user-preferred language that should be used by this application.
 	 * The language resolution is based on the user preferred languages and the languages
 	 * supported by the application. The method will try to find the best match.
-	 * @param array $languages a list of the languages supported by the application.
-	 * If empty, this method will return the first language returned by [[getAcceptedLanguages()]].
-	 * @return string the language that the application should use. Null is returned if both [[getAcceptedLanguages()]]
-	 * and `$languages` are empty.
+	 * @param array $languages a list of the languages supported by the application. If this is empty, the current
+	 * application language will be returned without further processing.
+	 * @return string the language that the application should use.
 	 */
-	public function getPreferredLanguage($languages = [])
+	public function getPreferredLanguage(array $languages = [])
 	{
-		$acceptedLanguages = $this->getAcceptedLanguages();
 		if (empty($languages)) {
-			return isset($acceptedLanguages[0]) ? $acceptedLanguages[0] : null;
+			return Yii::$app->language;
 		}
-		foreach ($acceptedLanguages as $acceptedLanguage) {
-			$acceptedLanguage = str_replace('_', '-', strtolower($acceptedLanguage));
+		foreach ($this->getAcceptableLanguages() as $acceptableLanguage) {
+			$acceptableLanguage = str_replace('_', '-', strtolower($acceptableLanguage));
 			foreach ($languages as $language) {
 				$language = str_replace('_', '-', strtolower($language));
 				// en-us==en-us, en==en-us, en-us==en
-				if ($language === $acceptedLanguage || strpos($acceptedLanguage, $language . '-') === 0 || strpos($language, $acceptedLanguage . '-') === 0) {
+				if ($language === $acceptableLanguage || strpos($acceptableLanguage, $language . '-') === 0 || strpos($language, $acceptableLanguage . '-') === 0) {
 					return $language;
 				}
 			}

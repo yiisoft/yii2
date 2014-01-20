@@ -146,7 +146,7 @@ class DbManager extends Manager
 		}
 		$query = new Query;
 		$rows = $query->from($this->itemTable)
-			->where(['or', 'name=:name1', 'name=:name2'], [':name1' => $itemName,	':name2' => $childName])
+			->where(['or', 'name=:name1', 'name=:name2'], [':name1' => $itemName, ':name2' => $childName])
 			->createCommand($this->db)
 			->queryAll();
 		if (count($rows) == 2) {
@@ -216,7 +216,7 @@ class DbManager extends Manager
 			->queryAll();
 		$children = [];
 		foreach ($rows as $row) {
-			if (($data = @unserialize($row['data'])) === false) {
+			if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
 			$children[$row['name']] = new Item([
@@ -251,7 +251,7 @@ class DbManager extends Manager
 				'user_id' => $userId,
 				'item_name' => $itemName,
 				'biz_rule' => $bizRule,
-				'data' => serialize($data),
+				'data' => $data === null ? null : serialize($data),
 			])
 			->execute();
 		return new Assignment([
@@ -299,7 +299,7 @@ class DbManager extends Manager
 		$query = new Query;
 		return $query->select(['item_name'])
 			->from($this->assignmentTable)
-			->where(['user_id' => $userId,	'item_name' => $itemName])
+			->where(['user_id' => $userId, 'item_name' => $itemName])
 			->createCommand($this->db)
 			->queryScalar() !== false;
 	}
@@ -315,11 +315,11 @@ class DbManager extends Manager
 	{
 		$query = new Query;
 		$row = $query->from($this->assignmentTable)
-			->where(['user_id' => $userId,	'item_name' => $itemName])
+			->where(['user_id' => $userId, 'item_name' => $itemName])
 			->createCommand($this->db)
 			->queryOne();
 		if ($row !== false) {
-			if (($data = @unserialize($row['data'])) === false) {
+			if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
 			return new Assignment([
@@ -349,7 +349,7 @@ class DbManager extends Manager
 			->queryAll();
 		$assignments = [];
 		foreach ($rows as $row) {
-			if (($data = @unserialize($row['data'])) === false) {
+			if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
 			$assignments[$row['item_name']] = new Assignment([
@@ -372,7 +372,7 @@ class DbManager extends Manager
 		$this->db->createCommand()
 			->update($this->assignmentTable, [
 				'biz_rule' => $assignment->bizRule,
-				'data' => serialize($assignment->data),
+				'data' => $assignment->data === null ? null : serialize($assignment->data),
 			], [
 				'user_id' => $assignment->userId,
 				'item_name' => $assignment->itemName,
@@ -411,7 +411,7 @@ class DbManager extends Manager
 		}
 		$items = [];
 		foreach ($command->queryAll() as $row) {
-			if (($data = @unserialize($row['data'])) === false) {
+			if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
 			$items[$row['name']] = new Item([
@@ -449,7 +449,7 @@ class DbManager extends Manager
 				'type' => $type,
 				'description' => $description,
 				'biz_rule' => $bizRule,
-				'data' => serialize($data),
+				'data' => $data === null ? null : serialize($data),
 			])
 			->execute();
 		return new Item([
@@ -496,7 +496,7 @@ class DbManager extends Manager
 			->queryOne();
 
 		if ($row !== false) {
-			if (($data = @unserialize($row['data'])) === false) {
+			if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
 				$data = null;
 			}
 			return new Item([
@@ -537,7 +537,7 @@ class DbManager extends Manager
 				'type' => $item->type,
 				'description' => $item->description,
 				'biz_rule' => $item->bizRule,
-				'data' => serialize($item->data),
+				'data' => $item->data === null ? null : serialize($item->data),
 			], [
 				'name' => $oldName === null ? $item->getName() : $oldName,
 			])

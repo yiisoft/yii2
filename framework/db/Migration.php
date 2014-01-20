@@ -333,7 +333,7 @@ class Migration extends \yii\base\Component
 	 */
 	public function addPrimaryKey($name, $table, $columns)
 	{
-		echo "    > add primary key $name on $table (".(is_array($columns) ? implode(',', $columns) : $columns).") ...";
+		echo "    > add primary key $name on $table (" . (is_array($columns) ? implode(',', $columns) : $columns).") ...";
 		$time = microtime(true);
 		$this->db->createCommand()->addPrimaryKey($name, $table, $columns)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
@@ -343,7 +343,6 @@ class Migration extends \yii\base\Component
 	 * Builds and executes a SQL statement for dropping a primary key.
 	 * @param string $name the name of the primary key constraint to be removed.
 	 * @param string $table the table that the primary key constraint will be removed from.
-	 * @return Command the command object itself
 	 */
 	public function dropPrimaryKey($name, $table)
 	{
