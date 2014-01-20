@@ -16,7 +16,6 @@ class ActiveFixture extends \yii\test\BaseActiveFixture
 	 */
 	public $collectionName;
 
-	public $loadSchema = false;
 	/**
 	 * @var string the file path or path alias of the data file that contains the fixture data
 	 * and will be loaded by [[loadData()]]. If this is not set, it will default to `FixturePath/data/TableName.php`,
@@ -24,12 +23,6 @@ class ActiveFixture extends \yii\test\BaseActiveFixture
 	 * name of the table associated with this fixture.
 	 */
 	public $dataFile;
-	/**
-	 * @var boolean whether to reset the collection associated with this fixture.
-	 * By setting this property to be true, when [[loadData()]] is called, all existing data in the table
-	 * will be removed and the sequence number (if any) will be reset.
-	 */
-	public $resetCollection = true;
 
 	/**
 	 * @inheritdoc
@@ -48,11 +41,10 @@ class ActiveFixture extends \yii\test\BaseActiveFixture
 	 * The default implementation will first reset the DB table and then populate it with the data
 	 * returned by [[getData()]].
 	 */
-	protected function loadData()
+	public function load()
 	{
-		if ($this->resetCollection) {
-			$this->resetCollection();
-		}
+		$this->resetCollection();
+
 		foreach ($this->getData() as $alias => $row) {
 			$this->getCollection()->insert($row);
 			$this->data[$alias] = $row;
