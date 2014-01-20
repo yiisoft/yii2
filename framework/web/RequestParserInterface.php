@@ -8,7 +8,7 @@
 namespace yii\web;
 
 /**
- * Interface for objects that parse the raw request body into a parameters array
+ * Interface for classes that parse the raw request body into a parameters array.
  *
  * @author Dan Schmidt <danschmidt5189@gmail.com>
  * @since 2.0
@@ -16,8 +16,10 @@ namespace yii\web;
 interface RequestParserInterface
 {
 	/**
-	 * @param string $rawBody the raw HTTP request body
+	 * Parses a HTTP request body.
+	 * @param string $rawBody the raw HTTP request body.
+	 * @param string $contentType the content type specified for the request body.
 	 * @return array parameters parsed from the request body
 	 */
-	public function parse($rawBody);
+	public function parse($rawBody, $contentType);
 }
