@@ -174,7 +174,6 @@ return [
 	'yii\rbac\Manager' => YII_PATH . '/rbac/Manager.php',
 	'yii\rbac\PhpManager' => YII_PATH . '/rbac/PhpManager.php',
 	'yii\requirements\YiiRequirementChecker' => YII_PATH . '/requirements/YiiRequirementChecker.php',
-	'yii\test\DbTestTrait' => YII_PATH . '/test/DbTestTrait.php',
 	'yii\validators\BooleanValidator' => YII_PATH . '/validators/BooleanValidator.php',
 	'yii\validators\CompareValidator' => YII_PATH . '/validators/CompareValidator.php',
 	'yii\validators\DateValidator' => YII_PATH . '/validators/DateValidator.php',
