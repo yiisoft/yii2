@@ -338,6 +338,18 @@ class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
+	 * TBD.
+	 * @param ActiveRecord[] $models
+	 * @param bool $runValidation
+	 * @param null $attributes
+	 * @return bool|void
+	 */
+	public static function insertMultiple($models, $runValidation = true, $attributes = null)
+	{
+
+	}
+
+	/**
 	 * @see ActiveRecord::insert()
 	 */
 	private function insertInternal($attributes = null)
@@ -447,6 +459,18 @@ class ActiveRecord extends BaseActiveRecord
 			$result = $this->updateInternal($attributes);
 		}
 		return $result;
+	}
+
+	/**
+	 * TBD.
+	 * @param ActiveRecord[] $models
+	 * @param bool $runValidation
+	 * @param null $attributes
+	 * @return bool|void
+	 */
+	public static function updateMultiple($models, $runValidation = true, $attributes = null)
+	{
+
 	}
 
 	/**
