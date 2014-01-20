@@ -11,7 +11,6 @@ use Yii;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\FileHelper;
-use yii\test\DbTestTrait;
 use yii\helpers\Console;
 
 /**
@@ -309,7 +308,7 @@ class FixtureController extends Controller
 
 	/**
 	 * @param array $fixtures
-	 * @return array Array of found fixtures. These may differer from input parameter as not all fixtures may exists.
+	 * @return array Array of found fixtures. These may differ from input parameter as not all fixtures may exists.
 	 */
 	private function findFixtures(array $fixtures)
 	{
