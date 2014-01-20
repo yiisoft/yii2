@@ -44,9 +44,8 @@ class ActiveFixture extends \yii\test\BaseActiveFixture
 	public function load()
 	{
 		$this->resetCollection();
-
+		$this->getCollection()->batchInsert($this->getData());
 		foreach ($this->getData() as $alias => $row) {
-			$this->getCollection()->insert($row);
 			$this->data[$alias] = $row;
 		}
 	}
