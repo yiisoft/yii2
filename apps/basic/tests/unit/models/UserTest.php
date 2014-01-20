@@ -3,12 +3,9 @@
 namespace tests\unit\models;
 
 use yii\codeception\TestCase;
-use yii\test\DbTestTrait;
 
 class UserTest extends TestCase
 {
-	use DbTestTrait;
-
 	protected function setUp()
 	{
 		parent::setUp();
