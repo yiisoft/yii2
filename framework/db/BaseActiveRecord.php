@@ -576,6 +576,54 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	}
 
 	/**
+	 * Saves the multiple records.
+	 *
+	 * For example, to save a multiple records:
+	 *
+	 * ```php
+	 * $customer1 = new Customer;
+	 * $customer1->name = $name1;
+	 * $customer1->email = $email1;
+	 * $customer2 = new Customer;
+	 * $customer2->name = $name2;
+	 * $customer2->email = $email2;
+	 * $customer3 = new Customer;
+	 * $customer3->name = $name3;
+	 * $customer3->email = $email3;
+	 * ActiveRecord::saveMultiple([$customer1, $customer2, $customer3]);
+	 * ```
+	 *
+	 * @param ActiveRecord[] $models the models to be saved.
+	 * @param bool $runValidation whether to perform validation before saving the records.
+	 * If the validation fails, the records will not be saved to database.
+	 * @param null $attributes list of attributes that need to be saved. Defaults to null,
+	 * meaning all attributes that are loaded from DB will be saved.
+	 * @return boolean whether the saving succeeds
+	 */
+	public static function saveMultiple($models, $runValidation = true, $attributes = null)
+	{
+		if ($runValidation || !static::validateMultiple($models, $attributes)) {
+			return false;
+		}
+
+		$insertModels = [];
+		$updateModels = [];
+
+		foreach ($models as $model) {
+			if ($model->getIsNewRecord()) {
+				$insertModels[] = $model;
+			} else {
+				$updateModels[] = $model;
+			}
+		}
+
+		$result = static::insertMultiple($models, $runValidation, $attributes);
+		$result = static::updateMultiple($models, $runValidation, $attributes) && $result;
+
+		return $result;
+	}
+
+	/**
 	 * Saves the changes to this active record into the associated database table.
 	 *
 	 * This method performs the following steps in order:
