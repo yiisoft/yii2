@@ -108,9 +108,9 @@ class AccessControl extends ActionFilter
 				return true;
 			} elseif ($allow === false) {
 				if (isset($rule->denyCallback)) {
-					call_user_func($rule->denyCallback, $rule);
+					call_user_func($rule->denyCallback, $rule, $action);
 				} elseif (isset($this->denyCallback)) {
-					call_user_func($this->denyCallback, $rule);
+					call_user_func($this->denyCallback, $rule, $action);
 				} else {
 					$this->denyAccess($user);
 				}
@@ -118,9 +118,8 @@ class AccessControl extends ActionFilter
 			}
 		}
 		if (isset($this->denyCallback)) {
-			call_user_func($this->denyCallback, $rule);
-		}
-		else {
+			call_user_func($this->denyCallback, $rule, $action);
+		} else {
 			$this->denyAccess($user);
 		}
 		return false;
