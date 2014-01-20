@@ -47,6 +47,7 @@ class ActiveFixture extends BaseActiveFixture
 	 */
 	private $_table;
 
+
 	/**
 	 * @inheritdoc
 	 */

@@ -86,6 +86,8 @@ class Pagination extends Object
 	 * @var array parameters (name => value) that should be used to obtain the current page number
 	 * and to create new pagination URLs. If not set, all parameters from $_GET will be used instead.
 	 *
+	 * In order to add hash to all links use `array_merge($_GET, ['#' => 'my-hash'])`.
+	 *
 	 * The array element indexed by [[pageVar]] is considered to be the current page number.
 	 * If the element does not exist, the current page number is considered 0.
 	 */

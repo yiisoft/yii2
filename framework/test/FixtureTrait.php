@@ -38,6 +38,7 @@ trait FixtureTrait
 	 */
 	private $_fixtureAliases;
 
+
 	/**
 	 * Returns the value of an object property.
 	 *

@@ -128,6 +128,26 @@ class Request extends \yii\base\Request
 	 * @see getRestParams()
 	 */
 	public $restVar = '_method';
+	/**
+	 * @var array the parsers for converting the raw HTTP request body into [[restParams]].
+	 * The array keys are the request `Content-Types`, and the array values are the
+	 * corresponding configurations for [[Yii::createObject|creating the parser objects]].
+	 * A parser must implement the [[RequestParserInterface]].
+	 *
+	 * To enable parsing for JSON requests you can use the [[JsonParser]] class like in the following example:
+	 *
+	 * ```
+	 * [
+	 *     'application/json' => 'yii\web\JsonParser',
+	 * ]
+	 * ```
+	 *
+	 * To register a parser for parsing all request types you can use `'*'` as the array key.
+	 * This one will be used as a fallback in case no other types match.
+	 *
+	 * @see getRestParams()
+	 */
+	public $parsers = [];
 
 	private $_cookies;
 
@@ -249,16 +269,33 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Returns the request parameters for the RESTful request.
+	 *
+	 * Request parameters are determined using the parsers configured in [[parsers]] property.
+	 * If no parsers are configured for the current [[contentType]] it uses the PHP function [[mb_parse_str()]]
+	 * to parse the [[rawBody|request body]].
 	 * @return array the RESTful request parameters
+	 * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
 	 * @see getMethod()
 	 */
 	public function getRestParams()
 	{
 		if ($this->_restParams === null) {
+			$contentType = $this->getContentType();
 			if (isset($_POST[$this->restVar])) {
 				$this->_restParams = $_POST;
-			} elseif(strncmp($this->getContentType(), 'application/json', 16) === 0) {
-				$this->_restParams = Json::decode($this->getRawBody(), true);
+				unset($this->_restParams[$this->restVar]);
+			} elseif (isset($this->parsers[$contentType])) {
+				$parser = Yii::createObject($this->parsers[$contentType]);
+				if (!($parser instanceof RequestParserInterface)) {
+					throw new InvalidConfigException("The '$contentType' request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
+				}
+				$this->_restParams = $parser->parse($this->getRawBody(), $contentType);
+			} elseif (isset($this->parsers['*'])) {
+				$parser = Yii::createObject($this->parsers['*']);
+				if (!($parser instanceof RequestParserInterface)) {
+					throw new InvalidConfigException("The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
+				}
+				$this->_restParams = $parser->parse($this->getRawBody(), $contentType);
 			} else {
 				$this->_restParams = [];
 				mb_parse_str($this->getRawBody(), $this->_restParams);
@@ -824,7 +861,7 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 *  Returns request content-type
+	 * Returns request content-type
 	 * The Content-Type header field indicates the MIME type of the data
 	 * contained in [[getRawBody()]] or, in the case of the HEAD method, the
 	 * media type that would have been sent had the request been a GET.
