@@ -59,6 +59,7 @@ Yii Framework 2 Change Log
 - Enh #1572: Added `yii\web\Controller::createAbsoluteUrl()` (samdark)
 - Enh #1579: throw exception when the given AR relation name does not match in a case sensitive manner (qiangxue)
 - Enh #1581: Added `ActiveQuery::joinWith()` and `ActiveQuery::innerJoinWith()` to support joining with relations (qiangxue)
+- Enh #1585: added schema parameter to createAbsoluteUrl() to force 'http' or 'https' (cebe)
 - Enh #1601: Added support for tagName and encodeLabel parameters in ButtonDropdown (omnilight)
 - Enh #1611: Added `BaseActiveRecord::markAttributeDirty()` (qiangxue)
 - Enh #1633: Advanced application template now works with MongoDB by default (samdark)

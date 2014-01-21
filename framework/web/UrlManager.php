@@ -277,17 +277,21 @@ class UrlManager extends Component
 	 * This method prepends the URL created by [[createUrl()]] with the [[hostInfo]].
 	 * @param string $route the route
 	 * @param array $params the parameters (name-value pairs)
+	 * @param string $schema the schema to use for the url. e.g. 'http' or 'https'. If not specified
+	 * the schema of the current request will be used.
 	 * @return string the created URL
 	 * @see createUrl()
 	 */
-	public function createAbsoluteUrl($route, $params = [])
+	public function createAbsoluteUrl($route, $params = [], $schema = null)
 	{
 		$url = $this->createUrl($route, $params);
-		if (strpos($url, '://') !== false) {
-			return $url;
-		} else {
-			return $this->getHostInfo() . $url;
+		if (strpos($url, '://') === false) {
+			$url = $this->getHostInfo($schema) . $url;
 		}
+		if ($schema !== null && ($pos = strpos($url, '://')) !== false) {
+			$url = $schema . substr($url, $pos);
+		}
+		return $url;
 	}
 
 	/**
