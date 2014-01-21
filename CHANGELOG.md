@@ -34,6 +34,7 @@ Yii Framework 2 Change Log
 - Bug #1992: In module scenario that use 'site/captcha' will get wrong refreshUrl (callmez)
 - Bug #1993: afterFind event in AR is now called after relations have been populated (cebe, creocoder)
 - Bug #1998: Unchecked required checkbox never pass client validation (klevron)
+- Bug #2091: `QueryBuilder::buildInCondition()` fails to handle array not starting with index 0 (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
