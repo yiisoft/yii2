@@ -1,8 +1,7 @@
 <?php
-
 namespace yiiunit\data\ar\sphinx;
 
-use yii\db\ActiveRelation;
+use yii\sphinx\ActiveQuery;
 
 class ArticleIndex extends ActiveRecord
 {
@@ -11,11 +10,6 @@ class ArticleIndex extends ActiveRecord
 	public static function indexName()
 	{
 		return 'yii2_test_article_index';
-	}
-
-	public static function favoriteAuthor($query)
-	{
-		$query->andWhere('author_id=1');
 	}
 
 	public function getSource()
@@ -31,5 +25,10 @@ class ArticleIndex extends ActiveRecord
 	public function getSnippetSource()
 	{
 		return $this->source->content;
+	}
+
+	public static function createQuery()
+	{
+		return new ArticleIndexQuery(['modelClass' => get_called_class()]);
 	}
 }

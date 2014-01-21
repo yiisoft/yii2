@@ -35,11 +35,6 @@ class Customer extends ActiveRecord
 		return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('created_at');
 	}
 
-	public static function active($query)
-	{
-		$query->andWhere(['status' => 1]);
-	}
-
 	public function afterSave($insert)
 	{
 		ActiveRecordTest::$afterSaveInsert = $insert;
@@ -66,5 +61,10 @@ class Customer extends ActiveRecord
 			]
 		]);
 
+	}
+
+	public static function createQuery()
+	{
+		return new CustomerQuery(['modelClass' => get_called_class()]);
 	}
 }
