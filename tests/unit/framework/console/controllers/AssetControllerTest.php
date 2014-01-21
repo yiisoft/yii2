@@ -338,6 +338,18 @@ EOL;
 				'/test/base/path/assets/output',
 				'.absolute-url-secure-class {background-image: url(https://secure.domain.com/img/image.gif);}',
 			],
+			[
+				"@font-face {
+				src: url('../fonts/glyphicons-halflings-regular.eot');
+				src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype');
+				}",
+				'/test/base/path/assets/input/css',
+				'/test/base/path/assets/output',
+				"@font-face {
+				src: url('../input/fonts/glyphicons-halflings-regular.eot');
+				src: url('../input/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype');
+				}",
+			],
 		];
 	}
 
