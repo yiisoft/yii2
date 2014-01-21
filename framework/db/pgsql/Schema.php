@@ -283,7 +283,7 @@ SQL;
 				// Index is an expression like "lower(colname::text)"
 				$indexColumns = preg_replace("/.*\(([^\:]+).*/mi", "$1", $index['indexcolumns']);
 			} else {
-				$indexColumns = array_map('trim', explode(',', str_replace(['{', '}'], '', $index['indexcolumns'])));
+				$indexColumns = array_map('trim', explode(',', str_replace(['{', '}', '"', '\\'], '', $index['indexcolumns'])));
 			}
 
 			$uniqueIndexes[$indexName] = $indexColumns;

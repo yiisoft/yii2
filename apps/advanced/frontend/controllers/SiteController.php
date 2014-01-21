@@ -126,12 +126,16 @@ class SiteController extends Controller
 
 	public function actionResetPassword($token)
 	{
+		if (empty($token) || is_array($token)) {
+			throw new BadRequestHttpException('Invalid password reset token.');
+		}
+
 		$model = User::find([
 			'password_reset_token' => $token,
 			'status' => User::STATUS_ACTIVE,
 		]);
 
-		if (!$model) {
+		if ($model === null) {
 			throw new BadRequestHttpException('Wrong password reset token.');
 		}
 

@@ -52,7 +52,7 @@ use yii\validators\Validator;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Model extends Component implements IteratorAggregate, ArrayAccess
+class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayable
 {
 	/**
 	 * The name of the default scenario.
