@@ -585,7 +585,7 @@ return [
 	],
 	// Asset bundle for compression output:
 	'targets' => [
-		'app\config\AllAsset' => [
+		'app\assets\AllAsset' => [
 			'basePath' => 'path/to/web',
 			'baseUrl' => '',
 			'js' => 'js/all-{ts}.js',
