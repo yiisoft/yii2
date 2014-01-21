@@ -100,7 +100,7 @@ class Nav extends Widget
 			$this->route = Yii::$app->controller->getRoute();
 		}
 		if ($this->params === null) {
-			$this->params = $_GET;
+			$this->params = Yii::$app->request->getQueryParams();
 		}
 		Html::addCssClass($this->options, 'nav');
 	}
