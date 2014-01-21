@@ -245,7 +245,7 @@ class Sort extends Object
 			$this->_attributeOrders = [];
 			if (($params = $this->params) === null) {
 				$request = Yii::$app->getRequest();
-				$params = $request instanceof Request ? $request->get() : [];
+				$params = $request instanceof Request ? $request->getQueryParams() : [];
 			}
 			if (isset($params[$this->sortVar]) && is_scalar($params[$this->sortVar])) {
 				$attributes = explode($this->separators[0], $params[$this->sortVar]);
@@ -341,7 +341,7 @@ class Sort extends Object
 	{
 		if (($params = $this->params) === null) {
 			$request = Yii::$app->getRequest();
-			$params = $request instanceof Request ? $request->get() : [];
+			$params = $request instanceof Request ? $request->getQueryParams() : [];
 		}
 		$params[$this->sortVar] = $this->createSortVar($attribute);
 		$route = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
