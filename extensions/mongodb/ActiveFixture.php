@@ -1,11 +1,32 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\mongodb;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\test\BaseActiveFixture;
 
-class ActiveFixture extends \yii\test\BaseActiveFixture
+/**
+ * ActiveFixture represents a fixture backed up by a [[modelClass|MongoDB ActiveRecord class]] or a [[collectionName|MongoDB collection]].
+ *
+ * Either [[modelClass]] or [[collectionName]] must be set. You should also provide fixture data in the file
+ * specified by [[dataFile]] or overriding [[getData()]] if you want to use code to generate the fixture data.
+ *
+ * When the fixture is being loaded, it will first call [[resetCollection()]] to remove any existing data in the collection.
+ * It will then populate the table with the data returned by [[getData()]].
+ *
+ * After the fixture is loaded, you can access the loaded data via the [[data]] property. If you set [[modelClass]],
+ * you will also be able to retrieve an instance of [[modelClass]] with the populated data via [[getModel()]].
+ *
+ * @author Paul Klimov <klimov.paul@gmail.com>
+ * @since 2.0
+ */
+class ActiveFixture extends BaseActiveFixture
 {
 	/**
 	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
@@ -55,6 +76,7 @@ class ActiveFixture extends \yii\test\BaseActiveFixture
 		if ($this->collectionName) {
 			return $this->collectionName;
 		} else {
+			/** @var ActiveRecord $modelClass */
 			$modelClass = $this->modelClass;
 			return $modelClass::collectionName();
 		}
@@ -74,16 +96,13 @@ class ActiveFixture extends \yii\test\BaseActiveFixture
 	 */
 	protected function getData()
 	{
-		if ($this->dataFile === false) {
-			return [];
-		}
-		if ($this->dataFile !== null) {
-			$dataFile = Yii::getAlias($this->dataFile);
-		} else {
+		if ($this->dataFile === null) {
 			$class = new \ReflectionClass($this);
 			$dataFile = dirname($class->getFileName()) . '/data/' . $this->getCollectionName() . '.php';
+			return is_file($dataFile) ? require($dataFile) : [];
+		} else {
+			return parent::getData();
 		}
-		return is_file($dataFile) ? require($dataFile) : [];
 	}
 
 	/**
