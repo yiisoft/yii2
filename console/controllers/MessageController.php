@@ -16,8 +16,8 @@ use yii\helpers\FileHelper;
 /**
  * This command extracts messages to be translated from source files.
  * The extracted messages are saved either as PHP message source files
- * or ".po" files under the specified directory. Format depends on `format`
- * setting in config file.
+ * or ".po" files under the specified directory or to a database. Format 
+ * depends on `format` setting in config file.
  *
  * Usage:
  * 1. Create a configuration file using the 'message/config' command:
@@ -91,14 +91,16 @@ class MessageController extends Controller
 		if (!is_dir($config['sourcePath'])) {
 			throw new Exception("The source path {$config['sourcePath']} is not a valid directory.");
 		}
-		if (!is_dir($config['messagePath'])) {
-			throw new Exception("The message path {$config['messagePath']} is not a valid directory.");
+		if (in_array($config['format'], ['php', 'po'])) {
+			if (!is_dir($config['messagePath'])) {
+				throw new Exception("The message path {$config['messagePath']} is not a valid directory.");
+			}
 		}
 		if (empty($config['languages'])) {
 			throw new Exception("Languages cannot be empty.");
 		}
-		if (empty($config['format']) || !in_array($config['format'], ['php', 'po'])) {
-			throw new Exception('Format should be either "php" or "po".');
+		if (empty($config['format']) || !in_array($config['format'], ['php', 'po', 'db'])) {
+			throw new Exception('Format should be either "php", "po" or "db".');
 		}
 
 		$files = FileHelper::findFiles(realpath($config['sourcePath']), $config);
@@ -107,23 +109,120 @@ class MessageController extends Controller
 		foreach ($files as $file) {
 			$messages = array_merge_recursive($messages, $this->extractMessages($file, $config['translator']));
 		}
-
-		foreach ($config['languages'] as $language) {
-			$dir = $config['messagePath'] . DIRECTORY_SEPARATOR . $language;
-			if (!is_dir($dir)) {
-				@mkdir($dir);
-			}
-			foreach ($messages as $category => $msgs) {
-				$file = str_replace("\\", '/', "$dir/$category." . $config['format']);
-				$path = dirname($file);
-				if (!is_dir($path)) {
-					mkdir($path, 0755, true);
+		if (in_array($config['format'], ['php', 'po'])) {
+			foreach ($config['languages'] as $language) {
+				$dir = $config['messagePath'] . DIRECTORY_SEPARATOR . $language;
+				if (!is_dir($dir)) {
+					@mkdir($dir);
 				}
-				$msgs = array_values(array_unique($msgs));
-				$this->generateMessageFile($msgs, $file, $config['overwrite'], $config['removeUnused'], $config['sort'], $config['format']);
+				foreach ($messages as $category => $msgs) {
+					$file = str_replace("\\", '/', "$dir/$category." . $config['format']);
+					$path = dirname($file);
+					if (!is_dir($path)) {
+						mkdir($path, 0755, true);
+					}
+					$msgs = array_values(array_unique($msgs));
+					$this->generateMessageFile($msgs, $file, $config['overwrite'], $config['removeUnused'], $config['sort'], $config['format']);
+				}
+			}
+		}
+		if ($config['format'] === 'db') {
+			$dbConnection = \Yii::$app->getComponent(isset($config['connectionID']) ? $config['connectionID'] : 'db');
+			if (!$dbConnection instanceof \yii\db\Connection) {
+				$this->usageError('The "connectionID" must refer to a valid database application component.');
+			}
+			$sourceMessageTable = !isset($config['sourceMessageTable']) ? 'SourceMessage' : $config['sourceMessageTable'];
+			$res = [];
+			foreach ($config['languages'] as $language) {
+				foreach ($messages as $category => $msgs) {
+					$res[$category] = $msgs;
+				}
+			}
+			$this->saveMessagesToDb(
+				$res,
+				$dbConnection,
+				$sourceMessageTable,
+				$config['removeUnused']
+			);
+		}
+	}
+
+	/**
+	* @param $messages
+	* @param \yii\db\Connection $dbConnection
+	* @param $sourceMessageTable
+	* @param $removeUnused
+	*/
+	protected function saveMessagesToDb($messages, $dbConnection, $sourceMessageTable, $removeUnused)
+	{
+		$q = new \yii\db\Query;
+		$current = [];
+
+		foreach ($q->select(['id', 'category', 'message'])->from($sourceMessageTable)->all() as $row) {
+			$current[$row['category']][$row['id']] = $row['message'];
+		}
+
+		$new = [];
+		$obsoleted = [];
+
+		foreach ($messages as $category => $msgs) {
+			$msgs = array_unique($msgs);
+
+			if (isset($current[$category])) {
+				$new[$category] = array_diff($msgs, $current[$category]);
+				$obsoleted = array_diff($current[$category], $msgs);
+			} else {
+				$new[$category] = $msgs;
+			}
+		}
+
+		foreach (array_diff(array_keys($current), array_keys($messages)) as $category) {
+			$obsoleted += $current[$category];
+		}
+
+		if (!$removeUnused) {
+			foreach ($obsoleted as $pk => $m) {
+				if (mb_substr($m, 0, 2) === '@@' && mb_substr($m, -2) === '@@') {
+					unset($obsoleted[$pk]);
+				}
+			}
+		}
+
+		$obsoleted = array_keys($obsoleted);
+		echo "Inserting new messages...";
+		$savedFlag = false;
+
+		foreach ($new as $category => $msgs) {
+			foreach ($msgs as $m) {
+				$savedFlag = true;
+
+				$dbConnection->createCommand()
+					->insert($sourceMessageTable, ['category' => $category, 'message' => $m])->execute();
+			}
+		}
+
+		echo $savedFlag ? "saved.\n" : "nothing new...skipped.\n";
+		echo $removeUnused ? "Deleting obsoleted messages..." : "Updating obsoleted messages...";
+
+		if (empty($obsoleted)) {
+			echo "nothing obsoleted...skipped.\n";
+		} else {
+			if ($removeUnused) {
+				$dbConnection->createCommand()
+					->delete($sourceMessageTable, ['in', 'id', $obsoleted])->execute();
+			echo "deleted.\n";
+			} else {
+				$dbConnection->createCommand()
+					->update(
+						$sourceMessageTable,
+						['message' => new \yii\db\Expression("CONCAT('@@',message,'@@')")],
+						['in', 'id', $obsoleted]
+					)->execute();
+				echo "updated.\n";
 			}
 		}
 	}
+
 
 	/**
 	 * Extracts messages from a file
