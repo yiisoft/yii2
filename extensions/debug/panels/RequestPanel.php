@@ -80,6 +80,11 @@ class RequestPanel extends Panel
 			'route' => Yii::$app->requestedAction ? Yii::$app->requestedAction->getUniqueId() : Yii::$app->requestedRoute,
 			'action' => $action,
 			'actionParams' => Yii::$app->requestedParams,
+			'requestBody' => Yii::$app->getRequest()->getRawBody() == '' ? [] : [
+				'Content Type' => Yii::$app->getRequest()->getContentType(),
+				'Raw' => Yii::$app->getRequest()->getRawBody(),
+				'Decoded to Params' => Yii::$app->getRequest()->getBodyParams(),
+			],
 			'SERVER' => empty($_SERVER) ? [] : $_SERVER,
 			'GET' => empty($_GET) ? [] : $_GET,
 			'POST' => empty($_POST) ? [] : $_POST,

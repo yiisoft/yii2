@@ -25,8 +25,13 @@ ul.trace {
 }
 
 td, th {
-	white-space: pre-line;
+	white-space: pre-wrap;
 	word-wrap: break-word;
+}
+
+.request-table td {
+	font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+	word-break: break-all;
 }
 
 .detail-grid-view th {
