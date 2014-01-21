@@ -53,7 +53,7 @@ class DbPanel extends Panel
 	public function getDetail()
 	{
 		$searchModel = new Db();
-		$dataProvider = $searchModel->search(Yii::$app->request->get(), $this->getModels());
+		$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), $this->getModels());
 
 		return Yii::$app->view->render('panels/db/detail', [
 			'panel' => $this,

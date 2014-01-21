@@ -1,5 +1,6 @@
 <?php 
 use yii\bootstrap\Tabs;
+use yii\helpers\VarDumper;
 
 /**
  * @var yii\debug\panels\RequestPanel $panel
@@ -13,7 +14,8 @@ echo Tabs::widget([
 				. $this->render('panels/request/table', ['caption' => '$_GET', 'values' => $panel->data['GET']])
 				. $this->render('panels/request/table', ['caption' => '$_POST', 'values' => $panel->data['POST']])
 				. $this->render('panels/request/table', ['caption' => '$_FILES', 'values' => $panel->data['FILES']])
-				. $this->render('panels/request/table', ['caption' => '$_COOKIE', 'values' => $panel->data['COOKIE']]),
+				. $this->render('panels/request/table', ['caption' => '$_COOKIE', 'values' => $panel->data['COOKIE']])
+				. $this->render('panels/request/table', ['caption' => 'Request Body', 'values' => $panel->data['requestBody']]),
 			'active' => true,
 		],
 		[
