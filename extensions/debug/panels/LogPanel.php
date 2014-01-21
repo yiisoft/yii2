@@ -39,7 +39,7 @@ class LogPanel extends Panel
 	public function getDetail()
 	{
 		$searchModel = new Log();
-		$dataProvider = $searchModel->search(Yii::$app->request->get(), $this->getModels());
+		$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), $this->getModels());
 
 		return Yii::$app->view->render('panels/log/detail', [
 			'dataProvider' => $dataProvider, 

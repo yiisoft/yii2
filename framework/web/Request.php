@@ -9,8 +9,6 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
-use yii\helpers\Json;
 use yii\helpers\Security;
 use yii\helpers\StringHelper;
 
@@ -125,11 +123,11 @@ class Request extends \yii\base\Request
 	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
 	 * request tunneled through POST. Default to '_method'.
 	 * @see getMethod()
-	 * @see getRestParams()
+	 * @see getBodyParams()
 	 */
-	public $restVar = '_method';
+	public $methodVar = '_method';
 	/**
-	 * @var array the parsers for converting the raw HTTP request body into [[restParams]].
+	 * @var array the parsers for converting the raw HTTP request body into [[bodyParams]].
 	 * The array keys are the request `Content-Types`, and the array values are the
 	 * corresponding configurations for [[Yii::createObject|creating the parser objects]].
 	 * A parser must implement the [[RequestParserInterface]].
@@ -145,7 +143,7 @@ class Request extends \yii\base\Request
 	 * To register a parser for parsing all request types you can use `'*'` as the array key.
 	 * This one will be used as a fallback in case no other types match.
 	 *
-	 * @see getRestParams()
+	 * @see getBodyParams()
 	 */
 	public $parsers = [];
 
@@ -176,8 +174,8 @@ class Request extends \yii\base\Request
 	 */
 	public function getMethod()
 	{
-		if (isset($_POST[$this->restVar])) {
-			return strtoupper($_POST[$this->restVar]);
+		if (isset($_POST[$this->methodVar])) {
+			return strtoupper($_POST[$this->methodVar]);
 		} else {
 			return isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
 		}
@@ -265,45 +263,6 @@ class Request extends \yii\base\Request
 			(stripos($_SERVER['HTTP_USER_AGENT'], 'Shockwave') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Flash') !== false);
 	}
 
-	private $_restParams;
-
-	/**
-	 * Returns the request parameters for the RESTful request.
-	 *
-	 * Request parameters are determined using the parsers configured in [[parsers]] property.
-	 * If no parsers are configured for the current [[contentType]] it uses the PHP function [[mb_parse_str()]]
-	 * to parse the [[rawBody|request body]].
-	 * @return array the RESTful request parameters
-	 * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
-	 * @see getMethod()
-	 */
-	public function getRestParams()
-	{
-		if ($this->_restParams === null) {
-			$contentType = $this->getContentType();
-			if (isset($_POST[$this->restVar])) {
-				$this->_restParams = $_POST;
-				unset($this->_restParams[$this->restVar]);
-			} elseif (isset($this->parsers[$contentType])) {
-				$parser = Yii::createObject($this->parsers[$contentType]);
-				if (!($parser instanceof RequestParserInterface)) {
-					throw new InvalidConfigException("The '$contentType' request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
-				}
-				$this->_restParams = $parser->parse($this->getRawBody(), $contentType);
-			} elseif (isset($this->parsers['*'])) {
-				$parser = Yii::createObject($this->parsers['*']);
-				if (!($parser instanceof RequestParserInterface)) {
-					throw new InvalidConfigException("The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
-				}
-				$this->_restParams = $parser->parse($this->getRawBody(), $contentType);
-			} else {
-				$this->_restParams = [];
-				mb_parse_str($this->getRawBody(), $this->_restParams);
-			}
-		}
-		return $this->_restParams;
-	}
-
 	private $_rawBody;
 
 	/**
@@ -318,25 +277,98 @@ class Request extends \yii\base\Request
 		return $this->_rawBody;
 	}
 
+	private $_bodyParams;
+
 	/**
-	 * Sets the RESTful parameters.
-	 * @param array $values the RESTful parameters (name-value pairs)
+	 * Returns the request parameters given in the request body.
+	 *
+	 * Request parameters are determined using the parsers configured in [[parsers]] property.
+	 * If no parsers are configured for the current [[contentType]] it uses the PHP function [[mb_parse_str()]]
+	 * to parse the [[rawBody|request body]].
+	 * @return array the request parameters given in the request body.
+	 * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
+	 * @see getMethod()
+	 * @see getBodyParam()
+	 * @see setBodyParams()
 	 */
-	public function setRestParams($values)
+	public function getBodyParams()
 	{
-		$this->_restParams = $values;
+		if ($this->_bodyParams === null) {
+			$contentType = $this->getContentType();
+			if (isset($_POST[$this->methodVar])) {
+				$this->_bodyParams = $_POST;
+				unset($this->_bodyParams[$this->methodVar]);
+			} elseif (isset($this->parsers[$contentType])) {
+				$parser = Yii::createObject($this->parsers[$contentType]);
+				if (!($parser instanceof RequestParserInterface)) {
+					throw new InvalidConfigException("The '$contentType' request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
+				}
+				$this->_bodyParams = $parser->parse($this->getRawBody(), $contentType);
+			} elseif (isset($this->parsers['*'])) {
+				$parser = Yii::createObject($this->parsers['*']);
+				if (!($parser instanceof RequestParserInterface)) {
+					throw new InvalidConfigException("The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
+				}
+				$this->_bodyParams = $parser->parse($this->getRawBody(), $contentType);
+			} else {
+				$this->_bodyParams = [];
+				mb_parse_str($this->getRawBody(), $this->_bodyParams);
+			}
+		}
+		return $this->_bodyParams;
 	}
 
 	/**
-	 * Returns the named RESTful parameter value.
+	 * Sets the request body parameters.
+	 * @param array $values the request body parameters (name-value pairs)
+	 * @see getBodyParam()
+	 * @see getBodyParams()
+	 */
+	public function setBodyParams($values)
+	{
+		$this->_bodyParams = $values;
+	}
+
+	/**
+	 * Returns the named request body parameter value.
 	 * @param string $name the parameter name
 	 * @param mixed $defaultValue the default parameter value if the parameter does not exist.
 	 * @return mixed the parameter value
+	 * @see getBodyParams()
+	 * @see setBodyParams()
 	 */
-	public function getRestParam($name, $defaultValue = null)
+	public function getBodyParam($name, $defaultValue = null)
 	{
-		$params = $this->getRestParams();
+		$params = $this->getBodyParams();
 		return isset($params[$name]) ? $params[$name] : $defaultValue;
+	}
+
+	private $_queryParams;
+
+	/**
+	 * Returns the request parameters given in the [[queryString]].
+	 *
+	 * This method will return the contents of `$_GET` if params where not explicitly set.
+	 * @return array the request GET parameter values.
+	 * @see setQueryParams()
+	 */
+	public function getQueryParams()
+	{
+		if ($this->_queryParams === null) {
+			return $_GET;
+		}
+		return $this->_queryParams;
+	}
+
+	/**
+	 * Sets the request [[queryString]] parameters.
+	 * @param array $values the request query parameters (name-value pairs)
+	 * @see getQueryParam()
+	 * @see getQueryParams()
+	 */
+	public function setQueryParams($values)
+	{
+		$this->_queryParams = $values;
 	}
 
 	/**
@@ -347,12 +379,10 @@ class Request extends \yii\base\Request
 	 * @return mixed the GET parameter value
 	 * @see getPost()
 	 */
-	public function get($name = null, $defaultValue = null)
+	public function getQueryParam($name, $defaultValue = null)
 	{
-		if ($name === null) {
-			return $_GET;
-		}
-		return isset($_GET[$name]) ? $_GET[$name] : $defaultValue;
+		$params = $this->getQueryParams();
+		return isset($params[$name]) ? $params[$name] : $defaultValue;
 	}
 
 	/**
@@ -364,57 +394,12 @@ class Request extends \yii\base\Request
 	 * @return mixed the POST parameter value
 	 * @see get()
 	 */
-	public function getPost($name = null, $defaultValue = null)
+	public function getPostParam($name = null, $defaultValue = null)
 	{
 		if ($name === null) {
 			return $_POST;
 		}
 		return isset($_POST[$name]) ? $_POST[$name] : $defaultValue;
-	}
-
-	/**
-	 * Returns the named DELETE parameter value.
-	 * @param string $name the DELETE parameter name. If not specified, an array of DELETE parameters is returned.
-	 * @param mixed $defaultValue the default parameter value if the DELETE parameter does not exist.
-	 * @property array the DELETE request parameter values
-	 * @return mixed the DELETE parameter value
-	 */
-	public function getDelete($name = null, $defaultValue = null)
-	{
-		if ($name === null) {
-			return $this->getRestParams();
-		}
-		return $this->getIsDelete() ? $this->getRestParam($name, $defaultValue) : null;
-	}
-
-	/**
-	 * Returns the named PUT parameter value.
-	 * @param string $name the PUT parameter name. If not specified, an array of PUT parameters is returned.
-	 * @param mixed $defaultValue the default parameter value if the PUT parameter does not exist.
-	 * @property array the PUT request parameter values
-	 * @return mixed the PUT parameter value
-	 */
-	public function getPut($name = null, $defaultValue = null)
-	{
-		if ($name === null) {
-			return $this->getRestParams();
-		}
-		return $this->getIsPut() ? $this->getRestParam($name, $defaultValue) : null;
-	}
-
-	/**
-	 * Returns the named PATCH parameter value.
-	 * @param string $name the PATCH parameter name. If not specified, an array of PATCH parameters is returned.
-	 * @param mixed $defaultValue the default parameter value if the PATCH parameter does not exist.
-	 * @property array the PATCH request parameter values
-	 * @return mixed the PATCH parameter value
-	 */
-	public function getPatch($name = null, $defaultValue = null)
-	{
-		if ($name === null) {
-			return $this->getRestParams();
-		}
-		return $this->getIsPatch() ? $this->getRestParam($name, $defaultValue) : null;
 	}
 
 	private $_hostInfo;
@@ -1151,24 +1136,12 @@ class Request extends \yii\base\Request
 	public function validateCsrfToken()
 	{
 		$method = $this->getMethod();
-		if (!$this->enableCsrfValidation || !in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'], true)) {
+		// only validate CSRF token on "safe" methods http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.1.1
+		if (!$this->enableCsrfValidation || in_array($method, ['GET', 'HEAD', 'OPTIONS'], true)) {
 			return true;
 		}
 		$trueToken = $this->getCookies()->getValue($this->csrfVar);
-		switch ($method) {
-			case 'PUT':
-				$token = $this->getPut($this->csrfVar);
-				break;
-			case 'PATCH':
-				$token = $this->getPatch($this->csrfVar);
-				break;
-			case 'DELETE':
-				$token = $this->getDelete($this->csrfVar);
-				break;
-			default:
-				$token = $this->getPost($this->csrfVar);
-				break;
-		}
+		$token = $this->getBodyParam($this->csrfVar);
 		return $this->validateCsrfTokenInternal($token, $trueToken)
 			|| $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
 	}

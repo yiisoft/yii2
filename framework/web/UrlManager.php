@@ -217,7 +217,7 @@ class UrlManager extends Component
 			return [$pathInfo, []];
 		} else {
 			Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
-			$route = $request->get($this->routeVar);
+			$route = $request->getQueryParam($this->routeVar, '');
 			if (is_array($route)) {
 				$route = '';
 			}
