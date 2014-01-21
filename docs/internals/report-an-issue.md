@@ -1,14 +1,17 @@
-Creating issues
+Report an Issue
 ===============
 
-You got into rough corner while working with yii, or you found a bug? We are very sorry for that, but we can sort that
-out together.
+Please follow the guidelines below when creating an issue so that your issue can be more promptly resolved:
 
-- If you are unsure about a function, you may ask on IRC or the forums. If the documentation is unclear, open a separate
-  issue.
-- Please use English if possible.
-- Make sure it is clear what is the problem and how to reproduce it.
+* Provide information including: the version of PHP and Yii, the type of operating system and Web server, browser type and version;
+* Provide the **complete** error call stack if available. A screenshot to explain the issue is very welcome.
+* Describe the steps for reproducing the issue. It would be even better if you could provide code to reproduce the issue.
 
-If you are going to report security issue please **do not** use the issue tracker and instead
-[contact us directly](http://www.yiiframework.com/security/).
+**Do not report an issue if**
 
+* you are asking how to use some Yii feature. You should use [the forum](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/) or [chat room](http://www.yiiframework.com/chat/) for this purpose.
+* your issue is about security. Please [contact us directly](http://www.yiiframework.com/security/) to report security issues.
+
+**Avoid duplicated issues**
+
+Before you report an issue, please search through [existing issues](https://github.com/yiisoft/yii2/issues) to see if your issue is already reported or fixed to make sure you are not reporting a duplicated issue. Also make sure you have the latest version of Yii and see if the issue still exists.
