@@ -103,15 +103,11 @@ class RenderController extends Controller
 	 */
 	protected function findRenderer()
 	{
-		$file = Yii::getAlias('@yii/apidoc/templates/' . $this->template . '/Renderer.php');
-		$reflection = new FileReflector($file, true);
-		$reflection->process();
-		$classes = $reflection->getClasses();
-		if (empty($classes)) {
+		$rendererClass = 'yii\\apidoc\\templates\\' . $this->template . '\\Renderer';
+		if (!class_exists($rendererClass)) {
 			$this->stderr('Renderer not found.' . PHP_EOL);
+			exit(0);
 		}
-		$rendererClass = reset($classes)->getName();
-		require($file);
 		return new $rendererClass();
 	}
 
