@@ -17,8 +17,8 @@ use yii\web\IdentityInterface;
  * @property string $auth_key
  * @property integer $role
  * @property integer $status
- * @property integer $create_time
- * @property integer $update_time
+ * @property integer $created_at
+ * @property integer $updated_at
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -38,8 +38,8 @@ class User extends ActiveRecord implements IdentityInterface
 			'timestamp' => [
 				'class' => 'yii\behaviors\AutoTimestamp',
 				'attributes' => [
-					ActiveRecord::EVENT_BEFORE_INSERT => ['create_time', 'update_time'],
-					ActiveRecord::EVENT_BEFORE_UPDATE => 'update_time',
+					ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+					ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
 				],
 			],
 		];

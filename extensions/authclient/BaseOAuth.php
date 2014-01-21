@@ -173,10 +173,10 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 		$curlOptions = $this->mergeCurlOptions(
 			$this->defaultCurlOptions(),
 			$this->getCurlOptions(),
-			array(
+			[
 				CURLOPT_RETURNTRANSFER => true,
 				CURLOPT_URL => $url,
-			),
+			],
 			$this->composeRequestCurlOptions(strtoupper($method), $url, $params)
 		);
 		$curlResource = curl_init();
@@ -217,7 +217,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 		while (!empty($args)) {
 			$next = array_shift($args);
 			foreach ($next as $k => $v) {
-				$res[$k]=$v;
+				$res[$k] = $v;
 			}
 		}
 		return $res;

@@ -57,15 +57,26 @@ class SiteController extends Controller
 		return [
 			'access' => [
 				'class' => \yii\web\AccessControl::className(),
-				'only' => ['special'],
+				'only' => ['special-callback'],
 				'rules' => [
 					[
-						'actions' => ['special'],
+						'actions' => ['special-callback'],
 						'allow' => true,
 						'matchCallback' => function ($rule, $action) {
 							return date('d-m') === '31-10';
 						}
 					],
+```
+
+And the action:
+
+```php
+	// ...
+	// Match callback called! This page can be accessed only each October 31st
+	public function actionSpecialCallback()
+	{
+		return $this->render('happy-halloween');
+	}
 ```
 
 Sometimes you want a custom action to be taken when access is denied. In this case you can specify `denyCallback`.

@@ -6,7 +6,7 @@ class Order extends ActiveRecord
 {
 	public function attributes()
 	{
-		return ['id', 'customer_id', 'create_time', 'total'];
+		return ['id', 'customer_id', 'created_at', 'total'];
 	}
 
 	public function getCustomer()
@@ -53,7 +53,7 @@ class Order extends ActiveRecord
 	public function beforeSave($insert)
 	{
 		if (parent::beforeSave($insert)) {
-			$this->create_time = time();
+			$this->created_at = time();
 			return true;
 		} else {
 			return false;

@@ -25,10 +25,6 @@ return [
 			],
 		],
 		'db' => $db,
-		'fixture' => [
-			'class' => 'yii\test\DbFixtureManager',
-			'basePath' => '@tests/unit/fixtures',
-		],
 	],
 	'params' => $params,
 ];

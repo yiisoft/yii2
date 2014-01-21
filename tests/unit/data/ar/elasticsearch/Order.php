@@ -8,7 +8,7 @@ use yii\elasticsearch\Command;
  *
  * @property integer $id
  * @property integer $customer_id
- * @property integer $create_time
+ * @property integer $created_at
  * @property string $total
  */
 class Order extends ActiveRecord
@@ -20,7 +20,7 @@ class Order extends ActiveRecord
 
 	public function attributes()
 	{
-		return ['id', 'customer_id', 'create_time', 'total'];
+		return ['id', 'customer_id', 'created_at', 'total'];
 	}
 
 	public function getCustomer()
@@ -65,7 +65,7 @@ class Order extends ActiveRecord
 	public function beforeSave($insert)
 	{
 		if (parent::beforeSave($insert)) {
-//			$this->create_time = time();
+//			$this->created_at = time();
 			return true;
 		} else {
 			return false;
@@ -84,7 +84,7 @@ class Order extends ActiveRecord
 				"_id" => ["path" => "id", "index" => "not_analyzed", "store" => "yes"],
 				"properties" => [
 					"customer_id" => ["type" => "integer"],
-//					"create_time" => ["type" => "string", "index" => "not_analyzed"],
+//					"created_at" => ["type" => "string", "index" => "not_analyzed"],
 					"total" => ["type" => "integer"],
 				]
 			]

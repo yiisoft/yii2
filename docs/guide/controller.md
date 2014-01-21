@@ -8,7 +8,7 @@ Most often a controller takes HTTP request data and returns HTML, JSON or XML as
 Basics
 ------
 
-Controller resides in application's `controllers` directory is is named like `SiteController.php` where `Site`
+Controller resides in application's `controllers` directory is named like `SiteController.php` where `Site`
 part could be anything describing a set of actions it contains.
 
 The basic web controller is a class that extends [[\yii\web\Controller]] and could be very simple:
@@ -200,7 +200,7 @@ The following code is too simple to implement as a separate action but gives an 
 can be used in your controller as following:
 
 ```php
-public SiteController extends \yii\web\Controller
+class SiteController extends \yii\web\Controller
 {
 	public function actions()
 	{

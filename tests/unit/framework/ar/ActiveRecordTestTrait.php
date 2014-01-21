@@ -502,7 +502,7 @@ trait ActiveRecordTestTrait
 
 		/*
 		Item (name, category_id)
-		Order (customer_id, create_time, total)
+		Order (customer_id, created_at, total)
 		OrderItem (order_id, item_id, quantity, subtotal)
 
 		Result should be the following:
@@ -530,7 +530,7 @@ trait ActiveRecordTestTrait
 		- itemsInOrder:
 			Item 3: 'Ice Age', 2
 		 */
-		$orders = $this->callOrderFind()->with('itemsInOrder1')->orderBy('create_time')->all();
+		$orders = $this->callOrderFind()->with('itemsInOrder1')->orderBy('created_at')->all();
 		$this->assertEquals(3, count($orders));
 
 		$order = $orders[0];
@@ -558,7 +558,7 @@ trait ActiveRecordTestTrait
 	// different order in via table
 	public function testFindEagerViaRelationPreserveOrderB()
 	{
-		$orders = $this->callOrderFind()->with('itemsInOrder2')->orderBy('create_time')->all();
+		$orders = $this->callOrderFind()->with('itemsInOrder2')->orderBy('created_at')->all();
 		$this->assertEquals(3, count($orders));
 
 		$order = $orders[0];

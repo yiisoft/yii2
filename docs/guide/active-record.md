@@ -202,12 +202,14 @@ class Customer extends \yii\db\ActiveRecord
 {
 	public function getOrders()
 	{
+		// Customer has_many Order via Order.customer_id -> id
 		return $this->hasMany(Order::className(), ['customer_id' => 'id']);
 	}
 }
 
 class Order extends \yii\db\ActiveRecord
 {
+	// Order has_one Customer via Customer.id -> customer_id
 	public function getCustomer()
 	{
 		return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
@@ -413,7 +415,7 @@ and you may also join with sub-relations. For example,
 $orders = Order::find()->innerJoinWith([
 	'books',
 	'customer' => function ($query) {
-		$query->where('tbl_customer.create_time > ' . (time() - 24 * 3600));
+		$query->where('tbl_customer.created_at > ' . (time() - 24 * 3600));
 	}
 ])->all();
 // join with sub-relations: join with books and books' authors
