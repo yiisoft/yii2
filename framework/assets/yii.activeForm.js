@@ -38,6 +38,18 @@
 		// a callback that is called before submitting the form. The signature of the callback should be:
 		// function ($form) { ...return false to cancel submission...}
 		beforeSubmit: undefined,
+		// a callback that is called after submitting the form. The signature of the callback should be:
+		// function ($form, data, status, xhr) { ... }
+		afterSubmit: null,
+		// a callback that is called after sucessfully submitting the form. The signature of the callback should be:
+		// function ($form, data, status, xhr) { ... }
+		afterSuccessfulSubmit: null,
+		// a callback that is called after unsucessfully submitting the form. The signature of the callback should be:
+		// function ($form, data, status, xhr) { ... }
+		afterUnsuccessfulSubmit: null,
+		// a callback that is called immediately after submitting the form (without waiting for callback). The signature of the callback should be:
+		// function ($form) { ... }
+		immediatelyAfterSubmit: null,
 		// a callback that is called before validating each attribute. The signature of the callback should be:
 		// function ($form, attribute, messages) { ...return false to cancel the validation...}
 		beforeValidate: undefined,
@@ -45,7 +57,11 @@
 		// function ($form, attribute, messages)
 		afterValidate: undefined,
 		// the GET parameter name indicating an AJAX-based validation
-		ajaxVar: 'ajax'
+		ajaxVar: 'ajax',
+		// wether to perform submit action with ajax
+		withAjaxSubmit: false,
+		// additional data for ajax request (withAjaxSubmit should be true)
+		ajaxData: {}
 	};
 
 	var attributeDefaults = {
@@ -154,6 +170,32 @@
 						data.validated = true;
 						var $button = data.submitObject || $form.find(':submit:first');
 						// TODO: if the submission is caused by "change" event, it will not work
+						if (data.settings.withAjaxSubmit) {
+							$form.ajaxSubmit({
+								success: function(ajaxdata, status, xhr) {
+									if (data.settings.afterSuccessfulSubmit) {
+										data.settings.afterSuccessfulSubmit($form)
+									}
+									if (data.settings.afterSubmit) {
+										data.settings.afterSubmit($form, ajaxdata, status, xhr)
+									}
+								},
+								error: function(ajaxdata, status, xhr) {
+									if (data.settings.afterUnsuccessfulSubmit) {
+										data.settings.afterUnsuccessfulSubmit($form, ajaxdata, status, xhr)
+									}
+									if (data.settings.afterSubmit) {
+										data.settings.afterSubmit($form, ajaxdata, status, xhr)
+									}
+								},
+								data: data.settings.ajaxData
+							});
+							if (data.settings.immediatelyAfterSubmit) {
+								data.settings.immediatelyAfterSubmit($form)
+							}
+							data.validated = false;
+							return false;
+						} else
 						if ($button.length) {
 							$button.click();
 						} else {
