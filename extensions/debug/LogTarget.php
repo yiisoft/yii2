@@ -8,6 +8,7 @@
 namespace yii\debug;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\log\Target;
 
 /**
@@ -45,15 +46,10 @@ class LogTarget extends Target
 		if (!is_dir($path)) {
 			mkdir($path);
 		}
-		$indexFile = "$path/index.data";
-		if (!is_file($indexFile)) {
-			$manifest = [];
-		} else {
-			$manifest = unserialize(file_get_contents($indexFile));
-		}
+
 		$request = Yii::$app->getRequest();
 		$response = Yii::$app->getResponse();
-		$manifest[$this->tag] = $summary = [
+		$summary = [
 			'tag' => $this->tag,
 			'url' => $request->getAbsoluteUrl(),
 			'ajax' => $request->getIsAjax(),
@@ -63,7 +59,6 @@ class LogTarget extends Target
 			'statusCode' => $response->statusCode,
 			'sqlCount' => $this->getSqlTotalCount(),
 		];
-		$this->gc($manifest);
 
 		$dataFile = "$path/{$this->tag}.data";
 		$data = [];
@@ -72,7 +67,38 @@ class LogTarget extends Target
 		}
 		$data['summary'] = $summary;
 		file_put_contents($dataFile, serialize($data));
-		file_put_contents($indexFile, serialize($manifest));
+
+		$indexFile = "$path/index.data";
+		$this->updateIndexFile($indexFile, $summary);
+	}
+
+	private function updateIndexFile($indexFile, $summary)
+	{
+		touch($indexFile);
+		if (($fp = @fopen($indexFile, 'r+')) === false) {
+			throw new InvalidConfigException("Unable to open debug data index file: $indexFile");
+		}
+		@flock($fp, LOCK_EX);
+		$manifest = '';
+		while (($buffer = fgets($fp)) !== false) {
+			$manifest .= $buffer;
+		}
+		if (!feof($fp) || empty($manifest)) {
+			// error while reading index data, ignore and create new
+			$manifest = [];
+		} else {
+			$manifest = unserialize($manifest);
+		}
+
+		$manifest[$this->tag] = $summary;
+		$this->gc($manifest);
+
+		ftruncate($fp, 0);
+		rewind($fp);
+		fwrite($fp, serialize($manifest));
+
+		@flock($fp, LOCK_UN);
+		@fclose($fp);
 	}
 
 	/**
