@@ -100,16 +100,13 @@ class ActiveFixture extends BaseActiveFixture
 	 */
 	protected function getData()
 	{
-		if ($this->dataFile === false) {
-			return [];
-		}
-		if ($this->dataFile !== null) {
-			$dataFile = Yii::getAlias($this->dataFile);
-		} else {
+		if ($this->dataFile === null) {
 			$class = new \ReflectionClass($this);
 			$dataFile = dirname($class->getFileName()) . '/data/' . $this->getTableSchema()->fullName . '.php';
+			return is_file($dataFile) ? require($dataFile) : [];
+		} else {
+			return parent::getData();
 		}
-		return is_file($dataFile) ? require($dataFile) : [];
 	}
 
 	/**
