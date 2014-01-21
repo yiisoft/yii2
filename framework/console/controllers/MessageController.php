@@ -9,15 +9,19 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\FileHelper;
 
 /**
  * This command extracts messages to be translated from source files.
- * The extracted messages are saved either as PHP message source files
- * or ".po" files under the specified directory or to a database. Format 
- * depends on `format` setting in config file.
+ * The extracted messages can be saved the following depending on `format`
+ * setting in config file:
+ *
+ * - PHP message source files.
+ * - ".po" files.
+ * - Database.
  *
  * Usage:
  * 1. Create a configuration file using the 'message/config' command:
@@ -125,13 +129,12 @@ class MessageController extends Controller
 					$this->generateMessageFile($msgs, $file, $config['overwrite'], $config['removeUnused'], $config['sort'], $config['format']);
 				}
 			}
-		}
-		if ($config['format'] === 'db') {
+		} elseif ($config['format'] === 'db') {
 			$dbConnection = \Yii::$app->getComponent(isset($config['connectionID']) ? $config['connectionID'] : 'db');
 			if (!$dbConnection instanceof \yii\db\Connection) {
-				$this->usageError('The "connectionID" must refer to a valid database application component.');
+				throw new Exception('The "connectionID" must refer to a valid database application component.');
 			}
-			$sourceMessageTable = !isset($config['sourceMessageTable']) ? 'SourceMessage' : $config['sourceMessageTable'];
+			$sourceMessageTable = isset($config['sourceMessageTable']) ? $config['sourceMessageTable'] : 'SourceMessage';
 			$res = [];
 			foreach ($config['languages'] as $language) {
 				foreach ($messages as $category => $msgs) {
@@ -148,11 +151,13 @@ class MessageController extends Controller
 	}
 
 	/**
-	* @param $messages
-	* @param \yii\db\Connection $dbConnection
-	* @param $sourceMessageTable
-	* @param $removeUnused
-	*/
+	 * Saves messages to database
+	 *
+	 * @param array $messages
+	 * @param \yii\db\Connection $dbConnection
+	 * @param string $sourceMessageTable
+	 * @param boolean $removeUnused
+	 */
 	protected function saveMessagesToDb($messages, $dbConnection, $sourceMessageTable, $removeUnused)
 	{
 		$q = new \yii\db\Query;
@@ -163,36 +168,36 @@ class MessageController extends Controller
 		}
 
 		$new = [];
-		$obsoleted = [];
+		$obsolete = [];
 
 		foreach ($messages as $category => $msgs) {
 			$msgs = array_unique($msgs);
 
 			if (isset($current[$category])) {
 				$new[$category] = array_diff($msgs, $current[$category]);
-				$obsoleted = array_diff($current[$category], $msgs);
+				$obsolete = array_diff($current[$category], $msgs);
 			} else {
 				$new[$category] = $msgs;
 			}
 		}
 
 		foreach (array_diff(array_keys($current), array_keys($messages)) as $category) {
-			$obsoleted += $current[$category];
+			$obsolete += $current[$category];
 		}
 
 		if (!$removeUnused) {
-			foreach ($obsoleted as $pk => $m) {
+			foreach ($obsolete as $pk => $m) {
 				if (mb_substr($m, 0, 2) === '@@' && mb_substr($m, -2) === '@@') {
-					unset($obsoleted[$pk]);
+					unset($obsolete[$pk]);
 				}
 			}
 		}
 
-		$obsoleted = array_keys($obsoleted);
+		$obsolete = array_keys($obsolete);
 		echo "Inserting new messages...";
 		$savedFlag = false;
 
-		foreach ($new as $category => $msgs) {
+		foreach ($new  as $category => $msgs) {
 			foreach ($msgs as $m) {
 				$savedFlag = true;
 
@@ -204,19 +209,19 @@ class MessageController extends Controller
 		echo $savedFlag ? "saved.\n" : "nothing new...skipped.\n";
 		echo $removeUnused ? "Deleting obsoleted messages..." : "Updating obsoleted messages...";
 
-		if (empty($obsoleted)) {
+		if (empty($obsolete)) {
 			echo "nothing obsoleted...skipped.\n";
 		} else {
 			if ($removeUnused) {
 				$dbConnection->createCommand()
-					->delete($sourceMessageTable, ['in', 'id', $obsoleted])->execute();
+					->delete($sourceMessageTable, ['in', 'id', $obsolete])->execute();
 			echo "deleted.\n";
 			} else {
 				$dbConnection->createCommand()
 					->update(
 						$sourceMessageTable,
 						['message' => new \yii\db\Expression("CONCAT('@@',message,'@@')")],
-						['in', 'id', $obsoleted]
+						['in', 'id', $obsolete]
 					)->execute();
 				echo "updated.\n";
 			}

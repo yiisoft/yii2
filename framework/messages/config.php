@@ -42,6 +42,8 @@ return [
 		'.hgkeep',
 		'/messages',
 	],
-	// Generated file format. Can be either "db", "php" or "po".
+	// Generated file format. Can be either "php", "po" or "db".
 	'format' => 'php',
+	// Connection component ID for "db".
+	//'connectionID' => 'db',
 ];
