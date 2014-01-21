@@ -1136,7 +1136,7 @@ class Request extends \yii\base\Request
 	public function validateCsrfToken()
 	{
 		$method = $this->getMethod();
-		// only validate CSRF token on "safe" methods http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.1.1
+		// only validate CSRF token on non-"safe" methods http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.1.1
 		if (!$this->enableCsrfValidation || in_array($method, ['GET', 'HEAD', 'OPTIONS'], true)) {
 			return true;
 		}
