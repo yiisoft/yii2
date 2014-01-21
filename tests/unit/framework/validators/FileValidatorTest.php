@@ -239,7 +239,6 @@ class FileValidatorTest extends TestCase
 		$val->validateAttribute($m, 'attr_err_part');
 		$this->assertTrue($m->hasErrors('attr_err_part'));
 		$this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_part')));
-		$log = Yii::$app->getLog()->toArray();
 	}
 
 	public function testValidateAttributeErrCantWrite()
@@ -249,7 +248,6 @@ class FileValidatorTest extends TestCase
 		$val->validateAttribute($m, 'attr_err_write');
 		$this->assertTrue($m->hasErrors('attr_err_write'));
 		$this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_write')));
-		$log = Yii::$app->getLog()->toArray();
 	}
 
 	public function testValidateAttributeErrExtension()
@@ -259,7 +257,6 @@ class FileValidatorTest extends TestCase
 		$val->validateAttribute($m, 'attr_err_ext');
 		$this->assertTrue($m->hasErrors('attr_err_ext'));
 		$this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_ext')));
-		$log = Yii::$app->getLog()->toArray();
 	}
 
 	public function testValidateAttributeErrNoTmpDir()
@@ -269,6 +266,5 @@ class FileValidatorTest extends TestCase
 		$val->validateAttribute($m, 'attr_err_tmp');
 		$this->assertTrue($m->hasErrors('attr_err_tmp'));
 		$this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_tmp')));
-		$log = Yii::$app->getLog()->toArray();
 	}
 }
