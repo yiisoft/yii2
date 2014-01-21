@@ -80,7 +80,7 @@ class AssetController extends Controller
 	 * Default value relies on usage of "YUI Compressor"
 	 * @see https://github.com/yui/yuicompressor/
 	 */
-	public $cssCompressor = 'java -jar yuicompressor.jar {from} -o {to}';
+	public $cssCompressor = 'java -jar yuicompressor.jar -o --type css {from} {to}';
 
 	/**
 	 * @var array|\yii\web\AssetManager [[yii\web\AssetManager]] instance or its array configuration, which will be used
