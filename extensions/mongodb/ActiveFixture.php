@@ -17,13 +17,6 @@ class ActiveFixture extends \yii\test\BaseActiveFixture
 	 * @see [[yii\mongodb\Connection::getCollection()]]
 	 */
 	public $collectionName;
-	/**
-	 * @var string the file path or path alias of the data file that contains the fixture data
-	 * and will be loaded by [[loadData()]]. If this is not set, it will default to `FixturePath/data/TableName.php`,
-	 * where `FixturePath` stands for the directory containing this fixture class, and `TableName` stands for the
-	 * name of the table associated with this fixture.
-	 */
-	public $dataFile;
 
 	
 	/**
