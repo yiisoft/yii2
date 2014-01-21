@@ -36,6 +36,15 @@ In order to use both Yii1 and Yii2 you need to resolve this collision.
 To do so you need to define your own 'Yii' class, which will combine content of 'Yii' from 1.x
 and 'Yii' from 2.x.
 
+When using composer you add the following to your composer.json in order to add both versions of yii to your project:
+
+```json
+"require": {
+        "yiisoft/yii": "*",
+        "yiisoft/yii2": "*",
+    },
+```
+
 Start from defining your own descendant of [[\yii\BaseYii]]:
 
 ```php

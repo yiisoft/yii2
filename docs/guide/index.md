@@ -48,6 +48,7 @@ Extensions and 3rd party libraries
 - [Composer](composer.md) - How to manage applications dependencies via composer
 - [Extending Yii](extensions.md)
 - [Template engines](template.md) - Using template engines such as Smarty or Twig
+- [Using Yii together with 3rd-Party Systems](using-3rd-party-libraries.md) - Using Yii in 3rd-Party Systems and using Yii 1 and 2 together
 
 Security and access control
 ===========================
