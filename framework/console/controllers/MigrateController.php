@@ -592,7 +592,8 @@ class MigrateController extends Controller
 	 */
 	protected function createMigrationHistoryTable()
 	{
-		echo 'Creating migration history table "' . $this->migrationTable . '"...';
+		$tableName = $this->db->schema->getRawTableName($this->migrationTable);
+		echo "Creating migration history table \"$tableName\"...";
 		$this->db->createCommand()->createTable($this->migrationTable, [
 			'version' => 'varchar(180) NOT NULL PRIMARY KEY',
 			'apply_time' => 'integer',
