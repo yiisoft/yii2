@@ -988,7 +988,7 @@ class QueryBuilder extends \yii\base\Object
 			return "$column $operator (" . implode(', ', $values) . ')';
 		} else {
 			$operator = $operator === 'IN' ? '=' : '<>';
-			return "$column$operator{$values[0]}";
+			return $column . $operator . reset($values);
 		}
 	}
 
