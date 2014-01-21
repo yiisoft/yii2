@@ -3,9 +3,9 @@ Report an Issue
 
 Please follow the guidelines below when creating an issue so that your issue can be more promptly resolved:
 
-* Provide information about PHP and Yii version, operating system, browser type and version;
-* Provide **complete** error call stack if possible. A screenshot is very welcome.
-* Describe the steps for reproducing the issue.
+* Provide information including: the version of PHP and Yii, the type of operating system and Web server, browser type and version;
+* Provide the **complete** error call stack if available. A screenshot to explain the issue is very welcome.
+* Describe the steps for reproducing the issue. It would be even better if you could provide code to reproduce the issue.
 
 **Do not report an issue if**
 
