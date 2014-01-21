@@ -44,6 +44,9 @@ class RenderController extends Controller
 		}
 
 		$renderer = $this->findRenderer();
+		if ($renderer === false) {
+			return 1;
+		}
 		$renderer->targetDir = $targetDir;
 
 		$this->stdout('Searching files to process... ');
@@ -106,7 +109,7 @@ class RenderController extends Controller
 		$rendererClass = 'yii\\apidoc\\templates\\' . $this->template . '\\Renderer';
 		if (!class_exists($rendererClass)) {
 			$this->stderr('Renderer not found.' . PHP_EOL);
-			exit(0);
+			return false;
 		}
 		return new $rendererClass();
 	}
