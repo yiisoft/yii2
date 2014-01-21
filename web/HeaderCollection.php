@@ -8,6 +8,7 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\Arrayable;
 use yii\base\Object;
 use ArrayIterator;
 
@@ -21,7 +22,7 @@ use ArrayIterator;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAccess, \Countable
+class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAccess, \Countable, Arrayable
 {
 	/**
 	 * @var array the headers in this collection (indexed by the header names)
