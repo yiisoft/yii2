@@ -118,7 +118,7 @@ in cache and we should regenerate it:
 public function getCachedData()
 {
 	$key = /* generate unique key here */;
-	$value = Yii::$app->getCache()->get($key);
+	$value = Yii::$app->cache->get($key);
 	if ($value === false) {
 		$value = /* regenerate value because it is not found in cache and then save it in cache for later use */;
 		Yii::$app->cache->set($key, $value);

@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.0 beta under development
 ----------------------------
 
+- Bug #1265: AssetController does not override 'js' and 'css' for compressed bundles (klimov-paul)
 - Bug #1326: The `visible` setting for `DetailView` doesn't work as expected (qiangxue)
 - Bug #1446: Logging while logs are processed causes infinite loop (qiangxue)
 - Bug #1497: Localized view files are not correctly returned (mintao)
@@ -34,6 +35,8 @@ Yii Framework 2 Change Log
 - Bug #1992: In module scenario that use 'site/captcha' will get wrong refreshUrl (callmez)
 - Bug #1993: afterFind event in AR is now called after relations have been populated (cebe, creocoder)
 - Bug #1998: Unchecked required checkbox never pass client validation (klevron)
+- Bug #2084: AssetController adjusting CSS URLs declared at same line fixed (klimov-paul)
+- Bug #2091: `QueryBuilder::buildInCondition()` fails to handle array not starting with index 0 (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
@@ -56,6 +59,7 @@ Yii Framework 2 Change Log
 - Enh #1572: Added `yii\web\Controller::createAbsoluteUrl()` (samdark)
 - Enh #1579: throw exception when the given AR relation name does not match in a case sensitive manner (qiangxue)
 - Enh #1581: Added `ActiveQuery::joinWith()` and `ActiveQuery::innerJoinWith()` to support joining with relations (qiangxue)
+- Enh #1585: added schema parameter to createAbsoluteUrl() to force 'http' or 'https' (cebe)
 - Enh #1601: Added support for tagName and encodeLabel parameters in ButtonDropdown (omnilight)
 - Enh #1611: Added `BaseActiveRecord::markAttributeDirty()` (qiangxue)
 - Enh #1633: Advanced application template now works with MongoDB by default (samdark)

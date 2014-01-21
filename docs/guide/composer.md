@@ -24,7 +24,7 @@ Adding more packages to your project
 The act of [installing a Yii application](installation.md) creates the `composer.json` file in the root directory of your project.
 In this file you list the packages that your application requires. For Yii sites, the most important part of the file is the `require` section:
 
-```
+```json
 {
     "require": {
         "Michelf/php-markdown": ">=1.3",
@@ -61,6 +61,25 @@ Again, you may need to provide specific path references.
 
 In both cases, after some waiting, the required packages will be installed and ready to use in your Yii application.
 No additional configuration of those packages will be required.
+
+
+Using a specifc version of a package
+------------------------------------
+
+Yii always comes with the latest version of a required library that it is compatible with but allows you to use an
+older version if you need to.
+A good example for this is jQuery which has [dropped old IE browser support](http://jquery.com/browser-support/) in version 2.x.
+When installing Yii via composer the installed jQuery version will be the latest 2.x release. When you want to use jQuery 1.10
+because of IE browser support you can adjust your composer.json by requiring a specific version of jQuery like this:
+
+```json
+{
+    "require": {
+        ...
+        "yiisoft/jquery": "1.10.*"
+    }
+}
+```
 
 
 FAQ

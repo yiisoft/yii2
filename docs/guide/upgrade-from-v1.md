@@ -523,3 +523,8 @@ up to date updating it semi-automatically and manages autoloading for third part
 these are using.
 
 In order to learn more refer to [composer](composer.md) and [installation](installation.md) sections of the guide.
+
+Using Yii 1.1 and 2.x together
+------------------------------
+
+Check the guide on [using Yii together with 3rd-Party Systems](using-3rd-party-libraries.md) on this topic.

@@ -210,7 +210,7 @@ assets file like the following:
 'components' => [
 	// ...
 	'assetManager' => [
-		'bundles' => require /path/to/myapp/config/assets_compressed.php,
+		'bundles' => require '/path/to/myapp/config/assets_compressed.php',
 	],
 ],
 ```
