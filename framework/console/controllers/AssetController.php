@@ -558,7 +558,7 @@ EOD;
 			return str_replace($inputUrl, $outputUrl, $fullMatch);
 		};
 
-		$cssContent = preg_replace_callback('/url\(["\']?([^"]*)["\']?\)/is', $callback, $cssContent);
+		$cssContent = preg_replace_callback('/url\(["\']?([^)^"^\']*)["\']?\)/is', $callback, $cssContent);
 
 		return $cssContent;
 	}
