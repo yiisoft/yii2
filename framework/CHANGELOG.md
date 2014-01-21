@@ -96,6 +96,9 @@ Yii Framework 2 Change Log
 - Chg #1821: Changed default values for yii\db\Connection username and password to null (cebe)
 - Chg #1844: `Response::sendFile()` and other file sending methods will not send the response (qiangxue)
 - Chg #1852: DbConnection::tablePrefix default value now 'tbl_' (creocoder)
+- Chg #2043: Renamed `yii\web\Request::acceptedLanguages` to `acceptableLanguages` (qiangxue)
+- Chg #2043: Removed `yii\web\Request::getPut()`, `getDelete()`, `getPatch()` in favor of `getBodyParam()` (cebe)
+- Chg #2043: Renamed `yii\web\Request::get()` to `getQueryParams()` and `getRestParams()` to `getBodyParams()` (cebe)
 - Chg #2057: AutoTimestamp attributes defaults changed from `create_time` and `update_time` to `created_at` and `updated_at` (creocoder)
 - Chg #2063: Removed `yii\web\Request::acceptTypes` and renamed `yii\web\Request::acceptedContentTypes` to `acceptableContentTypes` (qiangxue)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
@@ -108,7 +111,6 @@ Yii Framework 2 Change Log
 - Chg: Changed the directory structure according to PSR-4. You have to update your application `index.php`,
        `index-test.php` and `yii` files to point to the new location of `Yii.php` (qiangxue, cebe)
 - Chg: Advanced app template: moved database connection DSN, login and password to `-local` config not to expose it to VCS (samdark)
-- Chg: Renamed `yii\web\Request::acceptedLanguages` to `acceptableLanguages` (qiangxue)
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
