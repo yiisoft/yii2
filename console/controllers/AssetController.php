@@ -381,9 +381,11 @@ class AssetController extends Controller
 	{
 		$array = [];
 		foreach ($targets as $name => $target) {
-			foreach (['js', 'css', 'depends', 'basePath', 'baseUrl'] as $prop) {
+			foreach (['basePath', 'baseUrl', 'js', 'css', 'depends'] as $prop) {
 				if (!empty($target->$prop)) {
 					$array[$name][$prop] = $target->$prop;
+				} elseif (in_array($prop, ['js', 'css'])) {
+					$array[$name][$prop] = [];
 				}
 			}
 		}
@@ -556,7 +558,7 @@ EOD;
 			return str_replace($inputUrl, $outputUrl, $fullMatch);
 		};
 
-		$cssContent = preg_replace_callback('/url\(["\']?([^"]*)["\']?\)/is', $callback, $cssContent);
+		$cssContent = preg_replace_callback('/url\(["\']?([^)^"^\']*)["\']?\)/is', $callback, $cssContent);
 
 		return $cssContent;
 	}
