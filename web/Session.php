@@ -8,6 +8,7 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\Arrayable;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
@@ -71,7 +72,7 @@ use yii\base\InvalidParamException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Countable
+class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Countable, Arrayable
 {
 	/**
 	 * @var boolean whether the session should be automatically started when the session component is initialized.

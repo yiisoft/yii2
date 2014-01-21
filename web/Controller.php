@@ -167,12 +167,14 @@ class Controller extends \yii\base\Controller
 	 *
 	 * @param string $route the route. This can be either an absolute route or a relative route.
 	 * @param array $params the parameters (name-value pairs) to be included in the generated URL
+	 * @param string $schema the schema to use for the url. e.g. 'http' or 'https'. If not specified
+	 * the schema of the current request will be used.
 	 * @return string the created absolute URL
 	 */
-	public function createAbsoluteUrl($route, $params = [])
+	public function createAbsoluteUrl($route, $params = [], $schema = null)
 	{
 		$route = $this->getNormalizedRoute($route);
-		return Yii::$app->getUrlManager()->createAbsoluteUrl($route, $params);
+		return Yii::$app->getUrlManager()->createAbsoluteUrl($route, $params, $schema);
 	}
 
 	/**
