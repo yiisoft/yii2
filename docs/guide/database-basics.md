@@ -260,7 +260,7 @@ $connection->createCommand()->createTable('tbl_post', [
 	'id' => 'pk',
 	'title' => 'string',
 	'text' => 'text',
-];
+]);
 ```
 
 For the full reference check [[\yii\db\Command]].
