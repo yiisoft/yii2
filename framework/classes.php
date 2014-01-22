@@ -196,7 +196,7 @@ return [
 	'yii\validators\ValidationAsset' => YII_PATH . '/validators/ValidationAsset.php',
 	'yii\validators\Validator' => YII_PATH . '/validators/Validator.php',
 	'yii\web\AccessControl' => YII_PATH . '/web/AccessControl.php',
-	'yii\web\AccessDeniedHttpException' => YII_PATH . '/web/AccessDeniedHttpException.php',
+	'yii\web\ForbiddenHttpException' => YII_PATH . '/web/ForbiddenHttpException.php',
 	'yii\web\AccessRule' => YII_PATH . '/web/AccessRule.php',
 	'yii\web\Application' => YII_PATH . '/web/Application.php',
 	'yii\web\AssetBundle' => YII_PATH . '/web/AssetBundle.php',
