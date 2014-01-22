@@ -1,6 +1,5 @@
 <?php 
 use yii\bootstrap\Tabs;
-use yii\helpers\VarDumper;
 
 /**
  * @var yii\debug\panels\RequestPanel $panel
