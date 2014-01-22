@@ -151,6 +151,10 @@ class Request extends \yii\base\Request
 
 	private $_cookies;
 
+	/**
+	 * @var array the headers in this collection (indexed by the header names)
+	 */
+	private $_headers;
 
 	/**
 	 * Resolves the current request into a route and the associated parameters.
@@ -167,6 +171,37 @@ class Request extends \yii\base\Request
 		} else {
 			throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
 		}
+	}
+
+	/**
+	 * Returns the header collection.
+	 * The header collection contains incoming HTTP headers.
+	 * @return HeaderCollection the header collection
+	 */
+	public function getHeaders()
+	{
+		if ($this->_headers === null) {
+			$this->_headers = new HeaderCollection;
+			$headers = [];
+			if (function_exists('getallheaders')) {
+				$headers = getallheaders();
+			} elseif (function_exists('http_get_request_headers')) {
+				$headers = http_get_request_headers();
+			} else {
+				foreach ($_SERVER as $name => $value) {
+					if (substr($name, 0, 5) == 'HTTP_') {
+						$name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
+						$this->_headers->add($name, $value);
+					}
+				}
+				return $this->_headers;
+			}
+			foreach ($headers as $name => $value) {
+				$this->_headers->add($name, $value);
+			}
+		}
+
+		return $this->_headers;
 	}
 
 	/**
