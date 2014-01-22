@@ -44,6 +44,7 @@ return [
 	],
 	// Generated file format. Can be either "php", "po" or "db".
 	'format' => 'php',
-	// Connection component ID for "db".
-	//'connectionID' => 'db',
+	// When format is "db", you may specify the following two options
+	//'db' => 'db',
+	//'sourceMessageTable' => '{{%source_message}}',
 ];
