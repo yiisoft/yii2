@@ -8,12 +8,12 @@
 namespace yii\web;
 
 /**
- * ForbiddenHttpException represents a "Forbidden" HTTP exception with status code 403.
+ * UnauthorizedHttpException represents an "Unauthorized" HTTP exception with status code 401.
  *
  * @author Dan Schmidt <danschmidt5189@gmail.com>
  * @since 2.0
  */
-class ForbiddenHttpException extends HttpException
+class UnauthorizedHttpException extends HttpException
 {
 	/**
 	 * Constructor.
@@ -23,6 +23,6 @@ class ForbiddenHttpException extends HttpException
 	 */
 	public function __construct($message = null, $code = 0, \Exception $previous = null)
 	{
-		parent::__construct(403, $message, $code, $previous);
+		parent::__construct(401, $message, $code, $previous);
 	}
 }
