@@ -93,6 +93,7 @@ Yii Framework 2 Change Log
 - Enh #1839: Added support for getting file extension and basename from uploaded file (anfrantic)
 - Enh: yii\codeception\TestCase now supports loading and using fixtures via Yii fixture framework (qiangxue)
 - Enh: Added support to parse json request data to Request::getRestParams() (cebe)
+- Enh: Added ability to get incoming headers (dizews)
 - Chg #1519: `yii\web\User::loginRequired()` now returns the `Response` object instead of exiting the application (qiangxue)
 - Chg #1586: `QueryBuilder::buildLikeCondition()` will now escape special characters and use percentage characters by default (qiangxue)
 - Chg #1610: `Html::activeCheckboxList()` and `Html::activeRadioList()` will submit an empty string if no checkbox/radio is selected (qiangxue)
