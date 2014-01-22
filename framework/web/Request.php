@@ -182,11 +182,11 @@ class Request extends \yii\base\Request
 	{
 		if ($this->_headers === null) {
 			$this->_headers = new HeaderCollection;
+			$headers = [];
 			if (function_exists('getallheaders')) {
 				$headers = getallheaders();
-				foreach ($headers as $name => $value) {
-					$this->_headers->add($name, $value);
-				}
+			} elseif (function_exists('http_get_request_headers')) {
+				$headers = http_get_request_headers();
 			} else {
 				foreach ($_SERVER as $name => $value) {
 					if (substr($name, 0, 5) == 'HTTP_') {
@@ -194,8 +194,13 @@ class Request extends \yii\base\Request
 						$this->_headers->add($name, $value);
 					}
 				}
+				return $this->_headers;
+			}
+			foreach ($headers as $name => $value) {
+				$this->_headers->add($name, $value);
 			}
 		}
+
 		return $this->_headers;
 	}
 
