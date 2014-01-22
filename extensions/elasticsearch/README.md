@@ -48,6 +48,13 @@ Using the Query
 
 TBD
 
+> **NOTE:** elasticsearch limits the number of records returned by any query to 10 records by default.
+> If you expect to get more records you should specify limit explicitly in relation definition.
+ * This is also important for relations that use [[via()]] so that if via records are limited to 10
+ * the relations records can also not be more than 10.
+ *
+
+
 Using the ActiveRecord
 ----------------------
 
@@ -112,6 +119,12 @@ It supports the same interface and features except the following limitations and
   See the usage example below on how they work and check out the [Query DSL](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html)
   on how to compose `query` and `filter` parts.
 - It is also possible to define relations from elasticsearch ActiveRecords to normal ActiveRecord classes and vice versa.
+
+> **NOTE:** elasticsearch limits the number of records returned by any query to 10 records by default.
+> If you expect to get more records you should specify limit explicitly in query **and also** relation definition.
+> This is also important for relations that use via() so that if via records are limited to 10
+> the relations records can also not be more than 10.
+
 
 Usage example:
 
