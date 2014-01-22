@@ -22,6 +22,11 @@ use yii\db\ActiveRelationTrait;
  *
  * If a relation involves a pivot table, it may be specified by [[via()]] method.
  *
+ * NOTE: elasticsearch limits the number of records returned by any query to 10 records by default.
+ * If you expect to get more records you should specify limit explicitly in relation definition.
+ * This is also important for relations that use [[via()]] so that if via records are limited to 10
+ * the relations records can also not be more than 10.
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
