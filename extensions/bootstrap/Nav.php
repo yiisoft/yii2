@@ -202,7 +202,7 @@ class Nav extends Widget
 			unset($item['url']['#']);
 			if (count($item['url']) > 1) {
 				foreach (array_splice($item['url'], 1) as $name => $value) {
-					if (!isset($this->params[$name]) || $this->params[$name] != $value) {
+					if ($value !== null && (!isset($this->params[$name]) || $this->params[$name] != $value)) {
 						return false;
 					}
 				}
