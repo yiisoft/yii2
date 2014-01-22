@@ -36,13 +36,15 @@ class RequestPanel extends Panel
 
 	public function save()
 	{
-		if (function_exists('apache_request_headers')) {
-			$requestHeaders = apache_request_headers();
-		} elseif (function_exists('http_get_request_headers')) {
-			$requestHeaders = http_get_request_headers();
-		} else {
-			$requestHeaders = [];
+		$headers = Yii::$app->getRequest()->getHeaders();
+		foreach ($headers as $name => $value) {
+			if (is_array($value) && count($value) == 1) {
+				$requestHeaders[$name] = current($value);
+			} else {
+				$requestHeaders[$name] = $value;
+			}
 		}
+
 		$responseHeaders = [];
 		foreach (headers_list() as $header) {
 			if (($pos = strpos($header, ':')) !== false) {
