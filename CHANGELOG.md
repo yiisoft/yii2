@@ -102,6 +102,7 @@ Yii Framework 2 Change Log
 - Chg #1821: Changed default values for yii\db\Connection username and password to null (cebe)
 - Chg #1844: `Response::sendFile()` and other file sending methods will not send the response (qiangxue)
 - Chg #1852: DbConnection::tablePrefix default value now 'tbl_' (creocoder)
+- Chg #1958: `beforeSubmit` in `yii.activeform` is now executed after validation and before form submission (6pblcb)
 - Chg #2025: Removed ability to declare scopes in ActiveRecord (samdark)
 - Chg #2057: AutoTimestamp attributes defaults changed from `create_time` and `update_time` to `created_at` and `updated_at` (creocoder)
 - Chg #2063: Removed `yii\web\Request::acceptTypes` and renamed `yii\web\Request::acceptedContentTypes` to `acceptableContentTypes` (qiangxue)
