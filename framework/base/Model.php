@@ -13,6 +13,7 @@ use ArrayObject;
 use ArrayIterator;
 use ReflectionClass;
 use IteratorAggregate;
+use CallbackFilterIterator;
 use yii\helpers\Inflector;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
@@ -383,18 +384,18 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 	 * Returns the validators applicable to the current [[scenario]].
 	 * @param string $attribute the name of the attribute whose applicable validators should be returned.
 	 * If this is null, the validators for ALL attributes in the model will be returned.
-	 * @return \yii\validators\Validator[] the validators applicable to the current [[scenario]].
+	 * @return CallbackFilterIterator|\yii\validators\Validator[] the validators applicable to the current [[scenario]].
 	 */
 	public function getActiveValidators($attribute = null)
 	{
-		$validators = [];
-		$scenario = $this->getScenario();
-		foreach ($this->getValidators() as $validator) {
-			if ($validator->isActive($scenario) && ($attribute === null || in_array($attribute, $validator->attributes, true))) {
-				$validators[] = $validator;
+		return new CallbackFilterIterator(
+			$this->getValidators()->getIterator(),
+			function ($validator) use ($attribute) {
+				/** @var \yii\validators\Validator $validator */
+				return $validator->isActive($this->getScenario())
+					&& ($attribute === null || in_array($attribute, $validator->attributes, true));
 			}
-		}
-		return $validators;
+		);
 	}
 
 	/**
