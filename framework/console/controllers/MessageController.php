@@ -129,20 +129,14 @@ class MessageController extends Controller
 				}
 			}
 		} elseif ($config['format'] === 'db') {
-			$dbConnection = \Yii::$app->getComponent(isset($config['connectionID']) ? $config['connectionID'] : 'db');
-			if (!$dbConnection instanceof \yii\db\Connection) {
-				throw new Exception('The "connectionID" must refer to a valid database application component.');
+			$db = \Yii::$app->getComponent(isset($config['db']) ? $config['db'] : 'db');
+			if (!$db instanceof \yii\db\Connection) {
+				throw new Exception('The "db" option must refer to a valid database application component.');
 			}
-			$sourceMessageTable = isset($config['sourceMessageTable']) ? $config['sourceMessageTable'] : 'SourceMessage';
-			$res = [];
-			foreach ($config['languages'] as $language) {
-				foreach ($messages as $category => $msgs) {
-					$res[$category] = $msgs;
-				}
-			}
+			$sourceMessageTable = isset($config['sourceMessageTable']) ? $config['sourceMessageTable'] : '{{%source_message}}';
 			$this->saveMessagesToDb(
-				$res,
-				$dbConnection,
+				$messages,
+				$db,
 				$sourceMessageTable,
 				$config['removeUnused']
 			);
@@ -153,11 +147,11 @@ class MessageController extends Controller
 	 * Saves messages to database
 	 *
 	 * @param array $messages
-	 * @param \yii\db\Connection $dbConnection
+	 * @param \yii\db\Connection $db
 	 * @param string $sourceMessageTable
 	 * @param boolean $removeUnused
 	 */
-	protected function saveMessagesToDb($messages, $dbConnection, $sourceMessageTable, $removeUnused)
+	protected function saveMessagesToDb($messages, $db, $sourceMessageTable, $removeUnused)
 	{
 		$q = new \yii\db\Query;
 		$current = [];
@@ -200,7 +194,7 @@ class MessageController extends Controller
 			foreach ($msgs as $m) {
 				$savedFlag = true;
 
-				$dbConnection->createCommand()
+				$db->createCommand()
 					->insert($sourceMessageTable, ['category' => $category, 'message' => $m])->execute();
 			}
 		}
@@ -212,11 +206,11 @@ class MessageController extends Controller
 			echo "nothing obsoleted...skipped.\n";
 		} else {
 			if ($removeUnused) {
-				$dbConnection->createCommand()
+				$db->createCommand()
 					->delete($sourceMessageTable, ['in', 'id', $obsolete])->execute();
 			echo "deleted.\n";
 			} else {
-				$dbConnection->createCommand()
+				$db->createCommand()
 					->update(
 						$sourceMessageTable,
 						['message' => new \yii\db\Expression("CONCAT('@@',message,'@@')")],
@@ -324,20 +318,20 @@ class MessageController extends Controller
 				$fileName .= '.merged';
 			}
 			if ($format === 'po'){
-				$out_str = '';
+				$output = '';
 				foreach ($merged as $k => $v){
 					$k = preg_replace('/(\")|(\\\")/', "\\\"", $k);
 					$v = preg_replace('/(\")|(\\\")/', "\\\"", $v);
 					if (substr($v, 0, 2) === '@@' && substr($v, -2) === '@@') {
-						$out_str .= "#msgid \"$k\"\n";
-						$out_str .= "#msgstr \"$v\"\n";
+						$output .= "#msgid \"$k\"\n";
+						$output .= "#msgstr \"$v\"\n";
 					} else {
-						$out_str .= "msgid \"$k\"\n";
-						$out_str .= "msgstr \"$v\"\n";
+						$output .= "msgid \"$k\"\n";
+						$output .= "msgstr \"$v\"\n";
 					}
-					$out_str .= "\n";
+					$output .= "\n";
 				}
-				$merged = $out_str;
+				$merged = $output;
 			}
 			echo "translation merged.\n";
 		} else {
