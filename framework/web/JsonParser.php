@@ -11,7 +11,7 @@ use yii\base\InvalidParamException;
 use yii\helpers\Json;
 
 /**
- * Parses a raw HTTP request using [[yii\helpers\Json::decode()]]
+ * Parses a raw HTTP request using [[\yii\helpers\Json::decode()]]
  *
  * @author Dan Schmidt <danschmidt5189@gmail.com>
  * @since 2.0
