@@ -76,8 +76,8 @@ class PhpMessageSource extends MessageSource
 			} else if (empty($messages)) {
 				return $fallbackMessages;
 			} else if (!empty($fallbackMessages)) {
-				foreach ($messages as $key => $value) {
-					if (empty($value) && !empty($fallbackMessages[$key])) {
+				foreach ($fallbackMessages as $key => $value) {
+					if (!empty($value) && empty($messages[$key])) {
 						$messages[$key] = $fallbackMessages[$key];
 					}
 				}
