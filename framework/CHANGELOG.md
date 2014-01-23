@@ -81,6 +81,10 @@ Yii Framework 2 Change Log
 - Enh #2043: Added support for custom request body parsers (danschmidt5189, cebe)
 - Enh #2051: Do not save null data into database when using RBAC (qiangxue)
 - Enh #2101: Gii is now using model labels when generating search (thiagotalma)
+- Enh #2079:
+	- i18n now falls back to `en` from `en-US` if message translation isn't found (samdark)
+	- View now falls back to `en` from `en-US` if file not found (samdark)
+	- Default `sourceLanguage` and `language` are now `en` (samdark)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
 - Enh: Support for file aliases in console command 'message' (omnilight)
