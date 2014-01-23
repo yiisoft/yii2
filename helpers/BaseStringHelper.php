@@ -85,7 +85,7 @@ class BaseStringHelper
 		if ($pos !== false) {
 			return mb_substr($path, 0, $pos);
 		} else {
-			return $path;
+			return '';
 		}
 	}
 
