@@ -640,7 +640,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function union($sql, $all = false)
 	{
-		$sql->addParams([ 'all' => $all ])
+		$sql->addParams([ 'all' => $all ]);
 		$this->union[] = $sql;
 		return $this;
 	}
