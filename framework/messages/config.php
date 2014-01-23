@@ -7,7 +7,7 @@ return [
 	'messagePath' => __DIR__,
 	// array, required, list of language codes that the extracted messages
 	// should be translated to. For example, ['zh-CN', 'de'].
-	'languages' => ['ar', 'da', 'de', 'es', 'fa-IR', 'fr', 'it', 'ja', 'pl', 'pt-BR', 'pt-PT', 'ro', 'ru', 'sk', 'sr', 'sr-Latn', 'uk', 'zh-CN'],
+	'languages' => ['ar', 'da', 'de', 'el', 'es', 'fa-IR', 'fr', 'it', 'ja', 'pl', 'pt-BR', 'pt-PT', 'ro', 'ru', 'sk', 'sr', 'sr-Latn', 'uk', 'zh-CN'],
 	// string, the name of the function for translating messages.
 	// Defaults to 'Yii::t'. This is used as a mark to find the messages to be
 	// translated. You may use a string for single function name or an array for
@@ -42,6 +42,8 @@ return [
 		'.hgkeep',
 		'/messages',
 	],
-	// Generated file format. Can be either "php" or "po".
+	// Generated file format. Can be either "php", "po" or "db".
 	'format' => 'php',
+	// Connection component ID for "db".
+	//'connectionID' => 'db',
 ];

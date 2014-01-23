@@ -96,7 +96,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 		$this->context = $context;
 		$dir = Yii::getAlias($this->targetDir);
 		if (!is_dir($dir)) {
-			mkdir($dir);
+			mkdir($dir, 0777, true);
 		}
 
 		$types = array_merge($context->classes, $context->interfaces, $context->traits);
@@ -107,6 +107,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 			$fileContent = $this->renderWithLayout($this->typeView, [
 				'type' => $type,
 				'docContext' => $context,
+				'types' => $types,
 			]);
 			file_put_contents($dir . '/' . $this->generateFileName($type->name), $fileContent);
 			Console::updateProgress(++$done, $typeCount);
@@ -166,7 +167,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 				$links[] = Html::a(
 					$type->name,
 					null,
-					['href' => $this->generateFileName($type->name)]
+					['href' => $this->generateUrl($type->name)]
 				) . $postfix;
 			}
 		}
@@ -191,7 +192,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 		if (($type = $this->context->getType($subject->definedBy)) === null) {
 			return $subject->name;
 		} else {
-			$link = $this->generateFileName($type->name);
+			$link = $this->generateUrl($type->name);
 			if ($subject instanceof MethodDoc) {
 				$link .= '#' . $subject->name . '()';
 			} else {
@@ -334,6 +335,11 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 			. ' ' . $this->subjectLink($method, $method->name) . '( '
 			. implode(', ', $params)
 			. ' )';
+	}
+
+	public function generateUrl($typeName)
+	{
+		return $this->generateFileName($typeName);
 	}
 
 	protected function generateFileName($typeName)

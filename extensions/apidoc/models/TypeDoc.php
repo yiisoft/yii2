@@ -154,7 +154,7 @@ class TypeDoc extends BaseDoc
 	{
 		parent::__construct($reflector, $config);
 
-		$this->namespace = StringHelper::basename($this->name);
+		$this->namespace = StringHelper::dirname($this->name);
 
 		if ($reflector === null) {
 			return;

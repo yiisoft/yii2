@@ -76,8 +76,7 @@ There are two ActiveRecord methods for querying data from database:
  - [[ActiveRecord::find()]]
  - [[ActiveRecord::findBySql()]]
 
-Both methods return an [[ActiveQuery]] instance, which extends [[Query]], and thus supports
-the same set of flexible and powerful DB query methods. The following examples demonstrate some of the possibilities.
+Both methods return an [[ActiveQuery]] instance, which extends [[Query]], and thus supports the same set of flexible and powerful DB query methods. The following examples demonstrate some of the possibilities.
 
 ```php
 // to retrieve all *active* customers and order them by their ID:
@@ -119,8 +118,7 @@ Accessing Column Data
 ---------------------
 
 ActiveRecord maps each column of the corresponding database table row to an attribute in the ActiveRecord
-object. The attribute behaves like any regular object public property. The attribute's name will be the same as the corresponding column
-name, and is case-sensitive.
+object. The attribute behaves like any regular object public property. The attribute's name will be the same as the corresponding column name, and is case-sensitive.
 
 To read the value of a column, you can use the following syntax:
 
@@ -151,9 +149,7 @@ ActiveRecord provides the following methods to insert, update and delete data in
 - [[ActiveRecord::updateAllCounters()|updateAllCounters()]]
 - [[ActiveRecord::deleteAll()|deleteAll()]]
 
-Note that [[ActiveRecord::updateAll()|updateAll()]], [[ActiveRecord::updateAllCounters()|updateAllCounters()]]
-and [[ActiveRecord::deleteAll()|deleteAll()]] are static methods that apply to the whole database
-table. The other methods only apply to the row associated with the ActiveRecord object through which the method is being called.
+Note that [[ActiveRecord::updateAll()|updateAll()]], [[ActiveRecord::updateAllCounters()|updateAllCounters()]] and [[ActiveRecord::deleteAll()|deleteAll()]] are static methods that apply to the whole database table. The other methods only apply to the row associated with the ActiveRecord object through which the method is being called.
 
 ```php
 // to insert a new customer record
@@ -477,7 +473,7 @@ of the corresponding JOIN query. For example,
 ```php
 // SELECT tbl_user.* FROM tbl_user LEFT JOIN tbl_item ON tbl_item.owner_id=tbl_user.id AND category_id=1
 // SELECT * FROM tbl_item WHERE owner_id IN (...) AND category_id=1
-$users = User::model()->joinWith('books')->all();
+$users = User::find()->joinWith('books')->all();
 ```
 
 Note that if you use eager loading via [[ActiveQuery::with()]] or lazy loading, the on-condition will be put
@@ -485,7 +481,7 @@ in the WHERE part of the corresponding SQL statement, because there is no JOIN q
 
 ```php
 // SELECT * FROM tbl_user WHERE id=10
-$user = User::model(10);
+$user = User::find(10);
 // SELECT * FROM tbl_item WHERE owner_id=10 AND category_id=1
 $books = $user->books;
 ```
@@ -547,32 +543,60 @@ Finally when calling [[delete()]] to delete an ActiveRecord, we will have the fo
 3. [[afterDelete()]]: will trigger an [[EVENT_AFTER_DELETE]] event
 
 
-Scopes
-------
+Custom scopes
+-------------
 
-A scope is a method that customizes a given [[ActiveQuery]] object. Scope methods are static and are defined
-in the ActiveRecord classes. They can be invoked through the [[ActiveQuery]] object that is created
-via [[find()]] or [[findBySql()]]. The following is an example:
+When [[find()]] or [[findBySql()]] Active Record method is being called without parameters it returns an [[ActiveQuery]]
+instance. This object holds all the parameters and conditions for a future query and also allows you to customize these
+using a set of methods that are called scopes. By default there is a good set of such methods some of which we've
+already used above: `where`, `orderBy`, `limit` etc.
+
+In many cases it is convenient to wrap extra conditions into custom scope methods. In order to do so you need two things.
+First is creating a custom query class for your model. For example, a `Comment` may have a `CommentQuery`:
 
 ```php
-class Comment extends \yii\db\ActiveRecord
-{
-	// ...
+namespace app\models;
 
-	/**
-	 * @param ActiveQuery $query
-	 */
-	public static function active($query)
+use yii\db\ActiveQuery;
+
+class CommentQuery extends ActiveQuery
+{
+	public function active($state = true)
 	{
-		$query->andWhere('status = 1');
+		$this->andWhere(['active' => $state]);
+		return $this;
 	}
 }
-
-$comments = Comment::find()->active()->all();
 ```
 
-In the above, the `active()` method is defined in `Comment` while we are calling it
-through `ActiveQuery` returned by `Comment::find()`.
+Important points are:
+
+1. Class should extend from `yii\db\ActiveQuery` (or another `ActiveQuery` such as `yii\mongodb\ActiveQuery`).
+2. A method should be `public` and should return `$this` in order to allow method chaining. It may accept parameters.
+3. Check `ActiveQuery` methods that are very useful for modifying query conditions.
+
+The second step is to use `CommentQuery` instead of regular `ActiveQuery` for `Comment` model:
+
+```
+namespace app\models;
+
+use yii\db\ActiveRecord;
+
+class Comment extends ActiveRecord
+{
+	public static function createQuery()
+	{
+		return new CommentQuery(['modelClass' => get_called_class()]);
+	}
+}
+```
+
+That's it. Now you can use your custom scope methods:
+
+```php
+$comments = Comment::find()->active()->all();
+$inactiveComments = Comment::find()->active(false)->all();
+```
 
 You can also use scopes when defining relations. For example,
 
@@ -597,29 +621,32 @@ $posts = Post::find()->with([
 ])->all();
 ```
 
-Scopes can be parameterized. For example, we can define and use the following `olderThan` scope:
+### Making it IDE-friendly
+
+In order to make most modern IDE autocomplete happy you need to override return types for some methods of both model
+and query like the following:
 
 ```php
-class Customer extends \yii\db\ActiveRecord
+/**
+ * @method \app\models\CommentQuery|static|null find($q = null) static
+ * @method \app\models\CommentQuery findBySql($sql, $params = []) static
+ */
+class Comment extends ActiveRecord
 {
 	// ...
-
-	/**
-	 * @param ActiveQuery $query
-	 * @param integer $age
-	 */
-	public static function olderThan($query, $age = 30)
-	{
-		$query->andWhere('age > :age', [':age' => $age]);
-	}
 }
-
-$customers = Customer::find()->olderThan(50)->all();
 ```
 
-The parameters should follow after the `$query` parameter when defining the scope method, and they
-can take default values like shown above.
-
+```php
+/**
+ * @method \app\models\Comment|array|null one($db = null)
+ * @method \app\models\Comment[]|array all($db = null)
+ */
+class CommentQuery extends ActiveQuery
+{
+	// ...
+}
+```
 
 Transactional operations
 ------------------------
@@ -632,10 +659,10 @@ TODO: FIXME: WIP, TBD, https://github.com/yiisoft/yii2/issues/226
 ,
 [[afterSave()]], [[beforeDelete()]] and/or [[afterDelete()]] life cycle methods. Developer may come
 to the solution of overriding ActiveRecord [[save()]] method with database transaction wrapping or
-even using transaction in controller action, which is strictly speaking doesn't seems to be a good
-practice (recall skinny-controller fat-model fundamental rule).
+even using transaction in controller action, which is strictly speaking doesn't seem to be a good
+practice (recall "skinny-controller / fat-model" fundamental rule).
 
-Here these ways are (**DO NOT** use them unless you're sure what are you actually doing). Models:
+Here these ways are (**DO NOT** use them unless you're sure what you are actually doing). Models:
 
 ```php
 class Feature extends \yii\db\ActiveRecord

@@ -17,7 +17,7 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Object implements Arrayable
+class Object
 {
 	/**
 	 * @return string the fully qualified name of this class.
@@ -226,15 +226,5 @@ class Object implements Arrayable
 	public function hasMethod($name)
 	{
 		return method_exists($this, $name);
-	}
-
-	/**
-	 * Converts the object into an array.
-	 * The default implementation will return all public property values as an array.
-	 * @return array the array representation of the object
-	 */
-	public function toArray()
-	{
-		return Yii::getObjectVars($this);
 	}
 }

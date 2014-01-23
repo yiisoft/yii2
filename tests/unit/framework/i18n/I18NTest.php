@@ -40,8 +40,18 @@ class I18NTest extends TestCase
 	public function testTranslate()
 	{
 		$msg = 'The dog runs fast.';
-		$this->assertEquals('The dog runs fast.', $this->i18n->translate('test', $msg, [], 'en-US'));
+
+		// source = target. Should be returned as is.
+		$this->assertEquals('The dog runs fast.', $this->i18n->translate('test', $msg, [], 'en'));
+
+		// exact match
 		$this->assertEquals('Der Hund rennt schnell.', $this->i18n->translate('test', $msg, [], 'de-DE'));
+
+		// fallback to just language code with absent exact match
+		$this->assertEquals('Собака бегает быстро.', $this->i18n->translate('test', $msg, [], 'ru-RU'));
+
+		// fallback to just langauge code with present exact match
+		$this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
 	}
 
 	public function testTranslateParams()

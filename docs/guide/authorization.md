@@ -248,7 +248,7 @@ public function editArticle($id)
     throw new NotFoundHttpException;
   }
   if (!\Yii::$app->user->checkAccess('edit_article', ['article' => $article])) {
-    throw new AccessDeniedHttpException;
+    throw new ForbiddenHttpException;
   }
   // ...
 }

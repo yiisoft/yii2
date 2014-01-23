@@ -90,7 +90,7 @@ There are multiple problems with straightforward approach to configuration:
 - Defining all configuration options for each case is very repetitive and takes too much time to maintain.
 
 In order to solve these issues Yii introduces environments concept that is very simple. Each environment is represented
-by a set of files under `environments` directory. `init` command is used to switch between these. What is really does is
+by a set of files under `environments` directory. `init` command is used to switch between these. What it really does is
 just copying everything from environment directory over the root directory where all applications are.
 
 Typically environment contains application bootstrap files such as `index.php` and config files suffixed with

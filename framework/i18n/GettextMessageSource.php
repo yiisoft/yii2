@@ -50,8 +50,9 @@ class GettextMessageSource extends MessageSource
 
 	/**
 	 * Loads the message translation for the specified language and category.
-	 * Child classes should override this method to return the message translations of
-	 * the specified language and category.
+	 * If translation for specific locale code such as `en-US` isn't found it
+	 * tries more generic `en`.
+	 *
 	 * @param string $category the message category
 	 * @param string $language the target language
 	 * @return array the loaded messages. The keys are original messages, and the values
@@ -59,13 +60,59 @@ class GettextMessageSource extends MessageSource
 	 */
 	protected function loadMessages($category, $language)
 	{
+		$messageFile = $this->getMessageFilePath($category, $language);
+		$messages = $this->loadMessagesFromFile($messageFile);
+
+		$fallbackLanguage = substr($language, 0, 2);
+		if ($fallbackLanguage != $language) {
+			$fallbackMessageFile = $this->getMessageFilePath($category, $fallbackLanguage);
+			$fallbackMessages = $this->loadMessagesFromFile($fallbackMessageFile);
+
+			if ($messages === null && $fallbackMessages === null && $fallbackLanguage != $this->sourceLanguage) {
+				Yii::error("The message file for category '$category' does not exist: $messageFile Fallback file does not exist as well: $fallbackMessageFile", __METHOD__);
+			} else if (empty($messages)) {
+				return $fallbackMessages;
+			} else if (!empty($fallbackMessages)) {
+				foreach ($fallbackMessages as $key => $value) {
+					if (!empty($value) && empty($messages[$key])) {
+						$messages[$key] = $fallbackMessages[$key];
+					}
+				}
+			}
+		} else {
+			if ($messages === null) {
+				Yii::error("The message file for category '$category' does not exist: $messageFile", __METHOD__);
+			}
+		}
+		return (array)$messages;
+	}
+
+	/**
+	 * Returns message file path for the specified language and category.
+	 *
+	 * @param string $category the message category
+	 * @param string $language the target language
+	 * @return string path to message file
+	 */
+	protected function getMessageFilePath($category, $language)
+	{
 		$messageFile = Yii::getAlias($this->basePath) . '/' . $language . '/' . $this->catalog;
 		if ($this->useMoFile) {
 			$messageFile .= static::MO_FILE_EXT;
 		} else {
 			$messageFile .= static::PO_FILE_EXT;
 		}
+		return $messageFile;
+	}
 
+	/**
+	 * Loads the message translation for the specified language and category or returns null if file doesn't exist.
+	 *
+	 * @param $messageFile string path to message file
+	 * @return array|null array of messages or null if file not found
+	 */
+	protected function loadMessagesFromFile($messageFile)
+	{
 		if (is_file($messageFile)) {
 			if ($this->useMoFile) {
 				$gettextFile = new GettextMoFile(['useBigEndian' => $this->useBigEndian]);
@@ -78,8 +125,7 @@ class GettextMessageSource extends MessageSource
 			}
 			return $messages;
 		} else {
-			Yii::error("The message file for category '$category' does not exist: $messageFile", __METHOD__);
-			return [];
+			return null;
 		}
 	}
 }

@@ -305,16 +305,22 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function generateSearchLabels()
 	{
+		$model = new $this->modelClass();
+		$attributeLabels = $model->attributeLabels();
 		$labels = [];
 		foreach ($this->getColumnNames() as $name) {
-			if (!strcasecmp($name, 'id')) {
-				$labels[$name] = 'ID';
+			if (isset($attributeLabels[$name])) {
+				$labels[$name] = $attributeLabels[$name];
 			} else {
-				$label = Inflector::camel2words($name);
-				if (strcasecmp(substr($label, -3), ' id') === 0) {
-					$label = substr($label, 0, -3) . ' ID';
+				if (!strcasecmp($name, 'id')) {
+					$labels[$name] = 'ID';
+				} else {
+					$label = Inflector::camel2words($name);
+					if (strcasecmp(substr($label, -3), ' id') === 0) {
+						$label = substr($label, 0, -3) . ' ID';
+					}
+					$labels[$name] = $label;
 				}
-				$labels[$name] = $label;
 			}
 		}
 		return $labels;

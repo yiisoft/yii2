@@ -18,7 +18,7 @@ if ($protected && count($type->getProtectedProperties()) == 0 || !$protected && 
 
 <p><a href="#" class="toggle">Hide inherited properties</a></p>
 
-<table class="summaryTable">
+<table class="summaryTable table table-striped table-bordered table-hover">
 <colgroup>
 	<col class="col-property" />
 	<col class="col-type" />
