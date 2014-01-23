@@ -739,16 +739,23 @@ class QueryBuilder extends \yii\base\Object
 		if (empty($unions)) {
 			return '';
 		}
+		
+		$result = '';
+		
 		foreach ($unions as $i => $union) {
-			if ($union instanceof Query) {
+			$query = $union['query'];
+			if ($query instanceof Query) {
 				// save the original parameters so that we can restore them later to prevent from modifying the query object
-				$originalParams = $union->params;
-				$union->addParams($params);
-				list ($unions[$i], $params) = $this->build($union);
-				$union->params = $originalParams;
+				$originalParams = $query->params;
+				$query->addParams($params);
+				list ($unions[$i]['query'], $params) = $this->build($query);
+				$query->params = $originalParams;
 			}
+			
+			$result .= 'UNION ' . ($union['all'] ? 'ALL ' : '') . '( ' . $unions[$i]['query'] . ' ) ';
 		}
-		return "UNION (\n" . implode("\n) UNION (\n", $unions) . "\n)";
+		
+		return trim($result);
 	}
 
 	/**
