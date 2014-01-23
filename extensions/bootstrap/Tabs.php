@@ -134,7 +134,7 @@ class Tabs extends Widget
 				}
 
 				$header = Html::a($label, "#", ['class' => 'dropdown-toggle', 'data-toggle' => 'dropdown']) . "\n"
-					. Dropdown::widget(['items' => $item['items'], 'clientOptions' => false]);
+					. Dropdown::widget(['items' => $item['items'], 'clientOptions' => false, 'view' => $this->getView()]);
 			} elseif (isset($item['content'])) {
 				$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
 				$options['id'] = ArrayHelper::getValue($options, 'id', $this->options['id'] . '-tab' . $n);
