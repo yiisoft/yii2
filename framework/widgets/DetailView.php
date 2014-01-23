@@ -179,6 +179,7 @@ class DetailView extends Widget
 				$attribute = [
 					'name' => $matches[1],
 					'format' => isset($matches[3]) ? $matches[3] : 'text',
+					'label' => isset($matches[5]) ? $matches[5] : null,
 				];
 			}
 
