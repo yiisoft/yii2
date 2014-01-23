@@ -53,8 +53,9 @@ class MessageSource extends Component
 
 	/**
 	 * Loads the message translation for the specified language and category.
-	 * Child classes should override this method to return the message translations of
-	 * the specified language and category.
+	 * If translation for specific locale code such as `en-US` isn't found it
+	 * tries more generic `en`.
+	 *
 	 * @param string $category the message category
 	 * @param string $language the target language
 	 * @return array the loaded messages. The keys are original messages, and the values

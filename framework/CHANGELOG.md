@@ -80,6 +80,10 @@ Yii Framework 2 Change Log
 - Enh #2008: `yii message/extract` is now able to save translation strings to database (kate-kate, samdark)
 - Enh #2043: Added support for custom request body parsers (danschmidt5189, cebe)
 - Enh #2051: Do not save null data into database when using RBAC (qiangxue)
+- Enh #2079:
+	- i18n now falls back to `en` from `en-US` if message translation isn't found (samdark)
+	- View now falls back to `en` from `en-US` if file not found (samdark)
+	- Default `sourceLanguage` and `language` are now `en` (samdark)
 - Enh #2101: Gii is now using model labels when generating search (thiagotalma)
 - Enh #2103: Renamed AccessDeniedHttpException to ForbiddenHttpException, added new commonly used HTTP exception classes (danschmidt5189)
 - Enh #2124: Added support for UNION ALL queries (Ivan Pomortsev, iworker)
