@@ -740,35 +740,22 @@ class QueryBuilder extends \yii\base\Object
 			return '';
 		}
 		
-		/**
-		 * @param Query $left left element of reducing pair
-		 * @param Query $right right element of reducing pair
-		 * @return string imploding pair with "UNION ALL" if 
-		 * 	right element is array and "UNION" if not
-		 */
-		$reducer = function($left, $right)
-		{
-			if(is_array($left))
-				$left = $left['query'];
-			$all = false;
-			if(is_array($right)) {
-				$all = $right['all'];
-				$right = $right['query'];
-			}
-			return $left . ' UNION ' . ($all ? 'ALL ' : '') . '( ' . $right . ' )';
-		};
+		$result = '';
 		
 		foreach ($unions as $i => $union) {
-			if ($union instanceof Query) {
+			$query = $union['query'];
+			if ($query instanceof Query) {
 				// save the original parameters so that we can restore them later to prevent from modifying the query object
-				$originalParams = $union->params;
-				$union->addParams($params);
+				$originalParams = $query->params;
+				$query->addParams($params);
 				list ($unions[$i]['query'], $params) = $this->build($query);
-				$union->params = $originalParams;
+				$query->params = $originalParams;
 			}
+			
+			$result .= 'UNION ' . ($union['all'] ? 'ALL ' : '') . '( ' . $unions[$i]['query'] . ' ) ';
 		}
 		
-		return trim(array_reduce($unions, $reducer));
+		return trim($result);
 	}
 
 	/**
