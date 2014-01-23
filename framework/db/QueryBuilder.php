@@ -739,6 +739,20 @@ class QueryBuilder extends \yii\base\Object
 		if (empty($unions)) {
 			return '';
 		}
+		
+		/**
+		 * @param string $left left element of reducing pair
+		 * @param string $right right element of reducing pair
+		 * @return string imploding pair with "UNION ALL" if 
+		 * 	right element is array and "UNION" if not
+		 */
+		$reducer = function($left, $right)
+		{
+			if($all = is_array($right))
+				list ($right) = $right;
+			return $left . ' UNION ' . ($all ? 'ALL ' : ' ') . $right . ' ) ';
+		}
+		
 		foreach ($unions as $i => $union) {
 			if ($union instanceof Query) {
 				// save the original parameters so that we can restore them later to prevent from modifying the query object
@@ -748,7 +762,7 @@ class QueryBuilder extends \yii\base\Object
 				$union->params = $originalParams;
 			}
 		}
-		return "UNION (\n" . implode("\n) UNION (\n", $unions) . "\n)";
+		return array_reduce($unions, $reducer);
 	}
 
 	/**
