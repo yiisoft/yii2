@@ -49,10 +49,22 @@ class QueryBuilder extends \yii\db\QueryBuilder
 //		return '';
 //	}
 
-//	public function buildLimit($limit, $offset)
-//	{
-//		return '';
-//	}
+	/**
+	 * @param integer $limit
+	 * @param integer $offset
+	 * @return string the LIMIT and OFFSET clauses built from [[query]].
+	 */
+	public function buildLimit($limit, $offset = 0)
+	{
+		$sql = '';
+		if ($offset !== null && $offset >= 0) {
+			$sql = 'OFFSET ' . (int)$offset . ' ROWS';
+			if ($limit !== null && $limit >= 0) {
+				$sql .= ' FETCH NEXT ' . (int)$limit . ' ROWS ONLY';
+			}
+		}
+		return $sql;
+	}
 
 //	public function resetSequence($table, $value = null)
 //	{
