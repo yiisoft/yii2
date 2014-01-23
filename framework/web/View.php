@@ -312,6 +312,7 @@ class View extends \yii\base\View
 	 */
 	public function registerCssFile($url, $depends = [], $options = [], $key = null)
 	{
+		$url = Yii::getAlias($url);
 		$key = $key ?: $url;
 		if (empty($depends)) {
 			$this->cssFiles[$key] = Html::cssFile($url, $options);
@@ -369,6 +370,7 @@ class View extends \yii\base\View
 	 */
 	public function registerJsFile($url, $depends = [], $options = [], $key = null)
 	{
+		$url = Yii::getAlias($url);
 		$key = $key ?: $url;
 		if (empty($depends)) {
 			$position = isset($options['position']) ? $options['position'] : self::POS_END;
