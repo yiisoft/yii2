@@ -88,7 +88,7 @@ class UserProfileFixture extends ActiveFixture
 	public $modelClass = 'app\models\UserProfile';
 	public $depends = ['app\tests\fixtures\UserFixture'];
 }
-
+```
 
 In the above, we have shown how to define a fixture about a DB table. To define a fixture not related with DB
 (e.g. a fixture about certain files and directories), you may extend from the more general base class
