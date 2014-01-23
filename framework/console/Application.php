@@ -15,7 +15,7 @@ use yii\base\InvalidRouteException;
 /**
  * Application represents a console application.
  *
- * Application extends from [[yii\base\Application]] by providing functionalities that are
+ * Application extends from [[\yii\base\Application]] by providing functionalities that are
  * specific to console requests. In particular, it deals with console requests
  * through a command-based approach:
  *

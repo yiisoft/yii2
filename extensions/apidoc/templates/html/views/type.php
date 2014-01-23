@@ -44,7 +44,7 @@ $renderer = $this->context;
 	<?php endif; ?>
 </div>
 
-<table class="summaryTable docClass">
+<table class="summaryTable docClass table table-bordered">
 	<colgroup>
 		<col class="col-name" />
 		<col class="col-value" />

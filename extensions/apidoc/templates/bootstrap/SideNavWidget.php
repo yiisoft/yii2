@@ -5,10 +5,11 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\bootstrap;
+namespace yii\apidoc\templates\bootstrap;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\bootstrap\BootstrapAsset;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
@@ -46,7 +47,7 @@ use yii\helpers\Html;
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */
-class Nav extends Widget
+class SideNavWidget extends \yii\bootstrap\Widget
 {
 	/**
 	 * @var array list of items in the nav widget. Each array element represents a single
@@ -69,25 +70,12 @@ class Nav extends Widget
 	 */
 	public $encodeLabels = true;
 	/**
-	 * @var boolean whether to automatically activate items according to whether their route setting
-	 * matches the currently requested route.
-	 * @see isItemActive
-	 */
-	public $activateItems = true;
-	/**
 	 * @var string the route used to determine if a menu item is active or not.
 	 * If not set, it will use the route of the current request.
 	 * @see params
 	 * @see isItemActive
 	 */
-	public $route;
-	/**
-	 * @var array the parameters used to determine if a menu item is active or not.
-	 * If not set, it will use `$_GET`.
-	 * @see route
-	 * @see isItemActive
-	 */
-	public $params;
+	public $activeUrl;
 
 
 	/**
@@ -96,13 +84,9 @@ class Nav extends Widget
 	public function init()
 	{
 		parent::init();
-		if ($this->route === null && Yii::$app->controller !== null) {
-			$this->route = Yii::$app->controller->getRoute();
+		if (!isset($this->options['class'])) {
+			Html::addCssClass($this->options, 'list-group');
 		}
-		if ($this->params === null) {
-			$this->params = $_GET;
-		}
-		Html::addCssClass($this->options, 'nav');
 	}
 
 	/**
@@ -128,7 +112,7 @@ class Nav extends Widget
 			$items[] = $this->renderItem($item);
 		}
 
-		return Html::tag('ul', implode("\n", $items), $this->options);
+		return Html::tag('div', implode("\n", $items), $this->options);
 	}
 
 	/**
@@ -145,71 +129,50 @@ class Nav extends Widget
 		if (!isset($item['label'])) {
 			throw new InvalidConfigException("The 'label' option is required.");
 		}
+
 		$label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
-		$options = ArrayHelper::getValue($item, 'options', []);
+//		$options = ArrayHelper::getValue($item, 'options', []);
 		$items = ArrayHelper::getValue($item, 'items');
 		$url = Html::url(ArrayHelper::getValue($item, 'url', '#'));
 		$linkOptions = ArrayHelper::getValue($item, 'linkOptions', []);
+		Html::addCssClass($linkOptions, 'list-group-item');
 
 		if (isset($item['active'])) {
 			$active = ArrayHelper::remove($item, 'active', false);
 		} else {
-			$active = $this->isItemActive($item);
-		}
-
-		if ($active) {
-			Html::addCssClass($options, 'active');
+			$active = ($url == $this->activeUrl);
 		}
 
 		if ($items !== null) {
-			$linkOptions['data-toggle'] = 'dropdown';
-			Html::addCssClass($options, 'dropdown');
-			Html::addCssClass($linkOptions, 'dropdown-toggle');
+			$linkOptions['data-toggle'] = 'collapse';
+			$linkOptions['data-parent'] = '#' . $this->id;
+			$id = $this->id . '-' . static::$counter++;
+			$url = '#' . $id;
 			$label .= ' ' . Html::tag('b', '', ['class' => 'caret']);
 			if (is_array($items)) {
-				$items = Dropdown::widget([
+				if ($active === false) {
+					foreach($items as $subItem) {
+						if (isset($subItem['active']) && $subItem['active']) {
+							$active = true;
+						}
+					}
+				}
+				$items = static::widget([
+					'id' => $id,
 					'items' => $items,
 					'encodeLabels' => $this->encodeLabels,
-					'clientOptions' => false,
 					'view' => $this->getView(),
+					'options' => [
+						'class' => "submenu panel-collapse collapse" . ($active ? ' in' : '')
+					]
 				]);
 			}
 		}
 
-		return Html::tag('li', Html::a($label, $url, $linkOptions) . $items, $options);
-	}
-
-
-	/**
-	 * Checks whether a menu item is active.
-	 * This is done by checking if [[route]] and [[params]] match that specified in the `url` option of the menu item.
-	 * When the `url` option of a menu item is specified in terms of an array, its first element is treated
-	 * as the route for the item and the rest of the elements are the associated parameters.
-	 * Only when its route and parameters match [[route]] and [[params]], respectively, will a menu item
-	 * be considered active.
-	 * @param array $item the menu item to be checked
-	 * @return boolean whether the menu item is active
-	 */
-	protected function isItemActive($item)
-	{
-		if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
-			$route = $item['url'][0];
-			if ($route[0] !== '/' && Yii::$app->controller) {
-				$route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
-			}
-			if (ltrim($route, '/') !== $this->route) {
-				return false;
-			}
-			unset($item['url']['#']);
-			if (count($item['url']) > 1) {
-				foreach (array_splice($item['url'], 1) as $name => $value) {
-					if ($value !== null && (!isset($this->params[$name]) || $this->params[$name] != $value)) {
-						return false;
-					}
-				}
-			}
-			return true;
+		if ($active) {
+			Html::addCssClass($linkOptions, 'active');
 		}
-		return false;
+
+		return Html::a($label, $url, $linkOptions) . $items;
 	}
 }

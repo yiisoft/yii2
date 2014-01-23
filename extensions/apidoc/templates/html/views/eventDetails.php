@@ -13,9 +13,9 @@ if (empty($events)) {
 } ?>
 <h2>Event Details</h2>
 <?php foreach($events as $event): ?>
-	<div class="detailHeader" id="<?= $event->name.'-detail' ?>">
+	<div class="detailHeader h3" id="<?= $event->name.'-detail' ?>">
 		<?php echo $event->name; ?>
-		<span class="detailHeaderTag">
+		<span class="detailHeaderTag small">
 		event
 		<?php if(!empty($event->since)): ?>
 			(available since version <?= $event->since ?>)

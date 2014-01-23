@@ -20,6 +20,7 @@
     "minimum-stability": "dev",
 	"require": {
 		"yiisoft/yii2": "*",
+		"yiisoft/yii2-bootstrap": "*",
 		"phpdocumentor/reflection": "dev-master | >1.0.2"
 	},
 	"autoload": {

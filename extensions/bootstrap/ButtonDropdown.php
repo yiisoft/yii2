@@ -87,6 +87,7 @@ class ButtonDropdown extends Widget
 				'label' => '<span class="caret"></span>',
 				'encodeLabel' => false,
 				'options' => $this->options,
+				'view' => $this->getView(),
 			]);
 		} else {
 			$label .= ' <span class="caret"></span>';
@@ -103,6 +104,7 @@ class ButtonDropdown extends Widget
 			'label' => $label,
 			'options' => $options,
 			'encodeLabel' => false,
+			'view' => $this->getView(),
 		]) . "\n" . $splitButton;
 	}
 
@@ -114,6 +116,7 @@ class ButtonDropdown extends Widget
 	{
 		$config = $this->dropdown;
 		$config['clientOptions'] = false;
+		$config['view'] = $this->getView();
 		return Dropdown::widget($config);
 	}
 }

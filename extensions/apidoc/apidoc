@@ -12,18 +12,20 @@ defined('YII_DEBUG') or define('YII_DEBUG', false);
 
 $composerAutoload = [
 	__DIR__ . '/vendor/autoload.php', // standalone with "composer install" run
-	__DIR__ . '/../autoload.php', // script is installed as a composer binary
+	__DIR__ . '/../../autoload.php', // script is installed as a composer binary
 ];
+$vendorPath = null;
 foreach($composerAutoload as $autoload) {
 	if (file_exists($autoload)) {
 		require($autoload);
+		$vendorPath = dirname($autoload);
 		break;
 	}
 }
 $yiiDirs = [
 	__DIR__ . '/../../framework', // in yii2-dev repo
 	__DIR__ . '/vendor/yiisoft/yii2', // standalone with "composer install" run
-	__DIR__ . '/../yiisoft/yii2', // script is installed as a composer binary
+	__DIR__ . '/../../yiisoft/yii2', // script is installed as a composer binary
 ];
 foreach($yiiDirs as $dir) {
 	if (file_exists($dir . '/Yii.php')) {
@@ -45,5 +47,8 @@ $application = new yii\console\Application([
 	'controllerNamespace' => 'yii\\apidoc\\commands',
 	'controllerPath' => '@yii/apidoc/commands',
 ]);
+if ($vendorPath !== null) {
+	$application->setVendorPath($vendorPath);
+}
 $exitCode = $application->run();
 exit($exitCode);
