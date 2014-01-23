@@ -82,6 +82,7 @@ Yii Framework 2 Change Log
 - Enh #2051: Do not save null data into database when using RBAC (qiangxue)
 - Enh #2101: Gii is now using model labels when generating search (thiagotalma)
 - Enh #2103: Renamed AccessDeniedHttpException to ForbiddenHttpException, added new commonly used HTTP exception classes (danschmidt5189)
+- Enh #2124: Added support for UNION ALL queries (Ivan Pomortsev, iworker)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
 - Enh: Support for file aliases in console command 'message' (omnilight)
