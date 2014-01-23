@@ -4,8 +4,6 @@ Yii Framework 2 Change Log
 2.0.0 beta under development
 ----------------------------
 
-- Enh #2103: Adds docblock descriptions and links to HTTP specs for new HTTP exception classes (danschmidt5189)
-- Enh #2103: Renames AccessDeniedHttpException to ForbiddenHttpException (danschmidt5189)
 - Bug #1265: AssetController does not override 'js' and 'css' for compressed bundles (klimov-paul)
 - Bug #1326: The `visible` setting for `DetailView` doesn't work as expected (qiangxue)
 - Bug #1446: Logging while logs are processed causes infinite loop (qiangxue)
@@ -83,6 +81,7 @@ Yii Framework 2 Change Log
 - Enh #2043: Added support for custom request body parsers (danschmidt5189, cebe)
 - Enh #2051: Do not save null data into database when using RBAC (qiangxue)
 - Enh #2101: Gii is now using model labels when generating search (thiagotalma)
+- Enh #2103: Renamed AccessDeniedHttpException to ForbiddenHttpException, added new commonly used HTTP exception classes (danschmidt5189)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
 - Enh: Support for file aliases in console command 'message' (omnilight)
