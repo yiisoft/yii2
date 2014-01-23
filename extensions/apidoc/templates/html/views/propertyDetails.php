@@ -16,9 +16,9 @@ if (empty($properties)) {
 
 <?php foreach($properties as $property): ?>
 
-	<div class="detailHeader" id="<?= $property->name.'-detail' ?>">
+	<div class="detailHeader h3" id="<?= $property->name.'-detail' ?>">
 		<?php echo $property->name; ?>
-		<span class="detailHeaderTag">
+		<span class="detailHeaderTag small">
 			property
 			<?php if($property->getIsReadOnly()) echo ' <em>read-only</em> '; ?>
 			<?php if($property->getIsWriteOnly()) echo ' <em>write-only</em> '; ?>
@@ -28,9 +28,7 @@ if (empty($properties)) {
 		</span>
 	</div>
 
-	<div class="signature">
-	<?php echo $this->context->renderPropertySignature($property); ?>
-	</div>
+	<div class="signature"><?php echo $this->context->renderPropertySignature($property); ?></div>
 
 	<p><?= Markdown::process($property->description, $type) ?></p>
 

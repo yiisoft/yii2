@@ -19,7 +19,7 @@ if ($protected && count($type->getProtectedMethods()) == 0 || !$protected && cou
 
 <p><a href="#" class="toggle">Hide inherited methods</a></p>
 
-<table class="summaryTable">
+<table class="summaryTable table table-striped table-bordered table-hover">
 <colgroup>
 	<col class="col-method" />
 	<col class="col-description" />
