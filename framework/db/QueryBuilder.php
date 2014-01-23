@@ -748,9 +748,14 @@ class QueryBuilder extends \yii\base\Object
 		 */
 		$reducer = function($left, $right)
 		{
-			$all = $right->params['all'];
-			list($right, $params) = $this->build($right);
-			return $left . ' UNION ' . ($all ? 'ALL ' : ' ') . $right . ' )';
+			if(is_array($left))
+				$left = $left['query'];
+			$all = false;
+			if(is_array($right)) {
+				$all = $right['all'];
+				$right = $right['query'];
+			}
+			return $left . ' UNION ' . ($all ? 'ALL ' : '') . '( ' . $right . ' )';
 		};
 		
 		foreach ($unions as $i => $union) {
@@ -758,6 +763,7 @@ class QueryBuilder extends \yii\base\Object
 				// save the original parameters so that we can restore them later to prevent from modifying the query object
 				$originalParams = $union->params;
 				$union->addParams($params);
+				list ($unions[$i]['query'], $params) = $this->build($query);
 				$union->params = $originalParams;
 			}
 		}
