@@ -15,7 +15,7 @@ if (empty($type->constants)) {
 
 <p><a href="#" class="toggle">Hide inherited constants</a></p>
 
-<table class="summaryTable">
+<table class="summaryTable table table-striped table-bordered table-hover">
 <colgroup>
 	<col class="col-const" />
 	<col class="col-description" />

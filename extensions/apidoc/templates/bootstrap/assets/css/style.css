@@ -1,0 +1,52 @@
+html,
+body {
+	height: 100%;
+}
+
+.wrap {
+	min-height: 100%;
+	height: auto;
+	width: auto;
+	margin: 60px 30px 0 30px;
+	padding: 0;
+}
+
+.footer {
+	height: 60px;
+	background-color: #f5f5f5;
+	border-top: 1px solid #ddd;
+	padding: 20px 30px;
+}
+
+#navigation {
+	margin-top: 20px;
+}
+
+.submenu a {
+	background: #f5f5f5;
+	border-radius: 0;
+}
+
+.submenu a:hover, .submenu a:active,
+.submenu a.active, .submenu a.active:hover, .submenu a.active:active {
+	background: #44b5f6;
+	border-color: #44b5f6;
+	border-radius: 0;
+	color: #fff;
+}
+
+.signature, .signature2 {
+	padding: 3px;
+	color: #000000;
+	font-family: "courier new", "times new roman", monospace;
+	line-height: 1.3em;
+	white-space: pre-line;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
+.signature {
+	margin: 10px 0 10px 0;
+	background: #E6ECFF;
+	border: 1px #BFCFFF solid;
+}

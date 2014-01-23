@@ -21,8 +21,8 @@ use yii\helpers\StringHelper;
  */
 class Renderer extends \yii\apidoc\templates\html\Renderer
 {
-	public $layout = false;//'@yii/apidoc/templates/offline/views/offline.php';
-	public $indexView = '@yii/apidoc/templates/offline/views/index.php';
+	public $layout = false;
+	public $indexView = '@yii/apidoc/templates/online/views/index.php';
 
 	public $pageTitle = 'Yii Framework 2.0 API Documentation';
 
@@ -56,13 +56,13 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 		$controller->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 	}
 
-	protected function generateLink($typeName)
+	protected function generateUrl($typeName)
 	{
 		return strtolower(str_replace('\\', '-', $typeName));
 	}
 
 	protected function generateFileName($typeName)
 	{
-		return $this->generateLink($typeName) . '.html';
+		return $this->generateUrl($typeName) . '.html';
 	}
 }

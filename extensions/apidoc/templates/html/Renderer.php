@@ -107,6 +107,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 			$fileContent = $this->renderWithLayout($this->typeView, [
 				'type' => $type,
 				'docContext' => $context,
+				'types' => $types,
 			]);
 			file_put_contents($dir . '/' . $this->generateFileName($type->name), $fileContent);
 			Console::updateProgress(++$done, $typeCount);
@@ -166,7 +167,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 				$links[] = Html::a(
 					$type->name,
 					null,
-					['href' => $this->generateLink($type->name)]
+					['href' => $this->generateUrl($type->name)]
 				) . $postfix;
 			}
 		}
@@ -191,7 +192,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 		if (($type = $this->context->getType($subject->definedBy)) === null) {
 			return $subject->name;
 		} else {
-			$link = $this->generateLink($type->name);
+			$link = $this->generateUrl($type->name);
 			if ($subject instanceof MethodDoc) {
 				$link .= '#' . $subject->name . '()';
 			} else {
@@ -336,7 +337,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 			. ' )';
 	}
 
-	protected function generateLink($typeName)
+	public function generateUrl($typeName)
 	{
 		return $this->generateFileName($typeName);
 	}

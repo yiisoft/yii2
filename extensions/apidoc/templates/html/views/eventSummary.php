@@ -15,7 +15,7 @@ if (empty($type->events)) {
 
 <p><a href="#" class="toggle">Hide inherited events</a></p>
 
-<table class="summaryTable">
+<table class="summaryTable table table-striped table-bordered table-hover">
 <colgroup>
 	<col class="col-event" />
 	<col class="col-description" />

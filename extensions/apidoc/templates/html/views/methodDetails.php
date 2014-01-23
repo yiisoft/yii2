@@ -16,9 +16,9 @@ if (empty($methods)) {
 
 <?php foreach($methods as $method): ?>
 
-	<div class="detailHeader" id="<?= $method->name . '()-detail' ?>">
+	<div class="detailHeader h3" id="<?= $method->name . '()-detail' ?>">
 		<?= $method->name ?>()
-		<span class="detailHeaderTag">
+		<span class="detailHeaderTag small">
 			method
 			<?php if (!empty($method->since)): ?>
 				(available since version <?php echo $method->since; ?>)
@@ -26,11 +26,9 @@ if (empty($methods)) {
 		</span>
 	</div>
 
-	<table class="summaryTable">
+	<table class="summaryTable table table-striped table-bordered table-hover">
 		<tr><td colspan="3">
-			<div class="signature2">
-			<?= $this->context->renderMethodSignature($method) ?>
-			</div>
+			<div class="signature2"><?= $this->context->renderMethodSignature($method) ?></div>
 		</td></tr>
 		<?php if(!empty($method->params) || !empty($method->return) || !empty($method->exceptions)): ?>
 			<?php foreach($method->params as $param): ?>
