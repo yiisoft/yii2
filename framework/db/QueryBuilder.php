@@ -750,7 +750,7 @@ class QueryBuilder extends \yii\base\Object
 		{
 			$all = $right->params['all'];
 			list($right, $params) = $this->build($right);
-			return $left . ' UNION ' . ($all ? 'ALL ' : ' ') . $right . ' ) ';
+			return $left . ' UNION ' . ($all ? 'ALL ' : ' ') . $right . ' )';
 		};
 		
 		foreach ($unions as $i => $union) {
@@ -762,7 +762,7 @@ class QueryBuilder extends \yii\base\Object
 			}
 		}
 		
-		return array_reduce($unions, $reducer);
+		return trim(array_reduce($unions, $reducer));
 	}
 
 	/**
