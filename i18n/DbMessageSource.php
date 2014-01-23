@@ -111,8 +111,9 @@ class DbMessageSource extends MessageSource
 
 	/**
 	 * Loads the message translation for the specified language and category.
-	 * Child classes should override this method to return the message translations of
-	 * the specified language and category.
+	 * If translation for specific locale code such as `en-US` isn't found it
+	 * tries more generic `en`.
+	 *
 	 * @param string $category the message category
 	 * @param string $language the target language
 	 * @return array the loaded messages. The keys are original messages, and the values
@@ -146,13 +147,25 @@ class DbMessageSource extends MessageSource
 	 */
 	protected function loadMessagesFromDb($category, $language)
 	{
-		$query = new Query();
-		$messages = $query->select(['t1.message message', 't2.translation translation'])
+		$mainQuery = new Query();
+		$mainQuery->select(['t1.message message', 't2.translation translation'])
 			->from([$this->sourceMessageTable . ' t1', $this->messageTable . ' t2'])
 			->where('t1.id = t2.id AND t1.category = :category AND t2.language = :language')
-			->params([':category' => $category, ':language' => $language])
-			->createCommand($this->db)
-			->queryAll();
+			->params([':category' => $category, ':language' => $language]);
+
+		$fallbackLanguage = substr($language, 0, 2);
+		if ($fallbackLanguage != $language) {
+			$fallbackQuery = new Query();
+			$fallbackQuery->select(['t1.message message', 't2.translation translation'])
+				->from([$this->sourceMessageTable . ' t1', $this->messageTable . ' t2'])
+				->where('t1.id = t2.id AND t1.category = :category AND t2.language = :fallbackLanguage')
+				->andWhere('t2.id NOT IN (SELECT id FROM '.$this->messageTable.' WHERE language = :language)')
+				->params([':category' => $category, ':language' => $language, ':fallbackLanguage' => $fallbackLanguage]);
+
+			$mainQuery->union($fallbackQuery);
+		}
+
+		$messages = $mainQuery->createCommand($this->db)->queryAll();
 		return ArrayHelper::map($messages, 'message', 'translation');
 	}
 }

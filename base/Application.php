@@ -80,13 +80,13 @@ abstract class Application extends Module
 	 * @var string the language that is meant to be used for end users.
 	 * @see sourceLanguage
 	 */
-	public $language = 'en-US';
+	public $language = 'en';
 	/**
 	 * @var string the language that the application is written in. This mainly refers to
 	 * the language that the messages and view files are written in.
 	 * @see language
 	 */
-	public $sourceLanguage = 'en-US';
+	public $sourceLanguage = 'en';
 	/**
 	 * @var Controller the currently active controller instance
 	 */

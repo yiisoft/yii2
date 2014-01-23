@@ -6,7 +6,7 @@
 ?>
 <?php if (method_exists($this, 'beginPage')) $this->beginPage(); ?>
 <!doctype html>
-<html lang="en-us">
+<html lang="en">
 
 <head>
 	<meta charset="utf-8"/>
