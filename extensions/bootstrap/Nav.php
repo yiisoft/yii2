@@ -171,6 +171,7 @@ class Nav extends Widget
 					'items' => $items,
 					'encodeLabels' => $this->encodeLabels,
 					'clientOptions' => false,
+					'view' => $this->getView(),
 				]);
 			}
 		}

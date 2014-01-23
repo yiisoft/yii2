@@ -86,7 +86,8 @@ class ButtonGroup extends Widget
 				$buttons[] = Button::widget([
 					'label' => $label,
 					'options' => $options,
-					'encodeLabel' => $this->encodeLabels
+					'encodeLabel' => $this->encodeLabels,
+					'view' => $this->getView()
 				]);
 			} else {
 				$buttons[] = $button;
