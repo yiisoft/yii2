@@ -86,4 +86,23 @@ class Action extends Component
 		}
 		return call_user_func_array([$this, 'run'], $args);
 	}
+
+	/**
+	 * This method is called right before `run()` is executed.
+	 * You may override this method to do preparation work for the action run.
+	 * If the method returns false, it will cancel the action.
+	 * @return boolean whether to run the action.
+	 */
+	protected function beforeRun()
+	{
+		return true;
+	}
+
+	/**
+	 * This method is called right after `run()` is executed.
+	 * You may override this method to do post-processing work for the action run.
+	 */
+	protected function afterRun()
+	{
+	}
 }
