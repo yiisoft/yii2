@@ -42,8 +42,8 @@ class BaseFileHelper
 	 * The searching is based on the specified language code. In particular,
 	 * a file with the same name will be looked for under the subdirectory
 	 * whose name is the same as the language code. For example, given the file "path/to/view.php"
-	 * and language code "zh_CN", the localized file will be looked for as
-	 * "path/to/zh_CN/view.php". If the file is not found, it will try a fallback with just a language code that is
+	 * and language code "zh-CN", the localized file will be looked for as
+	 * "path/to/zh-CN/view.php". If the file is not found, it will try a fallback with just a language code that is
 	 * "zh" i.e. "path/to/zh/view.php". If it is not found as well the original file will be returned.
 	 *
 	 * If the target and the source language codes are the same,

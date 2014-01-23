@@ -162,7 +162,7 @@ class DbMessageSource extends MessageSource
 				->andWhere('t2.id NOT IN (SELECT id FROM '.$this->messageTable.' WHERE language = :language)')
 				->params([':category' => $category, ':language' => $language, ':fallbackLanguage' => $fallbackLanguage]);
 
-			$mainQuery->union($fallbackQuery);
+			$mainQuery->union($fallbackQuery, true);
 		}
 
 		$messages = $mainQuery->createCommand($this->db)->queryAll();
