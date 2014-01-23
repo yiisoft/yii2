@@ -10,6 +10,12 @@ namespace yii\web;
 /**
  * BadRequestHttpException represents a "Bad Request" HTTP exception with status code 400.
  *
+ * Use this exception to represent a generic client error. In many cases, there
+ * may be an HTTP exception that more precisely describes the error. In that
+ * case, consider using the more precise exception to provide the user with
+ * additional information.
+ *
+ * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
