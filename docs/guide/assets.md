@@ -195,6 +195,18 @@ named `yuicompressor.jar`.
 In order to compress resources with these two you need to download both and place where your `yii` console bootstrap
 file is using named mentioned above. Since both are Java tools you need JRE installed.
 
+If you want to place this two jar file at other location, then you need to redefine `cssCompressor` and `jsCompressor` properties in above config.php file.
+```php
+return [
+	...
+    	'cssCompressor' => 'java -jar path.to.file\yuicompressor.jar  --type css {from} {to}',
+    	'jsCompressor' => 'java -jar path.to.file\compiler.jar --js {from} --js_output_file {to}',
+	...
+];
+```
+path.to.file can be `D:\xyz\compressor\` for Windows and `/bin/compressor/` for unix and other. 
+
+
 ### Performing compression
 
 After configuration is adjusted you can run the `compress` action, using created config:
