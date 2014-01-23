@@ -635,10 +635,12 @@ class Query extends Component implements QueryInterface
 	/**
 	 * Appends a SQL statement using UNION operator.
 	 * @param string|Query $sql the SQL statement to be appended using UNION
+	 * @param bool $all TRUE if using UNION ALL and FALSE if using UNION
 	 * @return static the query object itself
 	 */
-	public function union($sql)
+	public function union($sql, $all = false)
 	{
+		$sql->addParams([ 'all' => $all ])
 		$this->union[] = $sql;
 		return $this;
 	}
