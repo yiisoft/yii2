@@ -46,6 +46,9 @@ use yii\db\QueryTrait;
  * - [[column()]]: returns the value of the first column in the query result.
  * - [[exists()]]: returns a value indicating whether the query result has data or not.
  *
+ * NOTE: elasticsearch limits the number of records returned to 10 records by default.
+ * If you expect to get more records you should specify limit explicitly.
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
