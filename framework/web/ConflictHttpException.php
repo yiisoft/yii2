@@ -8,12 +8,13 @@
 namespace yii\web;
 
 /**
- * AccessDeniedHttpException represents an "Access Denied" HTTP exception with status code 403.
+ * ConflictHttpException represents a "Conflict" HTTP exception with status code 409
  *
- * @author Qiang Xue <qiang.xue@gmail.com>
+ * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.10
+ * @author Dan Schmidt <danschmidt5189@gmail.com>
  * @since 2.0
  */
-class AccessDeniedHttpException extends HttpException
+class ConflictHttpException extends HttpException
 {
 	/**
 	 * Constructor.
@@ -23,6 +24,6 @@ class AccessDeniedHttpException extends HttpException
 	 */
 	public function __construct($message = null, $code = 0, \Exception $previous = null)
 	{
-		parent::__construct(403, $message, $code, $previous);
+		parent::__construct(409, $message, $code, $previous);
 	}
 }

@@ -4,6 +4,8 @@ Yii Framework 2 Change Log
 2.0.0 beta under development
 ----------------------------
 
+- Enh #2103: Adds docblock descriptions and links to HTTP specs for new HTTP exception classes (danschmidt5189)
+- Enh #2103: Renames AccessDeniedHttpException to ForbiddenHttpException (danschmidt5189)
 - Bug #1265: AssetController does not override 'js' and 'css' for compressed bundles (klimov-paul)
 - Bug #1326: The `visible` setting for `DetailView` doesn't work as expected (qiangxue)
 - Bug #1446: Logging while logs are processed causes infinite loop (qiangxue)

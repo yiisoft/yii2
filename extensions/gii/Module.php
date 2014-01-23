@@ -8,7 +8,7 @@
 namespace yii\gii;
 
 use Yii;
-use yii\web\AccessDeniedHttpException;
+use yii\web\ForbiddenHttpException;
 
 /**
  * This is the main module class for the Gii module.
@@ -110,7 +110,7 @@ class Module extends \yii\base\Module
 		if ($this->checkAccess()) {
 			return parent::beforeAction($action);
 		} else {
-			throw new AccessDeniedHttpException('You are not allowed to access this page.');
+			throw new ForbiddenHttpException('You are not allowed to access this page.');
 		}
 	}
 
