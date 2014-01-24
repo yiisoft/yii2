@@ -21,7 +21,7 @@ use yii\helpers\StringHelper;
  */
 class Renderer extends \yii\apidoc\templates\html\Renderer
 {
-	public $layout = false;
+	public $apiLayout = false;
 	public $indexView = '@yii/apidoc/templates/online/views/index.php';
 
 	public $pageTitle = 'Yii Framework 2.0 API Documentation';
@@ -32,9 +32,9 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 	 * @param Context $context the api documentation context to render.
 	 * @param Controller $controller the apidoc controller instance. Can be used to control output.
 	 */
-	public function render($context, $controller)
+	public function renderApi($context, $controller)
 	{
-		parent::render($context, $controller);
+		parent::renderApi($context, $controller);
 		$dir = Yii::getAlias($this->targetDir);
 		$controller->stdout("writing packages file...");
 		$packages = [];

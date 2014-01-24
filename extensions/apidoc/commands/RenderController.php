@@ -25,7 +25,9 @@ use Yii;
  */
 class RenderController extends Controller
 {
-	public $template = 'offline';
+	public $template = 'bootstrap';
+
+	public $guide;
 
 	/**
 	 * Renders API documentation files
@@ -48,6 +50,9 @@ class RenderController extends Controller
 			return 1;
 		}
 		$renderer->targetDir = $targetDir;
+		if ($this->guide !== null && $renderer->hasProperty('guideUrl')) {
+			$renderer->guideUrl = './';
+		}
 
 		$this->stdout('Searching files to process... ');
 		$files = [];
@@ -98,7 +103,12 @@ class RenderController extends Controller
 		$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 
 		// render models
-		$renderer->render($context, $this);
+		$renderer->renderApi($context, $this);
+
+		// render guide if specified
+		if ($this->guide !== null) {
+			$renderer->renderMarkdownFiles($this->findMarkdownFiles($this->guide, ['README.md']), $this);
+		}
 	}
 
 	/**
@@ -133,11 +143,21 @@ class RenderController extends Controller
 		return FileHelper::findFiles($path, $options);
 	}
 
+	protected function findMarkdownFiles($path, $except = [])
+	{
+		$path = FileHelper::normalizePath($path);
+		$options = [
+			'only' => ['.md'],
+			'except' => $except,
+		];
+		return FileHelper::findFiles($path, $options);
+	}
+
 	/**
 	 * @inheritdoc
 	 */
 	public function globalOptions()
 	{
-		return array_merge(parent::globalOptions(), ['template']);
+		return array_merge(parent::globalOptions(), ['template', 'guide']);
 	}
 }
