@@ -11,6 +11,10 @@ Composer package. Here's how to do it:
    then.
 5. Now you have working playground that uses latest code.
 
+Alternatively you can start new project yii2 based with composer's create-project command:
+
+    composer create-project --no-dev --stability=dev yiisoft/yii2-app-basic basic
+
 Note that requirements of extensions that come with `yii2-dev` are not loaded automatically.
 If you want to use an extension, check if there are dependencies suggested for it and add them
 to your `composer.json`. You can see suggested packages by running `composer show yiisoft/yii2-dev`.
