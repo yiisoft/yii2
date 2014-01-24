@@ -46,8 +46,10 @@ class Markdown extends \yii\helpers\Markdown
 			if (($pos = strpos($object, '::')) !== false) {
 				$typeName = substr($object, 0, $pos);
 				$subjectName = substr($object, $pos + 2);
-				// Collection resolves relative types
-				$typeName = (new Collection([$typeName], $context->phpDocContext))->__toString();
+				if ($context !== null) {
+					// Collection resolves relative types
+					$typeName = (new Collection([$typeName], $context->phpDocContext))->__toString();
+				}
 				$type = static::$renderer->context->getType($typeName);
 				if ($type === null) {
 					return '<span style="background: #f00;">' . $typeName . '::' . $subjectName . '</span>';
@@ -64,11 +66,13 @@ class Markdown extends \yii\helpers\Markdown
 						return '<span style="background: #ff0;">' . $type->name . '</span><span style="background: #f00;">::' . $subjectName . '</span>';
 					}
 				}
-			} elseif (($subject = $context->findSubject($object)) !== null) {
+			} elseif ($context !== null && ($subject = $context->findSubject($object)) !== null) {
 				return static::$renderer->subjectLink($subject, $title);
 			}
-			// Collection resolves relative types
-			$object = (new Collection([$object], $context->phpDocContext))->__toString();
+			if ($context !== null) {
+				// Collection resolves relative types
+				$object = (new Collection([$object], $context->phpDocContext))->__toString();
+			}
 			if (($type = static::$renderer->context->getType($object)) !== null) {
 				return static::$renderer->typeLink($type, $title);
 			}

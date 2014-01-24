@@ -46,7 +46,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	/**
 	 * @var string path or alias of the layout file to use.
 	 */
-	public $layout;
+	public $apiLayout;
 	/**
 	 * @var string path or alias of the view file to use for rendering types (classes, interfaces, traits).
 	 */
@@ -91,7 +91,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	 * @param Context $context the api documentation context to render.
 	 * @param Controller $controller the apidoc controller instance. Can be used to control output.
 	 */
-	public function render($context, $controller)
+	public function renderApi($context, $controller)
 	{
 		$this->context = $context;
 		$dir = Yii::getAlias($this->targetDir);
@@ -125,9 +125,9 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	protected function renderWithLayout($viewFile, $params)
 	{
 		$output = $this->getView()->render($viewFile, $params, $this);
-		if ($this->layout !== false) {
+		if ($this->apiLayout !== false) {
 			$params['content'] = $output;
-			return $this->getView()->renderFile($this->layout, $params, $this);
+			return $this->getView()->renderFile($this->apiLayout, $params, $this);
 		} else {
 			return $output;
 		}
