@@ -59,7 +59,7 @@ class ActiveRecord extends BaseActiveRecord
 	/**
 	 * @inheritdoc
 	 */
-	public static function createActiveRelation($config = [])
+	public static function createRelation($config = [])
 	{
 		return new ActiveRelation($config);
 	}

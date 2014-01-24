@@ -263,7 +263,7 @@ interface ActiveRecordInterface
 	 * @param array $config the configuration passed to the ActiveRelation class.
 	 * @return ActiveRelation the newly created [[ActiveRelation]] instance.
 	 */
-	public static function createActiveRelation($config = []);
+	public static function createRelation($config = []);
 
 	/**
 	 * Returns the relation object with the specified name.
