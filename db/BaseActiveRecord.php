@@ -325,7 +325,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	public function hasOne($class, $link)
 	{
 		/** @var ActiveRecord $class */
-		return $class::createActiveRelation([
+		return $class::createRelation([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
@@ -364,7 +364,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	public function hasMany($class, $link)
 	{
 		/** @var ActiveRecord $class */
-		return $class::createActiveRelation([
+		return $class::createRelation([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
