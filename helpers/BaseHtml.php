@@ -1419,9 +1419,17 @@ class BaseHtml
 
 	/**
 	 * Renders the HTML tag attributes.
+	 *
 	 * Attributes whose values are of boolean type will be treated as
 	 * [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
-	 * And attributes whose values are null will not be rendered.
+	 *
+	 * Attributes whose values are null will not be rendered.
+	 *
+	 * The "data" attribute is specially handled when it is receiving an array value. In this case,
+	 * the array will be "expanded" and a list data attributes will be rendered. For example,
+	 * if `'data' => ['id' => 1, 'name' => 'yii']`, then this will be rendered:
+	 * `data-id="1" data-name="yii"`.
+	 *
 	 * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
 	 * @return string the rendering result. If the attributes are not empty, they will be rendered
 	 * into a string with a leading white space (so that it can be directly appended to the tag name
@@ -1444,6 +1452,10 @@ class BaseHtml
 			if (is_bool($value)) {
 				if ($value) {
 					$html .= " $name";
+				}
+			} elseif (is_array($value) && $name === 'data') {
+				foreach ($value as $n => $v) {
+					$html .= "$name-$n\"" . static::encode($v) . '"';
 				}
 			} elseif ($value !== null) {
 				$html .= " $name=\"" . static::encode($value) . '"';
