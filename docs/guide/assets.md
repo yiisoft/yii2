@@ -192,19 +192,21 @@ By default for JavaScript compression Yii tries to use
 For CSS compression Yii assumes that [YUI Compressor](https://github.com/yui/yuicompressor/) is looked up in a file
 named `yuicompressor.jar`.
 
-In order to compress resources with these two you need to download both and place where your `yii` console bootstrap
-file is using named mentioned above. Since both are Java tools you need JRE installed.
+In order to compress both JavaScript and CSS, you need to download both tools and place them under the directory
+containing your `yii` console bootstrap file. You also need to install JRE in order to run these tools.
 
-If you want to place this two jar file at other location, then you need to redefine `cssCompressor` and `jsCompressor` properties in above config.php file.
+You may customize the compression commands (e.g. changing the location of the jar files) in the `config.php` file
+like the following,
+
 ```php
 return [
-	...
-    	'cssCompressor' => 'java -jar path.to.file\yuicompressor.jar  --type css {from} {to}',
-    	'jsCompressor' => 'java -jar path.to.file\compiler.jar --js {from} --js_output_file {to}',
-	...
+   	'cssCompressor' => 'java -jar path.to.file\yuicompressor.jar  --type css {from} {to}',
+   	'jsCompressor' => 'java -jar path.to.file\compiler.jar --js {from} --js_output_file {to}',
 ];
 ```
-path.to.file can be `D:\xyz\compressor\` for Windows and `/bin/compressor/` for unix and other. 
+
+where `{from}` and `{to}` are tokens that will be replaced with the actual source and target file paths, respectively,
+when the `asset` command is compressing every file.
 
 
 ### Performing compression
