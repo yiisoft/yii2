@@ -1455,7 +1455,7 @@ class BaseHtml
 				}
 			} elseif (is_array($value) && $name === 'data') {
 				foreach ($value as $n => $v) {
-					$html .= "$name-$n\"" . static::encode($v) . '"';
+					$html .= " $name-$n=\"" . static::encode($v) . '"';
 				}
 			} elseif ($value !== null) {
 				$html .= " $name=\"" . static::encode($value) . '"';
