@@ -1422,6 +1422,7 @@ class BaseHtml
 	 * Attributes whose values are of boolean type will be treated as
 	 * [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
 	 * And attributes whose values are null will not be rendered.
+	 * 'data' attribute can be array, will be converted to data-key="value"
 	 * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
 	 * @return string the rendering result. If the attributes are not empty, they will be rendered
 	 * into a string with a leading white space (so that it can be directly appended to the tag name
@@ -1429,6 +1430,15 @@ class BaseHtml
 	 */
 	public static function renderTagAttributes($attributes)
 	{
+		if ( isset($attributes['data']) && is_array($attributes['data'])) {
+			$arData = [];
+			foreach($attributes['data'] as $k => $v) {
+				$arData['data-' . (string)$k] = (string)$v;
+			}
+			unset($attributes['data']);
+			$attributes = array_merge($attributes,$arData);
+		}
+		
 		if (count($attributes) > 1) {
 			$sorted = [];
 			foreach (static::$attributeOrder as $name) {
