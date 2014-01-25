@@ -28,6 +28,15 @@ use yii\helpers\Html;
 class Formatter extends Component
 {
 	/**
+	 * @var string|\IntlTimeZone|\DateTimeZone the timezone to use for formatting time and date values.
+	 * This can be any value that may be passed to [date_default_timezone_set()](http://www.php.net/manual/en/function.date-default-timezone-set.php)
+	 * e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
+	 * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available timezones.
+	 * This can also be an IntlTimeZone or a DateTimeZone object.
+	 * If not set, [[\yii\base\Application::timezone]] will be used.
+	 */
+	public $timeZone;
+	/**
 	 * @var string the default format string to be used to format a date using PHP date() function.
 	 */
 	public $dateFormat = 'Y/m/d';
@@ -59,12 +68,20 @@ class Formatter extends Component
 	 */
 	public $thousandSeparator;
 
-
 	/**
 	 * Initializes the component.
 	 */
 	public function init()
 	{
+		if ($this->timeZone === null) {
+			$this->timeZone = Yii::$app->timeZone;
+		}
+		if (is_string($this->timeZone)) {
+			$this->timeZone = new \DateTimeZone($this->timeZone);
+		} elseif ($this->timeZone instanceof IntlTimeZone) {
+			$this->timeZone = $this->timeZone->toDateTimeZone();
+		}
+
 		if (empty($this->booleanFormat)) {
 			$this->booleanFormat = [Yii::t('yii', 'No'), Yii::t('yii', 'Yes')];
 		}
@@ -258,7 +275,7 @@ class Formatter extends Component
 			return $this->nullDisplay;
 		}
 		$value = $this->normalizeDatetimeValue($value);
-		return date($format === null ? $this->dateFormat : $format, $value);
+		return $this->formatTimestamp($value, $format === null ? $this->dateFormat : $format, $value);
 	}
 
 	/**
@@ -282,7 +299,7 @@ class Formatter extends Component
 			return $this->nullDisplay;
 		}
 		$value = $this->normalizeDatetimeValue($value);
-		return date($format === null ? $this->timeFormat : $format, $value);
+		return $this->formatTimestamp($value, $format === null ? $this->timeFormat : $format, $value);
 	}
 
 	/**
@@ -306,7 +323,7 @@ class Formatter extends Component
 			return $this->nullDisplay;
 		}
 		$value = $this->normalizeDatetimeValue($value);
-		return date($format === null ? $this->datetimeFormat : $format, $value);
+		return $this->formatTimestamp($value, $format === null ? $this->datetimeFormat : $format, $value);
 	}
 
 	/**
@@ -323,6 +340,19 @@ class Formatter extends Component
 		} else {
 			return (int)$value;
 		}
+	}
+
+	/**
+	 * @param integer $value normalized datetime value
+	 * @param string $format the format used to convert the value into a date string.
+	 * @return string the formatted result
+	 */
+	protected function formatTimestamp($value, $format)
+	{
+		$date = new DateTime();
+		$date->setTimestamp($value);
+		$date->setTimezone($this->timeZone);
+		return $date->format($format);
 	}
 
 	/**
