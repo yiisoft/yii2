@@ -297,7 +297,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 		if ($this->fileTransportCallback !== null) {
 			$file = $path . '/' . call_user_func($this->fileTransportCallback, $this, $message);
 		} else {
-			$file = $this->generateMessageFileName();
+			$file = $path . '/' . $this->generateMessageFileName();
 		}
 		file_put_contents($file, $message->toString());
 		return true;
