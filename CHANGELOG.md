@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #1597: Added `enableAutoLogin` to basic and advanced application templates so "remember me" now works properly (samdark)
 - Bug #1631: Charset is now explicitly set to UTF-8 when serving JSON (samdark)
 - Bug #1635: `yii\jui\SliderInput` wasn't properly initialized (samdark)
+- Bug #1659: MSSQL doesn't support limit (Ana1oliy)
 - Bug #1686: ActiveForm is creating duplicated messages in error summary (qiangxue)
 - Bug #1704: Incorrect regexp is used in `Inflector::camelize()` (qiangxue)
 - Bug #1710: OpenId auth client does not request required attributes correctly (klimov-paul)
