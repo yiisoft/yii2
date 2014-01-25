@@ -76,11 +76,6 @@ class Formatter extends Component
 		if ($this->timeZone === null) {
 			$this->timeZone = Yii::$app->timeZone;
 		}
-		if (is_string($this->timeZone)) {
-			$this->timeZone = new \DateTimeZone($this->timeZone);
-		} elseif ($this->timeZone instanceof IntlTimeZone) {
-			$this->timeZone = $this->timeZone->toDateTimeZone();
-		}
 
 		if (empty($this->booleanFormat)) {
 			$this->booleanFormat = [Yii::t('yii', 'No'), Yii::t('yii', 'Yes')];
