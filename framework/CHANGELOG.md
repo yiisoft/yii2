@@ -103,6 +103,7 @@ Yii Framework 2 Change Log
 - Enh: Added support to parse json request data to Request::getRestParams() (cebe)
 - Enh: Added ability to get incoming headers (dizews)
 - Enh: Added `beforeRun()` and `afterRun()` to `yii\base\Action` (qiangxue)
+- Enh: Added support formatter timeZone by default (dizews)
 - Chg #1519: `yii\web\User::loginRequired()` now returns the `Response` object instead of exiting the application (qiangxue)
 - Chg #1586: `QueryBuilder::buildLikeCondition()` will now escape special characters and use percentage characters by default (qiangxue)
 - Chg #1610: `Html::activeCheckboxList()` and `Html::activeRadioList()` will submit an empty string if no checkbox/radio is selected (qiangxue)
