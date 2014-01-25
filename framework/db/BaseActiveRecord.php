@@ -213,7 +213,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	/**
 	 * PHP getter magic method.
 	 * This method is overridden so that attributes and related objects can be accessed like properties.
+	 *
 	 * @param string $name property name
+	 * @throws \yii\base\InvalidParamException if relation name is wrong
 	 * @return mixed property value
 	 * @see getAttribute()
 	 */
@@ -237,9 +239,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 					}
 				}
 				return $this->_related[$name] = $value->multiple ? $value->all() : $value->one();
-			} else {
-				return $value;
 			}
+			return $value;
 		}
 	}
 
