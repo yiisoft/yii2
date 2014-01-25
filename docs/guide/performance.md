@@ -7,6 +7,16 @@ on your application out of the box and can be fine-tuned further for production
 environment. As for the application, we'll provide some of the best practices
 along with examples on how to apply them to Yii.
 
+Preparing environment
+---------------------
+
+A well configured environment to run PHP application really matters. In order to get maximum performance:
+
+- Always use latest stable PHP version. Each major release brings significant performance improvements and reduced
+  memory usage.
+- Use [APC](http://ru2.php.net/apc) for PHP 5.4 and less or [Opcache](http://php.net/opcache) for PHP 5.5 and more. It
+  gives a very good performance boost.
+
 Preparing framework for production
 ----------------------------------
 
@@ -215,3 +225,12 @@ request later if there's no need for immediate response.
 - queues + handlers.
 
 TBD
+
+### If nothing helps
+
+If nothing helps, never assume what may fix performance problem. Always profile your code instead before changing
+anything. The following tools may be helpful:
+
+- [Yii debug toolbar and debugger](module-debug.md)
+- [XDebug profiler](http://xdebug.org/docs/profiler)
+- [XHProf](http://www.php.net/manual/en/book.xhprof.php)
