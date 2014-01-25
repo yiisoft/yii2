@@ -275,7 +275,7 @@ class Formatter extends Component
 			return $this->nullDisplay;
 		}
 		$value = $this->normalizeDatetimeValue($value);
-		return $this->formatTimestamp($value, $format);
+		return $this->formatTimestamp($value, $format === null ? $this->dateFormat : $format, $value);
 	}
 
 	/**
@@ -299,7 +299,7 @@ class Formatter extends Component
 			return $this->nullDisplay;
 		}
 		$value = $this->normalizeDatetimeValue($value);
-		return $this->formatTimestamp($value, $format);
+		return $this->formatTimestamp($value, $format === null ? $this->timeFormat : $format, $value);
 	}
 
 	/**
@@ -323,7 +323,7 @@ class Formatter extends Component
 			return $this->nullDisplay;
 		}
 		$value = $this->normalizeDatetimeValue($value);
-		return $this->formatTimestamp($value, $format);
+		return $this->formatTimestamp($value, $format === null ? $this->datetimeFormat : $format, $value);
 	}
 
 	/**
@@ -347,12 +347,12 @@ class Formatter extends Component
 	 * @param string $format the format used to convert the value into a date string.
 	 * @return string the formatted result
 	 */
-	protected function formatTimestamp($value, $format = null)
+	protected function formatTimestamp($value, $format)
 	{
 		$date = new DateTime();
 		$date->setTimestamp($value);
 		$date->setTimezone($this->timeZone);
-		return $date->format($format === null ? $this->datetimeFormat : $format);
+		return $date->format($format);
 	}
 
 	/**
