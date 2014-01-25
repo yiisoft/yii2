@@ -69,11 +69,6 @@ class Formatter extends Component
 	public $thousandSeparator;
 
 	/**
-	 * @var \DateTimeZone
-	 */
-	private $_timeZone;
-
-	/**
 	 * Initializes the component.
 	 */
 	public function init()
@@ -82,9 +77,9 @@ class Formatter extends Component
 			$this->timeZone = Yii::$app->timeZone;
 		}
 		if (is_string($this->timeZone)) {
-			$this->_timeZone = new \DateTimeZone($this->timeZone);
-		} elseif ($this->_timeZone instanceof IntlTimeZone) {
-			$this->_timeZone = $this->timeZone->toDateTimeZone();
+			$this->timeZone = new \DateTimeZone($this->timeZone);
+		} elseif ($this->timeZone instanceof IntlTimeZone) {
+			$this->timeZone = $this->timeZone->toDateTimeZone();
 		}
 
 		if (empty($this->booleanFormat)) {
@@ -356,7 +351,7 @@ class Formatter extends Component
 	{
 		$date = new DateTime();
 		$date->setTimestamp($value);
-		$date->setTimezone($this->_timeZone);
+		$date->setTimezone($this->timeZone);
 		return $date->format($format);
 	}
 
