@@ -322,13 +322,13 @@ class BaseFileHelper
 		$path = str_replace('\\', '/', $path);
 
 		if (!empty($options['except'])) {
-			if (($except=self::lastExcludeMatchingFromList($options['basePath'], $path, $options['except'])) !== null) {
+			if (($except = self::lastExcludeMatchingFromList($options['basePath'], $path, $options['except'])) !== null) {
 				return $except['flags'] & self::PATTERN_NEGATIVE;
 			}
 		}
 
 		if (!is_dir($path) && !empty($options['only'])) {
-			if (($except=self::lastExcludeMatchingFromList($options['basePath'], $path, $options['only'])) !== null) {
+			if (($except = self::lastExcludeMatchingFromList($options['basePath'], $path, $options['only'])) !== null) {
 				// don't check PATTERN_NEGATIVE since those entries are not prefixed with !
 				return true;
 			}
