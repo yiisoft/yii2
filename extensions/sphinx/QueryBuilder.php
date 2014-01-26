@@ -514,9 +514,11 @@ class QueryBuilder extends Object
         }
         if ($limit !== null && $limit >= 0) {
             $sql[] = (int)$limit;
+        } elseif ($sql) {
+            $sql[] = PHP_INT_MAX;
         }
 
-        return 'LIMIT ' . implode(',', $sql);
+        return $sql ? 'LIMIT ' . implode(',', $sql) : null;
 	}
 
 	/**
