@@ -344,9 +344,8 @@ class Formatter extends Component
 	 */
 	protected function formatTimestamp($value, $format)
 	{
-		$date = new DateTime();
+		$date = new DateTime(null, is_string($this->timeZone) ? new \DateTimeZone($this->timeZone) : $this->timeZone);
 		$date->setTimestamp($value);
-		$date->setTimezone($this->timeZone);
 		return $date->format($format);
 	}
 
