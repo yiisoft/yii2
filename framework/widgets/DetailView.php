@@ -57,9 +57,11 @@ class DetailView extends Widget
 	 * @var array a list of attributes to be displayed in the detail view. Each array element
 	 * represents the specification for displaying one particular attribute.
 	 *
-	 * An attribute can be specified as a string in the format of "Name" or "Name:Format", where "Name" refers to
-	 * the attribute name, and "Format" represents the format of the attribute. The "Format" is passed to the [[Formatter::format()]]
-	 * method to format an attribute value into a displayable text. Please refer to [[Formatter]] for the supported types.
+	 * An attribute can be specified as a string in the format of "name", "name:format" or "name:format:label",
+	 * where "name" refers to the attribute name, and "format" represents the format of the attribute. The "format"
+	 * is passed to the [[Formatter::format()]] method to format an attribute value into a displayable text.
+	 * Please refer to [[Formatter]] for the supported types. Both "format" and "label" are optional.
+	 * They will take default values if absent.
 	 *
 	 * An attribute can also be specified in terms of an array with the following elements:
 	 *
@@ -173,12 +175,13 @@ class DetailView extends Widget
 
 		foreach ($this->attributes as $i => $attribute) {
 			if (is_string($attribute)) {
-				if (!preg_match('/^(\w+)(\s*:\s*(\w+))?$/', $attribute, $matches)) {
-					throw new InvalidConfigException('The attribute must be specified in the format of "Name" or "Name:Format"');
+				if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $attribute, $matches)) {
+					throw new InvalidConfigException('The attribute must be specified in the format of "name", "name:format" or "name:format:label"');
 				}
 				$attribute = [
 					'name' => $matches[1],
 					'format' => isset($matches[3]) ? $matches[3] : 'text',
+					'label' => isset($matches[5]) ? $matches[5] : null,
 				];
 			}
 
