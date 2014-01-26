@@ -141,8 +141,8 @@ class ConsoleTestCase extends TestCase
 
 You can extend other console test cases from this basic `ConsoleTestCase`.
 
-Reconfiguring components for test
----------------------------------
+Reconfiguring components for testing
+------------------------------------
 
 You also can reconfigure some components for tests, for this purpose in your `setUp` method of your test case 
 you can do this for example:
