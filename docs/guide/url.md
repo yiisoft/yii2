@@ -134,7 +134,7 @@ obtain `/index.php/post/100?year=2008`.
 As we mentioned, the other purpose of URL rules is to parse the requesting URLs. Naturally, this is an inverse process
 of URL creation. For example, when a user requests for `/index.php/post/100`, the second rule in the above example will
 apply, which resolves in the route `post/read` and the GET parameter `['id' => 100]` (accessible via
-`Yii::$app->request->get`).
+`Yii::$app->request->getQueryParam('id')`).
 
 ### Parameterizing Routes
 
