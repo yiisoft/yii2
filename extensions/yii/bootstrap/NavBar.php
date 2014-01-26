@@ -45,11 +45,11 @@ class NavBar extends Widget
 	 */
 	public $options = [];
 	/**
-	 * @var array the HTML attributes for the collapse container tag. The following special options are recognized:
+	 * @var array the HTML attributes for the container tag. The following special options are recognized:
 	 *
 	 * - tag: string, defaults to "div", the name of the container tag
 	 */
-	public $collapseOptions = [];
+	public $containerOptions = [];
 	/**
 	 * @var string the text of the brand. Note that this is not HTML-encoded.
 	 * @see http://getbootstrap.com/components/#navbar
@@ -102,8 +102,8 @@ class NavBar extends Widget
 			echo Html::beginTag('div', $this->innerContainerOptions);
 		}
 		echo Html::beginTag('div', ['class' => 'navbar-header']);
-		if (!isset($this->collapseOptions['id'])) {
-			$this->collapseOptions['id'] = "{$this->options['id']}-collapse";
+		if (!isset($this->containerOptions['id'])) {
+			$this->containerOptions['id'] = "{$this->options['id']}-collapse";
 		}
 		echo $this->renderToggleButton();
 		if ($this->brandLabel !== null) {
@@ -111,9 +111,9 @@ class NavBar extends Widget
 			echo Html::a($this->brandLabel, $this->brandUrl, $this->brandOptions);
 		}
 		echo Html::endTag('div');
-		Html::addCssClass($this->collapseOptions, 'collapse');
-		Html::addCssClass($this->collapseOptions, 'navbar-collapse');
-		$options = $this->collapseOptions;
+		Html::addCssClass($this->containerOptions, 'collapse');
+		Html::addCssClass($this->containerOptions, 'navbar-collapse');
+		$options = $this->containerOptions;
 		$tag = ArrayHelper::remove($options, 'tag', 'div');
 		echo Html::beginTag($tag, $options);
 	}
@@ -123,7 +123,7 @@ class NavBar extends Widget
 	 */
 	public function run()
 	{
-		$tag = ArrayHelper::remove($this->collapseOptions, 'tag', 'div');
+		$tag = ArrayHelper::remove($this->containerOptions, 'tag', 'div');
 		echo Html::endTag($tag);
 		if ($this->renderInnerContainer) {
 			echo Html::endTag('div');
@@ -144,7 +144,7 @@ class NavBar extends Widget
 		return Html::button("{$screenReader}\n{$bar}\n{$bar}\n{$bar}", [
 			'class' => 'navbar-toggle',
 			'data-toggle' => 'collapse',
-			'data-target' => "#{$this->collapseOptions['id']}",
+			'data-target' => "#{$this->containerOptions['id']}",
 		]);
 	}
 }
