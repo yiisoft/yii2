@@ -29,7 +29,7 @@ return [
 	// the '*.svn' will match all files and directories whose name ends with '.svn'.
 	// and the '.svn' will match all files and directories named exactly '.svn'.
 	// Note, the '/' characters in a pattern matches both '/' and '\'.
-	// If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
+	// See helpers/FileHelper::findFiles() description for more details on pattern matching rules.
 	'except' => [
 		'.svn',
 		'.git',
@@ -39,9 +39,10 @@ return [
 		'.hgkeep',
 		'/messages',
 	],
-	// array, list of patterns that specify which files should be processed.
+	// array, list of patterns that specify which files (not directories) should be processed.
 	// If empty or not set, all files will be processed.
 	// Please refer to "except" for details about the patterns.
+	// If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
 	'only' => ['*.php'],
 	// Generated file format. Can be either "php" or "po".
 	'format' => 'php',
