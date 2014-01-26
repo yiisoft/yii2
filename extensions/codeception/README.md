@@ -44,6 +44,8 @@ You may use codeception modules and fire events in your test, just use methods:
 Getting Codeception modules
 ---------------------------
 
+If you want to use codeception modules and helpers in your unit tests, you can do it like this:
+
 ```php
 <?php
 #in your unit-test
@@ -144,7 +146,7 @@ You can extend other console test cases from this basic `ConsoleTestCase`.
 Reconfiguring components for testing
 ------------------------------------
 
-You also can reconfigure some components for tests, for this purpose in your `setUp` method of your test case 
+You can reconfigure a component for testing, for this purpose in your `setUp` method of your test case 
 you can do this for example:
 
 ```php
@@ -158,7 +160,7 @@ class MailTest extends TestCase
 
 	protected function setUp()
 	{
-		//dont forget to call parent method that will setup Yii application
+		// don't forget to call parent method that will setup Yii application
 		parent::setUp();
 
 		Yii::$app->mail->fileTransportCallback = function ($mailer, $message) {
@@ -169,9 +171,9 @@ class MailTest extends TestCase
 }
 ```
 
-You dont need to worry about application instances and isolation because application will be created [each time](https://github.com/yiisoft/yii2/blob/master/extensions/codeception/TestCase.php#L31) before test.
-You also can mock application in some other custom way, for this purposes you have method [`mockApplication`](https://github.com/yiisoft/yii2/blob/master/extensions/codeception/TestCase.php#L55) available in your test case,
-this method will create new application instance and replace old one. Use this method when you need to create application with config that is not suitable for all other test methods in current tests case, for example:
+You don't need to worry about application instances and isolation because application will be created [each time](https://github.com/yiisoft/yii2/blob/master/extensions/codeception/TestCase.php#L31) before any of test method will be executed in test case.
+You can mock application in a different way. For this purposes you have method [`mockApplication`](https://github.com/yiisoft/yii2/blob/master/extensions/codeception/TestCase.php#L55) available in your test case.
+This method creates new application instance and replaces old one with it and is handy when you need to create application with a config that is different from other test methods in the current test suite. For example:
 
 ```php
 
