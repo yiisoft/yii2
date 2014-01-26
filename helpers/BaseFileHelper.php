@@ -259,6 +259,7 @@ class BaseFileHelper
 		if (!is_dir($dir)) {
 			throw new InvalidParamException('The dir argument must be a directory.');
 		}
+		$dir = rtrim($dir, DIRECTORY_SEPARATOR);
 		if (!isset($options['basePath'])) {
 			$options['basePath'] = realpath($dir);
 			// this should also be done only once
