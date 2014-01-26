@@ -93,43 +93,107 @@ If you use special methods dont forget to call its parent.
 
 SomeConsoleTest extends \yii\codeception\TestCase
 {
-	// this is the config file to load as application config
-	public static $applicationConfig = '@app/config/web.php';
 
-	// this defines the application class to use for mock applications
-	protected $applicationClass = 'yii\web\Application';
+	// this is the config file to load as application config
+	public $appConfig = '@app/path/to/my/custom/config/for/test.php';
+
 }
 ```
 
-The `$applicationConfig` property may be set for all tests in a `_bootstrap.php` file like this:
+The `$appConfig` property could be an array or valid alias, pointing to file that returns config array. You can sepcify
+application class in the config, for example for testing console commands/features you can create `_console.php` config under
+`tests/unit` folder like this:
 
 ```php
-<?php
-
-yii\codeception\TestCase::$applicationConfig = yii\helpers\ArrayHelper::merge(
-	require(__DIR__ . '/../../config/web.php'),
-	require(__DIR__ . '/../../config/codeception/unit.php')
+return yii\helpers\ArrayHelper::merge(
+        require(__DIR__ . '/../../config/console.php'),
+        require(__DIR__ . '/../_config.php'),
+        [
+                'components' => [
+					//override console components if needed
+                ],
+        ]
 );
 ```
 
-Don't forget that you have to include autoload and Yii class in the `_bootstrap.php` file.
+and then just use your `ConsoleTestCase` like following:
 
-You also can reconfigure some components for tests, for this purpose there is a `$config` property in the `TestCase` class.
+```php
+
+use \yii\codeception\TestCase;
+
+class ConsoleTestCase extends TestCase
+{
+
+	public $appConfig = '@tests/unit/_console.php';
+
+}
+```
+
+You can extend other console tests cases from this basic `ConsoleTestCase`.
+
+You also can reconfigure some components for tests, for this purpose in your `setUp` method of your test case 
+you can do this for example:
 
 ```php
 <?php
 
-SomeOtherTest extends \yii\codeception\TestCase
+use \yii\codeception\TestCase;
+use Yii;
+
+class MailTest extends TestCase
 {
-	public $config = [
-		'components' => [
-			'mail' => [
-				'useFileTransport' => true,
-			],
-		]
-	];
+
+	protected function setUp()
+	{
+		//dont forget to call parent method that will setup Yii application
+		parent::setUp();
+
+		Yii::$app->mail->fileTransportCallback = function ($mailer, $message) {
+			return 'testing_message.eml';
+		};
+	}
+
 }
 ```
+
+You dont need to worry about application instances and isolation because application will be created [each time](https://github.com/yiisoft/yii2/blob/master/extensions/codeception/TestCase.php#L31) before test.
+You also can mock application in some other custom way, for this purposes you have method [`mockApplication`](https://github.com/yiisoft/yii2/blob/master/extensions/codeception/TestCase.php#L55) available in your test case,
+this method will create new application instance and replace old one. Use this method when you need to create application with config that is not suitable for all other test methods in current tests case, for example:
+
+```php
+
+use \yii\codeception\TestCase;
+
+class SomeMyTest extends TestCase
+{
+
+	public function testOne()
+	{
+		...
+	}
+
+	public function testTwo()
+	{
+		$this->mockApplication([
+			'language' => 'ru-RU',
+			'components' => [
+				'db' => [
+					//your custom configuration here
+				],
+			],
+		]);
+
+		//your expectations and assertions goes here
+	}
+
+	public function testThree()
+	{
+		...
+	}
+
+}
+
 
 Because of Codeception buffers all output you can't make simple `var_dump()` in the TestCase, instead you need to use
 `Codeception\Util\Debug::debug()` function and then run test with `--debug` key, for example:
