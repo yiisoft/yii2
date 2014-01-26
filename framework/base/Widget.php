@@ -93,8 +93,8 @@ class Widget extends Component implements ViewContextInterface
 		/** @var Widget $widget */
 		$config['class'] = get_called_class();
 		$widget = Yii::createObject($config);
-		$widget->run();
-		return ob_get_clean();
+		$out = $widget->run();
+		return ob_get_clean() . $out;
 	}
 
 	private $_id;
@@ -149,6 +149,7 @@ class Widget extends Component implements ViewContextInterface
 
 	/**
 	 * Executes the widget.
+	 * @return string the result of widget execution to be outputted.
 	 */
 	public function run()
 	{
