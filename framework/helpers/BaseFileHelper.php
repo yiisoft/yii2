@@ -23,10 +23,10 @@ use yii\base\InvalidParamException;
  */
 class BaseFileHelper
 {
-	const PATTERN_FLAG_NODIR = 1;
-	const PATTERN_FLAG_ENDSWITH = 4;
-	const PATTERN_FLAG_MUSTBEDIR = 8;
-	const PATTERN_FLAG_NEGATIVE = 16;
+	const PATTERN_NODIR = 1;
+	const PATTERN_ENDSWITH = 4;
+	const PATTERN_MUSTBEDIR = 8;
+	const PATTERN_NEGATIVE = 16;
 
 	/**
 	 * Normalizes a file/directory path.
@@ -319,13 +319,13 @@ class BaseFileHelper
 
 		if (!empty($options['except'])) {
 			if (($except=self::lastExcludeMatchingFromList($options['basePath'], $path, $options['except'])) !== null) {
-				return $except['flags'] & self::PATTERN_FLAG_NEGATIVE;
+				return $except['flags'] & self::PATTERN_NEGATIVE;
 			}
 		}
 
 		if (!is_dir($path) && !empty($options['only'])) {
 			if (($except=self::lastExcludeMatchingFromList($options['basePath'], $path, $options['only'])) !== null) {
-				// don't check PATTERN_FLAG_NEGATIVE since those entries are not prefixed with !
+				// don't check PATTERN_NEGATIVE since those entries are not prefixed with !
 				return true;
 			}
 			return false;
@@ -376,7 +376,7 @@ class BaseFileHelper
 			if ($pattern === $baseName) {
 				return true;
 			}
-		} else if ($flags & self::PATTERN_FLAG_ENDSWITH) {
+		} else if ($flags & self::PATTERN_ENDSWITH) {
 			/* "*literal" matching against "fooliteral" */
 			$n = StringHelper::byteLength($pattern);
 			if (StringHelper::byteSubstr($pattern, 1, $n) === StringHelper::byteSubstr($baseName, -$n, $n)) {
@@ -458,11 +458,11 @@ class BaseFileHelper
 			if (!isset($exclude['pattern']) || !isset($exclude['flags']) || !isset($exclude['firstWildcard'])) {
 				throw new InvalidParamException('If exclude/include pattern is an array it must contain the pattern, flags and firstWildcard keys.');
 			}
-			if ($exclude['flags'] & self::PATTERN_FLAG_MUSTBEDIR && !is_dir($path)) {
+			if ($exclude['flags'] & self::PATTERN_MUSTBEDIR && !is_dir($path)) {
 				continue;
 			}
 
-			if ($exclude['flags'] & self::PATTERN_FLAG_NODIR) {
+			if ($exclude['flags'] & self::PATTERN_NODIR) {
 				if (self::matchBasename(basename($path), $exclude['pattern'], $exclude['firstWildcard'], $exclude['flags'])) {
 					return $exclude;
 				}
@@ -496,20 +496,20 @@ class BaseFileHelper
 			return $result;
 
 		if ($pattern[0] == '!') {
-			$result['flags'] |= self::PATTERN_FLAG_NEGATIVE;
+			$result['flags'] |= self::PATTERN_NEGATIVE;
 			$pattern = StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern));
 		}
 		$len = StringHelper::byteLength($pattern);
 		if ($len && StringHelper::byteSubstr($pattern, -1, 1) == '/') {
 			$pattern = StringHelper::byteSubstr($pattern, 0, -1);
 			$len--;
-			$result['flags'] |= self::PATTERN_FLAG_MUSTBEDIR;
+			$result['flags'] |= self::PATTERN_MUSTBEDIR;
 		}
 		if (strpos($pattern, '/') === false)
-			$result['flags'] |= self::PATTERN_FLAG_NODIR;
+			$result['flags'] |= self::PATTERN_NODIR;
 		$result['firstWildcard'] = self::firstWildcardInPattern($pattern);
 		if ($pattern[0] == '*' && self::firstWildcardInPattern(StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern))) === false)
-			$result['flags'] |= self::PATTERN_FLAG_ENDSWITH;
+			$result['flags'] |= self::PATTERN_ENDSWITH;
 		$result['pattern'] = $pattern;
 		return $result;
 	}
