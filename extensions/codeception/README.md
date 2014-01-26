@@ -41,6 +41,9 @@ and application destroy after each test. You can configure a mock application us
 `TestCase` is extended from `Codeception\TestCase\Case` so all methods and assertions are available.
 You may use codeception modules and fire events in your test, just use methods:
 
+Getting Codeception modules
+---------------------------
+
 ```php
 <?php
 #in your unit-test
@@ -53,6 +56,8 @@ You also can use all guy methods by accessing guy instance like:
 <?php
 $this->codeGuy->someMethodFromModule();
 ```
+Codeception events
+------------------
 
 to fire event do this:
 
@@ -67,6 +72,10 @@ public function testSomething()
 ```
 this event can be catched in modules and helpers. If your test is in the group, then event name will be followed by the groupname, 
 for example ```myevent.somegroup```.
+
+
+Special test methods chain call
+-------------------------------
 
 Execution of special tests methods is (for example on ```UserTest``` class):
 
@@ -88,31 +97,33 @@ tests\unit\models\UserTest::tearDownAfterClass();
 
 If you use special methods dont forget to call its parent.
 
+Customizing application config
+------------------------------
+
 ```php
 <?php
 
 SomeConsoleTest extends \yii\codeception\TestCase
 {
-
 	// this is the config file to load as application config
 	public $appConfig = '@app/path/to/my/custom/config/for/test.php';
-
 }
 ```
 
-The `$appConfig` property could be an array or valid alias, pointing to file that returns config array. You can sepcify
+The `$appConfig` property could be an array or valid alias, pointing to file that returns config array. You can specify
 application class in the config, for example for testing console commands/features you can create `_console.php` config under
 `tests/unit` folder like this:
 
 ```php
 return yii\helpers\ArrayHelper::merge(
-        require(__DIR__ . '/../../config/console.php'),
-        require(__DIR__ . '/../_config.php'),
-        [
-                'components' => [
-					//override console components if needed
-                ],
-        ]
+	require(__DIR__ . '/../../config/console.php'),
+	require(__DIR__ . '/../_config.php'),
+	[
+		'class' => 'yii\console\Application',
+		'components' => [
+			//override console components if needed
+		],
+	]
 );
 ```
 
@@ -124,13 +135,14 @@ use \yii\codeception\TestCase;
 
 class ConsoleTestCase extends TestCase
 {
-
 	public $appConfig = '@tests/unit/_console.php';
-
 }
 ```
 
 You can extend other console tests cases from this basic `ConsoleTestCase`.
+
+Reconfiguring components for test
+---------------------------------
 
 You also can reconfigure some components for tests, for this purpose in your `setUp` method of your test case 
 you can do this for example:
@@ -193,7 +205,10 @@ class SomeMyTest extends TestCase
 	}
 
 }
+```
 
+Additional debug output
+-----------------------
 
 Because of Codeception buffers all output you can't make simple `var_dump()` in the TestCase, instead you need to use
 `Codeception\Util\Debug::debug()` function and then run test with `--debug` key, for example:
