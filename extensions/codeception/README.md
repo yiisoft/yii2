@@ -102,6 +102,8 @@ If you use special methods dont forget to call its parent.
 Customizing application config
 ------------------------------
 
+You may need to specify different configuration files per test cases, to do this you can make it like the following:
+
 ```php
 <?php
 
