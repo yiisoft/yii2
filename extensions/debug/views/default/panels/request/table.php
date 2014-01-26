@@ -15,7 +15,7 @@ use yii\helpers\VarDumper;
 
 <?php else:	?>
 
-	<table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
+	<table class="table table-condensed table-bordered table-striped table-hover request-table" style="table-layout: fixed;">
 		<thead>
 			<tr>
 				<th style="width: 200px;">Name</th>

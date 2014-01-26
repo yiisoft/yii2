@@ -237,7 +237,7 @@ class BaseHtml
 		if ($request instanceof Request) {
 			if (strcasecmp($method, 'get') && strcasecmp($method, 'post')) {
 				// simulate PUT, DELETE, etc. via POST
-				$hiddenInputs[] = static::hiddenInput($request->restVar, $method);
+				$hiddenInputs[] = static::hiddenInput($request->methodVar, $method);
 				$method = 'post';
 			}
 			if ($request->enableCsrfValidation && !strcasecmp($method, 'post')) {
