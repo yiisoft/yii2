@@ -4,7 +4,7 @@ Yii Framework 2 sphinx extension Change Log
 2.0.0 beta under development
 ----------------------------
 
-- Bug #2160: SphinxQL: COUNT(*) get error (romeo7)
+- Bug #2162: Fixed error when executing a query COUNT (romeo7)
 - Bug #1993: afterFind event in AR is now called after relations have been populated (cebe, creocoder)
 - Enh #1398: Refactor ActiveRecord to use BaseActiveRecord class of the framework (klimov-paul)
 
