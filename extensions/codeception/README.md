@@ -127,7 +127,7 @@ return yii\helpers\ArrayHelper::merge(
 );
 ```
 
-and then just use your `ConsoleTestCase` like following:
+and then just use your `ConsoleTestCase` like the following:
 
 ```php
 
@@ -139,7 +139,7 @@ class ConsoleTestCase extends TestCase
 }
 ```
 
-You can extend other console tests cases from this basic `ConsoleTestCase`.
+You can extend other console test cases from this basic `ConsoleTestCase`.
 
 Reconfiguring components for test
 ---------------------------------
