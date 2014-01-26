@@ -59,7 +59,7 @@ $this->codeGuy->someMethodFromModule();
 Codeception events
 ------------------
 
-to fire event do this:
+To fire event do this:
 
 ```php
 <?php
@@ -74,8 +74,8 @@ this event can be catched in modules and helpers. If your test is in the group, 
 for example ```myevent.somegroup```.
 
 
-Special test methods chain call
--------------------------------
+Special test method chaining
+----------------------------
 
 Execution of special tests methods is (for example on ```UserTest``` class):
 
@@ -110,9 +110,9 @@ SomeConsoleTest extends \yii\codeception\TestCase
 }
 ```
 
-The `$appConfig` property could be an array or valid alias, pointing to file that returns config array. You can specify
-application class in the config, for example for testing console commands/features you can create `_console.php` config under
-`tests/unit` folder like this:
+The `$appConfig` property could be an array or a valid alias, pointing to the file that returns a config array. You can specify
+application class in the config, for example for testing console commands or features you can create `_console.php` config under
+`tests/unit` directory like this:
 
 ```php
 return yii\helpers\ArrayHelper::merge(
