@@ -1176,7 +1176,7 @@ class Request extends \yii\base\Request
 			return true;
 		}
 		$trueToken = $this->getCookies()->getValue($this->csrfVar);
-		$token = $this->getBodyParam($this->csrfVar);
+		$token = $method === 'POST' ? $this->getPostParam($this->csrfVar) : $this->getBodyParam($this->csrfVar);
 		return $this->validateCsrfTokenInternal($token, $trueToken)
 			|| $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
 	}
