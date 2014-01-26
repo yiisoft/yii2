@@ -29,9 +29,13 @@ class I18N extends Component
 {
 	/**
 	 * @var array list of [[MessageSource]] configurations or objects. The array keys are message
-	 * categories, and the array values are the corresponding [[MessageSource]] objects or the configurations
-	 * for creating the [[MessageSource]] objects. The message categories can contain the wildcard '*' at the end
-	 * to match multiple categories with the same prefix. For example, 'app\*' matches both 'app\cat1' and 'app\cat2'.
+	 * category patterns, and the array values are the corresponding [[MessageSource]] objects or the configurations
+	 * for creating the [[MessageSource]] objects.
+	 *
+	 * The message category patterns can contain the wildcard '*' at the end to match multiple categories with the same prefix.
+	 * For example, 'app\*' matches both 'app\cat1' and 'app\cat2'.
+	 *
+	 * The '*' category pattern will match all categories that do not match any other category patterns.
 	 *
 	 * This property may be modified on the fly by extensions who want to have their own message sources
 	 * registered under their own namespaces.
@@ -169,13 +173,22 @@ class I18N extends Component
 			}
 		} else {
 			// try wildcard matching
-			foreach ($this->translations as $pattern => $config) {
-				if ($pattern === '*' || substr($pattern, -1) === '*' && strpos($category, rtrim($pattern, '*')) === 0) {
-					if ($config instanceof MessageSource) {
-						return $config;
+			foreach ($this->translations as $pattern => $source) {
+				if (strpos($pattern, '*') > 0 && strpos($category, rtrim($pattern, '*')) === 0) {
+					if ($source instanceof MessageSource) {
+						return $source;
 					} else {
-						return $this->translations[$category] = $this->translations[$pattern] = Yii::createObject($config);
+						return $this->translations[$category] = $this->translations[$pattern] = Yii::createObject($source);
 					}
+				}
+			}
+			// match '*' in the last
+			if (isset($this->translations['*'])) {
+				$source = $this->translations['*'];
+				if ($source instanceof MessageSource) {
+					return $source;
+				} else {
+					return $this->translations[$category] = $this->translations['*'] = Yii::createObject($source);
 				}
 			}
 		}

@@ -28,12 +28,11 @@ use yii\helpers\Html;
 class Formatter extends Component
 {
 	/**
-	 * @var string|\IntlTimeZone|\DateTimeZone the timezone to use for formatting time and date values.
+	 * @var string the timezone to use for formatting time and date values.
 	 * This can be any value that may be passed to [date_default_timezone_set()](http://www.php.net/manual/en/function.date-default-timezone-set.php)
 	 * e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
 	 * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available timezones.
-	 * This can also be an IntlTimeZone or a DateTimeZone object.
-	 * If not set, [[\yii\base\Application::timezone]] will be used.
+	 * If this property is not set, [[\yii\base\Application::timezone]] will be used.
 	 */
 	public $timeZone;
 	/**
@@ -344,7 +343,7 @@ class Formatter extends Component
 	 */
 	protected function formatTimestamp($value, $format)
 	{
-		$date = new DateTime(null, is_string($this->timeZone) ? new \DateTimeZone($this->timeZone) : $this->timeZone);
+		$date = new DateTime(null, new \DateTimeZone($this->timeZone));
 		$date->setTimestamp($value);
 		return $date->format($format);
 	}
