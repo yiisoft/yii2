@@ -87,6 +87,8 @@ Yii Framework 2 Change Log
 	- View now falls back to `en` from `en-US` if file not found (samdark)
 	- Default `sourceLanguage` and `language` are now `en` (samdark)
 - Enh #2101: Gii is now using model labels when generating search (thiagotalma)
+- Enh #2102: DetailView now allow use `category.name` as attribute name (creocoder)
+- Enh #2102: DetailView now allow use custom label in string format like `name:format:label` (creocoder)
 - Enh #2103: Renamed AccessDeniedHttpException to ForbiddenHttpException, added new commonly used HTTP exception classes (danschmidt5189)
 - Enh #2124: Added support for UNION ALL queries (Ivan Pomortsev, iworker)
 - Enh #2132: Allow url of CSS and JS files registered in yii\web\View to be url alias (cebe)
