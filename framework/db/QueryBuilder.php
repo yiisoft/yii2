@@ -69,9 +69,9 @@ class QueryBuilder extends \yii\base\Object
 			$this->buildWhere($query->where, $params),
 			$this->buildGroupBy($query->groupBy),
 			$this->buildHaving($query->having, $params),
-			$this->buildUnion($query->union, $params),
 			$this->buildOrderBy($query->orderBy),
 			$this->buildLimit($query->limit, $query->offset),
+			$this->buildUnion($query->union, $params),
 		];
 		return [implode($this->separator, array_filter($clauses)), $params];
 	}
