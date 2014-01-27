@@ -71,10 +71,10 @@ class PhpDocController extends Controller
 				}
 				return null;
 			},
-			'only' => ['.php'],
+			'only' => ['*.php'],
 			'except' => array_merge($except, [
-				'BaseYii.php',
-				'Yii.php',
+				'/BaseYii.php',
+				'/Yii.php',
 				'/views/',
 				'/requirements/',
 				'/gii/generators/',
