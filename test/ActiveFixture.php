@@ -24,6 +24,9 @@ use yii\db\TableSchema;
  * After the fixture is loaded, you can access the loaded data via the [[data]] property. If you set [[modelClass]],
  * you will also be able to retrieve an instance of [[modelClass]] with the populated data via [[getModel()]].
  *
+ * @property TableSchema $tableSchema The schema information of the database table associated with this
+ * fixture. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

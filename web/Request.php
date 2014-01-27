@@ -23,18 +23,21 @@ use yii\helpers\StringHelper;
  * You can access that instance via `Yii::$app->request`.
  *
  * @property string $absoluteUrl The currently requested absolute URL. This property is read-only.
- * @property array $acceptableContentTypes The content types ordered by the preference level. The first element
- * represents the most preferred content type.
+ * @property array $acceptableContentTypes The content types ordered by the preference level. The first
+ * element represents the most preferred content type.
  * @property array $acceptableLanguages The languages ordered by the preference level. The first element
  * represents the most preferred language.
  * @property string $baseUrl The relative URL for the application.
+ * @property array $bodyParams The request parameters given in the request body.
+ * @property string $contentType Request content-type. Null is returned if this information is not available.
+ * This property is read-only.
  * @property string $cookieValidationKey The secret key used for cookie validation. If it was not set
  * previously, a random key will be generated and used.
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
- * @property string $csrfToken The random token for CSRF validation. This property is read-only.
+ * @property string $csrfToken The token used to perform CSRF validation. This property is read-only.
  * @property string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned
  * if no such header is sent. This property is read-only.
- * @property array $delete The DELETE request parameter values. This property is read-only.
+ * @property HeaderCollection $headers The header collection. This property is read-only.
  * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
  * `http://www.yiiframework.com`).
  * @property boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
@@ -49,21 +52,18 @@ use yii\helpers\StringHelper;
  * @property boolean $isPut Whether this is a PUT request. This property is read-only.
  * @property boolean $isSecureConnection If the request is sent via secure channel (https). This property is
  * read-only.
- * @property string $rawCsrfToken The unmasked CSRF token sent via cookie. This property is read-only.
  * @property string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value returned is
  * turned into upper case. This property is read-only.
- * @property array $patch The PATCH request parameter values. This property is read-only.
  * @property string $pathInfo Part of the request URL that is after the entry script and before the question
  * mark. Note, the returned path info is already URL-decoded.
  * @property integer $port Port number for insecure requests.
- * @property array $post The POST request parameter values. This property is read-only.
- * @property string $preferredLanguage The language that the application should use. This property is read-only.
- * @property array $put The PUT request parameter values. This property is read-only.
+ * @property array $postParams The request POST parameter values.
+ * @property array $queryParams The request GET parameter values.
  * @property string $queryString Part of the request URL that is after the question mark. This property is
  * read-only.
  * @property string $rawBody The request body. This property is read-only.
+ * @property string $rawCsrfToken The random token for CSRF validation. This property is read-only.
  * @property string $referrer URL referrer, null if not present. This property is read-only.
- * @property array $restParams The RESTful request parameters.
  * @property string $scriptFile The entry script file path.
  * @property string $scriptUrl The relative URL of the entry script.
  * @property integer $securePort Port number for secure requests.
