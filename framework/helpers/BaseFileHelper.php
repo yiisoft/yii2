@@ -278,14 +278,16 @@ class BaseFileHelper
 			// this should also be done only once
 			if (isset($options['except'])) {
 				foreach($options['except'] as $key=>$value) {
-					if (is_string($value))
+					if (is_string($value)) {
 						$options['except'][$key] = static::parseExcludePattern($value);
+					}
 				}
 			}
 			if (isset($options['only'])) {
 				foreach($options['only'] as $key=>$value) {
-					if (is_string($value))
+					if (is_string($value)) {
 						$options['only'][$key] = static::parseExcludePattern($value);
+					}
 				}
 			}
 		}

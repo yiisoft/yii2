@@ -10,7 +10,6 @@ namespace yii\gii;
 use Yii;
 use yii\base\Object;
 use yii\gii\components\DiffRendererHtmlInline;
-use yii\gii\components\TextDiff;
 use yii\helpers\Html;
 
 /**

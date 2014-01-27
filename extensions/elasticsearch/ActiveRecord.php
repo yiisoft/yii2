@@ -39,6 +39,9 @@ use yii\helpers\StringHelper;
  *
  * You may override [[index()]] and [[type()]] to define the index and type this record represents.
  *
+ * @property float $score Returns the score of this record when it was retrieved via a [[find()]] query. This
+ * property is read-only.
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
