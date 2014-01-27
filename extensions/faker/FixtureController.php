@@ -131,7 +131,7 @@ use yii\helpers\Console;
  *    ],
  * ~~~
  *
- * @property \Faker\Generator $generator
+ * @property \Faker\Generator $generator This property is read-only.
  *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0.0

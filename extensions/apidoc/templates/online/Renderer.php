@@ -56,7 +56,7 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 		$controller->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 	}
 
-	protected function generateUrl($typeName)
+	public function generateUrl($typeName)
 	{
 		return strtolower(str_replace('\\', '-', $typeName));
 	}
