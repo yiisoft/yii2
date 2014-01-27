@@ -60,13 +60,13 @@ class GettextMessageSource extends MessageSource
 	 */
 	protected function loadMessages($category, $language)
 	{
-		$messageFile = $this->getMessageFilePath($category, $language);
-		$messages = $this->loadMessagesFromFile($messageFile);
+		$messageFile = $this->getMessageFilePath($language);
+		$messages = $this->loadMessagesFromFile($messageFile, $category);
 
 		$fallbackLanguage = substr($language, 0, 2);
 		if ($fallbackLanguage != $language) {
-			$fallbackMessageFile = $this->getMessageFilePath($category, $fallbackLanguage);
-			$fallbackMessages = $this->loadMessagesFromFile($fallbackMessageFile);
+			$fallbackMessageFile = $this->getMessageFilePath($fallbackLanguage);
+			$fallbackMessages = $this->loadMessagesFromFile($fallbackMessageFile, $category);
 
 			if ($messages === null && $fallbackMessages === null && $fallbackLanguage != $this->sourceLanguage) {
 				Yii::error("The message file for category '$category' does not exist: $messageFile Fallback file does not exist as well: $fallbackMessageFile", __METHOD__);
@@ -90,11 +90,10 @@ class GettextMessageSource extends MessageSource
 	/**
 	 * Returns message file path for the specified language and category.
 	 *
-	 * @param string $category the message category
 	 * @param string $language the target language
 	 * @return string path to message file
 	 */
-	protected function getMessageFilePath($category, $language)
+	protected function getMessageFilePath($language)
 	{
 		$messageFile = Yii::getAlias($this->basePath) . '/' . $language . '/' . $this->catalog;
 		if ($this->useMoFile) {
@@ -108,10 +107,11 @@ class GettextMessageSource extends MessageSource
 	/**
 	 * Loads the message translation for the specified language and category or returns null if file doesn't exist.
 	 *
-	 * @param $messageFile string path to message file
+	 * @param string $messageFile path to message file
+	 * @param string $category the message category
 	 * @return array|null array of messages or null if file not found
 	 */
-	protected function loadMessagesFromFile($messageFile)
+	protected function loadMessagesFromFile($messageFile, $category)
 	{
 		if (is_file($messageFile)) {
 			if ($this->useMoFile) {
