@@ -111,6 +111,12 @@ or
 <div class="hint-block">Please enter your name</div>
 ```
 
+If you want to use one of HTML5 fields you may specify input type directly like the following:
+
+```php
+<?= $form->field($model, 'email')->input('email') ?>
+```
+
 > **Tip**: in order to style required fields with asterisk you can use the following CSS:
 >
 ```css
