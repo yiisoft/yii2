@@ -412,12 +412,42 @@ class Request extends \yii\base\Request
 	 * @param string $name the GET parameter name. If not specified, whole $_GET is returned.
 	 * @param mixed $defaultValue the default parameter value if the GET parameter does not exist.
 	 * @return mixed the GET parameter value
-	 * @see getPost()
+	 * @see getPostParam()
+	 * @see getBodyParam()
 	 */
 	public function getQueryParam($name, $defaultValue = null)
 	{
 		$params = $this->getQueryParams();
 		return isset($params[$name]) ? $params[$name] : $defaultValue;
+	}
+
+	private $_postParams;
+
+	/**
+	 * Returns the POST request parameters.
+	 *
+	 * This method will return the contents of `$_POST` if params where not explicitly set.
+	 * @return array the request POST parameter values.
+	 * @see setPostParams()
+	 * @see getPostParam()
+	 */
+	public function getPostParams()
+	{
+		if ($this->_postParams === null) {
+			return $_POST;
+		}
+		return $this->_postParams;
+	}
+
+	/**
+	 * Sets the request POST parameters.
+	 * @param array $values the request POST parameters (name-value pairs)
+	 * @see getPostParam()
+	 * @see getPostParams()
+	 */
+	public function setPostParams($values)
+	{
+		$this->_postParams = $values;
 	}
 
 	/**
@@ -427,14 +457,13 @@ class Request extends \yii\base\Request
 	 * @param mixed $defaultValue the default parameter value if the POST parameter does not exist.
 	 * @property array the POST request parameter values
 	 * @return mixed the POST parameter value
-	 * @see get()
+	 * @see getQueryParam()
+	 * @see getBodyParam() for request method independent body parameters.
 	 */
-	public function getPostParam($name = null, $defaultValue = null)
+	public function getPostParam($name, $defaultValue = null)
 	{
-		if ($name === null) {
-			return $_POST;
-		}
-		return isset($_POST[$name]) ? $_POST[$name] : $defaultValue;
+		$params = $this->getPostParams();
+		return isset($params[$name]) ? $params[$name] : $defaultValue;
 	}
 
 	private $_hostInfo;
