@@ -148,10 +148,6 @@ body {
 	font-weight: normal;
 	color: #999;
 	width: 5px;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
 }
 
 .Differences td {
@@ -212,6 +208,10 @@ body {
 
 .DifferencesInline .ChangeReplace del {
 	background: #e99;
+}
+
+.DifferencesInline th[data-line-number]:before {
+	content: attr(data-line-number);
 }
 
 /* additional styles for typeahead.js-bootstrap.css */

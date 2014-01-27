@@ -253,23 +253,58 @@ class FileHelperTest extends TestCase
 	 */
 	public function testFindFilesExclude()
 	{
-		$dirName = 'test_dir';
-		$fileName = 'test_file.txt';
-		$excludeFileName = 'exclude_file.txt';
-		$this->createFileStructure([
-			$dirName => [
-				$fileName => 'file content',
-				$excludeFileName => 'exclude file content',
-			],
-		]);
-		$basePath = $this->testFilePath;
-		$dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
+		$basePath = $this->testFilePath . DIRECTORY_SEPARATOR;
+		$dirs = array('', 'one', 'one'.DIRECTORY_SEPARATOR.'two', 'three');
+		$files = array_fill_keys(array_map(function($n){return "a.$n";}, range(1,8)), 'file contents');
 
-		$options = [
-			'except' => [$excludeFileName],
-		];
-		$foundFiles = FileHelper::findFiles($dirName, $options);
-		$this->assertEquals([$dirName . DIRECTORY_SEPARATOR . $fileName], $foundFiles);
+		$tree = $files;
+		$root = $files;
+		$flat = array();
+		foreach($dirs as $dir) {
+			foreach($files as $fileName=>$contents) {
+				$flat[] = rtrim($basePath.$dir,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$fileName;
+			}
+			if ($dir === '') continue;
+			$parts = explode(DIRECTORY_SEPARATOR, $dir);
+			$last = array_pop($parts);
+			$parent = array_pop($parts);
+			$tree[$last] = $files;
+			if ($parent !== null) {
+				$tree[$parent][$last] = &$tree[$last];
+			} else {
+				$root[$last] = &$tree[$last];
+			}
+		}
+		$this->createFileStructure($root);
+
+		// range
+		$foundFiles = FileHelper::findFiles($basePath, ['except' => ['a.[2-8]']]);
+		sort($foundFiles);
+		$expect = array_values(array_filter($flat, function($p){return substr($p, -3)==='a.1';}));
+		$this->assertEquals($expect, $foundFiles);
+
+		// suffix
+		$foundFiles = FileHelper::findFiles($basePath, ['except' => ['*.1']]);
+		sort($foundFiles);
+		$expect = array_values(array_filter($flat, function($p){return substr($p, -3)!=='a.1';}));
+		$this->assertEquals($expect, $foundFiles);
+
+		// dir
+		$foundFiles = FileHelper::findFiles($basePath, ['except' => ['/one']]);
+		sort($foundFiles);
+		$expect = array_values(array_filter($flat, function($p){return strpos($p, DIRECTORY_SEPARATOR.'one')===false;}));
+		$this->assertEquals($expect, $foundFiles);
+
+		// dir contents
+		$foundFiles = FileHelper::findFiles($basePath, ['except' => ['?*/a.1']]);
+		sort($foundFiles);
+		$expect = array_values(array_filter($flat, function($p){
+			return substr($p, -11, 10)==='one'.DIRECTORY_SEPARATOR.'two'.DIRECTORY_SEPARATOR.'a.' || (
+				substr($p, -8)!==DIRECTORY_SEPARATOR.'one'.DIRECTORY_SEPARATOR.'a.1' &&
+				substr($p, -10)!==DIRECTORY_SEPARATOR.'three'.DIRECTORY_SEPARATOR.'a.1'
+			);
+		}));
+		$this->assertEquals($expect, $foundFiles);
 	}
 
 	public function testCreateDirectory()
