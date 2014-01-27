@@ -17,7 +17,7 @@ For example, `MigrationController::actionCreate()` with `MigrationController::$m
 line like the following:
 
 ```
-yii migreate/create --migrationTable=my_migration
+yii migrate/create --migrationTable=my_migration
 ```
 
 In the above `yii` is console application entry script described below.
