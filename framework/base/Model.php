@@ -102,8 +102,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 	 * where
 	 *
 	 *  - attribute list: required, specifies the attributes array to be validated, for single attribute you can pass string;
-	 *  - validator type: required, specifies the validator to be used. It can be the name of a model
-	 *    class method, the name of a built-in validator, or a validator class name (or its path alias).
+	 *  - validator type: required, specifies the validator to be used. It can be a built-in validator name,
+	 *    a method name of the model class, an anonymous function, or a validator class name.
 	 *  - on: optional, specifies the [[scenario|scenarios]] array when the validation
 	 *    rule can be applied. If this option is not set, the rule will apply to all scenarios.
 	 *  - additional name-value pairs can be specified to initialize the corresponding validator properties.
