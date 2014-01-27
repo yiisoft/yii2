@@ -39,6 +39,34 @@ class DynamicModelTest extends TestCase
 		$this->assertTrue($model->hasErrors('age'));
 	}
 
+	public function testAddRule()
+	{
+		$model = new DynamicModel();
+		$this->assertEquals(0, $model->getValidators()->count());
+		$model->addRule('name', 'string', ['min' => 12]);
+		$this->assertEquals(1, $model->getValidators()->count());
+		$model->addRule('email', 'email');
+		$this->assertEquals(2, $model->getValidators()->count());
+		$model->addRule(['name', 'email'], 'required');
+		$this->assertEquals(3, $model->getValidators()->count());
+	}
+
+	public function testValidateWithAddRule()
+	{
+		$email = 'invalid';
+		$name = 'long name';
+		$age = '';
+		$model = new DynamicModel(compact('name', 'email', 'age'));
+		$model->addRule(['email', 'name', 'age'], 'required')
+			->addRule('email', 'email')
+			->addRule('name', 'string', ['max' => 3])
+			->validate();
+		$this->assertTrue($model->hasErrors());
+		$this->assertTrue($model->hasErrors('email'));
+		$this->assertTrue($model->hasErrors('name'));
+		$this->assertTrue($model->hasErrors('age'));
+	}
+
 	public function testDynamicProperty()
 	{
 		$email = 'invalid';
