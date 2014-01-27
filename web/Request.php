@@ -344,6 +344,9 @@ class Request extends \yii\base\Request
 					throw new InvalidConfigException("The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
 				}
 				$this->_bodyParams = $parser->parse($this->getRawBody(), $contentType);
+			} elseif ($this->getMethod() === 'POST') {
+				// PHP has already parsed the body so we have all params in $_POST
+				$this->_bodyParams = $_POST;
 			} else {
 				$this->_bodyParams = [];
 				mb_parse_str($this->getRawBody(), $this->_bodyParams);
@@ -411,57 +414,11 @@ class Request extends \yii\base\Request
 	 * @param string $name the GET parameter name. If not specified, whole $_GET is returned.
 	 * @param mixed $defaultValue the default parameter value if the GET parameter does not exist.
 	 * @return mixed the GET parameter value
-	 * @see getPostParam()
 	 * @see getBodyParam()
 	 */
 	public function getQueryParam($name, $defaultValue = null)
 	{
 		$params = $this->getQueryParams();
-		return isset($params[$name]) ? $params[$name] : $defaultValue;
-	}
-
-	private $_postParams;
-
-	/**
-	 * Returns the POST request parameters.
-	 *
-	 * This method will return the contents of `$_POST` if params where not explicitly set.
-	 * @return array the request POST parameter values.
-	 * @see setPostParams()
-	 * @see getPostParam()
-	 */
-	public function getPostParams()
-	{
-		if ($this->_postParams === null) {
-			return $_POST;
-		}
-		return $this->_postParams;
-	}
-
-	/**
-	 * Sets the request POST parameters.
-	 * @param array $values the request POST parameters (name-value pairs)
-	 * @see getPostParam()
-	 * @see getPostParams()
-	 */
-	public function setPostParams($values)
-	{
-		$this->_postParams = $values;
-	}
-
-	/**
-	 * Returns the named POST parameter value.
-	 * If the POST parameter does not exist, the second parameter to this method will be returned.
-	 * @param string $name the POST parameter name. If not specified, whole $_POST is returned.
-	 * @param mixed $defaultValue the default parameter value if the POST parameter does not exist.
-	 * @property array the POST request parameter values
-	 * @return mixed the POST parameter value
-	 * @see getQueryParam()
-	 * @see getBodyParam() for request method independent body parameters.
-	 */
-	public function getPostParam($name, $defaultValue = null)
-	{
-		$params = $this->getPostParams();
 		return isset($params[$name]) ? $params[$name] : $defaultValue;
 	}
 
@@ -1204,7 +1161,7 @@ class Request extends \yii\base\Request
 			return true;
 		}
 		$trueToken = $this->getCookies()->getValue($this->csrfVar);
-		$token = $method === 'POST' ? $this->getPostParam($this->csrfVar) : $this->getBodyParam($this->csrfVar);
+		$token = $this->getBodyParam($this->csrfVar);
 		return $this->validateCsrfTokenInternal($token, $trueToken)
 			|| $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
 	}
