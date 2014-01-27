@@ -204,7 +204,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
 		$fixturePath = Yii::getAlias($this->fixturePath);
 
 		if ($this->needToGenerateAll($file[0])) {
-			$files = FileHelper::findFiles($templatePath, ['only' => ['.php']]);
+			$files = FileHelper::findFiles($templatePath, ['only' => ['*.php']]);
 		} else {
 			$filesToSearch = [];
 			foreach ($file as $fileName) {
