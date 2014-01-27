@@ -645,6 +645,19 @@ class Query extends Component implements QueryInterface
 	}
 
 	/**
+	 * Appends a SQL statement using UNION operator as individual SELECT statements.
+	 * e.g. (SELECT ... FROM ...) UNION (SELECT ... FROM ...)
+	 * @param string|Query $sql the SQL statement to be appended using UNION
+	 * @param bool $all TRUE if using UNION ALL and FALSE if using UNION
+	 * @return static the query object itself
+	 */
+	public function unionFull($sql, $all = false)
+	{
+		$this->union[] = ['query' => $sql, 'all' => $all, 'full' => true];
+		return $this;
+	}
+
+	/**
 	 * Sets the parameters to be bound to the query.
 	 * @param array $params list of query parameter values indexed by parameter placeholders.
 	 * For example, `[':name' => 'Dan', ':age' => 31]`.

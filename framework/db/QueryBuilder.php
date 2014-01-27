@@ -69,10 +69,14 @@ class QueryBuilder extends \yii\base\Object
 			$this->buildWhere($query->where, $params),
 			$this->buildGroupBy($query->groupBy),
 			$this->buildHaving($query->having, $params),
-			$this->buildUnion($query->union, $params),
+			$this->buildUnion($query->union, $params, $full),
 			$this->buildOrderBy($query->orderBy),
 			$this->buildLimit($query->limit, $query->offset),
 		];
+		if ($full === true) {
+			$union = current(array_splice($clauses, 6, 1));
+			return ['(' . implode($this->separator, array_filter($clauses)) . ')' . $this->separator . $union, $params];
+		}
 		return [implode($this->separator, array_filter($clauses)), $params];
 	}
 
@@ -732,9 +736,10 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * @param array $unions
 	 * @param array $params the binding parameters to be populated
+	 * @param bool $full TRUE if using individual SELECT statements
 	 * @return string the UNION clause built from [[query]].
 	 */
-	public function buildUnion($unions, &$params)
+	public function buildUnion($unions, &$params, &$full = false)
 	{
 		if (empty($unions)) {
 			return '';
@@ -744,10 +749,19 @@ class QueryBuilder extends \yii\base\Object
 		
 		foreach ($unions as $i => $union) {
 			$query = $union['query'];
+			if (!empty($union['full'])) {
+				$full = true;
+			}
 			if ($query instanceof Query) {
 				// save the original parameters so that we can restore them later to prevent from modifying the query object
 				$originalParams = $query->params;
 				$query->addParams($params);
+				// add table
+				if ($query instanceof ActiveQuery) {
+					/** @var ActiveRecord $object */
+					$object = $query->modelClass;
+					$query->from = array_merge((array)$query->from, (array)$object::tableName());
+				}
 				list ($unions[$i]['query'], $params) = $this->build($query);
 				$query->params = $originalParams;
 			}
