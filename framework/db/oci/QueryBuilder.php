@@ -28,7 +28,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
 			$this->buildWhere($query->where, $params),
 			$this->buildGroupBy($query->groupBy),
 			$this->buildHaving($query->having, $params),
-			$this->buildUnion($query->union, $params),
 			$this->buildOrderBy($query->orderBy),
 		];
 		$this->sql = implode($this->separator, array_filter($clauses));
@@ -36,6 +35,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		if ($query->limit !== null || $query->offset !== null) {
 			$this->sql = $this->buildLimit($query->limit, $query->offset);
 		}
+
+		$unions = $this->buildUnion($query->union, $params);
+		if ($unions !== '') {
+			$this->sql .= $this->separator . $unions;
+		}
+
 		return [$this->sql, $params];
 	}
 
