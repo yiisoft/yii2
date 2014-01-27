@@ -139,7 +139,7 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 
 	public function safeDown()
 	{
-		$this->dropTable('tbl_news);
+		$this->dropTable('tbl_news');
 		$this->dropTable('tbl_user');
 	}
 
