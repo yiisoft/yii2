@@ -62,7 +62,7 @@ class DynamicModel extends Model
 	 * @param array $attributes the dynamic attributes (name-value pairs, or names) being defined
 	 * @param array $config the configuration array to be applied to this object.
 	 */
-	public function __construct(array $attributes, $config = [])
+	public function __construct(array $attributes = [], $config = [])
 	{
 		foreach ($attributes as $name => $value) {
 			if (is_integer($name)) {
