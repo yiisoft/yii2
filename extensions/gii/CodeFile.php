@@ -9,9 +9,9 @@ namespace yii\gii;
 
 use Yii;
 use yii\base\Object;
+use yii\gii\components\DiffRendererHtmlInline;
 use yii\gii\components\TextDiff;
 use yii\helpers\Html;
-use yii\helpers\StringHelper;
 
 /**
  * CodeFile represents a code file to be generated.
@@ -147,9 +147,29 @@ class CodeFile extends Object
 		if (in_array($type, ['jpg', 'gif', 'png', 'exe'])) {
 			return false;
 		} elseif ($this->operation === self::OP_OVERWRITE) {
-			return StringHelper::diff(file($this->path), $this->content);
+			return $this->renderDiff(file($this->path), $this->content);
 		} else {
 			return '';
 		}
+	}
+
+	private function renderDiff($lines1, $lines2)
+	{
+		if (!is_array($lines1)) {
+			$lines1 = explode("\n", $lines1);
+		}
+		if (!is_array($lines2)) {
+			$lines2 = explode("\n", $lines2);
+		}
+		foreach ($lines1 as $i => $line) {
+			$lines1[$i] = rtrim($line, "\r\n");
+		}
+		foreach ($lines2 as $i => $line) {
+			$lines2[$i] = rtrim($line, "\r\n");
+		}
+
+		$renderer = new DiffRendererHtmlInline();
+		$diff = new \Diff($lines1, $lines2);
+		return $diff->render($renderer);
 	}
 }
