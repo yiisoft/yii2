@@ -30,7 +30,7 @@ return [
 	// and the '.svn' will match all files and directories named exactly '.svn'.
 	// Note, the '/' characters in a pattern matches both '/' and '\'.
 	// See helpers/FileHelper::findFiles() description for more details on pattern matching rules.
-	'only' => ['.php'],
+	'only' => ['*.php'],
 	// array, list of patterns that specify which files (not directories) should be processed.
 	// If empty or not set, all files will be processed.
 	// Please refer to "except" for details about the patterns.

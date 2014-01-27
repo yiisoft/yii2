@@ -42,10 +42,10 @@ class ClassmapController extends Controller
 				}
 				return null;
 			},
-			'only' => ['.php'],
+			'only' => ['*.php'],
 			'except' => [
-				'Yii.php',
-				'BaseYii.php',
+				'/Yii.php',
+				'/BaseYii.php',
 				'/console/',
 			],
 		];

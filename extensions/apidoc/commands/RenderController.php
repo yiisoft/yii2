@@ -137,7 +137,7 @@ class RenderController extends Controller
 				}
 				return null;
 			},
-			'only' => ['.php'],
+			'only' => ['*.php'],
 			'except' => $except,
 		];
 		return FileHelper::findFiles($path, $options);
@@ -147,7 +147,7 @@ class RenderController extends Controller
 	{
 		$path = FileHelper::normalizePath($path);
 		$options = [
-			'only' => ['.md'],
+			'only' => ['*.md'],
 			'except' => $except,
 		];
 		return FileHelper::findFiles($path, $options);
