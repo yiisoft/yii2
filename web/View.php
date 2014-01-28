@@ -128,6 +128,38 @@ class View extends \yii\base\View
 	private $_assetManager;
 
 	/**
+	 * Renders a view in response to an AJAX request.
+	 *
+	 * This method is similar to [[render()]] except that it will surround the view being rendered
+	 * with the calls of [[beginPage()]], [[head()]], [[beginBody()]], [[endBody()]] and [[endPage()]].
+	 * By doing so, the method is able to inject into the rendering result with JS/CSS scripts and files
+	 * that are registered with the view.
+	 *
+	 * @param string $view the view name. Please refer to [[render()]] on how to specify this parameter.
+	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+	 * @param object $context the context that the view should use for rendering the view. If null,
+	 * existing [[context]] will be used.
+	 * @return string the rendering result
+	 * @see render()
+	 */
+	public function renderAjax($view, $params = [], $context = null)
+	{
+		$viewFile = $this->findViewFile($view, $context);
+
+		ob_start();
+		ob_implicit_flush(false);
+
+		$this->beginPage();
+		$this->head();
+		$this->beginBody();
+		echo $this->renderFile($viewFile, $params, $context);
+		$this->endBody();
+		$this->endPage(true);
+
+		return ob_get_clean();
+	}
+
+	/**
 	 * Registers the asset manager being used by this view object.
 	 * @return \yii\web\AssetManager the asset manager. Defaults to the "assetManager" application component.
 	 */
@@ -147,8 +179,11 @@ class View extends \yii\base\View
 
 	/**
 	 * Marks the ending of an HTML page.
+	 * @param boolean $ajaxMode whether the view is rendering in AJAX mode.
+	 * If true, the JS scripts registered at [[POS_READY]] and [[POS_LOAD]] positions
+	 * will be rendered at the end of the view like normal scripts.
 	 */
-	public function endPage()
+	public function endPage($ajaxMode = false)
 	{
 		$this->trigger(self::EVENT_END_PAGE);
 
@@ -159,7 +194,7 @@ class View extends \yii\base\View
 		echo strtr($content, [
 			self::PH_HEAD => $this->renderHeadHtml(),
 			self::PH_BODY_BEGIN => $this->renderBodyBeginHtml(),
-			self::PH_BODY_END => $this->renderBodyEndHtml(),
+			self::PH_BODY_END => $this->renderBodyEndHtml($ajaxMode),
 		]);
 
 		$this->metaTags = null;
@@ -450,25 +485,47 @@ class View extends \yii\base\View
 	/**
 	 * Renders the content to be inserted at the end of the body section.
 	 * The content is rendered using the registered JS code blocks and files.
+	 * @param boolean $ajaxMode whether the view is rendering in AJAX mode.
+	 * If true, the JS scripts registered at [[POS_READY]] and [[POS_LOAD]] positions
+	 * will be rendered at the end of the view like normal scripts.
 	 * @return string the rendered content
 	 */
-	protected function renderBodyEndHtml()
+	protected function renderBodyEndHtml($ajaxMode)
 	{
 		$lines = [];
+
 		if (!empty($this->jsFiles[self::POS_END])) {
 			$lines[] = implode("\n", $this->jsFiles[self::POS_END]);
 		}
-		if (!empty($this->js[self::POS_END])) {
-			$lines[] = Html::script(implode("\n", $this->js[self::POS_END]), ['type' => 'text/javascript']);
+
+		if ($ajaxMode) {
+			$scripts = [];
+			if (!empty($this->js[self::POS_END])) {
+				$scripts[] = implode("\n", $this->js[self::POS_END]);
+			}
+			if (!empty($this->js[self::POS_READY])) {
+				$scripts[] = implode("\n", $this->js[self::POS_READY]);
+			}
+			if (!empty($this->js[self::POS_LOAD])) {
+				$scripts[] = implode("\n", $this->js[self::POS_LOAD]);
+			}
+			if (!empty($scripts)) {
+				$lines[] = Html::script(implode("\n", $scripts), ['type' => 'text/javascript']);
+			}
+		} else {
+			if (!empty($this->js[self::POS_END])) {
+				$lines[] = Html::script(implode("\n", $this->js[self::POS_END]), ['type' => 'text/javascript']);
+			}
+			if (!empty($this->js[self::POS_READY])) {
+				$js = "jQuery(document).ready(function(){\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
+				$lines[] = Html::script($js, ['type' => 'text/javascript']);
+			}
+			if (!empty($this->js[self::POS_LOAD])) {
+				$js = "jQuery(window).load(function(){\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});";
+				$lines[] = Html::script($js, ['type' => 'text/javascript']);
+			}
 		}
-		if (!empty($this->js[self::POS_READY])) {
-			$js = "jQuery(document).ready(function(){\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
-			$lines[] = Html::script($js, ['type' => 'text/javascript']);
-		}
-		if (!empty($this->js[self::POS_LOAD])) {
-			$js = "jQuery(window).load(function(){\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});";
-			$lines[] = Html::script($js, ['type' => 'text/javascript']);
-		}
+
 		return empty($lines) ? '' : implode("\n", $lines);
 	}
 }
