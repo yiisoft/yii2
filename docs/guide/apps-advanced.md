@@ -99,6 +99,8 @@ Typically environment contains application bootstrap files such as `index.php` a
 In order to avoid duplication configurations are overriding each other. For example, frontend reads configuration in the
 following order:
 
+- `common/config/main.php`
+- `common/config/main-local.php`
 - `frontend/config/main.php`
 - `frontend/config/main-local.php`
 
@@ -111,8 +113,9 @@ Parameters are read in the following order:
 
 The later config file overrides the former.
 
-Another difference is that most application component configurations are moved to params. Since params are read from
-`common` as well it allows you to specify database connection in one file and it will be then used for all applications.
+Here's the full scheme:
+
+![Advanced application configs](images/advanced-app-configs.png)
 
 Configuring Composer
 --------------------
