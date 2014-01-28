@@ -88,17 +88,25 @@ class Context extends Component
 		}
 		// update implementedBy and usedBy for interfaces and traits
 		foreach($this->classes as $class) {
-			foreach($class->interfaces as $interface) {
-				if (isset($this->interfaces[$interface])) {
-					$this->interfaces[$interface]->implementedBy[] = $class->name;
-				}
-			}
 			foreach($class->traits as $trait) {
 				if (isset($this->traits[$trait])) {
 					$trait = $this->traits[$trait];
 					$trait->usedBy[] = $class->name;
 					$class->properties = array_merge($trait->properties, $class->properties);
 					$class->methods = array_merge($trait->methods, $class->methods);
+				}
+			}
+			foreach($class->interfaces as $interface) {
+				if (isset($this->interfaces[$interface])) {
+					$this->interfaces[$interface]->implementedBy[] = $class->name;
+					if ($class->isAbstract) {
+						// add not implemented interface methods
+						foreach($this->interfaces[$interface]->methods as $method) {
+							if (!isset($class->methods[$method->name])) {
+								$class->methods[$method->name] = $method;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -145,7 +153,7 @@ class Context extends Component
 	}
 
 	/**
-	 * Add properties for getters and setters if class is subclass of [[yii\base\Object]].
+	 * Add properties for getters and setters if class is subclass of [[\yii\base\Object]].
 	 * @param ClassDoc $class
 	 */
 	protected function handlePropertyFeature($class)
