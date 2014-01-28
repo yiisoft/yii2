@@ -14,7 +14,7 @@ use yii\base\InvalidConfigException;
 /**
  * CaptchaAction renders a CAPTCHA image.
  *
- * CaptchaAction is used together with [[Captcha]] and [[\yii\validators\CaptchaValidator]]
+ * CaptchaAction is used together with [[Captcha]] and [[\yii\captcha\CaptchaValidator]]
  * to provide the [CAPTCHA](http://en.wikipedia.org/wiki/Captcha) feature.
  *
  * By configuring the properties of CaptchaAction, you may customize the appearance of

@@ -23,7 +23,6 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
 
 	/**
 	 * @var string the AR model class associated with this fixture.
-	 * @see tableName
 	 */
 	public $modelClass;
 	/**

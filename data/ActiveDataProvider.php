@@ -64,7 +64,7 @@ class ActiveDataProvider extends BaseDataProvider
 	 *
 	 * If this is not set, the following rules will be used to determine the keys of the data models:
 	 *
-	 * - If [[query]] is an [[ActiveQuery]] instance, the primary keys of [[ActiveQuery::modelClass]] will be used.
+	 * - If [[query]] is an [[\yii\db\ActiveQuery]] instance, the primary keys of [[\yii\db\ActiveQuery::modelClass]] will be used.
 	 * - Otherwise, the keys of the [[models]] array will be used.
 	 *
 	 * @see getKeys()

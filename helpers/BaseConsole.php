@@ -250,7 +250,7 @@ class BaseConsole
 	 * You can pass any of the FG_*, BG_* and TEXT_* constants
 	 * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
 	 * @see ansiFormatCode()
-	 * @see ansiFormatEnd()
+	 * @see endAnsiFormat()
 	 */
 	public static function beginAnsiFormat($format)
 	{
@@ -258,7 +258,7 @@ class BaseConsole
 	}
 
 	/**
-	 * Resets any ANSI format set by previous method [[ansiFormatBegin()]]
+	 * Resets any ANSI format set by previous method [[beginAnsiFormat()]]
 	 * Any output after this will have default text format.
 	 * This is equal to calling
 	 *

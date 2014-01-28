@@ -72,7 +72,7 @@ class DbManager extends Manager
 	/**
 	 * Performs access check for the specified user.
 	 * @param mixed $userId the user ID. This should can be either an integer or a string representing
-	 * the unique identifier of a user. See [[User::id]].
+	 * the unique identifier of a user. See [[\yii\web\User::id]].
 	 * @param string $itemName the name of the operation that need access check
 	 * @param array $params name-value pairs that would be passed to biz rules associated
 	 * with the tasks and roles assigned to the user. A param with name 'userId' is added to this array,
@@ -89,7 +89,7 @@ class DbManager extends Manager
 	 * Performs access check for the specified user.
 	 * This method is internally called by [[checkAccess()]].
 	 * @param mixed $userId the user ID. This should can be either an integer or a string representing
-	 * the unique identifier of a user. See [[User::id]].
+	 * the unique identifier of a user. See [[\yii\web\User::id]].
 	 * @param string $itemName the name of the operation that need access check
 	 * @param array $params name-value pairs that would be passed to biz rules associated
 	 * with the tasks and roles assigned to the user. A param with name 'userId' is added to this array,
@@ -233,7 +233,7 @@ class DbManager extends Manager
 
 	/**
 	 * Assigns an authorization item to a user.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @param string $itemName the item name
 	 * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
 	 * for this particular authorization item.
@@ -265,7 +265,7 @@ class DbManager extends Manager
 
 	/**
 	 * Revokes an authorization assignment from a user.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @param string $itemName the item name
 	 * @return boolean whether removal is successful
 	 */
@@ -278,7 +278,7 @@ class DbManager extends Manager
 
 	/**
 	 * Revokes all authorization assignments from a user.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @return boolean whether removal is successful
 	 */
 	public function revokeAll($userId)
@@ -290,7 +290,7 @@ class DbManager extends Manager
 
 	/**
 	 * Returns a value indicating whether the item has been assigned to the user.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @param string $itemName the item name
 	 * @return boolean whether the item has been assigned to the user.
 	 */
@@ -306,7 +306,7 @@ class DbManager extends Manager
 
 	/**
 	 * Returns the item assignment information.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @param string $itemName the item name
 	 * @return Assignment the item assignment information. Null is returned if
 	 * the item is not assigned to the user.
@@ -336,7 +336,7 @@ class DbManager extends Manager
 
 	/**
 	 * Returns the item assignments for the specified user.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @return Assignment[] the item assignment information for the user. An empty array will be
 	 * returned if there is no item assigned to the user.
 	 */

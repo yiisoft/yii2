@@ -15,7 +15,7 @@ use yii\base\InvalidConfigException;
 /**
  * I18N provides features related with internationalization (I18N) and localization (L10N).
  *
- * I18N is configured as an application component in [[yii\base\Application]] by default.
+ * I18N is configured as an application component in [[\yii\base\Application]] by default.
  * You can access that instance via `Yii::$app->i18n`.
  *
  * @property MessageFormatter $messageFormatter The message formatter to be used to format message via ICU

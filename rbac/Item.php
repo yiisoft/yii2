@@ -146,7 +146,7 @@ class Item extends Object
 
 	/**
 	 * Assigns this item to a user.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
 	 * for this particular authorization item.
 	 * @param mixed $data additional data associated with this assignment
@@ -161,7 +161,7 @@ class Item extends Object
 
 	/**
 	 * Revokes an authorization assignment from a user.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @return boolean whether removal is successful
 	 * @see Manager::revoke
 	 */
@@ -172,7 +172,7 @@ class Item extends Object
 
 	/**
 	 * Returns a value indicating whether this item has been assigned to the user.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @return boolean whether the item has been assigned to the user.
 	 * @see Manager::isAssigned
 	 */
@@ -183,7 +183,7 @@ class Item extends Object
 
 	/**
 	 * Returns the item assignment information.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @return Assignment the item assignment information. Null is returned if
 	 * this item is not assigned to the user.
 	 * @see Manager::getAssignment

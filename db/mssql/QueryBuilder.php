@@ -52,7 +52,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	/**
 	 * @param integer $limit
 	 * @param integer $offset
-	 * @return string the LIMIT and OFFSET clauses built from [[query]].
+	 * @return string the LIMIT and OFFSET clauses built from [[\yii\db\Query::$limit]].
 	 */
 	public function buildLimit($limit, $offset = 0)
 	{
