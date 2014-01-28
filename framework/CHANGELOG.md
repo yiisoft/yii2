@@ -50,6 +50,7 @@ Yii Framework 2 Change Log
 - Enh #364: Improve Inflector::slug with `intl` transliteration. Improved transliteration char map. (tonydspaniard)
 - Enh #797: Added support for validating multiple columns by `UniqueValidator` and `ExistValidator` (qiangxue)
 - Enh #802: Added support for retrieving sub-array element or child object property through `ArrayHelper::getValue()` (qiangxue, cebe)
+- Enh #938: Added `yii\web\View::renderAjax()` and `yii\web\Controller::renderAjax()` (qiangxue)
 - Enh #1293: Replaced Console::showProgress() with a better approach. See Console::startProgress() for details (cebe)
 - Enh #1406: DB Schema support for Oracle Database (p0larbeer, qiangxue)
 - Enh #1437: Added ListView::viewParams (qiangxue)
