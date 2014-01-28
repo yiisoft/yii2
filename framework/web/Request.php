@@ -19,7 +19,7 @@ use yii\helpers\StringHelper;
  * Also it provides an interface to retrieve request parameters from $_POST, $_GET, $_COOKIES and REST
  * parameters sent via other HTTP methods like PUT or DELETE.
  *
- * Request is configured as an application component in [[yii\web\Application]] by default.
+ * Request is configured as an application component in [[\yii\web\Application]] by default.
  * You can access that instance via `Yii::$app->request`.
  *
  * @property string $absoluteUrl The currently requested absolute URL. This property is read-only.

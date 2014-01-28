@@ -22,6 +22,9 @@ class ClassDoc extends TypeDoc
 	public $isAbstract;
 	public $isFinal;
 
+	/**
+	 * @var string[]
+	 */
 	public $interfaces = [];
 	public $traits = [];
 	// will be set by Context::updateReferences()

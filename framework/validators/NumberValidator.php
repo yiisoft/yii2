@@ -14,7 +14,7 @@ use yii\helpers\Json;
 /**
  * NumberValidator validates that the attribute value is a number.
  *
- * The format of the number must match the regular expression specified in [[pattern]].
+ * The format of the number must match the regular expression specified in [[integerPattern]] or [[numberPattern]].
  * Optionally, you may configure the [[max]] and [[min]] properties to ensure the number
  * is within certain range.
  *

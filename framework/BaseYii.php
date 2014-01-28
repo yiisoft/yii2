@@ -100,6 +100,7 @@ class BaseYii
 
 
 	/**
+	 * Returns a string representing the current version of the Yii framework.
 	 * @return string the version of Yii framework
 	 */
 	public static function getVersion()
@@ -482,7 +483,7 @@ class BaseYii
 	 * ```
 	 *
 	 * Further formatting of message parameters is supported using the [PHP intl extensions](http://www.php.net/manual/en/intro.intl.php)
-	 * message formatter. See [[yii\i18n\I18N::translate()]] for more details.
+	 * message formatter. See [[\yii\i18n\I18N::translate()]] for more details.
 	 *
 	 * @param string $category the message category.
 	 * @param string $message the message to be translated.

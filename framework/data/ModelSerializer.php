@@ -15,7 +15,7 @@ use yii\helpers\StringHelper;
 /**
  * ModelSerializer converts a model or a list of models into an array representation with selected fields.
  *
- * Used together with [[\yii\web\ResponseFormatter]], ModelSerializer can be used to serve model data
+ * Used together with [[\yii\web\ResponseFormatterInterface]], ModelSerializer can be used to serve model data
  * in JSON or XML format for REST APIs.
  *
  * ModelSerializer provides two methods [[export()]] and [[exportAll()]] to convert model(s) into array(s).

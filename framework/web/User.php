@@ -20,7 +20,7 @@ use yii\base\InvalidConfigException;
  * User works with a class implementing the [[IdentityInterface]]. This class implements
  * the actual user authentication logic and is often backed by a user database table.
  *
- * User is configured as an application component in [[yii\web\Application]] by default.
+ * User is configured as an application component in [[\yii\web\Application]] by default.
  * You can access that instance via `Yii::$app->user`.
  *
  * You can modify its configuration by adding an array to your application config under `components`

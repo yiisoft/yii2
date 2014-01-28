@@ -11,6 +11,7 @@ use phpDocumentor\Reflection\FileReflector;
 use TokenReflection\ReflectionFile;
 use yii\apidoc\templates\BaseRenderer;
 use yii\console\Controller;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\apidoc\components\OfflineRenderer;
@@ -105,6 +106,7 @@ class RenderController extends Controller
 		// render models
 		$renderer->renderApi($context, $this);
 
+		ArrayHelper::multisort($context->errors, 'file');
 		print_r($context->errors);
 
 		// render guide if specified
