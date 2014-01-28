@@ -33,7 +33,7 @@ ArrayHelper::multisort($constants, 'name');
 	<tr<?= $constant->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $constant->name ?>">
 	  <td><?= $constant->name ?><a name="<?= $constant->name ?>-detail"></a></td>
 	  <td><?= $constant->value ?></td>
-	  <td><?= Markdown::process($constant->shortDescription . "\n" . $constant->description, $type) ?></td>
+	  <td><?= Markdown::process($constant->shortDescription . "\n" . $constant->description, $constant->definedBy) ?></td>
 	  <td><?= $this->context->typeLink($constant->definedBy) ?></td>
 	</tr>
 <?php endforeach; ?>
