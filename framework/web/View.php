@@ -67,6 +67,11 @@ class View extends \yii\base\View
 	 */
 	const POS_READY = 4;
 	/**
+	 * The location of registered JavaScript code block.
+	 * This means the JavaScript code block will be enclosed within `jQuery(window).load()`.
+	 */
+	const POS_LOAD = 5;
+	/**
 	 * This is internally used as the placeholder for receiving the content registered for the head section.
 	 */
 	const PH_HEAD = '<![CDATA[YII-BLOCK-HEAD]]>';
@@ -336,6 +341,8 @@ class View extends \yii\base\View
 	 * - [[POS_HEAD]]: in the head section
 	 * - [[POS_BEGIN]]: at the beginning of the body section
 	 * - [[POS_END]]: at the end of the body section
+	 * - [[POS_LOAD]]: enclosed within jQuery(window).load().
+	 *   Note that by using this position, the method will automatically register the jQuery js file.
 	 * - [[POS_READY]]: enclosed within jQuery(document).ready(). This is the default value.
 	 *   Note that by using this position, the method will automatically register the jQuery js file.
 	 *
@@ -347,7 +354,7 @@ class View extends \yii\base\View
 	{
 		$key = $key ?: md5($js);
 		$this->js[$position][$key] = $js;
-		if ($position === self::POS_READY) {
+		if ($position === self::POS_READY || $position === self::POS_LOAD) {
 			JqueryAsset::register($this);
 		}
 	}
@@ -456,6 +463,10 @@ class View extends \yii\base\View
 		}
 		if (!empty($this->js[self::POS_READY])) {
 			$js = "jQuery(document).ready(function(){\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
+			$lines[] = Html::script($js, ['type' => 'text/javascript']);
+		}
+		if (!empty($this->js[self::POS_LOAD])) {
+			$js = "jQuery(window).load(function(){\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});";
 			$lines[] = Html::script($js, ['type' => 'text/javascript']);
 		}
 		return empty($lines) ? '' : implode("\n", $lines);
