@@ -155,11 +155,12 @@ class TypeDoc extends BaseDoc
 
 	/**
 	 * @param \phpDocumentor\Reflection\InterfaceReflector $reflector
+	 * @param Context $context
 	 * @param array $config
 	 */
-	public function __construct($reflector = null, $config = [])
+	public function __construct($reflector = null, $context = null, $config = [])
 	{
-		parent::__construct($reflector, $config);
+		parent::__construct($reflector, $context, $config);
 
 		$this->namespace = StringHelper::dirname($this->name);
 
@@ -176,7 +177,7 @@ class TypeDoc extends BaseDoc
 
 		foreach($reflector->getProperties() as $propertyReflector) {
 			if ($propertyReflector->getVisibility() != 'private') {
-				$property = new PropertyDoc($propertyReflector);
+				$property = new PropertyDoc($propertyReflector, $context, ['sourceFile' => $this->sourceFile]);
 				$property->definedBy = $this->name;
 				$this->properties[$property->name] = $property;
 			}
@@ -184,7 +185,7 @@ class TypeDoc extends BaseDoc
 
 		foreach($reflector->getMethods() as $methodReflector) {
 			if ($methodReflector->getVisibility() != 'private') {
-				$method = new MethodDoc($methodReflector);
+				$method = new MethodDoc($methodReflector, $context, ['sourceFile' => $this->sourceFile]);
 				$method->definedBy = $this->name;
 				$this->methods[$method->name] = $method;
 			}

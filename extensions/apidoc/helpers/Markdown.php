@@ -52,6 +52,10 @@ class Markdown extends \yii\helpers\Markdown
 				}
 				$type = static::$renderer->context->getType($typeName);
 				if ($type === null) {
+					static::$renderer->context->errors[] = [
+						'file' => ($context !== null) ? $context->sourceFile : null,
+						'message' => 'broken link to ' . $typeName . '::' . $subjectName . (($context !== null) ? ' in ' . $context->name : ''),
+					];
 					return '<span style="background: #f00;">' . $typeName . '::' . $subjectName . '</span>';
 				} else {
 					if (($subject = $type->findSubject($subjectName)) !== null) {
@@ -63,6 +67,10 @@ class Markdown extends \yii\helpers\Markdown
 						}
 						return static::$renderer->subjectLink($subject, $title);
 					} else {
+						static::$renderer->context->errors[] = [
+							'file' => ($context !== null) ? $context->sourceFile : null,
+							'message' => 'broken link to ' . $type->name . '::' . $subjectName . (($context !== null) ? ' in ' . $context->name : ''),
+						];
 						return '<span style="background: #ff0;">' . $type->name . '</span><span style="background: #f00;">::' . $subjectName . '</span>';
 					}
 				}
@@ -76,6 +84,10 @@ class Markdown extends \yii\helpers\Markdown
 			if (($type = static::$renderer->context->getType($object)) !== null) {
 				return static::$renderer->typeLink($type, $title);
 			}
+			static::$renderer->context->errors[] = [
+				'file' => ($context !== null) ? $context->sourceFile : null,
+				'message' => 'broken link to ' . $object . (($context !== null) ? ' in ' . $context->name : ''),
+			];
 			return '<span style="background: #f00;">' . $object . '</span>';
 		}, $content);
 
