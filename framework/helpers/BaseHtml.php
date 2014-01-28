@@ -113,9 +113,12 @@ class BaseHtml
 	 * @param string $name the tag name
 	 * @param string $content the content to be enclosed between the start and end tags. It will not be HTML-encoded.
 	 * If this is coming from end users, you should consider [[encode()]] it to prevent XSS attacks.
-	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
-	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * @param array $options the HTML tag attributes (HTML options) in terms of name-value pairs.
+	 * These will be rendered as the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
+	 *
+	 * For example when using `['class' => 'my-class', 'target' => '_blank', 'value' => null]` it will result in the
+	 * html attributes rendered like this: `class="my-class" target="_blank"`.
 	 * @return string the generated HTML tag
 	 * @see beginTag()
 	 * @see endTag()
