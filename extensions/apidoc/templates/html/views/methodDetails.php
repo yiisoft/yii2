@@ -3,6 +3,8 @@
 use yii\apidoc\helpers\Markdown;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\TraitDoc;
+use yii\helpers\ArrayHelper;
+
 /**
  * @var ClassDoc|TraitDoc $type
  * @var yii\web\View $this
@@ -11,7 +13,9 @@ use yii\apidoc\models\TraitDoc;
 $methods = $type->getNativeMethods();
 if (empty($methods)) {
 	return;
-} ?>
+}
+ArrayHelper::multisort($methods, 'name');
+?>
 <h2>Method Details</h2>
 
 <?php foreach($methods as $method): ?>
