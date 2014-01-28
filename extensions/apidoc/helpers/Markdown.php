@@ -34,6 +34,10 @@ class Markdown extends \yii\helpers\Markdown
 	 */
 	public static function process($content, $context = null)
 	{
+		if (is_string($context)) {
+			$context = static::$renderer->context->getType($context);
+		}
+
 		$content = trim(parent::process($content, []));
 		if (!strncmp($content, '<p>', 3) && substr($content, -4, 4) == '</p>') {
 			$content = substr($content, 3, -4);
