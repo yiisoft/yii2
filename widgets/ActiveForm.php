@@ -33,7 +33,7 @@ class ActiveForm extends Widget
 	public $method = 'post';
 	/**
 	 * @var array the HTML attributes (name-value pairs) for the form tag.
-	 * The values will be HTML-encoded using [[Html::encode()]].
+	 * The values will be HTML-encoded using [[\yii\helpers\Html::encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 */
 	public $options = [];
@@ -209,7 +209,7 @@ class ActiveForm extends Widget
 	 * - footer: string, the footer HTML for the error summary.
 	 *
 	 * The rest of the options will be rendered as the attributes of the container tag. The values will
-	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+	 * be HTML-encoded using [[\yii\helpers\Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
 	 * @return string the generated error summary
 	 */
 	public function errorSummary($models, $options = [])

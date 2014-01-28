@@ -16,10 +16,6 @@ use yii\base\Widget;
 class Block extends Widget
 {
 	/**
-	 * @var string the ID of this block.
-	 */
-	public $id;
-	/**
 	 * @var boolean whether to render the block content in place. Defaults to false,
 	 * meaning the captured block content will not be displayed.
 	 */
@@ -36,7 +32,7 @@ class Block extends Widget
 
 	/**
 	 * Ends recording a block.
-	 * This method stops output buffering and saves the rendering result as a named block in the controller.
+	 * This method stops output buffering and saves the rendering result as a named block in the view.
 	 */
 	public function run()
 	{
@@ -44,6 +40,6 @@ class Block extends Widget
 		if ($this->renderInPlace) {
 			echo $block;
 		}
-		$this->view->blocks[$this->id] = $block;
+		$this->view->blocks[$this->getId()] = $block;
 	}
 }

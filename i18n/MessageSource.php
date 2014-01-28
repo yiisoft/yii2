@@ -73,7 +73,7 @@ class MessageSource extends Component
 	 * is the same as the [[sourceLanguage|source language]], the message
 	 * will NOT be translated.
 	 *
-	 * If a translation is not found, a [[missingTranslation]] event will be triggered.
+	 * If a translation is not found, a [[EVENT_MISSING_TRANSLATION|missingTranslation]] event will be triggered.
 	 *
 	 * @param string $category the message category
 	 * @param string $message the message to be translated
@@ -91,7 +91,7 @@ class MessageSource extends Component
 
 	/**
 	 * Translates the specified message.
-	 * If the message is not found, a [[missingTranslation]] event will be triggered
+	 * If the message is not found, a [[EVENT_MISSING_TRANSLATION|missingTranslation]] event will be triggered
 	 * and the original message will be returned.
 	 * @param string $category the category that the message belongs to
 	 * @param string $message the message to be translated

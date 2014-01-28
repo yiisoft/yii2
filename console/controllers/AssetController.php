@@ -83,7 +83,7 @@ class AssetController extends Controller
 	public $cssCompressor = 'java -jar yuicompressor.jar -o --type css {from} {to}';
 
 	/**
-	 * @var array|\yii\web\AssetManager [[yii\web\AssetManager]] instance or its array configuration, which will be used
+	 * @var array|\yii\web\AssetManager [[\yii\web\AssetManager]] instance or its array configuration, which will be used
 	 * for assets processing.
 	 */
 	private $_assetManager = [];

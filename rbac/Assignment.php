@@ -35,7 +35,7 @@ class Assignment extends Object
 	 */
 	public $data;
 	/**
-	 * @var mixed user ID (see [[User::id]]). Do not modify this property after it is populated.
+	 * @var mixed user ID (see [[\yii\web\User::id]]). Do not modify this property after it is populated.
 	 * To modify the user ID of an assignment, you must remove the assignment and create a new one.
 	 */
 	public $userId;

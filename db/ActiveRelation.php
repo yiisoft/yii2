@@ -30,14 +30,14 @@ class ActiveRelation extends ActiveQuery implements ActiveRelationInterface
 
 	/**
 	 * @var string|array the join condition. Please refer to [[Query::where()]] on how to specify this parameter.
-	 * The condition will be used in the ON part when [[ActiveQuery::joinRelation()]] is called.
+	 * The condition will be used in the ON part when [[ActiveQuery::joinWith()]] is called.
 	 * Otherwise, the condition will be used in the WHERE part of a query.
 	 */
 	public $on;
 
 	/**
 	 * Sets the ON condition for the query.
-	 * The condition will be used in the ON part when [[ActiveQuery::joinRelation()]] is called.
+	 * The condition will be used in the ON part when [[ActiveQuery::joinWith()]] is called.
 	 * Otherwise, the condition will be used in the WHERE part of a query.
 	 * @param string|array $condition the ON condition. Please refer to [[Query::where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name => value) to be bound to the query.

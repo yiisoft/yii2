@@ -82,7 +82,7 @@ class BaseHtml
 
 	/**
 	 * Encodes special characters into HTML entities.
-	 * The [[yii\base\Application::charset|application charset]] will be used for encoding.
+	 * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
 	 * @param string $content the content to be encoded
 	 * @param boolean $doubleEncode whether to encode HTML entities in `$content`. If false,
 	 * HTML entities in `$content` will not be further encoded.
@@ -223,7 +223,7 @@ class BaseHtml
 	 * @param string $method the form submission method, such as "post", "get", "put", "delete" (case-insensitive).
 	 * Since most browsers only support "post" and "get", if other methods are given, they will
 	 * be simulated using "post", and a hidden input will be added which contains the actual method type.
-	 * See [[\yii\web\Request::restVar]] for more details.
+	 * See [[\yii\web\Request::methodVar]] for more details.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
@@ -956,7 +956,7 @@ class BaseHtml
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * The following options are specially handled:
 	 *
-	 * - label: this specifies the label to be displayed. Note that this will NOT be [[encoded()]].
+	 * - label: this specifies the label to be displayed. Note that this will NOT be [[encode()|encoded]].
 	 *   If this is not set, [[Model::getAttributeLabel()]] will be called to get the label for display
 	 *   (after encoding).
 	 *
