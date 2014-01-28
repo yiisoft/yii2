@@ -50,8 +50,8 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 /**
  * BaseYii is the core helper class for the Yii framework.
  *
- * Do not use BaseYii directly. Instead, use its child class [[\Yii]] where
- * you can customize methods of BaseYii.
+ * Do not use BaseYii directly. Instead, use its child class [[\Yii]] which you can replace to
+ * customize methods of BaseYii.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
