@@ -10,14 +10,16 @@ namespace yii\widgets;
 use yii\web\AssetBundle;
 
 /**
+ * This asset bundle provides the javascript files required by [[yii\widgets\Pjax]] widget.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class MaskedInputAsset extends AssetBundle
+class PjaxAsset extends AssetBundle
 {
 	public $sourcePath = '@yii/assets';
 	public $js = [
-		'jquery.maskedinput.js',
+		'pjax/jquery.pjax.js',
 	];
 	public $depends = [
 		'yii\web\YiiAsset',
