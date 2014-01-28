@@ -169,8 +169,8 @@ interface ActiveRecordInterface
 	/**
 	 * Saves the current record.
 	 *
-	 * This method will call [[insert()]] when [[isNewRecord]] is true, or [[update()]]
-	 * when [[isNewRecord]] is false.
+	 * This method will call [[insert()]] when [[getIsNewRecord|isNewRecord]] is true, or [[update()]]
+	 * when [[getIsNewRecord|isNewRecord]] is false.
 	 *
 	 * For example, to save a customer record:
 	 *

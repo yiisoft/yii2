@@ -593,7 +593,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * [[EVENT_BEFORE_UPDATE]], [[EVENT_AFTER_UPDATE]] and [[EVENT_AFTER_VALIDATE]]
 	 * will be raised by the corresponding methods.
 	 *
-	 * Only the [[changedAttributes|changed attribute values]] will be saved into database.
+	 * Only the [[dirtyAttributes|changed attribute values]] will be saved into database.
 	 *
 	 * For example, to update a customer record:
 	 *

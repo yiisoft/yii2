@@ -19,7 +19,7 @@ use yii\helpers\Html;
  * The behavior of some of them may be configured via the properties of Formatter. For example,
  * by configuring [[dateFormat]], one may control how [[asDate()]] formats the value into a date string.
  *
- * Formatter is configured as an application component in [[yii\base\Application]] by default.
+ * Formatter is configured as an application component in [[\yii\base\Application]] by default.
  * You can access that instance via `Yii::$app->formatter`.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

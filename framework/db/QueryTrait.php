@@ -10,12 +10,7 @@ namespace yii\db;
 /**
  * The BaseQuery trait represents the minimum method set of a database Query.
  *
- * It has support for getting [[one]] instance or [[all]].
- * Allows pagination via [[limit]] and [[offset]].
- * Sorting is supported via [[orderBy]] and items can be limited to match some conditions unsing [[where]].
- *
- * By calling [[createCommand()]], we can get a [[Command]] instance which can be further
- * used to perform/execute the DB query against a database.
+ * It is supposed to be used in a class that implements the [[QueryInterface]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
