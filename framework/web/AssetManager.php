@@ -227,8 +227,7 @@ class AssetManager extends Component
 			return $this->_published[$path];
 		}
 
-		$src = realpath($path);
-		if ($src === false) {
+		if (!is_string($path) || ($src = realpath($path)) === false) {
 			throw new InvalidParamException("The file or directory to be published does not exist: $path");
 		}
 
@@ -295,7 +294,7 @@ class AssetManager extends Component
 		if (isset($this->_published[$path])) {
 			return $this->_published[$path][0];
 		}
-		if (($path = realpath($path)) !== false) {
+		if (is_string($path) && ($path = realpath($path)) !== false) {
 			$base = $this->basePath . DIRECTORY_SEPARATOR;
 			if (is_file($path)) {
 				return $base . $this->hash(dirname($path) . filemtime($path)) . DIRECTORY_SEPARATOR . basename($path);
@@ -319,7 +318,7 @@ class AssetManager extends Component
 		if (isset($this->_published[$path])) {
 			return $this->_published[$path][1];
 		}
-		if (($path = realpath($path)) !== false) {
+		if (is_string($path) && ($path = realpath($path)) !== false) {
 			if (is_file($path)) {
 				return $this->baseUrl . '/' . $this->hash(dirname($path) . filemtime($path)) . '/' . basename($path);
 			} else {

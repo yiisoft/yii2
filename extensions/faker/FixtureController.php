@@ -233,8 +233,9 @@ class FixtureController extends \yii\console\controllers\FixtureController
 			}
 
 			$content = $this->exportFixtures($fixtures);
-			file_put_contents($fixturePath . '/' . $fixtureFileName, $content);
-			$this->stdout("Fixture file was generated under: " . realpath($fixturePath . "/" . $fixtureFileName) . "\n", Console::FG_GREEN);
+			$filePath = realpath($fixturePath . '/' . $fixtureFileName);
+			file_put_contents($filePath, $content);
+			$this->stdout("Fixture file was generated under: $filePath\n", Console::FG_GREEN);
 		}
 	}
 
@@ -356,9 +357,9 @@ class FixtureController extends \yii\console\controllers\FixtureController
 	public function confirmGeneration($files)
 	{
 		$this->stdout("Fixtures will be generated under the path: \n", Console::FG_YELLOW);
-		$this->stdout(realpath(Yii::getAlias($this->fixturePath, false)) . "\n\n", Console::FG_GREEN);
+		$this->stdout(realpath(Yii::getAlias($this->fixturePath)) . "\n\n", Console::FG_GREEN);
 		$this->stdout("Templates will be taken from path: \n", Console::FG_YELLOW);
-		$this->stdout(realpath(Yii::getAlias($this->templatePath, false)) . "\n\n", Console::FG_GREEN);
+		$this->stdout(realpath(Yii::getAlias($this->templatePath)) . "\n\n", Console::FG_GREEN);
 
 		foreach ($files as $index => $fileName) {
 			$this->stdout("    " . ($index + 1) . ". " . basename($fileName) . "\n", Console::FG_GREEN);
