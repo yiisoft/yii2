@@ -8,8 +8,8 @@ Most often a controller takes HTTP request data and returns HTML, JSON or XML as
 Basics
 ------
 
-Controller resides in application's `controllers` directory is named like `SiteController.php` where `Site`
-part could be anything describing a set of actions it contains.
+Controller resides in application's `controllers` directory and is named like `SiteController.php`,
+where the `Site` part could be anything describing a set of actions it contains.
 
 The basic web controller is a class that extends [[\yii\web\Controller]] and could be very simple:
 
@@ -35,9 +35,9 @@ class SiteController extends Controller
 ```
 
 As you can see, typical controller contains actions that are public class methods named as `actionSomething`.
-The output of an action is what the method returns, it could be rendered result or it can be instance of ```yii\web\Response```, for [example](#custom-response-class).
+The output of an action is what the method returns: it could be a string or an instance of `yii\web\Response`, [for example](#custom-response-class).
 The return value will be handled by the `response` application
-component which can convert the output to differnet formats such as JSON for example. The default behavior
+component which can convert the output to different formats such as JSON for example. The default behavior
 is to output the value unchanged though.
 
 You also can disable CSRF validation per controller and/or action, by setting its property:
@@ -49,7 +49,6 @@ use yii\web\Controller;
 
 class SiteController extends Controller
 {
-
 	public $enableCsrfValidation = false;
 
 	public function actionIndex()

@@ -32,6 +32,17 @@ The view for the action above would be `views/site/index.php` and can be somethi
 
 Any data type can be passed to the view, including arrays or objects.
 
+Besides the above `render()` method, the [[yii\web\Controller]] class also provides several other rendering methods.
+Below is a summary of these methods:
+
+* `render()`: renders a view and applies the layout to the rendering result. This is most commonly used to render a complete page.
+* `renderPartial()`: renders a view without applying any layout. This is often used to render a fragment of a page.
+* `renderAjax()`: renders a view without applying any layout, and injects all registered JS/CSS scripts and files.
+  It is most commonly used to render an HTML output to respond to an AJAX request.
+* `renderFile()`: renders a view file. This is similar to `renderPartial()` except that it takes the file path
+  of the view instead of the view name.
+
+
 Widgets
 -------
 
@@ -43,7 +54,7 @@ Widgets are self-contained building blocks for your views, a way to combine comp
 * Returns HTML to be shown within the context of the view
 
 There are a good number of widgets bundled with Yii, such as [active form](form.md),
-breadcrumbs, dmenu, and [wrappers around bootstrap component framework](bootstrap-widgets.md). Additionally there are
+breadcrumbs, menu, and [wrappers around bootstrap component framework](bootstrap-widgets.md). Additionally there are
 extensions that provide more widgets, such as the official widget for [jQueryUI](http://www.jqueryui.com) components.
 
 In order to use a widget, your view file would do the following:
@@ -72,7 +83,7 @@ One of the main security principles is to always escape output. If violated it l
 most probably, to cross-site scripting known as XSS leading to leaking of admin passwords, making a user to automatically
 perform actions etc.
 
-Yii provides a good toolset in order help you escaping your output. The very basic thing to escape is a text without any
+Yii provides a good tool set in order to help you escape your output. The very basic thing to escape is a text without any
 markup. You can deal with it like the following:
 
 ```php
@@ -86,15 +97,7 @@ use yii\helpers\Html;
 ```
 
 When you want to render HTML it becomes complex so we're delegating the task to excellent
-[HTMLPurifier](http://htmlpurifier.org/) library. In order to use it you need to modify your `composer.json` first by
-adding the following to `require`:
-
-```javascript
-"ezyang/htmlpurifier": "v4.6.0"
-```
-
-After it's done run `php composer.phar install --prefer-dist` and wait till package is downloaded. Now everything is prepared to use
-Yii's HtmlPurifier helper:
+[HTMLPurifier](http://htmlpurifier.org/) library which is wrapped in Yii as a helper [[yii\helpers\HtmlPurifier]]:
 
 ```php
 <?php
