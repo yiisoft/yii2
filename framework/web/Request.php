@@ -380,6 +380,22 @@ class Request extends \yii\base\Request
 		return isset($params[$name]) ? $params[$name] : $defaultValue;
 	}
 
+	/**
+	 * Returns POST parameter with a given name. If name isn't specified, returns an array of all POST parameters.
+	 *
+	 * @param string $name the parameter name
+	 * @param mixed $defaultValue the default parameter value if the parameter does not exist.
+	 * @return array|mixed
+	 */
+	public function post($name = null, $defaultValue = null)
+	{
+		if ($name === null) {
+			return $this->getBodyParams();
+		} else {
+			return $this->getBodyParam($name, $defaultValue);
+		}
+	}
+
 	private $_queryParams;
 
 	/**
@@ -406,6 +422,22 @@ class Request extends \yii\base\Request
 	public function setQueryParams($values)
 	{
 		$this->_queryParams = $values;
+	}
+
+	/**
+	 * Returns GET parameter with a given name. If name isn't specified, returns an array of all GET parameters.
+	 *
+	 * @param string $name the parameter name
+	 * @param mixed $defaultValue the default parameter value if the parameter does not exist.
+	 * @return array|mixed
+	 */
+	public function get($name = null, $defaultValue = null)
+	{
+		if ($name === null) {
+			return $this->getQueryParams();
+		} else {
+			return $this->getQueryParam($name, $defaultValue);
+		}
 	}
 
 	/**
