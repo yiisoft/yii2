@@ -37,6 +37,10 @@ class InterfaceDoc extends TypeDoc
 			$this->parentInterfaces[] = ltrim($interface, '\\');
 		}
 
+		foreach($this->methods as $method) {
+			$method->isAbstract = true;
+		}
+
 		// interface can not have properties
 		$this->properties = null;
 	}
