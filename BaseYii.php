@@ -459,7 +459,7 @@ class BaseYii
 
 	/**
 	 * Returns an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information.
-	 * @return string an HTML hyperlink that can be displayed on your Web page showing Powered by Yii" information
+	 * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
 	 */
 	public static function powered()
 	{
@@ -473,16 +473,16 @@ class BaseYii
 	 *
 	 * The translation will be conducted according to the message category and the target language will be used.
 	 *
-	 * In case when a translated message has different plural forms (separated by "|"), this method
-	 * will also attempt to choose an appropriate one according to a given numeric value which is
-	 * specified as the first parameter (indexed by 0) in `$params`.
+	 * You can add parameters to a translation message that will be substituted with the corresponding value after
+	 * translation. The format for this is to use curly brackets around the parameter name as you can see in the following example:
 	 *
-	 * For example, if a translated message is "I have an apple.|I have {n} apples.", and the first
-	 * parameter is 2, the message returned will be "I have 2 apples.". Note that the placeholder "{n}"
-	 * will be replaced with the given number.
+	 * ```php
+	 * $username = 'Alexander';
+	 * echo \Yii::t('app', 'Hello, {username}!', ['username' => $username]);
+	 * ```
 	 *
-	 * For more details on how plural rules are applied, please refer to:
-	 * <http://www.unicode.org/cldr/charts/supplemental/language_plural_rules.html>
+	 * Further formatting of message parameters is supported using the [PHP intl extensions](http://www.php.net/manual/en/intro.intl.php)
+	 * message formatter. See [[yii\i18n\I18N::translate()]] for more details.
 	 *
 	 * @param string $category the message category.
 	 * @param string $message the message to be translated.
