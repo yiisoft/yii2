@@ -39,7 +39,7 @@ class Markdown extends \yii\helpers\Markdown
 			$content = substr($content, 3, -4);
 		}
 
-		$content = preg_replace_callback('/\[\[([\w\d\\\\\(\):]+)(\|[\w\d ]*)?\]\]/xm', function($matches) use ($context) {
+		$content = preg_replace_callback('/\[\[([\w\d\\\\\(\):$]+)(\|[^\]]*)?\]\]/xm', function($matches) use ($context) {
 			$object = $matches[1];
 			$title = (empty($matches[2]) || $matches[2] == '|') ? null : substr($matches[2], 1);
 
