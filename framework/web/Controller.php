@@ -16,6 +16,8 @@ use yii\helpers\Html;
  *
  * @property string $canonicalUrl The canonical URL of the currently requested page. This property is
  * read-only.
+ * @property View $view The view object that can be used to render views or view files. This property is
+ * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -31,6 +33,24 @@ class Controller extends \yii\base\Controller
 	 * @var array the parameters bound to the current action. This is mainly used by [[getCanonicalUrl()]].
 	 */
 	public $actionParams = [];
+
+
+	/**
+	 * Renders a view in response to an AJAX request.
+	 *
+	 * This method is similar to [[renderPartial()]] except that it will inject into
+	 * the rendering result with JS/CSS scripts and files which are registered with the view.
+	 * For this reason, you should use this method instead of [[renderPartial()]] to render
+	 * a view to respond to an AJAX request.
+	 *
+	 * @param string $view the view name. Please refer to [[render()]] on how to specify a view name.
+	 * @param array $params the parameters (name-value pairs) that should be made available in the view.
+	 * @return string the rendering result.
+	 */
+	public function renderAjax($view, $params = [])
+	{
+		return $this->getView()->renderAjax($view, $params, $this);
+	}
 
 	/**
 	 * Binds the parameters to the action.
