@@ -22,7 +22,7 @@ use yii\base\NotSupportedException;
  * be referenced using short names. They are listed as follows:
  *
  * - `boolean`: [[BooleanValidator]]
- * - `captcha`: [[CaptchaValidator]]
+ * - `captcha`: [[\yii\captcha\CaptchaValidator]]
  * - `compare`: [[CompareValidator]]
  * - `date`: [[DateValidator]]
  * - `default`: [[DefaultValueValidator]]
@@ -257,7 +257,7 @@ class Validator extends Component
 	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script. Null if the validator does not support
 	 * client-side validation.
-	 * @see \yii\web\ActiveForm::enableClientValidation
+	 * @see \yii\widgets\ActiveForm::enableClientValidation
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{

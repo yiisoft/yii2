@@ -21,8 +21,6 @@ use yii\helpers\Html;
  * with another attribute whose name is by appending "_repeat" to the source
  * attribute name.
  *
- * The comparison can be either [[strict]] or not.
- *
  * CompareValidator supports different comparison operators, specified
  * via the [[operator]] property.
  *

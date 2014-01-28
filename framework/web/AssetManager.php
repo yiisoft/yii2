@@ -16,7 +16,7 @@ use yii\helpers\FileHelper;
 /**
  * AssetManager manages asset bundles and asset publishing.
  *
- * AssetManager is configured as an application component in [[yii\web\Application]] by default.
+ * AssetManager is configured as an application component in [[\yii\web\Application]] by default.
  * You can access that instance via `Yii::$app->assetManager`.
  *
  * You can modify its configuration by adding an array to your application config under `components`

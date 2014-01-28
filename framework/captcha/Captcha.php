@@ -25,7 +25,7 @@ use yii\widgets\InputWidget;
  * When the user clicks on the CAPTCHA image, it will cause the CAPTCHA image
  * to be refreshed with a new CAPTCHA.
  *
- * You may use [[\yii\validators\CaptchaValidator]] to validate the user input matches
+ * You may use [[\yii\captcha\CaptchaValidator]] to validate the user input matches
  * the current CAPTCHA verification code.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
