@@ -105,6 +105,8 @@ class RenderController extends Controller
 		// render models
 		$renderer->renderApi($context, $this);
 
+		print_r($context->errors);
+
 		// render guide if specified
 		if ($this->guide !== null) {
 			$renderer->renderMarkdownFiles($this->findMarkdownFiles($this->guide, ['README.md']), $this);

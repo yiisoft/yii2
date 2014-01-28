@@ -33,11 +33,12 @@ class FunctionDoc extends BaseDoc
 
 	/**
 	 * @param \phpDocumentor\Reflection\FunctionReflector $reflector
+	 * @param Context $context
 	 * @param array $config
 	 */
-	public function __construct($reflector = null, $config = [])
+	public function __construct($reflector = null, $context = null, $config = [])
 	{
-		parent::__construct($reflector, $config);
+		parent::__construct($reflector, $context, $config);
 
 		if ($reflector === null) {
 			return;
@@ -46,7 +47,7 @@ class FunctionDoc extends BaseDoc
 		$this->isReturnByReference = $reflector->isByRef();
 
 		foreach($reflector->getArguments() as $arg) {
-			$arg = new ParamDoc($arg);
+			$arg = new ParamDoc($arg, $context, ['sourceFile' => $this->sourceFile]);
 			$this->params[$arg->name] = $arg;
 		}
 
@@ -58,8 +59,12 @@ class FunctionDoc extends BaseDoc
 				 // ignore property tag
 			} elseif ($tag instanceof ParamTag) {
 				$paramName = $tag->getVariableName();
-				if (!isset($this->params[$paramName])) {
-					echo 'undefined parameter documented: ' . $paramName . ' in ' . $this->name . "()\n"; // TODO log these messages somewhere
+				if (!isset($this->params[$paramName]) && $context !== null) {
+					$context->errors[] = [
+						'line' => $this->startLine,
+						'file' => $this->sourceFile,
+						'message' => "Undefined parameter documented: $paramName in {$this->name}().",
+					];
 					continue;
 				}
 				$this->params[$paramName]->description = ucfirst($tag->getDescription());

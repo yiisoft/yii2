@@ -27,11 +27,12 @@ class MethodDoc extends FunctionDoc
 
 	/**
 	 * @param \phpDocumentor\Reflection\ClassReflector\MethodReflector $reflector
+	 * @param Context $context
 	 * @param array $config
 	 */
-	public function __construct($reflector = null, $config = [])
+	public function __construct($reflector = null, $context = null, $config = [])
 	{
-		parent::__construct($reflector, $config);
+		parent::__construct($reflector, $context, $config);
 
 		if ($reflector === null) {
 			return;

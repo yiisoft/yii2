@@ -44,11 +44,12 @@ class PropertyDoc extends BaseDoc
 
 	/**
 	 * @param \phpDocumentor\Reflection\ClassReflector\PropertyReflector $reflector
+	 * @param Context $context
 	 * @param array $config
 	 */
-	public function __construct($reflector = null, $config = [])
+	public function __construct($reflector = null, $context = null, $config = [])
 	{
-		parent::__construct($reflector, $config);
+		parent::__construct($reflector, $context, $config);
 
 		if ($reflector === null) {
 			return;
@@ -73,6 +74,13 @@ class PropertyDoc extends BaseDoc
 					$this->shortDescription = $this->description;
 				}
 			}
+		}
+		if (empty($this->shortDescription) && $context !== null) {
+			$context->errors[] = [
+				'line' => $this->startLine,
+				'file' => $this->sourceFile,
+				'message' => "No short description for element '{$this->name}'",
+			];
 		}
 	}
 }

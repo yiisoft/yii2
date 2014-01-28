@@ -35,6 +35,8 @@ class Context extends Component
 	 */
 	public $traits = [];
 
+	public $errors = [];
+
 
 	public function getType($type)
 	{
@@ -57,18 +59,15 @@ class Context extends Component
 		$reflection->process();
 
 		foreach($reflection->getClasses() as $class) {
-			$class = new ClassDoc($class);
-			$class->sourceFile = $fileName;
+			$class = new ClassDoc($class, $this, ['sourceFile' => $fileName]);
 			$this->classes[$class->name] = $class;
 		}
 		foreach($reflection->getInterfaces() as $interface) {
-			$interface = new InterfaceDoc($interface);
-			$interface->sourceFile = $fileName;
+			$interface = new InterfaceDoc($interface, $this, ['sourceFile' => $fileName]);
 			$this->interfaces[$interface->name] = $interface;
 		}
 		foreach($reflection->getTraits() as $trait) {
-			$trait = new TraitDoc($trait);
-			$trait->sourceFile = $fileName;
+			$trait = new TraitDoc($trait, $this, ['sourceFile' => $fileName]);
 			$this->traits[$trait->name] = $trait;
 		}
 	}
@@ -160,13 +159,18 @@ class Context extends Component
 				if (isset($class->properties[$propertyName])) {
 					$property = $class->properties[$propertyName];
 					if ($property->getter === null && $property->setter === null) {
-						echo "Property $propertyName conflicts with a defined getter {$method->name} in {$class->name}.\n"; // TODO log these messages somewhere
+						$this->errors[] = [
+							'line' => $property->startLine,
+							'file' => $class->sourceFile,
+							'message' => "Property $propertyName conflicts with a defined getter {$method->name} in {$class->name}.",
+						];
 					}
 					$property->getter = $method;
 				} else {
-					$class->properties[$propertyName] = new PropertyDoc(null, [
+					$class->properties[$propertyName] = new PropertyDoc(null, $this, [
 						'name' => $propertyName,
 						'definedBy' => $class->name,
+						'sourceFile' => $class->sourceFile,
 						'visibility' => 'public',
 						'isStatic' => false,
 						'type' => $method->returnType,
@@ -184,14 +188,19 @@ class Context extends Component
 				if (isset($class->properties[$propertyName])) {
 					$property = $class->properties[$propertyName];
 					if ($property->getter === null && $property->setter === null) {
-						echo "Property $propertyName conflicts with a defined setter {$method->name} in {$class->name}.\n"; // TODO log these messages somewhere
+						$this->errors[] = [
+							'line' => $property->startLine,
+							'file' => $class->sourceFile,
+							'message' => "Property $propertyName conflicts with a defined setter {$method->name} in {$class->name}.",
+						];
 					}
 					$property->setter = $method;
 				} else {
 					$param = $this->getFirstNotOptionalParameter($method);
-					$class->properties[$propertyName] = new PropertyDoc(null, [
+					$class->properties[$propertyName] = new PropertyDoc(null, $this, [
 						'name' => $propertyName,
 						'definedBy' => $class->name,
+						'sourceFile' => $class->sourceFile,
 						'visibility' => 'public',
 						'isStatic' => false,
 						'type' => $param->type,
