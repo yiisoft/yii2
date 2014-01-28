@@ -561,7 +561,7 @@ class QueryBuilder extends \yii\base\Object
 	 * @param array $columns
 	 * @param boolean $distinct
 	 * @param string $selectOption
-	 * @return string the SELECT clause built from [[query]].
+	 * @return string the SELECT clause built from [[Query::$select]].
 	 */
 	public function buildSelect($columns, $distinct = false, $selectOption = null)
 	{
@@ -595,7 +595,7 @@ class QueryBuilder extends \yii\base\Object
 
 	/**
 	 * @param array $tables
-	 * @return string the FROM clause built from [[query]].
+	 * @return string the FROM clause built from [[Query::$from]].
 	 */
 	public function buildFrom($tables)
 	{
@@ -623,7 +623,7 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * @param string|array $joins
 	 * @param array $params the binding parameters to be populated
-	 * @return string the JOIN clause built from [[query]].
+	 * @return string the JOIN clause built from [[Query::$join]].
 	 * @throws Exception if the $joins parameter is not in proper format
 	 */
 	public function buildJoin($joins, &$params)
@@ -663,7 +663,7 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * @param string|array $condition
 	 * @param array $params the binding parameters to be populated
-	 * @return string the WHERE clause built from [[query]].
+	 * @return string the WHERE clause built from [[Query::$where]].
 	 */
 	public function buildWhere($condition, &$params)
 	{
@@ -683,7 +683,7 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * @param string|array $condition
 	 * @param array $params the binding parameters to be populated
-	 * @return string the HAVING clause built from [[query]].
+	 * @return string the HAVING clause built from [[Query::$having]].
 	 */
 	public function buildHaving($condition, &$params)
 	{
@@ -693,7 +693,7 @@ class QueryBuilder extends \yii\base\Object
 
 	/**
 	 * @param array $columns
-	 * @return string the ORDER BY clause built from [[query]].
+	 * @return string the ORDER BY clause built from [[Query::$orderBy]].
 	 */
 	public function buildOrderBy($columns)
 	{
@@ -715,7 +715,7 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * @param integer $limit
 	 * @param integer $offset
-	 * @return string the LIMIT and OFFSET clauses built from [[query]].
+	 * @return string the LIMIT and OFFSET clauses built from [[Query::$limit]].
 	 */
 	public function buildLimit($limit, $offset)
 	{
@@ -732,7 +732,7 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * @param array $unions
 	 * @param array $params the binding parameters to be populated
-	 * @return string the UNION clause built from [[query]].
+	 * @return string the UNION clause built from [[Query::$union]].
 	 */
 	public function buildUnion($unions, &$params)
 	{

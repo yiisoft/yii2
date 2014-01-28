@@ -50,7 +50,7 @@ trait QueryTrait
 	/**
 	 * @var string|callable $column the name of the column by which the query results should be indexed by.
 	 * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
-	 * row data. For more details, see [[indexBy()]]. This property is only used by [[all()]].
+	 * row data. For more details, see [[indexBy()]]. This property is only used by [[QueryInterface::all()|all()]].
 	 */
 	public $indexBy;
 
