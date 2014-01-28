@@ -49,6 +49,7 @@ $this->beginPage();
 		'options' => ['class' => 'navbar-nav'],
 		'items' => $nav,
 		'view' => $this,
+		'params' => [],
 	]);
 	NavBar::end();
 	?>
