@@ -236,7 +236,8 @@ determines where script should be inserted into the page. Possible values are:
 - `View::POS_HEAD` for head section.
 - `View::POS_BEGIN` for right after opening `<body>`.
 - `View::POS_END` for right before closing `</body>`.
-- `View::POS_READY` for executing code on document `ready` event. This one registers jQuery automatically.
+- `View::POS_READY` for executing code on document `ready` event. This will register jQuery automatically.
+- `View::POS_LOAD` for executing code on document `load` event. This will register jQuery automatically.
 
 The last argument is a unique script ID that is used to identify code block and replace existing one with the same ID
 instead of adding a new one. If you don't provide it, the JS code itself will be used as the ID.
