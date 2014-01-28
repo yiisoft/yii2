@@ -6,6 +6,7 @@
  */
 
 namespace yii\base;
+use Yii;
 
 /**
  * Request represents a request that is handled by an [[Application]].
@@ -72,7 +73,7 @@ abstract class Request extends Component
 	 */
 	public function setScriptFile($value)
 	{
-		$scriptFile = realpath(\Yii::getAlias($value));
+		$scriptFile = realpath(Yii::getAlias($value));
 		if ($scriptFile !== false && is_file($scriptFile)) {
 			$this->_scriptFile = $scriptFile;
 		} else {
