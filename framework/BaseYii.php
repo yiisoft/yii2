@@ -458,8 +458,8 @@ class BaseYii
 	}
 
 	/**
-	 * Returns an HTML hyperlink that can be displayed on your Web page showing Powered by Yii" information.
-	 * @return string an HTML hyperlink that can be displayed on your Web page showing Powered by Yii" information
+	 * Returns an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information.
+	 * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
 	 */
 	public static function powered()
 	{
