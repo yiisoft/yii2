@@ -185,6 +185,9 @@ class BaseFileHelper
 		}
 
 		$handle = opendir($src);
+		if ($handle === false) {
+			throw new InvalidParamException('Unable to open directory: ' . $src);
+		}
 		while (($file = readdir($handle)) !== false) {
 			if ($file === '.' || $file === '..') {
 				continue;
@@ -293,6 +296,9 @@ class BaseFileHelper
 		}
 		$list = [];
 		$handle = opendir($dir);
+		if ($handle === false) {
+			throw new InvalidParamException('Unable to open directory: ' . $dir);
+		}
 		while (($file = readdir($handle)) !== false) {
 			if ($file === '.' || $file === '..') {
 				continue;
