@@ -19,7 +19,7 @@ public function actionIndex()
 ```
 
 The first argument to `render()` is the name of the view to display. In the context of the controller, Yii will search for its views in `views/site/` where `site`
-is the controller ID. For details on how the view name is resolved, refer to the [yii\base\Controller::render] method.
+is the controller ID. For details on how the view name is resolved, refer to the [[yii\base\Controller::render()]] method.
 
 
 The second argument to `render()` is a data array of key-value pairs. Through this array, data can be passed to the view, making the value available in the view as a variable named the same as the corresponding key.

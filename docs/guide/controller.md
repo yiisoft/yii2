@@ -35,7 +35,7 @@ class SiteController extends Controller
 ```
 
 As you can see, typical controller contains actions that are public class methods named as `actionSomething`.
-The output of an action is what the method returns: it could be a string or an instance of `yii\web\Response`, [for example](#custom-response-class).
+The output of an action is what the method returns: it could be a string or an instance of [[yii\web\Response]], [for example](#custom-response-class).
 The return value will be handled by the `response` application
 component which can convert the output to different formats such as JSON for example. The default behavior
 is to output the value unchanged though.
