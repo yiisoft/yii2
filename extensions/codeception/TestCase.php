@@ -21,7 +21,7 @@ class TestCase extends Test
 	 * @var array|string the application configuration that will be used for creating an application instance for each test.
 	 * You can use a string to represent the file path or path alias of a configuration file.
 	 * The application configuration array may contain an optional `class` element which specifies the class
-	 * name of the application instance to be created. By default, a [[yii\web\Application]] instance will be created.
+	 * name of the application instance to be created. By default, a [[\yii\web\Application]] instance will be created.
 	 */
 	public $appConfig = '@tests/unit/_config.php';
 
