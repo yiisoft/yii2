@@ -36,7 +36,7 @@
 				});
 
 				var enterPressed = false;
-				$(document).on('change.yiiGridView keydown.yiiGridView', settings.filterSelector, function (event) {
+				$(settings.filterSelector).on('change.yiiGridView keydown.yiiGridView', function (event) {
 					if (event.type === 'keydown') {
 						if (event.keyCode !== 13) {
 							return; // only react to enter key
@@ -57,7 +57,13 @@
 					} else {
 						url += '?' + data;
 					}
-					window.location.href = url;
+					var $filterLink = $('.gridview-filter-link', $e);
+					if (!$filterLink.length) {
+						$filterLink = $('<a href="" style="display:none" class="gridview-filter-link"></a>');
+						$e.append($filterLink);
+					}
+					// use link clicking so that pjax can work by default
+					$filterLink.prop('href', url).click();
 					return false;
 				});
 			});
@@ -101,39 +107,6 @@
 		data: function() {
 			return this.data('yiiGridView');
 		}
-	};
-
-	var enterPressed = false;
-
-	var filterChanged = function (event) {
-		if (event.type === 'keydown') {
-			if (event.keyCode !== 13) {
-				return; // only react to enter key
-			} else {
-				enterPressed = true;
-			}
-		} else {
-			// prevent processing for both keydown and change events
-			if (enterPressed) {
-				enterPressed = false;
-				return;
-			}
-		}
-		var data = $(settings.filterSelector).serialize();
-		if (settings.pageVar !== undefined) {
-			data += '&' + settings.pageVar + '=1';
-		}
-		if (settings.enableHistory && settings.ajaxUpdate !== false && window.History.enabled) {
-			// Ajaxify this link
-			var url = $('#' + id).yiiGridView('getUrl'),
-				params = $.deparam.querystring($.param.querystring(url, data));
-
-			delete params[settings.ajaxVar];
-			window.History.pushState(null, document.title, decodeURIComponent($.param.querystring(url.substr(0, url.indexOf('?')), params)));
-		} else {
-			$('#' + id).yiiGridView('update', {data: data});
-		}
-		return false;
 	};
 })(window.jQuery);
 
