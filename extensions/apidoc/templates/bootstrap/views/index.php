@@ -8,6 +8,10 @@ use yii\apidoc\models\TraitDoc;
  * @var yii\web\View $this
  */
 
+if (isset($readme)) {
+	echo \yii\apidoc\helpers\Markdown::process($readme);
+}
+
 ?><h1>Class Reference</h1>
 
 <table class="summaryTable docIndex table table-bordered table-striped table-hover">

@@ -37,9 +37,17 @@ $this->beginPage();
 		'padded' => false,
 		'view' => $this,
 	]);
+	$extItems = [];
+	foreach($this->context->extensions as $ext) {
+		$extItems[] = [
+			'label' => $ext,
+			'url' => "./ext_{$ext}_index.html",
+		];
+	}
 	$nav = [
 		['label' => 'Class reference', 'url' => './index.html'],
 //		['label' => 'Application API', 'url' => '/site/about'],
+		['label' => 'Extensions', 'items' => $extItems],
 	];
 	if ($this->context->guideUrl !== null) {
 		$nav[] = ['label' => 'Guide', 'url' => $this->context->guideUrl . 'guide_index.html'];
