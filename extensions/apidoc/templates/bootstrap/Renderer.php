@@ -70,6 +70,13 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 			]);
 			file_put_contents($dir . "/ext_{$ext}_index.html", $indexFileContent);
 		}
+		$readme = @file_get_contents("https://raw.github.com/yiisoft/yii2-framework/master/README.md");
+		$indexFileContent = $this->renderWithLayout($this->indexView, [
+			'docContext' => $context,
+			'types' => $this->filterTypes($types, 'yii'),
+			'readme' => $readme ?: null,
+		]);
+		file_put_contents($dir . '/index.html', $indexFileContent);
 		$controller->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 	}
 
