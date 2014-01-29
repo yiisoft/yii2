@@ -88,7 +88,7 @@ class Debug extends Base
 				'attributes' => ['method', 'ip', 'tag', 'time', 'statusCode', 'sqlCount'],
 			],
 			'pagination' => [
-				'pageSize' => 10,
+				'pageSize' => 50,
 			],
 		]);
 
