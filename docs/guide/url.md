@@ -2,11 +2,11 @@ URL Management
 ==============
 
 The concept of URL management in Yii is fairly simple. URL management is based on the premise that the application uses
-internal routes and parameters everywhere. The framework itself will then translate routes into URLs, and vice vera, according to the URL manager's configuration. This approach allows you to change site-wide URLs merely by
+internal routes and parameters everywhere. The framework itself will then translate routes into URLs, and vice versa, according to the URL manager's configuration. This approach allows you to change site-wide URLs merely by
 editing a single configuration file, without ever touching the application code.
 
 Internal routes
---------------
+---------------
 
 When implementing an application using Yii, you'll deal with internal routes, often referred to as routes and parameters.
 Each controller and controller action has a corresponding internal route such as `site/index` or `user/create`.
@@ -24,10 +24,11 @@ The most important rule for creating URLs in your site is to always do so using 
 - `createUrl($route, $params = [])`
 - `createAbsoluteUrl($route, $params = [])`
 
-The `createUrl` method creates a URL relative to the application root, such as `/index.php/site/index/`.
-The `createAbsoluteUrl` method creates a URL prefixed with the proper protocol and hostname:
+The `createUrl` method creates an URL relative to the application root, such as `/index.php/site/index/`.
+The `createAbsoluteUrl` method creates an URL prefixed with the proper protocol and hostname:
 `http://www.example.com/index.php/site/index`. The former is suitable for internal application URLs, while the latter
-is used when you need to create URLs for external resources, such as connecting to third party services, sending email, generating RSS feeds etc.
+is used when you need to create URLs for external resources, such as connecting to third party services, sending email,
+generating RSS feeds etc.
 
 Some examples:
 
