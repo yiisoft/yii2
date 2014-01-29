@@ -10,7 +10,7 @@ namespace yii\widgets;
 use yii\web\AssetBundle;
 
 /**
- * This asset bundle provides the javascript files required by [[yii\widgets\Pjax]] widget.
+ * This asset bundle provides the javascript files required by [[Pjax]] widget.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
