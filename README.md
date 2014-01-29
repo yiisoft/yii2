@@ -49,6 +49,9 @@ DOCUMENTATION
 
 A draft of the [Definitive Guide](docs/guide/index.md) is available.
 
+API docs and a (quite bad) rendering of the definitive guide are currently
+available at http://stuff.cebe.cc/yii2docs/ (updated four times per hour).
+
 For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/upgrade-from-v1.md)
 to have a general idea of what has changed in 2.0.
 
