@@ -197,6 +197,14 @@ class View extends \yii\base\View
 			self::PH_BODY_END => $this->renderBodyEndHtml($ajaxMode),
 		]);
 
+		$this->clear();
+	}
+
+	/**
+	 * Clears up the registered meta tags, link tags, css/js scripts and files.
+	 */
+	public function clear()
+	{
 		$this->metaTags = null;
 		$this->linkTags = null;
 		$this->css = null;
