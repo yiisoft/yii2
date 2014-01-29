@@ -57,13 +57,7 @@
 					} else {
 						url += '?' + data;
 					}
-					var $filterLink = $('.gridview-filter-link', $e);
-					if (!$filterLink.length) {
-						$filterLink = $('<a href="" style="display:none" class="gridview-filter-link"></a>');
-						$e.append($filterLink);
-					}
-					// use link clicking so that pjax can work by default
-					$filterLink.prop('href', url).click();
+					window.location.href = url;
 					return false;
 				});
 			});
