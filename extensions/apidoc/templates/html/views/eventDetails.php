@@ -1,6 +1,6 @@
 <?php
 
-use yii\apidoc\helpers\Markdown;
+use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
 use yii\helpers\ArrayHelper;
 
@@ -32,7 +32,7 @@ ArrayHelper::multisort($events, 'name');
 		<?php echo $event->trigger->signature; ?>
 	</div>*/ ?>
 
-	<p><?= Markdown::process($event->description, $type); ?></p>
+	<p><?= ApiMarkdown::process($event->description, $type); ?></p>
 
 	<?= $this->render('seeAlso', ['object' => $event]); ?>
 

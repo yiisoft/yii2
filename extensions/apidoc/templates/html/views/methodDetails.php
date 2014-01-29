@@ -1,6 +1,6 @@
 <?php
 
-use yii\apidoc\helpers\Markdown;
+use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\TraitDoc;
 use yii\helpers\ArrayHelper;
@@ -39,21 +39,21 @@ ArrayHelper::multisort($methods, 'name');
 				<tr>
 				  <td class="paramNameCol"><?= $param->name ?></td>
 				  <td class="paramTypeCol"><?= $this->context->typeLink($param->types) ?></td>
-				  <td class="paramDescCol"><?= Markdown::process($param->description, $type) ?></td>
+				  <td class="paramDescCol"><?= ApiMarkdown::process($param->description, $type) ?></td>
 				</tr>
 			<?php endforeach; ?>
 			<?php if(!empty($method->return)): ?>
 				<tr>
 				  <td class="paramNameCol"><?= 'return'; ?></td>
 				  <td class="paramTypeCol"><?= $this->context->typeLink($method->returnTypes); ?></td>
-				  <td class="paramDescCol"><?= Markdown::process($method->return, $type); ?></td>
+				  <td class="paramDescCol"><?= ApiMarkdown::process($method->return, $type); ?></td>
 				</tr>
 			<?php endif; ?>
 			<?php foreach($method->exceptions as $exception => $description): ?>
 				<tr>
 				  <td class="paramNameCol"><?= 'throws' ?></td>
 				  <td class="paramTypeCol"><?= $this->context->typeLink($exception) ?></td>
-				  <td class="paramDescCol"><?= Markdown::process($description, $type) ?></td>
+				  <td class="paramDescCol"><?= ApiMarkdown::process($description, $type) ?></td>
 				</tr>
 			<?php endforeach; ?>
 		<?php endif; ?>
@@ -61,8 +61,8 @@ ArrayHelper::multisort($methods, 'name');
 
 <!--	--><?php //$this->renderPartial('sourceCode',array('object'=>$method)); ?>
 
-	<p><?= Markdown::process($method->shortDescription, $type) ?></strong></p>
-	<p><?= Markdown::process($method->description, $type) ?></p>
+	<p><?= ApiMarkdown::process($method->shortDescription, $type, true) ?></strong></p>
+	<p><?= ApiMarkdown::process($method->description, $type) ?></p>
 
 	<?= $this->render('seeAlso', ['object' => $method]); ?>
 

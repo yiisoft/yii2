@@ -1,6 +1,6 @@
 <?php
 
-use yii\apidoc\helpers\Markdown;
+use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\InterfaceDoc;
 use yii\apidoc\models\TraitDoc;
@@ -37,7 +37,7 @@ foreach($methods as $method): ?>
 	<?php if($protected && $method->visibility == 'protected' || !$protected && $method->visibility != 'protected'): ?>
 	<tr<?= $method->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $method->name ?>()">
 		<td><?= $this->context->subjectLink($method, $method->name.'()') ?></td>
-		<td><?= Markdown::process($method->shortDescription, $method->definedBy) ?></td>
+		<td><?= ApiMarkdown::process($method->shortDescription, $method->definedBy, true) ?></td>
 		<td><?= $this->context->typeLink($method->definedBy, $type) ?></td>
 	</tr>
 	<?php endif; ?>

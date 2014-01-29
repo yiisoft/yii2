@@ -1,6 +1,6 @@
 <?php
 
-use yii\apidoc\helpers\Markdown;
+use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\TraitDoc;
 use yii\helpers\ArrayHelper;
@@ -38,7 +38,7 @@ foreach($properties as $property): ?>
 	<tr<?= $property->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $property->name ?>">
 		<td><?= $this->context->subjectLink($property) ?></td>
 		<td><?= $this->context->typeLink($property->types) ?></td>
-		<td><?= Markdown::process($property->shortDescription, $property->definedBy) ?></td>
+		<td><?= ApiMarkdown::process($property->shortDescription, $property->definedBy, true) ?></td>
 		<td><?= $this->context->typeLink($property->definedBy) ?></td>
 	</tr>
 	<?php endif; ?>

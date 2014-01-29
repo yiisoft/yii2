@@ -25,7 +25,7 @@ if (empty($see)) {
 <h4>See Also</h4>
 <ul>
 <?php foreach($see as $ref): ?>
-	<li><?= \yii\apidoc\helpers\Markdown::process($ref, $object->definedBy) ?></li>
+	<li><?= \yii\apidoc\helpers\ApiMarkdown::process($ref, $object->definedBy, true) ?></li>
 <?php endforeach; ?>
 </ul>
 </div>
