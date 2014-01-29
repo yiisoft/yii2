@@ -251,7 +251,7 @@ $query = new Query;
 $query->select("id, 'post' as type, name")->from('tbl_post')->limit(10);
 
 $anotherQuery = new Query;
-$query->select('id, 'user' as type, name')->from('tbl_user')->limit(10);
+$anotherQuery->select('id, 'user' as type, name')->from('tbl_user')->limit(10);
 
 $query->union($anotherQuery);
 ```
