@@ -49,9 +49,9 @@ Class instances are obtained in one of two ways:
 Connecting to the Database
 ----------------------
 
-ActiveRecord relies on a [[Connection|DB connection]] to perform the underlying DB operations.
+ActiveRecord relies on a [[yii\db\Connection|DB connection]] to perform the underlying DB operations.
 By default, ActiveRecord assumes that there is an application component named `db` which provides the needed
-[[Connection]] instance. Usually this component is configured in application configuration file:
+[[yii\db\Connection]] instance. Usually this component is configured in application configuration file:
 
 ```php
 return [
@@ -76,7 +76,7 @@ There are two ActiveRecord methods for querying data from database:
  - [[yii\db\ActiveRecord::find()]]
  - [[yii\db\ActiveRecord::findBySql()]]
 
-Both methods return an [[ActiveQuery]] instance, which extends [[Query]], and thus supports the same set of flexible and powerful DB query methods. The following examples demonstrate some of the possibilities.
+Both methods return an [[yii\db\ActiveQuery]] instance, which extends [[yii\db\Query]], and thus supports the same set of flexible and powerful DB query methods. The following examples demonstrate some of the possibilities.
 
 ```php
 // to retrieve all *active* customers and order them by their ID:
@@ -191,7 +191,7 @@ You can use ActiveRecord to also query a table's relational data (i.e., selectio
 For example, with an appropriate relation declaration, by accessing `$customer->orders` you may obtain
 an array of `Order` objects which represent the orders placed by the specified customer.
 
-To declare a relation, define a getter method which returns an [[ActiveRelation]] object. For example,
+To declare a relation, define a getter method which returns an [[yii\db\ActiveRelation]] object. For example,
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -216,7 +216,7 @@ class Order extends \yii\db\ActiveRecord
 The methods [[yii\db\ActiveRecord::hasMany()]] and [[yii\db\ActiveRecord::hasOne()]] used in the above
 are used to model the many-one relationship and one-one relationship in a relational database.
 For example, a customer has many orders, and an order has one customer.
-Both methods take two parameters and return an [[ActiveRelation]] object:
+Both methods take two parameters and return an [[yii\db\ActiveRelation]] object:
 
  - `$class`: the name of the class of the related model(s). This should be a fully qualified class name.
  - `$link`: the association between columns from the two tables. This should be given as an array.
@@ -261,8 +261,8 @@ class Customer extends \yii\db\ActiveRecord
 }
 ```
 
-Remember that `hasMany()` returns an [[ActiveRelation]] object which extends from [[ActiveQuery]]
-and thus supports the same set of querying methods as [[ActiveQuery]].
+Remember that `hasMany()` returns an [[yii\db\ActiveRelation]] object which extends from [[yii\db\ActiveQuery]]
+and thus supports the same set of querying methods as [[yii\db\ActiveQuery]].
 
 With the above declaration, if you access `$customer->bigOrders`, it will only return the orders
 whose subtotal is greater than 100. To specify a different threshold value, use the following code:
@@ -277,7 +277,7 @@ Relations with Pivot Table
 
 Sometimes, two tables are related together via an intermediary table called
 [pivot table](http://en.wikipedia.org/wiki/Pivot_table). To declare such relations, we can customize
-the [[ActiveRelation]] object by calling its [[ActiveRelation::via()]] or [[ActiveRelation::viaTable()]]
+the [[yii\db\ActiveRelation]] object by calling its [[yii\db\ActiveRelation::via()]] or [[yii\db\ActiveRelation::viaTable()]]
 method.
 
 For example, if table `tbl_order` and table `tbl_item` are related via pivot table `tbl_order_item`,
@@ -294,8 +294,8 @@ class Order extends \yii\db\ActiveRecord
 }
 ```
 
-[[ActiveRelation::via()]] method is similar to [[ActiveRelation::viaTable()]] except that
-the first parameter of [[ActiveRelation::via()]] takes a relation name declared in the ActiveRecord class
+[[yii\db\ActiveRelation::via()]] method is similar to [[yii\db\ActiveRelation::viaTable()]] except that
+the first parameter of [[yii\db\ActiveRelation::via()]] takes a relation name declared in the ActiveRecord class
 instead of the pivot table name. For example, the above `items` relation can be equivalently declared as follows:
 
 ```php
@@ -348,7 +348,7 @@ How many SQL queries will be performed in the above code, assuming there are mor
 the database? 101! The first SQL query brings back 100 customers. Then for each customer, a SQL query
 is performed to bring back the orders of that customer.
 
-To solve the above performance problem, you can use the so-called *eager loading* approach by calling [[ActiveQuery::with()]]:
+To solve the above performance problem, you can use the so-called *eager loading* approach by calling [[yii\db\ActiveQuery::with()]]:
 
 ```php
 // SQL executed: SELECT * FROM tbl_customer LIMIT 100;
@@ -388,9 +388,9 @@ Joining with Relations
 ----------------------
 
 When working with relational databases, a common task is to join multiple tables and apply various
-query conditions and parameters to the JOIN SQL statement. Instead of calling [[ActiveQuery::join()]]
+query conditions and parameters to the JOIN SQL statement. Instead of calling [[yii\db\ActiveQuery::join()]]
 explicitly to build up the JOIN query, you may reuse the existing relation definitions and call
-[[ActiveQuery::joinWith()]] to achieve this goal. For example,
+[[yii\db\ActiveQuery::joinWith()]] to achieve this goal. For example,
 
 ```php
 // find all orders and sort the orders by the customer id and the order id. also eager loading "customer"
@@ -399,7 +399,7 @@ $orders = Order::find()->joinWith('customer')->orderBy('tbl_customer.id, tbl_ord
 $orders = Order::find()->innerJoinWith('books')->all();
 ```
 
-In the above, the method [[ActiveQuery::innerJoinWith()|innerJoinWith()]] is a shortcut to [[ActiveQuery::joinWith()|joinWith()]]
+In the above, the method [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] is a shortcut to [[yii\db\ActiveQuery::joinWith()|joinWith()]]
 with the join type set as `INNER JOIN`.
 
 You may join with one or multiple relations; you may apply query conditions to the relations on-the-fly;
@@ -422,7 +422,7 @@ Behind the scene, Yii will first execute a JOIN SQL statement to bring back the 
 satisfying the conditions applied to the JOIN SQL. It will then execute a query for each relation
 and populate the corresponding related records.
 
-The difference between [[ActiveQuery::joinWith()|joinWith()]] and [[ActiveQuery::with()|with()]] is that
+The difference between [[yii\db\ActiveQuery::joinWith()|joinWith()]] and [[yii\db\ActiveQuery::with()|with()]] is that
 the former joins the tables for the primary model class and the related model classes to retrieve
 the primary models, while the latter just queries against the table for the primary model class to
 retrieve the primary models.
@@ -431,16 +431,16 @@ Because of this difference, you may apply query conditions that are only availab
 For example, you may filter the primary models by the conditions on the related models, like the example
 above. You may also sort the primary models using columns from the related tables.
 
-When using [[ActiveQuery::joinWith()|joinWith()]], you are responsible to disambiguate column names.
+When using [[yii\db\ActiveQuery::joinWith()|joinWith()]], you are responsible to disambiguate column names.
 In the above examples, we use `tbl_item.id` and `tbl_order.id` to disambiguate the `id` column references
 because both of the order table and the item table contain a column named `id`.
 
 By default, when you join with a relation, the relation will also be eagerly loaded. You may change this behavior
 by passing the `$eagerLoading` parameter which specifies whether to eager load the specified relations.
 
-And also by default, [[ActiveQuery::joinWith()|joinWith()]] uses `LEFT JOIN` to join the related tables.
+And also by default, [[yii\db\ActiveQuery::joinWith()|joinWith()]] uses `LEFT JOIN` to join the related tables.
 You may pass it with the `$joinType` parameter to customize the join type. As a shortcut to the `INNER JOIN` type,
-you may use [[ActiveQuery::innerJoinWith()|innerJoinWith()]].
+you may use [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]].
 
 Below are some more examples,
 
@@ -467,7 +467,7 @@ class User extends ActiveRecord
 In the above, the `hasMany()` method returns an `ActiveRelation` instance, upon which `onCondition()` is called
 to specify that only items whose `category_id` is 1 should be returned.
 
-When you perform query using [[ActiveQuery::joinWith()|joinWith()]], the on-condition will be put in the ON part
+When you perform query using [[yii\db\ActiveQuery::joinWith()|joinWith()]], the on-condition will be put in the ON part
 of the corresponding JOIN query. For example,
 
 ```php
@@ -476,7 +476,7 @@ of the corresponding JOIN query. For example,
 $users = User::find()->joinWith('books')->all();
 ```
 
-Note that if you use eager loading via [[ActiveQuery::with()]] or lazy loading, the on-condition will be put
+Note that if you use eager loading via [[yii\db\ActiveQuery::with()]] or lazy loading, the on-condition will be put
 in the WHERE part of the corresponding SQL statement, because there is no JOIN query involved. For example,
 
 ```php
@@ -506,8 +506,8 @@ $order->subtotal = 100;
 $customer->link('orders', $order);
 ```
 
-The [[link()]] call above will set the `customer_id` of the order to be the primary key
-value of `$customer` and then call [[save()]] to save the order into database.
+The [[yii\db\Activerecord::link()|link()]] call above will set the `customer_id` of the order to be the primary key
+value of `$customer` and then call [[yii\db\Activerecord::save()|save()]] to save the order into database.
 
 
 Life Cycles of an ActiveRecord Object
@@ -520,33 +520,33 @@ method overriding and event handling mechanisms.
 When instantiating a new ActiveRecord instance, we will have the following life cycles:
 
 1. constructor
-2. [[init()]]: will trigger an [[EVENT_INIT]] event
+2. [[yii\db\Activerecord::init()|init()]]: will trigger an [[yii\db\Activerecord::EVENT_INIT|EVENT_INIT]] event
 
-When getting an ActiveRecord instance through the [[find()]] method, we will have the following life cycles:
+When getting an ActiveRecord instance through the [[yii\db\Activerecord::find()|find()]] method, we will have the following life cycles:
 
 1. constructor
-2. [[init()]]: will trigger an [[EVENT_INIT]] event
-3. [[afterFind()]]: will trigger an [[EVENT_AFTER_FIND]] event
+2. [[yii\db\Activerecord::init()|init()]]: will trigger an [[yii\db\Activerecord::EVENT_INIT|EVENT_INIT]] event
+3. [[yii\db\Activerecord::afterFind()|afterFind()]]: will trigger an [[yii\db\Activerecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] event
 
-When calling [[save()]] to insert or update an ActiveRecord, we will have the following life cycles:
+When calling [[yii\db\Activerecord::save()|save()]] to insert or update an ActiveRecord, we will have the following life cycles:
 
-1. [[beforeValidate()]]: will trigger an [[EVENT_BEFORE_VALIDATE]] event
-2. [[afterValidate()]]: will trigger an [[EVENT_AFTER_VALIDATE]] event
-3. [[beforeSave()]]: will trigger an [[EVENT_BEFORE_INSERT]] or [[EVENT_BEFORE_UPDATE]] event
+1. [[yii\db\Activerecord::beforeValidate()|beforeValidate()]]: will trigger an [[yii\db\Activerecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event
+2. [[yii\db\Activerecord::afterValidate()|afterValidate()]]: will trigger an [[yii\db\Activerecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] event
+3. [[yii\db\Activerecord::beforeSave()|beforeSave()]]: will trigger an [[yii\db\Activerecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] or [[yii\db\Activerecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event
 4. perform the actual data insertion or updating
-5. [[afterSave()]]: will trigger an [[EVENT_AFTER_INSERT]] or [[EVENT_AFTER_UPDATE]] event
+5. [[yii\db\Activerecord::afterSave()|afterSave()]]: will trigger an [[yii\db\Activerecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] or [[yii\db\Activerecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] event
 
-Finally when calling [[delete()]] to delete an ActiveRecord, we will have the following life cycles:
+Finally when calling [[yii\db\Activerecord::delete()|delete()]] to delete an ActiveRecord, we will have the following life cycles:
 
-1. [[beforeDelete()]]: will trigger an [[EVENT_BEFORE_DELETE]] event
+1. [[yii\db\Activerecord::beforeDelete()|beforeDelete()]]: will trigger an [[yii\db\Activerecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event
 2. perform the actual data deletion
-3. [[afterDelete()]]: will trigger an [[EVENT_AFTER_DELETE]] event
+3. [[yii\db\Activerecord::afterDelete()|afterDelete()]]: will trigger an [[yii\db\Activerecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event
 
 
 Custom scopes
 -------------
 
-When [[find()]] or [[findBySql()]] Active Record method is being called without parameters it returns an [[ActiveQuery]]
+When [[yii\db\Activerecord::find()|find()]] or [[yii\db\Activerecord::findBySql()|findBySql()]] Active Record method is being called without parameters it returns an [[yii\db\Activerecord::yii\db\ActiveQuery|yii\db\ActiveQuery]]
 instance. This object holds all the parameters and conditions for a future query and also allows you to customize these
 using a set of methods that are called scopes. By default there is a good set of such methods some of which we've
 already used above: `where`, `orderBy`, `limit` etc.
@@ -657,8 +657,8 @@ When a few DB operations are related and are executed
 TODO: FIXME: WIP, TBD, https://github.com/yiisoft/yii2/issues/226
 
 ,
-[[afterSave()]], [[beforeDelete()]] and/or [[afterDelete()]] life cycle methods. Developer may come
-to the solution of overriding ActiveRecord [[save()]] method with database transaction wrapping or
+[[yii\db\Activerecord::afterSave()|afterSave()]], [[yii\db\Activerecord::beforeDelete()|beforeDelete()]] and/or [[yii\db\Activerecord::afterDelete()|afterDelete()]] life cycle methods. Developer may come
+to the solution of overriding ActiveRecord [[yii\db\Activerecord::save()|save()]] method with database transaction wrapping or
 even using transaction in controller action, which is strictly speaking doesn't seem to be a good
 practice (recall "skinny-controller / fat-model" fundamental rule).
 
@@ -686,7 +686,7 @@ class Product extends \yii\db\ActiveRecord
 }
 ```
 
-Overriding [[save()]] method:
+Overriding [[yii\db\Activerecord::save()|save()]] method:
 
 ```php
 
