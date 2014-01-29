@@ -887,7 +887,7 @@ class Collection extends Object
 		}
 		list($column, $value) = $operands;
 		if (!($value instanceof \MongoRegex)) {
-			$value = new \MongoRegex($value);
+			$value = new \MongoRegex('/'.$value.'/');
 		}
 		return [$column => $value];
 	}
