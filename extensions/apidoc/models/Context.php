@@ -162,6 +162,9 @@ class Context extends Component
 			return;
 		}
 		foreach($class->getPublicMethods() as $name => $method) {
+			if ($method->isStatic) {
+				continue;
+			}
 			if (!strncmp($name, 'get', 3) && $this->paramsOptional($method)) {
 				$propertyName = '$' . lcfirst(substr($method->name, 3));
 				if (isset($class->properties[$propertyName])) {

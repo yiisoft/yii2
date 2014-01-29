@@ -37,9 +37,17 @@ $this->beginPage();
 		'padded' => false,
 		'view' => $this,
 	]);
+	$extItems = [];
+	foreach($this->context->extensions as $ext) {
+		$extItems[] = [
+			'label' => $ext,
+			'url' => "./ext_{$ext}_index.html",
+		];
+	}
 	$nav = [
 		['label' => 'Class reference', 'url' => './index.html'],
 //		['label' => 'Application API', 'url' => '/site/about'],
+		['label' => 'Extensions', 'items' => $extItems],
 	];
 	if ($this->context->guideUrl !== null) {
 		$nav[] = ['label' => 'Guide', 'url' => $this->context->guideUrl . 'guide_index.html'];
@@ -60,7 +68,8 @@ $this->beginPage();
 
 <footer class="footer">
 	<?php /* <p class="pull-left">&copy; My Company <?= date('Y') ?></p> */ ?>
-	<p class="pull-right"><?= Yii::powered() ?></p>
+	<p class="pull-right"><small>Page generated on <?= date('r') ?></small></p>
+	<?= Yii::powered() ?>
 </footer>
 
 <?php $this->endBody() ?>
