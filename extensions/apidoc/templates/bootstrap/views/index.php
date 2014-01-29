@@ -9,7 +9,7 @@ use yii\apidoc\models\TraitDoc;
  */
 
 if (isset($readme)) {
-	echo \yii\apidoc\helpers\Markdown::process($readme);
+	echo \yii\apidoc\helpers\ApiMarkdown::process($readme);
 }
 
 ?><h1>Class Reference</h1>
@@ -30,7 +30,7 @@ foreach($types as $i=>$class):
 ?>
 	<tr>
 		<td><?= $this->context->typeLink($class, $class->name) ?></td>
-		<td><?= \yii\apidoc\helpers\Markdown::process($class->shortDescription, $class) ?></td>
+		<td><?= \yii\apidoc\helpers\ApiMarkdown::process($class->shortDescription, $class, true) ?></td>
 	</tr>
 <?php endforeach; ?>
 </table>

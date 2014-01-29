@@ -7,7 +7,7 @@
 
 namespace yii\apidoc\templates\html;
 
-use yii\apidoc\helpers\Markdown;
+use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\BaseDoc;
 use yii\apidoc\models\ConstDoc;
 use yii\apidoc\models\EventDoc;
@@ -65,7 +65,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 
 	public function init()
 	{
-		Markdown::$renderer = $this;
+		ApiMarkdown::$renderer = $this;
 	}
 
 	/**

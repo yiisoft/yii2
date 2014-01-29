@@ -6,7 +6,7 @@
  */
 
 namespace yii\apidoc\templates\bootstrap;
-use yii\apidoc\helpers\Markdown;
+use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\Context;
 use yii\console\Controller;
 use Yii;
@@ -145,7 +145,7 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 			mkdir($dir, 0777, true);
 		}
 
-		Markdown::$renderer = $this;
+		ApiMarkdown::$renderer = $this;
 
 		$fileCount = count($files) + 1;
 		Console::startProgress(0, $fileCount, 'Rendering markdown files: ', false);
@@ -165,7 +165,7 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 		}
 
 		foreach($fileData as $file => $content) {
-			$output = Markdown::process($content); // TODO generate links to yiiframework.com by default
+			$output = ApiMarkdown::process($content); // TODO generate links to yiiframework.com by default
 			$output = $this->fixMarkdownLinks($output);
 			if ($this->guideLayout !== false) {
 				$params = [
