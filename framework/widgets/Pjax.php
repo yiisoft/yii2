@@ -19,7 +19,7 @@ use yii\web\Response;
  * Pjax captures the link clicks in the content enclosed between its [[begin()]] and [[end()]] calls,
  * turns them into AJAX requests, and replaces the enclosed content with the corresponding AJAX response.
  *
- * The following example makes the [[yii\gridview\GridView]] widget support updating via AJAX:
+ * The following example makes the [[\yii\gridview\GridView]] widget support updating via AJAX:
  *
  * ```php
  * use yii\widgets\Pjax;
