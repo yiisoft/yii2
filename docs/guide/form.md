@@ -107,8 +107,8 @@ or
 
 <?= Html::activeLabel($model, 'username', ['label' => 'name']) ?>
 <?= Html::activeTextInput($model, 'username') ?>
-<?= Html::error($model, 'username') ?>
 <div class="hint-block">Please enter your name</div>
+<?= Html::error($model, 'username') ?>
 ```
 
 If you want to use one of HTML5 fields you may specify input type directly like the following:
