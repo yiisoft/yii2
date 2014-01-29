@@ -2,14 +2,14 @@ Active Record
 =============
 
 Active Record implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
-The premise behind Active Record is that an individual [[ActiveRecord]] object is associated with a specific row in a database table. The object's attributes are mapped to the columns of the corresponding table. Referencing an Active Record attribute is equivalent to accessing
+The premise behind Active Record is that an individual [[yii\db\ActiveRecord]] object is associated with a specific row in a database table. The object's attributes are mapped to the columns of the corresponding table. Referencing an Active Record attribute is equivalent to accessing
 the corresponding table column for that record.
 
 As an example, say that the `Customer` ActiveRecord class is associated with the
 `tbl_customer` table. This would mean that the class's `name` attribute is automatically mapped to the `name` column in `tbl_customer`.
 Thanks to Active Record, assuming the variable `$customer` is an object of type `Customer`, to get the value of the `name` column for the table row, you can use the expression `$customer->name`. In this example, Active Record is providing an object-oriented interface for accessing data stored in the database. But Active Record provides much more functionality than this.
 
-With Active Record, instead of writing raw SQL statements to perform database queries, you can call intuitive methods to achieve the same goals. For example, calling [[ActiveRecord::save()|save()]] would perform an INSERT or UPDATE query, creating or updating a row in the associated table of the ActiveRecord class:
+With Active Record, instead of writing raw SQL statements to perform database queries, you can call intuitive methods to achieve the same goals. For example, calling [[yii\db\ActiveRecord::save()|save()]] would perform an INSERT or UPDATE query, creating or updating a row in the associated table of the ActiveRecord class:
 
 ```php
 $customer = new Customer();
@@ -73,8 +73,8 @@ Querying Data from the Database
 
 There are two ActiveRecord methods for querying data from database:
 
- - [[ActiveRecord::find()]]
- - [[ActiveRecord::findBySql()]]
+ - [[yii\db\ActiveRecord::find()]]
+ - [[yii\db\ActiveRecord::findBySql()]]
 
 Both methods return an [[ActiveQuery]] instance, which extends [[Query]], and thus supports the same set of flexible and powerful DB query methods. The following examples demonstrate some of the possibilities.
 
@@ -140,16 +140,16 @@ Manipulating Data in the Database
 
 ActiveRecord provides the following methods to insert, update and delete data in the database:
 
-- [[ActiveRecord::save()|save()]]
-- [[ActiveRecord::insert()|insert()]]
-- [[ActiveRecord::update()|update()]]
-- [[ActiveRecord::delete()|delete()]]
-- [[ActiveRecord::updateCounters()|updateCounters()]]
-- [[ActiveRecord::updateAll()|updateAll()]]
-- [[ActiveRecord::updateAllCounters()|updateAllCounters()]]
-- [[ActiveRecord::deleteAll()|deleteAll()]]
+- [[yii\db\ActiveRecord::save()|save()]]
+- [[yii\db\ActiveRecord::insert()|insert()]]
+- [[yii\db\ActiveRecord::update()|update()]]
+- [[yii\db\ActiveRecord::delete()|delete()]]
+- [[yii\db\ActiveRecord::updateCounters()|updateCounters()]]
+- [[yii\db\ActiveRecord::updateAll()|updateAll()]]
+- [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]]
+- [[yii\db\ActiveRecord::deleteAll()|deleteAll()]]
 
-Note that [[ActiveRecord::updateAll()|updateAll()]], [[ActiveRecord::updateAllCounters()|updateAllCounters()]] and [[ActiveRecord::deleteAll()|deleteAll()]] are static methods that apply to the whole database table. The other methods only apply to the row associated with the ActiveRecord object through which the method is being called.
+Note that [[yii\db\ActiveRecord::updateAll()|updateAll()]], [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]] and [[yii\db\ActiveRecord::deleteAll()|deleteAll()]] are static methods that apply to the whole database table. The other methods only apply to the row associated with the ActiveRecord object through which the method is being called.
 
 ```php
 // to insert a new customer record
@@ -213,7 +213,7 @@ class Order extends \yii\db\ActiveRecord
 }
 ```
 
-The methods [[ActiveRecord::hasMany()]] and [[ActiveRecord::hasOne()]] used in the above
+The methods [[yii\db\ActiveRecord::hasMany()]] and [[yii\db\ActiveRecord::hasOne()]] used in the above
 are used to model the many-one relationship and one-one relationship in a relational database.
 For example, a customer has many orders, and an order has one customer.
 Both methods take two parameters and return an [[ActiveRelation]] object:
@@ -493,8 +493,8 @@ Working with Relationships
 ActiveRecord provides the following two methods for establishing and breaking a
 relationship between two ActiveRecord objects:
 
-- [[ActiveRecord::link()|link()]]
-- [[ActiveRecord::unlink()|unlink()]]
+- [[yii\db\ActiveRecord::link()|link()]]
+- [[yii\db\ActiveRecord::unlink()|unlink()]]
 
 For example, given a customer and a new order, we can use the following code to make the
 order owned by the customer:

@@ -38,6 +38,7 @@ class ApiMarkdown extends Markdown
 			$text = highlight_string(trim($block['text']), true);
 		} else {
 			$text = highlight_string("<?php\n".trim($block['text']), true);
+			$text = str_replace('<?php', '', $text);
 		}
 		// remove <code> tags added by php
 		$text = substr(trim($text), 6, -7);
