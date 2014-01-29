@@ -11,6 +11,7 @@ $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
 <div class="row">
 	<div class="col-md-2">
 		<?php
+		$types = $this->context->getNavTypes(isset($type) ? $type : null, $types);
 		ksort($types);
 		$nav = [];
 		foreach($types as $i=>$class) {
