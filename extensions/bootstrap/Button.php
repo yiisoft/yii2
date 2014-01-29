@@ -57,6 +57,6 @@ class Button extends Widget
 	public function run()
 	{
 		echo Html::tag($this->tagName, $this->encodeLabel ? Html::encode($this->label) : $this->label, $this->options);
-		$this->registerPlugin('button');
+		$this->registerPlugin($this);
 	}
 }
