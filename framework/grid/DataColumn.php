@@ -9,7 +9,7 @@ namespace yii\grid;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use yii\db\ActiveQuery;
+use yii\db\ActiveQueryInterface;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
@@ -90,7 +90,7 @@ class DataColumn extends Column
 		$provider = $this->grid->dataProvider;
 
 		if ($this->label === null) {
-			if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQuery) {
+			if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
 				/** @var Model $model */
 				$model = new $provider->query->modelClass;
 				$label = $model->getAttributeLabel($this->attribute);
