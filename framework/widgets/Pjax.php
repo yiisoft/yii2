@@ -58,6 +58,15 @@ class Pjax extends Widget
 	 * @var boolean whether to enable replace state.
 	 */
 	public $enableReplaceState = false;
+	/**
+	 * @var integer pjax timeout setting (in milliseconds)
+	 */
+	public $timeout = 1000;
+	/**
+	 * @var array additional options to be passed to the pjax JS plugin. Please refer to
+	 * [pjax project page](https://github.com/defunkt/jquery-pjax) for available options.
+	 */
+	public $clientOptions;
 
 	/**
 	 * @inheritdoc
@@ -131,10 +140,10 @@ class Pjax extends Widget
 	public function registerClientScript()
 	{
 		$id = $this->options['id'];
-		$options = Json::encode([
-			'push' => $this->enablePushState,
-			'replace' => $this->enableReplaceState,
-		]);
+		$this->clientOptions['push'] = $this->enablePushState;
+		$this->clientOptions['replace'] = $this->enableReplaceState;
+		$this->clientOptions['timeout'] = $this->timeout;
+		$options = Json::encode($this->clientOptions);
 		$linkSelector = Json::encode($this->linkSelector !== null ? $this->linkSelector : '#' . $id . ' a');
 		$view = $this->getView();
 		PjaxAsset::register($view);
