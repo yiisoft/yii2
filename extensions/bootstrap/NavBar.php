@@ -30,7 +30,7 @@ use yii\helpers\Html;
  * NavBar::end();
  * ```
  *
- * @see http://twitter.github.io/bootstrap/components.html#navbar
+ * @see http://getbootstrap.com/components/#navbar
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */
@@ -38,7 +38,7 @@ class NavBar extends Widget
 {
 	/**
 	 * @var string the text of the brand. Note that this is not HTML-encoded.
-	 * @see http://twitter.github.io/bootstrap/components.html#navbar
+	 * @see http://getbootstrap.com/components/#navbar
 	 */
 	public $brandLabel;
 	/**

@@ -47,7 +47,7 @@ use yii\helpers\Html;
  * ]);
  * ```
  *
- * @see http://twitter.github.io/bootstrap/javascript.html#tabs
+ * @see http://getbootstrap.com/javascript/#tabs
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */

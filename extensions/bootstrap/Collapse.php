@@ -35,7 +35,7 @@ use yii\helpers\Html;
  * ]);
  * ```
  *
- * @see http://twitter.github.io/bootstrap/javascript.html#collapse
+ * @see http://getbootstrap.com/javascript/#collapse
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */
