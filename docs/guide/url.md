@@ -169,7 +169,7 @@ In order to use parameterized hostnames, simply declare URL rules with host info
 In the above example the first segment of the hostname is treated as the user parameter while the first segment
 of the path info is treated as the lang parameter. The rule corresponds to the `user/profile` route.
 
-Note that [[UrlManager::showScriptName]] will not take effect when a URL is being created using a rule with a parameterized hostname.
+Note that [[yii\web\UrlManager::showScriptName]] will not take effect when a URL is being created using a rule with a parameterized hostname.
 
 Also note that any rule with a parameterized hostname should NOT contain the subfolder if the application is under
 a subfolder of the Web root. For example, if the application is under `http://www.example.com/sandbox/blog`, then we
@@ -189,9 +189,13 @@ return [
 ];
 ```
 
-### Handling REST
+### Handling REST requests
 
-TBD: [[\yii\web\VerbFiler]]
+TBD:
+- RESTful routing: [[\yii\web\VerbFilter]], [[\yii\web\UrlManager::$rules]]
+- Json API:
+  - response: [[\yii\web\Response::format]]
+  - request: [[yii\web\Request::$parsers]], [[\yii\web\JsonParser]]
 
 
 URL parsing

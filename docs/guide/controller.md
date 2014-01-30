@@ -221,7 +221,7 @@ Action Filters
 
 Action filters are implemented via behaviors. You should extend from `ActionFilter` to
 define a new filter. To use a filter, you should attach the filter class to the controller
-as a behavior. For example, to use the [[AccessControl]] filter, you should have the following
+as a behavior. For example, to use the [[yii\web\AccessControl]] filter, you should have the following
 code in a controller:
 
 ```php
@@ -238,8 +238,8 @@ public function behaviors()
 }
 ```
 
-In order to learn more about access control check [authorization](authorization.md) section of the guide.
-Two other filters, [[PageCache]] and [[HttpCache]] are described in [caching](caching.md) section of the guide.
+In order to learn more about access control check the [authorization](authorization.md) section of the guide.
+Two other filters, [[yii\web\PageCache]] and [[yii\web\HttpCache]] are described in the [caching](caching.md) section of the guide.
 
 Catching all incoming requests
 ------------------------------

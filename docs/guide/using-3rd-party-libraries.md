@@ -40,12 +40,12 @@ When using composer you add the following to your composer.json in order to add 
 
 ```json
 "require": {
-        "yiisoft/yii": "*",
-        "yiisoft/yii2": "*",
-    },
+    "yiisoft/yii": "*",
+    "yiisoft/yii2": "*",
+},
 ```
 
-Start from defining your own descendant of [[\yii\BaseYii]]:
+Start from defining your own descendant of [[yii\BaseYii]]:
 
 ```php
 $yii2path = '/path/to/yii2';
@@ -59,7 +59,7 @@ Yii::$classMap = include($yii2path . '/classes.php');
 ```
 
 Now we have a class, which suites Yii2, but causes fatal errors for Yii1.
-So, first of all, we need to include [[\YiiBase]] of Yii1 source code to our 'Yii' class
+So, first of all, we need to include `YiiBase` of Yii1 source code to our 'Yii' class
 definition file:
 
 ```php
@@ -76,7 +76,7 @@ Yii::$classMap = include($yii2path . '/classes.php');
 ```
 
 Using this, defines all necessary constants and autoloader of Yii1.
-Now we need to add all fields and methods from [[\YiiBase]] of Yii1 to our 'Yii' class.
+Now we need to add all fields and methods from `YiiBase` of Yii1 to our 'Yii' class.
 Unfortunally, there is no way to do so but copy-paste:
 
 ```php

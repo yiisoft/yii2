@@ -2,9 +2,9 @@ Managing assets
 ===============
 
 An asset in Yii is a file that is included into the page. It could be CSS, JavaScript or
-any other file. Framework provides many ways to work with assets from basics such as adding `<script src="` tag
+any other file. Framework provides many ways to work with assets from basics such as adding `<script src="...">` tag
 for a file that is [handled by View](view.md) section to advanced usage such as publishing files that are not
-under webserve document root, resolving JavaScript dependencies or minifying CSS.
+under the webservers document root, resolving JavaScript dependencies or minifying CSS.
 
 Declaring asset bundle
 ----------------------
@@ -13,9 +13,15 @@ In order to publish some assets you should declare an asset bundle first. The bu
 directories to be published and their dependencies on other asset bundles.
 
 Both basic and advanced application templates contain `AppAsset` asset bundle class that defines assets required
-application wide. Let's review basic application asset bundle class:
+application wide. An asset bundle class always extends from [[yii\web\AssetBundle]].
+
+Let's review basic application's asset bundle class:
 
 ```php
+<?php
+
+use yii\web\AssetBundle as AssetBundle;
+
 class AppAsset extends AssetBundle
 {
 	public $basePath = '@webroot';
