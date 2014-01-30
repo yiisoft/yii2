@@ -158,7 +158,7 @@ Operator can be one of the following:
   in the generated condition.
 - `or not like`: similar to the `not like` operator except that `OR` is used to concatenate
   the `NOT LIKE` predicates.
-- `exists`: requires one operand which must be an instance of [[Query]] representing the sub-query.
+- `exists`: requires one operand which must be an instance of [[yii\db\Query]] representing the sub-query.
   It will build a `EXISTS (sub-query)` expression.
 - `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
 

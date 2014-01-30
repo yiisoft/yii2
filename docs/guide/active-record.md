@@ -506,8 +506,8 @@ $order->subtotal = 100;
 $customer->link('orders', $order);
 ```
 
-The [[yii\db\Activerecord::link()|link()]] call above will set the `customer_id` of the order to be the primary key
-value of `$customer` and then call [[yii\db\Activerecord::save()|save()]] to save the order into database.
+The [[yii\db\ActiveRecord::link()|link()]] call above will set the `customer_id` of the order to be the primary key
+value of `$customer` and then call [[yii\db\ActiveRecord::save()|save()]] to save the order into database.
 
 
 Life Cycles of an ActiveRecord Object
@@ -520,33 +520,33 @@ method overriding and event handling mechanisms.
 When instantiating a new ActiveRecord instance, we will have the following life cycles:
 
 1. constructor
-2. [[yii\db\Activerecord::init()|init()]]: will trigger an [[yii\db\Activerecord::EVENT_INIT|EVENT_INIT]] event
+2. [[yii\db\ActiveRecord::init()|init()]]: will trigger an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event
 
-When getting an ActiveRecord instance through the [[yii\db\Activerecord::find()|find()]] method, we will have the following life cycles:
+When getting an ActiveRecord instance through the [[yii\db\ActiveRecord::find()|find()]] method, we will have the following life cycles:
 
 1. constructor
-2. [[yii\db\Activerecord::init()|init()]]: will trigger an [[yii\db\Activerecord::EVENT_INIT|EVENT_INIT]] event
-3. [[yii\db\Activerecord::afterFind()|afterFind()]]: will trigger an [[yii\db\Activerecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] event
+2. [[yii\db\ActiveRecord::init()|init()]]: will trigger an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event
+3. [[yii\db\ActiveRecord::afterFind()|afterFind()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] event
 
-When calling [[yii\db\Activerecord::save()|save()]] to insert or update an ActiveRecord, we will have the following life cycles:
+When calling [[yii\db\ActiveRecord::save()|save()]] to insert or update an ActiveRecord, we will have the following life cycles:
 
-1. [[yii\db\Activerecord::beforeValidate()|beforeValidate()]]: will trigger an [[yii\db\Activerecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event
-2. [[yii\db\Activerecord::afterValidate()|afterValidate()]]: will trigger an [[yii\db\Activerecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] event
-3. [[yii\db\Activerecord::beforeSave()|beforeSave()]]: will trigger an [[yii\db\Activerecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] or [[yii\db\Activerecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event
+1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event
+2. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] event
+3. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event
 4. perform the actual data insertion or updating
-5. [[yii\db\Activerecord::afterSave()|afterSave()]]: will trigger an [[yii\db\Activerecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] or [[yii\db\Activerecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] event
+5. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] or [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] event
 
-Finally when calling [[yii\db\Activerecord::delete()|delete()]] to delete an ActiveRecord, we will have the following life cycles:
+Finally when calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an ActiveRecord, we will have the following life cycles:
 
-1. [[yii\db\Activerecord::beforeDelete()|beforeDelete()]]: will trigger an [[yii\db\Activerecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event
+1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event
 2. perform the actual data deletion
-3. [[yii\db\Activerecord::afterDelete()|afterDelete()]]: will trigger an [[yii\db\Activerecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event
+3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event
 
 
 Custom scopes
 -------------
 
-When [[yii\db\Activerecord::find()|find()]] or [[yii\db\Activerecord::findBySql()|findBySql()]] Active Record method is being called without parameters it returns an [[yii\db\Activerecord::yii\db\ActiveQuery|yii\db\ActiveQuery]]
+When [[yii\db\ActiveRecord::find()|find()]] or [[yii\db\ActiveRecord::findBySql()|findBySql()]] Active Record method is being called without parameters it returns an [[yii\db\ActiveRecord::yii\db\ActiveQuery|yii\db\ActiveQuery]]
 instance. This object holds all the parameters and conditions for a future query and also allows you to customize these
 using a set of methods that are called scopes. By default there is a good set of such methods some of which we've
 already used above: `where`, `orderBy`, `limit` etc.
@@ -657,8 +657,8 @@ When a few DB operations are related and are executed
 TODO: FIXME: WIP, TBD, https://github.com/yiisoft/yii2/issues/226
 
 ,
-[[yii\db\Activerecord::afterSave()|afterSave()]], [[yii\db\Activerecord::beforeDelete()|beforeDelete()]] and/or [[yii\db\Activerecord::afterDelete()|afterDelete()]] life cycle methods. Developer may come
-to the solution of overriding ActiveRecord [[yii\db\Activerecord::save()|save()]] method with database transaction wrapping or
+[[yii\db\ActiveRecord::afterSave()|afterSave()]], [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]] and/or [[yii\db\ActiveRecord::afterDelete()|afterDelete()]] life cycle methods. Developer may come
+to the solution of overriding ActiveRecord [[yii\db\ActiveRecord::save()|save()]] method with database transaction wrapping or
 even using transaction in controller action, which is strictly speaking doesn't seem to be a good
 practice (recall "skinny-controller / fat-model" fundamental rule).
 
@@ -686,7 +686,7 @@ class Product extends \yii\db\ActiveRecord
 }
 ```
 
-Overriding [[yii\db\Activerecord::save()|save()]] method:
+Overriding [[yii\db\ActiveRecord::save()|save()]] method:
 
 ```php
 

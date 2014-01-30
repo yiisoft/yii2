@@ -209,7 +209,7 @@ public function behaviors()
 }
 ```
 
-Another way is to call [[User::checkAccess()]] where appropriate.
+Another way is to call [[yii\web\User::checkAccess()]] where appropriate.
 
 ### Using DB-based storage for RBAC
 

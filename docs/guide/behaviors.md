@@ -9,8 +9,10 @@ code execution. Unlike [PHP's traits](http://www.php.net/traits), behaviors can 
 Using behaviors
 ---------------
 
-A behavior can be attached to any class that extends from `Component`. In order to attach a behavior to a class, the component class must implement the `behaviors`
-method. As an example, Yii provides the `AutoTimestamp` behavior for automatically updating timestamp fields when saving an Active Record model:
+A behavior can be attached to any class that extends from [[yii\base\Component]]. In order to attach a behavior to a class,
+the component class must implement the `behaviors`
+method. As an example, Yii provides the [[yii\behaviors\AutoTimestamp|AutoTimestamp]] behavior for automatically updating timestamp
+fields when saving an [[yii\db\ActiveRecord|Active Record]] model:
 
 ```php
 class User extends ActiveRecord
@@ -32,7 +34,10 @@ class User extends ActiveRecord
 }
 ```
 
-In the above, the `class` value is a string representing the fully qualified behavior class name. All of the other key-value pairs represent corresponding public properties of the `AutoTimestamp` class, thereby customizing how the behavior functions.
+In the above, the `class` value is a string representing the fully qualified behavior class name.
+All of the other key-value pairs represent corresponding public properties of the [[yii\behaviors\AutoTimestamp|AutoTimestamp]]
+class, thereby customizing how the behavior functions.
+
 
 Creating your own behaviors
 ---------------------------
