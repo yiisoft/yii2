@@ -206,7 +206,7 @@ like the following,
 
 ```php
 return [
-   	'cssCompressor' => 'java -jar path.to.file\yuicompressor.jar  -o --type css {from} {to}',
+   	'cssCompressor' => 'java -jar path.to.file\yuicompressor.jar  --type css {from} -o {to}',
    	'jsCompressor' => 'java -jar path.to.file\compiler.jar --js {from} --js_output_file {to}',
 ];
 ```
