@@ -26,14 +26,14 @@ class Widget extends \yii\base\Widget
 	/**
 	 * @var array the options for the underlying Bootstrap JS plugin.
 	 * Please refer to the corresponding Bootstrap plugin Web page for possible options.
-	 * For example, [this page](http://twitter.github.io/bootstrap/javascript.html#modals) shows
+	 * For example, [this page](http://getbootstrap.com/javascript/#modals) shows
 	 * how to use the "Modal" plugin and the supported options (e.g. "remote").
 	 */
 	public $clientOptions = [];
 	/**
 	 * @var array the event handlers for the underlying Bootstrap JS plugin.
 	 * Please refer to the corresponding Bootstrap plugin Web page for possible events.
-	 * For example, [this page](http://twitter.github.io/bootstrap/javascript.html#modals) shows
+	 * For example, [this page](http://getbootstrap.com/javascript/#modals) shows
 	 * how to use the "Modal" plugin and the supported events (e.g. "shown").
 	 */
 	public $clientEvents = [];
