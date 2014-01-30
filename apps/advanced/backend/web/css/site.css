@@ -76,6 +76,12 @@ a.desc:after {
     white-space: nowrap;
 }
 
+.hint-block {
+	display: block;
+	margin-top: 5px;
+	color: #999;
+}
+
 .error-summary {
 	color: #a94442;
 	background: #fdf7f7;
