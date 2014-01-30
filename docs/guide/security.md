@@ -14,7 +14,7 @@ When a user provides a password for the first time (e.g., upon registration), th
 
 
 ```php
-$hash = yii\helpers\Security::generatePasswordHash($password);
+$hash = \yii\helpers\Security::generatePasswordHash($password);
 ```
 
 The hash can then be associated with the corresponding model attribute, so it can be stored in the database for later use.
@@ -34,7 +34,7 @@ if (Security::validatePassword($password, $hash)) {
 Generating Pseudorandom data
 -----------
 
-Pseudorandom data is useful in many situations. For example when resetting a password via email you need to generate a token, save it to the database, and send it via email to end user which in turn will allow them to prove ownership of that account. It is very important that this token be unique, else there is a possibility and attacker can predict the token's value and reset the user's password.
+Pseudorandom data is useful in many situations. For example when resetting a password via email you need to generate a token, save it to the database, and send it via email to end user which in turn will allow them to prove ownership of that account. It is very important that this token be unique and hard to guess, else there is a possibility and attacker can predict the token's value and reset the user's password.
 
 Yii security helper makes generating pseudorandom data simple:
 
@@ -54,7 +54,7 @@ For example, we need to store some information in our database but we need to ma
 
 ```php
 // $data and $secretKey are obtained from the form
-$encryptedData = yii\helpers\Security::encrypt($data, $secretKey);
+$encryptedData = \yii\helpers\Security::encrypt($data, $secretKey);
 // store $encryptedData to database
 ```
 
@@ -62,7 +62,7 @@ Subsequently when user wants to read the data:
 
 ```php
 // $secretKey is obtained from user input, $encryptedData is from the database
-$data = yii\helpers\Security::decrypt($encryptedData, $secretKey);
+$data = \yii\helpers\Security::decrypt($encryptedData, $secretKey);
 ```
 
 Confirming data integrity
@@ -75,14 +75,14 @@ Prefix the data with a hash generated from the secret key and data
 
 ```php
 // $secretKey our application or user secret, $genuineData obtained from a reliable source 
-$data = yii\helpers\Security::hashData($genuineData, $secretKey);
+$data = \yii\helpers\Security::hashData($genuineData, $secretKey);
 ```
 
 Checks if the data integrity has been compromised
 
 ```php
 // $secretKey our application or user secret, $data obtained from an unreliable source 
-$data = yii\helpers\Security::validateData($data, $secretKey);
+$data = \yii\helpers\Security::validateData($data, $secretKey);
 ```
 
 
