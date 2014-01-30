@@ -28,7 +28,7 @@ use yii\helpers\Html;
  * Modal::end();
  * ~~~
  *
- * @see http://twitter.github.io/bootstrap/javascript.html#modals
+ * @see http://getbootstrap.com/javascript/#modals
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -54,7 +54,7 @@ class Modal extends Widget
 	 * - label: string, the label of the button. Defaults to '&times;'.
 	 *
 	 * The rest of the options will be rendered as the HTML attributes of the button tag.
-	 * Please refer to the [Modal plugin help](http://twitter.github.com/bootstrap/javascript.html#modals)
+	 * Please refer to the [Modal plugin help](http://getbootstrap.com/javascript/#modals)
 	 * for the supported HTML attributes.
 	 */
 	public $closeButton = [];
@@ -69,7 +69,7 @@ class Modal extends Widget
 	 * - label: string, the label of the button. Defaults to 'Show'.
 	 *
 	 * The rest of the options will be rendered as the HTML attributes of the button tag.
-	 * Please refer to the [Modal plugin help](http://twitter.github.com/bootstrap/javascript.html#modals)
+	 * Please refer to the [Modal plugin help](http://getbootstrap.com/javascript/#modals)
 	 * for the supported HTML attributes.
 	 */
 	public $toggleButton;

@@ -40,7 +40,7 @@ use yii\helpers\Html;
  *
  * Note: Multilevel dropdowns beyond Level 1 are not supported in Bootstrap 3.
  *
- * @see http://getbootstrap.com/components.html#dropdowns
+ * @see http://getbootstrap.com/components/#dropdowns
  * @see http://getbootstrap.com/components/#nav
  *
  * @author Antonio Ramirez <amigo.cobos@gmail.com>

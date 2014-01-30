@@ -14,7 +14,7 @@ use yii\helpers\Html;
 /**
  * Dropdown renders a Bootstrap dropdown menu component.
  *
- * @see http://twitter.github.io/bootstrap/javascript.html#dropdowns
+ * @see http://getbootstrap.com/javascript/#dropdowns
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */
