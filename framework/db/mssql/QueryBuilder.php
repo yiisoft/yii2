@@ -56,14 +56,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	 */
 	public function buildLimit($limit, $offset = 0)
 	{
-		$sql = '';
-		if ($offset !== null && $offset >= 0) {
-			$sql = 'OFFSET ' . (int)$offset . ' ROWS';
-			if ($limit !== null && $limit >= 0) {
-				$sql .= ' FETCH NEXT ' . (int)$limit . ' ROWS ONLY';
+		$hasOffset = $this->hasOffset($offset);
+		$hasLimit = $this->hasLimit($limit);
+		if ($hasOffset || $hasLimit) {
+			// http://technet.microsoft.com/en-us/library/gg699618.aspx
+			$sql = 'OFFSET ' . ($hasOffset ? $offset : '0');
+			if ($hasLimit) {
+				$sql .= " FETCH NEXT $limit ROWS ONLY";
 			}
+			return $sql;
+		} else {
+			return '';
 		}
-		return $sql;
 	}
 
 //	public function resetSequence($table, $value = null)
