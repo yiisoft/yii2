@@ -43,17 +43,17 @@ class ApiMarkdown extends Markdown
 		// remove <code> tags added by php
 		$text = substr(trim($text), 6, -7);
 
-        $markup .= '<pre><code';
+		$code = '<pre><code';
+		if (isset($block['language']))
+		{
+			if ($block['language'] !== 'php') {
+				return false;
+			}
+			$code .= ' class="language-'.$block['language'].'"';
+		}
+		$code .= '>'.$text.'</code></pre>'."\n";
 
-        if (isset($block['language']))
-        {
-	        if ($block['language'] !== 'php') {
-		        return false;
-	        }
-            $markup .= ' class="language-'.$block['language'].'"';
-        }
-
-		$markup .= '>'.$text.'</code></pre>'."\n";
+		$markup .= $code;
 		return true;
 	}
 
