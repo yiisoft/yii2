@@ -140,7 +140,11 @@ class DataColumn extends Column
 	protected function renderDataCellContent($model, $key, $index)
 	{
 		if ($this->value !== null) {
-			$value = call_user_func($this->value, $model, $index, $this);
+            if (is_callable($this->value)) {
+                $value = call_user_func($this->value, $model, $index, $this);
+            } else {
+                $value = ArrayHelper::getValue($model, $this->value);
+            }
 		} elseif ($this->content === null && $this->attribute !== null) {
 			$value = ArrayHelper::getValue($model, $this->attribute);
 		} else {
