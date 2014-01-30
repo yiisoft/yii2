@@ -112,6 +112,10 @@ class RenderController extends Controller
 		// render guide if specified
 		if ($this->guide !== null) {
 			$renderer->renderMarkdownFiles($this->findMarkdownFiles($this->guide, ['README.md']), $this);
+
+			$this->stdout('Publishing images...');
+			FileHelper::copyDirectory(rtrim($this->guide, '/\\') . '/images', $targetDir . '/images');
+			$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 		}
 	}
 
