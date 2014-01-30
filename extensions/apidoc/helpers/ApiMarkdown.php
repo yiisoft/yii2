@@ -37,7 +37,7 @@ class ApiMarkdown extends Markdown
 		if (strncmp($block['text'], '<?php', 5) === 0) {
 			$text = highlight_string(trim($block['text']), true);
 		} else {
-			$text = highlight_string("<?php\n".trim($block['text']), true);
+			$text = highlight_string("<?php ".trim($block['text']), true);
 			$text = str_replace('&lt;?php', '', $text);
 		}
 		// remove <code> tags added by php
