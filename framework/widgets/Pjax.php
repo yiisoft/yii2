@@ -35,6 +35,9 @@ use yii\web\Response;
  * By default, Pjax enables [[enablePushState|push state]], which means the browser's current URL will
  * be updated when an AJAX request is made by Pjax.
  *
+ * Pjax can also be used for submitting forms, check the
+ * [pjax documentation](https://github.com/defunkt/jquery-pjax#pjaxsubmit) for it.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
