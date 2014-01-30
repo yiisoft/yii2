@@ -14,6 +14,7 @@ use yii\console\Controller;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
+use yii\helpers\FileHelper;
 
 /**
  * This command manages application migrations.
@@ -105,15 +106,16 @@ class MigrateController extends Controller
 	 * This method is invoked right before an action is to be executed (after all possible filters.)
 	 * It checks the existence of the [[migrationPath]].
 	 * @param \yii\base\Action $action the action to be executed.
+	 * @throws Exception if db component isn't configured
 	 * @return boolean whether the action should continue to be executed.
-	 * @throws Exception if the migration directory does not exist.
 	 */
 	public function beforeAction($action)
 	{
 		if (parent::beforeAction($action)) {
 			$path = Yii::getAlias($this->migrationPath);
 			if (!is_dir($path)) {
-				throw new Exception("The migration directory \"{$path}\" does not exist.");
+				echo "";
+				FileHelper::createDirectory($path);
 			}
 			$this->migrationPath = $path;
 

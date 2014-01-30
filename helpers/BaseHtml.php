@@ -82,7 +82,7 @@ class BaseHtml
 
 	/**
 	 * Encodes special characters into HTML entities.
-	 * The [[yii\base\Application::charset|application charset]] will be used for encoding.
+	 * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
 	 * @param string $content the content to be encoded
 	 * @param boolean $doubleEncode whether to encode HTML entities in `$content`. If false,
 	 * HTML entities in `$content` will not be further encoded.
@@ -113,9 +113,12 @@ class BaseHtml
 	 * @param string $name the tag name
 	 * @param string $content the content to be enclosed between the start and end tags. It will not be HTML-encoded.
 	 * If this is coming from end users, you should consider [[encode()]] it to prevent XSS attacks.
-	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
-	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+	 * @param array $options the HTML tag attributes (HTML options) in terms of name-value pairs.
+	 * These will be rendered as the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
+	 *
+	 * For example when using `['class' => 'my-class', 'target' => '_blank', 'value' => null]` it will result in the
+	 * html attributes rendered like this: `class="my-class" target="_blank"`.
 	 * @return string the generated HTML tag
 	 * @see beginTag()
 	 * @see endTag()
@@ -220,7 +223,7 @@ class BaseHtml
 	 * @param string $method the form submission method, such as "post", "get", "put", "delete" (case-insensitive).
 	 * Since most browsers only support "post" and "get", if other methods are given, they will
 	 * be simulated using "post", and a hidden input will be added which contains the actual method type.
-	 * See [[\yii\web\Request::restVar]] for more details.
+	 * See [[\yii\web\Request::methodVar]] for more details.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
@@ -237,7 +240,7 @@ class BaseHtml
 		if ($request instanceof Request) {
 			if (strcasecmp($method, 'get') && strcasecmp($method, 'post')) {
 				// simulate PUT, DELETE, etc. via POST
-				$hiddenInputs[] = static::hiddenInput($request->restVar, $method);
+				$hiddenInputs[] = static::hiddenInput($request->methodVar, $method);
 				$method = 'post';
 			}
 			if ($request->enableCsrfValidation && !strcasecmp($method, 'post')) {
@@ -953,7 +956,7 @@ class BaseHtml
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * The following options are specially handled:
 	 *
-	 * - label: this specifies the label to be displayed. Note that this will NOT be [[encoded()]].
+	 * - label: this specifies the label to be displayed. Note that this will NOT be [[encode()|encoded]].
 	 *   If this is not set, [[Model::getAttributeLabel()]] will be called to get the label for display
 	 *   (after encoding).
 	 *
@@ -1419,9 +1422,17 @@ class BaseHtml
 
 	/**
 	 * Renders the HTML tag attributes.
+	 *
 	 * Attributes whose values are of boolean type will be treated as
 	 * [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
-	 * And attributes whose values are null will not be rendered.
+	 *
+	 * Attributes whose values are null will not be rendered.
+	 *
+	 * The "data" attribute is specially handled when it is receiving an array value. In this case,
+	 * the array will be "expanded" and a list data attributes will be rendered. For example,
+	 * if `'data' => ['id' => 1, 'name' => 'yii']`, then this will be rendered:
+	 * `data-id="1" data-name="yii"`.
+	 *
 	 * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
 	 * @return string the rendering result. If the attributes are not empty, they will be rendered
 	 * into a string with a leading white space (so that it can be directly appended to the tag name
@@ -1444,6 +1455,10 @@ class BaseHtml
 			if (is_bool($value)) {
 				if ($value) {
 					$html .= " $name";
+				}
+			} elseif (is_array($value) && $name === 'data') {
+				foreach ($value as $n => $v) {
+					$html .= " $name-$n=\"" . static::encode($v) . '"';
 				}
 			} elseif ($value !== null) {
 				$html .= " $name=\"" . static::encode($value) . '"';

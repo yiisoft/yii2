@@ -12,8 +12,6 @@ use Yii;
 /**
  * Controller is the base class for classes containing controller logic.
  *
- * @property array $actionParams The request parameters (name-value pairs) to be used for action parameter
- * binding. This property is read-only.
  * @property string $route The route (module ID, controller ID and action ID) of the current request. This
  * property is read-only.
  * @property string $uniqueId The controller ID that is prefixed with the module ID (if any). This property is

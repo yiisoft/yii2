@@ -22,7 +22,7 @@ use yii\helpers\StringHelper;
  * It holds the [[headers]], [[cookies]] and [[content]] that is to be sent to the client.
  * It also controls the HTTP [[statusCode|status code]].
  *
- * Response is configured as an application component in [[yii\web\Application]] by default.
+ * Response is configured as an application component in [[\yii\web\Application]] by default.
  * You can access that instance via `Yii::$app->response`.
  *
  * You can modify its configuration by adding an array to your application config under `components`
@@ -293,8 +293,6 @@ class Response extends \yii\base\Response
 	{
 		if ($this->isSent) {
 			return;
-		} else {
-			$this->isSent = true;
 		}
 		$this->trigger(self::EVENT_BEFORE_SEND);
 		$this->prepare();
@@ -302,6 +300,7 @@ class Response extends \yii\base\Response
 		$this->sendHeaders();
 		$this->sendContent();
 		$this->trigger(self::EVENT_AFTER_SEND);
+		$this->isSent = true;
 	}
 
 	/**
@@ -870,9 +869,13 @@ class Response extends \yii\base\Response
 		}
 
 		if (is_array($this->content)) {
-			$this->content = 'array()';
+			throw new InvalidParamException("Response content must not be an array.");
 		} elseif (is_object($this->content)) {
-			$this->content = method_exists($this->content, '__toString') ? $this->content->__toString() : get_class($this->content);
+			if (method_exists($this->content, '__toString')) {
+				$this->content = $this->content->__toString();
+			} else {
+				throw new InvalidParamException("Response content must be a string or an object implementing __toString().");
+			}
 		}
 	}
 }

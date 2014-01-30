@@ -213,7 +213,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	/**
 	 * PHP getter magic method.
 	 * This method is overridden so that attributes and related objects can be accessed like properties.
+	 *
 	 * @param string $name property name
+	 * @throws \yii\base\InvalidParamException if relation name is wrong
 	 * @return mixed property value
 	 * @see getAttribute()
 	 */
@@ -237,9 +239,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 					}
 				}
 				return $this->_related[$name] = $value->multiple ? $value->all() : $value->one();
-			} else {
-				return $value;
 			}
+			return $value;
 		}
 	}
 
@@ -325,7 +326,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	public function hasOne($class, $link)
 	{
 		/** @var ActiveRecord $class */
-		return $class::createActiveRelation([
+		return $class::createRelation([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
@@ -364,7 +365,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	public function hasMany($class, $link)
 	{
 		/** @var ActiveRecord $class */
-		return $class::createActiveRelation([
+		return $class::createRelation([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
@@ -592,7 +593,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * [[EVENT_BEFORE_UPDATE]], [[EVENT_AFTER_UPDATE]] and [[EVENT_AFTER_VALIDATE]]
 	 * will be raised by the corresponding methods.
 	 *
-	 * Only the [[changedAttributes|changed attribute values]] will be saved into database.
+	 * Only the [[dirtyAttributes|changed attribute values]] will be saved into database.
 	 *
 	 * For example, to update a customer record:
 	 *

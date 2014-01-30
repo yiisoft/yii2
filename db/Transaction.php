@@ -59,7 +59,7 @@ class Transaction extends \yii\base\Object
 
 	/**
 	 * Begins a transaction.
-	 * @throws InvalidConfigException if [[connection]] is null
+	 * @throws InvalidConfigException if [[db]] is `null`.
 	 */
 	public function begin()
 	{
@@ -76,7 +76,7 @@ class Transaction extends \yii\base\Object
 
 	/**
 	 * Commits a transaction.
-	 * @throws Exception if the transaction or the DB connection is not active.
+	 * @throws Exception if the transaction or the [[db|DB connection]] is not active.
 	 */
 	public function commit()
 	{
@@ -91,7 +91,7 @@ class Transaction extends \yii\base\Object
 
 	/**
 	 * Rolls back a transaction.
-	 * @throws Exception if the transaction or the DB connection is not active.
+	 * @throws Exception if the transaction or the [[db|DB connection]] is not active.
 	 */
 	public function rollback()
 	{

@@ -260,15 +260,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
 	public function buildLimit($limit, $offset)
 	{
 		$sql = '';
-		// limit is not optional in SQLite
-		// http://www.sqlite.org/syntaxdiagrams.html#select-stmt
-		if ($limit !== null && $limit >= 0) {
-			$sql = 'LIMIT ' . (int)$limit;
-			if ($offset > 0) {
-				$sql .= ' OFFSET ' . (int)$offset;
+		if ($this->hasLimit($limit)) {
+			$sql = 'LIMIT ' . $limit;
+			if ($this->hasOffset($offset)) {
+				$sql .= ' OFFSET ' . $offset;
 			}
-		} elseif ($offset > 0) {
-			$sql = 'LIMIT 9223372036854775807 OFFSET ' . (int)$offset; // 2^63-1
+		} elseif ($this->hasOffset($offset)) {
+			// limit is not optional in SQLite
+			// http://www.sqlite.org/syntaxdiagrams.html#select-stmt
+			$sql = "LIMIT 9223372036854775807 OFFSET $offset"; // 2^63-1
 		}
 		return $sql;
 	}

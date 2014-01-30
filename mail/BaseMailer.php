@@ -297,11 +297,19 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 		if ($this->fileTransportCallback !== null) {
 			$file = $path . '/' . call_user_func($this->fileTransportCallback, $this, $message);
 		} else {
-			$time = microtime(true);
-			$file = $path . '/' . date('Ymd-His-', $time) . sprintf('%04d', (int)(($time - (int)$time) * 10000)) . '-' . sprintf('%04d', mt_rand(0, 10000)) . '.eml';
+			$file = $path . '/' . $this->generateMessageFileName();
 		}
 		file_put_contents($file, $message->toString());
 		return true;
+	}
+
+	/**
+	 * @return string the file name for saving the message when [[useFileTransport]] is true.
+	 */
+	public function generateMessageFileName()
+	{
+		$time = microtime(true);
+		return date('Ymd-His-', $time) . sprintf('%04d', (int)(($time - (int)$time) * 10000)) . '-' . sprintf('%04d', mt_rand(0, 10000)) . '.eml';
 	}
 
 	/**

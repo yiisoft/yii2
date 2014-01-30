@@ -9,8 +9,6 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
-use yii\helpers\Json;
 use yii\helpers\Security;
 use yii\helpers\StringHelper;
 
@@ -21,22 +19,25 @@ use yii\helpers\StringHelper;
  * Also it provides an interface to retrieve request parameters from $_POST, $_GET, $_COOKIES and REST
  * parameters sent via other HTTP methods like PUT or DELETE.
  *
- * Request is configured as an application component in [[yii\web\Application]] by default.
+ * Request is configured as an application component in [[\yii\web\Application]] by default.
  * You can access that instance via `Yii::$app->request`.
  *
  * @property string $absoluteUrl The currently requested absolute URL. This property is read-only.
- * @property array $acceptableContentTypes The content types ordered by the preference level. The first element
- * represents the most preferred content type.
+ * @property array $acceptableContentTypes The content types ordered by the preference level. The first
+ * element represents the most preferred content type.
  * @property array $acceptableLanguages The languages ordered by the preference level. The first element
  * represents the most preferred language.
  * @property string $baseUrl The relative URL for the application.
+ * @property array $bodyParams The request parameters given in the request body.
+ * @property string $contentType Request content-type. Null is returned if this information is not available.
+ * This property is read-only.
  * @property string $cookieValidationKey The secret key used for cookie validation. If it was not set
  * previously, a random key will be generated and used.
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
- * @property string $csrfToken The random token for CSRF validation. This property is read-only.
+ * @property string $csrfToken The token used to perform CSRF validation. This property is read-only.
  * @property string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned
  * if no such header is sent. This property is read-only.
- * @property array $delete The DELETE request parameter values. This property is read-only.
+ * @property HeaderCollection $headers The header collection. This property is read-only.
  * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
  * `http://www.yiiframework.com`).
  * @property boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
@@ -51,21 +52,18 @@ use yii\helpers\StringHelper;
  * @property boolean $isPut Whether this is a PUT request. This property is read-only.
  * @property boolean $isSecureConnection If the request is sent via secure channel (https). This property is
  * read-only.
- * @property string $rawCsrfToken The unmasked CSRF token sent via cookie. This property is read-only.
  * @property string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value returned is
  * turned into upper case. This property is read-only.
- * @property array $patch The PATCH request parameter values. This property is read-only.
  * @property string $pathInfo Part of the request URL that is after the entry script and before the question
  * mark. Note, the returned path info is already URL-decoded.
  * @property integer $port Port number for insecure requests.
- * @property array $post The POST request parameter values. This property is read-only.
- * @property string $preferredLanguage The language that the application should use. This property is read-only.
- * @property array $put The PUT request parameter values. This property is read-only.
+ * @property array $postParams The request POST parameter values.
+ * @property array $queryParams The request GET parameter values.
  * @property string $queryString Part of the request URL that is after the question mark. This property is
  * read-only.
  * @property string $rawBody The request body. This property is read-only.
+ * @property string $rawCsrfToken The random token for CSRF validation. This property is read-only.
  * @property string $referrer URL referrer, null if not present. This property is read-only.
- * @property array $restParams The RESTful request parameters.
  * @property string $scriptFile The entry script file path.
  * @property string $scriptUrl The relative URL of the entry script.
  * @property integer $securePort Port number for secure requests.
@@ -125,11 +123,11 @@ class Request extends \yii\base\Request
 	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
 	 * request tunneled through POST. Default to '_method'.
 	 * @see getMethod()
-	 * @see getRestParams()
+	 * @see getBodyParams()
 	 */
-	public $restVar = '_method';
+	public $methodVar = '_method';
 	/**
-	 * @var array the parsers for converting the raw HTTP request body into [[restParams]].
+	 * @var array the parsers for converting the raw HTTP request body into [[bodyParams]].
 	 * The array keys are the request `Content-Types`, and the array values are the
 	 * corresponding configurations for [[Yii::createObject|creating the parser objects]].
 	 * A parser must implement the [[RequestParserInterface]].
@@ -145,7 +143,7 @@ class Request extends \yii\base\Request
 	 * To register a parser for parsing all request types you can use `'*'` as the array key.
 	 * This one will be used as a fallback in case no other types match.
 	 *
-	 * @see getRestParams()
+	 * @see getBodyParams()
 	 */
 	public $parsers = [];
 
@@ -182,14 +180,13 @@ class Request extends \yii\base\Request
 	{
 		if ($this->_headers === null) {
 			$this->_headers = new HeaderCollection;
-			$headers = [];
 			if (function_exists('getallheaders')) {
 				$headers = getallheaders();
 			} elseif (function_exists('http_get_request_headers')) {
 				$headers = http_get_request_headers();
 			} else {
 				foreach ($_SERVER as $name => $value) {
-					if (substr($name, 0, 5) == 'HTTP_') {
+					if (strncmp($name, 'HTTP_', 5) === 0) {
 						$name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
 						$this->_headers->add($name, $value);
 					}
@@ -211,8 +208,8 @@ class Request extends \yii\base\Request
 	 */
 	public function getMethod()
 	{
-		if (isset($_POST[$this->restVar])) {
-			return strtoupper($_POST[$this->restVar]);
+		if (isset($_POST[$this->methodVar])) {
+			return strtoupper($_POST[$this->methodVar]);
 		} else {
 			return isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
 		}
@@ -300,45 +297,6 @@ class Request extends \yii\base\Request
 			(stripos($_SERVER['HTTP_USER_AGENT'], 'Shockwave') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Flash') !== false);
 	}
 
-	private $_restParams;
-
-	/**
-	 * Returns the request parameters for the RESTful request.
-	 *
-	 * Request parameters are determined using the parsers configured in [[parsers]] property.
-	 * If no parsers are configured for the current [[contentType]] it uses the PHP function [[mb_parse_str()]]
-	 * to parse the [[rawBody|request body]].
-	 * @return array the RESTful request parameters
-	 * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
-	 * @see getMethod()
-	 */
-	public function getRestParams()
-	{
-		if ($this->_restParams === null) {
-			$contentType = $this->getContentType();
-			if (isset($_POST[$this->restVar])) {
-				$this->_restParams = $_POST;
-				unset($this->_restParams[$this->restVar]);
-			} elseif (isset($this->parsers[$contentType])) {
-				$parser = Yii::createObject($this->parsers[$contentType]);
-				if (!($parser instanceof RequestParserInterface)) {
-					throw new InvalidConfigException("The '$contentType' request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
-				}
-				$this->_restParams = $parser->parse($this->getRawBody(), $contentType);
-			} elseif (isset($this->parsers['*'])) {
-				$parser = Yii::createObject($this->parsers['*']);
-				if (!($parser instanceof RequestParserInterface)) {
-					throw new InvalidConfigException("The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
-				}
-				$this->_restParams = $parser->parse($this->getRawBody(), $contentType);
-			} else {
-				$this->_restParams = [];
-				mb_parse_str($this->getRawBody(), $this->_restParams);
-			}
-		}
-		return $this->_restParams;
-	}
-
 	private $_rawBody;
 
 	/**
@@ -353,25 +311,133 @@ class Request extends \yii\base\Request
 		return $this->_rawBody;
 	}
 
+	private $_bodyParams;
+
 	/**
-	 * Sets the RESTful parameters.
-	 * @param array $values the RESTful parameters (name-value pairs)
+	 * Returns the request parameters given in the request body.
+	 *
+	 * Request parameters are determined using the parsers configured in [[parsers]] property.
+	 * If no parsers are configured for the current [[contentType]] it uses the PHP function [[mb_parse_str()]]
+	 * to parse the [[rawBody|request body]].
+	 * @return array the request parameters given in the request body.
+	 * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
+	 * @see getMethod()
+	 * @see getBodyParam()
+	 * @see setBodyParams()
 	 */
-	public function setRestParams($values)
+	public function getBodyParams()
 	{
-		$this->_restParams = $values;
+		if ($this->_bodyParams === null) {
+			$contentType = $this->getContentType();
+			if (isset($_POST[$this->methodVar])) {
+				$this->_bodyParams = $_POST;
+				unset($this->_bodyParams[$this->methodVar]);
+			} elseif (isset($this->parsers[$contentType])) {
+				$parser = Yii::createObject($this->parsers[$contentType]);
+				if (!($parser instanceof RequestParserInterface)) {
+					throw new InvalidConfigException("The '$contentType' request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
+				}
+				$this->_bodyParams = $parser->parse($this->getRawBody(), $contentType);
+			} elseif (isset($this->parsers['*'])) {
+				$parser = Yii::createObject($this->parsers['*']);
+				if (!($parser instanceof RequestParserInterface)) {
+					throw new InvalidConfigException("The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
+				}
+				$this->_bodyParams = $parser->parse($this->getRawBody(), $contentType);
+			} elseif ($this->getMethod() === 'POST') {
+				// PHP has already parsed the body so we have all params in $_POST
+				$this->_bodyParams = $_POST;
+			} else {
+				$this->_bodyParams = [];
+				mb_parse_str($this->getRawBody(), $this->_bodyParams);
+			}
+		}
+		return $this->_bodyParams;
 	}
 
 	/**
-	 * Returns the named RESTful parameter value.
+	 * Sets the request body parameters.
+	 * @param array $values the request body parameters (name-value pairs)
+	 * @see getBodyParam()
+	 * @see getBodyParams()
+	 */
+	public function setBodyParams($values)
+	{
+		$this->_bodyParams = $values;
+	}
+
+	/**
+	 * Returns the named request body parameter value.
 	 * @param string $name the parameter name
 	 * @param mixed $defaultValue the default parameter value if the parameter does not exist.
 	 * @return mixed the parameter value
+	 * @see getBodyParams()
+	 * @see setBodyParams()
 	 */
-	public function getRestParam($name, $defaultValue = null)
+	public function getBodyParam($name, $defaultValue = null)
 	{
-		$params = $this->getRestParams();
+		$params = $this->getBodyParams();
 		return isset($params[$name]) ? $params[$name] : $defaultValue;
+	}
+
+	/**
+	 * Returns POST parameter with a given name. If name isn't specified, returns an array of all POST parameters.
+	 *
+	 * @param string $name the parameter name
+	 * @param mixed $defaultValue the default parameter value if the parameter does not exist.
+	 * @return array|mixed
+	 */
+	public function post($name = null, $defaultValue = null)
+	{
+		if ($name === null) {
+			return $this->getBodyParams();
+		} else {
+			return $this->getBodyParam($name, $defaultValue);
+		}
+	}
+
+	private $_queryParams;
+
+	/**
+	 * Returns the request parameters given in the [[queryString]].
+	 *
+	 * This method will return the contents of `$_GET` if params where not explicitly set.
+	 * @return array the request GET parameter values.
+	 * @see setQueryParams()
+	 */
+	public function getQueryParams()
+	{
+		if ($this->_queryParams === null) {
+			return $_GET;
+		}
+		return $this->_queryParams;
+	}
+
+	/**
+	 * Sets the request [[queryString]] parameters.
+	 * @param array $values the request query parameters (name-value pairs)
+	 * @see getQueryParam()
+	 * @see getQueryParams()
+	 */
+	public function setQueryParams($values)
+	{
+		$this->_queryParams = $values;
+	}
+
+	/**
+	 * Returns GET parameter with a given name. If name isn't specified, returns an array of all GET parameters.
+	 *
+	 * @param string $name the parameter name
+	 * @param mixed $defaultValue the default parameter value if the parameter does not exist.
+	 * @return array|mixed
+	 */
+	public function get($name = null, $defaultValue = null)
+	{
+		if ($name === null) {
+			return $this->getQueryParams();
+		} else {
+			return $this->getQueryParam($name, $defaultValue);
+		}
 	}
 
 	/**
@@ -380,76 +446,12 @@ class Request extends \yii\base\Request
 	 * @param string $name the GET parameter name. If not specified, whole $_GET is returned.
 	 * @param mixed $defaultValue the default parameter value if the GET parameter does not exist.
 	 * @return mixed the GET parameter value
-	 * @see getPost()
+	 * @see getBodyParam()
 	 */
-	public function get($name = null, $defaultValue = null)
+	public function getQueryParam($name, $defaultValue = null)
 	{
-		if ($name === null) {
-			return $_GET;
-		}
-		return isset($_GET[$name]) ? $_GET[$name] : $defaultValue;
-	}
-
-	/**
-	 * Returns the named POST parameter value.
-	 * If the POST parameter does not exist, the second parameter to this method will be returned.
-	 * @param string $name the POST parameter name. If not specified, whole $_POST is returned.
-	 * @param mixed $defaultValue the default parameter value if the POST parameter does not exist.
-	 * @property array the POST request parameter values
-	 * @return mixed the POST parameter value
-	 * @see get()
-	 */
-	public function getPost($name = null, $defaultValue = null)
-	{
-		if ($name === null) {
-			return $_POST;
-		}
-		return isset($_POST[$name]) ? $_POST[$name] : $defaultValue;
-	}
-
-	/**
-	 * Returns the named DELETE parameter value.
-	 * @param string $name the DELETE parameter name. If not specified, an array of DELETE parameters is returned.
-	 * @param mixed $defaultValue the default parameter value if the DELETE parameter does not exist.
-	 * @property array the DELETE request parameter values
-	 * @return mixed the DELETE parameter value
-	 */
-	public function getDelete($name = null, $defaultValue = null)
-	{
-		if ($name === null) {
-			return $this->getRestParams();
-		}
-		return $this->getIsDelete() ? $this->getRestParam($name, $defaultValue) : null;
-	}
-
-	/**
-	 * Returns the named PUT parameter value.
-	 * @param string $name the PUT parameter name. If not specified, an array of PUT parameters is returned.
-	 * @param mixed $defaultValue the default parameter value if the PUT parameter does not exist.
-	 * @property array the PUT request parameter values
-	 * @return mixed the PUT parameter value
-	 */
-	public function getPut($name = null, $defaultValue = null)
-	{
-		if ($name === null) {
-			return $this->getRestParams();
-		}
-		return $this->getIsPut() ? $this->getRestParam($name, $defaultValue) : null;
-	}
-
-	/**
-	 * Returns the named PATCH parameter value.
-	 * @param string $name the PATCH parameter name. If not specified, an array of PATCH parameters is returned.
-	 * @param mixed $defaultValue the default parameter value if the PATCH parameter does not exist.
-	 * @property array the PATCH request parameter values
-	 * @return mixed the PATCH parameter value
-	 */
-	public function getPatch($name = null, $defaultValue = null)
-	{
-		if ($name === null) {
-			return $this->getRestParams();
-		}
-		return $this->getIsPatch() ? $this->getRestParam($name, $defaultValue) : null;
+		$params = $this->getQueryParams();
+		return isset($params[$name]) ? $params[$name] : $defaultValue;
 	}
 
 	private $_hostInfo;
@@ -1186,24 +1188,12 @@ class Request extends \yii\base\Request
 	public function validateCsrfToken()
 	{
 		$method = $this->getMethod();
-		if (!$this->enableCsrfValidation || !in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'], true)) {
+		// only validate CSRF token on non-"safe" methods http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.1.1
+		if (!$this->enableCsrfValidation || in_array($method, ['GET', 'HEAD', 'OPTIONS'], true)) {
 			return true;
 		}
 		$trueToken = $this->getCookies()->getValue($this->csrfVar);
-		switch ($method) {
-			case 'PUT':
-				$token = $this->getPut($this->csrfVar);
-				break;
-			case 'PATCH':
-				$token = $this->getPatch($this->csrfVar);
-				break;
-			case 'DELETE':
-				$token = $this->getDelete($this->csrfVar);
-				break;
-			default:
-				$token = $this->getPost($this->csrfVar);
-				break;
-		}
+		$token = $this->getBodyParam($this->csrfVar);
 		return $this->validateCsrfTokenInternal($token, $trueToken)
 			|| $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
 	}

@@ -69,9 +69,9 @@ class QueryBuilder extends \yii\base\Object
 			$this->buildWhere($query->where, $params),
 			$this->buildGroupBy($query->groupBy),
 			$this->buildHaving($query->having, $params),
-			$this->buildUnion($query->union, $params),
 			$this->buildOrderBy($query->orderBy),
 			$this->buildLimit($query->limit, $query->offset),
+			$this->buildUnion($query->union, $params),
 		];
 		return [implode($this->separator, array_filter($clauses)), $params];
 	}
@@ -561,7 +561,7 @@ class QueryBuilder extends \yii\base\Object
 	 * @param array $columns
 	 * @param boolean $distinct
 	 * @param string $selectOption
-	 * @return string the SELECT clause built from [[query]].
+	 * @return string the SELECT clause built from [[Query::$select]].
 	 */
 	public function buildSelect($columns, $distinct = false, $selectOption = null)
 	{
@@ -595,7 +595,7 @@ class QueryBuilder extends \yii\base\Object
 
 	/**
 	 * @param array $tables
-	 * @return string the FROM clause built from [[query]].
+	 * @return string the FROM clause built from [[Query::$from]].
 	 */
 	public function buildFrom($tables)
 	{
@@ -623,7 +623,7 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * @param string|array $joins
 	 * @param array $params the binding parameters to be populated
-	 * @return string the JOIN clause built from [[query]].
+	 * @return string the JOIN clause built from [[Query::$join]].
 	 * @throws Exception if the $joins parameter is not in proper format
 	 */
 	public function buildJoin($joins, &$params)
@@ -663,7 +663,7 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * @param string|array $condition
 	 * @param array $params the binding parameters to be populated
-	 * @return string the WHERE clause built from [[query]].
+	 * @return string the WHERE clause built from [[Query::$where]].
 	 */
 	public function buildWhere($condition, &$params)
 	{
@@ -683,7 +683,7 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * @param string|array $condition
 	 * @param array $params the binding parameters to be populated
-	 * @return string the HAVING clause built from [[query]].
+	 * @return string the HAVING clause built from [[Query::$having]].
 	 */
 	public function buildHaving($condition, &$params)
 	{
@@ -693,7 +693,7 @@ class QueryBuilder extends \yii\base\Object
 
 	/**
 	 * @param array $columns
-	 * @return string the ORDER BY clause built from [[query]].
+	 * @return string the ORDER BY clause built from [[Query::$orderBy]].
 	 */
 	public function buildOrderBy($columns)
 	{
@@ -715,24 +715,44 @@ class QueryBuilder extends \yii\base\Object
 	/**
 	 * @param integer $limit
 	 * @param integer $offset
-	 * @return string the LIMIT and OFFSET clauses built from [[query]].
+	 * @return string the LIMIT and OFFSET clauses built from [[Query::$limit]].
 	 */
 	public function buildLimit($limit, $offset)
 	{
 		$sql = '';
-		if ($limit !== null && $limit >= 0) {
-			$sql = 'LIMIT ' . (int)$limit;
+		if ($this->hasLimit($limit)) {
+			$sql = 'LIMIT ' . $limit;
 		}
-		if ($offset > 0) {
-			$sql .= ' OFFSET ' . (int)$offset;
+		if ($this->hasOffset($offset)) {
+			$sql .= ' OFFSET ' . $offset;
 		}
 		return ltrim($sql);
 	}
 
 	/**
+	 * Checks to see if the given limit is effective.
+	 * @param mixed $limit the given limit
+	 * @return boolean whether the limit is effective
+	 */
+	protected function hasLimit($limit)
+	{
+		return is_string($limit) && ctype_digit($limit) || is_integer($limit) && $limit >= 0;
+	}
+
+	/**
+	 * Checks to see if the given offset is effective.
+	 * @param mixed $offset the given offset
+	 * @return boolean whether the offset is effective
+	 */
+	protected function hasOffset($offset)
+	{
+		return is_integer($offset) && $offset > 0 || is_string($offset) && ctype_digit($offset) && $offset !== '0';
+	}
+
+	/**
 	 * @param array $unions
 	 * @param array $params the binding parameters to be populated
-	 * @return string the UNION clause built from [[query]].
+	 * @return string the UNION clause built from [[Query::$union]].
 	 */
 	public function buildUnion($unions, &$params)
 	{

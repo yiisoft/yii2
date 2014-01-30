@@ -168,7 +168,7 @@ abstract class Manager extends Component
 	/**
 	 * Performs access check for the specified user.
 	 * @param mixed $userId the user ID. This should be either an integer or a string representing
-	 * the unique identifier of a user. See [[User::id]].
+	 * the unique identifier of a user. See [[\yii\web\User::id]].
 	 * @param string $itemName the name of the operation that we are checking access to
 	 * @param array $params name-value pairs that would be passed to biz rules associated
 	 * with the tasks and roles assigned to the user.
@@ -252,7 +252,7 @@ abstract class Manager extends Component
 
 	/**
 	 * Assigns an authorization item to a user.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @param string $itemName the item name
 	 * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
 	 * for this particular authorization item.
@@ -263,27 +263,27 @@ abstract class Manager extends Component
 	abstract public function assign($userId, $itemName, $bizRule = null, $data = null);
 	/**
 	 * Revokes an authorization assignment from a user.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @param string $itemName the item name
 	 * @return boolean whether removal is successful
 	 */
 	abstract public function revoke($userId, $itemName);
 	/**
 	 * Revokes all authorization assignments from a user.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @return boolean whether removal is successful
 	 */
 	abstract public function revokeAll($userId);
 	/**
 	 * Returns a value indicating whether the item has been assigned to the user.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @param string $itemName the item name
 	 * @return boolean whether the item has been assigned to the user.
 	 */
 	abstract public function isAssigned($userId, $itemName);
 	/**
 	 * Returns the item assignment information.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @param string $itemName the item name
 	 * @return Assignment the item assignment information. Null is returned if
 	 * the item is not assigned to the user.
@@ -291,7 +291,7 @@ abstract class Manager extends Component
 	abstract public function getAssignment($userId, $itemName);
 	/**
 	 * Returns the item assignments for the specified user.
-	 * @param mixed $userId the user ID (see [[User::id]])
+	 * @param mixed $userId the user ID (see [[\yii\web\User::id]])
 	 * @return Item[] the item assignment information for the user. An empty array will be
 	 * returned if there is no item assigned to the user.
 	 */

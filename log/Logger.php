@@ -66,8 +66,8 @@ use yii\base\Component;
  * second element the total time spent in SQL execution. This property is read-only.
  * @property float $elapsedTime The total elapsed time in seconds for current request. This property is
  * read-only.
- * @property array $profiling The profiling results. Each array element has the following structure: `[$token,
- * $category, $time]`. This property is read-only.
+ * @property array $profiling The profiling results. Each element is an array consisting of these elements:
+ * `info`, `category`, `timestamp`, `trace`, `level`, `duration`. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -221,7 +221,7 @@ class Logger extends Component
 	 * Returns the total elapsed time since the start of the current request.
 	 * This method calculates the difference between now and the timestamp
 	 * defined by constant `YII_BEGIN_TIME` which is evaluated at the beginning
-	 * of [[BaseYii]] class file.
+	 * of [[\yii\BaseYii]] class file.
 	 * @return float the total elapsed time in seconds for current request.
 	 */
 	public function getElapsedTime()

@@ -117,7 +117,8 @@ class YiiRequirementChecker
 	/**
 	 * Return the check results.
 	 * @return array|null check results in format:
-	 * <code>
+	 *
+	 * ```php
 	 * array(
 	 *     'summary' => array(
 	 *         'total' => total number of checks,
@@ -133,7 +134,7 @@ class YiiRequirementChecker
 	 *         ...
 	 *     ),
 	 * )
-	 * </code>
+	 * ```
 	 */
 	function getResult()
 	{

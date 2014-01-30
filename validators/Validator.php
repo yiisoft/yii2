@@ -22,7 +22,7 @@ use yii\base\NotSupportedException;
  * be referenced using short names. They are listed as follows:
  *
  * - `boolean`: [[BooleanValidator]]
- * - `captcha`: [[CaptchaValidator]]
+ * - `captcha`: [[\yii\captcha\CaptchaValidator]]
  * - `compare`: [[CompareValidator]]
  * - `date`: [[DateValidator]]
  * - `default`: [[DefaultValueValidator]]
@@ -124,8 +124,8 @@ class Validator extends Component
 
 	/**
 	 * Creates a validator object.
-	 * @param string $type the validator type. This can be a method name,
-	 * a built-in validator name, a class name, or a path alias of the validator class.
+	 * @param mixed $type the validator type. This can be a built-in validator name,
+	 * a method name of the model class, an anonymous function, or a validator class name.
 	 * @param \yii\base\Model $object the data object to be validated.
 	 * @param array|string $attributes list of attributes to be validated. This can be either an array of
 	 * the attribute names or a string of comma-separated attribute names.
@@ -136,7 +136,7 @@ class Validator extends Component
 	{
 		$params['attributes'] = $attributes;
 
-		if (method_exists($object, $type)) {
+		if ($type instanceof \Closure || method_exists($object, $type)) {
 			// method-based validator
 			$params['class'] = __NAMESPACE__ . '\InlineValidator';
 			$params['method'] = $type;
@@ -257,7 +257,7 @@ class Validator extends Component
 	 * containing a model form with this validator applied.
 	 * @return string the client-side validation script. Null if the validator does not support
 	 * client-side validation.
-	 * @see \yii\web\ActiveForm::enableClientValidation
+	 * @see \yii\widgets\ActiveForm::enableClientValidation
 	 */
 	public function clientValidateAttribute($object, $attribute, $view)
 	{

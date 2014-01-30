@@ -28,46 +28,43 @@ class QueryBuilder extends \yii\db\QueryBuilder
 			$this->buildWhere($query->where, $params),
 			$this->buildGroupBy($query->groupBy),
 			$this->buildHaving($query->having, $params),
-			$this->buildUnion($query->union, $params),
 			$this->buildOrderBy($query->orderBy),
 		];
 		$this->sql = implode($this->separator, array_filter($clauses));
 
-		if ($query->limit !== null || $query->offset !== null) {
-			$this->sql = $this->buildLimit($query->limit, $query->offset);
+		$this->sql = $this->buildLimit($query->limit, $query->offset);
+
+		$unions = $this->buildUnion($query->union, $params);
+		if ($unions !== '') {
+			$this->sql .= $this->separator . $unions;
 		}
+
 		return [$this->sql, $params];
 	}
 
 	public function buildLimit($limit, $offset)
 	{
-		if (($limit < 0) && ($offset < 0)) {
-			return $this->sql;
-		}
 		$filters = [];
-		if ($offset > 0) {
-			$filters[] = 'rowNumId > ' . (int)$offset;
+		if ($this->hasOffset($offset) > 0) {
+			$filters[] = 'rowNumId > ' . $offset;
 		}
 
-		if ($limit >= 0) {
-			$filters[] = 'rownum <= ' . (int)$limit;
+		if ($this->hasLimit($limit)) {
+			$filters[] = 'rownum <= ' . $limit;
 		}
 
-		if (count($filters) > 0) {
+		if (!empty($filters)) {
 			$filter = implode(' and ', $filters);
-			$filter = " WHERE " . $filter;
-		} else {
-			$filter = '';
-		}
-
-		$sql = <<<EOD
+			return <<<EOD
 WITH USER_SQL AS ({$this->sql}),
 	PAGINATION AS (SELECT USER_SQL.*, rownum as rowNumId FROM USER_SQL)
 SELECT *
 FROM PAGINATION
-{$filter}
+WHERE $filter
 EOD;
-		return $sql;
+		} else {
+			return $this->sql;
+		}
 	}
 
 
