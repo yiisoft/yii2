@@ -293,8 +293,6 @@ class Response extends \yii\base\Response
 	{
 		if ($this->isSent) {
 			return;
-		} else {
-			$this->isSent = true;
 		}
 		$this->trigger(self::EVENT_BEFORE_SEND);
 		$this->prepare();
@@ -302,6 +300,7 @@ class Response extends \yii\base\Response
 		$this->sendHeaders();
 		$this->sendContent();
 		$this->trigger(self::EVENT_AFTER_SEND);
+		$this->isSent = true;
 	}
 
 	/**
@@ -875,7 +874,7 @@ class Response extends \yii\base\Response
 			if (method_exists($this->content, '__toString')) {
 				$this->content = $this->content->__toString();
 			} else {
-				throw new InvalidParamException("Response content can only be an object when it implements __toString() method.");
+				throw new InvalidParamException("Response content must be a string or an object implementing __toString().");
 			}
 		}
 	}
