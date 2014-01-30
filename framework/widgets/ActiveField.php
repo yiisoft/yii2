@@ -70,7 +70,7 @@ class ActiveField extends Component
 	 *
 	 * - tag: the tag name of the container element. Defaults to "div".
 	 */
-	public $hintOptions = ['class' => 'help-block'];
+	public $hintOptions = ['class' => 'hint-block'];
 	/**
 	 * @var boolean whether to enable client-side data validation.
 	 * If not set, it will take the value of [[ActiveForm::enableClientValidation]].
