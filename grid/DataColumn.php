@@ -40,7 +40,8 @@ class DataColumn extends Column
 	 */
 	public $label;
 	/**
-	 * @var \Closure an anonymous function that returns the value to be displayed for every data model.
+	 * @var string|\Closure the attribute name to be displayed in this column or an anonymous function that returns 
+	 * the value to be displayed for every data model.
 	 * The signature of this function is `function ($model, $index, $widget)`.
 	 * If this is not set, `$model[$attribute]` will be used to obtain the value.
 	 */
@@ -140,7 +141,11 @@ class DataColumn extends Column
 	protected function renderDataCellContent($model, $key, $index)
 	{
 		if ($this->value !== null) {
-			$value = call_user_func($this->value, $model, $index, $this);
+			if (is_string($this->value)) {
+				$value = ArrayHelper::getValue($model, $this->value);
+			} else {
+				$value = call_user_func($this->value, $model, $index, $this);
+			}
 		} elseif ($this->content === null && $this->attribute !== null) {
 			$value = ArrayHelper::getValue($model, $this->attribute);
 		} else {
