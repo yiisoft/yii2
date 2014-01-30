@@ -508,14 +508,17 @@ class QueryBuilder extends Object
 	 */
 	public function buildLimit($limit, $offset)
 	{
-		$sql = '';
-		if ($limit !== null && $limit >= 0) {
-			$sql = 'LIMIT ' . (int)$limit;
-		}
+		$sql = [];
 		if ($offset > 0) {
-			$sql .= ' OFFSET ' . (int)$offset;
+			$sql[] = (int)$offset;
 		}
-		return ltrim($sql);
+		if ($limit !== null && $limit >= 0) {
+			$sql[] = (int)$limit;
+		} elseif ($sql) {
+			$sql[] = PHP_INT_MAX;
+		}
+
+		return $sql ? 'LIMIT ' . implode(',', $sql) : null;
 	}
 
 	/**
