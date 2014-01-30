@@ -720,13 +720,33 @@ class QueryBuilder extends \yii\base\Object
 	public function buildLimit($limit, $offset)
 	{
 		$sql = '';
-		if ($limit !== null && $limit >= 0) {
-			$sql = 'LIMIT ' . (int)$limit;
+		if ($this->hasLimit($limit)) {
+			$sql = 'LIMIT ' . $limit;
 		}
-		if ($offset > 0) {
-			$sql .= ' OFFSET ' . (int)$offset;
+		if ($this->hasOffset($offset)) {
+			$sql .= ' OFFSET ' . $offset;
 		}
 		return ltrim($sql);
+	}
+
+	/**
+	 * Checks to see if the given limit is effective.
+	 * @param mixed $limit the given limit
+	 * @return boolean whether the limit is effective
+	 */
+	protected function hasLimit($limit)
+	{
+		return is_string($limit) && ctype_digit($limit) || is_integer($limit) && $limit >= 0;
+	}
+
+	/**
+	 * Checks to see if the given offset is effective.
+	 * @param mixed $offset the given offset
+	 * @return boolean whether the offset is effective
+	 */
+	protected function hasOffset($offset)
+	{
+		return is_integer($offset) && $offset > 0 || is_string($offset) && ctype_digit($offset) && $offset !== '0';
 	}
 
 	/**
