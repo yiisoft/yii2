@@ -39,9 +39,12 @@ class ApiMarkdown extends Markdown
 		} else {
 			$text = highlight_string("<?php ".trim($block['text']), true);
 			$text = str_replace('&lt;?php', '', $text);
+			if (($pos = strpos($text, '&nbsp;')) !== false) {
+				$text = substr($text, 0, $pos) . substr($text, $pos + 6);
+			}
 		}
-		// remove <code> tags added by php
-		$text = substr(trim($text), 6, -7);
+		// remove <code><span style="color: #000000">\n and </span>tags added by php
+		$text = substr(trim($text), 36, -16);
 
 		$code = '<pre><code';
 		if (isset($block['language']))
