@@ -10,6 +10,7 @@ namespace yii\apidoc\models;
 use phpDocumentor\Reflection\DocBlock\Tag\DeprecatedTag;
 use phpDocumentor\Reflection\DocBlock\Tag\SinceTag;
 use yii\base\Object;
+use yii\helpers\StringHelper;
 
 /**
  * Base class for API documentation information.
@@ -44,9 +45,10 @@ class BaseDoc extends Object
 
 	/**
 	 * @param \phpDocumentor\Reflection\BaseReflector $reflector
+	 * @param Context $context
 	 * @param array $config
 	 */
-	public function __construct($reflector = null, $config = [])
+	public function __construct($reflector = null, $context = null, $config = [])
 	{
 		parent::__construct($config);
 
@@ -62,6 +64,13 @@ class BaseDoc extends Object
 		$docblock = $reflector->getDocBlock();
 		if ($docblock !== null) {
 			$this->shortDescription = ucfirst($docblock->getShortDescription());
+			if (empty($this->shortDescription) && !($this instanceof PropertyDoc) && $context !== null) {
+				$context->errors[] = [
+					'line' => $this->startLine,
+					'file' => $this->sourceFile,
+					'message' => "No short description for " . substr(StringHelper::basename(get_class($this)), 0, -3) . " '{$this->name}'",
+				];
+			}
 			$this->description = $docblock->getLongDescription();
 
 			$this->phpDocContext = $docblock->getContext();
@@ -77,6 +86,12 @@ class BaseDoc extends Object
 					unset($this->tags[$i]);
 				}
 			}
+		} elseif ($context !== null) {
+			$context->errors[] = [
+				'line' => $this->startLine,
+				'file' => $this->sourceFile,
+				'message' => "No docblock for element '{$this->name}'",
+			];
 		}
 	}
 

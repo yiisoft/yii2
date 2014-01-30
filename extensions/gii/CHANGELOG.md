@@ -8,6 +8,7 @@ Yii Framework 2 gii extension Change Log
 - Bug: fixed controller in crud template to avoid returning query in findModel() (cebe)
 - Enh #1624: generate rules for unique indexes (lucianobaraglia)
 - Enh #1818: Do not display checkbox column if all rows are empty (johonunu)
+- Enh #1897: diff markup is now copy paste friendly (samdark)
 
 2.0.0 alpha, December 1, 2013
 -----------------------------

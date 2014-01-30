@@ -22,11 +22,12 @@ class InterfaceDoc extends TypeDoc
 
 	/**
 	 * @param \phpDocumentor\Reflection\InterfaceReflector $reflector
+	 * @param Context $context
 	 * @param array $config
 	 */
-	public function __construct($reflector = null, $config = [])
+	public function __construct($reflector = null, $context = null, $config = [])
 	{
-		parent::__construct($reflector, $config);
+		parent::__construct($reflector, $context, $config);
 
 		if ($reflector === null) {
 			return;
@@ -34,6 +35,10 @@ class InterfaceDoc extends TypeDoc
 
 		foreach($reflector->getParentInterfaces() as $interface) {
 			$this->parentInterfaces[] = ltrim($interface, '\\');
+		}
+
+		foreach($this->methods as $method) {
+			$method->isAbstract = true;
 		}
 
 		// interface can not have properties

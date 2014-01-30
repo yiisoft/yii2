@@ -33,18 +33,18 @@ Yii widgets
 Most complex bootstrap components are wrapped into Yii widgets to allow more robust syntax and integrate with
 framework features. All widgets belong to `\yii\bootstrap` namespace:
 
-- Alert
-- Button
-- ButtonDropdown
-- ButtonGroup
-- Carousel
-- Collapse
-- Dropdown
-- Modal
-- Nav
-- NavBar
-- Progress
-- Tabs
+- [[yii\bootstrap\Alert|Alert]]
+- [[yii\bootstrap\Button|Button]]
+- [[yii\bootstrap\ButtonDropdown|ButtonDropdown]]
+- [[yii\bootstrap\ButtonGroup|ButtonGroup]]
+- [[yii\bootstrap\Carousel|Carousel]]
+- [[yii\bootstrap\Collapse|Collapse]]
+- [[yii\bootstrap\Dropdown|Dropdown]]
+- [[yii\bootstrap\Modal|Modal]]
+- [[yii\bootstrap\Nav|Nav]]
+- [[yii\bootstrap\NavBar|NavBar]]
+- [[yii\bootstrap\Progress|Progress]]
+- [[yii\bootstrap\Tabs|Tabs]]
 
 
 Using the .less files of Bootstrap directly
@@ -52,7 +52,7 @@ Using the .less files of Bootstrap directly
 
 If you want to include the [Bootstrap css directly in your less files](http://getbootstrap.com/getting-started/#customizing)
 you may need to disable the original bootstrap css files to be loaded.
-You can do this by setting the css property of the `BootstrapAsset` to be empty.
+You can do this by setting the css property of the [[yii\bootstrap\BootstrapAsset|BootstrapAsset]] to be empty.
 For this you need to configure the `assetManagner` application component as follows:
 
 ```php

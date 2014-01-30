@@ -35,7 +35,7 @@ class ActiveFixture extends BaseActiveFixture
 	/**
 	 * @var string|array the collection name that this fixture is about. If this property is not set,
 	 * the table name will be determined via [[modelClass]].
-	 * @see [[yii\mongodb\Connection::getCollection()]]
+	 * @see Connection::getCollection()
 	 */
 	public $collectionName;
 

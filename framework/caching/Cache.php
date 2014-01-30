@@ -53,7 +53,7 @@ abstract class Cache extends Component implements \ArrayAccess
 {
 	/**
 	 * @var string a string prefixed to every cache key so that it is unique. If not set,
-	 * it will use a prefix generated from [[Application::id]]. You may set this property to be an empty string
+	 * it will use a prefix generated from [[\yii\base\Application::id]]. You may set this property to be an empty string
 	 * if you don't want to use key prefix. It is recommended that you explicitly set this property to some
 	 * static value if the cached data needs to be shared among multiple applications.
 	 *
@@ -173,7 +173,7 @@ abstract class Cache extends Component implements \ArrayAccess
 					$results[$key] = $values[$newKey];
 				} else {
 					$value = $this->serializer === null ? unserialize($values[$newKey])
-							: call_user_func($this->serializer[1], $values[$newKey]);
+						: call_user_func($this->serializer[1], $values[$newKey]);
 
 					if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->getHasChanged($this))) {
 						$results[$key] = $value[0];
@@ -232,14 +232,14 @@ abstract class Cache extends Component implements \ArrayAccess
 
 		$data = [];
 		foreach ($items as $key => $value) {
-			$itemKey = $this->buildKey($key);
 			if ($this->serializer === null) {
-				$itemValue = serialize([$value, $dependency]);
+				$value = serialize([$value, $dependency]);
 			} elseif ($this->serializer !== false) {
-				$itemValue = call_user_func($this->serializer[0], [$value, $dependency]);
+				$value = call_user_func($this->serializer[0], [$value, $dependency]);
 			}
 
-			$data[$itemKey] = $itemValue;
+			$key = $this->buildKey($key);
+			$data[$key] = $value;
 		}
 		return $this->setValues($data, $expire);
 	}
@@ -263,14 +263,14 @@ abstract class Cache extends Component implements \ArrayAccess
 
 		$data = [];
 		foreach ($items as $key => $value) {
-			$itemKey = $this->buildKey($key);
 			if ($this->serializer === null) {
-				$itemValue = serialize([$value, $dependency]);
+				$value = serialize([$value, $dependency]);
 			} elseif ($this->serializer !== false) {
-				$itemValue = call_user_func($this->serializer[0], [$value, $dependency]);
+				$value = call_user_func($this->serializer[0], [$value, $dependency]);
 			}
 
-			$data[$itemKey] = $itemValue;
+			$key = $this->buildKey($key);
+			$data[$key] = $value;
 		}
 		return $this->addValues($data, $expire);
 	}
@@ -389,7 +389,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	/**
 	 * Stores multiple key-value pairs in cache.
 	 * The default implementation calls [[setValue()]] multiple times store values one by one. If the underlying cache
-	 * storage supports multiset, this method should be overridden to exploit that feature.
+	 * storage supports multi-set, this method should be overridden to exploit that feature.
 	 * @param array $data array where key corresponds to cache key while value is the value stored
 	 * @param integer $expire the number of seconds in which the cached values will expire. 0 means never expire.
 	 * @return array array of failed keys
@@ -397,8 +397,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	protected function setValues($data, $expire)
 	{
 		$failedKeys = [];
-		foreach ($data as $key => $value)
-		{
+		foreach ($data as $key => $value) {
 			if ($this->setValue($key, $value, $expire) === false) {
 				$failedKeys[] = $key;
 			}
@@ -409,7 +408,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	/**
 	 * Adds multiple key-value pairs to cache.
 	 * The default implementation calls [[addValue()]] multiple times add values one by one. If the underlying cache
-	 * storage supports multiadd, this method should be overridden to exploit that feature.
+	 * storage supports multi-add, this method should be overridden to exploit that feature.
 	 * @param array $data array where key corresponds to cache key while value is the value stored
 	 * @param integer $expire the number of seconds in which the cached values will expire. 0 means never expire.
 	 * @return array array of failed keys
@@ -417,8 +416,7 @@ abstract class Cache extends Component implements \ArrayAccess
 	protected function addValues($data, $expire)
 	{
 		$failedKeys = [];
-		foreach ($data as $key => $value)
-		{
+		foreach ($data as $key => $value) {
 			if ($this->addValue($key, $value, $expire) === false) {
 				$failedKeys[] = $key;
 			}

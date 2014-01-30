@@ -49,10 +49,26 @@ class QueryBuilder extends \yii\db\QueryBuilder
 //		return '';
 //	}
 
-//	public function buildLimit($limit, $offset)
-//	{
-//		return '';
-//	}
+	/**
+	 * @param integer $limit
+	 * @param integer $offset
+	 * @return string the LIMIT and OFFSET clauses built from [[\yii\db\Query::$limit]].
+	 */
+	public function buildLimit($limit, $offset = 0)
+	{
+		$hasOffset = $this->hasOffset($offset);
+		$hasLimit = $this->hasLimit($limit);
+		if ($hasOffset || $hasLimit) {
+			// http://technet.microsoft.com/en-us/library/gg699618.aspx
+			$sql = 'OFFSET ' . ($hasOffset ? $offset : '0');
+			if ($hasLimit) {
+				$sql .= " FETCH NEXT $limit ROWS ONLY";
+			}
+			return $sql;
+		} else {
+			return '';
+		}
+	}
 
 //	public function resetSequence($table, $value = null)
 //	{

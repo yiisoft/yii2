@@ -33,7 +33,7 @@ use yii\helpers\Html;
  * ]);
  * ```
  *
- * @see http://twitter.github.io/bootstrap/javascript.html#carousel
+ * @see http://getbootstrap.com/javascript/#carousel
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
  */

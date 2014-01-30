@@ -1,6 +1,6 @@
 <?php
 
-use yii\apidoc\helpers\Markdown;
+use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\InterfaceDoc;
 use yii\apidoc\models\TraitDoc;
@@ -77,8 +77,8 @@ $renderer = $this->context;
 </table>
 
 <div id="classDescription">
-	<strong><?= Markdown::process($type->shortDescription, $type) ?></strong>
-	<p><?= Markdown::process($type->description, $type) ?></p>
+	<strong><?= ApiMarkdown::process($type->shortDescription, $type, true) ?></strong>
+	<p><?= ApiMarkdown::process($type->description, $type) ?></p>
 </div>
 
 <a name="properties"></a>

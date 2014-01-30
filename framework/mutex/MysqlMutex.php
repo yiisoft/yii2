@@ -14,7 +14,7 @@ use yii\base\InvalidConfigException;
  * @author resurtm <resurtm@gmail.com>
  * @since 2.0
  */
-class MysqlMutex extends Mutex
+class MysqlMutex extends DbMutex
 {
 	/**
 	 * Initializes MySQL specific mutex component implementation.

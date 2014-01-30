@@ -177,7 +177,7 @@ class ActiveRecord extends BaseActiveRecord
 	/**
 	 * Declares the name of the database table associated with this AR class.
 	 * By default this method returns the class name as the table name by calling [[Inflector::camel2id()]]
-	 * with prefix [[DbConnection::tablePrefix]]. For example if [[DbConnection::tablePrefix]] is 'tbl_',
+	 * with prefix [[Connection::tablePrefix]]. For example if [[Connection::tablePrefix]] is 'tbl_',
 	 * 'Customer' becomes 'tbl_customer', and 'OrderItem' becomes 'tbl_order_item'. You may override this method
 	 * if the table is not named after this convention.
 	 * @return string the table name
@@ -269,7 +269,7 @@ class ActiveRecord extends BaseActiveRecord
 	 * @param array $config the configuration passed to the ActiveRelation class.
 	 * @return ActiveRelation the newly created [[ActiveRelation]] instance.
 	 */
-	public static function createActiveRelation($config = [])
+	public static function createRelation($config = [])
 	{
 		return new ActiveRelation($config);
 	}
@@ -391,7 +391,7 @@ class ActiveRecord extends BaseActiveRecord
 	 * [[EVENT_BEFORE_UPDATE]], [[EVENT_AFTER_UPDATE]] and [[EVENT_AFTER_VALIDATE]]
 	 * will be raised by the corresponding methods.
 	 *
-	 * Only the [[changedAttributes|changed attribute values]] will be saved into database.
+	 * Only the [[dirtyAttributes|changed attribute values]] will be saved into database.
 	 *
 	 * For example, to update a customer record:
 	 *

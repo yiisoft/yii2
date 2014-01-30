@@ -16,9 +16,6 @@ namespace yii\db;
  * Allows pagination via [[limit]] and [[offset]].
  * Sorting is supported via [[orderBy]] and items can be limited to match some conditions using [[where]].
  *
- * By calling [[createCommand()]], we can get a [[Command]] instance which can be further
- * used to perform/execute the DB query against a database.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

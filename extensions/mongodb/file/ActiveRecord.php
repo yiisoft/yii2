@@ -72,7 +72,7 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
 	 * @param array $config the configuration passed to the ActiveRelation class.
 	 * @return ActiveRelation the newly created [[ActiveRelation]] instance.
 	 */
-	public static function createActiveRelation($config = [])
+	public static function createRelation($config = [])
 	{
 		return new ActiveRelation($config);
 	}

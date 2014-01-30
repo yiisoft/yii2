@@ -14,7 +14,7 @@ use yii\base\InvalidConfigException;
 /**
  * CaptchaAction renders a CAPTCHA image.
  *
- * CaptchaAction is used together with [[Captcha]] and [[\yii\validators\CaptchaValidator]]
+ * CaptchaAction is used together with [[Captcha]] and [[\yii\captcha\CaptchaValidator]]
  * to provide the [CAPTCHA](http://en.wikipedia.org/wiki/Captcha) feature.
  *
  * By configuring the properties of CaptchaAction, you may customize the appearance of
@@ -114,7 +114,7 @@ class CaptchaAction extends Action
 	 */
 	public function run()
 	{
-		if (isset($_GET[self::REFRESH_GET_VAR])) {
+		if (Yii::$app->request->getQueryParam(self::REFRESH_GET_VAR) !== null) {
 			// AJAX request for regenerating code
 			$code = $this->getVerifyCode(true);
 			/** @var \yii\web\Controller $controller */

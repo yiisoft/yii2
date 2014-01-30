@@ -1,7 +1,9 @@
 <?php
 
-use yii\apidoc\helpers\Markdown;
+use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
+use yii\helpers\ArrayHelper;
+
 /**
  * @var ClassDoc $type
  * @var yii\web\View $this
@@ -9,7 +11,10 @@ use yii\apidoc\models\ClassDoc;
 
 if (empty($type->events)) {
 	return;
-} ?>
+}
+$events = $type->events;
+ArrayHelper::multisort($events, 'name');
+?>
 <div class="summary docEvent">
 <h2>Events</h2>
 
@@ -24,12 +29,12 @@ if (empty($type->events)) {
 <tr>
   <th>Event</th><th>Type</th><th>Description</th><th>Defined By</th>
 </tr>
-<?php foreach($type->events as $event): ?>
+<?php foreach($events as $event): ?>
 <tr<?= $event->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $event->name ?>">
 	<td><?= $this->context->subjectLink($event) ?></td>
 	<td><?= $this->context->typeLink($event->types) ?></td>
 	<td>
-		<?= Markdown::process($event->shortDescription, $type) ?>
+		<?= ApiMarkdown::process($event->shortDescription, $event->definedBy, true) ?>
 		<?php if(!empty($event->since)): ?>
 			(available since version <?php echo $event->since; ?>)
 		<?php endif; ?>

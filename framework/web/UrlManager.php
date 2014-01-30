@@ -14,7 +14,7 @@ use yii\caching\Cache;
 /**
  * UrlManager handles HTTP request parsing and creation of URLs based on a set of rules.
  *
- * UrlManager is configured as an application component in [[yii\base\Application]] by default.
+ * UrlManager is configured as an application component in [[\yii\base\Application]] by default.
  * You can access that instance via `Yii::$app->urlManager`.
  *
  * You can modify its configuration by adding an array to your application config under `components`
@@ -217,7 +217,7 @@ class UrlManager extends Component
 			return [$pathInfo, []];
 		} else {
 			Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
-			$route = $request->get($this->routeVar);
+			$route = $request->getQueryParam($this->routeVar, '');
 			if (is_array($route)) {
 				$route = '';
 			}

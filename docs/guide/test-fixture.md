@@ -106,7 +106,7 @@ to achieve the same goal.
 In the following we will describe how to write a `UserProfile` unit test class using `yii2-codeception`.
 
 In your unit test class extending [[yii\codeception\DbTestCase]] or [[yii\codeception\TestCase]],
-declare which fixtures you want to use in the [[yii\testFixtureTrait::fixtures()|fixtures()]] method. For example,
+declare which fixtures you want to use in the [[yii\test\FixtureTrait::fixtures()|fixtures()]] method. For example,
 
 ```php
 namespace app\tests\unit\models;

@@ -314,7 +314,7 @@ class FixtureController extends Controller
 	{
 		$fixturesPath = Yii::getAlias($this->fixturePath);
 
-		$filesToSearch = ['.php'];
+		$filesToSearch = ['*.php'];
 		if (!$this->needToApplyAll($fixtures[0])) {
 			$filesToSearch = [];
 			foreach ($fixtures as $fileName) {

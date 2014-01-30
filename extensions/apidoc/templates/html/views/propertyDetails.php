@@ -1,8 +1,10 @@
 <?php
 
-use yii\apidoc\helpers\Markdown;
+use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\TraitDoc;
+use yii\helpers\ArrayHelper;
+
 /**
  * @var ClassDoc|TraitDoc $type
  * @var yii\web\View $this
@@ -11,7 +13,9 @@ use yii\apidoc\models\TraitDoc;
 $properties = $type->getNativeProperties();
 if (empty($properties)) {
 	return;
-} ?>
+}
+ArrayHelper::multisort($properties, 'name');
+?>
 <h2>Property Details</h2>
 
 <?php foreach($properties as $property): ?>
@@ -30,7 +34,7 @@ if (empty($properties)) {
 
 	<div class="signature"><?php echo $this->context->renderPropertySignature($property); ?></div>
 
-	<p><?= Markdown::process($property->description, $type) ?></p>
+	<p><?= ApiMarkdown::process($property->description, $type) ?></p>
 
 	<?= $this->render('seeAlso', ['object' => $property]); ?>
 

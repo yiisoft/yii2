@@ -103,7 +103,7 @@ by Yii with the corresponding types depended on your database management system.
 You can use them to write database independent migrations.
 For example `pk` will be replaced by `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`
 for MySQL and `integer PRIMARY KEY AUTOINCREMENT NOT NULL` for sqlite.
-See documentation of [[QueryBuilder::getColumnType()]] for more details and a list
+See documentation of [[yii\db\QueryBuilder::getColumnType()]] for more details and a list
 of available types. You may also use the constants defined in [[\yii\db\Schema]] to
 define column types.
 
@@ -139,7 +139,7 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 
 	public function safeDown()
 	{
-		$this->dropTable('tbl_news);
+		$this->dropTable('tbl_news');
 		$this->dropTable('tbl_user');
 	}
 

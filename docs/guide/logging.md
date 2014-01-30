@@ -23,16 +23,16 @@ default.
 
 There are multiple severity levels and corresponding methods available:
 
-- `\Yii::trace` used maily for development purpose to indicate workflow of some code. Note that it only works in
+- [[Yii::trace]] used maily for development purpose to indicate workflow of some code. Note that it only works in
   development mode when `YII_DEBUG` is set to `true`.
-- `\Yii::error` used when there's unrecoverable error.
-- `\Yii::warning` used when an error occured but execution can be continued.
-- `\Yii::info` used to keep record of important events such as administrator logins.
+- [[Yii::error]] used when there's unrecoverable error.
+- [[Yii::warning]] used when an error occured but execution can be continued.
+- [[Yii::info]] used to keep record of important events such as administrator logins.
 
 Log targets
 -----------
 
-When one of the logging methods is called, message is passed to `\yii\log\Logger` component also accessible as
+When one of the logging methods is called, message is passed to [[yii\log\Logger]] component also accessible as
 `Yii::$app->log`. Logger accumulates messages in memory and then when there are enough messages or when current
 request finishes, sends them to different log targets, such as file or email.
 
@@ -72,12 +72,14 @@ Each log target can have a name and can be referenced via the [[targets]] proper
 Yii::$app->log->targets['file']->enabled = false;
 ```
 
-When the application ends or [[flushInterval]] is reached, Logger will call [[flush()]] to send logged messages to
-different log targets, such as file, email, Web.
+When the application ends or [[yii\log\Logger::flushInterval|flushInterval]] is reached, Logger will call
+[[yii\log\Logger::flush()|flush()]] to send logged messages to different log targets, such as file, email, web.
 
 
 Configuring context information
 -------------------------------
+
+TDB
 
 Profiling
 ---------

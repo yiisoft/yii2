@@ -1,8 +1,10 @@
 <?php
 
-use yii\apidoc\helpers\Markdown;
+use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\TraitDoc;
+use yii\helpers\ArrayHelper;
+
 /**
  * @var ClassDoc|TraitDoc $type
  * @var boolean $protected
@@ -28,12 +30,15 @@ if ($protected && count($type->getProtectedProperties()) == 0 || !$protected && 
 <tr>
   <th>Property</th><th>Type</th><th>Description</th><th>Defined By</th>
 </tr>
-<?php foreach($type->properties as $property): ?>
+<?php
+$properties = $type->properties;
+ArrayHelper::multisort($properties, 'name');
+foreach($properties as $property): ?>
 	<?php if($protected && $property->visibility == 'protected' || !$protected && $property->visibility != 'protected'): ?>
 	<tr<?= $property->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $property->name ?>">
 		<td><?= $this->context->subjectLink($property) ?></td>
 		<td><?= $this->context->typeLink($property->types) ?></td>
-		<td><?= Markdown::process($property->shortDescription, $type) ?></td>
+		<td><?= ApiMarkdown::process($property->shortDescription, $property->definedBy, true) ?></td>
 		<td><?= $this->context->typeLink($property->definedBy) ?></td>
 	</tr>
 	<?php endif; ?>

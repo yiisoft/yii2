@@ -1,7 +1,9 @@
 <?php
 
-use yii\apidoc\helpers\Markdown;
+use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
+use yii\helpers\ArrayHelper;
+
 /**
  * @var ClassDoc $type
  * @var yii\web\View $this
@@ -9,7 +11,10 @@ use yii\apidoc\models\ClassDoc;
 
 if (empty($type->constants)) {
 	return;
-} ?>
+}
+$constants = $type->constants;
+ArrayHelper::multisort($constants, 'name');
+?>
 <div class="summary docConst">
 <h2>Constants</h2>
 
@@ -24,11 +29,11 @@ if (empty($type->constants)) {
 <tr>
   <th>Constant</th><th>Value</th><th>Description</th><th>Defined By</th>
 </tr>
-<?php foreach($type->constants as $constant): ?>
+<?php foreach($constants as $constant): ?>
 	<tr<?= $constant->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $constant->name ?>">
 	  <td><?= $constant->name ?><a name="<?= $constant->name ?>-detail"></a></td>
 	  <td><?= $constant->value ?></td>
-	  <td><?= Markdown::process($constant->shortDescription . "\n" . $constant->description, $type) ?></td>
+	  <td><?= APiMarkdown::process($constant->shortDescription . "\n" . $constant->description, $constant->definedBy, true) ?></td>
 	  <td><?= $this->context->typeLink($constant->definedBy) ?></td>
 	</tr>
 <?php endforeach; ?>

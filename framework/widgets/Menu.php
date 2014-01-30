@@ -158,7 +158,7 @@ class Menu extends Widget
 			$this->route = Yii::$app->controller->getRoute();
 		}
 		if ($this->params === null) {
-			$this->params = $_GET;
+			$this->params = Yii::$app->request->getQueryParams();
 		}
 		$items = $this->normalizeItems($this->items, $hasActiveChild);
 		$options = $this->options;

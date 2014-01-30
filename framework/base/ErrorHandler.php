@@ -16,7 +16,7 @@ use yii\web\HttpException;
  * ErrorHandler displays these errors using appropriate views based on the
  * nature of the errors and the mode the application runs at.
  *
- * ErrorHandler is configured as an application component in [[yii\base\Application]] by default.
+ * ErrorHandler is configured as an application component in [[\yii\base\Application]] by default.
  * You can access that instance via `Yii::$app->errorHandler`.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

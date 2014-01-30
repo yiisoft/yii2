@@ -40,7 +40,7 @@ use yii\helpers\Html;
  *
  * Note: Multilevel dropdowns beyond Level 1 are not supported in Bootstrap 3.
  *
- * @see http://getbootstrap.com/components.html#dropdowns
+ * @see http://getbootstrap.com/components/#dropdowns
  * @see http://getbootstrap.com/components/#nav
  *
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
@@ -100,7 +100,7 @@ class Nav extends Widget
 			$this->route = Yii::$app->controller->getRoute();
 		}
 		if ($this->params === null) {
-			$this->params = $_GET;
+			$this->params = Yii::$app->request->getQueryParams();
 		}
 		Html::addCssClass($this->options, 'nav');
 	}

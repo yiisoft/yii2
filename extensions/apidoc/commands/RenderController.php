@@ -11,6 +11,7 @@ use phpDocumentor\Reflection\FileReflector;
 use TokenReflection\ReflectionFile;
 use yii\apidoc\templates\BaseRenderer;
 use yii\console\Controller;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\apidoc\components\OfflineRenderer;
@@ -25,7 +26,9 @@ use Yii;
  */
 class RenderController extends Controller
 {
-	public $template = 'offline';
+	public $template = 'bootstrap';
+
+	public $guide;
 
 	/**
 	 * Renders API documentation files
@@ -48,6 +51,9 @@ class RenderController extends Controller
 			return 1;
 		}
 		$renderer->targetDir = $targetDir;
+		if ($this->guide !== null && $renderer->hasProperty('guideUrl')) {
+			$renderer->guideUrl = './';
+		}
 
 		$this->stdout('Searching files to process... ');
 		$files = [];
@@ -98,7 +104,19 @@ class RenderController extends Controller
 		$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 
 		// render models
-		$renderer->render($context, $this);
+		$renderer->renderApi($context, $this);
+
+		ArrayHelper::multisort($context->errors, 'file');
+		print_r($context->errors);
+
+		// render guide if specified
+		if ($this->guide !== null) {
+			$renderer->renderMarkdownFiles($this->findMarkdownFiles($this->guide, ['README.md']), $this);
+
+			$this->stdout('Publishing images...');
+			FileHelper::copyDirectory(rtrim($this->guide, '/\\') . '/images', $targetDir . '/images');
+			$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
+		}
 	}
 
 	/**
@@ -114,7 +132,7 @@ class RenderController extends Controller
 		return new $rendererClass();
 	}
 
-	protected function findFiles($path, $except = ['/vendor/', '/tests/'])
+	protected function findFiles($path, $except = ['vendor/', 'tests/'])
 	{
 		$path = FileHelper::normalizePath($path);
 		$options = [
@@ -127,7 +145,17 @@ class RenderController extends Controller
 				}
 				return null;
 			},
-			'only' => ['.php'],
+			'only' => ['*.php'],
+			'except' => $except,
+		];
+		return FileHelper::findFiles($path, $options);
+	}
+
+	protected function findMarkdownFiles($path, $except = [])
+	{
+		$path = FileHelper::normalizePath($path);
+		$options = [
+			'only' => ['*.md'],
 			'except' => $except,
 		];
 		return FileHelper::findFiles($path, $options);
@@ -138,6 +166,6 @@ class RenderController extends Controller
 	 */
 	public function globalOptions()
 	{
-		return array_merge(parent::globalOptions(), ['template']);
+		return array_merge(parent::globalOptions(), ['template', 'guide']);
 	}
 }

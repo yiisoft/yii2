@@ -10,6 +10,8 @@ namespace yii\apidoc\models;
 /**
  * Represents API documentation information for a `class`.
  *
+ * @property EventDoc[] $nativeEvents This property is read-only.
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
@@ -20,6 +22,9 @@ class ClassDoc extends TypeDoc
 	public $isAbstract;
 	public $isFinal;
 
+	/**
+	 * @var string[]
+	 */
 	public $interfaces = [];
 	public $traits = [];
 	// will be set by Context::updateReferences()
@@ -70,11 +75,12 @@ class ClassDoc extends TypeDoc
 
 	/**
 	 * @param \phpDocumentor\Reflection\ClassReflector $reflector
+	 * @param Context $context
 	 * @param array $config
 	 */
-	public function __construct($reflector = null, $config = [])
+	public function __construct($reflector = null, $context = null, $config = [])
 	{
-		parent::__construct($reflector, $config);
+		parent::__construct($reflector, $context, $config);
 
 		if ($reflector === null) {
 			return;

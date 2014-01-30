@@ -52,10 +52,18 @@ class PhpDocController extends Controller
 			}
 
 			$except = [
+				'.git/',
 				'/apps/',
 				'/build/',
 				'/docs/',
+				'/extensions/apidoc/helpers/PrettyPrinter.php',
+				'/extensions/codeception/TestCase.php',
+				'/extensions/codeception/DbTestCase.php',
 				'/extensions/composer/',
+				'/extensions/gii/components/DiffRendererHtmlInline.php',
+				'/extensions/twig/TwigSimpleFileLoader.php',
+				'/framework/BaseYii.php',
+				'/framework/Yii.php',
 				'/tests/',
 				'/vendor/',
 			];
@@ -71,13 +79,12 @@ class PhpDocController extends Controller
 				}
 				return null;
 			},
-			'only' => ['.php'],
+			'only' => ['*.php'],
 			'except' => array_merge($except, [
-				'BaseYii.php',
-				'Yii.php',
-				'/views/',
-				'/requirements/',
-				'/gii/generators/',
+				'views/',
+				'requirements/',
+				'gii/generators/',
+				'vendor/',
 			]),
 		];
 		$files = FileHelper::findFiles($root, $options);

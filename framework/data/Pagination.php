@@ -16,7 +16,7 @@ use yii\web\Request;
  *
  * When data needs to be rendered in multiple pages, Pagination can be used to
  * represent information such as [[totalCount|total item count]], [[pageSize|page size]],
- * [[page|current page]], etc. These information can be passed to [[yii\widgets\Pager|pagers]]
+ * [[page|current page]], etc. These information can be passed to [[\yii\widgets\LinkPager|pagers]]
  * to render pagination buttons or links.
  *
  * The following example shows how to create a pagination object and feed it
@@ -141,7 +141,7 @@ class Pagination extends Object
 		if ($this->_page === null || $recalculate) {
 			if (($params = $this->params) === null) {
 				$request = Yii::$app->getRequest();
-				$params = $request instanceof Request ? $request->get() : [];
+				$params = $request instanceof Request ? $request->getQueryParams() : [];
 			}
 			if (isset($params[$this->pageVar]) && is_scalar($params[$this->pageVar])) {
 				$this->_page = (int)$params[$this->pageVar] - 1;
@@ -183,7 +183,7 @@ class Pagination extends Object
 	{
 		if (($params = $this->params) === null) {
 			$request = Yii::$app->getRequest();
-			$params = $request instanceof Request ? $request->get() : [];
+			$params = $request instanceof Request ? $request->getQueryParams() : [];
 		}
 		if ($page > 0 || $page >= 0 && $this->forcePageVar) {
 			$params[$this->pageVar] = $page + 1;

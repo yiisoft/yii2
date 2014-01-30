@@ -28,7 +28,7 @@ The following diagram shows a typical workflow of a Yii application  handling a 
 
 1. A user makes a request of the URL `http://www.example.com/index.php?r=post/show&id=1`.
    The Web server handles the request by executing the bootstrap script `index.php`.
-2. The bootstrap script creates an [[Application|yii\web\Application]] instance and runs it.
+2. The bootstrap script creates an [[yii\web\Application|Application]] instance and runs it.
 3. The Application instance obtains the detailed user request information from an application component named `request`.
 4. The application determines which [controller](controller.md) and which action of that controller was requested.
    This is accomplished with the help of an application component named `urlManager`.

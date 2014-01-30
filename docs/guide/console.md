@@ -13,11 +13,12 @@ You can execute controller action using the following syntax:
 yii <route> [--option1=value1 --option2=value2 ... argument1 argument2 ...]
 ```
 
-For example, `MigrationController::actionCreate()` with `MigrationController::$migrationTable` set can be called from command
-line like the following:
+For example, [[yii\console\controllers\MigrateController::actionCreate()|MigrateController::actionCreate()]]
+with [[yii\console\controllers\MigrateController::$migrationTable|MigrateController::$migrationTable]] set can
+be called from command line like the following:
 
 ```
-yii migreate/create --migrationTable=my_migration
+yii migrate/create --migrationTable=my_migration
 ```
 
 In the above `yii` is console application entry script described below.
@@ -43,7 +44,7 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 
 // fcgi doesn't have STDIN and STDOUT defined by default
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDIN') or define('STDOUT', fopen('php://stdout', 'w'));
+defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
 require(__DIR__ . '/vendor/autoload.php');
 require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
@@ -79,7 +80,8 @@ you define one or several actions that correspond to the sub-commands of the com
 to implement certain tasks for that particular sub-command.
 
 When running a command, you need to specify the route to the corresponding controller action. For example,
-the route `migrate/create` specifies the sub-command corresponding to the `MigrateController::actionCreate()` action method.
+the route `migrate/create` specifies the sub-command corresponding to the
+[[yii\console\controllers\MigrateController::actionCreate()|MigrateController::actionCreate()]] action method.
 If a route does not contain an action ID, the default action will be executed.
 
 ### Options

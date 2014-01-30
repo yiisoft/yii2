@@ -30,6 +30,8 @@ use yii\base\InvalidConfigException;
  * ]
  * ~~~
  *
+ * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */

@@ -35,6 +35,8 @@ class Context extends Component
 	 */
 	public $traits = [];
 
+	public $errors = [];
+
 
 	public function getType($type)
 	{
@@ -57,18 +59,15 @@ class Context extends Component
 		$reflection->process();
 
 		foreach($reflection->getClasses() as $class) {
-			$class = new ClassDoc($class);
-			$class->sourceFile = $fileName;
+			$class = new ClassDoc($class, $this, ['sourceFile' => $fileName]);
 			$this->classes[$class->name] = $class;
 		}
 		foreach($reflection->getInterfaces() as $interface) {
-			$interface = new InterfaceDoc($interface);
-			$interface->sourceFile = $fileName;
+			$interface = new InterfaceDoc($interface, $this, ['sourceFile' => $fileName]);
 			$this->interfaces[$interface->name] = $interface;
 		}
 		foreach($reflection->getTraits() as $trait) {
-			$trait = new TraitDoc($trait);
-			$trait->sourceFile = $fileName;
+			$trait = new TraitDoc($trait, $this, ['sourceFile' => $fileName]);
 			$this->traits[$trait->name] = $trait;
 		}
 	}
@@ -89,17 +88,25 @@ class Context extends Component
 		}
 		// update implementedBy and usedBy for interfaces and traits
 		foreach($this->classes as $class) {
-			foreach($class->interfaces as $interface) {
-				if (isset($this->interfaces[$interface])) {
-					$this->interfaces[$interface]->implementedBy[] = $class->name;
-				}
-			}
 			foreach($class->traits as $trait) {
 				if (isset($this->traits[$trait])) {
 					$trait = $this->traits[$trait];
 					$trait->usedBy[] = $class->name;
 					$class->properties = array_merge($trait->properties, $class->properties);
 					$class->methods = array_merge($trait->methods, $class->methods);
+				}
+			}
+			foreach($class->interfaces as $interface) {
+				if (isset($this->interfaces[$interface])) {
+					$this->interfaces[$interface]->implementedBy[] = $class->name;
+					if ($class->isAbstract) {
+						// add not implemented interface methods
+						foreach($this->interfaces[$interface]->methods as $method) {
+							if (!isset($class->methods[$method->name])) {
+								$class->methods[$method->name] = $method;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -146,7 +153,7 @@ class Context extends Component
 	}
 
 	/**
-	 * Add properties for getters and setters if class is subclass of [[yii\base\Object]].
+	 * Add properties for getters and setters if class is subclass of [[\yii\base\Object]].
 	 * @param ClassDoc $class
 	 */
 	protected function handlePropertyFeature($class)
@@ -155,18 +162,26 @@ class Context extends Component
 			return;
 		}
 		foreach($class->getPublicMethods() as $name => $method) {
+			if ($method->isStatic) {
+				continue;
+			}
 			if (!strncmp($name, 'get', 3) && $this->paramsOptional($method)) {
 				$propertyName = '$' . lcfirst(substr($method->name, 3));
 				if (isset($class->properties[$propertyName])) {
 					$property = $class->properties[$propertyName];
 					if ($property->getter === null && $property->setter === null) {
-						echo "Property $propertyName conflicts with a defined getter {$method->name} in {$class->name}.\n"; // TODO log these messages somewhere
+						$this->errors[] = [
+							'line' => $property->startLine,
+							'file' => $class->sourceFile,
+							'message' => "Property $propertyName conflicts with a defined getter {$method->name} in {$class->name}.",
+						];
 					}
 					$property->getter = $method;
 				} else {
-					$class->properties[$propertyName] = new PropertyDoc(null, [
+					$class->properties[$propertyName] = new PropertyDoc(null, $this, [
 						'name' => $propertyName,
 						'definedBy' => $class->name,
+						'sourceFile' => $class->sourceFile,
 						'visibility' => 'public',
 						'isStatic' => false,
 						'type' => $method->returnType,
@@ -184,14 +199,19 @@ class Context extends Component
 				if (isset($class->properties[$propertyName])) {
 					$property = $class->properties[$propertyName];
 					if ($property->getter === null && $property->setter === null) {
-						echo "Property $propertyName conflicts with a defined setter {$method->name} in {$class->name}.\n"; // TODO log these messages somewhere
+						$this->errors[] = [
+							'line' => $property->startLine,
+							'file' => $class->sourceFile,
+							'message' => "Property $propertyName conflicts with a defined setter {$method->name} in {$class->name}.",
+						];
 					}
 					$property->setter = $method;
 				} else {
 					$param = $this->getFirstNotOptionalParameter($method);
-					$class->properties[$propertyName] = new PropertyDoc(null, [
+					$class->properties[$propertyName] = new PropertyDoc(null, $this, [
 						'name' => $propertyName,
 						'definedBy' => $class->name,
+						'sourceFile' => $class->sourceFile,
 						'visibility' => 'public',
 						'isStatic' => false,
 						'type' => $param->type,

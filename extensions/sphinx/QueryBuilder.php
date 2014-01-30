@@ -509,13 +509,16 @@ class QueryBuilder extends Object
 	public function buildLimit($limit, $offset)
 	{
 		$sql = '';
-		if ($limit !== null && $limit >= 0) {
-			$sql = 'LIMIT ' . (int)$limit;
+		if (is_integer($offset) && $offset > 0 || is_string($offset) && ctype_digit($offset) && $offset !== '0') {
+			$sql = 'LIMIT ' . $offset;
 		}
-		if ($offset > 0) {
-			$sql .= ' OFFSET ' . (int)$offset;
+		if (is_string($limit) && ctype_digit($limit) || is_integer($limit) && $limit >= 0) {
+			$sql = $sql === '' ? "LIMIT $limit" : "$sql,$limit";
+		} elseif ($sql !== '') {
+			$sql .= ',1000';  // this is the default limit by sphinx
 		}
-		return ltrim($sql);
+
+		return $sql;
 	}
 
 	/**

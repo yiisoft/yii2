@@ -9,7 +9,7 @@ use yii\base\InvalidConfigException;
 /**
  * BasePage is the base class for page classes that represent Web pages to be tested.
  *
- * @property string $url the URL to this page
+ * @property string $url The URL to this page. This property is read-only.
  *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0

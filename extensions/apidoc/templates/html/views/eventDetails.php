@@ -1,7 +1,9 @@
 <?php
 
-use yii\apidoc\helpers\Markdown;
+use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
+use yii\helpers\ArrayHelper;
+
 /**
  * @var ClassDoc $type
  * @var yii\web\View $this
@@ -10,7 +12,9 @@ use yii\apidoc\models\ClassDoc;
 $events = $type->getNativeEvents();
 if (empty($events)) {
 	return;
-} ?>
+}
+ArrayHelper::multisort($events, 'name');
+?>
 <h2>Event Details</h2>
 <?php foreach($events as $event): ?>
 	<div class="detailHeader h3" id="<?= $event->name.'-detail' ?>">
@@ -28,7 +32,7 @@ if (empty($events)) {
 		<?php echo $event->trigger->signature; ?>
 	</div>*/ ?>
 
-	<p><?= Markdown::process($event->description, $type); ?></p>
+	<p><?= ApiMarkdown::process($event->description, $type); ?></p>
 
 	<?= $this->render('seeAlso', ['object' => $event]); ?>
 

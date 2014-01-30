@@ -72,7 +72,10 @@ echo GridView::widget([
 			},
 			'filter' => ['No', 'Yes'],
 		],
-		'url',
+		[
+			'attribute' => 'url',
+			'label' => 'URL',
+		],
 		[
 			'attribute' => 'statusCode',
 			'filter' => [200 => 200, 404 => 404, 403 => 403, 500 => 500],

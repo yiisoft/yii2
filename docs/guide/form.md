@@ -1,9 +1,12 @@
 Working with forms
 ==================
 
-The primary way of using forms in Yii is through [[yii\widgets\ActiveForm]]. This approach should be preferred when the form is based upon  a model. Additionally, there are some useful methods in [[\yii\helpers\Html]] that are typically used for adding buttons and help text to any form.
+The primary way of using forms in Yii is through [[yii\widgets\ActiveForm]]. This approach should be preferred when
+the form is based upon  a model. Additionally, there are some useful methods in [[\yii\helpers\Html]] that are typically
+used for adding buttons and help text to any form.
 
-When creating model-based forms, the first step is to define the model itself. The model can be either based upon the Active Record class, or the more generic Model class. For this login example, a generic model will be used:
+When creating model-based forms, the first step is to define the model itself. The model can be either based upon the
+Active Record class, or the more generic Model class. For this login example, a generic model will be used:
 
 ```php
 use yii\base\Model;
@@ -75,11 +78,16 @@ use yii\widgets\ActiveForm;
 <?php ActiveForm::end() ?>
 ```
 
-In the above code, `ActiveForm::begin()` not only creates a form instance, but also marks the beginning of the form. All of the content
-placed between `ActiveForm::begin()` and `ActiveForm::end()` will be wrapped within the `<form>` tag. As with any widget, you can specify some options as to how the widget should be configured by passing an array to the `begin` method. In this case, an extra CSS class and identifying ID are passed to be used in the opening `<form>` tag.
+In the above code, [[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] not only creates a form instance, but also marks the beginning of the form.
+All of the content placed between [[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] and
+[[yii\widgets\ActiveForm::end()|ActiveForm::end()]] will be wrapped within the `<form>` tag.
+As with any widget, you can specify some options as to how the widget should be configured by passing an array to
+the `begin` method. In this case, an extra CSS class and identifying ID are passed to be used in the opening `<form>` tag.
 
-In order to create a form element in the form, along with the element's label, and any application JavaScript validation, the `field` method of the Active Form widget is called. When the invocation of this method is echoed directly, the result is a regular (text) input. To
-customize the output, you can chain additional methods to this call:
+In order to create a form element in the form, along with the element's label, and any application JavaScript validation,
+the [[yii\widgets\ActiveForm::field()|ActiveForm::field()]] method of the Active Form widget is called.
+When the invocation of this method is echoed directly, the result is a regular (text) input.
+To customize the output, you can chain additional methods to this call:
 
 ```php
 <?= $form->field($model, 'password')->passwordInput() ?>
@@ -101,6 +109,21 @@ or
 
 <?= Html::activeLabel($model, 'username', ['label' => 'name']) ?>
 <?= Html::activeTextInput($model, 'username') ?>
-<?= Html::error($model, 'username') ?>
 <div class="hint-block">Please enter your name</div>
+<?= Html::error($model, 'username') ?>
+```
+
+If you want to use one of HTML5 fields you may specify input type directly like the following:
+
+```php
+<?= $form->field($model, 'email')->input('email') ?>
+```
+
+> **Tip**: in order to style required fields with asterisk you can use the following CSS:
+>
+```css
+div.required label:after {
+    content: " *";
+    color: red;
+}
 ```

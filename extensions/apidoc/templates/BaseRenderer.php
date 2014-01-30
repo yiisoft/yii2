@@ -39,7 +39,17 @@ abstract class BaseRenderer extends Component
 	 * @param Context $context the api documentation context to render.
 	 * @param Controller $controller the apidoc controller instance. Can be used to control output.
 	 */
-	public abstract function render($context, $controller);
+	public abstract function renderApi($context, $controller);
+
+	/**
+	 * Renders a given [[Context]].
+	 *
+	 * @param array $files list of markdown files to render
+	 * @param Context $context the api documentation context to render.
+	 * @param Controller $controller the apidoc controller instance. Can be used to control output.
+	 * @return
+	 */
+	public abstract function renderMarkdownFiles($files, $controller);
 
 	/**
 	 * creates a link to a type (class, interface or trait)

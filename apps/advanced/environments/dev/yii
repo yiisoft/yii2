@@ -13,12 +13,15 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // fcgi doesn't have STDIN and STDOUT defined by default
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
-defined('STDIN') or define('STDOUT', fopen('php://stdout', 'w'));
+defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
 require(__DIR__ . '/vendor/autoload.php');
 require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require(__DIR__ . '/../../common/config/aliases.php');
 
 $config = yii\helpers\ArrayHelper::merge(
+	require(__DIR__ . '/common/config/main.php'),
+	require(__DIR__ . '/common/config/main-local.php'),
 	require(__DIR__ . '/console/config/main.php'),
 	require(__DIR__ . '/console/config/main-local.php')
 );

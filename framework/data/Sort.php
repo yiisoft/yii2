@@ -171,7 +171,7 @@ class Sort extends Object
 	 * In order to add hash to all links use `array_merge($_GET, ['#' => 'my-hash'])`.
 	 *
 	 * The array element indexed by [[sortVar]] is considered to be the current sort directions.
-	 * If the element does not exist, the [[defaults|default order]] will be used.
+	 * If the element does not exist, the [[defaultOrder|default order]] will be used.
 	 *
 	 * @see sortVar
 	 * @see defaultOrder
@@ -245,7 +245,7 @@ class Sort extends Object
 			$this->_attributeOrders = [];
 			if (($params = $this->params) === null) {
 				$request = Yii::$app->getRequest();
-				$params = $request instanceof Request ? $request->get() : [];
+				$params = $request instanceof Request ? $request->getQueryParams() : [];
 			}
 			if (isset($params[$this->sortVar]) && is_scalar($params[$this->sortVar])) {
 				$attributes = explode($this->separators[0], $params[$this->sortVar]);
@@ -293,7 +293,7 @@ class Sort extends Object
 	 * @param array $options additional HTML attributes for the hyperlink tag.
 	 * There is one special attribute `label` which will be used as the label of the hyperlink.
 	 * If this is not set, the label defined in [[attributes]] will be used.
-	 * If no label is defined, [[yii\helpers\Inflector::camel2words()]] will be called to get a label.
+	 * If no label is defined, [[\yii\helpers\Inflector::camel2words()]] will be called to get a label.
 	 * Note that it will not be HTML-encoded.
 	 * @return string the generated hyperlink
 	 * @throws InvalidConfigException if the attribute is unknown
@@ -341,7 +341,7 @@ class Sort extends Object
 	{
 		if (($params = $this->params) === null) {
 			$request = Yii::$app->getRequest();
-			$params = $request instanceof Request ? $request->get() : [];
+			$params = $request instanceof Request ? $request->getQueryParams() : [];
 		}
 		$params[$this->sortVar] = $this->createSortVar($attribute);
 		$route = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;

@@ -17,6 +17,10 @@ use yii\web\Controller;
 
 /**
  *
+ * @property string $controllerID The controller ID (without the module ID prefix). This property is
+ * read-only.
+ * @property string $viewPath The action view file path. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
