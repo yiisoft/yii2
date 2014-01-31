@@ -139,6 +139,7 @@ Yii Framework 2 Change Log
 - Chg #2173: Removed `StringHelper::diff()`, Moved `phpspec/php-diff` dependency from `yiisoft/yii2` to `yiisoft/yii2-gii` (samdark)
 - Chg #2175: QueryBuilder will now append UNION statements at the end of the primary SQL (qiangxue)
 - Chg #2210: Mysql driver will now treat `tinyint(1)` as integer instead of boolean (qiangxue)
+- Chg #2248: Renamed `yii\base\Model::DEFAULT_SCENARIO` to `yii\base\Model::SCENARIO_DEFAULT` (samdark)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
