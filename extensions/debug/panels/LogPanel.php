@@ -20,22 +20,30 @@ use yii\debug\models\search\Log;
  */
 class LogPanel extends Panel
 {
-
 	/**
 	 * @var array log messages extracted to array as models, to use with data provider.
 	 */
 	private $_models;
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getName()
 	{
 		return 'Logs';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getSummary()
 	{
 		return Yii::$app->view->render('panels/log/summary', ['data' => $this->data, 'panel' => $this]);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getDetail()
 	{
 		$searchModel = new Log();
@@ -48,6 +56,9 @@ class LogPanel extends Panel
 		]);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function save()
 	{
 		$target = $this->module->logTarget;
@@ -56,9 +67,10 @@ class LogPanel extends Panel
 	}
 
 	/**
-	 * Returns array of models that represents logs of the current request. Can be used with data providers,
-	 * like yii\data\ArrayDataProvider.
-	 * @param boolean $refresh if needed to build models from log messages and refresh them.
+	 * Returns an array of models that represents logs of the current request.
+	 * Can be used with data providers, such as \yii\data\ArrayDataProvider.
+	 *
+	 * @param boolean $refresh if need to build models from log messages and refresh them.
 	 * @return array models
 	 */
 	protected function getModels($refresh = false)
@@ -78,5 +90,4 @@ class LogPanel extends Panel
 		}
 		return $this->_models;
 	}
-
 }

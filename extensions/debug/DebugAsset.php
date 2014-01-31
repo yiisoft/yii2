@@ -9,6 +9,8 @@ namespace yii\debug;
 use yii\web\AssetBundle;
 
 /**
+ * Debugger asset bundle
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

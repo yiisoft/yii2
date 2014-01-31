@@ -50,7 +50,9 @@ class Module extends \yii\base\Module
 	 */
 	public $historySize = 50;
 
-
+	/**
+	 * @inheritdoc
+	 */
 	public function init()
 	{
 		parent::init();
@@ -69,13 +71,16 @@ class Module extends \yii\base\Module
 		}
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function beforeAction($action)
 	{
 		Yii::$app->getView()->off(View::EVENT_END_BODY, [$this, 'renderToolbar']);
 		unset(Yii::$app->getLog()->targets['debug']);
 		$this->logTarget = null;
 
-		if ($this->checkAccess($action)) {
+		if ($this->checkAccess()) {
 			return parent::beforeAction($action);
 		} elseif ($action->id === 'toolbar') {
 			return false;
@@ -84,6 +89,11 @@ class Module extends \yii\base\Module
 		}
 	}
 
+	/**
+	 * Renders mini-toolbar at the end of page body.
+	 *
+	 * @param \yii\base\Event $event
+	 */
 	public function renderToolbar($event)
 	{
 		if (!$this->checkAccess() || Yii::$app->getRequest()->getIsAjax()) {
@@ -99,6 +109,10 @@ class Module extends \yii\base\Module
 		echo '<script>' . $view->renderPhpFile(__DIR__ . '/assets/toolbar.js') . '</script>';
 	}
 
+	/**
+	 * Checks if current user is allowed to access the module
+	 * @return boolean if access is granted
+	 */
 	protected function checkAccess()
 	{
 		$ip = Yii::$app->getRequest()->getUserIP();
@@ -111,6 +125,9 @@ class Module extends \yii\base\Module
 		return false;
 	}
 
+	/**
+	 * @return array default set of panels
+	 */
 	protected function corePanels()
 	{
 		return [

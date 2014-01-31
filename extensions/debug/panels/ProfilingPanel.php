@@ -25,11 +25,17 @@ class ProfilingPanel extends Panel
 	 */
 	private $_models;
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getName()
 	{
 		return 'Profiling';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getSummary()
 	{
 		return Yii::$app->view->render('panels/profile/summary', [
@@ -39,6 +45,9 @@ class ProfilingPanel extends Panel
 		]);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getDetail()
 	{
 		$searchModel = new Profile();
@@ -53,6 +62,9 @@ class ProfilingPanel extends Panel
 		]);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function save()
 	{
 		$target = $this->module->logTarget;
@@ -65,7 +77,7 @@ class ProfilingPanel extends Panel
 	}
 
 	/**
-	 * Returns array of profiling models that can be used in data provider.
+	 * Returns array of profiling models that can be used in a data provider.
 	 * @return array models
 	 */
 	protected function getModels()
@@ -87,5 +99,4 @@ class ProfilingPanel extends Panel
 		}
 		return $this->_models;
 	}
-
 }
