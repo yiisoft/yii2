@@ -170,9 +170,19 @@ class FileValidatorTest extends TestCase
 		$val->validateAttribute($m, 'attr_files');
 		$this->assertFalse($m->hasErrors());
 		$val->validateAttribute($m, 'attr_files_empty');
+		$this->assertFalse($m->hasErrors('attr_files_empty'));
+		$m = $this->createModelForAttributeTest();
+
+		// single File with skipOnEmpty=false
+		$val = new FileValidator(['skipOnEmpty' => false]);
+		$m = $this->createModelForAttributeTest();
+		$val->validateAttribute($m, 'attr_files');
+		$this->assertFalse($m->hasErrors());
+		$val->validateAttribute($m, 'attr_files_empty');
 		$this->assertTrue($m->hasErrors('attr_files_empty'));
 		$this->assertSame($val->uploadRequired, current($m->getErrors('attr_files_empty')));
 		$m = $this->createModelForAttributeTest();
+
 		// too big
 		$val = new FileValidator(['maxSize' => 128]);
 		$val->validateAttribute($m, 'attr_files');
