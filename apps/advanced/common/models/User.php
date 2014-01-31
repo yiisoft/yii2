@@ -6,8 +6,7 @@ use yii\helpers\Security;
 use yii\web\IdentityInterface;
 
 /**
- * Class User
- * @package common\models
+ * User model
  *
  * @property integer $id
  * @property string $username
@@ -22,16 +21,14 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-	/**
-	 * @var string the raw password. Used to collect password input and isn't saved in database
-	 */
-	public $password;
-
 	const STATUS_DELETED = 0;
 	const STATUS_ACTIVE = 10;
 
 	const ROLE_USER = 10;
 
+	/**
+	 * @inheritdoc
+	 */
 	public function behaviors()
 	{
 		return [
@@ -46,10 +43,7 @@ class User extends ActiveRecord implements IdentityInterface
 	}
 
 	/**
-	 * Finds an identity by the given ID.
-	 *
-	 * @param string|integer $id the ID to be looked for
-	 * @return IdentityInterface|null the identity object that matches the given ID.
+	 * @inheritdoc
 	 */
 	public static function findIdentity($id)
 	{
@@ -68,7 +62,7 @@ class User extends ActiveRecord implements IdentityInterface
 	}
 
 	/**
-	 * @return int|string|array current user ID
+	 * @inheritdoc
 	 */
 	public function getId()
 	{
@@ -76,7 +70,7 @@ class User extends ActiveRecord implements IdentityInterface
 	}
 
 	/**
-	 * @return string current user auth key
+	 * @inheritdoc
 	 */
 	public function getAuthKey()
 	{
@@ -84,8 +78,7 @@ class User extends ActiveRecord implements IdentityInterface
 	}
 
 	/**
-	 * @param string $authKey
-	 * @return boolean if auth key is valid for current user
+	 * @inheritdoc
 	 */
 	public function validateAuthKey($authKey)
 	{
@@ -93,6 +86,8 @@ class User extends ActiveRecord implements IdentityInterface
 	}
 
 	/**
+	 * Validates password
+	 *
 	 * @param string $password password to validate
 	 * @return bool if password provided is valid for current user
 	 */
@@ -101,13 +96,13 @@ class User extends ActiveRecord implements IdentityInterface
 		return Security::validatePassword($password, $this->password_hash);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function rules()
 	{
 		return [
-			['status', 'default', 'value' => self::STATUS_ACTIVE],
 			['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
-
-			['role', 'default', 'value' => self::ROLE_USER],
 			['role', 'in', 'range' => [self::ROLE_USER]],
 
 			['username', 'filter', 'filter' => 'trim'],
@@ -117,34 +112,7 @@ class User extends ActiveRecord implements IdentityInterface
 			['email', 'filter', 'filter' => 'trim'],
 			['email', 'required'],
 			['email', 'email'],
-			['email', 'unique', 'message' => 'This email address has already been taken.', 'on' => 'signup'],
-			['email', 'exist', 'message' => 'There is no user with such email.', 'on' => 'requestPasswordResetToken'],
-
-			['password', 'required'],
-			['password', 'string', 'min' => 6],
+			['email', 'unique'],
 		];
-	}
-
-	public function scenarios()
-	{
-		return [
-			'signup' => ['username', 'email', 'password', '!status', '!role'],
-			'resetPassword' => ['password'],
-			'requestPasswordResetToken' => ['email'],
-		];
-	}
-
-	public function beforeSave($insert)
-	{
-		if (parent::beforeSave($insert)) {
-			if (($this->isNewRecord || $this->getScenario() === 'resetPassword') && !empty($this->password)) {
-				$this->password_hash = Security::generatePasswordHash($this->password);
-			}
-			if ($this->isNewRecord) {
-				$this->auth_key = Security::generateRandomKey();
-			}
-			return true;
-		}
-		return false;
 	}
 }

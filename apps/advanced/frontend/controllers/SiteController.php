@@ -1,17 +1,24 @@
 <?php
-
 namespace frontend\controllers;
 
-use Yii;
-use yii\web\Controller;
-use common\models\LoginForm;
+use common\models\forms\LoginForm;
+use common\models\forms\PasswordResetRequestForm;
+use common\models\forms\ResetPasswordForm;
+use common\models\forms\SignupForm;
 use frontend\models\ContactForm;
-use common\models\User;
+use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
-use yii\helpers\Security;
+use yii\web\Controller;
+use Yii;
 
+/**
+ * Site controller
+ */
 class SiteController extends Controller
 {
+	/**
+	 * @inheritdoc
+	 */
 	public function behaviors()
 	{
 		return [
@@ -34,6 +41,9 @@ class SiteController extends Controller
 		];
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function actions()
 	{
 		return [
@@ -59,7 +69,7 @@ class SiteController extends Controller
 		}
 
 		$model = new LoginForm();
-		if ($model->load($_POST) && $model->login()) {
+		if ($model->load(Yii::$app->request->post()) && $model->login()) {
 			return $this->goBack();
 		} else {
 			return $this->render('login', [
@@ -94,11 +104,13 @@ class SiteController extends Controller
 
 	public function actionSignup()
 	{
-		$model = new User();
-		$model->setScenario('signup');
-		if ($model->load($_POST) && $model->save()) {
-			if (Yii::$app->getUser()->login($model)) {
-				return $this->goHome();
+		$model = new SignupForm();
+		if ($model->load(Yii::$app->request->post())) {
+			$user = $model->signup();
+			if ($user) {
+				if (Yii::$app->getUser()->login($user)) {
+					return $this->goHome();
+				}
 			}
 		}
 
@@ -109,16 +121,14 @@ class SiteController extends Controller
 
 	public function actionRequestPasswordReset()
 	{
-		$model = new User();
-		$model->scenario = 'requestPasswordResetToken';
-		if ($model->load($_POST) && $model->validate()) {
-			if ($this->sendPasswordResetEmail($model->email)) {
-				Yii::$app->getSession()->setFlash('success', 'Check your email for further instructions.');
-				return $this->goHome();
-			} else {
-				Yii::$app->getSession()->setFlash('error', 'There was an error sending email.');
-			}
+		$model = new PasswordResetRequestForm();
+		if ($model->load(Yii::$app->request->post()) && $model->sendEmail()) {
+			Yii::$app->getSession()->setFlash('success', 'Check your email for further instructions.');
+			return $this->goHome();
+		} else {
+			Yii::$app->getSession()->setFlash('error', 'There was an error sending email.');
 		}
+
 		return $this->render('requestPasswordResetToken', [
 			'model' => $model,
 		]);
@@ -126,21 +136,13 @@ class SiteController extends Controller
 
 	public function actionResetPassword($token)
 	{
-		if (empty($token) || is_array($token)) {
-			throw new BadRequestHttpException('Invalid password reset token.');
+		try {
+			$model = new ResetPasswordForm($token);
+		} catch (InvalidParamException $e) {
+			throw new BadRequestHttpException($e->getMessage());
 		}
 
-		$model = User::find([
-			'password_reset_token' => $token,
-			'status' => User::STATUS_ACTIVE,
-		]);
-
-		if ($model === null) {
-			throw new BadRequestHttpException('Wrong password reset token.');
-		}
-
-		$model->scenario = 'resetPassword';
-		if ($model->load($_POST) && $model->save()) {
+		if ($model->load($_POST) && $model->resetPassword()) {
 			Yii::$app->getSession()->setFlash('success', 'New password was saved.');
 			return $this->goHome();
 		}
@@ -148,28 +150,5 @@ class SiteController extends Controller
 		return $this->render('resetPassword', [
 			'model' => $model,
 		]);
-	}
-
-	private function sendPasswordResetEmail($email)
-	{
-		$user = User::find([
-			'status' => User::STATUS_ACTIVE,
-			'email' => $email,
-		]);
-
-		if (!$user) {
-			return false;
-		}
-
-		$user->password_reset_token = Security::generateRandomKey();
-		if ($user->save(false)) {
-			return \Yii::$app->mail->compose('passwordResetToken', ['user' => $user])
-				->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'])
-				->setTo($email)
-				->setSubject('Password reset for ' . \Yii::$app->name)
-				->send();
-		}
-
-		return false;
 	}
 }
