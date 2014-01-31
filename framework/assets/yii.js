@@ -152,6 +152,19 @@ yii = (function ($) {
 			return false;
 		},
 
+		getQueryParams: function (url) {
+			var pos = url.indexOf('?');
+			if (pos < 0) {
+				return {};
+			}
+			var qs = url.substring(pos + 1).split('&');
+			for(var i = 0, result = {}; i < qs.length; i++){
+				qs[i] = qs[i].split('=');
+				result[decodeURIComponent(qs[i][0])] = decodeURIComponent(qs[i][1]);
+			}
+			return result;
+		},
+
 		initModule: function (module) {
 			if (module.isActive === undefined || module.isActive) {
 				if ($.isFunction(module.init)) {
