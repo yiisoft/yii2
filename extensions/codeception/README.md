@@ -173,6 +173,8 @@ class MailTest extends TestCase
 }
 ```
 
+> **Tip**: You also can reconfigure Yii components and properties with method `Yii::configure()`.
+
 You don't need to worry about application instances and isolation because application will be created [each time](https://github.com/yiisoft/yii2/blob/master/extensions/codeception/TestCase.php#L31) before any of test method will be executed in test case.
 You can mock application in a different way. For this purposes you have method [`mockApplication`](https://github.com/yiisoft/yii2/blob/master/extensions/codeception/TestCase.php#L55) available in your test case.
 This method creates new application instance and replaces old one with it and is handy when you need to create application with a config that is different from other test methods in the current test suite. For example:
