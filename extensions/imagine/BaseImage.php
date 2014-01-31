@@ -14,7 +14,6 @@ use Imagine\Image\ImageInterface;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\ManipulatorInterface;
 use Imagine\Image\Point;
-use Imagine\Image\Palette\RGB;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\helpers\ArrayHelper;
@@ -156,8 +155,7 @@ class BaseImage
 		$img = $img->thumbnail($box, $mode);
 
 		// create empty image to preserve aspect ratio of thumbnail
-		$color = (new RGB())->color('#FFF', 100);
-		$thumb = static::getImagine()->create($box, $color);
+		$thumb = static::getImagine()->create($box, new Color('FFF', 100));
 
 		// calculate points
 		$size = $img->getSize();
