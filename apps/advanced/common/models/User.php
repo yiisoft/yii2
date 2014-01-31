@@ -97,6 +97,32 @@ class User extends ActiveRecord implements IdentityInterface
 	}
 
 	/**
+	 * Generates password hash from password and sets it to the model
+	 *
+	 * @param string $password
+	 */
+	public function setPassword($password)
+	{
+		$this->password_hash = Security::generatePasswordHash($password);
+	}
+
+	/**
+	 * Generates new password reset token
+	 */
+	public function generatePasswordResetToken()
+	{
+		$this->password_reset_token = Security::generateRandomKey();
+	}
+
+	/**
+	 * Removes password reset token
+	 */
+	public function removePasswordResetToken()
+	{
+		$this->password_reset_token = '';
+	}
+
+	/**
 	 * @inheritdoc
 	 */
 	public function rules()

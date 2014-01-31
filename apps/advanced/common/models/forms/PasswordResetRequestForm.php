@@ -3,7 +3,6 @@ namespace common\models\forms;
 
 use common\models\User;
 use yii\base\Model;
-use yii\helpers\Security;
 
 /**
  * Password reset request form
@@ -31,6 +30,7 @@ class PasswordResetRequestForm extends Model
 	 */
 	public function sendEmail()
 	{
+		/** @var User $user */
 		$user = User::find([
 			'status' => User::STATUS_ACTIVE,
 			'email' => $this->email,
@@ -40,7 +40,7 @@ class PasswordResetRequestForm extends Model
 			return false;
 		}
 
-		$user->password_reset_token = Security::generateRandomKey();
+		$user->generatePasswordResetToken();
 		if ($user->save()) {
 			return \Yii::$app->mail->compose('passwordResetToken', ['user' => $user])
 				->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'])
