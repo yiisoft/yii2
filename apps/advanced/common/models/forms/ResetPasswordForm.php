@@ -4,7 +4,6 @@ namespace common\models\forms;
 use common\models\User;
 use yii\base\InvalidParamException;
 use yii\base\Model;
-use yii\helpers\Security;
 use Yii;
 
 /**
@@ -27,6 +26,7 @@ class ResetPasswordForm extends Model
 	 */
 	public function __construct($token)
 	{
+		parent::__construct();
 		if (empty($token) || !is_string($token)) {
 			throw new InvalidParamException('Password reset token cannot be blank.');
 		}
@@ -58,8 +58,8 @@ class ResetPasswordForm extends Model
 	{
 		$user = $this->_user;
 		if ($user->validate()) {
-			$user->password_hash = Security::generatePasswordHash($this->password);
-			$user->password_reset_token = '';
+			$user->setPassword($this->password);
+			$user->removePasswordResetToken();
 			return $user->save();
 		} else {
 			return false;

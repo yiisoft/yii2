@@ -3,7 +3,6 @@ namespace common\models\forms;
 
 use common\models\User;
 use yii\base\Model;
-use yii\helpers\Security;
 use Yii;
 
 /**
@@ -45,10 +44,10 @@ class SignupForm extends Model
 			$user = new User();
 			$user->username = $this->username;
 			$user->email = $this->email;
-			$user->password_hash = Security::generatePasswordHash($this->password);
-			$user->auth_key = Security::generateRandomKey();
+			$user->setPassword($this->password);
+			$user->generatePasswordResetToken();
 			$user->role = User::ROLE_USER;
-			$user->status = USer::STATUS_ACTIVE;
+			$user->status = User::STATUS_ACTIVE;
 			if ($user->save()) {
 				return $user;
 			}
