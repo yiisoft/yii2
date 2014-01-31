@@ -41,6 +41,7 @@ Yii Framework 2 Change Log
 - Bug #2091: `QueryBuilder::buildInCondition()` fails to handle array not starting with index 0 (qiangxue)
 - Bug #2160: SphinxQL does not support OFFSET (qiangxue, romeo7)
 - Bug #2212: `yii\gridview\DataColumn` generates incorrect labels when used with nosql DB and there is no data (qiangxue)
+- Bug #2247: `yii\web\UploadedFile` returns object instead of null value (tonydspaniard)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
