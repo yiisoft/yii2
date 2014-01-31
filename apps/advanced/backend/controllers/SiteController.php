@@ -1,18 +1,24 @@
 <?php
-
 namespace backend\controllers;
 
 use Yii;
+use yii\web\AccessControl;
 use yii\web\Controller;
-use common\models\LoginForm;
+use common\models\forms\LoginForm;
 
+/**
+ * Site controller
+ */
 class SiteController extends Controller
 {
+	/**
+	 * @inheritdoc
+	 */
 	public function behaviors()
 	{
 		return [
 			'access' => [
-				'class' => \yii\web\AccessControl::className(),
+				'class' => AccessControl::className(),
 				'rules' => [
 					[
 						'actions' => ['login', 'error'],
@@ -28,6 +34,9 @@ class SiteController extends Controller
 		];
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function actions()
 	{
 		return [
