@@ -190,7 +190,6 @@ abstract class Generator extends Model
 	public function loadStickyAttributes()
 	{
 		$stickyAttributes = $this->stickyAttributes();
-		$attributes[] = 'template';
 		$path = $this->getStickyDataFile();
 		if (is_file($path)) {
 			$result = json_decode(file_get_contents($path), true);
