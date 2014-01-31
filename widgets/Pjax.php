@@ -16,10 +16,17 @@ use yii\web\Response;
 /**
  * Pjax is a widget integrating the [pjax](https://github.com/defunkt/jquery-pjax) jQuery plugin.
  *
- * Pjax captures the link clicks in the content enclosed between its [[begin()]] and [[end()]] calls,
- * turns them into AJAX requests, and replaces the enclosed content with the corresponding AJAX response.
+ * Pjax only deals with the content enclosed between its [[begin()]] and [[end()]] calls, called the *body content* of the widget.
+ * By default, any link click or form submission (for those forms with `data-pjax` attribute) within the body content
+ * will trigger an AJAX request. In responding to the AJAX request, Pjax will send the updated body content (based
+ * on the AJAX request) to the client which will replace the old content with the new one. The browser's URL will then
+ * be updated using pushState. The whole process requires no reloading of the layout or resources (js, css).
  *
- * The following example makes the [[\yii\gridview\GridView]] widget support updating via AJAX:
+ * You may configure [[linkSelector]] to specify which links should trigger pjax, and configure [[formSelector]]
+ * to specify which form submission may trigger pjax.
+ *
+ * The following example shows how to use Pjax with the [[\yii\gridview\GridView]] widget so that the grid pagination,
+ * sorting and filtering can be done via pjax:
  *
  * ```php
  * use yii\widgets\Pjax;
@@ -28,15 +35,6 @@ use yii\web\Response;
  * echo GridView::widget([...]);
  * Pjax::end();
  * ```
- *
- * Clicking the sorting and pagination links in the grid will trigger AJAX-based updating of the grid content.
- * Moreover, if the grid view has turned on filtering, the filtering will also be performed via AJAX.
- *
- * By default, Pjax enables [[enablePushState|push state]], which means the browser's current URL will
- * be updated when an AJAX request is made by Pjax.
- *
- * Pjax can also be used for submitting forms, check the
- * [pjax documentation](https://github.com/defunkt/jquery-pjax#pjaxsubmit) for it.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
