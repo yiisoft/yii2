@@ -37,6 +37,7 @@ class RequestPanel extends Panel
 	public function save()
 	{
 		$headers = Yii::$app->getRequest()->getHeaders();
+		$requestHeaders = [];
 		foreach ($headers as $name => $value) {
 			if (is_array($value) && count($value) == 1) {
 				$requestHeaders[$name] = current($value);
