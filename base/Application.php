@@ -515,6 +515,9 @@ abstract class Application extends Module
 				$handler->handle($exception);
 			} else {
 				echo $this->renderException($exception);
+				if (PHP_SAPI === 'cli') {
+					exit(1);
+				}
 			}
 		} catch (\Exception $e) {
 			// exception could be thrown in ErrorHandler::handle()
