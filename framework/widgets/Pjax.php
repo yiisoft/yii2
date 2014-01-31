@@ -72,6 +72,11 @@ class Pjax extends Widget
 	 */
 	public $timeout = 1000;
 	/**
+	 * @var boolean|integer how to scroll the page when pjax response is received. If false, no page scroll will be made.
+	 * Use a number if you want to scroll to a particular place.
+	 */
+	public $scrollTo = false;
+	/**
 	 * @var array additional options to be passed to the pjax JS plugin. Please refer to
 	 * [pjax project page](https://github.com/defunkt/jquery-pjax) for available options.
 	 */
@@ -152,6 +157,7 @@ class Pjax extends Widget
 		$this->clientOptions['push'] = $this->enablePushState;
 		$this->clientOptions['replace'] = $this->enableReplaceState;
 		$this->clientOptions['timeout'] = $this->timeout;
+		$this->clientOptions['scrollTo'] = $this->scrollTo;
 		$options = Json::encode($this->clientOptions);
 		$linkSelector = Json::encode($this->linkSelector !== null ? $this->linkSelector : '#' . $id . ' a');
 		$formSelector = Json::encode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
