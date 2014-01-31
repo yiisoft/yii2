@@ -137,7 +137,7 @@ class MessageFormatter extends Component
 		}
 
 		// replace named arguments
-		if (($tokens = $this->tokenizePattern($pattern)) === false) {
+		if (($tokens = self::tokenizePattern($pattern)) === false) {
 			$this->_errorCode = -1;
 			$this->_errorMessage = "Message pattern is invalid.";
 			return false;
@@ -187,7 +187,7 @@ class MessageFormatter extends Component
 	 */
 	private function replaceNamedArguments($pattern, $givenParams, &$resultingParams, &$map = [])
 	{
-		if (($tokens = $this->tokenizePattern($pattern)) === false) {
+		if (($tokens = self::tokenizePattern($pattern)) === false) {
 			return false;
 		}
 		foreach($tokens as $i => $token) {
@@ -214,7 +214,7 @@ class MessageFormatter extends Component
 				if (!isset($token[2])) {
 					return false;
 				}
-				$subtokens = $this->tokenizePattern($token[2]);
+				$subtokens = self::tokenizePattern($token[2]);
 				$c = count($subtokens);
 				for ($k = 0; $k + 1 < $c; $k++) {
 					if (is_array($subtokens[$k]) || !is_array($subtokens[++$k])) {
@@ -239,7 +239,7 @@ class MessageFormatter extends Component
 	 */
 	protected function fallbackFormat($pattern, $args, $locale)
 	{
-		if (($tokens = $this->tokenizePattern($pattern)) === false) {
+		if (($tokens = self::tokenizePattern($pattern)) === false) {
 			$this->_errorCode = -1;
 			$this->_errorMessage = "Message pattern is invalid.";
 			return false;
@@ -261,7 +261,7 @@ class MessageFormatter extends Component
 	 * @param string $pattern patter to tokenize
 	 * @return array|bool array of tokens or false on failure
 	 */
-	private function tokenizePattern($pattern)
+	private static function tokenizePattern($pattern)
 	{
 		$depth = 1;
 		if (($start = $pos = mb_strpos($pattern, '{')) === false) {
@@ -340,7 +340,7 @@ class MessageFormatter extends Component
 				if (!isset($token[2])) {
 					return false;
 				}
-				$select = static::tokenizePattern($token[2]);
+				$select = self::tokenizePattern($token[2]);
 				$c = count($select);
 				$message = false;
 				for ($i = 0; $i + 1 < $c; $i++) {
@@ -368,7 +368,7 @@ class MessageFormatter extends Component
 				if (!isset($token[2])) {
 					return false;
 				}
-				$plural = static::tokenizePattern($token[2]);
+				$plural = self::tokenizePattern($token[2]);
 				$c = count($plural);
 				$message = false;
 				$offset = 0;
