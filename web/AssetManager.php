@@ -223,6 +223,8 @@ class AssetManager extends Component
 	 */
 	public function publish($path, $options = [])
 	{
+		$path = Yii::getAlias($path);
+
 		if (isset($this->_published[$path])) {
 			return $this->_published[$path];
 		}
@@ -291,6 +293,8 @@ class AssetManager extends Component
 	 */
 	public function getPublishedPath($path)
 	{
+		$path = Yii::getAlias($path);
+
 		if (isset($this->_published[$path])) {
 			return $this->_published[$path][0];
 		}
@@ -315,6 +319,8 @@ class AssetManager extends Component
 	 */
 	public function getPublishedUrl($path)
 	{
+		$path = Yii::getAlias($path);
+		
 		if (isset($this->_published[$path])) {
 			return $this->_published[$path][1];
 		}
