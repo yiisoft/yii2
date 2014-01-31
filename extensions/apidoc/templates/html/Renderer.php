@@ -232,6 +232,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	 */
 	public function renderInheritance($class)
 	{
+		$parents = [];
 		$parents[] = $this->typeLink($class);
 		while ($class->parentClass !== null) {
 			if(isset($this->context->classes[$class->parentClass])) {
