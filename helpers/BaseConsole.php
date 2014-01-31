@@ -422,7 +422,7 @@ class BaseConsole
 
 					$styleA = ArrayHelper::merge($styleA, $style);
 				}
-				$styleString[] = [];
+				$styleString = [];
 				foreach ($styleA as $name => $content) {
 					if ($name === 'text-decoration') {
 						$content = implode(' ', $content);
