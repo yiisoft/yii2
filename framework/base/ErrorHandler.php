@@ -87,7 +87,7 @@ class ErrorHandler extends Component
 	{
 		if (Yii::$app instanceof \yii\console\Application || YII_ENV_TEST) {
 			echo Yii::$app->renderException($exception);
-			return;
+			exit(1);
 		}
 
 		$useErrorView = !YII_DEBUG || $exception instanceof UserException;
