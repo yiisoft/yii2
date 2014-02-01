@@ -237,8 +237,8 @@ Using the same `attributes` property you can massively assign data from associat
 
 ```php
 $attributes = [
-	'title' => 'Model attributes',
-	'created_at' => time(),
+	'title' => 'Massive assignment example',
+	'body' => 'Never allow assigning attributes that are not meant to be assigned.',
 ];
 $post->attributes = $attributes;
 ```
