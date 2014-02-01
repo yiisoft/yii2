@@ -1,5 +1,5 @@
 <?php
-namespace common\models\forms;
+namespace frontend\models\forms;
 
 use common\models\User;
 use yii\base\InvalidParamException;
