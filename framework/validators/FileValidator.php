@@ -167,7 +167,7 @@ class FileValidator extends Validator
 	protected function validateValue($file)
 	{
 		if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
-			return $this->skipOnEmpty ? [] : [$this->uploadRequired, []];
+			return $this->skipOnEmpty ? null : [$this->uploadRequired, []];
 		}
 		switch ($file->error) {
 			case UPLOAD_ERR_OK:
