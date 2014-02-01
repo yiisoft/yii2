@@ -59,7 +59,7 @@ class ResetPasswordForm extends Model
 	{
 		$user = $this->_user;
 		if ($user->validate()) {
-			$user->setPassword($this->password);
+			$user->password = $this->password;
 			$user->removePasswordResetToken();
 			return $user->save();
 		} else {
