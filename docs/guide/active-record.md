@@ -620,6 +620,29 @@ $posts = Post::find()->with([
 	}
 ])->all();
 ```
+### Default scope
+
+To use default scope you should owerride [[yii\db\ActiveRecord::createQuery()|createQuery()]] and customize query:
+
+```php
+namespace app\models;
+
+use yii\db\ActiveRecord;
+
+class Comment extends ActiveRecord
+{
+	public static function createQuery()
+	{
+		$query = new CommentQuery(['modelClass' => get_called_class()]);
+		$query->where(['status'=>1]);
+		$query->orderBy(['title'=>SORT_ASC]);
+		return $query;
+	}
+}
+
+```
+
+Note, that if you use [[yii\db\Query::where()|where()]] after applying default scope, it will be overrided by later called method. To avoid this use [[yii\db\Query::andWhere()|andWhere()]] instead.
 
 ### Making it IDE-friendly
 
