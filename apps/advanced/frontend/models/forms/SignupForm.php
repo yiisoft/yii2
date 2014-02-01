@@ -41,13 +41,7 @@ class SignupForm extends Model
 	public function signup()
 	{
 		if ($this->validate()) {
-			$user = new User();
-			$user->username = $this->username;
-			$user->email = $this->email;
-			$user->password = $this->password;
-			$user->generatePasswordResetToken();
-			$user->role = User::ROLE_USER;
-			$user->status = User::STATUS_ACTIVE;
+			$user = User::create($this->attributes);
 			if ($user->save()) {
 				return $user;
 			}

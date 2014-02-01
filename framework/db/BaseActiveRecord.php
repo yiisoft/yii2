@@ -986,8 +986,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	/**
 	 * Creates an active record object using a row of data from the database/storage.
 	 *
-	 * This method is *not* meant to be used to create new records.
-	 *
 	 * It is an internal method meant to be called to create active record objects after
 	 * fetching data from the database. It is mainly used by [[ActiveQuery]] to populate
 	 * the query results into Active Records.
