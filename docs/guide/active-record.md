@@ -273,8 +273,9 @@ $orders = $customer->getBigOrders(200)->all();
 
 > Note: A relation method returns an instance of [[yii\db\ActiveRelation]]. If you access the relation like
 an attribute, the return value will be the query result of the relation, which could be an instance of `ActiveRecord`,
-an array of that, or null, depending the multiplicity of the relation. For example, `$customer->orders` returns
-an array of `Order` objects, while `$customer->getOrders()` returns an `ActiveRelation` instance.
+an array of that, or null, depending the multiplicity of the relation. For example, `$customer->getOrders()` returns
+an `ActiveRelation` instance, while `$customer->orders` returns an array of `Order` objects (or an empty array if
+the query results in nothing).
 
 
 Relations with Pivot Table
