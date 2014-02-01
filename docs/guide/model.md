@@ -279,7 +279,8 @@ function scenarios()
 }
 ```
 
-Note that everything is unsafe by default and you can't make field "safe" without specifying scenario.
+Note that everything is unsafe by default in active record models and you can't make field "safe" without specifying
+scenario. In normal models that are not active record, everything is safe by default.
 
 
 See also
