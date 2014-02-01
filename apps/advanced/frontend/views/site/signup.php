@@ -5,7 +5,7 @@ use yii\widgets\ActiveForm;
 /**
  * @var yii\web\View $this
  * @var yii\widgets\ActiveForm $form
- * @var common\models\forms\SignupForm $model
+ * @var \frontend\models\forms\SignupForm $model
  */
 $this->title = 'Signup';
 $this->params['breadcrumbs'][] = $this->title;
