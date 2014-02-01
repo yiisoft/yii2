@@ -363,7 +363,7 @@ array(
 )
 ```
 
-If you want some methods to be unsafe for default scenario:
+If you want some fields to be unsafe for default scenario:
 
 ```php
 class User extends ActiveRecord
