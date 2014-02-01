@@ -1002,11 +1002,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	{
 		$record = static::instantiate($row);
 		$columns = array_flip($record->attributes());
-		/* @var $schema TableSchema */
-		$schema = static::getDb()->getTableSchema(static::tableName());
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
-				$value = $schema->getColumn($name)->typecast($value);
 				$record->_attributes[$name] = $value;
 			} else {
 				$record->$name = $value;
