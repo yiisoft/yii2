@@ -8,7 +8,7 @@
 namespace yii\validators;
 
 use Yii;
-use yii\base\Component;
+use yii\base\Object;
 use yii\base\NotSupportedException;
 
 /**
@@ -45,7 +45,7 @@ use yii\base\NotSupportedException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Validator extends Component
+class Validator extends Object
 {
 	/**
 	 * @var array list of built-in validators (name => class or configuration)
