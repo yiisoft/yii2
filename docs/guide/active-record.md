@@ -271,6 +271,11 @@ whose subtotal is greater than 100. To specify a different threshold value, use 
 $orders = $customer->getBigOrders(200)->all();
 ```
 
+> Note: A relation method returns an instance of [[yii\db\ActiveRelation]]. If you access the relation like
+an attribute, the return value will be the query result of the relation, which could be an instance of `ActiveRecord`,
+an array of that, or null, depending the multiplicity of the relation. For example, `$customer->orders` returns
+an array of `Order` objects, while `$customer->getOrders()` returns an `ActiveRelation` instance.
+
 
 Relations with Pivot Table
 --------------------------
