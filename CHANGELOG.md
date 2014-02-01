@@ -6,7 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #1265: AssetController does not override 'js' and 'css' for compressed bundles (klimov-paul)
 - Bug #1326: The `visible` setting for `DetailView` doesn't work as expected (qiangxue)
-- Bug #1412: `FileValidator` still triggers `uploadRequired` error in some case when `skipOnEmpty` is true and no upload is provided (qiangxue)
+- Bug #1412: `FileValidator` and `ImageValidator` still trigger `uploadRequired` error in some case when `skipOnEmpty` is true and no upload is provided (qiangxue)
 - Bug #1446: Logging while logs are processed causes infinite loop (qiangxue)
 - Bug #1497: Localized view files are not correctly returned (mintao)
 - Bug #1500: Log messages exported to files are not separated by newlines (omnilight, qiangxue)
