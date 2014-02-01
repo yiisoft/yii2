@@ -167,7 +167,7 @@ class FileValidator extends Validator
 	protected function validateValue($file)
 	{
 		if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
-			return $this->skipOnEmpty ? null : [$this->uploadRequired, []];
+			return [$this->uploadRequired, []];
 		}
 		switch ($file->error) {
 			case UPLOAD_ERR_OK:
@@ -222,6 +222,14 @@ class FileValidator extends Validator
 			$limit = (int)$_POST['MAX_FILE_SIZE'];
 		}
 		return $limit;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function isEmpty($value, $trim = false)
+	{
+		return !$value instanceof UploadedFile || $value->error == UPLOAD_ERR_NO_FILE;
 	}
 
 	/**
