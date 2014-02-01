@@ -265,7 +265,7 @@ assignment is described in `scenarios` method:
 ```php
 class User extends ActiveRecord
 {
-	function rules()
+	public function rules()
 	{
 		return [
 			// rule applied when corresponding field is "safe"
@@ -278,7 +278,7 @@ class User extends ActiveRecord
 		];
 	}
 
-	function scenarios()
+	public function scenarios()
 	{
 		return [
 			// on signup allow mass assignment of username
@@ -328,7 +328,7 @@ In case of not defined `scenarios` method like the following:
 ```php
 class User extends ActiveRecord
 {
-	function rules()
+	public function rules()
 	{
 		return [
 			['username', 'string', 'length' => [4, 32]],
@@ -360,6 +360,52 @@ array(
 	'username' => 'samdark',
 	'first_name' => 'Alexander',
 	'password' => '123',
+)
+```
+
+If you want some methods to be unsafe for default scenario:
+
+```php
+class User extends ActiveRecord
+{
+	function rules()
+	{
+		return [
+			['username', 'string', 'length' => [4, 32]],
+			['first_name', 'string', 'max' => 128],
+			['password', 'required'],
+		];
+	}
+
+	public function scenarios()
+	{
+		return [
+			self::DEFAULT_SCENARIO => ['username', 'first_name', '!password']
+		];
+	}
+}
+```
+
+Mass assignment is still available by default:
+
+```php
+$user = User::find(42);
+$data = [
+	'username' => 'samdark',
+	'first_name' => 'Alexander',
+	'password' => '123',
+];
+$user->attributes = $data;
+print_r($data);
+```
+
+The code above gives you:
+
+```php
+array(
+	'username' => 'samdark',
+	'first_name' => 'Alexander',
+	'password' => null, // because of ! before field name in scenarios
 )
 ```
 
