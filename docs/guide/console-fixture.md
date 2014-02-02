@@ -1,5 +1,5 @@
-Database Fixtures
-=================
+Fixtures console flow
+=====================
 
 Fixtures are important part of testing. Their main purpose is to populate you with data that needed by testing
 different cases. With this data using your tests becoming more efficient and useful.
