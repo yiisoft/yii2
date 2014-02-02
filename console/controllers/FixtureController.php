@@ -16,7 +16,7 @@ use yii\test\FixtureTrait;
 use yii\helpers\Inflector;
 
 /**
- * This command manages fixtures load.
+ * This command manages loading and unloading fixtures.
  * You can specify different options of this command to point fixture manager
  * to the specific tables of the different database connections.
  *
@@ -131,12 +131,12 @@ class FixtureController extends Controller
 
 		if (!$this->confirmApply($foundFixtures, $except)) {
 			return;
-		}		
+		}
 
-		$fixtures = $this->getFixturesConfigs(array_diff($foundFixtures, $except));
+		$fixtures = $this->getFixturesConfig(array_diff($foundFixtures, $except));
 
 		if (!$fixtures) {
-			throw new Exception("No fixtures were found in namespace: \"" . $this->namespace . "\".");
+			throw new Exception('No fixtures were found in namespace: "' . $this->namespace . '"'.'');
 		}
 
 		$transaction = Yii::$app->db->beginTransaction();
@@ -183,10 +183,10 @@ class FixtureController extends Controller
 			return;
 		}
 
-		$fixtures = $this->getFixturesConfigs(array_diff($foundFixtures, $except));
+		$fixtures = $this->getFixturesConfig(array_diff($foundFixtures, $except));
 
 		if (!$fixtures) {
-			throw new Exception("No fixtures were found in namespace: \"" . $this->namespace . "\".");
+			throw new Exception('No fixtures were found in namespace: ' . $this->namespace . '".');
 		}
 
 		$transaction = Yii::$app->db->beginTransaction();
@@ -363,7 +363,7 @@ class FixtureController extends Controller
 	 * @param array $fixtures fixtures to configure
 	 * @return array
 	 */
-	private function getFixturesConfigs($fixtures)
+	private function getFixturesConfig($fixtures)
 	{
 		$config = [];
 
