@@ -13,6 +13,19 @@ use yii\helpers\Html;
 
 /**
  * CheckboxColumn displays a column of checkboxes in a grid view.
+ *
+ *  * To add a CheckboxColumn to the [[GridView]], add it to the [[GridView::columns|columns]] configuration as follows:
+ *
+ * ```php
+ * 'columns' => [
+ *     // ...
+ *     [
+ *         'class' => 'yii\grid\CheckboxColumn',
+ *         // you may configure additional properties here
+ *     ],
+ * ]
+ * ```
+ *
  * Users may click on the checkboxes to select rows of the grid. The selected rows may be
  * obtained by calling the following JavaScript code:
  *
