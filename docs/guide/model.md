@@ -380,7 +380,7 @@ class User extends ActiveRecord
 	public function scenarios()
 	{
 		return [
-			self::DEFAULT_SCENARIO => ['username', 'first_name', '!password']
+			self::SCENARIO_DEFAULT => ['username', 'first_name', '!password']
 		];
 	}
 }
@@ -396,7 +396,7 @@ $data = [
 	'password' => '123',
 ];
 $user->attributes = $data;
-print_r($data);
+print_r($user->attributes);
 ```
 
 The code above gives you:
