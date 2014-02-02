@@ -115,7 +115,7 @@ Yii Framework 2 Change Log
 - Enh: Added `yii\web\View::POS_LOAD` (qiangxue)
 - Enh: Added `yii\web\Response::clearOutputBuffers()` (qiangxue)
 - Enh: Improved `QueryBuilder::buildLimit()` to support big numbers (qiangxue)
-- Enh: Added typecast database types into php types (dizews)
+- Enh:#2211: Added typecast database types into php types (dizews)
 - Enh #2240: Improved `yii\web\AssetManager::publish()`, `yii\web\AssetManager::getPublishedPath()` and `yii\web\AssetManager::getPublishedUrl()` to support aliases (vova07)
 - Chg #1519: `yii\web\User::loginRequired()` now returns the `Response` object instead of exiting the application (qiangxue)
 - Chg #1586: `QueryBuilder::buildLikeCondition()` will now escape special characters and use percentage characters by default (qiangxue)

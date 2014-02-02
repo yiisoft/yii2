@@ -275,8 +275,7 @@ class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
-	 * @param array $row
-	 * @return static
+	 * @inheritdoc
 	 */
 	public static function create($row)
 	{
