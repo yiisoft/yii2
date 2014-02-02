@@ -284,7 +284,11 @@ class ActiveRecord extends BaseActiveRecord
 		$schema = static::getTableSchema();
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
-				$record->setAttribute($name, $schema->getColumn($name)->typecast($value));
+				if ($schema->getColumn($name) !== null) {
+					$record->setAttribute($name, $schema->getColumn($name)->typecast($value));
+				} else {
+					$record->setAttribute($name, $value);
+				}
 			} else {
 				$record->$name = $value;
 			}
