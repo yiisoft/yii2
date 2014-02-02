@@ -114,6 +114,22 @@ class Column extends Object
 	{
 		return trim($this->footer) !== '' ? $this->footer : $this->grid->emptyCell;
 	}
+	
+	/**
+	 * Get the raw data cell content.
+	 * @param mixed $model the data model
+	 * @param mixed $key the key associated with the data model
+	 * @param integer $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
+	 * @return string the rendering result
+	 */
+	protected function getDataCellContent($model, $key, $index)
+	{
+		if ($this->content !== null) {
+			return call_user_func($this->content, $model, $key, $index, $this);
+		} else {
+			return null;
+		}
+	}
 
 	/**
 	 * Renders the data cell content.
@@ -124,11 +140,7 @@ class Column extends Object
 	 */
 	protected function renderDataCellContent($model, $key, $index)
 	{
-		if ($this->content !== null) {
-			return call_user_func($this->content, $model, $key, $index, $this);
-		} else {
-			return $this->grid->emptyCell;
-		}
+		return ($this->content !== null) ? $this->getDataCellContent : $this->grid->emptyCell;
 	}
 
 	/**
