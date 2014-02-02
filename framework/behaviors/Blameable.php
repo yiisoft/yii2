@@ -13,31 +13,36 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 /**
- * Blame is used to fill automatically the attributes representing the user creating and/or updating the record.
+ * Blameable is used to fill attributes representing the user creating and/or updating the record automatically.
  *
- * Blame fills these attributes when the associated AR model is being inserted or updated.
- * Note that you need to create the create and update columns by hand before using this behavior.
- * In order to attach this behavior to an AR model, write the following method in that class:
+ * Blameable fills these attributes when the associated AR model is being inserted or updated.
+ * Note that you need to create the columns (e.g. `created_by`, `updated_by`) by hand before using this behavior.
+ * In order to attach this behavior to an AR model, write the following method in the class representing the model:
  *
  * ~~~
- * public function behaviors()
- * {
- *     return [
- *         'blame' => [
- *             'class' => 'yii\behaviors\Blame',
- *         ],
- *     ];
- * }
- * ~~~
+ *
+ * class BlogPost extends \yii\db\ActiveRecord
  * 
+ *     // ...
+ *     // ...
+ *     public function behaviors()
+ *     {
+ *         return [
+ *             'blameable' => [
+ *                 'class' => 'yii\behaviors\Blameable',
+ *             ],
+ *         ];
+ *     }
+ * ~~~
+ *
  * And here a more complete example customizing several properties:
  * 
  * ~~~
  * public function behaviors()
  * {
  *     return [
- *         'blame' => [
- *             'class' => 'yii\behaviors\Blame',
+ *         'blameable' => [
+ *             'class' => 'yii\behaviors\Blameable',
  *             // This results in using a custom column name and not saving update information
  *             'attributes' => [
  *                  \Yii\db\ActiveRecord::EVENT_BEFORE_INSERT => 'creation_information',
@@ -52,13 +57,13 @@ use yii\db\ActiveRecord;
  * }
  * ~~~
  *
- * By default, Blame will fill the `created_by` attribute with the currently logged in user's ID
+ * By default, Blameable will fill the `created_by` attribute with the currently logged in user's ID
  * when the associated AR object is being inserted; and the `updated_by` attribute when the AR object is being updated.
  *
  * @author Luciano Baraglia <luciano.baraglia@gmail.com>
  * @since 2.0
  */
-class Blame extends Behavior
+class Blameable extends Behavior
 {
 	/**
 	 * @var array list of attributes that are to be automatically filled with the logged in user's ID.
@@ -83,8 +88,8 @@ class Blame extends Behavior
 	 * public function behaviors()
 	 * {
 	 *     return [
-	 *         'blame' => [
-	 *             'class' => 'yii\behaviors\Blame',
+	 *         'blameable' => [
+	 *             'class' => 'yii\behaviors\Blameable',
 	 *             'attributeValue' => function() {
 	 *                 return 'By: ' . \Yii::$app->user->getIdentity()->username . ' at ' . date('Y-m-d H:i:s');
 	 *             }
