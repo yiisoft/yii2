@@ -984,19 +984,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	}
 
 	/**
-	 * Creates an active record object using a row of data from the database/storage.
-	 *
-	 * This method is *not* meant to be used to create new records.
-	 *
-	 * It is an internal method meant to be called to create active record objects after
-	 * fetching data from the database. It is mainly used by [[ActiveQuery]] to populate
-	 * the query results into Active Records.
-	 *
-	 * When calling this method manually you should call [[afterFind()]] on the created
-	 * record to trigger the [[EVENT_AFTER_FIND|afterFind Event]].
-	 *
-	 * @param array $row attribute values (name => value)
-	 * @return static the newly created active record.
+	 * @inheritdoc
 	 */
 	public static function create($row)
 	{
