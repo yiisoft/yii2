@@ -24,8 +24,8 @@ use yii\db\ActiveRecord;
  * {
  *     return [
  *         'blame' => [
- * 				'class' => 'yii\behaviors\Blame', 
- * 			],
+ *             'class' => 'yii\behaviors\Blame',
+ *         ],
  *     ];
  * }
  * ~~~
@@ -37,17 +37,17 @@ use yii\db\ActiveRecord;
  * {
  *     return [
  *         'blame' => [
- * 				'class' => 'yii\behaviors\Blame',
- * 				 // This results in using a custom column name and not saving update information
- * 				'attributes' => [
- * 					\Yii\db\ActiveRecord::EVENT_BEFORE_INSERT => 'creation_information',
- * 					\Yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => null,
- * 				],
- * 				// Using an arbitrary value or anonymous function that returns the desired value
- * 				'attributeValue' => function() {
- *					return 'Created by: ' . \Yii::$app->user->getIdentity()->username . ' at ' . date('Y-m-d H:i:s');
- * 				}
- * 			],
+ *             'class' => 'yii\behaviors\Blame',
+ *             // This results in using a custom column name and not saving update information
+ *             'attributes' => [
+ *                  \Yii\db\ActiveRecord::EVENT_BEFORE_INSERT => 'creation_information',
+ *                  \Yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => null,
+ *              ],
+ *              // Using an arbitrary value or anonymous function that returns the desired value
+ *              'attributeValue' => function() {
+ *                    return 'Created by: ' . \Yii::$app->user->getIdentity()->username . ' at ' . date('Y-m-d H:i:s');
+ *              }
+ *          ],
  *     ];
  * }
  * ~~~
@@ -84,11 +84,11 @@ class Blame extends Behavior
 	 * {
 	 *     return [
 	 *         'blame' => [
-	 * 				'class' => 'yii\behaviors\Blame'
-	 * 				'attributeValue' => function() {
-	 *					return 'By: ' . \Yii::$app->user->getIdentity()->username . ' at ' . date('Y-m-d H:i:s');
-	 * 				}
-	 * 			],
+	 *             'class' => 'yii\behaviors\Blame',
+	 *             'attributeValue' => function() {
+	 *                 return 'By: ' . \Yii::$app->user->getIdentity()->username . ' at ' . date('Y-m-d H:i:s');
+	 *             }
+	 *         ],
 	 *     ];
 	 * }
 	 * ~~~
