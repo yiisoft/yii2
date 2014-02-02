@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Application;
 use yii\web\View;
 use yii\web\ForbiddenHttpException;
+use yii\helpers\ArrayHelper;
 
 /**
  * The Yii Debug Module provides the debug toolbar and debugger
@@ -63,7 +64,7 @@ class Module extends \yii\base\Module
 			Yii::$app->getView()->on(View::EVENT_END_BODY, [$this, 'renderToolbar']);
 		});
 
-		$this->panels = array_merge($this->corePanels(), $this->panels);
+		$this->panels = ArrayHelper::merge($this->corePanels(), $this->panels);
 		foreach ($this->panels as $id => $config) {
 			$config['module'] = $this;
 			$config['id'] = $id;
