@@ -12,9 +12,11 @@ use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\FileHelper;
 use yii\helpers\Console;
+use yii\test\FixtureTrait;
+use yii\helpers\Inflector;
 
 /**
- * This command manages fixtures load to the database tables.
+ * This command manages fixtures load.
  * You can specify different options of this command to point fixture manager
  * to the specific tables of the different database connections.
  *
@@ -28,23 +30,20 @@ use yii\helpers\Console;
  *     'password' => '',
  *     'charset' => 'utf8',
  * ],
- * 'fixture' => [
- *     'class' => 'yii\test\DbFixtureManager',
- * ],
  * ~~~
  *
  * ~~~
- * #load fixtures under $fixturePath to the "users" table
- * yii fixture/apply users
+ * #load fixtures under $fixturePath from UsersFixture class with default namespace "tests\unit\fixtures"
+ * yii fixture/apply Users
  *
  * #also a short version of this command (generate action is default)
- * yii fixture users
+ * yii fixture Users
  *
- * #load fixtures under $fixturePath to the "users" table to the different connection
- * yii fixture/apply users --db=someOtherDbConneciton
+ * #load fixtures under $fixturePath with the different database connection
+ * yii fixture/apply Users --db=someOtherDbConneciton
  *
- * #load fixtures under different $fixturePath to the "users" table.
- * yii fixture/apply users --fixturePath=@app/some/other/path/to/fixtures
+ * #load fixtures under different $fixturePath.
+ * yii fixture/apply Users --fixturePath=@app/some/other/path/to/fixtures
  * ~~~
  *
  * @author Mark Jebri <mark.github@yandex.ru>
@@ -52,8 +51,9 @@ use yii\helpers\Console;
  */
 class FixtureController extends Controller
 {
-	use DbTestTrait;
 	
+	use FixtureTrait;
+
 	/**
 	 * type of fixture apply to database
 	 */
@@ -64,16 +64,18 @@ class FixtureController extends Controller
 	 */
 	public $defaultAction = 'apply';
 	/**
-	 * Alias to the path, where all fixtures are stored.
-	 * @var string
+	 * @var string alias to the path, where all fixtures are stored.
 	 */
 	public $fixturePath = '@tests/unit/fixtures';
 	/**
-	 * Id of the database connection component of the application.
-	 * @var string
+	 * @var string id of the database connection component of the application.
 	 */
 	public $db = 'db';
 
+	/**
+	 * @var string default namespace to search fixtures in
+	 */
+	public $namespace = 'tests\unit\fixtures';
 
 	/**
 	 * Returns the names of the global options for this command.
@@ -82,7 +84,7 @@ class FixtureController extends Controller
 	public function globalOptions()
 	{
 		return array_merge(parent::globalOptions(), [
-			'db', 'fixturePath'
+			'db', 'fixturePath','namespace'
 		]);
 	}
 
@@ -111,10 +113,6 @@ class FixtureController extends Controller
 	 */
 	public function actionApply(array $fixtures, array $except = [])
 	{
-		if ($this->getFixtureManager() === null) {
-			throw new Exception('Fixture manager is not configured properly. Please refer to official documentation for this purposes.');
-		}
-
 		$foundFixtures = $this->findFixtures($fixtures);
 
 		if (!$this->needToApplyAll($fixtures[0])) {
@@ -128,24 +126,26 @@ class FixtureController extends Controller
 		if (!$foundFixtures) {
 			throw new Exception("No files were found by name: \"" . implode(', ', $fixtures) . "\".\n"
 				. "Check that fixtures with these name exists, under fixtures path: \n\"" . Yii::getAlias($this->fixturePath) . "\"."
-			);			
+			);
 		}
 
 		if (!$this->confirmApply($foundFixtures, $except)) {
 			return;
+		}		
+
+		$fixtures = $this->getFixturesConfigs(array_diff($foundFixtures, $except));
+
+		if (!$fixtures) {
+			throw new Exception("No fixtures were found in namespace: \"" . $this->namespace . "\".");
 		}
-
-		$fixtures = array_diff($foundFixtures, $except);
-
-		$this->getFixtureManager()->basePath = $this->fixturePath;
-		$this->getFixtureManager()->db = $this->db;
 
 		$transaction = Yii::$app->db->beginTransaction();
 
 		try {
-			$this->loadFixtures($foundFixtures);
+			$this->getDbConnection()->createCommand()->checkIntegrity(false)->execute();
+			$this->loadFixtures($fixtures);
+			$this->getDbConnection()->createCommand()->checkIntegrity(true)->execute();
 			$transaction->commit();
-
 		} catch (\Exception $e) {
 			$transaction->rollback();
 			$this->stdout("Exception occured, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
@@ -155,32 +155,49 @@ class FixtureController extends Controller
 	}
 
 	/**
-	 * Truncate given table and clear all fixtures from it. You can clear several tables specifying
+	 * Unloads given fixtures. You can clear environment and unload multiple fixtures by specifying
 	 * their names separated with commas, like: tbl_user,tbl_profile. Be sure there is no
 	 * whitespace between tables names.
-	 * @param array|string $tables
+	 * @param array|string $fixtures
+	 * @param array|string $except
 	 */
-	public function actionClear(array $tables, array $except = ['tbl_migration'])
-	{		
-		if ($this->needToApplyAll($tables[0])) {
-			$tables = $this->getDbConnection()->schema->getTableNames();
+	public function actionClear(array $fixtures, array $except = [])
+	{
+		$foundFixtures = $this->findFixtures($fixtures);
+
+		if (!$this->needToApplyAll($fixtures[0])) {
+			$notFoundFixtures = array_diff($fixtures, $foundFixtures);
+
+			if ($notFoundFixtures) {
+				$this->notifyNotFound($notFoundFixtures);
+			}
 		}
 
-		if (!$this->confirmClear($tables, $except)) {
+		if (!$foundFixtures) {
+			throw new Exception("No files were found by name: \"" . implode(', ', $fixtures) . "\".\n"
+				. "Check that fixtures with these name exists, under fixtures path: \n\"" . Yii::getAlias($this->fixturePath) . "\"."
+			);
+		}
+
+		if (!$this->confirmClear($foundFixtures, $except)) {
 			return;
 		}
 
-		$tables = array_diff($tables, $except);
+		$fixtures = $this->getFixturesConfigs(array_diff($foundFixtures, $except));
+
+		if (!$fixtures) {
+			throw new Exception("No fixtures were found in namespace: \"" . $this->namespace . "\".");
+		}
 
 		$transaction = Yii::$app->db->beginTransaction();
 
 		try {
 			$this->getDbConnection()->createCommand()->checkIntegrity(false)->execute();
 
-			foreach($tables as $table) {
-				$this->getDbConnection()->createCommand()->delete($table)->execute();
-				$this->getDbConnection()->createCommand()->resetSequence($table)->execute();
-				$this->stdout("    Table \"{$table}\" was successfully cleared. \n", Console::FG_GREEN);
+			foreach($fixtures as $fixtureConfig) {
+				$fixture = Yii::createObject($fixtureConfig);
+				$fixture->unload();
+				$this->stdout("    Fixture \"{$fixture::className()}\" was successfully unloaded. \n", Console::FG_GREEN);
 			}
 
 			$this->getDbConnection()->createCommand()->checkIntegrity(true)->execute();
@@ -195,7 +212,7 @@ class FixtureController extends Controller
 
 	/**
 	 * Checks if the database and fixtures path are available.
-	 * @throws Exception
+	 * @throws yii\console\Exception
 	 */
 	public function checkRequirements()
 	{
@@ -210,7 +227,7 @@ class FixtureController extends Controller
 	/**
 	 * Returns database connection component
 	 * @return \yii\db\Connection
-	 * @throws Exception if [[db]] is invalid.
+	 * @throws yii\console\Exception if [[db]] is invalid.
 	 */
 	public function getDbConnection()
 	{
@@ -230,7 +247,7 @@ class FixtureController extends Controller
 	private function notifySuccess($fixtures)
 	{
 		$this->stdout("Fixtures were successfully loaded from path:\n", Console::FG_YELLOW);
-		$this->stdout(Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
+		$this->stdout("\t" . Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
 		$this->outputList($fixtures);
 	}
 
@@ -241,7 +258,7 @@ class FixtureController extends Controller
 	private function notifyNotFound($fixtures)
 	{
 		$this->stdout("Some fixtures were not found under path:\n", Console::BG_RED);
-		$this->stdout(Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
+		$this->stdout("\t" . Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
 		$this->outputList($fixtures);
 		$this->stdout("\n");
 	}
@@ -255,7 +272,11 @@ class FixtureController extends Controller
 	private function confirmApply($fixtures, $except)
 	{
 		$this->stdout("Fixtures will be loaded from path: \n", Console::FG_YELLOW);
-		$this->stdout(Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
+		$this->stdout("\t" . Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
+		$this->stdout("Fixtures namespace is: \n", Console::FG_YELLOW);
+		$this->stdout("\t" . $this->namespace . "\n\n", Console::FG_GREEN);
+
+		$this->stdout("Fixtures below will be loaded:\n\n", Console::FG_YELLOW);
 		$this->outputList($fixtures);
 
 		if (count($except)) {
@@ -263,26 +284,31 @@ class FixtureController extends Controller
 			$this->outputList($except);
 		}
 
-		return $this->confirm("\nLoad to database above fixtures?");
+		return $this->confirm("\nLoad to above fixtures?");
 	}
 
 	/**
-	 * Prompts user with confirmation for tables that should be cleared.
-	 * @param array $tables
+	 * Prompts user with confirmation for fixtures that should be unloaded.
+	 * @param array $fixtures
 	 * @param array $except
 	 * @return boolean
 	 */
-	private function confirmClear($tables, $except)
+	private function confirmClear($fixtures, $except)
 	{
-		$this->stdout("Tables below will be cleared:\n\n", Console::FG_YELLOW);
-		$this->outputList($tables);
+		$this->stdout("Fixtures will be loaded from path: \n", Console::FG_YELLOW);
+		$this->stdout("\t" . Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
+		$this->stdout("Fixtures namespace is: \n", Console::FG_YELLOW);
+		$this->stdout("\t" . $this->namespace . "\n\n", Console::FG_GREEN);
+
+		$this->stdout("Fixtures below will be unloaded:\n\n", Console::FG_YELLOW);
+		$this->outputList($fixtures);
 
 		if (count($except)) {
-			$this->stdout("\nTables that will NOT be cleared:\n\n", Console::FG_YELLOW);
+			$this->stdout("\nFixtures that will NOT be unloaded:\n\n", Console::FG_YELLOW);
 			$this->outputList($except);
 		}
 
-		return $this->confirm("\nClear tables?");
+		return $this->confirm("\nUnload fixtures?");
 	}
 
 	/**
@@ -292,7 +318,7 @@ class FixtureController extends Controller
 	private function outputList($data)
 	{
 		foreach($data as $index => $item) {
-			$this->stdout("    " . ($index + 1) . ". {$item}\n", Console::FG_GREEN);
+			$this->stdout("\t" . ($index + 1) . ". {$item}\n", Console::FG_GREEN);
 		}
 	}
 
@@ -314,11 +340,11 @@ class FixtureController extends Controller
 	{
 		$fixturesPath = Yii::getAlias($this->fixturePath);
 
-		$filesToSearch = ['*.php'];
+		$filesToSearch = ['*Fixture.php'];
 		if (!$this->needToApplyAll($fixtures[0])) {
 			$filesToSearch = [];
 			foreach ($fixtures as $fileName) {
-				$filesToSearch[] = $fileName . '.php';
+				$filesToSearch[] = $fileName . 'Fixture.php';
 			}
 		}
 
@@ -326,10 +352,33 @@ class FixtureController extends Controller
 		$foundFixtures = [];
 
 		foreach ($files as $fixture) {
-			$foundFixtures[] = basename($fixture , '.php');
+			$foundFixtures[] = basename($fixture , 'Fixture.php');
 		}
 
 		return $foundFixtures;
+	}
+
+	/**
+	 * Returns valid fixtures config that can be used to load them.
+	 * @param array $fixtures fixtures to configure
+	 * @return array
+	 */
+	private function getFixturesConfigs($fixtures)
+	{
+		$config = [];
+
+		foreach($fixtures as $fixture) {
+
+			$fullClassName = $this->namespace . '\\' . $fixture . 'Fixture';
+
+			if (class_exists($fullClassName)) {
+				$config[Inflector::camel2id($fixture, '_')] = [
+					'class' => $fullClassName,
+				];
+			}
+		}
+
+		return $config;
 	}
 
 }
