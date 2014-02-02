@@ -275,6 +275,29 @@ class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	public static function create($row)
+	{
+		$record = static::instantiate($row);
+		$columns = array_flip($record->attributes());
+		$schema = static::getTableSchema();
+		foreach ($row as $name => $value) {
+			if (isset($columns[$name])) {
+				if ($schema->getColumn($name) !== null) {
+					$record->setAttribute($name, $schema->getColumn($name)->typecast($value));
+				} else {
+					$record->setAttribute($name, $value);
+				}
+			} else {
+				$record->$name = $value;
+			}
+		}
+		$record->setOldAttributes($record->getAttributes());
+		return $record;
+	}
+
+	/**
 	 * Inserts a row into the associated database table using the attribute values of this record.
 	 *
 	 * This method performs the following steps in order:
