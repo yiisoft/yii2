@@ -45,7 +45,7 @@ use yii\db\ActiveRecord;
  *              ],
  *              // Using an arbitrary value or anonymous function that returns the desired value
  *              'attributeValue' => function() {
- *                    return 'Created by: ' . \Yii::$app->user->getIdentity()->username . ' at ' . date('Y-m-d H:i:s');
+ *                  return 'Created by: ' . \Yii::$app->user->getIdentity()->username . ' at ' . date('Y-m-d H:i:s');
  *              }
  *          ],
  *     ];
