@@ -140,7 +140,7 @@ class Column extends Object
 	 */
 	protected function renderDataCellContent($model, $key, $index)
 	{
-		return ($this->content !== null) ? $this->getDataCellContent : $this->grid->emptyCell;
+		return ($this->content !== null) ? $this->getDataCellContent($model, $key, $index) : $this->grid->emptyCell;
 	}
 
 	/**
