@@ -45,7 +45,7 @@ use yii\validators\Validator;
  * property is read-only.
  * @property ArrayIterator $iterator An iterator for traversing the items in the list. This property is
  * read-only.
- * @property string $scenario The scenario that this model is in. Defaults to [[DEFAULT_SCENARIO]].
+ * @property string $scenario The scenario that this model is in. Defaults to [[SCENARIO_DEFAULT]].
  * @property ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the model.
  * This property is read-only.
  *
@@ -170,7 +170,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 	 * please prefix the attribute with an exclamation character (e.g. '!rank').
 	 *
 	 * The default implementation of this method will return all scenarios found in the [[rules()]]
-	 * declaration. A special scenario named [[DEFAULT_SCENARIO]] will contain all attributes
+	 * declaration. A special scenario named [[SCENARIO_DEFAULT]] will contain all attributes
 	 * found in the [[rules()]]. Each scenario will be associated with the attributes that
 	 * are being validated by the validation rules that apply to the scenario.
 	 *
@@ -649,7 +649,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 	 * Scenario affects how validation is performed and which attributes can
 	 * be massively assigned.
 	 *
-	 * @return string the scenario that this model is in. Defaults to [[DEFAULT_SCENARIO]].
+	 * @return string the scenario that this model is in. Defaults to [[SCENARIO_DEFAULT]].
 	 */
 	public function getScenario()
 	{
