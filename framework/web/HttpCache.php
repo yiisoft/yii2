@@ -142,7 +142,7 @@ class HttpCache extends ActionFilter
 	{
 		session_cache_limiter('public');
 		$headers = Yii::$app->getResponse()->getHeaders();
-		$headers->set('Pragma');
+		$headers->remove('Pragma');
 		if ($this->cacheControlHeader !== null) {
 			$headers->set('Cache-Control', $this->cacheControlHeader);
 		}
