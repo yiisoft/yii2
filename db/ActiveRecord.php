@@ -280,15 +280,14 @@ class ActiveRecord extends BaseActiveRecord
 	public static function create($row)
 	{
 		$record = static::instantiate($row);
-		$columns = array_flip($record->attributes());
-		$schema = static::getTableSchema();
+		$attributes = array_flip($record->attributes());
+		$columns = static::getTableSchema()->columns;
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
-				if ($schema->getColumn($name) !== null) {
-					$record->setAttribute($name, $schema->getColumn($name)->typecast($value));
-				} else {
-					$record->setAttribute($name, $value);
-				}
+				$value = $columns[$name]->typecast($value);
+			}
+			if (isset($attributes[$name])) {
+				$record->setAttribute($name, $value);
 			} else {
 				$record->$name = $value;
 			}
