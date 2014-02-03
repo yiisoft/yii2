@@ -43,7 +43,7 @@ use yii\helpers\Inflector;
  * yii fixture/apply Users --db=someOtherDbConneciton
  *
  * #load fixtures under different $fixturePath.
- * yii fixture/apply Users --fixturePath=@app/some/other/path/to/fixtures
+ * yii fixture/apply Users --namespace=alias\my\custom\namespace\goes\here
  * ~~~
  *
  * @author Mark Jebri <mark.github@yandex.ru>
@@ -64,10 +64,6 @@ class FixtureController extends Controller
 	 */
 	public $defaultAction = 'apply';
 	/**
-	 * @var string alias to the path, where all fixtures are stored.
-	 */
-	public $fixturePath = '@tests/unit/fixtures';
-	/**
 	 * @var string id of the database connection component of the application.
 	 */
 	public $db = 'db';
@@ -84,24 +80,8 @@ class FixtureController extends Controller
 	public function globalOptions()
 	{
 		return array_merge(parent::globalOptions(), [
-			'db', 'fixturePath','namespace'
+			'db','namespace'
 		]);
-	}
-
-	/**
-	 * This method is invoked right before an action is to be executed (after all possible filters.)
-	 * It checks that fixtures path and database connection are available.
-	 * @param \yii\base\Action $action
-	 * @return boolean
-	 */
-	public function beforeAction($action)
-	{
-		if (parent::beforeAction($action)) {
-			$this->checkRequirements();
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	/**
@@ -125,7 +105,7 @@ class FixtureController extends Controller
 
 		if (!$foundFixtures) {
 			throw new Exception("No files were found by name: \"" . implode(', ', $fixtures) . "\".\n"
-				. "Check that fixtures with these name exists, under fixtures path: \n\"" . Yii::getAlias($this->fixturePath) . "\"."
+				. "Check that files with these name exists, under fixtures path: \n\"" . Yii::getAlias($this->getFixturePath()) . "\"."
 			);
 		}
 
@@ -175,7 +155,7 @@ class FixtureController extends Controller
 
 		if (!$foundFixtures) {
 			throw new Exception("No files were found by name: \"" . implode(', ', $fixtures) . "\".\n"
-				. "Check that fixtures with these name exists, under fixtures path: \n\"" . Yii::getAlias($this->fixturePath) . "\"."
+				. "Check that fixtures with these name exists, under fixtures path: \n\"" . Yii::getAlias($this->getFixturePath()) . "\"."
 			);
 		}
 
@@ -197,7 +177,7 @@ class FixtureController extends Controller
 			foreach($fixtures as $fixtureConfig) {
 				$fixture = Yii::createObject($fixtureConfig);
 				$fixture->unload();
-				$this->stdout("    Fixture \"{$fixture::className()}\" was successfully unloaded. \n", Console::FG_GREEN);
+				$this->stdout("\tFixture \"{$fixture::className()}\" was successfully unloaded. \n", Console::FG_GREEN);
 			}
 
 			$this->getDbConnection()->createCommand()->checkIntegrity(true)->execute();
@@ -208,20 +188,6 @@ class FixtureController extends Controller
 			$this->stdout("Exception occured, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
 			throw $e;
 		}
-	}
-
-	/**
-	 * Checks if the database and fixtures path are available.
-	 * @throws yii\console\Exception
-	 */
-	public function checkRequirements()
-	{
-		$path = Yii::getAlias($this->fixturePath, false);
-
-		if (!is_dir($path) || !is_writable($path)) {
-			throw new Exception("The fixtures path \"{$this->fixturePath}\" not exist or is not writable.");
-		}
-
 	}
 
 	/**
@@ -246,8 +212,8 @@ class FixtureController extends Controller
 	 */
 	private function notifySuccess($fixtures)
 	{
-		$this->stdout("Fixtures were successfully loaded from path:\n", Console::FG_YELLOW);
-		$this->stdout("\t" . Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
+		$this->stdout("Fixtures were successfully loaded from namespace:\n", Console::FG_YELLOW);
+		$this->stdout("\t\"" . Yii::getAlias($this->namespace) . "\"\n\n", Console::FG_GREEN);
 		$this->outputList($fixtures);
 	}
 
@@ -258,7 +224,8 @@ class FixtureController extends Controller
 	private function notifyNotFound($fixtures)
 	{
 		$this->stdout("Some fixtures were not found under path:\n", Console::BG_RED);
-		$this->stdout("\t" . Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
+		$this->stdout("Check that they have correct namespace \"{$this->namespace}\" \n", Console::BG_RED);
+		$this->stdout("\t" . Yii::getAlias($this->getFixturePath()) . "\n\n", Console::FG_GREEN);
 		$this->outputList($fixtures);
 		$this->stdout("\n");
 	}
@@ -271,8 +238,6 @@ class FixtureController extends Controller
 	 */
 	private function confirmApply($fixtures, $except)
 	{
-		$this->stdout("Fixtures will be loaded from path: \n", Console::FG_YELLOW);
-		$this->stdout("\t" . Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
 		$this->stdout("Fixtures namespace is: \n", Console::FG_YELLOW);
 		$this->stdout("\t" . $this->namespace . "\n\n", Console::FG_GREEN);
 
@@ -284,7 +249,7 @@ class FixtureController extends Controller
 			$this->outputList($except);
 		}
 
-		return $this->confirm("\nLoad to above fixtures?");
+		return $this->confirm("\nLoad above fixtures?");
 	}
 
 	/**
@@ -295,8 +260,6 @@ class FixtureController extends Controller
 	 */
 	private function confirmClear($fixtures, $except)
 	{
-		$this->stdout("Fixtures will be loaded from path: \n", Console::FG_YELLOW);
-		$this->stdout("\t" . Yii::getAlias($this->fixturePath) . "\n\n", Console::FG_GREEN);
 		$this->stdout("Fixtures namespace is: \n", Console::FG_YELLOW);
 		$this->stdout("\t" . $this->namespace . "\n\n", Console::FG_GREEN);
 
@@ -338,7 +301,7 @@ class FixtureController extends Controller
 	 */
 	private function findFixtures(array $fixtures)
 	{
-		$fixturesPath = Yii::getAlias($this->fixturePath);
+		$fixturesPath = Yii::getAlias($this->getFixturePath());
 
 		$filesToSearch = ['*Fixture.php'];
 		if (!$this->needToApplyAll($fixtures[0])) {
@@ -379,6 +342,15 @@ class FixtureController extends Controller
 		}
 
 		return $config;
+	}
+
+	/**
+	 * Returns fixture path that determined on fixtures namespace.
+	 * @return string fixture path
+	 */
+	private function getFixturePath()
+	{
+		return Yii::getAlias('@' . str_replace('\\', '/', $this->namespace));
 	}
 
 }
