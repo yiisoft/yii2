@@ -175,6 +175,47 @@ This means you only need to work with `@app/tests/fixtures/initdb.php` if you wa
 before each test. You may otherwise simply focus on developing each individual test case and the corresponding fixtures.
 
 
+Fixtures hierarchy convention
+-----------------------------
+
+Usually you will have one fixture class per needed fixture and will be only switching data files for fixture classes. 
+When you have simple project that does not have much database testing and fixtures, you can put all fixtures data files under `data` folder, as it is done by default.
+But when your project is not very simple you should not be greedy when using data files and organize them according these rule:
+
+- data file should follow same hierarchy that is used for your project classes namespace.
+
+Lets see example:
+
+```php
+#under folder tests\unit\fixtures
+data\
+     components\
+                some_fixture_data_file1.php
+                some_fixture_data_file2.php
+                ...
+                some_fixture_data_fileN.php
+     models\
+            db\
+               some_fixture_data_file1.php
+               some_fixture_data_file2.php
+               ...
+               some_fixture_data_fileN.php
+            forms\
+               some_fixture_data_file1.php
+               some_fixture_data_file2.php
+               ...
+               some_fixture_data_fileN.php
+
+#and so on
+```
+
+In this way you will avoid fixture data collision between tests and use them as you need.
+
+> **Note** In the example above fixture files are named only for example purposes, in real life you should name them according what fixture type you are using.
+It can be table name, or mongodb collection name if you are using mongodb fixture. In order to know how to specify and name data files for your fixtures read above on this article.
+
+Same rule can be applied to organize fixtures classes in your project, so similar hierarchy will be build under `fixtures` directory, avoiding usage of `data` directory, that is reserved for data files.
+
 Summary
 -------
 
