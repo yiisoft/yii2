@@ -619,15 +619,11 @@ abstract class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
-	 * Creates an active record object using a row of data.
-	 * This method is called by [[ActiveQuery]] to populate the query results
-	 * into Active Records. It is not meant to be used to create new records.
-	 * @param array $row attribute values (name => value)
-	 * @return ActiveRecord the newly created active record.
+	 * @inheritdoc
 	 */
-	public static function create($row)
+	public static function populateRecord($record, $row)
 	{
-		$record = static::instantiate($row);
+		// TODO refactor to call parent
 		$columns = static::getIndexSchema()->columns;
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
@@ -641,7 +637,6 @@ abstract class ActiveRecord extends BaseActiveRecord
 			}
 		}
 		$record->setOldAttributes($record->getAttributes());
-		return $record;
 	}
 
 	/**
