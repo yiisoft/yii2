@@ -142,6 +142,7 @@ Yii Framework 2 Change Log
 - Chg #2175: QueryBuilder will now append UNION statements at the end of the primary SQL (qiangxue)
 - Chg #2210: Mysql driver will now treat `tinyint(1)` as integer instead of boolean (qiangxue)
 - Chg #2248: Renamed `yii\base\Model::DEFAULT_SCENARIO` to `yii\base\Model::SCENARIO_DEFAULT` (samdark)
+- Chg #2281: Renamed `ActiveRecord::create()` to `populateRecord()` and changed signature. This method will not call instantiate() anymore (cebe)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
