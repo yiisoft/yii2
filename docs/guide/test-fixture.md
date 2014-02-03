@@ -214,9 +214,7 @@ In this way you will avoid fixture data collision between tests and use them as 
 > **Note** In the example above fixture files are named only for example purposes, in real life you should name them according what fixture type you are using.
 It can be table name, or mongodb collection name if you are using mongodb fixture. In order to know how to specify and name data files for your fixtures read above on this article.
 
-To organize your fixtures in a good order and simplify life of other developers that will work with your project you should follow these 
-fixtures hierarchy rules:
-
+Same rule can be applied to organize fixtures classes in your project, so similar hierarchy will be build under `fixtures` directory, avoiding usage of `data` directory, that is reserved for data files.
 
 Summary
 -------
