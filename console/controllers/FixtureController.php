@@ -10,10 +10,10 @@ namespace yii\console\controllers;
 use Yii;
 use yii\console\Controller;
 use yii\console\Exception;
-use yii\helpers\FileHelper;
 use yii\helpers\Console;
-use yii\test\FixtureTrait;
+use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
+use yii\test\FixtureTrait;
 
 /**
  * This command manages loading and unloading fixtures.
@@ -40,7 +40,7 @@ use yii\helpers\Inflector;
  * yii fixture User
  *
  * #load fixtures under $fixturePath with the different database connection
- * yii fixture/apply User --db=someOtherDbConneciton
+ * yii fixture/apply User --db=someOtherDbConnection
  *
  * #load fixtures under different $fixturePath.
  * yii fixture/apply User --namespace=alias\my\custom\namespace\goes\here
@@ -51,7 +51,7 @@ use yii\helpers\Inflector;
  */
 class FixtureController extends Controller
 {
-	
+
 	use FixtureTrait;
 
 	/**
@@ -80,7 +80,7 @@ class FixtureController extends Controller
 	public function globalOptions()
 	{
 		return array_merge(parent::globalOptions(), [
-			'db','namespace'
+			'db', 'namespace'
 		]);
 	}
 
@@ -116,7 +116,7 @@ class FixtureController extends Controller
 		$fixtures = $this->getFixturesConfig(array_diff($foundFixtures, $except));
 
 		if (!$fixtures) {
-			throw new Exception('No fixtures were found in namespace: "' . $this->namespace . '"'.'');
+			throw new Exception('No fixtures were found in namespace: "' . $this->namespace . '"' . '');
 		}
 
 		$transaction = Yii::$app->db->beginTransaction();
@@ -174,7 +174,7 @@ class FixtureController extends Controller
 		try {
 			$this->getDbConnection()->createCommand()->checkIntegrity(false)->execute();
 
-			foreach($fixtures as $fixtureConfig) {
+			foreach ($fixtures as $fixtureConfig) {
 				$fixture = Yii::createObject($fixtureConfig);
 				$fixture->unload();
 				$this->stdout("\tFixture \"{$fixture::className()}\" was successfully unloaded. \n", Console::FG_GREEN);
@@ -185,7 +185,7 @@ class FixtureController extends Controller
 
 		} catch (\Exception $e) {
 			$transaction->rollback();
-			$this->stdout("Exception occured, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
+			$this->stdout("Exception occurred, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
 			throw $e;
 		}
 	}
@@ -193,7 +193,7 @@ class FixtureController extends Controller
 	/**
 	 * Returns database connection component
 	 * @return \yii\db\Connection
-	 * @throws yii\console\Exception if [[db]] is invalid.
+	 * @throws \yii\console\Exception if [[db]] is invalid.
 	 */
 	public function getDbConnection()
 	{
@@ -280,7 +280,7 @@ class FixtureController extends Controller
 	 */
 	private function outputList($data)
 	{
-		foreach($data as $index => $item) {
+		foreach ($data as $index => $item) {
 			$this->stdout("\t" . ($index + 1) . ". {$item}\n", Console::FG_GREEN);
 		}
 	}
@@ -315,7 +315,7 @@ class FixtureController extends Controller
 		$foundFixtures = [];
 
 		foreach ($files as $fixture) {
-			$foundFixtures[] = basename($fixture , 'Fixture.php');
+			$foundFixtures[] = basename($fixture, 'Fixture.php');
 		}
 
 		return $foundFixtures;
@@ -330,7 +330,7 @@ class FixtureController extends Controller
 	{
 		$config = [];
 
-		foreach($fixtures as $fixture) {
+		foreach ($fixtures as $fixture) {
 
 			$fullClassName = $this->namespace . '\\' . $fixture . 'Fixture';
 
