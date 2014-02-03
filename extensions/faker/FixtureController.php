@@ -9,8 +9,8 @@ namespace yii\faker;
 
 use Yii;
 use yii\console\Exception;
-use yii\helpers\FileHelper;
 use yii\helpers\Console;
+use yii\helpers\FileHelper;
 
 /**
  * This command manage fixtures creations based on given template.
