@@ -1,12 +1,14 @@
-Fixtures console flow
-=====================
+Managing Fixtures
+=================
+
+// todo: this tutorial may be merged into test-fixture.md
 
 Fixtures are important part of testing. Their main purpose is to populate you with data that needed by testing
 different cases. With this data using your tests becoming more efficient and useful.
 
 Yii supports fixtures via the `yii fixture` command line tool. This tool supports:
 
-* Loading fixtures to different storages such as: database, nosql, etc;
+* Loading fixtures to different storage such as: RDBMS, NoSQL, etc;
 * Unloading fixtures in different ways (usually it is clearing storage);
 * Auto-generating fixtures and populating it with random data.
 
