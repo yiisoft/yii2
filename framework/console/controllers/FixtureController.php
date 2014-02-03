@@ -34,16 +34,16 @@ use yii\helpers\Inflector;
  *
  * ~~~
  * #load fixtures under $fixturePath from UsersFixture class with default namespace "tests\unit\fixtures"
- * yii fixture/apply Users
+ * yii fixture/apply User
  *
  * #also a short version of this command (generate action is default)
- * yii fixture Users
+ * yii fixture User
  *
  * #load fixtures under $fixturePath with the different database connection
- * yii fixture/apply Users --db=someOtherDbConneciton
+ * yii fixture/apply User --db=someOtherDbConneciton
  *
  * #load fixtures under different $fixturePath.
- * yii fixture/apply Users --namespace=alias\my\custom\namespace\goes\here
+ * yii fixture/apply User --namespace=alias\my\custom\namespace\goes\here
  * ~~~
  *
  * @author Mark Jebri <mark.github@yandex.ru>
