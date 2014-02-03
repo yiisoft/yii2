@@ -91,7 +91,7 @@ If controller is located inside a module its action internal route will be `modu
 
 In case module, controller or action specified isn't found Yii will return "not found" page and HTTP status code 404.
 
-> Note: If controller name or action name contains camelCased words, internal route will use dashes i.e. for
+> Note: If module name, controller name or action name contains camelCased words, internal route will use dashes i.e. for
 `DateTimeController::actionFastForward` route will be `date-time/fast-forward`.
 
 ### Defaults
