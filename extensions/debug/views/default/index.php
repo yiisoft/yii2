@@ -68,7 +68,7 @@ echo GridView::widget([
 
 					$content = Html::tag('b', $data['sqlCount']) . ' ' . Html::tag('span','',['class' => 'glyphicon glyphicon-exclamation-sign']);
 					return Html::a($content, $dbPanel->getUrl(), [
-						'title' => 'Query is slow. Allowed count is ' . $dbPanel->criticalQueriesCount,
+						'title' => 'Too many queries. Allowed count is ' . $dbPanel->criticalQueryThreshold,
 					]);
 
 				} else {

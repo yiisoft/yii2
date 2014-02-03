@@ -21,10 +21,9 @@ use yii\debug\models\search\Db;
 class DbPanel extends Panel
 {
 	/**
-	 *
 	 * @var integer total queries critical count
 	 */
-	public $criticalQueriesCount;
+	public $criticalQueryThreshold;
 	/**
 	 * @var array db queries info extracted to array as models, to use with data provider.
 	 */
@@ -155,12 +154,13 @@ class DbPanel extends Panel
 
 	/**
 	 * Check if given queries count is critical according settings.
-	 * @param queries count $count
+	 * 
+	 * @param integer $count queries count
 	 * @return boolean
 	 */
 	public function isQueriesCountCritical($count)
 	{
-		return (($this->criticalQueriesCount !== null) && ($count > $this->criticalQueriesCount));
+		return (($this->criticalQueryThreshold !== null) && ($count > $this->criticalQueryThreshold));
 	}
 
 }
