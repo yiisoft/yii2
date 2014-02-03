@@ -277,9 +277,9 @@ class ActiveRecord extends BaseActiveRecord
 	/**
 	 * @inheritdoc
 	 */
-	public static function create($row)
+	public static function populateRecord($record, $row)
 	{
-		$record = static::instantiate($row);
+		// TODO refactor to call parent
 		$attributes = array_flip($record->attributes());
 		$columns = static::getTableSchema()->columns;
 		foreach ($row as $name => $value) {
@@ -293,7 +293,6 @@ class ActiveRecord extends BaseActiveRecord
 			}
 		}
 		$record->setOldAttributes($record->getAttributes());
-		return $record;
 	}
 
 	/**
