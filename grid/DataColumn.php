@@ -134,7 +134,7 @@ class DataColumn extends Column
 			return parent::renderFilterCellContent();
 		}
 	}
-	
+
 	/**
 	 * Return raw content
 	 */
