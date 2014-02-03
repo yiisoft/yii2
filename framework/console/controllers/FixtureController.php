@@ -224,8 +224,8 @@ class FixtureController extends Controller
 	private function notifyNotFound($fixtures)
 	{
 		$this->stdout("Some fixtures were not found under path:\n", Console::BG_RED);
-		$this->stdout("Check that they have correct namespace \"{$this->namespace}\" \n", Console::BG_RED);
 		$this->stdout("\t" . Yii::getAlias($this->getFixturePath()) . "\n\n", Console::FG_GREEN);
+		$this->stdout("Check that they have correct namespace \"{$this->namespace}\" \n", Console::BG_RED);
 		$this->outputList($fixtures);
 		$this->stdout("\n");
 	}
