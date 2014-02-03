@@ -114,7 +114,7 @@ class Column extends Object
 	{
 		return trim($this->footer) !== '' ? $this->footer : $this->grid->emptyCell;
 	}
-	
+
 	/**
 	 * Get the raw data cell content.
 	 * @param mixed $model the data model
