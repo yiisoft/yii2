@@ -128,7 +128,7 @@ class FixtureController extends Controller
 			$transaction->commit();
 		} catch (\Exception $e) {
 			$transaction->rollback();
-			$this->stdout("Exception occured, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
+			$this->stdout("Exception occurred, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
 			throw $e;
 		}
 		$this->notifySuccess($foundFixtures);
