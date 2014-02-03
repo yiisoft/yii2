@@ -65,6 +65,7 @@ echo GridView::widget([
 				$dbPanel = $this->context->module->panels['db'];
 
 				if ($dbPanel->isQueryCountCritical($data['sqlCount'])) {
+					$dbPanel->tag = $data['tag'];
 
 					$content = Html::tag('b', $data['sqlCount']) . ' ' . Html::tag('span','',['class' => 'glyphicon glyphicon-exclamation-sign']);
 					return Html::a($content, $dbPanel->getUrl(), [
