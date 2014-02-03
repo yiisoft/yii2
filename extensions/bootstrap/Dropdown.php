@@ -29,6 +29,8 @@ class Dropdown extends Widget
 	 * - visible: boolean, optional, whether this menu item is visible. Defaults to true.
 	 * - linkOptions: array, optional, the HTML attributes of the item link.
 	 * - options: array, optional, the HTML attributes of the item.
+	 * - items: array, optional, the submenu items. The structure is the same as this property.
+	 *   Note that Bootstrap doesn't support dropdown submenu. You have to add your own CSS styles to support it.
 	 *
 	 * To insert divider use `<li role="presentation" class="divider"></li>`.
 	 */
