@@ -21,7 +21,9 @@ use yii\debug\models\search\Db;
 class DbPanel extends Panel
 {
 	/**
-	 * @var integer total queries critical count
+	 * @var integer the threshold for determining whether the request has involved 
+	 * critical number of DB queries. If the number of queries exceeds this number, 
+	 * the execution is considered taking critical number of DB queries.
 	 */
 	public $criticalQueryThreshold;
 	/**
@@ -158,7 +160,7 @@ class DbPanel extends Panel
 	 * @param integer $count queries count
 	 * @return boolean
 	 */
-	public function isQueriesCountCritical($count)
+	public function isQueryCountCritical($count)
 	{
 		return (($this->criticalQueryThreshold !== null) && ($count > $this->criticalQueryThreshold));
 	}

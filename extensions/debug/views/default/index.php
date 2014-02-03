@@ -34,7 +34,7 @@ echo GridView::widget([
 	'rowOptions' => function ($model, $key, $index, $grid) use ($searchModel) {
 		$dbPanel = $this->context->module->panels['db'];
 
-		if ($searchModel->isCodeCritical($model['statusCode']) || $dbPanel->isQueriesCountCritical($model['sqlCount'])) {
+		if ($searchModel->isCodeCritical($model['statusCode']) || $dbPanel->isQueryCountCritical($model['sqlCount'])) {
 			return ['class'=>'danger'];
 		} else {
 			return [];
@@ -64,7 +64,7 @@ echo GridView::widget([
 			'value' => function ($data) {
 				$dbPanel = $this->context->module->panels['db'];
 
-				if ($dbPanel->isQueriesCountCritical($data['sqlCount'])) {
+				if ($dbPanel->isQueryCountCritical($data['sqlCount'])) {
 
 					$content = Html::tag('b', $data['sqlCount']) . ' ' . Html::tag('span','',['class' => 'glyphicon glyphicon-exclamation-sign']);
 					return Html::a($content, $dbPanel->getUrl(), [
