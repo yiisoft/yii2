@@ -61,7 +61,7 @@ trait FixtureTrait
 	 *
 	 * @return array the fixtures needed by the current test case
 	 */
-	protected function fixtures()
+	public function fixtures()
 	{
 		return [];
 	}
@@ -73,7 +73,7 @@ trait FixtureTrait
 	 * @return array the fixtures shared and required by different test cases.
 	 * @see fixtures()
 	 */
-	protected function globalFixtures()
+	public function globalFixtures()
 	{
 		return [];
 	}
@@ -154,7 +154,7 @@ trait FixtureTrait
 	/**
 	 * @return array the loaded fixtures for the current test case
 	 */
-	protected function getFixtures()
+	public function getFixtures()
 	{
 		return $this->_fixtures;
 	}
@@ -164,7 +164,7 @@ trait FixtureTrait
 	 * @param string $name the fixture alias or class name
 	 * @return Fixture the fixture object, or null if the named fixture does not exist.
 	 */
-	protected function getFixture($name)
+	public function getFixture($name)
 	{
 		$class = isset($this->_fixtureAliases[$name]) ? $this->_fixtureAliases[$name] : $name;
 		return isset($this->_fixtures[$class]) ? $this->_fixtures[$class] : null;
