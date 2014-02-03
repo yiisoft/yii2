@@ -21,6 +21,9 @@ class ActiveField extends \yii\widgets\ActiveField
 	 */
 	public $model;
 
+	/**
+	 * @inheritdoc
+	 */
 	public function init()
 	{
 		$stickyAttributes = $this->model->stickyAttributes();

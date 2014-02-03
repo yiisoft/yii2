@@ -616,6 +616,8 @@ class ActiveField extends Component
 			return [];
 		}
 
+		$options = [];
+
 		$enableClientValidation = $this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation;
 		if ($enableClientValidation) {
 			$validators = [];

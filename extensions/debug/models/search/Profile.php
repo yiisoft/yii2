@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\debug\models\search;
 
@@ -6,11 +11,14 @@ use yii\data\ArrayDataProvider;
 use yii\debug\components\search\Filter;
 
 /**
- * Profile represents the model behind the search form about current request profiling log.
+ * Search model for current request profiling log.
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Mark Jebri <mark.github@yandex.ru>
+ * @since 2.0
  */
 class Profile extends Base
 {
-
 	/**
 	 * @var string method attribute input search value
 	 */
@@ -21,6 +29,9 @@ class Profile extends Base
 	 */
 	public $info;
 
+	/**
+	 * @inheritdoc
+	 */
 	public function rules()
 	{
 		return [
@@ -41,8 +52,9 @@ class Profile extends Base
 
 	/**
 	 * Returns data provider with filled models. Filter applied if needed.
-	 * @param array $params
-	 * @param array $models
+	 *
+	 * @param array $params an array of parameter values indexed by parameter names
+	 * @param array $models data to return provider for
 	 * @return \yii\data\ArrayDataProvider
 	 */
 	public function search($params, $models)
@@ -69,5 +81,4 @@ class Profile extends Base
 
 		return $dataProvider;
 	}
-
 }

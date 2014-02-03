@@ -111,9 +111,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 				$value = (int)$value - 1;
 			}
 			try {
-				// it's possible sqlite_sequence does not exist
 				$db->createCommand("UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'")->execute();
 			} catch (Exception $e) {
+				// it's possible that sqlite_sequence does not exist
 			}
 		} elseif ($table === null) {
 			throw new InvalidParamException("Table not found: $tableName");

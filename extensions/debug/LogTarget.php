@@ -72,6 +72,13 @@ class LogTarget extends Target
 		$this->updateIndexFile($indexFile, $summary);
 	}
 
+	/**
+	 * Updates index file with summary log data
+	 *
+	 * @param string $indexFile path to index file
+	 * @param array $summary summary log data
+	 * @throws \yii\base\InvalidConfigException
+	 */
 	private function updateIndexFile($indexFile, $summary)
 	{
 		touch($indexFile);

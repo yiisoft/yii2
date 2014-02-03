@@ -20,7 +20,6 @@ use yii\debug\models\search\Db;
  */
 class DbPanel extends Panel
 {
-
 	/**
 	 * @var array db queries info extracted to array as models, to use with data provider.
 	 */
@@ -31,11 +30,17 @@ class DbPanel extends Panel
 	 */
 	private $_timings;
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getName()
 	{
 		return 'Database';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getSummary()
 	{
 		$timings = $this->calculateTimings();
@@ -50,6 +55,9 @@ class DbPanel extends Panel
 		]);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getDetail()
 	{
 		$searchModel = new Db();
@@ -63,7 +71,8 @@ class DbPanel extends Panel
 	}
 
 	/**
-	 * Calculates given request profile messages timings.
+	 * Calculates given request profile timings.
+	 *
 	 * @return array timings [token, category, timestamp, traces, nesting level, elapsed time]
 	 */
 	protected function calculateTimings()
@@ -74,6 +83,9 @@ class DbPanel extends Panel
 		return $this->_timings;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function save()
 	{
 		$target = $this->module->logTarget;
@@ -82,7 +94,8 @@ class DbPanel extends Panel
 	}
 
 	/**
-	 * Returns total queries time.
+	 * Returns total query time.
+	 *
 	 * @param array $timings
 	 * @return integer total time
 	 */
@@ -98,8 +111,8 @@ class DbPanel extends Panel
 	}
 
 	/**
-	 * Returns array of models that represents logs of the current request. Can be used with data providers,
-	 * like yii\data\ArrayDataProvider.
+	 * Returns an  array of models that represents logs of the current request.
+	 * Can be used with data providers such as \yii\data\ArrayDataProvider.
 	 * @return array models
 	 */
 	protected function getModels()
@@ -110,7 +123,7 @@ class DbPanel extends Panel
 
 			foreach($timings as $seq => $dbTiming) {
 				$this->_models[] = 	[
-					'type' => $this->detectQueryType($dbTiming['info']),
+					'type' => $this->getQueryType($dbTiming['info']),
 					'query' => $dbTiming['info'],
 					'duration' => ($dbTiming['duration'] * 1000), // in milliseconds
 					'trace' => $dbTiming['trace'],
@@ -123,16 +136,15 @@ class DbPanel extends Panel
 	}
 
 	/**
-	 * Detects databse timing type. Detecting is produced through simple parsing to the first space|tab|new row.
-	 * First word before space is timing type. If there is no such words, timing will have empty type.
+	 * Returns databse query type.
+	 *
 	 * @param string $timing timing procedure string
-	 * @return string query type select|insert|delete|etc
+	 * @return string query type such as select, insert, delete, etc.
 	 */
-	protected function detectQueryType($timing)
+	protected function getQueryType($timing)
 	{
 		$timing = ltrim($timing);
 		preg_match('/^([a-zA-z]*)/', $timing, $matches);
 		return count($matches) ? $matches[0] : '';
 	}
-
 }

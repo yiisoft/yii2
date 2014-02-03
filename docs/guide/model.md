@@ -1,15 +1,20 @@
 Model
 =====
 
-In keeping with the MVC approach, a model in Yii is intended for storing or temporarily representing application data. Yii models have the following basic features:
+In keeping with the MVC approach, a model in Yii is intended for storing or temporarily representing application data.
+Yii models have the following basic features:
 
 - Attribute declaration: a model defines what is considered an attribute.
 - Attribute labels: each attribute may be associated with a label for display purpose.
 - Massive attribute assignment: the ability to populate multiple model attributes in one step.
 - Scenario-based data validation.
 
-Models in Yii extend from the [[\yii\base\Model]] class. Models are typically used to both hold data and define the validation rules for that data (aka, the business logic). The business logic greatly simplifies the generation of models from complex web forms by providing validation and error reporting.
-The Model class is also the base class for more advanced models with additional functionality, such as [Active Record](active-record.md).
+Models in Yii extend from the [[\yii\base\Model]] class. Models are typically used to both hold data and define
+the validation rules for that data (aka, the business logic). The business logic greatly simplifies the generation
+of models from complex web forms by providing validation and error reporting.
+
+The Model class is also the base class for more advanced models with additional functionality, such
+as [Active Record](active-record.md).
 
 Attributes
 ----------
@@ -21,7 +26,7 @@ may contain a `title` attribute and a `content` attribute, accessible as follows
 ```php
 $post = new Post;
 $post->title = 'Hello, world';
-$post->content = 'Something interesting is happening';
+$post->content = 'Something interesting is happening.';
 echo $post->title;
 echo $post->content;
 ```
@@ -62,8 +67,11 @@ Attribute labels are mainly used for display purpose. For example, given an attr
 a label `First Name` that is more user-friendly when displayed to end users in places such as form labels and
 error messages. Given an attribute name, you can obtain its label by calling [[\yii\base\Model::getAttributeLabel()]].
 
-To declare attribute labels, override the [[\yii\base\Model::attributeLabels()]] method. The overridden method returns a mapping of attribute names to attribute labels, as shown in the example below. If an attribute is not found
-in this mapping, its label will be generated using the [[\yii\base\Model::generateAttributeLabel()]] method. In many cases, [[\yii\base\Model::generateAttributeLabel()]] will generate reasonable labels (e.g. `username` to `Username`, `orderNumber` to `Order Number`).
+To declare attribute labels, override the [[\yii\base\Model::attributeLabels()]] method. The overridden method returns
+a mapping of attribute names to attribute labels, as shown in the example below. If an attribute is not found
+in this mapping, its label will be generated using the [[\yii\base\Model::generateAttributeLabel()]] method.
+In many cases, [[\yii\base\Model::generateAttributeLabel()]] will generate reasonable labels (e.g. `username` to `Username`,
+`orderNumber` to `Order Number`).
 
 ```php
 // LoginForm has two attributes: username and password
@@ -86,7 +94,8 @@ Scenarios
 ---------
 
 A model may be used in different *scenarios*. For example, a `User` model may be used to collect user login inputs,
-but it may also be used for user registration purposes. In the one scenario, every piece of data is required; in the other, only the username and password would be.
+but it may also be used for user registration purposes. In the one scenario, every piece of data is required;
+in the other, only the username and password would be.
 
 To easily implement the business logic for different scenarios, each model has a property named `scenario`
 that stores the name of the scenario that the model is currently being used in. As will be explained in the next
@@ -111,6 +120,9 @@ class User extends \yii\db\ActiveRecord
 	}
 }
 ```
+
+If `scenarios` method is not defined, default scenario is applied. That means attributes with validation rules are
+considered *active*.
 
 If you want to keep the default scenario available besides your own scenarios, use inheritance to include it:
 ```php
@@ -161,9 +173,9 @@ class EmployeeController extends \yii\web\Controller
 ```
 
 The example above presumes that the model is based upon [Active Record](active-record.md). For basic form models,
-scenarios are rarely needed, as the basic form model is normally tied directly to a single form.
-The default implementation of the `scenarios()`-method will return all scenarios found in the `rules()`
-declaration (explained in the next section) so in simple cases you do not need to define scenarios.
+scenarios are rarely needed, as the basic form model is normally tied directly to a single form and, as noted above,
+the default implementation of the `scenarios()` returns every property with active validation rule making it always
+available for mass assignment and validation.
 
 
 Validation
@@ -211,16 +223,6 @@ When `validate()` is called, the actual validation rules executed are determined
 - the rule must be active for the current scenario.
 
 
-### Active Attributes
-
-An attribute is *active* if it is subject to some validations in the current scenario.
-
-
-### Safe Attributes
-
-An attribute is *safe* if it can be massively assigned in the current scenario.
-
-
 Massive Attribute Retrieval and Assignment
 ------------------------------------------
 
@@ -229,18 +231,23 @@ The following code will return *all* attributes in the `$post` model
 as an array of name-value pairs.
 
 ```php
-$attributes = $post->attributes;
-var_dump($attributes);
+$post = Post::find(42);
+if ($post) {
+	$attributes = $post->attributes;
+	var_dump($attributes);
+}
 ```
 
 Using the same `attributes` property you can massively assign data from associative array to model attributes:
 
 ```php
+$post = new Post();
 $attributes = [
-	'title' => 'Model attributes',
-	'created_at' => time(),
+	'title' => 'Massive assignment example',
+	'content' => 'Never allow assigning attributes that are not meant to be assigned.',
 ];
 $post->attributes = $attributes;
+var_dump($attributes);
 ```
 
 In the code above we're assigning corresponding data to model attributes named as array keys. The key difference from mass
@@ -256,31 +263,151 @@ rules are described in `rules()` method of the model while what's safe for mass
 assignment is described in `scenarios` method:
 
 ```php
-function rules()
+class User extends ActiveRecord
 {
-	return [
-		// rule applied when corresponding field is "safe"
-		['username', 'string', 'length' => [4, 32]],
-		['first_name', 'string', 'max' => 128],
-		['password', 'required'],
+	public function rules()
+	{
+		return [
+			// rule applied when corresponding field is "safe"
+			['username', 'string', 'length' => [4, 32]],
+			['first_name', 'string', 'max' => 128],
+			['password', 'required'],
 
-		// rule applied when scenario is "signup" no matter if field is "safe" or not
-		['hashcode', 'check', 'on' => 'signup'],
-	];
-}
+			// rule applied when scenario is "signup" no matter if field is "safe" or not
+			['hashcode', 'check', 'on' => 'signup'],
+		];
+	}
 
-function scenarios()
-{
-	return [
-		// on signup allow mass assignment of username
-		'signup' => ['username', 'password'],
-		'update' => ['username', 'first_name'],
-	];
+	public function scenarios()
+	{
+		return [
+			// on signup allow mass assignment of username
+			'signup' => ['username', 'password'],
+			'update' => ['username', 'first_name'],
+		];
+	}
 }
 ```
 
-Note that everything is unsafe by default and you can't make field "safe" without specifying scenario.
+For the code above mass assignment will be allowed stsrictly according to `scenarios()`:
 
+```php
+$user = User::find(42);
+$data = ['password' => '123'];
+$user->attributes = $data;
+print_r($data);
+```
+
+Will give you empty array because there's no default scenario defined in our `scenarios()`.
+
+```php
+$user = User::find(42);
+$user->scenario = 'signup';
+$data = [
+	'username' => 'samdark',
+	'password' => '123',
+	'hashcode' => 'test',
+];
+$user->attributes = $data;
+print_r($data);
+```
+
+Will give you the following:
+
+```php
+array(
+	'username' => 'samdark',
+	'first_name' => null,
+	'password' => '123',
+	'hashcode' => null, // it's not defined in scenarios method
+)
+```
+
+In case of not defined `scenarios` method like the following:
+
+```php
+class User extends ActiveRecord
+{
+	public function rules()
+	{
+		return [
+			['username', 'string', 'length' => [4, 32]],
+			['first_name', 'string', 'max' => 128],
+			['password', 'required'],
+		];
+	}
+}
+```
+
+The code above assumes default scenario so mass assignment will be available for all fields with `rules` defined:
+
+```php
+$user = User::find(42);
+$data = [
+	'username' => 'samdark',
+	'first_name' => 'Alexander',
+	'last_name' => 'Makarov',
+	'password' => '123',
+];
+$user->attributes = $data;
+print_r($data);
+```
+
+Will give you the following:
+
+```php
+array(
+	'username' => 'samdark',
+	'first_name' => 'Alexander',
+	'password' => '123',
+)
+```
+
+If you want some fields to be unsafe for default scenario:
+
+```php
+class User extends ActiveRecord
+{
+	function rules()
+	{
+		return [
+			['username', 'string', 'length' => [4, 32]],
+			['first_name', 'string', 'max' => 128],
+			['password', 'required'],
+		];
+	}
+
+	public function scenarios()
+	{
+		return [
+			self::SCENARIO_DEFAULT => ['username', 'first_name', '!password']
+		];
+	}
+}
+```
+
+Mass assignment is still available by default:
+
+```php
+$user = User::find(42);
+$data = [
+	'username' => 'samdark',
+	'first_name' => 'Alexander',
+	'password' => '123',
+];
+$user->attributes = $data;
+print_r($user->attributes);
+```
+
+The code above gives you:
+
+```php
+array(
+	'username' => 'samdark',
+	'first_name' => 'Alexander',
+	'password' => null, // because of ! before field name in scenarios
+)
+```
 
 See also
 --------

@@ -45,7 +45,7 @@ use yii\validators\Validator;
  * property is read-only.
  * @property ArrayIterator $iterator An iterator for traversing the items in the list. This property is
  * read-only.
- * @property string $scenario The scenario that this model is in. Defaults to [[DEFAULT_SCENARIO]].
+ * @property string $scenario The scenario that this model is in. Defaults to [[SCENARIO_DEFAULT]].
  * @property ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the model.
  * This property is read-only.
  *
@@ -57,7 +57,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 	/**
 	 * The name of the default scenario.
 	 */
-	const DEFAULT_SCENARIO = 'default';
+	const SCENARIO_DEFAULT = 'default';
 
 	/**
 	 * @event ModelEvent an event raised at the beginning of [[validate()]]. You may set
@@ -80,7 +80,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 	/**
 	 * @var string current scenario
 	 */
-	private $_scenario = self::DEFAULT_SCENARIO;
+	private $_scenario = self::SCENARIO_DEFAULT;
 
 	/**
 	 * Returns the validation rules for attributes.
@@ -170,7 +170,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 	 * please prefix the attribute with an exclamation character (e.g. '!rank').
 	 *
 	 * The default implementation of this method will return all scenarios found in the [[rules()]]
-	 * declaration. A special scenario named [[DEFAULT_SCENARIO]] will contain all attributes
+	 * declaration. A special scenario named [[SCENARIO_DEFAULT]] will contain all attributes
 	 * found in the [[rules()]]. Each scenario will be associated with the attributes that
 	 * are being validated by the validation rules that apply to the scenario.
 	 *
@@ -178,7 +178,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 	 */
 	public function scenarios()
 	{
-		$scenarios = [self::DEFAULT_SCENARIO => []];
+		$scenarios = [self::SCENARIO_DEFAULT => []];
 		foreach ($this->getValidators() as $validator) {
 			foreach ($validator->on as $scenario) {
 				$scenarios[$scenario] = [];
@@ -214,7 +214,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 		}
 
 		foreach ($scenarios as $scenario => $attributes) {
-			if (empty($attributes) && $scenario !== self::DEFAULT_SCENARIO) {
+			if (empty($attributes) && $scenario !== self::SCENARIO_DEFAULT) {
 				unset($scenarios[$scenario]);
 			} else {
 				$scenarios[$scenario] = array_keys($attributes);
@@ -649,7 +649,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 	 * Scenario affects how validation is performed and which attributes can
 	 * be massively assigned.
 	 *
-	 * @return string the scenario that this model is in. Defaults to [[DEFAULT_SCENARIO]].
+	 * @return string the scenario that this model is in. Defaults to [[SCENARIO_DEFAULT]].
 	 */
 	public function getScenario()
 	{
