@@ -78,6 +78,7 @@ class ActiveFixtureTest extends DatabaseTestCase
 		$this->assertEquals('customer1@example.com', $fixture['customer1']['email']);
 		$this->assertEquals(2, $fixture['customer2']['id']);
 		$this->assertEquals('customer2@example.com', $fixture['customer2']['email']);
+		$test->tearDown();
 	}
 
 	public function testGetModel()
@@ -90,5 +91,6 @@ class ActiveFixtureTest extends DatabaseTestCase
 		$this->assertEquals('customer1@example.com', $fixture->getModel('customer1')->email);
 		$this->assertEquals(2, $fixture->getModel('customer2')->id);
 		$this->assertEquals('customer2@example.com', $fixture->getModel('customer2')->email);
+		$test->tearDown();
 	}
 }
