@@ -94,7 +94,8 @@ class ActiveRecord extends BaseActiveRecord
 		$command = static::getDb()->createCommand();
 		$result = $command->get(static::index(), static::type(), $primaryKey, $options);
 		if ($result['exists']) {
-			$model = static::create($result);
+			$model = static::instantiate($result);
+			static::populateRecord($model, $result);
 			$model->afterFind();
 			return $model;
 		}
@@ -123,7 +124,8 @@ class ActiveRecord extends BaseActiveRecord
 		$models = [];
 		foreach($result['docs'] as $doc) {
 			if ($doc['exists']) {
-				$model = static::create($doc);
+				$model = static::instantiate($doc);
+				static::populateRecord($model, $doc);
 				$model->afterFind();
 				$models[] = $model;
 			}
@@ -264,22 +266,38 @@ class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
-	 * Creates an active record object using a row of data.
-	 * This method is called by [[ActiveQuery]] to populate the query results
-	 * into Active Records. It is not meant to be used to create new records.
-	 * @param array $row attribute values (name => value)
-	 * @return ActiveRecord the newly created active record.
+	 * @inheritdoc
 	 */
-	public static function create($row)
+	public static function populateRecord($record, $row)
 	{
-		$record = parent::create($row['_source']);
+		parent::populateRecord($record, $row['_source']);
 		$pk = static::primaryKey()[0];
 		if ($pk === '_id') {
-			$record->$pk = $row['_id'];
+			$record->_id = $row['_id'];
 		}
 		$record->_score = isset($row['_score']) ? $row['_score'] : null;
 		$record->_version = isset($row['_version']) ? $row['_version'] : null; // TODO version should always be available...
-		return $record;
+	}
+
+	/**
+	 * Creates an active record instance.
+	 *
+	 * This method is called together with [[populateRecord()]] by [[ActiveQuery]].
+	 *
+	 * You may override this method if the instance being created
+	 * depends on the row data to be populated into the record.
+	 * For example, by creating a record based on the value of a column,
+	 * you may implement the so-called single-table inheritance mapping.
+	 * @param array $row row data to be populated into the record.
+	 * This array consists of the following keys:
+	 * - `_source`: refers to the attributes of the record.
+	 * - `_type`: the type this record is stored in.
+	 * - `_index`: the index this record is stored in.
+	 * @return static the newly created active record
+	 */
+	public static function instantiate($row)
+	{
+		return new static;
 	}
 
 	/**
