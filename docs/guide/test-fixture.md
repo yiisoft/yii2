@@ -175,46 +175,42 @@ This means you only need to work with `@app/tests/fixtures/initdb.php` if you wa
 before each test. You may otherwise simply focus on developing each individual test case and the corresponding fixtures.
 
 
-Fixtures hierarchy convention
------------------------------
+Organizing Fixture Classes and Data Files
+-----------------------------------------
 
-Usually you will have one fixture class per needed fixture and will be only switching data files for fixture classes. 
-When you have simple project that does not have much database testing and fixtures, you can put all fixtures data files under `data` folder, as it is done by default.
-But when your project is not very simple you should not be greedy when using data files and organize them according these rule:
+By default, fixture classes look for the corresponding data files under the `data` folder which is a sub-folder
+of the folder containing the fixture class files. You can follow this convention when working with simple projects.
+For big projects, chances are that you often need to switch different data files for the same fixture class for
+different tests. We thus recommend that you organize the data files in a hierarchical way that is similar to
+your class namespaces. For example,
 
-- data file should follow same hierarchy that is used for your project classes namespace.
+```
+# under folder tests\unit\fixtures
 
-Lets see example:
-
-```php
-#under folder tests\unit\fixtures
 data\
-     components\
-                some_fixture_data_file1.php
-                some_fixture_data_file2.php
-                ...
-                some_fixture_data_fileN.php
-     models\
-            db\
-               some_fixture_data_file1.php
-               some_fixture_data_file2.php
-               ...
-               some_fixture_data_fileN.php
-            forms\
-               some_fixture_data_file1.php
-               some_fixture_data_file2.php
-               ...
-               some_fixture_data_fileN.php
-
-#and so on
+	components\
+		fixture_data_file1.php
+		fixture_data_file2.php
+		...
+		fixture_data_fileN.php
+	models\
+		fixture_data_file1.php
+		fixture_data_file2.php
+		...
+		fixture_data_fileN.php
+# and so on
 ```
 
-In this way you will avoid fixture data collision between tests and use them as you need.
+In this way you will avoid collision of fixture data files between tests and use them as you need.
 
-> **Note** In the example above fixture files are named only for example purposes, in real life you should name them according what fixture type you are using.
-It can be table name, or mongodb collection name if you are using mongodb fixture. In order to know how to specify and name data files for your fixtures read above on this article.
+> Note: In the example above fixture files are named only for example purpose. In real life you should name them
+> according to which fixture class your fixture classes are extending from. For example, if you are extending
+> from [[\yii\test\ActiveFixture]] for DB fixtures, you should use DB table names as the fixture data file names;
+> If you are extending for [[\yii\mongodb\ActiveFixture]] for MongoDB fixtures, you should use collection names as the file names.
 
-Same rule can be applied to organize fixtures classes in your project, so similar hierarchy will be build under `fixtures` directory, avoiding usage of `data` directory, that is reserved for data files.
+The similar hierarchy can be used to organize fixture class files. Instead of using `data` as the root directory, you may
+want to use `fixtures` as the root directory to avoid conflict with the data files.
+
 
 Summary
 -------
@@ -227,5 +223,5 @@ of running unit tests related with DB:
    - Load fixtures: clean up the relevant DB tables and populate them with fixture data;
    - Perform the actual test;
    - Unload fixtures.
-3. Repeat 2 until all tests finish.
+3. Repeat Step 2 until all tests finish.
 
