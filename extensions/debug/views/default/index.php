@@ -32,7 +32,9 @@ echo GridView::widget([
 	'dataProvider' => $dataProvider,
 	'filterModel' => $searchModel,
 	'rowOptions' => function ($model, $key, $index, $grid) use ($searchModel) {
-		if ($searchModel->isCodeCritical($model['statusCode'])) {
+		$dbPanel = $this->context->module->panels['db'];
+
+		if ($searchModel->isCodeCritical($model['statusCode']) || $dbPanel->isQueryCountCritical($model['sqlCount'])) {
 			return ['class'=>'danger'];
 		} else {
 			return [];
@@ -58,7 +60,22 @@ echo GridView::widget([
 		'ip',
 		[
 			'attribute' => 'sqlCount',
-			'label' => 'Total queries count'
+			'label' => 'Total queries count',
+			'value' => function ($data) {
+				$dbPanel = $this->context->module->panels['db'];
+
+				if ($dbPanel->isQueryCountCritical($data['sqlCount'])) {
+
+					$content = Html::tag('b', $data['sqlCount']) . ' ' . Html::tag('span','',['class' => 'glyphicon glyphicon-exclamation-sign']);
+					return Html::a($content, $dbPanel->getUrl(), [
+						'title' => 'Too many queries. Allowed count is ' . $dbPanel->criticalQueryThreshold,
+					]);
+
+				} else {
+					return $data['sqlCount'];
+				}
+			},
+			'format' => 'html',
 		],
 		[
 			'attribute' => 'method',
