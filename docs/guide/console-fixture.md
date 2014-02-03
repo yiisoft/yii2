@@ -106,7 +106,7 @@ different migration path as follows:
 ```
 'controllerMap' => [
     'fixture' => [
-        'class' => 'yii\console\FixtureController',
+        'class' => 'yii\console\controllers\FixtureController',
 		'db' => 'customDbConnectionId',
 		'namespace' => 'myalias\some\custom\namespace',
     ],
