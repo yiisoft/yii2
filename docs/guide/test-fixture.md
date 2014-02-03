@@ -116,7 +116,7 @@ use app\tests\fixtures\UserProfileFixture;
 
 class UserProfileTest extends DbTestCase
 {
-	protected function fixtures()
+	public function fixtures()
 	{
 		return [
 			'profiles' => UserProfileFixture::className(),
