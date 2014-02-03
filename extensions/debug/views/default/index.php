@@ -60,7 +60,7 @@ echo GridView::widget([
 		'ip',
 		[
 			'attribute' => 'sqlCount',
-			'label' => 'Total queries count',
+			'label' => 'Total queries',
 			'value' => function ($data) {
 				$dbPanel = $this->context->module->panels['db'];
 
