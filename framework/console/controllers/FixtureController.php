@@ -349,7 +349,7 @@ class FixtureController extends Controller
 		foreach ($fixtures as $fixture) {
 
 			$isNamespaced = (strpos($fixture, '\\') !== false);
-			$fullClassName = $isNamespaced ? $fixture : $this->namespace . '\\' . $fixture . 'Fixture';
+			$fullClassName = $isNamespaced ? $fixture . 'Fixture' : $this->namespace . '\\' . $fixture . 'Fixture';
 
 			if (class_exists($fullClassName)) {
 				$config[] = $fullClassName;
