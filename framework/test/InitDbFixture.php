@@ -46,9 +46,7 @@ class InitDbFixture extends DbFixture
 	 */
 	public function beforeLoad()
 	{
-		foreach ($this->schemas as $schema) {
-			$this->checkIntegrity(false, $schema);
-		}
+		$this->checkIntegrity(false);
 	}
 
 	/**
@@ -56,9 +54,7 @@ class InitDbFixture extends DbFixture
 	 */
 	public function afterLoad()
 	{
-		foreach ($this->schemas as $schema) {
-			$this->checkIntegrity(true, $schema);
-		}
+		$this->checkIntegrity(true);
 	}
 
 	/**
@@ -77,9 +73,7 @@ class InitDbFixture extends DbFixture
 	 */
 	public function beforeUnload()
 	{
-		foreach ($this->schemas as $schema) {
-			$this->checkIntegrity(false, $schema);
-		}
+		$this->checkIntegrity(false);
 	}
 
 	/**
@@ -87,9 +81,7 @@ class InitDbFixture extends DbFixture
 	 */
 	public function afterUnload()
 	{
-		foreach ($this->schemas as $schema) {
-			$this->checkIntegrity(true, $schema);
-		}
+		$this->checkIntegrity(true);
 	}
 
 	/**
