@@ -33,16 +33,16 @@ use yii\test\FixtureTrait;
  *
  * ~~~
  * #load fixtures under $fixturePath from UsersFixture class with default namespace "tests\unit\fixtures"
- * yii fixture/apply User
+ * yii fixture/load User
  *
  * #also a short version of this command (generate action is default)
  * yii fixture User
  *
  * #load fixtures under $fixturePath with the different database connection
- * yii fixture/apply User --db=someOtherDbConnection
+ * yii fixture/load User --db=someOtherDbConnection
  *
  * #load fixtures under different $fixturePath.
- * yii fixture/apply User --namespace=alias\my\custom\namespace\goes\here
+ * yii fixture/load User --namespace=alias\my\custom\namespace\goes\here
  * ~~~
  *
  * @author Mark Jebri <mark.github@yandex.ru>
@@ -251,8 +251,10 @@ class FixtureController extends Controller
 		$this->stdout("Fixtures namespace is: \n", Console::FG_YELLOW);
 		$this->stdout("\t" . $this->namespace . "\n\n", Console::FG_GREEN);
 
-		$this->stdout("Global fixtures will be loaded:\n\n", Console::FG_YELLOW);
-		$this->outputList($this->globalFixtures);
+		if (count($this->globalFixtures)) {
+			$this->stdout("Global fixtures will be loaded:\n\n", Console::FG_YELLOW);
+			$this->outputList($this->globalFixtures);
+		}
 
 		$this->stdout("\nFixtures below will be loaded:\n\n", Console::FG_YELLOW);
 		$this->outputList($fixtures);
@@ -276,8 +278,10 @@ class FixtureController extends Controller
 		$this->stdout("Fixtures namespace is: \n", Console::FG_YELLOW);
 		$this->stdout("\t" . $this->namespace . "\n\n", Console::FG_GREEN);
 
-		$this->stdout("Global fixtures will be unloaded:\n\n", Console::FG_YELLOW);
-		$this->outputList($this->globalFixtures);
+		if (count($this->globalFixtures)) {
+			$this->stdout("Global fixtures will be unloaded:\n\n", Console::FG_YELLOW);
+			$this->outputList($this->globalFixtures);
+		}
 
 		$this->stdout("\nFixtures below will be unloaded:\n\n", Console::FG_YELLOW);
 		$this->outputList($fixtures);
