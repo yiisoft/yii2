@@ -67,7 +67,7 @@ echo GridView::widget([
 				if ($dbPanel->isQueryCountCritical($data['sqlCount'])) {
 
 					$content = Html::tag('b', $data['sqlCount']) . ' ' . Html::tag('span','',['class' => 'glyphicon glyphicon-exclamation-sign']);
-					return Html::a($content, $dbPanel->getUrl(), [
+					return Html::a($content, ['view', 'panel' => 'db', 'tag' => $data['tag']], [
 						'title' => 'Too many queries. Allowed count is ' . $dbPanel->criticalQueryThreshold,
 					]);
 
