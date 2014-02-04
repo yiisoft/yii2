@@ -40,6 +40,11 @@ class ActiveRecord extends BaseActiveRecord
 	 * This is a shortcut of the expression: OP_INSERT | OP_UPDATE | OP_DELETE.
 	 */
 	const OP_ALL = 0x07;
+	/**
+	 * Keep a count of related aliases.
+	 * @var array
+	 */
+	private static $_relationAlias = [];
 
 	/**
 	 * Returns the database connection used by this AR class.
@@ -272,6 +277,17 @@ class ActiveRecord extends BaseActiveRecord
 	public static function createRelation($config = [])
 	{
 		return new ActiveRelation($config);
+	}
+	
+	/**
+	 * Return the table name affixed with the numbered alias.
+	 * @param string $alias
+	 * @return string
+	 */
+	protected static function relationAlias($alias)
+	{
+		$alias = static::tableName() . ' ' . $alias;
+		return $alias . (self::$_relationAlias[$alias] = \yii\helpers\ArrayHelper::getValue(self::$_relationAlias, $alias, 0) + 1);
 	}
 
 	/**
