@@ -9,8 +9,6 @@ namespace yii\test;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\UnknownMethodException;
-use yii\base\UnknownPropertyException;
 
 /**
  * FixtureTrait provides functionalities for loading, unloading and accessing fixtures for a test case.
@@ -33,10 +31,6 @@ trait FixtureTrait
 	 * if B depends on A.
 	 */
 	private $_fixtures;
-	/**
-	 * @var array the fixture class names indexed by the corresponding fixture names (aliases).
-	 */
-	private $_fixtureAliases;
 
 	/**
 	 * Declares the fixtures that are needed by the current test case.
@@ -79,94 +73,133 @@ trait FixtureTrait
 	}
 
 	/**
-	 * Loads the fixtures.
-	 * This method will load the fixtures specified by `$fixtures` or [[globalFixtures()]] and [[fixtures()]].
-	 * @param array $fixtures the fixtures to loaded. If not set, [[fixtures()]] will be loaded instead.
-	 * @throws InvalidConfigException if fixtures are not properly configured or if a circular dependency among
-	 * the fixtures is detected.
+	 * Loads the specified fixtures.
+	 * This method will call [[Fixture::load()]] for every fixture object.
+	 * @param Fixture[] $fixtures the fixtures to be loaded. If this parameter is not specified,
+	 * the return value of [[getFixtures()]] will be used.
 	 */
-	protected function loadFixtures($fixtures = null)
+	public function loadFixtures($fixtures = null)
 	{
 		if ($fixtures === null) {
-			$fixtures = array_merge($this->globalFixtures(), $this->fixtures());
+			$fixtures = $this->getFixtures();
 		}
 
-		// normalize fixture configurations
-		$config = [];  // configuration provided in test case
-		$this->_fixtureAliases = [];
-		foreach ($fixtures as $name => $fixture) {
-			if (!is_array($fixture)) {
-				$fixtures[$name] = $fixture = ['class' => $fixture];
-			} elseif (!isset($fixture['class'])) {
-				throw new InvalidConfigException("You must specify 'class' for the fixture '$name'.");
-			}
-			$config[$fixture['class']] = $fixture;
-			$this->_fixtureAliases[$name] = $fixture['class'];
-		}
-
-		// create fixture instances
-		$this->_fixtures = [];
-		$stack = array_reverse($fixtures);
-		while (($fixture = array_pop($stack)) !== null) {
-			if ($fixture instanceof Fixture) {
-				$class = get_class($fixture);
-				unset($this->_fixtures[$class]);  // unset so that the fixture is added to the last in the next line
-				$this->_fixtures[$class] = $fixture;
-			} else {
-				$class = $fixture['class'];
-				if (!isset($this->_fixtures[$class])) {
-					$this->_fixtures[$class] = false;
-					$stack[] = $fixture = Yii::createObject($fixture);
-					foreach ($fixture->depends as $dep) {
-						// need to use the configuration provided in test case
-						$stack[] = isset($config[$dep]) ? $config[$dep] : ['class' => $dep];
-	 				}
-				} elseif ($this->_fixtures[$class] === false) {
-					throw new InvalidConfigException("A circular dependency is detected for fixture '$class'.");
-				}
-			}
-		}
-
-		// load fixtures
 		/** @var Fixture $fixture */
-		foreach ($this->_fixtures as $fixture) {
+		foreach ($fixtures as $fixture) {
 			$fixture->beforeLoad();
 		}
-		foreach ($this->_fixtures as $fixture) {
+		foreach ($fixtures as $fixture) {
 			$fixture->load();
 		}
-		foreach ($this->_fixtures as $fixture) {
+		foreach (array_reverse($fixtures) as $fixture) {
 			$fixture->afterLoad();
 		}
 	}
 
 	/**
-	 * Unloads all existing fixtures.
+	 * Unloads the specified fixtures.
+	 * This method will call [[Fixture::unload()]] for every fixture object.
+	 * @param Fixture[] $fixtures the fixtures to be loaded. If this parameter is not specified,
+	 * the return value of [[getFixtures()]] will be used.
 	 */
-	protected function unloadFixtures()
+	public function unloadFixtures($fixtures = null)
 	{
+		if ($fixtures === null) {
+			$fixtures = $this->getFixtures();
+		}
+
 		/** @var Fixture $fixture */
-		foreach (array_reverse($this->_fixtures) as $fixture) {
+		foreach ($fixtures as $fixture) {
+			$fixture->beforeUnload();
+		}
+		$fixtures = array_reverse($fixtures);
+		foreach ($fixtures as $fixture) {
 			$fixture->unload();
+		}
+		foreach ($fixtures as $fixture) {
+			$fixture->afterUnload();
 		}
 	}
 
 	/**
-	 * @return array the loaded fixtures for the current test case
+	 * Returns the fixture objects as specified in [[globalFixtures()]] and [[fixtures()]].
+	 * @return Fixture[] the loaded fixtures for the current test case
 	 */
 	public function getFixtures()
 	{
+		if ($this->_fixtures === null) {
+			$this->_fixtures = $this->createFixtures(array_merge($this->globalFixtures(), $this->fixtures()));
+		}
 		return $this->_fixtures;
 	}
 
 	/**
 	 * Returns the named fixture.
-	 * @param string $name the fixture alias or class name
+	 * @param string $name the fixture name. This can be either the fixture alias name, or the class name if the alias is not used.
 	 * @return Fixture the fixture object, or null if the named fixture does not exist.
 	 */
 	public function getFixture($name)
 	{
-		$class = isset($this->_fixtureAliases[$name]) ? $this->_fixtureAliases[$name] : $name;
-		return isset($this->_fixtures[$class]) ? $this->_fixtures[$class] : null;
+		if ($this->_fixtures === null) {
+			$this->_fixtures = $this->createFixtures(array_merge($this->globalFixtures(), $this->fixtures()));
+		}
+		$name = ltrim($name, '\\');
+		return isset($this->_fixtures[$name]) ? $this->_fixtures[$name] : null;
+	}
+
+	/**
+	 * Creates the specified fixture instances.
+	 * All dependent fixtures will also be created.
+	 * @param array $fixtures the fixtures to be created. You may provide fixture names or fixture configurations.
+	 * If this parameter is not provided, the fixtures specified in [[globalFixtures()]] and [[fixtures()]] will be created.
+	 * @return Fixture[] the created fixture instances
+	 * @throws InvalidConfigException if fixtures are not properly configured or if a circular dependency among
+	 * the fixtures is detected.
+	 */
+	protected function createFixtures(array $fixtures)
+	{
+		// normalize fixture configurations
+		$config = [];  // configuration provided in test case
+		$aliases = [];  // class name => alias or class name
+		foreach ($fixtures as $name => $fixture) {
+			if (!is_array($fixture)) {
+				$class = ltrim($fixture, '\\');
+				$fixtures[$name] = ['class' => $class];
+				$aliases[$class] = is_integer($name) ? $class : $name;
+			} elseif (isset($fixture['class'])) {
+				$class = ltrim($fixture['class'], '\\');
+				$config[$class] = $fixture;
+				$aliases[$class] = $name;
+			} else {
+				throw new InvalidConfigException("You must specify 'class' for the fixture '$name'.");
+			}
+		}
+
+		// create fixture instances
+		$instances = [];
+		$stack = array_reverse($fixtures);
+		while (($fixture = array_pop($stack)) !== null) {
+			if ($fixture instanceof Fixture) {
+				$class = get_class($fixture);
+				$name = isset($aliases[$class]) ? $aliases[$class] : $class;
+				unset($instances[$name]);  // unset so that the fixture is added to the last in the next line
+				$instances[$name] = $fixture;
+			} else {
+				$class = ltrim($fixture['class'], '\\');
+				$name = isset($aliases[$class]) ? $aliases[$class] : $class;
+				if (!isset($instances[$name])) {
+					$instances[$name] = false;
+					$stack[] = $fixture = Yii::createObject($fixture);
+					foreach ($fixture->depends as $dep) {
+						// need to use the configuration provided in test case
+						$stack[] = isset($config[$dep]) ? $config[$dep] : ['class' => $dep];
+					}
+				} elseif ($instances[$name] === false) {
+					throw new InvalidConfigException("A circular dependency is detected for fixture '$class'.");
+				}
+			}
+		}
+
+		return $instances;
 	}
 }

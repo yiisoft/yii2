@@ -119,11 +119,25 @@ class FixtureController extends Controller
 			throw new Exception('No fixtures were found in namespace: "' . $this->namespace . '"' . '');
 		}
 
+		$fixtures = $this->createFixtures($fixtures);
+
 		$transaction = Yii::$app->db->beginTransaction();
 
 		try {
 			$this->getDbConnection()->createCommand()->checkIntegrity(false)->execute();
-			$this->loadFixtures($fixtures);
+
+			/** @var \yii\test\Fixture $fixture */
+			foreach ($fixtures as $fixture) {
+				$fixture->beforeLoad();
+			}
+			foreach ($fixtures as $fixture) {
+				$fixture->load();
+			}
+			foreach (array_reverse($fixtures) as $fixture) {
+				$fixture->afterLoad();
+				$this->stdout("    Fixture \"{$fixture::className()}\" was successfully loaded. \n", Console::FG_GREEN);
+			}
+
 			$this->getDbConnection()->createCommand()->checkIntegrity(true)->execute();
 			$transaction->commit();
 		} catch (\Exception $e) {
@@ -169,15 +183,24 @@ class FixtureController extends Controller
 			throw new Exception('No fixtures were found in namespace: ' . $this->namespace . '".');
 		}
 
+		$fixtures = $this->createFixtures($fixtures);
+
 		$transaction = Yii::$app->db->beginTransaction();
 
 		try {
 			$this->getDbConnection()->createCommand()->checkIntegrity(false)->execute();
 
-			foreach ($fixtures as $fixtureConfig) {
-				$fixture = Yii::createObject($fixtureConfig);
+			/** @var \yii\test\Fixture $fixture */
+			foreach ($fixtures as $fixture) {
+				$fixture->beforeUnload();
+			}
+			$fixtures = array_reverse($fixtures);
+			foreach ($fixtures as $fixture) {
 				$fixture->unload();
-				$this->stdout("\tFixture \"{$fixture::className()}\" was successfully unloaded. \n", Console::FG_GREEN);
+			}
+			foreach ($fixtures as $fixture) {
+				$fixture->afterUnload();
+				$this->stdout("    Fixture \"{$fixture::className()}\" was successfully unloaded. \n", Console::FG_GREEN);
 			}
 
 			$this->getDbConnection()->createCommand()->checkIntegrity(true)->execute();
