@@ -88,6 +88,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	 */
 	public function set($name, $value = '')
 	{
+		header_remove($name);
 		$name = strtolower($name);
 		$this->_headers[$name] = (array)$value;
 		return $this;
@@ -146,6 +147,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 		if (isset($this->_headers[$name])) {
 			$value = $this->_headers[$name];
 			unset($this->_headers[$name]);
+			header_remove($name);
 			return $value;
 		} else {
 			return null;
