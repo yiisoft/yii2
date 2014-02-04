@@ -61,16 +61,21 @@ class Controller extends \yii\base\Controller
 	 * @param array $params the parameters (name-value pairs) to be passed to the action.
 	 * @return integer the status of the action execution. 0 means normal, other values mean abnormal.
 	 * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
+	 * @throws Exception if there are unknown options or missing arguments
 	 * @see createAction
 	 */
 	public function runAction($id, $params = [])
 	{
 		if (!empty($params)) {
+			// populate global options here so that they are available in beforeAction().
 			$options = $this->globalOptions();
 			foreach ($params as $name => $value) {
 				if (in_array($name, $options, true)) {
-					$this->$name = $value;
+					$default = $this->$name;
+					$this->$name = is_array($default) ? preg_split('/\s*,\s*/', $value) : $value;
 					unset($params[$name]);
+				} elseif (!is_int($name)) {
+					throw new Exception(Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]));
 				}
 			}
 		}
@@ -89,26 +94,13 @@ class Controller extends \yii\base\Controller
 	 */
 	public function bindActionParams($action, $params)
 	{
-		$args = [];
-		if (!empty($params)) {
-			$options = $this->globalOptions();
-			foreach ($params as $name => $value) {
-				if (in_array($name, $options, true)) {
-					$default = $this->$name;
-					$this->$name = is_array($default) ? preg_split('/\s*,\s*/', $value) : $value;
-				} elseif (is_int($name)) {
-					$args[] = $value;
-				} else {
-					throw new Exception(Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]));
-				}
-			}
-		}
-
 		if ($action instanceof InlineAction) {
 			$method = new \ReflectionMethod($this, $action->actionMethod);
 		} else {
 			$method = new \ReflectionMethod($action, 'run');
 		}
+
+		$args = array_values($params);
 
 		$missing = [];
 		foreach ($method->getParameters() as $i => $param) {
