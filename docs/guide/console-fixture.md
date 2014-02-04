@@ -83,7 +83,7 @@ yii fixture User --namespace='alias\my\custom\namespace'
 // load global fixture `some\name\space\CustomFixture` before other fixtures will be loaded.
 // By default this option is set to `InitDbFixture` to disable/enable integrity checks. You can specify several
 // global fixtures separated by comma.
-yii fixtures User --globalFixtures='some\name\space\Custom'
+yii fixture User --globalFixtures='some\name\space\Custom'
 ```
 
 Unloading fixtures
