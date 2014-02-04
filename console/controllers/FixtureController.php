@@ -12,6 +12,7 @@ use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\test\FixtureTrait;
 
@@ -119,25 +120,11 @@ class FixtureController extends Controller
 			throw new Exception('No fixtures were found in namespace: "' . $this->namespace . '"' . '');
 		}
 
-		$fixtures = $this->createFixtures($fixtures);
-
 		$transaction = Yii::$app->db->beginTransaction();
 
 		try {
 			$this->getDbConnection()->createCommand()->checkIntegrity(false)->execute();
-
-			/** @var \yii\test\Fixture $fixture */
-			foreach ($fixtures as $fixture) {
-				$fixture->beforeLoad();
-			}
-			foreach ($fixtures as $fixture) {
-				$fixture->load();
-			}
-			foreach (array_reverse($fixtures) as $fixture) {
-				$fixture->afterLoad();
-				$this->stdout("    Fixture \"{$fixture::className()}\" was successfully loaded. \n", Console::FG_GREEN);
-			}
-
+			$this->loadFixtures($this->createFixtures($fixtures));
 			$this->getDbConnection()->createCommand()->checkIntegrity(true)->execute();
 			$transaction->commit();
 		} catch (\Exception $e) {
@@ -145,7 +132,7 @@ class FixtureController extends Controller
 			$this->stdout("Exception occurred, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
 			throw $e;
 		}
-		$this->notifySuccess($foundFixtures);
+		$this->notifyLoaded(ArrayHelper::getColumn($fixtures, 'class', false));
 	}
 
 	/**
@@ -183,26 +170,11 @@ class FixtureController extends Controller
 			throw new Exception('No fixtures were found in namespace: ' . $this->namespace . '".');
 		}
 
-		$fixtures = $this->createFixtures($fixtures);
-
 		$transaction = Yii::$app->db->beginTransaction();
 
 		try {
 			$this->getDbConnection()->createCommand()->checkIntegrity(false)->execute();
-
-			/** @var \yii\test\Fixture $fixture */
-			foreach ($fixtures as $fixture) {
-				$fixture->beforeUnload();
-			}
-			$fixtures = array_reverse($fixtures);
-			foreach ($fixtures as $fixture) {
-				$fixture->unload();
-			}
-			foreach ($fixtures as $fixture) {
-				$fixture->afterUnload();
-				$this->stdout("    Fixture \"{$fixture::className()}\" was successfully unloaded. \n", Console::FG_GREEN);
-			}
-
+			$this->unloadFixtures($this->createFixtures($fixtures));
 			$this->getDbConnection()->createCommand()->checkIntegrity(true)->execute();
 			$transaction->commit();
 
@@ -211,6 +183,7 @@ class FixtureController extends Controller
 			$this->stdout("Exception occurred, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
 			throw $e;
 		}
+		$this->notifyUnloaded(ArrayHelper::getColumn($fixtures, 'class', false));
 	}
 
 	/**
@@ -233,7 +206,18 @@ class FixtureController extends Controller
 	 * Notifies user that fixtures were successfully loaded.
 	 * @param array $fixtures
 	 */
-	private function notifySuccess($fixtures)
+	private function notifyLoaded($fixtures)
+	{
+		$this->stdout("Fixtures were successfully loaded from namespace:\n", Console::FG_YELLOW);
+		$this->stdout("\t\"" . Yii::getAlias($this->namespace) . "\"\n\n", Console::FG_GREEN);
+		$this->outputList($fixtures);
+	}
+
+	/**
+	 * Notifies user that fixtures were successfully unloaded.
+	 * @param array $fixtures
+	 */
+	private function notifyUnloaded($fixtures)
 	{
 		$this->stdout("Fixtures were successfully loaded from namespace:\n", Console::FG_YELLOW);
 		$this->stdout("\t\"" . Yii::getAlias($this->namespace) . "\"\n\n", Console::FG_GREEN);
