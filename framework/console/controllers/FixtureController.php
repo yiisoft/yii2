@@ -75,7 +75,7 @@ class FixtureController extends Controller
 	 * that disables and enables integrity check, so your data can be safely loaded.
 	 */
 	public $globalFixtures = [
-		'yii\test\InitDbFixture',
+		'yii\test\InitDb',
 	];
 
 	/**
