@@ -95,13 +95,14 @@ php yii fixture/generate users
 //also a short version of this command ("generate" action is default)
 php yii fixture users
 
-//to generate fixtures for several tables, use "," as a separator, for example:
-php yii fixture users,profile,some_other_table
+//to generate several fixtures data files, use "," as a separator, for example:
+php yii fixture users,profile,some_other_name
 ```
 
 In the code above "users" is template name, after this command run, new file named same as template
 will be created under the fixtures path (by default ```@tests/unit/fixtures```) folder.
-You can generate fixtures for all templates by specifying keyword ```all```.
+You can generate fixtures for all templates by specifying keyword ```all```. You dont need to worry about if data file
+directory already created or not, if not - it will be created by these command.
 
 ```php
 php yii fixture/generate all
@@ -124,8 +125,8 @@ php yii fixture/generate users 5 --language='ru_RU'
 //read templates from the other path
 php yii fixture/generate all --templatePath='@app/path/to/my/custom/templates'
 
-//generate fixtures into other folders, but be sure that this folders exists or you will get notice about that.
-php yii fixture/generate all --fixturePath='@tests/unit/fixtures/subfolder1/subfolder2/subfolder3'
+//generate fixtures into other directory.
+php yii fixture/generate all --fixtureDataPath='@tests/acceptance/fixtures/data'
 ```
 
 You also can create your own data providers for custom tables fields, see [Faker]((https://github.com/fzaninotto/Faker)) library guide for more info;
