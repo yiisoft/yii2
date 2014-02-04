@@ -106,7 +106,7 @@ class FixtureController extends Controller
 
 		if (!$foundFixtures) {
 			throw new Exception("No files were found by name: \"" . implode(', ', $fixtures) . "\".\n"
-				. "Check that files with these name exists, under fixtures path: \n\"" . Yii::getAlias($this->getFixturePath()) . "\"."
+				. "Check that files with these name exists, under fixtures path: \n\"" . $this->getFixturePath() . "\"."
 			);
 		}
 
@@ -156,7 +156,7 @@ class FixtureController extends Controller
 
 		if (!$foundFixtures) {
 			throw new Exception("No files were found by name: \"" . implode(', ', $fixtures) . "\".\n"
-				. "Check that fixtures with these name exists, under fixtures path: \n\"" . Yii::getAlias($this->getFixturePath()) . "\"."
+				. "Check that fixtures with these name exists, under fixtures path: \n\"" . $this->getFixturePath() . "\"."
 			);
 		}
 
@@ -231,7 +231,7 @@ class FixtureController extends Controller
 	private function notifyNotFound($fixtures)
 	{
 		$this->stdout("Some fixtures were not found under path:\n", Console::BG_RED);
-		$this->stdout("\t" . Yii::getAlias($this->getFixturePath()) . "\n\n", Console::FG_GREEN);
+		$this->stdout("\t" . $this->getFixturePath() . "\n\n", Console::FG_GREEN);
 		$this->stdout("Check that they have correct namespace \"{$this->namespace}\" \n", Console::BG_RED);
 		$this->outputList($fixtures);
 		$this->stdout("\n");
@@ -308,7 +308,7 @@ class FixtureController extends Controller
 	 */
 	private function findFixtures(array $fixtures)
 	{
-		$fixturesPath = Yii::getAlias($this->getFixturePath());
+		$fixturesPath = $this->getFixturePath();
 
 		$filesToSearch = ['*Fixture.php'];
 		if (!$this->needToApplyAll($fixtures[0])) {
