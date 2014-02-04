@@ -12,8 +12,6 @@ use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Inflector;
 use yii\test\FixtureTrait;
 
 /**
@@ -68,11 +66,17 @@ class FixtureController extends Controller
 	 * @var string id of the database connection component of the application.
 	 */
 	public $db = 'db';
-
 	/**
 	 * @var string default namespace to search fixtures in
 	 */
 	public $namespace = 'tests\unit\fixtures';
+	/**
+	 * @var array global fixtures that should be applied when loading and unloading. By default it is set to `InitDbFixture`
+	 * that disables and enables integrity check, so your data can be safely loaded.
+	 */
+	public $globalFixtures = [
+		'yii\test\InitDbFixture',
+	];
 
 	/**
 	 * Returns the names of the global options for this command.
@@ -81,18 +85,19 @@ class FixtureController extends Controller
 	public function globalOptions()
 	{
 		return array_merge(parent::globalOptions(), [
-			'db', 'namespace'
+			'db', 'namespace','globalFixtures'
 		]);
 	}
 
 	/**
-	 * Apply given fixture to the table. You can load several fixtures specifying
-	 * their names separated with commas, like: tbl_user,tbl_profile. Be sure there is no
-	 * whitespace between tables names.
+	 * Loads given fixture. You can load several fixtures specifying
+	 * their names separated with commas, like: User,UserProfile,MyCustom. Be sure there is no
+	 * whitespace between names. Note that if you are loading fixtures to storage, for example: database or nosql,
+	 * storage will not be cleared, data will be appended to already existed.
 	 * @param array $fixtures
 	 * @throws \yii\console\Exception
 	 */
-	public function actionApply(array $fixtures, array $except = [])
+	public function actionLoad(array $fixtures, array $except = [])
 	{
 		$foundFixtures = $this->findFixtures($fixtures);
 
@@ -110,39 +115,38 @@ class FixtureController extends Controller
 			);
 		}
 
-		if (!$this->confirmApply($foundFixtures, $except)) {
+		if (!$this->confirmLoad($foundFixtures, $except)) {
 			return;
 		}
 
-		$fixtures = $this->getFixturesConfig(array_diff($foundFixtures, $except));
+		$filtered = array_diff($foundFixtures, $except);
+		$fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures ,$filtered));
 
 		if (!$fixtures) {
 			throw new Exception('No fixtures were found in namespace: "' . $this->namespace . '"' . '');
 		}
 
-		$transaction = Yii::$app->db->beginTransaction();
+		$transaction = $this->getDbConnection()->beginTransaction();
 
 		try {
-			$this->getDbConnection()->createCommand()->checkIntegrity(false)->execute();
 			$this->loadFixtures($this->createFixtures($fixtures));
-			$this->getDbConnection()->createCommand()->checkIntegrity(true)->execute();
 			$transaction->commit();
 		} catch (\Exception $e) {
 			$transaction->rollback();
 			$this->stdout("Exception occurred, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
 			throw $e;
 		}
-		$this->notifyLoaded(ArrayHelper::getColumn($fixtures, 'class', false));
+		$this->notifyLoaded($fixtures);
 	}
 
 	/**
 	 * Unloads given fixtures. You can clear environment and unload multiple fixtures by specifying
-	 * their names separated with commas, like: tbl_user,tbl_profile. Be sure there is no
+	 * their names separated with commas, like: User,UserProfile,MyCustom. Be sure there is no
 	 * whitespace between tables names.
 	 * @param array|string $fixtures
 	 * @param array|string $except
 	 */
-	public function actionClear(array $fixtures, array $except = [])
+	public function actionUnload(array $fixtures, array $except = [])
 	{
 		$foundFixtures = $this->findFixtures($fixtures);
 
@@ -160,22 +164,21 @@ class FixtureController extends Controller
 			);
 		}
 
-		if (!$this->confirmClear($foundFixtures, $except)) {
+		if (!$this->confirmUnload($foundFixtures, $except)) {
 			return;
 		}
 
-		$fixtures = $this->getFixturesConfig(array_diff($foundFixtures, $except));
+		$filtered = array_diff($foundFixtures, $except);
+		$fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures ,$filtered));
 
 		if (!$fixtures) {
 			throw new Exception('No fixtures were found in namespace: ' . $this->namespace . '".');
 		}
 
-		$transaction = Yii::$app->db->beginTransaction();
+		$transaction = $this->getDbConnection()->beginTransaction();
 
 		try {
-			$this->getDbConnection()->createCommand()->checkIntegrity(false)->execute();
 			$this->unloadFixtures($this->createFixtures($fixtures));
-			$this->getDbConnection()->createCommand()->checkIntegrity(true)->execute();
 			$transaction->commit();
 
 		} catch (\Exception $e) {
@@ -183,7 +186,7 @@ class FixtureController extends Controller
 			$this->stdout("Exception occurred, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
 			throw $e;
 		}
-		$this->notifyUnloaded(ArrayHelper::getColumn($fixtures, 'class', false));
+		$this->notifyUnloaded($fixtures);
 	}
 
 	/**
@@ -243,12 +246,15 @@ class FixtureController extends Controller
 	 * @param array $except
 	 * @return boolean
 	 */
-	private function confirmApply($fixtures, $except)
+	private function confirmLoad($fixtures, $except)
 	{
 		$this->stdout("Fixtures namespace is: \n", Console::FG_YELLOW);
 		$this->stdout("\t" . $this->namespace . "\n\n", Console::FG_GREEN);
 
-		$this->stdout("Fixtures below will be loaded:\n\n", Console::FG_YELLOW);
+		$this->stdout("Global fixtures will be loaded:\n\n", Console::FG_YELLOW);
+		$this->outputList($this->globalFixtures);
+
+		$this->stdout("\nFixtures below will be loaded:\n\n", Console::FG_YELLOW);
 		$this->outputList($fixtures);
 
 		if (count($except)) {
@@ -265,12 +271,15 @@ class FixtureController extends Controller
 	 * @param array $except
 	 * @return boolean
 	 */
-	private function confirmClear($fixtures, $except)
+	private function confirmUnload($fixtures, $except)
 	{
 		$this->stdout("Fixtures namespace is: \n", Console::FG_YELLOW);
 		$this->stdout("\t" . $this->namespace . "\n\n", Console::FG_GREEN);
 
-		$this->stdout("Fixtures below will be unloaded:\n\n", Console::FG_YELLOW);
+		$this->stdout("Global fixtures will be unloaded:\n\n", Console::FG_YELLOW);
+		$this->outputList($this->globalFixtures);
+
+		$this->stdout("\nFixtures below will be unloaded:\n\n", Console::FG_YELLOW);
 		$this->outputList($fixtures);
 
 		if (count($except)) {
@@ -339,12 +348,11 @@ class FixtureController extends Controller
 
 		foreach ($fixtures as $fixture) {
 
-			$fullClassName = $this->namespace . '\\' . $fixture . 'Fixture';
+			$isNamespaced = (strpos($fixture, '\\') !== false);
+			$fullClassName = $isNamespaced ? $fixture : $this->namespace . '\\' . $fixture . 'Fixture';
 
 			if (class_exists($fullClassName)) {
-				$config[Inflector::camel2id($fixture, '_')] = [
-					'class' => $fullClassName,
-				];
+				$config[] = $fullClassName;
 			}
 		}
 
