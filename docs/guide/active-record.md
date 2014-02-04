@@ -271,6 +271,12 @@ whose subtotal is greater than 100. To specify a different threshold value, use 
 $orders = $customer->getBigOrders(200)->all();
 ```
 
+> Note: A relation method returns an instance of [[yii\db\ActiveRelation]]. If you access the relation like
+an attribute, the return value will be the query result of the relation, which could be an instance of `ActiveRecord`,
+an array of that, or null, depending the multiplicity of the relation. For example, `$customer->getOrders()` returns
+an `ActiveRelation` instance, while `$customer->orders` returns an array of `Order` objects (or an empty array if
+the query results in nothing).
+
 
 Relations with Pivot Table
 --------------------------
@@ -543,16 +549,19 @@ Finally when calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an Act
 3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event
 
 
-Custom scopes
--------------
+Scopes
+------
 
-When [[yii\db\ActiveRecord::find()|find()]] or [[yii\db\ActiveRecord::findBySql()|findBySql()]] Active Record method is being called without parameters it returns an [[yii\db\ActiveRecord::yii\db\ActiveQuery|yii\db\ActiveQuery]]
-instance. This object holds all the parameters and conditions for a future query and also allows you to customize these
-using a set of methods that are called scopes. By default there is a good set of such methods some of which we've
-already used above: `where`, `orderBy`, `limit` etc.
+When [[yii\db\ActiveRecord::find()|find()]] or [[yii\db\ActiveRecord::findBySql()|findBySql()]], it returns an [[yii\db\ActiveRecord::yii\db\ActiveQuery|yii\db\ActiveQuery]]
+instance. You may call additional query methods, such as `where()`, `orderBy()`, to further specify the query conditions, etc.
 
-In many cases it is convenient to wrap extra conditions into custom scope methods. In order to do so you need two things.
-First is creating a custom query class for your model. For example, a `Comment` may have a `CommentQuery`:
+It is possible that you may want to call the same set of query methods in different places. If this is the case,
+you should consider defining the so-called *scopes*. A scope is essentially a method defined in a custom query class that
+calls a set of query methods to modify the query object. You can then use a scope like calling a normal query method.
+
+Two steps are required to define a scope. First create a custom query class for your model and define the needed scope
+methods in this class. For example, create a `CommentQuery` class for the `Comment` model and define the `active()`
+scope method like the following:
 
 ```php
 namespace app\models;
@@ -575,7 +584,8 @@ Important points are:
 2. A method should be `public` and should return `$this` in order to allow method chaining. It may accept parameters.
 3. Check `ActiveQuery` methods that are very useful for modifying query conditions.
 
-The second step is to use `CommentQuery` instead of regular `ActiveQuery` for `Comment` model:
+Second, override `ActiveRecord::createQuery()` to use the custom query class instead of the regular `ActiveQuery`.
+For the example above, you need to write the following code:
 
 ```
 namespace app\models;
@@ -620,6 +630,21 @@ $posts = Post::find()->with([
 	}
 ])->all();
 ```
+
+### Default Scope
+
+If you used Yii 1.1 before, you may know a concept called *default scope*. A default scope is a scope that
+applies to ALL queries. You can define a default scope easily by overriding `ActiveRecord::createQuery()`. For example,
+
+```php
+public static function createQuery()
+{
+	$query = new CommentQuery(['modelClass' => get_called_class()]);
+	$query->where(['deleted' => false]);
+	return $query;
+}
+```
+
 
 ### Making it IDE-friendly
 

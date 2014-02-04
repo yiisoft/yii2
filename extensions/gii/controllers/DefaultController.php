@@ -107,6 +107,9 @@ class DefaultController extends Controller
 		}
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function createUrl($route, $params = [])
 	{
 		if (!isset($params['id']) && $this->generator !== null) {
@@ -120,6 +123,13 @@ class DefaultController extends Controller
 		return parent::createUrl($route, $params);
 	}
 
+	/**
+	 * Creates URL for an aciton
+	 *
+	 * @param string $name name of the action
+	 * @param array $params the parameters (name-value pairs) to be included in the generated URL
+	 * @return string the created relative URL
+	 */
 	public function createActionUrl($name, $params = [])
 	{
 		foreach ($this->module->generators as $id => $generator) {

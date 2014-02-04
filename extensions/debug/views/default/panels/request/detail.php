@@ -33,4 +33,3 @@ echo Tabs::widget([
 		],
 	],
 ]);
-?>

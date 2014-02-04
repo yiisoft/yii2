@@ -275,6 +275,20 @@ class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	public static function populateRecord($record, $row)
+	{
+		$columns = static::getTableSchema()->columns;
+		foreach ($row as $name => $value) {
+			if (isset($columns[$name])) {
+				$row[$name] = $columns[$name]->typecast($value);
+			}
+		}
+		parent::populateRecord($record, $row);
+	}
+
+	/**
 	 * Inserts a row into the associated database table using the attribute values of this record.
 	 *
 	 * This method performs the following steps in order:

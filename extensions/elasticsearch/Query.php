@@ -165,8 +165,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public function one($db = null)
 	{
-		$options['size'] = 1;
-		$result = $this->createCommand($db)->search($options);
+		$result = $this->createCommand($db)->search(['size' => 1]);
 		if (empty($result['hits']['hits'])) {
 			return false;
 		}

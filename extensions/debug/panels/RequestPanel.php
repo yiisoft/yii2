@@ -19,24 +19,37 @@ use yii\debug\Panel;
  */
 class RequestPanel extends Panel
 {
+	/**
+	 * @inheritdoc
+	 */
 	public function getName()
 	{
 		return 'Request';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getSummary()
 	{
 		return Yii::$app->view->render('panels/request/summary', ['panel' => $this]);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getDetail()
 	{
 		return Yii::$app->view->render('panels/request/detail', ['panel' => $this]);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function save()
 	{
 		$headers = Yii::$app->getRequest()->getHeaders();
+		$requestHeaders = [];
 		foreach ($headers as $name => $value) {
 			if (is_array($value) && count($value) == 1) {
 				$requestHeaders[$name] = current($value);
@@ -95,5 +108,4 @@ class RequestPanel extends Panel
 			'SESSION' => empty($_SESSION) ? [] : $_SESSION,
 		];
 	}
-
 }

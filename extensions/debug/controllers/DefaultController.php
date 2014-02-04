@@ -13,11 +13,16 @@ use yii\web\NotFoundHttpException;
 use yii\debug\models\search\Debug;
 
 /**
+ * Debugger controller
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class DefaultController extends Controller
 {
+	/**
+	 * @inheritdoc
+	 */
 	public $layout = 'main';
 	/**
 	 * @var \yii\debug\Module
@@ -28,6 +33,9 @@ class DefaultController extends Controller
 	 */
 	public $summary;
 
+	/**
+	 * @inheritdoc
+	 */
 	public function actions()
 	{
 		$actions = [];

@@ -73,6 +73,11 @@ class Panel extends Component
 		return null;
 	}
 
+	/**
+	 * Loads data into the panel
+	 *
+	 * @param mixed $data
+	 */
 	public function load($data)
 	{
 		$this->data = $data;

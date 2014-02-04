@@ -112,7 +112,8 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		} else {
 			/** @var ActiveRecord $class */
 			$class = $this->modelClass;
-			$model = $class::create($row);
+			$model = $class::instantiate($row);
+			$class::populateRecord($model, $row);
 		}
 		if (!empty($this->with)) {
 			$models = [$model];

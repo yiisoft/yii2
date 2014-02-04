@@ -123,6 +123,11 @@ class CodeFile extends Object
 		}
 	}
 
+	/**
+	 * Returns preview or false if it cannot be rendered
+	 *
+	 * @return boolean|string
+	 */
 	public function preview()
 	{
 		if (($pos = strrpos($this->path, '.')) !== false) {
@@ -140,6 +145,11 @@ class CodeFile extends Object
 		}
 	}
 
+	/**
+	 * Returns diff or false if it cannot be calculated
+	 *
+	 * @return boolean|string
+	 */
 	public function diff()
 	{
 		$type = strtolower($this->getType());
@@ -152,6 +162,13 @@ class CodeFile extends Object
 		}
 	}
 
+	/**
+	 * Renders diff between two sets of lines
+	 *
+	 * @param mixed $lines1
+	 * @param mixed $lines2
+	 * @return string
+	 */
 	private function renderDiff($lines1, $lines2)
 	{
 		if (!is_array($lines1)) {

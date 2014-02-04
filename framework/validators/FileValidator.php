@@ -225,6 +225,14 @@ class FileValidator extends Validator
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	public function isEmpty($value, $trim = false)
+	{
+		return !$value instanceof UploadedFile || $value->error == UPLOAD_ERR_NO_FILE;
+	}
+
+	/**
 	 * Converts php.ini style size to bytes
 	 *
 	 * @param string $sizeStr $sizeStr

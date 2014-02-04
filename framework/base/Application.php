@@ -515,7 +515,7 @@ abstract class Application extends Module
 				$handler->handle($exception);
 			} else {
 				echo $this->renderException($exception);
-				if (PHP_SAPI === 'cli') {
+				if (PHP_SAPI === 'cli' && !YII_ENV_TEST) {
 					exit(1);
 				}
 			}

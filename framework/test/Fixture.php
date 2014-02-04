@@ -67,5 +67,19 @@ class Fixture extends Component
 	public function unload()
 	{
 	}
+
+	/**
+	 * This method is called BEFORE any fixture data is unloaded for the current test.
+	 */
+	public function beforeUnload()
+	{
+	}
+
+	/**
+	 * This method is called AFTER all fixture data have been unloaded for the current test.
+	 */
+	public function afterUnload()
+	{
+	}
 }
 

@@ -223,7 +223,7 @@ This method also determines which attributes are safe and which are not. In part
 given a scenario, if an attribute appears in the corresponding attribute list in [[yii\base\Model::scenarios()|scenarios()]]
 and the name is not prefixed with `!`, it is considered *safe*.
 
-Because of the above change, Yii 2.0 no longer has "safe" and "unsafe" validators.
+Because of the above change, Yii 2.0 no longer has "unsafe" validator.
 
 If your model only has one scenario (very common), you do not have to overwrite [[yii\base\Model::scenarios()|scenarios()]],
 and everything will still work like the 1.1 way.

@@ -33,17 +33,26 @@ class Generator extends \yii\gii\Generator
 	public $indexWidgetType = 'grid';
 	public $searchModelClass;
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getName()
 	{
 		return 'CRUD Generator';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getDescription()
 	{
 		return 'This generator generates a controller and views that implement CRUD (Create, Read, Update, Delete)
 			operations for the specified data model.';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function rules()
 	{
 		return array_merge(parent::rules(), [
@@ -61,6 +70,9 @@ class Generator extends \yii\gii\Generator
 		]);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function attributeLabels()
 	{
 		return array_merge(parent::attributeLabels(), [
@@ -94,6 +106,9 @@ class Generator extends \yii\gii\Generator
 		];
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function requiredTemplates()
 	{
 		return ['controller.php'];
@@ -107,6 +122,9 @@ class Generator extends \yii\gii\Generator
 		return ['baseControllerClass', 'moduleID', 'indexWidgetType'];
 	}
 
+	/**
+	 * Checks if model class is valid
+	 */
 	public function validateModelClass()
 	{
 		/** @var ActiveRecord $class */
@@ -117,6 +135,9 @@ class Generator extends \yii\gii\Generator
 		}
 	}
 
+	/**
+	 * Checks if model ID is valid
+	 */
 	public function validateModuleID()
 	{
 		if (!empty($this->moduleID)) {
@@ -184,6 +205,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
+	 * Generates code for active field
 	 * @param string $attribute
 	 * @return string
 	 */
@@ -217,6 +239,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
+	 * Generates code for active search field
 	 * @param string $attribute
 	 * @return string
 	 */
@@ -235,6 +258,7 @@ class Generator extends \yii\gii\Generator
 	}
 
 	/**
+	 * Generates column format
 	 * @param \yii\db\ColumnSchema $column
 	 * @return string
 	 */
@@ -298,6 +322,9 @@ class Generator extends \yii\gii\Generator
 		return $rules;
 	}
 
+	/**
+	 * @return array searchable attributes
+	 */
 	public function getSearchAttributes()
 	{
 		return $this->getColumnNames();
@@ -309,6 +336,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function generateSearchLabels()
 	{
+		/** @var \yii\base\Model $model */
 		$model = new $this->modelClass();
 		$attributeLabels = $model->attributeLabels();
 		$labels = [];
@@ -330,11 +358,16 @@ class Generator extends \yii\gii\Generator
 		return $labels;
 	}
 
+	/**
+	 * Generates search conditions
+	 * @return array
+	 */
 	public function generateSearchConditions()
 	{
 		$columns = [];
 		if (($table = $this->getTableSchema()) === false) {
 			$class = $this->modelClass;
+			/** @var \yii\base\Model $model */
 			$model = new $class();
 			foreach ($model->attributes() as $attribute) {
 				$columns[$attribute] = 'unknown';
@@ -369,6 +402,10 @@ class Generator extends \yii\gii\Generator
 		return $conditions;
 	}
 
+	/**
+	 * Generates URL parameters
+	 * @return string
+	 */
 	public function generateUrlParams()
 	{
 		/** @var ActiveRecord $class */
@@ -385,6 +422,10 @@ class Generator extends \yii\gii\Generator
 		}
 	}
 
+	/**
+	 * Generates action parameters
+	 * @return string
+	 */
 	public function generateActionParams()
 	{
 		/** @var ActiveRecord $class */
@@ -397,6 +438,10 @@ class Generator extends \yii\gii\Generator
 		}
 	}
 
+	/**
+	 * Generates parameter tags for phpdoc
+	 * @return array parameter tags for phpdoc
+	 */
 	public function generateActionParamComments()
 	{
 		/** @var ActiveRecord $class */
@@ -420,6 +465,10 @@ class Generator extends \yii\gii\Generator
 		}
 	}
 
+	/**
+	 * Returns table schema for current model class or false if it is not an active record
+	 * @return boolean|\yii\db\TableSchema
+	 */
 	public function getTableSchema()
 	{
 		/** @var ActiveRecord $class */
@@ -431,6 +480,9 @@ class Generator extends \yii\gii\Generator
 		}
 	}
 
+	/**
+	 * @return array model column names
+	 */
 	public function getColumnNames()
 	{
 		/** @var ActiveRecord $class */
@@ -438,6 +490,7 @@ class Generator extends \yii\gii\Generator
 		if (is_subclass_of($class, 'yii\db\ActiveRecord')) {
 			return $class::getTableSchema()->getColumnNames();
 		} else {
+			/** @var \yii\base\Model $model */
 			$model = new $class();
 			return $model->attributes();
 		}
