@@ -211,7 +211,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function regenerateID($deleteOldSession = false)
 	{
-		session_regenerate_id($deleteOldSession);
+		// add @ to inhibit possible warning due to race condition
+		// https://github.com/yiisoft/yii2/pull/1812
+		@session_regenerate_id($deleteOldSession);
 	}
 
 	/**

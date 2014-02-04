@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Bug #1710: OpenId auth client does not request required attributes correctly (klimov-paul)
 - Bug #1798: Fixed label attributes for array fields (zhuravljov)
 - Bug #1800: Better check for `$_SERVER['HTTPS']` in `yii\web\Request::getIsSecureConnection()` (ginus, samdark)
+- Bug #1812: Hide potential warning message due to race condition occurring to `Session::regenerateID()` call (qiangxue)
 - Bug #1827: Debugger toolbar is loaded twice if an action is calling `run()` to execute another action (qiangxue)
 - Bug #1868: Added ability to exclude tables from FixtureController apply/clear actions. (Ragazzo)
 - Bug #1869: Fixed tables clearing. `TRUNCATE` changed to `DELETE` to avoid postgresql tables checks (and truncating all tables) (Ragazzo)
