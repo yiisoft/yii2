@@ -69,12 +69,11 @@ class MemCache extends Cache
 	 * Defaults to false.
 	 */
 	public $useMemcached = false;
-    /**
-     * @var bool whether to use memcache value compression
-     * Defaults to false.
-     */
-    public $useCompression = false;
-    /**
+	/**
+	 * @var boolean whether to use memcache value compression
+	 */
+	public $useCompression = false;
+	/**
 	 * @var \Memcache|\Memcached the Memcache instance
 	 */
 	private $_cache = null;
@@ -203,7 +202,7 @@ class MemCache extends Cache
 			$expire = 0;
 		}
 
-        $flag = $this->useCompression ? MEMCACHE_COMPRESSED : 0;
+		$flag = $this->useCompression ? MEMCACHE_COMPRESSED : 0;
 
 		return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, $flag, $expire);
 	}
