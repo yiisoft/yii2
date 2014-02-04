@@ -202,9 +202,13 @@ class MemCache extends Cache
 			$expire = 0;
 		}
 
-		$flag = $this->useCompression ? MEMCACHE_COMPRESSED : 0;
-
-		return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, $flag, $expire);
+		if ($this->useMemcached) {
+			$this->_cache->setOption(Memcached::OPT_COMPRESSION, $this->useCompression);
+			return $this->_cache->set($key, $value, $expire);
+		} else {
+			$flag = $this->useCompression ? MEMCACHE_COMPRESSED : 0;
+			$this->_cache->set($key, $value, $flag, $expire);
+		}
 	}
 
 	/**
