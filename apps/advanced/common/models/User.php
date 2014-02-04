@@ -27,6 +27,18 @@ class User extends ActiveRecord implements IdentityInterface
 
 	const ROLE_USER = 10;
 
+	public static function create($attributes)
+	{
+		/** @var User $user */
+		$user = new static();
+		$user->setAttributes($attributes);
+		if ($user->save()) {
+			return $user;
+		} else {
+			return null;
+		}
+	}
+
 	/**
 	 * @inheritdoc
 	 */
