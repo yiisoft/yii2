@@ -62,23 +62,23 @@ Below are correct formats of this command:
 // load `users` fixture
 yii fixture/load User
 
-// same as above, because default action of "fixture" command is "apply"
+// same as above, because default action of "fixture" command is "load"
 yii fixture User
 
 // load several fixtures. Note that there should not be any whitespace between ",", it should be one string.
 yii fixture User,UserProfile
 
 // load all fixtures
-yii fixture/apply all
+yii fixture/load all
 
 // same as above
 yii fixture all
 
 // load fixtures, but for other database connection.
-yii fixtures User --db='customDbConnectionId'
+yii fixture User --db='customDbConnectionId'
 
 // load fixtures, but search them in different namespace. By default namespace is: tests\unit\fixtures.
-yii fixtures User --namespace='alias\my\custom\namespace'
+yii fixture User --namespace='alias\my\custom\namespace'
 
 // load global fixture `some\name\space\CustomFixture` before other fixtures will be loaded.
 // By default this option is set to `InitDbFixture` to disable/enable integrity checks. You can specify several
