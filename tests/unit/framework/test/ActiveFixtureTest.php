@@ -25,12 +25,12 @@ class MyDbTestCase
 
 	public function setUp()
 	{
+		$this->unloadFixtures();
 		$this->loadFixtures();
 	}
 
 	public function tearDown()
 	{
-		$this->unloadFixtures();
 	}
 
 	public function fixtures()

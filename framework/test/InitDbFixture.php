@@ -73,6 +73,26 @@ class InitDbFixture extends DbFixture
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	public function beforeUnload()
+	{
+		foreach ($this->schemas as $schema) {
+			$this->checkIntegrity(false, $schema);
+		}
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function afterUnload()
+	{
+		foreach ($this->schemas as $schema) {
+			$this->checkIntegrity(true, $schema);
+		}
+	}
+
+	/**
 	 * Toggles the DB integrity check.
 	 * @param boolean $check whether to turn on or off the integrity check.
 	 */
