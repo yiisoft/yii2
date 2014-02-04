@@ -91,6 +91,9 @@ to a console command. The method should return a list of public property names o
 When running a command, you may specify the value of an option using the syntax `--OptionName=OptionValue`.
 This will assign `OptionValue` to the `OptionName` property of the controller class.
 
+If the default value of an option is of array type, then if you set this option while running the command,
+the option value will be converted into an array by splitting the input string by commas.
+
 ### Arguments
 
 Besides options, a command can also receive arguments. The arguments will be passed as the parameters to the action

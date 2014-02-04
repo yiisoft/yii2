@@ -94,7 +94,8 @@ class Controller extends \yii\base\Controller
 			$options = $this->globalOptions();
 			foreach ($params as $name => $value) {
 				if (in_array($name, $options, true)) {
-					$this->$name = $value;
+					$default = $this->$name;
+					$this->$name = is_array($default) ? preg_split('/\s*,\s*/', $value) : $value;
 				} elseif (is_int($name)) {
 					$args[] = $value;
 				} else {
