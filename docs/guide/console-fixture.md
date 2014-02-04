@@ -79,6 +79,11 @@ yii fixtures User --db='customDbConnectionId'
 
 // apply fixtures, but search them in different namespace. By default namespace is: tests\unit\fixtures.
 yii fixtures User --namespace='alias\my\custom\namespace'
+
+// apply global fixture `some\name\space\CustomFixture` before other fixtures will be loaded.
+// By default this option is set to `InitDbFixture` to disable/enable integrity checks. You can specify several
+// global fixtures separated by comma.
+yii fixtures User --globalFixtures='some\name\space\Custom'
 ```
 
 Unloading fixtures
@@ -97,7 +102,7 @@ yii fixture/clear User,UserProfile
 yii fixture/clear all
 ```
 
-Same command options like: `db`, `namespace` also can be applied to this command.
+Same command options like: `db`, `namespace`, `globalFixtures` also can be applied to this command.
 
 Configure Command Globally
 --------------------------
@@ -111,6 +116,10 @@ different migration path as follows:
         'class' => 'yii\console\controllers\FixtureController',
 		'db' => 'customDbConnectionId',
 		'namespace' => 'myalias\some\custom\namespace',
+		'globalFixtures' => [
+			'some\name\space\Foo',
+			'other\name\space\Bar'
+		],
     ],
 ]
 ```
