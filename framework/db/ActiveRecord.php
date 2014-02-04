@@ -277,23 +277,15 @@ class ActiveRecord extends BaseActiveRecord
 	/**
 	 * @inheritdoc
 	 */
-	public static function create($row)
+	public static function populateRecord($record, $row)
 	{
-		$record = static::instantiate($row);
-		$attributes = array_flip($record->attributes());
 		$columns = static::getTableSchema()->columns;
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
-				$value = $columns[$name]->typecast($value);
-			}
-			if (isset($attributes[$name])) {
-				$record->setAttribute($name, $value);
-			} else {
-				$record->$name = $value;
+				$row[$name] = $columns[$name]->typecast($value);
 			}
 		}
-		$record->setOldAttributes($record->getAttributes());
-		return $record;
+		parent::populateRecord($record, $row);
 	}
 
 	/**

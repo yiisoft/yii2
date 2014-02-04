@@ -9,8 +9,8 @@ namespace yii\faker;
 
 use Yii;
 use yii\console\Exception;
-use yii\helpers\FileHelper;
 use yii\helpers\Console;
+use yii\helpers\FileHelper;
 
 /**
  * This command manage fixtures creations based on given template.
@@ -69,7 +69,7 @@ use yii\helpers\Console;
  * ~~~
  *
  * In the code above "users" is template name, after this command run, new file named same as template
- * will be created under the `$fixturePath` folder.
+ * will be created under the `$fixtureDataPath` folder.
  * You can generate fixtures for all templates by specifying keyword "all"
  *
  * ~~~
@@ -77,7 +77,7 @@ use yii\helpers\Console;
  * ~~~
  *
  * This command will generate fixtures for all template files that are stored under $templatePath and
- * store fixtures under $fixturePath with file names same as templates names.
+ * store fixtures under `$fixtureDataPath` with file names same as templates names.
  *
  * You can specify how many fixtures per file you need by the second parameter. In the code below we generate
  * all fixtures and in each file there will be 3 rows (fixtures).
@@ -95,8 +95,8 @@ use yii\helpers\Console;
  * //read templates from the other path
  * yii fixture/generate all --templatePath=@app/path/to/my/custom/templates
  *
- * //generate fixtures into other folders, but be sure that this folders exists or you will get notice about that.
- * yii fixture/generate all --fixturePath=@tests/unit/fixtures/subfolder1/subfolder2/subfolder3
+ * //generate fixtures into other folders
+ * yii fixture/generate all --fixtureDataPath=@tests/unit/fixtures/subfolder1/subfolder2/subfolder3
  * ~~~
  *
  * You also can create your own data providers for custom tables fields, see Faker library guide for more info (https://github.com/fzaninotto/Faker);
@@ -148,24 +148,24 @@ class FixtureController extends \yii\console\controllers\FixtureController
 	 */
 	public $defaultAction = 'generate';
 	/**
-	 * Alias to the template path, where all tables templates are stored.
-	 * @var string
+	 * @var string Alias to the template path, where all tables templates are stored.
 	 */
 	public $templatePath = '@tests/unit/templates/fixtures';
 	/**
-	 * Language to use when generating fixtures data.
-	 * @var string
+	 * @var string Alias to the fixture data path, where data files should be written.
+	 */
+	public $fixtureDataPath = '@tests/unit/fixtures/data';
+	/**
+	 * @var string Language to use when generating fixtures data.
 	 */
 	public $language;
 	/**
-	 * Additional data providers that can be created by user and will be added to the Faker generator.
+	 * @var array Additional data providers that can be created by user and will be added to the Faker generator.
 	 * More info in [Faker](https://github.com/fzaninotto/Faker.) library docs.
-	 * @var array
 	 */
 	public $providers = [];
 	/**
-	 * Faker generator instance
-	 * @var \Faker\Generator
+	 * @var \Faker\Generator Faker generator instance
 	 */
 	private $_generator;
 
@@ -177,7 +177,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
 	public function globalOptions()
 	{
 		return array_merge(parent::globalOptions(), [
-			'templatePath', 'language'
+			'templatePath', 'language', 'fixtureDataPath'
 		]);
 	}
 
@@ -201,7 +201,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
 	public function actionGenerate(array $file, $times = 2)
 	{
 		$templatePath = Yii::getAlias($this->templatePath);
-		$fixturePath = Yii::getAlias($this->fixturePath);
+		$fixtureDataPath = Yii::getAlias($this->fixtureDataPath);
 
 		if ($this->needToGenerateAll($file[0])) {
 			$files = FileHelper::findFiles($templatePath, ['only' => ['*.php']]);
@@ -233,9 +233,10 @@ class FixtureController extends \yii\console\controllers\FixtureController
 			}
 
 			$content = $this->exportFixtures($fixtures);
-			$filePath = realpath($fixturePath . '/' . $fixtureFileName);
-			file_put_contents($filePath, $content);
-			$this->stdout("Fixture file was generated under: $filePath\n", Console::FG_GREEN);
+			FileHelper::createDirectory($fixtureDataPath);
+			file_put_contents($fixtureDataPath . '/'. $fixtureFileName, $content);
+
+			$this->stdout("Fixture file was generated under: $fixtureDataPath\n", Console::FG_GREEN);
 		}
 	}
 
@@ -357,9 +358,9 @@ class FixtureController extends \yii\console\controllers\FixtureController
 	public function confirmGeneration($files)
 	{
 		$this->stdout("Fixtures will be generated under the path: \n", Console::FG_YELLOW);
-		$this->stdout(realpath(Yii::getAlias($this->fixturePath)) . "\n\n", Console::FG_GREEN);
+		$this->stdout("\t" . Yii::getAlias($this->fixtureDataPath) . "\n\n", Console::FG_GREEN);
 		$this->stdout("Templates will be taken from path: \n", Console::FG_YELLOW);
-		$this->stdout(realpath(Yii::getAlias($this->templatePath)) . "\n\n", Console::FG_GREEN);
+		$this->stdout("\t" . Yii::getAlias($this->templatePath) . "\n\n", Console::FG_GREEN);
 
 		foreach ($files as $index => $fileName) {
 			$this->stdout("    " . ($index + 1) . ". " . basename($fileName) . "\n", Console::FG_GREEN);

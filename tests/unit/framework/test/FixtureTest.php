@@ -78,7 +78,7 @@ class MyTestCase
 		return $this->getFixture($name);
 	}
 
-	protected function fixtures()
+	public function fixtures()
 	{
 		switch ($this->scenario) {
 			case 0: return [];

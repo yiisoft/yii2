@@ -128,11 +128,14 @@ trait ActiveQueryTrait
 			$class = $this->modelClass;
 			if ($this->indexBy === null) {
 				foreach ($rows as $row) {
-					$models[] = $class::create($row);
+					$model = $class::instantiate($row);
+					$class::populateRecord($model, $row);
+					$models[] = $model;
 				}
 			} else {
 				foreach ($rows as $row) {
-					$model = $class::create($row);
+					$model = $class::instantiate($row);
+					$class::populateRecord($model, $row);
 					if (is_string($this->indexBy)) {
 						$key = $model->{$this->indexBy};
 					} else {
