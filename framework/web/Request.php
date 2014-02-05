@@ -210,6 +210,8 @@ class Request extends \yii\base\Request
 	{
 		if (isset($_POST[$this->methodVar])) {
 			return strtoupper($_POST[$this->methodVar]);
+		} elseif (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
+			return strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
 		} else {
 			return isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
 		}
