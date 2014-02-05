@@ -952,7 +952,8 @@ class Request extends \yii\base\Request
 		$n = preg_match_all('/\s*([\w\/\-\*]+)\s*(?:;\s*q\s*=\s*([\d\.]+))?[^,]*/', $header, $matches, PREG_SET_ORDER);
 		for ($i = 0; $i < $n; ++$i) {
 			if (!empty($matches[$i][1])) {
-				$accepts[] = [$matches[$i][1], isset($matches[$i][2]) ? (float)$matches[$i][2] : 1, $i];
+				$accepts[] = [$matches[$i][1], isset($matches[$i][2]) ? (float)$matches[$i][2] : 1,
+					$i];
 			}
 		}
 		usort($accepts, function ($a, $b) {
