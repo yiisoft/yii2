@@ -33,7 +33,7 @@ the installed application. You only need to do these once for all.
    ```
    php /path/to/yii-application/init
    ```
-2. Create a new database and adjust the `components.db` configuration in `common/config/params-local.php` accordingly.
+2. Create a new database and adjust the `components.db` configuration in `common/config/main-local.php` accordingly.
 3. Apply migrations with console command `yii migrate`.
 4. Set document roots of your Web server:
 
