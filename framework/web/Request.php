@@ -79,7 +79,6 @@ use yii\helpers\StringHelper;
  */
 class Request extends \yii\base\Request
 {
-
 	/**
 	 * The name of the HTTP header for sending CSRF token.
 	 */
@@ -88,6 +87,7 @@ class Request extends \yii\base\Request
 	 * The length of the CSRF token mask.
 	 */
 	const CSRF_MASK_LENGTH = 8;
+
 
 	/**
 	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
@@ -146,7 +146,9 @@ class Request extends \yii\base\Request
 	 * @see getBodyParams()
 	 */
 	public $parsers = [];
+
 	private $_cookies;
+
 	/**
 	 * @var array the headers in this collection (indexed by the header names)
 	 */
@@ -294,7 +296,7 @@ class Request extends \yii\base\Request
 	public function getIsFlash()
 	{
 		return isset($_SERVER['HTTP_USER_AGENT']) &&
-			(stripos($_SERVER['HTTP_USER_AGENT'], 'Shockwave') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Flash') !== false);
+		(stripos($_SERVER['HTTP_USER_AGENT'], 'Shockwave') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Flash') !== false);
 	}
 
 	private $_rawBody;
@@ -748,7 +750,8 @@ class Request extends \yii\base\Request
 	 */
 	public function getIsSecureConnection()
 	{
-		return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1) || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
+		return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
+		|| isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
 	}
 
 	/**
@@ -952,8 +955,7 @@ class Request extends \yii\base\Request
 		$n = preg_match_all('/\s*([\w\/\-\*]+)\s*(?:;\s*q\s*=\s*([\d\.]+))?[^,]*/', $header, $matches, PREG_SET_ORDER);
 		for ($i = 0; $i < $n; ++$i) {
 			if (!empty($matches[$i][1])) {
-				$accepts[] = [$matches[$i][1], isset($matches[$i][2]) ? (float)$matches[$i][2] : 1,
-					$i];
+				$accepts[] = [$matches[$i][1], isset($matches[$i][2]) ? (float)$matches[$i][2] : 1, $i];
 			}
 		}
 		usort($accepts, function ($a, $b) {
@@ -1194,7 +1196,8 @@ class Request extends \yii\base\Request
 		}
 		$trueToken = $this->getCookies()->getValue($this->csrfVar);
 		$token = $this->getBodyParam($this->csrfVar);
-		return $this->validateCsrfTokenInternal($token, $trueToken) || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
+		return $this->validateCsrfTokenInternal($token, $trueToken)
+		|| $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
 	}
 
 	private function validateCsrfTokenInternal($token, $trueToken)
