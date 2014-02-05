@@ -106,7 +106,7 @@
 			"yii\\elasticsearch\\": "extensions/elasticsearch/",
 			"yii\\faker\\": "extensions/faker/",
 			"yii\\gii\\": "extensions/gii/",
-			"yii\\imagine\\": "extensions/imagine/",
+			"yii\\imagine\\" : "extensions/imagine/",
 			"yii\\jui\\": "extensions/jui/",
 			"yii\\mongodb\\": "extensions/mongodb/",
 			"yii\\redis\\": "extensions/redis/",
