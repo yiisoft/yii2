@@ -32,6 +32,8 @@ class User extends ActiveRecord implements IdentityInterface
 		/** @var User $user */
 		$user = new static();
 		$user->setAttributes($attributes);
+		$user->setPassword($attributes['password']);
+		$user->generateAuthKey();
 		if ($user->save()) {
 			return $user;
 		} else {
@@ -139,6 +141,14 @@ class User extends ActiveRecord implements IdentityInterface
 	public function setPassword($password)
 	{
 		$this->password_hash = Security::generatePasswordHash($password);
+	}
+
+	/**
+	 * Generates "remember me" authentication key
+	 */
+	public function generateAuthKey()
+	{
+		$this->auth_key = Security::generateRandomKey();
 	}
 
 	/**
