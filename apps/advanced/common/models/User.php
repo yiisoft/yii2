@@ -82,7 +82,7 @@ class User extends ActiveRecord implements IdentityInterface
 	 */
 	public static function findByPasswordResetToken($token)
 	{
-		$expire = \Yii::$app->getParam('user.passwordResetTokenExpire', 3600);
+		$expire = \Yii::$app->params['user.passwordResetTokenExpire'];
 		$parts = explode('_', $token);
 		$timestamp = (int)end($parts);
 		if ($timestamp + $expire < time()) {
