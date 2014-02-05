@@ -10,6 +10,7 @@ Yii Framework 2 gii extension Change Log
 - Enh #1624: generate rules for unique indexes (lucianobaraglia)
 - Enh #1818: Do not display checkbox column if all rows are empty (johonunu)
 - Enh #1897: diff markup is now copy paste friendly (samdark)
+- Enh #2327: better visual representation of changed files, added header and refresh button to diff modal (thiagotalma)
 
 2.0.0 alpha, December 1, 2013
 -----------------------------
