@@ -643,6 +643,18 @@ class Module extends Component
 	}
 
 	/**
+	 * Returns parameter with a given name.
+	 *
+	 * @param string $name the parameter name
+	 * @param mixed $defaultValue the default parameter value if the parameter does not exist
+	 * @return mixed
+	 */
+	public function getParam($name, $defaultValue = null)
+	{
+		return isset($this->params[$name]) ? $this->params[$name] : $defaultValue;
+	}
+
+	/**
 	 * This method is invoked right before an action of this module is to be executed (after all possible filters.)
 	 * You may override this method to do last-minute preparation for the action.
 	 * Make sure you call the parent implementation so that the relevant event is triggered.
