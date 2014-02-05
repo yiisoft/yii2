@@ -35,9 +35,10 @@ yii.gii = (function ($) {
 	};
 
 	var initPreviewDiffLinks = function () {
-		$('.preview-code,.diff-code').on('click', function () {
+		$('.preview-code, .diff-code, .modal-refresh').on('click', function () {
 			var $modal = $('#preview-modal');
 			var $link = $(this);
+			$modal.find('.modal-refresh').attr('href', $link.prop('href'));
 			$modal.find('.modal-title').text($link.data('title'));
 			$modal.find('.modal-body').html('Loading ...');
 			$modal.modal('show');
