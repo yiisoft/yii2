@@ -450,7 +450,7 @@ class View extends \yii\base\View
 		}
 
 		$request = Yii::$app->getRequest();
-		if ($request instanceof \yii\web\Request && $request->enableCsrfValidation) {
+		if ($request instanceof \yii\web\Request && $request->enableCsrfValidation && !$request->getIsAjax()) {
 			$lines[] = Html::tag('meta', '', ['name' => 'csrf-var', 'content' => $request->csrfVar]);
 			$lines[] = Html::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getCsrfToken()]);
 		}
