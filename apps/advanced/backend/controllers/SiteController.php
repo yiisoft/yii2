@@ -4,7 +4,7 @@ namespace backend\controllers;
 use Yii;
 use yii\web\AccessControl;
 use yii\web\Controller;
-use common\models\forms\LoginForm;
+use common\models\LoginForm;
 
 /**
  * Site controller
