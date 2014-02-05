@@ -5,6 +5,7 @@ Yii Framework 2 elasticsearch extension Change Log
 ----------------------------
 
 - Enh #1382: Added a debug toolbar panel for elasticsearch (cebe)
+- Bug #2324: Fixed QueryBuilder queries (mintao)
 
 2.0.0 alpha, December 1, 2013
 -----------------------------
