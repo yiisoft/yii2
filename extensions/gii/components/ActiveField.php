@@ -66,14 +66,7 @@ class ActiveField extends \yii\widgets\ActiveField
 		foreach($data as &$item) {
 			$item = array('word' => $item);
 		}
-		$this->form->getView()->registerJs("
-var datum = new Bloodhound({
-    datumTokenizer: function(d){return Bloodhound.tokenizers.whitespace(d.word);},
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: " . Json::encode($data) . "
-});
-datum.initialize();
-jQuery('.typeahead-{$counter}').typeahead(null,{displayKey: 'word', source: datum.ttAdapter()});");
+		$this->form->getView()->registerJs("yii.gii.autocomplete($counter, " . Json::encode($data) . ");");
 		return $this;
 	}
 }
