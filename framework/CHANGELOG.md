@@ -31,6 +31,7 @@ Yii Framework 2 Change Log
 - Bug #1868: Added ability to exclude tables from FixtureController apply/clear actions. (Ragazzo)
 - Bug #1869: Fixed tables clearing. `TRUNCATE` changed to `DELETE` to avoid postgresql tables checks (and truncating all tables) (Ragazzo)
 - Bug #1870: Validation errors weren't properly translated when using clientside validation (samdark)
+- Bug #1904: Fixed autocomplete to work with underscore inputs "_" (tonydspaniard)
 - Bug #1930: Fixed domain based URL matching for website root (samdark)
 - Bug #1937: Fixed wrong behavior or advanced app's `init --env` when called without parameter actually specified (samdark)
 - Bug #1959: `Html::activeCheckbox` wasn't respecting custom values for checked/unchecked state (klevron, samdark)
