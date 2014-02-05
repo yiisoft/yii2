@@ -111,7 +111,7 @@ abstract class Schema extends Object
 				return $this->_tables[$name] = $table;
 			}
 		}
-		return $this->_tables[$name] = $table = $this->loadTableSchema($realName);
+		return $this->_tables[$name] = $this->loadTableSchema($realName);
 	}
 
 	/**
