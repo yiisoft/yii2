@@ -63,17 +63,17 @@ class ActiveField extends \yii\widgets\ActiveField
 	{
 		static $counter = 0;
 		$this->inputOptions['class'] .= ' typeahead-' . (++$counter);
-		array_walk($data, function(&$item){ $item = array('word' => $item);});
-		$this->form->getView()->registerJs(<<<JS
+		foreach($data as &$item) {
+			$item = array('word' => $item);
+		}
+		$this->form->getView()->registerJs("
 var datum = new Bloodhound({
-	datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.word);},
+	datumTokenizer: function(d){return Bloodhound.tokenizers.whitespace(d.word);},
 	queryTokenizer: Bloodhound.tokenizers.whitespace,
 	local: " . Json::encode($data) . "
 });
 datum.initialize();
-jQuery('.typeahead-{$counter}').typeahead(null,{displayKey: 'word', source: datum.ttAdapter()});
-JS
-		);
+jQuery('.typeahead-{$counter}').typeahead(null,{displayKey: 'word', source: datum.ttAdapter()});");
 		return $this;
 	}
 }
