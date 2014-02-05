@@ -16,6 +16,11 @@ $this->title = 'Yii Debugger';
 <div class="default-index">
 	<div id="yii-debug-toolbar" class="yii-debug-toolbar-top">
 		<div class="yii-debug-toolbar-block title">
+			<a href="<?= Yii::$app->homeUrl ?>">
+				<span class="glyphicon glyphicon-home"></span>
+			</a>
+		</div>
+		<div class="yii-debug-toolbar-block title">
 			Yii Debugger
 		</div>
 	</div>

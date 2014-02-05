@@ -13,5 +13,5 @@ use yii\helpers\Html;
 	</a>
 </div>
 <div class="yii-debug-toolbar-block">
-	<?= Html::a('PHP ' . $panel->data['php']['version'], ['phpinfo'], ['title' => 'Show phpinfo()']) ?>
+	<?= Html::a('PHP ' . $panel->data['php']['version'], ['phpinfo'], ['title' => 'Show phpinfo()', 'target' => 'phpinfo']) ?>
 </div>
