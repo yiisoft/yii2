@@ -26,6 +26,11 @@ EOD;
 $url = $panels['request']->getUrl();
 ?>
 <div id="yii-debug-toolbar" class="yii-debug-toolbar-<?= $position ?>">
+    <div class="yii-debug-toolbar-block">
+        <a href="<?= Yii::$app->homeUrl ?>">
+            <span class="glyphicon glyphicon-home"></span>
+        </a>
+    </div>
 	<?php foreach ($panels as $panel): ?>
 	<?= $panel->getSummary() ?>
 	<?php endforeach; ?>
