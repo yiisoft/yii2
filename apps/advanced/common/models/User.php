@@ -67,11 +67,33 @@ class User extends ActiveRecord implements IdentityInterface
 	 * Finds user by username
 	 *
 	 * @param string $username
-	 * @return null|User
+	 * @return self
 	 */
 	public static function findByUsername($username)
 	{
 		return static::find(['username' => $username, 'status' => static::STATUS_ACTIVE]);
+	}
+
+	/**
+	 * Finds user by password reset token
+	 *
+	 * @param string $token password reset token
+	 * @return self
+	 */
+	public static function findByPasswordResetToken($token)
+	{
+		$expire = \Yii::$app->getParam('user.passwordResetTokenExpire', 3600);
+		$parts = explode('_', $token);
+		$timestamp = (int)end($parts);
+		if ($timestamp + $expire < time()) {
+			// token expired
+			return null;
+		}
+
+		return User::find([
+			'password_reset_token' => $token,
+			'status' => User::STATUS_ACTIVE,
+		]);
 	}
 
 	/**
@@ -124,7 +146,7 @@ class User extends ActiveRecord implements IdentityInterface
 	 */
 	public function generatePasswordResetToken()
 	{
-		$this->password_reset_token = Security::generateRandomKey();
+		$this->password_reset_token = Security::generateRandomKey() . '_' . time();
 	}
 
 	/**
