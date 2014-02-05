@@ -49,36 +49,41 @@ Loading fixtures
 Fixture classes should be suffixed by `Fixture` class. By default fixtures will be searched under `tests\unit\fixtures` namespace, you can
 change this behavior with config or command options.
 
-To apply fixture, run the following command:
+To load fixture, run the following command:
 
 ```
-yii fixture/apply <fixture_name>
+yii fixture/load <fixture_name>
 ```
 
 The required `fixture_name` parameter specifies a fixture name which data will be loaded. You can load several fixtures at once.
 Below are correct formats of this command:
 
 ```
-// apply `users` fixture
-yii fixture/apply User
+// load `users` fixture
+yii fixture/load User
 
-// same as above, because default action of "fixture" command is "apply"
+// same as above, because default action of "fixture" command is "load"
 yii fixture User
 
-// apply several fixtures. Note that there should not be any whitespace between ",", it should be one string.
+// load several fixtures. Note that there should not be any whitespace between ",", it should be one string.
 yii fixture User,UserProfile
 
-// apply all fixtures
-yii fixture/apply all
+// load all fixtures
+yii fixture/load all
 
 // same as above
 yii fixture all
 
-// apply fixtures, but for other database connection.
-yii fixtures User --db='customDbConnectionId'
+// load fixtures, but for other database connection.
+yii fixture User --db='customDbConnectionId'
 
-// apply fixtures, but search them in different namespace. By default namespace is: tests\unit\fixtures.
-yii fixtures User --namespace='alias\my\custom\namespace'
+// load fixtures, but search them in different namespace. By default namespace is: tests\unit\fixtures.
+yii fixture User --namespace='alias\my\custom\namespace'
+
+// load global fixture `some\name\space\CustomFixture` before other fixtures will be loaded.
+// By default this option is set to `InitDbFixture` to disable/enable integrity checks. You can specify several
+// global fixtures separated by comma.
+yii fixture User --globalFixtures='some\name\space\Custom'
 ```
 
 Unloading fixtures
@@ -88,16 +93,16 @@ To unload fixture, run the following command:
 
 ```
 // unload Users fixture, by default it will clear fixture storage (for example "users" table, or "users" collection if this is mongodb fixture).
-yii fixture/clear User
+yii fixture/unload User
 
 // Unload several fixtures. Note that there should not be any whitespace between ",", it should be one string.
-yii fixture/clear User,UserProfile
+yii fixture/unload User,UserProfile
 
 // unload all fixtures
-yii fixture/clear all
+yii fixture/unload all
 ```
 
-Same command options like: `db`, `namespace` also can be applied to this command.
+Same command options like: `db`, `namespace`, `globalFixtures` also can be applied to this command.
 
 Configure Command Globally
 --------------------------
@@ -111,6 +116,10 @@ different migration path as follows:
         'class' => 'yii\console\controllers\FixtureController',
 		'db' => 'customDbConnectionId',
 		'namespace' => 'myalias\some\custom\namespace',
+		'globalFixtures' => [
+			'some\name\space\Foo',
+			'other\name\space\Bar'
+		],
     ],
 ]
 ```
