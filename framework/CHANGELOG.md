@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.0 beta under development
 ----------------------------
 
+- Enh: Adding support for the `X-HTTP-Method-Override` header in `yii\web\Request::getMethod()`.
 - Bug #1265: AssetController does not override 'js' and 'css' for compressed bundles (klimov-paul)
 - Bug #1326: The `visible` setting for `DetailView` doesn't work as expected (qiangxue)
 - Bug #1412: `FileValidator` and `ImageValidator` still trigger `uploadRequired` error in some case when `skipOnEmpty` is true and no upload is provided (qiangxue)
