@@ -33,7 +33,18 @@ use yii\gii\CodeFile;
 		</thead>
 		<tbody>
 			<?php foreach ($files as $file): ?>
-			<tr class="<?= $file->operation ?>">
+			<?php
+			if ($file->operation === CodeFile::OP_OVERWRITE) {
+				$trClass = 'warning';
+			} elseif ($file->operation === CodeFile::OP_SKIP) {
+				$trClass = 'active';
+			} elseif ($file->operation === CodeFile::OP_CREATE) {
+				$trClass = 'success';
+			} else {
+				$trClass = '';
+			}
+			?>
+			<tr class="<?= "$file->operation $trClass" ?>">
 				<td class="file">
 					<?= Html::a(Html::encode($file->getRelativePath()), ['preview', 'file' => $file->id], ['class' => 'preview-code', 'data-title' => $file->getRelativePath()]) ?>
 					<?php if ($file->operation === CodeFile::OP_OVERWRITE): ?>
@@ -70,7 +81,7 @@ use yii\gii\CodeFile;
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title">Modal title</h4>
+					<h4><a class="modal-refresh glyphicon glyphicon-refresh" href="#"></a> <span class="modal-title">Modal title</span></h4>
 				</div>
 				<div class="modal-body">
 					<p>Please wait ...</p>
