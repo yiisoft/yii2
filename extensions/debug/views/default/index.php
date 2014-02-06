@@ -59,7 +59,7 @@ echo GridView::widget([
 			'attribute' => 'time',
 			'value' => function ($data) use ($timeFormatter)
 			{
-				return $timeFormatter->asDateTime($data['time'], 'long');
+				return $timeFormatter->asDateTime($data['time'], 'H:i_j.M');
 			},
 		],
 		'ip',
