@@ -23,7 +23,8 @@ if (window.localStorage) {
 }
 EOD;
 
-$url = $panels['request']->getUrl();
+$firstPanel = reset($panels);
+$url = $firstPanel->getUrl();
 ?>
 <div id="yii-debug-toolbar" class="yii-debug-toolbar-<?= $position ?>">
     <div class="yii-debug-toolbar-block">
