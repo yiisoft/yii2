@@ -15,18 +15,22 @@ class QueryBuilderTest extends ElasticSearchTestCase
 	{
 		parent::setUp();
 		$command = $this->getConnection()->createCommand();
-		$command->deleteAllIndexes();
+
+		// delete index
+		if ($command->indexExists('yiitest')) {
+			$command->deleteIndex('yiitest');
+		}
 	}
 
 	private function prepareDbData()
 	{
 		$command = $this->getConnection()->createCommand();
-		$command->insert('test', 'article', ['title' => 'I love yii!'], 1);
-		$command->insert('test', 'article', ['title' => 'Symfony2 is another framework'], 2);
-		$command->insert('test', 'article', ['title' => 'Yii2 out now!'], 3);
-		$command->insert('test', 'article', ['title' => 'yii test'], 4);
+		$command->insert('yiitest', 'article', ['title' => 'I love yii!'], 1);
+		$command->insert('yiitest', 'article', ['title' => 'Symfony2 is another framework'], 2);
+		$command->insert('yiitest', 'article', ['title' => 'Yii2 out now!'], 3);
+		$command->insert('yiitest', 'article', ['title' => 'yii test'], 4);
 
-		$command->flushIndex();
+		$command->flushIndex('yiitest');
 	}
 
 	public function testQueryBuilderRespectsQuery()
@@ -47,7 +51,7 @@ class QueryBuilderTest extends ElasticSearchTestCase
 		$this->prepareDbData();
 		$queryParts = ['field' => ['title' => 'yii']];
 		$query = new Query();
-		$query->from('test', 'article');
+		$query->from('yiitest', 'article');
 		$query->query = $queryParts;
 		$result = $query->search($this->getConnection());
 		$this->assertEquals(2, $result['hits']['total']);
@@ -64,7 +68,7 @@ class QueryBuilderTest extends ElasticSearchTestCase
 			]
 		];
 		$query = new Query();
-		$query->from('test', 'article');
+		$query->from('yiitest', 'article');
 		$query->query = $queryParts;
 		$result = $query->search($this->getConnection());
 		$this->assertEquals(3, $result['hits']['total']);
