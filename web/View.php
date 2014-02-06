@@ -127,6 +127,58 @@ class View extends \yii\base\View
 
 	private $_assetManager;
 
+
+	/**
+	 * Marks the position of an HTML head section.
+	 */
+	public function head()
+	{
+		echo self::PH_HEAD;
+	}
+
+	/**
+	 * Marks the beginning of an HTML body section.
+	 */
+	public function beginBody()
+	{
+		echo self::PH_BODY_BEGIN;
+		$this->trigger(self::EVENT_BEGIN_BODY);
+	}
+
+	/**
+	 * Marks the ending of an HTML body section.
+	 */
+	public function endBody()
+	{
+		$this->trigger(self::EVENT_END_BODY);
+		echo self::PH_BODY_END;
+
+		foreach (array_keys($this->assetBundles) as $bundle) {
+			$this->registerAssetFiles($bundle);
+		}
+	}
+
+	/**
+	 * Marks the ending of an HTML page.
+	 * @param boolean $ajaxMode whether the view is rendering in AJAX mode.
+	 * If true, the JS scripts registered at [[POS_READY]] and [[POS_LOAD]] positions
+	 * will be rendered at the end of the view like normal scripts.
+	 */
+	public function endPage($ajaxMode = false)
+	{
+		$this->trigger(self::EVENT_END_PAGE);
+
+		$content = ob_get_clean();
+
+		echo strtr($content, [
+			self::PH_HEAD => $this->renderHeadHtml(),
+			self::PH_BODY_BEGIN => $this->renderBodyBeginHtml(),
+			self::PH_BODY_END => $this->renderBodyEndHtml($ajaxMode),
+		]);
+
+		$this->clear();
+	}
+
 	/**
 	 * Renders a view in response to an AJAX request.
 	 *
@@ -178,29 +230,6 @@ class View extends \yii\base\View
 	}
 
 	/**
-	 * Marks the ending of an HTML page.
-	 * @param boolean $ajaxMode whether the view is rendering in AJAX mode.
-	 * If true, the JS scripts registered at [[POS_READY]] and [[POS_LOAD]] positions
-	 * will be rendered at the end of the view like normal scripts.
-	 */
-	public function endPage($ajaxMode = false)
-	{
-		$this->trigger(self::EVENT_END_PAGE);
-
-		$content = ob_get_clean();
-		foreach (array_keys($this->assetBundles) as $bundle) {
-			$this->registerAssetFiles($bundle);
-		}
-		echo strtr($content, [
-			self::PH_HEAD => $this->renderHeadHtml(),
-			self::PH_BODY_BEGIN => $this->renderBodyBeginHtml(),
-			self::PH_BODY_END => $this->renderBodyEndHtml($ajaxMode),
-		]);
-
-		$this->clear();
-	}
-
-	/**
 	 * Clears up the registered meta tags, link tags, css/js scripts and files.
 	 */
 	public function clear()
@@ -231,32 +260,6 @@ class View extends \yii\base\View
 			$bundle->registerAssetFiles($this);
 		}
 		unset($this->assetBundles[$name]);
-	}
-
-	/**
-	 * Marks the beginning of an HTML body section.
-	 */
-	public function beginBody()
-	{
-		echo self::PH_BODY_BEGIN;
-		$this->trigger(self::EVENT_BEGIN_BODY);
-	}
-
-	/**
-	 * Marks the ending of an HTML body section.
-	 */
-	public function endBody()
-	{
-		$this->trigger(self::EVENT_END_BODY);
-		echo self::PH_BODY_END;
-	}
-
-	/**
-	 * Marks the position of an HTML head section.
-	 */
-	public function head()
-	{
-		echo self::PH_HEAD;
 	}
 
 	/**
