@@ -22,9 +22,6 @@ $this->title = 'Yii Debugger';
 				<span class="glyphicon glyphicon-home"></span>
 			</a>
 		</div>
-		<div class="yii-debug-toolbar-block title">
-			<?= Html::a('Yii Debugger', ['index'], ['title' => 'Back to main debug page']) ?>
-		</div>
 		<?php foreach ($panels as $panel): ?>
 			<?= $panel->getSummary() ?>
 		<?php endforeach; ?>
