@@ -120,6 +120,12 @@ class Pjax extends Widget
 
 		$view = $this->getView();
 		$view->endBody();
+
+		// Do not re-send css files as it may override the css files that were loaded after them.
+		// This is a temporary fix for https://github.com/yiisoft/yii2/issues/2310
+		// It should be removed once pjax supports loading only missing css files
+		$view->cssFiles = null;
+
 		$view->endPage(true);
 
 		$content = ob_get_clean();
