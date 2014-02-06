@@ -89,15 +89,17 @@ class Pjax extends Widget
 			$this->options['id'] = $this->getId();
 		}
 
-		ob_start();
-		ob_implicit_flush(false);
-
 		if ($this->requiresPjax()) {
+			ob_start();
+			ob_implicit_flush(false);
 			$view = $this->getView();
 			$view->clear();
 			$view->beginPage();
 			$view->head();
 			$view->beginBody();
+			if ($view->title !== null) {
+				echo Html::tag('title', Html::encode($view->title));
+			}
 		}
 		echo Html::beginTag('div', $this->options);
 	}
@@ -108,32 +110,31 @@ class Pjax extends Widget
 	public function run()
 	{
 		echo Html::endTag('div');
-		if ($requiresPjax = $this->requiresPjax()) {
-			$view = $this->getView();
-			$view->endBody();
-			$view->endPage(true);
+
+		if (!$this->requiresPjax()) {
+			$this->registerClientScript();
+			return;
 		}
+
+		$view = $this->getView();
+		$view->endBody();
+		$view->endPage(true);
 
 		$content = ob_get_clean();
 
-		if ($requiresPjax) {
-			// only need the content enclosed within this widget
-			$response = Yii::$app->getResponse();
-			$level = ob_get_level();
-			$response->clearOutputBuffers();
-			$response->setStatusCode(200);
-			$response->format = Response::FORMAT_HTML;
-			$response->content = $content;
-			$response->send();
+		// only need the content enclosed within this widget
+		$response = Yii::$app->getResponse();
+		$level = ob_get_level();
+		$response->clearOutputBuffers();
+		$response->setStatusCode(200);
+		$response->format = Response::FORMAT_HTML;
+		$response->content = $content;
+		$response->send();
 
-			// re-enable output buffer to capture content after this widget
-			for (; $level > 0; --$level) {
-				ob_start();
-				ob_implicit_flush(false);
-			}
-		} else {
-			$this->registerClientScript();
-			echo $content;
+		// re-enable output buffer to capture content after this widget
+		for (; $level > 0; --$level) {
+			ob_start();
+			ob_implicit_flush(false);
 		}
 	}
 
