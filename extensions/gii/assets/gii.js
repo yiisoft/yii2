@@ -71,6 +71,15 @@ yii.gii = (function ($) {
 	};
 
 	return {
+		autocomplete: function (counter, data) {
+			var datum = new Bloodhound({
+				datumTokenizer: function(d){return Bloodhound.tokenizers.whitespace(d.word);},
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				local: data
+			});
+			datum.initialize();
+			jQuery('.typeahead-'+counter).typeahead(null,{displayKey: 'word', source: datum.ttAdapter()});
+		},
 		init: function () {
 			initHintBlocks();
 			initStickyInputs();
