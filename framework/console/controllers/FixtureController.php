@@ -222,7 +222,7 @@ class FixtureController extends Controller
 	 */
 	private function notifyUnloaded($fixtures)
 	{
-		$this->stdout("Fixtures were successfully loaded from namespace:\n", Console::FG_YELLOW);
+		$this->stdout("Fixtures were successfully unloaded from namespace:\n", Console::FG_YELLOW);
 		$this->stdout("\t\"" . Yii::getAlias($this->namespace) . "\"\n\n", Console::FG_GREEN);
 		$this->outputList($fixtures);
 	}
