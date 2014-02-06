@@ -95,7 +95,10 @@ class Query extends Component implements QueryInterface
 	public $having;
 	/**
 	 * @var array this is used to construct the UNION clause(s) in a SQL statement.
-	 * Each array element can be either a string or a [[Query]] object representing a sub-query.
+	 * Each array element is an array of the following structure:
+	 *
+	 * - `query`: either a string or a [[Query]] object representing a query
+	 * - `all`: boolean, whether it should be `UNION ALL` or `UNION`
 	 */
 	public $union;
 	/**
