@@ -163,7 +163,7 @@ class Pjax extends Widget
 		$view = $this->getView();
 		PjaxAsset::register($view);
 		$js = "jQuery(document).pjax($linkSelector, \"#$id\", $options);";
-		$js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id');});";
+		$js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
 		$view->registerJs($js);
 	}
 }
