@@ -66,7 +66,9 @@ class Pjax extends Widget
 	 */
 	public $enableReplaceState = false;
 	/**
-	 * @var integer pjax timeout setting (in milliseconds)
+	 * @var integer pjax timeout setting (in milliseconds). This timeout is used when making AJAX requests.
+	 * Use a bigger number if your server is slow. If the server does not respond within the timeout,
+	 * a full page load will be triggered.
 	 */
 	public $timeout = 1000;
 	/**
