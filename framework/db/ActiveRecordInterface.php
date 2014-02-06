@@ -1,7 +1,7 @@
 <?php
 /**
- * 
- * 
+ *
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  */
 
@@ -191,6 +191,33 @@ interface ActiveRecordInterface
 	public function save($runValidation = true, $attributes = null);
 
 	/**
+	 * Saves the multiple records.
+	 *
+	 * For example, to save a multiple records:
+	 *
+	 * ```php
+	 * $customer1 = new Customer;
+	 * $customer1->name = $name1;
+	 * $customer1->email = $email1;
+	 * $customer2 = new Customer;
+	 * $customer2->name = $name2;
+	 * $customer2->email = $email2;
+	 * $customer3 = new Customer;
+	 * $customer3->name = $name3;
+	 * $customer3->email = $email3;
+	 * ActiveRecord::saveMultiple([$customer1, $customer2, $customer3]);
+	 * ```
+	 *
+	 * @param ActiveRecord[] $models the models to be saved.
+	 * @param bool $runValidation whether to perform validation before saving the records.
+	 * If the validation fails, the records will not be saved to database.
+	 * @param null $attributes list of attributes that need to be saved. Defaults to null,
+	 * meaning all attributes that are loaded from DB will be saved.
+	 * @return boolean whether the saving succeeds
+	 */
+	public static function saveMultiple($models, $runValidation = true, $attributes = null);
+
+	/**
 	 * Inserts the record into the database using the attribute values of this record.
 	 *
 	 * Usage example:
@@ -209,6 +236,33 @@ interface ActiveRecordInterface
 	 * @return boolean whether the attributes are valid and the record is inserted successfully.
 	 */
 	public function insert($runValidation = true, $attributes = null);
+
+	/**
+	 * Inserts the record into the database using the attribute values of this record.
+	 *
+	 * Usage example:
+	 *
+	 * ~~~
+	 * $customer1 = new Customer;
+	 * $customer1->name = $name1;
+	 * $customer1->email = $email1;
+	 * $customer2 = new Customer;
+	 * $customer2->name = $name2;
+	 * $customer2->email = $email2;
+	 * $customer3 = new Customer;
+	 * $customer3->name = $name3;
+	 * $customer3->email = $email3;
+	 * ActiveRecord::insertMultiple([$customer1, $customer2, $customer3]);
+	 * ~~~
+	 *
+	 * @param ActiveRecord[] $models the models to be inserted.
+	 * @param boolean $runValidation whether to perform validation before saving the records.
+	 * If the validation fails, the records will not be inserted into the database.
+	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
+	 * meaning all attributes that are loaded from DB will be saved.
+	 * @return boolean whether the attributes are valid and the records is inserted successfully.
+	 */
+	public static function insertMultiple($models, $runValidation = true, $attributes = null);
 
 	/**
 	 * Saves the changes to this active record into the database.
@@ -232,6 +286,31 @@ interface ActiveRecordInterface
 	 * update execution is successful.
 	 */
 	public function update($runValidation = true, $attributes = null);
+
+	/**
+	 * Saves the changes to active records into the database.
+	 *
+	 * Usage example:
+	 *
+	 * ```php
+	 * $customers = Customer::find()->where(['in', 'id', [1001, 1002, 1003]])->indexBy('id')->all();
+	 * $customers[1001]->name = $newName1;
+	 * $customers[1002]->name = $newName2;
+	 * $customers[1003]->name = $newName3;
+	 * ActiveRecord::updateMultiple($customers);
+	 * ```
+	 *
+	 * @param ActiveRecord[] $models the models to be updated.
+	 * @param boolean $runValidation whether to perform validation before updating the records.
+	 * If the validation fails, the records will not be updated in the database.
+	 * @param array $attributes list of attributes that need to be updated. Defaults to null,
+	 * meaning all attributes that are loaded from DB will be updated.
+	 * @return integer|boolean the number of rows affected, or false if validation fails
+	 * or updating process is stopped for other reasons.
+	 * Note that it is possible that the number of rows affected is 0, even though the
+	 * update execution is successful.
+	 */
+	public static function updateMultiple($models, $runValidation = true, $attributes = null);
 
 	/**
 	 * Deletes the record from the database.

@@ -217,6 +217,30 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
+	 * Generates a batch UPDATE SQL statement.
+	 * For example,
+	 *
+	 * ~~~
+	 * $connection->createCommand()->batchUpdate('tbl_user', ['name', 'age'], [
+	 *     1001 => ['Tom', 30],
+	 *     1002 => ['Jane', 20],
+	 *     1003 => ['Linda', 25],
+	 * ])->execute();
+	 * ~~~
+	 *
+	 * Note that the values in each row must match the corresponding column names.
+	 *
+	 * @param string $table the table to be updated.
+	 * @param array $columns the column names
+	 * @param array $rows the rows (pk => row) to be batch updated in the table
+	 * @return string the batch INSERT SQL statement
+	 */
+	public function batchUpdate($table, $columns, $rows)
+	{
+		// implementation http://www.karlrixon.co.uk/writing/update-multiple-rows-with-different-values-and-a-single-sql-query/
+	}
+
+	/**
 	 * Creates a DELETE SQL statement.
 	 * For example,
 	 *
