@@ -66,7 +66,9 @@ class Pjax extends Widget
 	 */
 	public $enableReplaceState = false;
 	/**
-	 * @var integer pjax timeout setting (in milliseconds)
+	 * @var integer pjax timeout setting (in milliseconds). This timeout is used when making AJAX requests.
+	 * Use a bigger number if your server is slow. If the server does not respond within the timeout,
+	 * a full page load will be triggered.
 	 */
 	public $timeout = 1000;
 	/**
@@ -89,15 +91,17 @@ class Pjax extends Widget
 			$this->options['id'] = $this->getId();
 		}
 
-		ob_start();
-		ob_implicit_flush(false);
-
 		if ($this->requiresPjax()) {
+			ob_start();
+			ob_implicit_flush(false);
 			$view = $this->getView();
 			$view->clear();
 			$view->beginPage();
 			$view->head();
 			$view->beginBody();
+			if ($view->title !== null) {
+				echo Html::tag('title', Html::encode($view->title));
+			}
 		}
 		echo Html::beginTag('div', $this->options);
 	}
@@ -108,32 +112,37 @@ class Pjax extends Widget
 	public function run()
 	{
 		echo Html::endTag('div');
-		if ($requiresPjax = $this->requiresPjax()) {
-			$view = $this->getView();
-			$view->endBody();
-			$view->endPage(true);
+
+		if (!$this->requiresPjax()) {
+			$this->registerClientScript();
+			return;
 		}
+
+		$view = $this->getView();
+		$view->endBody();
+
+		// Do not re-send css files as it may override the css files that were loaded after them.
+		// This is a temporary fix for https://github.com/yiisoft/yii2/issues/2310
+		// It should be removed once pjax supports loading only missing css files
+		$view->cssFiles = null;
+
+		$view->endPage(true);
 
 		$content = ob_get_clean();
 
-		if ($requiresPjax) {
-			// only need the content enclosed within this widget
-			$response = Yii::$app->getResponse();
-			$level = ob_get_level();
-			$response->clearOutputBuffers();
-			$response->setStatusCode(200);
-			$response->format = Response::FORMAT_HTML;
-			$response->content = $content;
-			$response->send();
+		// only need the content enclosed within this widget
+		$response = Yii::$app->getResponse();
+		$level = ob_get_level();
+		$response->clearOutputBuffers();
+		$response->setStatusCode(200);
+		$response->format = Response::FORMAT_HTML;
+		$response->content = $content;
+		$response->send();
 
-			// re-enable output buffer to capture content after this widget
-			for (; $level > 0; --$level) {
-				ob_start();
-				ob_implicit_flush(false);
-			}
-		} else {
-			$this->registerClientScript();
-			echo $content;
+		// re-enable output buffer to capture content after this widget
+		for (; $level > 0; --$level) {
+			ob_start();
+			ob_implicit_flush(false);
 		}
 	}
 
@@ -162,7 +171,7 @@ class Pjax extends Widget
 		$view = $this->getView();
 		PjaxAsset::register($view);
 		$js = "jQuery(document).pjax($linkSelector, \"#$id\", $options);";
-		$js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id');});";
+		$js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
 		$view->registerJs($js);
 	}
 }
