@@ -252,7 +252,7 @@ class Generator extends \yii\gii\Generator
 		try {
 			$db = $this->getDbConnection();
 			$uniqueIndexes = $db->getSchema()->findUniqueIndexes($table);
-			foreach ($uniqueIndexes as $indexName => $uniqueColumns) {
+			foreach ($uniqueIndexes as $uniqueColumns) {
 				// Avoid validating auto incrementable columns
 				if (!$this->isUniqueColumnAutoIncrementable($table, $uniqueColumns)) {
 					$attributesCount = count($uniqueColumns);

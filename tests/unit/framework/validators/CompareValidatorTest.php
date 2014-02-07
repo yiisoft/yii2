@@ -162,7 +162,7 @@ class CompareValidatorTest extends TestCase
 			$this->assertTrue(strlen($val->message) > 1);
 		}
 		try {
-			$val = new CompareValidator(['operator' => '<>']);
+			new CompareValidator(['operator' => '<>']);
 		} catch (InvalidConfigException $e) {
 			return;
 		}

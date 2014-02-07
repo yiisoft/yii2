@@ -379,7 +379,6 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 	public function testFindAsArrayFields()
 	{
-		$customerClass = $this->getCustomerClass();
 		/** @var TestCase|ActiveRecordTestTrait $this */
 		// indexBy + asArray
 		$customers = $this->callCustomerFind()->asArray()->fields(['id', 'name'])->all();
@@ -454,7 +453,6 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 	public function testFindIndexByAsArrayFields()
 	{
-		$customerClass = $this->getCustomerClass();
 		/** @var TestCase|ActiveRecordTestTrait $this */
 		// indexBy + asArray
 		$customers = $this->callCustomerFind()->indexBy('name')->asArray()->fields('id', 'name')->all();
