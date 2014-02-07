@@ -173,7 +173,9 @@ abstract class ManagerTestCase extends TestCase
 		$this->assertTrue($this->auth->executeBizRule(null, [], null));
 		$this->assertTrue($this->auth->executeBizRule('return 1 == true;', [], null));
 		$this->assertTrue($this->auth->executeBizRule('return $params[0] == $params[1];', [1, '1'], null));
-		$this->assertFalse($this->auth->executeBizRule('invalid;', [], null));
+		if (!defined('HHVM_VERSION')) { // skip this on hiphop vm as eval will cause problems with invalid code
+			$this->assertFalse($this->auth->executeBizRule('invalid;', [], null));
+		}
 	}
 
 	public function testCheckAccess()

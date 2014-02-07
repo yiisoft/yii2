@@ -1,9 +1,9 @@
 language: php
 
 php:
-  - 5.4
-  - 5.5
-#  - hhvm # commented until composer or hhvm get fixed: https://github.com/facebook/hhvm/issues/1347
+#  - 5.4
+#  - 5.5
+  - hhvm # commented until composer or hhvm get fixed: https://github.com/facebook/hhvm/issues/1347
 
 services:
   - redis-server
@@ -12,10 +12,8 @@ services:
   - mongodb
 
 install:
-  - composer self-update && composer --version
 # core framework:
-#  - composer require satooshi/php-coveralls 0.6.* --dev --prefer-dist
-  - composer install --prefer-dist
+  - tests/unit/data/travis/composer.sh
   - tests/unit/data/travis/mongodb-setup.sh
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
@@ -34,9 +32,7 @@ before_script:
   - mongo yii2test --eval 'db.addUser("travis", "test");'
 
 script:
-#  - vendor/bin/phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
   - vendor/bin/phpunit --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
-  - cd apps/basic && php vendor/bin/codecept run
 
 #after_script:
 #  - php vendor/bin/coveralls

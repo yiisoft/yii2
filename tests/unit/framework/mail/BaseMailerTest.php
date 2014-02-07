@@ -163,7 +163,7 @@ class BaseMailerTest extends TestCase
 
 		$filePath = $this->getTestFilePath();
 
-		$viewName = 'test_view';
+		$viewName = 'test_view2';
 		$viewFileName = $filePath . DIRECTORY_SEPARATOR . $viewName . '.php';
 		$viewFileContent = 'view file content';
 		file_put_contents($viewFileName, $viewFileContent);

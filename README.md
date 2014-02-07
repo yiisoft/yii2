@@ -70,4 +70,3 @@ You may participate in the following ways:
     - Please submit a merge request after you finish development.
 
 In order to make it easier we've prepared [special `yii2-dev` Composer package](https://github.com/yiisoft/yii2/blob/master/docs/internals/getting-started.md).
-
