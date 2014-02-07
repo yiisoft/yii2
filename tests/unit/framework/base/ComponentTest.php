@@ -365,6 +365,47 @@ class ComponentTest extends TestCase
 	{
 		$this->component->object = 'z';
 	}
+
+	/**
+	 * @expectedException \yii\base\UnknownPropertyException
+	 * @expectedExceptionMessage Setting unknown property: yiiunit\framework\base\NewComponent::invalidProperty
+	 */
+	public function testSetInvalidProperty()
+	{
+		$component = new NewComponent();
+		$component->invalidProperty = 3;
+	}
+
+	public function testSuccessfulMethodCheck()
+	{
+		$component = new NewComponent();
+		$this->assertTrue($component->hasMethod('hasProperty'));
+	}
+
+	/**
+	 * @expectedException \yii\base\InvalidCallException
+	 * @expectedExceptionMessage Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly
+	 */
+	public function testWriteOnlyProperty()
+	{
+		$component = new NewComponent();
+		$component->writeOnly;
+	}
+
+	public function testWorkingUnset()
+	{
+		$component = new NewComponent();
+		$component->content = 'foo';
+		$component->__unset('content');
+		var_dump($component);die;
+		// $this->assertNull($component->content);
+	}
+
+//	public function testTurningOffNonExistingBehavior()
+//	{
+//		$component = new NewComponent();
+//		$this->assertFalse($component->off('foo'));
+//	}
 }
 
 class NewComponent extends Component
