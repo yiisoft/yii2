@@ -206,7 +206,6 @@ trait ActiveRecordTestTrait
 
 	public function testfindIndexByAsArray()
 	{
-		$customerClass = $this->getCustomerClass();
 		/** @var TestCase|ActiveRecordTestTrait $this */
 		// indexBy + asArray
 		$customers = $this->callCustomerFind()->asArray()->indexBy('name')->all();
