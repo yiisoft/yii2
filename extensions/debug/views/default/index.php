@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\data\ArrayDataProvider;
+use yii\debug\panels\ConfigPanel;
 
 /**
  * @var \yii\web\View $this
@@ -14,15 +15,18 @@ use yii\data\ArrayDataProvider;
 $this->title = 'Yii Debugger';
 ?>
 <div class="default-index">
-	<div id="yii-debug-toolbar" class="yii-debug-toolbar-top">
-		<div class="yii-debug-toolbar-block title">
-			<a href="<?= Yii::$app->homeUrl ?>">
-				<span class="glyphicon glyphicon-home"></span>
-			</a>
-		</div>
-		<div class="yii-debug-toolbar-block title">
-			Yii Debugger
-		</div>
+
+
+    <div id="yii-debug-toolbar" class="yii-debug-toolbar-top">
+        <div class="yii-debug-toolbar-block title">
+            <a href="#">
+                <img width="29" height="30" alt="" src="<?= \yii\debug\Module::getYiiLogo() ?>">
+                Yii Debugger
+            </a>
+        </div>
+        <?php foreach ($panels as $panel): ?>
+            <?= $panel->getSummary() ?>
+        <?php endforeach; ?>
 	</div>
 
 	<div class="container">
