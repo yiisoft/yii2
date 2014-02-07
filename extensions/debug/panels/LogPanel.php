@@ -50,7 +50,7 @@ class LogPanel extends Panel
 		$dataProvider = $searchModel->search(Yii::$app->request->getQueryParams(), $this->getModels());
 
 		return Yii::$app->view->render('panels/log/detail', [
-			'dataProvider' => $dataProvider, 
+			'dataProvider' => $dataProvider,
 			'panel' => $this,
 			'searchModel' => $searchModel,
 		]);
@@ -78,7 +78,7 @@ class LogPanel extends Panel
 		if ($this->_models === null || $refresh) {
 			$this->_models = [];
 
-			foreach($this->data['messages'] as $message) {
+			foreach ($this->data['messages'] as $message) {
 				$this->_models[] = 	[
 					'message' => $message[0],
 					'level' => $message[1],
