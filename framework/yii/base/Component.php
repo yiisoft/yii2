@@ -171,11 +171,7 @@ class Component extends Object
 				return;
 			}
 		}
-
-		if (method_exists($this, 'get' . $name)) {
-			throw new InvalidCallException('Unsetting read-only property: ' . get_class($this) . '.' . $name);
-		}
-
+		throw new InvalidCallException('Unsetting read-only property: ' . get_class($this) . '.' . $name);
 	}
 
 	/**
@@ -528,13 +524,13 @@ class Component extends Object
 	public function detachBehavior($name)
 	{
 		$this->ensureBehaviors();
-		if (isset($this->_behaviors[$name])) {
-			$behavior = $this->_behaviors[$name];
-			unset($this->_behaviors[$name]);
-			$behavior->detach();
-			return $behavior;
+		if (!isset($this->_behaviors[$name])) {
+			return null;
 		}
-		return null;
+		$behavior = $this->_behaviors[$name];
+		unset($this->_behaviors[$name]);
+		$behavior->detach();
+		return $behavior;
 	}
 
 	/**
@@ -544,7 +540,7 @@ class Component extends Object
 	{
 		$this->ensureBehaviors();
 		if ($this->_behaviors !== null) {
-			foreach ($this->_behaviors as $name => $behavior) {
+			foreach (array_keys($this->_behaviors) as $name) {
 				$this->detachBehavior($name);
 			}
 		}
@@ -556,11 +552,12 @@ class Component extends Object
 	 */
 	public function ensureBehaviors()
 	{
-		if ($this->_behaviors === null) {
-			$this->_behaviors = [];
-			foreach ($this->behaviors() as $name => $behavior) {
-				$this->attachBehaviorInternal($name, $behavior);
-			}
+		if ($this->_behaviors !== null) {
+			return;
+		}
+		$this->_behaviors = [];
+		foreach ($this->behaviors() as $name => $behavior) {
+			$this->attachBehaviorInternal($name, $behavior);
 		}
 	}
 
