@@ -54,7 +54,7 @@ class DbPanel extends Panel
 		$queryTime = number_format($this->getTotalQueryTime($timings) * 1000) . ' ms';
 
 		return Yii::$app->view->render('panels/db/summary', [
-			'timings' => $this->calculateTimings(), 
+			'timings' => $this->calculateTimings(),
 			'panel' => $this,
 			'queryCount' => $queryCount,
 			'queryTime' => $queryTime,
@@ -127,7 +127,7 @@ class DbPanel extends Panel
 			$this->_models = [];
 			$timings = $this->calculateTimings();
 
-			foreach($timings as $seq => $dbTiming) {
+			foreach ($timings as $seq => $dbTiming) {
 				$this->_models[] = 	[
 					'type' => $this->getQueryType($dbTiming['info']),
 					'query' => $dbTiming['info'],
@@ -164,5 +164,4 @@ class DbPanel extends Panel
 	{
 		return (($this->criticalQueryThreshold !== null) && ($count > $this->criticalQueryThreshold));
 	}
-
 }

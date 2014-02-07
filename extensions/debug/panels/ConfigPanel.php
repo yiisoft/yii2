@@ -56,21 +56,22 @@ class ConfigPanel extends Panel
 		return $data;
 	}
 
-    /**
-     * Returns the BODY contents of the phpinfo() output
-     *
-     * @return array
-     */
-    public function getPhpInfo(){
-        ob_start();
-        phpinfo();
-        $pinfo = ob_get_contents();
-        ob_end_clean();
-        $phpinfo = preg_replace( '%^.*<body>(.*)</body>.*$%ms','$1',$pinfo);
-        $phpinfo = str_replace('<table ','<table class="table table-condensed table-bordered table-striped table-hover"',$phpinfo);
+	/**
+	 * Returns the BODY contents of the phpinfo() output
+	 *
+	 * @return array
+	 */
+	public function getPhpInfo ()
+	{
+		ob_start();
+		phpinfo();
+		$pinfo = ob_get_contents();
+		ob_end_clean();
+		$phpinfo = preg_replace('%^.*<body>(.*)</body>.*$%ms', '$1', $pinfo);
+		$phpinfo = str_replace('<table ', '<table class="table table-condensed table-bordered table-striped table-hover"', $phpinfo);
 
-        return $phpinfo;
-    }
+		return $phpinfo;
+	}
 
 	/**
 	 * @inheritdoc

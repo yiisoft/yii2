@@ -53,17 +53,15 @@ echo GridView::widget([
 		['class' => 'yii\grid\SerialColumn'],
 		[
 			'attribute' => 'tag',
-			'value' => function ($data)
-			{
+			'value' => function ($data) {
 				return Html::a($data['tag'], ['view', 'tag' => $data['tag']]);
 			},
 			'format' => 'html',
 		],
 		[
 			'attribute' => 'time',
-			'value' => function ($data) use ($timeFormatter)
-			{
-				return $timeFormatter->asDateTime($data['time'], 'H:i_j.M');
+			'value' => function ($data) use ($timeFormatter) {
+				return $timeFormatter->asDateTime($data['time'], 'short');
 			},
 		],
 		'ip',
@@ -75,7 +73,7 @@ echo GridView::widget([
 
 				if ($dbPanel->isQueryCountCritical($data['sqlCount'])) {
 
-					$content = Html::tag('b', $data['sqlCount']) . ' ' . Html::tag('span','',['class' => 'glyphicon glyphicon-exclamation-sign']);
+					$content = Html::tag('b', $data['sqlCount']) . ' ' . Html::tag('span', '', ['class' => 'glyphicon glyphicon-exclamation-sign']);
 					return Html::a($content, ['view', 'panel' => 'db', 'tag' => $data['tag']], [
 						'title' => 'Too many queries. Allowed count is ' . $dbPanel->criticalQueryThreshold,
 					]);
@@ -92,8 +90,7 @@ echo GridView::widget([
 		],
 		[
 			'attribute'=>'ajax',
-			'value' => function ($data)
-			{
+			'value' => function ($data) {
 				return $data['ajax'] ? 'Yes' : 'No';
 			},
 			'filter' => ['No', 'Yes'],
