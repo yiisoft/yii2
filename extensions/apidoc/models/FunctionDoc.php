@@ -11,7 +11,6 @@ use phpDocumentor\Reflection\DocBlock\Tag\ParamTag;
 use phpDocumentor\Reflection\DocBlock\Tag\PropertyTag;
 use phpDocumentor\Reflection\DocBlock\Tag\ReturnTag;
 use phpDocumentor\Reflection\DocBlock\Tag\ThrowsTag;
-use yii\base\Exception;
 
 /**
  * Represents API documentation information for a `function`.

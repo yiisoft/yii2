@@ -3,10 +3,8 @@
 namespace yiiunit\extensions\elasticsearch;
 
 use yii\base\Event;
-use yii\base\Exception;
 use yii\db\BaseActiveRecord;
 use yii\elasticsearch\Connection;
-use yii\helpers\Json;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\data\ar\elasticsearch\ActiveRecord;
 use yiiunit\data\ar\elasticsearch\Customer;

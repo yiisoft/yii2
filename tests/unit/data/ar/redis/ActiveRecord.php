@@ -7,8 +7,6 @@
 
 namespace yiiunit\data\ar\redis;
 
-use yii\redis\Connection;
-
 /**
  * ActiveRecord is ...
  *

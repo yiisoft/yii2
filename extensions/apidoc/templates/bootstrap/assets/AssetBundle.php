@@ -6,7 +6,6 @@
  */
 
 namespace yii\apidoc\templates\bootstrap\assets;
-use yii\web\JqueryAsset;
 use yii\web\View;
 
 /**

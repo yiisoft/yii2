@@ -8,7 +8,6 @@
 namespace yii\apidoc\models;
 
 use phpDocumentor\Reflection\DocBlock\Tag\AuthorTag;
-use yii\base\Exception;
 use yii\helpers\StringHelper;
 
 /**

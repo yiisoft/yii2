@@ -1,7 +1,6 @@
 <?php
 namespace yiiunit\data\ar;
 
-use yii\db\ActiveQuery;
 use yiiunit\framework\db\ActiveRecordTest;
 
 /**
