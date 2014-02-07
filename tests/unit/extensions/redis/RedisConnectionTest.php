@@ -2,8 +2,6 @@
 
 namespace yiiunit\extensions\redis;
 
-use yii\redis\Connection;
-
 /**
  * @group redis
  */
@@ -35,14 +33,14 @@ class RedisConnectionTest extends RedisTestCase
 
 	public function keyValueData()
 	{
-		return array(
-			array(123),
-			array(-123),
-			array(0),
-			array('test'),
-			array("test\r\ntest"),
-			array(''),
-		);
+		return [
+			[123],
+			[-123],
+			[0],
+			['test'],
+			["test\r\ntest"],
+			[''],
+		];
 	}
 
 	/**

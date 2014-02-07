@@ -20,8 +20,8 @@ class CustomerFile extends ActiveRecord
 		);
 	}
 
-	public static function activeOnly($query)
+	public static function createQuery()
 	{
-		$query->andWhere(['status' => 2]);
+		return new CustomerFileQuery(['modelClass' => get_called_class()]);
 	}
 }

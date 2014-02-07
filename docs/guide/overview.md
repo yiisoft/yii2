@@ -15,8 +15,8 @@ PHP 5.4.0 or greater.
 
 For developers who want to use Yii, understanding object-oriented
 programming (OOP) is very helpful, because Yii is a pure OOP framework.
-Yii 2.0 also makes use of the latest features of PHP such as [namespaces](http://www.php.net/manual/en/language.namespaces.php)
-so you should be familiar with how they work.
+Yii 2.0 also makes use of the latest features of PHP such as [namespaces](http://www.php.net/manual/en/language.namespaces.php),
+so you should be familiar with how they work, too.
 
 
 What is Yii Best for?
@@ -24,16 +24,16 @@ What is Yii Best for?
 
 Yii is a generic Web programming framework that can be used for developing
 virtually any type of Web application. Because it is light-weight and
-equipped with sophisticated caching mechanisms, it is especially suited
-to high-traffic applications, such as portals, forums, content
-management systems (CMS), e-commerce projects, etc.
+equipped with sophisticated caching mechanisms, Yii is especially suited
+to high-traffic applications such as portals, forums, content
+management systems (CMS), e-commerce projects, and so on.
 
 
 How does Yii Compare with Other Frameworks?
 -------------------------------------------
 
 - Like most PHP frameworks, Yii is uses the MVC (Model-View-Controller) design approach.
-- Yii is a fullstack framework providing many solutions and components, such as logging, session management, caching etc.
+- Yii is a fullstack framework providing many solutions and components, such as logging, session management, caching, etc.
 - Yii strikes a good balance between simplicity and features.
 - Syntax and overall development usability are taken seriously by the Yii development team.
 - Performance is one of the key goals for the Yii framework.

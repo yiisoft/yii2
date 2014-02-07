@@ -13,7 +13,7 @@ class PostgreSQLConnectionTest extends ConnectionTest
 
 	public function testConnection()
 	{
-		$connection = $this->getConnection(true);
+		$this->getConnection(true);
 	}
 
 	public function testQuoteValue()

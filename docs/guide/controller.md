@@ -8,8 +8,8 @@ Most often a controller takes HTTP request data and returns HTML, JSON or XML as
 Basics
 ------
 
-Controller resides in application's `controllers` directory is is named like `SiteController.php` where `Site`
-part could be anything describing a set of actions it contains.
+Controller resides in application's `controllers` directory and is named like `SiteController.php`,
+where the `Site` part could be anything describing a set of actions it contains.
 
 The basic web controller is a class that extends [[\yii\web\Controller]] and could be very simple:
 
@@ -35,9 +35,9 @@ class SiteController extends Controller
 ```
 
 As you can see, typical controller contains actions that are public class methods named as `actionSomething`.
-The output of an action is what the method returns, it could be rendered result or it can be instance of ```yii\web\Response```, for [example](#custom-response-class).
+The output of an action is what the method returns: it could be a string or an instance of [[yii\web\Response]], [for example](#custom-response-class).
 The return value will be handled by the `response` application
-component which can convert the output to differnet formats such as JSON for example. The default behavior
+component which can convert the output to different formats such as JSON for example. The default behavior
 is to output the value unchanged though.
 
 You also can disable CSRF validation per controller and/or action, by setting its property:
@@ -49,7 +49,6 @@ use yii\web\Controller;
 
 class SiteController extends Controller
 {
-
 	public $enableCsrfValidation = false;
 
 	public function actionIndex()
@@ -92,7 +91,7 @@ If controller is located inside a module its action internal route will be `modu
 
 In case module, controller or action specified isn't found Yii will return "not found" page and HTTP status code 404.
 
-> Note: If controller name or action name contains camelCased words, internal route will use dashes i.e. for
+> Note: If module name, controller name or action name contains camelCased words, internal route will use dashes i.e. for
 `DateTimeController::actionFastForward` route will be `date-time/fast-forward`.
 
 ### Defaults
@@ -200,7 +199,7 @@ The following code is too simple to implement as a separate action but gives an 
 can be used in your controller as following:
 
 ```php
-public SiteController extends \yii\web\Controller
+class SiteController extends \yii\web\Controller
 {
 	public function actions()
 	{
@@ -222,7 +221,7 @@ Action Filters
 
 Action filters are implemented via behaviors. You should extend from `ActionFilter` to
 define a new filter. To use a filter, you should attach the filter class to the controller
-as a behavior. For example, to use the [[AccessControl]] filter, you should have the following
+as a behavior. For example, to use the [[yii\web\AccessControl]] filter, you should have the following
 code in a controller:
 
 ```php
@@ -239,8 +238,8 @@ public function behaviors()
 }
 ```
 
-In order to learn more about access control check [authorization](authorization.md) section of the guide.
-Two other filters, [[PageCache]] and [[HttpCache]] are described in [caching](caching.md) section of the guide.
+In order to learn more about access control check the [authorization](authorization.md) section of the guide.
+Two other filters, [[yii\web\PageCache]] and [[yii\web\HttpCache]] are described in the [caching](caching.md) section of the guide.
 
 Catching all incoming requests
 ------------------------------

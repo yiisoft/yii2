@@ -4,7 +4,6 @@ namespace yiiunit\extensions\authclient;
 
 use yii\authclient\signature\PlainText;
 use yii\authclient\OAuthToken;
-use yiiunit\extensions\authclient\TestCase;
 use yii\authclient\BaseOAuth;
 
 class BaseOAuthTest extends TestCase
@@ -180,13 +179,13 @@ class BaseOAuthTest extends TestCase
 	 */
 	public function determineContentTypeByRawDataProvider()
 	{
-		return array(
+		return [
 			['{name: value}', 'json'],
 			['name=value', 'urlencoded'],
 			['name1=value1&name2=value2', 'urlencoded'],
 			['<?xml version="1.0" encoding="UTF-8"?><tag>Value</tag>', 'xml'],
 			['<tag>Value</tag>', 'xml'],
-		);
+		];
 	}
 
 	/**

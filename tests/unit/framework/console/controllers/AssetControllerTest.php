@@ -1,7 +1,11 @@
 <?php
 
+namespace yiiunit\framework\console\controllers;
+
+use yii\helpers\StringHelper;
 use yiiunit\TestCase;
 use yii\console\controllers\AssetController;
+use Yii;
 
 /**
  * Unit test for [[\yii\console\controllers\AssetController]].
@@ -92,11 +96,12 @@ class AssetControllerTest extends TestCase
 	 */
 	protected function createCompressConfig(array $bundles)
 	{
+		$className = $this->declareAssetBundleClass(['class' => 'AssetBundleAll']);
 		$baseUrl = '/test';
 		$config = [
-			'bundles' => $this->createBundleConfig($bundles),
+			'bundles' => $bundles,
 			'targets' => [
-				'all' => [
+				$className => [
 					'basePath' => $this->testAssetsBasePath,
 					'baseUrl' => $baseUrl,
 					'js' => 'all.js',
@@ -112,28 +117,10 @@ class AssetControllerTest extends TestCase
 	}
 
 	/**
-	 * Creates test bundle configuration.
-	 * @param array[] $bundles asset bundles config.
-	 * @return array bundle config.
-	 */
-	protected function createBundleConfig(array $bundles)
-	{
-		foreach ($bundles as $name => $config) {
-			if (!array_key_exists('basePath', $config)) {
-				$bundles[$name]['basePath'] = $this->testFilePath;
-			}
-			if (!array_key_exists('baseUrl', $config)) {
-				$bundles[$name]['baseUrl'] = '';
-			}
-		}
-		return $bundles;
-	}
-
-	/**
 	 * Creates test compress config file.
 	 * @param string $fileName output file name.
 	 * @param array[] $bundles asset bundles config.
-	 * @throws Exception on failure.
+	 * @throws \Exception on failure.
 	 */
 	protected function createCompressConfigFile($fileName, array $bundles)
 	{
@@ -147,7 +134,7 @@ class AssetControllerTest extends TestCase
 	 * Creates test asset file.
 	 * @param string $fileRelativeName file name relative to [[testFilePath]]
 	 * @param string $content file content
-	 * @throws Exception on failure.
+	 * @throws \Exception on failure.
 	 */
 	protected function createAssetSourceFile($fileRelativeName, $content)
 	{
@@ -178,12 +165,66 @@ class AssetControllerTest extends TestCase
 	protected function invokeAssetControllerMethod($methodName, array $args = [])
 	{
 		$controller = $this->createAssetController();
-		$controllerClassReflection = new ReflectionClass(get_class($controller));
+		$controllerClassReflection = new \ReflectionClass(get_class($controller));
 		$methodReflection = $controllerClassReflection->getMethod($methodName);
 		$methodReflection->setAccessible(true);
 		$result = $methodReflection->invokeArgs($controller, $args);
 		$methodReflection->setAccessible(false);
 		return $result;
+	}
+
+	/**
+	 * Composes asset bundle class source code.
+	 * @param array $config asset bundle config.
+	 * @return string class source code.
+	 */
+	protected function composeAssetBundleClassSource(array &$config)
+	{
+		$config = array_merge(
+			[
+				'namespace' => StringHelper::dirname(get_class($this)),
+				'class' => 'AppAsset',
+				'basePath' => $this->testFilePath,
+				'baseUrl' => '',
+				'css' => [],
+				'js' => [],
+				'depends' => [],
+			],
+			$config
+		);
+		foreach ($config as $name => $value) {
+			if (is_array($value)) {
+				$config[$name] = var_export($value, true);
+			}
+		}
+
+		$source = <<<EOL
+namespace {$config['namespace']};
+
+use yii\web\AssetBundle;
+
+class {$config['class']} extends AssetBundle
+{
+	public \$basePath = '{$config['basePath']}';
+	public \$baseUrl = '{$config['baseUrl']}';
+	public \$css = {$config['css']};
+	public \$js = {$config['js']};
+	public \$depends = {$config['depends']};
+}
+EOL;
+		return $source;
+	}
+
+	/**
+	 * Declares asset bundle class according to given configuration.
+	 * @param array $config asset bundle config.
+	 * @return string new class full name.
+	 */
+	protected function declareAssetBundleClass(array $config)
+	{
+		$sourceCode = $this->composeAssetBundleClassSource($config);
+		eval($sourceCode);
+		return $config['namespace'] . '\\' . $config['class'];
 	}
 
 	// Tests :
@@ -195,7 +236,7 @@ class AssetControllerTest extends TestCase
 		$this->assertTrue(file_exists($configFileName), 'Unable to create config file template!');
 	}
 
-	public function atestActionCompress()
+	public function testActionCompress()
 	{
 		// Given :
 		$cssFiles = [
@@ -219,15 +260,13 @@ class AssetControllerTest extends TestCase
 			}",
 		];
 		$this->createAssetSourceFiles($jsFiles);
+		$assetBundleClassName = $this->declareAssetBundleClass([
+			'css' => array_keys($cssFiles),
+			'js' => array_keys($jsFiles),
+		]);
 
 		$bundles = [
-			'app' => [
-				'css' => array_keys($cssFiles),
-				'js' => array_keys($jsFiles),
-				'depends' => [
-					'yii',
-				],
-			],
+			$assetBundleClassName
 		];
 		$bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
 
@@ -298,6 +337,18 @@ class AssetControllerTest extends TestCase
 				'/test/base/path/assets/input',
 				'/test/base/path/assets/output',
 				'.absolute-url-secure-class {background-image: url(https://secure.domain.com/img/image.gif);}',
+			],
+			[
+				"@font-face {
+				src: url('../fonts/glyphicons-halflings-regular.eot');
+				src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype');
+				}",
+				'/test/base/path/assets/input/css',
+				'/test/base/path/assets/output',
+				"@font-face {
+				src: url('../input/fonts/glyphicons-halflings-regular.eot');
+				src: url('../input/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype');
+				}",
 			],
 		];
 	}

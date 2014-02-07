@@ -5,21 +5,22 @@ Basic concepts of Yii
 Component and Object
 --------------------
 
-Classes of the Yii framework usually extend from one of the two base classes [[Object]] and [[Component]].
+Classes of the Yii framework usually extend from one of the two base classes [[yii\base\Object]] and [[yii\base\Component]].
 These classes provide useful features that are added automatically to all classes extending from them.
 
-The `Object` class provides the [configuration and property feature](../api/base/Object.md).
-The `Component` class extends from `Object` and adds [event handling](events.md) and [behaviors](behaviors.md).
+The [[yii\base\Object|Object]] class provides the [configuration and property feature](../api/base/Object.md).
+The [[yii\base\Component|Component]] class extends from [[yii\base\Object|Object]] and adds
+[event handling](events.md) and [behaviors](behaviors.md).
 
-`Object` is usually used for classes that represent basic data structures while `Component` is used for
-application components and other classes that implement higher logic.
+[[yii\base\Object|Object]] is usually used for classes that represent basic data structures while
+[[yii\base\Component|Component]] is used for application components and other classes that implement higher logic.
 
 
 Object Configuration
 --------------------
 
-The [[Object]] class introduces a uniform way of configuring objects. Any descendant class
-of [[Object]] should declare its constructor (if needed) in the following way so that
+The [[yii\base\Object|Object]] class introduces a uniform way of configuring objects. Any descendant class
+of [[yii\base\Object|Object]] should declare its constructor (if needed) in the following way so that
 it can be properly configured:
 
 ```php
@@ -81,8 +82,9 @@ Autoloading
 All classes, interfaces and traits are loaded automatically at the moment they are used. There's no need to use
 `include` or `require`. It is, as well, true for Composer-loaded packages and Yii extensions.
 
-Autoloader works according to [PSR-0](). That means namespaces and class, interface and trait
-names should correspond to file system paths except root namespace path that is defined by an alias.
+Autoloader works according to [PSR-4](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md).
+That means namespaces and class, interface and trait names should correspond to file system paths except root namespace
+path that is defined by an alias.
 
 For example, if standard alias `@app` refers to `/var/www/example.com/` then `\app\models\User` will be loaded from
 `/var/www/example.com/app/models/User.php`.

@@ -172,43 +172,34 @@ class FileValidatorTest extends TestCase
 		$val->validateAttribute($m, 'attr_files_empty');
 		$this->assertTrue($m->hasErrors('attr_files_empty'));
 		$this->assertSame($val->uploadRequired, current($m->getErrors('attr_files_empty')));
+
+		// single File with skipOnEmpty=false
+		$val = new FileValidator(['skipOnEmpty' => false]);
 		$m = $this->createModelForAttributeTest();
+		$val->validateAttribute($m, 'attr_files');
+		$this->assertFalse($m->hasErrors());
+		$val->validateAttribute($m, 'attr_files_empty');
+		$this->assertTrue($m->hasErrors('attr_files_empty'));
+		$this->assertSame($val->uploadRequired, current($m->getErrors('attr_files_empty')));
+		$m = $this->createModelForAttributeTest();
+
 		// too big
 		$val = new FileValidator(['maxSize' => 128]);
 		$val->validateAttribute($m, 'attr_files');
 		$this->assertTrue($m->hasErrors('attr_files'));
-		$this->assertTrue(
-			stripos(
-				current($m->getErrors('attr_files')),
-				str_ireplace(['{file}', '{limit}'], [$m->attr_files->name, 128], $val->tooBig)
-			) !== false
-		);
+		$this->assertTrue(stripos(current($m->getErrors('attr_files')), 'too big') !== false);
 		// to Small
 		$m = $this->createModelForAttributeTest();
 		$val = new FileValidator(['minSize' => 2048]);
 		$val->validateAttribute($m, 'attr_files');
 		$this->assertTrue($m->hasErrors('attr_files'));
-		$this->assertTrue(
-			stripos(
-				current($m->getErrors('attr_files')),
-				str_ireplace(['{file}', '{limit}'], [$m->attr_files->name, 2048], $val->tooSmall)
-			) !== false
-		);
+		$this->assertTrue(stripos(current($m->getErrors('attr_files')), 'too small') !== false);
 		// UPLOAD_ERR_INI_SIZE/UPLOAD_ERR_FORM_SIZE
 		$m = $this->createModelForAttributeTest();
 		$val = new FileValidator();
 		$val->validateAttribute($m, 'attr_err_ini');
 		$this->assertTrue($m->hasErrors('attr_err_ini'));
-		$this->assertTrue(
-			stripos(
-				current($m->getErrors('attr_err_ini')),
-				str_ireplace(
-					['{file}', '{limit}'],
-					[$m->attr_err_ini->name, $val->getSizeLimit()],
-					$val->tooBig
-				)
-			) !== false
-		);
+		$this->assertTrue(stripos(current($m->getErrors('attr_err_ini')), 'too big') !== false);
 		// UPLOAD_ERR_PARTIAL
 		$m = $this->createModelForAttributeTest();
 		$val = new FileValidator();
@@ -258,7 +249,6 @@ class FileValidatorTest extends TestCase
 		$val->validateAttribute($m, 'attr_err_part');
 		$this->assertTrue($m->hasErrors('attr_err_part'));
 		$this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_part')));
-		$log = Yii::$app->getLog()->toArray();
 	}
 
 	public function testValidateAttributeErrCantWrite()
@@ -268,7 +258,6 @@ class FileValidatorTest extends TestCase
 		$val->validateAttribute($m, 'attr_err_write');
 		$this->assertTrue($m->hasErrors('attr_err_write'));
 		$this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_write')));
-		$log = Yii::$app->getLog()->toArray();
 	}
 
 	public function testValidateAttributeErrExtension()
@@ -278,7 +267,6 @@ class FileValidatorTest extends TestCase
 		$val->validateAttribute($m, 'attr_err_ext');
 		$this->assertTrue($m->hasErrors('attr_err_ext'));
 		$this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_ext')));
-		$log = Yii::$app->getLog()->toArray();
 	}
 
 	public function testValidateAttributeErrNoTmpDir()
@@ -288,6 +276,5 @@ class FileValidatorTest extends TestCase
 		$val->validateAttribute($m, 'attr_err_tmp');
 		$this->assertTrue($m->hasErrors('attr_err_tmp'));
 		$this->assertSame(Yii::t('yii', 'File upload failed.'), current($m->getErrors('attr_err_tmp')));
-		$log = Yii::$app->getLog()->toArray();
 	}
 }

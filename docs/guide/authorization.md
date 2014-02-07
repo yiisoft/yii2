@@ -57,15 +57,26 @@ class SiteController extends Controller
 		return [
 			'access' => [
 				'class' => \yii\web\AccessControl::className(),
-				'only' => ['special'],
+				'only' => ['special-callback'],
 				'rules' => [
 					[
-						'actions' => ['special'],
+						'actions' => ['special-callback'],
 						'allow' => true,
 						'matchCallback' => function ($rule, $action) {
 							return date('d-m') === '31-10';
 						}
 					],
+```
+
+And the action:
+
+```php
+	// ...
+	// Match callback called! This page can be accessed only each October 31st
+	public function actionSpecialCallback()
+	{
+		return $this->render('happy-halloween');
+	}
 ```
 
 Sometimes you want a custom action to be taken when access is denied. In this case you can specify `denyCallback`.
@@ -198,7 +209,7 @@ public function behaviors()
 }
 ```
 
-Another way is to call [[User::checkAccess()]] where appropriate.
+Another way is to call [[yii\web\User::checkAccess()]] where appropriate.
 
 ### Using DB-based storage for RBAC
 
@@ -206,7 +217,7 @@ Storing RBAC hierarchy in database is less efficient performancewise but is much
 a good management UI for it so in case you need permissions structure that is managed by end user DB is your choice.
 
 In order to get started you need to configure database connection in `db` component. After it is done [get `schema-*.sql`
-file for your database](https://github.com/yiisoft/yii2/tree/master/framework/yii/rbac) and execute it.
+file for your database](https://github.com/yiisoft/yii2/tree/master/framework/rbac) and execute it.
 
 Next step is to configure `authManager` application component in application config file (`web.php` or `main.php`
 depending on template you've used):
@@ -237,7 +248,7 @@ public function editArticle($id)
     throw new NotFoundHttpException;
   }
   if (!\Yii::$app->user->checkAccess('edit_article', ['article' => $article])) {
-    throw new AccessDeniedHttpException;
+    throw new ForbiddenHttpException;
   }
   // ...
 }

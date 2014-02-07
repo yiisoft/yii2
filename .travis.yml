@@ -12,12 +12,16 @@ services:
   - mongodb
 
 install:
+# core framework:
   - tests/unit/data/travis/composer.sh
-#  - composer require satooshi/php-coveralls 0.6.* --dev --prefer-dist
   - tests/unit/data/travis/mongodb-setup.sh
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
+# basic application:
+  - composer install --dev --prefer-dist -d apps/basic
+  - cd apps/basic && php vendor/bin/codecept build && cd ../..
+  - cd apps && php -S localhost:8080 &
 
 before_script:
   - echo 'elasticsearch version ' && curl http://localhost:9200/

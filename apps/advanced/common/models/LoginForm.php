@@ -1,12 +1,11 @@
 <?php
-
 namespace common\models;
 
-use Yii;
 use yii\base\Model;
+use Yii;
 
 /**
- * LoginForm is the model behind the login form.
+ * Login form
  */
 class LoginForm extends Model
 {
@@ -17,7 +16,7 @@ class LoginForm extends Model
 	private $_user = false;
 
 	/**
-	 * @return array the validation rules.
+	 * @inheritdoc
 	 */
 	public function rules()
 	{

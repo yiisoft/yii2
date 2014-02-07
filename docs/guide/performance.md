@@ -7,6 +7,16 @@ on your application out of the box and can be fine-tuned further for production
 environment. As for the application, we'll provide some of the best practices
 along with examples on how to apply them to Yii.
 
+Preparing environment
+---------------------
+
+A well configured environment to run PHP application really matters. In order to get maximum performance:
+
+- Always use latest stable PHP version. Each major release brings significant performance improvements and reduced
+  memory usage.
+- Use [APC](http://ru2.php.net/apc) for PHP 5.4 and less or [Opcache](http://php.net/opcache) for PHP 5.5 and more. It
+  gives a very good performance boost.
+
 Preparing framework for production
 ----------------------------------
 
@@ -158,7 +168,8 @@ used to generate `ETag` header value.
 ### Database Optimization
 
 Fetching data from database is often the main performance bottleneck in
-a Web application. Although using caching may alleviate the performance hit,
+a Web application.
+Although using [caching](caching.md#Query-Caching) may alleviate the performance hit,
 it does not fully solve the problem. When the database contains enormous data
 and the cached data is invalid, fetching the latest data could be prohibitively
 expensive without proper database and query design.
@@ -214,3 +225,12 @@ request later if there's no need for immediate response.
 - queues + handlers.
 
 TBD
+
+### If nothing helps
+
+If nothing helps, never assume what may fix performance problem. Always profile your code instead before changing
+anything. The following tools may be helpful:
+
+- [Yii debug toolbar and debugger](module-debug.md)
+- [XDebug profiler](http://xdebug.org/docs/profiler)
+- [XHProf](http://www.php.net/manual/en/book.xhprof.php)

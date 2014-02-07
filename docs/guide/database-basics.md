@@ -1,16 +1,17 @@
 Database basics
 ===============
 
-Yii has a database access layer built on top of PHP's [PDO](http://www.php.net/manual/en/ref.pdo.php). It provides
+Yii has a database access layer built on top of PHP's [PDO](http://www.php.net/manual/en/book.pdo.php). It provides
 uniform API and solves some inconsistencies between different DBMS. By default Yii supports the following DBMS:
 
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
 - [PostgreSQL](http://www.postgresql.org/)
-- [CUBRID](http://www.cubrid.org/) (version 9.1.0 and higher).
+- [CUBRID](http://www.cubrid.org/): version 9.1.0 or higher.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
-- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx)
+- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2012 or above is required if you
+  want to use LIMIT/OFFSET.
 
 
 Configuration
@@ -260,7 +261,7 @@ $connection->createCommand()->createTable('tbl_post', [
 	'id' => 'pk',
 	'title' => 'string',
 	'text' => 'text',
-];
+]);
 ```
 
 For the full reference check [[\yii\db\Command]].

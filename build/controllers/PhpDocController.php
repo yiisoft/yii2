@@ -43,8 +43,8 @@ class PhpDocController extends Controller
 	{
 		$except = [];
 		if ($root === null) {
-			$root = dirname(dirname(YII_PATH));
-			$extensionPath = "$root/extensions/yii";
+			$root = dirname(YII_PATH);
+			$extensionPath = "$root/extensions";
 			foreach (scandir($extensionPath) as $extension) {
 				if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
 					Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
@@ -52,10 +52,18 @@ class PhpDocController extends Controller
 			}
 
 			$except = [
+				'.git/',
 				'/apps/',
 				'/build/',
 				'/docs/',
-				'/extensions/yii/composer/',
+				'/extensions/apidoc/helpers/PrettyPrinter.php',
+				'/extensions/codeception/TestCase.php',
+				'/extensions/codeception/DbTestCase.php',
+				'/extensions/composer/',
+				'/extensions/gii/components/DiffRendererHtmlInline.php',
+				'/extensions/twig/TwigSimpleFileLoader.php',
+				'/framework/BaseYii.php',
+				'/framework/Yii.php',
 				'/tests/',
 				'/vendor/',
 			];
@@ -71,13 +79,12 @@ class PhpDocController extends Controller
 				}
 				return null;
 			},
-			'only' => ['.php'],
+			'only' => ['*.php'],
 			'except' => array_merge($except, [
-				'BaseYii.php',
-				'Yii.php',
-				'/views/',
-				'/requirements/',
-				'/gii/generators/',
+				'views/',
+				'requirements/',
+				'gii/generators/',
+				'vendor/',
 			]),
 		];
 		$files = FileHelper::findFiles($root, $options);
@@ -298,7 +305,7 @@ class PhpDocController extends Controller
 					if (isset($prop['get']) && isset($prop['set'])) {
 						if ($prop['get']['type'] != $prop['set']['type']) {
 							$note = ' Note that the type of this property differs in getter and setter.'
-								  . ' See [[get'.ucfirst($propName).'()]] and [[set'.ucfirst($propName).'()]] for details.';
+								  . ' See [[get' . ucfirst($propName) . '()]] and [[set' . ucfirst($propName) . '()]] for details.';  
 						}
 					} elseif (isset($prop['get'])) {
 						// check if parent class has setter defined

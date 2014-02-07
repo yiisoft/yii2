@@ -2,14 +2,16 @@
 
 namespace yiiunit\extensions\elasticsearch;
 
+use yii\base\Event;
+use yii\db\BaseActiveRecord;
 use yii\elasticsearch\Connection;
-use yii\helpers\Json;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\data\ar\elasticsearch\ActiveRecord;
 use yiiunit\data\ar\elasticsearch\Customer;
 use yiiunit\data\ar\elasticsearch\OrderItem;
 use yiiunit\data\ar\elasticsearch\Order;
 use yiiunit\data\ar\elasticsearch\Item;
+use yiiunit\TestCase;
 
 /**
  * @group elasticsearch
@@ -47,18 +49,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		if ($db->createCommand()->indexExists('yiitest')) {
 			$db->createCommand()->deleteIndex('yiitest');
 		}
+		$db->createCommand()->createIndex('yiitest');
 
-		$db->post(['yiitest'], [], Json::encode([
-			'mappings' => [
-				"item" => [
-		            "_source" => [ "enabled" => true ],
-		            "properties" => [
-						// allow proper sorting by name
-		                "name" => ["type" => "string", "index" => "not_analyzed"],
-		            ]
-		        ]
-			],
-		]));
+		$command = $db->createCommand();
+		Customer::setUpMapping($command);
+		Item::setUpMapping($command);
+		Order::setUpMapping($command);
+		OrderItem::setUpMapping($command);
+
+		$db->createCommand()->flushIndex('yiitest');
 
 		$customer = new Customer();
 		$customer->id = 1;
@@ -99,15 +98,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 		$order = new Order();
 		$order->id = 1;
-		$order->setAttributes(['customer_id' => 1, 'create_time' => 1325282384, 'total' => 110.0], false);
+		$order->setAttributes(['customer_id' => 1, 'created_at' => 1325282384, 'total' => 110.0], false);
 		$order->save(false);
 		$order = new Order();
 		$order->id = 2;
-		$order->setAttributes(['customer_id' => 2, 'create_time' => 1325334482, 'total' => 33.0], false);
+		$order->setAttributes(['customer_id' => 2, 'created_at' => 1325334482, 'total' => 33.0], false);
 		$order->save(false);
 		$order = new Order();
 		$order->id = 3;
-		$order->setAttributes(['customer_id' => 2, 'create_time' => 1325502201, 'total' => 40.0], false);
+		$order->setAttributes(['customer_id' => 2, 'created_at' => 1325502201, 'total' => 40.0], false);
 		$order->save(false);
 
 		$orderItem = new OrderItem();
@@ -130,6 +129,20 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$orderItem->save(false);
 
 		$db->createCommand()->flushIndex('yiitest');
+	}
+
+	public function testFindAsArray()
+	{
+		// asArray
+		$customer = $this->callCustomerFind()->where(['id' => 2])->asArray()->one();
+		$this->assertEquals([
+			'id' => 2,
+			'email' => 'user2@example.com',
+			'name' => 'user2',
+			'address' => 'address2',
+			'status' => 1,
+			'_score' => 1.0
+		], $customer);
 	}
 
 	public function testSearch()
@@ -224,14 +237,14 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$orders = $customer->orders;
 		$this->assertEquals(2, count($orders));
 
-		$orders = $customer->getOrders()->where(['between', 'create_time', 1325334000, 1325400000])->all();
+		$orders = $customer->getOrders()->where(['between', 'created_at', 1325334000, 1325400000])->all();
 		$this->assertEquals(1, count($orders));
 		$this->assertEquals(2, $orders[0]->id);
 	}
 
 	public function testFindEagerViaRelation()
 	{
-		$orders = Order::find()->with('items')->orderBy('create_time')->all();
+		$orders = Order::find()->with('items')->orderBy('created_at')->all();
 		$this->assertEquals(3, count($orders));
 		$order = $orders[0];
 		$this->assertEquals(1, $order->id);
@@ -243,8 +256,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 	public function testInsertNoPk()
 	{
-		$this->assertEquals([ActiveRecord::PRIMARY_KEY_NAME], Customer::primaryKey());
-		$pkName = ActiveRecord::PRIMARY_KEY_NAME;
+		$this->assertEquals(['id'], Customer::primaryKey());
+		$pkName = 'id';
 
 		$customer = new Customer;
 		$customer->email = 'user4@example.com';
@@ -257,6 +270,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertTrue($customer->isNewRecord);
 
 		$customer->save();
+		$this->afterSave();
 
 		$this->assertNotNull($customer->primaryKey);
 		$this->assertNotNull($customer->oldPrimaryKey);
@@ -268,7 +282,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 	public function testInsertPk()
 	{
-		$pkName = ActiveRecord::PRIMARY_KEY_NAME;
+		$pkName = 'id';
 
 		$customer = new Customer;
 		$customer->$pkName = 5;
@@ -288,17 +302,26 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 	public function testUpdatePk()
 	{
-		$pkName = ActiveRecord::PRIMARY_KEY_NAME;
+		$pkName = 'id';
 
-		$pk = [$pkName => 2];
-		$orderItem = Order::find($pk);
+		$orderItem = Order::find([$pkName => 2]);
 		$this->assertEquals(2, $orderItem->primaryKey);
 		$this->assertEquals(2, $orderItem->oldPrimaryKey);
 		$this->assertEquals(2, $orderItem->$pkName);
 
-		$this->setExpectedException('yii\base\InvalidCallException');
+//		$this->setExpectedException('yii\base\InvalidCallException');
 		$orderItem->$pkName = 13;
+		$this->assertEquals(13, $orderItem->primaryKey);
+		$this->assertEquals(2, $orderItem->oldPrimaryKey);
+		$this->assertEquals(13, $orderItem->$pkName);
 		$orderItem->save();
+		$this->afterSave();
+		$this->assertEquals(13, $orderItem->primaryKey);
+		$this->assertEquals(13, $orderItem->oldPrimaryKey);
+		$this->assertEquals(13, $orderItem->$pkName);
+
+		$this->assertNull(Order::find([$pkName => 2]));
+		$this->assertNotNull(Order::find([$pkName => 13]));
 	}
 
 	public function testFindLazyVia2()
@@ -306,7 +329,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		/** @var TestCase|ActiveRecordTestTrait $this */
 		/** @var Order $order */
 		$orderClass = $this->getOrderClass();
-		$pkName = ActiveRecord::PRIMARY_KEY_NAME;
+		$pkName = 'id';
 
 		$order = new $orderClass();
 		$order->$pkName = 100;
@@ -320,18 +343,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
 	public function testBooleanAttribute()
 	{
 		$db = $this->getConnection();
-		$db->createCommand()->deleteIndex('yiitest');
-		$db->post(['yiitest'], [], Json::encode([
-			'mappings' => [
-				"customer" => [
-		            "_source" => [ "enabled" => true ],
-		            "properties" => [
-						// this is for the boolean test
-		                "status" => ["type" => "boolean"],
-		            ]
-		        ]
-			],
-		]));
+		Customer::deleteAll();
+		Customer::setUpMapping($db->createCommand(), true);
 
 		$customerClass = $this->getCustomerClass();
 		$customer = new $customerClass();
@@ -364,9 +377,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertEquals(2, count($customers));
 	}
 
-	public function testfindAsArrayFields()
+	public function testFindAsArrayFields()
 	{
-		$customerClass = $this->getCustomerClass();
 		/** @var TestCase|ActiveRecordTestTrait $this */
 		// indexBy + asArray
 		$customers = $this->callCustomerFind()->asArray()->fields(['id', 'name'])->all();
@@ -388,7 +400,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertArrayNotHasKey('status', $customers[2]);
 	}
 
-	public function testfindIndexByFields()
+	public function testFindIndexByFields()
 	{
 		$customerClass = $this->getCustomerClass();
 		/** @var TestCase|ActiveRecordTestTrait $this */
@@ -439,9 +451,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertNull($customers['3-user3']->status);
 	}
 
-	public function testfindIndexByAsArrayFields()
+	public function testFindIndexByAsArrayFields()
 	{
-		$customerClass = $this->getCustomerClass();
 		/** @var TestCase|ActiveRecordTestTrait $this */
 		// indexBy + asArray
 		$customers = $this->callCustomerFind()->indexBy('name')->asArray()->fields('id', 'name')->all();
@@ -484,5 +495,34 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$this->assertArrayNotHasKey('status', $customers['3-user3']);
 	}
 
+	public function testAfterFindGet()
+	{
+		/** @var BaseActiveRecord $customerClass */
+		$customerClass = $this->getCustomerClass();
 
+		$afterFindCalls = [];
+		Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND, function($event) use (&$afterFindCalls) {
+			/** @var BaseActiveRecord $ar */
+			$ar = $event->sender;
+			$afterFindCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+		});
+
+		$customer = Customer::get(1);
+		$this->assertNotNull($customer);
+		$this->assertEquals([[$customerClass, false, 1, false]], $afterFindCalls);
+		$afterFindCalls = [];
+
+		$customer = Customer::mget([1, 2]);
+		$this->assertNotNull($customer);
+		$this->assertEquals([
+			[$customerClass, false, 1, false],
+			[$customerClass, false, 2, false],
+		], $afterFindCalls);
+		$afterFindCalls = [];
+
+		Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND);
+	}
+
+
+	// TODO test AR with not mapped PK
 }

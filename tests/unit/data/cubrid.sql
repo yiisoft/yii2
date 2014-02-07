@@ -46,7 +46,7 @@ CREATE TABLE `tbl_item` (
 CREATE TABLE `tbl_order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `customer_id` int(11) NOT NULL,
-  `create_time` int(11) NOT NULL,
+  `created_at` int(11) NOT NULL,
   `total` decimal(10,0) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `FK_order_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `tbl_customer` (`id`) ON DELETE CASCADE
@@ -107,9 +107,9 @@ INSERT INTO tbl_item (name, category_id) VALUES ('Ice Age', 2);
 INSERT INTO tbl_item (name, category_id) VALUES ('Toy Story', 2);
 INSERT INTO tbl_item (name, category_id) VALUES ('Cars', 2);
 
-INSERT INTO tbl_order (customer_id, create_time, total) VALUES (1, 1325282384, 110.0);
-INSERT INTO tbl_order (customer_id, create_time, total) VALUES (2, 1325334482, 33.0);
-INSERT INTO tbl_order (customer_id, create_time, total) VALUES (2, 1325502201, 40.0);
+INSERT INTO tbl_order (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO tbl_order (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
+INSERT INTO tbl_order (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
 
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
 INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);

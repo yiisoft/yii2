@@ -29,15 +29,15 @@ class Customer extends ActiveRecord
 		return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('id');
 	}
 
-	public static function active($query)
-	{
-		$query->andWhere('status=1');
-	}
-
 	public function afterSave($insert)
 	{
 		ActiveRecordTest::$afterSaveInsert = $insert;
 		ActiveRecordTest::$afterSaveNewRecord = $this->isNewRecord;
 		parent::afterSave($insert);
+	}
+
+	public static function createQuery()
+	{
+		return new CustomerQuery(['modelClass' => get_called_class()]);
 	}
 }

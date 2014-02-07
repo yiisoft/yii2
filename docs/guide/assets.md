@@ -2,9 +2,9 @@ Managing assets
 ===============
 
 An asset in Yii is a file that is included into the page. It could be CSS, JavaScript or
-any other file. Framework provides many ways to work with assets from basics such as adding `<script src="` tag
+any other file. Framework provides many ways to work with assets from basics such as adding `<script src="...">` tag
 for a file that is [handled by View](view.md) section to advanced usage such as publishing files that are not
-under webserve document root, resolving JavaScript dependencies or minifying CSS.
+under the webservers document root, resolving JavaScript dependencies or minifying CSS.
 
 Declaring asset bundle
 ----------------------
@@ -13,9 +13,15 @@ In order to publish some assets you should declare an asset bundle first. The bu
 directories to be published and their dependencies on other asset bundles.
 
 Both basic and advanced application templates contain `AppAsset` asset bundle class that defines assets required
-application wide. Let's review basic application asset bundle class:
+application wide. An asset bundle class always extends from [[yii\web\AssetBundle]].
+
+Let's review basic application's asset bundle class:
 
 ```php
+<?php
+
+use yii\web\AssetBundle as AssetBundle;
+
 class AppAsset extends AssetBundle
 {
 	public $basePath = '@webroot';
@@ -51,6 +57,10 @@ Here `yii\web\YiiAsset` adds Yii's JavaScript library while `yii\bootstrap\Boots
 
 Asset bundles are regular classes so if you need to define another one, just create alike class with unique name. This
 class can be placed anywhere but the convention for it is to be under `assets` directory of the application.
+
+Additionally you may specify `$jsOptions`, `$cssOptions` and `$publishOptions` that will be passed to
+[[\yii\web\View::registerJsFile()]], [[\yii\web\View::registerCssFile()]] and [[\yii\web\AssetManager::publish()]]
+respectively during registering and publising an asset.
 
 Registering asset bundle
 ------------------------
@@ -188,8 +198,22 @@ By default for JavaScript compression Yii tries to use
 For CSS compression Yii assumes that [YUI Compressor](https://github.com/yui/yuicompressor/) is looked up in a file
 named `yuicompressor.jar`.
 
-In order to compress resources with these two you need to download both and place where your `yii` console bootstrap
-file is using named mentioned above. Since both are Java tools you need JRE installed.
+In order to compress both JavaScript and CSS, you need to download both tools and place them under the directory
+containing your `yii` console bootstrap file. You also need to install JRE in order to run these tools.
+
+You may customize the compression commands (e.g. changing the location of the jar files) in the `config.php` file
+like the following,
+
+```php
+return [
+   	'cssCompressor' => 'java -jar path.to.file\yuicompressor.jar  --type css {from} -o {to}',
+   	'jsCompressor' => 'java -jar path.to.file\compiler.jar --js {from} --js_output_file {to}',
+];
+```
+
+where `{from}` and `{to}` are tokens that will be replaced with the actual source and target file paths, respectively,
+when the `asset` command is compressing every file.
+
 
 ### Performing compression
 
@@ -206,7 +230,7 @@ assets file like the following:
 'components' => [
 	// ...
 	'assetManager' => [
-		'bundles' => require /path/to/myapp/config/assets_compressed.php,
+		'bundles' => require '/path/to/myapp/config/assets_compressed.php',
 	],
 ],
 ```

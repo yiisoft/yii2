@@ -20,7 +20,7 @@ curl -s http://getcomposer.org/installer | php
 You can then install the application using the following command:
 
 ~~~
-php composer.phar create-project --stability=dev yiisoft/yii2-app-advanced /path/to/yii-application
+php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-advanced /path/to/yii-application
 ~~~
 
 Getting started
@@ -30,13 +30,12 @@ After you install the application, you have to conduct the following steps to in
 the installed application. You only need to do these once for all.
 
 1. Execute the `init` command and select `dev` as environment.
----
-php /path/to/yii-application/init
----
-2. Create a new database. It is assumed that MySQL InnoDB is used. If not, adjust `console/migrations/m130524_201442_init.php`.
-3. In `common/config/params.php` set your database details in `components.db` values.
-4. Apply migrations with console command 'yii migrate'.
-5. Set document roots of your Web server:
+   ```
+   php /path/to/yii-application/init
+   ```
+2. Create a new database and adjust the `components.db` configuration in `common/config/main-local.php` accordingly.
+3. Apply migrations with console command `yii migrate`.
+4. Set document roots of your Web server:
 
 - for frontend `/path/to/yii-application/frontend/web/` and using the URL `http://frontend/`
 - for backend `/path/to/yii-application/backend/web/` and using the URL `http://backend/`
@@ -91,7 +90,7 @@ There are multiple problems with straightforward approach to configuration:
 - Defining all configuration options for each case is very repetitive and takes too much time to maintain.
 
 In order to solve these issues Yii introduces environments concept that is very simple. Each environment is represented
-by a set of files under `environments` directory. `init` command is used to switch between these. What is really does is
+by a set of files under `environments` directory. `init` command is used to switch between these. What it really does is
 just copying everything from environment directory over the root directory where all applications are.
 
 Typically environment contains application bootstrap files such as `index.php` and config files suffixed with
@@ -100,6 +99,8 @@ Typically environment contains application bootstrap files such as `index.php` a
 In order to avoid duplication configurations are overriding each other. For example, frontend reads configuration in the
 following order:
 
+- `common/config/main.php`
+- `common/config/main-local.php`
 - `frontend/config/main.php`
 - `frontend/config/main-local.php`
 
@@ -112,8 +113,9 @@ Parameters are read in the following order:
 
 The later config file overrides the former.
 
-Another difference is that most application component configurations are moved to params. Since params are read from
-`common` as well it allows you to specify database connection in one file and it will be then used for all applications.
+Here's the full scheme:
+
+![Advanced application configs](images/advanced-app-configs.png)
 
 Configuring Composer
 --------------------
@@ -171,5 +173,5 @@ your project.
 Now the interesting part. You can add more packages your application needs to `require` section.
 All these packages are coming from [packagist.org](https://packagist.org/) so feel free to browse the website for useful code.
 
-After your `composer.json` is changed you can run `php composer.phar update`, wait till packages are downloaded and
+After your `composer.json` is changed you can run `php composer.phar update --prefer-dist`, wait till packages are downloaded and
 installed and then just use them. Autoloading of classes will be handled automatically.

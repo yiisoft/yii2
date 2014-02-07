@@ -130,4 +130,114 @@ class QueryBuilderTest extends DatabaseTestCase
 		$tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
 		$this->assertEquals(0, count($tableSchema->primaryKey));
 	}
+
+	/* qiangxue: the following tests are commented because they vary by different DB drivers. need a better test scheme.
+	public function testBuildWhereExists()
+	{
+		$expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE EXISTS (SELECT `1` FROM `Website` `w`)";
+		$expectedQueryParams = null;
+
+		$subQuery = new Query();
+		$subQuery->select('1')
+			->from('Website w');
+
+		$query = new Query();
+		$query->select('id')
+			->from('TotalExample t')
+			->where(['exists', $subQuery]);
+
+		list($actualQuerySql, $actualQueryParams) = $this->getQueryBuilder()->build($query);
+		$this->assertEquals($expectedQuerySql, $actualQuerySql);
+		$this->assertEquals($expectedQueryParams, $actualQueryParams);
+	}
+
+	public function testBuildWhereNotExists()
+	{
+		$expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE NOT EXISTS (SELECT `1` FROM `Website` `w`)";
+		$expectedQueryParams = null;
+
+		$subQuery = new Query();
+		$subQuery->select('1')
+			->from('Website w');
+
+		$query = new Query();
+		$query->select('id')
+			->from('TotalExample t')
+			->where(['not exists', $subQuery]);
+
+		list($actualQuerySql, $actualQueryParams) = $this->getQueryBuilder()->build($query);
+		$this->assertEquals($expectedQuerySql, $actualQuerySql);
+		$this->assertEquals($expectedQueryParams, $actualQueryParams);
+	}
+
+	public function testBuildWhereExistsWithParameters()
+	{
+		$expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND (w.merchant_id = :merchant_id))) AND (t.some_column = :some_value)";
+		$expectedQueryParams = [':some_value' => "asd", ':merchant_id' => 6];
+
+		$subQuery = new Query();
+		$subQuery->select('1')
+			->from('Website w')
+			->where('w.id = t.website_id')
+			->andWhere('w.merchant_id = :merchant_id', [':merchant_id' => 6]);
+
+		$query = new Query();
+		$query->select('id')
+			->from('TotalExample t')
+			->where(['exists', $subQuery])
+			->andWhere('t.some_column = :some_value', [':some_value' => "asd"]);
+
+		list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+		$this->assertEquals($expectedQuerySql, $actualQuerySql);
+		$this->assertEquals($expectedQueryParams, $queryParams);
+	}
+
+	public function testBuildWhereExistsWithArrayParameters()
+	{
+		$expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND ((`w`.`merchant_id`=:qp0) AND (`w`.`user_id`=:qp1)))) AND (`t`.`some_column`=:qp2)";
+		$expectedQueryParams = [':qp0' => 6, ':qp1' => 210, ':qp2' => 'asd'];
+
+		$subQuery = new Query();
+		$subQuery->select('1')
+			->from('Website w')
+			->where('w.id = t.website_id')
+			->andWhere(['w.merchant_id' => 6, 'w.user_id' => '210']);
+
+		$query = new Query();
+		$query->select('id')
+			->from('TotalExample t')
+			->where(['exists', $subQuery])
+			->andWhere(['t.some_column' => "asd"]);
+
+		list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+		$this->assertEquals($expectedQuerySql, $actualQuerySql);
+		$this->assertEquals($expectedQueryParams, $queryParams);
+	}
+	*/
+	
+	/*
+	This test contains three select queries connected with UNION and UNION ALL constructions.
+	It could be useful to use "phpunit --group=db --filter testBuildUnion" command for run it.
+	
+	 public function testBuildUnion()
+	 {
+	 	$expectedQuerySql = "SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2) UNION ( SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 ) UNION ALL ( SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3 )";
+    		$query = new Query();
+    		$secondQuery = new Query();
+    		$secondQuery->select('id')
+      			->from('TotalTotalExample t2')
+      			->where('w > 5');
+    		$thirdQuery = new Query();
+    		$thirdQuery->select('id')
+      			->from('TotalTotalExample t3')
+      			->where('w = 3');
+    		$query->select('id')
+      			->from('TotalExample t1')
+      			->where(['and', 'w > 0', 'x < 2'])
+      			->union($secondQuery)
+      			->union($thirdQuery, TRUE);
+    		list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+    		$this->assertEquals($expectedQuerySql, $actualQuerySql);
+  	 }*/
+
 }

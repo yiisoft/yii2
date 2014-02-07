@@ -6,7 +6,7 @@ static data in cache and serving it from cache when requested, the application s
 
 
 Base Concepts
---------------------------
+-------------
 
 Using cache in Yii involves configuring and accessing a cache application component. The following
 application configuration specifies a cache component that uses [memcached](http://memcached.org/) with
@@ -62,7 +62,7 @@ is a summary of the available cache components:
   balancers, etc.)
 
 * [[\yii\caching\RedisCache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
-  (redis version 2.6 or higher is required).
+  (redis version 2.6.12 or higher is required).
 
 * [[\yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
   ([see also](http://php.net/manual/en/book.wincache.php)) extension.
@@ -73,7 +73,7 @@ is a summary of the available cache components:
   [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
   as the underlying caching medium.
 
-Tip: because all these cache components extend from the same base class [[Cache]], one can switch to use
+Tip: because all these cache components extend from the same base class [[yii\caching\Cache]], one can switch to use
 a different type of cache without modifying the code that uses cache.
 
 Caching can be used at different levels. At the lowest level, we use cache to store a single piece of data,
@@ -92,9 +92,9 @@ Data Caching
 
 Data caching is about storing some PHP variable in cache and retrieving it later from cache. For this purpose,
 the cache component base class [[\yii\caching\Cache]] provides two methods that are used most of the time:
-[[set()]] and [[get()]]. Note, only serializable variables and objects could be cached successfully.
+[[yii\caching\Cache::set()|set()]] and [[yii\caching\Cache::get()|get()]]. Note, only serializable variables and objects could be cached successfully.
 
-To store a variable `$value` in cache, we choose a unique `$key` and call [[set()]] to store it:
+To store a variable `$value` in cache, we choose a unique `$key` and call [[yii\caching\Cache::set()|set()]] to store it:
 
 ```php
 Yii::$app->cache->set($key, $value);
@@ -102,7 +102,7 @@ Yii::$app->cache->set($key, $value);
 
 The cached data will remain in the cache forever unless it is removed because of some caching policy
 (e.g. caching space is full and the oldest data are removed). To change this behavior, we can also supply
-an expiration parameter when calling [[set()]] so that the data will be removed from the cache after
+an expiration parameter when calling [[yii\caching\Cache::set()|set()]] so that the data will be removed from the cache after
 a certain period of time:
 
 ```php
@@ -110,7 +110,7 @@ a certain period of time:
 Yii::$app->cache->set($key, $value, 45);
 ```
 
-Later when we need to access this variable (in either the same or a different web request), we call [[get()]]
+Later when we need to access this variable (in either the same or a different web request), we call [[yii\caching\Cache::get()|get()]]
 with the key to retrieve it from cache. If the value returned is `false`, it means the value is not available
 in cache and we should regenerate it:
 
@@ -118,7 +118,7 @@ in cache and we should regenerate it:
 public function getCachedData()
 {
 	$key = /* generate unique key here */;
-	$value = Yii::$app->getCache()->get($key);
+	$value = Yii::$app->cache->get($key);
 	if ($value === false) {
 		$value = /* regenerate value because it is not found in cache and then save it in cache for later use */;
 		Yii::$app->cache->set($key, $value);
@@ -134,18 +134,20 @@ may be cached in the application. It is **NOT** required that the key is unique 
 the cache component is intelligent enough to differentiate keys for different applications.
 
 Some cache storages, such as MemCache, APC, support retrieving multiple cached values in a batch mode,
-which may reduce the overhead involved in retrieving cached data. A method named [[mget()]] is provided
+which may reduce the overhead involved in retrieving cached data. A method named [[yii\caching\Cache::mget()|mget()]] is provided
 to exploit this feature. In case the underlying cache storage does not support this feature,
-[[mget()]] will still simulate it.
+[[yii\caching\Cache::mget()|mget()]] will still simulate it.
 
-To remove a cached value from cache, call [[delete()]]; and to remove everything from cache, call [[flush()]].
-Be very careful when calling [[flush()]] because it also removes cached data that are from other applications.
+To remove a cached value from cache, call [[yii\caching\Cache::delete()|delete()]]; and to remove everything from cache, call
+[[yii\caching\Cache::flush()|flush()]].
+Be very careful when calling [[yii\caching\Cache::flush()|flush()]] because it also removes cached data that are from
+other applications if the cache is shared among different applications.
 
-Note, because [[Cache]] implements `ArrayAccess`, a cache component can be used liked an array. The followings
+Note, because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used liked an array. The followings
 are some examples:
 
 ```php
-$cache = Yii::$app->getComponent('cache');
+$cache = Yii::$app->cache;
 $cache['var1'] = $value1;  // equivalent to: $cache->set('var1', $value1);
 $value2 = $cache['var2'];  // equivalent to: $value2 = $cache->get('var2');
 ```
@@ -157,10 +159,10 @@ are caching the content of some file and the file is changed, we should invalida
 content from the file instead of the cache.
 
 We represent a dependency as an instance of [[\yii\caching\Dependency]] or its child class. We pass the dependency
-instance along with the data to be cached when calling `set()`.
+instance along with the data to be cached when calling [[yii\caching\Cache::set()|set()]].
 
 ```php
-use yii\cache\FileDependency;
+use yii\caching\FileDependency;
 
 // the value will expire in 30 seconds
 // it may also be invalidated earlier if the dependent file is changed
@@ -172,17 +174,25 @@ get a false value, indicating the data needs to be regenerated.
 
 Below is a summary of the available cache dependencies:
 
-- [[\yii\cache\FileDependency]]: the dependency is changed if the file's last modification time is changed.
-- [[\yii\cache\GroupDependency]]: marks a cached data item with a group name. You may invalidate the cached data items
-  with the same group name all at once by calling [[\yii\cache\GroupDependency::invalidate()]].
-- [[\yii\cache\DbDependency]]: the dependency is changed if the query result of the specified SQL statement is changed.
-- [[\yii\cache\ChainedDependency]]: the dependency is changed if any of the dependencies on the chain is changed.
-- [[\yii\cache\ExpressionDependency]]: the dependency is changed if the result of the specified PHP expression is
+- [[\yii\caching\FileDependency]]: the dependency is changed if the file's last modification time is changed.
+- [[\yii\caching\GroupDependency]]: marks a cached data item with a group name. You may invalidate the cached data items
+  with the same group name all at once by calling [[\yii\caching\GroupDependency::invalidate()]].
+- [[\yii\caching\DbDependency]]: the dependency is changed if the query result of the specified SQL statement is changed.
+- [[\yii\caching\ChainedDependency]]: the dependency is changed if any of the dependencies on the chain is changed.
+- [[\yii\caching\ExpressionDependency]]: the dependency is changed if the result of the specified PHP expression is
   changed.
 
 ### Query Caching
 
-TBD: http://www.yiiframework.com/doc/guide/1.1/en/caching.data#query-caching
+For caching the result of database queries you can wrap them in calls to [[yii\db\Connection::beginCache()]]
+and [[yii\db\Connection::endCache()]]:
+
+```php
+$connection->beginCache(60); // cache all query results for 60 seconds.
+// your db query code here...
+$connection->endCache();
+```
+
 
 Fragment Caching
 ----------------

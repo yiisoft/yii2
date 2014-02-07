@@ -1,6 +1,7 @@
 <?php
 
 namespace yiiunit;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the base class for all yii framework unit tests.
@@ -45,8 +46,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 			'id' => 'testapp',
 			'basePath' => __DIR__,
 		];
+		$defaultConfig['vendorPath'] = dirname(dirname(__DIR__)) . '/vendor';
 
-		new $appClass(array_merge($defaultConfig, $config));
+		new $appClass(ArrayHelper::merge($defaultConfig, $config));
 	}
 
 	/**

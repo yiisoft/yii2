@@ -124,6 +124,13 @@ class UrlManagerTest extends TestCase
 		]);
 		$url = $manager->createAbsoluteUrl('post/view', ['id' => 1, 'title' => 'sample post']);
 		$this->assertEquals('http://www.example.com?r=post/view&id=1&title=sample+post', $url);
+
+		$url = $manager->createAbsoluteUrl('post/view', ['id' => 1, 'title' => 'sample post'], 'https');
+		$this->assertEquals('https://www.example.com?r=post/view&id=1&title=sample+post', $url);
+
+		$manager->hostInfo = 'https://www.example.com';
+		$url = $manager->createAbsoluteUrl('post/view', ['id' => 1, 'title' => 'sample post'], 'http');
+		$this->assertEquals('http://www.example.com?r=post/view&id=1&title=sample+post', $url);
 	}
 
 	public function testParseRequest()

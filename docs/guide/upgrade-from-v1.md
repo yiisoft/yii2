@@ -20,9 +20,9 @@ class loader.
 Component and Object
 --------------------
 
-Yii 2.0 breaks the `CComponent` class in 1.1 into two classes: `Object` and `Component`.
-The `Object` class is a lightweight base class that allows defining class properties
-via getters and setters. The `Component` class extends from `Object` and supports
+Yii 2.0 breaks the `CComponent` class in 1.1 into two classes: [[yii\base\Object]] and [[yii\base\Component]].
+The [[yii\base\Object|Object]] class is a lightweight base class that allows defining class properties
+via getters and setters. The [[yii\base\Component|Component]] class extends from [[yii\base\Object|Object]] and supports
 the event feature and the behavior feature.
 
 If your class does not need the event or behavior feature, you should consider using
@@ -35,8 +35,8 @@ More details about Object and component can be found in the [Basic concepts sect
 Object Configuration
 --------------------
 
-The `Object` class introduces a uniform way of configuring objects. Any descendant class
-of `Object` should declare its constructor (if needed) in the following way so that
+The [[yii\base\Object|Object]] class introduces a uniform way of configuring objects. Any descendant class
+of [[yii\base\Object|Object]] should declare its constructor (if needed) in the following way so that
 it can be properly configured:
 
 ```php
@@ -60,7 +60,7 @@ class MyClass extends \yii\base\Object
 
 In the above, the last parameter of the constructor must take a configuration array
 which contains name-value pairs for initializing the properties at the end of the constructor.
-You can override the `init()` method to do initialization work that should be done after
+You can override the [[yii\base\Object::init()|init()]] method to do initialization work that should be done after
 the configuration is applied.
 
 By following this convention, you will be able to create and configure a new object
@@ -144,7 +144,7 @@ More on path aliases can be found in the [Basic concepts section](basics.md).
 View
 ----
 
-Yii 2.0 introduces a `View` class to represent the view part of the MVC pattern.
+Yii 2.0 introduces a [[yii\web\View|View]] class to represent the view part of the MVC pattern.
 It can be configured globally through the "view" application component. It is also
 accessible in any view file via `$this`. This is one of the biggest changes compared to 1.1:
 **`$this` in a view file no longer refers to the controller or widget object.**
@@ -162,15 +162,14 @@ $content = Yii::$app->view->renderFile($viewFile, $params);
 // $view->renderFile($viewFile, $params);
 ```
 
-
-Also, there is no more `CClientScript` in Yii 2.0. The `View` class has taken over its role
+Also, there is no more `CClientScript` in Yii 2.0. The [[yii\web\View|View]] class has taken over its role
 with significant improvements. For more details, please see the "assets" subsection.
 
 While Yii 2.0 continues to use PHP as its main template language, it comes with two official extensions
 adding support for two popular template engines: Smarty and Twig. The Prado template engine is
 no longer supported. To use these template engines, you just need to use `tpl` as the file
 extension for your Smarty views, or `twig` for Twig views. You may also configure the
-`View::renderers` property to use other template engines. See [Using template engines](template.md) section
+[[yii\web\View::$renderers|View::$renderers]] property to use other template engines. See [Using template engines](template.md) section
 of the guide for more details.
 
 See [View section](view.md) for more details.
@@ -179,12 +178,12 @@ See [View section](view.md) for more details.
 Models
 ------
 
-A model is now associated with a form name returned by its `formName()` method. This is
+A model is now associated with a form name returned by its [[yii\base\Model::formName()|formName()]] method. This is
 mainly used when using HTML forms to collect user inputs for a model. Previously in 1.1,
 this is usually hardcoded as the class name of the model.
 
-A new methods called `load()` and `Model::loadMultiple()` is introduced to simplify the data population from user inputs
-to a model. For example,
+New methods called [[yii\base\Model::load()|load()] and [[yii\base\Model::loadMultiple()|Model::loadMultiple()]] are
+introduced to simplify the data population from user inputs to a model. For example,
 
 ```php
 $model = new Post;
@@ -204,10 +203,10 @@ while ($tagsCount-- > 0) {
 Model::loadMultiple($postTags, $_POST);
 ```
 
-Yii 2.0 introduces a new method called `scenarios()` to declare which attributes require
-validation under which scenario. Child classes should overwrite `scenarios()` to return
+Yii 2.0 introduces a new method called [[yii\base\Model::scenarios()|scenarios()]] to declare which attributes require
+validation under which scenario. Child classes should overwrite [[yii\base\Model::scenarios()|scenarios()]] to return
 a list of scenarios and the corresponding attributes that need to be validated when
-`validate()` is called. For example,
+[[yii\base\Model::validate()|validate()]] is called. For example,
 
 ```php
 public function scenarios()
@@ -221,12 +220,12 @@ public function scenarios()
 
 
 This method also determines which attributes are safe and which are not. In particular,
-given a scenario, if an attribute appears in the corresponding attribute list in `scenarios()`
+given a scenario, if an attribute appears in the corresponding attribute list in [[yii\base\Model::scenarios()|scenarios()]]
 and the name is not prefixed with `!`, it is considered *safe*.
 
-Because of the above change, Yii 2.0 no longer has "safe" and "unsafe" validators.
+Because of the above change, Yii 2.0 no longer has "unsafe" validator.
 
-If your model only has one scenario (very common), you do not have to overwrite `scenarios()`,
+If your model only has one scenario (very common), you do not have to overwrite [[yii\base\Model::scenarios()|scenarios()]],
 and everything will still work like the 1.1 way.
 
 To learn more about Yii 2.0 models refer to [Models](model.md) section of the guide.
@@ -235,8 +234,9 @@ To learn more about Yii 2.0 models refer to [Models](model.md) section of the gu
 Controllers
 -----------
 
-The `render()` and `renderPartial()` methods now return the rendering results instead of directly
-sending them out. You have to `echo` them explicitly, e.g., `echo $this->render(...);`.
+The [[yii\base\Controller::render()|render()]] and [[yii\base\Controller::renderPartial()|renderPartial()]] methods
+now return the rendering results instead of directly sending them out.
+You have to `echo` them explicitly, e.g., `echo $this->render(...);`.
 
 To learn more about Yii 2.0 controllers refer to [Controller](controller.md) section of the guide.
 
@@ -244,8 +244,11 @@ To learn more about Yii 2.0 controllers refer to [Controller](controller.md) sec
 Widgets
 -------
 
-Using a widget is more straightforward in 2.0. You mainly use the `begin()`, `end()` and `widget()`
-methods of the `Widget` class. For example,
+Using a widget is more straightforward in 2.0. You mainly use the
+[[yii\base\Widget::begin()|begin()]],
+[[yii\base\Widget::end()|end()]] and
+[[yii\base\Widget::widget()|widget()]]
+methods of the [[yii\base\Widget|Widget]] class. For example,
 
 ```php
 // Note that you have to "echo" the result to display it
@@ -313,9 +316,9 @@ sources based on message categories. For more information, see the class documen
 Action Filters
 --------------
 
-Action filters are implemented via behaviors now. You should extend from `ActionFilter` to
+Action filters are implemented via behaviors now. You should extend from [[yii\base\ActionFilter]] to
 define a new filter. To use a filter, you should attach the filter class to the controller
-as a behavior. For example, to use the `AccessControl` filter, you should have the following
+as a behavior. For example, to use the [[yii\web\AccessControl]] filter, you should have the following
 code in a controller:
 
 ```php
@@ -342,8 +345,8 @@ Yii 2.0 introduces a new concept called *asset bundle*. It is similar to script
 packages (managed by `CClientScript`) in 1.1, but with better support.
 
 An asset bundle is a collection of asset files (e.g. JavaScript files, CSS files, image files, etc.)
-under a directory. Each asset bundle is represented as a class extending `AssetBundle`.
-By registering an asset bundle via `AssetBundle::register()`, you will be able to make
+under a directory. Each asset bundle is represented as a class extending [[yii\web\AssetBundle]].
+By registering an asset bundle via [[yii\web\AssetBundle::register()]], you will be able to make
 the assets in that bundle accessible via Web, and the current page will automatically
 contain the references to the JavaScript and CSS files specified in that bundle.
 
@@ -352,18 +355,25 @@ To learn more about assets see the [asset manager documentation](assets.md).
 Static Helpers
 --------------
 
-Yii 2.0 introduces many commonly used static helper classes, such as `Html`, `ArrayHelper`,
-`StringHelper`. These classes are designed to be easily extended. Note that static classes
+Yii 2.0 introduces many commonly used static helper classes, such as
+[[yii\helpers\Html|Html]],
+[[yii\helpers\ArrayHelper|ArrayHelper]],
+[[yii\helpers\StringHelper|StringHelper]].
+[[yii\helpers\FileHelper|FileHelper]],
+[[yii\helpers\Json|Json]],
+[[yii\helpers\Security|Security]],
+These classes are designed to be easily extended. Note that static classes
 are usually hard to extend because of the fixed class name references. But Yii 2.0
-introduces the class map (via `Yii::$classMap`) to overcome this difficulty.
+introduces the class map (via [[Yii::$classMap]]) to overcome this difficulty.
 
 
-`ActiveForm`
-------------
+ActiveForm
+----------
 
-Yii 2.0 introduces the *field* concept for building a form using `ActiveForm`. A field
+Yii 2.0 introduces the *field* concept for building a form using [[yii\widgets\ActiveForm]]. A field
 is a container consisting of a label, an input, an error message, and/or a hint text.
-It is represented as an `ActiveField` object. Using fields, you can build a form more cleanly than before:
+It is represented as an [[yii\widgets\ActiveField|ActiveField]] object.
+Using fields, you can build a form more cleanly than before:
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
@@ -376,13 +386,12 @@ It is represented as an `ActiveField` object. Using fields, you can build a form
 ```
 
 
-
 Query Builder
 -------------
 
 In 1.1, query building is scattered among several classes, including `CDbCommand`,
-`CDbCriteria`, and `CDbCommandBuilder`. Yii 2.0 uses `Query` to represent a DB query
-and `QueryBuilder` to generate SQL statements from query objects. For example:
+`CDbCriteria`, and `CDbCommandBuilder`. Yii 2.0 uses [[yii\db\Query|Query]] to represent a DB query
+and [[yii\db\QueryBuilder|QueryBuilder]] to generate SQL statements from query objects. For example:
 
 ```php
 $query = new \yii\db\Query;
@@ -395,18 +404,17 @@ $sql = $command->sql;
 $rows = $command->queryAll();
 ```
 
-
-Best of all, such query building methods can be used together with `ActiveRecord`,
+Best of all, such query building methods can be used together with [[yii\db\ActiveRecord|ActiveRecord]],
 as explained in the next sub-section.
 
 
 ActiveRecord
 ------------
 
-ActiveRecord has undergone significant changes in Yii 2.0. The most important one
+[[yii\db\ActiveRecord|ActiveRecord]] has undergone significant changes in Yii 2.0. The most important one
 is the relational ActiveRecord query. In 1.1, you have to declare the relations
 in the `relations()` method. In 2.0, this is done via getter methods that return
-an `ActiveQuery` object. For example, the following method declares an "orders" relation:
+an [[yii\db\ActiveQuery|ActiveQuery]] object. For example, the following method declares an "orders" relation:
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -417,7 +425,6 @@ class Customer extends \yii\db\ActiveRecord
 	}
 }
 ```
-
 
 You can use `$customer->orders` to access the customer's orders. You can also
 use `$customer->getOrders()->andWhere('status=1')->all()` to perform on-the-fly
@@ -431,7 +438,7 @@ by filtering with the primary keys of the primary records.
 
 
 Yii 2.0 no longer uses the `model()` method when performing queries. Instead, you
-use the `find()` method:
+use the [[yii\db\ActiveRecord::find()|find()]] method:
 
 ```php
 // to retrieve all *active* customers and order them by their ID:
@@ -444,10 +451,10 @@ $customer = Customer::find(1);
 ```
 
 
-The `find()` method returns an instance of `ActiveQuery` which is a subclass of `Query`.
-Therefore, you can use all query methods of `Query`.
+The [[yii\db\ActiveRecord::find()|find()]] method returns an instance of [[yii\db\ActiveQuery|ActiveQuery]]
+which is a subclass of [[yii\db\Query]]. Therefore, you can use all query methods of [[yii\db\Query]].
 
-Instead of returning ActiveRecord objects, you may call `ActiveQuery::asArray()` to
+Instead of returning ActiveRecord objects, you may call [[yii\db\ActiveQuery::asArray()|ActiveQuery::asArray()]] to
 return results in terms of arrays. This is more efficient and is especially useful
 when you need to return a large number of records:
 
@@ -458,6 +465,8 @@ $customers = Customer::find()->asArray()->all();
 By default, ActiveRecord now only saves dirty attributes. In 1.1, all attributes
 are saved to database when you call `save()`, regardless of having changed or not,
 unless you explicitly list the attributes to save.
+
+Scopes are now defined in a custom [[yii\db\ActiveQuery|ActiveQuery]] class instead of model directly.
 
 See [active record docs](active-record.md) for more details.
 
@@ -482,9 +491,9 @@ different DBMS.
 User and IdentityInterface
 --------------------------
 
-The `CWebUser` class in 1.1 is now replaced by `\yii\Web\User`, and there is no more
-`CUserIdentity` class. Instead, you should implement the `IdentityInterface` which
-is much more straightforward to implement. The bootstrap application provides such an example.
+The `CWebUser` class in 1.1 is now replaced by [[yii\web\User]], and there is no more
+`CUserIdentity` class. Instead, you should implement the [[yii\web\IdentityInterface]] which
+is much more straightforward to implement. The advanced application template provides such an example.
 
 
 URL Management
@@ -523,3 +532,8 @@ up to date updating it semi-automatically and manages autoloading for third part
 these are using.
 
 In order to learn more refer to [composer](composer.md) and [installation](installation.md) sections of the guide.
+
+Using Yii 1.1 and 2.x together
+------------------------------
+
+Check the guide on [using Yii together with 3rd-Party Systems](using-3rd-party-libraries.md) on this topic.

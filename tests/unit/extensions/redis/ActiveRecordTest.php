@@ -2,7 +2,6 @@
 
 namespace yiiunit\extensions\redis;
 
-use yii\redis\ActiveQuery;
 use yiiunit\data\ar\redis\ActiveRecord;
 use yiiunit\data\ar\redis\Customer;
 use yiiunit\data\ar\redis\OrderItem;
@@ -63,13 +62,13 @@ class ActiveRecordTest extends RedisTestCase
 		$item->save(false);
 
 		$order = new Order();
-		$order->setAttributes(['customer_id' => 1, 'create_time' => 1325282384, 'total' => 110.0], false);
+		$order->setAttributes(['customer_id' => 1, 'created_at' => 1325282384, 'total' => 110.0], false);
 		$order->save(false);
 		$order = new Order();
-		$order->setAttributes(['customer_id' => 2, 'create_time' => 1325334482, 'total' => 33.0], false);
+		$order->setAttributes(['customer_id' => 2, 'created_at' => 1325334482, 'total' => 33.0], false);
 		$order->save(false);
 		$order = new Order();
-		$order->setAttributes(['customer_id' => 2, 'create_time' => 1325502201, 'total' => 40.0], false);
+		$order->setAttributes(['customer_id' => 2, 'created_at' => 1325502201, 'total' => 40.0], false);
 		$order->save(false);
 
 		$orderItem = new OrderItem();
