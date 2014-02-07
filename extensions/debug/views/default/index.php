@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\data\ArrayDataProvider;
-use yii\debug\panels\ConfigPanel;
 
 /**
  * @var \yii\web\View $this
  * @var array $manifest
  * @var \yii\debug\models\search\Debug $searchModel
  * @var ArrayDataProvider $dataProvider
+ * @var \yii\debug\Panel[] $panels
  */
 
 $this->title = 'Yii Debugger';
