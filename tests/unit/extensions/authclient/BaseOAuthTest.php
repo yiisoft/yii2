@@ -4,7 +4,6 @@ namespace yiiunit\extensions\authclient;
 
 use yii\authclient\signature\PlainText;
 use yii\authclient\OAuthToken;
-use yiiunit\extensions\authclient\TestCase;
 use yii\authclient\BaseOAuth;
 
 class BaseOAuthTest extends TestCase

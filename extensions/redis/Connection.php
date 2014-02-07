@@ -8,7 +8,6 @@
 namespace yii\redis;
 
 use yii\base\Component;
-use yii\base\InvalidConfigException;
 use yii\db\Exception;
 use yii\helpers\Inflector;
 

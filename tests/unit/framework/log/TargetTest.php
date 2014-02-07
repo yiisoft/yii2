@@ -6,8 +6,6 @@
 namespace yiiunit\framework\log;
 
 
-use yii\debug\LogTarget;
-use yii\log\FileTarget;
 use yii\log\Logger;
 use yii\log\Target;
 use yiiunit\TestCase;

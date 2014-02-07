@@ -336,7 +336,7 @@ EOF;
 		}
 		$columnAlias = $this->addColumn($column, $columns);
 		$parts = [];
-		foreach ($values as $i => $value) {
+		foreach ($values as $value) {
 			if (is_array($value)) {
 				$value = isset($value[$column]) ? $value[$column] : null;
 			}

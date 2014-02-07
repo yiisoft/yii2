@@ -6,7 +6,6 @@ use yiiunit\data\ar\sphinx\ActiveRecord;
 use yiiunit\data\ar\ActiveRecord as ActiveRecordDb;
 use yiiunit\data\ar\sphinx\ArticleIndex;
 use yiiunit\data\ar\sphinx\ArticleDb;
-use yiiunit\data\ar\sphinx\TagDb;
 
 /**
  * @group sphinx

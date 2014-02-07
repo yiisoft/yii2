@@ -2,8 +2,6 @@
 
 namespace yiiunit\data\ar\mongodb;
 
-use yii\mongodb\ActiveQuery;
-
 class Customer extends ActiveRecord
 {
 	public static function collectionName()

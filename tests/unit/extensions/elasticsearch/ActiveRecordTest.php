@@ -3,10 +3,8 @@
 namespace yiiunit\extensions\elasticsearch;
 
 use yii\base\Event;
-use yii\base\Exception;
 use yii\db\BaseActiveRecord;
 use yii\elasticsearch\Connection;
-use yii\helpers\Json;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\data\ar\elasticsearch\ActiveRecord;
 use yiiunit\data\ar\elasticsearch\Customer;
@@ -381,7 +379,6 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 	public function testFindAsArrayFields()
 	{
-		$customerClass = $this->getCustomerClass();
 		/** @var TestCase|ActiveRecordTestTrait $this */
 		// indexBy + asArray
 		$customers = $this->callCustomerFind()->asArray()->fields(['id', 'name'])->all();
@@ -456,7 +453,6 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 	public function testFindIndexByAsArrayFields()
 	{
-		$customerClass = $this->getCustomerClass();
 		/** @var TestCase|ActiveRecordTestTrait $this */
 		// indexBy + asArray
 		$customers = $this->callCustomerFind()->indexBy('name')->asArray()->fields('id', 'name')->all();

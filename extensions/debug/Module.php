@@ -11,7 +11,6 @@ use Yii;
 use yii\base\Application;
 use yii\web\View;
 use yii\web\ForbiddenHttpException;
-use yii\helpers\ArrayHelper;
 
 /**
  * The Yii Debug Module provides the debug toolbar and debugger
@@ -40,7 +39,8 @@ class Module extends \yii\base\Module
 	/**
 	 * @var array list of debug panels. The array keys are the panel IDs, and values are the corresponding
 	 * panel class names or configuration arrays. This will be merged with [[corePanels()]].
-	 * You may set a panel to be false to disable a core panel.
+	 * You may reconfigure a core panel via this property by using the same panel ID.
+	 * You may also disable a core panel by setting it to be false in this property.
 	 */
 	public $panels = [];
 	/**
@@ -76,7 +76,19 @@ class Module extends \yii\base\Module
 			Yii::$app->getView()->on(View::EVENT_END_BODY, [$this, 'renderToolbar']);
 		});
 
-		$this->panels = array_filter(ArrayHelper::merge($this->corePanels(), $this->panels));
+		// merge custom panels and core panels so that they are ordered mainly by custom panels
+		if (empty($this->panels)) {
+			$this->panels = $this->corePanels();
+		} else {
+			$corePanels = $this->corePanels();
+			foreach ($corePanels as $id => $config) {
+				if (isset($this->panels[$id])) {
+					unset($corePanels[$id]);
+				}
+			}
+			$this->panels = array_filter(array_merge($corePanels, $this->panels));
+		}
+
 		foreach ($this->panels as $id => $config) {
 			$config['module'] = $this;
 			$config['id'] = $id;

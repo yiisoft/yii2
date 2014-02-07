@@ -315,7 +315,7 @@ class AuthAction extends Action
 			return Yii::$app->getResponse()->redirect($url);
 		} else {
 			// Upgrade to access token.
-			$accessToken = $client->fetchAccessToken();
+			$client->fetchAccessToken();
 			return $this->authSuccess($client);
 		}
 	}

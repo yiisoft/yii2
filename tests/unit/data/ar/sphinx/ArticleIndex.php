@@ -1,8 +1,6 @@
 <?php
 namespace yiiunit\data\ar\sphinx;
 
-use yii\sphinx\ActiveQuery;
-
 class ArticleIndex extends ActiveRecord
 {
 	public $custom_column;

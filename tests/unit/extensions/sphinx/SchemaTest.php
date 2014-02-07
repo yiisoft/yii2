@@ -3,7 +3,6 @@
 namespace yiiunit\extensions\sphinx;
 
 use yii\caching\FileCache;
-use yii\sphinx\Schema;
 
 /**
  * @group sphinx

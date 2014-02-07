@@ -1,6 +1,5 @@
 <?php
 use yii\apidoc\templates\bootstrap\SideNavWidget;
-use yii\helpers\StringHelper;
 
 /**
  * @var yii\web\View $this
