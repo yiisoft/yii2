@@ -50,13 +50,13 @@ class DefaultController extends Controller
 		$searchModel = new Debug();
 		$dataProvider = $searchModel->search($_GET, $this->getManifest());
 
-        // load latest request
-        $tags = array_keys($this->getManifest());
-        $tag = reset($tags);
-        $this->loadData($tag);
+		// load latest request
+		$tags = array_keys($this->getManifest());
+		$tag = reset($tags);
+		$this->loadData($tag);
 
 		return $this->render('index', [
-            'panels' => $this->module->panels,
+			'panels' => $this->module->panels,
 			'dataProvider' => $dataProvider,
 			'searchModel' => $searchModel,
 		]);
