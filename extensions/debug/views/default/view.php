@@ -17,11 +17,14 @@ $this->title = 'Yii Debugger';
 ?>
 <div class="default-view">
 	<div id="yii-debug-toolbar" class="yii-debug-toolbar-top">
-		<div class="yii-debug-toolbar-block">
-			<a href="<?= Yii::$app->homeUrl ?>">
-				<span class="glyphicon glyphicon-home"></span>
-			</a>
-		</div>
+
+        <div class="yii-debug-toolbar-block title">
+            <a href="<?= Html::url(['index']) ?>">
+                <img width="29" height="30" alt="" src="<?= \yii\debug\Module::getYiiLogo() ?>">
+                Yii Debugger
+            </a>
+        </div>
+
 		<?php foreach ($panels as $panel): ?>
 			<?= $panel->getSummary() ?>
 		<?php endforeach; ?>
