@@ -45,7 +45,7 @@ class NavBar extends Widget
 	 * @param array|string $url the URL for the brand's hyperlink tag. This parameter will be processed by [[Html::url()]]
 	 * and will be used for the "href" attribute of the brand link. Defaults to site root.
 	 */
-	public $brandUrl = '/';
+	public $brandUrl = ['/'];
 	/**
 	 * @var array the HTML attributes of the brand link.
 	 */
