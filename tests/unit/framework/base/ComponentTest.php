@@ -54,7 +54,7 @@ class ComponentTest extends TestCase
 		$this->assertNull($clone->getBehavior('a'));
 		$this->assertFalse($clone->hasEventHandlers('test'));
 	}
-	
+
 	public function testHasProperty()
 	{
 		$this->assertTrue($this->component->hasProperty('Text'));
@@ -303,6 +303,47 @@ class ComponentTest extends TestCase
 		$this->assertNull($component->getBehavior('a'));
 		$this->assertNull($component->getBehavior('b'));
 	}
+
+	/**
+	 * @expectedException \yii\base\UnknownPropertyException
+	 * @expectedExceptionMessage Setting unknown property: yiiunit\framework\base\NewComponent::invalidProperty
+	 */
+	public function testSetInvalidProperty()
+	{
+		$component = new NewComponent();
+		$component->invalidProperty = 3;
+	}
+
+	public function testSuccessfulMethodCheck()
+	{
+		$component = new NewComponent();
+		$this->assertTrue($component->hasMethod('hasProperty'));
+	}
+
+	/**
+	 * @expectedException \yii\base\InvalidCallException
+	 * @expectedExceptionMessage Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly
+	 */
+	public function testWriteOnlyProperty()
+	{
+		$component = new NewComponent();
+		$component->writeOnly;
+	}
+
+	public function testWorkingUnset()
+	{
+		$component = new NewComponent();
+		$component->content = 'foo';
+		$component->__unset('content');
+		var_dump($component);die;
+		// $this->assertNull($component->content);
+	}
+
+//	public function testTurningOffNonExistingBehavior()
+//	{
+//		$component = new NewComponent();
+//		$this->assertFalse($component->off('foo'));
+//	}
 }
 
 class NewComponent extends Component
@@ -310,6 +351,7 @@ class NewComponent extends Component
 	private $_object = null;
 	private $_text = 'default';
 	private $_items = [];
+	private $_writeOnly;
 	public $content;
 
 	public function getText()
@@ -357,6 +399,11 @@ class NewComponent extends Component
 	{
 		$this->trigger('click', new Event);
 	}
+
+	public function setWriteOnly($value)
+	{
+		$this->_writeOnly = $value;
+	}
 }
 
 class NewBehavior extends Behavior
@@ -393,3 +440,4 @@ class NewComponent2 extends Component
 		$this->c = $c;
 	}
 }
+

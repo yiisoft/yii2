@@ -51,20 +51,18 @@ class Component extends Object
 		if (method_exists($this, $getter)) {
 			// read property, e.g. getName()
 			return $this->$getter();
-		} else {
-			// behavior property
-			$this->ensureBehaviors();
-			foreach ($this->_behaviors as $behavior) {
-				if ($behavior->canGetProperty($name)) {
-					return $behavior->$name;
-				}
+		}
+		// behavior property
+		$this->ensureBehaviors();
+		foreach ($this->_behaviors as $behavior) {
+			if ($behavior->canGetProperty($name)) {
+				return $behavior->$name;
 			}
 		}
 		if (method_exists($this, 'set' . $name)) {
 			throw new InvalidCallException('Getting write-only property: ' . get_class($this) . '::' . $name);
-		} else {
-			throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
 		}
+		throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
 	}
 
 	/**
@@ -91,30 +89,31 @@ class Component extends Object
 			// set property
 			$this->$setter($value);
 			return;
-		} elseif (strncmp($name, 'on ', 3) === 0) {
+		}
+		if (strncmp($name, 'on ', 3) === 0) {
 			// on event: attach event handler
 			$this->on(trim(substr($name, 3)), $value);
 			return;
-		} elseif (strncmp($name, 'as ', 3) === 0) {
+		}
+		if (strncmp($name, 'as ', 3) === 0) {
 			// as behavior: attach behavior
 			$name = trim(substr($name, 3));
 			$this->attachBehavior($name, $value instanceof Behavior ? $value : Yii::createObject($value));
 			return;
-		} else {
-			// behavior property
-			$this->ensureBehaviors();
-			foreach ($this->_behaviors as $behavior) {
-				if ($behavior->canSetProperty($name)) {
-					$behavior->$name = $value;
-					return;
-				}
+		}
+		// behavior property
+		$this->ensureBehaviors();
+		foreach ($this->_behaviors as $behavior) {
+			if ($behavior->canSetProperty($name)) {
+				$behavior->$name = $value;
+				return;
 			}
 		}
+
 		if (method_exists($this, 'get' . $name)) {
 			throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '::' . $name);
-		} else {
-			throw new UnknownPropertyException('Setting unknown property: ' . get_class($this) . '::' . $name);
 		}
+		throw new UnknownPropertyException('Setting unknown property: ' . get_class($this) . '::' . $name);
 	}
 
 	/**
@@ -134,13 +133,12 @@ class Component extends Object
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) {
 			return $this->$getter() !== null;
-		} else {
-			// behavior property
-			$this->ensureBehaviors();
-			foreach ($this->_behaviors as $behavior) {
-				if ($behavior->canGetProperty($name)) {
-					return $behavior->$name !== null;
-				}
+		}
+		// behavior property
+		$this->ensureBehaviors();
+		foreach ($this->_behaviors as $behavior) {
+			if ($behavior->canGetProperty($name)) {
+				return $behavior->$name !== null;
 			}
 		}
 		return false;
@@ -164,19 +162,20 @@ class Component extends Object
 		if (method_exists($this, $setter)) {
 			$this->$setter(null);
 			return;
-		} else {
-			// behavior property
-			$this->ensureBehaviors();
-			foreach ($this->_behaviors as $behavior) {
-				if ($behavior->canSetProperty($name)) {
-					$behavior->$name = null;
-					return;
-				}
+		}
+		// behavior property
+		$this->ensureBehaviors();
+		foreach ($this->_behaviors as $behavior) {
+			if ($behavior->canSetProperty($name)) {
+				$behavior->$name = null;
+				return;
 			}
 		}
+
 		if (method_exists($this, 'get' . $name)) {
 			throw new InvalidCallException('Unsetting read-only property: ' . get_class($this) . '.' . $name);
 		}
+
 	}
 
 	/**
@@ -254,7 +253,8 @@ class Component extends Object
 	{
 		if (method_exists($this, 'get' . $name) || $checkVars && property_exists($this, $name)) {
 			return true;
-		} elseif ($checkBehaviors) {
+		}
+		if ($checkBehaviors) {
 			$this->ensureBehaviors();
 			foreach ($this->_behaviors as $behavior) {
 				if ($behavior->canGetProperty($name, $checkVars)) {
@@ -284,7 +284,8 @@ class Component extends Object
 	{
 		if (method_exists($this, 'set' . $name) || $checkVars && property_exists($this, $name)) {
 			return true;
-		} elseif ($checkBehaviors) {
+		}
+		if ($checkBehaviors) {
 			$this->ensureBehaviors();
 			foreach ($this->_behaviors as $behavior) {
 				if ($behavior->canSetProperty($name, $checkVars)) {
@@ -310,7 +311,8 @@ class Component extends Object
 	{
 		if (method_exists($this, $name)) {
 			return true;
-		} elseif ($checkBehaviors) {
+		}
+		if ($checkBehaviors) {
 			$this->ensureBehaviors();
 			foreach ($this->_behaviors as $behavior) {
 				if ($behavior->hasMethod($name)) {
@@ -414,19 +416,18 @@ class Component extends Object
 		if ($handler === null) {
 			unset($this->_events[$name]);
 			return true;
-		} else {
-			$removed = false;
-			foreach ($this->_events[$name] as $i => $event) {
-				if ($event[0] === $handler) {
-					unset($this->_events[$name][$i]);
-					$removed = true;
-				}
-			}
-			if ($removed) {
-				$this->_events[$name] = array_values($this->_events[$name]);
-			}
-			return $removed;
 		}
+		$removed = false;
+		foreach ($this->_events[$name] as $i => $event) {
+			if ($event[0] === $handler) {
+				unset($this->_events[$name][$i]);
+				$removed = true;
+			}
+		}
+		if ($removed) {
+			$this->_events[$name] = array_values($this->_events[$name]);
+		}
+		return $removed;
 	}
 
 	/**
@@ -532,9 +533,8 @@ class Component extends Object
 			unset($this->_behaviors[$name]);
 			$behavior->detach();
 			return $behavior;
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	/**
