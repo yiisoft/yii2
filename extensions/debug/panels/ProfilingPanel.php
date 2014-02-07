@@ -86,7 +86,7 @@ class ProfilingPanel extends Panel
 			$this->_models = [];
 			$timings = Yii::$app->getLog()->calculateTimings($this->data['messages']);
 
-			foreach($timings as $seq => $profileTiming) {
+			foreach ($timings as $seq => $profileTiming) {
 				$this->_models[] = 	[
 					'duration' => $profileTiming['duration'] * 1000, // in milliseconds
 					'category' => $profileTiming['category'],

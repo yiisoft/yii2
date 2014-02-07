@@ -6,6 +6,7 @@
  */
 
 namespace yii\debug;
+
 use yii\web\AssetBundle;
 
 /**

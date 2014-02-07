@@ -39,7 +39,7 @@ class DefaultController extends Controller
 	public function actions()
 	{
 		$actions = [];
-		foreach($this->module->panels as $panel) {
+		foreach ($this->module->panels as $panel) {
 			$actions = array_merge($actions, $panel->actions);
 		}
 		return $actions;
