@@ -77,7 +77,7 @@ class Module extends \yii\base\Module
 					unset($corePanels[$id]);
 				}
 			}
-			$this->panels = array_merge($corePanels, $this->panels);
+			$this->panels = array_filter(array_merge($corePanels, $this->panels));
 		}
 
 		foreach ($this->panels as $id => $config) {
