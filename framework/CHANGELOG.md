@@ -45,6 +45,7 @@ Yii Framework 2 Change Log
 - Bug #2298: Fixed the bug that Gii controller generator did not allow digit in the controller ID (qiangxue)
 - Bug #2303: Fixed the bug that `yii\base\Theme::pathMap` did not support dynamic update with path aliases (qiangxue)
 - Bug #2324: Fixed QueryBuilder bug when building a query with "query" option (mintao)
+- Bug #2361: `yii\bootstrap\NavBar::brandUrl` should default to the home URL of application (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
