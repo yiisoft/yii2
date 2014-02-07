@@ -13,10 +13,15 @@ class ContactPage extends BasePage
 	 */
 	public function submit(array $contactData)
 	{
-		$data = [];
-		foreach ($contactData as $name => $value) {
-			$data["ContactForm[$name]"] = $value;
+		foreach ($contactData as $field => $value) {
+			if (in_array($field, ['name','email','subject','verifyCode'])) {
+				$this->guy->fillField('input[name="ContactForm[' . $field .']"]', $value);
+			}
 		}
-		$this->guy->submitForm('#contact-form', $data);
+		
+		if (isset($contactData['body'])) {
+			$this->guy->fillField('textarea[name="ContactForm[body]"]',$contactData['body']);
+		}
+		$this->guy->click('Submit','#contact-form');
 	}
 }
