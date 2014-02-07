@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\db;
 
-use yii\db\Query;
 use yii\db\QueryBuilder;
 use yii\db\Schema;
 use yii\db\mysql\QueryBuilder as MysqlQueryBuilder;

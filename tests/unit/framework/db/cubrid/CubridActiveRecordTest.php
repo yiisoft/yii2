@@ -1,7 +1,6 @@
 <?php
 namespace yiiunit\framework\db\cubrid;
 
-use yiiunit\data\ar\Customer;
 use yiiunit\framework\db\ActiveRecordTest;
 
 /**

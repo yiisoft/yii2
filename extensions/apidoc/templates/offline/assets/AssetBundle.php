@@ -6,7 +6,6 @@
  */
 
 namespace yii\apidoc\templates\offline\assets;
-use yii\web\JqueryAsset;
 use yii\web\View;
 
 /**

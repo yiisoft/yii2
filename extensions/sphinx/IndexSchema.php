@@ -8,7 +8,6 @@
 namespace yii\sphinx;
 
 use yii\base\Object;
-use yii\base\InvalidParamException;
 
 /**
  * IndexSchema represents the metadata of a Sphinx index.

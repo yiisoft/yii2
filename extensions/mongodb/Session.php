@@ -8,8 +8,6 @@
 namespace yii\mongodb;
 
 use Yii;
-use yii\mongodb\Connection;
-use yii\mongodb\Query;
 use yii\base\InvalidConfigException;
 
 /**

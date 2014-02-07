@@ -2,8 +2,6 @@
 
 namespace yiiunit\extensions\redis;
 
-use yii\redis\Connection;
-
 /**
  * @group redis
  */

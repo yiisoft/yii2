@@ -9,7 +9,6 @@ namespace yii\apidoc\models;
 
 use phpDocumentor\Reflection\FileReflector;
 use yii\base\Component;
-use yii\base\Exception;
 
 /**
  *

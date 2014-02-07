@@ -11,7 +11,6 @@ use Yii;
 use yii\base\Application;
 use yii\web\View;
 use yii\web\ForbiddenHttpException;
-use yii\helpers\ArrayHelper;
 
 /**
  * The Yii Debug Module provides the debug toolbar and debugger
