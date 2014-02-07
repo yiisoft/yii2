@@ -14,11 +14,8 @@ class ContactPage extends BasePage
 	public function submit(array $contactData)
 	{
 		foreach ($contactData as $field => $value) {
-			if ($field == 'body') {
-				$this->guy->fillField('textarea[name="ContactForm[' . $field . ']"]', $value);
-			} else {
-				$this->guy->fillField('input[name="ContactForm[' . $field .']"]', $value);				
-			}
+			$inputType = ($field == 'body') ? 'textarea' : 'input';
+			$this->guy->fillField($inputType.'[name="ContactForm[' . $field . ']"]', $value);
 		}
 		$this->guy->click('Submit','#contact-form');
 	}
