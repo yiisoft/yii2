@@ -6,7 +6,6 @@
  */
 
 namespace yii\db;
-use yii\base\InvalidCallException;
 
 /**
  * ActiveQueryTrait implements the common methods and properties for active record query classes.
