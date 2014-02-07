@@ -93,7 +93,7 @@
 		"imagine/imagine": "required by yii2-imagine extension",
 		"smarty/smarty": "required by yii2-smarty extension",
 		"swiftmailer/swiftmailer": "required by yii2-swiftmailer extension",
-		"yiisoft/yii2-coding-standards": "you can use this package to check for code style issues when contributing to yii",
+		"yiisoft/yii2-coding-standards": "you can use this package to check for code style issues when contributing to yii"
 	},
 	"autoload": {
 		"psr-4": {
