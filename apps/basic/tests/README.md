@@ -5,7 +5,13 @@ After creating the basic application, follow these steps to prepare for the test
 
 1. In the file `_bootstrap.php`, modify the definition of the constant `TEST_ENTRY_URL` so
    that it points to the correct entry script URL.
-2. Go to the application base directory and build the test suites:
+2. Install additional composer packages:
+
+```
+php composer.phar require --dev "codeception/codeception: 1.8.*@dev" "codeception/specify: *" "codeception/verify: *"
+```
+
+3. Go to the application base directory and build the test suites:
 
    ```
    vendor/bin/codecept build
