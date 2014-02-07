@@ -3,14 +3,13 @@ These tests are developed with [Codeception PHP Testing Framework](http://codece
 
 After creating the basic application, follow these steps to prepare for the tests:
 
-1. In the file `_bootstrap.php`, modify the definition of the constant `TEST_ENTRY_URL` so
-   that it points to the correct entry script URL.
-2. Install additional composer packages:
+1. Install additional composer packages:
 
    ```
    php composer.phar require --dev "codeception/codeception: 1.8.*@dev" "codeception/specify: *" "codeception/verify: *"
    ```
-
+2. In the file `_bootstrap.php`, modify the definition of the constant `TEST_ENTRY_URL` so
+   that it points to the correct entry script URL.
 3. Go to the application base directory and build the test suites:
 
    ```
