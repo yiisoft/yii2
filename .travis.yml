@@ -22,7 +22,7 @@ install:
   - tests/unit/data/travis/cubrid-setup.sh
 # basic application:
   - composer install --dev --prefer-dist -d apps/basic
-  - cd apps/basic && composer require --dev "codeception/codeception: 1.8.*@dev" "codeception/specify: *" "codeception/verify: *"
+  - cd apps/basic && composer require --dev codeception/codeception:1.8.*@dev codeception/specify:* codeception/verify:*
   - cd apps/basic && php vendor/bin/codecept build && cd ../..
   - cd apps && php -S localhost:8080 &
 
