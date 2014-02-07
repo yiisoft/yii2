@@ -87,10 +87,6 @@ class DefaultController extends Controller
 		]);
 	}
 
-	public function actionPhpinfo()
-	{
-		phpinfo();
-	}
 
 	private $_manifest;
 

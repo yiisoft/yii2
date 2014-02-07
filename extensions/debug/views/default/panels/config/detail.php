@@ -8,8 +8,6 @@ $extensions = $panel->getExtensions();
 ?>
 <h1>Configuration</h1>
 
-<div><?= Html::a('Show phpinfo() »', ['phpinfo'], ['class' => 'btn btn-info', 'target' => 'phpinfo']) ?></div>
-
 <?php
 echo $this->render('panels/config/table', [
 	'caption' => 'Application Configuration',
@@ -37,4 +35,6 @@ echo $this->render('panels/config/table', [
 		'Memcache' => $panel->data['php']['memcache'] ? 'Enabled' : 'Disabled',
 	],
 ]);
+
+echo $panel->getPhpInfo();
 ?>
