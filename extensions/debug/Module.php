@@ -38,7 +38,9 @@ class Module extends \yii\base\Module
 	 */
 	public $logTarget;
 	/**
-	 * @var array|Panel[]
+	 * @var array list of debug panels. The array keys are the panel IDs, and values are the corresponding
+	 * panel class names or configuration arrays. This will be merged with [[corePanels()]].
+	 * You may set a panel to be false to disable a core panel.
 	 */
 	public $panels = [];
 	/**
@@ -64,7 +66,7 @@ class Module extends \yii\base\Module
 			Yii::$app->getView()->on(View::EVENT_END_BODY, [$this, 'renderToolbar']);
 		});
 
-		$this->panels = ArrayHelper::merge($this->corePanels(), $this->panels);
+		$this->panels = array_filter(ArrayHelper::merge($this->corePanels(), $this->panels));
 		foreach ($this->panels as $id => $config) {
 			$config['module'] = $this;
 			$config['id'] = $id;
