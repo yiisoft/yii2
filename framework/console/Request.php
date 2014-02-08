@@ -66,7 +66,9 @@ class Request extends \yii\base\Request
 		foreach ($rawParams as $param) {
 			if (preg_match('/^--(\w+)(=(.*))?$/', $param, $matches)) {
 				$name = $matches[1];
-				$params[$name] = isset($matches[3]) ? $matches[3] : true;
+				if ($name !== Application::OPTION_APPCONFIG) {
+					$params[$name] = isset($matches[3]) ? $matches[3] : true;
+				}
 			} else {
 				$params[] = $param;
 			}
