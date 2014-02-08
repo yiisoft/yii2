@@ -41,6 +41,7 @@ Yii Framework 2 Change Log
 - Bug #2084: AssetController adjusting CSS URLs declared at same line fixed (klimov-paul)
 - Bug #2091: `QueryBuilder::buildInCondition()` fails to handle array not starting with index 0 (qiangxue)
 - Bug #2160: SphinxQL does not support OFFSET (qiangxue, romeo7)
+- Bug #2209: When I18N message translation is missing source language is now used for formatting (samdark)
 - Bug #2212: `yii\gridview\DataColumn` generates incorrect labels when used with nosql DB and there is no data (qiangxue)
 - Bug #2298: Fixed the bug that Gii controller generator did not allow digit in the controller ID (qiangxue)
 - Bug #2303: Fixed the bug that `yii\base\Theme::pathMap` did not support dynamic update with path aliases (qiangxue)
