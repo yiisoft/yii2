@@ -54,6 +54,11 @@ use yii\base\InvalidRouteException;
 class Application extends \yii\base\Application
 {
 	/**
+	 * The option name for specifying the application configuration file path.
+	 */
+	const OPTION_APPCONFIG = 'appconfig';
+
+	/**
 	 * @var string the default route of this application. Defaults to 'help',
 	 * meaning the `help` command.
 	 */
@@ -67,6 +72,42 @@ class Application extends \yii\base\Application
 	 * @var Controller the currently active controller instance
 	 */
 	public $controller;
+
+
+	/**
+	 * @inheritdoc
+	 */
+	public function __construct($config = [])
+	{
+		$config = $this->loadConfig($config);
+		parent::__construct($config);
+	}
+
+	/**
+	 * Loads the configuration.
+	 * This method will check if the command line option [[OPTION_APPCONFIG]] is specified.
+	 * If so, the corresponding file will be loaded as the application configuration.
+	 * Otherwise, the configuration provided as the parameter will be returned back.
+	 * @param array $config the configuration provided in the constructor.
+	 * @return array the actual configuration to be used by the application.
+	 */
+	protected function loadConfig($config)
+	{
+		if (!empty($_SERVER['argv'])) {
+			$option = '--' . self::OPTION_APPCONFIG . '=';
+			foreach ($_SERVER['argv'] as $param) {
+				if (strpos($param, $option) !== false) {
+					$path = substr($param, strlen($option));
+					if (!empty($path) && is_file($path)) {
+						return require($path);
+					} else {
+						die("The configuration file does not exist: $path\n");
+					}
+				}
+			}
+		}
+		return $config;
+	}
 
 	/**
 	 * Initialize the application.
