@@ -151,7 +151,7 @@ class StringValidator extends Validator
 
 		$options = [
 			'message' => Yii::$app->getI18n()->format($this->message, [
-				'{attribute}' => $label,
+				'attribute' => $label,
 			], Yii::$app->language),
 		];
 

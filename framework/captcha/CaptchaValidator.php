@@ -93,7 +93,7 @@ class CaptchaValidator extends Validator
 			'hashKey' => 'yiiCaptcha/' . $this->captchaAction,
 			'caseSensitive' => $this->caseSensitive,
 			'message' => strtr($this->message, [
-				'{attribute}' => $object->getAttributeLabel($attribute),
+				'attribute' => $object->getAttributeLabel($attribute),
 			]),
 		];
 		if ($this->skipOnEmpty) {
