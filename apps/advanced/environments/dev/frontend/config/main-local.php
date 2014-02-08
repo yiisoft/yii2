@@ -4,7 +4,7 @@ return [
 		'debug',
 	],
 	'modules' => [
-				'debug' => 'yii\debug\Module',
-				'gii' => 'yii\gii\Module',
+		'debug' => 'yii\debug\Module',
+		'gii' => 'yii\gii\Module',
 	],
 ];
