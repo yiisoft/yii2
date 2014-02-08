@@ -123,7 +123,7 @@ Yii Framework 2 Change Log
 - Enh:#2211: Added typecast database types into php types (dizews)
 - Enh #2240: Improved `yii\web\AssetManager::publish()`, `yii\web\AssetManager::getPublishedPath()` and `yii\web\AssetManager::getPublishedUrl()` to support aliases (vova07)
 - Enh #2325: Adding support for the `X-HTTP-Method-Override` header in `yii\web\Request::getMethod()` (pawzar)
-- Enh: Take into account current error reporting level in error handler (gureedo)
+- Enh #2364: Take into account current error reporting level in error handler (gureedo)
 - Chg #1519: `yii\web\User::loginRequired()` now returns the `Response` object instead of exiting the application (qiangxue)
 - Chg #1586: `QueryBuilder::buildLikeCondition()` will now escape special characters and use percentage characters by default (qiangxue)
 - Chg #1610: `Html::activeCheckboxList()` and `Html::activeRadioList()` will submit an empty string if no checkbox/radio is selected (qiangxue)
