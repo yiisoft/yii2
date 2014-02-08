@@ -247,7 +247,7 @@ abstract class Application extends Module
 		if (YII_ENABLE_ERROR_HANDLER) {
 			ini_set('display_errors', 0);
 			set_exception_handler([$this, 'handleException']);
-			set_error_handler([$this, 'handleError'], error_reporting());
+			set_error_handler([$this, 'handleError']);
 			if ($this->memoryReserveSize > 0) {
 				$this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
 			}
@@ -551,7 +551,7 @@ abstract class Application extends Module
 	 */
 	public function handleError($code, $message, $file, $line)
 	{
-		if (error_reporting() !== 0) {
+		if (error_reporting() & $code) {
 			// load ErrorException manually here because autoloading them will not work
 			// when error occurs while autoloading a class
 			if (!class_exists('\\yii\\base\\Exception', false)) {
