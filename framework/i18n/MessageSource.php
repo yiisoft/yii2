@@ -78,14 +78,14 @@ class MessageSource extends Component
 	 * @param string $category the message category
 	 * @param string $message the message to be translated
 	 * @param string $language the target language
-	 * @return string the translated message (or the original message if translation is not needed)
+	 * @return string|boolean the translated message or false if translation wasn't found or isn't required
 	 */
 	public function translate($category, $message, $language)
 	{
 		if ($this->forceTranslation || $language !== $this->sourceLanguage) {
 			return $this->translateMessage($category, $message, $language);
 		} else {
-			return $message;
+			return false;
 		}
 	}
 
@@ -96,7 +96,7 @@ class MessageSource extends Component
 	 * @param string $category the category that the message belongs to
 	 * @param string $message the message to be translated
 	 * @param string $language the target language
-	 * @return string the translated message
+	 * @return string|boolean the translated message or false if translation wasn't found
 	 */
 	protected function translateMessage($category, $message, $language)
 	{
@@ -113,9 +113,7 @@ class MessageSource extends Component
 				'language' => $language,
 			]);
 			$this->trigger(self::EVENT_MISSING_TRANSLATION, $event);
-			return $this->_messages[$key] = $event->message;
-		} else {
-			return $message;
 		}
+		return false;
 	}
 }
