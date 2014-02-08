@@ -113,6 +113,7 @@ class MessageSource extends Component
 				'language' => $language,
 			]);
 			$this->trigger(self::EVENT_MISSING_TRANSLATION, $event);
+			$this->_messages[$key] = $event->message;
 		}
 		return false;
 	}
