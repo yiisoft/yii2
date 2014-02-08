@@ -20,7 +20,7 @@ return [
     ],
 ```
 
-With that configuration in place, whenever an error occurs, Yii will execute the "error" acction of the "Site" controller. That action should look for an exception and, if present, render the proper view file, passing along the exception:
+With that configuration in place, whenever an error occurs, Yii will execute the "error" action of the "Site" controller. That action should look for an exception and, if present, render the proper view file, passing along the exception:
 
 ```php
 public function actionError()
