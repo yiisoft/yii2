@@ -3,7 +3,6 @@ Yii Framework 2 Change Log
 
 2.0.0 beta under development
 ----------------------------
-
 - Bug #1265: AssetController does not override 'js' and 'css' for compressed bundles (klimov-paul)
 - Bug #1326: The `visible` setting for `DetailView` doesn't work as expected (qiangxue)
 - Bug #1412: `FileValidator` and `ImageValidator` still trigger `uploadRequired` error in some case when `skipOnEmpty` is true and no upload is provided (qiangxue)
@@ -123,6 +122,7 @@ Yii Framework 2 Change Log
 - Enh:#2211: Added typecast database types into php types (dizews)
 - Enh #2240: Improved `yii\web\AssetManager::publish()`, `yii\web\AssetManager::getPublishedPath()` and `yii\web\AssetManager::getPublishedUrl()` to support aliases (vova07)
 - Enh #2325: Adding support for the `X-HTTP-Method-Override` header in `yii\web\Request::getMethod()` (pawzar)
+- Enh: Take into account current error reporting level in error handler (gureedo)
 - Chg #1519: `yii\web\User::loginRequired()` now returns the `Response` object instead of exiting the application (qiangxue)
 - Chg #1586: `QueryBuilder::buildLikeCondition()` will now escape special characters and use percentage characters by default (qiangxue)
 - Chg #1610: `Html::activeCheckboxList()` and `Html::activeRadioList()` will submit an empty string if no checkbox/radio is selected (qiangxue)
