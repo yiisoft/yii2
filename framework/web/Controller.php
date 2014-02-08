@@ -279,7 +279,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function goBack($defaultUrl = null)
 	{
-		return Yii::$app->getResponse()->redirect(Yii::$app->getUser()->getReturnUrl($defaultUrl));
+		return Yii::$app->getResponse()->redirect(Yii::$app->request->referrer);
 	}
 
 	/**
