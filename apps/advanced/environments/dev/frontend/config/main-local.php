@@ -1,12 +1,10 @@
 <?php
-
-$config = [];
-
-if (YII_ENV_DEV) {
-	// configuration adjustments for 'dev' environment
-	$config['preload'][] = 'debug';
-	$config['modules']['debug'] = 'yii\debug\Module';
-	$config['modules']['gii'] = 'yii\gii\Module';
-}
-
-return $config;
+return [
+	'preload' => [
+		'debug',
+	],
+	'modules' => [
+				'debug' => 'yii\debug\Module',
+				'gii' => 'yii\gii\Module',
+	],
+];
