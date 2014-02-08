@@ -27,19 +27,6 @@ class ComponentTest extends TestCase
 	 */
 	protected $component;
 
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->mockApplication();
-		$this->component = new NewComponent();
-	}
-
-	protected function tearDown()
-	{
-		parent::tearDown();
-		$this->component = null;
-	}
-
 	public function testClone()
 	{
 		$behavior = new NewBehavior();
@@ -299,12 +286,12 @@ class ComponentTest extends TestCase
 		$this->assertNull($this->component->getBehavior('b'));
 	}
 
-	/**
-	 * @expectedException \yii\base\UnknownPropertyException
-	 * @expectedExceptionMessage Setting unknown property: yiiunit\framework\base\NewComponent::invalidProperty
-	 */
 	public function testSetInvalidProperty()
 	{
+		$this->setExpectedException(
+			'\yii\base\UnknownPropertyException',
+			'Setting unknown property: yiiunit\framework\base\NewComponent::invalidProperty'
+		);
 		$this->component->invalidProperty = 3;
 	}
 
@@ -313,12 +300,12 @@ class ComponentTest extends TestCase
 		$this->assertTrue($this->component->hasMethod('hasProperty'));
 	}
 
-	/**
-	 * @expectedException \yii\base\InvalidCallException
-	 * @expectedExceptionMessage Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly
-	 */
 	public function testWriteOnlyProperty()
 	{
+		$this->setExpectedException(
+			'\yii\base\InvalidCallException',
+			'Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly'
+		);
 		$this->component->writeOnly;
 	}
 
@@ -357,64 +344,39 @@ class ComponentTest extends TestCase
 		$this->assertSame('Yii is cool.', $this->component->getBehavior('a')->p);
 	}
 
-	/**
-	 * @expectedException \yii\base\InvalidCallException
-	 * @expectedExceptionMessage Setting read-only property: yiiunit\framework\base\NewComponent::object
-	 */
 	public function testSetReadOnlyProperty()
 	{
+		$this->setExpectedException(
+			'\yii\base\InvalidCallException',
+			'Setting read-only property: yiiunit\framework\base\NewComponent::object'
+		);
 		$this->component->object = 'z';
 	}
 
-	/**
-	 * @expectedException \yii\base\UnknownPropertyException
-	 * @expectedExceptionMessage Setting unknown property: yiiunit\framework\base\NewComponent::invalidProperty
-	 */
-	public function testSetInvalidProperty()
+	protected function setUp()
 	{
-		$component = new NewComponent();
-		$component->invalidProperty = 3;
+		parent::setUp();
+		$this->mockApplication();
+		$this->component = new NewComponent();
 	}
 
-	public function testSuccessfulMethodCheck()
+	protected function tearDown()
 	{
-		$component = new NewComponent();
-		$this->assertTrue($component->hasMethod('hasProperty'));
+		parent::tearDown();
+		$this->component = null;
 	}
-
-	/**
-	 * @expectedException \yii\base\InvalidCallException
-	 * @expectedExceptionMessage Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly
-	 */
-	public function testWriteOnlyProperty()
-	{
-		$component = new NewComponent();
-		$component->writeOnly;
-	}
-
-	public function testWorkingUnset()
-	{
-		$component = new NewComponent();
-		$component->content = 'foo';
-		$component->__unset('content');
-		var_dump($component);die;
-		// $this->assertNull($component->content);
-	}
-
-//	public function testTurningOffNonExistingBehavior()
-//	{
-//		$component = new NewComponent();
-//		$this->assertFalse($component->off('foo'));
-//	}
 }
 
 class NewComponent extends Component
 {
+	public $content;
+	public $eventHandled = false;
+	public $event;
+	public $behaviorCalled = false;
 	private $_object = null;
 	private $_text = 'default';
 	private $_items = [];
 	private $_writeOnly;
-	public $content;
 
 	public function getText()
 	{
@@ -446,10 +408,6 @@ class NewComponent extends Component
 	{
 		return $this->_items;
 	}
-
-	public $eventHandled = false;
-	public $event;
-	public $behaviorCalled = false;
 
 	public function myEventHandler($event)
 	{
