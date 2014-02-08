@@ -93,6 +93,7 @@ Yii Framework 2 Change Log
 - Enh #2008: `yii message/extract` is now able to save translation strings to database (kate-kate, samdark)
 - Enh #2043: Added support for custom request body parsers (danschmidt5189, cebe)
 - Enh #2051: Do not save null data into database when using RBAC (qiangxue)
+- Enh #2054: Added support for using custom application configuration with the console command runner (qiangxue)
 - Enh #2079:
 	- i18n now falls back to `en` from `en-US` if message translation isn't found (samdark)
 	- View now falls back to `en` from `en-US` if file not found (samdark)
