@@ -984,23 +984,21 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	}
 
 	/**
-	 * Creates an active record object using a row of data from the database/storage.
+	 * Populates an active record object using a row of data from the database/storage.
 	 *
-	 * This method is *not* meant to be used to create new records.
-	 *
-	 * It is an internal method meant to be called to create active record objects after
+	 * This is an internal method meant to be called to create active record objects after
 	 * fetching data from the database. It is mainly used by [[ActiveQuery]] to populate
-	 * the query results into Active Records.
+	 * the query results into active records.
 	 *
 	 * When calling this method manually you should call [[afterFind()]] on the created
 	 * record to trigger the [[EVENT_AFTER_FIND|afterFind Event]].
 	 *
+	 * @param BaseActiveRecord $record the record to be populated. In most cases this will be an instance
+	 * created by [[instantiate()]] beforehand.
 	 * @param array $row attribute values (name => value)
-	 * @return static the newly created active record.
 	 */
-	public static function create($row)
+	public static function populateRecord($record, $row)
 	{
-		$record = static::instantiate($row);
 		$columns = array_flip($record->attributes());
 		foreach ($row as $name => $value) {
 			if (isset($columns[$name])) {
@@ -1010,12 +1008,13 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 			}
 		}
 		$record->_oldAttributes = $record->_attributes;
-		return $record;
 	}
 
 	/**
 	 * Creates an active record instance.
-	 * This method is called by [[create()]].
+	 *
+	 * This method is called together with [[populateRecord()]] by [[ActiveQuery]].
+	 *
 	 * You may override this method if the instance being created
 	 * depends on the row data to be populated into the record.
 	 * For example, by creating a record based on the value of a column,

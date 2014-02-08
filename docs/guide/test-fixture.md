@@ -116,7 +116,7 @@ use app\tests\fixtures\UserProfileFixture;
 
 class UserProfileTest extends DbTestCase
 {
-	protected function fixtures()
+	public function fixtures()
 	{
 		return [
 			'profiles' => UserProfileFixture::className(),
@@ -175,6 +175,43 @@ This means you only need to work with `@app/tests/fixtures/initdb.php` if you wa
 before each test. You may otherwise simply focus on developing each individual test case and the corresponding fixtures.
 
 
+Organizing Fixture Classes and Data Files
+-----------------------------------------
+
+By default, fixture classes look for the corresponding data files under the `data` folder which is a sub-folder
+of the folder containing the fixture class files. You can follow this convention when working with simple projects.
+For big projects, chances are that you often need to switch different data files for the same fixture class for
+different tests. We thus recommend that you organize the data files in a hierarchical way that is similar to
+your class namespaces. For example,
+
+```
+# under folder tests\unit\fixtures
+
+data\
+	components\
+		fixture_data_file1.php
+		fixture_data_file2.php
+		...
+		fixture_data_fileN.php
+	models\
+		fixture_data_file1.php
+		fixture_data_file2.php
+		...
+		fixture_data_fileN.php
+# and so on
+```
+
+In this way you will avoid collision of fixture data files between tests and use them as you need.
+
+> Note: In the example above fixture files are named only for example purpose. In real life you should name them
+> according to which fixture class your fixture classes are extending from. For example, if you are extending
+> from [[\yii\test\ActiveFixture]] for DB fixtures, you should use DB table names as the fixture data file names;
+> If you are extending for [[\yii\mongodb\ActiveFixture]] for MongoDB fixtures, you should use collection names as the file names.
+
+The similar hierarchy can be used to organize fixture class files. Instead of using `data` as the root directory, you may
+want to use `fixtures` as the root directory to avoid conflict with the data files.
+
+
 Summary
 -------
 
@@ -186,5 +223,5 @@ of running unit tests related with DB:
    - Load fixtures: clean up the relevant DB tables and populate them with fixture data;
    - Perform the actual test;
    - Unload fixtures.
-3. Repeat 2 until all tests finish.
+3. Repeat Step 2 until all tests finish.
 

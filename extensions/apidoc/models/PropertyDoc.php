@@ -63,7 +63,7 @@ class PropertyDoc extends BaseDoc
 			$this->defaultValue = PrettyPrinter::getRepresentationOfValue($reflector->getNode()->default);
 		}
 
-		foreach($this->tags as $i => $tag) {
+		foreach($this->tags as $tag) {
 			if ($tag instanceof VarTag) {
 				$this->type = $tag->getType();
 				$this->types = $tag->getTypes();

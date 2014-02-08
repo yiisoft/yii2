@@ -55,8 +55,10 @@ class QueryBuilder extends \yii\base\Object
 			$parts['from'] = (int) $query->offset;
 		}
 
-		if (empty($parts['query'])) {
+		if (empty($query->query)) {
 			$parts['query'] = ["match_all" => (object)[]];
+		} else {
+			$parts['query'] = $query->query;
 		}
 
 		$whereFilter = $this->buildCondition($query->where);

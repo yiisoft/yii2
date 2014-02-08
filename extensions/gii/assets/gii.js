@@ -35,9 +35,10 @@ yii.gii = (function ($) {
 	};
 
 	var initPreviewDiffLinks = function () {
-		$('.preview-code,.diff-code').on('click', function () {
+		$('.preview-code, .diff-code, .modal-refresh').on('click', function () {
 			var $modal = $('#preview-modal');
 			var $link = $(this);
+			$modal.find('.modal-refresh').attr('href', $link.prop('href'));
 			$modal.find('.modal-title').text($link.data('title'));
 			$modal.find('.modal-body').html('Loading ...');
 			$modal.modal('show');
@@ -70,6 +71,15 @@ yii.gii = (function ($) {
 	};
 
 	return {
+		autocomplete: function (counter, data) {
+			var datum = new Bloodhound({
+				datumTokenizer: function(d){return Bloodhound.tokenizers.whitespace(d.word);},
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				local: data
+			});
+			datum.initialize();
+			jQuery('.typeahead-'+counter).typeahead(null,{displayKey: 'word', source: datum.ttAdapter()});
+		},
 		init: function () {
 			initHintBlocks();
 			initStickyInputs();

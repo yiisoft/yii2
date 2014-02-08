@@ -18,7 +18,7 @@ class RangeValidatorTest extends TestCase
 	public function testInitException()
 	{
 		$this->setExpectedException('yii\base\InvalidConfigException', 'The "range" property must be set.');
-		$val = new RangeValidator(['range' => 'not an array']);
+		new RangeValidator(['range' => 'not an array']);
 	}
 
 	public function testAssureMessageSetOnInit()

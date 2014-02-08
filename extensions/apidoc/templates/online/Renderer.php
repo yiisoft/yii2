@@ -11,8 +11,6 @@ use yii\apidoc\models\TypeDoc;
 use yii\console\Controller;
 use Yii;
 use yii\helpers\Console;
-use yii\helpers\FileHelper;
-use yii\helpers\StringHelper;
 
 /**
  *

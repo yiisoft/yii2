@@ -767,8 +767,11 @@ class QueryBuilder extends \yii\base\Object
 			if ($query instanceof Query) {
 				// save the original parameters so that we can restore them later to prevent from modifying the query object
 				$originalParams = $query->params;
-				$query->addParams($params);
-				list ($unions[$i]['query'], $params) = $this->build($query);
+				$command = $query->createCommand($this->db);
+				$unions[$i]['query'] = $command->sql;
+				foreach ($command->params as $name => $value) {
+					$params[$name] = $value;
+				}
 				$query->params = $originalParams;
 			}
 			
@@ -1107,11 +1110,18 @@ class QueryBuilder extends \yii\base\Object
 	 * @param array $operands contains only one element which is a [[Query]] object representing the sub-query.
 	 * @param array $params the binding parameters to be populated
 	 * @return string the generated SQL expression
+	 * @throws InvalidParamException if the operand is not a [[Query]] object.
 	 */
 	public function buildExistsCondition($operator, $operands, &$params)
 	{
 		$subQuery = $operands[0];
-		list($subQuerySql, $subQueryParams) = $this->build($subQuery);
+		if (!$subQuery instanceof Query) {
+			throw new InvalidParamException('Subquery for EXISTS operator must be a Query object.');
+		}
+
+		$command = $subQuery->createCommand($this->db);
+		$subQuerySql = $command->sql;
+		$subQueryParams = $command->params;
 		if (!empty($subQueryParams)) {
 			foreach ($subQueryParams as $name => $value) {
 				$params[$name] = $value;

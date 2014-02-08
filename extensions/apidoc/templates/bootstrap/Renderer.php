@@ -11,7 +11,6 @@ use yii\apidoc\models\Context;
 use yii\console\Controller;
 use Yii;
 use yii\helpers\Console;
-use yii\helpers\FileHelper;
 
 /**
  *
@@ -186,7 +185,7 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 
 	protected function fixMarkdownLinks($content)
 	{
-		$content = preg_replace('/href\s*=\s*"([^"]+)\.md(#.*)?"/i', 'href="guide_\1.html\2"', $content);
+		$content = preg_replace('/href\s*=\s*"([^"\/]+)\.md(#.*)?"/i', 'href="guide_\1.html\2"', $content);
 		return $content;
 	}
 }

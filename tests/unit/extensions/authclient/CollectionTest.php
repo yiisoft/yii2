@@ -4,7 +4,6 @@ namespace yiiunit\extensions\authclient;
 
 use yii\authclient\Collection;
 use yii\authclient\BaseClient;
-use yiiunit\extensions\authclient\TestCase;
 
 class CollectionTest extends TestCase
 {

@@ -1,7 +1,6 @@
 <?php
 namespace yiiunit\framework\db;
 
-use yii\db\ActiveQuery;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\NullValues;

@@ -4,11 +4,9 @@ use yii\helpers\Html;
 /**
  * @var \yii\web\View $this
  * @var \yii\gii\Generator[] $generators
- * @var \yii\gii\Generator $activeGenerator
  * @var string $content
  */
 $generators = Yii::$app->controller->module->generators;
-$activeGenerator = Yii::$app->controller->generator;
 $this->title = 'Welcome to Gii';
 ?>
 <div class="default-index">

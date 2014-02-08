@@ -18,7 +18,7 @@ class DbTestCase extends TestCase
 	/**
 	 * @inheritdoc
 	 */
-	protected function globalFixtures()
+	public function globalFixtures()
 	{
 		return [
 			InitDbFixture::className(),

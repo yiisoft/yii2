@@ -112,7 +112,8 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		} else {
 			/** @var ActiveRecord $class */
 			$class = $this->modelClass;
-			$model = $class::create($row);
+			$model = $class::instantiate($row);
+			$class::populateRecord($model, $row);
 		}
 		if (!empty($this->with)) {
 			$models = [$model];
@@ -287,7 +288,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		if (count($this->where) == 1) {
 			$pks = (array) reset($this->where);
 		} else {
-			foreach($this->where as $column => $values) {
+			foreach($this->where as $values) {
 				if (is_array($values)) {
 					// TODO support composite IN for composite PK
 					throw new NotSupportedException('Find by composite PK is not supported by redis ActiveRecord.');

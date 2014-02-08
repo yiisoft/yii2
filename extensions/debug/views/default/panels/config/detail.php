@@ -7,6 +7,7 @@ use yii\helpers\Html;
 $extensions = $panel->getExtensions();
 ?>
 <h1>Configuration</h1>
+
 <?php
 echo $this->render('panels/config/table', [
 	'caption' => 'Application Configuration',
@@ -34,5 +35,6 @@ echo $this->render('panels/config/table', [
 		'Memcache' => $panel->data['php']['memcache'] ? 'Enabled' : 'Disabled',
 	],
 ]);
+
+echo $panel->getPhpInfo();
 ?>
-<div><?= Html::a('Show phpinfo() »', ['phpinfo'], ['class' => 'btn btn-primary']) ?></div>

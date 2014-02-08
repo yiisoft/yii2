@@ -93,6 +93,13 @@ class Theme extends Component
 	public function init()
 	{
 		parent::init();
+
+		if ($this->baseUrl === null) {
+			throw new InvalidConfigException('The "baseUrl" property must be set.');
+		} else {
+			$this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
+		}
+
 		if (empty($this->pathMap)) {
 			if ($this->basePath !== null) {
 				$this->basePath = Yii::getAlias($this->basePath);
@@ -100,20 +107,6 @@ class Theme extends Component
 			} else {
 				throw new InvalidConfigException('The "basePath" property must be set.');
 			}
-		}
-		$paths = [];
-		foreach ($this->pathMap as $from => $tos) {
-			$from = FileHelper::normalizePath(Yii::getAlias($from));
-			foreach ((array)$tos as $to) {
-				$to = FileHelper::normalizePath(Yii::getAlias($to));
-				$paths[$from . DIRECTORY_SEPARATOR][] = $to . DIRECTORY_SEPARATOR;
-			}
-		}
-		$this->pathMap = $paths;
-		if ($this->baseUrl === null) {
-			throw new InvalidConfigException('The "baseUrl" property must be set.');
-		} else {
-			$this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
 		}
 	}
 
@@ -127,9 +120,11 @@ class Theme extends Component
 	{
 		$path = FileHelper::normalizePath($path);
 		foreach ($this->pathMap as $from => $tos) {
+			$from = FileHelper::normalizePath(Yii::getAlias($from)) . DIRECTORY_SEPARATOR;
 			if (strpos($path, $from) === 0) {
 				$n = strlen($from);
-				foreach ($tos as $to) {
+				foreach ((array)$tos as $to) {
+					$to = FileHelper::normalizePath(Yii::getAlias($to)) . DIRECTORY_SEPARATOR;
 					$file = $to . substr($path, $n);
 					if (is_file($file)) {
 						return $file;

@@ -7,8 +7,6 @@
 
 namespace yii\helpers;
 
-use yii\base\InvalidParamException;
-
 /**
  * BaseStringHelper provides concrete implementation for [[StringHelper]].
  *

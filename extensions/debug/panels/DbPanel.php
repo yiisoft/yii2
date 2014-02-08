@@ -21,6 +21,12 @@ use yii\debug\models\search\Db;
 class DbPanel extends Panel
 {
 	/**
+	 * @var integer the threshold for determining whether the request has involved 
+	 * critical number of DB queries. If the number of queries exceeds this number, 
+	 * the execution is considered taking critical number of DB queries.
+	 */
+	public $criticalQueryThreshold;
+	/**
 	 * @var array db queries info extracted to array as models, to use with data provider.
 	 */
 	private $_models;
@@ -48,7 +54,7 @@ class DbPanel extends Panel
 		$queryTime = number_format($this->getTotalQueryTime($timings) * 1000) . ' ms';
 
 		return Yii::$app->view->render('panels/db/summary', [
-			'timings' => $this->calculateTimings(), 
+			'timings' => $this->calculateTimings(),
 			'panel' => $this,
 			'queryCount' => $queryCount,
 			'queryTime' => $queryTime,
@@ -121,7 +127,7 @@ class DbPanel extends Panel
 			$this->_models = [];
 			$timings = $this->calculateTimings();
 
-			foreach($timings as $seq => $dbTiming) {
+			foreach ($timings as $seq => $dbTiming) {
 				$this->_models[] = 	[
 					'type' => $this->getQueryType($dbTiming['info']),
 					'query' => $dbTiming['info'],
@@ -146,5 +152,16 @@ class DbPanel extends Panel
 		$timing = ltrim($timing);
 		preg_match('/^([a-zA-z]*)/', $timing, $matches);
 		return count($matches) ? $matches[0] : '';
+	}
+
+	/**
+	 * Check if given queries count is critical according settings.
+	 * 
+	 * @param integer $count queries count
+	 * @return boolean
+	 */
+	public function isQueryCountCritical($count)
+	{
+		return (($this->criticalQueryThreshold !== null) && ($count > $this->criticalQueryThreshold));
 	}
 }

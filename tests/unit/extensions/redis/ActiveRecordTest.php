@@ -2,7 +2,6 @@
 
 namespace yiiunit\extensions\redis;
 
-use yii\redis\ActiveQuery;
 use yiiunit\data\ar\redis\ActiveRecord;
 use yiiunit\data\ar\redis\Customer;
 use yiiunit\data\ar\redis\OrderItem;

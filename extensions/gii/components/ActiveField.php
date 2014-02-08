@@ -63,7 +63,10 @@ class ActiveField extends \yii\widgets\ActiveField
 	{
 		static $counter = 0;
 		$this->inputOptions['class'] .= ' typeahead-' . (++$counter);
-		$this->form->getView()->registerJs("jQuery('.typeahead-{$counter}').typeahead({local: " . Json::encode($data) . "});");
+		foreach ($data as &$item) {
+			$item = array('word' => $item);
+		}
+		$this->form->getView()->registerJs("yii.gii.autocomplete($counter, " . Json::encode($data) . ");");
 		return $this;
 	}
 }

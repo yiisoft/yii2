@@ -154,5 +154,4 @@ class LogTarget extends Target
 		# / 2 because messages are in couple (begin/end)
 		return count($profileLogs['messages']) / 2;
 	}
-
 }

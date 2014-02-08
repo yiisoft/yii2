@@ -28,7 +28,7 @@ class ExistValidatorTest extends DatabaseTestCase
 	{
 		try {
 			$val = new ExistValidator();
-			$result = $val->validate('ref');
+			$val->validate('ref');
 			$this->fail('Exception should have been thrown at this time');
 		} catch (Exception $e) {
 			$this->assertInstanceOf('yii\base\InvalidConfigException', $e);

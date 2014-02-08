@@ -146,7 +146,7 @@ class Schema extends Object
 				return $this->_indexes[$name] = $index;
 			}
 		}
-		return $this->_indexes[$name] = $index = $this->loadIndexSchema($realName);
+		return $this->_indexes[$name] = $this->loadIndexSchema($realName);
 	}
 
 	/**

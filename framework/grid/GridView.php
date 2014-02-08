@@ -67,9 +67,9 @@ class GridView extends BaseListView
 	 * returns an array of the HTML attributes. The anonymous function will be called once for every
 	 * data model returned by [[dataProvider]]. It should have the following signature:
 	 *
-	 * ~~~php
+	 * ```php
 	 * function ($model, $key, $index, $grid)
-	 * ~~~
+	 * ```
 	 *
 	 * - `$model`: the current data model being rendered
 	 * - `$key`: the key value associated with the current data model
@@ -111,7 +111,7 @@ class GridView extends BaseListView
 	 * @var array grid column configuration. Each array element represents the configuration
 	 * for one particular grid column. For example,
 	 *
-	 * ~~~php
+	 * ```php
 	 * [
 	 *     ['class' => SerialColumn::className()],
 	 *     [
@@ -122,7 +122,7 @@ class GridView extends BaseListView
 	 *     ],
 	 *     ['class' => CheckboxColumn::className()],
 	 * ]
-	 * ~~~
+	 * ```
 	 *
 	 * If a column is of class [[DataColumn]], the "class" element can be omitted.
 	 *

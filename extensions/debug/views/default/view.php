@@ -17,9 +17,14 @@ $this->title = 'Yii Debugger';
 ?>
 <div class="default-view">
 	<div id="yii-debug-toolbar" class="yii-debug-toolbar-top">
-		<div class="yii-debug-toolbar-block title">
-			<?= Html::a('Yii Debugger', ['index'], ['title' => 'Back to main debug page']) ?>
-		</div>
+
+        <div class="yii-debug-toolbar-block title">
+            <a href="<?= Html::url(['index']) ?>">
+                <img width="29" height="30" alt="" src="<?= \yii\debug\Module::getYiiLogo() ?>">
+                Yii Debugger
+            </a>
+        </div>
+
 		<?php foreach ($panels as $panel): ?>
 			<?= $panel->getSummary() ?>
 		<?php endforeach; ?>
@@ -27,7 +32,7 @@ $this->title = 'Yii Debugger';
 
 	<div class="container">
 		<div class="row">
-			<div class="col-lg-2">
+			<div class="col-lg-2 col-md-2">
 				<div class="list-group">
 					<?php
 					foreach ($panels as $id => $panel) {
@@ -39,7 +44,7 @@ $this->title = 'Yii Debugger';
 					?>
 				</div>
 			</div>
-			<div class="col-lg-10">
+			<div class="col-lg-10 col-md-10">
 				<div class="callout callout-danger">
 					<?php
 						$count = 0;

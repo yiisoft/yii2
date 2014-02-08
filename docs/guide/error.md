@@ -1,16 +1,14 @@
 Error Handling
 ==============
 
-Error handling in Yii is different from plain PHP. First of all, all non-fatal errors are converted to exceptions so
-you can use `try`-`catch` to work with these. Second, even fatal errors are rendered in a nice way. In debug mode that
-means you have a trace and a piece of code where it happened so it takes less time to analyze and fix it.
+Error handling in Yii is different than handling errors in plain PHP. First of all, Yii will convert all non-fatal errors to *exceptions*. By doing so, you can gracefully handle them using `try`-`catch`. Second, even fatal errors in Yii are rendered in a nice way. This means that in debugging mode, you can trace the causes of fatal errors in order to more quickly identify the cause of the problem.
 
-Using controller action to render errors
-----------------------------------------
+Rendering errors in a dedicated controller action
+-------------------------------------------------
 
-Default Yii error page is great for development mode and is OK for production if `YII_DEBUG` is turned off but you may
-have an idea how to make it more suitable for your project. An easiest way to customize it is to use controller action
-for error rendering. In order to do so you need to configure `errorHandler` component via application config:
+The default Yii error page is great when developing a site, and is acceptable for production sites if `YII_DEBUG` is turned off in your bootstrap index.php file. But but you may want to customize the default error page to make it more suitable for your project. 
+
+The easiest way to create a custom error page it is to use a dedicated controller action for error rendering. First, you'll need to configure the `errorHandler` component in the application's configuration:
 
 ```php
 return [
@@ -22,7 +20,7 @@ return [
     ],
 ```
 
-After it is done in case of error, Yii will launch `SiteController::actionError()`:
+With that configuration in place, whenever an error occurs, Yii will execute the "error" acction of the "Site" controller. That action should look for an exception and, if present, render the proper view file, passing along the exception:
 
 ```php
 public function actionError()
@@ -33,8 +31,22 @@ public function actionError()
 }
 ```
 
-Since most of the time you need to adjust look and feel only, Yii provides `ErrorAction` class that can be used in
-controller instead of implementing action yourself:
+Next, you would create the `views/site/error.php` file, which would make use of the exception. The exception object has the following properties:
+
+* `code`: the HTTP status code (e.g. 403, 500)
+* `type`: the error type (e.g. CHttpException, PHP Error)
+* `message`: the error message
+* `file`: the name of the PHP script file where the error occurs
+* `line`: the line number of the code where the error occurs
+* `trace`: the call stack of the error
+* `source`: the context source code where the error occurs
+
+[[Need to confirm the above for Yii 2.]]
+
+Rendering errors without a dedicated controller action
+------------------------------------------------------
+
+Instead of creating a dedicated action within the Site controller, you could just indicate to Yii what class should be used to handle errors:
 
 ```php
 public function actions()
@@ -47,10 +59,10 @@ public function actions()
 }
 ```
 
-After defining `actions` in `SiteController` as shown above you can create `views/site/error.php`. In the view there
-are three variables available:
+After associating the class with the error as in the above, define the `views/site/error.php` file, which will automatically be used. The view will be passed three variables:
 
 - `$name`: the error name
 - `$message`: the error message
 - `$exception`: the exception being handled
 
+The `$exception` object will have the same properties outlined above.

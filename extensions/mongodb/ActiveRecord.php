@@ -8,9 +8,7 @@
 namespace yii\mongodb;
 
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\db\BaseActiveRecord;
-use yii\base\UnknownMethodException;
 use yii\db\StaleObjectException;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;

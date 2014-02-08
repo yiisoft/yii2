@@ -65,7 +65,6 @@ class ActiveFixture extends BaseActiveFixture
 	/**
 	 * Loads the fixture.
 	 *
-	 * The default implementation will first clean up the table by calling [[resetTable()]].
 	 * It will then populate the table with the data returned by [[getData()]].
 	 *
 	 * If you override this method, you should consider calling the parent implementation
@@ -73,7 +72,7 @@ class ActiveFixture extends BaseActiveFixture
 	 */
 	public function load()
 	{
-		$this->resetTable();
+		parent::load();
 
 		$table = $this->getTableSchema();
 
@@ -89,6 +88,17 @@ class ActiveFixture extends BaseActiveFixture
 			}
 			$this->data[$alias] = $row;
 		}
+	}
+
+	/**
+	 * Unloads the fixture.
+	 * 
+	 * The default implementation will clean up the table by calling [[resetTable()]].
+	 */
+	public function unload()
+	{
+		$this->resetTable();
+		parent::unload();
 	}
 
 	/**

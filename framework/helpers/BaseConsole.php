@@ -414,7 +414,7 @@ class BaseConsole
 							break;
 						case 0: // ansi reset
 							$return = '';
-							for ($n = $tags; $tags > 0; $tags--) {
+							for (; $tags > 0; $tags--) {
 								$return .= '</span>';
 							}
 							return $return;

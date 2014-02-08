@@ -9,15 +9,24 @@ use yii\data\ArrayDataProvider;
  * @var array $manifest
  * @var \yii\debug\models\search\Debug $searchModel
  * @var ArrayDataProvider $dataProvider
+ * @var \yii\debug\Panel[] $panels
  */
 
 $this->title = 'Yii Debugger';
 ?>
 <div class="default-index">
-	<div id="yii-debug-toolbar" class="yii-debug-toolbar-top">
-		<div class="yii-debug-toolbar-block title">
-			Yii Debugger
-		</div>
+
+
+    <div id="yii-debug-toolbar" class="yii-debug-toolbar-top">
+        <div class="yii-debug-toolbar-block title">
+            <a href="#">
+                <img width="29" height="30" alt="" src="<?= \yii\debug\Module::getYiiLogo() ?>">
+                Yii Debugger
+            </a>
+        </div>
+        <?php foreach ($panels as $panel): ?>
+            <?= $panel->getSummary() ?>
+        <?php endforeach; ?>
 	</div>
 
 	<div class="container">
@@ -32,7 +41,9 @@ echo GridView::widget([
 	'dataProvider' => $dataProvider,
 	'filterModel' => $searchModel,
 	'rowOptions' => function ($model, $key, $index, $grid) use ($searchModel) {
-		if ($searchModel->isCodeCritical($model['statusCode'])) {
+		$dbPanel = $this->context->module->panels['db'];
+
+		if ($searchModel->isCodeCritical($model['statusCode']) || $dbPanel->isQueryCountCritical($model['sqlCount'])) {
 			return ['class'=>'danger'];
 		} else {
 			return [];
@@ -42,23 +53,36 @@ echo GridView::widget([
 		['class' => 'yii\grid\SerialColumn'],
 		[
 			'attribute' => 'tag',
-			'value' => function ($data)
-			{
+			'value' => function ($data) {
 				return Html::a($data['tag'], ['view', 'tag' => $data['tag']]);
 			},
 			'format' => 'html',
 		],
 		[
 			'attribute' => 'time',
-			'value' => function ($data) use ($timeFormatter)
-			{
-				return $timeFormatter->asDateTime($data['time'], 'long');
+			'value' => function ($data) use ($timeFormatter) {
+				return $timeFormatter->asDateTime($data['time'], 'short');
 			},
 		],
 		'ip',
 		[
 			'attribute' => 'sqlCount',
-			'label' => 'Total queries count'
+			'label' => 'Total queries',
+			'value' => function ($data) {
+				$dbPanel = $this->context->module->panels['db'];
+
+				if ($dbPanel->isQueryCountCritical($data['sqlCount'])) {
+
+					$content = Html::tag('b', $data['sqlCount']) . ' ' . Html::tag('span', '', ['class' => 'glyphicon glyphicon-exclamation-sign']);
+					return Html::a($content, ['view', 'panel' => 'db', 'tag' => $data['tag']], [
+						'title' => 'Too many queries. Allowed count is ' . $dbPanel->criticalQueryThreshold,
+					]);
+
+				} else {
+					return $data['sqlCount'];
+				}
+			},
+			'format' => 'html',
 		],
 		[
 			'attribute' => 'method',
@@ -66,8 +90,7 @@ echo GridView::widget([
 		],
 		[
 			'attribute'=>'ajax',
-			'value' => function ($data)
-			{
+			'value' => function ($data) {
 				return $data['ajax'] ? 'Yes' : 'No';
 			},
 			'filter' => ['No', 'Yes'],

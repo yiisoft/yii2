@@ -1,7 +1,7 @@
 Database basics
 ===============
 
-Yii has a database access layer built on top of PHP's [PDO](http://www.php.net/manual/en/ref.pdo.php). It provides
+Yii has a database access layer built on top of PHP's [PDO](http://www.php.net/manual/en/book.pdo.php). It provides
 uniform API and solves some inconsistencies between different DBMS. By default Yii supports the following DBMS:
 
 - [MySQL](http://www.mysql.com/)
