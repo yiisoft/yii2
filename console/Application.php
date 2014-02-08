@@ -98,8 +98,8 @@ class Application extends \yii\base\Application
 			foreach ($_SERVER['argv'] as $param) {
 				if (strpos($param, $option) !== false) {
 					$path = substr($param, strlen($option));
-					if (!empty($path) && is_file($path)) {
-						return require($path);
+					if (!empty($path) && is_file($file = Yii::getAlias($path))) {
+						return require($file);
 					} else {
 						die("The configuration file does not exist: $path\n");
 					}
