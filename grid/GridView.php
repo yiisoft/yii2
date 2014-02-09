@@ -279,13 +279,14 @@ class GridView extends BaseListView
 			/** @var Column $column */
 			$cells[] = $column->renderHeaderCell();
 		}
-		$content = implode('', $cells);
+		$content = Html::tag('tr', implode('', $cells), $this->headerRowOptions);
 		if ($this->filterPosition == self::FILTER_POS_HEADER) {
 			$content = $this->renderFilters() . $content;
 		} elseif ($this->filterPosition == self::FILTER_POS_BODY) {
 			$content .= $this->renderFilters();
 		}
-		return "<thead>\n" . Html::tag('tr', $content, $this->headerRowOptions) . "\n</thead>";
+
+		return "<thead>\n" .  $content . "\n</thead>";
 	}
 
 	/**
@@ -299,11 +300,11 @@ class GridView extends BaseListView
 			/** @var Column $column */
 			$cells[] = $column->renderFooterCell();
 		}
-		$content = implode('', $cells);
+		$content = Html::tag('tr', implode('', $cells), $this->footerRowOptions);
 		if ($this->filterPosition == self::FILTER_POS_FOOTER) {
 			$content .= $this->renderFilters();
 		}
-		return "<tfoot>\n" . Html::tag('tr', $content, $this->footerRowOptions) . "\n</tfoot>";
+		return "<tfoot>\n" . $content . "\n</tfoot>";
 	}
 
 	/**
