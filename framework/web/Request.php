@@ -95,10 +95,10 @@ class Request extends \yii\base\Request
 	 * from the same application. If not, a 400 HTTP exception will be raised.
 	 *
 	 * Note, this feature requires that the user client accepts cookie. Also, to use this feature,
-	 * forms submitted via POST method must contain a hidden input whose name is specified by [[csrfVar]].
+	 * forms submitted via POST method must contain a hidden input whose name is specified by [[csrfParam]].
 	 * You may use [[\yii\web\Html::beginForm()]] to generate his hidden input.
 	 *
-	 * In JavaScript, you may get the values of [[csrfVar]] and [[csrfToken]] via `yii.getCsrfVar()` and
+	 * In JavaScript, you may get the values of [[csrfParam]] and [[csrfToken]] via `yii.getCsrfParam()` and
 	 * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
 	 *
 	 * @see Controller::enableCsrfValidation
@@ -109,7 +109,7 @@ class Request extends \yii\base\Request
 	 * @var string the name of the token used to prevent CSRF. Defaults to '_csrf'.
 	 * This property is used only when [[enableCsrfValidation]] is true.
 	 */
-	public $csrfVar = '_csrf';
+	public $csrfParam = '_csrf';
 	/**
 	 * @var array the configuration of the CSRF cookie. This property is used only when [[enableCsrfValidation]] is true.
 	 * @see Cookie
@@ -1103,7 +1103,7 @@ class Request extends \yii\base\Request
 	public function getRawCsrfToken()
 	{
 		if ($this->_csrfCookie === null) {
-			$this->_csrfCookie = $this->getCookies()->get($this->csrfVar);
+			$this->_csrfCookie = $this->getCookies()->get($this->csrfParam);
 			if ($this->_csrfCookie === null) {
 				$this->_csrfCookie = $this->createCsrfCookie();
 				Yii::$app->getResponse()->getCookies()->add($this->_csrfCookie);
@@ -1175,7 +1175,7 @@ class Request extends \yii\base\Request
 	protected function createCsrfCookie()
 	{
 		$options = $this->csrfCookie;
-		$options['name'] = $this->csrfVar;
+		$options['name'] = $this->csrfParam;
 		$options['value'] = Security::generateRandomKey();
 		return new Cookie($options);
 	}
@@ -1194,8 +1194,8 @@ class Request extends \yii\base\Request
 		if (!$this->enableCsrfValidation || in_array($method, ['GET', 'HEAD', 'OPTIONS'], true)) {
 			return true;
 		}
-		$trueToken = $this->getCookies()->getValue($this->csrfVar);
-		$token = $this->getBodyParam($this->csrfVar);
+		$trueToken = $this->getCookies()->getValue($this->csrfParam);
+		$token = $this->getBodyParam($this->csrfParam);
 		return $this->validateCsrfTokenInternal($token, $trueToken)
 			|| $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
 	}
