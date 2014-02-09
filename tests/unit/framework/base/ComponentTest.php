@@ -303,6 +303,57 @@ class ComponentTest extends TestCase
 		$this->assertNull($component->getBehavior('a'));
 		$this->assertNull($component->getBehavior('b'));
 	}
+
+	public function testSetReadOnlyProperty()
+	{
+		$this->setExpectedException(
+			'\yii\base\InvalidCallException',
+			'Setting read-only property: yiiunit\framework\base\NewComponent::object'
+		);
+		$this->component->object = 'z';
+	}
+
+	public function testSetPropertyOfBehavior()
+	{
+		$this->assertNull($this->component->getBehavior('a'));
+
+		$behavior = new NewBehavior;
+		$this->component->attachBehaviors([
+			'a' => $behavior,
+		]);
+		$this->component->p = 'Yii is cool.';
+
+		$this->assertSame('Yii is cool.', $this->component->getBehavior('a')->p);
+	}
+
+	public function testSettingBehaviorWithSetter()
+	{
+		$behaviorName = 'foo';
+		$this->assertNull($this->component->getBehavior($behaviorName));
+		$p = 'as ' . $behaviorName;
+		$this->component->$p = __NAMESPACE__ .  '\NewBehavior';
+		$this->assertSame(__NAMESPACE__ .  '\NewBehavior', get_class($this->component->getBehavior($behaviorName)));
+	}
+
+	public function testWriteOnlyProperty()
+	{
+		$this->setExpectedException(
+			'\yii\base\InvalidCallException',
+			'Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly'
+		);
+		$this->component->writeOnly;
+	}
+
+	public function testSuccessfulMethodCheck()
+	{
+		$this->assertTrue($this->component->hasMethod('hasProperty'));
+	}
+
+	public function testTurningOffNonExistingBehavior()
+	{
+		$this->assertFalse($this->component->hasEventHandlers('foo'));
+		$this->assertFalse($this->component->off('foo'));
+	}
 }
 
 class NewComponent extends Component
@@ -356,6 +407,10 @@ class NewComponent extends Component
 	public function raiseEvent()
 	{
 		$this->trigger('click', new Event);
+	}
+
+	public function setWriteOnly()
+	{
 	}
 }
 

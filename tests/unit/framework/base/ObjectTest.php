@@ -139,6 +139,21 @@ class ObjectTest extends TestCase
 		$object = new NewObject(['text' => 'test text']);
 		$this->assertEquals('test text', $object->getText());
 	}
+
+	public function testGetClassName()
+	{
+		$object = $this->object;
+		$this->assertSame(get_class($object), $object::className());
+	}
+
+	public function testReadingWriteOnlyProperty()
+	{
+		$this->setExpectedException(
+			'yii\base\InvalidCallException',
+			'Getting write-only property: yiiunit\framework\base\NewObject::writeOnly'
+		);
+		$this->object->writeOnly;
+	}
 }
 
 
@@ -179,4 +194,6 @@ class NewObject extends Object
 	{
 		return $this->_items;
 	}
+
+	public function setWriteOnly(){}
 }
