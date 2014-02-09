@@ -369,7 +369,11 @@ foreach ($customers as $customer) {
 }
 ```
 
-As you can see, only two SQL queries are needed for the same task.
+As you can see, only two SQL queries are needed for the same task!
+
+> Info: In general, if you are eager loading `N` relations among which `M` relations are defined with `via()` or `viaTable()`,
+> a total number of `1+M+N` SQL queries will be performed: one query to bring back the rows for the primary table, one for
+> each of the `M` pivot tables corresponding to the `via()` or `viaTable()` calls, and one for each of the `N` related tables.
 
 
 Sometimes, you may want to customize the relational queries on the fly. This can be
