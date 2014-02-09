@@ -165,7 +165,7 @@ Yii Framework 2 Change Log
 - Chg: Removed implementation of `Arrayable` from `yii\Object` (qiangxue)
 - Chg: Renamed `ActiveRecordInterface::createActiveRelation()` to `createRelation()` (qiangxue)
 - Chg: The scripts in asset bundles are now registered in `View` at the end of `endBody()`. It was done in `endPage()` previously (qiangxue)
-- Chg: Renamed `csrf-var` to `csrf-param` as `csrf-var` is not a valid meta tag name (Dilip)
+- Chg: Renamed `csrf-var` to `csrf-param` for CSRF header name (Dilip)
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #706: Added `yii\widgets\Pjax` and enhanced `GridView` to work with `Pjax` to support AJAX-update (qiangxue)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
