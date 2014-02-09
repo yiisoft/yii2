@@ -161,6 +161,7 @@ class Module extends \yii\base\Module
 			'log' => ['class' => 'yii\debug\panels\LogPanel'],
 			'profiling' => ['class' => 'yii\debug\panels\ProfilingPanel'],
 			'db' => ['class' => 'yii\debug\panels\DbPanel'],
+			'mail' => ['class' => 'yii\debug\panels\MailPanel'],
 		];
 	}
 }

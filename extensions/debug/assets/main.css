@@ -73,3 +73,14 @@ a.desc:after {
 .sort-ordinal a.desc:after {
 	content: "\e156";
 }
+
+.mail-sorter {
+	margin-top: 7px;
+}
+
+.mail-sorter li {
+	list-style: none;
+	float: left;
+	width: 12%;
+	font-weight: bold;
+}
