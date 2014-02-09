@@ -60,8 +60,8 @@ yii = (function ($) {
 		/**
 		 * @return string|undefined the CSRF variable name. Undefined is returned if CSRF validation is not enabled.
 		 */
-		getCsrfVar: function () {
-			return $('meta[name=csrf-var]').prop('content');
+		getCsrfParam: function () {
+			return $('meta[name=csrf-param]').prop('content');
 		},
 
 		/**
@@ -130,9 +130,9 @@ yii = (function ($) {
 				if (!method.match(/(get|post)/i)) {
 					$form.append('<input name="_method" value="' + method + '" type="hidden">');
 				}
-				var csrfVar = pub.getCsrfVar();
-				if (csrfVar) {
-					$form.append('<input name="' + csrfVar + '" value="' + pub.getCsrfToken() + '" type="hidden">');
+				var csrfParam = pub.getCsrfParam();
+				if (csrfParam) {
+					$form.append('<input name="' + csrfParam + '" value="' + pub.getCsrfToken() + '" type="hidden">');
 				}
 				$form.hide().appendTo('body');
 			}
@@ -199,7 +199,7 @@ yii = (function ($) {
 	function initCsrfHandler() {
 		// automatically send CSRF token for all AJAX requests
 		$.ajaxPrefilter(function (options, originalOptions, xhr) {
-			if (!options.crossDomain && pub.getCsrfVar()) {
+			if (!options.crossDomain && pub.getCsrfParam()) {
 				xhr.setRequestHeader('X-CSRF-Token', pub.getCsrfToken());
 			}
 		});
