@@ -174,9 +174,7 @@ class Component extends Object
 				}
 			}
 		}
-		if (method_exists($this, 'get' . $name)) {
-			throw new InvalidCallException('Unsetting read-only property: ' . get_class($this) . '.' . $name);
-		}
+		throw new InvalidCallException('Unsetting an unknown or read-only property: ' . get_class($this) . '.' . $name);
 	}
 
 	/**
