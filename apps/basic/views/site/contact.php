@@ -18,8 +18,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<div class="alert alert-success">
 		Thank you for contacting us. We will respond to you as soon as possible.
+		<?php if (Yii::$app->mail->useFileTransport): ?>
 		Application is in debug mode, message was logged under  <code><?= Yii::getAlias(Yii::$app->mail->fileTransportPath); ?> </code>.
-		You can also view it in debug module on mail panel.
+		<?php endif; ?>
+		You can also view message in debug module on mail panel.
 	</div>
 
 	<?php else: ?>
