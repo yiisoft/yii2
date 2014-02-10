@@ -18,11 +18,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<div class="alert alert-success">
 		Thank you for contacting us. We will respond to you as soon as possible.
-		<?php if (Yii::$app->mail->useFileTransport): ?>
-		Application is in debug mode, message was logged under  <code><?= Yii::getAlias(Yii::$app->mail->fileTransportPath); ?> </code>.
-		<?php endif; ?>
-		You can also view message in debug module on mail panel.
 	</div>
+
+	<p>
+		Note that if you turn on the Yii debugger, you should be able
+		to view the mail message on the mail panel of the debugger.
+		<?php if (Yii::$app->mail->useFileTransport): ?>
+		Because the application is in development mode, the email is not sent but saved as
+		a file under <code><?= Yii::getAlias(Yii::$app->mail->fileTransportPath); ?></code>.
+		Please configure the <code>useFileTransport</code> property of the <code>mail</code>
+		application component to be false to enable email sending.
+		<?php endif; ?>
+	</p>
 
 	<?php else: ?>
 
