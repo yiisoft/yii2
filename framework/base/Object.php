@@ -74,11 +74,11 @@ class Object
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) {
 			return $this->$getter();
-		} elseif (method_exists($this, 'set' . $name)) {
-			throw new InvalidCallException('Getting write-only property: ' . get_class($this) . '::' . $name);
-		} else {
-			throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
 		}
+		if (method_exists($this, 'set' . $name)) {
+			throw new InvalidCallException('Getting write-only property: ' . get_class($this) . '::' . $name);
+		}
+		throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
 	}
 
 	/**
@@ -97,11 +97,12 @@ class Object
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) {
 			$this->$setter($value);
-		} elseif (method_exists($this, 'get' . $name)) {
-			throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '::' . $name);
-		} else {
-			throw new UnknownPropertyException('Setting unknown property: ' . get_class($this) . '::' . $name);
+			return;
 		}
+		if (method_exists($this, 'get' . $name)) {
+			throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '::' . $name);
+		}
+		throw new UnknownPropertyException('Setting unknown property: ' . get_class($this) . '::' . $name);
 	}
 
 	/**
@@ -119,9 +120,8 @@ class Object
 		$getter = 'get' . $name;
 		if (method_exists($this, $getter)) {
 			return $this->$getter() !== null;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	/**
@@ -140,9 +140,9 @@ class Object
 		$setter = 'set' . $name;
 		if (method_exists($this, $setter)) {
 			$this->$setter(null);
-		} elseif (method_exists($this, 'get' . $name)) {
-			throw new InvalidCallException('Unsetting read-only property: ' . get_class($this) . '::' . $name);
+			return;
 		}
+		throw new InvalidCallException('Unsetting an unknown or read-only property: ' . get_class($this) . '::' . $name);
 	}
 
 	/**
