@@ -1512,6 +1512,28 @@ class BaseHtml
 	}
 
 	/**
+	 * Adds inline CSS styles to the specified options.
+	 * If the style is already in the options, it will not be added again.
+	 * @param array $options the options to be modified.
+	 * @param string $styles the CSS style\s to be added
+	 */
+	public static function addCssStyle(&$options, $styles)
+	{
+		if (isset($options['style'])) {
+			$options['style'] = rtrim($options['style'], ';') . ';';
+			$styles = rtrim($styles, ';') . ';';
+			foreach (array_filter(explode(';', $styles), 'strlen') as $style) {
+				$property = trim(substr($style, 0, strpos($style, ':')));
+				if (!preg_match('/[\s;]' . preg_quote($property) . '\s*:/i', ' ' . $options['style'])) {
+					$options['style'] .= ' ' . $style . ';';
+				}
+			}
+		} else {
+			$options['style'] = $styles;
+		}
+	}
+
+	/**
 	 * Adds a CSS class to the specified options.
 	 * If the CSS class is already in the options, it will not be added again.
 	 * @param array $options the options to be modified.
