@@ -95,7 +95,7 @@ class DefaultController extends Controller
 
 	public function actionDownloadMail($file)
 	{
-		$filePath = Yii::getAlias($this->module->panels['mail']->mailPath) . '/' . $file;
+		$filePath = Yii::getAlias($this->module->panels['mail']->mailPath) . '/' . basename($file);
 
 		if (!is_file($filePath)) {
 			throw new NotFoundHttpException('Mail file not found');
