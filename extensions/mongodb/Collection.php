@@ -521,7 +521,8 @@ class Collection extends Object
 	 * and the map values) and does the aggregation.
 	 * Argument will be automatically cast to [[\MongoCode]].
 	 * @param string|array $out output collection name. It could be a string for simple output
-	 * ('outputCollection'), or an array for parametrized output (['merge' => 'outputCollection'])
+	 * ('outputCollection'), or an array for parametrized output (['merge' => 'outputCollection']).
+     * You can pass ['inline' => true] to fetch the result at once without temporary collection usage.
 	 * @param array $condition criteria for including a document in the aggregation.
 	 * @param array $options additional optional parameters to the mapReduce command. Valid options include:
 	 *  - sort - array - key to sort the input documents. The sort key must be in an existing index for this collection.
@@ -530,7 +531,7 @@ class Collection extends Object
 	 *  - scope - array - specifies global variables that are accessible in the map, reduce and finalize functions.
 	 *  - jsMode - boolean -Specifies whether to convert intermediate data into BSON format between the execution of the map and reduce functions.
 	 *  - verbose - boolean - specifies whether to include the timing information in the result information.
-	 * @return string the map reduce output collection name.
+	 * @return string|array the map reduce output collection name or output results.
 	 * @throws Exception on failure.
 	 */
 	public function mapReduce($map, $reduce, $out, $condition = [], $options = [])
@@ -566,7 +567,7 @@ class Collection extends Object
 			$result = $this->mongoCollection->db->command($command);
 			$this->tryResultError($result);
 			Yii::endProfile($token, __METHOD__);
-			return $result['result'];
+			return array_key_exists('results', $result) ? $result['results'] : $result['result'];
 		} catch (\Exception $e) {
 			Yii::endProfile($token, __METHOD__);
 			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);

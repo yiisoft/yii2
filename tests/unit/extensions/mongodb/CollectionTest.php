@@ -240,6 +240,55 @@ class CollectionTest extends MongoDbTestCase
 		$this->assertEquals($expectedRows, $rows);
 	}
 
+    /**
+     * @depends testMapReduce
+     */
+    public function testMapReduceInline()
+    {
+        $collection = $this->getConnection()->getCollection('customer');
+        $rows = [
+            [
+                'name' => 'customer 1',
+                'status' => 1,
+                'amount' => 100,
+            ],
+            [
+                'name' => 'customer 2',
+                'status' => 1,
+                'amount' => 200,
+            ],
+            [
+                'name' => 'customer 2',
+                'status' => 2,
+                'amount' => 400,
+            ],
+            [
+                'name' => 'customer 2',
+                'status' => 3,
+                'amount' => 500,
+            ],
+        ];
+        $collection->batchInsert($rows);
+
+        $result = $collection->mapReduce(
+            'function () {emit(this.status, this.amount)}',
+            'function (key, values) {return Array.sum(values)}',
+            ['inline' => true],
+            ['status' => ['$lt' => 3]]
+        );
+        $expectedRows = [
+            [
+                '_id' => 1,
+                'value' => 300,
+            ],
+            [
+                '_id' => 2,
+                'value' => 400,
+            ],
+        ];
+        $this->assertEquals($expectedRows, $result);
+    }
+
 	public function testCreateIndex()
 	{
 		$collection = $this->getConnection()->getCollection('customer');
