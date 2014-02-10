@@ -1014,6 +1014,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * Creates an active record instance.
 	 *
 	 * This method is called together with [[populateRecord()]] by [[ActiveQuery]].
+	 * It is not meant to be used for creating new records directly.
 	 *
 	 * You may override this method if the instance being created
 	 * depends on the row data to be populated into the record.
