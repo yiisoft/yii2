@@ -85,8 +85,13 @@ class I18N extends Component
 	 */
 	public function translate($category, $message, $params, $language)
 	{
-		$message = $this->getMessageSource($category)->translate($category, $message, $language);
-		return $this->format($message, $params, $language);
+		$messageSource = $this->getMessageSource($category);
+		$translation = $messageSource->translate($category, $message, $language);
+		if ($translation === false) {
+			return $this->format($message, $params, $messageSource->sourceLanguage);
+		} else {
+			return $this->format($translation, $params, $language);
+		}
 	}
 
 	/**

@@ -98,7 +98,7 @@ class Request extends \yii\base\Request
 	 * forms submitted via POST method must contain a hidden input whose name is specified by [[csrfVar]].
 	 * You may use [[\yii\web\Html::beginForm()]] to generate his hidden input.
 	 *
-	 * In JavaScript, you may get the values of [[csrfVar]] and [[csrfToken]] via `yii.getCsrfVar()` and
+	 * In JavaScript, you may get the values of [[csrfVar]] and [[csrfToken]] via `yii.getCsrfParam()` and
 	 * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
 	 *
 	 * @see Controller::enableCsrfValidation

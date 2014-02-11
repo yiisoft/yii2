@@ -89,6 +89,15 @@ class I18NTest extends TestCase
 		$model = new ParamModel();
 		$this->assertEquals('His name is peer and he is 5 years old.', $this->i18n->translate('test', $msg, $model, 'en-US'));
 	}
+
+	/**
+	 * When translation is missing source language should be used for formatting.
+	 * https://github.com/yiisoft/yii2/issues/2209
+	 */
+	public function testMissingTranslationFormatting()
+	{
+		$this->assertEquals('1 item', $this->i18n->translate('test', '{0, number} {0, plural, one{item} other{items}}', 1, 'hu'));
+	}
 }
 
 class ParamModel extends Model

@@ -16,32 +16,15 @@ use yii\test\FixtureTrait;
 
 /**
  * This command manages loading and unloading fixtures.
- * You can specify different options of this command to point fixture manager
- * to the specific tables of the different database connections.
- *
- * To use this command simply configure your console.php config like this:
  *
  * ~~~
- * 'db' => [
- *     'class' => 'yii\db\Connection',
- *     'dsn' => 'mysql:host=localhost;dbname={your_database}',
- *     'username' => '{your_db_user}',
- *     'password' => '',
- *     'charset' => 'utf8',
- * ],
- * ~~~
- *
- * ~~~
- * #load fixtures under $fixturePath from UsersFixture class with default namespace "tests\unit\fixtures"
+ * #load fixtures from UsersFixture class with default namespace "tests\unit\fixtures"
  * yii fixture/load User
  *
  * #also a short version of this command (generate action is default)
  * yii fixture User
  *
- * #load fixtures under $fixturePath with the different database connection
- * yii fixture/load User --db=someOtherDbConnection
- *
- * #load fixtures under different $fixturePath.
+ * #load fixtures with different namespace.
  * yii fixture/load User --namespace=alias\my\custom\namespace\goes\here
  * ~~~
  *
@@ -61,11 +44,7 @@ class FixtureController extends Controller
 	/**
 	 * @var string controller default action ID.
 	 */
-	public $defaultAction = 'apply';
-	/**
-	 * @var string id of the database connection component of the application.
-	 */
-	public $db = 'db';
+	public $defaultAction = 'load';
 	/**
 	 * @var string default namespace to search fixtures in
 	 */
@@ -85,7 +64,7 @@ class FixtureController extends Controller
 	public function globalOptions()
 	{
 		return array_merge(parent::globalOptions(), [
-			'db', 'namespace','globalFixtures'
+			'namespace','globalFixtures'
 		]);
 	}
 
@@ -126,23 +105,16 @@ class FixtureController extends Controller
 			throw new Exception('No fixtures were found in namespace: "' . $this->namespace . '"' . '');
 		}
 
-		$transaction = $this->getDbConnection()->beginTransaction();
-
-		try {
-			$this->loadFixtures($this->createFixtures($fixtures));
-			$transaction->commit();
-		} catch (\Exception $e) {
-			$transaction->rollback();
-			$this->stdout("Exception occurred, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
-			throw $e;
-		}
+		$fixturesObjects = $this->createFixtures($fixtures);
+		$this->unloadFixtures($fixturesObjects);
+		$this->loadFixtures($fixturesObjects);
 		$this->notifyLoaded($fixtures);
 	}
 
 	/**
 	 * Unloads given fixtures. You can clear environment and unload multiple fixtures by specifying
 	 * their names separated with commas, like: User,UserProfile,MyCustom. Be sure there is no
-	 * whitespace between tables names.
+	 * whitespace between names.
 	 * @param array|string $fixtures
 	 * @param array|string $except
 	 */
@@ -169,40 +141,14 @@ class FixtureController extends Controller
 		}
 
 		$filtered = array_diff($foundFixtures, $except);
-		$fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures ,$filtered));
+		$fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures, $filtered));
 
 		if (!$fixtures) {
 			throw new Exception('No fixtures were found in namespace: ' . $this->namespace . '".');
 		}
 
-		$transaction = $this->getDbConnection()->beginTransaction();
-
-		try {
-			$this->unloadFixtures($this->createFixtures($fixtures));
-			$transaction->commit();
-
-		} catch (\Exception $e) {
-			$transaction->rollback();
-			$this->stdout("Exception occurred, transaction rollback. Tables will be in same state.\n", Console::BG_RED);
-			throw $e;
-		}
+		$this->unloadFixtures($this->createFixtures($fixtures));
 		$this->notifyUnloaded($fixtures);
-	}
-
-	/**
-	 * Returns database connection component
-	 * @return \yii\db\Connection
-	 * @throws \yii\console\Exception if [[db]] is invalid.
-	 */
-	public function getDbConnection()
-	{
-		$db = Yii::$app->getComponent($this->db);
-
-		if ($db === null) {
-			throw new Exception("There is no database connection component with id \"{$this->db}\".");
-		}
-
-		return $db;
 	}
 
 	/**

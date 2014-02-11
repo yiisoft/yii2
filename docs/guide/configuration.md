@@ -3,35 +3,42 @@ Configuration
 
 Yii applications rely upon components to perform most of the common tasks, such as connecting to a database, routing browser
 requests, and handling sessions. How these stock components behave can be adjusted by *configuring* your Yii application.
-The majority of components have sensible defaults, so it's unlikely that you'll spend a lot of time configuring
-them. Still there are some mandatory settings, such as the database connection, that you will have to establish.
+The majority of components have sensible default settings, so it's unlikely that you'll do a lot of configuration. Still, there are some mandatory configuration settings that you will have to establish, such as the database connection.
 
-How an application is configured depends on application template but there are some general principles applying in any case.
+How an application is configured depends upon the application template in use, but there are some general principles that apply in every Yii case.
 
-Configuring options in bootstrap file
--------------------------------------
+Configuring options in the bootstrap file
+-----------------------------------------
 
-For each application in Yii there is at least one bootstrap file. For web applications it's typically `index.php`, for
-console applications it's `yii`. Both are doing nearly the same job:
+For each application in Yii there is at least one bootstrap file: a PHP script through which all requests are handled. For web applications, the bootstrap file is  typically `index.php`; for
+console applications, the bootstrap file is `yii`. Both bootstrap files perform nearly the same job:
 
 1. Setting common constants.
-2. Including Yii itself.
+2. Including the Yii framework itself.
 3. Including [Composer autoloader](http://getcomposer.org/doc/01-basic-usage.md#autoloading).
-4. Reading config file into `$config`.
-5. Creating new application instance using `$config` and running it.
+4. Reading the configuration file into `$config`.
+5. Creating a new application instance, configured via `$config`, and running that instance.
 
-The Bootstrap file is not the part of framework but your application so it's OK to adjust it to fit your application. Typical
-adjustments are the value of `YII_DEBUG` that should never be `true` on production and the way config is read:
+Like any resource in your Yii application, the bootstrap file can be edited to fit your needs. A typical change is to the value of `YII_DEBUG`. This constant should be `true` during development, but always `false` on production sites.
+
+The default bootstrap structure sets `YII_DEBUG` to `false` if not defined:
 
 ```php
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 ```
 
-Configuring application instance
---------------------------------
+During development, you can change this to `true`:
 
-It was mentioned above that application is configured in bootstrap file when its instance is created. Config is typically
-stored in a PHP file in the `/config` directory of the application and looks like the following:
+```php
+define('YII_DEBUG', true); // Development only 
+defined('YII_DEBUG') or define('YII_DEBUG', false);
+```
+
+Configuring the application instance
+------------------------------------
+
+An application instance is configured when it's created in the bootstrap file. The configuration is typically
+stored in a PHP file stored in the `/config` application directory. The file has this structure to begin:
 
 ```php
 <?php
@@ -45,18 +52,18 @@ return [
 ];
 ```
 
-In the above array keys are names of application properties. Depending on application type you can check properties of
-either [[yii\web\Application]] or [[yii\console\Application]]. Both are extended from [[yii\base\Application]].
+The configuration is a large array of key-value pairs. In the above, the array keys are the names of application properties. Depending upon the application type, you can configure the properties of
+either [[yii\web\Application]] or [[yii\console\Application]] classes. Both classes extend  [[yii\base\Application]].
 
-> Note that you can configure not only public class properties but anything accessible via setter. For example, to
-  configure runtime path you can use key named `runtimePath`. There's no such property in the application class but
-  since there's a corresponding setter named `setRuntimePath` it will be properly configured.
-  This feature is added to any class that extends from [[yii\base\Object]] which is nearly any class of the Yii framework.
+Note that you can configure not only public class properties, but any property accessible via a setter. For example, to
+  configure the runtime path, you can use a key named `runtimePath`. There's no such property in the application class, but
+  since the class has a corresponding setter named `setRuntimePath`, `runtimePath` becomes configurable.
+  The ability to configure properties via setters is available to any class that extends from [[yii\base\Object]], which is nearly every class in the Yii framework.
 
 Configuring application components
 ----------------------------------
 
-Majority of Yii functionality are application components. These are attached to application via its `components` property:
+The majority of the Yii functionality comes from application components. These components are attached to the application instance via the instance's `components` property:
 
 ```php
 <?php
@@ -81,23 +88,21 @@ return [
 ];
 ```
 
-In the above four components are configured: `cache`, `user`, `errorHandler`, `log`. Each entry key is a component ID
-and the value is the configuration array. ID is used to access the component like `\Yii::$app->myComponent`.
-Configuration array has one special key named `class` that sets the component class. The rest of the keys and values are used
-to configure component properties in the same way as top-level keys are used to configure application properties.
+In the above code, four components are configured: `cache`, `user`, `errorHandler`, `log`. Each entry's key is a component ID. The values are subarrays used to configure that component. The component ID is also used to access the component anywhere within the application, using code like `\Yii::$app->myComponent`.
 
-Each application has a predefined set of components. In case of configuring one of these, the `class` key is omitted and
-application default class is used instead. You can check `registerCoreComponents()` method of the application you are using
+The configuration array has one special key named `class` that identifies the component's base class. The rest of the keys and values are used
+to configure component properties in the same way as top-level keys are used to configure the application's properties.
+
+Each application has a predefined set of components. To configure one of these, the `class` key can be omitted to use the default Yii class for that component. You can check the `registerCoreComponents()` method of the application you are using
 to get a list of component IDs and corresponding classes.
 
-Note that Yii is smart enough to configure the component when it's actually used i.e. if `cache` is never used it will
-not be instantiated and configured at all.
+Note that Yii is smart enough to only configure the component when it's actually being used: for example, if you configure the `cache` component in your configuration file but never use the `cache` component in your code, no instance of that component will be created and no time is wasted configuring it.
 
 Setting component defaults classwide
 ------------------------------------
 
-For each component you can specifiy classwide defaults. For example, if we want to change class for all `LinkPager`
-widgets without specifying it over and over again when widget is called we can do it like the following:
+For each component you can specifiy classwide defaults. For example, if you want to change the class used for all `LinkPager`
+widgets without specifying the class for every widget usage, you can do the following:
 
 ```php
 \Yii::$objectConfig = [
@@ -109,5 +114,5 @@ widgets without specifying it over and over again when widget is called we can d
 ];
 ```
 
-The code above should be executed once before `LinkPager` widget is used. It can be done in `index.php`, application
-config or anywhere else.
+The code above should be executed once before `LinkPager` widget is used. It can be done in `index.php`, the application
+configuration file, or anywhere else.

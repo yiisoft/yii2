@@ -58,16 +58,27 @@ exit($exitCode);
 ```
 
 This script is a part of your application so you're free to adjust it. The `YII_DEBUG` constant can be set `false` if you do
-not want to see stacktrace on error and want to improve overall performance. In both basic and advanced application
+not want to see stack trace on error and want to improve overall performance. In both basic and advanced application
 templates it is enabled to provide more developer-friendly environment.
 
 Configuration
 -------------
 
-As can be seen in the code above, console application uses its own config files named `console.php` so you need to
-configure database connection and the rest of the components you're going to use there in that file. If web and console
-application configs have a lot in common it's a good idea to move matching parts into their own config files as it was
-done in advanced application template.
+As can be seen in the code above, console application uses its own config files named `console.php`. In this file,
+you should specify how to configure various application components and properties.
+
+If your Web application and the console application share a lot of configurations, you may consider moving the common
+part into a separate file, and include this file in both of the application configurations, just as what is done
+in the "advanced" application template.
+
+Sometimes, you may want to run a console command using an application configuration that is different from the one
+specified in the entry script. For example, you may want to use the `yii migrate` command to upgrade your
+test databases which are configured in each individual test suite. To do so, simply specify the custom application configuration
+file via the `appconfig` option, like the following,
+
+```
+yii <route> --appconfig=path/to/config.php ...
+```
 
 
 Creating your own console commands

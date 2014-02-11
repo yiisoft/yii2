@@ -3,7 +3,6 @@ Yii Framework 2 Change Log
 
 2.0.0 beta under development
 ----------------------------
-
 - Bug #1265: AssetController does not override 'js' and 'css' for compressed bundles (klimov-paul)
 - Bug #1326: The `visible` setting for `DetailView` doesn't work as expected (qiangxue)
 - Bug #1412: `FileValidator` and `ImageValidator` still trigger `uploadRequired` error in some case when `skipOnEmpty` is true and no upload is provided (qiangxue)
@@ -41,6 +40,7 @@ Yii Framework 2 Change Log
 - Bug #2084: AssetController adjusting CSS URLs declared at same line fixed (klimov-paul)
 - Bug #2091: `QueryBuilder::buildInCondition()` fails to handle array not starting with index 0 (qiangxue)
 - Bug #2160: SphinxQL does not support OFFSET (qiangxue, romeo7)
+- Bug #2209: When I18N message translation is missing source language is now used for formatting (samdark)
 - Bug #2212: `yii\gridview\DataColumn` generates incorrect labels when used with nosql DB and there is no data (qiangxue)
 - Bug #2298: Fixed the bug that Gii controller generator did not allow digit in the controller ID (qiangxue)
 - Bug #2303: Fixed the bug that `yii\base\Theme::pathMap` did not support dynamic update with path aliases (qiangxue)
@@ -66,7 +66,6 @@ Yii Framework 2 Change Log
 - Enh #1476: Add yii\web\Session::handler property (nineinchnick)
 - Enh #1499: Added `ActionColumn::controller` property to support customizing the controller for handling GridView actions (qiangxue)
 - Enh #1523: Query conditions now allow to use the NOT operator (cebe)
-- Enh #1552: It is now possible to use multiple bootstrap NavBar in a single page (Alex-Code)
 - Enh #1572: Added `yii\web\Controller::createAbsoluteUrl()` (samdark)
 - Enh #1579: throw exception when the given AR relation name does not match in a case sensitive manner (qiangxue)
 - Enh #1581: Added `ActiveQuery::joinWith()` and `ActiveQuery::innerJoinWith()` to support joining with relations (qiangxue)
@@ -92,6 +91,7 @@ Yii Framework 2 Change Log
 - Enh #2008: `yii message/extract` is now able to save translation strings to database (kate-kate, samdark)
 - Enh #2043: Added support for custom request body parsers (danschmidt5189, cebe)
 - Enh #2051: Do not save null data into database when using RBAC (qiangxue)
+- Enh #2054: Added support for using custom application configuration with the console command runner (qiangxue)
 - Enh #2079:
 	- i18n now falls back to `en` from `en-US` if message translation isn't found (samdark)
 	- View now falls back to `en` from `en-US` if file not found (samdark)
@@ -124,6 +124,7 @@ Yii Framework 2 Change Log
 - Enh:#2211: Added typecast database types into php types (dizews)
 - Enh #2240: Improved `yii\web\AssetManager::publish()`, `yii\web\AssetManager::getPublishedPath()` and `yii\web\AssetManager::getPublishedUrl()` to support aliases (vova07)
 - Enh #2325: Adding support for the `X-HTTP-Method-Override` header in `yii\web\Request::getMethod()` (pawzar)
+- Enh #2364: Take into account current error reporting level in error handler (gureedo)
 - Chg #1519: `yii\web\User::loginRequired()` now returns the `Response` object instead of exiting the application (qiangxue)
 - Chg #1586: `QueryBuilder::buildLikeCondition()` will now escape special characters and use percentage characters by default (qiangxue)
 - Chg #1610: `Html::activeCheckboxList()` and `Html::activeRadioList()` will submit an empty string if no checkbox/radio is selected (qiangxue)
@@ -164,6 +165,7 @@ Yii Framework 2 Change Log
 - Chg: Removed implementation of `Arrayable` from `yii\Object` (qiangxue)
 - Chg: Renamed `ActiveRecordInterface::createActiveRelation()` to `createRelation()` (qiangxue)
 - Chg: The scripts in asset bundles are now registered in `View` at the end of `endBody()`. It was done in `endPage()` previously (qiangxue)
+- Chg: Renamed `csrf-var` to `csrf-param` for CSRF header name (Dilip)
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #706: Added `yii\widgets\Pjax` and enhanced `GridView` to work with `Pjax` to support AJAX-update (qiangxue)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
