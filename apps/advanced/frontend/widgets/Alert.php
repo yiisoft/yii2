@@ -60,9 +60,9 @@ class Alert extends \yii\bootstrap\Widget
 					'closeButton' => $this->closeButton,
 					'options' => $this->options,
 				]);
-			}
 
-			$session->removeFlash($type);
+				$session->removeFlash($type);
+			}
 		}
 	}
 }
