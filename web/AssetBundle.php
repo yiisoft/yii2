@@ -170,13 +170,12 @@ class AssetBundle extends Object
 			list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
 		}
 		$converter = $am->getConverter();
-		$baseUrl = Yii::$app->getRequest()->getBaseUrl();
 		foreach ($this->js as $i => $js) {
 			if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
 				if (isset($this->basePath, $this->baseUrl)) {
 					$this->js[$i] = $converter->convert($js, $this->basePath, $this->baseUrl);
 				} else {
-					$this->js[$i] = $baseUrl . '/' . $js;
+					$this->js[$i] = '/' . $js;
 				}
 			}
 		}
@@ -185,7 +184,7 @@ class AssetBundle extends Object
 				if (isset($this->basePath, $this->baseUrl)) {
 					$this->css[$i] = $converter->convert($css, $this->basePath, $this->baseUrl);
 				} else {
-					$this->css[$i] = $baseUrl . '/' . $css;
+					$this->css[$i] = '/' . $css;
 				}
 			}
 		}
