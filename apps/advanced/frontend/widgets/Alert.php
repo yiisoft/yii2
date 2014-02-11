@@ -33,21 +33,21 @@ class Alert extends \yii\bootstrap\Widget
 		'info'    => 'alert-info',
 		'warning' => 'alert-warning'
 	];
-	
+
 	/**
 	 * @var array the options for rendering the close button tag.
 	 */
 	public $closeButton = [];
-	
-	public function init()
-	{
-		parent::init();
 
-		$session = \Yii::$app->getSession();
-		$flashes = $session->getAllFlashes();
-		$appendCss = isset($this->options['class']) ? ' ' . $this->options['class'] : '';
+    public function init()
+    {
+        parent::init();
 
-		foreach ($flashes as $type => $message) {
+        $session = \Yii::$app->getSession();
+        $flashes = $session->getAllFlashes();
+        $appendCss = isset($this->options['class']) ? ' ' . $this->options['class'] : '';
+
+        foreach ($flashes as $type => $message) {
             if (isset($this->alertTypes[$type])) {
                 /* initialize css class for each alert box */
                 $this->options['class'] = $this->alertTypes[$type] . $appendCss;
@@ -62,7 +62,7 @@ class Alert extends \yii\bootstrap\Widget
                 ]);
             }
 
-			$session->removeFlash($type);
-		}
-	}
+            $session->removeFlash($type);
+        }
+    }
 }
