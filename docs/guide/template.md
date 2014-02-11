@@ -1,10 +1,10 @@
 Using template engines
 ======================
 
-By default Yii uses PHP as template language, but you can configure it to support other rendering engines, such as
+By default, Yii uses PHP as its template language, but you can configure Yii to support other rendering engines, such as
 [Twig](http://twig.sensiolabs.org/) or [Smarty](http://www.smarty.net/).
 
-The `view` component is responsible for rendering views. You can add a custom template engines by reconfiguring this
+The `view` component is responsible for rendering views. You can add a custom template engine by reconfiguring this
 component's behavior:
 
 ```php
@@ -30,22 +30,21 @@ component's behavior:
 ]
 ```
 
-In the config above we're using Smarty and Twig. In order to get these extensions in your project you need to modify
-your `composer.json` to include
+In the code above, both Smarty and Twig are configured to be useable by the view files. But in order to get these extensions into your project, you need to also modify
+your `composer.json` file to include them, too:
 
 ```
 "yiisoft/yii2-smarty": "*",
 "yiisoft/yii2-twig": "*",
 ```
-
-in `require` section and then run `composer update --preder-dist`.
+That code would be added to the `require` section of `composer.json`. After making that change and saving the file, you can install the extensions by running `composer update --preder-dist` in the command-line.
 
 Twig
 ----
 
-To use Twig, you need to create templates in files with the `.twig` extension (or use another file extension but configure the component accordingly).
-Unlike standard view files, when using Twig, you must include the extension  when calling `$this->render()`
-or `$this->renderPartial()` from your controller:
+To use Twig, you need to create templates in files that have the `.twig` extension (or use another file extension but configure the component accordingly).
+Unlike standard view files, when using Twig you must include the extension in your `$this->render()`
+or `$this->renderPartial()` controller calls:
 
 ```php
 echo $this->render('renderer.twig', ['username' => 'Alex']);
@@ -70,8 +69,8 @@ Within Twig templates, you can also make use of these variables:
 
 ### Globals
 
-You can add global helpers or values via config's `globals`. It allows both using Yii helpers and setting your own
-values:
+You can add global helpers or values via the application configuration's `globals` variable. You can define both Yii helpers and your own
+variables there:
 
 ```php
 'globals' => [
@@ -80,7 +79,7 @@ values:
 ],
 ```
 
-Then in your template you can use it the following way:
+Once configured, in your template you can use the globals in the following way:
 
 ```
 Hello, {{name}}! {{ html.a('Please login', 'site/login') | raw }}.
@@ -88,7 +87,7 @@ Hello, {{name}}! {{ html.a('Please login', 'site/login') | raw }}.
 
 ### Additional filters
 
-Additional filters may be added via config's `filters` option:
+Additional filters may be added via the application configuration's `filters` option:
 
 ```php
 'filters' => [
@@ -96,7 +95,7 @@ Additional filters may be added via config's `filters` option:
 ],
 ```
 
-Then in the template you can use
+Then in the template you can use:
 
 ```
 {{ model|jsonEncode }}
@@ -106,8 +105,8 @@ Then in the template you can use
 Smarty
 ------
 
-To use Smarty, you need to create templates in files with the `.tpl` extension (or use another file extension but configure the component accordingly). Unlike standard view files, when using Smarty, you must include the extension  when calling `$this->render()`
-or `$this->renderPartial()` from your controller:
+To use Smarty, you need to create templates in files that have the `.tpl` extension (or use another file extension but configure the component accordingly). Unlike standard view files, when using Smarty you must include the extension in your `$this->render()`
+or `$this->renderPartial()` controller calls:
 
 ```php
 echo $this->render('renderer.tpl', ['username' => 'Alex']);
