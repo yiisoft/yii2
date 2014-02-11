@@ -61,6 +61,10 @@ class MaskedInput extends InputWidget
 	 * @var string a JavaScript function callback that will be invoked when user finishes the input.
 	 */
 	public $completed;
+	/**
+	 * @var array the HTML attributes for the input tag.
+	 */
+	public $options = ['class' => 'form-control'];
 
 
 	/**
