@@ -431,6 +431,9 @@ class View extends \yii\base\View
 			$this->jsFiles[$position][$key] = Html::jsFile($url, $options);
 		} else {
 			$am = Yii::$app->getAssetManager();
+			if (strpos($url, '/') !== 0 && strpos($url, '://') === false) {
+				$url = Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
+			}
 			$am->bundles[$key] = new AssetBundle([
 				'js' => [$url],
 				'jsOptions' => $options,
