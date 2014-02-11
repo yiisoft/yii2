@@ -5,6 +5,8 @@ use yii\bootstrap\Tabs;
  * @var yii\debug\panels\RequestPanel $panel
  */
 
+echo "<h1>Request</h1>";
+
 echo Tabs::widget([
 	'items' => [
 		[
