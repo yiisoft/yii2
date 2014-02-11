@@ -33,12 +33,12 @@ class Alert extends \yii\bootstrap\Widget
 		'info'    => 'alert-info',
 		'warning' => 'alert-warning'
 	];
-	
+
 	/**
 	 * @var array the options for rendering the close button tag.
 	 */
 	public $closeButton = [];
-	
+
 	public function init()
 	{
 		parent::init();
@@ -46,21 +46,23 @@ class Alert extends \yii\bootstrap\Widget
 		$session = \Yii::$app->getSession();
 		$flashes = $session->getAllFlashes();
 		$appendCss = isset($this->options['class']) ? ' ' . $this->options['class'] : '';
-		
+
 		foreach ($flashes as $type => $message) {
-			/* initialize css class for each alert box */
-			$this->options['class'] = $this->alertTypes[$type] . $appendCss;
+			if (isset($this->alertTypes[$type])) {
+				/* initialize css class for each alert box */
+				$this->options['class'] = $this->alertTypes[$type] . $appendCss;
 
-			/* assign unique id to each alert box */
-			$this->options['id'] = $this->getId() . '-' . $type;
+				/* assign unique id to each alert box */
+				$this->options['id'] = $this->getId() . '-' . $type;
 
-			echo \yii\bootstrap\Alert::widget([
-				'body' => $message,
-				'closeButton' => $this->closeButton,
-				'options' => $this->options,
-			]);
+				echo \yii\bootstrap\Alert::widget([
+					'body' => $message,
+					'closeButton' => $this->closeButton,
+					'options' => $this->options,
+				]);
 
-			$session->removeFlash($type);
+				$session->removeFlash($type);
+			}
 		}
 	}
 }
