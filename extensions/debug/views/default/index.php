@@ -17,16 +17,16 @@ $this->title = 'Yii Debugger';
 <div class="default-index">
 
 
-    <div id="yii-debug-toolbar" class="yii-debug-toolbar-top">
-        <div class="yii-debug-toolbar-block title">
-            <a href="#">
-                <img width="29" height="30" alt="" src="<?= \yii\debug\Module::getYiiLogo() ?>">
-                Yii Debugger
-            </a>
-        </div>
-        <?php foreach ($panels as $panel): ?>
-            <?= $panel->getSummary() ?>
-        <?php endforeach; ?>
+	<div id="yii-debug-toolbar" class="yii-debug-toolbar-top">
+		<div class="yii-debug-toolbar-block title">
+			<a href="#">
+				<img width="29" height="30" alt="" src="<?= \yii\debug\Module::getYiiLogo() ?>">
+				Yii Debugger
+			</a>
+		</div>
+		<?php foreach ($panels as $panel): ?>
+			<?= $panel->getSummary() ?>
+		<?php endforeach; ?>
 	</div>
 
 	<div class="container">
