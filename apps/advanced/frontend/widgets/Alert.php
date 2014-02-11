@@ -56,9 +56,9 @@ class Alert extends \yii\bootstrap\Widget
 				$this->options['id'] = $this->getId() . '-' . $type;
 
 				echo \yii\bootstrap\Alert::widget([
-				'body' => $message,
-				'closeButton' => $this->closeButton,
-				'options' => $this->options,
+					'body' => $message,
+					'closeButton' => $this->closeButton,
+					'options' => $this->options,
 				]);
 			}
 
