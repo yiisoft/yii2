@@ -223,6 +223,42 @@ When `validate()` is called, the actual validation rules executed are determined
 - the rule must be active for the current scenario.
 
 
+### Creating your own validators (Inline validators)
+
+If none of the built in validators fit your needs, you can create your own validator by creating a method in you model class.
+This method will be wrapped by an [[InlineValidator|yii\validation\InlineValidator]] an be called upon validation.
+You will do the validation of the attribute and [[add errors|yii\base\Model::addError()]] to the model when validation fails.
+
+The method has the following signature `public function myValidator($attribute, $params)` while you are free to choose the name.
+
+Here is an example implementation of a validator validating the age of a user:
+
+```php
+public function validateAge($attribute, $params)
+{
+	$value = $this->$attribute;
+	if (strtotime($value) > strtotime('now - ' . $params['min'] . ' years')) {
+		$this->addError($attribute, 'You must be at least ' . $params['min'] . ' years old to register for this service.');
+	}
+}
+
+public function rules()
+{
+	return [
+		// ...
+		[['birthdate'], 'validateAge', 'params' => ['min' => '12']],
+	];
+}
+```
+
+You may also set other properties of the [[InlineValidator|yii\validation\InlineValidator]] in the rules definition,
+for example the [[skipOnEmpty|yii\validation\InlineValidator::skipOnEmpty]] property:
+
+```php
+[['birthdate'], 'validateAge', 'params' => ['min' => '12'], 'skipOnEmpty' => false],
+```
+
+
 Massive Attribute Retrieval and Assignment
 ------------------------------------------
 
