@@ -693,13 +693,25 @@ class Query extends Component implements QueryInterface
 	 */
 	protected function callSnippets(array $source)
 	{
+		return $this->callSnippetsInternal($source, $this->from[0]);
+	}
+
+	/**
+	 * Builds a snippets from provided source data by the given index.
+	 * @param array $source the source data to extract a snippet from.
+	 * @param string $from name of the source index.
+	 * @return array snippets list.
+	 * @throws InvalidCallException in case [[match]] is not specified.
+	 */
+	protected function callSnippetsInternal(array $source, $from)
+	{
 		$connection = $this->getConnection();
 		$match = $this->match;
 		if ($match === null) {
 			throw new InvalidCallException('Unable to call snippets: "' . $this->className() . '::match" should be specified.');
 		}
 		return $connection->createCommand()
-			->callSnippets($this->from[0], $source, $match, $this->snippetOptions)
+			->callSnippets($from, $source, $match, $this->snippetOptions)
 			->queryColumn();
 	}
 }

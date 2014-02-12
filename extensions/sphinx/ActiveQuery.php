@@ -201,4 +201,19 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 		return $result;
 	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function callSnippets(array $source)
+	{
+		$from = $this->from;
+		if ($from === null) {
+			/** @var ActiveRecord $modelClass */
+			$modelClass = $this->modelClass;
+			$tableName = $modelClass::indexName();
+			$from = [$tableName];
+		}
+		return $this->callSnippetsInternal($source, $from[0]);
+	}
 }
