@@ -1524,12 +1524,25 @@ class BaseHtml
 			$styles = rtrim($styles, ';') . ';';
 			foreach (array_filter(explode(';', $styles), 'strlen') as $style) {
 				$property = trim(substr($style, 0, strpos($style, ':')));
-				if (!preg_match('/[\s;]' . preg_quote($property) . '\s*:/i', ' ' . $options['style'])) {
+				if (!preg_match('/[\s;]' . $property . '\s*:/i', ' ' . $options['style'])) {
 					$options['style'] .= ' ' . $style . ';';
 				}
 			}
 		} else {
 			$options['style'] = $styles;
+		}
+	}
+	
+	/**
+	 * Removes a CSS style\s from the specified options.
+	 * @param array $options the options to be modified.
+	 * @param array $styles names of the styles to be removed.
+	 */
+	public static function removeCssStyle(&$options, $styles)
+	{
+		if (isset($options['style']) && !empty($styles)) {
+			$options['style'] = rtrim($options['style'], ';') . ';';
+			$options['style'] = trim(preg_replace('/(?![\s;])((' . implode('|', $styles) . '):.+?;)/i', '', ' ' . $options['style']));
 		}
 	}
 
