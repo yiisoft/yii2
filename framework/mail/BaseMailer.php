@@ -29,7 +29,6 @@ use yii\base\MailEvent;
  */
 abstract class BaseMailer extends Component implements MailerInterface, ViewContextInterface
 {
-
 	/**
 	 * @event \yii\base\MailEvent an event raised right before send.
 	 * You may set [[\yii\base\MailEvent::isValid]] to be false to cancel the send.
@@ -43,13 +42,13 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 * @var string directory containing view files for this email messages.
 	 * This can be specified as an absolute path or path alias.
 	 */
-	public $viewPath = '@app/mails';
+	public $viewPath = '@app/mail';
 	/**
 	 * @var string|boolean HTML layout view name. This is the layout used to render HTML mail body.
 	 * The property can take the following values:
 	 *
 	 * - a relative view name: a view file relative to [[viewPath]], e.g., 'layouts/html'.
-	 * - a path alias: an absolute view file path specified as a path alias, e.g., '@app/mails/html'.
+	 * - a path alias: an absolute view file path specified as a path alias, e.g., '@app/mail/html'.
 	 * - a boolean false: the layout is disabled.
 	 */
 	public $htmlLayout = 'layouts/html';
@@ -157,7 +156,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 	 *
 	 * The view to be rendered can be specified in one of the following formats:
 	 *
-	 * - path alias (e.g. "@app/mails/contact");
+	 * - path alias (e.g. "@app/mail/contact");
 	 * - a relative view name (e.g. "contact"): the actual view file will be resolved by [[findViewFile()]]
 	 *
 	 * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
