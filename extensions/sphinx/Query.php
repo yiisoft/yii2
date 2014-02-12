@@ -97,7 +97,7 @@ class Query extends Component implements QueryInterface
 	 * @var array list of query parameter values indexed by parameter placeholders.
 	 * For example, `[':name' => 'Dan', ':age' => 31]`.
 	 */
-	public $params;
+	public $params = [];
 	/**
 	 * @var callback PHP callback, which should be used to fetch source data for the snippets.
 	 * Such callback will receive array of query result rows as an argument and must return the
@@ -559,7 +559,7 @@ class Query extends Component implements QueryInterface
 	public function addParams($params)
 	{
 		if (!empty($params)) {
-			if ($this->params === null) {
+			if (empty($this->params)) {
 				$this->params = $params;
 			} else {
 				foreach ($params as $name => $value) {

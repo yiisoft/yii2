@@ -55,16 +55,32 @@ class QueryBuilder extends \yii\base\Object
 
 	/**
 	 * Generates a SELECT SQL statement from a [[Query]] object.
-	 * @param Query $query the [[Query]] object from which the SQL statement will be generated
+	 * @param Query $query the [[Query]] object from which the SQL statement will be generated.
+	 * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
+	 * be included in the result with the additional parameters generated during the query building process.
 	 * @return array the generated SQL statement (the first array element) and the corresponding
-	 * parameters to be bound to the SQL statement (the second array element).
+	 * parameters to be bound to the SQL statement (the second array element). The parameters returned
+	 * include those provided in `$params`.
 	 */
-	public function build($query)
+	public function build($query, $params = [])
 	{
-		$params = $query->params;
+		$params = empty($params) ? $query->params : array_merge($params, $query->params);
+
+		$select = $query->select;
+		$from = $query->from;
+		if ($from === null && $query instanceof ActiveQuery) {
+			/** @var ActiveRecord $modelClass */
+			$modelClass = $query->modelClass;
+			$tableName = $modelClass::tableName();
+			$from = [$tableName];
+			if ($select === null && !empty($query->join)) {
+				$select = ["$tableName.*"];
+			}
+		}
+
 		$clauses = [
-			$this->buildSelect($query->select, $query->distinct, $query->selectOption),
-			$this->buildFrom($query->from),
+			$this->buildSelect($select, $params, $query->distinct, $query->selectOption),
+			$this->buildFrom($from, $params),
 			$this->buildJoin($query->join, $params),
 			$this->buildWhere($query->where, $params),
 			$this->buildGroupBy($query->groupBy),
@@ -128,11 +144,11 @@ class QueryBuilder extends \yii\base\Object
 	 * For example,
 	 *
 	 * ~~~
-	 * $connection->createCommand()->batchInsert('tbl_user', ['name', 'age'], [
+	 * $sql = $queryBuilder->batchInsert('tbl_user', ['name', 'age'], [
 	 *     ['Tom', 30],
 	 *     ['Jane', 20],
 	 *     ['Linda', 25],
-	 * ])->execute();
+	 * ]);
 	 * ~~~
 	 *
 	 * Note that the values in each row must match the corresponding column names.
@@ -559,11 +575,12 @@ class QueryBuilder extends \yii\base\Object
 
 	/**
 	 * @param array $columns
+	 * @param array $params the binding parameters to be populated
 	 * @param boolean $distinct
 	 * @param string $selectOption
 	 * @return string the SELECT clause built from [[Query::$select]].
 	 */
-	public function buildSelect($columns, $distinct = false, $selectOption = null)
+	public function buildSelect($columns, &$params, $distinct = false, $selectOption = null)
 	{
 		$select = $distinct ? 'SELECT DISTINCT' : 'SELECT';
 		if ($selectOption !== null) {
@@ -575,8 +592,14 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		foreach ($columns as $i => $column) {
-			if (is_object($column)) {
-				$columns[$i] = (string)$column;
+			if ($column instanceof Expression) {
+				$columns[$i] = $column->expression;
+				$params = array_merge($params, $column->params);
+			} elseif (is_string($i)) {
+				if (strpos($column, '(') === false) {
+					$column = $this->db->quoteColumnName($column);
+				}
+				$columns[$i] = "$column AS " . $this->db->quoteColumnName($i);;
 			} elseif (strpos($column, '(') === false) {
 				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
 					$columns[$i] = $this->db->quoteColumnName($matches[1]) . ' AS ' . $this->db->quoteColumnName($matches[2]);
@@ -586,25 +609,30 @@ class QueryBuilder extends \yii\base\Object
 			}
 		}
 
-		if (is_array($columns)) {
-			$columns = implode(', ', $columns);
-		}
-
-		return $select . ' ' . $columns;
+		return $select . ' ' . implode(', ', $columns);
 	}
 
 	/**
 	 * @param array $tables
+	 * @param array $params the binding parameters to be populated
 	 * @return string the FROM clause built from [[Query::$from]].
 	 */
-	public function buildFrom($tables)
+	public function buildFrom($tables, &$params)
 	{
 		if (empty($tables)) {
 			return '';
 		}
 
 		foreach ($tables as $i => $table) {
-			if (strpos($table, '(') === false) {
+			if ($table instanceof Query) {
+				list($sql, $params) = $this->build($table, $params);
+				$tables[$i] = "($sql) " . $this->db->quoteTableName($i);
+			} elseif (is_string($i)) {
+				if (strpos($table, '(') === false) {
+					$table = $this->db->quoteTableName($table);
+				}
+				$tables[$i] = "$table " . $this->db->quoteTableName($i);
+			} elseif (strpos($table, '(') === false) {
 				if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
 					$tables[$i] = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
 				} else {
@@ -613,11 +641,7 @@ class QueryBuilder extends \yii\base\Object
 			}
 		}
 
-		if (is_array($tables)) {
-			$tables = implode(', ', $tables);
-		}
-
-		return 'FROM ' . $tables;
+		return 'FROM ' . implode(', ', $tables);
 	}
 
 	/**
@@ -633,27 +657,32 @@ class QueryBuilder extends \yii\base\Object
 		}
 
 		foreach ($joins as $i => $join) {
-			if (is_object($join)) {
-				$joins[$i] = (string)$join;
-			} elseif (is_array($join) && isset($join[0], $join[1])) {
-				// 0:join type, 1:table name, 2:on-condition
-				$table = $join[1];
-				if (strpos($table, '(') === false) {
-					if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
-						$table = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
-					} else {
-						$table = $this->db->quoteTableName($table);
-					}
-				}
-				$joins[$i] = $join[0] . ' ' . $table;
-				if (isset($join[2])) {
-					$condition = $this->buildCondition($join[2], $params);
-					if ($condition !== '') {
-						$joins[$i] .= ' ON ' . $condition;
-					}
-				}
-			} else {
+			if (!is_array($join) || !isset($join[0], $join[1])) {
 				throw new Exception('A join clause must be specified as an array of join type, join table, and optionally join condition.');
+			}
+			// 0:join type, 1:join table, 2:on-condition (optional)
+			list ($joinType, $table) = $join;
+			if (is_array($table)) {
+				$query = reset($table);
+				if (!$query instanceof Query) {
+					throw new Exception('The sub-query for join must be an instance of yii\db\Query.');
+				}
+				$alias = $this->db->quoteTableName(key($table));
+				list ($sql, $params) = $this->build($query, $params);
+				$table = "($sql) $alias";
+			} elseif (strpos($table, '(') === false) {
+				if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
+					$table = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
+				} else {
+					$table = $this->db->quoteTableName($table);
+				}
+			}
+			$joins[$i] = "$joinType $table";
+			if (isset($join[2])) {
+				$condition = $this->buildCondition($join[2], $params);
+				if ($condition !== '') {
+					$joins[$i] .= ' ON ' . $condition;
+				}
 			}
 		}
 
@@ -702,8 +731,8 @@ class QueryBuilder extends \yii\base\Object
 		}
 		$orders = [];
 		foreach ($columns as $name => $direction) {
-			if (is_object($direction)) {
-				$orders[] = (string)$direction;
+			if ($direction instanceof Expression) {
+				$orders[] = $direction->expression;
 			} else {
 				$orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
 			}
@@ -765,14 +794,7 @@ class QueryBuilder extends \yii\base\Object
 		foreach ($unions as $i => $union) {
 			$query = $union['query'];
 			if ($query instanceof Query) {
-				// save the original parameters so that we can restore them later to prevent from modifying the query object
-				$originalParams = $query->params;
-				$command = $query->createCommand($this->db);
-				$unions[$i]['query'] = $command->sql;
-				foreach ($command->params as $name => $value) {
-					$params[$name] = $value;
-				}
-				$query->params = $originalParams;
+				list($unions[$i]['query'], $params) = $this->build($query, $params);
 			}
 			
 			$result .= 'UNION ' . ($union['all'] ? 'ALL ' : '') . '( ' . $unions[$i]['query'] . ' ) ';
@@ -797,8 +819,8 @@ class QueryBuilder extends \yii\base\Object
 			}
 		}
 		foreach ($columns as $i => $column) {
-			if (is_object($column)) {
-				$columns[$i] = (string)$column;
+			if ($column instanceof Expression) {
+				$columns[$i] = $column->expression;
 			} elseif (strpos($column, '(') === false) {
 				$columns[$i] = $this->db->quoteColumnName($column);
 			}
@@ -1114,19 +1136,11 @@ class QueryBuilder extends \yii\base\Object
 	 */
 	public function buildExistsCondition($operator, $operands, &$params)
 	{
-		$subQuery = $operands[0];
-		if (!$subQuery instanceof Query) {
+		if ($operands[0] instanceof Query) {
+			list($sql, $params) = $this->build($operands[0], $params);
+			return "$operator ($sql)";
+		} else {
 			throw new InvalidParamException('Subquery for EXISTS operator must be a Query object.');
 		}
-
-		$command = $subQuery->createCommand($this->db);
-		$subQuerySql = $command->sql;
-		$subQueryParams = $command->params;
-		if (!empty($subQueryParams)) {
-			foreach ($subQueryParams as $name => $value) {
-				$params[$name] = $value;
-			}
-		}
-		return "$operator ($subQuerySql)";
 	}
 }

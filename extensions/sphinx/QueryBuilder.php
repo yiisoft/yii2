@@ -52,20 +52,33 @@ class QueryBuilder extends Object
 	/**
 	 * Generates a SELECT SQL statement from a [[Query]] object.
 	 * @param Query $query the [[Query]] object from which the SQL statement will be generated
+	 * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
+	 * be included in the result with the additional parameters generated during the query building process.
 	 * @return array the generated SQL statement (the first array element) and the corresponding
-	 * parameters to be bound to the SQL statement (the second array element).
+	 * parameters to be bound to the SQL statement (the second array element). The parameters returned
+	 * include those provided in `$params`.
 	 */
-	public function build($query)
+	public function build($query, $params = [])
 	{
-		$params = $query->params;
+		$params = empty($params) ? $query->params : array_merge($params, $query->params);
+
 		if ($query->match !== null) {
 			$phName = self::PARAM_PREFIX . count($params);
 			$params[$phName] = (string)$query->match;
 			$query->andWhere('MATCH(' . $phName . ')');
 		}
+
+		$from = $query->from;
+		if ($from === null && $query instanceof ActiveQuery) {
+			/** @var ActiveRecord $modelClass */
+			$modelClass = $query->modelClass;
+			$tableName = $modelClass::indexName();
+			$from = [$tableName];
+		}
+
 		$clauses = [
-			$this->buildSelect($query->select, $query->distinct, $query->selectOption),
-			$this->buildFrom($query->from),
+			$this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
+			$this->buildFrom($from, $Params),
 			$this->buildWhere($query->from, $query->where, $params),
 			$this->buildGroupBy($query->groupBy),
 			$this->buildWithin($query->within),
@@ -157,11 +170,11 @@ class QueryBuilder extends Object
 	 * For example,
 	 *
 	 * ~~~
-	 * $connection->createCommand()->batchInsert('idx_user', ['id', 'name', 'age'], [
+	 * $sql = $queryBuilder->batchInsert('idx_user', ['id', 'name', 'age'], [
 	 *     [1, 'Tom', 30],
 	 *     [2, 'Jane', 20],
 	 *     [3, 'Linda', 25],
-	 * ])->execute();
+	 * ], $params);
 	 * ~~~
 	 *
 	 * Note that the values in each row must match the corresponding column names.
@@ -183,11 +196,11 @@ class QueryBuilder extends Object
 	 * For example,
 	 *
 	 * ~~~
-	 * $connection->createCommand()->batchReplace('idx_user', ['id', 'name', 'age'], [
+	 * $sql = $queryBuilder->batchReplace('idx_user', ['id', 'name', 'age'], [
 	 *     [1, 'Tom', 30],
 	 *     [2, 'Jane', 20],
 	 *     [3, 'Linda', 25],
-	 * ])->execute();
+	 * ], $params);
 	 * ~~~
 	 *
 	 * Note that the values in each row must match the corresponding column names.
@@ -386,11 +399,12 @@ class QueryBuilder extends Object
 
 	/**
 	 * @param array $columns
+	 * @param array $params the binding parameters to be populated
 	 * @param boolean $distinct
 	 * @param string $selectOption
 	 * @return string the SELECT clause built from [[query]].
 	 */
-	public function buildSelect($columns, $distinct = false, $selectOption = null)
+	public function buildSelect($columns, &$params, $distinct = false, $selectOption = null)
 	{
 		$select = $distinct ? 'SELECT DISTINCT' : 'SELECT';
 		if ($selectOption !== null) {
@@ -402,8 +416,14 @@ class QueryBuilder extends Object
 		}
 
 		foreach ($columns as $i => $column) {
-			if (is_object($column)) {
-				$columns[$i] = (string)$column;
+			if ($column instanceof Expression) {
+				$columns[$i] = $column->expression;
+				$params = array_merge($params, $column->params);
+			} elseif (is_string($i)) {
+				if (strpos($column, '(') === false) {
+					$column = $this->db->quoteColumnName($column);
+				}
+				$columns[$i] = "$column AS " . $this->db->quoteColumnName($i);;
 			} elseif (strpos($column, '(') === false) {
 				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
 					$columns[$i] = $this->db->quoteColumnName($matches[1]) . ' AS ' . $this->db->quoteColumnName($matches[2]);
@@ -413,25 +433,30 @@ class QueryBuilder extends Object
 			}
 		}
 
-		if (is_array($columns)) {
-			$columns = implode(', ', $columns);
-		}
-
-		return $select . ' ' . $columns;
+		return $select . ' ' . implode(', ', $columns);
 	}
 
 	/**
 	 * @param array $indexes
+	 * @param array $params the binding parameters to be populated
 	 * @return string the FROM clause built from [[query]].
 	 */
-	public function buildFrom($indexes)
+	public function buildFrom($indexes, &$params)
 	{
 		if (empty($indexes)) {
 			return '';
 		}
 
 		foreach ($indexes as $i => $index) {
-			if (strpos($index, '(') === false) {
+			if ($index instanceof Query) {
+				list($sql, $params) = $this->build($index, $params);
+				$indexes[$i] = "($sql) " . $this->db->quoteIndexName($i);
+			} elseif (is_string($i)) {
+				if (strpos($index, '(') === false) {
+					$index = $this->db->quoteIndexName($index);
+				}
+				$indexes[$i] = "$index " . $this->db->quoteIndexName($i);
+			} elseif (strpos($index, '(') === false) {
 				if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $index, $matches)) { // with alias
 					$indexes[$i] = $this->db->quoteIndexName($matches[1]) . ' ' . $this->db->quoteIndexName($matches[2]);
 				} else {
@@ -491,8 +516,8 @@ class QueryBuilder extends Object
 		}
 		$orders = [];
 		foreach ($columns as $name => $direction) {
-			if (is_object($direction)) {
-				$orders[] = (string)$direction;
+			if ($direction instanceof Expression) {
+				$orders[] = $direction->expression;
 			} else {
 				$orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : 'ASC');
 			}
@@ -537,8 +562,8 @@ class QueryBuilder extends Object
 			}
 		}
 		foreach ($columns as $i => $column) {
-			if (is_object($column)) {
-				$columns[$i] = (string)$column;
+			if ($column instanceof Expression) {
+				$columns[$i] = $column->expression;
 			} elseif (strpos($column, '(') === false) {
 				$columns[$i] = $this->db->quoteColumnName($column);
 			}
@@ -823,8 +848,8 @@ class QueryBuilder extends Object
 		}
 		$orders = [];
 		foreach ($columns as $name => $direction) {
-			if (is_object($direction)) {
-				$orders[] = (string)$direction;
+			if ($direction instanceof Expression) {
+				$orders[] = $direction->expression;
 			} else {
 				$orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
 			}
