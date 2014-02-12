@@ -245,8 +245,10 @@ class Query extends Component implements QueryInterface
 	 */
 	public function count($q = '*', $db = null)
 	{
-		$this->select = ["COUNT($q)"];
-		return $this->createCommand($db)->queryScalar();
+		$this->limit(0);
+		$this->createCommand($db)->queryScalar();
+		$result = $this->getConnection()->createCommand('SHOW META')->queryAll();
+		return isset($result[1]['Value']) ? (int)$result[1]['Value'] : 0;
 	}
 
 	/**
