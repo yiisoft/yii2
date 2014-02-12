@@ -105,7 +105,7 @@ class Query extends Component implements QueryInterface
 	 * @var array list of query parameter values indexed by parameter placeholders.
 	 * For example, `[':name' => 'Dan', ':age' => 31]`.
 	 */
-	public $params;
+	public $params = [];
 
 
 	/**
@@ -298,6 +298,9 @@ class Query extends Component implements QueryInterface
 	 *
 	 * Note that if you are selecting an expression like `CONCAT(first_name, ' ', last_name)`, you should
 	 * use an array to specify the columns. Otherwise, the expression may be incorrectly split into several parts.
+	 *
+	 * When the columns are specified as an array, you may also use array keys as the column aliases (if a column
+	 * does not need alias, do not use a string key).
 	 * 
 	 * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
 	 * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
@@ -331,6 +334,13 @@ class Query extends Component implements QueryInterface
 	 * Table names can contain schema prefixes (e.g. `'public.tbl_user'`) and/or table aliases (e.g. `'tbl_user u'`).
 	 * The method will automatically quote the table names unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
+	 *
+	 * When the tables are specified as an array, you may also use the array keys as the table aliases
+	 * (if a table does not need alias, do not use a string key).
+	 *
+	 * Use a Query object to represent a sub-query. In this case, the corresponding array key will be used
+	 * as the alias for the sub-query.
+	 *
 	 * @return static the query object itself
 	 */
 	public function from($tables)
@@ -471,10 +481,17 @@ class Query extends Component implements QueryInterface
 	 * Appends a JOIN part to the query.
 	 * The first parameter specifies what type of join it is.
 	 * @param string $type the type of join, such as INNER JOIN, LEFT JOIN.
-	 * @param string $table the table to be joined.
+	 * @param string|array $table the table to be joined.
+	 *
+	 * Use string to represent the name of the table to be joined.
 	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
+	 *
+	 * Use array to represent joining with a sub-query. The array must contain only one element.
+	 * The value must be a Query object representing the sub-query while the corresponding key
+	 * represents the alias for the sub-query.
+	 *
 	 * @param string|array $on the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name => value) to be bound to the query.
@@ -488,10 +505,17 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Appends an INNER JOIN part to the query.
-	 * @param string $table the table to be joined.
+	 * @param string|array $table the table to be joined.
+	 *
+	 * Use string to represent the name of the table to be joined.
 	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
+	 *
+	 * Use array to represent joining with a sub-query. The array must contain only one element.
+	 * The value must be a Query object representing the sub-query while the corresponding key
+	 * represents the alias for the sub-query.
+	 *
 	 * @param string|array $on the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name => value) to be bound to the query.
@@ -505,10 +529,17 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Appends a LEFT OUTER JOIN part to the query.
-	 * @param string $table the table to be joined.
+	 * @param string|array $table the table to be joined.
+	 *
+	 * Use string to represent the name of the table to be joined.
 	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
+	 *
+	 * Use array to represent joining with a sub-query. The array must contain only one element.
+	 * The value must be a Query object representing the sub-query while the corresponding key
+	 * represents the alias for the sub-query.
+	 *
 	 * @param string|array $on the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name => value) to be bound to the query
@@ -522,10 +553,17 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Appends a RIGHT OUTER JOIN part to the query.
-	 * @param string $table the table to be joined.
+	 * @param string|array $table the table to be joined.
+	 *
+	 * Use string to represent the name of the table to be joined.
 	 * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
 	 * The method will automatically quote the table name unless it contains some parenthesis
 	 * (which means the table is given as a sub-query or DB expression).
+	 *
+	 * Use array to represent joining with a sub-query. The array must contain only one element.
+	 * The value must be a Query object representing the sub-query while the corresponding key
+	 * represents the alias for the sub-query.
+	 *
 	 * @param string|array $on the join condition that should appear in the ON part.
 	 * Please refer to [[where()]] on how to specify this parameter.
 	 * @param array $params the parameters (name => value) to be bound to the query
@@ -670,7 +708,7 @@ class Query extends Component implements QueryInterface
 	public function addParams($params)
 	{
 		if (!empty($params)) {
-			if ($this->params === null) {
+			if (empty($this->params)) {
 				$this->params = $params;
 			} else {
 				foreach ($params as $name => $value) {
