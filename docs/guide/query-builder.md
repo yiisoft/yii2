@@ -41,6 +41,11 @@ $query->select($columns)
 	->from('tbl_user');
 ```
 
+> Info: If your `SELECT` contains SQL expressions which use commas (e.g. `CONCAT(first_name, last_name) AS full_name`),
+> you should use an array instead of a string to represent the columns being selected. Your SQL expressions may be
+> split by commas into several parts.
+
+
 Joins
 -----
 
