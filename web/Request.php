@@ -57,7 +57,6 @@ use yii\helpers\StringHelper;
  * @property string $pathInfo Part of the request URL that is after the entry script and before the question
  * mark. Note, the returned path info is already URL-decoded.
  * @property integer $port Port number for insecure requests.
- * @property array $postParams The request POST parameter values.
  * @property array $queryParams The request GET parameter values.
  * @property string $queryString Part of the request URL that is after the question mark. This property is
  * read-only.
