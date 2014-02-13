@@ -237,7 +237,7 @@ class ActiveForm extends Widget
 		}
 
 		if (!empty($lines)) {
-			$content = "<ul><li>" . implode("</li>\n<li>", $lines) . "</li><ul>";
+			$content = "<ul><li>" . implode("</li>\n<li>", $lines) . "</li></ul>";
 			return Html::tag('div', $header . $content . $footer, $options);
 		} else {
 			$content = "<ul></ul>";
