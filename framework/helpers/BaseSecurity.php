@@ -336,13 +336,10 @@ class BaseSecurity
 		}
 
 		// Get 20 * 8bits of pseudo-random entropy from mt_rand().
-		$rand = '';
-		for ($i = 0; $i < 20; ++$i) {
-			$rand .= chr(mt_rand(0, 255));
-		}
+		$rand = openssl_random_pseudo_bytes(20);
 
 		// Add the microtime for a little more entropy.
-		$rand .= microtime();
+		$rand .= microtime(true);
 		// Mix the bits cryptographically into a 20-byte binary string.
 		$rand = sha1($rand, true);
 		// Form the prefix that specifies Blowfish algorithm and cost parameter.
