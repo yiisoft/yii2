@@ -1,0 +1,18 @@
+{
+    "name": "<?= $generator->vendorName ?>/yii2-<?= $generator->packageName ?>",
+    "description": "<?= $generator->description ?>",
+    "type": "<?= $generator->type ?>",
+    "keywords": ["TODO","ARRAY INPUT"],
+    "license": "<?= $generator->license ?>",
+    "authors": [
+        {
+            "name": "<?= $generator->authorName ?>",
+            "email": "<?= $generator->authorEmail ?>"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "<?= $generator->namespace ?>": ""
+        }
+    }
+}
