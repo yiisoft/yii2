@@ -105,7 +105,6 @@ class ActiveForm extends Widget
 	public $ajaxVar = 'ajax';
 	/**
 	 * @var string the type of data that you're expecting back from the server.
-	 * @since 2.0
 	 */
 	public $ajaxDataType = 'json';
 	/**
