@@ -166,7 +166,7 @@ class Query extends Component implements QueryInterface
 			$this->_dataReader = $this->createCommand($db)->query();
 		}
 		$count = 0;
-		$results = [];
+		$result = [];
 		while ($count++ < $limit && ($row = $this->_dataReader->read())) {
 			if ($this->indexBy === null) {
 				$result[] = $row;
@@ -179,7 +179,7 @@ class Query extends Component implements QueryInterface
 				$result[$key] = $row;
 			}
 		}
-		if (empty($results)) {
+		if (empty($result)) {
 			$this->_dataReader = null;
 		}
 		return $result;
