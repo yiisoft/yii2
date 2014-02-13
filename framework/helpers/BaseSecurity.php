@@ -335,8 +335,16 @@ class BaseSecurity
 			throw new InvalidParamException('Cost must be between 4 and 31.');
 		}
 
-		// Get 20 * 8bits of pseudo-random entropy from mt_rand().
-		$rand = openssl_random_pseudo_bytes(20);
+		// Get 20 * 8bits of random entropy
+		if (function_exists('openssl_random_pseudo_bytes')) {
+			// https://github.com/yiisoft/yii2/pull/2422
+			$rand = openssl_random_pseudo_bytes(20);
+		} else {
+			$rand = '';
+			for ($i = 0; $i < 20; ++$i) {
+				$rand .= chr(mt_rand(0, 255));
+			}
+		}
 
 		// Add the microtime for a little more entropy.
 		$rand .= microtime(true);
