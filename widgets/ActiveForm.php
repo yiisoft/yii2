@@ -104,6 +104,10 @@ class ActiveForm extends Widget
 	 */
 	public $ajaxVar = 'ajax';
 	/**
+	 * @var string the type of data that you're expecting back from the server.
+	 */
+	public $ajaxDataType = 'json';
+	/**
 	 * @var string|JsExpression a JS callback that will be called when the form is being submitted.
 	 * The signature of the callback should be:
 	 *
@@ -187,6 +191,7 @@ class ActiveForm extends Widget
 			'successCssClass' => $this->successCssClass,
 			'validatingCssClass' => $this->validatingCssClass,
 			'ajaxVar' => $this->ajaxVar,
+			'ajaxDataType' => $this->ajaxDataType,
 		];
 		if ($this->validationUrl !== null) {
 			$options['validationUrl'] = Html::url($this->validationUrl);

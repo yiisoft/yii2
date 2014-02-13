@@ -45,7 +45,9 @@
 		// function ($form, attribute, messages)
 		afterValidate: undefined,
 		// the GET parameter name indicating an AJAX-based validation
-		ajaxVar: 'ajax'
+		ajaxVar: 'ajax',
+		// the type of data that you're expecting back from the server
+		ajaxDataType: 'json'
 	};
 
 	var attributeDefaults = {
@@ -301,7 +303,7 @@
 				url: data.settings.validationUrl,
 				type: $form.prop('method'),
 				data: $form.serialize() + extData,
-				dataType: 'json',
+				dataType: data.settings.ajaxDataType,
 				success: function (msgs) {
 					if (msgs !== null && typeof msgs === 'object') {
 						$.each(data.attributes, function () {
