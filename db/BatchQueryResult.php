@@ -10,39 +10,61 @@ namespace yii\db;
 use yii\base\Object;
 
 /**
- * BatchQueryResult represents the query result from which you can retrieve the data in batches.
+ * BatchQueryResult represents a batch query from which you can retrieve data in batches.
  *
- * BatchQueryResult is mainly used with [[Query::batch()]].
+ * You usually do not instantiate BatchQueryResult directly. Instead, you obtain it by
+ * calling [[Query::batch()]] or [[Query::each()]]. Because BatchQueryResult implements the `Iterator` interface,
+ * you can iterate it to obtain a batch of data in each iteration. For example,
+ *
+ * ```php
+ * $query = (new Query)->from('tbl_user');
+ * foreach ($query->batch() as $i => $users) {
+ *     // $users represents the rows in the $i-th batch
+ * }
+ * ```
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class BatchQueryResult extends Object implements \Iterator
 {
 	/**
-	 * @var Connection
+	 * @var Connection the DB connection to be used when performing batch query.
+	 * If null, the "db" application component will be used.
 	 */
 	public $db;
 	/**
-	 * @var Query
+	 * @var Query the query object associated with this batch query.
+	 * Do not modify this property directly unless after [[reset()]] is called explicitly.
 	 */
 	public $query;
 	/**
-	 * @var integer
-	 */
-	public $batchSize = 10;
-	/**
-	 * @var DataReader
+	 * @var DataReader the data reader associated with this batch query.
+	 * Do not modify this property directly unless after [[reset()]] is called explicitly.
 	 */
 	public $dataReader;
+	/**
+	 * @var integer the number of rows to be returned in each batch.
+	 */
+	public $batchSize = 100;
 
 	private $_data;
+	private $_key;
 	private $_index = -1;
 
+	/**
+	 * Destructor.
+	 */
 	public function __destruct()
 	{
+		// make sure cursor is closed
 		$this->reset();
 	}
 
+	/**
+	 * Resets the batch query.
+	 * This method will clean up the existing batch query so that a new batch query can be performed.
+	 */
 	public function reset()
 	{
 		if ($this->dataReader !== null) {
@@ -64,19 +86,19 @@ class BatchQueryResult extends Object implements \Iterator
 	}
 
 	/**
-	 * Returns the index of the current row.
+	 * Returns the index of the current dataset.
 	 * This method is required by the interface Iterator.
 	 * @return integer the index of the current row.
 	 */
 	public function key()
 	{
-		return $this->_index;
+		return $this->batchSize == 1 ? $this->_key : $this->_index;
 	}
 
 	/**
-	 * Returns the current row.
+	 * Returns the current dataset.
 	 * This method is required by the interface Iterator.
-	 * @return mixed the current row.
+	 * @return mixed the current dataset.
 	 */
 	public function current()
 	{
@@ -84,7 +106,7 @@ class BatchQueryResult extends Object implements \Iterator
 	}
 
 	/**
-	 * Moves the internal pointer to the next row.
+	 * Moves the internal pointer to the next dataset.
 	 * This method is required by the interface Iterator.
 	 */
 	public function next()
@@ -106,15 +128,17 @@ class BatchQueryResult extends Object implements \Iterator
 		} else {
 			$this->_data = $this->query->prepareResult($rows);
 			if ($this->batchSize == 1) {
-				$this->_data = reset($this->_data);
+				$row = reset($this->_data);
+				$this->_key = key($this->_data);
+				$this->_data = $row;
 			}
 		}
 	}
 
 	/**
-	 * Returns whether there is a row of data at current position.
+	 * Returns whether there is a valid dataset at the current position.
 	 * This method is required by the interface Iterator.
-	 * @return boolean whether there is a row of data at current position.
+	 * @return boolean whether there is a valid dataset at the current position.
 	 */
 	public function valid()
 	{
