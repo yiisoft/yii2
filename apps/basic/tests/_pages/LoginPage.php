@@ -14,8 +14,8 @@ class LoginPage extends BasePage
 	 */
 	public function login($username, $password)
 	{
-		$this->guy->fillField('input[name="LoginForm[username]"]',$username);
-		$this->guy->fillField('input[name="LoginForm[password]"]',$password);
-		$this->guy->click('Login','#login-form');
+		$this->guy->fillField('input[name="LoginForm[username]"]', $username);
+		$this->guy->fillField('input[name="LoginForm[password]"]', $password);
+		$this->guy->click('login-button');
 	}
 }

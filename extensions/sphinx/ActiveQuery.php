@@ -165,20 +165,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 */
 	public function createCommand($db = null)
 	{
-		/** @var $modelClass ActiveRecord */
-		$modelClass = $this->modelClass;
 		$this->setConnection($db);
 		$db = $this->getConnection();
 
 		$params = $this->params;
 		if ($this->sql === null) {
-			if ($this->from === null) {
-				$tableName = $modelClass::indexName();
-				if ($this->select === null && !empty($this->join)) {
-					$this->select = ["$tableName.*"];
-				}
-				$this->from = [$tableName];
-			}
 			list ($this->sql, $params) = $db->getQueryBuilder()->build($this);
 		}
 		return $db->createCommand($this->sql, $params);
@@ -209,5 +200,20 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			$result[] = $model->getSnippetSource();
 		}
 		return $result;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function callSnippets(array $source)
+	{
+		$from = $this->from;
+		if ($from === null) {
+			/** @var ActiveRecord $modelClass */
+			$modelClass = $this->modelClass;
+			$tableName = $modelClass::indexName();
+			$from = [$tableName];
+		}
+		return $this->callSnippetsInternal($source, $from[0]);
 	}
 }

@@ -431,6 +431,9 @@ class View extends \yii\base\View
 			$this->jsFiles[$position][$key] = Html::jsFile($url, $options);
 		} else {
 			$am = Yii::$app->getAssetManager();
+			if (strpos($url, '/') !== 0 && strpos($url, '://') === false) {
+				$url = Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
+			}
 			$am->bundles[$key] = new AssetBundle([
 				'js' => [$url],
 				'jsOptions' => $options,
@@ -454,7 +457,7 @@ class View extends \yii\base\View
 
 		$request = Yii::$app->getRequest();
 		if ($request instanceof \yii\web\Request && $request->enableCsrfValidation && !$request->getIsAjax()) {
-			$lines[] = Html::tag('meta', '', ['name' => 'csrf-var', 'content' => $request->csrfVar]);
+			$lines[] = Html::tag('meta', '', ['name' => 'csrf-param', 'content' => $request->csrfVar]);
 			$lines[] = Html::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getCsrfToken()]);
 		}
 

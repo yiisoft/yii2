@@ -176,20 +176,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 
 		if ($this->sql === null) {
-			$select = $this->select;
-			$from = $this->from;
-
-			if ($this->from === null) {
-				$tableName = $modelClass::tableName();
-				if ($this->select === null && !empty($this->join)) {
-					$this->select = ["$tableName.*"];
-				}
-				$this->from = [$tableName];
-			}
 			list ($sql, $params) = $db->getQueryBuilder()->build($this);
-
-			$this->select = $select;
-			$this->from = $from;
 		} else {
 			$sql = $this->sql;
 			$params = $this->params;

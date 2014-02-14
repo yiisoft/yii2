@@ -16,7 +16,7 @@ DIRECTORY STRUCTURE
       commands/           contains console commands (controllers)
       config/             contains application configurations
       controllers/        contains Web controller classes
-      mails/              contains view files for e-mails
+      mail/               contains view files for e-mails
       models/             contains model classes
       runtime/            contains files generated during runtime
       tests/              contains various tests for the basic application

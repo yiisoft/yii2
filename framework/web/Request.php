@@ -57,7 +57,6 @@ use yii\helpers\StringHelper;
  * @property string $pathInfo Part of the request URL that is after the entry script and before the question
  * mark. Note, the returned path info is already URL-decoded.
  * @property integer $port Port number for insecure requests.
- * @property array $postParams The request POST parameter values.
  * @property array $queryParams The request GET parameter values.
  * @property string $queryString Part of the request URL that is after the question mark. This property is
  * read-only.
@@ -98,7 +97,7 @@ class Request extends \yii\base\Request
 	 * forms submitted via POST method must contain a hidden input whose name is specified by [[csrfVar]].
 	 * You may use [[\yii\web\Html::beginForm()]] to generate his hidden input.
 	 *
-	 * In JavaScript, you may get the values of [[csrfVar]] and [[csrfToken]] via `yii.getCsrfVar()` and
+	 * In JavaScript, you may get the values of [[csrfVar]] and [[csrfToken]] via `yii.getCsrfParam()` and
 	 * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
 	 *
 	 * @see Controller::enableCsrfValidation

@@ -61,7 +61,7 @@ yii = (function ($) {
 		 * @return string|undefined the CSRF variable name. Undefined is returned if CSRF validation is not enabled.
 		 */
 		getCsrfVar: function () {
-			return $('meta[name=csrf-var]').prop('content');
+			return $('meta[name=csrf-param]').prop('content');
 		},
 
 		/**
