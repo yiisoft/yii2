@@ -236,6 +236,9 @@ yii = (function ($) {
 			return this.src.charAt(0) === '/' ? hostInfo + this.src : this.src;
 		}).toArray();
 		$.ajaxPrefilter('script', function (options, originalOptions, xhr) {
+			if(options.dataType == 'jsonp') {
+				return;
+			}
 			var url = options.url.charAt(0) === '/' ? hostInfo + options.url : options.url;
 			if ($.inArray(url, loadedScripts) === -1) {
 				loadedScripts.push(url);
