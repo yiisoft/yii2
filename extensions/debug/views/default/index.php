@@ -86,6 +86,10 @@ if (isset($this->context->module->panels['db']) && isset($this->context->module-
 				'format' => 'html',
 			],
 			[
+				'attribute' => 'mailCount',
+				'visible' => isset($this->context->module->panels['mail']),
+			],
+			[
 				'attribute' => 'method',
 				'filter' => ['get' => 'GET', 'post' => 'POST', 'delete' => 'DELETE', 'put' => 'PUT', 'head' => 'HEAD']
 			],

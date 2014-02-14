@@ -94,9 +94,18 @@ class DbPanel extends Panel
 	 */
 	public function save()
 	{
+		return ['messages' => $this->getProfileLogs()];
+	}
+
+	/**
+	 * Returns all profile logs of the current request for this panel. It includes categories such as:
+	 * 'yii\db\Command::query', 'yii\db\Command::execute'.
+	 * @return array
+	 */
+	public function getProfileLogs()
+	{
 		$target = $this->module->logTarget;
-		$messages = $target->filterMessages($target->messages, Logger::LEVEL_PROFILE, ['yii\db\Command::query', 'yii\db\Command::execute']);
-		return ['messages' => $messages];
+		return $target->filterMessages($target->messages, Logger::LEVEL_PROFILE, ['yii\db\Command::query', 'yii\db\Command::execute']);
 	}
 
 	/**
@@ -164,4 +173,5 @@ class DbPanel extends Panel
 	{
 		return (($this->criticalQueryThreshold !== null) && ($count > $this->criticalQueryThreshold));
 	}
+
 }
