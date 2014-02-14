@@ -238,7 +238,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 						throw new InvalidParamException('Relation names are case sensitive. ' . get_class($this) . " has a relation named \"$realName\" instead of \"$name\".");
 					}
 				}
-				return $this->_related[$name] = $value->multiple ? $value->all() : $value->one();
+				$this->populateRelation($name, $value->multiple ? $value->all() : $value->one());
+				return $this->_related[$name];
 			}
 			return $value;
 		}
