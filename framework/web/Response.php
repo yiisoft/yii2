@@ -852,7 +852,7 @@ class Response extends \yii\base\Response
 					$this->content = Json::encode($this->data);
 					break;
 				case self::FORMAT_JSONP:
-					$this->getHeaders()->set('Content-Type', 'text/javascript; charset=' . $this->charset);
+					$this->getHeaders()->set('Content-Type', 'application/javascript; charset=' . $this->charset);
 					if (is_array($this->data) && isset($this->data['data'], $this->data['callback'])) {
 						$this->content = sprintf('%s(%s);', $this->data['callback'], Json::encode($this->data['data']));
 					} else {
