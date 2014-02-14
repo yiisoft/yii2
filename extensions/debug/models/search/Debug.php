@@ -86,8 +86,8 @@ class Debug extends Base
 			'ajax' => 'Ajax',
 			'url' => 'url',
 			'statusCode' => 'Status code',
-			'sqlCount' => 'Total queries',
-			'mailCount' => 'Total mails',
+			'sqlCount' => 'Query Count',
+			'mailCount' => 'Mail Count',
 		];
 	}
 
