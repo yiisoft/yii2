@@ -1,16 +1,16 @@
 Helper Classes
 ==============
 
-Yii provides many helper classes to simplify commonly needed coding tasks, such as string/array manipulations,
-HTML code generation, etc. These helper classes are mostly organized under the `yii\helpers` namespace, and
-they are all static classes (meaning they contain only static properties and methods and should not be instantiated).
+Yii provides many helper classes to help simplify some common coding tasks, such as string/array manipulations,
+HTML code generation. These helper classes are organized under the `yii\helpers` namespace and
+are all static classes (meaning they contain only static properties and methods and should not be instantiated).
 You use a helper class by directly calling its static method, like the following,
 
-~~~
+```php
 use yii\helpers\ArrayHelper;
 
 $c = ArrayHelper::merge($a, $b);
-~~~
+```
 
 Extending Helper Classes
 ------------------------
@@ -36,3 +36,6 @@ Yii::$classMap['yii\helpers\ArrayHelper'] = 'path/to/ArrayHelper.php';
 
 The Step 4 above will instruct Yii class autoloader to load your version of the helper instead of the one
 included in the Yii distribution.
+
+> Tip: You can also use `Yii::$classMap` to replace ANY core Yii class, not necessarily helper classes,
+> with your own customized version.
