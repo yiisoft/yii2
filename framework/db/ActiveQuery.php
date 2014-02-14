@@ -66,23 +66,57 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	{
 		$command = $this->createCommand($db);
 		$rows = $command->queryAll();
-		if (!empty($rows)) {
-			$models = $this->createModels($rows);
-			if (!empty($this->join) && $this->indexBy === null) {
-				$models = $this->removeDuplicatedModels($models);
-			}
-			if (!empty($this->with)) {
-				$this->findWith($this->with, $models);
-			}
-			if (!$this->asArray) {
-				foreach($models as $model) {
-					$model->afterFind();
-				}
-			}
-			return $models;
-		} else {
+		return $this->prepareResults($rows);
+	}
+
+	/**
+	 * Executes query if it hadn't been already run and returns next batch of records as an array.
+	 * If there are no more records, returns an empty array an resets the reader,
+	 * so the next call will execute the query again and start from the beginning.
+	 * @param integer $limit number of records to return
+	 * @param Connection $db the DB connection used to create the DB command.
+	 * If null, the DB connection returned by [[modelClass]] will be used.
+	 * @return array|ActiveRecord[] the query results. If the query results in nothing, an empty array will be returned.
+	 */
+	public function next($limit = 1, $db = null)
+	{
+		if ($this->_dataReader === null) {
+			$this->_dataReader = $this->createCommand($db)->query();
+		}
+		$count = 0;
+		$rows = [];
+		while ($count++ < $limit && ($row = $this->_dataReader->read())) {
+			$rows[] = $row;
+		}
+		if (empty($rows)) {
+			$this->_dataReader = null;
+		}
+		return $this->prepareResults($rows);
+	}
+
+	/**
+	 * Turns rows obtained from executing a query into a result array.
+	 * @param array $rows rows obtained from executing a query
+	 * @return array|ActiveRecord[] the query results. If the query results in nothing, an empty array will be returned.
+	 */
+	private function prepareResults($rows)
+	{
+		if (empty($rows)) {
 			return [];
 		}
+		$models = $this->createModels($rows);
+		if (!empty($this->join) && $this->indexBy === null) {
+			$models = $this->removeDuplicatedModels($models);
+		}
+		if (!empty($this->with)) {
+			$this->findWith($this->with, $models);
+		}
+		if (!$this->asArray) {
+			foreach($models as $model) {
+				$model->afterFind();
+			}
+		}
+		return $models;
 	}
 
 	/**

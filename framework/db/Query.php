@@ -106,6 +106,10 @@ class Query extends Component implements QueryInterface
 	 * For example, `[':name' => 'Dan', ':age' => 31]`.
 	 */
 	public $params = [];
+	/**
+	 * @var DataReader the data reader used when fetching a batch of results using [[next()]] method.
+	 */
+	protected $_dataReader;
 
 
 	/**
@@ -143,6 +147,40 @@ class Query extends Component implements QueryInterface
 				$key = call_user_func($this->indexBy, $row);
 			}
 			$result[$key] = $row;
+		}
+		return $result;
+	}
+
+	/**
+	 * Executes the query if it hadn't been already run and returns next batch of records as an array.
+	 * If there are no more records, returns an empty array an resets the reader,
+	 * so the next call will execute the query again and start from the beginning.
+	 * @param integer $limit number of records to return
+	 * @param Connection $db the database connection used to generate the SQL statement.
+	 * If this parameter is not given, the `db` application component will be used.
+	 * @return array the query results. If the query results in nothing, an empty array will be returned.
+	 */
+	public function next($limit = 1, $db = null)
+	{
+		if ($this->_dataReader === null) {
+			$this->_dataReader = $this->createCommand($db)->query();
+		}
+		$count = 0;
+		$result = [];
+		while ($count++ < $limit && ($row = $this->_dataReader->read())) {
+			if ($this->indexBy === null) {
+				$result[] = $row;
+			} else {
+				if (is_string($this->indexBy)) {
+					$key = $row[$this->indexBy];
+				} else {
+					$key = call_user_func($this->indexBy, $row);
+				}
+				$result[$key] = $row;
+			}
+		}
+		if (empty($result)) {
+			$this->_dataReader = null;
 		}
 		return $result;
 	}
