@@ -17,6 +17,6 @@ class ContactPage extends BasePage
 			$inputType = $field === 'body' ? 'textarea' : 'input';
 			$this->guy->fillField($inputType . '[name="ContactForm[' . $field . ']"]', $value);
 		}
-		$this->guy->click('#contact-form input[type=submit]');
+		$this->guy->click('#contact-form button[type=submit]');
 	}
 }
