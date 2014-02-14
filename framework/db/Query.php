@@ -123,6 +123,21 @@ class Query extends Component implements QueryInterface
 		return $db->createCommand($sql, $params);
 	}
 
+	public function batch($size = 10, $db = null)
+	{
+		return Yii::createObject([
+			'class' => BatchQueryResult::className(),
+			'query' => $this,
+			'batchSize' => $size,
+			'db' => $db,
+		]);
+	}
+
+	public function each($db = null)
+	{
+		return $this->batch(1, $db);
+	}
+
 	/**
 	 * Executes the query and returns all results as an array.
 	 * @param Connection $db the database connection used to generate the SQL statement.
@@ -132,6 +147,11 @@ class Query extends Component implements QueryInterface
 	public function all($db = null)
 	{
 		$rows = $this->createCommand($db)->queryAll();
+		return $this->prepareResult($rows);
+	}
+
+	public function prepareResult($rows)
+	{
 		if ($this->indexBy === null) {
 			return $rows;
 		}

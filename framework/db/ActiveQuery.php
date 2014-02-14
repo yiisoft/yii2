@@ -64,25 +64,28 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 */
 	public function all($db = null)
 	{
-		$command = $this->createCommand($db);
-		$rows = $command->queryAll();
-		if (!empty($rows)) {
-			$models = $this->createModels($rows);
-			if (!empty($this->join) && $this->indexBy === null) {
-				$models = $this->removeDuplicatedModels($models);
-			}
-			if (!empty($this->with)) {
-				$this->findWith($this->with, $models);
-			}
-			if (!$this->asArray) {
-				foreach($models as $model) {
-					$model->afterFind();
-				}
-			}
-			return $models;
-		} else {
+		return parent::all($db);
+	}
+
+	public function prepareResult($rows)
+	{
+		if (empty($rows)) {
 			return [];
 		}
+
+		$models = $this->createModels($rows);
+		if (!empty($this->join) && $this->indexBy === null) {
+			$models = $this->removeDuplicatedModels($models);
+		}
+		if (!empty($this->with)) {
+			$this->findWith($this->with, $models);
+		}
+		if (!$this->asArray) {
+			foreach($models as $model) {
+				$model->afterFind();
+			}
+		}
+		return $models;
 	}
 
 	/**

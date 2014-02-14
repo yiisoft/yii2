@@ -113,6 +113,25 @@ $customers = Customer::find()->indexBy('id')->all();
 // $customers array is indexed by customer IDs
 ```
 
+Batch query is also supported when working with Active Record. For example,
+
+```php
+// fetch 10 customers at a time
+foreach (Customer::find()->batch() as $customers) {
+	// $customers is an array of 10 or fewer Customer objects
+}
+// fetch customers one by one
+foreach (Customer::find()->each() as $customer) {
+	// $customer is a Customer object
+}
+// batch query with eager loading
+foreach (Customer::find()->with('orders')->batch() as $customers) {
+}
+```
+
+As explained in [Query Builder](query-builder.md), batch query is very useful when you are fetching
+a large amount of data from database. It will keep your memory usage under a limit.
+
 
 Accessing Column Data
 ---------------------
