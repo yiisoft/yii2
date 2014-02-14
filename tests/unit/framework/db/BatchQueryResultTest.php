@@ -84,6 +84,7 @@ class BatchQueryResultTest extends DatabaseTestCase
 		$this->assertEquals('user2', $allRows[1]['name']);
 		$this->assertEquals('user3', $allRows[2]['name']);
 
+		// each
 		$query = new Query();
 		$query->from('tbl_customer')->orderBy('id');
 		$allRows = [];
@@ -94,6 +95,18 @@ class BatchQueryResultTest extends DatabaseTestCase
 		$this->assertEquals('user1', $allRows[0]['name']);
 		$this->assertEquals('user2', $allRows[1]['name']);
 		$this->assertEquals('user3', $allRows[2]['name']);
+
+		// each with key
+		$query = new Query();
+		$query->from('tbl_customer')->orderBy('id')->indexBy('name');
+		$allRows = [];
+		foreach ($query->each($db) as $key => $row) {
+			$allRows[$key] = $row;
+		}
+		$this->assertEquals(3, count($allRows));
+		$this->assertEquals('address1', $allRows['user1']['address']);
+		$this->assertEquals('address2', $allRows['user2']['address']);
+		$this->assertEquals('address3', $allRows['user3']['address']);
 	}
 
 	public function testActiveQuery()

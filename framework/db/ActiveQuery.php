@@ -67,6 +67,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		return parent::all($db);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function prepareResult($rows)
 	{
 		if (empty($rows)) {
