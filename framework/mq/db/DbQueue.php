@@ -14,16 +14,9 @@ use yii\base\NotSupportedException;
 class DbQueue extends Queue
 {
 	/**
-	 * @inheritdoc
-	 * @throws NotSupportedException
+	 * @var string|yii\db\Connection Name or a db connection component to use as storage.
 	 */
-	public function init()
-	{
-		parent::init();
-		if ($this->blocking) {
-			throw new NotSupportedException(Yii::t('app', 'DbQueue does not support blocking.'));
-		}
-	}
+	public $db;
 
 	/**
 	 * Creates an instance of DbMessage model. The passed message body may be modified, @see formatMessage().
@@ -36,7 +29,6 @@ class DbQueue extends Queue
 		$message = new models\DbMessage;
 		$message->setAttributes(array(
 			'queue_id'		=> $this->id,
-			'timeout'		=> $this->timeout,
 			'sender_id'		=> Yii::$app->hasComponent('user') ? Yii::$app->user->getId() : null,
 			'status'		=> Message::AVAILABLE,
 			'body'			=> $body,
@@ -61,7 +53,7 @@ class DbQueue extends Queue
 		$queueMessage = $this->createMessage($message);
 
         if ($this->beforeSend($queueMessage) !== true) {
-			Yii::info(Yii::t('app', "Not sending message '{msg}' to queue {queue_label}.", array('{msg}' => $queueMessage->body, '{queue_label}' => $this->label)), 'nfy');
+			Yii::info(Yii::t('app', "Not sending message '{msg}' to queue {queue_label}.", array('{msg}' => $queueMessage->body, '{queue_label}' => $this->label)), __METHOD__);
             return;
         }
 
@@ -73,7 +65,7 @@ class DbQueue extends Queue
         
 		// empty($subscriptions) && 
         if (!$queueMessage->save()) {
-			Yii::error(Yii::t('app', "Failed to save message '{msg}' in queue {queue_label}.", array('{msg}' => $queueMessage->body, '{queue_label}' => $this->label)), 'nfy');
+			Yii::error(Yii::t('app', "Failed to save message '{msg}' in queue {queue_label}.", array('{msg}' => $queueMessage->body, '{queue_label}' => $this->label)), __METHOD__);
             return false;
         }
 
@@ -90,7 +82,7 @@ class DbQueue extends Queue
 					'{msg}' => $queueMessage->body,
 					'{queue_label}' => $this->label,
 					'{subscription_id}' => $subscription->id,
-				)), 'nfy');
+				)), __METHOD__);
 				$success = false;
 			}
             
@@ -103,51 +95,44 @@ class DbQueue extends Queue
 			$trx->commit();
 		}
 
-		Yii::info(Yii::t('app', "Sent message '{msg}' to queue {queue_label}.", array('{msg}' => $queueMessage->body, '{queue_label}' => $this->label)), 'nfy');
+		Yii::info(Yii::t('app', "Sent message '{msg}' to queue {queue_label}.", array('{msg}' => $queueMessage->body, '{queue_label}' => $this->label)), __METHOD__);
 
 		return $success;
 	}
 
 	/**
 	 * @inheritdoc
+	 * @throws NotSupportedException
 	 */
-	public function peek($subscriber_id=null, $limit=-1, $status=Message::AVAILABLE)
+	public function peek($subscriber_id=null, $limit=-1, $status=Message::AVAILABLE, $blocking=false)
 	{
+		if ($blocking) {
+			throw new NotSupportedException(Yii::t('app', 'DbQueue does not support blocking.'));
+		}
 		$pk = models\DbMessage::primaryKey();
-		$messages = models\DbMessage::find()->withQueue($this->id)->withSubscriber($subscriber_id)->withStatus($status, $this->timeout)->limit($limit)->indexBy($pk[0])->all();
+		$messages = models\DbMessage::find()->withQueue($this->id)->withSubscriber($subscriber_id)->withStatus($status)->limit($limit)->indexBy($pk[0])->all();
 		return models\DbMessage::createMessages($messages);
 	}
 
 	/**
 	 * @inheritdoc
+	 * @throws NotSupportedException
 	 */
-	public function reserve($subscriber_id=null, $limit=-1)
+	public function pull($subscriber_id=null, $limit=-1, $timeout=null, $blocking=false)
 	{
-		return $this->receiveInternal($subscriber_id, $limit, self::GET_RESERVE);
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function receive($subscriber_id=null, $limit=-1)
-	{
-		return $this->receiveInternal($subscriber_id, $limit, self::GET_DELETE);
-	}
-
-	/**
-	 * Perform message extraction.
-	 */
-	protected function receiveInternal($subscriber_id=null, $limit=-1, $mode=self::GET_RESERVE)
-	{
+		if ($blocking) {
+			throw new NotSupportedException(Yii::t('app', 'DbQueue does not support blocking.'));
+		}
 		$pk = models\DbMessage::primaryKey();
 		$trx = models\DbMessage::getDb()->transaction !== null ? null : models\DbMessage::getDb()->beginTransaction();
-		$messages = models\DbMessage::find()->withQueue($this->id)->withSubscriber($subscriber_id)->available($this->timeout)->limit($limit)->indexBy($pk[0])->all();
+		$messages = models\DbMessage::find()->withQueue($this->id)->withSubscriber($subscriber_id)->available()->limit($limit)->indexBy($pk[0])->all();
 		if (!empty($messages)) {
 			$now = new \DateTime('now', new \DateTimezone('UTC'));
-			if ($mode === self::GET_DELETE) {
+			if ($timeout === null) {
 				$attributes = array('status'=>Message::DELETED, 'deleted_on'=>$now->format('Y-m-d H:i:s'));
-			} elseif ($mode === self::GET_RESERVE) {
-				$attributes = array('status'=>Message::RESERVED, 'reserved_on'=>$now->format('Y-m-d H:i:s'));
+			} else {
+				$future = new \DateTime("+$timeout seconds", new \DateTimezone('UTC'));
+				$attributes = array('status'=>Message::RESERVED, 'reserved_on'=>$now->format('Y-m-d H:i:s'), 'times_out_on'=>$future->format('Y-m-d H:i:s'));
 			}
 			models\DbMessage::updateAll($attributes, ['in', models\DbMessage::primaryKey(), array_keys($messages)]);
 		}
@@ -164,7 +149,7 @@ class DbQueue extends Queue
 	{
         $trx = models\DbMessage::getDb()->transaction !== null ? null : models\DbMessage::getDb()->beginTransaction();
 		$pk = models\DbMessage::primaryKey();
-		$message_ids = models\DbMessage::find()->withQueue($this->id)->withSubscriber($subscriber_id)->reserved($this->timeout)->select($pk)->andWhere(['in',$pk,$message_id])->column();
+		$message_ids = models\DbMessage::find()->withQueue($this->id)->withSubscriber($subscriber_id)->reserved()->select($pk)->andWhere(['in',$pk,$message_id])->column();
 		$now = new \DateTime('now', new \DateTimezone('UTC'));
 		models\DbMessage::updateAll(array('status'=>Message::DELETED, 'deleted_on'=>$now->format('Y-m-d H:i:s')), ['in', $pk, $message_ids]);
 		if ($trx !== null) {
@@ -180,7 +165,7 @@ class DbQueue extends Queue
 	{
         $trx = models\DbMessage::getDb()->transaction !== null ? null : models\DbMessage::getDb()->beginTransaction();
 		$pk = models\DbMessage::primaryKey();
-		$message_ids = models\DbMessage::find()->withQueue($this->id)->withSubscriber($subscriber_id)->reserved($this->timeout)->select($pk)->andWhere(['in',$pk,$message_id])->column();
+		$message_ids = models\DbMessage::find()->withQueue($this->id)->withSubscriber($subscriber_id)->reserved()->select($pk)->andWhere(['in',$pk,$message_id])->column();
 		models\DbMessage::updateAll(array('status'=>Message::AVAILABLE), ['in', $pk, $message_ids]);
 		if ($trx !== null) {
 			$trx->commit();
@@ -196,7 +181,7 @@ class DbQueue extends Queue
 	{
         $trx = models\DbMessage::getDb()->transaction !== null ? null : models\DbMessage::getDb()->beginTransaction();
 		$pk = models\DbMessage::primaryKey();
-		$message_ids = models\DbMessage::find()->withQueue($this->id)->timedout($this->timeout)->select($pk)->andWhere(['in',$pk,$message_id])->column();
+		$message_ids = models\DbMessage::find()->withQueue($this->id)->timedout()->select($pk)->andWhere(['in',$pk,$message_id])->column();
 		models\DbMessage::updateAll(array('status'=>Message::AVAILABLE), ['in', $pk, $message_ids]);
 		if ($trx !== null) {
 			$trx->commit();

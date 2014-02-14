@@ -14,7 +14,7 @@ use yii\mq;
  * @property integer $message_id
  * @property integer $subscription_id
  * @property integer $status
- * @property integer $timeout
+ * @property integer $times_out_on
  * @property string $reserved_on
  * @property string $deleted_on
  * @property string $mimetype
@@ -48,8 +48,8 @@ class DbMessage extends \yii\db\ActiveRecord
 	{
 		return [
 			[['queue_id', 'sender_id', 'body'], 'required', 'except'=>'search'],
-			[['sender_id', 'subscription_id', 'timeout'], 'number', 'integerOnly'=>true],
-			[['message_id', 'subscription_id', 'timeout'], 'number', 'integerOnly'=>true, 'on'=>'search'],
+			[['sender_id', 'subscription_id'], 'number', 'integerOnly'=>true],
+			[['message_id', 'subscription_id'], 'number', 'integerOnly'=>true, 'on'=>'search'],
 			['status', 'number', 'integerOnly'=>true, 'on'=>'search'],
 			['mimetype', 'safe', 'on'=>'search'],
 		];
@@ -89,7 +89,7 @@ class DbMessage extends \yii\db\ActiveRecord
 			'message_id' => Yii::t('models', 'Message ID'),
 			'subscription_id' => Yii::t('models', 'Subscription ID'),
 			'status' => Yii::t('models', 'Status'),
-			'timeout' => Yii::t('models', 'Timeout'),
+			'times_out_on' => Yii::t('models', 'Times Out On'),
 			'reserved_on' => Yii::t('models', 'Reserved On'),
 			'deleted_on' => Yii::t('models', 'Deleted On'),
 			'mimetype' => Yii::t('models', 'MIME Type'),

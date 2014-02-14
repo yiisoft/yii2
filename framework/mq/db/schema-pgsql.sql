@@ -41,7 +41,7 @@ create table "tbl_messages"
    "message_id"         integer,
    "subscription_id"    integer references "tbl_subscriptions" ("id") on delete cascade on update cascade,
    "status"             integer not null,
-   "timeout"            integer,
+   "times_out_on"       timestamp,
    "reserved_on"        timestamp,
    "deleted_on"         timestamp,
    "mimetype"           varchar not null default 'text/plain',
@@ -55,6 +55,7 @@ create index tbl_messages_queue_id_idx on "tbl_messages" ("queue_id");
 create index tbl_messages_sender_id_idx on "tbl_messages" ("sender_id");
 create index tbl_messages_message_id_idx on "tbl_messages" ("message_id");
 create index tbl_messages_status_idx on "tbl_messages" ("status");
+create index tbl_messages_times_out_on_idx on "tbl_messages" ("times_out_on");
 create index tbl_messages_reserved_on_idx on "tbl_messages" ("reserved_on");
 create index tbl_messages_subscription_id_idx on "tbl_messages" ("subscription_id");
 

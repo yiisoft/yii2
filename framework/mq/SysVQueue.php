@@ -86,26 +86,26 @@ class SysVQueue extends Queue
 	/**
 	 * @inheritdoc
 	 */
-	public function send($message, $category=null) {
+	public function put($message, $category=null) {
 		$queueMessage = $this->createMessage($message);
 
-        if ($this->beforeSend($queueMessage) !== true) {
-			Yii::log(Yii::t('app', "Not sending message '{msg}' to queue {queue_label}.", array('{msg}' => $queueMessage->body, '{queue_label}' => $this->label)), CLogger::LEVEL_INFO, 'nfy');
+        if ($this->beforePut($queueMessage) !== true) {
+			Yii::info(Yii::t('app', "Not putting message '{msg}' in queue {queue_label}.", array('{msg}' => $queueMessage->body, '{queue_label}' => $this->label)), __METHOD__);
             return;
         }
 
 		$success = msg_send($this->getQueue(), 1, $queueMessage, true, false, $errorcode);
         if (!$success) {
-			Yii::log(Yii::t('app', "Failed to save message '{msg}' in queue {queue_label}.", array('{msg}' => $queueMessage->body, '{queue_label}' => $this->label)), CLogger::LEVEL_ERROR, 'nfy');
+			Yii::error(Yii::t('app', "Failed to save message '{msg}' in queue {queue_label}.", array('{msg}' => $queueMessage->body, '{queue_label}' => $this->label)), __METHOD__);
 			if ($errorcode === MSG_EAGAIN) {
-				Yii::log(Yii::t('app', "Queue {queue_label} is full.", array('{queue_label}' => $this->label)), CLogger::LEVEL_ERROR, 'nfy');
+				Yii::error(Yii::t('app', "Queue {queue_label} is full.", array('{queue_label}' => $this->label)), __METHOD__);
 			}
             return false;
         }
 
-        $this->afterSend($queueMessage);
+        $this->afterPut($queueMessage);
 
-		Yii::log(Yii::t('app', "Sent message '{msg}' to queue {queue_label}.", array('{msg}' => $queueMessage->body, '{queue_label}' => $this->label)), CLogger::LEVEL_INFO, 'nfy');
+		Yii::info(Yii::t('app', "Put message '{msg}' in queue {queue_label}.", array('{msg}' => $queueMessage->body, '{queue_label}' => $this->label)), __METHOD__);
 	}
 
 	/**
@@ -114,31 +114,22 @@ class SysVQueue extends Queue
 	 */
 	public function peek($subscriber_id=null, $limit=-1, $status=Message::AVAILABLE)
 	{
-		throw new NotSupportedException('Not implemented. System V queues does not support peeking. Use the receive() method.');
+		throw new NotSupportedException('Not implemented. System V queues does not support peeking. Use the pull() method.');
 	}
 
 	/**
 	 * @inheritdoc
 	 * @throws NotSupportedException
 	 */
-	public function reserve($subscriber_id=null, $limit=-1)
-	{
-		throw new NotSupportedException('Not implemented. System V queues does not support reserving messages. Use the receive() method.');
-	}
-
-	/**
-	 * Gets available messages from the queue and removes them from the queue.
-	 * @param mixed $subscriber_id unused, must be null
-	 * @param integer $limit number of available messages that will be fetched from the queue, defaults to -1 which means no limit
-	 * @return array of Message objects
-	 * @throws NotSupportedException
-	 */
-	public function receive($subscriber_id=null, $limit=-1)
+	public function pull($subscriber_id=null, $limit=-1, $timeout=null, $blocking=false)
 	{
 		if ($subscriber_id !== null) {
 			throw new NotSupportedException('Not implemented. System V queues does not support subscriptions.');
 		}
-		$flags = $this->blocking ? 0 : MSG_IPC_NOWAIT;
+		if ($timeout !== null) {
+			throw new NotSupportedException('Not implemented. System V queues does not support reserving messages.');
+		}
+		$flags = $blocking ? 0 : MSG_IPC_NOWAIT;
 		$messages = array();
 		$count = 0;
 		while (($limit == -1 || $count < $limit) && (msg_receive($this->getQueue(), 0, $msgtype, self::MSG_MAXSIZE, $message, true, $flags, $errorcode))) {

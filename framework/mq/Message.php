@@ -36,9 +36,9 @@ class Message
 	 */
 	public $subscriber_id;
 	/**
-	 * @var integer $timeout Number of seconds after which when the current message is reserved it becomes available again
+	 * @var string $times_out_on Date and time after which the message is considered timed out and becomes available again, in Y-m-d H:i:s format
 	 */
-	public $timeout;
+	public $times_out_on;
 	/**
 	 * @var string $reserved_on Date and time when the message has been reserved, in Y-m-d H:i:s format
 	 */
@@ -54,9 +54,14 @@ class Message
 
 	public function __sleep()
 	{
-		$attributes = array('id', 'created_on', 'sender_id', 'timeout', 'body');
-		if ($this->status == self::RESERVED) $attributes[] = 'reserved_on';
-		if ($this->status == self::DELETED) $attributes[] = 'deleted_on';
+		$attributes = array('id', 'created_on', 'sender_id', 'body');
+		if ($this->status == self::RESERVED) {
+			$attributes[] = 'times_out_on';
+			$attributes[] = 'reserved_on';
+		}
+		if ($this->status == self::DELETED) {
+			$attributes[] = 'deleted_on';
+		}
 		return $attributes;
 	}
 

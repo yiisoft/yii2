@@ -5,84 +5,80 @@ namespace yii\mq;
 interface QueueInterface
 {
 	/**
-	 * @event Event an event that is triggered before a message is sent to a queue.
+	 * @event Event an event that is triggered before a message is put in a queue.
 	 */
-	const EVENT_BEFORE_SEND = 'beforeSend';
+	const EVENT_BEFORE_PUT = 'beforePut';
 	/**
-	 * @event Event an event that is triggered after a message is sent to a queue.
+	 * @event Event an event that is triggered after a message is put in a queue.
 	 */
-	const EVENT_AFTER_SEND = 'afterSend';
+	const EVENT_AFTER_PUT = 'afterPut';
 	/**
-	 * @event Event an event that is triggered before a message is sent to a subscription.
+	 * @event Event an event that is triggered before a message is put in a subscription queue.
 	 */
-	const EVENT_BEFORE_SEND_SUBSCRIPTION = 'beforeSendSubscription';
+	const EVENT_BEFORE_PUT_SUBSCRIPTION = 'beforePutSubscription';
 	/**
-	 * @event Event an event that is triggered after a message is sent to a subscription.
+	 * @event Event an event that is triggered after a message is put in a subscription queue.
 	 */
-	const EVENT_AFTER_SEND_SUBSCRIPTION = 'afterSendSubscription';
+	const EVENT_AFTER_PUT_SUBSCRIPTION = 'afterPutSubscription';
 
 	/**
-	 * Determines if message can be sent.
-	 * The default implementation should raise the {@link onBeforeSend} event.
+	 * Determines if message can be put in a queue.
+	 * The default implementation should raise the {@link onBeforePut} event.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 * @param mixed $message the actual format depends on the implementation
 	 * @return boolean
 	 */
-    public function beforeSend($message);
+    public function beforePut($message);
 	/**
-	 * Called after sending the message. 
-	 * The default implementation should raise the {@link onAfterSend} event.
+	 * Called after putting the message in the queue. 
+	 * The default implementation should raise the {@link onAfterPut} event.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 * @param mixed $message the actual format depends on the implementation
 	 */
-    public function afterSend($message);
+    public function afterPut($message);
 	/**
-	 * Determines if message can be sent to specified subscription.
-	 * The default implementation should raise the {@link onBeforeSendSubscription} event.
+	 * Determines if message can be put in the specified subscription queue.
+	 * The default implementation should raise the {@link onBeforePutSubscription} event.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 * @param mixed $message the actual format depends on the implementation
 	 * @param mixed $subscriber_id the actual format depends on the implementation
 	 * @return boolean
 	 */
-    public function beforeSendSubscription($message, $subscriber_id);
+    public function beforePutSubscription($message, $subscriber_id);
 	/**
-	 * Called after sending the message to a subscription. 
-	 * The default implementation should raise the {@link onAfterSendSubscription} event.
+	 * Called after putting the message in a subscription queue. 
+	 * The default implementation should raise the {@link onAfterPutSubscription} event.
 	 * Make sure you call the parent implementation so that the event is raised properly.
 	 * @param mixed $message the actual format depends on the implementation
 	 * @param mixed $subscriber_id the actual format depends on the implementation
 	 */
-    public function afterSendSubscription($message, $subscriber_id);
+    public function afterPutSubscription($message, $subscriber_id);
 	/**
-	 * Sends message to the queue. If there are any subscriptions, it will be delivered to those matching specified category.
+	 * Puts message to the queue. If there are any subscriptions, it will be delivered to those matching specified category.
 	 *
 	 * @param mixed $message the actual format depends on the implementation
 	 * @param string $category category of the message (e.g. 'system.web'). It is case-insensitive.
 	 */
-	public function send($message, $category=null);
+	public function put($message, $category=null);
 	/**
 	 * Gets messages from the queue, but neither reserves or removes them.
 	 * Messages are sorted by date and time of creation.
 	 * @param mixed $subscriber_id the actual format depends on the implementation
 	 * @param integer $limit number of available messages that will be fetched from the queue, defaults to -1 which means no limit
 	 * @param integer|array $status allows peeking at reserved or removed messages (not yet permanently)
-	 * @return array of NfyMessage objects
+	 * @param boolean $blocking should this method wait until a message is available if the queue is empty
+	 * @return Message[]
 	 */
-	public function peek($subscriber_id=null, $limit=-1, $status=NfyMessage::AVAILABLE);
-	/**
-	 * Gets available messages from the queue and reserves them. Unless they are deleted, they will be released after a specific amount of time.
-	 * @param mixed $subscriber_id the actual format depends on the implementation
-	 * @param integer $limit number of available messages that will be fetched from the queue, defaults to -1 which means no limit
-	 * @return array of NfyMessage objects
-	 */
-	public function reserve($subscriber_id=null, $limit=-1);
+	public function peek($subscriber_id=null, $limit=-1, $status=Message::AVAILABLE, $blocking=false);
 	/**
 	 * Gets available messages from the queue and removes them from the queue.
 	 * @param mixed $subscriber_id the actual format depends on the implementation
 	 * @param integer $limit number of available messages that will be fetched from the queue, defaults to -1 which means no limit
-	 * @return array of NfyMessage objects
+	 * @param integer $timeout if not null and the message is not deleted after this much seconds it is returned to the queue
+	 * @param boolean $blocking should this method wait until a message is available if the queue is empty
+	 * @return Message[]
 	 */
-	public function receive($subscriber_id=null, $limit=-1);
+	public function pull($subscriber_id=null, $limit=-1, $timeout=null, $blocking=false);
 	/**
 	 * Deletes reserved messages from the queue.
 	 * @param integer|array $message_id one or many message ids
@@ -125,7 +121,7 @@ interface QueueInterface
 	/**
 	 * Returns all subscriptions or one for specified subscriber, if it exists.
 	 * @param mixed $subscriber_id
-	 * @return array of NfySubscription
+	 * @return Subscription[]
 	 */
 	public function getSubscriptions($subscriber_id=null);
 }

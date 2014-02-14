@@ -13,17 +13,17 @@ class QueueEvent extends Event
 {
 
 	/**
-	 * @var yii\mq\Message queue message being send
+	 * @var yii\mq\Message queue message being put in
 	 */
 	public $message;
 	/**
-	 * @var string id of subscriber, null if sending to a general queue
+	 * @var string id of subscriber, null if putting in a general queue
 	 */
 	public $subscriber_id;
 	/**
-	 * @var boolean whether to continue sending a message. Event handlers of
-	 * [[yii\mq\Queue::EVENT_BEFORE_SEND]] or [[yii\mq\Queue::EVENT_BEFORE_SEND_SUBSCRIPTION]]
-	 * may set this property to decide whether to continue send or not.
+	 * @var boolean whether to continue putting a message. Event handlers of
+	 * [[yii\mq\Queue::EVENT_BEFORE_PUT]] or [[yii\mq\Queue::EVENT_BEFORE_PUT_SUBSCRIPTION]]
+	 * may set this property to decide whether to continue putting or not.
 	 */
 	public $isValid = true;
 }
