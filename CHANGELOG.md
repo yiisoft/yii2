@@ -109,6 +109,7 @@ Yii Framework 2 Change Log
 - Enh #2240: Improved `yii\web\AssetManager::publish()`, `yii\web\AssetManager::getPublishedPath()` and `yii\web\AssetManager::getPublishedUrl()` to support aliases (vova07)
 - Enh #2325: Adding support for the `X-HTTP-Method-Override` header in `yii\web\Request::getMethod()` (pawzar)
 - Enh #2364: Take into account current error reporting level in error handler (gureedo)
+- Enh #2409: Added support for fetching data from database in batches (nineinchnick, qiangxue)
 - Enh #2417: Added possibility to set `dataType` for `$.ajax` call in yii.activeForm.js (Borales)
 - Enh: Added support for using arrays as option values for console commands (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
