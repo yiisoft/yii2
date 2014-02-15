@@ -71,12 +71,12 @@ class Pagination extends Object
 	 * @var string name of the parameter storing the current page index. Defaults to 'page'.
 	 * @see params
 	 */
-	public $pageVar = 'page';
+	public $pageParam = 'page';
 	/**
 	 * @var boolean whether to always have the page parameter in the URL created by [[createUrl()]].
 	 * If false and [[page]] is 0, the page parameter will not be put in the URL.
 	 */
-	public $forcePageVar = true;
+	public $forcePageParam = true;
 	/**
 	 * @var string the route of the controller action for displaying the paged contents.
 	 * If not set, it means using the currently requested route.
@@ -88,7 +88,7 @@ class Pagination extends Object
 	 *
 	 * In order to add hash to all links use `array_merge($_GET, ['#' => 'my-hash'])`.
 	 *
-	 * The array element indexed by [[pageVar]] is considered to be the current page number.
+	 * The array element indexed by [[pageParam]] is considered to be the current page number.
 	 * If the element does not exist, the current page number is considered 0.
 	 */
 	public $params;
@@ -102,7 +102,7 @@ class Pagination extends Object
 	 * When this property is true, the value of [[page]] will always be between 0 and ([[pageCount]]-1).
 	 * Because [[pageCount]] relies on the correct value of [[totalCount]] which may not be available
 	 * in some cases (e.g. MongoDB), you may want to set this property to be false to disable the page
-	 * number validation. By doing so, [[page]] will return the value indexed by [[pageVar]] in [[params]].
+	 * number validation. By doing so, [[page]] will return the value indexed by [[pageParam]] in [[params]].
 	 */
 	public $validatePage = true;
 	/**
@@ -143,8 +143,8 @@ class Pagination extends Object
 				$request = Yii::$app->getRequest();
 				$params = $request instanceof Request ? $request->getQueryParams() : [];
 			}
-			if (isset($params[$this->pageVar]) && is_scalar($params[$this->pageVar])) {
-				$this->_page = (int)$params[$this->pageVar] - 1;
+			if (isset($params[$this->pageParam]) && is_scalar($params[$this->pageParam])) {
+				$this->_page = (int)$params[$this->pageParam] - 1;
 				if ($this->validatePage) {
 					$pageCount = $this->getPageCount();
 					if ($this->_page >= $pageCount) {
@@ -177,7 +177,7 @@ class Pagination extends Object
 	 * @param boolean $absolute whether to create an absolute URL. Defaults to `false`.
 	 * @return string the created URL
 	 * @see params
-	 * @see forcePageVar
+	 * @see forcePageParam
 	 */
 	public function createUrl($page, $absolute = false)
 	{
@@ -185,10 +185,10 @@ class Pagination extends Object
 			$request = Yii::$app->getRequest();
 			$params = $request instanceof Request ? $request->getQueryParams() : [];
 		}
-		if ($page > 0 || $page >= 0 && $this->forcePageVar) {
-			$params[$this->pageVar] = $page + 1;
+		if ($page > 0 || $page >= 0 && $this->forcePageParam) {
+			$params[$this->pageParam] = $page + 1;
 		} else {
-			unset($params[$this->pageVar]);
+			unset($params[$this->pageParam]);
 		}
 		$route = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
 		$urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;

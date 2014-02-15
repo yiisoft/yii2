@@ -223,7 +223,7 @@ class BaseHtml
 	 * @param string $method the form submission method, such as "post", "get", "put", "delete" (case-insensitive).
 	 * Since most browsers only support "post" and "get", if other methods are given, they will
 	 * be simulated using "post", and a hidden input will be added which contains the actual method type.
-	 * See [[\yii\web\Request::methodVar]] for more details.
+	 * See [[\yii\web\Request::methodParam]] for more details.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
@@ -240,11 +240,11 @@ class BaseHtml
 		if ($request instanceof Request) {
 			if (strcasecmp($method, 'get') && strcasecmp($method, 'post')) {
 				// simulate PUT, DELETE, etc. via POST
-				$hiddenInputs[] = static::hiddenInput($request->methodVar, $method);
+				$hiddenInputs[] = static::hiddenInput($request->methodParam, $method);
 				$method = 'post';
 			}
 			if ($request->enableCsrfValidation && !strcasecmp($method, 'post')) {
-				$hiddenInputs[] = static::hiddenInput($request->csrfVar, $request->getCsrfToken());
+				$hiddenInputs[] = static::hiddenInput($request->csrfParam, $request->getCsrfToken());
 			}
 		}
 
