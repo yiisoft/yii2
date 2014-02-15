@@ -23,6 +23,22 @@ use yii\mq;
 class DbSubscription extends \yii\db\ActiveRecord
 {
 	/**
+	 * @var yii\db\Connection allows overriding the default connection used
+	 */
+	public static $db;
+
+	/**
+	 * @inheritdoc
+	 */
+	public static function getDb()
+	{
+		if (self::$db === null) {
+			self::$db = \Yii::$app->getDb();
+		}
+		return self::$db;
+	}
+
+	/**
 	 * @inheritdoc
 	 */
 	public static function tableName()

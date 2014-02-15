@@ -19,6 +19,23 @@ class DbQueue extends Queue
 	public $db;
 
 	/**
+	 * @inheritdoc
+	 * @throws InvalidConfigException
+	 */
+	public function init()
+	{
+		parent::init();
+		if (is_string($this->db)) {
+			$this->db = Yii::$app->getComponent($this->db);
+		} elseif (is_array($this->db)) {
+		}
+		if (!($this->db instanceof yii\db\Connection)) {
+			throw new InvalidConfigException('The db property must contain a name or a valid yii\db\Connection component.');
+		}
+		models\DbMessage::$db = models\DbSubscription::$db = models\DbSubscriptionCategory::$db = $this->db;
+	}
+
+	/**
 	 * Creates an instance of DbMessage model. The passed message body may be modified, @see formatMessage().
 	 * This method may be overriden in extending classes.
 	 * @param string $body message body
