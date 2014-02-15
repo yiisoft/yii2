@@ -3,8 +3,7 @@
 namespace yii\redis;
 
 use Yii;
-use yii\mq;
-use yii\base\InvalidConfigException;
+use yii\mq\Message;
 use yii\base\NotSupportedException;
 
 /**
@@ -15,7 +14,7 @@ use yii\base\NotSupportedException;
  * Peeking and locking is disabled and the pull() method becomes always blocking.
  * Before/after put subscription events are not raised.
  */
-class PubSubQueue extends Queue
+class PubSubQueue extends ListsPubSubQueue
 {
 	/**
 	 * @inheritdoc

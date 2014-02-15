@@ -86,7 +86,7 @@ class SysVQueue extends Queue
 	/**
 	 * @inheritdoc
 	 */
-	public function put($message, $category=null) {
+	public function put($message) {
 		$queueMessage = $this->createMessage($message);
 
         if ($this->beforePut($queueMessage) !== true) {
@@ -112,7 +112,7 @@ class SysVQueue extends Queue
 	 * @inheritdoc
 	 * @throws NotSupportedException
 	 */
-	public function peek($subscriber_id=null, $limit=-1, $status=Message::AVAILABLE)
+	public function peek($limit=-1, $status=Message::AVAILABLE)
 	{
 		throw new NotSupportedException('Not implemented. System V queues does not support peeking. Use the pull() method.');
 	}
@@ -121,11 +121,8 @@ class SysVQueue extends Queue
 	 * @inheritdoc
 	 * @throws NotSupportedException
 	 */
-	public function pull($subscriber_id=null, $limit=-1, $timeout=null, $blocking=false)
+	public function pull($limit=-1, $timeout=null, $blocking=false)
 	{
-		if ($subscriber_id !== null) {
-			throw new NotSupportedException('Not implemented. System V queues does not support subscriptions.');
-		}
 		if ($timeout !== null) {
 			throw new NotSupportedException('Not implemented. System V queues does not support reserving messages.');
 		}
@@ -133,7 +130,6 @@ class SysVQueue extends Queue
 		$messages = array();
 		$count = 0;
 		while (($limit == -1 || $count < $limit) && (msg_receive($this->getQueue(), 0, $msgtype, self::MSG_MAXSIZE, $message, true, $flags, $errorcode))) {
-			$message->subscriber_id = $subscriber_id;
 			$message->status = Message::AVAILABLE;
 			$messages[] = $message;
 			$count++;
@@ -146,7 +142,7 @@ class SysVQueue extends Queue
 	 * @inheritdoc
 	 * @throws NotSupportedException
 	 */
-	public function delete($message_id, $subscriber_id=null)
+	public function delete($message_id)
 	{
 		throw new NotSupportedException('Not implemented. System V queues does not support reserving messages.');
 	}
@@ -155,7 +151,7 @@ class SysVQueue extends Queue
 	 * @inheritdoc
 	 * @throws NotSupportedException
 	 */
-	public function release($message_id, $subscriber_id=null)
+	public function release($message_id)
 	{
 		throw new NotSupportedException('Not implemented. System V queues does not support reserving messages.');
 	}
@@ -167,41 +163,5 @@ class SysVQueue extends Queue
 	public function releaseTimedout()
 	{
 		throw new NotSupportedException('Not implemented. System V queues does not support reserving messages.');
-	}
-
-	/**
-	 * @inheritdoc
-	 * @throws NotSupportedException
-	 */
-	public function subscribe($subscriber_id, $label=null, $categories=null, $exceptions=null)
-	{
-		throw new NotSupportedException('Not implemented. System V queues does not support subscriptions.');
-	}
-
-	/**
-	 * @inheritdoc
-	 * @throws NotSupportedException
-	 */
-	public function unsubscribe($subscriber_id, $permanent=true)
-	{
-		throw new NotSupportedException('Not implemented. System V queues does not support subscriptions.');
-	}
-
-	/**
-	 * @inheritdoc
-	 * @throws NotSupportedException
-	 */
-	public function isSubscribed($subscriber_id)
-	{
-		throw new NotSupportedException('Not implemented. System V queues does not support subscriptions.');
-	}
-
-	/**
-	 * @inheritdoc
-	 * @throws NotSupportedException
-	 */
-	public function getSubscriptions($subscriber_id=null)
-	{
-		throw new NotSupportedException('Not implemented. System V queues does not support subscriptions.');
 	}
 }
