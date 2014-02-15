@@ -98,7 +98,7 @@ class Sort extends Object
 	 * ]
 	 * ~~~
 	 *
-	 * In the above, two attributes are declared: "age" and "user". The "age" attribute is
+	 * In the above, two attributes are declared: "age" and "name". The "age" attribute is
 	 * a simple attribute which is equivalent to the following:
 	 *
 	 * ~~~
@@ -110,10 +110,10 @@ class Sort extends Object
 	 * ]
 	 * ~~~
 	 *
-	 * The "user" attribute is a composite attribute:
+	 * The "name" attribute is a composite attribute:
 	 *
-	 * - The "user" key represents the attribute name which will appear in the URLs leading
-	 *   to sort actions. Attribute names cannot contain characters listed in [[separators]].
+	 * - The "name" key represents the attribute name which will appear in the URLs leading
+	 *   to sort actions.
 	 * - The "asc" and "desc" elements specify how to sort by the attribute in ascending
 	 *   and descending orders, respectively. Their values represent the actual columns and
 	 *   the directions by which the data should be sorted by.
@@ -124,7 +124,7 @@ class Sort extends Object
 	 *   Note that it will not be HTML-encoded.
 	 *
 	 * Note that if the Sort object is already created, you can only use the full format
-	 * to configure every attribute. Each attribute must include these elements: asc and desc.
+	 * to configure every attribute. Each attribute must include these elements: `asc` and `desc`.
 	 */
 	public $attributes = [];
 	/**
@@ -133,11 +133,6 @@ class Sort extends Object
 	 * @see params
 	 */
 	public $sortVar = 'sort';
-	/**
-	 * @var string the tag appeared in the [[sortVar]] parameter that indicates the attribute should be sorted
-	 * in descending order. Defaults to 'desc'.
-	 */
-	public $descTag = 'desc';
 	/**
 	 * @var array the order that should be used when the current request does not specify any order.
 	 * The array keys are attribute names and the array values are the corresponding sort directions. For example,
@@ -158,12 +153,9 @@ class Sort extends Object
 	 */
 	public $route;
 	/**
-	 * @var array separators used in the generated URL. This must be an array consisting of
-	 * two elements. The first element specifies the character separating different
-	 * attributes, while the second element specifies the character separating attribute name
-	 * and the corresponding sort direction. Defaults to `['.', '-']`.
+	 * @var string the character used to separate different attributes that need to be sorted by.
 	 */
-	public $separators = ['.', '-'];
+	public $separator = ',';
 	/**
 	 * @var array parameters (name => value) that should be used to obtain the current sort directions
 	 * and to create new sort URLs. If not set, $_GET will be used instead.
@@ -248,13 +240,12 @@ class Sort extends Object
 				$params = $request instanceof Request ? $request->getQueryParams() : [];
 			}
 			if (isset($params[$this->sortVar]) && is_scalar($params[$this->sortVar])) {
-				$attributes = explode($this->separators[0], $params[$this->sortVar]);
+				$attributes = explode($this->separator, $params[$this->sortVar]);
 				foreach ($attributes as $attribute) {
 					$descending = false;
-					if (($pos = strrpos($attribute, $this->separators[1])) !== false) {
-						if ($descending = (substr($attribute, $pos + 1) === $this->descTag)) {
-							$attribute = substr($attribute, 0, $pos);
-						}
+					if (strncmp($attribute, '-', 1) === 0) {
+						$descending = true;
+						$attribute = substr($attribute, 1);
 					}
 
 					if (isset($this->attributes[$attribute])) {
@@ -383,9 +374,9 @@ class Sort extends Object
 
 		$sorts = [];
 		foreach ($directions as $attribute => $direction) {
-			$sorts[] = $direction === SORT_DESC ? $attribute . $this->separators[1] . $this->descTag : $attribute;
+			$sorts[] = $direction === SORT_DESC ? '-' . $attribute : $attribute;
 		}
-		return implode($this->separators[0], $sorts);
+		return implode($this->separator, $sorts);
 	}
 
 	/**
