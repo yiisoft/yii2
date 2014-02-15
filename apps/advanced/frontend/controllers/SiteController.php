@@ -65,7 +65,7 @@ class SiteController extends Controller
 	public function actionLogin()
 	{
 		if (!\Yii::$app->user->isGuest) {
-			$this->goHome();
+			return $this->goHome();
 		}
 
 		$model = new LoginForm();
@@ -87,7 +87,7 @@ class SiteController extends Controller
 	public function actionContact()
 	{
 		$model = new ContactForm;
-		if ($model->load($_POST) && $model->contact(Yii::$app->params['adminEmail'])) {
+		if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
 			Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
 			return $this->refresh();
 		} else {
@@ -144,7 +144,7 @@ class SiteController extends Controller
 			throw new BadRequestHttpException($e->getMessage());
 		}
 
-		if ($model->load($_POST) && $model->resetPassword()) {
+		if ($model->load(Yii::$app->request->post()) && $model->resetPassword()) {
 			Yii::$app->getSession()->setFlash('success', 'New password was saved.');
 			return $this->goHome();
 		}
