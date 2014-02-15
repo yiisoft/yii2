@@ -1286,4 +1286,41 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 			return false;
 		}
 	}
+
+	/**
+	 * Returns the text label for the specified attribute.
+	 * If the attribute looks like `relatedModel.attribute`, then the attribute will be received from the related model.
+	 * @param string $attribute the attribute name
+	 * @return string the attribute label
+	 * @see generateAttributeLabel()
+	 * @see attributeLabels()
+	 */
+	public function getAttributeLabel($attribute)
+	{
+		$labels = $this->attributeLabels();
+		if (isset($labels[$attribute])) {
+			return ($labels[$attribute]);
+		} elseif(strpos($attribute, '.')) {
+			$attributeParts = explode('.', $attribute);
+			$neededAttribute = array_pop($attributeParts);
+
+			$relatedModel = $this;
+			foreach ($attributeParts as $relationName) {
+				try {
+					$relation = $relatedModel->getRelation($relationName);
+				} catch (InvalidParamException $e) {
+					return $this->generateAttributeLabel($attribute);
+				}
+
+				$relatedModel = new $relation->modelClass;
+			}
+
+			$labels = $relatedModel->attributeLabels();
+			if (isset($labels[$neededAttribute])) {
+				return $labels[$neededAttribute];
+			}
+		}
+
+		return $this->generateAttributeLabel($attribute);
+	}
 }
