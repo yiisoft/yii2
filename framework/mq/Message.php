@@ -32,10 +32,6 @@ class Message
 	 */
 	public $status;
 	/**
-	 * @var string $subscriber_id Unique identifier of the subscriber (user) to which this message has been delivered to
-	 */
-	public $subscriber_id;
-	/**
 	 * @var string $times_out_on Date and time after which the message is considered timed out and becomes available again, in Y-m-d H:i:s format
 	 */
 	public $times_out_on;

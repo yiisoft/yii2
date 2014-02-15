@@ -145,7 +145,6 @@ class DbMessage extends \yii\db\ActiveRecord
 		$result = [];
 		foreach($dbMessages as $dbMessage) {
 			$attributes = $dbMessage->getAttributes();
-			$attributes['subscriber_id'] = $dbMessage->subscription_id === null ? null : $dbMessage->subscription->subscriber_id;
 			unset($attributes['queue_id']);
 			unset($attributes['subscription_id']);
 			unset($attributes['mimetype']);
