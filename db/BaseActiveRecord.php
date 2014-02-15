@@ -1124,7 +1124,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 				/** @var $viaClass ActiveRecord */
 				/** @var $record ActiveRecord */
 				$record = new $viaClass();
-				foreach($columns as $column => $value) {
+				foreach ($columns as $column => $value) {
 					$record->$column = $value;
 				}
 				$record->insert(false);
@@ -1300,19 +1300,22 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 		$labels = $this->attributeLabels();
 		if (isset($labels[$attribute])) {
 			return ($labels[$attribute]);
-		} elseif(strpos($attribute, '.')) {
+		} elseif (strpos($attribute, '.')) {
 			$attributeParts = explode('.', $attribute);
 			$neededAttribute = array_pop($attributeParts);
 
 			$relatedModel = $this;
 			foreach ($attributeParts as $relationName) {
-				try {
-					$relation = $relatedModel->getRelation($relationName);
-				} catch (InvalidParamException $e) {
-					return $this->generateAttributeLabel($attribute);
+				if (isset($this->_related[$relationName]) && $this->_related[$relationName] instanceof self) {
+					$relatedModel = $this->_related[$relationName];
+				} else {
+					try {
+						$relation = $relatedModel->getRelation($relationName);
+					} catch (InvalidParamException $e) {
+						return $this->generateAttributeLabel($attribute);
+					}
+					$relatedModel = new $relation->modelClass;
 				}
-
-				$relatedModel = new $relation->modelClass;
 			}
 
 			$labels = $relatedModel->attributeLabels();
