@@ -351,40 +351,24 @@ $query = (new Query)
 	->from('tbl_user')
 	->orderBy('id');
 
-foreach ($query->batch(10) as $users) {
-	// $users is an array of 10 or fewer rows from the user table
+foreach ($query->batch() as $users) {
+	// $users is an array of 100 or fewer rows from the user table
 }
-```
 
-The method [[yii\db\Query::batch()]] returns an [[yii\db\BatchQueryResult]] object which implements
-the `Iterator` interface and thus can be used in the `foreach` construct. For each iterator,
-it returns an array of query result. The size of the array is determined by the so-called batch
-size, which is the first parameter (defaults to 100) to the method.
-
-Compared to the `$query->all()` call, the above code only loads 10 rows of data at a time into the memory.
-If you process the data and then discard it right away, the batch query can help keep the memory usage under a limit.
-
-Note that in the special case when you specify the batch size as 1, each iteration of the batch query
-only returns a single row of data, rather than an array of a row. In this case, you may also use
-the shortcut method [[yii\db\Query::each()]]. For example,
-
-```php
-use yii\db\Query;
-
-$query = (new Query)
-	->from('tbl_user')
-	->orderBy('id');
-
-
+// or if you want to iterate the row one by one
 foreach ($query->each() as $user) {
-	// $user represents a row from the user table
-}
-
-// the above code is equivalent to the following:
-foreach ($query->batch(1) as $user) {
-	// $user represents a row from the user table
+	// $user represents one row of data from the user table
 }
 ```
+
+The method [[yii\db\Query::batch()]] and [[yii\db\Query::each()]] return an [[yii\db\BatchQueryResult]] object
+which implements the `Iterator` interface and thus can be used in the `foreach` construct.
+During the first iteration, a SQL query is made to the database. Data are since then fetched in batches
+in the iterations. By default, the batch size is 100, meaning 100 rows of data are being fetched in each batch.
+You can change the batch size by passing the first parameter to the `batch()` or `each()` method.
+
+Compared to the [[yii\db\Query::all()]], the batch query only loads 100 rows of data at a time into the memory.
+If you process the data and then discard it right away, the batch query can help keep the memory usage under a limit.
 
 If you specify the query result to be indexed by some column via [[yii\db\Query::indexBy()]], the batch query
 will still keep the proper index. For example,
@@ -396,7 +380,7 @@ $query = (new Query)
 	->from('tbl_user')
 	->indexBy('username');
 
-foreach ($query->batch(10) as $users) {
+foreach ($query->batch() as $users) {
 	// $users is indexed by the "username" column
 }
 

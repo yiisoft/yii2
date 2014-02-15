@@ -35,7 +35,6 @@ class BatchQueryResultTest extends DatabaseTestCase
 		$result = $query->batch(2, $db);
 		$this->assertTrue($result instanceof BatchQueryResult);
 		$this->assertEquals(2, $result->batchSize);
-		$this->assertNull($result->dataReader);
 		$this->assertTrue($result->query === $query);
 
 		// normal query
@@ -58,7 +57,16 @@ class BatchQueryResultTest extends DatabaseTestCase
 		$this->assertEquals(3, count($allRows));
 		// reset
 		$batch->reset();
-		$this->assertNull($batch->dataReader);
+
+		// empty query
+		$query = new Query();
+		$query->from('tbl_customer')->where(['id' => 100]);
+		$allRows = [];
+		$batch = $query->batch(2, $db);
+		foreach ($batch as $rows) {
+			$allRows = array_merge($allRows, $rows);
+		}
+		$this->assertEquals(0, count($allRows));
 
 		// query with index
 		$query = new Query();
@@ -72,23 +80,11 @@ class BatchQueryResultTest extends DatabaseTestCase
 		$this->assertEquals('address2', $allRows['user2']['address']);
 		$this->assertEquals('address3', $allRows['user3']['address']);
 
-		// query in batch 1
-		$query = new Query();
-		$query->from('tbl_customer')->orderBy('id');
-		$allRows = [];
-		foreach ($query->batch(1, $db) as $rows) {
-			$allRows[] = $rows;
-		}
-		$this->assertEquals(3, count($allRows));
-		$this->assertEquals('user1', $allRows[0]['name']);
-		$this->assertEquals('user2', $allRows[1]['name']);
-		$this->assertEquals('user3', $allRows[2]['name']);
-
 		// each
 		$query = new Query();
 		$query->from('tbl_customer')->orderBy('id');
 		$allRows = [];
-		foreach ($query->each($db) as $rows) {
+		foreach ($query->each(100, $db) as $rows) {
 			$allRows[] = $rows;
 		}
 		$this->assertEquals(3, count($allRows));
@@ -100,7 +96,7 @@ class BatchQueryResultTest extends DatabaseTestCase
 		$query = new Query();
 		$query->from('tbl_customer')->orderBy('id')->indexBy('name');
 		$allRows = [];
-		foreach ($query->each($db) as $key => $row) {
+		foreach ($query->each(100, $db) as $key => $row) {
 			$allRows[$key] = $row;
 		}
 		$this->assertEquals(3, count($allRows));
@@ -117,17 +113,6 @@ class BatchQueryResultTest extends DatabaseTestCase
 		$customers = [];
 		foreach ($query->batch(2, $db) as $models) {
 			$customers = array_merge($customers, $models);
-		}
-		$this->assertEquals(3, count($customers));
-		$this->assertEquals('user1', $customers[0]->name);
-		$this->assertEquals('user2', $customers[1]->name);
-		$this->assertEquals('user3', $customers[2]->name);
-
-		// query in batch 1
-		$query = Customer::find()->orderBy('id');
-		$customers = [];
-		foreach ($query->batch(1, $db) as $model) {
-			$customers[] = $model;
 		}
 		$this->assertEquals(3, count($customers));
 		$this->assertEquals('user1', $customers[0]->name);

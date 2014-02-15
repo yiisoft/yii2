@@ -117,15 +117,15 @@ Batch query is also supported when working with Active Record. For example,
 
 ```php
 // fetch 10 customers at a time
-foreach (Customer::find()->batch() as $customers) {
+foreach (Customer::find()->batch(10) as $customers) {
 	// $customers is an array of 10 or fewer Customer objects
 }
-// fetch customers one by one
-foreach (Customer::find()->each() as $customer) {
+// fetch 10 customers at a time and iterate them one by one
+foreach (Customer::find()->each(10) as $customer) {
 	// $customer is a Customer object
 }
 // batch query with eager loading
-foreach (Customer::find()->with('orders')->batch() as $customers) {
+foreach (Customer::find()->with('orders')->each() as $customer) {
 }
 ```
 
