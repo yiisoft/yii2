@@ -3,7 +3,6 @@ Yii Framework 2 Change Log
 
 2.0.0 beta under development
 ----------------------------
-- Enh #2436: Label of the attribute, which looks like `relatedModel.attribute`, will be received from the related model if it available (djagya)
 - Bug #1265: AssetController does not override 'js' and 'css' for compressed bundles (klimov-paul)
 - Bug #1326: The `visible` setting for `DetailView` doesn't work as expected (qiangxue)
 - Bug #1412: `FileValidator` and `ImageValidator` still trigger `uploadRequired` error in some case when `skipOnEmpty` is true and no upload is provided (qiangxue)
@@ -112,6 +111,7 @@ Yii Framework 2 Change Log
 - Enh #2364: Take into account current error reporting level in error handler (gureedo)
 - Enh #2387: Added support for fetching data from database in batches (nineinchnick, qiangxue)
 - Enh #2417: Added possibility to set `dataType` for `$.ajax` call in yii.activeForm.js (Borales)
+- Enh #2436: Label of the attribute, which looks like `relatedModel.attribute`, will be received from the related model if it available (djagya)
 - Enh: Added support for using arrays as option values for console commands (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
