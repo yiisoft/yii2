@@ -2,6 +2,7 @@
 
 namespace yii\mq\db;
 
+use yii\mq\db\models;
 use yii\base\InvalidConfigException;
 
 /**
@@ -30,7 +31,7 @@ trait DbQueueTrait
 			$this->db = Yii::$app->getComponent($this->db);
 		} elseif (is_array($this->db)) {
 		}
-		if (!($this->db instanceof yii\db\Connection)) {
+		if (!($this->db instanceof \yii\db\Connection)) {
 			throw new InvalidConfigException('The db property must contain a name or a valid yii\db\Connection component.');
 		}
 		models\DbMessage::$db = models\DbSubscription::$db = models\DbSubscriptionCategory::$db = $this->db;
@@ -40,7 +41,7 @@ trait DbQueueTrait
 	 * Creates an instance of DbMessage model. The passed message body may be modified, @see formatMessage().
 	 * This method may be overriden in extending classes.
 	 * @param string $body message body
-	 * @return DbMessage
+	 * @return models\DbMessage
 	 */
 	protected function createMessage($body)
 	{
@@ -56,8 +57,8 @@ trait DbQueueTrait
 
 	/**
 	 * Formats the body of a queue message. This method may be overriden in extending classes.
-	 * @param DbMessage $message
-	 * @return DbMessage $message
+	 * @param models\DbMessage $message
+	 * @return models\DbMessage $message
 	 */
 	protected function formatMessage($message)
 	{
@@ -96,7 +97,7 @@ trait DbQueueTrait
 	/**
 	 * @throws NotSupportedException
 	 */
-	private function peekInternal(ActiveQuery $query, $blocking=false)
+	private function peekInternal(models\DbMessageQuery $query, $blocking=false)
 	{
 		if ($blocking) {
 			throw new NotSupportedException(Yii::t('app', 'DbQueue does not support blocking.'));
@@ -106,7 +107,7 @@ trait DbQueueTrait
 		return models\DbMessage::createMessages($messages);
 	}
 
-	private function pullInternal(ActiveQuery $query, $timeout=null, $blocking=false)
+	private function pullInternal(models\DbMessageQuery $query, $timeout=null, $blocking=false)
 	{
 		if ($blocking) {
 			throw new NotSupportedException(Yii::t('app', 'DbQueue does not support blocking.'));
@@ -130,7 +131,7 @@ trait DbQueueTrait
 		return models\DbMessage::createMessages($messages);
 	}
 
-	private function deleteInternal(ActiveQuery $query)
+	private function deleteInternal(models\DbMessageQuery $query, $message_id)
 	{
         $trx = models\DbMessage::getDb()->transaction !== null ? null : models\DbMessage::getDb()->beginTransaction();
 		$pk = models\DbMessage::primaryKey();
@@ -143,7 +144,7 @@ trait DbQueueTrait
 		return $message_ids;
 	}
 
-	private function releaseInternal(ActiveQuery $query)
+	private function releaseInternal(models\DbMessageQuery $query, $message_id)
 	{
         $trx = models\DbMessage::getDb()->transaction !== null ? null : models\DbMessage::getDb()->beginTransaction();
 		$pk = models\DbMessage::primaryKey();
@@ -179,7 +180,7 @@ trait DbQueueTrait
 	{
         $trx = models\DbMessage::getDb()->transaction !== null ? null : models\DbMessage::getDb()->beginTransaction();
 		$pk = models\DbMessage::primaryKey();
-		$message_ids = models\DbMessage::find()->withQueue($this->id)->deleted()->select($pk)->andWhere(['in', $pk, $message_id])->column();
+		$message_ids = models\DbMessage::find()->withQueue($this->id)->deleted()->select($pk)->column();
 		models\DbMessage::deleteAll(['in', $pk, $message_ids]);
 		if ($trx !== null) {
 			$trx->commit();

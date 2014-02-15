@@ -146,7 +146,7 @@ trait QueueTrait
 		$this->redis->exec();
 	}
 
-	private releaseTimedoutInternal($keys)
+	private function releaseTimedoutInternal($keys)
 	{
 		$message_ids = array();
 		$this->redis->multi();

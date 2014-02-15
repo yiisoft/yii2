@@ -44,8 +44,6 @@ class DbSubscriptionQuery extends \yii\db\ActiveQuery
 	{
         if ($categories===null)
             return $this;
-		$modelClass = $this->modelClass;
-        $t = $modelClass::tableName();
 		$r = DbSubscriptionCategory::tableName();
 
         if (!is_array($categories))

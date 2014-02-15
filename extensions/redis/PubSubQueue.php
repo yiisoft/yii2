@@ -50,27 +50,26 @@ class PubSubQueue extends ListsPubSubQueue
 	 */
 	public function pull($subscriber_id=null, $limit=-1, $timeout=null, $blocking=false)
 	{
-		if ($blocking=false) {
+		if ($blocking==false) {
 			throw new NotSupportedException('Non-blocking mode not supported. Set the $blocking argument to true.');
 		}
 		if ($timeout!==null) {
 			throw new NotSupportedException('When in PubSub mode reserving is not available.');
 		}
 		$messages = array();
-		$count = 0;
 		$response = $this->redis->parseResponse('', true);
 		if (is_array($response)) {
 			$type = array_shift($reponse);
 			if ($type == 'message') {
-				$channel = array_shift($response);
-				$message = array_shift($response);
+				// channel
+				array_shift($response);
+				$messages[] = array_shift($response);
 			} elseif ($type == 'pmessage') {
-				$pattern = array_shift($response);
-				$channel = array_shift($response);
-				$message = array_shift($response);
-			}
-			if (isset($message)) {
-				$messages[] = $message;
+				// pattern
+				array_shift($response);
+				// channel
+				array_shift($response);
+				$messages[] = array_shift($response);
 			}
 		}
 		return $messages;

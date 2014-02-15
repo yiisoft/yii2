@@ -44,7 +44,7 @@ class DbPubSubQueue extends pubsub\Queue
 	 * @param string $category category of the message (e.g. 'system.web'). It is case-insensitive.
 	 * @return boolean
 	 */
-	private function saveSubscriptionsMessage(DbMessage, $queueMessage, $category)
+	private function saveSubscriptionsMessage(DbMessage $queueMessage, $category)
 	{
 		$subscriptions = models\DbSubscription::find()
 			->current()

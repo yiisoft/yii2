@@ -71,12 +71,12 @@ class Subscription
 		if (($c=rtrim($container,'*'))!==$container) {
 			if (($c2=rtrim($c,'.'))!==$c) {
 				if ($c2 == $category || strpos($category, $c2.'.') === 0)
-					$result = true;
+					return true;
 			} elseif (strpos($category, $c) === 0) {
-				$result = true;
+				return true;
 			}
 		} elseif ($container == $category) {
-			$result = true;
+			return true;
 		}
 		return false;
 	}

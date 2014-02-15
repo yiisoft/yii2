@@ -62,7 +62,7 @@ class DbQueue extends Queue
 	 */
 	public function delete($message_id)
 	{
-		$query = models\DbMessage::find()->withQueue($this->id)->reserved(;)
+		$query = models\DbMessage::find()->withQueue($this->id)->reserved();
 		return $this->deleteInternal($query, $message_id);
 	}
 
