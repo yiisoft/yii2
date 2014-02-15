@@ -139,31 +139,47 @@ class Query extends Component implements QueryInterface
 	 * }
 	 * ```
 	 *
-	 * @param integer $size the number of records to be fetched in each batch.
+	 * @param integer $batchSize the number of records to be fetched in each batch.
 	 * @param Connection $db the database connection. If not set, the "db" application component will be used.
 	 * @return BatchQueryResult the batch query result. It implements the `Iterator` interface
 	 * and can be traversed to retrieve the data in batches.
 	 */
-	public function batch($size = 100, $db = null)
+	public function batch($batchSize = 100, $db = null)
 	{
 		return Yii::createObject([
 			'class' => BatchQueryResult::className(),
 			'query' => $this,
-			'batchSize' => $size,
+			'batchSize' => $batchSize,
 			'db' => $db,
+			'each' => false,
 		]);
 	}
 
 	/**
 	 * Starts a batch query and retrieves data row by row.
-	 * This method is a shortcut to [[batch()]] with batch size fixed to be 1.
+	 * This method is similar to [[batch()]] except that in each iteration of the result,
+	 * only one row of data is returned. For example,
+	 *
+	 * ```php
+	 * $query = (new Query)->from('tbl_user');
+	 * foreach ($query->each() as $row) {
+	 * }
+	 * ```
+	 *
+	 * @param integer $batchSize the number of records to be fetched in each batch.
 	 * @param Connection $db the database connection. If not set, the "db" application component will be used.
 	 * @return BatchQueryResult the batch query result. It implements the `Iterator` interface
 	 * and can be traversed to retrieve the data in batches.
 	 */
-	public function each($db = null)
+	public function each($batchSize = 100, $db = null)
 	{
-		return $this->batch(1, $db);
+		return Yii::createObject([
+			'class' => BatchQueryResult::className(),
+			'query' => $this,
+			'batchSize' => $batchSize,
+			'db' => $db,
+			'each' => true,
+		]);
 	}
 
 	/**

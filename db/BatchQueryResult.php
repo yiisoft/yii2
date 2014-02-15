@@ -21,6 +21,8 @@ use yii\base\Object;
  * foreach ($query->batch() as $i => $users) {
  *     // $users represents the rows in the $i-th batch
  * }
+ * foreach ($query->each() as $user) {
+ * }
  * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -39,18 +41,30 @@ class BatchQueryResult extends Object implements \Iterator
 	 */
 	public $query;
 	/**
-	 * @var DataReader the data reader associated with this batch query.
-	 * Do not modify this property directly unless after [[reset()]] is called explicitly.
-	 */
-	public $dataReader;
-	/**
 	 * @var integer the number of rows to be returned in each batch.
 	 */
 	public $batchSize = 100;
-
-	private $_data;
+	/**
+	 * @var boolean whether to return a single row during each iteration.
+	 * If false, a whole batch of rows will be returned in each iteration.
+	 */
+	public $each = false;
+	/**
+	 * @var DataReader the data reader associated with this batch query.
+	 */
+	private $_dataReader;
+	/**
+	 * @var array the data retrieved in the current batch
+	 */
+	private $_batch;
+	/**
+	 * @var mixed the value for the current iteration
+	 */
+	private $_value;
+	/**
+	 * @var string|integer the key for the current iteration
+	 */
 	private $_key;
-	private $_index = -1;
 
 	/**
 	 * Destructor.
@@ -67,12 +81,13 @@ class BatchQueryResult extends Object implements \Iterator
 	 */
 	public function reset()
 	{
-		if ($this->dataReader !== null) {
-			$this->dataReader->close();
+		if ($this->_dataReader !== null) {
+			$this->_dataReader->close();
 		}
-		$this->dataReader = null;
-		$this->_data = null;
-		$this->_index = -1;
+		$this->_dataReader = null;
+		$this->_batch = null;
+		$this->_value = null;
+		$this->_key = null;
 	}
 
 	/**
@@ -86,13 +101,57 @@ class BatchQueryResult extends Object implements \Iterator
 	}
 
 	/**
+	 * Moves the internal pointer to the next dataset.
+	 * This method is required by the interface Iterator.
+	 */
+	public function next()
+	{
+		if ($this->_batch === null || !$this->each || $this->each && next($this->_batch) === false) {
+			$this->_batch = $this->fetchData();
+		}
+
+		if ($this->each) {
+			$this->_value = current($this->_batch);
+			if ($this->query->indexBy !== null) {
+				$this->_key = key($this->_batch);
+			} elseif (key($this->_batch) !== null) {
+				$this->_key++;
+			} else {
+				$this->_key = null;
+			}
+		} else {
+			$this->_value = $this->_batch;
+			$this->_key = $this->_key === null ? 0 : $this->_key + 1;
+		}
+	}
+
+	/**
+	 * Fetches the next batch of data.
+	 * @return array the data fetched
+	 */
+	protected function fetchData()
+	{
+		if ($this->_dataReader === null) {
+			$this->_dataReader = $this->query->createCommand($this->db)->query();
+		}
+
+		$rows = [];
+		$count = 0;
+		while ($count++ < $this->batchSize && ($row = $this->_dataReader->read())) {
+			$rows[] = $row;
+		}
+
+		return $this->query->prepareResult($rows);
+	}
+
+	/**
 	 * Returns the index of the current dataset.
 	 * This method is required by the interface Iterator.
 	 * @return integer the index of the current row.
 	 */
 	public function key()
 	{
-		return $this->batchSize == 1 ? $this->_key : $this->_index;
+		return $this->_key;
 	}
 
 	/**
@@ -102,37 +161,7 @@ class BatchQueryResult extends Object implements \Iterator
 	 */
 	public function current()
 	{
-		return $this->_data;
-	}
-
-	/**
-	 * Moves the internal pointer to the next dataset.
-	 * This method is required by the interface Iterator.
-	 */
-	public function next()
-	{
-		if ($this->dataReader === null) {
-			$this->dataReader = $this->query->createCommand($this->db)->query();
-			$this->_index = 0;
-		} else {
-			$this->_index++;
-		}
-
-		$rows = [];
-		$count = 0;
-		while ($count++ < $this->batchSize && ($row = $this->dataReader->read())) {
-			$rows[] = $row;
-		}
-		if (empty($rows)) {
-			$this->_data = null;
-		} else {
-			$this->_data = $this->query->prepareResult($rows);
-			if ($this->batchSize == 1) {
-				$row = reset($this->_data);
-				$this->_key = key($this->_data);
-				$this->_data = $row;
-			}
-		}
+		return $this->_value;
 	}
 
 	/**
@@ -142,6 +171,6 @@ class BatchQueryResult extends Object implements \Iterator
 	 */
 	public function valid()
 	{
-		return $this->_data !== null;
+		return !empty($this->_batch);
 	}
 }
