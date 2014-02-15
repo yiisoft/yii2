@@ -102,7 +102,7 @@ class ActiveForm extends Widget
 	/**
 	 * @var string the name of the GET parameter indicating the validation request is an AJAX request.
 	 */
-	public $ajaxVar = 'ajax';
+	public $ajaxParam = 'ajax';
 	/**
 	 * @var string the type of data that you're expecting back from the server.
 	 */
@@ -190,7 +190,7 @@ class ActiveForm extends Widget
 			'errorCssClass' => $this->errorCssClass,
 			'successCssClass' => $this->successCssClass,
 			'validatingCssClass' => $this->validatingCssClass,
-			'ajaxVar' => $this->ajaxVar,
+			'ajaxParam' => $this->ajaxParam,
 			'ajaxDataType' => $this->ajaxDataType,
 		];
 		if ($this->validationUrl !== null) {

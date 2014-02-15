@@ -101,7 +101,7 @@ class SortTest extends TestCase
 		$this->assertNull($sort->getAttributeOrder('xyz'));
 	}
 
-	public function testCreateSortVar()
+	public function testCreateSortParam()
 	{
 		$sort = new Sort([
 			'attributes' => [
@@ -118,8 +118,8 @@ class SortTest extends TestCase
 			'route' => 'site/index',
 		]);
 
-		$this->assertEquals('-age,-name', $sort->createSortVar('age'));
-		$this->assertEquals('name,age', $sort->createSortVar('name'));
+		$this->assertEquals('-age,-name', $sort->createSortParam('age'));
+		$this->assertEquals('name,age', $sort->createSortParam('name'));
 	}
 
 	public function testCreateUrl()

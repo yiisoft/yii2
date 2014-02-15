@@ -173,7 +173,19 @@ Yii Framework 2 Change Log
 - Chg: Renamed `ActiveRecordInterface::createActiveRelation()` to `createRelation()` (qiangxue)
 - Chg: The scripts in asset bundles are now registered in `View` at the end of `endBody()`. It was done in `endPage()` previously (qiangxue)
 - Chg: Renamed `csrf-var` to `csrf-param` for CSRF header name (Dilip)
-- Cgh: The directory holding email templates is renamed from `mails` to `mail` (qiangxue)
+- Chg: The directory holding email templates is renamed from `mails` to `mail` (qiangxue)
+- Chg: Renamed properties `fooVar` to `fooParam` for various classes (qiangxue)
+	- Renamed `ActiveForm::ajaxVar` to `ajaxParam`
+	- Renamed `Pagination::pageVar` to `pageParam`
+	- Renamed `Sort::sortVar` to `sortParam`
+	- Renamed `yii\web\Request::csrfVar` to `csrfParam`
+	- Renamed `yii\web\Request::methodVar` to `methodParam`
+	- Renamed `UrlManager::routeVar` to `routeParam`
+	- Renamed `yii\web\Session::flashVar` to `flashParam`
+	- Renamed `yii\web\User::idVar` to `idParam`
+	- Renamed `yii\web\User::authTimeoutVar` to `authTimeoutParam`
+	- Renamed `yii\web\User::returnUrlVar` to `returnUrlParam`
+
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #706: Added `yii\widgets\Pjax` and enhanced `GridView` to work with `Pjax` to support AJAX-update (qiangxue)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)

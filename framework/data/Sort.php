@@ -132,7 +132,7 @@ class Sort extends Object
 	 * in which direction. Defaults to 'sort'.
 	 * @see params
 	 */
-	public $sortVar = 'sort';
+	public $sortParam = 'sort';
 	/**
 	 * @var array the order that should be used when the current request does not specify any order.
 	 * The array keys are attribute names and the array values are the corresponding sort directions. For example,
@@ -162,10 +162,10 @@ class Sort extends Object
 	 *
 	 * In order to add hash to all links use `array_merge($_GET, ['#' => 'my-hash'])`.
 	 *
-	 * The array element indexed by [[sortVar]] is considered to be the current sort directions.
+	 * The array element indexed by [[sortParam]] is considered to be the current sort directions.
 	 * If the element does not exist, the [[defaultOrder|default order]] will be used.
 	 *
-	 * @see sortVar
+	 * @see sortParam
 	 * @see defaultOrder
 	 */
 	public $params;
@@ -239,8 +239,8 @@ class Sort extends Object
 				$request = Yii::$app->getRequest();
 				$params = $request instanceof Request ? $request->getQueryParams() : [];
 			}
-			if (isset($params[$this->sortVar]) && is_scalar($params[$this->sortVar])) {
-				$attributes = explode($this->separator, $params[$this->sortVar]);
+			if (isset($params[$this->sortParam]) && is_scalar($params[$this->sortParam])) {
+				$attributes = explode($this->separator, $params[$this->sortParam]);
 				foreach ($attributes as $attribute) {
 					$descending = false;
 					if (strncmp($attribute, '-', 1) === 0) {
@@ -301,7 +301,7 @@ class Sort extends Object
 		}
 
 		$url = $this->createUrl($attribute);
-		$options['data-sort'] = $this->createSortVar($attribute);
+		$options['data-sort'] = $this->createSortParam($attribute);
 
 		if (isset($options['label'])) {
 			$label = $options['label'];
@@ -334,7 +334,7 @@ class Sort extends Object
 			$request = Yii::$app->getRequest();
 			$params = $request instanceof Request ? $request->getQueryParams() : [];
 		}
-		$params[$this->sortVar] = $this->createSortVar($attribute);
+		$params[$this->sortParam] = $this->createSortParam($attribute);
 		$route = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
 		$urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
 		if ($absolute) {
@@ -352,7 +352,7 @@ class Sort extends Object
 	 * @return string the value of the sort variable
 	 * @throws InvalidConfigException if the specified attribute is not defined in [[attributes]]
 	 */
-	public function createSortVar($attribute)
+	public function createSortParam($attribute)
 	{
 		if (!isset($this->attributes[$attribute])) {
 			throw new InvalidConfigException("Unknown attribute: $attribute");
