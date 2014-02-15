@@ -128,10 +128,10 @@ div.required label:after {
 }
 ```
 
-Handling variable number of models with a single form
------------------------------------------------------
+Handling multiple models with a single form
+-------------------------------------------
 
-Sometimes you need to handle multiple models of the same kind in a signle form. For example, multiple settings where
+Sometimes you need to handle multiple models of the same kind in a single form. For example, multiple settings where
 each setting is stored as name-value and is represented by `Setting` model. The
 following shows how to implement it with Yii.
 
