@@ -17,7 +17,7 @@ class ContactForm extends Model
 	public $verifyCode;
 
 	/**
-	 * @return array the validation rules.
+	 * @inheritdoc
 	 */
 	public function rules()
 	{
@@ -32,7 +32,7 @@ class ContactForm extends Model
 	}
 
 	/**
-	 * @return array customized attribute labels
+	 * @inheritdoc
 	 */
 	public function attributeLabels()
 	{
@@ -43,6 +43,7 @@ class ContactForm extends Model
 
 	/**
 	 * Sends an email to the specified email address using the information collected by this model.
+	 *
 	 * @param string $email the target email address
 	 * @return boolean whether the model passes validation
 	 */

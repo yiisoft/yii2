@@ -36,7 +36,8 @@ class SignupForm extends Model
 
 	/**
 	 * Signs user up.
-	 * @return User saved model
+	 *
+	 * @return User|null the saved model or null if saving fails
 	 */
 	public function signup()
 	{
@@ -46,4 +47,3 @@ class SignupForm extends Model
 		return null;
 	}
 }
- 

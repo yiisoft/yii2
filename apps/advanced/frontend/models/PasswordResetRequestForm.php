@@ -25,8 +25,9 @@ class PasswordResetRequestForm extends Model
 	}
 
 	/**
+	 * Sends an email with a link, for resetting the password.
 	 *
-	 * @return boolean sends an email
+	 * @return boolean whether the email was send
 	 */
 	public function sendEmail()
 	{
@@ -52,4 +53,3 @@ class PasswordResetRequestForm extends Model
 		return false;
 	}
 }
- 
