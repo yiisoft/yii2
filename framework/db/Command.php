@@ -700,7 +700,7 @@ class Command extends \yii\base\Component
 	 * Creates a SQL command for creating a new index.
 	 * @param string $name the name of the index. The name will be properly quoted by the method.
 	 * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
-	 * @param string $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
+	 * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
 	 * by commas. The column names will be properly quoted by the method.
 	 * @param boolean $unique whether to add UNIQUE constraint on the created index.
 	 * @return Command the command object itself
