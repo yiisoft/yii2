@@ -372,12 +372,12 @@ abstract class ActiveRecord extends BaseActiveRecord
 			try {
 				$result = $this->insertInternal($attributes);
 				if ($result === false) {
-					$transaction->rollback();
+					$transaction->rollBack();
 				} else {
 					$transaction->commit();
 				}
 			} catch (\Exception $e) {
-				$transaction->rollback();
+				$transaction->rollBack();
 				throw $e;
 			}
 		} else {
@@ -473,12 +473,12 @@ abstract class ActiveRecord extends BaseActiveRecord
 			try {
 				$result = $this->updateInternal($attributes);
 				if ($result === false) {
-					$transaction->rollback();
+					$transaction->rollBack();
 				} else {
 					$transaction->commit();
 				}
 			} catch (\Exception $e) {
-				$transaction->rollback();
+				$transaction->rollBack();
 				throw $e;
 			}
 		} else {
@@ -589,14 +589,14 @@ abstract class ActiveRecord extends BaseActiveRecord
 			}
 			if ($transaction !== null) {
 				if ($result === false) {
-					$transaction->rollback();
+					$transaction->rollBack();
 				} else {
 					$transaction->commit();
 				}
 			}
 		} catch (\Exception $e) {
 			if ($transaction !== null) {
-				$transaction->rollback();
+				$transaction->rollBack();
 			}
 			throw $e;
 		}

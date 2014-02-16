@@ -74,6 +74,30 @@ class Schema extends \yii\db\Schema
 	];
 
 	/**
+	 * @inheritdoc
+	 */
+	public function createSavepoint($name)
+	{
+		$this->db->createCommand("SAVE TRANSACTION $name")->execute();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function releaseSavepoint($name)
+	{
+		// does nothing as MSSQL does not support this
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function rollBackSavepoint($name)
+	{
+		$this->db->createCommand("ROLLBACK TRANSACTION $name")->execute();
+	}
+
+	/**
 	 * Quotes a table name for use in a query.
 	 * A simple table name has no schema prefix.
 	 * @param string $name table name.
