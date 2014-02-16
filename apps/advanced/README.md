@@ -91,8 +91,10 @@ the installed application. You only need to do these once for all.
 TESTING
 -------
 
-This application boilerplate use database in testing, so you should create three databases that are used in tests:
+1. Install additional composer packages:
+* `php composer.phar require --dev "codeception/codeception: 1.8.*@dev" "codeception/specify: *" "codeception/verify: *"`
 
+2. This application boilerplate use database in testing, so you should create three databases that are used in tests:
 * `yii2_advanced_unit` - database for unit tests;
 * `yii2_advanced_functional` - database for functional tests;
 * `yii2_advanced_acceptance` - database for acceptance tests;
