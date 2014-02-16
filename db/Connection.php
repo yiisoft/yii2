@@ -68,7 +68,7 @@ use yii\caching\Cache;
  *     // ... executing other SQL statements ...
  *     $transaction->commit();
  * } catch(Exception $e) {
- *     $transaction->rollback();
+ *     $transaction->rollBack();
  * }
  * ~~~
  *
@@ -396,7 +396,7 @@ class Connection extends Component
 	 */
 	public function getTransaction()
 	{
-		return $this->_transaction && $this->_transaction->isActive ? $this->_transaction : null;
+		return $this->_transaction && $this->_transaction->getIsActive() ? $this->_transaction : null;
 	}
 
 	/**
@@ -406,9 +406,12 @@ class Connection extends Component
 	public function beginTransaction()
 	{
 		$this->open();
-		$this->_transaction = new Transaction(['db' => $this]);
-		$this->_transaction->begin();
-		return $this->_transaction;
+
+		if (($transaction = $this->getTransaction()) === null) {
+			$transaction = $this->_transaction = new Transaction(['db' => $this]);
+		}
+		$transaction->begin();
+		return $transaction;
 	}
 
 	/**

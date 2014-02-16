@@ -64,14 +64,14 @@ class Migration extends \yii\base\Component
 		$transaction = $this->db->beginTransaction();
 		try {
 			if ($this->safeUp() === false) {
-				$transaction->rollback();
+				$transaction->rollBack();
 				return false;
 			}
 			$transaction->commit();
 		} catch (\Exception $e) {
 			echo "Exception: " . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
 			echo $e->getTraceAsString() . "\n";
-			$transaction->rollback();
+			$transaction->rollBack();
 			return false;
 		}
 		return null;
@@ -89,14 +89,14 @@ class Migration extends \yii\base\Component
 		$transaction = $this->db->beginTransaction();
 		try {
 			if ($this->safeDown() === false) {
-				$transaction->rollback();
+				$transaction->rollBack();
 				return false;
 			}
 			$transaction->commit();
 		} catch (\Exception $e) {
 			echo "Exception: " . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
 			echo $e->getTraceAsString() . "\n";
-			$transaction->rollback();
+			$transaction->rollBack();
 			return false;
 		}
 		return null;

@@ -51,7 +51,7 @@ class PDO extends \PDO
 	/**
 	 * Rollbacks a transaction. It is necessary to override PDO's method as MSSQL PDO driver does not
 	 * natively support transactions.
-	 * @return boolean the result of a transaction rollback.
+	 * @return boolean the result of a transaction roll back.
 	 */
 	public function rollBack()
 	{
