@@ -97,7 +97,7 @@ Install additional composer packages:
 This application boilerplate use database in testing, so you should create three databases that are used in tests:
 * `yii2_advanced_unit` - database for unit tests;
 * `yii2_advanced_functional` - database for functional tests;
-* `yii2_advanced_acceptance` - database for acceptance tests;
+* `yii2_advanced_acceptance` - database for acceptance tests.
 
 To make your database up to date, you can run in needed test folder `yii migrate`, for example 
 if you are starting from `frontend` tests then you should run `yii migrate` in each suite folder `acceptance`, `functional`, `unit`
@@ -109,7 +109,7 @@ use php builtin server, then all that is needed to do is run `php -S 127.0.0.1:8
 After that is done you should be able to run your tests, for example to run `frontend` tests do:
 
 * `cd frontend`;
-* `../vendor/bin/codecept build`
+* `../vendor/bin/codecept build`;
 * `../vendor/bin/codecept run`.
 
 In similar way you can run tests for other application tiers - `backend`, `console`, `common`.
