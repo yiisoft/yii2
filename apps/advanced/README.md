@@ -104,13 +104,13 @@ if you are starting from `frontend` tests then you should run `yii migrate` in e
 it will upgrade your database to the last state according migrations.
 
 To be able to run acceptance tests you should configure your server to point doc_root to your new created application. For example if we
-use php builtin server, then all that is needed to do is run `php -S 127.0.0.1:8080` in main project directory - directory that contains frontend/backend/common/console directories.
+use php builtin server, then all that is needed to do is run `php -S 127.0.0.1:8080` in main project directory - directory that contains `frontend`, `backend`, `common`, `console` directories.
 
 After that is done you should be able to run your tests, for example to run `frontend` tests do:
 
-* cd frontend;
-* ../vendor/bin/codecept build;
-* ../vendor/bin/codecept run;
+* `cd frontend`;
+* `../vendor/bin/codecept build`
+* `../vendor/bin/codecept run`.
 
 In similar way you can run tests for other application tiers - `backend`, `console`, `common`.
 
