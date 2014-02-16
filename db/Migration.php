@@ -388,15 +388,15 @@ class Migration extends \yii\base\Component
 	 * Builds and executes a SQL statement for creating a new index.
 	 * @param string $name the name of the index. The name will be properly quoted by the method.
 	 * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
-	 * @param string $column the column(s) that should be included in the index. If there are multiple columns, please separate them
+	 * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
 	 * by commas or use an array. The column names will be properly quoted by the method.
 	 * @param boolean $unique whether to add UNIQUE constraint on the created index.
 	 */
-	public function createIndex($name, $table, $column, $unique = false)
+	public function createIndex($name, $table, $columns, $unique = false)
 	{
-		echo "    > create" . ($unique ? ' unique' : '') . " index $name on $table (" . implode(',', (array)$column) . ") ...";
+		echo "    > create" . ($unique ? ' unique' : '') . " index $name on $table (" . implode(',', (array)$columns) . ") ...";
 		$time = microtime(true);
-		$this->db->createCommand()->createIndex($name, $table, $column, $unique)->execute();
+		$this->db->createCommand()->createIndex($name, $table, $columns, $unique)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
