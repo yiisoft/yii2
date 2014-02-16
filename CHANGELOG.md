@@ -85,6 +85,7 @@ Yii Framework 2 Change Log
 - Enh #1809: Added support for building "EXISTS" and "NOT EXISTS" query conditions (abdrasulov)
 - Enh #1839: Added support for getting file extension and basename from uploaded file (anfrantic)
 - Enh #1852: ActiveRecord::tableName() now returns table name using DbConnection::tablePrefix (creocoder)
+- Enh #1881: Improved `yii\bootstrap\NavBar` with `containerOptions`, `innerContainerOptions` and `renderInnerContainer` (creocoder)
 - Enh #1894: The path aliases `@webroot` and `@web` are now available right after the application is initialized (qiangxue)
 - Enh #1921: Grid view ActionColumn now allow to name buttons like `{controller/action}` (creocoder)
 - Enh #1973: `yii message/extract` is now able to generate `.po` files (SergeiKutanov, samdark)
