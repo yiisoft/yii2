@@ -30,8 +30,8 @@ class User extends ActiveRecord implements IdentityInterface
 	/**
 	 * Creates a new user
 	 *
-	 * @param $attributes
-	 * @return static|null
+	 * @param array $attributes the attributes given by field => value
+	 * @return static|null the newly created model, or null on failure
 	 */
 	public static function create($attributes)
 	{
