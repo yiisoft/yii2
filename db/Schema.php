@@ -294,7 +294,7 @@ abstract class Schema extends Object
 	 */
 	public function supportsSavepoint()
 	{
-		return true;
+		return $this->db->enableSavepoint;
 	}
 
 	/**
