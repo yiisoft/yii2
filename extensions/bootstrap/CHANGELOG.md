@@ -10,6 +10,7 @@ Yii Framework 2 bootstrap extension Change Log
 - Enh #1553: Only add navbar-default class to NavBar when no other class is specified (cebe)
 - Enh #1562: Added `yii\bootstrap\Tabs::linkOptions` (kartik-v)
 - Enh #1601: Added support for tagName and encodeLabel parameters in ButtonDropdown (omnilight)
+- Enh #1881: Improved `yii\bootstrap\NavBar` with `containerOptions`, `innerContainerOptions` and `renderInnerContainer` (creocoder)
 - Chg #1459: Update Collapse to use bootstrap 3 classes (tonydspaniard)
 - Chg #1820: Update Progress to use bootstrap 3 markup (samdark)
 
