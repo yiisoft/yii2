@@ -10,7 +10,7 @@ Standard Yii validators
 Standard Yii validators could be specified using aliases instead of referring to class names. Here's the list of all
 validators bundled with Yii with their most useful properties:
 
-### `boolean`: [[yii\validation\BooleanValidator|BooleanValidator]]
+### `boolean`: [[yii\validators\BooleanValidator|BooleanValidator]]
 
 Checks if the attribute value is a boolean value.
 
@@ -26,7 +26,7 @@ with [[yii\captcha\CaptchaAction]].
 - `caseSensitive` whether the comparison is case sensitive. _(false)_
 - `captchaAction` the route of the controller action that renders the CAPTCHA image. _('site/captcha')_
 
-### `compare`: [[yii\validation\CompareValidator|CompareValidator]]
+### `compare`: [[yii\validators\CompareValidator|CompareValidator]]
 
 Compares the specified attribute value with another value and validates if they are equal.
 
@@ -34,7 +34,7 @@ Compares the specified attribute value with another value and validates if they 
 - `compareValue` the constant value to be compared with.
 - `operator` the operator for comparison. _('==')_
 
-### `date`: [[yii\validation\DateValidator|DateValidator]]
+### `date`: [[yii\validators\DateValidator|DateValidator]]
 
 Verifies if the attribute represents a date, time or datetime in a proper format.
 
@@ -42,20 +42,20 @@ Verifies if the attribute represents a date, time or datetime in a proper format
   [PHP date_create_from_format](http://www.php.net/manual/en/datetime.createfromformat.php). _('Y-m-d')_
 - `timestampAttribute` the name of the attribute to receive the parsing result.
 
-### `default`: [[yii\validation\DefaultValueValidator|DefaultValueValidator]]
+### `default`: [[yii\validators\DefaultValueValidator|DefaultValueValidator]]
 
 Sets the attribute to be the specified default value.
 
 - `value` the default value to be set to the specified attributes.
 
-### `double`: [[yii\validation\NumberValidator|NumberValidator]]
+### `double`: [[yii\validators\NumberValidator|NumberValidator]]
 
 Validates that the attribute value is a number.
 
 - `max` limit of the number. _(null)_
 - `min` lower limit of the number. _(null)_
 
-### `email`: [[yii\validation\EmailValidator|EmailValidator]]
+### `email`: [[yii\validators\EmailValidator|EmailValidator]]
 
 Validates that the attribute value is a valid email address.
 
@@ -64,7 +64,7 @@ Validates that the attribute value is a valid email address.
 - `checkPort` whether to check port 25 for the email address. _(false)_
 - `enableIDN` whether validation process should take into account IDN (internationalized domain names). _(false)_
 
-### `exist`: [[yii\validation\ExistValidator|ExistValidator]]
+### `exist`: [[yii\validators\ExistValidator|ExistValidator]]
 
 Validates that the attribute value exists in a table.
 
@@ -73,7 +73,7 @@ Validates that the attribute value exists in a table.
 - `targetAttribute` the ActiveRecord attribute name that should be used to look for the attribute value being validated.
   _(name of the attribute being validated)_
 
-### `file`: [[yii\validation\FileValidator|FileValidator]]
+### `file`: [[yii\validators\FileValidator|FileValidator]]
 
 Verifies if an attribute is receiving a valid uploaded file.
 
@@ -82,7 +82,7 @@ Verifies if an attribute is receiving a valid uploaded file.
 - `maxSize` the maximum number of bytes required for the uploaded file.
 - `maxFiles` the maximum file count the given attribute can hold. _(1)_
 
-### `filter`: [[yii\validation\FilterValidator|FilterValidator]]
+### `filter`: [[yii\validators\FilterValidator|FilterValidator]]
 
 Converts the attribute value according to a filter.
 
@@ -103,7 +103,7 @@ Or an anonymous function:
 }],
 ```
 
-### `in`: [[yii\validation\RangeValidator|RangeValidator]]
+### `in`: [[yii\validators\RangeValidator|RangeValidator]]
 
 Validates that the attribute value is among a list of values.
 
@@ -111,7 +111,7 @@ Validates that the attribute value is among a list of values.
 - `strict` whether the comparison is strict (both type and value must be the same). _(false)_
 - `not` whether to invert the validation logic. _(false)_
 
-### `inline`: [[yii\validation\InlineValidator|InlineValidator]]
+### `inline`: [[yii\validators\InlineValidator|InlineValidator]]
 
 Uses a custom function to validate the attribute. You need to define a public method in your
 model class which will evaluate the validity of the attribute. For example, if an attribute
@@ -126,40 +126,40 @@ public function myValidationMethod($attribute) {
 }
 ```
 
-### `integer`: [[yii\validation\NumberValidator|NumberValidator]]
+### `integer`: [[yii\validators\NumberValidator|NumberValidator]]
 
 Validates that the attribute value is an integer number.
 
 - `max` limit of the number. _(null)_
 - `min` lower limit of the number. _(null)_
 
-### `match`: [[yii\validation\RegularExpressionValidator|RegularExpressionValidator]]
+### `match`: [[yii\validators\RegularExpressionValidator|RegularExpressionValidator]]
 
 Validates that the attribute value matches the specified pattern defined by regular expression.
 
 - `pattern` the regular expression to be matched with.
 - `not` whether to invert the validation logic. _(false)_
 
-### `number`: [[yii\validation\NumberValidator|NumberValidator]]
+### `number`: [[yii\validators\NumberValidator|NumberValidator]]
 
 Validates that the attribute value is a number.
 
 - `max` limit of the number. _(null)_
 - `min` lower limit of the number. _(null)_
 
-### `required`: [[yii\validation\RequiredValidator|RequiredValidator]]
+### `required`: [[yii\validators\RequiredValidator|RequiredValidator]]
 
 Validates that the specified attribute does not have null or empty value.
 
 - `requiredValue` the desired value that the attribute must have. _(any)_
 - `strict` whether the comparison between the attribute value and
-  [[yii\validation\RequiredValidator::requiredValue|requiredValue]] is strict. _(false)_
+  [[yii\validators\RequiredValidator::requiredValue|requiredValue]] is strict. _(false)_
 
-### `safe`: [[yii\validation\SafeValidator|SafeValidator]]
+### `safe`: [[yii\validators\SafeValidator|SafeValidator]]
 
 Serves as a dummy validator whose main purpose is to mark the attributes to be safe for massive assignment.
 
-### `string`: [[yii\validation\StringValidator|StringValidator]]
+### `string`: [[yii\validators\StringValidator|StringValidator]]
 
 Validates that the attribute value is of certain length.
 
@@ -168,7 +168,7 @@ Validates that the attribute value is of certain length.
 - `min` minimum length. If not set, it means no minimum length limit.
 - `encoding` the encoding of the string value to be validated. _([[\yii\base\Application::charset]])_
 
-### `unique`: [[yii\validation\UniqueValidator|UniqueValidator]]
+### `unique`: [[yii\validators\UniqueValidator|UniqueValidator]]
 
 Validates that the attribute value is unique in the corresponding database table.
 
@@ -177,7 +177,7 @@ Validates that the attribute value is unique in the corresponding database table
 - `targetAttribute` the ActiveRecord attribute name that should be used to look for the attribute value being validated.
   _(name of the attribute being validated)_
 
-### `url`: [[yii\validation\UrlValidator|UrlValidator]]
+### `url`: [[yii\validators\UrlValidator|UrlValidator]]
 
 Validates that the attribute value is a valid http or https URL.
 
