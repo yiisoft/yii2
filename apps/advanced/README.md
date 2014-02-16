@@ -87,3 +87,29 @@ the installed application. You only need to do these once for all.
 
 - for frontend `/path/to/yii-application/frontend/web/` and using the URL `http://frontend/`
 - for backend `/path/to/yii-application/backend/web/` and using the URL `http://backend/`
+
+TESTING
+-------
+
+This application boilerplate use database in testing, so you should create three databases that are used in tests:
+
+* `yii2_advanced_unit` - database for unit tests;
+* `yii2_advanced_functional` - database for functional tests;
+* `yii2_advanced_acceptance` - database for acceptance tests;
+
+To make your database up to date, you can run in needed test folder `yii migrate`, for example 
+if you are starting from `frontend` tests then you should run `yii migrate` in each suite folder `acceptance`, `functional`, `unit`
+it will upgrade your database to the last state according migrations.
+
+To be able to run acceptance tests you should configure your server to point doc_root to your new created application. For example if we
+use php builtin server, then all that is needed to do is run `php -S 127.0.0.1:8080` in main project directory - directory that contains frontend/backend/common/console directories.
+
+After that is done you should be able to run your tests, for example to run `frontend` tests do:
+
+* cd frontend;
+* ../vendor/bin/codecept build;
+* ../vendor/bin/codecept run;
+
+In similar way you can run tests for other application tiers - `backend`, `console`, `common`.
+
+You also can adjust you application suite configs and `_bootstrap.php` settings to use other urls and files, as it is can be done in `yii2-basic`.
