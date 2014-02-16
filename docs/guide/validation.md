@@ -30,7 +30,7 @@ with [[yii\captcha\CaptchaAction]].
 
 Compares the specified attribute value with another value and validates if they are equal.
 
-- `compareAttribute` the name of the attribute to be compared with. _(currentAttribute_repeat)_
+- `compareAttribute` the name of the attribute to be compared with. _(currentAttribute&#95;repeat)_
 - `compareValue` the constant value to be compared with.
 - `operator` the operator for comparison. _('==')_
 
