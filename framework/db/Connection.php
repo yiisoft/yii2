@@ -249,6 +249,11 @@ class Connection extends Component
 	 */
 	public $pdoClass;
 	/**
+	 * @var boolean whether to enable [savepoint](http://en.wikipedia.org/wiki/Savepoint).
+	 * Note that if the underlying DBMS does not support savepoint, setting this property to be true will have no effect.
+	 */
+	public $enableSavepoint = true;
+	/**
 	 * @var Transaction the currently active transaction
 	 */
 	private $_transaction;
