@@ -27,6 +27,12 @@ class User extends ActiveRecord implements IdentityInterface
 
 	const ROLE_USER = 10;
 
+	/**
+	 * Creates a new user
+	 *
+	 * @param array $attributes the attributes given by field => value
+	 * @return static|null the newly created model, or null on failure
+	 */
 	public static function create($attributes)
 	{
 		/** @var User $user */
@@ -69,18 +75,18 @@ class User extends ActiveRecord implements IdentityInterface
 	 * Finds user by username
 	 *
 	 * @param string $username
-	 * @return self
+	 * @return static|null
 	 */
 	public static function findByUsername($username)
 	{
-		return static::find(['username' => $username, 'status' => static::STATUS_ACTIVE]);
+		return static::find(['username' => $username, 'status' => self::STATUS_ACTIVE]);
 	}
 
 	/**
 	 * Finds user by password reset token
 	 *
 	 * @param string $token password reset token
-	 * @return self
+	 * @return static|null
 	 */
 	public static function findByPasswordResetToken($token)
 	{
@@ -92,9 +98,9 @@ class User extends ActiveRecord implements IdentityInterface
 			return null;
 		}
 
-		return User::find([
+		return static::find([
 			'password_reset_token' => $token,
-			'status' => User::STATUS_ACTIVE,
+			'status' => self::STATUS_ACTIVE,
 		]);
 	}
 

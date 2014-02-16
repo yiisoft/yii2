@@ -19,7 +19,7 @@ class ResetPasswordForm extends Model
 	private $_user;
 
 	/**
-	 * Creates a form model given a token
+	 * Creates a form model given a token.
 	 *
 	 * @param string $token
 	 * @param array $config name-value pairs that will be used to initialize the object properties
@@ -38,7 +38,7 @@ class ResetPasswordForm extends Model
 	}
 
 	/**
-	 * @return array the validation rules.
+	 * @inheritdoc
 	 */
 	public function rules()
 	{
@@ -50,6 +50,7 @@ class ResetPasswordForm extends Model
 
 	/**
 	 * Resets password.
+	 *
 	 * @return boolean if password was reset.
 	 */
 	public function resetPassword()
@@ -60,4 +61,3 @@ class ResetPasswordForm extends Model
 		return $user->save();
 	}
 }
- 
