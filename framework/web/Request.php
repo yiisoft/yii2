@@ -82,14 +82,13 @@ class Request extends \yii\base\Request
 	 * The name of the HTTP header for sending CSRF token.
 	 */
 	const CSRF_HEADER = 'X-CSRF-Token';
+
 	/**
 	 * The length of the CSRF token mask.
 	 */
 	const CSRF_MASK_LENGTH = 8;
 
-
 	/**
-	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
 	 * When CSRF validation is enabled, forms submitted to an Yii Web application must be originated
 	 * from the same application. If not, a 400 HTTP exception will be raised.
 	 *
@@ -100,33 +99,39 @@ class Request extends \yii\base\Request
 	 * In JavaScript, you may get the values of [[csrfParam]] and [[csrfToken]] via `yii.getCsrfParam()` and
 	 * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
 	 *
-	 * @see Controller::enableCsrfValidation
-	 * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery
+	 * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
+	 * @see Controller::enableCsrfValidation.
+	 * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery.
 	 */
 	public $enableCsrfValidation = true;
+
 	/**
-	 * @var string the name of the token used to prevent CSRF. Defaults to '_csrf'.
 	 * This property is used only when [[enableCsrfValidation]] is true.
+	 * @var string the name of the token used to prevent CSRF. Defaults to '_csrf'.
 	 */
 	public $csrfParam = '_csrf';
+
 	/**
-	 * @var array the configuration of the CSRF cookie. This property is used only when [[enableCsrfValidation]] is true.
+	 * This property is used only when [[enableCsrfValidation]] is true.
+	 * @var array the configuration of the CSRF cookie.
 	 * @see Cookie
 	 */
 	public $csrfCookie = ['httpOnly' => true];
+
 	/**
 	 * @var boolean whether cookies should be validated to ensure they are not tampered. Defaults to true.
 	 */
 	public $enableCookieValidation = true;
+
 	/**
-	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
-	 * request tunneled through POST. Default to '_method'.
+	 * Request tunneled through POST. Default to '_method'.
 	 * @see getMethod()
 	 * @see getBodyParams()
+	 * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
 	 */
 	public $methodParam = '_method';
+
 	/**
-	 * @var array the parsers for converting the raw HTTP request body into [[bodyParams]].
 	 * The array keys are the request `Content-Types`, and the array values are the
 	 * corresponding configurations for [[Yii::createObject|creating the parser objects]].
 	 * A parser must implement the [[RequestParserInterface]].
@@ -142,16 +147,100 @@ class Request extends \yii\base\Request
 	 * To register a parser for parsing all request types you can use `'*'` as the array key.
 	 * This one will be used as a fallback in case no other types match.
 	 *
+	 * @var array the parsers for converting the raw HTTP request body into [[bodyParams]].
 	 * @see getBodyParams()
 	 */
 	public $parsers = [];
 
+	/**
+	 * @var CookieCollection the cookie collection.
+	 */
 	private $_cookies;
 
 	/**
 	 * @var array the headers in this collection (indexed by the header names)
 	 */
 	private $_headers;
+
+	/**
+	 * @var string the request body.
+	 */
+	private $_rawBody;
+
+	/**
+	 * @var array the request parameters given in the request body.
+	 */
+	private $_bodyParams;
+
+	/**
+	 * @var array the request GET parameter values.
+	 */
+	private $_queryParams;
+
+	/**
+	 * @var string schema and hostname part.
+	 */
+	private $_hostInfo;
+
+	/**
+	 * @var string the relative URL for the application.
+	 */
+	private $_baseUrl;
+
+	/**
+	 * @var string the relative URL of the entry script.
+	 */
+	private $_scriptUrl;
+
+	/**
+	 * @var string the entry script file path.
+	 */
+	private $_scriptFile;
+
+	/**
+	 * @var string part of the request URL that is after the entry script and before the question mark.
+	 */
+	private $_pathInfo;
+
+	/**
+	 * @var string the currently requested relative URL.
+	 */
+	private $_url;
+
+	/**
+	 * @var integer port number for insecure requests.
+	 */
+	private $_port;
+
+	/**
+	 * @var integer port number for secure requests.
+	 */
+	private $_securePort;
+
+	/**
+	 * @var array the content types ordered by the preference level.
+	 */
+	private $_contentTypes;
+
+	/**
+	 * @var array the languages ordered by the preference level.
+	 */
+	private $_languages;
+
+	/**
+	 * @var string the secret key used for cookie validation.
+	 */
+	private $_cookieValidationKey;
+
+	/**
+	 * @var Cookie the cookie for CSRF.
+	 */
+	private $_csrfCookie;
+
+	/**
+	 * @var string the token used to perform CSRF validation.
+	 */
+	private $_csrfToken;
 
 	/**
 	 * Resolves the current request into a route and the associated parameters.
@@ -173,7 +262,7 @@ class Request extends \yii\base\Request
 	/**
 	 * Returns the header collection.
 	 * The header collection contains incoming HTTP headers.
-	 * @return HeaderCollection the header collection
+	 * @return HeaderCollection the header collection.
 	 */
 	public function getHeaders()
 	{
@@ -202,8 +291,8 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Returns the method of the current request (e.g. GET, POST, HEAD, PUT, PATCH, DELETE).
-	 * @return string request method, such as GET, POST, HEAD, PUT, PATCH, DELETE.
 	 * The value returned is turned into upper case.
+	 * @return string request method, such as GET, POST, HEAD, PUT, PATCH, DELETE.
 	 */
 	public function getMethod()
 	{
@@ -298,11 +387,10 @@ class Request extends \yii\base\Request
 			(stripos($_SERVER['HTTP_USER_AGENT'], 'Shockwave') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Flash') !== false);
 	}
 
-	private $_rawBody;
 
 	/**
 	 * Returns the raw HTTP request body.
-	 * @return string the request body
+	 * @return string the request body.
 	 */
 	public function getRawBody()
 	{
@@ -312,8 +400,6 @@ class Request extends \yii\base\Request
 		return $this->_rawBody;
 	}
 
-	private $_bodyParams;
-
 	/**
 	 * Returns the request parameters given in the request body.
 	 *
@@ -322,9 +408,9 @@ class Request extends \yii\base\Request
 	 * to parse the [[rawBody|request body]].
 	 * @return array the request parameters given in the request body.
 	 * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
-	 * @see getMethod()
-	 * @see getBodyParam()
-	 * @see setBodyParams()
+	 * @see getMethod().
+	 * @see getBodyParam().
+	 * @see setBodyParams().
 	 */
 	public function getBodyParams()
 	{
@@ -358,9 +444,9 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Sets the request body parameters.
-	 * @param array $values the request body parameters (name-value pairs)
-	 * @see getBodyParam()
-	 * @see getBodyParams()
+	 * @param array $values the request body parameters (name-value pairs).
+	 * @see getBodyParam().
+	 * @see getBodyParams().
 	 */
 	public function setBodyParams($values)
 	{
@@ -369,11 +455,11 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Returns the named request body parameter value.
-	 * @param string $name the parameter name
+	 * @param string $name the parameter name.
 	 * @param mixed $defaultValue the default parameter value if the parameter does not exist.
-	 * @return mixed the parameter value
-	 * @see getBodyParams()
-	 * @see setBodyParams()
+	 * @return mixed the parameter value.
+	 * @see getBodyParams().
+	 * @see setBodyParams().
 	 */
 	public function getBodyParam($name, $defaultValue = null)
 	{
@@ -383,10 +469,9 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Returns POST parameter with a given name. If name isn't specified, returns an array of all POST parameters.
-	 *
-	 * @param string $name the parameter name
+	 * @param string $name the parameter name.
 	 * @param mixed $defaultValue the default parameter value if the parameter does not exist.
-	 * @return array|mixed
+	 * @return array|mixed.
 	 */
 	public function post($name = null, $defaultValue = null)
 	{
@@ -397,14 +482,11 @@ class Request extends \yii\base\Request
 		}
 	}
 
-	private $_queryParams;
-
 	/**
 	 * Returns the request parameters given in the [[queryString]].
-	 *
 	 * This method will return the contents of `$_GET` if params where not explicitly set.
 	 * @return array the request GET parameter values.
-	 * @see setQueryParams()
+	 * @see setQueryParams().
 	 */
 	public function getQueryParams()
 	{
@@ -416,9 +498,9 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Sets the request [[queryString]] parameters.
-	 * @param array $values the request query parameters (name-value pairs)
-	 * @see getQueryParam()
-	 * @see getQueryParams()
+	 * @param array $values the request query parameters (name-value pairs).
+	 * @see getQueryParam().
+	 * @see getQueryParams().
 	 */
 	public function setQueryParams($values)
 	{
@@ -427,10 +509,9 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Returns GET parameter with a given name. If name isn't specified, returns an array of all GET parameters.
-	 *
-	 * @param string $name the parameter name
+	 * @param string $name the parameter name.
 	 * @param mixed $defaultValue the default parameter value if the parameter does not exist.
-	 * @return array|mixed
+	 * @return array|mixed the GET parameter value.
 	 */
 	public function get($name = null, $defaultValue = null)
 	{
@@ -446,8 +527,8 @@ class Request extends \yii\base\Request
 	 * If the GET parameter does not exist, the second parameter to this method will be returned.
 	 * @param string $name the GET parameter name. If not specified, whole $_GET is returned.
 	 * @param mixed $defaultValue the default parameter value if the GET parameter does not exist.
-	 * @return mixed the GET parameter value
-	 * @see getBodyParam()
+	 * @return mixed the GET parameter value.
+	 * @see getBodyParam().
 	 */
 	public function getQueryParam($name, $defaultValue = null)
 	{
@@ -455,15 +536,13 @@ class Request extends \yii\base\Request
 		return isset($params[$name]) ? $params[$name] : $defaultValue;
 	}
 
-	private $_hostInfo;
-
 	/**
 	 * Returns the schema and host part of the current request URL.
 	 * The returned URL does not have an ending slash.
 	 * By default this is determined based on the user request information.
 	 * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.
 	 * @return string schema and hostname part (with port number if needed) of the request URL (e.g. `http://www.yiiframework.com`)
-	 * @see setHostInfo()
+	 * @see setHostInfo().
 	 */
 	public function getHostInfo()
 	{
@@ -486,8 +565,7 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Sets the schema and host part of the application URL.
-	 * This setter is provided in case the schema and hostname cannot be determined
-	 * on certain Web servers.
+	 * This setter is provided in case the schema and hostname cannot be determined on certain Web servers.
 	 * @param string $value the schema and host part of the application URL. The trailing slashes will be removed.
 	 */
 	public function setHostInfo($value)
@@ -495,14 +573,12 @@ class Request extends \yii\base\Request
 		$this->_hostInfo = rtrim($value, '/');
 	}
 
-	private $_baseUrl;
-
 	/**
 	 * Returns the relative URL for the application.
 	 * This is similar to [[scriptUrl]] except that it does not include the script file name,
 	 * and the ending slashes are removed.
-	 * @return string the relative URL for the application
-	 * @see setScriptUrl()
+	 * @return string the relative URL for the application.
+	 * @see setScriptUrl().
 	 */
 	public function getBaseUrl()
 	{
@@ -516,20 +592,18 @@ class Request extends \yii\base\Request
 	 * Sets the relative URL for the application.
 	 * By default the URL is determined based on the entry script URL.
 	 * This setter is provided in case you want to change this behavior.
-	 * @param string $value the relative URL for the application
+	 * @param string $value the relative URL for the application.
 	 */
 	public function setBaseUrl($value)
 	{
 		$this->_baseUrl = $value;
 	}
 
-	private $_scriptUrl;
-
 	/**
 	 * Returns the relative URL of the entry script.
 	 * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
 	 * @return string the relative URL of the entry script.
-	 * @throws InvalidConfigException if unable to determine the entry script URL
+	 * @throws InvalidConfigException if unable to determine the entry script URL.
 	 */
 	public function getScriptUrl()
 	{
@@ -555,8 +629,7 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Sets the relative URL for the application entry script.
-	 * This setter is provided in case the entry script URL cannot be determined
-	 * on certain Web servers.
+	 * This setter is provided in case the entry script URL cannot be determined on certain Web servers.
 	 * @param string $value the relative URL for the application entry script.
 	 */
 	public function setScriptUrl($value)
@@ -564,12 +637,10 @@ class Request extends \yii\base\Request
 		$this->_scriptUrl = '/' . trim($value, '/');
 	}
 
-	private $_scriptFile;
-
 	/**
 	 * Returns the entry script file path.
 	 * The default implementation will simply return `$_SERVER['SCRIPT_FILENAME']`.
-	 * @return string the entry script file path
+	 * @return string the entry script file path.
 	 */
 	public function getScriptFile()
 	{
@@ -579,8 +650,7 @@ class Request extends \yii\base\Request
 	/**
 	 * Sets the entry script file path.
 	 * The entry script file path normally can be obtained from `$_SERVER['SCRIPT_FILENAME']`.
-	 * If your server configuration does not return the correct value, you may configure
-	 * this property to make it right.
+	 * If your server configuration does not return the correct value, you may configure this property to make it right.
 	 * @param string $value the entry script file path.
 	 */
 	public function setScriptFile($value)
@@ -588,15 +658,13 @@ class Request extends \yii\base\Request
 		$this->_scriptFile = $value;
 	}
 
-	private $_pathInfo;
-
 	/**
 	 * Returns the path info of the currently requested URL.
 	 * A path info refers to the part that is after the entry script and before the question mark (query string).
 	 * The starting and ending slashes are both removed.
-	 * @return string part of the request URL that is after the entry script and before the question mark.
 	 * Note, the returned path info is already URL-decoded.
-	 * @throws InvalidConfigException if the path info cannot be determined due to unexpected server configuration
+	 * @return string part of the request URL that is after the entry script and before the question mark.
+	 * @throws InvalidConfigException if the path info cannot be determined due to unexpected server configuration.
 	 */
 	public function getPathInfo()
 	{
@@ -609,7 +677,7 @@ class Request extends \yii\base\Request
 	/**
 	 * Sets the path info of the current request.
 	 * This method is mainly provided for testing purpose.
-	 * @param string $value the path info of the current request
+	 * @param string $value the path info of the current request.
 	 */
 	public function setPathInfo($value)
 	{
@@ -620,9 +688,9 @@ class Request extends \yii\base\Request
 	 * Resolves the path info part of the currently requested URL.
 	 * A path info refers to the part that is after the entry script and before the question mark (query string).
 	 * The starting slashes are both removed (ending slashes will be kept).
-	 * @return string part of the request URL that is after the entry script and before the question mark.
 	 * Note, the returned path info is decoded.
-	 * @throws InvalidConfigException if the path info cannot be determined due to unexpected server configuration
+	 * @return string part of the request URL that is after the entry script and before the question mark.
+	 * @throws InvalidConfigException if the path info cannot be determined due to unexpected server configuration.
 	 */
 	protected function resolvePathInfo()
 	{
@@ -678,14 +746,12 @@ class Request extends \yii\base\Request
 		return $this->getHostInfo() . $this->getUrl();
 	}
 
-	private $_url;
-
 	/**
 	 * Returns the currently requested relative URL.
 	 * This refers to the portion of the URL that is after the [[hostInfo]] part.
 	 * It includes the [[queryString]] part if any.
 	 * @return string the currently requested relative URL. Note that the URI returned is URL-encoded.
-	 * @throws InvalidConfigException if the URL cannot be determined due to unusual server configuration
+	 * @throws InvalidConfigException if the URL cannot be determined due to unusual server configuration.
 	 */
 	public function getUrl()
 	{
@@ -699,7 +765,7 @@ class Request extends \yii\base\Request
 	 * Sets the currently requested relative URL.
 	 * The URI must refer to the portion that is after [[hostInfo]].
 	 * Note that the URI should be URL-encoded.
-	 * @param string $value the request URI to be set
+	 * @param string $value the request URI to be set.
 	 */
 	public function setUrl($value)
 	{
@@ -712,7 +778,7 @@ class Request extends \yii\base\Request
 	 * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
 	 * @return string|boolean the request URI portion for the currently requested URL.
 	 * Note that the URI returned is URL-encoded.
-	 * @throws InvalidConfigException if the request URI cannot be determined due to unusual server configuration
+	 * @throws InvalidConfigException if the request URI cannot be determined due to unusual server configuration.
 	 */
 	protected function resolveRequestUri()
 	{
@@ -736,7 +802,7 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Returns part of the request URL that is after the question mark.
-	 * @return string part of the request URL that is after the question mark
+	 * @return string part of the request URL that is after the question mark.
 	 */
 	public function getQueryString()
 	{
@@ -745,7 +811,7 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Return if the request is sent via secure channel (https).
-	 * @return boolean if the request is sent via secure channel (https)
+	 * @return boolean if the request is sent via secure channel (https).
 	 */
 	public function getIsSecureConnection()
 	{
@@ -755,7 +821,7 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Returns the server name.
-	 * @return string server name
+	 * @return string server name.
 	 */
 	public function getServerName()
 	{
@@ -764,7 +830,7 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Returns the server port number.
-	 * @return integer server port number
+	 * @return integer server port number.
 	 */
 	public function getServerPort()
 	{
@@ -772,8 +838,8 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * Returns the URL referrer, null if not present
-	 * @return string URL referrer, null if not present
+	 * Returns the URL referrer.
+	 * @return string URL referrer, null if not present.
 	 */
 	public function getReferrer()
 	{
@@ -781,8 +847,8 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * Returns the user agent, null if not present.
-	 * @return string user agent, null if not present
+	 * Returns the user agent.
+	 * @return string user agent, null if not present.
 	 */
 	public function getUserAgent()
 	{
@@ -791,7 +857,7 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Returns the user IP address.
-	 * @return string user IP address
+	 * @return string user IP address.
 	 */
 	public function getUserIP()
 	{
@@ -799,22 +865,19 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * Returns the user host name, null if it cannot be determined.
-	 * @return string user host name, null if cannot be determined
+	 * Returns the user host name
+	 * @return string user host name, null if cannot be determined.
 	 */
 	public function getUserHost()
 	{
 		return isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
 	}
 
-	private $_port;
-
 	/**
 	 * Returns the port to use for insecure requests.
-	 * Defaults to 80, or the port specified by the server if the current
-	 * request is insecure.
+	 * Defaults to 80, or the port specified by the server if the current request is insecure.
 	 * @return integer port number for insecure requests.
-	 * @see setPort()
+	 * @see setPort().
 	 */
 	public function getPort()
 	{
@@ -826,8 +889,7 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Sets the port to use for insecure requests.
-	 * This setter is provided in case a custom port is necessary for certain
-	 * server configurations.
+	 * This setter is provided in case a custom port is necessary for certain server configurations.
 	 * @param integer $value port number.
 	 */
 	public function setPort($value)
@@ -838,14 +900,11 @@ class Request extends \yii\base\Request
 		}
 	}
 
-	private $_securePort;
-
 	/**
 	 * Returns the port to use for secure requests.
-	 * Defaults to 443, or the port specified by the server if the current
-	 * request is secure.
+	 * Defaults to 443, or the port specified by the server if the current request is secure.
 	 * @return integer port number for secure requests.
-	 * @see setSecurePort()
+	 * @see setSecurePort().
 	 */
 	public function getSecurePort()
 	{
@@ -857,8 +916,7 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Sets the port to use for secure requests.
-	 * This setter is provided in case a custom port is necessary for certain
-	 * server configurations.
+	 * This setter is provided in case a custom port is necessary for certain server configurations.
 	 * @param integer $value port number.
 	 */
 	public function setSecurePort($value)
@@ -869,13 +927,11 @@ class Request extends \yii\base\Request
 		}
 	}
 
-	private $_contentTypes;
-
 	/**
 	 * Returns the content types acceptable by the end user.
 	 * This is determined by the `Accept` HTTP header.
-	 * @return array the content types ordered by the preference level. The first element
-	 * represents the most preferred content type.
+	 * The first element represents the most preferred content type.
+	 * @return array the content types ordered by the preference level.
 	 */
 	public function getAcceptableContentTypes()
 	{
@@ -890,8 +946,9 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * @param array $value the content types that are acceptable by the end user. They should
-	 * be ordered by the preference level.
+	 * Sets the content types that are acceptable by end user.
+	 * Note, they should be ordered by the preference level.
+	 * @param array $value the content types that are acceptable by the end user.
 	 */
 	public function setAcceptableContentTypes($value)
 	{
@@ -899,7 +956,7 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * Returns request content-type
+	 * Returns request content-type.
 	 * The Content-Type header field indicates the MIME type of the data
 	 * contained in [[getRawBody()]] or, in the case of the HEAD method, the
 	 * media type that would have been sent had the request been a GET.
@@ -913,13 +970,11 @@ class Request extends \yii\base\Request
 		return isset($_SERVER["CONTENT_TYPE"]) ? $_SERVER["CONTENT_TYPE"] : null;
 	}
 
-	private $_languages;
-
 	/**
 	 * Returns the languages acceptable by the end user.
 	 * This is determined by the `Accept-Language` HTTP header.
-	 * @return array the languages ordered by the preference level. The first element
-	 * represents the most preferred language.
+	 * The first element represents the most preferred language.
+	 * @return array the languages ordered by the preference level.
 	 */
 	public function getAcceptableLanguages()
 	{
@@ -934,8 +989,9 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * @param array $value the languages that are acceptable by the end user. They should
-	 * be ordered by the preference level.
+	 * Sets the languages that are acceptable by end user.
+	 * Note, they should be ordered by the preference level.
+	 * @param array $value the languages that are acceptable by the end user.
 	 */
 	public function setAcceptableLanguages($value)
 	{
@@ -945,7 +1001,7 @@ class Request extends \yii\base\Request
 	/**
 	 * Parses the given `Accept` (or `Accept-Language`) header.
 	 * This method will return the acceptable values ordered by their preference level.
-	 * @param string $header the header to be parsed
+	 * @param string $header the header to be parsed.
 	 * @return array the accept values ordered by their preference level.
 	 */
 	protected function parseAcceptHeader($header)
@@ -1039,7 +1095,7 @@ class Request extends \yii\base\Request
 
 	/**
 	 * Converts `$_COOKIE` into an array of [[Cookie]].
-	 * @return array the cookies obtained from request
+	 * @return array the cookies obtained from request.
 	 */
 	protected function loadCookies()
 	{
@@ -1065,11 +1121,10 @@ class Request extends \yii\base\Request
 		return $cookies;
 	}
 
-	private $_cookieValidationKey;
-
 	/**
-	 * @return string the secret key used for cookie validation. If it was not set previously,
-	 * a random key will be generated and used.
+	 * Returns the secret key used for cookie validation.
+	 * If it was not set previously, a random key will be generated and used.
+	 * @return string the secret key used for cookie validation.
 	 */
 	public function getCookieValidationKey()
 	{
@@ -1089,15 +1144,10 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * @var Cookie
-	 */
-	private $_csrfCookie;
-
-	/**
 	 * Returns the unmasked random token used to perform CSRF validation.
 	 * This token is typically sent via a cookie. If such a cookie does not exist, a new token will be generated.
 	 * @return string the random token for CSRF validation.
-	 * @see enableCsrfValidation
+	 * @see enableCsrfValidation.
 	 */
 	public function getRawCsrfToken()
 	{
@@ -1112,15 +1162,11 @@ class Request extends \yii\base\Request
 		return $this->_csrfCookie->value;
 	}
 
-	private $_csrfToken;
-
 	/**
 	 * Returns the token used to perform CSRF validation.
-	 *
 	 * This token is a masked version of [[rawCsrfToken]] to prevent [BREACH attacks](http://breachattack.com/).
 	 * This token may be passed along via a hidden field of an HTML form or an HTTP header value
 	 * to support CSRF validation.
-	 *
 	 * @return string the token used to perform CSRF validation.
 	 */
 	public function getCsrfToken()
@@ -1140,9 +1186,9 @@ class Request extends \yii\base\Request
 	/**
 	 * Returns the XOR result of two strings.
 	 * If the two strings are of different lengths, the shorter one will be padded to the length of the longer one.
-	 * @param string $token1
-	 * @param string $token2
-	 * @return string the XOR result
+	 * @param string $token1.
+	 * @param string $token2.
+	 * @return string the XOR result.
 	 */
 	private function xorTokens($token1, $token2)
 	{
@@ -1157,7 +1203,8 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * @return string the CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned if no such header is sent.
+	 * Returns the CSRF token sent via [[CSRF_HEADER]] by browser.
+	 * @return string the CSRF token. Null is returned if no such header is sent.
 	 */
 	public function getCsrfTokenFromHeader()
 	{
@@ -1168,8 +1215,8 @@ class Request extends \yii\base\Request
 	/**
 	 * Creates a cookie with a randomly generated CSRF token.
 	 * Initial values specified in [[csrfCookie]] will be applied to the generated cookie.
-	 * @return Cookie the generated cookie
-	 * @see enableCsrfValidation
+	 * @return Cookie the generated cookie.
+	 * @see enableCsrfValidation.
 	 */
 	protected function createCsrfCookie()
 	{
