@@ -47,6 +47,15 @@ class Session extends \yii\web\Session
 	 * This collection is better to be pre-created with fields 'id' and 'expire' indexed.
 	 */
 	public $sessionCollection = 'session';
+	/**
+	 * @var array the query options
+	 * By default, the Session is used a MongoDB connection options.
+	 */
+	private $_options = [];
+	/**
+	 * @var Collection the MongoCollection instance for the session collection
+	 */
+	private $_collection;
 
 	/**
 	 * Initializes the Session component.
@@ -61,6 +70,7 @@ class Session extends \yii\web\Session
 		if (!$this->db instanceof Connection) {
 			throw new InvalidConfigException($this->className() . "::db must be either a MongoDB connection instance or the application component ID of a MongoDB connection.");
 		}
+		$this->_collection = $this->db->getCollection($this->sessionCollection);
 		parent::init();
 	}
 
@@ -91,28 +101,25 @@ class Session extends \yii\web\Session
 		parent::regenerateID(false);
 		$newID = session_id();
 
-		$query = new Query;
-		$row = $query->from($this->sessionCollection)
-			->where(['id' => $oldID])
-			->one($this->db);
-		if ($row !== false) {
+		$row = $this->_collection->findOne(['id' => $oldID]);
+		if ($row !== null) {
 			if ($deleteOldSession) {
-				$this->db->getCollection($this->sessionCollection)
-					->update(['_id' => $row['_id']], ['id' => $newID]);
+				$this->_collection->update(
+					['id' => $oldID],
+					['id' => $newID],
+					$this->_options
+				);
 			} else {
 				unset($row['_id']);
 				$row['id'] = $newID;
-				$this->db->getCollection($this->sessionCollection)
-					->insert($row);
+				$this->_collection->insert($row, $this->_options);
 			}
 		} else {
 			// shouldn't reach here normally
-			$this->db->getCollection($this->sessionCollection)
-				->insert([
-					'id' => $newID,
-					'expire' => time() + $this->getTimeout(),
-					'data' => '',
-				]);
+			$this->_collection->insert(
+				['id' => $newID, 'expire' => time() + $this->getTimeout()],
+				$this->_options
+			);
 		}
 	}
 
@@ -124,15 +131,14 @@ class Session extends \yii\web\Session
 	 */
 	public function readSession($id)
 	{
-		$query = new Query;
-		$row = $query->select(['data'])
-			->from($this->sessionCollection)
-			->where([
+		$doc = $this->_collection->findOne(
+			[
+				'id' => $id,
 				'expire' => ['$gt' => time()],
-				'id' => $id
-			])
-			->one($this->db);
-		return $row === false ? '' : $row['data'];
+			],
+			['data' => 1, '_id' => 0]
+		);
+		return isset($doc['data']) ? $doc['data'] : '';
 	}
 
 	/**
@@ -147,23 +153,15 @@ class Session extends \yii\web\Session
 		// exception must be caught in session write handler
 		// http://us.php.net/manual/en/function.session-set-save-handler.php
 		try {
-			$expire = time() + $this->getTimeout();
-			$query = new Query;
-			$exists = $query->select(['id'])
-				->from($this->sessionCollection)
-				->where(['id' => $id])
-				->one($this->db);
-			if ($exists === false) {
-				$this->db->getCollection($this->sessionCollection)
-					->insert([
-						'id' => $id,
-						'data' => $data,
-						'expire' => $expire,
-					]);
-			} else {
-				$this->db->getCollection($this->sessionCollection)
-					->update(['id' => $id], ['data' => $data, 'expire' => $expire]);
-			}
+			$this->_collection->update(
+				['id' => $id],
+				[
+					'id' => $id,
+					'data' => $data,
+					'expire' => time() + $this->getTimeout(),
+				],
+				$this->_options + ['upsert' => true]
+			);
 		} catch (\Exception $e) {
 			if (YII_DEBUG) {
 				echo $e->getMessage();
@@ -182,8 +180,10 @@ class Session extends \yii\web\Session
 	 */
 	public function destroySession($id)
 	{
-		$this->db->getCollection($this->sessionCollection)
-			->remove(['id' => $id]);
+		$this->_collection->remove(
+			['id' => $id],
+			$this->_options + ['justOne' => true]
+		);
 		return true;
 	}
 
@@ -195,10 +195,10 @@ class Session extends \yii\web\Session
 	 */
 	public function gcSession($maxLifetime)
 	{
-		$this->db->getCollection($this->sessionCollection)
-			->remove([
-				'expire' => ['$lt' => time()]
-			]);
+		$this->_collection->remove(
+			['expire' => ['$lt' => time()]],
+			$this->_options + ['justOne' => false]
+		);
 		return true;
 	}
 }
