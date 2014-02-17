@@ -25,7 +25,7 @@ use yii\widgets\ActiveForm;
 $this->title = 'Posts';
 ?>
 <!-- Separate PHP blocks are preferred for foreach, for, if etc. -->
-<?php foreach($posts as $post): ?>
+<?php foreach ($posts as $post): ?>
 	<!-- Note indentation level here. -->
 	<h2><?= Html::encode($post['title']) ?></h2>
 	<p><?= Html::encode($post['shortDescription']) ?></p>

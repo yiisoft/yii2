@@ -63,7 +63,7 @@ class Connection extends Component
 
 	public function init()
 	{
-		foreach($this->nodes as $node) {
+		foreach ($this->nodes as $node) {
 			if (!isset($node['http_address'])) {
 				throw new InvalidConfigException('Elasticsearch node needs at least a http_address configured.');
 			}
@@ -245,7 +245,7 @@ class Connection extends Component
 				return mb_strlen($data, '8bit');
 			},
 			CURLOPT_HEADERFUNCTION => function($curl, $data) use (&$headers) {
-				foreach(explode("\r\n", $data) as $row) {
+				foreach (explode("\r\n", $data) as $row) {
 					if (($pos = strpos($row, ':')) !== false) {
 						$headers[strtolower(substr($row, 0, $pos))] = trim(substr($row, $pos + 1));
 					}

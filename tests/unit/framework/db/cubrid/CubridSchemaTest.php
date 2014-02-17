@@ -28,7 +28,7 @@ class CubridSchemaTest extends SchemaTest
 		/** @var Schema $schema */
 		$schema = $this->getConnection()->schema;
 
-		foreach($values as $value) {
+		foreach ($values as $value) {
 			$this->assertEquals($value[1], $schema->getPdoType($value[0]));
 		}
 		fclose($fp);
