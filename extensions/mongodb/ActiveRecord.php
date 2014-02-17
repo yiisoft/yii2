@@ -233,8 +233,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 				$values[$key] = isset($currentAttributes[$key]) ? $currentAttributes[$key] : null;
 			}
 		}
-		$collection = static::getCollection();
-		$newId = $collection->insert($values);
+		$newId = static::getCollection()->insert($values);
 		$this->setAttribute('_id', $newId);
 		foreach ($values as $name => $value) {
 			$this->setOldAttribute($name, $value);
