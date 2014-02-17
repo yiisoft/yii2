@@ -260,6 +260,18 @@ class Collection extends Object
 	}
 
 	/**
+	 * Returns a a single document.
+	 * @param array $condition query condition
+	 * @param array $fields fields to be selected
+	 * @return array|null the single document. Null is returned if the query results in nothing.
+	 * @see http://www.php.net/manual/en/mongocollection.findone.php
+	 */
+	public function findOne($condition = [], $fields = [])
+	{
+		return $this->mongoCollection->findOne($this->buildCondition($condition), $fields);
+	}
+
+	/**
 	 * Inserts new data into collection.
 	 * @param array|object $data data to be inserted.
 	 * @param array $options list of options in format: optionName => optionValue.
