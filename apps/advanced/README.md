@@ -16,32 +16,37 @@ DIRECTORY STRUCTURE
 
 ```
 common
-	config/             contains shared configurations
-	models/             contains model classes used in both backend and frontend
+	config/				contains shared configurations
+	mail/				contains view files for e-mails
+	models/				contains model classes used in both backend and frontend
+	tests/				contains various tests for objects that are common among applications
 console
-	config/             contains console configurations
-	controllers/        contains console controllers (commands)
-	migrations/         contains database migrations
-	models/             contains console-specific model classes
-	runtime/            contains files generated during runtime
+	config/				contains console configurations
+	controllers/		contains console controllers (commands)
+	migrations/			contains database migrations
+	models/				contains console-specific model classes
+	runtime/			contains files generated during runtime
+	tests/				contains various tests for the console application
 backend
-	assets/             contains application assets such as JavaScript and CSS
-	config/             contains backend configurations
-	controllers/        contains Web controller classes
-	models/             contains backend-specific model classes
-	runtime/            contains files generated during runtime
-	views/              contains view files for the Web application
-	web/                contains the entry script and Web resources
+	assets/				contains application assets such as JavaScript and CSS
+	config/				contains backend configurations
+	controllers/		contains Web controller classes
+	models/				contains backend-specific model classes
+	runtime/			contains files generated during runtime
+	tests/				contains various tests for the backend application
+	views/				contains view files for the Web application
+	web/				contains the entry script and Web resources
 frontend
-	assets/             contains application assets such as JavaScript and CSS
-	config/             contains frontend configurations
-	controllers/        contains Web controller classes
-	models/             contains frontend-specific model classes
-	runtime/            contains files generated during runtime
-	views/              contains view files for the Web application
-	web/                contains the entry script and Web resources
-vendor/                 contains dependent 3rd-party packages
-environments/                contains environment-based overrides
+	assets/				contains application assets such as JavaScript and CSS
+	config/				contains frontend configurations
+	controllers/		contains Web controller classes
+	models/				contains frontend-specific model classes
+	runtime/			contains files generated during runtime
+	tests/				contains various tests for the frontend application
+	views/				contains view files for the Web application
+	web/				contains the entry script and Web resources
+vendor/					contains dependent 3rd-party packages
+environments/			contains environment-based overrides
 ```
 
 
@@ -87,7 +92,7 @@ the installed application. You only need to do these once for all.
 
 - for frontend `/path/to/yii-application/frontend/web/` and using the URL `http://frontend/`
 - for backend `/path/to/yii-application/backend/web/` and using the URL `http://backend/`
-- 
+-
 To login into the application, you need to first sign up, with any of your email address, username and password.
 Then, you can login into the application with same email address and password at any time.
 
@@ -102,7 +107,7 @@ This application boilerplate use database in testing, so you should create three
 * `yii2_advanced_functional` - database for functional tests;
 * `yii2_advanced_acceptance` - database for acceptance tests.
 
-To make your database up to date, you can run in needed test folder `yii migrate`, for example 
+To make your database up to date, you can run in needed test folder `yii migrate`, for example
 if you are starting from `frontend` tests then you should run `yii migrate` in each suite folder `acceptance`, `functional`, `unit`
 it will upgrade your database to the last state according migrations.
 
