@@ -77,7 +77,12 @@ class Foo
 ### 4.2. Properties
 
 - When declaring public class members specify `public` keyword explicitly.
-- Variables should be declared at the top of the class before any method declarations.
+- Public and protected variables should be declared at the top of the class before any method declarations.
+  Private variables should also be declared at the top of the class but may be added right before the methods
+  that are dealing with them in cases where they are only related to a small subset of the class methods.
+- The order of property declaration in a class should be ascending from public over protected to private.
+- For better readability there should be no blank lines between property declarations and two blank lines
+  between property and method declaration sections.
 - Private variables should be named like `$_varName`.
 - Public class members and standalone variables should be named using `$camelCase`
   with first letter lowercase.
