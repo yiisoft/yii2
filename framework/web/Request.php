@@ -146,12 +146,15 @@ class Request extends \yii\base\Request
 	 */
 	public $parsers = [];
 
+	/**
+	 * @var CookieCollection Collection of request cookies.
+	 */
 	private $_cookies;
-
 	/**
 	 * @var array the headers in this collection (indexed by the header names)
 	 */
 	private $_headers;
+
 
 	/**
 	 * Resolves the current request into a route and the associated parameters.
