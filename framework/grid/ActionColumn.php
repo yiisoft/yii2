@@ -123,7 +123,7 @@ class ActionColumn extends Column
 		if ($this->urlCreator instanceof Closure) {
 			return call_user_func($this->urlCreator, $action, $model, $key, $index);
 		} else {
-			$params = is_array($key) ? $key : ['id' => $key];
+			$params = is_array($key) ? $key : ['id' => (string)$key];
 			$route = $this->controller ? $this->controller . '/' . $action : $action;
 			return Yii::$app->controller->createUrl($route, $params);
 		}

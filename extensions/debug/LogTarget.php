@@ -47,19 +47,7 @@ class LogTarget extends Target
 			mkdir($path);
 		}
 
-		$request = Yii::$app->getRequest();
-		$response = Yii::$app->getResponse();
-		$summary = [
-			'tag' => $this->tag,
-			'url' => $request->getAbsoluteUrl(),
-			'ajax' => $request->getIsAjax(),
-			'method' => $request->getMethod(),
-			'ip' => $request->getUserIP(),
-			'time' => time(),
-			'statusCode' => $response->statusCode,
-			'sqlCount' => $this->getSqlTotalCount(),
-		];
-
+		$summary = $this->collectSummary();
 		$dataFile = "$path/{$this->tag}.data";
 		$data = [];
 		foreach ($this->module->panels as $id => $panel) {
@@ -140,6 +128,32 @@ class LogTarget extends Target
 	}
 
 	/**
+	 * Collects summary data of current request.
+	 * @return array
+	 */
+	protected function collectSummary()
+	{
+		$request = Yii::$app->getRequest();
+		$response = Yii::$app->getResponse();
+		$summary = [
+			'tag' => $this->tag,
+			'url' => $request->getAbsoluteUrl(),
+			'ajax' => $request->getIsAjax(),
+			'method' => $request->getMethod(),
+			'ip' => $request->getUserIP(),
+			'time' => time(),
+			'statusCode' => $response->statusCode,
+			'sqlCount' => $this->getSqlTotalCount(),
+		];
+
+		if (isset($this->module->panels['mail'])) {
+			$summary['mailCount'] = count($this->module->panels['mail']->getMessages());
+		}
+
+		return $summary;
+	}
+
+	/**
 	 * Returns total sql count executed in current request. If database panel is not configured
 	 * returns 0.
 	 * @return integer
@@ -149,9 +163,10 @@ class LogTarget extends Target
 		if (!isset($this->module->panels['db'])) {
 			return 0;
 		}
-		$profileLogs = $this->module->panels['db']->save();
+		$profileLogs = $this->module->panels['db']->getProfileLogs();
 		
 		# / 2 because messages are in couple (begin/end)
-		return count($profileLogs['messages']) / 2;
+		return count($profileLogs) / 2;
 	}
+
 }

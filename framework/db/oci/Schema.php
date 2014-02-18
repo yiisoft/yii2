@@ -34,6 +34,14 @@ class Schema extends \yii\db\Schema
 	/**
 	 * @inheritdoc
 	 */
+	public function releaseSavepoint($name)
+	{
+		// does nothing as Oracle does not support this
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	public function quoteSimpleTableName($name)
 	{
 		return '"' . $name . '"';

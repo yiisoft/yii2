@@ -7,6 +7,7 @@
 
 namespace yii\db;
 
+use Yii;
 use yii\base\InvalidConfigException;
 
 /**
@@ -25,12 +26,12 @@ use yii\base\InvalidConfigException;
  *     //.... other SQL executions
  *     $transaction->commit();
  * } catch(Exception $e) {
- *     $transaction->rollback();
+ *     $transaction->rollBack();
  * }
  * ~~~
  *
  * @property boolean $isActive Whether this transaction is active. Only an active transaction can [[commit()]]
- * or [[rollback()]]. This property is read-only.
+ * or [[rollBack()]]. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -42,19 +43,18 @@ class Transaction extends \yii\base\Object
 	 */
 	public $db;
 	/**
-	 * @var boolean whether this transaction is active. Only an active transaction
-	 * can [[commit()]] or [[rollback()]]. This property is set true when the transaction is started.
+	 * @var integer the nesting level of the transaction. 0 means the outermost level.
 	 */
-	private $_active = false;
+	private $_level = 0;
 
 	/**
 	 * Returns a value indicating whether this transaction is active.
 	 * @return boolean whether this transaction is active. Only an active transaction
-	 * can [[commit()]] or [[rollback()]].
+	 * can [[commit()]] or [[rollBack()]].
 	 */
 	public function getIsActive()
 	{
-		return $this->_active;
+		return $this->_level > 0 && $this->db && $this->db->isActive;
 	}
 
 	/**
@@ -63,44 +63,79 @@ class Transaction extends \yii\base\Object
 	 */
 	public function begin()
 	{
-		if (!$this->_active) {
-			if ($this->db === null) {
-				throw new InvalidConfigException('Transaction::db must be set.');
-			}
-			\Yii::trace('Starting transaction', __METHOD__);
-			$this->db->open();
-			$this->db->pdo->beginTransaction();
-			$this->_active = true;
+		if ($this->db === null) {
+			throw new InvalidConfigException('Transaction::db must be set.');
 		}
+		$this->db->open();
+
+		if ($this->_level == 0) {
+			Yii::trace('Begin transaction', __METHOD__);
+			$this->db->pdo->beginTransaction();
+			$this->_level = 1;
+			return;
+		}
+
+		$schema = $this->db->getSchema();
+		if ($schema->supportsSavepoint()) {
+			Yii::trace('Set savepoint ' . $this->_level, __METHOD__);
+			$schema->createSavepoint('LEVEL' . $this->_level);
+		} else {
+			Yii::info('Transaction not started: nested transaction not supported', __METHOD__);
+		}
+		$this->_level++;
 	}
 
 	/**
 	 * Commits a transaction.
-	 * @throws Exception if the transaction or the [[db|DB connection]] is not active.
+	 * @throws Exception if the transaction is not active
 	 */
 	public function commit()
 	{
-		if ($this->_active && $this->db && $this->db->isActive) {
-			\Yii::trace('Committing transaction', __METHOD__);
-			$this->db->pdo->commit();
-			$this->_active = false;
-		} else {
+		if (!$this->getIsActive()) {
 			throw new Exception('Failed to commit transaction: transaction was inactive.');
+		}
+
+		$this->_level--;
+		if ($this->_level == 0) {
+			Yii::trace('Commit transaction', __METHOD__);
+			$this->db->pdo->commit();
+			return;
+		}
+
+		$schema = $this->db->getSchema();
+		if ($schema->supportsSavepoint()) {
+			Yii::trace('Release savepoint ' . $this->_level, __METHOD__);
+			$schema->releaseSavepoint('LEVEL' . $this->_level);
+		} else {
+			Yii::info('Transaction not committed: nested transaction not supported', __METHOD__);
 		}
 	}
 
 	/**
 	 * Rolls back a transaction.
-	 * @throws Exception if the transaction or the [[db|DB connection]] is not active.
+	 * @throws Exception if the transaction is not active
 	 */
-	public function rollback()
+	public function rollBack()
 	{
-		if ($this->_active && $this->db && $this->db->isActive) {
-			\Yii::trace('Rolling back transaction', __METHOD__);
-			$this->db->pdo->rollBack();
-			$this->_active = false;
-		} else {
+		if (!$this->getIsActive()) {
 			throw new Exception('Failed to roll back transaction: transaction was inactive.');
+		}
+
+		$this->_level--;
+		if ($this->_level == 0) {
+			Yii::trace('Roll back transaction', __METHOD__);
+			$this->db->pdo->rollBack();
+			return;
+		}
+
+		$schema = $this->db->getSchema();
+		if ($schema->supportsSavepoint()) {
+			Yii::trace('Roll back to savepoint ' . $this->_level, __METHOD__);
+			$schema->rollBackSavepoint('LEVEL' . $this->_level);
+		} else {
+			Yii::info('Transaction not rolled back: nested transaction not supported', __METHOD__);
+			// throw an exception to fail the outer transaction
+			throw new Exception('Roll back failed: nested transaction not supported.');
 		}
 	}
 }

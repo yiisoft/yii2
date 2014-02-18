@@ -210,7 +210,7 @@ $command->execute();
 Transactions
 ------------
 
-If the underlying DBMS supports transactions, you can perform transactional SQL queries like the following:
+You can perform transactional SQL queries like the following:
 
 ```php
 $transaction = $connection->beginTransaction();
@@ -220,9 +220,33 @@ try {
 	// ... executing other SQL statements ...
 	$transaction->commit();
 } catch(Exception $e) {
-	$transaction->rollback();
+	$transaction->rollBack();
 }
 ```
+
+You can also nest multiple transactions, if needed:
+
+```php
+// outer transaction
+$transaction1 = $connection->beginTransaction();
+try {
+	$connection->createCommand($sql1)->execute();
+
+	// inner transaction
+	$transaction2 = $connection->beginTransaction();
+	try {
+		$connection->createCommand($sql2)->execute();
+		$transaction2->commit();
+	} catch (Exception $e) {
+		$transaction2->rollBack();
+	}
+
+	$transaction1->commit();
+} catch (Exception $e) {
+	$transaction1->rollBack();
+}
+```
+
 
 Working with database schema
 ----------------------------

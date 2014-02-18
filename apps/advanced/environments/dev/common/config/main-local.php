@@ -10,7 +10,7 @@ return [
 		],
 		'mail' => [
 			'class' => 'yii\swiftmailer\Mailer',
-			'viewPath' => '@common/mails',
+			'viewPath' => '@common/mail',
 			'useFileTransport' => true,
 		],
 	],

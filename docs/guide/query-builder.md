@@ -1,28 +1,62 @@
 Query Builder and Query
 =======================
 
-Yii provides a basic database access layer as described in the [Database basics](database-basics.md) section. The database access layer provides a low-level way to interact with the database. While useful in some situations, it can be tedious to rely too much upon direct SQL. An alternative approach that Yii provides is the Query Builder. The Query Builder provides an object-oriented vehicle for generating queries to be executed.
+Yii provides a basic database access layer as described in the [Database basics](database-basics.md) section.
+The database access layer provides a low-level way to interact with the database. While useful in some situations,
+it can be tedious and error-prone to write raw SQLs. An alternative approach is to use the Query Builder.
+The Query Builder provides an object-oriented vehicle for generating queries to be executed.
 
-Here's a basic example:
+A typical usage of the query builder looks like the following:
 
 ```php
-$query = new Query;
+$rows = (new \yii\db\Query)
+	->select('id, name')
+	->from('tbl_user')
+	->limit(10)
+	->all();
 
-// Define the query:
-$query->select('id, name')
+// which is equivalent to the following code:
+
+$query = (new \yii\db\Query)
+	->select('id, name')
 	->from('tbl_user')
 	->limit(10);
 
-// Create a command. 
+// Create a command. You can get the actual SQL using $command->sql
 $command = $query->createCommand();
-// You can get the actual SQL using $command->sql
 
 // Execute the command:
 $rows = $command->queryAll();
 ```
 
-Basic selects
+Query Methods
 -------------
+
+As you can see, [[yii\db\Query]] is the main player that you need to deal with. Behind the scene,
+`Query` is actually only responsible for representing various query information. The actual query
+building logic is done by [[yii\db\QueryBuilder]] when you call the `createCommand()` method,
+and the query execution is done by [[yii\db\Command]].
+
+For convenience, [[yii\db\Query]] provides a set of commonly used query methods that will build
+the query, execute it, and return the result. For example,
+
+- [[yii\db\Query::all()|all()]]: builds the query, executes it and returns all results as an array.
+- [[yii\db\Query::one()|one()]]: returns the first row of the result.
+- [[yii\db\Query::column()|column()]]: returns the first column of the result.
+- [[yii\db\Query::scalar()|scalar()]]: returns the first column in the first row of the result.
+- [[yii\db\Query::exists()|exists()]]: returns a value indicating whether the query results in anything.
+- [[yii\db\Query::count()|count()]]: returns the result of a `COUNT` query. Other similar methods
+  include `sum()`, `average()`, `max()`, `min()`, which support the so-called aggregational data query.
+
+
+Building Query
+--------------
+
+In the following, we will explain how to build various clauses in a SQL statement. For simplicity,
+we use `$query` to represent a [[yii\db\Query]] object.
+
+
+### `SELECT`
 
 In order to form a basic `SELECT` query, you need to specify what columns to select and from what table:
 
@@ -31,45 +65,63 @@ $query->select('id, name')
 	->from('tbl_user');
 ```
 
-Select options can be specified as a comma-separated string, as in the above, or as an array. The array syntax is especially useful when forming the selection dynamically:
+Select options can be specified as a comma-separated string, as in the above, or as an array.
+The array syntax is especially useful when forming the selection dynamically:
 
 ```php
-$columns = [];
-$columns[] = 'id';
-$columns[] = 'name';
-$query->select($columns)
+$query->select(['id', 'name'])
 	->from('tbl_user');
 ```
 
-Joins
------
+> Info: You should always use the array format if your `SELECT` clause contains SQL expressions.
+> This is because a SQL expression like `CONCAT(first_name, last_name) AS full_name` may contain commas.
+> If you list it together with other columns in a string, the expression may be split into several parts
+> by commas, which is not what you want to see.
 
-Joins are generated in the Query Builder by using the applicable join method:
+When specifying columns, you may include the table prefixes or column aliases, e.g., `tbl_user.id`, `tbl_user.id AS user_id`.
+If you are using array to specify the columns, you may also use the array keys to specify the column aliases,
+e.g., `['user_id' => 'tbl_user.id', 'user_name' => 'tbl_user.name']`.
 
-- `innerJoin`
-- `leftJoin`
-- `rightJoin`
-
-This left join selects data from two related tables in one query:
-
-```php
-$query->select(['tbl_user.name AS author', 'tbl_post.title as title'])	->from('tbl_user')
-	->leftJoin('tbl_post', 'tbl_post.user_id = tbl_user.id'); 
-```
-
-In the code, the `leftJion` method's first parameter
-specifies the table to join to. The second paramter defines the join condition.
-
-If your database application supports other join types, you can use those via the  generic `join` method:
+To select distinct rows, you may call `distinct()`, like the following:
 
 ```php
-$query->join('FULL OUTER JOIN', 'tbl_post', 'tbl_post.user_id = tbl_user.id');
+$query->select('user_id')->distinct()->from('tbl_post');
 ```
 
-The first argument is the join type to perform. The second is the table to join to, and the third is the condition.
+### `FROM`
 
-Specifying SELECT conditions
----------------------
+To specify which table(s) to select data from, call `from()`:
+
+```php
+$query->select('*')->from('tbl_user');
+```
+
+You may specify multiple tables using a comma-separated string or an array.
+Table names can contain schema prefixes (e.g. `'public.tbl_user'`) and/or table aliases (e.g. `'tbl_user u'`).
+The method will automatically quote the table names unless it contains some parenthesis
+(which means the table is given as a sub-query or DB expression). For example,
+
+```php
+$query->select('u.*, p.*')->from(['tbl_user u', 'tbl_post p']);
+```
+
+When the tables are specified as an array, you may also use the array keys as the table aliases
+(if a table does not need alias, do not use a string key). For example,
+
+```php
+$query->select('u.*, p.*')->from(['u' => 'tbl_user u', 'p' => 'tbl_post']);
+```
+
+You may specify a sub-query using a `Query` object. In this case, the corresponding array key will be used
+as the alias for the sub-query.
+
+```php
+$subQuery = (new Query)->select('id')->from('tbl_user')->where('status=1');
+$query->select('*')->from(['u' => $subQuery]);
+```
+
+
+### `WHERE`
 
 Usually data is selected based upon certain criteria. Query Builder has some useful methods to specify these, the most powerful of which being `where`. It can be used in multiple ways.
 
@@ -180,8 +232,7 @@ In case `$search` isn't empty the following SQL will be generated:
 WHERE (`status` = 10) AND (`title` LIKE '%yii%')
 ```
 
-Order
------
+### `ORDER BY`
 
 For ordering results `orderBy` and `addOrderBy` could be used:
 
@@ -194,17 +245,9 @@ $query->orderBy([
 
 Here we are ordering by `id` ascending and then by `name` descending.
 
-Distinct
---------
-
-If you want to get IDs of all users with posts you can use `DISTINCT`. With query builder it will look like the following:
-
-```php
-$query->select('user_id')->distinct()->from('tbl_post');
 ```
 
-Group and Having
-----------------
+### `GROUP BY` and `HAVING`
 
 In order to add `GROUP BY` to generated SQL you can use the following:
 
@@ -225,8 +268,7 @@ for these are similar to the ones for `where` methods group:
 $query->having(['status' => $status]);
 ```
 
-Limit and offset
-----------------
+### `LIMIT` and `OFFSET`
 
 To limit result to 10 rows `limit` can be used:
 
@@ -240,8 +282,43 @@ To skip 100 fist rows use:
 $query->offset(100);
 ```
 
-Union
------
+### `JOIN`
+
+The `JOIN` clauses are generated in the Query Builder by using the applicable join method:
+
+- `innerJoin()`
+- `leftJoin()`
+- `rightJoin()`
+
+This left join selects data from two related tables in one query:
+
+```php
+$query->select(['tbl_user.name AS author', 'tbl_post.title as title'])
+	->from('tbl_user')
+	->leftJoin('tbl_post', 'tbl_post.user_id = tbl_user.id');
+```
+
+In the code, the `leftJoin()` method's first parameter
+specifies the table to join to. The second parameter defines the join condition.
+
+If your database application supports other join types, you can use those via the  generic `join` method:
+
+```php
+$query->join('FULL OUTER JOIN', 'tbl_post', 'tbl_post.user_id = tbl_user.id');
+```
+
+The first argument is the join type to perform. The second is the table to join to, and the third is the condition.
+
+Like `FROM`, you may also join with sub-queries. To do so, specify the sub-query as an array
+which must contain one element. The array value must be a `Query` object representing the sub-query,
+while the array key is the alias for the sub-query. For example,
+
+```php
+$query->leftJoin(['u' => $subQuery], 'u.id=author_id');
+```
+
+
+### `UNION`
 
 `UNION` in SQL adds results of one query to results of another query. Columns returned by both queries should match.
 In Yii in order to build it you can first form two query objects and then use `union` method:
@@ -256,3 +333,57 @@ $anotherQuery->select('id, 'user' as type, name')->from('tbl_user')->limit(10);
 $query->union($anotherQuery);
 ```
 
+
+Batch Query
+-----------
+
+When working with large amount of data, methods such as [[yii\db\Query::all()]] are not suitable
+because they require loading all data into the memory. To keep the memory requirement low, Yii
+provides the so-called batch query support. A batch query makes uses of data cursor and fetches
+data in batches.
+
+Batch query can be used like the following:
+
+```php
+use yii\db\Query;
+
+$query = (new Query)
+	->from('tbl_user')
+	->orderBy('id');
+
+foreach ($query->batch() as $users) {
+	// $users is an array of 100 or fewer rows from the user table
+}
+
+// or if you want to iterate the row one by one
+foreach ($query->each() as $user) {
+	// $user represents one row of data from the user table
+}
+```
+
+The method [[yii\db\Query::batch()]] and [[yii\db\Query::each()]] return an [[yii\db\BatchQueryResult]] object
+which implements the `Iterator` interface and thus can be used in the `foreach` construct.
+During the first iteration, a SQL query is made to the database. Data are since then fetched in batches
+in the iterations. By default, the batch size is 100, meaning 100 rows of data are being fetched in each batch.
+You can change the batch size by passing the first parameter to the `batch()` or `each()` method.
+
+Compared to the [[yii\db\Query::all()]], the batch query only loads 100 rows of data at a time into the memory.
+If you process the data and then discard it right away, the batch query can help keep the memory usage under a limit.
+
+If you specify the query result to be indexed by some column via [[yii\db\Query::indexBy()]], the batch query
+will still keep the proper index. For example,
+
+```php
+use yii\db\Query;
+
+$query = (new Query)
+	->from('tbl_user')
+	->indexBy('username');
+
+foreach ($query->batch() as $users) {
+	// $users is indexed by the "username" column
+}
+
+foreach ($query->each() as $username => $user) {
+}
+```

@@ -127,3 +127,65 @@ div.required label:after {
     color: red;
 }
 ```
+
+Handling multiple models with a single form
+-------------------------------------------
+
+Sometimes you need to handle multiple models of the same kind in a single form. For example, multiple settings where
+each setting is stored as name-value and is represented by `Setting` model. The
+following shows how to implement it with Yii.
+
+Let's start with controller action:
+
+```php
+namespace app\controllers;
+
+use Yii;
+use yii\base\Model;
+use yii\web\Controller;
+use app\models\Setting;
+
+class SettingsController extends Controller
+{
+	// ...
+
+	public function actionUpdate()
+	{
+		$settings = Setting::find()->indexBy('id')->all();
+
+		if (Model::loadMultiple($settings, Yii::$app->request->post()) && Model::validateMultiple($settings)) {
+			foreach ($settings as $setting) {
+				$setting->save(false);
+			}
+
+			return $this->redirect('index');
+		}
+
+		return $this->render('update', ['settings' => $settings]);
+	}
+}
+```
+
+In the code above we're using `indexBy` when retrieving models from database to make array indexed by model ids. These
+will be later used to identify form fields. `loadMultiple` fills multiple modelds with the form data coming from POST
+and `validateMultiple` validates all models at once. In order to skip validation when saving we're passing `false` as
+a parameter to `save`.
+
+Now the form that's in `update` view:
+
+```php
+<?php
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+$form = ActiveForm::begin();
+
+foreach ($settings as $index => $setting) {
+	echo Html::encode($setting->name) . ': ' . $form->field($setting, "[$index]value");
+}
+
+ActiveForm::end();
+```
+
+Here for each setting we are rendering name and an input with a value. It is important to add a proper index
+to input name since that is how `loadMultiple` determines which model to fill with which values.

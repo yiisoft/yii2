@@ -102,7 +102,11 @@ class ActiveForm extends Widget
 	/**
 	 * @var string the name of the GET parameter indicating the validation request is an AJAX request.
 	 */
-	public $ajaxVar = 'ajax';
+	public $ajaxParam = 'ajax';
+	/**
+	 * @var string the type of data that you're expecting back from the server.
+	 */
+	public $ajaxDataType = 'json';
 	/**
 	 * @var string|JsExpression a JS callback that will be called when the form is being submitted.
 	 * The signature of the callback should be:
@@ -186,7 +190,8 @@ class ActiveForm extends Widget
 			'errorCssClass' => $this->errorCssClass,
 			'successCssClass' => $this->successCssClass,
 			'validatingCssClass' => $this->validatingCssClass,
-			'ajaxVar' => $this->ajaxVar,
+			'ajaxParam' => $this->ajaxParam,
+			'ajaxDataType' => $this->ajaxDataType,
 		];
 		if ($this->validationUrl !== null) {
 			$options['validationUrl'] = Html::url($this->validationUrl);
@@ -237,7 +242,7 @@ class ActiveForm extends Widget
 		}
 
 		if (!empty($lines)) {
-			$content = "<ul><li>" . implode("</li>\n<li>", $lines) . "</li><ul>";
+			$content = "<ul><li>" . implode("</li>\n<li>", $lines) . "</li></ul>";
 			return Html::tag('div', $header . $content . $footer, $options);
 		} else {
 			$content = "<ul></ul>";

@@ -64,6 +64,15 @@ class Schema extends \yii\db\Schema
 		'enum' => self::TYPE_STRING,
 	];
 
+
+	/**
+	 * @inheritdoc
+	 */
+	public function releaseSavepoint($name)
+	{
+		// does nothing as cubrid does not support this
+	}
+
 	/**
 	 * Quotes a table name for use in a query.
 	 * A simple table name has no schema prefix.

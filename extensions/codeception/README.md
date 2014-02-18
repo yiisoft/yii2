@@ -267,9 +267,9 @@ Then run command `php codecept.phar run --debug unit/SomeDebugTest` and you will
   
       [authTimeout] => 
       [autoRenewCookie] => 1
-      [idVar] => __id
-      [authTimeoutVar] => __expire
-      [returnUrlVar] => __returnUrl
+      [idParam] => __id
+      [authTimeoutParam] => __expire
+      [returnUrlParam] => __returnUrl
       [_access:yii\web\User:private] => Array
           (
           )

@@ -36,7 +36,7 @@ class SortTest extends TestCase
 				],
 			],
 			'params' => [
-				'sort' => 'age.name-desc'
+				'sort' => 'age,-name'
 			],
 			'enableMultiSort' => true,
 		]);
@@ -64,7 +64,7 @@ class SortTest extends TestCase
 				],
 			],
 			'params' => [
-				'sort' => 'age.name-desc'
+				'sort' => 'age,-name'
 			],
 			'enableMultiSort' => true,
 		]);
@@ -91,7 +91,7 @@ class SortTest extends TestCase
 				],
 			],
 			'params' => [
-				'sort' => 'age.name-desc'
+				'sort' => 'age,-name'
 			],
 			'enableMultiSort' => true,
 		]);
@@ -101,7 +101,7 @@ class SortTest extends TestCase
 		$this->assertNull($sort->getAttributeOrder('xyz'));
 	}
 
-	public function testCreateSortVar()
+	public function testCreateSortParam()
 	{
 		$sort = new Sort([
 			'attributes' => [
@@ -112,14 +112,14 @@ class SortTest extends TestCase
 				],
 			],
 			'params' => [
-				'sort' => 'age.name-desc'
+				'sort' => 'age,-name'
 			],
 			'enableMultiSort' => true,
 			'route' => 'site/index',
 		]);
 
-		$this->assertEquals('age-desc.name-desc', $sort->createSortVar('age'));
-		$this->assertEquals('name.age', $sort->createSortVar('name'));
+		$this->assertEquals('-age,-name', $sort->createSortParam('age'));
+		$this->assertEquals('name,age', $sort->createSortParam('name'));
 	}
 
 	public function testCreateUrl()
@@ -138,15 +138,15 @@ class SortTest extends TestCase
 				],
 			],
 			'params' => [
-				'sort' => 'age.name-desc'
+				'sort' => 'age,-name'
 			],
 			'enableMultiSort' => true,
 			'urlManager' => $manager,
 			'route' => 'site/index',
 		]);
 
-		$this->assertEquals('/index.php?r=site/index&sort=age-desc.name-desc', $sort->createUrl('age'));
-		$this->assertEquals('/index.php?r=site/index&sort=name.age', $sort->createUrl('name'));
+		$this->assertEquals('/index.php?r=site/index&sort=-age%2C-name', $sort->createUrl('age'));
+		$this->assertEquals('/index.php?r=site/index&sort=name%2Cage', $sort->createUrl('name'));
 	}
 
 	public function testLink()
@@ -166,13 +166,13 @@ class SortTest extends TestCase
 				],
 			],
 			'params' => [
-				'sort' => 'age.name-desc'
+				'sort' => 'age,-name'
 			],
 			'enableMultiSort' => true,
 			'urlManager' => $manager,
 			'route' => 'site/index',
 		]);
 
-		$this->assertEquals('<a class="asc" href="/index.php?r=site/index&amp;sort=age-desc.name-desc" data-sort="age-desc.name-desc">Age</a>', $sort->link('age'));
+		$this->assertEquals('<a class="asc" href="/index.php?r=site/index&amp;sort=-age%2C-name" data-sort="-age,-name">Age</a>', $sort->link('age'));
 	}
 }

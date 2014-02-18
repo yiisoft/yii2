@@ -2,7 +2,7 @@ Yii 2 Basic Application Template
 ================================
 
 Yii 2 Basic Application Template is a skeleton Yii 2 application best for
-rapidly developing small Websites containing mainly informational pages.
+rapidly creating small projects.
 
 The template contains the basic features including user login/logout and a contact page.
 It includes all commonly used configurations that would allow you to focus on adding new
@@ -16,7 +16,7 @@ DIRECTORY STRUCTURE
       commands/           contains console commands (controllers)
       config/             contains application configurations
       controllers/        contains Web controller classes
-      mails/              contains view files for e-mails
+      mail/               contains view files for e-mails
       models/             contains model classes
       runtime/            contains files generated during runtime
       tests/              contains various tests for the basic application

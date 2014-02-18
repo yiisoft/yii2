@@ -59,6 +59,7 @@ class Tabs extends Widget
 	 *
 	 * - label: string, required, the tab header label.
 	 * - headerOptions: array, optional, the HTML attributes of the tab header.
+	 * - linkOptions: array, optional, the HTML attributes of the tab header link tags.
 	 * - content: array, required if `items` is not set. The content (HTML) of the tab pane.
 	 * - options: array, optional, the HTML attributes of the tab pane container.
 	 * - active: boolean, optional, whether the item tab header and pane should be visible or not.
@@ -81,6 +82,11 @@ class Tabs extends Widget
 	 * by the "headerOptions" set in individual [[items]].
 	 */
 	public $headerOptions = [];
+	/**
+	 * @var array list of HTML attributes for the tab header link tags. This will be overwritten
+	 * by the "linkOptions" set in individual [[items]].
+	 */
+	public $linkOptions = [];
 	/**
 	 * @var boolean whether the labels for header items should be HTML-encoded.
 	 */
@@ -124,6 +130,7 @@ class Tabs extends Widget
 			}
 			$label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
 			$headerOptions = array_merge($this->headerOptions, ArrayHelper::getValue($item, 'headerOptions', []));
+			$linkOptions = array_merge($this->linkOptions, ArrayHelper::getValue($item, 'linkOptions', []));
 
 			if (isset($item['items'])) {
 				$label .= ' <b class="caret"></b>';
@@ -133,7 +140,9 @@ class Tabs extends Widget
 					Html::addCssClass($headerOptions, 'active');
 				}
 
-				$header = Html::a($label, "#", ['class' => 'dropdown-toggle', 'data-toggle' => 'dropdown']) . "\n"
+				Html::addCssClass($linkOptions, 'dropdown-toggle');
+				$linkOptions['data-toggle'] = 'dropdown';
+				$header = Html::a($label, "#", $linkOptions) . "\n"
 					. Dropdown::widget(['items' => $item['items'], 'clientOptions' => false, 'view' => $this->getView()]);
 			} elseif (isset($item['content'])) {
 				$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
@@ -144,7 +153,8 @@ class Tabs extends Widget
 					Html::addCssClass($options, 'active');
 					Html::addCssClass($headerOptions, 'active');
 				}
-				$header = Html::a($label, '#' . $options['id'], ['data-toggle' => 'tab']);
+				$linkOptions['data-toggle'] = 'tab';
+				$header = Html::a($label, '#' . $options['id'], $linkOptions);
 				$panes[] = Html::tag('div', $item['content'], $options);
 			} else {
 				throw new InvalidConfigException("Either the 'content' or 'items' option must be set.");
@@ -154,7 +164,7 @@ class Tabs extends Widget
 		}
 
 		return Html::tag('ul', implode("\n", $headers), $this->options) . "\n"
-			. Html::tag('div', implode("\n", $panes), ['class' => 'tab-content']);
+		. Html::tag('div', implode("\n", $panes), ['class' => 'tab-content']);
 	}
 
 	/**

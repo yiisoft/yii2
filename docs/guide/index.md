@@ -41,12 +41,13 @@ Database
 
 - [Basics](database-basics.md) - Connecting to a database, basic queries, transactions and schema manipulation
 - [Query Builder](query-builder.md) - Querying the database using a simple abstraction layer
-- [ActiveRecord](active-record.md) - The active record ORM, retrieving and manipulatings records and defining relations
-- [Database Migration](console-migrate.md) - Versioning your database with database migrations
+- [ActiveRecord](active-record.md) - The active record ORM, retrieving and manipulating records and defining relations
+- [Database Migration](console-migrate.md) - Versioning your database with database migration
 
 Developers Toolbox
 ------------------
 
+- [Helper Classes](helpers.md)
 - [Automatic Code Generation](gii.md)
 - [Debug toolbar and debugger](module-debug.md)
 - [Error Handling](error.md)
