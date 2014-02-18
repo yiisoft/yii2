@@ -91,28 +91,22 @@ class Session extends \yii\web\Session
 		parent::regenerateID(false);
 		$newID = session_id();
 
-		$query = new Query;
-		$row = $query->from($this->sessionCollection)
-			->where(['id' => $oldID])
-			->one($this->db);
-		if ($row !== false) {
+		$collection = $this->db->getCollection($this->sessionCollection);
+		$row = $collection->findOne(['id' => $oldID]);
+		if ($row !== null) {
 			if ($deleteOldSession) {
-				$this->db->getCollection($this->sessionCollection)
-					->update(['_id' => $row['_id']], ['id' => $newID]);
+				$collection->update(['id' => $oldID], ['id' => $newID]);
 			} else {
 				unset($row['_id']);
 				$row['id'] = $newID;
-				$this->db->getCollection($this->sessionCollection)
-					->insert($row);
+				$collection->insert($row);
 			}
 		} else {
 			// shouldn't reach here normally
-			$this->db->getCollection($this->sessionCollection)
-				->insert([
-					'id' => $newID,
-					'expire' => time() + $this->getTimeout(),
-					'data' => '',
-				]);
+			$collection->insert([
+				'id' => $newID,
+				'expire' => time() + $this->getTimeout()
+			]);
 		}
 	}
 
@@ -124,15 +118,15 @@ class Session extends \yii\web\Session
 	 */
 	public function readSession($id)
 	{
-		$query = new Query;
-		$row = $query->select(['data'])
-			->from($this->sessionCollection)
-			->where([
+		$collection = $this->db->getCollection($this->sessionCollection);
+		$doc = $collection->findOne(
+			[
+				'id' => $id,
 				'expire' => ['$gt' => time()],
-				'id' => $id
-			])
-			->one($this->db);
-		return $row === false ? '' : $row['data'];
+			],
+			['data' => 1, '_id' => 0]
+		);
+		return isset($doc['data']) ? $doc['data'] : '';
 	}
 
 	/**
@@ -147,23 +141,15 @@ class Session extends \yii\web\Session
 		// exception must be caught in session write handler
 		// http://us.php.net/manual/en/function.session-set-save-handler.php
 		try {
-			$expire = time() + $this->getTimeout();
-			$query = new Query;
-			$exists = $query->select(['id'])
-				->from($this->sessionCollection)
-				->where(['id' => $id])
-				->one($this->db);
-			if ($exists === false) {
-				$this->db->getCollection($this->sessionCollection)
-					->insert([
-						'id' => $id,
-						'data' => $data,
-						'expire' => $expire,
-					]);
-			} else {
-				$this->db->getCollection($this->sessionCollection)
-					->update(['id' => $id], ['data' => $data, 'expire' => $expire]);
-			}
+			$this->db->getCollection($this->sessionCollection)->update(
+				['id' => $id],
+				[
+					'id' => $id,
+					'data' => $data,
+					'expire' => time() + $this->getTimeout(),
+				],
+				['upsert' => true]
+			);
 		} catch (\Exception $e) {
 			if (YII_DEBUG) {
 				echo $e->getMessage();
@@ -182,8 +168,10 @@ class Session extends \yii\web\Session
 	 */
 	public function destroySession($id)
 	{
-		$this->db->getCollection($this->sessionCollection)
-			->remove(['id' => $id]);
+		$this->db->getCollection($this->sessionCollection)->remove(
+			['id' => $id],
+			['justOne' => true]
+		);
 		return true;
 	}
 
@@ -195,10 +183,10 @@ class Session extends \yii\web\Session
 	 */
 	public function gcSession($maxLifetime)
 	{
-		$this->db->getCollection($this->sessionCollection)
-			->remove([
-				'expire' => ['$lt' => time()]
-			]);
+		$this->db->getCollection($this->sessionCollection)->remove(
+			['expire' => ['$lt' => time()]],
+			['justOne' => false]
+		);
 		return true;
 	}
 }
