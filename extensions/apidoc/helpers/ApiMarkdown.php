@@ -30,6 +30,48 @@ class ApiMarkdown extends GithubMarkdown
 	protected $context;
 
 	/**
+	 * @inheritDoc
+	 */
+	protected function identifyLine($lines, $current)
+	{
+		if (strncmp($lines[$current], '~~~', 3) === 0) {
+			return 'fencedCode';
+		}
+		return parent::identifyLine($lines, $current);
+	}
+
+	/**
+	 * Consume lines for a fenced code block
+	 */
+	protected function consumeFencedCode($lines, $current)
+	{
+		// consume until ```
+		$block = [
+			'type' => 'code',
+			'content' => [],
+		];
+		$line = rtrim($lines[$current]);
+		if (strncmp($lines[$current], '~~~', 3) === 0) {
+			$fence = '~~~';
+			$language = 'php';
+		} else {
+			$fence = substr($line, 0, $pos = strrpos($line, '`') + 1);
+			$language = substr($line, $pos);
+		}
+		if (!empty($language)) {
+			$block['language'] = $language;
+		}
+		for($i = $current + 1, $count = count($lines); $i < $count; $i++) {
+			if (rtrim($line = $lines[$i]) !== $fence) {
+				$block['content'][] = $line;
+			} else {
+				break;
+			}
+		}
+		return [$block, $i];
+	}
+
+	/**
 	 * Renders a code block
 	 */
 	protected function renderCode($block)

@@ -21,7 +21,8 @@
 	"require": {
 		"yiisoft/yii2": "*",
 		"yiisoft/yii2-bootstrap": "*",
-		"phpdocumentor/reflection": ">=1.0.3"
+		"phpdocumentor/reflection": ">=1.0.3",
+		"nikic/php-parser": "0.9.*"
 	},
 	"autoload": {
 		"psr-4": { "yii\\apidoc\\": "" }

@@ -57,7 +57,7 @@ class BaseMarkdown
 	public static function process($markdown, $flavor = 'original')
 	{
 		$parser = static::getParser($flavor);
-		return $parser->parse($parser);
+		return $parser->parse($markdown);
 	}
 
 	/**
@@ -73,7 +73,7 @@ class BaseMarkdown
 	public static function processParagraph($markdown, $flavor = 'original')
 	{
 		$parser = static::getParser($flavor);
-		return $parser->parseParagraph($parser);
+		return $parser->parseParagraph($markdown);
 	}
 
 	/**
