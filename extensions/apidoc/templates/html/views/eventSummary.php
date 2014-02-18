@@ -29,14 +29,14 @@ ArrayHelper::multisort($events, 'name');
 <tr>
   <th>Event</th><th>Type</th><th>Description</th><th>Defined By</th>
 </tr>
-<?php foreach($events as $event): ?>
+<?php foreach ($events as $event): ?>
 <tr<?= $event->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $event->name ?>">
 	<td><?= $this->context->subjectLink($event) ?></td>
 	<td><?= $this->context->typeLink($event->types) ?></td>
 	<td>
 		<?= ApiMarkdown::process($event->shortDescription, $event->definedBy, true) ?>
-		<?php if(!empty($event->since)): ?>
-			(available since version <?php echo $event->since; ?>)
+		<?php if (!empty($event->since)): ?>
+			(available since version <?= $event->since ?>)
 		<?php endif; ?>
 	</td>
 	<td><?= $this->context->typeLink($event->definedBy) ?></td>

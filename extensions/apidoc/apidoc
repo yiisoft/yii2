@@ -15,7 +15,7 @@ $composerAutoload = [
 	__DIR__ . '/../../autoload.php', // script is installed as a composer binary
 ];
 $vendorPath = null;
-foreach($composerAutoload as $autoload) {
+foreach ($composerAutoload as $autoload) {
 	if (file_exists($autoload)) {
 		require($autoload);
 		$vendorPath = dirname($autoload);
@@ -27,7 +27,7 @@ $yiiDirs = [
 	__DIR__ . '/vendor/yiisoft/yii2', // standalone with "composer install" run
 	__DIR__ . '/../../yiisoft/yii2', // script is installed as a composer binary
 ];
-foreach($yiiDirs as $dir) {
+foreach ($yiiDirs as $dir) {
 	if (file_exists($dir . '/Yii.php')) {
 		require($dir . '/Yii.php');
 		break;

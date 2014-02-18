@@ -33,11 +33,11 @@ class InterfaceDoc extends TypeDoc
 			return;
 		}
 
-		foreach($reflector->getParentInterfaces() as $interface) {
+		foreach ($reflector->getParentInterfaces() as $interface) {
 			$this->parentInterfaces[] = ltrim($interface, '\\');
 		}
 
-		foreach($this->methods as $method) {
+		foreach ($this->methods as $method) {
 			$method->isAbstract = true;
 		}
 

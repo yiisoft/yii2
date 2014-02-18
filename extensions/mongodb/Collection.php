@@ -260,6 +260,18 @@ class Collection extends Object
 	}
 
 	/**
+	 * Returns a a single document.
+	 * @param array $condition query condition
+	 * @param array $fields fields to be selected
+	 * @return array|null the single document. Null is returned if the query results in nothing.
+	 * @see http://www.php.net/manual/en/mongocollection.findone.php
+	 */
+	public function findOne($condition = [], $fields = [])
+	{
+		return $this->mongoCollection->findOne($this->buildCondition($condition), $fields);
+	}
+
+	/**
 	 * Inserts new data into collection.
 	 * @param array|object $data data to be inserted.
 	 * @param array $options list of options in format: optionName => optionValue.
@@ -372,11 +384,12 @@ class Collection extends Object
 	 * @param array $options list of options in format: optionName => optionValue.
 	 * @return integer|boolean number of updated documents or whether operation was successful.
 	 * @throws Exception on failure.
+	 * @see http://www.php.net/manual/en/mongocollection.remove.php
 	 */
 	public function remove($condition = [], $options = [])
 	{
 		$condition = $this->buildCondition($condition);
-		$options = array_merge(['w' => 1, 'multiple' => true], $options);
+		$options = array_merge(['w' => 1, 'justOne' => false], $options);
 		$token = $this->composeLogToken('remove', [$condition, $options]);
 		Yii::info($token, __METHOD__);
 		try {

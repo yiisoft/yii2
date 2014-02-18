@@ -145,7 +145,7 @@ class Cache extends \yii\caching\Cache
 	protected function setValues($data, $expire)
 	{
 		$args = [];
-		foreach($data as $key => $value) {
+		foreach ($data as $key => $value) {
 			$args[] = $key;
 			$args[] = $value;
 		}
@@ -164,7 +164,7 @@ class Cache extends \yii\caching\Cache
 			}
 			$result = $this->redis->executeCommand('EXEC');
 			array_shift($result);
-			foreach($result as $i => $r) {
+			foreach ($result as $i => $r) {
 				if ($r != 1) {
 					$failedKeys[] = $index[$i];
 				}

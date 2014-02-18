@@ -37,7 +37,7 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 		$controller->stdout("writing packages file...");
 		$packages = [];
 		$notNamespaced = [];
-		foreach(array_merge($context->classes, $context->interfaces, $context->traits) as $type) {
+		foreach (array_merge($context->classes, $context->interfaces, $context->traits) as $type) {
 			/** @var TypeDoc $type */
 			if (empty($type->namespace)) {
 				$notNamespaced[] = str_replace('\\', '-', $type->name);
@@ -47,7 +47,7 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 		}
 		ksort($packages);
 		$packages = array_merge(['Not namespaced' => $notNamespaced], $packages);
-		foreach($packages as $name => $classes) {
+		foreach ($packages as $name => $classes) {
 			sort($packages[$name]);
 		}
 		file_put_contents($dir . '/packages.txt', serialize($packages));

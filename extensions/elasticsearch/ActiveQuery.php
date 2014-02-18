@@ -108,7 +108,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 		$models = $this->createModels($result['hits']['hits']);
 		if ($this->asArray && !$this->indexBy) {
-			foreach($models as $key => $model) {
+			foreach ($models as $key => $model) {
 				if ($pk === '_id') {
 					$model['_source']['_id'] = $model['_id'];
 				}
@@ -120,7 +120,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			$this->findWith($this->with, $models);
 		}
 		if (!$this->asArray) {
-			foreach($models as $model) {
+			foreach ($models as $model) {
 				$model->afterFind();
 			}
 		}
@@ -178,7 +178,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 				/** @var ActiveRecord $modelClass */
 				$modelClass = $this->modelClass;
 				$pk = $modelClass::primaryKey()[0];
-				foreach($models as $key => $model) {
+				foreach ($models as $key => $model) {
 					if ($pk === '_id') {
 						$model['_source']['_id'] = $model['_id'];
 					}
@@ -190,7 +190,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 				$this->findWith($this->with, $models);
 			}
 			if (!$this->asArray) {
-				foreach($models as $model) {
+				foreach ($models as $model) {
 					$model->afterFind();
 				}
 			}
