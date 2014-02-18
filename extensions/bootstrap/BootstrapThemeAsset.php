@@ -22,7 +22,7 @@ class BootstrapThemeAsset extends AssetBundle
     public $sourcePath = '@vendor/twbs/bootstrap/dist';
 
     public function init() {
-        $this->css = YII_DEBUG ? ['js/bootstrap-theme.css'] : ['js/bootstrap-theme.min.css'];
+        $this->css = YII_DEBUG ? ['css/bootstrap-theme.css'] : ['css/bootstrap-theme.min.css'];
         parent::init();
     }
 
