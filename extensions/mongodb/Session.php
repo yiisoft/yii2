@@ -183,10 +183,8 @@ class Session extends \yii\web\Session
 	 */
 	public function gcSession($maxLifetime)
 	{
-		$this->db->getCollection($this->sessionCollection)->remove(
-			['expire' => ['$lt' => time()]],
-			['justOne' => false]
-		);
+		$this->db->getCollection($this->sessionCollection)
+			->remove(['expire' => ['$lt' => time()]]);
 		return true;
 	}
 }
