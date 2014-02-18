@@ -25,7 +25,7 @@ class BootstrapPluginAsset extends AssetBundle
     ];
 
     public function init() {
-        $this->css = YII_DEBUG ? ['js/bootstrap.js'] : ['js/bootstrap.min.js'];
+        $this->js = YII_DEBUG ? ['js/bootstrap.js'] : ['js/bootstrap.min.js'];
         parent::init();
     }
 
