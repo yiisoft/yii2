@@ -65,6 +65,11 @@ class RenderController extends Controller
 
 		$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 
+		if (empty($files)) {
+			$this->stderr('Error: No php files found to process.' . PHP_EOL);
+			return 1;
+		}
+
 		$context = new Context();
 
 		$cacheFile = $targetDir . '/cache/' . md5(serialize($files)) . '.tmp';
