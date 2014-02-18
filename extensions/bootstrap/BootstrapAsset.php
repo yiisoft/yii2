@@ -14,7 +14,8 @@ use yii\web\AssetBundle;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class BootstrapAsset extends AssetBundle {
+class BootstrapAsset extends AssetBundle
+{
 
     public $sourcePath = '@vendor/twbs/bootstrap/dist';
 
