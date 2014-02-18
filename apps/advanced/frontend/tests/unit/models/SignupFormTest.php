@@ -5,7 +5,7 @@ namespace frontend\tests\unit\models;
 use frontend\tests\unit\DbTestCase;
 use common\tests\fixtures\UserFixture;
 
-class SingupFormTest extends DbTestCase
+class SignupFormTest extends DbTestCase
 {
 
 	use \Codeception\Specify;
