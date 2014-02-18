@@ -73,6 +73,11 @@ use Yii;
 class Connection extends Component
 {
 	/**
+	 * @event Event an event that is triggered after a DB connection is established
+	 */
+	const EVENT_AFTER_OPEN = 'afterOpen';
+
+	/**
 	 * @var string host:port
 	 *
 	 * Correct syntax is:
@@ -233,6 +238,7 @@ class Connection extends Component
 					$options['db'] = $this->defaultDatabaseName;
 				}
 				$this->mongoClient = new \MongoClient($this->dsn, $options);
+				$this->initConnection();
 				Yii::endProfile($token, __METHOD__);
 			} catch (\Exception $e) {
 				Yii::endProfile($token, __METHOD__);
@@ -252,5 +258,15 @@ class Connection extends Component
 			$this->mongoClient = null;
 			$this->_databases = [];
 		}
+	}
+
+	/**
+	 * Initializes the DB connection.
+	 * This method is invoked right after the DB connection is established.
+	 * The default implementation triggers an [[EVENT_AFTER_OPEN]] event.
+	 */
+	protected function initConnection()
+	{
+		$this->trigger(self::EVENT_AFTER_OPEN);
 	}
 }
