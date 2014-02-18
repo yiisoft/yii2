@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,8 +16,12 @@ use yii\web\AssetBundle;
  */
 class BootstrapAsset extends AssetBundle
 {
-	public $sourcePath = '@vendor/twbs/bootstrap/dist';
-	public $css = [
-		'css/bootstrap.css',
-	];
+
+    public $sourcePath = '@vendor/twbs/bootstrap/dist';
+
+    public function init() {
+        $this->css = YII_DEBUG ? ['css/bootstrap.css'] : ['css/bootstrap.min.css'];
+        parent::init();
+    }
+
 }
