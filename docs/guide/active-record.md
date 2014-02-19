@@ -413,6 +413,96 @@ $customers = Customer::find()->limit(100)->with([
 ```
 
 
+Inverse Relations
+-----------------
+
+Relations can often be defined in pairs. For example, `Customer` may have a relation named `orders` while `Order` may have a relation
+named `customer`:
+
+```php
+class Customer extends ActiveRecord
+{
+	....
+	public function getOrders()
+	{
+		return $this->hasMany(Order::className, ['customer_id' => 'id']);
+	}
+}
+
+class Order extends ActiveRecord
+{
+	....
+	public function getCustomer()
+	{
+		return $this->hasOne(Customer::className, ['id' => 'customer_id']);
+	}
+}
+```
+
+If we perform the following query, we would find that the `customer` of an order is not the same customer object
+that finds those orders, and accessing `customer->orders` will trigger one SQL execution while accessing
+the `customer` of an order will trigger another SQL execution:
+
+```php
+// SELECT * FROM tbl_customer WHERE id=1
+$customer = Customer::find(1);
+// echoes "not equal"
+// SELECT * FROM tbl_order WHERE customer_id=1
+// SELECT * FROM tbl_customer WHERE id=1
+if ($customer->orders[0]->customer === $customer) {
+	echo 'equal';
+} else {
+	echo 'not equal';
+}
+```
+
+To avoid the redundant execution of the last SQL statement, we could declare the inverse relations for the `customer`
+and the `orders` relations by calling the `inverseOf()` method, like the following:
+
+```php
+class Customer extends ActiveRecord
+{
+	....
+	public function getOrders()
+	{
+		return $this->hasMany(Order::className, ['customer_id' => 'id'])->inverseOf('customer');
+	}
+}
+```
+
+Now if we execute the same query as shown above, we would get:
+
+```php
+// SELECT * FROM tbl_customer WHERE id=1
+$customer = Customer::find(1);
+// echoes "equal"
+// SELECT * FROM tbl_order WHERE customer_id=1
+if ($customer->orders[0]->customer === $customer) {
+	echo 'equal';
+} else {
+	echo 'not equal';
+}
+```
+
+In the above, we have shown how to use inverse relations in lazy loading. Inverse relations also apply in
+eager loading:
+
+```php
+// SELECT * FROM tbl_customer
+// SELECT * FROM tbl_order WHERE customer_id IN (1, 2, ...)
+$customers = Customer::find()->with('orders')->all();
+// echoes "equal"
+if ($customers[0]->orders[0]->customer === $customers[0]) {
+	echo 'equal';
+} else {
+	echo 'not equal';
+}
+```
+
+> Note: Inverse relation cannot be defined with a relation that involves pivoting tables.
+> That is, if your relation iso defined with `via()` or `viaTable()`, you cannot call `inverseOf()` further.
+
+
 Joining with Relations
 ----------------------
 
