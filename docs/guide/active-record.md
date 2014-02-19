@@ -500,7 +500,7 @@ if ($customers[0]->orders[0]->customer === $customers[0]) {
 ```
 
 > Note: Inverse relation cannot be defined with a relation that involves pivoting tables.
-> That is, if your relation iso defined with `via()` or `viaTable()`, you cannot call `inverseOf()` further.
+> That is, if your relation is defined with `via()` or `viaTable()`, you cannot call `inverseOf()` further.
 
 
 Joining with Relations
