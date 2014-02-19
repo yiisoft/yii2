@@ -34,6 +34,10 @@ td, th {
 	word-break: break-all;
 }
 
+.config-php-info-table td.v {
+	word-break: break-all;
+}
+
 .detail-grid-view th {
     white-space: nowrap;
 }
