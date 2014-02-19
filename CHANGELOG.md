@@ -115,6 +115,7 @@ Yii Framework 2 Change Log
 - Enh #2387: Added support for fetching data from database in batches (nineinchnick, qiangxue)
 - Enh #2417: Added possibility to set `dataType` for `$.ajax` call in yii.activeForm.js (Borales)
 - Enh #2436: Label of the attribute, which looks like `relatedModel.attribute`, will be received from the related model if it available (djagya)
+- Enh #2415: Added support for inverse relations (qiangxue)
 - Enh: Added support for using arrays as option values for console commands (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)

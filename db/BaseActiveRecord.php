@@ -231,17 +231,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 			}
 			$value = parent::__get($name);
 			if ($value instanceof ActiveRelationInterface) {
-				if (method_exists($this, 'get' . $name)) {
-					$method = new \ReflectionMethod($this, 'get' . $name);
-					$realName = lcfirst(substr($method->getName(), 3));
-					if ($realName !== $name) {
-						throw new InvalidParamException('Relation names are case sensitive. ' . get_class($this) . " has a relation named \"$realName\" instead of \"$name\".");
-					}
-				}
-				$this->populateRelation($name, $value->multiple ? $value->all() : $value->one());
-				return $this->_related[$name];
+				return $this->_related[$name] = $value->findFor($name, $this);
+			} else {
+				return $value;
 			}
-			return $value;
 		}
 	}
 
