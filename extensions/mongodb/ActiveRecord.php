@@ -37,7 +37,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 * For example, to change the status to be 1 for all customers whose status is 2:
 	 *
 	 * ~~~
-	 * Customer::updateAll(['status' => 1], ['status' = 2]);
+	 * Customer::updateAll(['status' => 1], ['status' => 2]);
 	 * ~~~
 	 *
 	 * @param array $attributes attribute values (name-value pairs) to be saved into the collection
@@ -78,7 +78,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 * For example, to delete all customers whose status is 3:
 	 *
 	 * ~~~
-	 * Customer::deleteAll('status = 3');
+	 * Customer::deleteAll(['status' => 3]);
 	 * ~~~
 	 *
 	 * @param array $condition description of the objects to delete.
@@ -88,10 +88,6 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function deleteAll($condition = [], $options = [])
 	{
-		$options['w'] = 1;
-		if (!array_key_exists('multiple', $options)) {
-			$options['multiple'] = true;
-		}
 		return static::getCollection()->remove($condition, $options);
 	}
 
@@ -237,8 +233,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 				$values[$key] = isset($currentAttributes[$key]) ? $currentAttributes[$key] : null;
 			}
 		}
-		$collection = static::getCollection();
-		$newId = $collection->insert($values);
+		$newId = static::getCollection()->insert($values);
 		$this->setAttribute('_id', $newId);
 		foreach ($values as $name => $value) {
 			$this->setOldAttribute($name, $value);
