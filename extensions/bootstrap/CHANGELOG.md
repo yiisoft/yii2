@@ -11,6 +11,7 @@ Yii Framework 2 bootstrap extension Change Log
 - Enh #1562: Added `yii\bootstrap\Tabs::linkOptions` (kartik-v)
 - Enh #1601: Added support for tagName and encodeLabel parameters in ButtonDropdown (omnilight)
 - Enh #1881: Improved `yii\bootstrap\NavBar` with `containerOptions`, `innerContainerOptions` and `renderInnerContainer` (creocoder)
+- Enh #2425: Tabs widget now selects first tab if no active tab is specified (samdark)
 - Chg #1459: Update Collapse to use bootstrap 3 classes (tonydspaniard)
 - Chg #1820: Update Progress to use bootstrap 3 markup (samdark)
 

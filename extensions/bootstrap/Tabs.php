@@ -124,6 +124,11 @@ class Tabs extends Widget
 	{
 		$headers = [];
 		$panes = [];
+
+		if (!$this->hasActiveTab() && !empty($this->items)) {
+			$this->items[0]['active'] = true;
+		}
+
 		foreach ($this->items as $n => $item) {
 			if (!isset($item['label'])) {
 				throw new InvalidConfigException("The 'label' option is required.");
@@ -165,6 +170,19 @@ class Tabs extends Widget
 
 		return Html::tag('ul', implode("\n", $headers), $this->options) . "\n"
 		. Html::tag('div', implode("\n", $panes), ['class' => 'tab-content']);
+	}
+
+	/**
+	 * @return boolean if there's active tab defined
+	 */
+	protected function hasActiveTab()
+	{
+		foreach ($this->items as $item) {
+			if (isset($item['active']) && $item['active']===true) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
