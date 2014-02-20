@@ -24,9 +24,9 @@ ArrayHelper::multisort($properties, 'name');
 		<?php echo $property->name; ?>
 		<span class="detailHeaderTag small">
 			<?= $property->visibility ?>
-			property
 			<?php if($property->getIsReadOnly()) echo ' <em>read-only</em> '; ?>
 			<?php if($property->getIsWriteOnly()) echo ' <em>write-only</em> '; ?>
+			property
 			<?php if(!empty($property->since)): ?>
 				(available since version <?php echo $property->since; ?>)
 			<?php endif; ?>
