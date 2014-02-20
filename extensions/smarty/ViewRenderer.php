@@ -88,7 +88,7 @@ class ViewRenderer extends BaseViewRenderer
 	public function render($view, $file, $params)
 	{
 		/** @var \Smarty_Internal_Template $template */
-		$template = $this->smarty->createTemplate($file, null, null, $params, true);
+		$template = $this->smarty->createTemplate($file, null, null, empty($params) ? null : $params, true);
 
 		$template->assign('app', \Yii::$app);
 		$template->assign('this', $view);
