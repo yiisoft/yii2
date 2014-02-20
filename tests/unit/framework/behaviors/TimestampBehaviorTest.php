@@ -10,7 +10,7 @@ use yii\behaviors\TimestampBehavior;
 
 /**
  * Unit test for [[\yii\behaviors\TimestampBehavior]].
- * @see AutoTimestamp
+ * @see TimestampBehavior
  *
  * @group behaviors
  */
@@ -88,7 +88,7 @@ class TimestampBehaviorTest extends TestCase
 }
 
 /**
- * Test Active Record class with [[AutoTimestamp]] behavior attached.
+ * Test Active Record class with [[TimestampBehavior]] behavior attached.
  *
  * @property integer $id
  * @property integer $created_at
