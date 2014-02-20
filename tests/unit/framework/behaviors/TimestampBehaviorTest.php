@@ -6,15 +6,15 @@ use Yii;
 use yiiunit\TestCase;
 use yii\db\Connection;
 use yii\db\ActiveRecord;
-use yii\behaviors\AutoTimestamp;
+use yii\behaviors\TimestampBehavior;
 
 /**
- * Unit test for [[\yii\behaviors\AutoTimestamp]].
+ * Unit test for [[\yii\behaviors\TimestampBehavior]].
  * @see AutoTimestamp
  *
  * @group behaviors
  */
-class AutoTimestampTest extends TestCase
+class TimestampBehaviorTest extends TestCase
 {
 	/**
 	 * @var Connection test db connection
@@ -59,7 +59,7 @@ class AutoTimestampTest extends TestCase
 	{
 		$currentTime = time();
 
-		$model = new ActiveRecordAutoTimestamp();
+		$model = new ActiveRecordTimestamp();
 		$model->save(false);
 
 		$this->assertTrue($model->created_at >= $currentTime);
@@ -73,7 +73,7 @@ class AutoTimestampTest extends TestCase
 	{
 		$currentTime = time();
 
-		$model = new ActiveRecordAutoTimestamp();
+		$model = new ActiveRecordTimestamp();
 		$model->save(false);
 
 		$enforcedTime = $currentTime - 100;
@@ -94,18 +94,12 @@ class AutoTimestampTest extends TestCase
  * @property integer $created_at
  * @property integer $updated_at
  */
-class ActiveRecordAutoTimestamp extends ActiveRecord
+class ActiveRecordTimestamp extends ActiveRecord
 {
 	public function behaviors()
 	{
 		return [
-			'timestamp' => [
-				'class' => AutoTimestamp::className(),
-				'attributes' => [
-					static::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
-					static::EVENT_BEFORE_UPDATE => 'updated_at',
-				],
-			],
+			TimestampBehavior::className(),
 		];
 	}
 
