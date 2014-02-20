@@ -23,6 +23,7 @@ ArrayHelper::multisort($methods, 'name');
 	<div class="detailHeader h3" id="<?= $method->name . '()-detail' ?>">
 		<?= $method->name ?>()
 		<span class="detailHeaderTag small">
+			<?= $method->visibility ?>
 			method
 			<?php if (!empty($method->since)): ?>
 				(available since version <?php echo $method->since; ?>)
