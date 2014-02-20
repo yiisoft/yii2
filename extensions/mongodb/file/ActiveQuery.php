@@ -9,6 +9,8 @@ namespace yii\mongodb\file;
 
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
+use yii\db\ActiveRelationInterface;
+use yii\db\ActiveRelationTrait;
 
 /**
  * ActiveQuery represents a Mongo query associated with an file Active Record class.
@@ -34,9 +36,10 @@ use yii\db\ActiveQueryTrait;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class ActiveQuery extends Query implements ActiveQueryInterface
+class ActiveQuery extends Query implements ActiveQueryInterface, ActiveRelationInterface
 {
 	use ActiveQueryTrait;
+	use ActiveRelationTrait;
 
 	/**
 	 * Executes query and returns all results as an array.

@@ -10,13 +10,20 @@ use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
+use yii\db\ActiveRelationInterface;
+use yii\db\ActiveRelationTrait;
 use yii\db\QueryTrait;
 
 /**
  * ActiveQuery represents a query associated with an Active Record class.
  *
- * ActiveQuery instances are usually created by [[ActiveRecord::find()]]
- * and [[ActiveRecord::count()]].
+ * An ActiveQuery can be a normal query or be used in a relational context.
+ *
+ * ActiveQuery instances are usually created by [[ActiveRecord::find()]].
+ * Relational queries are created by [[ActiveRecord::hasOne()]] and [[ActiveRecord::hasMany()]].
+ *
+ * Normal Query
+ * ------------
  *
  * ActiveQuery mainly provides the following methods to retrieve the query results:
  *
@@ -40,17 +47,34 @@ use yii\db\QueryTrait;
  *
  * These options can be configured using methods of the same name. For example:
  *
- * ~~~
+ * ```php
  * $customers = Customer::find()->with('orders')->asArray()->all();
- * ~~~
+ * ```
+ *
+ * Relational query
+ * ----------------
+ *
+ * In relational context ActiveQuery represents a relation between two Active Record classes.
+ *
+ * Relational ActiveQuery instances are usually created by calling [[ActiveRecord::hasOne()]] and
+ * [[ActiveRecord::hasMany()]]. An Active Record class declares a relation by defining
+ * a getter method which calls one of the above methods and returns the created ActiveQuery object.
+ *
+ * A relation is specified by [[link]] which represents the association between columns
+ * of different tables; and the multiplicity of the relation is indicated by [[multiple]].
+ *
+ * If a relation involves a pivot table, it may be specified by [[via()]].
+ * This methods may only be called in a relational context. Same is true for [[inverseOf()]], which
+ * marks a relation as inverse of another relation.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
+class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface, ActiveRelationInterface
 {
 	use QueryTrait;
 	use ActiveQueryTrait;
+	use ActiveRelationTrait;
 
 	/**
 	 * Executes the query and returns all results as an array.
@@ -252,6 +276,30 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 	 */
 	protected function executeScript($db, $type, $columnName = null)
 	{
+		if ($this->primaryModel !== null) {
+			// lazy loading
+			if ($this->via instanceof self) {
+				// via pivot table
+				$viaModels = $this->via->findPivotRows([$this->primaryModel]);
+				$this->filterByModels($viaModels);
+			} elseif (is_array($this->via)) {
+				// via relation
+				/** @var ActiveQuery $viaQuery */
+				list($viaName, $viaQuery) = $this->via;
+				if ($viaQuery->multiple) {
+					$viaModels = $viaQuery->all();
+					$this->primaryModel->populateRelation($viaName, $viaModels);
+				} else {
+					$model = $viaQuery->one();
+					$this->primaryModel->populateRelation($viaName, $model);
+					$viaModels = $model === null ? [] : [$model];
+				}
+				$this->filterByModels($viaModels);
+			} else {
+				$this->filterByModels([$this->primaryModel]);
+			}
+		}
+
 		if (!empty($this->orderBy)) {
 			throw new NotSupportedException('orderBy is currently not supported by redis ActiveRecord.');
 		}

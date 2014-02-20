@@ -9,11 +9,19 @@ namespace yii\elasticsearch;
 
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
+use yii\db\ActiveRelationInterface;
+use yii\db\ActiveRelationTrait;
 
 /**
  * ActiveQuery represents a [[Query]] associated with an [[ActiveRecord]] class.
  *
+ * An ActiveQuery can be a normal query or be used in a relational context.
+ *
  * ActiveQuery instances are usually created by [[ActiveRecord::find()]].
+ * Relational queries are created by [[ActiveRecord::hasOne()]] and [[ActiveRecord::hasMany()]].
+ *
+ * Normal Query
+ * ------------
  *
  * ActiveQuery mainly provides the following methods to retrieve the query results:
  *
@@ -35,19 +43,40 @@ use yii\db\ActiveQueryTrait;
  *
  * These options can be configured using methods of the same name. For example:
  *
- * ~~~
+ * ```php
  * $customers = Customer::find()->with('orders')->asArray()->all();
- * ~~~
+ * ```
+ * > NOTE: elasticsearch limits the number of records returned to 10 records by default.
+ * > If you expect to get more records you should specify limit explicitly.
  *
- * NOTE: elasticsearch limits the number of records returned to 10 records by default.
- * If you expect to get more records you should specify limit explicitly.
+ * Relational query
+ * ----------------
+ *
+ * In relational context ActiveQuery represents a relation between two Active Record classes.
+ *
+ * Relational ActiveQuery instances are usually created by calling [[ActiveRecord::hasOne()]] and
+ * [[ActiveRecord::hasMany()]]. An Active Record class declares a relation by defining
+ * a getter method which calls one of the above methods and returns the created ActiveQuery object.
+ *
+ * A relation is specified by [[link]] which represents the association between columns
+ * of different tables; and the multiplicity of the relation is indicated by [[multiple]].
+ *
+ * If a relation involves a pivot table, it may be specified by [[via()]].
+ * This methods may only be called in a relational context. Same is true for [[inverseOf()]], which
+ * marks a relation as inverse of another relation.
+ *
+ * > NOTE: elasticsearch limits the number of records returned by any query to 10 records by default.
+ * > If you expect to get more records you should specify limit explicitly in relation definition.
+ * > This is also important for relations that use [[via()]] so that if via records are limited to 10
+ * > the relations records can also not be more than 10.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ActiveQuery extends Query implements ActiveQueryInterface
+class ActiveQuery extends Query implements ActiveQueryInterface, ActiveRelationInterface
 {
 	use ActiveQueryTrait;
+	use ActiveRelationTrait;
 
 	/**
 	 * Creates a DB command that can be used to execute this query.
@@ -57,6 +86,26 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 */
 	public function createCommand($db = null)
 	{
+		if ($this->primaryModel !== null) {
+			// lazy loading
+			if (is_array($this->via)) {
+				// via relation
+				/** @var ActiveQuery $viaQuery */
+				list($viaName, $viaQuery) = $this->via;
+				if ($viaQuery->multiple) {
+					$viaModels = $viaQuery->all();
+					$this->primaryModel->populateRelation($viaName, $viaModels);
+				} else {
+					$model = $viaQuery->one();
+					$this->primaryModel->populateRelation($viaName, $model);
+					$viaModels = $model === null ? [] : [$model];
+				}
+				$this->filterByModels($viaModels);
+			} else {
+				$this->filterByModels([$this->primaryModel]);
+			}
+		}
+
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $this->modelClass;
 		if ($db === null) {

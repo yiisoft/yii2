@@ -20,8 +20,9 @@ class CustomerFile extends ActiveRecord
 		);
 	}
 
-	public static function createQuery()
+	public static function createQuery($config)
 	{
-		return new CustomerFileQuery(['modelClass' => get_called_class()]);
+		$config['modelClass'] = get_called_class();
+		return new CustomerFileQuery($config);
 	}
 }

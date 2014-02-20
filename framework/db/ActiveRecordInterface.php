@@ -112,7 +112,10 @@ interface ActiveRecordInterface
 	/**
 	 * Creates an [[ActiveQueryInterface|ActiveQuery]] instance.
 	 *
-	 * This method is called by [[find()]] to start a SELECT query.
+	 * This method is called by [[find()]] to start a SELECT query but also
+	 * by [[BaseActiveRecord::hasOne()]] and [[BaseActiveRecord::hasMany()]] to
+	 * create a relational query.
+	 *
 	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
 	 * written for querying `Customer` purpose.)
 	 *
@@ -128,9 +131,10 @@ interface ActiveRecordInterface
 	 * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
 	 * default condition. Using [[Query::where()]] will override the default condition.
 	 *
+	 * @param array $config the configuration passed to the ActiveRelation class.
 	 * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
 	 */
-	public static function createQuery();
+	public static function createQuery($config);
 
 	/**
 	 * Updates records using the provided attribute values and conditions.
@@ -256,21 +260,12 @@ interface ActiveRecordInterface
 	public function equals($record);
 
 	/**
-	 * Creates an [[ActiveRelationInterface|ActiveRelation]] instance.
-	 * This method is called by [[BaseActiveRecord::hasOne()]] and [[BaseActiveRecord::hasMany()]] to
-	 * create a relation instance.
-	 * You may override this method to return a customized relation.
-	 * @param array $config the configuration passed to the ActiveRelation class.
-	 * @return ActiveRelation the newly created [[ActiveRelation]] instance.
-	 */
-	public static function createRelation($config = []);
-
-	/**
 	 * Returns the relation object with the specified name.
-	 * A relation is defined by a getter method which returns an [[ActiveRelationInterface|ActiveRelation]] object.
+	 * A relation is defined by a getter method which returns an object implementing the [[ActiveRelationInterface]]
+	 * (normally this would be an [[ActiveQuery]] object).
 	 * It can be declared in either the ActiveRecord class itself or one of its behaviors.
 	 * @param string $name the relation name
-	 * @return ActiveRelation the relation object
+	 * @return ActiveRelationInterface the relation object
 	 */
 	public function getRelation($name);
 

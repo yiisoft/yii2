@@ -7,11 +7,18 @@
  */
 
 namespace yii\db;
+use yii\base\Object;
 
 /**
  * ActiveQuery represents a DB query associated with an Active Record class.
  *
+ * An ActiveQuery can be a normal query or be used in a relational context.
+ *
  * ActiveQuery instances are usually created by [[ActiveRecord::find()]] and [[ActiveRecord::findBySql()]].
+ * Relational queries are created by [[ActiveRecord::hasOne()]] and [[ActiveRecord::hasMany()]].
+ *
+ * Normal Query
+ * ------------
  *
  * ActiveQuery mainly provides the following methods to retrieve the query results:
  *
@@ -37,23 +44,49 @@ namespace yii\db;
  *
  * These options can be configured using methods of the same name. For example:
  *
- * ~~~
+ * ```php
  * $customers = Customer::find()->with('orders')->asArray()->all();
- * ~~~
+ * ```
+ *
+ * Relational query
+ * ----------------
+ *
+ * In relational context ActiveQuery represents a relation between two Active Record classes.
+ *
+ * Relational ActiveQuery instances are usually created by calling [[ActiveRecord::hasOne()]] and
+ * [[ActiveRecord::hasMany()]]. An Active Record class declares a relation by defining
+ * a getter method which calls one of the above methods and returns the created ActiveQuery object.
+ *
+ * A relation is specified by [[link]] which represents the association between columns
+ * of different tables; and the multiplicity of the relation is indicated by [[multiple]].
+ *
+ * If a relation involves a pivot table, it may be specified by [[via()]] or [[viaTable()]] method.
+ * These methods may only be called in a relational context. Same is true for [[inverseOf()]], which
+ * marks a relation as inverse of another relation and [[onCondition()]] which adds a condition that
+ * is to be added to relational querys join condition.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ActiveQuery extends Query implements ActiveQueryInterface
+class ActiveQuery extends Query implements ActiveQueryInterface, ActiveRelationInterface
 {
 	use ActiveQueryTrait;
+	use ActiveRelationTrait;
 
 	/**
 	 * @var string the SQL statement to be executed for retrieving AR records.
 	 * This is set by [[ActiveRecord::findBySql()]].
 	 */
 	public $sql;
+	/**
+	 * @var string|array the join condition to be used when this query is used in a relational context.
+	 * The condition will be used in the ON part when [[ActiveQuery::joinWith()]] is called.
+	 * Otherwise, the condition will be used in the WHERE part of a query.
+	 * Please refer to [[Query::where()]] on how to specify this parameter.
+	 * @see onCondition()
+	 */
+	public $on;
 
 
 	/**
@@ -175,6 +208,31 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 */
 	public function createCommand($db = null)
 	{
+		if ($this->primaryModel === null) {
+			// not a relational context or eager loading
+			if (!empty($this->on)) {
+				$where = $this->where;
+				$this->andWhere($this->on);
+				$command = $this->createCommandInternal($db);
+				$this->where = $where;
+				return $command;
+			} else {
+				return $this->createCommandInternal($db);
+			}
+		} else {
+			// lazy loading of a relation
+			return $this->createRelationalCommand($db);
+		}
+	}
+
+	/**
+	 * Creates a DB command that can be used to execute this query.
+	 * @param Connection $db the DB connection used to create the DB command.
+	 * If null, the DB connection returned by [[modelClass]] will be used.
+	 * @return Command the created DB command instance.
+	 */
+	protected function createCommandInternal($db)
+	{
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $this->modelClass;
 		if ($db === null) {
@@ -188,6 +246,47 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			$params = $this->params;
 		}
 		return $db->createCommand($sql, $params);
+	}
+
+	/**
+	 * Creates a command for lazy loading of a relation.
+	 * @param Connection $db the DB connection used to create the DB command.
+	 * @return Command the created DB command instance.
+	 */
+	private function createRelationalCommand($db = null)
+	{
+		$where = $this->where;
+
+		if ($this->via instanceof self) {
+			// via pivot table
+			$viaModels = $this->via->findPivotRows([$this->primaryModel]);
+			$this->filterByModels($viaModels);
+		} elseif (is_array($this->via)) {
+			// via relation
+			/** @var ActiveQuery $viaQuery */
+			list($viaName, $viaQuery) = $this->via;
+			if ($viaQuery->multiple) {
+				$viaModels = $viaQuery->all();
+				$this->primaryModel->populateRelation($viaName, $viaModels);
+			} else {
+				$model = $viaQuery->one();
+				$this->primaryModel->populateRelation($viaName, $model);
+				$viaModels = $model === null ? [] : [$model];
+			}
+			$this->filterByModels($viaModels);
+		} else {
+			$this->filterByModels([$this->primaryModel]);
+		}
+
+		if (!empty($this->on)) {
+			$this->andWhere($this->on);
+		}
+
+		$command = $this->createCommandInternal($db);
+
+		$this->where = $where;
+
+		return $command;
 	}
 
 	/**
@@ -355,14 +454,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 * Joins a parent query with a child query.
 	 * The current query object will be modified accordingly.
 	 * @param ActiveQuery $parent
-	 * @param ActiveRelation $child
+	 * @param ActiveRelationInterface $child
 	 * @param string $joinType
 	 */
 	private function joinWithRelation($parent, $child, $joinType)
 	{
 		$via = $child->via;
 		$child->via = null;
-		if ($via instanceof ActiveRelation) {
+		if ($via instanceof ActiveRelationInterface) {
 			// via table
 			$this->joinWithRelation($parent, $via, $joinType);
 			$this->joinWithRelation($via, $child, $joinType);
@@ -425,5 +524,68 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 				$this->union[] = $union;
 			}
 		}
+	}
+
+	/**
+	 * Sets the ON condition for a relational query.
+	 * The condition will be used in the ON part when [[ActiveQuery::joinWith()]] is called.
+	 * Otherwise, the condition will be used in the WHERE part of a query.
+	 *
+	 * Use this method to specify additional conditions when declaring a relation in the [[ActiveRecord]] class:
+	 *
+	 * ```php
+	 * public function getActiveUsers()
+	 * {
+	 *     return $this->hasMany(User::className(), ['id' => 'user_id'])->onCondition(['active' => true]);
+	 * }
+	 * ```
+	 *
+	 * @param string|array $condition the ON condition. Please refer to [[Query::where()]] on how to specify this parameter.
+	 * @param array $params the parameters (name => value) to be bound to the query.
+	 * @return static the query object itself
+	 */
+	public function onCondition($condition, $params = [])
+	{
+		$this->on = $condition;
+		$this->addParams($params);
+		return $this;
+	}
+
+	/**
+	 * Specifies the pivot table for a relational query.
+	 *
+	 * Use this method to specify a pivot table when declaring a relation in the [[ActiveRecord]] class:
+	 *
+	 * ```php
+	 * public function getItems()
+	 * {
+	 *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
+	 *                 ->viaTable('tbl_order_item', ['order_id' => 'id']);
+	 * }
+	 * ```
+	 *
+	 * @param string $tableName the name of the pivot table.
+	 * @param array $link the link between the pivot table and the table associated with [[primaryModel]].
+	 * The keys of the array represent the columns in the pivot table, and the values represent the columns
+	 * in the [[primaryModel]] table.
+	 * @param callable $callable a PHP callback for customizing the relation associated with the pivot table.
+	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
+	 * @return static
+	 * @see via()
+	 */
+	public function viaTable($tableName, $link, $callable = null)
+	{
+		$relation = new ActiveQuery([
+			'modelClass' => get_class($this->primaryModel),
+			'from' => [$tableName],
+			'link' => $link,
+			'multiple' => true,
+			'asArray' => true,
+		]);
+		$this->via = $relation;
+		if ($callable !== null) {
+			call_user_func($callable, $relation);
+		}
+		return $this;
 	}
 }

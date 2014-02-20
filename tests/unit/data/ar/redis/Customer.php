@@ -17,7 +17,7 @@ class Customer extends ActiveRecord
 	}
 
 	/**
-	 * @return \yii\redis\ActiveRelation
+	 * @return \yii\redis\ActiveQuery
 	 */
 	public function getOrders()
 	{
@@ -31,8 +31,9 @@ class Customer extends ActiveRecord
 		parent::afterSave($insert);
 	}
 
-	public static function createQuery()
+	public static function createQuery($config)
 	{
-		return new CustomerQuery(['modelClass' => get_called_class()]);
+		$config['modelClass'] = get_called_class();
+		return new CustomerQuery($config);
 	}
 }
