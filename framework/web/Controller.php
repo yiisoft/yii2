@@ -16,8 +16,6 @@ use yii\helpers\Html;
  *
  * @property string $canonicalUrl The canonical URL of the currently requested page. This property is
  * read-only.
- * @property View $view The view object that can be used to render views or view files. This property is
- * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

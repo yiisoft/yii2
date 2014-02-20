@@ -15,6 +15,8 @@ use yii\debug\models\search\Db;
 /**
  * Debugger panel that collects and displays database queries performed.
  *
+ * @property array $profileLogs This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
