@@ -276,8 +276,8 @@ class CarUrlRule extends UrlRule
 		if (preg_match('%^(\w+)(/(\w+))?$%', $pathInfo, $matches)) {
 			// check $matches[1] and $matches[3] to see
 			// if they match a manufacturer and a model in the database
-			// If so, set $_GET['manufacturer'] and/or $_GET['model']
-			// and return 'car/index'
+			// If so, set $params['manufacturer'] and/or $params['model']
+			// and return ['car/index', $params]
 		}
 		return false;  // this rule does not apply
 	}
