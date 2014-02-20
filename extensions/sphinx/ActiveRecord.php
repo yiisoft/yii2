@@ -9,7 +9,6 @@ namespace yii\sphinx;
 
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
-use yii\db\ActiveRelationInterface;
 use yii\db\BaseActiveRecord;
 use yii\db\StaleObjectException;
 use yii\helpers\Inflector;

@@ -230,7 +230,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 				return $this->_related[$name];
 			}
 			$value = parent::__get($name);
-			if ($value instanceof ActiveRelationInterface) {
+			if ($value instanceof ActiveQueryInterface) {
 				return $this->_related[$name] = $value->findFor($name, $this);
 			} else {
 				return $value;
@@ -315,7 +315,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
 	 * the attributes of the record associated with the `$class` model, while the values of the
 	 * array refer to the corresponding attributes in **this** AR class.
-	 * @return ActiveRelationInterface the relation object.
+	 * @return ActiveQueryInterface the relational query object.
 	 */
 	public function hasOne($class, $link)
 	{
@@ -356,7 +356,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
 	 * the attributes of the record associated with the `$class` model, while the values of the
 	 * array refer to the corresponding attributes in **this** AR class.
-	 * @return ActiveRelationInterface the relation object.
+	 * @return ActiveQueryInterface the relational query object.
 	 */
 	public function hasMany($class, $link)
 	{
@@ -1037,10 +1037,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
 	/**
 	 * Returns the relation object with the specified name.
-	 * A relation is defined by a getter method which returns an [[ActiveRelationInterface]] object.
+	 * A relation is defined by a getter method which returns an [[ActiveQueryInterface]] object.
 	 * It can be declared in either the Active Record class itself or one of its behaviors.
 	 * @param string $name the relation name
-	 * @return ActiveRelationInterface|ActiveQuery the relation object
+	 * @return ActiveQueryInterface|ActiveQuery the relational query object
 	 * @throws InvalidParamException if the named relation does not exist.
 	 */
 	public function getRelation($name)
@@ -1052,7 +1052,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 		} catch (UnknownMethodException $e) {
 			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);
 		}
-		if (!$relation instanceof ActiveRelationInterface) {
+		if (!$relation instanceof ActiveQueryInterface) {
 			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
 		}
 

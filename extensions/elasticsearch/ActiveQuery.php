@@ -9,7 +9,6 @@ namespace yii\elasticsearch;
 
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
-use yii\db\ActiveRelationInterface;
 use yii\db\ActiveRelationTrait;
 
 /**
@@ -73,7 +72,7 @@ use yii\db\ActiveRelationTrait;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ActiveQuery extends Query implements ActiveQueryInterface, ActiveRelationInterface
+class ActiveQuery extends Query implements ActiveQueryInterface
 {
 	use ActiveQueryTrait;
 	use ActiveRelationTrait;

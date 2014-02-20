@@ -9,7 +9,6 @@ namespace yii\mongodb\file;
 
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
-use yii\db\ActiveRelationInterface;
 use yii\db\ActiveRelationTrait;
 
 /**
@@ -36,7 +35,7 @@ use yii\db\ActiveRelationTrait;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class ActiveQuery extends Query implements ActiveQueryInterface, ActiveRelationInterface
+class ActiveQuery extends Query implements ActiveQueryInterface
 {
 	use ActiveQueryTrait;
 	use ActiveRelationTrait;

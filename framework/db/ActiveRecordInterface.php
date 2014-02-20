@@ -261,11 +261,11 @@ interface ActiveRecordInterface
 
 	/**
 	 * Returns the relation object with the specified name.
-	 * A relation is defined by a getter method which returns an object implementing the [[ActiveRelationInterface]]
-	 * (normally this would be an [[ActiveQuery]] object).
+	 * A relation is defined by a getter method which returns an object implementing the [[ActiveQueryInterface]]
+	 * (normally this would be a relational [[ActiveQuery]] object).
 	 * It can be declared in either the ActiveRecord class itself or one of its behaviors.
 	 * @param string $name the relation name
-	 * @return ActiveRelationInterface the relation object
+	 * @return ActiveQueryInterface the relational query object
 	 */
 	public function getRelation($name);
 
@@ -285,7 +285,7 @@ interface ActiveRecordInterface
 	 * @param static $model the record to be linked with the current one.
 	 * @param array $extraColumns additional column values to be saved into the pivot table.
 	 * This parameter is only meaningful for a relationship involving a pivot table
-	 * (i.e., a relation set with `[[ActiveRelationInterface::via()]]`.)
+	 * (i.e., a relation set with `[[ActiveQueryInterface::via()]]`.)
 	 */
 	public function link($name, $model, $extraColumns = []);
 

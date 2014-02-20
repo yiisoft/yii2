@@ -11,7 +11,6 @@ use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
-use yii\db\ActiveRelationInterface;
 use yii\db\ActiveRelationTrait;
 use yii\db\QueryTrait;
 
@@ -71,7 +70,7 @@ use yii\db\QueryTrait;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface, ActiveRelationInterface
+class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 {
 	use QueryTrait;
 	use ActiveQueryTrait;
