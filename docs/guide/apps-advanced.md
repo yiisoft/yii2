@@ -175,3 +175,29 @@ All these packages are coming from [packagist.org](https://packagist.org/) so fe
 
 After your `composer.json` is changed you can run `php composer.phar update --prefer-dist`, wait till packages are downloaded and
 installed and then just use them. Autoloading of classes will be handled automatically.
+
+Creating links from backend to frontend
+---------------------------------------
+
+Often it's required to create links from backend application to frontend application. Since frontend application may
+contain its own URL manager rules you need to duplicate that for backend application naming it differently:
+
+```php
+return [
+	'components' => [
+		'urlManager' => [
+			// here is your normal backend url manager config
+		],
+		'urlManagerFrontend' => [
+			// here is your frontend URL manager config
+		],
+
+	],
+];
+```
+
+After it is done you can get URL poiting to frontend like the following:
+
+```php
+echo Yii::$app->urlManagerFrontend->createUrl(...);
+```
