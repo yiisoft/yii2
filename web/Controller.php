@@ -159,11 +159,12 @@ class Controller extends \yii\base\Controller
 	 *
 	 * After this route conversion, the method calls [[UrlManager::createUrl()]] to create a URL.
 	 *
-	 * @param array $params route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
+	 * @param string|array $params route as a string or route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
 	 * @return string the created relative URL
 	 */
-	public function createUrl(array $params)
+	public function createUrl($params)
 	{
+		$params = (array)$params;
 		$params[0] = $this->getNormalizedRoute($params[0]);
 		return Yii::$app->getUrlManager()->createUrl($params);
 	}
@@ -182,13 +183,14 @@ class Controller extends \yii\base\Controller
 	 *
 	 * After this route conversion, the method calls [[UrlManager::createUrl()]] to create a URL.
 	 *
-	 * @param array $params route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
+	 * @param string|array $params route as a string or route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
 	 * @param string $schema the schema to use for the url. e.g. 'http' or 'https'. If not specified
 	 * the schema of the current request will be used.
 	 * @return string the created absolute URL
 	 */
-	public function createAbsoluteUrl(array $params, $schema = null)
+	public function createAbsoluteUrl($params, $schema = null)
 	{
+		$params = (array)$params;
 		$params[0] = $this->getNormalizedRoute($params[0]);
 		return Yii::$app->getUrlManager()->createAbsoluteUrl($params, $schema);
 	}
