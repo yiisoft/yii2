@@ -124,7 +124,7 @@ class CaptchaAction extends Action
 				'hash2' => $this->generateValidationHash(strtolower($code)),
 				// we add a random 'v' parameter so that FireFox can refresh the image
 				// when src attribute of image tag is changed
-				'url' => $controller->createUrl($this->id, ['v' => uniqid()]),
+				'url' => $controller->createUrl([$this->id, 'v' => uniqid()]),
 			]);
 		} else {
 			$this->setHttpHeaders();

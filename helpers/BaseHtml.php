@@ -1489,12 +1489,10 @@ class BaseHtml
 	{
 		if (is_array($url)) {
 			if (isset($url[0])) {
-				$route = $url[0];
-				$params = array_splice($url, 1);
 				if (Yii::$app->controller instanceof \yii\web\Controller) {
-					return Yii::$app->controller->createUrl($route, $params);
+					return Yii::$app->controller->createUrl($url);
 				} else {
-					return Yii::$app->getUrlManager()->createUrl($route, $params);
+					return Yii::$app->getUrlManager()->createUrl($url);
 				}
 			} else {
 				throw new InvalidParamException('The array specifying a URL must contain at least one element.');
