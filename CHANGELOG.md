@@ -152,7 +152,6 @@ Yii Framework 2 Change Log
 	- Removed `yii\web\Request::getPost()`, `getPut()`, `getDelete()`, `getPatch()` in favor of `getBodyParam()` (cebe)
 	- Renamed `yii\web\Request::get()` to `getQueryParams()` and `getRestParams()` to `getBodyParams()` (cebe)
 	- Added `yii\web\Request::get($name = null, $defaultValue = null)` and `yii\web\Request::post($name = null, $defaultValue = null)` (samdark)
-- Chg #2057: AutoTimestamp attributes defaults changed from `create_time` and `update_time` to `created_at` and `updated_at` (creocoder)
 - Chg #2059: Implemented git-flavored file excluding/filtering for `FileHelper` (nineinchnick)
 - Chg #2063: Removed `yii\web\Request::acceptTypes` and renamed `yii\web\Request::acceptedContentTypes` to `acceptableContentTypes` (qiangxue)
 - Chg #2157: The '*' category pattern will match all categories that do not match any other patterns listed in `I18N::translations` (qiangxue, Ragazzo)
