@@ -289,7 +289,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
 	/**
 	 * Declares a `has-one` relation.
-	 * The declaration is returned in terms of an [[ActiveRelation]] instance
+	 * The declaration is returned in terms of a relational [[ActiveQuery]] instance
 	 * through which the related record can be queried and retrieved back.
 	 *
 	 * A `has-one` relation means that there is at most one related record matching
@@ -309,7 +309,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * in the related class `Country`, while the 'country_id' value refers to an attribute name
 	 * in the current AR class.
 	 *
-	 * Call methods declared in [[ActiveRelation]] to further customize the relation.
+	 * Call methods declared in [[ActiveQuery]] to further customize the relation.
 	 *
 	 * @param string $class the class name of the related record
 	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
@@ -320,7 +320,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	public function hasOne($class, $link)
 	{
 		/** @var ActiveRecord $class */
-		return $class::createRelation([
+		return $class::createQuery([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
@@ -330,7 +330,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
 	/**
 	 * Declares a `has-many` relation.
-	 * The declaration is returned in terms of an [[ActiveRelation]] instance
+	 * The declaration is returned in terms of a relational [[ActiveQuery]] instance
 	 * through which the related record can be queried and retrieved back.
 	 *
 	 * A `has-many` relation means that there are multiple related records matching
@@ -350,6 +350,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * an attribute name in the related class `Order`, while the 'id' value refers to
 	 * an attribute name in the current AR class.
 	 *
+	 * Call methods declared in [[ActiveQuery]] to further customize the relation.
+	 *
 	 * @param string $class the class name of the related record
 	 * @param array $link the primary-foreign key constraint. The keys of the array refer to
 	 * the attributes of the record associated with the `$class` model, while the values of the
@@ -359,7 +361,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	public function hasMany($class, $link)
 	{
 		/** @var ActiveRecord $class */
-		return $class::createRelation([
+		return $class::createQuery([
 			'modelClass' => $class,
 			'primaryModel' => $this,
 			'link' => $link,
@@ -1035,10 +1037,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
 	/**
 	 * Returns the relation object with the specified name.
-	 * A relation is defined by a getter method which returns an [[ActiveRelation]] object.
+	 * A relation is defined by a getter method which returns an [[ActiveRelationInterface]] object.
 	 * It can be declared in either the Active Record class itself or one of its behaviors.
 	 * @param string $name the relation name
-	 * @return ActiveRelation the relation object
+	 * @return ActiveRelationInterface|ActiveQuery the relation object
 	 * @throws InvalidParamException if the named relation does not exist.
 	 */
 	public function getRelation($name)
@@ -1082,7 +1084,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * @param ActiveRecord $model the model to be linked with the current one.
 	 * @param array $extraColumns additional column values to be saved into the pivot table.
 	 * This parameter is only meaningful for a relationship involving a pivot table
-	 * (i.e., a relation set with `[[ActiveRelation::via()]]` or `[[ActiveRelation::viaTable()]]`.)
+	 * (i.e., a relation set with [[ActiveRelationTrait::via()]] or `[[ActiveQuery::viaTable()]]`.)
 	 * @throws InvalidCallException if the method is unable to link two models.
 	 */
 	public function link($name, $model, $extraColumns = [])
@@ -1094,7 +1096,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 				throw new InvalidCallException('Unable to link models: both models must NOT be newly created.');
 			}
 			if (is_array($relation->via)) {
-				/** @var ActiveRelation $viaRelation */
+				/** @var ActiveQuery $viaRelation */
 				list($viaName, $viaRelation) = $relation->via;
 				$viaClass = $viaRelation->modelClass;
 				// unset $viaName so that it can be reloaded to reflect the change
@@ -1178,7 +1180,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
 		if ($relation->via !== null) {
 			if (is_array($relation->via)) {
-				/** @var ActiveRelation $viaRelation */
+				/** @var ActiveQuery $viaRelation */
 				list($viaName, $viaRelation) = $relation->via;
 				$viaClass = $viaRelation->modelClass;
 				unset($this->_related[$viaName]);
