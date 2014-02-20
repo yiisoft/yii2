@@ -34,7 +34,6 @@ use yii\db\Expression;
  * you may configure the [[attributes]] and [[value]] properties like the following:
  *
  * ```php
- * use yii\behaviors\TimestampBehavior;
  * use yii\db\Expression;
  *
  * public function behaviors()
@@ -43,8 +42,8 @@ use yii\db\Expression;
  *         'timestamp' => [
  *             'class' => TimestampBehavior::className(),
  *             'attributes' => [
- *                 ActiveRecord::EVENT_BEFORE_INSERT => ['creation_time'],
- *                 ActiveRecord::EVENT_BEFORE_UPDATE => ['update_time'],
+ *                 ActiveRecord::EVENT_BEFORE_INSERT => 'creation_time',
+ *                 ActiveRecord::EVENT_BEFORE_UPDATE => 'update_time',
  *             ],
  *             'value' => new Expression('NOW()'),
  *         ],
@@ -74,7 +73,7 @@ class TimestampBehavior extends AttributeBehavior
 	 */
 	public $attributes = [
 		BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
-		BaseActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+		BaseActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
 	];
 	/**
 	 * @var callable|Expression The expression that will be used for generating the timestamp.
