@@ -39,8 +39,8 @@ use yii\db\BaseActiveRecord;
  *         [
  *             'class' => BlameableBehavior::className(),
  *             'attributes' => [
- *                 ActiveRecord::EVENT_BEFORE_INSERT => ['creator_id'],
- *                 ActiveRecord::EVENT_BEFORE_UPDATE => ['updater_id'],
+ *                 ActiveRecord::EVENT_BEFORE_INSERT => 'author_id',
+ *                 ActiveRecord::EVENT_BEFORE_UPDATE => 'updater_id',
  *             ],
  *         ],
  *     ];
@@ -63,7 +63,7 @@ class BlameableBehavior extends AttributeBehavior
 	 */
 	public $attributes = [
 		BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_by', 'updated_by'],
-		BaseActiveRecord::EVENT_BEFORE_UPDATE => ['updated_by'],
+		BaseActiveRecord::EVENT_BEFORE_UPDATE => 'updated_by',
 	];
 	/**
 	 * @var callable the value that will be assigned to the attributes. This should be a valid

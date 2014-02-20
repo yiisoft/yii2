@@ -21,14 +21,16 @@ use yii\base\Event;
  * attribute(s). For example,
  *
  * ~~~
+ * use yii\behaviors\AttributeBehavior;
+ *
  * public function behaviors()
  * {
  *     return [
  *         'attributeStamp' => [
- *             'class' => 'yii\behaviors\AttributeBehavior',
+ *             'class' => AttributeBehavior::className(),
  *             'attributes' => [
- *                 ActiveRecord::EVENT_BEFORE_INSERT => ['attribute1'],
- *                 ActiveRecord::EVENT_BEFORE_UPDATE => ['attribute2'],
+ *                 ActiveRecord::EVENT_BEFORE_INSERT => 'attribute1',
+ *                 ActiveRecord::EVENT_BEFORE_UPDATE => 'attribute2',
  *             ],
  *             'value' => function ($event) {
  *                 return 'some value';
