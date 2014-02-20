@@ -6,6 +6,7 @@
  */
 
 namespace yii\redis;
+
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\db\ActiveQueryInterface;

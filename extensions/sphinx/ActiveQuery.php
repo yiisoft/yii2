@@ -11,6 +11,7 @@ use yii\base\InvalidCallException;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
 use yii\db\ActiveRelationInterface;
+use yii\db\ActiveRelationTrait;
 
 /**
  * ActiveQuery represents a Sphinx query associated with an Active Record class.
