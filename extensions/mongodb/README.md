@@ -90,7 +90,7 @@ In these cases, ensure you have converted [[\MongoId]] into the string:
 
 ```php
 /** @var yii\web\View $this */
-echo $this->createUrl('item/update', ['id' => (string)$row['_id']]);
+echo $this->createUrl(['item/update', 'id' => (string)$row['_id']]);
 ```
 
 While building condition, values for the key '_id' will be automatically cast to [[\MongoId]] instance,

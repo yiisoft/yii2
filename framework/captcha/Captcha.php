@@ -78,7 +78,7 @@ class Captcha extends InputWidget
 		} else {
 			$input = Html::textInput($this->name, $this->value, $this->options);
 		}
-		$url = Yii::$app->getUrlManager()->createUrl($this->captchaAction, ['v' => uniqid()]);
+		$url = Yii::$app->getUrlManager()->createUrl([$this->captchaAction, 'v' => uniqid()]);
 		$image = Html::img($url, $this->imageOptions);
 		echo strtr($this->template, [
 			'{input}' => $input,

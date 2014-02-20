@@ -110,7 +110,7 @@ class DefaultController extends Controller
 	/**
 	 * @inheritdoc
 	 */
-	public function createUrl($route, $params = [])
+	public function createUrl(array $params)
 	{
 		if (!isset($params['id']) && $this->generator !== null) {
 			foreach ($this->module->generators as $id => $generator) {
@@ -120,7 +120,7 @@ class DefaultController extends Controller
 				}
 			}
 		}
-		return parent::createUrl($route, $params);
+		return parent::createUrl($params);
 	}
 
 	/**
@@ -139,7 +139,8 @@ class DefaultController extends Controller
 			}
 		}
 		$params['name'] = $name;
-		return parent::createUrl('action', $params);
+		$params[0] = 'action';
+		return parent::createUrl($params);
 	}
 
 	/**

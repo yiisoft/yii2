@@ -159,14 +159,13 @@ class Controller extends \yii\base\Controller
 	 *
 	 * After this route conversion, the method calls [[UrlManager::createUrl()]] to create a URL.
 	 *
-	 * @param string $route the route. This can be either an absolute route or a relative route.
-	 * @param array $params the parameters (name-value pairs) to be included in the generated URL
+	 * @param array $params route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
 	 * @return string the created relative URL
 	 */
-	public function createUrl($route, $params = [])
+	public function createUrl(array $params)
 	{
-		$route = $this->getNormalizedRoute($route);
-		return Yii::$app->getUrlManager()->createUrl($route, $params);
+		$params[0] = $this->getNormalizedRoute($params[0]);
+		return Yii::$app->getUrlManager()->createUrl($params);
 	}
 
 	/**
@@ -183,16 +182,15 @@ class Controller extends \yii\base\Controller
 	 *
 	 * After this route conversion, the method calls [[UrlManager::createUrl()]] to create a URL.
 	 *
-	 * @param string $route the route. This can be either an absolute route or a relative route.
-	 * @param array $params the parameters (name-value pairs) to be included in the generated URL
+	 * @param array $params route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
 	 * @param string $schema the schema to use for the url. e.g. 'http' or 'https'. If not specified
 	 * the schema of the current request will be used.
 	 * @return string the created absolute URL
 	 */
-	public function createAbsoluteUrl($route, $params = [], $schema = null)
+	public function createAbsoluteUrl(array $params, $schema = null)
 	{
-		$route = $this->getNormalizedRoute($route);
-		return Yii::$app->getUrlManager()->createAbsoluteUrl($route, $params, $schema);
+		$params[0] = $this->getNormalizedRoute($params[0]);
+		return Yii::$app->getUrlManager()->createAbsoluteUrl($params, $schema);
 	}
 
 	/**
@@ -208,7 +206,9 @@ class Controller extends \yii\base\Controller
 	 */
 	public function getCanonicalUrl()
 	{
-		return Yii::$app->getUrlManager()->createAbsoluteUrl($this->getRoute(), $this->actionParams);
+		$params = $this->actionParams;
+		$params[0] = $this->getRoute();
+		return Yii::$app->getUrlManager()->createAbsoluteUrl($params);
 	}
 
 	/**
