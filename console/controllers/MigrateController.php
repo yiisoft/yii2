@@ -286,50 +286,37 @@ class MigrateController extends Controller
 	/**
 	 * Upgrades or downgrades till the specified version.
 	 *
+	 * Can also downgrade versions to the certain apply time in the past by providing
+	 * a UNIX timestamp or a string parseable by the strtotime() function. This means
+	 * that all the versions applied after the specified certain time would be reverted.
+	 *
 	 * This command will first revert the specified migrations, and then apply
 	 * them again. For example,
 	 *
 	 * ~~~
 	 * yii migrate/to 101129_185401                      # using timestamp
 	 * yii migrate/to m101129_185401_create_user_table   # using full name
+	 * yii migrate/to 1392853618                         # using UNIX timestamp
+	 * yii migrate/to "2014-02-15 13:00:50"              # using strtotime() parseable string
 	 * ~~~
 	 *
-	 * @param string $version the version name that the application should be migrated to.
-	 * This can be either the timestamp or the full name of the migration.
-	 * @throws Exception if the version argument is invalid
+	 * @param string $version either the version name or the certain time value in the past
+	 * that the application should be migrated to. This can be either the timestamp,
+	 * the full name of the migration, the UNIX timestamp, or the parseable datetime
+	 * string.
+	 * @throws Exception if the version argument is invalid.
 	 */
 	public function actionTo($version)
 	{
-		$originalVersion = $version;
 		if (preg_match('/^m?(\d{6}_\d{6})(_.*?)?$/', $version, $matches)) {
-			$version = 'm' . $matches[1];
+			$this->migrateToVersion('m' . $matches[1]);
+		} elseif ((string)(int)$version == $version) {
+			$this->migrateToTime($version);
+		} elseif (($time = strtotime($version)) !== false) {
+			$this->migrateToTime($time);
 		} else {
-			throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table).");
+			throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401),\n the full name of a migration (e.g. m101129_185401_create_user_table),\n a UNIX timestamp (e.g. 1392853000), or a datetime string parseable\nby the strtotime() function (e.g. 2014-02-15 13:00:50).");
 		}
-
-		// try migrate up
-		$migrations = $this->getNewMigrations();
-		foreach ($migrations as $i => $migration) {
-			if (strpos($migration, $version . '_') === 0) {
-				$this->actionUp($i + 1);
-				return;
-			}
-		}
-
-		// try migrate down
-		$migrations = array_keys($this->getMigrationHistory(-1));
-		foreach ($migrations as $i => $migration) {
-			if (strpos($migration, $version . '_') === 0) {
-				if ($i === 0) {
-					echo "Already at '$originalVersion'. Nothing needs to be done.\n";
-				} else {
-					$this->actionDown($i);
-				}
-				return;
-			}
-		}
-
-		throw new Exception("Unable to find the version '$originalVersion'.");
 	}
 
 	/**
@@ -565,6 +552,58 @@ class MigrateController extends Controller
 		$file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
 		require_once($file);
 		return new $class(['db' => $this->db]);
+	}
+
+	/**
+	 * Migrates to the specified apply time in the past.
+	 * @param integer $time UNIX timestamp value.
+	 */
+	protected function migrateToTime($time)
+	{
+		$count = 0;
+		$migrations = array_values($this->getMigrationHistory(-1));
+		while ($count < count($migrations) && $migrations[$count] > $time) {
+			++$count;
+		}
+		if ($count === 0) {
+			echo "Nothing needs to be done.\n";
+		} else {
+			$this->actionDown($count);
+		}
+	}
+
+	/**
+	 * Migrates to the certain version.
+	 * @param string $version name in the full format.
+	 * @throws Exception if the provided version cannot be found.
+	 */
+	protected function migrateToVersion($version)
+	{
+		$originalVersion = $version;
+
+		// try migrate up
+		$migrations = $this->getNewMigrations();
+		foreach ($migrations as $i => $migration) {
+			if (strpos($migration, $version . '_') === 0) {
+				$this->actionUp($i + 1);
+				return;
+			}
+		}
+
+		// try migrate down
+		$migrations = array_keys($this->getMigrationHistory(-1));
+		foreach ($migrations as $i => $migration) {
+			if (strpos($migration, $version . '_') === 0) {
+				if ($i === 0) {
+					echo "Already at '$originalVersion'. Nothing needs to be done.\n";
+				} else {
+					$this->actionDown($i);
+				}
+				return;
+			}
+		}
+
+		throw new Exception("Unable to find the version '$originalVersion'.");
 	}
 
 	/**
