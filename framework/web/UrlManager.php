@@ -228,11 +228,12 @@ class UrlManager extends Component
 	/**
 	 * Creates a URL using the given route and parameters.
 	 * The URL created is a relative one. Use [[createAbsoluteUrl()]] to create an absolute URL.
-	 * @param array $params route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
+	 * @param string|array $params route as a string or route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
 	 * @return string the created URL
 	 */
-	public function createUrl(array $params)
+	public function createUrl($params)
 	{
+		$params = (array)$params;
 		$anchor = isset($params['#']) ? '#' . $params['#'] : '';
 		unset($params['#'], $params[$this->routeParam]);
 
@@ -275,14 +276,15 @@ class UrlManager extends Component
 	/**
 	 * Creates an absolute URL using the given route and parameters.
 	 * This method prepends the URL created by [[createUrl()]] with the [[hostInfo]].
-	 * @param array $params route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
+	 * @param string|array $params route as a string or route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
 	 * @param string $schema the schema to use for the url. e.g. 'http' or 'https'. If not specified
 	 * the schema of the current request will be used.
 	 * @return string the created URL
 	 * @see createUrl()
 	 */
-	public function createAbsoluteUrl(array $params, $schema = null)
+	public function createAbsoluteUrl($params, $schema = null)
 	{
+		$params = (array)$params;
 		$url = $this->createUrl($params);
 		if (strpos($url, '://') === false) {
 			$url = $this->getHostInfo($schema) . $url;

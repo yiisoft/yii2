@@ -110,8 +110,9 @@ class DefaultController extends Controller
 	/**
 	 * @inheritdoc
 	 */
-	public function createUrl(array $params)
+	public function createUrl($params)
 	{
+		$params = (array)$params;
 		if (!isset($params['id']) && $this->generator !== null) {
 			foreach ($this->module->generators as $id => $generator) {
 				if ($generator === $this->generator) {

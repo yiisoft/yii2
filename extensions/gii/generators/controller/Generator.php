@@ -149,9 +149,9 @@ class Generator extends \yii\gii\Generator
 	{
 		$actions = $this->getActionIDs();
 		if (in_array('index', $actions)) {
-			$route = [$this->controller . '/index'];
+			$route = $this->controller . '/index';
 		} else {
-			$route = [$this->controller . '/' . reset($actions)];
+			$route = $this->controller . '/' . reset($actions);
 		}
 		$link = Html::a('try it now', Yii::$app->getUrlManager()->createUrl($route), ['target' => '_blank']);
 		return "The controller has been generated successfully. You may $link.";

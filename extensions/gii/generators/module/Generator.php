@@ -84,7 +84,7 @@ class Generator extends \yii\gii\Generator
 	public function successMessage()
 	{
 		if (Yii::$app->hasModule($this->moduleID)) {
-			$link = Html::a('try it now', Yii::$app->getUrlManager()->createUrl([$this->moduleID]), ['target' => '_blank']);
+			$link = Html::a('try it now', Yii::$app->getUrlManager()->createUrl($this->moduleID), ['target' => '_blank']);
 			return "The module has been generated successfully. You may $link.";
 		}
 
