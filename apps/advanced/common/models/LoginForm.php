@@ -23,10 +23,10 @@ class LoginForm extends Model
 		return [
 			// username and password are both required
 			[['username', 'password'], 'required'],
-			// password is validated by validatePassword()
-			['password', 'validatePassword'],
 			// rememberMe must be a boolean value
 			['rememberMe', 'boolean'],
+			// password is validated by validatePassword()
+			['password', 'validatePassword'],
 		];
 	}
 
@@ -36,9 +36,11 @@ class LoginForm extends Model
 	 */
 	public function validatePassword()
 	{
-		$user = $this->getUser();
-		if (!$user || !$user->validatePassword($this->password)) {
-			$this->addError('password', 'Incorrect username or password.');
+		if (!$this->hasErrors()) {
+			$user = $this->getUser();
+			if (!$user || !$user->validatePassword($this->password)) {
+				$this->addError('password', 'Incorrect username or password.');
+			}
 		}
 	}
 
