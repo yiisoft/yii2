@@ -7,7 +7,6 @@
  */
 
 namespace yii\db;
-use yii\base\Object;
 
 /**
  * ActiveQuery represents a DB query associated with an Active Record class.
@@ -69,7 +68,7 @@ use yii\base\Object;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ActiveQuery extends Query implements ActiveQueryInterface, ActiveRelationInterface
+class ActiveQuery extends Query implements ActiveQueryInterface
 {
 	use ActiveQueryTrait;
 	use ActiveRelationTrait;
@@ -454,14 +453,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface, ActiveRelationI
 	 * Joins a parent query with a child query.
 	 * The current query object will be modified accordingly.
 	 * @param ActiveQuery $parent
-	 * @param ActiveRelationInterface $child
+	 * @param ActiveQuery $child
 	 * @param string $joinType
 	 */
 	private function joinWithRelation($parent, $child, $joinType)
 	{
 		$via = $child->via;
 		$child->via = null;
-		if ($via instanceof ActiveRelationInterface) {
+		if ($via instanceof ActiveQuery) {
 			// via table
 			$this->joinWithRelation($parent, $via, $joinType);
 			$this->joinWithRelation($via, $child, $joinType);

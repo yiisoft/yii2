@@ -10,7 +10,11 @@ namespace yii\db;
 /**
  * ActiveQueryInterface defines the common interface to be implemented by active record query classes.
  *
- * A class implementing this interface should also use [[ActiveQueryTrait]].
+ * That are methods for either normal queries that return active records but also relational queries
+ * in which the query represents a relation between two active record classes and will return related
+ * records only.
+ *
+ * A class implementing this interface should also use [[ActiveQueryTrait]] and [[ActiveRelationTrait]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -74,4 +78,22 @@ interface ActiveQueryInterface extends QueryInterface
 	 * @return static the query object itself
 	 */
 	public function with();
+
+	/**
+	 * Specifies the relation associated with the pivot table for use in relational query.
+	 * @param string $relationName the relation name. This refers to a relation declared in the [[ActiveRelationTrait::primaryModel|primaryModel]] of the relation.
+	 * @param callable $callable a PHP callback for customizing the relation associated with the pivot table.
+	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
+	 * @return static the relation object itself.
+	 */
+	public function via($relationName, $callable = null);
+
+	/**
+	 * Finds the related records for the specified primary record.
+	 * This method is invoked when a relation of an ActiveRecord is being accessed in a lazy fashion.
+	 * @param string $name the relation name
+	 * @param ActiveRecordInterface $model the primary model
+	 * @return mixed the related record(s)
+	 */
+	public function findFor($name, $model);
 }
