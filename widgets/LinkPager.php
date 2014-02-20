@@ -38,6 +38,10 @@ class LinkPager extends Widget
 	 */
 	public $options = ['class' => 'pagination'];
 	/**
+	 * @var array HTML attributes for the link in a pager container tag.
+	 */
+	public $linkOptions = [];
+	/**
 	 * @var string the CSS class for the "first" page button.
 	 */
 	public $firstPageCssClass = 'first';
@@ -172,7 +176,9 @@ class LinkPager extends Widget
 			Html::addCssClass($options, $this->disabledPageCssClass);
 			return Html::tag('li', Html::tag('span', $label), $options);
 		}
-		return Html::tag('li', Html::a($label, $this->pagination->createUrl($page), ['data-page' => $page]), $options);
+		$linkOptions = $this->linkOptions;
+		$linkOptions['data-page'] = $page;
+		return Html::tag('li', Html::a($label, $this->pagination->createUrl($page), $linkOptions), $options);
 	}
 
 	/**
