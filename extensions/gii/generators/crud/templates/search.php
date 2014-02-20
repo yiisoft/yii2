@@ -69,7 +69,13 @@ class <?= $searchModelClass ?> extends Model
 
 	protected function addCondition($query, $attribute, $partialMatch = false)
 	{
-		$value = $this->$attribute;
+		if (($pos = strrpos($attribute, '.')) !== false) {
+			$modelAttribute = substr($attribute, $pos + 1);
+		} else {
+			$modelAttribute = $attribute;
+		}
+
+		$value = $this->$modelAttribute;
 		if (trim($value) === '') {
 			return;
 		}
