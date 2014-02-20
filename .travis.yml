@@ -36,7 +36,7 @@ before_script:
 
 script:
 #  - vendor/bin/phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
-  - vendor/bin/phpunit --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
+  - vendor/bin/phpunit --verbose --exclude-group mssql,oci,wincache,xcache,zenddata
   - cd apps/basic && php vendor/bin/codecept run
 
 #after_script:

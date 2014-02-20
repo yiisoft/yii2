@@ -144,9 +144,9 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 * You may also define default conditions that should apply to all queries unless overridden:
 	 *
 	 * ```php
-	 * public static function createQuery()
+	 * public static function createQuery($config = [])
 	 * {
-	 *     return parent::createQuery()->where(['deleted' => false]);
+	 *     return parent::createQuery($config)->where(['deleted' => false]);
 	 * }
 	 * ```
 	 *
@@ -156,7 +156,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 * @param array $config the configuration passed to the ActiveRelation class.
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
 	 */
-	public static function createQuery($config)
+	public static function createQuery($config = [])
 	{
 		$config['modelClass'] = get_called_class();
 		return new ActiveQuery($config);

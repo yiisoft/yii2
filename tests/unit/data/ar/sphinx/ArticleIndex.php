@@ -25,7 +25,7 @@ class ArticleIndex extends ActiveRecord
 		return $this->source->content;
 	}
 
-	public static function createQuery($config)
+	public static function createQuery($config = [])
 	{
 		$config['modelClass'] = get_called_class();
 		return new ArticleIndexQuery($config);
