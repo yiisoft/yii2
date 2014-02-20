@@ -23,6 +23,7 @@ ArrayHelper::multisort($properties, 'name');
 	<div class="detailHeader h3" id="<?= $property->name.'-detail' ?>">
 		<?php echo $property->name; ?>
 		<span class="detailHeaderTag small">
+			<?= $property->visibility ?>
 			property
 			<?php if($property->getIsReadOnly()) echo ' <em>read-only</em> '; ?>
 			<?php if($property->getIsWriteOnly()) echo ' <em>write-only</em> '; ?>
