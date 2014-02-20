@@ -46,6 +46,7 @@ Yii Framework 2 Change Log
 - Bug #2303: Fixed the bug that `yii\base\Theme::pathMap` did not support dynamic update with path aliases (qiangxue)
 - Bug #2324: Fixed QueryBuilder bug when building a query with "query" option (mintao)
 - Bug #2399: Fixed the bug that AssetBundle did not handle relative URLs correctly (qiangxue)
+- Bug #2502: Unclear error message when `$_SERVER['DOCUMENT_ROOT']` is empty (samdark)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
