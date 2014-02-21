@@ -335,12 +335,12 @@ class Sort extends Object
 			$params = $request instanceof Request ? $request->getQueryParams() : [];
 		}
 		$params[$this->sortParam] = $this->createSortParam($attribute);
-		$route = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
+		$params[0] = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
 		$urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
 		if ($absolute) {
-			return $urlManager->createAbsoluteUrl($route, $params);
+			return $urlManager->createAbsoluteUrl($params);
 		} else {
-			return $urlManager->createUrl($route, $params);
+			return $urlManager->createUrl($params);
 		}
 	}
 
