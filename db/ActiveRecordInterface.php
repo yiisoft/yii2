@@ -131,7 +131,7 @@ interface ActiveRecordInterface
 	 * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
 	 * default condition. Using [[Query::where()]] will override the default condition.
 	 *
-	 * @param array $config the configuration passed to the ActiveRelation class.
+	 * @param array $config the configuration passed to the ActiveQuery class.
 	 * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
 	 */
 	public static function createQuery($config = []);
