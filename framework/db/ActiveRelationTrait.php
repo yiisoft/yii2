@@ -11,7 +11,7 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 
 /**
- * ActiveRelationTrait implements the common methods and properties for active record relation classes.
+ * ActiveRelationTrait implements the common methods and properties for active record relational queries.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -20,25 +20,30 @@ use yii\base\InvalidParamException;
 trait ActiveRelationTrait
 {
 	/**
-	 * @var boolean whether this relation should populate all query results into AR instances.
-	 * If false, only the first row of the results will be retrieved.
+	 * @var boolean whether this query represents a relation to more than one record.
+	 * This property is only used in relational context. If true, this relation will
+	 * populate all query results into AR instances using [[all()]].
+	 * If false, only the first row of the results will be retrieved using [[one()]].
 	 */
 	public $multiple;
 	/**
-	 * @var ActiveRecord the primary model that this relation is associated with.
+	 * @var ActiveRecord the primary model of a relational query.
 	 * This is used only in lazy loading with dynamic query options.
 	 */
 	public $primaryModel;
 	/**
-	 * @var array the columns of the primary and foreign tables that establish the relation.
+	 * @var array the columns of the primary and foreign tables that establish a relation.
 	 * The array keys must be columns of the table for this relation, and the array values
 	 * must be the corresponding columns from the primary table.
 	 * Do not prefix or quote the column names as this will be done automatically by Yii.
+	 * This property is only used in relational context.
 	 */
 	public $link;
 	/**
 	 * @var array the query associated with the pivot table. Please call [[via()]]
 	 * to set this property instead of directly setting it.
+	 * This property is only used in relational context.
+	 * @see via()
 	 */
 	public $via;
 	/**
@@ -48,8 +53,11 @@ trait ActiveRelationTrait
 	 * If this property is set, the primary record(s) will be referenced through the specified relation.
 	 * For example, `$customer->orders[0]->customer` and `$customer` will be the same object,
 	 * and accessing the customer of an order will not trigger new DB query.
+	 * This property is only used in relational context.
+	 * @see inverseOf()
 	 */
 	public $inverseOf;
+
 
 	/**
 	 * Clones internal objects.
@@ -66,6 +74,22 @@ trait ActiveRelationTrait
 
 	/**
 	 * Specifies the relation associated with the pivot table.
+	 *
+	 * Use this method to specify a pivot record/table when declaring a relation in the [[ActiveRecord]] class:
+	 *
+	 * ```php
+	 * public function getOrders()
+	 * {
+	 *     return $this->hasOne(Order::className(), ['id' => 'order_id']);
+	 * }
+	 *
+	 * public function getOrderItems()
+	 * {
+	 *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
+	 *                 ->via('orders', ['order_id' => 'id']);
+	 * }
+	 * ```
+	 *
 	 * @param string $relationName the relation name. This refers to a relation declared in [[primaryModel]].
 	 * @param callable $callable a PHP callback for customizing the relation associated with the pivot table.
 	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
@@ -87,7 +111,17 @@ trait ActiveRelationTrait
 	 * is the "orders", and the inverse of the "orders" relation is the "customer".
 	 * If this property is set, the primary record(s) will be referenced through the specified relation.
 	 * For example, `$customer->orders[0]->customer` and `$customer` will be the same object,
-	 * and accessing the customer of an order will not trigger new DB query.
+	 * and accessing the customer of an order will not trigger a new DB query.
+	 *
+	 * Use this method when declaring a relation in the [[ActiveRecord]] class:
+	 *
+	 * ```php
+	 * public function getOrders()
+	 * {
+	 *     return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+	 * }
+	 * ```
+	 *
 	 * @param string $relationName the name of the relation that is the inverse of this relation.
 	 * @return static the relation object itself.
 	 */

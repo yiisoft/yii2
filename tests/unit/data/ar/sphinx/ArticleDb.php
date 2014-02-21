@@ -2,7 +2,7 @@
 
 namespace yiiunit\data\ar\sphinx;
 
-use yii\sphinx\ActiveRelation;
+use yii\sphinx\ActiveQuery;
 use yiiunit\data\ar\ActiveRecord as ActiveRecordDb;
 
 class ArticleDb extends ActiveRecordDb
@@ -20,6 +20,6 @@ class ArticleDb extends ActiveRecordDb
 			'link' => ['id' => 'id'],
 			'multiple' => false,
 		];
-		return new ActiveRelation($config);
+		return new ActiveQuery($config);
 	}
 }

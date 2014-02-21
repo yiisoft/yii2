@@ -11,6 +11,9 @@ Yii Framework 2 elasticsearch extension Change Log
 - Enh #1765: Added support for primary key path mapping, pk can now be part of the attributes when mapping is defined (cebe)
 - Chg #1765: Changed handling of ActiveRecord primary keys, removed getId(), use getPrimaryKey() instead (cebe)
 - Chg #2281: Renamed `ActiveRecord::create()` to `populateRecord()` and changed signature. This method will not call instantiate() anymore (cebe)
+- Chg #2146: Removed `ActiveRelation` class and moved the functionality to `ActiveQuery`.
+             All relational queries are now directly served by `ActiveQuery` allowing to use
+             custom scopes in relations (cebe)
 
 2.0.0 alpha, December 1, 2013
 -----------------------------

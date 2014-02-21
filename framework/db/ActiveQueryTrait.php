@@ -169,7 +169,7 @@ trait ActiveQueryTrait
 	/**
 	 * @param ActiveRecord $model
 	 * @param array $with
-	 * @return ActiveRelationInterface[]
+	 * @return ActiveQueryInterface[]
 	 */
 	private function normalizeRelations($model, $with)
 	{

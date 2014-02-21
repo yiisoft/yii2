@@ -9,7 +9,6 @@ namespace yii\sphinx;
 
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
-use yii\db\ActiveRelationInterface;
 use yii\db\BaseActiveRecord;
 use yii\db\StaleObjectException;
 use yii\helpers\Inflector;
@@ -135,14 +134,31 @@ abstract class ActiveRecord extends BaseActiveRecord
 
 	/**
 	 * Creates an [[ActiveQuery]] instance.
-	 * This method is called by [[find()]], [[findBySql()]] and [[count()]] to start a SELECT query.
-	 * You may override this method to return a customized query (e.g. `ArticleQuery` specified
-	 * written for querying `Article` purpose.)
+	 *
+	 * This method is called by [[find()]], [[findBySql()]] to start a SELECT query but also
+	 * by [[hasOne()]] and [[hasMany()]] to create a relational query.
+	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
+	 * written for querying `Customer` purpose.)
+	 *
+	 * You may also define default conditions that should apply to all queries unless overridden:
+	 *
+	 * ```php
+	 * public static function createQuery($config = [])
+	 * {
+	 *     return parent::createQuery($config)->where(['deleted' => false]);
+	 * }
+	 * ```
+	 *
+	 * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
+	 * default condition. Using [[Query::where()]] will override the default condition.
+	 *
+	 * @param array $config the configuration passed to the ActiveQuery class.
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
 	 */
-	public static function createQuery()
+	public static function createQuery($config = [])
 	{
-		return new ActiveQuery(['modelClass' => get_called_class()]);
+		$config['modelClass'] = get_called_class();
+		return new ActiveQuery($config);
 	}
 
 	/**
@@ -301,18 +317,6 @@ abstract class ActiveRecord extends BaseActiveRecord
 	public function transactions()
 	{
 		return [];
-	}
-
-	/**
-	 * Creates an [[ActiveRelationInterface]] instance.
-	 * This method is called by [[hasOne()]] and [[hasMany()]] to create a relation instance.
-	 * You may override this method to return a customized relation.
-	 * @param array $config the configuration passed to the ActiveRelation class.
-	 * @return ActiveRelationInterface the newly created [[ActiveRelation]] instance.
-	 */
-	public static function createRelation($config = [])
-	{
-		return new ActiveRelation($config);
 	}
 
 	/**

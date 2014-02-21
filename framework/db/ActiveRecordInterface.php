@@ -112,25 +112,29 @@ interface ActiveRecordInterface
 	/**
 	 * Creates an [[ActiveQueryInterface|ActiveQuery]] instance.
 	 *
-	 * This method is called by [[find()]] to start a SELECT query.
+	 * This method is called by [[find()]] to start a SELECT query but also
+	 * by [[BaseActiveRecord::hasOne()]] and [[BaseActiveRecord::hasMany()]] to
+	 * create a relational query.
+	 *
 	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
 	 * written for querying `Customer` purpose.)
 	 *
 	 * You may also define default conditions that should apply to all queries unless overridden:
 	 *
 	 * ```php
-	 * public static function createQuery()
+	 * public static function createQuery($config = [])
 	 * {
-	 *     return parent::createQuery()->where(['deleted' => false]);
+	 *     return parent::createQuery($config)->where(['deleted' => false]);
 	 * }
 	 * ```
 	 *
 	 * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
 	 * default condition. Using [[Query::where()]] will override the default condition.
 	 *
+	 * @param array $config the configuration passed to the ActiveQuery class.
 	 * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
 	 */
-	public static function createQuery();
+	public static function createQuery($config = []);
 
 	/**
 	 * Updates records using the provided attribute values and conditions.
@@ -256,21 +260,12 @@ interface ActiveRecordInterface
 	public function equals($record);
 
 	/**
-	 * Creates an [[ActiveRelationInterface|ActiveRelation]] instance.
-	 * This method is called by [[BaseActiveRecord::hasOne()]] and [[BaseActiveRecord::hasMany()]] to
-	 * create a relation instance.
-	 * You may override this method to return a customized relation.
-	 * @param array $config the configuration passed to the ActiveRelation class.
-	 * @return ActiveRelation the newly created [[ActiveRelation]] instance.
-	 */
-	public static function createRelation($config = []);
-
-	/**
 	 * Returns the relation object with the specified name.
-	 * A relation is defined by a getter method which returns an [[ActiveRelationInterface|ActiveRelation]] object.
+	 * A relation is defined by a getter method which returns an object implementing the [[ActiveQueryInterface]]
+	 * (normally this would be a relational [[ActiveQuery]] object).
 	 * It can be declared in either the ActiveRecord class itself or one of its behaviors.
 	 * @param string $name the relation name
-	 * @return ActiveRelation the relation object
+	 * @return ActiveQueryInterface the relational query object
 	 */
 	public function getRelation($name);
 
@@ -290,7 +285,7 @@ interface ActiveRecordInterface
 	 * @param static $model the record to be linked with the current one.
 	 * @param array $extraColumns additional column values to be saved into the pivot table.
 	 * This parameter is only meaningful for a relationship involving a pivot table
-	 * (i.e., a relation set with `[[ActiveRelationInterface::via()]]`.)
+	 * (i.e., a relation set with `[[ActiveQueryInterface::via()]]`.)
 	 */
 	public function link($name, $model, $extraColumns = []);
 
