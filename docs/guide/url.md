@@ -192,10 +192,10 @@ return [
 ### Handling REST requests
 
 TBD:
-- RESTful routing: [[\yii\web\VerbFilter]], [[\yii\web\UrlManager::$rules]]
+- RESTful routing: [[yii\web\VerbFilter]], [[yii\web\UrlManager::$rules]]
 - Json API:
-  - response: [[\yii\web\Response::format]]
-  - request: [[yii\web\Request::$parsers]], [[\yii\web\JsonParser]]
+  - response: [[yii\web\Response::format]]
+  - request: [[yii\web\Request::$parsers]], [[yii\web\JsonParser]]
 
 
 URL parsing
@@ -222,13 +222,13 @@ return [
 Creating your own rule classes
 ------------------------------
 
-[[\yii\web\UrlRule]] class is used for both parsing URL into parameters and creating URL based on parameters. Despite
+[[yii\web\UrlRule]] class is used for both parsing URL into parameters and creating URL based on parameters. Despite
 the fact that default implementation is flexible enough for the majority of projects, there are situations when using
 your own rule class is the best choice. For example, in a car dealer website, we may want to support the URL format like
 `/Manufacturer/Model`, where `Manufacturer` and `Model` must both match some data in a database table. The default rule
 class will not work because it mostly relies on statically declared regular expressions which have no database knowledge.
 
-We can write a new URL rule class by extending from [[\yii\web\UrlRule]] and use it in one or multiple URL rules. Using
+We can write a new URL rule class by extending from [[yii\web\UrlRule]] and use it in one or multiple URL rules. Using
 the above car dealer website as an example, we may declare the following URL rules in application config:
 
 ```php

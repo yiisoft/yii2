@@ -62,7 +62,7 @@ You may configure the targets in application configuration, like the following:
 ]
 ```
 
-In the config above we are defining two log targets: [[\yii\log\FileTarget|file]] and [[\yii\log\EmailTarget|email]].
+In the config above we are defining two log targets: [[yii\log\FileTarget|file]] and [[yii\log\EmailTarget|email]].
 In both cases we are filtering messages handles by these targets by severity. In case of file target we're
 additionally filter by category. `yii\*` means all categories starting with `yii\`.
 

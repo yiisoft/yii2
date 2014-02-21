@@ -40,7 +40,7 @@ $component->on($eventName, function($event) {
 ```
 
 As shown in the anonymous function example, the event handling function must be defined so that it takes one argument.
-This will be an [[\yii\base\Event]] object.
+This will be an [[yii\base\Event]] object.
 
 
 Removing Event Handlers

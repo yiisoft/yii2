@@ -9,7 +9,7 @@ Yii models have the following basic features:
 - Massive attribute assignment: the ability to populate multiple model attributes in one step.
 - Scenario-based data validation.
 
-Models in Yii extend from the [[\yii\base\Model]] class. Models are typically used to both hold data and define
+Models in Yii extend from the [[yii\base\Model]] class. Models are typically used to both hold data and define
 the validation rules for that data (aka, the business logic). The business logic greatly simplifies the generation
 of models from complex web forms by providing validation and error reporting.
 
@@ -31,7 +31,7 @@ echo $post->title;
 echo $post->content;
 ```
 
-Since [[\yii\base\Model|Model]] implements the [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) interface,
+Since [[yii\base\Model|Model]] implements the [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) interface,
 you can also access the attributes as if they were array elements:
 
 ```php
@@ -42,7 +42,7 @@ echo $post['title'];
 echo $post['content'];
 ```
 
-By default, [[\yii\base\Model|Model]] requires that attributes be declared as *public* and *non-static*
+By default, [[yii\base\Model|Model]] requires that attributes be declared as *public* and *non-static*
 class member variables. In the following example, the `LoginForm` model class declares two attributes:
 `username` and `password`.
 
@@ -55,8 +55,8 @@ class LoginForm extends \yii\base\Model
 }
 ```
 
-Derived model classes may declare attributes in different ways, by overriding the [[\yii\base\Model::attributes()|attributes()]]
-method. For example, [[\yii\db\ActiveRecord]] defines attributes using the column names of the database table
+Derived model classes may declare attributes in different ways, by overriding the [[yii\base\Model::attributes()|attributes()]]
+method. For example, [[yii\db\ActiveRecord]] defines attributes using the column names of the database table
 that is associated with the class.
 
 
@@ -65,12 +65,12 @@ Attribute Labels
 
 Attribute labels are mainly used for display purpose. For example, given an attribute `firstName`, we can declare
 a label `First Name` that is more user-friendly when displayed to end users in places such as form labels and
-error messages. Given an attribute name, you can obtain its label by calling [[\yii\base\Model::getAttributeLabel()]].
+error messages. Given an attribute name, you can obtain its label by calling [[yii\base\Model::getAttributeLabel()]].
 
-To declare attribute labels, override the [[\yii\base\Model::attributeLabels()]] method. The overridden method returns
+To declare attribute labels, override the [[yii\base\Model::attributeLabels()]] method. The overridden method returns
 a mapping of attribute names to attribute labels, as shown in the example below. If an attribute is not found
-in this mapping, its label will be generated using the [[\yii\base\Model::generateAttributeLabel()]] method.
-In many cases, [[\yii\base\Model::generateAttributeLabel()]] will generate reasonable labels (e.g. `username` to `Username`,
+in this mapping, its label will be generated using the [[yii\base\Model::generateAttributeLabel()]] method.
+In many cases, [[yii\base\Model::generateAttributeLabel()]] will generate reasonable labels (e.g. `username` to `Username`,
 `orderNumber` to `Order Number`).
 
 ```php
@@ -200,7 +200,7 @@ if ($model->validate()) {
 
 The possible validation rules for a model should be listed in its `rules()` method. Each validation rule applies to one
 or several attributes and is effective in one or several scenarios. A rule can be specified using a validator object - an
-instance of a [[\yii\validators\Validator]] child class, or an array with the following format:
+instance of a [[yii\validators\Validator]] child class, or an array with the following format:
 
 ```php
 [
@@ -449,4 +449,4 @@ See also
 --------
 
 - [Model validation reference](validation.md)
-- [[\yii\base\Model]]
+- [[yii\base\Model]]

@@ -11,7 +11,7 @@ Basics
 Controller resides in application's `controllers` directory and is named like `SiteController.php`,
 where the `Site` part could be anything describing a set of actions it contains.
 
-The basic web controller is a class that extends [[\yii\web\Controller]] and could be very simple:
+The basic web controller is a class that extends [[yii\web\Controller]] and could be very simple:
 
 ```php
 namespace app\controllers;
@@ -97,12 +97,12 @@ In case module, controller or action specified isn't found Yii will return "not 
 ### Defaults
 
 If user isn't specifying any route i.e. using URL like `http://example.com/`, Yii assumes that default route should be
-used. It is determined by [[\yii\web\Application::defaultRoute]] method and is `site` by default meaning that `SiteController`
+used. It is determined by [[yii\web\Application::defaultRoute]] method and is `site` by default meaning that `SiteController`
 will be loaded.
 
 A controller has a default action. When the user request does not specify which action to execute by using an URL such as
 `http://example.com/?r=site`, the default action will be executed. By default, the default action is named as `index`.
-It can be changed by setting the [[\yii\base\Controller::defaultAction]] property.
+It can be changed by setting the [[yii\base\Controller::defaultAction]] property.
 
 Action parameters
 -----------------

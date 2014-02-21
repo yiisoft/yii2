@@ -205,8 +205,8 @@ In this way you will avoid collision of fixture data files between tests and use
 
 > Note: In the example above fixture files are named only for example purpose. In real life you should name them
 > according to which fixture class your fixture classes are extending from. For example, if you are extending
-> from [[\yii\test\ActiveFixture]] for DB fixtures, you should use DB table names as the fixture data file names;
-> If you are extending for [[\yii\mongodb\ActiveFixture]] for MongoDB fixtures, you should use collection names as the file names.
+> from [[yii\test\ActiveFixture]] for DB fixtures, you should use DB table names as the fixture data file names;
+> If you are extending for [[yii\mongodb\ActiveFixture]] for MongoDB fixtures, you should use collection names as the file names.
 
 The similar hierarchy can be used to organize fixture class files. Instead of using `data` as the root directory, you may
 want to use `fixtures` as the root directory to avoid conflict with the data files.

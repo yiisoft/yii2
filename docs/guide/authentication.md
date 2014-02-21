@@ -3,7 +3,7 @@ Authentication
 
 Authentication is the act of verifying who a user is, and is the basis of the login process. Typically, authentication uses the combination of an identifier--a username or email address--and a password. The user submits these values  through a form, and the application then compares the submitted information against that previously stored (e.g., upon registration).
 
-In Yii, this entire process is performed semi-automatically, leaving the developer to merely implement [[\yii\web\IdentityInterface]], the most important class in the authentication system. Typically, implementation of `IdentityInterface` is accomplished using the `User` model. 
+In Yii, this entire process is performed semi-automatically, leaving the developer to merely implement [[yii\web\IdentityInterface]], the most important class in the authentication system. Typically, implementation of `IdentityInterface` is accomplished using the `User` model.
 
 You can find a full featured example of authentication in the
 [advanced application template](installation.md). Below, only the interface methods are listed:

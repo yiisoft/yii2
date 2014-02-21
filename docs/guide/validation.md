@@ -166,7 +166,7 @@ Validates that the attribute value is of certain length.
 - `length` specifies the length limit of the value to be validated. Can be `exactly X`, `[min X]`, `[min X, max Y]`.
 - `max`  maximum length. If not set, it means no maximum length limit.
 - `min` minimum length. If not set, it means no minimum length limit.
-- `encoding` the encoding of the string value to be validated. _([[\yii\base\Application::charset]])_
+- `encoding` the encoding of the string value to be validated. _([[yii\base\Application::charset]])_
 
 ### `unique`: [[yii\validators\UniqueValidator|UniqueValidator]]
 
