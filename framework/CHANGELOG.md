@@ -164,6 +164,7 @@ Yii Framework 2 Change Log
 - Chg #2248: Renamed `yii\base\Model::DEFAULT_SCENARIO` to `yii\base\Model::SCENARIO_DEFAULT` (samdark)
 - Chg #2281: Renamed `ActiveRecord::create()` to `populateRecord()` and changed signature. This method will not call instantiate() anymore (cebe)
 - Chg #2405: The CSS class of `MaskedInput` now defaults to `form-control` (qiangxue)
+- Chg #2426: Changed URL creation method signatures to be consistent (samdark)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)

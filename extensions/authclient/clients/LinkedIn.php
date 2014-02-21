@@ -139,7 +139,8 @@ class LinkedIn extends OAuth2
 		$params = $_GET;
 		unset($params['code']);
 		unset($params['state']);
-		return Yii::$app->getUrlManager()->createAbsoluteUrl(Yii::$app->controller->getRoute(), $params);
+		$params[0] = Yii::$app->controller->getRoute();
+		return Yii::$app->getUrlManager()->createAbsoluteUrl($params);
 	}
 
 	/**
