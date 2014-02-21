@@ -62,6 +62,26 @@ Additionally you may specify `$jsOptions`, `$cssOptions` and `$publishOptions` t
 [[yii\web\View::registerJsFile()]], [[yii\web\View::registerCssFile()]] and [[yii\web\AssetManager::publish()]]
 respectively during registering and publising an asset.
 
+### Language-specific asset bundle
+
+If you need to define an asset bundle that includes JavaScript file depending on the language you can do it the
+following way:
+
+```php
+class LanguageAsset extends AssetBundle
+{
+    public $sourcePath = '@app/assets/language';
+    public $js = [
+    ];
+
+    public function init()
+    {
+        $this->js[] = 'language-' . Yii::$app->language . '.js';
+        parent::init();
+    }
+}
+```
+
 Registering asset bundle
 ------------------------
 
