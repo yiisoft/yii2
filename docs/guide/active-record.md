@@ -21,7 +21,7 @@ $customer->save();  // a new row is inserted into tbl_customer
 Declaring ActiveRecord Classes
 ------------------------------
 
-To declare an ActiveRecord class you need to extend [[\yii\db\ActiveRecord]] and
+To declare an ActiveRecord class you need to extend [[yii\db\ActiveRecord]] and
 implement the `tableName` method:
 
 ```php
@@ -197,7 +197,7 @@ Customer::updateAllCounters(['age' => 1]);
 Data Input and Validation
 -------------------------
 
-ActiveRecord inherits data validation and data input features from [[\yii\base\Model]]. Data validation is called
+ActiveRecord inherits data validation and data input features from [[yii\base\Model]]. Data validation is called
 automatically when `save()` is performed. If data validation fails, the saving operation will be cancelled.
 
 For more details refer to the [Model](model.md) section of this guide.
@@ -205,12 +205,15 @@ For more details refer to the [Model](model.md) section of this guide.
 Querying Relational Data
 ------------------------
 
-You can use ActiveRecord to also query a table's relational data (i.e., selection of data from Table A can also pull in related data from Table B). Thanks to ActiveRecord, the relational data returned can be accessed like a property of the ActiveRecord object associated with the primary table.
+You can use ActiveRecord to also query a table's relational data (i.e., selection of data from Table A can also pull
+in related data from Table B). Thanks to ActiveRecord, the relational data returned can be accessed like a property
+of the ActiveRecord object associated with the primary table.
 
 For example, with an appropriate relation declaration, by accessing `$customer->orders` you may obtain
 an array of `Order` objects which represent the orders placed by the specified customer.
 
-To declare a relation, define a getter method which returns an [[yii\db\ActiveRelation]] object. For example,
+To declare a relation, define a getter method which returns an [[yii\db\ActiveQuery]] object that has relation
+information about the relation context and thus will only query for related records. For example,
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -235,7 +238,7 @@ class Order extends \yii\db\ActiveRecord
 The methods [[yii\db\ActiveRecord::hasMany()]] and [[yii\db\ActiveRecord::hasOne()]] used in the above
 are used to model the many-one relationship and one-one relationship in a relational database.
 For example, a customer has many orders, and an order has one customer.
-Both methods take two parameters and return an [[yii\db\ActiveRelation]] object:
+Both methods take two parameters and return an [[yii\db\ActiveQuery]] object:
 
  - `$class`: the name of the class of the related model(s). This should be a fully qualified class name.
  - `$link`: the association between columns from the two tables. This should be given as an array.
@@ -259,8 +262,8 @@ SELECT * FROM tbl_customer WHERE id=1;
 SELECT * FROM tbl_order WHERE customer_id=1;
 ```
 
-> Tip: If you access the expression `$customer->orders` again, will it perform the second SQL query again?
-Nope. The SQL query is only performed the first time when this expression is accessed. Any further
+> Tip: If you access the expression `$customer->orders` again, it will not perform the second SQL query again.
+The SQL query is only performed the first time when this expression is accessed. Any further
 accesses will only return the previously fetched results that are cached internally. If you want to re-query
 the relational data, simply unset the existing one first: `unset($customer->orders);`.
 
@@ -280,8 +283,8 @@ class Customer extends \yii\db\ActiveRecord
 }
 ```
 
-Remember that `hasMany()` returns an [[yii\db\ActiveRelation]] object which extends from [[yii\db\ActiveQuery]]
-and thus supports the same set of querying methods as [[yii\db\ActiveQuery]].
+Remember that `hasMany()` returns an [[yii\db\ActiveQuery]] object which allows you to customize the query by
+calling the methods of [[yii\db\ActiveQuery]].
 
 With the above declaration, if you access `$customer->bigOrders`, it will only return the orders
 whose subtotal is greater than 100. To specify a different threshold value, use the following code:
@@ -290,20 +293,19 @@ whose subtotal is greater than 100. To specify a different threshold value, use 
 $orders = $customer->getBigOrders(200)->all();
 ```
 
-> Note: A relation method returns an instance of [[yii\db\ActiveRelation]]. If you access the relation like
-an attribute, the return value will be the query result of the relation, which could be an instance of `ActiveRecord`,
+> Note: A relation method returns an instance of [[yii\db\ActiveQuery]]. If you access the relation like
+an attribute (i.e. a class property), the return value will be the query result of the relation, which could be an instance of [[yii\db\ActiveRecord]],
 an array of that, or null, depending the multiplicity of the relation. For example, `$customer->getOrders()` returns
-an `ActiveRelation` instance, while `$customer->orders` returns an array of `Order` objects (or an empty array if
+an `ActiveQuery` instance, while `$customer->orders` returns an array of `Order` objects (or an empty array if
 the query results in nothing).
 
 
 Relations with Pivot Table
 --------------------------
 
-Sometimes, two tables are related together via an intermediary table called
-[pivot table](http://en.wikipedia.org/wiki/Pivot_table). To declare such relations, we can customize
-the [[yii\db\ActiveRelation]] object by calling its [[yii\db\ActiveRelation::via()]] or [[yii\db\ActiveRelation::viaTable()]]
-method.
+Sometimes, two tables are related together via an intermediary table called [pivot table][]. To declare such relations,
+we can customize the [[yii\db\ActiveQuery]] object by calling its [[yii\db\ActiveQuery::via()|via()]] or
+[[yii\db\ActiveQuery::viaTable()|viaTable()]] method.
 
 For example, if table `tbl_order` and table `tbl_item` are related via pivot table `tbl_order_item`,
 we can declare the `items` relation in the `Order` class like the following:
@@ -319,8 +321,8 @@ class Order extends \yii\db\ActiveRecord
 }
 ```
 
-[[yii\db\ActiveRelation::via()]] method is similar to [[yii\db\ActiveRelation::viaTable()]] except that
-the first parameter of [[yii\db\ActiveRelation::via()]] takes a relation name declared in the ActiveRecord class
+The [[yii\db\ActiveQuery::via()|via()]] method is similar to [[yii\db\ActiveQuery::viaTable()|viaTable()]] except that
+the first parameter of [[yii\db\ActiveQuery::via()|via()]] takes a relation name declared in the ActiveRecord class
 instead of the pivot table name. For example, the above `items` relation can be equivalently declared as follows:
 
 ```php
@@ -338,6 +340,8 @@ class Order extends \yii\db\ActiveRecord
 	}
 }
 ```
+
+[pivot table]: http://en.wikipedia.org/wiki/Pivot_table "Pivot table on Wikipedia"
 
 
 Lazy and Eager Loading
@@ -457,7 +461,7 @@ if ($customer->orders[0]->customer === $customer) {
 ```
 
 To avoid the redundant execution of the last SQL statement, we could declare the inverse relations for the `customer`
-and the `orders` relations by calling the `inverseOf()` method, like the following:
+and the `orders` relations by calling the [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] method, like the following:
 
 ```php
 class Customer extends ActiveRecord
@@ -500,7 +504,8 @@ if ($customers[0]->orders[0]->customer === $customers[0]) {
 ```
 
 > Note: Inverse relation cannot be defined with a relation that involves pivoting tables.
-> That is, if your relation is defined with `via()` or `viaTable()`, you cannot call `inverseOf()` further.
+> That is, if your relation is defined with [[yii\db\ActiveQuery::via()|via()]] or [[yii\db\ActiveQuery::viaTable()|viaTable()]],
+> you cannot call [[yii\db\ActiveQuery::inverseOf()]] further.
 
 
 Joining with Relations
@@ -571,7 +576,7 @@ $orders = Order::find()->joinWith('books', false, 'INNER JOIN')->all();
 ```
 
 Sometimes when joining two tables, you may need to specify some extra condition in the ON part of the JOIN query.
-This can be done by calling the [[\yii\db\ActiveRelation::onCondition()]] method like the following:
+This can be done by calling the [[yii\db\ActiveQuery::onCondition()]] method like the following:
 
 ```php
 class User extends ActiveRecord
@@ -583,7 +588,8 @@ class User extends ActiveRecord
 }
 ```
 
-In the above, the `hasMany()` method returns an `ActiveRelation` instance, upon which `onCondition()` is called
+In the above, the [[yii\db\ActiveRecord::hasMany()|hasMany()]] method returns an [[yii\db\ActiveQuery]] instance,
+upon which [[yii\db\ActiveQuery::onCondition()|onCondition()]] is called
 to specify that only items whose `category_id` is 1 should be returned.
 
 When you perform query using [[yii\db\ActiveQuery::joinWith()|joinWith()]], the on-condition will be put in the ON part
@@ -665,8 +671,10 @@ Finally when calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an Act
 Scopes
 ------
 
-When [[yii\db\ActiveRecord::find()|find()]] or [[yii\db\ActiveRecord::findBySql()|findBySql()]], it returns an [[yii\db\ActiveRecord::yii\db\ActiveQuery|yii\db\ActiveQuery]]
-instance. You may call additional query methods, such as `where()`, `orderBy()`, to further specify the query conditions, etc.
+When you call [[yii\db\ActiveRecord::find()|find()]] or [[yii\db\ActiveRecord::findBySql()|findBySql()]], it returns an
+[[yii\db\ActiveQuery|ActiveQuery]] instance.
+You may call additional query methods, such as [[yii\db\ActiveQuery::where()|where()]], [[yii\db\ActiveQuery::orderBy()|orderBy()]],
+to further specify the query conditions.
 
 It is possible that you may want to call the same set of query methods in different places. If this is the case,
 you should consider defining the so-called *scopes*. A scope is essentially a method defined in a custom query class that
@@ -933,4 +941,4 @@ See also
 --------
 
 - [Model](model.md)
-- [[\yii\db\ActiveRecord]]
+- [[yii\db\ActiveRecord]]

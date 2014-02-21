@@ -64,7 +64,7 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
 	 * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
 	 * default condition. Using [[Query::where()]] will override the default condition.
 	 *
-	 * @param array $config the configuration passed to the ActiveRelation class.
+	 * @param array $config the configuration passed to the ActiveQuery class.
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
 	 */
 	public static function createQuery($config = [])

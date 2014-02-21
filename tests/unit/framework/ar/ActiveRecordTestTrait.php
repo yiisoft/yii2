@@ -492,7 +492,7 @@ trait ActiveRecordTestTrait
 	}
 
 	/**
-	 * Ensure ActiveRelation does preserve order of items on find via()
+	 * Ensure ActiveRelationTrait does preserve order of items on find via()
 	 * https://github.com/yiisoft/yii2/issues/1310
 	 */
 	public function testFindEagerViaRelationPreserveOrder()
