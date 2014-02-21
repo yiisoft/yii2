@@ -92,13 +92,12 @@ class View extends Component
 	 * @internal
 	 */
 	public $dynamicPlaceholders = [];
+
 	/**
-	 * @var string the path of the view file currently being rendered. If the view is not
-	 * in the process of rendering a view, this property is null.
-	 * This property is mainly provided for information purpose and is maintained by [[renderFile()]].
-	 * Do not modify it.
+	 * @var array the view files currently being rendered. There may be multiple view files being
+	 * rendered at a moment because one may render a view file within another.
 	 */
-	public $viewFile;
+	private $_viewFiles = [];
 
 
 	/**
@@ -223,9 +222,9 @@ class View extends Component
 		if ($context !== null) {
 			$this->context = $context;
 		}
-
 		$output = '';
-		$this->viewFile = $viewFile;
+		$this->_viewFiles[] = $viewFile;
+
 		if ($this->beforeRender()) {
 			Yii::trace("Rendering view file: $viewFile", __METHOD__);
 			$ext = pathinfo($viewFile, PATHINFO_EXTENSION);
@@ -241,11 +240,19 @@ class View extends Component
 			}
 			$this->afterRender($output);
 		}
-		$this->viewFile = null;
 
+		array_pop($this->_viewFiles);
 		$this->context = $oldContext;
 
 		return $output;
+	}
+
+	/**
+	 * @return string|boolean the view file currently being rendered. False if no view file is being rendered.
+	 */
+	public function getViewFile()
+	{
+		return end($this->_viewFiles);
 	}
 
 	/**
