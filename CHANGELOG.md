@@ -195,6 +195,7 @@ Yii Framework 2 Change Log
 	- Renamed `yii\web\User::idVar` to `idParam`
 	- Renamed `yii\web\User::authTimeoutVar` to `authTimeoutParam`
 	- Renamed `yii\web\User::returnUrlVar` to `returnUrlParam`
+- Chg: Added `View::viewFile` and removed `ViewEvent::viewFile` (qiangxue)
 
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #706: Added `yii\widgets\Pjax` and enhanced `GridView` to work with `Pjax` to support AJAX-update (qiangxue)

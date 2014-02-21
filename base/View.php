@@ -92,6 +92,13 @@ class View extends Component
 	 * @internal
 	 */
 	public $dynamicPlaceholders = [];
+	/**
+	 * @var string the path of the view file currently being rendered. If the view is not
+	 * in the process of rendering a view, this property is null.
+	 * This property is mainly provided for information purpose and is maintained by [[renderFile()]].
+	 * Do not modify it.
+	 */
+	public $viewFile;
 
 
 	/**
@@ -218,7 +225,8 @@ class View extends Component
 		}
 
 		$output = '';
-		if ($this->beforeRender($viewFile)) {
+		$this->viewFile = $viewFile;
+		if ($this->beforeRender()) {
 			Yii::trace("Rendering view file: $viewFile", __METHOD__);
 			$ext = pathinfo($viewFile, PATHINFO_EXTENSION);
 			if (isset($this->renderers[$ext])) {
@@ -231,8 +239,9 @@ class View extends Component
 			} else {
 				$output = $this->renderPhpFile($viewFile, $params);
 			}
-			$this->afterRender($viewFile, $output);
+			$this->afterRender($output);
 		}
+		$this->viewFile = null;
 
 		$this->context = $oldContext;
 
@@ -243,12 +252,11 @@ class View extends Component
 	 * This method is invoked right before [[renderFile()]] renders a view file.
 	 * The default implementation will trigger the [[EVENT_BEFORE_RENDER]] event.
 	 * If you override this method, make sure you call the parent implementation first.
-	 * @param string $viewFile the view file to be rendered
 	 * @return boolean whether to continue rendering the view file.
 	 */
-	public function beforeRender($viewFile)
+	public function beforeRender()
 	{
-		$event = new ViewEvent($viewFile);
+		$event = new ViewEvent;
 		$this->trigger(self::EVENT_BEFORE_RENDER, $event);
 		return $event->isValid;
 	}
@@ -257,14 +265,13 @@ class View extends Component
 	 * This method is invoked right after [[renderFile()]] renders a view file.
 	 * The default implementation will trigger the [[EVENT_AFTER_RENDER]] event.
 	 * If you override this method, make sure you call the parent implementation first.
-	 * @param string $viewFile the view file to be rendered
 	 * @param string $output the rendering result of the view file. Updates to this parameter
 	 * will be passed back and returned by [[renderFile()]].
 	 */
-	public function afterRender($viewFile, &$output)
+	public function afterRender(&$output)
 	{
 		if ($this->hasEventHandlers(self::EVENT_AFTER_RENDER)) {
-			$event = new ViewEvent($viewFile);
+			$event = new ViewEvent;
 			$event->output = $output;
 			$this->trigger(self::EVENT_AFTER_RENDER, $event);
 			$output = $event->output;
