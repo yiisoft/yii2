@@ -703,9 +703,9 @@ Important points are:
 
 1. Class should extend from `yii\db\ActiveQuery` (or another `ActiveQuery` such as `yii\mongodb\ActiveQuery`).
 2. A method should be `public` and should return `$this` in order to allow method chaining. It may accept parameters.
-3. Check `ActiveQuery` methods that are very useful for modifying query conditions.
+3. Check [[yii\db\ActiveQuery]] methods that are very useful for modifying query conditions.
 
-Second, override `ActiveRecord::createQuery()` to use the custom query class instead of the regular `ActiveQuery`.
+Second, override [[yii\db\ActiveRecord::createQuery()]] to use the custom query class instead of the regular [[yii\db\ActiveQuery|ActiveQuery]].
 For the example above, you need to write the following code:
 
 ```
@@ -715,9 +715,10 @@ use yii\db\ActiveRecord;
 
 class Comment extends ActiveRecord
 {
-	public static function createQuery()
+	public static function createQuery($config = [])
 	{
-		return new CommentQuery(['modelClass' => get_called_class()]);
+		$config['modelClass'] = get_called_class();
+		return new CommentQuery($config);
 	}
 }
 ```
@@ -734,7 +735,7 @@ You can also use scopes when defining relations. For example,
 ```php
 class Post extends \yii\db\ActiveRecord
 {
-	public function getComments()
+	public function getActiveComments()
 	{
 		return $this->hasMany(Comment::className(), ['post_id' => 'id'])->active();
 
@@ -750,20 +751,6 @@ $posts = Post::find()->with([
 		$q->active();
 	}
 ])->all();
-```
-
-### Default Scope
-
-If you used Yii 1.1 before, you may know a concept called *default scope*. A default scope is a scope that
-applies to ALL queries. You can define a default scope easily by overriding `ActiveRecord::createQuery()`. For example,
-
-```php
-public static function createQuery()
-{
-	$query = new CommentQuery(['modelClass' => get_called_class()]);
-	$query->where(['deleted' => false]);
-	return $query;
-}
 ```
 
 
@@ -794,9 +781,26 @@ class CommentQuery extends ActiveQuery
 }
 ```
 
+### Default Scope
+
+If you used Yii 1.1 before, you may know a concept called *default scope*. A default scope is a scope that
+applies to ALL queries. You can define a default scope easily by overriding [[yii\db\ActiveRecord::createQuery()]]. For example,
+
+```php
+public static function createQuery($config = [])
+{
+	$config['modelClass'] = get_called_class();
+	return (new ActiveQuery($config))->where(['deleted' => false]);
+}
+```
+
+Note that all your queries should then not use [[yii\db\ActiveQuery::where()|where()]] but
+[[yii\db\ActiveQuery::andWhere()|andWhere()]] and [[yii\db\ActiveQuery::orWhere()|orWhere()]]
+to not override the default condition.
+
+
 Transactional operations
 ------------------------
-
 
 When a few DB operations are related and are executed
 
