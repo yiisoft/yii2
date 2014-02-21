@@ -164,9 +164,9 @@ class BlogController extends Controller
 		}
 
 		if (\Yii::$app->request->isPost) {
-			$post->load($_POST);
+			$post->load(Yii::$app->request->post());
 			if ($post->save()) {
-				$this->redirect(['view', 'id' => $post->id]);
+				return $this->redirect(['view', 'id' => $post->id]);
 			}
 		}
 
