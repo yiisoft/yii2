@@ -29,7 +29,7 @@ use yii\helpers\Html;
  *     'options' => ['tag' => 'ul'],
  *     'itemOptions' => ['tag' => 'li'],
  *     'clientOptions' => ['cursor' => 'move'],
- * ));
+ * ]);
  * ```
  *
  * @see http://api.jqueryui.com/sortable/
@@ -64,6 +64,25 @@ class Sortable extends Widget
 	 * - tag: string, defaults to "li", the tag name of the item container tags.
 	 */
 	public $itemOptions = [];
+
+	/**
+	 * @inheritDoc
+	 */
+	protected $clientEventMap = [
+		'activate' => 'sortactivate',
+		'beforeStop' => 'sortbeforestop',
+		'change' => 'sortchange',
+		'create' => 'sortcreate',
+		'deactivate' => 'sortdeactivate',
+		'out' => 'sortout',
+		'over' => 'sortover',
+		'receive' => 'sortreceive',
+		'remove' => 'sortremove',
+		'sort' => 'sort',
+		'start' => 'sortstart',
+		'stop' => 'sortstop',
+		'update' => 'sortupdate',
+	];
 
 
 	/**
