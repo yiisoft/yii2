@@ -14,7 +14,7 @@ $controllerClass = StringHelper::basename($generator->controllerClass);
 $modelClass = StringHelper::basename($generator->modelClass);
 $searchModelClass = StringHelper::basename($generator->searchModelClass);
 if ($modelClass === $searchModelClass) {
-	$searchModelAlias = $searchModelClass.'Search';
+	$searchModelAlias = $searchModelClass . 'Search';
 }
 
 /** @var ActiveRecordInterface $class */
@@ -31,7 +31,7 @@ namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>
 
 use Yii;
 use <?= ltrim($generator->modelClass, '\\') ?>;
-use <?= ltrim($generator->searchModelClass, '\\') ?><?php if (isset($searchModelAlias)):?> as <?= $searchModelAlias ?><?php endif ?>;
+use <?= ltrim($generator->searchModelClass, '\\') . (isset($searchModelClass) ? " as $searchModelClass" : "") ?>;
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\NotFoundHttpException;
 use yii\web\VerbFilter;
