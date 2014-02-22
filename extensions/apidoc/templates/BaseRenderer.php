@@ -34,7 +34,7 @@ abstract class BaseRenderer extends Component
 	/**
 	 * @var array files for guide pages
 	 */
-	public $markDownFiles;
+	public $markDownFiles = [];
 
 	/**
 	 * Renders a given [[Context]].
