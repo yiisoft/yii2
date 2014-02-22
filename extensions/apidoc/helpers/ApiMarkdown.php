@@ -29,6 +29,14 @@ class ApiMarkdown extends GithubMarkdown
 
 	protected $context;
 
+	public function prepare()
+	{
+		parent::prepare();
+
+		// add references to guide pages
+		$this->references = array_merge($this->references, static::$renderer->getGuideReferences());
+	}
+
 	/**
 	 * @inheritDoc
 	 */

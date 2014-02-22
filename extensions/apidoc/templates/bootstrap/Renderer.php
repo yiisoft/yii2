@@ -134,11 +134,11 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 	/**
 	 * Renders a given [[Context]].
 	 *
-	 * @param Context $context the api documentation context to render.
 	 * @param Controller $controller the apidoc controller instance. Can be used to control output.
 	 */
-	public function renderMarkdownFiles($files, $controller)
+	public function renderMarkdownFiles($controller)
 	{
+		$files = $this->markDownFiles;
 		$dir = Yii::getAlias($this->targetDir);
 		if (!is_dir($dir)) {
 			mkdir($dir, 0777, true);
@@ -174,13 +174,28 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 				];
 				$output = $this->getView()->renderFile($this->guideLayout, $params, $this);
 			}
-			$fileName = 'guide_' . str_replace('.md', '.html', basename($file));
+			$fileName = $this->generateGuideFileName($file);
 			file_put_contents($dir . '/' . $fileName, $output);
 			Console::updateProgress(++$done, $fileCount);
 		}
 		Console::updateProgress(++$done, $fileCount);
 		Console::endProgress(true);
 		$controller->stdout('done.' . PHP_EOL, Console::FG_GREEN);
+	}
+
+	protected function generateGuideFileName($file)
+	{
+		return 'guide_' . basename($file, '.md') . '.html';
+	}
+
+	public function getGuideReferences()
+	{
+		$refs = [];
+		foreach($this->markDownFiles as $file) {
+			$refName = 'guide-' . basename($file, '.md');
+			$refs[$refName] = ['url' => $this->generateGuideFileName($file)];
+		}
+		return $refs;
 	}
 
 	protected function fixMarkdownLinks($content)

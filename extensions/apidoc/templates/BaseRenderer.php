@@ -31,7 +31,10 @@ abstract class BaseRenderer extends Component
 	 * @var Context the [[Context]] currently being rendered.
 	 */
 	public $context;
-
+	/**
+	 * @var array files for guide pages
+	 */
+	public $markDownFiles;
 
 	/**
 	 * Renders a given [[Context]].
@@ -49,7 +52,7 @@ abstract class BaseRenderer extends Component
 	 * @param Controller $controller the apidoc controller instance. Can be used to control output.
 	 * @return
 	 */
-	public abstract function renderMarkdownFiles($files, $controller);
+	public abstract function renderMarkdownFiles($controller);
 
 	/**
 	 * creates a link to a type (class, interface or trait)
