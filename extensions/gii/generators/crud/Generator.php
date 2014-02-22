@@ -62,6 +62,7 @@ class Generator extends \yii\gii\Generator
 			[['moduleID', 'controllerClass', 'modelClass', 'searchModelClass', 'baseControllerClass'], 'filter', 'filter' => 'trim'],
 			[['modelClass', 'searchModelClass', 'controllerClass', 'baseControllerClass', 'indexWidgetType'], 'required'],
 			[['searchModelClass'], 'compare', 'compareAttribute' => 'modelClass', 'operator' => '!==', 'message' => 'Search Model Class must not be equal to Model Class.'],
+			[['searchModelClass'], 'validateSearchModelClass'],
 			[['modelClass', 'controllerClass', 'baseControllerClass', 'searchModelClass'], 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
 			[['modelClass'], 'validateClass', 'params' => ['extends' => BaseActiveRecord::className()]],
 			[['baseControllerClass'], 'validateClass', 'params' => ['extends' => Controller::className()]],
@@ -137,6 +138,19 @@ class Generator extends \yii\gii\Generator
 			$this->addError('modelClass', "The table associated with $class must have primary key(s).");
 		}
 	}
+	
+    /**
+     * Checks if name of search model equal name of model without namespace
+     */
+    public function validateSearchModelClass()
+    {
+        /** @var ActiveRecord $class */
+        $classPrimary = substr($this->modelClass, strripos($this->modelClass, '\\'));
+        $classSecondary = substr($this->searchModelClass, strripos($this->searchModelClass, '\\'));
+        if (strnatcasecmp($classPrimary,$classSecondary) === 0) {
+            $this->addError('searchModelClass', "Search Model Class must not be equal to Model Class without namespace.");
+        }
+    }
 
 	/**
 	 * Checks if model ID is valid
