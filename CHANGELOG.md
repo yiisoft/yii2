@@ -118,6 +118,7 @@ Yii Framework 2 Change Log
 - Enh #2436: Label of the attribute, which looks like `relatedModel.attribute`, will be received from the related model if it available (djagya)
 - Enh #2415: Added support for inverse relations (qiangxue)
 - Enh #2490: `yii\db\Query::count()` and other query scalar methods now properly handle queries with GROUP BY clause (qiangxue)
+- Enh #2491: Added support for using the same base class name of search model and data model in Gii (qiangxue)
 - Enh #2499: Added ability to downgrade migrations by their absolute apply time (resurtm, gorcer)
 - Enh: Added support for using arrays as option values for console commands (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
