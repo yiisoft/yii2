@@ -116,10 +116,8 @@ class MessageSource extends Component
 			$this->trigger(self::EVENT_MISSING_TRANSLATION, $event);
 			if ($event->translatedMessage !== null) {
 				return $this->_messages[$key][$message] = $event->translatedMessage;
-			} else {
-				return $this->_messages[$key][$message] = false;
 			}
 		}
-		return false;
+		return $this->_messages[$key][$message] = false;
 	}
 }
