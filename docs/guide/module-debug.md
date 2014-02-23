@@ -9,22 +9,22 @@ Installing and configuring
 
 Add these lines to your config file:
 
-```
+```php
 'preload' => ['debug'],
 'modules' => [
 	'debug' => ['yii\debug\Module']
 ]
 ```
 
-**Watch out: by default the debug module only works when browsing the website from the localhost. If you want to use it
-on a remote (staging) server, add the parameter allowedIPs to the config to whitelist your IP, e.g. :**
+> Note: by default the debug module only works when browsing the website from the localhost. If you want to use it
+> on a remote (staging) server, add the parameter allowedIPs to the config to whitelist your IP, e.g. :**
 
-```
+```php
 'preload' => ['debug'],
 'modules' => [
 	'debug' => [
-		'class'=>'yii\debug\Module',
-		'allowedIPs'=>['1.2.3.4', '127.0.0.1', '::1']
+		'class' => 'yii\debug\Module',
+		'allowedIPs' => ['1.2.3.4', '127.0.0.1', '::1']
 	]
 ]
 ```

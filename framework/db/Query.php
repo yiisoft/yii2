@@ -124,6 +124,65 @@ class Query extends Component implements QueryInterface
 	}
 
 	/**
+	 * Starts a batch query.
+	 *
+	 * A batch query supports fetching data in batches, which can keep the memory usage under a limit.
+	 * This method will return a [[BatchQueryResult]] object which implements the `Iterator` interface
+	 * and can be traversed to retrieve the data in batches.
+	 *
+	 * For example,
+	 *
+	 * ```php
+	 * $query = (new Query)->from('tbl_user');
+	 * foreach ($query->batch() as $rows) {
+	 *     // $rows is an array of 10 or fewer rows from tbl_user
+	 * }
+	 * ```
+	 *
+	 * @param integer $batchSize the number of records to be fetched in each batch.
+	 * @param Connection $db the database connection. If not set, the "db" application component will be used.
+	 * @return BatchQueryResult the batch query result. It implements the `Iterator` interface
+	 * and can be traversed to retrieve the data in batches.
+	 */
+	public function batch($batchSize = 100, $db = null)
+	{
+		return Yii::createObject([
+			'class' => BatchQueryResult::className(),
+			'query' => $this,
+			'batchSize' => $batchSize,
+			'db' => $db,
+			'each' => false,
+		]);
+	}
+
+	/**
+	 * Starts a batch query and retrieves data row by row.
+	 * This method is similar to [[batch()]] except that in each iteration of the result,
+	 * only one row of data is returned. For example,
+	 *
+	 * ```php
+	 * $query = (new Query)->from('tbl_user');
+	 * foreach ($query->each() as $row) {
+	 * }
+	 * ```
+	 *
+	 * @param integer $batchSize the number of records to be fetched in each batch.
+	 * @param Connection $db the database connection. If not set, the "db" application component will be used.
+	 * @return BatchQueryResult the batch query result. It implements the `Iterator` interface
+	 * and can be traversed to retrieve the data in batches.
+	 */
+	public function each($batchSize = 100, $db = null)
+	{
+		return Yii::createObject([
+			'class' => BatchQueryResult::className(),
+			'query' => $this,
+			'batchSize' => $batchSize,
+			'db' => $db,
+			'each' => true,
+		]);
+	}
+
+	/**
 	 * Executes the query and returns all results as an array.
 	 * @param Connection $db the database connection used to generate the SQL statement.
 	 * If this parameter is not given, the `db` application component will be used.
@@ -132,6 +191,18 @@ class Query extends Component implements QueryInterface
 	public function all($db = null)
 	{
 		$rows = $this->createCommand($db)->queryAll();
+		return $this->prepareResult($rows);
+	}
+
+	/**
+	 * Converts the raw query results into the format as specified by this query.
+	 * This method is internally used to convert the data fetched from database
+	 * into the format as required by this query.
+	 * @param array $rows the raw query result from database
+	 * @return array the converted query result
+	 */
+	public function prepareResult($rows)
+	{
 		if ($this->indexBy === null) {
 			return $rows;
 		}

@@ -77,6 +77,16 @@ class MailPanel extends Panel
 
 	public function save()
 	{
+		return $this->getMessages();
+	}
+
+	/**
+	 * Returns info about messages of current request. Each element is array holding
+	 * message info, such as: time, reply, bc, cc, from, to and other.
+	 * @return array messages
+	 */
+	public function getMessages()
+	{
 		return $this->_messages;
 	}
 

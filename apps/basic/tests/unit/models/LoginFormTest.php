@@ -11,6 +11,12 @@ class LoginFormTest extends TestCase
 	
 	use \Codeception\Specify;
 
+	protected function tearDown()
+	{
+		Yii::$app->user->logout();
+		parent::tearDown();
+	}
+
 	public function testLoginNoUser()
 	{
 		$model = $this->mockUser(null);

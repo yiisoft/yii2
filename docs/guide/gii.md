@@ -1,31 +1,29 @@
 The Gii code generation tool
 ============================
 
-Yii2 includes a handy tool that allows rapid prototyping by generating commonly used code snippets
+Yii includes a handy tool, named Gii, that provides rapid prototyping by generating commonly used code snippets
 as well as complete CRUD controllers.
 
 
 Installing and configuring
 --------------------------
 
-Gii comes as an offical extension and the preferred way to install this extension is through
+Gii is an offical Yii extension. The preferred way to install this extension is through
 [composer](http://getcomposer.org/download/).
 
-Either run
+You can either run this command:
 
 ```
 php composer.phar require --prefer-dist yiisoft/yii2-gii "*"
 ```
 
-or add
+Or you can add this code to the require section of your `composer.json` file:
 
 ```
 "yiisoft/yii2-gii": "*"
 ```
 
-to the require section of your `composer.json` file.
-
-Once the extension is installed, simply add these lines to your application configuration file:
+Once the Gii extension has been installed, you enable it by adding these lines to your application configuration file:
 
 ```php
 'modules' => [
@@ -41,8 +39,7 @@ You can then access Gii through the following URL:
 http://localhost/path/to/index.php?r=gii
 ```
 
-> Note: if you are accessing gii from another IP than localhost, access will be denied by default.
-  You have to add allowed IPs to the configuration in this case:
+> Note: if you are accessing gii from an IP address other than localhost, access will be denied by default. To circumvent that default, add the allowed IP addressess to the configuration:
 >
 ```php
 'gii' => [

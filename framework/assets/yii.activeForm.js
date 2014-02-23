@@ -45,7 +45,9 @@
 		// function ($form, attribute, messages)
 		afterValidate: undefined,
 		// the GET parameter name indicating an AJAX-based validation
-		ajaxVar: 'ajax'
+		ajaxParam: 'ajax',
+		// the type of data that you're expecting back from the server
+		ajaxDataType: 'json'
 	};
 
 	var attributeDefaults = {
@@ -293,7 +295,7 @@
 			// If the validation is triggered by form submission, ajax validation
 			// should be done only when all inputs pass client validation
 			var $button = data.submitObject,
-				extData = '&' + data.settings.ajaxVar + '=' + $form.prop('id');
+				extData = '&' + data.settings.ajaxParam + '=' + $form.prop('id');
 			if ($button && $button.length && $button.prop('name')) {
 				extData += '&' + $button.prop('name') + '=' + $button.prop('value');
 			}
@@ -301,7 +303,7 @@
 				url: data.settings.validationUrl,
 				type: $form.prop('method'),
 				data: $form.serialize() + extData,
-				dataType: 'json',
+				dataType: data.settings.ajaxDataType,
 				success: function (msgs) {
 					if (msgs !== null && typeof msgs === 'object') {
 						$.each(data.attributes, function () {

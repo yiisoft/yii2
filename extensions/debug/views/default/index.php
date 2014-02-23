@@ -68,7 +68,7 @@ if (isset($this->context->module->panels['db']) && isset($this->context->module-
 			'ip',
 			[
 				'attribute' => 'sqlCount',
-				'label' => 'Total queries',
+				'label' => 'Query Count',
 				'value' => function ($data) {
 					$dbPanel = $this->context->module->panels['db'];
 
@@ -84,6 +84,10 @@ if (isset($this->context->module->panels['db']) && isset($this->context->module-
 					}
 				},
 				'format' => 'html',
+			],
+			[
+				'attribute' => 'mailCount',
+				'visible' => isset($this->context->module->panels['mail']),
 			],
 			[
 				'attribute' => 'method',

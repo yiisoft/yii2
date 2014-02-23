@@ -66,7 +66,7 @@ In the config above we are defining two log targets: [[\yii\log\FileTarget|file]
 In both cases we are filtering messages handles by these targets by severity. In case of file target we're
 additionally filter by category. `yii\*` means all categories starting with `yii\`.
 
-Each log target can have a name and can be referenced via the [[targets]] property as follows:
+Each log target can have a name and can be referenced via the [[yii\log\Logger::targets|targets]] property as follows:
 
 ```php
 Yii::$app->log->targets['file']->enabled = false;

@@ -50,10 +50,14 @@ class Debug extends Base
 	public $statusCode;
 
 	/**
-	 *
 	 * @var integer sql count attribute input search value
 	 */
 	public $sqlCount;
+
+	/**
+	 * @var integer total mail count attribute input search value
+	 */
+	public $mailCount;
 
 	/**
 	 * @var array critical codes, used to determine grid row options.
@@ -66,7 +70,7 @@ class Debug extends Base
 	public function rules()
 	{
 		return [
-			[['tag', 'ip', 'method', 'ajax', 'url', 'statusCode', 'sqlCount'], 'safe'],
+			[['tag', 'ip', 'method', 'ajax', 'url', 'statusCode', 'sqlCount', 'mailCount'], 'safe'],
 		];
 	}
 
@@ -82,7 +86,8 @@ class Debug extends Base
 			'ajax' => 'Ajax',
 			'url' => 'url',
 			'statusCode' => 'Status code',
-			'sqlCount' => 'Total queries',
+			'sqlCount' => 'Query Count',
+			'mailCount' => 'Mail Count',
 		];
 	}
 
@@ -97,7 +102,7 @@ class Debug extends Base
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $models,
 			'sort' => [
-				'attributes' => ['method', 'ip', 'tag', 'time', 'statusCode', 'sqlCount'],
+				'attributes' => ['method', 'ip', 'tag', 'time', 'statusCode', 'sqlCount', 'mailCount'],
 			],
 			'pagination' => [
 				'pageSize' => 50,
@@ -116,6 +121,7 @@ class Debug extends Base
 		$this->addCondition($filter, 'url', true);
 		$this->addCondition($filter, 'statusCode');
 		$this->addCondition($filter, 'sqlCount');
+		$this->addCondition($filter, 'mailCount');
 		$dataProvider->allModels = $filter->filter($models);
 
 		return $dataProvider;

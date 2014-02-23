@@ -97,16 +97,16 @@ class User extends Component
 	/**
 	 * @var string the session variable name used to store the value of [[id]].
 	 */
-	public $idVar = '__id';
+	public $idParam = '__id';
 	/**
 	 * @var string the session variable name used to store the value of expiration timestamp of the authenticated state.
 	 * This is used when [[authTimeout]] is set.
 	 */
-	public $authTimeoutVar = '__expire';
+	public $authTimeoutParam = '__expire';
 	/**
 	 * @var string the session variable name used to store the value of [[returnUrl]].
 	 */
-	public $returnUrlVar = '__returnUrl';
+	public $returnUrlParam = '__returnUrl';
 
 	private $_access = [];
 
@@ -270,7 +270,7 @@ class User extends Component
 	 */
 	public function getId()
 	{
-		return Yii::$app->getSession()->get($this->idVar);
+		return Yii::$app->getSession()->get($this->idParam);
 	}
 
 	/**
@@ -285,7 +285,7 @@ class User extends Component
 	 */
 	public function getReturnUrl($defaultUrl = null)
 	{
-		$url = Yii::$app->getSession()->get($this->returnUrlVar, $defaultUrl);
+		$url = Yii::$app->getSession()->get($this->returnUrlParam, $defaultUrl);
 		if (is_array($url)) {
 			if (isset($url[0])) {
 				$route = array_shift($url);
@@ -309,7 +309,7 @@ class User extends Component
 	 */
 	public function setReturnUrl($url)
 	{
-		Yii::$app->getSession()->set($this->returnUrlVar, $url);
+		Yii::$app->getSession()->set($this->returnUrlParam, $url);
 	}
 
 	/**
@@ -467,12 +467,12 @@ class User extends Component
 			$session->regenerateID(true);
 		}
 		$this->setIdentity($identity);
-		$session->remove($this->idVar);
-		$session->remove($this->authTimeoutVar);
+		$session->remove($this->idParam);
+		$session->remove($this->authTimeoutParam);
 		if ($identity instanceof IdentityInterface) {
-			$session->set($this->idVar, $identity->getId());
+			$session->set($this->idParam, $identity->getId());
 			if ($this->authTimeout !== null) {
-				$session->set($this->authTimeoutVar, time() + $this->authTimeout);
+				$session->set($this->authTimeoutParam, time() + $this->authTimeout);
 			}
 			if ($duration > 0 && $this->enableAutoLogin) {
 				$this->sendIdentityCookie($identity, $duration);
@@ -491,11 +491,11 @@ class User extends Component
 	protected function renewAuthStatus()
 	{
 		if ($this->authTimeout !== null && !$this->getIsGuest()) {
-			$expire = Yii::$app->getSession()->get($this->authTimeoutVar);
+			$expire = Yii::$app->getSession()->get($this->authTimeoutParam);
 			if ($expire !== null && $expire < time()) {
 				$this->logout(false);
 			} else {
-				Yii::$app->getSession()->set($this->authTimeoutVar, time() + $this->authTimeout);
+				Yii::$app->getSession()->set($this->authTimeoutParam, time() + $this->authTimeout);
 			}
 		}
 	}
