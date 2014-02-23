@@ -91,12 +91,13 @@ class MessageSource extends Component
 
 	/**
 	 * Translates the specified message.
-	 * If the message is not found, a [[EVENT_MISSING_TRANSLATION|missingTranslation]] event will be triggered
-	 * and the original message will be returned.
-	 * @param string $category the category that the message belongs to
-	 * @param string $message the message to be translated
-	 * @param string $language the target language
-	 * @return string|boolean the translated message or false if translation wasn't found
+	 * If the message is not found, a [[EVENT_MISSING_TRANSLATION|missingTranslation]] event will be triggered.
+	 * If there is an event handler, it may provide a [[MissingTranslationEvent::$translatedMessage|fallback translation]].
+	 * If no fallback translation is provided this method will return `false`.
+	 * @param string $category the category that the message belongs to.
+	 * @param string $message the message to be translated.
+	 * @param string $language the target language.
+	 * @return string|boolean the translated message or false if translation wasn't found.
 	 */
 	protected function translateMessage($category, $message, $language)
 	{
@@ -113,7 +114,9 @@ class MessageSource extends Component
 				'language' => $language,
 			]);
 			$this->trigger(self::EVENT_MISSING_TRANSLATION, $event);
-			$this->_messages[$key] = $event->message;
+			if ($event->translatedMessage !== false) {
+				return $this->_messages[$key][$message] = $event->translatedMessage;
+			}
 		}
 		return false;
 	}
