@@ -398,6 +398,14 @@ As you can see, only two SQL queries are needed for the same task!
 > a total number of `1+M+N` SQL queries will be performed: one query to bring back the rows for the primary table, one for
 > each of the `M` pivot tables corresponding to the `via()` or `viaTable()` calls, and one for each of the `N` related tables.
 
+> Note: When you are customizing `select()` with eager loading, make sure you include the columns that link
+> the related models. Otherwise, the related models will not be loaded. For example,
+
+```php
+$orders = Order::find()->select(['id', 'amount'])->with('customer')->all();
+// $orders[0]->customer is always null. To fix the problem, you should do the following:
+$orders = Order::find()->select(['id', 'amount', 'customer_id'])->with('customer')->all();
+```
 
 Sometimes, you may want to customize the relational queries on the fly. This can be
 done for both lazy loading and eager loading. For example,
