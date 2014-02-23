@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\i18n;
 
+use yii\base\Event;
 use yii\base\Model;
 use yii\i18n\I18N;
 use yii\i18n\PhpMessageSource;
@@ -97,6 +98,33 @@ class I18NTest extends TestCase
 	public function testMissingTranslationFormatting()
 	{
 		$this->assertEquals('1 item', $this->i18n->translate('test', '{0, number} {0, plural, one{item} other{items}}', 1, 'hu'));
+	}
+
+	/**
+	 * https://github.com/yiisoft/yii2/issues/2519
+	 */
+	public function testMissingTranslationEvent()
+	{
+		$this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+		$this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
+		$this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+
+		Event::on(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION, function($event) {});
+		$this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+		$this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
+		$this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+		Event::off(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION);
+
+		Event::on(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION, function($event) {
+			if ($event->message == 'Missing translation message.') {
+				$event->translatedMessage = 'TRANSLATION MISSING HERE!';
+			}
+		});
+		$this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+		$this->assertEquals('Another missing translation message.', $this->i18n->translate('test', 'Another missing translation message.', [], 'de-DE'));
+		$this->assertEquals('TRANSLATION MISSING HERE!', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
+		$this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+		Event::off(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION);
 	}
 }
 

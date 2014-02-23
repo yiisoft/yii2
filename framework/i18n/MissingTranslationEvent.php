@@ -18,10 +18,16 @@ use yii\base\Event;
 class MissingTranslationEvent extends Event
 {
 	/**
-	 * @var string the message to be translated. An event handler may overwrite this property
-	 * with a translated version if possible.
+	 * @var string the message to be translated. An event handler may use this to provide a fallback translation
+	 * and set [[translatedMessage]] if possible.
 	 */
 	public $message;
+	/**
+	 * @var string|boolean the translated message. An event handler may overwrite this property
+	 * with a translated version of [[message]] if possible. Defaults to false meaning no translation
+	 * is available.
+	 */
+	public $translatedMessage = false;
 	/**
 	 * @var string the category that the message belongs to
 	 */
