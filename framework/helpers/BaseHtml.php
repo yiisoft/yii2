@@ -1570,6 +1570,41 @@ class BaseHtml
 	}
 
 	/**
+	 * Adds inline CSS styles to the specified options.
+	 * If the style is already in the options, it will not be added again.
+	 * @param array $options the options to be modified.
+	 * @param string $styles the CSS style\s to be added
+	 */
+	public static function addCssStyle(&$options, $styles)
+	{
+		if (isset($options['style'])) {
+			$options['style'] = rtrim($options['style'], ';') . ';';
+			$styles = rtrim($styles, ';') . ';';
+			foreach (array_filter(explode(';', $styles), 'strlen') as $style) {
+				$property = trim(substr($style, 0, strpos($style, ':')));
+				if (!preg_match('/[\s;]' . $property . '\s*:/i', ' ' . $options['style'])) {
+					$options['style'] .= ' ' . $style . ';';
+				}
+			}
+		} else {
+			$options['style'] = $styles;
+		}
+	}
+	
+	/**
+	 * Removes a CSS style\s from the specified options.
+	 * @param array $options the options to be modified.
+	 * @param array $styles names of the styles to be removed.
+	 */
+	public static function removeCssStyle(&$options, $styles)
+	{
+		if (isset($options['style']) && !empty($styles)) {
+			$options['style'] = rtrim($options['style'], ';') . ';';
+			$options['style'] = trim(preg_replace('/(?![\s;])((' . implode('|', $styles) . '):.+?;)/i', '', ' ' . $options['style']));
+		}
+	}
+
+	/**
 	 * Adds a CSS class to the specified options.
 	 * If the CSS class is already in the options, it will not be added again.
 	 * @param array $options the options to be modified.
