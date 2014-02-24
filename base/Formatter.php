@@ -423,7 +423,7 @@ class Formatter extends Component
 	 * @return string the formatted result
 	 * @see sizeFormat
 	 */
-	public function asSize($value, $verbose=false)
+	public function asSize($value, $verbose = false)
 	{
 		$position = 0;
 
