@@ -3,8 +3,8 @@ Installation
 
 There are two ways you can install the Yii framework:
 
-* Installation via [Composer](http://getcomposer.org/) (recommended)
-* Download an application template packed with all requirements including the Yii Framework
+* Via [Composer](http://getcomposer.org/) (recommended)
+* Download an application template containing all site requirements, including the Yii framework itself
 
 
 Installing via Composer
