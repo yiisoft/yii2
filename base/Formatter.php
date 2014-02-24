@@ -269,7 +269,7 @@ class Formatter extends Component
 			return $this->nullDisplay;
 		}
 		$value = $this->normalizeDatetimeValue($value);
-		return $this->formatTimestamp($value, $format === null ? $this->dateFormat : $format, $value);
+		return $this->formatTimestamp($value, $format === null ? $this->dateFormat : $format);
 	}
 
 	/**
@@ -293,7 +293,7 @@ class Formatter extends Component
 			return $this->nullDisplay;
 		}
 		$value = $this->normalizeDatetimeValue($value);
-		return $this->formatTimestamp($value, $format === null ? $this->timeFormat : $format, $value);
+		return $this->formatTimestamp($value, $format === null ? $this->timeFormat : $format);
 	}
 
 	/**
@@ -317,7 +317,7 @@ class Formatter extends Component
 			return $this->nullDisplay;
 		}
 		$value = $this->normalizeDatetimeValue($value);
-		return $this->formatTimestamp($value, $format === null ? $this->datetimeFormat : $format, $value);
+		return $this->formatTimestamp($value, $format === null ? $this->datetimeFormat : $format);
 	}
 
 	/**
