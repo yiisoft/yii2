@@ -412,7 +412,6 @@ class Formatter extends Component
 	 * @return string the formatted result
 	 * @see decimalSeparator
 	 * @see thousandSeparator
-	 * @see asNumber
 	 */
 	public function asSize($value, $decimals = 0)
 	{
@@ -428,6 +427,6 @@ class Formatter extends Component
 	        $position++;
 	    } while ($position < count($units));
 
-	    return $this->asNumber($value, $decimals) . Yii::t('yii', end($units));
+	    return number_format($value, $decimals) . Yii::t('yii', end($units));
 	}
 }
