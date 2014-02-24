@@ -8,7 +8,7 @@
 <div class="module-form">
 <?php
 	echo $form->field($generator, 'vendorName');
-	echo $form->field($generator, 'packageName')->label('Package Name -- WILL BE PREFIXED WITH yii2-');
+	echo $form->field($generator, 'packageName');
 	echo $form->field($generator, 'namespace');
 	echo $form->field($generator, 'type')->dropDownList($generator->optsType());
 	echo $form->field($generator, 'keywords');

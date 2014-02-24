@@ -23,10 +23,10 @@ use yii\helpers\StringHelper;
 class Generator extends \yii\gii\Generator
 {
 	public $vendorName;
-	public $packageName;
+	public $packageName = "yii2-";
 	public $namespace;
-	public $type;
-	public $keywords = "[yii2], [need array handling here]";
+	public $type = "yii2-extension";
+	public $keywords = "yii2,";
 	public $title;
 	public $description;
 	public $outputPath = "@app/tmp";
@@ -84,7 +84,7 @@ class Generator extends \yii\gii\Generator
 		return [
 			'vendorName' => 'This refers to the name of the publisher, often i.e. your GitHub user name.',
 			'packageName' => 'This is the name of the extension.',
-			'namespace' => 'This will be added to your autoloader by composer.',
+			'namespace' => 'This will be added to your autoloader by composer. Do not use yii or yii2 in the namespace',
 			'outputPath' => 'The temporary location of the generated files.',
 			'title' => 'A more descriptive name of your application for the README file.',
 			'description' => 'A sentence or subline describing the main purpose of the extension.',
