@@ -81,7 +81,7 @@ class BaseArrayHelper
 		$result = [];
 		foreach ($object as $key => $value) {
 			if ($recursive && (is_array($value) || is_object($value))) {
-				$result[$key] = static::toArray($value, true);
+				$result[$key] = static::toArray($value, $properties, true);
 			} else {
 				$result[$key] = $value;
 			}
