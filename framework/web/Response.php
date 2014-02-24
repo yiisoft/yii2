@@ -679,7 +679,7 @@ class Response extends \yii\base\Response
 		}
 
 		if (Yii::$app->getRequest()->getIsPjax()) {
-			$this->getHeaders()->set('X-PJAX-URL', $url);
+			$this->getHeaders()->set('X-Pjax-Url', $url);
 		} elseif (Yii::$app->getRequest()->getIsAjax()) {
 			$this->getHeaders()->set('X-Redirect', $url);
 		} else {
