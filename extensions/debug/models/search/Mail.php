@@ -7,6 +7,9 @@ use yii\debug\components\search\Filter;
 
 /**
  * Mail represents the model behind the search form about current send emails.
+ *
+ * @author Mark Jebri <mark.github@yandex.ru>
+ * @since 2.0
  */
 class Mail extends Base
 {

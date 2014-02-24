@@ -2,7 +2,7 @@ Console applications
 ====================
 
 Yii has full featured support of console. Console application structure in Yii is very similar to web application. It
-consists of one or more [[\yii\console\Controller]] (often referred to as commands). Each has one or more actions.
+consists of one or more [[yii\console\Controller]] (often referred to as commands). Each has one or more actions.
 
 Usage
 -----

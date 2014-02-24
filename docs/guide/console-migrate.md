@@ -104,7 +104,7 @@ You can use them to write database independent migrations.
 For example `pk` will be replaced by `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`
 for MySQL and `integer PRIMARY KEY AUTOINCREMENT NOT NULL` for sqlite.
 See documentation of [[yii\db\QueryBuilder::getColumnType()]] for more details and a list
-of available types. You may also use the constants defined in [[\yii\db\Schema]] to
+of available types. You may also use the constants defined in [[yii\db\Schema]] to
 define column types.
 
 

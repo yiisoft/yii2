@@ -47,12 +47,10 @@ abstract class BasePage extends Component
 	public function getUrl($params = [])
 	{
 		if (is_string($this->route)) {
-			return Yii::$app->getUrlManager()->createUrl($this->route, $params);
+			$params[0] = $this->route;
+			return Yii::$app->getUrlManager()->createUrl($params);
 		} elseif (is_array($this->route) && isset($this->route[0])) {
-			$route = $this->route[0];
-			$ps = $this->route;
-			unset($this->route[0]);
-			return Yii::$app->getUrlManager()->createUrl($route, array_merge($ps, $params));
+			return Yii::$app->getUrlManager()->createUrl(array_merge($this->route, $params));
 		} else {
 			throw new InvalidConfigException('The "route" property must be set.');
 		}

@@ -15,7 +15,61 @@ use yii\helpers\StringHelper;
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
  *
- * @include @yii/db/ActiveRecord.md
+ * Active Record implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
+ * The premise behind Active Record is that an individual [[ActiveRecord]] object is associated with a specific
+ * row in a database table. The object's attributes are mapped to the columns of the corresponding table.
+ * Referencing an Active Record attribute is equivalent to accessing the corresponding table column for that record.
+ *
+ * As an example, say that the `Customer` ActiveRecord class is associated with the `tbl_customer` table.
+ * This would mean that the class's `name` attribute is automatically mapped to the `name` column in `tbl_customer`.
+ * Thanks to Active Record, assuming the variable `$customer` is an object of type `Customer`, to get the value of
+ * the `name` column for the table row, you can use the expression `$customer->name`.
+ * In this example, Active Record is providing an object-oriented interface for accessing data stored in the database.
+ * But Active Record provides much more functionality than this.
+ *
+ * To declare an ActiveRecord class you need to extend [[\yii\db\ActiveRecord]] and
+ * implement the `tableName` method:
+ *
+ * ```php
+ * <?php
+ *
+ * class Customer extends \yii\db\ActiveRecord
+ * {
+ *     /**
+ *      * @return string the name of the table associated with this ActiveRecord class.
+ *      * /
+ *     public static function tableName()
+ *     {
+ *         return 'tbl_customer';
+ *     }
+ * }
+ * ```
+ *
+ * The `tableName` method only has to return the name of the database table associated with the class.
+ *
+ * > Tip: You may also use the [Gii code generator][guide-gii] to generate ActiveRecord classes from your
+ * > database tables.
+ *
+ * Class instances are obtained in one of two ways:
+ *
+ * * Using the `new` operator to create a new, empty object
+ * * Using a method to fetch an existing record (or records) from the database
+ *
+ * Here is a short teaser how working with an ActiveRecord looks like:
+ *
+ * ```php
+ * $user = new User();
+ * $user->name = 'Qiang';
+ * $user->save();  // a new row is inserted into tbl_user
+ *
+ * // the following will retrieve the user 'CeBe' from the database
+ * $user = User::find()->where(['name' => 'CeBe'])->one();
+ *
+ * // this will get related records from table tbl_orders when relation is defined
+ * $orders = $user->orders;
+ * ```
+ *
+ * For more details and usage information on ActiveRecord, see the [guide article on ActiveRecord][guide-active-record].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -151,27 +205,30 @@ class ActiveRecord extends BaseActiveRecord
 	/**
 	 * Creates an [[ActiveQuery]] instance.
 	 *
-	 * This method is called by [[find()]], [[findBySql()]] to start a SELECT query.
+	 * This method is called by [[find()]], [[findBySql()]] to start a SELECT query but also
+	 * by [[hasOne()]] and [[hasMany()]] to create a relational query.
 	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
 	 * written for querying `Customer` purpose.)
 	 *
 	 * You may also define default conditions that should apply to all queries unless overridden:
 	 *
 	 * ```php
-	 * public static function createQuery()
+	 * public static function createQuery($config = [])
 	 * {
-	 *     return parent::createQuery()->where(['deleted' => false]);
+	 *     return parent::createQuery($config)->where(['deleted' => false]);
 	 * }
 	 * ```
 	 *
 	 * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
 	 * default condition. Using [[Query::where()]] will override the default condition.
 	 *
+	 * @param array $config the configuration passed to the ActiveQuery class.
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
 	 */
-	public static function createQuery()
+	public static function createQuery($config = [])
 	{
-		return new ActiveQuery(['modelClass' => get_called_class()]);
+		$config['modelClass'] = get_called_class();
+		return new ActiveQuery($config);
 	}
 
 	/**
@@ -263,18 +320,6 @@ class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
-	 * Creates an [[ActiveRelation]] instance.
-	 * This method is called by [[hasOne()]] and [[hasMany()]] to create a relation instance.
-	 * You may override this method to return a customized relation.
-	 * @param array $config the configuration passed to the ActiveRelation class.
-	 * @return ActiveRelation the newly created [[ActiveRelation]] instance.
-	 */
-	public static function createRelation($config = [])
-	{
-		return new ActiveRelation($config);
-	}
-
-	/**
 	 * @inheritdoc
 	 */
 	public static function populateRecord($record, $row)
@@ -332,7 +377,7 @@ class ActiveRecord extends BaseActiveRecord
 			return false;
 		}
 		$db = static::getDb();
-		if ($this->isTransactional(self::OP_INSERT) && $db->getTransaction() === null) {
+		if ($this->isTransactional(self::OP_INSERT)) {
 			$transaction = $db->beginTransaction();
 			try {
 				$result = $this->insertInternal($attributes);
@@ -352,9 +397,12 @@ class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
-	 * @see ActiveRecord::insert()
+	 * Inserts an ActiveRecord into DB without considering transaction.
+	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
+	 * meaning all attributes that are loaded from DB will be saved.
+	 * @return boolean whether the record is inserted successfully.
 	 */
-	private function insertInternal($attributes = null)
+	protected function insertInternal($attributes = null)
 	{
 		if (!$this->beforeSave(true)) {
 			return false;
@@ -444,7 +492,7 @@ class ActiveRecord extends BaseActiveRecord
 			return false;
 		}
 		$db = static::getDb();
-		if ($this->isTransactional(self::OP_UPDATE) && $db->getTransaction() === null) {
+		if ($this->isTransactional(self::OP_UPDATE)) {
 			$transaction = $db->beginTransaction();
 			try {
 				$result = $this->updateInternal($attributes);
@@ -485,36 +533,49 @@ class ActiveRecord extends BaseActiveRecord
 	public function delete()
 	{
 		$db = static::getDb();
-		$transaction = $this->isTransactional(self::OP_DELETE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
-		try {
-			$result = false;
-			if ($this->beforeDelete()) {
-				// we do not check the return value of deleteAll() because it's possible
-				// the record is already deleted in the database and thus the method will return 0
-				$condition = $this->getOldPrimaryKey(true);
-				$lock = $this->optimisticLock();
-				if ($lock !== null) {
-					$condition[$lock] = $this->$lock;
-				}
-				$result = $this->deleteAll($condition);
-				if ($lock !== null && !$result) {
-					throw new StaleObjectException('The object being deleted is outdated.');
-				}
-				$this->setOldAttributes(null);
-				$this->afterDelete();
-			}
-			if ($transaction !== null) {
+		if ($this->isTransactional(self::OP_DELETE)) {
+			$transaction = $db->beginTransaction();
+			try {
+				$result = $this->deleteInternal();
 				if ($result === false) {
 					$transaction->rollBack();
 				} else {
 					$transaction->commit();
 				}
-			}
-		} catch (\Exception $e) {
-			if ($transaction !== null) {
+			} catch (\Exception $e) {
 				$transaction->rollBack();
+				throw $e;
 			}
-			throw $e;
+		} else {
+			$result = $this->deleteInternal();
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Deletes an ActiveRecord without considering transaction.
+	 * @return integer|boolean the number of rows deleted, or false if the deletion is unsuccessful for some reason.
+	 * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
+	 * @throws StaleObjectException
+	 */
+	protected function deleteInternal()
+	{
+		$result = false;
+		if ($this->beforeDelete()) {
+			// we do not check the return value of deleteAll() because it's possible
+			// the record is already deleted in the database and thus the method will return 0
+			$condition = $this->getOldPrimaryKey(true);
+			$lock = $this->optimisticLock();
+			if ($lock !== null) {
+				$condition[$lock] = $this->$lock;
+			}
+			$result = $this->deleteAll($condition);
+			if ($lock !== null && !$result) {
+				throw new StaleObjectException('The object being deleted is outdated.');
+			}
+			$this->setOldAttributes(null);
+			$this->afterDelete();
 		}
 		return $result;
 	}

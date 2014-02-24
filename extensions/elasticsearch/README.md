@@ -84,7 +84,7 @@ class Customer extends \yii\elasticsearch\ActiveRecord
     }
 
     /**
-     * @return ActiveRelation defines a relation to the Order record (can be in other database, e.g. redis or sql)
+     * @return ActiveQuery defines a relation to the Order record (can be in other database, e.g. redis or sql)
      */
     public function getOrders()
     {

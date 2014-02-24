@@ -53,7 +53,7 @@ After the connection component is configured you can access it using the followi
 $connection = \Yii::$app->db;
 ```
 
-You can refer to [[\yii\db\Connection]] for a list of properties you can configure. Also note that you can define more
+You can refer to [[yii\db\Connection]] for a list of properties you can configure. Also note that you can define more
 than one connection component and use both at the same time if needed:
 
 ```php
@@ -96,7 +96,7 @@ return [
 Basic SQL queries
 -----------------
 
-Once you have a connection instance you can execute SQL queries using [[\yii\db\Command]].
+Once you have a connection instance you can execute SQL queries using [[yii\db\Command]].
 
 ### SELECT
 
@@ -173,8 +173,8 @@ $rowCount = $connection->createCommand($sql)->queryScalar();
 In the code above `[[X]]` will be converted to properly quoted column name while `{{Y}}` will be converted to properly
 quoted table name.
 
-The alternative is to quote table and column names manually using [[\yii\db\Connection::quoteTableName()]] and
-[[\yii\db\Connection::quoteColumnName()]]:
+The alternative is to quote table and column names manually using [[yii\db\Connection::quoteTableName()]] and
+[[yii\db\Connection::quoteColumnName()]]:
 
 ```php
 $column = $connection->quoteColumnName($column);
@@ -253,7 +253,7 @@ Working with database schema
 
 ### Getting schema information
 
-You can get a [[\yii\db\Schema]] instance like the following:
+You can get a [[yii\db\Schema]] instance like the following:
 
 ```php
 $schema = $connection->getSchema();
@@ -265,11 +265,11 @@ It contains a set of methods allowing you to retrieve various information about 
 $tables = $schema->getTableNames();
 ```
 
-For the full reference check [[\yii\db\Schema]].
+For the full reference check [[yii\db\Schema]].
 
 ### Modifying schema
 
-Aside from basic SQL queries [[\yii\db\Command]] contains a set of methods allowing to modify database schema:
+Aside from basic SQL queries [[yii\db\Command]] contains a set of methods allowing to modify database schema:
 
 - createTable, renameTable, dropTable, truncateTable
 - addColumn, renameColumn, dropColumn, alterColumn
@@ -288,4 +288,4 @@ $connection->createCommand()->createTable('tbl_post', [
 ]);
 ```
 
-For the full reference check [[\yii\db\Command]].
+For the full reference check [[yii\db\Command]].

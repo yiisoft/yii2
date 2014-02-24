@@ -156,6 +156,9 @@ class AssetManager extends Component
 		if ($this->_converter === null) {
 			$this->_converter = Yii::createObject(AssetConverter::className());
 		} elseif (is_array($this->_converter) || is_string($this->_converter)) {
+			if (is_array($this->_converter) && !isset($this->_converter['class'])) {
+				$this->_converter['class'] = AssetConverter::className();
+			}
 			$this->_converter = Yii::createObject($this->_converter);
 		}
 		return $this->_converter;

@@ -17,6 +17,8 @@ use yii\helpers\Html;
 /**
  * TwigViewRenderer allows you to use Twig templates in views.
  *
+ * @property array $lexerOptions @see self::$lexerOptions. This property is write-only.
+ *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */

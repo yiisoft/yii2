@@ -53,6 +53,7 @@ class RenderController extends Controller
 		$renderer->targetDir = $targetDir;
 		if ($this->guide !== null && $renderer->hasProperty('guideUrl')) {
 			$renderer->guideUrl = './';
+			$renderer->markDownFiles = $this->findMarkdownFiles($this->guide, ['README.md']);
 		}
 
 		$this->stdout('Searching files to process... ');
@@ -64,6 +65,11 @@ class RenderController extends Controller
 		}
 
 		$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
+
+		if (empty($files)) {
+			$this->stderr('Error: No php files found to process.' . PHP_EOL);
+			return 1;
+		}
 
 		$context = new Context();
 
@@ -111,7 +117,7 @@ class RenderController extends Controller
 
 		// render guide if specified
 		if ($this->guide !== null) {
-			$renderer->renderMarkdownFiles($this->findMarkdownFiles($this->guide, ['README.md']), $this);
+			$renderer->renderMarkdownFiles($this);
 
 			$this->stdout('Publishing images...');
 			FileHelper::copyDirectory(rtrim($this->guide, '/\\') . '/images', $targetDir . '/images');

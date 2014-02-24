@@ -87,8 +87,12 @@ class SiteController extends Controller
 	public function actionContact()
 	{
 		$model = new ContactForm();
-		if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-			Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
+		if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+			if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
+				Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
+			} else {
+				Yii::$app->session->setFlash('error', 'There was an error sending email.');
+			}
 			return $this->refresh();
 		} else {
 			return $this->render('contact', [
@@ -122,7 +126,7 @@ class SiteController extends Controller
 	public function actionRequestPasswordReset()
 	{
 		$model = new PasswordResetRequestForm();
-		if ($model->load(Yii::$app->request->post())) {
+		if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 			if ($model->sendEmail()) {
 				Yii::$app->getSession()->setFlash('success', 'Check your email for further instructions.');
 				return $this->goHome();
@@ -144,7 +148,7 @@ class SiteController extends Controller
 			throw new BadRequestHttpException($e->getMessage());
 		}
 
-		if ($model->load(Yii::$app->request->post()) && $model->resetPassword()) {
+		if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
 			Yii::$app->getSession()->setFlash('success', 'New password was saved.');
 			return $this->goHome();
 		}

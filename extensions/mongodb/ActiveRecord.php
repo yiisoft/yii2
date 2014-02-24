@@ -37,7 +37,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 * For example, to change the status to be 1 for all customers whose status is 2:
 	 *
 	 * ~~~
-	 * Customer::updateAll(['status' => 1], ['status' = 2]);
+	 * Customer::updateAll(['status' => 1], ['status' => 2]);
 	 * ~~~
 	 *
 	 * @param array $attributes attribute values (name-value pairs) to be saved into the collection
@@ -78,7 +78,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 * For example, to delete all customers whose status is 3:
 	 *
 	 * ~~~
-	 * Customer::deleteAll('status = 3');
+	 * Customer::deleteAll(['status' => 3]);
 	 * ~~~
 	 *
 	 * @param array $condition description of the objects to delete.
@@ -88,23 +88,36 @@ abstract class ActiveRecord extends BaseActiveRecord
 	 */
 	public static function deleteAll($condition = [], $options = [])
 	{
-		$options['w'] = 1;
-		if (!array_key_exists('multiple', $options)) {
-			$options['multiple'] = true;
-		}
 		return static::getCollection()->remove($condition, $options);
 	}
 
 	/**
 	 * Creates an [[ActiveQuery]] instance.
-	 * This method is called by [[find()]] to start a "find" command.
+	 *
+	 * This method is called by [[find()]], [[findBySql()]] to start a SELECT query but also
+	 * by [[hasOne()]] and [[hasMany()]] to create a relational query.
 	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
 	 * written for querying `Customer` purpose.)
+	 *
+	 * You may also define default conditions that should apply to all queries unless overridden:
+	 *
+	 * ```php
+	 * public static function createQuery($config = [])
+	 * {
+	 *     return parent::createQuery($config)->where(['deleted' => false]);
+	 * }
+	 * ```
+	 *
+	 * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
+	 * default condition. Using [[Query::where()]] will override the default condition.
+	 *
+	 * @param array $config the configuration passed to the ActiveQuery class.
 	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
 	 */
-	public static function createQuery()
+	public static function createQuery($config = [])
 	{
-		return new ActiveQuery(['modelClass' => get_called_class()]);
+		$config['modelClass'] = get_called_class();
+		return new ActiveQuery($config);
 	}
 
 	/**
@@ -143,18 +156,6 @@ abstract class ActiveRecord extends BaseActiveRecord
 	public static function primaryKey()
 	{
 		return ['_id'];
-	}
-
-	/**
-	 * Creates an [[ActiveRelation]] instance.
-	 * This method is called by [[hasOne()]] and [[hasMany()]] to create a relation instance.
-	 * You may override this method to return a customized relation.
-	 * @param array $config the configuration passed to the ActiveRelation class.
-	 * @return ActiveRelation the newly created [[ActiveRelation]] instance.
-	 */
-	public static function createRelation($config = [])
-	{
-		return new ActiveRelation($config);
 	}
 
 	/**
@@ -237,8 +238,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 				$values[$key] = isset($currentAttributes[$key]) ? $currentAttributes[$key] : null;
 			}
 		}
-		$collection = static::getCollection();
-		$newId = $collection->insert($values);
+		$newId = static::getCollection()->insert($values);
 		$this->setAttribute('_id', $newId);
 		foreach ($values as $name => $value) {
 			$this->setOldAttribute($name, $value);

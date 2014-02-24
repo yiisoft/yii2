@@ -14,6 +14,13 @@ defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
 define('YII_DEBUG', true);
 
+$vendor = __DIR__ . '/../vendor/autoload.php';
+if (file_exists($vendor)) {
+	require($vendor);
+} else {
+	echo "composer autoloader could not be found.\nYou should run `composer install` in repo root directory.\n";
+	exit(1);
+}
 require(__DIR__ . '/../framework/Yii.php');
 
 $application = new yii\console\Application([

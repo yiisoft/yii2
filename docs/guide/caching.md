@@ -38,38 +38,38 @@ When the application is running, the cache component can be accessed through `Yi
 Yii provides various cache components that can store cached data in different media. The following
 is a summary of the available cache components:
 
-* [[\yii\caching\ApcCache]]: uses PHP [APC](http://php.net/manual/en/book.apc.php) extension. This option can be
+* [[yii\caching\ApcCache]]: uses PHP [APC](http://php.net/manual/en/book.apc.php) extension. This option can be
   considered as the fastest one when dealing with cache for a centralized thick application (e.g. one
   server, no dedicated load balancers, etc.).
 
-* [[\yii\caching\DbCache]]: uses a database table to store cached data. By default, it will create and use a
+* [[yii\caching\DbCache]]: uses a database table to store cached data. By default, it will create and use a
   [SQLite3](http://sqlite.org/) database under the runtime directory. You can explicitly specify a database for
   it to use by setting its `db` property.
 
-* [[\yii\caching\DummyCache]]: presents dummy cache that does no caching at all. The purpose of this component
+* [[yii\caching\DummyCache]]: presents dummy cache that does no caching at all. The purpose of this component
   is to simplify the code that needs to check the availability of cache. For example, during development or if
   the server doesn't have actual cache support, we can use this cache component. When an actual cache support
   is enabled, we can switch to use the corresponding cache component. In both cases, we can use the same
   code `Yii::$app->cache->get($key)` to attempt retrieving a piece of data without worrying that
   `Yii::$app->cache` might be `null`.
 
-* [[\yii\caching\FileCache]]: uses standard files to store cached data. This is particular suitable
+* [[yii\caching\FileCache]]: uses standard files to store cached data. This is particular suitable
   to cache large chunk of data (such as pages).
 
-* [[\yii\caching\MemCache]]: uses PHP [memcache](http://php.net/manual/en/book.memcache.php)
+* [[yii\caching\MemCache]]: uses PHP [memcache](http://php.net/manual/en/book.memcache.php)
   and [memcached](http://php.net/manual/en/book.memcached.php) extensions. This option can be considered as
   the fastest one when dealing with cache in a distributed applications (e.g. with several servers, load
   balancers, etc.)
 
-* [[\yii\caching\RedisCache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
+* [[yii\redis\Cache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
   (redis version 2.6.12 or higher is required).
 
-* [[\yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
+* [[yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
   ([see also](http://php.net/manual/en/book.wincache.php)) extension.
 
-* [[\yii\caching\XCache]]: uses PHP [XCache](http://xcache.lighttpd.net/) extension.
+* [[yii\caching\XCache]]: uses PHP [XCache](http://xcache.lighttpd.net/) extension.
 
-* [[\yii\caching\ZendDataCache]]: uses
+* [[yii\caching\ZendDataCache]]: uses
   [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
   as the underlying caching medium.
 
@@ -91,7 +91,7 @@ Data Caching
 ------------
 
 Data caching is about storing some PHP variable in cache and retrieving it later from cache. For this purpose,
-the cache component base class [[\yii\caching\Cache]] provides two methods that are used most of the time:
+the cache component base class [[yii\caching\Cache]] provides two methods that are used most of the time:
 [[yii\caching\Cache::set()|set()]] and [[yii\caching\Cache::get()|get()]]. Note, only serializable variables and objects could be cached successfully.
 
 To store a variable `$value` in cache, we choose a unique `$key` and call [[yii\caching\Cache::set()|set()]] to store it:
@@ -158,7 +158,7 @@ Besides expiration setting, cached data may also be invalidated according to som
 are caching the content of some file and the file is changed, we should invalidate the cached copy and read the latest
 content from the file instead of the cache.
 
-We represent a dependency as an instance of [[\yii\caching\Dependency]] or its child class. We pass the dependency
+We represent a dependency as an instance of [[yii\caching\Dependency]] or its child class. We pass the dependency
 instance along with the data to be cached when calling [[yii\caching\Cache::set()|set()]].
 
 ```php
@@ -174,12 +174,12 @@ get a false value, indicating the data needs to be regenerated.
 
 Below is a summary of the available cache dependencies:
 
-- [[\yii\caching\FileDependency]]: the dependency is changed if the file's last modification time is changed.
-- [[\yii\caching\GroupDependency]]: marks a cached data item with a group name. You may invalidate the cached data items
-  with the same group name all at once by calling [[\yii\caching\GroupDependency::invalidate()]].
-- [[\yii\caching\DbDependency]]: the dependency is changed if the query result of the specified SQL statement is changed.
-- [[\yii\caching\ChainedDependency]]: the dependency is changed if any of the dependencies on the chain is changed.
-- [[\yii\caching\ExpressionDependency]]: the dependency is changed if the result of the specified PHP expression is
+- [[yii\caching\FileDependency]]: the dependency is changed if the file's last modification time is changed.
+- [[yii\caching\GroupDependency]]: marks a cached data item with a group name. You may invalidate the cached data items
+  with the same group name all at once by calling [[yii\caching\GroupDependency::invalidate()]].
+- [[yii\caching\DbDependency]]: the dependency is changed if the query result of the specified SQL statement is changed.
+- [[yii\caching\ChainedDependency]]: the dependency is changed if any of the dependencies on the chain is changed.
+- [[yii\caching\ExpressionDependency]]: the dependency is changed if the result of the specified PHP expression is
   changed.
 
 ### Query Caching

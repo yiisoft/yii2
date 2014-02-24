@@ -21,8 +21,8 @@ Creating URLs
 The most important rule for creating URLs in your site is to always do so using the URL manager. The URL manager is a built-in application component named `urlManager`. This component is accessible from both web and console applications via
 `\Yii::$app->urlManager`. The component makes availabe the two following URL creation methods:
 
-- `createUrl($route, $params = [])`
-- `createAbsoluteUrl($route, $params = [])`
+- `createUrl($params)`
+- `createAbsoluteUrl($params, $schema = null)`
 
 The `createUrl` method creates an URL relative to the application root, such as `/index.php/site/index/`.
 The `createAbsoluteUrl` method creates an URL prefixed with the proper protocol and hostname:
@@ -33,9 +33,9 @@ generating RSS feeds etc.
 Some examples:
 
 ```php
-echo \Yii::$app->urlManager->createUrl('site/page', ['id' => 'about']);
+echo \Yii::$app->urlManager->createUrl(['site/page', 'id' => 'about']);
 // /index.php/site/page/id/about/
-echo \Yii::$app->urlManager->createUrl('date-time/fast-forward', ['id' => 105])
+echo \Yii::$app->urlManager->createUrl(['date-time/fast-forward', 'id' => 105])
 // /index.php?r=date-time/fast-forward&id=105
 echo \Yii::$app->urlManager->createAbsoluteUrl('blog/post/index');
 // http://www.example.com/index.php/blog/post/index/
@@ -56,15 +56,15 @@ Inside a web application controller, you can use the controller's `createUrl` sh
 
 ```php
 echo $this->createUrl(''); // currently active route
-echo $this->createUrl('view', ['id' => 'contact']); // same controller, different action
+echo $this->createUrl(['view', 'id' => 'contact']); // same controller, different action
 echo $this->createUrl('post/index'); // same module, different controller and action
 echo $this->createUrl('/site/index'); // absolute route no matter what controller is making this call
 echo $this->createurl('hi-tech'); // url for the case sensitive action `actionHiTech` of the current controller
-echo $this->createurl('/date-time/fast-forward', ['id' => 105]); // url for action the case sensitive controller, `DateTimeController::actionFastForward`
+echo $this->createurl(['/date-time/fast-forward', 'id' => 105]); // url for action the case sensitive controller, `DateTimeController::actionFastForward`
 ```
 
 > **Tip**: In order to generate URL with a hashtag, for example `/index.php?r=site/page&id=100#title`, you need to
-  specify the parameter named `#` using `$this->createUrl('post/read', ['id' => 100, '#' => 'title'])`.
+  specify the parameter named `#` using `$this->createUrl(['post/read', 'id' => 100, '#' => 'title'])`.
 
 Customizing URLs
 ----------------
@@ -115,8 +115,8 @@ Let's use some examples to explain how URL rules work. We assume that our rule s
 ```
 
 - Calling `$this->createUrl('post/list')` generates `/index.php/posts`. The first rule is applied.
-- Calling `$this->createUrl('post/read', ['id' => 100])` generates `/index.php/post/100`. The second rule is applied.
-- Calling `$this->createUrl('post/read', ['year' => 2008, 'title' => 'a sample post'])` generates
+- Calling `$this->createUrl(['post/read', 'id' => 100])` generates `/index.php/post/100`. The second rule is applied.
+- Calling `$this->createUrl(['post/read', 'year' => 2008, 'title' => 'a sample post'])` generates
   `/index.php/post/2008/a%20sample%20post`. The third rule is applied.
 - Calling `$this->createUrl('post/read')` generates `/index.php/post/read`. None of the rules is applied, convention is used
   instead.
@@ -192,10 +192,10 @@ return [
 ### Handling REST requests
 
 TBD:
-- RESTful routing: [[\yii\web\VerbFilter]], [[\yii\web\UrlManager::$rules]]
+- RESTful routing: [[yii\web\VerbFilter]], [[yii\web\UrlManager::$rules]]
 - Json API:
-  - response: [[\yii\web\Response::format]]
-  - request: [[yii\web\Request::$parsers]], [[\yii\web\JsonParser]]
+  - response: [[yii\web\Response::format]]
+  - request: [[yii\web\Request::$parsers]], [[yii\web\JsonParser]]
 
 
 URL parsing
@@ -222,13 +222,13 @@ return [
 Creating your own rule classes
 ------------------------------
 
-[[\yii\web\UrlRule]] class is used for both parsing URL into parameters and creating URL based on parameters. Despite
+[[yii\web\UrlRule]] class is used for both parsing URL into parameters and creating URL based on parameters. Despite
 the fact that default implementation is flexible enough for the majority of projects, there are situations when using
 your own rule class is the best choice. For example, in a car dealer website, we may want to support the URL format like
 `/Manufacturer/Model`, where `Manufacturer` and `Model` must both match some data in a database table. The default rule
 class will not work because it mostly relies on statically declared regular expressions which have no database knowledge.
 
-We can write a new URL rule class by extending from [[\yii\web\UrlRule]] and use it in one or multiple URL rules. Using
+We can write a new URL rule class by extending from [[yii\web\UrlRule]] and use it in one or multiple URL rules. Using
 the above car dealer website as an example, we may declare the following URL rules in application config:
 
 ```php
@@ -276,8 +276,8 @@ class CarUrlRule extends UrlRule
 		if (preg_match('%^(\w+)(/(\w+))?$%', $pathInfo, $matches)) {
 			// check $matches[1] and $matches[3] to see
 			// if they match a manufacturer and a model in the database
-			// If so, set $_GET['manufacturer'] and/or $_GET['model']
-			// and return 'car/index'
+			// If so, set $params['manufacturer'] and/or $params['model']
+			// and return ['car/index', $params]
 		}
 		return false;  // this rule does not apply
 	}

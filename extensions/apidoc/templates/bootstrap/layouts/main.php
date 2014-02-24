@@ -31,7 +31,7 @@ $this->beginPage();
 		'options' => [
 			'class' => 'navbar-inverse navbar-fixed-top',
 		],
-		'padded' => false,
+		'renderInnerContainer' => false,
 		'view' => $this,
 	]);
 	$extItems = [];

@@ -21,6 +21,7 @@ which is the latest stable release of Yii.
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2/v/stable.png)](https://packagist.org/packages/yiisoft/yii2)
 [![Total Downloads](https://poser.pugx.org/yiisoft/yii2/downloads.png)](https://packagist.org/packages/yiisoft/yii2)
 [![Build Status](https://secure.travis-ci.org/yiisoft/yii2.png)](http://travis-ci.org/yiisoft/yii2)
+[![Code Coverage](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/coverage.png?s=31d80f1036099e9d6a3e4d7738f6b000b3c3d10e)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 [![Dependency Status](https://www.versioneye.com/php/yiisoft:yii2/dev-master/badge.png)](https://www.versioneye.com/php/yiisoft:yii2/dev-master)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/quality-score.png?s=b1074a1ff6d0b214d54fa5ab7abbb90fc092471d)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 
@@ -49,8 +50,9 @@ DOCUMENTATION
 
 A draft of the [Definitive Guide](docs/guide/index.md) is available.
 
-API docs and a (quite bad) rendering of the definitive guide are currently
+API docs and a rendering of the definitive guide are currently
 available at http://stuff.cebe.cc/yii2docs/ (updated four times per hour).
+We will make guide and API docs available on yiiframework.com with the beta release.
 
 For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/upgrade-from-v1.md)
 to have a general idea of what has changed in 2.0.

@@ -59,8 +59,28 @@ Asset bundles are regular classes so if you need to define another one, just cre
 class can be placed anywhere but the convention for it is to be under `assets` directory of the application.
 
 Additionally you may specify `$jsOptions`, `$cssOptions` and `$publishOptions` that will be passed to
-[[\yii\web\View::registerJsFile()]], [[\yii\web\View::registerCssFile()]] and [[\yii\web\AssetManager::publish()]]
+[[yii\web\View::registerJsFile()]], [[yii\web\View::registerCssFile()]] and [[yii\web\AssetManager::publish()]]
 respectively during registering and publising an asset.
+
+### Language-specific asset bundle
+
+If you need to define an asset bundle that includes JavaScript file depending on the language you can do it the
+following way:
+
+```php
+class LanguageAsset extends AssetBundle
+{
+    public $sourcePath = '@app/assets/language';
+    public $js = [
+    ];
+
+    public function init()
+    {
+        $this->js[] = 'language-' . Yii::$app->language . '.js';
+        parent::init();
+    }
+}
+```
 
 Registering asset bundle
 ------------------------

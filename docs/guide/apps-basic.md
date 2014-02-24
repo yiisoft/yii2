@@ -1,23 +1,22 @@
 Basic application template
 ==========================
 
-This template is a perfect fit for small projects or learning Yii2.
+The basic Yii application template is a perfect fit for small projects or when you're just learning the framework.
 
-The application has four pages: the homepage, the about page, the contact page and the login page.
-The contact page displays a contact form that users can fill in to submit their inquiries to the webmaster,
-and the login page allows users to be authenticated before accessing privileged contents.
+The basic application template includes four pages: a homepage, an about page, a contact page, and a login page.
+The contact page displays a contact form that users can fill in to submit their inquiries to the webmaster. Assuming the site has access to a mail server and that the administrator's email address is entered in the configuration file, the contact form will work. The same goes for the login page, which allows users to be authenticated before accessing privileged content.
 
 Installation
 ------------
 
-If you do not have [Composer](http://getcomposer.org/), you may download it from
-[http://getcomposer.org/](http://getcomposer.org/) or run the following command on Linux/Unix/MacOS:
+Installation of the framework requires [Composer](http://getcomposer.org/). If you do not have Composer on your system yet, you may download it from
+[http://getcomposer.org/](http://getcomposer.org/), or run the following command on Linux/Unix/MacOS:
 
 ~~~
 curl -s http://getcomposer.org/installer | php
 ~~~
 
-You can then install the Bootstrap Application using the following command:
+You can then create a basic Yii application using the following :
 
 ~~~
 php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic /path/to/yii-application

@@ -29,6 +29,11 @@ class Customer extends ActiveRecord
 		return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('id');
 	}
 
+	public function getOrders2()
+	{
+		return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer2')->orderBy('id');
+	}
+
 	public function afterSave($insert)
 	{
 		ActiveRecordTest::$afterSaveInsert = $insert;
@@ -36,8 +41,9 @@ class Customer extends ActiveRecord
 		parent::afterSave($insert);
 	}
 
-	public static function createQuery()
+	public static function createQuery($config = [])
 	{
-		return new CustomerQuery(['modelClass' => get_called_class()]);
+		$config['modelClass'] = get_called_class();
+		return new CustomerQuery($config);
 	}
 }

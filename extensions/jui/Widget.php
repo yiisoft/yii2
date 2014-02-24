@@ -38,6 +38,16 @@ class Widget extends \yii\base\Widget
 	 * Please refer to the corresponding jQuery UI widget Web page for possible events.
 	 * For example, [this page](http://api.jqueryui.com/accordion/) shows
 	 * how to use the "Accordion" widget and the supported events (e.g. "create").
+	 * Keys are the event names and values are javascript code that is passed to the `.on()` function
+	 * as the event handler.
+	 *
+	 * For example you could write the following in your widget configuration:
+	 *
+	 * ```php
+	 * 'clientEvents' => [
+	 *     'change' => 'function() { alert('event "change" occured.'); }'
+	 * ],
+	 * ```
 	 */
 	public $clientEvents = [];
 
@@ -46,6 +56,7 @@ class Widget extends \yii\base\Widget
 	 * If empty, it is assumed that event passed to clientEvents is prefixed with widget name.
 	 */
 	protected $clientEventMap = [];
+
 
 	/**
 	 * Initializes the widget.
@@ -99,7 +110,7 @@ class Widget extends \yii\base\Widget
 				if (isset($this->clientEventMap[$event])) {
 					$eventName = $this->clientEventMap[$event];
 				} else {
-					$eventName = $name.$event;
+					$eventName = strtolower($name . $event);
 				}
 				$js[] = "jQuery('#$id').on('$eventName', $handler);";
 			}

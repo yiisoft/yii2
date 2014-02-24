@@ -13,21 +13,15 @@ namespace yii\helpers;
  * Basic usage is the following:
  *
  * ```php
- * $myHtml = Markdown::process($myText);
+ * $myHtml = Markdown::process($myText); // use original markdown flavor
+ * $myHtml = Markdown::process($myText, 'gfm'); // use github flavored markdown
  * ```
  *
- * If you want to configure the parser:
+ * You can configure multiple flavors using the [[$flavors]] property.
  *
- * ```php
- * $myHtml = Markdown::process($myText, [
- *     'fn_id_prefix' => 'footnote_',
- * ]);
- * ```
+ * For more details please refer to the [Markdown library documentation](https://github.com/cebe/markdown#readme).
  *
- * Note that in order to use this helper you need to install "michelf/php-markdown" Composer package.
- *
- * For more details please refer to [PHP Markdown library documentation](http://michelf.ca/projects/php-markdown/).
- * @author Alexander Makarov <sam@rmcreative.ru>
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
 class Markdown extends BaseMarkdown

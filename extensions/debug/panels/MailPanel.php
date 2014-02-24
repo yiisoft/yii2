@@ -11,6 +11,11 @@ use yii\helpers\FileHelper;
 
 /**
  * Debugger panel that collects and displays the generated emails.
+ *
+ * @property array $messages Messages. This property is read-only.
+ *
+ * @author Mark Jebri <mark.github@yandex.ru>
+ * @since 2.0
  */
 class MailPanel extends Panel
 {

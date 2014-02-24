@@ -25,8 +25,9 @@ class Customer extends ActiveRecord
 		return $this->hasMany(CustomerOrder::className(), ['customer_id' => '_id']);
 	}
 
-	public static function createQuery()
+	public static function createQuery($config = [])
 	{
-		return new CustomerQuery(['modelClass' => get_called_class()]);
+		$config['modelClass'] = get_called_class();
+		return new CustomerQuery($config);
 	}
 }

@@ -22,6 +22,11 @@ class Order extends ActiveRecord
 		return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
 	}
 
+	public function getCustomer2()
+	{
+		return $this->hasOne(Customer::className(), ['id' => 'customer_id'])->inverseOf('orders2');
+	}
+
 	public function getOrderItems()
 	{
 		return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);

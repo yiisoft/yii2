@@ -10,11 +10,18 @@ namespace yii\sphinx;
 use yii\base\InvalidCallException;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
+use yii\db\ActiveRelationTrait;
 
 /**
  * ActiveQuery represents a Sphinx query associated with an Active Record class.
  *
+ * An ActiveQuery can be a normal query or be used in a relational context.
+ *
  * ActiveQuery instances are usually created by [[ActiveRecord::find()]] and [[ActiveRecord::findBySql()]].
+ * Relational queries are created by [[ActiveRecord::hasOne()]] and [[ActiveRecord::hasMany()]].
+ *
+ * Normal Query
+ * ------------
  *
  * Because ActiveQuery extends from [[Query]], one can use query methods, such as [[where()]],
  * [[orderBy()]] to customize the query options.
@@ -54,12 +61,29 @@ use yii\db\ActiveQueryTrait;
  * $articles = Article::find()->with('source')->snippetByModel()->all();
  * ~~~
  *
+ * Relational query
+ * ----------------
+ *
+ * In relational context ActiveQuery represents a relation between two Active Record classes.
+ *
+ * Relational ActiveQuery instances are usually created by calling [[ActiveRecord::hasOne()]] and
+ * [[ActiveRecord::hasMany()]]. An Active Record class declares a relation by defining
+ * a getter method which calls one of the above methods and returns the created ActiveQuery object.
+ *
+ * A relation is specified by [[link]] which represents the association between columns
+ * of different tables; and the multiplicity of the relation is indicated by [[multiple]].
+ *
+ * If a relation involves a pivot table, it may be specified by [[via()]].
+ * This methods may only be called in a relational context. Same is true for [[inverseOf()]], which
+ * marks a relation as inverse of another relation.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
 class ActiveQuery extends Query implements ActiveQueryInterface
 {
 	use ActiveQueryTrait;
+	use ActiveRelationTrait;
 
 	/**
 	 * @var string the SQL statement to be executed for retrieving AR records.
@@ -165,6 +189,30 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 */
 	public function createCommand($db = null)
 	{
+		if ($this->primaryModel !== null) {
+			// lazy loading a relational query
+			if ($this->via instanceof self) {
+				// via pivot index
+				$viaModels = $this->via->findPivotRows([$this->primaryModel]);
+				$this->filterByModels($viaModels);
+			} elseif (is_array($this->via)) {
+				// via relation
+				/** @var ActiveQuery $viaQuery */
+				list($viaName, $viaQuery) = $this->via;
+				if ($viaQuery->multiple) {
+					$viaModels = $viaQuery->all();
+					$this->primaryModel->populateRelation($viaName, $viaModels);
+				} else {
+					$model = $viaQuery->one();
+					$this->primaryModel->populateRelation($viaName, $model);
+					$viaModels = $model === null ? [] : [$model];
+				}
+				$this->filterByModels($viaModels);
+			} else {
+				$this->filterByModels([$this->primaryModel]);
+			}
+		}
+
 		$this->setConnection($db);
 		$db = $this->getConnection();
 

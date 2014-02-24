@@ -46,6 +46,8 @@ Yii Framework 2 Change Log
 - Bug #2303: Fixed the bug that `yii\base\Theme::pathMap` did not support dynamic update with path aliases (qiangxue)
 - Bug #2324: Fixed QueryBuilder bug when building a query with "query" option (mintao)
 - Bug #2399: Fixed the bug that AssetBundle did not handle relative URLs correctly (qiangxue)
+- Bug #2502: Unclear error message when `$_SERVER['DOCUMENT_ROOT']` is empty (samdark)
+- Bug #2519: MessageSource removed translation messages when event handler was bound to `missingTranslation`-event (cebe)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
@@ -113,8 +115,14 @@ Yii Framework 2 Change Log
 - Enh #2325: Adding support for the `X-HTTP-Method-Override` header in `yii\web\Request::getMethod()` (pawzar)
 - Enh #2364: Take into account current error reporting level in error handler (gureedo)
 - Enh #2387: Added support for fetching data from database in batches (nineinchnick, qiangxue)
+- Enh #2392: Added `addCssStyle()`, `removeCssStyle()`, `cssStyleFromArray()` and `cssStyleToArray()` to `Html` (qiangxue, kartik-v, Alex-Code)
 - Enh #2417: Added possibility to set `dataType` for `$.ajax` call in yii.activeForm.js (Borales)
 - Enh #2436: Label of the attribute, which looks like `relatedModel.attribute`, will be received from the related model if it available (djagya)
+- Enh #2415: Added support for inverse relations (qiangxue)
+- Enh #2490: `yii\db\Query::count()` and other query scalar methods now properly handle queries with GROUP BY clause (qiangxue)
+- Enh #2491: Added support for using the same base class name of search model and data model in Gii (qiangxue)
+- Enh #2499: Added ability to downgrade migrations by their absolute apply time (resurtm, gorcer)
+- Enh #2526: Allow for null values in batchInsert (skotos)
 - Enh: Added support for using arrays as option values for console commands (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
@@ -150,7 +158,6 @@ Yii Framework 2 Change Log
 	- Removed `yii\web\Request::getPost()`, `getPut()`, `getDelete()`, `getPatch()` in favor of `getBodyParam()` (cebe)
 	- Renamed `yii\web\Request::get()` to `getQueryParams()` and `getRestParams()` to `getBodyParams()` (cebe)
 	- Added `yii\web\Request::get($name = null, $defaultValue = null)` and `yii\web\Request::post($name = null, $defaultValue = null)` (samdark)
-- Chg #2057: AutoTimestamp attributes defaults changed from `create_time` and `update_time` to `created_at` and `updated_at` (creocoder)
 - Chg #2059: Implemented git-flavored file excluding/filtering for `FileHelper` (nineinchnick)
 - Chg #2063: Removed `yii\web\Request::acceptTypes` and renamed `yii\web\Request::acceptedContentTypes` to `acceptableContentTypes` (qiangxue)
 - Chg #2157: The '*' category pattern will match all categories that do not match any other patterns listed in `I18N::translations` (qiangxue, Ragazzo)
@@ -161,6 +168,7 @@ Yii Framework 2 Change Log
 - Chg #2248: Renamed `yii\base\Model::DEFAULT_SCENARIO` to `yii\base\Model::SCENARIO_DEFAULT` (samdark)
 - Chg #2281: Renamed `ActiveRecord::create()` to `populateRecord()` and changed signature. This method will not call instantiate() anymore (cebe)
 - Chg #2405: The CSS class of `MaskedInput` now defaults to `form-control` (qiangxue)
+- Chg #2426: Changed URL creation method signatures to be consistent (samdark)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
@@ -173,7 +181,10 @@ Yii Framework 2 Change Log
 - Chg: Advanced app template: moved database connection DSN, login and password to `-local` config not to expose it to VCS (samdark)
 - Chg: Renamed `yii\web\Request::acceptedLanguages` to `acceptableLanguages` (qiangxue)
 - Chg: Removed implementation of `Arrayable` from `yii\Object` (qiangxue)
-- Chg: Renamed `ActiveRecordInterface::createActiveRelation()` to `createRelation()` (qiangxue)
+- Chg #2146: Removed `ActiveRelation` class and `ActiveRelationInterface`, moved the functionality to `ActiveQuery`.
+             All relational queries are now directly served by `ActiveQuery` allowing to use custom scopes in relations
+             and also to declare arbitrary queries as relations.
+			 Also removed `ActiveRecordInterface::createActiveRelation()` (cebe)
 - Chg: The scripts in asset bundles are now registered in `View` at the end of `endBody()`. It was done in `endPage()` previously (qiangxue)
 - Chg: Renamed `csrf-var` to `csrf-param` for CSRF header name (Dilip)
 - Chg: The directory holding email templates is renamed from `mails` to `mail` (qiangxue)
@@ -188,6 +199,7 @@ Yii Framework 2 Change Log
 	- Renamed `yii\web\User::idVar` to `idParam`
 	- Renamed `yii\web\User::authTimeoutVar` to `authTimeoutParam`
 	- Renamed `yii\web\User::returnUrlVar` to `returnUrlParam`
+- Chg: Added `View::viewFile` and removed `ViewEvent::viewFile` (qiangxue)
 
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #706: Added `yii\widgets\Pjax` and enhanced `GridView` to work with `Pjax` to support AJAX-update (qiangxue)
@@ -195,6 +207,7 @@ Yii Framework 2 Change Log
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
 - New #1956: Implemented test fixture framework (qiangxue)
 - New #2149: Added `yii\base\DynamicModel` to support ad-hoc data validation (qiangxue)
+- New #2360: Added `AttributeBehavior` and `BlameableBehavior`, and renamed `AutoTimestamp` to `TimestampBehavior` (lucianobaraglia, qiangxue)
 - New: Yii framework now comes with core messages in multiple languages
 - New: Added yii\codeception\DbTestCase (qiangxue)
 

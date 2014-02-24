@@ -15,7 +15,6 @@ services:
 install:
   - composer self-update && composer --version
 # core framework:
-#  - composer require satooshi/php-coveralls 0.6.* --dev --prefer-dist
   - composer install --prefer-dist
   - tests/unit/data/travis/mongodb-setup.sh
   - tests/unit/data/travis/apc-setup.sh
@@ -35,9 +34,9 @@ before_script:
   - mongo yii2test --eval 'db.addUser("travis", "test");'
 
 script:
-#  - vendor/bin/phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
-  - vendor/bin/phpunit --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
+  - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group mssql,oci,wincache,xcache,zenddata
   - cd apps/basic && php vendor/bin/codecept run
 
-#after_script:
-#  - php vendor/bin/coveralls
+after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover

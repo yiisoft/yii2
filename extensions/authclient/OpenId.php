@@ -199,7 +199,8 @@ class OpenId extends BaseClient implements ClientInterface
 				unset($params[$name]);
 			}
 		}
-		$url = Yii::$app->getUrlManager()->createUrl(Yii::$app->requestedRoute, $params);
+		$params[0] = Yii::$app->requestedRoute;
+		$url = Yii::$app->getUrlManager()->createUrl($params);
 		return $this->getTrustRoot() . $url;
 	}
 
