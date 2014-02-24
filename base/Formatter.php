@@ -66,6 +66,16 @@ class Formatter extends Component
 	 * If not set, "," will be used.
 	 */
 	public $thousandSeparator;
+	/**
+	 * @var array the format used to format size (bytes). Three elements may be specified: "base", "decimals" and "decimalSeparator".
+	 * They correspond to the base at which a kilobyte is calculated (1000 or 1024 bytes per kilobyte, defaults to 1024),
+	 * the number of digits after the decimal point (defaults to 2) and the character displayed as the decimal point.
+	 */
+	public $sizeFormat=array(
+		'base'=>1024,
+		'decimals'=>2,
+		'decimalSeparator'=>null,
+	);
 
 	/**
 	 * Initializes the component.
@@ -406,27 +416,45 @@ class Formatter extends Component
 	}
 
 	/**
-	 * Formats the value as file size with a unit representation
-	 * @param mixed $value the value to be formatted
-	 * @param integer $decimals the number of digits after the decimal point
+	 * Formats the value in bytes as a size in human readable form.
+	 * @param integer $value value in bytes to be formatted
+	 * @param boolean $verbose if full names should be used (e.g. bytes, kilobytes, ...).
+	 * Defaults to false meaning that short names will be used (e.g. B, KB, ...).
 	 * @return string the formatted result
-	 * @see decimalSeparator
-	 * @see thousandSeparator
+	 * @see sizeFormat
 	 */
-	public function asSize($value, $decimals = 0)
+	public function asSize($value, $verbose=false)
 	{
 		$units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
 	    $position = 0;
 
 	    do {
-	        if ($value < 1024) {
-	            return round($value, $decimals) . $units[$position];
+	        if ($value < $this->sizeFormat['base']) {
+	            break;
 	        }
 
-	        $value = $value / 1024;
+	        $value = $value / $this->sizeFormat['base'];
 	        $position++;
 	    } while ($position < count($units));
 
-	    return number_format($value, $decimals) . Yii::t('yii', end($units));
+	    $value = round($value, $this->sizeFormat['decimals']);
+		$formattedValue = isset($this->sizeFormat['decimalSeparator']) ? str_replace('.', $this->sizeFormat['decimalSeparator'], $value) : $value;
+		$params = ['n' => $formattedValue];
+		
+	    switch($position)
+		{
+			case 0:
+				return $verbose ? Yii::t('yii','{n, plural, =1{# byte} other{# bytes}}', $params) : Yii::t('yii', '{n} B', $params);
+			case 1:
+				return $verbose ? Yii::t('yii','{n, plural, =1{# kilobyte} other{# kilobytes}}', $params) : Yii::t('yii','{n} KB', $params);
+			case 2:
+				return $verbose ? Yii::t('yii','{n, plural, =1{# megabyte} other{# megabytes}}', $params) : Yii::t('yii','{n} MB', $params);
+			case 3:
+				return $verbose ? Yii::t('yii','{n, plural, =1{# gigabyte} other{# gigabytes}}', $params) : Yii::t('yii','{n} GB', $params);
+			case 4:
+				return $verbose ? Yii::t('yii','{n, plural, =1{# terabyte} other{# terabytes}}', $params) : Yii::t('yii','{n} TB', $params);
+			default:
+				return $verbose ? Yii::t('yii','{n, plural, =1{# petabyte} other{# petabytes}}', $params) : Yii::t('yii','{n} PB', $params);
+		}
 	}
 }
