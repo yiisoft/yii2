@@ -115,6 +115,7 @@ Yii Framework 2 Change Log
 - Enh #2325: Adding support for the `X-HTTP-Method-Override` header in `yii\web\Request::getMethod()` (pawzar)
 - Enh #2364: Take into account current error reporting level in error handler (gureedo)
 - Enh #2387: Added support for fetching data from database in batches (nineinchnick, qiangxue)
+- Enh #2392: Added `addCssStyle()`, `removeCssStyle()`, `cssStyleFromArray()` and `cssStyleToArray()` to `Html` (qiangxue, kartik-v, Alex-Code)
 - Enh #2417: Added possibility to set `dataType` for `$.ajax` call in yii.activeForm.js (Borales)
 - Enh #2436: Label of the attribute, which looks like `relatedModel.attribute`, will be received from the related model if it available (djagya)
 - Enh #2415: Added support for inverse relations (qiangxue)

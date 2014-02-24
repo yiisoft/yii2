@@ -1608,6 +1608,122 @@ class BaseHtml
 	}
 
 	/**
+	 * Adds the specified CSS style to the HTML options.
+	 *
+	 * If the options already contain a `style` element, the new style will be merged
+	 * with the existing one. If a CSS property exists in both the new and the old styles,
+	 * the old one may be overwritten if `$overwrite` is true.
+	 *
+	 * For example,
+	 *
+	 * ```php
+	 * Html::addCssStyle($options, 'width: 100px; height: 200px');
+	 * ```
+	 *
+	 * @param array $options the HTML options to be modified.
+	 * @param string|array $style the new style string (e.g. `'width: 100px; height: 200px'`) or
+	 * array (e.g. `['width' => '100px', 'height' => '200px']`).
+	 * @param boolean $overwrite whether to overwrite existing CSS properties if the new style
+	 * contain them too.
+	 * @see removeCssStyle()
+	 * @see cssStyleFromArray()
+	 * @see cssStyleToArray()
+	 */
+	public static function addCssStyle(&$options, $style, $overwrite = true)
+	{
+		if (!empty($options['style'])) {
+			$oldStyle = static::cssStyleToArray($options['style']);
+			$newStyle = is_array($style) ? $style : static::cssStyleToArray($style);
+			if (!$overwrite) {
+				foreach ($newStyle as $property => $value) {
+					if (isset($oldStyle[$property])) {
+						unset($newStyle[$property]);
+					}
+				}
+			}
+			$style = static::cssStyleFromArray(array_merge($oldStyle, $newStyle));
+		}
+		$options['style'] = $style;
+	}
+
+	/**
+	 * Removes the specified CSS style from the HTML options.
+	 *
+	 * For example,
+	 *
+	 * ```php
+	 * Html::removeCssStyle($options, ['width', 'height']);
+	 * ```
+	 *
+	 * @param array $options the HTML options to be modified.
+	 * @param string|array $properties the CSS properties to be removed. You may use a string
+	 * if you are removing a single property.
+	 * @see addCssStyle()
+	 */
+	public static function removeCssStyle(&$options, $properties)
+	{
+		if (!empty($options['style'])) {
+			$style = static::cssStyleToArray($options['style']);
+			foreach ((array)$properties as $property) {
+				unset($style[$property]);
+			}
+			$options['style'] = static::cssStyleFromArray($style);
+		}
+	}
+
+	/**
+	 * Converts a CSS style array into a string representation.
+	 *
+	 * For example,
+	 *
+	 * ```php
+	 * print_r(Html::cssStyleFromArray(['width' => '100px', 'height' => '200px']));
+	 * // will display: 'width: 100px; height: 200px;'
+	 * ```
+	 *
+	 * @param array $style the CSS style array. The array keys are the CSS property names,
+	 * and the array values are the corresponding CSS property values.
+	 * @return string the CSS style string. If the CSS style is empty, a null will be returned.
+	 */
+	public static function cssStyleFromArray(array $style)
+	{
+		$result = '';
+		foreach ($style as $name => $value) {
+			$result .= "$name: $value; ";
+		}
+		// return null if empty to avoid rendering the "style" attribute
+		return $result === '' ? null : rtrim($result);
+	}
+
+	/**
+	 * Converts a CSS style string into an array representation.
+	 *
+	 * The array keys are the CSS property names, and the array values
+	 * are the corresponding CSS property values.
+	 *
+	 * For example,
+	 *
+	 * ```php
+	 * print_r(Html::cssStyleToArray('width: 100px; height: 200px;'));
+	 * // will display: ['width' => '100px', 'height' => '200px']
+	 * ```
+	 *
+	 * @param string $style the CSS style string
+	 * @return array the array representation of the CSS style
+	 */
+	public static function cssStyleToArray($style)
+	{
+		$result = [];
+		foreach (explode(';', $style) as $property) {
+			$property = explode(':', $property);
+			if (count($property) > 1) {
+				$result[trim($property[0])] = trim($property[1]);
+			}
+		}
+		return $result;
+	}
+
+	/**
 	 * Returns the real attribute name from the given attribute expression.
 	 *
 	 * An attribute expression is an attribute name prefixed and/or suffixed with array indexes.
