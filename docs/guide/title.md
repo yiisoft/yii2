@@ -5,4 +5,4 @@ This tutorial is released under [the Terms of Yii Documentation](http://www.yiif
 
 All Rights Reserved.
 
-2014 (c) Yii Software LLC.
+&copy; 2014 Yii Software LLC.
