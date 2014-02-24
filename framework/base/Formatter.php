@@ -404,4 +404,30 @@ class Formatter extends Component
 		$ts = isset($this->thousandSeparator) ? $this->thousandSeparator: ',';
 		return number_format($value, $decimals, $ds, $ts);
 	}
+
+	/**
+	 * Formats the value as file size with a unit representation
+	 * @param mixed $value the value to be formatted
+	 * @param integer $decimals the number of digits after the decimal point
+	 * @return string the formatted result
+	 * @see decimalSeparator
+	 * @see thousandSeparator
+	 * @see asNumber
+	 */
+	public function asSize($value, $decimals = 0)
+	{
+		$units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+	    $position = 0;
+
+	    do {
+	        if ($value < 1024) {
+	            return round($value, $decimals) . $units[$position];
+	        }
+
+	        $value = $value / 1024;
+	        $position++;
+	    } while ($position < count($units));
+
+	    return $this->asNumber($value, $decimals) . Yii::t('yii', end($units));
+	}
 }
