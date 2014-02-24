@@ -177,8 +177,7 @@ class QueryBuilder extends \yii\base\Object
 				if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
 					$value = $columnSchemas[$columns[$i]]->typecast($value);
 				}
-				$vs[] = is_string($value) ? $this->db->quoteValue($value)
-					: ( is_null($value) ? 'null' : $value );
+				$vs[] = is_string($value) ? $this->db->quoteValue($value) : ($value === null ? 'NULL' : $value);
 			}
 			$values[] = '(' . implode(', ', $vs) . ')';
 		}
