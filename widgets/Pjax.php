@@ -102,8 +102,9 @@ class Pjax extends Widget
 			if ($view->title !== null) {
 				echo Html::tag('title', Html::encode($view->title));
 			}
+		} else {
+			echo Html::beginTag('div', $this->options);
 		}
-		echo Html::beginTag('div', $this->options);
 	}
 
 	/**
@@ -111,9 +112,8 @@ class Pjax extends Widget
 	 */
 	public function run()
 	{
-		echo Html::endTag('div');
-
 		if (!$this->requiresPjax()) {
+			echo Html::endTag('div');
 			$this->registerClientScript();
 			return;
 		}
