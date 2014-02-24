@@ -426,22 +426,22 @@ class Formatter extends Component
 	public function asSize($value, $verbose=false)
 	{
 		$units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
-	    $position = 0;
+		$position = 0;
 
-	    do {
-	        if ($value < $this->sizeFormat['base']) {
-	            break;
-	        }
+		do {
+			if ($value < $this->sizeFormat['base']) {
+				break;
+			}
 
-	        $value = $value / $this->sizeFormat['base'];
-	        $position++;
-	    } while ($position < count($units));
+			$value = $value / $this->sizeFormat['base'];
+			$position++;
+		} while ($position < count($units));
 
-	    $value = round($value, $this->sizeFormat['decimals']);
+		$value = round($value, $this->sizeFormat['decimals']);
 		$formattedValue = isset($this->sizeFormat['decimalSeparator']) ? str_replace('.', $this->sizeFormat['decimalSeparator'], $value) : $value;
 		$params = ['n' => $formattedValue];
 		
-	    switch($position)
+		switch($position)
 		{
 			case 0:
 				return $verbose ? Yii::t('yii','{n, plural, =1{# byte} other{# bytes}}', $params) : Yii::t('yii', '{n} B', $params);
