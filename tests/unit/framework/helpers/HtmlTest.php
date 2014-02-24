@@ -536,6 +536,62 @@ EOD;
 		$this->assertEquals([], $options);
 	}
 
+	public function testCssStyleFromArray()
+	{
+		$this->assertEquals('width: 100px; height: 200px;', Html::cssStyleFromArray([
+			'width' => '100px',
+			'height' => '200px',
+		]));
+		$this->assertNull(Html::cssStyleFromArray([]));
+	}
+
+	public function testCssStyleToArray()
+	{
+		$this->assertEquals([
+			'width' => '100px',
+			'height' => '200px',
+		], Html::cssStyleToArray('width: 100px; height: 200px;'));
+		$this->assertEquals([], Html::cssStyleToArray('  '));
+	}
+
+	public function testAddCssStyle()
+	{
+		$options = ['style' => 'width: 100px; height: 200px;'];
+		Html::addCssStyle($options, 'width: 110px; color: red;');
+		$this->assertEquals('width: 110px; height: 200px; color: red;', $options['style']);
+
+		$options = ['style' => 'width: 100px; height: 200px;'];
+		Html::addCssStyle($options, ['width' => '110px', 'color' => 'red']);
+		$this->assertEquals('width: 110px; height: 200px; color: red;', $options['style']);
+
+		$options = ['style' => 'width: 100px; height: 200px;'];
+		Html::addCssStyle($options, 'width: 110px; color: red;', false);
+		$this->assertEquals('width: 100px; height: 200px; color: red;', $options['style']);
+
+		$options = [];
+		Html::addCssStyle($options, 'width: 110px; color: red;');
+		$this->assertEquals('width: 110px; color: red;', $options['style']);
+
+		$options = [];
+		Html::addCssStyle($options, 'width: 110px; color: red;', false);
+		$this->assertEquals('width: 110px; color: red;', $options['style']);
+	}
+
+	public function testRemoveCssStyle()
+	{
+		$options = ['style' => 'width: 110px; height: 200px; color: red;'];
+		Html::removeCssStyle($options, 'width');
+		$this->assertEquals('height: 200px; color: red;', $options['style']);
+		Html::removeCssStyle($options, ['height']);
+		$this->assertEquals('color: red;', $options['style']);
+		Html::removeCssStyle($options, ['color', 'background']);
+		$this->assertNull($options['style']);
+
+		$options = [];
+		Html::removeCssStyle($options, ['color', 'background']);
+		$this->assertTrue(!array_key_exists('style', $options));
+	}
+
 	protected function getDataItems()
 	{
 		return [
