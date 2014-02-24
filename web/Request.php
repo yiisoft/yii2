@@ -292,12 +292,12 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * Returns wheter this is a PJAX request
-	 * @return boolean wether this is a PJAX request
+	 * Returns whether this is a PJAX request
+	 * @return boolean whether this is a PJAX request
 	 */
 	public function getIsPjax ()
 	{
-		return $this->getIsAjax() && isset($_SERVER['HTTP_X_PJAX']) && $_SERVER['HTTP_X_PJAX']==true;
+		return $this->getIsAjax() && !empty($_SERVER['HTTP_X_PJAX']);
 	}
 	
 	/**
