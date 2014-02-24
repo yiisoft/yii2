@@ -8,7 +8,6 @@ use app\models\User;
 
 class LoginFormTest extends TestCase
 {
-	
 	use \Codeception\Specify;
 
 	protected function tearDown()
@@ -64,5 +63,4 @@ class LoginFormTest extends TestCase
 		$loginForm->expects($this->any())->method('getUser')->will($this->returnValue($user));
 		return $loginForm;
 	}
-
 }
