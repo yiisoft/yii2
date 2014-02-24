@@ -139,7 +139,7 @@ class Migration extends \yii\base\Component
 	{
 		echo "    > execute SQL: $sql ...";
 		$time = microtime(true);
-		$this->db->createCommand($sql)->execute($params);
+		$this->db->createCommand($sql)->bindValues($params)->execute();
 		echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
 	}
 
