@@ -645,7 +645,7 @@ class QueryBuilder extends \yii\base\Object
 	}
 
 	/**
-	 * @param string|array $joins
+	 * @param array $joins
 	 * @param array $params the binding parameters to be populated
 	 * @return string the JOIN clause built from [[Query::$join]].
 	 * @throws Exception if the $joins parameter is not in proper format
