@@ -71,11 +71,11 @@ class Formatter extends Component
 	 * They correspond to the base at which a kilobyte is calculated (1000 or 1024 bytes per kilobyte, defaults to 1024),
 	 * the number of digits after the decimal point (defaults to 2) and the character displayed as the decimal point.
 	 */
-	public $sizeFormat=array(
-		'base'=>1024,
-		'decimals'=>2,
-		'decimalSeparator'=>null,
-	);
+	public $sizeFormat = [
+		'base' => 1024,
+		'decimals' => 2,
+		'decimalSeparator' => null,
+	];
 
 	/**
 	 * Initializes the component.
@@ -425,7 +425,6 @@ class Formatter extends Component
 	 */
 	public function asSize($value, $verbose=false)
 	{
-		$units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
 		$position = 0;
 
 		do {
@@ -435,7 +434,7 @@ class Formatter extends Component
 
 			$value = $value / $this->sizeFormat['base'];
 			$position++;
-		} while ($position < count($units));
+		} while ($position < 6);
 
 		$value = round($value, $this->sizeFormat['decimals']);
 		$formattedValue = isset($this->sizeFormat['decimalSeparator']) ? str_replace('.', $this->sizeFormat['decimalSeparator'], $value) : $value;
