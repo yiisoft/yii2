@@ -24,7 +24,7 @@ class LoginFormTest extends TestCase
 		$model->username = 'some_username';
 		$model->password = 'some_password';
 
-		$this->specify('user should not be able to login, when there is no identity' , function () use ($model) {
+		$this->specify('user should not be able to login, when there is no identity', function () use ($model) {
 			expect('model should not login user', $model->login())->false();
 			expect('user should not be logged in', Yii::$app->user->isGuest)->true();
 		});
@@ -51,7 +51,7 @@ class LoginFormTest extends TestCase
 		$model->username = 'demo';
 		$model->password = 'demo';
 
-		$this->specify('user should be able to login with correct credentials', function() use ($model) {
+		$this->specify('user should be able to login with correct credentials', function () use ($model) {
 			expect('model should login user', $model->login())->true();
 			expect('error message should not be set', $model->errors)->hasntKey('password');
 			expect('user should be logged in', Yii::$app->user->isGuest)->false();
@@ -60,7 +60,7 @@ class LoginFormTest extends TestCase
 
 	private function mockUser($user)
 	{
-		$loginForm = $this->getMock('app\models\LoginForm',['getUser']);
+		$loginForm = $this->getMock('app\models\LoginForm', ['getUser']);
 		$loginForm->expects($this->any())->method('getUser')->will($this->returnValue($user));
 		return $loginForm;
 	}
