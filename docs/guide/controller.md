@@ -244,7 +244,24 @@ Two other filters, [[yii\web\PageCache]] and [[yii\web\HttpCache]] are described
 Catching all incoming requests
 ------------------------------
 
-TBD
+Sometimes it is useful to handle all incoming requests with a single controller action. For example, displaying a notice
+when website is in maintenance mode. In order to do it you should configure web application `catchAll` property either
+dynamically or via application config:
+
+```php
+$config = [
+	'id' => 'basic',
+	'basePath' => dirname(__DIR__),
+	// ...
+	'catchAll' => [ // <-- here
+		'offline/notice',
+		'param1' => 'value1',
+		'param2' => 'value2',
+	],
+```
+
+In the above `offline/notice` refer to `OfflineController::actionNotice()`. `param1` and `param2` are parameters passed
+to action method.
 
 Custom response class
 ---------------------
