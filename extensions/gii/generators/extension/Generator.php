@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link      http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license   http://www.yiiframework.com/license/
  */
 
 namespace yii\gii\generators\extension;
@@ -14,11 +14,9 @@ use yii\helpers\StringHelper;
 
 /**
  * This generator will generate the skeleton files needed by an extension.
- *
  * @property tbd
- *
  * @author Tobias Munk <schmunk@usrbin.de>
- * @since 2.0
+ * @since  2.0
  */
 class Generator extends \yii\gii\Generator
 {
@@ -26,10 +24,10 @@ class Generator extends \yii\gii\Generator
 	public $packageName = "yii2-";
 	public $namespace;
 	public $type = "yii2-extension";
-	public $keywords = "yii2,";
+	public $keywords = "yii2,extension";
 	public $title;
 	public $description;
-	public $outputPath = "@app/tmp";
+	public $outputPath = "@app/runtime/tmp-extensions";
 	public $license;
 	public $authorName;
 	public $authorEmail;
@@ -55,13 +53,40 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function rules()
 	{
-		return array_merge(parent::rules(), [
-			[['vendorName', 'packageName'], 'filter', 'filter' => 'trim'],
-			[['vendorName', 'packageName', 'namespace', 'type', 'license', 'title','description', 'authorName','authorEmail'], 'required'],
-			[['authorEmail'], 'email'],
-			[['packageName'], 'match', 'pattern' => '/^[a-z0-9-\.]+$/', 'message' => 'Only lowercase word characters, dashes and dots are allowed.'],
-			[['vendorName'], 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
-		]);
+		return array_merge(
+			parent::rules(),
+			[
+				[['vendorName', 'packageName'], 'filter', 'filter' => 'trim'],
+				[
+					[
+						'vendorName',
+						'packageName',
+						'namespace',
+						'type',
+						'license',
+						'title',
+						'description',
+						'authorName',
+						'authorEmail',
+						'outputPath'
+					],
+					'required'
+				],
+				[['authorEmail'], 'email'],
+				[
+					['vendorName', 'packageName'],
+					'match',
+					'pattern' => '/^[a-z0-9\-\.]+$/',
+					'message' => 'Only lowercase word characters, dashes and dots are allowed.'
+				],
+				[
+					['namespace'],
+					'match',
+					'pattern' => '/^[a-zA-Z0-9\\\]+\\\$/',
+					'message' => 'Only letters, numbers and backslashes are allowed. PSR-4 namespaces must end with a namespace separator.'
+				],
+			]
+		);
 	}
 
 	/**
@@ -70,9 +95,9 @@ class Generator extends \yii\gii\Generator
 	public function attributeLabels()
 	{
 		return [
-			'vendorName' => 'Vendor Name',
+			'vendorName'  => 'Vendor Name',
 			'packageName' => 'Package Name',
-			'license' => 'License',
+			'license'     => 'License',
 		];
 	}
 
@@ -82,11 +107,12 @@ class Generator extends \yii\gii\Generator
 	public function hints()
 	{
 		return [
-			'vendorName' => 'This refers to the name of the publisher, often i.e. your GitHub user name.',
-			'packageName' => 'This is the name of the extension.',
-			'namespace' => 'This will be added to your autoloader by composer. Do not use yii or yii2 in the namespace',
-			'outputPath' => 'The temporary location of the generated files.',
-			'title' => 'A more descriptive name of your application for the README file.',
+			'vendorName'  => 'This refers to the name of the publisher, your GitHub user name is usually a good choice, eg. <code>myself</code>',
+			'packageName' => 'This is the name of the extension on packagist, eg. <code>yii2-foobar</code>',
+			'namespace'   => 'PSR-4, eg. <code>myself\foobar</code> This will be added to your autoloading by composer. Do not use yii or yii2 in the namespace.',
+			'keywords'    => 'Comma separated keywords for this extension.',
+			'outputPath'  => 'The temporary location of the generated files.',
+			'title'       => 'A more descriptive name of your application for the README file.',
 			'description' => 'A sentence or subline describing the main purpose of the extension.',
 		];
 	}
@@ -96,7 +122,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function stickyAttributes()
 	{
-		return ['vendorName','outputPath','authorName','authorEmail'];
+		return ['vendorName', 'outputPath', 'authorName', 'authorEmail'];
 	}
 
 	/**
@@ -108,46 +134,47 @@ class Generator extends \yii\gii\Generator
 		#	$link = Html::a('try it now', Yii::$app->getUrlManager()->createUrl($this->moduleID), ['target' => '_blank']);
 		#	return "The module has been generated successfully. You may $link.";
 		#}
-
-		$output1 = <<<EOD
-<p>The extension has been generated successfully.</p>
+		$outputPath = realpath(\Yii::getAlias($this->outputPath));
+		$output1    = <<<EOD
+<p><em>The extension has been generated successfully.</em></p>
 <p>To enable it in your application, you need to create a git repository
 and require via composer.</p>
 EOD;
-		$code1 = <<<EOD
-cd tmp/{$this->packageName}
+		$code1      = <<<EOD
+cd {$outputPath}/{$this->packageName}
 
 git init
 git add -A
 git commit
+git remote add origin https://path.to/your/repo
+git push -u origin master
 EOD;
-		$output2 = <<<EOD
+		$output2    = <<<EOD
 <p>The next step is just for <em>local testing</em>, skip it if you directly publish the extension on e.g. packagist.org</p>
 <p>Add the newly created repo to your composer.json.</p>
 EOD;
-		$code2 = <<<EOD
+		$code2      = <<<EOD
 "repositories":[
 	{
 		"type": "git",
-		"url": "file://./tmp/{$this->packageName}"
+		"url": "https://path.to/your/repo"
 	}
 ]
 EOD;
-		$output3 = <<<EOD
-<p>Note: Make sure to remove the above lines after testing.</p>
+		$output3    = <<<EOD
+<p class="well">Note: You may use the url <code>file://{$outputPath}/{$this->packageName}</code> for testing.</p>
 <p>Require the package with composer</p>
 EOD;
-		$code3 = <<<EOD
-composer.phar require {$this->vendorName}/yii2-{$this->packageName}:*
+		$code3      = <<<EOD
+composer.phar require {$this->vendorName}/{$this->packageName}:dev-master
 EOD;
-		$output4 = <<<EOD
+		$output4    = <<<EOD
 <p>And use it in your application.</p>
 EOD;
-		$code4 = <<<EOD
-\$x = new \\{$this->vendorName}\\{$this->packageName}\AutoloadExample::widget();
-echo \$x->run();
+		$code4      = <<<EOD
+\\{$this->namespace}AutoloadExample::widget();
 EOD;
-		$return = $output1 . '<pre>' . highlight_string($code1, true) . '</pre>';
+		$return     = $output1 . '<pre>' . highlight_string($code1, true) . '</pre>';
 		$return .= $output2 . '<pre>' . highlight_string($code2, true) . '</pre>';
 		$return .= $output3 . '<pre>' . highlight_string($code3, true) . '</pre>';
 		$return .= $output4 . '<pre>' . highlight_string($code4, true) . '</pre>';
@@ -190,7 +217,14 @@ EOD;
 	public function getOutputPath()
 	{
 		return Yii::getAlias($this->outputPath);
-		#return Yii::getAlias('@' . str_replace('\\', '/', substr($this->moduleClass, 0, strrpos($this->moduleClass, '\\'))));
+	}
+
+	/**
+	 * @return a json encoded array with the given keywords
+	 */
+	public function getKeywordsArrayJson()
+	{
+		return json_encode(explode(',', $this->keywords));
 	}
 
 	/**

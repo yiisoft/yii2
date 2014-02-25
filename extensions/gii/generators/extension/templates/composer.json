@@ -1,8 +1,8 @@
 {
-    "name": "<?= $generator->vendorName ?>/yii2-<?= $generator->packageName ?>",
+    "name": "<?= $generator->vendorName ?>/<?= $generator->packageName ?>",
     "description": "<?= $generator->description ?>",
     "type": "<?= $generator->type ?>",
-    "keywords": ["TODO","ARRAY INPUT"],
+    "keywords": <?= $generator->keywordsArrayJson ?>,
     "license": "<?= $generator->license ?>",
     "authors": [
         {
@@ -12,7 +12,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "<?= $generator->namespace ?>": ""
+            "<?= str_replace('\\','\\\\',$generator->namespace) ?>": ""
         }
     }
 }
