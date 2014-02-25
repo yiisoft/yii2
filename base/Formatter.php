@@ -440,8 +440,7 @@ class Formatter extends Component
 		$formattedValue = isset($this->sizeFormat['decimalSeparator']) ? str_replace('.', $this->sizeFormat['decimalSeparator'], $value) : $value;
 		$params = ['n' => $formattedValue];
 		
-		switch($position)
-		{
+		switch($position) {
 			case 0:
 				return $verbose ? Yii::t('yii','{n, plural, =1{# byte} other{# bytes}}', $params) : Yii::t('yii', '{n} B', $params);
 			case 1:
