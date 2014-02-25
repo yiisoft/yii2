@@ -3,6 +3,7 @@ use yii\apidoc\templates\bootstrap\SideNavWidget;
 
 /**
  * @var yii\web\View $this
+ * @var string $content
  */
 
 $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>

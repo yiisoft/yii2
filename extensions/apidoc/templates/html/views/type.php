@@ -7,7 +7,7 @@ use yii\apidoc\models\TraitDoc;
 /**
  * @var ClassDoc|InterfaceDoc|TraitDoc $type
  * @var yii\web\View $this
- * @var \yii\apidoc\templates\html\Renderer $renderer
+ * @var \yii\apidoc\templates\html\ApiRenderer $renderer
  */
 
 $renderer = $this->context;

@@ -1,17 +1,22 @@
 <?php
+use yii\apidoc\templates\bootstrap\ApiRenderer;
 use yii\apidoc\templates\bootstrap\SideNavWidget;
 use yii\helpers\StringHelper;
 
 /**
  * @var yii\web\View $this
+ * @var string $content
  */
+
+/** @var ApiRenderer $renderer */
+$renderer = $this->context;
 
 $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
 
 <div class="row">
 	<div class="col-md-2">
 		<?php
-		$types = $this->context->getNavTypes(isset($type) ? $type : null, $types);
+		$types = $renderer->getNavTypes(isset($type) ? $type : null, $types);
 		ksort($types);
 		$nav = [];
 		foreach($types as $i=>$class) {
@@ -28,7 +33,7 @@ $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
 			}
 			$nav[$namespace]['items'][] = [
 				'label' => StringHelper::basename($class->name),
-				'url' => './' . $this->context->generateUrl($class->name),
+				'url' => './' . $renderer->generateApiUrl($class->name),
 				'active' => isset($type) && ($class->name == $type->name),
 			];
 		} ?>

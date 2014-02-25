@@ -7,7 +7,10 @@ use yii\helpers\ArrayHelper;
 /**
  * @var ClassDoc $type
  * @var yii\web\View $this
+ * @var \yii\apidoc\templates\html\ApiRenderer $renderer
  */
+
+$renderer = $this->context;
 
 if (empty($type->constants)) {
 	return;
@@ -34,7 +37,7 @@ ArrayHelper::multisort($constants, 'name');
 	  <td><?= $constant->name ?><a name="<?= $constant->name ?>-detail"></a></td>
 	  <td><?= $constant->value ?></td>
 	  <td><?= APiMarkdown::process($constant->shortDescription . "\n" . $constant->description, $constant->definedBy, true) ?></td>
-	  <td><?= $this->context->typeLink($constant->definedBy) ?></td>
+	  <td><?= $renderer->createTypeLink($constant->definedBy) ?></td>
 	</tr>
 <?php endforeach; ?>
 </table>
