@@ -116,7 +116,8 @@ class Column extends Object
 	}
 
 	/**
-	 * Get the raw data cell content.
+	 * Returns the raw data cell content.
+	 * This method is called by [[renderDataCellContent()]] when rendering the content of a data cell.
 	 * @param mixed $model the data model
 	 * @param mixed $key the key associated with the data model
 	 * @param integer $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
@@ -140,7 +141,7 @@ class Column extends Object
 	 */
 	protected function renderDataCellContent($model, $key, $index)
 	{
-		return ($this->content !== null) ? $this->getDataCellContent($model, $key, $index) : $this->grid->emptyCell;
+		return $this->content !== null ? $this->getDataCellContent($model, $key, $index) : $this->grid->emptyCell;
 	}
 
 	/**
