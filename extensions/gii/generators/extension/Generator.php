@@ -14,7 +14,7 @@ use yii\helpers\StringHelper;
 
 /**
  * This generator will generate the skeleton files needed by an extension.
- * @property tbd
+ *
  * @author Tobias Munk <schmunk@usrbin.de>
  * @since  2.0
  */
@@ -131,15 +131,11 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function successMessage()
 	{
-		#if (Yii::$app->hasModule($this->moduleID)) {
-		#	$link = Html::a('try it now', Yii::$app->getUrlManager()->createUrl($this->moduleID), ['target' => '_blank']);
-		#	return "The module has been generated successfully. You may $link.";
-		#}
 		$outputPath = realpath(\Yii::getAlias($this->outputPath));
 		$output1    = <<<EOD
 <p><em>The extension has been generated successfully.</em></p>
 <p>To enable it in your application, you need to create a git repository
-and require via composer.</p>
+and require it via composer.</p>
 EOD;
 		$code1      = <<<EOD
 cd {$outputPath}/{$this->packageName}
@@ -179,7 +175,7 @@ EOD;
 <p>When you have finished development register your extension at <a href='https://packagist.org/' target='_blank'>packagist.org</a>.</p>
 EOD;
 
-		$return     = $output1 . '<pre>' . highlight_string($code1, true) . '</pre>';
+		$return  = $output1 . '<pre>' . highlight_string($code1, true) . '</pre>';
 		$return .= $output2 . '<pre>' . highlight_string($code2, true) . '</pre>';
 		$return .= $output3 . '<pre>' . highlight_string($code3, true) . '</pre>';
 		$return .= $output4 . '<pre>' . highlight_string($code4, true) . '</pre>';

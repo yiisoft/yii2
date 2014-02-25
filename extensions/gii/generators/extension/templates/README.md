@@ -12,13 +12,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist <?= $generator->vendorName ?>/yii2-<?= $generator->packageName ?> "*"
+php composer.phar require --prefer-dist <?= $generator->vendorName ?>/<?= $generator->packageName ?> "*"
 ```
 
 or add
 
 ```
-"<?= $generator->vendorName ?>/yii2-<?= $generator->packageName ?>": "*"
+"<?= $generator->vendorName ?>/<?= $generator->packageName ?>": "*"
 ```
 
 to the require section of your `composer.json` file.
