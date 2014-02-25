@@ -131,6 +131,22 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertEquals(2, $order['books'][1]['id']);
 	}
 
+	// deeply nested table relation
+	public function testDeeplyNestedTableRelation()
+	{
+		/** @var Customer $customer */
+		$customer = $this->callCustomerFind(1);
+		$this->assertNotNull($customer);
+
+		$items = $customer->orderItems;
+
+		$this->assertEquals(2, count($items));
+		$this->assertInstanceOf(Item::className(), $items[0]);
+		$this->assertInstanceOf(Item::className(), $items[1]);
+		$this->assertEquals(1, $items[0]->id);
+		$this->assertEquals(2, $items[1]->id);
+	}
+
 	public function testStoreNull()
 	{
 		$record = new NullValues();

@@ -1,6 +1,7 @@
 <?php
 namespace yiiunit\data\ar;
 
+use yii\db\ActiveQuery;
 use yiiunit\framework\db\ActiveRecordTest;
 
 /**
@@ -32,6 +33,17 @@ class Customer extends ActiveRecord
 	public function getOrders2()
 	{
 		return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer2')->orderBy('id');
+	}
+
+	// deeply nested table relation
+	public function getOrderItems()
+	{
+		/** @var ActiveQuery $rel */
+		$rel = $this->hasMany(Item::className(), ['id' => 'item_id']);
+		return $rel->viaTable('tbl_order_item', ['order_id' => 'id'], function($q) {
+			/** @var ActiveQuery $q */
+			$q->viaTable('tbl_order', ['customer_id' => 'id']);
+		})->orderBy('id');
 	}
 
 	public function afterSave($insert)
