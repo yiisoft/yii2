@@ -76,11 +76,6 @@ When the application ends or [[yii\log\Logger::flushInterval|flushInterval]] is 
 [[yii\log\Logger::flush()|flush()]] to send logged messages to different log targets, such as file, email, web.
 
 
-Configuring context information
--------------------------------
-
-TDB
-
 Profiling
 ---------
 
