@@ -48,6 +48,7 @@ Yii Framework 2 Change Log
 - Bug #2399: Fixed the bug that AssetBundle did not handle relative URLs correctly (qiangxue)
 - Bug #2502: Unclear error message when `$_SERVER['DOCUMENT_ROOT']` is empty (samdark)
 - Bug #2519: MessageSource removed translation messages when event handler was bound to `missingTranslation`-event (cebe)
+- Bug #2527: Source language for `app` message category was always `en` no matter which application `sourceLanguage` was used (samdark)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
