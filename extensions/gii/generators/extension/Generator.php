@@ -72,6 +72,7 @@ class Generator extends \yii\gii\Generator
 					],
 					'required'
 				],
+				[['keywords'], 'safe'],
 				[['authorEmail'], 'email'],
 				[
 					['vendorName', 'packageName'],
