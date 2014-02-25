@@ -108,9 +108,9 @@ class Generator extends \yii\gii\Generator
 	public function hints()
 	{
 		return [
-			'vendorName'  => 'This refers to the name of the publisher, your GitHub user name is usually a good choice, eg. <code>myself</code>',
-			'packageName' => 'This is the name of the extension on packagist, eg. <code>yii2-foobar</code>',
-			'namespace'   => 'PSR-4, eg. <code>myself\foobar</code> This will be added to your autoloading by composer. Do not use yii or yii2 in the namespace.',
+			'vendorName'  => 'This refers to the name of the publisher, your GitHub user name is usually a good choice, eg. <code>myself</code>.',
+			'packageName' => 'This is the name of the extension on packagist, eg. <code>yii2-foobar</code>.',
+			'namespace'   => 'PSR-4, eg. <code>myself\foobar\</code> This will be added to your autoloading by composer. Do not use yii or yii2 in the namespace.',
 			'keywords'    => 'Comma separated keywords for this extension.',
 			'outputPath'  => 'The temporary location of the generated files.',
 			'title'       => 'A more descriptive name of your application for the README file.',
@@ -151,7 +151,7 @@ git remote add origin https://path.to/your/repo
 git push -u origin master
 EOD;
 		$output2    = <<<EOD
-<p>The next step is just for <em>local testing</em>, skip it if you directly publish the extension on e.g. packagist.org</p>
+<p>The next step is just for <em>initial development</em>, skip it if you directly publish the extension on packagist.org</p>
 <p>Add the newly created repo to your composer.json.</p>
 EOD;
 		$code2      = <<<EOD
@@ -175,10 +175,15 @@ EOD;
 		$code4      = <<<EOD
 \\{$this->namespace}AutoloadExample::widget();
 EOD;
+		$output5    = <<<EOD
+<p>When you have finished development register your extension at <a href='https://packagist.org/' target='_blank'>packagist.org</a>.</p>
+EOD;
+
 		$return     = $output1 . '<pre>' . highlight_string($code1, true) . '</pre>';
 		$return .= $output2 . '<pre>' . highlight_string($code2, true) . '</pre>';
 		$return .= $output3 . '<pre>' . highlight_string($code3, true) . '</pre>';
 		$return .= $output4 . '<pre>' . highlight_string($code4, true) . '</pre>';
+		$return .= $output5;
 		return $return;
 	}
 
