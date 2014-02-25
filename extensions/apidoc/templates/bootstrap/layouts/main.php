@@ -9,6 +9,17 @@ use yii\helpers\Html;
 
 \yii\apidoc\templates\bootstrap\assets\AssetBundle::register($this);
 
+// Navbar hides initial content when jumping to in-page anchor
+// https://github.com/twbs/bootstrap/issues/1768
+$this->registerJs(<<<JS
+	var shiftWindow = function() { scrollBy(0, -50) };
+	if (location.hash) shiftWindow();
+	window.addEventListener("hashchange", shiftWindow);
+JS
+,
+	\yii\web\View::POS_HEAD
+);
+
 $this->beginPage();
 ?>
 <!DOCTYPE html>
