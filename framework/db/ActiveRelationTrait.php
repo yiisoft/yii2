@@ -64,6 +64,7 @@ trait ActiveRelationTrait
 	 */
 	public function __clone()
 	{
+		parent::__clone();
 		// make a clone of "via" object so that the same query object can be reused multiple times
 		if (is_object($this->via)) {
 			$this->via = clone $this->via;
