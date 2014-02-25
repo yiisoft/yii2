@@ -9,9 +9,13 @@ code execution. Unlike [PHP's traits](http://www.php.net/traits), behaviors can 
 Using behaviors
 ---------------
 
-A behavior can be attached to any class that extends from [[yii\base\Component]]. In order to attach a behavior to a class,
-the component class must implement the `behaviors`
-method. As an example, Yii provides the [[yii\behaviors\TimestampBehavior]] behavior for automatically updating timestamp
+A behavior can be attached to any class that extends from [[yii\base\Component]] either from code or via application
+config.
+
+### Attaching behaviors via `behaviors` method
+
+In order to attach a behavior to a class you can implement the `behaviors` method of the component.
+As an example, Yii provides the [[yii\behaviors\TimestampBehavior]] behavior for automatically updating timestamp
 fields when saving an [[yii\db\ActiveRecord|Active Record]] model:
 
 ```php
@@ -68,6 +72,38 @@ class User extends ActiveRecord
 	}
 }
 ```
+
+### Attaching behaviors dynamically
+
+Another way to attach a behavior to a component is calling `attachBehavior` method like the followig:
+
+```php
+$component = new MyComponent();
+$component->attachBehavior();
+```
+
+### Attaching behaviors from config
+
+One can attach a behavior to a component when configuring it with a configuration array. The syntax is like the
+following:
+
+```php
+return [
+	// ...
+	'components' => [
+		'myComponent' => [
+			// ...
+			'as tree' => [
+				'class' => 'Tree',
+				'root' => 0,
+			],
+		],
+	],
+];
+```
+
+In the config above `as tree` stands for attaching a behavior named `tree`, and the array will be passed to [[\Yii::createObject()]]
+to create the behavior object.
 
 
 Creating your own behaviors
