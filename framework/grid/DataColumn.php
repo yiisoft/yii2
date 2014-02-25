@@ -136,7 +136,7 @@ class DataColumn extends Column
 	}
 
 	/**
-	 * Return raw content
+	 * @inheritdoc
 	 */
 	protected function getDataCellContent($model, $key, $index)
 	{
