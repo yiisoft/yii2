@@ -29,29 +29,40 @@ Yii grid consists of a number of columns. Depending on column type and settings 
 These are defined in the columns part of GridView config like the following:
 
 ```php
-$this->widget('zii.widgets.grid.CGridView', array(
-    'dataProvider'=>$dataProvider,
-    'columns'=>array(
-        // A simple column defined by the data contained in $dataProvider.
-        // Data from model's column1 will be used.
-        'column1',
-        // More complex one.
-        array(
-            'class' => 'CDataColumn', // can be omitted, default
-            'name'=>'column1',
-            'value'=>function($data,$row){
-                return $data->name;
-            },
-            'type'=>'raw',
-        ),
-    ),
-));
+echo GridView::widget([
+	'dataProvider' => $dataProvider,
+	'columns' => [
+		['class' => 'yii\grid\SerialColumn'],
+		// A simple column defined by the data contained in $dataProvider.
+		// Data from model's column1 will be used.
+		'id',
+		'username',
+		// More complex one.
+		[
+			'class' => 'DataColumn', // can be omitted, default
+			'name' => 'column1',
+			'value' => function ($data) {
+				return $data->name;
+			},
+			'type'=>'raw',
+		],
+	],
+]);
 ```
 
 Note: If columns part of config isn't specified, Yii tries to show all possible data provider model columns.
 
 
 ### Column classes
+
+
+#### Data column
+
+#### Action column
+
+#### Checkbox column
+
+#### Serial column
 
 TODO: rewrite these:
 
