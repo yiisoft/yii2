@@ -57,15 +57,15 @@ class DetailView extends Widget
 	 * @var array a list of attributes to be displayed in the detail view. Each array element
 	 * represents the specification for displaying one particular attribute.
 	 *
-	 * An attribute can be specified as a string in the format of "name", "name:format" or "name:format:label",
-	 * where "name" refers to the attribute name, and "format" represents the format of the attribute. The "format"
+	 * An attribute can be specified as a string in the format of "attribute", "attribute:format" or "attribute:format:label",
+	 * where "attribute" refers to the attribute name, and "format" represents the format of the attribute. The "format"
 	 * is passed to the [[Formatter::format()]] method to format an attribute value into a displayable text.
 	 * Please refer to [[Formatter]] for the supported types. Both "format" and "label" are optional.
 	 * They will take default values if absent.
 	 *
 	 * An attribute can also be specified in terms of an array with the following elements:
 	 *
-	 * - name: the attribute name. This is required if either "label" or "value" is not specified.
+	 * - attribute: the attribute name. This is required if either "label" or "value" is not specified.
 	 * - label: the label associated with the attribute. If this is not specified, it will be generated from the attribute name.
 	 * - value: the value to be displayed. If this is not specified, it will be retrieved from [[model]] using the attribute name
 	 *   by calling [[ArrayHelper::getValue()]]. Note that this value will be formatted into a displayable text
@@ -176,10 +176,10 @@ class DetailView extends Widget
 		foreach ($this->attributes as $i => $attribute) {
 			if (is_string($attribute)) {
 				if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $attribute, $matches)) {
-					throw new InvalidConfigException('The attribute must be specified in the format of "name", "name:format" or "name:format:label"');
+					throw new InvalidConfigException('The attribute must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
 				}
 				$attribute = [
-					'name' => $matches[1],
+					'attribute' => $matches[1],
 					'format' => isset($matches[3]) ? $matches[3] : 'text',
 					'label' => isset($matches[5]) ? $matches[5] : null,
 				];
@@ -197,16 +197,16 @@ class DetailView extends Widget
 			if (!isset($attribute['format'])) {
 				$attribute['format'] = 'text';
 			}
-			if (isset($attribute['name'])) {
-				$name = $attribute['name'];
+			if (isset($attribute['attribute'])) {
+				$attributeName = $attribute['attribute'];
 				if (!isset($attribute['label'])) {
-					$attribute['label'] = $this->model instanceof Model ? $this->model->getAttributeLabel($name) : Inflector::camel2words($name, true);
+					$attribute['label'] = $this->model instanceof Model ? $this->model->getAttributeLabel($attributeName) : Inflector::camel2words($attributeName, true);
 				}
 				if (!array_key_exists('value', $attribute)) {
-					$attribute['value'] = ArrayHelper::getValue($this->model, $name);
+					$attribute['value'] = ArrayHelper::getValue($this->model, $attributeName);
 				}
 			} elseif (!isset($attribute['label']) || !array_key_exists('value', $attribute)) {
-				throw new InvalidConfigException('The attribute configuration requires the "name" element to determine the value and display label.');
+				throw new InvalidConfigException('The attribute configuration requires the "attribute" element to determine the value and display label.');
 			}
 
 			$this->attributes[$i] = $attribute;
