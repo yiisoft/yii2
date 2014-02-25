@@ -124,6 +124,7 @@ Yii Framework 2 Change Log
 - Enh #2490: `yii\db\Query::count()` and other query scalar methods now properly handle queries with GROUP BY clause (qiangxue)
 - Enh #2491: Added support for using the same base class name of search model and data model in Gii (qiangxue)
 - Enh #2499: Added ability to downgrade migrations by their absolute apply time (resurtm, gorcer)
+- Enh #2525: Added support for formatting file sizes with `yii\base\Formatter` (VinceG)
 - Enh #2526: Allow for null values in batchInsert (skotos)
 - Enh: Added support for using arrays as option values for console commands (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
