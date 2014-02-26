@@ -88,6 +88,8 @@ class Action extends Component
 			$result = call_user_func_array([$this, 'run'], $args);
 			$this->afterRun();
 			return $result;
+		} else {
+			return null;
 		}
 	}
 
