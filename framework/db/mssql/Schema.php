@@ -368,7 +368,7 @@ SQL;
 		}
 
 		$sql = <<<SQL
-SELECT [t].[table]
+SELECT [t].[table_name]
 FROM [information_schema].[tables] AS [t]
 WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'BASE TABLE'
 SQL;
