@@ -31,5 +31,5 @@ Usage
 Once the extension is installed, simply use it in your code by  :
 
 ```php
-<?= "<?= \\{$generator->namespace}AutoloadExample::wiget(); ?>" ?>
+<?= "<?= \\{$generator->namespace}AutoloadExample::widget(); ?>" ?>
 ```
