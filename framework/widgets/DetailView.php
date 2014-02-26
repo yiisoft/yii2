@@ -204,7 +204,7 @@ class DetailView extends Widget
 			if (!isset($attribute['format'])) {
 				$attribute['format'] = 'text';
 			}
-			if (isset($attribute['label']) && $attribute['label'] instanceof \Closure) {
+			if (isset($attribute['label']) && is_callable($attribute['label'])) {
 				$attribute['label'] = call_user_func($attribute['label'], $this, $attribute);
 			}
 			if (isset($attribute['attribute'])) {
