@@ -136,13 +136,13 @@ trait ActiveRelationTrait
 	 * Finds the related records for the specified primary record.
 	 * This method is invoked when a relation of an ActiveRecord is being accessed in a lazy fashion.
 	 * @param string $name the relation name
-	 * @param ActiveRecordInterface $model the primary model
+	 * @param ActiveRecordInterface|BaseActiveRecord $model the primary model
 	 * @return mixed the related record(s)
 	 * @throws InvalidParamException if the relation is invalid
 	 */
 	public function findFor($name, $model)
 	{
-		if (method_exists($model, 'get' . $name)) {
+		if ($model->hasMethod('get' . $name)) {
 			$method = new \ReflectionMethod($model, 'get' . $name);
 			$realName = lcfirst(substr($method->getName(), 3));
 			if ($realName !== $name) {
