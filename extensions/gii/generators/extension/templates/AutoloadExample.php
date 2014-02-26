@@ -1,6 +1,6 @@
 <?php
 /**
- * This is just an example. *
+ * This is just an example.
  */
 echo "<?php\n";
 ?>

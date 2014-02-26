@@ -1,5 +1,5 @@
 <?= $generator->title ?>
-===
+<?= str_repeat('=', mb_strlen($generator->title, \Yii::$app->charset)) ?>
 
 <?= $generator->description ?>
 

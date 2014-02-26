@@ -1,22 +1,20 @@
 <?php
 /**
- * @link      http://www.yiiframework.com/
+ * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license   http://www.yiiframework.com/license/
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\gii\generators\extension;
 
-use yii\gii\CodeFile;
-use yii\helpers\Html;
 use Yii;
-use yii\helpers\StringHelper;
+use yii\gii\CodeFile;
 
 /**
  * This generator will generate the skeleton files needed by an extension.
  *
  * @author Tobias Munk <schmunk@usrbin.de>
- * @since  2.0
+ * @since 2.0
  */
 class Generator extends \yii\gii\Generator
 {
@@ -132,12 +130,12 @@ class Generator extends \yii\gii\Generator
 	public function successMessage()
 	{
 		$outputPath = realpath(\Yii::getAlias($this->outputPath));
-		$output1    = <<<EOD
+		$output1 = <<<EOD
 <p><em>The extension has been generated successfully.</em></p>
 <p>To enable it in your application, you need to create a git repository
 and require it via composer.</p>
 EOD;
-		$code1      = <<<EOD
+		$code1 = <<<EOD
 cd {$outputPath}/{$this->packageName}
 
 git init
@@ -146,11 +144,11 @@ git commit
 git remote add origin https://path.to/your/repo
 git push -u origin master
 EOD;
-		$output2    = <<<EOD
+		$output2 = <<<EOD
 <p>The next step is just for <em>initial development</em>, skip it if you directly publish the extension on packagist.org</p>
 <p>Add the newly created repo to your composer.json.</p>
 EOD;
-		$code2      = <<<EOD
+		$code2 = <<<EOD
 "repositories":[
 	{
 		"type": "git",
@@ -158,24 +156,24 @@ EOD;
 	}
 ]
 EOD;
-		$output3    = <<<EOD
+		$output3 = <<<EOD
 <p class="well">Note: You may use the url <code>file://{$outputPath}/{$this->packageName}</code> for testing.</p>
 <p>Require the package with composer</p>
 EOD;
-		$code3      = <<<EOD
+		$code3 = <<<EOD
 composer.phar require {$this->vendorName}/{$this->packageName}:dev-master
 EOD;
-		$output4    = <<<EOD
+		$output4 = <<<EOD
 <p>And use it in your application.</p>
 EOD;
-		$code4      = <<<EOD
+		$code4 = <<<EOD
 \\{$this->namespace}AutoloadExample::widget();
 EOD;
-		$output5    = <<<EOD
+		$output5 = <<<EOD
 <p>When you have finished development register your extension at <a href='https://packagist.org/' target='_blank'>packagist.org</a>.</p>
 EOD;
 
-		$return  = $output1 . '<pre>' . highlight_string($code1, true) . '</pre>';
+		$return = $output1 . '<pre>' . highlight_string($code1, true) . '</pre>';
 		$return .= $output2 . '<pre>' . highlight_string($code2, true) . '</pre>';
 		$return .= $output3 . '<pre>' . highlight_string($code3, true) . '</pre>';
 		$return .= $output4 . '<pre>' . highlight_string($code4, true) . '</pre>';
@@ -196,17 +194,17 @@ EOD;
 	 */
 	public function generate()
 	{
-		$files      = [];
+		$files = [];
 		$modulePath = $this->getOutputPath();
-		$files[]    = new CodeFile(
+		$files[] = new CodeFile(
 			$modulePath . '/' . $this->packageName . '/composer.json',
 			$this->render("composer.json")
 		);
-		$files[]    = new CodeFile(
+		$files[] = new CodeFile(
 			$modulePath . '/' . $this->packageName . '/AutoloadExample.php',
 			$this->render("AutoloadExample.php")
 		);
-		$files[]    = new CodeFile(
+		$files[] = new CodeFile(
 			$modulePath . '/' . $this->packageName . '/README.md',
 			$this->render("README.md")
 		);
@@ -222,7 +220,7 @@ EOD;
 	}
 
 	/**
-	 * @return a json encoded array with the given keywords
+	 * @return string a json encoded array with the given keywords
 	 */
 	public function getKeywordsArrayJson()
 	{
