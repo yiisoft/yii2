@@ -1,4 +1,5 @@
 <?= $generator->title ?>
+
 <?= str_repeat('=', mb_strlen($generator->title, \Yii::$app->charset)) ?>
 
 <?= $generator->description ?>
@@ -30,6 +31,5 @@ Usage
 Once the extension is installed, simply use it in your code by  :
 
 ```php
-<?= "<?= \\{$generator->namespace}\\AutoloadExample::wiget(); ?>" ?>
-];
+<?= "<?= \\{$generator->namespace}AutoloadExample::widget(); ?>" ?>
 ```
