@@ -67,6 +67,13 @@ class DetailView extends Widget
 	 *
 	 * - attribute: the attribute name. This is required if either "label" or "value" is not specified.
 	 * - label: the label associated with the attribute. If this is not specified, it will be generated from the attribute name.
+	 *   If a callback (e.g. an anonymous function), the signature must be as follows:
+	 *
+	 *    ~~~
+	 *    function ($widget, $attribute)
+	 *    ~~~
+	 *
+	 *    where `$widget` refers to this widget instance and `$attribute` refer to the specification of the attribute being rendered.
 	 * - value: the value to be displayed. If this is not specified, it will be retrieved from [[model]] using the attribute name
 	 *   by calling [[ArrayHelper::getValue()]]. Note that this value will be formatted into a displayable text
 	 *   according to the "format" option.
@@ -196,6 +203,9 @@ class DetailView extends Widget
 
 			if (!isset($attribute['format'])) {
 				$attribute['format'] = 'text';
+			}
+			if (isset($attribute['label']) && $attribute['label'] instanceof \Closure) {
+				$attribute['label'] = call_user_func($attribute['label'], $this, $attribute);
 			}
 			if (isset($attribute['attribute'])) {
 				$attributeName = $attribute['attribute'];
