@@ -121,7 +121,7 @@ class Formatter extends Component
 			$params = [$value];
 		}
 		$method = 'as' . $format;
-		if (method_exists($this, $method)) {
+		if ($this->hasMethod($method)) {
 			return call_user_func_array([$this, $method], $params);
 		} else {
 			throw new InvalidParamException("Unknown type: $format");
