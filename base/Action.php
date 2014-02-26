@@ -84,7 +84,10 @@ class Action extends Component
 		if (Yii::$app->requestedParams === null) {
 			Yii::$app->requestedParams = $args;
 		}
-		return call_user_func_array([$this, 'run'], $args);
+		if ($this->beforeRun()) {
+			call_user_func_array([$this, 'run'], $args);
+			$this->afterRun();
+		}
 	}
 
 	/**
