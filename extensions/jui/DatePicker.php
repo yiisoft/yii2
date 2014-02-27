@@ -7,11 +7,12 @@
 
 namespace yii\jui;
 
+use Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
 
 /**
- * DatePicker renders an datepicker jQuery UI widget.
+ * DatePicker renders a datepicker jQuery UI widget.
  *
  * For example:
  *
@@ -46,9 +47,9 @@ class DatePicker extends InputWidget
 {
 	/**
 	 * @var string the locale ID (eg 'fr', 'de') for the language to be used by the date picker.
-	 * If this property set to false, I18N will not be involved. That is, the date picker will show in English.
+	 * If this property is empty, then the current application language will be used.
 	 */
-	public $language = false;
+	public $language;
 	/**
 	 * @var boolean If true, shows the widget as an inline calendar and the input as a hidden field.
 	 */
@@ -77,15 +78,16 @@ class DatePicker extends InputWidget
 	{
 		echo $this->renderWidget() . "\n";
 		$containerID = $this->inline ? $this->containerOptions['id'] : $this->options['id'];
-		if ($this->language !== false) {
+		$language = $this->language ? $this->language : Yii::$app->language;
+		if ($language != 'en') {
 			$view = $this->getView();
 			DatePickerRegionalAsset::register($view);
 
 			$options = Json::encode($this->clientOptions);
-			$view->registerJs("$('#{$containerID}').datepicker($.extend({}, $.datepicker.regional['{$this->language}'], $options));");
+			$view->registerJs("$('#{$containerID}').datepicker($.extend({}, $.datepicker.regional['{$language}'], $options));");
 
 			$options = $this->clientOptions;
-			$this->clientOptions = false;  // the datepicker js widget is already registered
+			$this->clientOptions = false; // the datepicker js widget is already registered
 			$this->registerWidget('datepicker', DatePickerAsset::className(), $containerID);
 			$this->clientOptions = $options;
 		} else {
