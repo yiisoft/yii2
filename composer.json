@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-dev",
 	"description": "Yii PHP Framework Version 2 - Development Package",
-	"keywords": ["yii", "framework"],
+	"keywords": ["yii2", "framework"],
 	"homepage": "http://www.yiiframework.com/",
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",

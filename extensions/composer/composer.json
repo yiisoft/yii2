@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-composer",
 	"description": "The composer plugin for Yii extension installer",
-	"keywords": ["yii", "composer", "extension installer"],
+	"keywords": ["yii2", "composer", "extension installer"],
 	"type": "composer-plugin",
 	"license": "BSD-3-Clause",
 	"support": {
