@@ -7,11 +7,12 @@
 
 namespace yii\jui;
 
+use Yii;
 use yii\helpers\Html;
 use yii\helpers\Json;
 
 /**
- * DatePicker renders an datepicker jQuery UI widget.
+ * DatePicker renders a datepicker jQuery UI widget.
  *
  * For example:
  *
@@ -45,10 +46,22 @@ use yii\helpers\Json;
 class DatePicker extends InputWidget
 {
 	/**
-	 * @var string the locale ID (eg 'fr', 'de') for the language to be used by the date picker.
-	 * If this property set to false, I18N will not be involved. That is, the date picker will show in English.
+	 * @var array the list of supported languages.
 	 */
-	public $language = false;
+	public static $languageList = [
+		'af', 'ar-DZ', 'ar', 'az', 'be', 'bg', 'bs', 'ca', 'cs', 'cy-GB', 'da', 'de', 'el',
+		'en-AU', 'en-GB', 'en-NZ', 'eo', 'es', 'et', 'eu', 'fa', 'fi', 'fo', 'fr-CA', 'fr-CH',
+		'fr', 'gl', 'he', 'hi', 'hr', 'hu', 'hy', 'id', 'is', 'it', 'ja', 'ka', 'kk', 'km',
+		'ko', 'ky', 'lb', 'lt', 'lv', 'mk', 'ml', 'ms', 'nb', 'nl-BE', 'nn', 'no', 'pl',
+		'pt-BR', 'pt', 'rm', 'ro', 'ru', 'sk', 'sl', 'sq', 'sr-SR', 'sr', 'sv', 'ta', 'th',
+		'tj', 'tr', 'uk', 'vi', 'zh-CN', 'zh-HK', 'zh-TW',
+	];
+	/**
+	 * @var string the locale ID (eg 'fr', 'de') for the language to be used by the date picker.
+	 * If this property is not set, then the current application language will be used.
+	 * If the property value is not in the [[languageList]], then date picker will show in English.
+	 */
+	public $language;
 	/**
 	 * @var boolean If true, shows the widget as an inline calendar and the input as a hidden field.
 	 */
@@ -77,15 +90,16 @@ class DatePicker extends InputWidget
 	{
 		echo $this->renderWidget() . "\n";
 		$containerID = $this->inline ? $this->containerOptions['id'] : $this->options['id'];
-		if ($this->language !== false) {
+		$language = $this->language === null ? Yii::$app->language : $this->language;
+		if (in_array($language, static::$languageList)) {
 			$view = $this->getView();
 			DatePickerRegionalAsset::register($view);
 
 			$options = Json::encode($this->clientOptions);
-			$view->registerJs("$('#{$containerID}').datepicker($.extend({}, $.datepicker.regional['{$this->language}'], $options));");
+			$view->registerJs("$('#{$containerID}').datepicker($.extend({}, $.datepicker.regional['{$language}'], $options));");
 
 			$options = $this->clientOptions;
-			$this->clientOptions = false;  // the datepicker js widget is already registered
+			$this->clientOptions = false; // the datepicker js widget is already registered
 			$this->registerWidget('datepicker', DatePickerAsset::className(), $containerID);
 			$this->clientOptions = $options;
 		} else {
