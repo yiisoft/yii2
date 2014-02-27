@@ -12,6 +12,9 @@ use yiiunit\framework\db\ActiveRecordTest;
  * @property string $email
  * @property string $address
  * @property integer $status
+ *
+ * @method CustomerQuery|Customer|null find($q = null) static
+ * @method CustomerQuery findBySql($sql, $params = []) static
  */
 class Customer extends ActiveRecord
 {
@@ -23,6 +26,11 @@ class Customer extends ActiveRecord
 	public static function tableName()
 	{
 		return 'tbl_customer';
+	}
+
+	public function getProfile()
+	{
+		return $this->hasOne(Profile::className(), ['id' => 'profile_id']);
 	}
 
 	public function getOrders()
