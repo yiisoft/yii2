@@ -154,11 +154,12 @@ trait ActiveRecordTestTrait
 		// asArray
 		$customer = $this->callCustomerFind()->where(['id' => 2])->asArray()->one();
 		$this->assertEquals([
-			'id' => '2',
+			'id' => 2,
 			'email' => 'user2@example.com',
 			'name' => 'user2',
 			'address' => 'address2',
-			'status' => '1',
+			'status' => 1,
+			'profile_id' => null,
 		], $customer);
 	}
 
