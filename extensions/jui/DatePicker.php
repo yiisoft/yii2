@@ -46,20 +46,8 @@ use yii\helpers\Json;
 class DatePicker extends InputWidget
 {
 	/**
-	 * @var array the list of supported languages.
-	 */
-	public static $languageList = [
-		'af', 'ar-DZ', 'ar', 'az', 'be', 'bg', 'bs', 'ca', 'cs', 'cy-GB', 'da', 'de', 'el',
-		'en-AU', 'en-GB', 'en-NZ', 'eo', 'es', 'et', 'eu', 'fa', 'fi', 'fo', 'fr-CA', 'fr-CH',
-		'fr', 'gl', 'he', 'hi', 'hr', 'hu', 'hy', 'id', 'is', 'it', 'ja', 'ka', 'kk', 'km',
-		'ko', 'ky', 'lb', 'lt', 'lv', 'mk', 'ml', 'ms', 'nb', 'nl-BE', 'nn', 'no', 'pl',
-		'pt-BR', 'pt', 'rm', 'ro', 'ru', 'sk', 'sl', 'sq', 'sr-SR', 'sr', 'sv', 'ta', 'th',
-		'tj', 'tr', 'uk', 'vi', 'zh-CN', 'zh-HK', 'zh-TW',
-	];
-	/**
 	 * @var string the locale ID (eg 'fr', 'de') for the language to be used by the date picker.
-	 * If this property is not set, then the current application language will be used.
-	 * If the property value is not in the [[languageList]], then date picker will show in English.
+	 * If this property is empty, then the current application language will be used.
 	 */
 	public $language;
 	/**
@@ -90,8 +78,8 @@ class DatePicker extends InputWidget
 	{
 		echo $this->renderWidget() . "\n";
 		$containerID = $this->inline ? $this->containerOptions['id'] : $this->options['id'];
-		$language = $this->language === null ? Yii::$app->language : $this->language;
-		if (in_array($language, static::$languageList)) {
+		$language = $this->language ? $this->language : Yii::$app->language;
+		if ($language != 'en') {
 			$view = $this->getView();
 			DatePickerRegionalAsset::register($view);
 
