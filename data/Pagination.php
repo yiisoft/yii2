@@ -67,6 +67,12 @@ use yii\web\Request;
  */
 class Pagination extends Object
 {
+	const LINK_SELF = 'self';
+	const LINK_NEXT = 'next';
+	const LINK_PREV = 'prev';
+	const LINK_FIRST = 'first';
+	const LINK_LAST = 'last';
+
 	/**
 	 * @var string name of the parameter storing the current page index. Defaults to 'page'.
 	 * @see params
@@ -216,5 +222,29 @@ class Pagination extends Object
 	public function getLimit()
 	{
 		return $this->pageSize < 1 ? -1 : $this->pageSize;
+	}
+
+	/**
+	 * Returns a whole set of links for navigating to the first, last, next and previous pages.
+	 * @param boolean $absolute whether the generated URLs should be absolute.
+	 * @return array the links for navigational purpose. The array keys specify the purpose of the links (e.g. [[LINK_FIRST]]),
+	 * and the array values are the corresponding URLs.
+	 */
+	public function getLinks($absolute = false)
+	{
+		$currentPage = $this->getPage();
+		$pageCount = $this->getPageCount();
+		$links = [
+			self::LINK_SELF => $this->createUrl($currentPage, $absolute),
+		];
+		if ($currentPage > 0) {
+			$links[self::LINK_FIRST] = $this->createUrl(0, $absolute);
+			$links[self::LINK_PREV] = $this->createUrl($currentPage - 1, $absolute);
+		}
+		if ($currentPage < $pageCount - 1) {
+			$links[self::LINK_NEXT] = $this->createUrl($currentPage + 1, $absolute);
+			$links[self::LINK_LAST] = $this->createUrl($pageCount - 1, $absolute);
+		}
+		return $links;
 	}
 }
