@@ -126,11 +126,12 @@ class Controller extends Component implements ViewContextInterface
 			Yii::$app->trigger(Application::EVENT_BEFORE_ACTION, $event);
 			if ($event->isValid && $this->module->beforeAction($action) && $this->beforeAction($action)) {
 				$result = $action->runWithParams($params);
-				$this->afterAction($action, $result);
-				$this->module->afterAction($action, $result);
+				$result = $this->afterAction($action, $result);
+				$result = $this->module->afterAction($action, $result);
 				$event = new ActionEvent($action);
-				$event->result = &$result;
+				$event->result = $result;
 				Yii::$app->trigger(Application::EVENT_AFTER_ACTION, $event);
+				$result = $event->result;
 			}
 			$this->action = $oldAction;
 			return $result;
@@ -222,14 +223,17 @@ class Controller extends Component implements ViewContextInterface
 	 * This method is invoked right after an action is executed.
 	 * You may override this method to do some postprocessing for the action.
 	 * If you override this method, please make sure you call the parent implementation first.
+	 * Also make sure you return the action result, whether it is processed or not.
 	 * @param Action $action the action just executed.
 	 * @param mixed $result the action return result.
+	 * @return mixed the processed action result.
 	 */
-	public function afterAction($action, &$result)
+	public function afterAction($action, $result)
 	{
 		$event = new ActionEvent($action);
-		$event->result = &$result;
+		$event->result = $result;
 		$this->trigger(self::EVENT_AFTER_ACTION, $event);
+		return $event->result;
 	}
 
 	/**
