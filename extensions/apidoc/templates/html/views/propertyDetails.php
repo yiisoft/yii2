@@ -35,7 +35,7 @@ ArrayHelper::multisort($properties, 'name');
 
 	<div class="signature"><?php echo $this->context->renderPropertySignature($property); ?></div>
 
-	<p><?= ApiMarkdown::process($property->description, $type) ?></p>
+	<?= ApiMarkdown::process($property->description, $type) ?>
 
 	<?= $this->render('seeAlso', ['object' => $property]); ?>
 
