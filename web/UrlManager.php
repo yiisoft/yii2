@@ -9,6 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
 use yii\caching\Cache;
 
 /**
@@ -156,17 +157,22 @@ class UrlManager extends Component
 		}
 
 		$rules = [];
+		$verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
 		foreach ($this->rules as $key => $rule) {
 			if (!is_array($rule)) {
 				$rule = ['route' => $rule];
-				if (preg_match('/^((?:(GET|HEAD|POST|PUT|PATCH|DELETE),)*(GET|HEAD|POST|PUT|PATCH|DELETE))\s+(.*)$/', $key, $matches)) {
+				if (preg_match("/^((?:($verbs),)*($verbs))\\s+(.*)$/", $key, $matches)) {
 					$rule['verb'] = explode(',', $matches[1]);
 					$rule['mode'] = UrlRule::PARSING_ONLY;
 					$key = $matches[4];
 				}
 				$rule['pattern'] = $key;
 			}
-			$rules[] = Yii::createObject(array_merge($this->ruleConfig, $rule));
+			$rule = Yii::createObject(array_merge($this->ruleConfig, $rule));
+			if (!$rule instanceof UrlRuleInterface) {
+				throw new InvalidConfigException('URL rule class must implement UrlRuleInterface.');
+			}
+			$rules[] = $rule;
 		}
 		$this->rules = $rules;
 
@@ -188,7 +194,6 @@ class UrlManager extends Component
 			/** @var UrlRule $rule */
 			foreach ($this->rules as $rule) {
 				if (($result = $rule->parseRequest($this, $request)) !== false) {
-					Yii::trace("Request parsed with URL rule: {$rule->name}", __METHOD__);
 					return $result;
 				}
 			}
@@ -245,7 +250,7 @@ class UrlManager extends Component
 			/** @var UrlRule $rule */
 			foreach ($this->rules as $rule) {
 				if (($url = $rule->createUrl($this, $route, $params)) !== false) {
-					if ($rule->host !== null) {
+					if (strpos($url, '://') !== false) {
 						if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
 							return substr($url, 0, $pos) . $baseUrl . substr($url, $pos);
 						} else {

@@ -89,6 +89,13 @@ class LinkPager extends Widget
 	 * If this property is null, the "last" page button will not be displayed.
 	 */
 	public $lastPageLabel;
+	/**
+	 * @var bool whether to register link tags in the HTML header for prev, next, first and last page.
+	 * Defaults to `false` to avoid conflicts when multiple pagers are used on one page.
+	 * @see http://www.w3.org/TR/html401/struct/links.html#h-12.1.2
+	 * @see registerLinkTags()
+	 */
+	public $registerLinkTags = false;
 
 
 	/**
@@ -107,7 +114,23 @@ class LinkPager extends Widget
 	 */
 	public function run()
 	{
+		if ($this->registerLinkTags) {
+			$this->registerLinkTags();
+		}
 		echo $this->renderPageButtons();
+	}
+
+	/**
+	 * Registers relational link tags in the html header for prev, next, first and last page.
+	 * These links are generated using [[yii\data\Pagination::getLinks()]].
+	 * @see http://www.w3.org/TR/html401/struct/links.html#h-12.1.2
+	 */
+	protected function registerLinkTags()
+	{
+		$view = $this->getView();
+		foreach($this->pagination->getLinks() as $rel => $href) {
+			$view->registerLinkTag(['rel' => $rel, 'href' => $href], $rel);
+		}
 	}
 
 	/**
