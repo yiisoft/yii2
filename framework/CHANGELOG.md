@@ -146,6 +146,7 @@ Yii Framework 2 Change Log
 - Enh: Improved `QueryBuilder::buildLimit()` to support big numbers (qiangxue)
 - Enh: Added support for building SQLs with sub-queries (qiangxue)
 - Enh: Added `Pagination::getLinks()` (qiangxue)
+- Enh: Added support for reading page size from query parameters by `Pagination` (qiangxue)
 - Chg #1186: Changed `Sort` to use comma to separate multiple sort fields and use negative sign to indicate descending sort (qiangxue)
 - Chg #1519: `yii\web\User::loginRequired()` now returns the `Response` object instead of exiting the application (qiangxue)
 - Chg #1586: `QueryBuilder::buildLikeCondition()` will now escape special characters and use percentage characters by default (qiangxue)

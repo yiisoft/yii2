@@ -97,7 +97,7 @@ class Mail extends Base
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $models,
 			'pagination' => [
-				'pageSize' => 5,
+				'pageSize' => 20,
 			],
 			'sort' => [
 				'attributes' => ['from', 'to', 'reply', 'cc', 'bcc', 'subject', 'body', 'charset'],

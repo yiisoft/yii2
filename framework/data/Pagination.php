@@ -74,10 +74,15 @@ class Pagination extends Object
 	const LINK_LAST = 'last';
 
 	/**
-	 * @var string name of the parameter storing the current page index. Defaults to 'page'.
+	 * @var string name of the parameter storing the current page index.
 	 * @see params
 	 */
 	public $pageParam = 'page';
+	/**
+	 * @var string name of the parameter storing the page size.
+	 * @see params
+	 */
+	public $pageSizeParam = 'per-page';
 	/**
 	 * @var boolean whether to always have the page parameter in the URL created by [[createUrl()]].
 	 * If false and [[page]] is 0, the page parameter will not be put in the URL.
@@ -94,8 +99,8 @@ class Pagination extends Object
 	 *
 	 * In order to add hash to all links use `array_merge($_GET, ['#' => 'my-hash'])`.
 	 *
-	 * The array element indexed by [[pageParam]] is considered to be the current page number.
-	 * If the element does not exist, the current page number is considered 0.
+	 * The array element indexed by [[pageParam]] is considered to be the current page number (defaults to 0);
+	 * while the element indexed by [[pageSizeParam]] is treated as the page size (defaults to [[defaultPageSize]]).
 	 */
 	public $params;
 	/**
@@ -112,14 +117,24 @@ class Pagination extends Object
 	 */
 	public $validatePage = true;
 	/**
-	 * @var integer number of items on each page. Defaults to 20.
-	 * If it is less than 1, it means the page size is infinite, and thus a single page contains all items.
-	 */
-	public $pageSize = 20;
-	/**
 	 * @var integer total number of items.
 	 */
 	public $totalCount = 0;
+	/**
+	 * @var integer the default page size. This property will be returned by [[pageSize]] when page size
+	 * cannot be determined by [[pageSizeParam]] from [[params]].
+	 */
+	public $defaultPageSize = 20;
+	/**
+	 * @var array|boolean the page size limits. The first array element stands for the minimal page size, and the second
+	 * the maximal page size. If this is false, it means [[pageSize]] should always return the value of [[defaultPageSize]].
+	 */
+	public $pageSizeLimit = [1, 50];
+	/**
+	 * @var integer number of items on each page.
+	 * If it is less than 1, it means the page size is infinite, and thus a single page contains all items.
+	 */
+	private $_pageSize;
 
 
 	/**
@@ -127,11 +142,12 @@ class Pagination extends Object
 	 */
 	public function getPageCount()
 	{
-		if ($this->pageSize < 1) {
+		$pageSize = $this->getPageSize();
+		if ($pageSize < 1) {
 			return $this->totalCount > 0 ? 1 : 0;
 		} else {
 			$totalCount = $this->totalCount < 0 ? 0 : (int)$this->totalCount;
-			return (int)(($totalCount + $this->pageSize - 1) / $this->pageSize);
+			return (int)(($totalCount + $pageSize - 1) / $pageSize);
 		}
 	}
 
@@ -145,24 +161,7 @@ class Pagination extends Object
 	public function getPage($recalculate = false)
 	{
 		if ($this->_page === null || $recalculate) {
-			if (($params = $this->params) === null) {
-				$request = Yii::$app->getRequest();
-				$params = $request instanceof Request ? $request->getQueryParams() : [];
-			}
-			if (isset($params[$this->pageParam]) && is_scalar($params[$this->pageParam])) {
-				$this->_page = (int)$params[$this->pageParam] - 1;
-				if ($this->validatePage) {
-					$pageCount = $this->getPageCount();
-					if ($this->_page >= $pageCount) {
-						$this->_page = $pageCount - 1;
-					}
-				}
-				if ($this->_page < 0) {
-					$this->_page = 0;
-				}
-			} else {
-				$this->_page = 0;
-			}
+			$this->setPage((int)$this->getQueryParam($this->pageParam, 1) - 1);
 		}
 		return $this->_page;
 	}
@@ -173,7 +172,61 @@ class Pagination extends Object
 	 */
 	public function setPage($value)
 	{
-		$this->_page = $value;
+		if ($value === null) {
+			$this->_page = null;
+		} else {
+			$value = (int)$value;
+			if ($this->validatePage) {
+				$pageCount = $this->getPageCount();
+				if ($value >= $pageCount) {
+					$value = $pageCount - 1;
+				}
+				if ($value < 0) {
+					$value = 0;
+				}
+			}
+			$this->_page = $value;
+		}
+	}
+
+	/**
+	 * Returns the number of items per page.
+	 * By default, this method will try to determine the page size by [[pageSizeParam]] in [[params]].
+	 * If the page size cannot be determined this way, [[defaultPageSize]] will be returned.
+	 * @return integer the number of items per page.
+	 * @see pageSizeLimit
+	 */
+	public function getPageSize()
+	{
+		if ($this->_pageSize === null) {
+			if (empty($this->pageSizeLimit)) {
+				$pageSize = $this->defaultPageSize;
+			} else {
+				$pageSize = (int)$this->getQueryParam($this->pageSizeParam, $this->defaultPageSize);
+			}
+			$this->setPageSize($pageSize);
+		}
+		return $this->_pageSize;
+	}
+
+	/**
+	 * @param integer $value the number of items per page.
+	 */
+	public function setPageSize($value)
+	{
+		if ($value === null) {
+			$this->_pageSize = null;
+		} else {
+			$value = (int)$value;
+			if (count($this->pageSizeLimit) === 2 && isset($this->pageSizeLimit[0], $this->pageSizeLimit[1])) {
+				if ($value < $this->pageSizeLimit[0]) {
+					$value = $this->pageSizeLimit[0];
+				} elseif ($value > $this->pageSizeLimit[1]) {
+					$value = $this->pageSizeLimit[1];
+				}
+			}
+			$this->_pageSize = $value;
+		}
 	}
 
 	/**
@@ -196,6 +249,12 @@ class Pagination extends Object
 		} else {
 			unset($params[$this->pageParam]);
 		}
+		$pageSize = $this->getPageSize();
+		if ($pageSize != $this->defaultPageSize) {
+			$params[$this->pageSizeParam] = $pageSize;
+		} else {
+			unset($params[$this->pageSizeParam]);
+		}
 		$params[0] = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
 		$urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
 		if ($absolute) {
@@ -211,7 +270,8 @@ class Pagination extends Object
 	 */
 	public function getOffset()
 	{
-		return $this->pageSize < 1 ? 0 : $this->getPage() * $this->pageSize;
+		$pageSize = $this->getPageSize();
+		return $pageSize < 1 ? 0 : $this->getPage() * $pageSize;
 	}
 
 	/**
@@ -221,7 +281,8 @@ class Pagination extends Object
 	 */
 	public function getLimit()
 	{
-		return $this->pageSize < 1 ? -1 : $this->pageSize;
+		$pageSize = $this->getPageSize();
+		return $pageSize < 1 ? -1 : $pageSize;
 	}
 
 	/**
@@ -246,5 +307,21 @@ class Pagination extends Object
 			$links[self::LINK_LAST] = $this->createUrl($pageCount - 1, $absolute);
 		}
 		return $links;
+	}
+
+	/**
+	 * Returns the value of the specified query parameter.
+	 * This method returns the named parameter value from [[params]]. Null is returned if the value does not exist.
+	 * @param string $name the parameter name
+	 * @param string $defaultValue the value to be returned when the specified parameter does not exist in [[params]].
+	 * @return string the parameter value
+	 */
+	protected function getQueryParam($name, $defaultValue = null)
+	{
+		if (($params = $this->params) === null) {
+			$request = Yii::$app->getRequest();
+			$params = $request instanceof Request ? $request->getQueryParams() : [];
+		}
+		return isset($params[$name]) && is_scalar($params[$name]) ? $params[$name] : $defaultValue;
 	}
 }
