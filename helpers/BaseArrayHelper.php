@@ -58,35 +58,42 @@ class BaseArrayHelper
 	 */
 	public static function toArray($object, $properties = [], $recursive = true)
 	{
-		if (!empty($properties) && is_object($object)) {
-			$className = get_class($object);
-			if (!empty($properties[$className])) {
-				$result = [];
-				foreach ($properties[$className] as $key => $name) {
-					if (is_int($key)) {
-						$result[$name] = $object->$name;
-					} else {
-						$result[$key] = static::getValue($object, $name);
+		if (is_array($object)) {
+			if ($recursive) {
+				foreach ($object as $key => $value) {
+					if (is_array($value) || is_object($value)) {
+						$object[$key] = static::toArray($value, true);
 					}
 				}
-				return $result;
 			}
-		}
-		if ($object instanceof Arrayable) {
-			$object = $object->toArray();
-			if (!$recursive) {
-				return $object;
+			return $object;
+		} elseif (is_object($object)) {
+			if (!empty($properties)) {
+				$className = get_class($object);
+				if (!empty($properties[$className])) {
+					$result = [];
+					foreach ($properties[$className] as $key => $name) {
+						if (is_int($key)) {
+							$result[$name] = $object->$name;
+						} else {
+							$result[$key] = static::getValue($object, $name);
+						}
+					}
+					return $recursive ? static::toArray($result) : $result;
+				}
 			}
-		}
-		$result = [];
-		foreach ($object as $key => $value) {
-			if ($recursive && (is_array($value) || is_object($value))) {
-				$result[$key] = static::toArray($value, true);
+			if ($object instanceof Arrayable) {
+				$result = $object->toArray();
 			} else {
-				$result[$key] = $value;
+				$result = [];
+				foreach ($object as $key => $value) {
+					$result[$key] = $value;
+				}
 			}
+			return $recursive ? static::toArray($result) : $result;
+		} else {
+			return [$object];
 		}
-		return $result;
 	}
 
 	/**
