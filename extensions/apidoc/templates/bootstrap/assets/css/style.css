@@ -50,3 +50,7 @@ body {
 	background: #E6ECFF;
 	border: 1px #BFCFFF solid;
 }
+
+blockquote {
+	font-size: 14px;
+}

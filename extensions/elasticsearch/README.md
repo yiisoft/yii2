@@ -119,7 +119,7 @@ It supports the same interface and features except the following limitations and
   There are
   [[yii\elasticsearch\ActiveQuery::query()|query()]],
   [[yii\elasticsearch\ActiveQuery::filter()|filter()]] and
-  [[yii\elasticsearch\ActiveQuery::addFacets()|addFacets()]] methods that allows to compose an elasticsearch query.
+  [[yii\elasticsearch\ActiveQuery::addFacet()|addFacet()]] methods that allows to compose an elasticsearch query.
   See the usage example below on how they work and check out the [Query DSL](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html)
   on how to compose `query` and `filter` parts.
 - It is also possible to define relations from elasticsearch ActiveRecords to normal ActiveRecord classes and vice versa.
