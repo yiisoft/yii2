@@ -54,3 +54,7 @@ body {
 blockquote {
 	font-size: 14px;
 }
+
+td p {
+	margin: 0;
+}
