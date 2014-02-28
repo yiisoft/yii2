@@ -92,7 +92,7 @@ class Tabs extends Widget
 	 */
 	public $encodeLabels = true;
 	/**
-	 * @var string, specifies the Bootstrap tab styling.
+	 * @var string specifies the Bootstrap tab styling.
 	 */
 	public $navType = 'nav-tabs';
 
