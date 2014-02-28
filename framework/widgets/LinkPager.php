@@ -107,7 +107,21 @@ class LinkPager extends Widget
 	 */
 	public function run()
 	{
+		$this->registerLinkTags();
 		echo $this->renderPageButtons();
+	}
+
+	/**
+	 * Registers relational link tags in the html header for prev, next, first and last page.
+	 * These links are generated using [[yii\data\Pagination::getLinks()]].
+	 * @see http://www.w3.org/TR/html401/struct/links.html#h-12.1.2
+	 */
+	protected function registerLinkTags()
+	{
+		$view = $this->getView();
+		foreach($this->pagination->getLinks() as $rel => $href) {
+			$view->registerLinkTag(['rel' => $rel, 'href' => $href], $rel);
+		}
 	}
 
 	/**
