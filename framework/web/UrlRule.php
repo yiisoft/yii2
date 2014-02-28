@@ -7,6 +7,7 @@
 
 namespace yii\web;
 
+use Yii;
 use yii\base\Object;
 use yii\base\InvalidConfigException;
 
@@ -26,7 +27,7 @@ use yii\base\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class UrlRule extends Object
+class UrlRule extends Object implements UrlRuleInterface
 {
 	/**
 	 * Set [[mode]] with this value to mark that this rule is for URL parsing only
@@ -47,7 +48,7 @@ class UrlRule extends Object
 	 */
 	public $pattern;
 	/**
-	 * @var string the pattern used to parse and create the host info part of a URL.
+	 * @var string the pattern used to parse and create the host info part of a URL (e.g. `http://example.com`).
 	 * @see pattern
 	 */
 	public $host;
@@ -127,7 +128,8 @@ class UrlRule extends Object
 		$this->pattern = trim($this->pattern, '/');
 
 		if ($this->host !== null) {
-			$this->pattern = rtrim($this->host, '/') . rtrim('/' . $this->pattern, '/') . '/';
+			$this->host = rtrim($this->host, '/');
+			$this->pattern = rtrim($this->host . '/' . $this->pattern, '/');
 		} elseif ($this->pattern === '') {
 			$this->_template = '';
 			$this->pattern = '#^$#u';
@@ -157,7 +159,7 @@ class UrlRule extends Object
 			foreach ($matches as $match) {
 				$name = $match[1][0];
 				$pattern = isset($match[2][0]) ? $match[2][0] : '[^\/]+';
-				if (isset($this->defaults[$name])) {
+				if (array_key_exists($name, $this->defaults)) {
 					$length = strlen($match[0][0]);
 					$offset = $match[0][1];
 					if ($offset > 1 && $this->pattern[$offset - 1] === '/' && $this->pattern[$offset + $length] === '/') {
@@ -243,6 +245,9 @@ class UrlRule extends Object
 		} else {
 			$route = $this->route;
 		}
+
+		Yii::trace("Request parsed with URL rule: {$this->name}", __METHOD__);
+
 		return [$route, $params];
 	}
 
