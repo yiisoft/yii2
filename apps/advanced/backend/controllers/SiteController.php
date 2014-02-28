@@ -5,6 +5,7 @@ use Yii;
 use yii\web\AccessControl;
 use yii\web\Controller;
 use common\models\LoginForm;
+use yii\web\VerbFilter;
 
 /**
  * Site controller
@@ -29,6 +30,12 @@ class SiteController extends Controller
 						'allow' => true,
 						'roles' => ['@'],
 					],
+				],
+			],
+			'verbs' => [
+				'class' => VerbFilter::className(),
+				'actions' => [
+					'logout' => ['post'],
 				],
 			],
 		];

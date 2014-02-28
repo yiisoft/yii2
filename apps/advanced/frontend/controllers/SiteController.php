@@ -10,6 +10,7 @@ use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use Yii;
+use yii\web\VerbFilter;
 
 /**
  * Site controller
@@ -36,6 +37,12 @@ class SiteController extends Controller
 						'allow' => true,
 						'roles' => ['@'],
 					],
+				],
+			],
+			'verbs' => [
+				'class' => VerbFilter::className(),
+				'actions' => [
+					'logout' => ['post'],
 				],
 			],
 		];

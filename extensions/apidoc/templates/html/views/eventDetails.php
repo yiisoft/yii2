@@ -32,7 +32,7 @@ ArrayHelper::multisort($events, 'name');
 		<?php echo $event->trigger->signature; ?>
 	</div>*/ ?>
 
-	<p><?= ApiMarkdown::process($event->description, $type); ?></p>
+	<?= ApiMarkdown::process($event->description, $type); ?>
 
 	<?= $this->render('seeAlso', ['object' => $event]); ?>
 
