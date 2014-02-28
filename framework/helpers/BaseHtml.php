@@ -1512,7 +1512,9 @@ class BaseHtml
 
 		$html = '';
 		foreach ($attributes as $name => $value) {
-			if (is_bool($value)) {
+			if (is_int($name)) {
+				$html .= " $value";
+			} elseif (is_bool($value)) {
 				if ($value) {
 					$html .= " $name";
 				}
