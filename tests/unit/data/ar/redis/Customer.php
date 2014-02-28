@@ -13,7 +13,7 @@ class Customer extends ActiveRecord
 
 	public function attributes()
 	{
-		return ['id', 'email', 'name', 'address', 'status'];
+		return ['id', 'email', 'name', 'address', 'status', 'profile_id'];
 	}
 
 	/**
