@@ -59,6 +59,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed an issue with Filehelper and not accessable directories which resulted in endless loop (cebe)
 - Bug: Fixed `$model->load($data)` returned `true` if `$data` and `formName` were empty (samdark)
 - Bug: Fixed issue with `ActiveRelationTrait` preventing `ActiveQuery` from clearing events and behaviors on clone (jom)
+- Bug: `Query::queryScalar` wasn't making `SELECT DISTINCT` queries subqueries (jom)
 - Enh #46: Added Image extension based on [Imagine library](http://imagine.readthedocs.org) (tonydspaniard)
 - Enh #364: Improve Inflector::slug with `intl` transliteration. Improved transliteration char map. (tonydspaniard)
 - Enh #797: Added support for validating multiple columns by `UniqueValidator` and `ExistValidator` (qiangxue)
