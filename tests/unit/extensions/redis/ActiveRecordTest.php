@@ -33,13 +33,13 @@ class ActiveRecordTest extends RedisTestCase
 		ActiveRecord::$db = $this->getConnection();
 
 		$customer = new Customer();
-		$customer->setAttributes(['email' => 'user1@example.com', 'name' => 'user1', 'address' => 'address1', 'status' => 1], false);
+		$customer->setAttributes(['email' => 'user1@example.com', 'name' => 'user1', 'address' => 'address1', 'status' => 1, 'profile_id' => 1], false);
 		$customer->save(false);
 		$customer = new Customer();
-		$customer->setAttributes(['email' => 'user2@example.com', 'name' => 'user2', 'address' => 'address2', 'status' => 1], false);
+		$customer->setAttributes(['email' => 'user2@example.com', 'name' => 'user2', 'address' => 'address2', 'status' => 1, 'profile_id' => null], false);
 		$customer->save(false);
 		$customer = new Customer();
-		$customer->setAttributes(['email' => 'user3@example.com', 'name' => 'user3', 'address' => 'address3', 'status' => 2], false);
+		$customer->setAttributes(['email' => 'user3@example.com', 'name' => 'user3', 'address' => 'address3', 'status' => 2, 'profile_id' => 2], false);
 		$customer->save(false);
 
 //		INSERT INTO tbl_category (name) VALUES ('Books');
