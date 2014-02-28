@@ -19,8 +19,6 @@ use yii\base\InvalidCallException;
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
  *
- * @include @yii/db/ActiveRecord.md
- *
  * @property array $dirtyAttributes The changed attribute values (name-value pairs). This property is
  * read-only.
  * @property boolean $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
@@ -1345,5 +1343,27 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 		}
 
 		return $this->generateAttributeLabel($attribute);
+	}
+
+	/**
+	 * @inheritdoc
+	 *
+	 * The default implementation returns the names of the columns whose values have been populated into this record.
+	 */
+	public function fields()
+	{
+		$fields = array_keys($this->_attributes);
+		return array_combine($fields, $fields);
+	}
+
+	/**
+	 * @inheritdoc
+	 *
+	 * The default implementation returns the names of the relations that have been populated into this record.
+	 */
+	public function expandableFields()
+	{
+		$fields = array_keys($this->getRelatedRecords());
+		return array_combine($fields, $fields);
 	}
 }
