@@ -161,7 +161,8 @@ class Pagination extends Object
 	public function getPage($recalculate = false)
 	{
 		if ($this->_page === null || $recalculate) {
-			$this->setPage((int)$this->getQueryParam($this->pageParam, 1) - 1);
+			$page = (int)$this->getQueryParam($this->pageParam, 1) - 1;
+			$this->setPage($page, true);
 		}
 		return $this->_page;
 	}
@@ -169,21 +170,23 @@ class Pagination extends Object
 	/**
 	 * Sets the current page number.
 	 * @param integer $value the zero-based index of the current page.
+	 * @param boolean $validatePage whether to validate the page number. Note that in order
+	 * to validate the page number, both [[validatePage]] and this parameter must be true.
 	 */
-	public function setPage($value)
+	public function setPage($value, $validatePage = false)
 	{
 		if ($value === null) {
 			$this->_page = null;
 		} else {
 			$value = (int)$value;
-			if ($this->validatePage) {
+			if ($validatePage && $this->validatePage) {
 				$pageCount = $this->getPageCount();
 				if ($value >= $pageCount) {
 					$value = $pageCount - 1;
 				}
-				if ($value < 0) {
-					$value = 0;
-				}
+			}
+			if ($value < 0) {
+				$value = 0;
 			}
 			$this->_page = $value;
 		}
@@ -201,24 +204,26 @@ class Pagination extends Object
 		if ($this->_pageSize === null) {
 			if (empty($this->pageSizeLimit)) {
 				$pageSize = $this->defaultPageSize;
+				$this->setPageSize($pageSize);
 			} else {
 				$pageSize = (int)$this->getQueryParam($this->pageSizeParam, $this->defaultPageSize);
+				$this->setPageSize($pageSize, true);
 			}
-			$this->setPageSize($pageSize);
 		}
 		return $this->_pageSize;
 	}
 
 	/**
 	 * @param integer $value the number of items per page.
+	 * @param boolean $validatePageSize whether to validate page size.
 	 */
-	public function setPageSize($value)
+	public function setPageSize($value, $validatePageSize = false)
 	{
 		if ($value === null) {
 			$this->_pageSize = null;
 		} else {
 			$value = (int)$value;
-			if (count($this->pageSizeLimit) === 2 && isset($this->pageSizeLimit[0], $this->pageSizeLimit[1])) {
+			if ($validatePageSize && count($this->pageSizeLimit) === 2 && isset($this->pageSizeLimit[0], $this->pageSizeLimit[1])) {
 				if ($value < $this->pageSizeLimit[0]) {
 					$value = $this->pageSizeLimit[0];
 				} elseif ($value > $this->pageSizeLimit[1]) {
