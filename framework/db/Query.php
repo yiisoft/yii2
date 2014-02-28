@@ -356,7 +356,7 @@ class Query extends Component implements QueryInterface
 		$this->limit = $limit;
 		$this->offset = $offset;
 
-		if (empty($this->groupBy)) {
+		if (empty($this->groupBy) && $this->distinct !== true) {
 			return $command->queryScalar();
 		} else {
 			return (new Query)->select([$selectExpression])
