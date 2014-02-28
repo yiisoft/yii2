@@ -331,7 +331,7 @@ For the code above mass assignment will be allowed stsrictly according to `scena
 $user = User::find(42);
 $data = ['password' => '123'];
 $user->attributes = $data;
-print_r($data);
+print_r($user->attributes);
 ```
 
 Will give you empty array because there's no default scenario defined in our `scenarios()`.
@@ -345,7 +345,7 @@ $data = [
 	'hashcode' => 'test',
 ];
 $user->attributes = $data;
-print_r($data);
+print_r($user->attributes);
 ```
 
 Will give you the following:
@@ -386,7 +386,7 @@ $data = [
 	'password' => '123',
 ];
 $user->attributes = $data;
-print_r($data);
+print_r($user->attributes);
 ```
 
 Will give you the following:

@@ -9,8 +9,8 @@ use yii\helpers\Html;
 <div class="yii-debug-toolbar-block">
 	<a href="<?= $panel->getUrl() ?>">
 		Yii
-		<span class="label label-info"><?= $panel->data['application']['yii'] ?></span>
+		<span class="label"><?= $panel->data['application']['yii'] ?></span>
 		PHP
-		<span class="label label-info"><?= $panel->data['php']['version'] ?></span>
+		<span class="label"><?= $panel->data['php']['version'] ?></span>
 	</a>
 </div>

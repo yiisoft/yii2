@@ -1274,8 +1274,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
 	/**
 	 * @param array $link
-	 * @param ActiveRecord $foreignModel
-	 * @param ActiveRecord $primaryModel
+	 * @param BaseActiveRecord $foreignModel
+	 * @param BaseActiveRecord $primaryModel
 	 * @throws InvalidCallException
 	 */
 	private function bindModels($link, $foreignModel, $primaryModel)

@@ -12,6 +12,7 @@ use phpDocumentor\Reflection\DocBlock\Type\Collection;
 use yii\apidoc\models\MethodDoc;
 use yii\apidoc\models\TypeDoc;
 use yii\apidoc\templates\BaseRenderer;
+use yii\helpers\Inflector;
 use yii\helpers\Markdown;
 
 /**
@@ -100,7 +101,7 @@ class ApiMarkdown extends GithubMarkdown
 
 		// TODO improve code highlighting
 		if (strncmp($code, '<?php', 5) === 0) {
-			$text = highlight_string(trim($code), true);
+			$text = @highlight_string(trim($code), true);
 		} else {
 			$text = highlight_string("<?php ".trim($code), true);
 			$text = str_replace('&lt;?php', '', $text);
@@ -198,6 +199,18 @@ class ApiMarkdown extends GithubMarkdown
 			];
 		}
 		return ['[[', 2];
+	}
+
+	/**
+	 * @inheritDocs
+	 */
+	protected function renderHeadline($block)
+	{
+		$content = $this->parseInline($block['content']);
+		$hash = Inflector::slug(strip_tags($content));
+		$hashLink = "<a href=\"#$hash\" name=\"$hash\">&para;</a>";
+		$tag = 'h' . $block['level'];
+		return "<$tag>$content $hashLink</$tag>";
 	}
 
 	/**

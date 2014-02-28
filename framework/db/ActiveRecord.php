@@ -377,7 +377,7 @@ class ActiveRecord extends BaseActiveRecord
 			return false;
 		}
 		$db = static::getDb();
-		if ($this->isTransactional(self::OP_INSERT) && $db->getTransaction() === null) {
+		if ($this->isTransactional(self::OP_INSERT)) {
 			$transaction = $db->beginTransaction();
 			try {
 				$result = $this->insertInternal($attributes);
@@ -397,9 +397,12 @@ class ActiveRecord extends BaseActiveRecord
 	}
 
 	/**
-	 * @see ActiveRecord::insert()
+	 * Inserts an ActiveRecord into DB without considering transaction.
+	 * @param array $attributes list of attributes that need to be saved. Defaults to null,
+	 * meaning all attributes that are loaded from DB will be saved.
+	 * @return boolean whether the record is inserted successfully.
 	 */
-	private function insertInternal($attributes = null)
+	protected function insertInternal($attributes = null)
 	{
 		if (!$this->beforeSave(true)) {
 			return false;
@@ -489,7 +492,7 @@ class ActiveRecord extends BaseActiveRecord
 			return false;
 		}
 		$db = static::getDb();
-		if ($this->isTransactional(self::OP_UPDATE) && $db->getTransaction() === null) {
+		if ($this->isTransactional(self::OP_UPDATE)) {
 			$transaction = $db->beginTransaction();
 			try {
 				$result = $this->updateInternal($attributes);
@@ -530,36 +533,49 @@ class ActiveRecord extends BaseActiveRecord
 	public function delete()
 	{
 		$db = static::getDb();
-		$transaction = $this->isTransactional(self::OP_DELETE) && $db->getTransaction() === null ? $db->beginTransaction() : null;
-		try {
-			$result = false;
-			if ($this->beforeDelete()) {
-				// we do not check the return value of deleteAll() because it's possible
-				// the record is already deleted in the database and thus the method will return 0
-				$condition = $this->getOldPrimaryKey(true);
-				$lock = $this->optimisticLock();
-				if ($lock !== null) {
-					$condition[$lock] = $this->$lock;
-				}
-				$result = $this->deleteAll($condition);
-				if ($lock !== null && !$result) {
-					throw new StaleObjectException('The object being deleted is outdated.');
-				}
-				$this->setOldAttributes(null);
-				$this->afterDelete();
-			}
-			if ($transaction !== null) {
+		if ($this->isTransactional(self::OP_DELETE)) {
+			$transaction = $db->beginTransaction();
+			try {
+				$result = $this->deleteInternal();
 				if ($result === false) {
 					$transaction->rollBack();
 				} else {
 					$transaction->commit();
 				}
-			}
-		} catch (\Exception $e) {
-			if ($transaction !== null) {
+			} catch (\Exception $e) {
 				$transaction->rollBack();
+				throw $e;
 			}
-			throw $e;
+		} else {
+			$result = $this->deleteInternal();
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Deletes an ActiveRecord without considering transaction.
+	 * @return integer|boolean the number of rows deleted, or false if the deletion is unsuccessful for some reason.
+	 * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
+	 * @throws StaleObjectException
+	 */
+	protected function deleteInternal()
+	{
+		$result = false;
+		if ($this->beforeDelete()) {
+			// we do not check the return value of deleteAll() because it's possible
+			// the record is already deleted in the database and thus the method will return 0
+			$condition = $this->getOldPrimaryKey(true);
+			$lock = $this->optimisticLock();
+			if ($lock !== null) {
+				$condition[$lock] = $this->$lock;
+			}
+			$result = $this->deleteAll($condition);
+			if ($lock !== null && !$result) {
+				throw new StaleObjectException('The object being deleted is outdated.');
+			}
+			$this->setOldAttributes(null);
+			$this->afterDelete();
 		}
 		return $result;
 	}

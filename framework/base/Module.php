@@ -658,10 +658,13 @@ class Module extends Component
 	 * This method is invoked right after an action of this module has been executed.
 	 * You may override this method to do some postprocessing for the action.
 	 * Make sure you call the parent implementation so that the relevant event is triggered.
+	 * Also make sure you return the action result, whether it is processed or not.
 	 * @param Action $action the action just executed.
 	 * @param mixed $result the action return result.
+	 * @return mixed the processed action result.
 	 */
-	public function afterAction($action, &$result)
+	public function afterAction($action, $result)
 	{
+		return $result;
 	}
 }

@@ -7,6 +7,7 @@ use yiiunit\data\ar\NullValues;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Item;
+use yiiunit\data\ar\Profile;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 
 /**
@@ -129,6 +130,22 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertEquals(2, count($order['books']));
 		$this->assertEquals(1, $order['books'][0]['id']);
 		$this->assertEquals(2, $order['books'][1]['id']);
+	}
+
+	// deeply nested table relation
+	public function testDeeplyNestedTableRelation()
+	{
+		/** @var Customer $customer */
+		$customer = $this->callCustomerFind(1);
+		$this->assertNotNull($customer);
+
+		$items = $customer->orderItems;
+
+		$this->assertEquals(2, count($items));
+		$this->assertInstanceOf(Item::className(), $items[0]);
+		$this->assertInstanceOf(Item::className(), $items[1]);
+		$this->assertEquals(1, $items[0]->id);
+		$this->assertEquals(2, $items[1]->id);
 	}
 
 	public function testStoreNull()
@@ -323,6 +340,34 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertEquals(2, count($orders[0]->books2));
 		$this->assertEquals(0, count($orders[1]->books2));
 		$this->assertEquals(1, count($orders[2]->books2));
+	}
+
+	public function testJoinWithAndScope()
+	{
+		// hasOne inner join
+		$customers = Customer::find()->active()->innerJoinWith('profile')->orderBy('tbl_customer.id')->all();
+		$this->assertEquals(1, count($customers));
+		$this->assertEquals(1, $customers[0]->id);
+		$this->assertTrue($customers[0]->isRelationPopulated('profile'));
+
+		// hasOne outer join
+		$customers = Customer::find()->active()->joinWith('profile')->orderBy('tbl_customer.id')->all();
+		$this->assertEquals(2, count($customers));
+		$this->assertEquals(1, $customers[0]->id);
+		$this->assertEquals(2, $customers[1]->id);
+		$this->assertTrue($customers[0]->isRelationPopulated('profile'));
+		$this->assertTrue($customers[1]->isRelationPopulated('profile'));
+		$this->assertInstanceOf(Profile::className(), $customers[0]->profile);
+		$this->assertNull($customers[1]->profile);
+
+		// hasMany
+		$customers = Customer::find()->active()->joinWith('orders')->orderBy('tbl_customer.id DESC, tbl_order.id')->all();
+		$this->assertEquals(2, count($customers));
+		$this->assertEquals(2, $customers[0]->id);
+		$this->assertEquals(1, $customers[1]->id);
+		$this->assertTrue($customers[0]->isRelationPopulated('orders'));
+		$this->assertTrue($customers[1]->isRelationPopulated('orders'));
+
 	}
 
 	public function testInverseOf()

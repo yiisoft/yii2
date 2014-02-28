@@ -2,20 +2,25 @@ Managing assets
 ===============
 
 An asset in Yii is a file that is included into the page. It could be CSS, JavaScript or
-any other file. Framework provides many ways to work with assets from basics such as adding `<script src="...">` tag
-for a file that is [handled by View](view.md) section to advanced usage such as publishing files that are not
-under the webservers document root, resolving JavaScript dependencies or minifying CSS.
+any other file. The framework provides many ways to work with assets from basics such as adding `<script src="...">` tags
+for a file which is covered by the [View section](view.md), to advanced usage such as publishing files that are not
+under the webservers document root, resolving JavaScript dependencies or minifying CSS, which we will cover in the following.
 
-Declaring asset bundle
-----------------------
 
-In order to publish some assets you should declare an asset bundle first. The bundle defines a set of asset files or
-directories to be published and their dependencies on other asset bundles.
+Declaring asset bundles
+-----------------------
 
-Both basic and advanced application templates contain `AppAsset` asset bundle class that defines assets required
-application wide. An asset bundle class always extends from [[yii\web\AssetBundle]].
+In order to define a set of assets the belong together and should be used on the website you declare a class called
+an "asset bundle". The bundle defines a set of asset files and their dependencies on other asset bundles.
 
-Let's review basic application's asset bundle class:
+Asset files can be located under the webservers accessable directory but also hidden inside of application or vendor
+directories. If the latter, the asset bundle will care for publishing them to a directory accessible by the webserver
+so they can be included in the website. This feature is useful for extensions so that they can ship all content in one
+directory and make installation easier for you.
+
+To define an asset you create a class extending from [[yii\web\AssetBundle]] and set the properties according to your needs.
+Here you can see an example asset definition which is part of the basic application template, the
+`AppAsset` asset bundle class. It defines assets required application wide:
 
 ```php
 <?php
@@ -39,20 +44,23 @@ class AppAsset extends AssetBundle
 ```
 
 In the above `$basePath` specifies web-accessible directory assets are served from. It is a base for relative
-`$css` and `$js` paths i.e. `@webroot/css/site.css` for `css/site.css`. Here `@webroot` is an alias that points to
+`$css` and `$js` paths i.e. `@webroot/css/site.css` for `css/site.css`. Here `@webroot` is an [alias][] that points to
 application's `web` directory.
 
 `$baseUrl` is used to specify base URL for the same relative `$css` and `$js` i.e. `@web/css/site.css` where `@web`
-is an alias that corresponds to your website base URL such as `http://example.com/`.
+is an [alias][] that corresponds to your website base URL such as `http://example.com/`.
 
-In case you have asset files under non web accessible directory, that is the case for any extension, you need
-to additionally specify `$sourcePath`. Files will be copied or symlinked from source path to base path prior to being
-registered. In case source path is used `baseUrl` is generated automatically at the time of publishing asset bundle.
+In case you have asset files under a non web accessible directory, that is the case for any extension, you need
+to specify `$sourcePath` instead of `$basePath` and `$baseUrl`. Files will be copied or symlinked from source path
+to the `web/assets` directory of your application prior to being registered.
+In this case `$basePath` and `$baseUrl` are generated automatically at the time of publishing the asset bundle.
 
 Dependencies on other asset bundles are specified via `$depends` property. It is an array that contains fully qualified
-names of bundle classes that should be published in order for this bundle to work properly.
+class names of bundle classes that should be published in order for this bundle to work properly.
+Javascript and CSS files for `AppAsset` are added to the header after the files of [[yii\web\YiiAsset]] and
+[[yii\bootstrap\BootstrapAsset]] in this example.
 
-Here `yii\web\YiiAsset` adds Yii's JavaScript library while `yii\bootstrap\BootstrapAsset` includes
+Here [[yii\web\YiiAsset]] adds Yii's JavaScript library while [[yii\bootstrap\BootstrapAsset]] includes
 [Bootstrap](http://getbootstrap.com) frontend framework.
 
 Asset bundles are regular classes so if you need to define another one, just create alike class with unique name. This
@@ -61,6 +69,9 @@ class can be placed anywhere but the convention for it is to be under `assets` d
 Additionally you may specify `$jsOptions`, `$cssOptions` and `$publishOptions` that will be passed to
 [[yii\web\View::registerJsFile()]], [[yii\web\View::registerCssFile()]] and [[yii\web\AssetManager::publish()]]
 respectively during registering and publising an asset.
+
+[alias]: basics.md#path-aliases "Yii Path alias"
+
 
 ### Language-specific asset bundle
 
@@ -82,11 +93,14 @@ class LanguageAsset extends AssetBundle
 }
 ```
 
+
 Registering asset bundle
 ------------------------
 
-Asset bundle classes are typically registered in views or, if it's main application asset, in layout. Doing it is
-as simple as:
+Asset bundle classes are typically registered in view files or [widgets](view.md#widgets) that depend on the css or
+javascript files for providing its functionality. An exception to this is the `AppAsset` class defined above which is
+added in the applications main layout file to be registered on any page of the application.
+Registering an asset bundle is as simple as calling the [[yii\web\AssetBundle::register()|register()]] method:
 
 ```php
 use app\assets\AppAsset;
@@ -94,6 +108,12 @@ AppAsset::register($this);
 ```
 
 Since we're in a view context `$this` refers to `View` class.
+To register an asset inside of a widget, the view instance is available as `$this->view`:
+
+```php
+AppAsset::register($this->view);
+```
+
 
 Overriding asset bundles
 ------------------------
@@ -118,12 +138,13 @@ return [
 ];
 ```
 
-In the above we're adding asset bundle definitions to `bundles` property of asset manager. Keys there are fully
-qualified class paths to asset bundle classes we want to override while values are key-value arrays of class properties
+In the above we're adding asset bundle definitions to the [[yii\web\AssetManager::bundles|bundles]] property of asset manager. Keys are fully
+qualified class names to asset bundle classes we want to override while values are key-value arrays of class properties
 and corresponding values to set.
 
 Setting `sourcePath` to `null` tells asset manager not to copy anything while `js` overrides local files with a link
 to CDN.
+
 
 Enabling symlinks
 -----------------
@@ -145,6 +166,7 @@ return [
 
 There are two main benefits in enabling it. First it is faster since no copying is required and second is that assets
 will always be up to date with source files.
+
 
 Compressing and combining assets
 --------------------------------

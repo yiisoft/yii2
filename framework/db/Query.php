@@ -338,7 +338,7 @@ class Query extends Component implements QueryInterface
 	 * Queries a scalar value by setting [[select]] first.
 	 * Restores the value of select to make this query reusable.
 	 * @param string|Expression $selectExpression
-	 * @param Connection $db
+	 * @param Connection|null $db
 	 * @return bool|string
 	 */
 	private function queryScalar($selectExpression, $db)
@@ -356,7 +356,7 @@ class Query extends Component implements QueryInterface
 		$this->limit = $limit;
 		$this->offset = $offset;
 
-		if (empty($this->groupBy)) {
+		if (empty($this->groupBy) && !$this->distinct) {
 			return $command->queryScalar();
 		} else {
 			return (new Query)->select([$selectExpression])

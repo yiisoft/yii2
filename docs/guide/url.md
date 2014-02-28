@@ -240,7 +240,7 @@ the above car dealer website as an example, we may declare the following URL rul
 
 			// ...
 
-			['class' => 'app\components\CarUrlRule', 'connectionID' => 'db', ...],
+			['class' => 'app\components\CarUrlRule', 'connectionID' => 'db', /* ... */],
 		],
 	],
 ],

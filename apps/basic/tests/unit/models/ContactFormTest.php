@@ -7,7 +7,6 @@ use yii\codeception\TestCase;
 
 class ContactFormTest extends TestCase
 {
-
 	use \Codeception\Specify;
 
 	protected function setUp()
@@ -42,7 +41,7 @@ class ContactFormTest extends TestCase
 			expect('email file should exist', file_exists($this->getMessageFile()))->true();
 		});
 
-		$this->specify('message should contain correct data', function () use($model) {
+		$this->specify('message should contain correct data', function () use ($model) {
 			$emailMessage = file_get_contents($this->getMessageFile());
 
 			expect('email should contain user name', $emailMessage)->contains($model->name);
@@ -56,5 +55,4 @@ class ContactFormTest extends TestCase
 	{
 		return Yii::getAlias(Yii::$app->mail->fileTransportPath) . '/testing_message.eml';
 	}
-
 }

@@ -112,7 +112,7 @@ class AssetBundle extends Object
 
 	/**
 	 * @param View $view
-	 * @return AssetBundle the registered asset bundle instance
+	 * @return static the registered asset bundle instance
 	 */
 	public static function register($view)
 	{

@@ -6,7 +6,6 @@
  * @var string $position
  */
 use yii\helpers\Html;
-use yii\debug\panels\ConfigPanel;
 
 $minJs = <<<EOD
 document.getElementById('yii-debug-toolbar').style.display = 'none';

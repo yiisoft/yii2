@@ -72,10 +72,10 @@ Security and access control
 Data providers, lists and grids
 -------------------------------
 
-- Overview
-- Data providers
-- Grids
-- Lists
+- [Overview](data-overview.md)
+- [Data providers](data-providers.md)
+- [Data widgets](data-widgets.md)
+- [Grid](data-grid.md)
 
 Advanced Topics
 ---------------

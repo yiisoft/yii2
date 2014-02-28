@@ -76,17 +76,32 @@ When the application ends or [[yii\log\Logger::flushInterval|flushInterval]] is 
 [[yii\log\Logger::flush()|flush()]] to send logged messages to different log targets, such as file, email, web.
 
 
-Configuring context information
--------------------------------
-
-TDB
-
 Profiling
 ---------
 
-TBD
+Performance profiling is a special type of message logging that can be used to measure the time needed for the
+specified code blocks to execute and find out what the performance bottleneck is.
 
-- [[Yii::beginProfile()]]
-- [[Yii::endProfile()]]
+To use it we need to identify which code blocks need to be profiled. Then we mark the beginning and the end of each code
+block by inserting the following methods:
 
+```php
+\Yii::beginProfile('myBenchmark');
+...code block being profiled...
+\Yii::endProfile('myBenchmark');
+```
 
+where `myBenchmark` uniquely identifies the code block.
+
+Note, code blocks need to be nested properly such as
+
+```php
+\Yii::beginProfile('block1');
+	// some code to be profiled
+	\Yii::beginProfile('block2');
+		// some other code to be profiled
+	\Yii::endProfile('block2');
+\Yii::endProfile('block1');
+```
+
+Profiling results [could be displayed in debugger](module-debug.md).

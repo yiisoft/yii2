@@ -77,7 +77,7 @@ class QueryBuilder extends Object
 
 		$clauses = [
 			$this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
-			$this->buildFrom($from, $Params),
+			$this->buildFrom($from, $params),
 			$this->buildWhere($query->from, $query->where, $params),
 			$this->buildGroupBy($query->groupBy),
 			$this->buildWithin($query->within),

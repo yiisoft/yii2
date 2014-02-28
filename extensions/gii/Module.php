@@ -141,6 +141,7 @@ class Module extends \yii\base\Module
 			'controller' => ['class' => 'yii\gii\generators\controller\Generator'],
 			'form' => ['class' => 'yii\gii\generators\form\Generator'],
 			'module' => ['class' => 'yii\gii\generators\module\Generator'],
+			'extension' => ['class' => 'yii\gii\generators\extension\Generator'],
 		];
 	}
 }

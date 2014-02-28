@@ -50,7 +50,6 @@ abstract class BaseRenderer extends Component
 	 * @param array $files list of markdown files to render
 	 * @param Context $context the api documentation context to render.
 	 * @param Controller $controller the apidoc controller instance. Can be used to control output.
-	 * @return
 	 */
 	public abstract function renderMarkdownFiles($controller);
 

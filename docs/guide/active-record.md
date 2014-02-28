@@ -716,7 +716,7 @@ Important points are:
 Second, override [[yii\db\ActiveRecord::createQuery()]] to use the custom query class instead of the regular [[yii\db\ActiveQuery|ActiveQuery]].
 For the example above, you need to write the following code:
 
-```
+```php
 namespace app\models;
 
 use yii\db\ActiveRecord;
