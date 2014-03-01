@@ -86,6 +86,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 * @see onCondition()
 	 */
 	public $on;
+	/**
+	 * @var array a list of relations that this query should be joined with
+	 */
+	public $joinWith;
 
 
 	/**
@@ -232,6 +236,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 */
 	protected function createCommandInternal($db)
 	{
+		if (!empty($this->joinWith)) {
+			$this->buildJoinWith();
+		}
+
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $this->modelClass;
 		if ($db === null) {
@@ -330,24 +338,32 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 */
 	public function joinWith($with, $eagerLoading = true, $joinType = 'LEFT JOIN')
 	{
-		$with = (array)$with;
-		$this->joinWithRelations(new $this->modelClass, $with, $joinType);
+		$this->joinWith[] = [(array)$with, $eagerLoading, $joinType];
+		return $this;
+	}
 
-		if (is_array($eagerLoading)) {
-			foreach ($with as $name => $callback) {
-				if (is_integer($name)) {
-					if (!in_array($callback, $eagerLoading, true)) {
+	private function buildJoinWith()
+	{
+		foreach ($this->joinWith as $config) {
+			list ($with, $eagerLoading, $joinType) = $config;
+			$this->joinWithRelations(new $this->modelClass, $with, $joinType);
+
+			if (is_array($eagerLoading)) {
+				foreach ($with as $name => $callback) {
+					if (is_integer($name)) {
+						if (!in_array($callback, $eagerLoading, true)) {
+							unset($with[$name]);
+						}
+					} elseif (!in_array($name, $eagerLoading, true)) {
 						unset($with[$name]);
 					}
-				} elseif (!in_array($name, $eagerLoading, true)) {
-					unset($with[$name]);
 				}
+			} elseif (!$eagerLoading) {
+				$with = [];
 			}
-		} elseif (!$eagerLoading) {
-			$with = [];
-		}
 
-		return $this->with($with);
+			$this->with($with);
+		}
 	}
 
 	/**

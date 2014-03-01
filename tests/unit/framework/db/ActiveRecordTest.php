@@ -258,6 +258,16 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertTrue($orders[0]->isRelationPopulated('customer'));
 		$this->assertTrue($orders[1]->isRelationPopulated('customer'));
 
+		// inner join filtering, eager loading, conditions on both primary and relation
+		$orders = Order::find()->innerJoinWith([
+			'customer' => function ($query) {
+				$query->where(['tbl_customer.id' => 2]);
+			},
+		])->where(['tbl_order.id' => [1, 2]])->orderBy('tbl_order.id')->all();
+		$this->assertEquals(1, count($orders));
+		$this->assertEquals(2, $orders[0]->id);
+		$this->assertTrue($orders[0]->isRelationPopulated('customer'));
+
 		// inner join filtering without eager loading
 		$orders = Order::find()->innerJoinWith([
 			'customer' => function ($query) {
@@ -269,6 +279,16 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertEquals(3, $orders[1]->id);
 		$this->assertFalse($orders[0]->isRelationPopulated('customer'));
 		$this->assertFalse($orders[1]->isRelationPopulated('customer'));
+
+		// inner join filtering without eager loading, conditions on both primary and relation
+		$orders = Order::find()->innerJoinWith([
+			'customer' => function ($query) {
+					$query->where(['tbl_customer.id' => 2]);
+				},
+		], false)->where(['tbl_order.id' => [1, 2]])->orderBy('tbl_order.id')->all();
+		$this->assertEquals(1, count($orders));
+		$this->assertEquals(2, $orders[0]->id);
+		$this->assertFalse($orders[0]->isRelationPopulated('customer'));
 
 		// join with via-relation
 		$orders = Order::find()->innerJoinWith('books')->orderBy('tbl_order.id')->all();
