@@ -517,7 +517,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
 	/**
 	 * Returns the first error of every attribute in the model.
-	 * @return array the first errors. An empty array will be returned if there is no error.
+	 * @return array the first errors. The array keys are the attribute names, and the array
+	 * values are the corresponding error messages. An empty array will be returned if there is no error.
 	 * @see getErrors()
 	 * @see getFirstError()
 	 */
@@ -527,13 +528,13 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 			return [];
 		} else {
 			$errors = [];
-			foreach ($this->_errors as $attributeErrors) {
-				if (isset($attributeErrors[0])) {
-					$errors[] = $attributeErrors[0];
+			foreach ($this->_errors as $name => $es) {
+				if (!empty($es)) {
+					$errors[$name] = reset($es);
 				}
 			}
+			return $errors;
 		}
-		return $errors;
 	}
 
 	/**

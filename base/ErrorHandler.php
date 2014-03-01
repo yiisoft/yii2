@@ -93,10 +93,9 @@ class ErrorHandler extends Component
 			return;
 		}
 
-		$useErrorView = !YII_DEBUG || $exception instanceof UserException;
+		$useErrorView = $response->format === \yii\web\Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
 
 		$response = Yii::$app->getResponse();
-		$response->getHeaders()->removeAll();
 
 		if ($useErrorView && $this->errorAction !== null) {
 			$result = Yii::$app->runAction($this->errorAction);
@@ -121,7 +120,7 @@ class ErrorHandler extends Component
 				]);
 			}
 		} elseif ($exception instanceof Arrayable) {
-			$response->data = $exception;
+			$response->data = $exception->toArray();
 		} else {
 			$response->data = [
 				'type' => get_class($exception),
