@@ -819,6 +819,22 @@ class Request extends \yii\base\Request
 		return isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
 	}
 
+	/**
+	 * @return string the username sent via HTTP authentication, null if the username is not given
+	 */
+	public function getAuthUser()
+	{
+		return isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : null;
+	}
+
+	/**
+	 * @return string the password sent via HTTP authentication, null if the username is not given
+	 */
+	public function getAuthPassword()
+	{
+		return isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null;
+	}
+
 	private $_port;
 
 	/**
