@@ -172,7 +172,7 @@ Note that [[yii\db\ActiveRecord::updateAll()|updateAll()]], [[yii\db\ActiveRecor
 
 ```php
 // to insert a new customer record
-$customer = new Customer;
+$customer = new Customer();
 $customer->name = 'James';
 $customer->email = 'james@example.com';
 $customer->save();  // equivalent to $customer->insert();
@@ -634,7 +634,7 @@ order owned by the customer:
 
 ```php
 $customer = Customer::find(1);
-$order = new Order;
+$order = new Order();
 $order->subtotal = 100;
 $customer->link('orders', $order);
 ```

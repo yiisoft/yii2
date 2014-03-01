@@ -9,7 +9,7 @@ The Query Builder provides an object-oriented vehicle for generating queries to 
 A typical usage of the query builder looks like the following:
 
 ```php
-$rows = (new \yii\db\Query)
+$rows = (new \yii\db\Query())
 	->select('id, name')
 	->from('tbl_user')
 	->limit(10)
@@ -17,7 +17,7 @@ $rows = (new \yii\db\Query)
 
 // which is equivalent to the following code:
 
-$query = (new \yii\db\Query)
+$query = (new \yii\db\Query())
 	->select('id, name')
 	->from('tbl_user')
 	->limit(10);
@@ -116,7 +116,7 @@ You may specify a sub-query using a `Query` object. In this case, the correspond
 as the alias for the sub-query.
 
 ```php
-$subQuery = (new Query)->select('id')->from('tbl_user')->where('status=1');
+$subQuery = (new Query())->select('id')->from('tbl_user')->where('status=1');
 $query->select('*')->from(['u' => $subQuery]);
 ```
 
@@ -324,10 +324,10 @@ $query->leftJoin(['u' => $subQuery], 'u.id=author_id');
 In Yii in order to build it you can first form two query objects and then use `union` method:
 
 ```php
-$query = new Query;
+$query = new Query();
 $query->select("id, 'post' as type, name")->from('tbl_post')->limit(10);
 
-$anotherQuery = new Query;
+$anotherQuery = new Query();
 $anotherQuery->select('id, 'user' as type, name')->from('tbl_user')->limit(10);
 
 $query->union($anotherQuery);
@@ -347,7 +347,7 @@ Batch query can be used like the following:
 ```php
 use yii\db\Query;
 
-$query = (new Query)
+$query = (new Query())
 	->from('tbl_user')
 	->orderBy('id');
 
@@ -376,7 +376,7 @@ will still keep the proper index. For example,
 ```php
 use yii\db\Query;
 
-$query = (new Query)
+$query = (new Query())
 	->from('tbl_user')
 	->indexBy('username');
 
