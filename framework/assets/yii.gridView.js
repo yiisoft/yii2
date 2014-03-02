@@ -33,7 +33,7 @@
 			return this.each(function () {
 				var $e = $(this);
 				var settings = $.extend({}, defaults, options || {});
-				gridData.settings = settings;
+				gridData[$e.prop('id')] = {settings: settings};
 
 				var enterPressed = false;
 				$(document).on('change.yiiGridView keydown.yiiGridView', settings.filterSelector, function (event) {
@@ -60,7 +60,7 @@
 
 		applyFilter: function () {
 			var $grid = $(this);
-			var settings = gridData.settings;
+			var settings = gridData[$grid.prop('id')].settings;
 			var data = {};
 			$.each($(settings.filterSelector).serializeArray(), function () {
 				data[this.name] = this.value;
@@ -86,12 +86,12 @@
 		setSelectionColumn: function (options) {
 			var $grid = $(this);
 			var id = $(this).prop('id');
-			gridData.selectionColumn = options.name;
+			gridData[id].selectionColumn = options.name;
 			if (!options.multiple) {
 				return;
 			}
 			var inputs = "#" + id + " input[name='" + options.checkAll + "']";
-			$(document).off('click.yiiGridView', inputs ).on('click.yiiGridView', inputs, function () {
+			$(document).off('click.yiiGridView', inputs).on('click.yiiGridView', inputs, function () {
 				$grid.find("input[name='" + options.name + "']:enabled").prop('checked', this.checked);
 			});
 			$(document).off('click.yiiGridView', inputs + ":enabled").on('click.yiiGridView', inputs + ":enabled", function () {
@@ -102,7 +102,7 @@
 
 		getSelectedRows: function () {
 			var $grid = $(this);
-			var data = $grid.data('yiiGridView');
+			var data = gridData[$grid.prop('id')];
 			var keys = [];
 			if (data.selectionColumn) {
 				$grid.find("input[name='" + data.selectionColumn + "']:checked").each(function () {
@@ -119,7 +119,7 @@
 			});
 		},
 
-		data: function() {
+		data: function () {
 			return this.data('yiiGridView');
 		}
 	};
