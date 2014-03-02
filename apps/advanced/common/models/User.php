@@ -1,6 +1,7 @@
 <?php
 namespace common\models;
 
+use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\helpers\Security;
 use yii\web\IdentityInterface;
@@ -69,6 +70,14 @@ class User extends ActiveRecord implements IdentityInterface
 	public static function findIdentity($id)
 	{
 		return static::find($id);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public static function findIdentityByToken($token)
+	{
+		throw new NotSupportedException('"findIdentityByToken" is not implemented.');
 	}
 
 	/**

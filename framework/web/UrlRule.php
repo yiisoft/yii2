@@ -199,7 +199,7 @@ class UrlRule extends Object implements UrlRuleInterface
 			return false;
 		}
 
-		if ($this->verb !== null && !in_array($request->getMethod(), $this->verb, true)) {
+		if (!empty($this->verb) && !in_array($request->getMethod(), $this->verb, true)) {
 			return false;
 		}
 

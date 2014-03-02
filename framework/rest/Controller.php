@@ -19,7 +19,7 @@ use yii\web\VerbFilter;
  * Controller implements the following steps in a RESTful API request handling cycle:
  *
  * 1. Resolving response format and API version number (see [[supportedFormats]], [[supportedVersions]] and [[version]]);
- * 2. Validating request method (see [[verbs()]]);
+ * 2. Validating request method (see [[verbs()]]).
  * 3. Authenticating user (see [[authenticate()]]);
  * 4. Formatting response data (see [[serializeData()]]).
  *
@@ -150,10 +150,16 @@ class Controller extends \yii\web\Controller
 
 	/**
 	 * Authenticates the user.
+	 * This method implements the user authentication based on HTTP basic authentication.
 	 * @throws UnauthorizedHttpException if the user is not authenticated successfully
 	 */
 	protected function authenticate()
 	{
+		$apiKey = Yii::$app->getRequest()->getAuthUser();
+		if ($apiKey === null || !Yii::$app->getUser()->loginByToken($apiKey)) {
+			Yii::$app->getResponse()->getHeaders()->set('WWW-Authenticate', 'Basic realm="api"');
+			throw new UnauthorizedHttpException($apiKey === null ? 'Please provide an API key.' : 'You are requesting with an invalid API key.');
+		}
 	}
 
 	/**
