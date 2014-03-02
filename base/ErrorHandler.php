@@ -93,9 +93,9 @@ class ErrorHandler extends Component
 			return;
 		}
 
-		$useErrorView = $response->format === \yii\web\Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
-
 		$response = Yii::$app->getResponse();
+
+		$useErrorView = $response->format === \yii\web\Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
 
 		if ($useErrorView && $this->errorAction !== null) {
 			$result = Yii::$app->runAction($this->errorAction);
