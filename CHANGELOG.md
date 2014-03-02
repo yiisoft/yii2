@@ -72,6 +72,7 @@ Yii Framework 2 Change Log
 - Enh #1476: Add yii\web\Session::handler property (nineinchnick)
 - Enh #1499: Added `ActionColumn::controller` property to support customizing the controller for handling GridView actions (qiangxue)
 - Enh #1523: Query conditions now allow to use the NOT operator (cebe)
+- Enh #1535: Improved `yii\web\User` to start session only when needed. Also prepared it for use without session. (qiangxue)
 - Enh #1562: Added `yii\bootstrap\Tabs::linkOptions` (kartik-v)
 - Enh #1572: Added `yii\web\Controller::createAbsoluteUrl()` (samdark)
 - Enh #1579: throw exception when the given AR relation name does not match in a case sensitive manner (qiangxue)
