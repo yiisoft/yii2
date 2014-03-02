@@ -26,17 +26,17 @@
 		filterSelector: undefined
 	};
 
-    var gridData = {};
+	var gridData = {};
 
 	var methods = {
 		init: function (options) {
 			return this.each(function () {
 				var $e = $(this);
 				var settings = $.extend({}, defaults, options || {});
-                gridData.settings = settings;
+				gridData.settings = settings;
 
 				var enterPressed = false;
-                $(document).on('change.yiiGridView keydown.yiiGridView', settings.filterSelector, function (event) {
+				$(document).on('change.yiiGridView keydown.yiiGridView', settings.filterSelector, function (event) {
 					if (event.type === 'keydown') {
 						if (event.keyCode !== 13) {
 							return; // only react to enter key
@@ -60,7 +60,7 @@
 
 		applyFilter: function () {
 			var $grid = $(this);
-            var settings = gridData.settings;
+			var settings = gridData.settings;
 			var data = {};
 			$.each($(settings.filterSelector).serializeArray(), function () {
 				data[this.name] = this.value;
@@ -85,16 +85,16 @@
 
 		setSelectionColumn: function (options) {
 			var $grid = $(this);
-            var id = $(this).prop('id');
-            gridData.selectionColumn = options.name;
+			var id = $(this).prop('id');
+			gridData.selectionColumn = options.name;
 			if (!options.multiple) {
 				return;
 			}
-            var inputs = "#" + id + " input[name='" + options.checkAll + "']";
-            $(document).off('click.yiiGridView', inputs ).on('click.yiiGridView', inputs, function () {
+			var inputs = "#" + id + " input[name='" + options.checkAll + "']";
+			$(document).off('click.yiiGridView', inputs ).on('click.yiiGridView', inputs, function () {
 				$grid.find("input[name='" + options.name + "']:enabled").prop('checked', this.checked);
 			});
-            $(document).off('click.yiiGridView', inputs + ":enabled").on('click.yiiGridView', inputs + ":enabled", function () {
+			$(document).off('click.yiiGridView', inputs + ":enabled").on('click.yiiGridView', inputs + ":enabled", function () {
 				var all = $grid.find("input[name='" + options.name + "']").length == $grid.find("input[name='" + options.name + "']:checked").length;
 				$grid.find("input[name='" + options.checkAll + "']").prop('checked', all);
 			});
