@@ -121,7 +121,6 @@ class ActiveController extends Controller
 			'create' => ['POST'],
 			'update' => ['PUT', 'PATCH'],
 			'delete' => ['DELETE'],
-			'options' => ['OPTIONS'],
 		];
 	}
 

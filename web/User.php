@@ -209,6 +209,15 @@ class User extends Component
 		return !$this->getIsGuest();
 	}
 
+	public function loginByToken($token)
+	{
+		/** @var IdentityInterface $class */
+		$class = $this->identityClass;
+		$identity = $class::findIdentityByToken($token);
+		$this->setIdentity($identity);
+		return $identity;
+	}
+
 	/**
 	 * Logs in a user by cookie.
 	 *

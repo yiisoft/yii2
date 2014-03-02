@@ -20,11 +20,12 @@ class OptionsAction extends \yii\base\Action
 	/**
 	 * @var array the HTTP verbs that are supported by the collection URL
 	 */
-	public $collectionOptions = ['GET', 'POST'];
+	public $collectionOptions = ['GET', 'POST', 'HEAD', 'OPTIONS'];
 	/**
 	 * @var array the HTTP verbs that are supported by the resource URL
 	 */
-	public $resourceOptions = ['GET', 'PUT', 'PATCH', 'DELETE'];
+	public $resourceOptions = ['GET', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
+
 
 	/**
 	 * Responds to the OPTIONS request.
@@ -32,6 +33,9 @@ class OptionsAction extends \yii\base\Action
 	 */
 	public function run($id = null)
 	{
+		if (Yii::$app->getRequest()->getMethod() !== 'OPTIONS') {
+			Yii::$app->getResponse()->setStatusCode(405);
+		}
 		$options = $id === null ? $this->collectionOptions : $this->resourceOptions;
 		Yii::$app->getResponse()->getHeaders()->set('Allow', implode(', ', $options));
 	}

@@ -13,7 +13,7 @@ use yii\helpers\Inflector;
 use yii\web\CompositeUrlRule;
 
 /**
- * UrlRule is provided to simplify creation of URL rules for RESTful API support.
+ * UrlRule is provided to simplify the creation of URL rules for RESTful API support.
  *
  * The simplest usage of UrlRule is to declare a rule like the following in the application configuration,
  *
@@ -28,11 +28,11 @@ use yii\web\CompositeUrlRule;
  *
  * - `'PUT,PATCH users/<id>' => 'user/update'`: update a user
  * - `'DELETE users/<id>' => 'user/delete'`: delete a user
- * - `'GET,HEAD users/<id>' => 'user/view'`: return the details of a user (or the overview for HEAD requests)
- * - `'OPTIONS users/<id>' => 'user/options'`: return the supported methods for `users/<id>`
+ * - `'GET,HEAD users/<id>' => 'user/view'`: return the details/overview/options of a user
  * - `'POST users' => 'user/create'`: create a new user
- * - `'GET,HEAD users' => 'user/index'`: return a list of users (or the overview for HEAD requests)
- * - `'OPTIONS users' => 'user/options'`: return the supported methods for `users`
+ * - `'GET,HEAD users' => 'user/index'`: return a list/overview/options of users
+ * - `'users/<id>' => 'user/options'`: process all unhandled verbs of a user
+ * - `'users' => 'user/options'`: process all unhandled verbs of user collection
  *
  * You may configure [[only]] and/or [[except]] to disable some of the above rules.
  * You may configure [[patterns]] to completely redefine your own list of rules.
@@ -98,23 +98,24 @@ class UrlRule extends CompositeUrlRule
 	 * @see patterns
 	 */
 	public $tokens = [
-		'{id}' => '<id:\\d+[\\d,]*>',
+		'{id}' => '<id:\\d[\\d,]*>',
 	];
 	/**
 	 * @var array list of possible patterns and the corresponding actions for creating the URL rules.
 	 * The keys are the patterns and the values are the corresponding actions.
-	 * The format of patterns is `Verbs Path`, where `Verbs` stands for a list of HTTP verbs separated
-	 * by comma (without space). `Path` is optional. It will be prefixed with [[prefix]]/[[controller]]/,
+	 * The format of patterns is `Verbs Pattern`, where `Verbs` stands for a list of HTTP verbs separated
+	 * by comma (without space). If `Verbs` is not specified, it means all verbs are allowed.
+	 * `Pattern` is optional. It will be prefixed with [[prefix]]/[[controller]]/,
 	 * and tokens in it will be replaced by [[tokens]].
 	 */
 	public $patterns = [
-		'GET,HEAD {id}' => 'view',
 		'PUT,PATCH {id}' => 'update',
 		'DELETE {id}' => 'delete',
-		'OPTIONS {id}' => 'options',
-		'GET,HEAD' => 'index',
+		'GET,HEAD {id}' => 'view',
 		'POST' => 'create',
-		'OPTIONS' => 'options',
+		'GET,HEAD' => 'index',
+		'{id}' => 'options',
+		'' => 'options',
 	];
 	public $ruleConfig = [
 		'class' => 'yii\web\UrlRule',
@@ -156,7 +157,7 @@ class UrlRule extends CompositeUrlRule
 			$prefix = trim($this->prefix . '/' . $urlName, '/');
 			foreach ($this->patterns as $pattern => $action) {
 				if (!isset($except[$action]) && (empty($only) || isset($only[$action]))) {
-					$rules[] = $this->createRule($pattern, $prefix, $controller . '/' . $action);
+					$rules[$urlName][] = $this->createRule($pattern, $prefix, $controller . '/' . $action);
 				}
 			}
 		}
@@ -172,23 +173,61 @@ class UrlRule extends CompositeUrlRule
 	 */
 	protected function createRule($pattern, $prefix, $action)
 	{
-		if (($pos = strpos($pattern, ' ')) !== false) {
-			$verbs = substr($pattern, 0, $pos);
-			$pattern = strtr(substr($pattern, $pos + 1), $this->tokens);
+		$verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
+		if (preg_match("/^((?:($verbs),)*($verbs))(?:\\s+(.*))?$/", $pattern, $matches)) {
+			$verbs = explode(',', $matches[1]);
+			$pattern = isset($matches[4]) ? $matches[4] : '';
 		} else {
-			$verbs = $pattern;
-			$pattern = '';
+			$verbs = [];
 		}
 
 		$config = $this->ruleConfig;
-		$config['verb'] = explode(',', $verbs);
-		$config['pattern'] = rtrim($prefix . '/' . $pattern, '/');
+		$config['verb'] = $verbs;
+		$config['pattern'] = rtrim($prefix . '/' . strtr($pattern, $this->tokens), '/');
 		$config['route'] = $action;
-		if (strcasecmp($verbs, 'GET')) {
+		if (!in_array('GET', $verbs)) {
 			$config['mode'] = \yii\web\UrlRule::PARSING_ONLY;
 		}
 		$config['suffix'] = $this->suffix;
 
 		return Yii::createObject($config);
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function parseRequest($manager, $request)
+	{
+		$pathInfo = $request->getPathInfo();
+		foreach ($this->rules as $urlName => $rules) {
+			if (strpos($pathInfo, $urlName) !== false) {
+				foreach ($rules as $rule) {
+					/** @var \yii\web\UrlRule $rule */
+					if (($result = $rule->parseRequest($manager, $request)) !== false) {
+						Yii::trace("Request parsed with URL rule: {$rule->name}", __METHOD__);
+						return $result;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function createUrl($manager, $route, $params)
+	{
+		foreach ($this->controller as $urlName => $controller) {
+			if (strpos($route, $controller) !== false) {
+				foreach ($this->rules[$urlName] as $rule) {
+					/** @var \yii\web\UrlRule $rule */
+					if (($url = $rule->createUrl($manager, $route, $params)) !== false) {
+						return $url;
+					}
+				}
+			}
+		}
+		return false;
 	}
 }
