@@ -160,7 +160,7 @@ class BlogController extends Controller
 	{
 		$post = Post::find($id);
 		if (!$post) {
-			throw new NotFoundHttpException;
+			throw new NotFoundHttpException();
 		}
 
 		if (\Yii::$app->request->isPost) {

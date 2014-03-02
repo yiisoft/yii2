@@ -29,7 +29,7 @@ $posts = $provider->getModels();
 And the following example shows how to use ActiveDataProvider without ActiveRecord:
 
 ```php
-$query = new Query;
+$query = new Query();
 $provider = new ActiveDataProvider([
 	'query' => $query->from('tbl_post'),
 	'pagination' => [
@@ -62,7 +62,7 @@ because it needs to have [[allModels]] ready.
 ArrayDataProvider may be used in the following way:
 
 ```php
-$query = new Query;
+$query = new Query();
 $provider = new ArrayDataProvider([
     'allModels' => $query->from('tbl_post')->all(),
     'sort' => [

@@ -158,7 +158,7 @@ in controllers or widgets:
 ```php
 $content = Yii::$app->view->renderFile($viewFile, $params);
 // You can also explicitly create a new View instance to do the rendering
-// $view = new View;
+// $view = new View();
 // $view->renderFile($viewFile, $params);
 ```
 
@@ -186,7 +186,7 @@ New methods called [[yii\base\Model::load()|load()] and [[yii\base\Model::loadMu
 introduced to simplify the data population from user inputs to a model. For example,
 
 ```php
-$model = new Post;
+$model = new Post();
 if ($model->load($_POST)) {...}
 // which is equivalent to:
 if (isset($_POST['Post'])) {
@@ -394,7 +394,7 @@ In 1.1, query building is scattered among several classes, including `CDbCommand
 and [[yii\db\QueryBuilder|QueryBuilder]] to generate SQL statements from query objects. For example:
 
 ```php
-$query = new \yii\db\Query;
+$query = new \yii\db\Query();
 $query->select('id, name')
       ->from('tbl_user')
       ->limit(10);
