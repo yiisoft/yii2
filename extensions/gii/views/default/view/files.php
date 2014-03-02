@@ -81,7 +81,14 @@ use yii\gii\CodeFile;
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4><a class="modal-refresh glyphicon glyphicon-refresh" href="#"></a> <span class="modal-title">Modal title</span></h4>
+					<div class="btn-group pull-left">
+						<a class="modal-previous btn btn-xs btn-default" href="#"><span class="glyphicon glyphicon-arrow-left"></span></a>
+						<a class="modal-next btn btn-xs btn-default" href="#"><span class="glyphicon glyphicon-arrow-right"></span></a>
+						<a class="modal-refresh btn btn-xs btn-default" href="#"><span class="glyphicon glyphicon-refresh"></span></a>
+						&nbsp;
+					</div>
+					<strong class="modal-title pull-left">Modal title</strong>
+					<div class="clearfix"></div>
 				</div>
 				<div class="modal-body">
 					<p>Please wait ...</p>
