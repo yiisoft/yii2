@@ -828,7 +828,7 @@ class Request extends \yii\base\Request
 	}
 
 	/**
-	 * @return string the password sent via HTTP authentication, null if the username is not given
+	 * @return string the password sent via HTTP authentication, null if the password is not given
 	 */
 	public function getAuthPassword()
 	{
