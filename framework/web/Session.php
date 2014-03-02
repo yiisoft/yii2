@@ -127,6 +127,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 		@session_start();
 
 		if ($this->getIsActive()) {
+			Yii::info('Session started', __METHOD__);
 			$this->updateFlashCounters();
 		} else {
 			$error = error_get_last();
@@ -204,7 +205,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 		if ($this->_hasSessionId === null) {
 			$name = $this->getName();
 			$request = Yii::$app->getRequest();
-			if (ini_get('session.use_cookie') && $request->getCookies()->getValue($name) !== null) {
+			if (ini_get('session.use_cookies') && !empty($_COOKIE[$name])) {
 				$this->_hasSessionId = true;
 			} elseif (!ini_get('use_only_cookies') && ini_get('use_trans_sid')) {
 				$this->_hasSessionId = $request->get($name) !== null;
