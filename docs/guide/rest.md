@@ -86,7 +86,25 @@ for accessing the user data. The APIs you have created include:
 You may access your APIs with the `curl` command like the following,
 
 ```
-curl -i -u "Your-API-Key:" -H "Accept:application/json" -d "_method=GET" "http://localhost/users"
+curl -i -u "Your-API-Key:" -H "Accept:application/json" "http://localhost/users"
+```
+
+which may give the following output:
+
+```
+HTTP/1.1 200 OK
+Date: Sun, 02 Mar 2014 05:31:43 GMT
+Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
+X-Powered-By: PHP/5.4.20
+X-Pagination-Total-Count: 1000
+X-Pagination-Page-Count: 50
+X-Pagination-Current-Page: 1
+X-Pagination-Per-Page: 20
+Link: <http://localhost/users?page=1>; rel=self, <http://localhost/users?page=2>; rel=next, <http://localhost/users?page=50>; rel=last
+Transfer-Encoding: chunked
+Content-Type: application/json; charset=UTF-8
+
+[{"id":1,..},{"id":2,...}...]
 ```
 
 > Tip: You may also access your API via Web browser. You will be asked
