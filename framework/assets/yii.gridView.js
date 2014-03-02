@@ -26,17 +26,17 @@
 		filterSelector: undefined
 	};
 
-    var gridData = {};
+	var gridData = {};
 
 	var methods = {
 		init: function (options) {
 			return this.each(function () {
 				var $e = $(this);
 				var settings = $.extend({}, defaults, options || {});
-                gridData.settings = settings;
+				gridData.settings = settings;
 
 				var enterPressed = false;
-                $(document).on('change.yiiGridView keydown.yiiGridView', settings.filterSelector, function (event) {
+				$(document).on('change.yiiGridView keydown.yiiGridView', settings.filterSelector, function (event) {
 					if (event.type === 'keydown') {
 						if (event.keyCode !== 13) {
 							return; // only react to enter key
@@ -85,8 +85,8 @@
 
 		setSelectionColumn: function (options) {
 			var $grid = $(this);
-            var id = $(this).prop('id');
-            gridData.selectionColumn = options.name;
+			var id = $(this).prop('id');
+			gridData.selectionColumn = options.name;
 			if (!options.multiple) {
 				return;
 			}
