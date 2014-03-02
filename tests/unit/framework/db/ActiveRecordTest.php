@@ -302,6 +302,9 @@ class ActiveRecordTest extends DatabaseTestCase
 
 		// join with sub-relation
 		$orders = Order::find()->innerJoinWith([
+			'items' => function ($q) {
+				$q->orderBy('tbl_item.id');
+			},
 			'items.category' => function ($q) {
 				$q->where('tbl_category.id = 2');
 			},
@@ -381,7 +384,11 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertNull($customers[1]->profile);
 
 		// hasMany
-		$customers = Customer::find()->active()->joinWith('orders')->orderBy('tbl_customer.id DESC, tbl_order.id')->all();
+		$customers = Customer::find()->active()->joinWith([
+			'orders' => function ($q) {
+				$q->orderBy('tbl_order.id');
+			}
+		])->orderBy('tbl_customer.id DESC, tbl_order.id')->all();
 		$this->assertEquals(2, count($customers));
 		$this->assertEquals(2, $customers[0]->id);
 		$this->assertEquals(1, $customers[1]->id);
