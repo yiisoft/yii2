@@ -75,10 +75,6 @@ use yii\base\InvalidParamException;
 class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Countable, Arrayable
 {
 	/**
-	 * @var boolean whether the session should be automatically started when the session component is initialized.
-	 */
-	public $autoStart = true;
-	/**
 	 * @var string the name of the session variable that stores the flash message data.
 	 */
 	public $flashParam = '__flash';
@@ -100,9 +96,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	public function init()
 	{
 		parent::init();
-		if ($this->autoStart) {
-			$this->open();
-		}
 		register_shutdown_function([$this, 'close']);
 	}
 
@@ -123,10 +116,32 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function open()
 	{
-		if (session_status() == PHP_SESSION_ACTIVE) {
+		if ($this->getIsActive()) {
 			return;
 		}
 
+		$this->registerSessionHandler();
+
+		$this->setCookieParamsInternal();
+
+		@session_start();
+
+		if ($this->getIsActive()) {
+			Yii::info('Session started', __METHOD__);
+			$this->updateFlashCounters();
+		} else {
+			$error = error_get_last();
+			$message = isset($error['message']) ? $error['message'] : 'Failed to start session.';
+			Yii::error($message, __METHOD__);
+		}
+	}
+
+	/**
+	 * Registers session handler.
+	 * @throws \yii\base\InvalidConfigException
+	 */
+	protected function registerSessionHandler()
+	{
 		if ($this->handler !== null) {
 			if (!is_object($this->handler)) {
 				$this->handler = Yii::createObject($this->handler);
@@ -145,18 +160,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 				[$this, 'gcSession']
 			);
 		}
-
-		$this->setCookieParamsInternal();
-
-		@session_start();
-
-		if (session_id() == '') {
-			$error = error_get_last();
-			$message = isset($error['message']) ? $error['message'] : 'Failed to start session.';
-			Yii::error($message, __METHOD__);
-		} else {
-			$this->updateFlashCounters();
-		}
 	}
 
 	/**
@@ -164,7 +167,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function close()
 	{
-		if (session_id() !== '') {
+		if ($this->getIsActive()) {
 			@session_write_close();
 		}
 	}
@@ -174,7 +177,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function destroy()
 	{
-		if (session_id() !== '') {
+		if ($this->getIsActive()) {
 			@session_unset();
 			@session_destroy();
 		}
@@ -186,6 +189,42 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	public function getIsActive()
 	{
 		return session_status() == PHP_SESSION_ACTIVE;
+	}
+
+	private $_hasSessionId;
+
+	/**
+	 * Returns a value indicating whether the current request has sent the session ID.
+	 * The default implementation will check cookie and $_GET using the session name.
+	 * If you send session ID via other ways, you may need to override this method
+	 * or call [[setHasSessionId()]] to explicitly set whether the session ID is sent.
+	 * @return boolean whether the current request has sent the session ID.
+	 */
+	public function getHasSessionId()
+	{
+		if ($this->_hasSessionId === null) {
+			$name = $this->getName();
+			$request = Yii::$app->getRequest();
+			if (ini_get('session.use_cookies') && !empty($_COOKIE[$name])) {
+				$this->_hasSessionId = true;
+			} elseif (!ini_get('use_only_cookies') && ini_get('use_trans_sid')) {
+				$this->_hasSessionId = $request->get($name) !== null;
+			} else {
+				$this->_hasSessionId = false;
+			}
+		}
+		return $this->_hasSessionId;
+	}
+
+	/**
+	 * Sets the value indicating whether the current request has sent the session ID.
+	 * This method is provided so that you can override the default way of determining
+	 * whether the session ID is sent.
+	 * @param boolean $value whether the current request has sent the session ID.
+	 */
+	public function setHasSessionId($value)
+	{
+		$this->_hasSessionId = $value;
 	}
 
 	/**
@@ -506,6 +545,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function get($key, $defaultValue = null)
 	{
+		$this->open();
 		return isset($_SESSION[$key]) ? $_SESSION[$key] : $defaultValue;
 	}
 
@@ -517,6 +557,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function set($key, $value)
 	{
+		$this->open();
 		$_SESSION[$key] = $value;
 	}
 
@@ -527,6 +568,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function remove($key)
 	{
+		$this->open();
 		if (isset($_SESSION[$key])) {
 			$value = $_SESSION[$key];
 			unset($_SESSION[$key]);
@@ -541,6 +583,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function removeAll()
 	{
+		$this->open();
 		foreach (array_keys($_SESSION) as $key) {
 			unset($_SESSION[$key]);
 		}
@@ -552,6 +595,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function has($key)
 	{
+		$this->open();
 		return isset($_SESSION[$key]);
 	}
 
@@ -560,6 +604,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function toArray()
 	{
+		$this->open();
 		return $_SESSION;
 	}
 
@@ -689,6 +734,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function offsetExists($offset)
 	{
+		$this->open();
 		return isset($_SESSION[$offset]);
 	}
 
@@ -699,6 +745,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function offsetGet($offset)
 	{
+		$this->open();
 		return isset($_SESSION[$offset]) ? $_SESSION[$offset] : null;
 	}
 
@@ -709,6 +756,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function offsetSet($offset, $item)
 	{
+		$this->open();
 		$_SESSION[$offset] = $item;
 	}
 
@@ -718,6 +766,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function offsetUnset($offset)
 	{
+		$this->open();
 		unset($_SESSION[$offset]);
 	}
 }
