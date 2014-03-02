@@ -18,5 +18,5 @@ echo "<?php\n";
 
 <p>
 	You may change the content of this page by modifying
-	the file <code><?= '<?php' ?> echo __FILE__; ?></code>.
+	the file <code><?= '<?=' ?> __FILE__; ?></code>.
 </p>
