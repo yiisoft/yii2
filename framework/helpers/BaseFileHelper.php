@@ -280,14 +280,14 @@ class BaseFileHelper
 			$options['basePath'] = realpath($dir);
 			// this should also be done only once
 			if (isset($options['except'])) {
-				foreach($options['except'] as $key=>$value) {
+				foreach ($options['except'] as $key => $value) {
 					if (is_string($value)) {
 						$options['except'][$key] = static::parseExcludePattern($value);
 					}
 				}
 			}
 			if (isset($options['only'])) {
-				foreach($options['only'] as $key=>$value) {
+				foreach ($options['only'] as $key => $value) {
 					if (is_string($value)) {
 						$options['only'][$key] = static::parseExcludePattern($value);
 					}
@@ -472,7 +472,7 @@ class BaseFileHelper
 	 */
 	private static function lastExcludeMatchingFromList($basePath, $path, $excludes)
 	{
-		foreach(array_reverse($excludes) as $exclude) {
+		foreach (array_reverse($excludes) as $exclude) {
 			if (is_string($exclude)) {
 				$exclude = self::parseExcludePattern($exclude);
 			}

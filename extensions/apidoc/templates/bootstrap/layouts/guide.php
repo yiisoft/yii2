@@ -17,7 +17,7 @@ $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
 			'url' => './guide_index.html',
 			'active' => isset($currentFile) && (basename($currentFile) == 'index.md'),
 		];
-		foreach($headlines as $file => $headline) {
+		foreach ($headlines as $file => $headline) {
 //			if (!isset($nav[$namespace])) {
 //				$nav[$namespace] = [
 //					'label' => $namespace,

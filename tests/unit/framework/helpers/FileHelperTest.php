@@ -260,8 +260,8 @@ class FileHelperTest extends TestCase
 		$tree = $files;
 		$root = $files;
 		$flat = [];
-		foreach($dirs as $dir) {
-			foreach($files as $fileName=>$contents) {
+		foreach ($dirs as $dir) {
+			foreach ($files as $fileName => $contents) {
 				$flat[] = rtrim($basePath.$dir,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$fileName;
 			}
 			if ($dir === '') continue;

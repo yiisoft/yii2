@@ -351,7 +351,7 @@ class Connection extends Component
 
 		array_unshift($params, $name);
 		$command = '*' . count($params) . "\r\n";
-		foreach($params as $arg) {
+		foreach ($params as $arg) {
 			$command .= '$' . mb_strlen($arg, '8bit') . "\r\n" . $arg . "\r\n";
 		}
 

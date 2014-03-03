@@ -57,15 +57,15 @@ class Context extends Component
 		$reflection = new FileReflector($fileName, true);
 		$reflection->process();
 
-		foreach($reflection->getClasses() as $class) {
+		foreach ($reflection->getClasses() as $class) {
 			$class = new ClassDoc($class, $this, ['sourceFile' => $fileName]);
 			$this->classes[$class->name] = $class;
 		}
-		foreach($reflection->getInterfaces() as $interface) {
+		foreach ($reflection->getInterfaces() as $interface) {
 			$interface = new InterfaceDoc($interface, $this, ['sourceFile' => $fileName]);
 			$this->interfaces[$interface->name] = $interface;
 		}
-		foreach($reflection->getTraits() as $trait) {
+		foreach ($reflection->getTraits() as $trait) {
 			$trait = new TraitDoc($trait, $this, ['sourceFile' => $fileName]);
 			$this->traits[$trait->name] = $trait;
 		}
@@ -74,7 +74,7 @@ class Context extends Component
 	public function updateReferences()
 	{
 		// update all subclass references
-		foreach($this->classes as $class) {
+		foreach ($this->classes as $class) {
 			$className = $class->name;
 			while (isset($this->classes[$class->parentClass])) {
 				$class = $this->classes[$class->parentClass];
@@ -82,12 +82,12 @@ class Context extends Component
 			}
 		}
 		// update interfaces of subclasses
-		foreach($this->classes as $class) {
+		foreach ($this->classes as $class) {
 			$this->updateSubclassInferfacesTraits($class);
 		}
 		// update implementedBy and usedBy for interfaces and traits
-		foreach($this->classes as $class) {
-			foreach($class->traits as $trait) {
+		foreach ($this->classes as $class) {
+			foreach ($class->traits as $trait) {
 				if (isset($this->traits[$trait])) {
 					$trait = $this->traits[$trait];
 					$trait->usedBy[] = $class->name;
@@ -95,12 +95,12 @@ class Context extends Component
 					$class->methods = array_merge($trait->methods, $class->methods);
 				}
 			}
-			foreach($class->interfaces as $interface) {
+			foreach ($class->interfaces as $interface) {
 				if (isset($this->interfaces[$interface])) {
 					$this->interfaces[$interface]->implementedBy[] = $class->name;
 					if ($class->isAbstract) {
 						// add not implemented interface methods
-						foreach($this->interfaces[$interface]->methods as $method) {
+						foreach ($this->interfaces[$interface]->methods as $method) {
 							if (!isset($class->methods[$method->name])) {
 								$class->methods[$method->name] = $method;
 							}
@@ -110,11 +110,11 @@ class Context extends Component
 			}
 		}
 		// inherit properties, methods, contants and events to subclasses
-		foreach($this->classes as $class) {
+		foreach ($this->classes as $class) {
 			$this->updateSubclassInheritance($class);
 		}
 		// add properties from getters and setters
-		foreach($this->classes as $class) {
+		foreach ($this->classes as $class) {
 			$this->handlePropertyFeature($class);
 		}
 
@@ -127,7 +127,7 @@ class Context extends Component
 	 */
 	protected function updateSubclassInferfacesTraits($class)
 	{
-		foreach($class->subclasses as $subclass) {
+		foreach ($class->subclasses as $subclass) {
 			$subclass = $this->classes[$subclass];
 			$subclass->interfaces = array_unique(array_merge($subclass->interfaces, $class->interfaces));
 			$subclass->traits = array_unique(array_merge($subclass->traits, $class->traits));
@@ -141,7 +141,7 @@ class Context extends Component
 	 */
 	protected function updateSubclassInheritance($class)
 	{
-		foreach($class->subclasses as $subclass) {
+		foreach ($class->subclasses as $subclass) {
 			$subclass = $this->classes[$subclass];
 			$subclass->events = array_merge($class->events, $subclass->events);
 			$subclass->constants = array_merge($class->constants, $subclass->constants);
@@ -160,7 +160,7 @@ class Context extends Component
 		if (!$this->isSubclassOf($class, 'yii\base\Object')) {
 			return;
 		}
-		foreach($class->getPublicMethods() as $name => $method) {
+		foreach ($class->getPublicMethods() as $name => $method) {
 			if ($method->isStatic) {
 				continue;
 			}
@@ -232,7 +232,7 @@ class Context extends Component
 	 */
 	private function paramsOptional($method, $number = 0)
 	{
-		foreach($method->params as $param) {
+		foreach ($method->params as $param) {
 			if (!$param->isOptional && $number-- <= 0) {
 				return false;
 			}
@@ -246,7 +246,7 @@ class Context extends Component
 	 */
 	private function getFirstNotOptionalParameter($method)
 	{
-		foreach($method->params as $param) {
+		foreach ($method->params as $param) {
 			if (!$param->isOptional) {
 				return $param;
 			}

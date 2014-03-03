@@ -33,7 +33,7 @@ if ($protected && count($type->getProtectedMethods()) == 0 || !$protected && cou
 <?php
 $methods = $type->methods;
 ArrayHelper::multisort($methods, 'name');
-foreach($methods as $method): ?>
+foreach ($methods as $method): ?>
 	<?php if ($protected && $method->visibility == 'protected' || !$protected && $method->visibility != 'protected'): ?>
 	<tr<?= $method->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $method->name ?>()">
 		<td><?= $this->context->subjectLink($method, $method->name.'()') ?></td>

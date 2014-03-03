@@ -34,7 +34,7 @@ class EventDoc extends ConstDoc
 			return;
 		}
 
-		foreach($this->tags as $i => $tag) {
+		foreach ($this->tags as $i => $tag) {
 			if ($tag->getName() == 'event') {
 				$eventTag = new ReturnTag('event', $tag->getContent(), $tag->getDocBlock(), $tag->getLocation());
 				$this->type = $eventTag->getType();

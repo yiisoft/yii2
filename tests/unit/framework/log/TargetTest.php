@@ -66,7 +66,7 @@ class TargetTest extends TestCase
 
 		$this->assertEquals(count($expected), count(static::$messages));
 		$i = 0;
-		foreach($expected as $e) {
+		foreach ($expected as $e) {
 			$this->assertEquals('test' . $e, static::$messages[$i++][0]);
 		}
 	}

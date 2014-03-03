@@ -16,7 +16,7 @@ if (empty($events)) {
 ArrayHelper::multisort($events, 'name');
 ?>
 <h2>Event Details</h2>
-<?php foreach($events as $event): ?>
+<?php foreach ($events as $event): ?>
 	<div class="detailHeader h3" id="<?= $event->name.'-detail' ?>">
 		<?= $event->name ?>
 		<span class="detailHeaderTag small">

@@ -18,7 +18,7 @@ ArrayHelper::multisort($properties, 'name');
 ?>
 <h2>Property Details</h2>
 
-<?php foreach($properties as $property): ?>
+<?php foreach ($properties as $property): ?>
 
 	<div class="detailHeader h3" id="<?= $property->name.'-detail' ?>">
 		<?= $property->name ?>

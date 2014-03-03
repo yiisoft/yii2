@@ -18,7 +18,7 @@ namespace <?= $generator->ns ?>;
 
 class <?= $generator->getControllerClass() ?> extends <?= '\\' . trim($generator->baseClass, '\\') . "\n" ?>
 {
-<?php foreach($generator->getActionIDs() as $action): ?>
+<?php foreach ($generator->getActionIDs() as $action): ?>
 	public function action<?= Inflector::id2camel($action) ?>()
 	{
 		return $this->render('<?= $action ?>');

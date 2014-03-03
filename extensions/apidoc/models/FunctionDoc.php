@@ -45,12 +45,12 @@ class FunctionDoc extends BaseDoc
 
 		$this->isReturnByReference = $reflector->isByRef();
 
-		foreach($reflector->getArguments() as $arg) {
+		foreach ($reflector->getArguments() as $arg) {
 			$arg = new ParamDoc($arg, $context, ['sourceFile' => $this->sourceFile]);
 			$this->params[$arg->name] = $arg;
 		}
 
-		foreach($this->tags as $i => $tag) {
+		foreach ($this->tags as $i => $tag) {
 			if ($tag instanceof ThrowsTag) {
 				$this->exceptions[$tag->getType()] = $tag->getDescription();
 				unset($this->tags[$i]);

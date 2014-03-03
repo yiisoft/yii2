@@ -87,7 +87,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		// TODO add support for orderBy
 		$data = $this->executeScript($db, 'All');
 		$rows = [];
-		foreach($data as $dataRow) {
+		foreach ($data as $dataRow) {
 			$row = [];
 			$c = count($dataRow);
 			for($i = 0; $i < $c; ) {
@@ -101,7 +101,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 				$this->findWith($this->with, $models);
 			}
 			if (!$this->asArray) {
-				foreach($models as $model) {
+				foreach ($models as $model) {
 					$model->afterFind();
 				}
 			}
@@ -336,7 +336,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		if (count($this->where) == 1) {
 			$pks = (array) reset($this->where);
 		} else {
-			foreach($this->where as $values) {
+			foreach ($this->where as $values) {
 				if (is_array($values)) {
 					// TODO support composite IN for composite PK
 					throw new NotSupportedException('Find by composite PK is not supported by redis ActiveRecord.');
@@ -357,7 +357,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		}
 		$i = 0;
 		$data = [];
-		foreach($pks as $pk) {
+		foreach ($pks as $pk) {
 			if (++$i > $start && ($limit === null || $i <= $start + $limit)) {
 				$key = $modelClass::keyPrefix() . ':a:' . $modelClass::buildKey($pk);
 				$result = $db->executeCommand('HGETALL', [$key]);
@@ -380,7 +380,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 				return count($data);
 			case 'Column':
 				$column = [];
-				foreach($data as $dataRow) {
+				foreach ($data as $dataRow) {
 					$row = [];
 					$c = count($dataRow);
 					for($i = 0; $i < $c; ) {
@@ -391,7 +391,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 				return $column;
 			case 'Sum':
 				$sum = 0;
-				foreach($data as $dataRow) {
+				foreach ($data as $dataRow) {
 					$c = count($dataRow);
 					for($i = 0; $i < $c; ) {
 						if ($dataRow[$i++] == $columnName) {
@@ -404,7 +404,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 			case 'Average':
 				$sum = 0;
 				$count = 0;
-				foreach($data as $dataRow) {
+				foreach ($data as $dataRow) {
 					$count++;
 					$c = count($dataRow);
 					for($i = 0; $i < $c; ) {
@@ -417,7 +417,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 				return $sum / $count;
 			case 'Min':
 				$min = null;
-				foreach($data as $dataRow) {
+				foreach ($data as $dataRow) {
 					$c = count($dataRow);
 					for($i = 0; $i < $c; ) {
 						if ($dataRow[$i++] == $columnName && ($min == null || $dataRow[$i] < $min)) {
@@ -429,7 +429,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 				return $min;
 			case 'Max':
 				$max = null;
-				foreach($data as $dataRow) {
+				foreach ($data as $dataRow) {
 					$c = count($dataRow);
 					for($i = 0; $i < $c; ) {
 						if ($dataRow[$i++] == $columnName && ($max == null || $dataRow[$i] > $max)) {

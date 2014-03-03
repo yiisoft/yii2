@@ -23,7 +23,7 @@ use yii\helpers\VarDumper;
 			</tr>
 		</thead>
 		<tbody>
-		<?php foreach($values as $name => $value): ?>
+		<?php foreach ($values as $name => $value): ?>
 			<tr>
 				<th style="width: 200px;"><?= Html::encode($name) ?></th>
 				<td><?= htmlspecialchars(VarDumper::dumpAsString($value), ENT_QUOTES|ENT_SUBSTITUTE, \Yii::$app->charset, true) ?></td>

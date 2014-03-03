@@ -192,7 +192,7 @@ class Installer extends LibraryInstaller
 		if (!file_exists($yiiDir)) {
 			mkdir($yiiDir, 0777, true);
 		}
-		foreach(['Yii.php', 'BaseYii.php', 'classes.php'] as $file) {
+		foreach (['Yii.php', 'BaseYii.php', 'classes.php'] as $file) {
 			file_put_contents($yiiDir . '/' . $file, <<<EOF
 <?php
 /**
@@ -213,7 +213,7 @@ EOF
 	protected function removeBaseYiiFiles()
 	{
 		$yiiDir = $this->vendorDir . '/yiisoft/yii2';
-		foreach(['Yii.php', 'BaseYii.php', 'classes.php'] as $file) {
+		foreach (['Yii.php', 'BaseYii.php', 'classes.php'] as $file) {
 			if (file_exists($yiiDir . '/' . $file)) {
 				unlink($yiiDir . '/' . $file);
 			}
