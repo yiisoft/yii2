@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-elasticsearch",
 	"description": "Elasticsearch integration and ActiveRecord for the Yii framework",
-	"keywords": ["yii", "elasticsearch", "active-record", "search", "fulltext"],
+	"keywords": ["yii2", "elasticsearch", "active-record", "search", "fulltext"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {

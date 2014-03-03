@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-smarty",
 	"description": "The Smarty integration for the Yii framework",
-	"keywords": ["yii", "smarty", "renderer"],
+	"keywords": ["yii2", "smarty", "renderer"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {

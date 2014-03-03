@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-app-benchmark",
 	"description": "Yii 2 Benchmark Application",
-	"keywords": ["yii", "framework", "benchmark", "application"],
+	"keywords": ["yii2", "framework", "benchmark", "application"],
 	"homepage": "http://www.yiiframework.com/",
 	"type": "project",
 	"license": "BSD-3-Clause",

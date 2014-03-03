@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-bootstrap",
 	"description": "The Twitter Bootstrap extension for the Yii framework",
-	"keywords": ["yii", "bootstrap"],
+	"keywords": ["yii2", "bootstrap"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {
