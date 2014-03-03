@@ -28,7 +28,7 @@ ArrayHelper::multisort($properties, 'name');
 			<?php if($property->getIsWriteOnly()) echo ' <em>write-only</em> '; ?>
 			property
 			<?php if(!empty($property->since)): ?>
-				(available since version <?php echo $property->since; ?>)
+				(available since version <?= $property->since ?>)
 			<?php endif; ?>
 		</span>
 	</div>

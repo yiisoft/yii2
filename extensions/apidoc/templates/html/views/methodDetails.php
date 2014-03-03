@@ -26,7 +26,7 @@ ArrayHelper::multisort($methods, 'name');
 			<?= $method->visibility ?>
 			method
 			<?php if (!empty($method->since)): ?>
-				(available since version <?php echo $method->since; ?>)
+				(available since version <?= $method->since ?>)
 			<?php endif; ?>
 		</span>
 	</div>
