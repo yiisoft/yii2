@@ -181,7 +181,7 @@ class Controller extends \yii\web\Controller
 			}
 		}
 
-		if (empty($accessToken) || !Yii::$app->getUser()->loginByToken($accessToken)) {
+		if (empty($accessToken) || !Yii::$app->getUser()->loginByAccessToken($accessToken)) {
 			Yii::$app->getResponse()->getHeaders()->set("WWW-Authenticate', '{$this->authType} realm=\"{$this->authRealm}\"");
 			throw new UnauthorizedHttpException(empty($accessToken) ? 'Access token required.' : 'You are requesting with an invalid access token.');
 		}
