@@ -8,6 +8,7 @@
 namespace yii\rest;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
 use yii\web\UnsupportedMediaTypeHttpException;
@@ -33,18 +34,6 @@ class Controller extends \yii\web\Controller
 	 * The name of the header parameter representing the API version number.
 	 */
 	const HEADER_VERSION = 'version';
-	/**
-	 * HTTP Basic authentication.
-	 */
-	const AUTH_TYPE_BASIC = 'Basic';
-	/**
-	 * HTTP Bearer authentication (the token obtained through OAuth2)
-	 */
-	const AUTH_TYPE_BEARER = 'Bearer';
-	/**
-	 * Authentication by an access token passed via a query parameter
-	 */
-	const AUTH_TYPE_QUERY = 'Query';
 
 	/**
 	 * @var string|array the configuration for creating the serializer that formats the response data.
@@ -55,18 +44,10 @@ class Controller extends \yii\web\Controller
 	 */
 	public $enableCsrfValidation = false;
 	/**
-	 * @var string|array the supported authentication type(s). Valid values include [[AUTH_TYPE_BASIC]],
-	 * [[AUTH_TYPE_BEARER]] and [[AUTH_TYPE_QUERY]].
+	 * @var array the supported authentication methods. This property should take a list of supported
+	 * authentication methods, each represented by an authentication class or configuration.
 	 */
-	public $authType = [self::AUTH_TYPE_BASIC, self::AUTH_TYPE_BEARER, self::AUTH_TYPE_QUERY];
-	/**
-	 * @var string the authentication realm to display in case when authentication fails.
-	 */
-	public $authRealm = 'api';
-	/**
-	 * @var string the name of the query parameter containing the access token when [[AUTH_TYPE_QUERY]] is used.
-	 */
-	public $authParam = 'access-token';
+	public $authMethods = ['yii\rest\HttpBasicAuth', 'yii\rest\HttpBearerAuth', 'yii\rest\QueryParamAuth'];
 	/**
 	 * @var string the chosen API version number
 	 * @see supportedVersions
@@ -182,36 +163,25 @@ class Controller extends \yii\web\Controller
 	 */
 	protected function authenticate()
 	{
+		if (empty($this->authMethods)) {
+			return;
+		}
+
+		$user = Yii::$app->getUser();
 		$request = Yii::$app->getRequest();
-		foreach ((array)$this->authType as $authType) {
-			switch ($authType) {
-				case self::AUTH_TYPE_BASIC:
-					$accessToken = $request->getAuthUser();
-					break;
-				case self::AUTH_TYPE_BEARER:
-					$authHeader = $request->getHeaders()->get('Authorization');
-					if ($authHeader !== null && preg_match("/^{$this->authType}\\s+(.*?)$/", $authHeader, $matches)) {
-						$accessToken = $matches[1];
-					}
-					break;
-				case self::AUTH_TYPE_QUERY:
-					$accessToken = $request->get($this->authParam);
-					break;
-			}
-			if (isset($accessToken)) {
-				break;
+		$response = Yii::$app->getResponse();
+		foreach ($this->authMethods as $i => $auth) {
+			$this->authMethods[$i] = $auth = Yii::createObject($auth);
+			if (!$auth instanceof AuthInterface) {
+				throw new InvalidConfigException(get_class($auth) . ' must implement yii\rest\AuthInterface');
+			} elseif ($auth->authenticate($user, $request, $response) !== null) {
+				return;
 			}
 		}
 
-		if (!isset($accessToken) || !Yii::$app->getUser()->loginByAccessToken($accessToken)) {
-			if (!isset($accessToken, $authType)) {
-				$authType = is_array($this->authType) ? reset($this->authType) : $this->authType;
-			}
-			if ($authType !== self::AUTH_TYPE_QUERY) {
-				Yii::$app->getResponse()->getHeaders()->set('WWW-Authenticate', "{$authType} realm=\"{$this->authRealm}\"");
-			}
-			throw new UnauthorizedHttpException(empty($accessToken) ? 'Access token required.' : 'You are requesting with an invalid access token.');
-		}
+		/** @var AuthInterface $auth */
+		$auth = reset($this->authMethods);
+		$auth->handleFailure($response);
 	}
 
 	/**
