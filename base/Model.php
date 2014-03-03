@@ -17,6 +17,8 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
+use yii\web\Link;
+use yii\web\Linkable;
 
 /**
  * Model is the base class for data models.
@@ -876,6 +878,11 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 		foreach ($this->resolveFields($fields, $expand) as $field => $definition) {
 			$data[$field] = is_string($definition) ? $this->$definition : call_user_func($definition, $field, $this);
 		}
+
+		if ($this instanceof Linkable) {
+			$data['_links'] = Link::serialize($this->getLinks());
+		}
+
 		return $recursive ? ArrayHelper::toArray($data) : $data;
 	}
 
