@@ -213,7 +213,7 @@ class User extends Component
 	{
 		/** @var IdentityInterface $class */
 		$class = $this->identityClass;
-		$identity = $class::findIdentityByToken($token);
+		$identity = $class::findIdentityByAccessToken($token);
 		$this->setIdentity($identity);
 		return $identity;
 	}

@@ -58,7 +58,7 @@ interface IdentityInterface
 	 * Null should be returned if such an identity cannot be found
 	 * or the identity is not in an active state (disabled, deleted, etc.)
 	 */
-	public static function findIdentityByToken($token);
+	public static function findIdentityByAccessToken($token);
 	/**
 	 * Returns an ID that can uniquely identify a user identity.
 	 * @return string|integer an ID that uniquely identifies a user identity.
