@@ -14,7 +14,7 @@ In particular, Yii provides support for the following aspects regarding RESTful 
 * Authorization;
 * Support for HATEOAS;
 * Caching via `yii\web\HttpCache`;
-* Rate limiting: TBD
+* Rate limiting;
 * Searching and filtering: TBD
 * Testing: TBD
 * Automatic generation of API documentation: TBD
