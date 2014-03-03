@@ -11,6 +11,7 @@ use Yii;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
 use yii\web\UnsupportedMediaTypeHttpException;
+use yii\web\TooManyRequestsHttpException;
 use yii\web\VerbFilter;
 
 /**
@@ -116,6 +117,7 @@ class Controller extends \yii\web\Controller
 	{
 		if (parent::beforeAction($action)) {
 			$this->authenticate();
+			$this->checkRateLimit($action);
 			return true;
 		} else {
 			return false;
@@ -201,7 +203,6 @@ class Controller extends \yii\web\Controller
 			}
 		}
 
-
 		if (!isset($accessToken) || !Yii::$app->getUser()->loginByAccessToken($accessToken)) {
 			if (!isset($accessToken, $authType)) {
 				$authType = is_array($this->authType) ? reset($this->authType) : $this->authType;
@@ -211,6 +212,19 @@ class Controller extends \yii\web\Controller
 			}
 			throw new UnauthorizedHttpException(empty($accessToken) ? 'Access token required.' : 'You are requesting with an invalid access token.');
 		}
+	}
+
+	/**
+	 * Ensures the rate limit is not exceeded.
+	 * You may override this method to log the API usage and make sure the rate limit is not exceeded.
+	 * If exceeded, you should throw a [[TooManyRequestsHttpException]], and you may also send some HTTP headers,
+	 * such as `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`,
+	 * to explain the rate limit information.
+	 * @param \yii\base\Action $action the action to be executed
+	 * @throws TooManyRequestsHttpException if the rate limit is exceeded.
+	 */
+	protected function checkRateLimit($action)
+	{
 	}
 
 	/**
