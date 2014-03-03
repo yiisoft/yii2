@@ -90,7 +90,7 @@ class LanguageAsset extends AssetBundle
 	{
 		$language = $this->language ? $this->language : Yii::$app->language;
 		$this->js[] = 'language-' . $language . '.js';
-		parent::init();
+		parent::registerAssetFiles($view);
 	}
 }
 ```
