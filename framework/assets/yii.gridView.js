@@ -36,7 +36,8 @@
 				gridData[$e.prop('id')] = {settings: settings};
 
 				var enterPressed = false;
-				$(document).on('change.yiiGridView keydown.yiiGridView', settings.filterSelector, function (event) {
+				$(document).off('change.yiiGridView keydown.yiiGridView', settings.filterSelector)
+					.on('change.yiiGridView keydown.yiiGridView', settings.filterSelector, function (event) {
 					if (event.type === 'keydown') {
 						if (event.keyCode !== 13) {
 							return; // only react to enter key
