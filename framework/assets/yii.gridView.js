@@ -121,7 +121,8 @@
 		},
 
 		data: function () {
-			return this.data('yiiGridView');
+			var id = $(this).prop('id');
+			return gridData[id];
 		}
 	};
 })(window.jQuery);
