@@ -319,7 +319,7 @@ class MessageController extends Controller
 			}
 			if ($format === 'po') {
 				$output = '';
-				foreach ($merged as $k => $v){
+				foreach ($merged as $k => $v) {
 					$k = preg_replace('/(\")|(\\\")/', "\\\"", $k);
 					$v = preg_replace('/(\")|(\\\")/', "\\\"", $v);
 					if (substr($v, 0, 2) === '@@' && substr($v, -2) === '@@') {
@@ -338,7 +338,7 @@ class MessageController extends Controller
 			if ($format === 'po') {
 				$merged = '';
 				sort($messages);
-				foreach($messages as $message) {
+				foreach ($messages as $message) {
 					$message = preg_replace('/(\")|(\\\")/', '\\\"', $message);
 					$merged .= "msgid \"$message\"\n";
 					$merged .= "msgstr \"\"\n";

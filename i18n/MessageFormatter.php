@@ -143,7 +143,7 @@ class MessageFormatter extends Component
 			return false;
 		}
 		$map = [];
-		foreach($tokens as $i => $token) {
+		foreach ($tokens as $i => $token) {
 			if (is_array($token)) {
 				$param = trim($token[0]);
 				if (!isset($map[$param])) {
@@ -169,7 +169,7 @@ class MessageFormatter extends Component
 			return false;
 		} else {
 			$values = [];
-			foreach($result as $key => $value) {
+			foreach ($result as $key => $value) {
 				$values[$map[$key]] = $value;
 			}
 			return $values;
@@ -190,7 +190,7 @@ class MessageFormatter extends Component
 		if (($tokens = self::tokenizePattern($pattern)) === false) {
 			return false;
 		}
-		foreach($tokens as $i => $token) {
+		foreach ($tokens as $i => $token) {
 			if (!is_array($token)) {
 				continue;
 			}
@@ -244,7 +244,7 @@ class MessageFormatter extends Component
 			$this->_errorMessage = "Message pattern is invalid.";
 			return false;
 		}
-		foreach($tokens as $i => $token) {
+		foreach ($tokens as $i => $token) {
 			if (is_array($token)) {
 				if (($tokens[$i] = $this->parseToken($token, $args, $locale)) === false) {
 					$this->_errorCode = -1;
