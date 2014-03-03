@@ -140,25 +140,6 @@ class User extends ActiveRecord
 In the following subsections, we will explain in more details about implementing RESTful APIs.
 
 
-HTTP Status Code Summary
-------------------------
-
-* `200`: OK. Everything worked as expected.
-* `201`: A resource was successfully created in response to a `POST` request. The `Location` header
-   contains the URL pointing to the newly created resource.
-* `204`: The request is handled successfully and the response contains no body content (like a `DELETE` request).
-* `304`: Resource was not modified. You can use the cached version.
-* `400`: Bad request. This could be caused by various reasons from the user side, such as invalid JSON
-   data in the request body, invalid action parameters, etc.
-* `401`: No valid API access token is provided.
-* `403`: The authenticated user is not allowed to access the specified API endpoint.
-* `404`: The requested resource does not exist.
-* `405`: Method not allowed. Please check the `Allow` header for allowed HTTP methods.
-* `415`: Unsupported media type. The requested content type or version number is invalid.
-* `422`: Data validation failed (in response to a `POST` request, for example). Please check the response body for detailed error messages.
-* `429`: Too many requests. The request is rejected due to rate limiting.
-* `500`: Internal server error. This could be caused by internal program errors.
-
 
 Data Formatting
 ---------------
@@ -191,8 +172,30 @@ Caching
 Rate Limiting
 -------------
 
+
+HTTP Status Code Summary
+------------------------
+
+* `200`: OK. Everything worked as expected.
+* `201`: A resource was successfully created in response to a `POST` request. The `Location` header
+   contains the URL pointing to the newly created resource.
+* `204`: The request is handled successfully and the response contains no body content (like a `DELETE` request).
+* `304`: Resource was not modified. You can use the cached version.
+* `400`: Bad request. This could be caused by various reasons from the user side, such as invalid JSON
+   data in the request body, invalid action parameters, etc.
+* `401`: No valid API access token is provided.
+* `403`: The authenticated user is not allowed to access the specified API endpoint.
+* `404`: The requested resource does not exist.
+* `405`: Method not allowed. Please check the `Allow` header for allowed HTTP methods.
+* `415`: Unsupported media type. The requested content type or version number is invalid.
+* `422`: Data validation failed (in response to a `POST` request, for example). Please check the response body for detailed error messages.
+* `429`: Too many requests. The request is rejected due to rate limiting.
+* `500`: Internal server error. This could be caused by internal program errors.
+
+
 Documentation
 -------------
 
 Testing
 -------
+
