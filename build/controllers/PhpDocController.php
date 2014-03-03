@@ -24,7 +24,7 @@ class PhpDocController extends Controller
 	public $defaultAction = 'property';
 
 	/**
-	 * @var bool whether to update class docs directly. Setting this to false will just output docs
+	 * @var boolean whether to update class docs directly. Setting this to false will just output docs
 	 * for copy and paste.
 	 */
 	public $updateFiles = true;

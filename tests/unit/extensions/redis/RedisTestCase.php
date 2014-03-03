@@ -31,7 +31,7 @@ abstract class RedisTestCase extends TestCase
 	}
 
 	/**
-	 * @param bool $reset whether to clean up the test database
+	 * @param boolean $reset whether to clean up the test database
 	 * @return Connection
 	 */
 	public function getConnection($reset = true)

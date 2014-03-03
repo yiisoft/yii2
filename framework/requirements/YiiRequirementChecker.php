@@ -320,7 +320,7 @@ class YiiRequirementChecker
 	/**
 	 * Normalizes requirement ensuring it has correct format.
 	 * @param array $requirement raw requirement.
-	 * @param int $requirementKey requirement key in the list.
+	 * @param integer $requirementKey requirement key in the list.
 	 * @return array normalized requirement.
 	 */
 	function normalizeRequirement($requirement, $requirementKey = 0)

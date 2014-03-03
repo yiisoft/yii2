@@ -22,7 +22,7 @@ use yii\caching\Cache;
 abstract class CacheTestCase extends TestCase
 {
 	/**
-	 * @var int virtual time to be returned by mocked time() function.
+	 * @var integer virtual time to be returned by mocked time() function.
 	 * Null means normal time() behavior.
 	 */
 	public static $time;

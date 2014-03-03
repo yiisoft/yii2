@@ -29,7 +29,7 @@ class Connection extends Component
 	const EVENT_AFTER_OPEN = 'afterOpen';
 
 	/**
-	 * @var bool whether to autodetect available cluster nodes on [[open()]]
+	 * @var boolean whether to autodetect available cluster nodes on [[open()]]
 	 */
 	public $autodetectCluster = true;
 	/**
