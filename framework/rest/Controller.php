@@ -8,9 +8,9 @@
 namespace yii\rest;
 
 use Yii;
-use yii\web\BadRequestHttpException;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
+use yii\web\UnsupportedMediaTypeHttpException;
 use yii\web\VerbFilter;
 
 /**
@@ -124,7 +124,7 @@ class Controller extends \yii\web\Controller
 
 	/**
 	 * Resolves the response format and the API version number.
-	 * @throws BadRequestHttpException
+	 * @throws UnsupportedMediaTypeHttpException
 	 */
 	protected function resolveFormatAndVersion()
 	{
@@ -142,7 +142,7 @@ class Controller extends \yii\web\Controller
 					if (in_array($params[self::HEADER_VERSION], $this->supportedVersions, true)) {
 						$this->version = $params[self::HEADER_VERSION];
 					} else {
-						throw new BadRequestHttpException('You are requesting an invalid version number.');
+						throw new UnsupportedMediaTypeHttpException('You are requesting an invalid version number.');
 					}
 				}
 				return;
@@ -150,7 +150,7 @@ class Controller extends \yii\web\Controller
 		}
 
 		if (!isset($types['*/*'])) {
-			throw new BadRequestHttpException('None of your requested content types is valid.');
+			throw new UnsupportedMediaTypeHttpException('None of your requested content types is supported.');
 		}
 	}
 

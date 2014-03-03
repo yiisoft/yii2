@@ -126,7 +126,7 @@ class Serializer extends Component
 	 */
 	protected function serializeModelErrors($model)
 	{
-		$this->response->setStatusCode(400, 'Data Validation Failure');
+		$this->response->setStatusCode(422, 'Data Validation Failed.');
 		$result = [];
 		foreach ($model->getFirstErrors() as $name => $message) {
 			$result[] = [
