@@ -508,11 +508,11 @@ class BaseFileHelper
 		if (!is_string($pattern)) {
 			throw new InvalidParamException('Exclude/include pattern must be a string.');
 		}
-		$result = array(
+		$result = [
 			'pattern' => $pattern,
 			'flags' => 0,
 			'firstWildcard' => false,
-		);
+		];
 		if (!isset($pattern[0]))
 			return $result;
 
@@ -542,7 +542,7 @@ class BaseFileHelper
 	 */
 	private static function firstWildcardInPattern($pattern)
 	{
-		$wildcards = array('*','?','[','\\');
+		$wildcards = ['*','?','[','\\'];
 		$wildcardSearch = function($r, $c) use ($pattern) {
 			$p = strpos($pattern, $c);
 			return $r===false ? $p : ($p===false ? $r : min($r, $p));
