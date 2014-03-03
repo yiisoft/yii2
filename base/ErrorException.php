@@ -66,7 +66,7 @@ class ErrorException extends Exception
 	 * Returns if error is one of fatal type.
 	 *
 	 * @param array $error error got from error_get_last()
-	 * @return bool if error is one of fatal type
+	 * @return boolean if error is one of fatal type
 	 */
 	public static function isFatalError($error)
 	{
@@ -76,7 +76,7 @@ class ErrorException extends Exception
 	/**
 	 * Gets the exception severity.
 	 * @link http://php.net/manual/en/errorexception.getseverity.php
-	 * @return int the severity level of the exception.
+	 * @return integer the severity level of the exception.
 	 */
 	final public function getSeverity()
 	{

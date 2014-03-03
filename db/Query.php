@@ -396,7 +396,7 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Sets the value indicating whether to SELECT DISTINCT or not.
-	 * @param bool $value whether to SELECT DISTINCT or not.
+	 * @param boolean $value whether to SELECT DISTINCT or not.
 	 * @return static the query object itself
 	 */
 	public function distinct($value = true)
@@ -754,7 +754,7 @@ class Query extends Component implements QueryInterface
 	/**
 	 * Appends a SQL statement using UNION operator.
 	 * @param string|Query $sql the SQL statement to be appended using UNION
-	 * @param bool $all TRUE if using UNION ALL and FALSE if using UNION
+	 * @param boolean $all TRUE if using UNION ALL and FALSE if using UNION
 	 * @return static the query object itself
 	 */
 	public function union($sql, $all = false)
