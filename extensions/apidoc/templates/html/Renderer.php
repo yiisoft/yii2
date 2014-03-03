@@ -235,7 +235,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 		$parents = [];
 		$parents[] = $this->typeLink($class);
 		while ($class->parentClass !== null) {
-			if(isset($this->context->classes[$class->parentClass])) {
+			if (isset($this->context->classes[$class->parentClass])) {
 				$class = $this->context->classes[$class->parentClass];
 				$parents[] = $this->typeLink($class);
 			} else {
@@ -255,7 +255,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 		$interfaces = [];
 		sort($names, SORT_STRING);
 		foreach($names as $interface) {
-			if(isset($this->context->interfaces[$interface])) {
+			if (isset($this->context->interfaces[$interface])) {
 				$interfaces[] = $this->typeLink($this->context->interfaces[$interface]);
 			} else {
 				$interfaces[] = $interface; // TODO link to php.net
@@ -273,7 +273,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 		$traits = [];
 		sort($names, SORT_STRING);
 		foreach($names as $trait) {
-			if(isset($this->context->traits[$trait])) {
+			if (isset($this->context->traits[$trait])) {
 				$traits[] = $this->typeLink($this->context->traits[$trait]);
 			} else {
 				$traits[] = $trait; // TODO link to php.net
@@ -291,7 +291,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 		$classes = [];
 		sort($names, SORT_STRING);
 		foreach($names as $class) {
-			if(isset($this->context->classes[$class])) {
+			if (isset($this->context->classes[$class])) {
 				$classes[] = $this->typeLink($this->context->classes[$class]);
 			} else {
 				$classes[] = $class; // TODO link to php.net

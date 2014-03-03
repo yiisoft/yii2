@@ -120,7 +120,7 @@ needs to be divisible by 10. In the rules you would define: `['attributeName', '
 Then, your own method could look like this:
 ```php
 public function myValidationMethod($attribute) {
-    if(($this->$attribute % 10) != 0) {
+    if (($this->$attribute % 10) != 0) {
          $this->addError($attribute, 'cannot divide value by 10');
     }
 }

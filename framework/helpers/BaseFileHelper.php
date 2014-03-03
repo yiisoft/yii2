@@ -397,7 +397,7 @@ class BaseFileHelper
 			if ($pattern === $baseName) {
 				return true;
 			}
-		} else if ($flags & self::PATTERN_ENDSWITH) {
+		} elseif ($flags & self::PATTERN_ENDSWITH) {
 			/* "*literal" matching against "fooliteral" */
 			$n = StringHelper::byteLength($pattern);
 			if (StringHelper::byteSubstr($pattern, 1, $n) === StringHelper::byteSubstr($baseName, -$n, $n)) {

@@ -34,7 +34,7 @@ if ($protected && count($type->getProtectedProperties()) == 0 || !$protected && 
 $properties = $type->properties;
 ArrayHelper::multisort($properties, 'name');
 foreach($properties as $property): ?>
-	<?php if($protected && $property->visibility == 'protected' || !$protected && $property->visibility != 'protected'): ?>
+	<?php if ($protected && $property->visibility == 'protected' || !$protected && $property->visibility != 'protected'): ?>
 	<tr<?= $property->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $property->name ?>">
 		<td><?= $this->context->subjectLink($property) ?></td>
 		<td><?= $this->context->typeLink($property->types) ?></td>

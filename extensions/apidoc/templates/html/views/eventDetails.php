@@ -21,7 +21,7 @@ ArrayHelper::multisort($events, 'name');
 		<?= $event->name ?>
 		<span class="detailHeaderTag small">
 		event
-		<?php if(!empty($event->since)): ?>
+		<?php if (!empty($event->since)): ?>
 			(available since version <?= $event->since ?>)
 		<?php endif; ?>
 		</span>

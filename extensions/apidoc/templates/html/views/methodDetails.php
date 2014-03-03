@@ -35,7 +35,7 @@ ArrayHelper::multisort($methods, 'name');
 		<tr><td colspan="3">
 			<div class="signature2"><?= $this->context->renderMethodSignature($method) ?></div>
 		</td></tr>
-		<?php if(!empty($method->params) || !empty($method->return) || !empty($method->exceptions)): ?>
+		<?php if (!empty($method->params) || !empty($method->return) || !empty($method->exceptions)): ?>
 			<?php foreach($method->params as $param): ?>
 				<tr>
 				  <td class="paramNameCol"><?= $param->name ?></td>
@@ -43,7 +43,7 @@ ArrayHelper::multisort($methods, 'name');
 				  <td class="paramDescCol"><?= ApiMarkdown::process($param->description, $type) ?></td>
 				</tr>
 			<?php endforeach; ?>
-			<?php if(!empty($method->return)): ?>
+			<?php if (!empty($method->return)): ?>
 				<tr>
 				  <td class="paramNameCol"><?= 'return'; ?></td>
 				  <td class="paramTypeCol"><?= $this->context->typeLink($method->returnTypes); ?></td>

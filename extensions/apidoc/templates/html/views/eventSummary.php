@@ -35,7 +35,7 @@ ArrayHelper::multisort($events, 'name');
 	<td><?= $this->context->typeLink($event->types) ?></td>
 	<td>
 		<?= ApiMarkdown::process($event->shortDescription, $event->definedBy, true) ?>
-		<?php if(!empty($event->since)): ?>
+		<?php if (!empty($event->since)): ?>
 			(available since version <?= $event->since ?>)
 		<?php endif; ?>
 	</td>

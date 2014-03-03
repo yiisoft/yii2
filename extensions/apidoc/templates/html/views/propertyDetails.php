@@ -24,10 +24,10 @@ ArrayHelper::multisort($properties, 'name');
 		<?= $property->name ?>
 		<span class="detailHeaderTag small">
 			<?= $property->visibility ?>
-			<?php if($property->getIsReadOnly()) echo ' <em>read-only</em> '; ?>
-			<?php if($property->getIsWriteOnly()) echo ' <em>write-only</em> '; ?>
+			<?php if ($property->getIsReadOnly()) echo ' <em>read-only</em> '; ?>
+			<?php if ($property->getIsWriteOnly()) echo ' <em>write-only</em> '; ?>
 			property
-			<?php if(!empty($property->since)): ?>
+			<?php if (!empty($property->since)): ?>
 				(available since version <?= $property->since ?>)
 			<?php endif; ?>
 		</span>

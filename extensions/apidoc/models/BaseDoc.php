@@ -106,10 +106,11 @@ class BaseDoc extends Object
 
 	public function getSourceUrl($baseUrl, $line=null)
 	{
-		if($line === null)
+		if ($line === null) {
 			return $baseUrl . $this->sourcePath;
-		else
+		} else {
 			return $baseUrl . $this->sourcePath . '#' . $line;
+		}
 	}
 
 	public function getSourceCode()

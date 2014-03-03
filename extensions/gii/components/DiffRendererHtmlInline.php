@@ -73,7 +73,7 @@ HTML;
 					}
 				}
 				// Added lines only on the right side
-				else if ($change['tag'] === 'insert') {
+				elseif ($change['tag'] === 'insert') {
 					foreach ($change['changed']['lines'] as $no => $line) {
 						$toLine = $change['changed']['offset'] + $no + 1;
 						$html .= <<<HTML
@@ -86,7 +86,7 @@ HTML;
 					}
 				}
 				// Show deleted lines only on the left side
-				else if ($change['tag'] === 'delete') {
+				elseif ($change['tag'] === 'delete') {
 					foreach ($change['base']['lines'] as $no => $line) {
 						$fromLine = $change['base']['offset'] + $no + 1;
 						$html .= <<<HTML
@@ -99,7 +99,7 @@ HTML;
 					}
 				}
 				// Show modified lines on both sides
-				else if ($change['tag'] === 'replace') {
+				elseif ($change['tag'] === 'replace') {
 					foreach ($change['base']['lines'] as $no => $line) {
 						$fromLine = $change['base']['offset'] + $no + 1;
 						$html .= <<<HTML
