@@ -10,7 +10,7 @@ In particular, Yii provides support for the following aspects regarding RESTful 
 * Proper formatting of collection data and validation errors;
 * Efficient routing with proper HTTP verb check;
 * Support `OPTIONS` and `HEAD` verbs;
-* Authentication via HTTP basic;
+* Authentication;
 * Authorization;
 * Caching via `yii\web\HttpCache`;
 * Support for HATEOAS: TBD
@@ -27,22 +27,22 @@ Let's use a quick example to show how to build a set of RESTful APIs using Yii.
 Assume you want to expose the user data via RESTful APIs. The user data are stored in the user DB table,
 and you have already created the ActiveRecord class `app\models\User` to access the user data.
 
-First, check your `User` class for its implementation of the `findIdentityByToken()` method.
+First, check your `User` class for its implementation of the `findIdentityByAccessToken()` method.
 It may look like the following:
 
 ```php
 class User extends ActiveRecord
 {
 	...
-	public static function findIdentityByToken($token)
+	public static function findIdentityByAccessToken($token)
 	{
-		return static::find(['api_key' => $token]);
+		return static::find(['access_token' => $token]);
 	}
 }
 ```
 
-This means your user table has a column named `api_key` which stores API access keys for the users.
-Pick up a key from the table as you will need it to access your APIs next.
+This means your user table has a column named `access_token` which stores API access tokens for the users.
+Pick up a token from the table as you will need it to access your APIs next.
 
 Second, create a controller class `app\controllers\UserController` as follows,
 
@@ -86,7 +86,7 @@ for accessing the user data. The APIs you have created include:
 You may access your APIs with the `curl` command like the following,
 
 ```
-curl -i -u "Your-API-Key:" -H "Accept:application/json" "http://localhost/users"
+curl -i -u "Your-API-Access-Token:" -H "Accept:application/json" "http://localhost/users"
 ```
 
 which may give the following output:
@@ -108,7 +108,7 @@ Content-Type: application/json; charset=UTF-8
 ```
 
 > Tip: You may also access your API via Web browser. You will be asked
-> to enter a username and password. Fill in the username field with the API key you obtained
+> to enter a username and password. Fill in the username field with the API access token you obtained
 > previously and leave the password field blank.
 
 Try changing the acceptable content type to be `application/xml`, and you will see the result
@@ -139,4 +139,57 @@ class User extends ActiveRecord
 
 In the following subsections, we will explain in more details about implementing RESTful APIs.
 
-TBD
+
+HTTP Status Code Summary
+------------------------
+
+* `200`: OK. Everything worked as expected.
+* `201`: A data item was successfully created. Please check the `Location` header for the URL to access the new data item.
+* `204`: A data item was successfully deleted.
+* `304`: Data not modified. You can use cached data.
+* `400`: Bad request. This could be caused by various reasons from the user side, such as invalid content type request,
+  invalid API version number, or data validation failure. If it is data validation failure, please check
+  the response body for error messages.
+* `401`: No valid API access token is provided.
+* `403`: The authenticated user is not allowed to access the specified API endpoint.
+* `404`: The requested item does not exist.
+* `405`: Method not allowed. Please check the `Allow` header for allowed HTTP methods.
+* `500`: Internal server error.
+
+
+Data Formatting
+---------------
+
+
+Implementing New API Endpoints
+------------------------------
+
+
+Routing
+-------
+
+
+Authentication
+--------------
+
+
+Authorization
+-------------
+
+
+Versioning
+----------
+
+
+Caching
+-------
+
+
+Rate Limiting
+-------------
+
+Documentation
+-------------
+
+Testing
+-------

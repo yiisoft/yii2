@@ -8,7 +8,7 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
 	public $username;
 	public $password;
 	public $authKey;
-	public $apiKey;
+	public $accessToken;
 
 	private static $users = [
 		'100' => [
@@ -16,14 +16,14 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
 			'username' => 'admin',
 			'password' => 'admin',
 			'authKey' => 'test100key',
-			'apiKey' => '100-apikey',
+			'accessToken' => '100-token',
 		],
 		'101' => [
 			'id' => '101',
 			'username' => 'demo',
 			'password' => 'demo',
 			'authKey' => 'test101key',
-			'apiKey' => '101-apikey',
+			'accessToken' => '101-token',
 		],
 	];
 
@@ -38,10 +38,10 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
 	/**
 	 * @inheritdoc
 	 */
-	public static function findIdentityByToken($token)
+	public static function findIdentityByAccessToken($token)
 	{
 		foreach (self::$users as $user) {
-			if ($user['apiKey'] === $token) {
+			if ($user['accessToken'] === $token) {
 				return new static($user);
 			}
 		}

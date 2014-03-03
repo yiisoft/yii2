@@ -30,9 +30,9 @@ class User extends ActiveRecord implements IdentityInterface
 	 * @param string $token the token to be looked for
 	 * @return IdentityInterface|null the identity object that matches the given token.
 	 */
-	public static function findIdentityByToken($token)
+	public static function findIdentityByAccessToken($token)
 	{
-		return static::find(['api_key' => $token]);
+		return static::find(['access_token' => $token]);
 	}
 
 	/**

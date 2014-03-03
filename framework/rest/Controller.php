@@ -32,6 +32,14 @@ class Controller extends \yii\web\Controller
 	 * The name of the header parameter representing the API version number.
 	 */
 	const HEADER_VERSION = 'version';
+	/**
+	 * HTTP Basic authentication.
+	 */
+	const AUTH_TYPE_BASIC = 'Basic';
+	/**
+	 * HTTP Bearer authentication (the token obtained through OAuth2)
+	 */
+	const AUTH_TYPE_BEARER = 'Bearer';
 
 	/**
 	 * @var string|array the configuration for creating the serializer that formats the response data.
@@ -41,6 +49,14 @@ class Controller extends \yii\web\Controller
 	 * @inheritdoc
 	 */
 	public $enableCsrfValidation = false;
+	/**
+	 * @var string the authentication type. This should be a valid HTTP authentication method.
+	 */
+	public $authType = self::AUTH_TYPE_BASIC;
+	/**
+	 * @var string the authentication realm to display in case when authentication fails.
+	 */
+	public $authRealm = 'api';
 	/**
 	 * @var string the chosen API version number
 	 * @see supportedVersions
@@ -150,15 +166,24 @@ class Controller extends \yii\web\Controller
 
 	/**
 	 * Authenticates the user.
-	 * This method implements the user authentication based on HTTP basic authentication.
+	 * This method implements the user authentication based on an access token sent through the `Authorization` HTTP header.
 	 * @throws UnauthorizedHttpException if the user is not authenticated successfully
 	 */
 	protected function authenticate()
 	{
-		$apiKey = Yii::$app->getRequest()->getAuthUser();
-		if ($apiKey === null || !Yii::$app->getUser()->loginByToken($apiKey)) {
-			Yii::$app->getResponse()->getHeaders()->set('WWW-Authenticate', 'Basic realm="api"');
-			throw new UnauthorizedHttpException($apiKey === null ? 'Please provide an API key.' : 'You are requesting with an invalid API key.');
+		$request = Yii::$app->getRequest();
+		if ($this->authType == self::AUTH_TYPE_BASIC) {
+			$accessToken = $request->getAuthUser();
+		} else {
+			$authHeader = $request->getHeaders()->get('Authorization');
+			if ($authHeader !== null && preg_match("/^{$this->authType}\\s+(.*?)$/", $authHeader, $matches)) {
+				$accessToken = $matches[1];
+			}
+		}
+
+		if (empty($accessToken) || !Yii::$app->getUser()->loginByToken($accessToken)) {
+			Yii::$app->getResponse()->getHeaders()->set("WWW-Authenticate', '{$this->authType} realm=\"{$this->authRealm}\"");
+			throw new UnauthorizedHttpException(empty($accessToken) ? 'Access token required.' : 'You are requesting with an invalid access token.');
 		}
 	}
 
