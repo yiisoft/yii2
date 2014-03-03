@@ -9,7 +9,7 @@ class CustomerQuery extends ActiveQuery
 {
 	public function active()
 	{
-		$this->andWhere(array('status' => 1));
+		$this->andWhere(['status' => 1]);
 		return $this;
 	}
 }

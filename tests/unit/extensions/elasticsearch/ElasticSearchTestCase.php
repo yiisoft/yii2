@@ -41,7 +41,7 @@ class ElasticSearchTestCase extends TestCase
 	public function getConnection($reset = true)
 	{
 		$databases = $this->getParam('databases');
-		$params = isset($databases['elasticsearch']) ? $databases['elasticsearch'] : array();
+		$params = isset($databases['elasticsearch']) ? $databases['elasticsearch'] : [];
 		$db = new Connection();
 		if ($reset) {
 			$db->open();

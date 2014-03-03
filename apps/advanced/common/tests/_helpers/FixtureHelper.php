@@ -32,7 +32,7 @@ class FixtureHelper extends Module
 	 * to use in acceptance and functional tests.
 	 * @param array $settings
 	 */
-	public function _beforeSuite($settings = array())
+	public function _beforeSuite($settings = [])
 	{
 		$this->loadFixtures();
 	}

@@ -254,12 +254,12 @@ class FileHelperTest extends TestCase
 	public function testFindFilesExclude()
 	{
 		$basePath = $this->testFilePath . DIRECTORY_SEPARATOR;
-		$dirs = array('', 'one', 'one'.DIRECTORY_SEPARATOR.'two', 'three');
+		$dirs = ['', 'one', 'one'.DIRECTORY_SEPARATOR.'two', 'three'];
 		$files = array_fill_keys(array_map(function($n){return "a.$n";}, range(1,8)), 'file contents');
 
 		$tree = $files;
 		$root = $files;
-		$flat = array();
+		$flat = [];
 		foreach($dirs as $dir) {
 			foreach($files as $fileName=>$contents) {
 				$flat[] = rtrim($basePath.$dir,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$fileName;
