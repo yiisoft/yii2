@@ -18,7 +18,7 @@
 *
 * NOTE: this file must be saved in UTF-8 encoding.
 */
-return [
+array(
 	'the input value' => 'مقدار ورودی',
 	'(not set)' => '(تنظیم نشده)',
 	'An internal server error occurred.' => 'خطای داخلی سرور رخ داده است.',
@@ -80,4 +80,4 @@ return [
 	'{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} حداقل باید شامل {min, number} کارکتر باشد.',
 	'{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} حداکثر باید شامل {max, number} کارکتر باشد.',
 	'{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} باید شامل {length, number} کارکتر باشد.',
-];
+);
