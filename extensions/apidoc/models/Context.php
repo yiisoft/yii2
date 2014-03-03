@@ -266,7 +266,7 @@ class Context extends Component
 		if ($classA->name == $classB) {
 			return true;
 		}
-		while($classA->parentClass !== null && isset($this->classes[$classA->parentClass])) {
+		while ($classA->parentClass !== null && isset($this->classes[$classA->parentClass])) {
 			$classA = $this->classes[$classA->parentClass];
 			if ($classA->name == $classB) {
 				return true;
