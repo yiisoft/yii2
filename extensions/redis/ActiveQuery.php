@@ -90,7 +90,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		foreach ($data as $dataRow) {
 			$row = [];
 			$c = count($dataRow);
-			for($i = 0; $i < $c; ) {
+			for ($i = 0; $i < $c; ) {
 				$row[$dataRow[$i++]] = $dataRow[$i++];
 			}
 			$rows[] = $row;
@@ -128,7 +128,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 		}
 		$row = [];
 		$c = count($data);
-		for($i = 0; $i < $c; ) {
+		for ($i = 0; $i < $c; ) {
 			$row[$data[$i++]] = $data[$i++];
 		}
 		if ($this->asArray) {
@@ -383,7 +383,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 				foreach ($data as $dataRow) {
 					$row = [];
 					$c = count($dataRow);
-					for($i = 0; $i < $c; ) {
+					for ($i = 0; $i < $c; ) {
 						$row[$dataRow[$i++]] = $dataRow[$i++];
 					}
 					$column[] = $row[$columnName];
@@ -393,7 +393,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 				$sum = 0;
 				foreach ($data as $dataRow) {
 					$c = count($dataRow);
-					for($i = 0; $i < $c; ) {
+					for ($i = 0; $i < $c; ) {
 						if ($dataRow[$i++] == $columnName) {
 							$sum += $dataRow[$i];
 							break;
@@ -407,7 +407,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 				foreach ($data as $dataRow) {
 					$count++;
 					$c = count($dataRow);
-					for($i = 0; $i < $c; ) {
+					for ($i = 0; $i < $c; ) {
 						if ($dataRow[$i++] == $columnName) {
 							$sum += $dataRow[$i];
 							break;
@@ -419,7 +419,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 				$min = null;
 				foreach ($data as $dataRow) {
 					$c = count($dataRow);
-					for($i = 0; $i < $c; ) {
+					for ($i = 0; $i < $c; ) {
 						if ($dataRow[$i++] == $columnName && ($min == null || $dataRow[$i] < $min)) {
 							$min = $dataRow[$i];
 							break;
@@ -431,7 +431,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 				$max = null;
 				foreach ($data as $dataRow) {
 					$c = count($dataRow);
-					for($i = 0; $i < $c; ) {
+					for ($i = 0; $i < $c; ) {
 						if ($dataRow[$i++] == $columnName && ($max == null || $dataRow[$i] > $max)) {
 							$max = $dataRow[$i];
 							break;
