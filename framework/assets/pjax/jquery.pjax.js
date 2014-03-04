@@ -44,6 +44,8 @@
 // event   - "click" jQuery.Event
 // options - pjax options
 //
+// If the click event target has 'data-pjax="0"' attribute, the event is ignored, and no pjax call is made.
+//
 // Examples
 //
 //   $(document).on('click', 'a', $.pjax.click)

@@ -25,6 +25,8 @@ use yii\web\Response;
  * You may configure [[linkSelector]] to specify which links should trigger pjax, and configure [[formSelector]]
  * to specify which form submission may trigger pjax.
  *
+ * You may disable pjax for a specific link inside the container by adding `data-pjax="0"` attribute to this link.
+ *
  * The following example shows how to use Pjax with the [[\yii\gridview\GridView]] widget so that the grid pagination,
  * sorting and filtering can be done via pjax:
  *
