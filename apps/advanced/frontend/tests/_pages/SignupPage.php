@@ -20,5 +20,4 @@ class SignupPage extends BasePage
 		}
 		$this->guy->click('signup-button');
 	}
-
 }

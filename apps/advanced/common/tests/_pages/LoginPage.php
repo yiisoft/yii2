@@ -18,5 +18,4 @@ class LoginPage extends BasePage
 		$this->guy->fillField('input[name="LoginForm[password]"]', $password);
 		$this->guy->click('login-button');
 	}
-
 }
