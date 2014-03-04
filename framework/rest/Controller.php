@@ -46,12 +46,15 @@ class Controller extends \yii\web\Controller
 	/**
 	 * @var array the supported authentication methods. This property should take a list of supported
 	 * authentication methods, each represented by an authentication class or configuration.
+	 * If this is not set or empty, it means authentication is disabled.
 	 */
-	public $authMethods = ['yii\rest\HttpBasicAuth', 'yii\rest\HttpBearerAuth', 'yii\rest\QueryParamAuth'];
+	public $authMethods;
 	/**
 	 * @var string|array the rate limiter class or configuration. If this is not set or empty,
-	 * the rate limiting will be disabled.
+	 * the rate limiting will be disabled. Note that if the user is not authenticated, the rate limiting
+	 * will also NOT be performed.
 	 * @see checkRateLimit()
+	 * @see authMethods
 	 */
 	public $rateLimiter = 'yii\rest\RateLimiter';
 	/**

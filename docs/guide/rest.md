@@ -27,24 +27,7 @@ Let's use a quick example to show how to build a set of RESTful APIs using Yii.
 Assume you want to expose the user data via RESTful APIs. The user data are stored in the user DB table,
 and you have already created the ActiveRecord class `app\models\User` to access the user data.
 
-First, check your `User` class for its implementation of the `findIdentityByAccessToken()` method.
-It may look like the following:
-
-```php
-class User extends ActiveRecord
-{
-	...
-	public static function findIdentityByAccessToken($token)
-	{
-		return static::find(['access_token' => $token]);
-	}
-}
-```
-
-This means your user table has a column named `access_token` which stores API access tokens for the users.
-Pick up a token from the table as you will need it to access your APIs next.
-
-Second, create a controller class `app\controllers\UserController` as follows,
+First, create a controller class `app\controllers\UserController` as follows,
 
 ```php
 namespace app\controllers;
@@ -57,7 +40,7 @@ class UserController extends ActiveController
 }
 ```
 
-Third, modify the configuration about the `urlManager` component in your application configuration:
+Then, modify the configuration about the `urlManager` component in your application configuration:
 
 ```php
 'urlManager' => [
@@ -86,7 +69,7 @@ for accessing the user data. The APIs you have created include:
 You may access your APIs with the `curl` command like the following,
 
 ```
-curl -i -u "Your-API-Access-Token:" -H "Accept:application/json" "http://localhost/users"
+curl -i -H "Accept:application/json" "http://localhost/users"
 ```
 
 which may give the following output:
@@ -107,46 +90,189 @@ Content-Type: application/json; charset=UTF-8
 [{"id":1,..},{"id":2,...}...]
 ```
 
-> Tip: You may also access your API via Web browser. You will be asked
-> to enter a username and password. Fill in the username field with the API access token you obtained
-> previously and leave the password field blank.
-
 Try changing the acceptable content type to be `application/xml`, and you will see the result
-is returned in XML format.
-
-Using the `fields` and `expand` parameters, you can request to return a subset of the fields in the result.
-For example, the following URL will only return the `id` and `email` columns in the result:
+is returned in XML format:
 
 ```
-http://localhost/users?fields=id,email
+curl -i -H "Accept:application/xml" "http://localhost/users"
 ```
 
-You may have noticed that the result of `http://localhost/users` includes some sensitive columns,
-such as `password_hash`, `auth_key`. You certainly do not want these to appear in your API result.
-To filter these data out, modify the `User` class as follows,
+```
+HTTP/1.1 200 OK
+Date: Sun, 02 Mar 2014 05:31:43 GMT
+Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
+X-Powered-By: PHP/5.4.20
+X-Pagination-Total-Count: 1000
+X-Pagination-Page-Count: 50
+X-Pagination-Current-Page: 1
+X-Pagination-Per-Page: 20
+Link: <http://localhost/users?page=1>; rel=self, <http://localhost/users?page=2>; rel=next, <http://localhost/users?page=50>; rel=last
+Transfer-Encoding: chunked
+Content-Type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<response><item><id>1</id>...</item><item><id>2</id>...</item>...</response>
+```
+
+> Tip: You may also access your APIs via Web browser by entering the URL `http://localhost/users`.
+
+As you can see, in the response headers, there are information about the total count, page count, etc.
+There are also links that allow you to navigate to other pages of data. For example, `http://localhost/users?page=2`
+would give you the next page of the user data.
+
+Using the `fields` and `expand` parameters, you may also request to return a subset of the fields in the result.
+For example, the URL `http://localhost/users?fields=id,email` will only return the `id` and `email` fields in the result:
+
+
+> Info: You may have noticed that the result of `http://localhost/users` includes some sensitive fields,
+> such as `password_hash`, `auth_key`. You certainly do not want these to appear in your API result.
+> You can/should filter out these fields as described in the following sections.
+
+
+In the following sections, we will explain in more details about implementing RESTful APIs.
+
+
+General Architecture
+--------------------
+
+Using the Yii RESTful API framework, you implement an API endpoint in terms of a controller action, and you use
+a controller to organize the actions that implement the endpoints for a single type of resource.
+
+Resources are represented as data models which extend from the [[yii\base\Model]] class.
+If you are working with databases (relational or NoSQL), it is recommended you use ActiveRecord to represent resources.
+
+You may use [[yii\rest\UrlRule]] to simplify the routing to your API endpoints.
+
+While not required, it is recommended that you develop your RESTful APIs as an application, separated from
+your Web front end and back end.
+
+
+Adding or Removing Endpoints
+----------------------------
+
+As explained above, controllers and actions are used to implement API endpoints.
+
+To add an API endpoint servicing a new kind of model (resource), create a new controller class by extending
+[[yii\rest\ActiveController]] or [[yii\rest\Controller]]. The difference between these two base controller
+classes is that the former is a subclass of the latter and implements a commonly needed actions to deal
+with ActiveRecord. The controller class should be named after the model class with the `Controller` suffix.
+For example, for the `Post` model, you would create a `PostController` class.
+
+If your new controller class extends from [[yii\rest\ActiveController]], you already have a whole set of
+endpoints available out of box, as shown in the quick example. You may want to disable some of the actions
+or customize them. This can be easily done by overriding the `actions()` method, like the following,
 
 ```php
-class User extends ActiveRecord
+public function actions()
+{
+	$actions = parent::actions();
+
+	// disable the "delete" and "create" actions
+	unset($actions['delete'], $actions['create']);
+
+	// customize the data provider preparation with the "prepareDataProvider()" method
+	$actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
+
+	return $actions;
+}
+
+public function prepareDataProvider()
+{
+	// prepare and return a data provider for the "index" action
+}
+```
+
+You can certainly create new actions like you do with regular controllers. The only difference is that
+instead of calling [[yii\base\Controller::render()]] to render views, you directly return the data
+in your action. For example,
+
+```php
+public function actionSearch($keyword)
+{
+	$result = SolrService::search($keyword);
+	return $result;
+}
+```
+
+The data will be automatically formatted and sent to the client, as we will explain in the next section.
+
+
+Formatting Response Data
+------------------------
+
+By default, Yii supports two response formats for RESTful APIs: JSON and XML. If you want to support
+other formats, you should configure [[yii\rest\Controller::supportedFormats]] and also [[yii\web\Response::formatters]].
+
+The data formatting is in general a two-step process:
+
+1. The objects (including embedded objects) in the response data are converted into arrays by [[yii\rest\Serializer]];
+2. The array data are converted into different formats (e.g. JSON, XML) by [[yii\web\ResponseFormatterInterface|response formatters]].
+
+Step 2 is usually a very mechanical data conversion process and can be well handled by the built-in response formatters.
+Step 1 involves some major development effort as explained below.
+
+When the [[yii\rest\Serializer|serializer]] converts an object into an array, it will call the `toArray()` method
+of the object if it implements [[yii\base\ArrayableInterface]]. If an object does not implement this interface,
+an array consisting of all its public properties will be returned.
+
+For classes extending from [[yii\base\Model]] or [[yii\db\ActiveRecord]], besides directly overriding `toArray()`,
+you may also override the `fields()` method and/or the `expandableFields()` method to customize the data to be returned.
+
+The method [[yii\base\Model::fields()]] declares a set of fields of an object that should be included in the result.
+The default implementation returns all attributes of a model as the output fields. You can customize it to add,
+remove, rename or reformat the fields. For example,
+
+```php
+class User extends \yii\db\ActiveRecord
 {
 	public function fields()
 	{
 		$fields = parent::fields();
+
+		// remove fields that contain sensitive information
 		unset($fields['auth_key'], $fields['password_hash'], $fields['password_reset_token']);
+
+		// add a new field "full_name" defined as the concatenation of "first_name" and "last_name"
+		$fields['full_name'] = function () {
+			return $this->first_name . ' ' . $this->last_name;
+		};
+
 		return $fields;
 	}
 }
 ```
 
-In the following subsections, we will explain in more details about implementing RESTful APIs.
+The return value of `fields()` should be an array. The array keys are the field names, and the array values
+are the corresponding field definitions which can be either property/attribute names or anonymous functions
+returning the corresponding field values.
 
+> Warning: Because by default all attributes of a model will be included in the API result, you should
+> examine your data to make sure they do not contain sensitive information. If there is such information,
+> you should override `fields()` or `toArray()` to filter them out. In the above example, we choose
+> to filter out `auth_key`, `password_hash` and `password_reset_token`.
 
+You may use the `fields` query parameter to specify which fields in `fields()` should be included in the result.
+If this parameter is not specified, all fields returned by `fields()` will be returned.
 
-Data Formatting
----------------
+The method [[yii\base\Model::expandableFields()]] is very similar to [[yii\base\Model::fields()]].
+The difference between these methods is that the latter declares the fields that should be returned by default,
+while the former declares the fields that should only be returned when the user specifies them in the `expand` query parameter.
 
+For example, `http://localhost/users?fields=id,email&expand=profile` may return the following JSON data:
 
-Implementing New API Endpoints
-------------------------------
+```php
+[
+	{
+		"id": 100,
+		"email": "100@example.com",
+		"profile": {
+			"id": 100,
+			"age": 30,
+		}
+	},
+	...
+]
+```
 
 
 Routing
@@ -173,8 +299,8 @@ Rate Limiting
 -------------
 
 
-HTTP Status Code Summary
-------------------------
+Error Handling
+--------------
 
 * `200`: OK. Everything worked as expected.
 * `201`: A resource was successfully created in response to a `POST` request. The `Location` header
