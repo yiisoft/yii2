@@ -61,6 +61,10 @@
 
 		var link = event.currentTarget
 
+		// Ignore links with data-pjax="0"
+		if ($(link).data('pjax')==0)
+			return
+
 		if (link.tagName.toUpperCase() !== 'A')
 			throw "$.fn.pjax or $.pjax.click requires an anchor element"
 
