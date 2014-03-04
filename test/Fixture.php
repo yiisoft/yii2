@@ -82,4 +82,3 @@ class Fixture extends Component
 	{
 	}
 }
-

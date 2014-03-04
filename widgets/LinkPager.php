@@ -128,7 +128,7 @@ class LinkPager extends Widget
 	protected function registerLinkTags()
 	{
 		$view = $this->getView();
-		foreach($this->pagination->getLinks() as $rel => $href) {
+		foreach ($this->pagination->getLinks() as $rel => $href) {
 			$view->registerLinkTag(['rel' => $rel, 'href' => $href], $rel);
 		}
 	}
