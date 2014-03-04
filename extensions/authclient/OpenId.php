@@ -239,14 +239,14 @@ class OpenId extends BaseClient implements ClientInterface
 		curl_setopt($curl, CURLOPT_HEADER, false);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/xrds+xml, */*'));
+		curl_setopt($curl, CURLOPT_HTTPHEADER, ['Accept: application/xrds+xml, */*']);
 
 		if ($this->verifyPeer !== null) {
 			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->verifyPeer);
-			if($this->capath) {
+			if ($this->capath) {
 				curl_setopt($curl, CURLOPT_CAPATH, $this->capath);
 			}
-			if($this->cainfo) {
+			if ($this->cainfo) {
 				curl_setopt($curl, CURLOPT_CAINFO, $this->cainfo);
 			}
 		}

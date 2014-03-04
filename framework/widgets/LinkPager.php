@@ -90,7 +90,7 @@ class LinkPager extends Widget
 	 */
 	public $lastPageLabel;
 	/**
-	 * @var bool whether to register link tags in the HTML header for prev, next, first and last page.
+	 * @var boolean whether to register link tags in the HTML header for prev, next, first and last page.
 	 * Defaults to `false` to avoid conflicts when multiple pagers are used on one page.
 	 * @see http://www.w3.org/TR/html401/struct/links.html#h-12.1.2
 	 * @see registerLinkTags()
@@ -128,7 +128,7 @@ class LinkPager extends Widget
 	protected function registerLinkTags()
 	{
 		$view = $this->getView();
-		foreach($this->pagination->getLinks() as $rel => $href) {
+		foreach ($this->pagination->getLinks() as $rel => $href) {
 			$view->registerLinkTag(['rel' => $rel, 'href' => $href], $rel);
 		}
 	}

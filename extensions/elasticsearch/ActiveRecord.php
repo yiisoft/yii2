@@ -122,7 +122,7 @@ class ActiveRecord extends BaseActiveRecord
 		$command = static::getDb()->createCommand();
 		$result = $command->mget(static::index(), static::type(), $primaryKeys, $options);
 		$models = [];
-		foreach($result['docs'] as $doc) {
+		foreach ($result['docs'] as $doc) {
 			if ($doc['exists']) {
 				$model = static::instantiate($doc);
 				static::populateRecord($model, $doc);
@@ -422,7 +422,7 @@ class ActiveRecord extends BaseActiveRecord
 			return 0;
 		}
 		$bulk = '';
-		foreach($primaryKeys as $pk) {
+		foreach ($primaryKeys as $pk) {
 			$action = Json::encode([
 				"update" => [
 					"_id" => $pk,
@@ -441,7 +441,7 @@ class ActiveRecord extends BaseActiveRecord
 		$response = static::getDb()->post($url, [], $bulk);
 		$n=0;
 		$errors = [];
-		foreach($response['items'] as $item) {
+		foreach ($response['items'] as $item) {
 			if (isset($item['update']['error'])) {
 				$errors[] = $item['update'];
 			} elseif ($item['update']['ok']) {
@@ -480,7 +480,7 @@ class ActiveRecord extends BaseActiveRecord
 			return 0;
 		}
 		$bulk = '';
-		foreach($primaryKeys as $pk) {
+		foreach ($primaryKeys as $pk) {
 			$action = Json::encode([
 				"update" => [
 					"_id" => $pk,
@@ -489,7 +489,7 @@ class ActiveRecord extends BaseActiveRecord
 				],
 			]);
 			$script = '';
-			foreach($counters as $counter => $value) {
+			foreach ($counters as $counter => $value) {
 				$script .= "ctx._source.$counter += $counter;\n";
 			}
 			$data = Json::encode([
@@ -504,7 +504,7 @@ class ActiveRecord extends BaseActiveRecord
 		$response = static::getDb()->post($url, [], $bulk);
 		$n=0;
 		$errors = [];
-		foreach($response['items'] as $item) {
+		foreach ($response['items'] as $item) {
 			if (isset($item['update']['error'])) {
 				$errors[] = $item['update'];
 			} elseif ($item['update']['ok']) {
@@ -543,7 +543,7 @@ class ActiveRecord extends BaseActiveRecord
 			return 0;
 		}
 		$bulk = '';
-		foreach($primaryKeys as $pk) {
+		foreach ($primaryKeys as $pk) {
 			$bulk .= Json::encode([
 				"delete" => [
 					"_id" => $pk,
@@ -558,7 +558,7 @@ class ActiveRecord extends BaseActiveRecord
 		$response = static::getDb()->post($url, [], $bulk);
 		$n=0;
 		$errors = [];
-		foreach($response['items'] as $item) {
+		foreach ($response['items'] as $item) {
 			if (isset($item['delete']['error'])) {
 				$errors[] = $item['delete'];
 			} elseif ($item['delete']['found'] && $item['delete']['ok']) {

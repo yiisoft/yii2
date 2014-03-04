@@ -51,7 +51,7 @@
 
 		<table class="table table-bordered">
 			<tr><th>Name</th><th>Result</th><th>Required By</th><th>Memo</th></tr>
-			<?php foreach($requirements as $requirement): ?>
+			<?php foreach ($requirements as $requirement): ?>
 			<tr class="<?php echo $requirement['condition'] ? 'success' : ($requirement['mandatory'] ? 'error' : 'warning') ?>">
 				<td>
 				<?php echo $requirement['name'] ?>

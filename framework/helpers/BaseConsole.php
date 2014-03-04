@@ -123,7 +123,7 @@ class BaseConsole
 	/**
 	 * Scrolls whole page up by sending ANSI control code SU to the terminal.
 	 * New lines are added at the bottom. This is not supported by ANSI.SYS used in windows.
-	 * @param int $lines number of lines to scroll up
+	 * @param integer $lines number of lines to scroll up
 	 */
 	public static function scrollUp($lines = 1)
 	{
@@ -133,7 +133,7 @@ class BaseConsole
 	/**
 	 * Scrolls whole page down by sending ANSI control code SD to the terminal.
 	 * New lines are added at the top. This is not supported by ANSI.SYS used in windows.
-	 * @param int $lines number of lines to scroll down
+	 * @param integer $lines number of lines to scroll down
 	 */
 	public static function scrollDown($lines = 1)
 	{
@@ -474,7 +474,7 @@ class BaseConsole
 	 * colorcodes will just be removed (And %% will be transformed into %)
 	 *
 	 * @param string $string  String to convert
-	 * @param bool   $colored Should the string be colored?
+	 * @param boolean $colored Should the string be colored?
 	 * @return string
 	 */
 	// TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
@@ -554,7 +554,7 @@ class BaseConsole
 	 * - not tty consoles
 	 *
 	 * @param mixed $stream
-	 * @return bool true if the stream supports ANSI colors, otherwise false.
+	 * @return boolean true if the stream supports ANSI colors, otherwise false.
 	 */
 	public static function streamSupportsAnsiColors($stream)
 	{
@@ -575,7 +575,7 @@ class BaseConsole
 	/**
 	 * Usage: list($width, $height) = ConsoleHelper::getScreenSize();
 	 *
-	 * @param bool $refresh whether to force checking and not re-use cached size value.
+	 * @param boolean $refresh whether to force checking and not re-use cached size value.
 	 * This is useful to detect changing window size while the application is running but may
 	 * not get up to date values on every terminal.
 	 * @return array|boolean An array of ($width, $height) or false when it was not able to determine size.
@@ -617,7 +617,7 @@ class BaseConsole
 	/**
 	 * Gets input from STDIN and returns a string right-trimmed for EOLs.
 	 *
-	 * @param bool $raw If set to true, returns the raw string without trimming
+	 * @param boolean $raw If set to true, returns the raw string without trimming
 	 * @return string the string read from stdin
 	 */
 	public static function stdin($raw = false)
@@ -898,7 +898,7 @@ class BaseConsole
 	 * @param string|boolean $remove This can be `false` to leave the progress bar on screen and just print a newline.
 	 * If set to `true`, the line of the progress bar will be cleared. This may also be a string to be displayed instead
 	 * of the progress bar.
-	 * @param bool $keepPrefix whether to keep the prefix that has been specified for the progressbar when progressbar
+	 * @param boolean $keepPrefix whether to keep the prefix that has been specified for the progressbar when progressbar
 	 * gets removed. Defaults to true.
 	 * @see startProgress
 	 * @see updateProgress

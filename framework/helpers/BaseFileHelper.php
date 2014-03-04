@@ -280,14 +280,14 @@ class BaseFileHelper
 			$options['basePath'] = realpath($dir);
 			// this should also be done only once
 			if (isset($options['except'])) {
-				foreach($options['except'] as $key=>$value) {
+				foreach ($options['except'] as $key => $value) {
 					if (is_string($value)) {
 						$options['except'][$key] = static::parseExcludePattern($value);
 					}
 				}
 			}
 			if (isset($options['only'])) {
-				foreach($options['only'] as $key=>$value) {
+				foreach ($options['only'] as $key => $value) {
 					if (is_string($value)) {
 						$options['only'][$key] = static::parseExcludePattern($value);
 					}
@@ -397,7 +397,7 @@ class BaseFileHelper
 			if ($pattern === $baseName) {
 				return true;
 			}
-		} else if ($flags & self::PATTERN_ENDSWITH) {
+		} elseif ($flags & self::PATTERN_ENDSWITH) {
 			/* "*literal" matching against "fooliteral" */
 			$n = StringHelper::byteLength($pattern);
 			if (StringHelper::byteSubstr($pattern, 1, $n) === StringHelper::byteSubstr($baseName, -$n, $n)) {
@@ -472,7 +472,7 @@ class BaseFileHelper
 	 */
 	private static function lastExcludeMatchingFromList($basePath, $path, $excludes)
 	{
-		foreach(array_reverse($excludes) as $exclude) {
+		foreach (array_reverse($excludes) as $exclude) {
 			if (is_string($exclude)) {
 				$exclude = self::parseExcludePattern($exclude);
 			}
@@ -508,11 +508,11 @@ class BaseFileHelper
 		if (!is_string($pattern)) {
 			throw new InvalidParamException('Exclude/include pattern must be a string.');
 		}
-		$result = array(
+		$result = [
 			'pattern' => $pattern,
 			'flags' => 0,
 			'firstWildcard' => false,
-		);
+		];
 		if (!isset($pattern[0]))
 			return $result;
 
@@ -542,7 +542,7 @@ class BaseFileHelper
 	 */
 	private static function firstWildcardInPattern($pattern)
 	{
-		$wildcards = array('*','?','[','\\');
+		$wildcards = ['*','?','[','\\'];
 		$wildcardSearch = function($r, $c) use ($pattern) {
 			$p = strpos($pattern, $c);
 			return $r===false ? $p : ($p===false ? $r : min($r, $p));

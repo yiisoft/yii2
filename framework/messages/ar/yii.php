@@ -16,7 +16,7 @@
  *
  * NOTE: this file must be saved in UTF-8 encoding.
  */
-return array(
+array(
 	'the input value' => 'قيمة المُدخل',
 	'(not set)' => '(لم تحدد)',
 	'An internal server error occurred.' => '.حدث خطأ داخلي في الخادم',

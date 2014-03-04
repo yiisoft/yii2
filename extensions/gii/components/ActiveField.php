@@ -64,7 +64,7 @@ class ActiveField extends \yii\widgets\ActiveField
 		static $counter = 0;
 		$this->inputOptions['class'] .= ' typeahead-' . (++$counter);
 		foreach ($data as &$item) {
-			$item = array('word' => $item);
+			$item = ['word' => $item];
 		}
 		$this->form->getView()->registerJs("yii.gii.autocomplete($counter, " . Json::encode($data) . ");");
 		return $this;

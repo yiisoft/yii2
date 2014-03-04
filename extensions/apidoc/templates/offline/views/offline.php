@@ -14,7 +14,7 @@ $this->beginPage();
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="language" content="en" />
 <?php $this->head(); ?>
-<title><?php echo $this->context->pageTitle; ?></title>
+<title><?= $this->context->pageTitle ?></title>
 </head>
 
 <body>
@@ -22,11 +22,11 @@ $this->beginPage();
 	<div id="apiPage">
 
 		<div id="apiHeader">
-			<a href="http://www.yiiframework.com">Yii Framework</a> v<?php echo Yii::getVersion(); ?> Class Reference
+			<a href="http://www.yiiframework.com">Yii Framework</a> v<?= Yii::getVersion() ?> Class Reference
 		</div><!-- end of header -->
 
 		<div id="content">
-		<?php echo $content; ?>
+		<?= $content ?>
 		</div><!-- end of content -->
 
 		<div id="apiFooter">

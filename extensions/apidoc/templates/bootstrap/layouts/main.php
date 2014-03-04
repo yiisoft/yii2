@@ -46,7 +46,7 @@ $this->beginPage();
 		'view' => $this,
 	]);
 	$extItems = [];
-	foreach($this->context->extensions as $ext) {
+	foreach ($this->context->extensions as $ext) {
 		$extItems[] = [
 			'label' => $ext,
 			'url' => "./ext_{$ext}_index.html",

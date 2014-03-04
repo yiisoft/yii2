@@ -105,7 +105,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 		$typeCount = count($types) + 1;
 		Console::startProgress(0, $typeCount, 'Rendering files: ', false);
 		$done = 0;
-		foreach($types as $type) {
+		foreach ($types as $type) {
 			$fileContent = $this->renderWithLayout($this->typeView, [
 				'type' => $type,
 				'docContext' => $context,
@@ -147,7 +147,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 			$types = [$types];
 		}
 		$links = [];
-		foreach($types as $type) {
+		foreach ($types as $type) {
 			$postfix = '';
 			if (!is_object($type)) {
 				if (substr($type, -2, 2) == '[]') {
@@ -235,7 +235,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 		$parents = [];
 		$parents[] = $this->typeLink($class);
 		while ($class->parentClass !== null) {
-			if(isset($this->context->classes[$class->parentClass])) {
+			if (isset($this->context->classes[$class->parentClass])) {
 				$class = $this->context->classes[$class->parentClass];
 				$parents[] = $this->typeLink($class);
 			} else {
@@ -254,8 +254,8 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	{
 		$interfaces = [];
 		sort($names, SORT_STRING);
-		foreach($names as $interface) {
-			if(isset($this->context->interfaces[$interface])) {
+		foreach ($names as $interface) {
+			if (isset($this->context->interfaces[$interface])) {
 				$interfaces[] = $this->typeLink($this->context->interfaces[$interface]);
 			} else {
 				$interfaces[] = $interface; // TODO link to php.net
@@ -272,8 +272,8 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	{
 		$traits = [];
 		sort($names, SORT_STRING);
-		foreach($names as $trait) {
-			if(isset($this->context->traits[$trait])) {
+		foreach ($names as $trait) {
+			if (isset($this->context->traits[$trait])) {
 				$traits[] = $this->typeLink($this->context->traits[$trait]);
 			} else {
 				$traits[] = $trait; // TODO link to php.net
@@ -290,8 +290,8 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	{
 		$classes = [];
 		sort($names, SORT_STRING);
-		foreach($names as $class) {
-			if(isset($this->context->classes[$class])) {
+		foreach ($names as $class) {
+			if (isset($this->context->classes[$class])) {
 				$classes[] = $this->typeLink($this->context->classes[$class]);
 			} else {
 				$classes[] = $class; // TODO link to php.net
@@ -326,7 +326,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	public function renderMethodSignature($method)
 	{
 		$params = [];
-		foreach($method->params as $param) {
+		foreach ($method->params as $param) {
 			$params[] = (empty($param->typeHint) ? '' : $param->typeHint . ' ')
 				. ($param->isPassedByReference ? '<b>&</b>' : '')
 				. $param->name

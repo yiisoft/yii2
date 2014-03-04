@@ -27,7 +27,7 @@ class ElasticSearchTestCase extends TestCase
 		if (strpos($host, ':')===false) {
 			$host .= ':9200';
 		}
-		if(!@stream_socket_client($host, $errorNumber, $errorDescription, 0.5)) {
+		if (!@stream_socket_client($host, $errorNumber, $errorDescription, 0.5)) {
 			$this->markTestSkipped('No elasticsearch server running at ' . $params['dsn'] . ' : ' . $errorNumber . ' - ' . $errorDescription);
 		}
 
@@ -35,13 +35,13 @@ class ElasticSearchTestCase extends TestCase
 	}
 
 	/**
-	 * @param bool $reset whether to clean up the test database
+	 * @param boolean $reset whether to clean up the test database
 	 * @return Connection
 	 */
 	public function getConnection($reset = true)
 	{
 		$databases = $this->getParam('databases');
-		$params = isset($databases['elasticsearch']) ? $databases['elasticsearch'] : array();
+		$params = isset($databases['elasticsearch']) ? $databases['elasticsearch'] : [];
 		$db = new Connection();
 		if ($reset) {
 			$db->open();
