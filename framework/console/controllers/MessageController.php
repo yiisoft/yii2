@@ -134,14 +134,14 @@ class MessageController extends Controller
 				throw new Exception('The "db" option must refer to a valid database application component.');
 			}
 			$sourceMessageTable = isset($config['sourceMessageTable']) ? $config['sourceMessageTable'] : '{{%source_message}}';
-            $messageTable = isset($config['messageTable']) ? $config['messageTable'] : '{{%message}}';
+			$messageTable = isset($config['messageTable']) ? $config['messageTable'] : '{{%message}}';
 			$this->saveMessagesToDb(
 				$messages,
 				$db,
 				$sourceMessageTable,
-                $messageTable,
+				$messageTable,
 				$config['removeUnused'],
-                $config['languages']
+				$config['languages']
 			);
 		}
 	}
@@ -152,9 +152,9 @@ class MessageController extends Controller
 	 * @param array $messages
 	 * @param \yii\db\Connection $db
 	 * @param string $sourceMessageTable
-     * @param string $messageTable
+	 * @param string $messageTable
 	 * @param boolean $removeUnused
-     * @param array $languages
+	 * @param array $languages
 	 */
 	protected function saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $languages)
 	{
@@ -195,16 +195,16 @@ class MessageController extends Controller
 		echo "Inserting new messages...";
 		$savedFlag = false;
 
-		foreach ($new  as $category => $msgs) {
+		foreach ($new as $category => $msgs) {
 			foreach ($msgs as $m) {
 				$savedFlag = true;
 
 				$db->createCommand()
-					->insert($sourceMessageTable, ['category' => $category, 'message' => $m])->execute();
-                		$lastId = $db->getLastInsertID();
+				->insert($sourceMessageTable, ['category' => $category, 'message' => $m])->execute();
+				$lastId = $db->getLastInsertID();
 				foreach ($languages as $language) {
 					$db->createCommand()
-						->insert($messageTable, ['id' => $lastId, 'language' => $language])->execute();
+					->insert($messageTable, ['id' => $lastId, 'language' => $language])->execute();
 				}
 			}
 		}
@@ -217,19 +217,19 @@ class MessageController extends Controller
 		} else {
 			if ($removeUnused) {
 				$db->createCommand()
-					->delete($sourceMessageTable, ['in', 'id', $obsolete])->execute();
-			echo "deleted.\n";
+				->delete($sourceMessageTable, ['in', 'id', $obsolete])->execute();
+				echo "deleted.\n";
 			} else {
-                		$last_id = $db->getLastInsertID();
+				$last_id = $db->getLastInsertID();
 				$db->createCommand()
-					->update(
+				->update(
 						$sourceMessageTable,
 						['message' => new \yii\db\Expression("CONCAT('@@',message,'@@')")],
 						['in', 'id', $obsolete]
 					)->execute();
-                    		foreach ($languages as $language) {
-					    $db->createCommand()
-					        ->insert($messageTable, ['id' => $last_id, 'language' => $language])->execute();
+				foreach ($languages as $language) {
+					$db->createCommand()
+					->insert($messageTable, ['id' => $last_id, 'language' => $language])->execute();
 				}
 				echo "updated.\n";
 			}
@@ -283,7 +283,7 @@ class MessageController extends Controller
 	{
 		echo "Saving messages to $fileName...";
 		if (is_file($fileName)) {
-			if($format === 'po'){
+			if ($format === 'po') {
 				$translated = file_get_contents($fileName);
 				preg_match_all('/(?<=msgid ").*(?="\n(#*)msgstr)/', $translated, $keys);
 				preg_match_all('/(?<=msgstr ").*(?="\n\n)/', $translated, $values);
@@ -300,7 +300,7 @@ class MessageController extends Controller
 			$merged = [];
 			$untranslated = [];
 			foreach ($messages as $message) {
-				if($format === 'po'){
+				if ($format === 'po') {
 					$message = preg_replace('/\"/', '\"', $message);
 				}
 				if (array_key_exists($message, $translated) && strlen($translated[$message]) > 0) {
@@ -332,9 +332,9 @@ class MessageController extends Controller
 			if (false === $overwrite) {
 				$fileName .= '.merged';
 			}
-			if ($format === 'po'){
+			if ($format === 'po') {
 				$output = '';
-				foreach ($merged as $k => $v){
+				foreach ($merged as $k => $v) {
 					$k = preg_replace('/(\")|(\\\")/', "\\\"", $k);
 					$v = preg_replace('/(\")|(\\\")/', "\\\"", $v);
 					if (substr($v, 0, 2) === '@@' && substr($v, -2) === '@@') {
@@ -353,7 +353,7 @@ class MessageController extends Controller
 			if ($format === 'po') {
 				$merged = '';
 				sort($messages);
-				foreach($messages as $message) {
+				foreach ($messages as $message) {
 					$message = preg_replace('/(\")|(\\\")/', '\\\"', $message);
 					$merged .= "msgid \"$message\"\n";
 					$merged .= "msgstr \"\"\n";
