@@ -1579,7 +1579,7 @@ class BaseHtml
 	{
 		if (isset($options['class'])) {
 			$classes = ' ' . $options['class'] . ' ';
-			if (($pos = strpos($classes, ' ' . $class . ' ')) === false) {
+			if (strpos($classes, ' ' . $class . ' ') === false) {
 				$options['class'] .= ' ' . $class;
 			}
 		} else {
