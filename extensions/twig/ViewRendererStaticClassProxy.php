@@ -19,7 +19,8 @@ class ViewRendererStaticClassProxy
 {
 	private $_staticClassName;
 
-    public function __construct($staticClassName) {
+	public function __construct($staticClassName)
+	{
 		$this->_staticClassName = $staticClassName;
 	}
 

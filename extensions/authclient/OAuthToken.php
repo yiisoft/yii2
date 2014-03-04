@@ -58,14 +58,16 @@ class OAuthToken extends Object
 	/**
 	 * @param string $expireDurationParamKey expire duration param key.
 	 */
-	public function setExpireDurationParamKey($expireDurationParamKey) {
+	public function setExpireDurationParamKey($expireDurationParamKey)
+	{
 		$this->_expireDurationParamKey = $expireDurationParamKey;
 	}
 
 	/**
 	 * @return string expire duration param key.
 	 */
-	public function getExpireDurationParamKey() {
+	public function getExpireDurationParamKey()
+	{
 		if ($this->_expireDurationParamKey === null) {
 			$this->_expireDurationParamKey = $this->defaultExpireDurationParamKey();
 		}
@@ -75,14 +77,16 @@ class OAuthToken extends Object
 	/**
 	 * @return array
 	 */
-	public function getParams() {
+	public function getParams()
+	{
 		return $this->_params;
 	}
 
 	/**
 	 * @param array $params
 	 */
-	public function setParams(array $params) {
+	public function setParams(array $params)
+	{
 		$this->_params = $params;
 	}
 
@@ -91,7 +95,8 @@ class OAuthToken extends Object
 	 * @param string $name param name.
 	 * @param mixed $value param value,
 	 */
-	public function setParam($name, $value) {
+	public function setParam($name, $value)
+	{
 		$this->_params[$name] = $value;
 	}
 
@@ -100,7 +105,8 @@ class OAuthToken extends Object
 	 * @param string $name param name.
 	 * @return mixed param value.
 	 */
-	public function getParam($name) {
+	public function getParam($name)
+	{
 		return isset($this->_params[$name]) ? $this->_params[$name] : null;
 	}
 
@@ -109,7 +115,8 @@ class OAuthToken extends Object
 	 * @param string $token token value.
 	 * @return static self reference.
 	 */
-	public function setToken($token) {
+	public function setToken($token)
+	{
 		$this->setParam($this->tokenParamKey, $token);
 	}
 
@@ -117,7 +124,8 @@ class OAuthToken extends Object
 	 * Returns token value.
 	 * @return string token value.
 	 */
-	public function getToken() {
+	public function getToken()
+	{
 		return $this->getParam($this->tokenParamKey);
 	}
 
@@ -125,7 +133,8 @@ class OAuthToken extends Object
 	 * Sets the token secret value.
 	 * @param string $tokenSecret token secret.
 	 */
-	public function setTokenSecret($tokenSecret) {
+	public function setTokenSecret($tokenSecret)
+	{
 		$this->setParam($this->tokenSecretParamKey, $tokenSecret);
 	}
 
@@ -133,7 +142,8 @@ class OAuthToken extends Object
 	 * Returns the token secret value.
 	 * @return string token secret value.
 	 */
-	public function getTokenSecret() {
+	public function getTokenSecret()
+	{
 		return $this->getParam($this->tokenSecretParamKey);
 	}
 
@@ -141,7 +151,8 @@ class OAuthToken extends Object
 	 * Sets token expire duration.
 	 * @param string $expireDuration token expiration duration.
 	 */
-	public function setExpireDuration($expireDuration) {
+	public function setExpireDuration($expireDuration)
+	{
 		$this->setParam($this->getExpireDurationParamKey(), $expireDuration);
 	}
 
@@ -149,7 +160,8 @@ class OAuthToken extends Object
 	 * Returns the token expiration duration.
 	 * @return integer token expiration duration.
 	 */
-	public function getExpireDuration() {
+	public function getExpireDuration()
+	{
 		return $this->getParam($this->getExpireDurationParamKey());
 	}
 
@@ -157,7 +169,8 @@ class OAuthToken extends Object
 	 * Fetches default expire duration param key.
 	 * @return string expire duration param key.
 	 */
-	protected function defaultExpireDurationParamKey() {
+	protected function defaultExpireDurationParamKey()
+	{
 		$expireDurationParamKey = 'expires_in';
 		foreach ($this->getParams() as $name => $value) {
 			if (strpos($name, 'expir') !== false) {
@@ -172,7 +185,8 @@ class OAuthToken extends Object
 	 * Checks if token has expired.
 	 * @return boolean is token expired.
 	 */
-	public function getIsExpired() {
+	public function getIsExpired()
+	{
 		$expirationDuration = $this->getExpireDuration();
 		if (empty($expirationDuration)) {
 			return false;
@@ -184,7 +198,8 @@ class OAuthToken extends Object
 	 * Checks if token is valid.
 	 * @return boolean is token valid.
 	 */
-	public function getIsValid() {
+	public function getIsValid()
+	{
 		$token = $this->getToken();
 		return (!empty($token) && !$this->getIsExpired());
 	}

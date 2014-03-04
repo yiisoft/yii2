@@ -175,5 +175,4 @@ class DbPanel extends Panel
 	{
 		return (($this->criticalQueryThreshold !== null) && ($count > $this->criticalQueryThreshold));
 	}
-
 }

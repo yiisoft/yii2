@@ -1,6 +1,7 @@
 <?php
 use yii\grid\GridView;
 use yii\helpers\Html;
+
 ?>
 <h1>Performance Profiling</h1>
 <p>Total processing time: <b><?= $time ?></b>; Peak memory: <b><?= $memory ?></b>.</p>
@@ -50,4 +51,3 @@ echo GridView::widget([
 		],
 	],
 ]);
-?>

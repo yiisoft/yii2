@@ -102,5 +102,4 @@ class MailPanel extends Panel
 		}
 		return $attr;
 	}
-
 }

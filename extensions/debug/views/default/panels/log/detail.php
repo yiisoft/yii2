@@ -70,4 +70,3 @@ echo GridView::widget([
 		],
 	],
 ]);
-?>

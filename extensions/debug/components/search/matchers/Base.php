@@ -37,5 +37,4 @@ abstract class Base extends Component implements MatcherInterface
 	{
 		return !empty($this->baseValue) || ($this->baseValue === '0');
 	}
-
 }

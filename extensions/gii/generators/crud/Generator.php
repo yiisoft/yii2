@@ -499,5 +499,4 @@ class Generator extends \yii\gii\Generator
 			return $model->attributes();
 		}
 	}
-
 }

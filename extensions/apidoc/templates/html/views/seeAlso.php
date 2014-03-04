@@ -6,7 +6,7 @@
  */
 
 $see = [];
-foreach($object->tags as $tag) {
+foreach ($object->tags as $tag) {
 	/** @var $tag phpDocumentor\Reflection\DocBlock\Tag\SeeTag */
 	if (get_class($tag) == 'phpDocumentor\Reflection\DocBlock\Tag\SeeTag') {
 		$ref = $tag->getReference();

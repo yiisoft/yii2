@@ -58,8 +58,8 @@ class RenderController extends Controller
 
 		$this->stdout('Searching files to process... ');
 		$files = [];
-		foreach($sourceDirs as $source) {
-			foreach($this->findFiles($source) as $fileName) {
+		foreach ($sourceDirs as $source) {
+			foreach ($this->findFiles($source) as $fileName) {
 				$files[$fileName] = $fileName;
 			}
 		}
@@ -80,7 +80,7 @@ class RenderController extends Controller
 			$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 
 			$this->stdout('Checking for updated files... ');
-			foreach($context->files as $file => $sha) {
+			foreach ($context->files as $file => $sha) {
 				if (sha1_file($file) === $sha) {
 					unset($files[$file]);
 				}
@@ -92,7 +92,7 @@ class RenderController extends Controller
 		$this->stdout($fileCount . ' file' . ($fileCount == 1 ? '' : 's') . ' to update.' . PHP_EOL);
 		Console::startProgress(0, $fileCount, 'Processing files... ', false);
 		$done = 0;
-		foreach($files as $file) {
+		foreach ($files as $file) {
 			$context->addFile($file);
 			Console::updateProgress(++$done, $fileCount);
 		}

@@ -6,6 +6,7 @@
  */
 
 namespace yii\apidoc\templates\offline;
+
 use Yii;
 
 /**

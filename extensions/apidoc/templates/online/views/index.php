@@ -3,6 +3,7 @@
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\InterfaceDoc;
 use yii\apidoc\models\TraitDoc;
+
 /**
  * @var ClassDoc[]|InterfaceDoc[]|TraitDoc[] $types
  * @var yii\web\View $this
@@ -22,7 +23,7 @@ use yii\apidoc\models\TraitDoc;
 	</tr>
 <?php
 ksort($types);
-foreach($types as $i=>$class):
+foreach($types as $i => $class):
 ?>
 	<tr>
 		<td><?= $this->context->typeLink($class, $class->name) ?></td>

@@ -4,6 +4,7 @@ use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\InterfaceDoc;
 use yii\apidoc\models\TraitDoc;
+
 /**
  * @var ClassDoc|InterfaceDoc|TraitDoc $type
  * @var yii\web\View $this
@@ -82,8 +83,8 @@ $renderer = $this->context;
 </div>
 
 <a name="properties"></a>
-<?= $this->render('@yii/apidoc/templates/html/views/propertySummary', ['type' => $type,'protected' => false]) ?>
-<?= $this->render('@yii/apidoc/templates/html/views/propertySummary', ['type' => $type,'protected' => true]) ?>
+<?= $this->render('@yii/apidoc/templates/html/views/propertySummary', ['type' => $type, 'protected' => false]) ?>
+<?= $this->render('@yii/apidoc/templates/html/views/propertySummary', ['type' => $type, 'protected' => true]) ?>
 
 <a name="methods"></a>
 <?= $this->render('@yii/apidoc/templates/html/views/methodSummary', ['type' => $type, 'protected' => false]) ?>
