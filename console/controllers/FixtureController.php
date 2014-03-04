@@ -74,6 +74,7 @@ class FixtureController extends Controller
 	 * whitespace between names. Note that if you are loading fixtures to storage, for example: database or nosql,
 	 * storage will not be cleared, data will be appended to already existed.
 	 * @param array $fixtures
+	 * @param array $except
 	 * @throws \yii\console\Exception
 	 */
 	public function actionLoad(array $fixtures, array $except = [])
