@@ -260,7 +260,7 @@ class Collection extends Object
 	}
 
 	/**
-	 * Returns a a single document.
+	 * Returns a single document.
 	 * @param array $condition query condition
 	 * @param array $fields fields to be selected
 	 * @return array|null the single document. Null is returned if the query results in nothing.
@@ -269,6 +269,32 @@ class Collection extends Object
 	public function findOne($condition = [], $fields = [])
 	{
 		return $this->mongoCollection->findOne($this->buildCondition($condition), $fields);
+	}
+
+	/**
+	 * Updates a document and returns it.
+	 * @param array $condition query condition
+	 * @param array $update update criteria
+	 * @param array $fields fields to be returned
+	 * @param array $options list of options in format: optionName => optionValue.
+	 * @return array|null the original document, or the modified document when $options['new'] is set.
+	 * @throws Exception on failure.
+	 * @see http://www.php.net/manual/en/mongocollection.findandmodify.php
+	 */
+	public function findAndModify($condition, $update, $fields = [], $options = [])
+	{
+		$condition = $this->buildCondition($condition);
+		$token = $this->composeLogToken('findAndModify', [$condition, $update, $fields, $options]);
+		Yii::info($token, __METHOD__);
+		try {
+			Yii::beginProfile($token, __METHOD__);
+			$result = $this->mongoCollection->findAndModify($condition, $update, $fields, $options);
+			Yii::endProfile($token, __METHOD__);
+			return $result;
+		} catch (\Exception $e) {
+			Yii::endProfile($token, __METHOD__);
+			throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+		}
 	}
 
 	/**
