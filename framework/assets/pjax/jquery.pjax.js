@@ -336,6 +336,11 @@
 		}
 
 		pjax.options = options
+		
+		// Strip existing _pjax parameter from URL if any.
+		// It will be added by $.ajax data settings
+		options.url=stripPjaxParam(options.url);
+		
 		var xhr = pjax.xhr = $.ajax(options)
 
 		if (xhr.readyState > 0) {
