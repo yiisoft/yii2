@@ -94,8 +94,6 @@ class Pjax extends Widget
 		}
 
 		if ($this->requiresPjax()) {
-			// Remove _pjax GET parameter added by pjax request
-			unset($_GET['_pjax']);
 			ob_start();
 			ob_implicit_flush(false);
 			$view = $this->getView();
