@@ -478,7 +478,7 @@ Yii 2.0 supports automatic quoting of database table and column names. A name en
 within double curly brackets is treated as a table name, and a name enclosed within
 double square brackets is treated as a column name. They will be quoted according to
 the database driver being used:
-i.e.   {[tablename}}   [[fieldname]]
+i.e.   {{tablename}}   [[fieldname]]
 
 code example:
 ```php
@@ -529,8 +529,7 @@ TBD
 Integration with Composer
 -------------------------
 
-Yii is fully integrated Composer, a well known package manager for PHP that resolves dependencies, keeps your code
-up to date, by updating it semi-automatically and manages autoloading of third party libraries regardless of the the autoloading these are using.
+Yii is fully integrated with Composer, a well known package manager for PHP, that resolves dependencies, keeps your code up to date, by updating it semi-automatically and manages autoloading of third party libraries regardless of the the autoloading such libraries are already using.
 
 In order to learn more refer to [composer](composer.md) and [installation](installation.md) sections of the guide.
 
