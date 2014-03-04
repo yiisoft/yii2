@@ -318,5 +318,4 @@ class FixtureController extends Controller
 	{
 		return Yii::getAlias('@' . str_replace('\\', '/', $this->namespace));
 	}
-
 }
