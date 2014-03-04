@@ -122,6 +122,10 @@ To register an asset inside of a widget, the view instance is available as `$thi
 AppAsset::register($this->view);
 ```
 
+> Note: If there is a need to modify third party asset bundles it is recommended to create your own bundles depending
+  on third party ones and use CSS and JavaScript features to modify behavior instead of editing files directly or
+  copying them over.
+
 
 Overriding asset bundles
 ------------------------
