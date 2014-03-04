@@ -49,6 +49,12 @@ class Controller extends \yii\web\Controller
 	 */
 	public $authMethods = ['yii\rest\HttpBasicAuth', 'yii\rest\HttpBearerAuth', 'yii\rest\QueryParamAuth'];
 	/**
+	 * @var string|array the rate limiter class or configuration. If this is not set or empty,
+	 * the rate limiting will be disabled.
+	 * @see checkRateLimit()
+	 */
+	public $rateLimiter = 'yii\rest\RateLimiter';
+	/**
 	 * @var string the chosen API version number
 	 * @see supportedVersions
 	 */
@@ -186,15 +192,26 @@ class Controller extends \yii\web\Controller
 
 	/**
 	 * Ensures the rate limit is not exceeded.
-	 * You may override this method to log the API usage and make sure the rate limit is not exceeded.
-	 * If exceeded, you should throw a [[TooManyRequestsHttpException]], and you may also send some HTTP headers,
-	 * such as `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`,
-	 * to explain the rate limit information.
+	 *
+	 * This method will use [[rateLimiter]] to check rate limit. In order to perform rate limiting check,
+	 * the user must be authenticated and the user identity object (`Yii::$app->user->identity`) must
+	 * implement [[RateLimitInterface]].
+	 *
 	 * @param \yii\base\Action $action the action to be executed
 	 * @throws TooManyRequestsHttpException if the rate limit is exceeded.
 	 */
 	protected function checkRateLimit($action)
 	{
+		if (empty($this->rateLimiter)) {
+			return;
+		}
+
+		$identity = Yii::$app->getUser()->getIdentity(false);
+		if ($identity instanceof RateLimitInterface) {
+			/** @var RateLimiter $rateLimiter */
+			$rateLimiter = Yii::createObject($this->rateLimiter);
+			$rateLimiter->check($identity, Yii::$app->getRequest(), Yii::$app->getResponse(), $action);
+		}
 	}
 
 	/**
