@@ -64,7 +64,7 @@ class FixtureController extends Controller
 	public function globalOptions()
 	{
 		return array_merge(parent::globalOptions(), [
-			'namespace','globalFixtures'
+			'namespace', 'globalFixtures'
 		]);
 	}
 
@@ -100,7 +100,7 @@ class FixtureController extends Controller
 		}
 
 		$filtered = array_diff($foundFixtures, $except);
-		$fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures ,$filtered));
+		$fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures, $filtered));
 
 		if (!$fixtures) {
 			throw new Exception('No fixtures were found in namespace: "' . $this->namespace . '"' . '');
