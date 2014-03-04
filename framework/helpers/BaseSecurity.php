@@ -107,10 +107,10 @@ class BaseSecurity
 	*/
 	protected static function stripPadding($data)
 	{
-		$end = StringHelper::byteSubstr($data, -1, NULL);
+		$end = StringHelper::byteSubstr($data, -1, null);
 		$last = ord($end);
 		$n = StringHelper::byteLength($data) - $last;
-		if (StringHelper::byteSubstr($data, $n, NULL) == str_repeat($end, $last)) {
+		if (StringHelper::byteSubstr($data, $n, null) == str_repeat($end, $last)) {
 			return StringHelper::byteSubstr($data, 0, $n);
 		}
 		return false;
