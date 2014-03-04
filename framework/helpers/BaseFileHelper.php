@@ -544,7 +544,7 @@ class BaseFileHelper
 	private static function firstWildcardInPattern($pattern)
 	{
 		$wildcards = array('*','?','[','\\');
-		$wildcardSearch = function($r, $c) use ($pattern) {
+		$wildcardSearch = function ($r, $c) use ($pattern) {
 			$p = strpos($pattern, $c);
 			return $r===false ? $p : ($p===false ? $r : min($r, $p));
 		};
