@@ -147,6 +147,7 @@ class BaseFileHelper
 	 * @param string $src the source directory
 	 * @param string $dst the destination directory
 	 * @param array $options options for directory copy. Valid options are:
+	 * @throws \yii\base\InvalidParamException if unable to open directory
 	 *
 	 * - dirMode: integer, the permission to be set for newly copied directories. Defaults to 0775.
 	 * - fileMode:  integer, the permission to be set for newly copied files. Defaults to the current environment setting.
