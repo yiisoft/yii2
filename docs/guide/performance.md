@@ -28,7 +28,7 @@ is to disable debug mode. A Yii application runs in debug mode if the constant
 should be in your `index.php`:
 
 ```php
-defined('YII_DEBUG') or define('YII_DEBUG', false);
+defined('YII_DEBUG') ?: define('YII_DEBUG', false);
 ```
 
 Debug mode is very useful during development stage, but it would impact performance

@@ -24,14 +24,14 @@ Like any resource in your Yii application, the bootstrap file can be edited to f
 The default bootstrap structure sets `YII_DEBUG` to `false` if not defined:
 
 ```php
-defined('YII_DEBUG') or define('YII_DEBUG', false);
+defined('YII_DEBUG') ?: define('YII_DEBUG', false);
 ```
 
 During development, you can change this to `true`:
 
 ```php
 define('YII_DEBUG', true); // Development only 
-defined('YII_DEBUG') or define('YII_DEBUG', false);
+defined('YII_DEBUG') ?: define('YII_DEBUG', false);
 ```
 
 Configuring the application instance
