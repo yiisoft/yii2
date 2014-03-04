@@ -134,14 +134,14 @@ class MessageController extends Controller
 				throw new Exception('The "db" option must refer to a valid database application component.');
 			}
 			$sourceMessageTable = isset($config['sourceMessageTable']) ? $config['sourceMessageTable'] : '{{%source_message}}';
-            		$messageTable = isset($config['messageTable']) ? $config['messageTable'] : '{{%message}}';
+            $messageTable = isset($config['messageTable']) ? $config['messageTable'] : '{{%message}}';
 			$this->saveMessagesToDb(
 				$messages,
 				$db,
 				$sourceMessageTable,
-                		$messageTable,
+                $messageTable,
 				$config['removeUnused'],
-                		$config['languages']
+                $config['languages']
 			);
 		}
 	}
@@ -201,10 +201,10 @@ class MessageController extends Controller
 
 				$db->createCommand()
 					->insert($sourceMessageTable, ['category' => $category, 'message' => $m])->execute();
-                $last_id = $db->getLastInsertID();
+                		$lastId = $db->getLastInsertID();
 				foreach ($languages as $language) {
 					$db->createCommand()
-					->insert($messageTable, ['id' => $last_id, 'language' => $language])->execute();
+						->insert($messageTable, ['id' => $lastId, 'language' => $language])->execute();
 				}
 			}
 		}
