@@ -514,8 +514,9 @@ class BaseFileHelper
 			'flags' => 0,
 			'firstWildcard' => false,
 		);
-		if (!isset($pattern[0]))
+		if (!isset($pattern[0])) {
 			return $result;
+		}
 
 		if ($pattern[0] == '!') {
 			$result['flags'] |= self::PATTERN_NEGATIVE;
@@ -527,11 +528,13 @@ class BaseFileHelper
 			$len--;
 			$result['flags'] |= self::PATTERN_MUSTBEDIR;
 		}
-		if (strpos($pattern, '/') === false)
+		if (strpos($pattern, '/') === false) {
 			$result['flags'] |= self::PATTERN_NODIR;
+		}
 		$result['firstWildcard'] = self::firstWildcardInPattern($pattern);
-		if ($pattern[0] == '*' && self::firstWildcardInPattern(StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern))) === false)
+		if ($pattern[0] == '*' && self::firstWildcardInPattern(StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern))) === false) {
 			$result['flags'] |= self::PATTERN_ENDSWITH;
+		}
 		$result['pattern'] = $pattern;
 		return $result;
 	}
