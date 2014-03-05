@@ -175,6 +175,7 @@ class User extends Component
 	public function setIdentity($identity)
 	{
 		$this->_identity = $identity;
+		$this->_access = [];
 	}
 
 	/**
