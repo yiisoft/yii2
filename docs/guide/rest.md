@@ -216,7 +216,7 @@ of the object if it implements [[yii\base\ArrayableInterface]]. If an object doe
 an array consisting of all its public properties will be returned.
 
 For classes extending from [[yii\base\Model]] or [[yii\db\ActiveRecord]], besides directly overriding `toArray()`,
-you may also override the `fields()` method and/or the `expandableFields()` method to customize the data to be returned.
+you may also override the `fields()` method and/or the `extraFields()` method to customize the data to be returned.
 
 The method [[yii\base\Model::fields()]] declares a set of fields of an object that should be included in the result.
 The default implementation returns all attributes of a model as the output fields. You can customize it to add,
@@ -254,7 +254,7 @@ returning the corresponding field values.
 You may use the `fields` query parameter to specify which fields in `fields()` should be included in the result.
 If this parameter is not specified, all fields returned by `fields()` will be returned.
 
-The method [[yii\base\Model::expandableFields()]] is very similar to [[yii\base\Model::fields()]].
+The method [[yii\base\Model::extraFields()]] is very similar to [[yii\base\Model::fields()]].
 The difference between these methods is that the latter declares the fields that should be returned by default,
 while the former declares the fields that should only be returned when the user specifies them in the `expand` query parameter.
 

@@ -57,11 +57,12 @@ use yii\web\Linkable;
  */
 class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayable
 {
+	use ArrayableTrait;
+
 	/**
 	 * The name of the default scenario.
 	 */
 	const SCENARIO_DEFAULT = 'default';
-
 	/**
 	 * @event ModelEvent an event raised at the beginning of [[validate()]]. You may set
 	 * [[ModelEvent::isValid]] to be false to stop the validation.
@@ -829,8 +830,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 	 * ```
 	 *
 	 * In this method, you may also want to return different lists of fields based on some context
-	 * information. For example, depending on privilege of the current application user, you may return different
-	 * sets of visible fields.
+	 * information. For example, depending on [[scenario]] or the privilege of the current application user,
+	 * you may return different sets of visible fields or filter out some fields.
 	 *
 	 * The default implementation of this method returns [[attributes()]] indexed by the same attribute names.
 	 *
@@ -844,51 +845,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 	}
 
 	/**
-	 * Returns the list of fields that can be expanded further and returned by [[toArray()]].
-	 *
-	 * This method is similar to [[fields()]] except that the list of fields returned
-	 * by this method are not returned by default by [[toArray()]]. Only when field names
-	 * to be expanded are explicitly specified when calling [[toArray()]], will their values
-	 * be exported.
-	 *
-	 * The default implementation returns an empty array.
-	 *
-	 * @return array the list of expandable field names or field definitions. Please refer
-	 * to [[fields()]] on the format of the return value.
-	 * @see toArray()
-	 * @see fields()
-	 */
-	public function expandableFields()
-	{
-		return [];
-	}
-
-	/**
-	 * Converts the object into an array.
-	 * The default implementation will return [[attributes]].
-	 * @param array $fields the fields being requested. If empty, all fields as specified by [[fields()]] will be returned.
-	 * @param array $expand the additional fields being requested for exporting. Only fields declared in [[expandableFields()]]
-	 * will be considered.
-	 * @param boolean $recursive whether to recursively return array representation of embedded objects.
-	 * @return array the array representation of the object
-	 */
-	public function toArray(array $fields = [], array $expand = [], $recursive = true)
-	{
-		$data = [];
-		foreach ($this->resolveFields($fields, $expand) as $field => $definition) {
-			$data[$field] = is_string($definition) ? $this->$definition : call_user_func($definition, $field, $this);
-		}
-
-		if ($this instanceof Linkable) {
-			$data['_links'] = Link::serialize($this->getLinks());
-		}
-
-		return $recursive ? ArrayHelper::toArray($data) : $data;
-	}
-
-	/**
 	 * Determines which fields can be returned by [[toArray()]].
-	 * This method will check the requested fields against those declared in [[fields()]] and [[expandableFields()]]
+	 * This method will check the requested fields against those declared in [[fields()]] and [[extraFields()]]
 	 * to determine which fields can be returned.
 	 * @param array $fields the fields being requested for exporting
 	 * @param array $expand the additional fields being requested for exporting
@@ -912,7 +870,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 			return $result;
 		}
 
-		foreach ($this->expandableFields() as $field => $definition) {
+		foreach ($this->extraFields() as $field => $definition) {
 			if (is_integer($field)) {
 				$field = $definition;
 			}

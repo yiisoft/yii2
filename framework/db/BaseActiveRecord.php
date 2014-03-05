@@ -1361,7 +1361,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 *
 	 * The default implementation returns the names of the relations that have been populated into this record.
 	 */
-	public function expandableFields()
+	public function extraFields()
 	{
 		$fields = array_keys($this->getRelatedRecords());
 		return array_combine($fields, $fields);

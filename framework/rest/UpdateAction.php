@@ -8,6 +8,7 @@
 namespace yii\rest;
 
 use Yii;
+use yii\base\Model;
 use yii\db\ActiveRecord;
 
 /**
@@ -21,7 +22,7 @@ class UpdateAction extends Action
 	/**
 	 * @var string the scenario to be assigned to the model before it is validated and updated.
 	 */
-	public $scenario = 'api-update';
+	public $scenario = Model::SCENARIO_DEFAULT;
 	/**
 	 * @var boolean whether to start a DB transaction when saving the model.
 	 */

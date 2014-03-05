@@ -93,7 +93,7 @@ class Action extends \yii\base\Action
 			if (count($keys) === count($values)) {
 				$model = $modelClass::find(array_combine($keys, $values));
 			}
-		} else {
+		} elseif ($id !== null) {
 			$model = $modelClass::find($id);
 		}
 

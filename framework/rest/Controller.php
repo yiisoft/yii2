@@ -31,10 +31,9 @@ use yii\web\VerbFilter;
 class Controller extends \yii\web\Controller
 {
 	/**
-	 * The name of the header parameter representing the API version number.
+	 * @var string the name of the header parameter representing the API version number.
 	 */
-	const HEADER_VERSION = 'version';
-
+	public $versionHeaderParam = 'version';
 	/**
 	 * @var string|array the configuration for creating the serializer that formats the response data.
 	 */
@@ -58,16 +57,16 @@ class Controller extends \yii\web\Controller
 	 */
 	public $rateLimiter = 'yii\rest\RateLimiter';
 	/**
-	 * @var string the chosen API version number
+	 * @var string the chosen API version number, or null if [[supportedVersions]] is empty.
 	 * @see supportedVersions
 	 */
 	public $version;
 	/**
 	 * @var array list of supported API version numbers. If the current request does not specify a version
-	 * number, the first element will be used as the chosen version number. For this reason, you should
-	 * put the latest version number at the first.
+	 * number, the first element will be used as the [[version|chosen version number]]. For this reason, you should
+	 * put the latest version number at the first. If this property is empty, [[version]] will not be set.
 	 */
-	public $supportedVersions = ['1.0'];
+	public $supportedVersions = [];
 	/**
 	 * @var array list of supported response formats. The array keys are the requested content MIME types,
 	 * and the array values are the corresponding response formats. The first element will be used
@@ -129,7 +128,7 @@ class Controller extends \yii\web\Controller
 	 */
 	protected function resolveFormatAndVersion()
 	{
-		$this->version = reset($this->supportedVersions);
+		$this->version = empty($this->supportedVersions) ? null : reset($this->supportedVersions);
 		Yii::$app->getResponse()->format = reset($this->supportedFormats);
 		$types = Yii::$app->getRequest()->getAcceptableContentTypes();
 		if (empty($types)) {
@@ -139,9 +138,9 @@ class Controller extends \yii\web\Controller
 		foreach ($types as $type => $params) {
 			if (isset($this->supportedFormats[$type])) {
 				Yii::$app->getResponse()->format = $this->supportedFormats[$type];
-				if (isset($params[self::HEADER_VERSION])) {
-					if (in_array($params[self::HEADER_VERSION], $this->supportedVersions, true)) {
-						$this->version = $params[self::HEADER_VERSION];
+				if (isset($params[$this->versionHeaderParam])) {
+					if (in_array($params[$this->versionHeaderParam], $this->supportedVersions, true)) {
+						$this->version = $params[$this->versionHeaderParam];
 					} else {
 						throw new UnsupportedMediaTypeHttpException('You are requesting an invalid version number.');
 					}
