@@ -344,7 +344,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 */
 	public function hasOne($class, $link)
 	{
-		/** @var ActiveRecord $class */
+		/** @var ActiveRecordInterface $class */
 		return $class::createQuery([
 			'modelClass' => $class,
 			'primaryModel' => $this,
@@ -385,7 +385,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 */
 	public function hasMany($class, $link)
 	{
-		/** @var ActiveRecord $class */
+		/** @var ActiveRecordInterface $class */
 		return $class::createQuery([
 			'modelClass' => $class,
 			'primaryModel' => $this,
@@ -398,7 +398,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * Populates the named relation with the related records.
 	 * Note that this method does not check if the relation exists or not.
 	 * @param string $name the relation name (case-sensitive)
-	 * @param ActiveRecord|array|null $records the related records to be populated into the relation.
+	 * @param ActiveRecordInterface|array|null $records the related records to be populated into the relation.
 	 */
 	public function populateRelation($name, $records)
 	{
@@ -938,7 +938,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * Returns a value indicating whether the given active record is the same as the current one.
 	 * The comparison is made by comparing the table names and the primary key values of the two active records.
 	 * If one of the records [[isNewRecord|is new]] they are also considered not equal.
-	 * @param ActiveRecord $record record to compare to
+	 * @param ActiveRecordInterface $record record to compare to
 	 * @return boolean whether the two active records refer to the same row in the same database table.
 	 */
 	public function equals($record)
@@ -1106,7 +1106,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * Note that this method requires that the primary key value is not null.
 	 *
 	 * @param string $name the case sensitive name of the relationship
-	 * @param ActiveRecord $model the model to be linked with the current one.
+	 * @param ActiveRecordInterface $model the model to be linked with the current one.
 	 * @param array $extraColumns additional column values to be saved into the pivot table.
 	 * This parameter is only meaningful for a relationship involving a pivot table
 	 * (i.e., a relation set with [[ActiveRelationTrait::via()]] or `[[ActiveQuery::viaTable()]]`.)
@@ -1141,8 +1141,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 				$columns[$k] = $v;
 			}
 			if (is_array($relation->via)) {
-				/** @var $viaClass ActiveRecord */
-				/** @var $record ActiveRecord */
+				/** @var $viaClass ActiveRecordInterface */
+				/** @var $record ActiveRecordInterface */
 				$record = new $viaClass();
 				foreach ($columns as $column => $value) {
 					$record->$column = $value;
@@ -1193,7 +1193,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * Otherwise, the foreign key will be set null and the model will be saved without validation.
 	 *
 	 * @param string $name the case sensitive name of the relationship.
-	 * @param ActiveRecord $model the model to be unlinked from the current one.
+	 * @param ActiveRecordInterface $model the model to be unlinked from the current one.
 	 * @param boolean $delete whether to delete the model that contains the foreign key.
 	 * If false, the model's foreign key will be set null and saved.
 	 * If true, the model containing the foreign key will be deleted.
@@ -1221,7 +1221,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 				$columns[$b] = $model->$a;
 			}
 			if (is_array($relation->via)) {
-				/** @var $viaClass ActiveRecord */
+				/** @var $viaClass ActiveRecordInterface */
 				if ($delete) {
 					$viaClass::deleteAll($columns);
 				} else {
@@ -1233,6 +1233,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 				}
 			} else {
 				/** @var $viaTable string */
+				/** @var Command $command */
 				$command = static::getDb()->createCommand();
 				if ($delete) {
 					$command->delete($viaTable, $columns)->execute();
@@ -1265,7 +1266,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 		if (!$relation->multiple) {
 			unset($this->_related[$name]);
 		} elseif (isset($this->_related[$name])) {
-			/** @var ActiveRecord $b */
+			/** @var ActiveRecordInterface $b */
 			foreach ($this->_related[$name] as $a => $b) {
 				if ($model->getPrimaryKey() == $b->getPrimaryKey()) {
 					unset($this->_related[$name][$a]);
