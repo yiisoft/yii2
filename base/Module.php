@@ -687,7 +687,7 @@ class Module extends Component
 
 		$className = str_replace(' ', '', ucwords(str_replace('-', ' ', $className))) . 'Controller';
 		$classFile = $this->controllerPath . '/' . $prefix . $className . '.php';
-		$className = $this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix)  . $className;
+		$className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix)  . $className, '\\');
 		if (strpos($className, '-') !== false || !is_file($classFile)) {
 			return null;
 		}
