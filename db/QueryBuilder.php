@@ -599,7 +599,7 @@ class QueryBuilder extends \yii\base\Object
 				if (strpos($column, '(') === false) {
 					$column = $this->db->quoteColumnName($column);
 				}
-				$columns[$i] = "$column AS " . $this->db->quoteColumnName($i);;
+				$columns[$i] = "$column AS " . $this->db->quoteColumnName($i);
 			} elseif (strpos($column, '(') === false) {
 				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
 					$columns[$i] = $this->db->quoteColumnName($matches[1]) . ' AS ' . $this->db->quoteColumnName($matches[2]);
