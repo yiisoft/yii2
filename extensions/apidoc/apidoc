@@ -8,7 +8,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-defined('YII_DEBUG') ?: define('YII_DEBUG', false);
+defined('YII_DEBUG') or define('YII_DEBUG', false);
 
 $composerAutoload = [
 	__DIR__ . '/vendor/autoload.php', // standalone with "composer install" run
