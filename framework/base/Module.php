@@ -593,12 +593,21 @@ class Module extends Component
 	}
 
 	/**
-	 * Creates a controller instance based on the controller ID.
+	 * Creates a controller instance based on the given route.
 	 *
-	 * The controller is created within this module. The method first attempts to
-	 * create the controller based on the [[controllerMap]] of the module. If not available,
-	 * it will look for the controller class under the [[controllerPath]] and create an
-	 * instance of it.
+	 * The route should be relative to this module. The method implements the following algorithm
+	 * to resolve the given route:
+	 *
+	 * 1. If the route is empty, use [[defaultRoute]];
+	 * 2. If the first segment of the route is a valid module ID as declared in [[modules]],
+	 *    call the module's `createController()` with the rest part of the route;
+	 * 3. If the first segment of the route is found in [[controllerMap]], create a controller
+	 *    based on the corresponding configuration found in [[controllerMap]];
+	 * 4. The given route is in the format of `abc/def/xyz`. Try either `abc\DefController`
+	 *    or `abc\def\XyzController` class within the [[controllerNamespace|controller namespace]].
+	 *
+	 * If any of the above steps resolves into a controller, it is returned together with the rest
+	 * part of the route which will be treated as the action ID. Otherwise, false will be returned.
 	 *
 	 * @param string $route the route consisting of module, controller and action IDs.
 	 * @return array|boolean If the controller is created successfully, it will be returned together
@@ -610,6 +619,13 @@ class Module extends Component
 		if ($route === '') {
 			$route = $this->defaultRoute;
 		}
+
+		// double slashes or leading/ending slashes may cause substr problem
+		$route = trim($route, '/');
+		if (strpos($route, '//') !== false) {
+			return false;
+		}
+
 		if (strpos($route, '/') !== false) {
 			list ($id, $route) = explode('/', $route, 2);
 		} else {
@@ -617,29 +633,73 @@ class Module extends Component
 			$route = '';
 		}
 
+		// module and controller map take precedence
 		$module = $this->getModule($id);
 		if ($module !== null) {
 			return $module->createController($route);
 		}
-
 		if (isset($this->controllerMap[$id])) {
 			$controller = Yii::createObject($this->controllerMap[$id], $id, $this);
-		} elseif (preg_match('/^[a-z0-9\\-_]+$/', $id) && strpos($id, '--') === false && trim($id, '-') === $id) {
-			$className = str_replace(' ', '', ucwords(str_replace('-', ' ', $id))) . 'Controller';
-			$classFile = $this->controllerPath . DIRECTORY_SEPARATOR . $className . '.php';
-			if (!is_file($classFile)) {
-				return false;
-			}
-			$className = ltrim($this->controllerNamespace . '\\' . $className, '\\');
-			Yii::$classMap[$className] = $classFile;
-			if (is_subclass_of($className, 'yii\base\Controller')) {
-				$controller = new $className($id, $this);
-			} elseif (YII_DEBUG) {
-				throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
-			}
+			return [$controller, $route];
 		}
 
-		return isset($controller) ? [$controller, $route] : false;
+		if (($pos = strrpos($route, '/')) !== false) {
+			$id .= '/' . substr($route, 0, $pos);
+			$route = substr($route, $pos + 1);
+		}
+
+		$controller = $this->createControllerByID($id);
+		if ($controller === null && $route !== '') {
+			$controller = $this->createControllerByID($id . '/' . $route);
+			$route = '';
+		}
+
+		return $controller === null ? false : [$controller, $route];
+	}
+
+	/**
+	 * Creates a controller based on the given controller ID.
+	 *
+	 * The controller ID is relative to this module. The controller class
+	 * should be located under [[controllerPath]] and namespaced under [[controllerNamespace]].
+	 *
+	 * Note that this method does not check [[modules]] or [[controllerMap]].
+	 *
+	 * @param string $id the controller ID
+	 * @return Controller the newly created controller instance, or null if the controller ID is invalid.
+	 * @throws InvalidConfigException if the controller class and its file name do not match.
+	 * This exception is only thrown when in debug mode.
+	 */
+	public function createControllerByID($id)
+	{
+		if (!preg_match('%^[a-z0-9\\-_/]+$%', $id)) {
+			return null;
+		}
+
+		$pos = strrpos($id, '/');
+		if ($pos === false) {
+			$prefix = '';
+			$className = $id;
+		} else {
+			$prefix = substr($id, 0, $pos + 1);
+			$className = substr($id, $pos + 1);
+		}
+
+		$className = str_replace(' ', '', ucwords(str_replace('-', ' ', $className))) . 'Controller';
+		$classFile = $this->controllerPath . '/' . $prefix . $className . '.php';
+		$className = $this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix)  . $className;
+		if (strpos($className, '-') !== false || !is_file($classFile)) {
+			return null;
+		}
+
+		Yii::$classMap[$className] = $classFile;
+		if (is_subclass_of($className, 'yii\base\Controller')) {
+			return new $className($id, $this);
+		} elseif (YII_DEBUG) {
+			throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
+		} else {
+			return null;
+		}
 	}
 
 	/**

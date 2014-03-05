@@ -81,13 +81,16 @@ Routes
 ------
 
 Each controller action has a corresponding internal route. In our example above `actionIndex` has `site/index` route
-and `actionTest` has `site/test` route. In this route `site` is referred to as controller ID while `test` is referred to
-as action ID.
+and `actionTest` has `site/test` route. In this route `site` is referred to as controller ID while `test` is action ID.
 
 By default you can access specific controller and action using the `http://example.com/?r=controller/action` URL. This
-behavior is fully customizable. For details refer to [URL Management](url.md).
+behavior is fully customizable. For more details please refer to [URL Management](url.md).
 
-If controller is located inside a module its action internal route will be `module/controller/action`.
+If a controller is located inside a module, the route of its actions will be in the format of `module/controller/action`.
+
+A controller can be located under a subdirectory of the controller directory of an application or module. The route
+will be prefixed with the corresponding directory names. For example, you may have a `UserController` under `controllers/admin`.
+The route of its `actionIndex` would be `admin/user/index`, and `admin/user` would be the controller ID.
 
 In case module, controller or action specified isn't found Yii will return "not found" page and HTTP status code 404.
 
