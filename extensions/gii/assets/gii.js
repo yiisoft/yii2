@@ -69,6 +69,16 @@ yii.gii = (function ($) {
 			});
 			return false;
 		});
+
+		$('#preview-modal').on('keydown', function(e) {
+			if (e.keyCode === 37) {
+				$('.modal-previous').trigger('click');
+			} else if(e.keyCode === 39) {
+				$('.modal-next').trigger('click');
+			} else if(e.keyCode === 82) {
+				$('.modal-refresh').trigger('click');
+			}
+		});
 	};
 
 	var initConfirmationCheckboxes = function () {
