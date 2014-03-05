@@ -13,7 +13,7 @@ use yii\helpers\FileHelper;
 /**
  * Theme represents an application theme.
  *
- * When [[View]] renders a view file, it will check the [[Application::theme|active theme]]
+ * When [[View]] renders a view file, it will check the [[View::theme|active theme]]
  * to see if there is a themed version of the view file exists. If so, the themed version will be rendered instead.
  *
  * A theme is a directory consisting of view files which are meant to replace their non-themed counterparts.

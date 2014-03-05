@@ -73,9 +73,9 @@ class PhpMessageSource extends MessageSource
 
 			if ($messages === null && $fallbackMessages === null && $fallbackLanguage != $this->sourceLanguage) {
 				Yii::error("The message file for category '$category' does not exist: $messageFile Fallback file does not exist as well: $fallbackMessageFile", __METHOD__);
-			} else if (empty($messages)) {
+			} elseif (empty($messages)) {
 				return $fallbackMessages;
-			} else if (!empty($fallbackMessages)) {
+			} elseif (!empty($fallbackMessages)) {
 				foreach ($fallbackMessages as $key => $value) {
 					if (!empty($value) && empty($messages[$key])) {
 						$messages[$key] = $fallbackMessages[$key];

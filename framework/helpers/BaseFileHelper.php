@@ -147,6 +147,7 @@ class BaseFileHelper
 	 * @param string $src the source directory
 	 * @param string $dst the destination directory
 	 * @param array $options options for directory copy. Valid options are:
+	 * @throws \yii\base\InvalidParamException if unable to open directory
 	 *
 	 * - dirMode: integer, the permission to be set for newly copied directories. Defaults to 0775.
 	 * - fileMode:  integer, the permission to be set for newly copied files. Defaults to the current environment setting.
@@ -280,14 +281,14 @@ class BaseFileHelper
 			$options['basePath'] = realpath($dir);
 			// this should also be done only once
 			if (isset($options['except'])) {
-				foreach($options['except'] as $key=>$value) {
+				foreach ($options['except'] as $key => $value) {
 					if (is_string($value)) {
 						$options['except'][$key] = static::parseExcludePattern($value);
 					}
 				}
 			}
 			if (isset($options['only'])) {
-				foreach($options['only'] as $key=>$value) {
+				foreach ($options['only'] as $key => $value) {
 					if (is_string($value)) {
 						$options['only'][$key] = static::parseExcludePattern($value);
 					}
@@ -397,7 +398,7 @@ class BaseFileHelper
 			if ($pattern === $baseName) {
 				return true;
 			}
-		} else if ($flags & self::PATTERN_ENDSWITH) {
+		} elseif ($flags & self::PATTERN_ENDSWITH) {
 			/* "*literal" matching against "fooliteral" */
 			$n = StringHelper::byteLength($pattern);
 			if (StringHelper::byteSubstr($pattern, 1, $n) === StringHelper::byteSubstr($baseName, -$n, $n)) {
@@ -472,7 +473,7 @@ class BaseFileHelper
 	 */
 	private static function lastExcludeMatchingFromList($basePath, $path, $excludes)
 	{
-		foreach(array_reverse($excludes) as $exclude) {
+		foreach (array_reverse($excludes) as $exclude) {
 			if (is_string($exclude)) {
 				$exclude = self::parseExcludePattern($exclude);
 			}
@@ -508,13 +509,14 @@ class BaseFileHelper
 		if (!is_string($pattern)) {
 			throw new InvalidParamException('Exclude/include pattern must be a string.');
 		}
-		$result = array(
+		$result = [
 			'pattern' => $pattern,
 			'flags' => 0,
 			'firstWildcard' => false,
-		);
-		if (!isset($pattern[0]))
+		];
+		if (!isset($pattern[0])) {
 			return $result;
+		}
 
 		if ($pattern[0] == '!') {
 			$result['flags'] |= self::PATTERN_NEGATIVE;
@@ -526,11 +528,13 @@ class BaseFileHelper
 			$len--;
 			$result['flags'] |= self::PATTERN_MUSTBEDIR;
 		}
-		if (strpos($pattern, '/') === false)
+		if (strpos($pattern, '/') === false) {
 			$result['flags'] |= self::PATTERN_NODIR;
+		}
 		$result['firstWildcard'] = self::firstWildcardInPattern($pattern);
-		if ($pattern[0] == '*' && self::firstWildcardInPattern(StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern))) === false)
+		if ($pattern[0] == '*' && self::firstWildcardInPattern(StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern))) === false) {
 			$result['flags'] |= self::PATTERN_ENDSWITH;
+		}
 		$result['pattern'] = $pattern;
 		return $result;
 	}
@@ -542,8 +546,8 @@ class BaseFileHelper
 	 */
 	private static function firstWildcardInPattern($pattern)
 	{
-		$wildcards = array('*','?','[','\\');
-		$wildcardSearch = function($r, $c) use ($pattern) {
+		$wildcards = ['*', '?', '[', '\\'];
+		$wildcardSearch = function ($r, $c) use ($pattern) {
 			$p = strpos($pattern, $c);
 			return $r===false ? $p : ($p===false ? $r : min($r, $p));
 		};

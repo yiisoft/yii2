@@ -76,7 +76,7 @@ return [
 By default it's automatically set to `3` if Yii is run in debug mode i.e. your `index.php` file contains the following:
 
 ```php
-defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_DEBUG') ?: define('YII_DEBUG', true);
 ```
 
 > Note: Make sure to disable debug mode on production since it may have significan performance effect and expose sensible
