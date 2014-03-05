@@ -14,7 +14,7 @@ use yii\web\IdentityInterface;
 use yii\web\UnauthorizedHttpException;
 
 /**
- * AuthInterface is the interface required by classes than support user authentication.
+ * AuthInterface is the interface required by classes that support user authentication.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

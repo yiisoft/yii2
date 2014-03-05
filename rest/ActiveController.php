@@ -8,6 +8,7 @@
 namespace yii\rest;
 
 use yii\base\InvalidConfigException;
+use yii\base\Model;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -44,12 +45,12 @@ class ActiveController extends Controller
 	 * @var string the scenario used for updating a model.
 	 * @see \yii\base\Model::scenarios()
 	 */
-	public $updateScenario = 'api-update';
+	public $updateScenario = Model::SCENARIO_DEFAULT;
 	/**
 	 * @var string the scenario used for creating a model.
 	 * @see \yii\base\Model::scenarios()
 	 */
-	public $createScenario = 'api-create';
+	public $createScenario = Model::SCENARIO_DEFAULT;
 	/**
 	 * @var boolean whether to use a DB transaction when creating, updating or deleting a model.
 	 * This property is only useful for relational database.

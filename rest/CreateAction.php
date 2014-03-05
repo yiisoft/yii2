@@ -8,6 +8,7 @@
 namespace yii\rest;
 
 use Yii;
+use yii\base\Model;
 use yii\db\ActiveRecord;
 
 /**
@@ -21,7 +22,7 @@ class CreateAction extends Action
 	/**
 	 * @var string the scenario to be assigned to the new model before it is validated and saved.
 	 */
-	public $scenario = 'api-create';
+	public $scenario = Model::SCENARIO_DEFAULT;
 	/**
 	 * @var boolean whether to start a DB transaction when saving the model.
 	 */
