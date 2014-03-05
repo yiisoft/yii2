@@ -82,9 +82,9 @@ use yii\gii\CodeFile;
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<div class="btn-group pull-left">
-						<a class="modal-previous btn btn-xs btn-default" href="#" title="Shortcut: Left Arrow Key"><span class="glyphicon glyphicon-arrow-left"></span></a>
-						<a class="modal-next btn btn-xs btn-default" href="#" title="Shortcut: Right Arrow Key"><span class="glyphicon glyphicon-arrow-right"></span></a>
-						<a class="modal-refresh btn btn-xs btn-default" href="#" title="Shortcut: R Key"><span class="glyphicon glyphicon-refresh"></span></a>
+						<a class="modal-previous btn btn-xs btn-default" href="#" title="Previous File (Left Arrow)"><span class="glyphicon glyphicon-arrow-left"></span></a>
+						<a class="modal-next btn btn-xs btn-default" href="#" title="Next File (Right Arrow)"><span class="glyphicon glyphicon-arrow-right"></span></a>
+						<a class="modal-refresh btn btn-xs btn-default" href="#" title="Refresh File (R)"><span class="glyphicon glyphicon-refresh"></span></a>
 						&nbsp;
 					</div>
 					<strong class="modal-title pull-left">Modal title</strong>
