@@ -1140,12 +1140,12 @@ class BaseHtml
 	 * about attribute expression.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-	 * See [[renderTagAttributes()]] for details on how these are beeing rendered.
+	 * See [[renderTagAttributes()]] for details on how these are being rendered.
 	 * @return string the generated textarea tag
 	 */
 	public static function activeTextarea($model, $attribute, $options = [])
 	{
-		$name = static::getInputName($model, $attribute);
+		$name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
 		$value = static::getAttributeValue($model, $attribute);
 		if (!array_key_exists('id', $options)) {
 			$options['id'] = static::getInputId($model, $attribute);
