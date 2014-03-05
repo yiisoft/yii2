@@ -75,6 +75,10 @@ class Nav extends Widget
 	 */
 	public $activateItems = true;
 	/**
+	 * @var boolean whether to activate parent menu items when one of the corresponding child menu items is active.
+	 */
+	public $activateParents = false;
+	/**
 	 * @var string the route used to determine if a menu item is active or not.
 	 * If not set, it will use the route of the current request.
 	 * @see params
@@ -110,8 +114,34 @@ class Nav extends Widget
 	 */
 	public function run()
 	{
+		$this->activateItems($this->items, $hasActiveChild);
 		echo $this->renderItems();
 		BootstrapAsset::register($this->getView());
+	}
+
+	/**
+	 * Check for active items adding the active class if found.
+	 * @param array $items the items to check
+	 * @param boolean $active does an item have an active child
+	 */
+	protected function activateItems(&$items, &$active)
+	{
+		foreach ($items as &$item) {
+			$hasActiveChild = false;
+			if (isset($item['items']) && is_array($item['items'])) {
+				$this->activateItems($item['items'], $hasActiveChild);
+			}
+			if (!isset($item['active'])) {
+				if ($this->activateParents && $hasActiveChild || $this->activateItems && $this->isItemActive($item)) {
+					$active = $item['active'] = true;
+				}
+			} elseif ($item['active']) {
+				$active = true;
+			}
+			if (ArrayHelper::remove($item, 'active', false)) {
+				Html::addCssClass($item['options'], 'active');
+			}
+		}
 	}
 
 	/**
@@ -150,16 +180,6 @@ class Nav extends Widget
 		$items = ArrayHelper::getValue($item, 'items');
 		$url = ArrayHelper::getValue($item, 'url', '#');
 		$linkOptions = ArrayHelper::getValue($item, 'linkOptions', []);
-
-		if (isset($item['active'])) {
-			$active = ArrayHelper::remove($item, 'active', false);
-		} else {
-			$active = $this->isItemActive($item);
-		}
-
-		if ($active) {
-			Html::addCssClass($options, 'active');
-		}
 
 		if ($items !== null) {
 			$linkOptions['data-toggle'] = 'dropdown';
