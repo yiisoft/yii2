@@ -1347,4 +1347,26 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
 		return $this->generateAttributeLabel($attribute);
 	}
+
+	/**
+	 * @inheritdoc
+	 *
+	 * The default implementation returns the names of the columns whose values have been populated into this record.
+	 */
+	public function fields()
+	{
+		$fields = array_keys($this->_attributes);
+		return array_combine($fields, $fields);
+	}
+
+	/**
+	 * @inheritdoc
+	 *
+	 * The default implementation returns the names of the relations that have been populated into this record.
+	 */
+	public function extraFields()
+	{
+		$fields = array_keys($this->getRelatedRecords());
+		return array_combine($fields, $fields);
+	}
 }

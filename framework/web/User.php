@@ -211,6 +211,23 @@ class User extends Component
 	}
 
 	/**
+	 * Logs in a user by the given access token.
+	 * Note that unlike [[login()]], this method will NOT start a session to remember the user authentication status.
+	 * Also if the access token is invalid, the user will remain as a guest.
+	 * @param string $token the access token
+	 * @return IdentityInterface the identity associated with the given access token. Null is returned if
+	 * the access token is invalid.
+	 */
+	public function loginByAccessToken($token)
+	{
+		/** @var IdentityInterface $class */
+		$class = $this->identityClass;
+		$identity = $class::findIdentityByAccessToken($token);
+		$this->setIdentity($identity);
+		return $identity;
+	}
+
+	/**
 	 * Logs in a user by cookie.
 	 *
 	 * This method attempts to log in a user using the ID and authKey information
