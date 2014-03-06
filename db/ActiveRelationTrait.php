@@ -288,7 +288,7 @@ trait ActiveRelationTrait
 				foreach ($primaryModels as $i => $primaryModel) {
 					if ($primaryModels[$i][$primaryName] instanceof ActiveRecordInterface) {
 						$primaryModels[$i][$primaryName]->populateRelation($name, $primaryModel);
-					} elseif  (!empty($primaryModels[$i][$primaryName])) {
+					} elseif (!empty($primaryModels[$i][$primaryName])) {
 						$primaryModels[$i][$primaryName][$name] = $primaryModel;
 					}
 				}

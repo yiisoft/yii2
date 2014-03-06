@@ -348,5 +348,4 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 		$event = new MailEvent(['message' => $message, 'isSuccessful' => $isSuccessful]);
 		$this->trigger(self::EVENT_AFTER_SEND, $event);
 	}
-
 }

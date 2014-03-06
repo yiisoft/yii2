@@ -152,7 +152,7 @@ class DataColumn extends Column
 			return parent::getDataCellContent($model, $key, $index);
 		}
 		return $value;
-	}	 
+	}
 
 	/**
 	 * @inheritdoc

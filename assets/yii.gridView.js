@@ -26,17 +26,18 @@
 		filterSelector: undefined
 	};
 
+	var gridData = {};
+
 	var methods = {
 		init: function (options) {
 			return this.each(function () {
 				var $e = $(this);
 				var settings = $.extend({}, defaults, options || {});
-				$e.data('yiiGridView', {
-					settings: settings
-				});
+				gridData[$e.prop('id')] = {settings: settings};
 
 				var enterPressed = false;
-				$(settings.filterSelector).on('change.yiiGridView keydown.yiiGridView', function (event) {
+				$(document).off('change.yiiGridView keydown.yiiGridView', settings.filterSelector)
+					.on('change.yiiGridView keydown.yiiGridView', settings.filterSelector, function (event) {
 					if (event.type === 'keydown') {
 						if (event.keyCode !== 13) {
 							return; // only react to enter key
@@ -60,7 +61,7 @@
 
 		applyFilter: function () {
 			var $grid = $(this);
-			var settings = $grid.data('yiiGridView').settings;
+			var settings = gridData[$grid.prop('id')].settings;
 			var data = {};
 			$.each($(settings.filterSelector).serializeArray(), function () {
 				data[this.name] = this.value;
@@ -85,15 +86,16 @@
 
 		setSelectionColumn: function (options) {
 			var $grid = $(this);
-			var data = $grid.data('yiiGridView');
-			data.selectionColumn = options.name;
+			var id = $(this).prop('id');
+			gridData[id].selectionColumn = options.name;
 			if (!options.multiple) {
 				return;
 			}
-			$grid.on('click.yiiGridView', "input[name='" + options.checkAll + "']", function () {
+			var inputs = "#" + id + " input[name='" + options.checkAll + "']";
+			$(document).off('click.yiiGridView', inputs).on('click.yiiGridView', inputs, function () {
 				$grid.find("input[name='" + options.name + "']:enabled").prop('checked', this.checked);
 			});
-			$grid.on('click.yiiGridView', "input[name='" + options.name + "']:enabled", function () {
+			$(document).off('click.yiiGridView', inputs + ":enabled").on('click.yiiGridView', inputs + ":enabled", function () {
 				var all = $grid.find("input[name='" + options.name + "']").length == $grid.find("input[name='" + options.name + "']:checked").length;
 				$grid.find("input[name='" + options.checkAll + "']").prop('checked', all);
 			});
@@ -101,7 +103,7 @@
 
 		getSelectedRows: function () {
 			var $grid = $(this);
-			var data = $grid.data('yiiGridView');
+			var data = gridData[$grid.prop('id')];
 			var keys = [];
 			if (data.selectionColumn) {
 				$grid.find("input[name='" + data.selectionColumn + "']:checked").each(function () {
@@ -118,8 +120,9 @@
 			});
 		},
 
-		data: function() {
-			return this.data('yiiGridView');
+		data: function () {
+			var id = $(this).prop('id');
+			return gridData[id];
 		}
 	};
 })(window.jQuery);

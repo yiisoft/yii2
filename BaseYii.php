@@ -356,7 +356,7 @@ class BaseYii
 			$config = array_merge(static::$objectConfig[$class], $config);
 		}
 
-		if (($n = func_num_args()) > 1) {
+		if (func_num_args() > 1) {
 			/** @var \ReflectionClass $reflection */
 			if (isset($reflections[$class])) {
 				$reflection = $reflections[$class];
