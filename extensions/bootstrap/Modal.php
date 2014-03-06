@@ -35,9 +35,9 @@ use yii\helpers\Html;
  */
 class Modal extends Widget
 {
-	const SIZE_LARGE="modal-lg";
-	const SIZE_SMALL="modal-sm";
-	const SIZE_DEFAULT="";
+	const SIZE_LARGE = "modal-lg";
+	const SIZE_SMALL = "modal-sm";
+	const SIZE_DEFAULT = "";
 
 	/**
 	 * @var string the header content in the modal window.
@@ -94,7 +94,7 @@ class Modal extends Widget
 
 		echo $this->renderToggleButton() . "\n";
 		echo Html::beginTag('div', $this->options) . "\n";
-		echo Html::beginTag('div', ['class' => 'modal-dialog '.$this->size]) . "\n";
+		echo Html::beginTag('div', ['class' => 'modal-dialog ' . $this->size]) . "\n";
 		echo Html::beginTag('div', ['class' => 'modal-content']) . "\n";
 		echo $this->renderHeader() . "\n";
 		echo $this->renderBodyBegin() . "\n";
