@@ -16,7 +16,7 @@ use yii\helpers\Console;
 use yii\helpers\Inflector;
 
 /**
- * This command provides help information about console commands.
+ * Provides help information about console commands.
  *
  * This command displays the available command list in
  * the application or the detailed instructions about using
@@ -82,6 +82,32 @@ class HelpController extends Controller
 	}
 
 	/**
+	 * Returns an array of commands an their descriptions.
+	 * @return array all available commands as keys and their description as values.
+	 */
+	protected function getCommandDescriptions()
+	{
+		$descriptions = [];
+		foreach ($this->getCommands() as $command) {
+			$description = '';
+
+			$result = Yii::$app->createController($command);
+			if ($result !== false) {
+				list($controller, $actionID) = $result;
+				$class = new \ReflectionClass($controller);
+
+				$docLines = preg_split('~(\n|\r|\r\n)~', $class->getDocComment());
+				if (isset($docLines[1])) {
+					$description = trim($docLines[1], ' *');
+				}
+			}
+
+			$descriptions[$command] = $description;
+		}
+		return $descriptions;
+	}
+
+	/**
 	 * Returns all available actions of the specified controller.
 	 * @param Controller $controller the controller instance
 	 * @return array all available action IDs.
@@ -141,11 +167,19 @@ class HelpController extends Controller
 	 */
 	protected function getHelp()
 	{
-		$commands = $this->getCommands();
+		$commands = $this->getCommandDescriptions();
 		if (!empty($commands)) {
 			$this->stdout("\nThe following commands are available:\n\n", Console::BOLD);
-			foreach ($commands as $command) {
-				echo "- " . $this->ansiFormat($command, Console::FG_YELLOW) . "\n";
+			$len = 0;
+			foreach ($commands as $command => $description) {
+				if (($l = strlen($command)) > $len) {
+					$len = $l;
+				}
+			}
+			foreach ($commands as $command => $description) {
+				echo "- " . $this->ansiFormat($command, Console::FG_YELLOW);
+				echo str_repeat(' ', $len + 3 - strlen($command)) . $description;
+				echo "\n";
 			}
 			$scriptName = $this->getScriptName();
 			$this->stdout("\nTo see the help of each command, enter:\n", Console::BOLD);

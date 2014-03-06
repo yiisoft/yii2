@@ -13,7 +13,7 @@ use yii\console\Exception;
 use yii\caching\Cache;
 
 /**
- * This command allows you to flush cache.
+ * Allows you to flush cache.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0

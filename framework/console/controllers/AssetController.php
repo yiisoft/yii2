@@ -12,7 +12,7 @@ use yii\console\Exception;
 use yii\console\Controller;
 
 /**
- * This command allows you to combine and compress your JavaScript and CSS files.
+ * Allows you to combine and compress your JavaScript and CSS files.
  *
  * Usage:
  * 1. Create a configuration file using 'template' action:
