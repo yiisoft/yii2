@@ -36,7 +36,7 @@ use yii\rest\ActiveController;
 
 class UserController extends ActiveController
 {
-	public $modelClass = 'app\models\User';
+    public $modelClass = 'app\models\User';
 }
 ```
 
@@ -48,7 +48,7 @@ Then, modify the configuration about the `urlManager` component in your applicat
     'enableStrictParsing' => true,
     'showScriptName' => false,
     'rules' => [
-		['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
+        ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
     ],
 ]
 ```
@@ -83,11 +83,23 @@ X-Pagination-Total-Count: 1000
 X-Pagination-Page-Count: 50
 X-Pagination-Current-Page: 1
 X-Pagination-Per-Page: 20
-Link: <http://localhost/users?page=1>; rel=self, <http://localhost/users?page=2>; rel=next, <http://localhost/users?page=50>; rel=last
+Link: <http://localhost/users?page=1>; rel=self, 
+      <http://localhost/users?page=2>; rel=next, 
+      <http://localhost/users?page=50>; rel=last
 Transfer-Encoding: chunked
 Content-Type: application/json; charset=UTF-8
 
-[{"id":1,..},{"id":2,...}...]
+[
+    {
+        "id": 1,
+        ...
+    },
+    {
+        "id": 2,
+        ...
+    },
+    ...
+]
 ```
 
 Try changing the acceptable content type to be `application/xml`, and you will see the result
@@ -106,12 +118,24 @@ X-Pagination-Total-Count: 1000
 X-Pagination-Page-Count: 50
 X-Pagination-Current-Page: 1
 X-Pagination-Per-Page: 20
-Link: <http://localhost/users?page=1>; rel=self, <http://localhost/users?page=2>; rel=next, <http://localhost/users?page=50>; rel=last
+Link: <http://localhost/users?page=1>; rel=self, 
+      <http://localhost/users?page=2>; rel=next, 
+      <http://localhost/users?page=50>; rel=last
 Transfer-Encoding: chunked
 Content-Type: application/xml
 
 <?xml version="1.0" encoding="UTF-8"?>
-<response><item><id>1</id>...</item><item><id>2</id>...</item>...</response>
+<response>
+    <item>
+        <id>1</id>
+        ...
+    </item>
+    <item>
+        <id>2</id>
+        ...
+    </item>
+    ...
+</response>
 ```
 
 > Tip: You may also access your APIs via Web browser by entering the URL `http://localhost/users`.
@@ -193,28 +217,28 @@ You can override the `fields()` method to add, remove, rename or redefine fields
 // in your DB table or model attributes do not cause your field changes (to keep API backward compatibility).
 public function fields()
 {
-	return [
-		// field name is the same as the attribute name
-		'id',
-		// field name is "email", the corresponding attribute name is "email_address"
-		'email' => 'email_address',
-		// field name is "name", its value is defined by a PHP callback
-		'name' => function () {
-			return $this->first_name . ' ' . $this->last_name;
-		},
-	];
+    return [
+        // field name is the same as the attribute name
+        'id',
+        // field name is "email", the corresponding attribute name is "email_address"
+        'email' => 'email_address',
+        // field name is "name", its value is defined by a PHP callback
+        'name' => function () {
+            return $this->first_name . ' ' . $this->last_name;
+        },
+    ];
 }
 
 // filter out some fields, best used when you want to inherit the parent implementation
 // and blacklist some sensitive fields.
 public function fields()
 {
-	$fields = parent::fields();
+    $fields = parent::fields();
 
-	// remove fields that contain sensitive information
-	unset($fields['auth_key'], $fields['password_hash'], $fields['password_reset_token']);
+    // remove fields that contain sensitive information
+    unset($fields['auth_key'], $fields['password_hash'], $fields['password_reset_token']);
 
-	return $fields;
+    return $fields;
 }
 ```
 
@@ -238,15 +262,15 @@ For example, `http://localhost/users?fields=id,email&expand=profile` may return 
 
 ```php
 [
-	{
-		"id": 100,
-		"email": "100@example.com",
-		"profile": {
-			"id": 100,
-			"age": 30,
-		}
-	},
-	...
+    {
+        "id": 100,
+        "email": "100@example.com",
+        "profile": {
+            "id": 100,
+            "age": 30,
+        }
+    },
+    ...
 ]
 ```
 
@@ -264,6 +288,84 @@ extend from [[yii\base\Model]], or if you want to use some new collection classe
 customize the serializer class and configure [[yii\rest\Controller::serializer]] to use it.
 You new resource classes may use the trait [[yii\base\ArrayableTrait]] to support selective field output
 as explained above.
+
+
+### Pagination
+
+For API endpoints about resource collections, pagination is supported out-of-box if you use 
+[[yii\data\DataProviderInterface|data provider]] to serve the response data. In particular,
+through query parameters `page` and `per-page`, an API consumer may specify which page of data
+to return and how many data items should be included in each page. The corresponding response
+will include the pagination information by the following HTTP headers (please also refer to the first example
+in this chapter):
+
+* `X-Pagination-Total-Count`: The total number of data items;
+* `X-Pagination-Page-Count`: The number of pages;
+* `X-Pagination-Current-Page`: The current page (1-based);
+* `X-Pagination-Per-Page`: The number of data items in each page;
+* `Link`: A set of navigational links allowing client to traverse the data page by page.
+
+The response body will contain a list of data items in the requested page.
+
+Sometimes, you may want to help simplify the client development work by including pagination information
+directly in the response body. To do so, configure the [[yii\rest\Serializer::collectionEnvelope]] property
+as follows:
+
+```php
+use yii\rest\ActiveController;
+
+class UserController extends ActiveController
+{
+    public $modelClass = 'app\models\User';
+    public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items',
+    ];
+}
+```
+
+You may then get the following response for request `http://localhost/users`:
+
+```
+HTTP/1.1 200 OK
+Date: Sun, 02 Mar 2014 05:31:43 GMT
+Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
+X-Powered-By: PHP/5.4.20
+X-Pagination-Total-Count: 1000
+X-Pagination-Page-Count: 50
+X-Pagination-Current-Page: 1
+X-Pagination-Per-Page: 20
+Link: <http://localhost/users?page=1>; rel=self, 
+      <http://localhost/users?page=2>; rel=next, 
+      <http://localhost/users?page=50>; rel=last
+Transfer-Encoding: chunked
+Content-Type: application/json; charset=UTF-8
+
+{
+    "items": [
+        {
+            "id": 1,
+            ...
+        },
+        {
+            "id": 2,
+            ...
+        },
+        ...
+    ],
+    "_links": {
+        "self": "http://localhost/users?page=1", 
+        "next": "http://localhost/users?page=2", 
+        "last": "http://localhost/users?page=50"
+    },
+    "_meta": {
+        "totalCount": 1000,
+        "pageCount": 50,
+        "currentPage": 1,
+        "perPage": 20
+    }
+}
+```
 
 
 ### HATEOAS Support
@@ -284,12 +386,12 @@ use yii\helpers\Url;
 
 class User extends ActiveRecord implements Linkable
 {
-	public function getLinks()
-	{
-		return [
-			Link::REL_SELF => Url::action(['user', 'id' => $this->id], true),
-		];
-	}
+    public function getLinks()
+    {
+        return [
+            Link::REL_SELF => Url::action(['user', 'id' => $this->id], true),
+        ];
+    }
 }
 ```
 
@@ -298,12 +400,12 @@ to the user, for example,
 
 ```
 {
-	"id": 100,
-	"email": "user@example.com",
-	...,
-	"_links" => [
-		"self": "https://example.com/users/100"
-	]
+    "id": 100,
+    "email": "user@example.com",
+    ...,
+    "_links" => [
+        "self": "https://example.com/users/100"
+    ]
 }
 ```
 
@@ -350,8 +452,8 @@ format. For example,
 ```php
 public function actionSearch($keyword)
 {
-	$result = SolrService::search($keyword);
-	return $result;
+    $result = SolrService::search($keyword);
+    return $result;
 }
 ```
 
@@ -365,20 +467,20 @@ To do so, override the `actions()` method like the following:
 ```php
 public function actions()
 {
-	$actions = parent::actions();
+    $actions = parent::actions();
 
-	// disable the "delete" and "create" actions
-	unset($actions['delete'], $actions['create']);
+    // disable the "delete" and "create" actions
+    unset($actions['delete'], $actions['create']);
 
-	// customize the data provider preparation with the "prepareDataProvider()" method
-	$actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
+    // customize the data provider preparation with the "prepareDataProvider()" method
+    $actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
 
-	return $actions;
+    return $actions;
 }
 
 public function prepareDataProvider()
 {
-	// prepare and return a data provider for the "index" action
+    // prepare and return a data provider for the "index" action
 }
 ```
 
@@ -410,7 +512,7 @@ configuration like the following:
     'enableStrictParsing' => true,
     'showScriptName' => false,
     'rules' => [
-		['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
+        ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
     ],
 ]
 ```
@@ -422,13 +524,13 @@ For example, the above code is roughly equivalent to the following rules:
 
 ```php
 [
-	'PUT,PATCH users/<id>' => 'user/update',
-	'DELETE users/<id>' => 'user/delete',
-	'GET,HEAD users/<id>' => 'user/view',
-	'POST users' => 'user/create',
-	'GET,HEAD users' => 'user/index',
-	'users/<id>' => 'user/options',
-	'users' => 'user/options',
+    'PUT,PATCH users/<id>' => 'user/update',
+    'DELETE users/<id>' => 'user/delete',
+    'GET,HEAD users/<id>' => 'user/view',
+    'POST users' => 'user/create',
+    'GET,HEAD users' => 'user/index',
+    'users/<id>' => 'user/options',
+    'users' => 'user/options',
 ]
 ```
 
@@ -449,9 +551,9 @@ actions should be disabled, respectively. For example,
 
 ```php
 [
-	'class' => 'yii\rest\UrlRule',
-	'controller' => 'user',
-	'except' => ['delete', 'create', 'update'],
+    'class' => 'yii\rest\UrlRule',
+    'controller' => 'user',
+    'except' => ['delete', 'create', 'update'],
 ],
 ```
 
@@ -460,11 +562,11 @@ For example, to support a new action `search` by the endpoint `GET /users/search
 
 ```php
 [
-	'class' => 'yii\rest\UrlRule',
-	'controller' => 'user',
-	'extra' => [
-		'GET search' => 'search',
-	],
+    'class' => 'yii\rest\UrlRule',
+    'controller' => 'user',
+    'extra' => [
+        'GET search' => 'search',
+    ],
 ```
 
 You may have noticed that the controller ID `user` appears in plural form as `users` in the endpoints.
@@ -509,11 +611,11 @@ as follows,
 ```php
 class UserController extends ActiveController
 {
-	public $authMethods = [
-		'yii\rest\HttpBasicAuth',
-		'yii\rest\QueryParamAuth',
-		'yii\rest\HttpBearerAuth',
-	];
+    public $authMethods = [
+        'yii\rest\HttpBasicAuth',
+        'yii\rest\QueryParamAuth',
+        'yii\rest\HttpBearerAuth',
+    ];
 }
 ```
 
@@ -530,10 +632,10 @@ use yii\web\IdentityInterface;
 
 class User extends ActiveRecord implements IdentityInterface
 {
-	public static function findIdentityByAccessToken($token)
-	{
-		return static::find(['access_token' => $token]);
-	}
+    public static function findIdentityByAccessToken($token)
+    {
+        return static::find(['access_token' => $token]);
+    }
 }
 ```
 
@@ -616,6 +718,32 @@ the current rate limiting information:
 Error Handling
 --------------
 
+When handling a RESTful API request, if there is an error in the user request or if something unexpected
+happens on the server, you may simply throw an exception to notify the user something wrong happened. 
+If you can identify the cause of the error (e.g. the requested resource does not exist), you should 
+consider throwing an exception with a proper HTTP status code (e.g. [[yii\web\NotFoundHttpException]] 
+representing a 404 HTTP status code). Yii will send the response with the corresponding HTTP status
+code and text. It will also include in the response body the serialized representation of the 
+exception. For example,
+
+```
+HTTP/1.1 404 Not Found
+Date: Sun, 02 Mar 2014 05:31:43 GMT
+Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
+Transfer-Encoding: chunked
+Content-Type: application/json; charset=UTF-8
+
+{
+    "type": "yii\\web\\NotFoundHttpException",
+    "name": "Not Found Exception",
+    "message": "The requested resource was not found.",
+    "code": 0,
+    "status": 404
+}
+```
+
+The following list summarizes the HTTP status code that are used by the Yii REST framework:
+
 * `200`: OK. Everything worked as expected.
 * `201`: A resource was successfully created in response to a `POST` request. The `Location` header
    contains the URL pointing to the newly created resource.
@@ -663,46 +791,59 @@ of API versioning that is a kind of mix of these two methods:
   to determine the minor version number and write conditional code to respond to the minor versions accordingly.
 
 For each module serving a major version, it should include the resource classes and the controller classes
-serving for that specific version. The resource and controller classes may or may not extend from a common set
-of base classes shared by all major versions. As a result, your code may be organized like the following:
+serving for that specific version. To better separate code responsibility, you may keep a common set of
+base resource and controller classes, and subclass them in each individual version module. Within the subclasses,
+implement the concrete code such as `Model::fields()`. As a result, your code may be organized like the following:
 
 ```
 api/
-	common/
-		controllers/
-		models/
-	modules/
-		v1/
-			controllers/
-			models/
-		v2/
-			controllers/
-			models/
+    common/
+        controllers/
+            UserController.php
+            PostController.php
+        models/
+            User.php
+            Post.php
+    modules/
+        v1/
+            controllers/
+                UserController.php
+                PostController.php
+            models/
+                User.php
+                Post.php
+        v2/
+            controllers/
+                UserController.php
+                PostController.php
+            models/
+                User.php
+                Post.php
 ```
 
 Your application configuration would look like:
 
 ```php
 return [
-	'modules' => [
-		'v1' => [
-			'basePath' => '@app/modules/v1',
-		],
-		'v2' => [
-			'basePath' => '@app/modules/v2',
-		],
-	],
-	'components' => [
-		'urlManager' => [
-			'enablePrettyUrl' => true,
-			'enableStrictParsing' => true,
-			'showScriptName' => false,
-			'rules' => [
-				['class' => 'yii\rest\UrlRule', 'controller' => ['v1/user', 'v1/post']],
-				['class' => 'yii\rest\UrlRule', 'controller' => ['v2/user', 'v2/post']],
-			],
-		],
-	],
+    'modules' => [
+        'v1' => [
+            'basePath' => '@app/modules/v1',
+        ],
+        'v2' => [
+            'basePath' => '@app/modules/v2',
+        ],
+    ],
+    'components' => [
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'enableStrictParsing' => true,
+            'showScriptName' => false,
+            'rules' => [
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['v1/user', 'v1/post']],
+                ['class' => 'yii\rest\UrlRule', 'controller' => ['v2/user', 'v2/post']],
+            ],
+        ],
+    ],
 ];
 ```
 
@@ -710,7 +851,7 @@ As a result, `http://example.com/v1/users` will return the list of users in vers
 `http://example.com/v2/users` will return version 2 users.
 
 Using modules, code for different major versions can be well isolated. And it is still possible
-to share commonly used code via common base classes or other shared classes.
+to reuse code across modules via common base classes and other shared classes.
 
 To deal with minor version numbers, you may take advantage of the content type negotiation
 feature provided by [[yii\rest\Controller]]:
