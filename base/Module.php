@@ -359,6 +359,9 @@ class Module extends Component
 				return $this->_modules[$id];
 			} elseif ($load) {
 				Yii::trace("Loading module: $id", __METHOD__);
+				if (is_array($this->_modules[$id]) && !isset($this->_modules[$id]['class'])) {
+					$this->_modules[$id]['class'] = 'yii\base\Module';
+				}
 				return $this->_modules[$id] = Yii::createObject($this->_modules[$id], $id, $this);
 			}
 		}
