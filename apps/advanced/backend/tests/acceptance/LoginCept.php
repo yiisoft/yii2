@@ -10,21 +10,22 @@ $loginPage = LoginPage::openBy($I);
 $I->amGoingTo('submit login form with no data');
 $loginPage->login('', '');
 $I->expectTo('see validations errors');
-$I->see('Username cannot be blank.');
-$I->see('Password cannot be blank.');
+$I->see('Username cannot be blank.', '.help-block');
+$I->see('Password cannot be blank.', '.help-block');
 
 $I->amGoingTo('try to login with wrong credentials');
 $I->expectTo('see validations errors');
 $loginPage->login('admin', 'wrong');
 $I->expectTo('see validations errors');
-$I->see('Incorrect username or password.');
+$I->see('Incorrect username or password.', '.help-block');
 
 $I->amGoingTo('try to login with correct credentials');
 $loginPage->login('erau', 'password_0');
 $I->expectTo('see that user is logged');
-$I->see('Logout (erau)');
-$I->dontSee('Login');
-$I->dontSee('Signup');
-$I->click('Logout (erau)');
-$I->dontSee('Logout (erau)');
-$I->see('Login');
+$I->see('Logout (erau)', 'ul.nav li a');
+$I->dontSee('Login', 'ul.nav li a');
+$I->dontSee('Signup', 'ul.nav li a');
+// Uncomment if using WebDriver
+//$I->click('Logout (erau)', 'ul.nav li a');
+//$I->dontSee('Logout (erau)', 'ul.nav li a');
+//$I->see('Login', 'ul.nav li a');
