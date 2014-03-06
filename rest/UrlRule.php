@@ -93,6 +93,12 @@ class UrlRule extends CompositeUrlRule
 	 */
 	public $except = [];
 	/**
+	 * @var array patterns for supporting extra actions in addition to those listed in [[patterns]].
+	 * The keys are the patterns and the values are the corresponding action IDs.
+	 * These extra patterns will take precedence over [[patterns]].
+	 */
+	public $extra = [];
+	/**
 	 * @var array list of tokens that should be replaced for each pattern. The keys are the token names,
 	 * and the values are the corresponding replacements.
 	 * @see patterns
@@ -117,9 +123,19 @@ class UrlRule extends CompositeUrlRule
 		'{id}' => 'options',
 		'' => 'options',
 	];
+	/**
+	 * @var array the default configuration for creating each URL rule contained by this rule.
+	 */
 	public $ruleConfig = [
 		'class' => 'yii\web\UrlRule',
 	];
+	/**
+	 * @var boolean whether to automatically pluralize the URL names for controllers.
+	 * If true, a controller ID will appear in plural form in URLs. For example, `user` controller
+	 * will appear as `users` in URLs.
+	 * @see controllers
+	 */
+	public $pluralize = true;
 
 
 	/**
@@ -134,7 +150,7 @@ class UrlRule extends CompositeUrlRule
 		$controllers = [];
 		foreach ((array)$this->controller as $urlName => $controller) {
 			if (is_integer($urlName)) {
-				$urlName = Inflector::pluralize($controller);
+				$urlName = $this->pluralize ? Inflector::pluralize($controller) : $controller;
 			}
 			$controllers[$urlName] = $controller;
 		}
@@ -152,10 +168,11 @@ class UrlRule extends CompositeUrlRule
 	{
 		$only = array_flip($this->only);
 		$except = array_flip($this->except);
+		$patterns = array_merge($this->patterns, $this->extra);
 		$rules = [];
 		foreach ($this->controller as $urlName => $controller) {
 			$prefix = trim($this->prefix . '/' . $urlName, '/');
-			foreach ($this->patterns as $pattern => $action) {
+			foreach ($patterns as $pattern => $action) {
 				if (!isset($except[$action]) && (empty($only) || isset($only[$action]))) {
 					$rules[$urlName][] = $this->createRule($pattern, $prefix, $controller . '/' . $action);
 				}
