@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2",
 	"description": "Yii PHP Framework Version 2",
-	"keywords": ["yii", "framework"],
+	"keywords": ["yii2", "framework"],
 	"homepage": "http://www.yiiframework.com/",
 	"type": "library",
 	"license": "BSD-3-Clause",
@@ -54,6 +54,7 @@
 		"lib-pcre": "*",
 		"yiisoft/yii2-composer": "*",
 		"yiisoft/jquery": "~2.0 | ~1.10",
+		"yiisoft/jquery-pjax": "*",
 		"ezyang/htmlpurifier": "4.6.*",
 		"cebe/markdown": "0.9.*"
 	},

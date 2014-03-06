@@ -14,7 +14,7 @@ use yii\helpers\Json;
 use yii\web\Response;
 
 /**
- * Pjax is a widget integrating the [pjax](https://github.com/defunkt/jquery-pjax) jQuery plugin.
+ * Pjax is a widget integrating the [pjax](https://github.com/yiisoft/jquery-pjax) jQuery plugin.
  *
  * Pjax only deals with the content enclosed between its [[begin()]] and [[end()]] calls, called the *body content* of the widget.
  * By default, any link click or form submission (for those forms with `data-pjax` attribute) within the body content
@@ -25,7 +25,9 @@ use yii\web\Response;
  * You may configure [[linkSelector]] to specify which links should trigger pjax, and configure [[formSelector]]
  * to specify which form submission may trigger pjax.
  *
- * The following example shows how to use Pjax with the [[\yii\gridview\GridView]] widget so that the grid pagination,
+ * You may disable pjax for a specific link inside the container by adding `data-pjax="0"` attribute to this link.
+ *
+ * The following example shows how to use Pjax with the [[\yii\grid\GridView]] widget so that the grid pagination,
  * sorting and filtering can be done via pjax:
  *
  * ```php
@@ -78,7 +80,7 @@ class Pjax extends Widget
 	public $scrollTo = false;
 	/**
 	 * @var array additional options to be passed to the pjax JS plugin. Please refer to
-	 * [pjax project page](https://github.com/defunkt/jquery-pjax) for available options.
+	 * [pjax project page](https://github.com/yiisoft/jquery-pjax) for available options.
 	 */
 	public $clientOptions;
 

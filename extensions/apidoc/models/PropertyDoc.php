@@ -69,7 +69,7 @@ class PropertyDoc extends BaseDoc
 				$this->types = $tag->getTypes();
 				$this->description = ucfirst($tag->getDescription());
 				if (($pos = strpos($this->description, '.')) !== false) {
-					$this->shortDescription = substr($this->description, 0, $pos);
+					$this->shortDescription = substr($this->description, 0, $pos + 1);
 				} else {
 					$this->shortDescription = $this->description;
 				}

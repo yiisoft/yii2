@@ -31,16 +31,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<p>
 		<?= "<?= " ?>Html::a('Update', ['update', <?= $urlParams ?>], ['class' => 'btn btn-primary']) ?>
-		<?= "<?php " ?>echo Html::a('Delete', ['delete', <?= $urlParams ?>], [
+		<?= "<?= " ?>Html::a('Delete', ['delete', <?= $urlParams ?>], [
 			'class' => 'btn btn-danger',
 			'data' => [
 				'confirm' => Yii::t('app', 'Are you sure to delete this item?'),
 				'method' => 'post',
 			],
-		]); ?>
+		]) ?>
 	</p>
 
-	<?= "<?php " ?>echo DetailView::widget([
+	<?= "<?= " ?>DetailView::widget([
 		'model' => $model,
 		'attributes' => [
 <?php
@@ -56,6 +56,6 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
 }
 ?>
 		],
-	]); ?>
+	]) ?>
 
 </div>

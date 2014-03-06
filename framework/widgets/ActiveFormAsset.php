@@ -6,6 +6,7 @@
  */
 
 namespace yii\widgets;
+
 use yii\web\AssetBundle;
 
 /**

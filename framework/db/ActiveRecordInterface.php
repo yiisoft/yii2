@@ -87,6 +87,13 @@ interface ActiveRecordInterface
 	public function getOldPrimaryKey($asArray = false);
 
 	/**
+	 * Returns a value indicating whether the given set of attributes represents the primary key for this model
+	 * @param array $keys the set of attributes to check
+	 * @return boolean whether the given set of attributes represents the primary key for this model
+	 */
+	public static function isPrimaryKey($keys);
+
+	/**
 	 * Creates an [[ActiveQueryInterface|ActiveQuery]] instance for query purpose.
 	 *
 	 * This method is usually ment to be used like this:

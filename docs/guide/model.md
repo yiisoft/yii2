@@ -24,7 +24,7 @@ be accessed like the member variables of any object. For example, a `Post` model
 may contain a `title` attribute and a `content` attribute, accessible as follows:
 
 ```php
-$post = new Post;
+$post = new Post();
 $post->title = 'Hello, world';
 $post->content = 'Something interesting is happening.';
 echo $post->title;
@@ -35,7 +35,7 @@ Since [[yii\base\Model|Model]] implements the [ArrayAccess](http://php.net/manua
 you can also access the attributes as if they were array elements:
 
 ```php
-$post = new Post;
+$post = new Post();
 $post['title'] = 'Hello, world';
 $post['content'] = 'Something interesting is happening';
 echo $post['title'];
@@ -160,7 +160,7 @@ class EmployeeController extends \yii\web\Controller
 		$employee = new Employee(['scenario' => 'managementPanel']);
 
 		// second way
-		$employee = new Employee;
+		$employee = new Employee();
 		$employee->scenario = 'managementPanel';
 
 		// third way
@@ -187,7 +187,7 @@ only, etc. If errors are found in validation, they may be presented to the user 
 The following example shows how the validation is performed:
 
 ```php
-$model = new LoginForm;
+$model = new LoginForm();
 $model->username = $_POST['username'];
 $model->password = $_POST['password'];
 if ($model->validate()) {
@@ -331,7 +331,7 @@ For the code above mass assignment will be allowed stsrictly according to `scena
 $user = User::find(42);
 $data = ['password' => '123'];
 $user->attributes = $data;
-print_r($data);
+print_r($user->attributes);
 ```
 
 Will give you empty array because there's no default scenario defined in our `scenarios()`.
@@ -345,7 +345,7 @@ $data = [
 	'hashcode' => 'test',
 ];
 $user->attributes = $data;
-print_r($data);
+print_r($user->attributes);
 ```
 
 Will give you the following:
@@ -386,7 +386,7 @@ $data = [
 	'password' => '123',
 ];
 $user->attributes = $data;
-print_r($data);
+print_r($user->attributes);
 ```
 
 Will give you the following:

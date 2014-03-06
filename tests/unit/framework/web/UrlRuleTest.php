@@ -12,6 +12,12 @@ use yiiunit\TestCase;
  */
 class UrlRuleTest extends TestCase
 {
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->mockApplication();
+	}
+
 	public function testCreateUrl()
 	{
 		$manager = new UrlManager(['cache' => null]);

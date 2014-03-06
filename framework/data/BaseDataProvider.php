@@ -188,6 +188,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 			$config = ['class' => Pagination::className()];
 			if ($this->id !== null) {
 				$config['pageParam'] = $this->id . '-page';
+				$config['pageSizeParam'] = $this->id . '-per-page';
 			}
 			$this->_pagination = Yii::createObject(array_merge($config, $value));
 		} elseif ($value instanceof Pagination || $value === false) {

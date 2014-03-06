@@ -136,15 +136,12 @@ class PageCache extends ActionFilter
 	}
 
 	/**
-	 * This method is invoked right after an action is executed.
-	 * You may override this method to do some postprocessing for the action.
-	 * @param Action $action the action just executed.
-	 * @param mixed $result the action execution result
+	 * @inheritdoc
 	 */
-	public function afterAction($action, &$result)
+	public function afterAction($action, $result)
 	{
 		echo $result;
 		$this->view->endCache();
-		$result = ob_get_clean();
+		return ob_get_clean();
 	}
 }

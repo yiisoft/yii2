@@ -24,7 +24,7 @@ ArrayHelper::multisort($properties, 'name');
 <?php foreach($properties as $property): ?>
 
 	<div class="detailHeader h3" id="<?= $property->name.'-detail' ?>">
-		<?php echo $property->name; ?>
+		<?= $property->name ?>
 		<span class="detailHeaderTag small">
 			<?= $property->visibility ?>
 			<?php if($property->getIsReadOnly()) echo ' <em>read-only</em> '; ?>
@@ -38,7 +38,7 @@ ArrayHelper::multisort($properties, 'name');
 
 	<div class="signature"><?php echo $renderer->renderPropertySignature($property); ?></div>
 
-	<p><?= ApiMarkdown::process($property->description, $type) ?></p>
+	<?= ApiMarkdown::process($property->description, $type) ?>
 
 	<?= $this->render('seeAlso', ['object' => $property]); ?>
 

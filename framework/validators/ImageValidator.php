@@ -124,7 +124,7 @@ class ImageValidator extends FileValidator
 		}
 		if ($this->underHeight === null) {
 			$this->underHeight = Yii::t('yii', 'The image "{file}" is too small. The height cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.');
-		}		
+		}
 		if ($this->overWidth === null) {
 			$this->overWidth = Yii::t('yii', 'The image "{file}" is too large. The width cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.');
 		}

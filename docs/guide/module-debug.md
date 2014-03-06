@@ -110,7 +110,7 @@ class ViewsPanel extends Panel
 	{
 		parent::init();
 		Event::on(View::className(), View::EVENT_BEFORE_RENDER, function (ViewEvent $event) {
-			$this->_viewFiles[] = $event->viewFile;
+			$this->_viewFiles[] = $event->sender->getViewFile();
 		});
 	}
 

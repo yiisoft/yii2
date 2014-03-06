@@ -52,7 +52,7 @@ class ClassmapController extends Controller
 		$files = FileHelper::findFiles($root, $options);
 		$map = [];
 		foreach ($files as $file) {
-			if (($pos = strpos($file, $root)) !== 0) {
+			if (strpos($file, $root) !== 0) {
 				die("Something wrong: $file\n");
 			}
 			$path = str_replace('\\', '/', substr($file, strlen($root)));

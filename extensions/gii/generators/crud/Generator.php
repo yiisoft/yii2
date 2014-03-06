@@ -16,6 +16,7 @@ use yii\helpers\Inflector;
 use yii\web\Controller;
 
 /**
+ * Generates CRUD
  *
  * @property array $columnNames Model column names. This property is read-only.
  * @property string $controllerID The controller ID (without the module ID prefix). This property is

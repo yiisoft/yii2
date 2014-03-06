@@ -13,9 +13,12 @@ use ArrayObject;
 use ArrayIterator;
 use ReflectionClass;
 use IteratorAggregate;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
+use yii\web\Link;
+use yii\web\Linkable;
 
 /**
  * Model is the base class for data models.
@@ -54,11 +57,12 @@ use yii\validators\Validator;
  */
 class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayable
 {
+	use ArrayableTrait;
+
 	/**
 	 * The name of the default scenario.
 	 */
 	const SCENARIO_DEFAULT = 'default';
-
 	/**
 	 * @event ModelEvent an event raised at the beginning of [[validate()]]. You may set
 	 * [[ModelEvent::isValid]] to be false to stop the validation.
@@ -516,7 +520,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
 	/**
 	 * Returns the first error of every attribute in the model.
-	 * @return array the first errors. An empty array will be returned if there is no error.
+	 * @return array the first errors. The array keys are the attribute names, and the array
+	 * values are the corresponding error messages. An empty array will be returned if there is no error.
 	 * @see getErrors()
 	 * @see getFirstError()
 	 */
@@ -526,13 +531,13 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 			return [];
 		} else {
 			$errors = [];
-			foreach ($this->_errors as $attributeErrors) {
-				if (isset($attributeErrors[0])) {
-					$errors[] = $attributeErrors[0];
+			foreach ($this->_errors as $name => $es) {
+				if (!empty($es)) {
+					$errors[$name] = reset($es);
 				}
 			}
+			return $errors;
 		}
-		return $errors;
 	}
 
 	/**
@@ -789,13 +794,92 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 	}
 
 	/**
-	 * Converts the object into an array.
-	 * The default implementation will return [[attributes]].
-	 * @return array the array representation of the object
+	 * Returns the list of fields that should be returned by default by [[toArray()]] when no specific fields are specified.
+	 *
+	 * A field is a named element in the returned array by [[toArray()]].
+	 *
+	 * This method should return an array of field names or field definitions.
+	 * If the former, the field name will be treated as an object property name whose value will be used
+	 * as the field value. If the latter, the array key should be the field name while the array value should be
+	 * the corresponding field definition which can be either an object property name or a PHP callable
+	 * returning the corresponding field value. The signature of the callable should be:
+	 *
+	 * ```php
+	 * function ($field, $model) {
+	 *     // return field value
+	 * }
+	 * ```
+	 *
+	 * For example, the following code declares four fields:
+	 *
+	 * - `email`: the field name is the same as the property name `email`;
+	 * - `firstName` and `lastName`: the field names are `firstName` and `lastName`, and their
+	 *   values are obtained from the `first_name` and `last_name` properties;
+	 * - `fullName`: the field name is `fullName`. Its value is obtained by concatenating `first_name`
+	 *   and `last_name`.
+	 *
+	 * ```php
+	 * return [
+	 *     'email',
+	 *     'firstName' => 'first_name',
+	 *     'lastName' => 'last_name',
+	 *     'fullName' => function () {
+	 *         return $this->first_name . ' ' . $this->last_name;
+	 *     },
+	 * ];
+	 * ```
+	 *
+	 * In this method, you may also want to return different lists of fields based on some context
+	 * information. For example, depending on [[scenario]] or the privilege of the current application user,
+	 * you may return different sets of visible fields or filter out some fields.
+	 *
+	 * The default implementation of this method returns [[attributes()]] indexed by the same attribute names.
+	 *
+	 * @return array the list of field names or field definitions.
+	 * @see toArray()
 	 */
-	public function toArray()
+	public function fields()
 	{
-		return $this->getAttributes();
+		$fields = $this->attributes();
+		return array_combine($fields, $fields);
+	}
+
+	/**
+	 * Determines which fields can be returned by [[toArray()]].
+	 * This method will check the requested fields against those declared in [[fields()]] and [[extraFields()]]
+	 * to determine which fields can be returned.
+	 * @param array $fields the fields being requested for exporting
+	 * @param array $expand the additional fields being requested for exporting
+	 * @return array the list of fields to be exported. The array keys are the field names, and the array values
+	 * are the corresponding object property names or PHP callables returning the field values.
+	 */
+	protected function resolveFields(array $fields, array $expand)
+	{
+		$result = [];
+
+		foreach ($this->fields() as $field => $definition) {
+			if (is_integer($field)) {
+				$field = $definition;
+			}
+			if (empty($fields) || in_array($field, $fields, true)) {
+				$result[$field] = $definition;
+			}
+		}
+
+		if (empty($expand)) {
+			return $result;
+		}
+
+		foreach ($this->extraFields() as $field => $definition) {
+			if (is_integer($field)) {
+				$field = $definition;
+			}
+			if (in_array($field, $expand, true)) {
+				$result[$field] = $definition;
+			}
+		}
+
+		return $result;
 	}
 
 	/**

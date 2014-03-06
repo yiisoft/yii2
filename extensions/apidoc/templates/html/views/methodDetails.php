@@ -65,8 +65,8 @@ ArrayHelper::multisort($methods, 'name');
 
 <!--	--><?php //$this->renderPartial('sourceCode',array('object'=>$method)); ?>
 
-	<p><?= ApiMarkdown::process($method->shortDescription, $type, true) ?></strong></p>
-	<p><?= ApiMarkdown::process($method->description, $type) ?></p>
+	<p><strong><?= ApiMarkdown::process($method->shortDescription, $type, true) ?></strong></p>
+	<?= ApiMarkdown::process($method->description, $type) ?>
 
 	<?= $this->render('seeAlso', ['object' => $method]); ?>
 

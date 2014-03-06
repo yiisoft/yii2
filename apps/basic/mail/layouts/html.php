@@ -1,10 +1,9 @@
 <?php
 use yii\helpers\Html;
-use yii\mail\BaseMessage;
 
 /**
  * @var \yii\web\View $this
- * @var BaseMessage $content
+ * @var \yii\mail\BaseMessage $content
  */
 ?>
 <?php $this->beginPage() ?>
