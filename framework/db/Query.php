@@ -577,7 +577,10 @@ class Query extends Component implements QueryInterface
 	 */
 	public function join($type, $table, $on = '', $params = [])
 	{
-		$this->join[] = [$type, $table, $on];
+		if (is_array($this->join) && array_key_exists($table, $this->join)) {
+			return;
+		}
+		$this->join[$table] = [$type, $table, $on];
 		return $this->addParams($params);
 	}
 
