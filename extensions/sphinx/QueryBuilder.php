@@ -422,7 +422,7 @@ class QueryBuilder extends Object
 				if (strpos($column, '(') === false) {
 					$column = $this->db->quoteColumnName($column);
 				}
-				$columns[$i] = "$column AS " . $this->db->quoteColumnName($i);;
+				$columns[$i] = "$column AS " . $this->db->quoteColumnName($i);
 			} elseif (strpos($column, '(') === false) {
 				if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
 					$columns[$i] = $this->db->quoteColumnName($matches[1]) . ' AS ' . $this->db->quoteColumnName($matches[2]);
@@ -907,7 +907,8 @@ class QueryBuilder extends Object
 	 * @param array $params the binding parameters to be populated
 	 * @return string SQL expression, which represents column value
 	 */
-	protected function composeColumnValue($indexes, $columnName, $value, &$params) {
+	protected function composeColumnValue($indexes, $columnName, $value, &$params)
+	{
 		if ($value === null) {
 			return 'NULL';
 		} elseif ($value instanceof Expression) {

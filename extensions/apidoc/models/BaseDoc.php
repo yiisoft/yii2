@@ -76,7 +76,7 @@ class BaseDoc extends Object
 			$this->phpDocContext = $docblock->getContext();
 
 			$this->tags = $docblock->getTags();
-			foreach($this->tags as $i => $tag) {
+			foreach ($this->tags as $i => $tag) {
 				if ($tag instanceof SinceTag) {
 					$this->since = $tag->getVersion();
 					unset($this->tags[$i]);
@@ -104,12 +104,13 @@ class BaseDoc extends Object
 		$this->endLine = $reflection->getEndLine();
 	}
 
-	public function getSourceUrl($baseUrl, $line=null)
+	public function getSourceUrl($baseUrl, $line = null)
 	{
-		if($line === null)
+		if ($line === null) {
 			return $baseUrl . $this->sourcePath;
-		else
+		} else {
 			return $baseUrl . $this->sourcePath . '#' . $line;
+		}
 	}
 
 	public function getSourceCode()

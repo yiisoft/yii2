@@ -6,6 +6,7 @@
  */
 
 namespace yii\apidoc\templates\bootstrap;
+
 use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\Context;
 use yii\console\Controller;
@@ -60,7 +61,7 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 		$types = array_merge($context->classes, $context->interfaces, $context->traits);
 
 		$controller->stdout('generating extension index files...');
-		foreach($this->extensions as $ext) {
+		foreach ($this->extensions as $ext) {
 			$readme = @file_get_contents("https://raw.github.com/yiisoft/yii2-$ext/master/README.md");
 			$indexFileContent = $this->renderWithLayout($this->indexView, [
 				'docContext' => $context,
@@ -109,13 +110,13 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 		switch ($navClasses)
 		{
 			case 'app':
-				$types = array_filter($types, function($val) {
+				$types = array_filter($types, function ($val) {
 					return strncmp($val->name, 'yii\\', 4) !== 0;
 				});
 				break;
 			case 'yii':
 				$self = $this;
-				$types = array_filter($types, function($val) use ($self) {
+				$types = array_filter($types, function ($val) use ($self) {
 					if (strlen($val->name) < 5) {
 						return false;
 					}
@@ -124,7 +125,7 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 				});
 				break;
 			default:
-				$types = array_filter($types, function($val) use ($navClasses) {
+				$types = array_filter($types, function ($val) use ($navClasses) {
 					return strncmp($val->name, "yii\\$navClasses\\", strlen("yii\\$navClasses\\")) === 0;
 				});
 		}
@@ -151,7 +152,7 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 		$done = 0;
 		$fileData = [];
 		$headlines = [];
-		foreach($files as $file) {
+		foreach ($files as $file) {
 			$fileData[$file] = file_get_contents($file);
 			if (basename($file) == 'index.md') {
 				continue; // to not add index file to nav
@@ -163,7 +164,7 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 			}
 		}
 
-		foreach($fileData as $file => $content) {
+		foreach ($fileData as $file => $content) {
 			$output = ApiMarkdown::process($content); // TODO generate links to yiiframework.com by default
 			$output = $this->fixMarkdownLinks($output);
 			if ($this->guideLayout !== false) {
@@ -191,7 +192,7 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 	public function getGuideReferences()
 	{
 		$refs = [];
-		foreach($this->markDownFiles as $file) {
+		foreach ($this->markDownFiles as $file) {
 			$refName = 'guide-' . basename($file, '.md');
 			$refs[$refName] = ['url' => $this->generateGuideFileName($file)];
 		}

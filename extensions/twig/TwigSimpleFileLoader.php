@@ -68,7 +68,8 @@ class TwigSimpleFileLoader implements \Twig_LoaderInterface
 	 * @param string $name file name
 	 * @return string absolute path of file
 	 */
-	protected  function getFilePath($name){
+	protected function getFilePath($name)
+	{
 		return $this->_dir . '/' . $name;
 	}
 }

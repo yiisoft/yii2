@@ -177,7 +177,7 @@ class QueryBuilder extends \yii\base\Object
 	private function buildHashCondition($condition)
 	{
 		$parts = [];
-		foreach($condition as $attribute => $value) {
+		foreach ($condition as $attribute => $value) {
 			if ($attribute == '_id') {
 				if ($value == null) { // there is no null pk
 					$parts[] = ['script' => ['script' => '0==1']];

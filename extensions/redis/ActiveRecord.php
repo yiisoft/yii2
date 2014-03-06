@@ -139,7 +139,7 @@ class ActiveRecord extends BaseActiveRecord
 			$key = static::keyPrefix() . ':a:' . static::buildKey($pk);
 			// save attributes
 			$args = [$key];
-			foreach($values as $attribute => $value) {
+			foreach ($values as $attribute => $value) {
 				$args[] = $attribute;
 				$args[] = $value;
 			}
@@ -172,13 +172,13 @@ class ActiveRecord extends BaseActiveRecord
 		}
 		$db = static::getDb();
 		$n=0;
-		foreach(static::fetchPks($condition) as $pk) {
+		foreach (static::fetchPks($condition) as $pk) {
 			$newPk = $pk;
 			$pk = static::buildKey($pk);
 			$key = static::keyPrefix() . ':a:' . $pk;
 			// save attributes
 			$args = [$key];
-			foreach($attributes as $attribute => $value) {
+			foreach ($attributes as $attribute => $value) {
 				if (isset($newPk[$attribute])) {
 					$newPk[$attribute] = $value;
 				}
@@ -224,9 +224,9 @@ class ActiveRecord extends BaseActiveRecord
 		}
 		$db = static::getDb();
 		$n=0;
-		foreach(static::fetchPks($condition) as $pk) {
+		foreach (static::fetchPks($condition) as $pk) {
 			$key = static::keyPrefix() . ':a:' . static::buildKey($pk);
-			foreach($counters as $attribute => $value) {
+			foreach ($counters as $attribute => $value) {
 				$db->executeCommand('HINCRBY', [$key, $attribute, $value]);
 			}
 			$n++;
@@ -254,7 +254,7 @@ class ActiveRecord extends BaseActiveRecord
 		$attributeKeys = [];
 		$pks = static::fetchPks($condition);
 		$db->executeCommand('MULTI');
-		foreach($pks as $pk) {
+		foreach ($pks as $pk) {
 			$pk = static::buildKey($pk);
 			$db->executeCommand('LREM', [static::keyPrefix(), 0, $pk]);
 			$attributeKeys[] = static::keyPrefix() . ':a:' . $pk;
@@ -276,9 +276,9 @@ class ActiveRecord extends BaseActiveRecord
 		$primaryKey = static::primaryKey();
 
 		$pks = [];
-		foreach($records as $record) {
+		foreach ($records as $record) {
 			$pk = [];
-			foreach($primaryKey as $key) {
+			foreach ($primaryKey as $key) {
 				$pk[$key] = $record[$key];
 			}
 			$pks[] = $pk;
@@ -304,7 +304,7 @@ class ActiveRecord extends BaseActiveRecord
 			}
 			ksort($key); // ensure order is always the same
 			$isNumeric = true;
-			foreach($key as $value) {
+			foreach ($key as $value) {
 				if (!is_numeric($value)) {
 					$isNumeric = false;
 				}

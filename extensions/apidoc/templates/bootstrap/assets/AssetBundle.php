@@ -6,6 +6,7 @@
  */
 
 namespace yii\apidoc\templates\bootstrap\assets;
+
 use yii\web\View;
 
 /**
