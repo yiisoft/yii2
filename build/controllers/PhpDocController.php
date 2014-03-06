@@ -30,14 +30,14 @@ class PhpDocController extends Controller
 	public $updateFiles = true;
 
 	/**
-	 * Generates @property annotations in class files from getters and setters
+	 * Generates `@property annotations` in class files from getters and setters
 	 *
-	 * Property description will be taken from getter or setter or from an @property annotation
+	 * Property description will be taken from getter or setter or from an `@property annotation`
 	 * in the getters docblock if there is one defined.
 	 *
 	 * See https://github.com/yiisoft/yii2/wiki/Core-framework-code-style#documentation for details.
 	 *
-	 * @param null $root the directory to parse files from. Defaults to YII_PATH.
+	 * @param string $root the directory to parse files from. Defaults to YII_PATH.
 	 */
 	public function actionProperty($root = null)
 	{
@@ -110,6 +110,9 @@ class PhpDocController extends Controller
 		$this->stdout("Updated $nFilesUpdated files.\n");
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function globalOptions()
 	{
 		return array_merge(parent::globalOptions(), ['updateFiles']);
@@ -197,7 +200,7 @@ class PhpDocController extends Controller
 	}
 
 	/**
-	 * replace property annotations in doc comment
+	 * Replace property annotations in doc comment
 	 * @param $doc
 	 * @param $properties
 	 * @return string
