@@ -96,7 +96,18 @@ class LinkPager extends Widget
 	 * @see registerLinkTags()
 	 */
 	public $registerLinkTags = false;
-
+	/**
+	 * @var string the html tag for links container
+	 */
+	public $containerTag = 'ul';
+	/**
+	 * @var string the html tag for link item
+	 */
+	public $itemTag = 'li';
+	/**
+	 * @var string the html tag for label link item
+	 */
+	public $itemLabelTag = 'span';
 
 	/**
 	 * Initializes the pager.
@@ -176,7 +187,7 @@ class LinkPager extends Widget
 			$buttons[] = $this->renderPageButton($this->lastPageLabel, $pageCount - 1, $this->lastPageCssClass, $currentPage >= $pageCount - 1, false);
 		}
 
-		return Html::tag('ul', implode("\n", $buttons), $this->options);
+		return Html::tag($this->containerTag, implode("\n", $buttons), $this->options);
 	}
 
 	/**
@@ -197,11 +208,11 @@ class LinkPager extends Widget
 		}
 		if ($disabled) {
 			Html::addCssClass($options, $this->disabledPageCssClass);
-			return Html::tag('li', Html::tag('span', $label), $options);
+			return Html::tag($this->itemTag, Html::tag($this->itemLabelTag, $label), $options);
 		}
 		$linkOptions = $this->linkOptions;
 		$linkOptions['data-page'] = $page;
-		return Html::tag('li', Html::a($label, $this->pagination->createUrl($page), $linkOptions), $options);
+		return Html::tag($this->itemTag, Html::a($label, $this->pagination->createUrl($page), $linkOptions), $options);
 	}
 
 	/**
