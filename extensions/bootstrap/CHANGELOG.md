@@ -14,6 +14,7 @@ Yii Framework 2 bootstrap extension Change Log
 - Enh #2425: Tabs widget now selects first tab if no active tab is specified (samdark)
 - Chg #1459: Update Collapse to use bootstrap 3 classes (tonydspaniard)
 - Chg #1820: Update Progress to use bootstrap 3 markup (samdark)
+- Enh #2643: Add size attribute to Modal (tof06)
 
 2.0.0 alpha, December 1, 2013
 -----------------------------

@@ -35,6 +35,10 @@ use yii\helpers\Html;
  */
 class Modal extends Widget
 {
+	const SIZE_LARGE="modal-lg";
+	const SIZE_SMALL="modal-sm";
+	const SIZE_DEFAULT="";
+
 	/**
 	 * @var string the header content in the modal window.
 	 */
@@ -43,6 +47,10 @@ class Modal extends Widget
 	 * @var string the footer content in the modal window.
 	 */
 	public $footer;
+	/**
+	 * @var string the modal size. Can be MODAL_LG or MODAL_SM, or empty for default.
+	 */
+	public $size;
 	/**
 	 * @var array the options for rendering the close button tag.
 	 * The close button is displayed in the header of the modal window. Clicking
@@ -86,7 +94,7 @@ class Modal extends Widget
 
 		echo $this->renderToggleButton() . "\n";
 		echo Html::beginTag('div', $this->options) . "\n";
-		echo Html::beginTag('div', ['class' => 'modal-dialog']) . "\n";
+		echo Html::beginTag('div', ['class' => 'modal-dialog '.$this->size]) . "\n";
 		echo Html::beginTag('div', ['class' => 'modal-content']) . "\n";
 		echo $this->renderHeader() . "\n";
 		echo $this->renderBodyBegin() . "\n";
