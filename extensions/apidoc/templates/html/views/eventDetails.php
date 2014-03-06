@@ -18,7 +18,7 @@ ArrayHelper::multisort($events, 'name');
 <h2>Event Details</h2>
 <?php foreach($events as $event): ?>
 	<div class="detailHeader h3" id="<?= $event->name.'-detail' ?>">
-		<?php echo $event->name; ?>
+		<?= $event->name ?>
 		<span class="detailHeaderTag small">
 		event
 		<?php if(!empty($event->since)): ?>

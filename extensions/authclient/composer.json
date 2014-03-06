@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-authclient",
 	"description": "External authentication via OAuth and OpenID for the Yii framework",
-	"keywords": ["yii", "OAuth", "OpenID", "auth"],
+	"keywords": ["yii2", "OAuth", "OpenID", "auth"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {

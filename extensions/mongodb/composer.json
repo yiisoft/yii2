@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-mongodb",
 	"description": "MongoDb extension for the Yii framework",
-	"keywords": ["yii", "mongo", "mongodb", "active-record"],
+	"keywords": ["yii2", "mongo", "mongodb", "active-record"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {

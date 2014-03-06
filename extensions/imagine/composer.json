@@ -1,7 +1,7 @@
 {
     "name": "yiisoft/yii2-imagine",
     "description": "The Imagine integration for the Yii framework",
-    "keywords": ["yii", "imagine", "image", "helper"],
+    "keywords": ["yii2", "imagine", "image", "helper"],
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "support": {

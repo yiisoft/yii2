@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	</p>
 
 <?php if ($generator->indexWidgetType === 'grid'): ?>
-	<?= "<?php " ?>echo GridView::widget([
+	<?= "<?= " ?>GridView::widget([
 		'dataProvider' => $dataProvider,
 		'filterModel' => $searchModel,
 		'columns' => [
@@ -69,13 +69,13 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
 		],
 	]); ?>
 <?php else: ?>
-	<?= "<?php " ?>echo ListView::widget([
+	<?= "<?= " ?>ListView::widget([
 		'dataProvider' => $dataProvider,
 		'itemOptions' => ['class' => 'item'],
 		'itemView' => function ($model, $key, $index, $widget) {
 			return Html::a(Html::encode($model-><?= $nameAttribute ?>), ['view', <?= $urlParams ?>]);
 		},
-	]); ?>
+	]) ?>
 <?php endif; ?>
 
 </div>

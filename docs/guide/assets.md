@@ -81,16 +81,24 @@ following way:
 ```php
 class LanguageAsset extends AssetBundle
 {
-    public $sourcePath = '@app/assets/language';
-    public $js = [
-    ];
+	public $language;
+	public $sourcePath = '@app/assets/language';
+	public $js = [
+	];
 
-    public function init()
-    {
-        $this->js[] = 'language-' . Yii::$app->language . '.js';
-        parent::init();
-    }
+	public function registerAssetFiles($view)
+	{
+		$language = $this->language ? $this->language : Yii::$app->language;
+		$this->js[] = 'language-' . $language . '.js';
+		parent::registerAssetFiles($view);
+	}
 }
+```
+
+In order to set language use the following code when registering an asset bundle in a view:
+
+```php
+LanguageAsset::register($this)->language = $language;
 ```
 
 
@@ -113,6 +121,10 @@ To register an asset inside of a widget, the view instance is available as `$thi
 ```php
 AppAsset::register($this->view);
 ```
+
+> Note: If there is a need to modify third party asset bundles it is recommended to create your own bundles depending
+  on third party ones and use CSS and JavaScript features to modify behavior instead of editing files directly or
+  copying them over.
 
 
 Overriding asset bundles

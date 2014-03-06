@@ -108,6 +108,7 @@ class BatchQueryResult extends Object implements \Iterator
 	{
 		if ($this->_batch === null || !$this->each || $this->each && next($this->_batch) === false) {
 			$this->_batch = $this->fetchData();
+			reset($this->_batch);
 		}
 
 		if ($this->each) {

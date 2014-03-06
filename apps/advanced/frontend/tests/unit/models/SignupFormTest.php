@@ -12,7 +12,7 @@ class SignupFormTest extends DbTestCase
 
 	public function testCorrectSignup()
 	{
-		$model = $this->getMock('frontend\models\SignupForm',['validate']);
+		$model = $this->getMock('frontend\models\SignupForm', ['validate']);
 		$model->expects($this->once())->method('validate')->will($this->returnValue(true));
 
 		$model->username = 'some_username';
@@ -28,7 +28,7 @@ class SignupFormTest extends DbTestCase
 
 	public function testNotCorrectSignup()
 	{
-		$model = $this->getMock('frontend\models\SignupForm',['validate']);
+		$model = $this->getMock('frontend\models\SignupForm', ['validate']);
 		$model->expects($this->once())->method('validate')->will($this->returnValue(false));
 
 		expect('user should not be created', $model->signup())->null();
@@ -43,5 +43,4 @@ class SignupFormTest extends DbTestCase
 			],
 		];
 	}
-
 }

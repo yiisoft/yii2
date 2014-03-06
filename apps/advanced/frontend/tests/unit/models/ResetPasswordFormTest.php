@@ -13,13 +13,13 @@ class ResetPasswordFormTest extends DbTestCase
 
 	public function testResetPassword()
 	{
-		$this->specify('wrong reset token', function() {
-			$this->setExpectedException('\Exception','Wrong password reset token.');
+		$this->specify('wrong reset token', function () {
+			$this->setExpectedException('\Exception', 'Wrong password reset token.');
 			new ResetPasswordForm('notexistingtoken_1391882543');
 		});
 
-		$this->specify('not correct token', function() {
-			$this->setExpectedException('yii\base\InvalidParamException','Password reset token cannot be blank.');
+		$this->specify('not correct token', function () {
+			$this->setExpectedException('yii\base\InvalidParamException', 'Password reset token cannot be blank.');
 			new ResetPasswordForm('');
 		});
 	}
@@ -33,5 +33,4 @@ class ResetPasswordFormTest extends DbTestCase
 			],
 		];
 	}
-
 }

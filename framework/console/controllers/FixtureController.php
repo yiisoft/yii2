@@ -64,7 +64,7 @@ class FixtureController extends Controller
 	public function globalOptions()
 	{
 		return array_merge(parent::globalOptions(), [
-			'namespace','globalFixtures'
+			'namespace', 'globalFixtures'
 		]);
 	}
 
@@ -74,6 +74,7 @@ class FixtureController extends Controller
 	 * whitespace between names. Note that if you are loading fixtures to storage, for example: database or nosql,
 	 * storage will not be cleared, data will be appended to already existed.
 	 * @param array $fixtures
+	 * @param array $except
 	 * @throws \yii\console\Exception
 	 */
 	public function actionLoad(array $fixtures, array $except = [])
@@ -99,7 +100,7 @@ class FixtureController extends Controller
 		}
 
 		$filtered = array_diff($foundFixtures, $except);
-		$fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures ,$filtered));
+		$fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures, $filtered));
 
 		if (!$fixtures) {
 			throw new Exception('No fixtures were found in namespace: "' . $this->namespace . '"' . '');
@@ -317,5 +318,4 @@ class FixtureController extends Controller
 	{
 		return Yii::getAlias('@' . str_replace('\\', '/', $this->namespace));
 	}
-
 }

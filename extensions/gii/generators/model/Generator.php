@@ -471,7 +471,7 @@ class Generator extends \yii\gii\Generator
 	 */
 	public function validateTableName()
 	{
-		if (($pos = strpos($this->tableName, '*')) !== false && substr($this->tableName, -1) !== '*') {
+		if (strpos($this->tableName, '*') !== false && substr($this->tableName, -1) !== '*') {
 			$this->addError('tableName', 'Asterisk is only allowed as the last character.');
 			return;
 		}

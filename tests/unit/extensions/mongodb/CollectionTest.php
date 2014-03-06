@@ -187,6 +187,60 @@ class CollectionTest extends MongoDbTestCase
 		$this->assertNotEmpty($result[0]['items']);
 	}
 
+	public function testFindAndModify()
+	{
+		$collection = $this->getConnection()->getCollection('customer');
+		$rows = [
+			[
+				'name' => 'customer 1',
+				'status' => 1,
+				'amount' => 100,
+			],
+			[
+				'name' => 'customer 2',
+				'status' => 1,
+				'amount' => 200,
+			],
+		];
+		$collection->batchInsert($rows);
+
+		// increment field
+		$result = $collection->findAndModify(['name' => 'customer 1'], ['$inc' => ['status' => 1]]);
+		$this->assertEquals('customer 1', $result['name']);
+		$this->assertEquals(1, $result['status']);
+		$newResult = $collection->findOne(['name' => 'customer 1']);
+		$this->assertEquals(2, $newResult['status']);
+
+		// $set and return modified document
+		$result = $collection->findAndModify(
+			['name' => 'customer 2'],
+			['$set' => ['status' => 2]],
+			[],
+			['new' => true]
+		);
+		$this->assertEquals('customer 2', $result['name']);
+		$this->assertEquals(2, $result['status']);
+
+		// Full update document
+		$data = [
+			'name' => 'customer 3',
+			'city' => 'Minsk'
+		];
+		$result = $collection->findAndModify(
+			['name' => 'customer 2'],
+			$data,
+			[],
+			['new' => true]
+		);
+		$this->assertEquals('customer 3', $result['name']);
+		$this->assertEquals('Minsk', $result['city']);
+		$this->assertTrue(!isset($result['status']));
+
+		// Test exceptions
+		$this->setExpectedException('\yii\mongodb\Exception');
+		$collection->findAndModify(['name' => 'customer 1'], ['$wrongOperator' => ['status' => 1]]);
+	}
+
 	/**
 	 * @depends testBatchInsert
 	 */
@@ -240,54 +294,54 @@ class CollectionTest extends MongoDbTestCase
 		$this->assertEquals($expectedRows, $rows);
 	}
 
-    /**
-     * @depends testMapReduce
-     */
-    public function testMapReduceInline()
-    {
-        $collection = $this->getConnection()->getCollection('customer');
-        $rows = [
-            [
-                'name' => 'customer 1',
-                'status' => 1,
-                'amount' => 100,
-            ],
-            [
-                'name' => 'customer 2',
-                'status' => 1,
-                'amount' => 200,
-            ],
-            [
-                'name' => 'customer 2',
-                'status' => 2,
-                'amount' => 400,
-            ],
-            [
-                'name' => 'customer 2',
-                'status' => 3,
-                'amount' => 500,
-            ],
-        ];
-        $collection->batchInsert($rows);
+	/**
+	 * @depends testMapReduce
+	 */
+	public function testMapReduceInline()
+	{
+		$collection = $this->getConnection()->getCollection('customer');
+		$rows = [
+			[
+				'name' => 'customer 1',
+				'status' => 1,
+				'amount' => 100,
+			],
+			[
+				'name' => 'customer 2',
+				'status' => 1,
+				'amount' => 200,
+			],
+			[
+				'name' => 'customer 2',
+				'status' => 2,
+				'amount' => 400,
+			],
+			[
+				'name' => 'customer 2',
+				'status' => 3,
+				'amount' => 500,
+			],
+		];
+		$collection->batchInsert($rows);
 
-        $result = $collection->mapReduce(
-            'function () {emit(this.status, this.amount)}',
-            'function (key, values) {return Array.sum(values)}',
-            ['inline' => true],
-            ['status' => ['$lt' => 3]]
-        );
-        $expectedRows = [
-            [
-                '_id' => 1,
-                'value' => 300,
-            ],
-            [
-                '_id' => 2,
-                'value' => 400,
-            ],
-        ];
-        $this->assertEquals($expectedRows, $result);
-    }
+		$result = $collection->mapReduce(
+			'function () {emit(this.status, this.amount)}',
+			'function (key, values) {return Array.sum(values)}',
+			['inline' => true],
+			['status' => ['$lt' => 3]]
+		);
+		$expectedRows = [
+			[
+				'_id' => 1,
+				'value' => 300,
+			],
+			[
+				'_id' => 2,
+				'value' => 400,
+			],
+		];
+		$this->assertEquals($expectedRows, $result);
+	}
 
 	public function testCreateIndex()
 	{
