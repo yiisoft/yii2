@@ -268,7 +268,44 @@ as explained above.
 
 ### HATEOAS Support
 
-TBD
+[HATEOAS](http://en.wikipedia.org/wiki/HATEOAS), an abbreviation for Hypermedia as the Engine of Application State,
+promotes that RESTful APIs should return information that allow clients to discover actions supported for the returned
+resources. The key of HATEOAS is to return a set of hyperlinks with relation information when resource data are served
+by APIs.
+
+You may let your model classes to implement the [[yii\web\Linkable]] interface to support HATEOAS. By implementing
+this interface, a class is required to return a list of [[yii\web\Link|links]]. Typically, you should return at least
+the `self` link, for example:
+
+```php
+use yii\db\ActiveRecord;
+use yii\web\Linkable;
+use yii\helpers\Url;
+
+class User extends ActiveRecord implements Linkable
+{
+	public function getLinks()
+	{
+		return [
+			Link::REL_SELF => Url::action(['user', 'id' => $this->id], true),
+		];
+	}
+}
+```
+
+When a `User` object is returned in a response, it will contain a `_links` element representing the links related
+to the user, for example,
+
+```
+{
+	"id": 100,
+	"email": "user@example.com",
+	...,
+	"_links" => [
+		"self": "https://example.com/users/100"
+	]
+}
+```
 
 
 Creating Controllers and Actions
@@ -576,10 +613,6 @@ the current rate limiting information:
 * `X-Rate-Limit-Reset`: The number of seconds to wait in order to get the maximum number of allowed requests.
 
 
-Caching
--------
-
-
 Error Handling
 --------------
 
@@ -602,6 +635,98 @@ Error Handling
 
 Versioning
 ----------
+
+Your APIs should be versioned. Unlike Web applications which you have full control on both client side and server side
+code, for APIs you usually do not have control of the client code that consumes the APIs. Therefore, backward
+compatibility (BC) of the APIs should be maintained whenever possible, and if some BC-breaking changes must be
+introduced to the APIs, you should bump up the version number. You may refer to [Symantic Versioning](http://semver.org/)
+for more information about designing the version numbers of your APIs.
+
+Regarding how to implement API versioning, a common practice is to embed the version number in the API URLs.
+For example, `http://example.com/v1/users` stands for `/users` API of version 1. Another method of API versioning
+which gains momentum recently is to put version numbers in the HTTP request headers, typically through the `Accept` header,
+like the following:
+
+```
+// via a parameter
+Accept: application/json; version=v1
+// via a vendor content type
+Accept: application/vnd.company.myapp-v1+json
+```
+
+Both methods have pros and cons, and there are a lot of debates about them. Below we describe a practical strategy
+of API versioning that is a kind of mix of these two methods:
+
+* Put each major version of API implementation in a separate module whose ID is the major version number (e.g. `v1`, `v2`).
+  Naturally, the API URLs will contain major version numbers.
+* Within each major version (and thus within the corresponding module), use the `Accept` HTTP request header
+  to determine the minor version number and write conditional code to respond to the minor versions accordingly.
+
+For each module serving a major version, it should include the resource classes and the controller classes
+serving for that specific version. The resource and controller classes may or may not extend from a common set
+of base classes shared by all major versions. As a result, your code may be organized like the following:
+
+```
+api/
+	common/
+		controllers/
+		models/
+	modules/
+		v1/
+			controllers/
+			models/
+		v2/
+			controllers/
+			models/
+```
+
+Your application configuration would look like:
+
+```php
+return [
+	'modules' => [
+		'v1' => [
+			'basePath' => '@app/modules/v1',
+		],
+		'v2' => [
+			'basePath' => '@app/modules/v2',
+		],
+	],
+	'components' => [
+		'urlManager' => [
+			'enablePrettyUrl' => true,
+			'enableStrictParsing' => true,
+			'showScriptName' => false,
+			'rules' => [
+				['class' => 'yii\rest\UrlRule', 'controller' => ['v1/user', 'v1/post']],
+				['class' => 'yii\rest\UrlRule', 'controller' => ['v2/user', 'v2/post']],
+			],
+		],
+	],
+];
+```
+
+As a result, `http://example.com/v1/users` will return the list of users in version 1, while
+`http://example.com/v2/users` will return version 2 users.
+
+Using modules, code for different major versions can be well isolated. And it is still possible
+to share commonly used code via common base classes or other shared classes.
+
+To deal with minor version numbers, you may take advantage of the content type negotiation
+feature provided by [[yii\rest\Controller]]:
+
+* Specify a list of supported minor versions (within the major version of the containing module)
+  via [[yii\rest\Controller::supportedVersions]].
+* Get the version number by reading [[yii\rest\Controller::version]].
+* In relevant code, such as actions, resource classes, serializers, etc., write conditional
+  code according to the requested minor version number.
+
+Since minor versions require maintaining backward compatibility, hopefully there are not much
+version checks in your code. Otherwise, chances are that you may need to create a new major version.
+
+
+Caching
+-------
 
 
 Documentation

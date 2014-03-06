@@ -97,7 +97,7 @@ class UrlRule extends CompositeUrlRule
 	 * The keys are the patterns and the values are the corresponding action IDs.
 	 * These extra patterns will take precedence over [[patterns]].
 	 */
-	public $extra = [];
+	public $extraPatterns = [];
 	/**
 	 * @var array list of tokens that should be replaced for each pattern. The keys are the token names,
 	 * and the values are the corresponding replacements.
@@ -168,7 +168,7 @@ class UrlRule extends CompositeUrlRule
 	{
 		$only = array_flip($this->only);
 		$except = array_flip($this->except);
-		$patterns = array_merge($this->patterns, $this->extra);
+		$patterns = array_merge($this->patterns, $this->extraPatterns);
 		$rules = [];
 		foreach ($this->controller as $urlName => $controller) {
 			$prefix = trim($this->prefix . '/' . $urlName, '/');
