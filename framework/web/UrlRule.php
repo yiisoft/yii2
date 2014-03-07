@@ -134,6 +134,12 @@ class UrlRule extends Object implements UrlRuleInterface
 			$this->_template = '';
 			$this->pattern = '#^$#u';
 			return;
+		} elseif (($pos = strpos($this->pattern, '://')) !== false) {
+			if (($pos2 = strpos($this->pattern, '/', $pos + 3)) !== false) {
+				$this->host = substr($this->pattern, 0, $pos2);
+			} else {
+				$this->host = $this->pattern;
+			}
 		} else {
 			$this->pattern = '/' . $this->pattern . '/';
 		}
