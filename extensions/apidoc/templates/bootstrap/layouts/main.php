@@ -57,7 +57,7 @@ $this->beginPage();
 			foreach($this->context->extensions as $ext) {
 				$extItems[] = [
 					'label' => $ext,
-					'url' => "./ext_{$ext}_index.html",
+					'url' => "./ext-{$ext}-index.html",
 				];
 			}
 			$nav[] = ['label' => 'Extensions', 'items' => $extItems];

@@ -35,7 +35,7 @@ abstract class BaseController extends Controller
 	{
 		$target = rtrim(Yii::getAlias($target), '\\/');
 		if (file_exists($target)) {
-			if (is_dir($target) && !$this->confirm('TargetDirectory already exists. Overwrite?')) {
+			if (is_dir($target) && !$this->confirm('TargetDirectory already exists. Overwrite?', true)) {
 				$this->stderr('User aborted.' . PHP_EOL);
 				return false;
 			}

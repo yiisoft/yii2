@@ -155,8 +155,6 @@ abstract class GuideRenderer extends BaseGuideRenderer
 	 */
 	public function generateApiUrl($typeName)
 	{
-		// TODO: Implement generateApiUrl() method.
-
-		return $this->apiUrl . '...';
+		return rtrim($this->apiUrl, '/') . '/' . strtolower(str_replace('\\', '-', $typeName)) . '.html';
 	}
 }

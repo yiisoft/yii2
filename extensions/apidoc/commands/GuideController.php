@@ -47,10 +47,13 @@ class GuideController extends BaseController
 		if ($this->apiDocs !== null) {
 			$renderer->apiUrl = $this->apiDocs;
 			$renderer->apiContext = $this->loadContext($this->apiDocs);
-			$this->updateContext($renderer->apiContext); // TODO autodetect API docs in same folder
+		} elseif (file_exists($targetDir . '/cache/apidoc.data')) {
+			$renderer->apiUrl = './';
+			$renderer->apiContext = $this->loadContext($targetDir);
 		} else {
 			$renderer->apiContext = new Context();
 		}
+		$this->updateContext($renderer->apiContext);
 
 		// search for files to process
 		$files = $this->searchFiles($sourceDirs);
@@ -92,5 +95,13 @@ class GuideController extends BaseController
 			return false;
 		}
 		return new $rendererClass();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function globalOptions()
+	{
+		return array_merge(parent::globalOptions(), ['apiDocs']);
 	}
 }

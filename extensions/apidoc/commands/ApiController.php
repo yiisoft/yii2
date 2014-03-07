@@ -9,6 +9,7 @@ namespace yii\apidoc\commands;
 
 
 use yii\apidoc\components\BaseController;
+use yii\apidoc\models\Context;
 use yii\apidoc\renderers\ApiRenderer;
 use yii\apidoc\renderers\BaseRenderer;
 use yii\helpers\ArrayHelper;
@@ -42,6 +43,8 @@ class ApiController extends BaseController
 			return 1;
 		}
 
+		$renderer->apiUrl = './';
+
 		// setup reference to guide
 		if ($this->guide !== null) {
 			$guideUrl = $this->guide;
@@ -54,7 +57,7 @@ class ApiController extends BaseController
 			$renderer->guideUrl = $guideUrl;
 			$renderer->guideReferences = [];
 			foreach(explode("\n", file_get_contents($referenceFile)) as $reference) {
-				$renderer->guideReferences[BaseRenderer::GUIDE_PREFIX . $reference] = $renderer->generateGuideUrl($reference);
+				$renderer->guideReferences[BaseRenderer::GUIDE_PREFIX . $reference]['url'] = $renderer->generateGuideUrl($reference);
 			}
 		}
 
@@ -65,6 +68,12 @@ class ApiController extends BaseController
 		$context = $this->loadContext($targetDir);
 		$this->stdout('Checking for updated files... ');
 		foreach($context->files as $file => $sha) {
+			if (!file_exists($file)) {
+				$this->stdout('At least one file has been removed. Rebuilding the context...');
+				$context = new Context();
+				$files = $this->searchFiles($sourceDirs);
+				break;
+			}
 			if (sha1_file($file) === $sha) {
 				unset($files[$file]);
 			}
@@ -92,8 +101,11 @@ class ApiController extends BaseController
 		$renderer->controller = $this;
 		$renderer->render($context, $targetDir);
 
-		ArrayHelper::multisort($context->errors, 'file');
-		print_r($context->errors);
+		if (!empty($context->errors)) {
+			ArrayHelper::multisort($context->errors, 'file');
+			file_put_contents($targetDir . '/errors.txt', print_r($context->errors, true));
+			$this->stdout(count($context->errors) . " errors have been logged to $targetDir/errors.txt\n", Console::FG_RED, Console::BOLD);
+		}
 	}
 
 	protected function findFiles($path, $except = ['vendor/', 'tests/'])
