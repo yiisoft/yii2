@@ -15,7 +15,7 @@ use yii\helpers\FileHelper;
 use yii\test\FixtureTrait;
 
 /**
- * This command manages loading and unloading fixtures.
+ * Manages loading and unloading fixtures.
  *
  * ~~~
  * #load fixtures from UsersFixture class with default namespace "tests\unit\fixtures"

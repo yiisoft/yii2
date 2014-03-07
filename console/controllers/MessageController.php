@@ -14,7 +14,8 @@ use yii\console\Exception;
 use yii\helpers\FileHelper;
 
 /**
- * This command extracts messages to be translated from source files.
+ * Extracts messages to be translated from source files.
+ *
  * The extracted messages can be saved the following depending on `format`
  * setting in config file:
  *
