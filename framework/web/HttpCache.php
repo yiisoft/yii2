@@ -46,7 +46,7 @@ use yii\base\Action;
 class HttpCache extends ActionFilter
 {
 	/**
-	 * @var callback a PHP callback that returns the UNIX timestamp of the last modification time.
+	 * @var callable a PHP callback that returns the UNIX timestamp of the last modification time.
 	 * The callback's signature should be:
 	 *
 	 * ~~~
@@ -58,7 +58,7 @@ class HttpCache extends ActionFilter
 	 */
 	public $lastModified;
 	/**
-	 * @var callback a PHP callback that generates the Etag seed string.
+	 * @var callable a PHP callback that generates the Etag seed string.
 	 * The callback's signature should be:
 	 *
 	 * ~~~

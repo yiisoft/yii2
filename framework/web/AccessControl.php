@@ -54,7 +54,7 @@ use yii\base\ActionFilter;
 class AccessControl extends ActionFilter
 {
 	/**
-	 * @var callback a callback that will be called if the access should be denied
+	 * @var callable a callback that will be called if the access should be denied
 	 * to the current user. If not set, [[denyAccess()]] will be called.
 	 *
 	 * The signature of the callback should be as follows:

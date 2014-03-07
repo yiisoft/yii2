@@ -85,7 +85,30 @@ abstract class BaseRenderer extends Component
 				}
 			}
 			if (!is_object($type)) {
-				$links[] = $type;
+				$linkText = ltrim($type, '\\');
+				if ($title !== null) {
+					$linkText = $title;
+				}
+				$phpTypes = [
+					'callable',
+					'array',
+					'string',
+					'boolean',
+					'integer',
+					'float',
+					'object',
+					'resource',
+					'null',
+				];
+				// check if it is PHP internal class
+				if (((class_exists($type, false) || interface_exists($type, false) || trait_exists($type, false)) &&
+					($reflection = new \ReflectionClass($type)) && $reflection->isInternal())) {
+					$links[] = $this->generateLink($linkText, 'http://www.php.net/class.' . strtolower(ltrim($type, '\\'))) . $postfix;
+				} elseif (in_array($type, $phpTypes)) {
+					$links[] = $this->generateLink($linkText, 'http://www.php.net/language.types.' . strtolower(ltrim($type, '\\'))) . $postfix;
+				} else {
+					$links[] = $type;
+				}
 			} else {
 				$linkText = $type->name;
 				if ($title !== null) {

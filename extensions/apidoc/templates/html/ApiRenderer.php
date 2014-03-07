@@ -148,7 +148,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 				$class = $this->apiContext->classes[$class->parentClass];
 				$parents[] = $this->createTypeLink($class);
 			} else {
-				$parents[] = $class->parentClass; // TODO link to php.net
+				$parents[] = $this->createTypeLink($class->parentClass);
 				break;
 			}
 		}
@@ -167,7 +167,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 			if(isset($this->apiContext->interfaces[$interface])) {
 				$interfaces[] = $this->createTypeLink($this->apiContext->interfaces[$interface]);
 			} else {
-				$interfaces[] = $interface; // TODO link to php.net
+				$interfaces[] = $this->createTypeLink($interface);
 			}
 		}
 		return implode(', ', $interfaces);
@@ -185,7 +185,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 			if(isset($this->apiContext->traits[$trait])) {
 				$traits[] = $this->createTypeLink($this->apiContext->traits[$trait]);
 			} else {
-				$traits[] = $trait; // TODO link to php.net
+				$traits[] = $this->createTypeLink($trait);
 			}
 		}
 		return implode(', ', $traits);
@@ -203,7 +203,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 			if(isset($this->apiContext->classes[$class])) {
 				$classes[] = $this->createTypeLink($this->apiContext->classes[$class]);
 			} else {
-				$classes[] = $class; // TODO link to php.net
+				$classes[] = $this->createTypeLink($class);
 			}
 		}
 		return implode(', ', $classes);

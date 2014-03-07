@@ -99,7 +99,7 @@ class Query extends Component implements QueryInterface
 	 */
 	public $params = [];
 	/**
-	 * @var callback PHP callback, which should be used to fetch source data for the snippets.
+	 * @var callable PHP callback, which should be used to fetch source data for the snippets.
 	 * Such callback will receive array of query result rows as an argument and must return the
 	 * array of snippet source strings in the order, which match one of incoming rows.
 	 * For example:
@@ -642,7 +642,7 @@ class Query extends Component implements QueryInterface
 	/**
 	 * Sets the PHP callback, which should be used to retrieve the source data
 	 * for the snippets building.
-	 * @param callback $callback PHP callback, which should be used to fetch source data for the snippets.
+	 * @param callable $callback PHP callback, which should be used to fetch source data for the snippets.
 	 * @return static the query object itself
 	 * @see snippetCallback
 	 */

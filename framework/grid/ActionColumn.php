@@ -63,7 +63,7 @@ class ActionColumn extends Column
 	 */
 	public $buttons = [];
 	/**
-	 * @var callback a callback that creates a button URL using the specified model information.
+	 * @var callable a callback that creates a button URL using the specified model information.
 	 * The signature of the callback should be the same as that of [[createUrl()]].
 	 * If this property is not set, button URLs will be created using [[createUrl()]].
 	 */

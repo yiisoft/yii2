@@ -179,6 +179,7 @@ class ApiMarkdown extends GithubMarkdown
 					$offset
 				];
 			}
+
 			if ($context !== null) {
 				// Collection resolves relative types
 				$object = (new Collection([$object], $context->phpDocContext))->__toString();
@@ -186,6 +187,11 @@ class ApiMarkdown extends GithubMarkdown
 			if (($type = static::$renderer->apiContext->getType($object)) !== null) {
 				return [
 					static::$renderer->createTypeLink($type, null, $title),
+					$offset
+				];
+			} elseif (strpos($typeLink = static::$renderer->createTypeLink($object, null, $title), '<a href') !== false) {
+				return [
+					$typeLink,
 					$offset
 				];
 			}
