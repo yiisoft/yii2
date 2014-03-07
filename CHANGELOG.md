@@ -134,6 +134,7 @@ Yii Framework 2 Change Log
 - Enh #2499: Added ability to downgrade migrations by their absolute apply time (resurtm, gorcer)
 - Enh #2525: Added support for formatting file sizes with `yii\base\Formatter` (VinceG)
 - Enh #2526: Allow for null values in batchInsert (skotos)
+- Enh #2646: Added support for specifying hostinfo in the pattern of a URL rule (qiangxue)
 - Enh: Added support for using arrays as option values for console commands (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
