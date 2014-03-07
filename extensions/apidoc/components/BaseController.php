@@ -78,7 +78,6 @@ abstract class BaseController extends Controller
 
 	protected abstract function findFiles($dir, $except = []);
 
-
 	protected function loadContext($location)
 	{
 		$context = new Context();
@@ -114,6 +113,7 @@ abstract class BaseController extends Controller
 	}
 
 	/**
+	 * @inheritdoc
 	 * @return BaseRenderer
 	 */
 	protected abstract function findRenderer($template);
