@@ -60,7 +60,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed the issue that query cache returns the same data for the same SQL but different query methods (qiangxue)
 - Bug: Fixed URL parsing so it's now properly giving 404 for URLs like `http://example.com//////site/about` (samdark)
 - Bug: Fixed `HelpController::getModuleCommands` issue where it attempts to scan a module's controller directory when it doesn't exist (jom)
-- Bug: Fixed an issue with Filehelper and not accessable directories which resulted in endless loop (cebe)
+- Bug: Fixed an issue with FileHelper and not accessible directories which resulted in endless loop (cebe)
 - Bug: Fixed `$model->load($data)` returned `true` if `$data` and `formName` were empty (samdark)
 - Bug: Fixed issue with `ActiveRelationTrait` preventing `ActiveQuery` from clearing events and behaviors on clone (jom)
 - Bug: `Query::queryScalar` wasn't making `SELECT DISTINCT` queries subqueries (jom)

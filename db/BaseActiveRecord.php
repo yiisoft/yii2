@@ -1390,7 +1390,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 */
 	public function offsetUnset($offset)
 	{
-		// use unset to trigger __unset()
-		unset($this->$offset);
+		if (property_exists($this, $offset)) {
+			$this->$offset = null;
+		} else {
+			unset($this->$offset);
+		}
 	}
 }
