@@ -202,7 +202,7 @@ class ApiMarkdown extends GithubMarkdown
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 */
 	protected function renderHeadline($block)
 	{

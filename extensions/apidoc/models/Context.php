@@ -184,7 +184,7 @@ class Context extends Component
 		}
 		$parent = $this->classes[$class->parentClass];
 		foreach ($method->tags as $tag) {
-			if (strtolower($tag->getName()) == 'inheritdoc' || strtolower($tag->getName()) == 'inheritdocs') {
+			if (strtolower($tag->getName()) == 'inheritdoc') {
 				if (isset($parent->methods[$method->name])) {
 					$method = $parent->methods[$method->name];
 				}
