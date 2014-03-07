@@ -251,7 +251,7 @@ class Component extends Object
 				}
 			}
 		}
-		throw new InvalidCallException('Unsetting an unknown or read-only property: ' . get_class($this) . '.' . $name);
+		throw new InvalidCallException('Unsetting an unknown or read-only property: ' . get_class($this) . '::' . $name);
 	}
 
 	/**

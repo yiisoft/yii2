@@ -303,12 +303,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	{
 		if ($this->hasAttribute($name)) {
 			unset($this->_attributes[$name]);
+		} elseif (array_key_exists($name, $this->_related)) {
+			unset($this->_related[$name]);
 		} else {
-			if (isset($this->_related[$name])) {
-				unset($this->_related[$name]);
-			} else {
-				parent::__unset($name);
-			}
+			parent::__unset($name);
 		}
 	}
 
