@@ -8,7 +8,10 @@ use yii\helpers\ArrayHelper;
 /**
  * @var ClassDoc|TraitDoc $type
  * @var yii\web\View $this
+ * @var \yii\apidoc\templates\html\ApiRenderer $renderer
  */
+
+$renderer = $this->context;
 
 $properties = $type->getNativeProperties();
 if (empty($properties)) {
@@ -33,7 +36,7 @@ ArrayHelper::multisort($properties, 'name');
 		</span>
 	</div>
 
-	<div class="signature"><?= $this->context->renderPropertySignature($property) ?></div>
+	<div class="signature"><?php echo $renderer->renderPropertySignature($property); ?></div>
 
 	<?= ApiMarkdown::process($property->description, $type) ?>
 

@@ -115,14 +115,14 @@ Removing Event Handlers
 The correspondoing `off` method removes an event handler:
 
 ```php
-// $component->off($eventName);
+$component->off($eventName);
 ```
 
 Yii supports the ability to associate multiple handlers with the same event. When using `off` as in the above,
 every handler is removed. To remove only a specific handler, provide that as the second argument to `off`:
 
 ```php
-// $component->off($eventName, $handler);
+$component->off($eventName, $handler);
 ```
 
 The `$handler` should be presented in the `off` method in the same way as was presented in `on` in order to remove it.

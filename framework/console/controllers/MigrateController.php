@@ -17,7 +17,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 
 /**
- * This command manages application migrations.
+ * Manages application migrations.
  *
  * A migration means a set of persistent changes to the application environment
  * that is shared among different developers. For example, in an application

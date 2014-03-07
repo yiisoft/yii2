@@ -1,4 +1,6 @@
 <?php
+
+use yii\apidoc\renderers\BaseRenderer;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\helpers\Html;
@@ -17,7 +19,7 @@ $this->registerJs(<<<JS
 	window.addEventListener("hashchange", shiftWindow);
 JS
 ,
-	\yii\web\View::POS_HEAD
+	\yii\web\View::POS_READY
 );
 
 $this->beginPage();
@@ -38,27 +40,32 @@ $this->beginPage();
 	<?php
 	NavBar::begin([
 		'brandLabel' => $this->context->pageTitle,
-		'brandUrl' => './index.html',
+		'brandUrl' => ($this->context->apiUrl === null && $this->context->guideUrl !== null) ? './guide-index.html' : './index.html',
 		'options' => [
 			'class' => 'navbar-inverse navbar-fixed-top',
 		],
 		'renderInnerContainer' => false,
 		'view' => $this,
 	]);
-	$extItems = [];
-	foreach($this->context->extensions as $ext) {
-		$extItems[] = [
-			'label' => $ext,
-			'url' => "./ext_{$ext}_index.html",
-		];
+	$nav = [];
+
+	if ($this->context->apiUrl !== null) {
+		$nav[] = ['label' => 'Class reference', 'url' => rtrim($this->context->apiUrl, '/') . '/index.html'];
+		if (!empty($this->context->extensions))
+		{
+			$extItems = [];
+			foreach($this->context->extensions as $ext) {
+				$extItems[] = [
+					'label' => $ext,
+					'url' => "./ext-{$ext}-index.html",
+				];
+			}
+			$nav[] = ['label' => 'Extensions', 'items' => $extItems];
+		}
 	}
-	$nav = [
-		['label' => 'Class reference', 'url' => './index.html'],
-//		['label' => 'Application API', 'url' => '/site/about'],
-		['label' => 'Extensions', 'items' => $extItems],
-	];
+
 	if ($this->context->guideUrl !== null) {
-		$nav[] = ['label' => 'Guide', 'url' => $this->context->guideUrl . 'guide_index.html'];
+		$nav[] = ['label' => 'Guide', 'url' => rtrim($this->context->guideUrl, '/') . '/' . BaseRenderer::GUIDE_PREFIX . 'index.html'];
 	}
 
 	echo Nav::widget([

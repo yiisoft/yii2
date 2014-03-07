@@ -8,7 +8,10 @@ use yii\helpers\ArrayHelper;
 /**
  * @var ClassDoc|TraitDoc $type
  * @var yii\web\View $this
+ * @var \yii\apidoc\templates\html\ApiRenderer $renderer
  */
+
+$renderer = $this->context;
 
 $methods = $type->getNativeMethods();
 if (empty($methods)) {
@@ -33,27 +36,27 @@ ArrayHelper::multisort($methods, 'name');
 
 	<table class="summaryTable table table-striped table-bordered table-hover">
 		<tr><td colspan="3">
-			<div class="signature2"><?= $this->context->renderMethodSignature($method) ?></div>
+			<div class="signature2"><?= $renderer->renderMethodSignature($method) ?></div>
 		</td></tr>
 		<?php if(!empty($method->params) || !empty($method->return) || !empty($method->exceptions)): ?>
 			<?php foreach($method->params as $param): ?>
 				<tr>
 				  <td class="paramNameCol"><?= $param->name ?></td>
-				  <td class="paramTypeCol"><?= $this->context->typeLink($param->types) ?></td>
+				  <td class="paramTypeCol"><?= $renderer->createTypeLink($param->types) ?></td>
 				  <td class="paramDescCol"><?= ApiMarkdown::process($param->description, $type) ?></td>
 				</tr>
 			<?php endforeach; ?>
 			<?php if(!empty($method->return)): ?>
 				<tr>
 				  <td class="paramNameCol"><?= 'return'; ?></td>
-				  <td class="paramTypeCol"><?= $this->context->typeLink($method->returnTypes); ?></td>
+				  <td class="paramTypeCol"><?= $renderer->createTypeLink($method->returnTypes); ?></td>
 				  <td class="paramDescCol"><?= ApiMarkdown::process($method->return, $type); ?></td>
 				</tr>
 			<?php endif; ?>
 			<?php foreach($method->exceptions as $exception => $description): ?>
 				<tr>
 				  <td class="paramNameCol"><?= 'throws' ?></td>
-				  <td class="paramTypeCol"><?= $this->context->typeLink($exception) ?></td>
+				  <td class="paramTypeCol"><?= $renderer->createTypeLink($exception) ?></td>
 				  <td class="paramDescCol"><?= ApiMarkdown::process($description, $type) ?></td>
 				</tr>
 			<?php endforeach; ?>

@@ -9,7 +9,10 @@ use yii\helpers\ArrayHelper;
  * @var ClassDoc|TraitDoc $type
  * @var boolean $protected
  * @var yii\web\View $this
+ * @var \yii\apidoc\templates\html\ApiRenderer $renderer
  */
+
+$renderer = $this->context;
 
 if ($protected && count($type->getProtectedProperties()) == 0 || !$protected && count($type->getPublicProperties()) == 0) {
 	return;
@@ -36,10 +39,10 @@ ArrayHelper::multisort($properties, 'name');
 foreach($properties as $property): ?>
 	<?php if($protected && $property->visibility == 'protected' || !$protected && $property->visibility != 'protected'): ?>
 	<tr<?= $property->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $property->name ?>">
-		<td><?= $this->context->subjectLink($property) ?></td>
-		<td><?= $this->context->typeLink($property->types) ?></td>
+		<td><?= $renderer->createSubjectLink($property) ?></td>
+		<td><?= $renderer->createTypeLink($property->types) ?></td>
 		<td><?= ApiMarkdown::process($property->shortDescription, $property->definedBy, true) ?></td>
-		<td><?= $this->context->typeLink($property->definedBy) ?></td>
+		<td><?= $renderer->createTypeLink($property->definedBy) ?></td>
 	</tr>
 	<?php endif; ?>
 <?php endforeach; ?>

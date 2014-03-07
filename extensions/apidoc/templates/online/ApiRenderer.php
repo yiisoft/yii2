@@ -17,24 +17,23 @@ use yii\helpers\Console;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class Renderer extends \yii\apidoc\templates\html\Renderer
+class ApiRenderer extends \yii\apidoc\templates\html\ApiRenderer
 {
-	public $apiLayout = false;
+	public $layout = false;
 	public $indexView = '@yii/apidoc/templates/online/views/index.php';
 
 	public $pageTitle = 'Yii Framework 2.0 API Documentation';
 
 	/**
-	 * Renders a given [[Context]].
-	 *
-	 * @param Context $context the api documentation context to render.
-	 * @param Controller $controller the apidoc controller instance. Can be used to control output.
+	 * @inheritdoc
 	 */
-	public function renderApi($context, $controller)
+	public function render($context, $targetDir)
 	{
-		parent::renderApi($context, $controller);
-		$dir = Yii::getAlias($this->targetDir);
-		$controller->stdout("writing packages file...");
+		parent::render($context, $targetDir);
+
+		if ($this->controller !== null) {
+			$this->controller->stdout("writing packages file...");
+		}
 		$packages = [];
 		$notNamespaced = [];
 		foreach(array_merge($context->classes, $context->interfaces, $context->traits) as $type) {
@@ -50,17 +49,19 @@ class Renderer extends \yii\apidoc\templates\html\Renderer
 		foreach($packages as $name => $classes) {
 			sort($packages[$name]);
 		}
-		file_put_contents($dir . '/packages.txt', serialize($packages));
-		$controller->stdout('done.' . PHP_EOL, Console::FG_GREEN);
+		file_put_contents($targetDir . '/packages.txt', serialize($packages));
+		if ($this->controller !== null) {
+			$this->controller->stdout('done.' . PHP_EOL, Console::FG_GREEN);
+		}
 	}
 
-	public function generateUrl($typeName)
+	public function generateApiUrl($typeName)
 	{
 		return strtolower(str_replace('\\', '-', $typeName));
 	}
 
 	protected function generateFileName($typeName)
 	{
-		return $this->generateUrl($typeName) . '.html';
+		return $this->generateApiUrl($typeName) . '.html';
 	}
 }

@@ -7,7 +7,10 @@ use yii\helpers\ArrayHelper;
 /**
  * @var ClassDoc $type
  * @var yii\web\View $this
+ * @var \yii\apidoc\templates\html\ApiRenderer $renderer
  */
+
+$renderer = $this->context;
 
 if (empty($type->events)) {
 	return;
@@ -31,15 +34,15 @@ ArrayHelper::multisort($events, 'name');
 </tr>
 <?php foreach($events as $event): ?>
 <tr<?= $event->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $event->name ?>">
-	<td><?= $this->context->subjectLink($event) ?></td>
-	<td><?= $this->context->typeLink($event->types) ?></td>
+	<td><?= $renderer->createSubjectLink($event) ?></td>
+	<td><?= $renderer->createTypeLink($event->types) ?></td>
 	<td>
 		<?= ApiMarkdown::process($event->shortDescription, $event->definedBy, true) ?>
 		<?php if(!empty($event->since)): ?>
 			(available since version <?= $event->since ?>)
 		<?php endif; ?>
 	</td>
-	<td><?= $this->context->typeLink($event->definedBy) ?></td>
+	<td><?= $renderer->createTypeLink($event->definedBy) ?></td>
 </tr>
 <?php endforeach; ?>
 </table>

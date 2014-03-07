@@ -7,25 +7,17 @@
 
 namespace yii\apidoc\templates\html;
 
-use yii\apidoc\helpers\ApiMarkdown;
-use yii\apidoc\models\BaseDoc;
-use yii\apidoc\models\ConstDoc;
-use yii\apidoc\models\EventDoc;
 use yii\apidoc\models\MethodDoc;
 use yii\apidoc\models\PropertyDoc;
-use yii\apidoc\models\TypeDoc;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\Context;
-use yii\apidoc\models\InterfaceDoc;
-use yii\apidoc\models\TraitDoc;
-use yii\apidoc\templates\BaseRenderer;
+use yii\apidoc\renderers\ApiRenderer as BaseApiRenderer;
 use yii\base\ViewContextInterface;
-use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\Html;
-use Yii;
 use yii\web\AssetManager;
 use yii\web\View;
+use Yii;
 
 /**
  * The base class for HTML API documentation renderers.
@@ -35,20 +27,16 @@ use yii\web\View;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-abstract class Renderer extends BaseRenderer implements ViewContextInterface
+class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 {
-	/**
-	 * @var string directory to use for output of html files. Can be a path alias.
-	 */
-	public $targetDir;
 	/**
 	 * @var string string to use as the title of the generated page.
 	 */
-	public $pageTitle = 'Yii Framework 2.0 API Documentation';
+	public $pageTitle;
 	/**
 	 * @var string path or alias of the layout file to use.
 	 */
-	public $apiLayout;
+	public $layout;
 	/**
 	 * @var string path or alias of the view file to use for rendering types (classes, interfaces, traits).
 	 */
@@ -61,11 +49,16 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	 * @var View
 	 */
 	private $_view;
+	private $_targetDir;
 
 
 	public function init()
 	{
-		ApiMarkdown::$renderer = $this;
+		parent::init();
+
+		if ($this->pageTitle === null) {
+			$this->pageTitle = 'Yii Framework 2.0 API Documentation'; // TODO guess page title
+		}
 	}
 
 	/**
@@ -75,7 +68,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	{
 		if ($this->_view === null) {
 			$this->_view = new View();
-			$assetPath = Yii::getAlias($this->targetDir) . '/assets';
+			$assetPath = Yii::getAlias($this->_targetDir) . '/assets';
 			if (!is_dir($assetPath)) {
 				mkdir($assetPath);
 			}
@@ -91,139 +84,55 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	 * Renders a given [[Context]].
 	 *
 	 * @param Context $context the api documentation context to render.
-	 * @param Controller $controller the apidoc controller instance. Can be used to control output.
+	 * @param $targetDir
 	 */
-	public function renderApi($context, $controller)
+	public function render($context, $targetDir)
 	{
-		$this->context = $context;
-		$dir = Yii::getAlias($this->targetDir);
-		if (!is_dir($dir)) {
-			mkdir($dir, 0777, true);
-		}
+		$this->apiContext = $context;
+		$this->_targetDir = $targetDir;
 
 		$types = array_merge($context->classes, $context->interfaces, $context->traits);
 		$typeCount = count($types) + 1;
-		Console::startProgress(0, $typeCount, 'Rendering files: ', false);
+
+		if ($this->controller !== null) {
+			Console::startProgress(0, $typeCount, 'Rendering files: ', false);
+		}
 		$done = 0;
 		foreach($types as $type) {
 			$fileContent = $this->renderWithLayout($this->typeView, [
 				'type' => $type,
-				'docContext' => $context,
+				'apiContext' => $context,
 				'types' => $types,
 			]);
-			file_put_contents($dir . '/' . $this->generateFileName($type->name), $fileContent);
-			Console::updateProgress(++$done, $typeCount);
+			file_put_contents($targetDir . '/' . $this->generateFileName($type->name), $fileContent);
+
+			if ($this->controller !== null) {
+				Console::updateProgress(++$done, $typeCount);
+			}
 		}
+
 		$indexFileContent = $this->renderWithLayout($this->indexView, [
-			'docContext' => $context,
+			'apiContext' => $context,
 			'types' => $types,
 		]);
-		file_put_contents($dir . '/index.html', $indexFileContent);
-		Console::updateProgress(++$done, $typeCount);
-		Console::endProgress(true);
-		$controller->stdout('done.' . PHP_EOL, Console::FG_GREEN);
+		file_put_contents($targetDir . '/index.html', $indexFileContent);
+
+		if ($this->controller !== null) {
+			Console::updateProgress(++$done, $typeCount);
+			Console::endProgress(true);
+			$this->controller->stdout('done.' . PHP_EOL, Console::FG_GREEN);
+		}
 	}
 
 	protected function renderWithLayout($viewFile, $params)
 	{
 		$output = $this->getView()->render($viewFile, $params, $this);
-		if ($this->apiLayout !== false) {
+		if ($this->layout !== false) {
 			$params['content'] = $output;
-			return $this->getView()->renderFile($this->apiLayout, $params, $this);
+			return $this->getView()->renderFile($this->layout, $params, $this);
 		} else {
 			return $output;
 		}
-	}
-
-	/**
-	 * creates a link to a type (class, interface or trait)
-	 * @param ClassDoc|InterfaceDoc|TraitDoc $types
-	 * @param BaseDoc $context
-	 * @return string
-	 */
-	public function typeLink($types, $context = null)
-	{
-		if (!is_array($types)) {
-			$types = [$types];
-		}
-		$links = [];
-		foreach($types as $type) {
-			$postfix = '';
-			if (!is_object($type)) {
-				if (substr($type, -2, 2) == '[]') {
-					$postfix = '[]';
-					$type = substr($type, 0, -2);
-				}
-
-				if (($t = $this->context->getType(ltrim($type, '\\'))) !== null) {
-					$type = $t;
-				} elseif ($type[0] !== '\\' && ($t = $this->context->getType($this->resolveNamespace($context) . '\\' . ltrim($type, '\\'))) !== null) {
-					$type = $t;
-				} else {
-					ltrim($type, '\\');
-				}
-			}
-			if (!is_object($type)) {
-				$links[] = $type;
-			} else {
-				$links[] = Html::a(
-					$type->name,
-					null,
-					['href' => $this->generateUrl($type->name)]
-				) . $postfix;
-			}
-		}
-		return implode('|', $links);
-	}
-
-	/**
-	 * creates a link to a subject
-	 * @param PropertyDoc|MethodDoc|ConstDoc|EventDoc $subject
-	 * @param string $title
-	 * @return string
-	 */
-	public function subjectLink($subject, $title = null)
-	{
-		if ($title === null) {
-			if ($subject instanceof MethodDoc) {
-				$title = $subject->name . '()';
-			} else {
-				$title = $subject->name;
-			}
-		}
-		if (($type = $this->context->getType($subject->definedBy)) === null) {
-			return $subject->name;
-		} else {
-			$link = $this->generateUrl($type->name);
-			if ($subject instanceof MethodDoc) {
-				$link .= '#' . $subject->name . '()';
-			} else {
-				$link .= '#' . $subject->name;
-			}
-			$link .= '-detail';
-			return Html::a($title, null, ['href' => $link]);
-		}
-	}
-
-	/**
-	 * @param BaseDoc $context
-	 */
-	private function resolveNamespace($context)
-	{
-		// TODO use phpdoc Context for this
-		if ($context === null) {
-			return '';
-		}
-		if ($context instanceof TypeDoc) {
-			return $context->namespace;
-		}
-		if ($context->hasProperty('definedBy')) {
-			$type = $this->context->getType($context);
-			if ($type !== null) {
-				return $type->namespace;
-			}
-		}
-		return '';
 	}
 
 	/**
@@ -233,11 +142,11 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	public function renderInheritance($class)
 	{
 		$parents = [];
-		$parents[] = $this->typeLink($class);
+		$parents[] = $this->createTypeLink($class);
 		while ($class->parentClass !== null) {
-			if(isset($this->context->classes[$class->parentClass])) {
-				$class = $this->context->classes[$class->parentClass];
-				$parents[] = $this->typeLink($class);
+			if(isset($this->apiContext->classes[$class->parentClass])) {
+				$class = $this->apiContext->classes[$class->parentClass];
+				$parents[] = $this->createTypeLink($class);
 			} else {
 				$parents[] = $class->parentClass; // TODO link to php.net
 				break;
@@ -255,8 +164,8 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 		$interfaces = [];
 		sort($names, SORT_STRING);
 		foreach($names as $interface) {
-			if(isset($this->context->interfaces[$interface])) {
-				$interfaces[] = $this->typeLink($this->context->interfaces[$interface]);
+			if(isset($this->apiContext->interfaces[$interface])) {
+				$interfaces[] = $this->createTypeLink($this->apiContext->interfaces[$interface]);
 			} else {
 				$interfaces[] = $interface; // TODO link to php.net
 			}
@@ -273,8 +182,8 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 		$traits = [];
 		sort($names, SORT_STRING);
 		foreach($names as $trait) {
-			if(isset($this->context->traits[$trait])) {
-				$traits[] = $this->typeLink($this->context->traits[$trait]);
+			if(isset($this->apiContext->traits[$trait])) {
+				$traits[] = $this->createTypeLink($this->apiContext->traits[$trait]);
 			} else {
 				$traits[] = $trait; // TODO link to php.net
 			}
@@ -291,8 +200,8 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 		$classes = [];
 		sort($names, SORT_STRING);
 		foreach($names as $class) {
-			if(isset($this->context->classes[$class])) {
-				$classes[] = $this->typeLink($this->context->classes[$class]);
+			if(isset($this->apiContext->classes[$class])) {
+				$classes[] = $this->createTypeLink($this->apiContext->classes[$class]);
 			} else {
 				$classes[] = $class; // TODO link to php.net
 			}
@@ -316,7 +225,7 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 			}
 			return implode('<br />', $sig);
 		}
-		return $this->typeLink($property->types) . ' ' . $property->name . ' = ' . ($property->defaultValue === null ? 'null' : $property->defaultValue);
+		return $this->createTypeLink($property->types) . ' ' . $property->name . ' = ' . ($property->defaultValue === null ? 'null' : $property->defaultValue);
 	}
 
 	/**
@@ -334,20 +243,20 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 		}
 
 		return ($method->isReturnByReference ? '<b>&</b>' : '')
-			. ($method->returnType === null ? 'void' : $this->typeLink($method->returnTypes))
-			. ' ' . $this->subjectLink($method, $method->name) . '( '
+			. ($method->returnType === null ? 'void' : $this->createTypeLink($method->returnTypes))
+			. ' ' . $this->createSubjectLink($method, $method->name) . '( '
 			. implode(', ', $params)
 			. ' )';
 	}
 
-	public function generateUrl($typeName)
+	public function generateApiUrl($typeName)
 	{
 		return $this->generateFileName($typeName);
 	}
 
 	protected function generateFileName($typeName)
 	{
-		return strtolower(str_replace('\\', '_', $typeName)) . '.html';
+		return strtolower(str_replace('\\', '-', $typeName)) . '.html';
 	}
 
 	/**
@@ -358,5 +267,16 @@ abstract class Renderer extends BaseRenderer implements ViewContextInterface
 	public function findViewFile($view)
 	{
 		return Yii::getAlias('@yii/apidoc/templates/html/views/' . $view);
+	}
+
+	/**
+	 * generate link markup
+	 * @param $text
+	 * @param $href
+	 * @return mixed
+	 */
+	protected function generateLink($text, $href)
+	{
+		return Html::a($text, null, ['href' => $href]);
 	}
 }
