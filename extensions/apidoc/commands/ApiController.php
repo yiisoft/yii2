@@ -62,7 +62,9 @@ class ApiController extends BaseController
 		}
 
 		// search for files to process
-		$files = $this->searchFiles($sourceDirs);
+		if (($files = $this->searchFiles($sourceDirs)) === false) {
+			return 1;
+		}
 
 		// load context from cache
 		$context = $this->loadContext($targetDir);
@@ -71,7 +73,9 @@ class ApiController extends BaseController
 			if (!file_exists($file)) {
 				$this->stdout('At least one file has been removed. Rebuilding the context...');
 				$context = new Context();
-				$files = $this->searchFiles($sourceDirs);
+				if (($files = $this->searchFiles($sourceDirs)) === false) {
+					return 1;
+				}
 				break;
 			}
 			if (sha1_file($file) === $sha) {
@@ -108,8 +112,11 @@ class ApiController extends BaseController
 		}
 	}
 
-	protected function findFiles($path, $except = ['vendor/', 'tests/'])
+	protected function findFiles($path, $except = [])
 	{
+		if (empty($except)) {
+			$except = ['vendor/', 'tests/'];
+		}
 		$path = FileHelper::normalizePath($path);
 		$options = [
 			'filter' => function ($path) {

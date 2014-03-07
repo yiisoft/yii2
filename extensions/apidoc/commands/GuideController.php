@@ -56,7 +56,9 @@ class GuideController extends BaseController
 		$this->updateContext($renderer->apiContext);
 
 		// search for files to process
-		$files = $this->searchFiles($sourceDirs);
+		if (($files = $this->searchFiles($sourceDirs)) === false) {
+			return 1;
+		}
 
 		$renderer->controller = $this;
 		$renderer->render($files, $targetDir);
@@ -75,8 +77,11 @@ class GuideController extends BaseController
 		file_put_contents($targetDir . '/guide-references.txt', implode("\n", $references));
 	}
 
-	protected function findFiles($path, $except = ['README.md'])
+	protected function findFiles($path, $except = [])
 	{
+		if (empty($except)) {
+			$except = ['README.md'];
+		}
 		$path = FileHelper::normalizePath($path);
 		$options = [
 			'only' => ['*.md'],

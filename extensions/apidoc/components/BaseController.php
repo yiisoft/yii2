@@ -26,9 +26,9 @@ abstract class BaseController extends Controller
 	 */
 	public $template = 'bootstrap';
 	/**
-	 * @var string|array files to exclude. NOT IMPLEMENTED YET
+	 * @var string|array files to exclude.
 	 */
-	public $exclude; // TODO implement
+	public $exclude;
 
 
 	protected function normalizeTargetDir($target)
@@ -53,8 +53,17 @@ abstract class BaseController extends Controller
 	{
 		$this->stdout('Searching files to process... ');
 		$files = [];
+
+		if (is_array($this->exclude)) {
+			$exclude = $this->exclude;
+		} elseif (is_string($this->exclude)) {
+			$exclude = explode(',', $this->exclude);
+		} else {
+			$exclude = [];
+		}
+
 		foreach($sourceDirs as $source) {
-			foreach($this->findFiles($source) as $fileName) {
+			foreach($this->findFiles($source, $exclude) as $fileName) {
 				$files[$fileName] = $fileName;
 			}
 		}
@@ -62,12 +71,12 @@ abstract class BaseController extends Controller
 
 		if (empty($files)) {
 			$this->stderr('Error: No files found to process.' . PHP_EOL);
-			return 1;
+			return false;
 		}
 		return $files;
 	}
 
-	protected abstract function findFiles($dir);
+	protected abstract function findFiles($dir, $except = []);
 
 
 	protected function loadContext($location)
