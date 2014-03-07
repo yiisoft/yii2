@@ -105,8 +105,8 @@ class Generator extends \yii\gii\Generator
 				If not set, it means the controller will belong to the application.',
 			'indexWidgetType' => 'This is the widget type to be used in the index page to display list of the models.
 				You may choose either <code>GridView</code> or <code>ListView</code>',
-			'searchModelClass' => 'This is the class representing the data being collected in the search form.
-			 	A fully qualified namespaced class name is required, e.g., <code>app\models\search\PostSearch</code>.',
+			'searchModelClass' => 'This is the name of the search model class to be generated. You should provide a fully
+				qualified namespaced class name, e.g., <code>app\models\search\PostSearch</code>.',
 		];
 	}
 
