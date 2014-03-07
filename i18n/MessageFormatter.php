@@ -259,7 +259,7 @@ class MessageFormatter extends Component
 	/**
 	 * Tokenizes a pattern by separating normal text from replaceable patterns
 	 * @param string $pattern patter to tokenize
-	 * @return array|bool array of tokens or false on failure
+	 * @return array|boolean array of tokens or false on failure
 	 */
 	private static function tokenizePattern($pattern)
 	{

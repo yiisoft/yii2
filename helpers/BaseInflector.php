@@ -332,7 +332,7 @@ class BaseInflector
 	 * Converts an underscored or CamelCase word into a English
 	 * sentence.
 	 * @param string $words
-	 * @param bool $ucAll whether to set all words to uppercase
+	 * @param boolean $ucAll whether to set all words to uppercase
 	 * @return string
 	 */
 	public static function titleize($words, $ucAll = false)
@@ -415,7 +415,7 @@ class BaseInflector
 	/**
 	 * Returns a human-readable string from $word
 	 * @param string $word the string to humanize
-	 * @param bool $ucAll whether to set all words to uppercase or not
+	 * @param boolean $ucAll whether to set all words to uppercase or not
 	 * @return string
 	 */
 	public static function humanize($word, $ucAll = false)
@@ -455,7 +455,7 @@ class BaseInflector
 	 * [[$transliteration]] array.
 	 * @param string $string An arbitrary string to convert
 	 * @param string $replacement The replacement to use for spaces
-	 * @param bool $lowercase whether to return the string in lowercase or not. Defaults to `true`.
+	 * @param boolean $lowercase whether to return the string in lowercase or not. Defaults to `true`.
 	 * @return string The converted string.
 	 */
 	public static function slug($string, $replacement = '-', $lowercase = true)
@@ -484,7 +484,7 @@ class BaseInflector
 
 	/**
 	 * Converts number to its ordinal English form. For example, converts 13 to 13th, 2 to 2nd ...
-	 * @param int $number the number to get its ordinal value
+	 * @param integer $number the number to get its ordinal value
 	 * @return string
 	 */
 	public static function ordinalize($number)
