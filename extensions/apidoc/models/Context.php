@@ -109,6 +109,10 @@ class Context extends Component
 				}
 			}
 		}
+		// inherit docs
+		foreach($this->classes as $class) {
+			$this->inheritDocs($class);
+		}
 		// inherit properties, methods, contants and events to subclasses
 		foreach($this->classes as $class) {
 			$this->updateSubclassInheritance($class);
@@ -149,6 +153,45 @@ class Context extends Component
 			$subclass->methods = array_merge($class->methods, $subclass->methods);
 			$this->updateSubclassInheritance($subclass);
 		}
+	}
+
+	/**
+	 * Inhertit docsblocks using `@inheritDoc` tag.
+	 * @param ClassDoc $class
+	 * @see http://phpdoc.org/docs/latest/guides/inheritance.html
+	 */
+	protected function inheritDocs($class)
+	{
+		// TODO also for properties?
+		foreach($class->methods as $m) {
+			$inheritedMethod = $this->inheritMethodRecursive($m, $class);
+			foreach(['shortDescription', 'description', 'params', 'return', 'returnType', 'returnTypes', 'exceptions'] as $property) {
+				if (empty($m->$property)) {
+					$m->$property = $inheritedMethod->$property;
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param MethodDoc $method
+	 * @param ClassDoc $parent
+	 */
+	private function inheritMethodRecursive($method, $class)
+	{
+		if (!isset($this->classes[$class->parentClass])) {
+			return $method;
+		}
+		$parent = $this->classes[$class->parentClass];
+		foreach ($method->tags as $tag) {
+			if (strtolower($tag->getName()) == 'inheritdoc' || strtolower($tag->getName()) == 'inheritdocs') {
+				if (isset($parent->methods[$method->name])) {
+					$method = $parent->methods[$method->name];
+				}
+				return $this->inheritMethodRecursive($method, $parent);
+			}
+		}
+		return $method;
 	}
 
 	/**
