@@ -22,10 +22,11 @@ $I->see('Incorrect username or password.', '.help-block');
 $I->amGoingTo('try to login with correct credentials');
 $loginPage->login('erau', 'password_0');
 $I->expectTo('see that user is logged');
-$I->see('Logout (erau)', 'ul.nav li a');
-$I->dontSee('Login', 'ul.nav li a');
-$I->dontSee('Signup', 'ul.nav li a');
-// Uncomment if using WebDriver
-//$I->click('Logout (erau)', 'ul.nav li a');
-//$I->dontSee('Logout (erau)', 'ul.nav li a');
-//$I->see('Login', 'ul.nav li a');
+$I->seeLink('Logout (erau)');
+$I->dontSeeLink('Login');
+$I->dontSeeLink('Signup');
+/** Uncomment if using WebDriver
+ * $I->click('Logout (erau)');
+ * $I->dontSeeLink('Logout (erau)');
+ * $I->seeLink('Login');
+ */
