@@ -25,7 +25,8 @@ use Yii;
  * This property is write-only.
  * @property string $basePath The root directory of the module.
  * @property array $components The components (indexed by their IDs).
- * @property string $controllerPath The directory that contains the controller classes.
+ * @property string $controllerPath The directory that contains the controller classes according to [[controllerNamespace]].
+ * This property is read-only.
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The modules (indexed by their IDs).
  * @property string $uniqueId The unique ID of the module. This property is read-only.
@@ -105,10 +106,6 @@ class Module extends Component
 	 * @var string the root directory that contains layout view files for this module.
 	 */
 	private $_layoutPath;
-	/**
-	 * @var string the directory containing controller classes in the module.
-	 */
-	private $_controllerPath;
 	/**
 	 * @var array child modules of this module
 	 */
@@ -224,28 +221,12 @@ class Module extends Component
 	}
 
 	/**
-	 * Returns the directory that contains the controller classes.
-	 * Defaults to "[[basePath]]/controllers".
+	 * Returns the directory that contains the controller classes according to [[controllerNamespace]].
 	 * @return string the directory that contains the controller classes.
 	 */
 	public function getControllerPath()
 	{
-		if ($this->_controllerPath !== null) {
-			return $this->_controllerPath;
-		} else {
-			return $this->_controllerPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'controllers';
-		}
-	}
-
-	/**
-	 * Sets the directory that contains the controller classes.
-	 * @param string $path the directory that contains the controller classes.
-	 * This can be either a directory name or a path alias.
-	 * @throws InvalidParamException if the directory is invalid
-	 */
-	public function setControllerPath($path)
-	{
-		$this->_controllerPath = Yii::getAlias($path);
+		return Yii::getAlias('@' . str_replace('\\', '/', $this->controllerNamespace));
 	}
 
 	/**
@@ -664,7 +645,7 @@ class Module extends Component
 	 * Creates a controller based on the given controller ID.
 	 *
 	 * The controller ID is relative to this module. The controller class
-	 * should be located under [[controllerPath]] and namespaced under [[controllerNamespace]].
+	 * should be namespaced under [[controllerNamespace]].
 	 *
 	 * Note that this method does not check [[modules]] or [[controllerMap]].
 	 *
@@ -689,7 +670,7 @@ class Module extends Component
 		}
 
 		$className = str_replace(' ', '', ucwords(str_replace('-', ' ', $className))) . 'Controller';
-		$classFile = $this->controllerPath . '/' . $prefix . $className . '.php';
+		$classFile = $this->getControllerPath() . '/' . $prefix . $className . '.php';
 		$className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix)  . $className, '\\');
 		if (strpos($className, '-') !== false || !is_file($classFile)) {
 			return null;

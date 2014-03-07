@@ -19,7 +19,6 @@ require(__DIR__ . '/Yii.php');
 $application = new yii\console\Application([
 	'id' => 'yii-console',
 	'basePath' => __DIR__ . '/console',
-	'controllerPath' => '@yii/console/controllers',
 ]);
 $exitCode = $application->run();
 exit($exitCode);
