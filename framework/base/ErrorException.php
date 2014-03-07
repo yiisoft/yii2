@@ -15,7 +15,7 @@ use Yii;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class ErrorException extends \ErrorException
+class ErrorException extends \ErrorException implements Arrayable
 {
 	/**
 	 * Constructs the exception.
