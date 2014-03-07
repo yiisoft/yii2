@@ -52,6 +52,7 @@ Yii Framework 2 Change Log
 - Bug #2559: Going back on browser history breaks GridView filtering with `Pjax` (tonydspaniard)
 - Bug #2607: `yii message` tool wasn't updating `message` table (mitalcoi)
 - Bug #2624: Html::textArea() should respect "name" option. (qiangxue)
+- Bug #2653: Fixed the bug that unsetting an unpopulated AR relation would trigger exception (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)

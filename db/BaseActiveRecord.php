@@ -305,7 +305,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 			unset($this->_attributes[$name]);
 		} elseif (array_key_exists($name, $this->_related)) {
 			unset($this->_related[$name]);
-		} else {
+		} elseif ($this->getRelation($name, false) === null) {
 			parent::__unset($name);
 		}
 	}
@@ -1063,20 +1063,30 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	 * A relation is defined by a getter method which returns an [[ActiveQueryInterface]] object.
 	 * It can be declared in either the Active Record class itself or one of its behaviors.
 	 * @param string $name the relation name
-	 * @return ActiveQueryInterface|ActiveQuery the relational query object
+	 * @param boolean $throwException whether to throw exception if the relation does not exist.
+	 * @return ActiveQueryInterface|ActiveQuery the relational query object. If the relation does not exist
+	 * and `$throwException` is false, null will be returned.
 	 * @throws InvalidParamException if the named relation does not exist.
 	 */
-	public function getRelation($name)
+	public function getRelation($name, $throwException = true)
 	{
 		$getter = 'get' . $name;
 		try {
 			// the relation could be defined in a behavior
 			$relation = $this->$getter();
 		} catch (UnknownMethodException $e) {
-			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);
+			if ($throwException) {
+				throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);
+			} else {
+				return null;
+			}
 		}
 		if (!$relation instanceof ActiveQueryInterface) {
-			throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
+			if ($throwException) {
+				throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
+			} else {
+				return null;
+			}
 		}
 
 		if (method_exists($this, $getter)) {
@@ -1084,7 +1094,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 			$method = new \ReflectionMethod($this, $getter);
 			$realName = lcfirst(substr($method->getName(), 3));
 			if ($realName !== $name) {
-				throw new InvalidParamException('Relation names are case sensitive. ' . get_class($this) . " has a relation named \"$realName\" instead of \"$name\".");
+				if ($throwException) {
+					throw new InvalidParamException('Relation names are case sensitive. ' . get_class($this) . " has a relation named \"$realName\" instead of \"$name\".");
+				} else {
+					return null;
+				}
 			}
 		}
 
@@ -1366,5 +1380,17 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	{
 		$fields = array_keys($this->getRelatedRecords());
 		return array_combine($fields, $fields);
+	}
+
+	/**
+	 * Sets the element value at the specified offset to null.
+	 * This method is required by the SPL interface `ArrayAccess`.
+	 * It is implicitly called when you use something like `unset($model[$offset])`.
+	 * @param mixed $offset the offset to unset element
+	 */
+	public function offsetUnset($offset)
+	{
+		// use unset to trigger __unset()
+		unset($this->$offset);
 	}
 }
