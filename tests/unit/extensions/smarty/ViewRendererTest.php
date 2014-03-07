@@ -8,7 +8,6 @@
 namespace yiiunit\extensions\smarty;
 
 use yii\web\AssetManager;
-use yii\web\JqueryAsset;
 use yii\web\View;
 use Yii;
 use yiiunit\TestCase;

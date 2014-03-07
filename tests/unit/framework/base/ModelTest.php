@@ -147,7 +147,7 @@ class ModelTest extends TestCase
 		$this->assertTrue($speaker->hasErrors('firstName'));
 		$this->assertFalse($speaker->hasErrors('lastName'));
 
-		$this->assertEquals(['Something is wrong!'], $speaker->getFirstErrors());
+		$this->assertEquals(['firstName' => 'Something is wrong!'], $speaker->getFirstErrors());
 		$this->assertEquals('Something is wrong!', $speaker->getFirstError('firstName'));
 		$this->assertNull($speaker->getFirstError('lastName'));
 

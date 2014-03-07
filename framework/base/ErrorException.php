@@ -15,10 +15,8 @@ use Yii;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class ErrorException extends Exception
+class ErrorException extends \ErrorException
 {
-	protected $severity;
-
 	/**
 	 * Constructs the exception.
 	 * @link http://php.net/manual/en/errorexception.construct.php
@@ -74,16 +72,6 @@ class ErrorException extends Exception
 	}
 
 	/**
-	 * Gets the exception severity.
-	 * @link http://php.net/manual/en/errorexception.getseverity.php
-	 * @return int the severity level of the exception.
-	 */
-	final public function getSeverity()
-	{
-		return $this->severity;
-	}
-
-	/**
 	 * @return string the user-friendly name of this exception
 	 */
 	public function getName()
@@ -104,5 +92,33 @@ class ErrorException extends Exception
 			E_DEPRECATED => 'PHP Deprecated Warning',
 		];
 		return isset($names[$this->getCode()]) ? $names[$this->getCode()] : 'Error';
+	}
+
+	/**
+	 * Returns the array representation of this object.
+	 * @return array the array representation of this object.
+	 */
+	public function toArray()
+	{
+		return $this->toArrayRecursive($this);
+	}
+
+	/**
+	 * Returns the array representation of the exception and all previous exceptions recursively.
+	 * @param \Exception $exception object
+	 * @return array the array representation of the exception.
+	 */
+	protected function toArrayRecursive($exception)
+	{
+		$array = [
+			'type' => get_class($exception),
+			'name' => $exception instanceof self ? $exception->getName() : 'Exception',
+			'message' => $exception->getMessage(),
+			'code' => $exception->getCode(),
+		];
+		if (($prev = $exception->getPrevious()) !== null) {
+			$array['previous'] = $this->toArrayRecursive($prev);
+		}
+		return $array;
 	}
 }
