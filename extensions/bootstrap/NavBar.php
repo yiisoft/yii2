@@ -70,7 +70,7 @@ class NavBar extends Widget
 	 */
 	public $screenReaderToggleText = 'Toggle navigation';
 	/**
-	 * @var bool whether the navbar content should be included in an inner div container which by default
+	 * @var boolean whether the navbar content should be included in an inner div container which by default
 	 * adds left and right padding. Set this to false for a 100% width navbar.
 	 */
 	public $renderInnerContainer = true;

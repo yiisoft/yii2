@@ -45,7 +45,7 @@ class Connection extends Component
 	 */
 	public $hostname = 'localhost';
 	/**
-	 * @var int the port to use for connecting to the redis server. Default port is 6379.
+	 * @var integer the port to use for connecting to the redis server. Default port is 6379.
 	 */
 	public $port = 6379;
 	/**
@@ -54,7 +54,7 @@ class Connection extends Component
 	 */
 	public $password;
 	/**
-	 * @var int the redis database to use. This is an integer value starting from 0. Defaults to 0.
+	 * @var integer the redis database to use. This is an integer value starting from 0. Defaults to 0.
 	 */
 	public $database = 0;
 	/**

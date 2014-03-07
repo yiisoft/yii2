@@ -30,7 +30,7 @@ if (isset($readme)) {
 	</tr>
 <?php
 ksort($types);
-foreach($types as $i => $class):
+foreach ($types as $i => $class):
 ?>
 	<tr>
 		<td><?= $renderer->createTypeLink($class, $class, $class->name) ?></td>

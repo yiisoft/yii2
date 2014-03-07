@@ -224,7 +224,7 @@ class ApiMarkdown extends GithubMarkdown
 	 *
 	 * @param string $content
 	 * @param TypeDoc $context
-	 * @param bool $paragraph
+	 * @param boolean $paragraph
 	 * @return string
 	 */
 	public static function process($content, $context = null, $paragraph = false)

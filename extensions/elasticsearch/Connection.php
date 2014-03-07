@@ -29,7 +29,7 @@ class Connection extends Component
 	const EVENT_AFTER_OPEN = 'afterOpen';
 
 	/**
-	 * @var bool whether to autodetect available cluster nodes on [[open()]]
+	 * @var boolean whether to autodetect available cluster nodes on [[open()]]
 	 */
 	public $autodetectCluster = true;
 	/**
@@ -244,8 +244,8 @@ class Connection extends Component
 				$body .= $data;
 				return mb_strlen($data, '8bit');
 			},
-			CURLOPT_HEADERFUNCTION => function ($curl, $data) use (&$headers) {
-				foreach (explode("\r\n", $data) as $row) {
+			CURLOPT_HEADERFUNCTION => function($curl, $data) use (&$headers) {
+				foreach(explode("\r\n", $data) as $row) {
 					if (($pos = strpos($row, ':')) !== false) {
 						$headers[strtolower(substr($row, 0, $pos))] = trim(substr($row, $pos + 1));
 					}

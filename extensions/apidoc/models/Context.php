@@ -110,7 +110,7 @@ class Context extends Component
 			}
 		}
 		// inherit docs
-		foreach($this->classes as $class) {
+		foreach ($this->classes as $class) {
 			$this->inheritDocs($class);
 		}
 		// inherit properties, methods, contants and events to subclasses

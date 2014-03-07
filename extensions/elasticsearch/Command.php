@@ -364,7 +364,7 @@ class Command extends Component
 	 * @param $pattern
 	 * @param $settings
 	 * @param $mappings
-	 * @param int $order
+	 * @param integer $order
 	 * @return mixed
 	 * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-templates.html
 	 */

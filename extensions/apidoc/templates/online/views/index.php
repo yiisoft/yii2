@@ -23,7 +23,7 @@ use yii\apidoc\models\TraitDoc;
 	</tr>
 <?php
 ksort($types);
-foreach($types as $i => $class):
+foreach ($types as $i => $class):
 ?>
 	<tr>
 		<td><?= $this->context->typeLink($class, $class->name) ?></td>

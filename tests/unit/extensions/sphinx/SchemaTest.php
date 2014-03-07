@@ -25,7 +25,7 @@ class SchemaTest extends SphinxTestCase
 
 		$indexes = $schema->getIndexSchemas();
 		$this->assertEquals(count($schema->getIndexNames()), count($indexes));
-		foreach($indexes as $index) {
+		foreach ($indexes as $index) {
 			$this->assertInstanceOf('yii\sphinx\IndexSchema', $index);
 		}
 	}
@@ -62,7 +62,7 @@ class SchemaTest extends SphinxTestCase
 
 		$schema = $this->getConnection()->schema;
 
-		foreach($values as $value) {
+		foreach ($values as $value) {
 			$this->assertEquals($value[1], $schema->getPdoType($value[0]));
 		}
 		fclose($fp);
