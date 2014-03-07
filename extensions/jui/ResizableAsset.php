@@ -6,6 +6,7 @@
  */
 
 namespace yii\jui;
+
 use yii\web\AssetBundle;
 
 /**

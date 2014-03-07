@@ -626,7 +626,8 @@ class Collection extends Object
 	 * @return array the highest scoring documents, in descending order by score.
 	 * @throws Exception on failure.
 	 */
-	public function fullTextSearch($search, $condition = [], $fields = [], $options = []) {
+	public function fullTextSearch($search, $condition = [], $fields = [], $options = [])
+	{
 		$command = [
 			'search' => $search
 		];

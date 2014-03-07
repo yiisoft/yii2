@@ -243,10 +243,10 @@ class OpenId extends BaseClient implements ClientInterface
 
 		if ($this->verifyPeer !== null) {
 			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $this->verifyPeer);
-			if($this->capath) {
+			if ($this->capath) {
 				curl_setopt($curl, CURLOPT_CAPATH, $this->capath);
 			}
-			if($this->cainfo) {
+			if ($this->cainfo) {
 				curl_setopt($curl, CURLOPT_CAINFO, $this->cainfo);
 			}
 		}

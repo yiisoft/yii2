@@ -76,7 +76,7 @@ class BaseDoc extends Object
 			$this->phpDocContext = $docblock->getContext();
 
 			$this->tags = $docblock->getTags();
-			foreach($this->tags as $i => $tag) {
+			foreach ($this->tags as $i => $tag) {
 				if ($tag instanceof SinceTag) {
 					$this->since = $tag->getVersion();
 					unset($this->tags[$i]);

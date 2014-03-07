@@ -6,6 +6,7 @@
  */
 
 namespace yii\apidoc\templates\online;
+
 use yii\apidoc\models\Context;
 use yii\apidoc\models\TypeDoc;
 use yii\console\Controller;
@@ -36,7 +37,7 @@ class ApiRenderer extends \yii\apidoc\templates\html\ApiRenderer
 		}
 		$packages = [];
 		$notNamespaced = [];
-		foreach(array_merge($context->classes, $context->interfaces, $context->traits) as $type) {
+		foreach (array_merge($context->classes, $context->interfaces, $context->traits) as $type) {
 			/** @var TypeDoc $type */
 			if (empty($type->namespace)) {
 				$notNamespaced[] = str_replace('\\', '-', $type->name);
@@ -46,7 +47,7 @@ class ApiRenderer extends \yii\apidoc\templates\html\ApiRenderer
 		}
 		ksort($packages);
 		$packages = array_merge(['Not namespaced' => $notNamespaced], $packages);
-		foreach($packages as $name => $classes) {
+		foreach ($packages as $name => $classes) {
 			sort($packages[$name]);
 		}
 		file_put_contents($targetDir . '/packages.txt', serialize($packages));

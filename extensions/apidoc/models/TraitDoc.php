@@ -34,7 +34,7 @@ class TraitDoc extends TypeDoc
 			return;
 		}
 
-		foreach($reflector->getTraits() as $trait) {
+		foreach ($reflector->getTraits() as $trait) {
 			$this->traits[] = ltrim($trait, '\\');
 		}
 	}
