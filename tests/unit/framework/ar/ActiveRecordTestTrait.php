@@ -184,7 +184,7 @@ trait ActiveRecordTestTrait
 		$this->assertEquals(['user3', 'user2', 'user1'], $this->callCustomerFind()->orderBy(['name' => SORT_DESC])->column('name'));
 	}
 
-	public function testfindIndexBy()
+	public function testFindIndexBy()
 	{
 		$customerClass = $this->getCustomerClass();
 		/** @var TestCase|ActiveRecordTestTrait $this */
@@ -205,7 +205,7 @@ trait ActiveRecordTestTrait
 		$this->assertTrue($customers['3-user3'] instanceof $customerClass);
 	}
 
-	public function testfindIndexByAsArray()
+	public function testFindIndexByAsArray()
 	{
 		/** @var TestCase|ActiveRecordTestTrait $this */
 		// indexBy + asArray
@@ -399,6 +399,10 @@ trait ActiveRecordTestTrait
 		$this->assertEquals(2, count($orders));
 		$this->assertEquals(1, count($customer->relatedRecords));
 
+		// unset
+		unset($customer['orders']);
+		$this->assertFalse($customer->isRelationPopulated('orders'));
+
 		/** @var Customer $customer */
 		$customer = $this->callCustomerFind(2);
 		$this->assertFalse($customer->isRelationPopulated('orders'));
@@ -422,6 +426,9 @@ trait ActiveRecordTestTrait
 		$this->assertEquals(1, count($customers[1]->orders));
 		$this->assertEquals(2, count($customers[2]->orders));
 		$this->assertEquals(0, count($customers[3]->orders));
+		// unset
+		unset($customers[1]->orders);
+		$this->assertFalse($customers[1]->isRelationPopulated('orders'));
 
 		$customer = $this->callCustomerFind()->where(['id' => 1])->with('orders')->one();
 		$this->assertTrue($customer->isRelationPopulated('orders'));
