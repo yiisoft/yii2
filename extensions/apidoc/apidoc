@@ -45,7 +45,6 @@ $application = new yii\console\Application([
 	'basePath' => __DIR__,
 	'enableCoreCommands' => false,
 	'controllerNamespace' => 'yii\\apidoc\\commands',
-	'controllerPath' => '@yii/apidoc/commands',
 ]);
 if ($vendorPath !== null) {
 	$application->setVendorPath($vendorPath);
