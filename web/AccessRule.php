@@ -61,7 +61,7 @@ class AccessRule extends Component
 	 */
 	public $verbs;
 	/**
-	 * @var callback a callback that will be called to determine if the rule should be applied.
+	 * @var callable a callback that will be called to determine if the rule should be applied.
 	 * The signature of the callback should be as follows:
 	 *
 	 * ~~~
@@ -73,7 +73,7 @@ class AccessRule extends Component
 	 */
 	public $matchCallback;
 	/**
-	 * @var callback a callback that will be called if this rule determines the access to
+	 * @var callable a callback that will be called if this rule determines the access to
 	 * the current action should be denied. If not set, the behavior will be determined by
 	 * [[AccessControl]].
 	 *

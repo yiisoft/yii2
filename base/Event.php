@@ -71,7 +71,7 @@ class Event extends Object
 	 *
 	 * @param string $class the fully qualified class name to which the event handler needs to attach.
 	 * @param string $name the event name.
-	 * @param callback $handler the event handler.
+	 * @param callable $handler the event handler.
 	 * @param mixed $data the data to be passed to the event handler when the event is triggered.
 	 * When the event handler is invoked, this data can be accessed via [[Event::data]].
 	 * @see off()
@@ -88,7 +88,7 @@ class Event extends Object
 	 *
 	 * @param string $class the fully qualified class name from which the event handler needs to be detached.
 	 * @param string $name the event name.
-	 * @param callback $handler the event handler to be removed.
+	 * @param callable $handler the event handler to be removed.
 	 * If it is null, all handlers attached to the named event will be removed.
 	 * @return boolean whether a handler is found and detached.
 	 * @see on()

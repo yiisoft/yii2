@@ -8,7 +8,7 @@
 namespace yii\base;
 
 /**
- * ArrayAccessTrait provides the implementation for `IteratorAggregate`, `ArrayAccess` and `Countable`.
+ * ArrayAccessTrait provides the implementation for [[\IteratorAggregate]], [[\ArrayAccess]] and [[\Countable]].
  *
  * Note that ArrayAccessTrait requires the class using it contain a property named `data` which should be an array.
  * The data will be exposed by ArrayAccessTrait to support accessing the class object like an array.
