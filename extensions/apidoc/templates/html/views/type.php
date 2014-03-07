@@ -70,10 +70,12 @@ $renderer = $this->context;
 	<?php if(!empty($type->since)): ?>
 		<tr><th>Available since version</th><td><?= $type->since ?></td></tr>
 	<?php endif; ?>
-	<tr>
-	  <th>Source Code</th>
-	  <td><?php // TODO echo $this->renderSourceLink($type->sourcePath) ?></td>
-	</tr>
+	<?php if(($sourceUrl = $renderer->getSourceUrl($type)) !== null): ?>
+		<tr>
+		  <th>Source Code</th>
+		  <td><a href="<?= $sourceUrl ?>"><?= $sourceUrl ?></a></td>
+		</tr>
+	<?php endif; ?>
 </table>
 
 <div id="classDescription">

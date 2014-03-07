@@ -33,6 +33,11 @@ trait RendererTrait
 		if ($type === null) {
 			return $types;
 		}
+		return $this->filterTypes($types, $this->getTypeCategory($type));
+	}
+
+	protected function getTypeCategory($type)
+	{
 		$extensions = $this->extensions;
 		$navClasses = 'app';
 		if (isset($type)) {
@@ -49,7 +54,7 @@ trait RendererTrait
 				}
 			}
 		}
-		return $this->filterTypes($types, $navClasses);
+		return $navClasses;
 	}
 
 	protected function filterTypes($types, $navClasses)
@@ -81,4 +86,4 @@ trait RendererTrait
 		}
 		return $types;
 	}
-} 
+}

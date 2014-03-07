@@ -61,6 +61,11 @@ ArrayHelper::multisort($methods, 'name');
 				</tr>
 			<?php endforeach; ?>
 		<?php endif; ?>
+		<?php if(($sourceUrl = $renderer->getSourceUrl($method->definedBy, $method->startLine)) !== null): ?>
+			<tr>
+				<td colspan="3">Source Code: <a href="<?= $sourceUrl ?>"><?= $sourceUrl ?></a></td>
+			</tr>
+		<?php endif; ?>
 	</table>
 
 <!--	--><?php //$this->renderPartial('sourceCode',array('object'=>$method)); ?>

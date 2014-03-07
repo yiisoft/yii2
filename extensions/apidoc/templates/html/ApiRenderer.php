@@ -279,4 +279,9 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 	{
 		return Html::a($text, null, ['href' => $href]);
 	}
+
+	public function getSourceUrl($type)
+	{
+		return null;
+	}
 }

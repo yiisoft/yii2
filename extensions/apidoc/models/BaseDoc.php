@@ -95,21 +95,12 @@ class BaseDoc extends Object
 		}
 	}
 
-
 	// TODO
 	public function loadSource($reflection)
 	{
 		$this->sourcePath = str_replace('\\', '/', str_replace(YII_PATH, '', $reflection->getFileName()));
 		$this->startLine = $reflection->getStartLine();
 		$this->endLine = $reflection->getEndLine();
-	}
-
-	public function getSourceUrl($baseUrl, $line=null)
-	{
-		if($line === null)
-			return $baseUrl . $this->sourcePath;
-		else
-			return $baseUrl . $this->sourcePath . '#' . $line;
 	}
 
 	public function getSourceCode()
