@@ -31,6 +31,8 @@ use yii\helpers\Html;
  */
 abstract class BaseRenderer extends Component
 {
+	const GUIDE_PREFIX = 'guide-';
+
 	public $apiUrl;
 	/**
 	 * @var Context the [[Context]] currently being rendered.
@@ -160,4 +162,14 @@ abstract class BaseRenderer extends Component
 	 * @return mixed
 	 */
 	public abstract function generateApiUrl($typeName);
+
+	/**
+	 * Generate an url to a guide page
+	 * @param string $file
+	 * @return string
+	 */
+	public function generateGuideUrl($file)
+	{
+		return rtrim($this->guideUrl, '/') . '/' . static::GUIDE_PREFIX . basename($file, '.md') . '.html';
+	}
 }

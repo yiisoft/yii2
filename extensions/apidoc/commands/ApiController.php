@@ -1,16 +1,24 @@
 <?php
 /**
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\apidoc\commands;
 
 
+use yii\apidoc\components\BaseController;
 use yii\apidoc\renderers\ApiRenderer;
+use yii\apidoc\renderers\BaseRenderer;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
+/**
+ * Generate class API documentation
+ *
+ */
 class ApiController extends BaseController
 {
 	/**
@@ -36,8 +44,18 @@ class ApiController extends BaseController
 
 		// setup reference to guide
 		if ($this->guide !== null) {
-			$renderer->guideUrl = $this->guide;
-			$renderer->guideReferences = []; // TODO set references
+			$guideUrl = $this->guide;
+			$referenceFile = $guideUrl . '/' . BaseRenderer::GUIDE_PREFIX . 'references.txt';
+		} else {
+			$guideUrl = './';
+			$referenceFile = $targetDir . '/' . BaseRenderer::GUIDE_PREFIX . 'references.txt';
+		}
+		if (file_exists($referenceFile)) {
+			$renderer->guideUrl = $guideUrl;
+			$renderer->guideReferences = [];
+			foreach(explode("\n", file_get_contents($referenceFile)) as $reference) {
+				$renderer->guideReferences[BaseRenderer::GUIDE_PREFIX . $reference] = $renderer->generateGuideUrl($reference);
+			}
 		}
 
 		// search for files to process

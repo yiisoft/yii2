@@ -1,4 +1,5 @@
 <?php
+
 use yii\apidoc\templates\bootstrap\SideNavWidget;
 
 /**
@@ -15,20 +16,13 @@ $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
 		$nav = [];
 		$nav[] = [
 			'label' => 'Index',
-			'url' => './guide_index.html',
+			'url' => $this->context->generateGuideUrl('index.md'),
 			'active' => isset($currentFile) && (basename($currentFile) == 'index.md'),
 		];
 		foreach($headlines as $file => $headline) {
-//			if (!isset($nav[$namespace])) {
-//				$nav[$namespace] = [
-//					'label' => $namespace,
-//					'url' => '#',
-//					'items' => [],
-//				];
-//			}
-			$nav/*[$namespace]['items']*/[] = [
+			$nav[] = [
 				'label' => $headline,
-				'url' => './guide_' . str_replace('.md', '.html', basename($file)),
+				'url' => $this->context->generateGuideUrl($file),
 				'active' => isset($currentFile) && ($file == $currentFile),
 			];
 		} ?>

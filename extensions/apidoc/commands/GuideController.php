@@ -1,10 +1,13 @@
 <?php
 /**
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\apidoc\commands;
 
+use yii\apidoc\components\BaseController;
 use yii\apidoc\models\Context;
 use yii\apidoc\renderers\BaseRenderer;
 use yii\apidoc\renderers\GuideRenderer;
@@ -38,6 +41,8 @@ class GuideController extends BaseController
 			return 1;
 		}
 
+		$renderer->guideUrl = './';
+
 		// setup reference to apidoc
 		if ($this->apiDocs !== null) {
 			$renderer->apiUrl = $this->apiDocs;
@@ -59,8 +64,12 @@ class GuideController extends BaseController
 		}
 		$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 
-
-		// TODO generate api references.txt
+		// generate api references.txt
+		$references = [];
+		foreach($files as $file) {
+			$references[] = basename($file, '.md');
+		}
+		file_put_contents($targetDir . '/guide-references.txt', implode("\n", $references));
 	}
 
 	protected function findFiles($path, $except = ['README.md'])

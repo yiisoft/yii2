@@ -25,14 +25,36 @@ to the require section of your composer.json.
 Usage
 -----
 
-To generate API documentation, run the `apidoc` command.
+This extension offers two commands:
+
+- `api` to generate class API documentation.
+- `guide` to render nice HTML pages from markdown files such as the yii guide.
+
+Simple usage for stand alone class documentation:
 
 ```
-vendor/bin/apidoc source/directory ./output
+vendor/bin/apidoc api source/directory ./output
 ```
 
-By default the `offline` template will be used. You can choose a different templates with the `--template=name` parameter.
-Currently there is only the `offline` template available.
+Simple usage for stand alone guide documentation:
+
+```
+vendor/bin/apidoc guide source/docs ./output
+```
+
+You can combine them to generate class API and guide doc in one place:
+
+```
+# first generate guide docs to allow links from code to guide you may skip this if you do not need these.
+vendor/bin/apidoc guide source/docs ./output
+# second generate API docs
+vendor/bin/apidoc api source/directory ./output
+# third run guide docs again to have class links enabled
+vendor/bin/apidoc guide source/docs ./output
+```
+
+By default the `bootstrap` template will be used. You can choose a different templates with the `--template=name` parameter.
+Currently there is only the `bootstrap` template available.
 
 You may also add the `yii\apidoc\commands\RenderController` to your console application class map and
 run it inside of your applications console app.

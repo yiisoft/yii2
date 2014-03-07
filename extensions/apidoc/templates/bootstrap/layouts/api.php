@@ -1,4 +1,5 @@
 <?php
+
 use yii\apidoc\templates\bootstrap\ApiRenderer;
 use yii\apidoc\templates\bootstrap\SideNavWidget;
 use yii\helpers\StringHelper;
