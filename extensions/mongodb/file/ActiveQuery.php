@@ -56,7 +56,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 				$this->findWith($this->with, $models);
 			}
 			if (!$this->asArray) {
-				foreach($models as $model) {
+				foreach ($models as $model) {
 					$model->afterFind();
 				}
 			}

@@ -45,7 +45,7 @@ class Connection extends Component
 	 */
 	public $hostname = 'localhost';
 	/**
-	 * @var int the port to use for connecting to the redis server. Default port is 6379.
+	 * @var integer the port to use for connecting to the redis server. Default port is 6379.
 	 */
 	public $port = 6379;
 	/**
@@ -54,7 +54,7 @@ class Connection extends Component
 	 */
 	public $password;
 	/**
-	 * @var int the redis database to use. This is an integer value starting from 0. Defaults to 0.
+	 * @var integer the redis database to use. This is an integer value starting from 0. Defaults to 0.
 	 */
 	public $database = 0;
 	/**
@@ -254,7 +254,7 @@ class Connection extends Component
 		);
 		if ($this->_socket) {
 			if ($this->dataTimeout !== null) {
-				stream_set_timeout($this->_socket, $timeout=(int)$this->dataTimeout, (int) (($this->dataTimeout - $timeout) * 1000000));
+				stream_set_timeout($this->_socket, $timeout = (int)$this->dataTimeout, (int) (($this->dataTimeout - $timeout) * 1000000));
 			}
 			if ($this->password !== null) {
 				$this->executeCommand('AUTH', [$this->password]);
@@ -345,13 +345,13 @@ class Connection extends Component
 	 * for details on the mentioned reply types.
 	 * @trows Exception for commands that return [error reply](http://redis.io/topics/protocol#error-reply).
 	 */
-	public function executeCommand($name, $params=[])
+	public function executeCommand($name, $params = [])
 	{
 		$this->open();
 
 		array_unshift($params, $name);
 		$command = '*' . count($params) . "\r\n";
-		foreach($params as $arg) {
+		foreach ($params as $arg) {
 			$command .= '$' . mb_strlen($arg, '8bit') . "\r\n" . $arg . "\r\n";
 		}
 

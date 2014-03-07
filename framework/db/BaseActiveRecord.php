@@ -406,7 +406,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 	/**
 	 * Check whether the named relation has been populated with records.
 	 * @param string $name the relation name (case-sensitive)
-	 * @return bool whether relation has been populated with records.
+	 * @return boolean whether relation has been populated with records.
 	 */
 	public function isRelationPopulated($name)
 	{

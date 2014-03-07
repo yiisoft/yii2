@@ -29,7 +29,7 @@ class Connection extends Component
 	const EVENT_AFTER_OPEN = 'afterOpen';
 
 	/**
-	 * @var bool whether to autodetect available cluster nodes on [[open()]]
+	 * @var boolean whether to autodetect available cluster nodes on [[open()]]
 	 */
 	public $autodetectCluster = true;
 	/**
@@ -63,7 +63,7 @@ class Connection extends Component
 
 	public function init()
 	{
-		foreach($this->nodes as $node) {
+		foreach ($this->nodes as $node) {
 			if (!isset($node['http_address'])) {
 				throw new InvalidConfigException('Elasticsearch node needs at least a http_address configured.');
 			}
@@ -210,7 +210,7 @@ class Connection extends Component
 	private function createUrl($path, $options = [])
 	{
 		if (!is_string($path)) {
-			$url = implode('/', array_map(function($a) {
+			$url = implode('/', array_map(function ($a) {
 				return urlencode(is_array($a) ? implode(',', $a) : $a);
 			}, $path));
 			if (!empty($options)) {
@@ -240,7 +240,7 @@ class Connection extends Component
 			// http://www.php.net/manual/en/function.curl-setopt.php#82418
 			CURLOPT_HTTPHEADER     => ['Expect:'],
 
-			CURLOPT_WRITEFUNCTION  => function($curl, $data) use (&$body) {
+			CURLOPT_WRITEFUNCTION  => function ($curl, $data) use (&$body) {
 				$body .= $data;
 				return mb_strlen($data, '8bit');
 			},

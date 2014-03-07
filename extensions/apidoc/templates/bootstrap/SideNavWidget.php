@@ -153,7 +153,7 @@ class SideNavWidget extends \yii\bootstrap\Widget
 			$label .= ' ' . Html::tag('b', '', ['class' => 'caret']);
 			if (is_array($items)) {
 				if ($active === false) {
-					foreach($items as $subItem) {
+					foreach ($items as $subItem) {
 						if (isset($subItem['active']) && $subItem['active']) {
 							$active = true;
 						}

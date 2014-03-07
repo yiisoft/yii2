@@ -33,46 +33,46 @@ class ViewRenderer extends BaseViewRenderer
 	 * @see http://twig.sensiolabs.org/doc/api.html#environment-options
 	 */
 	public $options = [];
-    /**
-     * @var array Objects or static classes.
-     * Keys of the array are names to call in template, values are objects or names of static classes.
-     * Example: `['html' => '\yii\helpers\Html']`.
-     * In the template you can use it like this: `{{ html.a('Login', 'site/login') | raw }}`.
-     */
-    public $globals = [];
-    /**
-     * @var array Custom functions.
-     * Keys of the array are names to call in template, values are names of functions or static methods of some class.
-     * Example: `['rot13' => 'str_rot13', 'a' => '\yii\helpers\Html::a']`.
-     * In the template you can use it like this: `{{ rot13('test') }}` or `{{ a('Login', 'site/login') | raw }}`.
-     */
-    public $functions = [];
-    /**
-     * @var array Custom filters.
-     * Keys of the array are names to call in template, values are names of functions or static methods of some class.
-     * Example: `['rot13' => 'str_rot13', 'jsonEncode' => '\yii\helpers\Json::encode']`.
-     * In the template you can use it like this: `{{ 'test'|rot13 }}` or `{{ model|jsonEncode }}`.
-     */
-    public $filters = [];
-    /**
-     * @var array Custom extensions.
-     * Example: `['Twig_Extension_Sandbox', 'Twig_Extension_Text']`
-     */
-    public $extensions = [];
-    /**
-     * @var array Twig lexer options.
-     * Example: Smarty-like syntax:
-     * ```php
-     * [
-     *     'tag_comment'  => ['{*', '*}'],
-     *     'tag_block'    => ['{', '}'],
-     *     'tag_variable' => ['{$', '}']
-     * ]
-     * ```
-     * @see http://twig.sensiolabs.org/doc/recipes.html#customizing-the-syntax
-     */
-    public $lexerOptions = [];
-    /**
+	/**
+	 * @var array Objects or static classes.
+	 * Keys of the array are names to call in template, values are objects or names of static classes.
+	 * Example: `['html' => '\yii\helpers\Html']`.
+	 * In the template you can use it like this: `{{ html.a('Login', 'site/login') | raw }}`.
+	 */
+	public $globals = [];
+	/**
+	 * @var array Custom functions.
+	 * Keys of the array are names to call in template, values are names of functions or static methods of some class.
+	 * Example: `['rot13' => 'str_rot13', 'a' => '\yii\helpers\Html::a']`.
+	 * In the template you can use it like this: `{{ rot13('test') }}` or `{{ a('Login', 'site/login') | raw }}`.
+	 */
+	public $functions = [];
+	/**
+	 * @var array Custom filters.
+	 * Keys of the array are names to call in template, values are names of functions or static methods of some class.
+	 * Example: `['rot13' => 'str_rot13', 'jsonEncode' => '\yii\helpers\Json::encode']`.
+	 * In the template you can use it like this: `{{ 'test'|rot13 }}` or `{{ model|jsonEncode }}`.
+	 */
+	public $filters = [];
+	/**
+	 * @var array Custom extensions.
+	 * Example: `['Twig_Extension_Sandbox', 'Twig_Extension_Text']`
+	 */
+	public $extensions = [];
+	/**
+	 * @var array Twig lexer options.
+	 * Example: Smarty-like syntax:
+	 * ```php
+	 * [
+	 *     'tag_comment'  => ['{*', '*}'],
+	 *     'tag_block'    => ['{', '}'],
+	 *     'tag_variable' => ['{$', '}']
+	 * ]
+	 * ```
+	 * @see http://twig.sensiolabs.org/doc/recipes.html#customizing-the-syntax
+	 */
+	public $lexerOptions = [];
+	/**
 	 * @var \Twig_Environment twig environment object that do all rendering twig templates
 	 */
 	public $twig;
@@ -118,7 +118,7 @@ class ViewRenderer extends BaseViewRenderer
 		}
 
 		// Adding global 'void' function (usage: {{void(App.clientScript.registerScriptFile(...))}})
-		$this->twig->addFunction('void', new \Twig_Function_Function(function($argument){
+		$this->twig->addFunction('void', new \Twig_Function_Function(function ($argument) {
 		}));
 
 		$this->twig->addFunction('path', new \Twig_Function_Function(function ($path, $args = []) {
@@ -162,7 +162,7 @@ class ViewRenderer extends BaseViewRenderer
 	}
 
 	/**
- 	 * Adds custom functions
+	 * Adds custom functions
 	 * @param array $functions @see self::$functions
 	 */
 	public function addFunctions($functions)

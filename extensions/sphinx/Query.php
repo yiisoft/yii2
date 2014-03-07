@@ -338,7 +338,7 @@ class Query extends Component implements QueryInterface
 
 	/**
 	 * Sets the value indicating whether to SELECT DISTINCT or not.
-	 * @param bool $value whether to SELECT DISTINCT or not.
+	 * @param boolean $value whether to SELECT DISTINCT or not.
 	 * @return static the query object itself
 	 */
 	public function distinct($value = true)

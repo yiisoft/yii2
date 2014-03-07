@@ -20,7 +20,7 @@ $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
 		$types = $renderer->getNavTypes(isset($type) ? $type : null, $types);
 		ksort($types);
 		$nav = [];
-		foreach($types as $i=>$class) {
+		foreach ($types as $i => $class) {
 			$namespace = $class->namespace;
 			if (empty($namespace)) {
 				$namespace = 'Not namespaced classes';

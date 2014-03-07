@@ -21,17 +21,17 @@ ArrayHelper::multisort($properties, 'name');
 ?>
 <h2>Property Details</h2>
 
-<?php foreach($properties as $property): ?>
+<?php foreach ($properties as $property): ?>
 
 	<div class="detailHeader h3" id="<?= $property->name.'-detail' ?>">
 		<?= $property->name ?>
 		<span class="detailHeaderTag small">
 			<?= $property->visibility ?>
-			<?php if($property->getIsReadOnly()) echo ' <em>read-only</em> '; ?>
-			<?php if($property->getIsWriteOnly()) echo ' <em>write-only</em> '; ?>
+			<?php if ($property->getIsReadOnly()) echo ' <em>read-only</em> '; ?>
+			<?php if ($property->getIsWriteOnly()) echo ' <em>write-only</em> '; ?>
 			property
-			<?php if(!empty($property->since)): ?>
-				(available since version <?php echo $property->since; ?>)
+			<?php if (!empty($property->since)): ?>
+				(available since version <?= $property->since ?>)
 			<?php endif; ?>
 		</span>
 	</div>

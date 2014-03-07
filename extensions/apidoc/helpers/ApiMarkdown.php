@@ -70,7 +70,7 @@ class ApiMarkdown extends GithubMarkdown
 		if (!empty($language)) {
 			$block['language'] = $language;
 		}
-		for($i = $current + 1, $count = count($lines); $i < $count; $i++) {
+		for ($i = $current + 1, $count = count($lines); $i < $count; $i++) {
 			if (rtrim($line = $lines[$i]) !== $fence) {
 				$block['content'][] = $line;
 			} else {
@@ -224,7 +224,7 @@ class ApiMarkdown extends GithubMarkdown
 	 *
 	 * @param string $content
 	 * @param TypeDoc $context
-	 * @param bool $paragraph
+	 * @param boolean $paragraph
 	 * @return string
 	 */
 	public static function process($content, $context = null, $paragraph = false)

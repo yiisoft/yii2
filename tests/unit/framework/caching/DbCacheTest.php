@@ -34,7 +34,7 @@ class DbCacheTest extends CacheTestCase
 	}
 
 	/**
-	 * @param bool $reset whether to clean up the test database
+	 * @param boolean $reset whether to clean up the test database
 	 * @return \yii\db\Connection
 	 */
 	public function getConnection($reset = true)

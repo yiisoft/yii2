@@ -147,7 +147,8 @@ class LinkedIn extends OAuth2
 	 * Generates the auth state value.
 	 * @return string auth state value.
 	 */
-	protected function generateAuthState() {
+	protected function generateAuthState()
+	{
 		return sha1(uniqid(get_class($this), true));
 	}
 

@@ -19,7 +19,7 @@ $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
 			'url' => $this->context->generateGuideUrl('index.md'),
 			'active' => isset($currentFile) && (basename($currentFile) == 'index.md'),
 		];
-		foreach($headlines as $file => $headline) {
+		foreach ($headlines as $file => $headline) {
 			$nav[] = [
 				'label' => $headline,
 				'url' => $this->context->generateGuideUrl($file),

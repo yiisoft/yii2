@@ -133,6 +133,7 @@ class LuaScriptBuilder extends \yii\base\Object
 	 * @param ActiveQuery $query the query used to build the script
 	 * @param string $buildResult the lua script for building the result
 	 * @param string $return the lua variable that should be returned
+	 * @throws yii\base\NotSupportedException when query contains unsupported order by condition
 	 * @return string
 	 */
 	private function build($query, $buildResult, $return)
@@ -155,7 +156,7 @@ class LuaScriptBuilder extends \yii\base\Object
 		$modelClass = $query->modelClass;
 		$key = $this->quoteValue($modelClass::keyPrefix());
 		$loadColumnValues = '';
-		foreach($columns as $column => $alias) {
+		foreach ($columns as $column => $alias) {
 			$loadColumnValues .= "local $alias=redis.call('HGET',$key .. ':a:' .. pk, '$column')\n";
 		}
 

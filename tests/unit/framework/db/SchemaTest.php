@@ -32,7 +32,7 @@ class SchemaTest extends DatabaseTestCase
 
 		$tables = $schema->getTableSchemas();
 		$this->assertEquals(count($schema->getTableNames()), count($tables));
-		foreach($tables as $table) {
+		foreach ($tables as $table) {
 			$this->assertInstanceOf('yii\db\TableSchema', $table);
 		}
 	}
@@ -85,7 +85,7 @@ class SchemaTest extends DatabaseTestCase
 		/** @var Schema $schema */
 		$schema = $this->getConnection()->schema;
 
-		foreach($values as $value) {
+		foreach ($values as $value) {
 			$this->assertEquals($value[1], $schema->getPdoType($value[0]));
 		}
 		fclose($fp);

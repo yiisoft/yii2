@@ -158,7 +158,7 @@ yii = (function ($) {
 				return {};
 			}
 			var qs = url.substring(pos + 1).split('&');
-			for(var i = 0, result = {}; i < qs.length; i++){
+			for (var i = 0, result = {}; i < qs.length; i++) {
 				qs[i] = qs[i].split('=');
 				result[decodeURIComponent(qs[i][0])] = decodeURIComponent(qs[i][1]);
 			}

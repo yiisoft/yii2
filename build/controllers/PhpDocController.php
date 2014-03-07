@@ -24,7 +24,7 @@ class PhpDocController extends Controller
 	public $defaultAction = 'property';
 
 	/**
-	 * @var bool whether to update class docs directly. Setting this to false will just output docs
+	 * @var boolean whether to update class docs directly. Setting this to false will just output docs
 	 * for copy and paste.
 	 */
 	public $updateFiles = true;
@@ -314,7 +314,7 @@ class PhpDocController extends Controller
 						// check if parent class has setter defined
 						$c = $className;
 						$parentSetter = false;
-						while($parent = get_parent_class($c)) {
+						while ($parent = get_parent_class($c)) {
 							if (method_exists($parent, 'set' . ucfirst($propName))) {
 								$parentSetter = true;
 								break;
@@ -329,7 +329,7 @@ class PhpDocController extends Controller
 						// check if parent class has getter defined
 						$c = $className;
 						$parentGetter = false;
-						while($parent = get_parent_class($c)) {
+						while ($parent = get_parent_class($c)) {
 							if (method_exists($parent, 'set' . ucfirst($propName))) {
 								$parentGetter = true;
 								break;
