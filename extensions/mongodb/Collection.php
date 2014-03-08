@@ -733,7 +733,13 @@ class Collection extends Object
 				$rawId = (string)$rawId;
 			}
 		}
-		return new \MongoId($rawId);
+		try {
+			$mongoId = new \MongoId($rawId);
+		} catch (\MongoException $e) {
+			// invalid id format
+			$mongoId = $rawId;
+		}
+		return $mongoId;
 	}
 
 	/**

@@ -419,4 +419,24 @@ class CollectionTest extends MongoDbTestCase
 		$this->assertNotEmpty($result);
 		$this->assertCount(2, $result);
 	}
+
+	public function testFindByNotObjectId()
+	{
+		$collection = $this->getConnection()->getCollection('customer');
+
+		$data = [
+			'name' => 'customer 1',
+			'address' => 'customer 1 address',
+		];
+		$id = $collection->insert($data);
+
+		$cursor = $collection->find(['_id' => (string)$id]);
+		$this->assertTrue($cursor instanceof \MongoCursor);
+		$row = $cursor->getNext();
+		$this->assertEquals($id, $row['_id']);
+
+		$cursor = $collection->find(['_id' => 'fake']);
+		$this->assertTrue($cursor instanceof \MongoCursor);
+		$this->assertEquals(0, $cursor->count());
+	}
 }
