@@ -420,6 +420,10 @@ class CollectionTest extends MongoDbTestCase
 		$this->assertCount(2, $result);
 	}
 
+	/**
+	 * @depends testInsert
+	 * @depends testFind
+	 */
 	public function testFindByNotObjectId()
 	{
 		$collection = $this->getConnection()->getCollection('customer');
@@ -438,5 +442,25 @@ class CollectionTest extends MongoDbTestCase
 		$cursor = $collection->find(['_id' => 'fake']);
 		$this->assertTrue($cursor instanceof \MongoCursor);
 		$this->assertEquals(0, $cursor->count());
+	}
+
+	/**
+	 * @depends testInsert
+	 *
+	 * @see https://github.com/yiisoft/yii2/issues/2548
+	 */
+	public function testInsertMongoBin()
+	{
+		$collection = $this->getConnection()->getCollection('customer');
+
+		$fileName = realpath(__DIR__ . '/../../../../extensions/gii/assets/logo.png');
+		$data = [
+			'name' => 'customer 1',
+			'address' => 'customer 1 address',
+			'binData' => new \MongoBinData(file_get_contents($fileName), 2),
+		];
+		$id = $collection->insert($data);
+		$this->assertTrue($id instanceof \MongoId);
+		$this->assertNotEmpty($id->__toString());
 	}
 }

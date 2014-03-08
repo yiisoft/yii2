@@ -107,9 +107,67 @@ class Collection extends Object
 	{
 		$parts = [];
 		foreach ($arguments as $argument) {
-			$parts[] = is_scalar($argument) ? $argument : Json::encode($argument);
+			$parts[] = is_scalar($argument) ? $argument : $this->encodeLogData($argument);
 		}
 		return $this->getFullName() . '.' . $command . '(' . implode(', ', $parts) . ')';
+	}
+
+	/**
+	 * Encodes complex log data into JSON format string.
+	 * @param mixed $data raw data.
+	 * @return string encoded data string.
+	 */
+	protected function encodeLogData($data)
+	{
+		return json_encode($this->processLogData($data));
+	}
+
+	/**
+	 * Pre-processes the log data before sending it to `json_encode()`.
+	 * @param mixed $data raw data.
+	 * @return mixed the processed data.
+	 */
+	protected function processLogData($data)
+	{
+		if (is_object($data)) {
+			if ($data instanceof \MongoId ||
+				$data instanceof \MongoRegex ||
+				$data instanceof \MongoDate ||
+				$data instanceof \MongoInt32 ||
+				$data instanceof \MongoInt64 ||
+				$data instanceof \MongoTimestamp
+			) {
+				$data = get_class($data) . '(' . $data->__toString() . ')';
+			} elseif ($data instanceof \MongoCode) {
+				$data = 'MongoCode( ' . $data->__toString() . ' )';
+			} elseif ($data instanceof \MongoBinData) {
+				$data = 'MongoBinData(...)';
+			} elseif ($data instanceof \MongoDBRef) {
+				$data = 'MongoDBRef(...)';
+			} elseif ($data instanceof \MongoMinKey || $data instanceof \MongoMaxKey) {
+				$data = get_class($data);
+			} else {
+				$result = [];
+				foreach ($data as $name => $value) {
+					$result[$name] = $value;
+				}
+				$data = $result;
+			}
+
+			if ($data === []) {
+				return new \stdClass();
+			}
+		}
+
+		if (is_array($data)) {
+			foreach ($data as $key => $value) {
+				if (is_array($value) || is_object($value)) {
+					$data[$key] = $this->processLogData($value);
+				}
+			}
+		}
+
+		return $data;
 	}
 
 	/**
