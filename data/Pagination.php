@@ -8,7 +8,6 @@
 namespace yii\data;
 
 use Yii;
-use yii\base\Arrayable;
 use yii\base\Object;
 use yii\web\Link;
 use yii\web\Linkable;
@@ -68,7 +67,7 @@ use yii\web\Request;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Pagination extends Object implements Linkable, Arrayable
+class Pagination extends Object implements Linkable
 {
 	const LINK_NEXT = 'next';
 	const LINK_PREV = 'prev';
@@ -314,19 +313,6 @@ class Pagination extends Object implements Linkable, Arrayable
 			$links[self::LINK_LAST] = $this->createUrl($pageCount - 1, $absolute);
 		}
 		return $links;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function toArray()
-	{
-		return [
-			'totalCount' => $this->totalCount,
-			'pageCount' => $this->getPageCount(),
-			'currentPage' => $this->getPage(),
-			'perPage' => $this->getPageSize(),
-		];
 	}
 
 	/**

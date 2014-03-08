@@ -8,7 +8,6 @@
 namespace yii\i18n;
 
 use Yii;
-use yii\base\Arrayable;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 
@@ -104,11 +103,7 @@ class I18N extends Component
 	 */
 	public function format($message, $params, $language)
 	{
-		if ($params instanceof Arrayable) {
-			$params = $params->toArray();
-		} else {
-			$params = (array)$params;
-		}
+		$params = (array)$params;
 		if ($params === []) {
 			return $message;
 		}

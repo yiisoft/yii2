@@ -8,7 +8,6 @@
 namespace yii\web;
 
 use Yii;
-use yii\base\Arrayable;
 use yii\base\Object;
 use ArrayIterator;
 
@@ -22,7 +21,7 @@ use ArrayIterator;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAccess, \Countable, Arrayable
+class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAccess, \Countable
 {
 	/**
 	 * @var array the headers in this collection (indexed by the header names)
@@ -158,16 +157,6 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	public function removeAll()
 	{
 		$this->_headers = [];
-	}
-
-	/**
-	 * Returns the collection as a PHP array.
-	 * @return array the array representation of the collection.
-	 * The array keys are header names, and the array values are the corresponding header values.
-	 */
-	public function toArray()
-	{
-		return $this->_headers;
 	}
 
 	/**

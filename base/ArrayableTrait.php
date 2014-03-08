@@ -13,6 +13,10 @@ use yii\web\Link;
 use yii\web\Linkable;
 
 /**
+ * ArrayableTrait provides a common implementation of the [[Arrayable]] interface.
+ *
+ * ArrayableTrait implements [[toArray()]] by respecting the field definitions as declared
+ * in [[fields()]] and [[extraFields()]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

@@ -9,7 +9,6 @@ namespace yii\web;
 
 use Yii;
 use ArrayIterator;
-use yii\base\Arrayable;
 use yii\base\InvalidCallException;
 use yii\base\Object;
 
@@ -23,7 +22,7 @@ use yii\base\Object;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CookieCollection extends Object implements \IteratorAggregate, \ArrayAccess, \Countable, Arrayable
+class CookieCollection extends Object implements \IteratorAggregate, \ArrayAccess, \Countable
 {
 	/**
 	 * @var boolean whether this collection is read only.
@@ -164,17 +163,6 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 			throw new InvalidCallException('The cookie collection is read only.');
 		}
 		$this->_cookies = [];
-	}
-
-	/**
-	 * Returns the collection as a PHP array.
-	 * @return array the array representation of the collection.
-	 * The array keys are cookie names, and the array values are the corresponding
-	 * cookie objects.
-	 */
-	public function toArray()
-	{
-		return $this->_cookies;
 	}
 
 	/**
