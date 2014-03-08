@@ -111,8 +111,10 @@ To make your database up to date, you can run in needed test folder `yii migrate
 if you are starting from `frontend` tests then you should run `yii migrate` in each suite folder `acceptance`, `functional`, `unit`
 it will upgrade your database to the last state according migrations.
 
-To be able to run acceptance tests you should configure your server to point doc_root to your new created application. For example if we
-use php builtin server, then all that is needed to do is run `php -S 127.0.0.1:8080` in main project directory - directory that contains `frontend`, `backend`, `common`, `console` directories.
+To be able to run acceptance tests you should configure your server to point the doc_root to the root of your application.
+You also need to adjust the `TEST_ENTRY_URL` in `frontend/tests/_bootstrap.php` and `backend/tests/_bootstrap.php` (remove "/advanced" sub-folder from url).
+If we use php builtin server, then all that is needed to do is to run `php -S 127.0.0.1:8080` in main project directory - directory that
+contains `frontend`, `backend`, `common`, `console` directories.
 
 After that is done you should be able to run your tests, for example to run `frontend` tests do:
 
