@@ -34,28 +34,28 @@ ArrayHelper::multisort($methods, 'name');
 		</span>
 	</div>
 
-	<table class="summaryTable table table-striped table-bordered table-hover">
+	<table class="detailTable table table-striped table-bordered table-hover">
 		<tr><td colspan="3">
 			<div class="signature2"><?= $renderer->renderMethodSignature($method) ?></div>
 		</td></tr>
 		<?php if (!empty($method->params) || !empty($method->return) || !empty($method->exceptions)): ?>
 			<?php foreach ($method->params as $param): ?>
 				<tr>
-				  <td class="paramNameCol"><?= $param->name ?></td>
+				  <td class="paramNameCol"><?= ApiMarkdown::highlight($param->name, 'php') ?></td>
 				  <td class="paramTypeCol"><?= $renderer->createTypeLink($param->types) ?></td>
 				  <td class="paramDescCol"><?= ApiMarkdown::process($param->description, $type) ?></td>
 				</tr>
 			<?php endforeach; ?>
 			<?php if (!empty($method->return)): ?>
 				<tr>
-				  <td class="paramNameCol"><?= 'return'; ?></td>
+				  <th class="paramNameCol"><?= 'return'; ?></th>
 				  <td class="paramTypeCol"><?= $renderer->createTypeLink($method->returnTypes); ?></td>
 				  <td class="paramDescCol"><?= ApiMarkdown::process($method->return, $type); ?></td>
 				</tr>
 			<?php endif; ?>
 			<?php foreach ($method->exceptions as $exception => $description): ?>
 				<tr>
-				  <td class="paramNameCol"><?= 'throws' ?></td>
+				  <th class="paramNameCol"><?= 'throws' ?></th>
 				  <td class="paramTypeCol"><?= $renderer->createTypeLink($exception) ?></td>
 				  <td class="paramDescCol"><?= ApiMarkdown::process($description, $type) ?></td>
 				</tr>

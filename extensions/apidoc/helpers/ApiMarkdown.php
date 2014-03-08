@@ -93,7 +93,7 @@ class ApiMarkdown extends GithubMarkdown
 		}
 	}
 
-	protected function highlight($code, $language)
+	public static function highlight($code, $language)
 	{
 		if ($language !== 'php') {
 			return htmlspecialchars($code, ENT_NOQUOTES, 'UTF-8');

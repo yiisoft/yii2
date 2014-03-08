@@ -31,7 +31,7 @@ class Widget extends Component implements ViewContextInterface
 	public static $counter = 0;
 	/**
 	 * @var string the prefix to the automatically generated widget IDs.
-	 * @see [[getId()]]
+	 * @see getId()
 	 */
 	public static $autoIdPrefix = 'w';
 

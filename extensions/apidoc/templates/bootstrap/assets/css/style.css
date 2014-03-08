@@ -58,3 +58,8 @@ blockquote {
 td p {
 	margin: 0;
 }
+
+table.detailTable .paramNameCol { width: 15%; min-width: 100px; }
+table.detailTable .paramTypeCol { width: 15%; min-width: 150px; }
+table.detailTable .paramDescCol { width: 70%; }
+
