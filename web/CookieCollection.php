@@ -166,6 +166,16 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	}
 
 	/**
+	 * Returns the collection as a PHP array.
+	 * @return array the array representation of the collection.
+	 * The array keys are cookie names, and the array values are the corresponding cookie objects.
+	 */
+	public function toArray()
+	{
+		return $this->_cookies;
+	}
+
+	/**
 	 * Returns whether there is a cookie with the specified name.
 	 * This method is required by the SPL interface `ArrayAccess`.
 	 * It is implicitly called when you use something like `isset($collection[$name])`.
