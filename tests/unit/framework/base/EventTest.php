@@ -89,5 +89,4 @@ class Post extends ActiveRecord
 
 class User extends ActiveRecord
 {
-
 }

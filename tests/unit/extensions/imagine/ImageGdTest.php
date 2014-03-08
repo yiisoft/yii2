@@ -26,5 +26,4 @@ class ImageGdTest extends AbstractImageTest
 		$infos = gd_info();
 		return isset($infos['FreeType Support']) ? $infos['FreeType Support'] : false;
 	}
-
 }

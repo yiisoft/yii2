@@ -144,7 +144,7 @@ class NumberValidatorTest extends TestCase
 		$val->validateAttribute($model, 'attr_number');
 		$this->assertTrue($model->hasErrors('attr_number'));
 		$val = new NumberValidator(['min' => 1]);
-		$model = FakedValidationModel::createWithAttributes(['attr_num' => [1,2,3]]);
+		$model = FakedValidationModel::createWithAttributes(['attr_num' => [1, 2, 3]]);
 		$val->validateAttribute($model, 'attr_num');
 		$this->assertTrue($model->hasErrors('attr_num'));
 	}

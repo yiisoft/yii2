@@ -100,7 +100,8 @@ class OAuth1Test extends TestCase
 		$this->assertEquals($expectedAuthorizationHeader, $authorizationHeader);
 	}
 
-	public function testBuildAuthUrl() {
+	public function testBuildAuthUrl()
+	{
 		$oauthClient = new OAuth1();
 		$authUrl = 'http://test.auth.url';
 		$oauthClient->authUrl = $authUrl;

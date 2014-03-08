@@ -102,5 +102,4 @@ class BehaviorTest extends TestCase
 		$bar->attachBehavior('bar', $behavior);
 		$bar->nomagicBehaviorMethod();
 	}
-
 }

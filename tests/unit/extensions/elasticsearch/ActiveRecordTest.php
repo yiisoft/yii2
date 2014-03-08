@@ -20,15 +20,45 @@ class ActiveRecordTest extends ElasticSearchTestCase
 {
 	use ActiveRecordTestTrait;
 
-	public function callCustomerFind($q = null)	 { return Customer::find($q); }
-	public function callOrderFind($q = null)     { return Order::find($q); }
-	public function callOrderItemFind($q = null) { return OrderItem::find($q); }
-	public function callItemFind($q = null)      { return Item::find($q); }
+	public function callCustomerFind($q = null)
+	{
+		return Customer::find($q);
+	}
 
-	public function getCustomerClass() { return Customer::className(); }
-	public function getItemClass() { return Item::className(); }
-	public function getOrderClass() { return Order::className(); }
-	public function getOrderItemClass() { return OrderItem::className(); }
+	public function callOrderFind($q = null)
+	{
+		return Order::find($q);
+	}
+
+	public function callOrderItemFind($q = null)
+	{
+		return OrderItem::find($q);
+	}
+
+	public function callItemFind($q = null)
+	{
+		return Item::find($q);
+	}
+
+	public function getCustomerClass()
+	{
+		return Customer::className();
+	}
+
+	public function getItemClass()
+	{
+		return Item::className();
+	}
+
+	public function getOrderClass()
+	{
+		return Order::className();
+	}
+
+	public function getOrderItemClass()
+	{
+		return OrderItem::className();
+	}
 
 	/**
 	 * can be overridden to do things after save()
@@ -224,7 +254,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$records = Customer::mget([5]);
 		$this->assertEquals(0, count($records));
 
-		$records = Customer::mget([1,3,5]);
+		$records = Customer::mget([1, 3, 5]);
 		$this->assertEquals(2, count($records));
 		$this->assertInstanceOf(Customer::className(), $records[0]);
 		$this->assertInstanceOf(Customer::className(), $records[1]);
@@ -501,7 +531,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 		$customerClass = $this->getCustomerClass();
 
 		$afterFindCalls = [];
-		Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND, function($event) use (&$afterFindCalls) {
+		Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND, function ($event) use (&$afterFindCalls) {
 			/** @var BaseActiveRecord $ar */
 			$ar = $event->sender;
 			$afterFindCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
@@ -522,7 +552,6 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
 		Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND);
 	}
-
 
 	// TODO test AR with not mapped PK
 }

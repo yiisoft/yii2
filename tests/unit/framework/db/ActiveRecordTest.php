@@ -24,15 +24,45 @@ class ActiveRecordTest extends DatabaseTestCase
 		ActiveRecord::$db = $this->getConnection();
 	}
 
-	public function callCustomerFind($q = null)	 { return Customer::find($q); }
-	public function callOrderFind($q = null)     { return Order::find($q); }
-	public function callOrderItemFind($q = null) { return OrderItem::find($q); }
-	public function callItemFind($q = null)      { return Item::find($q); }
+	public function callCustomerFind($q = null)
+	{
+		return Customer::find($q);
+	}
 
-	public function getCustomerClass() { return Customer::className(); }
-	public function getItemClass() { return Item::className(); }
-	public function getOrderClass() { return Order::className(); }
-	public function getOrderItemClass() { return OrderItem::className(); }
+	public function callOrderFind($q = null)
+	{
+		return Order::find($q);
+	}
+
+	public function callOrderItemFind($q = null)
+	{
+		return OrderItem::find($q);
+	}
+
+	public function callItemFind($q = null)
+	{
+		return Item::find($q);
+	}
+
+	public function getCustomerClass()
+	{
+		return Customer::className();
+	}
+
+	public function getItemClass()
+	{
+		return Item::className();
+	}
+
+	public function getOrderClass()
+	{
+		return Order::className();
+	}
+
+	public function getOrderItemClass()
+	{
+		return OrderItem::className();
+	}
 
 	public function testCustomColumns()
 	{
@@ -284,7 +314,7 @@ class ActiveRecordTest extends DatabaseTestCase
 		$orders = Order::find()->innerJoinWith([
 			'customer' => function ($query) {
 					$query->where(['tbl_customer.id' => 2]);
-				},
+			},
 		], false)->where(['tbl_order.id' => [1, 2]])->orderBy('tbl_order.id')->all();
 		$this->assertEquals(1, count($orders));
 		$this->assertEquals(2, $orders[0]->id);
