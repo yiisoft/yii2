@@ -45,6 +45,7 @@ class Customer extends ActiveRecord
 	/**
 	 * sets up the index for this record
 	 * @param Command $command
+	 * @param boolean $statusIsBoolean
 	 */
 	public static function setUpMapping($command, $statusIsBoolean = false)
 	{
