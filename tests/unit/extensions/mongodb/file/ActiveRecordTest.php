@@ -248,6 +248,7 @@ class ActiveRecordTest extends MongoDbTestCase
 		$record2 = CustomerFile::find($record->_id);
 		$this->assertEquals($record->status, $record2->status);
 		$this->assertEquals(file_get_contents($updateFileName), $record2->getFileContent());
+		$this->assertEquals($record->tag, $record2->tag);
 	}
 
 	/**

@@ -112,6 +112,9 @@ class ApiController extends BaseController
 		}
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	protected function findFiles($path, $except = [])
 	{
 		if (empty($except)) {
@@ -135,6 +138,7 @@ class ApiController extends BaseController
 	}
 
 	/**
+	 * @inheritdoc
 	 * @return ApiRenderer
 	 */
 	protected function findRenderer($template)

@@ -169,11 +169,30 @@ class Serializer extends Component
 				$this->collectionEnvelope => $models,
 			];
 			if ($pagination !== false) {
-				$result['_links'] = Link::serialize($pagination->getLinks());
-				$result['_meta'] = $pagination->toArray();
+				return array_merge($result, $this->serializePagination($pagination));
+			} else {
+				return $result;
 			}
-			return $result;
 		}
+	}
+
+	/**
+	 * Serializes a pagination into an array.
+	 * @param Pagination $pagination
+	 * @return array the array representation of the pagination
+	 * @see addPaginationHeader()
+	 */
+	protected function serializePagination($pagination)
+	{
+		return [
+			'_links' => Link::serialize($pagination->getLinks(true)),
+			'_meta' => [
+				'totalCount' => $pagination->totalCount,
+				'pageCount' => $pagination->getPageCount(),
+				'currentPage' => $pagination->getPage(),
+				'perPage' => $pagination->getPageSize(),
+			],
+		];
 	}
 
 	/**

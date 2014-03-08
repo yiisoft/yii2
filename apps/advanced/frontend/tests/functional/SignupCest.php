@@ -9,7 +9,7 @@ class SignupCest
 {
 
 	/**
-	 * This method is called after each cest class test method
+	 * This method is called before each cest class test method
 	 * @param \Codeception\Event\Test $event
 	 */
 	public function _before($event)
@@ -34,10 +34,11 @@ class SignupCest
 	 */
 	public function _fail($event)
 	{
+
 	}
 
 	/**
-	 * 
+	 *
 	 * @param \TestGuy $I
 	 * @param \Codeception\Scenario $scenario
 	 */
@@ -46,6 +47,7 @@ class SignupCest
 		$I->wantTo('ensure that signup works');
 
 		$signupPage = SignupPage::openBy($I);
+		$I->see('Signup', 'h1');
 		$I->see('Please fill out the following fields to signup:');
 
 		$I->amGoingTo('submit signup form with no data');
@@ -53,9 +55,9 @@ class SignupCest
 		$signupPage->submit([]);
 
 		$I->expectTo('see validation errors');
-		$I->see('Username cannot be blank.');
-		$I->see('Email cannot be blank.');
-		$I->see('Password cannot be blank.');
+		$I->see('Username cannot be blank.', '.help-block');
+		$I->see('Email cannot be blank.', '.help-block');
+		$I->see('Password cannot be blank.', '.help-block');
 
 		$I->amGoingTo('submit signup form with not correct email');
 		$signupPage->submit([
@@ -64,9 +66,9 @@ class SignupCest
 			'password'		=>	'tester_password',
 		]);
 
-		$I->expectTo('see that email adress is wrong');
-		$I->dontSee('Username cannot be blank.', '.help-inline');
-		$I->dontSee('Password cannot be blank.', '.help-inline');
+		$I->expectTo('see that email address is wrong');
+		$I->dontSee('Username cannot be blank.', '.help-block');
+		$I->dontSee('Password cannot be blank.', '.help-block');
 		$I->see('Email is not a valid email address.', '.help-block');
 
 		$I->amGoingTo('submit signup form with correct email');
@@ -76,7 +78,13 @@ class SignupCest
 			'password'		=>	'tester_password',
 		]);
 
+		$I->expectTo('see that user is created');
+		$I->seeRecord('common\models\User', [
+			'username'		=>	'tester',
+			'email'			=>	'tester.email@example.com',
+		]);
+
 		$I->expectTo('see that user logged in');
-		$I->see('Logout (tester)');
+		$I->seeLink('Logout (tester)');
 	}
 }

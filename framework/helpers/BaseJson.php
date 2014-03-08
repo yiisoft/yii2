@@ -91,7 +91,11 @@ class BaseJson
 			} elseif ($data instanceof Arrayable) {
 				$data = $data->toArray();
 			} else {
-				$data = get_object_vars($data);
+				$result = [];
+				foreach ($data as $name => $value) {
+					$result[$name] = $value;
+				}
+				$data = $result;
 			}
 
 			if ($data === []) {

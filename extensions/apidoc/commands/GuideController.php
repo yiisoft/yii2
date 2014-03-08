@@ -9,7 +9,6 @@ namespace yii\apidoc\commands;
 
 use yii\apidoc\components\BaseController;
 use yii\apidoc\models\Context;
-use yii\apidoc\renderers\BaseRenderer;
 use yii\apidoc\renderers\GuideRenderer;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
@@ -77,6 +76,9 @@ class GuideController extends BaseController
 		file_put_contents($targetDir . '/guide-references.txt', implode("\n", $references));
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	protected function findFiles($path, $except = [])
 	{
 		if (empty($except)) {
@@ -89,7 +91,9 @@ class GuideController extends BaseController
 		];
 		return FileHelper::findFiles($path, $options);
 	}
+
 	/**
+	 * @inheritdoc
 	 * @return GuideRenderer
 	 */
 	protected function findRenderer($template)
