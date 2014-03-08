@@ -222,7 +222,10 @@ class Module extends Component
 
 	/**
 	 * Returns the directory that contains the controller classes according to [[controllerNamespace]].
+	 * Note that in order for this method to return a value, you must define
+	 * an alias for the root namespace of [[controllerNamespace]].
 	 * @return string the directory that contains the controller classes.
+	 * @throws InvalidParamException if there is no alias defined for the root namespace of [[controllerNamespace]].
 	 */
 	public function getControllerPath()
 	{
@@ -670,13 +673,11 @@ class Module extends Component
 		}
 
 		$className = str_replace(' ', '', ucwords(str_replace('-', ' ', $className))) . 'Controller';
-		$classFile = $this->getControllerPath() . '/' . $prefix . $className . '.php';
 		$className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix)  . $className, '\\');
-		if (strpos($className, '-') !== false || !is_file($classFile)) {
+		if (strpos($className, '-') !== false || !class_exists($className)) {
 			return null;
 		}
 
-		Yii::$classMap[$className] = $classFile;
 		if (is_subclass_of($className, 'yii\base\Controller')) {
 			return new $className($id, $this);
 		} elseif (YII_DEBUG) {
