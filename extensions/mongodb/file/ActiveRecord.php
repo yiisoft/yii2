@@ -178,6 +178,16 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
 			unset($values['file']);
 		}
 		if (isset($newFileContent) || isset($newFile)) {
+			$fileAssociatedAttributeNames = [
+				'filename',
+				'uploadDate',
+				'length',
+				'chunkSize',
+				'md5',
+				'file',
+				'newFileContent'
+			];
+			$values = array_merge($this->getAttributes(null, $fileAssociatedAttributeNames), $values);
 			$rows = $this->deleteInternal();
 			$insertValues = $values;
 			$insertValues['_id'] = $this->getAttribute('_id');

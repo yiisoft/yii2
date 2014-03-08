@@ -45,5 +45,7 @@ script:
   - cd apps/basic && php vendor/bin/codecept run
 
 after_script:
+  - cd ../..
+  - pwd
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
