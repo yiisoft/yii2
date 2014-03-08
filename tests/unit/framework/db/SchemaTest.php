@@ -79,7 +79,7 @@ class SchemaTest extends DatabaseTestCase
 			[1337, \PDO::PARAM_INT],
 			[true, \PDO::PARAM_BOOL],
 			[false, \PDO::PARAM_BOOL],
-			[$fp=fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
+			[$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
 		];
 
 		/** @var Schema $schema */

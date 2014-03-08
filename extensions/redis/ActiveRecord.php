@@ -59,7 +59,7 @@ class ActiveRecord extends BaseActiveRecord
 	 * You may also define default conditions that should apply to all queries unless overridden:
 	 *
 	 * ```php
-	 * public static function createQuery($config= [])
+	 * public static function createQuery($config = [])
 	 * {
 	 *     return parent::createQuery($config)->where(['deleted' => false]);
 	 * }
@@ -171,7 +171,7 @@ class ActiveRecord extends BaseActiveRecord
 			return 0;
 		}
 		$db = static::getDb();
-		$n=0;
+		$n = 0;
 		foreach (static::fetchPks($condition) as $pk) {
 			$newPk = $pk;
 			$pk = static::buildKey($pk);
@@ -223,7 +223,7 @@ class ActiveRecord extends BaseActiveRecord
 			return 0;
 		}
 		$db = static::getDb();
-		$n=0;
+		$n = 0;
 		foreach (static::fetchPks($condition) as $pk) {
 			$key = static::keyPrefix() . ':a:' . static::buildKey($pk);
 			foreach ($counters as $attribute => $value) {

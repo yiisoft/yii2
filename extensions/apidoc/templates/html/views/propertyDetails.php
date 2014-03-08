@@ -40,6 +40,6 @@ ArrayHelper::multisort($properties, 'name');
 
 	<?= ApiMarkdown::process($property->description, $type) ?>
 
-	<?= $this->render('seeAlso', ['object' => $property]); ?>
+	<?= $this->render('seeAlso', ['object' => $property]) ?>
 
 <?php endforeach; ?>

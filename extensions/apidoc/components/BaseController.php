@@ -62,8 +62,8 @@ abstract class BaseController extends Controller
 			$exclude = [];
 		}
 
-		foreach($sourceDirs as $source) {
-			foreach($this->findFiles($source, $exclude) as $fileName) {
+		foreach ($sourceDirs as $source) {
+			foreach ($this->findFiles($source, $exclude) as $fileName) {
 				$files[$fileName] = $fileName;
 			}
 		}

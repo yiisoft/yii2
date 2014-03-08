@@ -439,7 +439,7 @@ class ActiveRecord extends BaseActiveRecord
 		// TODO do this via command
 		$url = [static::index(), static::type(), '_bulk'];
 		$response = static::getDb()->post($url, [], $bulk);
-		$n=0;
+		$n = 0;
 		$errors = [];
 		foreach ($response['items'] as $item) {
 			if (isset($item['update']['error'])) {
@@ -502,7 +502,7 @@ class ActiveRecord extends BaseActiveRecord
 		// TODO do this via command
 		$url = [static::index(), static::type(), '_bulk'];
 		$response = static::getDb()->post($url, [], $bulk);
-		$n=0;
+		$n = 0;
 		$errors = [];
 		foreach ($response['items'] as $item) {
 			if (isset($item['update']['error'])) {
@@ -556,7 +556,7 @@ class ActiveRecord extends BaseActiveRecord
 		// TODO do this via command
 		$url = [static::index(), static::type(), '_bulk'];
 		$response = static::getDb()->post($url, [], $bulk);
-		$n=0;
+		$n = 0;
 		$errors = [];
 		foreach ($response['items'] as $item) {
 			if (isset($item['delete']['error'])) {

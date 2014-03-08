@@ -78,7 +78,7 @@ abstract class GuideRenderer extends BaseGuideRenderer
 		$done = 0;
 		$fileData = [];
 		$headlines = [];
-		foreach($files as $file) {
+		foreach ($files as $file) {
 			$fileData[$file] = file_get_contents($file);
 			if (basename($file) == 'index.md') {
 				continue; // to not add index file to nav
@@ -90,7 +90,7 @@ abstract class GuideRenderer extends BaseGuideRenderer
 			}
 		}
 
-		foreach($fileData as $file => $content) {
+		foreach ($fileData as $file => $content) {
 			$output = ApiMarkdown::process($content); // TODO generate links to yiiframework.com by default
 			$output = $this->fixMarkdownLinks($output);
 			if ($this->layout !== false) {

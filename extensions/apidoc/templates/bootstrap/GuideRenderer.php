@@ -39,7 +39,7 @@ class GuideRenderer extends \yii\apidoc\templates\html\GuideRenderer
 		$types = array_merge($this->apiContext->classes, $this->apiContext->interfaces, $this->apiContext->traits);
 
 		$extTypes = [];
-		foreach($this->extensions as $k => $ext) {
+		foreach ($this->extensions as $k => $ext) {
 			$extType = $this->filterTypes($types, $ext);
 			if (empty($extType)) {
 				unset($this->extensions[$k]);

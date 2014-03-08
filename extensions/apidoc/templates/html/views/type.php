@@ -71,7 +71,7 @@ $renderer = $this->context;
 	<?php if (!empty($type->since)): ?>
 		<tr><th>Available since version</th><td><?= $type->since ?></td></tr>
 	<?php endif; ?>
-	<?php if(($sourceUrl = $renderer->getSourceUrl($type)) !== null): ?>
+	<?php if (($sourceUrl = $renderer->getSourceUrl($type)) !== null): ?>
 		<tr>
 		  <th>Source Code</th>
 		  <td><a href="<?= $sourceUrl ?>"><?= $sourceUrl ?></a></td>

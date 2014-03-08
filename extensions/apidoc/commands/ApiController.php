@@ -56,7 +56,7 @@ class ApiController extends BaseController
 		if (file_exists($referenceFile)) {
 			$renderer->guideUrl = $guideUrl;
 			$renderer->guideReferences = [];
-			foreach(explode("\n", file_get_contents($referenceFile)) as $reference) {
+			foreach (explode("\n", file_get_contents($referenceFile)) as $reference) {
 				$renderer->guideReferences[BaseRenderer::GUIDE_PREFIX . $reference]['url'] = $renderer->generateGuideUrl($reference);
 			}
 		}
@@ -69,7 +69,7 @@ class ApiController extends BaseController
 		// load context from cache
 		$context = $this->loadContext($targetDir);
 		$this->stdout('Checking for updated files... ');
-		foreach($context->files as $file => $sha) {
+		foreach ($context->files as $file => $sha) {
 			if (!file_exists($file)) {
 				$this->stdout('At least one file has been removed. Rebuilding the context...');
 				$context = new Context();
@@ -89,7 +89,7 @@ class ApiController extends BaseController
 		$this->stdout($fileCount . ' file' . ($fileCount == 1 ? '' : 's') . ' to update.' . PHP_EOL);
 		Console::startProgress(0, $fileCount, 'Processing files... ', false);
 		$done = 0;
-		foreach($files as $file) {
+		foreach ($files as $file) {
 			$context->addFile($file);
 			Console::updateProgress(++$done, $fileCount);
 		}

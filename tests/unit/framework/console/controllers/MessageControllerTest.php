@@ -70,7 +70,7 @@ class MessageControllerTest extends TestCase
 		} else {
 			$dirHandle = opendir($fileSystemObjectFullName);
 			while (($fileSystemObjectName = readdir($dirHandle)) !== false) {
-				if ($fileSystemObjectName==='.' || $fileSystemObjectName==='..') {
+				if ($fileSystemObjectName === '.' || $fileSystemObjectName === '..') {
 					continue;
 				}
 				$this->removeFileSystemObject($fileSystemObjectFullName . DIRECTORY_SEPARATOR . $fileSystemObjectName);

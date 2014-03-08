@@ -7,9 +7,9 @@
  * @var string $tableName full table name
  * @var string $className class name
  * @var yii\db\TableSchema $tableSchema
- * @var string[] $labels list of attribute labels (name=>label)
+ * @var string[] $labels list of attribute labels (name => label)
  * @var string[] $rules list of validation rules
- * @var array $relations list of relations (name=>relation declaration)
+ * @var array $relations list of relations (name => relation declaration)
  */
 
 echo "<?php\n";
