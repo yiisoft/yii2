@@ -25,7 +25,7 @@ class ListView extends BaseListView
 	 */
 	public $itemOptions = [];
 	/**
-	 * @var string|callback the name of the view for rendering each data item, or a callback (e.g. an anonymous function)
+	 * @var string|callable the name of the view for rendering each data item, or a callback (e.g. an anonymous function)
 	 * for rendering each data item. If it specifies a view name, the following variables will
 	 * be available in the view:
 	 *
