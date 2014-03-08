@@ -525,7 +525,7 @@ class User extends Component
 	protected function renewAuthStatus()
 	{
 		$session = Yii::$app->getSession();
-		$id = $session->getHasSessionId() ? $session->get($this->idParam) : null;
+		$id = $session->getHasSessionId() || $session->getIsActive() ? $session->get($this->idParam) : null;
 
 		if ($id === null) {
 			$identity = null;
