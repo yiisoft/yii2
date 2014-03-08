@@ -201,6 +201,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	 */
 	public function getHasSessionId()
 	{
+		if ($this->getIsActive()) {
+			return true;
+		}
 		if ($this->_hasSessionId === null) {
 			$name = $this->getName();
 			$request = Yii::$app->getRequest();
