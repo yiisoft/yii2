@@ -7,6 +7,7 @@
 
 namespace yii\apidoc\templates\html;
 
+use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\MethodDoc;
 use yii\apidoc\models\PropertyDoc;
 use yii\apidoc\models\ClassDoc;
@@ -225,7 +226,8 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 			}
 			return implode('<br />', $sig);
 		}
-		return $this->createTypeLink($property->types) . ' ' . $property->name . ' = ' . ($property->defaultValue === null ? 'null' : $property->defaultValue);
+		return $this->createTypeLink($property->types) . ' ' . $this->createSubjectLink($property, $property->name) . ' '
+				. ApiMarkdown::highlight('= ' . ($property->defaultValue === null ? 'null' : $property->defaultValue), 'php');
 	}
 
 	/**
@@ -244,9 +246,8 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 
 		return ($method->isReturnByReference ? '<b>&</b>' : '')
 			. ($method->returnType === null ? 'void' : $this->createTypeLink($method->returnTypes))
-			. ' ' . $this->createSubjectLink($method, $method->name) . '( '
-			. implode(', ', $params)
-			. ' )';
+			. ' ' . $this->createSubjectLink($method, $method->name)
+			. ApiMarkdown::highlight('( ' . implode(', ', $params) . ' )', 'php');
 	}
 
 	public function generateApiUrl($typeName)

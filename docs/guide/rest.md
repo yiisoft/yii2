@@ -381,6 +381,7 @@ the `self` link, for example:
 
 ```php
 use yii\db\ActiveRecord;
+use yii\web\Link;
 use yii\web\Linkable;
 use yii\helpers\Url;
 

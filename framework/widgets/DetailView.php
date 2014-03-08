@@ -76,7 +76,7 @@ class DetailView extends Widget
 	 */
 	public $attributes;
 	/**
-	 * @var string|callback the template used to render a single attribute. If a string, the token `{label}`
+	 * @var string|callable the template used to render a single attribute. If a string, the token `{label}`
 	 * and `{value}` will be replaced with the label and the value of the corresponding attribute.
 	 * If a callback (e.g. an anonymous function), the signature must be as follows:
 	 *
