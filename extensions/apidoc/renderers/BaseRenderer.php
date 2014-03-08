@@ -117,7 +117,7 @@ abstract class BaseRenderer extends Component
 				$links[] = $this->generateLink($linkText, $this->generateApiUrl($type->name)) . $postfix;
 			}
 		}
-		return implode('|', $links);
+		return implode(' | ', $links);
 	}
 
 
