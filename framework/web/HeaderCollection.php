@@ -160,6 +160,16 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 	}
 
 	/**
+	 * Returns the collection as a PHP array.
+	 * @return array the array representation of the collection.
+	 * The array keys are header names, and the array values are the corresponding header values.
+	 */
+	public function toArray()
+	{
+		return $this->_headers;
+	}
+
+	/**
 	 * Returns whether there is a header with the specified name.
 	 * This method is required by the SPL interface `ArrayAccess`.
 	 * It is implicitly called when you use something like `isset($collection[$name])`.

@@ -145,6 +145,9 @@ class ErrorHandler extends Component
 			'message' => $exception->getMessage(),
 			'code' => $exception->getCode(),
 		];
+		if ($exception instanceof HttpException) {
+			$array['status'] = $exception->statusCode;
+		}
 		if (($prev = $exception->getPrevious()) !== null) {
 			$array['previous'] = $this->convertExceptionToArray($prev);
 		}
