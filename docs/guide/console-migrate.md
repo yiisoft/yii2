@@ -322,7 +322,7 @@ the console application's configuration file like the following,
 ```php
 'controllerMap' => [
     'migrate' => [
-        'class' => 'yii\console\MigrateController',
+        'class' => 'yii\console\controllers\MigrateController',
         'migrationTable' => 'my_custom_migrate_table',
     ],
 ]
