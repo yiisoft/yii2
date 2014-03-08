@@ -24,6 +24,8 @@ class Schema extends \yii\db\Schema
 	public $typeMap = [
 		'tinyint' => self::TYPE_SMALLINT,
 		'bit' => self::TYPE_SMALLINT,
+		'boolean' => self::TYPE_BOOLEAN,
+		'bool' => self::TYPE_BOOLEAN,
 		'smallint' => self::TYPE_SMALLINT,
 		'mediumint' => self::TYPE_INTEGER,
 		'int' => self::TYPE_INTEGER,
