@@ -67,6 +67,16 @@ class Controller extends \yii\base\Controller
 	public function runAction($id, $params = [])
 	{
 		if (!empty($params)) {
+			// extract valid local options first so that they don't throw "unknown option"- exception below.
+			$options = $this->localOptions($id);
+			foreach ($params as $name => $value) {
+				if (in_array($name, $options, true)) {
+					$default = $this->$name;
+					$this->$name = is_array($default) ? preg_split('/\s*,\s*/', $value) : $value;
+					unset($params[$name]);
+				}
+			}
+
 			// populate global options here so that they are available in beforeAction().
 			$options = $this->globalOptions();
 			foreach ($params as $name => $value) {
@@ -265,5 +275,22 @@ class Controller extends \yii\base\Controller
 	public function globalOptions()
 	{
 		return ['color', 'interactive'];
+	}
+
+	/**
+	 * Returns the names of valid options local to the action (id)
+	 * A local option requires the existence of a public member variable whose
+	 * name is the option name.
+	 * Child classes may override this method to specify possible local options.
+	 *
+	 * Note that the values setting via global options are not available
+	 * until [[beforeAction()]] is being called.
+	 *
+	 * @param $id action name
+	 * @return array the names of the options valid for this action (in addition to global options above)
+	 */
+	public function localOptions($id)
+	{
+		return [];
 	}
 }
