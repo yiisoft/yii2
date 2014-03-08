@@ -2,9 +2,26 @@ Error Handling
 ==============
 
 Error handling in Yii is different than handling errors in plain PHP. First of all, Yii will convert all non-fatal errors
-to *exceptions*. By doing so, you can gracefully handle them using `try`-`catch`. Second, even fatal errors in Yii are
-rendered in a nice way. This means that in debugging mode, you can trace the causes of fatal errors in order to more quickly
-identify the cause of the problem.
+to *exceptions*:
+
+```php
+use yii\base\ErrorException;
+use Yii;
+
+try {
+	10/0;
+} catch (ErrorException) {
+	Yii::warning("Tried dividing by zero.");
+}
+
+// execution may continue
+```
+
+As demonstrated above you may handle errors using `try`-`catch`.
+
+
+Second, even fatal errors in Yii are rendered in a nice way. This means that in debugging mode, you can trace the causes
+of fatal errors in order to more quickly identify the cause of the problem.
 
 Rendering errors in a dedicated controller action
 -------------------------------------------------
