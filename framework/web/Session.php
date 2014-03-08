@@ -8,7 +8,6 @@
 namespace yii\web;
 
 use Yii;
-use yii\base\Arrayable;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
@@ -72,7 +71,7 @@ use yii\base\InvalidParamException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Countable, Arrayable
+class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Countable
 {
 	/**
 	 * @var string the name of the session variable that stores the flash message data.
@@ -597,15 +596,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 	{
 		$this->open();
 		return isset($_SESSION[$key]);
-	}
-
-	/**
-	 * @return array the list of all session variables in array
-	 */
-	public function toArray()
-	{
-		$this->open();
-		return $_SESSION;
 	}
 
 	/**
