@@ -129,7 +129,7 @@ php yii fixture/generate all --templatePath='@app/path/to/my/custom/templates'
 php yii fixture/generate all --fixtureDataPath='@tests/acceptance/fixtures/data'
 ```
 
-You also can create your own data providers for custom tables fields, see [Faker]((https://github.com/fzaninotto/Faker)) library guide for more info;
+You also can create your own data providers for custom tables fields, see [Faker](https://github.com/fzaninotto/Faker) library guide for more info;
 After you created custom provider, for example:
 
 ```php

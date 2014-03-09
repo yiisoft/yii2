@@ -2,7 +2,7 @@ Data grid
 =========
 
 Data grid or GridView is one of the most powerful Yii widgets. It is extremely useful if you need to quickly build admin
-section of the system. It takes data from [data provider](data-provider.md) and renders each row using a set of columns
+section of the system. It takes data from [data provider](data-providers.md) and renders each row using a set of columns
 presenting data in a form of a table.
 
 Each row of the table represents the data of a single data item, and a column usually represents an attribute of
