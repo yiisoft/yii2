@@ -185,11 +185,6 @@ echo GridView::widget([
 		['class' => 'yii\grid\SerialColumn'], // <-- here
 ```
 
-TODO: rewrite these:
-
-- https://github.com/samdark/a-guide-to-yii-grids-lists-and-data-providers/blob/master/grid-columns.md
-- https://github.com/samdark/a-guide-to-yii-grids-lists-and-data-providers/pull/1
-
 Sorting data
 ------------
 
