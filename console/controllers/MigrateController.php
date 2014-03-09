@@ -97,9 +97,10 @@ class MigrateController extends Controller
 	 */
 	public function options($id)
 	{
-		return array_merge(parent::options($id), [
-			'migrationPath', 'migrationTable', 'db', 'templateFile', 'interactive', 'color'
-		]);
+		return array_merge(parent::options($id),
+			['migrationPath', 'migrationTable', 'db'], // global for all actions
+			($id == 'create') ? ['templateFile'] : [] // action create
+		);
 	}
 
 	/**
