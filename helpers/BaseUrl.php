@@ -34,32 +34,56 @@ class BaseUrl
 	 *   For example: `['post/index', 'page' => 2]`, `['index']`.
 	 *   In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
 	 *
-	 * @param array|string $url the parameter to be used to generate a valid URL
+	 * @param array|string $params the parameter to be used to generate a valid URL
+	 * @param boolean $absolute if absolute URL should be created
 	 * @return string the normalized URL
 	 * @throws InvalidParamException if the parameter is invalid.
 	 */
-	public static function create($url)
+	public static function create($params, $absolute = false)
 	{
-		if (is_array($url)) {
-			if (isset($url[0])) {
+		if (is_array($params)) {
+			if (isset($params[0])) {
 				if (Yii::$app->controller instanceof \yii\web\Controller) {
-					return Yii::$app->controller->createUrl($url);
+					return $absolute ? Yii::$app->controller->createAbsoluteUrl($params) : Yii::$app->controller->createUrl($params);
 				} else {
-					return Yii::$app->getUrlManager()->createUrl($url);
+					return $absolute ? Yii::$app->getUrlManager()->createAbsoluteUrl($params) : Yii::$app->getUrlManager()->createUrl($params);
 				}
 			} else {
 				throw new InvalidParamException('The array specifying a URL must contain at least one element.');
 			}
-		} elseif ($url === '') {
-			return Yii::$app->getRequest()->getUrl();
+		} elseif ($params === '') {
+			return $absolute ? Yii::$app->getRequest()->getAbsoluteUrl() : Yii::$app->getRequest()->getUrl();
 		} else {
-			$url = Yii::getAlias($url);
-			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || strpos($url, '://') || !strncmp($url, './', 2))) {
-				return $url;
+			$params = Yii::getAlias($params);
+			if ($params !== '' && ($params[0] === '/' || $params[0] === '#' || strpos($params, '://') || !strncmp($params, './', 2))) {
+				return $params;
 			} else {
-				return static::base($url);
+				return static::base($params);
 			}
 		}
+	}
+
+	/**
+	 * Normalizes the input parameter to be a valid absolute URL.
+	 *
+	 * If the input parameter
+	 *
+	 * - is an empty string: the currently requested URL will be returned;
+	 * - is a non-empty string: it will first be processed by [[Yii::getAlias()]]. If the result
+	 *   is an absolute URL, it will be returned without any change further; Otherwise, the result
+	 *   will be prefixed with [[\yii\web\Request::baseUrl]] and returned.
+	 * - is an array: the first array element is considered a route, while the rest of the name-value
+	 *   pairs are treated as the parameters to be used for URL creation using [[\yii\web\Controller::createUrl()]].
+	 *   For example: `['post/index', 'page' => 2]`, `['index']`.
+	 *   In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
+	 *
+	 * @param array|string $params the parameter to be used to generate a valid URL
+	 * @return string the normalized URL
+	 * @throws InvalidParamException if the parameter is invalid.
+	 */
+	public static function createAbsolute($params)
+	{
+		return static::create($params, true);
 	}
 
 	/**
