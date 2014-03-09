@@ -359,15 +359,12 @@ class HelpController extends Controller
 	/**
 	 * Returns the help information about the options available for a console controller.
 	 * @param Controller $controller the console controller
-	 * @param String|null $actionID name of the action, if set include local options for that action
+	 * @param string $actionID name of the action, if set include local options for that action
 	 * @return array the help information about the options
 	 */
-	protected function getOptionHelps($controller, $actionID = null)
+	protected function getOptionHelps($controller, $actionID)
 	{
-		$optionNames = $controller->globalOptions();
-		if (! empty($actionID)) {
-			$optionNames = array_merge($optionNames, $controller->localOptions($actionID));
-		}
+		$optionNames = $controller->options($actionID);
 		if (empty($optionNames)) {
 			return [];
 		}

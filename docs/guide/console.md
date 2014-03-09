@@ -97,8 +97,8 @@ If a route does not contain an action ID, the default action will be executed.
 
 ### Options
 
-By overriding the [[yii\console\Controller::globalOptions()]] method, you can specify options that are available
-to a console command. The method should return a list of public property names of the controller class.
+By overriding the [[yii\console\Controller::options($id)]] method, you can specify options that are available
+to a console command (controller/actionID). The method should return a list of public property names of the controller class.
 When running a command, you may specify the value of an option using the syntax `--OptionName=OptionValue`.
 This will assign `OptionValue` to the `OptionName` property of the controller class.
 
