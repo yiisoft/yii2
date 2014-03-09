@@ -57,9 +57,20 @@ class BaseUrl
 			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || strpos($url, '://') || !strncmp($url, './', 2))) {
 				return $url;
 			} else {
-				return Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
+				return static::asset($url);
 			}
 		}
+	}
+
+	/**
+	 * Prefixes relative URL with base URL
+	 *
+	 * @param string $url relative URL
+	 * @return string absolute URL
+	 */
+	public function asset($url)
+	{
+		return Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
 	}
 }
  
