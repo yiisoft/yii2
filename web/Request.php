@@ -956,7 +956,12 @@ class Request extends \yii\base\Request
 	 */
 	public function getContentType()
 	{
-		return isset($_SERVER["CONTENT_TYPE"]) ? $_SERVER["CONTENT_TYPE"] : null;
+		if (isset($_SERVER["CONTENT_TYPE"])) {
+			return $_SERVER["CONTENT_TYPE"];
+		} elseif (isset($_SERVER["HTTP_CONTENT_TYPE"])) {
+			return $_SERVER["HTTP_CONTENT_TYPE"];
+		}
+		return null;
 	}
 
 	private $_languages;
