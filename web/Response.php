@@ -673,7 +673,7 @@ class Response extends \yii\base\Response
 			// ensure the route is absolute
 			$url[0] = '/' . ltrim($url[0], '/');
 		}
-		$url = Url::create($url);
+		$url = Url::toRoute($url);
 		if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
 			$url = Yii::$app->getRequest()->getHostInfo() . $url;
 		}

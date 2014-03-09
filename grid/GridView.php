@@ -219,7 +219,7 @@ class GridView extends BaseListView
 		}
 
 		return [
-			'filterUrl' => Url::create($filterUrl),
+			'filterUrl' => Url::toRoute($filterUrl),
 			'filterSelector' => $filterSelector,
 		];
 	}

@@ -219,7 +219,7 @@ class Menu extends Widget
 		if (isset($item['url'])) {
 			$template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
 			return strtr($template, [
-				'{url}' => Url::create($item['url']),
+				'{url}' => Url::toRoute($item['url']),
 				'{label}' => $item['label'],
 			]);
 		} else {
