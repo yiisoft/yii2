@@ -95,9 +95,9 @@ class MigrateController extends Controller
 	 * Returns the names of the global options for this command.
 	 * @return array the names of the global options for this command.
 	 */
-	public function globalOptions()
+	public function options($id)
 	{
-		return array_merge(parent::globalOptions(), [
+		return array_merge(parent::options($id), [
 			'migrationPath', 'migrationTable', 'db', 'templateFile', 'interactive', 'color'
 		]);
 	}

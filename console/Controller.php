@@ -67,18 +67,8 @@ class Controller extends \yii\base\Controller
 	public function runAction($id, $params = [])
 	{
 		if (!empty($params)) {
-			// extract valid local options first so that they don't throw "unknown option"- exception below.
-			$options = $this->localOptions($id);
-			foreach ($params as $name => $value) {
-				if (in_array($name, $options, true)) {
-					$default = $this->$name;
-					$this->$name = is_array($default) ? preg_split('/\s*,\s*/', $value) : $value;
-					unset($params[$name]);
-				}
-			}
-
-			// populate global options here so that they are available in beforeAction().
-			$options = $this->globalOptions();
+			// populate options here so that they are available in beforeAction().
+			$options = $this->options($id);
 			foreach ($params as $name => $value) {
 				if (in_array($name, $options, true)) {
 					$default = $this->$name;
@@ -95,7 +85,7 @@ class Controller extends \yii\base\Controller
 	/**
 	 * Binds the parameters to the action.
 	 * This method is invoked by [[Action]] when it begins to run with the given parameters.
-	 * This method will first bind the parameters with the [[globalOptions()|global options]]
+	 * This method will first bind the parameters with the [[options()|options]]
 	 * available to the action. It then validates the given arguments.
 	 * @param Action $action the action to be bound with parameters
 	 * @param array $params the parameters to be bound to the action
@@ -261,36 +251,22 @@ class Controller extends \yii\base\Controller
 		return Console::select($prompt, $options);
 	}
 
-	/**
-	 * Returns the names of the global options for this command.
-	 * A global option requires the existence of a public member variable whose
-	 * name is the option name.
-	 * Child classes may override this method to specify possible global options.
-	 *
-	 * Note that the values setting via global options are not available
-	 * until [[beforeAction()]] is being called.
-	 *
-	 * @return array the names of the global options for this command.
-	 */
-	public function globalOptions()
-	{
-		return ['color', 'interactive'];
-	}
 
 	/**
-	 * Returns the names of valid options local to the action (id)
-	 * A local option requires the existence of a public member variable whose
+	 * Returns the names of valid options for the action (id)
+	 * An option requires the existence of a public member variable whose
 	 * name is the option name.
-	 * Child classes may override this method to specify possible local options.
+	 * Child classes may override this method to specify possible options.
 	 *
-	 * Note that the values setting via global options are not available
+	 * Note that the values setting via options are not available
 	 * until [[beforeAction()]] is being called.
 	 *
 	 * @param $id action name
-	 * @return array the names of the options valid for this action (in addition to global options above)
+	 * @return array the names of the options valid for the action
 	 */
-	public function localOptions($id)
+	public function options($id)
 	{
-		return [];
+		// $id might be used in subclass to provide options specific to action id
+		return ['color', 'interactive'];
 	}
 }
