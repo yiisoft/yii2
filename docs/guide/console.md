@@ -136,5 +136,23 @@ class ExampleController extends \yii\console\Controller
 
 ### Exit Code
 
-Using return codes is the best practice of console application development. If command returns `0` it means everything
-is OK. If it is a number more than zero, we have an error and integer returned is the error code.
+Using exit codes is the best practice of console application development. If a command returns `0` it means
+everything is OK. If it is a number greater than zero, we have an error and the number returned is the error
+code that may be interpreted to find out details about the error.
+For example `1` could stand generally for an unknown error and all codes above are declared for specific cases
+such as input errors, missing files, and so forth.
+
+To have your console command return with an exit code you simply return an integer in the controller action
+method:
+
+```php
+public function actionIndex()
+{
+	if (/* some problem */) {
+		echo "A problem occured!\n";
+		return 1;
+	}
+	// do something
+	return 0;
+}
+```

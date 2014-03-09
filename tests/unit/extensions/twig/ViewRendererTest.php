@@ -71,4 +71,4 @@ class ViewRendererTest extends TestCase
 			'baseUrl' => '/assets',
 		]);
 	}
-} 
+}

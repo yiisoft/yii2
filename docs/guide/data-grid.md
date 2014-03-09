@@ -12,7 +12,7 @@ Grid view supports both sorting and pagination of the data items. The sorting an
 or normal page request. A benefit of using GridView is that when the user disables JavaScript, the sorting and pagination
 automatically degrade to normal page requests and are still functioning as expected.
 
-The minimal code needed to use CGridView is as follows:
+The minimal code needed to use GridView is as follows:
 
 ```php
 use yii\data\GridView;
@@ -184,11 +184,6 @@ echo GridView::widget([
 	'columns' => [
 		['class' => 'yii\grid\SerialColumn'], // <-- here
 ```
-
-TODO: rewrite these:
-
-- https://github.com/samdark/a-guide-to-yii-grids-lists-and-data-providers/blob/master/grid-columns.md
-- https://github.com/samdark/a-guide-to-yii-grids-lists-and-data-providers/pull/1
 
 Sorting data
 ------------

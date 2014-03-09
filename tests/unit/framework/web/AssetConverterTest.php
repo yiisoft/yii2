@@ -4,6 +4,7 @@
  */
 
 namespace yiiunit\framework\web;
+
 use yii\web\AssetConverter;
 
 /**

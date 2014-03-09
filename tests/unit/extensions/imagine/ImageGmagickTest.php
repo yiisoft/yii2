@@ -26,5 +26,4 @@ class ImageGmagickTest extends AbstractImageTest
 	{
 		return true;
 	}
-
 }

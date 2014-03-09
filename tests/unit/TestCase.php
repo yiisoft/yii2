@@ -1,6 +1,7 @@
 <?php
 
 namespace yiiunit;
+
 use yii\helpers\ArrayHelper;
 
 /**

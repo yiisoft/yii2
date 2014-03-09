@@ -31,7 +31,16 @@ install:
   - composer install --dev --prefer-dist -d apps/basic
   - cd apps/basic && composer require --dev codeception/codeception:1.8.*@dev codeception/specify:* codeception/verify:*
   - php vendor/bin/codecept build && cd ../..
-  - cd apps && php -S localhost:8080 &
+# advanced application:
+  - composer install --dev --prefer-dist -d apps/advanced
+  - cd apps/advanced && composer require --dev codeception/codeception:1.8.*@dev codeception/specify:* codeception/verify:*
+  - ./init --env=Development
+  - sed -i s/root/travis/ common/config/main-local.php
+  - cd backend && php ../vendor/bin/codecept build
+  - cd ../common && php ../vendor/bin/codecept build
+  - cd ../frontend && php ../vendor/bin/codecept build && cd ../../..
+ # boot server
+  - cd apps && php -S localhost:8080 > /dev/null 2>&1 &
 
 before_script:
   - echo 'elasticsearch version ' && curl http://localhost:9200/
@@ -39,13 +48,21 @@ before_script:
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
   - tests/unit/data/travis/sphinx-setup.sh
   - mongo yii2test --eval 'db.addUser("travis", "test");'
+  - mysql -e 'CREATE DATABASE yii2_advanced_acceptance;';
+  - mysql -e 'CREATE DATABASE yii2_advanced_functional;';
+  - mysql -e 'CREATE DATABASE yii2_advanced_unit;';
+  - cd apps/advanced/frontend/tests/acceptance && php yii migrate --interactive=0
+  - cd ../functional && php yii migrate --interactive=0
+  - cd ../unit && php yii migrate --interactive=0 && cd ../../../../..
 
 script:
   - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group mssql,oci,wincache,xcache,zenddata
   - cd apps/basic && php vendor/bin/codecept run
+  - cd ../advanced/backend && ../vendor/bin/codecept run
+  - cd ../common && ../vendor/bin/codecept run
+  - cd ../frontend && ../vendor/bin/codecept run
 
 after_script:
-  - cd ../..
-  - pwd
+  - cd ../../..
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover

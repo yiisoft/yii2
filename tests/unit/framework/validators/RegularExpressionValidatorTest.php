@@ -50,5 +50,4 @@ class RegularExpressionValidatorTest extends TestCase
 		$val = new RegularExpressionValidator();
 		$val->validate('abc');
 	}
-
 }

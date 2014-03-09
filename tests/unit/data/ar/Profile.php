@@ -18,5 +18,4 @@ class Profile extends ActiveRecord
 	{
 		return 'tbl_profile';
 	}
-
-} 
+}

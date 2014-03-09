@@ -161,7 +161,7 @@ class QueryTest extends SphinxTestCase
 
 		$match = 'about';
 		$snippetPrefix = 'snippet#';
-		$snippetCallback = function() use ($match, $snippetPrefix) {
+		$snippetCallback = function () use ($match, $snippetPrefix) {
 			return [
 				$snippetPrefix . '1: ' . $match,
 				$snippetPrefix . '2: ' . $match,
