@@ -84,7 +84,7 @@ EOD;
 					},
 				]);
 			}
-			$ajaxUrl = Url::create(['elasticsearch-query', 'logId' => $logId, 'tag' => $this->tag]);
+			$ajaxUrl = Url::toRoute(['elasticsearch-query', 'logId' => $logId, 'tag' => $this->tag]);
 			\Yii::$app->view->registerJs(<<<JS
 $('#elastic-link-$i').on('click', function() {
 	var result = $('#elastic-result-$i');

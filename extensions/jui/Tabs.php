@@ -121,7 +121,7 @@ class Tabs extends Widget
 				throw new InvalidConfigException("The 'label' option is required.");
 			}
 			if (isset($item['url'])) {
-				$url = Url::create($item['url']);
+				$url = Url::toRoute($item['url']);
 			} else {
 				if (!isset($item['content'])) {
 					throw new InvalidConfigException("The 'content' or 'url' option is required.");

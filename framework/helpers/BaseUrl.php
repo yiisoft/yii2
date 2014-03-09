@@ -21,92 +21,90 @@ use Yii;
 class BaseUrl
 {
 	/**
-	 * Normalizes the input parameter to be a valid URL.
+	 * Returns URL for a route.
 	 *
-	 * If the input parameter
+	 * @param array|string $route parametrized route or empty string for current URL:
 	 *
-	 * - is an empty string: the currently requested URL will be returned;
-	 * - is a non-empty string: it will first be processed by [[Yii::getAlias()]]. If the result
-	 *   is an absolute URL, it will be returned without any change further; Otherwise, the result
-	 *   will be prefixed with [[\yii\web\Request::baseUrl]] and returned.
-	 * - is an array: the first array element is considered a route, while the rest of the name-value
+	 * - an empty string: the currently requested URL will be returned;
+	 * - an array: the first array element is considered a route, while the rest of the name-value
 	 *   pairs are treated as the parameters to be used for URL creation using [[\yii\web\Controller::createUrl()]].
 	 *   For example: `['post/index', 'page' => 2]`, `['index']`.
 	 *   In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
 	 *
-	 * @param array|string $params the parameter to be used to generate a valid URL
 	 * @param boolean $absolute if absolute URL should be created
 	 * @return string the normalized URL
 	 * @throws InvalidParamException if the parameter is invalid.
 	 */
-	public static function create($params, $absolute = false)
+	public static function toRoute($route, $absolute = false)
 	{
-		if (is_array($params)) {
-			if (isset($params[0])) {
-				if (Yii::$app->controller instanceof \yii\web\Controller) {
-					return $absolute ? Yii::$app->controller->createAbsoluteUrl($params) : Yii::$app->controller->createUrl($params);
-				} else {
-					return $absolute ? Yii::$app->getUrlManager()->createAbsoluteUrl($params) : Yii::$app->getUrlManager()->createUrl($params);
-				}
-			} else {
-				throw new InvalidParamException('The array specifying a URL must contain at least one element.');
-			}
-		} elseif ($params === '') {
+		if ($route === '') {
 			return $absolute ? Yii::$app->getRequest()->getAbsoluteUrl() : Yii::$app->getRequest()->getUrl();
+		}
+		if (!is_array($route) || !isset($route[0])) {
+			throw new InvalidParamException('$route should be either empty string or array containing at least one element.');
+		}
+		if (Yii::$app->controller instanceof \yii\web\Controller) {
+			return $absolute ? Yii::$app->controller->createAbsoluteUrl($route) : Yii::$app->controller->createUrl($route);
 		} else {
-			$params = Yii::getAlias($params);
-			if ($params !== '' && ($params[0] === '/' || $params[0] === '#' || strpos($params, '://') || !strncmp($params, './', 2))) {
-				return $params;
-			} else {
-				return static::base($params);
+			return $absolute ? Yii::$app->getUrlManager()->createAbsoluteUrl($route) : Yii::$app->getUrlManager()->createUrl($route);
+		}
+	}
+
+	/**
+	 * Returns URL to asset located under webroot
+	 *
+	 * @param string $asset will first be processed by [[Yii::getAlias()]]. If the result is an absolute URL, it will be
+	 * returned without any change further; Otherwise, the result will be prefixed with [[\yii\web\Request::baseUrl]] and returned.
+	 * @param boolean $absolute if URL should be absolute
+	 * @return string
+	 */
+	public function toAsset($asset = null, $absolute = false)
+	{
+		$route = Yii::getAlias($asset);
+		if ($route !== '' && ($route[0] === '/' || $route[0] === '#' || strpos($route, '://') || !strncmp($route, './', 2))) {
+			return $route;
+		} else {
+			$result = $absolute ? Yii::$app->getRequest()->getHostInfo() : '';
+			$result .= Yii::$app->getRequest()->getBaseUrl();
+			if ($asset !== null) {
+				$result .= '/' . $asset;
 			}
+			return $result;
 		}
 	}
 
 	/**
-	 * Normalizes the input parameter to be a valid absolute URL.
+	 * Remembers URL passed
 	 *
-	 * If the input parameter
-	 *
-	 * - is an empty string: the currently requested URL will be returned;
-	 * - is a non-empty string: it will first be processed by [[Yii::getAlias()]]. If the result
-	 *   is an absolute URL, it will be returned without any change further; Otherwise, the result
-	 *   will be prefixed with [[\yii\web\Request::baseUrl]] and returned.
-	 * - is an array: the first array element is considered a route, while the rest of the name-value
-	 *   pairs are treated as the parameters to be used for URL creation using [[\yii\web\Controller::createUrl()]].
-	 *   For example: `['post/index', 'page' => 2]`, `['index']`.
-	 *   In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
-	 *
-	 * @param array|string $params the parameter to be used to generate a valid URL
-	 * @return string the normalized URL
-	 * @throws InvalidParamException if the parameter is invalid.
+	 * @param string $url URL to remember. Default is current URL.
+	 * @param string $name Name to use to remember URL. Defaults to `yii\web\User::returnUrlParam`.
 	 */
-	public static function createAbsolute($params)
+	public function remember($url = null, $name = null)
 	{
-		return static::create($params, true);
-	}
-
-	/**
-	 * Prefixes relative URL with base URL
-	 *
-	 * @param string $url relative URL
-	 * @return string absolute URL
-	 */
-	public function base($url = null)
-	{
-		$result = Yii::$app->getRequest()->getBaseUrl();
-		if ($url !== null) {
-			$result .= '/' . $url;
+		if ($url === null) {
+			$url = Yii::$app->getRequest()->getUrl();
 		}
-		return $result;
+
+		if ($name === null) {
+			Yii::$app->user->setReturnUrl($url);
+		} else {
+			Yii::$app->session->set($name, $url);
+		}
 	}
 
 	/**
-	 * Sets current URL as return URL
+	 * Returns URL previously saved with remember method
+	 *
+	 * @param string $name Name used to remember URL. Defaults to `yii\web\User::returnUrlParam`.
+	 * @return string URL
 	 */
-	public function rememberReturn()
+	public function previous($name = null)
 	{
-		Yii::$app->user->setReturnUrl(Yii::$app->getRequest()->getUrl());
+		if ($name === null) {
+			return Yii::$app->user->getReturnUrl();
+		} else {
+			return Yii::$app->session->get($name);
+		}
 	}
 
 	/**
@@ -114,7 +112,7 @@ class BaseUrl
 	 *
 	 * @return string canonical URL
 	 */
-	public function getCanonical()
+	public function canonical()
 	{
 		return Yii::$app->controller->getCanonicalUrl();
 	}
@@ -122,11 +120,13 @@ class BaseUrl
 	/**
 	 * Returns home URL
 	 *
+	 * @param boolean $absolute if absolute URL should be returned
 	 * @return string home URL
 	 */
-	public function getHome()
+	public function home($absolute = false)
 	{
-		return Yii::$app->getHomeUrl();
+		$result = $absolute ? Yii::$app->request->getHostInfo() : '';
+		return $result . Yii::$app->getHomeUrl();
 	}
 }
  

@@ -195,7 +195,7 @@ class ActiveForm extends Widget
 			'ajaxDataType' => $this->ajaxDataType,
 		];
 		if ($this->validationUrl !== null) {
-			$options['validationUrl'] = Url::create($this->validationUrl);
+			$options['validationUrl'] = Url::toRoute($this->validationUrl);
 		}
 		foreach (['beforeSubmit', 'beforeValidate', 'afterValidate'] as $name) {
 			if (($value = $this->$name) !== null) {
