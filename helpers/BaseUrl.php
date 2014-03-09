@@ -72,5 +72,13 @@ class BaseUrl
 	{
 		return Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
 	}
+
+	/**
+	 * Sets current URL as return URL
+	 */
+	public function rememberReturnUrl()
+	{
+		Yii::$app->user->setReturnUrl(Yii::$app->getRequest()->getUrl());
+	}
 }
  
