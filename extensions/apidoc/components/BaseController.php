@@ -113,7 +113,7 @@ abstract class BaseController extends Controller
 	}
 
 	/**
-	 * @inheritdoc
+	 * @param string $template
 	 * @return BaseRenderer
 	 */
 	protected abstract function findRenderer($template);

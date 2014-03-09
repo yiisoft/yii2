@@ -299,7 +299,8 @@ class Context extends Component
 
 	/**
 	 * @param ClassDoc $classA
-	 * @param ClassDoc $classB
+	 * @param ClassDoc|string $classB
+	 * @return boolean
 	 */
 	protected function isSubclassOf($classA, $classB)
 	{
