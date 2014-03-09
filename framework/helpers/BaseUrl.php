@@ -80,5 +80,15 @@ class BaseUrl
 	{
 		Yii::$app->user->setReturnUrl(Yii::$app->getRequest()->getUrl());
 	}
+
+	/**
+	 * Returns canonical URL for the current page
+	 *
+	 * @return string canonical URL
+	 */
+	public function canonical()
+	{
+		return Yii::$app->controller->getCanonicalUrl();
+	}
 }
  
