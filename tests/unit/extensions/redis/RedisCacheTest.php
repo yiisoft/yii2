@@ -97,5 +97,4 @@ class RedisCacheTest extends CacheTestCase
 		$cache->set($key, $data);
 		$this->assertTrue($cache->get($key) === $data);
 	}
-
 }

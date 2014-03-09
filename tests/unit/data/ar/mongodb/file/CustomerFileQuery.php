@@ -1,5 +1,7 @@
 <?php
+
 namespace yiiunit\data\ar\mongodb\file;
+
 use yii\mongodb\file\ActiveQuery;
 
 /**
@@ -13,4 +15,3 @@ class CustomerFileQuery extends ActiveQuery
 		return $this;
 	}
 }
- 

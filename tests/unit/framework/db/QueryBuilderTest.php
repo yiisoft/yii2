@@ -239,5 +239,4 @@ class QueryBuilderTest extends DatabaseTestCase
     		list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
     		$this->assertEquals($expectedQuerySql, $actualQuerySql);
   	 }*/
-
 }

@@ -16,15 +16,45 @@ class ActiveRecordTest extends RedisTestCase
 {
 	use ActiveRecordTestTrait;
 
-	public function callCustomerFind($q = null)	 { return Customer::find($q); }
-	public function callOrderFind($q = null)     { return Order::find($q); }
-	public function callOrderItemFind($q = null) { return OrderItem::find($q); }
-	public function callItemFind($q = null)      { return Item::find($q); }
+	public function callCustomerFind($q = null)
+	{
+		return Customer::find($q);
+	}
 
-	public function getCustomerClass() { return Customer::className(); }
-	public function getItemClass() { return Item::className(); }
-	public function getOrderClass() { return Order::className(); }
-	public function getOrderItemClass() { return OrderItem::className(); }
+	public function callOrderFind($q = null)
+	{
+		return Order::find($q);
+	}
+
+	public function callOrderItemFind($q = null)
+	{
+		return OrderItem::find($q);
+	}
+
+	public function callItemFind($q = null)
+	{
+		return Item::find($q);
+	}
+
+	public function getCustomerClass()
+	{
+		return Customer::className();
+	}
+
+	public function getItemClass()
+	{
+		return Item::className();
+	}
+
+	public function getOrderClass()
+	{
+		return Order::className();
+	}
+
+	public function getOrderItemClass()
+	{
+		return OrderItem::className();
+	}
 
 
 	public function setUp()
@@ -207,7 +237,7 @@ class ActiveRecordTest extends RedisTestCase
 	public function testFindColumn()
 	{
 		$this->assertEquals(['user1', 'user2', 'user3'], Customer::find()->column('name'));
-//		TODO $this->assertEquals(['user3', 'user2', 'user1'], Customer::find()->orderBy(['name' => SORT_DESC])->column('name'));
+		// TODO $this->assertEquals(['user3', 'user2', 'user1'], Customer::find()->orderBy(['name' => SORT_DESC])->column('name'));
 	}
 
 	// TODO test serial column incr

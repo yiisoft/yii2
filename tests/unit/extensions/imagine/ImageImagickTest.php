@@ -26,5 +26,4 @@ class ImageImagickTest extends AbstractImageTest
 	{
 		return true;
 	}
-
 }

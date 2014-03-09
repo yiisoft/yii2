@@ -1,5 +1,7 @@
 <?php
+
 namespace yiiunit\data\ar\sphinx;
+
 use yii\sphinx\ActiveQuery;
 
 /**
@@ -13,4 +15,3 @@ class ArticleIndexQuery extends ActiveQuery
 		return $this;
 	}
 }
- 

@@ -74,4 +74,3 @@ class QueryBuilderTest extends ElasticSearchTestCase
 		$this->assertEquals(3, $result['hits']['total']);
 	}
 }
-
