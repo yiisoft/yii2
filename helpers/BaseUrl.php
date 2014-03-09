@@ -57,7 +57,7 @@ class BaseUrl
 			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || strpos($url, '://') || !strncmp($url, './', 2))) {
 				return $url;
 			} else {
-				return static::asset($url);
+				return static::base($url);
 			}
 		}
 	}
@@ -68,7 +68,7 @@ class BaseUrl
 	 * @param string $url relative URL
 	 * @return string absolute URL
 	 */
-	public function asset($url)
+	public function base($url)
 	{
 		return Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
 	}
@@ -76,7 +76,7 @@ class BaseUrl
 	/**
 	 * Sets current URL as return URL
 	 */
-	public function rememberReturnUrl()
+	public function rememberReturn()
 	{
 		Yii::$app->user->setReturnUrl(Yii::$app->getRequest()->getUrl());
 	}
@@ -86,9 +86,19 @@ class BaseUrl
 	 *
 	 * @return string canonical URL
 	 */
-	public function canonical()
+	public function getCanonical()
 	{
 		return Yii::$app->controller->getCanonicalUrl();
+	}
+
+	/**
+	 * Returns home URL
+	 *
+	 * @return string home URL
+	 */
+	public function getHome()
+	{
+		return Yii::$app->getHomeUrl();
 	}
 }
  
