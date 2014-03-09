@@ -92,9 +92,13 @@ class BaseUrl
 	 * @param string $url relative URL
 	 * @return string absolute URL
 	 */
-	public function base($url)
+	public function base($url = null)
 	{
-		return Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
+		$result = Yii::$app->getRequest()->getBaseUrl();
+		if ($url !== null) {
+			$result .= '/' . $url;
+		}
+		return $result;
 	}
 
 	/**
