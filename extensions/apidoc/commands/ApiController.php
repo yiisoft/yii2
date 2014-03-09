@@ -158,4 +158,4 @@ class ApiController extends BaseController
 	{
 		return array_merge(parent::globalOptions(), ['template', 'guide']);
 	}
-} 
+}
