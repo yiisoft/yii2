@@ -48,9 +48,9 @@ ArrayHelper::multisort($methods, 'name');
 			<?php endforeach; ?>
 			<?php if (!empty($method->return)): ?>
 				<tr>
-				  <th class="paramNameCol"><?= 'return'; ?></th>
-				  <td class="paramTypeCol"><?= $renderer->createTypeLink($method->returnTypes); ?></td>
-				  <td class="paramDescCol"><?= ApiMarkdown::process($method->return, $type); ?></td>
+				  <th class="paramNameCol"><?= 'return' ?></th>
+				  <td class="paramTypeCol"><?= $renderer->createTypeLink($method->returnTypes) ?></td>
+				  <td class="paramDescCol"><?= ApiMarkdown::process($method->return, $type) ?></td>
 				</tr>
 			<?php endif; ?>
 			<?php foreach ($method->exceptions as $exception => $description): ?>
@@ -61,7 +61,7 @@ ArrayHelper::multisort($methods, 'name');
 				</tr>
 			<?php endforeach; ?>
 		<?php endif; ?>
-		<?php if(($sourceUrl = $renderer->getSourceUrl($method->definedBy, $method->startLine)) !== null): ?>
+		<?php if (($sourceUrl = $renderer->getSourceUrl($method->definedBy, $method->startLine)) !== null): ?>
 			<tr>
 				<td colspan="3">Source Code: <a href="<?= $sourceUrl ?>"><?= $sourceUrl ?></a></td>
 			</tr>
@@ -73,6 +73,6 @@ ArrayHelper::multisort($methods, 'name');
 	<p><strong><?= ApiMarkdown::process($method->shortDescription, $type, true) ?></strong></p>
 	<?= ApiMarkdown::process($method->description, $type) ?>
 
-	<?= $this->render('seeAlso', ['object' => $method]); ?>
+	<?= $this->render('seeAlso', ['object' => $method]) ?>
 
 <?php endforeach; ?>

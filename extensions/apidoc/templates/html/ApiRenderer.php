@@ -99,7 +99,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 			Console::startProgress(0, $typeCount, 'Rendering files: ', false);
 		}
 		$done = 0;
-		foreach($types as $type) {
+		foreach ($types as $type) {
 			$fileContent = $this->renderWithLayout($this->typeView, [
 				'type' => $type,
 				'apiContext' => $context,
@@ -145,7 +145,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 		$parents = [];
 		$parents[] = $this->createTypeLink($class);
 		while ($class->parentClass !== null) {
-			if(isset($this->apiContext->classes[$class->parentClass])) {
+			if (isset($this->apiContext->classes[$class->parentClass])) {
 				$class = $this->apiContext->classes[$class->parentClass];
 				$parents[] = $this->createTypeLink($class);
 			} else {
@@ -164,8 +164,8 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 	{
 		$interfaces = [];
 		sort($names, SORT_STRING);
-		foreach($names as $interface) {
-			if(isset($this->apiContext->interfaces[$interface])) {
+		foreach ($names as $interface) {
+			if (isset($this->apiContext->interfaces[$interface])) {
 				$interfaces[] = $this->createTypeLink($this->apiContext->interfaces[$interface]);
 			} else {
 				$interfaces[] = $this->createTypeLink($interface);
@@ -182,8 +182,8 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 	{
 		$traits = [];
 		sort($names, SORT_STRING);
-		foreach($names as $trait) {
-			if(isset($this->apiContext->traits[$trait])) {
+		foreach ($names as $trait) {
+			if (isset($this->apiContext->traits[$trait])) {
 				$traits[] = $this->createTypeLink($this->apiContext->traits[$trait]);
 			} else {
 				$traits[] = $this->createTypeLink($trait);
@@ -200,8 +200,8 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 	{
 		$classes = [];
 		sort($names, SORT_STRING);
-		foreach($names as $class) {
-			if(isset($this->apiContext->classes[$class])) {
+		foreach ($names as $class) {
+			if (isset($this->apiContext->classes[$class])) {
 				$classes[] = $this->createTypeLink($this->apiContext->classes[$class]);
 			} else {
 				$classes[] = $this->createTypeLink($class);
@@ -237,7 +237,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 	public function renderMethodSignature($method)
 	{
 		$params = [];
-		foreach($method->params as $param) {
+		foreach ($method->params as $param) {
 			$params[] = (empty($param->typeHint) ? '' : $param->typeHint . ' ')
 				. ($param->isPassedByReference ? '<b>&</b>' : '')
 				. $param->name

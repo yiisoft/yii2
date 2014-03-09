@@ -68,7 +68,7 @@ abstract class BaseRenderer extends Component
 			$title = null;
 		}
 		$links = [];
-		foreach($types as $type) {
+		foreach ($types as $type) {
 			$postfix = '';
 			if (!is_object($type)) {
 				if (substr($type, -2, 2) == '[]') {

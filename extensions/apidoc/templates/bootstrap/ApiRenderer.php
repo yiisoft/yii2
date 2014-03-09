@@ -40,7 +40,7 @@ class ApiRenderer extends \yii\apidoc\templates\html\ApiRenderer
 		$types = array_merge($context->classes, $context->interfaces, $context->traits);
 
 		$extTypes = [];
-		foreach($this->extensions as $k => $ext) {
+		foreach ($this->extensions as $k => $ext) {
 			$extType = $this->filterTypes($types, $ext);
 			if (empty($extType)) {
 				unset($this->extensions[$k]);
@@ -56,7 +56,7 @@ class ApiRenderer extends \yii\apidoc\templates\html\ApiRenderer
 			$this->controller->stdout('generating extension index files...');
 		}
 
-		foreach($extTypes as $ext => $extType) {
+		foreach ($extTypes as $ext => $extType) {
 			$readme = @file_get_contents("https://raw.github.com/yiisoft/yii2-$ext/master/README.md");
 			$indexFileContent = $this->renderWithLayout($this->indexView, [
 				'docContext' => $context,
@@ -108,7 +108,7 @@ class ApiRenderer extends \yii\apidoc\templates\html\ApiRenderer
 				break;
 		}
 
-		if($line === null)
+		if ($line === null)
 			return $baseUrl . $url;
 		else
 			return $baseUrl . $url . '#L' . $line;

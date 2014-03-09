@@ -163,9 +163,9 @@ class Context extends Component
 	protected function inheritDocs($class)
 	{
 		// TODO also for properties?
-		foreach($class->methods as $m) {
+		foreach ($class->methods as $m) {
 			$inheritedMethod = $this->inheritMethodRecursive($m, $class);
-			foreach(['shortDescription', 'description', 'params', 'return', 'returnType', 'returnTypes', 'exceptions'] as $property) {
+			foreach (['shortDescription', 'description', 'params', 'return', 'returnType', 'returnTypes', 'exceptions'] as $property) {
 				if (empty($m->$property)) {
 					$m->$property = $inheritedMethod->$property;
 				}

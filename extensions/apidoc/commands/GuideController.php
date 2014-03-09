@@ -63,14 +63,14 @@ class GuideController extends BaseController
 		$renderer->render($files, $targetDir);
 
 		$this->stdout('Publishing images...');
-		foreach($sourceDirs as $source) {
+		foreach ($sourceDirs as $source) {
 			FileHelper::copyDirectory(rtrim($source, '/\\') . '/images', $targetDir . '/images');
 		}
 		$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 
 		// generate api references.txt
 		$references = [];
-		foreach($files as $file) {
+		foreach ($files as $file) {
 			$references[] = basename($file, '.md');
 		}
 		file_put_contents($targetDir . '/guide-references.txt', implode("\n", $references));
