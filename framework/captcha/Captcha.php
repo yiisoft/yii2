@@ -9,6 +9,7 @@ namespace yii\captcha;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\widgets\InputWidget;
@@ -106,7 +107,7 @@ class Captcha extends InputWidget
 	protected function getClientOptions()
 	{
 		$options = [
-			'refreshUrl' => Html::url(['/' . $this->captchaAction, CaptchaAction::REFRESH_GET_VAR => 1]),
+			'refreshUrl' => Url::create(['/' . $this->captchaAction, CaptchaAction::REFRESH_GET_VAR => 1]),
 			'hashKey' => "yiiCaptcha/{$this->captchaAction}",
 		];
 		return $options;

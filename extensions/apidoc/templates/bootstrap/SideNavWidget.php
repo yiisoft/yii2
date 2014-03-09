@@ -11,6 +11,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\bootstrap\BootstrapAsset;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\helpers\Html;
 
 /**
@@ -135,7 +136,7 @@ class SideNavWidget extends \yii\bootstrap\Widget
 		$label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
 //		$options = ArrayHelper::getValue($item, 'options', []);
 		$items = ArrayHelper::getValue($item, 'items');
-		$url = Html::url(ArrayHelper::getValue($item, 'url', '#'));
+		$url = Url::create(ArrayHelper::getValue($item, 'url', '#'));
 		$linkOptions = ArrayHelper::getValue($item, 'linkOptions', []);
 		Html::addCssClass($linkOptions, 'list-group-item');
 

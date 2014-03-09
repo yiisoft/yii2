@@ -10,6 +10,7 @@ namespace yii\widgets;
 use Yii;
 use yii\base\Widget;
 use yii\base\Model;
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\JsExpression;
@@ -194,7 +195,7 @@ class ActiveForm extends Widget
 			'ajaxDataType' => $this->ajaxDataType,
 		];
 		if ($this->validationUrl !== null) {
-			$options['validationUrl'] = Html::url($this->validationUrl);
+			$options['validationUrl'] = Url::create($this->validationUrl);
 		}
 		foreach (['beforeSubmit', 'beforeValidate', 'afterValidate'] as $name) {
 			if (($value = $this->$name) !== null) {

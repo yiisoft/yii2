@@ -12,7 +12,6 @@ namespace yii\smarty;
 use Yii;
 use Smarty;
 use yii\base\View;
-use yii\helpers\Html;
 use yii\base\ViewRenderer as BaseViewRenderer;
 
 /**
@@ -70,7 +69,7 @@ class ViewRenderer extends BaseViewRenderer
 		array_unshift($params, $params['route']) ;
 		unset($params['route']);
 
-		return Html::url($params);
+		return BaseViewRenderer::url($params);
 	}
 
 	/**

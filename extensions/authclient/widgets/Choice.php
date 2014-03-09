@@ -9,6 +9,7 @@ namespace yii\authclient\widgets;
 
 use yii\base\Widget;
 use Yii;
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\authclient\ClientInterface;
 
@@ -195,7 +196,7 @@ class Choice extends Widget
 		$this->autoRender = false;
 		$url = $this->getBaseAuthUrl();
 		$url[$this->clientIdGetParamName] = $provider->getId();
-		return Html::url($url);
+		return Url::create($url);
 	}
 
 	/**

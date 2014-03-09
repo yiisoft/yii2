@@ -12,7 +12,6 @@ namespace yii\twig;
 use Yii;
 use yii\base\View;
 use yii\base\ViewRenderer as BaseViewRenderer;
-use yii\helpers\Html;
 
 /**
  * TwigViewRenderer allows you to use Twig templates in views.
@@ -122,7 +121,7 @@ class ViewRenderer extends BaseViewRenderer
 		}));
 
 		$this->twig->addFunction('path', new \Twig_Function_Function(function ($path, $args = []) {
-			return Html::url(array_merge([$path], $args));
+			return BaseViewRenderer::url(array_merge([$path], $args));
 		}));
 
 		$this->twig->addGlobal('app', \Yii::$app);
