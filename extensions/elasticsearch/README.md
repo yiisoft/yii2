@@ -190,7 +190,7 @@ enabled, it is sufficient to just add the panels configuration):
 	// ...
 ```
 
-![elasticsearch DebugPanel](README-debug.png)
+![elasticsearch DebugPanel](images/README-debug.png)
 
 
 Relation definitions with records whose primary keys are not part of attributes

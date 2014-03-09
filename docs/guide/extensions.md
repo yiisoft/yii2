@@ -37,7 +37,7 @@ There should be a `readme.md` file, written in English. This file should clearly
   
   It is a good idea to include some screenshots as part of the documentation, especially if your extension provides a widget. 
   
-It is recommended to host your extensions at [Github](github.com).
+It is recommended to host your extensions at [Github](https://github.com).
 
 Extensions should also be registered at [Packagist](https://packagist.org) in order to be installable via Composer. 
 
