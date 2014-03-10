@@ -51,20 +51,30 @@ examples may also output:
 * `http://www.example.com/blog/post/index/`
 * `http://www.example.com/index.php?r=blog/post/index`
 
-Inside a web application controller, you can use the controller's `createUrl` shortcut method. Unlike the global
-`createUrl` method, the controller version is context sensitive:
+In order to simplify URL creation there is [[yii\helpers\Url]] helper that is able to do the following:
 
 ```php
-echo $this->createUrl(''); // currently active route
-echo $this->createUrl(['view', 'id' => 'contact']); // same controller, different action
-echo $this->createUrl('post/index'); // same module, different controller and action
-echo $this->createUrl('/site/index'); // absolute route no matter what controller is making this call
-echo $this->createurl('hi-tech'); // url for the case sensitive action `actionHiTech` of the current controller
-echo $this->createurl(['/date-time/fast-forward', 'id' => 105]); // url for action the case sensitive controller, `DateTimeController::actionFastForward`
+use yii\helpers\Url;
+
+echo Url::to(''); // currently active URL
+
+echo Url::toRoute(['view', 'id' => 'contact']); // same controller, different action
+echo Url::toRoute('post/index'); // same module, different controller and action
+echo Url::toRoute('/site/index'); // absolute route no matter what controller is making this call
+echo Url::toRoute('hi-tech'); // url for the case sensitive action `actionHiTech` of the current controller
+echo Url::toRoute(['/date-time/fast-forward', 'id' => 105]); // url for action the case sensitive controller, `DateTimeController::actionFastForward`
+
+echo Url::to('@web'); // get URL from alias
+
+echo Url::canonical(); // get canonical URL for the curent page
+echo Url::home(); // get home URL
+
+Url::remember(); // save URL to be used later
+Url::previous(); // get previously saved URL
 ```
 
 > **Tip**: In order to generate URL with a hashtag, for example `/index.php?r=site/page&id=100#title`, you need to
-  specify the parameter named `#` using `$this->createUrl(['post/read', 'id' => 100, '#' => 'title'])`.
+  specify the parameter named `#` using `Url::to(['post/read', 'id' => 100, '#' => 'title'])`.
 
 Customizing URLs
 ----------------
@@ -114,21 +124,25 @@ Let's use some examples to explain how URL rules work. We assume that our rule s
 ]
 ```
 
-- Calling `$this->createUrl('post/list')` generates `/index.php/posts`. The first rule is applied.
-- Calling `$this->createUrl(['post/read', 'id' => 100])` generates `/index.php/post/100`. The second rule is applied.
-- Calling `$this->createUrl(['post/read', 'year' => 2008, 'title' => 'a sample post'])` generates
+- Calling `Url::toRoute('post/list')` generates `/index.php/posts`. The first rule is applied.
+- Calling `Url::toRoute(['post/read', 'id' => 100])` generates `/index.php/post/100`. The second rule is applied.
+- Calling `Url::toRoute(['post/read', 'year' => 2008, 'title' => 'a sample post'])` generates
   `/index.php/post/2008/a%20sample%20post`. The third rule is applied.
-- Calling `$this->createUrl('post/read')` generates `/index.php/post/read`. None of the rules is applied, convention is used
+- Calling `Url::toRoute('post/read')` generates `/index.php/post/read`. None of the rules is applied, convention is used
   instead.
 
 In summary, when using `createUrl` to generate a URL, the route and the `GET` parameters passed to the method are used to
 decide which URL rule to be applied. If every parameter associated with a rule can be found in the `GET` parameters passed
 to `createUrl`, and if the route of the rule also matches the route parameter, the rule will be used to generate the URL.
 
-If the `GET` parameters passed to `createUrl` are more than those required by a rule, the additional parameters will appear in the query string. For example, if we call `$this->createUrl('post/read', ['id' => 100, 'year' => 2008])`, we will obtain `/index.php/post/100?year=2008`.
+If the `GET` parameters passed to `Url::toRoute` are more than those required by a rule, the additional parameters will
+appear in the query string. For example, if we call `Url::toRoute(['post/read', 'id' => 100, 'year' => 2008])`, we will
+obtain `/index.php/post/100?year=2008`.
 
-As we mentioned earlier, the other purpose of URL rules is to parse the requesting URLs. Naturally, this is an inverse process of URL creation. For example, when a user requests for `/index.php/post/100`, the second rule in the above example will apply, which resolves in the route `post/read` and the `GET` parameter `['id' => 100]` (accessible via
-`Yii::$app->request->getQueryParam('id')`).
+As we mentioned earlier, the other purpose of URL rules is to parse the requesting URLs. Naturally, this is an inverse
+process of URL creation. For example, when a user requests for `/index.php/post/100`, the second rule in the above example
+will apply, which resolves in the route `post/read` and the `GET` parameter `['id' => 100]` (accessible via
+`Yii::$app->request->get('id')`).
 
 ### Parameterizing Routes
 

@@ -193,6 +193,11 @@ Yii Framework 2 Change Log
 - Chg #2544: Changed `DetailView`'s `name:format:label` to `attribute:format:label` to match `GridView` (samdark)
 - Chg #2603: `yii\base\ErrorException` now extends `\ErrorException` (samdark)
 - Chg #2629: `Module::controllerPath` is now read only, and all controller classes must be namespaced under `Module::controllerNamespace`. (qiangxue)
+- Chg #2630: API changes for URLs generation (samdark, qiangxue, cebe)
+	- Added `yii\helpers\Url`.
+	- Removed `yii\heplers\Html::url`, use `yii\helpers\Url::to` instead.
+	- Removed `yii\web\Controller::createUrl` and `yii\web\Controller::createAbsoluteUrl`, use `yii\helpers::toRoute` instead.
+	- Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers::canonical` instead.
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)

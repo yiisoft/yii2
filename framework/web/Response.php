@@ -10,8 +10,8 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\helpers\Url;
 use yii\helpers\FileHelper;
-use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Security;
 use yii\helpers\StringHelper;
@@ -673,7 +673,7 @@ class Response extends \yii\base\Response
 			// ensure the route is absolute
 			$url[0] = '/' . ltrim($url[0], '/');
 		}
-		$url = Html::url($url);
+		$url = Url::to($url);
 		if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
 			$url = Yii::$app->getRequest()->getHostInfo() . $url;
 		}

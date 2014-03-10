@@ -9,6 +9,7 @@ namespace yii\elasticsearch;
 
 use yii\debug\Panel;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\log\Logger;
 use yii\helpers\Html;
 use yii\web\View;
@@ -83,7 +84,7 @@ EOD;
 					},
 				]);
 			}
-			$ajaxUrl = Html::url(['elasticsearch-query', 'logId' => $logId, 'tag' => $this->tag]);
+			$ajaxUrl = Url::to(['elasticsearch-query', 'logId' => $logId, 'tag' => $this->tag]);
 			\Yii::$app->view->registerJs(<<<JS
 $('#elastic-link-$i').on('click', function() {
 	var result = $('#elastic-result-$i');

@@ -11,6 +11,7 @@ use Yii;
 use Closure;
 use yii\base\Formatter;
 use yii\base\InvalidConfigException;
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\widgets\BaseListView;
@@ -218,7 +219,7 @@ class GridView extends BaseListView
 		}
 
 		return [
-			'filterUrl' => Html::url($filterUrl),
+			'filterUrl' => Url::to($filterUrl),
 			'filterSelector' => $filterSelector,
 		];
 	}

@@ -9,6 +9,7 @@ namespace yii\jui;
 
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\helpers\Html;
 
 /**
@@ -120,7 +121,7 @@ class Tabs extends Widget
 				throw new InvalidConfigException("The 'label' option is required.");
 			}
 			if (isset($item['url'])) {
-				$url = Html::url($item['url']);
+				$url = Url::to($item['url']);
 			} else {
 				if (!isset($item['content'])) {
 					throw new InvalidConfigException("The 'content' or 'url' option is required.");
