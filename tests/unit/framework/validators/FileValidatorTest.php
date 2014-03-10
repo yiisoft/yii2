@@ -108,67 +108,67 @@ class FileValidatorTest extends TestCase
 		$this->assertTrue($m->hasErrors());
 		$this->assertTrue(stripos(current($m->getErrors('attr_files')), 'you can upload at most') !== false);
 
-        $m = FakedValidationModel::createWithAttributes(
-            [
-                'attr_images' => $this->createTestFiles(
-                        [
-                            [
-                                'name' => 'image.png',
-                                'size' => 1024,
-                                'type' => 'image/png'
-                            ],
-                            [
-                                'name' => 'image.png',
-                                'size' => 1024,
-                                'type' => 'image/png'
-                            ],
-                            [
-                                'name' => 'text.txt',
-                                'size' => 1024
-                            ],
-                        ]
-                    )
-            ]
-        );
-        $m->setScenario('validateMultipleFiles');
-        $this->assertFalse($m->validate());
-        $this->assertTrue(stripos(current($m->getErrors('attr_images')), 'Only files with these extensions are allowed') !== false);
-
-        $m = FakedValidationModel::createWithAttributes(
-            [
-                'attr_images' => $this->createTestFiles(
-                        [
-                            [
-                                'name' => 'image.png',
-                                'size' => 1024,
-                                'type' => 'image/png'
-                            ],
-                            [
-                                'name' => 'image.png',
-                                'size' => 1024,
-                                'type' => 'image/png'
-                            ],
-                        ]
-                    )
-            ]
-        );
-        $m->setScenario('validateMultipleFiles');
-        $this->assertTrue($m->validate());
-
-        $m = FakedValidationModel::createWithAttributes(
-            [
-                'attr_image' => $this->createTestFiles(
-                        [
-                            [
-                                'name' => 'text.txt',
-                                'size' => 1024,
-                            ],
-                        ]
-                    )
-            ]
-        );
-        $m->setScenario('validateFile');
-        $this->assertFalse($m->validate());
+	        $m = FakedValidationModel::createWithAttributes(
+	            [
+	                'attr_images' => $this->createTestFiles(
+	                        [
+	                            [
+	                                'name' => 'image.png',
+	                                'size' => 1024,
+	                                'type' => 'image/png'
+	                            ],
+	                            [
+	                                'name' => 'image.png',
+	                                'size' => 1024,
+	                                'type' => 'image/png'
+	                            ],
+	                            [
+	                                'name' => 'text.txt',
+	                                'size' => 1024
+	                            ],
+	                        ]
+	                    )
+	            ]
+	        );
+	        $m->setScenario('validateMultipleFiles');
+	        $this->assertFalse($m->validate());
+	        $this->assertTrue(stripos(current($m->getErrors('attr_images')), 'Only files with these extensions are allowed') !== false);
+	
+	        $m = FakedValidationModel::createWithAttributes(
+	            [
+	                'attr_images' => $this->createTestFiles(
+	                        [
+	                            [
+	                                'name' => 'image.png',
+	                                'size' => 1024,
+	                                'type' => 'image/png'
+	                            ],
+	                            [
+	                                'name' => 'image.png',
+	                                'size' => 1024,
+	                                'type' => 'image/png'
+	                            ],
+	                        ]
+	                    )
+	            ]
+	        );
+	        $m->setScenario('validateMultipleFiles');
+	        $this->assertTrue($m->validate());
+	
+	        $m = FakedValidationModel::createWithAttributes(
+	            [
+	                'attr_image' => $this->createTestFiles(
+	                        [
+	                            [
+	                                'name' => 'text.txt',
+	                                'size' => 1024,
+	                            ],
+	                        ]
+	                    )
+	            ]
+	        );
+	        $m->setScenario('validateFile');
+	        $this->assertFalse($m->validate());
 	}
 
 	/**
