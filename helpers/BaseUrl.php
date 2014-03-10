@@ -76,7 +76,7 @@ class BaseUrl
 		} else {
 			$url = Yii::getAlias($url);
 			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || strpos($url, '://') || !strncmp($url, './', 2))) {
-				return $url;
+				return strpos($url, '://') ? $url :  Yii::$app->getRequest()->getHostInfo() . $url;
 			} else {
 				$prefix = $absolute ? Yii::$app->getRequest()->getHostInfo() : '';
 				return $prefix . Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
