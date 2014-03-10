@@ -51,25 +51,36 @@ class BaseUrl
 	}
 
 	/**
-	 * Returns URL to asset located under webroot
+	 * Normalizes the input parameter to be a valid URL.
 	 *
-	 * @param string $asset will first be processed by [[Yii::getAlias()]]. If the result is an absolute URL, it will be
-	 * returned without any change further; Otherwise, the result will be prefixed with [[\yii\web\Request::baseUrl]] and returned.
+	 * If the input parameter
+	 *
+	 * - is an empty string: the currently requested URL will be returned;
+	 * - is a non-empty string: it will first be processed by [[Yii::getAlias()]]. If the result
+	 *   is an absolute URL, it will be returned without any change further; Otherwise, the result
+	 *   will be prefixed with [[\yii\web\Request::baseUrl]] and returned.
+	 * - is an array: the first array element is considered a route, while the rest of the name-value
+	 *   pairs are treated as the parameters to be used for URL creation using [[\yii\web\Controller::createUrl()]].
+	 *   For example: `['post/index', 'page' => 2]`, `['index']`.
+	 *   In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
+	 *
+	 * @param array|string $url the parameter to be used to generate a valid URL
 	 * @param boolean $absolute if URL should be absolute
-	 * @return string
+	 * @return string the normalized URL
+	 * @throws InvalidParamException if the parameter is invalid.
 	 */
-	public function toAsset($asset = null, $absolute = false)
+	public static function to($url = null, $absolute = false)
 	{
-		$route = Yii::getAlias($asset);
-		if ($route !== '' && ($route[0] === '/' || $route[0] === '#' || strpos($route, '://') || !strncmp($route, './', 2))) {
-			return $route;
+		if (is_array($url) && isset($url[0]) || $url === '') {
+			return static::to($url, $absolute);
 		} else {
-			$result = $absolute ? Yii::$app->getRequest()->getHostInfo() : '';
-			$result .= Yii::$app->getRequest()->getBaseUrl();
-			if ($asset !== null) {
-				$result .= '/' . $asset;
+			$url = Yii::getAlias($url);
+			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || strpos($url, '://') || !strncmp($url, './', 2))) {
+				return $url;
+			} else {
+				$prefix = $absolute ? Yii::$app->request->getHostInfo() : '';
+				return $prefix . Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
 			}
-			return $result;
 		}
 	}
 
@@ -125,8 +136,8 @@ class BaseUrl
 	 */
 	public function home($absolute = false)
 	{
-		$result = $absolute ? Yii::$app->request->getHostInfo() : '';
-		return $result . Yii::$app->getHomeUrl();
+		$prefix = $absolute ? Yii::$app->request->getHostInfo() : '';
+		return $prefix . Yii::$app->getHomeUrl();
 	}
 }
  

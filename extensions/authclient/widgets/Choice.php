@@ -196,7 +196,7 @@ class Choice extends Widget
 		$this->autoRender = false;
 		$url = $this->getBaseAuthUrl();
 		$url[$this->clientIdGetParamName] = $provider->getId();
-		return Url::toRoute($url);
+		return Url::to($url);
 	}
 
 	/**

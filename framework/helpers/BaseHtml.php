@@ -205,7 +205,7 @@ class BaseHtml
 		if (!isset($options['rel'])) {
 			$options['rel'] = 'stylesheet';
 		}
-		$options['href'] = Url::toRoute($url);
+		$options['href'] = Url::to($url);
 		return static::tag('link', '', $options);
 	}
 
@@ -221,7 +221,7 @@ class BaseHtml
 	 */
 	public static function jsFile($url, $options = [])
 	{
-		$options['src'] = Url::toRoute($url);
+		$options['src'] = Url::to($url);
 		return static::tag('script', '', $options);
 	}
 
@@ -241,7 +241,7 @@ class BaseHtml
 	 */
 	public static function beginForm($action = '', $method = 'post', $options = [])
 	{
-		$action = Url::toRoute($action);
+		$action = Url::to($action);
 
 		$hiddenInputs = [];
 
@@ -311,7 +311,7 @@ class BaseHtml
 	public static function a($text, $url = null, $options = [])
 	{
 		if ($url !== null) {
-			$options['href'] = Url::toRoute($url);
+			$options['href'] = Url::to($url);
 		}
 		return static::tag('a', $text, $options);
 	}
@@ -346,7 +346,7 @@ class BaseHtml
 	 */
 	public static function img($src, $options = [])
 	{
-		$options['src'] = Url::toRoute($src);
+		$options['src'] = Url::to($src);
 		if (!isset($options['alt'])) {
 			$options['alt'] = '';
 		}

@@ -13,6 +13,7 @@ use Yii;
 use Smarty;
 use yii\base\View;
 use yii\base\ViewRenderer as BaseViewRenderer;
+use yii\helpers\Url;
 
 /**
  * SmartyViewRenderer allows you to use Smarty templates in views.
@@ -69,7 +70,7 @@ class ViewRenderer extends BaseViewRenderer
 		array_unshift($params, $params['route']) ;
 		unset($params['route']);
 
-		return BaseViewRenderer::url($params);
+		return Url::to($params);
 	}
 
 	/**

@@ -136,7 +136,7 @@ class SideNavWidget extends \yii\bootstrap\Widget
 		$label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
 //		$options = ArrayHelper::getValue($item, 'options', []);
 		$items = ArrayHelper::getValue($item, 'items');
-		$url = Url::toRoute(ArrayHelper::getValue($item, 'url', '#'));
+		$url = Url::to(ArrayHelper::getValue($item, 'url', '#'));
 		$linkOptions = ArrayHelper::getValue($item, 'linkOptions', []);
 		Html::addCssClass($linkOptions, 'list-group-item');
 
