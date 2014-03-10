@@ -36,11 +36,12 @@ class BaseUrl
 	 *
 	 * In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
 	 *
-	 * @param string $schema URI schema to use. If specified absolute URL with the schema specified is returned.
+	 * @param boolean $absolute if absolute URL should be created.
+	 * @param string $schema URI schema to use. Schema to use for absolute URL. If not specified current schema will be used.
 	 * @return string the normalized URL
 	 * @throws InvalidParamException if the parameter is invalid.
 	 */
-	public static function toRoute($route, $schema = null)
+	public static function toRoute($route, $absolute = false, $schema = null)
 	{
 		$route = (array)$route;
 		if (!isset($route[0])) {
@@ -49,7 +50,7 @@ class BaseUrl
 		if (Yii::$app->controller instanceof \yii\web\Controller) {
 			$route[0] = static::getNormalizedRoute($route[0]);
 		}
-		return $schema === null ? Yii::$app->getUrlManager()->createUrl($route) : Yii::$app->getUrlManager()->createAbsoluteUrl($route, $schema);
+		return $absolute ? Yii::$app->getUrlManager()->createAbsoluteUrl($route, $schema) : Yii::$app->getUrlManager()->createUrl($route);
 	}
 
 	/**
@@ -95,45 +96,49 @@ class BaseUrl
 
 	 *
 	 * @param array|string $url the parameter to be used to generate a valid URL
-	 * @param string $schema URI schema to use. If specified absolute URL with the schema specified is returned.
+	 * @param boolean $absolute if absolute URL should be created.
+	 * @param string $schema URI schema to use. Schema to use for absolute URL. If not specified current schema will be used.
 	 * @return string the normalized URL
 	 * @throws InvalidParamException if the parameter is invalid.
 	 */
-	public static function to($url = '', $schema = null)
+	public static function to($url = '', $absolute = false, $schema = null)
 	{
 		if (is_array($url)) {
-			return static::toRoute($url, $schema);
+			return static::toRoute($url, $absolute, $schema);
 		} elseif ($url === '') {
-			if ($schema === null) {
-				return Yii::$app->request->getUrl();
-			} else {
+			if ($absolute) {
 				$url = Yii::$app->request->getAbsoluteUrl();
 				$pos = strpos($url, '://');
-				return $schema . substr($url, $pos);
+				$url = $schema . substr($url, $pos);
+			} else {
+				$url = Yii::$app->request->getUrl();
 			}
 		} else {
 			$url = Yii::getAlias($url);
 			$pos = strpos($url, '://');
 			if ($pos !== null) {
+				// URI is already absolute, adjust schema if specified
 				if ($schema !== null) {
 					$url = $schema . substr($url, $pos);
 				}
-				return $url;
-			}
-
-			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || !strncmp($url, './', 2))) {
-				$url = Yii::$app->getRequest()->getHostInfo() . $url;
 			} else {
-				$url = Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
-			}
-			if ($schema !== null) {
-				$pos = strpos($url, '://');
-				if ($pos !== null) {
-					$url = $schema . substr($url, $pos);
+				// URI is relative
+				if ($url === '' || ($url[0] !== '/' && $url[0] !== '#' && strncmp($url, './', 2))) {
+					// URL is relative need to adjust it to be absolute
+					$url = Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
+				}
+				if ($absolute) {
+					$url = Yii::$app->getRequest()->getHostInfo() . $url;
+					if ($schema !== null) {
+						$pos = strpos($url, '://');
+						if ($pos !== null) {
+							$url = $schema . substr($url, $pos);
+						}
+					}
 				}
 			}
-			return $url;
 		}
+		return $url;
 	}
 
 	/**
@@ -192,18 +197,22 @@ class BaseUrl
 	/**
 	 * Returns home URL
 	 *
-	 * @param string $schema URI schema to use. If specified absolute URL with the schema specified is returned.
+	 * @param boolean $absolute if absolute URL should be created.
+	 * @param string $schema URI schema to use. Schema to use for absolute URL. If not specified current schema will be used.
 	 * @return string home URL
 	 */
-	public static function home($schema = null)
+	public static function home($absolute = false, $schema = null)
 	{
-		if ($schema === null) {
-			return Yii::$app->getHomeUrl();
-		} else {
+		if ($absolute) {
 			$url = Yii::$app->getRequest()->getHostInfo() . Yii::$app->getHomeUrl();
-			$pos = strpos($url, '://');
-			return $schema . substr($url, $pos);
+			if ($schema !== null) {
+				$pos = strpos($url, '://');
+				$url = $schema . substr($url, $pos);
+			}
+		} else {
+			$url = Yii::$app->getHomeUrl();
 		}
+		return $url;
 	}
 }
  
