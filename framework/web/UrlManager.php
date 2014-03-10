@@ -294,7 +294,7 @@ class UrlManager extends Component
 		if (strpos($url, '://') === false) {
 			$url = $this->getHostInfo() . $url;
 		}
-		if ($schema !== null && ($pos = strpos($url, '://')) !== false) {
+		if ($schema && ($pos = strpos($url, '://')) !== false) {
 			$url = $schema . substr($url, $pos);
 		}
 		return $url;
