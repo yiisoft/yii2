@@ -522,7 +522,8 @@ TBD
 Extensions
 ----------
 
-TBD
+Yii 1.1 extensions are not compatible with 2.0 so you have to port or rewrite these. In order to get more info about
+extensions in 2.0 [referer to corresponding guide section](extensions.md).
 
 Integration with Composer
 -------------------------

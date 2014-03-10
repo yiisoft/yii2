@@ -4,10 +4,11 @@ use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\InterfaceDoc;
 use yii\apidoc\models\TraitDoc;
+
 /**
  * @var ClassDoc|InterfaceDoc|TraitDoc $type
  * @var yii\web\View $this
- * @var \yii\apidoc\templates\html\Renderer $renderer
+ * @var \yii\apidoc\templates\html\ApiRenderer $renderer
  */
 
 $renderer = $this->context;
@@ -30,16 +31,16 @@ $renderer = $this->context;
 ?></h1>
 <div id="nav">
 	<a href="index.html">All Classes</a>
-	<?php if(!($type instanceof InterfaceDoc) && !empty($type->properties)): ?>
+	<?php if (!($type instanceof InterfaceDoc) && !empty($type->properties)): ?>
 		| <a href="#properties">Properties</a>
 	<?php endif; ?>
-	<?php if(!empty($type->methods)): ?>
+	<?php if (!empty($type->methods)): ?>
 		| <a href="#methods">Methods</a>
 	<?php endif; ?>
-	<?php if($type instanceof ClassDoc && !empty($type->events)): ?>
+	<?php if ($type instanceof ClassDoc && !empty($type->events)): ?>
 		| <a href="#events">Events</a>
 	<?php endif; ?>
-	<?php if($type instanceof ClassDoc && !empty($type->constants)): ?>
+	<?php if ($type instanceof ClassDoc && !empty($type->constants)): ?>
 		| <a href="#constants">Constants</a>
 	<?php endif; ?>
 </div>
@@ -55,10 +56,10 @@ $renderer = $this->context;
 	<?php if ($type instanceof ClassDoc && !empty($type->interfaces)): ?>
 		<tr><th>Implements</th><td><?= $renderer->renderInterfaces($type->interfaces) ?></td></tr>
 	<?php endif; ?>
-	<?php if(!($type instanceof InterfaceDoc) && !empty($type->traits)): ?>
+	<?php if (!($type instanceof InterfaceDoc) && !empty($type->traits)): ?>
 		<tr><th>Uses Traits</th><td><?= $renderer->renderTraits($type->traits) ?></td></tr>
 	<?php endif; ?>
-	<?php if($type instanceof ClassDoc && !empty($type->subclasses)): ?>
+	<?php if ($type instanceof ClassDoc && !empty($type->subclasses)): ?>
 		<tr><th>Subclasses</th><td><?= $renderer->renderClasses($type->subclasses) ?></td></tr>
 	<?php endif; ?>
 	<?php if ($type instanceof InterfaceDoc && !empty($type->implementedBy)): ?>
@@ -67,13 +68,15 @@ $renderer = $this->context;
 	<?php if ($type instanceof TraitDoc && !empty($type->usedBy)): ?>
 		<tr><th>Implemented by</th><td><?= $renderer->renderClasses($type->usedBy) ?></td></tr>
 	<?php endif; ?>
-	<?php if(!empty($type->since)): ?>
+	<?php if (!empty($type->since)): ?>
 		<tr><th>Available since version</th><td><?= $type->since ?></td></tr>
 	<?php endif; ?>
-	<tr>
-	  <th>Source Code</th>
-	  <td><?php // TODO echo $this->renderSourceLink($type->sourcePath) ?></td>
-	</tr>
+	<?php if (($sourceUrl = $renderer->getSourceUrl($type)) !== null): ?>
+		<tr>
+		  <th>Source Code</th>
+		  <td><a href="<?= $sourceUrl ?>"><?= $sourceUrl ?></a></td>
+		</tr>
+	<?php endif; ?>
 </table>
 
 <div id="classDescription">
@@ -82,8 +85,8 @@ $renderer = $this->context;
 </div>
 
 <a name="properties"></a>
-<?= $this->render('@yii/apidoc/templates/html/views/propertySummary', ['type' => $type,'protected' => false]) ?>
-<?= $this->render('@yii/apidoc/templates/html/views/propertySummary', ['type' => $type,'protected' => true]) ?>
+<?= $this->render('@yii/apidoc/templates/html/views/propertySummary', ['type' => $type, 'protected' => false]) ?>
+<?= $this->render('@yii/apidoc/templates/html/views/propertySummary', ['type' => $type, 'protected' => true]) ?>
 
 <a name="methods"></a>
 <?= $this->render('@yii/apidoc/templates/html/views/methodSummary', ['type' => $type, 'protected' => false]) ?>
@@ -97,6 +100,6 @@ $renderer = $this->context;
 
 <?= $this->render('@yii/apidoc/templates/html/views/propertyDetails', ['type' => $type]) ?>
 <?= $this->render('@yii/apidoc/templates/html/views/methodDetails', ['type' => $type]) ?>
-<?php if($type instanceof ClassDoc): ?>
+<?php if ($type instanceof ClassDoc): ?>
 	<?= $this->render('@yii/apidoc/templates/html/views/eventDetails', ['type' => $type]) ?>
 <?php endif; ?>

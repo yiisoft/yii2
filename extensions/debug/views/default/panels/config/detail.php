@@ -35,4 +35,3 @@ echo $this->render('panels/config/table', [
 ]);
 
 echo $panel->getPhpInfo();
-?>

@@ -23,7 +23,7 @@ use yii\helpers\Html;
 			</tr>
 		</thead>
 		<tbody>
-		<?php foreach($values as $name => $value): ?>
+		<?php foreach ($values as $name => $value): ?>
 			<tr>
 				<th style="width: 200px;"><?= Html::encode($name) ?></th>
 				<td style="overflow:auto"><?= Html::encode($value) ?></td>

@@ -356,11 +356,11 @@ trait ActiveRecordTestTrait
 		$this->assertEquals(2, $this->callCustomerFind()->where(['OR', ['name' => 'user1'], ['name' => 'user2']])->count());
 		$this->assertEquals(2, count($this->callCustomerFind()->where(['OR', ['name' => 'user1'], ['name' => 'user2']])->all()));
 
-		$this->assertEquals(2, $this->callCustomerFind()->where(['name' => ['user1','user2']])->count());
-		$this->assertEquals(2, count($this->callCustomerFind()->where(['name' => ['user1','user2']])->all()));
+		$this->assertEquals(2, $this->callCustomerFind()->where(['name' => ['user1', 'user2']])->count());
+		$this->assertEquals(2, count($this->callCustomerFind()->where(['name' => ['user1', 'user2']])->all()));
 
-		$this->assertEquals(1, $this->callCustomerFind()->where(['AND', ['name' => ['user2','user3']], ['BETWEEN', 'status', 2, 4]])->count());
-		$this->assertEquals(1, count($this->callCustomerFind()->where(['AND', ['name' => ['user2','user3']], ['BETWEEN', 'status', 2, 4]])->all()));
+		$this->assertEquals(1, $this->callCustomerFind()->where(['AND', ['name' => ['user2', 'user3']], ['BETWEEN', 'status', 2, 4]])->count());
+		$this->assertEquals(1, count($this->callCustomerFind()->where(['AND', ['name' => ['user2', 'user3']], ['BETWEEN', 'status', 2, 4]])->all()));
 	}
 
 	public function testFindNullValues()
@@ -384,9 +384,9 @@ trait ActiveRecordTestTrait
 		$this->assertTrue($this->callCustomerFind()->where(['name' => 'user1'])->exists());
 		$this->assertFalse($this->callCustomerFind()->where(['name' => 'user5'])->exists());
 
-		$this->assertTrue($this->callCustomerFind()->where(['id' => [2,3]])->exists());
-		$this->assertTrue($this->callCustomerFind()->where(['id' => [2,3]])->offset(1)->exists());
-		$this->assertFalse($this->callCustomerFind()->where(['id' => [2,3]])->offset(2)->exists());
+		$this->assertTrue($this->callCustomerFind()->where(['id' => [2, 3]])->exists());
+		$this->assertTrue($this->callCustomerFind()->where(['id' => [2, 3]])->offset(1)->exists());
+		$this->assertFalse($this->callCustomerFind()->where(['id' => [2, 3]])->offset(2)->exists());
 	}
 
 	public function testFindLazy()
@@ -854,7 +854,7 @@ trait ActiveRecordTestTrait
 		/** @var TestCase|ActiveRecordTestTrait $this */
 
 		$afterFindCalls = [];
-		Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND, function($event) use (&$afterFindCalls) {
+		Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND, function ($event) use (&$afterFindCalls) {
 			/** @var BaseActiveRecord $ar */
 			$ar = $event->sender;
 			$afterFindCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];

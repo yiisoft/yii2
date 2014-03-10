@@ -64,7 +64,7 @@ class ErrorException extends \ErrorException
 	 * Returns if error is one of fatal type.
 	 *
 	 * @param array $error error got from error_get_last()
-	 * @return bool if error is one of fatal type
+	 * @return boolean if error is one of fatal type
 	 */
 	public static function isFatalError($error)
 	{
@@ -92,33 +92,5 @@ class ErrorException extends \ErrorException
 			E_DEPRECATED => 'PHP Deprecated Warning',
 		];
 		return isset($names[$this->getCode()]) ? $names[$this->getCode()] : 'Error';
-	}
-
-	/**
-	 * Returns the array representation of this object.
-	 * @return array the array representation of this object.
-	 */
-	public function toArray()
-	{
-		return $this->toArrayRecursive($this);
-	}
-
-	/**
-	 * Returns the array representation of the exception and all previous exceptions recursively.
-	 * @param \Exception $exception object
-	 * @return array the array representation of the exception.
-	 */
-	protected function toArrayRecursive($exception)
-	{
-		$array = [
-			'type' => get_class($exception),
-			'name' => $exception instanceof self ? $exception->getName() : 'Exception',
-			'message' => $exception->getMessage(),
-			'code' => $exception->getCode(),
-		];
-		if (($prev = $exception->getPrevious()) !== null) {
-			$array['previous'] = $this->toArrayRecursive($prev);
-		}
-		return $array;
 	}
 }

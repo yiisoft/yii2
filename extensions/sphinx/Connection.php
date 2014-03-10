@@ -6,6 +6,7 @@
  */
 
 namespace yii\sphinx;
+
 use yii\base\NotSupportedException;
 
 /**

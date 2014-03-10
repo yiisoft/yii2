@@ -16,12 +16,12 @@ if (empty($events)) {
 ArrayHelper::multisort($events, 'name');
 ?>
 <h2>Event Details</h2>
-<?php foreach($events as $event): ?>
+<?php foreach ($events as $event): ?>
 	<div class="detailHeader h3" id="<?= $event->name.'-detail' ?>">
 		<?= $event->name ?>
 		<span class="detailHeaderTag small">
 		event
-		<?php if(!empty($event->since)): ?>
+		<?php if (!empty($event->since)): ?>
 			(available since version <?= $event->since ?>)
 		<?php endif; ?>
 		</span>
@@ -32,8 +32,8 @@ ArrayHelper::multisort($events, 'name');
 		<?php echo $event->trigger->signature; ?>
 	</div>*/ ?>
 
-	<?= ApiMarkdown::process($event->description, $type); ?>
+	<?= ApiMarkdown::process($event->description, $type) ?>
 
-	<?= $this->render('seeAlso', ['object' => $event]); ?>
+	<?= $this->render('seeAlso', ['object' => $event]) ?>
 
 <?php endforeach; ?>

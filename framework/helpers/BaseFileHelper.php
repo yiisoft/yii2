@@ -147,7 +147,6 @@ class BaseFileHelper
 	 * @param string $src the source directory
 	 * @param string $dst the destination directory
 	 * @param array $options options for directory copy. Valid options are:
-	 * @throws \yii\base\InvalidParamException if unable to open directory
 	 *
 	 * - dirMode: integer, the permission to be set for newly copied directories. Defaults to 0775.
 	 * - fileMode:  integer, the permission to be set for newly copied files. Defaults to the current environment setting.
@@ -178,6 +177,7 @@ class BaseFileHelper
 	 * - afterCopy: callback, a PHP callback that is called after each sub-directory or file is successfully copied.
 	 *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
 	 *   file copied from, while `$to` is the copy target.
+	 * @throws \yii\base\InvalidParamException if unable to open directory
 	 */
 	public static function copyDirectory($src, $dst, $options = [])
 	{

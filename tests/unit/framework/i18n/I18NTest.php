@@ -85,10 +85,6 @@ class I18NTest extends TestCase
 		$this->assertEquals('His speed is about 42 km/h.', $this->i18n->translate('test', $msg, 42, 'en-US'));
 		$this->assertEquals('His speed is about {0} km/h.', $this->i18n->translate('test', $msg, null, 'en-US'));
 		$this->assertEquals('His speed is about {0} km/h.', $this->i18n->translate('test', $msg, [], 'en-US'));
-
-		$msg = 'His name is {name} and he is {age} years old.';
-		$model = new ParamModel();
-		$this->assertEquals('His name is peer and he is 5 years old.', $this->i18n->translate('test', $msg, $model, 'en-US'));
 	}
 
 	/**
@@ -109,13 +105,13 @@ class I18NTest extends TestCase
 		$this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
 		$this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
 
-		Event::on(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION, function($event) {});
+		Event::on(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION, function ($event) {});
 		$this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
 		$this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
 		$this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
 		Event::off(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION);
 
-		Event::on(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION, function($event) {
+		Event::on(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION, function ($event) {
 			if ($event->message == 'New missing translation message.') {
 				$event->translatedMessage = 'TRANSLATION MISSING HERE!';
 			}
@@ -127,10 +123,4 @@ class I18NTest extends TestCase
 		$this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
 		Event::off(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION);
 	}
-}
-
-class ParamModel extends Model
-{
-	public $name = 'peer';
-	public $age = 5;
 }

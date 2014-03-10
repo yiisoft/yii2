@@ -28,7 +28,7 @@ class DataColumn extends Column
 	 * @var string the attribute name associated with this column. When neither [[content]] nor [[value]]
 	 * is specified, the value of the specified attribute will be retrieved from each data model and displayed.
 	 *
-	 * Also, if [[header]] is not specified, the label associated with the attribute will be displayed.
+	 * Also, if [[label]] is not specified, the label associated with the attribute will be displayed.
 	 */
 	public $attribute;
 	/**

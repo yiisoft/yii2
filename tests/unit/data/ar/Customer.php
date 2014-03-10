@@ -48,7 +48,7 @@ class Customer extends ActiveRecord
 	{
 		/** @var ActiveQuery $rel */
 		$rel = $this->hasMany(Item::className(), ['id' => 'item_id']);
-		return $rel->viaTable('tbl_order_item', ['order_id' => 'id'], function($q) {
+		return $rel->viaTable('tbl_order_item', ['order_id' => 'id'], function ($q) {
 			/** @var ActiveQuery $q */
 			$q->viaTable('tbl_order', ['customer_id' => 'id']);
 		})->orderBy('id');

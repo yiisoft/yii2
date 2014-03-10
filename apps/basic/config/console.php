@@ -9,7 +9,6 @@ return [
 	'id' => 'basic-console',
 	'basePath' => dirname(__DIR__),
 	'preload' => ['log'],
-	'controllerPath' => dirname(__DIR__) . '/commands',
 	'controllerNamespace' => 'app\commands',
 	'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
 	'components' => [

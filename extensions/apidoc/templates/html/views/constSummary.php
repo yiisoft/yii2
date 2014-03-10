@@ -7,7 +7,10 @@ use yii\helpers\ArrayHelper;
 /**
  * @var ClassDoc $type
  * @var yii\web\View $this
+ * @var \yii\apidoc\templates\html\ApiRenderer $renderer
  */
+
+$renderer = $this->context;
 
 if (empty($type->constants)) {
 	return;
@@ -29,12 +32,12 @@ ArrayHelper::multisort($constants, 'name');
 <tr>
   <th>Constant</th><th>Value</th><th>Description</th><th>Defined By</th>
 </tr>
-<?php foreach($constants as $constant): ?>
+<?php foreach ($constants as $constant): ?>
 	<tr<?= $constant->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $constant->name ?>">
 	  <td><?= $constant->name ?><a name="<?= $constant->name ?>-detail"></a></td>
 	  <td><?= $constant->value ?></td>
 	  <td><?= ApiMarkdown::process($constant->shortDescription . "\n" . $constant->description, $constant->definedBy, true) ?></td>
-	  <td><?= $this->context->typeLink($constant->definedBy) ?></td>
+	  <td><?= $renderer->createTypeLink($constant->definedBy) ?></td>
 	</tr>
 <?php endforeach; ?>
 </table>

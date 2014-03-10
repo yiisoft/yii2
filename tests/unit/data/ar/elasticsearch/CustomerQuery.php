@@ -1,5 +1,7 @@
 <?php
+
 namespace yiiunit\data\ar\elasticsearch;
+
 use yii\elasticsearch\ActiveQuery;
 
 /**
@@ -13,4 +15,3 @@ class CustomerQuery extends ActiveQuery
 		return $this;
 	}
 }
- 

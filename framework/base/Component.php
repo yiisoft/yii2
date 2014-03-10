@@ -460,7 +460,7 @@ class Component extends Object
 	 * where `$event` is an [[Event]] object which includes parameters associated with the event.
 	 *
 	 * @param string $name the event name
-	 * @param callback $handler the event handler
+	 * @param callable $handler the event handler
 	 * @param mixed $data the data to be passed to the event handler when the event is triggered.
 	 * When the event handler is invoked, this data can be accessed via [[Event::data]].
 	 * @see off()
@@ -475,7 +475,7 @@ class Component extends Object
 	 * Detaches an existing event handler from this component.
 	 * This method is the opposite of [[on()]].
 	 * @param string $name event name
-	 * @param callback $handler the event handler to be removed.
+	 * @param callable $handler the event handler to be removed.
 	 * If it is null, all handlers attached to the named event will be removed.
 	 * @return boolean if a handler is found and detached
 	 * @see on()

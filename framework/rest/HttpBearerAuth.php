@@ -46,7 +46,7 @@ class HttpBearerAuth extends Component implements AuthInterface
 	 */
 	public function handleFailure($response)
 	{
-		$response->getHeaders()->set('WWW-Authenticate', "Basic realm=\"{$this->realm}\"");
+		$response->getHeaders()->set('WWW-Authenticate', "Bearer realm=\"{$this->realm}\"");
 		throw new UnauthorizedHttpException('You are requesting with an invalid access token.');
 	}
 }

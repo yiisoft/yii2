@@ -12,7 +12,7 @@ use yii\console\Exception;
 use yii\console\Controller;
 
 /**
- * This command allows you to combine and compress your JavaScript and CSS files.
+ * Allows you to combine and compress your JavaScript and CSS files.
  *
  * Usage:
  * 1. Create a configuration file using 'template' action:
@@ -62,7 +62,7 @@ class AssetController extends Controller
 	 */
 	public $targets = [];
 	/**
-	 * @var string|callback JavaScript file compressor.
+	 * @var string|callable JavaScript file compressor.
 	 * If a string, it is treated as shell command template, which should contain
 	 * placeholders {from} - source file name - and {to} - output file name.
 	 * Otherwise, it is treated as PHP callback, which should perform the compression.
@@ -72,7 +72,7 @@ class AssetController extends Controller
 	 */
 	public $jsCompressor = 'java -jar compiler.jar --js {from} --js_output_file {to}';
 	/**
-	 * @var string|callback CSS file compressor.
+	 * @var string|callable CSS file compressor.
 	 * If a string, it is treated as shell command template, which should contain
 	 * placeholders {from} - source file name - and {to} - output file name.
 	 * Otherwise, it is treated as PHP callback, which should perform the compression.
@@ -87,6 +87,7 @@ class AssetController extends Controller
 	 * for assets processing.
 	 */
 	private $_assetManager = [];
+
 
 	/**
 	 * Returns the asset manager instance.

@@ -213,7 +213,7 @@ class HtmlTest extends TestCase
 	{
 		$this->assertEquals('<input type="radio" name="test" value="1">', Html::radio('test'));
 		$this->assertEquals('<input type="radio" class="a" name="test" checked>', Html::radio('test', true, ['class' => 'a', 'value' => null]));
-		$this->assertEquals('<input type="hidden" name="test" value="0"><input type="radio" class="a" name="test" value="2" checked>', Html::radio('test', true, ['class' => 'a' , 'uncheck' => '0', 'value' => 2]));
+		$this->assertEquals('<input type="hidden" name="test" value="0"><input type="radio" class="a" name="test" value="2" checked>', Html::radio('test', true, ['class' => 'a', 'uncheck' => '0', 'value' => 2]));
 
 		$this->assertEquals('<div class="radio"><label class="bbb"><input type="radio" class="a" name="test" checked> ccc</label></div>', Html::radio('test', true, [
 			'class' => 'a',

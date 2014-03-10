@@ -350,6 +350,18 @@ class UrlRuleTest extends TestCase
 					['post/index', ['page' => 1, 'tag' => 'a', 'lang' => 'en'], 'http://en.example.com/post/a'],
 				],
 			],
+			[
+				'with host info in pattern',
+				[
+					'pattern' => 'http://<lang:en|fr>.example.com/post/<page:\d+>/<tag>',
+					'route' => 'post/index',
+					'defaults' => ['page' => 1],
+				],
+				[
+					['post/index', ['page' => 1, 'tag' => 'a'], false],
+					['post/index', ['page' => 1, 'tag' => 'a', 'lang' => 'en'], 'http://en.example.com/post/a'],
+				],
+			],
 		];
 	}
 
@@ -652,6 +664,18 @@ class UrlRuleTest extends TestCase
 					'pattern' => 'post/<page:\d+>',
 					'route' => 'post/index',
 					'host' => 'http://<lang:en|fr>.example.com',
+				],
+				[
+					['post/1', 'post/index', ['page' => '1', 'lang' => 'en']],
+					['post/a', false],
+					['post/1/a', false],
+				],
+			],
+			[
+				'with host info in pattern',
+				[
+					'pattern' => 'http://<lang:en|fr>.example.com/post/<page:\d+>',
+					'route' => 'post/index',
 				],
 				[
 					['post/1', 'post/index', ['page' => '1', 'lang' => 'en']],

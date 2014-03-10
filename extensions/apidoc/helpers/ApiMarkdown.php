@@ -11,7 +11,7 @@ use cebe\markdown\GithubMarkdown;
 use phpDocumentor\Reflection\DocBlock\Type\Collection;
 use yii\apidoc\models\MethodDoc;
 use yii\apidoc\models\TypeDoc;
-use yii\apidoc\templates\BaseRenderer;
+use yii\apidoc\renderers\BaseRenderer;
 use yii\helpers\Inflector;
 use yii\helpers\Markdown;
 
@@ -35,7 +35,7 @@ class ApiMarkdown extends GithubMarkdown
 		parent::prepare();
 
 		// add references to guide pages
-		$this->references = array_merge($this->references, static::$renderer->getGuideReferences());
+		$this->references = array_merge($this->references, static::$renderer->guideReferences);
 	}
 
 	/**
@@ -70,7 +70,7 @@ class ApiMarkdown extends GithubMarkdown
 		if (!empty($language)) {
 			$block['language'] = $language;
 		}
-		for($i = $current + 1, $count = count($lines); $i < $count; $i++) {
+		for ($i = $current + 1, $count = count($lines); $i < $count; $i++) {
 			if (rtrim($line = $lines[$i]) !== $fence) {
 				$block['content'][] = $line;
 			} else {
@@ -93,7 +93,7 @@ class ApiMarkdown extends GithubMarkdown
 		}
 	}
 
-	protected function highlight($code, $language)
+	public static function highlight($code, $language)
 	{
 		if ($language !== 'php') {
 			return htmlspecialchars($code, ENT_NOQUOTES, 'UTF-8');
@@ -140,9 +140,9 @@ class ApiMarkdown extends GithubMarkdown
 					// Collection resolves relative types
 					$typeName = (new Collection([$typeName], $context->phpDocContext))->__toString();
 				}
-				$type = static::$renderer->context->getType($typeName);
+				$type = static::$renderer->apiContext->getType($typeName);
 				if ($type === null) {
-					static::$renderer->context->errors[] = [
+					static::$renderer->apiContext->errors[] = [
 						'file' => ($context !== null) ? $context->sourceFile : null,
 						'message' => 'broken link to ' . $typeName . '::' . $subjectName . (($context !== null) ? ' in ' . $context->name : ''),
 					];
@@ -159,11 +159,11 @@ class ApiMarkdown extends GithubMarkdown
 							}
 						}
 						return [
-							static::$renderer->subjectLink($subject, $title),
+							static::$renderer->createSubjectLink($subject, $title),
 							$offset
 						];
 					} else {
-						static::$renderer->context->errors[] = [
+						static::$renderer->apiContext->errors[] = [
 							'file' => ($context !== null) ? $context->sourceFile : null,
 							'message' => 'broken link to ' . $type->name . '::' . $subjectName . (($context !== null) ? ' in ' . $context->name : ''),
 						];
@@ -175,21 +175,27 @@ class ApiMarkdown extends GithubMarkdown
 				}
 			} elseif ($context !== null && ($subject = $context->findSubject($object)) !== null) {
 				return [
-					static::$renderer->subjectLink($subject, $title),
+					static::$renderer->createSubjectLink($subject, $title),
 					$offset
 				];
 			}
+
 			if ($context !== null) {
 				// Collection resolves relative types
 				$object = (new Collection([$object], $context->phpDocContext))->__toString();
 			}
-			if (($type = static::$renderer->context->getType($object)) !== null) {
+			if (($type = static::$renderer->apiContext->getType($object)) !== null) {
 				return [
-					static::$renderer->typeLink($type, $title),
+					static::$renderer->createTypeLink($type, null, $title),
+					$offset
+				];
+			} elseif (strpos($typeLink = static::$renderer->createTypeLink($object, null, $title), '<a href') !== false) {
+				return [
+					$typeLink,
 					$offset
 				];
 			}
-			static::$renderer->context->errors[] = [
+			static::$renderer->apiContext->errors[] = [
 				'file' => ($context !== null) ? $context->sourceFile : null,
 				'message' => 'broken link to ' . $object . (($context !== null) ? ' in ' . $context->name : ''),
 			];
@@ -202,7 +208,7 @@ class ApiMarkdown extends GithubMarkdown
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 */
 	protected function renderHeadline($block)
 	{
@@ -218,7 +224,7 @@ class ApiMarkdown extends GithubMarkdown
 	 *
 	 * @param string $content
 	 * @param TypeDoc $context
-	 * @param bool $paragraph
+	 * @param boolean $paragraph
 	 * @return string
 	 */
 	public static function process($content, $context = null, $paragraph = false)
@@ -228,7 +234,7 @@ class ApiMarkdown extends GithubMarkdown
 		}
 
 		if (is_string($context)) {
-			$context = static::$renderer->context->getType($context);
+			$context = static::$renderer->apiContext->getType($context);
 		}
 		Markdown::$flavors['api']->context = $context;
 

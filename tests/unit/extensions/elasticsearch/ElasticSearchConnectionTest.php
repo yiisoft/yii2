@@ -24,5 +24,4 @@ class ElasticSearchConnectionTest extends ElasticSearchTestCase
 		$this->assertArrayHasKey('version', reset($connection->nodes));
 		$this->assertArrayHasKey('http_address', reset($connection->nodes));
 	}
-
 }

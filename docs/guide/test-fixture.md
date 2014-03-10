@@ -164,7 +164,7 @@ fixtures that are applied to ALL or many test cases. An example is [[yii\test\In
 two things:
 
 * Perform some common initialization tasks by executing a script located at `@app/tests/fixtures/initdb.php`;
-* Disable the database integrity check before loading other DB fixtures, and re-enable it after other DB fixtures are unloead.
+* Disable the database integrity check before loading other DB fixtures, and re-enable it after other DB fixtures are unloaded.
 
 Using global fixtures is similar to using non-global ones. The only difference is that you declare these fixtures
 in [[yii\codeception\TestCase::globalFixtures()]] instead of `fixtures()`. When a test case loads fixtures, it will

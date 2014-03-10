@@ -33,8 +33,8 @@ class TwigSimpleFileLoader implements \Twig_LoaderInterface
 	/**
 	 * Compare a file's freshness with previously stored timestamp
 	 *
-	 * @param $name string file name to check
-	 * @param $time int timestamp to compare with
+	 * @param string $name file name to check
+	 * @param integer $time timestamp to compare with
 	 * @return boolean true if file is still fresh and not changes, false otherwise
 	 */
 	public function isFresh($name, $time)
@@ -68,7 +68,8 @@ class TwigSimpleFileLoader implements \Twig_LoaderInterface
 	 * @param string $name file name
 	 * @return string absolute path of file
 	 */
-	protected  function getFilePath($name){
+	protected function getFilePath($name)
+	{
 		return $this->_dir . '/' . $name;
 	}
 }

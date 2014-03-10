@@ -1,6 +1,7 @@
 <?php
 
 namespace yiiunit\data\ar\elasticsearch;
+
 use yii\elasticsearch\Command;
 
 /**

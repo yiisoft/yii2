@@ -58,15 +58,4 @@ class HttpException extends UserException
 			return 'Error';
 		}
 	}
-
-	/**
-	 * Returns the array representation of this object.
-	 * @return array the array representation of this object.
-	 */
-	public function toArray()
-	{
-		$array = parent::toArray();
-		$array['status'] = $this->statusCode;
-		return $array;
-	}
 }

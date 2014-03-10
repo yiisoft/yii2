@@ -3,10 +3,14 @@
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\InterfaceDoc;
 use yii\apidoc\models\TraitDoc;
+
 /**
  * @var ClassDoc[]|InterfaceDoc[]|TraitDoc[] $types
  * @var yii\web\View $this
+ * @var \yii\apidoc\templates\html\ApiRenderer $renderer
  */
+
+$renderer = $this->context;
 
 if (isset($readme)) {
 	echo \yii\apidoc\helpers\ApiMarkdown::process($readme);
@@ -26,10 +30,10 @@ if (isset($readme)) {
 	</tr>
 <?php
 ksort($types);
-foreach($types as $i=>$class):
+foreach ($types as $i => $class):
 ?>
 	<tr>
-		<td><?= $this->context->typeLink($class, $class->name) ?></td>
+		<td><?= $renderer->createTypeLink($class, $class, $class->name) ?></td>
 		<td><?= \yii\apidoc\helpers\ApiMarkdown::process($class->shortDescription, $class, true) ?></td>
 	</tr>
 <?php endforeach; ?>

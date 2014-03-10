@@ -7,7 +7,6 @@
 
 namespace yii\web;
 
-use yii\base\Arrayable;
 use yii\base\Object;
 
 /**
@@ -16,7 +15,7 @@ use yii\base\Object;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Link extends Object implements Arrayable
+class Link extends Object
 {
 	/**
 	 * The self link.
@@ -53,13 +52,6 @@ class Link extends Object implements Arrayable
 	 */
 	public $hreflang;
 
-	/**
-	 * @inheritdoc
-	 */
-	public function toArray()
-	{
-		return array_filter((array)$this);
-	}
 
 	/**
 	 * Serializes a list of links into proper array format.
@@ -71,7 +63,7 @@ class Link extends Object implements Arrayable
 		foreach ($links as $rel => $link) {
 			if (is_array($link)) {
 				foreach ($link as $i => $l) {
-					$link[$i] = $l instanceof self ? $l->toArray() : ['href' => $l];
+					$link[$i] = $l instanceof self ? array_filter((array)$l) : ['href' => $l];
 				}
 				$links[$rel] = $link;
 			} elseif (!$link instanceof self) {

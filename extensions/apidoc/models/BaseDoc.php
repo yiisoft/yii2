@@ -76,7 +76,7 @@ class BaseDoc extends Object
 			$this->phpDocContext = $docblock->getContext();
 
 			$this->tags = $docblock->getTags();
-			foreach($this->tags as $i => $tag) {
+			foreach ($this->tags as $i => $tag) {
 				if ($tag instanceof SinceTag) {
 					$this->since = $tag->getVersion();
 					unset($this->tags[$i]);
@@ -95,26 +95,17 @@ class BaseDoc extends Object
 		}
 	}
 
-
-	// TODO
-	public function loadSource($reflection)
-	{
-		$this->sourcePath = str_replace('\\', '/', str_replace(YII_PATH, '', $reflection->getFileName()));
-		$this->startLine = $reflection->getStartLine();
-		$this->endLine = $reflection->getEndLine();
-	}
-
-	public function getSourceUrl($baseUrl, $line=null)
-	{
-		if($line === null)
-			return $baseUrl . $this->sourcePath;
-		else
-			return $baseUrl . $this->sourcePath . '#' . $line;
-	}
-
-	public function getSourceCode()
-	{
-		$lines = file(YII_PATH . $this->sourcePath);
-		return implode("", array_slice($lines, $this->startLine - 1, $this->endLine - $this->startLine + 1));
-	}
+	// TODO implement
+//	public function loadSource($reflection)
+//	{
+//		$this->sourceFile;
+//		$this->startLine;
+//		$this->endLine;
+//	}
+//
+//	public function getSourceCode()
+//	{
+//		$lines = file(YII_PATH . $this->sourcePath);
+//		return implode("", array_slice($lines, $this->startLine - 1, $this->endLine - $this->startLine + 1));
+//	}
 }

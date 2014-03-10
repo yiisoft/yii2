@@ -109,7 +109,7 @@ class SideNavWidget extends \yii\bootstrap\Widget
 				unset($items[$i]);
 				continue;
 			}
-			$items[] = $this->renderItem($item);
+			$items[] = $this->renderItem($item, count($this->items) !== 1);
 		}
 
 		return Html::tag('div', implode("\n", $items), $this->options);
@@ -118,10 +118,12 @@ class SideNavWidget extends \yii\bootstrap\Widget
 	/**
 	 * Renders a widget's item.
 	 * @param string|array $item the item to render.
+	 * @param boolean $collapsed whether to collapse item if not active
+	 * @throws \yii\base\InvalidConfigException
 	 * @return string the rendering result.
-	 * @throws InvalidConfigException
+	 * @throws InvalidConfigException if label is not defined
 	 */
-	public function renderItem($item)
+	public function renderItem($item, $collapsed = true)
 	{
 		if (is_string($item)) {
 			return $item;
@@ -151,7 +153,7 @@ class SideNavWidget extends \yii\bootstrap\Widget
 			$label .= ' ' . Html::tag('b', '', ['class' => 'caret']);
 			if (is_array($items)) {
 				if ($active === false) {
-					foreach($items as $subItem) {
+					foreach ($items as $subItem) {
 						if (isset($subItem['active']) && $subItem['active']) {
 							$active = true;
 						}
@@ -163,7 +165,7 @@ class SideNavWidget extends \yii\bootstrap\Widget
 					'encodeLabels' => $this->encodeLabels,
 					'view' => $this->getView(),
 					'options' => [
-						'class' => "submenu panel-collapse collapse" . ($active ? ' in' : '')
+						'class' => "submenu panel-collapse collapse" . ($active || !$collapsed ? ' in' : '')
 					]
 				]);
 			}
