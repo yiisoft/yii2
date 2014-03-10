@@ -78,7 +78,7 @@ class BaseUrl
 			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || strpos($url, '://') || !strncmp($url, './', 2))) {
 				return $url;
 			} else {
-				$prefix = $absolute ? Yii::$app->request->getHostInfo() : '';
+				$prefix = $absolute ? Yii::$app->getRequest()->getHostInfo() : '';
 				return $prefix . Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
 			}
 		}
@@ -97,9 +97,9 @@ class BaseUrl
 		}
 
 		if ($name === null) {
-			Yii::$app->user->setReturnUrl($url);
+			Yii::$app->getUser()->setReturnUrl($url);
 		} else {
-			Yii::$app->session->set($name, $url);
+			Yii::$app->getSession()->set($name, $url);
 		}
 	}
 
@@ -112,9 +112,9 @@ class BaseUrl
 	public function previous($name = null)
 	{
 		if ($name === null) {
-			return Yii::$app->user->getReturnUrl();
+			return Yii::$app->getUser()->getReturnUrl();
 		} else {
-			return Yii::$app->session->get($name);
+			return Yii::$app->getSession()->get($name);
 		}
 	}
 
@@ -136,7 +136,7 @@ class BaseUrl
 	 */
 	public function home($absolute = false)
 	{
-		$prefix = $absolute ? Yii::$app->request->getHostInfo() : '';
+		$prefix = $absolute ? Yii::$app->getRequest()->getHostInfo() : '';
 		return $prefix . Yii::$app->getHomeUrl();
 	}
 }
