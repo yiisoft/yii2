@@ -9,7 +9,8 @@ return yii\helpers\ArrayHelper::merge(
 			'db' => [
 				'dsn' => 'mysql:host=localhost;dbname=yii2_advanced_unit',
 			],
-			'id' => 'app-common',
 		],
+		'id' => 'app-common',
+		'basePath' => dirname(__DIR__),
 	]
 );
