@@ -191,7 +191,11 @@ Yii Framework 2 Change Log
 - Chg #2544: Changed `DetailView`'s `name:format:label` to `attribute:format:label` to match `GridView` (samdark)
 - Chg #2603: `yii\base\ErrorException` now extends `\ErrorException` (samdark)
 - Chg #2629: `Module::controllerPath` is now read only, and all controller classes must be namespaced under `Module::controllerNamespace`. (qiangxue)
-- Chg #2630: `yii\heplers\Html::url` removed (samdark)
+- Chg #2630: API changes for URLs generation (samdark, qiangxue, cebe)
+	- Added `yii\helpers\Url`.
+	- Removed `yii\heplers\Html::url`, use `yii\helpers\Url::to` instead.
+	- Removed `yii\web\Controller::createUrl` and `yii\web\Controller::createAbsoluteUrl`, use `yii\helpers::toRoute` instead.
+	- Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers::canonical` instead.
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
@@ -231,7 +235,6 @@ Yii Framework 2 Change Log
 - New #1956: Implemented test fixture framework (qiangxue)
 - New #2149: Added `yii\base\DynamicModel` to support ad-hoc data validation (qiangxue)
 - New #2360: Added `AttributeBehavior` and `BlameableBehavior`, and renamed `AutoTimestamp` to `TimestampBehavior` (lucianobaraglia, qiangxue)
-- New #2630: Added `yii\helpers\Url` (samdark)
 - New: Yii framework now comes with core messages in multiple languages
 - New: Added yii\codeception\DbTestCase (qiangxue)
 
