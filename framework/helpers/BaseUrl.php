@@ -72,7 +72,7 @@ class BaseUrl
 	public static function to($url = null, $absolute = false)
 	{
 		if (is_array($url) && isset($url[0]) || $url === '') {
-			return static::to($url, $absolute);
+			return static::toRoute($url, $absolute);
 		} else {
 			$url = Yii::getAlias($url);
 			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || strpos($url, '://') || !strncmp($url, './', 2))) {
