@@ -958,7 +958,7 @@ class Request extends \yii\base\Request
 	{
 		if (isset($_SERVER["CONTENT_TYPE"])) {
 			return $_SERVER["CONTENT_TYPE"];
-		} elseif (isset($_SERVER["HTTP_CONTENT_TYPE"])) {
+		} elseif (isset($_SERVER["HTTP_CONTENT_TYPE"])) { //fix bug https://bugs.php.net/bug.php?id=66606
 			return $_SERVER["HTTP_CONTENT_TYPE"];
 		}
 		return null;
