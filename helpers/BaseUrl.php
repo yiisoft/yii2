@@ -24,24 +24,28 @@ class BaseUrl
 	 * Returns URL for a route.
 	 *
 	 * @param array|string $route route as a string or route and parameters in form of
-	 * ['route', 'param1' => 'value1', 'param2' => 'value2'].
+	 * `['route', 'param1' => 'value1', 'param2' => 'value2']`.
 	 *
 	 * If there is a controller running relative routes are recognized:
 	 *
-	 * - If the route is an empty string, the current [[route]] will be used;
+	 * - If the route is an empty string, the current [[\yii\web\Controller::route]] will be used;
 	 * - If the route contains no slashes at all, it is considered to be an action ID
-	 *   of the current controller and will be prepended with [[uniqueId]];
+	 *   of the current controller and will be prepended with [[\yii\web\Controller::uniqueId]];
 	 * - If the route has no leading slash, it is considered to be a route relative
 	 *   to the current module and will be prepended with the module's uniqueId.
 	 *
 	 * In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
 	 *
-	 * @param boolean $absolute if absolute URL should be created.
-	 * @param string $schema URI schema to use. Schema to use for absolute URL. If not specified current schema will be used.
+	 * @param boolean|string $schema URI schema to use:
+	 *
+	 * - `false`: relative URL. Default behavior.
+	 * - `true`: absolute URL with the current scheme.
+	 * - string: absolute URL with string value used as schema.
+	 *
 	 * @return string the normalized URL
 	 * @throws InvalidParamException if the parameter is invalid.
 	 */
-	public static function toRoute($route, $absolute = false, $schema = null)
+	public static function toRoute($route, $schema = false)
 	{
 		$route = (array)$route;
 		if (!isset($route[0])) {
@@ -50,7 +54,7 @@ class BaseUrl
 		if (Yii::$app->controller instanceof \yii\web\Controller) {
 			$route[0] = static::getNormalizedRoute($route[0]);
 		}
-		return $absolute ? Yii::$app->getUrlManager()->createAbsoluteUrl($route, $schema) : Yii::$app->getUrlManager()->createUrl($route);
+		return $schema ? Yii::$app->getUrlManager()->createAbsoluteUrl($route, $schema) : Yii::$app->getUrlManager()->createUrl($route);
 	}
 
 	/**
@@ -59,9 +63,9 @@ class BaseUrl
 	 *
 	 * A relative route is a route without a leading slash, such as "view", "post/view".
 	 *
-	 * - If the route is an empty string, the current [[route]] will be used;
+	 * - If the route is an empty string, the current [[\yii\web\Controller::route]] will be used;
 	 * - If the route contains no slashes at all, it is considered to be an action ID
-	 *   of the current controller and will be prepended with [[uniqueId]];
+	 *   of the current controller and will be prepended with [[\yii\web\Controller::uniqueId]];
 	 * - If the route has no leading slash, it is considered to be a route relative
 	 *   to the current module and will be prepended with the module's uniqueId.
 	 *
@@ -96,20 +100,26 @@ class BaseUrl
 
 	 *
 	 * @param array|string $url the parameter to be used to generate a valid URL
-	 * @param boolean $absolute if absolute URL should be created.
-	 * @param string $schema URI schema to use. Schema to use for absolute URL. If not specified current schema will be used.
+	 * @param boolean|string $schema URI schema to use:
+	 *
+	 * - `false`: relative URL. Default behavior.
+	 * - `true`: absolute URL with the current scheme.
+	 * - string: absolute URL with string value used as schema.
+	 *
 	 * @return string the normalized URL
 	 * @throws InvalidParamException if the parameter is invalid.
 	 */
-	public static function to($url = '', $absolute = false, $schema = null)
+	public static function to($url = '', $schema = false)
 	{
 		if (is_array($url)) {
-			return static::toRoute($url, $absolute, $schema);
+			return static::toRoute($url, $schema);
 		} elseif ($url === '') {
-			if ($absolute) {
+			if ($schema) {
 				$url = Yii::$app->request->getAbsoluteUrl();
-				$pos = strpos($url, '://');
-				$url = $schema . substr($url, $pos);
+				if ($schema !== true) {
+					$pos = strpos($url, '://');
+					$url = $schema . substr($url, $pos);
+				}
 			} else {
 				$url = Yii::$app->request->getUrl();
 			}
@@ -118,7 +128,7 @@ class BaseUrl
 			$pos = strpos($url, '://');
 			if ($pos !== null) {
 				// URI is already absolute, adjust schema if specified
-				if ($schema !== null) {
+				if ($schema  && $schema !== true) {
 					$url = $schema . substr($url, $pos);
 				}
 			} else {
@@ -127,9 +137,9 @@ class BaseUrl
 					// URL is relative need to adjust it to be absolute
 					$url = Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
 				}
-				if ($absolute) {
+				if ($schema) {
 					$url = Yii::$app->getRequest()->getHostInfo() . $url;
-					if ($schema !== null) {
+					if ($schema !== true) {
 						$pos = strpos($url, '://');
 						if ($pos !== null) {
 							$url = $schema . substr($url, $pos);
@@ -197,15 +207,19 @@ class BaseUrl
 	/**
 	 * Returns home URL
 	 *
-	 * @param boolean $absolute if absolute URL should be created.
-	 * @param string $schema URI schema to use. Schema to use for absolute URL. If not specified current schema will be used.
+	 * @param boolean|string $schema URI schema to use:
+	 *
+	 * - `false`: relative URL. Default behavior.
+	 * - `true`: absolute URL with the current scheme.
+	 * - string: absolute URL with string value used as schema.
+	 *
 	 * @return string home URL
 	 */
-	public static function home($absolute = false, $schema = null)
+	public static function home($schema = false)
 	{
-		if ($absolute) {
+		if ($schema) {
 			$url = Yii::$app->getRequest()->getHostInfo() . Yii::$app->getHomeUrl();
-			if ($schema !== null) {
+			if ($schema !== true) {
 				$pos = strpos($url, '://');
 				$url = $schema . substr($url, $pos);
 			}
