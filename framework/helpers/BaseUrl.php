@@ -108,9 +108,9 @@ class BaseUrl
 	 * @param string $url URL to remember. Default is current URL.
 	 * @param string $name Name to use to remember URL. Defaults to `yii\web\User::returnUrlParam`.
 	 */
-	public function remember($url = null, $name = null)
+	public function remember($url = '', $name = null)
 	{
-		if ($url === null) {
+		if ($url === '') {
 			$url = Yii::$app->getRequest()->getUrl();
 		}
 
