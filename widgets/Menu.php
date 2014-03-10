@@ -10,6 +10,7 @@ namespace yii\widgets;
 use Yii;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\helpers\Html;
 
 /**
@@ -218,7 +219,7 @@ class Menu extends Widget
 		if (isset($item['url'])) {
 			$template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
 			return strtr($template, [
-				'{url}' => Html::url($item['url']),
+				'{url}' => Url::to($item['url']),
 				'{label}' => $item['label'],
 			]);
 		} else {

@@ -205,7 +205,7 @@ class BaseHtml
 		if (!isset($options['rel'])) {
 			$options['rel'] = 'stylesheet';
 		}
-		$options['href'] = static::url($url);
+		$options['href'] = Url::to($url);
 		return static::tag('link', '', $options);
 	}
 
@@ -221,7 +221,7 @@ class BaseHtml
 	 */
 	public static function jsFile($url, $options = [])
 	{
-		$options['src'] = static::url($url);
+		$options['src'] = Url::to($url);
 		return static::tag('script', '', $options);
 	}
 
@@ -241,7 +241,7 @@ class BaseHtml
 	 */
 	public static function beginForm($action = '', $method = 'post', $options = [])
 	{
-		$action = static::url($action);
+		$action = Url::to($action);
 
 		$hiddenInputs = [];
 
@@ -311,7 +311,7 @@ class BaseHtml
 	public static function a($text, $url = null, $options = [])
 	{
 		if ($url !== null) {
-			$options['href'] = static::url($url);
+			$options['href'] = Url::to($url);
 		}
 		return static::tag('a', $text, $options);
 	}
@@ -346,7 +346,7 @@ class BaseHtml
 	 */
 	public static function img($src, $options = [])
 	{
-		$options['src'] = static::url($src);
+		$options['src'] = Url::to($src);
 		if (!isset($options['alt'])) {
 			$options['alt'] = '';
 		}
@@ -1525,48 +1525,6 @@ class BaseHtml
 			}
 		}
 		return $html;
-	}
-
-	/**
-	 * Normalizes the input parameter to be a valid URL.
-	 *
-	 * If the input parameter
-	 *
-	 * - is an empty string: the currently requested URL will be returned;
-	 * - is a non-empty string: it will first be processed by [[Yii::getAlias()]]. If the result
-	 *   is an absolute URL, it will be returned without any change further; Otherwise, the result
-	 *   will be prefixed with [[\yii\web\Request::baseUrl]] and returned.
-	 * - is an array: the first array element is considered a route, while the rest of the name-value
-	 *   pairs are treated as the parameters to be used for URL creation using [[\yii\web\Controller::createUrl()]].
-	 *   For example: `['post/index', 'page' => 2]`, `['index']`.
-	 *   In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
-	 *
-	 * @param array|string $url the parameter to be used to generate a valid URL
-	 * @return string the normalized URL
-	 * @throws InvalidParamException if the parameter is invalid.
-	 */
-	public static function url($url)
-	{
-		if (is_array($url)) {
-			if (isset($url[0])) {
-				if (Yii::$app->controller instanceof \yii\web\Controller) {
-					return Yii::$app->controller->createUrl($url);
-				} else {
-					return Yii::$app->getUrlManager()->createUrl($url);
-				}
-			} else {
-				throw new InvalidParamException('The array specifying a URL must contain at least one element.');
-			}
-		} elseif ($url === '') {
-			return Yii::$app->getRequest()->getUrl();
-		} else {
-			$url = Yii::getAlias($url);
-			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || strpos($url, '://') || !strncmp($url, './', 2))) {
-				return $url;
-			} else {
-				return Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
-			}
-		}
 	}
 
 	/**
