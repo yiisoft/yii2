@@ -390,7 +390,7 @@ class User extends ActiveRecord implements Linkable
     public function getLinks()
     {
         return [
-            Link::REL_SELF => Url::action(['user', 'id' => $this->id], true),
+            Link::REL_SELF => Url::to(['user', 'id' => $this->id], true),
         ];
     }
 }
