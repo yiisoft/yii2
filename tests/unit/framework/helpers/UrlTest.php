@@ -23,10 +23,6 @@ class UrlTest extends TestCase
 					'hostInfo' => 'http://example.com/',
 					'url' => '/base/index.php&r=site/current&id=42'
 				],
-				'user' => [
-					'class' => 'yii\web\User',
-					'identityClass' => 'stdObject',
-				],
 			],
 		], '\yii\web\Application');
 	}
