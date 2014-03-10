@@ -28,7 +28,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public $enableCsrfValidation = true;
 	/**
-	 * @var array the parameters bound to the current action. This is mainly used by [[getCanonicalUrl()]].
+	 * @var array the parameters bound to the current action.
 	 */
 	public $actionParams = [];
 
@@ -116,101 +116,6 @@ class Controller extends \yii\base\Controller
 		} else {
 			return false;
 		}
-	}
-
-	/**
-	 * Normalizes route making it suitable for UrlManager. Absolute routes are staying as is
-	 * while relative routes are converted to absolute routes.
-	 *
-	 * A relative route is a route without a leading slash, such as "view", "post/view".
-	 *
-	 * - If the route is an empty string, the current [[route]] will be used;
-	 * - If the route contains no slashes at all, it is considered to be an action ID
-	 *   of the current controller and will be prepended with [[uniqueId]];
-	 * - If the route has no leading slash, it is considered to be a route relative
-	 *   to the current module and will be prepended with the module's uniqueId.
-	 *
-	 * @param string $route the route. This can be either an absolute route or a relative route.
-	 * @return string normalized route suitable for UrlManager
-	 */
-	protected function getNormalizedRoute($route)
-	{
-		if (strpos($route, '/') === false) {
-			// empty or an action ID
-			$route = $route === '' ? $this->getRoute() : $this->getUniqueId() . '/' . $route;
-		} elseif ($route[0] !== '/') {
-			// relative to module
-			$route = ltrim($this->module->getUniqueId() . '/' . $route, '/');
-		}
-		return $route;
-	}
-
-	/**
-	 * Creates a relative URL using the given route and parameters.
-	 *
-	 * This method enhances [[UrlManager::createUrl()]] by supporting relative routes.
-	 * A relative route is a route without a leading slash, such as "view", "post/view".
-	 *
-	 * - If the route is an empty string, the current [[route]] will be used;
-	 * - If the route contains no slashes at all, it is considered to be an action ID
-	 *   of the current controller and will be prepended with [[uniqueId]];
-	 * - If the route has no leading slash, it is considered to be a route relative
-	 *   to the current module and will be prepended with the module's uniqueId.
-	 *
-	 * After this route conversion, the method calls [[UrlManager::createUrl()]] to create a URL.
-	 *
-	 * @param string|array $params route as a string or route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
-	 * @return string the created relative URL
-	 */
-	public function createUrl($params)
-	{
-		$params = (array)$params;
-		$params[0] = $this->getNormalizedRoute($params[0]);
-		return Yii::$app->getUrlManager()->createUrl($params);
-	}
-
-	/**
-	 * Creates an absolute URL using the given route and parameters.
-	 *
-	 * This method enhances [[UrlManager::createAbsoluteUrl()]] by supporting relative routes.
-	 * A relative route is a route without a leading slash, such as "view", "post/view".
-	 *
-	 * - If the route is an empty string, the current [[route]] will be used;
-	 * - If the route contains no slashes at all, it is considered to be an action ID
-	 *   of the current controller and will be prepended with [[uniqueId]];
-	 * - If the route has no leading slash, it is considered to be a route relative
-	 *   to the current module and will be prepended with the module's uniqueId.
-	 *
-	 * After this route conversion, the method calls [[UrlManager::createUrl()]] to create a URL.
-	 *
-	 * @param string|array $params route as a string or route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
-	 * @param string $schema the schema to use for the url. e.g. 'http' or 'https'. If not specified
-	 * the schema of the current request will be used.
-	 * @return string the created absolute URL
-	 */
-	public function createAbsoluteUrl($params, $schema = null)
-	{
-		$params = (array)$params;
-		$params[0] = $this->getNormalizedRoute($params[0]);
-		return Yii::$app->getUrlManager()->createAbsoluteUrl($params, $schema);
-	}
-
-	/**
-	 * Returns the canonical URL of the currently requested page.
-	 * The canonical URL is constructed using [[route]] and [[actionParams]]. You may use the following code
-	 * in the layout view to add a link tag about canonical URL:
-	 *
-	 * ~~~
-	 * $this->registerLinkTag(['rel' => 'canonical', 'href' => Yii::$app->controller->canonicalUrl]);
-	 * ~~~
-	 *
-	 * @return string the canonical URL of the currently requested page
-	 */
-	public function getCanonicalUrl()
-	{
-		$params = $this->actionParams;
-		$params[0] = $this->getRoute();
-		return Yii::$app->getUrlManager()->createAbsoluteUrl($params);
 	}
 
 	/**

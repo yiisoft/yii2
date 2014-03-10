@@ -26,6 +26,14 @@ class BaseUrl
 	 * @param array|string $route route as a string or route and parameters in form of
 	 * ['route', 'param1' => 'value1', 'param2' => 'value2'].
 	 *
+	 * If there is a controller running relative routes are recognized:
+	 *
+	 * - If the route is an empty string, the current [[route]] will be used;
+	 * - If the route contains no slashes at all, it is considered to be an action ID
+	 *   of the current controller and will be prepended with [[uniqueId]];
+	 * - If the route has no leading slash, it is considered to be a route relative
+	 *   to the current module and will be prepended with the module's uniqueId.
+	 *
 	 * In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
 	 *
 	 * @param string $schema URI schema to use. If specified absolute URL with the schema specified is returned.
@@ -39,10 +47,36 @@ class BaseUrl
 			throw new InvalidParamException('$route should contain at least one element.');
 		}
 		if (Yii::$app->controller instanceof \yii\web\Controller) {
-			return $schema === null ? Yii::$app->controller->createUrl($route) : Yii::$app->controller->createAbsoluteUrl($route, $schema);
-		} else {
-			return $schema === null ? Yii::$app->getUrlManager()->createUrl($route) : Yii::$app->getUrlManager()->createAbsoluteUrl($route, $schema);
+			$route[0] = static::getNormalizedRoute($route[0]);
 		}
+		return $schema === null ? Yii::$app->getUrlManager()->createUrl($route) : Yii::$app->getUrlManager()->createAbsoluteUrl($route, $schema);
+	}
+
+	/**
+	 * Normalizes route making it suitable for UrlManager. Absolute routes are staying as is
+	 * while relative routes are converted to absolute routes.
+	 *
+	 * A relative route is a route without a leading slash, such as "view", "post/view".
+	 *
+	 * - If the route is an empty string, the current [[route]] will be used;
+	 * - If the route contains no slashes at all, it is considered to be an action ID
+	 *   of the current controller and will be prepended with [[uniqueId]];
+	 * - If the route has no leading slash, it is considered to be a route relative
+	 *   to the current module and will be prepended with the module's uniqueId.
+	 *
+	 * @param string $route the route. This can be either an absolute route or a relative route.
+	 * @return string normalized route suitable for UrlManager
+	 */
+	private static function getNormalizedRoute($route)
+	{
+		if (strpos($route, '/') === false) {
+			// empty or an action ID
+			$route = $route === '' ? Yii::$app->controller->getRoute() : Yii::$app->controller->getUniqueId() . '/' . $route;
+		} elseif ($route[0] !== '/') {
+			// relative to module
+			$route = ltrim(Yii::$app->controller->module->getUniqueId() . '/' . $route, '/');
+		}
+		return $route;
 	}
 
 	/**
@@ -108,7 +142,7 @@ class BaseUrl
 	 * @param string $url URL to remember. Default is current URL.
 	 * @param string $name Name to use to remember URL. Defaults to `yii\web\User::returnUrlParam`.
 	 */
-	public function remember($url = '', $name = null)
+	public static function remember($url = '', $name = null)
 	{
 		if ($url === '') {
 			$url = Yii::$app->getRequest()->getUrl();
@@ -127,7 +161,7 @@ class BaseUrl
 	 * @param string $name Name used to remember URL. Defaults to `yii\web\User::returnUrlParam`.
 	 * @return string URL
 	 */
-	public function previous($name = null)
+	public static function previous($name = null)
 	{
 		if ($name === null) {
 			return Yii::$app->getUser()->getReturnUrl();
@@ -137,13 +171,22 @@ class BaseUrl
 	}
 
 	/**
-	 * Returns canonical URL for the current page
+	 * Returns the canonical URL of the currently requested page.
+	 * The canonical URL is constructed using current controller's [[yii\web\Controller::route]] and
+	 * [[yii\web\Controller::actionParams]]. You may use the following code in the layout view to add a link tag
+	 * about canonical URL:
 	 *
-	 * @return string canonical URL
+	 * ```php
+	 * $this->registerLinkTag(['rel' => 'canonical', 'href' => Url::canonical()]);
+	 * ```
+	 *
+	 * @return string the canonical URL of the currently requested page
 	 */
-	public function canonical()
+	public static function canonical()
 	{
-		return Yii::$app->controller->getCanonicalUrl();
+		$params = Yii::$app->controller->actionParams;
+		$params[0] = Yii::$app->controller->getRoute();
+		return Yii::$app->getUrlManager()->createAbsoluteUrl($params);
 	}
 
 	/**
@@ -152,7 +195,7 @@ class BaseUrl
 	 * @param string $schema URI schema to use. If specified absolute URL with the schema specified is returned.
 	 * @return string home URL
 	 */
-	public function home($schema = null)
+	public static function home($schema = null)
 	{
 		if ($schema === null) {
 			return Yii::$app->getHomeUrl();
