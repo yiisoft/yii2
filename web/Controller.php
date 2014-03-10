@@ -241,7 +241,7 @@ class Controller extends \yii\base\Controller
 	 */
 	public function redirect($url, $statusCode = 302)
 	{
-		return Yii::$app->getResponse()->redirect(Url::toRoute($url), $statusCode);
+		return Yii::$app->getResponse()->redirect(Url::to($url), $statusCode);
 	}
 
 	/**
