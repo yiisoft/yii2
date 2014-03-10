@@ -287,7 +287,7 @@ class HelpController extends Controller
 		}
 
 		$tags = $this->parseComment($method->getDocComment());
-		$options = $this->getOptionHelps($controller);
+		$options = $this->getOptionHelps($controller, $actionID);
 
 		if ($tags['description'] !== '') {
 			$this->stdout("\nDESCRIPTION\n", Console::BOLD);
@@ -317,7 +317,6 @@ class HelpController extends Controller
 			echo implode("\n\n", array_merge($required, $optional)) . "\n\n";
 		}
 
-		$options = $this->getOptionHelps($controller);
 		if (!empty($options)) {
 			$this->stdout("\nOPTIONS\n\n", Console::BOLD);
 			echo implode("\n\n", $options) . "\n\n";
@@ -360,11 +359,12 @@ class HelpController extends Controller
 	/**
 	 * Returns the help information about the options available for a console controller.
 	 * @param Controller $controller the console controller
+	 * @param string $actionID name of the action, if set include local options for that action
 	 * @return array the help information about the options
 	 */
-	protected function getOptionHelps($controller)
+	protected function getOptionHelps($controller, $actionID)
 	{
-		$optionNames = $controller->globalOptions();
+		$optionNames = $controller->options($actionID);
 		if (empty($optionNames)) {
 			return [];
 		}

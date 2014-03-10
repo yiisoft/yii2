@@ -296,7 +296,7 @@ Each console controller is like `CConsoleCommand` in 1.1. It consists of one or 
 actions. You use the `yii <route>` command to execute a console command, where `<route>`
 stands for a controller route (e.g. `sitemap/index`). Additional anonymous arguments
 are passed as the parameters to the corresponding controller action method, and named arguments
-are treated as global options declared in `globalOptions()`.
+are treated as options declared in `options($id)`.
 
 Yii 2.0 supports automatic generation of command help information from comment blocks.
 

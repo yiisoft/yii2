@@ -109,8 +109,8 @@ class GuideController extends BaseController
 	/**
 	 * @inheritdoc
 	 */
-	public function globalOptions()
+	public function options($id)
 	{
-		return array_merge(parent::globalOptions(), ['apiDocs']);
+		return array_merge(parent::options($id), ['apiDocs']);
 	}
 }
