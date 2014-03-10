@@ -30,6 +30,8 @@ class FakedValidationModel extends Model
 		return [
 			[['val_attr_a', 'val_attr_b'], 'required', 'on' => 'reqTest'],
 			['val_attr_c', 'integer'],
+            ['attr_images', 'file', 'maxFiles' => 3, 'types' => ['png'], 'on' => 'validateMultipleFiles'],
+            ['attr_image', 'file', 'types' => ['png'], 'on' => 'validateFile']
 		];
 	}
 
