@@ -23,64 +23,82 @@ class BaseUrl
 	/**
 	 * Returns URL for a route.
 	 *
-	 * @param array|string $route parametrized route or empty string for current URL:
+	 * @param array|string $route route as a string or route and parameters in form of
+	 * ['route', 'param1' => 'value1', 'param2' => 'value2'].
 	 *
-	 * - an empty string: the currently requested URL will be returned;
-	 * - an array: the first array element is considered a route, while the rest of the name-value
-	 *   pairs are treated as the parameters to be used for URL creation using [[\yii\web\Controller::createUrl()]].
-	 *   For example: `['post/index', 'page' => 2]`, `['index']`.
-	 *   In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
+	 * In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
 	 *
-	 * @param boolean $absolute if absolute URL should be created
+	 * @param string $schema URI schema to use. If specified absolute URL with the schema specified is returned.
 	 * @return string the normalized URL
 	 * @throws InvalidParamException if the parameter is invalid.
 	 */
-	public static function toRoute($route, $absolute = false)
+	public static function toRoute($route, $schema = null)
 	{
-		if ($route === '') {
-			return $absolute ? Yii::$app->getRequest()->getAbsoluteUrl() : Yii::$app->getRequest()->getUrl();
-		}
-		if (!is_array($route) || !isset($route[0])) {
-			throw new InvalidParamException('$route should be either empty string or array containing at least one element.');
+		$route = (array)$route;
+		if (!isset($route[0])) {
+			throw new InvalidParamException('$route should contain at least one element.');
 		}
 		if (Yii::$app->controller instanceof \yii\web\Controller) {
-			return $absolute ? Yii::$app->controller->createAbsoluteUrl($route) : Yii::$app->controller->createUrl($route);
+			return $schema === null ? Yii::$app->controller->createUrl($route) : Yii::$app->controller->createAbsoluteUrl($route, $schema);
 		} else {
-			return $absolute ? Yii::$app->getUrlManager()->createAbsoluteUrl($route) : Yii::$app->getUrlManager()->createUrl($route);
+			return $schema === null ? Yii::$app->getUrlManager()->createUrl($route) : Yii::$app->getUrlManager()->createAbsoluteUrl($route, $schema);
 		}
 	}
 
 	/**
-	 * Normalizes the input parameter to be a valid URL.
+	 * Creates a link specified by the input parameter.
 	 *
 	 * If the input parameter
 	 *
-	 * - is an empty string: the currently requested URL will be returned;
-	 * - is a non-empty string: it will first be processed by [[Yii::getAlias()]]. If the result
-	 *   is an absolute URL, it will be returned without any change further; Otherwise, the result
-	 *   will be prefixed with [[\yii\web\Request::baseUrl]] and returned.
 	 * - is an array: the first array element is considered a route, while the rest of the name-value
 	 *   pairs are treated as the parameters to be used for URL creation using [[\yii\web\Controller::createUrl()]].
 	 *   For example: `['post/index', 'page' => 2]`, `['index']`.
 	 *   In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
+	 * - is an empty string: the currently requested URL will be returned;
+	 * - is a non-empty string: it will first be processed by [[Yii::getAlias()]]. If the result
+	 *   is an absolute URL, it will be returned without any change further; Otherwise, the result
+	 *   will be prefixed with [[\yii\web\Request::baseUrl]] and returned.
+
 	 *
 	 * @param array|string $url the parameter to be used to generate a valid URL
-	 * @param boolean $absolute if URL should be absolute
+	 * @param string $schema URI schema to use. If specified absolute URL with the schema specified is returned.
 	 * @return string the normalized URL
 	 * @throws InvalidParamException if the parameter is invalid.
 	 */
-	public static function to($url = null, $absolute = false)
+	public static function to($url = '', $schema = null)
 	{
-		if (is_array($url) && isset($url[0]) || $url === '') {
-			return static::toRoute($url, $absolute);
+		if (is_array($url)) {
+			return static::toRoute($url, $schema);
+		} elseif ($url === '') {
+			if ($schema === null) {
+				return Yii::$app->request->getUrl();
+			} else {
+				$url = Yii::$app->request->getAbsoluteUrl();
+				$pos = strpos($url, '://');
+				return $schema . substr($url, $pos);
+			}
 		} else {
 			$url = Yii::getAlias($url);
-			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || strpos($url, '://') || !strncmp($url, './', 2))) {
-				return strpos($url, '://') ? $url :  Yii::$app->getRequest()->getHostInfo() . $url;
-			} else {
-				$prefix = $absolute ? Yii::$app->getRequest()->getHostInfo() : '';
-				return $prefix . Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
+			$pos = strpos($url, '://');
+			if ($pos !== null) {
+				if ($schema !== null) {
+					$url = $schema . substr($url, $pos);
+				}
+				return $url;
 			}
+
+			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || !strncmp($url, './', 2))) {
+				$url = Yii::$app->getRequest()->getHostInfo() . $url;
+			} else {
+				$url = Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
+			}
+			if ($schema !== null) {
+				$pos = strpos($url, '://');
+				if ($pos !== null) {
+					$url = $schema . substr($url, $pos);
+				}
+			}
+			return $url;
 		}
 	}
 
@@ -131,13 +149,18 @@ class BaseUrl
 	/**
 	 * Returns home URL
 	 *
-	 * @param boolean $absolute if absolute URL should be returned
+	 * @param string $schema URI schema to use. If specified absolute URL with the schema specified is returned.
 	 * @return string home URL
 	 */
-	public function home($absolute = false)
+	public function home($schema = null)
 	{
-		$prefix = $absolute ? Yii::$app->getRequest()->getHostInfo() : '';
-		return $prefix . Yii::$app->getHomeUrl();
+		if ($schema === null) {
+			return Yii::$app->getHomeUrl();
+		} else {
+			$url = Yii::$app->getRequest()->getHostInfo() . Yii::$app->getHomeUrl();
+			$pos = strpos($url, '://');
+			return $schema . substr($url, $pos);
+		}
 	}
 }
  
