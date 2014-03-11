@@ -69,7 +69,6 @@ use Yii;
  * }, $data);
  * ~~~
  *
- *
  * A behavior is an instance of [[Behavior]] or its child class. A component can be attached with one or multiple
  * behaviors. When a behavior is attached to a component, its public properties and methods can be accessed via the
  * component directly, as if the component owns those properties and methods.

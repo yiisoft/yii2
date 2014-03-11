@@ -10,7 +10,7 @@ namespace yii\bootstrap;
 use yii\web\AssetBundle;
 
 /**
- * Bootstrap 2 theme for Bootstrap 3
+ * Bootstrap 2 theme for Bootstrap 3.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0

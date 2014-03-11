@@ -46,7 +46,6 @@ use Yii;
  *
  * One can call [[hasProperty()]], [[canGetProperty()]] and/or [[canSetProperty()]] to check the existence of a property.
  *
- *
  * Besides the property feature, Object also introduces an important object initialization life cycle. In particular,
  * creating an new instance of Object or its derived class will involve the following life cycles sequentially:
  *

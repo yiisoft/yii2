@@ -18,6 +18,8 @@ use Yii;
  * This command can render documentation stored as markdown files such as the yii guide
  * or your own applications documentation setup.
  *
+ * @author Carsten Brandt <mail@cebe.cc>
+ * @since 2.0
  */
 class GuideController extends BaseController
 {

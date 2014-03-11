@@ -23,10 +23,15 @@ use yii\helpers\StringHelper;
  * You can access that instance via `Yii::$app->request`.
  *
  * @property string $absoluteUrl The currently requested absolute URL. This property is read-only.
- * @property array $acceptableContentTypes The content types ordered by the preference level. The first
- * element represents the most preferred content type.
+ * @property array $acceptableContentTypes The content types ordered by the quality score. Types with the
+ * highest scores will be returned first. The array keys are the content types, while the array values are the
+ * corresponding quality score and other parameters as given in the header.
  * @property array $acceptableLanguages The languages ordered by the preference level. The first element
  * represents the most preferred language.
+ * @property string $authPassword The password sent via HTTP authentication, null if the password is not
+ * given. This property is read-only.
+ * @property string $authUser The username sent via HTTP authentication, null if the username is not given.
+ * This property is read-only.
  * @property string $baseUrl The relative URL for the application.
  * @property array $bodyParams The request parameters given in the request body.
  * @property string $contentType Request content-type. Null is returned if this information is not available.
