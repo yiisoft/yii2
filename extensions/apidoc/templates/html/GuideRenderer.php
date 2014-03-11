@@ -138,14 +138,12 @@ abstract class GuideRenderer extends BaseGuideRenderer
 	}
 
 	/**
-	 * generate link markup
-	 * @param $text
-	 * @param $href
-	 * @return mixed
+	 * @inheritdoc
 	 */
-	protected function generateLink($text, $href)
+	protected function generateLink($text, $href, $options = [])
 	{
-		return Html::a($text, null, ['href' => $href]);
+		$options['href'] = $href;
+		return Html::a($text, null, $options);
 	}
 
 	/**

@@ -18,12 +18,12 @@ if ($protected && count($type->getProtectedProperties()) == 0 || !$protected && 
 	return;
 } ?>
 
-<div class="summary docProperty">
+<div class="summary doc-property">
 <h2><?= $protected ? 'Protected Properties' : 'Public Properties' ?></h2>
 
 <p><a href="#" class="toggle">Hide inherited properties</a></p>
 
-<table class="summaryTable table table-striped table-bordered table-hover">
+<table class="summary-table table table-striped table-bordered table-hover">
 <colgroup>
 	<col class="col-property" />
 	<col class="col-type" />

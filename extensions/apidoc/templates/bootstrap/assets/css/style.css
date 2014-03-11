@@ -3,6 +3,10 @@ body {
 	height: 100%;
 }
 
+.guide-content, .api-content {
+	max-width: 1250px;
+}
+
 .wrap {
 	min-height: 100%;
 	height: auto;
@@ -35,20 +39,19 @@ body {
 	color: #fff;
 }
 
-.signature, .signature2 {
-	padding: 3px;
+.signature, .table-striped > tbody > tr > td.signature {
+	margin: 10px 0 10px 0;
+	padding: 8px;
+
 	color: #000000;
+	background: rgba(230, 236, 255, 0.81);
+	border: 1px rgba(191, 207, 255, 0.81) solid;
+
 	font-family: "courier new", "times new roman", monospace;
 	line-height: 1.3em;
 	white-space: pre-line;
 	word-wrap: break-word;
 	word-break: break-all;
-}
-
-.signature {
-	margin: 10px 0 10px 0;
-	background: #E6ECFF;
-	border: 1px #BFCFFF solid;
 }
 
 blockquote {
@@ -59,7 +62,50 @@ td p {
 	margin: 0;
 }
 
-table.detailTable .paramNameCol { width: 15%; min-width: 100px; }
-table.detailTable .paramTypeCol { width: 15%; min-width: 150px; }
-table.detailTable .paramDescCol { width: 70%; }
+table.detail-table .param-name-col { width: 15%; min-width: 100px; }
+table.detail-table .param-type-col { width: 15%; min-width: 150px; }
+table.detail-table .param-desc-col { width: 70%; }
 
+table.summary-table .col-method   { width: 20%; }
+table.summary-table .col-property { width: 20%; }
+table.summary-table .col-const    { width: 20%; }
+table.summary-table .col-event    { width: 20%; }
+table.summary-table .col-defined  { width: 15%; }
+
+.detail-header {
+	margin-top: 30px;
+}
+
+.doc-description {
+	border-left: solid 1px #ddd;
+	border-right: solid 1px #ddd;
+	padding: 10px 8px;
+	margin: 0;
+}
+
+.event-doc .doc-description {
+	border-bottom: solid 1px #ddd;
+}
+
+.doc-description p:last-child {
+	margin-bottom: 0;
+}
+
+.tool-link {
+	float: right;
+	color: #ddd;
+	margin: 0 8px;
+}
+
+.icon-hash:before {
+	content: '#';
+	font-size: 32px;
+	font-weight: bold;
+	/*top: -10px;*/
+	line-height: 0.5;
+}
+
+.tool-link:hover {
+	color: #bbb;
+	text-decoration: none;
+}

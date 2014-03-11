@@ -32,7 +32,7 @@ $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
 			'view' => $this,
 		]) ?>
 	</div>
-	<div class="col-md-9" role="main">
+	<div class="col-md-9 guide-content" role="main">
 		<?= $content ?>
 	</div>
 </div>

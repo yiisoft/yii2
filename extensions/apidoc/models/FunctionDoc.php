@@ -73,7 +73,7 @@ class FunctionDoc extends BaseDoc
 			} elseif ($tag instanceof ReturnTag) {
 				$this->returnType = $tag->getType();
 				$this->returnTypes = $tag->getTypes();
-				$this->return = $tag->getDescription();
+				$this->return = ucfirst($tag->getDescription());
 				unset($this->tags[$i]);
 			}
 		}
