@@ -80,6 +80,7 @@ class BaseHtml
 		'media',
 	];
 
+
 	/**
 	 * Encodes special characters into HTML entities.
 	 * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
@@ -685,12 +686,12 @@ class BaseHtml
 	 * - options: array, the attributes for the select option tags. The array keys must be valid option values,
 	 *   and the array values are the extra attributes for the corresponding option tags. For example,
 	 *
-	 * ~~~
-	 * [
-	 *     'value1' => ['disabled' => true],
-	 *     'value2' => ['label' => 'value 2'],
-	 * ];
-	 * ~~~
+	 *   ~~~
+	 *   [
+	 *       'value1' => ['disabled' => true],
+	 *       'value2' => ['label' => 'value 2'],
+	 *   ];
+	 *   ~~~
 	 *
 	 * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
 	 *   except that the array keys represent the optgroup labels specified in $items.
@@ -729,12 +730,12 @@ class BaseHtml
 	 * - options: array, the attributes for the select option tags. The array keys must be valid option values,
 	 *   and the array values are the extra attributes for the corresponding option tags. For example,
 	 *
-	 * ~~~
-	 * [
-	 *     'value1' => ['disabled' => true],
-	 *     'value2' => ['label' => 'value 2'],
-	 * ];
-	 * ~~~
+	 *   ~~~
+	 *   [
+	 *       'value1' => ['disabled' => true],
+	 *       'value2' => ['label' => 'value 2'],
+	 *   ];
+	 *   ~~~
 	 *
 	 * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
 	 *   except that the array keys represent the optgroup labels specified in $items.
@@ -792,13 +793,13 @@ class BaseHtml
 	 * - item: callable, a callback that can be used to customize the generation of the HTML code
 	 *   corresponding to a single item in $items. The signature of this callback must be:
 	 *
-	 * ~~~
-	 * function ($index, $label, $name, $checked, $value)
-	 * ~~~
+	 *   ~~~
+	 *   function ($index, $label, $name, $checked, $value)
+	 *   ~~~
 	 *
-	 * where $index is the zero-based index of the checkbox in the whole list; $label
-	 * is the label for the checkbox; and $name, $value and $checked represent the name,
-	 * value and the checked status of the checkbox input, respectively.
+	 *   where $index is the zero-based index of the checkbox in the whole list; $label
+	 *   is the label for the checkbox; and $name, $value and $checked represent the name,
+	 *   value and the checked status of the checkbox input, respectively.
 	 *
 	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
@@ -863,13 +864,13 @@ class BaseHtml
 	 * - item: callable, a callback that can be used to customize the generation of the HTML code
 	 *   corresponding to a single item in $items. The signature of this callback must be:
 	 *
-	 * ~~~
-	 * function ($index, $label, $name, $checked, $value)
-	 * ~~~
+	 *   ~~~
+	 *   function ($index, $label, $name, $checked, $value)
+	 *   ~~~
 	 *
-	 * where $index is the zero-based index of the radio button in the whole list; $label
-	 * is the label for the radio button; and $name, $value and $checked represent the name,
-	 * value and the checked status of the radio button input, respectively.
+	 *   where $index is the zero-based index of the radio button in the whole list; $label
+	 *   is the label for the radio button; and $name, $value and $checked represent the name,
+	 *   value and the checked status of the radio button input, respectively.
 	 *
 	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
@@ -923,12 +924,12 @@ class BaseHtml
 	 * - item: callable, a callback that is used to generate each individual list item.
 	 *   The signature of this callback must be:
 	 *
-	 * ~~~
-	 * function ($item, $index)
-	 * ~~~
+	 *   ~~~
+	 *   function ($item, $index)
+	 *   ~~~
 	 *
-	 * where $index is the array key corresponding to `$item` in `$items`. The callback should return
-	 * the whole list item tag.
+	 *   where $index is the array key corresponding to `$item` in `$items`. The callback should return
+	 *   the whole list item tag.
 	 *
 	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
@@ -967,12 +968,12 @@ class BaseHtml
 	 * - item: callable, a callback that is used to generate each individual list item.
 	 *   The signature of this callback must be:
 	 *
-	 * ~~~
-	 * function ($item, $index)
-	 * ~~~
+	 *   ~~~
+	 *   function ($item, $index)
+	 *   ~~~
 	 *
-	 * where $index is the array key corresponding to `$item` in `$items`. The callback should return
-	 * the whole list item tag.
+	 *   where $index is the array key corresponding to `$item` in `$items`. The callback should return
+	 *   the whole list item tag.
 	 *
 	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
@@ -1260,12 +1261,12 @@ class BaseHtml
 	 * - options: array, the attributes for the select option tags. The array keys must be valid option values,
 	 *   and the array values are the extra attributes for the corresponding option tags. For example,
 	 *
-	 * ~~~
-	 * [
-	 *     'value1' => ['disabled' => true],
-	 *     'value2' => ['label' => 'value 2'],
-	 * ];
-	 * ~~~
+	 *   ~~~
+	 *   [
+	 *       'value1' => ['disabled' => true],
+	 *       'value2' => ['label' => 'value 2'],
+	 *   ];
+	 *   ~~~
 	 *
 	 * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
 	 *   except that the array keys represent the optgroup labels specified in $items.
@@ -1309,12 +1310,12 @@ class BaseHtml
 	 * - options: array, the attributes for the select option tags. The array keys must be valid option values,
 	 *   and the array values are the extra attributes for the corresponding option tags. For example,
 	 *
-	 * ~~~
-	 * [
-	 *     'value1' => ['disabled' => true],
-	 *     'value2' => ['label' => 'value 2'],
-	 * ];
-	 * ~~~
+	 *   ~~~
+	 *   [
+	 *       'value1' => ['disabled' => true],
+	 *       'value2' => ['label' => 'value 2'],
+	 *   ];
+	 *   ~~~
 	 *
 	 * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
 	 *   except that the array keys represent the optgroup labels specified in $items.
@@ -1361,13 +1362,13 @@ class BaseHtml
 	 * - item: callable, a callback that can be used to customize the generation of the HTML code
 	 *   corresponding to a single item in $items. The signature of this callback must be:
 	 *
-	 * ~~~
-	 * function ($index, $label, $name, $checked, $value)
-	 * ~~~
+	 *   ~~~
+	 *   function ($index, $label, $name, $checked, $value)
+	 *   ~~~
 	 *
-	 * where $index is the zero-based index of the checkbox in the whole list; $label
-	 * is the label for the checkbox; and $name, $value and $checked represent the name,
-	 * value and the checked status of the checkbox input.
+	 *   where $index is the zero-based index of the checkbox in the whole list; $label
+	 *   is the label for the checkbox; and $name, $value and $checked represent the name,
+	 *   value and the checked status of the checkbox input.
 	 *
 	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
@@ -1405,13 +1406,13 @@ class BaseHtml
 	 * - item: callable, a callback that can be used to customize the generation of the HTML code
 	 *   corresponding to a single item in $items. The signature of this callback must be:
 	 *
-	 * ~~~
-	 * function ($index, $label, $name, $checked, $value)
-	 * ~~~
+	 *   ~~~
+	 *   function ($index, $label, $name, $checked, $value)
+	 *   ~~~
 	 *
-	 * where $index is the zero-based index of the radio button in the whole list; $label
-	 * is the label for the radio button; and $name, $value and $checked represent the name,
-	 * value and the checked status of the radio button input.
+	 *   where $index is the zero-based index of the radio button in the whole list; $label
+	 *   is the label for the radio button; and $name, $value and $checked represent the name,
+	 *   value and the checked status of the radio button input.
 	 *
 	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *

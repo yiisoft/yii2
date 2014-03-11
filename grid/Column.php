@@ -41,12 +41,12 @@ class Column extends Object
 	public $visible = true;
 	/**
 	 * @var array the HTML attributes for the column group tag.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $options = [];
 	/**
 	 * @var array the HTML attributes for the header cell tag.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $headerOptions = [];
 	/**
@@ -55,17 +55,17 @@ class Column extends Object
 	 * The signature of the function should be the following: `function ($model, $key, $index, $gridView)`.
 	 * A function may be used to assign different attributes to different rows based on the data in that row.
 	 *
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $contentOptions = [];
 	/**
 	 * @var array the HTML attributes for the footer cell tag.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $footerOptions = [];
 	/**
 	 * @var array the HTML attributes for the filter cell tag.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $filterOptions = [];
 

@@ -42,29 +42,29 @@ class GridView extends BaseListView
 	public $caption;
 	/**
 	 * @var array the HTML attributes for the caption element.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 * @see caption
 	 */
 	public $captionOptions = [];
 	/**
 	 * @var array the HTML attributes for the grid table element.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $tableOptions = ['class' => 'table table-striped table-bordered'];
 	/**
 	 * @var array the HTML attributes for the container tag of the grid view.
 	 * The "tag" element specifies the tag name of the container element and defaults to "div".
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $options = ['class' => 'grid-view'];
 	/**
 	 * @var array the HTML attributes for the table header row.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $headerRowOptions = [];
 	/**
 	 * @var array the HTML attributes for the table footer row.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $footerRowOptions = [];
 	/**
@@ -82,7 +82,7 @@ class GridView extends BaseListView
 	 * - `$index`: the zero-based index of the data model in the model array returned by [[dataProvider]]
 	 * - `$grid`: the GridView object
 	 *
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $rowOptions = [];
 	/**
@@ -170,7 +170,7 @@ class GridView extends BaseListView
 	public $filterPosition = self::FILTER_POS_BODY;
 	/**
 	 * @var array the HTML attributes for the filter row element.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $filterRowOptions = ['class' => 'filters'];
 

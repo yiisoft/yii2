@@ -14,7 +14,7 @@ use yii\helpers\Html;
 /**
  * CheckboxColumn displays a column of checkboxes in a grid view.
  *
- *  * To add a CheckboxColumn to the [[GridView]], add it to the [[GridView::columns|columns]] configuration as follows:
+ * To add a CheckboxColumn to the [[GridView]], add it to the [[GridView::columns|columns]] configuration as follows:
  *
  * ```php
  * 'columns' => [
@@ -45,7 +45,7 @@ class CheckboxColumn extends Column
 	public $name = 'selection';
 	/**
 	 * @var array HTML attributes for the checkboxes.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $checkboxOptions = [];
 	/**
