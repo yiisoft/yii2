@@ -81,8 +81,8 @@ Events
 ------
 
 There is no longer the need to define an `on`-method in order to define an event in Yii 2.0.
-Instead, you can use whatever event names. To attach a handler to an event, you should
-use the `on` method now:
+Instead, you can use whatever event names. To attach a handler to an event, you should now 
+use the `on` method:
 
 ```php
 $component->on($eventName, $handler);
@@ -370,8 +370,8 @@ introduces the class map (via [[Yii::$classMap]]) to overcome this difficulty.
 ActiveForm
 ----------
 
-Yii 2.0 introduces the *field* concept for building a form using [[yii\widgets\ActiveForm]]. A field
-is a container consisting of a label, an input, an error message, and/or a hint text.
+Yii 2.0 introduces the *field* concept for building a form using [[yii\widgets\ActiveForm]]. 
+A field is a container consisting of a label, an input, an error message, and/or a hint text.
 It is represented as an [[yii\widgets\ActiveField|ActiveField]] object.
 Using fields, you can build a form more cleanly than before:
 
@@ -478,7 +478,9 @@ Yii 2.0 supports automatic quoting of database table and column names. A name en
 within double curly brackets is treated as a table name, and a name enclosed within
 double square brackets is treated as a column name. They will be quoted according to
 the database driver being used:
+i.e.   {{tablename}}   [[fieldname]]
 
+code example:
 ```php
 $command = $connection->createCommand('SELECT [[id]] FROM {{posts}}');
 echo $command->sql;  // MySQL: SELECT `id` FROM `posts`
@@ -528,9 +530,7 @@ extensions in 2.0 [referer to corresponding guide section](extensions.md).
 Integration with Composer
 -------------------------
 
-Yii is fully inegrated with the package manager for PHP named Composer that resolves dependencies, keeps your code
-up to date updating it semi-automatically and manages autoloading for third party libraries no matter which autoloading
-these are using.
+Yii is fully integrated with Composer, a well known package manager for PHP, that resolves dependencies, keeps your code up to date, by updating it semi-automatically and manages autoloading of third party libraries regardless of the the autoloading such libraries are already using.
 
 In order to learn more refer to [composer](composer.md) and [installation](installation.md) sections of the guide.
 
