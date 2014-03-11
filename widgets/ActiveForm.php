@@ -34,8 +34,7 @@ class ActiveForm extends Widget
 	public $method = 'post';
 	/**
 	 * @var array the HTML attributes (name-value pairs) for the form tag.
-	 * The values will be HTML-encoded using [[\yii\helpers\Html::encode()]].
-	 * If a value is null, the corresponding attribute will not be rendered.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $options = [];
 	/**

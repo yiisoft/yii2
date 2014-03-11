@@ -40,6 +40,8 @@ class ActiveField extends Component
 	 * The following special options are recognized:
 	 *
 	 * - tag: the tag name of the container element. Defaults to "div".
+	 *
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $options = ['class' => 'form-group'];
 	/**
@@ -50,6 +52,7 @@ class ActiveField extends Component
 	/**
 	 * @var array the default options for the input tags. The parameter passed to individual input methods
 	 * (e.g. [[textInput()]]) will be merged with this property when rendering the input tag.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $inputOptions = ['class' => 'form-control'];
 	/**
@@ -58,11 +61,14 @@ class ActiveField extends Component
 	 * The following special options are recognized:
 	 *
 	 * - tag: the tag name of the container element. Defaults to "div".
+	 *
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $errorOptions = ['class' => 'help-block'];
 	/**
 	 * @var array the default options for the label tags. The parameter passed to [[label()]] will be
 	 * merged with this property when rendering the label tag.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $labelOptions = ['class' => 'control-label'];
 	/**
@@ -71,6 +77,8 @@ class ActiveField extends Component
 	 * The following special options are recognized:
 	 *
 	 * - tag: the tag name of the container element. Defaults to "div".
+	 *
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $hintOptions = ['class' => 'hint-block'];
 	/**

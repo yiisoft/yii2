@@ -39,15 +39,33 @@ class Column extends Object
 	 * @var boolean whether this column is visible. Defaults to true.
 	 */
 	public $visible = true;
+	/**
+	 * @var array the HTML attributes for the column group tag.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 */
 	public $options = [];
+	/**
+	 * @var array the HTML attributes for the header cell tag.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 */
 	public $headerOptions = [];
 	/**
-	 * @var array|\Closure
+	 * @var array|\Closure the HTML attributes for the data cell tag. This can either be an array of
+	 * attributes or an anonymous function that ([[Closure]]) that returns such an array.
+	 * The signature of the function should be the following: `function ($model, $key, $index, $gridView)`.
+	 * A function may be used to assign different attributes to different rows based on the data in that row.
+	 *
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $contentOptions = [];
+	/**
+	 * @var array the HTML attributes for the footer cell tag.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 */
 	public $footerOptions = [];
 	/**
 	 * @var array the HTML attributes for the filter cell tag.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $filterOptions = [];
 

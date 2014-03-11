@@ -45,6 +45,7 @@ class Pjax extends Widget
 {
 	/**
 	 * @var array the HTML attributes for the widget container tag.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $options = [];
 	/**
@@ -79,7 +80,7 @@ class Pjax extends Widget
 	 */
 	public $scrollTo = false;
 	/**
-	 * @var array additional options to be passed to the pjax JS plugin. Please refer to
+	 * @var array additional options to be passed to the pjax JS plugin. Please refer to the
 	 * [pjax project page](https://github.com/yiisoft/jquery-pjax) for available options.
 	 */
 	public $clientOptions;

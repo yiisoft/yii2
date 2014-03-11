@@ -22,6 +22,7 @@ abstract class BaseListView extends Widget
 	/**
 	 * @var array the HTML attributes for the container tag of the list view.
 	 * The "tag" element specifies the tag name of the container element and defaults to "div".
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $options = [];
 	/**
