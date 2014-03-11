@@ -51,23 +51,49 @@ examples may also output:
 * `http://www.example.com/blog/post/index/`
 * `http://www.example.com/index.php?r=blog/post/index`
 
-In order to simplify URL creation there is [[yii\helpers\Url]] helper that is able to do the following:
+In order to simplify URL creation there is [[yii\helpers\Url]] helper. Assuming we're at `/index.php?r=management/default/users&id=10` the following
+is how `Url` helper works:
 
 ```php
 use yii\helpers\Url;
 
-echo Url::to(''); // currently active URL
+// currently active route
+// /index.php?r=management/default/users
+echo Url::to('');
 
-echo Url::toRoute(['view', 'id' => 'contact']); // same controller, different action
-echo Url::toRoute('post/index'); // same module, different controller and action
-echo Url::toRoute('/site/index'); // absolute route no matter what controller is making this call
-echo Url::toRoute('hi-tech'); // url for the case sensitive action `actionHiTech` of the current controller
-echo Url::toRoute(['/date-time/fast-forward', 'id' => 105]); // url for action the case sensitive controller, `DateTimeController::actionFastForward`
+// same controller, different action
+// /index.php?r=management/default/view&id=contact
+echo Url::toRoute(['page', 'id' => 'contact']);
 
-echo Url::to('@web'); // get URL from alias
 
-echo Url::canonical(); // get canonical URL for the curent page
-echo Url::home(); // get home URL
+// same module, different controller and action
+// /index.php?r=management/post/index
+echo Url::toRoute('post/index');
+
+// absolute route no matter what controller is making this call
+// /index.php?r=site/index
+echo Url::toRoute('/site/index');
+
+// url for the case sensitive action `actionHiTech` of the current controller
+// /index.php?r=management/default/hi-tech
+echo Url::toRoute('hi-tech');
+
+// url for action the case sensitive controller, `DateTimeController::actionFastForward`
+// /index.php?r=date-time/fast-forward&id=105
+echo Url::toRoute(['/date-time/fast-forward', 'id' => 105]);
+
+// get URL from alias
+// http://google.com/
+Yii::setAlias('@google', 'http://google.com/');
+echo Url::to('@google');
+
+// get canonical URL for the curent page
+// /index.php?r=management/default/users
+echo Url::canonical();
+
+// get home URL
+// /index.php?r=site/index
+echo Url::home();
 
 Url::remember(); // save URL to be used later
 Url::previous(); // get previously saved URL
