@@ -61,7 +61,7 @@ class NavBar extends Widget
 	 */
 	public $brandLabel;
 	/**
-	 * @param array|string $url the URL for the brand's hyperlink tag. This parameter will be processed by [[Html::url()]]
+	 * @param array|string $url the URL for the brand's hyperlink tag. This parameter will be processed by [[Url::to()]]
 	 * and will be used for the "href" attribute of the brand link. If not set, [[\yii\web\Application::homeUrl]] will be used.
 	 */
 	public $brandUrl;
