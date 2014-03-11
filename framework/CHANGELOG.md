@@ -197,7 +197,7 @@ Yii Framework 2 Change Log
 	- Added `yii\helpers\Url`.
 	- Removed `yii\heplers\Html::url`, use `yii\helpers\Url::to` instead.
 	- Removed `yii\web\Controller::createUrl` and `yii\web\Controller::createAbsoluteUrl`, use `yii\helpers::toRoute` instead.
-	- Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers::canonical` instead.
+	- Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers\Url::canonical` instead.
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
