@@ -62,7 +62,7 @@ use yii\helpers\Url;
 echo Url::to('');
 
 // same controller, different action
-// /index.php?r=management/default/view&id=contact
+// /index.php?r=management/default/page&id=contact
 echo Url::toRoute(['page', 'id' => 'contact']);
 
 
