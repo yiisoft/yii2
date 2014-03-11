@@ -153,7 +153,7 @@ class GridView extends BaseListView
 	 */
 	public $filterModel;
 	/**
-	 * @var string|array the URL for returning the filtering result. [[Html::url()]] will be called to
+	 * @var string|array the URL for returning the filtering result. [[Url::to()]] will be called to
 	 * normalize the URL. If not set, the current controller action will be used.
 	 * When the user makes change to any filter input, the current filtering inputs will be appended
 	 * as GET parameters to this URL.
