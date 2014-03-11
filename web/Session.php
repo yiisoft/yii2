@@ -54,6 +54,7 @@ use yii\base\InvalidParamException;
  * be overwritten by this method. This property is write-only.
  * @property float $gCProbability The probability (percentage) that the GC (garbage collection) process is
  * started on every session initialization, defaults to 1 meaning 1% chance.
+ * @property boolean $hasSessionId Whether the current request has sent the session ID.
  * @property string $id The current session ID.
  * @property boolean $isActive Whether the session has started. This property is read-only.
  * @property SessionIterator $iterator An iterator for traversing the session variables. This property is

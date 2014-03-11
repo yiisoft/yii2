@@ -25,8 +25,8 @@ use Yii;
  * This property is write-only.
  * @property string $basePath The root directory of the module.
  * @property array $components The components (indexed by their IDs).
- * @property string $controllerPath The directory that contains the controller classes according to [[controllerNamespace]].
- * This property is read-only.
+ * @property string $controllerPath The directory that contains the controller classes. This property is
+ * read-only.
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The modules (indexed by their IDs).
  * @property string $uniqueId The unique ID of the module. This property is read-only.
