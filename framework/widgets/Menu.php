@@ -53,7 +53,7 @@ class Menu extends Widget
 	 *
 	 * - label: string, optional, specifies the menu item label. When [[encodeLabels]] is true, the label
 	 *   will be HTML-encoded. If the label is not specified, an empty string will be used.
-	 * - url: string or array, optional, specifies the URL of the menu item. It will be processed by [[Html::url]].
+	 * - url: string or array, optional, specifies the URL of the menu item. It will be processed by [[Url::to]].
 	 *   When this is set, the actual menu item content will be generated using [[linkTemplate]];
 	 *   otherwise, [[labelTemplate]] will be used.
 	 * - visible: boolean, optional, whether this menu item is visible. Defaults to true.

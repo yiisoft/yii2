@@ -24,7 +24,7 @@ use yii\web\JsExpression;
 class ActiveForm extends Widget
 {
 	/**
-	 * @param array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Html::url()]].
+	 * @param array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
 	 */
 	public $action = '';
 	/**
@@ -74,7 +74,7 @@ class ActiveForm extends Widget
 	public $enableAjaxValidation = false;
 	/**
 	 * @var array|string the URL for performing AJAX-based validation. This property will be processed by
-	 * [[Html::url()]]. Please refer to [[Html::url()]] for more details on how to configure this property.
+	 * [[Url::to()]]. Please refer to [[Url::to()]] for more details on how to configure this property.
 	 * If this property is not set, it will take the value of the form's action attribute.
 	 */
 	public $validationUrl;
