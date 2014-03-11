@@ -2,6 +2,7 @@
 
 use yii\bootstrap\ButtonDropdown;
 use yii\bootstrap\ButtonGroup;
+use yii\helpers\Url;
 use yii\helpers\Html;
 
 /**
@@ -19,7 +20,7 @@ $this->title = 'Yii Debugger';
 	<div id="yii-debug-toolbar" class="yii-debug-toolbar-top">
 
         <div class="yii-debug-toolbar-block title">
-            <a href="<?= Html::url(['index']) ?>">
+            <a href="<?= Url::to(['index']) ?>">
                 <img width="29" height="30" alt="" src="<?= \yii\debug\Module::getYiiLogo() ?>">
                 Yii Debugger
             </a>

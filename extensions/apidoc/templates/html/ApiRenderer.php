@@ -246,8 +246,8 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 
 		return ($method->isReturnByReference ? '<b>&</b>' : '')
 			. ($method->returnType === null ? 'void' : $this->createTypeLink($method->returnTypes))
-			. ' ' . $this->createSubjectLink($method, $method->name)
-			. ApiMarkdown::highlight('( ' . implode(', ', $params) . ' )', 'php');
+			. ' <strong>' . $this->createSubjectLink($method, $method->name) . '</strong>'
+			. ApiMarkdown::highlight(str_replace('  ', ' ', '( ' . implode(', ', $params) . ' )'), 'php');
 	}
 
 	public function generateApiUrl($typeName)
@@ -271,14 +271,12 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
 	}
 
 	/**
-	 * generate link markup
-	 * @param $text
-	 * @param $href
-	 * @return mixed
+	 * @inheritdoc
 	 */
-	protected function generateLink($text, $href)
+	protected function generateLink($text, $href, $options = [])
 	{
-		return Html::a($text, null, ['href' => $href]);
+		$options['href'] = $href;
+		return Html::a($text, null, $options);
 	}
 
 	public function getSourceUrl($type)

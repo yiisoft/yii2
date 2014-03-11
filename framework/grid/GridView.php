@@ -11,6 +11,7 @@ use Yii;
 use Closure;
 use yii\base\Formatter;
 use yii\base\InvalidConfigException;
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\widgets\BaseListView;
@@ -40,25 +41,30 @@ class GridView extends BaseListView
 	 */
 	public $caption;
 	/**
-	 * @var array the HTML attributes for the caption element
+	 * @var array the HTML attributes for the caption element.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 * @see caption
 	 */
 	public $captionOptions = [];
 	/**
-	 * @var array the HTML attributes for the grid table element
+	 * @var array the HTML attributes for the grid table element.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $tableOptions = ['class' => 'table table-striped table-bordered'];
 	/**
 	 * @var array the HTML attributes for the container tag of the grid view.
 	 * The "tag" element specifies the tag name of the container element and defaults to "div".
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $options = ['class' => 'grid-view'];
 	/**
-	 * @var array the HTML attributes for the table header row
+	 * @var array the HTML attributes for the table header row.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $headerRowOptions = [];
 	/**
-	 * @var array the HTML attributes for the table footer row
+	 * @var array the HTML attributes for the table footer row.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $footerRowOptions = [];
 	/**
@@ -75,6 +81,8 @@ class GridView extends BaseListView
 	 * - `$key`: the key value associated with the current data model
 	 * - `$index`: the zero-based index of the data model in the model array returned by [[dataProvider]]
 	 * - `$grid`: the GridView object
+	 *
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $rowOptions = [];
 	/**
@@ -161,9 +169,11 @@ class GridView extends BaseListView
 	 */
 	public $filterPosition = self::FILTER_POS_BODY;
 	/**
-	 * @var array the HTML attributes for the filter row element
+	 * @var array the HTML attributes for the filter row element.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $filterRowOptions = ['class' => 'filters'];
+
 
 	/**
 	 * Initializes the grid view.
@@ -203,7 +213,6 @@ class GridView extends BaseListView
 		parent::run();
 	}
 
-
 	/**
 	 * Returns the options for the grid view JS widget.
 	 * @return array the options
@@ -218,7 +227,7 @@ class GridView extends BaseListView
 		}
 
 		return [
-			'filterUrl' => Html::url($filterUrl),
+			'filterUrl' => Url::to($filterUrl),
 			'filterSelector' => $filterSelector,
 		];
 	}
@@ -238,6 +247,10 @@ class GridView extends BaseListView
 		return Html::tag('table', implode("\n", $content), $this->tableOptions);
 	}
 
+	/**
+	 * Renders the caption element.
+	 * @return bool|string the rendered caption element or `false` if no caption element should be rendered.
+	 */
 	public function renderCaption()
 	{
 		if (!empty($this->caption)) {
@@ -247,6 +260,10 @@ class GridView extends BaseListView
 		}
 	}
 
+	/**
+	 * Renders the column group HTML.
+	 * @return bool|string the column group HTML or `false` if no column group should be rendered.
+	 */
 	public function renderColumnGroup()
 	{
 		$requireColumnGroup = false;
@@ -270,7 +287,7 @@ class GridView extends BaseListView
 
 	/**
 	 * Renders the table header.
-	 * @return string the rendering result
+	 * @return string the rendering result.
 	 */
 	public function renderTableHeader()
 	{
@@ -291,7 +308,7 @@ class GridView extends BaseListView
 
 	/**
 	 * Renders the table footer.
-	 * @return string the rendering result
+	 * @return string the rendering result.
 	 */
 	public function renderTableFooter()
 	{
@@ -309,6 +326,7 @@ class GridView extends BaseListView
 
 	/**
 	 * Renders the filter.
+	 * @return string the rendering result.
 	 */
 	public function renderFilters()
 	{
@@ -326,7 +344,7 @@ class GridView extends BaseListView
 
 	/**
 	 * Renders the table body.
-	 * @return string the rendering result
+	 * @return string the rendering result.
 	 */
 	public function renderTableBody()
 	{
@@ -428,6 +446,10 @@ class GridView extends BaseListView
 		]);
 	}
 
+	/**
+	 * This function tries to guesses the columns to show from the given data
+	 * if [[columns]] are not explicitly specified.
+	 */
 	protected function guessColumns()
 	{
 		$models = $this->dataProvider->getModels();

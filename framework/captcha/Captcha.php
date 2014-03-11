@@ -9,6 +9,7 @@ namespace yii\captcha;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\widgets\InputWidget;
@@ -40,6 +41,7 @@ class Captcha extends InputWidget
 	public $captchaAction = 'site/captcha';
 	/**
 	 * @var array HTML attributes to be applied to the CAPTCHA image tag.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $imageOptions = [];
 	/**
@@ -50,8 +52,10 @@ class Captcha extends InputWidget
 	public $template = '{image} {input}';
 	/**
 	 * @var array the HTML attributes for the input tag.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $options = ['class' => 'form-control'];
+
 
 	/**
 	 * Initializes the widget.
@@ -106,7 +110,7 @@ class Captcha extends InputWidget
 	protected function getClientOptions()
 	{
 		$options = [
-			'refreshUrl' => Html::url(['/' . $this->captchaAction, CaptchaAction::REFRESH_GET_VAR => 1]),
+			'refreshUrl' => Url::to(['/' . $this->captchaAction, CaptchaAction::REFRESH_GET_VAR => 1]),
 			'hashKey' => "yiiCaptcha/{$this->captchaAction}",
 		];
 		return $options;

@@ -50,12 +50,10 @@ echo GridView::widget([
 		'username',
 		// More complex one.
 		[
-			'class' => 'DataColumn', // can be omitted, default
-			'name' => 'column1',
+			'class' => 'yii\grid\DataColumn', // can be omitted, default
 			'value' => function ($data) {
 				return $data->name;
 			},
-			'type'=>'raw',
 		],
 	],
 ]);

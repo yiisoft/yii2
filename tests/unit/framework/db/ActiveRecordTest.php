@@ -393,6 +393,13 @@ class ActiveRecordTest extends DatabaseTestCase
 		$this->assertEquals(2, count($orders[0]->books2));
 		$this->assertEquals(0, count($orders[1]->books2));
 		$this->assertEquals(1, count($orders[2]->books2));
+
+		// join with count and query
+		$query = Order::find()->joinWith('customer');
+		$count = $query->count();
+		$this->assertEquals(3, $count);
+		$orders = $query->all();
+		$this->assertEquals(3, count($orders));
 	}
 
 	public function testJoinWithAndScope()

@@ -57,9 +57,10 @@ abstract class BaseRenderer extends Component
 	 * @param ClassDoc|InterfaceDoc|TraitDoc|ClassDoc[]|InterfaceDoc[]|TraitDoc[] $types
 	 * @param string $title a title to be used for the link TODO check whether [[yii\...|Class]] is supported
 	 * @param BaseDoc $context
+	 * @param array $options additional HTML attributes for the link.
 	 * @return string
 	 */
-	public function createTypeLink($types, $context = null, $title = null)
+	public function createTypeLink($types, $context = null, $title = null, $options = [])
 	{
 		if (!is_array($types)) {
 			$types = [$types];
@@ -103,9 +104,9 @@ abstract class BaseRenderer extends Component
 				// check if it is PHP internal class
 				if (((class_exists($type, false) || interface_exists($type, false) || trait_exists($type, false)) &&
 					($reflection = new \ReflectionClass($type)) && $reflection->isInternal())) {
-					$links[] = $this->generateLink($linkText, 'http://www.php.net/class.' . strtolower(ltrim($type, '\\'))) . $postfix;
+					$links[] = $this->generateLink($linkText, 'http://www.php.net/class.' . strtolower(ltrim($type, '\\')), $options) . $postfix;
 				} elseif (in_array($type, $phpTypes)) {
-					$links[] = $this->generateLink($linkText, 'http://www.php.net/language.types.' . strtolower(ltrim($type, '\\'))) . $postfix;
+					$links[] = $this->generateLink($linkText, 'http://www.php.net/language.types.' . strtolower(ltrim($type, '\\')), $options) . $postfix;
 				} else {
 					$links[] = $type;
 				}
@@ -114,10 +115,10 @@ abstract class BaseRenderer extends Component
 				if ($title !== null) {
 					$linkText = $title;
 				}
-				$links[] = $this->generateLink($linkText, $this->generateApiUrl($type->name)) . $postfix;
+				$links[] = $this->generateLink($linkText, $this->generateApiUrl($type->name), $options) . $postfix;
 			}
 		}
-		return implode(' | ', $links);
+		return implode('|', $links);
 	}
 
 
@@ -125,9 +126,10 @@ abstract class BaseRenderer extends Component
 	 * creates a link to a subject
 	 * @param PropertyDoc|MethodDoc|ConstDoc|EventDoc $subject
 	 * @param string $title
+	 * @param array $options additional HTML attributes for the link.
 	 * @return string
 	 */
-	public function createSubjectLink($subject, $title = null)
+	public function createSubjectLink($subject, $title = null, $options = [])
 	{
 		if ($title === null) {
 			if ($subject instanceof MethodDoc) {
@@ -146,7 +148,7 @@ abstract class BaseRenderer extends Component
 				$link .= '#' . $subject->name;
 			}
 			$link .= '-detail';
-			return Html::a($title, null, ['href' => $link]);
+			return $this->generateLink($title, $link, $options);
 		}
 	}
 
@@ -175,9 +177,10 @@ abstract class BaseRenderer extends Component
 	 * generate link markup
 	 * @param $text
 	 * @param $href
+	 * @param array $options additional HTML attributes for the link.
 	 * @return mixed
 	 */
-	protected abstract function generateLink($text, $href);
+	protected abstract function generateLink($text, $href, $options = []);
 
 	/**
 	 * Generate an url to a type in apidocs

@@ -19,12 +19,12 @@ if ($protected && count($type->getProtectedMethods()) == 0 || !$protected && cou
 	return;
 } ?>
 
-<div class="summary docMethod">
+<div class="summary doc-method">
 <h2><?= $protected ? 'Protected Methods' : 'Public Methods' ?></h2>
 
 <p><a href="#" class="toggle">Hide inherited methods</a></p>
 
-<table class="summaryTable table table-striped table-bordered table-hover">
+<table class="summary-table table table-striped table-bordered table-hover">
 <colgroup>
 	<col class="col-method" />
 	<col class="col-description" />

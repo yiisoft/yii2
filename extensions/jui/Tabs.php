@@ -9,6 +9,7 @@ namespace yii\jui;
 
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\helpers\Html;
 
 /**
@@ -55,7 +56,9 @@ class Tabs extends Widget
 	/**
 	 * @var array the HTML attributes for the widget container tag. The following special options are recognized:
 	 *
-	 * - tag: string, defaults to "div", the tag name of the container tag of this widget
+	 * - tag: string, defaults to "div", the tag name of the container tag of this widget.
+	 *
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $options = [];
 	/**
@@ -76,11 +79,14 @@ class Tabs extends Widget
 	 * by the "options" set in individual [[items]]. The following special options are recognized:
 	 *
 	 * - tag: string, defaults to "div", the tag name of the item container tags.
+	 *
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $itemOptions = [];
 	/**
 	 * @var array list of HTML attributes for the header container tags. This will be overwritten
 	 * by the "headerOptions" set in individual [[items]].
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $headerOptions = [];
 	/**
@@ -120,7 +126,7 @@ class Tabs extends Widget
 				throw new InvalidConfigException("The 'label' option is required.");
 			}
 			if (isset($item['url'])) {
-				$url = Html::url($item['url']);
+				$url = Url::to($item['url']);
 			} else {
 				if (!isset($item['content'])) {
 					throw new InvalidConfigException("The 'content' or 'url' option is required.");

@@ -53,6 +53,7 @@ Yii Framework 2 Change Log
 - Bug #2607: `yii message` tool wasn't updating `message` table (mitalcoi)
 - Bug #2624: Html::textArea() should respect "name" option. (qiangxue)
 - Bug #2653: Fixed the bug that unsetting an unpopulated AR relation would trigger exception (qiangxue)
+- Bug #2681: Fixed the bug of php build-in server https://bugs.php.net/bug.php?id=66606 (dizews)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
@@ -136,6 +137,7 @@ Yii Framework 2 Change Log
 - Enh #2526: Allow for null values in batchInsert (skotos)
 - Enh #2646: Added support for specifying hostinfo in the pattern of a URL rule (qiangxue)
 - Enh #2661: Added boolean column type support for SQLite (qiangxue)
+- Enh #2670: Changed `console\Controller::globalOptions()` to `options($actionId)` to (make it possible to) differentiate options per action (hqx)
 - Enh: Added support for using arrays as option values for console commands (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
@@ -191,6 +193,11 @@ Yii Framework 2 Change Log
 - Chg #2544: Changed `DetailView`'s `name:format:label` to `attribute:format:label` to match `GridView` (samdark)
 - Chg #2603: `yii\base\ErrorException` now extends `\ErrorException` (samdark)
 - Chg #2629: `Module::controllerPath` is now read only, and all controller classes must be namespaced under `Module::controllerNamespace`. (qiangxue)
+- Chg #2630: API changes for URLs generation (samdark, qiangxue, cebe)
+	- Added `yii\helpers\Url`.
+	- Removed `yii\heplers\Html::url`, use `yii\helpers\Url::to` instead.
+	- Removed `yii\web\Controller::createUrl` and `yii\web\Controller::createAbsoluteUrl`, use `yii\helpers::toRoute` instead.
+	- Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers::canonical` instead.
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)

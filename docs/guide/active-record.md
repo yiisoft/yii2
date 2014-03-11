@@ -437,7 +437,7 @@ class Customer extends ActiveRecord
 	....
 	public function getOrders()
 	{
-		return $this->hasMany(Order::className, ['customer_id' => 'id']);
+		return $this->hasMany(Order::className(), ['customer_id' => 'id']);
 	}
 }
 
@@ -446,7 +446,7 @@ class Order extends ActiveRecord
 	....
 	public function getCustomer()
 	{
-		return $this->hasOne(Customer::className, ['id' => 'customer_id']);
+		return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
 	}
 }
 ```
@@ -477,7 +477,7 @@ class Customer extends ActiveRecord
 	....
 	public function getOrders()
 	{
-		return $this->hasMany(Order::className, ['customer_id' => 'id'])->inverseOf('customer');
+		return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
 	}
 }
 ```

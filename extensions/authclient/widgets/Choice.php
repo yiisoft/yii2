@@ -9,6 +9,7 @@ namespace yii\authclient\widgets;
 
 use yii\base\Widget;
 use Yii;
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\authclient\ClientInterface;
 
@@ -71,6 +72,7 @@ class Choice extends Widget
 	public $clientIdGetParamName = 'authclient';
 	/**
 	 * @var array the HTML attributes that should be rendered in the div HTML tag representing the container element.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $options = [
 		'class' => 'auth-clients'
@@ -195,7 +197,7 @@ class Choice extends Widget
 		$this->autoRender = false;
 		$url = $this->getBaseAuthUrl();
 		$url[$this->clientIdGetParamName] = $provider->getId();
-		return Html::url($url);
+		return Url::to($url);
 	}
 
 	/**

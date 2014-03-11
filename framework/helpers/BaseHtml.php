@@ -80,6 +80,7 @@ class BaseHtml
 		'media',
 	];
 
+
 	/**
 	 * Encodes special characters into HTML entities.
 	 * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
@@ -120,7 +121,7 @@ class BaseHtml
 	 * For example when using `['class' => 'my-class', 'target' => '_blank', 'value' => null]` it will result in the
 	 * html attributes rendered like this: `class="my-class" target="_blank"`.
 	 *
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated HTML tag
 	 * @see beginTag()
@@ -138,7 +139,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated start tag
 	 * @see endTag()
 	 * @see tag()
@@ -167,7 +168,7 @@ class BaseHtml
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * If the options does not contain "type", a "type" attribute with value "text/css" will be used.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated style tag
 	 */
 	public static function style($content, $options = [])
@@ -182,7 +183,7 @@ class BaseHtml
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * If the options does not contain "type", a "type" attribute with value "text/javascript" will be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated script tag
 	 */
 	public static function script($content, $options = [])
@@ -196,7 +197,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated link tag
 	 * @see url()
 	 */
@@ -205,7 +206,7 @@ class BaseHtml
 		if (!isset($options['rel'])) {
 			$options['rel'] = 'stylesheet';
 		}
-		$options['href'] = static::url($url);
+		$options['href'] = Url::to($url);
 		return static::tag('link', '', $options);
 	}
 
@@ -215,13 +216,13 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated script tag
 	 * @see url()
 	 */
 	public static function jsFile($url, $options = [])
 	{
-		$options['src'] = static::url($url);
+		$options['src'] = Url::to($url);
 		return static::tag('script', '', $options);
 	}
 
@@ -235,13 +236,13 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated form start tag.
 	 * @see endForm()
 	 */
 	public static function beginForm($action = '', $method = 'post', $options = [])
 	{
-		$action = static::url($action);
+		$action = Url::to($action);
 
 		$hiddenInputs = [];
 
@@ -304,14 +305,14 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated hyperlink
 	 * @see url()
 	 */
 	public static function a($text, $url = null, $options = [])
 	{
 		if ($url !== null) {
-			$options['href'] = static::url($url);
+			$options['href'] = Url::to($url);
 		}
 		return static::tag('a', $text, $options);
 	}
@@ -326,7 +327,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated mailto link
 	 */
 	public static function mailto($text, $email = null, $options = [])
@@ -341,12 +342,12 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated image tag
 	 */
 	public static function img($src, $options = [])
 	{
-		$options['src'] = static::url($src);
+		$options['src'] = Url::to($src);
 		if (!isset($options['alt'])) {
 			$options['alt'] = '';
 		}
@@ -363,7 +364,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated label tag
 	 */
 	public static function label($content, $for = null, $options = [])
@@ -380,7 +381,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated button tag
 	 */
 	public static function button($content = 'Button', $options = [])
@@ -396,7 +397,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated submit button tag
 	 */
 	public static function submitButton($content = 'Submit', $options = [])
@@ -413,7 +414,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated reset button tag
 	 */
 	public static function resetButton($content = 'Reset', $options = [])
@@ -430,7 +431,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated input tag
 	 */
 	public static function input($type, $name = null, $value = null, $options = [])
@@ -447,7 +448,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated button tag
 	 */
 	public static function buttonInput($label = 'Button', $options = [])
@@ -463,7 +464,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated button tag
 	 */
 	public static function submitInput($label = 'Submit', $options = [])
@@ -478,7 +479,7 @@ class BaseHtml
 	 * @param string $label the value attribute. If it is null, the value attribute will not be generated.
 	 * @param array $options the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
 	 * Attributes whose value is null will be ignored and not put in the tag returned.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated button tag
 	 */
 	public static function resetInput($label = 'Reset', $options = [])
@@ -495,7 +496,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated button tag
 	 */
 	public static function textInput($name, $value = null, $options = [])
@@ -510,7 +511,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated button tag
 	 */
 	public static function hiddenInput($name, $value = null, $options = [])
@@ -525,7 +526,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated button tag
 	 */
 	public static function passwordInput($name, $value = null, $options = [])
@@ -543,7 +544,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated button tag
 	 */
 	public static function fileInput($name, $value = null, $options = [])
@@ -558,7 +559,7 @@ class BaseHtml
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated text area tag
 	 */
 	public static function textarea($name, $value = '', $options = [])
@@ -586,7 +587,7 @@ class BaseHtml
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting radio button tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated radio button tag
 	 */
@@ -636,7 +637,7 @@ class BaseHtml
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting checkbox tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated checkbox tag
 	 */
@@ -685,19 +686,19 @@ class BaseHtml
 	 * - options: array, the attributes for the select option tags. The array keys must be valid option values,
 	 *   and the array values are the extra attributes for the corresponding option tags. For example,
 	 *
-	 * ~~~
-	 * [
-	 *     'value1' => ['disabled' => true],
-	 *     'value2' => ['label' => 'value 2'],
-	 * ];
-	 * ~~~
+	 *   ~~~
+	 *   [
+	 *       'value1' => ['disabled' => true],
+	 *       'value2' => ['label' => 'value 2'],
+	 *   ];
+	 *   ~~~
 	 *
 	 * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
 	 *   except that the array keys represent the optgroup labels specified in $items.
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated drop-down list tag
 	 */
@@ -729,12 +730,12 @@ class BaseHtml
 	 * - options: array, the attributes for the select option tags. The array keys must be valid option values,
 	 *   and the array values are the extra attributes for the corresponding option tags. For example,
 	 *
-	 * ~~~
-	 * [
-	 *     'value1' => ['disabled' => true],
-	 *     'value2' => ['label' => 'value 2'],
-	 * ];
-	 * ~~~
+	 *   ~~~
+	 *   [
+	 *       'value1' => ['disabled' => true],
+	 *       'value2' => ['label' => 'value 2'],
+	 *   ];
+	 *   ~~~
 	 *
 	 * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
 	 *   except that the array keys represent the optgroup labels specified in $items.
@@ -744,7 +745,7 @@ class BaseHtml
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated list box tag
 	 */
@@ -792,15 +793,15 @@ class BaseHtml
 	 * - item: callable, a callback that can be used to customize the generation of the HTML code
 	 *   corresponding to a single item in $items. The signature of this callback must be:
 	 *
-	 * ~~~
-	 * function ($index, $label, $name, $checked, $value)
-	 * ~~~
+	 *   ~~~
+	 *   function ($index, $label, $name, $checked, $value)
+	 *   ~~~
 	 *
-	 * where $index is the zero-based index of the checkbox in the whole list; $label
-	 * is the label for the checkbox; and $name, $value and $checked represent the name,
-	 * value and the checked status of the checkbox input, respectively.
+	 *   where $index is the zero-based index of the checkbox in the whole list; $label
+	 *   is the label for the checkbox; and $name, $value and $checked represent the name,
+	 *   value and the checked status of the checkbox input, respectively.
 	 *
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated checkbox list
 	 */
@@ -863,15 +864,15 @@ class BaseHtml
 	 * - item: callable, a callback that can be used to customize the generation of the HTML code
 	 *   corresponding to a single item in $items. The signature of this callback must be:
 	 *
-	 * ~~~
-	 * function ($index, $label, $name, $checked, $value)
-	 * ~~~
+	 *   ~~~
+	 *   function ($index, $label, $name, $checked, $value)
+	 *   ~~~
 	 *
-	 * where $index is the zero-based index of the radio button in the whole list; $label
-	 * is the label for the radio button; and $name, $value and $checked represent the name,
-	 * value and the checked status of the radio button input, respectively.
+	 *   where $index is the zero-based index of the radio button in the whole list; $label
+	 *   is the label for the radio button; and $name, $value and $checked represent the name,
+	 *   value and the checked status of the radio button input, respectively.
 	 *
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated radio button list
 	 */
@@ -923,14 +924,14 @@ class BaseHtml
 	 * - item: callable, a callback that is used to generate each individual list item.
 	 *   The signature of this callback must be:
 	 *
-	 * ~~~
-	 * function ($item, $index)
-	 * ~~~
+	 *   ~~~
+	 *   function ($item, $index)
+	 *   ~~~
 	 *
-	 * where $index is the array key corresponding to `$item` in `$items`. The callback should return
-	 * the whole list item tag.
+	 *   where $index is the array key corresponding to `$item` in `$items`. The callback should return
+	 *   the whole list item tag.
 	 *
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated unordered list. An empty string is returned if `$items` is empty.
 	 */
@@ -967,14 +968,14 @@ class BaseHtml
 	 * - item: callable, a callback that is used to generate each individual list item.
 	 *   The signature of this callback must be:
 	 *
-	 * ~~~
-	 * function ($item, $index)
-	 * ~~~
+	 *   ~~~
+	 *   function ($item, $index)
+	 *   ~~~
 	 *
-	 * where $index is the array key corresponding to `$item` in `$items`. The callback should return
-	 * the whole list item tag.
+	 *   where $index is the array key corresponding to `$item` in `$items`. The callback should return
+	 *   the whole list item tag.
 	 *
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated ordered list. An empty string is returned if `$items` is empty.
 	 */
@@ -999,7 +1000,7 @@ class BaseHtml
 	 *   If this is not set, [[Model::getAttributeLabel()]] will be called to get the label for display
 	 *   (after encoding).
 	 *
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated label tag
 	 */
@@ -1025,7 +1026,7 @@ class BaseHtml
 	 *
 	 * - tag: this specifies the tag name. If not set, "div" will be used.
 	 *
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated label tag
 	 */
@@ -1048,7 +1049,7 @@ class BaseHtml
 	 * about attribute expression.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated input tag
 	 */
 	public static function activeInput($type, $model, $attribute, $options = [])
@@ -1070,7 +1071,7 @@ class BaseHtml
 	 * about attribute expression.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated input tag
 	 */
 	public static function activeTextInput($model, $attribute, $options = [])
@@ -1087,7 +1088,7 @@ class BaseHtml
 	 * about attribute expression.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated input tag
 	 */
 	public static function activeHiddenInput($model, $attribute, $options = [])
@@ -1104,7 +1105,7 @@ class BaseHtml
 	 * about attribute expression.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated input tag
 	 */
 	public static function activePasswordInput($model, $attribute, $options = [])
@@ -1121,7 +1122,7 @@ class BaseHtml
 	 * about attribute expression.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated input tag
 	 */
 	public static function activeFileInput($model, $attribute, $options = [])
@@ -1140,7 +1141,7 @@ class BaseHtml
 	 * about attribute expression.
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated textarea tag
 	 */
 	public static function activeTextarea($model, $attribute, $options = [])
@@ -1173,7 +1174,7 @@ class BaseHtml
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
 	 *
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated radio button tag
 	 */
@@ -1216,7 +1217,7 @@ class BaseHtml
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated checkbox tag
 	 */
@@ -1260,19 +1261,19 @@ class BaseHtml
 	 * - options: array, the attributes for the select option tags. The array keys must be valid option values,
 	 *   and the array values are the extra attributes for the corresponding option tags. For example,
 	 *
-	 * ~~~
-	 * [
-	 *     'value1' => ['disabled' => true],
-	 *     'value2' => ['label' => 'value 2'],
-	 * ];
-	 * ~~~
+	 *   ~~~
+	 *   [
+	 *       'value1' => ['disabled' => true],
+	 *       'value2' => ['label' => 'value 2'],
+	 *   ];
+	 *   ~~~
 	 *
 	 * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
 	 *   except that the array keys represent the optgroup labels specified in $items.
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated drop-down list tag
 	 */
@@ -1309,12 +1310,12 @@ class BaseHtml
 	 * - options: array, the attributes for the select option tags. The array keys must be valid option values,
 	 *   and the array values are the extra attributes for the corresponding option tags. For example,
 	 *
-	 * ~~~
-	 * [
-	 *     'value1' => ['disabled' => true],
-	 *     'value2' => ['label' => 'value 2'],
-	 * ];
-	 * ~~~
+	 *   ~~~
+	 *   [
+	 *       'value1' => ['disabled' => true],
+	 *       'value2' => ['label' => 'value 2'],
+	 *   ];
+	 *   ~~~
 	 *
 	 * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
 	 *   except that the array keys represent the optgroup labels specified in $items.
@@ -1324,7 +1325,7 @@ class BaseHtml
 	 *
 	 * The rest of the options will be rendered as the attributes of the resulting tag. The values will
 	 * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated list box tag
 	 */
@@ -1361,15 +1362,15 @@ class BaseHtml
 	 * - item: callable, a callback that can be used to customize the generation of the HTML code
 	 *   corresponding to a single item in $items. The signature of this callback must be:
 	 *
-	 * ~~~
-	 * function ($index, $label, $name, $checked, $value)
-	 * ~~~
+	 *   ~~~
+	 *   function ($index, $label, $name, $checked, $value)
+	 *   ~~~
 	 *
-	 * where $index is the zero-based index of the checkbox in the whole list; $label
-	 * is the label for the checkbox; and $name, $value and $checked represent the name,
-	 * value and the checked status of the checkbox input.
+	 *   where $index is the zero-based index of the checkbox in the whole list; $label
+	 *   is the label for the checkbox; and $name, $value and $checked represent the name,
+	 *   value and the checked status of the checkbox input.
 	 *
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated checkbox list
 	 */
@@ -1405,15 +1406,15 @@ class BaseHtml
 	 * - item: callable, a callback that can be used to customize the generation of the HTML code
 	 *   corresponding to a single item in $items. The signature of this callback must be:
 	 *
-	 * ~~~
-	 * function ($index, $label, $name, $checked, $value)
-	 * ~~~
+	 *   ~~~
+	 *   function ($index, $label, $name, $checked, $value)
+	 *   ~~~
 	 *
-	 * where $index is the zero-based index of the radio button in the whole list; $label
-	 * is the label for the radio button; and $name, $value and $checked represent the name,
-	 * value and the checked status of the radio button input.
+	 *   where $index is the zero-based index of the radio button in the whole list; $label
+	 *   is the label for the radio button; and $name, $value and $checked represent the name,
+	 *   value and the checked status of the radio button input.
 	 *
-	 * See [[renderTagAttributes()]] for details on how these are being rendered.
+	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 *
 	 * @return string the generated radio button list
 	 */
@@ -1488,6 +1489,8 @@ class BaseHtml
 	 *
 	 * Attributes whose values are null will not be rendered.
 	 *
+	 * The values of attributes will be HTML-encoded using [[encode()]].
+	 *
 	 * The "data" attribute is specially handled when it is receiving an array value. In this case,
 	 * the array will be "expanded" and a list data attributes will be rendered. For example,
 	 * if `'data' => ['id' => 1, 'name' => 'yii']`, then this will be rendered:
@@ -1525,48 +1528,6 @@ class BaseHtml
 			}
 		}
 		return $html;
-	}
-
-	/**
-	 * Normalizes the input parameter to be a valid URL.
-	 *
-	 * If the input parameter
-	 *
-	 * - is an empty string: the currently requested URL will be returned;
-	 * - is a non-empty string: it will first be processed by [[Yii::getAlias()]]. If the result
-	 *   is an absolute URL, it will be returned without any change further; Otherwise, the result
-	 *   will be prefixed with [[\yii\web\Request::baseUrl]] and returned.
-	 * - is an array: the first array element is considered a route, while the rest of the name-value
-	 *   pairs are treated as the parameters to be used for URL creation using [[\yii\web\Controller::createUrl()]].
-	 *   For example: `['post/index', 'page' => 2]`, `['index']`.
-	 *   In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
-	 *
-	 * @param array|string $url the parameter to be used to generate a valid URL
-	 * @return string the normalized URL
-	 * @throws InvalidParamException if the parameter is invalid.
-	 */
-	public static function url($url)
-	{
-		if (is_array($url)) {
-			if (isset($url[0])) {
-				if (Yii::$app->controller instanceof \yii\web\Controller) {
-					return Yii::$app->controller->createUrl($url);
-				} else {
-					return Yii::$app->getUrlManager()->createUrl($url);
-				}
-			} else {
-				throw new InvalidParamException('The array specifying a URL must contain at least one element.');
-			}
-		} elseif ($url === '') {
-			return Yii::$app->getRequest()->getUrl();
-		} else {
-			$url = Yii::getAlias($url);
-			if ($url !== '' && ($url[0] === '/' || $url[0] === '#' || strpos($url, '://') || !strncmp($url, './', 2))) {
-				return $url;
-			} else {
-				return Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
-			}
-		}
 	}
 
 	/**
