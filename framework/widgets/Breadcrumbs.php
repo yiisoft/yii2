@@ -53,6 +53,7 @@ class Breadcrumbs extends Widget
 	public $tag = 'ul';
 	/**
 	 * @var array the HTML attributes for the breadcrumb container tag.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $options = ['class' => 'breadcrumb'];
 	/**

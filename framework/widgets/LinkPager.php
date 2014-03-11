@@ -35,10 +35,12 @@ class LinkPager extends Widget
 	public $pagination;
 	/**
 	 * @var array HTML attributes for the pager container tag.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $options = ['class' => 'pagination'];
 	/**
 	 * @var array HTML attributes for the link in a pager container tag.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $linkOptions = [];
 	/**

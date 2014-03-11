@@ -63,6 +63,7 @@ class MaskedInput extends InputWidget
 	public $completed;
 	/**
 	 * @var array the HTML attributes for the input tag.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $options = ['class' => 'form-control'];
 

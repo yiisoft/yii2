@@ -60,7 +60,7 @@ use yii\helpers\Html;
 class Progress extends Widget
 {
 	/**
-	 * @var string the button label
+	 * @var string the button label.
 	 */
 	public $label;
 	/**
@@ -68,7 +68,8 @@ class Progress extends Widget
 	 */
 	public $percent = 0;
 	/**
-	 * @var array the HTML attributes of the bar
+	 * @var array the HTML attributes of the bar.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $barOptions = [];
 	/**
@@ -84,6 +85,7 @@ class Progress extends Widget
 	 *     // optional, array, additional HTML attributes for the bar tag
 	 *     'options' => [],
 	 * ]
+	 * ```
 	 */
 	public $bars;
 

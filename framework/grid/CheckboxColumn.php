@@ -39,11 +39,25 @@ use yii\helpers\Html;
  */
 class CheckboxColumn extends Column
 {
+	/**
+	 * @var string the name of the input checkbox input fields. This will be appended with `[]` to ensure it is an array.
+	 */
 	public $name = 'selection';
+	/**
+	 * @var array HTML attributes for the checkboxes.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 */
 	public $checkboxOptions = [];
+	/**
+	 * @var bool whether it is possible to select multiple rows. Defaults to `true`.
+	 */
 	public $multiple = true;
 
 
+	/**
+	 * @inheritdoc
+	 * @throws \yii\base\InvalidConfigException if [[name]] is not set.
+	 */
 	public function init()
 	{
 		parent::init();

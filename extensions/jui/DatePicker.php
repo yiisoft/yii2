@@ -56,6 +56,7 @@ class DatePicker extends InputWidget
 	public $inline = false;
 	/**
 	 * @var array the HTML attributes for the container tag. This is only used when [[inline]] is true.
+	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
 	 */
 	public $containerOptions = [];
 
