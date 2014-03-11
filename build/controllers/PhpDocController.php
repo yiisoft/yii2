@@ -61,11 +61,12 @@ class PhpDocController extends Controller
 				'/extensions/codeception/DbTestCase.php',
 				'/extensions/composer/',
 				'/extensions/gii/components/DiffRendererHtmlInline.php',
+				'/extensions/gii/generators/extension/templates/*',
 				'/extensions/twig/TwigSimpleFileLoader.php',
 				'/framework/BaseYii.php',
 				'/framework/Yii.php',
-				'/tests/',
-				'/vendor/',
+				'tests/',
+				'vendor/',
 			];
 		}
 		$root = FileHelper::normalizePath($root);

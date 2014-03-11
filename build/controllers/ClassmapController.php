@@ -12,6 +12,8 @@ use yii\console\Exception;
 use yii\helpers\FileHelper;
 
 /**
+ * Creates a class map for the core Yii classes.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
