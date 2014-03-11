@@ -236,10 +236,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 	 */
 	protected function createCommandInternal($db)
 	{
-		if (!empty($this->joinWith)) {
-			$this->buildJoinWith();
-		}
-
 		/** @var ActiveRecord $modelClass */
 		$modelClass = $this->modelClass;
 		if ($db === null) {
@@ -247,6 +243,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 		}
 
 		if ($this->sql === null) {
+			if (!empty($this->joinWith)) {
+				$this->buildJoinWith();
+				$this->joinWith = null;    // clean it up to avoid issue https://github.com/yiisoft/yii2/issues/2687
+			}
 			list ($sql, $params) = $db->getQueryBuilder()->build($this);
 		} else {
 			$sql = $this->sql;
