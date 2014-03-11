@@ -58,7 +58,7 @@ Yii adds the following construct to the standard Twig syntax:
 <a href="{{ path('blog/view', {'alias' : post.alias}) }}">{{ post.title }}</a>
 ```
 
-Internally, the `path()` function calls Yii's `Html::url()` method.
+Internally, the `path()` function calls Yii's `Url::to()` method.
 
 ### Additional variables
 
@@ -120,7 +120,7 @@ Yii adds the following construct to the standard Smarty syntax:
 <a href="{path route='blog/view' alias=$post.alias}">{$post.title}</a>
 ```
 
-Internally, the `path()` function calls Yii's `Html::url()` method.
+Internally, the `path()` function calls Yii's `Url::to()` method.
 
 ### Additional variables
 
