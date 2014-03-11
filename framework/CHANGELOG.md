@@ -195,9 +195,9 @@ Yii Framework 2 Change Log
 - Chg #2629: `Module::controllerPath` is now read only, and all controller classes must be namespaced under `Module::controllerNamespace`. (qiangxue)
 - Chg #2630: API changes for URLs generation (samdark, qiangxue, cebe)
 	- Added `yii\helpers\Url`.
-	- Removed `yii\heplers\Url::to`, use `yii\helpers\Url::to` instead.
-	- Removed `yii\web\Controller::createUrl` and `yii\web\Controller::createAbsoluteUrl`, use `yii\helpers::toRoute` instead.
-	- Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers::canonical` instead.
+	- Removed `yii\helpers\Html::url`, use `yii\helpers\Url::to` instead.
+	- Removed `yii\web\Controller::createUrl` and `yii\web\Controller::createAbsoluteUrl`, use `yii\helpers\Url::toRoute` instead.
+	- Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers\Url::canonical` instead.
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
