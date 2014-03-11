@@ -75,7 +75,7 @@ class Breadcrumbs extends Widget
 	 * ~~~
 	 * [
 	 *     'label' => 'label of the link',  // required
-	 *     'url' => 'url of the link',      // optional, will be processed by Html::url()
+	 *     'url' => 'url of the link',      // optional, will be processed by Url::to()
 	 * ]
 	 * ~~~
 	 *
