@@ -14,9 +14,6 @@ use yii\helpers\Url;
 /**
  * Controller is the base class of web controllers.
  *
- * @property string $canonicalUrl The canonical URL of the currently requested page. This property is
- * read-only.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
