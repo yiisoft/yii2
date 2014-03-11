@@ -39,7 +39,7 @@ class ButtonDropdown extends Widget
 	public $label = 'Button';
 	/**
 	 * @var array the HTML attributes of the button.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $options = [];
 	/**

@@ -43,7 +43,7 @@ class InputWidget extends Widget
 	public $value;
 	/**
 	 * @var array the HTML attributes for the input tag.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $options = [];
 

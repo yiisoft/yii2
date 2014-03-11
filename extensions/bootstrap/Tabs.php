@@ -76,19 +76,19 @@ class Tabs extends Widget
 	 *
 	 * - tag: string, defaults to "div", the tag name of the item container tags.
 	 *
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $itemOptions = [];
 	/**
 	 * @var array list of HTML attributes for the header container tags. This will be overwritten
 	 * by the "headerOptions" set in individual [[items]].
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $headerOptions = [];
 	/**
 	 * @var array list of HTML attributes for the tab header link tags. This will be overwritten
 	 * by the "linkOptions" set in individual [[items]].
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $linkOptions = [];
 	/**

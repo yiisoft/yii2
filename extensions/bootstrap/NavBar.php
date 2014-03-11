@@ -44,7 +44,7 @@ class NavBar extends Widget
 	 *
 	 * - tag: string, defaults to "nav", the name of the container tag.
 	 *
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $options = [];
 	/**
@@ -52,7 +52,7 @@ class NavBar extends Widget
 	 *
 	 * - tag: string, defaults to "div", the name of the container tag.
 	 *
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $containerOptions = [];
 	/**
@@ -67,7 +67,7 @@ class NavBar extends Widget
 	public $brandUrl;
 	/**
 	 * @var array the HTML attributes of the brand link.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $brandOptions = [];
 	/**
@@ -81,7 +81,7 @@ class NavBar extends Widget
 	public $renderInnerContainer = true;
 	/**
 	 * @var array the HTML attributes of the inner container.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $innerContainerOptions = [];
 

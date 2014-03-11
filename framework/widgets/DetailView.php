@@ -91,7 +91,7 @@ class DetailView extends Widget
 	/**
 	 * @var array the HTML attributes for the container tag of this widget. The "tag" option specifies
 	 * what container tag should be used. It defaults to "table" if not set.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $options = ['class' => 'table table-striped table-bordered detail-view'];
 	/**

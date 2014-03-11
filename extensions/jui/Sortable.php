@@ -43,7 +43,7 @@ class Sortable extends Widget
 	 *
 	 * - tag: string, defaults to "ul", the tag name of the container tag of this widget.
 	 *
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $options = [];
 	/**
@@ -65,7 +65,7 @@ class Sortable extends Widget
 	 *
 	 * - tag: string, defaults to "li", the tag name of the item container tags.
 	 *
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $itemOptions = [];
 

@@ -19,7 +19,7 @@ use yii\base\InvalidCallException;
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
  *
- * See [[yii\db\ActiveRecord]] for a concrete implementation.
+ * See [[\yii\db\ActiveRecord]] for a concrete implementation.
  *
  * @property array $dirtyAttributes The changed attribute values (name-value pairs). This property is
  * read-only.

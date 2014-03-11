@@ -55,7 +55,7 @@ class SliderInput extends InputWidget
 	];
 	/**
 	 * @var array the HTML attributes for the container tag.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $containerOptions = [];
 

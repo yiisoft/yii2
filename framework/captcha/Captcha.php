@@ -41,7 +41,7 @@ class Captcha extends InputWidget
 	public $captchaAction = 'site/captcha';
 	/**
 	 * @var array HTML attributes to be applied to the CAPTCHA image tag.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $imageOptions = [];
 	/**
@@ -52,7 +52,7 @@ class Captcha extends InputWidget
 	public $template = '{image} {input}';
 	/**
 	 * @var array the HTML attributes for the input tag.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $options = ['class' => 'form-control'];
 

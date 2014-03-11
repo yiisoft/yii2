@@ -69,7 +69,7 @@ class Progress extends Widget
 	public $percent = 0;
 	/**
 	 * @var array the HTML attributes of the bar.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $barOptions = [];
 	/**

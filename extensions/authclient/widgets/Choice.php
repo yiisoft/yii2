@@ -72,7 +72,7 @@ class Choice extends Widget
 	public $clientIdGetParamName = 'authclient';
 	/**
 	 * @var array the HTML attributes that should be rendered in the div HTML tag representing the container element.
-	 * See [[\yii\helpers\Html::renderTagAttributes()]] for details on how attributes are being rendered.
+	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
 	 */
 	public $options = [
 		'class' => 'auth-clients'
