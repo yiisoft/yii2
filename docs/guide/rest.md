@@ -198,7 +198,7 @@ Step 2 is usually a very mechanical data conversion process and can be well hand
 Step 1 involves some major development effort as explained below.
 
 When the [[yii\rest\Serializer|serializer]] converts an object into an array, it will call the `toArray()` method
-of the object if it implements [[yii\base\ArrayableInterface]]. If an object does not implement this interface,
+of the object if it implements [[yii\base\Arrayable]]. If an object does not implement this interface,
 its public properties will be returned instead.
 
 For classes extending from [[yii\base\Model]] or [[yii\db\ActiveRecord]], besides directly overriding `toArray()`,

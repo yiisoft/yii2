@@ -226,8 +226,8 @@ When `validate()` is called, the actual validation rules executed are determined
 ### Creating your own validators (Inline validators)
 
 If none of the built in validators fit your needs, you can create your own validator by creating a method in you model class.
-This method will be wrapped by an [[InlineValidator|yii\validators\InlineValidator]] an be called upon validation.
-You will do the validation of the attribute and [[add errors|yii\base\Model::addError()]] to the model when validation fails.
+This method will be wrapped by an [[yii\validators\InlineValidator|InlineValidator]] an be called upon validation.
+You will do the validation of the attribute and [[yii\base\Model::addError()|add errors]] to the model when validation fails.
 
 The method has the following signature `public function myValidator($attribute, $params)` while you are free to choose the name.
 
@@ -251,8 +251,8 @@ public function rules()
 }
 ```
 
-You may also set other properties of the [[InlineValidator|yii\validators\InlineValidator]] in the rules definition,
-for example the [[skipOnEmpty|yii\validators\InlineValidator::skipOnEmpty]] property:
+You may also set other properties of the [[yii\validators\InlineValidator|InlineValidator]] in the rules definition,
+for example the [[yii\validators\InlineValidator::$skipOnEmpty|skipOnEmpty]] property:
 
 ```php
 [['birthdate'], 'validateAge', 'params' => ['min' => '12'], 'skipOnEmpty' => false],

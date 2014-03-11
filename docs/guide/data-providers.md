@@ -46,18 +46,18 @@ Array data provider
 
 ArrayDataProvider implements a data provider based on a data array.
 
-The [[allModels]] property contains all data models that may be sorted and/or paginated.
+The [[yii\data\ArrayDataProvider::$allModels]] property contains all data models that may be sorted and/or paginated.
 ArrayDataProvider will provide the data after sorting and/or pagination.
-You may configure the [[sort]] and [[pagination]] properties to
+You may configure the [[yii\data\ArrayDataProvider::$sort]] and [[yii\data\ArrayDataProvider::$pagination]] properties to
 customize the sorting and pagination behaviors.
 
-Elements in the [[allModels]] array may be either objects (e.g. model objects)
+Elements in the [[yii\data\ArrayDataProvider::$allModels]] array may be either objects (e.g. model objects)
 or associative arrays (e.g. query results of DAO).
-Make sure to set the [[key]] property to the name of the field that uniquely
+Make sure to set the [[yii\data\ArrayDataProvider::$key]] property to the name of the field that uniquely
 identifies a data record or false if you do not have such a field.
 
 Compared to `ActiveDataProvider`, `ArrayDataProvider` could be less efficient
-because it needs to have [[allModels]] ready.
+because it needs to have [[yii\data\ArrayDataProvider::$allModels]] ready.
 
 ArrayDataProvider may be used in the following way:
 
@@ -86,8 +86,9 @@ SqlDataProvider implements a data provider based on a plain SQL statement. It pr
 representing a row of query result.
 
 Like other data providers, SqlDataProvider also supports sorting and pagination. It does so by modifying the given
-[[sql]] statement with "ORDER BY" and "LIMIT" clauses. You may configure the [[sort]] and [[pagination]] properties to
-customize sorting and pagination behaviors.
+[[yii\data\SqlDataProvider::$sql]] statement with "ORDER BY" and "LIMIT" clauses. You may configure the
+[[yii\data\SqlDataProvider::$sort]] and [[yii\data\SqlDataProvider::$pagination]] properties to customize sorting
+and pagination behaviors.
 
 `SqlDataProvider` may be used in the following way:
 
@@ -120,11 +121,13 @@ $dataProvider = new SqlDataProvider([
 $models = $dataProvider->getModels();
 ```
 
-> Note: if you want to use the pagination feature, you must configure the [[totalCount]] property
-to be the total number of rows (without pagination). And if you want to use the sorting feature,
-you must configure the [[sort]] property so that the provider knows which columns can be sorted.
+> Note: if you want to use the pagination feature, you must configure the [[yii\data\SqlDataProvider::$totalCount]]
+property to be the total number of rows (without pagination). And if you want to use the sorting feature,
+you must configure the [[yii\data\SqlDataProvider::$sort]] property so that the provider knows which columns can
+be sorted.
 
 
 Implementing your own custom data provider
 ------------------------------------------
 
+TBD
