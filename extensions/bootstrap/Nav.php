@@ -114,34 +114,8 @@ class Nav extends Widget
 	 */
 	public function run()
 	{
-		$this->activateItems($this->items, $hasActiveChild);
 		echo $this->renderItems();
 		BootstrapAsset::register($this->getView());
-	}
-
-	/**
-	 * Check for active items adding the active class if found.
-	 * @param array $items the items to check
-	 * @param boolean $active does an item have an active child
-	 */
-	protected function activateItems(&$items, &$active)
-	{
-		foreach ($items as &$item) {
-			$hasActiveChild = false;
-			if (isset($item['items']) && is_array($item['items'])) {
-				$this->activateItems($item['items'], $hasActiveChild);
-			}
-			if (!isset($item['active'])) {
-				if ($this->activateParents && $hasActiveChild || $this->activateItems && $this->isItemActive($item)) {
-					$active = $item['active'] = true;
-				}
-			} elseif ($item['active']) {
-				$active = true;
-			}
-			if (ArrayHelper::remove($item, 'active', false)) {
-				Html::addCssClass($item['options'], 'active');
-			}
-		}
 	}
 
 	/**
@@ -181,12 +155,21 @@ class Nav extends Widget
 		$url = ArrayHelper::getValue($item, 'url', '#');
 		$linkOptions = ArrayHelper::getValue($item, 'linkOptions', []);
 
+		if (isset($item['active'])) {
+			$active = ArrayHelper::remove($item, 'active', false);
+		} else {
+			$active = $this->isItemActive($item);
+		}
+
 		if ($items !== null) {
 			$linkOptions['data-toggle'] = 'dropdown';
 			Html::addCssClass($options, 'dropdown');
 			Html::addCssClass($linkOptions, 'dropdown-toggle');
 			$label .= ' ' . Html::tag('b', '', ['class' => 'caret']);
 			if (is_array($items)) {
+				if ($this->activateItems) {
+					$items = $this->isChildActive($items, $active);
+				}
 				$items = Dropdown::widget([
 					'items' => $items,
 					'encodeLabels' => $this->encodeLabels,
@@ -195,10 +178,32 @@ class Nav extends Widget
 				]);
 			}
 		}
-
+		
+		if ($this->activateItems && $active) {
+			Html::addCssClass($options, 'active');
+		}
+		
 		return Html::tag('li', Html::a($label, $url, $linkOptions) . $items, $options);
 	}
-
+	
+	/**
+	 * Check to see if a child item is active optionally activating the parent.
+	 * @param array $items @see items
+	 * @param boolean $active should the parent be active too
+	 * @return array @see items
+	 */
+	protected function isChildActive($items, &$active)
+	{
+		foreach ($items as $i => $child) {
+			if (ArrayHelper::remove($items[$i], 'active', false) || $this->isItemActive($child)) {
+				Html::addCssClass($items[$i]['options'], 'active');
+				if ($this->activateParents) {
+					$active = true;
+				}
+			}
+		}
+		return $items;
+	}
 
 	/**
 	 * Checks whether a menu item is active.
