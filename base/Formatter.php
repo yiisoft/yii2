@@ -462,7 +462,7 @@ class Formatter extends Component
 	 * types of value are supported:
 	 *
 	 * - an integer representing a UNIX timestamp
-	 * - a string that can be parsed into a UNIX timestamp via `strtotime()`
+	 * - a string that can be parsed into a UNIX timestamp via `strtotime()` or that can be passed to a DateInterval constructor.
 	 * - a PHP DateTime object
 	 * - a PHP DateInterval object
 	 *
@@ -477,15 +477,26 @@ class Formatter extends Component
 		if ($value instanceof \DateInterval) {
 			$interval = $value;
 		} else {
-			$value = $this->normalizeDatetimeValue($value);
+			$timestamp = $this->normalizeDatetimeValue($value);
 
-			$timezone = new \DateTimeZone($this->timeZone);
+			if ($timestamp === false) {
+				// $value is not a valid date/time value, so we try
+				// to create a DateInterval with it
+				try {
+					$interval = new \DateInterval($value);
+				} catch (Exception $e) {
+					// invalid date/time and invalid interval
+					return $this->nullDisplay;
+				}
+			} else {
+				$timezone = new \DateTimeZone($this->timeZone);
 
-			$dateNow = new DateTime('now', $timezone);
-			$dateThen = new DateTime(null, $timezone);
-			$dateThen->setTimestamp($value);
+				$dateNow = new DateTime('now', $timezone);
+				$dateThen = new DateTime(null, $timezone);
+				$dateThen->setTimestamp($timestamp);
 
-			$interval = $dateNow->diff($dateThen);
+				$interval = $dateNow->diff($dateThen);
+			}
 		}
 
 		if ($interval->y >= 1) {
