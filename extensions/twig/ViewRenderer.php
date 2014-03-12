@@ -131,7 +131,7 @@ class ViewRenderer extends BaseViewRenderer
 
         $this->twig->addGlobal('app', \Yii::$app);
 
-        $loader = new \Twig_Loader_Filesystem;
+        $loader = new TwigFilesystemLoader;
 
         foreach ($this->namespaces as $dir => $namespace) {
             if ($path = Yii::getAlias($dir, false)) {
