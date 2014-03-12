@@ -470,16 +470,19 @@ class Formatter extends Component
 	 */
 	public function asElapsedTime($value)
 	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
+
 		if ($value instanceof \DateInterval) {
 			$interval = $value;
 		} else {
-			if ($value === null) {
-				return $this->nullDisplay;
-			}
 			$value = $this->normalizeDatetimeValue($value);
 
-			$dateNow = new DateTime('now', new \DateTimeZone($this->timeZone));
-			$dateThen = new DateTime(null, new \DateTimeZone($this->timeZone));
+			$timezone = new \DateTimeZone($this->timeZone);
+
+			$dateNow = new DateTime('now', $timezone);
+			$dateThen = new DateTime(null, $timezone);
 			$dateThen->setTimestamp($value);
 
 			$interval = $dateNow->diff($dateThen);
