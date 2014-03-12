@@ -193,13 +193,13 @@ class BaseHtml
 
 	/**
 	 * Generates a link tag that refers to an external CSS file.
-	 * @param array|string $url the URL of the external CSS file. This parameter will be processed by [[url()]].
+	 * @param array|string $url the URL of the external CSS file. This parameter will be processed by [[\yii\helpers\Url::to()]].
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated link tag
-	 * @see url()
+	 * @see \yii\helpers\Url::to()
 	 */
 	public static function cssFile($url, $options = [])
 	{
@@ -212,13 +212,13 @@ class BaseHtml
 
 	/**
 	 * Generates a script tag that refers to an external JavaScript file.
-	 * @param string $url the URL of the external JavaScript file. This parameter will be processed by [[url()]].
+	 * @param string $url the URL of the external JavaScript file. This parameter will be processed by [[\yii\helpers\Url::to()]].
 	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
 	 * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
 	 * If a value is null, the corresponding attribute will not be rendered.
 	 * See [[renderTagAttributes()]] for details on how attributes are being rendered.
 	 * @return string the generated script tag
-	 * @see url()
+	 * @see \yii\helpers\Url::to()
 	 */
 	public static function jsFile($url, $options = [])
 	{
@@ -228,7 +228,7 @@ class BaseHtml
 
 	/**
 	 * Generates a form start tag.
-	 * @param array|string $action the form action URL. This parameter will be processed by [[url()]].
+	 * @param array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
 	 * @param string $method the form submission method, such as "post", "get", "put", "delete" (case-insensitive).
 	 * Since most browsers only support "post" and "get", if other methods are given, they will
 	 * be simulated using "post", and a hidden input will be added which contains the actual method type.
