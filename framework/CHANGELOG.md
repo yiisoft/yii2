@@ -240,6 +240,7 @@ Yii Framework 2 Change Log
 - New #2360: Added `AttributeBehavior` and `BlameableBehavior`, and renamed `AutoTimestamp` to `TimestampBehavior` (lucianobaraglia, qiangxue)
 - New: Yii framework now comes with core messages in multiple languages
 - New: Added yii\codeception\DbTestCase (qiangxue)
+- Enh #2722: Added hiddenInput in ActiveField (thiagotalma)
 
 
 2.0.0 alpha, December 1, 2013
