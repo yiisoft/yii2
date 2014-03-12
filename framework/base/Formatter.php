@@ -458,49 +458,59 @@ class Formatter extends Component
 
 	/**
 	 * Formats the value as the time elapsed since then in human readable form.
-	 * @param integer|string|DateTime $value the value to be formatted. The following
+	 * @param integer|string|DateTime|DateInterval $value the value to be formatted. The following
 	 * types of value are supported:
 	 *
 	 * - an integer representing a UNIX timestamp
 	 * - a string that can be parsed into a UNIX timestamp via `strtotime()`
 	 * - a PHP DateTime object
+	 * - a PHP DateInterval object
 	 *
 	 * @return string the formatted result
 	 */
 	public function asElapsedTime($value)
 	{
-		if ($value === null) {
-			return $this->nullDisplay;
+		if ($value instanceof \DateInterval) {
+			$interval = $value;
+		} else {
+			if ($value === null) {
+				return $this->nullDisplay;
+			}
+			$value = $this->normalizeDatetimeValue($value);
+
+			$dateNow = new DateTime('now', new \DateTimeZone($this->timeZone));
+			$dateThen = new DateTime(null, new \DateTimeZone($this->timeZone));
+			$dateThen->setTimestamp($value);
+
+			$interval = $dateNow->diff($dateThen);
 		}
-		$value = $this->normalizeDatetimeValue($value);
-
-		$now = new \DateTime();
-		$date = new DateTime(null, new \DateTimeZone($this->timeZone));
-		$date->setTimestamp($value);
-
-		$interval = $now->diff($date);
 
 		if ($interval->y >= 1) {
 			$delta = $interval->y;
 			return Yii::t('yii', '{delta, plural, =1{a year} other{# years}} ago', ['delta' => $delta]);
-		} elseif ($interval->m >= 1) {
+		}
+		if ($interval->m >= 1) {
 			$delta = $interval->m;
 			return Yii::t('yii', '{delta, plural, =1{a month} other{# months}} ago', ['delta' => $delta]);
-		} elseif ($interval->d >= 7) {
+		}
+		if ($interval->d >= 7) {
 			$delta = floor($interval->d / 7);
 			return Yii::t('yii', '{delta, plural, =1{a week} other{# weeks}} ago', ['delta' => $delta]);
-		} elseif ($interval->d >= 1) {
+		}
+		if ($interval->d >= 1) {
 			$delta = $interval->d;
 			return Yii::t('yii', '{delta, plural, =1{yesterday} other{# days ago}}', ['delta' => $delta]);
-		} elseif ($interval->h >= 1) {
+		}
+		if ($interval->h >= 1) {
 			$delta = $interval->h;
 			return Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}} ago', ['delta' => $delta]);
-		} elseif ($interval->i >= 1) {
+		}
+		if ($interval->i >= 1) {
 			$delta = $interval->i;
 			return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $delta]);
-		} else {
-			$delta = $interval->s;
-			return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $delta]);
 		}
+
+		$delta = $interval->s;
+		return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $delta]);
 	}
 }
