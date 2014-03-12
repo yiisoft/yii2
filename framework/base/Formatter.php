@@ -457,7 +457,7 @@ class Formatter extends Component
 	}
 
 	/**
-	 * Formats the value as the time elapsed since then in human readable form.
+	 * Formats the value as 	the time elapsed since then in human readable form.
 	 * @param integer|string|DateTime $value the value to be formatted. The following
 	 * types of value are supported:
 	 *
@@ -482,27 +482,25 @@ class Formatter extends Component
 
 		if ($interval->y >= 1) {
 			$delta = $interval->y;
-			$format = '{delta, plural, =1{a year} other{# years}} ago';
+			return Yii::t('yii', '{delta, plural, =1{a year} other{# years}} ago', ['delta' => $delta]);
 		} elseif ($interval->m >= 1) {
 			$delta = $interval->m;
-			$format = '{delta, plural, =1{a month} other{# months}} ago';
+			return Yii::t('yii', '{delta, plural, =1{a month} other{# months}} ago', ['delta' => $delta]);
 		} elseif ($interval->d >= 7) {
 			$delta = floor($interval->d / 7);
-			$format = '{delta, plural, =1{a week} other{# weeks}} ago';
+			return Yii::t('yii', '{delta, plural, =1{a week} other{# weeks}} ago', ['delta' => $delta]);
 		} elseif ($interval->d >= 1) {
 			$delta = $interval->d;
-			$format = '{delta, plural, =1{yesterday} other{# days ago}}';
+			return Yii::t('yii', '{delta, plural, =1{yesterday} other{# days ago}}', ['delta' => $delta]);
 		} elseif ($interval->h >= 1) {
 			$delta = $interval->h;
-			$format = '{delta, plural, =1{an hour} other{# hours}} ago';
+			return Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}} ago', ['delta' => $delta]);
 		} elseif ($interval->i >= 1) {
 			$delta = $interval->i;
-			$format = '{delta, plural, =1{a minute} other{# minutes}} ago';
+			return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $delta]);
 		} else {
 			$delta = $interval->s;
-			$format = '{delta, plural, =1{a second} other{# seconds}} ago';
+			return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $delta]);
 		}
-		
-		return Yii::t('yii', $format, ['delta' => $delta]);
 	}
 }
