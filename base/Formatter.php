@@ -457,7 +457,7 @@ class Formatter extends Component
 	}
 
 	/**
-	 * Formats the value as 	the time elapsed since then in human readable form.
+	 * Formats the value as the time elapsed since then in human readable form.
 	 * @param integer|string|DateTime $value the value to be formatted. The following
 	 * types of value are supported:
 	 *
