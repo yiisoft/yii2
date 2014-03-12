@@ -126,6 +126,8 @@ class ViewRenderer extends BaseViewRenderer
         }));
 
         $this->twig->addGlobal('app', \Yii::$app);
+
+        Yii::$app->layout = false;
     }
 
     /**
