@@ -10,11 +10,16 @@ return [
 	//....
 	'components' => [
 		'view' => [
+            //'defaultExtension' => 'twig',
 			'renderers' => [
 				'twig' => [
 					'class' => 'yii\twig\ViewRenderer',
 					//'cachePath' => '@runtime/Twig/cache',
 					//'options' => [], /*  Array of twig options */
+                    //'namespaces' => [
+                    //    '@app/views/layouts' => 'layouts',
+                    //    '@app/views' => '__main__'
+                    //]
 					// ... see ViewRenderer for more options
 				],
 			],
