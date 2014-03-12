@@ -62,6 +62,7 @@ foreach ($generator->templates as $name => $path) {
 			]);
 		} elseif (isset($files)) {
 			echo $this->render('view/files', [
+				'id' => $id,
 				'generator' => $generator,
 				'files' => $files,
 				'answers' => $answers,
