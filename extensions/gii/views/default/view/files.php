@@ -46,7 +46,7 @@ use yii\gii\CodeFile;
 			?>
 			<tr class="<?= "$file->operation $trClass" ?>">
 				<td class="file">
-					<?= Html::a(Html::encode($file->getRelativePath()), ['preview', 'file' => $file->id], ['class' => 'preview-code', 'data-title' => $file->getRelativePath()]) ?>
+					<?= Html::a(Html::encode($file->getRelativePath()), ['preview', 'id'=>$id, 'file' => $file->id], ['class' => 'preview-code', 'data-title' => $file->getRelativePath()]) ?>
 					<?php if ($file->operation === CodeFile::OP_OVERWRITE): ?>
 						<?= Html::a('diff', ['diff', 'file' => $file->id], ['class' => 'diff-code label label-warning', 'data-title' => $file->getRelativePath()]) ?>
 					<?php endif; ?>
