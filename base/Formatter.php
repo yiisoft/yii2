@@ -455,4 +455,54 @@ class Formatter extends Component
 				return $verbose ? Yii::t('yii', '{n, plural, =1{# petabyte} other{# petabytes}}', $params) : Yii::t('yii', '{n} PB', $params);
 		}
 	}
+
+	/**
+	 * Formats the value as a the time elapsed since then in human readable form.
+	 * @param integer|string|DateTime $value the value to be formatted. The following
+	 * types of value are supported:
+	 *
+	 * - an integer representing a UNIX timestamp
+	 * - a string that can be parsed into a UNIX timestamp via `strtotime()`
+	 * - a PHP DateTime object
+	 *
+	 * @return string the formatted result
+	 */
+	public function asElapsedTime($value)
+	{
+		if ($value === null) {
+			return $this->nullDisplay;
+		}
+		$value = $this->normalizeDatetimeValue($value);
+
+		$now = new \DateTime();
+		$date = new DateTime(null, new \DateTimeZone($this->timeZone));
+		$date->setTimestamp($value);
+
+		$interval = $now->diff($date);
+
+		if ($interval->y >= 1) {
+			$delta = $interval->y;
+			$format = '{delta, plural, =1{a year} other{# years}} ago';
+		} elseif ($interval->m >= 1) {
+			$delta = $interval->m;
+			$format = '{delta, plural, =1{a month} other{# months}} ago';
+		} elseif ($interval->d >= 7) {
+			$delta = floor($interval->d / 7);
+			$format = '{delta, plural, =1{a week} other{# weeks}} ago';
+		} elseif ($interval->d >= 1) {
+			$delta = $interval->d;
+			$format = '{delta, plural, =1{yesterday} other{# days ago}}';
+		} elseif ($interval->h >= 1) {
+			$delta = $interval->h;
+			$format = '{delta, plural, =1{an hour} other{# hours}} ago';
+		} elseif ($interval->i >= 1) {
+			$delta = $interval->i;
+			$format = '{delta, plural, =1{a minute} other{# minutes}} ago';
+		} else {
+			$delta = $interval->s;
+			$format = '{delta, plural, =1{a second} other{# seconds}} ago';
+		}
+		
+		return Yii::t('yii', $format, ['delta' => $delta]);
+	}
 }
