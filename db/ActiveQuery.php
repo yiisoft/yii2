@@ -453,7 +453,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 			$modelClass = $query->modelClass;
 			$tableName = $modelClass::tableName();
 		} else {
-			$tableName = reset($query->from);
+			$tableName = '';
+			foreach ($query->from as $alias => $tableName) {
+				if (is_string($alias)) {
+					return [$tableName, $alias];
+				} else {
+					break;
+				}
+			}
 		}
 
 		if (preg_match('/^(.*?)\s+({{\w+}}|\w+)$/', $tableName, $matches)) {
