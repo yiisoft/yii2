@@ -9,5 +9,5 @@ use yiiunit\framework\db\ActiveRecordTest;
  */
 class CubridActiveRecordTest extends ActiveRecordTest
 {
-	public $driverName = 'cubrid';
+    public $driverName = 'cubrid';
 }

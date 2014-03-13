@@ -15,14 +15,14 @@ use yii\web\AssetBundle;
  */
 class DialogAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/jui/assets';
-	public $js = [
-		'jquery.ui.dialog.js',
-	];
-	public $depends = [
-		'yii\jui\CoreAsset',
-		'yii\jui\ButtonAsset',
-		'yii\jui\DraggableAsset',
-		'yii\jui\ResizableAsset',
-	];
+    public $sourcePath = '@yii/jui/assets';
+    public $js = [
+        'jquery.ui.dialog.js',
+    ];
+    public $depends = [
+        'yii\jui\CoreAsset',
+        'yii\jui\ButtonAsset',
+        'yii\jui\DraggableAsset',
+        'yii\jui\ResizableAsset',
+    ];
 }

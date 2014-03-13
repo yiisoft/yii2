@@ -8,16 +8,6 @@
 namespace yii\apidoc\renderers;
 
 use Yii;
-use yii\apidoc\models\ClassDoc;
-use yii\apidoc\models\ConstDoc;
-use yii\apidoc\models\Context;
-use yii\apidoc\models\EventDoc;
-use yii\apidoc\models\InterfaceDoc;
-use yii\apidoc\models\MethodDoc;
-use yii\apidoc\models\PropertyDoc;
-use yii\apidoc\models\TraitDoc;
-use yii\base\Component;
-use yii\console\Controller;
 
 /**
  * Base class for all Guide documentation renderers
@@ -27,12 +17,12 @@ use yii\console\Controller;
  */
 abstract class GuideRenderer extends BaseRenderer
 {
-	/**
-	 * Render markdown files
-	 *
-	 * @param array $files list of markdown files to render
-	 * @param $targetDir
-	 */
-	public abstract function render($files, $targetDir);
+    /**
+     * Render markdown files
+     *
+     * @param array $files list of markdown files to render
+     * @param $targetDir
+     */
+    abstract public function render($files, $targetDir);
 
 }

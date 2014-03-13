@@ -15,11 +15,11 @@ use yii\web\AssetBundle;
  */
 class SortableAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/jui/assets';
-	public $js = [
-		'jquery.ui.sortable.js',
-	];
-	public $depends = [
-		'yii\jui\CoreAsset',
-	];
+    public $sourcePath = '@yii/jui/assets';
+    public $js = [
+        'jquery.ui.sortable.js',
+    ];
+    public $depends = [
+        'yii\jui\CoreAsset',
+    ];
 }

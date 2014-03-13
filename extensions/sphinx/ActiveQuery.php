@@ -82,186 +82,193 @@ use yii\db\ActiveRelationTrait;
  */
 class ActiveQuery extends Query implements ActiveQueryInterface
 {
-	use ActiveQueryTrait;
-	use ActiveRelationTrait;
+    use ActiveQueryTrait;
+    use ActiveRelationTrait;
 
-	/**
-	 * @var string the SQL statement to be executed for retrieving AR records.
-	 * This is set by [[ActiveRecord::findBySql()]].
-	 */
-	public $sql;
+    /**
+     * @var string the SQL statement to be executed for retrieving AR records.
+     * This is set by [[ActiveRecord::findBySql()]].
+     */
+    public $sql;
 
-	/**
-	 * Sets the [[snippetCallback]] to [[fetchSnippetSourceFromModels()]], which allows to
-	 * fetch the snippet source strings from the Active Record models, using method
-	 * [[ActiveRecord::getSnippetSource()]].
-	 * For example:
-	 *
-	 * ~~~
-	 * class Article extends ActiveRecord
-	 * {
-	 *     public function getSnippetSource()
-	 *     {
-	 *         return file_get_contents('/path/to/source/files/' . $this->id . '.txt');;
-	 *     }
-	 * }
-	 *
-	 * $articles = Article::find()->snippetByModel()->all();
-	 * ~~~
-	 *
-	 * Warning: this option should NOT be used with [[asArray]] at the same time!
-	 * @return static the query object itself
-	 */
-	public function snippetByModel()
-	{
-		$this->snippetCallback([$this, 'fetchSnippetSourceFromModels']);
-		return $this;
-	}
+    /**
+     * Sets the [[snippetCallback]] to [[fetchSnippetSourceFromModels()]], which allows to
+     * fetch the snippet source strings from the Active Record models, using method
+     * [[ActiveRecord::getSnippetSource()]].
+     * For example:
+     *
+     * ~~~
+     * class Article extends ActiveRecord
+     * {
+     *     public function getSnippetSource()
+     *     {
+     *         return file_get_contents('/path/to/source/files/' . $this->id . '.txt');;
+     *     }
+     * }
+     *
+     * $articles = Article::find()->snippetByModel()->all();
+     * ~~~
+     *
+     * Warning: this option should NOT be used with [[asArray]] at the same time!
+     * @return static the query object itself
+     */
+    public function snippetByModel()
+    {
+        $this->snippetCallback([$this, 'fetchSnippetSourceFromModels']);
 
-	/**
-	 * Executes query and returns all results as an array.
-	 * @param Connection $db the DB connection used to create the DB command.
-	 * If null, the DB connection returned by [[modelClass]] will be used.
-	 * @return array the query results. If the query results in nothing, an empty array will be returned.
-	 */
-	public function all($db = null)
-	{
-		$command = $this->createCommand($db);
-		$rows = $command->queryAll();
-		if (!empty($rows)) {
-			$models = $this->createModels($rows);
-			if (!empty($this->with)) {
-				$this->findWith($this->with, $models);
-			}
-			$models = $this->fillUpSnippets($models);
-			if (!$this->asArray) {
-				foreach ($models as $model) {
-					$model->afterFind();
-				}
-			}
-			return $models;
-		} else {
-			return [];
-		}
-	}
+        return $this;
+    }
 
-	/**
-	 * Executes query and returns a single row of result.
-	 * @param Connection $db the DB connection used to create the DB command.
-	 * If null, the DB connection returned by [[modelClass]] will be used.
-	 * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
-	 * the query result may be either an array or an ActiveRecord object. Null will be returned
-	 * if the query results in nothing.
-	 */
-	public function one($db = null)
-	{
-		$command = $this->createCommand($db);
-		$row = $command->queryOne();
-		if ($row !== false) {
-			if ($this->asArray) {
-				$model = $row;
-			} else {
-				/** @var $class ActiveRecord */
-				$class = $this->modelClass;
-				$model = $class::instantiate($row);
-				$class::populateRecord($model, $row);
-			}
-			if (!empty($this->with)) {
-				$models = [$model];
-				$this->findWith($this->with, $models);
-				$model = $models[0];
-			}
-			list ($model) = $this->fillUpSnippets([$model]);
-			if (!$this->asArray) {
-				$model->afterFind();
-			}
-			return $model;
-		} else {
-			return null;
-		}
-	}
+    /**
+     * Executes query and returns all results as an array.
+     * @param  Connection $db the DB connection used to create the DB command.
+     *                        If null, the DB connection returned by [[modelClass]] will be used.
+     * @return array      the query results. If the query results in nothing, an empty array will be returned.
+     */
+    public function all($db = null)
+    {
+        $command = $this->createCommand($db);
+        $rows = $command->queryAll();
+        if (!empty($rows)) {
+            $models = $this->createModels($rows);
+            if (!empty($this->with)) {
+                $this->findWith($this->with, $models);
+            }
+            $models = $this->fillUpSnippets($models);
+            if (!$this->asArray) {
+                foreach ($models as $model) {
+                    $model->afterFind();
+                }
+            }
 
-	/**
-	 * Creates a DB command that can be used to execute this query.
-	 * @param Connection $db the DB connection used to create the DB command.
-	 * If null, the DB connection returned by [[modelClass]] will be used.
-	 * @return Command the created DB command instance.
-	 */
-	public function createCommand($db = null)
-	{
-		if ($this->primaryModel !== null) {
-			// lazy loading a relational query
-			if ($this->via instanceof self) {
-				// via pivot index
-				$viaModels = $this->via->findPivotRows([$this->primaryModel]);
-				$this->filterByModels($viaModels);
-			} elseif (is_array($this->via)) {
-				// via relation
-				/** @var ActiveQuery $viaQuery */
-				list($viaName, $viaQuery) = $this->via;
-				if ($viaQuery->multiple) {
-					$viaModels = $viaQuery->all();
-					$this->primaryModel->populateRelation($viaName, $viaModels);
-				} else {
-					$model = $viaQuery->one();
-					$this->primaryModel->populateRelation($viaName, $model);
-					$viaModels = $model === null ? [] : [$model];
-				}
-				$this->filterByModels($viaModels);
-			} else {
-				$this->filterByModels([$this->primaryModel]);
-			}
-		}
+            return $models;
+        } else {
+            return [];
+        }
+    }
 
-		$this->setConnection($db);
-		$db = $this->getConnection();
+    /**
+     * Executes query and returns a single row of result.
+     * @param  Connection              $db the DB connection used to create the DB command.
+     *                                     If null, the DB connection returned by [[modelClass]] will be used.
+     * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
+     *                                    the query result may be either an array or an ActiveRecord object. Null will be returned
+     *                                    if the query results in nothing.
+     */
+    public function one($db = null)
+    {
+        $command = $this->createCommand($db);
+        $row = $command->queryOne();
+        if ($row !== false) {
+            if ($this->asArray) {
+                $model = $row;
+            } else {
+                /** @var $class ActiveRecord */
+                $class = $this->modelClass;
+                $model = $class::instantiate($row);
+                $class::populateRecord($model, $row);
+            }
+            if (!empty($this->with)) {
+                $models = [$model];
+                $this->findWith($this->with, $models);
+                $model = $models[0];
+            }
+            list ($model) = $this->fillUpSnippets([$model]);
+            if (!$this->asArray) {
+                $model->afterFind();
+            }
 
-		$params = $this->params;
-		if ($this->sql === null) {
-			list ($this->sql, $params) = $db->getQueryBuilder()->build($this);
-		}
-		return $db->createCommand($this->sql, $params);
-	}
+            return $model;
+        } else {
+            return null;
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultConnection()
-	{
-		$modelClass = $this->modelClass;
-		return $modelClass::getDb();
-	}
+    /**
+     * Creates a DB command that can be used to execute this query.
+     * @param  Connection $db the DB connection used to create the DB command.
+     *                        If null, the DB connection returned by [[modelClass]] will be used.
+     * @return Command    the created DB command instance.
+     */
+    public function createCommand($db = null)
+    {
+        if ($this->primaryModel !== null) {
+            // lazy loading a relational query
+            if ($this->via instanceof self) {
+                // via pivot index
+                $viaModels = $this->via->findPivotRows([$this->primaryModel]);
+                $this->filterByModels($viaModels);
+            } elseif (is_array($this->via)) {
+                // via relation
+                /** @var ActiveQuery $viaQuery */
+                list($viaName, $viaQuery) = $this->via;
+                if ($viaQuery->multiple) {
+                    $viaModels = $viaQuery->all();
+                    $this->primaryModel->populateRelation($viaName, $viaModels);
+                } else {
+                    $model = $viaQuery->one();
+                    $this->primaryModel->populateRelation($viaName, $model);
+                    $viaModels = $model === null ? [] : [$model];
+                }
+                $this->filterByModels($viaModels);
+            } else {
+                $this->filterByModels([$this->primaryModel]);
+            }
+        }
 
-	/**
-	 * Fetches the source for the snippets using [[ActiveRecord::getSnippetSource()]] method.
-	 * @param ActiveRecord[] $models raw query result rows.
-	 * @throws \yii\base\InvalidCallException if [[asArray]] enabled.
-	 * @return array snippet source strings
-	 */
-	protected function fetchSnippetSourceFromModels($models)
-	{
-		if ($this->asArray) {
-			throw new InvalidCallException('"' . __METHOD__ . '" unable to determine snippet source from plain array. Either disable "asArray" option or use regular "snippetCallback"');
-		}
-		$result = [];
-		foreach ($models as $model) {
-			$result[] = $model->getSnippetSource();
-		}
-		return $result;
-	}
+        $this->setConnection($db);
+        $db = $this->getConnection();
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function callSnippets(array $source)
-	{
-		$from = $this->from;
-		if ($from === null) {
-			/** @var ActiveRecord $modelClass */
-			$modelClass = $this->modelClass;
-			$tableName = $modelClass::indexName();
-			$from = [$tableName];
-		}
-		return $this->callSnippetsInternal($source, $from[0]);
-	}
+        $params = $this->params;
+        if ($this->sql === null) {
+            list ($this->sql, $params) = $db->getQueryBuilder()->build($this);
+        }
+
+        return $db->createCommand($this->sql, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defaultConnection()
+    {
+        $modelClass = $this->modelClass;
+
+        return $modelClass::getDb();
+    }
+
+    /**
+     * Fetches the source for the snippets using [[ActiveRecord::getSnippetSource()]] method.
+     * @param  ActiveRecord[]                 $models raw query result rows.
+     * @throws \yii\base\InvalidCallException if [[asArray]] enabled.
+     * @return array                          snippet source strings
+     */
+    protected function fetchSnippetSourceFromModels($models)
+    {
+        if ($this->asArray) {
+            throw new InvalidCallException('"' . __METHOD__ . '" unable to determine snippet source from plain array. Either disable "asArray" option or use regular "snippetCallback"');
+        }
+        $result = [];
+        foreach ($models as $model) {
+            $result[] = $model->getSnippetSource();
+        }
+
+        return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function callSnippets(array $source)
+    {
+        $from = $this->from;
+        if ($from === null) {
+            /** @var ActiveRecord $modelClass */
+            $modelClass = $this->modelClass;
+            $tableName = $modelClass::indexName();
+            $from = [$tableName];
+        }
+
+        return $this->callSnippetsInternal($source, $from[0]);
+    }
 }

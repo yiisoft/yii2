@@ -16,75 +16,75 @@ use yii\behaviors\TimestampBehavior;
  */
 class TimestampBehaviorTest extends TestCase
 {
-	/**
-	 * @var Connection test db connection
-	 */
-	protected $dbConnection;
+    /**
+     * @var Connection test db connection
+     */
+    protected $dbConnection;
 
-	public static function setUpBeforeClass()
-	{
-		if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
-			static::markTestSkipped('PDO and SQLite extensions are required.');
-		}
-	}
+    public static function setUpBeforeClass()
+    {
+        if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
+            static::markTestSkipped('PDO and SQLite extensions are required.');
+        }
+    }
 
-	public function setUp()
-	{
-		$this->mockApplication([
-			'components' => [
-				'db' => [
-					'class' => '\yii\db\Connection',
-					'dsn' => 'sqlite::memory:',
-				]
-			]
-		]);
+    public function setUp()
+    {
+        $this->mockApplication([
+            'components' => [
+                'db' => [
+                    'class' => '\yii\db\Connection',
+                    'dsn' => 'sqlite::memory:',
+                ]
+            ]
+        ]);
 
-		$columns = [
-			'id' => 'pk',
-			'created_at' => 'integer',
-			'updated_at' => 'integer',
-		];
-		Yii::$app->getDb()->createCommand()->createTable('test_auto_timestamp', $columns)->execute();
-	}
+        $columns = [
+            'id' => 'pk',
+            'created_at' => 'integer',
+            'updated_at' => 'integer',
+        ];
+        Yii::$app->getDb()->createCommand()->createTable('test_auto_timestamp', $columns)->execute();
+    }
 
-	public function tearDown()
-	{
-		Yii::$app->getDb()->close();
-		parent::tearDown();
-	}
+    public function tearDown()
+    {
+        Yii::$app->getDb()->close();
+        parent::tearDown();
+    }
 
-	// Tests :
+    // Tests :
 
-	public function testNewRecord()
-	{
-		$currentTime = time();
+    public function testNewRecord()
+    {
+        $currentTime = time();
 
-		$model = new ActiveRecordTimestamp();
-		$model->save(false);
+        $model = new ActiveRecordTimestamp();
+        $model->save(false);
 
-		$this->assertTrue($model->created_at >= $currentTime);
-		$this->assertTrue($model->updated_at >= $currentTime);
-	}
+        $this->assertTrue($model->created_at >= $currentTime);
+        $this->assertTrue($model->updated_at >= $currentTime);
+    }
 
-	/**
-	 * @depends testNewRecord
-	 */
-	public function testUpdateRecord()
-	{
-		$currentTime = time();
+    /**
+     * @depends testNewRecord
+     */
+    public function testUpdateRecord()
+    {
+        $currentTime = time();
 
-		$model = new ActiveRecordTimestamp();
-		$model->save(false);
+        $model = new ActiveRecordTimestamp();
+        $model->save(false);
 
-		$enforcedTime = $currentTime - 100;
+        $enforcedTime = $currentTime - 100;
 
-		$model->created_at = $enforcedTime;
-		$model->updated_at = $enforcedTime;
-		$model->save(false);
+        $model->created_at = $enforcedTime;
+        $model->updated_at = $enforcedTime;
+        $model->save(false);
 
-		$this->assertEquals($enforcedTime, $model->created_at, 'Create time has been set on update!');
-		$this->assertTrue($model->updated_at >= $currentTime, 'Update time has NOT been set on update!');
-	}
+        $this->assertEquals($enforcedTime, $model->created_at, 'Create time has been set on update!');
+        $this->assertTrue($model->updated_at >= $currentTime, 'Update time has NOT been set on update!');
+    }
 }
 
 /**
@@ -96,15 +96,15 @@ class TimestampBehaviorTest extends TestCase
  */
 class ActiveRecordTimestamp extends ActiveRecord
 {
-	public function behaviors()
-	{
-		return [
-			TimestampBehavior::className(),
-		];
-	}
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+        ];
+    }
 
-	public static function tableName()
-	{
-		return 'test_auto_timestamp';
-	}
+    public static function tableName()
+    {
+        return 'test_auto_timestamp';
+    }
 }

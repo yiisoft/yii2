@@ -13,8 +13,8 @@ namespace yiiunit\data\ar;
  */
 class NullValues extends ActiveRecord
 {
-	public static function tableName()
-	{
-		return 'tbl_null_values';
-	}
+    public static function tableName()
+    {
+        return 'tbl_null_values';
+    }
 }

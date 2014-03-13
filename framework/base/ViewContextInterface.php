@@ -17,10 +17,10 @@ namespace yii\base;
  */
 interface ViewContextInterface
 {
-	/**
-	 * Finds the view file corresponding to the specified relative view name.
-	 * @param string $view a relative view name. The name does NOT start with a slash.
-	 * @return string the view file path. Note that the file may not exist.
-	 */
-	public function findViewFile($view);
+    /**
+     * Finds the view file corresponding to the specified relative view name.
+     * @param  string $view a relative view name. The name does NOT start with a slash.
+     * @return string the view file path. Note that the file may not exist.
+     */
+    public function findViewFile($view);
 }

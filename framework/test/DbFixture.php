@@ -21,25 +21,24 @@ use yii\db\Connection;
  */
 abstract class DbFixture extends Fixture
 {
-	/**
-	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
-	 * After the DbFixture object is created, if you want to change this property, you should only assign it
-	 * with a DB connection object.
-	 */
-	public $db = 'db';
+    /**
+     * @var Connection|string the DB connection object or the application component ID of the DB connection.
+     * After the DbFixture object is created, if you want to change this property, you should only assign it
+     * with a DB connection object.
+     */
+    public $db = 'db';
 
-
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		parent::init();
-		if (is_string($this->db)) {
-			$this->db = Yii::$app->getComponent($this->db);
-		}
-		if (!is_object($this->db)) {
-			throw new InvalidConfigException("The 'db' property must be either a DB connection instance or the application component ID of a DB connection.");
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if (is_string($this->db)) {
+            $this->db = Yii::$app->getComponent($this->db);
+        }
+        if (!is_object($this->db)) {
+            throw new InvalidConfigException("The 'db' property must be either a DB connection instance or the application component ID of a DB connection.");
+        }
+    }
 }

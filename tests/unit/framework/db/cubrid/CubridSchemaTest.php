@@ -9,28 +9,28 @@ use yiiunit\framework\db\SchemaTest;
  */
 class CubridSchemaTest extends SchemaTest
 {
-	public $driverName = 'cubrid';
+    public $driverName = 'cubrid';
 
-	public function testGetPDOType()
-	{
-		$values = [
-			[null, \PDO::PARAM_NULL],
-			['', \PDO::PARAM_STR],
-			['hello', \PDO::PARAM_STR],
-			[0, \PDO::PARAM_INT],
-			[1, \PDO::PARAM_INT],
-			[1337, \PDO::PARAM_INT],
-			[true, \PDO::PARAM_INT],
-			[false, \PDO::PARAM_INT],
-			[$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
-		];
+    public function testGetPDOType()
+    {
+        $values = [
+            [null, \PDO::PARAM_NULL],
+            ['', \PDO::PARAM_STR],
+            ['hello', \PDO::PARAM_STR],
+            [0, \PDO::PARAM_INT],
+            [1, \PDO::PARAM_INT],
+            [1337, \PDO::PARAM_INT],
+            [true, \PDO::PARAM_INT],
+            [false, \PDO::PARAM_INT],
+            [$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
+        ];
 
-		/** @var Schema $schema */
-		$schema = $this->getConnection()->schema;
+        /** @var Schema $schema */
+        $schema = $this->getConnection()->schema;
 
-		foreach ($values as $value) {
-			$this->assertEquals($value[1], $schema->getPdoType($value[0]));
-		}
-		fclose($fp);
-	}
+        foreach ($values as $value) {
+            $this->assertEquals($value[1], $schema->getPdoType($value[0]));
+        }
+        fclose($fp);
+    }
 }

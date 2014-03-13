@@ -15,11 +15,11 @@ use yii\web\AssetBundle;
  */
 class ResizableAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/jui/assets';
-	public $js = [
-		'jquery.ui.resizable.js',
-	];
-	public $depends = [
-		'yii\jui\CoreAsset',
-	];
+    public $sourcePath = '@yii/jui/assets';
+    public $js = [
+        'jquery.ui.resizable.js',
+    ];
+    public $depends = [
+        'yii\jui\CoreAsset',
+    ];
 }

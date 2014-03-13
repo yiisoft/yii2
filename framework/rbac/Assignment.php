@@ -22,34 +22,34 @@ use yii\base\Object;
  */
 class Assignment extends Object
 {
-	/**
-	 * @var Manager the auth manager of this item
-	 */
-	public $manager;
-	/**
-	 * @var string the business rule associated with this assignment
-	 */
-	public $bizRule;
-	/**
-	 * @var mixed additional data for this assignment
-	 */
-	public $data;
-	/**
-	 * @var mixed user ID (see [[\yii\web\User::id]]). Do not modify this property after it is populated.
-	 * To modify the user ID of an assignment, you must remove the assignment and create a new one.
-	 */
-	public $userId;
-	/**
-	 * @return string the authorization item name. Do not modify this property after it is populated.
-	 * To modify the item name of an assignment, you must remove the assignment and create a new one.
-	 */
-	public $itemName;
+    /**
+     * @var Manager the auth manager of this item
+     */
+    public $manager;
+    /**
+     * @var string the business rule associated with this assignment
+     */
+    public $bizRule;
+    /**
+     * @var mixed additional data for this assignment
+     */
+    public $data;
+    /**
+     * @var mixed user ID (see [[\yii\web\User::id]]). Do not modify this property after it is populated.
+     * To modify the user ID of an assignment, you must remove the assignment and create a new one.
+     */
+    public $userId;
+    /**
+     * @return string the authorization item name. Do not modify this property after it is populated.
+     *                To modify the item name of an assignment, you must remove the assignment and create a new one.
+     */
+    public $itemName;
 
-	/**
-	 * Saves the changes to an authorization assignment.
-	 */
-	public function save()
-	{
-		$this->manager->saveAssignment($this);
-	}
+    /**
+     * Saves the changes to an authorization assignment.
+     */
+    public function save()
+    {
+        $this->manager->saveAssignment($this);
+    }
 }

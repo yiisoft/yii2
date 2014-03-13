@@ -14,8 +14,8 @@ namespace yiiunit\data\ar;
  */
 class Profile extends ActiveRecord
 {
-	public static function tableName()
-	{
-		return 'tbl_profile';
-	}
+    public static function tableName()
+    {
+        return 'tbl_profile';
+    }
 }

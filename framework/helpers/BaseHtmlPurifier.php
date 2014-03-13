@@ -16,19 +16,20 @@ namespace yii\helpers;
  */
 class BaseHtmlPurifier
 {
-	/**
-	 * Passes markup through HTMLPurifier making it safe to output to end user
-	 *
-	 * @param string $content
-	 * @param array|null $config
-	 * @return string
-	 */
-	public static function process($content, $config = null)
-	{
-		$configInstance = \HTMLPurifier_Config::create($config);
-		$configInstance->autoFinalize = false;
-		$purifier=\HTMLPurifier::instance($configInstance);
-		$purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
-		return $purifier->purify($content);
-	}
+    /**
+     * Passes markup through HTMLPurifier making it safe to output to end user
+     *
+     * @param  string     $content
+     * @param  array|null $config
+     * @return string
+     */
+    public static function process($content, $config = null)
+    {
+        $configInstance = \HTMLPurifier_Config::create($config);
+        $configInstance->autoFinalize = false;
+        $purifier=\HTMLPurifier::instance($configInstance);
+        $purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
+
+        return $purifier->purify($content);
+    }
 }

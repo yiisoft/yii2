@@ -15,15 +15,14 @@ echo "<?php\n";
 
 namespace <?= $ns ?>;
 
-
 class <?= $className ?> extends \yii\base\Module
 {
-	public $controllerNamespace = '<?= $generator->getControllerNamespace() ?>';
+    public $controllerNamespace = '<?= $generator->getControllerNamespace() ?>';
 
-	public function init()
-	{
-		parent::init();
+    public function init()
+    {
+        parent::init();
 
-		// custom initialization code goes here
-	}
+        // custom initialization code goes here
+    }
 }

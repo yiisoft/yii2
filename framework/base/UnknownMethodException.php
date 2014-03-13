@@ -15,11 +15,11 @@ namespace yii\base;
  */
 class UnknownMethodException extends Exception
 {
-	/**
-	 * @return string the user-friendly name of this exception
-	 */
-	public function getName()
-	{
-		return 'Unknown Method';
-	}
+    /**
+     * @return string the user-friendly name of this exception
+     */
+    public function getName()
+    {
+        return 'Unknown Method';
+    }
 }

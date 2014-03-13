@@ -10,5 +10,5 @@ use yiiunit\framework\data\ActiveDataProviderTest;
  */
 class PostgreSQLActiveDataProviderTest extends ActiveDataProviderTest
 {
-	public $driverName = 'pgsql';
+    public $driverName = 'pgsql';
 }

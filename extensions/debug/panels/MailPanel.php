@@ -20,86 +20,87 @@ use yii\helpers\FileHelper;
 class MailPanel extends Panel
 {
 
-	/**
-	 * @var string path where all emails will be saved. should be an alias.
-	 */
-	public $mailPath = '@runtime/debug/mail';
-	/**
-	 * @var array current request sent messages
-	 */
-	private $_messages = [];
+    /**
+     * @var string path where all emails will be saved. should be an alias.
+     */
+    public $mailPath = '@runtime/debug/mail';
+    /**
+     * @var array current request sent messages
+     */
+    private $_messages = [];
 
-	public function init()
-	{
-		parent::init();
-		Event::on(BaseMailer::className(), BaseMailer::EVENT_AFTER_SEND, function ($event) {
+    public function init()
+    {
+        parent::init();
+        Event::on(BaseMailer::className(), BaseMailer::EVENT_AFTER_SEND, function ($event) {
 
-			$message = $event->message->getSwiftMessage();
-			$textBody = $message->getBody();
-			$fileName = $event->sender->generateMessageFileName();
+            $message = $event->message->getSwiftMessage();
+            $textBody = $message->getBody();
+            $fileName = $event->sender->generateMessageFileName();
 
-			FileHelper::createDirectory(Yii::getAlias($this->mailPath));
-			file_put_contents(Yii::getAlias($this->mailPath) . '/' . $fileName, $message->toString());
+            FileHelper::createDirectory(Yii::getAlias($this->mailPath));
+            file_put_contents(Yii::getAlias($this->mailPath) . '/' . $fileName, $message->toString());
 
-			$this->_messages[] = [
-					'isSuccessful' => $event->isSuccessful,
-					'time' => $message->getDate(),
-					'headers' => $message->getHeaders(),
-					'from' => $this->convertParams($message->getFrom()),
-					'to' => $this->convertParams($message->getTo()),
-					'reply' => $this->convertParams($message->getReplyTo()),
-					'cc' => $this->convertParams($message->getCc()),
-					'bcc' => $this->convertParams($message->getBcc()),
-					'subject' => $message->getSubject(),
-					'body' => $textBody,
-					'charset' => $message->getCharset(),
-					'file' => $fileName,
-			];
-		});
-	}
+            $this->_messages[] = [
+                    'isSuccessful' => $event->isSuccessful,
+                    'time' => $message->getDate(),
+                    'headers' => $message->getHeaders(),
+                    'from' => $this->convertParams($message->getFrom()),
+                    'to' => $this->convertParams($message->getTo()),
+                    'reply' => $this->convertParams($message->getReplyTo()),
+                    'cc' => $this->convertParams($message->getCc()),
+                    'bcc' => $this->convertParams($message->getBcc()),
+                    'subject' => $message->getSubject(),
+                    'body' => $textBody,
+                    'charset' => $message->getCharset(),
+                    'file' => $fileName,
+            ];
+        });
+    }
 
-	public function getName()
-	{
-		return 'Mail';
-	}
+    public function getName()
+    {
+        return 'Mail';
+    }
 
-	public function getSummary()
-	{
-		return Yii::$app->view->render('panels/mail/summary', ['panel' => $this, 'mailCount' => count($this->data)]);
-	}
+    public function getSummary()
+    {
+        return Yii::$app->view->render('panels/mail/summary', ['panel' => $this, 'mailCount' => count($this->data)]);
+    }
 
-	public function getDetail()
-	{
-		$searchModel = new Mail();
-		$dataProvider = $searchModel->search(Yii::$app->request->get(), $this->data);
+    public function getDetail()
+    {
+        $searchModel = new Mail();
+        $dataProvider = $searchModel->search(Yii::$app->request->get(), $this->data);
 
-		return Yii::$app->view->render('panels/mail/detail', [
-				'panel' => $this,
-				'dataProvider' => $dataProvider,
-				'searchModel' => $searchModel
-		]);
-	}
+        return Yii::$app->view->render('panels/mail/detail', [
+                'panel' => $this,
+                'dataProvider' => $dataProvider,
+                'searchModel' => $searchModel
+        ]);
+    }
 
-	public function save()
-	{
-		return $this->getMessages();
-	}
+    public function save()
+    {
+        return $this->getMessages();
+    }
 
-	/**
-	 * Returns info about messages of current request. Each element is array holding
-	 * message info, such as: time, reply, bc, cc, from, to and other.
-	 * @return array messages
-	 */
-	public function getMessages()
-	{
-		return $this->_messages;
-	}
+    /**
+     * Returns info about messages of current request. Each element is array holding
+     * message info, such as: time, reply, bc, cc, from, to and other.
+     * @return array messages
+     */
+    public function getMessages()
+    {
+        return $this->_messages;
+    }
 
-	private function convertParams($attr)
-	{
-		if (is_array($attr)) {
-			$attr = implode(', ', array_keys($attr));
-		}
-		return $attr;
-	}
+    private function convertParams($attr)
+    {
+        if (is_array($attr)) {
+            $attr = implode(', ', array_keys($attr));
+        }
+
+        return $attr;
+    }
 }

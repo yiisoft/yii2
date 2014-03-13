@@ -30,37 +30,37 @@ use yii\base\InvalidConfigException;
  */
 class FilterValidator extends Validator
 {
-	/**
-	 * @var callable the filter. This can be a global function name, anonymous function, etc.
-	 * The function signature must be as follows,
-	 *
-	 * ~~~
-	 * function foo($value) {...return $newValue; }
-	 * ~~~
-	 */
-	public $filter;
-	/**
-	 * @var boolean this property is overwritten to be false so that this validator will
-	 * be applied when the value being validated is empty.
-	 */
-	public $skipOnEmpty = false;
+    /**
+     * @var callable the filter. This can be a global function name, anonymous function, etc.
+     * The function signature must be as follows,
+     *
+     * ~~~
+     * function foo($value) {...return $newValue; }
+     * ~~~
+     */
+    public $filter;
+    /**
+     * @var boolean this property is overwritten to be false so that this validator will
+     * be applied when the value being validated is empty.
+     */
+    public $skipOnEmpty = false;
 
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		parent::init();
-		if ($this->filter === null) {
-			throw new InvalidConfigException('The "filter" property must be set.');
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if ($this->filter === null) {
+            throw new InvalidConfigException('The "filter" property must be set.');
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function validateAttribute($object, $attribute)
-	{
-		$object->$attribute = call_user_func($this->filter, $object->$attribute);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function validateAttribute($object, $attribute)
+    {
+        $object->$attribute = call_user_func($this->filter, $object->$attribute);
+    }
 }
