@@ -592,6 +592,13 @@ EOD;
 		$this->assertTrue(!array_key_exists('style', $options));
 	}
 
+	public function testBooleanAttributes()
+	{
+		$this->assertEquals('<input type="email" name="mail">', Html::input('email', 'mail', null, ['required' => false]));
+		$this->assertEquals('<input type="email" name="mail" required>', Html::input('email', 'mail', null, ['required' => true]));
+		$this->assertEquals('<input type="email" name="mail" required="hi">', Html::input('email', 'mail', null, ['required' => 'hi']));
+	}
+
 	protected function getDataItems()
 	{
 		return [
