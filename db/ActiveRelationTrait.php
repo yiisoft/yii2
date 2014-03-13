@@ -142,7 +142,7 @@ trait ActiveRelationTrait
 	 */
 	public function findFor($name, $model)
 	{
-		if ($model->hasMethod('get' . $name)) {
+		if (method_exists($model, 'get' . $name)) {
 			$method = new \ReflectionMethod($model, 'get' . $name);
 			$realName = lcfirst(substr($method->getName(), 3));
 			if ($realName !== $name) {
