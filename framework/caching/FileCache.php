@@ -25,6 +25,14 @@ use yii\helpers\FileHelper;
 class FileCache extends Cache
 {
 	/**
+	 * @var string a string prefixed to every cache key. This is needed when you store
+	 * cache data under the same [[cachePath]] for different applications to avoid
+	 * conflict.
+	 *
+	 * To ensure interoperability, only alphanumeric characters should be used.
+	 */
+	public $keyPrefix = '';
+	/**
 	 * @var string the directory to store cache files. You may use path alias here.
 	 * If not set, it will use the "cache" subdirectory under the application runtime path.
 	 */
