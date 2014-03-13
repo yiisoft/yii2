@@ -329,8 +329,8 @@ class UrlRule extends Object implements UrlRuleInterface
 			$url .= ($this->suffix === null ? $manager->suffix : $this->suffix);
 		}
 
-		if (!empty($params)) {
-			$url .= '?' . http_build_query($params);
+		if (!empty($params) && ($query = http_build_query($params)) !== '') {
+			$url .= '?' . $query;
 		}
 		return $url;
 	}
