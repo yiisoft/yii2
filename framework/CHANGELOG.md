@@ -182,6 +182,10 @@ Yii Framework 2 Change Log
 	- Added `yii\web\Request::get($name = null, $defaultValue = null)` and `yii\web\Request::post($name = null, $defaultValue = null)` (samdark)
 - Chg #2059: Implemented git-flavored file excluding/filtering for `FileHelper` (nineinchnick)
 - Chg #2063: Removed `yii\web\Request::acceptTypes` and renamed `yii\web\Request::acceptedContentTypes` to `acceptableContentTypes` (qiangxue)
+- Chg #2146: Removed `ActiveRelation` class and `ActiveRelationInterface`, moved the functionality to `ActiveQuery`.
+             All relational queries are now directly served by `ActiveQuery` allowing to use custom scopes in relations
+             and also to declare arbitrary queries as relations.
+			 Also removed `ActiveRecordInterface::createActiveRelation()` (cebe)
 - Chg #2157: The '*' category pattern will match all categories that do not match any other patterns listed in `I18N::translations` (qiangxue, Ragazzo)
 - Chg #2161: Added ability to use `return` in `Widget::run` (samdark)
 - Chg #2173: Removed `StringHelper::diff()`, Moved `phpspec/php-diff` dependency from `yiisoft/yii2` to `yiisoft/yii2-gii` (samdark)
@@ -199,6 +203,7 @@ Yii Framework 2 Change Log
 	- Removed `yii\helpers\Html::url`, use `yii\helpers\Url::to` instead.
 	- Removed `yii\web\Controller::createUrl` and `yii\web\Controller::createAbsoluteUrl`, use `yii\helpers\Url::toRoute` instead.
 	- Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers\Url::canonical` instead.
+- Chg #2691: Null parameters will not be included in the generated URLs by `UrlManager` (gonimar, qiangxue)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
@@ -211,10 +216,6 @@ Yii Framework 2 Change Log
 - Chg: Advanced app template: moved database connection DSN, login and password to `-local` config not to expose it to VCS (samdark)
 - Chg: Renamed `yii\web\Request::acceptedLanguages` to `acceptableLanguages` (qiangxue)
 - Chg: Removed implementation of `Arrayable` from `yii\Object` (qiangxue)
-- Chg #2146: Removed `ActiveRelation` class and `ActiveRelationInterface`, moved the functionality to `ActiveQuery`.
-             All relational queries are now directly served by `ActiveQuery` allowing to use custom scopes in relations
-             and also to declare arbitrary queries as relations.
-			 Also removed `ActiveRecordInterface::createActiveRelation()` (cebe)
 - Chg: The scripts in asset bundles are now registered in `View` at the end of `endBody()`. It was done in `endPage()` previously (qiangxue)
 - Chg: Renamed `csrf-var` to `csrf-param` for CSRF header name (Dilip)
 - Chg: The directory holding email templates is renamed from `mails` to `mail` (qiangxue)
