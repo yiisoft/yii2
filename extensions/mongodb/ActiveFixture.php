@@ -28,100 +28,101 @@ use yii\test\BaseActiveFixture;
  */
 class ActiveFixture extends BaseActiveFixture
 {
-	/**
-	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
-	 */
-	public $db = 'mongodb';
-	/**
-	 * @var string|array the collection name that this fixture is about. If this property is not set,
-	 * the table name will be determined via [[modelClass]].
-	 * @see Connection::getCollection()
-	 */
-	public $collectionName;
+    /**
+     * @var Connection|string the DB connection object or the application component ID of the DB connection.
+     */
+    public $db = 'mongodb';
+    /**
+     * @var string|array the collection name that this fixture is about. If this property is not set,
+     * the table name will be determined via [[modelClass]].
+     * @see Connection::getCollection()
+     */
+    public $collectionName;
 
-	
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		parent::init();
-		if (!isset($this->modelClass) && !isset($this->collectionName)) {
-			throw new InvalidConfigException('Either "modelClass" or "collectionName" must be set.');
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if (!isset($this->modelClass) && !isset($this->collectionName)) {
+            throw new InvalidConfigException('Either "modelClass" or "collectionName" must be set.');
+        }
+    }
 
-	/**
-	 * Loads the fixture data.
-	 * Data will be batch inserted into the given collection.
-	 */
-	public function load()
-	{
-		parent::load();
+    /**
+     * Loads the fixture data.
+     * Data will be batch inserted into the given collection.
+     */
+    public function load()
+    {
+        parent::load();
 
-		$data = $this->getData();
-		$this->getCollection()->batchInsert($data);
-		foreach ($data as $alias => $row) {
-			$this->data[$alias] = $row;
-		}
-	}
+        $data = $this->getData();
+        $this->getCollection()->batchInsert($data);
+        foreach ($data as $alias => $row) {
+            $this->data[$alias] = $row;
+        }
+    }
 
-	/**
-	 * Unloads the fixture.
-	 * 
-	 * The default implementation will clean up the colection by calling [[resetCollection()]].
-	 */
-	public function unload()
-	{
-		$this->resetCollection();
-		parent::unload();
-	}
+    /**
+     * Unloads the fixture.
+     *
+     * The default implementation will clean up the colection by calling [[resetCollection()]].
+     */
+    public function unload()
+    {
+        $this->resetCollection();
+        parent::unload();
+    }
 
-	protected function getCollection()
-	{
-		return $this->db->getCollection($this->getCollectionName());
-	}
+    protected function getCollection()
+    {
+        return $this->db->getCollection($this->getCollectionName());
+    }
 
-	protected function getCollectionName()
-	{
-		if ($this->collectionName) {
-			return $this->collectionName;
-		} else {
-			/** @var ActiveRecord $modelClass */
-			$modelClass = $this->modelClass;
-			return $modelClass::collectionName();
-		}
-	}
+    protected function getCollectionName()
+    {
+        if ($this->collectionName) {
+            return $this->collectionName;
+        } else {
+            /** @var ActiveRecord $modelClass */
+            $modelClass = $this->modelClass;
 
-	/**
-	 * Returns the fixture data.
-	 *
-	 * This method is called by [[loadData()]] to get the needed fixture data.
-	 *
-	 * The default implementation will try to return the fixture data by including the external file specified by [[dataFile]].
-	 * The file should return an array of data rows (column name => column value), each corresponding to a row in the table.
-	 *
-	 * If the data file does not exist, an empty array will be returned.
-	 *
-	 * @return array the data rows to be inserted into the collection.
-	 */
-	protected function getData()
-	{
-		if ($this->dataFile === null) {
-			$class = new \ReflectionClass($this);
-			$dataFile = dirname($class->getFileName()) . '/data/' . $this->getCollectionName() . '.php';
-			return is_file($dataFile) ? require($dataFile) : [];
-		} else {
-			return parent::getData();
-		}
-	}
+            return $modelClass::collectionName();
+        }
+    }
 
-	/**
-	 * Removes all existing data from the specified collection and resets sequence number if any.
-	 * This method is called before populating fixture data into the collection associated with this fixture.
-	 */
-	protected function resetCollection()
-	{
-		$this->getCollection()->remove();
-	}
+    /**
+     * Returns the fixture data.
+     *
+     * This method is called by [[loadData()]] to get the needed fixture data.
+     *
+     * The default implementation will try to return the fixture data by including the external file specified by [[dataFile]].
+     * The file should return an array of data rows (column name => column value), each corresponding to a row in the table.
+     *
+     * If the data file does not exist, an empty array will be returned.
+     *
+     * @return array the data rows to be inserted into the collection.
+     */
+    protected function getData()
+    {
+        if ($this->dataFile === null) {
+            $class = new \ReflectionClass($this);
+            $dataFile = dirname($class->getFileName()) . '/data/' . $this->getCollectionName() . '.php';
+
+            return is_file($dataFile) ? require($dataFile) : [];
+        } else {
+            return parent::getData();
+        }
+    }
+
+    /**
+     * Removes all existing data from the specified collection and resets sequence number if any.
+     * This method is called before populating fixture data into the collection associated with this fixture.
+     */
+    protected function resetCollection()
+    {
+        $this->getCollection()->remove();
+    }
 }

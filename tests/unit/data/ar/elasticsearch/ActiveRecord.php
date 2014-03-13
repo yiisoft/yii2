@@ -15,18 +15,18 @@ namespace yiiunit\data\ar\elasticsearch;
  */
 class ActiveRecord extends \yii\elasticsearch\ActiveRecord
 {
-	public static $db;
+    public static $db;
 
-	/**
-	 * @return \yii\elasticsearch\Connection
-	 */
-	public static function getDb()
-	{
-		return self::$db;
-	}
+    /**
+     * @return \yii\elasticsearch\Connection
+     */
+    public static function getDb()
+    {
+        return self::$db;
+    }
 
-	public static function index()
-	{
-		return 'yiitest';
-	}
+    public static function index()
+    {
+        return 'yiitest';
+    }
 }

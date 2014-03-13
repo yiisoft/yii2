@@ -3,5 +3,5 @@
  *
  */
 return [
-	'The dog runs fast.' => 'Собака бегает быстро.',
+    'The dog runs fast.' => 'Собака бегает быстро.',
 ];

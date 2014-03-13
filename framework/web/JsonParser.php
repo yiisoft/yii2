@@ -18,32 +18,32 @@ use yii\helpers\Json;
  */
 class JsonParser implements RequestParserInterface
 {
-	/**
-	 * @var boolean whether to return objects in terms of associative arrays.
-	 */
-	public $asArray = true;
-	/**
-	 * @var boolean whether to throw a [[BadRequestHttpException]] if the body is invalid json
-	 */
-	public $throwException = true;
+    /**
+     * @var boolean whether to return objects in terms of associative arrays.
+     */
+    public $asArray = true;
+    /**
+     * @var boolean whether to throw a [[BadRequestHttpException]] if the body is invalid json
+     */
+    public $throwException = true;
 
+    /**
+     * Parses a HTTP request body.
+     * @param  string                  $rawBody     the raw HTTP request body.
+     * @param  string                  $contentType the content type specified for the request body.
+     * @return array                   parameters parsed from the request body
+     * @throws BadRequestHttpException if the body contains invalid json and [[throwException]] is `true`.
+     */
+    public function parse($rawBody, $contentType)
+    {
+        try {
+            return Json::decode($rawBody, $this->asArray);
+        } catch (InvalidParamException $e) {
+            if ($this->throwException) {
+                throw new BadRequestHttpException('Invalid JSON data in request body: ' . $e->getMessage(), 0, $e);
+            }
 
-	/**
-	 * Parses a HTTP request body.
-	 * @param string $rawBody the raw HTTP request body.
-	 * @param string $contentType the content type specified for the request body.
-	 * @return array parameters parsed from the request body
-	 * @throws BadRequestHttpException if the body contains invalid json and [[throwException]] is `true`.
-	 */
-	public function parse($rawBody, $contentType)
-	{
-		try {
-			return Json::decode($rawBody, $this->asArray);
-		} catch (InvalidParamException $e) {
-			if ($this->throwException) {
-				throw new BadRequestHttpException('Invalid JSON data in request body: ' . $e->getMessage(), 0, $e);
-			}
-			return null;
-		}
-	}
+            return null;
+        }
+    }
 }

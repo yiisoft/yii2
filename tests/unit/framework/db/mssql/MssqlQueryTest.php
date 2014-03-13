@@ -10,5 +10,5 @@ use yiiunit\framework\db\QueryTest;
  */
 class MssqlQueryTest extends QueryTest
 {
-	protected $driverName = 'sqlsrv';
+    protected $driverName = 'sqlsrv';
 }

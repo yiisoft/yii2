@@ -15,11 +15,11 @@ use yii\web\AssetBundle;
  */
 class DroppableAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/jui/assets';
-	public $js = [
-		'jquery.ui.droppable.js',
-	];
-	public $depends = [
-		'yii\jui\DraggableAsset',
-	];
+    public $sourcePath = '@yii/jui/assets';
+    public $js = [
+        'jquery.ui.droppable.js',
+    ];
+    public $depends = [
+        'yii\jui\DraggableAsset',
+    ];
 }

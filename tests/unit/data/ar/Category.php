@@ -15,13 +15,13 @@ namespace yiiunit\data\ar;
  */
 class Category extends ActiveRecord
 {
-	public static function tableName()
-	{
-		return 'tbl_category';
-	}
+    public static function tableName()
+    {
+        return 'tbl_category';
+    }
 
-	public function getItems()
-	{
-		return $this->hasMany(Item::className(), ['category_id' => 'id']);
-	}
+    public function getItems()
+    {
+        return $this->hasMany(Item::className(), ['category_id' => 'id']);
+    }
 }

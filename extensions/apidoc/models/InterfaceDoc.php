@@ -15,33 +15,33 @@ namespace yii\apidoc\models;
  */
 class InterfaceDoc extends TypeDoc
 {
-	public $parentInterfaces = [];
+    public $parentInterfaces = [];
 
-	// will be set by Context::updateReferences()
-	public $implementedBy = [];
+    // will be set by Context::updateReferences()
+    public $implementedBy = [];
 
-	/**
-	 * @param \phpDocumentor\Reflection\InterfaceReflector $reflector
-	 * @param Context $context
-	 * @param array $config
-	 */
-	public function __construct($reflector = null, $context = null, $config = [])
-	{
-		parent::__construct($reflector, $context, $config);
+    /**
+     * @param \phpDocumentor\Reflection\InterfaceReflector $reflector
+     * @param Context                                      $context
+     * @param array                                        $config
+     */
+    public function __construct($reflector = null, $context = null, $config = [])
+    {
+        parent::__construct($reflector, $context, $config);
 
-		if ($reflector === null) {
-			return;
-		}
+        if ($reflector === null) {
+            return;
+        }
 
-		foreach ($reflector->getParentInterfaces() as $interface) {
-			$this->parentInterfaces[] = ltrim($interface, '\\');
-		}
+        foreach ($reflector->getParentInterfaces() as $interface) {
+            $this->parentInterfaces[] = ltrim($interface, '\\');
+        }
 
-		foreach ($this->methods as $method) {
-			$method->isAbstract = true;
-		}
+        foreach ($this->methods as $method) {
+            $method->isAbstract = true;
+        }
 
-		// interface can not have properties
-		$this->properties = null;
-	}
+        // interface can not have properties
+        $this->properties = null;
+    }
 }

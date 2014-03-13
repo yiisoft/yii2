@@ -10,5 +10,5 @@ use yiiunit\framework\data\ActiveDataProviderTest;
  */
 class SqliteActiveDataProviderTest extends ActiveDataProviderTest
 {
-	public $driverName = 'sqlite';
+    public $driverName = 'sqlite';
 }

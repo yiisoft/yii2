@@ -8,8 +8,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Test</title>
-	<?php $this->head(); ?>
+    <title>Test</title>
+    <?php $this->head(); ?>
 </head>
 <body>
 <?php $this->beginBody(); ?>

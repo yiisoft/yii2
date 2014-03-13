@@ -19,34 +19,35 @@ use yii\web\UnauthorizedHttpException;
  */
 class HttpBearerAuth extends Component implements AuthInterface
 {
-	/**
-	 * @var string the HTTP authentication realm
-	 */
-	public $realm = 'api';
+    /**
+     * @var string the HTTP authentication realm
+     */
+    public $realm = 'api';
 
-	/**
-	 * @inheritdoc
-	 */
-	public function authenticate($user, $request, $response)
-	{
-		$authHeader = $request->getHeaders()->get('Authorization');
-		if ($authHeader !== null && preg_match("/^Bearer\\s+(.*?)$/", $authHeader, $matches)) {
-			$identity = $user->loginByAccessToken($matches[1]);
-			if ($identity !== null) {
-				return $identity;
-			}
+    /**
+     * @inheritdoc
+     */
+    public function authenticate($user, $request, $response)
+    {
+        $authHeader = $request->getHeaders()->get('Authorization');
+        if ($authHeader !== null && preg_match("/^Bearer\\s+(.*?)$/", $authHeader, $matches)) {
+            $identity = $user->loginByAccessToken($matches[1]);
+            if ($identity !== null) {
+                return $identity;
+            }
 
-			$this->handleFailure($response);
-		}
-		return null;
-	}
+            $this->handleFailure($response);
+        }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function handleFailure($response)
-	{
-		$response->getHeaders()->set('WWW-Authenticate', "Bearer realm=\"{$this->realm}\"");
-		throw new UnauthorizedHttpException('You are requesting with an invalid access token.');
-	}
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function handleFailure($response)
+    {
+        $response->getHeaders()->set('WWW-Authenticate', "Bearer realm=\"{$this->realm}\"");
+        throw new UnauthorizedHttpException('You are requesting with an invalid access token.');
+    }
 }

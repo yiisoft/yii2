@@ -20,82 +20,81 @@ use yii\helpers\StringHelper;
  */
 class BaseDoc extends Object
 {
-	/**
-	 * @var \phpDocumentor\Reflection\DocBlock\Context
-	 */
-	public $phpDocContext;
+    /**
+     * @var \phpDocumentor\Reflection\DocBlock\Context
+     */
+    public $phpDocContext;
 
-	public $name;
+    public $name;
 
-	public $sourceFile;
-	public $startLine;
-	public $endLine;
+    public $sourceFile;
+    public $startLine;
+    public $endLine;
 
-	public $shortDescription;
-	public $description;
-	public $since;
-	public $deprecatedSince;
-	public $deprecatedReason;
+    public $shortDescription;
+    public $description;
+    public $since;
+    public $deprecatedSince;
+    public $deprecatedReason;
 
-	/**
-	 * @var \phpDocumentor\Reflection\DocBlock\Tag[]
-	 */
-	public $tags = [];
+    /**
+     * @var \phpDocumentor\Reflection\DocBlock\Tag[]
+     */
+    public $tags = [];
 
+    /**
+     * @param \phpDocumentor\Reflection\BaseReflector $reflector
+     * @param Context                                 $context
+     * @param array                                   $config
+     */
+    public function __construct($reflector = null, $context = null, $config = [])
+    {
+        parent::__construct($config);
 
-	/**
-	 * @param \phpDocumentor\Reflection\BaseReflector $reflector
-	 * @param Context $context
-	 * @param array $config
-	 */
-	public function __construct($reflector = null, $context = null, $config = [])
-	{
-		parent::__construct($config);
+        if ($reflector === null) {
+            return;
+        }
 
-		if ($reflector === null) {
-			return;
-		}
+        // base properties
+        $this->name = ltrim($reflector->getName(), '\\');
+        $this->startLine = $reflector->getNode()->getAttribute('startLine');
+        $this->endLine = $reflector->getNode()->getAttribute('endLine');
 
-		// base properties
-		$this->name = ltrim($reflector->getName(), '\\');
-		$this->startLine = $reflector->getNode()->getAttribute('startLine');
-		$this->endLine = $reflector->getNode()->getAttribute('endLine');
+        $docblock = $reflector->getDocBlock();
+        if ($docblock !== null) {
+            $this->shortDescription = ucfirst($docblock->getShortDescription());
+            if (empty($this->shortDescription) && !($this instanceof PropertyDoc) && $context !== null) {
+                $context->errors[] = [
+                    'line' => $this->startLine,
+                    'file' => $this->sourceFile,
+                    'message' => "No short description for " . substr(StringHelper::basename(get_class($this)), 0, -3) . " '{$this->name}'",
+                ];
+            }
+            $this->description = $docblock->getLongDescription();
 
-		$docblock = $reflector->getDocBlock();
-		if ($docblock !== null) {
-			$this->shortDescription = ucfirst($docblock->getShortDescription());
-			if (empty($this->shortDescription) && !($this instanceof PropertyDoc) && $context !== null) {
-				$context->errors[] = [
-					'line' => $this->startLine,
-					'file' => $this->sourceFile,
-					'message' => "No short description for " . substr(StringHelper::basename(get_class($this)), 0, -3) . " '{$this->name}'",
-				];
-			}
-			$this->description = $docblock->getLongDescription();
+            $this->phpDocContext = $docblock->getContext();
 
-			$this->phpDocContext = $docblock->getContext();
+            $this->tags = $docblock->getTags();
+            foreach ($this->tags as $i => $tag) {
+                if ($tag instanceof SinceTag) {
+                    $this->since = $tag->getVersion();
+                    unset($this->tags[$i]);
+                } elseif ($tag instanceof DeprecatedTag) {
+                    $this->deprecatedSince = $tag->getVersion();
+                    $this->deprecatedReason = $tag->getDescription();
+                    unset($this->tags[$i]);
+                }
+            }
+        } elseif ($context !== null) {
+            $context->errors[] = [
+                'line' => $this->startLine,
+                'file' => $this->sourceFile,
+                'message' => "No docblock for element '{$this->name}'",
+            ];
+        }
+    }
 
-			$this->tags = $docblock->getTags();
-			foreach ($this->tags as $i => $tag) {
-				if ($tag instanceof SinceTag) {
-					$this->since = $tag->getVersion();
-					unset($this->tags[$i]);
-				} elseif ($tag instanceof DeprecatedTag) {
-					$this->deprecatedSince = $tag->getVersion();
-					$this->deprecatedReason = $tag->getDescription();
-					unset($this->tags[$i]);
-				}
-			}
-		} elseif ($context !== null) {
-			$context->errors[] = [
-				'line' => $this->startLine,
-				'file' => $this->sourceFile,
-				'message' => "No docblock for element '{$this->name}'",
-			];
-		}
-	}
-
-	// TODO implement
+    // TODO implement
 //	public function loadSource($reflection)
 //	{
 //		$this->sourceFile;

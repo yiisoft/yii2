@@ -19,34 +19,35 @@ use yii\web\UnauthorizedHttpException;
  */
 class QueryParamAuth extends Component implements AuthInterface
 {
-	/**
-	 * @var string the parameter name for passing the access token
-	 */
-	public $tokenParam = 'access-token';
+    /**
+     * @var string the parameter name for passing the access token
+     */
+    public $tokenParam = 'access-token';
 
-	/**
-	 * @inheritdoc
-	 */
-	public function authenticate($user, $request, $response)
-	{
-		$accessToken = $request->get($this->tokenParam);
-		if (is_string($accessToken)) {
-			$identity = $user->loginByAccessToken($accessToken);
-			if ($identity !== null) {
-				return $identity;
-			}
-		}
-		if ($accessToken !== null) {
-			$this->handleFailure($response);
-		}
-		return null;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function authenticate($user, $request, $response)
+    {
+        $accessToken = $request->get($this->tokenParam);
+        if (is_string($accessToken)) {
+            $identity = $user->loginByAccessToken($accessToken);
+            if ($identity !== null) {
+                return $identity;
+            }
+        }
+        if ($accessToken !== null) {
+            $this->handleFailure($response);
+        }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function handleFailure($response)
-	{
-		throw new UnauthorizedHttpException('You are requesting with an invalid access token.');
-	}
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function handleFailure($response)
+    {
+        throw new UnauthorizedHttpException('You are requesting with an invalid access token.');
+    }
 }
