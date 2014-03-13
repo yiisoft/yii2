@@ -10,6 +10,7 @@ namespace yii\rest;
 use Yii;
 use yii\base\Model;
 use yii\db\ActiveRecord;
+use yii\helpers\Url;
 
 /**
  * CreateAction implements the API endpoint for creating a new model from the given data.
@@ -72,7 +73,7 @@ class CreateAction extends Action
 			$response = Yii::$app->getResponse();
 			$response->setStatusCode(201);
 			$id = implode(',', array_values($model->getPrimaryKey(true)));
-			$response->getHeaders()->set('Location', $this->controller->createAbsoluteUrl([$this->viewAction, 'id' => $id]));
+			$response->getHeaders()->set('Location', Url::toRoute([$this->viewAction, 'id' => $id], true));
 		}
 
 		return $model;
