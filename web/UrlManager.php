@@ -265,14 +265,14 @@ class UrlManager extends Component
 			if ($this->suffix !== null) {
 				$route .= $this->suffix;
 			}
-			if (!empty($params)) {
-				$route .= '?' . http_build_query($params);
+			if (!empty($params) && ($query = http_build_query($params)) !== '') {
+				$route .= '?' . $query;
 			}
 			return "$baseUrl/{$route}{$anchor}";
 		} else {
 			$url = "$baseUrl?{$this->routeParam}=$route";
-			if (!empty($params)) {
-				$url .= '&' . http_build_query($params);
+			if (!empty($params) && ($query = http_build_query($params)) !== '') {
+				$url .= '&' . $query;
 			}
 			return $url . $anchor;
 		}
