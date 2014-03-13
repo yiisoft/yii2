@@ -339,7 +339,7 @@ class Formatter extends Component
 	{
 		if (is_string($value)) {
 			return is_numeric($value) || $value === '' ? (int)$value : strtotime($value);
-		} elseif ($value instanceof DateTime) {
+		} elseif ($value instanceof DateTime || $value instanceof \DateTimeInterface) {
 			return $value->getTimestamp();
 		} else {
 			return (int)$value;
