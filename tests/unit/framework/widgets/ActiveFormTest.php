@@ -44,10 +44,10 @@ EOF
 
 		$this->assertEquals(<<<EOF
 <div class="form-group field-dynamicmodel-name">
-<input type="email" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]">
+<input type="email" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]" required="test">
 </div>
 EOF
-			, (string) $form->field($model, 'name', $o)->input('email', ['required' => false]));
+			, (string) $form->field($model, 'name', $o)->input('email', ['required' => 'test']));
 
 	}
 }
