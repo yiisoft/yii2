@@ -139,7 +139,7 @@ Yii Framework 2 Change Log
 - Enh #2646: Added support for specifying hostinfo in the pattern of a URL rule (qiangxue)
 - Enh #2661: Added boolean column type support for SQLite (qiangxue)
 - Enh #2670: Changed `console\Controller::globalOptions()` to `options($actionId)` to (make it possible to) differentiate options per action (hqx)
-- Enh #2735: Formatter now supports DateTimeInterface (ivokund)
+- Enh #2735: Added support for `DateTimeInterface` in `Formatter` (ivokund)
 - Enh: Added support for using arrays as option values for console commands (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
