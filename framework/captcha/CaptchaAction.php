@@ -10,6 +10,7 @@ namespace yii\captcha;
 use Yii;
 use yii\base\Action;
 use yii\base\InvalidConfigException;
+use yii\helpers\Url;
 
 /**
  * CaptchaAction renders a CAPTCHA image.
@@ -117,14 +118,12 @@ class CaptchaAction extends Action
 		if (Yii::$app->request->getQueryParam(self::REFRESH_GET_VAR) !== null) {
 			// AJAX request for regenerating code
 			$code = $this->getVerifyCode(true);
-			/** @var \yii\web\Controller $controller */
-			$controller = $this->controller;
 			return json_encode([
 				'hash1' => $this->generateValidationHash($code),
 				'hash2' => $this->generateValidationHash(strtolower($code)),
 				// we add a random 'v' parameter so that FireFox can refresh the image
 				// when src attribute of image tag is changed
-				'url' => $controller->createUrl([$this->id, 'v' => uniqid()]),
+				'url' => Url::to([$this->id, 'v' => uniqid()]),
 			]);
 		} else {
 			$this->setHttpHeaders();
