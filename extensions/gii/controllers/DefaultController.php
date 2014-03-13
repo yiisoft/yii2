@@ -108,43 +108,6 @@ class DefaultController extends Controller
 	}
 
 	/**
-	 * @inheritdoc
-	 */
-	public function createUrl($params)
-	{
-		$params = (array)$params;
-		if (!isset($params['id']) && $this->generator !== null) {
-			foreach ($this->module->generators as $id => $generator) {
-				if ($generator === $this->generator) {
-					$params['id'] = $id;
-					break;
-				}
-			}
-		}
-		return parent::createUrl($params);
-	}
-
-	/**
-	 * Creates URL for an aciton
-	 *
-	 * @param string $name name of the action
-	 * @param array $params the parameters (name-value pairs) to be included in the generated URL
-	 * @return string the created relative URL
-	 */
-	public function createActionUrl($name, $params = [])
-	{
-		foreach ($this->module->generators as $id => $generator) {
-			if ($generator === $this->generator) {
-				$params['id'] = $id;
-				break;
-			}
-		}
-		$params['name'] = $name;
-		$params[0] = 'action';
-		return parent::createUrl($params);
-	}
-
-	/**
 	 * Loads the generator with the specified ID.
 	 * @param string $id the ID of the generator to be loaded.
 	 * @return \yii\gii\Generator the loaded generator

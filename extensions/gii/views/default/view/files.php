@@ -8,6 +8,7 @@ use yii\gii\CodeFile;
  * @var \yii\gii\Generator $generator
  * @var CodeFile[] $files
  * @var array $answers
+ * @var string $id panel ID
  */
 ?>
 <div class="default-view-files">
