@@ -261,7 +261,7 @@ class Controller extends \yii\base\Controller
 	 * Note that the values setting via options are not available
 	 * until [[beforeAction()]] is being called.
 	 *
-	 * @param $id action name
+	 * @param string $id action name
 	 * @return array the names of the options valid for the action
 	 */
 	public function options($id)
