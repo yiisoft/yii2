@@ -98,7 +98,7 @@ $count = Yii::$app->db->createCommand('
 ', [':status' => 1])->queryScalar();
 
 $dataProvider = new SqlDataProvider([
-    'sql' => 'SELECTFROM tbl_user WHERE status=:status',
+    'sql' => 'SELECT * FROM tbl_user WHERE status=:status',
     'params' => [':status' => 1],
     'totalCount' => $count,
     'sort' => [
