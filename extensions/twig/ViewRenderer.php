@@ -73,6 +73,10 @@ class ViewRenderer extends BaseViewRenderer
 	 */
 	public $lexerOptions = [];
 	/**
+	 * @var array list of namespaces with pathes
+	 */
+	public $namespaces = [];
+	/**
 	 * @var \Twig_Environment twig environment object that do all rendering twig templates
 	 */
 	public $twig;
@@ -125,7 +129,7 @@ class ViewRenderer extends BaseViewRenderer
 			return Url::to(array_merge([$path], $args));
 		}));
 
-		$this->twig->addGlobal('app', \Yii::$app);
+		$this->twig->addGlobal('app', Yii::$app);
 	}
 
 	/**
@@ -142,8 +146,26 @@ class ViewRenderer extends BaseViewRenderer
 	 */
 	public function render($view, $file, $params)
 	{
+		Yii::$app->layout = false;
+
+		$this->twig->setLoader($loader = new TwigLoaderFilesystem);
+
+		if ($view->theme) {
+			$contextId = $view->context->getUniqueId();
+			foreach ($view->theme->pathMap as $path) {
+				$path = Yii::getAlias(is_array($path) ? $path[0] : $path) . DIRECTORY_SEPARATOR . $contextId;
+				if (is_dir($path)) {
+					$loader->addPath($path);
+				}
+			}
+		}
+
+		foreach ($this->namespaces as $dir => $namespace) {
+			$loader->addPath(Yii::getAlias($dir), $namespace);
+		}
+
+		$loader->addPath(dirname($file));
 		$this->twig->addGlobal('this', $view);
-		$this->twig->setLoader(new TwigSimpleFileLoader(dirname($file)));
 		return $this->twig->render(pathinfo($file, PATHINFO_BASENAME), $params);
 	}
 

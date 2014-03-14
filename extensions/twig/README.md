@@ -10,11 +10,13 @@ return [
 	//....
 	'components' => [
 		'view' => [
+			'defaultExtension' => 'twig',
 			'renderers' => [
 				'twig' => [
 					'class' => 'yii\twig\ViewRenderer',
 					//'cachePath' => '@runtime/Twig/cache',
 					//'options' => [], /*  Array of twig options */
+					//'namespaces' => []
 					// ... see ViewRenderer for more options
 				],
 			],
@@ -23,6 +25,55 @@ return [
 ];
 ```
 
+
+Using namespaces
+----------------
+
+Specify in your application config file:
+
+```php
+'namespaces' => [
+	'@app/themes/default/layouts' => 'layouts',
+	'@app/views/layouts' => 'layouts'
+]
+```
+
+and in template you can use
+
+```
+{% extends "@layouts:common.twig" %}
+```
+
+the view will be searched in `app/themes/default/layouts/common.twig` then if it's not found it will check `app/views/layouts/common.twig`.
+
+Layout Example
+--------------
+
+```
+{% spaceless %}
+	{{ this.beginPage() }}
+	<!DOCTYPE html>
+	<html lang="{{ app.language }}">
+	<head>
+		<meta charset="{{ app.charset }}"/>
+		<title>{% block title %}{{ html.encode(this.title) }}{% endblock %}</title>
+		{{ this.head() }}
+	</head>
+	<body>
+		<div id="layout">
+			{{ this.beginBody() }}
+
+				<div id="container">
+					{% block content %}{% endblock %}
+				</div>
+
+			{{ this.endBody() }}
+		</div>
+	</body>
+	</html>
+	{{ this.endPage() }}
+{% endspaceless %}
+```
 
 Installation
 ------------
