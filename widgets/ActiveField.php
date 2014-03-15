@@ -312,6 +312,27 @@ class ActiveField extends Component
 	}
 
 	/**
+	 * Renders a hidden input.
+	 *
+	 * Note that this method is provided for completeness. In most cases because you do not need
+	 * to validate a hidden input, you should not need to use this method. Instead, you should
+	 * use [[\yii\helpers\Html::activeHiddenInput()]].
+	 *
+	 * This method will generate the "name" and "value" tag attributes automatically for the model attribute
+	 * unless they are explicitly specified in `$options`.
+	 * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+	 * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
+	 * @return static the field object itself
+	 */
+	public function hiddenInput($options = [])
+	{
+		$options = array_merge($this->inputOptions, $options);
+		$this->adjustLabelFor($options);
+		$this->parts['{input}'] = Html::activeHiddenInput($this->model, $this->attribute, $options);
+		return $this;
+	}
+
+	/**
 	 * Renders a password input.
 	 * This method will generate the "name" and "value" tag attributes automatically for the model attribute
 	 * unless they are explicitly specified in `$options`.

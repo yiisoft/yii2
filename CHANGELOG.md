@@ -165,6 +165,7 @@ Yii Framework 2 Change Log
 - Enh: LinkPager can now register relational link tags in the html header for prev, next, first and last page (cebe)
 - Enh: Added `yii\web\UrlRuleInterface` and `yii\web\CompositeUrlRule` (qiangxue)
 - Enh: Added `yii\web\Request::getAuthUser()` and `getAuthPassword()` (qiangxue)
+- Chg #735: Added back `ActiveField::hiddenInput()` (qiangxue)
 - Chg #1186: Changed `Sort` to use comma to separate multiple sort fields and use negative sign to indicate descending sort (qiangxue)
 - Chg #1519: `yii\web\User::loginRequired()` now returns the `Response` object instead of exiting the application (qiangxue)
 - Chg #1564: Removed `yii\web\Session::autoStart` and added `hasSessionId`. Session will be automatically started when accessing session data (qiangxue)
