@@ -106,7 +106,7 @@ class Controller extends \yii\web\Controller
 	public function beforeAction($action)
 	{
 		if (parent::beforeAction($action)) {
-			$this->authenticate();
+			$this->authenticate($action);
 			$this->checkRateLimit($action);
 			return true;
 		} else {
@@ -168,9 +168,11 @@ class Controller extends \yii\web\Controller
 	/**
 	 * Authenticates the user.
 	 * This method implements the user authentication based on an access token sent through the `Authorization` HTTP header.
+	 * @param \yii\base\Action $action the action to be executed
 	 * @throws UnauthorizedHttpException if the user is not authenticated successfully
+	 * @throws InvalidConfigException if an auth method declared in [[authMethods]] is invalid.
 	 */
-	protected function authenticate()
+	protected function authenticate($action)
 	{
 		if (empty($this->authMethods)) {
 			return;
