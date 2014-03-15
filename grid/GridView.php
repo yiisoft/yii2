@@ -447,7 +447,7 @@ class GridView extends BaseListView
 	}
 
 	/**
-	 * This function tries to guesses the columns to show from the given data
+	 * This function tries to guess the columns to show from the given data
 	 * if [[columns]] are not explicitly specified.
 	 */
 	protected function guessColumns()
@@ -459,7 +459,7 @@ class GridView extends BaseListView
 				$this->columns[] = $name;
 			}
 		} else {
-			throw new InvalidConfigException('Unable to generate columns from data.');
+			throw new InvalidConfigException('Unable to generate columns from the data. Please manually configure the "columns" property.');
 		}
 	}
 }
