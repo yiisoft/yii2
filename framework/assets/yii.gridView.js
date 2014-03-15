@@ -30,6 +30,13 @@
 
 	var methods = {
 		init: function (options) {
+            var params = yii.getQueryParams(""+document.location);
+            var val,prop;
+            for(prop in params)
+            {
+                val = params[prop];
+                $(this).find("select[name=\'"+prop+"\']").val(val);
+            }
 			return this.each(function () {
 				var $e = $(this);
 				var settings = $.extend({}, defaults, options || {});
