@@ -216,6 +216,18 @@ class CommandTest extends DatabaseTestCase
 		$this->assertTrue(is_array($result) && isset($result[0]));
 	}
 
+	public function testBatchInsert()
+	{
+		$command = $this->getConnection()->createCommand();
+		$command->batchInsert('tbl_customer',
+			['email', 'name', 'address'], [
+				['t1@example.com', 't1', 't1 address'],
+				['t2@example.com', null, false],
+			]
+		);
+		$this->assertEquals(2, $command->execute());
+	}
+
 	public function testInsert()
 	{
 	}
