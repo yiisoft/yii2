@@ -558,14 +558,14 @@ actions should be disabled, respectively. For example,
 ],
 ```
 
-You may also configure `patterns` or `extra` to redefine existing patterns or add new patterns supported by this rule.
-For example, to support a new action `search` by the endpoint `GET /users/search`, configure the `extra` option as follows,
+You may also configure `patterns` or `extraPatterns` to redefine existing patterns or add new patterns supported by this rule.
+For example, to support a new action `search` by the endpoint `GET /users/search`, configure the `extraPatterns` option as follows,
 
 ```php
 [
     'class' => 'yii\rest\UrlRule',
     'controller' => 'user',
-    'extra' => [
+    'extraPatterns' => [
         'GET search' => 'search',
     ],
 ```
