@@ -171,14 +171,6 @@ class ValidatorTest extends TestCase
 		$this->assertFalse($val->isEmpty(0));
 		$this->assertFalse($val->isEmpty(new \stdClass()));
 		$this->assertFalse($val->isEmpty('  '));
-		// trim
-		$this->assertTrue($val->isEmpty('   ', true));
-		$this->assertTrue($val->isEmpty('', true));
-		$this->assertTrue($val->isEmpty(" \t\n\r\0\x0B", true));
-		$this->assertTrue($val->isEmpty('', true));
-		$this->assertFalse($val->isEmpty('0', true));
-		$this->assertFalse($val->isEmpty(0, true));
-		$this->assertFalse($val->isEmpty('this ain\'t an empty value', true));
 	}
 
 	public function testValidateValue()
