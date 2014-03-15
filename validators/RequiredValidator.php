@@ -67,7 +67,7 @@ class RequiredValidator extends Validator
 	protected function validateValue($value)
 	{
 		if ($this->requiredValue === null) {
-			if ($this->strict && $value !== null || !$this->strict && !$this->isEmpty($value, true)) {
+			if ($this->strict && $value !== null || !$this->strict && !$this->isEmpty(is_string($value) ? trim($value) : $value)) {
 				return null;
 			}
 		} elseif (!$this->strict && $value == $this->requiredValue || $this->strict && $value === $this->requiredValue) {

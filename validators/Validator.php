@@ -120,6 +120,13 @@ class Validator extends Component
 	 * is true, no client-side validation will be done by this validator.
 	 */
 	public $enableClientValidation = true;
+	/**
+	 * @var callable a PHP callable that replaces the default implementation of [[isEmpty()]].
+	 * If not set, [[isEmpty()]] will be used to check if a value is empty. The signature
+	 * of the callable should be `function ($value)` which returns a boolean indicating
+	 * whether the value is empty.
+	 */
+	public $isEmpty;
 
 
 	/**
@@ -301,12 +308,14 @@ class Validator extends Component
 	 * A value is considered empty if it is null, an empty array, or the trimmed result is an empty string.
 	 * Note that this method is different from PHP empty(). It will return false when the value is 0.
 	 * @param mixed $value the value to be checked
-	 * @param boolean $trim whether to perform trimming before checking if the string is empty. Defaults to false.
 	 * @return boolean whether the value is empty
 	 */
-	public function isEmpty($value, $trim = false)
+	public function isEmpty($value)
 	{
-		return $value === null || $value === [] || $value === ''
-			|| $trim && is_scalar($value) && trim($value) === '';
+		if ($this->isEmpty !== null) {
+			return call_user_func($this->isEmpty, $value);
+		} else {
+			return $value === null || $value === [] || $value === '';
+		}
 	}
 }
