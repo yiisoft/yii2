@@ -106,7 +106,9 @@ class FileCache extends Cache
 	protected function getValue($key)
 	{
 		$cacheFile = $this->getCacheFile($key);
-		if (@filemtime($cacheFile) > time()) {
+        	if (file_exists($cacheFile)) {
+            		return false;
+        	} elseif (@filemtime($cacheFile) > time()) {
 			return @file_get_contents($cacheFile);
 		} else {
 			return false;
