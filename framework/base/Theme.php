@@ -67,17 +67,6 @@ use yii\helpers\FileHelper;
 class Theme extends Component
 {
 	/**
-	 * @var string the root path or path alias of this theme. All resources of this theme are located
-	 * under this directory. This property must be set if [[pathMap]] is not set.
-	 * @see pathMap
-	 */
-	public $basePath;
-	/**
-	 * @var string the base URL (or path alias) for this theme. All resources of this theme are considered
-	 * to be under this base URL. This property must be set. It is mainly used by [[getUrl()]].
-	 */
-	public $baseUrl;
-	/**
 	 * @var array the mapping between view directories and their corresponding themed versions.
 	 * If not set, it will be initialized as a mapping from [[Application::basePath]] to [[basePath]].
 	 * This property is used by [[applyTo()]] when a view is trying to apply the theme.
@@ -94,20 +83,54 @@ class Theme extends Component
 	{
 		parent::init();
 
-		if ($this->baseUrl === null) {
-			throw new InvalidConfigException('The "baseUrl" property must be set.');
-		} else {
-			$this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
-		}
-
-		if (empty($this->pathMap)) {
-			if ($this->basePath !== null) {
-				$this->basePath = Yii::getAlias($this->basePath);
-				$this->pathMap = [Yii::$app->getBasePath() => [$this->basePath]];
-			} else {
-				throw new InvalidConfigException('The "basePath" property must be set.');
+		if (($basePath = $this->getBasePath()) !== null) {
+			if (empty($this->pathMap)) {
+				$this->pathMap = [Yii::$app->getBasePath() => [$basePath]];
 			}
+		} else {
+			throw new InvalidConfigException('The "basePath" property must be set.');
 		}
+	}
+
+	private $_baseUrl;
+
+	/**
+	 * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
+	 * to be under this base URL.
+	 */
+	public function getBaseUrl()
+	{
+		return $this->_baseUrl;
+	}
+
+	/**
+	 * @param $url string the base URL or path alias for this theme. All resources of this theme are considered
+	 * to be under this base URL.
+	 */
+	public function setBaseUrl($url)
+	{
+		$this->_baseUrl = rtrim(Yii::getAlias($url), '/');
+	}
+
+	private $_basePath;
+
+	/**
+	 * @return string the root path of this theme. All resources of this theme are located under this directory.
+	 * @see pathMap
+	 */
+	public function getBasePath()
+	{
+		return $this->_basePath;
+	}
+
+	/**
+	 * @param string $path the root path or path alias of this theme. All resources of this theme are located
+	 * under this directory.
+	 * @see pathMap
+	 */
+	public function setBasePath($path)
+	{
+		$this->_basePath = Yii::getAlias($path);
 	}
 
 	/**
@@ -139,9 +162,24 @@ class Theme extends Component
 	 * Converts a relative URL into an absolute URL using [[baseUrl]].
 	 * @param string $url the relative URL to be converted.
 	 * @return string the absolute URL
+	 * @throws InvalidConfigException if [[baseUrl]] is not set
 	 */
 	public function getUrl($url)
 	{
-		return $this->baseUrl . '/' . ltrim($url, '/');
+		if (($baseUrl = $this->getBaseUrl()) !== null) {
+			return $baseUrl . '/' . ltrim($url, '/');
+		} else {
+			throw new InvalidConfigException('The "baseUrl" property must be set.');
+		}
+	}
+
+	/**
+	 * Converts a relative file path into an absolute one using [[basePath]].
+	 * @param string $path the relative file path to be converted.
+	 * @return string the absolute file path
+	 */
+	public function getPath($path)
+	{
+		return $this->getBasePath() . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
 	}
 }
