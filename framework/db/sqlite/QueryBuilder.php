@@ -92,7 +92,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 		}
 
 		return 'INSERT INTO ' . $this->db->quoteTableName($table)
-		. ' (' . implode(', ', $columns) . ') SELECT ' . implode(' UNION ALL ', $values);
+		. ' (' . implode(', ', $columns) . ') SELECT ' . implode(' UNION SELECT ', $values);
 	}
 
 	/**
