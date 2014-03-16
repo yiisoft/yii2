@@ -219,7 +219,7 @@ class GridView extends BaseListView
      */
     protected function getClientOptions()
     {
-        $filterUrl = isset($this->filterUrl) ? $this->filterUrl : [Yii::$app->controller->action->id];
+        $filterUrl = isset($this->filterUrl) ? $this->filterUrl : [Yii::$app->controller->action->id] + Yii::$app->controller->actionParams;
         $id = $this->filterRowOptions['id'];
         $filterSelector = "#$id input, #$id select";
         if (isset($this->filterSelector)) {
