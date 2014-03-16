@@ -59,6 +59,7 @@ Yii Framework 2 Change Log
 - Bug #2695: Fixed the issue that `FileValidator::isEmpty()` always returns true for validate multiple files (ZhandosKz)
 - Bug #2739: Fixed the issue that `CreateAction::run()` was using obsolete `Controller::createAbsoluteUrl()` method (tonydspaniard)
 - Bug #2740: Fixed the issue that `CaptchaAction::run()` was using obsolete `Controller::createUrl()` method (tonydspaniard)
+- Bug #2760: Fixed GridView `filterUrl` parameters (qiangxue, AlexGx)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
