@@ -49,21 +49,21 @@ use yii\base\Widget;
  */
 class Spaceless extends Widget
 {
-	/**
-	 * Starts capturing an output to be cleaned from whitespace characters between HTML tags.
-	 */
-	public function init()
-	{
-		ob_start();
-		ob_implicit_flush(false);
-	}
+    /**
+     * Starts capturing an output to be cleaned from whitespace characters between HTML tags.
+     */
+    public function init()
+    {
+        ob_start();
+        ob_implicit_flush(false);
+    }
 
-	/**
-	 * Marks the end of content to be cleaned from whitespace characters between HTML tags.
-	 * Stops capturing an output and echoes cleaned result.
-	 */
-	public function run()
-	{
-		echo trim(preg_replace('/>\s+</', '><', ob_get_clean()));
-	}
+    /**
+     * Marks the end of content to be cleaned from whitespace characters between HTML tags.
+     * Stops capturing an output and echoes cleaned result.
+     */
+    public function run()
+    {
+        echo trim(preg_replace('/>\s+</', '><', ob_get_clean()));
+    }
 }

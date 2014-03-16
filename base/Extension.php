@@ -19,11 +19,11 @@ namespace yii\base;
  */
 class Extension
 {
-	/**
-	 * Initializes the extension.
-	 * This method is invoked at the end of [[Application::init()]].
-	 */
-	public static function init()
-	{
-	}
+    /**
+     * Initializes the extension.
+     * This method is invoked at the end of [[Application::init()]].
+     */
+    public static function init()
+    {
+    }
 }

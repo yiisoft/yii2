@@ -22,60 +22,61 @@ use yii\mail\MailerInterface;
  */
 class EmailTarget extends Target
 {
-	/**
-	 * @var array the configuration array for creating a [[\yii\mail\MessageInterface|message]] object.
-	 * Note that the "to" option must be set, which specifies the destination email address(es).
-	 */
-	public $message = [];
-	/**
-	 * @var MailerInterface|string the mailer object or the application component ID of the mailer object.
-	 * After the EmailTarget object is created, if you want to change this property, you should only assign it
-	 * with a mailer object.
-	 */
-	public $mail = 'mail';
+    /**
+     * @var array the configuration array for creating a [[\yii\mail\MessageInterface|message]] object.
+     * Note that the "to" option must be set, which specifies the destination email address(es).
+     */
+    public $message = [];
+    /**
+     * @var MailerInterface|string the mailer object or the application component ID of the mailer object.
+     * After the EmailTarget object is created, if you want to change this property, you should only assign it
+     * with a mailer object.
+     */
+    public $mail = 'mail';
 
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		parent::init();
-		if (empty($this->message['to'])) {
-			throw new InvalidConfigException('The "to" option must be set for EmailTarget::message.');
-		}
-		if (is_string($this->mail)) {
-			$this->mail = Yii::$app->getComponent($this->mail);
-		}
-		if (!$this->mail instanceof MailerInterface) {
-			throw new InvalidConfigException("EmailTarget::mailer must be either a mailer object or the application component ID of a mailer object.");
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if (empty($this->message['to'])) {
+            throw new InvalidConfigException('The "to" option must be set for EmailTarget::message.');
+        }
+        if (is_string($this->mail)) {
+            $this->mail = Yii::$app->getComponent($this->mail);
+        }
+        if (!$this->mail instanceof MailerInterface) {
+            throw new InvalidConfigException("EmailTarget::mailer must be either a mailer object or the application component ID of a mailer object.");
+        }
+    }
 
-	/**
-	 * Sends log messages to specified email addresses.
-	 */
-	public function export()
-	{
-		// moved initialization of subject here because of the following issue
-		// https://github.com/yiisoft/yii2/issues/1446
-		if (empty($this->message['subject'])) {
-			$this->message['subject'] = 'Application Log';
-		}
-		$messages = array_map([$this, 'formatMessage'], $this->messages);
-		$body = wordwrap(implode("\n", $messages), 70);
-		$this->composeMessage($body)->send($this->mail);
-	}
+    /**
+     * Sends log messages to specified email addresses.
+     */
+    public function export()
+    {
+        // moved initialization of subject here because of the following issue
+        // https://github.com/yiisoft/yii2/issues/1446
+        if (empty($this->message['subject'])) {
+            $this->message['subject'] = 'Application Log';
+        }
+        $messages = array_map([$this, 'formatMessage'], $this->messages);
+        $body = wordwrap(implode("\n", $messages), 70);
+        $this->composeMessage($body)->send($this->mail);
+    }
 
-	/**
-	 * Composes a mail message with the given body content.
-	 * @param string $body the body content
-	 * @return \yii\mail\MessageInterface $message
-	 */
-	protected function composeMessage($body)
-	{
-		$message = $this->mail->compose();
-		Yii::configure($message, $this->message);
-		$message->setTextBody($body);
-		return $message;
-	}
+    /**
+     * Composes a mail message with the given body content.
+     * @param  string                     $body the body content
+     * @return \yii\mail\MessageInterface $message
+     */
+    protected function composeMessage($body)
+    {
+        $message = $this->mail->compose();
+        Yii::configure($message, $this->message);
+        $message->setTextBody($body);
+
+        return $message;
+    }
 }

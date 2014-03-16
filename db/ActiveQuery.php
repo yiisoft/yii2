@@ -70,544 +70,551 @@ namespace yii\db;
  */
 class ActiveQuery extends Query implements ActiveQueryInterface
 {
-	use ActiveQueryTrait;
-	use ActiveRelationTrait;
+    use ActiveQueryTrait;
+    use ActiveRelationTrait;
 
-	/**
-	 * @var string the SQL statement to be executed for retrieving AR records.
-	 * This is set by [[ActiveRecord::findBySql()]].
-	 */
-	public $sql;
-	/**
-	 * @var string|array the join condition to be used when this query is used in a relational context.
-	 * The condition will be used in the ON part when [[ActiveQuery::joinWith()]] is called.
-	 * Otherwise, the condition will be used in the WHERE part of a query.
-	 * Please refer to [[Query::where()]] on how to specify this parameter.
-	 * @see onCondition()
-	 */
-	public $on;
-	/**
-	 * @var array a list of relations that this query should be joined with
-	 */
-	public $joinWith;
+    /**
+     * @var string the SQL statement to be executed for retrieving AR records.
+     * This is set by [[ActiveRecord::findBySql()]].
+     */
+    public $sql;
+    /**
+     * @var string|array the join condition to be used when this query is used in a relational context.
+     * The condition will be used in the ON part when [[ActiveQuery::joinWith()]] is called.
+     * Otherwise, the condition will be used in the WHERE part of a query.
+     * Please refer to [[Query::where()]] on how to specify this parameter.
+     * @see onCondition()
+     */
+    public $on;
+    /**
+     * @var array a list of relations that this query should be joined with
+     */
+    public $joinWith;
 
+    /**
+     * Executes query and returns all results as an array.
+     * @param  Connection           $db the DB connection used to create the DB command.
+     *                                  If null, the DB connection returned by [[modelClass]] will be used.
+     * @return array|ActiveRecord[] the query results. If the query results in nothing, an empty array will be returned.
+     */
+    public function all($db = null)
+    {
+        return parent::all($db);
+    }
 
-	/**
-	 * Executes query and returns all results as an array.
-	 * @param Connection $db the DB connection used to create the DB command.
-	 * If null, the DB connection returned by [[modelClass]] will be used.
-	 * @return array|ActiveRecord[] the query results. If the query results in nothing, an empty array will be returned.
-	 */
-	public function all($db = null)
-	{
-		return parent::all($db);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function prepareResult($rows)
+    {
+        if (empty($rows)) {
+            return [];
+        }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function prepareResult($rows)
-	{
-		if (empty($rows)) {
-			return [];
-		}
+        $models = $this->createModels($rows);
+        if (!empty($this->join) && $this->indexBy === null) {
+            $models = $this->removeDuplicatedModels($models);
+        }
+        if (!empty($this->with)) {
+            $this->findWith($this->with, $models);
+        }
+        if (!$this->asArray) {
+            foreach ($models as $model) {
+                $model->afterFind();
+            }
+        }
 
-		$models = $this->createModels($rows);
-		if (!empty($this->join) && $this->indexBy === null) {
-			$models = $this->removeDuplicatedModels($models);
-		}
-		if (!empty($this->with)) {
-			$this->findWith($this->with, $models);
-		}
-		if (!$this->asArray) {
-			foreach ($models as $model) {
-				$model->afterFind();
-			}
-		}
-		return $models;
-	}
+        return $models;
+    }
 
-	/**
-	 * Removes duplicated models by checking their primary key values.
-	 * This method is mainly called when a join query is performed, which may cause duplicated rows being returned.
-	 * @param array $models the models to be checked
-	 * @return array the distinctive models
-	 */
-	private function removeDuplicatedModels($models)
-	{
-		$hash = [];
-		/** @var ActiveRecord $class */
-		$class = $this->modelClass;
-		$pks = $class::primaryKey();
+    /**
+     * Removes duplicated models by checking their primary key values.
+     * This method is mainly called when a join query is performed, which may cause duplicated rows being returned.
+     * @param  array $models the models to be checked
+     * @return array the distinctive models
+     */
+    private function removeDuplicatedModels($models)
+    {
+        $hash = [];
+        /** @var ActiveRecord $class */
+        $class = $this->modelClass;
+        $pks = $class::primaryKey();
 
-		if (count($pks) > 1) {
-			foreach ($models as $i => $model) {
-				$key = [];
-				foreach ($pks as $pk) {
-					$key[] = $model[$pk];
-				}
-				$key = serialize($key);
-				if (isset($hash[$key])) {
-					unset($models[$i]);
-				} else {
-					$hash[$key] = true;
-				}
-			}
-		} else {
-			$pk = reset($pks);
-			foreach ($models as $i => $model) {
-				$key = $model[$pk];
-				if (isset($hash[$key])) {
-					unset($models[$i]);
-				} else {
-					$hash[$key] = true;
-				}
-			}
-		}
+        if (count($pks) > 1) {
+            foreach ($models as $i => $model) {
+                $key = [];
+                foreach ($pks as $pk) {
+                    $key[] = $model[$pk];
+                }
+                $key = serialize($key);
+                if (isset($hash[$key])) {
+                    unset($models[$i]);
+                } else {
+                    $hash[$key] = true;
+                }
+            }
+        } else {
+            $pk = reset($pks);
+            foreach ($models as $i => $model) {
+                $key = $model[$pk];
+                if (isset($hash[$key])) {
+                    unset($models[$i]);
+                } else {
+                    $hash[$key] = true;
+                }
+            }
+        }
 
-		return array_values($models);
-	}
+        return array_values($models);
+    }
 
-	/**
-	 * Executes query and returns a single row of result.
-	 * @param Connection $db the DB connection used to create the DB command.
-	 * If null, the DB connection returned by [[modelClass]] will be used.
-	 * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
-	 * the query result may be either an array or an ActiveRecord object. Null will be returned
-	 * if the query results in nothing.
-	 */
-	public function one($db = null)
-	{
-		$command = $this->createCommand($db);
-		$row = $command->queryOne();
-		if ($row !== false) {
-			if ($this->asArray) {
-				$model = $row;
-			} else {
-				/** @var ActiveRecord $class */
-				$class = $this->modelClass;
-				$model = $class::instantiate($row);
-				$class::populateRecord($model, $row);
-			}
-			if (!empty($this->with)) {
-				$models = [$model];
-				$this->findWith($this->with, $models);
-				$model = $models[0];
-			}
-			if (!$this->asArray) {
-				$model->afterFind();
-			}
-			return $model;
-		} else {
-			return null;
-		}
-	}
+    /**
+     * Executes query and returns a single row of result.
+     * @param  Connection              $db the DB connection used to create the DB command.
+     *                                     If null, the DB connection returned by [[modelClass]] will be used.
+     * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
+     *                                    the query result may be either an array or an ActiveRecord object. Null will be returned
+     *                                    if the query results in nothing.
+     */
+    public function one($db = null)
+    {
+        $command = $this->createCommand($db);
+        $row = $command->queryOne();
+        if ($row !== false) {
+            if ($this->asArray) {
+                $model = $row;
+            } else {
+                /** @var ActiveRecord $class */
+                $class = $this->modelClass;
+                $model = $class::instantiate($row);
+                $class::populateRecord($model, $row);
+            }
+            if (!empty($this->with)) {
+                $models = [$model];
+                $this->findWith($this->with, $models);
+                $model = $models[0];
+            }
+            if (!$this->asArray) {
+                $model->afterFind();
+            }
 
-	/**
-	 * Creates a DB command that can be used to execute this query.
-	 * @param Connection $db the DB connection used to create the DB command.
-	 * If null, the DB connection returned by [[modelClass]] will be used.
-	 * @return Command the created DB command instance.
-	 */
-	public function createCommand($db = null)
-	{
-		if ($this->primaryModel === null) {
-			// not a relational context or eager loading
-			if (!empty($this->on)) {
-				$where = $this->where;
-				$this->andWhere($this->on);
-				$command = $this->createCommandInternal($db);
-				$this->where = $where;
-				return $command;
-			} else {
-				return $this->createCommandInternal($db);
-			}
-		} else {
-			// lazy loading of a relation
-			return $this->createRelationalCommand($db);
-		}
-	}
+            return $model;
+        } else {
+            return null;
+        }
+    }
 
-	/**
-	 * Creates a DB command that can be used to execute this query.
-	 * @param Connection $db the DB connection used to create the DB command.
-	 * If null, the DB connection returned by [[modelClass]] will be used.
-	 * @return Command the created DB command instance.
-	 */
-	protected function createCommandInternal($db)
-	{
-		/** @var ActiveRecord $modelClass */
-		$modelClass = $this->modelClass;
-		if ($db === null) {
-			$db = $modelClass::getDb();
-		}
+    /**
+     * Creates a DB command that can be used to execute this query.
+     * @param  Connection $db the DB connection used to create the DB command.
+     *                        If null, the DB connection returned by [[modelClass]] will be used.
+     * @return Command    the created DB command instance.
+     */
+    public function createCommand($db = null)
+    {
+        if ($this->primaryModel === null) {
+            // not a relational context or eager loading
+            if (!empty($this->on)) {
+                $where = $this->where;
+                $this->andWhere($this->on);
+                $command = $this->createCommandInternal($db);
+                $this->where = $where;
 
-		if ($this->sql === null) {
-			if (!empty($this->joinWith)) {
-				$this->buildJoinWith();
-				$this->joinWith = null;    // clean it up to avoid issue https://github.com/yiisoft/yii2/issues/2687
-			}
-			list ($sql, $params) = $db->getQueryBuilder()->build($this);
-		} else {
-			$sql = $this->sql;
-			$params = $this->params;
-		}
-		return $db->createCommand($sql, $params);
-	}
+                return $command;
+            } else {
+                return $this->createCommandInternal($db);
+            }
+        } else {
+            // lazy loading of a relation
+            return $this->createRelationalCommand($db);
+        }
+    }
 
-	/**
-	 * Creates a command for lazy loading of a relation.
-	 * @param Connection $db the DB connection used to create the DB command.
-	 * @return Command the created DB command instance.
-	 */
-	private function createRelationalCommand($db = null)
-	{
-		$where = $this->where;
+    /**
+     * Creates a DB command that can be used to execute this query.
+     * @param  Connection $db the DB connection used to create the DB command.
+     *                        If null, the DB connection returned by [[modelClass]] will be used.
+     * @return Command    the created DB command instance.
+     */
+    protected function createCommandInternal($db)
+    {
+        /** @var ActiveRecord $modelClass */
+        $modelClass = $this->modelClass;
+        if ($db === null) {
+            $db = $modelClass::getDb();
+        }
 
-		if ($this->via instanceof self) {
-			// via pivot table
-			$viaModels = $this->via->findPivotRows([$this->primaryModel]);
-			$this->filterByModels($viaModels);
-		} elseif (is_array($this->via)) {
-			// via relation
-			/** @var ActiveQuery $viaQuery */
-			list($viaName, $viaQuery) = $this->via;
-			if ($viaQuery->multiple) {
-				$viaModels = $viaQuery->all();
-				$this->primaryModel->populateRelation($viaName, $viaModels);
-			} else {
-				$model = $viaQuery->one();
-				$this->primaryModel->populateRelation($viaName, $model);
-				$viaModels = $model === null ? [] : [$model];
-			}
-			$this->filterByModels($viaModels);
-		} else {
-			$this->filterByModels([$this->primaryModel]);
-		}
+        if ($this->sql === null) {
+            if (!empty($this->joinWith)) {
+                $this->buildJoinWith();
+                $this->joinWith = null;    // clean it up to avoid issue https://github.com/yiisoft/yii2/issues/2687
+            }
+            list ($sql, $params) = $db->getQueryBuilder()->build($this);
+        } else {
+            $sql = $this->sql;
+            $params = $this->params;
+        }
 
-		if (!empty($this->on)) {
-			$this->andWhere($this->on);
-		}
+        return $db->createCommand($sql, $params);
+    }
 
-		$command = $this->createCommandInternal($db);
+    /**
+     * Creates a command for lazy loading of a relation.
+     * @param  Connection $db the DB connection used to create the DB command.
+     * @return Command    the created DB command instance.
+     */
+    private function createRelationalCommand($db = null)
+    {
+        $where = $this->where;
 
-		$this->where = $where;
+        if ($this->via instanceof self) {
+            // via pivot table
+            $viaModels = $this->via->findPivotRows([$this->primaryModel]);
+            $this->filterByModels($viaModels);
+        } elseif (is_array($this->via)) {
+            // via relation
+            /** @var ActiveQuery $viaQuery */
+            list($viaName, $viaQuery) = $this->via;
+            if ($viaQuery->multiple) {
+                $viaModels = $viaQuery->all();
+                $this->primaryModel->populateRelation($viaName, $viaModels);
+            } else {
+                $model = $viaQuery->one();
+                $this->primaryModel->populateRelation($viaName, $model);
+                $viaModels = $model === null ? [] : [$model];
+            }
+            $this->filterByModels($viaModels);
+        } else {
+            $this->filterByModels([$this->primaryModel]);
+        }
 
-		return $command;
-	}
+        if (!empty($this->on)) {
+            $this->andWhere($this->on);
+        }
 
-	/**
-	 * Joins with the specified relations.
-	 *
-	 * This method allows you to reuse existing relation definitions to perform JOIN queries.
-	 * Based on the definition of the specified relation(s), the method will append one or multiple
-	 * JOIN statements to the current query.
-	 *
-	 * If the `$eagerLoading` parameter is true, the method will also eager loading the specified relations,
-	 * which is equivalent to calling [[with()]] using the specified relations.
-	 *
-	 * Note that because a JOIN query will be performed, you are responsible to disambiguate column names.
-	 *
-	 * This method differs from [[with()]] in that it will build up and execute a JOIN SQL statement
-	 * for the primary table. And when `$eagerLoading` is true, it will call [[with()]] in addition with the specified relations.
-	 *
-	 * @param array $with the relations to be joined. Each array element represents a single relation.
-	 * The array keys are relation names, and the array values are the corresponding anonymous functions that
-	 * can be used to modify the relation queries on-the-fly. If a relation query does not need modification,
-	 * you may use the relation name as the array value. Sub-relations can also be specified (see [[with()]]).
-	 * For example,
-	 *
-	 * ```php
-	 * // find all orders that contain books, and eager loading "books"
-	 * Order::find()->joinWith('books', true, 'INNER JOIN')->all();
-	 * // find all orders, eager loading "books", and sort the orders and books by the book names.
-	 * Order::find()->joinWith([
-	 *     'books' => function ($query) {
-	 *         $query->orderBy('tbl_item.name');
-	 *     }
-	 * ])->all();
-	 * ```
-	 *
-	 * @param boolean|array $eagerLoading whether to eager load the relations specified in `$with`.
-	 * When this is a boolean, it applies to all relations specified in `$with`. Use an array
-	 * to explicitly list which relations in `$with` need to be eagerly loaded.
-	 * @param string|array $joinType the join type of the relations specified in `$with`.
-	 * When this is a string, it applies to all relations specified in `$with`. Use an array
-	 * in the format of `relationName => joinType` to specify different join types for different relations.
-	 * @return static the query object itself
-	 */
-	public function joinWith($with, $eagerLoading = true, $joinType = 'LEFT JOIN')
-	{
-		$this->joinWith[] = [(array)$with, $eagerLoading, $joinType];
-		return $this;
-	}
+        $command = $this->createCommandInternal($db);
 
-	private function buildJoinWith()
-	{
-		foreach ($this->joinWith as $config) {
-			list ($with, $eagerLoading, $joinType) = $config;
-			$this->joinWithRelations(new $this->modelClass, $with, $joinType);
+        $this->where = $where;
 
-			if (is_array($eagerLoading)) {
-				foreach ($with as $name => $callback) {
-					if (is_integer($name)) {
-						if (!in_array($callback, $eagerLoading, true)) {
-							unset($with[$name]);
-						}
-					} elseif (!in_array($name, $eagerLoading, true)) {
-						unset($with[$name]);
-					}
-				}
-			} elseif (!$eagerLoading) {
-				$with = [];
-			}
+        return $command;
+    }
 
-			$this->with($with);
-		}
-	}
+    /**
+     * Joins with the specified relations.
+     *
+     * This method allows you to reuse existing relation definitions to perform JOIN queries.
+     * Based on the definition of the specified relation(s), the method will append one or multiple
+     * JOIN statements to the current query.
+     *
+     * If the `$eagerLoading` parameter is true, the method will also eager loading the specified relations,
+     * which is equivalent to calling [[with()]] using the specified relations.
+     *
+     * Note that because a JOIN query will be performed, you are responsible to disambiguate column names.
+     *
+     * This method differs from [[with()]] in that it will build up and execute a JOIN SQL statement
+     * for the primary table. And when `$eagerLoading` is true, it will call [[with()]] in addition with the specified relations.
+     *
+     * @param array $with the relations to be joined. Each array element represents a single relation.
+     *                    The array keys are relation names, and the array values are the corresponding anonymous functions that
+     *                    can be used to modify the relation queries on-the-fly. If a relation query does not need modification,
+     *                    you may use the relation name as the array value. Sub-relations can also be specified (see [[with()]]).
+     *                    For example,
+     *
+     * ```php
+     * // find all orders that contain books, and eager loading "books"
+     * Order::find()->joinWith('books', true, 'INNER JOIN')->all();
+     * // find all orders, eager loading "books", and sort the orders and books by the book names.
+     * Order::find()->joinWith([
+     *     'books' => function ($query) {
+     *         $query->orderBy('tbl_item.name');
+     *     }
+     * ])->all();
+     * ```
+     *
+     * @param  boolean|array $eagerLoading whether to eager load the relations specified in `$with`.
+     *                                     When this is a boolean, it applies to all relations specified in `$with`. Use an array
+     *                                     to explicitly list which relations in `$with` need to be eagerly loaded.
+     * @param  string|array  $joinType     the join type of the relations specified in `$with`.
+     *                                     When this is a string, it applies to all relations specified in `$with`. Use an array
+     *                                     in the format of `relationName => joinType` to specify different join types for different relations.
+     * @return static        the query object itself
+     */
+    public function joinWith($with, $eagerLoading = true, $joinType = 'LEFT JOIN')
+    {
+        $this->joinWith[] = [(array) $with, $eagerLoading, $joinType];
 
-	/**
-	 * Inner joins with the specified relations.
-	 * This is a shortcut method to [[joinWith()]] with the join type set as "INNER JOIN".
-	 * Please refer to [[joinWith()]] for detailed usage of this method.
-	 * @param array $with the relations to be joined with
-	 * @param boolean|array $eagerLoading whether to eager loading the relations
-	 * @return static the query object itself
-	 * @see joinWith()
-	 */
-	public function innerJoinWith($with, $eagerLoading = true)
-	{
-		return $this->joinWith($with, $eagerLoading, 'INNER JOIN');
-	}
+        return $this;
+    }
 
-	/**
-	 * Modifies the current query by adding join fragments based on the given relations.
-	 * @param ActiveRecord $model the primary model
-	 * @param array $with the relations to be joined
-	 * @param string|array $joinType the join type
-	 */
-	private function joinWithRelations($model, $with, $joinType)
-	{
-		$relations = [];
+    private function buildJoinWith()
+    {
+        foreach ($this->joinWith as $config) {
+            list ($with, $eagerLoading, $joinType) = $config;
+            $this->joinWithRelations(new $this->modelClass, $with, $joinType);
 
-		foreach ($with as $name => $callback) {
-			if (is_integer($name)) {
-				$name = $callback;
-				$callback = null;
-			}
+            if (is_array($eagerLoading)) {
+                foreach ($with as $name => $callback) {
+                    if (is_integer($name)) {
+                        if (!in_array($callback, $eagerLoading, true)) {
+                            unset($with[$name]);
+                        }
+                    } elseif (!in_array($name, $eagerLoading, true)) {
+                        unset($with[$name]);
+                    }
+                }
+            } elseif (!$eagerLoading) {
+                $with = [];
+            }
 
-			$primaryModel = $model;
-			$parent = $this;
-			$prefix = '';
-			while (($pos = strpos($name, '.')) !== false) {
-				$childName = substr($name, $pos + 1);
-				$name = substr($name, 0, $pos);
-				$fullName = $prefix === '' ? $name : "$prefix.$name";
-				if (!isset($relations[$fullName])) {
-					$relations[$fullName] = $relation = $primaryModel->getRelation($name);
-					$this->joinWithRelation($parent, $relation, $this->getJoinType($joinType, $fullName));
-				} else {
-					$relation = $relations[$fullName];
-				}
-				$primaryModel = new $relation->modelClass;
-				$parent = $relation;
-				$prefix = $fullName;
-				$name = $childName;
-			}
+            $this->with($with);
+        }
+    }
 
-			$fullName = $prefix === '' ? $name : "$prefix.$name";
-			if (!isset($relations[$fullName])) {
-				$relations[$fullName] = $relation = $primaryModel->getRelation($name);
-				if ($callback !== null) {
-					call_user_func($callback, $relation);
-				}
-				$this->joinWithRelation($parent, $relation, $this->getJoinType($joinType, $fullName));
-			}
-		}
-	}
+    /**
+     * Inner joins with the specified relations.
+     * This is a shortcut method to [[joinWith()]] with the join type set as "INNER JOIN".
+     * Please refer to [[joinWith()]] for detailed usage of this method.
+     * @param  array         $with         the relations to be joined with
+     * @param  boolean|array $eagerLoading whether to eager loading the relations
+     * @return static        the query object itself
+     * @see joinWith()
+     */
+    public function innerJoinWith($with, $eagerLoading = true)
+    {
+        return $this->joinWith($with, $eagerLoading, 'INNER JOIN');
+    }
 
-	/**
-	 * Returns the join type based on the given join type parameter and the relation name.
-	 * @param string|array $joinType the given join type(s)
-	 * @param string $name relation name
-	 * @return string the real join type
-	 */
-	private function getJoinType($joinType, $name)
-	{
-		if (is_array($joinType) && isset($joinType[$name])) {
-			return $joinType[$name];
-		} else {
-			return is_string($joinType) ? $joinType : 'INNER JOIN';
-		}
-	}
+    /**
+     * Modifies the current query by adding join fragments based on the given relations.
+     * @param ActiveRecord $model    the primary model
+     * @param array        $with     the relations to be joined
+     * @param string|array $joinType the join type
+     */
+    private function joinWithRelations($model, $with, $joinType)
+    {
+        $relations = [];
 
-	/**
-	 * Returns the table name and the table alias for [[modelClass]].
-	 * @param ActiveQuery $query
-	 * @return array the table name and the table alias.
-	 */
-	private function getQueryTableName($query)
-	{
-		if (empty($query->from)) {
-			/** @var ActiveRecord $modelClass */
-			$modelClass = $query->modelClass;
-			$tableName = $modelClass::tableName();
-		} else {
-			$tableName = '';
-			foreach ($query->from as $alias => $tableName) {
-				if (is_string($alias)) {
-					return [$tableName, $alias];
-				} else {
-					break;
-				}
-			}
-		}
+        foreach ($with as $name => $callback) {
+            if (is_integer($name)) {
+                $name = $callback;
+                $callback = null;
+            }
 
-		if (preg_match('/^(.*?)\s+({{\w+}}|\w+)$/', $tableName, $matches)) {
-			$alias = $matches[2];
-		} else {
-			$alias = $tableName;
-		}
+            $primaryModel = $model;
+            $parent = $this;
+            $prefix = '';
+            while (($pos = strpos($name, '.')) !== false) {
+                $childName = substr($name, $pos + 1);
+                $name = substr($name, 0, $pos);
+                $fullName = $prefix === '' ? $name : "$prefix.$name";
+                if (!isset($relations[$fullName])) {
+                    $relations[$fullName] = $relation = $primaryModel->getRelation($name);
+                    $this->joinWithRelation($parent, $relation, $this->getJoinType($joinType, $fullName));
+                } else {
+                    $relation = $relations[$fullName];
+                }
+                $primaryModel = new $relation->modelClass;
+                $parent = $relation;
+                $prefix = $fullName;
+                $name = $childName;
+            }
 
-		return [$tableName, $alias];
-	}
+            $fullName = $prefix === '' ? $name : "$prefix.$name";
+            if (!isset($relations[$fullName])) {
+                $relations[$fullName] = $relation = $primaryModel->getRelation($name);
+                if ($callback !== null) {
+                    call_user_func($callback, $relation);
+                }
+                $this->joinWithRelation($parent, $relation, $this->getJoinType($joinType, $fullName));
+            }
+        }
+    }
 
-	/**
-	 * Joins a parent query with a child query.
-	 * The current query object will be modified accordingly.
-	 * @param ActiveQuery $parent
-	 * @param ActiveQuery $child
-	 * @param string $joinType
-	 */
-	private function joinWithRelation($parent, $child, $joinType)
-	{
-		$via = $child->via;
-		$child->via = null;
-		if ($via instanceof ActiveQuery) {
-			// via table
-			$this->joinWithRelation($parent, $via, $joinType);
-			$this->joinWithRelation($via, $child, $joinType);
-			return;
-		} elseif (is_array($via)) {
-			// via relation
-			$this->joinWithRelation($parent, $via[1], $joinType);
-			$this->joinWithRelation($via[1], $child, $joinType);
-			return;
-		}
+    /**
+     * Returns the join type based on the given join type parameter and the relation name.
+     * @param  string|array $joinType the given join type(s)
+     * @param  string       $name     relation name
+     * @return string       the real join type
+     */
+    private function getJoinType($joinType, $name)
+    {
+        if (is_array($joinType) && isset($joinType[$name])) {
+            return $joinType[$name];
+        } else {
+            return is_string($joinType) ? $joinType : 'INNER JOIN';
+        }
+    }
 
-		list ($parentTable, $parentAlias) = $this->getQueryTableName($parent);
-		list ($childTable, $childAlias) = $this->getQueryTableName($child);
+    /**
+     * Returns the table name and the table alias for [[modelClass]].
+     * @param  ActiveQuery $query
+     * @return array       the table name and the table alias.
+     */
+    private function getQueryTableName($query)
+    {
+        if (empty($query->from)) {
+            /** @var ActiveRecord $modelClass */
+            $modelClass = $query->modelClass;
+            $tableName = $modelClass::tableName();
+        } else {
+            $tableName = '';
+            foreach ($query->from as $alias => $tableName) {
+                if (is_string($alias)) {
+                    return [$tableName, $alias];
+                } else {
+                    break;
+                }
+            }
+        }
 
-		if (!empty($child->link)) {
+        if (preg_match('/^(.*?)\s+({{\w+}}|\w+)$/', $tableName, $matches)) {
+            $alias = $matches[2];
+        } else {
+            $alias = $tableName;
+        }
 
-			if (strpos($parentAlias, '{{') === false) {
-				$parentAlias = '{{' . $parentAlias . '}}';
-			}
-			if (strpos($childAlias, '{{') === false) {
-				$childAlias = '{{' . $childAlias . '}}';
-			}
+        return [$tableName, $alias];
+    }
 
-			$on = [];
-			foreach ($child->link as $childColumn => $parentColumn) {
-				$on[] = "$parentAlias.[[$parentColumn]] = $childAlias.[[$childColumn]]";
-			}
-			$on = implode(' AND ', $on);
-			if (!empty($child->on)) {
-				$on = ['and', $on, $child->on];
-			}
-		} else {
-			$on = $child->on;
-		}
-		$this->join($joinType, $childTable, $on);
+    /**
+     * Joins a parent query with a child query.
+     * The current query object will be modified accordingly.
+     * @param ActiveQuery $parent
+     * @param ActiveQuery $child
+     * @param string      $joinType
+     */
+    private function joinWithRelation($parent, $child, $joinType)
+    {
+        $via = $child->via;
+        $child->via = null;
+        if ($via instanceof ActiveQuery) {
+            // via table
+            $this->joinWithRelation($parent, $via, $joinType);
+            $this->joinWithRelation($via, $child, $joinType);
 
+            return;
+        } elseif (is_array($via)) {
+            // via relation
+            $this->joinWithRelation($parent, $via[1], $joinType);
+            $this->joinWithRelation($via[1], $child, $joinType);
 
-		if (!empty($child->where)) {
-			$this->andWhere($child->where);
-		}
-		if (!empty($child->having)) {
-			$this->andHaving($child->having);
-		}
-		if (!empty($child->orderBy)) {
-			$this->addOrderBy($child->orderBy);
-		}
-		if (!empty($child->groupBy)) {
-			$this->addGroupBy($child->groupBy);
-		}
-		if (!empty($child->params)) {
-			$this->addParams($child->params);
-		}
-		if (!empty($child->join)) {
-			foreach ($child->join as $join) {
-				$this->join[] = $join;
-			}
-		}
-		if (!empty($child->union)) {
-			foreach ($child->union as $union) {
-				$this->union[] = $union;
-			}
-		}
-	}
+            return;
+        }
 
-	/**
-	 * Sets the ON condition for a relational query.
-	 * The condition will be used in the ON part when [[ActiveQuery::joinWith()]] is called.
-	 * Otherwise, the condition will be used in the WHERE part of a query.
-	 *
-	 * Use this method to specify additional conditions when declaring a relation in the [[ActiveRecord]] class:
-	 *
-	 * ```php
-	 * public function getActiveUsers()
-	 * {
-	 *     return $this->hasMany(User::className(), ['id' => 'user_id'])->onCondition(['active' => true]);
-	 * }
-	 * ```
-	 *
-	 * @param string|array $condition the ON condition. Please refer to [[Query::where()]] on how to specify this parameter.
-	 * @param array $params the parameters (name => value) to be bound to the query.
-	 * @return static the query object itself
-	 */
-	public function onCondition($condition, $params = [])
-	{
-		$this->on = $condition;
-		$this->addParams($params);
-		return $this;
-	}
+        list ($parentTable, $parentAlias) = $this->getQueryTableName($parent);
+        list ($childTable, $childAlias) = $this->getQueryTableName($child);
 
-	/**
-	 * Specifies the pivot table for a relational query.
-	 *
-	 * Use this method to specify a pivot table when declaring a relation in the [[ActiveRecord]] class:
-	 *
-	 * ```php
-	 * public function getItems()
-	 * {
-	 *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
-	 *                 ->viaTable('tbl_order_item', ['order_id' => 'id']);
-	 * }
-	 * ```
-	 *
-	 * @param string $tableName the name of the pivot table.
-	 * @param array $link the link between the pivot table and the table associated with [[primaryModel]].
-	 * The keys of the array represent the columns in the pivot table, and the values represent the columns
-	 * in the [[primaryModel]] table.
-	 * @param callable $callable a PHP callback for customizing the relation associated with the pivot table.
-	 * Its signature should be `function($query)`, where `$query` is the query to be customized.
-	 * @return static
-	 * @see via()
-	 */
-	public function viaTable($tableName, $link, $callable = null)
-	{
-		$relation = new ActiveQuery([
-			'modelClass' => get_class($this->primaryModel),
-			'from' => [$tableName],
-			'link' => $link,
-			'multiple' => true,
-			'asArray' => true,
-		]);
-		$this->via = $relation;
-		if ($callable !== null) {
-			call_user_func($callable, $relation);
-		}
-		return $this;
-	}
+        if (!empty($child->link)) {
+
+            if (strpos($parentAlias, '{{') === false) {
+                $parentAlias = '{{' . $parentAlias . '}}';
+            }
+            if (strpos($childAlias, '{{') === false) {
+                $childAlias = '{{' . $childAlias . '}}';
+            }
+
+            $on = [];
+            foreach ($child->link as $childColumn => $parentColumn) {
+                $on[] = "$parentAlias.[[$parentColumn]] = $childAlias.[[$childColumn]]";
+            }
+            $on = implode(' AND ', $on);
+            if (!empty($child->on)) {
+                $on = ['and', $on, $child->on];
+            }
+        } else {
+            $on = $child->on;
+        }
+        $this->join($joinType, $childTable, $on);
+
+        if (!empty($child->where)) {
+            $this->andWhere($child->where);
+        }
+        if (!empty($child->having)) {
+            $this->andHaving($child->having);
+        }
+        if (!empty($child->orderBy)) {
+            $this->addOrderBy($child->orderBy);
+        }
+        if (!empty($child->groupBy)) {
+            $this->addGroupBy($child->groupBy);
+        }
+        if (!empty($child->params)) {
+            $this->addParams($child->params);
+        }
+        if (!empty($child->join)) {
+            foreach ($child->join as $join) {
+                $this->join[] = $join;
+            }
+        }
+        if (!empty($child->union)) {
+            foreach ($child->union as $union) {
+                $this->union[] = $union;
+            }
+        }
+    }
+
+    /**
+     * Sets the ON condition for a relational query.
+     * The condition will be used in the ON part when [[ActiveQuery::joinWith()]] is called.
+     * Otherwise, the condition will be used in the WHERE part of a query.
+     *
+     * Use this method to specify additional conditions when declaring a relation in the [[ActiveRecord]] class:
+     *
+     * ```php
+     * public function getActiveUsers()
+     * {
+     *     return $this->hasMany(User::className(), ['id' => 'user_id'])->onCondition(['active' => true]);
+     * }
+     * ```
+     *
+     * @param  string|array $condition the ON condition. Please refer to [[Query::where()]] on how to specify this parameter.
+     * @param  array        $params    the parameters (name => value) to be bound to the query.
+     * @return static       the query object itself
+     */
+    public function onCondition($condition, $params = [])
+    {
+        $this->on = $condition;
+        $this->addParams($params);
+
+        return $this;
+    }
+
+    /**
+     * Specifies the pivot table for a relational query.
+     *
+     * Use this method to specify a pivot table when declaring a relation in the [[ActiveRecord]] class:
+     *
+     * ```php
+     * public function getItems()
+     * {
+     *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
+     *                 ->viaTable('tbl_order_item', ['order_id' => 'id']);
+     * }
+     * ```
+     *
+     * @param  string   $tableName the name of the pivot table.
+     * @param  array    $link      the link between the pivot table and the table associated with [[primaryModel]].
+     *                             The keys of the array represent the columns in the pivot table, and the values represent the columns
+     *                             in the [[primaryModel]] table.
+     * @param  callable $callable  a PHP callback for customizing the relation associated with the pivot table.
+     *                             Its signature should be `function($query)`, where `$query` is the query to be customized.
+     * @return static
+     * @see via()
+     */
+    public function viaTable($tableName, $link, $callable = null)
+    {
+        $relation = new ActiveQuery([
+            'modelClass' => get_class($this->primaryModel),
+            'from' => [$tableName],
+            'link' => $link,
+            'multiple' => true,
+            'asArray' => true,
+        ]);
+        $this->via = $relation;
+        if ($callable !== null) {
+            call_user_func($callable, $relation);
+        }
+
+        return $this;
+    }
 }

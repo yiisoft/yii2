@@ -63,49 +63,48 @@ use yii\db\Expression;
  */
 class TimestampBehavior extends AttributeBehavior
 {
-	/**
-	 * @var array list of attributes that are to be automatically filled with timestamps.
-	 * The array keys are the ActiveRecord events upon which the attributes are to be filled with timestamps,
-	 * and the array values are the corresponding attribute(s) to be updated. You can use a string to represent
-	 * a single attribute, or an array to represent a list of attributes.
-	 * The default setting is to update both of the `created_at` and `updated_at` attributes upon AR insertion,
-	 * and update the `updated_at` attribute upon AR updating.
-	 */
-	public $attributes = [
-		BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
-		BaseActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
-	];
-	/**
-	 * @var callable|Expression The expression that will be used for generating the timestamp.
-	 * This can be either an anonymous function that returns the timestamp value,
-	 * or an [[Expression]] object representing a DB expression (e.g. `new Expression('NOW()')`).
-	 * If not set, it will use the value of `time()` to set the attributes.
-	 */
-	public $value;
+    /**
+     * @var array list of attributes that are to be automatically filled with timestamps.
+     * The array keys are the ActiveRecord events upon which the attributes are to be filled with timestamps,
+     * and the array values are the corresponding attribute(s) to be updated. You can use a string to represent
+     * a single attribute, or an array to represent a list of attributes.
+     * The default setting is to update both of the `created_at` and `updated_at` attributes upon AR insertion,
+     * and update the `updated_at` attribute upon AR updating.
+     */
+    public $attributes = [
+        BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+        BaseActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
+    ];
+    /**
+     * @var callable|Expression The expression that will be used for generating the timestamp.
+     * This can be either an anonymous function that returns the timestamp value,
+     * or an [[Expression]] object representing a DB expression (e.g. `new Expression('NOW()')`).
+     * If not set, it will use the value of `time()` to set the attributes.
+     */
+    public $value;
 
+    /**
+     * @inheritdoc
+     */
+    protected function getValue($event)
+    {
+        if ($this->value instanceof Expression) {
+            return $this->value;
+        } else {
+            return $this->value !== null ? call_user_func($this->value, $event) : time();
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function getValue($event)
-	{
-		if ($this->value instanceof Expression) {
-			return $this->value;
-		} else {
-			return $this->value !== null ? call_user_func($this->value, $event) : time();
-		}
-	}
-
-	/**
-	 * Updates a timestamp attribute to the current timestamp.
-	 *
-	 * ```php
-	 * $model->touch('lastVisit');
-	 * ```
-	 * @param string $attribute the name of the attribute to update.
-	 */
-	public function touch($attribute)
-	{
-		$this->owner->updateAttributes(array_fill_keys((array)$attribute, $this->getValue(null)));
-	}
+    /**
+     * Updates a timestamp attribute to the current timestamp.
+     *
+     * ```php
+     * $model->touch('lastVisit');
+     * ```
+     * @param string $attribute the name of the attribute to update.
+     */
+    public function touch($attribute)
+    {
+        $this->owner->updateAttributes(array_fill_keys((array) $attribute, $this->getValue(null)));
+    }
 }
