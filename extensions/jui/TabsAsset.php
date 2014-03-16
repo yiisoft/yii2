@@ -15,12 +15,12 @@ use yii\web\AssetBundle;
  */
 class TabsAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/jui/assets';
-	public $js = [
-		'jquery.ui.tabs.js',
-	];
-	public $depends = [
-		'yii\jui\CoreAsset',
-		'yii\jui\EffectAsset',
-	];
+    public $sourcePath = '@yii/jui/assets';
+    public $js = [
+        'jquery.ui.tabs.js',
+    ];
+    public $depends = [
+        'yii\jui\CoreAsset',
+        'yii\jui\EffectAsset',
+    ];
 }

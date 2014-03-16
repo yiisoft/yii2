@@ -43,128 +43,133 @@ use Yii;
  */
 class LinkedIn extends OAuth2
 {
-	/**
-	 * @inheritdoc
-	 */
-	public $authUrl = 'https://www.linkedin.com/uas/oauth2/authorization';
-	/**
-	 * @inheritdoc
-	 */
-	public $tokenUrl = 'https://www.linkedin.com/uas/oauth2/accessToken';
-	/**
-	 * @inheritdoc
-	 */
-	public $apiBaseUrl = 'https://api.linkedin.com/v1';
+    /**
+     * @inheritdoc
+     */
+    public $authUrl = 'https://www.linkedin.com/uas/oauth2/authorization';
+    /**
+     * @inheritdoc
+     */
+    public $tokenUrl = 'https://www.linkedin.com/uas/oauth2/accessToken';
+    /**
+     * @inheritdoc
+     */
+    public $apiBaseUrl = 'https://api.linkedin.com/v1';
 
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		parent::init();
-		if ($this->scope === null) {
-			$this->scope = implode(' ', [
-				'r_basicprofile',
-				'r_emailaddress',
-			]);
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if ($this->scope === null) {
+            $this->scope = implode(' ', [
+                'r_basicprofile',
+                'r_emailaddress',
+            ]);
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultNormalizeUserAttributeMap()
-	{
-		return [
-			'email' => 'email-address',
-			'first_name' => 'first-name',
-			'last_name' => 'last-name',
-		];
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function defaultNormalizeUserAttributeMap()
+    {
+        return [
+            'email' => 'email-address',
+            'first_name' => 'first-name',
+            'last_name' => 'last-name',
+        ];
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function initUserAttributes()
-	{
-		$attributeNames = [
-			'id',
-			'email-address',
-			'first-name',
-			'last-name',
-			'public-profile-url',
-		];
-		return $this->api('people/~:(' . implode(',', $attributeNames) . ')', 'GET');
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function initUserAttributes()
+    {
+        $attributeNames = [
+            'id',
+            'email-address',
+            'first-name',
+            'last-name',
+            'public-profile-url',
+        ];
 
-	/**
-	 * @inheritdoc
-	 */
-	public function buildAuthUrl(array $params = [])
-	{
-		$authState = $this->generateAuthState();
-		$this->setState('authState', $authState);
-		$params['state'] = $authState;
-		return parent::buildAuthUrl($params);
-	}
+        return $this->api('people/~:(' . implode(',', $attributeNames) . ')', 'GET');
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function fetchAccessToken($authCode, array $params = [])
-	{
-		$authState = $this->getState('authState');
-		if (!isset($_REQUEST['state']) || empty($authState) || strcmp($_REQUEST['state'], $authState) !== 0) {
-			throw new HttpException(400, 'Invalid auth state parameter.');
-		} else {
-			$this->removeState('authState');
-		}
-		return parent::fetchAccessToken($authCode, $params);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function buildAuthUrl(array $params = [])
+    {
+        $authState = $this->generateAuthState();
+        $this->setState('authState', $authState);
+        $params['state'] = $authState;
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function apiInternal($accessToken, $url, $method, array $params)
-	{
-		$params['oauth2_access_token'] = $accessToken->getToken();
-		return $this->sendRequest($method, $url, $params);
-	}
+        return parent::buildAuthUrl($params);
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultReturnUrl()
-	{
-		$params = $_GET;
-		unset($params['code']);
-		unset($params['state']);
-		$params[0] = Yii::$app->controller->getRoute();
-		return Yii::$app->getUrlManager()->createAbsoluteUrl($params);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function fetchAccessToken($authCode, array $params = [])
+    {
+        $authState = $this->getState('authState');
+        if (!isset($_REQUEST['state']) || empty($authState) || strcmp($_REQUEST['state'], $authState) !== 0) {
+            throw new HttpException(400, 'Invalid auth state parameter.');
+        } else {
+            $this->removeState('authState');
+        }
 
-	/**
-	 * Generates the auth state value.
-	 * @return string auth state value.
-	 */
-	protected function generateAuthState()
-	{
-		return sha1(uniqid(get_class($this), true));
-	}
+        return parent::fetchAccessToken($authCode, $params);
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultName()
-	{
-		return 'linkedin';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function apiInternal($accessToken, $url, $method, array $params)
+    {
+        $params['oauth2_access_token'] = $accessToken->getToken();
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultTitle()
-	{
-		return 'LinkedIn';
-	}
+        return $this->sendRequest($method, $url, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defaultReturnUrl()
+    {
+        $params = $_GET;
+        unset($params['code']);
+        unset($params['state']);
+        $params[0] = Yii::$app->controller->getRoute();
+
+        return Yii::$app->getUrlManager()->createAbsoluteUrl($params);
+    }
+
+    /**
+     * Generates the auth state value.
+     * @return string auth state value.
+     */
+    protected function generateAuthState()
+    {
+        return sha1(uniqid(get_class($this), true));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defaultName()
+    {
+        return 'linkedin';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defaultTitle()
+    {
+        return 'LinkedIn';
+    }
 }

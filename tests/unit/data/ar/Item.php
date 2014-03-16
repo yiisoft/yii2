@@ -11,13 +11,13 @@ namespace yiiunit\data\ar;
  */
 class Item extends ActiveRecord
 {
-	public static function tableName()
-	{
-		return 'tbl_item';
-	}
+    public static function tableName()
+    {
+        return 'tbl_item';
+    }
 
-	public function getCategory()
-	{
-		return $this->hasOne(Category::className(), ['id' => 'category_id']);
-	}
+    public function getCategory()
+    {
+        return $this->hasOne(Category::className(), ['id' => 'category_id']);
+    }
 }

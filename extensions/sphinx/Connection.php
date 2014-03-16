@@ -59,72 +59,73 @@ use yii\base\NotSupportedException;
  */
 class Connection extends \yii\db\Connection
 {
-	/**
-	 * @inheritdoc
-	 */
-	public $schemaMap = [
-		'mysqli' => 'yii\sphinx\Schema',   // MySQL
-		'mysql' => 'yii\sphinx\Schema',    // MySQL
-	];
+    /**
+     * @inheritdoc
+     */
+    public $schemaMap = [
+        'mysqli' => 'yii\sphinx\Schema',   // MySQL
+        'mysql' => 'yii\sphinx\Schema',    // MySQL
+    ];
 
-	/**
-	 * Obtains the schema information for the named index.
-	 * @param string $name index name.
-	 * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
-	 * @return IndexSchema index schema information. Null if the named index does not exist.
-	 */
-	public function getIndexSchema($name, $refresh = false)
-	{
-		return $this->getSchema()->getIndexSchema($name, $refresh);
-	}
+    /**
+     * Obtains the schema information for the named index.
+     * @param  string      $name    index name.
+     * @param  boolean     $refresh whether to reload the table schema even if it is found in the cache.
+     * @return IndexSchema index schema information. Null if the named index does not exist.
+     */
+    public function getIndexSchema($name, $refresh = false)
+    {
+        return $this->getSchema()->getIndexSchema($name, $refresh);
+    }
 
-	/**
-	 * Quotes a index name for use in a query.
-	 * If the index name contains schema prefix, the prefix will also be properly quoted.
-	 * If the index name is already quoted or contains special characters including '(', '[[' and '{{',
-	 * then this method will do nothing.
-	 * @param string $name index name
-	 * @return string the properly quoted index name
-	 */
-	public function quoteIndexName($name)
-	{
-		return $this->getSchema()->quoteIndexName($name);
-	}
+    /**
+     * Quotes a index name for use in a query.
+     * If the index name contains schema prefix, the prefix will also be properly quoted.
+     * If the index name is already quoted or contains special characters including '(', '[[' and '{{',
+     * then this method will do nothing.
+     * @param  string $name index name
+     * @return string the properly quoted index name
+     */
+    public function quoteIndexName($name)
+    {
+        return $this->getSchema()->quoteIndexName($name);
+    }
 
-	/**
-	 * Alias of [[quoteIndexName()]].
-	 * @param string $name table name
-	 * @return string the properly quoted table name
-	 */
-	public function quoteTableName($name)
-	{
-		return $this->quoteIndexName($name);
-	}
+    /**
+     * Alias of [[quoteIndexName()]].
+     * @param  string $name table name
+     * @return string the properly quoted table name
+     */
+    public function quoteTableName($name)
+    {
+        return $this->quoteIndexName($name);
+    }
 
-	/**
-	 * Creates a command for execution.
-	 * @param string $sql the SQL statement to be executed
-	 * @param array $params the parameters to be bound to the SQL statement
-	 * @return Command the Sphinx command
-	 */
-	public function createCommand($sql = null, $params = [])
-	{
-		$this->open();
-		$command = new Command([
-			'db' => $this,
-			'sql' => $sql,
-		]);
-		return $command->bindValues($params);
-	}
+    /**
+     * Creates a command for execution.
+     * @param  string  $sql    the SQL statement to be executed
+     * @param  array   $params the parameters to be bound to the SQL statement
+     * @return Command the Sphinx command
+     */
+    public function createCommand($sql = null, $params = [])
+    {
+        $this->open();
+        $command = new Command([
+            'db' => $this,
+            'sql' => $sql,
+        ]);
 
-	/**
-	 * This method is not supported by Sphinx.
-	 * @param string $sequenceName name of the sequence object
-	 * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
-	 * @throws \yii\base\NotSupportedException always.
-	 */
-	public function getLastInsertID($sequenceName = '')
-	{
-		throw new NotSupportedException('"' . __METHOD__ . '" is not supported.');
-	}
+        return $command->bindValues($params);
+    }
+
+    /**
+     * This method is not supported by Sphinx.
+     * @param  string                          $sequenceName name of the sequence object
+     * @return string                          the row ID of the last row inserted, or the last value retrieved from the sequence object
+     * @throws \yii\base\NotSupportedException always.
+     */
+    public function getLastInsertID($sequenceName = '')
+    {
+        throw new NotSupportedException('"' . __METHOD__ . '" is not supported.');
+    }
 }

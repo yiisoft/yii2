@@ -9,12 +9,12 @@ use yiiunit\TestCase;
  */
 class VarDumperTest extends TestCase
 {
-	public function testDumpObject()
-	{
-		$obj = new \StdClass();
-		ob_start();
-		VarDumper::dump($obj);
-		$this->assertEquals("stdClass#1\n(\n)", ob_get_contents());
-		ob_end_clean();
-	}
+    public function testDumpObject()
+    {
+        $obj = new \StdClass();
+        ob_start();
+        VarDumper::dump($obj);
+        $this->assertEquals("stdClass#1\n(\n)", ob_get_contents());
+        ob_end_clean();
+    }
 }

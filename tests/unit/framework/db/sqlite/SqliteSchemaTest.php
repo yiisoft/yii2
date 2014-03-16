@@ -9,5 +9,5 @@ use yiiunit\framework\db\SchemaTest;
  */
 class SqliteSchemaTest extends SchemaTest
 {
-	protected $driverName = 'sqlite';
+    protected $driverName = 'sqlite';
 }

@@ -15,11 +15,11 @@ use yii\web\AssetBundle;
  */
 class DatePickerRegionalAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/jui/assets';
-	public $js = [
-		'jquery.ui.datepicker-i18n.js',
-	];
-	public $depends = [
-		'yii\jui\DatePickerAsset',
-	];
+    public $sourcePath = '@yii/jui/assets';
+    public $js = [
+        'jquery.ui.datepicker-i18n.js',
+    ];
+    public $depends = [
+        'yii\jui\DatePickerAsset',
+    ];
 }

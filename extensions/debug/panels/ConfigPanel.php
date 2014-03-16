@@ -20,82 +20,83 @@ use yii\debug\Panel;
  */
 class ConfigPanel extends Panel
 {
-	/**
-	 * @inheritdoc
-	 */
-	public function getName()
-	{
-		return 'Configuration';
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getName()
+    {
+        return 'Configuration';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getSummary()
-	{
-		return Yii::$app->view->render('panels/config/summary', ['panel' => $this]);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getSummary()
+    {
+        return Yii::$app->view->render('panels/config/summary', ['panel' => $this]);
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getDetail()
-	{
-		return Yii::$app->view->render('panels/config/detail', ['panel' => $this]);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getDetail()
+    {
+        return Yii::$app->view->render('panels/config/detail', ['panel' => $this]);
+    }
 
-	/**
-	 * Returns data about extensions
-	 *
-	 * @return array
-	 */
-	public function getExtensions()
-	{
-		$data = [];
-		foreach ($this->data['extensions'] as $extension) {
-			$data[$extension['name']] = $extension['version'];
-		}
-		return $data;
-	}
+    /**
+     * Returns data about extensions
+     *
+     * @return array
+     */
+    public function getExtensions()
+    {
+        $data = [];
+        foreach ($this->data['extensions'] as $extension) {
+            $data[$extension['name']] = $extension['version'];
+        }
 
-	/**
-	 * Returns the BODY contents of the phpinfo() output
-	 *
-	 * @return array
-	 */
-	public function getPhpInfo ()
-	{
-		ob_start();
-		phpinfo();
-		$pinfo = ob_get_contents();
-		ob_end_clean();
-		$phpinfo = preg_replace('%^.*<body>(.*)</body>.*$%ms', '$1', $pinfo);
-		$phpinfo = str_replace('<table ', '<table class="table table-condensed table-bordered table-striped table-hover config-php-info-table"', $phpinfo);
+        return $data;
+    }
 
-		return $phpinfo;
-	}
+    /**
+     * Returns the BODY contents of the phpinfo() output
+     *
+     * @return array
+     */
+    public function getPhpInfo()
+    {
+        ob_start();
+        phpinfo();
+        $pinfo = ob_get_contents();
+        ob_end_clean();
+        $phpinfo = preg_replace('%^.*<body>(.*)</body>.*$%ms', '$1', $pinfo);
+        $phpinfo = str_replace('<table ', '<table class="table table-condensed table-bordered table-striped table-hover config-php-info-table"', $phpinfo);
 
-	/**
-	 * @inheritdoc
-	 */
-	public function save()
-	{
-		return [
-			'phpVersion' => PHP_VERSION,
-			'yiiVersion' => Yii::getVersion(),
-			'application' => [
-				'yii' => Yii::getVersion(),
-				'name' => Yii::$app->name,
-				'env' => YII_ENV,
-				'debug' => YII_DEBUG,
-			],
-			'php' => [
-				'version' => PHP_VERSION,
-				'xdebug' => extension_loaded('xdebug'),
-				'apc' => extension_loaded('apc'),
-				'memcache' => extension_loaded('memcache'),
-			],
-			'extensions' => Yii::$app->extensions,
-		];
-	}
+        return $phpinfo;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function save()
+    {
+        return [
+            'phpVersion' => PHP_VERSION,
+            'yiiVersion' => Yii::getVersion(),
+            'application' => [
+                'yii' => Yii::getVersion(),
+                'name' => Yii::$app->name,
+                'env' => YII_ENV,
+                'debug' => YII_DEBUG,
+            ],
+            'php' => [
+                'version' => PHP_VERSION,
+                'xdebug' => extension_loaded('xdebug'),
+                'apc' => extension_loaded('apc'),
+                'memcache' => extension_loaded('memcache'),
+            ],
+            'extensions' => Yii::$app->extensions,
+        ];
+    }
 }

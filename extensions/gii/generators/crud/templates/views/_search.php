@@ -23,26 +23,26 @@ use yii\widgets\ActiveForm;
 
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-search">
 
-	<?= "<?php " ?>$form = ActiveForm::begin([
-		'action' => ['index'],
-		'method' => 'get',
-	]); ?>
+    <?= "<?php " ?>$form = ActiveForm::begin([
+        'action' => ['index'],
+        'method' => 'get',
+    ]); ?>
 
 <?php
 $count = 0;
 foreach ($generator->getColumnNames() as $attribute) {
-	if (++$count < 6) {
-		echo "\t\t<?= " . $generator->generateActiveSearchField($attribute) . " ?>\n\n";
-	} else {
-		echo "\t\t<?php // echo " . $generator->generateActiveSearchField($attribute) . " ?>\n\n";
-	}
+    if (++$count < 6) {
+        echo "\t\t<?= " . $generator->generateActiveSearchField($attribute) . " ?>\n\n";
+    } else {
+        echo "\t\t<?php // echo " . $generator->generateActiveSearchField($attribute) . " ?>\n\n";
+    }
 }
 ?>
-		<div class="form-group">
-			<?= "<?= " ?>Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-			<?= "<?= " ?>Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
-		</div>
+        <div class="form-group">
+            <?= "<?= " ?>Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+            <?= "<?= " ?>Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+        </div>
 
-	<?= "<?php " ?>ActiveForm::end(); ?>
+    <?= "<?php " ?>ActiveForm::end(); ?>
 
 </div>

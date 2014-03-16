@@ -15,17 +15,17 @@ namespace yii\base;
  */
 class ViewEvent extends Event
 {
-	/**
-	 * @var string the rendering result of [[View::renderFile()]].
-	 * Event handlers may modify this property and the modified output will be
-	 * returned by [[View::renderFile()]]. This property is only used
-	 * by [[View::EVENT_AFTER_RENDER]] event.
-	 */
-	public $output;
-	/**
-	 * @var boolean whether to continue rendering the view file. Event handlers of
-	 * [[View::EVENT_BEFORE_RENDER]] may set this property to decide whether
-	 * to continue rendering the current view file.
-	 */
-	public $isValid = true;
+    /**
+     * @var string the rendering result of [[View::renderFile()]].
+     * Event handlers may modify this property and the modified output will be
+     * returned by [[View::renderFile()]]. This property is only used
+     * by [[View::EVENT_AFTER_RENDER]] event.
+     */
+    public $output;
+    /**
+     * @var boolean whether to continue rendering the view file. Event handlers of
+     * [[View::EVENT_BEFORE_RENDER]] may set this property to decide whether
+     * to continue rendering the current view file.
+     */
+    public $isValid = true;
 }

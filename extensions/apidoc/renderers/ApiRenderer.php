@@ -8,16 +8,7 @@
 namespace yii\apidoc\renderers;
 
 use Yii;
-use yii\apidoc\models\ClassDoc;
-use yii\apidoc\models\ConstDoc;
 use yii\apidoc\models\Context;
-use yii\apidoc\models\EventDoc;
-use yii\apidoc\models\InterfaceDoc;
-use yii\apidoc\models\MethodDoc;
-use yii\apidoc\models\PropertyDoc;
-use yii\apidoc\models\TraitDoc;
-use yii\base\Component;
-use yii\console\Controller;
 
 /**
  * Base class for all API documentation renderers
@@ -27,11 +18,11 @@ use yii\console\Controller;
  */
 abstract class ApiRenderer extends BaseRenderer
 {
-	/**
-	 * Renders a given [[Context]].
-	 *
-	 * @param Context $context the api documentation context to render.
-	 * @param $targetDir
-	 */
-	public abstract function render($context, $targetDir);
+    /**
+     * Renders a given [[Context]].
+     *
+     * @param Context $context the api documentation context to render.
+     * @param $targetDir
+     */
+    abstract public function render($context, $targetDir);
 }

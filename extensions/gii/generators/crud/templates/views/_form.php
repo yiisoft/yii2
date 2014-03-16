@@ -12,7 +12,7 @@ use yii\helpers\StringHelper;
 $model = new $generator->modelClass;
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
-	$safeAttributes = $model->attributes();
+    $safeAttributes = $model->attributes();
 }
 
 echo "<?php\n";
@@ -30,15 +30,15 @@ use yii\widgets\ActiveForm;
 
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-form">
 
-	<?= "<?php " ?>$form = ActiveForm::begin(); ?>
+    <?= "<?php " ?>$form = ActiveForm::begin(); ?>
 
 <?php foreach ($safeAttributes as $attribute) {
-	echo "\t\t<?= " . $generator->generateActiveField($attribute) . " ?>\n\n";
+    echo "\t\t<?= " . $generator->generateActiveField($attribute) . " ?>\n\n";
 } ?>
-		<div class="form-group">
-			<?= "<?= " ?>Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-		</div>
+        <div class="form-group">
+            <?= "<?= " ?>Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        </div>
 
-	<?= "<?php " ?>ActiveForm::end(); ?>
+    <?= "<?php " ?>ActiveForm::end(); ?>
 
 </div>
