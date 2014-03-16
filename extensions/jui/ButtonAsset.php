@@ -15,11 +15,11 @@ use yii\web\AssetBundle;
  */
 class ButtonAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/jui/assets';
-	public $js = [
-		'jquery.ui.button.js',
-	];
-	public $depends = [
-		'yii\jui\CoreAsset',
-	];
+    public $sourcePath = '@yii/jui/assets';
+    public $js = [
+        'jquery.ui.button.js',
+    ];
+    public $depends = [
+        'yii\jui\CoreAsset',
+    ];
 }

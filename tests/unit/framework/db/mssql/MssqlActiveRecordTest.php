@@ -10,5 +10,5 @@ use yiiunit\framework\db\ActiveRecordTest;
  */
 class MssqlActiveRecordTest extends ActiveRecordTest
 {
-	protected $driverName = 'sqlsrv';
+    protected $driverName = 'sqlsrv';
 }

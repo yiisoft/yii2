@@ -43,54 +43,54 @@ use yii\helpers\Html;
  */
 class SliderInput extends InputWidget
 {
-	/**
-	 * @inheritDoc
-	 */
-	protected $clientEventMap = [
-		'change' => 'slidechange',
-		'create' => 'slidecreate',
-		'slide' => 'slide',
-		'start' => 'slidestart',
-		'stop' => 'slidestop',
-	];
-	/**
-	 * @var array the HTML attributes for the container tag.
-	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
-	 */
-	public $containerOptions = [];
+    /**
+     * @inheritDoc
+     */
+    protected $clientEventMap = [
+        'change' => 'slidechange',
+        'create' => 'slidecreate',
+        'slide' => 'slide',
+        'start' => 'slidestart',
+        'stop' => 'slidestop',
+    ];
+    /**
+     * @var array the HTML attributes for the container tag.
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $containerOptions = [];
 
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		parent::init();
-		if (!isset($this->containerOptions['id'])) {
-			$this->containerOptions['id'] = $this->options['id'] . '-container';
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if (!isset($this->containerOptions['id'])) {
+            $this->containerOptions['id'] = $this->options['id'] . '-container';
+        }
+    }
 
-	/**
-	 * Executes the widget.
-	 */
-	public function run()
-	{
-		echo Html::tag('div', '', $this->containerOptions);
+    /**
+     * Executes the widget.
+     */
+    public function run()
+    {
+        echo Html::tag('div', '', $this->containerOptions);
 
-		if ($this->hasModel()) {
-			echo Html::activeHiddenInput($this->model, $this->attribute, $this->options);
-			$this->clientOptions['value'] = $this->model{$this->attribute};
-		} else {
-			echo Html::hiddenInput($this->name, $this->value, $this->options);
-			$this->clientOptions['value'] = $this->value;
-		}
+        if ($this->hasModel()) {
+            echo Html::activeHiddenInput($this->model, $this->attribute, $this->options);
+            $this->clientOptions['value'] = $this->model{$this->attribute};
+        } else {
+            echo Html::hiddenInput($this->name, $this->value, $this->options);
+            $this->clientOptions['value'] = $this->value;
+        }
 
-		if (!isset($this->clientEvents['slide'])) {
-			$this->clientEvents['slide'] = 'function(event, ui) {
-				$("#' . $this->options['id'] . '").val(ui.value);
-			}';
-		}
+        if (!isset($this->clientEvents['slide'])) {
+            $this->clientEvents['slide'] = 'function (event, ui) {
+                $("#' . $this->options['id'] . '").val(ui.value);
+            }';
+        }
 
-		$this->registerWidget('slider', SliderAsset::className(), $this->containerOptions['id']);
-	}
+        $this->registerWidget('slider', SliderAsset::className(), $this->containerOptions['id']);
+    }
 }

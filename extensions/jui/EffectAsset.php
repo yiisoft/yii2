@@ -15,11 +15,11 @@ use yii\web\AssetBundle;
  */
 class EffectAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/jui/assets';
-	public $js = [
-		'jquery.ui.effect-all.js',
-	];
-	public $depends = [
-		'yii\web\JqueryAsset',
-	];
+    public $sourcePath = '@yii/jui/assets';
+    public $js = [
+        'jquery.ui.effect-all.js',
+    ];
+    public $depends = [
+        'yii\web\JqueryAsset',
+    ];
 }

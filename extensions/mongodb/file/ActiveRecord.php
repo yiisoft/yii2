@@ -44,306 +44,311 @@ use yii\web\UploadedFile;
  */
 abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
 {
-	/**
-	 * Creates an [[ActiveQuery]] instance.
-	 *
-	 * This method is called by [[find()]], [[findBySql()]] to start a SELECT query but also
-	 * by [[hasOne()]] and [[hasMany()]] to create a relational query.
-	 * You may override this method to return a customized query (e.g. `CustomerQuery` specified
-	 * written for querying `Customer` purpose.)
-	 *
-	 * You may also define default conditions that should apply to all queries unless overridden:
-	 *
-	 * ```php
-	 * public static function createQuery($config = [])
-	 * {
-	 *     return parent::createQuery($config)->where(['deleted' => false]);
-	 * }
-	 * ```
-	 *
-	 * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
-	 * default condition. Using [[Query::where()]] will override the default condition.
-	 *
-	 * @param array $config the configuration passed to the ActiveQuery class.
-	 * @return ActiveQuery the newly created [[ActiveQuery]] instance.
-	 */
-	public static function createQuery($config = [])
-	{
-		$config['modelClass'] = get_called_class();
-		return new ActiveQuery($config);
-	}
+    /**
+     * Creates an [[ActiveQuery]] instance.
+     *
+     * This method is called by [[find()]], [[findBySql()]] to start a SELECT query but also
+     * by [[hasOne()]] and [[hasMany()]] to create a relational query.
+     * You may override this method to return a customized query (e.g. `CustomerQuery` specified
+     * written for querying `Customer` purpose.)
+     *
+     * You may also define default conditions that should apply to all queries unless overridden:
+     *
+     * ```php
+     * public static function createQuery($config = [])
+     * {
+     *     return parent::createQuery($config)->where(['deleted' => false]);
+     * }
+     * ```
+     *
+     * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
+     * default condition. Using [[Query::where()]] will override the default condition.
+     *
+     * @param  array       $config the configuration passed to the ActiveQuery class.
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+     */
+    public static function createQuery($config = [])
+    {
+        $config['modelClass'] = get_called_class();
 
-	/**
-	 * Return the Mongo GridFS collection instance for this AR class.
-	 * @return Collection collection instance.
-	 */
-	public static function getCollection()
-	{
-		return static::getDb()->getFileCollection(static::collectionName());
-	}
+        return new ActiveQuery($config);
+    }
 
-	/**
-	 * Returns the list of all attribute names of the model.
-	 * This method could be overridden by child classes to define available attributes.
-	 * Note: all attributes defined in base Active Record class should be always present
-	 * in returned array.
-	 * For example:
-	 * ~~~
-	 * public function attributes()
-	 * {
-	 *     return array_merge(
-	 *         parent::attributes(),
-	 *         ['tags', 'status']
-	 *     );
-	 * }
-	 * ~~~
-	 * @return array list of attribute names.
-	 */
-	public function attributes()
-	{
-		return [
-			'_id',
-			'filename',
-			'uploadDate',
-			'length',
-			'chunkSize',
-			'md5',
-			'file',
-			'newFileContent'
-		];
-	}
+    /**
+     * Return the Mongo GridFS collection instance for this AR class.
+     * @return Collection collection instance.
+     */
+    public static function getCollection()
+    {
+        return static::getDb()->getFileCollection(static::collectionName());
+    }
 
-	/**
-	 * @see ActiveRecord::insert()
-	 */
-	protected function insertInternal($attributes = null)
-	{
-		if (!$this->beforeSave(true)) {
-			return false;
-		}
-		$values = $this->getDirtyAttributes($attributes);
-		if (empty($values)) {
-			$currentAttributes = $this->getAttributes();
-			foreach ($this->primaryKey() as $key) {
-				$values[$key] = isset($currentAttributes[$key]) ? $currentAttributes[$key] : null;
-			}
-		}
-		$collection = static::getCollection();
-		if (isset($values['newFileContent'])) {
-			$newFileContent = $values['newFileContent'];
-			unset($values['newFileContent']);
-		}
-		if (isset($values['file'])) {
-			$newFile = $values['file'];
-			unset($values['file']);
-		}
-		if (isset($newFileContent)) {
-			$newId = $collection->insertFileContent($newFileContent, $values);
-		} elseif (isset($newFile)) {
-			$fileName = $this->extractFileName($newFile);
-			$newId = $collection->insertFile($fileName, $values);
-		} else {
-			$newId = $collection->insert($values);
-		}
-		$this->setAttribute('_id', $newId);
-		foreach ($values as $name => $value) {
-			$this->setOldAttribute($name, $value);
-		}
-		$this->afterSave(true);
-		return true;
-	}
+    /**
+     * Returns the list of all attribute names of the model.
+     * This method could be overridden by child classes to define available attributes.
+     * Note: all attributes defined in base Active Record class should be always present
+     * in returned array.
+     * For example:
+     * ~~~
+     * public function attributes()
+     * {
+     *     return array_merge(
+     *         parent::attributes(),
+     *         ['tags', 'status']
+     *     );
+     * }
+     * ~~~
+     * @return array list of attribute names.
+     */
+    public function attributes()
+    {
+        return [
+            '_id',
+            'filename',
+            'uploadDate',
+            'length',
+            'chunkSize',
+            'md5',
+            'file',
+            'newFileContent'
+        ];
+    }
 
-	/**
-	 * @see ActiveRecord::update()
-	 * @throws StaleObjectException
-	 */
-	protected function updateInternal($attributes = null)
-	{
-		if (!$this->beforeSave(false)) {
-			return false;
-		}
-		$values = $this->getDirtyAttributes($attributes);
-		if (empty($values)) {
-			$this->afterSave(false);
-			return 0;
-		}
+    /**
+     * @see ActiveRecord::insert()
+     */
+    protected function insertInternal($attributes = null)
+    {
+        if (!$this->beforeSave(true)) {
+            return false;
+        }
+        $values = $this->getDirtyAttributes($attributes);
+        if (empty($values)) {
+            $currentAttributes = $this->getAttributes();
+            foreach ($this->primaryKey() as $key) {
+                $values[$key] = isset($currentAttributes[$key]) ? $currentAttributes[$key] : null;
+            }
+        }
+        $collection = static::getCollection();
+        if (isset($values['newFileContent'])) {
+            $newFileContent = $values['newFileContent'];
+            unset($values['newFileContent']);
+        }
+        if (isset($values['file'])) {
+            $newFile = $values['file'];
+            unset($values['file']);
+        }
+        if (isset($newFileContent)) {
+            $newId = $collection->insertFileContent($newFileContent, $values);
+        } elseif (isset($newFile)) {
+            $fileName = $this->extractFileName($newFile);
+            $newId = $collection->insertFile($fileName, $values);
+        } else {
+            $newId = $collection->insert($values);
+        }
+        $this->setAttribute('_id', $newId);
+        foreach ($values as $name => $value) {
+            $this->setOldAttribute($name, $value);
+        }
+        $this->afterSave(true);
 
-		$collection = static::getCollection();
-		if (isset($values['newFileContent'])) {
-			$newFileContent = $values['newFileContent'];
-			unset($values['newFileContent']);
-		}
-		if (isset($values['file'])) {
-			$newFile = $values['file'];
-			unset($values['file']);
-		}
-		if (isset($newFileContent) || isset($newFile)) {
-			$fileAssociatedAttributeNames = [
-				'filename',
-				'uploadDate',
-				'length',
-				'chunkSize',
-				'md5',
-				'file',
-				'newFileContent'
-			];
-			$values = array_merge($this->getAttributes(null, $fileAssociatedAttributeNames), $values);
-			$rows = $this->deleteInternal();
-			$insertValues = $values;
-			$insertValues['_id'] = $this->getAttribute('_id');
-			if (isset($newFileContent)) {
-				$collection->insertFileContent($newFileContent, $insertValues);
-			} else {
-				$fileName = $this->extractFileName($newFile);
-				$collection->insertFile($fileName, $insertValues);
-			}
-			$this->setAttribute('newFileContent', null);
-			$this->setAttribute('file', null);
-		} else {
-			$condition = $this->getOldPrimaryKey(true);
-			$lock = $this->optimisticLock();
-			if ($lock !== null) {
-				if (!isset($values[$lock])) {
-					$values[$lock] = $this->$lock + 1;
-				}
-				$condition[$lock] = $this->$lock;
-			}
-			// We do not check the return value of update() because it's possible
-			// that it doesn't change anything and thus returns 0.
-			$rows = $collection->update($condition, $values);
-			if ($lock !== null && !$rows) {
-				throw new StaleObjectException('The object being updated is outdated.');
-			}
-		}
+        return true;
+    }
 
-		foreach ($values as $name => $value) {
-			$this->setOldAttribute($name, $this->getAttribute($name));
-		}
-		$this->afterSave(false);
-		return $rows;
-	}
+    /**
+     * @see ActiveRecord::update()
+     * @throws StaleObjectException
+     */
+    protected function updateInternal($attributes = null)
+    {
+        if (!$this->beforeSave(false)) {
+            return false;
+        }
+        $values = $this->getDirtyAttributes($attributes);
+        if (empty($values)) {
+            $this->afterSave(false);
 
-	/**
-	 * Extracts filename from given raw file value.
-	 * @param mixed $file raw file value.
-	 * @return string file name.
-	 * @throws \yii\base\InvalidParamException on invalid file value.
-	 */
-	protected function extractFileName($file)
-	{
-		if ($file instanceof UploadedFile) {
-			return $file->tempName;
-		} elseif (is_string($file)) {
-			if (file_exists($file)) {
-				return $file;
-			} else {
-				throw new InvalidParamException("File '{$file}' does not exist.");
-			}
-		} else {
-			throw new InvalidParamException('Unsupported type of "file" attribute.');
-		}
-	}
+            return 0;
+        }
 
-	/**
-	 * Refreshes the [[file]] attribute from file collection, using current primary key.
-	 * @return \MongoGridFSFile|null refreshed file value.
-	 */
-	public function refreshFile()
-	{
-		$mongoFile = $this->getCollection()->get($this->getPrimaryKey());
-		$this->setAttribute('file', $mongoFile);
-		return $mongoFile;
-	}
+        $collection = static::getCollection();
+        if (isset($values['newFileContent'])) {
+            $newFileContent = $values['newFileContent'];
+            unset($values['newFileContent']);
+        }
+        if (isset($values['file'])) {
+            $newFile = $values['file'];
+            unset($values['file']);
+        }
+        if (isset($newFileContent) || isset($newFile)) {
+            $fileAssociatedAttributeNames = [
+                'filename',
+                'uploadDate',
+                'length',
+                'chunkSize',
+                'md5',
+                'file',
+                'newFileContent'
+            ];
+            $values = array_merge($this->getAttributes(null, $fileAssociatedAttributeNames), $values);
+            $rows = $this->deleteInternal();
+            $insertValues = $values;
+            $insertValues['_id'] = $this->getAttribute('_id');
+            if (isset($newFileContent)) {
+                $collection->insertFileContent($newFileContent, $insertValues);
+            } else {
+                $fileName = $this->extractFileName($newFile);
+                $collection->insertFile($fileName, $insertValues);
+            }
+            $this->setAttribute('newFileContent', null);
+            $this->setAttribute('file', null);
+        } else {
+            $condition = $this->getOldPrimaryKey(true);
+            $lock = $this->optimisticLock();
+            if ($lock !== null) {
+                if (!isset($values[$lock])) {
+                    $values[$lock] = $this->$lock + 1;
+                }
+                $condition[$lock] = $this->$lock;
+            }
+            // We do not check the return value of update() because it's possible
+            // that it doesn't change anything and thus returns 0.
+            $rows = $collection->update($condition, $values);
+            if ($lock !== null && !$rows) {
+                throw new StaleObjectException('The object being updated is outdated.');
+            }
+        }
 
-	/**
-	 * Returns the associated file content.
-	 * @return null|string file content.
-	 * @throws \yii\base\InvalidParamException on invalid file attribute value.
-	 */
-	public function getFileContent()
-	{
-		$file = $this->getAttribute('file');
-		if (empty($file) && !$this->getIsNewRecord()) {
-			$file = $this->refreshFile();
-		}
-		if (empty($file)) {
-			return null;
-		} elseif ($file instanceof \MongoGridFSFile) {
-			$fileSize = $file->getSize();
-			if (empty($fileSize)) {
-				return null;
-			} else {
-				return $file->getBytes();
-			}
-		} elseif ($file instanceof UploadedFile) {
-			return file_get_contents($file->tempName);
-		} elseif (is_string($file)) {
-			if (file_exists($file)) {
-				return file_get_contents($file);
-			} else {
-				throw new InvalidParamException("File '{$file}' does not exist.");
-			}
-		} else {
-			throw new InvalidParamException('Unsupported type of "file" attribute.');
-		}
-	}
+        foreach ($values as $name => $value) {
+            $this->setOldAttribute($name, $this->getAttribute($name));
+        }
+        $this->afterSave(false);
 
-	/**
-	 * Writes the the internal file content into the given filename.
-	 * @param string $filename full filename to be written.
-	 * @return boolean whether the operation was successful.
-	 * @throws \yii\base\InvalidParamException on invalid file attribute value.
-	 */
-	public function writeFile($filename)
-	{
-		$file = $this->getAttribute('file');
-		if (empty($file) && !$this->getIsNewRecord()) {
-			$file = $this->refreshFile();
-		}
-		if (empty($file)) {
-			throw new InvalidParamException('There is no file associated with this object.');
-		} elseif ($file instanceof \MongoGridFSFile) {
-			return ($file->write($filename) == $file->getSize());
-		} elseif ($file instanceof UploadedFile) {
-			return copy($file->tempName, $filename);
-		} elseif (is_string($file)) {
-			if (file_exists($file)) {
-				return copy($file, $filename);
-			} else {
-				throw new InvalidParamException("File '{$file}' does not exist.");
-			}
-		} else {
-			throw new InvalidParamException('Unsupported type of "file" attribute.');
-		}
-	}
+        return $rows;
+    }
 
-	/**
-	 * This method returns a stream resource that can be used with all file functions in PHP,
-	 * which deal with reading files. The contents of the file are pulled out of MongoDB on the fly,
-	 * so that the whole file does not have to be loaded into memory first.
-	 * @return resource file stream resource.
-	 * @throws \yii\base\InvalidParamException on invalid file attribute value.
-	 */
-	public function getFileResource()
-	{
-		$file = $this->getAttribute('file');
-		if (empty($file) && !$this->getIsNewRecord()) {
-			$file = $this->refreshFile();
-		}
-		if (empty($file)) {
-			throw new InvalidParamException('There is no file associated with this object.');
-		} elseif ($file instanceof \MongoGridFSFile) {
-			return $file->getResource();
-		} elseif ($file instanceof UploadedFile) {
-			return fopen($file->tempName, 'r');
-		} elseif (is_string($file)) {
-			if (file_exists($file)) {
-				return fopen($file, 'r');
-			} else {
-				throw new InvalidParamException("File '{$file}' does not exist.");
-			}
-		} else {
-			throw new InvalidParamException('Unsupported type of "file" attribute.');
-		}
-	}
+    /**
+     * Extracts filename from given raw file value.
+     * @param  mixed                           $file raw file value.
+     * @return string                          file name.
+     * @throws \yii\base\InvalidParamException on invalid file value.
+     */
+    protected function extractFileName($file)
+    {
+        if ($file instanceof UploadedFile) {
+            return $file->tempName;
+        } elseif (is_string($file)) {
+            if (file_exists($file)) {
+                return $file;
+            } else {
+                throw new InvalidParamException("File '{$file}' does not exist.");
+            }
+        } else {
+            throw new InvalidParamException('Unsupported type of "file" attribute.');
+        }
+    }
+
+    /**
+     * Refreshes the [[file]] attribute from file collection, using current primary key.
+     * @return \MongoGridFSFile|null refreshed file value.
+     */
+    public function refreshFile()
+    {
+        $mongoFile = $this->getCollection()->get($this->getPrimaryKey());
+        $this->setAttribute('file', $mongoFile);
+
+        return $mongoFile;
+    }
+
+    /**
+     * Returns the associated file content.
+     * @return null|string                     file content.
+     * @throws \yii\base\InvalidParamException on invalid file attribute value.
+     */
+    public function getFileContent()
+    {
+        $file = $this->getAttribute('file');
+        if (empty($file) && !$this->getIsNewRecord()) {
+            $file = $this->refreshFile();
+        }
+        if (empty($file)) {
+            return null;
+        } elseif ($file instanceof \MongoGridFSFile) {
+            $fileSize = $file->getSize();
+            if (empty($fileSize)) {
+                return null;
+            } else {
+                return $file->getBytes();
+            }
+        } elseif ($file instanceof UploadedFile) {
+            return file_get_contents($file->tempName);
+        } elseif (is_string($file)) {
+            if (file_exists($file)) {
+                return file_get_contents($file);
+            } else {
+                throw new InvalidParamException("File '{$file}' does not exist.");
+            }
+        } else {
+            throw new InvalidParamException('Unsupported type of "file" attribute.');
+        }
+    }
+
+    /**
+     * Writes the the internal file content into the given filename.
+     * @param  string                          $filename full filename to be written.
+     * @return boolean                         whether the operation was successful.
+     * @throws \yii\base\InvalidParamException on invalid file attribute value.
+     */
+    public function writeFile($filename)
+    {
+        $file = $this->getAttribute('file');
+        if (empty($file) && !$this->getIsNewRecord()) {
+            $file = $this->refreshFile();
+        }
+        if (empty($file)) {
+            throw new InvalidParamException('There is no file associated with this object.');
+        } elseif ($file instanceof \MongoGridFSFile) {
+            return ($file->write($filename) == $file->getSize());
+        } elseif ($file instanceof UploadedFile) {
+            return copy($file->tempName, $filename);
+        } elseif (is_string($file)) {
+            if (file_exists($file)) {
+                return copy($file, $filename);
+            } else {
+                throw new InvalidParamException("File '{$file}' does not exist.");
+            }
+        } else {
+            throw new InvalidParamException('Unsupported type of "file" attribute.');
+        }
+    }
+
+    /**
+     * This method returns a stream resource that can be used with all file functions in PHP,
+     * which deal with reading files. The contents of the file are pulled out of MongoDB on the fly,
+     * so that the whole file does not have to be loaded into memory first.
+     * @return resource                        file stream resource.
+     * @throws \yii\base\InvalidParamException on invalid file attribute value.
+     */
+    public function getFileResource()
+    {
+        $file = $this->getAttribute('file');
+        if (empty($file) && !$this->getIsNewRecord()) {
+            $file = $this->refreshFile();
+        }
+        if (empty($file)) {
+            throw new InvalidParamException('There is no file associated with this object.');
+        } elseif ($file instanceof \MongoGridFSFile) {
+            return $file->getResource();
+        } elseif ($file instanceof UploadedFile) {
+            return fopen($file->tempName, 'r');
+        } elseif (is_string($file)) {
+            if (file_exists($file)) {
+                return fopen($file, 'r');
+            } else {
+                throw new InvalidParamException("File '{$file}' does not exist.");
+            }
+        } else {
+            throw new InvalidParamException('Unsupported type of "file" attribute.');
+        }
+    }
 }

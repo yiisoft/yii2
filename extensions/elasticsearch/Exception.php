@@ -15,11 +15,11 @@ namespace yii\elasticsearch;
  */
 class Exception extends \yii\db\Exception
 {
-	/**
-	 * @return string the user-friendly name of this exception
-	 */
-	public function getName()
-	{
-		return 'Elasticsearch Database Exception';
-	}
+    /**
+     * @return string the user-friendly name of this exception
+     */
+    public function getName()
+    {
+        return 'Elasticsearch Database Exception';
+    }
 }

@@ -8,15 +8,15 @@ use yii\base\Model;
  */
 class Singer extends Model
 {
-	public $fistName;
-	public $lastName;
+    public $fistName;
+    public $lastName;
 
-	public function rules()
-	{
-		return [
-			[['lastName'], 'default', 'value' => 'Lennon'],
-			[['lastName'], 'required'],
-			[['underscore_style'], 'yii\captcha\CaptchaValidator'],
-		];
-	}
+    public function rules()
+    {
+        return [
+            [['lastName'], 'default', 'value' => 'Lennon'],
+            [['lastName'], 'required'],
+            [['underscore_style'], 'yii\captcha\CaptchaValidator'],
+        ];
+    }
 }

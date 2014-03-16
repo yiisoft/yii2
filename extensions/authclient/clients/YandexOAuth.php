@@ -40,52 +40,53 @@ use yii\authclient\OAuth2;
  */
 class YandexOAuth extends OAuth2
 {
-	/**
-	 * @inheritdoc
-	 */
-	public $authUrl = 'https://oauth.yandex.ru/authorize';
-	/**
-	 * @inheritdoc
-	 */
-	public $tokenUrl = 'https://oauth.yandex.ru/token';
-	/**
-	 * @inheritdoc
-	 */
-	public $apiBaseUrl = 'https://login.yandex.ru';
+    /**
+     * @inheritdoc
+     */
+    public $authUrl = 'https://oauth.yandex.ru/authorize';
+    /**
+     * @inheritdoc
+     */
+    public $tokenUrl = 'https://oauth.yandex.ru/token';
+    /**
+     * @inheritdoc
+     */
+    public $apiBaseUrl = 'https://login.yandex.ru';
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function initUserAttributes()
-	{
-		return $this->api('info', 'GET');
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function initUserAttributes()
+    {
+        return $this->api('info', 'GET');
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function apiInternal($accessToken, $url, $method, array $params)
-	{
-		if (!isset($params['format'])) {
-			$params['format'] = 'json';
-		}
-		$params['oauth_token'] = $accessToken->getToken();
-		return $this->sendRequest($method, $url, $params);
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function apiInternal($accessToken, $url, $method, array $params)
+    {
+        if (!isset($params['format'])) {
+            $params['format'] = 'json';
+        }
+        $params['oauth_token'] = $accessToken->getToken();
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultName()
-	{
-		return 'yandex';
-	}
+        return $this->sendRequest($method, $url, $params);
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultTitle()
-	{
-		return 'Yandex';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function defaultName()
+    {
+        return 'yandex';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defaultTitle()
+    {
+        return 'Yandex';
+    }
 }

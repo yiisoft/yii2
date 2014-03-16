@@ -15,12 +15,12 @@ use yii\web\AssetBundle;
  */
 class AutoCompleteAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/jui/assets';
-	public $js = [
-		'jquery.ui.autocomplete.js',
-	];
-	public $depends = [
-		'yii\jui\CoreAsset',
-		'yii\jui\MenuAsset',
-	];
+    public $sourcePath = '@yii/jui/assets';
+    public $js = [
+        'jquery.ui.autocomplete.js',
+    ];
+    public $depends = [
+        'yii\jui\CoreAsset',
+        'yii\jui\MenuAsset',
+    ];
 }

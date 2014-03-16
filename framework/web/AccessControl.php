@@ -53,91 +53,93 @@ use yii\base\ActionFilter;
  */
 class AccessControl extends ActionFilter
 {
-	/**
-	 * @var callable a callback that will be called if the access should be denied
-	 * to the current user. If not set, [[denyAccess()]] will be called.
-	 *
-	 * The signature of the callback should be as follows:
-	 *
-	 * ~~~
-	 * function ($rule, $action)
-	 * ~~~
-	 *
-	 * where `$rule` is this rule, and `$action` is the current [[Action|action]] object.
-	 */
-	public $denyCallback;
-	/**
-	 * @var array the default configuration of access rules. Individual rule configurations
-	 * specified via [[rules]] will take precedence when the same property of the rule is configured.
-	 */
-	public $ruleConfig = ['class' => 'yii\web\AccessRule'];
-	/**
-	 * @var array a list of access rule objects or configuration arrays for creating the rule objects.
-	 * If a rule is specified via a configuration array, it will be merged with [[ruleConfig]] first
-	 * before it is used for creating the rule object.
-	 * @see ruleConfig
-	 */
-	public $rules = [];
+    /**
+     * @var callable a callback that will be called if the access should be denied
+     * to the current user. If not set, [[denyAccess()]] will be called.
+     *
+     * The signature of the callback should be as follows:
+     *
+     * ~~~
+     * function ($rule, $action)
+     * ~~~
+     *
+     * where `$rule` is this rule, and `$action` is the current [[Action|action]] object.
+     */
+    public $denyCallback;
+    /**
+     * @var array the default configuration of access rules. Individual rule configurations
+     * specified via [[rules]] will take precedence when the same property of the rule is configured.
+     */
+    public $ruleConfig = ['class' => 'yii\web\AccessRule'];
+    /**
+     * @var array a list of access rule objects or configuration arrays for creating the rule objects.
+     * If a rule is specified via a configuration array, it will be merged with [[ruleConfig]] first
+     * before it is used for creating the rule object.
+     * @see ruleConfig
+     */
+    public $rules = [];
 
-	/**
-	 * Initializes the [[rules]] array by instantiating rule objects from configurations.
-	 */
-	public function init()
-	{
-		parent::init();
-		foreach ($this->rules as $i => $rule) {
-			if (is_array($rule)) {
-				$this->rules[$i] = Yii::createObject(array_merge($this->ruleConfig, $rule));
-			}
-		}
-	}
+    /**
+     * Initializes the [[rules]] array by instantiating rule objects from configurations.
+     */
+    public function init()
+    {
+        parent::init();
+        foreach ($this->rules as $i => $rule) {
+            if (is_array($rule)) {
+                $this->rules[$i] = Yii::createObject(array_merge($this->ruleConfig, $rule));
+            }
+        }
+    }
 
-	/**
-	 * This method is invoked right before an action is to be executed (after all possible filters.)
-	 * You may override this method to do last-minute preparation for the action.
-	 * @param Action $action the action to be executed.
-	 * @return boolean whether the action should continue to be executed.
-	 */
-	public function beforeAction($action)
-	{
-		$user = Yii::$app->getUser();
-		$request = Yii::$app->getRequest();
-		/** @var AccessRule $rule */
-		foreach ($this->rules as $rule) {
-			if ($allow = $rule->allows($action, $user, $request)) {
-				return true;
-			} elseif ($allow === false) {
-				if (isset($rule->denyCallback)) {
-					call_user_func($rule->denyCallback, $rule, $action);
-				} elseif (isset($this->denyCallback)) {
-					call_user_func($this->denyCallback, $rule, $action);
-				} else {
-					$this->denyAccess($user);
-				}
-				return false;
-			}
-		}
-		if (isset($this->denyCallback)) {
-			call_user_func($this->denyCallback, $rule, $action);
-		} else {
-			$this->denyAccess($user);
-		}
-		return false;
-	}
+    /**
+     * This method is invoked right before an action is to be executed (after all possible filters.)
+     * You may override this method to do last-minute preparation for the action.
+     * @param  Action  $action the action to be executed.
+     * @return boolean whether the action should continue to be executed.
+     */
+    public function beforeAction($action)
+    {
+        $user = Yii::$app->getUser();
+        $request = Yii::$app->getRequest();
+        /** @var AccessRule $rule */
+        foreach ($this->rules as $rule) {
+            if ($allow = $rule->allows($action, $user, $request)) {
+                return true;
+            } elseif ($allow === false) {
+                if (isset($rule->denyCallback)) {
+                    call_user_func($rule->denyCallback, $rule, $action);
+                } elseif (isset($this->denyCallback)) {
+                    call_user_func($this->denyCallback, $rule, $action);
+                } else {
+                    $this->denyAccess($user);
+                }
 
-	/**
-	 * Denies the access of the user.
-	 * The default implementation will redirect the user to the login page if he is a guest;
-	 * if the user is already logged, a 403 HTTP exception will be thrown.
-	 * @param User $user the current user
-	 * @throws ForbiddenHttpException if the user is already logged in.
-	 */
-	protected function denyAccess($user)
-	{
-		if ($user->getIsGuest()) {
-			$user->loginRequired();
-		} else {
-			throw new ForbiddenHttpException(Yii::t('yii', 'You are not allowed to perform this action.'));
-		}
-	}
+                return false;
+            }
+        }
+        if (isset($this->denyCallback)) {
+            call_user_func($this->denyCallback, $rule, $action);
+        } else {
+            $this->denyAccess($user);
+        }
+
+        return false;
+    }
+
+    /**
+     * Denies the access of the user.
+     * The default implementation will redirect the user to the login page if he is a guest;
+     * if the user is already logged, a 403 HTTP exception will be thrown.
+     * @param  User                   $user the current user
+     * @throws ForbiddenHttpException if the user is already logged in.
+     */
+    protected function denyAccess($user)
+    {
+        if ($user->getIsGuest()) {
+            $user->loginRequired();
+        } else {
+            throw new ForbiddenHttpException(Yii::t('yii', 'You are not allowed to perform this action.'));
+        }
+    }
 }

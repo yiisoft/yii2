@@ -41,25 +41,25 @@ use yii\helpers\Html;
  */
 class AutoComplete extends InputWidget
 {
-	/**
-	 * Renders the widget.
-	 */
-	public function run()
-	{
-		echo $this->renderWidget();
-		$this->registerWidget('autocomplete', AutoCompleteAsset::className());
-	}
+    /**
+     * Renders the widget.
+     */
+    public function run()
+    {
+        echo $this->renderWidget();
+        $this->registerWidget('autocomplete', AutoCompleteAsset::className());
+    }
 
-	/**
-	 * Renders the AutoComplete widget.
-	 * @return string the rendering result.
-	 */
-	public function renderWidget()
-	{
-		if ($this->hasModel()) {
-			return Html::activeTextInput($this->model, $this->attribute, $this->options);
-		} else {
-			return Html::textInput($this->name, $this->value, $this->options);
-		}
-	}
+    /**
+     * Renders the AutoComplete widget.
+     * @return string the rendering result.
+     */
+    public function renderWidget()
+    {
+        if ($this->hasModel()) {
+            return Html::activeTextInput($this->model, $this->attribute, $this->options);
+        } else {
+            return Html::textInput($this->name, $this->value, $this->options);
+        }
+    }
 }

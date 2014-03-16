@@ -17,13 +17,13 @@ use yii\web\AssetBundle;
  */
 class DebugAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/debug/assets';
-	public $css = [
-		'main.css',
-		'toolbar.css',
-	];
-	public $depends = [
-		'yii\web\YiiAsset',
-		'yii\bootstrap\BootstrapAsset',
-	];
+    public $sourcePath = '@yii/debug/assets';
+    public $css = [
+        'main.css',
+        'toolbar.css',
+    ];
+    public $depends = [
+        'yii\web\YiiAsset',
+        'yii\bootstrap\BootstrapAsset',
+    ];
 }

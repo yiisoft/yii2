@@ -7,10 +7,10 @@ namespace yiiunit\data\ar\mongodb\file;
  */
 class ActiveRecord extends \yii\mongodb\file\ActiveRecord
 {
-	public static $db;
+    public static $db;
 
-	public static function getDb()
-	{
-		return self::$db;
-	}
+    public static function getDb()
+    {
+        return self::$db;
+    }
 }
