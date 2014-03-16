@@ -26,7 +26,9 @@ class FilterValidatorTest extends TestCase
                 'attr_one' => '  to be trimmed  ',
                 'attr_two' => 'set this to null',
                 'attr_empty1' => '',
-                'attr_empty2' => null
+                'attr_empty2' => null,
+                'attr_array' => ['Maria', 'Anna', 'Elizabeth'],
+                'attr_array_skipped' => ['John', 'Bill']
         ]);
         $val = new FilterValidator(['filter' => 'trim']);
         $val->validateAttribute($m, 'attr_one');
@@ -42,6 +44,16 @@ class FilterValidatorTest extends TestCase
         $val->skipOnEmpty = true;
         $val->validateAttribute($m, 'attr_empty2');
         $this->assertNotNull($m->attr_empty2);
+        $val->filter = function($value) {
+
+            return implode(',', $value);
+        };
+        $val->skipOnArray = false;
+        $val->validateAttribute($m, 'attr_array');
+        $this->assertSame('Maria,Anna,Elizabeth', $m->attr_array);
+        $val->skipOnArray = true;
+        $val->validateAttribute($m, 'attr_array_skipped');
+        $this->assertSame(['John', 'Bill'], $m->attr_array_skipped);
     }
 
     public function notToBeNull($value)
