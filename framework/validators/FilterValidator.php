@@ -67,7 +67,7 @@ class FilterValidator extends Validator
     public function validateAttribute($object, $attribute)
     {
         $value = $object->$attribute;
-        if ($this->skipOnArray || !is_array($value)) {
+        if (!$this->skipOnArray || !is_array($value)) {
             $object->$attribute = call_user_func($this->filter, $value);
         }
     }
