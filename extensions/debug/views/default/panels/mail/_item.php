@@ -13,18 +13,16 @@ echo DetailView::widget([
 			'to',
 			'charset',
 			[
-				'name' => 'time',
-				'label' => 'Time',
+				'attribute' => 'time',
 				'value' => $timeFormatter->asDateTime($model['time'], 'short'),
 			],
 			'subject',
 			[
-				'name' => 'body',
+				'attribute' => 'body',
 				'label' => 'Text body',
-				'value' => $model['body'],
 			],
 			[
-				'name' => 'isSuccessful',
+				'attribute' => 'isSuccessful',
 				'label' => 'Successfully sent',
 				'value' => $model['isSuccessful'] ? 'Yes' : 'No'
 			],
@@ -32,8 +30,7 @@ echo DetailView::widget([
 			'bcc',
 			'cc',
 			[
-				'name' => 'file',
-				'label' => 'File',
+				'attribute' => 'file',
 				'format' => 'html',
 				'value' => Html::a('Download eml', ['download-mail', 'file' => $model['file']]),
 			],
