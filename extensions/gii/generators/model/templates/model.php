@@ -45,7 +45,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
      */
     public function rules()
     {
-        return [<?= "\n\t\t\t" . implode(",\n\t\t\t", $rules) . "\n\t\t" ?>];
+        return [<?= "\n            " . implode(",\n            ", $rules) . "\n        " ?>];
     }
 
     /**

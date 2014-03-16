@@ -33,12 +33,12 @@ use <?= ltrim($generator->modelClass, '\\') . (isset($modelAlias) ? " as $modelA
  */
 class <?= $searchModelClass ?> extends Model
 {
-    public $<?= implode(";\n\tpublic $", $searchAttributes) ?>;
+    public $<?= implode(";\n    public $", $searchAttributes) ?>;
 
     public function rules()
     {
         return [
-            <?= implode(",\n\t\t\t", $rules) ?>,
+            <?= implode(",\n            ", $rules) ?>,
         ];
     }
 
@@ -65,7 +65,7 @@ class <?= $searchModelClass ?> extends Model
             return $dataProvider;
         }
 
-        <?= implode("\n\t\t", $searchConditions) ?>
+        <?= implode("\n        ", $searchConditions) ?>
 
         return $dataProvider;
     }
