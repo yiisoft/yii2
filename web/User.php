@@ -265,6 +265,7 @@ class User extends Component
      * This will remove authentication-related session data.
      * If `$destroySession` is true, all session data will be removed.
      * @param boolean $destroySession whether to destroy the whole session. Defaults to true.
+     * @return boolean whether the user is logged out
      */
     public function logout($destroySession = true)
     {
@@ -279,6 +280,7 @@ class User extends Component
             }
             $this->afterLogout($identity);
         }
+        return $this->getIsGuest();
     }
 
     /**
