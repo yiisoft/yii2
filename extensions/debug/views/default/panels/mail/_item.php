@@ -14,12 +14,14 @@ echo DetailView::widget([
 			'charset',
 			[
 				'name' => 'time',
+				'label' => 'Time',
 				'value' => $timeFormatter->asDateTime($model['time'], 'short'),
 			],
 			'subject',
 			[
 				'name' => 'body',
 				'label' => 'Text body',
+				'value' => $model['body'],
 			],
 			[
 				'name' => 'isSuccessful',
@@ -31,6 +33,7 @@ echo DetailView::widget([
 			'cc',
 			[
 				'name' => 'file',
+				'label' => 'File',
 				'format' => 'html',
 				'value' => Html::a('Download eml', ['download-mail', 'file' => $model['file']]),
 			],
