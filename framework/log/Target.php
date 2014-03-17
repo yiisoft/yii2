@@ -10,6 +10,7 @@ namespace yii\log;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\web\Request;
 
 /**
  * Target is the base class for all log target classes.
@@ -52,16 +53,17 @@ abstract class Target extends Component
      */
     public $except = [];
     /**
-     * @var boolean whether to log a message containing the current user name and ID. Defaults to false.
-     * @see \yii\web\User
-     */
-    public $logUser = false;
-    /**
      * @var array list of the PHP predefined variables that should be logged in a message.
      * Note that a variable must be accessible via `$GLOBALS`. Otherwise it won't be logged.
      * Defaults to `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER']`.
      */
     public $logVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER'];
+    /**
+     * @var callable a PHP callable that returns a string to be prefix to every exported message.
+     * If not set, [[getMessagePrefix()]] will be used, which prefixes user IP, user ID and session ID
+     * to every message. The signature of the callable should be `function ($message)`.
+     */
+    public $prefix;
     /**
      * @var integer how many messages should be accumulated before they are exported.
      * Defaults to 1000. Note that messages will always be exported when the application terminates.
@@ -111,11 +113,6 @@ abstract class Target extends Component
     protected function getContextMessage()
     {
         $context = [];
-        if ($this->logUser && ($user = Yii::$app->getComponent('user', false)) !== null) {
-            /** @var \yii\web\User $user */
-            $context[] = 'User: ' . $user->getId();
-        }
-
         foreach ($this->logVars as $name) {
             if (!empty($GLOBALS[$name])) {
                 $context[] = "\${$name} = " . var_export($GLOBALS[$name], true);
@@ -233,8 +230,28 @@ abstract class Target extends Component
         if (!is_string($text)) {
             $text = var_export($text, true);
         }
-        $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
 
-        return date('Y/m/d H:i:s', $timestamp) . " [$ip] [$level] [$category] $text";
+        $prefix = $this->prefix ? call_user_func($this->prefix, $message) : $this->getMessagePrefix($message);
+
+        return date('Y/m/d H:i:s', $timestamp) . " $prefix [$level] [$category] $text";
+    }
+
+    /**
+     * Returns a string to be prefixed to the given message.
+     * The default implementation will return user IP, user ID and session ID as a prefix.
+     * @param array $message the message being exported
+     * @return string the prefix string
+     */
+    public function getMessagePrefix($message)
+    {
+        $request = Yii::$app->getRequest();
+        $ip = $request instanceof Request ? $request->getUserIP() : '-';
+        /** @var \yii\web\User $user */
+        $user = Yii::$app->getComponent('user', false);
+        $userID = $user ? $user->getId(false) : '-';
+        /** @var \yii\web\Session $session */
+        $session = Yii::$app->getComponent('session', false);
+        $sessionID = $session && $session->getIsActive() ? $session->getId() : '-';
+        return "[$ip] [$userID] [$sessionID]";
     }
 }
