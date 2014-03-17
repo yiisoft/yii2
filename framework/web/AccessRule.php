@@ -133,6 +133,9 @@ class AccessRule extends Component
      */
     protected function matchRole($user)
     {
+        if (!is_array($this->roles)) {
+            $this->roles = (array) $this->roles;
+        }
         if (empty($this->roles)) {
             return true;
         }
