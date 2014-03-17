@@ -17,6 +17,8 @@ have Composer installed, you may download it from [http://getcomposer.org/](http
 curl -s http://getcomposer.org/installer | php
 ```
 
+We strongly recommend a global composer installation.
+
 For problems or more information, see the official Composer guide:
 
 * [Linux](http://getcomposer.org/doc/00-intro.md#installation-nix)
