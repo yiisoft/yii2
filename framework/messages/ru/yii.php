@@ -78,4 +78,5 @@ return array (
   '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать минимум {min, number} {min, plural, one{символ} few{символа} many{символов} other{символа}}.',
   '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать максимум {max, number} {max, plural, one{символ} few{символа} many{символов} other{символа}}.',
   '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать {length, number} {length, plural, one{символ} few{символа} many{символов} other{символа}}.',
+  'Are you sure you want to delete this item?' => 'Вы уверены, что хотите удалить этот элемент?',
 );
