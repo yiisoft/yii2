@@ -153,7 +153,7 @@ abstract class Generator extends Model
     {
         $class = new ReflectionClass($this);
 
-        return dirname($class->getFileName()) . '/templates';
+        return dirname($class->getFileName()) . '/default';
     }
 
     /**
