@@ -33,7 +33,7 @@ return array (
   'No help for unknown sub-command "{command}".' => 'Ei ohjetta tuntemattomalle alikomennolle "{command}".',
   'No results found.' => 'Ei tuloksia.',
   'Only files with these extensions are allowed: {extensions}.' => 'Sallittuja ovat vain tiedostot, joiden tiedostopääte on: {extensions}.',
-  'Only files with these mimeTypes are allowed: {mimeTypes}.' => 'Sallittuja ovat vain tiedostot, joiden MIME-tyyppi on: {mimeTypes}.',
+  'Only files with these MIME types are allowed: {mimeTypes}.' => 'Sallittuja ovat vain tiedostot, joiden MIME-tyyppi on: {mimeTypes}.',
   'Page not found.' => 'Sivua ei löytynyt.',
   'Please fix the following errors:' => 'Korjaa seuraavat virheet:',
   'Please upload a file.' => 'Lähetä tiedosto.',
