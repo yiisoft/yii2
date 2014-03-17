@@ -124,6 +124,10 @@ abstract class Application extends Module
      *     'name' => 'extension name',
      *     'version' => 'version number',
      *     'bootstrap' => 'BootstrapClassName',
+     *     'alias' => [
+     *         '@alias1' => 'to/path1',
+     *         '@alias2' => 'to/path2',
+     *     ],
      * ]
      * ~~~
      */

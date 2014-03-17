@@ -132,7 +132,7 @@ class ImageValidator extends FileValidator
             $this->overHeight = Yii::t('yii', 'The image "{file}" is too large. The height cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.');
         }
         if ($this->wrongMimeType === null) {
-            $this->wrongMimeType = Yii::t('yii', 'Only files with these mimeTypes are allowed: {mimeTypes}.');
+            $this->wrongMimeType = Yii::t('yii', 'Only files with these MIME types are allowed: {mimeTypes}.');
         }
         if (!is_array($this->mimeTypes)) {
             $this->mimeTypes = preg_split('/[\s,]+/', strtolower($this->mimeTypes), -1, PREG_SPLIT_NO_EMPTY);
