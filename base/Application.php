@@ -133,6 +133,11 @@ abstract class Application extends Module
      */
     public $extensions = [];
     /**
+     * @var array list of bootstrap classes. A bootstrap class must have a public static method named
+     * `bootstrap()`. The method will be called during [[init()]] for every bootstrap class.
+     */
+    public $bootstrap = [];
+    /**
      * @var \Exception the exception that is being handled currently. When this is not null,
      * it means the application is handling some exception and extra care should be taken.
      */
@@ -209,6 +214,10 @@ abstract class Application extends Module
     public function init()
     {
         $this->initExtensions($this->extensions);
+        foreach ($this->bootstrap as $class) {
+            /** @var Extension $class */
+            $class::bootstrap();
+        }
         parent::init();
     }
 
@@ -228,7 +237,7 @@ abstract class Application extends Module
             if (isset($extension['bootstrap'])) {
                 /** @var Extension $class */
                 $class = $extension['bootstrap'];
-                $class::init();
+                $class::bootstrap();
             }
         }
     }

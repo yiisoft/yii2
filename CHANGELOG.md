@@ -148,6 +148,7 @@ Yii Framework 2 Change Log
 - Enh #2729: Added `FilterValidator::skipOnArray` so that filters like `trim` will not fail for array inputs (qiangxue)
 - Enh #2735: Added support for `DateTimeInterface` in `Formatter` (ivokund)
 - Enh #2756: Added support for injecting custom `isEmpty` check for all validators (qiangxue)
+- Enh #2775: Added `yii\base\Application::bootstrap` to support running bootstrap classes when starting an application (qiangxue)
 - Enh: Added support for using arrays as option values for console commands (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
@@ -243,6 +244,7 @@ Yii Framework 2 Change Log
 	- Renamed `yii\web\User::returnUrlVar` to `returnUrlParam`
 - Chg: Added `View::viewFile` and removed `ViewEvent::viewFile` (qiangxue)
 - Chg: Changed `Controller::afterAction()`, `Module::afterAction()` and `ActionFilter::afterAction()` to pass `$result` by value instead of reference (qiangxue)
+- Chg: `yii\base\Extension::init()` is renamed to `bootstrap()` (qiangxue)
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #706: Added `yii\widgets\Pjax` and enhanced `GridView` to work with `Pjax` to support AJAX-update (qiangxue)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
