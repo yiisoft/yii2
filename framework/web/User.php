@@ -265,6 +265,7 @@ class User extends Component
      * This will remove authentication-related session data.
      * If `$destroySession` is true, all session data will be removed.
      * @param boolean $destroySession whether to destroy the whole session. Defaults to true.
+     * @return boolean whether the user is logged out
      */
     public function logout($destroySession = true)
     {
@@ -279,24 +280,31 @@ class User extends Component
             }
             $this->afterLogout($identity);
         }
+        return $this->getIsGuest();
     }
 
     /**
      * Returns a value indicating whether the user is a guest (not authenticated).
+     * @param boolean $checkSession whether to check the session to determine if the user is a guest.
+     * Note that if this is false, it is possible that the user may not be a guest while this method still returns
+     * true. This is because the session is not checked.
      * @return boolean whether the current user is a guest.
      */
-    public function getIsGuest()
+    public function getIsGuest($checkSession = true)
     {
-        return $this->getIdentity() === null;
+        return $this->getIdentity($checkSession) === null;
     }
 
     /**
      * Returns a value that uniquely represents the user.
+     * @param boolean $checkSession whether to check the session to determine the user ID.
+     * Note that if this is false, it is possible that this method returns null although the user may not
+     * be a guest. This is because the session is not checked.
      * @return string|integer the unique identifier for the user. If null, it means the user is a guest.
      */
-    public function getId()
+    public function getId($checkSession = true)
     {
-        $identity = $this->getIdentity();
+        $identity = $this->getIdentity($checkSession);
 
         return $identity !== null ? $identity->getId() : null;
     }

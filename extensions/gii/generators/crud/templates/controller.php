@@ -70,7 +70,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 
     /**
      * Displays a single <?= $modelClass ?> model.
-     * <?= implode("\n\t * ", $actionParamComments) . "\n" ?>
+     * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
      * @return mixed
      */
     public function actionView(<?= $actionParams ?>)
@@ -101,7 +101,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     /**
      * Updates an existing <?= $modelClass ?> model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * <?= implode("\n\t * ", $actionParamComments) . "\n" ?>
+     * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
      * @return mixed
      */
     public function actionUpdate(<?= $actionParams ?>)
@@ -120,7 +120,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     /**
      * Deletes an existing <?= $modelClass ?> model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * <?= implode("\n\t * ", $actionParamComments) . "\n" ?>
+     * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
      * @return mixed
      */
     public function actionDelete(<?= $actionParams ?>)
@@ -133,7 +133,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     /**
      * Finds the <?= $modelClass ?> model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * <?= implode("\n\t * ", $actionParamComments) . "\n" ?>
+     * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
      * @return <?=                   $modelClass ?> the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
