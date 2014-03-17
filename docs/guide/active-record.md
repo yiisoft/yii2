@@ -149,7 +149,7 @@ $email = $customer->email;
 
 To change the value of a column, assign a new value to the associated property and save the object:
 
-```
+```php
 $customer->email = 'jane@example.com';
 $customer->save();
 ```
