@@ -657,8 +657,7 @@ After a user is authenticated, you probably want to check if he has the permissi
 action for the requested resource. This process is called *authorization* which is covered in detail in
 the [Authorization chapter](authorization.md).
 
-You may use the [[yii\web\AccessControl]] filter and/or the Role-Based Access Control (RBAC) component
-to implementation authorization.
+You may use the Role-Based Access Control (RBAC) component to implementation authorization.
 
 To simplify the authorization check, you may also override the [[yii\rest\Controller::checkAccess()]] method
 and then call this method in places where authorization is needed. By default, the built-in actions provided
