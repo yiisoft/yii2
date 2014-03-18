@@ -247,10 +247,10 @@ abstract class Target extends Component
         $request = Yii::$app->getRequest();
         $ip = $request instanceof Request ? $request->getUserIP() : '-';
         /** @var \yii\web\User $user */
-        $user = Yii::$app->get('user', [], false);
+        $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
         $userID = $user ? $user->getId(false) : '-';
         /** @var \yii\web\Session $session */
-        $session = Yii::$app->get('session', [], false);
+        $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;
         $sessionID = $session && $session->getIsActive() ? $session->getId() : '-';
         return "[$ip] [$userID] [$sessionID]";
     }

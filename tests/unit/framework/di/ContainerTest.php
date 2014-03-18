@@ -13,7 +13,7 @@ use yiiunit\TestCase;
 
 class Creator
 {
-    public static function create($type, $params, $container)
+    public static function create($type, $container)
     {
         return new $type;
     }
@@ -25,17 +25,6 @@ class TestClass extends Object
     public $prop2;
 }
 
-class TestClass2 extends Object
-{
-    public $prop1 = 1;
-    public $prop2;
-
-    public function __construct($a, $config = [])
-    {
-        $this->prop1 = $a;
-        parent::__construct($config);
-    }
-}
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -119,10 +108,6 @@ class ContainerTest extends TestCase
         $object2 = $container->get($className);
         $this->assertTrue($object2 instanceof $className);
         $this->assertTrue($object === $object2);
-        // check leading slash is handled properly
-        $object3 = $container->get('\\' . $className);
-        $this->assertTrue($object3 instanceof $className);
-        $this->assertTrue($object === $object3);
     }
 
     public function testNonShared()
@@ -142,10 +127,6 @@ class ContainerTest extends TestCase
         $object2 = $container->get($className);
         $this->assertTrue($object2 instanceof $className);
         $this->assertTrue($object !== $object2);
-        // check leading slash is handled properly
-        $object3 = $container->get('\\' . $className);
-        $this->assertTrue($object3 instanceof $className);
-        $this->assertTrue($object !== $object3);
 
         // shared as non-shared
         $object = new TestClass;
@@ -165,15 +146,6 @@ class ContainerTest extends TestCase
         ]);
         $object = $container->get('test');
         $this->assertTrue($object instanceof TestClass);
-        $this->assertEquals(100, $object->prop1);
-    }
-
-    public function testConstructorParams()
-    {
-        // with configuration: shared
-        $container = new Container;
-        $className = TestClass2::className();
-        $object = $container->get($className, [100]);
         $this->assertEquals(100, $object->prop1);
     }
 }

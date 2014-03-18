@@ -33,14 +33,23 @@ trait ContainerTrait
 
 
     /**
-     * Returns a value indicating whether the container has the component definition of the specified type or ID.
+     * Returns a value indicating whether the container has the specified component definition or has instantiated the shared component.
+     * This method may return different results depending on the value of `$checkInstance`.
+     *
+     * - If `$checkInstance` is false (default), the method will return a value indicating whether the container has the specified
+     * component definition.
+     * - If `$checkInstance` is true, the method will return a value indicating whether the container has
+     * instantiated the specified shared component.
+     *
      * @param string $typeOrID component type (a fully qualified namespaced class/interface name, e.g. `yii\db\Connection`) or ID (e.g. `db`).
+     * When a class/interface name is given, make sure it does NOT have a leading backslash.
+     * @param boolean $checkInstance whether the method should check if the component is shared and instantiated.
      * @return boolean whether the container has the component definition of the specified type or ID
      * @see set()
      */
-    public function has($typeOrID)
+    public function has($typeOrID, $checkInstance = false)
     {
-        return isset($this->_definitions[$typeOrID]);
+        return $checkInstance ? isset($this->_components[$typeOrID]) : isset($this->_definitions[$typeOrID]);
     }
 
     private $_building = [];
@@ -52,29 +61,18 @@ trait ContainerTrait
      * the same component instance each time it is called.
      * If a component is not shared, this method will create a new instance every time.
      *
-     * @param string $typeOrID component type (a fully qualified namespaced class/interface name, e.g. `yii\db\Connection`) or ID (e.g. `db`).
-     * @param array $params the parameters to be passed to the object constructor
-     * if the method needs to create a new object instance.
-     * @param boolean $create whether to create an instance of a component if it is not previously created.
-     * This is mainly useful for shared instance.
-     * @return object|null the component of the specified type or ID, null if the component `$create` is false
-     * and the component was not instantiated before.
+     * @param string $typeOrID component type (a fully qualified namespaced class/interface name, e.g. `yii\db\Connection`)
+     * or ID (e.g. `db`). When a class/interface name is given, make sure it does NOT have a leading backslash.
+     * @return object the component of the specified type or ID
      * @throws InvalidConfigException if `$typeOrID` refers to a nonexistent component ID
      * or if there is cyclic dependency detected
      * @see has()
      * @see set()
      */
-    public function get($typeOrID, $params = [], $create = true)
+    public function get($typeOrID)
     {
-        // try shared component
         if (isset($this->_components[$typeOrID])) {
             return $this->_components[$typeOrID];
-        }
-        $typeOrID = ltrim($typeOrID, '\\');
-        if (isset($this->_components[$typeOrID])) {
-            return $this->_components[$typeOrID];
-        } elseif (!$create) {
-            return null;
         }
 
         if (isset($this->_building[$typeOrID])) {
@@ -86,20 +84,20 @@ trait ContainerTrait
             $definition = $this->_definitions[$typeOrID];
             if (is_string($definition)) {
                 // a type or ID
-                $component = $this->get($definition, $params);
+                $component = $this->get($definition);
             } elseif ($definition instanceof Closure || is_array($definition) && isset($definition[0], $definition[1])) {
                 // a PHP callable
-                $component = call_user_func($definition, $typeOrID, $params, $this);
+                $component = call_user_func($definition, $typeOrID, $this);
             } elseif (is_object($definition)) {
                 // an object
                 $component = $definition;
             } else {
                 // a configuration array
-                $component = $this->buildComponent($definition, $params);
+                $component = $this->buildComponent($definition);
             }
         } elseif (strpos($typeOrID, '\\') !== false) {
             // a class name
-            $component = $this->buildComponent($typeOrID, $params);
+            $component = $this->buildComponent($typeOrID);
         } else {
             throw new InvalidConfigException("Unknown component ID: $typeOrID");
         }
@@ -152,12 +150,15 @@ trait ContainerTrait
      * - an ID: e.g. `db`. This declares a shared component with an ID. The class name should
      *   be declared in `$definition`. When [[get()]] is called, the same component instance will be returned.
      *
+     * Note that when a class/interface name is given, make sure it does NOT have a leading backslash.
+     *
      * @param mixed $definition the component definition to be registered with this container.
      * It can be one of the followings:
      *
      * - a PHP callable: either an anonymous function or an array representing a class method (e.g. `['Foo', 'bar']`).
      *   The callable will be called by [[get()]] to return an object associated with the specified component type.
-     *   The signature of the function should be: `function ($container)`, where `$container` is this container.
+     *   The signature of the function should be: `function ($type, $container)`, where
+     *   `$type` is the type or ID of the component to be created, and `$container` is this container.
      * - an object: When [[get()]] is called, this object will be returned. No new object will be created.
      *   This essentially makes the component a shared one, regardless how it is specified in `$typeOrID`.
      * - a configuration array: the array contains name-value pairs that will be used to initialize the property
@@ -173,7 +174,6 @@ trait ContainerTrait
         if ($notShared = $typeOrID[0] === '*') {
             $typeOrID = substr($typeOrID, 1);
         }
-        $typeOrID = ltrim($typeOrID, '\\');
 
         if ($definition === null) {
             unset($this->_components[$typeOrID], $this->_definitions[$typeOrID]);
@@ -206,21 +206,13 @@ trait ContainerTrait
     }
 
     /**
-     * Returns the list of the loaded shared component instances.
-     * @return array the list of the loaded shared component instances (type or ID => component).
+     * Returns the list of the component definitions or the loaded shared component instances.
+     * @param boolean $returnDefinitions whether to return component definitions or the loaded shared component instances.
+     * @return array the list of the component definitions or the loaded shared component instances (type or ID => definition or instance).
      */
-    public function getComponents()
+    public function getComponents($returnDefinitions = true)
     {
-        return $this->_components;
-    }
-
-    /**
-     * Returns the component definitions registered with this container.
-     * @return array the component definitions registered with this container (type or ID => definition).
-     */
-    public function getComponentDefinitions()
-    {
-        return $this->_definitions;
+        return $returnDefinitions ? $this->_definitions : $this->_components;
     }
 
     /**
@@ -262,17 +254,10 @@ trait ContainerTrait
      * Builds a new component instance based on the given class name or configuration array.
      * This method is mainly called by [[get()]].
      * @param string|array $type a class name or configuration array
-     * @param array $params the constructor parameters
      * @return object the new component instance
      */
-    protected function buildComponent($type, $params)
+    protected function buildComponent($type)
     {
-        // a class name or configuration
-        if (empty($params)) {
-            return Yii::createObject($type);
-        } else {
-            array_unshift($params, $type);
-            return call_user_func_array(['Yii', 'createObject'], $params);
-        }
+        return Yii::createObject($type);
     }
 }

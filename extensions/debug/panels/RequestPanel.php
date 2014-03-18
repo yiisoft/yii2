@@ -86,7 +86,7 @@ class RequestPanel extends Panel
             $action = null;
         }
         /** @var \yii\web\Session $session */
-        $session = Yii::$app->get('session', [], false);
+        $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;
 
         return [
             'flashes' => $session ? $session->getAllFlashes() : [],
