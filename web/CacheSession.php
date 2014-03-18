@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\caching\Cache;
 use yii\base\InvalidConfigException;
+use yii\di\Instance;
 
 /**
  * CacheSession implements a session component using cache as storage medium.
@@ -52,13 +53,8 @@ class CacheSession extends Session
      */
     public function init()
     {
-        if (is_string($this->cache)) {
-            $this->cache = Yii::$app->get($this->cache);
-        }
-        if (!$this->cache instanceof Cache) {
-            throw new InvalidConfigException('CacheSession::cache must refer to the application component ID of a cache object.');
-        }
         parent::init();
+        $this->cache = Instance::ensure($this->cache, Cache::className());
     }
 
     /**

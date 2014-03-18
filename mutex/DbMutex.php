@@ -10,6 +10,7 @@ namespace yii\mutex;
 use Yii;
 use yii\db\Connection;
 use yii\base\InvalidConfigException;
+use yii\di\Instance;
 
 /**
  * @author resurtm <resurtm@gmail.com>
@@ -31,11 +32,6 @@ abstract class DbMutex extends Mutex
     public function init()
     {
         parent::init();
-        if (is_string($this->db)) {
-            $this->db = Yii::$app->get($this->db);
-        }
-        if (!$this->db instanceof Connection) {
-            throw new InvalidConfigException('Mutex::db must be either a DB connection instance or the application component ID of a DB connection.');
-        }
+        $this->db = Instance::ensure($this->db, Connection::className());
     }
 }

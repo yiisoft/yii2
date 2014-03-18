@@ -53,7 +53,7 @@ class CacheController extends Controller
     public function actionFlush($component = 'cache')
     {
         /** @var Cache $cache */
-        $cache = Yii::$app->get($component);
+        $cache = Yii::$app->get($component, false);
         if (!$cache || !$cache instanceof Cache) {
             throw new Exception('Application component "'.$component.'" is not defined or not a cache.');
         }

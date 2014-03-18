@@ -378,7 +378,7 @@ class Command extends \yii\base\Component
 
         /** @var \yii\caching\Cache $cache */
         if ($db->enableQueryCache && $method !== '') {
-            $cache = is_string($db->queryCache) ? Yii::$app->get($db->queryCache) : $db->queryCache;
+            $cache = is_string($db->queryCache) ? Yii::$app->get($db->queryCache, false) : $db->queryCache;
         }
 
         if (isset($cache) && $cache instanceof Cache) {

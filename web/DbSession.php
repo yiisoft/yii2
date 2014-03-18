@@ -11,6 +11,7 @@ use Yii;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\base\InvalidConfigException;
+use yii\di\Instance;
 
 /**
  * DbSession extends [[Session]] by using database as session data storage.
@@ -74,13 +75,8 @@ class DbSession extends Session
      */
     public function init()
     {
-        if (is_string($this->db)) {
-            $this->db = Yii::$app->get($this->db);
-        }
-        if (!$this->db instanceof Connection) {
-            throw new InvalidConfigException("DbSession::db must be either a DB connection instance or the application component ID of a DB connection.");
-        }
         parent::init();
+        $this->db = Instance::ensure($this->db, Connection::className());
     }
 
     /**

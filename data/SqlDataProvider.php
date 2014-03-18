@@ -10,6 +10,7 @@ namespace yii\data;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
+use yii\di\Instance;
 
 /**
  * SqlDataProvider implements a data provider based on a plain SQL statement.
@@ -89,12 +90,7 @@ class SqlDataProvider extends BaseDataProvider
     public function init()
     {
         parent::init();
-        if (is_string($this->db)) {
-            $this->db = Yii::$app->get($this->db);
-        }
-        if (!$this->db instanceof Connection) {
-            throw new InvalidConfigException('The "db" property must be a valid DB Connection application component.');
-        }
+        $this->db = Instance::ensure($this->db, Connection::className());
         if ($this->sql === null) {
             throw new InvalidConfigException('The "sql" property must be set.');
         }

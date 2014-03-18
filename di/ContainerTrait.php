@@ -63,16 +63,29 @@ trait ContainerTrait
      *
      * @param string $typeOrID component type (a fully qualified namespaced class/interface name, e.g. `yii\db\Connection`)
      * or ID (e.g. `db`). When a class/interface name is given, make sure it does NOT have a leading backslash.
-     * @return object the component of the specified type or ID
+     * @param boolean $throwException whether to throw an exception if `$typeOrID` is not registered with the container before.
+     * @return object|null the component of the specified type or ID. If `$throwException` is false and `$typeOrID`
+     * is not registered before, null will be returned.
      * @throws InvalidConfigException if `$typeOrID` refers to a nonexistent component ID
      * or if there is cyclic dependency detected
      * @see has()
      * @see set()
      */
-    public function get($typeOrID)
+    public function get($typeOrID, $throwException = true)
     {
         if (isset($this->_components[$typeOrID])) {
             return $this->_components[$typeOrID];
+        }
+
+        if (!isset($this->_definitions[$typeOrID])) {
+            if (strpos($typeOrID, '\\') !== false) {
+                // a class name
+                return $this->buildComponent($typeOrID);
+            } elseif (!$throwException) {
+                return null;
+            } else {
+                throw new InvalidConfigException("Unknown component ID: $typeOrID");
+            }
         }
 
         if (isset($this->_building[$typeOrID])) {
@@ -80,26 +93,19 @@ trait ContainerTrait
         }
 
         $this->_building[$typeOrID] = true;
-        if (isset($this->_definitions[$typeOrID])) {
-            $definition = $this->_definitions[$typeOrID];
-            if (is_string($definition)) {
-                // a type or ID
-                $component = $this->get($definition);
-            } elseif ($definition instanceof Closure || is_array($definition) && isset($definition[0], $definition[1])) {
-                // a PHP callable
-                $component = call_user_func($definition, $typeOrID, $this);
-            } elseif (is_object($definition)) {
-                // an object
-                $component = $definition;
-            } else {
-                // a configuration array
-                $component = $this->buildComponent($definition);
-            }
-        } elseif (strpos($typeOrID, '\\') !== false) {
-            // a class name
-            $component = $this->buildComponent($typeOrID);
+        $definition = $this->_definitions[$typeOrID];
+        if (is_string($definition)) {
+            // a type or ID
+            $component = $this->get($definition);
+        } elseif ($definition instanceof Closure || is_array($definition) && isset($definition[0], $definition[1])) {
+            // a PHP callable
+            $component = call_user_func($definition, $typeOrID, $this);
+        } elseif (is_object($definition)) {
+            // an object
+            $component = $definition;
         } else {
-            throw new InvalidConfigException("Unknown component ID: $typeOrID");
+            // a configuration array
+            $component = $this->buildComponent($definition);
         }
         unset($this->_building[$typeOrID]);
 

@@ -9,6 +9,7 @@ namespace yii\i18n;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\caching\Cache;
 use yii\db\Connection;
@@ -93,19 +94,9 @@ class DbMessageSource extends MessageSource
     public function init()
     {
         parent::init();
-        if (is_string($this->db)) {
-            $this->db = Yii::$app->get($this->db);
-        }
-        if (!$this->db instanceof Connection) {
-            throw new InvalidConfigException("DbMessageSource::db must be either a DB connection instance or the application component ID of a DB connection.");
-        }
+        $this->db = Instance::ensure($this->db, Connection::className());
         if ($this->enableCaching) {
-            if (is_string($this->cache)) {
-                $this->cache = Yii::$app->get($this->cache);
-            }
-            if (!$this->cache instanceof Cache) {
-                throw new InvalidConfigException("DbMessageSource::cache must be either a cache object or the application component ID of the cache object.");
-            }
+            $this->cache = Instance::ensure($this->cache, Cache::className());
         }
     }
 

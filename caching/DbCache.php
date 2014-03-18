@@ -11,6 +11,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Query;
+use yii\di\Instance;
 
 /**
  * DbCache implements a cache application component by storing cached data in a database.
@@ -79,12 +80,7 @@ class DbCache extends Cache
     public function init()
     {
         parent::init();
-        if (is_string($this->db)) {
-            $this->db = Yii::$app->get($this->db);
-        }
-        if (!$this->db instanceof Connection) {
-            throw new InvalidConfigException("DbCache::db must be either a DB connection instance or the application component ID of a DB connection.");
-        }
+        $this->db = Instance::ensure($this->db, Connection::className());
     }
 
     /**

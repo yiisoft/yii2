@@ -9,6 +9,7 @@ namespace yii\log;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\di\Instance;
 use yii\mail\MailerInterface;
 
 /**
@@ -43,12 +44,7 @@ class EmailTarget extends Target
         if (empty($this->message['to'])) {
             throw new InvalidConfigException('The "to" option must be set for EmailTarget::message.');
         }
-        if (is_string($this->mail)) {
-            $this->mail = Yii::$app->get($this->mail);
-        }
-        if (!$this->mail instanceof MailerInterface) {
-            throw new InvalidConfigException("EmailTarget::mailer must be either a mailer object or the application component ID of a mailer object.");
-        }
+        $this->mail = Instance::ensure($this->mail, 'yii\mail\MailerInterface');
     }
 
     /**

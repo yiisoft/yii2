@@ -6,6 +6,7 @@
  */
 
 namespace yii\db;
+use yii\di\Instance;
 
 /**
  * Migration is the base class for representing a database migration.
@@ -36,10 +37,10 @@ namespace yii\db;
 class Migration extends \yii\base\Component
 {
     /**
-     * @var Connection the database connection that this migration should work with.
-     * If not set, it will be initialized as the 'db' application component.
+     * @var Connection|string the DB connection object or the application component ID of the DB connection
+     * that this migration should work with.
      */
-    public $db;
+    public $db = 'db';
 
     /**
      * Initializes the migration.
@@ -48,9 +49,7 @@ class Migration extends \yii\base\Component
     public function init()
     {
         parent::init();
-        if ($this->db === null) {
-            $this->db = \Yii::$app->get('db');
-        }
+        $this->db = Instance::ensure($this->db, Connection::className());
     }
 
     /**

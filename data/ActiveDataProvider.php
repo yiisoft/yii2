@@ -13,6 +13,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\db\Connection;
 use yii\db\QueryInterface;
+use yii\di\Instance;
 
 /**
  * ActiveDataProvider implements a data provider based on [[\yii\db\Query]] and [[\yii\db\ActiveQuery]].
@@ -85,10 +86,7 @@ class ActiveDataProvider extends BaseDataProvider
     {
         parent::init();
         if (is_string($this->db)) {
-            $this->db = Yii::$app->get($this->db);
-            if ($this->db === null) {
-                throw new InvalidConfigException('The "db" property must be a valid DB Connection application component.');
-            }
+            $this->db = Instance::ensure($this->db, Connection::className());
         }
     }
 

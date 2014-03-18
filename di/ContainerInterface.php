@@ -61,13 +61,14 @@ interface ContainerInterface
      * If a component is not shared, this method will create a new instance every time.
      *
      * @param string $typeOrID component type (a fully qualified namespaced class/interface name, e.g. `yii\db\Connection`) or ID (e.g. `db`).
+     * @param boolean $throwException whether to throw an exception if `$typeOrID` is not registered with the container before.
      * @return object the component of the specified type or ID
      * @throws \yii\base\InvalidConfigException if `$typeOrID` refers to a nonexistent component ID
      * or if there is cyclic dependency detected
      * @see has()
      * @see set()
      */
-    public function get($typeOrID);
+    public function get($typeOrID, $throwException = true);
 
     /**
      * Registers a component definition with this container.
