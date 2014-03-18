@@ -207,13 +207,11 @@ abstract class Application extends Module
         }
 
         // merge core components with custom components
-        if (!empty($config['components'])) {
-            foreach ($this->coreComponents() as $id => $component) {
-                if (!isset($config['components'][$id])) {
-                    $config['components'][$id] = $component;
-                } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['class'])) {
-                    $config['components'][$id]['class'] = $component['class'];
-                }
+        foreach ($this->coreComponents() as $id => $component) {
+            if (!isset($config['components'][$id])) {
+                $config['components'][$id] = $component;
+            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['class'])) {
+                $config['components'][$id]['class'] = $component['class'];
             }
         }
     }
