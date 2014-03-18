@@ -16,16 +16,11 @@ namespace yii\di;
 interface ContainerInterface
 {
     /**
-     * Returns the list of the loaded shared component instances.
-     * @return array the list of the loaded shared component instances (type or ID => component).
+     * Returns the list of the component definitions or the loaded shared component instances.
+     * @param boolean $returnDefinitions whether to return component definitions or the loaded shared component instances.
+     * @return array the list of the component definitions or the loaded shared component instances (type or ID => definition or instance).
      */
-    public function getComponents();
-
-    /**
-     * Returns the component definitions registered with this container.
-     * @return array the component definitions registered with this container (type or ID => definition).
-     */
-    public function getComponentDefinitions();
+    public function getComponents($returnDefinitions = true);
 
     /**
      * Registers a set of component definitions in this container.
@@ -43,12 +38,20 @@ interface ContainerInterface
     public function setComponents($components);
 
     /**
-     * Returns a value indicating whether the container has the component definition of the specified type or ID.
+     * Returns a value indicating whether the container has the specified component definition or has instantiated the shared component.
+     * This method may return different results depending on the value of `$checkInstance`.
+     *
+     * - If `$checkInstance` is false (default), the method will return a value indicating whether the container has the specified
+     * component definition.
+     * - If `$checkInstance` is true, the method will return a value indicating whether the container has
+     * instantiated the specified shared component.
+     *
      * @param string $typeOrID component type (a fully qualified namespaced class/interface name, e.g. `yii\db\Connection`) or ID (e.g. `db`).
+     * @param boolean $checkInstance whether the method should check if the component is shared and instantiated.
      * @return boolean whether the container has the component definition of the specified type or ID
      * @see set()
      */
-    public function has($typeOrID);
+    public function has($typeOrID, $checkInstance = false);
 
     /**
      * Returns an instance of a component with the specified type or ID.
@@ -58,18 +61,13 @@ interface ContainerInterface
      * If a component is not shared, this method will create a new instance every time.
      *
      * @param string $typeOrID component type (a fully qualified namespaced class/interface name, e.g. `yii\db\Connection`) or ID (e.g. `db`).
-     * @param array $params the parameters to be passed to the object constructor
-     * if the method needs to create a new object instance.
-     * @param boolean $create whether to create an instance of a component if it is not previously created.
-     * This is mainly useful for shared instance.
-     * @return object|null the component of the specified type or ID, null if the component `$create` is false
-     * and the component was not instantiated before.
+     * @return object the component of the specified type or ID
      * @throws \yii\base\InvalidConfigException if `$typeOrID` refers to a nonexistent component ID
      * or if there is cyclic dependency detected
      * @see has()
      * @see set()
      */
-    public function get($typeOrID, $params = [], $create = true);
+    public function get($typeOrID);
 
     /**
      * Registers a component definition with this container.
