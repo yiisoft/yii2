@@ -439,7 +439,7 @@ class Generator extends \yii\gii\Generator
     {
         if (Yii::$app->hasComponent($this->db) === false) {
             $this->addError('db', 'There is no application component named "db".');
-        } elseif (!Yii::$app->getComponent($this->db) instanceof Connection) {
+        } elseif (!Yii::$app->get($this->db) instanceof Connection) {
             $this->addError('db', 'The "db" application component must be a DB connection instance.');
         }
     }

@@ -132,7 +132,7 @@ class Schema extends Object
 
         if ($db->enableSchemaCache && !in_array($name, $db->schemaCacheExclude, true)) {
             /** @var $cache Cache */
-            $cache = is_string($db->schemaCache) ? Yii::$app->getComponent($db->schemaCache) : $db->schemaCache;
+            $cache = is_string($db->schemaCache) ? Yii::$app->get($db->schemaCache) : $db->schemaCache;
             if ($cache instanceof Cache) {
                 $key = $this->getCacheKey($name);
                 if ($refresh || ($index = $cache->get($key)) === false) {
@@ -296,7 +296,7 @@ class Schema extends Object
     public function refresh()
     {
         /** @var $cache Cache */
-        $cache = is_string($this->db->schemaCache) ? Yii::$app->getComponent($this->db->schemaCache) : $this->db->schemaCache;
+        $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof Cache) {
             GroupDependency::invalidate($cache, $this->getCacheGroup());
         }

@@ -94,14 +94,14 @@ class DbMessageSource extends MessageSource
     {
         parent::init();
         if (is_string($this->db)) {
-            $this->db = Yii::$app->getComponent($this->db);
+            $this->db = Yii::$app->get($this->db);
         }
         if (!$this->db instanceof Connection) {
             throw new InvalidConfigException("DbMessageSource::db must be either a DB connection instance or the application component ID of a DB connection.");
         }
         if ($this->enableCaching) {
             if (is_string($this->cache)) {
-                $this->cache = Yii::$app->getComponent($this->cache);
+                $this->cache = Yii::$app->get($this->cache);
             }
             if (!$this->cache instanceof Cache) {
                 throw new InvalidConfigException("DbMessageSource::cache must be either a cache object or the application component ID of the cache object.");

@@ -45,7 +45,7 @@ class DbDependency extends Dependency
      */
     protected function generateDependencyData($cache)
     {
-        $db = Yii::$app->getComponent($this->db);
+        $db = Yii::$app->get($this->db);
         if (!$db instanceof Connection) {
             throw new InvalidConfigException("DbDependency::db must be the application component ID of a DB connection.");
         }

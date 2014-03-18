@@ -59,7 +59,7 @@ class BaseMailerTest extends TestCase
      */
     protected function getTestMailComponent()
     {
-        return Yii::$app->getComponent('mail');
+        return Yii::$app->get('mail');
     }
 
     // Tests :

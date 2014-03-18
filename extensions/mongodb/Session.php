@@ -56,7 +56,7 @@ class Session extends \yii\web\Session
     public function init()
     {
         if (is_string($this->db)) {
-            $this->db = Yii::$app->getComponent($this->db);
+            $this->db = Yii::$app->get($this->db);
         }
         if (!$this->db instanceof Connection) {
             throw new InvalidConfigException($this->className() . "::db must be either a MongoDB connection instance or the application component ID of a MongoDB connection.");

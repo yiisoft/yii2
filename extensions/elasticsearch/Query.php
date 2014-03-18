@@ -115,7 +115,7 @@ class Query extends Component implements QueryInterface
     public function createCommand($db = null)
     {
         if ($db === null) {
-            $db = Yii::$app->getComponent('elasticsearch');
+            $db = Yii::$app->get('elasticsearch');
         }
 
         $commandConfig = $db->getQueryBuilder()->build($this);

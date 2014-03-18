@@ -90,7 +90,7 @@ class SqlDataProvider extends BaseDataProvider
     {
         parent::init();
         if (is_string($this->db)) {
-            $this->db = Yii::$app->getComponent($this->db);
+            $this->db = Yii::$app->get($this->db);
         }
         if (!$this->db instanceof Connection) {
             throw new InvalidConfigException('The "db" property must be a valid DB Connection application component.');

@@ -44,7 +44,7 @@ class EmailTarget extends Target
             throw new InvalidConfigException('The "to" option must be set for EmailTarget::message.');
         }
         if (is_string($this->mail)) {
-            $this->mail = Yii::$app->getComponent($this->mail);
+            $this->mail = Yii::$app->get($this->mail);
         }
         if (!$this->mail instanceof MailerInterface) {
             throw new InvalidConfigException("EmailTarget::mailer must be either a mailer object or the application component ID of a mailer object.");

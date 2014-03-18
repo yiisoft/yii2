@@ -155,7 +155,7 @@ class Query extends Component implements QueryInterface
      */
     protected function defaultConnection()
     {
-        return Yii::$app->getComponent('sphinx');
+        return Yii::$app->get('sphinx');
     }
 
     /**

@@ -55,7 +55,7 @@ class DebugAction extends Action
         $options = ['pretty' => true];
 
         /** @var Connection $db */
-        $db = \Yii::$app->getComponent($this->db);
+        $db = \Yii::$app->get($this->db);
         $time = microtime(true);
         switch ($method) {
             case 'GET': $result = $db->get($url, $options, $body, true); break;

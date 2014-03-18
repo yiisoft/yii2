@@ -122,7 +122,7 @@ class MigrateController extends Controller
 
             if ($action->id !== 'create') {
                 if (is_string($this->db)) {
-                    $this->db = Yii::$app->getComponent($this->db);
+                    $this->db = Yii::$app->get($this->db);
                 }
                 if (!$this->db instanceof Connection) {
                     throw new Exception("The 'db' option must refer to the application component ID of a DB connection.");

@@ -154,7 +154,7 @@ class Application extends \yii\base\Application
      */
     public function getResponse()
     {
-        return $this->getComponent('response');
+        return $this->get('response');
     }
 
     /**
@@ -193,15 +193,13 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Registers the core application components.
-     * @see setComponents
+     * @inheritdoc
      */
-    public function registerCoreComponents()
+    public function coreComponents()
     {
-        parent::registerCoreComponents();
-        $this->setComponents([
+        return array_merge([
             'request' => ['class' => 'yii\console\Request'],
             'response' => ['class' => 'yii\console\Response'],
-        ]);
+        ], parent::coreComponents());
     }
 }

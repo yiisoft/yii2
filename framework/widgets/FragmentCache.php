@@ -82,7 +82,7 @@ class FragmentCache extends Widget
         if (!$this->enabled) {
             $this->cache = null;
         } elseif (is_string($this->cache)) {
-            $this->cache = Yii::$app->getComponent($this->cache);
+            $this->cache = Yii::$app->get($this->cache);
         }
 
         if ($this->getCachedContent() === false) {
