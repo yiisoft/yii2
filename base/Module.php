@@ -8,6 +8,8 @@
 namespace yii\base;
 
 use Yii;
+use yii\di\ContainerInterface;
+use yii\di\ContainerTrait;
 
 /**
  * Module is the base class for module and application classes.
@@ -35,8 +37,10 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Module extends Component
+class Module extends Component implements ContainerInterface
 {
+    use ContainerTrait;
+
     /**
      * @var array custom module parameters (name => value).
      */
@@ -110,10 +114,7 @@ class Module extends Component
      * @var array child modules of this module
      */
     private $_modules = [];
-    /**
-     * @var array components registered under this module
-     */
-    private $_components = [];
+
 
     /**
      * Constructor.
@@ -130,15 +131,14 @@ class Module extends Component
 
     /**
      * Getter magic method.
-     * This method is overridden to support accessing components
-     * like reading module properties.
+     * This method is overridden to support accessing components like reading properties.
      * @param  string $name component or property name
      * @return mixed  the named property value
      */
     public function __get($name)
     {
-        if ($this->hasComponent($name)) {
-            return $this->getComponent($name);
+        if ($this->has($name)) {
+            return $this->get($name);
         } else {
             return parent::__get($name);
         }
@@ -146,15 +146,14 @@ class Module extends Component
 
     /**
      * Checks if a property value is null.
-     * This method overrides the parent implementation by checking
-     * if the named component is loaded.
+     * This method overrides the parent implementation by checking if the named component is loaded.
      * @param  string  $name the property name or the event name
      * @return boolean whether the property value is null
      */
     public function __isset($name)
     {
-        if ($this->hasComponent($name)) {
-            return $this->getComponent($name) !== null;
+        if ($this->has($name)) {
+            return $this->get($name, [], false) !== null;
         } else {
             return parent::__isset($name);
         }
@@ -432,126 +431,14 @@ class Module extends Component
     }
 
     /**
-     * Checks whether the named component exists.
-     * @param  string  $id component ID
-     * @return boolean whether the named component exists. Both loaded and unloaded components
-     *                    are considered.
-     */
-    public function hasComponent($id)
-    {
-        return isset($this->_components[$id]);
-    }
-
-    /**
-     * Retrieves the named component.
-     * @param  string         $id   component ID (case-sensitive)
-     * @param  boolean        $load whether to load the component if it is not yet loaded.
-     * @return Component|null the component instance, null if the component does not exist.
-     * @see hasComponent()
-     */
-    public function getComponent($id, $load = true)
-    {
-        if (isset($this->_components[$id])) {
-            if ($this->_components[$id] instanceof Object) {
-                return $this->_components[$id];
-            } elseif ($load) {
-                return $this->_components[$id] = Yii::createObject($this->_components[$id]);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Registers a component with this module.
-     * @param string               $id        component ID
-     * @param Component|array|null $component the component to be registered with the module. This can
-     *                                        be one of the followings:
-     *
-     * - a [[Component]] object
-     * - a configuration array: when [[getComponent()]] is called initially for this component, the array
-     *   will be used to instantiate the component via [[Yii::createObject()]].
-     * - null: the named component will be removed from the module
-     */
-    public function setComponent($id, $component)
-    {
-        if ($component === null) {
-            unset($this->_components[$id]);
-        } else {
-            $this->_components[$id] = $component;
-        }
-    }
-
-    /**
-     * Returns the registered components.
-     * @param  boolean $loadedOnly whether to return the loaded components only. If this is set false,
-     *                             then all components specified in the configuration will be returned, whether they are loaded or not.
-     *                             Loaded components will be returned as objects, while unloaded components as configuration arrays.
-     * @return array   the components (indexed by their IDs)
-     */
-    public function getComponents($loadedOnly = false)
-    {
-        if ($loadedOnly) {
-            $components = [];
-            foreach ($this->_components as $component) {
-                if ($component instanceof Component) {
-                    $components[] = $component;
-                }
-            }
-
-            return $components;
-        } else {
-            return $this->_components;
-        }
-    }
-
-    /**
-     * Registers a set of components in this module.
-     *
-     * Each component should be specified as a name-value pair, where
-     * name refers to the ID of the component and value the component or a configuration
-     * array that can be used to create the component. In the latter case, [[Yii::createObject()]]
-     * will be used to create the component.
-     *
-     * If a new component has the same ID as an existing one, the existing one will be overwritten silently.
-     *
-     * The following is an example for setting two components:
-     *
-     * ~~~
-     * [
-     *     'db' => [
-     *         'class' => 'yii\db\Connection',
-     *         'dsn' => 'sqlite:path/to/file.db',
-     *     ],
-     *     'cache' => [
-     *         'class' => 'yii\caching\DbCache',
-     *         'db' => 'db',
-     *     ],
-     * ]
-     * ~~~
-     *
-     * @param array $components components (id => component configuration or instance)
-     */
-    public function setComponents($components)
-    {
-        foreach ($components as $id => $component) {
-            if (!is_object($component) && isset($this->_components[$id]['class']) && !isset($component['class'])) {
-                // set default component class
-                $component['class'] = $this->_components[$id]['class'];
-            }
-            $this->_components[$id] = $component;
-        }
-    }
-
-    /**
      * Loads components that are declared in [[preload]].
      * @throws InvalidConfigException if a component or module to be preloaded is unknown
      */
     public function preloadComponents()
     {
         foreach ($this->preload as $id) {
-            if ($this->hasComponent($id)) {
-                $this->getComponent($id);
+            if ($this->has($id)) {
+                $this->get($id);
             } elseif ($this->hasModule($id)) {
                 $this->getModule($id);
             } else {

@@ -145,7 +145,7 @@ class UrlManager extends Component
             return;
         }
         if (is_string($this->cache)) {
-            $this->cache = Yii::$app->getComponent($this->cache);
+            $this->cache = Yii::$app->get($this->cache);
         }
         if ($this->cache instanceof Cache) {
             $key = __CLASS__;

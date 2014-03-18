@@ -49,7 +49,7 @@ class Migration extends \yii\base\Component
     {
         parent::init();
         if ($this->db === null) {
-            $this->db = \Yii::$app->getComponent('db');
+            $this->db = \Yii::$app->get('db');
         }
     }
 

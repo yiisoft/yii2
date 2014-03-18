@@ -191,7 +191,7 @@ trait ContainerTrait
                 $definition['class'] = $typeOrID;
                 $this->_definitions[$typeOrID] = $definition;
             } else {
-                throw new InvalidConfigException("The configuration for \"$typeOrID\" must contain a \"class\" element.");
+                throw new InvalidConfigException("The configuration for the \"$typeOrID\" component must contain a \"class\" element.");
             }
         } else {
             // a type or ID

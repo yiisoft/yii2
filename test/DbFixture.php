@@ -35,7 +35,7 @@ abstract class DbFixture extends Fixture
     {
         parent::init();
         if (is_string($this->db)) {
-            $this->db = Yii::$app->getComponent($this->db);
+            $this->db = Yii::$app->get($this->db);
         }
         if (!is_object($this->db)) {
             throw new InvalidConfigException("The 'db' property must be either a DB connection instance or the application component ID of a DB connection.");
