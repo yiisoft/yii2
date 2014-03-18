@@ -9,6 +9,7 @@ namespace yii\mongodb;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\di\Instance;
 
 /**
  * Cache implements a cache application component by storing cached data in a MongoDB.
@@ -61,12 +62,7 @@ class Cache extends \yii\caching\Cache
     public function init()
     {
         parent::init();
-        if (is_string($this->db)) {
-            $this->db = Yii::$app->get($this->db);
-        }
-        if (!$this->db instanceof Connection) {
-            throw new InvalidConfigException($this->className() . "::db must be either a MongoDB connection instance or the application component ID of a MongoDB connection.");
-        }
+        $this->db = Instance::ensure($this->db, Connection::className());
     }
 
     /**

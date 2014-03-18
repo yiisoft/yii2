@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Widget;
 use yii\caching\Cache;
 use yii\caching\Dependency;
+use yii\di\Instance;
 
 /**
  *
@@ -79,11 +80,7 @@ class FragmentCache extends Widget
     {
         parent::init();
 
-        if (!$this->enabled) {
-            $this->cache = null;
-        } elseif (is_string($this->cache)) {
-            $this->cache = Yii::$app->get($this->cache);
-        }
+        $this->cache = $this->enabled ? Instance::ensure($this->cache, Cache::className()) : null;
 
         if ($this->getCachedContent() === false) {
             $this->getView()->cacheStack[] = $this;

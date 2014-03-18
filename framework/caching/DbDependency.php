@@ -10,6 +10,7 @@ namespace yii\caching;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
+use yii\di\Instance;
 
 /**
  * DbDependency represents a dependency based on the query result of a SQL statement.
@@ -45,10 +46,7 @@ class DbDependency extends Dependency
      */
     protected function generateDependencyData($cache)
     {
-        $db = Yii::$app->get($this->db);
-        if (!$db instanceof Connection) {
-            throw new InvalidConfigException("DbDependency::db must be the application component ID of a DB connection.");
-        }
+        $db = Instance::ensure($this->db, Connection::className());
         if ($this->sql === null) {
             throw new InvalidConfigException("DbDependency::sql must be set.");
         }

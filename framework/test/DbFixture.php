@@ -10,6 +10,8 @@ namespace yii\test;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
+use yii\di\Instance;
+use yii\base\Object;
 
 /**
  * DbFixture is the base class for DB-related fixtures.
@@ -34,11 +36,6 @@ abstract class DbFixture extends Fixture
     public function init()
     {
         parent::init();
-        if (is_string($this->db)) {
-            $this->db = Yii::$app->get($this->db);
-        }
-        if (!is_object($this->db)) {
-            throw new InvalidConfigException("The 'db' property must be either a DB connection instance or the application component ID of a DB connection.");
-        }
+        $this->db = Instance::ensure($this->db, Object::className());
     }
 }

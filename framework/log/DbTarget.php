@@ -10,6 +10,7 @@ namespace yii\log;
 use Yii;
 use yii\db\Connection;
 use yii\base\InvalidConfigException;
+use yii\di\Instance;
 
 /**
  * DbTarget stores log messages in a database table.
@@ -62,12 +63,7 @@ class DbTarget extends Target
     public function init()
     {
         parent::init();
-        if (is_string($this->db)) {
-            $this->db = Yii::$app->get($this->db);
-        }
-        if (!$this->db instanceof Connection) {
-            throw new InvalidConfigException("DbTarget::db must be either a DB connection instance or the application component ID of a DB connection.");
-        }
+        $this->db = Instance::ensure($this->db, Connection::className());
     }
 
     /**

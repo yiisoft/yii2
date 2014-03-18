@@ -437,7 +437,7 @@ class Generator extends \yii\gii\Generator
      */
     public function validateDb()
     {
-        if (Yii::$app->hasComponent($this->db) === false) {
+        if (!Yii::$app->has($this->db)) {
             $this->addError('db', 'There is no application component named "db".');
         } elseif (!Yii::$app->get($this->db) instanceof Connection) {
             $this->addError('db', 'The "db" application component must be a DB connection instance.');

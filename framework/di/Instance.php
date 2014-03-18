@@ -82,7 +82,7 @@ class Instance
      */
     public static function of($id, ContainerInterface $container = null)
     {
-        return new self($id, $container);
+        return new static($id, $container);
     }
 
     /**
@@ -108,7 +108,7 @@ class Instance
      * You may specify a reference in terms of a component ID or an Instance object.
      * @param string $type the class name to be checked
      * @param ContainerInterface $container the container. If null, the application instance will be used.
-     * @return null|\yii\base\Component|Instance
+     * @return object
      * @throws \yii\base\InvalidConfigException
      */
     public static function ensure($value, $type, $container = null)
@@ -119,7 +119,7 @@ class Instance
         if ($value instanceof $type) {
             return $value;
         } elseif (is_string($value)) {
-            $value = new self($value, $container);
+            $value = new static($value, $container);
         }
 
         if ($value instanceof self) {

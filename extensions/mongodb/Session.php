@@ -9,6 +9,7 @@ namespace yii\mongodb;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\di\Instance;
 
 /**
  * Session extends [[\yii\web\Session]] by using MongoDB as session data storage.
@@ -55,13 +56,8 @@ class Session extends \yii\web\Session
      */
     public function init()
     {
-        if (is_string($this->db)) {
-            $this->db = Yii::$app->get($this->db);
-        }
-        if (!$this->db instanceof Connection) {
-            throw new InvalidConfigException($this->className() . "::db must be either a MongoDB connection instance or the application component ID of a MongoDB connection.");
-        }
         parent::init();
+        $this->db = Instance::ensure($this->db, Connection::className());
     }
 
     /**
