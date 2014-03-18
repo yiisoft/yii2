@@ -164,5 +164,5 @@ server {
 When using this configuration, you should set `cgi.fix_pathinfo=0` in the `php.ini` file in order to avoid many unnecessary system `stat()` calls.
 
 
-Note that when running HTTP server you need to add `fastcgi_param HTTPS on;` in order for Yii to properly detect if
+Note that when running a HTTPS server you need to add `fastcgi_param HTTPS on;` in order for Yii to properly detect if
 connection is secure.
