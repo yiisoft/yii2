@@ -26,8 +26,10 @@ class GiiController extends Controller
      */
     public $generate = false;
 
-    // TODO: magic getter and setter currently needed in controller and action
-    private $_attributes;
+    /**
+     * @var array stores generator attributes
+     */
+    private $_attributes = [];
 
     public function __set($key, $value)
     {
@@ -41,6 +43,9 @@ class GiiController extends Controller
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function actions()
     {
         $actions = [];
@@ -50,12 +55,6 @@ class GiiController extends Controller
                 'class'         => '\yii\console\controllers\GenerateAction',
                 'generatorName' => $name,
             ];
-            // create action properties from generator
-            $properties = $generator->attributes;
-            foreach ($properties as $property => $value) {
-                $actions[$name][$property] = $value;
-            }
-
         }
         return $actions;
     }
@@ -65,18 +64,11 @@ class GiiController extends Controller
      */
     public function options($id)
     {
+        $generator = \Yii::$app->getModule('console-gii')->generators[$id];
         return array_merge(
             parent::options($id),
-            // TODO: read array from generator
-            [
-                'generator',
-                'template',
-                'attribute',
-                'generate',
-                'modelClass',
-                'searchModelClass',
-                'controllerClass'
-            ] // global for all actions
+            ['generate'],
+            array_keys($generator->attributes) // global for all actions
         );
     }
 }

@@ -18,26 +18,15 @@ class GenerateAction extends \yii\base\Action
     public $generatorName;
     public $generator;
 
-    // TODO: magic getter and setter currently needed in controller and action
-    private $_attributes;
-
-    public function __set($key, $value)
-    {
-        $this->_attributes[$key] = $value;
-    }
-
-    public function __get($key)
-    {
-        if (isset($this->_attributes[$key])) {
-            return $this->_attributes[$key];
-        }
-    }
-
     // TODO: is there are better way, needed for `./yii help gii`
-    public function getUniqueId(){
-        return 'gii/'.$this->generatorName;
+    public function getUniqueId()
+    {
+        return 'gii/' . $this->generatorName;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function run()
     {
         echo "Loading generator '$this->generatorName'...\n\n";
@@ -45,7 +34,7 @@ class GenerateAction extends \yii\base\Action
         if ($generator->validate()) {
             $files   = $generator->generate();
             $answers = [];
-            if ($this->generate == true) {
+            if ($this->controller->generate == true) {
                 foreach ($files AS $file) {
                     $answers[$file->id] = true;
                 }
@@ -80,7 +69,6 @@ class GenerateAction extends \yii\base\Action
         if (isset(\Yii::$app->getModule('console-gii')->generators[$this->generatorName])) {
             $this->generator = \Yii::$app->getModule('console-gii')->generators[$this->generatorName];
             $this->generator->init();
-            // TODO: assigning values from controller, if available - because they're not available from the action?!
             foreach ($this->generator->attributes AS $name => $attribute) {
                 if ($this->controller->$name) {
                     $this->generator->$name = $this->controller->$name;
