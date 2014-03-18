@@ -84,6 +84,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function bootstrap($app)
     {
+        $app->controllerMap[$this->id] = 'yii\gii\commands\GiiController';
+
         $app->getUrlManager()->addRules([
             $this->id => $this->id . '/default/index',
             $this->id . '/<id:\w+>' => $this->id . '/default/view',
@@ -94,23 +96,26 @@ class Module extends \yii\base\Module implements BootstrapInterface
     /**
      * @inheritdoc
      */
+    public function init()
+    {
+        parent::init();
+        foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
+            $this->generators[$id] = Yii::createObject($config);
+        }
+    }
+    
+    /**
+     * @inheritdoc
+     */
     public function beforeAction($action)
     {
-        if (!parent::beforeAction($action)) {
-            return false;
-        }
-
         if (!$this->checkAccess()) {
             throw new ForbiddenHttpException('You are not allowed to access this page.');
         }
 
-        foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
-            $this->generators[$id] = Yii::createObject($config);
-        }
-
         $this->resetGlobalSettings();
 
-        return true;
+        return parent::beforeAction($action);
     }
 
     /**
@@ -126,6 +131,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     protected function checkAccess()
     {
+        if (Yii::$app instanceof \yii\console\Application) {
+            return true;
+        }
+
         $ip = Yii::$app->getRequest()->getUserIP();
         foreach ($this->allowedIPs as $filter) {
             if ($filter === '*' || $filter === $ip || (($pos = strpos($filter, '*')) !== false && !strncmp($ip, $filter, $pos))) {
