@@ -241,8 +241,8 @@ class GridView extends BaseListView
             $this->renderCaption(),
             $this->renderColumnGroup(),
             $this->showHeader ? $this->renderTableHeader() : false,
-            $this->showFooter ? $this->renderTableFooter() : false,
             $this->renderTableBody(),
+            $this->showFooter ? $this->renderTableFooter() : false,
         ]);
 
         return Html::tag('table', implode("\n", $content), $this->tableOptions);
