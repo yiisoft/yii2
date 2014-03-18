@@ -10,5 +10,5 @@ use yiiunit\framework\db\ActiveRecordTest;
  */
 class PostgreSQLActiveRecordTest extends ActiveRecordTest
 {
-	protected $driverName = 'pgsql';
+    protected $driverName = 'pgsql';
 }

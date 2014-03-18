@@ -18,69 +18,69 @@ use yii\apidoc\helpers\PrettyPrinter;
  */
 class PropertyDoc extends BaseDoc
 {
-	public $visibility;
-	public $isStatic;
+    public $visibility;
+    public $isStatic;
 
-	public $type;
-	public $types;
-	public $defaultValue;
+    public $type;
+    public $types;
+    public $defaultValue;
 
-	// will be set by creating class
-	public $getter;
-	public $setter;
+    // will be set by creating class
+    public $getter;
+    public $setter;
 
-	// will be set by creating class
-	public $definedBy;
+    // will be set by creating class
+    public $definedBy;
 
-	public function getIsReadOnly()
-	{
-		return $this->getter !== null && $this->setter === null;
-	}
+    public function getIsReadOnly()
+    {
+        return $this->getter !== null && $this->setter === null;
+    }
 
-	public function getIsWriteOnly()
-	{
-		return $this->getter === null && $this->setter !== null;
-	}
+    public function getIsWriteOnly()
+    {
+        return $this->getter === null && $this->setter !== null;
+    }
 
-	/**
-	 * @param \phpDocumentor\Reflection\ClassReflector\PropertyReflector $reflector
-	 * @param Context $context
-	 * @param array $config
-	 */
-	public function __construct($reflector = null, $context = null, $config = [])
-	{
-		parent::__construct($reflector, $context, $config);
+    /**
+     * @param \phpDocumentor\Reflection\ClassReflector\PropertyReflector $reflector
+     * @param Context                                                    $context
+     * @param array                                                      $config
+     */
+    public function __construct($reflector = null, $context = null, $config = [])
+    {
+        parent::__construct($reflector, $context, $config);
 
-		if ($reflector === null) {
-			return;
-		}
+        if ($reflector === null) {
+            return;
+        }
 
-		$this->visibility = $reflector->getVisibility();
-		$this->isStatic = $reflector->isStatic();
+        $this->visibility = $reflector->getVisibility();
+        $this->isStatic = $reflector->isStatic();
 
-		// bypass $reflector->getDefault() for short array syntax
-		if ($reflector->getNode()->default) {
-			$this->defaultValue = PrettyPrinter::getRepresentationOfValue($reflector->getNode()->default);
-		}
+        // bypass $reflector->getDefault() for short array syntax
+        if ($reflector->getNode()->default) {
+            $this->defaultValue = PrettyPrinter::getRepresentationOfValue($reflector->getNode()->default);
+        }
 
-		foreach ($this->tags as $tag) {
-			if ($tag instanceof VarTag) {
-				$this->type = $tag->getType();
-				$this->types = $tag->getTypes();
-				$this->description = ucfirst($tag->getDescription());
-				if (($pos = strpos($this->description, '.')) !== false) {
-					$this->shortDescription = substr($this->description, 0, $pos + 1);
-				} else {
-					$this->shortDescription = $this->description;
-				}
-			}
-		}
-		if (empty($this->shortDescription) && $context !== null) {
-			$context->errors[] = [
-				'line' => $this->startLine,
-				'file' => $this->sourceFile,
-				'message' => "No short description for element '{$this->name}'",
-			];
-		}
-	}
+        foreach ($this->tags as $tag) {
+            if ($tag instanceof VarTag) {
+                $this->type = $tag->getType();
+                $this->types = $tag->getTypes();
+                $this->description = ucfirst($tag->getDescription());
+                if (($pos = strpos($this->description, '.')) !== false) {
+                    $this->shortDescription = substr($this->description, 0, $pos + 1);
+                } else {
+                    $this->shortDescription = $this->description;
+                }
+            }
+        }
+        if (empty($this->shortDescription) && $context !== null) {
+            $context->errors[] = [
+                'line' => $this->startLine,
+                'file' => $this->sourceFile,
+                'message' => "No short description for element '{$this->name}'",
+            ];
+        }
+    }
 }

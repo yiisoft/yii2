@@ -1,17 +1,24 @@
 Yii2 Core framework code style
 ==============================
 
-The following code style is used for Yii 2.x core and official extensions development. If you want to pull-request code into the core, consider using it. We aren't forcing you to use this code style for your application. Feel free to choose what suits you better.
+The following code style is used for Yii 2.x core and official extensions development. If you want to pull-request code
+into the core, consider using it. We aren't forcing you to use this code style for your application. Feel free to choose
+what suits you better.
 
 You can get a config for CodeSniffer here: https://github.com/yiisoft/yii2-coding-standards
 
 1. Overview
 -----------
 
+Overall we're using [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)
+compatible style so everything that applies to
+[PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) is applied to our code
+style as well.
+
 - Files MUST use either `<?php` or `<?=` tags.
 - There should be a newline at the end of file.
 - Files MUST use only UTF-8 without BOM for PHP code.
-- Code MUST use tabs for indenting, not spaces.
+- Code MUST use 4 spaces for indenting, not tabs.
 - Class names MUST be declared in `StudlyCaps`.
 - Class constants MUST be declared in all upper case with underscore separators.
 - Method names MUST be declared in `camelCase`.

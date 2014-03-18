@@ -19,7 +19,7 @@ Creating URLs
 -------------
 
 The most important rule for creating URLs in your site is to always do so using the URL manager. The URL manager is a built-in application component named `urlManager`. This component is accessible from both web and console applications via
-`\Yii::$app->urlManager`. The component makes availabe the two following URL creation methods:
+`\Yii::$app->urlManager`. The component makes available the two following URL creation methods:
 
 - `createUrl($params)`
 - `createAbsoluteUrl($params, $schema = null)`

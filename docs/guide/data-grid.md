@@ -125,7 +125,7 @@ Available properties you can configure are:
   controller.
 - `template` the template used for composing each cell in the action column. Tokens enclosed within curly brackets are
   treated as controller action IDs (also called *button names* in the context of action column). They will be replaced
-  by the corresponding button rendering callbacks specified in [[buttons]]. For example, the token `{view}` will be
+  by the corresponding button rendering callbacks specified in [[yii\grid\ActionColumn::$buttons|buttons]]. For example, the token `{view}` will be
   replaced by the result of the callback `buttons['view']`. If a callback cannot be found, the token will be replaced
   with an empty string. Default is `{view} {update} {delete}`.
 - `buttons` is an array of button rendering callbacks. The array keys are the button names (without curly brackets),
@@ -141,14 +141,14 @@ In the code above `$url` is the URL that the column creates for the button, and 
 rendered for the current row.
 
 - `urlCreator` is a callback that creates a button URL using the specified model information. The signature of
-  the callback should be the same as that of [[createUrl()]]. If this property is not set, button URLs will be created
-  using [[createUrl()]].
+  the callback should be the same as that of [[yii\grid\ActionColumn\createUrl()]]. If this property is not set,
+  button URLs will be created using [[yii\grid\ActionColumn\createUrl()]].
 
 #### Checkbox column
 
 CheckboxColumn displays a column of checkboxes.
  
-To add a CheckboxColumn to the [[GridView]], add it to the [[GridView::columns|columns]] configuration as follows:
+To add a CheckboxColumn to the [[yii\grid\GridView]], add it to the [[yii\grid\GridView::$columns|columns]] configuration as follows:
  
 ```php
 echo GridView::widget([

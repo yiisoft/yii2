@@ -114,9 +114,11 @@ There are several classes provided by framework:
 - FileHelper
 - Html
 - HtmlPurifier
+- Image
 - Inflector
 - Json
 - Markdown
 - Security
 - StringHelper
+- Url
 - VarDumper

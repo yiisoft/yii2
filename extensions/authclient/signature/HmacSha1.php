@@ -19,29 +19,29 @@ use yii\base\NotSupportedException;
  */
 class HmacSha1 extends BaseMethod
 {
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		if (!function_exists('hash_hmac')) {
-			throw new NotSupportedException('PHP "Hash" extension is required.');
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        if (!function_exists('hash_hmac')) {
+            throw new NotSupportedException('PHP "Hash" extension is required.');
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getName()
-	{
-		return 'HMAC-SHA1';
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getName()
+    {
+        return 'HMAC-SHA1';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function generateSignature($baseString, $key)
-	{
-		return base64_encode(hash_hmac('sha1', $baseString, $key, true));
-	}
+    /**
+     * @inheritdoc
+     */
+    public function generateSignature($baseString, $key)
+    {
+        return base64_encode(hash_hmac('sha1', $baseString, $key, true));
+    }
 }

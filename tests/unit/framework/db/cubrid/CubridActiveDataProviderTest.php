@@ -10,5 +10,5 @@ use yiiunit\framework\data\ActiveDataProviderTest;
  */
 class CubridActiveDataProviderTest extends ActiveDataProviderTest
 {
-	public $driverName = 'cubrid';
+    public $driverName = 'cubrid';
 }

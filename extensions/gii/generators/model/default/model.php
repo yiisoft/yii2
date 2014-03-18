@@ -32,41 +32,41 @@ namespace <?= $generator->ns ?>;
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
-	/**
-	 * @inheritdoc
-	 */
-	public static function tableName()
-	{
-		return '<?= $tableName ?>';
-	}
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return '<?= $tableName ?>';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function rules()
-	{
-		return [<?= "\n\t\t\t" . implode(",\n\t\t\t", $rules) . "\n\t\t" ?>];
-	}
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [<?= "\n            " . implode(",\n            ", $rules) . "\n        " ?>];
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function attributeLabels()
-	{
-		return [
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
 <?php foreach ($labels as $name => $label): ?>
-			<?= "'$name' => '" . addslashes($label) . "',\n" ?>
+            <?= "'$name' => '" . addslashes($label) . "',\n" ?>
 <?php endforeach; ?>
-		];
-	}
+        ];
+    }
 <?php foreach ($relations as $name => $relation): ?>
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function get<?= $name ?>()
-	{
-		<?= $relation[0] . "\n" ?>
-	}
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function get<?= $name ?>()
+    {
+        <?= $relation[0] . "\n" ?>
+    }
 <?php endforeach; ?>
 }

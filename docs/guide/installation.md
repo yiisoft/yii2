@@ -17,6 +17,8 @@ have Composer installed, you may download it from [http://getcomposer.org/](http
 curl -s http://getcomposer.org/installer | php
 ```
 
+We strongly recommend a global composer installation.
+
 For problems or more information, see the official Composer guide:
 
 * [Linux](http://getcomposer.org/doc/00-intro.md#installation-nix)
@@ -120,7 +122,7 @@ an [FPM SAPI](http://php.net/install.fpm). Below is a sample host configuration 
 The configuration tells the server to send all requests for non-existent resources through the bootstrap file,
 resulting in "prettier" URLs without the need for `index.php` references.
 
-~~~
+```
 server {
     set $yii_bootstrap "index.php";
     charset utf-8;
@@ -157,6 +159,10 @@ server {
         deny all;
     }
 }
-~~~
+```
 
 When using this configuration, you should set `cgi.fix_pathinfo=0` in the `php.ini` file in order to avoid many unnecessary system `stat()` calls.
+
+
+Note that when running a HTTPS server you need to add `fastcgi_param HTTPS on;` in order for Yii to properly detect if
+connection is secure.

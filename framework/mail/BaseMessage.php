@@ -23,30 +23,32 @@ use Yii;
  */
 abstract class BaseMessage extends Object implements MessageInterface
 {
-	/**
-	 * @inheritdoc
-	 */
-	public function send(MailerInterface $mailer = null)
-	{
-		if ($mailer === null) {
-			$mailer = Yii::$app->getMail();
-		}
-		return $mailer->send($this);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function send(MailerInterface $mailer = null)
+    {
+        if ($mailer === null) {
+            $mailer = Yii::$app->getMail();
+        }
 
-	/**
-	 * PHP magic method that returns the string representation of this object.
-	 * @return string the string representation of this object.
-	 */
-	public function __toString()
-	{
-		// __toString cannot throw exception
-		// use trigger_error to bypass this limitation
-		try {
-			return $this->toString();
-		} catch (\Exception $e) {
-			trigger_error($e->getMessage() . "\n\n" . $e->getTraceAsString());
-			return '';
-		}
-	}
+        return $mailer->send($this);
+    }
+
+    /**
+     * PHP magic method that returns the string representation of this object.
+     * @return string the string representation of this object.
+     */
+    public function __toString()
+    {
+        // __toString cannot throw exception
+        // use trigger_error to bypass this limitation
+        try {
+            return $this->toString();
+        } catch (\Exception $e) {
+            trigger_error($e->getMessage() . "\n\n" . $e->getTraceAsString());
+
+            return '';
+        }
+    }
 }

@@ -17,24 +17,24 @@ use yii\base\Component;
  */
 abstract class Base extends Component implements MatcherInterface
 {
-	/**
-	 * @var mixed base value to check
-	 */
-	protected $baseValue;
+    /**
+     * @var mixed base value to check
+     */
+    protected $baseValue;
 
-	/**
-	 * @inheritdoc
-	 */
-	public function setValue($value)
-	{
-		$this->baseValue = $value;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function setValue($value)
+    {
+        $this->baseValue = $value;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function hasValue()
-	{
-		return !empty($this->baseValue) || ($this->baseValue === '0');
-	}
+    /**
+     * @inheritdoc
+     */
+    public function hasValue()
+    {
+        return !empty($this->baseValue) || ($this->baseValue === '0');
+    }
 }

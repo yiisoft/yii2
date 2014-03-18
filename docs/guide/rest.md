@@ -198,7 +198,7 @@ Step 2 is usually a very mechanical data conversion process and can be well hand
 Step 1 involves some major development effort as explained below.
 
 When the [[yii\rest\Serializer|serializer]] converts an object into an array, it will call the `toArray()` method
-of the object if it implements [[yii\base\ArrayableInterface]]. If an object does not implement this interface,
+of the object if it implements [[yii\base\Arrayable]]. If an object does not implement this interface,
 its public properties will be returned instead.
 
 For classes extending from [[yii\base\Model]] or [[yii\db\ActiveRecord]], besides directly overriding `toArray()`,
@@ -558,14 +558,14 @@ actions should be disabled, respectively. For example,
 ],
 ```
 
-You may also configure `patterns` or `extra` to redefine existing patterns or add new patterns supported by this rule.
-For example, to support a new action `search` by the endpoint `GET /users/search`, configure the `extra` option as follows,
+You may also configure `patterns` or `extraPatterns` to redefine existing patterns or add new patterns supported by this rule.
+For example, to support a new action `search` by the endpoint `GET /users/search`, configure the `extraPatterns` option as follows,
 
 ```php
 [
     'class' => 'yii\rest\UrlRule',
     'controller' => 'user',
-    'extra' => [
+    'extraPatterns' => [
         'GET search' => 'search',
     ],
 ```
@@ -657,8 +657,7 @@ After a user is authenticated, you probably want to check if he has the permissi
 action for the requested resource. This process is called *authorization* which is covered in detail in
 the [Authorization chapter](authorization.md).
 
-You may use the [[yii\web\AccessControl]] filter and/or the Role-Based Access Control (RBAC) component
-to implementation authorization.
+You may use the Role-Based Access Control (RBAC) component to implementation authorization.
 
 To simplify the authorization check, you may also override the [[yii\rest\Controller::checkAccess()]] method
 and then call this method in places where authorization is needed. By default, the built-in actions provided

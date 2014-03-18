@@ -21,21 +21,21 @@ use yii\web\UnauthorizedHttpException;
  */
 interface AuthInterface
 {
-	/**
-	 * Authenticates the current user.
-	 *
-	 * @param User $user
-	 * @param Request $request
-	 * @param Response $response
-	 * @return IdentityInterface the authenticated user identity. If authentication information is not provided, null will be returned.
-	 * @throws UnauthorizedHttpException if authentication information is provided but is invalid.
-	 */
-	public function authenticate($user, $request, $response);
-	/**
-	 * Handles authentication failure.
-	 * The implementation should normally throw UnauthorizedHttpException to indicate authentication failure.
-	 * @param Response $response
-	 * @throws UnauthorizedHttpException
-	 */
-	public function handleFailure($response);
+    /**
+     * Authenticates the current user.
+     *
+     * @param  User                      $user
+     * @param  Request                   $request
+     * @param  Response                  $response
+     * @return IdentityInterface         the authenticated user identity. If authentication information is not provided, null will be returned.
+     * @throws UnauthorizedHttpException if authentication information is provided but is invalid.
+     */
+    public function authenticate($user, $request, $response);
+    /**
+     * Handles authentication failure.
+     * The implementation should normally throw UnauthorizedHttpException to indicate authentication failure.
+     * @param  Response                  $response
+     * @throws UnauthorizedHttpException
+     */
+    public function handleFailure($response);
 }

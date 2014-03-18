@@ -15,11 +15,11 @@ use yii\web\AssetBundle;
  */
 class SliderAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/jui/assets';
-	public $js = [
-		'jquery.ui.slider.js',
-	];
-	public $depends = [
-		'yii\jui\CoreAsset',
-	];
+    public $sourcePath = '@yii/jui/assets';
+    public $js = [
+        'jquery.ui.slider.js',
+    ];
+    public $depends = [
+        'yii\jui\CoreAsset',
+    ];
 }
