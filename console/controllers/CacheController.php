@@ -20,48 +20,48 @@ use yii\caching\Cache;
  */
 class CacheController extends Controller
 {
-	/**
-	 * Lists the caches that can be flushed.
-	 */
-	public function actionIndex()
-	{
-		$caches = [];
-		$components = Yii::$app->getComponents();
-		foreach ($components as $name => $component) {
-			if ($component instanceof Cache) {
-				$caches[$name] = get_class($component);
-			} elseif (is_array($component) && isset($component['class']) && strpos($component['class'], 'Cache') !== false) {
-				$caches[$name] = $component['class'];
-			}
-		}
-		if (!empty($caches)) {
-			echo "The following caches can be flushed:\n\n";
-			foreach ($caches as $name => $class) {
-				echo " * $name: $class\n";
-			}
-		} else {
-			echo "No cache is used.\n";
-		}
-	}
+    /**
+     * Lists the caches that can be flushed.
+     */
+    public function actionIndex()
+    {
+        $caches = [];
+        $components = Yii::$app->getComponents();
+        foreach ($components as $name => $component) {
+            if ($component instanceof Cache) {
+                $caches[$name] = get_class($component);
+            } elseif (is_array($component) && isset($component['class']) && strpos($component['class'], 'Cache') !== false) {
+                $caches[$name] = $component['class'];
+            }
+        }
+        if (!empty($caches)) {
+            echo "The following caches can be flushed:\n\n";
+            foreach ($caches as $name => $class) {
+                echo " * $name: $class\n";
+            }
+        } else {
+            echo "No cache is used.\n";
+        }
+    }
 
-	/**
-	 * Flushes cache.
-	 * @param string $component Name of the cache application component to use.
-	 *
-	 * @throws \yii\console\Exception
-	 */
-	public function actionFlush($component = 'cache')
-	{
-		/** @var Cache $cache */
-		$cache = Yii::$app->getComponent($component);
-		if (!$cache || !$cache instanceof Cache) {
-			throw new Exception('Application component "'.$component.'" is not defined or not a cache.');
-		}
+    /**
+     * Flushes cache.
+     * @param string $component Name of the cache application component to use.
+     *
+     * @throws \yii\console\Exception
+     */
+    public function actionFlush($component = 'cache')
+    {
+        /** @var Cache $cache */
+        $cache = Yii::$app->getComponent($component);
+        if (!$cache || !$cache instanceof Cache) {
+            throw new Exception('Application component "'.$component.'" is not defined or not a cache.');
+        }
 
-		if (!$cache->flush()) {
-			throw new Exception('Unable to flush cache.');
-		}
+        if (!$cache->flush()) {
+            throw new Exception('Unable to flush cache.');
+        }
 
-		echo "\nDone.\n";
-	}
+        echo "\nDone.\n";
+    }
 }

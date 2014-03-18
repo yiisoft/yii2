@@ -99,12 +99,12 @@ class Formatter extends Component
      * This method will call one of the "as" methods available in this class to do the formatting.
      * For type "xyz", the method "asXyz" will be used. For example, if the format is "html",
      * then [[asHtml()]] will be used. Format names are case insensitive.
-     * @param mixed $value the value to be formatted
-     * @param string|array $format the format of the value, e.g., "html", "text". To specify additional
-     * parameters of the formatting method, you may use an array. The first element of the array
-     * specifies the format name, while the rest of the elements will be used as the parameters to the formatting
-     * method. For example, a format of `['date', 'Y-m-d']` will cause the invocation of `asDate($value, 'Y-m-d')`.
-     * @return string the formatting result
+     * @param  mixed                 $value  the value to be formatted
+     * @param  string|array          $format the format of the value, e.g., "html", "text". To specify additional
+     *                                       parameters of the formatting method, you may use an array. The first element of the array
+     *                                       specifies the format name, while the rest of the elements will be used as the parameters to the formatting
+     *                                       method. For example, a format of `['date', 'Y-m-d']` will cause the invocation of `asDate($value, 'Y-m-d')`.
+     * @return string                the formatting result
      * @throws InvalidParamException if the type is not supported by this class.
      */
     public function format($value, $format)
@@ -131,7 +131,7 @@ class Formatter extends Component
     /**
      * Formats the value as is without any formatting.
      * This method simply returns back the parameter without any format.
-     * @param mixed $value the value to be formatted
+     * @param  mixed  $value the value to be formatted
      * @return string the formatted result
      */
     public function asRaw($value)
@@ -139,12 +139,13 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return $value;
     }
 
     /**
      * Formats the value as an HTML-encoded plain text.
-     * @param mixed $value the value to be formatted
+     * @param  mixed  $value the value to be formatted
      * @return string the formatted result
      */
     public function asText($value)
@@ -152,12 +153,13 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return Html::encode($value);
     }
 
     /**
      * Formats the value as an HTML-encoded plain text with newlines converted into breaks.
-     * @param mixed $value the value to be formatted
+     * @param  mixed  $value the value to be formatted
      * @return string the formatted result
      */
     public function asNtext($value)
@@ -165,6 +167,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return nl2br(Html::encode($value));
     }
 
@@ -172,7 +175,7 @@ class Formatter extends Component
      * Formats the value as HTML-encoded text paragraphs.
      * Each text paragraph is enclosed within a `<p>` tag.
      * One or multiple consecutive empty lines divide two paragraphs.
-     * @param mixed $value the value to be formatted
+     * @param  mixed  $value the value to be formatted
      * @return string the formatted result
      */
     public function asParagraphs($value)
@@ -180,9 +183,8 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
-        return str_replace(
-            '<p></p>',
-            '',
+
+        return str_replace('<p></p>', '',
             '<p>' . preg_replace('/[\r\n]{2,}/', "</p>\n<p>", Html::encode($value)) . '</p>'
         );
     }
@@ -191,21 +193,22 @@ class Formatter extends Component
      * Formats the value as HTML text.
      * The value will be purified using [[HtmlPurifier]] to avoid XSS attacks.
      * Use [[asRaw()]] if you do not want any purification of the value.
-     * @param mixed $value the value to be formatted
-     * @param array|null $config the configuration for the HTMLPurifier class.
-     * @return string the formatted result
+     * @param  mixed      $value  the value to be formatted
+     * @param  array|null $config the configuration for the HTMLPurifier class.
+     * @return string     the formatted result
      */
     public function asHtml($value, $config = null)
     {
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return HtmlPurifier::process($value, $config);
     }
 
     /**
      * Formats the value as a mailto link.
-     * @param mixed $value the value to be formatted
+     * @param  mixed  $value the value to be formatted
      * @return string the formatted result
      */
     public function asEmail($value)
@@ -213,12 +216,13 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return Html::mailto(Html::encode($value), $value);
     }
 
     /**
      * Formats the value as an image tag.
-     * @param mixed $value the value to be formatted
+     * @param  mixed  $value the value to be formatted
      * @return string the formatted result
      */
     public function asImage($value)
@@ -226,12 +230,13 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return Html::img($value);
     }
 
     /**
      * Formats the value as a hyperlink.
-     * @param mixed $value the value to be formatted
+     * @param  mixed  $value the value to be formatted
      * @return string the formatted result
      */
     public function asUrl($value)
@@ -243,12 +248,13 @@ class Formatter extends Component
         if (strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0) {
             $url = 'http://' . $url;
         }
+
         return Html::a(Html::encode($value), $url);
     }
 
     /**
      * Formats the value as a boolean.
-     * @param mixed $value the value to be formatted
+     * @param  mixed  $value the value to be formatted
      * @return string the formatted result
      * @see booleanFormat
      */
@@ -257,21 +263,22 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return $value ? $this->booleanFormat[1] : $this->booleanFormat[0];
     }
 
     /**
      * Formats the value as a date.
      * @param integer|string|DateTime $value the value to be formatted. The following
-     * types of value are supported:
+     *                                       types of value are supported:
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be parsed into a UNIX timestamp via `strtotime()`
      * - a PHP DateTime object
      *
-     * @param string $format the format used to convert the value into a date string.
-     * If null, [[dateFormat]] will be used. The format string should be one
-     * that can be recognized by the PHP `date()` function.
+     * @param  string $format the format used to convert the value into a date string.
+     *                        If null, [[dateFormat]] will be used. The format string should be one
+     *                        that can be recognized by the PHP `date()` function.
      * @return string the formatted result
      * @see dateFormat
      */
@@ -281,21 +288,22 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
         $value = $this->normalizeDatetimeValue($value);
+
         return $this->formatTimestamp($value, $format === null ? $this->dateFormat : $format);
     }
 
     /**
      * Formats the value as a time.
      * @param integer|string|DateTime $value the value to be formatted. The following
-     * types of value are supported:
+     *                                       types of value are supported:
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be parsed into a UNIX timestamp via `strtotime()`
      * - a PHP DateTime object
      *
-     * @param string $format the format used to convert the value into a date string.
-     * If null, [[timeFormat]] will be used. The format string should be one
-     * that can be recognized by the PHP `date()` function.
+     * @param  string $format the format used to convert the value into a date string.
+     *                        If null, [[timeFormat]] will be used. The format string should be one
+     *                        that can be recognized by the PHP `date()` function.
      * @return string the formatted result
      * @see timeFormat
      */
@@ -305,21 +313,22 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
         $value = $this->normalizeDatetimeValue($value);
+
         return $this->formatTimestamp($value, $format === null ? $this->timeFormat : $format);
     }
 
     /**
      * Formats the value as a datetime.
      * @param integer|string|DateTime $value the value to be formatted. The following
-     * types of value are supported:
+     *                                       types of value are supported:
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be parsed into a UNIX timestamp via `strtotime()`
      * - a PHP DateTime object
      *
-     * @param string $format the format used to convert the value into a date string.
-     * If null, [[datetimeFormat]] will be used. The format string should be one
-     * that can be recognized by the PHP `date()` function.
+     * @param  string $format the format used to convert the value into a date string.
+     *                        If null, [[datetimeFormat]] will be used. The format string should be one
+     *                        that can be recognized by the PHP `date()` function.
      * @return string the formatted result
      * @see datetimeFormat
      */
@@ -329,40 +338,42 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
         $value = $this->normalizeDatetimeValue($value);
+
         return $this->formatTimestamp($value, $format === null ? $this->datetimeFormat : $format);
     }
 
     /**
      * Normalizes the given datetime value as one that can be taken by various date/time formatting methods.
-     * @param mixed $value the datetime value to be normalized.
+     * @param  mixed   $value the datetime value to be normalized.
      * @return integer the normalized datetime value
      */
     protected function normalizeDatetimeValue($value)
     {
         if (is_string($value)) {
-            return is_numeric($value) || $value === '' ? (int)$value : strtotime($value);
-        } elseif ($value instanceof DateTime) {
+            return is_numeric($value) || $value === '' ? (int) $value : strtotime($value);
+        } elseif ($value instanceof DateTime || $value instanceof \DateTimeInterface) {
             return $value->getTimestamp();
         } else {
-            return (int)$value;
+            return (int) $value;
         }
     }
 
     /**
-     * @param integer $value normalized datetime value
-     * @param string $format the format used to convert the value into a date string.
-     * @return string the formatted result
+     * @param  integer $value  normalized datetime value
+     * @param  string  $format the format used to convert the value into a date string.
+     * @return string  the formatted result
      */
     protected function formatTimestamp($value, $format)
     {
         $date = new DateTime(null, new \DateTimeZone($this->timeZone));
         $date->setTimestamp($value);
+
         return $date->format($format);
     }
 
     /**
      * Formats the value as an integer.
-     * @param mixed $value the value to be formatted
+     * @param  mixed  $value the value to be formatted
      * @return string the formatting result.
      */
     public function asInteger($value)
@@ -373,7 +384,8 @@ class Formatter extends Component
         if (is_string($value) && preg_match('/^(-?\d+)/', $value, $matches)) {
             return $matches[1];
         } else {
-            $value = (int)$value;
+            $value = (int) $value;
+
             return "$value";
         }
     }
@@ -381,9 +393,9 @@ class Formatter extends Component
     /**
      * Formats the value as a double number.
      * Property [[decimalSeparator]] will be used to represent the decimal point.
-     * @param mixed $value the value to be formatted
-     * @param integer $decimals the number of digits after the decimal point
-     * @return string the formatting result.
+     * @param  mixed   $value    the value to be formatted
+     * @param  integer $decimals the number of digits after the decimal point
+     * @return string  the formatting result.
      * @see decimalSeparator
      */
     public function asDouble($value, $decimals = 2)
@@ -401,9 +413,9 @@ class Formatter extends Component
     /**
      * Formats the value as a number with decimal and thousand separators.
      * This method calls the PHP number_format() function to do the formatting.
-     * @param mixed $value the value to be formatted
-     * @param integer $decimals the number of digits after the decimal point
-     * @return string the formatted result
+     * @param  mixed   $value    the value to be formatted
+     * @param  integer $decimals the number of digits after the decimal point
+     * @return string  the formatted result
      * @see decimalSeparator
      * @see thousandSeparator
      */
@@ -414,15 +426,16 @@ class Formatter extends Component
         }
         $ds = isset($this->decimalSeparator) ? $this->decimalSeparator: '.';
         $ts = isset($this->thousandSeparator) ? $this->thousandSeparator: ',';
+
         return number_format($value, $decimals, $ds, $ts);
     }
 
     /**
      * Formats the value in bytes as a size in human readable form.
-     * @param integer $value value in bytes to be formatted
-     * @param boolean $verbose if full names should be used (e.g. bytes, kilobytes, ...).
-     * Defaults to false meaning that short names will be used (e.g. B, KB, ...).
-     * @return string the formatted result
+     * @param  integer $value   value in bytes to be formatted
+     * @param  boolean $verbose if full names should be used (e.g. bytes, kilobytes, ...).
+     *                          Defaults to false meaning that short names will be used (e.g. B, KB, ...).
+     * @return string  the formatted result
      * @see sizeFormat
      */
     public function asSize($value, $verbose = false)
@@ -441,8 +454,8 @@ class Formatter extends Component
         $value = round($value, $this->sizeFormat['decimals']);
         $formattedValue = isset($this->sizeFormat['decimalSeparator']) ? str_replace('.', $this->sizeFormat['decimalSeparator'], $value) : $value;
         $params = ['n' => $formattedValue];
-        
-        switch($position) {
+
+        switch ($position) {
             case 0:
                 return $verbose ? Yii::t('yii', '{n, plural, =1{# byte} other{# bytes}}', $params) : Yii::t('yii', '{n} B', $params);
             case 1:

@@ -36,91 +36,90 @@ use yii\base\Model;
  */
 class ActiveController extends Controller
 {
-	/**
-	 * @var string the model class name. This property must be set.
-	 */
-	public $modelClass;
-	/**
-	 * @var string the scenario used for updating a model.
-	 * @see \yii\base\Model::scenarios()
-	 */
-	public $updateScenario = Model::SCENARIO_DEFAULT;
-	/**
-	 * @var string the scenario used for creating a model.
-	 * @see \yii\base\Model::scenarios()
-	 */
-	public $createScenario = Model::SCENARIO_DEFAULT;
-	/**
-	 * @var boolean whether to use a DB transaction when creating, updating or deleting a model.
-	 * This property is only useful for relational database.
-	 */
-	public $transactional = true;
+    /**
+     * @var string the model class name. This property must be set.
+     */
+    public $modelClass;
+    /**
+     * @var string the scenario used for updating a model.
+     * @see \yii\base\Model::scenarios()
+     */
+    public $updateScenario = Model::SCENARIO_DEFAULT;
+    /**
+     * @var string the scenario used for creating a model.
+     * @see \yii\base\Model::scenarios()
+     */
+    public $createScenario = Model::SCENARIO_DEFAULT;
+    /**
+     * @var boolean whether to use a DB transaction when creating, updating or deleting a model.
+     * This property is only useful for relational database.
+     */
+    public $transactional = true;
 
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if ($this->modelClass === null) {
+            throw new InvalidConfigException('The "modelClass" property must be set.');
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		parent::init();
-		if ($this->modelClass === null) {
-			throw new InvalidConfigException('The "modelClass" property must be set.');
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function actions()
+    {
+        return [
+            'index' => [
+                'class' => 'yii\rest\IndexAction',
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+            ],
+            'view' => [
+                'class' => 'yii\rest\ViewAction',
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+            ],
+            'create' => [
+                'class' => 'yii\rest\CreateAction',
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+                'scenario' => $this->createScenario,
+                'transactional' => $this->transactional,
+            ],
+            'update' => [
+                'class' => 'yii\rest\UpdateAction',
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+                'scenario' => $this->updateScenario,
+                'transactional' => $this->transactional,
+            ],
+            'delete' => [
+                'class' => 'yii\rest\DeleteAction',
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+                'transactional' => $this->transactional,
+            ],
+            'options' => [
+                'class' => 'yii\rest\OptionsAction',
+            ],
+        ];
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function actions()
-	{
-		return [
-			'index' => [
-				'class' => 'yii\rest\IndexAction',
-				'modelClass' => $this->modelClass,
-				'checkAccess' => [$this, 'checkAccess'],
-			],
-			'view' => [
-				'class' => 'yii\rest\ViewAction',
-				'modelClass' => $this->modelClass,
-				'checkAccess' => [$this, 'checkAccess'],
-			],
-			'create' => [
-				'class' => 'yii\rest\CreateAction',
-				'modelClass' => $this->modelClass,
-				'checkAccess' => [$this, 'checkAccess'],
-				'scenario' => $this->createScenario,
-				'transactional' => $this->transactional,
-			],
-			'update' => [
-				'class' => 'yii\rest\UpdateAction',
-				'modelClass' => $this->modelClass,
-				'checkAccess' => [$this, 'checkAccess'],
-				'scenario' => $this->updateScenario,
-				'transactional' => $this->transactional,
-			],
-			'delete' => [
-				'class' => 'yii\rest\DeleteAction',
-				'modelClass' => $this->modelClass,
-				'checkAccess' => [$this, 'checkAccess'],
-				'transactional' => $this->transactional,
-			],
-			'options' => [
-				'class' => 'yii\rest\OptionsAction',
-			],
-		];
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	protected function verbs()
-	{
-		return [
-			'index' => ['GET', 'HEAD'],
-			'view' => ['GET', 'HEAD'],
-			'create' => ['POST'],
-			'update' => ['PUT', 'PATCH'],
-			'delete' => ['DELETE'],
-		];
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function verbs()
+    {
+        return [
+            'index' => ['GET', 'HEAD'],
+            'view' => ['GET', 'HEAD'],
+            'create' => ['POST'],
+            'update' => ['PUT', 'PATCH'],
+            'delete' => ['DELETE'],
+        ];
+    }
 }

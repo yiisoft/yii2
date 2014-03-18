@@ -20,96 +20,97 @@ use yii\db\ColumnSchema;
  */
 class Schema extends \yii\db\Schema
 {
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		parent::init();
-		if ($this->defaultSchema === null) {
-			$this->defaultSchema = $this->db->username;
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if ($this->defaultSchema === null) {
+            $this->defaultSchema = $this->db->username;
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function releaseSavepoint($name)
-	{
-		// does nothing as Oracle does not support this
-	}
+    /**
+     * @inheritdoc
+     */
+    public function releaseSavepoint($name)
+    {
+        // does nothing as Oracle does not support this
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function quoteSimpleTableName($name)
-	{
-		return '"' . $name . '"';
-	}
+    /**
+     * @inheritdoc
+     */
+    public function quoteSimpleTableName($name)
+    {
+        return '"' . $name . '"';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function quoteSimpleColumnName($name)
-	{
-		return '"' . $name . '"';
-	}
+    /**
+     * @inheritdoc
+     */
+    public function quoteSimpleColumnName($name)
+    {
+        return '"' . $name . '"';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function createQueryBuilder()
-	{
-		return new QueryBuilder($this->db);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function createQueryBuilder()
+    {
+        return new QueryBuilder($this->db);
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function loadTableSchema($name)
-	{
-		$table = new TableSchema();
-		$this->resolveTableNames($table, $name);
+    /**
+     * @inheritdoc
+     */
+    public function loadTableSchema($name)
+    {
+        $table = new TableSchema();
+        $this->resolveTableNames($table, $name);
 
-		if ($this->findColumns($table)) {
-			$this->findConstraints($table);
-			return $table;
-		} else {
-			return null;
-		}
-	}
+        if ($this->findColumns($table)) {
+            $this->findConstraints($table);
 
-	/**
-	 * Resolves the table name and schema name (if any).
-	 *
-	 * @param TableSchema $table the table metadata object
-	 * @param string $name the table name
-	 */
-	protected function resolveTableNames($table, $name)
-	{
-		$parts = explode('.', str_replace('"', '', $name));
-		if (isset($parts[1])) {
-			$table->schemaName = $parts[0];
-			$table->name = $parts[1];
-		} else {
-			$table->schemaName = $this->defaultSchema;
-			$table->name = $name;
-		}
+            return $table;
+        } else {
+            return null;
+        }
+    }
 
-		$table->fullName = $table->schemaName !== $this->defaultSchema ? $table->schemaName . '.' . $table->name : $table->name;
-	}
+    /**
+     * Resolves the table name and schema name (if any).
+     *
+     * @param TableSchema $table the table metadata object
+     * @param string      $name  the table name
+     */
+    protected function resolveTableNames($table, $name)
+    {
+        $parts = explode('.', str_replace('"', '', $name));
+        if (isset($parts[1])) {
+            $table->schemaName = $parts[0];
+            $table->name = $parts[1];
+        } else {
+            $table->schemaName = $this->defaultSchema;
+            $table->name = $name;
+        }
 
-	/**
-	 * Collects the table column metadata.
-	 * @param TableSchema $table the table schema
-	 * @return boolean whether the table exists
-	 */
-	protected function findColumns($table)
-	{
-		$schemaName = $table->schemaName;
-		$tableName = $table->name;
+        $table->fullName = $table->schemaName !== $this->defaultSchema ? $table->schemaName . '.' . $table->name : $table->name;
+    }
 
-		$sql = <<<EOD
+    /**
+     * Collects the table column metadata.
+     * @param  TableSchema $table the table schema
+     * @return boolean     whether the table exists
+     */
+    protected function findColumns($table)
+    {
+        $schemaName = $table->schemaName;
+        $tableName = $table->name;
+
+        $sql = <<<EOD
 SELECT a.column_name, a.data_type ||
     case
         when data_precision is not null
@@ -134,55 +135,56 @@ inner join ALL_OBJECTS B ON b.owner = a.owner and ltrim(B.OBJECT_NAME) = ltrim(A
 LEFT JOIN user_col_comments com ON (A.table_name = com.table_name AND A.column_name = com.column_name)
 WHERE
     a.owner = '{$schemaName}'
-	and (b.object_type = 'TABLE' or b.object_type = 'VIEW')
-	and b.object_name = '{$tableName}'
+    and (b.object_type = 'TABLE' or b.object_type = 'VIEW')
+    and b.object_name = '{$tableName}'
 ORDER by a.column_id
 EOD;
 
-		try {
-			$columns = $this->db->createCommand($sql)->queryAll();
-		} catch (\Exception $e) {
-			return false;
-		}
+        try {
+            $columns = $this->db->createCommand($sql)->queryAll();
+        } catch (\Exception $e) {
+            return false;
+        }
 
-		foreach ($columns as $column) {
-			$c = $this->createColumn($column);
-			$table->columns[$c->name] = $c;
-			if ($c->isPrimaryKey) {
-				$table->primaryKey[] = $c->name;
-				$table->sequenceName = '';
-				$c->autoIncrement = true;
-			}
-		}
-		return true;
-	}
+        foreach ($columns as $column) {
+            $c = $this->createColumn($column);
+            $table->columns[$c->name] = $c;
+            if ($c->isPrimaryKey) {
+                $table->primaryKey[] = $c->name;
+                $table->sequenceName = '';
+                $c->autoIncrement = true;
+            }
+        }
 
-	protected function createColumn($column)
-	{
-		$c = new ColumnSchema();
-		$c->name = $column['COLUMN_NAME'];
-		$c->allowNull = $column['NULLABLE'] === 'Y';
-		$c->isPrimaryKey = strpos($column['KEY'], 'P') !== false;
-		$c->comment = $column['COLUMN_COMMENT'] === null ? '' : $column['COLUMN_COMMENT'];
+        return true;
+    }
 
-		$this->extractColumnType($c, $column['DATA_TYPE']);
-		$this->extractColumnSize($c, $column['DATA_TYPE']);
+    protected function createColumn($column)
+    {
+        $c = new ColumnSchema();
+        $c->name = $column['COLUMN_NAME'];
+        $c->allowNull = $column['NULLABLE'] === 'Y';
+        $c->isPrimaryKey = strpos($column['KEY'], 'P') !== false;
+        $c->comment = $column['COLUMN_COMMENT'] === null ? '' : $column['COLUMN_COMMENT'];
 
-		if (stripos($column['DATA_DEFAULT'], 'timestamp') !== false) {
-			$c->defaultValue = null;
-		} else {
-			$c->defaultValue = $c->typecast($column['DATA_DEFAULT']);
-		}
+        $this->extractColumnType($c, $column['DATA_TYPE']);
+        $this->extractColumnSize($c, $column['DATA_TYPE']);
 
-		return $c;
-	}
+        if (stripos($column['DATA_DEFAULT'], 'timestamp') !== false) {
+            $c->defaultValue = null;
+        } else {
+            $c->defaultValue = $c->typecast($column['DATA_DEFAULT']);
+        }
 
-	protected function findConstraints($table)
-	{
-		$sql = <<<EOD
-		SELECT D.constraint_type as CONSTRAINT_TYPE, C.COLUMN_NAME, C.position, D.r_constraint_name,
+        return $c;
+    }
+
+    protected function findConstraints($table)
+    {
+        $sql = <<<EOD
+        SELECT D.constraint_type as CONSTRAINT_TYPE, C.COLUMN_NAME, C.position, D.r_constraint_name,
                 E.table_name as table_ref, f.column_name as column_ref,
-            	C.table_name
+                C.table_name
         FROM ALL_CONS_COLUMNS C
         inner join ALL_constraints D on D.OWNER = C.OWNER and D.constraint_name = C.constraint_name
         left join ALL_constraints E on E.OWNER = D.r_OWNER and E.constraint_name = D.r_constraint_name
@@ -192,82 +194,83 @@ EOD;
            and D.constraint_type <> 'P'
         order by d.constraint_name, c.position
 EOD;
-		$command = $this->db->createCommand($sql);
-		foreach ($command->queryAll() as $row) {
-			if ($row['CONSTRAINT_TYPE'] === 'R') {
-				$name = $row["COLUMN_NAME"];
-				$table->foreignKeys[$name] = [$row["TABLE_REF"], $row["COLUMN_REF"]];
-			}
-		}
-	}
+        $command = $this->db->createCommand($sql);
+        foreach ($command->queryAll() as $row) {
+            if ($row['CONSTRAINT_TYPE'] === 'R') {
+                $name = $row["COLUMN_NAME"];
+                $table->foreignKeys[$name] = [$row["TABLE_REF"], $row["COLUMN_REF"]];
+            }
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function findTableNames($schema = '')
-	{
-		if ($schema === '') {
-			$sql = <<<EOD
+    /**
+     * @inheritdoc
+     */
+    protected function findTableNames($schema = '')
+    {
+        if ($schema === '') {
+            $sql = <<<EOD
 SELECT table_name, '{$schema}' as table_schema FROM user_tables
 EOD;
-			$command = $this->db->createCommand($sql);
-		} else {
-			$sql = <<<EOD
+            $command = $this->db->createCommand($sql);
+        } else {
+            $sql = <<<EOD
 SELECT object_name as table_name, owner as table_schema FROM all_objects
 WHERE object_type = 'TABLE' AND owner=:schema
 EOD;
-			$command = $this->db->createCommand($sql);
-			$command->bindParam(':schema', $schema);
-		}
+            $command = $this->db->createCommand($sql);
+            $command->bindParam(':schema', $schema);
+        }
 
-		$rows = $command->queryAll();
-		$names = [];
-		foreach ($rows as $row) {
-			$names[] = $row['TABLE_NAME'];
-		}
-		return $names;
-	}
+        $rows = $command->queryAll();
+        $names = [];
+        foreach ($rows as $row) {
+            $names[] = $row['TABLE_NAME'];
+        }
 
-	/**
-	 * Extracts the data types for the given column
-	 * @param ColumnSchema $column
-	 * @param string $dbType DB type
-	 */
-	protected function extractColumnType($column, $dbType)
-	{
-		$column->dbType = $dbType;
+        return $names;
+    }
 
-		if (strpos($dbType, 'FLOAT') !== false) {
-			$column->type = 'double';
-		} elseif (strpos($dbType, 'NUMBER') !== false || strpos($dbType, 'INTEGER') !== false) {
-			if (strpos($dbType, '(') && preg_match('/\((.*)\)/', $dbType, $matches)) {
-				$values = explode(',', $matches[1]);
-				if (isset($values[1]) && (((int)$values[1]) > 0)) {
-					$column->type = 'double';
-				} else {
-					$column->type = 'integer';
-				}
-			} else {
-				$column->type = 'double';
-			}
-		} else {
-			$column->type = 'string';
-		}
-	}
+    /**
+     * Extracts the data types for the given column
+     * @param ColumnSchema $column
+     * @param string       $dbType DB type
+     */
+    protected function extractColumnType($column, $dbType)
+    {
+        $column->dbType = $dbType;
 
-	/**
-	 * Extracts size, precision and scale information from column's DB type.
-	 * @param ColumnSchema $column
-	 * @param string $dbType the column's DB type
-	 */
-	protected function extractColumnSize($column, $dbType)
-	{
-		if (strpos($dbType, '(') && preg_match('/\((.*)\)/', $dbType, $matches)) {
-			$values = explode(',', $matches[1]);
-			$column->size = $column->precision = (int)$values[0];
-			if (isset($values[1])) {
-				$column->scale = (int)$values[1];
-			}
-		}
-	}
+        if (strpos($dbType, 'FLOAT') !== false) {
+            $column->type = 'double';
+        } elseif (strpos($dbType, 'NUMBER') !== false || strpos($dbType, 'INTEGER') !== false) {
+            if (strpos($dbType, '(') && preg_match('/\((.*)\)/', $dbType, $matches)) {
+                $values = explode(',', $matches[1]);
+                if (isset($values[1]) && (((int) $values[1]) > 0)) {
+                    $column->type = 'double';
+                } else {
+                    $column->type = 'integer';
+                }
+            } else {
+                $column->type = 'double';
+            }
+        } else {
+            $column->type = 'string';
+        }
+    }
+
+    /**
+     * Extracts size, precision and scale information from column's DB type.
+     * @param ColumnSchema $column
+     * @param string       $dbType the column's DB type
+     */
+    protected function extractColumnSize($column, $dbType)
+    {
+        if (strpos($dbType, '(') && preg_match('/\((.*)\)/', $dbType, $matches)) {
+            $values = explode(',', $matches[1]);
+            $column->size = $column->precision = (int) $values[0];
+            if (isset($values[1])) {
+                $column->scale = (int) $values[1];
+            }
+        }
+    }
 }

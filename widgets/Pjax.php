@@ -43,138 +43,140 @@ use yii\web\Response;
  */
 class Pjax extends Widget
 {
-	/**
-	 * @var array the HTML attributes for the widget container tag.
-	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
-	 */
-	public $options = [];
-	/**
-	 * @var string the jQuery selector of the links that should trigger pjax requests.
-	 * If not set, all links within the enclosed content of Pjax will trigger pjax requests.
-	 * Note that if the response to the pjax request is a full page, a normal request will be sent again.
-	 */
-	public $linkSelector;
-	/**
-	 * @var string the jQuery selector of the forms whose submissions should trigger pjax requests.
-	 * If not set, all forms with `data-pjax` attribute within the enclosed content of Pjax will trigger pjax requests.
-	 * Note that if the response to the pjax request is a full page, a normal request will be sent again.
-	 */
-	public $formSelector;
-	/**
-	 * @var boolean whether to enable push state.
-	 */
-	public $enablePushState = true;
-	/**
-	 * @var boolean whether to enable replace state.
-	 */
-	public $enableReplaceState = false;
-	/**
-	 * @var integer pjax timeout setting (in milliseconds). This timeout is used when making AJAX requests.
-	 * Use a bigger number if your server is slow. If the server does not respond within the timeout,
-	 * a full page load will be triggered.
-	 */
-	public $timeout = 1000;
-	/**
-	 * @var boolean|integer how to scroll the page when pjax response is received. If false, no page scroll will be made.
-	 * Use a number if you want to scroll to a particular place.
-	 */
-	public $scrollTo = false;
-	/**
-	 * @var array additional options to be passed to the pjax JS plugin. Please refer to the
-	 * [pjax project page](https://github.com/yiisoft/jquery-pjax) for available options.
-	 */
-	public $clientOptions;
+    /**
+     * @var array the HTML attributes for the widget container tag.
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $options = [];
+    /**
+     * @var string the jQuery selector of the links that should trigger pjax requests.
+     * If not set, all links within the enclosed content of Pjax will trigger pjax requests.
+     * Note that if the response to the pjax request is a full page, a normal request will be sent again.
+     */
+    public $linkSelector;
+    /**
+     * @var string the jQuery selector of the forms whose submissions should trigger pjax requests.
+     * If not set, all forms with `data-pjax` attribute within the enclosed content of Pjax will trigger pjax requests.
+     * Note that if the response to the pjax request is a full page, a normal request will be sent again.
+     */
+    public $formSelector;
+    /**
+     * @var boolean whether to enable push state.
+     */
+    public $enablePushState = true;
+    /**
+     * @var boolean whether to enable replace state.
+     */
+    public $enableReplaceState = false;
+    /**
+     * @var integer pjax timeout setting (in milliseconds). This timeout is used when making AJAX requests.
+     * Use a bigger number if your server is slow. If the server does not respond within the timeout,
+     * a full page load will be triggered.
+     */
+    public $timeout = 1000;
+    /**
+     * @var boolean|integer how to scroll the page when pjax response is received. If false, no page scroll will be made.
+     * Use a number if you want to scroll to a particular place.
+     */
+    public $scrollTo = false;
+    /**
+     * @var array additional options to be passed to the pjax JS plugin. Please refer to the
+     * [pjax project page](https://github.com/yiisoft/jquery-pjax) for available options.
+     */
+    public $clientOptions;
 
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		if (!isset($this->options['id'])) {
-			$this->options['id'] = $this->getId();
-		}
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        if (!isset($this->options['id'])) {
+            $this->options['id'] = $this->getId();
+        }
 
-		if ($this->requiresPjax()) {
-			ob_start();
-			ob_implicit_flush(false);
-			$view = $this->getView();
-			$view->clear();
-			$view->beginPage();
-			$view->head();
-			$view->beginBody();
-			if ($view->title !== null) {
-				echo Html::tag('title', Html::encode($view->title));
-			}
-		} else {
-			echo Html::beginTag('div', $this->options);
-		}
-	}
+        if ($this->requiresPjax()) {
+            ob_start();
+            ob_implicit_flush(false);
+            $view = $this->getView();
+            $view->clear();
+            $view->beginPage();
+            $view->head();
+            $view->beginBody();
+            if ($view->title !== null) {
+                echo Html::tag('title', Html::encode($view->title));
+            }
+        } else {
+            echo Html::beginTag('div', $this->options);
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function run()
-	{
-		if (!$this->requiresPjax()) {
-			echo Html::endTag('div');
-			$this->registerClientScript();
-			return;
-		}
+    /**
+     * @inheritdoc
+     */
+    public function run()
+    {
+        if (!$this->requiresPjax()) {
+            echo Html::endTag('div');
+            $this->registerClientScript();
 
-		$view = $this->getView();
-		$view->endBody();
+            return;
+        }
 
-		// Do not re-send css files as it may override the css files that were loaded after them.
-		// This is a temporary fix for https://github.com/yiisoft/yii2/issues/2310
-		// It should be removed once pjax supports loading only missing css files
-		$view->cssFiles = null;
+        $view = $this->getView();
+        $view->endBody();
 
-		$view->endPage(true);
+        // Do not re-send css files as it may override the css files that were loaded after them.
+        // This is a temporary fix for https://github.com/yiisoft/yii2/issues/2310
+        // It should be removed once pjax supports loading only missing css files
+        $view->cssFiles = null;
 
-		$content = ob_get_clean();
+        $view->endPage(true);
 
-		// only need the content enclosed within this widget
-		$response = Yii::$app->getResponse();
-		$level = ob_get_level();
-		$response->clearOutputBuffers();
-		$response->setStatusCode(200);
-		$response->format = Response::FORMAT_HTML;
-		$response->content = $content;
-		$response->send();
+        $content = ob_get_clean();
 
-		// re-enable output buffer to capture content after this widget
-		for (; $level > 0; --$level) {
-			ob_start();
-			ob_implicit_flush(false);
-		}
-	}
+        // only need the content enclosed within this widget
+        $response = Yii::$app->getResponse();
+        $level = ob_get_level();
+        $response->clearOutputBuffers();
+        $response->setStatusCode(200);
+        $response->format = Response::FORMAT_HTML;
+        $response->content = $content;
+        $response->send();
 
-	/**
-	 * @return boolean whether the current request requires pjax response from this widget
-	 */
-	protected function requiresPjax()
-	{
-		$headers = Yii::$app->getRequest()->getHeaders();
-		return $headers->get('X-Pjax') && $headers->get('X-Pjax-Container') === '#' . $this->getId();
-	}
+        // re-enable output buffer to capture content after this widget
+        for (; $level > 0; --$level) {
+            ob_start();
+            ob_implicit_flush(false);
+        }
+    }
 
-	/**
-	 * Registers the needed JavaScript.
-	 */
-	public function registerClientScript()
-	{
-		$id = $this->options['id'];
-		$this->clientOptions['push'] = $this->enablePushState;
-		$this->clientOptions['replace'] = $this->enableReplaceState;
-		$this->clientOptions['timeout'] = $this->timeout;
-		$this->clientOptions['scrollTo'] = $this->scrollTo;
-		$options = Json::encode($this->clientOptions);
-		$linkSelector = Json::encode($this->linkSelector !== null ? $this->linkSelector : '#' . $id . ' a');
-		$formSelector = Json::encode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
-		$view = $this->getView();
-		PjaxAsset::register($view);
-		$js = "jQuery(document).pjax($linkSelector, \"#$id\", $options);";
-		$js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
-		$view->registerJs($js);
-	}
+    /**
+     * @return boolean whether the current request requires pjax response from this widget
+     */
+    protected function requiresPjax()
+    {
+        $headers = Yii::$app->getRequest()->getHeaders();
+
+        return $headers->get('X-Pjax') && $headers->get('X-Pjax-Container') === '#' . $this->getId();
+    }
+
+    /**
+     * Registers the needed JavaScript.
+     */
+    public function registerClientScript()
+    {
+        $id = $this->options['id'];
+        $this->clientOptions['push'] = $this->enablePushState;
+        $this->clientOptions['replace'] = $this->enableReplaceState;
+        $this->clientOptions['timeout'] = $this->timeout;
+        $this->clientOptions['scrollTo'] = $this->scrollTo;
+        $options = Json::encode($this->clientOptions);
+        $linkSelector = Json::encode($this->linkSelector !== null ? $this->linkSelector : '#' . $id . ' a');
+        $formSelector = Json::encode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
+        $view = $this->getView();
+        PjaxAsset::register($view);
+        $js = "jQuery(document).pjax($linkSelector, \"#$id\", $options);";
+        $js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
+        $view->registerJs($js);
+    }
 }

@@ -50,11 +50,16 @@ Yii Framework 2 Change Log
 - Bug #2519: MessageSource removed translation messages when event handler was bound to `missingTranslation`-event (cebe)
 - Bug #2527: Source language for `app` message category was always `en` no matter which application `sourceLanguage` was used (samdark)
 - Bug #2559: Going back on browser history breaks GridView filtering with `Pjax` (tonydspaniard)
+- Bug #2571: Fixed the bug that batchInsert will fail for SQLite if the values contain null or boolean false (qiangxue)
 - Bug #2607: `yii message` tool wasn't updating `message` table (mitalcoi)
 - Bug #2624: Html::textArea() should respect "name" option. (qiangxue)
 - Bug #2653: Fixed the bug that unsetting an unpopulated AR relation would trigger exception (qiangxue)
 - Bug #2681: Fixed the bug of php build-in server https://bugs.php.net/bug.php?id=66606 (dizews)
+- Bug #2683: Fixed the bug that batchInsert will fail for MySQL if the values contain boolean false (qiangxue)
 - Bug #2695: Fixed the issue that `FileValidator::isEmpty()` always returns true for validate multiple files (ZhandosKz)
+- Bug #2739: Fixed the issue that `CreateAction::run()` was using obsolete `Controller::createAbsoluteUrl()` method (tonydspaniard)
+- Bug #2740: Fixed the issue that `CaptchaAction::run()` was using obsolete `Controller::createUrl()` method (tonydspaniard)
+- Bug #2760: Fixed GridView `filterUrl` parameters (qiangxue, AlexGx)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
@@ -68,6 +73,7 @@ Yii Framework 2 Change Log
 - Bug: `Query::queryScalar` wasn't making `SELECT DISTINCT` queries subqueries (jom)
 - Enh #46: Added Image extension based on [Imagine library](http://imagine.readthedocs.org) (tonydspaniard)
 - Enh #364: Improve Inflector::slug with `intl` transliteration. Improved transliteration char map. (tonydspaniard)
+- Enh #497: Removed `\yii\log\Target::logUser` and added `\yii\log\Target::prefix` to support customizing message prefix (qiangxue)
 - Enh #797: Added support for validating multiple columns by `UniqueValidator` and `ExistValidator` (qiangxue)
 - Enh #802: Added support for retrieving sub-array element or child object property through `ArrayHelper::getValue()` (qiangxue, cebe)
 - Enh #938: Added `yii\web\View::renderAjax()` and `yii\web\Controller::renderAjax()` (qiangxue)
@@ -139,6 +145,10 @@ Yii Framework 2 Change Log
 - Enh #2646: Added support for specifying hostinfo in the pattern of a URL rule (qiangxue)
 - Enh #2661: Added boolean column type support for SQLite (qiangxue)
 - Enh #2670: Changed `console\Controller::globalOptions()` to `options($actionId)` to (make it possible to) differentiate options per action (hqx)
+- Enh #2729: Added `FilterValidator::skipOnArray` so that filters like `trim` will not fail for array inputs (qiangxue)
+- Enh #2735: Added support for `DateTimeInterface` in `Formatter` (ivokund)
+- Enh #2756: Added support for injecting custom `isEmpty` check for all validators (qiangxue)
+- Enh #2775: Added `yii\base\Application::bootstrap` to support running bootstrap classes when starting an application (qiangxue)
 - Enh: Added support for using arrays as option values for console commands (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
@@ -162,6 +172,7 @@ Yii Framework 2 Change Log
 - Enh: LinkPager can now register relational link tags in the html header for prev, next, first and last page (cebe)
 - Enh: Added `yii\web\UrlRuleInterface` and `yii\web\CompositeUrlRule` (qiangxue)
 - Enh: Added `yii\web\Request::getAuthUser()` and `getAuthPassword()` (qiangxue)
+- Chg #735: Added back `ActiveField::hiddenInput()` (qiangxue)
 - Chg #1186: Changed `Sort` to use comma to separate multiple sort fields and use negative sign to indicate descending sort (qiangxue)
 - Chg #1519: `yii\web\User::loginRequired()` now returns the `Response` object instead of exiting the application (qiangxue)
 - Chg #1564: Removed `yii\web\Session::autoStart` and added `hasSessionId`. Session will be automatically started when accessing session data (qiangxue)
@@ -182,6 +193,10 @@ Yii Framework 2 Change Log
 	- Added `yii\web\Request::get($name = null, $defaultValue = null)` and `yii\web\Request::post($name = null, $defaultValue = null)` (samdark)
 - Chg #2059: Implemented git-flavored file excluding/filtering for `FileHelper` (nineinchnick)
 - Chg #2063: Removed `yii\web\Request::acceptTypes` and renamed `yii\web\Request::acceptedContentTypes` to `acceptableContentTypes` (qiangxue)
+- Chg #2146: Removed `ActiveRelation` class and `ActiveRelationInterface`, moved the functionality to `ActiveQuery`.
+             All relational queries are now directly served by `ActiveQuery` allowing to use custom scopes in relations
+             and also to declare arbitrary queries as relations.
+			 Also removed `ActiveRecordInterface::createActiveRelation()` (cebe)
 - Chg #2157: The '*' category pattern will match all categories that do not match any other patterns listed in `I18N::translations` (qiangxue, Ragazzo)
 - Chg #2161: Added ability to use `return` in `Widget::run` (samdark)
 - Chg #2173: Removed `StringHelper::diff()`, Moved `phpspec/php-diff` dependency from `yiisoft/yii2` to `yiisoft/yii2-gii` (samdark)
@@ -199,6 +214,8 @@ Yii Framework 2 Change Log
 	- Removed `yii\helpers\Html::url`, use `yii\helpers\Url::to` instead.
 	- Removed `yii\web\Controller::createUrl` and `yii\web\Controller::createAbsoluteUrl`, use `yii\helpers\Url::toRoute` instead.
 	- Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers\Url::canonical` instead.
+- Chg #2691: Null parameters will not be included in the generated URLs by `UrlManager` (gonimar, qiangxue)
+- Chg #2734: `FileCache::keyPrefix` defaults to empty string now (qiangxue)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
@@ -211,10 +228,6 @@ Yii Framework 2 Change Log
 - Chg: Advanced app template: moved database connection DSN, login and password to `-local` config not to expose it to VCS (samdark)
 - Chg: Renamed `yii\web\Request::acceptedLanguages` to `acceptableLanguages` (qiangxue)
 - Chg: Removed implementation of `Arrayable` from `yii\Object` (qiangxue)
-- Chg #2146: Removed `ActiveRelation` class and `ActiveRelationInterface`, moved the functionality to `ActiveQuery`.
-             All relational queries are now directly served by `ActiveQuery` allowing to use custom scopes in relations
-             and also to declare arbitrary queries as relations.
-			 Also removed `ActiveRecordInterface::createActiveRelation()` (cebe)
 - Chg: The scripts in asset bundles are now registered in `View` at the end of `endBody()`. It was done in `endPage()` previously (qiangxue)
 - Chg: Renamed `csrf-var` to `csrf-param` for CSRF header name (Dilip)
 - Chg: The directory holding email templates is renamed from `mails` to `mail` (qiangxue)
@@ -231,6 +244,7 @@ Yii Framework 2 Change Log
 	- Renamed `yii\web\User::returnUrlVar` to `returnUrlParam`
 - Chg: Added `View::viewFile` and removed `ViewEvent::viewFile` (qiangxue)
 - Chg: Changed `Controller::afterAction()`, `Module::afterAction()` and `ActionFilter::afterAction()` to pass `$result` by value instead of reference (qiangxue)
+- Chg: `yii\base\Extension::init()` is renamed to `bootstrap()` (qiangxue)
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #706: Added `yii\widgets\Pjax` and enhanced `GridView` to work with `Pjax` to support AJAX-update (qiangxue)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
