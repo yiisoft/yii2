@@ -53,7 +53,7 @@ trait ContainerTrait
      * If a component is not shared, this method will create a new instance every time.
      *
      * @param string $typeOrID component type (a fully qualified namespaced class/interface name, e.g. `yii\db\Connection`) or ID (e.g. `db`).
-     * @param array $params the named parameters (name => value) to be passed to the object constructor
+     * @param array $params the parameters to be passed to the object constructor
      * if the method needs to create a new object instance.
      * @param boolean $create whether to create an instance of a component if it is not previously created.
      * This is mainly useful for shared instance.
@@ -89,7 +89,7 @@ trait ContainerTrait
                 $component = $this->get($definition, $params);
             } elseif ($definition instanceof Closure || is_array($definition) && isset($definition[0], $definition[1])) {
                 // a PHP callable
-                $component = call_user_func($definition, $params, $this);
+                $component = call_user_func($definition, $typeOrID, $params, $this);
             } elseif (is_object($definition)) {
                 // an object
                 $component = $definition;

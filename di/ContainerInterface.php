@@ -58,7 +58,7 @@ interface ContainerInterface
      * If a component is not shared, this method will create a new instance every time.
      *
      * @param string $typeOrID component type (a fully qualified namespaced class/interface name, e.g. `yii\db\Connection`) or ID (e.g. `db`).
-     * @param array $params the named parameters (name => value) to be passed to the object constructor
+     * @param array $params the parameters to be passed to the object constructor
      * if the method needs to create a new object instance.
      * @param boolean $create whether to create an instance of a component if it is not previously created.
      * This is mainly useful for shared instance.
