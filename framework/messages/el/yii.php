@@ -33,7 +33,7 @@ return array (
   'the input value' => 'η τιμή εισόδου',
   '(not set)' => '(μη ορισμένο)',
   'An internal server error occurred.' => 'Σφάλμα διακομιστή.',
-  'Are you sure to delete this item?' => 'Είστε σίγουρος για τη διαγραφή;',
+  'Are you sure you want to delete this item?' => 'Είστε σίγουρος για τη διαγραφή;',
   'Delete' => 'Διαγραφή',
   'Error' => 'Σφάλμα',
   'File upload failed.' => 'Η μεταφόρτωση απέτυχε.',

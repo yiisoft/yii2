@@ -19,7 +19,7 @@
 return array (
   '(not set)' => '(nu este setat)',
   'An internal server error occurred.' => 'A aparut o eroare internă de server.',
-  'Are you sure to delete this item?' => 'Sunteți sigur că doriți să ștergeți acest item?',
+  'Are you sure you want to delete this item?' => 'Sunteți sigur că doriți să ștergeți acest item?',
   'Delete' => 'Șterge',
   'Error' => 'Eroare',
   'File upload failed.' => 'Încărcarea fișierului a eșuat.',

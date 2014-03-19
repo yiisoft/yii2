@@ -19,7 +19,7 @@
 return array (
   '(not set)' => '(セットされていません)',
   'An internal server error occurred.' => 'サーバー内部エラーが発生しました。',
-  'Are you sure to delete this item?' => 'この項目を削除してもよろしいですか?',
+  'Are you sure you want to delete this item?' => 'この項目を削除してもよろしいですか?',
   'Delete' => '削除',
   'Error' => 'エラー',
   'File upload failed.' => 'ファイルアップロードに失敗しました。',

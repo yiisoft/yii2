@@ -19,7 +19,7 @@
 return array (
   '(not set)' => '(ikke defineret)',
   'An internal server error occurred.' => 'Der opstod en intern server fejl.',
-  'Are you sure to delete this item?' => 'Er du sikker på, at du vil slette dette element?',
+  'Are you sure you want to delete this item?' => 'Er du sikker på, at du vil slette dette element?',
   'Delete' => 'Slet',
   'Error' => 'Fejl',
   'File upload failed.' => 'Upload af fil fejlede.',

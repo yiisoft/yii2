@@ -22,7 +22,7 @@ return array(
         'the input value' => 'مقدار ورودی',
         '(not set)' => '(تنظیم نشده)',
         'An internal server error occurred.' => 'خطای داخلی سرور رخ داده است.',
-        'Are you sure to delete this item?' => 'آیا اطمینان به حذف این مورد دارید؟',
+        'Are you sure you want to delete this item?' => 'آیا اطمینان به حذف این مورد دارید؟',
         'Delete' => 'حذف',
         'Error' => 'خطا',
         'File upload failed.' => 'آپلود فایل شکست خورد.',

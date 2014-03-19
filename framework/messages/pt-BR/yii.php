@@ -19,7 +19,7 @@
 return array (
   '(not set)' => '(não definido)',
   'An internal server error occurred.' => 'Ocorreu um erro interno do servidor.',
-  'Are you sure to delete this item?' => 'Tem certeza de que deseja excluir este item?',
+  'Are you sure you want to delete this item?' => 'Tem certeza de que deseja excluir este item?',
   'Delete' => 'Excluir',
   'Error' => 'Erro',
   'File upload failed.' => 'O upload do arquivo falhou.',

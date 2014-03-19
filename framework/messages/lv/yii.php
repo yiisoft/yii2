@@ -20,7 +20,7 @@ return array (
   'View' => 'Skatīties',
   '(not set)' => '(nav uzstādīts)',
   'An internal server error occurred.' => 'Notika servera iekšēja kļūda.',
-  'Are you sure to delete this item?' => 'Vai patiešām vēlaties dzēst šo vienību?',
+  'Are you sure you want to delete this item?' => 'Vai patiešām vēlaties dzēst šo vienību?',
   'Delete' => 'Dzēst',
   'Error' => 'Kļūda',
   'File upload failed.' => 'Neizdevās augšupielādēt failu.',

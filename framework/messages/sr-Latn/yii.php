@@ -19,7 +19,7 @@
 return array (
   '(not set)' => '(bez vrednosti)',
   'An internal server error occurred.' => 'Došlo je do interne greške na serveru.',
-  'Are you sure to delete this item?' => 'Da li stvarno želite da obrišete ovu stavku?',
+  'Are you sure you want to delete this item?' => 'Da li stvarno želite da obrišete ovu stavku?',
   'Delete' => 'Obriši',
   'Error' => 'Greška',
   'File upload failed.' => 'Postavljanje fajla nije uspelo.',
