@@ -8,6 +8,7 @@ use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Item;
 use yiiunit\data\ar\Profile;
+use yiiunit\data\ar\Type;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 
 /**
@@ -485,5 +486,16 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertTrue($orders[0]['customer2']['orders2'][1]['id'] === $orders[1]['id']);
         $this->assertTrue($orders[1]['customer2']['orders2'][0]['id'] === $orders[0]['id']);
         $this->assertTrue($orders[1]['customer2']['orders2'][1]['id'] === $orders[1]['id']);
+    }
+
+    public function testDefaultValues()
+    {
+        $model = new Type();
+        $this->assertEquals(1, $model->int_col2);
+        $this->assertEquals('something', $model->char_col2);
+        $this->assertEquals(1.23, $model->float_col2);
+        $this->assertEquals(33.22, $model->numeric_col);
+        $this->assertEquals('2002-01-01 00:00:00', $model->time);
+        $this->assertEquals(true, $model->bool_col2);
     }
 }
