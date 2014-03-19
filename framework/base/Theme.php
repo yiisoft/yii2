@@ -83,7 +83,7 @@ class Theme extends Component
         parent::init();
 
         if (empty($this->pathMap)) {
-            if (($basePath = $this->getBasePath()) == null) {
+            if (($basePath = $this->getBasePath()) === null) {
                 throw new InvalidConfigException('The "basePath" property must be set.');
             }
             $this->pathMap = [Yii::$app->getBasePath() => [$basePath]];
