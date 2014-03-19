@@ -171,4 +171,15 @@ class Theme extends Component
             throw new InvalidConfigException('The "baseUrl" property must be set.');
         }
     }
+
+
+    /**
+     * Converts a relative file path into an absolute one using [[basePath]].
+     * @param string $path the relative file path to be converted.
+     * @return string the absolute file path
+     */
+    public function getPath($path)
+    {
+        return $this->getBasePath() . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
+    }
 }
