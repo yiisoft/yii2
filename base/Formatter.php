@@ -479,7 +479,7 @@ class Formatter extends Component
      * - an integer representing a UNIX timestamp
      * - a string that can be parsed into a UNIX timestamp via `strtotime()` or that can be passed to a DateInterval constructor.
      * - a PHP DateTime object
-     * - a PHP DateInterval object
+     * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
      *
      * @return string the formatted result
      */
