@@ -310,13 +310,17 @@ class UrlManager extends Component
      * It defaults to [[Request::scriptUrl]] if [[showScriptName]] is true or [[enablePrettyUrl]] is false;
      * otherwise, it defaults to [[Request::baseUrl]].
      * @return string the base URL that is used by [[createUrl()]] to prepend URLs it creates.
+     * @throws InvalidConfigException if running in console application and [[baseUrl]] is not configured.
      */
     public function getBaseUrl()
     {
         if ($this->_baseUrl === null) {
-            /** @var \yii\web\Request $request */
             $request = Yii::$app->getRequest();
-            $this->_baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $request->getScriptUrl() : $request->getBaseUrl();
+            if ($request instanceof \yii\web\Request) {
+                $this->_baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $request->getScriptUrl() : $request->getBaseUrl();
+            } else {
+                throw new InvalidConfigException('Please configure UrlManager::baseUrl correctly as you are running a console application.');
+            }
         }
 
         return $this->_baseUrl;
@@ -334,11 +338,17 @@ class UrlManager extends Component
     /**
      * Returns the host info that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
      * @return string the host info (e.g. "http://www.example.com") that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
+     * @throws InvalidConfigException if running in console application and [[hostInfo]] is not configured.
      */
     public function getHostInfo()
     {
         if ($this->_hostInfo === null) {
-            $this->_hostInfo = Yii::$app->getRequest()->getHostInfo();
+            $request = Yii::$app->getRequest();
+            if ($request instanceof \yii\web\Request) {
+                $this->_hostInfo = $request->getHostInfo();
+            } else {
+                throw new InvalidConfigException('Please configure UrlManager::hostInfo correctly as you are running a console application.');
+            }
         }
 
         return $this->_hostInfo;
