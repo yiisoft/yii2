@@ -18,7 +18,7 @@
  */
 return array (
   'Are you sure you want to delete this item?' => '¿Está seguro de eliminar este elemento?',
-  'Only files with these MIME types are allowed: {mimeTypes}.' => 'Sólo se permiten con estos tipos MIME: {mimeTypes}.',
+  'Only files with these MIME types are allowed: {mimeTypes}.' => 'Sólo se aceptan archivos con los siguientes tipos MIME: {mimeTypes}.',
   'in {delta, plural, =1{a day} other{# days}}' => 'en {delta, plural, =1{un día} other{# días}}',
   'in {delta, plural, =1{a minute} other{# minutes}}' => 'en {delta, plural, =1{un minuto} other{# minutos}}',
   'in {delta, plural, =1{a month} other{# months}}' => 'en {delta, plural, =1{un mes} other{# meses}}',
