@@ -127,6 +127,13 @@ class Validator extends Component
      * whether the value is empty.
      */
     public $isEmpty;
+    /**
+     * @var callable a PHP callable that determines the conditions upon which the validation is performed.
+     * If not set, the validation will always be performed. If set, the client-side validation is disabled.
+     * The signature of the callable should be `function ($model)` which takes the model to be validated as a
+     * parameter and returns a boolean indicating whether the validation should be performed.
+     */    
+    public $when;
 
     /**
      * Creates a validator object.
@@ -171,6 +178,10 @@ class Validator extends Component
         $this->attributes = (array) $this->attributes;
         $this->on = (array) $this->on;
         $this->except = (array) $this->except;
+
+        if ($this->when !== null) {
+            $this->enableClientValidation = false;
+        }
     }
 
     /**
@@ -192,7 +203,13 @@ class Validator extends Component
             $skip = $this->skipOnError && $object->hasErrors($attribute)
                 || $this->skipOnEmpty && $this->isEmpty($object->$attribute);
             if (!$skip) {
-                $this->validateAttribute($object, $attribute);
+                if ($this->when !== null) {
+                    if (call_user_func($this->when, $object)) {
+                        $this->validateAttribute($object, $attribute);
+                    }
+                } else {
+                    $this->validateAttribute($object, $attribute);
+                }
             }
         }
     }
