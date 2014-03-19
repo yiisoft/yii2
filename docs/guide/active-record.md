@@ -198,7 +198,7 @@ In order to load default values from database schema you may call `loadDefaultVa
 ```php
 $customer = new Customer();
 $customer->loadDefaultValues();
-$cusomer->name = 'Alexander';
+$customer->name = 'Alexander';
 $customer->save();
 ```
 
