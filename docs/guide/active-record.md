@@ -76,12 +76,13 @@ There are two ActiveRecord methods for querying data from database:
  - [[yii\db\ActiveRecord::find()]]
  - [[yii\db\ActiveRecord::findBySql()]]
 
-Both methods return an [[yii\db\ActiveQuery]] instance, which extends [[yii\db\Query]], and thus supports the same set of flexible and powerful DB query methods. The following examples demonstrate some of the possibilities.
+Both methods return an [[yii\db\ActiveQuery]] instance, which extends [[yii\db\Query]], and thus supports the same set
+of flexible and powerful DB query methods. The following examples demonstrate some of the possibilities.
 
 ```php
 // to retrieve all *active* customers and order them by their ID:
 $customers = Customer::find()
-	->where(['status' => $active])
+	->where(['status' => Customer::STATUS_ACTIVE])
 	->orderBy('id')
 	->all();
 
@@ -99,7 +100,7 @@ $customers = Customer::findBySql($sql)->all();
 
 // to return the number of *active* customers:
 $count = Customer::find()
-	->where(['status' => $active])
+	->where(['status' => Customer::STATUS_ACTIVE])
 	->count();
 
 // to return customers in terms of arrays rather than `Customer` objects:
@@ -112,6 +113,10 @@ $customers = Customer::find()
 $customers = Customer::find()->indexBy('id')->all();
 // $customers array is indexed by customer IDs
 ```
+
+> Note: In the code above `Customer::STATUS_ACTIVE` is a constant defined in the class itself. It is a good practice to
+  use such approach instead of relying on hardcoded strings and numbers directly.
+
 
 Batch query is also supported when working with Active Record. For example,
 
