@@ -491,6 +491,7 @@ class ActiveRecordTest extends DatabaseTestCase
     public function testDefaultValues()
     {
         $model = new Type();
+        $model->loadDefaultValues();
         $this->assertEquals(1, $model->int_col2);
         $this->assertEquals('something', $model->char_col2);
         $this->assertEquals(1.23, $model->float_col2);

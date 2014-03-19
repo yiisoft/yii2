@@ -193,6 +193,15 @@ Customer::updateAllCounters(['age' => 1]);
 > Info: The `save()` method will either perform an `INSERT` or `UPDATE` SQL statement, depending
   on whether the ActiveRecord being saved is new or not by checking `ActiveRecord::isNewRecord`.
 
+In order to load default values from database schema you may call `loadDefaultValues()` method:
+
+```php
+$customer = new Customer();
+$customer->loadDefaultValues();
+$cusomer->name = 'Alexander';
+$customer->save();
+```
+
 
 Data Input and Validation
 -------------------------
