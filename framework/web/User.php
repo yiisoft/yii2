@@ -324,9 +324,7 @@ class User extends Component
         $url = Yii::$app->getSession()->get($this->returnUrlParam, $defaultUrl);
         if (is_array($url)) {
             if (isset($url[0])) {
-                $route = array_shift($url);
-
-                return Yii::$app->getUrlManager()->createUrl($route, $url);
+                return Yii::$app->getUrlManager()->createUrl($url);
             } else {
                 $url = null;
             }
