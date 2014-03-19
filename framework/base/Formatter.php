@@ -470,4 +470,93 @@ class Formatter extends Component
                 return $verbose ? Yii::t('yii', '{n, plural, =1{# petabyte} other{# petabytes}}', $params) : Yii::t('yii', '{n} PB', $params);
         }
     }
+
+    /**
+     * Formats the value as the time interval between a date and now in human readable form.
+     * @param integer|string|DateTime|DateInterval $value the value to be formatted. The following
+     * types of value are supported:
+     *
+     * - an integer representing a UNIX timestamp
+     * - a string that can be parsed into a UNIX timestamp via `strtotime()` or that can be passed to a DateInterval constructor.
+     * - a PHP DateTime object
+     * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
+     *
+     * @return string the formatted result
+     */
+    public function asRelativeTime($value, $referenceTime = null)
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+
+        if ($value instanceof \DateInterval) {
+            $interval = $value;
+        } else {
+            $timestamp = $this->normalizeDatetimeValue($value);
+
+            if ($timestamp === false) {
+                // $value is not a valid date/time value, so we try
+                // to create a DateInterval with it
+                try {
+                    $interval = new \DateInterval($value);
+                } catch (Exception $e) {
+                    // invalid date/time and invalid interval
+                    return $this->nullDisplay;
+                }
+            } else {
+                $timezone = new \DateTimeZone($this->timeZone);
+                
+                if ($referenceTime === null) {
+                    $dateNow = new DateTime('now', $timezone);
+                } else {
+                    $referenceTime = $this->normalizeDatetimeValue($referenceTime);
+                    $dateNow = new DateTime(null, $timezone);
+                    $dateNow->setTimestamp($referenceTime);
+                }
+
+                $dateThen = new DateTime(null, $timezone);
+                $dateThen->setTimestamp($timestamp);
+
+                $interval = $dateThen->diff($dateNow);
+            }
+        }
+
+        if ($interval->invert) {
+            if ($interval->y >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{a year} other{# years}}', ['delta' => $interval->y]);
+            }
+            if ($interval->m >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{a month} other{# months}}', ['delta' => $interval->m]);
+            }
+            if ($interval->d >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{a day} other{# days}}', ['delta' => $interval->d]);
+            }
+            if ($interval->h >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{an hour} other{# hours}}', ['delta' => $interval->h]);
+            }
+            if ($interval->i >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{a minute} other{# minutes}}', ['delta' => $interval->i]);
+            }
+
+            return Yii::t('yii', 'in {delta, plural, =1{a second} other{# seconds}}', ['delta' => $interval->s]);
+        } else {
+            if ($interval->y >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{a year} other{# years}} ago', ['delta' => $interval->y]);
+            }
+            if ($interval->m >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{a month} other{# months}} ago', ['delta' => $interval->m]);
+            }
+            if ($interval->d >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{a day} other{# days}} ago', ['delta' => $interval->d]);
+            }
+            if ($interval->h >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}} ago', ['delta' => $interval->h]);
+            }
+            if ($interval->i >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $interval->i]);
+            }
+
+            return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $interval->s]);
+        }
+    }
 }
