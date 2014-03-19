@@ -180,6 +180,10 @@ class Theme extends Component
      */
     public function getPath($path)
     {
-        return $this->getBasePath() . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
+        if (($basePath = $this->getBasePath()) !== null) {
+            return $basePath . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
+        } else {
+            throw new InvalidConfigException('The "basePath" property must be set.');
+        }
     }
 }
