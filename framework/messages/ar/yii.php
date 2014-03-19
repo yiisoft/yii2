@@ -20,7 +20,7 @@ return array(
     'the input value' => 'قيمة المُدخل',
     '(not set)' => '(لم تحدد)',
     'An internal server error occurred.' => '.حدث خطأ داخلي في الخادم',
-    'Are you sure to delete this item?' => 'هل أنت متأكد من حذف هذا العنصر؟',
+    'Are you sure you want to delete this item?' => 'هل أنت متأكد من حذف هذا العنصر؟',
     'Delete' => 'حذف',
     'Error' => 'خطأ',
     'File upload failed.' => '.فشل في تحميل الملف',

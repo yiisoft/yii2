@@ -20,7 +20,7 @@ return array (
   'View' => 'Көру',
   '(not set)' => '(тапсырылған жок)',
   'An internal server error occurred.' => 'Сервердің ішкі қатесі туды.',
-  'Are you sure to delete this item?' => 'Осы элементі жоюға мақұлсызба?',
+  'Are you sure you want to delete this item?' => 'Осы элементі жоюға мақұлсызба?',
   'Delete' => 'Жою',
   'Error' => 'Қате',
   'File upload failed.' => 'Файлды жүктеу сәті болмады',

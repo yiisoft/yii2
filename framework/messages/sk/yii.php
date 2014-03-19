@@ -19,7 +19,7 @@
 return array (
   '(not set)' => '(nie je nastavené)',
   'An internal server error occurred.' => 'Vyskytla sa interná chyba servera.',
-  'Are you sure to delete this item?' => 'Skutočne chcete odstrániť tento záznam?',
+  'Are you sure you want to delete this item?' => 'Skutočne chcete odstrániť tento záznam?',
   'Delete' => 'Zmazať',
   'Error' => 'Chyba',
   'File upload failed.' => 'Súbor sa nepodarilo nahrať.',

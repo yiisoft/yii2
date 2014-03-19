@@ -19,7 +19,7 @@
 return array (
   '(not set)' => '(brak wartości)',
   'An internal server error occurred.' => 'Wystąpił wewnętrzny błąd serwera.',
-  'Are you sure to delete this item?' => 'Na pewno usunąć ten element?',
+  'Are you sure you want to delete this item?' => 'Na pewno usunąć ten element?',
   'Delete' => 'Usuń',
   'Error' => 'Bład',
   'File upload failed.' => 'Wgrywanie pliku nie powiodło się.',

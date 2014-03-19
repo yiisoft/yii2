@@ -23,7 +23,7 @@ return array (
   'The image "{file}" is too small. The width cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'L immagine "{file}" è troppo piccola. Il suo width non può essere maggiore di {limit, number} {limit, plural, one{pixel} other{pixels}}.',
   '(not set)' => '(nessun valore)',
   'An internal server error occurred.' => 'Si è verificato un errore interno',
-  'Are you sure to delete this item?' => 'Sei sicuro di voler cancellare questo elemento?',
+  'Are you sure you want to delete this item?' => 'Sei sicuro di voler cancellare questo elemento?',
   'Compile Error' => 'Errore di compilazione',
   'Compile Warning' => 'Avviso di compilazione',
   'Core Error' => 'Errore nel Core',

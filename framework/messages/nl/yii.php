@@ -20,7 +20,7 @@ return array (
   'the input value' => 'de invoerwaarde',
   '(not set)' => '(niet ingesteld)',
   'An internal server error occurred.' => 'Er is een interne serverfout opgetreden.',
-  'Are you sure to delete this item?' => 'Weet u zeker dat u dit item wilt verwijderen?',
+  'Are you sure you want to delete this item?' => 'Weet u zeker dat u dit item wilt verwijderen?',
   'Delete' => 'Verwijderen',
   'Error' => 'Fout',
   'File upload failed.' => 'Bestand uploaden mislukt.',
