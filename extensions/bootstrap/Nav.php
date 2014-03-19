@@ -75,6 +75,10 @@ class Nav extends Widget
      */
     public $activateItems = true;
     /**
+     * @var boolean whether to activate parent menu items when one of the corresponding child menu items is active.
+     */
+    public $activateParents = false;
+    /**
      * @var string the route used to determine if a menu item is active or not.
      * If not set, it will use the route of the current request.
      * @see params
@@ -156,16 +160,15 @@ class Nav extends Widget
             $active = $this->isItemActive($item);
         }
 
-        if ($active) {
-            Html::addCssClass($options, 'active');
-        }
-
         if ($items !== null) {
             $linkOptions['data-toggle'] = 'dropdown';
             Html::addCssClass($options, 'dropdown');
             Html::addCssClass($linkOptions, 'dropdown-toggle');
             $label .= ' ' . Html::tag('b', '', ['class' => 'caret']);
             if (is_array($items)) {
+                if ($this->activateItems) {
+                    $items = $this->isChildActive($items, $active);
+                }
                 $items = Dropdown::widget([
                     'items' => $items,
                     'encodeLabels' => $this->encodeLabels,
@@ -173,11 +176,33 @@ class Nav extends Widget
                     'view' => $this->getView(),
                 ]);
             }
+		}
+
+        if ($this->activateItems && $active) {
+            Html::addCssClass($options, 'active');
         }
 
         return Html::tag('li', Html::a($label, $url, $linkOptions) . $items, $options);
     }
 
+    /**
+     * Check to see if a child item is active optionally activating the parent.
+     * @param array $items @see items
+     * @param boolean $active should the parent be active too
+     * @return array @see items
+     */
+    protected function isChildActive($items, &$active)
+    {
+        foreach ($items as $i => $child) {
+            if (ArrayHelper::remove($items[$i], 'active', false) || $this->isItemActive($child)) {
+                Html::addCssClass($items[$i]['options'], 'active');
+                if ($this->activateParents) {
+                    $active = true;
+                }
+            }
+        }
+        return $items;
+    }
 
     /**
      * Checks whether a menu item is active.
