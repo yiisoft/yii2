@@ -94,15 +94,18 @@ class ActiveRecord extends BaseActiveRecord
     const OP_ALL = 0x07;
 
     /**
-     * @inheritdoc
+     * Loads default values from database table schema
+     *
+     * @return static model instance
      */
-    public function init()
+    public function loadDefaultValues()
     {
         foreach ($this->getTableSchema()->columns as $column) {
             if ($column->defaultValue) {
                 $this->{$column->name} = $column->defaultValue;
             }
         }
+        return $this;
     }
 
     /**
