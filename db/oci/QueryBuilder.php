@@ -20,9 +20,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     private $sql;
 
-    public function build($query)
+    /**
+     * @inheritdoc
+     */
+    public function build($query, $params = [])
     {
-        $params = $query->params;
+        $params = empty($params) ? $query->params : array_merge($params, $query->params);
+
         $clauses = [
             $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
             $this->buildFrom($query->from, $params),
