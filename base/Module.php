@@ -8,8 +8,7 @@
 namespace yii\base;
 
 use Yii;
-use yii\di\ContainerInterface;
-use yii\di\ContainerTrait;
+use yii\di\ServiceLocator;
 
 /**
  * Module is the base class for module and application classes.
@@ -37,10 +36,8 @@ use yii\di\ContainerTrait;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Module extends Component implements ContainerInterface
+class Module extends ServiceLocator
 {
-    use ContainerTrait;
-
     /**
      * @var array custom module parameters (name => value).
      */
@@ -349,7 +346,7 @@ class Module extends Component implements ContainerInterface
                     $this->_modules[$id]['class'] = 'yii\base\Module';
                 }
 
-                return $this->_modules[$id] = Yii::createObject($this->_modules[$id], $id, $this);
+                return $this->_modules[$id] = Yii::createObject($this->_modules[$id], [$id, $this]);
             }
         }
 
@@ -522,7 +519,7 @@ class Module extends Component implements ContainerInterface
             return $module->createController($route);
         }
         if (isset($this->controllerMap[$id])) {
-            $controller = Yii::createObject($this->controllerMap[$id], $id, $this);
+            $controller = Yii::createObject($this->controllerMap[$id], [$id, $this]);
 
             return [$controller, $route];
         }
