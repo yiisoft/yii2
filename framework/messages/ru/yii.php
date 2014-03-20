@@ -20,7 +20,7 @@ return array (
   'View' => 'Просмотр',
   '(not set)' => '(не задано)',
   'An internal server error occurred.' => 'Возникла внутренняя ошибка сервера.',
-  'Are you sure to delete this item?' => 'Вы уверены, что хотите удалить этот элемент?',
+  'Are you sure you want to delete this item?' => 'Вы уверены, что хотите удалить этот элемент?',
   'Delete' => 'Удалить',
   'Error' => 'Ошибка',
   'File upload failed.' => 'Загрузка файла не удалась.',
