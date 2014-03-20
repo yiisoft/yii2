@@ -111,12 +111,12 @@ yii.gii = (function ($) {
             initConfirmationCheckboxes();
 
             // model generator: hide class name input when table name input contains *
-            $('#model-generator #generator-tablename').on('change',function () {
+            $('#model-generator #generator-tablename').change(function () {
                 $('#model-generator .field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
             }).change();
 
             // CRUD generator: hide translationCategory when I18N is disabled
-            $('#crud-generator #generator-enablei18n').on('change',function () {
+            $('#crud-generator #generator-enablei18n').change(function () {
                 $('#crud-generator .field-generator-translationcategory').toggle($(this).is(':checked'));
             }).change();
 

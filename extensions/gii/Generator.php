@@ -457,7 +457,7 @@ abstract class Generator extends Model
     public function generateString($string = '', $placeholders = []){
         if ($this->enableI18N) {
             // If there are placeholders, use them
-            if (count($placeholders) > 0) {
+            if (!empty($placeholders)) {
                 $search = ['array (', ')'];
                 $replace = ['[', ']'];
                 $ph = ', ' . str_replace($search, $replace, var_export($placeholders, true));
@@ -467,7 +467,7 @@ abstract class Generator extends Model
             $str = "Yii::t('" . $this->translationCategory . "', '" . $string . "'" . $ph . ")";
         } else {
             // No I18N, replace placeholders by real words, if any
-            if (count($placeholders) > 0) {
+            if (!empty($placeholders)) {
                 $phKeys = array_map(function($word) {
                     return '{' . $word . '}';
                 }, array_keys($placeholders));

@@ -166,7 +166,7 @@ class Generator extends \yii\gii\Generator
      */
     public function validateTranslationCategory()
     {
-        if ((boolean)$this->enableI18N && empty($this->translationCategory)) {
+        if ($this->enableI18N && empty($this->translationCategory)) {
             $this->addError('translationCategory', "Translation Category cannot be blank.");
         }
     }
