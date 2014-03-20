@@ -94,6 +94,21 @@ class ActiveRecord extends BaseActiveRecord
     const OP_ALL = 0x07;
 
     /**
+     * Loads default values from database table schema
+     *
+     * @return static model instance
+     */
+    public function loadDefaultValues()
+    {
+        foreach ($this->getTableSchema()->columns as $column) {
+            if ($column->defaultValue) {
+                $this->{$column->name} = $column->defaultValue;
+            }
+        }
+        return $this;
+    }
+
+    /**
      * Returns the database connection used by this AR class.
      * By default, the "db" application component is used as the database connection.
      * You may override this method if you want to use a different database connection.

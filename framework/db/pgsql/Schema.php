@@ -373,6 +373,12 @@ SQL;
                     $table->sequenceName = preg_replace(['/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'], '', $column->defaultValue);
                 }
             }
+
+            if ($column->defaultValue) {
+                if (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches) || preg_match("/^(.*?)::/", $column->defaultValue, $matches)) {
+                    $column->defaultValue = $matches[1];
+                }
+            }
         }
 
         return true;
@@ -398,13 +404,13 @@ SQL;
         $column->precision = $info['numeric_precision'];
         $column->scale = $info['numeric_scale'];
         $column->size = $info['size'];
-
         if (isset($this->typeMap[$column->dbType])) {
             $column->type = $this->typeMap[$column->dbType];
         } else {
             $column->type = self::TYPE_STRING;
         }
         $column->phpType = $this->getColumnPhpType($column);
+
 
         return $column;
     }
