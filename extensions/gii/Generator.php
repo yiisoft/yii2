@@ -464,7 +464,7 @@ abstract class Generator extends Model
             } else {
                 $ph = '';
             }
-            $str = "Yii::t('app', '" . $string . "'" . $ph . ")";
+            $string = "Yii::t('app', '" . $string . "'" . $ph . ")";
         } else {
             // No translatable, replace placeholders by real words, if any
             if (count($placeholders) > 0) {
