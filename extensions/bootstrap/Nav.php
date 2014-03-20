@@ -176,7 +176,7 @@ class Nav extends Widget
                     'view' => $this->getView(),
                 ]);
             }
-		}
+        }
 
         if ($this->activateItems && $active) {
             Html::addCssClass($options, 'active');
