@@ -3,7 +3,7 @@
 use yii\helpers\StringHelper;
 
 /**
- * This is the template for generating a CRUD controller class file.
+ * This is the template for generating CRUD search class of the specified model.
  *
  * @var yii\web\View $this
  * @var yii\gii\generators\crud\Generator $generator
@@ -49,7 +49,7 @@ class <?= $searchModelClass ?> extends Model
     {
         return [
 <?php foreach ($labels as $name => $label): ?>
-            <?= "'$name' => '" . addslashes($label) . "',\n" ?>
+            <?= "'$name' => " . $generator->generateString(addslashes($label)) . ",\n" ?>
 <?php endforeach; ?>
         ];
     }

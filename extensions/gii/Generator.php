@@ -448,4 +448,36 @@ abstract class Generator extends Model
 
         return in_array(strtolower($value), $keywords, true);
     }
+
+    /**
+     * Generates a string depending on translatable property
+     * @param string $string       the text be generated
+     * @param array  $placeholders the placeholders to use by `Yii::t()`
+     */
+    public function generateString($string = '', $placeholders = []){
+        if ($this->translatable) {
+            // If there are placeholders, use them
+            if (count($placeholders) > 0) {
+                $search = ['array (', ')'];
+                $replace = ['[', ']'];
+                $ph = ', ' . str_replace($search, $replace, var_export($placeholders, true));
+            } else {
+                $ph = '';
+            }
+            $str = "Yii::t('app', '" . $string . "'" . $ph . ")";
+        } else {
+            // No translatable, replace placeholders by real words, if any
+            if (count($placeholders) > 0) {
+                $phKeys = array_map(function($word) {
+                    return '{' . $word . '}';
+                }, array_keys($placeholders));
+                $phValues = array_values($placeholders);
+                $string = "'" . str_replace($phKeys, $phValues, $string) . "'";
+            } else {
+                // No placeholders, just the given string
+                $string = "'" . $string . "'";
+            }
+        }
+        return $string;
+    }
 }

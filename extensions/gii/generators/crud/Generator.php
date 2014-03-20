@@ -36,6 +36,7 @@ class Generator extends \yii\gii\Generator
     public $baseControllerClass = 'yii\web\Controller';
     public $indexWidgetType = 'grid';
     public $searchModelClass;
+    public $translatable = false;
 
     /**
      * @inheritdoc
@@ -71,6 +72,7 @@ class Generator extends \yii\gii\Generator
             [['indexWidgetType'], 'in', 'range' => ['grid', 'list']],
             [['modelClass'], 'validateModelClass'],
             [['moduleID'], 'validateModuleID'],
+            [['translatable'], 'boolean'],
         ]);
     }
 
@@ -86,6 +88,7 @@ class Generator extends \yii\gii\Generator
             'baseControllerClass' => 'Base Controller Class',
             'indexWidgetType' => 'Widget Used in Index Page',
             'searchModelClass' => 'Search Model Class',
+            'translatable' => 'Generate Translatable Strings',
         ]);
     }
 
@@ -107,6 +110,8 @@ class Generator extends \yii\gii\Generator
                 You may choose either <code>GridView</code> or <code>ListView</code>',
             'searchModelClass' => 'This is the name of the search model class to be generated. You should provide a fully
                 qualified namespaced class name, e.g., <code>app\models\search\PostSearch</code>.',
+            'translatable' => 'This indicates whether the generator should generate strings using <code>Yii::t()</code> method.
+                Set this to <code>true</code> if you are planning to make your application translatable.',
         ];
     }
 
@@ -123,7 +128,7 @@ class Generator extends \yii\gii\Generator
      */
     public function stickyAttributes()
     {
-        return ['baseControllerClass', 'moduleID', 'indexWidgetType'];
+        return ['baseControllerClass', 'moduleID', 'indexWidgetType', 'translatable'];
     }
 
     /**
