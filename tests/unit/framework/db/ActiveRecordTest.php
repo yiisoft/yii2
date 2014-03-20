@@ -10,6 +10,7 @@ use yiiunit\data\ar\Item;
 use yiiunit\data\ar\Profile;
 use yiiunit\data\ar\Type;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
+use yiiunit\framework\db\cubrid\CubridActiveRecordTest;
 
 /**
  * @group db
@@ -496,7 +497,13 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals('something', $model->char_col2);
         $this->assertEquals(1.23, $model->float_col2);
         $this->assertEquals(33.22, $model->numeric_col);
-        $this->assertEquals('2002-01-01 00:00:00', $model->time);
         $this->assertEquals(true, $model->bool_col2);
+
+        if ($this instanceof CubridActiveRecordTest) {
+            // cubrid has non-standard timestamp representation
+            $this->assertEquals('12:00:00 AM 01/01/2002', $model->time);
+        } else {
+            $this->assertEquals('2002-01-01 00:00:00', $model->time);
+        }
     }
 }
