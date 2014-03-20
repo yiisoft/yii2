@@ -105,13 +105,11 @@ For each component you can specify class-wide defaults. For example, if you want
 widgets without specifying the class for every widget usage, you can do the following:
 
 ```php
-\Yii::$objectConfig = [
-	'yii\widgets\LinkPager' => [
-		'options' => [
-			'class' => 'pagination',
-		],
-	],
-];
+\Yii::$container->set('yii\widgets\LinkPager', [
+    'options' => [
+        'class' => 'pagination',
+    ],
+]);
 ```
 
 The code above should be executed once before `LinkPager` widget is used. It can be done in `index.php`, the application

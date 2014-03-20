@@ -55,10 +55,6 @@ use yii\base\InvalidConfigException;
 class Instance
 {
     /**
-     * @var ContainerInterface the container
-     */
-    public $container;
-    /**
      * @var string the component ID
      */
     public $id;
@@ -66,23 +62,20 @@ class Instance
     /**
      * Constructor.
      * @param string $id the component ID
-     * @param ContainerInterface $container the container. If null, the application instance will be used.
      */
-    protected function __construct($id, ContainerInterface $container = null)
+    protected function __construct($id)
     {
         $this->id = $id;
-        $this->container = $container;
     }
 
     /**
      * Creates a new Instance object.
      * @param string $id the component ID
-     * @param ContainerInterface $container the container. If null, the application instance will be used.
      * @return Instance the new Instance object.
      */
-    public static function of($id, ContainerInterface $container = null)
+    public static function of($id)
     {
-        return new static($id, $container);
+        return new static($id);
     }
 
     /**
@@ -111,48 +104,45 @@ class Instance
      * @return object
      * @throws \yii\base\InvalidConfigException
      */
-    public static function ensure($value, $type, $container = null)
+    public static function ensure($value, $type = null, $container = null)
     {
-        if (empty($value)) {
-            throw new InvalidConfigException('The required component is not specified.');
-        }
         if ($value instanceof $type) {
             return $value;
-        } elseif (is_string($value)) {
-            $value = new static($value, $container);
+        } elseif (empty($value)) {
+            throw new InvalidConfigException('The required component is not specified.');
+        }
+
+        if (is_string($value)) {
+            $value = new static($value);
         }
 
         if ($value instanceof self) {
-            $component = $value->get();
-            if ($component instanceof $type) {
+            $component = $value->get($container);
+            if ($component instanceof $type || $type === null) {
                 return $component;
             } else {
-                $container = $value->container ? : Yii::$app;
-                if ($component === null) {
-                    throw new InvalidConfigException('"' . $value->id . '" is not a valid component ID of ' . get_class($container));
-                } else {
-                    throw new InvalidConfigException('"' . $value->id . '" refers to a ' . get_class($component) . " component. $type is expected.");
-                }
+                throw new InvalidConfigException('"' . $value->id . '" refers to a ' . get_class($component) . " component. $type is expected.");
             }
-        } else {
-            $valueType = is_object($value) ? get_class($value) : gettype($value);
-            throw new InvalidConfigException("Invalid data type: $valueType. $type is expected.");
         }
+
+        $valueType = is_object($value) ? get_class($value) : gettype($value);
+        throw new InvalidConfigException("Invalid data type: $valueType. $type is expected.");
     }
 
     /**
      * Returns the actual component referenced by this Instance object.
      * @return object the actual component referenced by this Instance object.
-     * @throws InvalidConfigException there is no container available
      */
-    public function get()
+    public function get($container = null)
     {
         /** @var ContainerInterface $container */
-        $container = $this->container ? : Yii::$app;
-        if ($container !== null) {
+        if ($container) {
             return $container->get($this->id);
+        }
+        if (Yii::$app && Yii::$app->has($this->id)) {
+            return Yii::$app->get($this->id);
         } else {
-            throw new InvalidConfigException("Unable to locate a container for component \"{$this->id}\".");
+            return Yii::$container->get($this->id);
         }
     }
 }

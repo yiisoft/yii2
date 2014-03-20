@@ -200,10 +200,9 @@ class Mailer extends BaseMailer
                 }
             }
             unset($config['constructArgs']);
-            array_unshift($args, $className);
-            $object = call_user_func_array(['Yii', 'createObject'], $args);
+            $object = Yii::createObject($className, $args);
         } else {
-            $object = new $className;
+            $object = Yii::createObject($className);
         }
         if (!empty($config)) {
             foreach ($config as $name => $value) {
