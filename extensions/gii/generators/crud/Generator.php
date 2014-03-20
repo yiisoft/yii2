@@ -36,7 +36,8 @@ class Generator extends \yii\gii\Generator
     public $baseControllerClass = 'yii\web\Controller';
     public $indexWidgetType = 'grid';
     public $searchModelClass;
-    public $translatable = false;
+    public $enableI18N = false;
+    public $translationCategory = 'app';
 
     /**
      * @inheritdoc
@@ -72,7 +73,8 @@ class Generator extends \yii\gii\Generator
             [['indexWidgetType'], 'in', 'range' => ['grid', 'list']],
             [['modelClass'], 'validateModelClass'],
             [['moduleID'], 'validateModuleID'],
-            [['translatable'], 'boolean'],
+            [['enableI18N'], 'boolean'],
+            [['translationCategory'], 'validateTranslationCategory', 'skipOnEmpty' => false],
         ]);
     }
 
@@ -88,7 +90,8 @@ class Generator extends \yii\gii\Generator
             'baseControllerClass' => 'Base Controller Class',
             'indexWidgetType' => 'Widget Used in Index Page',
             'searchModelClass' => 'Search Model Class',
-            'translatable' => 'Generate Translatable Strings',
+            'enableI18N' => 'Enable I18N',
+            'translationCategory' => 'Translation Category',
         ]);
     }
 
@@ -110,8 +113,9 @@ class Generator extends \yii\gii\Generator
                 You may choose either <code>GridView</code> or <code>ListView</code>',
             'searchModelClass' => 'This is the name of the search model class to be generated. You should provide a fully
                 qualified namespaced class name, e.g., <code>app\models\search\PostSearch</code>.',
-            'translatable' => 'This indicates whether the generator should generate strings using <code>Yii::t()</code> method.
+            'enableI18N' => 'This indicates whether the generator should generate strings using <code>Yii::t()</code> method.
                 Set this to <code>true</code> if you are planning to make your application translatable.',
+            'translationCategory' => 'This is the category used by <code>Yii::t()</code> in case you enable I18N.',
         ];
     }
 
@@ -128,7 +132,7 @@ class Generator extends \yii\gii\Generator
      */
     public function stickyAttributes()
     {
-        return ['baseControllerClass', 'moduleID', 'indexWidgetType', 'translatable'];
+        return ['baseControllerClass', 'moduleID', 'indexWidgetType', 'enableI18N', 'translationCategory'];
     }
 
     /**
@@ -154,6 +158,16 @@ class Generator extends \yii\gii\Generator
             if ($module === null) {
                 $this->addError('moduleID', "Module '{$this->moduleID}' does not exist.");
             }
+        }
+    }
+
+    /**
+     * Checks if translation category is not empty when I18N is enabled
+     */
+    public function validateTranslationCategory()
+    {
+        if ((boolean)$this->enableI18N && empty($this->translationCategory)) {
+            $this->addError('translationCategory', "Translation Category cannot be blank.");
         }
     }
 

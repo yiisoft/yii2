@@ -450,12 +450,12 @@ abstract class Generator extends Model
     }
 
     /**
-     * Generates a string depending on translatable property
+     * Generates a string depending on enableI18N property
      * @param string $string       the text be generated
      * @param array  $placeholders the placeholders to use by `Yii::t()`
      */
     public function generateString($string = '', $placeholders = []){
-        if ($this->translatable) {
+        if ($this->enableI18N) {
             // If there are placeholders, use them
             if (count($placeholders) > 0) {
                 $search = ['array (', ')'];
@@ -464,20 +464,20 @@ abstract class Generator extends Model
             } else {
                 $ph = '';
             }
-            $string = "Yii::t('app', '" . $string . "'" . $ph . ")";
+            $str = "Yii::t('" . $this->translationCategory . "', '" . $string . "'" . $ph . ")";
         } else {
-            // No translatable, replace placeholders by real words, if any
+            // No I18N, replace placeholders by real words, if any
             if (count($placeholders) > 0) {
                 $phKeys = array_map(function($word) {
                     return '{' . $word . '}';
                 }, array_keys($placeholders));
                 $phValues = array_values($placeholders);
-                $string = "'" . str_replace($phKeys, $phValues, $string) . "'";
+                $str = "'" . str_replace($phKeys, $phValues, $string) . "'";
             } else {
                 // No placeholders, just the given string
-                $string = "'" . $string . "'";
+                $str = "'" . $string . "'";
             }
         }
-        return $string;
+        return $str;
     }
 }

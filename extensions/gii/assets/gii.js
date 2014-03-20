@@ -115,6 +115,11 @@ yii.gii = (function ($) {
                 $('#model-generator .field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
             }).change();
 
+            // CRUD generator: hide translationCategory when I18N is disabled
+            $('#crud-generator #generator-enablei18n').on('change',function () {
+                $('#crud-generator .field-generator-translationcategory').toggle($(this).is(':checked'));
+            }).change();
+
             // hide Generate button if any input is changed
             $('.default-view .form-group input,select,textarea').change(function () {
                 $('.default-view-results,.default-view-files').hide();
