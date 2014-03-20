@@ -296,6 +296,11 @@ class Generator extends \yii\gii\Generator
             $tableName = $table->name;
             $className = $this->generateClassName($tableName);
             foreach ($table->foreignKeys as $refs) {
+                // We don't need to create models for pivot tables
+                if ($this->checkPivotTable($table)) {
+                    continue 1;
+                }
+
                 $refTable = $refs[0];
                 unset($refs[0]);
                 $fks = array_keys($refs);
