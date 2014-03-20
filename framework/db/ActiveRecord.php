@@ -96,12 +96,13 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * Loads default values from database table schema
      *
+     * @param boolean $skipIfSet if existing value should be preserved
      * @return static model instance
      */
-    public function loadDefaultValues()
+    public function loadDefaultValues($skipIfSet = true)
     {
         foreach ($this->getTableSchema()->columns as $column) {
-            if ($column->defaultValue) {
+            if ($column->defaultValue && !($skipIfSet && $this->{$column->name} !== null)) {
                 $this->{$column->name} = $column->defaultValue;
             }
         }

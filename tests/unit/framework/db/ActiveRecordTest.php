@@ -505,5 +505,17 @@ class ActiveRecordTest extends DatabaseTestCase
         } else {
             $this->assertEquals('2002-01-01 00:00:00', $model->time);
         }
+
+        $model = new Type();
+        $model->char_col2 = 'not something';
+
+        $model->loadDefaultValues();
+        $this->assertEquals('not something', $model->char_col2);
+
+        $model = new Type();
+        $model->char_col2 = 'not something';
+
+        $model->loadDefaultValues(false);
+        $this->assertEquals('something', $model->char_col2);
     }
 }
