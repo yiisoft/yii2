@@ -82,45 +82,82 @@ Yii2 uses Composer for installation, and extensions for Yii2 should as well. Tow
 
 If your extension classes reside directly in the repository root directory, you can use the PSR-4 autoloader in the following way in your `composer.json` file:
 
-```
+```json
 {
-        "name": "myname/mywidget",
-        "description": "My widget is a cool widget that does everything",
-        "keywords": ["yii", "extension", "widget", "cool"],
-        "homepage": "https://github.com/myname/yii2-mywidget-widget",
-        "type": "yii2-extension",
-        "license": "BSD-3-Clause",
-        "authors": [
-                {
-                        "name": "John Doe",
-                        "email": "doe@example.com"
-                }
-        ],
-        "require": {
-                "yiisoft/yii2": "*"
-        },
-        "autoload": {
-                "psr-4": {
-                        "myname\\mywidget\\": ""
-                }
+    "name": "myname/mywidget",
+    "description": "My widget is a cool widget that does everything",
+    "keywords": ["yii", "extension", "widget", "cool"],
+    "homepage": "https://github.com/myname/yii2-mywidget-widget",
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "John Doe",
+            "email": "doe@example.com"
         }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "myname\\mywidget\\": ""
+        }
+    }
 }
 ```
 
 In the above, `myname/mywidget` is the package name that will be registered
 at [Packagist](https://packagist.org). It is common for the package name to match your Github repository name.
-
-In the above, the `psr-4` autoloader is specified, mapping the `myname\mywidget` namespace to the root directory where the classes reside.
+Also, the `psr-4` autoloader is specified in the above, which maps the `myname\mywidget` namespace to the root directory where the classes reside.
 
 More details on this syntax can be found in the [Composer documentation](http://getcomposer.org/doc/04-schema.md#autoload).
+
+
+### Bootstrap with extension
+
+Sometimes, you may want your extension to execute some code during the bootstrap stage of an application.
+For example, your extension may want to respond to the application's `beginRequest` event. You can ask the extension user
+to explicitly attach your event handler in the extension to the application's event. A better way, however, is to
+do all these automatically.
+
+To achieve this goal, you can create a bootstrap class by implementing [[yii\base\BootstrapInterface]].
+
+```php
+namespace myname\mywidget;
+
+use yii\base\BootstrapInterface;
+use yii\base\Application;
+
+class Bootstrap implements BootstrapInterface
+{
+    public function bootstrap(Application $app)
+    {
+        $app->on(Application::EVENT_BEFORE_REQUEST, function () {
+             // do something here
+        });
+    }
+}
+```
+
+You then list this bootstrap class in `composer.json` as follows,
+
+```json
+{
+    "extra": {
+        "bootstrap": "path\\to\\MyBootstrapClass"
+    }
+}
+```
+
 
 Working with database
 ---------------------
 
-Extensions sometimes have to use their own database tables. In such situations, 
+Extensions sometimes have to use their own database tables. In such a situation,
 
 - If the extension creates or modifies the database schema, always use Yii migrations instead of SQL files or custom scripts.
-- Migrations should be applicable to as many data storages as possible.
+- Migrations should be applicable to different database systems.
 - Do not use Active Record models in your migrations.
 
 Assets
