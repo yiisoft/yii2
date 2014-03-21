@@ -437,7 +437,7 @@ abstract class Application extends Module
      */
     public function getCache()
     {
-        return $this->get('cache');
+        return $this->get('cache', false);
     }
 
     /**
@@ -497,10 +497,11 @@ abstract class Application extends Module
     /**
      * Returns the auth manager for this application.
      * @return \yii\rbac\Manager the auth manager for this application.
+     * Null is returned if auth manager is not configured.
      */
     public function getAuthManager()
     {
-        return $this->get('authManager');
+        return $this->get('authManager', false);
     }
 
     /**
