@@ -488,7 +488,9 @@ abstract class Generator extends Model
      * @param string $string       the text be generated
      * @param array  $placeholders the placeholders to use by `Yii::t()`
      */
-    public function generateString($string = '', $placeholders = []) {
+    public function generateString($string = '', $placeholders = [])
+    {
+        $string = addslashes($string);
         if ($this->enableI18N) {
             // If there are placeholders, use them
             if (!empty($placeholders)) {
