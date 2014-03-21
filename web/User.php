@@ -570,6 +570,10 @@ class User extends Component
 
     /**
      * Performs access check for this user.
+     *
+     * Note that you must configure "authManager" application component in order to use this method.
+     * Otherwise an exception will be thrown.
+     *
      * @param  string  $operation    the name of the operation that need access check.
      * @param  array   $params       name-value pairs that would be passed to business rules associated
      *                               with the tasks and roles assigned to the user. A param with name 'userId' is added to
@@ -586,9 +590,6 @@ class User extends Component
     public function checkAccess($operation, $params = [], $allowCaching = true)
     {
         $auth = Yii::$app->getAuthManager();
-        if ($auth === null) {
-            return false;
-        }
         if ($allowCaching && empty($params) && isset($this->_access[$operation])) {
             return $this->_access[$operation];
         }
