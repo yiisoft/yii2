@@ -127,36 +127,6 @@ class Module extends ServiceLocator
     }
 
     /**
-     * Getter magic method.
-     * This method is overridden to support accessing components like reading properties.
-     * @param  string $name component or property name
-     * @return mixed  the named property value
-     */
-    public function __get($name)
-    {
-        if ($this->has($name)) {
-            return $this->get($name);
-        } else {
-            return parent::__get($name);
-        }
-    }
-
-    /**
-     * Checks if a property value is null.
-     * This method overrides the parent implementation by checking if the named component is loaded.
-     * @param  string  $name the property name or the event name
-     * @return boolean whether the property value is null
-     */
-    public function __isset($name)
-    {
-        if ($this->has($name)) {
-            return $this->get($name, [], false) !== null;
-        } else {
-            return parent::__isset($name);
-        }
-    }
-
-    /**
      * Initializes the module.
      * This method is called after the module is created and initialized with property values
      * given in configuration. The default implementation will call [[preloadComponents()]] to
