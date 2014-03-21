@@ -62,7 +62,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      */
     public static function getDb()
     {
-        return \Yii::$app->getComponent('sphinx');
+        return \Yii::$app->get('sphinx');
     }
 
     /**

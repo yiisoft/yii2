@@ -29,7 +29,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      */
     public static function getDb()
     {
-        return \Yii::$app->getComponent('mongodb');
+        return \Yii::$app->get('mongodb');
     }
 
     /**

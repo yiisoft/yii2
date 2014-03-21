@@ -143,7 +143,7 @@ class Choice extends Widget
     protected function defaultClients()
     {
         /** @var $collection \yii\authclient\Collection */
-        $collection = Yii::$app->getComponent($this->clientCollection);
+        $collection = Yii::$app->get($this->clientCollection);
 
         return $collection->getClients();
     }

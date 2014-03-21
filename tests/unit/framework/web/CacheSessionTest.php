@@ -15,7 +15,7 @@ class CacheSessionTest extends \yiiunit\TestCase
     {
         parent::setUp();
         $this->mockApplication();
-        Yii::$app->setComponent('cache', new FileCache());
+        Yii::$app->set('cache', new FileCache());
     }
 
     public function testCacheSession()
@@ -30,7 +30,7 @@ class CacheSessionTest extends \yiiunit\TestCase
 
     public function testInvalidCache()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException');
+        $this->setExpectedException('\Exception');
         new CacheSession(['cache' => 'invalid']);
     }
 }

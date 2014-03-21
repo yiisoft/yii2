@@ -10,6 +10,7 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;
 use yii\log\Logger;
+use yii\di\Container;
 
 /**
  * Gets the application start timestamp.
@@ -76,26 +77,13 @@ class BaseYii
      */
     public static $aliases = ['@yii' => __DIR__];
     /**
-     * @var array initial property values that will be applied to objects newly created via [[createObject]].
-     * The array keys are class names without leading backslashes "\", and the array values are the corresponding
-     * name-value pairs for initializing the created class instances. For example,
-     *
-     * ~~~
-     * [
-     *     'Bar' => [
-     *         'prop1' => 'value1',
-     *         'prop2' => 'value2',
-     *     ],
-     *     'mycompany\foo\Car' => [
-     *         'prop1' => 'value1',
-     *         'prop2' => 'value2',
-     *     ],
-     * ]
-     * ~~~
-     *
+     * @var Container the dependency injection (DI) container used by [[createObject()]].
+     * You may use [[Container::set()]] to set up the needed dependencies of classes and
+     * their initial property values.
      * @see createObject()
+     * @see Container
      */
-    public static $objectConfig = [];
+    public static $container;
 
 
     /**
@@ -304,74 +292,59 @@ class BaseYii
     /**
      * Creates a new object using the given configuration.
      *
-     * The configuration can be either a string or an array.
-     * If a string, it is treated as the *object class*; if an array,
-     * it must contain a `class` element specifying the *object class*, and
-     * the rest of the name-value pairs in the array will be used to initialize
-     * the corresponding object properties.
+     * You may view this method as an enhanced version of the `new` operator.
+     * The method supports creating an object based on a class name, a configuration array or
+     * an anonymous function.
      *
      * Below are some usage examples:
      *
-     * ~~~
-     * $object = \Yii::createObject('app\components\GoogleMap');
-     * $object = \Yii::createObject([
-     *     'class' => 'app\components\GoogleMap',
-     *     'apiKey' => 'xyz',
+     * ```php
+     * // create an object using a class name
+     * $object = Yii::createObject('yii\db\Connection');
+     *
+     * // create an object using a configuration array
+     * $object = Yii::createObject([
+     *     'class' => 'yii\db\Connection',
+     *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
+     *     'username' => 'root',
+     *     'password' => '',
+     *     'charset' => 'utf8',
      * ]);
-     * ~~~
      *
-     * This method can be used to create any object as long as the object's constructor is
-     * defined like the following:
+     * // create an object with two constructor parameters
+     * $object = \Yii::createObject('MyClass', [$param1, $param2]);
+     * ```
      *
-     * ~~~
-     * public function __construct(..., $config = []) {
-     * }
-     * ~~~
+     * Using [[\yii\di\Container|dependency injection container]], this method can also identify
+     * dependent objects, instantiate them and inject them into the newly created object.
      *
-     * The method will pass the given configuration as the last parameter of the constructor,
-     * and any additional parameters to this method will be passed as the rest of the constructor parameters.
+     * @param string|array|callable $type the object type. This can be specified in one of the following forms:
      *
-     * @param  string|array           $config the configuration. It can be either a string representing the class name
-     *                                        or an array representing the object configuration.
-     * @return mixed                  the created object
+     * - a string: representing the class name of the object to be created
+     * - a configuration array: the array must contain a `class` element which is treated as the object class,
+     *   and the rest of the name-value pairs will be used to initialize the corresponding object properties
+     * - a PHP callable: either an anonymous function or an array representing a class method (`[$class or $object, $method]`).
+     *   The callable should return a new instance of the object being created.
+     *
+     * @param array $params the constructor parameters
+     * @return object the created object
      * @throws InvalidConfigException if the configuration is invalid.
+     * @see \yii\di\Container
      */
-    public static function createObject($config)
+    public static function createObject($type, array $params = [])
     {
-        static $reflections = [];
-
-        if (is_string($config)) {
-            $class = $config;
-            $config = [];
-        } elseif (isset($config['class'])) {
-            $class = $config['class'];
-            unset($config['class']);
-        } else {
+        if (is_string($type)) {
+            return static::$container->get($type, $params);
+        } elseif (is_array($type) && isset($type['class'])) {
+            $class = $type['class'];
+            unset($type['class']);
+            return static::$container->get($class, $params, $type);
+        } elseif (is_callable($type, true)) {
+            return call_user_func($type, $params);
+        } elseif (is_array($type)) {
             throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
-        }
-
-        $class = ltrim($class, '\\');
-
-        if (isset(static::$objectConfig[$class])) {
-            $config = array_merge(static::$objectConfig[$class], $config);
-        }
-
-        if (func_num_args() > 1) {
-            /** @var \ReflectionClass $reflection */
-            if (isset($reflections[$class])) {
-                $reflection = $reflections[$class];
-            } else {
-                $reflection = $reflections[$class] = new \ReflectionClass($class);
-            }
-            $args = func_get_args();
-            array_shift($args); // remove $config
-            if (!empty($config)) {
-                $args[] = $config;
-            }
-
-            return $reflection->newInstanceArgs($args);
         } else {
-            return empty($config) ? new $class : new $class($config);
+            throw new InvalidConfigException("Unsupported configuration type: " . gettype($type));
         }
     }
 

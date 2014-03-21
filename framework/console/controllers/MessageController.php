@@ -129,7 +129,7 @@ class MessageController extends Controller
                 }
             }
         } elseif ($config['format'] === 'db') {
-            $db = \Yii::$app->getComponent(isset($config['db']) ? $config['db'] : 'db');
+            $db = \Yii::$app->get(isset($config['db']) ? $config['db'] : 'db');
             if (!$db instanceof \yii\db\Connection) {
                 throw new Exception('The "db" option must refer to a valid database application component.');
             }

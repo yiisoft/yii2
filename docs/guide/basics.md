@@ -55,7 +55,7 @@ $object = Yii::createObject([
     'class' => 'MyClass',
     'property1' => 'abc',
     'property2' => 'cde',
-], $param1, $param2);
+], [$param1, $param2]);
 ```
 
 

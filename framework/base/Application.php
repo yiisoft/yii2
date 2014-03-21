@@ -160,7 +160,6 @@ abstract class Application extends Module
 
         $this->preInit($config);
         $this->registerErrorHandlers();
-        $this->registerCoreComponents();
 
         Component::__construct($config);
     }
@@ -206,6 +205,15 @@ abstract class Application extends Module
         } elseif (!ini_get('date.timezone')) {
             $this->setTimeZone('UTC');
         }
+
+        // merge core components with custom components
+        foreach ($this->coreComponents() as $id => $component) {
+            if (!isset($config['components'][$id])) {
+                $config['components'][$id] = $component;
+            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['class'])) {
+                $config['components'][$id]['class'] = $component['class'];
+            }
+        }
     }
 
     /**
@@ -248,7 +256,7 @@ abstract class Application extends Module
      */
     public function preloadComponents()
     {
-        $this->getComponent('log');
+        $this->get('log');
         parent::preloadComponents();
     }
 
@@ -400,7 +408,7 @@ abstract class Application extends Module
      */
     public function getDb()
     {
-        return $this->getComponent('db');
+        return $this->get('db');
     }
 
     /**
@@ -409,7 +417,7 @@ abstract class Application extends Module
      */
     public function getLog()
     {
-        return $this->getComponent('log');
+        return $this->get('log');
     }
 
     /**
@@ -418,7 +426,7 @@ abstract class Application extends Module
      */
     public function getErrorHandler()
     {
-        return $this->getComponent('errorHandler');
+        return $this->get('errorHandler');
     }
 
     /**
@@ -427,7 +435,7 @@ abstract class Application extends Module
      */
     public function getCache()
     {
-        return $this->getComponent('cache');
+        return $this->get('cache');
     }
 
     /**
@@ -436,7 +444,7 @@ abstract class Application extends Module
      */
     public function getFormatter()
     {
-        return $this->getComponent('formatter');
+        return $this->get('formatter');
     }
 
     /**
@@ -445,7 +453,7 @@ abstract class Application extends Module
      */
     public function getRequest()
     {
-        return $this->getComponent('request');
+        return $this->get('request');
     }
 
     /**
@@ -454,7 +462,7 @@ abstract class Application extends Module
      */
     public function getView()
     {
-        return $this->getComponent('view');
+        return $this->get('view');
     }
 
     /**
@@ -463,7 +471,7 @@ abstract class Application extends Module
      */
     public function getUrlManager()
     {
-        return $this->getComponent('urlManager');
+        return $this->get('urlManager');
     }
 
     /**
@@ -472,7 +480,7 @@ abstract class Application extends Module
      */
     public function getI18n()
     {
-        return $this->getComponent('i18n');
+        return $this->get('i18n');
     }
 
     /**
@@ -481,7 +489,7 @@ abstract class Application extends Module
      */
     public function getMail()
     {
-        return $this->getComponent('mail');
+        return $this->get('mail');
     }
 
     /**
@@ -490,16 +498,16 @@ abstract class Application extends Module
      */
     public function getAuthManager()
     {
-        return $this->getComponent('authManager');
+        return $this->get('authManager');
     }
 
     /**
-     * Registers the core application components.
-     * @see setComponents
+     * Returns the core application components.
+     * @see set
      */
-    public function registerCoreComponents()
+    public function coreComponents()
     {
-        $this->setComponents([
+        return [
             'log' => ['class' => 'yii\log\Logger'],
             'errorHandler' => ['class' => 'yii\base\ErrorHandler'],
             'formatter' => ['class' => 'yii\base\Formatter'],
@@ -507,7 +515,7 @@ abstract class Application extends Module
             'mail' => ['class' => 'yii\swiftmailer\Mailer'],
             'urlManager' => ['class' => 'yii\web\UrlManager'],
             'view' => ['class' => 'yii\web\View'],
-        ]);
+        ];
     }
 
     /**

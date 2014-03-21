@@ -80,7 +80,7 @@ class Session extends \yii\web\Session
     public function init()
     {
         if (is_string($this->redis)) {
-            $this->redis = Yii::$app->getComponent($this->redis);
+            $this->redis = Yii::$app->get($this->redis);
         } elseif (is_array($this->redis)) {
             if (!isset($this->redis['class'])) {
                 $this->redis['class'] = Connection::className();
