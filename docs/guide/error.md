@@ -27,7 +27,7 @@ Rendering errors in a dedicated controller action
 -------------------------------------------------
 
 The default Yii error page is great when developing a site, and is acceptable for production sites if `YII_DEBUG`
-is turned off in your bootstrap index.php file. But but you may want to customize the default error page to make it
+is turned off in your bootstrap index.php file. But you may want to customize the default error page to make it
 more suitable for your project.
 
 The easiest way to create a custom error page it is to use a dedicated controller action for error rendering. First,
