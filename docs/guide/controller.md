@@ -53,7 +53,7 @@ class SiteController extends Controller
 
 	public function actionIndex()
 	{
-		#CSRF validation will no be applied on this and other actions
+		// CSRF validation will not be applied to this and other actions
 	}
 
 }

@@ -31,7 +31,7 @@ class CubridCommandTest extends CommandTest
         $command->bindParam(':email', $email);
         $this->assertEquals($name, $command->queryScalar());
 
-        $sql = "INSERT INTO tbl_type (int_col, char_col, char_col2, enum_col, float_col, blob_col, numeric_col) VALUES (:int_col, '', :char_col, :enum_col, :float_col, CHAR_TO_BLOB(:blob_col), :numeric_col)";
+        $sql = "INSERT INTO tbl_type (int_col, char_col, char_col2, enum_col, float_col, blob_col, numeric_col, bool_col) VALUES (:int_col, '', :char_col, :enum_col, :float_col, CHAR_TO_BLOB(:blob_col), :numeric_col, :bool_col)";
         $command = $db->createCommand($sql);
         $intCol = 123;
         $charCol = 'abc';
@@ -39,12 +39,14 @@ class CubridCommandTest extends CommandTest
         $floatCol = 1.23;
         $blobCol = "\x10\x11\x12";
         $numericCol = '1.23';
+        $boolCol = true;
         $command->bindParam(':int_col', $intCol);
         $command->bindParam(':char_col', $charCol);
         $command->bindParam(':enum_col', $enumCol);
         $command->bindParam(':float_col', $floatCol);
         $command->bindParam(':blob_col', $blobCol);
         $command->bindParam(':numeric_col', $numericCol);
+        $command->bindParam(':bool_col', $boolCol);
         $this->assertEquals(1, $command->execute());
 
         $sql = 'SELECT * FROM tbl_type';
@@ -55,6 +57,7 @@ class CubridCommandTest extends CommandTest
         $this->assertEquals($floatCol, $row['float_col']);
         $this->assertEquals($blobCol, fread($row['blob_col'], 3));
         $this->assertEquals($numericCol, $row['numeric_col']);
+        $this->assertEquals($boolCol, $row['bool_col']);
 
         // bindValue
         $sql = 'INSERT INTO tbl_customer(email, name, address) VALUES (:email, \'user5\', \'address5\')';

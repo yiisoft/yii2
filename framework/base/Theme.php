@@ -82,12 +82,11 @@ class Theme extends Component
     {
         parent::init();
 
-        if (($basePath = $this->getBasePath()) !== null) {
-            if (empty($this->pathMap)) {
-                $this->pathMap = [Yii::$app->getBasePath() => [$basePath]];
+        if (empty($this->pathMap)) {
+            if (($basePath = $this->getBasePath()) === null) {
+                throw new InvalidConfigException('The "basePath" property must be set.');
             }
-        } else {
-            throw new InvalidConfigException('The "basePath" property must be set.');
+            $this->pathMap = [Yii::$app->getBasePath() => [$basePath]];
         }
     }
 
@@ -173,13 +172,18 @@ class Theme extends Component
         }
     }
 
+
     /**
      * Converts a relative file path into an absolute one using [[basePath]].
-     * @param  string $path the relative file path to be converted.
+     * @param string $path the relative file path to be converted.
      * @return string the absolute file path
      */
     public function getPath($path)
     {
-        return $this->getBasePath() . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
+        if (($basePath = $this->getBasePath()) !== null) {
+            return $basePath . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
+        } else {
+            throw new InvalidConfigException('The "basePath" property must be set.');
+        }
     }
 }
