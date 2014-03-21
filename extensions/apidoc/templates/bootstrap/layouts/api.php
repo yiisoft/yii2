@@ -15,7 +15,7 @@ $renderer = $this->context;
 $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
 
 <div class="row">
-    <div class="col-md-2">
+    <div class="col-md-3">
         <?php
         $types = $renderer->getNavTypes(isset($type) ? $type : null, $types);
         ksort($types);
