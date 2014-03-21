@@ -8,7 +8,6 @@
 namespace yiiunit\framework\di;
 
 use yii\base\Component;
-use yii\base\Object;
 use yii\di\Container;
 use yii\di\Instance;
 use yiiunit\TestCase;

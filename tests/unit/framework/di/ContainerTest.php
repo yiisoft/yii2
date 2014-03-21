@@ -63,7 +63,7 @@ class ContainerTest extends TestCase
         // wiring by closure which uses container
         $container = new Container;
         $container->set($QuxInterface, $Qux);
-        $container->set('foo', function ($params, $config, Container $c) {
+        $container->set('foo', function (Container $c, $params, $config) {
             return $c->get(Foo::className());
         });
         $foo = $container->get('foo');
