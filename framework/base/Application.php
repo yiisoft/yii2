@@ -495,11 +495,10 @@ abstract class Application extends Module
     /**
      * Returns the auth manager for this application.
      * @return \yii\rbac\Manager the auth manager for this application.
-     * Null will be returned if "authManager" is not installed.
      */
     public function getAuthManager()
     {
-        return $this->get('authManager', false);
+        return $this->get('authManager');
     }
 
     /**

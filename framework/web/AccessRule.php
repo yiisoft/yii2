@@ -137,10 +137,14 @@ class AccessRule extends Component
             return true;
         }
         foreach ($this->roles as $role) {
-            if ($role === '?' && $user->getIsGuest()) {
-                return true;
-            } elseif ($role === '@' && !$user->getIsGuest()) {
-                return true;
+            if ($role === '?') {
+                if ($user->getIsGuest()) {
+                    return true;
+                }
+            } elseif ($role === '@') {
+                if (!$user->getIsGuest()) {
+                    return true;
+                }
             } elseif ($user->checkAccess($role)) {
                 return true;
             }
