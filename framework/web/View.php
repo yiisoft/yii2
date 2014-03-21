@@ -239,6 +239,7 @@ class View extends \yii\base\View
         $this->cssFiles = null;
         $this->js = null;
         $this->jsFiles = null;
+        $this->assetBundles = [];
     }
 
     /**
