@@ -16,6 +16,7 @@ Yii Framework 2 gii extension Change Log
 - Enh #2491: Added support for using the same base class name of search model and data model in Gii (qiangxue)
 - Enh #2595: Browse through all generated files using right and left arrows (thiagotalma)
 - Enh #2633: Keyboard shortcuts to browse through files (thiagotalma)
+- Enh #2822: possibility to generate I18N messages (lucianobaraglia)
 
 2.0.0 alpha, December 1, 2013
 -----------------------------
