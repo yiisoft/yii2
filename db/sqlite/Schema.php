@@ -238,9 +238,9 @@ class Schema extends \yii\db\Schema
         }
         $column->phpType = $this->getColumnPhpType($column);
 
-        $value = $info['dflt_value'];
+        $value = trim($info['dflt_value'], "'\"");
         if ($column->type === 'string') {
-            $column->defaultValue = trim($value, "'\"");
+            $column->defaultValue = $value;
         } else {
             $column->defaultValue = $column->typecast(strcasecmp($value, 'null') ? $value : null);
         }
