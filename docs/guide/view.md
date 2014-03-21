@@ -162,8 +162,8 @@ The first argument is an map of `<meta>` tag option names and values. The code a
 Sometimes there's a need to have only a single tag of a type. In this case you need to specify the second argument:
 
 ```html
-$this->registerMetaTag(['description' => 'This is my cool website made with Yii!'], 'meta-description');
-$this->registerMetaTag(['description' => 'This website is about funny raccoons.'], 'meta-description');
+$this->registerMetaTag(['name' => 'description', 'content' => 'This is my cool website made with Yii!'], 'meta-description');
+$this->registerMetaTag(['name' => 'description', 'content' => 'This website is about funny raccoons.'], 'meta-description');
 ```
 
 If there are multiple calls with the same value of the second argument (`meta-description` in this case), the latter will
