@@ -11,39 +11,37 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * Instance is a reference to a named component in a container.
+ * Instance represents a reference to a named object in a dependency injection (DI) container or a service locator.
  *
- * You may use [[get()]] to obtain the actual component.
+ * You may use [[get()]] to obtain the actual object referenced by [[id]].
  *
  * Instance is mainly used in two places:
  *
- * - When configuring a dependency injection container, you use Instance to reference a component
- * - In classes which use external dependent objects.
+ * - When configuring a dependency injection container, you use Instance to reference a class name, interface name
+ *   or alias name. The reference can later be resolved into the actual object by the container.
+ * - In classes which use service locator to obtain dependent objects.
  *
- * For example, the following configuration specifies that the "db" property should be
- * a component referenced by the "db" component:
+ * The following example shows how to configure a DI container with Instance:
  *
  * ```php
- * [
- *     'class' => 'app\components\UserFinder',
- *     'db' => Instance::of('db'),
- * ]
+ * $container = new \yii\di\Container;
+ * $container->set('cache', 'yii\caching\DbCache', Instance::of('db'));
+ * $container->set('db', [
+ *     'class' => 'yii\db\Connection',
+ *     'dsn' => 'sqlite:path/to/file.db',
+ * ]);
  * ```
  *
- * And in `UserFinder`, you may use `Instance` to make sure the "db" property is properly configured:
+ * And the following example shows how a class retrieves a component from a service locator:
  *
  * ```php
- * namespace app\components;
- *
- * use yii\base\Object;
- * use yii\di\Instance;
- *
- * class UserFinder extends \yii\db\Object
+ * class DbCache extends Cache
  * {
- *     public $db;
+ *     public $db = 'db';
  *
  *     public function init()
  *     {
+ *         parent::init();
  *         $this->db = Instance::ensure($this->db, 'yii\db\Connection');
  *     }
  * }
@@ -55,7 +53,7 @@ use yii\base\InvalidConfigException;
 class Instance
 {
     /**
-     * @var string the component ID
+     * @var string the component ID, class name, interface name or alias name
      */
     public $id;
 
@@ -79,11 +77,12 @@ class Instance
     }
 
     /**
-     * Ensures that `$value` is an object or a reference to the object of the specified type.
+     * Resolves the specified reference into the actual object and makes sure it is of the specified type.
      *
-     * An exception will be thrown if the type is not matched.
+     * The reference may be specified as a string or an Instance object. If the former,
+     * it will be treated as a component ID, a class/interface name or an alias, depending on the container type.
      *
-     * Upon success, the method will return the object itself or the object referenced by `$value`.
+     * If you do not specify a container, the method will first try `Yii::$app` followed by `Yii::$container`.
      *
      * For example,
      *
@@ -97,45 +96,46 @@ class Instance
      * $db = Instance::ensure($instance, Connection::className());
      * ```
      *
-     * @param object|string|static $value an object or a reference to the desired object.
+     * @param object|string|static $reference an object or a reference to the desired object.
      * You may specify a reference in terms of a component ID or an Instance object.
-     * @param string $type the class name to be checked
-     * @param ContainerInterface $container the container. If null, the application instance will be used.
-     * @return object
-     * @throws \yii\base\InvalidConfigException
+     * @param string $type the class/interface name to be checked. If null, type check will not be performed.
+     * @param ServiceLocator|Container $container the container. This will be passed to [[get()]].
+     * @return object the object referenced by the Instance, or `$reference` itself if it is an object.
+     * @throws InvalidConfigException if the reference is invalid
      */
-    public static function ensure($value, $type = null, $container = null)
+    public static function ensure($reference, $type = null, $container = null)
     {
-        if ($value instanceof $type) {
-            return $value;
-        } elseif (empty($value)) {
+        if ($reference instanceof $type) {
+            return $reference;
+        } elseif (empty($reference)) {
             throw new InvalidConfigException('The required component is not specified.');
         }
 
-        if (is_string($value)) {
-            $value = new static($value);
+        if (is_string($reference)) {
+            $reference = new static($reference);
         }
 
-        if ($value instanceof self) {
-            $component = $value->get($container);
+        if ($reference instanceof self) {
+            $component = $reference->get($container);
             if ($component instanceof $type || $type === null) {
                 return $component;
             } else {
-                throw new InvalidConfigException('"' . $value->id . '" refers to a ' . get_class($component) . " component. $type is expected.");
+                throw new InvalidConfigException('"' . $reference->id . '" refers to a ' . get_class($component) . " component. $type is expected.");
             }
         }
 
-        $valueType = is_object($value) ? get_class($value) : gettype($value);
+        $valueType = is_object($reference) ? get_class($reference) : gettype($reference);
         throw new InvalidConfigException("Invalid data type: $valueType. $type is expected.");
     }
 
     /**
-     * Returns the actual component referenced by this Instance object.
-     * @return object the actual component referenced by this Instance object.
+     * Returns the actual object referenced by this Instance object.
+     * @param ServiceLocator|Container $container the container used to locate the referenced object.
+     * If null, the method will first try `Yii::$app` then `Yii::$container`.
+     * @return object the actual object referenced by this Instance object.
      */
     public function get($container = null)
     {
-        /** @var ContainerInterface $container */
         if ($container) {
             return $container->get($this->id);
         }

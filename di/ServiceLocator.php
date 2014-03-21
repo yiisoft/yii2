@@ -13,6 +13,33 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 
 /**
+ * ServiceLocator implements a [service locator](http://en.wikipedia.org/wiki/Service_locator_pattern).
+ *
+ * To use ServiceLocator, you first need to register component IDs with the corresponding component
+ * definitions with the locator by calling [[set()]] or [[setComponents()]].
+ * You can then call [[get()]] to retrieve a component with the specified ID. The locator will automatically
+ * instantiate and configure the component according to the definition.
+ *
+ * For example,
+ *
+ * ```php
+ * $locator = new \yii\di\ServiceLocator;
+ * $locator->setComponents([
+ *     'db' => [
+ *         'class' => 'yii\db\Connection',
+ *         'dsn' => 'sqlite:path/to/file.db',
+ *     ],
+ *     'cache' => [
+ *         'class' => 'yii\caching\DbCache',
+ *         'db' => 'db',
+ *     ],
+ * ]);
+ *
+ * $db = $locator->get('db');
+ * $cache = $locator->get('cache');
+ * ```
+ *
+ * Because [[\yii\base\Module]] extends from ServiceLocator, modules and the application are all service locators.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -85,33 +112,40 @@ class ServiceLocator extends Component
      * For example,
      *
      * ```php
-     * // via configuration array
+     * // a class name
+     * $locator->set('cache', 'yii\caching\FileCache');
+     *
+     * // a configuration array
      * $locator->set('db', [
      *     'class' => 'yii\db\Connection',
-     *     'dsn' => '...',
+     *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
+     *     'username' => 'root',
+     *     'password' => '',
+     *     'charset' => 'utf8',
      * ]);
      *
-     * // via anonymous function
-     * $locator->set('db', function ($locator) {
-     *     return new \yii\db\Connection;
+     * // an anonymous function
+     * $locator->set('cache', function ($params) {
+     *     return new \yii\caching\FileCache;
      * });
+     *
+     * // an instance
+     * $locator->set('cache', new \yii\caching\FileCache);
      * ```
      *
      * If a component definition with the same ID already exists, it will be overwritten.
-     *
-     * If `$definition` is null, the previously registered component definition will be removed.
      *
      * @param string $id component ID (e.g. `db`).
      * @param mixed $definition the component definition to be registered with this locator.
      * It can be one of the followings:
      *
+     * - a class name
+     * - a configuration array: the array contains name-value pairs that will be used to
+     *   initialize the property values of the newly created object when [[get()]] is called.
+     *   The `class` element is required and stands for the the class of the object to be created.
      * - a PHP callable: either an anonymous function or an array representing a class method (e.g. `['Foo', 'bar']`).
      *   The callable will be called by [[get()]] to return an object associated with the specified component ID.
-     *   The signature of the function should be: `function ($locator)`, where `$locator` is this locator.
      * - an object: When [[get()]] is called, this object will be returned.
-     * - a configuration array or a class name: the array contains name-value pairs that will be used to
-     *   initialize the property values of the newly created object when [[get()]] is called.
-     *   The `class` element stands for the the class of the object to be created.
      *
      * @throws InvalidConfigException if the definition is an invalid configuration array
      */
@@ -138,8 +172,17 @@ class ServiceLocator extends Component
     }
 
     /**
+     * Removes the component from the locator.
+     * @param string $id the component ID
+     */
+    public function clear($id)
+    {
+        unset($this->_definitions[$id], $this->_components[$id]);
+    }
+
+    /**
      * Returns the list of the component definitions or the loaded component instances.
-     * @param boolean $returnDefinitions whether to return component definitions or the loaded component instances.
+     * @param boolean $returnDefinitions whether to return component definitions instead of the loaded component instances.
      * @return array the list of the component definitions or the loaded component instances (ID => definition or instance).
      */
     public function getComponents($returnDefinitions = true)
@@ -159,7 +202,7 @@ class ServiceLocator extends Component
      *
      * The following is an example for registering two component definitions:
      *
-     * ~~~
+     * ```php
      * [
      *     'db' => [
      *         'class' => 'yii\db\Connection',
@@ -170,7 +213,7 @@ class ServiceLocator extends Component
      *         'db' => 'db',
      *     ],
      * ]
-     * ~~~
+     * ```
      *
      * @param array $components component definitions or instances
      */

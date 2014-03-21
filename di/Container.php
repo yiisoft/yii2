@@ -12,10 +12,11 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 
 /**
- * Container implements a dependency injection (DI) container.
+ * Container implements a [dependency injection](http://en.wikipedia.org/wiki/Dependency_injection) container.
  *
- * A DI container is an object that knows how to instantiate and configure objects and all their dependent objects.
- * For more information about DI, please refer to [Martin Fowler's article](http://martinfowler.com/articles/injection.html).
+ * A dependency injection (DI) container is an object that knows how to instantiate and configure objects and
+ * all their dependent objects. For more information about DI, please refer to
+ * [Martin Fowler's article](http://martinfowler.com/articles/injection.html).
  *
  * Container supports constructor injection as well as property injection.
  *
@@ -36,7 +37,6 @@ use yii\base\InvalidConfigException;
  * use yii\base\Object;
  * use yii\db\Connection;
  * use yii\di\Container;
- * use yii\di\Instance;
  *
  * interface UserFinderInterface
  * {
@@ -148,7 +148,7 @@ class Container extends Component
 
         if (is_callable($definition, true)) {
             $params = $this->resolveDependencies($this->mergeParams($class, $params));
-            $object = call_user_func($definition, $params, $config, $this);
+            $object = call_user_func($definition, $this, $params, $config);
         } elseif (is_array($definition)) {
             $concrete = $definition['class'];
             unset($definition['class']);
@@ -214,7 +214,7 @@ class Container extends Component
      *
      * // register a PHP callable
      * // The callable will be executed when $container->get('db') is called
-     * $container->set('db', function ($params, $config, $container) {
+     * $container->set('db', function ($container, $params, $config) {
      *     return new \yii\db\Connection($config);
      * });
      * ```
@@ -226,7 +226,7 @@ class Container extends Component
      * @param mixed $definition the definition associated with `$class`. It can be one of the followings:
      *
      * - a PHP callable: The callable will be executed when [[get()]] is invoked. The signature of the callable
-     *   should be `function ($params, $config, $container)`, where `$params` stands for the list of constructor
+     *   should be `function ($container, $params, $config)`, where `$params` stands for the list of constructor
      *   parameters, `$config` the object configuration, and `$container` the container object. The return value
      *   of the callable will be returned by [[get()]] as the object instance requested.
      * - a configuration array: the array contains name-value pairs that will be used to initialize the property
