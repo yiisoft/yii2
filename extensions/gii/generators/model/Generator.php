@@ -64,6 +64,8 @@ class Generator extends \yii\gii\Generator
             [['modelClass'], 'validateModelClass', 'skipOnEmpty' => false],
             [['baseClass'], 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
             [['generateRelations', 'generateLabelsFromComments'], 'boolean'],
+            [['enableI18N'], 'boolean'],
+            [['messageCategory'], 'validateMessageCategory', 'skipOnEmpty' => false],
         ]);
     }
 
@@ -72,7 +74,7 @@ class Generator extends \yii\gii\Generator
      */
     public function attributeLabels()
     {
-        return [
+        return array_merge(parent::attributeLabels(), [
             'ns' => 'Namespace',
             'db' => 'Database Connection ID',
             'tableName' => 'Table Name',
@@ -80,7 +82,7 @@ class Generator extends \yii\gii\Generator
             'baseClass' => 'Base Class',
             'generateRelations' => 'Generate Relations',
             'generateLabelsFromComments' => 'Generate Labels from DB Comments',
-        ];
+        ]);
     }
 
     /**
@@ -88,7 +90,7 @@ class Generator extends \yii\gii\Generator
      */
     public function hints()
     {
-        return [
+        return array_merge(parent::hints(), [
             'ns' => 'This is the namespace of the ActiveRecord class to be generated, e.g., <code>app\models</code>',
             'db' => 'This is the ID of the DB application component.',
             'tableName' => 'This is the name of the DB table that the new ActiveRecord class is associated with, e.g. <code>tbl_post</code>.
@@ -107,7 +109,7 @@ class Generator extends \yii\gii\Generator
                 you may want to uncheck this option to accelerate the code generation process.',
             'generateLabelsFromComments' => 'This indicates whether the generator should generate attribute labels
                 by using the comments of the corresponding DB columns.',
-        ];
+        ]);
     }
 
     /**
@@ -140,7 +142,7 @@ class Generator extends \yii\gii\Generator
      */
     public function stickyAttributes()
     {
-        return ['ns', 'db', 'baseClass', 'generateRelations', 'generateLabelsFromComments'];
+        return array_merge(parent::stickyAttributes(), ['ns', 'db', 'baseClass', 'generateRelations', 'generateLabelsFromComments']);
     }
 
     /**
