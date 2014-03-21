@@ -15,4 +15,4 @@ echo $form->field($generator, 'indexWidgetType')->dropDownList([
     'list' => 'ListView',
 ]);
 echo $form->field($generator, 'enableI18N')->checkbox();
-echo $form->field($generator, 'translationCategory');
+echo $form->field($generator, 'messageCategory');

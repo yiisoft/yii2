@@ -49,7 +49,7 @@ class <?= $searchModelClass ?> extends Model
     {
         return [
 <?php foreach ($labels as $name => $label): ?>
-            <?= "'$name' => " . addslashes($generator->generateString($label)) . ",\n" ?>
+            <?= "'$name' => " . $generator->generateString(addslashes($label)) . ",\n" ?>
 <?php endforeach; ?>
         ];
     }

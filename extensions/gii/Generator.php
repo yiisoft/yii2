@@ -47,6 +47,15 @@ abstract class Generator extends Model
      * The value of this property is internally managed by this class.
      */
     public $template;
+    /**
+     * @var boolean whether the strings will be generated using `Yii::t()` or normal strings.
+     */
+    public $enableI18N = false;
+    /**
+     * @var string the message category used by `Yii::t()` when `$enableI18N` is `true`.
+     * Defaults to `app`.
+     */
+    public $messageCategory = 'app';
 
     /**
      * @return string name of the code generator
@@ -76,6 +85,17 @@ abstract class Generator extends Model
     }
 
     /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'enableI18N' => 'Enable I18N',
+            'messageCategory' => 'Message Category',
+        ];
+    }
+
+    /**
      * Returns a list of code template files that are required.
      * Derived classes usually should override this method if they require the existence of
      * certain template files.
@@ -95,7 +115,7 @@ abstract class Generator extends Model
      */
     public function stickyAttributes()
     {
-        return ['template'];
+        return ['template', 'enableI18N', 'messageCategory'];
     }
 
     /**
@@ -106,7 +126,11 @@ abstract class Generator extends Model
      */
     public function hints()
     {
-        return [];
+        return [
+            'enableI18N' => 'This indicates whether the generator should generate strings using <code>Yii::t()</code> method.
+                Set this to <code>true</code> if you are planning to make your application translatable.',
+            'messageCategory' => 'This is the category used by <code>Yii::t()</code> in case you enable I18N.',
+        ];
     }
 
     /**
@@ -359,6 +383,16 @@ abstract class Generator extends Model
     }
 
     /**
+     * Checks if message category is not empty when I18N is enabled.
+     */
+    public function validateMessageCategory()
+    {
+        if ($this->enableI18N && empty($this->messageCategory)) {
+            $this->addError('messageCategory', "Message Category cannot be blank.");
+        }
+    }
+
+    /**
      * @param  string  $value the attribute to be validated
      * @return boolean whether the value is a reserved PHP keyword.
      */
@@ -454,7 +488,7 @@ abstract class Generator extends Model
      * @param string $string       the text be generated
      * @param array  $placeholders the placeholders to use by `Yii::t()`
      */
-    public function generateString($string = '', $placeholders = []){
+    public function generateString($string = '', $placeholders = []) {
         if ($this->enableI18N) {
             // If there are placeholders, use them
             if (!empty($placeholders)) {
@@ -464,7 +498,7 @@ abstract class Generator extends Model
             } else {
                 $ph = '';
             }
-            $str = "Yii::t('" . $this->translationCategory . "', '" . $string . "'" . $ph . ")";
+            $str = "Yii::t('" . $this->messageCategory . "', '" . $string . "'" . $ph . ")";
         } else {
             // No I18N, replace placeholders by real words, if any
             if (!empty($placeholders)) {

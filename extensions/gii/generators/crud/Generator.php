@@ -36,8 +36,6 @@ class Generator extends \yii\gii\Generator
     public $baseControllerClass = 'yii\web\Controller';
     public $indexWidgetType = 'grid';
     public $searchModelClass;
-    public $enableI18N = false;
-    public $translationCategory = 'app';
 
     /**
      * @inheritdoc
@@ -74,7 +72,7 @@ class Generator extends \yii\gii\Generator
             [['modelClass'], 'validateModelClass'],
             [['moduleID'], 'validateModuleID'],
             [['enableI18N'], 'boolean'],
-            [['translationCategory'], 'validateTranslationCategory', 'skipOnEmpty' => false],
+            [['messageCategory'], 'validateMessageCategory', 'skipOnEmpty' => false],
         ]);
     }
 
@@ -90,8 +88,6 @@ class Generator extends \yii\gii\Generator
             'baseControllerClass' => 'Base Controller Class',
             'indexWidgetType' => 'Widget Used in Index Page',
             'searchModelClass' => 'Search Model Class',
-            'enableI18N' => 'Enable I18N',
-            'translationCategory' => 'Translation Category',
         ]);
     }
 
@@ -100,7 +96,7 @@ class Generator extends \yii\gii\Generator
      */
     public function hints()
     {
-        return [
+        return array_merge(parent::hints(), [
             'modelClass' => 'This is the ActiveRecord class associated with the table that CRUD will be built upon.
                 You should provide a fully qualified class name, e.g., <code>app\models\Post</code>.',
             'controllerClass' => 'This is the name of the controller class to be generated. You should
@@ -113,10 +109,7 @@ class Generator extends \yii\gii\Generator
                 You may choose either <code>GridView</code> or <code>ListView</code>',
             'searchModelClass' => 'This is the name of the search model class to be generated. You should provide a fully
                 qualified namespaced class name, e.g., <code>app\models\search\PostSearch</code>.',
-            'enableI18N' => 'This indicates whether the generator should generate strings using <code>Yii::t()</code> method.
-                Set this to <code>true</code> if you are planning to make your application translatable.',
-            'translationCategory' => 'This is the category used by <code>Yii::t()</code> in case you enable I18N.',
-        ];
+        ]);
     }
 
     /**
@@ -132,7 +125,7 @@ class Generator extends \yii\gii\Generator
      */
     public function stickyAttributes()
     {
-        return ['baseControllerClass', 'moduleID', 'indexWidgetType', 'enableI18N', 'translationCategory'];
+        return array_merge(parent::stickyAttributes(), ['baseControllerClass', 'moduleID', 'indexWidgetType']);
     }
 
     /**
@@ -158,16 +151,6 @@ class Generator extends \yii\gii\Generator
             if ($module === null) {
                 $this->addError('moduleID', "Module '{$this->moduleID}' does not exist.");
             }
-        }
-    }
-
-    /**
-     * Checks if translation category is not empty when I18N is enabled
-     */
-    public function validateTranslationCategory()
-    {
-        if ($this->enableI18N && empty($this->translationCategory)) {
-            $this->addError('translationCategory', "Translation Category cannot be blank.");
         }
     }
 
