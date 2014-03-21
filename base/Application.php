@@ -133,8 +133,9 @@ abstract class Application extends Module
      */
     public $extensions = [];
     /**
-     * @var array list of bootstrap classes. A bootstrap class must have a public static method named
-     * `bootstrap()`. The method will be called during [[init()]] for every bootstrap class.
+     * @var array list of bootstrap classes or their configurations. A bootstrap class must implement
+     * [[BootstrapInterface]]. The [[BootstrapInterface::bootstrap()]] method of each bootstrap class
+     * will be invoked at the beginning of [[init()]].
      */
     public $bootstrap = [];
     /**
@@ -223,8 +224,9 @@ abstract class Application extends Module
     {
         $this->initExtensions($this->extensions);
         foreach ($this->bootstrap as $class) {
-            /** @var Extension $class */
-            $class::bootstrap();
+            /** @var BootstrapInterface $bootstrap */
+            $bootstrap = Yii::createObject($class);
+            $bootstrap->bootstrap($this);
         }
         parent::init();
     }
@@ -243,9 +245,9 @@ abstract class Application extends Module
                 }
             }
             if (isset($extension['bootstrap'])) {
-                /** @var Extension $class */
-                $class = $extension['bootstrap'];
-                $class::bootstrap();
+                /** @var BootstrapInterface $bootstrap */
+                $bootstrap = Yii::createObject($extension['bootstrap']);
+                $bootstrap->bootstrap($this);
             }
         }
     }

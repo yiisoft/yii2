@@ -151,7 +151,7 @@ Yii Framework 2 Change Log
 - Enh #2729: Added `FilterValidator::skipOnArray` so that filters like `trim` will not fail for array inputs (qiangxue)
 - Enh #2735: Added support for `DateTimeInterface` in `Formatter` (ivokund)
 - Enh #2756: Added support for injecting custom `isEmpty` check for all validators (qiangxue)
-- Enh #2775: Added `yii\base\Application::bootstrap` to support running bootstrap classes when starting an application (qiangxue)
+- Enh #2775: Added `yii\base\Application::bootstrap` and `yii\base\BootstrapInterface` to support running bootstrap classes when starting an application (qiangxue)
 - Enh: Added support for using arrays as option values for console commands (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
