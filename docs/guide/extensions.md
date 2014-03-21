@@ -150,6 +150,9 @@ You then list this bootstrap class in `composer.json` as follows,
 }
 ```
 
+When the extension is installed in an application, Yii will automatically hook up the bootstrap class
+and call its `bootstrap()` while initializing the application for every request.
+
 
 Working with database
 ---------------------
