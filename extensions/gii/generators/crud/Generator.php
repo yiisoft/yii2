@@ -71,6 +71,8 @@ class Generator extends \yii\gii\Generator
             [['indexWidgetType'], 'in', 'range' => ['grid', 'list']],
             [['modelClass'], 'validateModelClass'],
             [['moduleID'], 'validateModuleID'],
+            [['enableI18N'], 'boolean'],
+            [['messageCategory'], 'validateMessageCategory', 'skipOnEmpty' => false],
         ]);
     }
 
@@ -94,7 +96,7 @@ class Generator extends \yii\gii\Generator
      */
     public function hints()
     {
-        return [
+        return array_merge(parent::hints(), [
             'modelClass' => 'This is the ActiveRecord class associated with the table that CRUD will be built upon.
                 You should provide a fully qualified class name, e.g., <code>app\models\Post</code>.',
             'controllerClass' => 'This is the name of the controller class to be generated. You should
@@ -107,7 +109,7 @@ class Generator extends \yii\gii\Generator
                 You may choose either <code>GridView</code> or <code>ListView</code>',
             'searchModelClass' => 'This is the name of the search model class to be generated. You should provide a fully
                 qualified namespaced class name, e.g., <code>app\models\search\PostSearch</code>.',
-        ];
+        ]);
     }
 
     /**
@@ -123,7 +125,7 @@ class Generator extends \yii\gii\Generator
      */
     public function stickyAttributes()
     {
-        return ['baseControllerClass', 'moduleID', 'indexWidgetType'];
+        return array_merge(parent::stickyAttributes(), ['baseControllerClass', 'moduleID', 'indexWidgetType']);
     }
 
     /**

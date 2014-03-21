@@ -22,7 +22,7 @@ use yii\widgets\DetailView;
  */
 
 $this->title = $model-><?= $generator->getNameAttribute() ?>;
-$this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => <?= $generator->generateString(Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) ?>, 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-view">
@@ -30,11 +30,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= "<?= " ?>Html::encode($this->title) ?></h1>
 
     <p>
-        <?= "<?= " ?>Html::a('Update', ['update', <?= $urlParams ?>], ['class' => 'btn btn-primary']) ?>
-        <?= "<?= " ?>Html::a('Delete', ['delete', <?= $urlParams ?>], [
+        <?= "<?= " ?>Html::a(<?= $generator->generateString('Update') ?>, ['update', <?= $urlParams ?>], ['class' => 'btn btn-primary']) ?>
+        <?= "<?= " ?>Html::a(<?= $generator->generateString('Delete') ?>, ['delete', <?= $urlParams ?>], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
+                'confirm' => <?= $generator->generateString('Are you sure you want to delete this item?') ?>,
                 'method' => 'post',
             ],
         ]) ?>
