@@ -170,7 +170,7 @@ If there are multiple calls with the same value of the second argument (`meta-de
 override the former and only a single tag will be rendered:
 
 ```html
-<meta description="This website is about funny raccoons.">
+<meta name="description" content="This website is about funny raccoons.">
 ```
 
 ### Registering link tags
