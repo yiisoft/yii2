@@ -17,6 +17,7 @@ Yii Framework 2 gii extension Change Log
 - Enh #2595: Browse through all generated files using right and left arrows (thiagotalma)
 - Enh #2633: Keyboard shortcuts to browse through files (thiagotalma)
 - Enh #2822: possibility to generate I18N messages (lucianobaraglia)
+- Enh #2843: Option to filter files according to the action. (thiagotalma)
 
 2.0.0 alpha, December 1, 2013
 -----------------------------
