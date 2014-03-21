@@ -115,9 +115,9 @@ yii.gii = (function ($) {
                 $('#model-generator .field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
             }).change();
 
-            // CRUD generator: hide messageCategory when I18N is disabled
-            $('#crud-generator #generator-enablei18n').change(function () {
-                $('#crud-generator .field-generator-messagecategory').toggle($(this).is(':checked'));
+            // hide message category when I18N is disabled
+            $('form #generator-enablei18n').change(function () {
+                $('form .field-generator-messagecategory').toggle($(this).is(':checked'));
             }).change();
 
             // hide Generate button if any input is changed
