@@ -98,6 +98,7 @@ yii.gii = (function ($) {
 
     var initToggleActions = function () {
         $('#action-toggle :input').change(function () {
+            $(this).parent('label').toggleClass('active', this.checked);
             $('.' + this.value, '.default-view-files table').toggle(this.checked).find('.check input').attr('disabled', !this.checked);
             checkAllToggle();
         });

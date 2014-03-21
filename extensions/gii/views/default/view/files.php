@@ -12,11 +12,11 @@ use yii\gii\CodeFile;
  */
 ?>
 <div class="default-view-files">
-    <div id="action-toggle" class="btn-group btn-group-xs pull-right" data-toggle="buttons">
+    <div id="action-toggle" class="btn-group btn-group-xs pull-right">
         <label class="btn btn-success active" title="Filter files that are created">
             <input type="checkbox" value="<?= CodeFile::OP_CREATE ?>" checked> Create
         </label>
-        <label class="btn btn-info active" title="Filter files that are unchanged.">
+        <label class="btn btn-default active" title="Filter files that are unchanged.">
             <input type="checkbox" value="<?= CodeFile::OP_SKIP ?>" checked> Unchanged
         </label>
         <label class="btn btn-warning active" title="Filter files that are overwritten">
