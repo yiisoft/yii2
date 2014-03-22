@@ -260,7 +260,8 @@ Yii Framework 2 Change Log
 - New #2149: Added `yii\base\DynamicModel` to support ad-hoc data validation (qiangxue)
 - New #2360: Added `AttributeBehavior` and `BlameableBehavior`, and renamed `AutoTimestamp` to `TimestampBehavior` (lucianobaraglia, qiangxue)
 - New: Yii framework now comes with core messages in multiple languages
-- New: Added yii\codeception\DbTestCase (qiangxue)
+- New: Added `yii\codeception\DbTestCase` (qiangxue)
+- New: Added `yii\web\PrefixUrlRule` (qiangxue)
 
 
 2.0.0 alpha, December 1, 2013
