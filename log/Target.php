@@ -233,7 +233,7 @@ abstract class Target extends Component
 
         $prefix = $this->prefix ? call_user_func($this->prefix, $message) : $this->getMessagePrefix($message);
 
-        return date('Y/m/d H:i:s', $timestamp) . " $prefix [$level] [$category] $text";
+        return date('Y/m/d H:i:s', $timestamp) . " $prefix[$level][$category] $text";
     }
 
     /**
@@ -252,6 +252,6 @@ abstract class Target extends Component
         /** @var \yii\web\Session $session */
         $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;
         $sessionID = $session && $session->getIsActive() ? $session->getId() : '-';
-        return "[$ip] [$userID] [$sessionID]";
+        return "[$ip][$userID][$sessionID]";
     }
 }
