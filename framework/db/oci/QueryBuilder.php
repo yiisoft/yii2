@@ -40,9 +40,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         $this->sql = $this->buildLimit($query->limit, $query->offset);
 
-        $unions = $this->buildUnion($query->union, $params);
-        if ($unions !== '') {
-            $this->sql .= $this->separator . $unions;
+        $union = $this->buildUnion($query->union, $params);
+        if ($union !== '') {
+            $this->sql = "{$this->sql}{$this->separator}$union";
         }
 
         return [$this->sql, $params];

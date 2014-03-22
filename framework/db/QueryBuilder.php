@@ -87,10 +87,16 @@ class QueryBuilder extends \yii\base\Object
             $this->buildHaving($query->having, $params),
             $this->buildOrderBy($query->orderBy),
             $this->buildLimit($query->limit, $query->offset),
-            $this->buildUnion($query->union, $params),
         ];
 
-        return [implode($this->separator, array_filter($clauses)), $params];
+        $sql = implode($this->separator, array_filter($clauses));
+
+        $union = $this->buildUnion($query->union, $params);
+        if ($union !== '') {
+            $sql = "($sql){$this->separator}$union";
+        }
+
+        return [$sql, $params];
     }
 
     /**
