@@ -61,6 +61,7 @@ Yii Framework 2 Change Log
 - Bug #2740: Fixed the issue that `CaptchaAction::run()` was using obsolete `Controller::createUrl()` method (tonydspaniard)
 - Bug #2760: Fixed GridView `filterUrl` parameters (qiangxue, AlexGx)
 - Bug #2834: When overriding i18n translation sources from config using `app*` or `yii*` default `app` and `yii` sources were not removed (samdark)
+- Bug #2848: Individual queries should be enclosed within parenthesis in a UNION query (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
