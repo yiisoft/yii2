@@ -347,11 +347,19 @@ class Request extends \yii\base\Request
     public function getBodyParams()
     {
         if ($this->_bodyParams === null) {
-            $contentType = $this->getContentType();
-            if (isset($_POST[$this->methodParam])) {
+            if (isset($_POST[$this->methodParam]) || $this->getMethod() === 'POST') {
                 $this->_bodyParams = $_POST;
                 unset($this->_bodyParams[$this->methodParam]);
-            } elseif (isset($this->parsers[$contentType])) {
+                return $this->_bodyParams;
+            }
+
+            $contentType = $this->getContentType();
+            if (($pos = strpos($contentType, ';')) !== false) {
+                // e.g. application/json; charset=UTF-8
+                $contentType = substr($contentType, 0, $pos);
+            }
+
+            if (isset($this->parsers[$contentType])) {
                 $parser = Yii::createObject($this->parsers[$contentType]);
                 if (!($parser instanceof RequestParserInterface)) {
                     throw new InvalidConfigException("The '$contentType' request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
@@ -363,9 +371,6 @@ class Request extends \yii\base\Request
                     throw new InvalidConfigException("The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
                 }
                 $this->_bodyParams = $parser->parse($this->getRawBody(), $contentType);
-            } elseif ($this->getMethod() === 'POST') {
-                // PHP has already parsed the body so we have all params in $_POST
-                $this->_bodyParams = $_POST;
             } else {
                 $this->_bodyParams = [];
                 mb_parse_str($this->getRawBody(), $this->_bodyParams);
@@ -976,8 +981,8 @@ class Request extends \yii\base\Request
     {
         if (isset($_SERVER["CONTENT_TYPE"])) {
             return $_SERVER["CONTENT_TYPE"];
-        } elseif (isset($_SERVER["HTTP_CONTENT_TYPE"])) { //fix bug https://bugs.php.net/bug.php?id=66606
-
+        } elseif (isset($_SERVER["HTTP_CONTENT_TYPE"])) {
+            //fix bug https://bugs.php.net/bug.php?id=66606
             return $_SERVER["HTTP_CONTENT_TYPE"];
         }
 
