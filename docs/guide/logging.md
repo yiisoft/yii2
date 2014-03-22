@@ -1,7 +1,7 @@
 Logging
 =======
 
-Yii provides flexible and extensible logger that is able to handle messages according to serverity level or their type.
+Yii provides flexible and extensible logger that is able to handle messages according to severity level or their type.
 You may filter messages by multiple criteria and forward them to files, email, debugger etc.
 
 Logging basics
@@ -26,7 +26,7 @@ There are multiple severity levels and corresponding methods available:
 - [[Yii::trace]] used maily for development purpose to indicate workflow of some code. Note that it only works in
   development mode when `YII_DEBUG` is set to `true`.
 - [[Yii::error]] used when there's unrecoverable error.
-- [[Yii::warning]] used when an error occured but execution can be continued.
+- [[Yii::warning]] used when an error occurred but execution can be continued.
 - [[Yii::info]] used to keep record of important events such as administrator logins.
 
 Log targets
