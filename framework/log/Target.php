@@ -233,7 +233,7 @@ abstract class Target extends Component
 
         $prefix = $this->prefix ? call_user_func($this->prefix, $message) : $this->getMessagePrefix($message);
 
-        return date('Y/m/d H:i:s', $timestamp) . " $prefix[$level][$category] $text";
+        return date('Y/m/d H:i:s', $timestamp) . " {$prefix}[$level][$category] $text";
     }
 
     /**
