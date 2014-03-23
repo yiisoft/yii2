@@ -64,23 +64,23 @@ class ApcCache extends Cache
      *
      * @param  string  $key    the key identifying the value to be cached
      * @param  string  $value  the value to be cached
-     * @param  integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
-    protected function setValue($key, $value, $expire)
+    protected function setValue($key, $value, $duration)
     {
-        return apc_store($key, $value, $expire);
+        return apc_store($key, $value, $duration);
     }
 
     /**
      * Stores multiple key-value pairs in cache.
      * @param  array   $data   array where key corresponds to cache key while value
-     * @param  integer $expire the number of seconds in which the cached values will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
      * @return array   array of failed keys
      */
-    protected function setValues($data, $expire)
+    protected function setValues($data, $duration)
     {
-        return array_keys(apc_store($data, null, $expire));
+        return array_keys(apc_store($data, null, $duration));
     }
 
     /**
@@ -88,23 +88,23 @@ class ApcCache extends Cache
      * This is the implementation of the method declared in the parent class.
      * @param  string  $key    the key identifying the value to be cached
      * @param  string  $value  the value to be cached
-     * @param  integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
-    protected function addValue($key, $value, $expire)
+    protected function addValue($key, $value, $duration)
     {
-        return apc_add($key, $value, $expire);
+        return apc_add($key, $value, $duration);
     }
 
     /**
      * Adds multiple key-value pairs to cache.
      * @param  array   $data   array where key corresponds to cache key while value is the value stored
-     * @param  integer $expire the number of seconds in which the cached values will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
      * @return array   array of failed keys
      */
-    protected function addValues($data, $expire)
+    protected function addValues($data, $duration)
     {
-        return array_keys(apc_add($data, null, $expire));
+        return array_keys(apc_add($data, null, $duration));
     }
 
     /**

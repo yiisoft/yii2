@@ -188,39 +188,28 @@ class MemCache extends Cache
      *
      * @param  string  $key    the key identifying the value to be cached
      * @param  string  $value  the value to be cached
-     * @param  integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
-    protected function setValue($key, $value, $expire)
+    protected function setValue($key, $value, $duration)
     {
-        if ($expire > 0) {
-            $expire += time();
-        } else {
-            $expire = 0;
-        }
-
+        $expire = $duration > 0 ? $duration + time() : 0;
         return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $expire);
     }
 
     /**
      * Stores multiple key-value pairs in cache.
      * @param  array   $data   array where key corresponds to cache key while value is the value stored
-     * @param  integer $expire the number of seconds in which the cached values will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
      * @return array   array of failed keys. Always empty in case of using memcached.
      */
-    protected function setValues($data, $expire)
+    protected function setValues($data, $duration)
     {
         if ($this->useMemcached) {
-            if ($expire > 0) {
-                $expire += time();
-            } else {
-                $expire = 0;
-            }
-            $this->_cache->setMulti($data, $expire);
-
+            $this->_cache->setMulti($data, $duration > 0 ? $duration + time() : 0);
             return [];
         } else {
-            return parent::setValues($data, $expire);
+            return parent::setValues($data, $duration);
         }
     }
 
@@ -230,17 +219,12 @@ class MemCache extends Cache
      *
      * @param  string  $key    the key identifying the value to be cached
      * @param  string  $value  the value to be cached
-     * @param  integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
-    protected function addValue($key, $value, $expire)
+    protected function addValue($key, $value, $duration)
     {
-        if ($expire > 0) {
-            $expire += time();
-        } else {
-            $expire = 0;
-        }
-
+        $expire = $duration > 0 ? $duration + time() : 0;
         return $this->useMemcached ? $this->_cache->add($key, $value, $expire) : $this->_cache->add($key, $value, 0, $expire);
     }
 

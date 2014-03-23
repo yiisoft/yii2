@@ -119,16 +119,11 @@ class FileCache extends Cache
      *
      * @param  string  $key    the key identifying the value to be cached
      * @param  string  $value  the value to be cached
-     * @param  integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
-    protected function setValue($key, $value, $expire)
+    protected function setValue($key, $value, $duration)
     {
-        if ($expire <= 0) {
-            $expire = 31536000; // 1 year
-        }
-        $expire += time();
-
         $cacheFile = $this->getCacheFile($key);
         if ($this->directoryLevel > 0) {
             @FileHelper::createDirectory(dirname($cacheFile), $this->dirMode, true);
@@ -137,8 +132,10 @@ class FileCache extends Cache
             if ($this->fileMode !== null) {
                 @chmod($cacheFile, $this->fileMode);
             }
-
-            return @touch($cacheFile, $expire);
+            if ($duration <= 0) {
+                $duration = 31536000; // 1 year
+            }
+            return @touch($cacheFile, $duration + time());
         } else {
             return false;
         }
@@ -150,17 +147,17 @@ class FileCache extends Cache
      *
      * @param  string  $key    the key identifying the value to be cached
      * @param  string  $value  the value to be cached
-     * @param  integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
-    protected function addValue($key, $value, $expire)
+    protected function addValue($key, $value, $duration)
     {
         $cacheFile = $this->getCacheFile($key);
         if (@filemtime($cacheFile) > time()) {
             return false;
         }
 
-        return $this->setValue($key, $value, $expire);
+        return $this->setValue($key, $value, $duration);
     }
 
     /**
@@ -227,10 +224,10 @@ class FileCache extends Cache
      * Recursively removing expired cache files under a directory.
      * This method is mainly used by [[gc()]].
      * @param string  $path        the directory under which expired cache files are removed.
-     * @param boolean $expiredOnly whether to only remove expired cache files. If false, all files
+     * @param boolean $durationdOnly whether to only remove expired cache files. If false, all files
      *                             under `$path` will be removed.
      */
-    protected function gcRecursive($path, $expiredOnly)
+    protected function gcRecursive($path, $durationdOnly)
     {
         if (($handle = opendir($path)) !== false) {
             while (($file = readdir($handle)) !== false) {
@@ -239,11 +236,11 @@ class FileCache extends Cache
                 }
                 $fullPath = $path . DIRECTORY_SEPARATOR . $file;
                 if (is_dir($fullPath)) {
-                    $this->gcRecursive($fullPath, $expiredOnly);
-                    if (!$expiredOnly) {
+                    $this->gcRecursive($fullPath, $durationdOnly);
+                    if (!$durationdOnly) {
                         @rmdir($fullPath);
                     }
-                } elseif (!$expiredOnly || $expiredOnly && @filemtime($fullPath) < time()) {
+                } elseif (!$durationdOnly || $durationdOnly && @filemtime($fullPath) < time()) {
                     @unlink($fullPath);
                 }
             }
