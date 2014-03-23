@@ -46,7 +46,7 @@ class Widget extends Component implements ViewContextInterface
      * Begins a widget.
      * This method creates an instance of the calling class. It will apply the configuration
      * to the created instance. A matching [[end()]] call should be called later.
-     * @param  array  $config name-value pairs that will be used to initialize the object properties
+     * @param array $config name-value pairs that will be used to initialize the object properties
      * @return static the newly created widget instance
      */
     public static function begin($config = [])
@@ -62,7 +62,7 @@ class Widget extends Component implements ViewContextInterface
     /**
      * Ends a widget.
      * Note that the rendering result of the widget is directly echoed out.
-     * @return static               the widget instance that is ended.
+     * @return static the widget instance that is ended.
      * @throws InvalidCallException if [[begin()]] and [[end()]] calls are not properly nested
      */
     public static function end()
@@ -84,7 +84,7 @@ class Widget extends Component implements ViewContextInterface
     /**
      * Creates a widget instance and runs it.
      * The widget rendering result is returned by this method.
-     * @param  array  $config name-value pairs that will be used to initialize the object properties
+     * @param array $config name-value pairs that will be used to initialize the object properties
      * @return string the rendering result of the widget.
      */
     public static function widget($config = [])
@@ -103,8 +103,8 @@ class Widget extends Component implements ViewContextInterface
 
     /**
      * Returns the ID of the widget.
-     * @param  boolean $autoGenerate whether to generate an ID if it is not set previously
-     * @return string  ID of the widget.
+     * @param boolean $autoGenerate whether to generate an ID if it is not set previously
+     * @return string ID of the widget.
      */
     public function getId($autoGenerate = true)
     {
@@ -173,9 +173,9 @@ class Widget extends Component implements ViewContextInterface
      *
      * If the view name does not contain a file extension, it will use the default one `.php`.
 
-     * @param  string                $view   the view name. Please refer to [[findViewFile()]] on how to specify a view name.
-     * @param  array                 $params the parameters (name-value pairs) that should be made available in the view.
-     * @return string                the rendering result.
+     * @param string $view the view name. Please refer to [[findViewFile()]] on how to specify a view name.
+     * @param array $params the parameters (name-value pairs) that should be made available in the view.
+     * @return string the rendering result.
      * @throws InvalidParamException if the view file does not exist.
      */
     public function render($view, $params = [])
@@ -185,9 +185,9 @@ class Widget extends Component implements ViewContextInterface
 
     /**
      * Renders a view file.
-     * @param  string                $file   the view file to be rendered. This can be either a file path or a path alias.
-     * @param  array                 $params the parameters (name-value pairs) that should be made available in the view.
-     * @return string                the rendering result.
+     * @param string $file the view file to be rendered. This can be either a file path or a path alias.
+     * @param array $params the parameters (name-value pairs) that should be made available in the view.
+     * @return string the rendering result.
      * @throws InvalidParamException if the view file does not exist.
      */
     public function renderFile($file, $params = [])
@@ -210,7 +210,7 @@ class Widget extends Component implements ViewContextInterface
     /**
      * Finds the view file based on the given view name.
      * File will be searched under [[viewPath]] directory.
-     * @param  string $view the view name.
+     * @param string $view the view name.
      * @return string the view file path. Note that the file may not exist.
      */
     public function findViewFile($view)

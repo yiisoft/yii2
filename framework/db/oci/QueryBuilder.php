@@ -77,8 +77,8 @@ EOD;
     /**
      * Builds a SQL statement for renaming a DB table.
      *
-     * @param  string $table   the table to be renamed. The name will be properly quoted by the method.
-     * @param  string $newName the new table name. The name will be properly quoted by the method.
+     * @param string $table the table to be renamed. The name will be properly quoted by the method.
+     * @param string $newName the new table name. The name will be properly quoted by the method.
      * @return string the SQL statement for renaming a DB table.
      */
     public function renameTable($table, $newName)
@@ -89,11 +89,11 @@ EOD;
     /**
      * Builds a SQL statement for changing the definition of a column.
      *
-     * @param  string $table  the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param  string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param  string $type   the new column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
-     *                        into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
-     *                        For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
+     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @param string $type the new column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
+     * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
+     * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
      * @return string the SQL statement for changing the definition of a column.
      */
     public function alterColumn($table, $column, $type)
@@ -106,8 +106,8 @@ EOD;
     /**
      * Builds a SQL statement for dropping an index.
      *
-     * @param  string $name  the name of the index to be dropped. The name will be properly quoted by the method.
-     * @param  string $table the table whose index is to be dropped. The name will be properly quoted by the method.
+     * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
+     * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
      * @return string the SQL statement for dropping an index.
      */
     public function dropIndex($name, $table)

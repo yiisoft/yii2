@@ -138,11 +138,11 @@ class User extends Component
 
     /**
      * Returns the identity object associated with the currently logged-in user.
-     * @param  boolean           $checkSession whether to check the session if the identity has never been determined before.
-     *                                         If the identity is already determined (e.g., by calling [[setIdentity()]] or [[login()]]),
-     *                                         then this parameter has no effect.
+     * @param boolean $checkSession whether to check the session if the identity has never been determined before.
+     * If the identity is already determined (e.g., by calling [[setIdentity()]] or [[login()]]),
+     * then this parameter has no effect.
      * @return IdentityInterface the identity object associated with the currently logged-in user.
-     *                                        Null is returned if the user is not logged in (not authenticated).
+     * Null is returned if the user is not logged in (not authenticated).
      * @see login()
      * @see logout()
      */
@@ -192,11 +192,11 @@ class User extends Component
      *   the cookie remains valid or the session is active, you may obtain the user identity information
      *   via [[identity]].
      *
-     * @param  IdentityInterface $identity the user identity (which should already be authenticated)
-     * @param  integer           $duration number of seconds that the user can remain in logged-in status.
-     *                                     Defaults to 0, meaning login till the user closes the browser or the session is manually destroyed.
-     *                                     If greater than 0 and [[enableAutoLogin]] is true, cookie-based login will be supported.
-     * @return boolean           whether the user is logged in
+     * @param IdentityInterface $identity the user identity (which should already be authenticated)
+     * @param integer $duration number of seconds that the user can remain in logged-in status.
+     * Defaults to 0, meaning login till the user closes the browser or the session is manually destroyed.
+     * If greater than 0 and [[enableAutoLogin]] is true, cookie-based login will be supported.
+     * @return boolean whether the user is logged in
      */
     public function login($identity, $duration = 0)
     {
@@ -215,9 +215,9 @@ class User extends Component
      * Logs in a user by the given access token.
      * Note that unlike [[login()]], this method will NOT start a session to remember the user authentication status.
      * Also if the access token is invalid, the user will remain as a guest.
-     * @param  string            $token the access token
+     * @param string $token the access token
      * @return IdentityInterface the identity associated with the given access token. Null is returned if
-     *                                 the access token is invalid.
+     * the access token is invalid.
      */
     public function loginByAccessToken($token)
     {
@@ -280,6 +280,7 @@ class User extends Component
             }
             $this->afterLogout($identity);
         }
+
         return $this->getIsGuest();
     }
 
@@ -313,10 +314,10 @@ class User extends Component
      * Returns the URL that the user should be redirected to after successful login.
      * This property is usually used by the login action. If the login is successful,
      * the action should read this property and use it to redirect the user browser.
-     * @param  string|array $defaultUrl the default return URL in case it was not set previously.
-     *                                  If this is null and the return URL was not set previously, [[Application::homeUrl]] will be redirected to.
-     *                                  Please refer to [[setReturnUrl()]] on accepted format of the URL.
-     * @return string       the URL that the user should be redirected to after login.
+     * @param string|array $defaultUrl the default return URL in case it was not set previously.
+     * If this is null and the return URL was not set previously, [[Application::homeUrl]] will be redirected to.
+     * Please refer to [[setReturnUrl()]] on accepted format of the URL.
+     * @return string the URL that the user should be redirected to after login.
      * @see loginRequired()
      */
     public function getReturnUrl($defaultUrl = null)
@@ -335,9 +336,9 @@ class User extends Component
 
     /**
      * @param string|array $url the URL that the user should be redirected to after login.
-     *                          If an array is given, [[UrlManager::createUrl()]] will be called to create the corresponding URL.
-     *                          The first element of the array should be the route, and the rest of
-     *                          the name-value pairs are GET parameters used to construct the URL. For example,
+     * If an array is given, [[UrlManager::createUrl()]] will be called to create the corresponding URL.
+     * The first element of the array should be the route, and the rest of
+     * the name-value pairs are GET parameters used to construct the URL. For example,
      *
      * ~~~
      * ['admin/index', 'ref' => 1]
@@ -358,7 +359,7 @@ class User extends Component
      *
      * Note that when [[loginUrl]] is set, calling this method will NOT terminate the application execution.
      *
-     * @return Response               the redirection response if [[loginUrl]] is set
+     * @return Response the redirection response if [[loginUrl]] is set
      * @throws ForbiddenHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set
      */
     public function loginRequired()
@@ -379,11 +380,11 @@ class User extends Component
      * The default implementation will trigger the [[EVENT_BEFORE_LOGIN]] event.
      * If you override this method, make sure you call the parent implementation
      * so that the event is triggered.
-     * @param  IdentityInterface $identity    the user identity information
-     * @param  boolean           $cookieBased whether the login is cookie-based
-     * @param  integer           $duration    number of seconds that the user can remain in logged-in status.
-     *                                        If 0, it means login till the user closes the browser or the session is manually destroyed.
-     * @return boolean           whether the user should continue to be logged in
+     * @param IdentityInterface $identity the user identity information
+     * @param boolean $cookieBased whether the login is cookie-based
+     * @param integer $duration number of seconds that the user can remain in logged-in status.
+     * If 0, it means login till the user closes the browser or the session is manually destroyed.
+     * @return boolean whether the user should continue to be logged in
      */
     protected function beforeLogin($identity, $cookieBased, $duration)
     {
@@ -402,10 +403,10 @@ class User extends Component
      * The default implementation will trigger the [[EVENT_AFTER_LOGIN]] event.
      * If you override this method, make sure you call the parent implementation
      * so that the event is triggered.
-     * @param IdentityInterface $identity    the user identity information
-     * @param boolean           $cookieBased whether the login is cookie-based
-     * @param integer           $duration    number of seconds that the user can remain in logged-in status.
-     *                                       If 0, it means login till the user closes the browser or the session is manually destroyed.
+     * @param IdentityInterface $identity the user identity information
+     * @param boolean $cookieBased whether the login is cookie-based
+     * @param integer $duration number of seconds that the user can remain in logged-in status.
+     * If 0, it means login till the user closes the browser or the session is manually destroyed.
      */
     protected function afterLogin($identity, $cookieBased, $duration)
     {
@@ -421,8 +422,8 @@ class User extends Component
      * The default implementation will trigger the [[EVENT_BEFORE_LOGOUT]] event.
      * If you override this method, make sure you call the parent implementation
      * so that the event is triggered.
-     * @param  IdentityInterface $identity the user identity information
-     * @return boolean           whether the user should continue to be logged out
+     * @param IdentityInterface $identity the user identity information
+     * @return boolean whether the user should continue to be logged out
      */
     protected function beforeLogout($identity)
     {
@@ -474,7 +475,7 @@ class User extends Component
      * It saves [[id]], [[IdentityInterface::getAuthKey()|auth key]], and the duration of cookie-based login
      * information in the cookie.
      * @param IdentityInterface $identity
-     * @param integer           $duration number of seconds that the user can remain in logged-in status.
+     * @param integer $duration number of seconds that the user can remain in logged-in status.
      * @see loginByCookie()
      */
     protected function sendIdentityCookie($identity, $duration)
@@ -499,9 +500,9 @@ class User extends Component
      * when the current user needs to be associated with the corresponding identity information.
      *
      * @param IdentityInterface $identity the identity information to be associated with the current user.
-     *                                    If null, it means switching the current user to be a guest.
-     * @param integer           $duration number of seconds that the user can remain in logged-in status.
-     *                                    This parameter is used only when `$identity` is not null.
+     * If null, it means switching the current user to be a guest.
+     * @param integer $duration number of seconds that the user can remain in logged-in status.
+     * This parameter is used only when `$identity` is not null.
      */
     public function switchIdentity($identity, $duration = 0)
     {
@@ -574,17 +575,17 @@ class User extends Component
      * Note that you must configure "authManager" application component in order to use this method.
      * Otherwise an exception will be thrown.
      *
-     * @param  string  $operation    the name of the operation that need access check.
-     * @param  array   $params       name-value pairs that would be passed to business rules associated
-     *                               with the tasks and roles assigned to the user. A param with name 'userId' is added to
-     *                               this array, which holds the value of [[id]] when [[DbAuthManager]] or
-     *                               [[PhpAuthManager]] is used.
-     * @param  boolean $allowCaching whether to allow caching the result of access check.
-     *                               When this parameter is true (default), if the access check of an operation was performed
-     *                               before, its result will be directly returned when calling this method to check the same
-     *                               operation. If this parameter is false, this method will always call
-     *                               [[AuthManager::checkAccess()]] to obtain the up-to-date access result. Note that this
-     *                               caching is effective only within the same request and only works when `$params = []`.
+     * @param string $operation the name of the operation that need access check.
+     * @param array $params name-value pairs that would be passed to business rules associated
+     * with the tasks and roles assigned to the user. A param with name 'userId' is added to
+     * this array, which holds the value of [[id]] when [[DbAuthManager]] or
+     * [[PhpAuthManager]] is used.
+     * @param boolean $allowCaching whether to allow caching the result of access check.
+     * When this parameter is true (default), if the access check of an operation was performed
+     * before, its result will be directly returned when calling this method to check the same
+     * operation. If this parameter is false, this method will always call
+     * [[AuthManager::checkAccess()]] to obtain the up-to-date access result. Note that this
+     * caching is effective only within the same request and only works when `$params = []`.
      * @return boolean whether the operations can be performed by this user.
      */
     public function checkAccess($operation, $params = [], $allowCaching = true)

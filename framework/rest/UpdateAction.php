@@ -30,9 +30,9 @@ class UpdateAction extends Action
 
     /**
      * Updates an existing model.
-     * @param  string                        $id the primary key of the model.
+     * @param string $id the primary key of the model.
      * @return \yii\db\ActiveRecordInterface the model being updated
-     * @throws \Exception                    if there is any error when updating the model
+     * @throws \Exception if there is any error when updating the model
      */
     public function run($id)
     {

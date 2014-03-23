@@ -124,7 +124,7 @@ class MemCache extends Cache
 
     /**
      * Returns the underlying memcache (or memcached) object.
-     * @return \Memcache|\Memcached   the memcache (or memcached) object used by this cache component.
+     * @return \Memcache|\Memcached the memcache (or memcached) object used by this cache component.
      * @throws InvalidConfigException if memcache or memcached extension is not loaded
      */
     public function getMemcache()
@@ -151,7 +151,7 @@ class MemCache extends Cache
 
     /**
      * @param array $config list of memcache server configurations. Each element must be an array
-     *                      with the following keys: host, port, persistent, weight, timeout, retryInterval, status.
+     * with the following keys: host, port, persistent, weight, timeout, retryInterval, status.
      * @see http://www.php.net/manual/en/function.Memcache-addServer.php
      */
     public function setServers($config)
@@ -164,7 +164,7 @@ class MemCache extends Cache
     /**
      * Retrieves a value from cache with a specified key.
      * This is the implementation of the method declared in the parent class.
-     * @param  string         $key a unique key identifying the cached value
+     * @param string $key a unique key identifying the cached value
      * @return string|boolean the value stored in cache, false if the value is not in the cache or expired.
      */
     protected function getValue($key)
@@ -174,7 +174,7 @@ class MemCache extends Cache
 
     /**
      * Retrieves multiple values from cache with the specified keys.
-     * @param  array $keys a list of keys identifying the cached values
+     * @param array $keys a list of keys identifying the cached values
      * @return array a list of cached values indexed by the keys
      */
     protected function getValues($keys)
@@ -186,27 +186,29 @@ class MemCache extends Cache
      * Stores a value identified by a key in cache.
      * This is the implementation of the method declared in the parent class.
      *
-     * @param  string  $key    the key identifying the value to be cached
-     * @param  string  $value  the value to be cached
-     * @param  integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param string $key the key identifying the value to be cached
+     * @param string $value the value to be cached
+     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
     protected function setValue($key, $value, $duration)
     {
         $expire = $duration > 0 ? $duration + time() : 0;
+
         return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $expire);
     }
 
     /**
      * Stores multiple key-value pairs in cache.
-     * @param  array   $data   array where key corresponds to cache key while value is the value stored
-     * @param  integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
-     * @return array   array of failed keys. Always empty in case of using memcached.
+     * @param array $data array where key corresponds to cache key while value is the value stored
+     * @param integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
+     * @return array array of failed keys. Always empty in case of using memcached.
      */
     protected function setValues($data, $duration)
     {
         if ($this->useMemcached) {
             $this->_cache->setMulti($data, $duration > 0 ? $duration + time() : 0);
+
             return [];
         } else {
             return parent::setValues($data, $duration);
@@ -217,21 +219,22 @@ class MemCache extends Cache
      * Stores a value identified by a key into cache if the cache does not contain this key.
      * This is the implementation of the method declared in the parent class.
      *
-     * @param  string  $key    the key identifying the value to be cached
-     * @param  string  $value  the value to be cached
-     * @param  integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param string $key the key identifying the value to be cached
+     * @param string $value the value to be cached
+     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
     protected function addValue($key, $value, $duration)
     {
         $expire = $duration > 0 ? $duration + time() : 0;
+
         return $this->useMemcached ? $this->_cache->add($key, $value, $expire) : $this->_cache->add($key, $value, 0, $expire);
     }
 
     /**
      * Deletes a value with the specified key from cache
      * This is the implementation of the method declared in the parent class.
-     * @param  string  $key the key of the value to be deleted
+     * @param string $key the key of the value to be deleted
      * @return boolean if no error happens during deletion
      */
     protected function deleteValue($key)

@@ -18,8 +18,8 @@ class PDO extends \PDO
 {
     /**
      * Returns value of the last inserted ID.
-     * @param  string|null $sequence the sequence name. Defaults to null.
-     * @return integer     last inserted ID value.
+     * @param string|null $sequence the sequence name. Defaults to null.
+     * @return integer last inserted ID value.
      */
     public function lastInsertId($sequence = null)
     {

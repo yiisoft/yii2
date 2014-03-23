@@ -60,7 +60,7 @@ class DynamicModel extends Model
     /**
      * Constructors.
      * @param array $attributes the dynamic attributes (name-value pairs, or names) being defined
-     * @param array $config     the configuration array to be applied to this object.
+     * @param array $config the configuration array to be applied to this object.
      */
     public function __construct(array $attributes = [], $config = [])
     {
@@ -123,8 +123,8 @@ class DynamicModel extends Model
 
     /**
      * Defines an attribute.
-     * @param string $name  the attribute name
-     * @param mixed  $value the attribute value
+     * @param string $name the attribute name
+     * @param mixed $value the attribute value
      */
     public function defineAttribute($name, $value = null)
     {
@@ -144,11 +144,11 @@ class DynamicModel extends Model
      * Adds a validation rule to this model.
      * You can also directly manipulate [[validators]] to add or remove validation rules.
      * This method provides a shortcut.
-     * @param  string|array $attributes the attribute(s) to be validated by the rule
-     * @param  mixed        $validator  the validator for the rule.This can be a built-in validator name,
-     *                                  a method name of the model class, an anonymous function, or a validator class name.
-     * @param  array        $options    the options (name-value pairs) to be applied to the validator
-     * @return static       the model itself
+     * @param string|array $attributes the attribute(s) to be validated by the rule
+     * @param mixed $validator the validator for the rule.This can be a built-in validator name,
+     * a method name of the model class, an anonymous function, or a validator class name.
+     * @param array $options the options (name-value pairs) to be applied to the validator
+     * @return static the model itself
      */
     public function addRule($attributes, $validator, $options = [])
     {
@@ -162,9 +162,9 @@ class DynamicModel extends Model
      * Validates the given data with the specified validation rules.
      * This method will create a DynamicModel instance, populate it with the data to be validated,
      * create the specified validation rules, and then validate the data using these rules.
-     * @param  array                  $data  the data (name-value pairs) to be validated
-     * @param  array                  $rules the validation rules. Please refer to [[Model::rules()]] on the format of this parameter.
-     * @return static                 the model instance that contains the data being validated
+     * @param array $data the data (name-value pairs) to be validated
+     * @param array $rules the validation rules. Please refer to [[Model::rules()]] on the format of this parameter.
+     * @return static the model instance that contains the data being validated
      * @throws InvalidConfigException if a validation rule is not specified correctly.
      */
     public static function validateData(array $data, $rules = [])

@@ -62,7 +62,7 @@ abstract class Dependency extends \yii\base\Object
 
     /**
      * Returns a value indicating whether the dependency has changed.
-     * @param  Cache   $cache the cache component that is currently evaluating this dependency
+     * @param Cache $cache the cache component that is currently evaluating this dependency
      * @return boolean whether the dependency has changed.
      */
     public function getHasChanged($cache)
@@ -92,7 +92,7 @@ abstract class Dependency extends \yii\base\Object
     /**
      * Generates the data needed to determine if dependency has been changed.
      * Derived classes should override this method to generate the actual dependency data.
-     * @param  Cache $cache the cache component that is currently evaluating this dependency
+     * @param Cache $cache the cache component that is currently evaluating this dependency
      * @return mixed the data needed to determine if dependency has been changed.
      */
     abstract protected function generateDependencyData($cache);

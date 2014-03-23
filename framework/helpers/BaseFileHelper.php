@@ -33,8 +33,8 @@ class BaseFileHelper
      * After normalization, the directory separators in the path will be `DIRECTORY_SEPARATOR`,
      * and any trailing directory separators will be removed. For example, '/home\demo/' on Linux
      * will be normalized as '/home/demo'.
-     * @param  string $path the file/directory path to be normalized
-     * @param  string $ds   the directory separator to be used in the normalized result. Defaults to `DIRECTORY_SEPARATOR`.
+     * @param string $path the file/directory path to be normalized
+     * @param string $ds the directory separator to be used in the normalized result. Defaults to `DIRECTORY_SEPARATOR`.
      * @return string the normalized file/directory path
      */
     public static function normalizePath($path, $ds = DIRECTORY_SEPARATOR)
@@ -55,13 +55,13 @@ class BaseFileHelper
      * If the target and the source language codes are the same,
      * the original file will be returned.
      *
-     * @param  string $file           the original file
-     * @param  string $language       the target language that the file should be localized to.
-     *                                If not set, the value of [[\yii\base\Application::language]] will be used.
-     * @param  string $sourceLanguage the language that the original file is in.
-     *                                If not set, the value of [[\yii\base\Application::sourceLanguage]] will be used.
+     * @param string $file the original file
+     * @param string $language the target language that the file should be localized to.
+     * If not set, the value of [[\yii\base\Application::language]] will be used.
+     * @param string $sourceLanguage the language that the original file is in.
+     * If not set, the value of [[\yii\base\Application::sourceLanguage]] will be used.
      * @return string the matching localized file, or the original file if the localized version is not found.
-     *                               If the target and the source language codes are the same, the original file will be returned.
+     * If the target and the source language codes are the same, the original file will be returned.
      */
     public static function localize($file, $language = null, $sourceLanguage = null)
     {
@@ -93,12 +93,12 @@ class BaseFileHelper
      * This method will first try to determine the MIME type based on
      * [finfo_open](http://php.net/manual/en/function.finfo-open.php). If this doesn't work, it will
      * fall back to [[getMimeTypeByExtension()]].
-     * @param  string  $file           the file name.
-     * @param  string  $magicFile      name of the optional magic database file, usually something like `/path/to/magic.mime`.
-     *                                 This will be passed as the second parameter to [finfo_open](http://php.net/manual/en/function.finfo-open.php).
-     * @param  boolean $checkExtension whether to use the file extension to determine the MIME type in case
-     *                                 `finfo_open()` cannot determine it.
-     * @return string  the MIME type (e.g. `text/plain`). Null is returned if the MIME type cannot be determined.
+     * @param string $file the file name.
+     * @param string $magicFile name of the optional magic database file, usually something like `/path/to/magic.mime`.
+     * This will be passed as the second parameter to [finfo_open](http://php.net/manual/en/function.finfo-open.php).
+     * @param boolean $checkExtension whether to use the file extension to determine the MIME type in case
+     * `finfo_open()` cannot determine it.
+     * @return string the MIME type (e.g. `text/plain`). Null is returned if the MIME type cannot be determined.
      */
     public static function getMimeType($file, $magicFile = null, $checkExtension = true)
     {
@@ -119,9 +119,9 @@ class BaseFileHelper
     /**
      * Determines the MIME type based on the extension name of the specified file.
      * This method will use a local map between extension names and MIME types.
-     * @param  string $file      the file name.
-     * @param  string $magicFile the path of the file that contains all available MIME type information.
-     *                           If this is not set, the default file aliased by `@yii/util/mimeTypes.php` will be used.
+     * @param string $file the file name.
+     * @param string $magicFile the path of the file that contains all available MIME type information.
+     * If this is not set, the default file aliased by `@yii/util/mimeTypes.php` will be used.
      * @return string the MIME type. Null is returned if the MIME type cannot be determined.
      */
     public static function getMimeTypeByExtension($file, $magicFile = null)
@@ -146,9 +146,9 @@ class BaseFileHelper
     /**
      * Copies a whole directory as another one.
      * The files and sub-directories will also be copied over.
-     * @param string $src     the source directory
-     * @param string $dst     the destination directory
-     * @param array  $options options for directory copy. Valid options are:
+     * @param string $src the source directory
+     * @param string $dst the destination directory
+     * @param array $options options for directory copy. Valid options are:
      *
      * - dirMode: integer, the permission to be set for newly copied directories. Defaults to 0775.
      * - fileMode:  integer, the permission to be set for newly copied files. Defaults to the current environment setting.
@@ -243,8 +243,8 @@ class BaseFileHelper
 
     /**
      * Returns the files found under the specified directory and subdirectories.
-     * @param string $dir     the directory under which the files will be looked for.
-     * @param array  $options options for file searching. Valid options are:
+     * @param string $dir the directory under which the files will be looked for.
+     * @param array $options options for file searching. Valid options are:
      *
      * - filter: callback, a PHP callback that is called for each directory or file.
      *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
@@ -270,7 +270,7 @@ class BaseFileHelper
      *   Same pattern matching rules as in the "except" option are used.
      *   If a file path matches a pattern in both "only" and "except", it will NOT be returned.
      * - recursive: boolean, whether the files under the subdirectories should also be looked for. Defaults to true.
-     * @return array                 files found under the directory. The file list is sorted.
+     * @return array files found under the directory. The file list is sorted.
      * @throws InvalidParamException if the dir is invalid.
      */
     public static function findFiles($dir, $options = [])
@@ -322,9 +322,9 @@ class BaseFileHelper
 
     /**
      * Checks if the given file path satisfies the filtering options.
-     * @param  string  $path    the path of the file or directory to be checked
-     * @param  array   $options the filtering options. See [[findFiles()]] for explanations of
-     *                          the supported options.
+     * @param string $path the path of the file or directory to be checked
+     * @param array $options the filtering options. See [[findFiles()]] for explanations of
+     * the supported options.
      * @return boolean whether the file or directory satisfies the filtering options.
      */
     public static function filterPath($path, $options)
@@ -367,9 +367,9 @@ class BaseFileHelper
      * it uses `chmod()` to set the permission of the created directory
      * in order to avoid the impact of the `umask` setting.
      *
-     * @param  string  $path      path of the directory to be created.
-     * @param  integer $mode      the permission to be set for the created directory.
-     * @param  boolean $recursive whether to create parent directories if they do not exist.
+     * @param string $path path of the directory to be created.
+     * @param integer $mode the permission to be set for the created directory.
+     * @param boolean $recursive whether to create parent directories if they do not exist.
      * @return boolean whether the directory is created successfully
      */
     public static function createDirectory($path, $mode = 0775, $recursive = true)
@@ -392,11 +392,11 @@ class BaseFileHelper
      *
      * Based on match_basename() from dir.c of git 1.8.5.3 sources.
      *
-     * @param  string          $baseName      file or directory name to compare with the pattern
-     * @param  string          $pattern       the pattern that $baseName will be compared against
-     * @param  integer|boolean $firstWildcard location of first wildcard character in the $pattern
-     * @param  integer         $flags         pattern flags
-     * @return boolean         wheter the name matches against pattern
+     * @param string $baseName file or directory name to compare with the pattern
+     * @param string $pattern the pattern that $baseName will be compared against
+     * @param integer|boolean $firstWildcard location of first wildcard character in the $pattern
+     * @param integer $flags pattern flags
+     * @return boolean wheter the name matches against pattern
      */
     private static function matchBasename($baseName, $pattern, $firstWildcard, $flags)
     {
@@ -420,12 +420,12 @@ class BaseFileHelper
      *
      * Based on match_pathname() from dir.c of git 1.8.5.3 sources.
      *
-     * @param  string          $path          full path to compare
-     * @param  string          $basePath      base of path that will not be compared
-     * @param  string          $pattern       the pattern that path part will be compared against
-     * @param  integer|boolean $firstWildcard location of first wildcard character in the $pattern
-     * @param  integer         $flags         pattern flags
-     * @return boolean         wheter the path part matches against pattern
+     * @param string $path full path to compare
+     * @param string $basePath base of path that will not be compared
+     * @param string $pattern the pattern that path part will be compared against
+     * @param integer|boolean $firstWildcard location of first wildcard character in the $pattern
+     * @param integer $flags pattern flags
+     * @return boolean wheter the path part matches against pattern
      */
     private static function matchPathname($path, $basePath, $pattern, $firstWildcard, $flags)
     {
@@ -472,10 +472,10 @@ class BaseFileHelper
      *
      * Based on last_exclude_matching_from_list() from dir.c of git 1.8.5.3 sources.
      *
-     * @param  string                $basePath
-     * @param  string                $path
-     * @param  array                 $excludes list of patterns to match $path against
-     * @return string                null or one of $excludes item as an array with keys: 'pattern', 'flags'
+     * @param string $basePath
+     * @param string $path
+     * @param array $excludes list of patterns to match $path against
+     * @return string null or one of $excludes item as an array with keys: 'pattern', 'flags'
      * @throws InvalidParamException if any of the exclude patterns is not a string or an array with keys: pattern, flags, firstWildcard.
      */
     private static function lastExcludeMatchingFromList($basePath, $path, $excludes)
@@ -508,8 +508,8 @@ class BaseFileHelper
 
     /**
      * Processes the pattern, stripping special characters like / and ! from the beginning and settings flags instead.
-     * @param  string                $pattern
-     * @return array                 with keys: (string) pattern, (int) flags, (int|boolean)firstWildcard
+     * @param string $pattern
+     * @return array with keys: (string) pattern, (int) flags, (int|boolean)firstWildcard
      * @throws InvalidParamException if the pattern is not a string.
      */
     private static function parseExcludePattern($pattern)
@@ -550,7 +550,7 @@ class BaseFileHelper
 
     /**
      * Searches for the first wildcard character in the pattern.
-     * @param  string          $pattern the pattern to search in
+     * @param string $pattern the pattern to search in
      * @return integer|boolean position of first wildcard character or false if not found
      */
     private static function firstWildcardInPattern($pattern)

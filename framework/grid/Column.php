@@ -87,10 +87,10 @@ class Column extends Object
 
     /**
      * Renders a data cell.
-     * @param  mixed   $model the data model being rendered
-     * @param  mixed   $key   the key associated with the data model
-     * @param  integer $index the zero-based index of the data item among the item array returned by [[GridView::dataProvider]].
-     * @return string  the rendering result
+     * @param mixed $model the data model being rendered
+     * @param mixed $key the key associated with the data model
+     * @param integer $index the zero-based index of the data item among the item array returned by [[GridView::dataProvider]].
+     * @return string the rendering result
      */
     public function renderDataCell($model, $key, $index)
     {
@@ -136,10 +136,10 @@ class Column extends Object
     /**
      * Returns the raw data cell content.
      * This method is called by [[renderDataCellContent()]] when rendering the content of a data cell.
-     * @param  mixed   $model the data model
-     * @param  mixed   $key   the key associated with the data model
-     * @param  integer $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
-     * @return string  the rendering result
+     * @param mixed $model the data model
+     * @param mixed $key the key associated with the data model
+     * @param integer $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
+     * @return string the rendering result
      */
     protected function getDataCellContent($model, $key, $index)
     {
@@ -152,10 +152,10 @@ class Column extends Object
 
     /**
      * Renders the data cell content.
-     * @param  mixed   $model the data model
-     * @param  mixed   $key   the key associated with the data model
-     * @param  integer $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
-     * @return string  the rendering result
+     * @param mixed $model the data model
+     * @param mixed $key the key associated with the data model
+     * @param integer $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
+     * @return string the rendering result
      */
     protected function renderDataCellContent($model, $key, $index)
     {

@@ -61,12 +61,12 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 
     /**
      * Returns the named header(s).
-     * @param  string       $name    the name of the header to return
-     * @param  mixed        $default the value to return in case the named header does not exist
-     * @param  boolean      $first   whether to only return the first header of the specified name.
-     *                               If false, all headers of the specified name will be returned.
+     * @param string $name the name of the header to return
+     * @param mixed $default the value to return in case the named header does not exist
+     * @param boolean $first whether to only return the first header of the specified name.
+     * If false, all headers of the specified name will be returned.
      * @return string|array the named header(s). If `$first` is true, a string will be returned;
-     *                              If `$first` is false, an array will be returned.
+     * If `$first` is false, an array will be returned.
      */
     public function get($name, $default = null, $first = true)
     {
@@ -81,8 +81,8 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
     /**
      * Adds a new header.
      * If there is already a header with the same name, it will be replaced.
-     * @param  string $name  the name of the header
-     * @param  string $value the value of the header
+     * @param string $name the name of the header
+     * @param string $value the value of the header
      * @return static the collection object itself
      */
     public function set($name, $value = '')
@@ -97,8 +97,8 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
      * Adds a new header.
      * If there is already a header with the same name, the new one will
      * be appended to it instead of replacing it.
-     * @param  string $name  the name of the header
-     * @param  string $value the value of the header
+     * @param string $name the name of the header
+     * @param string $value the value of the header
      * @return static the collection object itself
      */
     public function add($name, $value)
@@ -112,8 +112,8 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
     /**
      * Sets a new header only if it does not exist yet.
      * If there is already a header with the same name, the new one will be ignored.
-     * @param  string $name  the name of the header
-     * @param  string $value the value of the header
+     * @param string $name the name of the header
+     * @param string $value the value of the header
      * @return static the collection object itself
      */
     public function setDefault($name, $value)
@@ -128,7 +128,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 
     /**
      * Returns a value indicating whether the named header exists.
-     * @param  string  $name the name of the header
+     * @param string $name the name of the header
      * @return boolean whether the named header exists
      */
     public function has($name)
@@ -140,7 +140,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 
     /**
      * Removes a header.
-     * @param  string $name the name of the header to be removed.
+     * @param string $name the name of the header to be removed.
      * @return string the value of the removed header. Null is returned if the header does not exist.
      */
     public function remove($name)
@@ -167,7 +167,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
     /**
      * Returns the collection as a PHP array.
      * @return array the array representation of the collection.
-     *               The array keys are header names, and the array values are the corresponding header values.
+     * The array keys are header names, and the array values are the corresponding header values.
      */
     public function toArray()
     {
@@ -178,7 +178,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
      * Returns whether there is a header with the specified name.
      * This method is required by the SPL interface `ArrayAccess`.
      * It is implicitly called when you use something like `isset($collection[$name])`.
-     * @param  string  $name the header name
+     * @param string $name the header name
      * @return boolean whether the named header exists
      */
     public function offsetExists($name)
@@ -191,7 +191,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
      * This method is required by the SPL interface `ArrayAccess`.
      * It is implicitly called when you use something like `$header = $collection[$name];`.
      * This is equivalent to [[get()]].
-     * @param  string $name the header name
+     * @param string $name the header name
      * @return string the header value with the specified name, null if the named header does not exist.
      */
     public function offsetGet($name)
@@ -204,7 +204,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
      * This method is required by the SPL interface `ArrayAccess`.
      * It is implicitly called when you use something like `$collection[$name] = $header;`.
      * This is equivalent to [[add()]].
-     * @param string $name  the header name
+     * @param string $name the header name
      * @param string $value the header value to be added
      */
     public function offsetSet($name, $value)

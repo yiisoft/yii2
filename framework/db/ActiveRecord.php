@@ -134,8 +134,8 @@ class ActiveRecord extends BaseActiveRecord
      * $customers = Customer::findBySql('SELECT * FROM tbl_customer')->all();
      * ~~~
      *
-     * @param  string      $sql    the SQL statement to be executed
-     * @param  array       $params parameters to be bound to the SQL statement during execution.
+     * @param string $sql the SQL statement to be executed
+     * @param array $params parameters to be bound to the SQL statement during execution.
      * @return ActiveQuery the newly created [[ActiveQuery]] instance
      */
     public static function findBySql($sql, $params = [])
@@ -154,11 +154,11 @@ class ActiveRecord extends BaseActiveRecord
      * Customer::updateAll(['status' => 1], 'status = 2');
      * ~~~
      *
-     * @param  array        $attributes attribute values (name-value pairs) to be saved into the table
-     * @param  string|array $condition  the conditions that will be put in the WHERE part of the UPDATE SQL.
-     *                                  Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param  array        $params     the parameters (name => value) to be bound to the query.
-     * @return integer      the number of rows updated
+     * @param array $attributes attribute values (name-value pairs) to be saved into the table
+     * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+     * Please refer to [[Query::where()]] on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
+     * @return integer the number of rows updated
      */
     public static function updateAll($attributes, $condition = '', $params = [])
     {
@@ -176,13 +176,13 @@ class ActiveRecord extends BaseActiveRecord
      * Customer::updateAllCounters(['age' => 1]);
      * ~~~
      *
-     * @param  array        $counters  the counters to be updated (attribute name => increment value).
-     *                                 Use negative values if you want to decrement the counters.
-     * @param  string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
-     *                                 Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param  array        $params    the parameters (name => value) to be bound to the query.
-     *                                 Do not name the parameters as `:bp0`, `:bp1`, etc., because they are used internally by this method.
-     * @return integer      the number of rows updated
+     * @param array $counters the counters to be updated (attribute name => increment value).
+     * Use negative values if you want to decrement the counters.
+     * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+     * Please refer to [[Query::where()]] on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
+     * Do not name the parameters as `:bp0`, `:bp1`, etc., because they are used internally by this method.
+     * @return integer the number of rows updated
      */
     public static function updateAllCounters($counters, $condition = '', $params = [])
     {
@@ -207,10 +207,10 @@ class ActiveRecord extends BaseActiveRecord
      * Customer::deleteAll('status = 3');
      * ~~~
      *
-     * @param  string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
-     *                                 Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param  array        $params    the parameters (name => value) to be bound to the query.
-     * @return integer      the number of rows deleted
+     * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
+     * Please refer to [[Query::where()]] on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
+     * @return integer the number of rows deleted
      */
     public static function deleteAll($condition = '', $params = [])
     {
@@ -240,7 +240,7 @@ class ActiveRecord extends BaseActiveRecord
      * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
      * default condition. Using [[Query::where()]] will override the default condition.
      *
-     * @param  array       $config the configuration passed to the ActiveQuery class.
+     * @param array $config the configuration passed to the ActiveQuery class.
      * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function createQuery($config = [])
@@ -265,7 +265,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Returns the schema information of the DB table associated with this AR class.
-     * @return TableSchema            the schema information of the DB table associated with this AR class.
+     * @return TableSchema the schema information of the DB table associated with this AR class.
      * @throws InvalidConfigException if the table for the AR class does not exist.
      */
     public static function getTableSchema()
@@ -331,7 +331,7 @@ class ActiveRecord extends BaseActiveRecord
      * in a transaction.
      *
      * @return array the declarations of transactional operations. The array keys are scenarios names,
-     *               and the array values are the corresponding transaction operations.
+     * and the array values are the corresponding transaction operations.
      */
     public function transactions()
     {
@@ -383,11 +383,11 @@ class ActiveRecord extends BaseActiveRecord
      * $customer->insert();
      * ~~~
      *
-     * @param  boolean    $runValidation whether to perform validation before saving the record.
-     *                                   If the validation fails, the record will not be inserted into the database.
-     * @param  array      $attributes    list of attributes that need to be saved. Defaults to null,
-     *                                   meaning all attributes that are loaded from DB will be saved.
-     * @return boolean    whether the attributes are valid and the record is inserted successfully.
+     * @param boolean $runValidation whether to perform validation before saving the record.
+     * If the validation fails, the record will not be inserted into the database.
+     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * meaning all attributes that are loaded from DB will be saved.
+     * @return boolean whether the attributes are valid and the record is inserted successfully.
      * @throws \Exception in case insert failed.
      */
     public function insert($runValidation = true, $attributes = null)
@@ -419,8 +419,8 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Inserts an ActiveRecord into DB without considering transaction.
-     * @param  array   $attributes list of attributes that need to be saved. Defaults to null,
-     *                             meaning all attributes that are loaded from DB will be saved.
+     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * meaning all attributes that are loaded from DB will be saved.
      * @return boolean whether the record is inserted successfully.
      */
     protected function insertInternal($attributes = null)
@@ -498,15 +498,15 @@ class ActiveRecord extends BaseActiveRecord
      * }
      * ~~~
      *
-     * @param  boolean              $runValidation whether to perform validation before saving the record.
-     *                                             If the validation fails, the record will not be inserted into the database.
-     * @param  array                $attributes    list of attributes that need to be saved. Defaults to null,
-     *                                             meaning all attributes that are loaded from DB will be saved.
-     * @return integer|boolean      the number of rows affected, or false if validation fails
-     *                                            or [[beforeSave()]] stops the updating process.
+     * @param boolean $runValidation whether to perform validation before saving the record.
+     * If the validation fails, the record will not be inserted into the database.
+     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * meaning all attributes that are loaded from DB will be saved.
+     * @return integer|boolean the number of rows affected, or false if validation fails
+     * or [[beforeSave()]] stops the updating process.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
-     *                                            being updated is outdated.
-     * @throws \Exception           in case update failed.
+     * being updated is outdated.
+     * @throws \Exception in case update failed.
      */
     public function update($runValidation = true, $attributes = null)
     {
@@ -548,11 +548,11 @@ class ActiveRecord extends BaseActiveRecord
      * In the above step 1 and 3, events named [[EVENT_BEFORE_DELETE]] and [[EVENT_AFTER_DELETE]]
      * will be raised by the corresponding methods.
      *
-     * @return integer|boolean      the number of rows deleted, or false if the deletion is unsuccessful for some reason.
-     *                              Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
+     * @return integer|boolean the number of rows deleted, or false if the deletion is unsuccessful for some reason.
+     * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
-     *                              being deleted is outdated.
-     * @throws \Exception           in case delete failed.
+     * being deleted is outdated.
+     * @throws \Exception in case delete failed.
      */
     public function delete()
     {
@@ -579,8 +579,8 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Deletes an ActiveRecord without considering transaction.
-     * @return integer|boolean      the number of rows deleted, or false if the deletion is unsuccessful for some reason.
-     *                              Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
+     * @return integer|boolean the number of rows deleted, or false if the deletion is unsuccessful for some reason.
+     * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
      * @throws StaleObjectException
      */
     protected function deleteInternal()
@@ -609,8 +609,8 @@ class ActiveRecord extends BaseActiveRecord
      * Returns a value indicating whether the given active record is the same as the current one.
      * The comparison is made by comparing the table names and the primary key values of the two active records.
      * If one of the records [[isNewRecord|is new]] they are also considered not equal.
-     * @param  ActiveRecord $record record to compare to
-     * @return boolean      whether the two active records refer to the same row in the same database table.
+     * @param ActiveRecord $record record to compare to
+     * @return boolean whether the two active records refer to the same row in the same database table.
      */
     public function equals($record)
     {
@@ -623,7 +623,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Returns a value indicating whether the specified operation is transactional in the current [[scenario]].
-     * @param  integer $operation the operation to check. Possible values are [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]].
+     * @param integer $operation the operation to check. Possible values are [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]].
      * @return boolean whether the specified operation is transactional in the current [[scenario]].
      */
     public function isTransactional($operation)

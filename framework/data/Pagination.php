@@ -159,7 +159,7 @@ class Pagination extends Object implements Linkable
 
     /**
      * Returns the zero-based current page number.
-     * @param  boolean $recalculate whether to recalculate the current page based on the page size and item count.
+     * @param boolean $recalculate whether to recalculate the current page based on the page size and item count.
      * @return integer the zero-based current page number.
      */
     public function getPage($recalculate = false)
@@ -174,9 +174,9 @@ class Pagination extends Object implements Linkable
 
     /**
      * Sets the current page number.
-     * @param integer $value        the zero-based index of the current page.
+     * @param integer $value the zero-based index of the current page.
      * @param boolean $validatePage whether to validate the page number. Note that in order
-     *                              to validate the page number, both [[validatePage]] and this parameter must be true.
+     * to validate the page number, both [[validatePage]] and this parameter must be true.
      */
     public function setPage($value, $validatePage = false)
     {
@@ -220,7 +220,7 @@ class Pagination extends Object implements Linkable
     }
 
     /**
-     * @param integer $value            the number of items per page.
+     * @param integer $value the number of items per page.
      * @param boolean $validatePageSize whether to validate page size.
      */
     public function setPageSize($value, $validatePageSize = false)
@@ -243,9 +243,9 @@ class Pagination extends Object implements Linkable
     /**
      * Creates the URL suitable for pagination with the specified page number.
      * This method is mainly called by pagers when creating URLs used to perform pagination.
-     * @param  integer $page     the zero-based page number that the URL should point to.
-     * @param  boolean $absolute whether to create an absolute URL. Defaults to `false`.
-     * @return string  the created URL
+     * @param integer $page the zero-based page number that the URL should point to.
+     * @param boolean $absolute whether to create an absolute URL. Defaults to `false`.
+     * @return string the created URL
      * @see params
      * @see forcePageParam
      */
@@ -277,7 +277,7 @@ class Pagination extends Object implements Linkable
 
     /**
      * @return integer the offset of the data. This may be used to set the
-     *                 OFFSET value for a SQL statement for fetching the current page of data.
+     * OFFSET value for a SQL statement for fetching the current page of data.
      */
     public function getOffset()
     {
@@ -288,8 +288,8 @@ class Pagination extends Object implements Linkable
 
     /**
      * @return integer the limit of the data. This may be used to set the
-     *                 LIMIT value for a SQL statement for fetching the current page of data.
-     *                 Note that if the page size is infinite, a value -1 will be returned.
+     * LIMIT value for a SQL statement for fetching the current page of data.
+     * Note that if the page size is infinite, a value -1 will be returned.
      */
     public function getLimit()
     {
@@ -300,9 +300,9 @@ class Pagination extends Object implements Linkable
 
     /**
      * Returns a whole set of links for navigating to the first, last, next and previous pages.
-     * @param  boolean $absolute whether the generated URLs should be absolute.
-     * @return array   the links for navigational purpose. The array keys specify the purpose of the links (e.g. [[LINK_FIRST]]),
-     *                          and the array values are the corresponding URLs.
+     * @param boolean $absolute whether the generated URLs should be absolute.
+     * @return array the links for navigational purpose. The array keys specify the purpose of the links (e.g. [[LINK_FIRST]]),
+     * and the array values are the corresponding URLs.
      */
     public function getLinks($absolute = false)
     {
@@ -326,8 +326,8 @@ class Pagination extends Object implements Linkable
     /**
      * Returns the value of the specified query parameter.
      * This method returns the named parameter value from [[params]]. Null is returned if the value does not exist.
-     * @param  string $name         the parameter name
-     * @param  string $defaultValue the value to be returned when the specified parameter does not exist in [[params]].
+     * @param string $name the parameter name
+     * @param string $defaultValue the value to be returned when the specified parameter does not exist in [[params]].
      * @return string the parameter value
      */
     protected function getQueryParam($name, $defaultValue = null)

@@ -111,19 +111,19 @@ class Formatter extends \yii\base\Formatter
     /**
      * Formats the value as a date.
      * @param integer|string|DateTime $value the value to be formatted. The following
-     *                                       types of value are supported:
+     * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be parsed into a UNIX timestamp via `strtotime()`
      * - a PHP DateTime object
      *
      * @param string $format the format used to convert the value into a date string.
-     *                       If null, [[dateFormat]] will be used.
+     * If null, [[dateFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
      *
-     * @return string                 the formatted result
+     * @return string the formatted result
      * @throws InvalidConfigException when formatting fails due to invalid parameters.
      * @see dateFormat
      */
@@ -154,19 +154,19 @@ class Formatter extends \yii\base\Formatter
     /**
      * Formats the value as a time.
      * @param integer|string|DateTime $value the value to be formatted. The following
-     *                                       types of value are supported:
+     * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be parsed into a UNIX timestamp via `strtotime()`
      * - a PHP DateTime object
      *
      * @param string $format the format used to convert the value into a date string.
-     *                       If null, [[dateFormat]] will be used.
+     * If null, [[dateFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
      *
-     * @return string                 the formatted result
+     * @return string the formatted result
      * @throws InvalidConfigException when formatting fails due to invalid parameters.
      * @see timeFormat
      */
@@ -197,19 +197,19 @@ class Formatter extends \yii\base\Formatter
     /**
      * Formats the value as a datetime.
      * @param integer|string|DateTime $value the value to be formatted. The following
-     *                                       types of value are supported:
+     * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be parsed into a UNIX timestamp via `strtotime()`
      * - a PHP DateTime object
      *
      * @param string $format the format used to convert the value into a date string.
-     *                       If null, [[dateFormat]] will be used.
+     * If null, [[dateFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
      *
-     * @return string                 the formatted result
+     * @return string the formatted result
      * @throws InvalidConfigException when formatting fails due to invalid parameters.
      * @see datetimeFormat
      */
@@ -239,9 +239,9 @@ class Formatter extends \yii\base\Formatter
 
     /**
      * Formats the value as a decimal number.
-     * @param  mixed  $value  the value to be formatted
-     * @param  string $format the format to be used. Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
-     *                        for details on how to specify a format.
+     * @param mixed $value the value to be formatted
+     * @param string $format the format to be used. Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
+     * for details on how to specify a format.
      * @return string the formatted result.
      */
     public function asDecimal($value, $format = null)
@@ -255,10 +255,10 @@ class Formatter extends \yii\base\Formatter
 
     /**
      * Formats the value as a currency number.
-     * @param  mixed  $value    the value to be formatted
-     * @param  string $currency the 3-letter ISO 4217 currency code indicating the currency to use.
-     * @param  string $format   the format to be used. Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
-     *                          for details on how to specify a format.
+     * @param mixed $value the value to be formatted
+     * @param string $currency the 3-letter ISO 4217 currency code indicating the currency to use.
+     * @param string $format the format to be used. Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
+     * for details on how to specify a format.
      * @return string the formatted result.
      */
     public function asCurrency($value, $currency = 'USD', $format = null)
@@ -272,9 +272,9 @@ class Formatter extends \yii\base\Formatter
 
     /**
      * Formats the value as a percent number.
-     * @param  mixed  $value  the value to be formatted
-     * @param  string $format the format to be used. Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
-     *                        for details on how to specify a format.
+     * @param mixed $value the value to be formatted
+     * @param string $format the format to be used. Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
+     * for details on how to specify a format.
      * @return string the formatted result.
      */
     public function asPercent($value, $format = null)
@@ -288,9 +288,9 @@ class Formatter extends \yii\base\Formatter
 
     /**
      * Formats the value as a scientific number.
-     * @param  mixed  $value  the value to be formatted
-     * @param  string $format the format to be used. Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
-     *                        for details on how to specify a format.
+     * @param mixed $value the value to be formatted
+     * @param string $format the format to be used. Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
+     * for details on how to specify a format.
      * @return string the formatted result.
      */
     public function asScientific($value, $format = null)
@@ -304,8 +304,8 @@ class Formatter extends \yii\base\Formatter
 
     /**
      * Creates a number formatter based on the given type and format.
-     * @param  integer         $type   the type of the number formatter
-     * @param  string          $format the format to be used.  Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
+     * @param integer $type the type of the number formatter
+     * @param string $format the format to be used.  Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
      * @return NumberFormatter the created formatter instance
      */
     protected function createNumberFormatter($type, $format)

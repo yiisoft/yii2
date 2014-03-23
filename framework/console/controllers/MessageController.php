@@ -47,7 +47,7 @@ class MessageController extends Controller
      * how to customize it to fit for your needs. After customization,
      * you may use this configuration file with the "extract" command.
      *
-     * @param  string    $filePath output file name or alias.
+     * @param string $filePath output file name or alias.
      * @throws Exception on failure.
      */
     public function actionConfig($filePath)
@@ -68,9 +68,9 @@ class MessageController extends Controller
      * This command will search through source code files and extract
      * messages that need to be translated in different languages.
      *
-     * @param  string    $configFile the path or alias of the configuration file.
-     *                               You may use the "yii message/config" command to generate
-     *                               this file and then customize it for your needs.
+     * @param string $configFile the path or alias of the configuration file.
+     * You may use the "yii message/config" command to generate
+     * this file and then customize it for your needs.
      * @throws Exception on failure.
      */
     public function actionExtract($configFile)
@@ -149,12 +149,12 @@ class MessageController extends Controller
     /**
      * Saves messages to database
      *
-     * @param array              $messages
+     * @param array $messages
      * @param \yii\db\Connection $db
-     * @param string             $sourceMessageTable
-     * @param string             $messageTable
-     * @param boolean            $removeUnused
-     * @param array              $languages
+     * @param string $sourceMessageTable
+     * @param string $messageTable
+     * @param boolean $removeUnused
+     * @param array $languages
      */
     protected function saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $languages)
     {
@@ -239,8 +239,8 @@ class MessageController extends Controller
     /**
      * Extracts messages from a file
      *
-     * @param  string $fileName   name of the file to extract messages from
-     * @param  string $translator name of the function used to translate messages
+     * @param string $fileName name of the file to extract messages from
+     * @param string $translator name of the function used to translate messages
      * @return array
      */
     protected function extractMessages($fileName, $translator)
@@ -272,12 +272,12 @@ class MessageController extends Controller
     /**
      * Writes messages into file
      *
-     * @param array   $messages
-     * @param string  $fileName     name of the file to write to
-     * @param boolean $overwrite    if existing file should be overwritten without backup
+     * @param array $messages
+     * @param string $fileName name of the file to write to
+     * @param boolean $overwrite if existing file should be overwritten without backup
      * @param boolean $removeUnused if obsolete translations should be removed
-     * @param boolean $sort         if translations should be sorted
-     * @param string  $format       output format
+     * @param boolean $sort if translations should be sorted
+     * @param string $format output format
      */
     protected function generateMessageFile($messages, $fileName, $overwrite, $removeUnused, $sort, $format)
     {

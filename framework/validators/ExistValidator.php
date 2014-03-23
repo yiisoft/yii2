@@ -127,8 +127,8 @@ class ExistValidator extends Validator
 
     /**
      * Creates a query instance with the given condition.
-     * @param  string                       $targetClass the target AR class
-     * @param  mixed                        $condition   query condition
+     * @param string $targetClass the target AR class
+     * @param mixed $condition query condition
      * @return \yii\db\ActiveQueryInterface the query instance
      */
     protected function createQuery($targetClass, $condition)

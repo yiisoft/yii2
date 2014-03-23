@@ -54,7 +54,7 @@ interface DataProviderInterface
     /**
      * Returns the key values associated with the data models.
      * @return array the list of key values corresponding to [[getModels|models]]. Each data model in [[getModels|models]]
-     *               is uniquely identified by the corresponding key value in this array.
+     * is uniquely identified by the corresponding key value in this array.
      */
     public function getKeys();
 

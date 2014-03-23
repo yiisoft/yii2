@@ -52,8 +52,8 @@ trait QueryTrait
     /**
      * Sets the [[indexBy]] property.
      * @param string|callable $column the name of the column by which the query results should be indexed by.
-     *                                This can also be a callable (e.g. anonymous function) that returns the index value based on the given
-     *                                row data. The signature of the callable should be:
+     * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
+     * row data. The signature of the callable should be:
      *
      * ~~~
      * function ($row)
@@ -76,7 +76,7 @@ trait QueryTrait
      *
      * See [[QueryInterface::where()]] for detailed documentation.
      *
-     * @param  array  $condition the conditions that should be put in the WHERE part.
+     * @param array $condition the conditions that should be put in the WHERE part.
      * @return static the query object itself
      * @see andWhere()
      * @see orWhere()
@@ -91,9 +91,9 @@ trait QueryTrait
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
-     * @param  string|array $condition the new WHERE condition. Please refer to [[where()]]
-     *                                 on how to specify this parameter.
-     * @return static       the query object itself
+     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
      * @see where()
      * @see orWhere()
      */
@@ -111,9 +111,9 @@ trait QueryTrait
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
-     * @param  string|array $condition the new WHERE condition. Please refer to [[where()]]
-     *                                 on how to specify this parameter.
-     * @return static       the query object itself
+     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
      * @see where()
      * @see andWhere()
      */
@@ -130,15 +130,15 @@ trait QueryTrait
 
     /**
      * Sets the ORDER BY part of the query.
-     * @param  string|array $columns the columns (and the directions) to be ordered by.
-     *                               Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-     *                               (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
-     *                               The method will automatically quote the column names unless a column contains some parenthesis
-     *                               (which means the column contains a DB expression).
-     *                               Note that if your order-by is an expression containing commas, you should always use an array
-     *                               to represent the order-by information. Otherwise, the method will not be able to correctly determine
-     *                               the order-by columns.
-     * @return static       the query object itself
+     * @param string|array $columns the columns (and the directions) to be ordered by.
+     * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+     * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
+     * The method will automatically quote the column names unless a column contains some parenthesis
+     * (which means the column contains a DB expression).
+     * Note that if your order-by is an expression containing commas, you should always use an array
+     * to represent the order-by information. Otherwise, the method will not be able to correctly determine
+     * the order-by columns.
+     * @return static the query object itself
      * @see addOrderBy()
      */
     public function orderBy($columns)
@@ -150,12 +150,12 @@ trait QueryTrait
 
     /**
      * Adds additional ORDER BY columns to the query.
-     * @param  string|array $columns the columns (and the directions) to be ordered by.
-     *                               Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-     *                               (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
-     *                               The method will automatically quote the column names unless a column contains some parenthesis
-     *                               (which means the column contains a DB expression).
-     * @return static       the query object itself
+     * @param string|array $columns the columns (and the directions) to be ordered by.
+     * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+     * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
+     * The method will automatically quote the column names unless a column contains some parenthesis
+     * (which means the column contains a DB expression).
+     * @return static the query object itself
      * @see orderBy()
      */
     public function addOrderBy($columns)
@@ -191,8 +191,8 @@ trait QueryTrait
 
     /**
      * Sets the LIMIT part of the query.
-     * @param  integer $limit the limit. Use null or negative value to disable limit.
-     * @return static  the query object itself
+     * @param integer $limit the limit. Use null or negative value to disable limit.
+     * @return static the query object itself
      */
     public function limit($limit)
     {
@@ -203,8 +203,8 @@ trait QueryTrait
 
     /**
      * Sets the OFFSET part of the query.
-     * @param  integer $offset the offset. Use null or negative value to disable offset.
-     * @return static  the query object itself
+     * @param integer $offset the offset. Use null or negative value to disable offset.
+     * @return static the query object itself
      */
     public function offset($offset)
     {

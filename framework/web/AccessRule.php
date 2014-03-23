@@ -89,9 +89,9 @@ class AccessRule extends Component
 
     /**
      * Checks whether the Web user is allowed to perform the specified action.
-     * @param  Action       $action  the action to be performed
-     * @param  User         $user    the user object
-     * @param  Request      $request
+     * @param Action $action the action to be performed
+     * @param User $user the user object
+     * @param Request $request
      * @return boolean|null true if the user is allowed, false if the user is denied, null if the rule does not apply to the user
      */
     public function allows($action, $user, $request)
@@ -110,7 +110,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param  Action  $action the action
+     * @param Action $action the action
      * @return boolean whether the rule applies to the action
      */
     protected function matchAction($action)
@@ -119,8 +119,8 @@ class AccessRule extends Component
     }
 
     /**
-     * @param  Controller $controller the controller
-     * @return boolean    whether the rule applies to the controller
+     * @param Controller $controller the controller
+     * @return boolean whether the rule applies to the controller
      */
     protected function matchController($controller)
     {
@@ -128,7 +128,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param  User    $user the user object
+     * @param User $user the user object
      * @return boolean whether the rule applies to the role
      */
     protected function matchRole($user)
@@ -154,7 +154,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param  string  $ip the IP address
+     * @param string $ip the IP address
      * @return boolean whether the rule applies to the IP address
      */
     protected function matchIP($ip)
@@ -172,7 +172,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param  string  $verb the request method
+     * @param string $verb the request method
      * @return boolean whether the rule applies to the request
      */
     protected function matchVerb($verb)
@@ -181,7 +181,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param  Action  $action the action to be performed
+     * @param Action $action the action to be performed
      * @return boolean whether the rule should be applied
      */
     protected function matchCustom($action)

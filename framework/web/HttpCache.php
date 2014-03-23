@@ -82,7 +82,7 @@ class HttpCache extends ActionFilter
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * You may override this method to do last-minute preparation for the action.
-     * @param  Action  $action the action to be executed.
+     * @param Action $action the action to be executed.
      * @return boolean whether the action should continue to be executed.
      */
     public function beforeAction($action)
@@ -122,9 +122,9 @@ class HttpCache extends ActionFilter
 
     /**
      * Validates if the HTTP cache contains valid content.
-     * @param  integer $lastModified the calculated Last-Modified value in terms of a UNIX timestamp.
-     *                               If null, the Last-Modified header will not be validated.
-     * @param  string  $etag         the calculated ETag value. If null, the ETag header will not be validated.
+     * @param integer $lastModified the calculated Last-Modified value in terms of a UNIX timestamp.
+     * If null, the Last-Modified header will not be validated.
+     * @param string $etag the calculated ETag value. If null, the ETag header will not be validated.
      * @return boolean whether the HTTP cache is still valid.
      */
     protected function validateCache($lastModified, $etag)
@@ -152,7 +152,7 @@ class HttpCache extends ActionFilter
 
     /**
      * Generates an Etag from the given seed string.
-     * @param  string $seed Seed for the ETag
+     * @param string $seed Seed for the ETag
      * @return string the generated Etag
      */
     protected function generateEtag($seed)

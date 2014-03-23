@@ -37,8 +37,8 @@ class Controller extends \yii\base\Controller
      * For this reason, you should use this method instead of [[renderPartial()]] to render
      * a view to respond to an AJAX request.
      *
-     * @param  string $view   the view name. Please refer to [[render()]] on how to specify a view name.
-     * @param  array  $params the parameters (name-value pairs) that should be made available in the view.
+     * @param string $view the view name. Please refer to [[render()]] on how to specify a view name.
+     * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * @return string the rendering result.
      */
     public function renderAjax($view, $params = [])
@@ -52,10 +52,10 @@ class Controller extends \yii\base\Controller
      * This method will check the parameter names that the action requires and return
      * the provided parameters according to the requirement. If there is any missing parameter,
      * an exception will be thrown.
-     * @param  \yii\base\Action $action the action to be bound with parameters
-     * @param  array            $params the parameters to be bound to the action
-     * @return array            the valid parameters that the action can run with.
-     * @throws HttpException    if there are missing or invalid parameters.
+     * @param \yii\base\Action $action the action to be bound with parameters
+     * @param array $params the parameters to be bound to the action
+     * @return array the valid parameters that the action can run with.
+     * @throws HttpException if there are missing or invalid parameters.
      */
     public function bindActionParams($action, $params)
     {
@@ -136,9 +136,9 @@ class Controller extends \yii\base\Controller
      * Any relative URL will be converted into an absolute one by prepending it with the host info
      * of the current request.
      *
-     * @param  integer  $statusCode the HTTP status code. Defaults to 302.
-     *                              See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
-     *                              for details about HTTP status code
+     * @param integer $statusCode the HTTP status code. Defaults to 302.
+     * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
+     * for details about HTTP status code
      * @return Response the current response object
      */
     public function redirect($url, $statusCode = 302)
@@ -173,10 +173,10 @@ class Controller extends \yii\base\Controller
      * return $this->goBack();
      * ```
      *
-     * @param  string|array $defaultUrl the default return URL in case it was not set previously.
-     *                                  If this is null and the return URL was not set previously, [[Application::homeUrl]] will be redirected to.
-     *                                  Please refer to [[User::setReturnUrl()]] on accepted format of the URL.
-     * @return Response     the current response object
+     * @param string|array $defaultUrl the default return URL in case it was not set previously.
+     * If this is null and the return URL was not set previously, [[Application::homeUrl]] will be redirected to.
+     * Please refer to [[User::setReturnUrl()]] on accepted format of the URL.
+     * @return Response the current response object
      * @see User::getReturnUrl()
      */
     public function goBack($defaultUrl = null)
@@ -195,8 +195,8 @@ class Controller extends \yii\base\Controller
      * return $this->refresh();
      * ```
      *
-     * @param  string   $anchor the anchor that should be appended to the redirection URL.
-     *                          Defaults to empty. Make sure the anchor starts with '#' if you want to specify it.
+     * @param string $anchor the anchor that should be appended to the redirection URL.
+     * Defaults to empty. Make sure the anchor starts with '#' if you want to specify it.
      * @return Response the response object itself
      */
     public function refresh($anchor = '')

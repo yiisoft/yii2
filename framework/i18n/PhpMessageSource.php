@@ -56,10 +56,10 @@ class PhpMessageSource extends MessageSource
      * If translation for specific locale code such as `en-US` isn't found it
      * tries more generic `en`.
      *
-     * @param  string $category the message category
-     * @param  string $language the target language
-     * @return array  the loaded messages. The keys are original messages, and the values
-     *                         are translated messages.
+     * @param string $category the message category
+     * @param string $language the target language
+     * @return array the loaded messages. The keys are original messages, and the values
+     * are translated messages.
      */
     protected function loadMessages($category, $language)
     {
@@ -94,8 +94,8 @@ class PhpMessageSource extends MessageSource
     /**
      * Returns message file path for the specified language and category.
      *
-     * @param  string $category the message category
-     * @param  string $language the target language
+     * @param string $category the message category
+     * @param string $language the target language
      * @return string path to message file
      */
     protected function getMessageFilePath($category, $language)

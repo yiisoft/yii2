@@ -201,9 +201,9 @@ class Sort extends Object
 
     /**
      * Returns the columns and their corresponding sort directions.
-     * @param  boolean $recalculate whether to recalculate the sort directions
-     * @return array   the columns (keys) and their corresponding sort directions (values).
-     *                             This can be passed to [[\yii\db\Query::orderBy()]] to construct a DB query.
+     * @param boolean $recalculate whether to recalculate the sort directions
+     * @return array the columns (keys) and their corresponding sort directions (values).
+     * This can be passed to [[\yii\db\Query::orderBy()]] to construct a DB query.
      */
     public function getOrders($recalculate = false)
     {
@@ -227,10 +227,10 @@ class Sort extends Object
 
     /**
      * Returns the currently requested sort information.
-     * @param  boolean $recalculate whether to recalculate the sort directions
-     * @return array   sort directions indexed by attribute names.
-     *                             Sort direction can be either `SORT_ASC` for ascending order or
-     *                             `SORT_DESC` for descending order.
+     * @param boolean $recalculate whether to recalculate the sort directions
+     * @return array sort directions indexed by attribute names.
+     * Sort direction can be either `SORT_ASC` for ascending order or
+     * `SORT_DESC` for descending order.
      */
     public function getAttributeOrders($recalculate = false)
     {
@@ -267,10 +267,10 @@ class Sort extends Object
 
     /**
      * Returns the sort direction of the specified attribute in the current request.
-     * @param  string       $attribute the attribute name
+     * @param string $attribute the attribute name
      * @return boolean|null Sort direction of the attribute. Can be either `SORT_ASC`
-     *                                for ascending order or `SORT_DESC` for descending order. Null is returned
-     *                                if the attribute is invalid or does not need to be sorted.
+     * for ascending order or `SORT_DESC` for descending order. Null is returned
+     * if the attribute is invalid or does not need to be sorted.
      */
     public function getAttributeOrder($attribute)
     {
@@ -283,13 +283,13 @@ class Sort extends Object
      * Generates a hyperlink that links to the sort action to sort by the specified attribute.
      * Based on the sort direction, the CSS class of the generated hyperlink will be appended
      * with "asc" or "desc".
-     * @param  string                 $attribute the attribute name by which the data should be sorted by.
-     * @param  array                  $options   additional HTML attributes for the hyperlink tag.
-     *                                           There is one special attribute `label` which will be used as the label of the hyperlink.
-     *                                           If this is not set, the label defined in [[attributes]] will be used.
-     *                                           If no label is defined, [[\yii\helpers\Inflector::camel2words()]] will be called to get a label.
-     *                                           Note that it will not be HTML-encoded.
-     * @return string                 the generated hyperlink
+     * @param string $attribute the attribute name by which the data should be sorted by.
+     * @param array $options additional HTML attributes for the hyperlink tag.
+     * There is one special attribute `label` which will be used as the label of the hyperlink.
+     * If this is not set, the label defined in [[attributes]] will be used.
+     * If no label is defined, [[\yii\helpers\Inflector::camel2words()]] will be called to get a label.
+     * Note that it will not be HTML-encoded.
+     * @return string the generated hyperlink
      * @throws InvalidConfigException if the attribute is unknown
      */
     public function link($attribute, $options = [])
@@ -325,9 +325,9 @@ class Sort extends Object
      * This method will consider the current sorting status given by [[attributeOrders]].
      * For example, if the current page already sorts the data by the specified attribute in ascending order,
      * then the URL created will lead to a page that sorts the data by the specified attribute in descending order.
-     * @param  string                 $attribute the attribute name
-     * @param  boolean                $absolute  whether to create an absolute URL. Defaults to `false`.
-     * @return string                 the URL for sorting. False if the attribute is invalid.
+     * @param string $attribute the attribute name
+     * @param boolean $absolute whether to create an absolute URL. Defaults to `false`.
+     * @return string the URL for sorting. False if the attribute is invalid.
      * @throws InvalidConfigException if the attribute is unknown
      * @see attributeOrders
      * @see params
@@ -352,8 +352,8 @@ class Sort extends Object
      * Creates the sort variable for the specified attribute.
      * The newly created sort variable can be used to create a URL that will lead to
      * sorting by the specified attribute.
-     * @param  string                 $attribute the attribute name
-     * @return string                 the value of the sort variable
+     * @param string $attribute the attribute name
+     * @return string the value of the sort variable
      * @throws InvalidConfigException if the specified attribute is not defined in [[attributes]]
      */
     public function createSortParam($attribute)
@@ -386,7 +386,7 @@ class Sort extends Object
 
     /**
      * Returns a value indicating whether the sort definition supports sorting by the named attribute.
-     * @param  string  $name the attribute name
+     * @param string $name the attribute name
      * @return boolean whether the sort definition supports sorting by the named attribute.
      */
     public function hasAttribute($name)

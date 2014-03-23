@@ -21,7 +21,7 @@ class BaseStringHelper
     /**
      * Returns the number of bytes in the given string.
      * This method ensures the string is treated as a byte array by using `mb_strlen()`.
-     * @param  string  $string the string being measured for length
+     * @param string $string the string being measured for length
      * @return integer the number of bytes in the given string.
      */
     public static function byteLength($string)
@@ -32,10 +32,10 @@ class BaseStringHelper
     /**
      * Returns the portion of string specified by the start and length parameters.
      * This method ensures the string is treated as a byte array by using `mb_substr()`.
-     * @param  string  $string the input string. Must be one character or longer.
-     * @param  integer $start  the starting position
-     * @param  integer $length the desired portion length
-     * @return string  the extracted part of string, or FALSE on failure or an empty string.
+     * @param string $string the input string. Must be one character or longer.
+     * @param integer $start the starting position
+     * @param integer $length the desired portion length
+     * @return string the extracted part of string, or FALSE on failure or an empty string.
      * @see http://www.php.net/manual/en/function.substr.php
      */
     public static function byteSubstr($string, $start, $length)
@@ -51,8 +51,8 @@ class BaseStringHelper
      * file paths, php's `basename()` should work fine for you.
      * Note: this method is not aware of the actual filesystem, or path components such as "..".
      *
-     * @param  string $path   A path string.
-     * @param  string $suffix If the name component ends in suffix this will also be cut off.
+     * @param string $path A path string.
+     * @param string $suffix If the name component ends in suffix this will also be cut off.
      * @return string the trailing name component of the given path.
      * @see http://www.php.net/manual/en/function.basename.php
      */
@@ -74,7 +74,7 @@ class BaseStringHelper
      * This method is similar to `dirname()` except that it will treat
      * both \ and / as directory separators, independent of the operating system.
      *
-     * @param  string $path A path string.
+     * @param string $path A path string.
      * @return string the parent directory's path.
      * @see http://www.php.net/manual/en/function.basename.php
      */

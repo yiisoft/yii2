@@ -106,9 +106,9 @@ class MigrateController extends Controller
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
-     * @param  \yii\base\Action $action the action to be executed.
-     * @throws Exception        if db component isn't configured
-     * @return boolean          whether the action should continue to be executed.
+     * @param \yii\base\Action $action the action to be executed.
+     * @throws Exception if db component isn't configured
+     * @return boolean whether the action should continue to be executed.
      */
     public function beforeAction($action)
     {
@@ -148,7 +148,7 @@ class MigrateController extends Controller
      * ~~~
      *
      * @param integer $limit the number of new migrations to be applied. If 0, it means
-     *                       applying all available new migrations.
+     * applying all available new migrations.
      */
     public function actionUp($limit = 0)
     {
@@ -198,8 +198,8 @@ class MigrateController extends Controller
      * yii migrate/down 3   # revert the last 3 migrations
      * ~~~
      *
-     * @param  integer   $limit the number of migrations to be reverted. Defaults to 1,
-     *                          meaning the last applied migration will be reverted.
+     * @param integer $limit the number of migrations to be reverted. Defaults to 1,
+     * meaning the last applied migration will be reverted.
      * @throws Exception if the number of the steps specified is less than 1.
      */
     public function actionDown($limit = 1)
@@ -247,8 +247,8 @@ class MigrateController extends Controller
      * yii migrate/redo 3   # redo the last 3 applied migrations
      * ~~~
      *
-     * @param  integer   $limit the number of migrations to be redone. Defaults to 1,
-     *                          meaning the last applied migration will be redone.
+     * @param integer $limit the number of migrations to be redone. Defaults to 1,
+     * meaning the last applied migration will be redone.
      * @throws Exception if the number of the steps specified is less than 1.
      */
     public function actionRedo($limit = 1)
@@ -309,10 +309,10 @@ class MigrateController extends Controller
      * yii migrate/to "2014-02-15 13:00:50"              # using strtotime() parseable string
      * ~~~
      *
-     * @param  string    $version either the version name or the certain time value in the past
-     *                            that the application should be migrated to. This can be either the timestamp,
-     *                            the full name of the migration, the UNIX timestamp, or the parseable datetime
-     *                            string.
+     * @param string $version either the version name or the certain time value in the past
+     * that the application should be migrated to. This can be either the timestamp,
+     * the full name of the migration, the UNIX timestamp, or the parseable datetime
+     * string.
      * @throws Exception if the version argument is invalid.
      */
     public function actionTo($version)
@@ -338,8 +338,8 @@ class MigrateController extends Controller
      * yii migrate/mark m101129_185401_create_user_table   # using full name
      * ~~~
      *
-     * @param  string    $version the version at which the migration history should be marked.
-     *                            This can be either the timestamp or the full name of the migration.
+     * @param string $version the version at which the migration history should be marked.
+     * This can be either the timestamp or the full name of the migration.
      * @throws Exception if the version argument is invalid or the version cannot be found.
      */
     public function actionMark($version)
@@ -408,7 +408,7 @@ class MigrateController extends Controller
      * ~~~
      *
      * @param integer $limit the maximum number of migrations to be displayed.
-     *                       If it is 0, the whole migration history will be displayed.
+     * If it is 0, the whole migration history will be displayed.
      */
     public function actionHistory($limit = 10)
     {
@@ -442,7 +442,7 @@ class MigrateController extends Controller
      * ~~~
      *
      * @param integer $limit the maximum number of new migrations to be displayed.
-     *                       If it is 0, all available new migrations will be displayed.
+     * If it is 0, all available new migrations will be displayed.
      */
     public function actionNew($limit = 10)
     {
@@ -476,8 +476,8 @@ class MigrateController extends Controller
      * yii migrate/create create_user_table
      * ~~~
      *
-     * @param  string    $name the name of the new migration. This should only contain
-     *                         letters, digits and/or underscores.
+     * @param string $name the name of the new migration. This should only contain
+     * letters, digits and/or underscores.
      * @throws Exception if the name argument is invalid.
      */
     public function actionCreate($name)
@@ -498,7 +498,7 @@ class MigrateController extends Controller
 
     /**
      * Upgrades with the specified migration class.
-     * @param  string  $class the migration class name
+     * @param string $class the migration class name
      * @return boolean whether the migration is successful
      */
     protected function migrateUp($class)
@@ -529,7 +529,7 @@ class MigrateController extends Controller
 
     /**
      * Downgrades with the specified migration class.
-     * @param  string  $class the migration class name
+     * @param string $class the migration class name
      * @return boolean whether the migration is successful
      */
     protected function migrateDown($class)
@@ -559,7 +559,7 @@ class MigrateController extends Controller
 
     /**
      * Creates a new migration instance.
-     * @param  string            $class the migration class name
+     * @param string $class the migration class name
      * @return \yii\db\Migration the migration instance
      */
     protected function createMigration($class)
@@ -590,7 +590,7 @@ class MigrateController extends Controller
 
     /**
      * Migrates to the certain version.
-     * @param  string    $version name in the full format.
+     * @param string $version name in the full format.
      * @throws Exception if the provided version cannot be found.
      */
     protected function migrateToVersion($version)
@@ -626,8 +626,8 @@ class MigrateController extends Controller
 
     /**
      * Returns the migration history.
-     * @param  integer $limit the maximum number of records in the history to be returned
-     * @return array   the migration history
+     * @param integer $limit the maximum number of records in the history to be returned
+     * @return array the migration history
      */
     protected function getMigrationHistory($limit)
     {

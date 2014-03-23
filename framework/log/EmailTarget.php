@@ -64,7 +64,7 @@ class EmailTarget extends Target
 
     /**
      * Composes a mail message with the given body content.
-     * @param  string                     $body the body content
+     * @param string $body the body content
      * @return \yii\mail\MessageInterface $message
      */
     protected function composeMessage($body)

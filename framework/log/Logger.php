@@ -172,11 +172,11 @@ class Logger extends Component
      * Logs a message with the given type and category.
      * If [[traceLevel]] is greater than 0, additional call stack information about
      * the application code will be logged as well.
-     * @param string  $message  the message to be logged.
-     * @param integer $level    the level of the message. This must be one of the following:
-     *                          `Logger::LEVEL_ERROR`, `Logger::LEVEL_WARNING`, `Logger::LEVEL_INFO`, `Logger::LEVEL_TRACE`,
-     *                          `Logger::LEVEL_PROFILE_BEGIN`, `Logger::LEVEL_PROFILE_END`.
-     * @param string  $category the category of the message.
+     * @param string $message the message to be logged.
+     * @param integer $level the level of the message. This must be one of the following:
+     * `Logger::LEVEL_ERROR`, `Logger::LEVEL_WARNING`, `Logger::LEVEL_INFO`, `Logger::LEVEL_TRACE`,
+     * `Logger::LEVEL_PROFILE_BEGIN`, `Logger::LEVEL_PROFILE_END`.
+     * @param string $category the category of the message.
      */
     public function log($message, $level, $category = 'application')
     {
@@ -236,13 +236,13 @@ class Logger extends Component
      * `$categories` and `$excludeCategories` as parameters to retrieve the
      * results that you are interested in.
      *
-     * @param  array $categories        list of categories that you are interested in.
-     *                                  You can use an asterisk at the end of a category to do a prefix match.
-     *                                  For example, 'yii\db\*' will match categories starting with 'yii\db\',
-     *                                  such as 'yii\db\Connection'.
-     * @param  array $excludeCategories list of categories that you want to exclude
+     * @param array $categories list of categories that you are interested in.
+     * You can use an asterisk at the end of a category to do a prefix match.
+     * For example, 'yii\db\*' will match categories starting with 'yii\db\',
+     * such as 'yii\db\Connection'.
+     * @param array $excludeCategories list of categories that you want to exclude
      * @return array the profiling results. Each element is an array consisting of these elements:
-     *                                 `info`, `category`, `timestamp`, `trace`, `level`, `duration`.
+     * `info`, `category`, `timestamp`, `trace`, `level`, `duration`.
      */
     public function getProfiling($categories = [], $excludeCategories = [])
     {
@@ -286,7 +286,7 @@ class Logger extends Component
      * The results returned include the number of SQL statements executed and
      * the total time spent.
      * @return array the first element indicates the number of SQL statements executed,
-     *               and the second element the total time spent in SQL execution.
+     * and the second element the total time spent in SQL execution.
      */
     public function getDbProfiling()
     {
@@ -302,9 +302,9 @@ class Logger extends Component
 
     /**
      * Calculates the elapsed time for the given log messages.
-     * @param  array $messages the log messages obtained from profiling
+     * @param array $messages the log messages obtained from profiling
      * @return array timings. Each element is an array consisting of these elements:
-     *                        `info`, `category`, `timestamp`, `trace`, `level`, `duration`.
+     * `info`, `category`, `timestamp`, `trace`, `level`, `duration`.
      */
     public function calculateTimings($messages)
     {
@@ -338,8 +338,8 @@ class Logger extends Component
 
     /**
      * Returns the text display of the specified level.
-     * @param  integer $level the message level, e.g. [[LEVEL_ERROR]], [[LEVEL_WARNING]].
-     * @return string  the text display of the level
+     * @param integer $level the message level, e.g. [[LEVEL_ERROR]], [[LEVEL_WARNING]].
+     * @return string the text display of the level
      */
     public static function getLevelName($level)
     {

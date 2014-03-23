@@ -76,10 +76,10 @@ class I18N extends Component
      * After translation the message will be formatted using [[MessageFormatter]] if it contains
      * ICU message format and `$params` are not empty.
      *
-     * @param  string $category the message category.
-     * @param  string $message  the message to be translated.
-     * @param  array  $params   the parameters that will be used to replace the corresponding placeholders in the message.
-     * @param  string $language the language code (e.g. `en-US`, `en`).
+     * @param string $category the message category.
+     * @param string $message the message to be translated.
+     * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
+     * @param string $language the language code (e.g. `en-US`, `en`).
      * @return string the translated and formatted message.
      */
     public function translate($category, $message, $params, $language)
@@ -96,9 +96,9 @@ class I18N extends Component
     /**
      * Formats a message using [[MessageFormatter]].
      *
-     * @param  string $message  the message to be formatted.
-     * @param  array  $params   the parameters that will be used to replace the corresponding placeholders in the message.
-     * @param  string $language the language code (e.g. `en-US`, `en`).
+     * @param string $message the message to be formatted.
+     * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
+     * @param string $language the language code (e.g. `en-US`, `en`).
      * @return string the formatted message.
      */
     public function format($message, $params, $language)
@@ -151,8 +151,8 @@ class I18N extends Component
 
     /**
      * @param string|array|MessageFormatter $value the message formatter to be used to format message via ICU message format.
-     *                                             Can be given as array or string configuration that will be given to [[Yii::createObject]] to create an instance
-     *                                             or a [[MessageFormatter]] instance.
+     * Can be given as array or string configuration that will be given to [[Yii::createObject]] to create an instance
+     * or a [[MessageFormatter]] instance.
      */
     public function setMessageFormatter($value)
     {
@@ -161,8 +161,8 @@ class I18N extends Component
 
     /**
      * Returns the message source for the given category.
-     * @param  string                 $category the category name.
-     * @return MessageSource          the message source for the given category.
+     * @param string $category the category name.
+     * @return MessageSource the message source for the given category.
      * @throws InvalidConfigException if there is no message source available for the specified category.
      */
     public function getMessageSource($category)

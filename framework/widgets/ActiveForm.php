@@ -208,8 +208,8 @@ class ActiveForm extends Widget
     /**
      * Generates a summary of the validation errors.
      * If there is no validation error, an empty error summary markup will still be generated, but it will be hidden.
-     * @param Model|Model[] $models  the model(s) associated with this form
-     * @param array         $options the tag options in terms of name-value pairs. The following options are specially handled:
+     * @param Model|Model[] $models the model(s) associated with this form
+     * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
      * - header: string, the header HTML for the error summary. If not set, a default prompt string will be used.
      * - footer: string, the footer HTML for the error summary.
@@ -258,10 +258,10 @@ class ActiveForm extends Widget
      * Generates a form field.
      * A form field is associated with a model and an attribute. It contains a label, an input and an error message
      * and use them to interact with end users to collect their inputs for the attribute.
-     * @param  Model       $model     the data model
-     * @param  string      $attribute the attribute name or expression. See [[Html::getAttributeName()]] for the format
-     *                                about attribute expression.
-     * @param  array       $options   the additional configurations for the field object
+     * @param Model $model the data model
+     * @param string $attribute the attribute name or expression. See [[Html::getAttributeName()]] for the format
+     * about attribute expression.
+     * @param array $options the additional configurations for the field object
      * @return ActiveField the created ActiveField object
      * @see fieldConfig
      */
@@ -298,10 +298,10 @@ class ActiveForm extends Widget
      * ActiveForm::validate($model1, $model2, ...);
      * ~~~
      *
-     * @param Model $model      the model to be validated
+     * @param Model $model the model to be validated
      * @param mixed $attributes list of attributes that should be validated.
-     *                          If this parameter is empty, it means any attribute listed in the applicable
-     *                          validation rules should be validated.
+     * If this parameter is empty, it means any attribute listed in the applicable
+     * validation rules should be validated.
      *
      * When this method is used to validate multiple models, this parameter will be interpreted
      * as a model.
@@ -345,10 +345,10 @@ class ActiveForm extends Widget
      * // ... respond to non-AJAX request ...
      * ~~~
      *
-     * @param  array $models     an array of models to be validated.
-     * @param  mixed $attributes list of attributes that should be validated.
-     *                           If this parameter is empty, it means any attribute listed in the applicable
-     *                           validation rules should be validated.
+     * @param array $models an array of models to be validated.
+     * @param mixed $attributes list of attributes that should be validated.
+     * If this parameter is empty, it means any attribute listed in the applicable
+     * validation rules should be validated.
      * @return array the error message array indexed by the attribute IDs.
      */
     public static function validateMultiple($models, $attributes = null)

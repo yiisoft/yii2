@@ -87,7 +87,7 @@ class Application extends \yii\base\Application
      * This method will check if the command line option [[OPTION_APPCONFIG]] is specified.
      * If so, the corresponding file will be loaded as the application configuration.
      * Otherwise, the configuration provided as the parameter will be returned back.
-     * @param  array $config the configuration provided in the constructor.
+     * @param array $config the configuration provided in the constructor.
      * @return array the actual configuration to be used by the application.
      */
     protected function loadConfig($config)
@@ -130,7 +130,7 @@ class Application extends \yii\base\Application
 
     /**
      * Handles the specified request.
-     * @param  Request  $request the request to be handled
+     * @param Request $request the request to be handled
      * @return Response the resulting response
      */
     public function handleRequest($request)
@@ -162,9 +162,9 @@ class Application extends \yii\base\Application
      * This method parses the specified route and creates the corresponding child module(s), controller and action
      * instances. It then calls [[Controller::runAction()]] to run the action with the given parameters.
      * If the route is empty, the method will use [[defaultRoute]].
-     * @param  string    $route  the route that specifies the action.
-     * @param  array     $params the parameters to be passed to the action
-     * @return integer   the status code returned by the action execution. 0 means normal, and other values mean abnormal.
+     * @param string $route the route that specifies the action.
+     * @param array $params the parameters to be passed to the action
+     * @return integer the status code returned by the action execution. 0 means normal, and other values mean abnormal.
      * @throws Exception if the route is invalid
      */
     public function runAction($route, $params = [])

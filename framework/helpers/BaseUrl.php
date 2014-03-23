@@ -104,7 +104,7 @@ class BaseUrl
      * - If the route has no leading slash, it is considered to be a route relative
      *   to the current module and will be prepended with the module's uniqueId.
      *
-     * @param  string $route the route. This can be either an absolute route or a relative route.
+     * @param string $route the route. This can be either an absolute route or a relative route.
      * @return string normalized route suitable for UrlManager
      * @throws InvalidParamException a relative route is given while there is no active controller
      */
@@ -253,7 +253,7 @@ class BaseUrl
     /**
      * Returns the URL previously [[remember()|remembered]].
      *
-     * @param  string $name the named associated with the URL that was remembered previously.
+     * @param string $name the named associated with the URL that was remembered previously.
      * If not set, it will use [[\yii\web\User::returnUrlParam]].
      * @return string the URL previously remembered. Null is returned if no URL was remembered with the given name.
      * @see remember()

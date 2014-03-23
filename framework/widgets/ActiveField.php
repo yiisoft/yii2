@@ -151,9 +151,9 @@ class ActiveField extends Component
      * This method will generate the label, error tag, input tag and hint tag (if any), and
      * assemble them into HTML according to [[template]].
      * @param string|callable $content the content within the field container.
-     *                                 If null (not set), the default methods will be called to generate the label, error tag and input tag,
-     *                                 and use them as the content.
-     *                                 If a callable, it will be called to generate the content. The signature of the callable should be:
+     * If null (not set), the default methods will be called to generate the label, error tag and input tag,
+     * and use them as the content.
+     * If a callable, it will be called to generate the content. The signature of the callable should be:
      *
      * ~~~
      * function ($field) {
@@ -225,11 +225,11 @@ class ActiveField extends Component
 
     /**
      * Generates a label tag for [[attribute]].
-     * @param  string $label   the label to use. If null, it will be generated via [[Model::getAttributeLabel()]].
-     *                         Note that this will NOT be [[Html::encode()|encoded]].
-     * @param  array  $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
-     *                         The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
-     *                         using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
+     * @param string $label the label to use. If null, it will be generated via [[Model::getAttributeLabel()]].
+     * Note that this will NOT be [[Html::encode()|encoded]].
+     * @param array $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
+     * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
+     * using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
      * @return static the field object itself
      */
     public function label($label = null, $options = [])
@@ -247,8 +247,8 @@ class ActiveField extends Component
      * Generates a tag that contains the first validation error of [[attribute]].
      * Note that even if there is no validation error, this method will still return an empty error tag.
      * @param array $options the tag options in terms of name-value pairs. It will be merged with [[errorOptions]].
-     *                       The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
-     *                       using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
+     * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
+     * using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
      *
      * The following options are specially handled:
      *
@@ -267,8 +267,8 @@ class ActiveField extends Component
     /**
      * Renders the hint tag.
      * @param string $content the hint content. It will NOT be HTML-encoded.
-     * @param array  $options the tag options in terms of name-value pairs. These will be rendered as
-     *                        the attributes of the hint tag. The values will be HTML-encoded using [[Html::encode()]].
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the hint tag. The values will be HTML-encoded using [[Html::encode()]].
      *
      * The following options are specially handled:
      *
@@ -287,9 +287,9 @@ class ActiveField extends Component
 
     /**
      * Renders an input tag.
-     * @param  string $type    the input type (e.g. 'text', 'password')
-     * @param  array  $options the tag options in terms of name-value pairs. These will be rendered as
-     *                         the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
+     * @param string $type the input type (e.g. 'text', 'password')
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
      * @return static the field object itself
      */
     public function input($type, $options = [])
@@ -305,8 +305,8 @@ class ActiveField extends Component
      * Renders a text input.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
-     * @param  array  $options the tag options in terms of name-value pairs. These will be rendered as
-     *                         the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
      * @return static the field object itself
      */
     public function textInput($options = [])
@@ -327,8 +327,8 @@ class ActiveField extends Component
      *
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
-     * @param  array  $options the tag options in terms of name-value pairs. These will be rendered as
-     *                         the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
      * @return static the field object itself
      */
     public function hiddenInput($options = [])
@@ -344,8 +344,8 @@ class ActiveField extends Component
      * Renders a password input.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
-     * @param  array  $options the tag options in terms of name-value pairs. These will be rendered as
-     *                         the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
      * @return static the field object itself
      */
     public function passwordInput($options = [])
@@ -361,8 +361,8 @@ class ActiveField extends Component
      * Renders a file input.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
-     * @param  array  $options the tag options in terms of name-value pairs. These will be rendered as
-     *                         the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
      * @return static the field object itself
      */
     public function fileInput($options = [])
@@ -380,8 +380,8 @@ class ActiveField extends Component
     /**
      * Renders a text area.
      * The model attribute value will be used as the content in the textarea.
-     * @param  array  $options the tag options in terms of name-value pairs. These will be rendered as
-     *                         the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[Html::encode()]].
      * @return static the field object itself
      */
     public function textarea($options = [])
@@ -409,10 +409,10 @@ class ActiveField extends Component
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
-     * @param  boolean $enclosedByLabel whether to enclose the radio within the label.
-     *                                  If true, the method will still use [[template]] to layout the checkbox and the error message
-     *                                  except that the radio is enclosed by the label tag.
-     * @return static  the field object itself
+     * @param boolean $enclosedByLabel whether to enclose the radio within the label.
+     * If true, the method will still use [[template]] to layout the checkbox and the error message
+     * except that the radio is enclosed by the label tag.
+     * @return static the field object itself
      */
     public function radio($options = [], $enclosedByLabel = true)
     {
@@ -447,10 +447,10 @@ class ActiveField extends Component
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
-     * @param  boolean $enclosedByLabel whether to enclose the checkbox within the label.
-     *                                  If true, the method will still use [[template]] to layout the checkbox and the error message
-     *                                  except that the checkbox is enclosed by the label tag.
-     * @return static  the field object itself
+     * @param boolean $enclosedByLabel whether to enclose the checkbox within the label.
+     * If true, the method will still use [[template]] to layout the checkbox and the error message
+     * except that the checkbox is enclosed by the label tag.
+     * @return static the field object itself
      */
     public function checkbox($options = [], $enclosedByLabel = true)
     {
@@ -473,10 +473,10 @@ class ActiveField extends Component
      * Renders a drop-down list.
      * The selection of the drop-down list is taken from the value of the model attribute.
      * @param array $items the option data items. The array keys are option values, and the array values
-     *                     are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
-     *                     For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
-     *                     If you have a list of data models, you may convert them into the format described above using
-     *                     [[ArrayHelper::map()]].
+     * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
+     * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
+     * If you have a list of data models, you may convert them into the format described above using
+     * [[ArrayHelper::map()]].
      *
      * Note, the values and labels will be automatically HTML-encoded by this method, and the blank spaces in
      * the labels will also be HTML-encoded.
@@ -514,10 +514,10 @@ class ActiveField extends Component
      * Renders a list box.
      * The selection of the list box is taken from the value of the model attribute.
      * @param array $items the option data items. The array keys are option values, and the array values
-     *                     are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
-     *                     For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
-     *                     If you have a list of data models, you may convert them into the format described above using
-     *                     [[\yii\helpers\ArrayHelper::map()]].
+     * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
+     * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
+     * If you have a list of data models, you may convert them into the format described above using
+     * [[\yii\helpers\ArrayHelper::map()]].
      *
      * Note, the values and labels will be automatically HTML-encoded by this method, and the blank spaces in
      * the labels will also be HTML-encoded.
@@ -559,9 +559,9 @@ class ActiveField extends Component
      * A checkbox list allows multiple selection, like [[listBox()]].
      * As a result, the corresponding submitted value is an array.
      * The selection of the checkbox list is taken from the value of the model attribute.
-     * @param array $items   the data item used to generate the checkboxes.
-     *                       The array values are the labels, while the array keys are the corresponding checkbox values.
-     *                       Note that the labels will NOT be HTML-encoded, while the values will.
+     * @param array $items the data item used to generate the checkboxes.
+     * The array values are the labels, while the array keys are the corresponding checkbox values.
+     * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the checkbox list. The following options are specially handled:
      *
      * - unselect: string, the value that should be submitted when none of the checkboxes is selected.
@@ -591,9 +591,9 @@ class ActiveField extends Component
      * Renders a list of radio buttons.
      * A radio button list is like a checkbox list, except that it only allows single selection.
      * The selection of the radio buttons is taken from the value of the model attribute.
-     * @param array $items   the data item used to generate the radio buttons.
-     *                       The array keys are the labels, while the array values are the corresponding radio button values.
-     *                       Note that the labels will NOT be HTML-encoded, while the values will.
+     * @param array $items the data item used to generate the radio buttons.
+     * The array keys are the labels, while the array values are the corresponding radio button values.
+     * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the radio button list. The following options are specially handled:
      *
      * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
@@ -628,8 +628,8 @@ class ActiveField extends Component
      * If you want to use a widget that does not have `model` and `attribute` properties,
      * please use [[render()]] instead.
      *
-     * @param  string $class  the widget class name
-     * @param  array  $config name-value pairs that will be used to initialize the widget
+     * @param string $class the widget class name
+     * @param array $config name-value pairs that will be used to initialize the widget
      * @return static the field object itself
      */
     public function widget($class, $config = [])

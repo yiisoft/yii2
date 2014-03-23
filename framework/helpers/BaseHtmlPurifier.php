@@ -19,8 +19,8 @@ class BaseHtmlPurifier
     /**
      * Passes markup through HTMLPurifier making it safe to output to end user
      *
-     * @param  string     $content
-     * @param  array|null $config
+     * @param string $content
+     * @param array|null $config
      * @return string
      */
     public static function process($content, $config = null)

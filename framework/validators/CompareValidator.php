@@ -153,9 +153,9 @@ class CompareValidator extends Validator
 
     /**
      * Compares two values with the specified operator.
-     * @param  string  $operator     the comparison operator
-     * @param  mixed   $value        the value being compared
-     * @param  mixed   $compareValue another value being compared
+     * @param string $operator the comparison operator
+     * @param mixed $value the value being compared
+     * @param mixed $compareValue another value being compared
      * @return boolean whether the comparison using the specified operator is true.
      */
     protected function compareValues($operator, $value, $compareValue)

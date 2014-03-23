@@ -8,7 +8,6 @@
 namespace yii\test;
 
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\di\Instance;
 use yii\base\Object;

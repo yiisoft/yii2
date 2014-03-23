@@ -385,10 +385,10 @@ class GridView extends BaseListView
 
     /**
      * Renders a table row with the given data model and key.
-     * @param  mixed   $model the data model to be rendered
-     * @param  mixed   $key   the key associated with the data model
-     * @param  integer $index the zero-based index of the data model among the model array returned by [[dataProvider]].
-     * @return string  the rendering result
+     * @param mixed $model the data model to be rendered
+     * @param mixed $key the key associated with the data model
+     * @param integer $index the zero-based index of the data model among the model array returned by [[dataProvider]].
+     * @return string the rendering result
      */
     public function renderTableRow($model, $key, $index)
     {
@@ -434,8 +434,8 @@ class GridView extends BaseListView
 
     /**
      * Creates a [[DataColumn]] object based on a string in the format of "attribute:format:label".
-     * @param  string                 $text the column specification string
-     * @return DataColumn             the column instance
+     * @param string $text the column specification string
+     * @return DataColumn the column instance
      * @throws InvalidConfigException if the column specification is invalid
      */
     protected function createDataColumn($text)

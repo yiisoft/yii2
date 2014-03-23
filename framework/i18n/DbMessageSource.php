@@ -105,10 +105,10 @@ class DbMessageSource extends MessageSource
      * If translation for specific locale code such as `en-US` isn't found it
      * tries more generic `en`.
      *
-     * @param  string $category the message category
-     * @param  string $language the target language
-     * @return array  the loaded messages. The keys are original messages, and the values
-     *                         are translated messages.
+     * @param string $category the message category
+     * @param string $language the target language
+     * @return array the loaded messages. The keys are original messages, and the values
+     * are translated messages.
      */
     protected function loadMessages($category, $language)
     {
@@ -133,9 +133,9 @@ class DbMessageSource extends MessageSource
     /**
      * Loads the messages from database.
      * You may override this method to customize the message storage in the database.
-     * @param  string $category the message category.
-     * @param  string $language the target language.
-     * @return array  the messages loaded from database.
+     * @param string $category the message category.
+     * @param string $language the target language.
+     * @return array the messages loaded from database.
      */
     protected function loadMessagesFromDb($category, $language)
     {

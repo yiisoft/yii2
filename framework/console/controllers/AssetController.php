@@ -91,7 +91,7 @@ class AssetController extends Controller
     /**
      * Returns the asset manager instance.
      * @throws \yii\console\Exception on invalid configuration.
-     * @return \yii\web\AssetManager  asset manager instance.
+     * @return \yii\web\AssetManager asset manager instance.
      */
     public function getAssetManager()
     {
@@ -114,8 +114,8 @@ class AssetController extends Controller
 
     /**
      * Sets asset manager instance or configuration.
-     * @param  \yii\web\AssetManager|array $assetManager asset manager instance or its array configuration.
-     * @throws \yii\console\Exception      on invalid argument type.
+     * @param \yii\web\AssetManager|array $assetManager asset manager instance or its array configuration.
+     * @throws \yii\console\Exception on invalid argument type.
      */
     public function setAssetManager($assetManager)
     {
@@ -155,7 +155,7 @@ class AssetController extends Controller
 
     /**
      * Applies configuration from the given file to self instance.
-     * @param  string                 $configFile configuration file name.
+     * @param string $configFile configuration file name.
      * @throws \yii\console\Exception on failure.
      */
     protected function loadConfiguration($configFile)
@@ -174,7 +174,7 @@ class AssetController extends Controller
 
     /**
      * Creates full list of source asset bundles.
-     * @param  string[]               $bundles list of asset bundle names
+     * @param string[] $bundles list of asset bundle names
      * @return \yii\web\AssetBundle[] list of source asset bundles.
      */
     protected function loadBundles($bundles)
@@ -195,9 +195,9 @@ class AssetController extends Controller
 
     /**
      * Loads asset bundle dependencies recursively.
-     * @param  \yii\web\AssetBundle $bundle bundle instance
-     * @param  array                $result already loaded bundles list.
-     * @throws Exception            on failure.
+     * @param \yii\web\AssetBundle $bundle bundle instance
+     * @param array $result already loaded bundles list.
+     * @throws Exception on failure.
      */
     protected function loadDependency($bundle, &$result)
     {
@@ -216,10 +216,10 @@ class AssetController extends Controller
 
     /**
      * Creates full list of output asset bundles.
-     * @param  array                  $targets output asset bundles configuration.
-     * @param  \yii\web\AssetBundle[] $bundles list of source asset bundles.
+     * @param array $targets output asset bundles configuration.
+     * @param \yii\web\AssetBundle[] $bundles list of source asset bundles.
      * @return \yii\web\AssetBundle[] list of output asset bundles.
-     * @throws Exception              on failure.
+     * @throws Exception on failure.
      */
     protected function loadTargets($targets, $bundles)
     {
@@ -278,11 +278,11 @@ class AssetController extends Controller
 
     /**
      * Builds output asset bundle.
-     * @param  \yii\web\AssetBundle   $target    output asset bundle
-     * @param  string                 $type      either 'js' or 'css'.
-     * @param  \yii\web\AssetBundle[] $bundles   source asset bundles.
-     * @param  integer                $timestamp current timestamp.
-     * @throws Exception              on failure.
+     * @param \yii\web\AssetBundle $target output asset bundle
+     * @param string $type either 'js' or 'css'.
+     * @param \yii\web\AssetBundle[] $bundles source asset bundles.
+     * @param integer $timestamp current timestamp.
+     * @throws Exception on failure.
      */
     protected function buildTarget($target, $type, $bundles, $timestamp)
     {
@@ -310,8 +310,8 @@ class AssetController extends Controller
 
     /**
      * Adjust dependencies between asset bundles in the way source bundles begin to depend on output ones.
-     * @param  \yii\web\AssetBundle[] $targets output asset bundles.
-     * @param  \yii\web\AssetBundle[] $bundles source asset bundles.
+     * @param \yii\web\AssetBundle[] $targets output asset bundles.
+     * @param \yii\web\AssetBundle[] $bundles source asset bundles.
      * @return \yii\web\AssetBundle[] output asset bundles.
      */
     protected function adjustDependency($targets, $bundles)
@@ -354,10 +354,10 @@ class AssetController extends Controller
 
     /**
      * Registers asset bundles including their dependencies.
-     * @param  \yii\web\AssetBundle[] $bundles    asset bundles list.
-     * @param  string                 $name       bundle name.
-     * @param  array                  $registered stores already registered names.
-     * @throws Exception              if circular dependency is detected.
+     * @param \yii\web\AssetBundle[] $bundles asset bundles list.
+     * @param string $name bundle name.
+     * @param array $registered stores already registered names.
+     * @throws Exception if circular dependency is detected.
      */
     protected function registerBundle($bundles, $name, &$registered)
     {
@@ -376,8 +376,8 @@ class AssetController extends Controller
 
     /**
      * Saves new asset bundles configuration.
-     * @param  \yii\web\AssetBundle[] $targets    list of asset bundles to be saved.
-     * @param  string                 $bundleFile output file name.
+     * @param \yii\web\AssetBundle[] $targets list of asset bundles to be saved.
+     * @param string $bundleFile output file name.
      * @throws \yii\console\Exception on failure.
      */
     protected function saveTargets($targets, $bundleFile)
@@ -411,8 +411,8 @@ EOD;
 
     /**
      * Compresses given JavaScript files and combines them into the single one.
-     * @param  array                  $inputFiles list of source file names.
-     * @param  string                 $outputFile output file name.
+     * @param array $inputFiles list of source file names.
+     * @param string $outputFile output file name.
      * @throws \yii\console\Exception on failure
      */
     protected function compressJsFiles($inputFiles, $outputFile)
@@ -440,8 +440,8 @@ EOD;
 
     /**
      * Compresses given CSS files and combines them into the single one.
-     * @param  array                  $inputFiles list of source file names.
-     * @param  string                 $outputFile output file name.
+     * @param array $inputFiles list of source file names.
+     * @param string $outputFile output file name.
      * @throws \yii\console\Exception on failure
      */
     protected function compressCssFiles($inputFiles, $outputFile)
@@ -469,8 +469,8 @@ EOD;
 
     /**
      * Combines JavaScript files into a single one.
-     * @param  array                  $inputFiles source file names.
-     * @param  string                 $outputFile output file name.
+     * @param array $inputFiles source file names.
+     * @param string $outputFile output file name.
      * @throws \yii\console\Exception on failure.
      */
     public function combineJsFiles($inputFiles, $outputFile)
@@ -488,8 +488,8 @@ EOD;
 
     /**
      * Combines CSS files into a single one.
-     * @param  array                  $inputFiles source file names.
-     * @param  string                 $outputFile output file name.
+     * @param array $inputFiles source file names.
+     * @param string $outputFile output file name.
      * @throws \yii\console\Exception on failure.
      */
     public function combineCssFiles($inputFiles, $outputFile)
@@ -507,9 +507,9 @@ EOD;
 
     /**
      * Adjusts CSS content allowing URL references pointing to the original resources.
-     * @param  string $cssContent     source CSS content.
-     * @param  string $inputFilePath  input CSS file name.
-     * @param  string $outputFilePath output CSS file name.
+     * @param string $cssContent source CSS content.
+     * @param string $inputFilePath input CSS file name.
+     * @param string $outputFilePath output CSS file name.
      * @return string adjusted CSS content.
      */
     protected function adjustCssUrl($cssContent, $inputFilePath, $outputFilePath)
@@ -568,7 +568,7 @@ EOD;
 
     /**
      * Creates template of configuration file for [[actionCompress]].
-     * @param  string                 $configFile output file name.
+     * @param string $configFile output file name.
      * @throws \yii\console\Exception on failure.
      */
     public function actionTemplate($configFile)
