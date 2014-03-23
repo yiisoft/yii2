@@ -193,7 +193,7 @@ class BaseUrl
 
         if ($url === '') {
             $url = Yii::$app->getRequest()->getUrl();
-        } elseif ($url[0] !== '/' && $url[0] !== '#' && strpos($url, '://') === false) {
+        } elseif ($url[0] !== '/' && $url[0] !== '#' && strpos($url, '://') === false && strncmp($url, './', 2) !== 0) {
             $url = Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
         }
 
