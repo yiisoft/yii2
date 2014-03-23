@@ -89,7 +89,7 @@ trait ArrayableTrait
      * (e.g. the current application user).
      *
      * @return array the list of expandable field names or field definitions. Please refer
-     *               to [[fields()]] on the format of the return value.
+     * to [[fields()]] on the format of the return value.
      * @see toArray()
      * @see fields()
      */
@@ -108,11 +108,11 @@ trait ArrayableTrait
      * If the model implements the [[Linkable]] interface, the resulting array will also have a `_link` element
      * which refers to a list of links as specified by the interface.
      *
-     * @param  array   $fields    the fields being requested. If empty, all fields as specified by [[fields()]] will be returned.
-     * @param  array   $expand    the additional fields being requested for exporting. Only fields declared in [[extraFields()]]
-     *                            will be considered.
-     * @param  boolean $recursive whether to recursively return array representation of embedded objects.
-     * @return array   the array representation of the object
+     * @param array $fields the fields being requested. If empty, all fields as specified by [[fields()]] will be returned.
+     * @param array $expand the additional fields being requested for exporting. Only fields declared in [[extraFields()]]
+     * will be considered.
+     * @param boolean $recursive whether to recursively return array representation of embedded objects.
+     * @return array the array representation of the object
      */
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {
@@ -132,10 +132,10 @@ trait ArrayableTrait
      * Determines which fields can be returned by [[toArray()]].
      * This method will check the requested fields against those declared in [[fields()]] and [[extraFields()]]
      * to determine which fields can be returned.
-     * @param  array $fields the fields being requested for exporting
-     * @param  array $expand the additional fields being requested for exporting
+     * @param array $fields the fields being requested for exporting
+     * @param array $expand the additional fields being requested for exporting
      * @return array the list of fields to be exported. The array keys are the field names, and the array values
-     *                      are the corresponding object property names or PHP callables returning the field values.
+     * are the corresponding object property names or PHP callables returning the field values.
      */
     protected function resolveFields(array $fields, array $expand)
     {

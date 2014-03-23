@@ -266,7 +266,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * @param string $value the session name for the current session, must be an alphanumeric string.
-     *                      It defaults to "PHPSESSID".
+     * It defaults to "PHPSESSID".
      */
     public function setName($value)
     {
@@ -282,7 +282,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * @param  string                $value the current session save path. This can be either a directory name or a path alias.
+     * @param string $value the current session save path. This can be either a directory name or a path alias.
      * @throws InvalidParamException if the path is not a valid directory
      */
     public function setSavePath($value)
@@ -314,7 +314,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * Sets the session cookie parameters.
      * The cookie parameters passed to this method will be merged with the result
      * of `session_get_cookie_params()`.
-     * @param  array                 $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httpOnly`.
+     * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httpOnly`.
      * @throws InvalidParamException if the parameters are incomplete.
      * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
      */
@@ -389,7 +389,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * @param  float                 $value the probability (percentage) that the GC (garbage collection) process is started on every session initialization.
+     * @param float $value the probability (percentage) that the GC (garbage collection) process is started on every session initialization.
      * @throws InvalidParamException if the value is not between 0 and 100.
      */
     public function setGCProbability($value)
@@ -421,7 +421,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * @return integer the number of seconds after which data will be seen as 'garbage' and cleaned up.
-     *                 The default value is 1440 seconds (or the value of "session.gc_maxlifetime" set in php.ini).
+     * The default value is 1440 seconds (or the value of "session.gc_maxlifetime" set in php.ini).
      */
     public function getTimeout()
     {
@@ -440,8 +440,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * Session open handler.
      * This method should be overridden if [[useCustomStorage()]] returns true.
      * Do not call this method directly.
-     * @param  string  $savePath    session save path
-     * @param  string  $sessionName session name
+     * @param string $savePath session save path
+     * @param string $sessionName session name
      * @return boolean whether session is opened successfully
      */
     public function openSession($savePath, $sessionName)
@@ -464,7 +464,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * Session read handler.
      * This method should be overridden if [[useCustomStorage()]] returns true.
      * Do not call this method directly.
-     * @param  string $id session ID
+     * @param string $id session ID
      * @return string the session data
      */
     public function readSession($id)
@@ -476,8 +476,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * Session write handler.
      * This method should be overridden if [[useCustomStorage()]] returns true.
      * Do not call this method directly.
-     * @param  string  $id   session ID
-     * @param  string  $data session data
+     * @param string $id session ID
+     * @param string $data session data
      * @return boolean whether session write is successful
      */
     public function writeSession($id, $data)
@@ -489,7 +489,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * Session destroy handler.
      * This method should be overridden if [[useCustomStorage()]] returns true.
      * Do not call this method directly.
-     * @param  string  $id session ID
+     * @param string $id session ID
      * @return boolean whether session is destroyed successfully
      */
     public function destroySession($id)
@@ -501,7 +501,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * Session GC (garbage collection) handler.
      * This method should be overridden if [[useCustomStorage()]] returns true.
      * Do not call this method directly.
-     * @param  integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
+     * @param integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
      * @return boolean whether session is GCed successfully
      */
     public function gcSession($maxLifetime)
@@ -541,9 +541,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Returns the session variable value with the session variable name.
      * If the session variable does not exist, the `$defaultValue` will be returned.
-     * @param  string $key          the session variable name
-     * @param  mixed  $defaultValue the default value to be returned when the session variable does not exist.
-     * @return mixed  the session variable value, or $defaultValue if the session variable does not exist.
+     * @param string $key the session variable name
+     * @param mixed $defaultValue the default value to be returned when the session variable does not exist.
+     * @return mixed the session variable value, or $defaultValue if the session variable does not exist.
      */
     public function get($key, $defaultValue = null)
     {
@@ -555,8 +555,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Adds a session variable.
      * If the specified name already exists, the old value will be overwritten.
-     * @param string $key   session variable name
-     * @param mixed  $value session variable value
+     * @param string $key session variable name
+     * @param mixed $value session variable value
      */
     public function set($key, $value)
     {
@@ -566,8 +566,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Removes a session variable.
-     * @param  string $key the name of the session variable to be removed
-     * @return mixed  the removed value, null if no such session variable.
+     * @param string $key the name of the session variable to be removed
+     * @return mixed the removed value, null if no such session variable.
      */
     public function remove($key)
     {
@@ -594,7 +594,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * @param  mixed   $key session variable name
+     * @param mixed $key session variable name
      * @return boolean whether there is the named session variable
      */
     public function has($key)
@@ -629,11 +629,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Returns a flash message.
      * A flash message is available only in the current request and the next request.
-     * @param  string  $key          the key identifying the flash message
-     * @param  mixed   $defaultValue value to be returned if the flash message does not exist.
-     * @param  boolean $delete       whether to delete this flash message right after this method is called.
-     *                               If false, the flash message will be automatically deleted after the next request.
-     * @return mixed   the flash message
+     * @param string $key the key identifying the flash message
+     * @param mixed $defaultValue value to be returned if the flash message does not exist.
+     * @param boolean $delete whether to delete this flash message right after this method is called.
+     * If false, the flash message will be automatically deleted after the next request.
+     * @return mixed the flash message
      */
     public function getFlash($key, $defaultValue = null, $delete = false)
     {
@@ -670,10 +670,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Stores a flash message.
      * A flash message is available only in the current request and the next request.
-     * @param string $key   the key identifying the flash message. Note that flash messages
-     *                      and normal session variables share the same name space. If you have a normal
-     *                      session variable using the same name, its value will be overwritten by this method.
-     * @param mixed  $value flash message
+     * @param string $key the key identifying the flash message. Note that flash messages
+     * and normal session variables share the same name space. If you have a normal
+     * session variable using the same name, its value will be overwritten by this method.
+     * @param mixed $value flash message
      */
     public function setFlash($key, $value = true)
     {
@@ -686,10 +686,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Removes a flash message.
      * Note that flash messages will be automatically removed after the next request.
-     * @param  string $key the key identifying the flash message. Note that flash messages
-     *                     and normal session variables share the same name space.  If you have a normal
-     *                     session variable using the same name, it will be removed by this method.
-     * @return mixed  the removed flash message. Null if the flash message does not exist.
+     * @param string $key the key identifying the flash message. Note that flash messages
+     * and normal session variables share the same name space.  If you have a normal
+     * session variable using the same name, it will be removed by this method.
+     * @return mixed the removed flash message. Null if the flash message does not exist.
      */
     public function removeFlash($key)
     {
@@ -718,7 +718,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Returns a value indicating whether there is a flash message associated with the specified key.
-     * @param  string  $key key identifying the flash message
+     * @param string $key key identifying the flash message
      * @return boolean whether the specified flash message exists
      */
     public function hasFlash($key)
@@ -728,7 +728,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * This method is required by the interface ArrayAccess.
-     * @param  mixed   $offset the offset to check on
+     * @param mixed $offset the offset to check on
      * @return boolean
      */
     public function offsetExists($offset)
@@ -740,8 +740,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * This method is required by the interface ArrayAccess.
-     * @param  integer $offset the offset to retrieve element.
-     * @return mixed   the element at the offset, null if no element is found at the offset
+     * @param integer $offset the offset to retrieve element.
+     * @return mixed the element at the offset, null if no element is found at the offset
      */
     public function offsetGet($offset)
     {
@@ -753,7 +753,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * This method is required by the interface ArrayAccess.
      * @param integer $offset the offset to set element
-     * @param mixed   $item   the element value
+     * @param mixed $item the element value
      */
     public function offsetSet($offset, $item)
     {

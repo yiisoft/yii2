@@ -62,7 +62,7 @@ class TableSchema extends Object
     /**
      * Gets the named column metadata.
      * This is a convenient method for retrieving a named column even if it does not exist.
-     * @param  string       $name column name
+     * @param string $name column name
      * @return ColumnSchema metadata of the named column. Null if the named column does not exist.
      */
     public function getColumn($name)
@@ -81,7 +81,7 @@ class TableSchema extends Object
 
     /**
      * Manually specifies the primary key for this table.
-     * @param  string|array          $keys the primary key (can be composite)
+     * @param string|array $keys the primary key (can be composite)
      * @throws InvalidParamException if the specified key cannot be found in the table.
      */
     public function fixPrimaryKey($keys)

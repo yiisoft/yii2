@@ -37,35 +37,35 @@ interface ActiveRecordInterface
      * Returns the named attribute value.
      * If this record is the result of a query and the attribute is not loaded,
      * null will be returned.
-     * @param  string $name the attribute name
-     * @return mixed  the attribute value. Null if the attribute is not set or does not exist.
+     * @param string $name the attribute name
+     * @return mixed the attribute value. Null if the attribute is not set or does not exist.
      * @see hasAttribute()
      */
     public function getAttribute($name);
 
     /**
      * Sets the named attribute value.
-     * @param string $name  the attribute name.
-     * @param mixed  $value the attribute value.
+     * @param string $name the attribute name.
+     * @param mixed $value the attribute value.
      * @see hasAttribute()
      */
     public function setAttribute($name, $value);
 
     /**
      * Returns a value indicating whether the record has an attribute with the specified name.
-     * @param  string  $name the name of the attribute
+     * @param string $name the name of the attribute
      * @return boolean whether the record has an attribute with the specified name.
      */
     public function hasAttribute($name);
 
     /**
      * Returns the primary key value(s).
-     * @param  boolean $asArray whether to return the primary key value as an array. If true,
-     *                          the return value will be an array with attribute names as keys and attribute values as values.
-     *                          Note that for composite primary keys, an array will always be returned regardless of this parameter value.
-     * @return mixed   the primary key value. An array (attribute name => attribute value) is returned if the primary key
-     *                         is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
-     *                         the key value is null).
+     * @param boolean $asArray whether to return the primary key value as an array. If true,
+     * the return value will be an array with attribute names as keys and attribute values as values.
+     * Note that for composite primary keys, an array will always be returned regardless of this parameter value.
+     * @return mixed the primary key value. An array (attribute name => attribute value) is returned if the primary key
+     * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
+     * the key value is null).
      */
     public function getPrimaryKey($asArray = false);
 
@@ -74,21 +74,21 @@ interface ActiveRecordInterface
      * This refers to the primary key value that is populated into the record
      * after executing a find method (e.g. find(), findAll()).
      * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
-     * @param  boolean $asArray whether to return the primary key value as an array. If true,
-     *                          the return value will be an array with column name as key and column value as value.
-     *                          If this is false (default), a scalar value will be returned for non-composite primary key.
+     * @param boolean $asArray whether to return the primary key value as an array. If true,
+     * the return value will be an array with column name as key and column value as value.
+     * If this is false (default), a scalar value will be returned for non-composite primary key.
      * @property mixed The old primary key value. An array (column name => column value) is
-     *                          returned if the primary key is composite. A string is returned otherwise (null will be
-     *                          returned if the key value is null).
-     * @return mixed   the old primary key value. An array (column name => column value) is returned if the primary key
-     *                         is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
-     *                         the key value is null).
+     * returned if the primary key is composite. A string is returned otherwise (null will be
+     * returned if the key value is null).
+     * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
+     * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
+     * the key value is null).
      */
     public function getOldPrimaryKey($asArray = false);
 
     /**
      * Returns a value indicating whether the given set of attributes represents the primary key for this model
-     * @param  array   $keys the set of attributes to check
+     * @param array $keys the set of attributes to check
      * @return boolean whether the given set of attributes represents the primary key for this model
      */
     public static function isPrimaryKey($keys);
@@ -111,8 +111,8 @@ interface ActiveRecordInterface
      *  - null (not specified): return a new [[ActiveQuery]] object for further query purpose.
      *
      * @return ActiveQueryInterface|static|null When `$q` is null, a new [[ActiveQuery]] instance
-     *                                          is returned; when `$q` is a scalar or an array, an ActiveRecord object matching it will be
-     *                                          returned (null will be returned if there is no matching).
+     * is returned; when `$q` is a scalar or an array, an ActiveRecord object matching it will be
+     * returned (null will be returned if there is no matching).
      */
     public static function find($q = null);
 
@@ -138,7 +138,7 @@ interface ActiveRecordInterface
      * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
      * default condition. Using [[Query::where()]] will override the default condition.
      *
-     * @param  array                $config the configuration passed to the ActiveQuery class.
+     * @param array $config the configuration passed to the ActiveQuery class.
      * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
      */
     public static function createQuery($config = []);
@@ -151,11 +151,11 @@ interface ActiveRecordInterface
      * Customer::updateAll(['status' => 1], ['status' => '2']);
      * ~~~
      *
-     * @param  array   $attributes attribute values (name-value pairs) to be saved for the record.
-     *                             Unlike [[update()]] these are not going to be validated.
-     * @param  array   $condition  the condition that matches the records that should get updated.
-     *                             Please refer to [[QueryInterface::where()]] on how to specify this parameter.
-     *                             An empty condition will match all records.
+     * @param array $attributes attribute values (name-value pairs) to be saved for the record.
+     * Unlike [[update()]] these are not going to be validated.
+     * @param array $condition the condition that matches the records that should get updated.
+     * Please refer to [[QueryInterface::where()]] on how to specify this parameter.
+     * An empty condition will match all records.
      * @return integer the number of rows updated
      */
     public static function updateAll($attributes, $condition = null);
@@ -170,9 +170,9 @@ interface ActiveRecordInterface
      * Customer::deleteAll([status = 3]);
      * ~~~
      *
-     * @param  array   $condition the condition that matches the records that should get deleted.
-     *                            Please refer to [[QueryInterface::where()]] on how to specify this parameter.
-     *                            An empty condition will match all records.
+     * @param array $condition the condition that matches the records that should get deleted.
+     * Please refer to [[QueryInterface::where()]] on how to specify this parameter.
+     * An empty condition will match all records.
      * @return integer the number of rows deleted
      */
     public static function deleteAll($condition = null);
@@ -192,11 +192,11 @@ interface ActiveRecordInterface
      * $customer->save();
      * ~~~
      *
-     * @param  boolean $runValidation whether to perform validation before saving the record.
-     *                                If the validation fails, the record will not be saved to database. `false` will be returned
-     *                                in this case.
-     * @param  array   $attributes    list of attributes that need to be saved. Defaults to null,
-     *                                meaning all attributes that are loaded from DB will be saved.
+     * @param boolean $runValidation whether to perform validation before saving the record.
+     * If the validation fails, the record will not be saved to database. `false` will be returned
+     * in this case.
+     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * meaning all attributes that are loaded from DB will be saved.
      * @return boolean whether the saving succeeds
      */
     public function save($runValidation = true, $attributes = null);
@@ -213,10 +213,10 @@ interface ActiveRecordInterface
      * $customer->insert();
      * ```
      *
-     * @param  boolean $runValidation whether to perform validation before saving the record.
-     *                                If the validation fails, the record will not be inserted into the database.
-     * @param  array   $attributes    list of attributes that need to be saved. Defaults to null,
-     *                                meaning all attributes that are loaded from DB will be saved.
+     * @param boolean $runValidation whether to perform validation before saving the record.
+     * If the validation fails, the record will not be inserted into the database.
+     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * meaning all attributes that are loaded from DB will be saved.
      * @return boolean whether the attributes are valid and the record is inserted successfully.
      */
     public function insert($runValidation = true, $attributes = null);
@@ -233,14 +233,14 @@ interface ActiveRecordInterface
      * $customer->update();
      * ```
      *
-     * @param  boolean         $runValidation whether to perform validation before saving the record.
-     *                                        If the validation fails, the record will not be inserted into the database.
-     * @param  array           $attributes    list of attributes that need to be saved. Defaults to null,
-     *                                        meaning all attributes that are loaded from DB will be saved.
+     * @param boolean $runValidation whether to perform validation before saving the record.
+     * If the validation fails, the record will not be inserted into the database.
+     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * meaning all attributes that are loaded from DB will be saved.
      * @return integer|boolean the number of rows affected, or false if validation fails
-     *                                       or updating process is stopped for other reasons.
-     *                                       Note that it is possible that the number of rows affected is 0, even though the
-     *                                       update execution is successful.
+     * or updating process is stopped for other reasons.
+     * Note that it is possible that the number of rows affected is 0, even though the
+     * update execution is successful.
      */
     public function update($runValidation = true, $attributes = null);
 
@@ -248,7 +248,7 @@ interface ActiveRecordInterface
      * Deletes the record from the database.
      *
      * @return integer|boolean the number of rows deleted, or false if the deletion is unsuccessful for some reason.
-     *                         Note that it is possible that the number of rows deleted is 0, even though the deletion execution is successful.
+     * Note that it is possible that the number of rows deleted is 0, even though the deletion execution is successful.
      */
     public function delete();
 
@@ -261,7 +261,7 @@ interface ActiveRecordInterface
     /**
      * Returns a value indicating whether the given active record is the same as the current one.
      * Two [[isNewRecord|new]] records are considered to be not equal.
-     * @param  static  $record record to compare to
+     * @param static $record record to compare to
      * @return boolean whether the two active records refer to the same row in the same database table.
      */
     public function equals($record);
@@ -271,8 +271,8 @@ interface ActiveRecordInterface
      * A relation is defined by a getter method which returns an object implementing the [[ActiveQueryInterface]]
      * (normally this would be a relational [[ActiveQuery]] object).
      * It can be declared in either the ActiveRecord class itself or one of its behaviors.
-     * @param  string               $name           the relation name
-     * @param  boolean              $throwException whether to throw exception if the relation does not exist.
+     * @param string $name the relation name
+     * @param boolean $throwException whether to throw exception if the relation does not exist.
      * @return ActiveQueryInterface the relational query object
      */
     public function getRelation($name, $throwException = true);
@@ -289,11 +289,11 @@ interface ActiveRecordInterface
      *
      * This method requires that the primary key value is not null.
      *
-     * @param string $name         the case sensitive name of the relationship.
-     * @param static $model        the record to be linked with the current one.
-     * @param array  $extraColumns additional column values to be saved into the pivot table.
-     *                             This parameter is only meaningful for a relationship involving a pivot table
-     *                             (i.e., a relation set with `[[ActiveQueryInterface::via()]]`.)
+     * @param string $name the case sensitive name of the relationship.
+     * @param static $model the record to be linked with the current one.
+     * @param array $extraColumns additional column values to be saved into the pivot table.
+     * This parameter is only meaningful for a relationship involving a pivot table
+     * (i.e., a relation set with `[[ActiveQueryInterface::via()]]`.)
      */
     public function link($name, $model, $extraColumns = []);
 
@@ -303,11 +303,11 @@ interface ActiveRecordInterface
      * The record with the foreign key of the relationship will be deleted if `$delete` is true.
      * Otherwise, the foreign key will be set null and the record will be saved without validation.
      *
-     * @param string  $name   the case sensitive name of the relationship.
-     * @param static  $model  the model to be unlinked from the current one.
+     * @param string $name the case sensitive name of the relationship.
+     * @param static $model the model to be unlinked from the current one.
      * @param boolean $delete whether to delete the model that contains the foreign key.
-     *                        If false, the model's foreign key will be set null and saved.
-     *                        If true, the model containing the foreign key will be deleted.
+     * If false, the model's foreign key will be set null and saved.
+     * If true, the model containing the foreign key will be deleted.
      */
     public function unlink($name, $model, $delete = false);
 }

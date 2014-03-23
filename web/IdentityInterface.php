@@ -45,18 +45,18 @@ interface IdentityInterface
 {
     /**
      * Finds an identity by the given ID.
-     * @param  string|integer    $id the ID to be looked for
+     * @param string|integer $id the ID to be looked for
      * @return IdentityInterface the identity object that matches the given ID.
-     *                              Null should be returned if such an identity cannot be found
-     *                              or the identity is not in an active state (disabled, deleted, etc.)
+     * Null should be returned if such an identity cannot be found
+     * or the identity is not in an active state (disabled, deleted, etc.)
      */
     public static function findIdentity($id);
     /**
      * Finds an identity by the given secrete token.
-     * @param  string            $token the secrete token
+     * @param string $token the secrete token
      * @return IdentityInterface the identity object that matches the given token.
-     *                                 Null should be returned if such an identity cannot be found
-     *                                 or the identity is not in an active state (disabled, deleted, etc.)
+     * Null should be returned if such an identity cannot be found
+     * or the identity is not in an active state (disabled, deleted, etc.)
      */
     public static function findIdentityByAccessToken($token);
     /**
@@ -81,7 +81,7 @@ interface IdentityInterface
      * Validates the given auth key.
      *
      * This is required if [[User::enableAutoLogin]] is enabled.
-     * @param  string  $authKey the given auth key
+     * @param string $authKey the given auth key
      * @return boolean whether the given auth key is valid.
      * @see getAuthKey()
      */

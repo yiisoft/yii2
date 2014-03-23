@@ -58,12 +58,12 @@ class PhpManager extends Manager
 
     /**
      * Performs access check for the specified user.
-     * @param  mixed   $userId   the user ID. This can be either an integer or a string representing
-     * @param  string  $itemName the name of the operation that need access check
-     *                           the unique identifier of a user. See [[\yii\web\User::id]].
-     * @param  array   $params   name-value pairs that would be passed to biz rules associated
-     *                           with the tasks and roles assigned to the user. A param with name 'userId' is added to
-     *                           this array, which holds the value of `$userId`.
+     * @param mixed $userId the user ID. This can be either an integer or a string representing
+     * @param string $itemName the name of the operation that need access check
+     * the unique identifier of a user. See [[\yii\web\User::id]].
+     * @param array $params name-value pairs that would be passed to biz rules associated
+     * with the tasks and roles assigned to the user. A param with name 'userId' is added to
+     * this array, which holds the value of `$userId`.
      * @return boolean whether the operations can be performed by the user.
      */
     public function checkAccess($userId, $itemName, $params = [])
@@ -100,10 +100,10 @@ class PhpManager extends Manager
 
     /**
      * Adds an item as a child of another item.
-     * @param  string               $itemName  the parent item name
-     * @param  string               $childName the child item name
-     * @return boolean              whether the item is added successfully
-     * @throws Exception            if either parent or child doesn't exist.
+     * @param string $itemName the parent item name
+     * @param string $childName the child item name
+     * @return boolean whether the item is added successfully
+     * @throws Exception if either parent or child doesn't exist.
      * @throws InvalidCallException if item already has a child with $itemName or if a loop has been detected.
      */
     public function addItemChild($itemName, $childName)
@@ -130,8 +130,8 @@ class PhpManager extends Manager
     /**
      * Removes a child from its parent.
      * Note, the child item is not deleted. Only the parent-child relationship is removed.
-     * @param  string  $itemName  the parent item name
-     * @param  string  $childName the child item name
+     * @param string $itemName the parent item name
+     * @param string $childName the child item name
      * @return boolean whether the removal is successful
      */
     public function removeItemChild($itemName, $childName)
@@ -147,8 +147,8 @@ class PhpManager extends Manager
 
     /**
      * Returns a value indicating whether a child exists within a parent.
-     * @param  string  $itemName  the parent item name
-     * @param  string  $childName the child item name
+     * @param string $itemName the parent item name
+     * @param string $childName the child item name
      * @return boolean whether the child exists
      */
     public function hasItemChild($itemName, $childName)
@@ -158,8 +158,8 @@ class PhpManager extends Manager
 
     /**
      * Returns the children of the specified item.
-     * @param  mixed  $names the parent item name. This can be either a string or an array.
-     *                       The latter represents a list of item names.
+     * @param mixed $names the parent item name. This can be either a string or an array.
+     * The latter represents a list of item names.
      * @return Item[] all child items of the parent
      */
     public function getItemChildren($names)
@@ -180,12 +180,12 @@ class PhpManager extends Manager
 
     /**
      * Assigns an authorization item to a user.
-     * @param  mixed                 $userId   the user ID (see [[\yii\web\User::id]])
-     * @param  string                $itemName the item name
-     * @param  string                $bizRule  the business rule to be executed when [[checkAccess()]] is called
-     *                                         for this particular authorization item.
-     * @param  mixed                 $data     additional data associated with this assignment
-     * @return Assignment            the authorization assignment information.
+     * @param mixed $userId the user ID (see [[\yii\web\User::id]])
+     * @param string $itemName the item name
+     * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
+     * for this particular authorization item.
+     * @param mixed $data additional data associated with this assignment
+     * @return Assignment the authorization assignment information.
      * @throws InvalidParamException if the item does not exist or if the item has already been assigned to the user
      */
     public function assign($userId, $itemName, $bizRule = null, $data = null)
@@ -207,8 +207,8 @@ class PhpManager extends Manager
 
     /**
      * Revokes an authorization assignment from a user.
-     * @param  mixed   $userId   the user ID (see [[\yii\web\User::id]])
-     * @param  string  $itemName the item name
+     * @param mixed $userId the user ID (see [[\yii\web\User::id]])
+     * @param string $itemName the item name
      * @return boolean whether removal is successful
      */
     public function revoke($userId, $itemName)
@@ -224,7 +224,7 @@ class PhpManager extends Manager
 
     /**
      * Revokes all authorization assignments from a user.
-     * @param  mixed   $userId the user ID (see [[\yii\web\User::id]])
+     * @param mixed $userId the user ID (see [[\yii\web\User::id]])
      * @return boolean whether removal is successful
      */
     public function revokeAll($userId)
@@ -241,8 +241,8 @@ class PhpManager extends Manager
 
     /**
      * Returns a value indicating whether the item has been assigned to the user.
-     * @param  mixed   $userId   the user ID (see [[\yii\web\User::id]])
-     * @param  string  $itemName the item name
+     * @param mixed $userId the user ID (see [[\yii\web\User::id]])
+     * @param string $itemName the item name
      * @return boolean whether the item has been assigned to the user.
      */
     public function isAssigned($userId, $itemName)
@@ -252,10 +252,10 @@ class PhpManager extends Manager
 
     /**
      * Returns the item assignment information.
-     * @param  mixed      $userId   the user ID (see [[\yii\web\User::id]])
-     * @param  string     $itemName the item name
+     * @param mixed $userId the user ID (see [[\yii\web\User::id]])
+     * @param string $itemName the item name
      * @return Assignment the item assignment information. Null is returned if
-     *                             the item is not assigned to the user.
+     * the item is not assigned to the user.
      */
     public function getAssignment($userId, $itemName)
     {
@@ -264,9 +264,9 @@ class PhpManager extends Manager
 
     /**
      * Returns the item assignments for the specified user.
-     * @param  mixed        $userId the user ID (see [[\yii\web\User::id]])
+     * @param mixed $userId the user ID (see [[\yii\web\User::id]])
      * @return Assignment[] the item assignment information for the user. An empty array will be
-     *                             returned if there is no item assigned to the user.
+     * returned if there is no item assigned to the user.
      */
     public function getAssignments($userId)
     {
@@ -275,11 +275,11 @@ class PhpManager extends Manager
 
     /**
      * Returns the authorization items of the specific type and user.
-     * @param  mixed   $userId the user ID. Defaults to null, meaning returning all items even if
-     *                         they are not assigned to a user.
-     * @param  integer $type   the item type (0: operation, 1: task, 2: role). Defaults to null,
-     *                         meaning returning all items regardless of their type.
-     * @return Item[]  the authorization items of the specific type.
+     * @param mixed $userId the user ID. Defaults to null, meaning returning all items even if
+     * they are not assigned to a user.
+     * @param integer $type the item type (0: operation, 1: task, 2: role). Defaults to null,
+     * meaning returning all items regardless of their type.
+     * @return Item[] the authorization items of the specific type.
      */
     public function getItems($userId = null, $type = null)
     {
@@ -313,13 +313,13 @@ class PhpManager extends Manager
      * It has three types: operation, task and role.
      * Authorization items form a hierarchy. Higher level items inheirt permissions representing
      * by lower level items.
-     * @param  string    $name        the item name. This must be a unique identifier.
-     * @param  integer   $type        the item type (0: operation, 1: task, 2: role).
-     * @param  string    $description description of the item
-     * @param  string    $bizRule     business rule associated with the item. This is a piece of
-     *                                PHP code that will be executed when [[checkAccess()]] is called for the item.
-     * @param  mixed     $data        additional data associated with the item.
-     * @return Item      the authorization item
+     * @param string $name the item name. This must be a unique identifier.
+     * @param integer $type the item type (0: operation, 1: task, 2: role).
+     * @param string $description description of the item
+     * @param string $bizRule business rule associated with the item. This is a piece of
+     * PHP code that will be executed when [[checkAccess()]] is called for the item.
+     * @param mixed $data additional data associated with the item.
+     * @return Item the authorization item
      * @throws Exception if an item with the same name already exists
      */
     public function createItem($name, $type, $description = '', $bizRule = null, $data = null)
@@ -340,7 +340,7 @@ class PhpManager extends Manager
 
     /**
      * Removes the specified authorization item.
-     * @param  string  $name the name of the item to be removed
+     * @param string $name the name of the item to be removed
      * @return boolean whether the item exists in the storage and has been removed
      */
     public function removeItem($name)
@@ -362,8 +362,8 @@ class PhpManager extends Manager
 
     /**
      * Returns the authorization item with the specified name.
-     * @param  string $name the name of the item
-     * @return Item   the authorization item. Null if the item cannot be found.
+     * @param string $name the name of the item
+     * @return Item the authorization item. Null if the item cannot be found.
      */
     public function getItem($name)
     {
@@ -372,8 +372,8 @@ class PhpManager extends Manager
 
     /**
      * Saves an authorization item to persistent storage.
-     * @param  Item                  $item    the item to be saved.
-     * @param  string                $oldName the old item name. If null, it means the item name is not changed.
+     * @param Item $item the item to be saved.
+     * @param string $oldName the old item name. If null, it means the item name is not changed.
      * @throws InvalidParamException if an item with the same name already taken
      */
     public function saveItem($item, $oldName = null)
@@ -514,8 +514,8 @@ class PhpManager extends Manager
 
     /**
      * Checks whether there is a loop in the authorization item hierarchy.
-     * @param  string  $itemName  parent item name
-     * @param  string  $childName the name of the child item that is to be added to the hierarchy
+     * @param string $itemName parent item name
+     * @param string $childName the name of the child item that is to be added to the hierarchy
      * @return boolean whether a loop exists
      */
     protected function detectLoop($itemName, $childName)
@@ -538,8 +538,8 @@ class PhpManager extends Manager
 
     /**
      * Loads the authorization data from a PHP script file.
-     * @param  string $file the file path.
-     * @return array  the authorization data
+     * @param string $file the file path.
+     * @return array the authorization data
      * @see saveToFile()
      */
     protected function loadFromFile($file)
@@ -553,7 +553,7 @@ class PhpManager extends Manager
 
     /**
      * Saves the authorization data to a PHP script file.
-     * @param array  $data the authorization data
+     * @param array $data the authorization data
      * @param string $file the file path.
      * @see loadFromFile()
      */

@@ -28,8 +28,8 @@ class GroupDependency extends Dependency
     /**
      * Generates the data needed to determine if dependency has been changed.
      * This method does nothing in this class.
-     * @param  Cache                  $cache the cache component that is currently evaluating this dependency
-     * @return mixed                  the data needed to determine if dependency has been changed.
+     * @param Cache $cache the cache component that is currently evaluating this dependency
+     * @return mixed the data needed to determine if dependency has been changed.
      * @throws InvalidConfigException if [[group]] is not set.
      */
     protected function generateDependencyData($cache)
@@ -47,8 +47,8 @@ class GroupDependency extends Dependency
 
     /**
      * Performs the actual dependency checking.
-     * @param  Cache                  $cache the cache component that is currently evaluating this dependency
-     * @return boolean                whether the dependency is changed or not.
+     * @param Cache $cache the cache component that is currently evaluating this dependency
+     * @return boolean whether the dependency is changed or not.
      * @throws InvalidConfigException if [[group]] is not set.
      */
     public function getHasChanged($cache)
@@ -63,8 +63,8 @@ class GroupDependency extends Dependency
 
     /**
      * Invalidates all of the cached data items that have the same [[group]].
-     * @param  Cache  $cache the cache component that caches the data items
-     * @param  string $group the group name
+     * @param Cache $cache the cache component that caches the data items
+     * @param string $group the group name
      * @return string the current version number
      */
     public static function invalidate($cache, $group)

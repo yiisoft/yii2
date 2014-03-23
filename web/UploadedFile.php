@@ -70,11 +70,11 @@ class UploadedFile extends Object
     /**
      * Returns an uploaded file for the given model attribute.
      * The file should be uploaded using [[ActiveForm::fileInput()]].
-     * @param  \yii\base\Model $model     the data model
-     * @param  string          $attribute the attribute name. The attribute name may contain array indexes.
-     *                                    For example, '[1]file' for tabular file uploading; and 'file[1]' for an element in a file array.
-     * @return UploadedFile    the instance of the uploaded file.
-     *                                   Null is returned if no file is uploaded for the specified model attribute.
+     * @param \yii\base\Model $model the data model
+     * @param string $attribute the attribute name. The attribute name may contain array indexes.
+     * For example, '[1]file' for tabular file uploading; and 'file[1]' for an element in a file array.
+     * @return UploadedFile the instance of the uploaded file.
+     * Null is returned if no file is uploaded for the specified model attribute.
      * @see getInstanceByName()
      */
     public static function getInstance($model, $attribute)
@@ -86,11 +86,11 @@ class UploadedFile extends Object
 
     /**
      * Returns all uploaded files for the given model attribute.
-     * @param  \yii\base\Model $model     the data model
-     * @param  string          $attribute the attribute name. The attribute name may contain array indexes
-     *                                    for tabular file uploading, e.g. '[1]file'.
-     * @return UploadedFile[]  array of UploadedFile objects.
-     *                                   Empty array is returned if no available file was found for the given attribute.
+     * @param \yii\base\Model $model the data model
+     * @param string $attribute the attribute name. The attribute name may contain array indexes
+     * for tabular file uploading, e.g. '[1]file'.
+     * @return UploadedFile[] array of UploadedFile objects.
+     * Empty array is returned if no available file was found for the given attribute.
      */
     public static function getInstances($model, $attribute)
     {
@@ -102,9 +102,9 @@ class UploadedFile extends Object
     /**
      * Returns an uploaded file according to the given file input name.
      * The name can be a plain string or a string like an array element (e.g. 'Post[imageFile]', or 'Post[0][imageFile]').
-     * @param  string       $name the name of the file input field.
+     * @param string $name the name of the file input field.
      * @return UploadedFile the instance of the uploaded file.
-     *                           Null is returned if no file is uploaded for the specified name.
+     * Null is returned if no file is uploaded for the specified name.
      */
     public static function getInstanceByName($name)
     {
@@ -117,10 +117,10 @@ class UploadedFile extends Object
      * Returns an array of uploaded files corresponding to the specified file input name.
      * This is mainly used when multiple files were uploaded and saved as 'files[0]', 'files[1]',
      * 'files[n]'..., and you can retrieve them all by passing 'files' as the name.
-     * @param  string         $name the name of the array of files
+     * @param string $name the name of the array of files
      * @return UploadedFile[] the array of CUploadedFile objects. Empty array is returned
-     *                             if no adequate upload was found. Please note that this array will contain
-     *                             all files from all sub-arrays regardless how deeply nested they are.
+     * if no adequate upload was found. Please note that this array will contain
+     * all files from all sub-arrays regardless how deeply nested they are.
      */
     public static function getInstancesByName($name)
     {
@@ -151,9 +151,9 @@ class UploadedFile extends Object
      * Saves the uploaded file.
      * Note that this method uses php's move_uploaded_file() method. If the target file `$file`
      * already exists, it will be overwritten.
-     * @param  string  $file           the file path used to save the uploaded file
-     * @param  boolean $deleteTempFile whether to delete the temporary file after saving.
-     *                                 If true, you will not be able to save the uploaded file again in the current request.
+     * @param string $file the file path used to save the uploaded file
+     * @param boolean $deleteTempFile whether to delete the temporary file after saving.
+     * If true, you will not be able to save the uploaded file again in the current request.
      * @return boolean true whether the file is saved successfully
      * @see error
      */
@@ -188,7 +188,7 @@ class UploadedFile extends Object
 
     /**
      * @return boolean whether there is an error with the uploaded file.
-     *                 Check [[error]] for detailed error code information.
+     * Check [[error]] for detailed error code information.
      */
     public function getHasError()
     {
@@ -215,12 +215,12 @@ class UploadedFile extends Object
 
     /**
      * Creates UploadedFile instances from $_FILE recursively.
-     * @param string $key       key for identifying uploaded file: class name and sub-array indexes
-     * @param mixed  $names     file names provided by PHP
-     * @param mixed  $tempNames temporary file names provided by PHP
-     * @param mixed  $types     file types provided by PHP
-     * @param mixed  $sizes     file sizes provided by PHP
-     * @param mixed  $errors    uploading issues provided by PHP
+     * @param string $key key for identifying uploaded file: class name and sub-array indexes
+     * @param mixed $names file names provided by PHP
+     * @param mixed $tempNames temporary file names provided by PHP
+     * @param mixed $types file types provided by PHP
+     * @param mixed $sizes file sizes provided by PHP
+     * @param mixed $errors uploading issues provided by PHP
      */
     private static function loadFilesRecursive($key, $names, $tempNames, $types, $sizes, $errors)
     {

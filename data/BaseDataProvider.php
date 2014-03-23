@@ -51,7 +51,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * Prepares the keys associated with the currently available data models.
-     * @param  array $models the available data models
+     * @param array $models the available data models
      * @return array the keys
      */
     abstract protected function prepareKeys($models);
@@ -105,7 +105,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     /**
      * Returns the key values associated with the data models.
      * @return array the list of key values corresponding to [[models]]. Each data model in [[models]]
-     *               is uniquely identified by the corresponding key value in this array.
+     * is uniquely identified by the corresponding key value in this array.
      */
     public function getKeys()
     {
@@ -176,7 +176,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     /**
      * Sets the pagination for this data provider.
      * @param array|Pagination|boolean $value the pagination to be used by this data provider.
-     *                                        This can be one of the following:
+     * This can be one of the following:
      *
      * - a configuration array for creating the pagination object. The "class" element defaults
      *   to 'yii\data\Pagination'
@@ -216,7 +216,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     /**
      * Sets the sort definition for this data provider.
      * @param array|Sort|boolean $value the sort definition to be used by this data provider.
-     *                                  This can be one of the following:
+     * This can be one of the following:
      *
      * - a configuration array for creating the sort definition object. The "class" element defaults
      *   to 'yii\data\Sort'

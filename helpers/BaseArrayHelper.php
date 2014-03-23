@@ -23,9 +23,9 @@ class BaseArrayHelper
 {
     /**
      * Converts an object or an array of objects into an array.
-     * @param object|array $object     the object to be converted into an array
-     * @param array        $properties a mapping from object class names to the properties that need to put into the resulting arrays.
-     *                                 The properties specified for each class is an array of the following format:
+     * @param object|array $object the object to be converted into an array
+     * @param array $properties a mapping from object class names to the properties that need to put into the resulting arrays.
+     * The properties specified for each class is an array of the following format:
      *
      * ~~~
      * [
@@ -53,8 +53,8 @@ class BaseArrayHelper
      * ]
      * ~~~
      *
-     * @param  boolean $recursive whether to recursively converts properties which are objects into arrays.
-     * @return array   the array representation of the object
+     * @param boolean $recursive whether to recursively converts properties which are objects into arrays.
+     * @return array the array representation of the object
      */
     public static function toArray($object, $properties = [], $recursive = true)
     {
@@ -107,9 +107,9 @@ class BaseArrayHelper
      * type and are having the same key.
      * For integer-keyed elements, the elements from the latter array will
      * be appended to the former array.
-     * @param  array $a array to be merged to
-     * @param  array $b array to be merged from. You can specify additional
-     *                  arrays via third argument, fourth argument etc.
+     * @param array $a array to be merged to
+     * @param array $b array to be merged from. You can specify additional
+     * arrays via third argument, fourth argument etc.
      * @return array the merged array (the original arrays are not changed.)
      */
     public static function merge($a, $b)
@@ -158,12 +158,12 @@ class BaseArrayHelper
      * $street = \yii\helpers\ArrayHelper::getValue($users, 'address.street');
      * ~~~
      *
-     * @param  array|object          $array   array or object to extract value from
-     * @param  string|\Closure       $key     key name of the array element, or property name of the object,
-     *                                        or an anonymous function returning the value. The anonymous function signature should be:
-     *                                        `function($array, $defaultValue)`.
-     * @param  mixed                 $default the default value to be returned if the specified key does not exist
-     * @return mixed                 the value of the element if found, default value otherwise
+     * @param array|object $array array or object to extract value from
+     * @param string|\Closure $key key name of the array element, or property name of the object,
+     * or an anonymous function returning the value. The anonymous function signature should be:
+     * `function($array, $defaultValue)`.
+     * @param mixed $default the default value to be returned if the specified key does not exist
+     * @return mixed the value of the element if found, default value otherwise
      * @throws InvalidParamException if $array is neither an array nor an object.
      */
     public static function getValue($array, $key, $default = null)
@@ -204,9 +204,9 @@ class BaseArrayHelper
      * // $array = ['options' => [1, 2]];
      * ~~~
      *
-     * @param  array      $array   the array to extract value from
-     * @param  string     $key     key name of the array element
-     * @param  mixed      $default the default value to be returned if the specified key does not exist
+     * @param array $array the array to extract value from
+     * @param string $key key name of the array element
+     * @param mixed $default the default value to be returned if the specified key does not exist
      * @return mixed|null the value of the element if found, default value otherwise
      */
     public static function remove(&$array, $key, $default = null)
@@ -250,9 +250,9 @@ class BaseArrayHelper
      * });
      * ~~~
      *
-     * @param  array           $array the array that needs to be indexed
-     * @param  string|\Closure $key   the column name or anonymous function whose result will be used to index the array
-     * @return array           the indexed array
+     * @param array $array the array that needs to be indexed
+     * @param string|\Closure $key the column name or anonymous function whose result will be used to index the array
+     * @return array the indexed array
      */
     public static function index($array, $key)
     {
@@ -285,11 +285,11 @@ class BaseArrayHelper
      * });
      * ~~~
      *
-     * @param  array           $array
-     * @param  string|\Closure $name
-     * @param  boolean         $keepKeys whether to maintain the array keys. If false, the resulting array
-     *                                   will be re-indexed with integers.
-     * @return array           the list of column values
+     * @param array $array
+     * @param string|\Closure $name
+     * @param boolean $keepKeys whether to maintain the array keys. If false, the resulting array
+     * will be re-indexed with integers.
+     * @return array the list of column values
      */
     public static function getColumn($array, $name, $keepKeys = true)
     {
@@ -342,10 +342,10 @@ class BaseArrayHelper
      * // ]
      * ~~~
      *
-     * @param  array           $array
-     * @param  string|\Closure $from
-     * @param  string|\Closure $to
-     * @param  string|\Closure $group
+     * @param array $array
+     * @param string|\Closure $from
+     * @param string|\Closure $to
+     * @param string|\Closure $group
      * @return array
      */
     public static function map($array, $from, $to, $group = null)
@@ -368,9 +368,9 @@ class BaseArrayHelper
      * Checks if the given array contains the specified key.
      * This method enhances the `array_key_exists()` function by supporting case-insensitive
      * key comparison.
-     * @param  string  $key           the key to check
-     * @param  array   $array         the array with keys to check
-     * @param  boolean $caseSensitive whether the key comparison should be case-sensitive
+     * @param string $key the key to check
+     * @param array $array the array with keys to check
+     * @param boolean $caseSensitive whether the key comparison should be case-sensitive
      * @return boolean whether the array contains the specified key
      */
     public static function keyExists($key, $array, $caseSensitive = true)
@@ -390,19 +390,19 @@ class BaseArrayHelper
 
     /**
      * Sorts an array of objects or arrays (with the same structure) by one or several keys.
-     * @param  array                 $array     the array to be sorted. The array will be modified after calling this method.
-     * @param  string|\Closure|array $key       the key(s) to be sorted by. This refers to a key name of the sub-array
-     *                                          elements, a property name of the objects, or an anonymous function returning the values for comparison
-     *                                          purpose. The anonymous function signature should be: `function($item)`.
-     *                                          To sort by multiple keys, provide an array of keys here.
-     * @param  integer|array         $direction the sorting direction. It can be either `SORT_ASC` or `SORT_DESC`.
-     *                                          When sorting by multiple keys with different sorting directions, use an array of sorting directions.
-     * @param  integer|array         $sortFlag  the PHP sort flag. Valid values include
-     *                                          `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, `SORT_LOCALE_STRING`, `SORT_NATURAL` and `SORT_FLAG_CASE`.
-     *                                          Please refer to [PHP manual](http://php.net/manual/en/function.sort.php)
-     *                                          for more details. When sorting by multiple keys with different sort flags, use an array of sort flags.
+     * @param array $array the array to be sorted. The array will be modified after calling this method.
+     * @param string|\Closure|array $key the key(s) to be sorted by. This refers to a key name of the sub-array
+     * elements, a property name of the objects, or an anonymous function returning the values for comparison
+     * purpose. The anonymous function signature should be: `function($item)`.
+     * To sort by multiple keys, provide an array of keys here.
+     * @param integer|array $direction the sorting direction. It can be either `SORT_ASC` or `SORT_DESC`.
+     * When sorting by multiple keys with different sorting directions, use an array of sorting directions.
+     * @param integer|array $sortFlag the PHP sort flag. Valid values include
+     * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, `SORT_LOCALE_STRING`, `SORT_NATURAL` and `SORT_FLAG_CASE`.
+     * Please refer to [PHP manual](http://php.net/manual/en/function.sort.php)
+     * for more details. When sorting by multiple keys with different sort flags, use an array of sort flags.
      * @throws InvalidParamException if the $descending or $sortFlag parameters do not have
-     *                                         correct number of elements as that of $key.
+     * correct number of elements as that of $key.
      */
     public static function multisort(&$array, $key, $direction = SORT_ASC, $sortFlag = SORT_REGULAR)
     {
@@ -436,12 +436,12 @@ class BaseArrayHelper
      * Encodes special characters in an array of strings into HTML entities.
      * Both the array keys and values will be encoded.
      * If a value is an array, this method will also encode it recursively.
-     * @param  array   $data       data to be encoded
-     * @param  boolean $valuesOnly whether to encode array values only. If false,
-     *                             both the array keys and array values will be encoded.
-     * @param  string  $charset    the charset that the data is using. If not set,
-     *                             [[\yii\base\Application::charset]] will be used.
-     * @return array   the encoded data
+     * @param array $data data to be encoded
+     * @param boolean $valuesOnly whether to encode array values only. If false,
+     * both the array keys and array values will be encoded.
+     * @param string $charset the charset that the data is using. If not set,
+     * [[\yii\base\Application::charset]] will be used.
+     * @return array the encoded data
      * @see http://www.php.net/manual/en/function.htmlspecialchars.php
      */
     public static function htmlEncode($data, $valuesOnly = true, $charset = null)
@@ -468,10 +468,10 @@ class BaseArrayHelper
      * Decodes HTML entities into the corresponding characters in an array of strings.
      * Both the array keys and values will be decoded.
      * If a value is an array, this method will also decode it recursively.
-     * @param  array   $data       data to be decoded
-     * @param  boolean $valuesOnly whether to decode array values only. If false,
-     *                             both the array keys and array values will be decoded.
-     * @return array   the decoded data
+     * @param array $data data to be decoded
+     * @param boolean $valuesOnly whether to decode array values only. If false,
+     * both the array keys and array values will be decoded.
+     * @return array the decoded data
      * @see http://www.php.net/manual/en/function.htmlspecialchars-decode.php
      */
     public static function htmlDecode($data, $valuesOnly = true)

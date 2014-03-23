@@ -134,8 +134,8 @@ class ErrorHandler extends Component
 
     /**
      * Converts an exception into an array.
-     * @param  \Exception $exception the exception being converted
-     * @return array      the array representation of the exception.
+     * @param \Exception $exception the exception being converted
+     * @return array the array representation of the exception.
      */
     protected function convertExceptionToArray($exception)
     {
@@ -157,7 +157,7 @@ class ErrorHandler extends Component
 
     /**
      * Converts special characters to HTML entities.
-     * @param  string $text to encode.
+     * @param string $text to encode.
      * @return string encoded original text.
      */
     public function htmlEncode($text)
@@ -180,7 +180,7 @@ class ErrorHandler extends Component
 
     /**
      * Adds informational links to the given PHP type/class.
-     * @param  string $code type/class name to be linkified.
+     * @param string $code type/class name to be linkified.
      * @return string linkified with HTML type/class name.
      */
     public function addTypeLinks($code)
@@ -205,8 +205,8 @@ class ErrorHandler extends Component
 
     /**
      * Renders a view file as a PHP script.
-     * @param  string $_file_   the view file.
-     * @param  array  $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @param string $_file_ the view file.
+     * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @return string the rendering result
      */
     public function renderFile($_file_, $_params_)
@@ -226,9 +226,9 @@ class ErrorHandler extends Component
 
     /**
      * Renders the previous exception stack for a given Exception.
-     * @param  \Exception $exception the exception whose precursors should be rendered.
-     * @return string     HTML content of the rendered previous exceptions.
-     *                              Empty string if there are none.
+     * @param \Exception $exception the exception whose precursors should be rendered.
+     * @return string HTML content of the rendered previous exceptions.
+     * Empty string if there are none.
      */
     public function renderPreviousExceptions($exception)
     {
@@ -241,12 +241,12 @@ class ErrorHandler extends Component
 
     /**
      * Renders a single call stack element.
-     * @param  string|null  $file   name where call has happened.
-     * @param  integer|null $line   number on which call has happened.
-     * @param  string|null  $class  called class name.
-     * @param  string|null  $method called function/method name.
-     * @param  integer      $index  number of the call stack element.
-     * @return string       HTML content of the rendered call stack element.
+     * @param string|null $file name where call has happened.
+     * @param integer|null $line number on which call has happened.
+     * @param string|null $class called class name.
+     * @param string|null $method called function/method name.
+     * @param integer $index number of the call stack element.
+     * @return string HTML content of the rendered call stack element.
      */
     public function renderCallStackItem($file, $line, $class, $method, $index)
     {
@@ -294,7 +294,7 @@ class ErrorHandler extends Component
 
     /**
      * Determines whether given name of the file belongs to the framework.
-     * @param  string  $file name to be checked.
+     * @param string $file name to be checked.
      * @return boolean whether given name of the file belongs to the framework.
      */
     public function isCoreFile($file)
@@ -304,9 +304,9 @@ class ErrorHandler extends Component
 
     /**
      * Creates HTML containing link to the page with the information on given HTTP status code.
-     * @param  integer $statusCode        to be used to generate information link.
-     * @param  string  $statusDescription Description to display after the the status code.
-     * @return string  generated HTML with HTTP status code information.
+     * @param integer $statusCode to be used to generate information link.
+     * @param string $statusDescription Description to display after the the status code.
+     * @return string generated HTML with HTTP status code information.
      */
     public function createHttpStatusLink($statusCode, $statusDescription)
     {

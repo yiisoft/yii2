@@ -40,15 +40,15 @@ interface MailerInterface
      *   `['html' => 'contact-html', 'text' => 'contact-text']`.
      * - null, meaning the message instance will be returned without body content.
      *
-     * @param  array            $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @return MessageInterface message instance.
      */
     public function compose($view = null, array $params = []);
 
     /**
      * Sends the given email message.
-     * @param  MessageInterface $message email message instance to be sent
-     * @return boolean          whether the message has been sent successfully
+     * @param MessageInterface $message email message instance to be sent
+     * @return boolean whether the message has been sent successfully
      */
     public function send($message);
 
@@ -57,7 +57,7 @@ interface MailerInterface
      *
      * This method may be implemented by some mailers which support more efficient way of sending multiple messages in the same batch.
      *
-     * @param  array   $messages list of email messages, which should be sent.
+     * @param array $messages list of email messages, which should be sent.
      * @return integer number of messages that are successfully sent.
      */
     public function sendMultiple(array $messages);

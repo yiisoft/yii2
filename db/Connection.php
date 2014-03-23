@@ -275,10 +275,10 @@ class Connection extends Component
      * Turns on query caching.
      * This method is provided as a shortcut to setting two properties that are related
      * with query caching: [[queryCacheDuration]] and [[queryCacheDependency]].
-     * @param integer                 $duration   the number of seconds that query results may remain valid in cache.
-     *                                            If not set, it will use the value of [[queryCacheDuration]]. See [[queryCacheDuration]] for more details.
+     * @param integer $duration the number of seconds that query results may remain valid in cache.
+     * If not set, it will use the value of [[queryCacheDuration]]. See [[queryCacheDuration]] for more details.
      * @param \yii\caching\Dependency $dependency the dependency for the cached query result.
-     *                                            See [[queryCacheDependency]] for more details.
+     * See [[queryCacheDependency]] for more details.
      */
     public function beginCache($duration = null, $dependency = null)
     {
@@ -380,8 +380,8 @@ class Connection extends Component
 
     /**
      * Creates a command for execution.
-     * @param  string  $sql    the SQL statement to be executed
-     * @param  array   $params the parameters to be bound to the SQL statement
+     * @param string $sql the SQL statement to be executed
+     * @param array $params the parameters to be bound to the SQL statement
      * @return Command the DB command
      */
     public function createCommand($sql = null, $params = [])
@@ -422,7 +422,7 @@ class Connection extends Component
 
     /**
      * Returns the schema information for the database opened by this connection.
-     * @return Schema                the schema information for the database opened by this connection.
+     * @return Schema the schema information for the database opened by this connection.
      * @throws NotSupportedException if there is no support for the current driver type
      */
     public function getSchema()
@@ -453,8 +453,8 @@ class Connection extends Component
 
     /**
      * Obtains the schema information for the named table.
-     * @param  string      $name    table name.
-     * @param  boolean     $refresh whether to reload the table schema even if it is found in the cache.
+     * @param string $name table name.
+     * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
      * @return TableSchema table schema information. Null if the named table does not exist.
      */
     public function getTableSchema($name, $refresh = false)
@@ -464,7 +464,7 @@ class Connection extends Component
 
     /**
      * Returns the ID of the last inserted row or sequence value.
-     * @param  string $sequenceName name of the sequence object (required by some DBMS)
+     * @param string $sequenceName name of the sequence object (required by some DBMS)
      * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
      * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php
      */
@@ -476,7 +476,7 @@ class Connection extends Component
     /**
      * Quotes a string value for use in a query.
      * Note that if the parameter is not a string, it will be returned without change.
-     * @param  string $str string to be quoted
+     * @param string $str string to be quoted
      * @return string the properly quoted string
      * @see http://www.php.net/manual/en/function.PDO-quote.php
      */
@@ -490,7 +490,7 @@ class Connection extends Component
      * If the table name contains schema prefix, the prefix will also be properly quoted.
      * If the table name is already quoted or contains special characters including '(', '[[' and '{{',
      * then this method will do nothing.
-     * @param  string $name table name
+     * @param string $name table name
      * @return string the properly quoted table name
      */
     public function quoteTableName($name)
@@ -503,7 +503,7 @@ class Connection extends Component
      * If the column name contains prefix, the prefix will also be properly quoted.
      * If the column name is already quoted or contains special characters including '(', '[[' and '{{',
      * then this method will do nothing.
-     * @param  string $name column name
+     * @param string $name column name
      * @return string the properly quoted column name
      */
     public function quoteColumnName($name)
@@ -517,7 +517,7 @@ class Connection extends Component
      * tokens enclosed within double square brackets are column names. They will be quoted accordingly.
      * Also, the percentage character "%" at the beginning or ending of a table name will be replaced
      * with [[tablePrefix]].
-     * @param  string $sql the SQL to be quoted
+     * @param string $sql the SQL to be quoted
      * @return string the quoted SQL
      */
     public function quoteSql($sql)

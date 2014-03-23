@@ -55,9 +55,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
      *
      * Note that the values in each row must match the corresponding column names.
      *
-     * @param  string $table   the table that new rows will be inserted into.
-     * @param  array  $columns the column names
-     * @param  array  $rows    the rows to be batch inserted into the table
+     * @param string $table the table that new rows will be inserted into.
+     * @param array $columns the column names
+     * @param array $rows the rows to be batch inserted into the table
      * @return string the batch INSERT SQL statement
      */
     public function batchInsert($table, $columns, $rows)
@@ -99,10 +99,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
-     * @param  string                $tableName the name of the table whose primary key sequence will be reset
-     * @param  mixed                 $value     the value for the primary key of the next new row inserted. If this is not set,
-     *                                          the next new row's primary key will have a value 1.
-     * @return string                the SQL statement for resetting sequence
+     * @param string $tableName the name of the table whose primary key sequence will be reset
+     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have a value 1.
+     * @return string the SQL statement for resetting sequence
      * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
      */
     public function resetSequence($tableName, $value = null)
@@ -131,10 +131,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Enables or disables integrity check.
-     * @param  boolean               $check  whether to turn on or off the integrity check.
-     * @param  string                $schema the schema of the tables. Meaningless for SQLite.
-     * @param  string                $table  the table name. Meaningless for SQLite.
-     * @return string                the SQL statement for checking integrity
+     * @param boolean $check whether to turn on or off the integrity check.
+     * @param string $schema the schema of the tables. Meaningless for SQLite.
+     * @param string $table the table name. Meaningless for SQLite.
+     * @return string the SQL statement for checking integrity
      * @throws NotSupportedException this is not supported by SQLite
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
@@ -144,7 +144,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for truncating a DB table.
-     * @param  string $table the table to be truncated. The name will be properly quoted by the method.
+     * @param string $table the table to be truncated. The name will be properly quoted by the method.
      * @return string the SQL statement for truncating a DB table.
      */
     public function truncateTable($table)
@@ -154,8 +154,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for dropping an index.
-     * @param  string $name  the name of the index to be dropped. The name will be properly quoted by the method.
-     * @param  string $table the table whose index is to be dropped. The name will be properly quoted by the method.
+     * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
+     * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
      * @return string the SQL statement for dropping an index.
      */
     public function dropIndex($name, $table)
@@ -165,9 +165,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for dropping a DB column.
-     * @param  string                $table  the table whose column is to be dropped. The name will be properly quoted by the method.
-     * @param  string                $column the name of the column to be dropped. The name will be properly quoted by the method.
-     * @return string                the SQL statement for dropping a DB column.
+     * @param string $table the table whose column is to be dropped. The name will be properly quoted by the method.
+     * @param string $column the name of the column to be dropped. The name will be properly quoted by the method.
+     * @return string the SQL statement for dropping a DB column.
      * @throws NotSupportedException this is not supported by SQLite
      */
     public function dropColumn($table, $column)
@@ -177,10 +177,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for renaming a column.
-     * @param  string                $table   the table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param  string                $oldName the old name of the column. The name will be properly quoted by the method.
-     * @param  string                $newName the new name of the column. The name will be properly quoted by the method.
-     * @return string                the SQL statement for renaming a DB column.
+     * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
+     * @param string $oldName the old name of the column. The name will be properly quoted by the method.
+     * @param string $newName the new name of the column. The name will be properly quoted by the method.
+     * @return string the SQL statement for renaming a DB column.
      * @throws NotSupportedException this is not supported by SQLite
      */
     public function renameColumn($table, $oldName, $newName)
@@ -191,16 +191,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds a SQL statement for adding a foreign key constraint to an existing table.
      * The method will properly quote the table and column names.
-     * @param  string                $name       the name of the foreign key constraint.
-     * @param  string                $table      the table that the foreign key constraint will be added to.
-     * @param  string|array          $columns    the name of the column to that the constraint will be added on.
-     *                                           If there are multiple columns, separate them with commas or use an array to represent them.
-     * @param  string                $refTable   the table that the foreign key references to.
-     * @param  string|array          $refColumns the name of the column that the foreign key references to.
-     *                                           If there are multiple columns, separate them with commas or use an array to represent them.
-     * @param  string                $delete     the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
-     * @param  string                $update     the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
-     * @return string                the SQL statement for adding a foreign key constraint to an existing table.
+     * @param string $name the name of the foreign key constraint.
+     * @param string $table the table that the foreign key constraint will be added to.
+     * @param string|array $columns the name of the column to that the constraint will be added on.
+     * If there are multiple columns, separate them with commas or use an array to represent them.
+     * @param string $refTable the table that the foreign key references to.
+     * @param string|array $refColumns the name of the column that the foreign key references to.
+     * If there are multiple columns, separate them with commas or use an array to represent them.
+     * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+     * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+     * @return string the SQL statement for adding a foreign key constraint to an existing table.
      * @throws NotSupportedException this is not supported by SQLite
      */
     public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
@@ -210,9 +210,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for dropping a foreign key constraint.
-     * @param  string                $name  the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
-     * @param  string                $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
-     * @return string                the SQL statement for dropping a foreign key constraint.
+     * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
+     * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
+     * @return string the SQL statement for dropping a foreign key constraint.
      * @throws NotSupportedException this is not supported by SQLite
      */
     public function dropForeignKey($name, $table)
@@ -222,13 +222,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for changing the definition of a column.
-     * @param  string                $table  the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param  string                $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param  string                $type   the new column type. The [[getColumnType()]] method will be invoked to convert abstract
-     *                                       column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept
-     *                                       in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
-     *                                       will become 'varchar(255) not null'.
-     * @return string                the SQL statement for changing the definition of a column.
+     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @param string $type the new column type. The [[getColumnType()]] method will be invoked to convert abstract
+     * column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept
+     * in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
+     * will become 'varchar(255) not null'.
+     * @return string the SQL statement for changing the definition of a column.
      * @throws NotSupportedException this is not supported by SQLite
      */
     public function alterColumn($table, $column, $type)
@@ -238,10 +238,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for adding a primary key constraint to an existing table.
-     * @param  string                $name    the name of the primary key constraint.
-     * @param  string                $table   the table that the primary key constraint will be added to.
-     * @param  string|array          $columns comma separated string or array of columns that the primary key will consist of.
-     * @return string                the SQL statement for adding a primary key constraint to an existing table.
+     * @param string $name the name of the primary key constraint.
+     * @param string $table the table that the primary key constraint will be added to.
+     * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
+     * @return string the SQL statement for adding a primary key constraint to an existing table.
      * @throws NotSupportedException this is not supported by SQLite
      */
     public function addPrimaryKey($name, $table, $columns)
@@ -251,9 +251,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for removing a primary key constraint to an existing table.
-     * @param  string                $name  the name of the primary key constraint to be removed.
-     * @param  string                $table the table that the primary key constraint will be removed from.
-     * @return string                the SQL statement for removing a primary key constraint from an existing table.
+     * @param string $name the name of the primary key constraint to be removed.
+     * @param string $table the table that the primary key constraint will be removed from.
+     * @return string the SQL statement for removing a primary key constraint from an existing table.
      * @throws NotSupportedException this is not supported by SQLite	 *
      */
     public function dropPrimaryKey($name, $table)

@@ -90,10 +90,10 @@ trait ActiveRelationTrait
      * }
      * ```
      *
-     * @param  string   $relationName the relation name. This refers to a relation declared in [[primaryModel]].
-     * @param  callable $callable     a PHP callback for customizing the relation associated with the pivot table.
-     *                                Its signature should be `function($query)`, where `$query` is the query to be customized.
-     * @return static   the relation object itself.
+     * @param string $relationName the relation name. This refers to a relation declared in [[primaryModel]].
+     * @param callable $callable a PHP callback for customizing the relation associated with the pivot table.
+     * Its signature should be `function($query)`, where `$query` is the query to be customized.
+     * @return static the relation object itself.
      */
     public function via($relationName, $callable = null)
     {
@@ -123,7 +123,7 @@ trait ActiveRelationTrait
      * }
      * ```
      *
-     * @param  string $relationName the name of the relation that is the inverse of this relation.
+     * @param string $relationName the name of the relation that is the inverse of this relation.
      * @return static the relation object itself.
      */
     public function inverseOf($relationName)
@@ -136,10 +136,10 @@ trait ActiveRelationTrait
     /**
      * Finds the related records for the specified primary record.
      * This method is invoked when a relation of an ActiveRecord is being accessed in a lazy fashion.
-     * @param  string                                 $name  the relation name
-     * @param  ActiveRecordInterface|BaseActiveRecord $model the primary model
-     * @return mixed                                  the related record(s)
-     * @throws InvalidParamException                  if the relation is invalid
+     * @param string $name the relation name
+     * @param ActiveRecordInterface|BaseActiveRecord $model the primary model
+     * @return mixed the related record(s)
+     * @throws InvalidParamException if the relation is invalid
      */
     public function findFor($name, $model)
     {
@@ -180,9 +180,9 @@ trait ActiveRelationTrait
 
     /**
      * Finds the related records and populates them into the primary models.
-     * @param  string                 $name          the relation name
-     * @param  array                  $primaryModels primary models
-     * @return array                  the related models
+     * @param string $name the relation name
+     * @param array $primaryModels primary models
+     * @return array the related models
      * @throws InvalidConfigException if [[link]] is invalid
      */
     public function populateRelation($name, &$primaryModels)
@@ -300,11 +300,11 @@ trait ActiveRelationTrait
     }
 
     /**
-     * @param  array   $models
-     * @param  array   $link
-     * @param  array   $viaModels
-     * @param  array   $viaLink
-     * @param  boolean $checkMultiple
+     * @param array $models
+     * @param array $link
+     * @param array $viaModels
+     * @param array $viaLink
+     * @param boolean $checkMultiple
      * @return array
      */
     private function buildBuckets($models, $link, $viaModels = null, $viaLink = null, $checkMultiple = true)
@@ -385,8 +385,8 @@ trait ActiveRelationTrait
     }
 
     /**
-     * @param  ActiveRecord|array $model
-     * @param  array              $attributes
+     * @param ActiveRecord|array $model
+     * @param array $attributes
      * @return string
      */
     private function getModelKey($model, $attributes)
@@ -407,7 +407,7 @@ trait ActiveRelationTrait
     }
 
     /**
-     * @param  array $primaryModels either array of AR instances or arrays
+     * @param array $primaryModels either array of AR instances or arrays
      * @return array
      */
     private function findPivotRows($primaryModels)

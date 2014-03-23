@@ -50,9 +50,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 //	}
 
     /**
-     * @param  integer $limit
-     * @param  integer $offset
-     * @return string  the LIMIT and OFFSET clauses built from [[\yii\db\Query::$limit]].
+     * @param integer $limit
+     * @param integer $offset
+     * @return string the LIMIT and OFFSET clauses built from [[\yii\db\Query::$limit]].
      */
     public function buildLimit($limit, $offset = 0)
     {
@@ -78,8 +78,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for renaming a DB table.
-     * @param  string $table   the table to be renamed. The name will be properly quoted by the method.
-     * @param  string $newName the new table name. The name will be properly quoted by the method.
+     * @param string $table the table to be renamed. The name will be properly quoted by the method.
+     * @param string $newName the new table name. The name will be properly quoted by the method.
      * @return string the SQL statement for renaming a DB table.
      */
     public function renameTable($table, $newName)
@@ -89,9 +89,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for renaming a column.
-     * @param  string $table   the table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param  string $name    the old name of the column. The name will be properly quoted by the method.
-     * @param  string $newName the new name of the column. The name will be properly quoted by the method.
+     * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
+     * @param string $name the old name of the column. The name will be properly quoted by the method.
+     * @param string $newName the new name of the column. The name will be properly quoted by the method.
      * @return string the SQL statement for renaming a DB column.
      */
     public function renameColumn($table, $name, $newName)
@@ -101,11 +101,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for changing the definition of a column.
-     * @param  string $table  the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param  string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param  string $type   the new column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
-     *                        into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
-     *                        For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
+     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @param string $type the new column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
+     * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
+     * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
      * @return string the SQL statement for changing the definition of a column.
      */
     public function alterColumn($table, $column, $type)
@@ -120,10 +120,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
-     * @param  boolean               $check  whether to turn on or off the integrity check.
-     * @param  string                $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-     * @param  string                $table  the table name. Defaults to empty string, meaning that no table will be changed.
-     * @return string                the SQL statement for checking integrity
+     * @param boolean $check whether to turn on or off the integrity check.
+     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+     * @param string $table the table name. Defaults to empty string, meaning that no table will be changed.
+     * @return string the SQL statement for checking integrity
      * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')

@@ -54,7 +54,7 @@ class Link extends Object
 
     /**
      * Serializes a list of links into proper array format.
-     * @param  array $links the links to be serialized
+     * @param array $links the links to be serialized
      * @return array the proper array representation of the links.
      */
     public static function serialize(array $links)

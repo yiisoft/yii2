@@ -115,11 +115,11 @@ class ActionColumn extends Column
     /**
      * Creates a URL for the given action and model.
      * This method is called for each button and each row.
-     * @param  string               $action the button name (or action ID)
-     * @param  \yii\db\ActiveRecord $model  the data model
-     * @param  mixed                $key    the key associated with the data model
-     * @param  integer              $index  the current row index
-     * @return string               the created URL
+     * @param string $action the button name (or action ID)
+     * @param \yii\db\ActiveRecord $model the data model
+     * @param mixed $key the key associated with the data model
+     * @param integer $index the current row index
+     * @return string the created URL
      */
     public function createUrl($action, $model, $key, $index)
     {

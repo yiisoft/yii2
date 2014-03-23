@@ -42,9 +42,9 @@ class HelpController extends Controller
      * Displays available commands or the detailed information
      * about a particular command. For example,
      *
-     * @param  string    $command The name of the command to show help about.
-     *                            If not provided, all available commands will be displayed.
-     * @return integer   the exit status
+     * @param string $command The name of the command to show help about.
+     * If not provided, all available commands will be displayed.
+     * @return integer the exit status
      * @throws Exception if the command for help is unknown
      */
     public function actionIndex($command = null)
@@ -111,8 +111,8 @@ class HelpController extends Controller
 
     /**
      * Returns all available actions of the specified controller.
-     * @param  Controller $controller the controller instance
-     * @return array      all available action IDs.
+     * @param Controller $controller the controller instance
+     * @return array all available action IDs.
      */
     public function getActions($controller)
     {
@@ -131,8 +131,8 @@ class HelpController extends Controller
 
     /**
      * Returns available commands of a specified module.
-     * @param  \yii\base\Module $module the module instance
-     * @return array            the available command names
+     * @param \yii\base\Module $module the module instance
+     * @return array the available command names
      */
     protected function getModuleCommands($module)
     {
@@ -234,9 +234,9 @@ class HelpController extends Controller
 
     /**
      * Returns the short summary of the action.
-     * @param  Controller $controller the controller instance
-     * @param  string     $actionID   action ID
-     * @return string     the summary about the action
+     * @param Controller $controller the controller instance
+     * @param string $actionID action ID
+     * @return string the summary about the action
      */
     protected function getActionSummary($controller, $actionID)
     {
@@ -272,9 +272,9 @@ class HelpController extends Controller
 
     /**
      * Displays the detailed information of a command action.
-     * @param  Controller $controller the controller instance
-     * @param  string     $actionID   action ID
-     * @throws Exception  if the action does not exist
+     * @param Controller $controller the controller instance
+     * @param string $actionID action ID
+     * @throws Exception if the action does not exist
      */
     protected function getActionHelp($controller, $actionID)
     {
@@ -329,9 +329,9 @@ class HelpController extends Controller
 
     /**
      * Returns the help information about arguments.
-     * @param  \ReflectionMethod $method
-     * @param  string            $tags   the parsed comment block related with arguments
-     * @return array             the required and optional argument help information
+     * @param \ReflectionMethod $method
+     * @param string $tags the parsed comment block related with arguments
+     * @return array the required and optional argument help information
      */
     protected function getArgHelps($method, $tags)
     {
@@ -362,9 +362,9 @@ class HelpController extends Controller
 
     /**
      * Returns the help information about the options available for a console controller.
-     * @param  Controller $controller the console controller
-     * @param  string     $actionID   name of the action, if set include local options for that action
-     * @return array      the help information about the options
+     * @param Controller $controller the console controller
+     * @param string $actionID name of the action, if set include local options for that action
+     * @return array the help information about the options
      */
     protected function getOptionHelps($controller, $actionID)
     {
@@ -406,8 +406,8 @@ class HelpController extends Controller
 
     /**
      * Parses the comment block into tags.
-     * @param  string $comment the comment block
-     * @return array  the parsed tags
+     * @param string $comment the comment block
+     * @return array the parsed tags
      */
     protected function parseComment($comment)
     {
@@ -432,12 +432,12 @@ class HelpController extends Controller
 
     /**
      * Generates a well-formed string for an argument or option.
-     * @param  string  $name         the name of the argument or option
-     * @param  boolean $required     whether the argument is required
-     * @param  string  $type         the type of the option or argument
-     * @param  mixed   $defaultValue the default value of the option or argument
-     * @param  string  $comment      comment about the option or argument
-     * @return string  the formatted string for the argument or option
+     * @param string $name the name of the argument or option
+     * @param boolean $required whether the argument is required
+     * @param string $type the type of the option or argument
+     * @param mixed $defaultValue the default value of the option or argument
+     * @param string $comment comment about the option or argument
+     * @return string the formatted string for the argument or option
      */
     protected function formatOptionHelp($name, $required, $type, $defaultValue, $comment)
     {

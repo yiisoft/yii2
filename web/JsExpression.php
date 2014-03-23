@@ -28,7 +28,7 @@ class JsExpression extends Object
     /**
      * Constructor.
      * @param string $expression the JavaScript expression represented by this object
-     * @param array  $config     additional configurations for this object
+     * @param array $config additional configurations for this object
      */
     public function __construct($expression, $config = [])
     {

@@ -56,10 +56,10 @@ class MessageSource extends Component
      * If translation for specific locale code such as `en-US` isn't found it
      * tries more generic `en`.
      *
-     * @param  string $category the message category
-     * @param  string $language the target language
-     * @return array  the loaded messages. The keys are original messages, and the values
-     *                         are translated messages.
+     * @param string $category the message category
+     * @param string $language the target language
+     * @return array the loaded messages. The keys are original messages, and the values
+     * are translated messages.
      */
     protected function loadMessages($category, $language)
     {
@@ -75,9 +75,9 @@ class MessageSource extends Component
      *
      * If a translation is not found, a [[EVENT_MISSING_TRANSLATION|missingTranslation]] event will be triggered.
      *
-     * @param  string         $category the message category
-     * @param  string         $message  the message to be translated
-     * @param  string         $language the target language
+     * @param string $category the message category
+     * @param string $message the message to be translated
+     * @param string $language the target language
      * @return string|boolean the translated message or false if translation wasn't found or isn't required
      */
     public function translate($category, $message, $language)
@@ -94,9 +94,9 @@ class MessageSource extends Component
      * If the message is not found, a [[EVENT_MISSING_TRANSLATION|missingTranslation]] event will be triggered.
      * If there is an event handler, it may provide a [[MissingTranslationEvent::$translatedMessage|fallback translation]].
      * If no fallback translation is provided this method will return `false`.
-     * @param  string         $category the category that the message belongs to.
-     * @param  string         $message  the message to be translated.
-     * @param  string         $language the target language.
+     * @param string $category the category that the message belongs to.
+     * @param string $message the message to be translated.
+     * @param string $language the target language.
      * @return string|boolean the translated message or false if translation wasn't found.
      */
     protected function translateMessage($category, $message, $language)

@@ -134,7 +134,7 @@ class CaptchaAction extends Action
 
     /**
      * Generates a hash code that can be used for client side validation.
-     * @param  string $code the CAPTCHA code
+     * @param string $code the CAPTCHA code
      * @return string a hash code generated from the CAPTCHA code
      */
     public function generateValidationHash($code)
@@ -148,8 +148,8 @@ class CaptchaAction extends Action
 
     /**
      * Gets the verification code.
-     * @param  boolean $regenerate whether the verification code should be regenerated.
-     * @return string  the verification code.
+     * @param boolean $regenerate whether the verification code should be regenerated.
+     * @return string the verification code.
      */
     public function getVerifyCode($regenerate = false)
     {
@@ -170,8 +170,8 @@ class CaptchaAction extends Action
 
     /**
      * Validates the input to see if it matches the generated code.
-     * @param  string  $input         user input
-     * @param  boolean $caseSensitive whether the comparison should be case-sensitive
+     * @param string $input user input
+     * @param boolean $caseSensitive whether the comparison should be case-sensitive
      * @return boolean whether the input is valid
      */
     public function validate($input, $caseSensitive)
@@ -231,7 +231,7 @@ class CaptchaAction extends Action
 
     /**
      * Renders the CAPTCHA image.
-     * @param  string $code the verification code
+     * @param string $code the verification code
      * @return string image contents
      */
     protected function renderImage($code)
@@ -245,7 +245,7 @@ class CaptchaAction extends Action
 
     /**
      * Renders the CAPTCHA image based on the code using GD library.
-     * @param  string $code the verification code
+     * @param string $code the verification code
      * @return string image contents
      */
     protected function renderImageByGD($code)
@@ -294,7 +294,7 @@ class CaptchaAction extends Action
 
     /**
      * Renders the CAPTCHA image based on the code using ImageMagick library.
-     * @param  string   $code the verification code
+     * @param string $code the verification code
      * @return \Imagick image instance. Can be used as string. In this case it will contain image contents.
      */
     protected function renderImageByImagick($code)

@@ -73,8 +73,8 @@ class FixtureController extends Controller
      * their names separated with commas, like: User,UserProfile,MyCustom. Be sure there is no
      * whitespace between names. Note that if you are loading fixtures to storage, for example: database or nosql,
      * storage will not be cleared, data will be appended to already existed.
-     * @param  array                  $fixtures
-     * @param  array                  $except
+     * @param array $fixtures
+     * @param array $except
      * @throws \yii\console\Exception
      */
     public function actionLoad(array $fixtures, array $except = [])
@@ -189,8 +189,8 @@ class FixtureController extends Controller
 
     /**
      * Prompts user with confirmation if fixtures should be loaded.
-     * @param  array   $fixtures
-     * @param  array   $except
+     * @param array $fixtures
+     * @param array $except
      * @return boolean
      */
     private function confirmLoad($fixtures, $except)
@@ -216,8 +216,8 @@ class FixtureController extends Controller
 
     /**
      * Prompts user with confirmation for fixtures that should be unloaded.
-     * @param  array   $fixtures
-     * @param  array   $except
+     * @param array $fixtures
+     * @param array $except
      * @return boolean
      */
     private function confirmUnload($fixtures, $except)
@@ -254,7 +254,7 @@ class FixtureController extends Controller
 
     /**
      * Checks if needed to apply all fixtures.
-     * @param  string $fixture
+     * @param string $fixture
      * @return bool
      */
     public function needToApplyAll($fixture)
@@ -263,7 +263,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * @param  array $fixtures
+     * @param array $fixtures
      * @return array Array of found fixtures. These may differ from input parameter as not all fixtures may exists.
      */
     private function findFixtures(array $fixtures)
@@ -290,7 +290,7 @@ class FixtureController extends Controller
 
     /**
      * Returns valid fixtures config that can be used to load them.
-     * @param  array $fixtures fixtures to configure
+     * @param array $fixtures fixtures to configure
      * @return array
      */
     private function getFixturesConfig($fixtures)

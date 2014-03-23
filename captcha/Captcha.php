@@ -125,7 +125,7 @@ class Captcha extends InputWidget
     /**
      * Checks if there is graphic extension available to generate CAPTCHA images.
      * This method will check the existence of ImageMagick and GD extensions.
-     * @return string                 the name of the graphic extension, either "imagick" or "gd".
+     * @return string the name of the graphic extension, either "imagick" or "gd".
      * @throws InvalidConfigException if neither ImageMagick nor GD is installed.
      */
     public static function checkRequirements()

@@ -54,7 +54,7 @@ class Schema extends \yii\db\Schema
     /**
      * Quotes a table name for use in a query.
      * A simple table name has no schema prefix.
-     * @param  string $name table name
+     * @param string $name table name
      * @return string the properly quoted table name
      */
     public function quoteSimpleTableName($name)
@@ -65,7 +65,7 @@ class Schema extends \yii\db\Schema
     /**
      * Quotes a column name for use in a query.
      * A simple column name has no prefix.
-     * @param  string $name column name
+     * @param string $name column name
      * @return string the properly quoted column name
      */
     public function quoteSimpleColumnName($name)
@@ -85,8 +85,8 @@ class Schema extends \yii\db\Schema
 
     /**
      * Returns all table names in the database.
-     * @param  string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-     * @return array  all table names in the database. The names have NO schema name prefix.
+     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+     * @return array all table names in the database. The names have NO schema name prefix.
      */
     protected function findTableNames($schema = '')
     {
@@ -97,7 +97,7 @@ class Schema extends \yii\db\Schema
 
     /**
      * Loads the metadata for the specified table.
-     * @param  string      $name table name
+     * @param string $name table name
      * @return TableSchema driver dependent table metadata. Null if the table does not exist.
      */
     protected function loadTableSchema($name)
@@ -117,8 +117,8 @@ class Schema extends \yii\db\Schema
 
     /**
      * Collects the table column metadata.
-     * @param  TableSchema $table the table metadata
-     * @return boolean     whether the table exists in the database
+     * @param TableSchema $table the table metadata
+     * @return boolean whether the table exists in the database
      */
     protected function findColumns($table)
     {
@@ -173,8 +173,8 @@ class Schema extends \yii\db\Schema
      * ]
      * ~~~
      *
-     * @param  TableSchema $table the table metadata
-     * @return array       all unique indexes for the given table.
+     * @param TableSchema $table the table metadata
+     * @return array all unique indexes for the given table.
      */
     public function findUniqueIndexes($table)
     {
@@ -199,7 +199,7 @@ class Schema extends \yii\db\Schema
 
     /**
      * Loads the column information into a [[ColumnSchema]] object.
-     * @param  array        $info column information
+     * @param array $info column information
      * @return ColumnSchema the column schema object
      */
     protected function loadColumnSchema($info)

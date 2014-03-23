@@ -35,7 +35,7 @@ class ActionEvent extends Event
     /**
      * Constructor.
      * @param Action $action the action associated with this action event.
-     * @param array  $config name-value pairs that will be used to initialize the object properties
+     * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($action, $config = [])
     {

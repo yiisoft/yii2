@@ -9,7 +9,6 @@ namespace yii\web;
 
 use Yii;
 use yii\caching\Cache;
-use yii\base\InvalidConfigException;
 use yii\di\Instance;
 
 /**
@@ -70,7 +69,7 @@ class CacheSession extends Session
     /**
      * Session read handler.
      * Do not call this method directly.
-     * @param  string $id session ID
+     * @param string $id session ID
      * @return string the session data
      */
     public function readSession($id)
@@ -83,8 +82,8 @@ class CacheSession extends Session
     /**
      * Session write handler.
      * Do not call this method directly.
-     * @param  string  $id   session ID
-     * @param  string  $data session data
+     * @param string $id session ID
+     * @param string $data session data
      * @return boolean whether session write is successful
      */
     public function writeSession($id, $data)
@@ -95,7 +94,7 @@ class CacheSession extends Session
     /**
      * Session destroy handler.
      * Do not call this method directly.
-     * @param  string  $id session ID
+     * @param string $id session ID
      * @return boolean whether session is destroyed successfully
      */
     public function destroySession($id)
@@ -105,8 +104,8 @@ class CacheSession extends Session
 
     /**
      * Generates a unique key used for storing session data in cache.
-     * @param  string $id session variable name
-     * @return mixed  a safe cache key associated with the session variable name
+     * @param string $id session variable name
+     * @return mixed a safe cache key associated with the session variable name
      */
     protected function calculateKey($id)
     {

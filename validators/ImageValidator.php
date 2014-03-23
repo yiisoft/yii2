@@ -151,9 +151,9 @@ class ImageValidator extends FileValidator
 
     /**
      * Validates an image file.
-     * @param  UploadedFile $image uploaded file passed to check against a set of rules
-     * @return array|null   the error message and the parameters to be inserted into the error message.
-     *                            Null should be returned if the data is valid.
+     * @param UploadedFile $image uploaded file passed to check against a set of rules
+     * @return array|null the error message and the parameters to be inserted into the error message.
+     * Null should be returned if the data is valid.
      */
     protected function validateImage($image)
     {

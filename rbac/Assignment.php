@@ -41,7 +41,7 @@ class Assignment extends Object
     public $userId;
     /**
      * @return string the authorization item name. Do not modify this property after it is populated.
-     *                To modify the item name of an assignment, you must remove the assignment and create a new one.
+     * To modify the item name of an assignment, you must remove the assignment and create a new one.
      */
     public $itemName;
 

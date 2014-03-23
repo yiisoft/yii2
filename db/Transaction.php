@@ -50,7 +50,7 @@ class Transaction extends \yii\base\Object
     /**
      * Returns a value indicating whether this transaction is active.
      * @return boolean whether this transaction is active. Only an active transaction
-     *                 can [[commit()]] or [[rollBack()]].
+     * can [[commit()]] or [[rollBack()]].
      */
     public function getIsActive()
     {

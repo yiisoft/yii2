@@ -89,7 +89,7 @@ class Command extends \yii\base\Component
     /**
      * Specifies the SQL statement to be executed.
      * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well.
-     * @param  string $sql the SQL statement to be set.
+     * @param string $sql the SQL statement to be set.
      * @return static this command instance
      */
     public function setSql($sql)
@@ -170,15 +170,15 @@ class Command extends \yii\base\Component
 
     /**
      * Binds a parameter to the SQL statement to be executed.
-     * @param  string|integer $name          parameter identifier. For a prepared statement
-     *                                       using named placeholders, this will be a parameter name of
-     *                                       the form `:name`. For a prepared statement using question mark
-     *                                       placeholders, this will be the 1-indexed position of the parameter.
-     * @param  mixed          $value         Name of the PHP variable to bind to the SQL statement parameter
-     * @param  integer        $dataType      SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
-     * @param  integer        $length        length of the data type
-     * @param  mixed          $driverOptions the driver-specific options
-     * @return static         the current command being executed
+     * @param string|integer $name parameter identifier. For a prepared statement
+     * using named placeholders, this will be a parameter name of
+     * the form `:name`. For a prepared statement using question mark
+     * placeholders, this will be the 1-indexed position of the parameter.
+     * @param mixed $value Name of the PHP variable to bind to the SQL statement parameter
+     * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
+     * @param integer $length length of the data type
+     * @param mixed $driverOptions the driver-specific options
+     * @return static the current command being executed
      * @see http://www.php.net/manual/en/function.PDOStatement-bindParam.php
      */
     public function bindParam($name, &$value, $dataType = null, $length = null, $driverOptions = null)
@@ -201,13 +201,13 @@ class Command extends \yii\base\Component
 
     /**
      * Binds a value to a parameter.
-     * @param  string|integer $name     Parameter identifier. For a prepared statement
-     *                                  using named placeholders, this will be a parameter name of
-     *                                  the form `:name`. For a prepared statement using question mark
-     *                                  placeholders, this will be the 1-indexed position of the parameter.
-     * @param  mixed          $value    The value to bind to the parameter
-     * @param  integer        $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
-     * @return static         the current command being executed
+     * @param string|integer $name Parameter identifier. For a prepared statement
+     * using named placeholders, this will be a parameter name of
+     * the form `:name`. For a prepared statement using question mark
+     * placeholders, this will be the 1-indexed position of the parameter.
+     * @param mixed $value The value to bind to the parameter
+     * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
+     * @return static the current command being executed
      * @see http://www.php.net/manual/en/function.PDOStatement-bindValue.php
      */
     public function bindValue($name, $value, $dataType = null)
@@ -226,11 +226,11 @@ class Command extends \yii\base\Component
      * Binds a list of values to the corresponding parameters.
      * This is similar to [[bindValue()]] except that it binds multiple values at a time.
      * Note that the SQL data type of each value is determined by its PHP type.
-     * @param  array  $values the values to be bound. This must be given in terms of an associative
-     *                        array with array keys being the parameter names, and array values the corresponding parameter values,
-     *                        e.g. `[':name' => 'John', ':age' => 25]`. By default, the PDO type of each value is determined
-     *                        by its PHP type. You may explicitly specify the PDO type by using an array: `[value, type]`,
-     *                        e.g. `[':name' => 'John', ':profile' => [$profile, \PDO::PARAM_LOB]]`.
+     * @param array $values the values to be bound. This must be given in terms of an associative
+     * array with array keys being the parameter names, and array values the corresponding parameter values,
+     * e.g. `[':name' => 'John', ':age' => 25]`. By default, the PDO type of each value is determined
+     * by its PHP type. You may explicitly specify the PDO type by using an array: `[value, type]`,
+     * e.g. `[':name' => 'John', ':profile' => [$profile, \PDO::PARAM_LOB]]`.
      * @return static the current command being executed
      */
     public function bindValues($values)
@@ -256,7 +256,7 @@ class Command extends \yii\base\Component
      * Executes the SQL statement.
      * This method should only be used for executing non-query SQL statement, such as `INSERT`, `DELETE`, `UPDATE` SQLs.
      * No result set will be returned.
-     * @return integer   number of rows affected by the execution.
+     * @return integer number of rows affected by the execution.
      * @throws Exception execution failed
      */
     public function execute()
@@ -298,7 +298,7 @@ class Command extends \yii\base\Component
      * Executes the SQL statement and returns query result.
      * This method is for executing a SQL query that returns result set, such as `SELECT`.
      * @return DataReader the reader object for fetching the query result
-     * @throws Exception  execution failed
+     * @throws Exception execution failed
      */
     public function query()
     {
@@ -307,10 +307,10 @@ class Command extends \yii\base\Component
 
     /**
      * Executes the SQL statement and returns ALL rows at once.
-     * @param  integer   $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
-     *                              for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
-     * @return array     all rows of the query result. Each array element is an array representing a row of data.
-     *                             An empty array is returned if the query results in nothing.
+     * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
+     * @return array all rows of the query result. Each array element is an array representing a row of data.
+     * An empty array is returned if the query results in nothing.
      * @throws Exception execution failed
      */
     public function queryAll($fetchMode = null)
@@ -321,11 +321,11 @@ class Command extends \yii\base\Component
     /**
      * Executes the SQL statement and returns the first row of the result.
      * This method is best used when only the first row of result is needed for a query.
-     * @param  integer       $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
-     *                                  for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
+     * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
-     *                                 results in nothing.
-     * @throws Exception     execution failed
+     * results in nothing.
+     * @throws Exception execution failed
      */
     public function queryOne($fetchMode = null)
     {
@@ -336,8 +336,8 @@ class Command extends \yii\base\Component
      * Executes the SQL statement and returns the value of the first column in the first row of data.
      * This method is best used when only a single value is needed for a query.
      * @return string|boolean the value of the first column in the first row of the query result.
-     *                        False is returned if there is no value.
-     * @throws Exception      execution failed
+     * False is returned if there is no value.
+     * @throws Exception execution failed
      */
     public function queryScalar()
     {
@@ -353,7 +353,7 @@ class Command extends \yii\base\Component
      * Executes the SQL statement and returns the first column of the result.
      * This method is best used when only the first column of result (i.e. the first element in each row)
      * is needed for a query.
-     * @return array     the first column of the query result. Empty array is returned if the query results in nothing.
+     * @return array the first column of the query result. Empty array is returned if the query results in nothing.
      * @throws Exception execution failed
      */
     public function queryColumn()
@@ -363,10 +363,10 @@ class Command extends \yii\base\Component
 
     /**
      * Performs the actual DB query of a SQL statement.
-     * @param  string    $method    method of PDOStatement to be called
-     * @param  integer   $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
-     *                              for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
-     * @return mixed     the method execution result
+     * @param string $method method of PDOStatement to be called
+     * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
+     * @return mixed the method execution result
      * @throws Exception if the query causes any problem
      */
     private function queryInternal($method, $fetchMode = null)
@@ -448,8 +448,8 @@ class Command extends \yii\base\Component
      *
      * Note that the created command is not executed until [[execute()]] is called.
      *
-     * @param  string  $table   the table that new rows will be inserted into.
-     * @param  array   $columns the column data (name => value) to be inserted into the table.
+     * @param string $table the table that new rows will be inserted into.
+     * @param array $columns the column data (name => value) to be inserted into the table.
      * @return Command the command object itself
      */
     public function insert($table, $columns)
@@ -474,9 +474,9 @@ class Command extends \yii\base\Component
      *
      * Note that the values in each row must match the corresponding column names.
      *
-     * @param  string  $table   the table that new rows will be inserted into.
-     * @param  array   $columns the column names
-     * @param  array   $rows    the rows to be batch inserted into the table
+     * @param string $table the table that new rows will be inserted into.
+     * @param array $columns the column names
+     * @param array $rows the rows to be batch inserted into the table
      * @return Command the command object itself
      */
     public function batchInsert($table, $columns, $rows)
@@ -498,12 +498,12 @@ class Command extends \yii\base\Component
      *
      * Note that the created command is not executed until [[execute()]] is called.
      *
-     * @param  string       $table     the table to be updated.
-     * @param  array        $columns   the column data (name => value) to be updated.
-     * @param  string|array $condition the condition that will be put in the WHERE part. Please
-     *                                 refer to [[Query::where()]] on how to specify condition.
-     * @param  array        $params    the parameters to be bound to the command
-     * @return Command      the command object itself
+     * @param string $table the table to be updated.
+     * @param array $columns the column data (name => value) to be updated.
+     * @param string|array $condition the condition that will be put in the WHERE part. Please
+     * refer to [[Query::where()]] on how to specify condition.
+     * @param array $params the parameters to be bound to the command
+     * @return Command the command object itself
      */
     public function update($table, $columns, $condition = '', $params = [])
     {
@@ -524,11 +524,11 @@ class Command extends \yii\base\Component
      *
      * Note that the created command is not executed until [[execute()]] is called.
      *
-     * @param  string       $table     the table where the data will be deleted from.
-     * @param  string|array $condition the condition that will be put in the WHERE part. Please
-     *                                 refer to [[Query::where()]] on how to specify condition.
-     * @param  array        $params    the parameters to be bound to the command
-     * @return Command      the command object itself
+     * @param string $table the table where the data will be deleted from.
+     * @param string|array $condition the condition that will be put in the WHERE part. Please
+     * refer to [[Query::where()]] on how to specify condition.
+     * @param array $params the parameters to be bound to the command
+     * @return Command the command object itself
      */
     public function delete($table, $condition = '', $params = [])
     {
@@ -550,9 +550,9 @@ class Command extends \yii\base\Component
      * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
      * inserted into the generated SQL.
      *
-     * @param  string  $table   the name of the table to be created. The name will be properly quoted by the method.
-     * @param  array   $columns the columns (name => definition) in the new table.
-     * @param  string  $options additional SQL fragment that will be appended to the generated SQL.
+     * @param string $table the name of the table to be created. The name will be properly quoted by the method.
+     * @param array $columns the columns (name => definition) in the new table.
+     * @param string $options additional SQL fragment that will be appended to the generated SQL.
      * @return Command the command object itself
      */
     public function createTable($table, $columns, $options = null)
@@ -564,8 +564,8 @@ class Command extends \yii\base\Component
 
     /**
      * Creates a SQL command for renaming a DB table.
-     * @param  string  $table   the table to be renamed. The name will be properly quoted by the method.
-     * @param  string  $newName the new table name. The name will be properly quoted by the method.
+     * @param string $table the table to be renamed. The name will be properly quoted by the method.
+     * @param string $newName the new table name. The name will be properly quoted by the method.
      * @return Command the command object itself
      */
     public function renameTable($table, $newName)
@@ -577,7 +577,7 @@ class Command extends \yii\base\Component
 
     /**
      * Creates a SQL command for dropping a DB table.
-     * @param  string  $table the table to be dropped. The name will be properly quoted by the method.
+     * @param string $table the table to be dropped. The name will be properly quoted by the method.
      * @return Command the command object itself
      */
     public function dropTable($table)
@@ -589,7 +589,7 @@ class Command extends \yii\base\Component
 
     /**
      * Creates a SQL command for truncating a DB table.
-     * @param  string  $table the table to be truncated. The name will be properly quoted by the method.
+     * @param string $table the table to be truncated. The name will be properly quoted by the method.
      * @return Command the command object itself
      */
     public function truncateTable($table)
@@ -601,11 +601,11 @@ class Command extends \yii\base\Component
 
     /**
      * Creates a SQL command for adding a new DB column.
-     * @param  string  $table  the table that the new column will be added to. The table name will be properly quoted by the method.
-     * @param  string  $column the name of the new column. The name will be properly quoted by the method.
-     * @param  string  $type   the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
-     *                         to convert the give column type to the physical one. For example, `string` will be converted
-     *                         as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
+     * @param string $table the table that the new column will be added to. The table name will be properly quoted by the method.
+     * @param string $column the name of the new column. The name will be properly quoted by the method.
+     * @param string $type the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
+     * to convert the give column type to the physical one. For example, `string` will be converted
+     * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
      * @return Command the command object itself
      */
     public function addColumn($table, $column, $type)
@@ -617,8 +617,8 @@ class Command extends \yii\base\Component
 
     /**
      * Creates a SQL command for dropping a DB column.
-     * @param  string  $table  the table whose column is to be dropped. The name will be properly quoted by the method.
-     * @param  string  $column the name of the column to be dropped. The name will be properly quoted by the method.
+     * @param string $table the table whose column is to be dropped. The name will be properly quoted by the method.
+     * @param string $column the name of the column to be dropped. The name will be properly quoted by the method.
      * @return Command the command object itself
      */
     public function dropColumn($table, $column)
@@ -630,9 +630,9 @@ class Command extends \yii\base\Component
 
     /**
      * Creates a SQL command for renaming a column.
-     * @param  string  $table   the table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param  string  $oldName the old name of the column. The name will be properly quoted by the method.
-     * @param  string  $newName the new name of the column. The name will be properly quoted by the method.
+     * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
+     * @param string $oldName the old name of the column. The name will be properly quoted by the method.
+     * @param string $newName the new name of the column. The name will be properly quoted by the method.
      * @return Command the command object itself
      */
     public function renameColumn($table, $oldName, $newName)
@@ -644,11 +644,11 @@ class Command extends \yii\base\Component
 
     /**
      * Creates a SQL command for changing the definition of a column.
-     * @param  string  $table  the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param  string  $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param  string  $type   the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
-     *                         to convert the give column type to the physical one. For example, `string` will be converted
-     *                         as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
+     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @param string $type the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
+     * to convert the give column type to the physical one. For example, `string` will be converted
+     * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
      * @return Command the command object itself
      */
     public function alterColumn($table, $column, $type)
@@ -661,10 +661,10 @@ class Command extends \yii\base\Component
     /**
      * Creates a SQL command for adding a primary key constraint to an existing table.
      * The method will properly quote the table and column names.
-     * @param  string       $name    the name of the primary key constraint.
-     * @param  string       $table   the table that the primary key constraint will be added to.
-     * @param  string|array $columns comma separated string or array of columns that the primary key will consist of.
-     * @return Command      the command object itself.
+     * @param string $name the name of the primary key constraint.
+     * @param string $table the table that the primary key constraint will be added to.
+     * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
+     * @return Command the command object itself.
      */
     public function addPrimaryKey($name, $table, $columns)
     {
@@ -675,8 +675,8 @@ class Command extends \yii\base\Component
 
     /**
      * Creates a SQL command for removing a primary key constraint to an existing table.
-     * @param  string  $name  the name of the primary key constraint to be removed.
-     * @param  string  $table the table that the primary key constraint will be removed from.
+     * @param string $name the name of the primary key constraint to be removed.
+     * @param string $table the table that the primary key constraint will be removed from.
      * @return Command the command object itself
      */
     public function dropPrimaryKey($name, $table)
@@ -689,13 +689,13 @@ class Command extends \yii\base\Component
     /**
      * Creates a SQL command for adding a foreign key constraint to an existing table.
      * The method will properly quote the table and column names.
-     * @param  string  $name       the name of the foreign key constraint.
-     * @param  string  $table      the table that the foreign key constraint will be added to.
-     * @param  string  $columns    the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas.
-     * @param  string  $refTable   the table that the foreign key references to.
-     * @param  string  $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
-     * @param  string  $delete     the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
-     * @param  string  $update     the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+     * @param string $name the name of the foreign key constraint.
+     * @param string $table the table that the foreign key constraint will be added to.
+     * @param string $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas.
+     * @param string $refTable the table that the foreign key references to.
+     * @param string $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
+     * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+     * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
      * @return Command the command object itself
      */
     public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
@@ -707,8 +707,8 @@ class Command extends \yii\base\Component
 
     /**
      * Creates a SQL command for dropping a foreign key constraint.
-     * @param  string  $name  the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
-     * @param  string  $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
+     * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
+     * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
      * @return Command the command object itself
      */
     public function dropForeignKey($name, $table)
@@ -720,12 +720,12 @@ class Command extends \yii\base\Component
 
     /**
      * Creates a SQL command for creating a new index.
-     * @param  string       $name    the name of the index. The name will be properly quoted by the method.
-     * @param  string       $table   the table that the new index will be created for. The table name will be properly quoted by the method.
-     * @param  string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
-     *                               by commas. The column names will be properly quoted by the method.
-     * @param  boolean      $unique  whether to add UNIQUE constraint on the created index.
-     * @return Command      the command object itself
+     * @param string $name the name of the index. The name will be properly quoted by the method.
+     * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
+     * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
+     * by commas. The column names will be properly quoted by the method.
+     * @param boolean $unique whether to add UNIQUE constraint on the created index.
+     * @return Command the command object itself
      */
     public function createIndex($name, $table, $columns, $unique = false)
     {
@@ -736,8 +736,8 @@ class Command extends \yii\base\Component
 
     /**
      * Creates a SQL command for dropping an index.
-     * @param  string  $name  the name of the index to be dropped. The name will be properly quoted by the method.
-     * @param  string  $table the table whose index is to be dropped. The name will be properly quoted by the method.
+     * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
+     * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
      * @return Command the command object itself
      */
     public function dropIndex($name, $table)
@@ -751,10 +751,10 @@ class Command extends \yii\base\Component
      * Creates a SQL command for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
-     * @param  string                $table the name of the table whose primary key sequence will be reset
-     * @param  mixed                 $value the value for the primary key of the next new row inserted. If this is not set,
-     *                                      the next new row's primary key will have a value 1.
-     * @return Command               the command object itself
+     * @param string $table the name of the table whose primary key sequence will be reset
+     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have a value 1.
+     * @return Command the command object itself
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      */
     public function resetSequence($table, $value = null)
@@ -766,11 +766,11 @@ class Command extends \yii\base\Component
 
     /**
      * Builds a SQL command for enabling or disabling integrity check.
-     * @param  boolean               $check  whether to turn on or off the integrity check.
-     * @param  string                $schema the schema name of the tables. Defaults to empty string, meaning the current
-     *                                       or default schema.
-     * @param  string                $table  the table name.
-     * @return Command               the command object itself
+     * @param boolean $check whether to turn on or off the integrity check.
+     * @param string $schema the schema name of the tables. Defaults to empty string, meaning the current
+     * or default schema.
+     * @param string $table the table name.
+     * @return Command the command object itself
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')

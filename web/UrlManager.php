@@ -184,9 +184,9 @@ class UrlManager extends Component
 
     /**
      * Parses the user request.
-     * @param  Request $request the request component
+     * @param Request $request the request component
      * @return array|boolean the route and the associated parameters. The latter is always empty
-     *                               if [[enablePrettyUrl]] is false. False is returned if the current request cannot be successfully parsed.
+     * if [[enablePrettyUrl]] is false. False is returned if the current request cannot be successfully parsed.
      */
     public function parseRequest($request)
     {
@@ -205,7 +205,7 @@ class UrlManager extends Component
 
             Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
 
-            $suffix = (string)$this->suffix;
+            $suffix = (string) $this->suffix;
             if ($suffix !== '' && $pathInfo !== '') {
                 $n = strlen($this->suffix);
                 if (substr($pathInfo, -$n) === $this->suffix) {
@@ -228,7 +228,7 @@ class UrlManager extends Component
                 $route = '';
             }
 
-            return [(string)$route, []];
+            return [(string) $route, []];
         }
     }
 
@@ -263,7 +263,7 @@ class UrlManager extends Component
      */
     public function createUrl($params)
     {
-        $params = (array)$params;
+        $params = (array) $params;
         $anchor = isset($params['#']) ? '#' . $params['#'] : '';
         unset($params['#'], $params[$this->routeParam]);
 
@@ -322,7 +322,7 @@ class UrlManager extends Component
      */
     public function createAbsoluteUrl($params, $scheme = null)
     {
-        $params = (array)$params;
+        $params = (array) $params;
         $url = $this->createUrl($params);
         if (strpos($url, '://') === false) {
             $url = $this->getHostInfo() . $url;

@@ -106,8 +106,8 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     private $_view = [];
 
     /**
-     * @param  array|View             $view view instance or its array configuration that will be used to
-     *                                      render message bodies.
+     * @param array|View $view view instance or its array configuration that will be used to
+     * render message bodies.
      * @throws InvalidConfigException on invalid argument.
      */
     public function setView($view)
@@ -132,8 +132,8 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 
     /**
      * Creates view instance from given configuration.
-     * @param  array $config view configuration.
-     * @return View  view instance.
+     * @param array $config view configuration.
+     * @return View view instance.
      */
     protected function createView(array $config)
     {
@@ -161,7 +161,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * - path alias (e.g. "@app/mail/contact");
      * - a relative view name (e.g. "contact"): the actual view file will be resolved by [[findViewFile()]]
      *
-     * @param  array            $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @return MessageInterface message instance.
      */
     public function compose($view = null, array $params = [])
@@ -215,8 +215,8 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * If [[useFileTransport]] is true, it will save the email as a file under [[fileTransportPath]].
      * Otherwise, it will call [[sendMessage()]] to send the email to its recipient(s).
      * Child classes should implement [[sendMessage()]] with the actual email sending logic.
-     * @param  MessageInterface $message email message instance to be sent
-     * @return boolean          whether the message has been sent successfully
+     * @param MessageInterface $message email message instance to be sent
+     * @return boolean whether the message has been sent successfully
      */
     public function send($message)
     {
@@ -247,7 +247,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * Child classes may override this method to implement more efficient way of
      * sending multiple messages.
      *
-     * @param  array   $messages list of email messages, which should be sent.
+     * @param array $messages list of email messages, which should be sent.
      * @return integer number of messages that are successfully sent.
      */
     public function sendMultiple(array $messages)
@@ -265,10 +265,10 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     /**
      * Renders the specified view with optional parameters and layout.
      * The view will be rendered using the [[view]] component.
-     * @param  string         $view   the view name or the path alias of the view file.
-     * @param  array          $params the parameters (name-value pairs) that will be extracted and made available in the view file.
-     * @param  string|boolean $layout layout view name or path alias. If false, no layout will be applied.
-     * @return string         the rendering result.
+     * @param string $view the view name or the path alias of the view file.
+     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @param string|boolean $layout layout view name or path alias. If false, no layout will be applied.
+     * @return string the rendering result.
      */
     public function render($view, $params = [], $layout = false)
     {
@@ -283,15 +283,15 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     /**
      * Sends the specified message.
      * This method should be implemented by child classes with the actual email sending logic.
-     * @param  MessageInterface $message the message to be sent
-     * @return boolean          whether the message is sent successfully
+     * @param MessageInterface $message the message to be sent
+     * @return boolean whether the message is sent successfully
      */
     abstract protected function sendMessage($message);
 
     /**
      * Saves the message as a file under [[fileTransportPath]].
-     * @param  MessageInterface $message
-     * @return boolean          whether the message is saved successfully
+     * @param MessageInterface $message
+     * @return boolean whether the message is saved successfully
      */
     protected function saveMessage($message)
     {
@@ -322,7 +322,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     /**
      * Finds the view file corresponding to the specified relative view name.
      * This method will return the view file by prefixing the view name with [[viewPath]].
-     * @param  string $view a relative view name. The name does NOT start with a slash.
+     * @param string $view a relative view name. The name does NOT start with a slash.
      * @return string the view file path. Note that the file may not exist.
      */
     public function findViewFile($view)
@@ -334,8 +334,8 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * This method is invoked right before mail send.
      * You may override this method to do last-minute preparation for the message.
      * If you override this method, please make sure you call the parent implementation first.
-     * @param  MessageInterface $message
-     * @return boolean          whether to continue sending an email.
+     * @param MessageInterface $message
+     * @return boolean whether to continue sending an email.
      */
     public function beforeSend($message)
     {
@@ -350,7 +350,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * You may override this method to do some postprocessing or logging based on mail send status.
      * If you override this method, please make sure you call the parent implementation first.
      * @param MessageInterface $message
-     * @param boolean          $isSuccessful
+     * @param boolean $isSuccessful
      */
     public function afterSend($message, $isSuccessful)
     {

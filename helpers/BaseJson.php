@@ -26,10 +26,10 @@ class BaseJson
      * The method enhances `json_encode()` by supporting JavaScript expressions.
      * In particular, the method will not encode a JavaScript expression that is
      * represented in terms of a [[JsExpression]] object.
-     * @param  mixed   $value   the data to be encoded
-     * @param  integer $options the encoding options. For more details please refer to
-     *                          <http://www.php.net/manual/en/function.json-encode.php>
-     * @return string  the encoding result
+     * @param mixed $value the data to be encoded
+     * @param integer $options the encoding options. For more details please refer to
+     * <http://www.php.net/manual/en/function.json-encode.php>.
+     * @return string the encoding result
      */
     public static function encode($value, $options = 0)
     {
@@ -42,9 +42,9 @@ class BaseJson
 
     /**
      * Decodes the given JSON string into a PHP data structure.
-     * @param  string                $json    the JSON string to be decoded
-     * @param  boolean               $asArray whether to return objects in terms of associative arrays.
-     * @return mixed                 the PHP data
+     * @param string $json the JSON string to be decoded
+     * @param boolean $asArray whether to return objects in terms of associative arrays.
+     * @return mixed the PHP data
      * @throws InvalidParamException if there is any decoding error
      */
     public static function decode($json, $asArray = true)
@@ -75,10 +75,10 @@ class BaseJson
 
     /**
      * Pre-processes the data before sending it to `json_encode()`.
-     * @param  mixed  $data        the data to be processed
-     * @param  array  $expressions collection of JavaScript expressions
-     * @param  string $expPrefix   a prefix internally used to handle JS expressions
-     * @return mixed  the processed data
+     * @param mixed $data the data to be processed
+     * @param array $expressions collection of JavaScript expressions
+     * @param string $expPrefix a prefix internally used to handle JS expressions
+     * @return mixed the processed data
      */
     protected static function processData($data, &$expressions, $expPrefix)
     {

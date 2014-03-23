@@ -151,8 +151,8 @@ abstract class Application extends Module
 
     /**
      * Constructor.
-     * @param  array                  $config name-value pairs that will be used to initialize the object properties.
-     *                                        Note that the configuration must contain both [[id]] and [[basePath]].
+     * @param array $config name-value pairs that will be used to initialize the object properties.
+     * Note that the configuration must contain both [[id]] and [[basePath]].
      * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
      */
     public function __construct($config = [])
@@ -170,7 +170,7 @@ abstract class Application extends Module
      * This method is called at the beginning of the application constructor.
      * It initializes several important application properties.
      * If you override this method, please make sure you call the parent implementation.
-     * @param  array                  $config the application configuration
+     * @param array $config the application configuration
      * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
      */
     public function preInit(&$config)
@@ -234,7 +234,7 @@ abstract class Application extends Module
     /**
      * Initializes the extensions.
      * @param array $extensions the extensions to be initialized. Please refer to [[extensions]]
-     *                          for the structure of the extension array.
+     * for the structure of the extension array.
      */
     protected function initExtensions($extensions)
     {
@@ -291,7 +291,7 @@ abstract class Application extends Module
     /**
      * Sets the root directory of the application and the @app alias.
      * This method can only be invoked at the beginning of the constructor.
-     * @param  string                $path the root directory of the application.
+     * @param string $path the root directory of the application.
      * @property string the root directory of the application.
      * @throws InvalidParamException if the directory does not exist.
      */
@@ -322,7 +322,7 @@ abstract class Application extends Module
      * This method should return an instance of [[Response]] or its child class
      * which represents the handling result of the request.
      *
-     * @param  Request  $request the request to be handled
+     * @param Request $request the request to be handled
      * @return Response the resulting response
      */
     abstract public function handleRequest($request);
@@ -332,7 +332,7 @@ abstract class Application extends Module
     /**
      * Returns the directory that stores runtime files.
      * @return string the directory that stores runtime files.
-     *                Defaults to the "runtime" subdirectory under [[basePath]].
+     * Defaults to the "runtime" subdirectory under [[basePath]].
      */
     public function getRuntimePath()
     {
@@ -358,7 +358,7 @@ abstract class Application extends Module
     /**
      * Returns the directory that stores vendor files.
      * @return string the directory that stores vendor files.
-     *                Defaults to "vendor" directory under [[basePath]].
+     * Defaults to "vendor" directory under [[basePath]].
      */
     public function getVendorPath()
     {
@@ -568,10 +568,10 @@ abstract class Application extends Module
      *
      * This method is used as a PHP error handler. It will simply raise an `ErrorException`.
      *
-     * @param integer $code    the level of the error raised
-     * @param string  $message the error message
-     * @param string  $file    the filename that the error was raised in
-     * @param integer $line    the line number the error was raised at
+     * @param integer $code the level of the error raised
+     * @param string $message the error message
+     * @param string $file the filename that the error was raised in
+     * @param integer $line the line number the error was raised at
      *
      * @throws ErrorException
      */
@@ -638,8 +638,8 @@ abstract class Application extends Module
 
     /**
      * Renders an exception without using rich format.
-     * @param  \Exception $exception the exception to be rendered.
-     * @return string     the rendering result
+     * @param \Exception $exception the exception to be rendered.
+     * @return string the rendering result
      */
     public function renderException($exception)
     {

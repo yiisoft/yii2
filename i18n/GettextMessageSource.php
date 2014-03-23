@@ -53,10 +53,10 @@ class GettextMessageSource extends MessageSource
      * If translation for specific locale code such as `en-US` isn't found it
      * tries more generic `en`.
      *
-     * @param  string $category the message category
-     * @param  string $language the target language
-     * @return array  the loaded messages. The keys are original messages, and the values
-     *                         are translated messages.
+     * @param string $category the message category
+     * @param string $language the target language
+     * @return array the loaded messages. The keys are original messages, and the values
+     * are translated messages.
      */
     protected function loadMessages($category, $language)
     {
@@ -91,7 +91,7 @@ class GettextMessageSource extends MessageSource
     /**
      * Returns message file path for the specified language and category.
      *
-     * @param  string $language the target language
+     * @param string $language the target language
      * @return string path to message file
      */
     protected function getMessageFilePath($language)
@@ -109,8 +109,8 @@ class GettextMessageSource extends MessageSource
     /**
      * Loads the message translation for the specified language and category or returns null if file doesn't exist.
      *
-     * @param  string     $messageFile path to message file
-     * @param  string     $category    the message category
+     * @param string $messageFile path to message file
+     * @param string $category the message category
      * @return array|null array of messages or null if file not found
      */
     protected function loadMessagesFromFile($messageFile, $category)

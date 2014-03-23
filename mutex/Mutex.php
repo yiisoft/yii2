@@ -44,9 +44,9 @@ abstract class Mutex extends Component
 
     /**
      * Acquires lock by given name.
-     * @param  string  $name    of the lock to be acquired. Must be unique.
-     * @param  integer $timeout to wait for lock to be released. Defaults to zero meaning that method will return
-     *                          false immediately in case lock was already acquired.
+     * @param string $name of the lock to be acquired. Must be unique.
+     * @param integer $timeout to wait for lock to be released. Defaults to zero meaning that method will return
+     * false immediately in case lock was already acquired.
      * @return boolean lock acquiring result.
      */
     public function acquire($name, $timeout = 0)
@@ -62,7 +62,7 @@ abstract class Mutex extends Component
 
     /**
      * Release acquired lock. This method will return false in case named lock was not found.
-     * @param  string  $name of the lock to be released. This lock must be already created.
+     * @param string $name of the lock to be released. This lock must be already created.
      * @return boolean lock release result: false in case named lock was not found..
      */
     public function release($name)
@@ -81,15 +81,15 @@ abstract class Mutex extends Component
 
     /**
      * This method should be extended by concrete mutex implementations. Acquires lock by given name.
-     * @param  string  $name    of the lock to be acquired.
-     * @param  integer $timeout to wait for lock to become released.
+     * @param string $name of the lock to be acquired.
+     * @param integer $timeout to wait for lock to become released.
      * @return boolean acquiring result.
      */
     abstract protected function acquireLock($name, $timeout = 0);
 
     /**
      * This method should be extended by concrete mutex implementations. Releases lock by given name.
-     * @param  string  $name of the lock to be released.
+     * @param string $name of the lock to be released.
      * @return boolean release result.
      */
     abstract protected function releaseLock($name);

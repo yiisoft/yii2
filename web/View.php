@@ -160,8 +160,8 @@ class View extends \yii\base\View
     /**
      * Marks the ending of an HTML page.
      * @param boolean $ajaxMode whether the view is rendering in AJAX mode.
-     *                          If true, the JS scripts registered at [[POS_READY]] and [[POS_LOAD]] positions
-     *                          will be rendered at the end of the view like normal scripts.
+     * If true, the JS scripts registered at [[POS_READY]] and [[POS_LOAD]] positions
+     * will be rendered at the end of the view like normal scripts.
      */
     public function endPage($ajaxMode = false)
     {
@@ -186,10 +186,10 @@ class View extends \yii\base\View
      * By doing so, the method is able to inject into the rendering result with JS/CSS scripts and files
      * that are registered with the view.
      *
-     * @param  string $view    the view name. Please refer to [[render()]] on how to specify this parameter.
-     * @param  array  $params  the parameters (name-value pairs) that will be extracted and made available in the view file.
-     * @param  object $context the context that the view should use for rendering the view. If null,
-     *                         existing [[context]] will be used.
+     * @param string $view the view name. Please refer to [[render()]] on how to specify this parameter.
+     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @param object $context the context that the view should use for rendering the view. If null,
+     * existing [[context]] will be used.
      * @return string the rendering result
      * @see render()
      */
@@ -265,12 +265,12 @@ class View extends \yii\base\View
     /**
      * Registers the named asset bundle.
      * All dependent asset bundles will be registered.
-     * @param  string                 $name     the name of the asset bundle.
-     * @param  integer|null           $position if set, this forces a minimum position for javascript files.
-     *                                          This will adjust depending assets javascript file position or fail if requirement can not be met.
-     *                                          If this is null, asset bundles position settings will not be changed.
-     *                                          See [[registerJsFile]] for more details on javascript position.
-     * @return AssetBundle            the registered asset bundle instance
+     * @param string $name the name of the asset bundle.
+     * @param integer|null $position if set, this forces a minimum position for javascript files.
+     * This will adjust depending assets javascript file position or fail if requirement can not be met.
+     * If this is null, asset bundles position settings will not be changed.
+     * See [[registerJsFile]] for more details on javascript position.
+     * @return AssetBundle the registered asset bundle instance
      * @throws InvalidConfigException if the asset bundle does not exist or a circular dependency is detected
      */
     public function registerAssetBundle($name, $position = null)
@@ -309,10 +309,10 @@ class View extends \yii\base\View
 
     /**
      * Registers a meta tag.
-     * @param array  $options the HTML attributes for the meta tag.
-     * @param string $key     the key that identifies the meta tag. If two meta tags are registered
-     *                        with the same key, the latter will overwrite the former. If this is null, the new meta tag
-     *                        will be appended to the existing ones.
+     * @param array $options the HTML attributes for the meta tag.
+     * @param string $key the key that identifies the meta tag. If two meta tags are registered
+     * with the same key, the latter will overwrite the former. If this is null, the new meta tag
+     * will be appended to the existing ones.
      */
     public function registerMetaTag($options, $key = null)
     {
@@ -325,10 +325,10 @@ class View extends \yii\base\View
 
     /**
      * Registers a link tag.
-     * @param array  $options the HTML attributes for the link tag.
-     * @param string $key     the key that identifies the link tag. If two link tags are registered
-     *                        with the same key, the latter will overwrite the former. If this is null, the new link tag
-     *                        will be appended to the existing ones.
+     * @param array $options the HTML attributes for the link tag.
+     * @param string $key the key that identifies the link tag. If two link tags are registered
+     * with the same key, the latter will overwrite the former. If this is null, the new link tag
+     * will be appended to the existing ones.
      */
     public function registerLinkTag($options, $key = null)
     {
@@ -341,11 +341,11 @@ class View extends \yii\base\View
 
     /**
      * Registers a CSS code block.
-     * @param string $css     the CSS code block to be registered
-     * @param array  $options the HTML attributes for the style tag.
-     * @param string $key     the key that identifies the CSS code block. If null, it will use
-     *                        $css as the key. If two CSS code blocks are registered with the same key, the latter
-     *                        will overwrite the former.
+     * @param string $css the CSS code block to be registered
+     * @param array $options the HTML attributes for the style tag.
+     * @param string $key the key that identifies the CSS code block. If null, it will use
+     * $css as the key. If two CSS code blocks are registered with the same key, the latter
+     * will overwrite the former.
      */
     public function registerCss($css, $options = [], $key = null)
     {
@@ -355,12 +355,12 @@ class View extends \yii\base\View
 
     /**
      * Registers a CSS file.
-     * @param string $url     the CSS file to be registered.
-     * @param array  $depends the names of the asset bundles that this CSS file depends on
-     * @param array  $options the HTML attributes for the link tag.
-     * @param string $key     the key that identifies the CSS script file. If null, it will use
-     *                        $url as the key. If two CSS files are registered with the same key, the latter
-     *                        will overwrite the former.
+     * @param string $url the CSS file to be registered.
+     * @param array $depends the names of the asset bundles that this CSS file depends on
+     * @param array $options the HTML attributes for the link tag.
+     * @param string $key the key that identifies the CSS script file. If null, it will use
+     * $url as the key. If two CSS files are registered with the same key, the latter
+     * will overwrite the former.
      */
     public function registerCssFile($url, $depends = [], $options = [], $key = null)
     {
@@ -381,9 +381,9 @@ class View extends \yii\base\View
 
     /**
      * Registers a JS code block.
-     * @param string  $js       the JS code block to be registered
+     * @param string $js the JS code block to be registered
      * @param integer $position the position at which the JS script tag should be inserted
-     *                          in a page. The possible values are:
+     * in a page. The possible values are:
      *
      * - [[POS_HEAD]]: in the head section
      * - [[POS_BEGIN]]: at the beginning of the body section
@@ -394,8 +394,8 @@ class View extends \yii\base\View
      *   Note that by using this position, the method will automatically register the jQuery js file.
      *
      * @param string $key the key that identifies the JS code block. If null, it will use
-     *                    $js as the key. If two JS code blocks are registered with the same key, the latter
-     *                    will overwrite the former.
+     * $js as the key. If two JS code blocks are registered with the same key, the latter
+     * will overwrite the former.
      */
     public function registerJs($js, $position = self::POS_READY, $key = null)
     {
@@ -408,19 +408,19 @@ class View extends \yii\base\View
 
     /**
      * Registers a JS file.
-     * @param string $url     the JS file to be registered.
-     * @param array  $depends the names of the asset bundles that this JS file depends on
-     * @param array  $options the HTML attributes for the script tag. A special option
-     *                        named "position" is supported which specifies where the JS script tag should be inserted
-     *                        in a page. The possible values of "position" are:
+     * @param string $url the JS file to be registered.
+     * @param array $depends the names of the asset bundles that this JS file depends on
+     * @param array $options the HTML attributes for the script tag. A special option
+     * named "position" is supported which specifies where the JS script tag should be inserted
+     * in a page. The possible values of "position" are:
      *
      * - [[POS_HEAD]]: in the head section
      * - [[POS_BEGIN]]: at the beginning of the body section
      * - [[POS_END]]: at the end of the body section. This is the default value.
      *
      * @param string $key the key that identifies the JS script file. If null, it will use
-     *                    $url as the key. If two JS files are registered with the same key, the latter
-     *                    will overwrite the former.
+     * $url as the key. If two JS files are registered with the same key, the latter
+     * will overwrite the former.
      */
     public function registerJsFile($url, $depends = [], $options = [], $key = null)
     {
@@ -502,10 +502,10 @@ class View extends \yii\base\View
     /**
      * Renders the content to be inserted at the end of the body section.
      * The content is rendered using the registered JS code blocks and files.
-     * @param  boolean $ajaxMode whether the view is rendering in AJAX mode.
-     *                           If true, the JS scripts registered at [[POS_READY]] and [[POS_LOAD]] positions
-     *                           will be rendered at the end of the view like normal scripts.
-     * @return string  the rendered content
+     * @param boolean $ajaxMode whether the view is rendering in AJAX mode.
+     * If true, the JS scripts registered at [[POS_READY]] and [[POS_LOAD]] positions
+     * will be rendered at the end of the view like normal scripts.
+     * @return string the rendered content
      */
     protected function renderBodyEndHtml($ajaxMode)
     {

@@ -135,7 +135,7 @@ class ActiveFixture extends BaseActiveFixture
     }
 
     /**
-     * @return TableSchema                      the schema information of the database table associated with this fixture.
+     * @return TableSchema the schema information of the database table associated with this fixture.
      * @throws \yii\base\InvalidConfigException if the table does not exist
      */
     public function getTableSchema()

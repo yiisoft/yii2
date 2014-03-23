@@ -46,7 +46,7 @@ class ChainedDependency extends Dependency
     /**
      * Generates the data needed to determine if dependency has been changed.
      * This method does nothing in this class.
-     * @param  Cache $cache the cache component that is currently evaluating this dependency
+     * @param Cache $cache the cache component that is currently evaluating this dependency
      * @return mixed the data needed to determine if dependency has been changed.
      */
     protected function generateDependencyData($cache)
@@ -58,7 +58,7 @@ class ChainedDependency extends Dependency
      * Performs the actual dependency checking.
      * This method returns true if any of the dependency objects
      * reports a dependency change.
-     * @param  Cache   $cache the cache component that is currently evaluating this dependency
+     * @param Cache $cache the cache component that is currently evaluating this dependency
      * @return boolean whether the dependency is changed or not.
      */
     public function getHasChanged($cache)

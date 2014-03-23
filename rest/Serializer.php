@@ -116,7 +116,7 @@ class Serializer extends Component
      * It will not do conversion for unknown object types or non-object data.
      * The default implementation will handle [[Model]] and [[DataProviderInterface]].
      * You may override this method to support more object types.
-     * @param  mixed $data the data to be serialized.
+     * @param mixed $data the data to be serialized.
      * @return mixed the converted data.
      */
     public function serialize($data)
@@ -132,8 +132,8 @@ class Serializer extends Component
 
     /**
      * @return array the names of the requested fields. The first element is an array
-     *               representing the list of default fields requested, while the second element is
-     *               an array of the extra fields requested in addition to the default fields.
+     * representing the list of default fields requested, while the second element is
+     * an array of the extra fields requested in addition to the default fields.
      * @see Model::fields()
      * @see Model::extraFields()
      */
@@ -150,8 +150,8 @@ class Serializer extends Component
 
     /**
      * Serializes a data provider.
-     * @param  DataProviderInterface $dataProvider
-     * @return array                 the array representation of the data provider.
+     * @param DataProviderInterface $dataProvider
+     * @return array the array representation of the data provider.
      */
     protected function serializeDataProvider($dataProvider)
     {
@@ -179,8 +179,8 @@ class Serializer extends Component
 
     /**
      * Serializes a pagination into an array.
-     * @param  Pagination $pagination
-     * @return array      the array representation of the pagination
+     * @param Pagination $pagination
+     * @return array the array representation of the pagination
      * @see addPaginationHeader()
      */
     protected function serializePagination($pagination)
@@ -217,7 +217,7 @@ class Serializer extends Component
 
     /**
      * Serializes a model object.
-     * @param  Model $model
+     * @param Model $model
      * @return array the array representation of the model
      */
     protected function serializeModel($model)
@@ -233,7 +233,7 @@ class Serializer extends Component
 
     /**
      * Serializes the validation errors in a model.
-     * @param  Model $model
+     * @param Model $model
      * @return array the array representation of the errors
      */
     protected function serializeModelErrors($model)
@@ -252,7 +252,7 @@ class Serializer extends Component
 
     /**
      * Serializes a set of models.
-     * @param  array $models
+     * @param array $models
      * @return array the array representation of the models
      */
     protected function serializeModels(array $models)

@@ -61,7 +61,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
     /**
      * Constructor.
      * @param Command $command the command generating the query result
-     * @param array   $config  name-value pairs that will be used to initialize the object properties
+     * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct(Command $command, $config = [])
     {
@@ -74,11 +74,11 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
      * Binds a column to a PHP variable.
      * When rows of data are being fetched, the corresponding column value
      * will be set in the variable. Note, the fetch mode must include PDO::FETCH_BOUND.
-     * @param integer|string $column   Number of the column (1-indexed) or name of the column
-     *                                 in the result set. If using the column name, be aware that the name
-     *                                 should match the case of the column, as returned by the driver.
-     * @param mixed          $value    Name of the PHP variable to which the column will be bound.
-     * @param integer        $dataType Data type of the parameter
+     * @param integer|string $column Number of the column (1-indexed) or name of the column
+     * in the result set. If using the column name, be aware that the name
+     * should match the case of the column, as returned by the driver.
+     * @param mixed $value Name of the PHP variable to which the column will be bound.
+     * @param integer $dataType Data type of the parameter
      * @see http://www.php.net/manual/en/function.PDOStatement-bindColumn.php
      */
     public function bindColumn($column, &$value, $dataType = null)
@@ -112,8 +112,8 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Returns a single column from the next row of a result set.
-     * @param  integer $columnIndex zero-based column index
-     * @return mixed   the column of the current row, false if no more rows available
+     * @param integer $columnIndex zero-based column index
+     * @return mixed the column of the current row, false if no more rows available
      */
     public function readColumn($columnIndex)
     {
@@ -122,9 +122,9 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Returns an object populated with the next row of data.
-     * @param  string $className class name of the object to be created and populated
-     * @param  array  $fields    Elements of this array are passed to the constructor
-     * @return mixed  the populated object, false if no more row of data available
+     * @param string $className class name of the object to be created and populated
+     * @param array $fields Elements of this array are passed to the constructor
+     * @return mixed the populated object, false if no more row of data available
      */
     public function readObject($className, $fields)
     {
@@ -134,7 +134,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
     /**
      * Reads the whole result set into an array.
      * @return array the result set (each array element represents a row of data).
-     *               An empty array will be returned if the result contains no row.
+     * An empty array will be returned if the result contains no row.
      */
     public function readAll()
     {

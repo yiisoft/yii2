@@ -293,7 +293,7 @@ class BaseInflector
      * Converts a word to its plural form.
      * Note that this is for English only!
      * For example, 'apple' will become 'apples', and 'child' will become 'children'.
-     * @param  string $word the word to be pluralized
+     * @param string $word the word to be pluralized
      * @return string the pluralized word
      */
     public static function pluralize($word)
@@ -312,7 +312,7 @@ class BaseInflector
 
     /**
      * Returns the singular of the $word
-     * @param  string $word the english word to singularize
+     * @param string $word the english word to singularize
      * @return string Singular noun.
      */
     public static function singularize($word)
@@ -333,8 +333,8 @@ class BaseInflector
     /**
      * Converts an underscored or CamelCase word into a English
      * sentence.
-     * @param  string  $words
-     * @param  boolean $ucAll whether to set all words to uppercase
+     * @param string $words
+     * @param boolean $ucAll whether to set all words to uppercase
      * @return string
      */
     public static function titleize($words, $ucAll = false)
@@ -350,7 +350,7 @@ class BaseInflector
      * will remove non alphanumeric character from the word, so
      * "who's online" will be converted to "WhoSOnline"
      * @see variablize()
-     * @param  string $word the word to CamelCase
+     * @param string $word the word to CamelCase
      * @return string
      */
     public static function camelize($word)
@@ -361,9 +361,9 @@ class BaseInflector
     /**
      * Converts a CamelCase name into space-separated words.
      * For example, 'PostTag' will be converted to 'Post Tag'.
-     * @param  string  $name    the string to be converted
-     * @param  boolean $ucwords whether to capitalize the first letter in each word
-     * @return string  the resulting words
+     * @param string $name the string to be converted
+     * @param boolean $ucwords whether to capitalize the first letter in each word
+     * @return string the resulting words
      */
     public static function camel2words($name, $ucwords = true)
     {
@@ -380,8 +380,8 @@ class BaseInflector
      * Converts a CamelCase name into an ID in lowercase.
      * Words in the ID may be concatenated using the specified character (defaults to '-').
      * For example, 'PostTag' will be converted to 'post-tag'.
-     * @param  string $name      the string to be converted
-     * @param  string $separator the character used to concatenate the words in the ID
+     * @param string $name the string to be converted
+     * @param string $separator the character used to concatenate the words in the ID
      * @return string the resulting ID
      */
     public static function camel2id($name, $separator = '-')
@@ -397,8 +397,8 @@ class BaseInflector
      * Converts an ID into a CamelCase name.
      * Words in the ID separated by `$separator` (defaults to '-') will be concatenated into a CamelCase name.
      * For example, 'post-tag' is converted to 'PostTag'.
-     * @param  string $id        the ID to be converted
-     * @param  string $separator the character used to separate the words in the ID
+     * @param string $id the ID to be converted
+     * @param string $separator the character used to separate the words in the ID
      * @return string the resulting CamelCase name
      */
     public static function id2camel($id, $separator = '-')
@@ -408,7 +408,7 @@ class BaseInflector
 
     /**
      * Converts any "CamelCased" into an "underscored_word".
-     * @param  string $words the word(s) to underscore
+     * @param string $words the word(s) to underscore
      * @return string
      */
     public static function underscore($words)
@@ -418,8 +418,8 @@ class BaseInflector
 
     /**
      * Returns a human-readable string from $word
-     * @param  string  $word  the string to humanize
-     * @param  boolean $ucAll whether to set all words to uppercase or not
+     * @param string $word the string to humanize
+     * @param boolean $ucAll whether to set all words to uppercase or not
      * @return string
      */
     public static function humanize($word, $ucAll = false)
@@ -434,7 +434,7 @@ class BaseInflector
      * Converts a word like "send_email" to "sendEmail". It
      * will remove non alphanumeric character from the word, so
      * "who's online" will be converted to "whoSOnline"
-     * @param  string $word to lowerCamelCase
+     * @param string $word to lowerCamelCase
      * @return string
      */
     public static function variablize($word)
@@ -447,7 +447,7 @@ class BaseInflector
     /**
      * Converts a class name to its table name (pluralized)
      * naming conventions. For example, converts "Person" to "people"
-     * @param  string $className the class name for getting related table_name
+     * @param string $className the class name for getting related table_name
      * @return string
      */
     public static function tableize($className)
@@ -459,10 +459,10 @@ class BaseInflector
      * Returns a string with all spaces converted to given replacement and
      * non word characters removed.  Maps special characters to ASCII using
      * [[$transliteration]] array.
-     * @param  string  $string      An arbitrary string to convert
-     * @param  string  $replacement The replacement to use for spaces
-     * @param  boolean $lowercase   whether to return the string in lowercase or not. Defaults to `true`.
-     * @return string  The converted string.
+     * @param string $string An arbitrary string to convert
+     * @param string $replacement The replacement to use for spaces
+     * @param boolean $lowercase whether to return the string in lowercase or not. Defaults to `true`.
+     * @return string The converted string.
      */
     public static function slug($string, $replacement = '-', $lowercase = true)
     {
@@ -481,7 +481,7 @@ class BaseInflector
 
     /**
      * Converts a table name to its class name. For example, converts "people" to "Person"
-     * @param  string $tableName
+     * @param string $tableName
      * @return string
      */
     public static function classify($tableName)
@@ -491,7 +491,7 @@ class BaseInflector
 
     /**
      * Converts number to its ordinal English form. For example, converts 13 to 13th, 2 to 2nd ...
-     * @param  integer $number the number to get its ordinal value
+     * @param integer $number the number to get its ordinal value
      * @return string
      */
     public static function ordinalize($number)

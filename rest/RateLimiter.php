@@ -34,10 +34,10 @@ class RateLimiter extends Component
 
     /**
      * Checks whether the rate limit exceeds.
-     * @param  RateLimitInterface           $user     the current user
-     * @param  Request                      $request
-     * @param  Response                     $response
-     * @param  Action                       $action   the action to be executed
+     * @param RateLimitInterface $user the current user
+     * @param Request $request
+     * @param Response $response
+     * @param Action $action the action to be executed
      * @throws TooManyRequestsHttpException if rate limit exceeds
      */
     public function check($user, $request, $response, $action)
@@ -69,9 +69,9 @@ class RateLimiter extends Component
     /**
      * Adds the rate limit headers to the response
      * @param Response $response
-     * @param integer  $limit     the maximum number of allowed requests during a period
-     * @param integer  $remaining the remaining number of allowed requests within the current period
-     * @param integer  $reset     the number of seconds to wait before having maximum number of allowed requests again
+     * @param integer $limit the maximum number of allowed requests during a period
+     * @param integer $remaining the remaining number of allowed requests within the current period
+     * @param integer $reset the number of seconds to wait before having maximum number of allowed requests again
      */
     protected function addRateLimitHeaders($response, $limit, $remaining, $reset)
     {

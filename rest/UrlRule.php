@@ -183,9 +183,9 @@ class UrlRule extends CompositeUrlRule
 
     /**
      * Creates a URL rule using the given pattern and action.
-     * @param  string                    $pattern
-     * @param  string                    $prefix
-     * @param  string                    $action
+     * @param string $pattern
+     * @param string $prefix
+     * @param string $action
      * @return \yii\web\UrlRuleInterface
      */
     protected function createRule($pattern, $prefix, $action)

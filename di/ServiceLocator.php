@@ -55,12 +55,11 @@ class ServiceLocator extends Component
      */
     private $_definitions = [];
 
-
     /**
      * Getter magic method.
      * This method is overridden to support accessing components like reading properties.
-     * @param  string $name component or property name
-     * @return mixed  the named property value
+     * @param string $name component or property name
+     * @return mixed the named property value
      */
     public function __get($name)
     {
@@ -74,7 +73,7 @@ class ServiceLocator extends Component
     /**
      * Checks if a property value is null.
      * This method overrides the parent implementation by checking if the named component is loaded.
-     * @param  string  $name the property name or the event name
+     * @param string $name the property name or the event name
      * @return boolean whether the property value is null
      */
     public function __isset($name)

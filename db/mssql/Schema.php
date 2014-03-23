@@ -100,7 +100,7 @@ class Schema extends \yii\db\Schema
     /**
      * Quotes a table name for use in a query.
      * A simple table name has no schema prefix.
-     * @param  string $name table name.
+     * @param string $name table name.
      * @return string the properly quoted table name.
      */
     public function quoteSimpleTableName($name)
@@ -111,7 +111,7 @@ class Schema extends \yii\db\Schema
     /**
      * Quotes a column name for use in a query.
      * A simple column name has no prefix.
-     * @param  string $name column name.
+     * @param string $name column name.
      * @return string the properly quoted column name.
      */
     public function quoteSimpleColumnName($name)
@@ -130,7 +130,7 @@ class Schema extends \yii\db\Schema
 
     /**
      * Loads the metadata for the specified table.
-     * @param  string           $name table name
+     * @param string $name table name
      * @return TableSchema|null driver dependent table metadata. Null if the table does not exist.
      */
     public function loadTableSchema($name)
@@ -150,7 +150,7 @@ class Schema extends \yii\db\Schema
     /**
      * Resolves the table name and schema name (if any).
      * @param TableSchema $table the table metadata object
-     * @param string      $name  the table name
+     * @param string $name the table name
      */
     protected function resolveTableNames($table, $name)
     {
@@ -176,7 +176,7 @@ class Schema extends \yii\db\Schema
 
     /**
      * Loads the column information into a [[ColumnSchema]] object.
-     * @param  array        $info column information
+     * @param array $info column information
      * @return ColumnSchema the column schema object
      */
     protected function loadColumnSchema($info)
@@ -230,8 +230,8 @@ class Schema extends \yii\db\Schema
 
     /**
      * Collects the metadata of table columns.
-     * @param  TableSchema $table the table metadata
-     * @return boolean     whether the table exists in the database
+     * @param TableSchema $table the table metadata
+     * @return boolean whether the table exists in the database
      */
     protected function findColumns($table)
     {
@@ -360,8 +360,8 @@ SQL;
 
     /**
      * Returns all table names in the database.
-     * @param  string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-     * @return array  all table names in the database. The names have NO schema name prefix.
+     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+     * @return array all table names in the database. The names have NO schema name prefix.
      */
     protected function findTableNames($schema = '')
     {
