@@ -347,7 +347,7 @@ class Request extends \yii\base\Request
     public function getBodyParams()
     {
         if ($this->_bodyParams === null) {
-            if (isset($_POST[$this->methodParam]) || $this->getMethod() === 'POST') {
+            if (isset($_POST[$this->methodParam])) {
                 $this->_bodyParams = $_POST;
                 unset($this->_bodyParams[$this->methodParam]);
                 return $this->_bodyParams;
@@ -371,6 +371,9 @@ class Request extends \yii\base\Request
                     throw new InvalidConfigException("The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
                 }
                 $this->_bodyParams = $parser->parse($this->getRawBody(), $contentType);
+            } elseif ($this->getMethod() === 'POST') {
+                // PHP has already parsed the body so we have all params in $_POST
+                $this->_bodyParams = $_POST;
             } else {
                 $this->_bodyParams = [];
                 mb_parse_str($this->getRawBody(), $this->_bodyParams);
