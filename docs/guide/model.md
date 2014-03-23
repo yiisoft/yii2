@@ -50,8 +50,8 @@ class member variables. In the following example, the `LoginForm` model class de
 // LoginForm has two attributes: username and password
 class LoginForm extends \yii\base\Model
 {
-	public $username;
-	public $password;
+    public $username;
+    public $password;
 }
 ```
 
@@ -77,16 +77,16 @@ In many cases, [[yii\base\Model::generateAttributeLabel()]] will generate reason
 // LoginForm has two attributes: username and password
 class LoginForm extends \yii\base\Model
 {
-	public $username;
-	public $password;
+    public $username;
+    public $password;
 
-	public function attributeLabels()
-	{
-		return [
-			'username' => 'Your name',
-			'password' => 'Your password',
-		];
-	}
+    public function attributeLabels()
+    {
+        return [
+            'username' => 'Your name',
+            'password' => 'Your password',
+        ];
+    }
 }
 ```
 
@@ -111,13 +111,13 @@ names and whose values are lists of attributes that should be active in that sce
 ```php
 class User extends \yii\db\ActiveRecord
 {
-	public function scenarios()
-	{
-		return [
-			'login' => ['username', 'password'],
-			'register' => ['username', 'email', 'password'],
-		];
-	}
+    public function scenarios()
+    {
+        return [
+            'login' => ['username', 'password'],
+            'register' => ['username', 'email', 'password'],
+        ];
+    }
 }
 ```
 
@@ -128,13 +128,13 @@ If you want to keep the default scenario available besides your own scenarios, u
 ```php
 class User extends \yii\db\ActiveRecord
 {
-	public function scenarios()
-	{
-		$scenarios = parent::scenarios();
-		$scenarios['login'] = ['username', 'password'];
-		$scenarios['register'] = ['username', 'email', 'password'];
-		return $scenarios;
-	}
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios['login'] = ['username', 'password'];
+        $scenarios['register'] = ['username', 'email', 'password'];
+        return $scenarios;
+    }
 }
 ```
 
@@ -154,21 +154,21 @@ Identifying the active model scenario can be done using one of the following app
 ```php
 class EmployeeController extends \yii\web\Controller
 {
-	public function actionCreate($id = null)
-	{
-		// first way
-		$employee = new Employee(['scenario' => 'managementPanel']);
+    public function actionCreate($id = null)
+    {
+        // first way
+        $employee = new Employee(['scenario' => 'managementPanel']);
 
-		// second way
-		$employee = new Employee();
-		$employee->scenario = 'managementPanel';
+        // second way
+        $employee = new Employee();
+        $employee->scenario = 'managementPanel';
 
-		// third way
-		$employee = Employee::find()->where('id = :id', [':id' => $id])->one();
-		if ($employee !== null) {
-			$employee->scenario = 'managementPanel';
-		}
-	}
+        // third way
+        $employee = Employee::find()->where('id = :id', [':id' => $id])->one();
+        if ($employee !== null) {
+            $employee->scenario = 'managementPanel';
+        }
+    }
 }
 ```
 
@@ -191,10 +191,10 @@ $model = new LoginForm();
 $model->username = $_POST['username'];
 $model->password = $_POST['password'];
 if ($model->validate()) {
-	// ... login the user ...
+    // ... login the user ...
 } else {
-	$errors = $model->getErrors();
-	// ... display the errors to the end user ...
+    $errors = $model->getErrors();
+    // ... display the errors to the end user ...
 }
 ```
 
@@ -204,16 +204,16 @@ instance of a [[yii\validators\Validator]] child class, or an array with the fol
 
 ```php
 [
-	['attribute1', 'attribute2', ...],
-	'validator class or alias',
-	// specifies in which scenario(s) this rule is active.
-	// if not given, it means it is active in all scenarios
-	'on' => ['scenario1', 'scenario2', ...],
-	// the following name-value pairs will be used
-	// to initialize the validator properties
-	'property1' => 'value1',
-	'property2' => 'value2',
-	// ...
+    ['attribute1', 'attribute2', ...],
+    'validator class or alias',
+    // specifies in which scenario(s) this rule is active.
+    // if not given, it means it is active in all scenarios
+    'on' => ['scenario1', 'scenario2', ...],
+    // the following name-value pairs will be used
+    // to initialize the validator properties
+    'property1' => 'value1',
+    'property2' => 'value2',
+    // ...
 ]
 ```
 
@@ -236,18 +236,18 @@ Here is an example implementation of a validator validating the age of a user:
 ```php
 public function validateAge($attribute, $params)
 {
-	$value = $this->$attribute;
-	if (strtotime($value) > strtotime('now - ' . $params['min'] . ' years')) {
-		$this->addError($attribute, 'You must be at least ' . $params['min'] . ' years old to register for this service.');
-	}
+    $value = $this->$attribute;
+    if (strtotime($value) > strtotime('now - ' . $params['min'] . ' years')) {
+        $this->addError($attribute, 'You must be at least ' . $params['min'] . ' years old to register for this service.');
+    }
 }
 
 public function rules()
 {
-	return [
-		// ...
-		[['birthdate'], 'validateAge', 'params' => ['min' => '12']],
-	];
+    return [
+        // ...
+        [['birthdate'], 'validateAge', 'params' => ['min' => '12']],
+    ];
 }
 ```
 
@@ -258,7 +258,7 @@ for example the [[yii\validators\InlineValidator::$skipOnEmpty|skipOnEmpty]] pro
 [['birthdate'], 'validateAge', 'params' => ['min' => '12'], 'skipOnEmpty' => false],
 ```
 
-### conditional validation
+### Conditional validation
 
 To validate attributes only when certain conditions apply, e.g. the validation of
 one field depends on the value of another field you can use [[yii\validators\Validator::when|the `when` property]]
@@ -297,8 +297,8 @@ as an array of name-value pairs.
 ```php
 $post = Post::find(42);
 if ($post) {
-	$attributes = $post->attributes;
-	var_dump($attributes);
+    $attributes = $post->attributes;
+    var_dump($attributes);
 }
 ```
 
@@ -307,8 +307,8 @@ Using the same `attributes` property you can massively assign data from associat
 ```php
 $post = new Post();
 $attributes = [
-	'title' => 'Massive assignment example',
-	'content' => 'Never allow assigning attributes that are not meant to be assigned.',
+    'title' => 'Massive assignment example',
+    'content' => 'Never allow assigning attributes that are not meant to be assigned.',
 ];
 $post->attributes = $attributes;
 var_dump($attributes);
@@ -329,31 +329,31 @@ assignment is described in `scenarios` method:
 ```php
 class User extends ActiveRecord
 {
-	public function rules()
-	{
-		return [
-			// rule applied when corresponding field is "safe"
-			['username', 'string', 'length' => [4, 32]],
-			['first_name', 'string', 'max' => 128],
-			['password', 'required'],
+    public function rules()
+    {
+        return [
+            // rule applied when corresponding field is "safe"
+            ['username', 'string', 'length' => [4, 32]],
+            ['first_name', 'string', 'max' => 128],
+            ['password', 'required'],
 
-			// rule applied when scenario is "signup" no matter if field is "safe" or not
-			['hashcode', 'check', 'on' => 'signup'],
-		];
-	}
+            // rule applied when scenario is "signup" no matter if field is "safe" or not
+            ['hashcode', 'check', 'on' => 'signup'],
+        ];
+    }
 
-	public function scenarios()
-	{
-		return [
-			// on signup allow mass assignment of username
-			'signup' => ['username', 'password'],
-			'update' => ['username', 'first_name'],
-		];
-	}
+    public function scenarios()
+    {
+        return [
+            // on signup allow mass assignment of username
+            'signup' => ['username', 'password'],
+            'update' => ['username', 'first_name'],
+        ];
+    }
 }
 ```
 
-For the code above mass assignment will be allowed stsrictly according to `scenarios()`:
+For the code above mass assignment will be allowed strictly according to `scenarios()`:
 
 ```php
 $user = User::find(42);
@@ -368,9 +368,9 @@ Will give you empty array because there's no default scenario defined in our `sc
 $user = User::find(42);
 $user->scenario = 'signup';
 $data = [
-	'username' => 'samdark',
-	'password' => '123',
-	'hashcode' => 'test',
+    'username' => 'samdark',
+    'password' => '123',
+    'hashcode' => 'test',
 ];
 $user->attributes = $data;
 print_r($user->attributes);
@@ -380,10 +380,10 @@ Will give you the following:
 
 ```php
 array(
-	'username' => 'samdark',
-	'first_name' => null,
-	'password' => '123',
-	'hashcode' => null, // it's not defined in scenarios method
+    'username' => 'samdark',
+    'first_name' => null,
+    'password' => '123',
+    'hashcode' => null, // it's not defined in scenarios method
 )
 ```
 
@@ -392,14 +392,14 @@ In case of not defined `scenarios` method like the following:
 ```php
 class User extends ActiveRecord
 {
-	public function rules()
-	{
-		return [
-			['username', 'string', 'length' => [4, 32]],
-			['first_name', 'string', 'max' => 128],
-			['password', 'required'],
-		];
-	}
+    public function rules()
+    {
+        return [
+            ['username', 'string', 'length' => [4, 32]],
+            ['first_name', 'string', 'max' => 128],
+            ['password', 'required'],
+        ];
+    }
 }
 ```
 
@@ -408,10 +408,10 @@ The code above assumes default scenario so mass assignment will be available for
 ```php
 $user = User::find(42);
 $data = [
-	'username' => 'samdark',
-	'first_name' => 'Alexander',
-	'last_name' => 'Makarov',
-	'password' => '123',
+    'username' => 'samdark',
+    'first_name' => 'Alexander',
+    'last_name' => 'Makarov',
+    'password' => '123',
 ];
 $user->attributes = $data;
 print_r($user->attributes);
@@ -421,9 +421,9 @@ Will give you the following:
 
 ```php
 array(
-	'username' => 'samdark',
-	'first_name' => 'Alexander',
-	'password' => '123',
+    'username' => 'samdark',
+    'first_name' => 'Alexander',
+    'password' => '123',
 )
 ```
 
@@ -432,21 +432,21 @@ If you want some fields to be unsafe for default scenario:
 ```php
 class User extends ActiveRecord
 {
-	function rules()
-	{
-		return [
-			['username', 'string', 'length' => [4, 32]],
-			['first_name', 'string', 'max' => 128],
-			['password', 'required'],
-		];
-	}
+    function rules()
+    {
+        return [
+            ['username', 'string', 'length' => [4, 32]],
+            ['first_name', 'string', 'max' => 128],
+            ['password', 'required'],
+        ];
+    }
 
-	public function scenarios()
-	{
-		return [
-			self::SCENARIO_DEFAULT => ['username', 'first_name', '!password']
-		];
-	}
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_DEFAULT => ['username', 'first_name', '!password']
+        ];
+    }
 }
 ```
 
@@ -455,9 +455,9 @@ Mass assignment is still available by default:
 ```php
 $user = User::find(42);
 $data = [
-	'username' => 'samdark',
-	'first_name' => 'Alexander',
-	'password' => '123',
+    'username' => 'samdark',
+    'first_name' => 'Alexander',
+    'password' => '123',
 ];
 $user->attributes = $data;
 print_r($user->attributes);
@@ -467,9 +467,9 @@ The code above gives you:
 
 ```php
 array(
-	'username' => 'samdark',
-	'first_name' => 'Alexander',
-	'password' => null, // because of ! before field name in scenarios
+    'username' => 'samdark',
+    'first_name' => 'Alexander',
+    'password' => null, // because of ! before field name in scenarios
 )
 ```
 

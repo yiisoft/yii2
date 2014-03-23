@@ -53,26 +53,26 @@ to save the time of parsing database schema. This can be done by setting the
 
 ```php
 return [
-	// ...
-	'components' => [
-		// ...
-		'db' => [
-			'class' => 'yii\db\Connection',
-			'dsn' => 'mysql:host=localhost;dbname=mydatabase',
-			'username' => 'root',
-			'password' => '',
-			'enableSchemaCache' => true,
+    // ...
+    'components' => [
+        // ...
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=localhost;dbname=mydatabase',
+            'username' => 'root',
+            'password' => '',
+            'enableSchemaCache' => true,
 
-			// Duration of schema cache.
-			// 'schemaCacheDuration' => 3600,
+            // Duration of schema cache.
+            // 'schemaCacheDuration' => 3600,
 
-			// Name of the cache component used. Default is 'cache'.
-			//'schemaCache' => 'cache',
-		],
-		'cache' => [
-			'class' => 'yii\caching\FileCache',
-		],
-	],
+            // Name of the cache component used. Default is 'cache'.
+            //'schemaCache' => 'cache',
+        ],
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
+        ],
+    ],
 ];
 ```
 
@@ -94,19 +94,19 @@ application via `protected/config/main.php`:
 
 ```php
 return [
-	// ...
-	'components' => [
-		'session' => [
-			'class' => 'yii\web\DbSession',
+    // ...
+    'components' => [
+        'session' => [
+            'class' => 'yii\web\DbSession',
 
-			// Set the following if want to use DB component other than
-			// default 'db'.
-			// 'db' => 'mydb',
+            // Set the following if want to use DB component other than
+            // default 'db'.
+            // 'db' => 'mydb',
 
-			// To override default session table set the following
-			// 'sessionTable' => 'my_session',
-		],
-	],
+            // To override default session table set the following
+            // 'sessionTable' => 'my_session',
+        ],
+    ],
 ];
 ```
 
@@ -143,19 +143,19 @@ the following:
 ```php
 public function behaviors()
 {
-	return [
-		'httpCache' => [
-			'class' => \yii\web\HttpCache::className(),
-			'only' => ['list'],
-			'lastModified' => function ($action, $params) {
-				$q = new Query();
-				return strtotime($q->from('users')->max('updated_timestamp'));
-			},
-			// 'etagSeed' => function ($action, $params) {
-				// return // generate etag seed here
-			//}
-		],
-	];
+    return [
+        'httpCache' => [
+            'class' => \yii\web\HttpCache::className(),
+            'only' => ['list'],
+            'lastModified' => function ($action, $params) {
+                $q = new Query();
+                return strtotime($q->from('users')->max('updated_timestamp'));
+            },
+            // 'etagSeed' => function ($action, $params) {
+                // return // generate etag seed here
+            //}
+        ],
+    ];
 }
 ```
 
@@ -197,11 +197,11 @@ ActiveRecord's `asArray` method.
 ```php
 class PostController extends Controller
 {
-	public function actionIndex()
-	{
-		$posts = Post::find()->orderBy('id DESC')->limit(100)->asArray()->all();
-		return $this->render('index', ['posts' => $posts]);
-	}
+    public function actionIndex()
+    {
+        $posts = Post::find()->orderBy('id DESC')->limit(100)->asArray()->all();
+        return $this->render('index', ['posts' => $posts]);
+    }
 }
 ```
 
@@ -209,7 +209,7 @@ In the view you should access fields of each individual record from `$posts` as 
 
 ```php
 foreach ($posts as $post) {
-	echo $post['title']."<br>";
+    echo $post['title']."<br>";
 }
 ```
 

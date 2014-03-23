@@ -113,7 +113,7 @@ If you need to handle all instances of a class instead of the object you can att
 
 ```php
 Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-	Yii::trace(get_class($event->sender) . ' is inserted.');
+    Yii::trace(get_class($event->sender) . ' is inserted.');
 });
 ```
 
@@ -256,8 +256,8 @@ echo \yii\widgets\Menu::widget(['items' => $items]);
 
 // Passing an array to initialize the object properties
 $form = \yii\widgets\ActiveForm::begin([
-	'options' => ['class' => 'form-horizontal'],
-	'fieldConfig' => ['inputOptions' => ['class' => 'input-xlarge']],
+    'options' => ['class' => 'form-horizontal'],
+    'fieldConfig' => ['inputOptions' => ['class' => 'input-xlarge']],
 ]);
 ... form inputs here ...
 \yii\widgets\ActiveForm::end();
@@ -377,11 +377,11 @@ Using fields, you can build a form more cleanly than before:
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
-	<?= $form->field($model, 'username') ?>
-	<?= $form->field($model, 'password')->passwordInput() ?>
-	<div class="form-group">
-		<?= Html::submitButton('Login') ?>
-	</div>
+    <?= $form->field($model, 'username') ?>
+    <?= $form->field($model, 'password')->passwordInput() ?>
+    <div class="form-group">
+        <?= Html::submitButton('Login') ?>
+    </div>
 <?php yii\widgets\ActiveForm::end(); ?>
 ```
 
@@ -419,10 +419,10 @@ an [[yii\db\ActiveQuery|ActiveQuery]] object. For example, the following method 
 ```php
 class Customer extends \yii\db\ActiveRecord
 {
-	public function getOrders()
-	{
-		return $this->hasMany('Order', ['customer_id' => 'id']);
-	}
+    public function getOrders()
+    {
+        return $this->hasMany('Order', ['customer_id' => 'id']);
+    }
 }
 ```
 
@@ -443,9 +443,9 @@ use the [[yii\db\ActiveRecord::find()|find()]] method:
 ```php
 // to retrieve all *active* customers and order them by their ID:
 $customers = Customer::find()
-	->where(['status' => $active])
-	->orderBy('id')
-	->all();
+    ->where(['status' => $active])
+    ->orderBy('id')
+    ->all();
 // return the customer whose PK is 1
 $customer = Customer::find(1);
 ```
@@ -506,9 +506,9 @@ the same goal.
 
 ```php
 [
-	'pattern' => 'post/<page:\d+>/<tag>',
-	'route' => 'post/index',
-	'defaults' => ['page' => 1],
+    'pattern' => 'post/<page:\d+>/<tag>',
+    'route' => 'post/index',
+    'defaults' => ['page' => 1],
 ]
 ```
 

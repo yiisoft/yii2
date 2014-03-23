@@ -29,17 +29,17 @@ use yii\web\AssetBundle as AssetBundle;
 
 class AppAsset extends AssetBundle
 {
-	public $basePath = '@webroot';
-	public $baseUrl = '@web';
-	public $css = [
-		'css/site.css',
-	];
-	public $js = [
-	];
-	public $depends = [
-		'yii\web\YiiAsset',
-		'yii\bootstrap\BootstrapAsset',
-	];
+    public $basePath = '@webroot';
+    public $baseUrl = '@web';
+    public $css = [
+        'css/site.css',
+    ];
+    public $js = [
+    ];
+    public $depends = [
+        'yii\web\YiiAsset',
+        'yii\bootstrap\BootstrapAsset',
+    ];
 }
 ```
 
@@ -81,17 +81,17 @@ following way:
 ```php
 class LanguageAsset extends AssetBundle
 {
-	public $language;
-	public $sourcePath = '@app/assets/language';
-	public $js = [
-	];
+    public $language;
+    public $sourcePath = '@app/assets/language';
+    public $js = [
+    ];
 
-	public function registerAssetFiles($view)
-	{
-		$language = $this->language ? $this->language : Yii::$app->language;
-		$this->js[] = 'language-' . $language . '.js';
-		parent::registerAssetFiles($view);
-	}
+    public function registerAssetFiles($view)
+    {
+        $language = $this->language ? $this->language : Yii::$app->language;
+        $this->js[] = 'language-' . $language . '.js';
+        parent::registerAssetFiles($view);
+    }
 }
 ```
 
@@ -205,25 +205,25 @@ The template itself looks like the following:
  * Please define these missing path aliases.
  */
 return [
-	// The list of asset bundles to compress:
-	'bundles' => [
-		// 'yii\web\YiiAsset',
-		// 'yii\web\JqueryAsset',
-	],
-	// Asset bundle for compression output:
-	'targets' => [
-		'app\config\AllAsset' => [
-			'basePath' => 'path/to/web',
-			'baseUrl' => '',
-			'js' => 'js/all-{ts}.js',
-			'css' => 'css/all-{ts}.css',
-		],
-	],
-	// Asset manager configuration:
-	'assetManager' => [
-		'basePath' => __DIR__,
-		'baseUrl' => '',
-	],
+    // The list of asset bundles to compress:
+    'bundles' => [
+        // 'yii\web\YiiAsset',
+        // 'yii\web\JqueryAsset',
+    ],
+    // Asset bundle for compression output:
+    'targets' => [
+        'app\config\AllAsset' => [
+            'basePath' => 'path/to/web',
+            'baseUrl' => '',
+            'js' => 'js/all-{ts}.js',
+            'css' => 'css/all-{ts}.css',
+        ],
+    ],
+    // Asset manager configuration:
+    'assetManager' => [
+        'basePath' => __DIR__,
+        'baseUrl' => '',
+    ],
 ];
 ```
 
@@ -260,8 +260,8 @@ like the following,
 
 ```php
 return [
-   	'cssCompressor' => 'java -jar path.to.file\yuicompressor.jar  --type css {from} -o {to}',
-   	'jsCompressor' => 'java -jar path.to.file\compiler.jar --js {from} --js_output_file {to}',
+       'cssCompressor' => 'java -jar path.to.file\yuicompressor.jar  --type css {from} -o {to}',
+       'jsCompressor' => 'java -jar path.to.file\compiler.jar --js {from} --js_output_file {to}',
 ];
 ```
 
@@ -282,10 +282,10 @@ assets file like the following:
 
 ```php
 'components' => [
-	// ...
-	'assetManager' => [
-		'bundles' => require '/path/to/myapp/config/assets_compressed.php',
-	],
+    // ...
+    'assetManager' => [
+        'bundles' => require '/path/to/myapp/config/assets_compressed.php',
+    ],
 ],
 ```
 
@@ -310,18 +310,18 @@ So if the corresponding tool is installed you can specify any of these in asset 
 ```php
 class AppAsset extends AssetBundle
 {
-	public $basePath = '@webroot';
-	public $baseUrl = '@web';
-	public $css = [
-		'css/site.less',
-	];
-	public $js = [
-		'js/site.ts',
-	];
-	public $depends = [
-		'yii\web\YiiAsset',
-		'yii\bootstrap\BootstrapAsset',
-	];
+    public $basePath = '@webroot';
+    public $baseUrl = '@web';
+    public $css = [
+        'css/site.less',
+    ];
+    public $js = [
+        'js/site.ts',
+    ];
+    public $depends = [
+        'yii\web\YiiAsset',
+        'yii\bootstrap\BootstrapAsset',
+    ];
 }
 ```
 
@@ -330,15 +330,15 @@ In order to adjust conversion tool call parameters or add new ones you can use a
 ```php
 // ...
 'components' => [
-	'assetManager' => [
-		'converter' => [
-			'class' => 'yii\web\AssetConverter',
-			'commands' => [
-				'less' => ['css', 'lessc {from} {to} --no-color'],
-				'ts' => ['js', 'tsc --out {to} {from}'],
-			],
-		],
-	],
+    'assetManager' => [
+        'converter' => [
+            'class' => 'yii\web\AssetConverter',
+            'commands' => [
+                'less' => ['css', 'lessc {from} {to} --no-color'],
+                'ts' => ['js', 'tsc --out {to} {from}'],
+            ],
+        ],
+    ],
 ],
 ```
 

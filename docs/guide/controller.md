@@ -20,17 +20,17 @@ use yii\web\Controller;
 
 class SiteController extends Controller
 {
-	public function actionIndex()
-	{
-		// will render view from "views/site/index.php"
-		return $this->render('index');
-	}
+    public function actionIndex()
+    {
+        // will render view from "views/site/index.php"
+        return $this->render('index');
+    }
 
-	public function actionTest()
-	{
-		// will just print "test" to the browser
-		return 'test';
-	}
+    public function actionTest()
+    {
+        // will just print "test" to the browser
+        return 'test';
+    }
 }
 ```
 
@@ -49,12 +49,12 @@ use yii\web\Controller;
 
 class SiteController extends Controller
 {
-	public $enableCsrfValidation = false;
+    public $enableCsrfValidation = false;
 
-	public function actionIndex()
-	{
-		// CSRF validation will not be applied to this and other actions
-	}
+    public function actionIndex()
+    {
+        // CSRF validation will not be applied to this and other actions
+    }
 
 }
 ```
@@ -68,12 +68,12 @@ use yii\web\Controller;
 
 class SiteController extends Controller
 {
-	public function beforeAction($action)
-	{
-		// ...set `$this->enableCsrfValidation` here based on some conditions...
-		// call parent method that will check CSRF if such property is true.
-		return parent::beforeAction($action);
-	}
+    public function beforeAction($action)
+    {
+        // ...set `$this->enableCsrfValidation` here based on some conditions...
+        // call parent method that will check CSRF if such property is true.
+        return parent::beforeAction($action);
+    }
 }
 ```
 
@@ -125,20 +125,20 @@ use yii\web\Controller;
 
 class BlogController extends Controller
 {
-	public function actionView($id, $version = null)
-	{
-		$post = Post::find($id);
-		$text = $post->text;
+    public function actionView($id, $version = null)
+    {
+        $post = Post::find($id);
+        $text = $post->text;
 
-		if ($version) {
-			$text = $post->getHistory($version);
-		}
+        if ($version) {
+            $text = $post->getHistory($version);
+        }
 
-		return $this->render('view', [
-			'post' => $post,
-			'text' => $text,
-		]);
-	}
+        return $this->render('view', [
+            'post' => $post,
+            'text' => $text,
+        ]);
+    }
 }
 ```
 
@@ -159,22 +159,22 @@ use yii\web\HttpException;
 
 class BlogController extends Controller
 {
-	public function actionUpdate($id)
-	{
-		$post = Post::find($id);
-		if (!$post) {
-			throw new NotFoundHttpException();
-		}
+    public function actionUpdate($id)
+    {
+        $post = Post::find($id);
+        if (!$post) {
+            throw new NotFoundHttpException();
+        }
 
-		if (\Yii::$app->request->isPost) {
-			$post->load(Yii::$app->request->post());
-			if ($post->save()) {
-				return $this->redirect(['view', 'id' => $post->id]);
-			}
-		}
+        if (\Yii::$app->request->isPost) {
+            $post->load(Yii::$app->request->post());
+            if ($post->save()) {
+                return $this->redirect(['view', 'id' => $post->id]);
+            }
+        }
 
-		return $this->render('update', ['post' => $post]);
-	}
+        return $this->render('update', ['post' => $post]);
+    }
 }
 ```
 
@@ -189,12 +189,12 @@ namespace app\actions;
 
 class Page extends \yii\base\Action
 {
-	public $view = 'index';
+    public $view = 'index';
 
-	public function run()
-	{
-		return $this->controller->render($view);
-	}
+    public function run()
+    {
+        return $this->controller->render($view);
+    }
 }
 ```
 
@@ -204,15 +204,15 @@ can be used in your controller as following:
 ```php
 class SiteController extends \yii\web\Controller
 {
-	public function actions()
-	{
-		return [
-			'about' => [
-				'class' => 'app\actions\Page',
-				'view' => 'about',
-			],
-		];
-	}
+    public function actions()
+    {
+        return [
+            'about' => [
+                'class' => 'app\actions\Page',
+                'view' => 'about',
+            ],
+        ];
+    }
 }
 ```
 
@@ -253,14 +253,14 @@ dynamically or via application config:
 
 ```php
 $config = [
-	'id' => 'basic',
-	'basePath' => dirname(__DIR__),
-	// ...
-	'catchAll' => [ // <-- here
-		'offline/notice',
-		'param1' => 'value1',
-		'param2' => 'value2',
-	],
+    'id' => 'basic',
+    'basePath' => dirname(__DIR__),
+    // ...
+    'catchAll' => [ // <-- here
+        'offline/notice',
+        'param1' => 'value1',
+        'param2' => 'value2',
+    ],
 ```
 
 In the above `offline/notice` refer to `OfflineController::actionNotice()`. `param1` and `param2` are parameters passed
@@ -277,15 +277,15 @@ use app\components\web\MyCustomResponse; #extended from yii\web\Response
 
 class SiteController extends Controller
 {
-	public function actionCustom()
-	{
-		/*
-		 * do your things here
-		 * since Response in extended from yii\base\Object, you can initialize its values by passing in 
-		 * __constructor() simple array.
-		 */
-		return new MyCustomResponse(['data' => $myCustomData]);
-	}
+    public function actionCustom()
+    {
+        /*
+         * do your things here
+         * since Response in extended from yii\base\Object, you can initialize its values by passing in
+         * __constructor() simple array.
+         */
+        return new MyCustomResponse(['data' => $myCustomData]);
+    }
 }
 ```
 

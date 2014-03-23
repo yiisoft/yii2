@@ -18,7 +18,7 @@ The view is typically called from controller action using the [[yii\base\Control
 ```php
 public function actionIndex()
 {
-	return $this->render('index', ['username' => 'samdark']);
+    return $this->render('index', ['username' => 'samdark']);
 }
 ```
 
@@ -74,8 +74,8 @@ echo \yii\widgets\Menu::widget(['items' => $items]);
 
 // Passing an array to initialize the object properties
 $form = \yii\widgets\ActiveForm::begin([
-	'options' => ['class' => 'form-horizontal'],
-	'fieldConfig' => ['inputOptions' => ['class' => 'input-xlarge']],
+    'options' => ['class' => 'form-horizontal'],
+    'fieldConfig' => ['inputOptions' => ['class' => 'input-xlarge']],
 ]);
 ... form inputs here ...
 \yii\widgets\ActiveForm::end();
@@ -104,7 +104,7 @@ use yii\helpers\Html;
 ?>
 
 <div class="username">
-	<?= Html::encode($user->name) ?>
+    <?= Html::encode($user->name) ?>
 </div>
 ```
 
@@ -117,7 +117,7 @@ use yii\helpers\HtmlPurifier;
 ?>
 
 <div class="post">
-	<?= HtmlPurifier::process($post->text) ?>
+    <?= HtmlPurifier::process($post->text) ?>
 </div>
 ```
 
@@ -180,10 +180,10 @@ server. Yii view object has a method to work with these:
 
 ```php
 $this->registerLinkTag([
-	'title' => 'Lives News for Yii Framework',
-	'rel' => 'alternate',
-	'type' => 'application/rss+xml',
-	'href' => 'http://www.yiiframework.com/rss.xml/',
+    'title' => 'Lives News for Yii Framework',
+    'rel' => 'alternate',
+    'type' => 'application/rss+xml',
+    'href' => 'http://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
@@ -300,16 +300,16 @@ use yii\helpers\Html;
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
-	<meta charset="<?= Yii::$app->charset ?>"/>
-	<title><?= Html::encode($this->title) ?></title>
-	<?php $this->head() ?>
+    <meta charset="<?= Yii::$app->charset ?>"/>
+    <title><?= Html::encode($this->title) ?></title>
+    <?php $this->head() ?>
 </head>
 <body>
 <?php $this->beginBody() ?>
-	<div class="container">
-		<?= $content ?>
-	</div>
-	<footer class="footer">© 2013 me :)</footer>
+    <div class="container">
+        <?= $content ?>
+    </div>
+    <footer class="footer">© 2013 me :)</footer>
 <?php $this->endBody() ?>
 </body>
 </html>
@@ -343,8 +343,8 @@ use yii\helpers\Html;
 ?>
 
 <div class="profile">
-	<h2><?= Html::encode($username) ?></h2>
-	<p><?= Html::encode($tagline) ?></p>
+    <h2><?= Html::encode($username) ?></h2>
+    <p><?= Html::encode($tagline) ?></p>
 </div>
 ```
 
@@ -352,14 +352,14 @@ Then we're using it in `index.php` view where we display a list of users:
 
 ```php
 <div class="user-index">
-	<?php
-	foreach ($users as $user) {
-		echo $this->render('_profile', [
-			'username' => $user->name,
-			'tagline' => $user->tagline,
-		]);
-	}
-	?>
+    <?php
+    foreach ($users as $user) {
+        echo $this->render('_profile', [
+            'username' => $user->name,
+            'tagline' => $user->tagline,
+        ]);
+    }
+    ?>
 </div>
 ```
 
@@ -367,8 +367,8 @@ Same way we can reuse it in another view displaying a single user profile:
 
 ```php
 echo $this->render('_profile', [
-	'username' => $user->name,
-	'tagline' => $user->tagline,
+    'username' => $user->name,
+    'tagline' => $user->tagline,
 ]);
 ```
 
@@ -394,12 +394,12 @@ from [[yii\base\View]] or [[yii\web\View]]. It can be done via application confi
 
 ```php
 return [
-	// ...
-	'components' => [
-		'view' => [
-			'class' => 'app\components\View',
-		],
-		// ...
-	],
+    // ...
+    'components' => [
+        'view' => [
+            'class' => 'app\components\View',
+        ],
+        // ...
+    ],
 ];
 ```

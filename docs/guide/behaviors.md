@@ -23,20 +23,20 @@ use yii\behaviors\TimestampBehavior;
 
 class User extends ActiveRecord
 {
-	// ...
+    // ...
 
-	public function behaviors()
-	{
-		return [
-			'timestamp' => [
-				'class' => TimestampBehavior::className(),
-				'attributes' => [
-					ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
-					ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
-				],
-			],
-		];
-	}
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
+                ],
+            ],
+        ];
+    }
 }
 ```
 
@@ -60,16 +60,16 @@ use yii\behaviors\TimestampBehavior;
 
 class User extends ActiveRecord
 {
-	// ...
+    // ...
 
-	public function behaviors()
-	{
-		return [
-			TimestampBehavior::className(),
-			// or the following if you want to access the behavior object
-			// 'timestamp' => TimestampBehavior::className(),
-		];
-	}
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+            // or the following if you want to access the behavior object
+            // 'timestamp' => TimestampBehavior::className(),
+        ];
+    }
 }
 ```
 
@@ -89,16 +89,16 @@ following:
 
 ```php
 return [
-	// ...
-	'components' => [
-		'myComponent' => [
-			// ...
-			'as tree' => [
-				'class' => 'Tree',
-				'root' => 0,
-			],
-		],
-	],
+    // ...
+    'components' => [
+        'myComponent' => [
+            // ...
+            'as tree' => [
+                'class' => 'Tree',
+                'root' => 0,
+            ],
+        ],
+    ],
 ];
 ```
 
@@ -130,7 +130,7 @@ use yii\base\Behavior;
 
 class MyBehavior extends Behavior
 {
-	public $attr;
+    public $attr;
 }
 ```
 
@@ -143,17 +143,17 @@ use yii\db\ActiveRecord;
 
 class User extends ActiveRecord
 {
-	// ...
+    // ...
 
-	public function behaviors()
-	{
-		return [
-			'mybehavior' => [
-				'class' => 'app\components\MyBehavior',
-				'attr' => 'member_type'
-			],
-		];
-	}
+    public function behaviors()
+    {
+        return [
+            'mybehavior' => [
+                'class' => 'app\components\MyBehavior',
+                'attr' => 'member_type'
+            ],
+        ];
+    }
 }
 ```
 
@@ -168,24 +168,24 @@ use yii\db\ActiveRecord;
 
 class MyBehavior extends Behavior
 {
-	public $attr;
+    public $attr;
 
-	public function events()
-	{
-		return [
-			ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
-			ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
-		];
-	}
+    public function events()
+    {
+        return [
+            ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
+            ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
+        ];
+    }
 
-	public function beforeInsert() {
-		$model = $this->owner;
-		// Use $model->$attr
-	}
+    public function beforeInsert() {
+        $model = $this->owner;
+        // Use $model->$attr
+    }
 
-	public function beforeUpdate() {
-		$model = $this->owner;
-		// Use $model->$attr
-	}
+    public function beforeUpdate() {
+        $model = $this->owner;
+        // Use $model->$attr
+    }
 }
 ```

@@ -87,31 +87,31 @@ require($yii1path . '/YiiBase.php');
 
 class Yii extends \yii\BaseYii
 {
-	public static $classMap = [];
-	public static $enableIncludePath = true;
-	private static $_aliases = ['system'=>YII_PATH,'zii'=>YII_ZII_PATH];
-	private static $_imports = [];
-	private static $_includePaths;
-	private static $_app;
-	private static $_logger;
+    public static $classMap = [];
+    public static $enableIncludePath = true;
+    private static $_aliases = ['system'=>YII_PATH,'zii'=>YII_ZII_PATH];
+    private static $_imports = [];
+    private static $_includePaths;
+    private static $_app;
+    private static $_logger;
 
-	public static function getVersion()
-	{
-		return '1.1.15-dev';
-	}
+    public static function getVersion()
+    {
+        return '1.1.15-dev';
+    }
 
-	public static function createWebApplication($config=null)
-	{
-		return self::createApplication('CWebApplication',$config);
-	}
+    public static function createWebApplication($config=null)
+    {
+        return self::createApplication('CWebApplication',$config);
+    }
 
-	public static function app()
-	{
-		return self::$_app;
-	}
+    public static function app()
+    {
+        return self::$_app;
+    }
 
-	// Rest of \YiiBase internal code placed here
-	...
+    // Rest of \YiiBase internal code placed here
+    ...
 }
 
 Yii::$classMap = include($yii2path . '/classes.php');

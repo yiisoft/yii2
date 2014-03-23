@@ -9,9 +9,9 @@ use yii\base\ErrorException;
 use Yii;
 
 try {
-	10/0;
+    10/0;
 } catch (ErrorException) {
-	Yii::warning("Tried dividing by zero.");
+    Yii::warning("Tried dividing by zero.");
 }
 
 // execution may continue

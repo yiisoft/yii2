@@ -114,13 +114,13 @@ the application's configuration file:
 ```php
 <?php
 return [
-	// ...
-	'components' => [
-		'urlManager' => [
-			'enablePrettyUrl' => true,
-			'showScriptName' => false,
-		],
-	],
+    // ...
+    'components' => [
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ],
+    ],
 ];
 ```
 
@@ -144,9 +144,9 @@ Let's use some examples to explain how URL rules work. We assume that our rule s
 
 ```php
 [
-	'posts'=>'post/list',
-	'post/<id:\d+>'=>'post/read',
-	'post/<year:\d{4}>/<title>'=>'post/read',
+    'posts'=>'post/list',
+    'post/<id:\d+>'=>'post/read',
+    'post/<year:\d{4}>/<title>'=>'post/read',
 ]
 ```
 
@@ -180,9 +180,9 @@ We use the following example rules to illustrate how to parameterize routes with
 
 ```php
 [
-	'<controller:(post|comment)>/<id:\d+>/<action:(create|update|delete)>' => '<controller>/<action>',
-	'<controller:(post|comment)>/<id:\d+>' => '<controller>/read',
-	'<controller:(post|comment)>s' => '<controller>/list',
+    '<controller:(post|comment)>/<id:\d+>/<action:(create|update|delete)>' => '<controller>/<action>',
+    '<controller:(post|comment)>/<id:\d+>' => '<controller>/read',
+    '<controller:(post|comment)>s' => '<controller>/list',
 ]
 ```
 
@@ -202,7 +202,7 @@ In order to use parameterized hostnames, simply declare URL rules with host info
 
 ```php
 [
-	'http://<user:\w+>.example.com/<lang:\w+>/profile' => 'user/profile',
+    'http://<user:\w+>.example.com/<lang:\w+>/profile' => 'user/profile',
 ]
 ```
 
@@ -220,12 +220,12 @@ should still use the same URL rule as described above without the subfolder `san
 ```php
 <?php
 return [
-	// ...
-	'components' => [
-		'urlManager' => [
-			'suffix' => '.html',
-		],
-	],
+    // ...
+    'components' => [
+        'urlManager' => [
+            'suffix' => '.html',
+        ],
+    ],
 ];
 ```
 
@@ -250,12 +250,12 @@ By default if there's no custom rule for a URL and the URL matches the default f
 ```php
 <?php
 return [
-	// ...
-	'components' => [
-		'urlManager' => [
-			'enableStrictParsing' => true,
-		],
-	],
+    // ...
+    'components' => [
+        'urlManager' => [
+            'enableStrictParsing' => true,
+        ],
+    ],
 ];
 ```
 
@@ -274,15 +274,15 @@ the above car dealer website as an example, we may declare the following URL rul
 ```php
 // ...
 'components' => [
-	'urlManager' => [
-		'rules' => [
-			'<action:(login|logout|about)>' => 'site/<action>',
+    'urlManager' => [
+        'rules' => [
+            '<action:(login|logout|about)>' => 'site/<action>',
 
-			// ...
+            // ...
 
-			['class' => 'app\components\CarUrlRule', 'connectionID' => 'db', /* ... */],
-		],
-	],
+            ['class' => 'app\components\CarUrlRule', 'connectionID' => 'db', /* ... */],
+        ],
+    ],
 ],
 ```
 
@@ -296,31 +296,31 @@ use yii\web\UrlRule;
 
 class CarUrlRule extends UrlRule
 {
-	public $connectionID = 'db';
+    public $connectionID = 'db';
 
-	public function createUrl($manager, $route, $params)
-	{
-		if ($route === 'car/index') {
-			if (isset($params['manufacturer'], $params['model'])) {
-				return $params['manufacturer'] . '/' . $params['model'];
-			} elseif (isset($params['manufacturer'])) {
-				return $params['manufacturer'];
-			}
-		}
-		return false;  // this rule does not apply
-	}
+    public function createUrl($manager, $route, $params)
+    {
+        if ($route === 'car/index') {
+            if (isset($params['manufacturer'], $params['model'])) {
+                return $params['manufacturer'] . '/' . $params['model'];
+            } elseif (isset($params['manufacturer'])) {
+                return $params['manufacturer'];
+            }
+        }
+        return false;  // this rule does not apply
+    }
 
-	public function parseRequest($manager, $request)
-	{
-		$pathInfo = $request->getPathInfo();
-		if (preg_match('%^(\w+)(/(\w+))?$%', $pathInfo, $matches)) {
-			// check $matches[1] and $matches[3] to see
-			// if they match a manufacturer and a model in the database
-			// If so, set $params['manufacturer'] and/or $params['model']
-			// and return ['car/index', $params]
-		}
-		return false;  // this rule does not apply
-	}
+    public function parseRequest($manager, $request)
+    {
+        $pathInfo = $request->getPathInfo();
+        if (preg_match('%^(\w+)(/(\w+))?$%', $pathInfo, $matches)) {
+            // check $matches[1] and $matches[3] to see
+            // if they match a manufacturer and a model in the database
+            // If so, set $params['manufacturer'] and/or $params['model']
+            // and return ['car/index', $params]
+        }
+        return false;  // this rule does not apply
+    }
 }
 ```
 

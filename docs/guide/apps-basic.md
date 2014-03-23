@@ -72,13 +72,13 @@ Views directory contains templates your application is using. In the basic templ
 
 ```
 layouts
-	main.php
+    main.php
 site
-	about.php
-	contact.php
-	error.php
-	index.php
-	login.php
+    about.php
+    contact.php
+    error.php
+    index.php
+    login.php
 ```
 
 `layouts` contains HTML layouts i.e. page markup except content: doctype, head section, main menu, footer etc.
@@ -113,42 +113,42 @@ directory:
 
 ```json
 {
-	"name": "yiisoft/yii2-app-basic",
-	"description": "Yii 2 Basic Application Template",
-	"keywords": ["yii", "framework", "basic", "application template"],
-	"homepage": "http://www.yiiframework.com/",
-	"type": "project",
-	"license": "BSD-3-Clause",
-	"support": {
-		"issues": "https://github.com/yiisoft/yii2/issues?state=open",
-		"forum": "http://www.yiiframework.com/forum/",
-		"wiki": "http://www.yiiframework.com/wiki/",
-		"irc": "irc://irc.freenode.net/yii",
-		"source": "https://github.com/yiisoft/yii2"
-	},
-	"minimum-stability": "dev",
-	"require": {
-		"php": ">=5.4.0",
-		"yiisoft/yii2": "*",
-		"yiisoft/yii2-swiftmailer": "*",
-		"yiisoft/yii2-bootstrap": "*",
-		"yiisoft/yii2-debug": "*",
-		"yiisoft/yii2-gii": "*"
-	},
-	"scripts": {
-		"post-create-project-cmd": [
-			"yii\\composer\\Installer::setPermission"
-		]
-	},
-	"extra": {
-		"writable": [
-			"runtime",
-			"web/assets"
-		],
-		"executable": [
-			"yii"
-		]
-	}
+    "name": "yiisoft/yii2-app-basic",
+    "description": "Yii 2 Basic Application Template",
+    "keywords": ["yii", "framework", "basic", "application template"],
+    "homepage": "http://www.yiiframework.com/",
+    "type": "project",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
+        "forum": "http://www.yiiframework.com/forum/",
+        "wiki": "http://www.yiiframework.com/wiki/",
+        "irc": "irc://irc.freenode.net/yii",
+        "source": "https://github.com/yiisoft/yii2"
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.4.0",
+        "yiisoft/yii2": "*",
+        "yiisoft/yii2-swiftmailer": "*",
+        "yiisoft/yii2-bootstrap": "*",
+        "yiisoft/yii2-debug": "*",
+        "yiisoft/yii2-gii": "*"
+    },
+    "scripts": {
+        "post-create-project-cmd": [
+            "yii\\composer\\Installer::setPermission"
+        ]
+    },
+    "extra": {
+        "writable": [
+            "runtime",
+            "web/assets"
+        ],
+        "executable": [
+            "yii"
+        ]
+    }
 }
 ```
 

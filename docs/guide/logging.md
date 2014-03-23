@@ -40,25 +40,25 @@ You may configure the targets in application configuration, like the following:
 
 ```php
 [
-	'components' => [
-		'log' => [
-			'targets' => [
-				'file' => [
-					'class' => 'yii\log\FileTarget',
-					'levels' => ['trace', 'info'],
-					'categories' => ['yii\*'],
-				],
-				'email' => [
-					'class' => 'yii\log\EmailTarget',
-					'levels' => ['error', 'warning'],
-					'message' => [
-						'to' => ['admin@example.com', 'developer@example.com'],
-						'subject' => 'New example.com log message',
-					],
-				],
-			],
-		],
-	],
+    'components' => [
+        'log' => [
+            'targets' => [
+                'file' => [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['trace', 'info'],
+                    'categories' => ['yii\*'],
+                ],
+                'email' => [
+                    'class' => 'yii\log\EmailTarget',
+                    'levels' => ['error', 'warning'],
+                    'message' => [
+                        'to' => ['admin@example.com', 'developer@example.com'],
+                        'subject' => 'New example.com log message',
+                    ],
+                ],
+            ],
+        ],
+    ],
 ]
 ```
 
@@ -97,10 +97,10 @@ Note, code blocks need to be nested properly such as
 
 ```php
 \Yii::beginProfile('block1');
-	// some code to be profiled
-	\Yii::beginProfile('block2');
-		// some other code to be profiled
-	\Yii::endProfile('block2');
+    // some code to be profiled
+    \Yii::beginProfile('block2');
+        // some other code to be profiled
+    \Yii::endProfile('block2');
 \Yii::endProfile('block1');
 ```
 

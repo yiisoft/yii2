@@ -25,9 +25,9 @@ When a user attempts to log in, the submitted password must be verified against 
 ```php
 use yii\helpers\Security;
 if (Security::validatePassword($password, $hash)) {
-	// all good, logging user in
+    // all good, logging user in
 } else {
-	// wrong password
+    // wrong password
 }
 ```
 

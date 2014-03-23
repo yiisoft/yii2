@@ -25,7 +25,7 @@ Add these lines to your config file:
 ```php
 'preload' => ['debug'],
 'modules' => [
-	'debug' => ['yii\debug\Module']
+    'debug' => ['yii\debug\Module']
 ]
 ```
 
@@ -35,10 +35,10 @@ Add these lines to your config file:
 ```php
 'preload' => ['debug'],
 'modules' => [
-	'debug' => [
-		'class' => 'yii\debug\Module',
-		'allowedIPs' => ['1.2.3.4', '127.0.0.1', '::1']
-	]
+    'debug' => [
+        'class' => 'yii\debug\Module',
+        'allowedIPs' => ['1.2.3.4', '127.0.0.1', '::1']
+    ]
 ]
 ```
 
@@ -46,11 +46,11 @@ If you are using `enableStrictParsing` URL manager option, add the following to 
 
 ```php
 'urlManager' => [
-	'enableStrictParsing' => true,
-	'rules' => [
-		// ...
-		'debug/<controller>/<action>' => 'debug/<controller>/<action>',
-	],
+    'enableStrictParsing' => true,
+    'rules' => [
+        // ...
+        'debug/<controller>/<action>' => 'debug/<controller>/<action>',
+    ],
 ],
 ```
 
@@ -67,10 +67,10 @@ trace level in the config:
 
 ```php
 return [
-	// ...
-	'components' => [
-		'log' => [
-			'traceLevel' => YII_DEBUG ? 3 : 0, // <-- here
+    // ...
+    'components' => [
+        'log' => [
+            'traceLevel' => YII_DEBUG ? 3 : 0, // <-- here
 ```
 
 By default it's automatically set to `3` if Yii is run in debug mode i.e. your `index.php` file contains the following:
@@ -104,50 +104,50 @@ use yii\debug\Panel;
 
 class ViewsPanel extends Panel
 {
-	private $_viewFiles = [];
+    private $_viewFiles = [];
 
-	public function init()
-	{
-		parent::init();
-		Event::on(View::className(), View::EVENT_BEFORE_RENDER, function (ViewEvent $event) {
-			$this->_viewFiles[] = $event->sender->getViewFile();
-		});
-	}
+    public function init()
+    {
+        parent::init();
+        Event::on(View::className(), View::EVENT_BEFORE_RENDER, function (ViewEvent $event) {
+            $this->_viewFiles[] = $event->sender->getViewFile();
+        });
+    }
 
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getName()
-	{
-		return 'Views';
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getName()
+    {
+        return 'Views';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getSummary()
-	{
-		$url = $this->getUrl();
-		$count = count($this->data);
-		return "<div class=\"yii-debug-toolbar-block\"><a href=\"$url\">Views <span class=\"label\">$count</span></a></div>";
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getSummary()
+    {
+        $url = $this->getUrl();
+        $count = count($this->data);
+        return "<div class=\"yii-debug-toolbar-block\"><a href=\"$url\">Views <span class=\"label\">$count</span></a></div>";
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getDetail()
-	{
-		return '<ol><li>' . implode('<li>', $this->data) . '</ol>';
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getDetail()
+    {
+        return '<ol><li>' . implode('<li>', $this->data) . '</ol>';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function save()
-	{
-		return $this->_viewFiles;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function save()
+    {
+        return $this->_viewFiles;
+    }
 }
 ```
 
@@ -166,14 +166,14 @@ following:
 
 ```php
 if (YII_ENV_DEV) {
-	// configuration adjustments for 'dev' environment
-	$config['preload'][] = 'debug';
-	$config['modules']['debug'] = [
-		'class' => 'yii\debug\Module',
-		'panels' => [
-			'views' => ['class' => 'app\panels\ViewsPanel'],
-		],
-	];
+    // configuration adjustments for 'dev' environment
+    $config['preload'][] = 'debug';
+    $config['modules']['debug'] = [
+        'class' => 'yii\debug\Module',
+        'panels' => [
+            'views' => ['class' => 'app\panels\ViewsPanel'],
+        ],
+    ];
 
 // ...
 ```

@@ -98,8 +98,8 @@ Or an anonymous function:
 
 ```php
 ['text', 'filter', 'filter' => function ($value) {
-	// here we are removing all swear words from text
-	return $newValue;
+    // here we are removing all swear words from text
+    return $newValue;
 }],
 ```
 
@@ -197,9 +197,9 @@ operate without model do. In our case to validate an email we can do the followi
 $email = 'test@example.com';
 $validator = new yii\validators\EmailValidator();
 if ($validator->validate($email, $error)) {
-	echo 'Email is valid.';
+    echo 'Email is valid.';
 } else {
-	echo $error;
+    echo $error;
 }
 ```
 

@@ -43,12 +43,12 @@ stored in a PHP file stored in the `/config` application directory. The file has
 ```php
 <?php
 return [
-	'id' => 'applicationId',
-	'basePath' => dirname(__DIR__),
-	'components' => [
-		// configuration of application components goes here...
-	],
-	'params' => require(__DIR__ . '/params.php'),
+    'id' => 'applicationId',
+    'basePath' => dirname(__DIR__),
+    'components' => [
+        // configuration of application components goes here...
+    ],
+    'params' => require(__DIR__ . '/params.php'),
 ];
 ```
 
@@ -68,23 +68,23 @@ The majority of the Yii functionality comes from application components. These c
 ```php
 <?php
 return [
-	'id' => 'applicationId',
-	'basePath' => dirname(__DIR__),
-	'components' => [
-		'cache' => ['class' => 'yii\caching\FileCache'],
-		'user' => ['identityClass' => 'app\models\User'],
-		'errorHandler' => ['errorAction' => 'site/error'],
-		'log' => [
-			'traceLevel' => YII_DEBUG ? 3 : 0,
-			'targets' => [
-				[
-					'class' => 'yii\log\FileTarget',
-					'levels' => ['error', 'warning'],
-				],
-			],
-		],
-	],
-	// ...
+    'id' => 'applicationId',
+    'basePath' => dirname(__DIR__),
+    'components' => [
+        'cache' => ['class' => 'yii\caching\FileCache'],
+        'user' => ['identityClass' => 'app\models\User'],
+        'errorHandler' => ['errorAction' => 'site/error'],
+        'log' => [
+            'traceLevel' => YII_DEBUG ? 3 : 0,
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'warning'],
+                ],
+            ],
+        ],
+    ],
+    // ...
 ];
 ```
 

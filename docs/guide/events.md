@@ -28,13 +28,13 @@ to define event names using class constants:
 ```php
 class Mailer extends Component
 {
-	const EVENT_SEND_EMAIL = 'sendEmail';
+    const EVENT_SEND_EMAIL = 'sendEmail';
 
-	public function send()
-	{
-		// ...
-		$this->trigger(self::EVENT_SEND_EMAIL);
-	}
+    public function send()
+    {
+        // ...
+        $this->trigger(self::EVENT_SEND_EMAIL);
+    }
 }
 ```
 
@@ -76,7 +76,7 @@ $component->on($eventName, [$obj, 'functionName']);
 
 // Anonymous function:
 $component->on($eventName, function ($event) {
-	// Use $event.
+    // Use $event.
 });
 ```
 
@@ -87,7 +87,7 @@ In order to pass extra data supply it via third argument:
 
 ```php
 $component->on($eventName, function ($event) {
-	// the extra data can be accessed via $event->data
+    // the extra data can be accessed via $event->data
 }, $extraData);
 ```
 
@@ -97,15 +97,15 @@ It is possible to use application config to attach event hanelers:
 
 ```php
 return [
-	// ...
-	'components' => [
-		'db' => [
-			// ...
-			'on afterOpen' => function ($event) {
-				// do something right after connected to database
-			}
-		],
-	],
+    // ...
+    'components' => [
+        'db' => [
+            // ...
+            'on afterOpen' => function ($event) {
+                // do something right after connected to database
+            }
+        ],
+    ],
 ];
 ```
 
@@ -151,7 +151,7 @@ the static `Event::on` method:
 
 ```php
 Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-	Yii::trace(get_class($event->sender) . ' is inserted.');
+    Yii::trace(get_class($event->sender) . ' is inserted.');
 });
 ```
 

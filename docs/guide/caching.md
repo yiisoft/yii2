@@ -15,21 +15,21 @@ in case you're using basic sample application.
 
 ```php
 'components' => [
-	'cache' => [
-		'class' => '\yii\caching\MemCache',
-		'servers' => [
-			[
-				'host' => 'server1',
-				'port' => 11211,
-				'weight' => 100,
-			],
-			[
-				'host' => 'server2',
-				'port' => 11211,
-				'weight' => 50,
-			],
-		],
-	],
+    'cache' => [
+        'class' => '\yii\caching\MemCache',
+        'servers' => [
+            [
+                'host' => 'server1',
+                'port' => 11211,
+                'weight' => 100,
+            ],
+            [
+                'host' => 'server2',
+                'port' => 11211,
+                'weight' => 50,
+            ],
+        ],
+    ],
 ],
 ```
 
@@ -117,13 +117,13 @@ in cache and we should regenerate it:
 ```php
 public function getCachedData()
 {
-	$key = /* generate unique key here */;
-	$value = Yii::$app->cache->get($key);
-	if ($value === false) {
-		$value = /* regenerate value because it is not found in cache and then save it in cache for later use */;
-		Yii::$app->cache->set($key, $value);
-	}
-	return $value;
+    $key = /* generate unique key here */;
+    $value = Yii::$app->cache->get($key);
+    if ($value === false) {
+        $value = /* regenerate value because it is not found in cache and then save it in cache for later use */;
+        Yii::$app->cache->set($key, $value);
+    }
+    return $value;
 }
 ```
 

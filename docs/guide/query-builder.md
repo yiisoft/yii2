@@ -10,17 +10,17 @@ A typical usage of the query builder looks like the following:
 
 ```php
 $rows = (new \yii\db\Query())
-	->select('id, name')
-	->from('tbl_user')
-	->limit(10)
-	->all();
+    ->select('id, name')
+    ->from('tbl_user')
+    ->limit(10)
+    ->all();
 
 // which is equivalent to the following code:
 
 $query = (new \yii\db\Query())
-	->select('id, name')
-	->from('tbl_user')
-	->limit(10);
+    ->select('id, name')
+    ->from('tbl_user')
+    ->limit(10);
 
 // Create a command. You can get the actual SQL using $command->sql
 $command = $query->createCommand();
@@ -62,7 +62,7 @@ In order to form a basic `SELECT` query, you need to specify what columns to sel
 
 ```php
 $query->select('id, name')
-	->from('tbl_user');
+    ->from('tbl_user');
 ```
 
 Select options can be specified as a comma-separated string, as in the above, or as an array.
@@ -70,7 +70,7 @@ The array syntax is especially useful when forming the selection dynamically:
 
 ```php
 $query->select(['id', 'name'])
-	->from('tbl_user');
+    ->from('tbl_user');
 ```
 
 > Info: You should always use the array format if your `SELECT` clause contains SQL expressions.
@@ -148,9 +148,9 @@ Multiple conditions can simultaneously be set in `where` using the *hash format*
 
 ```php
 $query->where([
-	'status' => 10,
-	'type' => 2,
-	'id' => [4, 8, 15, 16, 23, 42],
+    'status' => 10,
+    'type' => 2,
+    'id' => [4, 8, 15, 16, 23, 42],
 ]);
 ```
 
@@ -222,7 +222,7 @@ $search = 'yii';
 
 $query->where(['status' => $status]);
 if (!empty($search)) {
-	$query->andWhere(['like', 'title', $search]);
+    $query->andWhere(['like', 'title', $search]);
 }
 ```
 
@@ -238,8 +238,8 @@ For ordering results `orderBy` and `addOrderBy` could be used:
 
 ```php
 $query->orderBy([
-	'id' => SORT_ASC,
-	'name' => SORT_DESC,
+    'id' => SORT_ASC,
+    'name' => SORT_DESC,
 ]);
 ```
 
@@ -294,8 +294,8 @@ This left join selects data from two related tables in one query:
 
 ```php
 $query->select(['tbl_user.name AS author', 'tbl_post.title as title'])
-	->from('tbl_user')
-	->leftJoin('tbl_post', 'tbl_post.user_id = tbl_user.id');
+    ->from('tbl_user')
+    ->leftJoin('tbl_post', 'tbl_post.user_id = tbl_user.id');
 ```
 
 In the code, the `leftJoin()` method's first parameter
@@ -348,16 +348,16 @@ Batch query can be used like the following:
 use yii\db\Query;
 
 $query = (new Query())
-	->from('tbl_user')
-	->orderBy('id');
+    ->from('tbl_user')
+    ->orderBy('id');
 
 foreach ($query->batch() as $users) {
-	// $users is an array of 100 or fewer rows from the user table
+    // $users is an array of 100 or fewer rows from the user table
 }
 
 // or if you want to iterate the row one by one
 foreach ($query->each() as $user) {
-	// $user represents one row of data from the user table
+    // $user represents one row of data from the user table
 }
 ```
 
@@ -377,11 +377,11 @@ will still keep the proper index. For example,
 use yii\db\Query;
 
 $query = (new Query())
-	->from('tbl_user')
-	->indexBy('username');
+    ->from('tbl_user')
+    ->indexBy('username');
 
 foreach ($query->batch() as $users) {
-	// $users is indexed by the "username" column
+    // $users is indexed by the "username" column
 }
 
 foreach ($query->each() as $username => $user) {

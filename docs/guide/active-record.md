@@ -29,13 +29,13 @@ use yii\db\ActiveRecord;
 
 class Customer extends ActiveRecord
 {
-	/**
-	 * @return string the name of the table associated with this ActiveRecord class.
-	 */
-	public static function tableName()
-	{
-		return 'tbl_customer';
-	}
+    /**
+     * @return string the name of the table associated with this ActiveRecord class.
+     */
+    public static function tableName()
+    {
+        return 'tbl_customer';
+    }
 }
 ```
 
@@ -55,14 +55,14 @@ By default, ActiveRecord assumes that there is an application component named `d
 
 ```php
 return [
-	'components' => [
-		'db' => [
-			'class' => 'yii\db\Connection',
-			'dsn' => 'mysql:host=localhost;dbname=testdb',
-			'username' => 'demo',
-			'password' => 'demo',
-		],
-	],
+    'components' => [
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=localhost;dbname=testdb',
+            'username' => 'demo',
+            'password' => 'demo',
+        ],
+    ],
 ];
 ```
 
@@ -82,17 +82,17 @@ of flexible and powerful DB query methods. The following examples demonstrate so
 ```php
 // to retrieve all *active* customers and order them by their ID:
 $customers = Customer::find()
-	->where(['status' => Customer::STATUS_ACTIVE])
-	->orderBy('id')
-	->all();
+    ->where(['status' => Customer::STATUS_ACTIVE])
+    ->orderBy('id')
+    ->all();
 
 // to return a single customer whose ID is 1:
 $customer = Customer::find(1);
 
 // the above code is equivalent to the following:
 $customer = Customer::find()
-	->where(['id' => 1])
-	->one();
+    ->where(['id' => 1])
+    ->one();
 
 // to retrieve customers using a raw SQL statement:
 $sql = 'SELECT * FROM tbl_customer';
@@ -100,13 +100,13 @@ $customers = Customer::findBySql($sql)->all();
 
 // to return the number of *active* customers:
 $count = Customer::find()
-	->where(['status' => Customer::STATUS_ACTIVE])
-	->count();
+    ->where(['status' => Customer::STATUS_ACTIVE])
+    ->count();
 
 // to return customers in terms of arrays rather than `Customer` objects:
 $customers = Customer::find()
-	->asArray()
-	->all();
+    ->asArray()
+    ->all();
 // each element of $customers is an array of name-value pairs
 
 // to index the result by customer IDs:
@@ -123,11 +123,11 @@ Batch query is also supported when working with Active Record. For example,
 ```php
 // fetch 10 customers at a time
 foreach (Customer::find()->batch(10) as $customers) {
-	// $customers is an array of 10 or fewer Customer objects
+    // $customers is an array of 10 or fewer Customer objects
 }
 // fetch 10 customers at a time and iterate them one by one
 foreach (Customer::find()->each(10) as $customer) {
-	// $customer is a Customer object
+    // $customer is a Customer object
 }
 // batch query with eager loading
 foreach (Customer::find()->with('orders')->each() as $customer) {
@@ -232,20 +232,20 @@ information about the relation context and thus will only query for related reco
 ```php
 class Customer extends \yii\db\ActiveRecord
 {
-	public function getOrders()
-	{
-		// Customer has_many Order via Order.customer_id -> id
-		return $this->hasMany(Order::className(), ['customer_id' => 'id']);
-	}
+    public function getOrders()
+    {
+        // Customer has_many Order via Order.customer_id -> id
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
 }
 
 class Order extends \yii\db\ActiveRecord
 {
-	// Order has_one Customer via Customer.id -> customer_id
-	public function getCustomer()
-	{
-		return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
-	}
+    // Order has_one Customer via Customer.id -> customer_id
+    public function getCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+    }
 }
 ```
 
@@ -288,12 +288,12 @@ To do so, declare a `bigOrders` relation with the following getter method:
 ```php
 class Customer extends \yii\db\ActiveRecord
 {
-	public function getBigOrders($threshold = 100)
-	{
-		return $this->hasMany(Order::className(), ['customer_id' => 'id'])
-			->where('subtotal > :threshold', [':threshold' => $threshold])
-			->orderBy('id');
-	}
+    public function getBigOrders($threshold = 100)
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])
+            ->where('subtotal > :threshold', [':threshold' => $threshold])
+            ->orderBy('id');
+    }
 }
 ```
 
@@ -327,11 +327,11 @@ we can declare the `items` relation in the `Order` class like the following:
 ```php
 class Order extends \yii\db\ActiveRecord
 {
-	public function getItems()
-	{
-		return $this->hasMany(Item::className(), ['id' => 'item_id'])
-			->viaTable('tbl_order_item', ['order_id' => 'id']);
-	}
+    public function getItems()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->viaTable('tbl_order_item', ['order_id' => 'id']);
+    }
 }
 ```
 
@@ -342,16 +342,16 @@ instead of the pivot table name. For example, the above `items` relation can be 
 ```php
 class Order extends \yii\db\ActiveRecord
 {
-	public function getOrderItems()
-	{
-		return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
-	}
+    public function getOrderItems()
+    {
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+    }
 
-	public function getItems()
-	{
-		return $this->hasMany(Item::className(), ['id' => 'item_id'])
-			->via('orderItems');
-	}
+    public function getItems()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems');
+    }
 }
 ```
 
@@ -381,9 +381,9 @@ Lazy loading is very convenient to use. However, it may suffer from a performanc
 $customers = Customer::find()->limit(100)->all();
 
 foreach ($customers as $customer) {
-	// SQL executed: SELECT * FROM tbl_order WHERE customer_id=...
-	$orders = $customer->orders;
-	// ...handle $orders...
+    // SQL executed: SELECT * FROM tbl_order WHERE customer_id=...
+    $orders = $customer->orders;
+    // ...handle $orders...
 }
 ```
 
@@ -397,12 +397,12 @@ To solve the above performance problem, you can use the so-called *eager loading
 // SQL executed: SELECT * FROM tbl_customer LIMIT 100;
 //               SELECT * FROM tbl_orders WHERE customer_id IN (1,2,...)
 $customers = Customer::find()->limit(100)
-	->with('orders')->all();
+    ->with('orders')->all();
 
 foreach ($customers as $customer) {
-	// no SQL executed
-	$orders = $customer->orders;
-	// ...handle $orders...
+    // no SQL executed
+    $orders = $customer->orders;
+    // ...handle $orders...
 }
 ```
 
@@ -432,9 +432,9 @@ $orders = $customer->getOrders()->where('subtotal>100')->all();
 // eager loading: SELECT * FROM tbl_customer LIMIT 100
 //                SELECT * FROM tbl_order WHERE customer_id IN (1,2,...) AND subtotal>100
 $customers = Customer::find()->limit(100)->with([
-	'orders' => function($query) {
-		$query->andWhere('subtotal>100');
-	},
+    'orders' => function($query) {
+        $query->andWhere('subtotal>100');
+    },
 ])->all();
 ```
 
@@ -448,20 +448,20 @@ named `customer`:
 ```php
 class Customer extends ActiveRecord
 {
-	....
-	public function getOrders()
-	{
-		return $this->hasMany(Order::className(), ['customer_id' => 'id']);
-	}
+    ....
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
 }
 
 class Order extends ActiveRecord
 {
-	....
-	public function getCustomer()
-	{
-		return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
-	}
+    ....
+    public function getCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+    }
 }
 ```
 
@@ -476,9 +476,9 @@ $customer = Customer::find(1);
 // SELECT * FROM tbl_order WHERE customer_id=1
 // SELECT * FROM tbl_customer WHERE id=1
 if ($customer->orders[0]->customer === $customer) {
-	echo 'equal';
+    echo 'equal';
 } else {
-	echo 'not equal';
+    echo 'not equal';
 }
 ```
 
@@ -488,11 +488,11 @@ and the `orders` relations by calling the [[yii\db\ActiveQuery::inverseOf()|inve
 ```php
 class Customer extends ActiveRecord
 {
-	....
-	public function getOrders()
-	{
-		return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
-	}
+    ....
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+    }
 }
 ```
 
@@ -504,9 +504,9 @@ $customer = Customer::find(1);
 // echoes "equal"
 // SELECT * FROM tbl_order WHERE customer_id=1
 if ($customer->orders[0]->customer === $customer) {
-	echo 'equal';
+    echo 'equal';
 } else {
-	echo 'not equal';
+    echo 'not equal';
 }
 ```
 
@@ -519,9 +519,9 @@ eager loading:
 $customers = Customer::find()->with('orders')->all();
 // echoes "equal"
 if ($customers[0]->orders[0]->customer === $customers[0]) {
-	echo 'equal';
+    echo 'equal';
 } else {
-	echo 'not equal';
+    echo 'not equal';
 }
 ```
 
@@ -555,10 +555,10 @@ and you may also join with sub-relations. For example,
 // join with multiple relations
 // find out the orders that contain books and are placed by customers who registered within the past 24 hours
 $orders = Order::find()->innerJoinWith([
-	'books',
-	'customer' => function ($query) {
-		$query->where('tbl_customer.created_at > ' . (time() - 24 * 3600));
-	}
+    'books',
+    'customer' => function ($query) {
+        $query->where('tbl_customer.created_at > ' . (time() - 24 * 3600));
+    }
 ])->all();
 // join with sub-relations: join with books and books' authors
 $orders = Order::find()->joinWith('books.author')->all();
@@ -603,10 +603,10 @@ This can be done by calling the [[yii\db\ActiveQuery::onCondition()]] method lik
 ```php
 class User extends ActiveRecord
 {
-	public function getBooks()
-	{
-		return $this->hasMany(Item::className(), ['owner_id' => 'id'])->onCondition(['category_id' => 1]);
-	}
+    public function getBooks()
+    {
+        return $this->hasMany(Item::className(), ['owner_id' => 'id'])->onCondition(['category_id' => 1]);
+    }
 }
 ```
 
@@ -713,11 +713,11 @@ use yii\db\ActiveQuery;
 
 class CommentQuery extends ActiveQuery
 {
-	public function active($state = true)
-	{
-		$this->andWhere(['active' => $state]);
-		return $this;
-	}
+    public function active($state = true)
+    {
+        $this->andWhere(['active' => $state]);
+        return $this;
+    }
 }
 ```
 
@@ -737,11 +737,11 @@ use yii\db\ActiveRecord;
 
 class Comment extends ActiveRecord
 {
-	public static function createQuery($config = [])
-	{
-		$config['modelClass'] = get_called_class();
-		return new CommentQuery($config);
-	}
+    public static function createQuery($config = [])
+    {
+        $config['modelClass'] = get_called_class();
+        return new CommentQuery($config);
+    }
 }
 ```
 
@@ -757,11 +757,11 @@ You can also use scopes when defining relations. For example,
 ```php
 class Post extends \yii\db\ActiveRecord
 {
-	public function getActiveComments()
-	{
-		return $this->hasMany(Comment::className(), ['post_id' => 'id'])->active();
+    public function getActiveComments()
+    {
+        return $this->hasMany(Comment::className(), ['post_id' => 'id'])->active();
 
-	}
+    }
 }
 ```
 
@@ -769,9 +769,9 @@ Or use the scopes on-the-fly when performing relational query:
 
 ```php
 $posts = Post::find()->with([
-	'comments' => function($q) {
-		$q->active();
-	}
+    'comments' => function($q) {
+        $q->active();
+    }
 ])->all();
 ```
 
@@ -788,7 +788,7 @@ and query like the following:
  */
 class Comment extends ActiveRecord
 {
-	// ...
+    // ...
 }
 ```
 
@@ -799,7 +799,7 @@ class Comment extends ActiveRecord
  */
 class CommentQuery extends ActiveQuery
 {
-	// ...
+    // ...
 }
 ```
 
@@ -811,8 +811,8 @@ applies to ALL queries. You can define a default scope easily by overriding [[yi
 ```php
 public static function createQuery($config = [])
 {
-	$config['modelClass'] = get_called_class();
-	return (new ActiveQuery($config))->where(['deleted' => false]);
+    $config['modelClass'] = get_called_class();
+    return (new ActiveQuery($config))->where(['deleted' => false]);
 }
 ```
 
@@ -839,22 +839,22 @@ Here these ways are (**DO NOT** use them unless you're sure what you are actuall
 ```php
 class Feature extends \yii\db\ActiveRecord
 {
-	// ...
+    // ...
 
-	public function getProduct()
-	{
-		return $this->hasOne(Product::className(), ['product_id' => 'id']);
-	}
+    public function getProduct()
+    {
+        return $this->hasOne(Product::className(), ['product_id' => 'id']);
+    }
 }
 
 class Product extends \yii\db\ActiveRecord
 {
-	// ...
+    // ...
 
-	public function getFeatures()
-	{
-		return $this->hasMany(Feature::className(), ['id' => 'product_id']);
-	}
+    public function getFeatures()
+    {
+        return $this->hasMany(Feature::className(), ['id' => 'product_id']);
+    }
 }
 ```
 
@@ -864,10 +864,10 @@ Overriding [[yii\db\ActiveRecord::save()|save()]] method:
 
 class ProductController extends \yii\web\Controller
 {
-	public function actionCreate()
-	{
-		// FIXME: TODO: WIP, TBD
-	}
+    public function actionCreate()
+    {
+        // FIXME: TODO: WIP, TBD
+    }
 }
 ```
 
@@ -876,10 +876,10 @@ Using transactions within controller layer:
 ```php
 class ProductController extends \yii\web\Controller
 {
-	public function actionCreate()
-	{
-		// FIXME: TODO: WIP, TBD
-	}
+    public function actionCreate()
+    {
+        // FIXME: TODO: WIP, TBD
+    }
 }
 ```
 
@@ -888,56 +888,56 @@ Instead of using these fragile methods you should consider using atomic scenario
 ```php
 class Feature extends \yii\db\ActiveRecord
 {
-	// ...
+    // ...
 
-	public function getProduct()
-	{
-		return $this->hasOne(Product::className(), ['product_id' => 'id']);
-	}
+    public function getProduct()
+    {
+        return $this->hasOne(Product::className(), ['product_id' => 'id']);
+    }
 
-	public function scenarios()
-	{
-		return [
-			'userCreates' => [
-				'attributes' => ['name', 'value'],
-				'atomic' => [self::OP_INSERT],
-			],
-		];
-	}
+    public function scenarios()
+    {
+        return [
+            'userCreates' => [
+                'attributes' => ['name', 'value'],
+                'atomic' => [self::OP_INSERT],
+            ],
+        ];
+    }
 }
 
 class Product extends \yii\db\ActiveRecord
 {
-	// ...
+    // ...
 
-	public function getFeatures()
-	{
-		return $this->hasMany(Feature::className(), ['id' => 'product_id']);
-	}
+    public function getFeatures()
+    {
+        return $this->hasMany(Feature::className(), ['id' => 'product_id']);
+    }
 
-	public function scenarios()
-	{
-		return [
-			'userCreates' => [
-				'attributes' => ['title', 'price'],
-				'atomic' => [self::OP_INSERT],
-			],
-		];
-	}
+    public function scenarios()
+    {
+        return [
+            'userCreates' => [
+                'attributes' => ['title', 'price'],
+                'atomic' => [self::OP_INSERT],
+            ],
+        ];
+    }
 
-	public function afterValidate()
-	{
-		parent::afterValidate();
-		// FIXME: TODO: WIP, TBD
-	}
+    public function afterValidate()
+    {
+        parent::afterValidate();
+        // FIXME: TODO: WIP, TBD
+    }
 
-	public function afterSave($insert)
-	{
-		parent::afterSave($insert);
-		if ($this->getScenario() === 'userCreates') {
-			// FIXME: TODO: WIP, TBD
-		}
-	}
+    public function afterSave($insert)
+    {
+        parent::afterSave($insert);
+        if ($this->getScenario() === 'userCreates') {
+            // FIXME: TODO: WIP, TBD
+        }
+    }
 }
 ```
 
@@ -946,10 +946,10 @@ Controller is very thin and neat:
 ```php
 class ProductController extends \yii\web\Controller
 {
-	public function actionCreate()
-	{
-		// FIXME: TODO: WIP, TBD
-	}
+    public function actionCreate()
+    {
+        // FIXME: TODO: WIP, TBD
+    }
 }
 ```
 

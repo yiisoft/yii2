@@ -11,54 +11,54 @@ You can find a fully featured example of authentication in the
 ```php
 class User extends ActiveRecord implements IdentityInterface
 {
-	// ...
+    // ...
 
-	/**
-	 * Finds an identity by the given ID.
-	 *
-	 * @param string|integer $id the ID to be looked for
-	 * @return IdentityInterface|null the identity object that matches the given ID.
-	 */
-	public static function findIdentity($id)
-	{
-		return static::find($id);
-	}
+    /**
+     * Finds an identity by the given ID.
+     *
+     * @param string|integer $id the ID to be looked for
+     * @return IdentityInterface|null the identity object that matches the given ID.
+     */
+    public static function findIdentity($id)
+    {
+        return static::find($id);
+    }
 
-	/**
-	 * Finds an identity by the given token.
-	 *
-	 * @param string $token the token to be looked for
-	 * @return IdentityInterface|null the identity object that matches the given token.
-	 */
-	public static function findIdentityByAccessToken($token)
-	{
-		return static::find(['access_token' => $token]);
-	}
+    /**
+     * Finds an identity by the given token.
+     *
+     * @param string $token the token to be looked for
+     * @return IdentityInterface|null the identity object that matches the given token.
+     */
+    public static function findIdentityByAccessToken($token)
+    {
+        return static::find(['access_token' => $token]);
+    }
 
-	/**
-	 * @return int|string current user ID
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int|string current user ID
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	/**
-	 * @return string current user auth key
-	 */
-	public function getAuthKey()
-	{
-		return $this->auth_key;
-	}
+    /**
+     * @return string current user auth key
+     */
+    public function getAuthKey()
+    {
+        return $this->auth_key;
+    }
 
-	/**
-	 * @param string $authKey
-	 * @return boolean if auth key is valid for current user
-	 */
-	public function validateAuthKey($authKey)
-	{
-		return $this->getAuthKey() === $authKey;
-	}
+    /**
+     * @param string $authKey
+     * @return boolean if auth key is valid for current user
+     */
+    public function validateAuthKey($authKey)
+    {
+        return $this->getAuthKey() === $authKey;
+    }
 }
 ```
 
@@ -68,13 +68,13 @@ Two of the other methods--`getAuthKey` and `validateAuthKey`--are used to provid
 ```php
 public function beforeSave($insert)
 {
-	if (parent::beforeSave($insert)) {
-		if ($this->isNewRecord) {
-			$this->auth_key = Security::generateRandomKey();
-		}
-		return true;
-	}
-	return false;
+    if (parent::beforeSave($insert)) {
+        if ($this->isNewRecord) {
+            $this->auth_key = Security::generateRandomKey();
+        }
+        return true;
+    }
+    return false;
 }
 ```
 
