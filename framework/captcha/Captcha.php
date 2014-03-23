@@ -35,8 +35,9 @@ use yii\widgets\InputWidget;
 class Captcha extends InputWidget
 {
     /**
-     * @var string the route of the action that generates the CAPTCHA images.
+     * @var string|array the route of the action that generates the CAPTCHA images.
      * The action represented by this route must be an action of [[CaptchaAction]].
+     * Please refer to [[\yii\helpers\Url::toRoute()]] for acceptable formats.
      */
     public $captchaAction = 'site/captcha';
     /**
@@ -81,8 +82,13 @@ class Captcha extends InputWidget
         } else {
             $input = Html::textInput($this->name, $this->value, $this->options);
         }
-        $url = Yii::$app->getUrlManager()->createUrl([$this->captchaAction, 'v' => uniqid()]);
-        $image = Html::img($url, $this->imageOptions);
+        $route = $this->captchaAction;
+        if (is_array($route)) {
+            $route['v'] = uniqid();
+        } else {
+            $route = [$route, 'v' => uniqid()];
+        }
+        $image = Html::img($route, $this->imageOptions);
         echo strtr($this->template, [
             '{input}' => $input,
             '{image}' => $image,

@@ -9,6 +9,7 @@ namespace yii\debug;
 
 use Yii;
 use yii\base\Component;
+use yii\helpers\Url;
 
 /**
  * Panel is a base class for debugger panel classes. It defines how data should be collected,
@@ -88,7 +89,7 @@ class Panel extends Component
      */
     public function getUrl()
     {
-        return Yii::$app->getUrlManager()->createUrl([$this->module->id . '/default/view',
+        return Url::toRoute(['/' . $this->module->id . '/default/view',
             'panel' => $this->id,
             'tag' => $this->tag,
         ]);

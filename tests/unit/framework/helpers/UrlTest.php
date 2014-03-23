@@ -75,13 +75,11 @@ class UrlTest extends TestCase
         $this->assertEquals('http://example.com/base/index.php?r=stats/user/view&id=42', Url::toRoute(['user/view', 'id' => 42], true));
         $this->assertEquals('https://example.com/base/index.php?r=stats/user/view&id=42', Url::toRoute(['user/view', 'id' => 42], 'https'));
 
-        // In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
+        // In case there is no controller, an exception should be thrown for relative route
         $this->removeMockedAction();
 
-        $this->assertEquals('/base/index.php?r=site/view', Url::toRoute('site/view'));
-        $this->assertEquals('http://example.com/base/index.php?r=site/view', Url::toRoute('site/view', true));
-        $this->assertEquals('https://example.com/base/index.php?r=site/view', Url::toRoute('site/view', 'https'));
-        $this->assertEquals('/base/index.php?r=site/view&id=37', Url::toRoute(['site/view', 'id' => 37]));
+        $this->setExpectedException('yii\base\InvalidParamException');
+        Url::toRoute('site/view');
     }
 
     public function testTo()
@@ -101,27 +99,11 @@ class UrlTest extends TestCase
         $this->assertEquals('https://example.com/base/index.php?r=page/edit', Url::to(['edit'], 'https'));
         $this->assertEquals('https://example.com/base/index.php?r=page/view', Url::to([''], 'https'));
 
-        //In case there is no controller, [[\yii\web\UrlManager::createUrl()]] will be used.
-        $this->removeMockedAction();
-
-        $this->assertEquals('/base/index.php?r=edit&id=20', Url::to(['edit', 'id' => 20]));
-        $this->assertEquals('/base/index.php?r=edit', Url::to(['edit']));
-        $this->assertEquals('/base/index.php?r=', Url::to(['']));
-
-        $this->assertEquals('http://example.com/base/index.php?r=edit&id=20', Url::to(['edit', 'id' => 20], true));
-        $this->assertEquals('http://example.com/base/index.php?r=edit', Url::to(['edit'], true));
-        $this->assertEquals('http://example.com/base/index.php?r=', Url::to([''], true));
-
-        $this->assertEquals('https://example.com/base/index.php?r=edit&id=20', Url::to(['edit', 'id' => 20], 'https'));
-        $this->assertEquals('https://example.com/base/index.php?r=edit', Url::to(['edit'], 'https'));
-        $this->assertEquals('https://example.com/base/index.php?r=', Url::to([''], 'https'));
-
         // is an empty string: the currently requested URL will be returned;
         $this->mockAction('page', 'view', null, ['id' => 10]);
         $this->assertEquals('/base/index.php&r=site/current&id=42', Url::to(''));
         $this->assertEquals('http://example.com/base/index.php&r=site/current&id=42', Url::to('', true));
         $this->assertEquals('https://example.com/base/index.php&r=site/current&id=42', Url::to('', 'https'));
-        $this->removeMockedAction();
 
         // is a non-empty string: it will first be processed by [[Yii::getAlias()]]. If the result
         // is an absolute URL, it will be returned either without any change or, if schema was specified, with schema
@@ -140,17 +122,31 @@ class UrlTest extends TestCase
         $this->assertEquals('http://example.com/base/test/me2', Url::to('@web2', true));
         $this->assertEquals('https://example.com/base/test/me2', Url::to('@web2', 'https'));
 
-        $this->assertEquals('/base/', Url::to('@web3'));
-        $this->assertEquals('http://example.com/base/', Url::to('@web3', true));
-        $this->assertEquals('https://example.com/base/', Url::to('@web3', 'https'));
+        $this->assertEquals('/base/index.php&r=site/current&id=42', Url::to('@web3'));
+        $this->assertEquals('http://example.com/base/index.php&r=site/current&id=42', Url::to('@web3', true));
+        $this->assertEquals('https://example.com/base/index.php&r=site/current&id=42', Url::to('@web3', 'https'));
 
         $this->assertEquals('/test', Url::to('@web4'));
         $this->assertEquals('http://example.com/test', Url::to('@web4', true));
         $this->assertEquals('https://example.com/test', Url::to('@web4', 'https'));
 
         $this->assertEquals('#test', Url::to('@web5'));
-        $this->assertEquals('http://example.com#test', Url::to('@web5', true));
-        $this->assertEquals('https://example.com#test', Url::to('@web5', 'https'));
+        $this->assertEquals('http://example.com/#test', Url::to('@web5', true));
+        $this->assertEquals('https://example.com/#test', Url::to('@web5', 'https'));
+
+        //In case there is no controller, throw an exception
+        $this->removeMockedAction();
+
+        $this->setExpectedException('yii\base\InvalidParamException');
+        Url::to(['site/view']);
+    }
+
+    public function testBase()
+    {
+        $this->mockAction('page', 'view', null, ['id' => 10]);
+        $this->assertEquals('/base', Url::base());
+        $this->assertEquals('http://example.com/base', Url::base(true));
+        $this->assertEquals('https://example.com/base', Url::base('https'));
     }
 
     public function testHome()
