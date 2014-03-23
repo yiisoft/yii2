@@ -673,6 +673,9 @@ class ActiveField extends Component
             foreach ($this->model->getActiveValidators($attribute) as $validator) {
                 /** @var \yii\validators\Validator $validator */
                 $js = $validator->clientValidateAttribute($this->model, $attribute, $this->form->getView());
+                if ($validator->whenClient !== null) {
+                    $js = "if ({$validator->whenClient}(attribute, value)) { $js }";
+                }
                 if ($validator->enableClientValidation && $js != '') {
                     $validators[] = $js;
                 }
@@ -689,7 +692,8 @@ class ActiveField extends Component
 
         if ($enableClientValidation && !empty($options['validate']) || $enableAjaxValidation) {
             $inputID = Html::getInputId($this->model, $this->attribute);
-            $options['name'] = $inputID;
+            $options['id'] = $inputID;
+            $options['name'] = $this->attribute;
             foreach (['validateOnChange', 'validateOnType', 'validationDelay'] as $name) {
                 $options[$name] = $this->$name === null ? $this->form->$name : $this->$name;
             }

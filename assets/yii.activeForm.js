@@ -51,6 +51,8 @@
     };
 
     var attributeDefaults = {
+        // a unique ID identifying an attribute (e.g. "loginform-username") in a form
+        id: undefined,
         // attribute name or expression (e.g. "[0]content" for tabular input)
         name: undefined,
         // the jQuery selector of the container of the input field
@@ -282,7 +284,7 @@
                         this.validate(this, getValue($form, this), msg);
                     }
                     if (msg.length) {
-                        messages[this.name] = msg;
+                        messages[this.id] = msg;
                     } else if (this.enableAjaxValidation) {
                         needAjaxValidation = true;
                     }
@@ -308,7 +310,7 @@
                     if (msgs !== null && typeof msgs === 'object') {
                         $.each(data.attributes, function () {
                             if (!this.enableAjaxValidation) {
-                                delete msgs[this.name];
+                                delete msgs[this.id];
                             }
                         });
                         successCallback($.extend({}, messages, msgs));
@@ -345,11 +347,11 @@
         }
         attribute.status = 1;
         if ($input.length) {
-            hasError = messages && $.isArray(messages[attribute.name]) && messages[attribute.name].length;
+            hasError = messages && $.isArray(messages[attribute.id]) && messages[attribute.id].length;
             var $container = $form.find(attribute.container);
             var $error = $container.find(attribute.error);
             if (hasError) {
-                $error.text(messages[attribute.name][0]);
+                $error.text(messages[attribute.id][0]);
                 $container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
                     .addClass(data.settings.errorCssClass);
             } else {
@@ -374,8 +376,8 @@
 
         if ($summary.length && messages) {
             $.each(data.attributes, function () {
-                if ($.isArray(messages[this.name]) && messages[this.name].length) {
-                    $ul.append($('<li/>').text(messages[this.name][0]));
+                if ($.isArray(messages[this.id]) && messages[this.id].length) {
+                    $ul.append($('<li/>').text(messages[this.id][0]));
                 }
             });
             $summary.toggle($ul.find('li').length > 0);
