@@ -184,7 +184,7 @@ class UrlManager extends Component
 
     /**
      * Parses the user request.
-     * @param  Request       $request the request component
+     * @param  Request $request the request component
      * @return array|boolean the route and the associated parameters. The latter is always empty
      *                               if [[enablePrettyUrl]] is false. False is returned if the current request cannot be successfully parsed.
      */
@@ -205,7 +205,7 @@ class UrlManager extends Component
 
             Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
 
-            $suffix = (string) $this->suffix;
+            $suffix = (string)$this->suffix;
             if ($suffix !== '' && $pathInfo !== '') {
                 $n = strlen($this->suffix);
                 if (substr($pathInfo, -$n) === $this->suffix) {
@@ -228,19 +228,42 @@ class UrlManager extends Component
                 $route = '';
             }
 
-            return [(string) $route, []];
+            return [(string)$route, []];
         }
     }
 
     /**
-     * Creates a URL using the given route and parameters.
+     * Creates a URL using the given route and query parameters.
+     *
+     * You may specify the route as a string, e.g., `site/index`. You may also use an array
+     * if you want to specify additional query parameters for the URL being created. The
+     * array format must be:
+     *
+     * ```php
+     * // generates: /index.php?r=site/index&param1=value1&param2=value2
+     * ['site/index', 'param1' => 'value1', 'param2' => 'value2']
+     * ```
+     *
+     * If you want to create a URL with an anchor, you can use the array format with a `#` parameter.
+     * For example,
+     *
+     * ```php
+     * // generates: /index.php?r=site/index&param1=value1#name
+     * ['site/index', 'param1' => 'value1', '#' => 'name']
+     * ```
+     *
      * The URL created is a relative one. Use [[createAbsoluteUrl()]] to create an absolute URL.
-     * @param  string|array $params route as a string or route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
-     * @return string       the created URL
+     *
+     * Note that unlike [[\yii\helpers\Url::toRoute()]], this method always treats the given route
+     * as an absolute route.
+     *
+     * @param string|array $params use a string to represent a route (e.g. `site/index`),
+     * or an array to represent a route with query parameters (e.g. `['site/index', 'param1' => 'value1']`).
+     * @return string the created URL
      */
     public function createUrl($params)
     {
-        $params = (array) $params;
+        $params = (array)$params;
         $anchor = isset($params['#']) ? '#' . $params['#'] : '';
         unset($params['#'], $params[$this->routeParam]);
 
@@ -283,23 +306,29 @@ class UrlManager extends Component
     }
 
     /**
-     * Creates an absolute URL using the given route and parameters.
+     * Creates an absolute URL using the given route and query parameters.
+     *
      * This method prepends the URL created by [[createUrl()]] with the [[hostInfo]].
-     * @param  string|array $params route as a string or route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
-     * @param  string       $schema the schema to use for the url. e.g. 'http' or 'https'. If not specified
-     *                              the schema of the current request will be used.
-     * @return string       the created URL
+     *
+     * Note that unlike [[\yii\helpers\Url::toRoute()]], this method always treats the given route
+     * as an absolute route.
+     *
+     * @param string|array $params use a string to represent a route (e.g. `site/index`),
+     * or an array to represent a route with query parameters (e.g. `['site/index', 'param1' => 'value1']`).
+     * @param string $scheme the scheme to use for the url (either `http` or `https`). If not specified
+     * the scheme of the current request will be used.
+     * @return string the created URL
      * @see createUrl()
      */
-    public function createAbsoluteUrl($params, $schema = null)
+    public function createAbsoluteUrl($params, $scheme = null)
     {
-        $params = (array) $params;
+        $params = (array)$params;
         $url = $this->createUrl($params);
         if (strpos($url, '://') === false) {
             $url = $this->getHostInfo() . $url;
         }
-        if ($schema && ($pos = strpos($url, '://')) !== false) {
-            $url = $schema . substr($url, $pos);
+        if (is_string($scheme) && ($pos = strpos($url, '://')) !== false) {
+            $url = $scheme . substr($url, $pos);
         }
 
         return $url;
