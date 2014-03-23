@@ -55,7 +55,6 @@ class BaseSecurity
     {
         $module = static::openCryptModule();
         $data = static::addPadding($data);
-        srand();
         $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($module), MCRYPT_RAND);
         $key = static::deriveKey($password, $iv);
         mcrypt_generic_init($module, $key, $iv);
