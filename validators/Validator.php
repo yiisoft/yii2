@@ -128,12 +128,44 @@ class Validator extends Component
      */
     public $isEmpty;
     /**
-     * @var callable a PHP callable that determines the conditions upon which the validation is performed.
-     * If not set, the validation will always be performed. If set, the client-side validation is disabled.
-     * The signature of the callable should be `function ($model)` which takes the model to be validated as a
-     * parameter and returns a boolean indicating whether the validation should be performed.
-     */    
+     * @var callable a PHP callable whose return value determines whether this validator should be applied.
+     * The signature of the callable should be `function ($model, $attribute)`, where `$model` and `$attribute`
+     * refer to the model and the attribute currently being validated. The callable should return a boolean value.
+     *
+     * This property is mainly provided to support conditional validation on the server side.
+     * If this property is not set, this validator will be always applied on the server side.
+     *
+     * The following example will enable the validator only when the country currently selected is USA:
+     *
+     * ```php
+     * function ($model) {
+     *     return $model->country == Country::USA;
+     * }
+     * ```
+     *
+     * @see whenClient
+     */
     public $when;
+    /**
+     * @var string a JavaScript function name whose return value determines whether this validator should be applied
+     * on the client side. The signature of the function should be `function (attribute, value)`, where
+     * `attribute` is the name of the attribute being validated and `value` the current value of the attribute.
+     *
+     * This property is mainly provided to support conditional validation on the client side.
+     * If this property is not set, this validator will be always applied on the client side.
+     *
+     * The following example will enable the validator only when the country currently selected is USA:
+     *
+     * ```php
+     * function (attribute, value) {
+     *     return $('#country').value == 'USA';
+     * }
+     * ```
+     *
+     * @see when
+     */
+    public $whenClient;
+
 
     /**
      * Creates a validator object.
@@ -178,10 +210,6 @@ class Validator extends Component
         $this->attributes = (array) $this->attributes;
         $this->on = (array) $this->on;
         $this->except = (array) $this->except;
-
-        if ($this->when !== null) {
-            $this->enableClientValidation = false;
-        }
     }
 
     /**
@@ -203,11 +231,7 @@ class Validator extends Component
             $skip = $this->skipOnError && $object->hasErrors($attribute)
                 || $this->skipOnEmpty && $this->isEmpty($object->$attribute);
             if (!$skip) {
-                if ($this->when !== null) {
-                    if (call_user_func($this->when, $object)) {
-                        $this->validateAttribute($object, $attribute);
-                    }
-                } else {
+                if ($this->when === null || call_user_func($this->when, $object, $attribute)) {
                     $this->validateAttribute($object, $attribute);
                 }
             }
