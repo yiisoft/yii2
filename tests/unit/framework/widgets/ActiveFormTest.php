@@ -24,7 +24,7 @@ class ActiveFormTest extends \yiiunit\TestCase
 
         $model = new DynamicModel(['name']);
         ob_start();
-        $form = new ActiveForm(['action' => './']);
+        $form = new ActiveForm(['action' => '/something']);
         ob_end_clean();
 
         $this->assertEquals(<<<EOF
