@@ -258,6 +258,34 @@ for example the [[yii\validators\InlineValidator::$skipOnEmpty|skipOnEmpty]] pro
 [['birthdate'], 'validateAge', 'params' => ['min' => '12'], 'skipOnEmpty' => false],
 ```
 
+### conditional validation
+
+To validate attributes only when certain conditions apply, e.g. the validation of
+one field depends on the value of another field you can use [[yii\validators\Validator::when|the `when` property]]
+to define such conditions:
+
+```php
+['state', 'required', 'when' => function($model) { return $model->country == Country::USA; }],
+['stateOthers', 'required', 'when' => function($model) { return $model->country != Country::USA; }],
+['mother', 'required', 'when' => function($model) { return $model->age < 18 && $model->married != true; }],
+```
+
+For better readability the conditions can also be written like this:
+
+```php
+public function rules()
+{
+    $usa = function($model) { return $model->country == Country::USA; };
+    $notUsa = function($model) { return $model->country != Country::USA; };
+    $child = function($model) { return $model->age < 18 && $model->married != true; };
+    return [
+        ['state', 'required', 'when' => $usa],
+        ['stateOthers', 'required', 'when' => $notUsa], // note that it is not possible to write !$usa
+        ['mother', 'required', 'when' => $child],
+    ];
+}
+```
+
 
 Massive Attribute Retrieval and Assignment
 ------------------------------------------
