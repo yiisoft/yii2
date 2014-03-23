@@ -225,10 +225,10 @@ class FileCache extends Cache
      * Recursively removing expired cache files under a directory.
      * This method is mainly used by [[gc()]].
      * @param string $path the directory under which expired cache files are removed.
-     * @param boolean $durationdOnly whether to only remove expired cache files. If false, all files
+     * @param boolean $expiredOnly whether to only remove expired cache files. If false, all files
      * under `$path` will be removed.
      */
-    protected function gcRecursive($path, $durationdOnly)
+    protected function gcRecursive($path, $expiredOnly)
     {
         if (($handle = opendir($path)) !== false) {
             while (($file = readdir($handle)) !== false) {
@@ -237,11 +237,11 @@ class FileCache extends Cache
                 }
                 $fullPath = $path . DIRECTORY_SEPARATOR . $file;
                 if (is_dir($fullPath)) {
-                    $this->gcRecursive($fullPath, $durationdOnly);
-                    if (!$durationdOnly) {
+                    $this->gcRecursive($fullPath, $expiredOnly);
+                    if (!$expiredOnly) {
                         @rmdir($fullPath);
                     }
-                } elseif (!$durationdOnly || $durationdOnly && @filemtime($fullPath) < time()) {
+                } elseif (!$expiredOnly || $expiredOnly && @filemtime($fullPath) < time()) {
                     @unlink($fullPath);
                 }
             }
