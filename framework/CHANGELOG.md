@@ -135,6 +135,7 @@ Yii Framework 2 Change Log
 - Enh #2364: Take into account current error reporting level in error handler (gureedo)
 - Enh #2387: Added support for fetching data from database in batches (nineinchnick, qiangxue)
 - Enh #2392: Added `addCssStyle()`, `removeCssStyle()`, `cssStyleFromArray()` and `cssStyleToArray()` to `Html` (qiangxue, kartik-v, Alex-Code)
+- Enh #2406: Added support for conditional validation (drenty, cebe, qiangxue)
 - Enh #2411: Added Gii extension generator (schmunk42)
 - Enh #2415: Added support for inverse relations (qiangxue)
 - Enh #2417: Added possibility to set `dataType` for `$.ajax` call in yii.activeForm.js (Borales)
