@@ -32,7 +32,7 @@ class Formatter extends Component
      * This can be any value that may be passed to [date_default_timezone_set()](http://www.php.net/manual/en/function.date-default-timezone-set.php)
      * e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
      * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available timezones.
-     * If this property is not set, [[\yii\base\Application::timezone]] will be used.
+     * If this property is not set, [[\yii\base\Application::timeZone]] will be used.
      */
     public $timeZone;
     /**
