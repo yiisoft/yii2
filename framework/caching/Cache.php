@@ -27,7 +27,7 @@ use yii\helpers\StringHelper;
  * $data = $cache->get($key);
  * if ($data === false) {
  *     // ...generate $data here...
- *     $cache->set($key, $data, $expire, $dependency);
+ *     $cache->set($key, $data, $duration, $dependency);
  * }
  * ~~~
  *
@@ -194,13 +194,13 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param  mixed      $key        a key identifying the value to be cached. This can be a simple string or
      *                                a complex data structure consisting of factors representing the key.
      * @param  mixed      $value      the value to be cached
-     * @param  integer    $expire     the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param  integer    $duration     the number of seconds in which the cached value will expire. 0 means never expire.
      * @param  Dependency $dependency dependency of the cached item. If the dependency changes,
      *                                the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      *                                This parameter is ignored if [[serializer]] is false.
      * @return boolean    whether the value is successfully stored into cache
      */
-    public function set($key, $value, $expire = 0, $dependency = null)
+    public function set($key, $value, $duration = 0, $dependency = null)
     {
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
@@ -212,7 +212,7 @@ abstract class Cache extends Component implements \ArrayAccess
         }
         $key = $this->buildKey($key);
 
-        return $this->setValue($key, $value, $expire);
+        return $this->setValue($key, $value, $duration);
     }
 
     /**
@@ -221,13 +221,13 @@ abstract class Cache extends Component implements \ArrayAccess
      * expiration time will be replaced with the new ones, respectively.
      *
      * @param  array      $items      the items to be cached, as key-value pairs.
-     * @param  integer    $expire     default number of seconds in which the cached values will expire. 0 means never expire.
+     * @param  integer    $duration     default number of seconds in which the cached values will expire. 0 means never expire.
      * @param  Dependency $dependency dependency of the cached items. If the dependency changes,
      *                                the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      *                                This parameter is ignored if [[serializer]] is false.
      * @return boolean    whether the items are successfully stored into cache
      */
-    public function mset($items, $expire = 0, $dependency = null)
+    public function mset($items, $duration = 0, $dependency = null)
     {
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
@@ -245,7 +245,7 @@ abstract class Cache extends Component implements \ArrayAccess
             $data[$key] = $value;
         }
 
-        return $this->setValues($data, $expire);
+        return $this->setValues($data, $duration);
     }
 
     /**
@@ -253,13 +253,13 @@ abstract class Cache extends Component implements \ArrayAccess
      * If the cache already contains such a key, the existing value and expiration time will be preserved.
      *
      * @param  array      $items      the items to be cached, as key-value pairs.
-     * @param  integer    $expire     default number of seconds in which the cached values will expire. 0 means never expire.
+     * @param  integer    $duration     default number of seconds in which the cached values will expire. 0 means never expire.
      * @param  Dependency $dependency dependency of the cached items. If the dependency changes,
      *                                the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      *                                This parameter is ignored if [[serializer]] is false.
      * @return boolean    whether the items are successfully stored into cache
      */
-    public function madd($items, $expire = 0, $dependency = null)
+    public function madd($items, $duration = 0, $dependency = null)
     {
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
@@ -277,7 +277,7 @@ abstract class Cache extends Component implements \ArrayAccess
             $data[$key] = $value;
         }
 
-        return $this->addValues($data, $expire);
+        return $this->addValues($data, $duration);
     }
 
     /**
@@ -286,13 +286,13 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param  mixed      $key        a key identifying the value to be cached. This can be a simple string or
      *                                a complex data structure consisting of factors representing the key.
      * @param  mixed      $value      the value to be cached
-     * @param  integer    $expire     the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param  integer    $duration     the number of seconds in which the cached value will expire. 0 means never expire.
      * @param  Dependency $dependency dependency of the cached item. If the dependency changes,
      *                                the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      *                                This parameter is ignored if [[serializer]] is false.
      * @return boolean    whether the value is successfully stored into cache
      */
-    public function add($key, $value, $expire = 0, $dependency = null)
+    public function add($key, $value, $duration = 0, $dependency = null)
     {
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
@@ -304,7 +304,7 @@ abstract class Cache extends Component implements \ArrayAccess
         }
         $key = $this->buildKey($key);
 
-        return $this->addValue($key, $value, $expire);
+        return $this->addValue($key, $value, $duration);
     }
 
     /**
@@ -345,10 +345,10 @@ abstract class Cache extends Component implements \ArrayAccess
      * in specific cache storage.
      * @param  string  $key    the key identifying the value to be cached
      * @param  string  $value  the value to be cached
-     * @param  integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
-    abstract protected function setValue($key, $value, $expire);
+    abstract protected function setValue($key, $value, $duration);
 
     /**
      * Stores a value identified by a key into cache if the cache does not contain this key.
@@ -356,10 +356,10 @@ abstract class Cache extends Component implements \ArrayAccess
      * in specific cache storage.
      * @param  string  $key    the key identifying the value to be cached
      * @param  string  $value  the value to be cached
-     * @param  integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
-    abstract protected function addValue($key, $value, $expire);
+    abstract protected function addValue($key, $value, $duration);
 
     /**
      * Deletes a value with the specified key from cache
@@ -399,14 +399,14 @@ abstract class Cache extends Component implements \ArrayAccess
      * The default implementation calls [[setValue()]] multiple times store values one by one. If the underlying cache
      * storage supports multi-set, this method should be overridden to exploit that feature.
      * @param  array   $data   array where key corresponds to cache key while value is the value stored
-     * @param  integer $expire the number of seconds in which the cached values will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
      * @return array   array of failed keys
      */
-    protected function setValues($data, $expire)
+    protected function setValues($data, $duration)
     {
         $failedKeys = [];
         foreach ($data as $key => $value) {
-            if ($this->setValue($key, $value, $expire) === false) {
+            if ($this->setValue($key, $value, $duration) === false) {
                 $failedKeys[] = $key;
             }
         }
@@ -419,14 +419,14 @@ abstract class Cache extends Component implements \ArrayAccess
      * The default implementation calls [[addValue()]] multiple times add values one by one. If the underlying cache
      * storage supports multi-add, this method should be overridden to exploit that feature.
      * @param  array   $data   array where key corresponds to cache key while value is the value stored
-     * @param  integer $expire the number of seconds in which the cached values will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
      * @return array   array of failed keys
      */
-    protected function addValues($data, $expire)
+    protected function addValues($data, $duration)
     {
         $failedKeys = [];
         foreach ($data as $key => $value) {
-            if ($this->addValue($key, $value, $expire) === false) {
+            if ($this->addValue($key, $value, $duration) === false) {
                 $failedKeys[] = $key;
             }
         }

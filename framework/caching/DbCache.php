@@ -178,14 +178,14 @@ class DbCache extends Cache
      *
      * @param  string  $key    the key identifying the value to be cached
      * @param  string  $value  the value to be cached
-     * @param  integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
-    protected function setValue($key, $value, $expire)
+    protected function setValue($key, $value, $duration)
     {
         $command = $this->db->createCommand()
             ->update($this->cacheTable, [
-                'expire' => $expire > 0 ? $expire + time() : 0,
+                'expire' => $duration > 0 ? $duration + time() : 0,
                 'data' => [$value, \PDO::PARAM_LOB],
             ], ['id' => $key]);
 
@@ -194,7 +194,7 @@ class DbCache extends Cache
 
             return true;
         } else {
-            return $this->addValue($key, $value, $expire);
+            return $this->addValue($key, $value, $duration);
         }
     }
 
@@ -204,24 +204,18 @@ class DbCache extends Cache
      *
      * @param  string  $key    the key identifying the value to be cached
      * @param  string  $value  the value to be cached
-     * @param  integer $expire the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param  integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return boolean true if the value is successfully stored into cache, false otherwise
      */
-    protected function addValue($key, $value, $expire)
+    protected function addValue($key, $value, $duration)
     {
         $this->gc();
-
-        if ($expire > 0) {
-            $expire += time();
-        } else {
-            $expire = 0;
-        }
 
         try {
             $this->db->createCommand()
                 ->insert($this->cacheTable, [
                     'id' => $key,
-                    'expire' => $expire,
+                    'expire' => $duration > 0 ? $duration + time() : 0,
                     'data' => [$value, \PDO::PARAM_LOB],
                 ])->execute();
 
