@@ -673,10 +673,10 @@ class ActiveField extends Component
             foreach ($this->model->getActiveValidators($attribute) as $validator) {
                 /** @var \yii\validators\Validator $validator */
                 $js = $validator->clientValidateAttribute($this->model, $attribute, $this->form->getView());
-                if ($validator->whenClient !== null) {
-                    $js = "if ({$validator->whenClient}(attribute, value)) { $js }";
-                }
                 if ($validator->enableClientValidation && $js != '') {
+                    if ($validator->whenClient !== null) {
+                        $js = "if ({$validator->whenClient}(attribute, value)) { $js }";
+                    }
                     $validators[] = $js;
                 }
             }
