@@ -21,7 +21,7 @@ return array (
   'An internal server error occurred.' => 'Wystąpił wewnętrzny błąd serwera.',
   'Are you sure to delete this item?' => 'Na pewno usunąć ten element?',
   'Delete' => 'Usuń',
-  'Error' => 'Bład',
+  'Error' => 'Błąd',
   'File upload failed.' => 'Wgrywanie pliku nie powiodło się.',
   'Home' => 'Strona domowa',
   'Invalid data received for parameter "{param}".' => 'Otrzymano nieprawidłowe dane dla parametru "{param}".',
