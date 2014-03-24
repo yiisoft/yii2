@@ -17,6 +17,8 @@ echo "<?php\n";
 
 namespace <?= $generator->ns ?>;
 
+use Yii;
+
 /**
  * This is the model class for table "<?= $tableName ?>".
  *
