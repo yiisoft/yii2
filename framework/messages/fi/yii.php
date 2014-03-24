@@ -17,6 +17,18 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return array (
+  'in {delta, plural, =1{a day} other{# days}}' => '{delta, plural, =1{päivässä} other{# päivässä}}',
+  'in {delta, plural, =1{a minute} other{# minutes}}' => '{delta, plural, =1{minuutissa} other{# minuutissa}}',
+  'in {delta, plural, =1{a month} other{# months}}' => '{delta, plural, =1{kuukaudessa} other{# kuukaudessa}}',
+  'in {delta, plural, =1{a second} other{# seconds}}' => '{delta, plural, =1{sekunnissa} other{# sekunnissa}}',
+  'in {delta, plural, =1{a year} other{# years}}' => '{delta, plural, =1{vuodessa} other{# vuodessa}}',
+  'in {delta, plural, =1{an hour} other{# hours}}' => '{delta, plural, =1{tunnissa} other{# tunnissa}}',
+  '{delta, plural, =1{a day} other{# days}} ago' => '{delta, plural, =1{päivä} other{# päivää}} sitten',
+  '{delta, plural, =1{a minute} other{# minutes}} ago' => '{delta, plural, =1{minuutti} other{# minuuttia}} sitten',
+  '{delta, plural, =1{a month} other{# months}} ago' => '{delta, plural, =1{kuukausi} other{# kuukautta}} sitten',
+  '{delta, plural, =1{a second} other{# seconds}} ago' => '{delta, plural, =1{sekunti} other{# sekuntia}} sitten',
+  '{delta, plural, =1{a year} other{# years}} ago' => '{delta, plural, =1{vuosi} other{# vuotta}} sitten',
+  '{delta, plural, =1{an hour} other{# hours}} ago' => '{delta, plural, =1{tunti} other{# tuntia}} sitten',
   '(not set)' => '(ei asetettu)',
   'An internal server error occurred.' => 'Sisäinen palvelinvirhe.',
   'Are you sure you want to delete this item?' => 'Haluatko varmasti poistaa tämän?',
@@ -32,8 +44,8 @@ return array (
   'No help for unknown command "{command}".' => 'Ei ohjetta tuntemattomalle komennolle "{command}".',
   'No help for unknown sub-command "{command}".' => 'Ei ohjetta tuntemattomalle alikomennolle "{command}".',
   'No results found.' => 'Ei tuloksia.',
-  'Only files with these extensions are allowed: {extensions}.' => 'Sallittuja ovat vain tiedostot, joiden tiedostopääte on: {extensions}.',
   'Only files with these MIME types are allowed: {mimeTypes}.' => 'Sallittuja ovat vain tiedostot, joiden MIME-tyyppi on: {mimeTypes}.',
+  'Only files with these extensions are allowed: {extensions}.' => 'Sallittuja ovat vain tiedostot, joiden tiedostopääte on: {extensions}.',
   'Page not found.' => 'Sivua ei löytynyt.',
   'Please fix the following errors:' => 'Korjaa seuraavat virheet:',
   'Please upload a file.' => 'Lähetä tiedosto.',
