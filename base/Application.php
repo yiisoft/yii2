@@ -14,7 +14,8 @@ use yii\web\HttpException;
 /**
  * Application is the base class for all application classes.
  *
- * @property \yii\rbac\Manager $authManager The auth manager for this application. This property is read-only.
+ * @property \yii\rbac\Manager $authManager The auth manager for this application. Null is returned if auth
+ * manager is not configured. This property is read-only.
  * @property string $basePath The root directory of the application.
  * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
  * This property is read-only.

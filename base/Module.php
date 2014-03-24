@@ -25,7 +25,6 @@ use yii\di\ServiceLocator;
  * with '@') and the array values are the corresponding paths or aliases. See [[setAliases()]] for an example.
  * This property is write-only.
  * @property string $basePath The root directory of the module.
- * @property array $components The components (indexed by their IDs).
  * @property string $controllerPath The directory that contains the controller classes. This property is
  * read-only.
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
