@@ -53,6 +53,7 @@ use yii\helpers\StringHelper;
  * @property boolean $isHead Whether this is a HEAD request. This property is read-only.
  * @property boolean $isOptions Whether this is a OPTIONS request. This property is read-only.
  * @property boolean $isPatch Whether this is a PATCH request. This property is read-only.
+ * @property boolean $isPjax Whether this is a PJAX request. This property is read-only.
  * @property boolean $isPost Whether this is a POST request. This property is read-only.
  * @property boolean $isPut Whether this is a PUT request. This property is read-only.
  * @property boolean $isSecureConnection If the request is sent via secure channel (https). This property is

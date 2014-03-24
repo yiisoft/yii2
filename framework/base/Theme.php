@@ -61,6 +61,11 @@ use yii\helpers\FileHelper;
  * that contains the entry script of the application. If your theme is designed to handle modules,
  * you may configure the [[pathMap]] property like described above.
  *
+ * @property string $basePath The root path of this theme. All resources of this theme are located under this
+ * directory.
+ * @property string $baseUrl The base URL (without ending slash) for this theme. All resources of this theme
+ * are considered to be under this base URL. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
