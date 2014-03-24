@@ -42,11 +42,11 @@ class Formatter extends Component
     /**
      * @var string the default format string to be used to format a time using PHP date() function.
      */
-    public $timeFormat = 'h:i:s';
+    public $timeFormat = 'H:i:s';
     /**
      * @var string the default format string to be used to format a date and time using PHP date() function.
      */
-    public $datetimeFormat = 'Y-m-d h:i:s';
+    public $datetimeFormat = 'Y-m-d H:i:s';
     /**
      * @var string the text to be displayed when formatting a null. Defaults to '<span class="not-set">(not set)</span>'.
      */

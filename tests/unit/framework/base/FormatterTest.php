@@ -129,15 +129,19 @@ class FormatterTest extends TestCase
     public function testAsTime()
     {
         $value = time();
-        $this->assertSame(date('h:i:s', $value), $this->formatter->asTime($value));
+        $this->assertSame(date('H:i:s', $value), $this->formatter->asTime($value));
         $this->assertSame(date('h:i:s A', $value), $this->formatter->asTime($value, 'h:i:s A'));
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asTime(null));
     }
 
     public function testAsDatetime()
     {
+        $this->assertSame(
+            '2009-02-15 15:16:17',
+            $this->formatter->asDatetime(DateTime::createFromFormat('Y-m-d H:i:s', '2009-02-15 15:16:17'))
+        );
         $value = time();
-        $this->assertSame(date('Y-m-d h:i:s', $value), $this->formatter->asDatetime($value));
+        $this->assertSame(date('Y-m-d H:i:s', $value), $this->formatter->asDatetime($value));
         $this->assertSame(date('Y/m/d h:i:s A', $value), $this->formatter->asDatetime($value, 'Y/m/d h:i:s A'));
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDatetime(null));
     }
