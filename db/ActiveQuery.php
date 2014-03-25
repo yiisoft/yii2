@@ -159,7 +159,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $key = $model[$pk];
                 if (isset($hash[$key])) {
                     unset($models[$i]);
-                } else {
+                } elseif ($key !== null) {
                     $hash[$key] = true;
                 }
             }
