@@ -188,7 +188,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
                 $message->setTextBody(strip_tags($html));
             }
         }
-
         return $message;
     }
 
@@ -205,7 +204,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
         if (!array_key_exists('class', $config)) {
             $config['class'] = $this->messageClass;
         }
-
+        $config['mailer'] = $this;
         return Yii::createObject($config);
     }
 
