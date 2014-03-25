@@ -129,7 +129,7 @@ Yii Framework 2 Change Log
 - Enh #2132: Allow url of CSS and JS files registered in yii\web\View to be url alias (cebe)
 - Enh #2144: `Html` helper now supports rendering "data" attributes (qiangxue)
 - Enh #2156: `yii migrate` now automatically creates `migrations` directory if it does not exist (samdark)
-- Enh:#2211: Added typecast database types into php types (dizews)
+- Enh #2211: Added typecast database types into php types (dizews)
 - Enh #2240: Improved `yii\web\AssetManager::publish()`, `yii\web\AssetManager::getPublishedPath()` and `yii\web\AssetManager::getPublishedUrl()` to support aliases (vova07)
 - Enh #2325: Adding support for the `X-HTTP-Method-Override` header in `yii\web\Request::getMethod()` (pawzar)
 - Enh #2364: Take into account current error reporting level in error handler (gureedo)
@@ -177,6 +177,7 @@ Yii Framework 2 Change Log
 - Enh: LinkPager can now register relational link tags in the html header for prev, next, first and last page (cebe)
 - Enh: Added `yii\web\UrlRuleInterface` and `yii\web\CompositeUrlRule` (qiangxue)
 - Enh: Added `yii\web\Request::getAuthUser()` and `getAuthPassword()` (qiangxue)
+- Chg #47: Changed Markdown library to cebe/markdown and adjusted Markdown helper API (cebe)
 - Chg #735: Added back `ActiveField::hiddenInput()` (qiangxue)
 - Chg #1186: Changed `Sort` to use comma to separate multiple sort fields and use negative sign to indicate descending sort (qiangxue)
 - Chg #1519: `yii\web\User::loginRequired()` now returns the `Response` object instead of exiting the application (qiangxue)
@@ -198,6 +199,7 @@ Yii Framework 2 Change Log
 	- Added `yii\web\Request::get($name = null, $defaultValue = null)` and `yii\web\Request::post($name = null, $defaultValue = null)` (samdark)
 - Chg #2059: Implemented git-flavored file excluding/filtering for `FileHelper` (nineinchnick)
 - Chg #2063: Removed `yii\web\Request::acceptTypes` and renamed `yii\web\Request::acceptedContentTypes` to `acceptableContentTypes` (qiangxue)
+- Chg #2103: Renamed AccessDeniedHttpException to ForbiddenHttpException (danschmidt5189)
 - Chg #2146: Removed `ActiveRelation` class and `ActiveRelationInterface`, moved the functionality to `ActiveQuery`.
              All relational queries are now directly served by `ActiveQuery` allowing to use custom scopes in relations
              and also to declare arbitrary queries as relations.
