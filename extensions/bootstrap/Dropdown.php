@@ -87,7 +87,7 @@ class Dropdown extends Widget
             $linkOptions['tabindex'] = '-1';
             $content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
             if (!empty($item['items'])) {
-                $content .= self::widget([
+                $content .= static::widget([
                     'items' => $item['items'],
                     'encodeLabels' => $this->encodeLabels,
                     'clientOptions' => $this->clientOptions,
