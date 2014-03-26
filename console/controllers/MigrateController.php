@@ -92,14 +92,13 @@ class MigrateController extends Controller
     public $db = 'db';
 
     /**
-     * Returns the names of the global options for this command.
-     * @return array the names of the global options for this command.
+     * @inheritdoc
      */
-    public function options($id)
+    public function options($actionId)
     {
-        return array_merge(parent::options($id),
+        return array_merge(parent::options($actionId),
             ['migrationPath', 'migrationTable', 'db'], // global for all actions
-            ($id == 'create') ? ['templateFile'] : [] // action create
+            ($actionId == 'create') ? ['templateFile'] : [] // action create
         );
     }
 
