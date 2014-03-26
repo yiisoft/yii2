@@ -220,7 +220,9 @@ class MessageFormatter extends Component
                 if (!isset($token[2])) {
                     return false;
                 }
-                $subtokens = self::tokenizePattern($token[2]);
+                if (($subtokens = self::tokenizePattern($token[2])) === false) {
+                    return false;
+                }
                 $c = count($subtokens);
                 for ($k = 0; $k + 1 < $c; $k++) {
                     if (is_array($subtokens[$k]) || !is_array($subtokens[++$k])) {
