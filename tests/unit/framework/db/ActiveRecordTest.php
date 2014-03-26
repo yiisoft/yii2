@@ -411,7 +411,8 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1, $customer->id);
         $order = Order::find()->joinWith([
             'items' => function ($q) {
-                $q->from(['items' => 'tbl_item']);
+                $q->from(['items' => 'tbl_item'])
+                    ->orderBy('items.id');
             },
         ])->orderBy('tbl_order.id')->one();
     }
