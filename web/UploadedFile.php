@@ -129,7 +129,7 @@ class UploadedFile extends Object
         $results = [];
         foreach ($files as $key => $file) {
             if (strpos($key, "{$name}[") === 0) {
-                $results[] = self::$_files[$key];
+                $results[] = $file;
             }
         }
         return $results;
