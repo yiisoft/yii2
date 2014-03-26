@@ -64,6 +64,7 @@ class AccessControl extends ActionFilter
      * ~~~
      *
      * where `$rule` is this rule, and `$action` is the current [[Action|action]] object.
+     * `$rule` will be `null` if access is denied because none of the rules matched.
      */
     public $denyCallback;
     /**
@@ -78,6 +79,7 @@ class AccessControl extends ActionFilter
      * @see ruleConfig
      */
     public $rules = [];
+
 
     /**
      * Initializes the [[rules]] array by instantiating rule objects from configurations.
@@ -114,16 +116,14 @@ class AccessControl extends ActionFilter
                 } else {
                     $this->denyAccess($user);
                 }
-
                 return false;
             }
         }
         if (isset($this->denyCallback)) {
-            call_user_func($this->denyCallback, $rule, $action);
+            call_user_func($this->denyCallback, null, $action);
         } else {
             $this->denyAccess($user);
         }
-
         return false;
     }
 
