@@ -115,9 +115,9 @@ class PhpDocController extends Controller
     /**
      * @inheritdoc
      */
-    public function options($id)
+    public function options($actionId)
     {
-        return array_merge(parent::options($id), ['updateFiles']);
+        return array_merge(parent::options($actionId), ['updateFiles']);
     }
 
     protected function updateClassPropertyDocs($file, $className, $propertyDoc)
