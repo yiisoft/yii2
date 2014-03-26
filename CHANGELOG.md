@@ -178,6 +178,7 @@ Yii Framework 2 Change Log
 - Enh: LinkPager can now register relational link tags in the html header for prev, next, first and last page (cebe)
 - Enh: Added `yii\web\UrlRuleInterface` and `yii\web\CompositeUrlRule` (qiangxue)
 - Enh: Added `yii\web\Request::getAuthUser()` and `getAuthPassword()` (qiangxue)
+- Enh: Added summaryOptions and emptyTextOptions to BaseListView (johonunu)
 - Chg #47: Changed Markdown library to cebe/markdown and adjusted Markdown helper API (cebe)
 - Chg #735: Added back `ActiveField::hiddenInput()` (qiangxue)
 - Chg #1186: Changed `Sort` to use comma to separate multiple sort fields and use negative sign to indicate descending sort (qiangxue)
