@@ -64,6 +64,7 @@ class ArrayDataProvider extends BaseDataProvider
      */
     public $allModels;
 
+
     /**
      * @inheritdoc
      */
