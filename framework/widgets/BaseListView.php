@@ -54,6 +54,12 @@ abstract class BaseListView extends Widget
      */
     public $summary;
     /**
+     * @var array the HTML attributes for the summary of the list view.
+     * The "tag" element specifies the tag name of the summary element and defaults to "div".
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $summaryOptions = ['class' => 'summary'];
+    /**
      * @var boolean whether to show the list view if [[dataProvider]] returns no data.
      */
     public $showOnEmpty = false;
@@ -61,6 +67,12 @@ abstract class BaseListView extends Widget
      * @var string the HTML content to be displayed when [[dataProvider]] does not have any data.
      */
     public $emptyText;
+    /**
+     * @var array the HTML attributes for the emptyText of the list view.
+     * The "tag" element specifies the tag name of the emptyText element and defaults to "div".
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $emptyTextOptions = ['class' => 'empty'];
     /**
      * @var string the layout that determines how different sections of the list view should be organized.
      * The following tokens will be replaced with the corresponding section contents:
@@ -139,7 +151,8 @@ abstract class BaseListView extends Widget
      */
     public function renderEmpty()
     {
-        return '<div class="empty">' . ($this->emptyText === null ? Yii::t('yii', 'No results found.') : $this->emptyText) . '</div>';
+        $tag = ArrayHelper::remove($this->emptyTextOptions, 'tag', 'div');
+        return Html::tag($tag, ($this->emptyText === null ? Yii::t('yii', 'No results found.') : $this->emptyText), $this->emptyTextOptions);
     }
 
     /**
@@ -151,6 +164,7 @@ abstract class BaseListView extends Widget
         if ($count <= 0) {
             return '';
         }
+        $tag = ArrayHelper::remove($this->summaryOptions, 'tag', 'div');
         if (($pagination = $this->dataProvider->getPagination()) !== false) {
             $totalCount = $this->dataProvider->getTotalCount();
             $begin = $pagination->getPage() * $pagination->pageSize + 1;
@@ -161,29 +175,27 @@ abstract class BaseListView extends Widget
             $page = $pagination->getPage() + 1;
             $pageCount = $pagination->pageCount;
             if (($summaryContent = $this->summary) === null) {
-                return '<div class="summary">'
-                    . Yii::t('yii', 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.', [
+                return Html::tag($tag, Yii::t('yii', 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.', [
                         'begin' => $begin,
                         'end' => $end,
                         'count' => $count,
                         'totalCount' => $totalCount,
                         'page' => $page,
                         'pageCount' => $pageCount,
-                    ])
-                    . '</div>';
+                    ]), $this->summaryOptions);
             }
         } else {
             $begin = $page = $pageCount = 1;
             $end = $totalCount = $count;
             if (($summaryContent = $this->summary) === null) {
-                return '<div class="summary">' . Yii::t('yii', 'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.', [
+                return Html::tag($tag, Yii::t('yii', 'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.', [
                     'begin' => $begin,
                     'end' => $end,
                     'count' => $count,
                     'totalCount' => $totalCount,
                     'page' => $page,
                     'pageCount' => $pageCount,
-                ]) . '</div>';
+                ]), $this->summaryOptions);
             }
         }
 
