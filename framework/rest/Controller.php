@@ -105,10 +105,9 @@ class Controller extends \yii\web\Controller
      */
     public function beforeAction($action)
     {
+        $this->authenticate($action);
         if (parent::beforeAction($action)) {
-            $this->authenticate($action);
             $this->checkRateLimit($action);
-
             return true;
         } else {
             return false;
@@ -121,7 +120,6 @@ class Controller extends \yii\web\Controller
     public function afterAction($action, $result)
     {
         $result = parent::afterAction($action, $result);
-
         return $this->serializeData($result);
     }
 
