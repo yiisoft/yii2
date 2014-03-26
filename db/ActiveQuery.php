@@ -349,6 +349,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     private function buildJoinWith()
     {
+        $join = $this->join;
+        $this->join = [];
+
         foreach ($this->joinWith as $config) {
             list ($with, $eagerLoading, $joinType) = $config;
             $this->joinWithRelations(new $this->modelClass, $with, $joinType);
@@ -368,6 +371,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
 
             $this->with($with);
+        }
+
+        if (!empty($join)) {
+            // append explicit join to joinWith()
+            // https://github.com/yiisoft/yii2/issues/2880
+            $this->join = empty($this->join) ? $join : array_merge($this->join, $join);
         }
     }
 
