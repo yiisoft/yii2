@@ -108,7 +108,7 @@ class BaseUrl
      * @return string normalized route suitable for UrlManager
      * @throws InvalidParamException a relative route is given while there is no active controller
      */
-    private static function normalizeRoute($route)
+    protected static function normalizeRoute($route)
     {
         $route = (string) $route;
         if (strncmp($route, '/', 1) === 0) {

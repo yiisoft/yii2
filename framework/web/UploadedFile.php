@@ -56,6 +56,7 @@ class UploadedFile extends Object
      */
     public $error;
 
+
     /**
      * String output.
      * This is PHP magic method that returns string representation of an object.
@@ -80,7 +81,6 @@ class UploadedFile extends Object
     public static function getInstance($model, $attribute)
     {
         $name = Html::getInputName($model, $attribute);
-
         return static::getInstanceByName($name);
     }
 
@@ -95,7 +95,6 @@ class UploadedFile extends Object
     public static function getInstances($model, $attribute)
     {
         $name = Html::getInputName($model, $attribute);
-
         return static::getInstancesByName($name);
     }
 
@@ -108,8 +107,7 @@ class UploadedFile extends Object
      */
     public static function getInstanceByName($name)
     {
-        $files = static::loadFiles();
-
+        $files = self::loadFiles();
         return isset($files[$name]) ? $files[$name] : null;
     }
 
@@ -124,7 +122,7 @@ class UploadedFile extends Object
      */
     public static function getInstancesByName($name)
     {
-        $files = static::loadFiles();
+        $files = self::loadFiles();
         if (isset($files[$name])) {
             return [$files[$name]];
         }
@@ -134,7 +132,6 @@ class UploadedFile extends Object
                 $results[] = self::$_files[$key];
             }
         }
-
         return $results;
     }
 
@@ -166,7 +163,6 @@ class UploadedFile extends Object
                 return copy($this->tempName, $file);
             }
         }
-
         return false;
     }
 
@@ -209,7 +205,6 @@ class UploadedFile extends Object
                 }
             }
         }
-
         return self::$_files;
     }
 
