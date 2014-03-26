@@ -402,6 +402,11 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(3, $count);
         $orders = $query->all();
         $this->assertEquals(3, count($orders));
+
+        // https://github.com/yiisoft/yii2/issues/2880
+        $query = Order::find(1);
+        $customer = $query->getCustomer()->joinWith('orders')->one();
+        $this->assertEquals(1, $customer->id);
     }
 
     public function testJoinWithAndScope()
