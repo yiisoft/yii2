@@ -60,6 +60,35 @@ class QueryTest extends SphinxTestCase
         $this->assertEquals([':id' => 1, ':name' => 'something', ':age' => '30'], $query->params);
     }
 
+    public function testFilter()
+    {
+        $query = new Query;
+        $query->filter('id = :id', [':id' => 1]);
+        $this->assertEquals('id = :id', $query->where);
+        $this->assertEquals([':id' => 1], $query->params);
+
+        $query->andFilter('name = :name', [':name' => 'something']);
+        $this->assertEquals(['and', 'id = :id', 'name = :name'], $query->where);
+        $this->assertEquals([':id' => 1, ':name' => 'something'], $query->params);
+
+        $query->orFilter('age = :age', [':age' => '30']);
+        $this->assertEquals(['or', ['and', 'id = :id', 'name = :name'], 'age = :age'], $query->where);
+        $this->assertEquals([':id' => 1, ':name' => 'something', ':age' => '30'], $query->params);
+
+        $query = new Query;
+        $query->filter('id = :id', [':id' => '']);
+        $this->assertEquals('', $query->where);
+        $this->assertEquals([], $query->params);
+
+        $query->andFilter('name = :name', [':name' => '']);
+        $this->assertEquals('', $query->where);
+        $this->assertEquals([], $query->params);
+
+        $query->orFilter('age = :age', [':age' => '']);
+        $this->assertEquals('', $query->where);
+        $this->assertEquals([], $query->params);
+    }
+
     public function testGroup()
     {
         $query = new Query;

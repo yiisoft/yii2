@@ -68,6 +68,48 @@ class QueryTest extends MongoDbTestCase
         );
     }
 
+    public function testFilter()
+    {
+        $query = new Query;
+        $query->filter(['name' => 'name1']);
+        $this->assertEquals(['name' => 'name1'], $query->where);
+
+        $query->andFilter(['address' => 'address1']);
+        $this->assertEquals(
+            [
+                'and',
+                ['name' => 'name1'],
+                ['address' => 'address1']
+            ],
+            $query->where
+        );
+
+        $query->orFilter(['name' => 'name2']);
+        $this->assertEquals(
+            [
+                'or',
+                [
+                    'and',
+                    ['name' => 'name1'],
+                    ['address' => 'address1']
+                ],
+                ['name' => 'name2']
+
+            ],
+            $query->where
+        );
+
+        $query = new Query;
+        $query->filter(['name' => '']);
+        $this->assertEquals('', $query->where);
+
+        $query->andFilter(['address' => '']);
+        $this->assertEquals([], $query->where);
+
+        $query->orFilter(['name' => '']);
+        $this->assertEquals([], $query->where);
+    }
+
     public function testOrder()
     {
         $query = new Query;
