@@ -203,6 +203,8 @@ class QueryBuilder extends \yii\base\Object
         return count($parts) === 1 ? $parts[0] : ['and' => $parts];
     }
 
+
+    // TODO implement these methods correctly
     private function buildNotCondition($operator, $operands, &$params)
     {
         if (count($operands) != 1) {
