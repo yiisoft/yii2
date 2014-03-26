@@ -413,7 +413,7 @@ class ActiveRecordTest extends DatabaseTestCase
             'items' => function ($q) {
                 $q->from(['items' => 'tbl_item']);
             },
-        ])->one();
+        ])->orderBy('tbl_order.id')->one();
     }
 
     public function testJoinWithAndScope()
