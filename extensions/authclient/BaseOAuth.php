@@ -13,7 +13,7 @@ use Yii;
 use yii\helpers\Json;
 
 /**
- * BaseClient is a base class for the OAuth clients.
+ * BaseOAuth is a base class for the OAuth clients.
  *
  * @see http://oauth.net/
  *
