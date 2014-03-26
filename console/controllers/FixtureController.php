@@ -33,7 +33,6 @@ use yii\test\FixtureTrait;
  */
 class FixtureController extends Controller
 {
-
     use FixtureTrait;
 
     /**
@@ -57,13 +56,13 @@ class FixtureController extends Controller
         'yii\test\InitDb',
     ];
 
+
     /**
-     * Returns the names of the global options for this command.
-     * @return array the names of the global options for this command.
+     * @inheritdoc
      */
-    public function options($id)
+    public function options($actionId)
     {
-        return array_merge(parent::options($id), [
+        return array_merge(parent::options($actionId), [
             'namespace', 'globalFixtures'
         ]);
     }

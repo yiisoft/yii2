@@ -285,14 +285,14 @@ class BaseFileHelper
             if (isset($options['except'])) {
                 foreach ($options['except'] as $key => $value) {
                     if (is_string($value)) {
-                        $options['except'][$key] = static::parseExcludePattern($value);
+                        $options['except'][$key] = self::parseExcludePattern($value);
                     }
                 }
             }
             if (isset($options['only'])) {
                 foreach ($options['only'] as $key => $value) {
                     if (is_string($value)) {
-                        $options['only'][$key] = static::parseExcludePattern($value);
+                        $options['only'][$key] = self::parseExcludePattern($value);
                     }
                 }
             }
