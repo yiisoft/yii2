@@ -405,7 +405,9 @@ class ActiveRecordTest extends DatabaseTestCase
 
         // https://github.com/yiisoft/yii2/issues/2880
         $query = Order::find(1);
-        $customer = $query->getCustomer()->joinWith('orders')->one();
+        $customer = $query->getCustomer()->joinWith([
+            'orders' => function ($q) { $q->orderBy([]); }
+        ])->one();
         $this->assertEquals(1, $customer->id);
     }
 
