@@ -73,6 +73,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed `$model->load($data)` returned `true` if `$data` and `formName` were empty (samdark)
 - Bug: Fixed issue with `ActiveRelationTrait` preventing `ActiveQuery` from clearing events and behaviors on clone (jom)
 - Bug: `Query::queryScalar` wasn't making `SELECT DISTINCT` queries subqueries (jom)
+- Bug: Fixed use `$files` instead of `self::$_files[$key]` to allow inheritance (pgaultier)
 - Enh #46: Added Image extension based on [Imagine library](http://imagine.readthedocs.org) (tonydspaniard)
 - Enh #364: Improve Inflector::slug with `intl` transliteration. Improved transliteration char map. (tonydspaniard)
 - Enh #497: Removed `\yii\log\Target::logUser` and added `\yii\log\Target::prefix` to support customizing message prefix (qiangxue)
