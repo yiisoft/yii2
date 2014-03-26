@@ -409,6 +409,11 @@ class ActiveRecordTest extends DatabaseTestCase
             'orders' => function ($q) { $q->orderBy([]); }
         ])->one();
         $this->assertEquals(1, $customer->id);
+        $order = Order::find()->joinWith([
+            'items' => function ($q) {
+                $q->from(['items' => 'tbl_item']);
+            },
+        ])->one();
     }
 
     public function testJoinWithAndScope()

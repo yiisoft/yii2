@@ -642,23 +642,7 @@ class QueryBuilder extends \yii\base\Object
             return '';
         }
 
-        foreach ($tables as $i => $table) {
-            if ($table instanceof Query) {
-                list($sql, $params) = $this->build($table, $params);
-                $tables[$i] = "($sql) " . $this->db->quoteTableName($i);
-            } elseif (is_string($i)) {
-                if (strpos($table, '(') === false) {
-                    $table = $this->db->quoteTableName($table);
-                }
-                $tables[$i] = "$table " . $this->db->quoteTableName($i);
-            } elseif (strpos($table, '(') === false) {
-                if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
-                    $tables[$i] = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
-                } else {
-                    $tables[$i] = $this->db->quoteTableName($table);
-                }
-            }
-        }
+        $tables = $this->quoteTableNames($tables, $params);
 
         return 'FROM ' . implode(', ', $tables);
     }
@@ -681,21 +665,8 @@ class QueryBuilder extends \yii\base\Object
             }
             // 0:join type, 1:join table, 2:on-condition (optional)
             list ($joinType, $table) = $join;
-            if (is_array($table)) {
-                $query = reset($table);
-                if (!$query instanceof Query) {
-                    throw new Exception('The sub-query for join must be an instance of yii\db\Query.');
-                }
-                $alias = $this->db->quoteTableName(key($table));
-                list ($sql, $params) = $this->build($query, $params);
-                $table = "($sql) $alias";
-            } elseif (strpos($table, '(') === false) {
-                if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
-                    $table = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
-                } else {
-                    $table = $this->db->quoteTableName($table);
-                }
-            }
+            $tables = $this->quoteTableNames((array)$table, $params);
+            $table = reset($tables);
             $joins[$i] = "$joinType $table";
             if (isset($join[2])) {
                 $condition = $this->buildCondition($join[2], $params);
@@ -706,6 +677,28 @@ class QueryBuilder extends \yii\base\Object
         }
 
         return implode($this->separator, $joins);
+    }
+
+    private function quoteTableNames($tables, &$params)
+    {
+        foreach ($tables as $i => $table) {
+            if ($table instanceof Query) {
+                list($sql, $params) = $this->build($table, $params);
+                $tables[$i] = "($sql) " . $this->db->quoteTableName($i);
+            } elseif (is_string($i)) {
+                if (strpos($table, '(') === false) {
+                    $table = $this->db->quoteTableName($table);
+                }
+                $tables[$i] = "$table " . $this->db->quoteTableName($i);
+            } elseif (strpos($table, '(') === false) {
+                if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
+                    $tables[$i] = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
+                } else {
+                    $tables[$i] = $this->db->quoteTableName($table);
+                }
+            }
+        }
+        return $tables;
     }
 
     /**

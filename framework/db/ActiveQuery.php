@@ -524,7 +524,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         } else {
             $on = $child->on;
         }
-        $this->join($joinType, $childTable, $on);
+        $this->join($joinType, empty($child->from) ? $childTable : $child->from, $on);
 
         if (!empty($child->where)) {
             $this->andWhere($child->where);
