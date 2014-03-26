@@ -86,8 +86,8 @@ class TypeDoc extends BaseDoc
     }
 
     /**
-     * @param  null        $visibility
-     * @param  null        $definedBy
+     * @param string|null $visibility
+     * @param string|null $definedBy
      * @return MethodDoc[]
      */
     private function getFilteredMethods($visibility = null, $definedBy = null)

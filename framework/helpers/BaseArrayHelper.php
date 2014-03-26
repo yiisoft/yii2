@@ -62,7 +62,7 @@ class BaseArrayHelper
             if ($recursive) {
                 foreach ($object as $key => $value) {
                     if (is_array($value) || is_object($value)) {
-                        $object[$key] = static::toArray($value, true);
+                        $object[$key] = static::toArray($value, $properties, true);
                     }
                 }
             }
