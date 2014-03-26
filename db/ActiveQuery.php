@@ -232,7 +232,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Creates a DB command that can be used to execute this query.
-     * @param Connection $db the DB connection used to create the DB command.
+     * @param Connection|null $db the DB connection used to create the DB command.
      * If null, the DB connection returned by [[modelClass]] will be used.
      * @return Command the created DB command instance.
      */
@@ -260,7 +260,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Creates a command for lazy loading of a relation.
-     * @param Connection $db the DB connection used to create the DB command.
+     * @param Connection|null $db the DB connection used to create the DB command.
      * @return Command the created DB command instance.
      */
     private function createRelationalCommand($db = null)
