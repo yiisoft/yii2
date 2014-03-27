@@ -60,6 +60,10 @@ class Dispatcher extends Component
      * or the configuration for creating the log target instance.
      */
     public $targets = [];
+    /**
+     * @var Logger the logger. If not set, [[\Yii::getLogger()]] will be used.
+     */
+    public $logger;
 
     /**
      * Initializes the logger by registering [[flush()]] as a shutdown function.
@@ -74,7 +78,10 @@ class Dispatcher extends Component
             }
         }
 
-        Yii::getLogger()->dispatcher = $this;
+        if ($this->logger === null) {
+            $this->logger = Yii::getLogger();
+        }
+        $this->logger->dispatcher = $this;
     }
 
     /**
@@ -83,7 +90,7 @@ class Dispatcher extends Component
      */
     public function getTraceLevel()
     {
-        return Yii::getLogger()->traceLevel;
+        return $this->logger->traceLevel;
     }
 
     /**
@@ -94,7 +101,7 @@ class Dispatcher extends Component
      */
     public function setTraceLevel($value)
     {
-        Yii::getLogger()->traceLevel = $value;
+        $this->logger->traceLevel = $value;
     }
 
     /**
@@ -103,7 +110,7 @@ class Dispatcher extends Component
      */
     public function getFlushInterval()
     {
-        return Yii::getLogger()->flushInterval;
+        return $this->logger->flushInterval;
     }
 
     /**
@@ -116,7 +123,7 @@ class Dispatcher extends Component
      */
     public function setFlushInterval($value)
     {
-        Yii::getLogger()->flushInterval = $value;
+        $this->logger->flushInterval = $value;
     }
 
     /**
