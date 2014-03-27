@@ -141,8 +141,8 @@ class User extends Component
      * @param boolean $checkSession whether to check the session if the identity has never been determined before.
      * If the identity is already determined (e.g., by calling [[setIdentity()]] or [[login()]]),
      * then this parameter has no effect.
-     * @return IdentityInterface the identity object associated with the currently logged-in user.
-     * Null is returned if the user is not logged in (not authenticated).
+     * @return IdentityInterface|null the identity object associated with the currently logged-in user.
+     * `null` is returned if the user is not logged in (not authenticated).
      * @see login()
      * @see logout()
      */
@@ -170,7 +170,7 @@ class User extends Component
      * [[switchIdentity()]]. Those methods will try to use session and cookie to maintain the user authentication
      * status.
      *
-     * @param IdentityInterface $identity the identity object associated with the currently logged user.
+     * @param IdentityInterface|null $identity the identity object associated with the currently logged user.
      */
     public function setIdentity($identity)
     {

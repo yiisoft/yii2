@@ -1,9 +1,10 @@
 <?php
-/* @var YiiRequirementChecker $this */
-/* @var array $summary */
-/* @var array[] $requirements */
-?>
-<!DOCTYPE html>
+/**
+ * @var YiiRequirementChecker $this
+ * @var array $summary
+ * @var array[] $requirements
+ */
+?><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>

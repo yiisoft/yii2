@@ -124,8 +124,8 @@ class Request extends \yii\base\Request
      */
     public $enableCookieValidation = true;
     /**
-     * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
-     * request tunneled through POST. Default to '_method'.
+     * @var string the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
+     * request tunneled through POST. Defaults to '_method'.
      * @see getMethod()
      * @see getBodyParams()
      */

@@ -348,6 +348,29 @@ class BaseYii
         }
     }
 
+    private static $_logger;
+    
+    /**
+     * @return Logger message logger
+     */
+    public static function getLogger()
+    {
+        if (self::$_logger !== null) {
+            return self::$_logger;
+        } else {
+            return self::$_logger = static::createObject('yii\log\Logger');
+        }
+    }
+
+    /**
+     * Sets the logger object.
+     * @param Logger $logger the logger object.
+     */
+    public static function setLogger($logger)
+    {
+        self::$_logger = $logger;
+    }
+
     /**
      * Logs a trace message.
      * Trace messages are logged mainly for development purpose to see
@@ -358,7 +381,7 @@ class BaseYii
     public static function trace($message, $category = 'application')
     {
         if (YII_DEBUG) {
-            static::$app->getLog()->log($message, Logger::LEVEL_TRACE, $category);
+            static::getLogger()->log($message, Logger::LEVEL_TRACE, $category);
         }
     }
 
@@ -371,7 +394,7 @@ class BaseYii
      */
     public static function error($message, $category = 'application')
     {
-        static::$app->getLog()->log($message, Logger::LEVEL_ERROR, $category);
+        static::getLogger()->log($message, Logger::LEVEL_ERROR, $category);
     }
 
     /**
@@ -383,7 +406,7 @@ class BaseYii
      */
     public static function warning($message, $category = 'application')
     {
-        static::$app->getLog()->log($message, Logger::LEVEL_WARNING, $category);
+        static::getLogger()->log($message, Logger::LEVEL_WARNING, $category);
     }
 
     /**
@@ -395,7 +418,7 @@ class BaseYii
      */
     public static function info($message, $category = 'application')
     {
-        static::$app->getLog()->log($message, Logger::LEVEL_INFO, $category);
+        static::getLogger()->log($message, Logger::LEVEL_INFO, $category);
     }
 
     /**
@@ -417,7 +440,7 @@ class BaseYii
      */
     public static function beginProfile($token, $category = 'application')
     {
-        static::$app->getLog()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
+        static::getLogger()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
     }
 
     /**
@@ -429,7 +452,7 @@ class BaseYii
      */
     public static function endProfile($token, $category = 'application')
     {
-        static::$app->getLog()->log($token, Logger::LEVEL_PROFILE_END, $category);
+        static::getLogger()->log($token, Logger::LEVEL_PROFILE_END, $category);
     }
 
     /**

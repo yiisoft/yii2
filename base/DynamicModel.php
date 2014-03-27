@@ -71,6 +71,7 @@ class DynamicModel extends Model
                 $this->_attributes[$name] = $value;
             }
         }
+        parent::__construct($config);
     }
 
     /**

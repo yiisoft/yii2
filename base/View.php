@@ -141,7 +141,6 @@ class View extends Component
     public function render($view, $params = [], $context = null)
     {
         $viewFile = $this->findViewFile($view, $context);
-
         return $this->renderFile($viewFile, $params, $context);
     }
 

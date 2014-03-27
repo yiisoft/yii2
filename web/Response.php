@@ -738,7 +738,6 @@ class Response extends \yii\base\Response
         if ($this->_cookies === null) {
             $this->_cookies = new CookieCollection;
         }
-
         return $this->_cookies;
     }
 

@@ -89,7 +89,6 @@ class ErrorHandler extends Component
             if (!YII_ENV_TEST) {
                 exit(1);
             }
-
             return;
         }
 
@@ -145,6 +144,9 @@ class ErrorHandler extends Component
             'message' => $exception->getMessage(),
             'code' => $exception->getCode(),
         ];
+        if (YII_DEBUG) {
+            $array['stack-trace'] = explode("\n", $exception->getTraceAsString());
+        }
         if ($exception instanceof HttpException) {
             $array['status'] = $exception->statusCode;
         }
