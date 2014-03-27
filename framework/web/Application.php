@@ -160,15 +160,6 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the asset manager.
-     * @return AssetManager the asset manager component
-     */
-    public function getAssetManager()
-    {
-        return $this->get('assetManager');
-    }
-
-    /**
      * @inheritdoc
      */
     public function coreComponents()
@@ -178,7 +169,6 @@ class Application extends \yii\base\Application
             'response' => ['class' => 'yii\web\Response'],
             'session' => ['class' => 'yii\web\Session'],
             'user' => ['class' => 'yii\web\User'],
-            'assetManager' => ['class' => 'yii\web\AssetManager'],
         ], parent::coreComponents());
     }
 }

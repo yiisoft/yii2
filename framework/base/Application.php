@@ -506,6 +506,15 @@ abstract class Application extends Module
     }
 
     /**
+     * Returns the asset manager.
+     * @return \yii\web\AssetManager the asset manager component
+     */
+    public function getAssetManager()
+    {
+        return $this->get('assetManager');
+    }
+
+    /**
      * Returns the core application components.
      * @see set
      */
@@ -514,11 +523,12 @@ abstract class Application extends Module
         return [
             'log' => ['class' => 'yii\log\Dispatcher'],
             'errorHandler' => ['class' => 'yii\base\ErrorHandler'],
+            'view' => ['class' => 'yii\web\View'],
             'formatter' => ['class' => 'yii\base\Formatter'],
             'i18n' => ['class' => 'yii\i18n\I18N'],
             'mail' => ['class' => 'yii\swiftmailer\Mailer'],
             'urlManager' => ['class' => 'yii\web\UrlManager'],
-            'view' => ['class' => 'yii\web\View'],
+            'assetManager' => ['class' => 'yii\web\AssetManager'],
         ];
     }
 
