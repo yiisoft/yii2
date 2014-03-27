@@ -78,7 +78,7 @@ class Dispatcher extends Component
     public function __construct($config = [])
     {
         if (isset($config['logger'])) {
-            $this->_logger = $config['logger'];
+            $this->setLogger($config['logger']);
             unset($config['logger']);
         }
         // connect logger and dispatcher
@@ -110,8 +110,7 @@ class Dispatcher extends Component
     public function getLogger()
     {
         if ($this->_logger === null) {
-            $this->_logger = Yii::getLogger();
-            $this->_logger->dispatcher = $this;
+            $this->setLogger(Yii::getLogger());
         }
         return $this->_logger;
     }
@@ -123,6 +122,7 @@ class Dispatcher extends Component
     public function setLogger($value)
     {
         $this->_logger = $value;
+        $this->_logger->dispatcher = $this;
     }
 
     /**
