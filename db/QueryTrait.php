@@ -89,6 +89,67 @@ trait QueryTrait
     }
 
     /**
+     * Returns true if value passed is null, empty string, blank string, or empty array.
+     *
+     * @param $value
+     * @return boolean if parameter is empty
+     */
+    protected function parameterNotEmpty($value)
+    {
+        if (is_string($value)) {
+            $value = trim($value);
+        }
+        return $value !== '' && $value !== [] && $value !== null;
+    }
+
+    /**
+    * Returns new condition with empty (null, empty string, blank string, or empty array) parameters in hash format
+    * removed
+    *
+    * @param array $condition original condition
+    * @return array condition with empty parameters removed
+    */
+    protected function filterConditionHash($condition)
+    {
+        if (is_array($condition) && !isset($condition[0])) {
+            // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
+            $condition = array_filter($condition, [$this, 'parameterNotEmpty']);
+        }
+        return $condition;
+    }
+
+    /**
+     * Returns new condition with empty (null, empty string, blank string, or empty array) parameters removed
+     *
+     * @param array $condition original condition
+     * @return array condition with empty parameters removed
+     */
+    protected function filterCondition($condition)
+    {
+        return $this->filterConditionHash($condition);
+    }
+
+    /**
+     * Sets the WHERE part of the query ignoring empty parameters.
+     *
+     * See [[QueryInterface::where()]] for detailed documentation.
+     *
+     * @param array $condition the conditions that should be put in the WHERE part.
+     * @return static the query object itself
+     * @see andFilter()
+     * @see orFilter()
+     */
+    public function filter($condition)
+    {
+        $condition = $this->filterCondition($condition);
+        if ($condition !== []) {
+            $this->where($condition);
+        }
+
+        return $this;
+    }
+
+    /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
@@ -109,6 +170,26 @@ trait QueryTrait
     }
 
     /**
+     * Adds an additional WHERE condition to the existing one ignoring empty parameters.
+     * The new condition and the existing one will be joined using the 'AND' operator.
+     *
+     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see filter()
+     * @see orFilter()
+     */
+    public function andFilter($condition)
+    {
+        $condition = $this->filterCondition($condition);
+        if ($condition !== []) {
+            $this->andWhere($condition);
+        }
+
+        return $this;
+    }
+
+    /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
@@ -123,6 +204,26 @@ trait QueryTrait
             $this->where = $condition;
         } else {
             $this->where = ['or', $this->where, $condition];
+        }
+
+        return $this;
+    }
+
+    /**
+     * Adds an additional WHERE condition to the existing one ignoring empty parameters.
+     * The new condition and the existing one will be joined using the 'OR' operator.
+     *
+     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see filter()
+     * @see andFilter()
+     */
+    public function orFilter($condition)
+    {
+        $condition = $this->filterCondition($condition);
+        if ($condition !== []) {
+            $this->orWhere($condition);
         }
 
         return $this;
