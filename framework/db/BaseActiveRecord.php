@@ -564,7 +564,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 }
             }
         }
-
         return $attributes;
     }
 
@@ -654,7 +653,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if ($runValidation && !$this->validate($attributes)) {
             return false;
         }
-
         return $this->updateInternal($attributes);
     }
 
@@ -684,8 +682,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $attrs[] = $name;
             }
         }
-
-        return $this->update(false, $attrs);
+        return $this->updateInternal($attrs);
     }
 
     /**
@@ -700,7 +697,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $values = $this->getDirtyAttributes($attributes);
         if (empty($values)) {
             $this->afterSave(false);
-
             return 0;
         }
         $condition = $this->getOldPrimaryKey(true);
@@ -719,10 +715,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             throw new StaleObjectException('The object being updated is outdated.');
         }
 
+        $this->afterSave(false);
         foreach ($values as $name => $value) {
             $this->_oldAttributes[$name] = $this->_attributes[$name];
         }
-        $this->afterSave(false);
 
         return $rows;
     }
@@ -751,7 +747,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $this->_attributes[$name] += $value;
                 $this->_oldAttributes[$name] = $this->_attributes[$name];
             }
-
             return true;
         } else {
             return false;
