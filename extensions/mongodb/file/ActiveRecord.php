@@ -147,6 +147,7 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
             $newId = $collection->insert($values);
         }
         $this->setAttribute('_id', $newId);
+        $values['_id'] = $newId;
 
         $this->afterSave(true);
         $this->setOldAttributes($values);

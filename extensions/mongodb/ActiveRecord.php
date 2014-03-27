@@ -242,6 +242,7 @@ abstract class ActiveRecord extends BaseActiveRecord
         }
         $newId = static::getCollection()->insert($values);
         $this->setAttribute('_id', $newId);
+        $values['_id'] = $newId;
 
         $this->afterSave(true);
         $this->setOldAttributes($values);
