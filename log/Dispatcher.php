@@ -50,6 +50,12 @@ use yii\base\Component;
  * Yii::$app->log->targets['file']->enabled = false;
  * ~~~
  *
+ * @property integer $flushInterval How many messages should be logged before they are sent to targets. This
+ * method returns the value of [[Logger::flushInterval]].
+ * @property Logger $logger The logger. If not set, [[\Yii::getLogger()]] will be used.
+ * @property integer $traceLevel How many application call stacks should be logged together with each message.
+ * This method returns the value of [[Logger::traceLevel]]. Defaults to 0.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -61,9 +67,10 @@ class Dispatcher extends Component
      */
     public $targets = [];
     /**
-     * @var Logger the logger. If not set, [[\Yii::getLogger()]] will be used.
+     * @var Logger the logger.
      */
-    public $logger;
+    private $_logger;
+
 
     /**
      * Initializes the logger by registering [[flush()]] as a shutdown function.
@@ -78,10 +85,32 @@ class Dispatcher extends Component
             }
         }
 
-        if ($this->logger === null) {
-            $this->logger = Yii::getLogger();
+        // connect logger and dispatcher
+        $this->getLogger();
+    }
+
+    /**
+     * Gets the connected logger.
+     * If not set, [[\Yii::getLogger()]] will be used.
+     * @property Logger the logger. If not set, [[\Yii::getLogger()]] will be used.
+     * @return Logger the logger.
+     */
+    public function getLogger()
+    {
+        if ($this->_logger === null) {
+            $this->_logger = Yii::getLogger();
+            $this->_logger->dispatcher = $this;
         }
-        $this->logger->dispatcher = $this;
+        return $this->_logger;
+    }
+
+    /**
+     * Sets the connected logger.
+     * @param Logger $value the logger.
+     */
+    public function setLogger($value)
+    {
+        $this->_logger = $value;
     }
 
     /**
@@ -90,7 +119,7 @@ class Dispatcher extends Component
      */
     public function getTraceLevel()
     {
-        return $this->logger->traceLevel;
+        return $this->getLogger()->traceLevel;
     }
 
     /**
@@ -101,7 +130,7 @@ class Dispatcher extends Component
      */
     public function setTraceLevel($value)
     {
-        $this->logger->traceLevel = $value;
+        $this->getLogger()->traceLevel = $value;
     }
 
     /**
@@ -110,7 +139,7 @@ class Dispatcher extends Component
      */
     public function getFlushInterval()
     {
-        return $this->logger->flushInterval;
+        return $this->getLogger()->flushInterval;
     }
 
     /**
@@ -123,7 +152,7 @@ class Dispatcher extends Component
      */
     public function setFlushInterval($value)
     {
-        $this->logger->flushInterval = $value;
+        $this->getLogger()->flushInterval = $value;
     }
 
     /**
