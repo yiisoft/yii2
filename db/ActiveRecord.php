@@ -445,7 +445,7 @@ class ActiveRecord extends BaseActiveRecord
                 if ($this->getAttribute($name) === null) {
                     $id = $db->getLastInsertID($table->sequenceName);
                     $this->setAttribute($name, $id);
-                    $this->setOldAttribute($name, $id);
+                    $values[$name] = $id;
                     break;
                 }
             }
