@@ -450,10 +450,9 @@ class ActiveRecord extends BaseActiveRecord
                 }
             }
         }
-        foreach ($values as $name => $value) {
-            $this->setOldAttribute($name, $value);
-        }
+
         $this->afterSave(true);
+        $this->setOldAttributes($values);
 
         return true;
     }
