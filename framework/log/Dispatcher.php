@@ -73,6 +73,21 @@ class Dispatcher extends Component
 
 
     /**
+     * @inheritdoc
+     */
+    public function __construct($config = [])
+    {
+        if (isset($config['logger'])) {
+            $this->_logger = $config['logger'];
+            unset($config['logger']);
+        }
+        // connect logger and dispatcher
+        $this->getLogger();
+
+        parent::__construct($config);
+    }
+
+    /**
      * Initializes the logger by registering [[flush()]] as a shutdown function.
      */
     public function init()
@@ -84,9 +99,6 @@ class Dispatcher extends Component
                 $this->targets[$name] = Yii::createObject($target);
             }
         }
-
-        // connect logger and dispatcher
-        $this->getLogger();
     }
 
     /**
