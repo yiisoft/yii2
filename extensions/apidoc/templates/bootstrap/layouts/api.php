@@ -6,6 +6,7 @@ use yii\helpers\StringHelper;
 
 /**
  * @var yii\web\View $this
+ * @var array $types
  * @var string $content
  */
 

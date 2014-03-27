@@ -23,7 +23,7 @@ use yii\web\HttpException;
  * @property ErrorHandler $errorHandler The error handler application component. This property is read-only.
  * @property \yii\base\Formatter $formatter The formatter application component. This property is read-only.
  * @property \yii\i18n\I18N $i18n The internationalization component. This property is read-only.
- * @property \yii\log\Logger $log The log component. This property is read-only.
+ * @property \yii\log\Dispatcher $log The log dispatcher component. This property is read-only.
  * @property \yii\mail\MailerInterface $mail The mailer interface. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property string $runtimePath The directory that stores runtime files. Defaults to the "runtime"
@@ -415,8 +415,8 @@ abstract class Application extends Module
     }
 
     /**
-     * Returns the log component.
-     * @return \yii\log\Logger the log component
+     * Returns the log dispatcher component.
+     * @return \yii\log\Dispatcher the log dispatcher component
      */
     public function getLog()
     {
@@ -512,7 +512,7 @@ abstract class Application extends Module
     public function coreComponents()
     {
         return [
-            'log' => ['class' => 'yii\log\Logger'],
+            'log' => ['class' => 'yii\log\Dispatcher'],
             'errorHandler' => ['class' => 'yii\base\ErrorHandler'],
             'formatter' => ['class' => 'yii\base\Formatter'],
             'i18n' => ['class' => 'yii\i18n\I18N'],

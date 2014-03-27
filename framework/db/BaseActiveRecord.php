@@ -81,7 +81,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     private $_attributes = [];
     /**
-     * @var array old attribute values indexed by attribute names.
+     * @var array|null old attribute values indexed by attribute names.
+     * This is `null` if the record [[isNewRecord|is new]].
      */
     private $_oldAttributes;
     /**
@@ -475,7 +476,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * Sets the old attribute values.
      * All existing old attribute values will be discarded.
-     * @param array $values old attribute values to be set.
+     * @param array|null $values old attribute values to be set.
      */
     public function setOldAttributes($values)
     {
@@ -1304,8 +1305,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * @param array $link
-     * @param BaseActiveRecord $foreignModel
-     * @param BaseActiveRecord $primaryModel
+     * @param ActiveRecordInterface $foreignModel
+     * @param ActiveRecordInterface $primaryModel
      * @throws InvalidCallException
      */
     private function bindModels($link, $foreignModel, $primaryModel)

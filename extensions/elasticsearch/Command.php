@@ -95,7 +95,7 @@ class Command extends Component
      */
     public function get($index, $type, $id, $options = [])
     {
-        return $this->db->get([$index, $type, $id], $options, null);
+        return $this->db->get([$index, $type, $id], $options);
     }
 
     /**
@@ -184,7 +184,7 @@ class Command extends Component
     {
         $body = $configuration !== null ? Json::encode($configuration) : null;
 
-        return $this->db->put([$index], $body);
+        return $this->db->put([$index], [], $body);
     }
 
     /**
@@ -381,7 +381,7 @@ class Command extends Component
             'mappings' => (object) $mappings,
         ]);
 
-        return $this->db->put(['_template', $name], $body);
+        return $this->db->put(['_template', $name], [], $body);
 
     }
 

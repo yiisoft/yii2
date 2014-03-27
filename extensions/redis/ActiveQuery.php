@@ -270,7 +270,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 
     /**
      * Executes a script created by [[LuaScriptBuilder]]
-     * @param  Connection             $db         the database connection used to execute the query.
+     * @param  Connection|null        $db         the database connection used to execute the query.
      *                                            If this parameter is not given, the `db` application component will be used.
      * @param  string                 $type       the type of the script to generate
      * @param  string                 $columnName

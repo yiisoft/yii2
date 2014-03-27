@@ -91,6 +91,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public $joinWith;
 
+
     /**
      * Executes query and returns all results as an array.
      * @param Connection $db the DB connection used to create the DB command.
@@ -232,7 +233,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Creates a DB command that can be used to execute this query.
-     * @param Connection $db the DB connection used to create the DB command.
+     * @param Connection|null $db the DB connection used to create the DB command.
      * If null, the DB connection returned by [[modelClass]] will be used.
      * @return Command the created DB command instance.
      */
@@ -260,7 +261,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Creates a command for lazy loading of a relation.
-     * @param Connection $db the DB connection used to create the DB command.
+     * @param Connection|null $db the DB connection used to create the DB command.
      * @return Command the created DB command instance.
      */
     private function createRelationalCommand($db = null)
@@ -348,6 +349,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     private function buildJoinWith()
     {
+        $join = $this->join;
+        $this->join = [];
+
         foreach ($this->joinWith as $config) {
             list ($with, $eagerLoading, $joinType) = $config;
             $this->joinWithRelations(new $this->modelClass, $with, $joinType);
@@ -367,6 +371,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
 
             $this->with($with);
+        }
+
+        if (!empty($join)) {
+            // append explicit join to joinWith()
+            // https://github.com/yiisoft/yii2/issues/2880
+            $this->join = empty($this->join) ? $join : array_merge($this->join, $join);
         }
     }
 
@@ -524,7 +534,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         } else {
             $on = $child->on;
         }
-        $this->join($joinType, $childTable, $on);
+        $this->join($joinType, empty($child->from) ? $childTable : $child->from, $on);
 
         if (!empty($child->where)) {
             $this->andWhere($child->where);

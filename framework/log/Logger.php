@@ -11,11 +11,11 @@ use Yii;
 use yii\base\Component;
 
 /**
- * Logger records logged messages in memory and sends them to different targets as needed.
+ * Logger records logged messages in memory and sends them to different targets if [[dispatcher]] is set.
  *
- * Logger is registered as a core application component and can be accessed using `Yii::$app->log`.
- * You can call the method [[log()]] to record a single log message. For convenience, a set of shortcut
- * methods are provided for logging messages of various severity levels via the [[Yii]] class:
+ * Logger can be accessed via `Yii::getLogger()`. You can call the method [[log()]] to record a single log message.
+ * For convenience, a set of shortcut methods are provided for logging messages of various severity levels
+ * via the [[Yii]] class:
  *
  * - [[Yii::trace()]]
  * - [[Yii::error()]]
@@ -24,43 +24,8 @@ use yii\base\Component;
  * - [[Yii::beginProfile()]]
  * - [[Yii::endProfile()]]
  *
- * When enough messages are accumulated in the logger, or when the current request finishes,
- * the logged messages will be sent to different [[targets]], such as log files, emails.
- *
- * You may configure the targets in application configuration, like the following:
- *
- * ~~~
- * [
- *     'components' => [
- *         'log' => [
- *             'targets' => [
- *                 'file' => [
- *                     'class' => 'yii\log\FileTarget',
- *                     'levels' => ['trace', 'info'],
- *                     'categories' => ['yii\*'],
- *                 ],
- *                 'email' => [
- *                     'class' => 'yii\log\EmailTarget',
- *                     'levels' => ['error', 'warning'],
- *                     'message' => [
- *                         'to' => 'admin@example.com',
- *                     ],
- *                 ],
- *             ],
- *         ],
- *     ],
- * ]
- * ~~~
- *
- * Each log target can have a name and can be referenced via the [[targets]] property
- * as follows:
- *
- * ~~~
- * Yii::$app->log->targets['file']->enabled = false;
- * ~~~
- *
  * When the application ends or [[flushInterval]] is reached, Logger will call [[flush()]]
- * to send logged messages to different log targets, such as file, email, Web.
+ * to send logged messages to different log targets, such as file, email, Web, with the help of [[dispatcher]].
  *
  * @property array $dbProfiling The first element indicates the number of SQL statements executed, and the
  * second element the total time spent in SQL execution. This property is read-only.
@@ -125,16 +90,6 @@ class Logger extends Component
      */
     public $messages = [];
     /**
-     * @var array debug data. This property stores various types of debug data reported at
-     * different instrument places.
-     */
-    public $data = [];
-    /**
-     * @var array|Target[] the log targets. Each array element represents a single [[Target|log target]] instance
-     * or the configuration for creating the log target instance.
-     */
-    public $targets = [];
-    /**
      * @var integer how many messages should be logged before they are flushed from memory and sent to targets.
      * Defaults to 1000, meaning the [[flush]] method will be invoked once every 1000 messages logged.
      * Set this property to be 0 if you don't want to flush messages until the application terminates.
@@ -146,10 +101,13 @@ class Logger extends Component
      * @var integer how much call stack information (file name and line number) should be logged for each message.
      * If it is greater than 0, at most that number of call stacks will be logged. Note that only application
      * call stacks are counted.
-     *
-     * If not set, it will default to 3 when `YII_ENV` is set as "dev", and 0 otherwise.
      */
-    public $traceLevel;
+    public $traceLevel = 0;
+    /**
+     * @var Dispatcher the message dispatcher
+     */
+    public $dispatcher;
+
 
     /**
      * Initializes the logger by registering [[flush()]] as a shutdown function.
@@ -157,14 +115,6 @@ class Logger extends Component
     public function init()
     {
         parent::init();
-        if ($this->traceLevel === null) {
-            $this->traceLevel = YII_ENV_DEV ? 3 : 0;
-        }
-        foreach ($this->targets as $name => $target) {
-            if (!$target instanceof Target) {
-                $this->targets[$name] = Yii::createObject($target);
-            }
-        }
         register_shutdown_function([$this, 'flush'], true);
     }
 
@@ -208,11 +158,8 @@ class Logger extends Component
      */
     public function flush($final = false)
     {
-        /** @var Target $target */
-        foreach ($this->targets as $target) {
-            if ($target->enabled) {
-                $target->collect($this->messages, $final);
-            }
+        if ($this->dispatcher instanceof Dispatcher) {
+            $this->dispatcher->dispatch($this->messages, $final);
         }
         $this->messages = [];
     }

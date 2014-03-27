@@ -53,10 +53,10 @@ abstract class BaseRenderer extends Component
 
     /**
      * creates a link to a type (class, interface or trait)
-     * @param  ClassDoc|InterfaceDoc|TraitDoc|ClassDoc[]|InterfaceDoc[]|TraitDoc[] $types
-     * @param  string                                                              $title   a title to be used for the link TODO check whether [[yii\...|Class]] is supported
-     * @param  BaseDoc                                                             $context
-     * @param  array                                                               $options additional HTML attributes for the link.
+     * @param ClassDoc|InterfaceDoc|TraitDoc|ClassDoc[]|InterfaceDoc[]|TraitDoc[]|string|string[] $types
+     * @param string $title a title to be used for the link TODO check whether [[yii\...|Class]] is supported
+     * @param BaseDoc $context
+     * @param array $options additional HTML attributes for the link.
      * @return string
      */
     public function createTypeLink($types, $context = null, $title = null, $options = [])

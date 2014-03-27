@@ -1,7 +1,9 @@
 <?php
-/* @var YiiRequirementChecker $this */
-/* @var array $summary */
-/* @var array[] $requirements */
+/**
+ * @var YiiRequirementChecker $this
+ * @var array $summary
+ * @var array[] $requirements
+ */
 
 echo "\nYii Application Requirement Checker\n\n";
 

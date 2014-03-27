@@ -175,7 +175,7 @@ class ActiveRecord extends BaseActiveRecord
         }
         $db = static::getDb();
         $n = 0;
-        foreach (static::fetchPks($condition) as $pk) {
+        foreach (self::fetchPks($condition) as $pk) {
             $newPk = $pk;
             $pk = static::buildKey($pk);
             $key = static::keyPrefix() . ':a:' . $pk;
@@ -228,7 +228,7 @@ class ActiveRecord extends BaseActiveRecord
         }
         $db = static::getDb();
         $n = 0;
-        foreach (static::fetchPks($condition) as $pk) {
+        foreach (self::fetchPks($condition) as $pk) {
             $key = static::keyPrefix() . ':a:' . static::buildKey($pk);
             foreach ($counters as $attribute => $value) {
                 $db->executeCommand('HINCRBY', [$key, $attribute, $value]);
@@ -257,7 +257,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         $db = static::getDb();
         $attributeKeys = [];
-        $pks = static::fetchPks($condition);
+        $pks = self::fetchPks($condition);
         $db->executeCommand('MULTI');
         foreach ($pks as $pk) {
             $pk = static::buildKey($pk);

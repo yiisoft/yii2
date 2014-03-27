@@ -17,7 +17,17 @@ use yii\helpers\Inflector;
 /**
  * DataColumn is the default column type for the [[GridView]] widget.
  *
- * It is used to show data columns and allows sorting them.
+ * It is used to show data columns and allows [[enableSorting|sorting]] and [[filter|filtering]] them.
+ *
+ * A simple data column definition refers to an attribute in the data model of the
+ * GridView's data provider. The name of the attribute is specified by [[attribute]].
+ *
+ * By setting [[value]] and [[label]], the header and cell content can be customized.
+ *
+ * A data column differentiates between the [[getDataCellValue|data cell value]] and the
+ * [[renderDataCellContent|data cell content]]. The cell value is an un-formatted value that
+ * may be used for calculation, while the actual cell content is a [[format|formatted]] version of that
+ * value which may contain HTML markup.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -40,10 +50,13 @@ class DataColumn extends Column
      */
     public $label;
     /**
-     * @var string|\Closure the attribute name to be displayed in this column or an anonymous function that returns
-     * the value to be displayed for every data model.
+     * @var string|\Closure an anonymous function that returns the value to be displayed for every data model.
      * The signature of this function is `function ($model, $index, $widget)`.
      * If this is not set, `$model[$attribute]` will be used to obtain the value.
+     *
+     * You may also set this property to a string representing the attribute name to be displayed in this column.
+     * This can be used when the attribute to be displayed is different from the [[attribute]] that is used for
+     * sorting and filtering.
      */
     public $value;
     /**
@@ -133,7 +146,6 @@ class DataColumn extends Column
         {
             if (is_array($this->filter)) {
                 $options = array_merge(['prompt' => ''], $this->filterInputOptions);
-
                 return Html::activeDropDownList($this->grid->filterModel, $this->attribute, $this->filter, $options);
             } else {
                 return Html::activeTextInput($this->grid->filterModel, $this->attribute, $this->filterInputOptions);
@@ -146,21 +158,18 @@ class DataColumn extends Column
     /**
      * @inheritdoc
      */
-    protected function getDataCellContent($model, $key, $index)
+    protected function getDataCellValue($model, $key, $index)
     {
         if ($this->value !== null) {
             if (is_string($this->value)) {
-                $value = ArrayHelper::getValue($model, $this->value);
+                return ArrayHelper::getValue($model, $this->value);
             } else {
-                $value = call_user_func($this->value, $model, $index, $this);
+                return call_user_func($this->value, $model, $index, $this);
             }
-        } elseif ($this->content === null && $this->attribute !== null) {
-            $value = ArrayHelper::getValue($model, $this->attribute);
-        } else {
-            return parent::getDataCellContent($model, $key, $index);
+        } elseif ($this->attribute !== null) {
+            return ArrayHelper::getValue($model, $this->attribute);
         }
-
-        return $value;
+        return null;
     }
 
     /**
@@ -168,6 +177,10 @@ class DataColumn extends Column
      */
     protected function renderDataCellContent($model, $key, $index)
     {
-        return $this->grid->formatter->format($this->getDataCellContent($model, $key, $index), $this->format);
+        if ($this->content === null) {
+            return $this->grid->formatter->format($this->getDataCellValue($model, $key, $index), $this->format);
+        } else {
+            return parent::renderDataCellContent($model, $key, $index);
+        }
     }
 }
