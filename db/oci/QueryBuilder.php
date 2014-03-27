@@ -19,7 +19,6 @@ use yii\db\ActiveRecord;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
-
     private $sql;
 
     /**
@@ -28,11 +27,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function build($query, $params = [])
     {
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
-        list ($select, $from) = $this->adjustSelectFrom($query);
 
         $clauses = [
-            $this->buildSelect($select, $params, $query->distinct, $query->selectOption),
-            $this->buildFrom($from, $params),
+            $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
+            $this->buildFrom($query->from, $params),
             $this->buildJoin($query->join, $params),
             $this->buildWhere($query->where, $params),
             $this->buildGroupBy($query->groupBy),
