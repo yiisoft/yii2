@@ -10,6 +10,9 @@ use yii\log\Logger;
 use yii\log\Target;
 use yiiunit\TestCase;
 
+/**
+ * @group log
+ */
 class TargetTest extends TestCase
 {
     public static $messages;
