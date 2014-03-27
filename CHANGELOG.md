@@ -259,6 +259,7 @@ Yii Framework 2 Change Log
 - Chg: The signature of `Yii::createObject()` is changed. Constructor parameters must be passed as the second parameter. (qiangxue)
 - Chg: `Yii::$objectConfig` is removed. You should use `Yii::$container->set()` to configure default settings of classes. (qiangxue)
 - Chg: Removed `yii\grid\Column::getDataCellContent()` and renamed `yii\grid\DataColumn::getDataCellContent()` to `yii\grid\DataColumn::getDataCellValue()` (cebe)
+- Chg: `yii\log\Logger` is split into `yii\log\Logger` and `yii\log\Dispatcher`. (qiangxue)
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #503: Added `yii\di\Container` and `yii\di\ServiceLocator` (qiangxue)
 - New #706: Added `yii\widgets\Pjax` and enhanced `GridView` to work with `Pjax` to support AJAX-update (qiangxue)
