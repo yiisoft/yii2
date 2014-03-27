@@ -459,7 +459,7 @@ class Query extends Component implements QueryInterface
      * @param  string $filter
      * @return static the query object itself
      */
-    public function filter($filter)
+    public function applyFilter($filter)
     {
         $this->filter = $filter;
 
