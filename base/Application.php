@@ -176,7 +176,7 @@ abstract class Application extends Module
      * @var integer the current application state during a request handling life cycle.
      * This property is managed by the application. Do not modify this property.
      */
-    public $_state;
+    public $state;
 
     /**
      * @var string Used to reserve memory for fatal error handler.
