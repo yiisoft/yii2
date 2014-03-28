@@ -15,7 +15,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ExitException extends Exception
+class ExitException extends \Exception
 {
     /**
      * @var integer the exit status code
@@ -34,13 +34,5 @@ class ExitException extends Exception
     {
         $this->statusCode = $status;
         parent::__construct($message, $code, $previous);
-    }
-
-    /**
-     * @return string the user-friendly name of this exception
-     */
-    public function getName()
-    {
-        return 'Application Ended';
     }
 }

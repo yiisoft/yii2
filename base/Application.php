@@ -597,13 +597,13 @@ abstract class Application extends Module
     }
 
     /**
-   	 * Terminates the application.
-   	 * This method replaces the `exit()` function by ensuring the application life cycle is completed
+     * Terminates the application.
+     * This method replaces the `exit()` function by ensuring the application life cycle is completed
      * before terminating the application.
-   	 * @param integer $status the exit status (value 0 means normal exit while other values mean abnormal exit).
+     * @param integer $status the exit status (value 0 means normal exit while other values mean abnormal exit).
      * @param Response $response the response to be sent. If not set, the default application [[response]] component will be used.
      * @throws ExitException if the application is in testing mode
-   	 */
+     */
     public function end($status = 0, $response = null)
     {
         if ($this->state === self::STATE_BEFORE_REQUEST || $this->state === self::STATE_HANDLING_REQUEST) {
