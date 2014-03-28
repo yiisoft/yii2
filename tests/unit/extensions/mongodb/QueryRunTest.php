@@ -101,6 +101,20 @@ class QueryRunTest extends MongoDbTestCase
         $this->assertEquals('address5', $rows[1]['address']);
     }
 
+    public function testCombinedInAndCondition()
+    {
+        $connection = $this->getConnection();
+        $query = new Query;
+        $rows = $query->from('customer')
+            ->where([
+                'name' => ['name1', 'name5']
+            ])
+            ->andWhere(['name' => 'name1'])
+            ->all($connection);
+        $this->assertEquals(1, count($rows));
+        $this->assertEquals('name1', $rows[0]['name']);
+    }
+
     public function testOrder()
     {
         $connection = $this->getConnection();
