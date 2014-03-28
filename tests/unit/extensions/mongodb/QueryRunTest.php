@@ -130,20 +130,25 @@ class QueryRunTest extends MongoDbTestCase
         $this->assertEquals('name10', $rows[0]['name']);
     }
 
-    public function testCombinedInAndOrCondition()
+    public function testNestedCombinedInAndCondition()
     {
         $connection = $this->getConnection();
         $query = new Query;
         $rows = $query->from('customer')
             ->where([
-                'name' => ['name1', 'name5', 'name10']
+                'and',
+                ['name' => ['name1', 'name2', 'name3']],
+                ['name' => 'name1']
             ])
-            ->andWhere(['name' => 'name1'])
-            ->orWhere(['name' => 'name5'])
+            ->orWhere([
+                'and',
+                ['name' => ['name4', 'name5', 'name6']],
+                ['name' => 'name6']
+            ])
             ->all($connection);
         $this->assertEquals(2, count($rows));
         $this->assertEquals('name1', $rows[0]['name']);
-        $this->assertEquals('name5', $rows[1]['name']);
+        $this->assertEquals('name6', $rows[1]['name']);
     }
 
     public function testOrder()
