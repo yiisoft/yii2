@@ -157,6 +157,7 @@ Yii Framework 2 Change Log
 - Enh #2756: Added support for injecting custom `isEmpty` check for all validators (qiangxue)
 - Enh #2775: Added `yii\base\Application::bootstrap` and `yii\base\BootstrapInterface` to support running bootstrap classes when starting an application (qiangxue)
 - Enh #2892: ActiveRecord dirty attributes are now reset after call to `afterSave()` so information about changed attributes is available in `afterSave`-event (cebe)
+- Enh #2910: Added `Application::end()` (qiangxue)
 - Enh: Added support for using arrays as option values for console commands (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
