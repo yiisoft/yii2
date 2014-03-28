@@ -199,8 +199,6 @@ abstract class Application extends Module
         $this->registerErrorHandlers();
 
         Component::__construct($config);
-
-        $this->state = self::STATE_INIT;
     }
 
     /**
@@ -260,6 +258,8 @@ abstract class Application extends Module
      */
     public function init()
     {
+        $this->state = self::STATE_INIT;
+
         $this->initExtensions($this->extensions);
         foreach ($this->bootstrap as $class) {
             /** @var BootstrapInterface $bootstrap */
@@ -346,21 +346,30 @@ abstract class Application extends Module
      */
     public function run()
     {
-        $this->state = self::STATE_BEFORE_REQUEST;
-        $this->trigger(self::EVENT_BEFORE_REQUEST);
+        try {
 
-        $this->state = self::STATE_HANDLING_REQUEST;
-        $response = $this->handleRequest($this->getRequest());
+            $this->state = self::STATE_BEFORE_REQUEST;
+            $this->trigger(self::EVENT_BEFORE_REQUEST);
 
-        $this->state = self::STATE_AFTER_REQUEST;
-        $this->trigger(self::EVENT_AFTER_REQUEST);
+            $this->state = self::STATE_HANDLING_REQUEST;
+            $response = $this->handleRequest($this->getRequest());
 
-        $this->state = self::STATE_SENDING_RESPONSE;
-        $response->send();
+            $this->state = self::STATE_AFTER_REQUEST;
+            $this->trigger(self::EVENT_AFTER_REQUEST);
 
-        $this->state = self::STATE_END;
+            $this->state = self::STATE_SENDING_RESPONSE;
+            $response->send();
 
-        return $response->exitStatus;
+            $this->state = self::STATE_END;
+
+            return $response->exitStatus;
+
+        } catch (ExitException $e) {
+
+            $this->end($e->statusCode, isset($response) ? $response : null);
+            return $e->statusCode;
+
+        }
     }
 
     /**
