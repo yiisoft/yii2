@@ -101,6 +101,56 @@ class QueryRunTest extends MongoDbTestCase
         $this->assertEquals('address5', $rows[1]['address']);
     }
 
+    public function testCombinedInAndCondition()
+    {
+        $connection = $this->getConnection();
+        $query = new Query;
+        $rows = $query->from('customer')
+            ->where([
+                'name' => ['name1', 'name5']
+            ])
+            ->andWhere(['name' => 'name1'])
+            ->all($connection);
+        $this->assertEquals(1, count($rows));
+        $this->assertEquals('name1', $rows[0]['name']);
+    }
+
+    public function testCombinedInLikeAndCondition()
+    {
+        $connection = $this->getConnection();
+        $query = new Query;
+        $rows = $query->from('customer')
+            ->where([
+                'name' => ['name1', 'name5', 'name10']
+            ])
+            ->andWhere(['LIKE', 'name', '/me1/'])
+            ->andWhere(['name' => 'name10'])
+            ->all($connection);
+        $this->assertEquals(1, count($rows));
+        $this->assertEquals('name10', $rows[0]['name']);
+    }
+
+    public function testNestedCombinedInAndCondition()
+    {
+        $connection = $this->getConnection();
+        $query = new Query;
+        $rows = $query->from('customer')
+            ->where([
+                'and',
+                ['name' => ['name1', 'name2', 'name3']],
+                ['name' => 'name1']
+            ])
+            ->orWhere([
+                'and',
+                ['name' => ['name4', 'name5', 'name6']],
+                ['name' => 'name6']
+            ])
+            ->all($connection);
+        $this->assertEquals(2, count($rows));
+        $this->assertEquals('name1', $rows[0]['name']);
+        $this->assertEquals('name6', $rows[1]['name']);
+    }
+
     public function testOrder()
     {
         $connection = $this->getConnection();
