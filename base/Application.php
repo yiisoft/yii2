@@ -64,7 +64,6 @@ abstract class Application extends Module
      * it will use the "app\controllers" namespace.
      */
     public $controllerNamespace = 'app\\controllers';
-
     /**
      * @var string the application name.
      */
@@ -97,13 +96,6 @@ abstract class Application extends Module
      * If this is false, layout will be disabled.
      */
     public $layout = 'main';
-    /**
-     * @var integer the size of the reserved memory. A portion of memory is pre-allocated so that
-     * when an out-of-memory issue occurs, the error handler is able to handle the error with
-     * the help of this reserved memory. If you set this value to be 0, no memory will be reserved.
-     * Defaults to 256KB.
-     */
-    public $memoryReserveSize = 262144;
     /**
      * @var string the requested route
      */
@@ -139,16 +131,7 @@ abstract class Application extends Module
      * will be invoked at the beginning of [[init()]].
      */
     public $bootstrap = [];
-    /**
-     * @var \Exception the exception that is being handled currently. When this is not null,
-     * it means the application is handling some exception and extra care should be taken.
-     */
-    public $exception;
 
-    /**
-     * @var string Used to reserve memory for fatal error handler.
-     */
-    private $_memoryReserve;
 
     /**
      * Constructor.
@@ -160,8 +143,15 @@ abstract class Application extends Module
     {
         Yii::$app = $this;
 
+        // TODO how to deal with exceptions thrown in preInit()
         $this->preInit($config);
-        $this->registerErrorHandlers();
+        if (YII_ENABLE_ERROR_HANDLER) {
+            if (isset($config['components']['errorHandler'])) {
+                $this->set('errorHandler', $config['components']['errorHandler']);
+                unset($config['components']['errorHandler']);
+            }
+            $this->getErrorHandler()->register();
+        }
 
         Component::__construct($config);
     }
@@ -261,22 +251,6 @@ abstract class Application extends Module
     {
         $this->get('log');
         parent::preloadComponents();
-    }
-
-    /**
-     * Registers error handlers.
-     */
-    public function registerErrorHandlers()
-    {
-        if (YII_ENABLE_ERROR_HANDLER) {
-            ini_set('display_errors', 0);
-            set_exception_handler([$this, 'handleException']);
-            set_error_handler([$this, 'handleError']);
-            if ($this->memoryReserveSize > 0) {
-                $this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
-            }
-            register_shutdown_function([$this, 'handleFatalError']);
-        }
     }
 
     /**
@@ -429,7 +403,7 @@ abstract class Application extends Module
      */
     public function getErrorHandler()
     {
-        return $this->get('errorHandler');
+        return $this->get('errorHandler', false);
     }
 
     /**
@@ -530,157 +504,5 @@ abstract class Application extends Module
             'urlManager' => ['class' => 'yii\web\UrlManager'],
             'assetManager' => ['class' => 'yii\web\AssetManager'],
         ];
-    }
-
-    /**
-     * Handles uncaught PHP exceptions.
-     *
-     * This method is implemented as a PHP exception handler.
-     *
-     * @param \Exception $exception the exception that is not caught
-     */
-    public function handleException($exception)
-    {
-        $this->exception = $exception;
-
-        // disable error capturing to avoid recursive errors while handling exceptions
-        restore_error_handler();
-        restore_exception_handler();
-        try {
-            $this->logException($exception);
-            if (($handler = $this->getErrorHandler()) !== null) {
-                $handler->handle($exception);
-            } else {
-                echo $this->renderException($exception);
-                if (PHP_SAPI === 'cli' && !YII_ENV_TEST) {
-                    exit(1);
-                }
-            }
-        } catch (\Exception $e) {
-            // exception could be thrown in ErrorHandler::handle()
-            $msg = (string) $e;
-            $msg .= "\nPrevious exception:\n";
-            $msg .= (string) $exception;
-            if (YII_DEBUG) {
-                if (PHP_SAPI === 'cli') {
-                    echo $msg . "\n";
-                } else {
-                    echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, $this->charset) . '</pre>';
-                }
-            }
-            $msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
-            error_log($msg);
-            exit(1);
-        }
-    }
-
-    /**
-     * Handles PHP execution errors such as warnings, notices.
-     *
-     * This method is used as a PHP error handler. It will simply raise an `ErrorException`.
-     *
-     * @param integer $code the level of the error raised
-     * @param string $message the error message
-     * @param string $file the filename that the error was raised in
-     * @param integer $line the line number the error was raised at
-     *
-     * @throws ErrorException
-     */
-    public function handleError($code, $message, $file, $line)
-    {
-        if (error_reporting() & $code) {
-            // load ErrorException manually here because autoloading them will not work
-            // when error occurs while autoloading a class
-            if (!class_exists('\\yii\\base\\Exception', false)) {
-                require_once(__DIR__ . '/Exception.php');
-            }
-            if (!class_exists('\\yii\\base\\ErrorException', false)) {
-                require_once(__DIR__ . '/ErrorException.php');
-            }
-            $exception = new ErrorException($message, $code, $code, $file, $line);
-
-            // in case error appeared in __toString method we can't throw any exception
-            $trace = debug_backtrace(false);
-            array_shift($trace);
-            foreach ($trace as $frame) {
-                if ($frame['function'] == '__toString') {
-                    $this->handleException($exception);
-                    exit(1);
-                }
-            }
-
-            throw $exception;
-        }
-    }
-
-    /**
-     * Handles fatal PHP errors
-     */
-    public function handleFatalError()
-    {
-        unset($this->_memoryReserve);
-
-        // load ErrorException manually here because autoloading them will not work
-        // when error occurs while autoloading a class
-        if (!class_exists('\\yii\\base\\Exception', false)) {
-            require_once(__DIR__ . '/Exception.php');
-        }
-        if (!class_exists('\\yii\\base\\ErrorException', false)) {
-            require_once(__DIR__ . '/ErrorException.php');
-        }
-
-        $error = error_get_last();
-
-        if (ErrorException::isFatalError($error)) {
-            $exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
-            $this->exception = $exception;
-            // use error_log because it's too late to use Yii log
-            error_log($exception);
-
-            if (($handler = $this->getErrorHandler()) !== null) {
-                $handler->handle($exception);
-            } else {
-                echo $this->renderException($exception);
-            }
-
-            exit(1);
-        }
-    }
-
-    /**
-     * Renders an exception without using rich format.
-     * @param \Exception $exception the exception to be rendered.
-     * @return string the rendering result
-     */
-    public function renderException($exception)
-    {
-        if ($exception instanceof Exception && ($exception instanceof UserException || !YII_DEBUG)) {
-            $message = $exception->getName() . ': ' . $exception->getMessage();
-            if (Yii::$app->controller instanceof \yii\console\Controller) {
-                $message = Yii::$app->controller->ansiFormat($message, Console::FG_RED);
-            }
-        } else {
-            $message = YII_DEBUG ? (string) $exception : 'Error: ' . $exception->getMessage();
-        }
-        if (PHP_SAPI === 'cli') {
-            return $message . "\n";
-        } else {
-            return '<pre>' . htmlspecialchars($message, ENT_QUOTES, $this->charset) . '</pre>';
-        }
-    }
-
-    /**
-     * Logs the given exception
-     * @param \Exception $exception the exception to be logged
-     */
-    protected function logException($exception)
-    {
-        $category = get_class($exception);
-        if ($exception instanceof HttpException) {
-            $category = 'yii\\web\\HttpException:' . $exception->statusCode;
-        } elseif ($exception instanceof \ErrorException) {
-            $category .= ':' . $exception->getSeverity();
-        }
-        Yii::error((string) $exception, $category);
     }
 }
