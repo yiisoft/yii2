@@ -197,9 +197,9 @@ class Application extends \yii\base\Application
      */
     public function coreComponents()
     {
-        return array_merge([
+        return array_merge(parent::coreComponents(), [
             'request' => ['class' => 'yii\console\Request'],
             'response' => ['class' => 'yii\console\Response'],
-        ], parent::coreComponents());
+        ]);
     }
 }
