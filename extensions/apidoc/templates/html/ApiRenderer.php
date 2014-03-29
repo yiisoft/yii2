@@ -268,13 +268,11 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
     }
 
     /**
-     * Finds the view file corresponding to the specified relative view name.
-     * @param  string $view a relative view name. The name does NOT start with a slash.
-     * @return string the view file path. Note that the file may not exist.
+     * @inheritdoc
      */
-    public function findViewFile($view)
+    public function getViewPath()
     {
-        return Yii::getAlias('@yii/apidoc/templates/html/views/' . $view);
+        return Yii::getAlias('@yii/apidoc/templates/html/views');
     }
 
     /**
