@@ -217,6 +217,9 @@ Yii Framework 2 Change Log
 - Chg #2281: Renamed `ActiveRecord::create()` to `populateRecord()` and changed signature. This method will not call instantiate() anymore (cebe)
 - Chg #2405: The CSS class of `MaskedInput` now defaults to `form-control` (qiangxue)
 - Chg #2426: Changed URL creation method signatures to be consistent (samdark)
+- Chg #2516: Moved error handling from application to ErrorHandler class and fixed problems with HTTP Exception response code (cebe)
+    - `Yii::$app->exception` has now moved to `Yii::$app->errorHandler->exception`
+    - `yii\base\ErrorHandler` was split into `yii\web\ErrorHandler` and `yii\console\ErrorHandler`
 - Chg #2544: Changed `DetailView`'s `name:format:label` to `attribute:format:label` to match `GridView` (samdark)
 - Chg #2603: `yii\base\ErrorException` now extends `\ErrorException` (samdark)
 - Chg #2629: `Module::controllerPath` is now read only, and all controller classes must be namespaced under `Module::controllerNamespace`. (qiangxue)

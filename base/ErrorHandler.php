@@ -53,10 +53,9 @@ class ErrorHandler extends Component
      */
     public function register()
     {
-        // TODO care for errorReporting set to deprecated or not
-        ini_set('display_errors', 0);
+        ini_set('display_errors', false);
         set_exception_handler([$this, 'handleException']);
-        set_error_handler([$this, 'handleError']);
+        set_error_handler([$this, 'handleError']); // TODO care for errorReporting set to deprecated or not
         if ($this->memoryReserveSize > 0) {
             $this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
         }
@@ -75,16 +74,19 @@ class ErrorHandler extends Component
         $this->exception = $exception;
 
         // disable error capturing to avoid recursive errors while handling exceptions
-        restore_error_handler(); // TODO maybe not needed
+        restore_error_handler();
         restore_exception_handler();
         try {
             $this->logException($exception);
-            // TODO set HTTP header when HTTP exception
             if ($this->discardExistingOutput) {
                 $this->clearOutput();
             }
-            echo $this->renderException($exception);
-            if (PHP_SAPI === 'cli' && !YII_ENV_TEST) { // TODO rethink condition
+            if (PHP_SAPI === 'cli') {
+                Console::stderr($this->renderException($exception));
+            } else {
+                echo $this->renderException($exception);
+            }
+            if (!YII_ENV_TEST) {
                 exit(1);
             }
         } catch (\Exception $e) {
@@ -119,7 +121,7 @@ class ErrorHandler extends Component
      */
     public function handleError($code, $message, $file, $line)
     {
-        if (error_reporting() & $code) {
+        if (error_reporting() & $code) { // TODO care for errorReporting set to deprecated or not
             // load ErrorException manually here because autoloading them will not work
             // when error occurs while autoloading a class
             if (!class_exists('\\yii\\base\\ErrorException', false)) {
@@ -160,12 +162,17 @@ class ErrorHandler extends Component
             $exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
             $this->exception = $exception;
             // use error_log because it's too late to use Yii log
-            error_log($exception);
+            // also do not log when on CLI SAPI because message will be sent to STDERR which has already been done by PHP
+            PHP_SAPI === 'cli' or error_log($exception);
 
             if ($this->discardExistingOutput) {
                 $this->clearOutput();
             }
-            echo $this->renderException($exception);
+            if (PHP_SAPI === 'cli') {
+                Console::stderr($this->renderException($exception));
+            } else {
+                echo $this->renderException($exception);
+            }
             exit(1);
         }
     }
@@ -178,14 +185,42 @@ class ErrorHandler extends Component
     protected function renderException($exception)
     {
         if ($exception instanceof Exception && ($exception instanceof UserException || !YII_DEBUG)) {
-            $message = $exception->getName() . ': ' . $exception->getMessage();
-            if (Yii::$app->controller instanceof \yii\console\Controller) {
-                $message = Yii::$app->controller->ansiFormat($message, Console::FG_RED);
+            $message = $this->formatMessage($exception->getName() . ': ') . $exception->getMessage();
+        } elseif (YII_DEBUG) {
+            if ($exception instanceof Exception) {
+                $message = $this->formatMessage("Exception ({$exception->getName()})");
+            } elseif ($exception instanceof ErrorException) {
+                $message = $this->formatMessage($exception->getName());
+            } else {
+                $message = $this->formatMessage('Exception');
             }
+            $message .= $this->formatMessage(" '" . get_class($exception) . "'", [Console::BOLD, Console::FG_BLUE])
+                . " with message " . $this->formatMessage("'{$exception->getMessage()}'", [Console::BOLD]) //. "\n"
+                . "\n\nin " . dirname($exception->getFile()) . DIRECTORY_SEPARATOR . $this->formatMessage(basename($exception->getFile()), [Console::BOLD])
+                . ':' . $this->formatMessage($exception->getLine(), [Console::BOLD, Console::FG_YELLOW]) . "\n\n"
+                . $this->formatMessage("Stack trace:\n", [Console::BOLD]) . $exception->getTraceAsString();
         } else {
-            $message = YII_DEBUG ? (string) $exception : 'Error: ' . $exception->getMessage(); // TODO improve output
+            $message = $this->formatMessage('Error: ') . $exception->getMessage();
         }
         return $message . "\n";
+    }
+
+    /**
+     * Colorizes a message for console output.
+     * @param string $message the message to colorize.
+     * @param array $format the message format.
+     * @return string the colorized message.
+     * @see Console::ansiFormat() for details on how to specify the message format.
+     */
+    protected function formatMessage($message, $format = [Console::FG_RED, Console::BOLD])
+    {
+        $stream = (PHP_SAPI === 'cli') ? STDERR : STDOUT;
+        // try controller first to allow check for --color switch
+        if (Yii::$app->controller instanceof \yii\console\Controller && Yii::$app->controller->isColorEnabled($stream)
+            || Yii::$app instanceof \yii\console\Application && Console::streamSupportsAnsiColors($stream)) {
+            $message = Console::ansiFormat($message, $format);
+        }
+        return $message;
     }
 
     /**
