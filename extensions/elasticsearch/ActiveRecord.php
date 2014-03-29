@@ -59,7 +59,7 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function getDb()
     {
-        return \Yii::$app->getComponent('elasticsearch');
+        return \Yii::$app->get('elasticsearch');
     }
 
     /**

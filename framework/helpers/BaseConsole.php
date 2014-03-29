@@ -108,8 +108,8 @@ class BaseConsole
 
     /**
      * Moves the cursor to an absolute position given as column and row by sending ANSI control code CUP or CHA to the terminal.
-     * @param integer      $column 1-based column number, 1 is the left edge of the screen.
-     * @param integer|null $row    1-based row number, 1 is the top edge of the screen. if not set, will move cursor only in current line.
+     * @param integer $column 1-based column number, 1 is the left edge of the screen.
+     * @param integer|null $row 1-based row number, 1 is the top edge of the screen. if not set, will move cursor only in current line.
      */
     public static function moveCursorTo($column, $row = null)
     {
@@ -233,9 +233,9 @@ class BaseConsole
     /**
      * Returns the ANSI format code.
      *
-     * @param  array  $format An array containing formatting values.
-     *                        You can pass any of the FG_*, BG_* and TEXT_* constants
-     *                        and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
+     * @param array $format An array containing formatting values.
+     * You can pass any of the FG_*, BG_* and TEXT_* constants
+     * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
      * @return string The ANSI format code according to the given formatting constants.
      */
     public static function ansiFormatCode($format)
@@ -247,8 +247,8 @@ class BaseConsole
      * Echoes an ANSI format code that affects the formatting of any text that is printed afterwards.
      *
      * @param array $format An array containing formatting values.
-     *                      You can pass any of the FG_*, BG_* and TEXT_* constants
-     *                      and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
+     * You can pass any of the FG_*, BG_* and TEXT_* constants
+     * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
      * @see ansiFormatCode()
      * @see endAnsiFormat()
      */
@@ -274,10 +274,10 @@ class BaseConsole
     /**
      * Will return a string formatted with the given ANSI style
      *
-     * @param  string $string the string to be formatted
-     * @param  array  $format An array containing formatting values.
-     *                        You can pass any of the FG_*, BG_* and TEXT_* constants
-     *                        and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
+     * @param string $string the string to be formatted
+     * @param array $format An array containing formatting values.
+     * You can pass any of the FG_*, BG_* and TEXT_* constants
+     * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
      * @return string
      */
     public static function ansiFormat($string, $format = [])
@@ -292,7 +292,7 @@ class BaseConsole
      * You can pass the return value of this to one of the formatting methods:
      * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]]
      *
-     * @param  integer $colorCode xterm color code
+     * @param integer $colorCode xterm color code
      * @return string
      * @see http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
      */
@@ -306,7 +306,7 @@ class BaseConsole
      * You can pass the return value of this to one of the formatting methods:
      * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]]
      *
-     * @param  integer $colorCode xterm color code
+     * @param integer $colorCode xterm color code
      * @return string
      * @see http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
      */
@@ -318,7 +318,7 @@ class BaseConsole
     /**
      * Strips ANSI control codes from a string
      *
-     * @param  string $string String to strip
+     * @param string $string String to strip
      * @return string
      */
     public static function stripAnsiFormat($string)
@@ -477,8 +477,8 @@ class BaseConsole
      * colors should be used. It defaults to true, if set to false, the
      * colorcodes will just be removed (And %% will be transformed into %)
      *
-     * @param  string  $string  String to convert
-     * @param  boolean $colored Should the string be colored?
+     * @param string $string String to convert
+     * @param boolean $colored Should the string be colored?
      * @return string
      */
     // TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
@@ -558,7 +558,7 @@ class BaseConsole
      * - windows without ansicon
      * - not tty consoles
      *
-     * @param  mixed   $stream
+     * @param mixed $stream
      * @return boolean true if the stream supports ANSI colors, otherwise false.
      */
     public static function streamSupportsAnsiColors($stream)
@@ -580,9 +580,9 @@ class BaseConsole
     /**
      * Usage: list($width, $height) = ConsoleHelper::getScreenSize();
      *
-     * @param  boolean       $refresh whether to force checking and not re-use cached size value.
-     *                                This is useful to detect changing window size while the application is running but may
-     *                                not get up to date values on every terminal.
+     * @param boolean $refresh whether to force checking and not re-use cached size value.
+     * This is useful to detect changing window size while the application is running but may
+     * not get up to date values on every terminal.
      * @return array|boolean An array of ($width, $height) or false when it was not able to determine size.
      */
     public static function getScreenSize($refresh = false)
@@ -622,8 +622,8 @@ class BaseConsole
     /**
      * Gets input from STDIN and returns a string right-trimmed for EOLs.
      *
-     * @param  boolean $raw If set to true, returns the raw string without trimming
-     * @return string  the string read from stdin
+     * @param boolean $raw If set to true, returns the raw string without trimming
+     * @return string the string read from stdin
      */
     public static function stdin($raw = false)
     {
@@ -633,7 +633,7 @@ class BaseConsole
     /**
      * Prints a string to STDOUT.
      *
-     * @param  string      $string the string to print
+     * @param string $string the string to print
      * @return int|boolean Number of bytes printed or false on error
      */
     public static function stdout($string)
@@ -644,7 +644,7 @@ class BaseConsole
     /**
      * Prints a string to STDERR.
      *
-     * @param  string      $string the string to print
+     * @param string $string the string to print
      * @return int|boolean Number of bytes printed or false on error
      */
     public static function stderr($string)
@@ -656,7 +656,7 @@ class BaseConsole
      * Asks the user for input. Ends when the user types a carriage return (PHP_EOL). Optionally, It also provides a
      * prompt.
      *
-     * @param  string $prompt the prompt to display before waiting for input (optional)
+     * @param string $prompt the prompt to display before waiting for input (optional)
      * @return string the user's input
      */
     public static function input($prompt = null)
@@ -671,7 +671,7 @@ class BaseConsole
     /**
      * Prints text to STDOUT appended with a carriage return (PHP_EOL).
      *
-     * @param  string          $string the text to print
+     * @param string $string the text to print
      * @return integer|boolean number of bytes printed or false on error.
      */
     public static function output($string = null)
@@ -682,7 +682,7 @@ class BaseConsole
     /**
      * Prints text to STDERR appended with a carriage return (PHP_EOL).
      *
-     * @param  string          $string the text to print
+     * @param string $string the text to print
      * @return integer|boolean number of bytes printed or false on error.
      */
     public static function error($string = null)
@@ -693,14 +693,16 @@ class BaseConsole
     /**
      * Prompts the user for input and validates it
      *
-     * @param  string $text    prompt string
-     * @param  array  $options the options to validate the input:
-     *                         - required: whether it is required or not
-     *                         - default: default value if no input is inserted by the user
-     *                         - pattern: regular expression pattern to validate user input
-     *                         - validator: a callable function to validate input. The function must accept two parameters:
-     *                         - $input: the user input to validate
-     *                         - $error: the error value passed by reference if validation failed.
+     * @param string $text prompt string
+     * @param array $options the options to validate the input:
+     *
+     * - `required`: whether it is required or not
+     * - `default`: default value if no input is inserted by the user
+     * - `pattern`: regular expression pattern to validate user input
+     * - `validator`: a callable function to validate input. The function must accept two parameters:
+     * - `input`: the user input to validate
+     * - `error`: the error value passed by reference if validation failed.
+     *
      * @return string the user input
      */
     public static function prompt($text, $options = [])
@@ -745,8 +747,8 @@ class BaseConsole
     /**
      * Asks user to confirm by typing y or n.
      *
-     * @param  string  $message to echo out before waiting for user input
-     * @param  boolean $default this value is returned if no selection is made.
+     * @param string $message to echo out before waiting for user input
+     * @param boolean $default this value is returned if no selection is made.
      * @return boolean whether user confirmed
      */
     public static function confirm($message, $default = true)
@@ -761,8 +763,8 @@ class BaseConsole
      * Gives the user an option to choose from. Giving '?' as an input will show
      * a list of options to choose from and their explanations.
      *
-     * @param string $prompt  the prompt message
-     * @param array  $options Key-value array of options to choose from
+     * @param string $prompt the prompt message
+     * @param array $options Key-value array of options to choose from
      *
      * @return string An option character the user chose
      */
@@ -814,15 +816,15 @@ class BaseConsole
      * Console::endProgress("done." . PHP_EOL);
      * ```
      *
-     * @param integer         $done   the number of items that are completed.
-     * @param integer         $total  the total value of items that are to be done.
-     * @param string          $prefix an optional string to display before the progress bar.
-     *                                Default to empty string which results in no prefix to be displayed.
-     * @param integer|boolean $width  optional width of the progressbar. This can be an integer representing
-     *                                the number of characters to display for the progress bar or a float between 0 and 1 representing the
-     *                                percentage of screen with the progress bar may take. It can also be set to false to disable the
-     *                                bar and only show progress information like percent, number of items and ETA.
-     *                                If not set, the bar will be as wide as the screen. Screen size will be detected using [[getScreenSize()]].
+     * @param integer $done the number of items that are completed.
+     * @param integer $total the total value of items that are to be done.
+     * @param string $prefix an optional string to display before the progress bar.
+     * Default to empty string which results in no prefix to be displayed.
+     * @param integer|boolean $width optional width of the progressbar. This can be an integer representing
+     * the number of characters to display for the progress bar or a float between 0 and 1 representing the
+     * percentage of screen with the progress bar may take. It can also be set to false to disable the
+     * bar and only show progress information like percent, number of items and ETA.
+     * If not set, the bar will be as wide as the screen. Screen size will be detected using [[getScreenSize()]].
      * @see startProgress
      * @see updateProgress
      * @see endProgress
@@ -839,11 +841,11 @@ class BaseConsole
     /**
      * Updates a progress bar that has been started by [[startProgress()]].
      *
-     * @param integer $done   the number of items that are completed.
-     * @param integer $total  the total value of items that are to be done.
-     * @param string  $prefix an optional string to display before the progress bar.
-     *                        Defaults to null meaning the prefix specified by [[startProgress()]] will be used.
-     *                        If prefix is specified it will update the prefix that will be used by later calls.
+     * @param integer $done the number of items that are completed.
+     * @param integer $total the total value of items that are to be done.
+     * @param string $prefix an optional string to display before the progress bar.
+     * Defaults to null meaning the prefix specified by [[startProgress()]] will be used.
+     * If prefix is specified it will update the prefix that will be used by later calls.
      * @see startProgress
      * @see endProgress
      */
@@ -903,11 +905,11 @@ class BaseConsole
     /**
      * Ends a progress bar that has been started by [[startProgress()]].
      *
-     * @param string|boolean $remove     This can be `false` to leave the progress bar on screen and just print a newline.
-     *                                   If set to `true`, the line of the progress bar will be cleared. This may also be a string to be displayed instead
-     *                                   of the progress bar.
-     * @param boolean        $keepPrefix whether to keep the prefix that has been specified for the progressbar when progressbar
-     *                                   gets removed. Defaults to true.
+     * @param string|boolean $remove This can be `false` to leave the progress bar on screen and just print a newline.
+     * If set to `true`, the line of the progress bar will be cleared. This may also be a string to be displayed instead
+     * of the progress bar.
+     * @param boolean $keepPrefix whether to keep the prefix that has been specified for the progressbar when progressbar
+     * gets removed. Defaults to true.
      * @see startProgress
      * @see updateProgress
      */

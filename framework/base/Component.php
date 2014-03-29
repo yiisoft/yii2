@@ -115,10 +115,10 @@ class Component extends Object
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when executing `$value = $component->property;`.
-     * @param  string                   $name the property name
-     * @return mixed                    the property value or the value of a behavior's property
+     * @param string $name the property name
+     * @return mixed the property value or the value of a behavior's property
      * @throws UnknownPropertyException if the property is not defined
-     * @throws InvalidCallException     if the property is write-only.
+     * @throws InvalidCallException if the property is write-only.
      * @see __set()
      */
     public function __get($name)
@@ -154,10 +154,10 @@ class Component extends Object
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when executing `$component->property = $value;`.
-     * @param  string                   $name  the property name or the event name
-     * @param  mixed                    $value the property value
+     * @param string $name the property name or the event name
+     * @param mixed $value the property value
      * @throws UnknownPropertyException if the property is not defined
-     * @throws InvalidCallException     if the property is read-only.
+     * @throws InvalidCallException if the property is read-only.
      * @see __get()
      */
     public function __set($name, $value)
@@ -206,7 +206,7 @@ class Component extends Object
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when executing `isset($component->property)`.
-     * @param  string  $name the property name or the event name
+     * @param string $name the property name or the event name
      * @return boolean whether the named property is null
      */
     public function __isset($name)
@@ -236,7 +236,7 @@ class Component extends Object
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when executing `unset($component->property)`.
-     * @param  string               $name the property name
+     * @param string $name the property name
      * @throws InvalidCallException if the property is read only.
      */
     public function __unset($name)
@@ -268,9 +268,9 @@ class Component extends Object
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when an unknown method is being invoked.
-     * @param  string                 $name   the method name
-     * @param  array                  $params method parameters
-     * @return mixed                  the method return value
+     * @param string $name the method name
+     * @param array $params method parameters
+     * @return mixed the method return value
      * @throws UnknownMethodException when calling unknown method
      */
     public function __call($name, $params)
@@ -304,9 +304,9 @@ class Component extends Object
      * - the class has a member variable with the specified name (when `$checkVars` is true);
      * - an attached behavior has a property of the given name (when `$checkBehaviors` is true).
      *
-     * @param  string  $name           the property name
-     * @param  boolean $checkVars      whether to treat member variables as properties
-     * @param  boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
+     * @param string $name the property name
+     * @param boolean $checkVars whether to treat member variables as properties
+     * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
      * @return boolean whether the property is defined
      * @see canGetProperty()
      * @see canSetProperty()
@@ -325,9 +325,9 @@ class Component extends Object
      * - the class has a member variable with the specified name (when `$checkVars` is true);
      * - an attached behavior has a readable property of the given name (when `$checkBehaviors` is true).
      *
-     * @param  string  $name           the property name
-     * @param  boolean $checkVars      whether to treat member variables as properties
-     * @param  boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
+     * @param string $name the property name
+     * @param boolean $checkVars whether to treat member variables as properties
+     * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
      * @return boolean whether the property can be read
      * @see canSetProperty()
      */
@@ -356,9 +356,9 @@ class Component extends Object
      * - the class has a member variable with the specified name (when `$checkVars` is true);
      * - an attached behavior has a writable property of the given name (when `$checkBehaviors` is true).
      *
-     * @param  string  $name           the property name
-     * @param  boolean $checkVars      whether to treat member variables as properties
-     * @param  boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
+     * @param string $name the property name
+     * @param boolean $checkVars whether to treat member variables as properties
+     * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
      * @return boolean whether the property can be written
      * @see canGetProperty()
      */
@@ -385,8 +385,8 @@ class Component extends Object
      * - the class has a method with the specified name
      * - an attached behavior has a method with the given name (when `$checkBehaviors` is true).
      *
-     * @param  string  $name           the property name
-     * @param  boolean $checkBehaviors whether to treat behaviors' methods as methods of this component
+     * @param string $name the property name
+     * @param boolean $checkBehaviors whether to treat behaviors' methods as methods of this component
      * @return boolean whether the property is defined
      */
     public function hasMethod($name, $checkBehaviors = true)
@@ -438,7 +438,7 @@ class Component extends Object
 
     /**
      * Returns a value indicating whether there is any handler attached to the named event.
-     * @param  string  $name the event name
+     * @param string $name the event name
      * @return boolean whether there is any handler attached to the event.
      */
     public function hasEventHandlers($name)
@@ -469,10 +469,10 @@ class Component extends Object
      *
      * where `$event` is an [[Event]] object which includes parameters associated with the event.
      *
-     * @param string   $name    the event name
+     * @param string $name the event name
      * @param callable $handler the event handler
-     * @param mixed    $data    the data to be passed to the event handler when the event is triggered.
-     *                          When the event handler is invoked, this data can be accessed via [[Event::data]].
+     * @param mixed $data the data to be passed to the event handler when the event is triggered.
+     * When the event handler is invoked, this data can be accessed via [[Event::data]].
      * @see off()
      */
     public function on($name, $handler, $data = null)
@@ -484,10 +484,10 @@ class Component extends Object
     /**
      * Detaches an existing event handler from this component.
      * This method is the opposite of [[on()]].
-     * @param  string   $name    event name
-     * @param  callable $handler the event handler to be removed.
-     *                           If it is null, all handlers attached to the named event will be removed.
-     * @return boolean  if a handler is found and detached
+     * @param string $name event name
+     * @param callable $handler the event handler to be removed.
+     * If it is null, all handlers attached to the named event will be removed.
+     * @return boolean if a handler is found and detached
      * @see on()
      */
     public function off($name, $handler = null)
@@ -520,8 +520,8 @@ class Component extends Object
      * Triggers an event.
      * This method represents the happening of an event. It invokes
      * all attached handlers for the event including class-level handlers.
-     * @param string $name  the event name
-     * @param Event  $event the event parameter. If not set, a default [[Event]] object will be created.
+     * @param string $name the event name
+     * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
      */
     public function trigger($name, Event $event = null)
     {
@@ -550,7 +550,7 @@ class Component extends Object
 
     /**
      * Returns the named behavior object.
-     * @param  string   $name the behavior name
+     * @param string $name the behavior name
      * @return Behavior the behavior object, or null if the behavior does not exist
      */
     public function getBehavior($name)
@@ -576,7 +576,7 @@ class Component extends Object
      * This method will create the behavior object based on the given
      * configuration. After that, the behavior object will be attached to
      * this component by calling the [[Behavior::attach()]] method.
-     * @param string                $name     the name of the behavior.
+     * @param string $name the name of the behavior.
      * @param string|array|Behavior $behavior the behavior configuration. This can be one of the following:
      *
      *  - a [[Behavior]] object
@@ -611,7 +611,7 @@ class Component extends Object
     /**
      * Detaches a behavior from the component.
      * The behavior's [[Behavior::detach()]] method will be invoked.
-     * @param  string   $name the behavior's name.
+     * @param string $name the behavior's name.
      * @return Behavior the detached behavior. Null if the behavior does not exist.
      */
     public function detachBehavior($name)
@@ -654,9 +654,9 @@ class Component extends Object
 
     /**
      * Attaches a behavior to this component.
-     * @param  string                $name     the name of the behavior.
-     * @param  string|array|Behavior $behavior the behavior to be attached
-     * @return Behavior              the attached behavior.
+     * @param string $name the name of the behavior.
+     * @param string|array|Behavior $behavior the behavior to be attached
+     * @return Behavior the attached behavior.
      */
     private function attachBehaviorInternal($name, $behavior)
     {

@@ -10,6 +10,7 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;
 use yii\log\Logger;
+use yii\di\Container;
 
 /**
  * Gets the application start timestamp.
@@ -76,26 +77,13 @@ class BaseYii
      */
     public static $aliases = ['@yii' => __DIR__];
     /**
-     * @var array initial property values that will be applied to objects newly created via [[createObject]].
-     * The array keys are class names without leading backslashes "\", and the array values are the corresponding
-     * name-value pairs for initializing the created class instances. For example,
-     *
-     * ~~~
-     * [
-     *     'Bar' => [
-     *         'prop1' => 'value1',
-     *         'prop2' => 'value2',
-     *     ],
-     *     'mycompany\foo\Car' => [
-     *         'prop1' => 'value1',
-     *         'prop2' => 'value2',
-     *     ],
-     * ]
-     * ~~~
-     *
+     * @var Container the dependency injection (DI) container used by [[createObject()]].
+     * You may use [[Container::set()]] to set up the needed dependencies of classes and
+     * their initial property values.
      * @see createObject()
+     * @see Container
      */
-    public static $objectConfig = [];
+    public static $container;
 
 
     /**
@@ -130,10 +118,10 @@ class BaseYii
      *
      * Note, this method does not check if the returned path exists or not.
      *
-     * @param  string                $alias          the alias to be translated.
-     * @param  boolean               $throwException whether to throw an exception if the given alias is invalid.
-     *                                               If this is false and an invalid alias is given, false will be returned by this method.
-     * @return string|boolean        the path corresponding to the alias, false if the root alias is not previously registered.
+     * @param string $alias the alias to be translated.
+     * @param boolean $throwException whether to throw an exception if the given alias is invalid.
+     * If this is false and an invalid alias is given, false will be returned by this method.
+     * @return string|boolean the path corresponding to the alias, false if the root alias is not previously registered.
      * @throws InvalidParamException if the alias is invalid while $throwException is true.
      * @see setAlias()
      */
@@ -170,7 +158,7 @@ class BaseYii
      * Returns the root alias part of a given alias.
      * A root alias is an alias that has been registered via [[setAlias()]] previously.
      * If a given alias matches multiple root aliases, the longest one will be returned.
-     * @param  string         $alias the alias
+     * @param string $alias the alias
      * @return string|boolean the root alias, or false if no root alias is found
      */
     public static function getRootAlias($alias)
@@ -208,10 +196,10 @@ class BaseYii
      * Any trailing '/' and '\' characters in the given path will be trimmed.
      *
      * @param string $alias the alias name (e.g. "@yii"). It must start with a '@' character.
-     *                      It may contain the forward slash '/' which serves as boundary character when performing
-     *                      alias translation by [[getAlias()]].
-     * @param string $path  the path corresponding to the alias. Trailing '/' and '\' characters
-     *                      will be trimmed. This can be
+     * It may contain the forward slash '/' which serves as boundary character when performing
+     * alias translation by [[getAlias()]].
+     * @param string $path the path corresponding to the alias. Trailing '/' and '\' characters
+     * will be trimmed. This can be
      *
      * - a directory or a file path (e.g. `/tmp`, `/tmp/main.txt`)
      * - a URL (e.g. `http://www.yiiframework.com`)
@@ -275,7 +263,7 @@ class BaseYii
      * will be loaded using the `@yii/bootstrap` alias which points to the directory where bootstrap extension
      * files are installed and all classes from other `yii` namespaces will be loaded from the yii framework directory.
      *
-     * @param  string                $className the fully qualified class name without a leading backslash "\"
+     * @param string $className the fully qualified class name without a leading backslash "\"
      * @throws UnknownClassException if the class does not exist in the class file
      */
     public static function autoload($className)
@@ -304,74 +292,59 @@ class BaseYii
     /**
      * Creates a new object using the given configuration.
      *
-     * The configuration can be either a string or an array.
-     * If a string, it is treated as the *object class*; if an array,
-     * it must contain a `class` element specifying the *object class*, and
-     * the rest of the name-value pairs in the array will be used to initialize
-     * the corresponding object properties.
+     * You may view this method as an enhanced version of the `new` operator.
+     * The method supports creating an object based on a class name, a configuration array or
+     * an anonymous function.
      *
      * Below are some usage examples:
      *
-     * ~~~
-     * $object = \Yii::createObject('app\components\GoogleMap');
-     * $object = \Yii::createObject([
-     *     'class' => 'app\components\GoogleMap',
-     *     'apiKey' => 'xyz',
+     * ```php
+     * // create an object using a class name
+     * $object = Yii::createObject('yii\db\Connection');
+     *
+     * // create an object using a configuration array
+     * $object = Yii::createObject([
+     *     'class' => 'yii\db\Connection',
+     *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
+     *     'username' => 'root',
+     *     'password' => '',
+     *     'charset' => 'utf8',
      * ]);
-     * ~~~
      *
-     * This method can be used to create any object as long as the object's constructor is
-     * defined like the following:
+     * // create an object with two constructor parameters
+     * $object = \Yii::createObject('MyClass', [$param1, $param2]);
+     * ```
      *
-     * ~~~
-     * public function __construct(..., $config = []) {
-     * }
-     * ~~~
+     * Using [[\yii\di\Container|dependency injection container]], this method can also identify
+     * dependent objects, instantiate them and inject them into the newly created object.
      *
-     * The method will pass the given configuration as the last parameter of the constructor,
-     * and any additional parameters to this method will be passed as the rest of the constructor parameters.
+     * @param string|array|callable $type the object type. This can be specified in one of the following forms:
      *
-     * @param  string|array           $config the configuration. It can be either a string representing the class name
-     *                                        or an array representing the object configuration.
-     * @return mixed                  the created object
+     * - a string: representing the class name of the object to be created
+     * - a configuration array: the array must contain a `class` element which is treated as the object class,
+     *   and the rest of the name-value pairs will be used to initialize the corresponding object properties
+     * - a PHP callable: either an anonymous function or an array representing a class method (`[$class or $object, $method]`).
+     *   The callable should return a new instance of the object being created.
+     *
+     * @param array $params the constructor parameters
+     * @return object the created object
      * @throws InvalidConfigException if the configuration is invalid.
+     * @see \yii\di\Container
      */
-    public static function createObject($config)
+    public static function createObject($type, array $params = [])
     {
-        static $reflections = [];
-
-        if (is_string($config)) {
-            $class = $config;
-            $config = [];
-        } elseif (isset($config['class'])) {
-            $class = $config['class'];
-            unset($config['class']);
-        } else {
+        if (is_string($type)) {
+            return static::$container->get($type, $params);
+        } elseif (is_array($type) && isset($type['class'])) {
+            $class = $type['class'];
+            unset($type['class']);
+            return static::$container->get($class, $params, $type);
+        } elseif (is_callable($type, true)) {
+            return call_user_func($type, $params);
+        } elseif (is_array($type)) {
             throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
-        }
-
-        $class = ltrim($class, '\\');
-
-        if (isset(static::$objectConfig[$class])) {
-            $config = array_merge(static::$objectConfig[$class], $config);
-        }
-
-        if (func_num_args() > 1) {
-            /** @var \ReflectionClass $reflection */
-            if (isset($reflections[$class])) {
-                $reflection = $reflections[$class];
-            } else {
-                $reflection = $reflections[$class] = new \ReflectionClass($class);
-            }
-            $args = func_get_args();
-            array_shift($args); // remove $config
-            if (!empty($config)) {
-                $args[] = $config;
-            }
-
-            return $reflection->newInstanceArgs($args);
         } else {
-            return empty($config) ? new $class : new $class($config);
+            throw new InvalidConfigException("Unsupported configuration type: " . gettype($type));
         }
     }
 
@@ -379,7 +352,7 @@ class BaseYii
      * Logs a trace message.
      * Trace messages are logged mainly for development purpose to see
      * the execution work flow of some code.
-     * @param string $message  the message to be logged.
+     * @param string $message the message to be logged.
      * @param string $category the category of the message.
      */
     public static function trace($message, $category = 'application')
@@ -393,7 +366,7 @@ class BaseYii
      * Logs an error message.
      * An error message is typically logged when an unrecoverable error occurs
      * during the execution of an application.
-     * @param string $message  the message to be logged.
+     * @param string $message the message to be logged.
      * @param string $category the category of the message.
      */
     public static function error($message, $category = 'application')
@@ -405,7 +378,7 @@ class BaseYii
      * Logs a warning message.
      * A warning message is typically logged when an error occurs while the execution
      * can still continue.
-     * @param string $message  the message to be logged.
+     * @param string $message the message to be logged.
      * @param string $category the category of the message.
      */
     public static function warning($message, $category = 'application')
@@ -417,7 +390,7 @@ class BaseYii
      * Logs an informative message.
      * An informative message is typically logged by an application to keep record of
      * something important (e.g. an administrator logs in).
-     * @param string $message  the message to be logged.
+     * @param string $message the message to be logged.
      * @param string $category the category of the message.
      */
     public static function info($message, $category = 'application')
@@ -438,7 +411,7 @@ class BaseYii
      *     \Yii::endProfile('block2');
      * \Yii::endProfile('block1');
      * ~~~
-     * @param string $token    token for the code block
+     * @param string $token token for the code block
      * @param string $category the category of this log message
      * @see endProfile()
      */
@@ -450,7 +423,7 @@ class BaseYii
     /**
      * Marks the end of a code block for profiling.
      * This has to be matched with a previous call to [[beginProfile]] with the same category name.
-     * @param string $token    token for the code block
+     * @param string $token token for the code block
      * @param string $category the category of this log message
      * @see beginProfile()
      */
@@ -486,11 +459,11 @@ class BaseYii
      * Further formatting of message parameters is supported using the [PHP intl extensions](http://www.php.net/manual/en/intro.intl.php)
      * message formatter. See [[\yii\i18n\I18N::translate()]] for more details.
      *
-     * @param  string $category the message category.
-     * @param  string $message  the message to be translated.
-     * @param  array  $params   the parameters that will be used to replace the corresponding placeholders in the message.
-     * @param  string $language the language code (e.g. `en-US`, `en`). If this is null, the current
-     *                          [[\yii\base\Application::language|application language]] will be used.
+     * @param string $category the message category.
+     * @param string $message the message to be translated.
+     * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
+     * @param string $language the language code (e.g. `en-US`, `en`). If this is null, the current
+     * [[\yii\base\Application::language|application language]] will be used.
      * @return string the translated message.
      */
     public static function t($category, $message, $params = [], $language = null)
@@ -509,8 +482,8 @@ class BaseYii
 
     /**
      * Configures an object with the initial property values.
-     * @param  object $object     the object to be configured
-     * @param  array  $properties the property initial values given in terms of name-value pairs.
+     * @param object $object the object to be configured
+     * @param array $properties the property initial values given in terms of name-value pairs.
      * @return object the object itself
      */
     public static function configure($object, $properties)
@@ -527,8 +500,8 @@ class BaseYii
      * This method is provided such that we can get the public member variables of an object.
      * It is different from "get_object_vars()" because the latter will return private
      * and protected variables if it is called within the object itself.
-     * @param  object $object the object to be handled
-     * @return array  the public member variables of the object
+     * @param object $object the object to be handled
+     * @return array the public member variables of the object
      */
     public static function getObjectVars($object)
     {

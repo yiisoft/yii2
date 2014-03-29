@@ -27,9 +27,9 @@ Once the Gii extension has been installed, you enable it by adding these lines t
 
 ```php
 'modules' => [
-	'gii' => [
-		'class' => 'yii\gii\Module',
-	],
+    'gii' => [
+        'class' => 'yii\gii\Module',
+    ],
 ]
 ```
 
@@ -43,8 +43,8 @@ http://localhost/path/to/index.php?r=gii
 >
 ```php
 'gii' => [
-	'class' => 'yii\gii\Module',
-	'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'] // adjust this to your needs
+    'class' => 'yii\gii\Module',
+    'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'] // adjust this to your needs
 ],
 ```
 
@@ -57,10 +57,10 @@ In basic application template configuration structure is a bit different so Gii 
 // ...
 if (YII_ENV_DEV)
 {
-	// configuration adjustments for 'dev' environment
-	$config['preload'][] = 'debug';
-	$config['modules']['debug'] = 'yii\debug\Module';
-	$config['modules']['gii'] = 'yii\gii\Module'; // <--- here
+    // configuration adjustments for 'dev' environment
+    $config['preload'][] = 'debug';
+    $config['modules']['debug'] = 'yii\debug\Module';
+    $config['modules']['gii'] = 'yii\gii\Module'; // <--- here
 }
 ```
 
@@ -69,13 +69,13 @@ So in order to adjust IP address you need to do it like the following:
 ```php
 if (YII_ENV_DEV)
 {
-	// configuration adjustments for 'dev' environment
-	$config['preload'][] = 'debug';
-	$config['modules']['debug'] = 'yii\debug\Module';
-	$config['modules']['gii'] = [
-		'class' => 'yii\gii\Module',
-		'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'],
-	];
+    // configuration adjustments for 'dev' environment
+    $config['preload'][] = 'debug';
+    $config['modules']['debug'] = 'yii\debug\Module';
+    $config['modules']['gii'] = [
+        'class' => 'yii\gii\Module',
+        'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'],
+    ];
 }
 ```
 

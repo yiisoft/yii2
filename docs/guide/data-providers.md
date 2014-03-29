@@ -16,10 +16,10 @@ The following is an example of using it to provide ActiveRecord instances:
 
 ```php
 $provider = new ActiveDataProvider([
-	'query' => Post::find(),
-	'pagination' => [
-		'pageSize' => 20,
-	],
+    'query' => Post::find(),
+    'pagination' => [
+        'pageSize' => 20,
+    ],
 ]);
 
 // get the posts in the current page
@@ -31,10 +31,10 @@ And the following example shows how to use ActiveDataProvider without ActiveReco
 ```php
 $query = new Query();
 $provider = new ActiveDataProvider([
-	'query' => $query->from('tbl_post'),
-	'pagination' => [
-		'pageSize' => 20,
-	],
+    'query' => $query->from('tbl_post'),
+    'pagination' => [
+        'pageSize' => 20,
+    ],
 ]);
 
 // get the posts in the current page

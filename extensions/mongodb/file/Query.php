@@ -31,7 +31,7 @@ class Query extends \yii\mongodb\Query
     public function getCollection($db = null)
     {
         if ($db === null) {
-            $db = Yii::$app->getComponent('mongodb');
+            $db = Yii::$app->get('mongodb');
         }
 
         return $db->getFileCollection($this->from);

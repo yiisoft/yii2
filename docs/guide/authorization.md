@@ -12,28 +12,28 @@ Basic access control is very simple to implement using [[yii\web\AccessControl]]
 ```php
 class SiteController extends Controller
 {
-	public function behaviors()
-	{
-		return [
-			'access' => [
-				'class' => \yii\web\AccessControl::className(),
-				'only' => ['login', 'logout', 'signup'],
-				'rules' => [
-					[
-						'actions' => ['login', 'signup'],
-						'allow' => true,
-						'roles' => ['?'],
-					],
-					[
-						'actions' => ['logout'],
-						'allow' => true,
-						'roles' => ['@'],
-					],
-				],
-			],
-		];
-	}
-	// ...
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => \yii\web\AccessControl::className(),
+                'only' => ['login', 'logout', 'signup'],
+                'rules' => [
+                    [
+                        'actions' => ['login', 'signup'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'actions' => ['logout'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
+    // ...
 ```
 
 In the code above we're attaching access control behavior to a controller. Since there's `only` option specified, it
@@ -52,31 +52,31 @@ checked. If no rules matched access is denied.
 ```php
 class SiteController extends Controller
 {
-	public function behaviors()
-	{
-		return [
-			'access' => [
-				'class' => \yii\web\AccessControl::className(),
-				'only' => ['special-callback'],
-				'rules' => [
-					[
-						'actions' => ['special-callback'],
-						'allow' => true,
-						'matchCallback' => function ($rule, $action) {
-							return date('d-m') === '31-10';
-						}
-					],
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => \yii\web\AccessControl::className(),
+                'only' => ['special-callback'],
+                'rules' => [
+                    [
+                        'actions' => ['special-callback'],
+                        'allow' => true,
+                        'matchCallback' => function ($rule, $action) {
+                            return date('d-m') === '31-10';
+                        }
+                    ],
 ```
 
 And the action:
 
 ```php
-	// ...
-	// Match callback called! This page can be accessed only each October 31st
-	public function actionSpecialCallback()
-	{
-		return $this->render('happy-halloween');
-	}
+    // ...
+    // Match callback called! This page can be accessed only each October 31st
+    public function actionSpecialCallback()
+    {
+        return $this->render('happy-halloween');
+    }
 ```
 
 Sometimes you want a custom action to be taken when access is denied. In this case you can specify `denyCallback`.

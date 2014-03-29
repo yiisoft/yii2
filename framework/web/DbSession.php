@@ -11,6 +11,7 @@ use Yii;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\base\InvalidConfigException;
+use yii\di\Instance;
 
 /**
  * DbSession extends [[Session]] by using database as session data storage.
@@ -74,13 +75,8 @@ class DbSession extends Session
      */
     public function init()
     {
-        if (is_string($this->db)) {
-            $this->db = Yii::$app->getComponent($this->db);
-        }
-        if (!$this->db instanceof Connection) {
-            throw new InvalidConfigException("DbSession::db must be either a DB connection instance or the application component ID of a DB connection.");
-        }
         parent::init();
+        $this->db = Instance::ensure($this->db, Connection::className());
     }
 
     /**
@@ -139,7 +135,7 @@ class DbSession extends Session
     /**
      * Session read handler.
      * Do not call this method directly.
-     * @param  string $id session ID
+     * @param string $id session ID
      * @return string the session data
      */
     public function readSession($id)
@@ -157,8 +153,8 @@ class DbSession extends Session
     /**
      * Session write handler.
      * Do not call this method directly.
-     * @param  string  $id   session ID
-     * @param  string  $data session data
+     * @param string $id session ID
+     * @param string $data session data
      * @return boolean whether session write is successful
      */
     public function writeSession($id, $data)
@@ -199,7 +195,7 @@ class DbSession extends Session
     /**
      * Session destroy handler.
      * Do not call this method directly.
-     * @param  string  $id session ID
+     * @param string $id session ID
      * @return boolean whether session is destroyed successfully
      */
     public function destroySession($id)
@@ -214,7 +210,7 @@ class DbSession extends Session
     /**
      * Session GC (garbage collection) handler.
      * Do not call this method directly.
-     * @param  integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
+     * @param integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
      * @return boolean whether session is GCed successfully
      */
     public function gcSession($maxLifetime)

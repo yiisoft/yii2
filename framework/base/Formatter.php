@@ -32,7 +32,7 @@ class Formatter extends Component
      * This can be any value that may be passed to [date_default_timezone_set()](http://www.php.net/manual/en/function.date-default-timezone-set.php)
      * e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
      * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available timezones.
-     * If this property is not set, [[\yii\base\Application::timezone]] will be used.
+     * If this property is not set, [[\yii\base\Application::timeZone]] will be used.
      */
     public $timeZone;
     /**
@@ -99,12 +99,12 @@ class Formatter extends Component
      * This method will call one of the "as" methods available in this class to do the formatting.
      * For type "xyz", the method "asXyz" will be used. For example, if the format is "html",
      * then [[asHtml()]] will be used. Format names are case insensitive.
-     * @param  mixed                 $value  the value to be formatted
-     * @param  string|array          $format the format of the value, e.g., "html", "text". To specify additional
-     *                                       parameters of the formatting method, you may use an array. The first element of the array
-     *                                       specifies the format name, while the rest of the elements will be used as the parameters to the formatting
-     *                                       method. For example, a format of `['date', 'Y-m-d']` will cause the invocation of `asDate($value, 'Y-m-d')`.
-     * @return string                the formatting result
+     * @param mixed $value the value to be formatted
+     * @param string|array $format the format of the value, e.g., "html", "text". To specify additional
+     * parameters of the formatting method, you may use an array. The first element of the array
+     * specifies the format name, while the rest of the elements will be used as the parameters to the formatting
+     * method. For example, a format of `['date', 'Y-m-d']` will cause the invocation of `asDate($value, 'Y-m-d')`.
+     * @return string the formatting result
      * @throws InvalidParamException if the type is not supported by this class.
      */
     public function format($value, $format)
@@ -131,7 +131,7 @@ class Formatter extends Component
     /**
      * Formats the value as is without any formatting.
      * This method simply returns back the parameter without any format.
-     * @param  mixed  $value the value to be formatted
+     * @param mixed $value the value to be formatted
      * @return string the formatted result
      */
     public function asRaw($value)
@@ -145,7 +145,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as an HTML-encoded plain text.
-     * @param  mixed  $value the value to be formatted
+     * @param mixed $value the value to be formatted
      * @return string the formatted result
      */
     public function asText($value)
@@ -159,7 +159,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as an HTML-encoded plain text with newlines converted into breaks.
-     * @param  mixed  $value the value to be formatted
+     * @param mixed $value the value to be formatted
      * @return string the formatted result
      */
     public function asNtext($value)
@@ -175,7 +175,7 @@ class Formatter extends Component
      * Formats the value as HTML-encoded text paragraphs.
      * Each text paragraph is enclosed within a `<p>` tag.
      * One or multiple consecutive empty lines divide two paragraphs.
-     * @param  mixed  $value the value to be formatted
+     * @param mixed $value the value to be formatted
      * @return string the formatted result
      */
     public function asParagraphs($value)
@@ -193,9 +193,9 @@ class Formatter extends Component
      * Formats the value as HTML text.
      * The value will be purified using [[HtmlPurifier]] to avoid XSS attacks.
      * Use [[asRaw()]] if you do not want any purification of the value.
-     * @param  mixed      $value  the value to be formatted
-     * @param  array|null $config the configuration for the HTMLPurifier class.
-     * @return string     the formatted result
+     * @param mixed $value the value to be formatted
+     * @param array|null $config the configuration for the HTMLPurifier class.
+     * @return string the formatted result
      */
     public function asHtml($value, $config = null)
     {
@@ -208,7 +208,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as a mailto link.
-     * @param  mixed  $value the value to be formatted
+     * @param mixed $value the value to be formatted
      * @return string the formatted result
      */
     public function asEmail($value)
@@ -222,7 +222,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as an image tag.
-     * @param  mixed  $value the value to be formatted
+     * @param mixed $value the value to be formatted
      * @return string the formatted result
      */
     public function asImage($value)
@@ -236,7 +236,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as a hyperlink.
-     * @param  mixed  $value the value to be formatted
+     * @param mixed $value the value to be formatted
      * @return string the formatted result
      */
     public function asUrl($value)
@@ -254,7 +254,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as a boolean.
-     * @param  mixed  $value the value to be formatted
+     * @param mixed $value the value to be formatted
      * @return string the formatted result
      * @see booleanFormat
      */
@@ -270,15 +270,15 @@ class Formatter extends Component
     /**
      * Formats the value as a date.
      * @param integer|string|DateTime $value the value to be formatted. The following
-     *                                       types of value are supported:
+     * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be parsed into a UNIX timestamp via `strtotime()`
      * - a PHP DateTime object
      *
-     * @param  string $format the format used to convert the value into a date string.
-     *                        If null, [[dateFormat]] will be used. The format string should be one
-     *                        that can be recognized by the PHP `date()` function.
+     * @param string $format the format used to convert the value into a date string.
+     * If null, [[dateFormat]] will be used. The format string should be one
+     * that can be recognized by the PHP `date()` function.
      * @return string the formatted result
      * @see dateFormat
      */
@@ -295,15 +295,15 @@ class Formatter extends Component
     /**
      * Formats the value as a time.
      * @param integer|string|DateTime $value the value to be formatted. The following
-     *                                       types of value are supported:
+     * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be parsed into a UNIX timestamp via `strtotime()`
      * - a PHP DateTime object
      *
-     * @param  string $format the format used to convert the value into a date string.
-     *                        If null, [[timeFormat]] will be used. The format string should be one
-     *                        that can be recognized by the PHP `date()` function.
+     * @param string $format the format used to convert the value into a date string.
+     * If null, [[timeFormat]] will be used. The format string should be one
+     * that can be recognized by the PHP `date()` function.
      * @return string the formatted result
      * @see timeFormat
      */
@@ -320,15 +320,15 @@ class Formatter extends Component
     /**
      * Formats the value as a datetime.
      * @param integer|string|DateTime $value the value to be formatted. The following
-     *                                       types of value are supported:
+     * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be parsed into a UNIX timestamp via `strtotime()`
      * - a PHP DateTime object
      *
-     * @param  string $format the format used to convert the value into a date string.
-     *                        If null, [[datetimeFormat]] will be used. The format string should be one
-     *                        that can be recognized by the PHP `date()` function.
+     * @param string $format the format used to convert the value into a date string.
+     * If null, [[datetimeFormat]] will be used. The format string should be one
+     * that can be recognized by the PHP `date()` function.
      * @return string the formatted result
      * @see datetimeFormat
      */
@@ -344,7 +344,7 @@ class Formatter extends Component
 
     /**
      * Normalizes the given datetime value as one that can be taken by various date/time formatting methods.
-     * @param  mixed   $value the datetime value to be normalized.
+     * @param mixed $value the datetime value to be normalized.
      * @return integer the normalized datetime value
      */
     protected function normalizeDatetimeValue($value)
@@ -359,9 +359,9 @@ class Formatter extends Component
     }
 
     /**
-     * @param  integer $value  normalized datetime value
-     * @param  string  $format the format used to convert the value into a date string.
-     * @return string  the formatted result
+     * @param integer $value normalized datetime value
+     * @param string $format the format used to convert the value into a date string.
+     * @return string the formatted result
      */
     protected function formatTimestamp($value, $format)
     {
@@ -373,7 +373,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as an integer.
-     * @param  mixed  $value the value to be formatted
+     * @param mixed $value the value to be formatted
      * @return string the formatting result.
      */
     public function asInteger($value)
@@ -393,9 +393,9 @@ class Formatter extends Component
     /**
      * Formats the value as a double number.
      * Property [[decimalSeparator]] will be used to represent the decimal point.
-     * @param  mixed   $value    the value to be formatted
-     * @param  integer $decimals the number of digits after the decimal point
-     * @return string  the formatting result.
+     * @param mixed $value the value to be formatted
+     * @param integer $decimals the number of digits after the decimal point
+     * @return string the formatting result.
      * @see decimalSeparator
      */
     public function asDouble($value, $decimals = 2)
@@ -413,9 +413,9 @@ class Formatter extends Component
     /**
      * Formats the value as a number with decimal and thousand separators.
      * This method calls the PHP number_format() function to do the formatting.
-     * @param  mixed   $value    the value to be formatted
-     * @param  integer $decimals the number of digits after the decimal point
-     * @return string  the formatted result
+     * @param mixed $value the value to be formatted
+     * @param integer $decimals the number of digits after the decimal point
+     * @return string the formatted result
      * @see decimalSeparator
      * @see thousandSeparator
      */
@@ -432,10 +432,10 @@ class Formatter extends Component
 
     /**
      * Formats the value in bytes as a size in human readable form.
-     * @param  integer $value   value in bytes to be formatted
-     * @param  boolean $verbose if full names should be used (e.g. bytes, kilobytes, ...).
-     *                          Defaults to false meaning that short names will be used (e.g. B, KB, ...).
-     * @return string  the formatted result
+     * @param integer $value value in bytes to be formatted
+     * @param boolean $verbose if full names should be used (e.g. bytes, kilobytes, ...).
+     * Defaults to false meaning that short names will be used (e.g. B, KB, ...).
+     * @return string the formatted result
      * @see sizeFormat
      */
     public function asSize($value, $verbose = false)
@@ -468,6 +468,95 @@ class Formatter extends Component
                 return $verbose ? Yii::t('yii', '{n, plural, =1{# terabyte} other{# terabytes}}', $params) : Yii::t('yii', '{n} TB', $params);
             default:
                 return $verbose ? Yii::t('yii', '{n, plural, =1{# petabyte} other{# petabytes}}', $params) : Yii::t('yii', '{n} PB', $params);
+        }
+    }
+
+    /**
+     * Formats the value as the time interval between a date and now in human readable form.
+     * @param integer|string|DateTime|DateInterval $value the value to be formatted. The following
+     * types of value are supported:
+     *
+     * - an integer representing a UNIX timestamp
+     * - a string that can be parsed into a UNIX timestamp via `strtotime()` or that can be passed to a DateInterval constructor.
+     * - a PHP DateTime object
+     * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
+     *
+     * @return string the formatted result
+     */
+    public function asRelativeTime($value, $referenceTime = null)
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+
+        if ($value instanceof \DateInterval) {
+            $interval = $value;
+        } else {
+            $timestamp = $this->normalizeDatetimeValue($value);
+
+            if ($timestamp === false) {
+                // $value is not a valid date/time value, so we try
+                // to create a DateInterval with it
+                try {
+                    $interval = new \DateInterval($value);
+                } catch (Exception $e) {
+                    // invalid date/time and invalid interval
+                    return $this->nullDisplay;
+                }
+            } else {
+                $timezone = new \DateTimeZone($this->timeZone);
+
+                if ($referenceTime === null) {
+                    $dateNow = new DateTime('now', $timezone);
+                } else {
+                    $referenceTime = $this->normalizeDatetimeValue($referenceTime);
+                    $dateNow = new DateTime(null, $timezone);
+                    $dateNow->setTimestamp($referenceTime);
+                }
+
+                $dateThen = new DateTime(null, $timezone);
+                $dateThen->setTimestamp($timestamp);
+
+                $interval = $dateThen->diff($dateNow);
+            }
+        }
+
+        if ($interval->invert) {
+            if ($interval->y >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{a year} other{# years}}', ['delta' => $interval->y]);
+            }
+            if ($interval->m >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{a month} other{# months}}', ['delta' => $interval->m]);
+            }
+            if ($interval->d >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{a day} other{# days}}', ['delta' => $interval->d]);
+            }
+            if ($interval->h >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{an hour} other{# hours}}', ['delta' => $interval->h]);
+            }
+            if ($interval->i >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{a minute} other{# minutes}}', ['delta' => $interval->i]);
+            }
+
+            return Yii::t('yii', 'in {delta, plural, =1{a second} other{# seconds}}', ['delta' => $interval->s]);
+        } else {
+            if ($interval->y >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{a year} other{# years}} ago', ['delta' => $interval->y]);
+            }
+            if ($interval->m >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{a month} other{# months}} ago', ['delta' => $interval->m]);
+            }
+            if ($interval->d >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{a day} other{# days}} ago', ['delta' => $interval->d]);
+            }
+            if ($interval->h >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}} ago', ['delta' => $interval->h]);
+            }
+            if ($interval->i >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $interval->i]);
+            }
+
+            return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $interval->s]);
         }
     }
 }

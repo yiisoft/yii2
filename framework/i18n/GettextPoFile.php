@@ -19,10 +19,10 @@ class GettextPoFile extends GettextFile
 {
     /**
      * Loads messages from a PO file.
-     * @param  string $filePath file path
-     * @param  string $context  message context
-     * @return array  message translations. Array keys are source messages and array values are translated messages:
-     *                         source message => translated message.
+     * @param string $filePath file path
+     * @param string $context message context
+     * @return array message translations. Array keys are source messages and array values are translated messages:
+     * source message => translated message.
      */
     public function load($filePath, $context)
     {
@@ -48,9 +48,9 @@ class GettextPoFile extends GettextFile
     /**
      * Saves messages to a PO file.
      * @param string $filePath file path
-     * @param array  $messages message translations. Array keys are source messages and array values are
-     *                         translated messages: source message => translated message. Note if the message has a context,
-     *                         the message ID must be prefixed with the context with chr(4) as the separator.
+     * @param array $messages message translations. Array keys are source messages and array values are
+     * translated messages: source message => translated message. Note if the message has a context,
+     * the message ID must be prefixed with the context with chr(4) as the separator.
      */
     public function save($filePath, $messages)
     {
@@ -69,7 +69,7 @@ class GettextPoFile extends GettextFile
 
     /**
      * Encodes special characters in a message.
-     * @param  string $string message to be encoded
+     * @param string $string message to be encoded
      * @return string the encoded message
      */
     protected function encode($string)
@@ -83,7 +83,7 @@ class GettextPoFile extends GettextFile
 
     /**
      * Decodes special characters in a message.
-     * @param  string $string message to be decoded
+     * @param string $string message to be decoded
      * @return string the decoded message
      */
     protected function decode($string)

@@ -66,8 +66,8 @@ class Application extends \yii\base\Application
 
     /**
      * Handles the specified request.
-     * @param  Request               $request the request to be handled
-     * @return Response              the resulting response
+     * @param Request $request the request to be handled
+     * @return Response the resulting response
      * @throws NotFoundHttpException if the requested route is invalid
      */
     public function handleRequest($request)
@@ -129,7 +129,7 @@ class Application extends \yii\base\Application
      */
     public function getRequest()
     {
-        return $this->getComponent('request');
+        return $this->get('request');
     }
 
     /**
@@ -138,7 +138,7 @@ class Application extends \yii\base\Application
      */
     public function getResponse()
     {
-        return $this->getComponent('response');
+        return $this->get('response');
     }
 
     /**
@@ -147,7 +147,7 @@ class Application extends \yii\base\Application
      */
     public function getSession()
     {
-        return $this->getComponent('session');
+        return $this->get('session');
     }
 
     /**
@@ -156,7 +156,7 @@ class Application extends \yii\base\Application
      */
     public function getUser()
     {
-        return $this->getComponent('user');
+        return $this->get('user');
     }
 
     /**
@@ -165,22 +165,20 @@ class Application extends \yii\base\Application
      */
     public function getAssetManager()
     {
-        return $this->getComponent('assetManager');
+        return $this->get('assetManager');
     }
 
     /**
-     * Registers the core application components.
-     * @see setComponents
+     * @inheritdoc
      */
-    public function registerCoreComponents()
+    public function coreComponents()
     {
-        parent::registerCoreComponents();
-        $this->setComponents([
+        return array_merge([
             'request' => ['class' => 'yii\web\Request'],
             'response' => ['class' => 'yii\web\Response'],
             'session' => ['class' => 'yii\web\Session'],
             'user' => ['class' => 'yii\web\User'],
             'assetManager' => ['class' => 'yii\web\AssetManager'],
-        ]);
+        ], parent::coreComponents());
     }
 }

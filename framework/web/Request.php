@@ -53,6 +53,7 @@ use yii\helpers\StringHelper;
  * @property boolean $isHead Whether this is a HEAD request. This property is read-only.
  * @property boolean $isOptions Whether this is a OPTIONS request. This property is read-only.
  * @property boolean $isPatch Whether this is a PATCH request. This property is read-only.
+ * @property boolean $isPjax Whether this is a PJAX request. This property is read-only.
  * @property boolean $isPost Whether this is a POST request. This property is read-only.
  * @property boolean $isPut Whether this is a PUT request. This property is read-only.
  * @property boolean $isSecureConnection If the request is sent via secure channel (https). This property is
@@ -161,7 +162,7 @@ class Request extends \yii\base\Request
 
     /**
      * Resolves the current request into a route and the associated parameters.
-     * @return array         the first element is the route, and the second is the associated parameters.
+     * @return array the first element is the route, and the second is the associated parameters.
      * @throws HttpException if the request cannot be resolved.
      */
     public function resolve()
@@ -211,7 +212,7 @@ class Request extends \yii\base\Request
     /**
      * Returns the method of the current request (e.g. GET, POST, HEAD, PUT, PATCH, DELETE).
      * @return string request method, such as GET, POST, HEAD, PUT, PATCH, DELETE.
-     *                The value returned is turned into upper case.
+     * The value returned is turned into upper case.
      */
     public function getMethod()
     {
@@ -338,7 +339,7 @@ class Request extends \yii\base\Request
      * Request parameters are determined using the parsers configured in [[parsers]] property.
      * If no parsers are configured for the current [[contentType]] it uses the PHP function [[mb_parse_str()]]
      * to parse the [[rawBody|request body]].
-     * @return array                            the request parameters given in the request body.
+     * @return array the request parameters given in the request body.
      * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
      * @see getMethod()
      * @see getBodyParam()
@@ -347,11 +348,19 @@ class Request extends \yii\base\Request
     public function getBodyParams()
     {
         if ($this->_bodyParams === null) {
-            $contentType = $this->getContentType();
             if (isset($_POST[$this->methodParam])) {
                 $this->_bodyParams = $_POST;
                 unset($this->_bodyParams[$this->methodParam]);
-            } elseif (isset($this->parsers[$contentType])) {
+                return $this->_bodyParams;
+            }
+
+            $contentType = $this->getContentType();
+            if (($pos = strpos($contentType, ';')) !== false) {
+                // e.g. application/json; charset=UTF-8
+                $contentType = substr($contentType, 0, $pos);
+            }
+
+            if (isset($this->parsers[$contentType])) {
                 $parser = Yii::createObject($this->parsers[$contentType]);
                 if (!($parser instanceof RequestParserInterface)) {
                     throw new InvalidConfigException("The '$contentType' request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
@@ -388,9 +397,9 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the named request body parameter value.
-     * @param  string $name         the parameter name
-     * @param  mixed  $defaultValue the default parameter value if the parameter does not exist.
-     * @return mixed  the parameter value
+     * @param string $name the parameter name
+     * @param mixed $defaultValue the default parameter value if the parameter does not exist.
+     * @return mixed the parameter value
      * @see getBodyParams()
      * @see setBodyParams()
      */
@@ -404,8 +413,8 @@ class Request extends \yii\base\Request
     /**
      * Returns POST parameter with a given name. If name isn't specified, returns an array of all POST parameters.
      *
-     * @param  string      $name         the parameter name
-     * @param  mixed       $defaultValue the default parameter value if the parameter does not exist.
+     * @param string $name the parameter name
+     * @param mixed $defaultValue the default parameter value if the parameter does not exist.
      * @return array|mixed
      */
     public function post($name = null, $defaultValue = null)
@@ -449,8 +458,8 @@ class Request extends \yii\base\Request
     /**
      * Returns GET parameter with a given name. If name isn't specified, returns an array of all GET parameters.
      *
-     * @param  string      $name         the parameter name
-     * @param  mixed       $defaultValue the default parameter value if the parameter does not exist.
+     * @param string $name the parameter name
+     * @param mixed $defaultValue the default parameter value if the parameter does not exist.
      * @return array|mixed
      */
     public function get($name = null, $defaultValue = null)
@@ -465,9 +474,9 @@ class Request extends \yii\base\Request
     /**
      * Returns the named GET parameter value.
      * If the GET parameter does not exist, the second parameter to this method will be returned.
-     * @param  string $name         the GET parameter name. If not specified, whole $_GET is returned.
-     * @param  mixed  $defaultValue the default parameter value if the GET parameter does not exist.
-     * @return mixed  the GET parameter value
+     * @param string $name the GET parameter name. If not specified, whole $_GET is returned.
+     * @param mixed $defaultValue the default parameter value if the GET parameter does not exist.
+     * @return mixed the GET parameter value
      * @see getBodyParam()
      */
     public function getQueryParam($name, $defaultValue = null)
@@ -551,7 +560,7 @@ class Request extends \yii\base\Request
     /**
      * Returns the relative URL of the entry script.
      * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
-     * @return string                 the relative URL of the entry script.
+     * @return string the relative URL of the entry script.
      * @throws InvalidConfigException if unable to determine the entry script URL
      */
     public function getScriptUrl()
@@ -618,8 +627,8 @@ class Request extends \yii\base\Request
      * Returns the path info of the currently requested URL.
      * A path info refers to the part that is after the entry script and before the question mark (query string).
      * The starting and ending slashes are both removed.
-     * @return string                 part of the request URL that is after the entry script and before the question mark.
-     *                                Note, the returned path info is already URL-decoded.
+     * @return string part of the request URL that is after the entry script and before the question mark.
+     * Note, the returned path info is already URL-decoded.
      * @throws InvalidConfigException if the path info cannot be determined due to unexpected server configuration
      */
     public function getPathInfo()
@@ -645,8 +654,8 @@ class Request extends \yii\base\Request
      * Resolves the path info part of the currently requested URL.
      * A path info refers to the part that is after the entry script and before the question mark (query string).
      * The starting slashes are both removed (ending slashes will be kept).
-     * @return string                 part of the request URL that is after the entry script and before the question mark.
-     *                                Note, the returned path info is decoded.
+     * @return string part of the request URL that is after the entry script and before the question mark.
+     * Note, the returned path info is decoded.
      * @throws InvalidConfigException if the path info cannot be determined due to unexpected server configuration
      */
     protected function resolvePathInfo()
@@ -709,7 +718,7 @@ class Request extends \yii\base\Request
      * Returns the currently requested relative URL.
      * This refers to the portion of the URL that is after the [[hostInfo]] part.
      * It includes the [[queryString]] part if any.
-     * @return string                 the currently requested relative URL. Note that the URI returned is URL-encoded.
+     * @return string the currently requested relative URL. Note that the URI returned is URL-encoded.
      * @throws InvalidConfigException if the URL cannot be determined due to unusual server configuration
      */
     public function getUrl()
@@ -736,8 +745,8 @@ class Request extends \yii\base\Request
      * Resolves the request URI portion for the currently requested URL.
      * This refers to the portion that is after the [[hostInfo]] part. It includes the [[queryString]] part if any.
      * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
-     * @return string|boolean         the request URI portion for the currently requested URL.
-     *                                Note that the URI returned is URL-encoded.
+     * @return string|boolean the request URI portion for the currently requested URL.
+     * Note that the URI returned is URL-encoded.
      * @throws InvalidConfigException if the request URI cannot be determined due to unusual server configuration
      */
     protected function resolveRequestUri()
@@ -933,8 +942,8 @@ class Request extends \yii\base\Request
      * ```
      *
      * @return array the content types ordered by the quality score. Types with the highest scores
-     *               will be returned first. The array keys are the content types, while the array values
-     *               are the corresponding quality score and other parameters as given in the header.
+     * will be returned first. The array keys are the content types, while the array values
+     * are the corresponding quality score and other parameters as given in the header.
      */
     public function getAcceptableContentTypes()
     {
@@ -953,7 +962,7 @@ class Request extends \yii\base\Request
      * Sets the acceptable content types.
      * Please refer to [[getAcceptableContentTypes()]] on the format of the parameter.
      * @param array $value the content types that are acceptable by the end user. They should
-     *                     be ordered by the preference level.
+     * be ordered by the preference level.
      * @see getAcceptableContentTypes()
      * @see parseAcceptHeader()
      */
@@ -970,14 +979,14 @@ class Request extends \yii\base\Request
      * For the MIME-types the user expects in response, see [[acceptableContentTypes]].
      * @return string request content-type. Null is returned if this information is not available.
      * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17
-     *                HTTP 1.1 header field definitions
+     * HTTP 1.1 header field definitions
      */
     public function getContentType()
     {
         if (isset($_SERVER["CONTENT_TYPE"])) {
             return $_SERVER["CONTENT_TYPE"];
-        } elseif (isset($_SERVER["HTTP_CONTENT_TYPE"])) { //fix bug https://bugs.php.net/bug.php?id=66606
-
+        } elseif (isset($_SERVER["HTTP_CONTENT_TYPE"])) {
+            //fix bug https://bugs.php.net/bug.php?id=66606
             return $_SERVER["HTTP_CONTENT_TYPE"];
         }
 
@@ -990,7 +999,7 @@ class Request extends \yii\base\Request
      * Returns the languages acceptable by the end user.
      * This is determined by the `Accept-Language` HTTP header.
      * @return array the languages ordered by the preference level. The first element
-     *               represents the most preferred language.
+     * represents the most preferred language.
      */
     public function getAcceptableLanguages()
     {
@@ -1007,7 +1016,7 @@ class Request extends \yii\base\Request
 
     /**
      * @param array $value the languages that are acceptable by the end user. They should
-     *                     be ordered by the preference level.
+     * be ordered by the preference level.
      */
     public function setAcceptableLanguages($value)
     {
@@ -1034,9 +1043,9 @@ class Request extends \yii\base\Request
      * // ]
      * ```
      *
-     * @param  string $header the header to be parsed
-     * @return array  the acceptable values ordered by their quality score. The values with the highest scores
-     *                       will be returned first.
+     * @param string $header the header to be parsed
+     * @return array the acceptable values ordered by their quality score. The values with the highest scores
+     * will be returned first.
      */
     public function parseAcceptHeader($header)
     {
@@ -1102,8 +1111,8 @@ class Request extends \yii\base\Request
      * Returns the user-preferred language that should be used by this application.
      * The language resolution is based on the user preferred languages and the languages
      * supported by the application. The method will try to find the best match.
-     * @param  array  $languages a list of the languages supported by the application. If this is empty, the current
-     *                           application language will be returned without further processing.
+     * @param array $languages a list of the languages supported by the application. If this is empty, the current
+     * application language will be returned without further processing.
      * @return string the language that the application should use.
      */
     public function getPreferredLanguage(array $languages = [])
@@ -1185,7 +1194,7 @@ class Request extends \yii\base\Request
 
     /**
      * @return string the secret key used for cookie validation. If it was not set previously,
-     *                a random key will be generated and used.
+     * a random key will be generated and used.
      */
     public function getCookieValidationKey()
     {
@@ -1258,8 +1267,8 @@ class Request extends \yii\base\Request
     /**
      * Returns the XOR result of two strings.
      * If the two strings are of different lengths, the shorter one will be padded to the length of the longer one.
-     * @param  string $token1
-     * @param  string $token2
+     * @param string $token1
+     * @param string $token2
      * @return string the XOR result
      */
     private function xorTokens($token1, $token2)

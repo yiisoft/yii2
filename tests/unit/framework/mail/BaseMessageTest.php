@@ -36,7 +36,7 @@ class BaseMessageTest extends TestCase
      */
     protected function getMailer()
     {
-        return Yii::$app->getComponent('mail');
+        return Yii::$app->get('mail');
     }
 
     // Tests :

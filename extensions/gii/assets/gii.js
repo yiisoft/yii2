@@ -81,15 +81,27 @@ yii.gii = (function ($) {
         });
     };
 
+    var checkAllToggle = function () {
+        $('#check-all').prop('checked', !$('.default-view-files table .check input:enabled:not(:checked)').length);
+    };
+
     var initConfirmationCheckboxes = function () {
         var $checkAll = $('#check-all');
         $checkAll.click(function () {
-            $('.default-view-files table .check input').prop('checked', this.checked);
+            $('.default-view-files table .check input:enabled').prop('checked', this.checked);
         });
         $('.default-view-files table .check input').click(function () {
-            $checkAll.prop('checked', !$('.default-view-files table .check input:not(:checked)').length);
+            checkAllToggle();
         });
-        $checkAll.prop('checked', !$('.default-view-files table .check input:not(:checked)').length);
+        checkAllToggle();
+    };
+
+    var initToggleActions = function () {
+        $('#action-toggle :input').change(function () {
+            $(this).parent('label').toggleClass('active', this.checked);
+            $('.' + this.value, '.default-view-files table').toggle(this.checked).find('.check input').attr('disabled', !this.checked);
+            checkAllToggle();
+        });
     };
 
     return {
@@ -109,10 +121,16 @@ yii.gii = (function ($) {
             initStickyInputs();
             initPreviewDiffLinks();
             initConfirmationCheckboxes();
+            initToggleActions();
 
             // model generator: hide class name input when table name input contains *
-            $('#model-generator #generator-tablename').on('change',function () {
+            $('#model-generator #generator-tablename').change(function () {
                 $('#model-generator .field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
+            }).change();
+
+            // hide message category when I18N is disabled
+            $('form #generator-enablei18n').change(function () {
+                $('form .field-generator-messagecategory').toggle($(this).is(':checked'));
             }).change();
 
             // hide Generate button if any input is changed

@@ -9,24 +9,24 @@ component's behavior:
 
 ```php
 [
-	'components' => [
-		'view' => [
-			'class' => 'yii\web\View',
-			'renderers' => [
-				'tpl' => [
-					'class' => 'yii\smarty\ViewRenderer',
-					//'cachePath' => '@runtime/Smarty/cache',
-				],
-				'twig' => [
-					'class' => 'yii\twig\ViewRenderer',
-					//'cachePath' => '@runtime/Twig/cache',
-					//'options' => [], /*  Array of twig options */
-					'globals' => ['html' => '\yii\helpers\Html'],
-				],
-				// ...
-			],
-		],
-	],
+    'components' => [
+        'view' => [
+            'class' => 'yii\web\View',
+            'renderers' => [
+                'tpl' => [
+                    'class' => 'yii\smarty\ViewRenderer',
+                    //'cachePath' => '@runtime/Smarty/cache',
+                ],
+                'twig' => [
+                    'class' => 'yii\twig\ViewRenderer',
+                    //'cachePath' => '@runtime/Twig/cache',
+                    //'options' => [], /*  Array of twig options */
+                    'globals' => ['html' => '\yii\helpers\Html'],
+                ],
+                // ...
+            ],
+        ],
+    ],
 ]
 ```
 
@@ -74,8 +74,8 @@ variables there:
 
 ```php
 'globals' => [
-	'html' => '\yii\helpers\Html',
-	'name' => 'Carsten',
+    'html' => '\yii\helpers\Html',
+    'name' => 'Carsten',
 ],
 ```
 
@@ -91,7 +91,7 @@ Additional filters may be added via the application configuration's `filters` op
 
 ```php
 'filters' => [
-	'jsonEncode' => '\yii\helpers\Json::encode',
+    'jsonEncode' => '\yii\helpers\Json::encode',
 ],
 ```
 

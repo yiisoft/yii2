@@ -94,6 +94,7 @@
 		"ext-pdo_mysql": "required by yii2-sphinx extension",
 		"fzaninotto/faker": "required by yii2-faker extension",
 		"imagine/imagine": "required by yii2-imagine extension",
+		"phpspec/php-diff": "required by yii2-gii extension",
 		"smarty/smarty": "required by yii2-smarty extension",
 		"swiftmailer/swiftmailer": "required by yii2-swiftmailer extension",
 		"twig/twig": "required by yii2-twig extension",

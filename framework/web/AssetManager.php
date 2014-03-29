@@ -119,10 +119,10 @@ class AssetManager extends Component
      * This method will first look for the bundle in [[bundles]]. If not found,
      * it will treat `$name` as the class of the asset bundle and create a new instance of it.
      *
-     * @param  string                 $name    the class name of the asset bundle
-     * @param  boolean                $publish whether to publish the asset files in the asset bundle before it is returned.
-     *                                         If you set this false, you must manually call `AssetBundle::publish()` to publish the asset files.
-     * @return AssetBundle            the asset bundle instance
+     * @param string $name the class name of the asset bundle
+     * @param boolean $publish whether to publish the asset files in the asset bundle before it is returned.
+     * If you set this false, you must manually call `AssetBundle::publish()` to publish the asset files.
+     * @return AssetBundle the asset bundle instance
      * @throws InvalidConfigException if $name does not refer to a valid asset bundle
      */
     public function getBundle($name, $publish = true)
@@ -169,8 +169,8 @@ class AssetManager extends Component
     /**
      * Sets the asset converter.
      * @param array|AssetConverterInterface $value the asset converter. This can be either
-     *                                             an object implementing the [[AssetConverterInterface]], or a configuration
-     *                                             array that can be used to create the asset converter object.
+     * an object implementing the [[AssetConverterInterface]], or a configuration
+     * array that can be used to create the asset converter object.
      */
     public function setConverter($value)
     {
@@ -206,9 +206,9 @@ class AssetManager extends Component
      * that in the application deployment phase, before system goes live. See more in the following
      * discussion: http://code.google.com/p/yii/issues/detail?id=2579
      *
-     * @param string $path    the asset (file or directory) to be published
-     * @param array  $options the options to	be applied when publishing a directory.
-     *                        The following options are supported:
+     * @param string $path the asset (file or directory) to be published
+     * @param array $options the options to	be applied when publishing a directory.
+     * The following options are supported:
      *
      * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
      *   This option is used only when publishing a directory. If the callback returns false, the copy
@@ -223,7 +223,7 @@ class AssetManager extends Component
      *   You may want to set this to be true during the development stage to make sure the published
      *   directory is always up-to-date. Do not set this to true on production servers as it will
      *   significantly degrade the performance.
-     * @return array                 the path (directory or file path) and the URL that the asset is published as.
+     * @return array the path (directory or file path) and the URL that the asset is published as.
      * @throws InvalidParamException if the asset to be published does not exist.
      */
     public function publish($path, $options = [])
@@ -293,7 +293,7 @@ class AssetManager extends Component
      * Returns the published path of a file path.
      * This method does not perform any publishing. It merely tells you
      * if the file or directory is published, where it will go.
-     * @param  string $path directory or file path being published
+     * @param string $path directory or file path being published
      * @return string the published file path. False if the file or directory does not exist
      */
     public function getPublishedPath($path)
@@ -319,7 +319,7 @@ class AssetManager extends Component
      * Returns the URL of a published file path.
      * This method does not perform any publishing. It merely tells you
      * if the file path is published, what the URL will be to access it.
-     * @param  string $path directory or file path being published
+     * @param string $path directory or file path being published
      * @return string the published URL for the file or directory. False if the file or directory does not exist.
      */
     public function getPublishedUrl($path)
@@ -343,7 +343,7 @@ class AssetManager extends Component
     /**
      * Generate a CRC32 hash for the directory path. Collisions are higher
      * than MD5 but generates a much smaller hash string.
-     * @param  string $path string to be hashed.
+     * @param string $path string to be hashed.
      * @return string hashed string.
      */
     protected function hash($path)

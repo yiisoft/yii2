@@ -39,8 +39,8 @@ class Expression extends \yii\base\Object
     /**
      * Constructor.
      * @param string $expression the DB expression
-     * @param array  $params     parameters
-     * @param array  $config     name-value pairs that will be used to initialize the object properties
+     * @param array $params parameters
+     * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($expression, $params = [], $config = [])
     {

@@ -59,8 +59,8 @@ class Item extends Object
      * Checks to see if the specified item is within the hierarchy starting from this item.
      * This method is expected to be internally used by the actual implementations
      * of the [[Manager::checkAccess()]].
-     * @param  string  $itemName the name of the item to be checked
-     * @param  array   $params   the parameters to be passed to business rule evaluation
+     * @param string $itemName the name of the item to be checked
+     * @param array $params the parameters to be passed to business rule evaluation
      * @return boolean whether the specified item is within the hierarchy starting from this item.
      */
     public function checkAccess($itemName, $params = [])
@@ -101,8 +101,8 @@ class Item extends Object
 
     /**
      * Adds a child item.
-     * @param  string              $name the name of the child item
-     * @return boolean             whether the item is added successfully
+     * @param string $name the name of the child item
+     * @return boolean whether the item is added successfully
      * @throws \yii\base\Exception if either parent or child doesn't exist or if a loop has been detected.
      * @see Manager::addItemChild
      */
@@ -114,7 +114,7 @@ class Item extends Object
     /**
      * Removes a child item.
      * Note, the child item is not deleted. Only the parent-child relationship is removed.
-     * @param  string  $name the child item name
+     * @param string $name the child item name
      * @return boolean whether the removal is successful
      * @see Manager::removeItemChild
      */
@@ -125,7 +125,7 @@ class Item extends Object
 
     /**
      * Returns a value indicating whether a child exists
-     * @param  string  $name the child item name
+     * @param string $name the child item name
      * @return boolean whether the child exists
      * @see Manager::hasItemChild
      */
@@ -146,11 +146,11 @@ class Item extends Object
 
     /**
      * Assigns this item to a user.
-     * @param  mixed               $userId  the user ID (see [[\yii\web\User::id]])
-     * @param  string              $bizRule the business rule to be executed when [[checkAccess()]] is called
-     *                                      for this particular authorization item.
-     * @param  mixed               $data    additional data associated with this assignment
-     * @return Assignment          the authorization assignment information.
+     * @param mixed $userId the user ID (see [[\yii\web\User::id]])
+     * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
+     * for this particular authorization item.
+     * @param mixed $data additional data associated with this assignment
+     * @return Assignment the authorization assignment information.
      * @throws \yii\base\Exception if the item has already been assigned to the user
      * @see Manager::assign
      */
@@ -161,7 +161,7 @@ class Item extends Object
 
     /**
      * Revokes an authorization assignment from a user.
-     * @param  mixed   $userId the user ID (see [[\yii\web\User::id]])
+     * @param mixed $userId the user ID (see [[\yii\web\User::id]])
      * @return boolean whether removal is successful
      * @see Manager::revoke
      */
@@ -172,7 +172,7 @@ class Item extends Object
 
     /**
      * Returns a value indicating whether this item has been assigned to the user.
-     * @param  mixed   $userId the user ID (see [[\yii\web\User::id]])
+     * @param mixed $userId the user ID (see [[\yii\web\User::id]])
      * @return boolean whether the item has been assigned to the user.
      * @see Manager::isAssigned
      */
@@ -183,9 +183,9 @@ class Item extends Object
 
     /**
      * Returns the item assignment information.
-     * @param  mixed      $userId the user ID (see [[\yii\web\User::id]])
+     * @param mixed $userId the user ID (see [[\yii\web\User::id]])
      * @return Assignment the item assignment information. Null is returned if
-     *                           this item is not assigned to the user.
+     * this item is not assigned to the user.
      * @see Manager::getAssignment
      */
     public function getAssignment($userId)

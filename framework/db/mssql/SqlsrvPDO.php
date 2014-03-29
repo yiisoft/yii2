@@ -23,8 +23,8 @@ class SqlsrvPDO extends \PDO
      * when `$sequence` value is a null or an empty string it returns an empty string.
      * But when parameter is not specified it works as expected and returns actual
      * last inserted ID (like the other PDO drivers).
-     * @param  string|null $sequence the sequence name. Defaults to null.
-     * @return integer     last inserted ID value.
+     * @param string|null $sequence the sequence name. Defaults to null.
+     * @return integer last inserted ID value.
      */
     public function lastInsertId($sequence = null)
     {

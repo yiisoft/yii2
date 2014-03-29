@@ -58,8 +58,8 @@ class FileMutex extends Mutex
 
     /**
      * Acquires lock by given name.
-     * @param  string  $name    of the lock to be acquired.
-     * @param  integer $timeout to wait for lock to become released.
+     * @param string $name of the lock to be acquired.
+     * @param integer $timeout to wait for lock to become released.
      * @return boolean acquiring result.
      */
     protected function acquireLock($name, $timeout = 0)
@@ -89,7 +89,7 @@ class FileMutex extends Mutex
 
     /**
      * Releases lock by given name.
-     * @param  string  $name of the lock to be released.
+     * @param string $name of the lock to be released.
      * @return boolean release result.
      */
     protected function releaseLock($name)

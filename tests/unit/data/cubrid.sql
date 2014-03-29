@@ -91,7 +91,9 @@ CREATE TABLE `tbl_type` (
   `float_col2` double DEFAULT '1.23',
   `blob_col` blob,
   `numeric_col` decimal(5,2) DEFAULT '33.22',
-  `time` timestamp NOT NULL DEFAULT '2002-01-01 00:00:00'
+  `time` timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
+  `bool_col` tinyint NOT NULL,
+  `bool_col2` tinyint DEFAULT '1'
 );
 
 CREATE TABLE `tbl_composite_fk` (

@@ -50,10 +50,10 @@ class GettextMoFile extends GettextFile
 
     /**
      * Loads messages from an MO file.
-     * @param  string    $filePath file path
-     * @param  string    $context  message context
-     * @return array     message translations. Array keys are source messages and array values are translated messages:
-     *                            source message => translated message.
+     * @param string $filePath file path
+     * @param string $context message context
+     * @return array message translations. Array keys are source messages and array values are translated messages:
+     * source message => translated message.
      * @throws Exception if unable to read the MO file
      */
     public function load($filePath, $context)
@@ -126,10 +126,10 @@ class GettextMoFile extends GettextFile
 
     /**
      * Saves messages to an MO file.
-     * @param  string    $filePath file path
-     * @param  array     $messages message translations. Array keys are source messages and array values are
-     *                             translated messages: source message => translated message. Note if the message has a context,
-     *                             the message ID must be prefixed with the context with chr(4) as the separator.
+     * @param string $filePath file path
+     * @param array $messages message translations. Array keys are source messages and array values are
+     * translated messages: source message => translated message. Note if the message has a context,
+     * the message ID must be prefixed with the context with chr(4) as the separator.
      * @throws Exception if unable to save the MO file
      */
     public function save($filePath, $messages)
@@ -198,9 +198,9 @@ class GettextMoFile extends GettextFile
 
     /**
      * Reads one or several bytes.
-     * @param  resource $fileHandle to read from
-     * @param  integer  $byteCount  to be read
-     * @return string   bytes
+     * @param resource $fileHandle to read from
+     * @param integer $byteCount to be read
+     * @return string bytes
      */
     protected function readBytes($fileHandle, $byteCount = 1)
     {
@@ -213,9 +213,9 @@ class GettextMoFile extends GettextFile
 
     /**
      * Write bytes.
-     * @param  resource $fileHandle to write to
-     * @param  string   $bytes      to be written
-     * @return integer  how many bytes are written
+     * @param resource $fileHandle to write to
+     * @param string $bytes to be written
+     * @return integer how many bytes are written
      */
     protected function writeBytes($fileHandle, $bytes)
     {
@@ -224,8 +224,8 @@ class GettextMoFile extends GettextFile
 
     /**
      * Reads a 4-byte integer.
-     * @param  resource $fileHandle to read from
-     * @return integer  the result
+     * @param resource $fileHandle to read from
+     * @return integer the result
      */
     protected function readInteger($fileHandle)
     {
@@ -236,9 +236,9 @@ class GettextMoFile extends GettextFile
 
     /**
      * Writes a 4-byte integer.
-     * @param  resource $fileHandle to write to
-     * @param  integer  $integer    to be written
-     * @return integer  how many bytes are written
+     * @param resource $fileHandle to write to
+     * @param integer $integer to be written
+     * @return integer how many bytes are written
      */
     protected function writeInteger($fileHandle, $integer)
     {
@@ -247,10 +247,10 @@ class GettextMoFile extends GettextFile
 
     /**
      * Reads a string.
-     * @param  resource $fileHandle file handle
-     * @param  integer  $length     of the string
-     * @param  integer  $offset     of the string in the file. If null, it reads from the current position.
-     * @return string   the result
+     * @param resource $fileHandle file handle
+     * @param integer $length of the string
+     * @param integer $offset of the string in the file. If null, it reads from the current position.
+     * @return string the result
      */
     protected function readString($fileHandle, $length, $offset = null)
     {
@@ -263,9 +263,9 @@ class GettextMoFile extends GettextFile
 
     /**
      * Writes a string.
-     * @param  resource $fileHandle to write to
-     * @param  string   $string     to be written
-     * @return integer  how many bytes are written
+     * @param resource $fileHandle to write to
+     * @param string $string to be written
+     * @return integer how many bytes are written
      */
     protected function writeString($fileHandle, $string)
     {

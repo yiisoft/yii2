@@ -113,7 +113,7 @@ abstract class BaseListView extends Widget
     /**
      * Renders a section of the specified name.
      * If the named section is not supported, false will be returned.
-     * @param  string         $name the section name, e.g., `{summary}`, `{items}`.
+     * @param string $name the section name, e.g., `{summary}`, `{items}`.
      * @return string|boolean the rendering result of the section, or false if the named section is not supported.
      */
     public function renderSection($name)

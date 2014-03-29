@@ -18,9 +18,9 @@ convenient way to include bootstrap assets in your pages with a single line adde
 
 ```php
 public $depends = [
-	'yii\web\YiiAsset',
-	'yii\bootstrap\BootstrapAsset', // this line
-	// 'yii\bootstrap\BootstrapThemeAsset' // uncomment to apply bootstrap 2 style to bootstrap 3
+    'yii\web\YiiAsset',
+    'yii\bootstrap\BootstrapAsset', // this line
+    // 'yii\bootstrap\BootstrapThemeAsset' // uncomment to apply bootstrap 2 style to bootstrap 3
 ];
 ```
 

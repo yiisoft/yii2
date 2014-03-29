@@ -1,7 +1,7 @@
 Logging
 =======
 
-Yii provides flexible and extensible logger that is able to handle messages according to serverity level or their type.
+Yii provides flexible and extensible logger that is able to handle messages according to severity level or their type.
 You may filter messages by multiple criteria and forward them to files, email, debugger etc.
 
 Logging basics
@@ -26,7 +26,7 @@ There are multiple severity levels and corresponding methods available:
 - [[Yii::trace]] used maily for development purpose to indicate workflow of some code. Note that it only works in
   development mode when `YII_DEBUG` is set to `true`.
 - [[Yii::error]] used when there's unrecoverable error.
-- [[Yii::warning]] used when an error occured but execution can be continued.
+- [[Yii::warning]] used when an error occurred but execution can be continued.
 - [[Yii::info]] used to keep record of important events such as administrator logins.
 
 Log targets
@@ -40,25 +40,25 @@ You may configure the targets in application configuration, like the following:
 
 ```php
 [
-	'components' => [
-		'log' => [
-			'targets' => [
-				'file' => [
-					'class' => 'yii\log\FileTarget',
-					'levels' => ['trace', 'info'],
-					'categories' => ['yii\*'],
-				],
-				'email' => [
-					'class' => 'yii\log\EmailTarget',
-					'levels' => ['error', 'warning'],
-					'message' => [
-						'to' => ['admin@example.com', 'developer@example.com'],
-						'subject' => 'New example.com log message',
-					],
-				],
-			],
-		],
-	],
+    'components' => [
+        'log' => [
+            'targets' => [
+                'file' => [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['trace', 'info'],
+                    'categories' => ['yii\*'],
+                ],
+                'email' => [
+                    'class' => 'yii\log\EmailTarget',
+                    'levels' => ['error', 'warning'],
+                    'message' => [
+                        'to' => ['admin@example.com', 'developer@example.com'],
+                        'subject' => 'New example.com log message',
+                    ],
+                ],
+            ],
+        ],
+    ],
 ]
 ```
 
@@ -97,10 +97,10 @@ Note, code blocks need to be nested properly such as
 
 ```php
 \Yii::beginProfile('block1');
-	// some code to be profiled
-	\Yii::beginProfile('block2');
-		// some other code to be profiled
-	\Yii::endProfile('block2');
+    // some code to be profiled
+    \Yii::beginProfile('block2');
+        // some other code to be profiled
+    \Yii::endProfile('block2');
 \Yii::endProfile('block1');
 ```
 

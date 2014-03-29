@@ -171,9 +171,9 @@ class Controller extends \yii\web\Controller
     /**
      * Authenticates the user.
      * This method implements the user authentication based on an access token sent through the `Authorization` HTTP header.
-     * @param  \yii\base\Action          $action the action to be executed
+     * @param \yii\base\Action $action the action to be executed
      * @throws UnauthorizedHttpException if the user is not authenticated successfully
-     * @throws InvalidConfigException    if an auth method declared in [[authMethods]] is invalid.
+     * @throws InvalidConfigException if an auth method declared in [[authMethods]] is invalid.
      */
     protected function authenticate($action)
     {
@@ -205,7 +205,7 @@ class Controller extends \yii\web\Controller
      * the user must be authenticated and the user identity object (`Yii::$app->user->identity`) must
      * implement [[RateLimitInterface]].
      *
-     * @param  \yii\base\Action             $action the action to be executed
+     * @param \yii\base\Action $action the action to be executed
      * @throws TooManyRequestsHttpException if the rate limit is exceeded.
      */
     protected function checkRateLimit($action)
@@ -226,7 +226,7 @@ class Controller extends \yii\web\Controller
      * Serializes the specified data.
      * The default implementation will create a serializer based on the configuration given by [[serializer]].
      * It then uses the serializer to serialize the given data.
-     * @param  mixed $data the data to be serialized
+     * @param mixed $data the data to be serialized
      * @return mixed the serialized data.
      */
     protected function serializeData($data)
@@ -241,9 +241,9 @@ class Controller extends \yii\web\Controller
      * to run the specified action against the specified data model.
      * If the user does not have access, a [[ForbiddenHttpException]] should be thrown.
      *
-     * @param  string                 $action the ID of the action to be executed
-     * @param  object                 $model  the model to be accessed. If null, it means no specific model is being accessed.
-     * @param  array                  $params additional parameters
+     * @param string $action the ID of the action to be executed
+     * @param object $model the model to be accessed. If null, it means no specific model is being accessed.
+     * @param array $params additional parameters
      * @throws ForbiddenHttpException if the user does not have access
      */
     public function checkAccess($action, $model = null, $params = [])

@@ -24,43 +24,43 @@ interface QueryInterface
 {
     /**
      * Executes the query and returns all results as an array.
-     * @param  Connection $db the database connection used to execute the query.
-     *                        If this parameter is not given, the `db` application component will be used.
-     * @return array      the query results. If the query results in nothing, an empty array will be returned.
+     * @param Connection $db the database connection used to execute the query.
+     * If this parameter is not given, the `db` application component will be used.
+     * @return array the query results. If the query results in nothing, an empty array will be returned.
      */
     public function all($db = null);
 
     /**
      * Executes the query and returns a single row of result.
-     * @param  Connection    $db the database connection used to execute the query.
-     *                           If this parameter is not given, the `db` application component will be used.
+     * @param Connection $db the database connection used to execute the query.
+     * If this parameter is not given, the `db` application component will be used.
      * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
-     *                          results in nothing.
+     * results in nothing.
      */
     public function one($db = null);
 
     /**
      * Returns the number of records.
-     * @param  string     $q  the COUNT expression. Defaults to '*'.
-     * @param  Connection $db the database connection used to execute the query.
-     *                        If this parameter is not given, the `db` application component will be used.
-     * @return integer    number of records
+     * @param string $q the COUNT expression. Defaults to '*'.
+     * @param Connection $db the database connection used to execute the query.
+     * If this parameter is not given, the `db` application component will be used.
+     * @return integer number of records
      */
     public function count($q = '*', $db = null);
 
     /**
      * Returns a value indicating whether the query result contains any row of data.
-     * @param  Connection $db the database connection used to execute the query.
-     *                        If this parameter is not given, the `db` application component will be used.
-     * @return boolean    whether the query result contains any row of data.
+     * @param Connection $db the database connection used to execute the query.
+     * If this parameter is not given, the `db` application component will be used.
+     * @return boolean whether the query result contains any row of data.
      */
     public function exists($db = null);
 
     /**
      * Sets the [[indexBy]] property.
      * @param string|callable $column the name of the column by which the query results should be indexed by.
-     *                                This can also be a callable (e.g. anonymous function) that returns the index value based on the given
-     *                                row data. The signature of the callable should be:
+     * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
+     * row data. The signature of the callable should be:
      *
      * ~~~
      * function ($row)
@@ -136,7 +136,7 @@ interface QueryInterface
      * - `or not like`: similar to the `not like` operator except that `OR` is used to concatenate
      * the `NOT LIKE` predicates.
      *
-     * @param  array  $condition the conditions that should be put in the WHERE part.
+     * @param array $condition the conditions that should be put in the WHERE part.
      * @return static the query object itself
      * @see andWhere()
      * @see orWhere()
@@ -146,9 +146,9 @@ interface QueryInterface
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
-     * @param  string|array $condition the new WHERE condition. Please refer to [[where()]]
-     *                                 on how to specify this parameter.
-     * @return static       the query object itself
+     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
      * @see where()
      * @see orWhere()
      */
@@ -157,9 +157,9 @@ interface QueryInterface
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
-     * @param  string|array $condition the new WHERE condition. Please refer to [[where()]]
-     *                                 on how to specify this parameter.
-     * @return static       the query object itself
+     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
      * @see where()
      * @see andWhere()
      */
@@ -167,39 +167,39 @@ interface QueryInterface
 
     /**
      * Sets the ORDER BY part of the query.
-     * @param  string|array $columns the columns (and the directions) to be ordered by.
-     *                               Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-     *                               (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
-     *                               The method will automatically quote the column names unless a column contains some parenthesis
-     *                               (which means the column contains a DB expression).
-     * @return static       the query object itself
+     * @param string|array $columns the columns (and the directions) to be ordered by.
+     * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+     * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
+     * The method will automatically quote the column names unless a column contains some parenthesis
+     * (which means the column contains a DB expression).
+     * @return static the query object itself
      * @see addOrderBy()
      */
     public function orderBy($columns);
 
     /**
      * Adds additional ORDER BY columns to the query.
-     * @param  string|array $columns the columns (and the directions) to be ordered by.
-     *                               Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-     *                               (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
-     *                               The method will automatically quote the column names unless a column contains some parenthesis
-     *                               (which means the column contains a DB expression).
-     * @return static       the query object itself
+     * @param string|array $columns the columns (and the directions) to be ordered by.
+     * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+     * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
+     * The method will automatically quote the column names unless a column contains some parenthesis
+     * (which means the column contains a DB expression).
+     * @return static the query object itself
      * @see orderBy()
      */
     public function addOrderBy($columns);
 
     /**
      * Sets the LIMIT part of the query.
-     * @param  integer $limit the limit. Use null or negative value to disable limit.
-     * @return static  the query object itself
+     * @param integer $limit the limit. Use null or negative value to disable limit.
+     * @return static the query object itself
      */
     public function limit($limit);
 
     /**
      * Sets the OFFSET part of the query.
-     * @param  integer $offset the offset. Use null or negative value to disable offset.
-     * @return static  the query object itself
+     * @param integer $offset the offset. Use null or negative value to disable offset.
+     * @return static the query object itself
      */
     public function offset($offset);
 }

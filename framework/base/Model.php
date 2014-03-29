@@ -302,11 +302,11 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * Errors found during the validation can be retrieved via [[getErrors()]],
      * [[getFirstErrors()]] and [[getFirstError()]].
      *
-     * @param  array                 $attributes  list of attributes that should be validated.
-     *                                            If this parameter is empty, it means any attribute listed in the applicable
-     *                                            validation rules should be validated.
-     * @param  boolean               $clearErrors whether to call [[clearErrors()]] before performing validation
-     * @return boolean               whether the validation is successful without any error.
+     * @param array $attributes list of attributes that should be validated.
+     * If this parameter is empty, it means any attribute listed in the applicable
+     * validation rules should be validated.
+     * @param boolean $clearErrors whether to call [[clearErrors()]] before performing validation
+     * @return boolean whether the validation is successful without any error.
      * @throws InvalidParamException if the current scenario is unknown.
      */
     public function validate($attributes = null, $clearErrors = true)
@@ -341,7 +341,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * You may override this method to do preliminary checks before validation.
      * Make sure the parent implementation is invoked so that the event can be raised.
      * @return boolean whether the validation should be executed. Defaults to true.
-     *                 If false is returned, the validation will stop and the model is considered invalid.
+     * If false is returned, the validation will stop and the model is considered invalid.
      */
     public function beforeValidate()
     {
@@ -389,8 +389,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns the validators applicable to the current [[scenario]].
-     * @param  string                      $attribute the name of the attribute whose applicable validators should be returned.
-     *                                                If this is null, the validators for ALL attributes in the model will be returned.
+     * @param string $attribute the name of the attribute whose applicable validators should be returned.
+     * If this is null, the validators for ALL attributes in the model will be returned.
      * @return \yii\validators\Validator[] the validators applicable to the current [[scenario]].
      */
     public function getActiveValidators($attribute = null)
@@ -409,7 +409,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     /**
      * Creates validator objects based on the validation rules specified in [[rules()]].
      * Unlike [[getValidators()]], each time this method is called, a new list of validators will be returned.
-     * @return ArrayObject            validators
+     * @return ArrayObject validators
      * @throws InvalidConfigException if any validation rule configuration is invalid
      */
     public function createValidators()
@@ -434,7 +434,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * This is determined by checking if the attribute is associated with a
      * [[\yii\validators\RequiredValidator|required]] validation rule in the
      * current [[scenario]].
-     * @param  string  $attribute attribute name
+     * @param string $attribute attribute name
      * @return boolean whether the attribute is required
      */
     public function isAttributeRequired($attribute)
@@ -450,7 +450,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns a value indicating whether the attribute is safe for massive assignments.
-     * @param  string  $attribute attribute name
+     * @param string $attribute attribute name
      * @return boolean whether the attribute is safe for massive assignments
      * @see safeAttributes()
      */
@@ -461,7 +461,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns a value indicating whether the attribute is active in the current scenario.
-     * @param  string  $attribute attribute name
+     * @param string $attribute attribute name
      * @return boolean whether the attribute is active in the current scenario
      * @see activeAttributes()
      */
@@ -472,7 +472,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns the text label for the specified attribute.
-     * @param  string $attribute the attribute name
+     * @param string $attribute the attribute name
      * @return string the attribute label
      * @see generateAttributeLabel()
      * @see attributeLabels()
@@ -486,8 +486,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns a value indicating whether there is any validation error.
-     * @param  string|null $attribute attribute name. Use null to check all attributes.
-     * @return boolean     whether there is any error.
+     * @param string|null $attribute attribute name. Use null to check all attributes.
+     * @return boolean whether there is any error.
      */
     public function hasErrors($attribute = null)
     {
@@ -496,11 +496,11 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns the errors for all attribute or a single attribute.
-     * @param  string $attribute attribute name. Use null to retrieve errors for all attributes.
+     * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
      * @property array An array of errors for all attributes. Empty array is returned if no error.
-     *                           The result is a two-dimensional array. See [[getErrors()]] for detailed description.
-     * @return array  errors for all attributes or the specified attribute. Empty array is returned if no error.
-     *                          Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
+     * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
+     * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
+     * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
      *
      * ~~~
      * [
@@ -529,7 +529,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     /**
      * Returns the first error of every attribute in the model.
      * @return array the first errors. The array keys are the attribute names, and the array
-     *               values are the corresponding error messages. An empty array will be returned if there is no error.
+     * values are the corresponding error messages. An empty array will be returned if there is no error.
      * @see getErrors()
      * @see getFirstError()
      */
@@ -551,7 +551,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns the first error of the specified attribute.
-     * @param  string $attribute attribute name.
+     * @param string $attribute attribute name.
      * @return string the error message. Null is returned if no error.
      * @see getErrors()
      * @see getFirstErrors()
@@ -564,7 +564,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     /**
      * Adds a new error to the specified attribute.
      * @param string $attribute attribute name
-     * @param string $error     new error message
+     * @param string $error new error message
      */
     public function addError($attribute, $error = '')
     {
@@ -589,7 +589,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * This is done by replacing underscores, dashes and dots with blanks and
      * changing the first letter of each word to upper case.
      * For example, 'department_name' or 'DepartmentName' will generate 'Department Name'.
-     * @param  string $name the column name
+     * @param string $name the column name
      * @return string the attribute label
      */
     public function generateAttributeLabel($name)
@@ -599,10 +599,10 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns attribute values.
-     * @param  array $names  list of attributes whose value needs to be returned.
-     *                       Defaults to null, meaning all attributes listed in [[attributes()]] will be returned.
-     *                       If it is an array, only the attributes in the array will be returned.
-     * @param  array $except list of attributes whose value should NOT be returned.
+     * @param array $names list of attributes whose value needs to be returned.
+     * Defaults to null, meaning all attributes listed in [[attributes()]] will be returned.
+     * If it is an array, only the attributes in the array will be returned.
+     * @param array $except list of attributes whose value should NOT be returned.
      * @return array attribute values (name => value).
      */
     public function getAttributes($names = null, $except = [])
@@ -623,9 +623,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Sets the attribute values in a massive way.
-     * @param array   $values   attribute values (name => value) to be assigned to the model.
+     * @param array $values attribute values (name => value) to be assigned to the model.
      * @param boolean $safeOnly whether the assignments should only be done to the safe attributes.
-     *                          A safe attribute is one that is associated with a validation rule in the current [[scenario]].
+     * A safe attribute is one that is associated with a validation rule in the current [[scenario]].
      * @see safeAttributes()
      * @see attributes()
      */
@@ -647,8 +647,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * This method is invoked when an unsafe attribute is being massively assigned.
      * The default implementation will log a warning message if YII_DEBUG is on.
      * It does nothing otherwise.
-     * @param string $name  the unsafe attribute name
-     * @param mixed  $value the attribute value
+     * @param string $name the unsafe attribute name
+     * @param mixed $value the attribute value
      */
     public function onUnsafeAttribute($name, $value)
     {
@@ -728,10 +728,10 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * The data to be loaded is `$data[formName]`, where `formName` refers to the value of [[formName()]].
      * If [[formName()]] is empty, the whole `$data` array will be used to populate the model.
      * The data being populated is subject to the safety check by [[setAttributes()]].
-     * @param  array   $data     the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
-     *                           supplied by end user.
-     * @param  string  $formName the form name to be used for loading the data into the model.
-     *                           If not set, [[formName()]] will be used.
+     * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
+     * supplied by end user.
+     * @param string $formName the form name to be used for loading the data into the model.
+     * If not set, [[formName()]] will be used.
      * @return boolean whether the model is successfully populated with some data.
      */
     public function load($data, $formName = null)
@@ -757,9 +757,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * refers to the value of [[formName()]], and `index` the index of the model in the `$models` array.
      * If [[formName()]] is empty, `$data[index]` will be used to populate each model.
      * The data being populated to each model is subject to the safety check by [[setAttributes()]].
-     * @param  array   $models the models to be populated. Note that all models should have the same class.
-     * @param  array   $data   the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
-     *                         supplied by end user.
+     * @param array $models the models to be populated. Note that all models should have the same class.
+     * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
+     * supplied by end user.
      * @return boolean whether the model is successfully populated with some data.
      */
     public static function loadMultiple($models, $data)
@@ -790,12 +790,12 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * Validates multiple models.
      * This method will validate every model. The models being validated may
      * be of the same or different types.
-     * @param  array   $models     the models to be validated
-     * @param  array   $attributes list of attributes that should be validated.
-     *                             If this parameter is empty, it means any attribute listed in the applicable
-     *                             validation rules should be validated.
+     * @param array $models the models to be validated
+     * @param array $attributes list of attributes that should be validated.
+     * If this parameter is empty, it means any attribute listed in the applicable
+     * validation rules should be validated.
      * @return boolean whether all models are valid. False will be returned if one
-     *                            or multiple models have validation error.
+     * or multiple models have validation error.
      */
     public static function validateMultiple($models, $attributes = null)
     {
@@ -864,10 +864,10 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * Determines which fields can be returned by [[toArray()]].
      * This method will check the requested fields against those declared in [[fields()]] and [[extraFields()]]
      * to determine which fields can be returned.
-     * @param  array $fields the fields being requested for exporting
-     * @param  array $expand the additional fields being requested for exporting
+     * @param array $fields the fields being requested for exporting
+     * @param array $expand the additional fields being requested for exporting
      * @return array the list of fields to be exported. The array keys are the field names, and the array values
-     *                      are the corresponding object property names or PHP callables returning the field values.
+     * are the corresponding object property names or PHP callables returning the field values.
      */
     protected function resolveFields(array $fields, array $expand)
     {
@@ -914,7 +914,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * Returns whether there is an element at the specified offset.
      * This method is required by the SPL interface `ArrayAccess`.
      * It is implicitly called when you use something like `isset($model[$offset])`.
-     * @param  mixed   $offset the offset to check on
+     * @param mixed $offset the offset to check on
      * @return boolean
      */
     public function offsetExists($offset)
@@ -926,7 +926,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * Returns the element at the specified offset.
      * This method is required by the SPL interface `ArrayAccess`.
      * It is implicitly called when you use something like `$value = $model[$offset];`.
-     * @param  mixed $offset the offset to retrieve element.
+     * @param mixed $offset the offset to retrieve element.
      * @return mixed the element at the offset, null if no element is found at the offset
      */
     public function offsetGet($offset)
@@ -939,7 +939,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * This method is required by the SPL interface `ArrayAccess`.
      * It is implicitly called when you use something like `$model[$offset] = $item;`.
      * @param integer $offset the offset to set element
-     * @param mixed   $item   the element value
+     * @param mixed $item the element value
      */
     public function offsetSet($offset, $item)
     {

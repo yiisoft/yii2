@@ -21,14 +21,14 @@ A typical usage of DetailView is as follows:
  
 ```php
 echo DetailView::widget([
-	'model' => $model,
-	'attributes' => [
-		'title',             // title attribute (in plain text)
-		'description:html',  // description attribute in HTML
-		[                    // the owner name of the model
-			'label' => 'Owner',
-			'value' => $model->owner->name,
-		],
-	],
+    'model' => $model,
+    'attributes' => [
+        'title',             // title attribute (in plain text)
+        'description:html',  // description attribute in HTML
+        [                    // the owner name of the model
+            'label' => 'Owner',
+            'value' => $model->owner->name,
+        ],
+    ],
 ]);
 ```

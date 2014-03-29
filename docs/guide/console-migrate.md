@@ -42,15 +42,15 @@ file named `m101129_185401_create_news_table.php`. This file will be created wit
 ```php
 class m101129_185401_create_news_table extends \yii\db\Migration
 {
-	public function up()
-	{
-	}
+    public function up()
+    {
+    }
 
-	public function down()
-	{
-		echo "m101129_185401_create_news_table cannot be reverted.\n";
-		return false;
-	}
+    public function down()
+    {
+        echo "m101129_185401_create_news_table cannot be reverted.\n";
+        return false;
+    }
 }
 ```
 
@@ -78,19 +78,19 @@ use yii\db\Schema;
 
 class m101129_185401_create_news_table extends \yii\db\Migration
 {
-	public function up()
-	{
-		$this->createTable('tbl_news', [
-			'id' => 'pk',
-			'title' => Schema::TYPE_STRING . ' NOT NULL',
-			'content' => Schema::TYPE_TEXT,
-		]);
-	}
+    public function up()
+    {
+        $this->createTable('tbl_news', [
+            'id' => 'pk',
+            'title' => Schema::TYPE_STRING . ' NOT NULL',
+            'content' => Schema::TYPE_TEXT,
+        ]);
+    }
 
-	public function down()
-	{
-		$this->dropTable('tbl_news');
-	}
+    public function down()
+    {
+        $this->dropTable('tbl_news');
+    }
 
 }
 ```
@@ -122,26 +122,26 @@ use yii\db\Schema;
 
 class m101129_185401_create_news_table extends \yii\db\Migration
 {
-	public function safeUp()
-	{
-		$this->createTable('tbl_news', [
-			'id' => 'pk',
-			'title' => Schema::TYPE_STRING . ' NOT NULL',
-			'content' => Schema::TYPE_TEXT,
-		]);
+    public function safeUp()
+    {
+        $this->createTable('tbl_news', [
+            'id' => 'pk',
+            'title' => Schema::TYPE_STRING . ' NOT NULL',
+            'content' => Schema::TYPE_TEXT,
+        ]);
 
-		$this->createTable('tbl_user', [
-			'id' => 'pk',
-			'login' => Schema::TYPE_STRING . ' NOT NULL',
-			'password' => Schema::TYPE_STRING . ' NOT NULL',
-		]);
-	}
+        $this->createTable('tbl_user', [
+            'id' => 'pk',
+            'login' => Schema::TYPE_STRING . ' NOT NULL',
+            'password' => Schema::TYPE_STRING . ' NOT NULL',
+        ]);
+    }
 
-	public function safeDown()
-	{
-		$this->dropTable('tbl_news');
-		$this->dropTable('tbl_user');
-	}
+    public function safeDown()
+    {
+        $this->dropTable('tbl_news');
+        $this->dropTable('tbl_user');
+    }
 
 }
 ```

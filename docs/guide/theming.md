@@ -16,12 +16,12 @@ be in your application config file:
 
 ```php
 'components' => [
-	'view' => [
-		'theme' => [
-			'pathMap' => ['@app/views' => '@webroot/themes/basic'],
-			'baseUrl' => '@web/themes/basic',
-		],
-	],
+    'view' => [
+        'theme' => [
+            'pathMap' => ['@app/views' => '@webroot/themes/basic'],
+            'baseUrl' => '@web/themes/basic',
+        ],
+    ],
 ],
 ```
 
@@ -36,10 +36,10 @@ It is possible to map a single path to multiple paths. For example,
 
 ```php
 'pathMap' => [
-	'/web/views' => [
-		'/web/themes/christmas',
-		'/web/themes/basic',
-	],
+    '/web/views' => [
+        '/web/themes/christmas',
+        '/web/themes/basic',
+    ],
 ]
 ```
 

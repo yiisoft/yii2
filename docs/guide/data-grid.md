@@ -19,13 +19,13 @@ use yii\data\GridView;
 use yii\data\ActiveDataProvider;
 
 $dataProvider = new ActiveDataProvider([
-	'query' => Post::find(),
-	'pagination' => [
-		'pageSize' => 20,
-	],
+    'query' => Post::find(),
+    'pagination' => [
+        'pageSize' => 20,
+    ],
 ]);
 echo GridView::widget([
-	'dataProvider' => $dataProvider,
+    'dataProvider' => $dataProvider,
 ]);
 ```
 
@@ -41,21 +41,21 @@ These are defined in the columns part of GridView config like the following:
 
 ```php
 echo GridView::widget([
-	'dataProvider' => $dataProvider,
-	'columns' => [
-		['class' => 'yii\grid\SerialColumn'],
-		// A simple column defined by the data contained in $dataProvider.
-		// Data from model's column1 will be used.
-		'id',
-		'username',
-		// More complex one.
-		[
-			'class' => 'yii\grid\DataColumn', // can be omitted, default
-			'value' => function ($data) {
-				return $data->name;
-			},
-		],
-	],
+    'dataProvider' => $dataProvider,
+    'columns' => [
+        ['class' => 'yii\grid\SerialColumn'],
+        // A simple column defined by the data contained in $dataProvider.
+        // Data from model's column1 will be used.
+        'id',
+        'username',
+        // More complex one.
+        [
+            'class' => 'yii\grid\DataColumn', // can be omitted, default
+            'value' => function ($data) {
+                return $data->name;
+            },
+        ],
+    ],
 ]);
 ```
 
@@ -67,12 +67,12 @@ Grid columns could be customized by using different column classes:
 
 ```php
 echo GridView::widget([
-	'dataProvider' => $dataProvider,
-	'columns' => [
-		[
-			'class' => 'yii\grid\SerialColumn', // <-- here
-			// you may configure additional properties here
-		],
+    'dataProvider' => $dataProvider,
+    'columns' => [
+        [
+            'class' => 'yii\grid\SerialColumn', // <-- here
+            // you may configure additional properties here
+        ],
 ```
 
 Additionally to column classes provided by Yii that we'll review below you can create your own column classes.
@@ -87,7 +87,7 @@ grid columns.
 
 ```php
 function ($model, $key, $index, $grid) {
-	return 'a string';
+    return 'a string';
 }
 ```
 
@@ -111,12 +111,12 @@ Action column displays action buttons such as update or delete for each row.
 
 ```php
 echo GridView::widget([
-	'dataProvider' => $dataProvider,
-	'columns' => [
-		[
-			'class' => 'yii\grid\ActionColumn',
-			// you may configure additional properties here
-		],
+    'dataProvider' => $dataProvider,
+    'columns' => [
+        [
+            'class' => 'yii\grid\ActionColumn',
+            // you may configure additional properties here
+        ],
 ```
 
 Available properties you can configure are:
@@ -133,7 +133,7 @@ Available properties you can configure are:
 
 ```php
 function ($url, $model) {
-	// return the button HTML code
+    // return the button HTML code
 }
 ```
 
@@ -152,14 +152,14 @@ To add a CheckboxColumn to the [[yii\grid\GridView]], add it to the [[yii\grid\G
  
 ```php
 echo GridView::widget([
-	'dataProvider' => $dataProvider,
-	'columns' => [
-		// ...
-		[
-			'class' => 'yii\grid\CheckboxColumn',
-			// you may configure additional properties here
-		],
-	],
+    'dataProvider' => $dataProvider,
+    'columns' => [
+        // ...
+        [
+            'class' => 'yii\grid\CheckboxColumn',
+            // you may configure additional properties here
+        ],
+    ],
 ```
 
 Users may click on the checkboxes to select rows of the grid. The selected rows may be obtained by calling the following
@@ -178,9 +178,9 @@ Usage is as simple as the following:
 
 ```php
 echo GridView::widget([
-	'dataProvider' => $dataProvider,
-	'columns' => [
-		['class' => 'yii\grid\SerialColumn'], // <-- here
+    'dataProvider' => $dataProvider,
+    'columns' => [
+        ['class' => 'yii\grid\SerialColumn'], // <-- here
 ```
 
 Sorting data

@@ -122,9 +122,9 @@ class Breadcrumbs extends Widget
 
     /**
      * Renders a single breadcrumb item.
-     * @param  array                  $link     the link to be rendered. It must contain the "label" element. The "url" element is optional.
-     * @param  string                 $template the template to be used to rendered the link. The token "{link}" will be replaced by the link.
-     * @return string                 the rendering result
+     * @param array $link the link to be rendered. It must contain the "label" element. The "url" element is optional.
+     * @param string $template the template to be used to rendered the link. The token "{link}" will be replaced by the link.
+     * @return string the rendering result
      * @throws InvalidConfigException if `$link` does not have "label" element.
      */
     protected function renderItem($link, $template)

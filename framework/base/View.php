@@ -129,12 +129,12 @@ class View extends Component
      *   The actual view file will be looked for under the [[Module::viewPath|view path]] of [[module]].
      * - resolving any other format will be performed via [[ViewContext::findViewFile()]].
      *
-     * @param  string                $view    the view name. Please refer to [[Controller::findViewFile()]]
-     *                                        and [[Widget::findViewFile()]] on how to specify this parameter.
-     * @param  array                 $params  the parameters (name-value pairs) that will be extracted and made available in the view file.
-     * @param  object                $context the context that the view should use for rendering the view. If null,
-     *                                        existing [[context]] will be used.
-     * @return string                the rendering result
+     * @param string $view the view name. Please refer to [[Controller::findViewFile()]]
+     * and [[Widget::findViewFile()]] on how to specify this parameter.
+     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @param object $context the context that the view should use for rendering the view. If null,
+     * existing [[context]] will be used.
+     * @return string the rendering result
      * @throws InvalidParamException if the view cannot be resolved or the view file does not exist.
      * @see renderFile()
      */
@@ -147,11 +147,11 @@ class View extends Component
 
     /**
      * Finds the view file based on the given view name.
-     * @param  string               $view    the view name or the path alias of the view file. Please refer to [[render()]]
-     *                                       on how to specify this parameter.
-     * @param  object               $context the context that the view should be used to search the view file. If null,
-     *                                       existing [[context]] will be used.
-     * @return string               the view file path. Note that the file may not exist.
+     * @param string $view the view name or the path alias of the view file. Please refer to [[render()]]
+     * on how to specify this parameter.
+     * @param object $context the context that the view should be used to search the view file. If null,
+     * existing [[context]] will be used.
+     * @return string the view file path. Note that the file may not exist.
      * @throws InvalidCallException if [[context]] is required and invalid.
      */
     protected function findViewFile($view, $context = null)
@@ -204,11 +204,11 @@ class View extends Component
      * Otherwise, it will simply include the view file as a normal PHP file, capture its output and
      * return it as a string.
      *
-     * @param  string                $viewFile the view file. This can be either a file path or a path alias.
-     * @param  array                 $params   the parameters (name-value pairs) that will be extracted and made available in the view file.
-     * @param  object                $context  the context that the view should use for rendering the view. If null,
-     *                                         existing [[context]] will be used.
-     * @return string                the rendering result
+     * @param string $viewFile the view file. This can be either a file path or a path alias.
+     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @param object $context the context that the view should use for rendering the view. If null,
+     * existing [[context]] will be used.
+     * @return string the rendering result
      * @throws InvalidParamException if the view file does not exist
      */
     public function renderFile($viewFile, $params = [], $context = null)
@@ -279,7 +279,7 @@ class View extends Component
      * The default implementation will trigger the [[EVENT_AFTER_RENDER]] event.
      * If you override this method, make sure you call the parent implementation first.
      * @param string $output the rendering result of the view file. Updates to this parameter
-     *                       will be passed back and returned by [[renderFile()]].
+     * will be passed back and returned by [[renderFile()]].
      */
     public function afterRender(&$output)
     {
@@ -300,8 +300,8 @@ class View extends Component
      *
      * This method should mainly be called by view renderer or [[renderFile()]].
      *
-     * @param  string $_file_   the view file.
-     * @param  array  $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @param string $_file_ the view file.
+     * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @return string the rendering result
      */
     public function renderPhpFile($_file_, $_params_ = [])
@@ -319,9 +319,9 @@ class View extends Component
      * This method is mainly used together with content caching (fragment caching and page caching)
      * when some portions of the content (called *dynamic content*) should not be cached.
      * The dynamic content must be returned by some PHP statements.
-     * @param  string $statements the PHP statements for generating the dynamic content.
+     * @param string $statements the PHP statements for generating the dynamic content.
      * @return string the placeholder of the dynamic content, or the dynamic content if there is no
-     *                           active content cache currently.
+     * active content cache currently.
      */
     public function renderDynamic($statements)
     {
@@ -340,7 +340,7 @@ class View extends Component
      * Adds a placeholder for dynamic content.
      * This method is internally used.
      * @param string $placeholder the placeholder name
-     * @param string $statements  the PHP statements for generating the dynamic content
+     * @param string $statements the PHP statements for generating the dynamic content
      */
     public function addDynamicPlaceholder($placeholder, $statements)
     {
@@ -353,8 +353,8 @@ class View extends Component
     /**
      * Evaluates the given PHP statements.
      * This method is mainly used internally to implement dynamic content feature.
-     * @param  string $statements the PHP statements to be evaluated.
-     * @return mixed  the return value of the PHP statements.
+     * @param string $statements the PHP statements to be evaluated.
+     * @return mixed the return value of the PHP statements.
      */
     public function evaluateDynamicContent($statements)
     {
@@ -364,10 +364,10 @@ class View extends Component
     /**
      * Begins recording a block.
      * This method is a shortcut to beginning [[Block]]
-     * @param  string  $id            the block ID.
-     * @param  boolean $renderInPlace whether to render the block content in place.
-     *                                Defaults to false, meaning the captured block will not be displayed.
-     * @return Block   the Block widget instance
+     * @param string $id the block ID.
+     * @param boolean $renderInPlace whether to render the block content in place.
+     * Defaults to false, meaning the captured block will not be displayed.
+     * @return Block the Block widget instance
      */
     public function beginBlock($id, $renderInPlace = false)
     {
@@ -397,9 +397,9 @@ class View extends Component
      * <?php $this->endContent(); ?>
      * ~~~
      *
-     * @param  string           $viewFile the view file that will be used to decorate the content enclosed by this widget.
-     *                                    This can be specified as either the view file path or path alias.
-     * @param  array            $params   the variables (name => value) to be extracted and made available in the decorative view.
+     * @param string $viewFile the view file that will be used to decorate the content enclosed by this widget.
+     * This can be specified as either the view file path or path alias.
+     * @param array $params the variables (name => value) to be extracted and made available in the decorative view.
      * @return ContentDecorator the ContentDecorator widget instance
      * @see ContentDecorator
      */
@@ -434,10 +434,10 @@ class View extends Component
      * }
      * ~~~
      *
-     * @param  string  $id         a unique ID identifying the fragment to be cached.
-     * @param  array   $properties initial property values for [[FragmentCache]]
+     * @param string $id a unique ID identifying the fragment to be cached.
+     * @param array $properties initial property values for [[FragmentCache]]
      * @return boolean whether you should generate the content for caching.
-     *                            False if the cached version is available.
+     * False if the cached version is available.
      */
     public function beginCache($id, $properties = [])
     {

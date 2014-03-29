@@ -120,10 +120,10 @@ class Object
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when executing `$value = $object->property;`.
-     * @param  string                   $name the property name
-     * @return mixed                    the property value
+     * @param string $name the property name
+     * @return mixed the property value
      * @throws UnknownPropertyException if the property is not defined
-     * @throws InvalidCallException     if the property is write-only
+     * @throws InvalidCallException if the property is write-only
      * @see __set()
      */
     public function __get($name)
@@ -143,10 +143,10 @@ class Object
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when executing `$object->property = $value;`.
-     * @param  string                   $name  the property name or the event name
-     * @param  mixed                    $value the property value
+     * @param string $name the property name or the event name
+     * @param mixed $value the property value
      * @throws UnknownPropertyException if the property is not defined
-     * @throws InvalidCallException     if the property is read-only
+     * @throws InvalidCallException if the property is read-only
      * @see __get()
      */
     public function __set($name, $value)
@@ -168,7 +168,7 @@ class Object
      * will be implicitly called when executing `isset($object->property)`.
      *
      * Note that if the property is not defined, false will be returned.
-     * @param  string  $name the property name or the event name
+     * @param string $name the property name or the event name
      * @return boolean whether the named property is set (not null).
      */
     public function __isset($name)
@@ -189,7 +189,7 @@ class Object
      *
      * Note that if the property is not defined, this method will do nothing.
      * If the property is read-only, it will throw an exception.
-     * @param  string               $name the property name
+     * @param string $name the property name
      * @throws InvalidCallException if the property is read only.
      */
     public function __unset($name)
@@ -207,10 +207,10 @@ class Object
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when an unknown method is being invoked.
-     * @param  string                 $name   the method name
-     * @param  array                  $params method parameters
+     * @param string $name the method name
+     * @param array $params method parameters
      * @throws UnknownMethodException when calling unknown method
-     * @return mixed                  the method return value
+     * @return mixed the method return value
      */
     public function __call($name, $params)
     {
@@ -225,8 +225,8 @@ class Object
      *   (in this case, property name is case-insensitive);
      * - the class has a member variable with the specified name (when `$checkVars` is true);
      *
-     * @param  string  $name      the property name
-     * @param  boolean $checkVars whether to treat member variables as properties
+     * @param string $name the property name
+     * @param boolean $checkVars whether to treat member variables as properties
      * @return boolean whether the property is defined
      * @see canGetProperty()
      * @see canSetProperty()
@@ -244,8 +244,8 @@ class Object
      *   (in this case, property name is case-insensitive);
      * - the class has a member variable with the specified name (when `$checkVars` is true);
      *
-     * @param  string  $name      the property name
-     * @param  boolean $checkVars whether to treat member variables as properties
+     * @param string $name the property name
+     * @param boolean $checkVars whether to treat member variables as properties
      * @return boolean whether the property can be read
      * @see canSetProperty()
      */
@@ -262,8 +262,8 @@ class Object
      *   (in this case, property name is case-insensitive);
      * - the class has a member variable with the specified name (when `$checkVars` is true);
      *
-     * @param  string  $name      the property name
-     * @param  boolean $checkVars whether to treat member variables as properties
+     * @param string $name the property name
+     * @param boolean $checkVars whether to treat member variables as properties
      * @return boolean whether the property can be written
      * @see canGetProperty()
      */
@@ -277,7 +277,7 @@ class Object
      *
      * The default implementation is a call to php function `method_exists()`.
      * You may override this method when you implemented the php magic method `__call()`.
-     * @param  string  $name the property name
+     * @param string $name the property name
      * @return boolean whether the property is defined
      */
     public function hasMethod($name)

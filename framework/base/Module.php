@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\di\ServiceLocator;
 
 /**
  * Module is the base class for module and application classes.
@@ -24,7 +25,6 @@ use Yii;
  * with '@') and the array values are the corresponding paths or aliases. See [[setAliases()]] for an example.
  * This property is write-only.
  * @property string $basePath The root directory of the module.
- * @property array $components The components (indexed by their IDs).
  * @property string $controllerPath The directory that contains the controller classes. This property is
  * read-only.
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
@@ -35,7 +35,7 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Module extends Component
+class Module extends ServiceLocator
 {
     /**
      * @var array custom module parameters (name => value).
@@ -88,10 +88,10 @@ class Module extends Component
     public $controllerNamespace;
     /**
      * @return string the default route of this module. Defaults to 'default'.
-     *                The route may consist of child module ID, controller ID, and/or action ID.
-     *                For example, `help`, `post/create`, `admin/post/create`.
-     *                If action ID is not given, it will take the default value as specified in
-     *                [[Controller::defaultAction]].
+     * The route may consist of child module ID, controller ID, and/or action ID.
+     * For example, `help`, `post/create`, `admin/post/create`.
+     * If action ID is not given, it will take the default value as specified in
+     * [[Controller::defaultAction]].
      */
     public $defaultRoute = 'default';
     /**
@@ -110,54 +110,19 @@ class Module extends Component
      * @var array child modules of this module
      */
     private $_modules = [];
-    /**
-     * @var array components registered under this module
-     */
-    private $_components = [];
+
 
     /**
      * Constructor.
-     * @param string $id     the ID of this module
+     * @param string $id the ID of this module
      * @param Module $parent the parent module (if any)
-     * @param array  $config name-value pairs that will be used to initialize the object properties
+     * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($id, $parent = null, $config = [])
     {
         $this->id = $id;
         $this->module = $parent;
         parent::__construct($config);
-    }
-
-    /**
-     * Getter magic method.
-     * This method is overridden to support accessing components
-     * like reading module properties.
-     * @param  string $name component or property name
-     * @return mixed  the named property value
-     */
-    public function __get($name)
-    {
-        if ($this->hasComponent($name)) {
-            return $this->getComponent($name);
-        } else {
-            return parent::__get($name);
-        }
-    }
-
-    /**
-     * Checks if a property value is null.
-     * This method overrides the parent implementation by checking
-     * if the named component is loaded.
-     * @param  string  $name the property name or the event name
-     * @return boolean whether the property value is null
-     */
-    public function __isset($name)
-    {
-        if ($this->hasComponent($name)) {
-            return $this->getComponent($name) !== null;
-        } else {
-            return parent::__isset($name);
-        }
     }
 
     /**
@@ -207,7 +172,7 @@ class Module extends Component
     /**
      * Sets the root directory of the module.
      * This method can only be invoked at the beginning of the constructor.
-     * @param  string                $path the root directory of the module. This can be either a directory name or a path alias.
+     * @param string $path the root directory of the module. This can be either a directory name or a path alias.
      * @throws InvalidParamException if the directory does not exist.
      */
     public function setBasePath($path)
@@ -225,7 +190,7 @@ class Module extends Component
      * Returns the directory that contains the controller classes according to [[controllerNamespace]].
      * Note that in order for this method to return a value, you must define
      * an alias for the root namespace of [[controllerNamespace]].
-     * @return string                the directory that contains the controller classes.
+     * @return string the directory that contains the controller classes.
      * @throws InvalidParamException if there is no alias defined for the root namespace of [[controllerNamespace]].
      */
     public function getControllerPath()
@@ -248,7 +213,7 @@ class Module extends Component
 
     /**
      * Sets the directory that contains the view files.
-     * @param  string                $path the root directory of view files.
+     * @param string $path the root directory of view files.
      * @throws InvalidParamException if the directory is invalid
      */
     public function setViewPath($path)
@@ -271,7 +236,7 @@ class Module extends Component
 
     /**
      * Sets the directory that contains the layout files.
-     * @param  string                $path the root directory of layout files.
+     * @param string $path the root directory of layout files.
      * @throws InvalidParamException if the directory is invalid
      */
     public function setLayoutPath($path)
@@ -287,8 +252,8 @@ class Module extends Component
      * (must start with '@') and the array values are the corresponding paths or aliases.
      * See [[setAliases()]] for an example.
      * @param array $aliases list of path aliases to be defined. The array keys are alias names
-     *                       (must start with '@') and the array values are the corresponding paths or aliases.
-     *                       For example,
+     * (must start with '@') and the array values are the corresponding paths or aliases.
+     * For example,
      *
      * ~~~
      * [
@@ -307,9 +272,9 @@ class Module extends Component
     /**
      * Checks whether the child module of the specified ID exists.
      * This method supports checking the existence of both child and grand child modules.
-     * @param  string  $id module ID. For grand child modules, use ID path relative to this module (e.g. `admin/content`).
+     * @param string $id module ID. For grand child modules, use ID path relative to this module (e.g. `admin/content`).
      * @return boolean whether the named module exists. Both loaded and unloaded modules
-     *                    are considered.
+     * are considered.
      */
     public function hasModule($id)
     {
@@ -326,9 +291,9 @@ class Module extends Component
     /**
      * Retrieves the child module of the specified ID.
      * This method supports retrieving both child modules and grand child modules.
-     * @param  string      $id   module ID (case-sensitive). To retrieve grand child modules,
-     *                           use ID path relative to this module (e.g. `admin/content`).
-     * @param  boolean     $load whether to load the module if it is not yet loaded.
+     * @param string $id module ID (case-sensitive). To retrieve grand child modules,
+     * use ID path relative to this module (e.g. `admin/content`).
+     * @param boolean $load whether to load the module if it is not yet loaded.
      * @return Module|null the module instance, null if the module does not exist.
      * @see hasModule()
      */
@@ -350,7 +315,7 @@ class Module extends Component
                     $this->_modules[$id]['class'] = 'yii\base\Module';
                 }
 
-                return $this->_modules[$id] = Yii::createObject($this->_modules[$id], $id, $this);
+                return $this->_modules[$id] = Yii::createObject($this->_modules[$id], [$id, $this]);
             }
         }
 
@@ -359,9 +324,9 @@ class Module extends Component
 
     /**
      * Adds a sub-module to this module.
-     * @param string            $id     module ID
+     * @param string $id module ID
      * @param Module|array|null $module the sub-module to be added to this module. This can
-     *                                  be one of the followings:
+     * be one of the followings:
      *
      * - a [[Module]] object
      * - a configuration array: when [[getModule()]] is called initially, the array
@@ -379,10 +344,10 @@ class Module extends Component
 
     /**
      * Returns the sub-modules in this module.
-     * @param  boolean $loadedOnly whether to return the loaded sub-modules only. If this is set false,
-     *                             then all sub-modules registered in this module will be returned, whether they are loaded or not.
-     *                             Loaded modules will be returned as objects, while unloaded modules as configuration arrays.
-     * @return array   the modules (indexed by their IDs)
+     * @param boolean $loadedOnly whether to return the loaded sub-modules only. If this is set false,
+     * then all sub-modules registered in this module will be returned, whether they are loaded or not.
+     * Loaded modules will be returned as objects, while unloaded modules as configuration arrays.
+     * @return array the modules (indexed by their IDs)
      */
     public function getModules($loadedOnly = false)
     {
@@ -432,126 +397,14 @@ class Module extends Component
     }
 
     /**
-     * Checks whether the named component exists.
-     * @param  string  $id component ID
-     * @return boolean whether the named component exists. Both loaded and unloaded components
-     *                    are considered.
-     */
-    public function hasComponent($id)
-    {
-        return isset($this->_components[$id]);
-    }
-
-    /**
-     * Retrieves the named component.
-     * @param  string         $id   component ID (case-sensitive)
-     * @param  boolean        $load whether to load the component if it is not yet loaded.
-     * @return Component|null the component instance, null if the component does not exist.
-     * @see hasComponent()
-     */
-    public function getComponent($id, $load = true)
-    {
-        if (isset($this->_components[$id])) {
-            if ($this->_components[$id] instanceof Object) {
-                return $this->_components[$id];
-            } elseif ($load) {
-                return $this->_components[$id] = Yii::createObject($this->_components[$id]);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Registers a component with this module.
-     * @param string               $id        component ID
-     * @param Component|array|null $component the component to be registered with the module. This can
-     *                                        be one of the followings:
-     *
-     * - a [[Component]] object
-     * - a configuration array: when [[getComponent()]] is called initially for this component, the array
-     *   will be used to instantiate the component via [[Yii::createObject()]].
-     * - null: the named component will be removed from the module
-     */
-    public function setComponent($id, $component)
-    {
-        if ($component === null) {
-            unset($this->_components[$id]);
-        } else {
-            $this->_components[$id] = $component;
-        }
-    }
-
-    /**
-     * Returns the registered components.
-     * @param  boolean $loadedOnly whether to return the loaded components only. If this is set false,
-     *                             then all components specified in the configuration will be returned, whether they are loaded or not.
-     *                             Loaded components will be returned as objects, while unloaded components as configuration arrays.
-     * @return array   the components (indexed by their IDs)
-     */
-    public function getComponents($loadedOnly = false)
-    {
-        if ($loadedOnly) {
-            $components = [];
-            foreach ($this->_components as $component) {
-                if ($component instanceof Component) {
-                    $components[] = $component;
-                }
-            }
-
-            return $components;
-        } else {
-            return $this->_components;
-        }
-    }
-
-    /**
-     * Registers a set of components in this module.
-     *
-     * Each component should be specified as a name-value pair, where
-     * name refers to the ID of the component and value the component or a configuration
-     * array that can be used to create the component. In the latter case, [[Yii::createObject()]]
-     * will be used to create the component.
-     *
-     * If a new component has the same ID as an existing one, the existing one will be overwritten silently.
-     *
-     * The following is an example for setting two components:
-     *
-     * ~~~
-     * [
-     *     'db' => [
-     *         'class' => 'yii\db\Connection',
-     *         'dsn' => 'sqlite:path/to/file.db',
-     *     ],
-     *     'cache' => [
-     *         'class' => 'yii\caching\DbCache',
-     *         'db' => 'db',
-     *     ],
-     * ]
-     * ~~~
-     *
-     * @param array $components components (id => component configuration or instance)
-     */
-    public function setComponents($components)
-    {
-        foreach ($components as $id => $component) {
-            if (!is_object($component) && isset($this->_components[$id]['class']) && !isset($component['class'])) {
-                // set default component class
-                $component['class'] = $this->_components[$id]['class'];
-            }
-            $this->_components[$id] = $component;
-        }
-    }
-
-    /**
      * Loads components that are declared in [[preload]].
      * @throws InvalidConfigException if a component or module to be preloaded is unknown
      */
     public function preloadComponents()
     {
         foreach ($this->preload as $id) {
-            if ($this->hasComponent($id)) {
-                $this->getComponent($id);
+            if ($this->has($id)) {
+                $this->get($id);
             } elseif ($this->hasModule($id)) {
                 $this->getModule($id);
             } else {
@@ -565,9 +418,9 @@ class Module extends Component
      * This method parses the specified route and creates the corresponding child module(s), controller and action
      * instances. It then calls [[Controller::runAction()]] to run the action with the given parameters.
      * If the route is empty, the method will use [[defaultRoute]].
-     * @param  string                $route  the route that specifies the action.
-     * @param  array                 $params the parameters to be passed to the action
-     * @return mixed                 the result of the action.
+     * @param string $route the route that specifies the action.
+     * @param array $params the parameters to be passed to the action
+     * @return mixed the result of the action.
      * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully
      */
     public function runAction($route, $params = [])
@@ -605,9 +458,9 @@ class Module extends Component
      * If any of the above steps resolves into a controller, it is returned together with the rest
      * part of the route which will be treated as the action ID. Otherwise, false will be returned.
      *
-     * @param  string                 $route the route consisting of module, controller and action IDs.
-     * @return array|boolean          If the controller is created successfully, it will be returned together
-     *                                      with the requested action ID. Otherwise false will be returned.
+     * @param string $route the route consisting of module, controller and action IDs.
+     * @return array|boolean If the controller is created successfully, it will be returned together
+     * with the requested action ID. Otherwise false will be returned.
      * @throws InvalidConfigException if the controller class and its file do not match.
      */
     public function createController($route)
@@ -635,7 +488,7 @@ class Module extends Component
             return $module->createController($route);
         }
         if (isset($this->controllerMap[$id])) {
-            $controller = Yii::createObject($this->controllerMap[$id], $id, $this);
+            $controller = Yii::createObject($this->controllerMap[$id], [$id, $this]);
 
             return [$controller, $route];
         }
@@ -662,10 +515,10 @@ class Module extends Component
      *
      * Note that this method does not check [[modules]] or [[controllerMap]].
      *
-     * @param  string                 $id the controller ID
-     * @return Controller             the newly created controller instance, or null if the controller ID is invalid.
+     * @param string $id the controller ID
+     * @return Controller the newly created controller instance, or null if the controller ID is invalid.
      * @throws InvalidConfigException if the controller class and its file name do not match.
-     *                                   This exception is only thrown when in debug mode.
+     * This exception is only thrown when in debug mode.
      */
     public function createControllerByID($id)
     {
@@ -701,7 +554,7 @@ class Module extends Component
      * This method is invoked right before an action of this module is to be executed (after all possible filters.)
      * You may override this method to do last-minute preparation for the action.
      * Make sure you call the parent implementation so that the relevant event is triggered.
-     * @param  Action  $action the action to be executed.
+     * @param Action $action the action to be executed.
      * @return boolean whether the action should continue to be executed.
      */
     public function beforeAction($action)
@@ -714,9 +567,9 @@ class Module extends Component
      * You may override this method to do some postprocessing for the action.
      * Make sure you call the parent implementation so that the relevant event is triggered.
      * Also make sure you return the action result, whether it is processed or not.
-     * @param  Action $action the action just executed.
-     * @param  mixed  $result the action return result.
-     * @return mixed  the processed action result.
+     * @param Action $action the action just executed.
+     * @param mixed $result the action return result.
+     * @return mixed the processed action result.
      */
     public function afterAction($action, $result)
     {

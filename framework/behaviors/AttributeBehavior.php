@@ -100,7 +100,7 @@ class AttributeBehavior extends Behavior
      * Returns the value of the current attributes.
      * This method is called by [[evaluateAttributes()]]. Its return value will be assigned
      * to the attributes corresponding to the triggering event.
-     * @param  Event $event the event that triggers the current attribute updating.
+     * @param Event $event the event that triggers the current attribute updating.
      * @return mixed the attribute value
      */
     protected function getValue($event)

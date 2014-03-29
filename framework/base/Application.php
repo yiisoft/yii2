@@ -14,7 +14,8 @@ use yii\web\HttpException;
 /**
  * Application is the base class for all application classes.
  *
- * @property \yii\rbac\Manager $authManager The auth manager for this application. This property is read-only.
+ * @property \yii\rbac\Manager $authManager The auth manager for this application. Null is returned if auth
+ * manager is not configured. This property is read-only.
  * @property string $basePath The root directory of the application.
  * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
  * This property is read-only.
@@ -133,8 +134,9 @@ abstract class Application extends Module
      */
     public $extensions = [];
     /**
-     * @var array list of bootstrap classes. A bootstrap class must have a public static method named
-     * `bootstrap()`. The method will be called during [[init()]] for every bootstrap class.
+     * @var array list of bootstrap classes or their configurations. A bootstrap class must implement
+     * [[BootstrapInterface]]. The [[BootstrapInterface::bootstrap()]] method of each bootstrap class
+     * will be invoked at the beginning of [[init()]].
      */
     public $bootstrap = [];
     /**
@@ -150,8 +152,8 @@ abstract class Application extends Module
 
     /**
      * Constructor.
-     * @param  array                  $config name-value pairs that will be used to initialize the object properties.
-     *                                        Note that the configuration must contain both [[id]] and [[basePath]].
+     * @param array $config name-value pairs that will be used to initialize the object properties.
+     * Note that the configuration must contain both [[id]] and [[basePath]].
      * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
      */
     public function __construct($config = [])
@@ -160,7 +162,6 @@ abstract class Application extends Module
 
         $this->preInit($config);
         $this->registerErrorHandlers();
-        $this->registerCoreComponents();
 
         Component::__construct($config);
     }
@@ -170,7 +171,7 @@ abstract class Application extends Module
      * This method is called at the beginning of the application constructor.
      * It initializes several important application properties.
      * If you override this method, please make sure you call the parent implementation.
-     * @param  array                  $config the application configuration
+     * @param array $config the application configuration
      * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
      */
     public function preInit(&$config)
@@ -206,6 +207,15 @@ abstract class Application extends Module
         } elseif (!ini_get('date.timezone')) {
             $this->setTimeZone('UTC');
         }
+
+        // merge core components with custom components
+        foreach ($this->coreComponents() as $id => $component) {
+            if (!isset($config['components'][$id])) {
+                $config['components'][$id] = $component;
+            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['class'])) {
+                $config['components'][$id]['class'] = $component['class'];
+            }
+        }
     }
 
     /**
@@ -215,8 +225,9 @@ abstract class Application extends Module
     {
         $this->initExtensions($this->extensions);
         foreach ($this->bootstrap as $class) {
-            /** @var Extension $class */
-            $class::bootstrap();
+            /** @var BootstrapInterface $bootstrap */
+            $bootstrap = Yii::createObject($class);
+            $bootstrap->bootstrap($this);
         }
         parent::init();
     }
@@ -224,7 +235,7 @@ abstract class Application extends Module
     /**
      * Initializes the extensions.
      * @param array $extensions the extensions to be initialized. Please refer to [[extensions]]
-     *                          for the structure of the extension array.
+     * for the structure of the extension array.
      */
     protected function initExtensions($extensions)
     {
@@ -235,9 +246,9 @@ abstract class Application extends Module
                 }
             }
             if (isset($extension['bootstrap'])) {
-                /** @var Extension $class */
-                $class = $extension['bootstrap'];
-                $class::bootstrap();
+                /** @var BootstrapInterface $bootstrap */
+                $bootstrap = Yii::createObject($extension['bootstrap']);
+                $bootstrap->bootstrap($this);
             }
         }
     }
@@ -248,7 +259,7 @@ abstract class Application extends Module
      */
     public function preloadComponents()
     {
-        $this->getComponent('log');
+        $this->get('log');
         parent::preloadComponents();
     }
 
@@ -281,7 +292,7 @@ abstract class Application extends Module
     /**
      * Sets the root directory of the application and the @app alias.
      * This method can only be invoked at the beginning of the constructor.
-     * @param  string                $path the root directory of the application.
+     * @param string $path the root directory of the application.
      * @property string the root directory of the application.
      * @throws InvalidParamException if the directory does not exist.
      */
@@ -312,7 +323,7 @@ abstract class Application extends Module
      * This method should return an instance of [[Response]] or its child class
      * which represents the handling result of the request.
      *
-     * @param  Request  $request the request to be handled
+     * @param Request $request the request to be handled
      * @return Response the resulting response
      */
     abstract public function handleRequest($request);
@@ -322,7 +333,7 @@ abstract class Application extends Module
     /**
      * Returns the directory that stores runtime files.
      * @return string the directory that stores runtime files.
-     *                Defaults to the "runtime" subdirectory under [[basePath]].
+     * Defaults to the "runtime" subdirectory under [[basePath]].
      */
     public function getRuntimePath()
     {
@@ -348,7 +359,7 @@ abstract class Application extends Module
     /**
      * Returns the directory that stores vendor files.
      * @return string the directory that stores vendor files.
-     *                Defaults to "vendor" directory under [[basePath]].
+     * Defaults to "vendor" directory under [[basePath]].
      */
     public function getVendorPath()
     {
@@ -400,7 +411,7 @@ abstract class Application extends Module
      */
     public function getDb()
     {
-        return $this->getComponent('db');
+        return $this->get('db');
     }
 
     /**
@@ -409,7 +420,7 @@ abstract class Application extends Module
      */
     public function getLog()
     {
-        return $this->getComponent('log');
+        return $this->get('log');
     }
 
     /**
@@ -418,7 +429,7 @@ abstract class Application extends Module
      */
     public function getErrorHandler()
     {
-        return $this->getComponent('errorHandler');
+        return $this->get('errorHandler');
     }
 
     /**
@@ -427,7 +438,7 @@ abstract class Application extends Module
      */
     public function getCache()
     {
-        return $this->getComponent('cache');
+        return $this->get('cache', false);
     }
 
     /**
@@ -436,7 +447,7 @@ abstract class Application extends Module
      */
     public function getFormatter()
     {
-        return $this->getComponent('formatter');
+        return $this->get('formatter');
     }
 
     /**
@@ -445,7 +456,7 @@ abstract class Application extends Module
      */
     public function getRequest()
     {
-        return $this->getComponent('request');
+        return $this->get('request');
     }
 
     /**
@@ -454,7 +465,7 @@ abstract class Application extends Module
      */
     public function getView()
     {
-        return $this->getComponent('view');
+        return $this->get('view');
     }
 
     /**
@@ -463,7 +474,7 @@ abstract class Application extends Module
      */
     public function getUrlManager()
     {
-        return $this->getComponent('urlManager');
+        return $this->get('urlManager');
     }
 
     /**
@@ -472,7 +483,7 @@ abstract class Application extends Module
      */
     public function getI18n()
     {
-        return $this->getComponent('i18n');
+        return $this->get('i18n');
     }
 
     /**
@@ -481,25 +492,26 @@ abstract class Application extends Module
      */
     public function getMail()
     {
-        return $this->getComponent('mail');
+        return $this->get('mail');
     }
 
     /**
      * Returns the auth manager for this application.
      * @return \yii\rbac\Manager the auth manager for this application.
+     * Null is returned if auth manager is not configured.
      */
     public function getAuthManager()
     {
-        return $this->getComponent('authManager');
+        return $this->get('authManager', false);
     }
 
     /**
-     * Registers the core application components.
-     * @see setComponents
+     * Returns the core application components.
+     * @see set
      */
-    public function registerCoreComponents()
+    public function coreComponents()
     {
-        $this->setComponents([
+        return [
             'log' => ['class' => 'yii\log\Logger'],
             'errorHandler' => ['class' => 'yii\base\ErrorHandler'],
             'formatter' => ['class' => 'yii\base\Formatter'],
@@ -507,7 +519,7 @@ abstract class Application extends Module
             'mail' => ['class' => 'yii\swiftmailer\Mailer'],
             'urlManager' => ['class' => 'yii\web\UrlManager'],
             'view' => ['class' => 'yii\web\View'],
-        ]);
+        ];
     }
 
     /**
@@ -557,10 +569,10 @@ abstract class Application extends Module
      *
      * This method is used as a PHP error handler. It will simply raise an `ErrorException`.
      *
-     * @param integer $code    the level of the error raised
-     * @param string  $message the error message
-     * @param string  $file    the filename that the error was raised in
-     * @param integer $line    the line number the error was raised at
+     * @param integer $code the level of the error raised
+     * @param string $message the error message
+     * @param string $file the filename that the error was raised in
+     * @param integer $line the line number the error was raised at
      *
      * @throws ErrorException
      */
@@ -627,8 +639,8 @@ abstract class Application extends Module
 
     /**
      * Renders an exception without using rich format.
-     * @param  \Exception $exception the exception to be rendered.
-     * @return string     the rendering result
+     * @param \Exception $exception the exception to be rendered.
+     * @return string the rendering result
      */
     public function renderException($exception)
     {

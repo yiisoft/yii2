@@ -13,47 +13,47 @@ use yii\base\Model;
 
 class LoginForm extends Model
 {
-	public $username;
-	public $password;
+    public $username;
+    public $password;
 
-	/**
-	 * @return array the validation rules.
-	 */
-	public function rules()
-	{
-		return [
-			// username and password are both required
-			[['username', 'password'], 'required'],
-			// password is validated by validatePassword()
-			['password', 'validatePassword'],
-		];
-	}
+    /**
+     * @return array the validation rules.
+     */
+    public function rules()
+    {
+        return [
+            // username and password are both required
+            [['username', 'password'], 'required'],
+            // password is validated by validatePassword()
+            ['password', 'validatePassword'],
+        ];
+    }
 
-	/**
-	 * Validates the password.
-	 * This method serves as the inline validation for password.
-	 */
-	public function validatePassword()
-	{
-		$user = User::findByUsername($this->username);
-		if (!$user || !$user->validatePassword($this->password)) {
-			$this->addError('password', 'Incorrect username or password.');
-		}
-	}
+    /**
+     * Validates the password.
+     * This method serves as the inline validation for password.
+     */
+    public function validatePassword()
+    {
+        $user = User::findByUsername($this->username);
+        if (!$user || !$user->validatePassword($this->password)) {
+            $this->addError('password', 'Incorrect username or password.');
+        }
+    }
 
-	/**
-	 * Logs in a user using the provided username and password.
-	 * @return boolean whether the user is logged in successfully
-	 */
-	public function login()
-	{
-		if ($this->validate()) {
-			$user = User::findByUsername($this->username);
-			return true;
-		} else {
-			return false;
-		}
-	}
+    /**
+     * Logs in a user using the provided username and password.
+     * @return boolean whether the user is logged in successfully
+     */
+    public function login()
+    {
+        if ($this->validate()) {
+            $user = User::findByUsername($this->username);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 ```
 
@@ -64,17 +64,17 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 <?php $form = ActiveForm::begin([
-	'id' => 'login-form',
-	'options' => ['class' => 'form-horizontal'],
+    'id' => 'login-form',
+    'options' => ['class' => 'form-horizontal'],
 ]) ?>
-	<?= $form->field($model, 'username') ?>
-	<?= $form->field($model, 'password')->passwordInput() ?>
+    <?= $form->field($model, 'username') ?>
+    <?= $form->field($model, 'password')->passwordInput() ?>
 
-	<div class="form-group">
-		<div class="col-lg-offset-1 col-lg-11">
-			<?= Html::submitButton('Login', ['class' => 'btn btn-primary']) ?>
-		</div>
-	</div>
+    <div class="form-group">
+        <div class="col-lg-offset-1 col-lg-11">
+            <?= Html::submitButton('Login', ['class' => 'btn btn-primary']) ?>
+        </div>
+    </div>
 <?php ActiveForm::end() ?>
 ```
 
@@ -147,22 +147,22 @@ use app\models\Setting;
 
 class SettingsController extends Controller
 {
-	// ...
+    // ...
 
-	public function actionUpdate()
-	{
-		$settings = Setting::find()->indexBy('id')->all();
+    public function actionUpdate()
+    {
+        $settings = Setting::find()->indexBy('id')->all();
 
-		if (Model::loadMultiple($settings, Yii::$app->request->post()) && Model::validateMultiple($settings)) {
-			foreach ($settings as $setting) {
-				$setting->save(false);
-			}
+        if (Model::loadMultiple($settings, Yii::$app->request->post()) && Model::validateMultiple($settings)) {
+            foreach ($settings as $setting) {
+                $setting->save(false);
+            }
 
-			return $this->redirect('index');
-		}
+            return $this->redirect('index');
+        }
 
-		return $this->render('update', ['settings' => $settings]);
-	}
+        return $this->render('update', ['settings' => $settings]);
+    }
 }
 ```
 
@@ -181,7 +181,7 @@ use yii\widgets\ActiveForm;
 $form = ActiveForm::begin();
 
 foreach ($settings as $index => $setting) {
-	echo Html::encode($setting->name) . ': ' . $form->field($setting, "[$index]value");
+    echo Html::encode($setting->name) . ': ' . $form->field($setting, "[$index]value");
 }
 
 ActiveForm::end();

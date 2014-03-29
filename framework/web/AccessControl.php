@@ -95,7 +95,7 @@ class AccessControl extends ActionFilter
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * You may override this method to do last-minute preparation for the action.
-     * @param  Action  $action the action to be executed.
+     * @param Action $action the action to be executed.
      * @return boolean whether the action should continue to be executed.
      */
     public function beforeAction($action)
@@ -131,7 +131,7 @@ class AccessControl extends ActionFilter
      * Denies the access of the user.
      * The default implementation will redirect the user to the login page if he is a guest;
      * if the user is already logged, a 403 HTTP exception will be thrown.
-     * @param  User                   $user the current user
+     * @param User $user the current user
      * @throws ForbiddenHttpException if the user is already logged in.
      */
     protected function denyAccess($user)

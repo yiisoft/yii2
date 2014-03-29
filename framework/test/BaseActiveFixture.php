@@ -42,8 +42,8 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
     /**
      * Returns the AR model by the specified model name.
      * A model name is the key of the corresponding data row in [[data]].
-     * @param  string                           $name the model name.
-     * @return null|\yii\db\ActiveRecord        the AR model, or null if the model cannot be found in the database
+     * @param string $name the model name.
+     * @return null|\yii\db\ActiveRecord the AR model, or null if the model cannot be found in the database
      * @throws \yii\base\InvalidConfigException if [[modelClass]] is not set.
      */
     public function getModel($name)
@@ -88,7 +88,7 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
      * The default implementation will try to return the fixture data by including the external file specified by [[dataFile]].
      * The file should return the data array that will be stored in [[data]] after inserting into the database.
      *
-     * @return array                  the data to be put into the database
+     * @return array the data to be put into the database
      * @throws InvalidConfigException if the specified data file does not exist.
      */
     protected function getData()

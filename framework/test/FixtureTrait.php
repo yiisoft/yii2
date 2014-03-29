@@ -76,7 +76,7 @@ trait FixtureTrait
      * Loads the specified fixtures.
      * This method will call [[Fixture::load()]] for every fixture object.
      * @param Fixture[] $fixtures the fixtures to be loaded. If this parameter is not specified,
-     *                            the return value of [[getFixtures()]] will be used.
+     * the return value of [[getFixtures()]] will be used.
      */
     public function loadFixtures($fixtures = null)
     {
@@ -100,7 +100,7 @@ trait FixtureTrait
      * Unloads the specified fixtures.
      * This method will call [[Fixture::unload()]] for every fixture object.
      * @param Fixture[] $fixtures the fixtures to be loaded. If this parameter is not specified,
-     *                            the return value of [[getFixtures()]] will be used.
+     * the return value of [[getFixtures()]] will be used.
      */
     public function unloadFixtures($fixtures = null)
     {
@@ -136,7 +136,7 @@ trait FixtureTrait
 
     /**
      * Returns the named fixture.
-     * @param  string  $name the fixture name. This can be either the fixture alias name, or the class name if the alias is not used.
+     * @param string $name the fixture name. This can be either the fixture alias name, or the class name if the alias is not used.
      * @return Fixture the fixture object, or null if the named fixture does not exist.
      */
     public function getFixture($name)
@@ -152,11 +152,11 @@ trait FixtureTrait
     /**
      * Creates the specified fixture instances.
      * All dependent fixtures will also be created.
-     * @param  array                  $fixtures the fixtures to be created. You may provide fixture names or fixture configurations.
-     *                                          If this parameter is not provided, the fixtures specified in [[globalFixtures()]] and [[fixtures()]] will be created.
-     * @return Fixture[]              the created fixture instances
+     * @param array $fixtures the fixtures to be created. You may provide fixture names or fixture configurations.
+     * If this parameter is not provided, the fixtures specified in [[globalFixtures()]] and [[fixtures()]] will be created.
+     * @return Fixture[] the created fixture instances
      * @throws InvalidConfigException if fixtures are not properly configured or if a circular dependency among
-     *                                         the fixtures is detected.
+     * the fixtures is detected.
      */
     protected function createFixtures(array $fixtures)
     {

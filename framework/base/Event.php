@@ -69,11 +69,11 @@ class Event extends Object
      *
      * For more details about how to declare an event handler, please refer to [[Component::on()]].
      *
-     * @param string   $class   the fully qualified class name to which the event handler needs to attach.
-     * @param string   $name    the event name.
+     * @param string $class the fully qualified class name to which the event handler needs to attach.
+     * @param string $name the event name.
      * @param callable $handler the event handler.
-     * @param mixed    $data    the data to be passed to the event handler when the event is triggered.
-     *                          When the event handler is invoked, this data can be accessed via [[Event::data]].
+     * @param mixed $data the data to be passed to the event handler when the event is triggered.
+     * When the event handler is invoked, this data can be accessed via [[Event::data]].
      * @see off()
      */
     public static function on($class, $name, $handler, $data = null)
@@ -86,11 +86,11 @@ class Event extends Object
      *
      * This method is the opposite of [[on()]].
      *
-     * @param  string   $class   the fully qualified class name from which the event handler needs to be detached.
-     * @param  string   $name    the event name.
-     * @param  callable $handler the event handler to be removed.
-     *                           If it is null, all handlers attached to the named event will be removed.
-     * @return boolean  whether a handler is found and detached.
+     * @param string $class the fully qualified class name from which the event handler needs to be detached.
+     * @param string $name the event name.
+     * @param callable $handler the event handler to be removed.
+     * If it is null, all handlers attached to the named event will be removed.
+     * @return boolean whether a handler is found and detached.
      * @see on()
      */
     public static function off($class, $name, $handler = null)
@@ -123,9 +123,9 @@ class Event extends Object
      * Returns a value indicating whether there is any handler attached to the specified class-level event.
      * Note that this method will also check all parent classes to see if there is any handler attached
      * to the named event.
-     * @param  string|object $class the object or the fully qualified class name specifying the class-level event.
-     * @param  string        $name  the event name.
-     * @return boolean       whether there is any handler attached to the event.
+     * @param string|object $class the object or the fully qualified class name specifying the class-level event.
+     * @param string $name the event name.
+     * @return boolean whether there is any handler attached to the event.
      */
     public static function hasHandlers($class, $name)
     {
@@ -151,8 +151,8 @@ class Event extends Object
      * This method will cause invocation of event handlers that are attached to the named event
      * for the specified class and all its parent classes.
      * @param string|object $class the object or the fully qualified class name specifying the class-level event.
-     * @param string        $name  the event name.
-     * @param Event         $event the event parameter. If not set, a default [[Event]] object will be created.
+     * @param string $name the event name.
+     * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
      */
     public static function trigger($class, $name, $event = null)
     {

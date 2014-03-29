@@ -37,8 +37,8 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
     /**
      * Constructor.
      * @param array $cookies the cookies that this collection initially contains. This should be
-     *                       an array of name-value pairs.s
-     * @param array $config  name-value pairs that will be used to initialize the object properties
+     * an array of name-value pairs.s
+     * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($cookies = [], $config = [])
     {
@@ -79,7 +79,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 
     /**
      * Returns the cookie with the specified name.
-     * @param  string $name the cookie name
+     * @param string $name the cookie name
      * @return Cookie the cookie with the specified name. Null if the named cookie does not exist.
      * @see getValue()
      */
@@ -90,9 +90,9 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 
     /**
      * Returns the value of the named cookie.
-     * @param  string $name         the cookie name
-     * @param  mixed  $defaultValue the value that should be returned when the named cookie does not exist.
-     * @return mixed  the value of the named cookie.
+     * @param string $name the cookie name
+     * @param mixed $defaultValue the value that should be returned when the named cookie does not exist.
+     * @return mixed the value of the named cookie.
      * @see get()
      */
     public function getValue($name, $defaultValue = null)
@@ -102,7 +102,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 
     /**
      * Returns whether there is a cookie with the specified name.
-     * @param  string  $name the cookie name
+     * @param string $name the cookie name
      * @return boolean whether the named cookie exists
      */
     public function has($name)
@@ -113,7 +113,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
     /**
      * Adds a cookie to the collection.
      * If there is already a cookie with the same name in the collection, it will be removed first.
-     * @param  Cookie               $cookie the cookie to be added
+     * @param Cookie $cookie the cookie to be added
      * @throws InvalidCallException if the cookie collection is read only
      */
     public function add($cookie)
@@ -128,8 +128,8 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
      * Removes a cookie.
      * If `$removeFromBrowser` is true, the cookie will be removed from the browser.
      * In this case, a cookie with outdated expiry will be added to the collection.
-     * @param  Cookie|string        $cookie            the cookie object or the name of the cookie to be removed.
-     * @param  boolean              $removeFromBrowser whether to remove the cookie from browser
+     * @param Cookie|string $cookie the cookie object or the name of the cookie to be removed.
+     * @param boolean $removeFromBrowser whether to remove the cookie from browser
      * @throws InvalidCallException if the cookie collection is read only
      */
     public function remove($cookie, $removeFromBrowser = true)
@@ -168,7 +168,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
     /**
      * Returns the collection as a PHP array.
      * @return array the array representation of the collection.
-     *               The array keys are cookie names, and the array values are the corresponding cookie objects.
+     * The array keys are cookie names, and the array values are the corresponding cookie objects.
      */
     public function toArray()
     {
@@ -179,7 +179,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
      * Returns whether there is a cookie with the specified name.
      * This method is required by the SPL interface `ArrayAccess`.
      * It is implicitly called when you use something like `isset($collection[$name])`.
-     * @param  string  $name the cookie name
+     * @param string $name the cookie name
      * @return boolean whether the named cookie exists
      */
     public function offsetExists($name)
@@ -192,7 +192,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
      * This method is required by the SPL interface `ArrayAccess`.
      * It is implicitly called when you use something like `$cookie = $collection[$name];`.
      * This is equivalent to [[get()]].
-     * @param  string $name the cookie name
+     * @param string $name the cookie name
      * @return Cookie the cookie with the specified name, null if the named cookie does not exist.
      */
     public function offsetGet($name)
@@ -205,7 +205,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
      * This method is required by the SPL interface `ArrayAccess`.
      * It is implicitly called when you use something like `$collection[$name] = $cookie;`.
      * This is equivalent to [[add()]].
-     * @param string $name   the cookie name
+     * @param string $name the cookie name
      * @param Cookie $cookie the cookie to be added
      */
     public function offsetSet($name, $cookie)

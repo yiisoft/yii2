@@ -41,7 +41,7 @@ trait ArrayAccessTrait
 
     /**
      * This method is required by the interface ArrayAccess.
-     * @param  mixed   $offset the offset to check on
+     * @param mixed $offset the offset to check on
      * @return boolean
      */
     public function offsetExists($offset)
@@ -51,8 +51,8 @@ trait ArrayAccessTrait
 
     /**
      * This method is required by the interface ArrayAccess.
-     * @param  integer $offset the offset to retrieve element.
-     * @return mixed   the element at the offset, null if no element is found at the offset
+     * @param integer $offset the offset to retrieve element.
+     * @return mixed the element at the offset, null if no element is found at the offset
      */
     public function offsetGet($offset)
     {
@@ -62,7 +62,7 @@ trait ArrayAccessTrait
     /**
      * This method is required by the interface ArrayAccess.
      * @param integer $offset the offset to set element
-     * @param mixed   $item   the element value
+     * @param mixed $item the element value
      */
     public function offsetSet($offset, $item)
     {

@@ -9,6 +9,7 @@ namespace yii\debug;
 
 use Yii;
 use yii\base\Application;
+use yii\helpers\Url;
 use yii\web\View;
 use yii\web\ForbiddenHttpException;
 
@@ -124,7 +125,7 @@ class Module extends \yii\base\Module
         if (!$this->checkAccess() || Yii::$app->getRequest()->getIsAjax()) {
             return;
         }
-        $url = Yii::$app->getUrlManager()->createUrl([$this->id . '/default/toolbar',
+        $url = Url::toRoute(['/' . $this->id . '/default/toolbar',
             'tag' => $this->logTarget->tag,
         ]);
         echo '<div id="yii-debug-toolbar" data-url="' . $url . '" style="display:none"></div>';

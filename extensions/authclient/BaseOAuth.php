@@ -21,8 +21,7 @@ use yii\helpers\Json;
  * getter and setter. See [[getAccessToken()]] and [[setAccessToken()]] for details.
  * @property array $curlOptions CURL options. This property is read-only.
  * @property string $returnUrl Return URL.
- * @property signature\BaseMethod $signatureMethod Signature method instance. Note that the type of this
- * property differs in getter and setter. See [[getSignatureMethod()]] and [[setSignatureMethod()]] for details.
+ * @property signature\BaseMethod $signatureMethod Signature method instance. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

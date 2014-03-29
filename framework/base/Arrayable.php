@@ -70,7 +70,7 @@ interface Arrayable
      * is explicitly requested, will it be included in the result of [[toArray()]].
      *
      * @return array the list of expandable field names or field definitions. Please refer
-     *               to [[fields()]] on the format of the return value.
+     * to [[fields()]] on the format of the return value.
      * @see toArray()
      * @see fields()
      */
@@ -78,13 +78,13 @@ interface Arrayable
     /**
      * Converts the object into an array.
      *
-     * @param  array   $fields    the fields that the output array should contain. Fields not specified
-     *                            in [[fields()]] will be ignored. If this parameter is empty, all fields as specified in [[fields()]] will be returned.
-     * @param  array   $expand    the additional fields that the output array should contain.
-     *                            Fields not specified in [[extraFields()]] will be ignored. If this parameter is empty, no extra fields
-     *                            will be returned.
-     * @param  boolean $recursive whether to recursively return array representation of embedded objects.
-     * @return array   the array representation of the object
+     * @param array $fields the fields that the output array should contain. Fields not specified
+     * in [[fields()]] will be ignored. If this parameter is empty, all fields as specified in [[fields()]] will be returned.
+     * @param array $expand the additional fields that the output array should contain.
+     * Fields not specified in [[extraFields()]] will be ignored. If this parameter is empty, no extra fields
+     * will be returned.
+     * @param boolean $recursive whether to recursively return array representation of embedded objects.
+     * @return array the array representation of the object
      */
     public function toArray(array $fields = [], array $expand = [], $recursive = true);
 }

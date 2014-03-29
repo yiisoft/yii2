@@ -253,8 +253,8 @@ class Response extends \yii\base\Response
     /**
      * Sets the response status code.
      * This method will set the corresponding status text if `$text` is null.
-     * @param  integer               $value the status code
-     * @param  string                $text  the status text. If not set, it will be set automatically based on the status code.
+     * @param integer $value the status code
+     * @param string $text the status text. If not set, it will be set automatically based on the status code.
      * @throws InvalidParamException if the status code is invalid.
      */
     public function setStatusCode($value, $text = null)
@@ -403,9 +403,9 @@ class Response extends \yii\base\Response
      * Note that this method only prepares the response for file sending. The file is not sent
      * until [[send()]] is called explicitly or implicitly. The latter is done after you return from a controller action.
      *
-     * @param  string $filePath       the path of the file to be sent.
-     * @param  string $attachmentName the file name shown to the user. If null, it will be determined from `$filePath`.
-     * @param  string $mimeType       the MIME type of the content. If null, it will be guessed based on `$filePath`
+     * @param string $filePath the path of the file to be sent.
+     * @param string $attachmentName the file name shown to the user. If null, it will be determined from `$filePath`.
+     * @param string $mimeType the MIME type of the content. If null, it will be guessed based on `$filePath`
      * @return static the response object itself
      */
     public function sendFile($filePath, $attachmentName = null, $mimeType = null)
@@ -428,10 +428,10 @@ class Response extends \yii\base\Response
      * Note that this method only prepares the response for file sending. The file is not sent
      * until [[send()]] is called explicitly or implicitly. The latter is done after you return from a controller action.
      *
-     * @param  string        $content        the content to be sent. The existing [[content]] will be discarded.
-     * @param  string        $attachmentName the file name shown to the user.
-     * @param  string        $mimeType       the MIME type of the content.
-     * @return static        the response object itself
+     * @param string $content the content to be sent. The existing [[content]] will be discarded.
+     * @param string $attachmentName the file name shown to the user.
+     * @param string $mimeType the MIME type of the content.
+     * @return static the response object itself
      * @throws HttpException if the requested range is not satisfiable
      */
     public function sendContentAsFile($content, $attachmentName, $mimeType = 'application/octet-stream')
@@ -474,10 +474,10 @@ class Response extends \yii\base\Response
      * Note that this method only prepares the response for file sending. The file is not sent
      * until [[send()]] is called explicitly or implicitly. The latter is done after you return from a controller action.
      *
-     * @param  resource      $handle         the handle of the stream to be sent.
-     * @param  string        $attachmentName the file name shown to the user.
-     * @param  string        $mimeType       the MIME type of the stream content.
-     * @return static        the response object itself
+     * @param resource $handle the handle of the stream to be sent.
+     * @param string $attachmentName the file name shown to the user.
+     * @param string $mimeType the MIME type of the stream content.
+     * @return static the response object itself
      * @throws HttpException if the requested range cannot be satisfied.
      */
     public function sendStreamAsFile($handle, $attachmentName, $mimeType = 'application/octet-stream')
@@ -518,7 +518,7 @@ class Response extends \yii\base\Response
 
     /**
      * Determines the HTTP range given in the request.
-     * @param  integer       $fileSize the size of the file that will be used to validate the requested HTTP range.
+     * @param integer $fileSize the size of the file that will be used to validate the requested HTTP range.
      * @return array|boolean the range (begin, end), or false if the range request is invalid.
      */
     protected function getHttpRange($fileSize)
@@ -595,10 +595,10 @@ class Response extends \yii\base\Response
      * Yii::$app->response->xSendFile('/home/user/Pictures/picture1.jpg');
      * ~~~
      *
-     * @param  string $filePath       file name with full path
-     * @param  string $mimeType       the MIME type of the file. If null, it will be determined based on `$filePath`.
-     * @param  string $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
-     * @param  string $xHeader        the name of the x-sendfile header.
+     * @param string $filePath file name with full path
+     * @param string $mimeType the MIME type of the file. If null, it will be determined based on `$filePath`.
+     * @param string $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
+     * @param string $xHeader the name of the x-sendfile header.
      * @return static the response object itself
      */
     public function xSendFile($filePath, $attachmentName = null, $mimeType = null, $xHeader = 'X-Sendfile')
@@ -664,10 +664,10 @@ class Response extends \yii\base\Response
      * Any relative URL will be converted into an absolute one by prepending it with the host info
      * of the current request.
      *
-     * @param  integer $statusCode the HTTP status code. Defaults to 302.
-     *                             See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
-     *                             for details about HTTP status code
-     * @return static  the response object itself
+     * @param integer $statusCode the HTTP status code. Defaults to 302.
+     * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
+     * for details about HTTP status code
+     * @return static the response object itself
      */
     public function redirect($url, $statusCode = 302)
     {
@@ -703,8 +703,8 @@ class Response extends \yii\base\Response
      * return Yii::$app->getResponse()->refresh();
      * ~~~
      *
-     * @param  string   $anchor the anchor that should be appended to the redirection URL.
-     *                          Defaults to empty. Make sure the anchor starts with '#' if you want to specify it.
+     * @param string $anchor the anchor that should be appended to the redirection URL.
+     * Defaults to empty. Make sure the anchor starts with '#' if you want to specify it.
      * @return Response the response object itself
      */
     public function refresh($anchor = '')

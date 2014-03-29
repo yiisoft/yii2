@@ -61,6 +61,11 @@ use yii\helpers\FileHelper;
  * that contains the entry script of the application. If your theme is designed to handle modules,
  * you may configure the [[pathMap]] property like described above.
  *
+ * @property string $basePath The root path of this theme. All resources of this theme are located under this
+ * directory.
+ * @property string $baseUrl The base URL (without ending slash) for this theme. All resources of this theme
+ * are considered to be under this base URL. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -82,12 +87,11 @@ class Theme extends Component
     {
         parent::init();
 
-        if (($basePath = $this->getBasePath()) !== null) {
-            if (empty($this->pathMap)) {
-                $this->pathMap = [Yii::$app->getBasePath() => [$basePath]];
+        if (empty($this->pathMap)) {
+            if (($basePath = $this->getBasePath()) === null) {
+                throw new InvalidConfigException('The "basePath" property must be set.');
             }
-        } else {
-            throw new InvalidConfigException('The "basePath" property must be set.');
+            $this->pathMap = [Yii::$app->getBasePath() => [$basePath]];
         }
     }
 
@@ -95,7 +99,7 @@ class Theme extends Component
 
     /**
      * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
-     *                to be under this base URL.
+     * to be under this base URL.
      */
     public function getBaseUrl()
     {
@@ -124,7 +128,7 @@ class Theme extends Component
 
     /**
      * @param string $path the root path or path alias of this theme. All resources of this theme are located
-     *                     under this directory.
+     * under this directory.
      * @see pathMap
      */
     public function setBasePath($path)
@@ -135,7 +139,7 @@ class Theme extends Component
     /**
      * Converts a file to a themed file if possible.
      * If there is no corresponding themed file, the original file will be returned.
-     * @param  string $path the file to be themed
+     * @param string $path the file to be themed
      * @return string the themed file, or the original file if the themed version is not available.
      */
     public function applyTo($path)
@@ -160,8 +164,8 @@ class Theme extends Component
 
     /**
      * Converts a relative URL into an absolute URL using [[baseUrl]].
-     * @param  string                 $url the relative URL to be converted.
-     * @return string                 the absolute URL
+     * @param string $url the relative URL to be converted.
+     * @return string the absolute URL
      * @throws InvalidConfigException if [[baseUrl]] is not set
      */
     public function getUrl($url)
@@ -175,11 +179,15 @@ class Theme extends Component
 
     /**
      * Converts a relative file path into an absolute one using [[basePath]].
-     * @param  string $path the relative file path to be converted.
+     * @param string $path the relative file path to be converted.
      * @return string the absolute file path
      */
     public function getPath($path)
     {
-        return $this->getBasePath() . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
+        if (($basePath = $this->getBasePath()) !== null) {
+            return $basePath . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
+        } else {
+            throw new InvalidConfigException('The "basePath" property must be set.');
+        }
     }
 }

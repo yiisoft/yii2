@@ -145,7 +145,7 @@ class UrlManager extends Component
             return;
         }
         if (is_string($this->cache)) {
-            $this->cache = Yii::$app->getComponent($this->cache);
+            $this->cache = Yii::$app->get($this->cache, false);
         }
         if ($this->cache instanceof Cache) {
             $key = __CLASS__;
@@ -184,9 +184,9 @@ class UrlManager extends Component
 
     /**
      * Parses the user request.
-     * @param  Request       $request the request component
+     * @param Request $request the request component
      * @return array|boolean the route and the associated parameters. The latter is always empty
-     *                               if [[enablePrettyUrl]] is false. False is returned if the current request cannot be successfully parsed.
+     * if [[enablePrettyUrl]] is false. False is returned if the current request cannot be successfully parsed.
      */
     public function parseRequest($request)
     {
@@ -233,10 +233,33 @@ class UrlManager extends Component
     }
 
     /**
-     * Creates a URL using the given route and parameters.
+     * Creates a URL using the given route and query parameters.
+     *
+     * You may specify the route as a string, e.g., `site/index`. You may also use an array
+     * if you want to specify additional query parameters for the URL being created. The
+     * array format must be:
+     *
+     * ```php
+     * // generates: /index.php?r=site/index&param1=value1&param2=value2
+     * ['site/index', 'param1' => 'value1', 'param2' => 'value2']
+     * ```
+     *
+     * If you want to create a URL with an anchor, you can use the array format with a `#` parameter.
+     * For example,
+     *
+     * ```php
+     * // generates: /index.php?r=site/index&param1=value1#name
+     * ['site/index', 'param1' => 'value1', '#' => 'name']
+     * ```
+     *
      * The URL created is a relative one. Use [[createAbsoluteUrl()]] to create an absolute URL.
-     * @param  string|array $params route as a string or route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
-     * @return string       the created URL
+     *
+     * Note that unlike [[\yii\helpers\Url::toRoute()]], this method always treats the given route
+     * as an absolute route.
+     *
+     * @param string|array $params use a string to represent a route (e.g. `site/index`),
+     * or an array to represent a route with query parameters (e.g. `['site/index', 'param1' => 'value1']`).
+     * @return string the created URL
      */
     public function createUrl($params)
     {
@@ -283,23 +306,29 @@ class UrlManager extends Component
     }
 
     /**
-     * Creates an absolute URL using the given route and parameters.
+     * Creates an absolute URL using the given route and query parameters.
+     *
      * This method prepends the URL created by [[createUrl()]] with the [[hostInfo]].
-     * @param  string|array $params route as a string or route and parameters in form of ['route', 'param1' => 'value1', 'param2' => 'value2']
-     * @param  string       $schema the schema to use for the url. e.g. 'http' or 'https'. If not specified
-     *                              the schema of the current request will be used.
-     * @return string       the created URL
+     *
+     * Note that unlike [[\yii\helpers\Url::toRoute()]], this method always treats the given route
+     * as an absolute route.
+     *
+     * @param string|array $params use a string to represent a route (e.g. `site/index`),
+     * or an array to represent a route with query parameters (e.g. `['site/index', 'param1' => 'value1']`).
+     * @param string $scheme the scheme to use for the url (either `http` or `https`). If not specified
+     * the scheme of the current request will be used.
+     * @return string the created URL
      * @see createUrl()
      */
-    public function createAbsoluteUrl($params, $schema = null)
+    public function createAbsoluteUrl($params, $scheme = null)
     {
         $params = (array) $params;
         $url = $this->createUrl($params);
         if (strpos($url, '://') === false) {
             $url = $this->getHostInfo() . $url;
         }
-        if ($schema && ($pos = strpos($url, '://')) !== false) {
-            $url = $schema . substr($url, $pos);
+        if (is_string($scheme) && ($pos = strpos($url, '://')) !== false) {
+            $url = $scheme . substr($url, $pos);
         }
 
         return $url;
@@ -310,13 +339,17 @@ class UrlManager extends Component
      * It defaults to [[Request::scriptUrl]] if [[showScriptName]] is true or [[enablePrettyUrl]] is false;
      * otherwise, it defaults to [[Request::baseUrl]].
      * @return string the base URL that is used by [[createUrl()]] to prepend URLs it creates.
+     * @throws InvalidConfigException if running in console application and [[baseUrl]] is not configured.
      */
     public function getBaseUrl()
     {
         if ($this->_baseUrl === null) {
-            /** @var \yii\web\Request $request */
             $request = Yii::$app->getRequest();
-            $this->_baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $request->getScriptUrl() : $request->getBaseUrl();
+            if ($request instanceof \yii\web\Request) {
+                $this->_baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $request->getScriptUrl() : $request->getBaseUrl();
+            } else {
+                throw new InvalidConfigException('Please configure UrlManager::baseUrl correctly as you are running a console application.');
+            }
         }
 
         return $this->_baseUrl;
@@ -334,11 +367,17 @@ class UrlManager extends Component
     /**
      * Returns the host info that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
      * @return string the host info (e.g. "http://www.example.com") that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
+     * @throws InvalidConfigException if running in console application and [[hostInfo]] is not configured.
      */
     public function getHostInfo()
     {
         if ($this->_hostInfo === null) {
-            $this->_hostInfo = Yii::$app->getRequest()->getHostInfo();
+            $request = Yii::$app->getRequest();
+            if ($request instanceof \yii\web\Request) {
+                $this->_hostInfo = $request->getHostInfo();
+            } else {
+                throw new InvalidConfigException('Please configure UrlManager::hostInfo correctly as you are running a console application.');
+            }
         }
 
         return $this->_hostInfo;

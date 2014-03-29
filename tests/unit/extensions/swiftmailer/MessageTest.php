@@ -68,7 +68,7 @@ class MessageTest extends VendorTestCase
      */
     protected function createTestMessage()
     {
-        return Yii::$app->getComponent('mail')->compose();
+        return Yii::$app->get('mail')->compose();
     }
 
     /**

@@ -43,8 +43,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for dropping an index.
-     * @param  string $name  the name of the index to be dropped. The name will be properly quoted by the method.
-     * @param  string $table the table whose index is to be dropped. The name will be properly quoted by the method.
+     * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
+     * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
      * @return string the SQL statement for dropping an index.
      */
     public function dropIndex($name, $table)
@@ -54,8 +54,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for renaming a DB table.
-     * @param  string $oldName the table to be renamed. The name will be properly quoted by the method.
-     * @param  string $newName the new table name. The name will be properly quoted by the method.
+     * @param string $oldName the table to be renamed. The name will be properly quoted by the method.
+     * @param string $newName the new table name. The name will be properly quoted by the method.
      * @return string the SQL statement for renaming a DB table.
      */
     public function renameTable($oldName, $newName)
@@ -67,10 +67,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
-     * @param  string                $tableName the name of the table whose primary key sequence will be reset
-     * @param  mixed                 $value     the value for the primary key of the next new row inserted. If this is not set,
-     *                                          the next new row's primary key will have a value 1.
-     * @return string                the SQL statement for resetting sequence
+     * @param string $tableName the name of the table whose primary key sequence will be reset
+     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have a value 1.
+     * @return string the SQL statement for resetting sequence
      * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
      */
     public function resetSequence($tableName, $value = null)
@@ -101,10 +101,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
-     * @param  boolean $check  whether to turn on or off the integrity check.
-     * @param  string  $schema the schema of the tables.
-     * @param  string  $table  the table name.
-     * @return string  the SQL statement for checking integrity
+     * @param boolean $check whether to turn on or off the integrity check.
+     * @param string $schema the schema of the tables.
+     * @param string $table the table name.
+     * @return string the SQL statement for checking integrity
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
@@ -126,12 +126,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for changing the definition of a column.
-     * @param  string $table  the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param  string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param  string $type   the new column type. The [[getColumnType()]] method will be invoked to convert abstract
-     *                        column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept
-     *                        in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
-     *                        will become 'varchar(255) not null'.
+     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @param string $type the new column type. The [[getColumnType()]] method will be invoked to convert abstract
+     * column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept
+     * in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
+     * will become 'varchar(255) not null'.
      * @return string the SQL statement for changing the definition of a column.
      */
     public function alterColumn($table, $column, $type)

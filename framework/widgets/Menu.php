@@ -173,7 +173,7 @@ class Menu extends Widget
 
     /**
      * Recursively renders the menu items (without the container tag).
-     * @param  array  $items the menu items to be rendered recursively
+     * @param array $items the menu items to be rendered recursively
      * @return string the rendering result
      */
     protected function renderItems($items)
@@ -216,7 +216,7 @@ class Menu extends Widget
     /**
      * Renders the content of a menu item.
      * Note that the container and the sub-menus are not rendered here.
-     * @param  array  $item the menu item to be rendered. Please refer to [[items]] to see what data might be in the item.
+     * @param array $item the menu item to be rendered. Please refer to [[items]] to see what data might be in the item.
      * @return string the rendering result
      */
     protected function renderItem($item)
@@ -239,9 +239,9 @@ class Menu extends Widget
 
     /**
      * Normalizes the [[items]] property to remove invisible items and activate certain items.
-     * @param  array   $items  the items to be normalized.
-     * @param  boolean $active whether there is an active child menu item.
-     * @return array   the normalized menu items
+     * @param array $items the items to be normalized.
+     * @param boolean $active whether there is an active child menu item.
+     * @return array the normalized menu items
      */
     protected function normalizeItems($items, &$active)
     {
@@ -288,7 +288,7 @@ class Menu extends Widget
      * as the route for the item and the rest of the elements are the associated parameters.
      * Only when its route and parameters match [[route]] and [[params]], respectively, will a menu item
      * be considered active.
-     * @param  array   $item the menu item to be checked
+     * @param array $item the menu item to be checked
      * @return boolean whether the menu item is active
      */
     protected function isItemActive($item)

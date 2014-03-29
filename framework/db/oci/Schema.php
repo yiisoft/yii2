@@ -84,7 +84,7 @@ class Schema extends \yii\db\Schema
      * Resolves the table name and schema name (if any).
      *
      * @param TableSchema $table the table metadata object
-     * @param string      $name  the table name
+     * @param string $name the table name
      */
     protected function resolveTableNames($table, $name)
     {
@@ -102,8 +102,8 @@ class Schema extends \yii\db\Schema
 
     /**
      * Collects the table column metadata.
-     * @param  TableSchema $table the table schema
-     * @return boolean     whether the table exists
+     * @param TableSchema $table the table schema
+     * @return boolean whether the table exists
      */
     protected function findColumns($table)
     {
@@ -234,7 +234,7 @@ EOD;
     /**
      * Extracts the data types for the given column
      * @param ColumnSchema $column
-     * @param string       $dbType DB type
+     * @param string $dbType DB type
      */
     protected function extractColumnType($column, $dbType)
     {
@@ -261,7 +261,7 @@ EOD;
     /**
      * Extracts size, precision and scale information from column's DB type.
      * @param ColumnSchema $column
-     * @param string       $dbType the column's DB type
+     * @param string $dbType the column's DB type
      */
     protected function extractColumnSize($column, $dbType)
     {

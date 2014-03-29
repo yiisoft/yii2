@@ -43,12 +43,12 @@ stored in a PHP file stored in the `/config` application directory. The file has
 ```php
 <?php
 return [
-	'id' => 'applicationId',
-	'basePath' => dirname(__DIR__),
-	'components' => [
-		// configuration of application components goes here...
-	],
-	'params' => require(__DIR__ . '/params.php'),
+    'id' => 'applicationId',
+    'basePath' => dirname(__DIR__),
+    'components' => [
+        // configuration of application components goes here...
+    ],
+    'params' => require(__DIR__ . '/params.php'),
 ];
 ```
 
@@ -68,23 +68,23 @@ The majority of the Yii functionality comes from application components. These c
 ```php
 <?php
 return [
-	'id' => 'applicationId',
-	'basePath' => dirname(__DIR__),
-	'components' => [
-		'cache' => ['class' => 'yii\caching\FileCache'],
-		'user' => ['identityClass' => 'app\models\User'],
-		'errorHandler' => ['errorAction' => 'site/error'],
-		'log' => [
-			'traceLevel' => YII_DEBUG ? 3 : 0,
-			'targets' => [
-				[
-					'class' => 'yii\log\FileTarget',
-					'levels' => ['error', 'warning'],
-				],
-			],
-		],
-	],
-	// ...
+    'id' => 'applicationId',
+    'basePath' => dirname(__DIR__),
+    'components' => [
+        'cache' => ['class' => 'yii\caching\FileCache'],
+        'user' => ['identityClass' => 'app\models\User'],
+        'errorHandler' => ['errorAction' => 'site/error'],
+        'log' => [
+            'traceLevel' => YII_DEBUG ? 3 : 0,
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'warning'],
+                ],
+            ],
+        ],
+    ],
+    // ...
 ];
 ```
 
@@ -93,25 +93,23 @@ In the above code, four components are configured: `cache`, `user`, `errorHandle
 The configuration array has one special key named `class` that identifies the component's base class. The rest of the keys and values are used
 to configure component properties in the same way as top-level keys are used to configure the application's properties.
 
-Each application has a predefined set of components. To configure one of these, the `class` key can be omitted to use the default Yii class for that component. You can check the `registerCoreComponents()` method of the application you are using
+Each application has a predefined set of components. To configure one of these, the `class` key can be omitted to use the default Yii class for that component. You can check the `coreComponents()` method of the application you are using
 to get a list of component IDs and corresponding classes.
 
 Note that Yii is smart enough to only configure the component when it's actually being used: for example, if you configure the `cache` component in your configuration file but never use the `cache` component in your code, no instance of that component will be created and no time is wasted configuring it.
 
-Setting component defaults classwide
+Setting component defaults class-wide
 ------------------------------------
 
-For each component you can specifiy classwide defaults. For example, if you want to change the class used for all `LinkPager`
+For each component you can specify class-wide defaults. For example, if you want to change the class used for all `LinkPager`
 widgets without specifying the class for every widget usage, you can do the following:
 
 ```php
-\Yii::$objectConfig = [
-	'yii\widgets\LinkPager' => [
-		'options' => [
-			'class' => 'pagination',
-		],
-	],
-];
+\Yii::$container->set('yii\widgets\LinkPager', [
+    'options' => [
+        'class' => 'pagination',
+    ],
+]);
 ```
 
 The code above should be executed once before `LinkPager` widget is used. It can be done in `index.php`, the application

@@ -74,9 +74,9 @@ class MessageFormatter extends Component
      * and works around some issues.
      * If PHP intl is not installed a fallback will be used that supports a subset of the ICU message format.
      *
-     * @param  string         $pattern  The pattern string to insert parameters into.
-     * @param  array          $params   The array of name value pairs to insert into the format string.
-     * @param  string         $language The locale to use for formatting locale-dependent parts
+     * @param string $pattern The pattern string to insert parameters into.
+     * @param array $params The array of name value pairs to insert into the format string.
+     * @param string $language The locale to use for formatting locale-dependent parts
      * @return string|boolean The formatted pattern string or `FALSE` if an error occurred
      */
     public function format($pattern, $params, $language)
@@ -123,10 +123,10 @@ class MessageFormatter extends Component
      * and adds support for named arguments.
      * Usage of this method requires PHP intl extension to be installed.
      *
-     * @param  string                          $pattern  The pattern to use for parsing the message.
-     * @param  string                          $message  The message to parse, conforming to the pattern.
-     * @param  string                          $language The locale to use for formatting locale-dependent parts
-     * @return array|boolean                   An array containing items extracted, or `FALSE` on error.
+     * @param string $pattern The pattern to use for parsing the message.
+     * @param string $message The message to parse, conforming to the pattern.
+     * @param string $language The locale to use for formatting locale-dependent parts
+     * @return array|boolean An array containing items extracted, or `FALSE` on error.
      * @throws \yii\base\NotSupportedException when PHP intl extension is not installed.
      */
     public function parse($pattern, $message, $language)
@@ -185,10 +185,10 @@ class MessageFormatter extends Component
     /**
      * Replace named placeholders with numeric placeholders and quote unused.
      *
-     * @param  string $pattern         The pattern string to replace things into.
-     * @param  array  $givenParams     The array of values to insert into the format string.
-     * @param  array  $resultingParams Modified array of parameters.
-     * @param  array  $map
+     * @param string $pattern The pattern string to replace things into.
+     * @param array $givenParams The array of values to insert into the format string.
+     * @param array $resultingParams Modified array of parameters.
+     * @param array $map
      * @return string The pattern string with placeholders replaced.
      */
     private function replaceNamedArguments($pattern, $givenParams, &$resultingParams, &$map = [])
@@ -239,9 +239,9 @@ class MessageFormatter extends Component
 
     /**
      * Fallback implementation for MessageFormatter::formatMessage
-     * @param  string         $pattern The pattern string to insert things into.
-     * @param  array          $args    The array of values to insert into the format string
-     * @param  string         $locale  The locale to use for formatting locale-dependent parts
+     * @param string $pattern The pattern string to insert things into.
+     * @param array $args The array of values to insert into the format string
+     * @param string $locale The locale to use for formatting locale-dependent parts
      * @return string|boolean The formatted pattern string or `FALSE` if an error occurred
      */
     protected function fallbackFormat($pattern, $args, $locale)
@@ -268,7 +268,7 @@ class MessageFormatter extends Component
 
     /**
      * Tokenizes a pattern by separating normal text from replaceable patterns
-     * @param  string        $pattern patter to tokenize
+     * @param string $pattern patter to tokenize
      * @return array|boolean array of tokens or false on failure
      */
     private static function tokenizePattern($pattern)
@@ -310,10 +310,10 @@ class MessageFormatter extends Component
 
     /**
      * Parses a token
-     * @param  array                           $token  the token to parse
-     * @param  array                           $args   arguments to replace
-     * @param  string                          $locale the locale
-     * @return bool|string                     parsed token or false on failure
+     * @param array $token the token to parse
+     * @param array $args arguments to replace
+     * @param string $locale the locale
+     * @return bool|string parsed token or false on failure
      * @throws \yii\base\NotSupportedException when unsupported formatting is used.
      */
     private function parseToken($token, $args, $locale)
