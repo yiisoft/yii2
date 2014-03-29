@@ -81,11 +81,7 @@ class ErrorHandler extends Component
             if ($this->discardExistingOutput) {
                 $this->clearOutput();
             }
-            if (PHP_SAPI === 'cli') {
-                Console::stderr($this->renderException($exception));
-            } else {
-                echo $this->renderException($exception);
-            }
+            $this->renderException($exception);
             if (!YII_ENV_TEST) {
                 exit(1);
             }
@@ -168,11 +164,7 @@ class ErrorHandler extends Component
             if ($this->discardExistingOutput) {
                 $this->clearOutput();
             }
-            if (PHP_SAPI === 'cli') {
-                Console::stderr($this->renderException($exception));
-            } else {
-                echo $this->renderException($exception);
-            }
+            $this->renderException($exception);
             exit(1);
         }
     }
@@ -180,7 +172,6 @@ class ErrorHandler extends Component
     /**
      * Renders an exception without using rich format.
      * @param \Exception $exception the exception to be rendered.
-     * @return string the rendering result
      */
     protected function renderException($exception)
     {
@@ -202,7 +193,12 @@ class ErrorHandler extends Component
         } else {
             $message = $this->formatMessage('Error: ') . $exception->getMessage();
         }
-        return $message . "\n";
+
+        if (PHP_SAPI === 'cli') {
+            Console::stderr($message . "\n");
+        } else {
+            echo $message . "\n";
+        }
     }
 
     /**
@@ -229,7 +225,6 @@ class ErrorHandler extends Component
      */
     protected function logException($exception)
     {
-        // TODO logger may not be registered
         $category = get_class($exception);
         if ($exception instanceof HttpException) {
             $category = 'yii\\web\\HttpException:' . $exception->statusCode;

@@ -10,7 +10,7 @@ use Yii;
 
 try {
     10/0;
-} catch (ErrorException) {
+} catch (ErrorException $e) {
     Yii::warning("Tried dividing by zero.");
 }
 
@@ -19,38 +19,39 @@ try {
 
 As demonstrated above you may handle errors using `try`-`catch`.
 
-
 Second, even fatal errors in Yii are rendered in a nice way. This means that in debugging mode, you can trace the causes
 of fatal errors in order to more quickly identify the cause of the problem.
+
 
 Rendering errors in a dedicated controller action
 -------------------------------------------------
 
 The default Yii error page is great when developing a site, and is acceptable for production sites if `YII_DEBUG`
-is turned off in your bootstrap index.php file. But you may want to customize the default error page to make it
+is turned off in your bootstrap `index.php` file. But you may want to customize the default error page to make it
 more suitable for your project.
 
 The easiest way to create a custom error page it is to use a dedicated controller action for error rendering. First,
 you'll need to configure the `errorHandler` component in the application's configuration:
 
 ```php
-return [
+// ...
+'components' => [
     // ...
-    'components' => [
-        // ...
-        'errorHandler' => [
-            'errorAction' => 'site/error',
+    'errorHandler' => [
+        'errorAction' => 'site/error',
     ],
+]
 ```
 
-With that configuration in place, whenever an error occurs, Yii will execute the "error" action of the "Site" controller.
+With that configuration in place, whenever an error occurs, Yii will execute the `error`-action of the `site`-controller.
 That action should look for an exception and, if present, render the proper view file, passing along the exception:
 
 ```php
 public function actionError()
 {
-    if (\Yii::$app->exception !== null) {
-        return $this->render('error', ['exception' => \Yii::$app->exception]);
+    $exception = \Yii::$app->errorHandler->exception;
+    if ($exception !== null) {
+        return $this->render('error', ['exception' => $exception]);
     }
 }
 ```
@@ -58,14 +59,13 @@ public function actionError()
 Next, you would create the `views/site/error.php` file, which would make use of the exception. The exception object has
 the following properties:
 
-- `statusCode`: the HTTP status code (e.g. 403, 500). Available for HTTP exceptions only.
+- `statusCode`: the HTTP status code (e.g. 403, 500). Available for [[yii\web\HttpException|HTTP exceptions]] only.
 - `code`: the code of the exception.
-- `type`: the error type (e.g. HttpException, PHP Error).
 - `message`: the error message.
 - `file`: the name of the PHP script file where the error occurs.
 - `line`: the line number of the code where the error occurs.
 - `trace`: the call stack of the error.
-- `source`: the context source code where the error occurs.
+
 
 Rendering errors without a dedicated controller action
 ------------------------------------------------------
@@ -91,4 +91,4 @@ automatically be used. The view will be passed three variables:
 - `$message`: the error message
 - `$exception`: the exception being handled
 
-The `$exception` object will have the same properties outlined above.
+The `$exception` object will have the same properties as outlined above.
