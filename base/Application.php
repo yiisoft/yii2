@@ -60,6 +60,35 @@ abstract class Application extends Module
     const EVENT_AFTER_ACTION = 'afterAction';
 
     /**
+     * Application state used by [[state]]: application just started.
+     */
+    const STATE_BEGIN = 0;
+    /**
+     * Application state used by [[state]]: application is initializing.
+     */
+    const STATE_INIT = 1;
+    /**
+     * Application state used by [[state]]: application is triggering [[EVENT_BEFORE_REQUEST]].
+     */
+    const STATE_BEFORE_REQUEST = 2;
+    /**
+     * Application state used by [[state]]: application is handling the request.
+     */
+    const STATE_HANDLING_REQUEST = 3;
+    /**
+     * Application state used by [[state]]: application is triggering [[EVENT_AFTER_REQUEST]]..
+     */
+    const STATE_AFTER_REQUEST = 4;
+    /**
+     * Application state used by [[state]]: application is about to send response.
+     */
+    const STATE_SENDING_RESPONSE = 5;
+    /**
+     * Application state used by [[state]]: application has ended.
+     */
+    const STATE_END = 6;
+
+    /**
      * @var string the namespace that controller classes are in. If not set,
      * it will use the "app\controllers" namespace.
      */
@@ -131,6 +160,11 @@ abstract class Application extends Module
      * will be invoked at the beginning of [[init()]].
      */
     public $bootstrap = [];
+    /**
+     * @var integer the current application state during a request handling life cycle.
+     * This property is managed by the application. Do not modify this property.
+     */
+    public $state;
 
 
     /**
@@ -142,6 +176,8 @@ abstract class Application extends Module
     public function __construct($config = [])
     {
         Yii::$app = $this;
+
+        $this->state = self::STATE_BEGIN;
 
         // TODO how to deal with exceptions thrown in preInit()
         $this->preInit($config);
@@ -213,6 +249,8 @@ abstract class Application extends Module
      */
     public function init()
     {
+        $this->state = self::STATE_INIT;
+
         $this->initExtensions($this->extensions);
         foreach ($this->bootstrap as $class) {
             /** @var BootstrapInterface $bootstrap */
@@ -283,12 +321,30 @@ abstract class Application extends Module
      */
     public function run()
     {
-        $this->trigger(self::EVENT_BEFORE_REQUEST);
-        $response = $this->handleRequest($this->getRequest());
-        $this->trigger(self::EVENT_AFTER_REQUEST);
-        $response->send();
+        try {
 
-        return $response->exitStatus;
+            $this->state = self::STATE_BEFORE_REQUEST;
+            $this->trigger(self::EVENT_BEFORE_REQUEST);
+
+            $this->state = self::STATE_HANDLING_REQUEST;
+            $response = $this->handleRequest($this->getRequest());
+
+            $this->state = self::STATE_AFTER_REQUEST;
+            $this->trigger(self::EVENT_AFTER_REQUEST);
+
+            $this->state = self::STATE_SENDING_RESPONSE;
+            $response->send();
+
+            $this->state = self::STATE_END;
+
+            return $response->exitStatus;
+
+        } catch (ExitException $e) {
+
+            $this->end($e->statusCode, isset($response) ? $response : null);
+            return $e->statusCode;
+
+        }
     }
 
     /**
@@ -434,6 +490,15 @@ abstract class Application extends Module
     }
 
     /**
+     * Returns the response component.
+     * @return \yii\web\Response|\yii\console\Response the response component
+     */
+    public function getResponse()
+    {
+        return $this->get('response');
+    }
+
+    /**
      * Returns the view object.
      * @return View|\yii\web\View the view object that is used to render various view files.
      */
@@ -504,5 +569,33 @@ abstract class Application extends Module
             'urlManager' => ['class' => 'yii\web\UrlManager'],
             'assetManager' => ['class' => 'yii\web\AssetManager'],
         ];
+    }
+
+    /**
+     * Terminates the application.
+     * This method replaces the `exit()` function by ensuring the application life cycle is completed
+     * before terminating the application.
+     * @param integer $status the exit status (value 0 means normal exit while other values mean abnormal exit).
+     * @param Response $response the response to be sent. If not set, the default application [[response]] component will be used.
+     * @throws ExitException if the application is in testing mode
+     */
+    public function end($status = 0, $response = null)
+    {
+        if ($this->state === self::STATE_BEFORE_REQUEST || $this->state === self::STATE_HANDLING_REQUEST) {
+            $this->state = self::STATE_AFTER_REQUEST;
+            $this->trigger(self::EVENT_AFTER_REQUEST);
+        }
+
+        if ($this->state !== self::STATE_SENDING_RESPONSE && $this->state !== self::STATE_END) {
+            $this->state = self::STATE_END;
+            $response = $response ? : $this->getResponse();
+            $response->send();
+        }
+
+        if (YII_ENV_TEST) {
+            throw new ExitException($status);
+        } else {
+            exit($status);
+        }
     }
 }

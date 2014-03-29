@@ -71,6 +71,10 @@ class ErrorHandler extends Component
      */
     public function handleException($exception)
     {
+        if ($exception instanceof ExitException) {
+            return;
+        }
+
         $this->exception = $exception;
 
         // disable error capturing to avoid recursive errors while handling exceptions
@@ -101,6 +105,8 @@ class ErrorHandler extends Component
             error_log($msg);
             exit(1);
         }
+
+        $this->exception = null;
     }
 
     /**
