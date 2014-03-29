@@ -289,7 +289,7 @@ class Controller extends Component implements ViewContextInterface
      *
      * If the layout name does not contain a file extension, it will use the default one `.php`.
      *
-     * @param string $view the view name. Please refer to [[findViewFile()]] on how to specify a view name.
+     * @param string $view the view name.
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * These parameters will not be available in the layout.
      * @return string the rendering result.
@@ -365,17 +365,6 @@ class Controller extends Component implements ViewContextInterface
     public function getViewPath()
     {
         return $this->module->getViewPath() . DIRECTORY_SEPARATOR . $this->id;
-    }
-
-    /**
-     * Finds the view file based on the given view name.
-     * @param string $view the view name or the path alias of the view file. Please refer to [[render()]]
-     * on how to specify this parameter.
-     * @return string the view file path. Note that the file may not exist.
-     */
-    public function findViewFile($view)
-    {
-        return $this->getViewPath() . DIRECTORY_SEPARATOR . $view;
     }
 
     /**

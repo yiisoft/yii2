@@ -395,8 +395,9 @@ class ActiveRecord extends BaseActiveRecord
             }
             $this->_version = $response['_version'];
             $this->_score = null;
-            $this->setOldAttributes($values);
+
             $this->afterSave(true);
+            $this->setOldAttributes($values);
 
             return true;
         }

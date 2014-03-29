@@ -64,12 +64,13 @@ class QueryBuilder extends \yii\base\Object
      */
     public function build($query, $params = [])
     {
+        $query->prepareBuild($this);
+
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
-        list ($select, $from) = $this->adjustSelectFrom($query);
 
         $clauses = [
-            $this->buildSelect($select, $params, $query->distinct, $query->selectOption),
-            $this->buildFrom($from, $params),
+            $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
+            $this->buildFrom($query->from, $params),
             $this->buildJoin($query->join, $params),
             $this->buildWhere($query->where, $params),
             $this->buildGroupBy($query->groupBy),
@@ -86,44 +87,6 @@ class QueryBuilder extends \yii\base\Object
         }
 
         return [$sql, $params];
-    }
-
-    /**
-     * Adjusts the select and from parts of the query when it is an ActiveQuery.
-     * When ActiveQuery does not specify "from", or if it is a join query without explicit "select",
-     * certain adjustments need to be made. This method is put here so that QueryBuilder can
-     * support sub-queries.
-     * @param Query $query
-     * @return array the select and from parts.
-     */
-    protected function adjustSelectFrom($query)
-    {
-        $select = $query->select;
-        $from = $query->from;
-        if ($query instanceof ActiveQuery && (empty($select) || empty($from))) {
-            /** @var ActiveRecord $modelClass */
-            $modelClass = $query->modelClass;
-            $tableName = $modelClass::tableName();
-            if (empty($from)) {
-                $from = [$tableName];
-            }
-            if (empty($select) && !empty($query->join)) {
-                foreach ((array)$from as $alias => $table) {
-                	if (is_string($alias)) {
-                        $select = ["$alias.*"];
-                    } elseif (is_string($table)) {
-                        if (preg_match('/^(.*?)\s+({{\w+}}|\w+)$/', $table, $matches)) {
-                            $alias = $matches[2];
-                        } else {
-                            $alias = $tableName;
-                        }
-                        $select = ["$alias.*"];
-                    }
-                    break;
-                }
-            }
-        }
-        return [$select, $from];
     }
 
     /**

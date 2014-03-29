@@ -39,11 +39,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      */
     const EVENT_AFTER_SEND = 'afterSend';
     /**
-     * @var string directory containing view files for this email messages.
-     * This can be specified as an absolute path or path alias.
-     */
-    public $viewPath = '@app/mail';
-    /**
      * @var string|boolean HTML layout view name. This is the layout used to render HTML mail body.
      * The property can take the following values:
      *
@@ -104,6 +99,10 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * @var \yii\base\View|array view instance or its array configuration.
      */
     private $_view = [];
+    /**
+     * @var string the directory containing view files for composing mail messages.
+     */
+    private $_viewPath;
 
     /**
      * @param array|View $view view instance or its array configuration that will be used to
@@ -159,7 +158,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * The view to be rendered can be specified in one of the following formats:
      *
      * - path alias (e.g. "@app/mail/contact");
-     * - a relative view name (e.g. "contact"): the actual view file will be resolved by [[findViewFile()]]
+     * - a relative view name (e.g. "contact") located under [[viewPath]].
      *
      * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @return MessageInterface message instance.
@@ -319,14 +318,24 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     }
 
     /**
-     * Finds the view file corresponding to the specified relative view name.
-     * This method will return the view file by prefixing the view name with [[viewPath]].
-     * @param string $view a relative view name. The name does NOT start with a slash.
-     * @return string the view file path. Note that the file may not exist.
+     * @return string the directory that contains the view files for composing mail messages
+     * Defaults to '@app/mail'.
      */
-    public function findViewFile($view)
+    public function getViewPath()
     {
-        return Yii::getAlias($this->viewPath) . DIRECTORY_SEPARATOR . $view;
+        if ($this->_viewPath === null) {
+            $this->setViewPath('@app/mail');
+        }
+        return $this->_viewPath;
+    }
+
+    /**
+     * @param string $path the directory that contains the view files for composing mail messages
+     * This can be specified as an absolute path or a path alias.
+     */
+    public function setViewPath($path)
+    {
+        $this->_viewPath = Yii::getAlias($path);
     }
 
     /**

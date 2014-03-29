@@ -772,6 +772,7 @@ class Collection extends Object
     protected function normalizeConditionKeyword($key)
     {
         static $map = [
+            'AND' => '$and',
             'OR' => '$or',
             'IN' => '$in',
             'NOT IN' => '$nin',
@@ -898,13 +899,13 @@ class Collection extends Object
      */
     public function buildAndCondition($operator, $operands)
     {
-        $result = [];
+        $operator = $this->normalizeConditionKeyword($operator);
+        $parts = [];
         foreach ($operands as $operand) {
-            $condition = $this->buildCondition($operand);
-            $result = array_merge_recursive($result, $condition);
+            $parts[] = $this->buildCondition($operand);
         }
 
-        return $result;
+        return [$operator => $parts];
     }
 
     /**

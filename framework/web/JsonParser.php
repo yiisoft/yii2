@@ -13,6 +13,16 @@ use yii\helpers\Json;
 /**
  * Parses a raw HTTP request using [[\yii\helpers\Json::decode()]]
  *
+ * To enable parsing for JSON requests you can configure [[Request::parsers]] using this class:
+ *
+ * ```php
+ * 'request' => [
+ *     'parsers' => [
+ *         'application/json' => 'yii\web\JsonParser',
+ *     ]
+ * ]
+ * ```
+ *
  * @author Dan Schmidt <danschmidt5189@gmail.com>
  * @since 2.0
  */

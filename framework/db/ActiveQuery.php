@@ -62,7 +62,7 @@ namespace yii\db;
  * If a relation involves a pivot table, it may be specified by [[via()]] or [[viaTable()]] method.
  * These methods may only be called in a relational context. Same is true for [[inverseOf()]], which
  * marks a relation as inverse of another relation and [[onCondition()]] which adds a condition that
- * is to be added to relational querys join condition.
+ * is to be added to relational query join condition.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -101,6 +101,40 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function all($db = null)
     {
         return parent::all($db);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function prepareBuild($builder)
+    {
+        if (!empty($this->joinWith)) {
+            $this->buildJoinWith();
+            $this->joinWith = null;    // clean it up to avoid issue https://github.com/yiisoft/yii2/issues/2687
+        }
+
+        if (empty($this->from)) {
+            /** @var ActiveRecord $modelClass */
+            $modelClass = $this->modelClass;
+            $tableName = $modelClass::tableName();
+            $this->from = [$tableName];
+        }
+
+        if (empty($this->select) && !empty($this->join)) {
+            foreach ((array)$this->from as $alias => $table) {
+                if (is_string($alias)) {
+                    $this->select = ["$alias.*"];
+                } elseif (is_string($table)) {
+                    if (preg_match('/^(.*?)\s+({{\w+}}|\w+)$/', $table, $matches)) {
+                        $alias = $matches[2];
+                    } else {
+                        $alias = $table;
+                    }
+                    $this->select = ["$alias.*"];
+                }
+                break;
+            }
+        }
     }
 
     /**
@@ -246,10 +280,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if ($this->sql === null) {
-            if (!empty($this->joinWith)) {
-                $this->buildJoinWith();
-                $this->joinWith = null;    // clean it up to avoid issue https://github.com/yiisoft/yii2/issues/2687
-            }
             list ($sql, $params) = $db->getQueryBuilder()->build($this);
         } else {
             $sql = $this->sql;

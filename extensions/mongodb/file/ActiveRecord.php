@@ -147,10 +147,10 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
             $newId = $collection->insert($values);
         }
         $this->setAttribute('_id', $newId);
-        foreach ($values as $name => $value) {
-            $this->setOldAttribute($name, $value);
-        }
+        $values['_id'] = $newId;
+
         $this->afterSave(true);
+        $this->setOldAttributes($values);
 
         return true;
     }
@@ -167,7 +167,6 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
         $values = $this->getDirtyAttributes($attributes);
         if (empty($values)) {
             $this->afterSave(false);
-
             return 0;
         }
 
@@ -219,10 +218,10 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
             }
         }
 
+        $this->afterSave(false);
         foreach ($values as $name => $value) {
             $this->setOldAttribute($name, $this->getAttribute($name));
         }
-        $this->afterSave(false);
 
         return $rows;
     }

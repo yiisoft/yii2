@@ -24,7 +24,8 @@ use yii\base\InvalidCallException;
  * @property array $dirtyAttributes The changed attribute values (name-value pairs). This property is
  * read-only.
  * @property boolean $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
- * @property array $oldAttributes The old attribute values (name-value pairs).
+ * @property array $oldAttributes The old attribute values (name-value pairs). Note that the type of this
+ * property differs in getter and setter. See [[getOldAttributes()]] and [[setOldAttributes()]] for details.
  * @property mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
  * returned if the primary key is composite. A string is returned otherwise (null will be returned if the key
  * value is null). This property is read-only.
@@ -477,6 +478,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Sets the old attribute values.
      * All existing old attribute values will be discarded.
      * @param array|null $values old attribute values to be set.
+     * If set to `null` this record is considered to be [[isNewRecord|new]].
      */
     public function setOldAttributes($values)
     {
@@ -564,7 +566,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 }
             }
         }
-
         return $attributes;
     }
 
@@ -654,7 +655,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if ($runValidation && !$this->validate($attributes)) {
             return false;
         }
-
         return $this->updateInternal($attributes);
     }
 
@@ -684,8 +684,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $attrs[] = $name;
             }
         }
-
-        return $this->update(false, $attrs);
+        return $this->updateInternal($attrs);
     }
 
     /**
@@ -700,7 +699,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $values = $this->getDirtyAttributes($attributes);
         if (empty($values)) {
             $this->afterSave(false);
-
             return 0;
         }
         $condition = $this->getOldPrimaryKey(true);
@@ -719,10 +717,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             throw new StaleObjectException('The object being updated is outdated.');
         }
 
+        $this->afterSave(false);
         foreach ($values as $name => $value) {
             $this->_oldAttributes[$name] = $this->_attributes[$name];
         }
-        $this->afterSave(false);
 
         return $rows;
     }
@@ -751,7 +749,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $this->_attributes[$name] += $value;
                 $this->_oldAttributes[$name] = $this->_attributes[$name];
             }
-
             return true;
         } else {
             return false;
