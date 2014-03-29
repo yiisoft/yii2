@@ -8,6 +8,8 @@
 namespace yii\db\oci;
 
 use yii\base\InvalidParamException;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * QueryBuilder is the query builder for Oracle databases.
@@ -17,7 +19,6 @@ use yii\base\InvalidParamException;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
-
     private $sql;
 
     /**
@@ -25,6 +26,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function build($query, $params = [])
     {
+        $query->prepareBuild($this);
+
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 
         $clauses = [

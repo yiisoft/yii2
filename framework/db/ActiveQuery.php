@@ -62,7 +62,7 @@ namespace yii\db;
  * If a relation involves a pivot table, it may be specified by [[via()]] or [[viaTable()]] method.
  * These methods may only be called in a relational context. Same is true for [[inverseOf()]], which
  * marks a relation as inverse of another relation and [[onCondition()]] which adds a condition that
- * is to be added to relational querys join condition.
+ * is to be added to relational query join condition.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -91,6 +91,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public $joinWith;
 
+
     /**
      * Executes query and returns all results as an array.
      * @param Connection $db the DB connection used to create the DB command.
@@ -100,6 +101,40 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function all($db = null)
     {
         return parent::all($db);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function prepareBuild($builder)
+    {
+        if (!empty($this->joinWith)) {
+            $this->buildJoinWith();
+            $this->joinWith = null;    // clean it up to avoid issue https://github.com/yiisoft/yii2/issues/2687
+        }
+
+        if (empty($this->from)) {
+            /** @var ActiveRecord $modelClass */
+            $modelClass = $this->modelClass;
+            $tableName = $modelClass::tableName();
+            $this->from = [$tableName];
+        }
+
+        if (empty($this->select) && !empty($this->join)) {
+            foreach ((array)$this->from as $alias => $table) {
+                if (is_string($alias)) {
+                    $this->select = ["$alias.*"];
+                } elseif (is_string($table)) {
+                    if (preg_match('/^(.*?)\s+({{\w+}}|\w+)$/', $table, $matches)) {
+                        $alias = $matches[2];
+                    } else {
+                        $alias = $table;
+                    }
+                    $this->select = ["$alias.*"];
+                }
+                break;
+            }
+        }
     }
 
     /**
@@ -232,7 +267,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Creates a DB command that can be used to execute this query.
-     * @param Connection $db the DB connection used to create the DB command.
+     * @param Connection|null $db the DB connection used to create the DB command.
      * If null, the DB connection returned by [[modelClass]] will be used.
      * @return Command the created DB command instance.
      */
@@ -245,10 +280,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if ($this->sql === null) {
-            if (!empty($this->joinWith)) {
-                $this->buildJoinWith();
-                $this->joinWith = null;    // clean it up to avoid issue https://github.com/yiisoft/yii2/issues/2687
-            }
             list ($sql, $params) = $db->getQueryBuilder()->build($this);
         } else {
             $sql = $this->sql;
@@ -260,7 +291,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Creates a command for lazy loading of a relation.
-     * @param Connection $db the DB connection used to create the DB command.
+     * @param Connection|null $db the DB connection used to create the DB command.
      * @return Command the created DB command instance.
      */
     private function createRelationalCommand($db = null)
@@ -348,6 +379,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     private function buildJoinWith()
     {
+        $join = $this->join;
+        $this->join = [];
+
         foreach ($this->joinWith as $config) {
             list ($with, $eagerLoading, $joinType) = $config;
             $this->joinWithRelations(new $this->modelClass, $with, $joinType);
@@ -367,6 +401,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
 
             $this->with($with);
+        }
+
+        if (!empty($join)) {
+            // append explicit join to joinWith()
+            // https://github.com/yiisoft/yii2/issues/2880
+            $this->join = empty($this->join) ? $join : array_merge($this->join, $join);
         }
     }
 
@@ -524,7 +564,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         } else {
             $on = $child->on;
         }
-        $this->join($joinType, $childTable, $on);
+        $this->join($joinType, empty($child->from) ? $childTable : $child->from, $on);
 
         if (!empty($child->where)) {
             $this->andWhere($child->where);

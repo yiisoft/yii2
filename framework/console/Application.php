@@ -149,15 +149,6 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the response component.
-     * @return Response the response component
-     */
-    public function getResponse()
-    {
-        return $this->get('response');
-    }
-
-    /**
      * Runs a controller action specified by a route.
      * This method parses the specified route and creates the corresponding child module(s), controller and action
      * instances. It then calls [[Controller::runAction()]] to run the action with the given parameters.

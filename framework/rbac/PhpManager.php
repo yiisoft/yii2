@@ -44,6 +44,7 @@ class PhpManager extends Manager
     private $_children = []; // itemName, childName => child
     private $_assignments = []; // userId, itemName => assignment
 
+
     /**
      * Initializes the application component.
      * This method overrides parent implementation by loading the authorization data
@@ -158,7 +159,7 @@ class PhpManager extends Manager
 
     /**
      * Returns the children of the specified item.
-     * @param mixed $names the parent item name. This can be either a string or an array.
+     * @param string|array $names the parent item name. This can be either a string or an array.
      * The latter represents a list of item names.
      * @return Item[] all child items of the parent
      */

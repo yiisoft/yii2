@@ -4,3 +4,8 @@ imports:
 tools:
     external_code_coverage:
         timeout: 2100 # Timeout in seconds.
+tools:
+    # disable copy paste detector and simliarity analyzer as they have no real value
+    # and a huge bunch of false-positives
+    php_sim: false
+    php_cpd: false

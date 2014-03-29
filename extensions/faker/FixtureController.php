@@ -171,12 +171,11 @@ class FixtureController extends \yii\console\controllers\FixtureController
 
 
     /**
-     * Returns the names of the global options for this command.
-     * @return array the names of the global options for this command.
+     * @inheritdoc
      */
-    public function options($id)
+    public function options($actionId)
     {
-        return array_merge(parent::options($id), [
+        return array_merge(parent::options($actionId), [
             'templatePath', 'language', 'fixtureDataPath'
         ]);
     }

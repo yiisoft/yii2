@@ -23,7 +23,7 @@ use yii\web\HttpException;
  * @property ErrorHandler $errorHandler The error handler application component. This property is read-only.
  * @property \yii\base\Formatter $formatter The formatter application component. This property is read-only.
  * @property \yii\i18n\I18N $i18n The internationalization component. This property is read-only.
- * @property \yii\log\Logger $log The log component. This property is read-only.
+ * @property \yii\log\Dispatcher $log The log dispatcher component. This property is read-only.
  * @property \yii\mail\MailerInterface $mail The mailer interface. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property string $runtimePath The directory that stores runtime files. Defaults to the "runtime"
@@ -60,11 +60,39 @@ abstract class Application extends Module
     const EVENT_AFTER_ACTION = 'afterAction';
 
     /**
+     * Application state used by [[state]]: application just started.
+     */
+    const STATE_BEGIN = 0;
+    /**
+     * Application state used by [[state]]: application is initializing.
+     */
+    const STATE_INIT = 1;
+    /**
+     * Application state used by [[state]]: application is triggering [[EVENT_BEFORE_REQUEST]].
+     */
+    const STATE_BEFORE_REQUEST = 2;
+    /**
+     * Application state used by [[state]]: application is handling the request.
+     */
+    const STATE_HANDLING_REQUEST = 3;
+    /**
+     * Application state used by [[state]]: application is triggering [[EVENT_AFTER_REQUEST]]..
+     */
+    const STATE_AFTER_REQUEST = 4;
+    /**
+     * Application state used by [[state]]: application is about to send response.
+     */
+    const STATE_SENDING_RESPONSE = 5;
+    /**
+     * Application state used by [[state]]: application has ended.
+     */
+    const STATE_END = 6;
+
+    /**
      * @var string the namespace that controller classes are in. If not set,
      * it will use the "app\controllers" namespace.
      */
     public $controllerNamespace = 'app\\controllers';
-
     /**
      * @var string the application name.
      */
@@ -144,6 +172,11 @@ abstract class Application extends Module
      * it means the application is handling some exception and extra care should be taken.
      */
     public $exception;
+    /**
+     * @var integer the current application state during a request handling life cycle.
+     * This property is managed by the application. Do not modify this property.
+     */
+    public $state;
 
     /**
      * @var string Used to reserve memory for fatal error handler.
@@ -159,6 +192,8 @@ abstract class Application extends Module
     public function __construct($config = [])
     {
         Yii::$app = $this;
+
+        $this->state = self::STATE_BEGIN;
 
         $this->preInit($config);
         $this->registerErrorHandlers();
@@ -223,6 +258,8 @@ abstract class Application extends Module
      */
     public function init()
     {
+        $this->state = self::STATE_INIT;
+
         $this->initExtensions($this->extensions);
         foreach ($this->bootstrap as $class) {
             /** @var BootstrapInterface $bootstrap */
@@ -309,12 +346,30 @@ abstract class Application extends Module
      */
     public function run()
     {
-        $this->trigger(self::EVENT_BEFORE_REQUEST);
-        $response = $this->handleRequest($this->getRequest());
-        $this->trigger(self::EVENT_AFTER_REQUEST);
-        $response->send();
+        try {
 
-        return $response->exitStatus;
+            $this->state = self::STATE_BEFORE_REQUEST;
+            $this->trigger(self::EVENT_BEFORE_REQUEST);
+
+            $this->state = self::STATE_HANDLING_REQUEST;
+            $response = $this->handleRequest($this->getRequest());
+
+            $this->state = self::STATE_AFTER_REQUEST;
+            $this->trigger(self::EVENT_AFTER_REQUEST);
+
+            $this->state = self::STATE_SENDING_RESPONSE;
+            $response->send();
+
+            $this->state = self::STATE_END;
+
+            return $response->exitStatus;
+
+        } catch (ExitException $e) {
+
+            $this->end($e->statusCode, isset($response) ? $response : null);
+            return $e->statusCode;
+
+        }
     }
 
     /**
@@ -415,8 +470,8 @@ abstract class Application extends Module
     }
 
     /**
-     * Returns the log component.
-     * @return \yii\log\Logger the log component
+     * Returns the log dispatcher component.
+     * @return \yii\log\Dispatcher the log dispatcher component
      */
     public function getLog()
     {
@@ -457,6 +512,15 @@ abstract class Application extends Module
     public function getRequest()
     {
         return $this->get('request');
+    }
+
+    /**
+     * Returns the response component.
+     * @return \yii\web\Response|\yii\console\Response the response component
+     */
+    public function getResponse()
+    {
+        return $this->get('response');
     }
 
     /**
@@ -506,20 +570,58 @@ abstract class Application extends Module
     }
 
     /**
+     * Returns the asset manager.
+     * @return \yii\web\AssetManager the asset manager component
+     */
+    public function getAssetManager()
+    {
+        return $this->get('assetManager');
+    }
+
+    /**
      * Returns the core application components.
      * @see set
      */
     public function coreComponents()
     {
         return [
-            'log' => ['class' => 'yii\log\Logger'],
+            'log' => ['class' => 'yii\log\Dispatcher'],
             'errorHandler' => ['class' => 'yii\base\ErrorHandler'],
+            'view' => ['class' => 'yii\web\View'],
             'formatter' => ['class' => 'yii\base\Formatter'],
             'i18n' => ['class' => 'yii\i18n\I18N'],
             'mail' => ['class' => 'yii\swiftmailer\Mailer'],
             'urlManager' => ['class' => 'yii\web\UrlManager'],
-            'view' => ['class' => 'yii\web\View'],
+            'assetManager' => ['class' => 'yii\web\AssetManager'],
         ];
+    }
+
+    /**
+     * Terminates the application.
+     * This method replaces the `exit()` function by ensuring the application life cycle is completed
+     * before terminating the application.
+     * @param integer $status the exit status (value 0 means normal exit while other values mean abnormal exit).
+     * @param Response $response the response to be sent. If not set, the default application [[response]] component will be used.
+     * @throws ExitException if the application is in testing mode
+     */
+    public function end($status = 0, $response = null)
+    {
+        if ($this->state === self::STATE_BEFORE_REQUEST || $this->state === self::STATE_HANDLING_REQUEST) {
+            $this->state = self::STATE_AFTER_REQUEST;
+            $this->trigger(self::EVENT_AFTER_REQUEST);
+        }
+
+        if ($this->state !== self::STATE_SENDING_RESPONSE && $this->state !== self::STATE_END) {
+            $this->state = self::STATE_END;
+            $response = $response ? : $this->getResponse();
+            $response->send();
+        }
+
+        if (YII_ENV_TEST) {
+            throw new ExitException($status);
+        } else {
+            exit($status);
+        }
     }
 
     /**
@@ -531,6 +633,10 @@ abstract class Application extends Module
      */
     public function handleException($exception)
     {
+        if ($exception instanceof ExitException) {
+            return;
+        }
+
         $this->exception = $exception;
 
         // disable error capturing to avoid recursive errors while handling exceptions

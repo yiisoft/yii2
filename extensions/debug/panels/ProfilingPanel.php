@@ -85,7 +85,7 @@ class ProfilingPanel extends Panel
     {
         if ($this->_models === null) {
             $this->_models = [];
-            $timings = Yii::$app->getLog()->calculateTimings($this->data['messages']);
+            $timings = Yii::getLogger()->calculateTimings($this->data['messages']);
 
             foreach ($timings as $seq => $profileTiming) {
                 $this->_models[] = 	[

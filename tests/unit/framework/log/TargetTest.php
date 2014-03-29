@@ -5,10 +5,14 @@
 
 namespace yiiunit\framework\log;
 
+use yii\log\Dispatcher;
 use yii\log\Logger;
 use yii\log\Target;
 use yiiunit\TestCase;
 
+/**
+ * @group log
+ */
 class TargetTest extends TestCase
 {
     public static $messages;
@@ -50,7 +54,9 @@ class TargetTest extends TestCase
     {
         static::$messages = [];
 
-        $logger = new Logger([
+        $logger = new Logger;
+        $dispatcher = new Dispatcher([
+            'logger' => $logger,
             'targets' => [new TestTarget(array_merge($filter, ['logVars' => []]))],
             'flushInterval' => 1,
         ]);

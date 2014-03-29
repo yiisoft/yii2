@@ -8,7 +8,6 @@
 namespace yii\rest;
 
 use yii\base\Component;
-use yii\base\Action;
 use yii\web\Request;
 use yii\web\Response;
 use yii\web\TooManyRequestsHttpException;
@@ -37,7 +36,7 @@ class RateLimiter extends Component
      * @param RateLimitInterface $user the current user
      * @param Request $request
      * @param Response $response
-     * @param Action $action the action to be executed
+     * @param \yii\base\Action $action the action to be executed
      * @throws TooManyRequestsHttpException if rate limit exceeds
      */
     public function check($user, $request, $response, $action)

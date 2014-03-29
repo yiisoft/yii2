@@ -46,8 +46,8 @@ use yii\base\InvalidConfigException;
  *
  * @property string|integer $id The unique identifier for the user. If null, it means the user is a guest.
  * This property is read-only.
- * @property IdentityInterface $identity The identity object associated with the currently logged-in user.
- * Null is returned if the user is not logged in (not authenticated).
+ * @property IdentityInterface|null $identity The identity object associated with the currently logged-in
+ * user. `null` is returned if the user is not logged in (not authenticated).
  * @property boolean $isGuest Whether the current user is a guest. This property is read-only.
  * @property string $returnUrl The URL that the user should be redirected to after login. Note that the type
  * of this property differs in getter and setter. See [[getReturnUrl()]] and [[setReturnUrl()]] for details.
@@ -141,8 +141,8 @@ class User extends Component
      * @param boolean $checkSession whether to check the session if the identity has never been determined before.
      * If the identity is already determined (e.g., by calling [[setIdentity()]] or [[login()]]),
      * then this parameter has no effect.
-     * @return IdentityInterface the identity object associated with the currently logged-in user.
-     * Null is returned if the user is not logged in (not authenticated).
+     * @return IdentityInterface|null the identity object associated with the currently logged-in user.
+     * `null` is returned if the user is not logged in (not authenticated).
      * @see login()
      * @see logout()
      */
@@ -170,7 +170,7 @@ class User extends Component
      * [[switchIdentity()]]. Those methods will try to use session and cookie to maintain the user authentication
      * status.
      *
-     * @param IdentityInterface $identity the identity object associated with the currently logged user.
+     * @param IdentityInterface|null $identity the identity object associated with the currently logged user.
      */
     public function setIdentity($identity)
     {
