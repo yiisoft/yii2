@@ -92,7 +92,7 @@ class Query extends Component implements QueryInterface
      * @var array|string The filter part of this search query. This is an array or json string that follows the format of
      * the elasticsearch [Query DSL](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html).
      */
-    public $filter;
+    public $filterPart;
 
     public $facets = [];
 
@@ -459,9 +459,9 @@ class Query extends Component implements QueryInterface
      * @param  string $filter
      * @return static the query object itself
      */
-    public function applyFilter($filter)
+    public function filterPart($filter)
     {
-        $this->filter = $filter;
+        $this->filterPart = $filter;
 
         return $this;
     }

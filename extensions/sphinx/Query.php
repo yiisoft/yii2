@@ -819,6 +819,16 @@ class Query extends Component implements QueryInterface
             $operator = strtoupper($condition[0]);
 
             switch ($operator) {
+                case 'NOT':
+                case 'AND':
+                case 'OR':
+                    $subCondition = $this->filterCondition($condition[1]);
+                    if ($this->parameterNotEmpty($subCondition)) {
+                        $condition[1] = $subCondition;
+                    } else {
+                        $condition = [];
+                    }
+                break;
                 case 'IN':
                 case 'NOT IN':
                 case 'LIKE':
@@ -837,7 +847,7 @@ class Query extends Component implements QueryInterface
                 break;
             }
         } else {
-            $condition = $this->filterConditionHash($condition);
+            $condition = $this->filterHashCondition($condition);
         }
         return $condition;
     }

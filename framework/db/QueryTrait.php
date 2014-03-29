@@ -109,7 +109,7 @@ trait QueryTrait
     * @param array $condition original condition
     * @return array condition with empty parameters removed
     */
-    protected function filterConditionHash($condition)
+    protected function filterHashCondition($condition)
     {
         if (is_array($condition) && !isset($condition[0])) {
             // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
@@ -126,7 +126,7 @@ trait QueryTrait
      */
     protected function filterCondition($condition)
     {
-        return $this->filterConditionHash($condition);
+        return $this->filterHashCondition($condition);
     }
 
     /**
