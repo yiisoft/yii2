@@ -372,6 +372,20 @@ echo $this->render('_profile', [
 ]);
 ```
 
+
+When you call `render()` to render a partial in a current view, you may use different formats to refer to the partial.
+The most commonly used format is the so-called relative view name which is as shown in the above example.
+The partial view file is relative to the directory containing the current view. If the partial is located under
+a subdirectory, you should include the subdirectory name in the view name, e.g., `public/_profile`.
+
+You may use path alias to specify a view, too. For example, `@app/views/common/_profile`.
+
+And you may also use the so-called absolute view names, e.g., `/user/_profile`, `//user/_profile`.
+An absolute view name starts with a single slashes or double slashes. If it starts with a single slash,
+the view file will be looked for under the view path of the currently active module. Otherwise, it will
+will be looked for under the application view path.
+
+
 ### Accessing context
 
 Views are generally used either by controller or by widget. In both cases the object that called view rendering is
