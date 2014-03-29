@@ -124,24 +124,6 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the request component.
-     * @return Request the request component
-     */
-    public function getRequest()
-    {
-        return $this->get('request');
-    }
-
-    /**
-     * Returns the response component.
-     * @return Response the response component
-     */
-    public function getResponse()
-    {
-        return $this->get('response');
-    }
-
-    /**
      * Returns the session component.
      * @return Session the session component
      */
@@ -160,15 +142,6 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the asset manager.
-     * @return AssetManager the asset manager component
-     */
-    public function getAssetManager()
-    {
-        return $this->get('assetManager');
-    }
-
-    /**
      * @inheritdoc
      */
     public function coreComponents()
@@ -178,7 +151,6 @@ class Application extends \yii\base\Application
             'response' => ['class' => 'yii\web\Response'],
             'session' => ['class' => 'yii\web\Session'],
             'user' => ['class' => 'yii\web\User'],
-            'assetManager' => ['class' => 'yii\web\AssetManager'],
         ], parent::coreComponents());
     }
 }

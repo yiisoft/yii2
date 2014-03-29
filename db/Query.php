@@ -124,6 +124,16 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * Prepares for building SQL.
+     * This method is called by [[QueryBuilder]] when it starts to build SQL from a query object.
+     * You may override this method to do some final preparation work when converting a query into a SQL statement.
+     * @param QueryBuilder $builder
+     */
+    public function prepareBuild($builder)
+    {
+    }
+
+    /**
      * Starts a batch query.
      *
      * A batch query supports fetching data in batches, which can keep the memory usage under a limit.

@@ -156,6 +156,8 @@ Yii Framework 2 Change Log
 - Enh #2735: Added support for `DateTimeInterface` in `Formatter` (ivokund)
 - Enh #2756: Added support for injecting custom `isEmpty` check for all validators (qiangxue)
 - Enh #2775: Added `yii\base\Application::bootstrap` and `yii\base\BootstrapInterface` to support running bootstrap classes when starting an application (qiangxue)
+- Enh #2892: ActiveRecord dirty attributes are now reset after call to `afterSave()` so information about changed attributes is available in `afterSave`-event (cebe)
+- Enh #2910: Added `Application::end()` (qiangxue)
 - Enh: Added support for using arrays as option values for console commands (qiangxue)
 - Enh: Added `favicon.ico` and `robots.txt` to default application templates (samdark)
 - Enh: Added `Widget::autoIdPrefix` to support prefixing automatically generated widget IDs (qiangxue)
@@ -226,6 +228,7 @@ Yii Framework 2 Change Log
 	- Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers\Url::canonical` instead.
 - Chg #2691: Null parameters will not be included in the generated URLs by `UrlManager` (gonimar, qiangxue)
 - Chg #2734: `FileCache::keyPrefix` defaults to empty string now (qiangxue)
+_ Chg #2912: Relative view files will be looked for under the directory containing the view currently being rendered (qiangxue)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
