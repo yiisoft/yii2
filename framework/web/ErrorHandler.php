@@ -132,32 +132,6 @@ class ErrorHandler extends \yii\base\ErrorHandler
     }
 
     /**
-     * Converts an exception into a simple string.
-     * @param \Exception $exception the exception being converted
-     * @return string the string representation of the exception.
-     */
-    protected function convertExceptionToString($exception)
-    {
-        if ($exception instanceof Exception && ($exception instanceof UserException || !YII_DEBUG)) {
-            $message = "{$exception->getName()}: {$exception->getMessage()}";
-        } elseif (YII_DEBUG) {
-            if ($exception instanceof Exception) {
-                $message = "Exception ({$exception->getName()})";
-            } elseif ($exception instanceof ErrorException) {
-                $message = "{$exception->getName()}";
-            } else {
-                $message = 'Exception';
-            }
-            $message .= " '" . get_class($exception) . "' with message '{$exception->getMessage()}' \n\nin "
-                . $exception->getFile() . ':' . $exception->getLine() . "\n\n"
-                . "Stack trace:\n" . $exception->getTraceAsString();
-        } else {
-            $message = 'Error: ' . $exception->getMessage();
-        }
-        return $message;
-    }
-
-    /**
      * Converts special characters to HTML entities.
      * @param string $text to encode.
      * @return string encoded original text.
