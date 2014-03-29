@@ -7,6 +7,7 @@
 
 namespace yii\mail;
 
+use yii\base\ErrorHandler;
 use yii\base\Object;
 use Yii;
 
@@ -58,7 +59,7 @@ abstract class BaseMessage extends Object implements MessageInterface
         try {
             return $this->toString();
         } catch (\Exception $e) {
-            trigger_error($e->getMessage() . "\n\n" . $e->getTraceAsString());
+            ErrorHandler::convertExceptionToError($e);
             return '';
         }
     }
