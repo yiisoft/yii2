@@ -164,11 +164,12 @@ class Application extends \yii\base\Application
      */
     public function coreComponents()
     {
-        return array_merge([
+        return array_merge(parent::coreComponents(), [
+            'errorHandler' => ['class' => 'yii\web\ErrorHandler'],
             'request' => ['class' => 'yii\web\Request'],
             'response' => ['class' => 'yii\web\Response'],
             'session' => ['class' => 'yii\web\Session'],
             'user' => ['class' => 'yii\web\User'],
-        ], parent::coreComponents());
+        ]);
     }
 }
