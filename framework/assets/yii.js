@@ -116,9 +116,9 @@ yii = (function ($) {
             }
 
             var $form = $e.closest('form');
-            var newForm = !$form.length || $e.prop('href') != '';
+            var action = $e.prop('href');
+            var newForm = !$form.length || action;
             if (newForm) {
-                var action = $e.prop('href');
                 if (!action || !action.match(/(^\/|:\/\/)/)) {
                     action = window.location.href;
                 }
@@ -129,10 +129,13 @@ yii = (function ($) {
                 }
                 if (!method.match(/(get|post)/i)) {
                     $form.append('<input name="_method" value="' + method + '" type="hidden">');
+                    method = 'POST';
                 }
-                var csrfParam = pub.getCsrfParam();
-                if (csrfParam) {
-                    $form.append('<input name="' + csrfParam + '" value="' + pub.getCsrfToken() + '" type="hidden">');
+                if (!method.match(/(get|head|options)/i)) {
+                    var csrfParam = pub.getCsrfParam();
+                    if (csrfParam) {
+                        $form.append('<input name="' + csrfParam + '" value="' + pub.getCsrfToken() + '" type="hidden">');
+                    }
                 }
                 $form.hide().appendTo('body');
             }
@@ -143,7 +146,12 @@ yii = (function ($) {
                 activeFormData.submitObject = $e;
             }
 
+            var oldMethod = $form.prop('method');
+            $form.prop('method', method);
+
             $form.trigger('submit');
+
+            $form.prop('method', oldMethod);
 
             if (newForm) {
                 $form.remove();
