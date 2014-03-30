@@ -84,10 +84,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public $handler;
     /**
      * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
-     * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httpOnly'
+     * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httponly'
      * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
      */
-    private $_cookieParams = ['httpOnly' => true];
+    private $_cookieParams = ['httponly' => true];
 
     /**
      * Initializes the application component.
@@ -301,20 +301,14 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getCookieParams()
     {
-        $params = session_get_cookie_params();
-        if (isset($params['httponly'])) {
-            $params['httpOnly'] = $params['httponly'];
-            unset($params['httponly']);
-        }
-
-        return array_merge($params, $this->_cookieParams);
+        return array_merge(session_get_cookie_params(), array_change_key_case($this->_cookieParams));
     }
 
     /**
      * Sets the session cookie parameters.
      * The cookie parameters passed to this method will be merged with the result
      * of `session_get_cookie_params()`.
-     * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httpOnly`.
+     * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httponly`.
      * @throws InvalidParamException if the parameters are incomplete.
      * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
      */
@@ -333,10 +327,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         $data = $this->getCookieParams();
         extract($data);
-        if (isset($lifetime, $path, $domain, $secure, $httpOnly)) {
-            session_set_cookie_params($lifetime, $path, $domain, $secure, $httpOnly);
+        if (isset($lifetime, $path, $domain, $secure, $httponly)) {
+            session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
         } else {
-            throw new InvalidParamException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httpOnly.');
+            throw new InvalidParamException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httponly.');
         }
     }
 
