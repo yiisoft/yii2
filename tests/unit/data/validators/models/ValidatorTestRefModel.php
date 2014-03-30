@@ -12,7 +12,7 @@ class ValidatorTestRefModel extends ActiveRecord
 
     public static function tableName()
     {
-        return 'tbl_validator_ref';
+        return 'validator_ref';
     }
 
     public function getMain()

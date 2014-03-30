@@ -17,7 +17,7 @@ use yii\base\InvalidCallException;
  * iterating through the reader. For example,
  *
  * ~~~
- * $command = $connection->createCommand('SELECT * FROM tbl_post');
+ * $command = $connection->createCommand('SELECT * FROM post');
  * $reader = $command->query();
  *
  * while ($row = $reader->read()) {

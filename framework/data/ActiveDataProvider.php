@@ -39,7 +39,7 @@ use yii\di\Instance;
  * ~~~
  * $query = new Query;
  * $provider = new ActiveDataProvider([
- *     'query' => $query->from('tbl_post'),
+ *     'query' => $query->from('post'),
  *     'pagination' => [
  *         'pageSize' => 20,
  *     ],

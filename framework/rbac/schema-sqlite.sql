@@ -9,11 +9,11 @@
  * @since 2.0
  */
 
-drop table if exists 'tbl_auth_assignment';
-drop table if exists 'tbl_auth_item_child';
-drop table if exists 'tbl_auth_item';
+drop table if exists 'auth_assignment';
+drop table if exists 'auth_item_child';
+drop table if exists 'auth_item';
 
-create table 'tbl_auth_item'
+create table 'auth_item'
 (
    "name"                 varchar(64) not null,
    "type"                 integer not null,
@@ -24,21 +24,21 @@ create table 'tbl_auth_item'
    key "type" ("type")
 );
 
-create table 'tbl_auth_item_child'
+create table 'auth_item_child'
 (
    "parent"               varchar(64) not null,
    "child"                varchar(64) not null,
    primary key ("parent","child"),
-   foreign key ("parent") references 'tbl_auth_item' ("name") on delete cascade on update cascade,
-   foreign key ("child") references 'tbl_auth_item' ("name") on delete cascade on update cascade
+   foreign key ("parent") references 'auth_item' ("name") on delete cascade on update cascade,
+   foreign key ("child") references 'auth_item' ("name") on delete cascade on update cascade
 );
 
-create table 'tbl_auth_assignment'
+create table 'auth_assignment'
 (
    "item_name"            varchar(64) not null,
    "user_id"              varchar(64) not null,
    "biz_rule"              text,
    "data"                 text,
    primary key ("item_name","user_id"),
-   foreign key ("item_name") references 'tbl_auth_item' ("name") on delete cascade on update cascade
+   foreign key ("item_name") references 'auth_item' ("name") on delete cascade on update cascade
 );

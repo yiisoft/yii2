@@ -21,8 +21,8 @@ use yii\helpers\StringHelper;
  * row in a database table. The object's attributes are mapped to the columns of the corresponding table.
  * Referencing an Active Record attribute is equivalent to accessing the corresponding table column for that record.
  *
- * As an example, say that the `Customer` ActiveRecord class is associated with the `tbl_customer` table.
- * This would mean that the class's `name` attribute is automatically mapped to the `name` column in `tbl_customer`.
+ * As an example, say that the `Customer` ActiveRecord class is associated with the `customer` table.
+ * This would mean that the class's `name` attribute is automatically mapped to the `name` column in `customer` table.
  * Thanks to Active Record, assuming the variable `$customer` is an object of type `Customer`, to get the value of
  * the `name` column for the table row, you can use the expression `$customer->name`.
  * In this example, Active Record is providing an object-oriented interface for accessing data stored in the database.
@@ -38,7 +38,7 @@ use yii\helpers\StringHelper;
  * {
  *     public static function tableName()
  *     {
- *         return 'tbl_customer';
+ *         return 'customer';
  *     }
  * }
  * ```
@@ -58,12 +58,12 @@ use yii\helpers\StringHelper;
  * ```php
  * $user = new User();
  * $user->name = 'Qiang';
- * $user->save();  // a new row is inserted into tbl_user
+ * $user->save();  // a new row is inserted into user table
  *
  * // the following will retrieve the user 'CeBe' from the database
  * $user = User::find()->where(['name' => 'CeBe'])->one();
  *
- * // this will get related records from table tbl_orders when relation is defined
+ * // this will get related records from orders table when relation is defined
  * $orders = $user->orders;
  * ```
  *
@@ -131,7 +131,7 @@ class ActiveRecord extends BaseActiveRecord
      * Below is an example:
      *
      * ~~~
-     * $customers = Customer::findBySql('SELECT * FROM tbl_customer')->all();
+     * $customers = Customer::findBySql('SELECT * FROM customer')->all();
      * ~~~
      *
      * @param string $sql the SQL statement to be executed

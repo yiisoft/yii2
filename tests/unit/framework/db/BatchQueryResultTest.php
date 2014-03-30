@@ -31,7 +31,7 @@ class BatchQueryResultTest extends DatabaseTestCase
 
         // initialize property test
         $query = new Query();
-        $query->from('tbl_customer')->orderBy('id');
+        $query->from('customer')->orderBy('id');
         $result = $query->batch(2, $db);
         $this->assertTrue($result instanceof BatchQueryResult);
         $this->assertEquals(2, $result->batchSize);
@@ -39,7 +39,7 @@ class BatchQueryResultTest extends DatabaseTestCase
 
         // normal query
         $query = new Query();
-        $query->from('tbl_customer')->orderBy('id');
+        $query->from('customer')->orderBy('id');
         $allRows = [];
         $batch = $query->batch(2, $db);
         foreach ($batch as $rows) {
@@ -60,7 +60,7 @@ class BatchQueryResultTest extends DatabaseTestCase
 
         // empty query
         $query = new Query();
-        $query->from('tbl_customer')->where(['id' => 100]);
+        $query->from('customer')->where(['id' => 100]);
         $allRows = [];
         $batch = $query->batch(2, $db);
         foreach ($batch as $rows) {
@@ -70,7 +70,7 @@ class BatchQueryResultTest extends DatabaseTestCase
 
         // query with index
         $query = new Query();
-        $query->from('tbl_customer')->indexBy('name');
+        $query->from('customer')->indexBy('name');
         $allRows = [];
         foreach ($query->batch(2, $db) as $rows) {
             $allRows = array_merge($allRows, $rows);
@@ -82,7 +82,7 @@ class BatchQueryResultTest extends DatabaseTestCase
 
         // each
         $query = new Query();
-        $query->from('tbl_customer')->orderBy('id');
+        $query->from('customer')->orderBy('id');
         $allRows = [];
         foreach ($query->each(100, $db) as $rows) {
             $allRows[] = $rows;
@@ -94,7 +94,7 @@ class BatchQueryResultTest extends DatabaseTestCase
 
         // each with key
         $query = new Query();
-        $query->from('tbl_customer')->orderBy('id')->indexBy('name');
+        $query->from('customer')->orderBy('id')->indexBy('name');
         $allRows = [];
         foreach ($query->each(100, $db) as $key => $row) {
             $allRows[$key] = $row;

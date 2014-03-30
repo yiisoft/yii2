@@ -10,7 +10,7 @@ class ValidatorTestMainModel extends ActiveRecord
 
     public static function tableName()
     {
-        return 'tbl_validator_main';
+        return 'validator_main';
     }
 
     public function getReferences()

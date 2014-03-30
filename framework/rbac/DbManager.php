@@ -39,15 +39,15 @@ class DbManager extends Manager
      */
     public $db = 'db';
     /**
-     * @var string the name of the table storing authorization items. Defaults to 'tbl_auth_item'.
+     * @var string the name of the table storing authorization items. Defaults to 'auth_item'.
      */
     public $itemTable = '{{%auth_item}}';
     /**
-     * @var string the name of the table storing authorization item hierarchy. Defaults to 'tbl_auth_item_child'.
+     * @var string the name of the table storing authorization item hierarchy. Defaults to 'auth_item_child'.
      */
     public $itemChildTable = '{{%auth_item_child}}';
     /**
-     * @var string the name of the table storing authorization item assignments. Defaults to 'tbl_auth_assignment'.
+     * @var string the name of the table storing authorization item assignments. Defaults to 'auth_assignment'.
      */
     public $assignmentTable = '{{%auth_assignment}}';
 

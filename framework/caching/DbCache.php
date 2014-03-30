@@ -16,7 +16,7 @@ use yii\di\Instance;
 /**
  * DbCache implements a cache application component by storing cached data in a database.
  *
- * By default, DbCache stores session data in a DB table named 'tbl_cache'. This table
+ * By default, DbCache stores session data in a DB table named 'cache'. This table
  * must be pre-created. The table name can be changed by setting [[cacheTable]].
  *
  * Please refer to [[Cache]] for common cache operations that are supported by DbCache.
@@ -47,7 +47,7 @@ class DbCache extends Cache
      * The table should be pre-created as follows:
      *
      * ~~~
-     * CREATE TABLE tbl_cache (
+     * CREATE TABLE cache (
      *     id char(128) NOT NULL PRIMARY KEY,
      *     expire int(11),
      *     data BLOB

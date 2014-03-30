@@ -17,12 +17,12 @@ class SchemaTest extends DatabaseTestCase
         $schema = $this->getConnection()->schema;
 
         $tables = $schema->getTableNames();
-        $this->assertTrue(in_array('tbl_customer', $tables));
-        $this->assertTrue(in_array('tbl_category', $tables));
-        $this->assertTrue(in_array('tbl_item', $tables));
-        $this->assertTrue(in_array('tbl_order', $tables));
-        $this->assertTrue(in_array('tbl_order_item', $tables));
-        $this->assertTrue(in_array('tbl_type', $tables));
+        $this->assertTrue(in_array('customer', $tables));
+        $this->assertTrue(in_array('category', $tables));
+        $this->assertTrue(in_array('item', $tables));
+        $this->assertTrue(in_array('order', $tables));
+        $this->assertTrue(in_array('order_item', $tables));
+        $this->assertTrue(in_array('type', $tables));
     }
 
     public function testGetTableSchemas()
@@ -49,8 +49,8 @@ class SchemaTest extends DatabaseTestCase
 
         $schema->db->enableSchemaCache = true;
         $schema->db->schemaCache = new FileCache();
-        $noCacheTable = $schema->getTableSchema('tbl_type', true);
-        $cachedTable = $schema->getTableSchema('tbl_type', true);
+        $noCacheTable = $schema->getTableSchema('type', true);
+        $cachedTable = $schema->getTableSchema('type', true);
         $this->assertEquals($noCacheTable, $cachedTable);
     }
 
@@ -59,11 +59,11 @@ class SchemaTest extends DatabaseTestCase
         /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
-        $table = $schema->getTableSchema('tbl_composite_fk');
+        $table = $schema->getTableSchema('composite_fk');
 
         $this->assertCount(1, $table->foreignKeys);
         $this->assertTrue(isset($table->foreignKeys[0]));
-        $this->assertEquals('tbl_order_item', $table->foreignKeys[0][0]);
+        $this->assertEquals('order_item', $table->foreignKeys[0][0]);
         $this->assertEquals('order_id', $table->foreignKeys[0]['order_id']);
         $this->assertEquals('item_id', $table->foreignKeys[0]['item_id']);
     }

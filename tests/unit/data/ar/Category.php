@@ -17,7 +17,7 @@ class Category extends ActiveRecord
 {
     public static function tableName()
     {
-        return 'tbl_category';
+        return 'category';
     }
 
     public function getItems()

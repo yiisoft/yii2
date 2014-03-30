@@ -39,9 +39,9 @@ use yii\caching\Cache;
  * After the DB connection is established, one can execute SQL statements like the following:
  *
  * ~~~
- * $command = $connection->createCommand('SELECT * FROM tbl_post');
+ * $command = $connection->createCommand('SELECT * FROM post');
  * $posts = $command->queryAll();
- * $command = $connection->createCommand('UPDATE tbl_post SET status=1');
+ * $command = $connection->createCommand('UPDATE post SET status=1');
  * $command->execute();
  * ~~~
  *
@@ -50,7 +50,7 @@ use yii\caching\Cache;
  * to prevent SQL injection attacks. The following is an example:
  *
  * ~~~
- * $command = $connection->createCommand('SELECT * FROM tbl_post WHERE id=:id');
+ * $command = $connection->createCommand('SELECT * FROM post WHERE id=:id');
  * $command->bindValue(':id', $_GET['id']);
  * $post = $command->query();
  * ~~~
@@ -221,7 +221,7 @@ class Connection extends Component
      * as `{{%TableName}}`, then the percentage character `%` will be replaced with this
      * property value. For example, `{{%post}}` becomes `{{tbl_post}}`.
      */
-    public $tablePrefix = 'tbl_';
+    public $tablePrefix = '';
     /**
      * @var array mapping between PDO driver names and [[Schema]] classes.
      * The keys of the array are PDO driver names while the values the corresponding

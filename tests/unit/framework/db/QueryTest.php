@@ -29,8 +29,8 @@ class QueryTest extends DatabaseTestCase
     public function testFrom()
     {
         $query = new Query;
-        $query->from('tbl_user');
-        $this->assertEquals(['tbl_user'], $query->from);
+        $query->from('user');
+        $this->assertEquals(['user'], $query->from);
     }
 
     public function testWhere()
@@ -117,10 +117,10 @@ class QueryTest extends DatabaseTestCase
     {
         $db = $this->getConnection();
 
-        $result = (new Query)->from('tbl_customer')->where(['status' => 2])->one($db);
+        $result = (new Query)->from('customer')->where(['status' => 2])->one($db);
         $this->assertEquals('user3', $result['name']);
 
-        $result = (new Query)->from('tbl_customer')->where(['status' => 3])->one($db);
+        $result = (new Query)->from('customer')->where(['status' => 3])->one($db);
         $this->assertFalse($result);
     }
 }
