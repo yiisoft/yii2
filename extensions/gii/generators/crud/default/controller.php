@@ -142,18 +142,15 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 <?php
 if (count($pks) === 1) {
     $condition = '$id';
-    // find() would return Query when $id === null
-    $nullCheck = '$id !== null && ';
 } else {
     $condition = [];
     foreach ($pks as $pk) {
         $condition[] = "'$pk' => \$$pk";
     }
     $condition = '[' . implode(', ', $condition) . ']';
-    $nullCheck = '';
 }
 ?>
-        if (<?= $nullCheck ?>($model = <?= $modelClass ?>::find(<?= $condition ?>)) !== null) {
+        if (($model = <?= $modelClass ?>::find(<?= $condition ?>)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

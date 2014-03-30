@@ -68,13 +68,17 @@ class ActiveRecord extends BaseActiveRecord
     public static function find($q = null)
     {
         $query = static::createQuery();
-        if (is_array($q)) {
-            return $query->andWhere($q)->one();
-        } elseif ($q !== null) {
-            return static::get($q);
+        $args = func_get_args();
+        if (empty($args)) {
+            return $query;
         }
 
-        return $query;
+        $q = reset($args);
+        if (is_array($q)) {
+            return $query->andWhere($q)->one();
+        } else {
+            return static::get($q);
+        }
     }
 
     /**
