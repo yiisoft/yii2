@@ -464,11 +464,11 @@ abstract class Application extends Module
 
     /**
      * Returns the error handler component.
-     * @return ErrorHandler the error handler application component.
+     * @return \yii\web\ErrorHandler|\yii\console\ErrorHandler the error handler application component.
      */
     public function getErrorHandler()
     {
-        return $this->get('errorHandler', false);
+        return $this->get('errorHandler');
     }
 
     /**
