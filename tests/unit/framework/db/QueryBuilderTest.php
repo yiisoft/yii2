@@ -115,7 +115,7 @@ class QueryBuilderTest extends DatabaseTestCase
 
     public function testAddDropPrimaryKey()
     {
-        $tableName = 'tbl_constraints';
+        $tableName = 'constraints';
         $pkeyName = $tableName . "_pkey";
 
         // ADD

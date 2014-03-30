@@ -31,7 +31,7 @@ And the following example shows how to use ActiveDataProvider without ActiveReco
 ```php
 $query = new Query();
 $provider = new ActiveDataProvider([
-    'query' => $query->from('tbl_post'),
+    'query' => $query->from('post'),
     'pagination' => [
         'pageSize' => 20,
     ],
@@ -64,7 +64,7 @@ ArrayDataProvider may be used in the following way:
 ```php
 $query = new Query();
 $provider = new ArrayDataProvider([
-    'allModels' => $query->from('tbl_post')->all(),
+    'allModels' => $query->from('post')->all(),
     'sort' => [
         'attributes' => ['id', 'username', 'email'],
     ],
@@ -94,11 +94,11 @@ and pagination behaviors.
 
 ```php
 $count = Yii::$app->db->createCommand('
-    SELECT COUNT(*) FROM tbl_user WHERE status=:status
+    SELECT COUNT(*) FROM user WHERE status=:status
 ', [':status' => 1])->queryScalar();
 
 $dataProvider = new SqlDataProvider([
-    'sql' => 'SELECT * FROM tbl_user WHERE status=:status',
+    'sql' => 'SELECT * FROM user WHERE status=:status',
     'params' => [':status' => 1],
     'totalCount' => $count,
     'sort' => [

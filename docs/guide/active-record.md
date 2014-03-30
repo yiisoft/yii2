@@ -7,9 +7,9 @@ an Active Record instance corresponds to a row of that table, and an attribute o
 instance represents the value of a column in that row. Instead of writing raw SQL statements,
 you can work with Active Record in an object-oriented fashion to manipulate the data in database tables.
 
-For example, assume `Customer` is an Active Record class is associated with the `tbl_customer` table
-and `name` is a column of `tbl_customer`. You can write the following code to insert a new
-row into `tbl_customer`:
+For example, assume `Customer` is an Active Record class is associated with the `customer` table
+and `name` is a column of `customer` table. You can write the following code to insert a new
+row into `customer` table:
 
 ```php
 $customer = new Customer();
@@ -21,7 +21,7 @@ The above code is equivalent to using the following raw SQL statement, which is 
 intuitive, more error prone, and may have compatibility problem for different DBMS:
 
 ```php
-$db->createCommand('INSERT INTO tbl_customer (name) VALUES (:name)', [
+$db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
     ':name' => 'Qiang',
 ])->execute();
 ```
@@ -45,7 +45,7 @@ class Customer extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'tbl_customer';
+        return 'customer';
     }
 }
 ```
@@ -144,7 +144,7 @@ $customers = Customer::find()->indexBy('id')->all();
 // $customers array is indexed by customer IDs
 
 // to retrieve customers using a raw SQL statement:
-$sql = 'SELECT * FROM tbl_customer';
+$sql = 'SELECT * FROM customer';
 $customers = Customer::findBySql($sql)->all();
 ```
 
@@ -332,8 +332,8 @@ $orders = $customer->orders;  // $orders is an array of Order objects
 Behind the scene, the above code executes the following two SQL queries, one for each line of code:
 
 ```sql
-SELECT * FROM tbl_customer WHERE id=1;
-SELECT * FROM tbl_order WHERE customer_id=1;
+SELECT * FROM customer WHERE id=1;
+SELECT * FROM order WHERE customer_id=1;
 ```
 
 > Tip: If you access the expression `$customer->orders` again, it will not perform the second SQL query again.
@@ -381,7 +381,7 @@ Sometimes, two tables are related together via an intermediary table called [piv
 we can customize the [[yii\db\ActiveQuery]] object by calling its [[yii\db\ActiveQuery::via()|via()]] or
 [[yii\db\ActiveQuery::viaTable()|viaTable()]] method.
 
-For example, if table `tbl_order` and table `tbl_item` are related via pivot table `tbl_order_item`,
+For example, if table `order` and table `item` are related via pivot table `order_item`,
 we can declare the `items` relation in the `Order` class like the following:
 
 ```php
@@ -390,7 +390,7 @@ class Order extends \yii\db\ActiveRecord
     public function getItems()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
-            ->viaTable('tbl_order_item', ['order_id' => 'id']);
+            ->viaTable('order_item', ['order_id' => 'id']);
     }
 }
 ```
@@ -426,9 +426,9 @@ to retrieve the corresponding data and populate it into the related objects. No 
 if you access the same related objects again. We call this *lazy loading*. For example,
 
 ```php
-// SQL executed: SELECT * FROM tbl_customer WHERE id=1
+// SQL executed: SELECT * FROM customer WHERE id=1
 $customer = Customer::find(1);
-// SQL executed: SELECT * FROM tbl_order WHERE customer_id=1
+// SQL executed: SELECT * FROM order WHERE customer_id=1
 $orders = $customer->orders;
 // no SQL executed
 $orders2 = $customer->orders;
@@ -437,11 +437,11 @@ $orders2 = $customer->orders;
 Lazy loading is very convenient to use. However, it may suffer from a performance issue in the following scenario:
 
 ```php
-// SQL executed: SELECT * FROM tbl_customer LIMIT 100
+// SQL executed: SELECT * FROM customer LIMIT 100
 $customers = Customer::find()->limit(100)->all();
 
 foreach ($customers as $customer) {
-    // SQL executed: SELECT * FROM tbl_order WHERE customer_id=...
+    // SQL executed: SELECT * FROM order WHERE customer_id=...
     $orders = $customer->orders;
     // ...handle $orders...
 }
@@ -454,8 +454,8 @@ is performed to bring back the orders of that customer.
 To solve the above performance problem, you can use the so-called *eager loading* approach by calling [[yii\db\ActiveQuery::with()]]:
 
 ```php
-// SQL executed: SELECT * FROM tbl_customer LIMIT 100;
-//               SELECT * FROM tbl_orders WHERE customer_id IN (1,2,...)
+// SQL executed: SELECT * FROM customer LIMIT 100;
+//               SELECT * FROM orders WHERE customer_id IN (1,2,...)
 $customers = Customer::find()->limit(100)
     ->with('orders')->all();
 
@@ -486,11 +486,11 @@ done for both lazy loading and eager loading. For example,
 
 ```php
 $customer = Customer::find(1);
-// lazy loading: SELECT * FROM tbl_order WHERE customer_id=1 AND subtotal>100
+// lazy loading: SELECT * FROM order WHERE customer_id=1 AND subtotal>100
 $orders = $customer->getOrders()->where('subtotal>100')->all();
 
-// eager loading: SELECT * FROM tbl_customer LIMIT 100
-//                SELECT * FROM tbl_order WHERE customer_id IN (1,2,...) AND subtotal>100
+// eager loading: SELECT * FROM customer LIMIT 100
+//                SELECT * FROM order WHERE customer_id IN (1,2,...) AND subtotal>100
 $customers = Customer::find()->limit(100)->with([
     'orders' => function($query) {
         $query->andWhere('subtotal>100');
@@ -530,11 +530,11 @@ that finds those orders, and accessing `customer->orders` will trigger one SQL e
 the `customer` of an order will trigger another SQL execution:
 
 ```php
-// SELECT * FROM tbl_customer WHERE id=1
+// SELECT * FROM customer WHERE id=1
 $customer = Customer::find(1);
 // echoes "not equal"
-// SELECT * FROM tbl_order WHERE customer_id=1
-// SELECT * FROM tbl_customer WHERE id=1
+// SELECT * FROM order WHERE customer_id=1
+// SELECT * FROM customer WHERE id=1
 if ($customer->orders[0]->customer === $customer) {
     echo 'equal';
 } else {
@@ -559,10 +559,10 @@ class Customer extends ActiveRecord
 Now if we execute the same query as shown above, we would get:
 
 ```php
-// SELECT * FROM tbl_customer WHERE id=1
+// SELECT * FROM customer WHERE id=1
 $customer = Customer::find(1);
 // echoes "equal"
-// SELECT * FROM tbl_order WHERE customer_id=1
+// SELECT * FROM order WHERE customer_id=1
 if ($customer->orders[0]->customer === $customer) {
     echo 'equal';
 } else {
@@ -574,8 +574,8 @@ In the above, we have shown how to use inverse relations in lazy loading. Invers
 eager loading:
 
 ```php
-// SELECT * FROM tbl_customer
-// SELECT * FROM tbl_order WHERE customer_id IN (1, 2, ...)
+// SELECT * FROM customer
+// SELECT * FROM order WHERE customer_id IN (1, 2, ...)
 $customers = Customer::find()->with('orders')->all();
 // echoes "equal"
 if ($customers[0]->orders[0]->customer === $customers[0]) {
@@ -600,7 +600,7 @@ explicitly to build up the JOIN query, you may reuse the existing relation defin
 
 ```php
 // find all orders and sort the orders by the customer id and the order id. also eager loading "customer"
-$orders = Order::find()->joinWith('customer')->orderBy('tbl_customer.id, tbl_order.id')->all();
+$orders = Order::find()->joinWith('customer')->orderBy('customer.id, order.id')->all();
 // find all orders that contain books, and eager loading "books"
 $orders = Order::find()->innerJoinWith('books')->all();
 ```
@@ -617,7 +617,7 @@ and you may also join with sub-relations. For example,
 $orders = Order::find()->innerJoinWith([
     'books',
     'customer' => function ($query) {
-        $query->where('tbl_customer.created_at > ' . (time() - 24 * 3600));
+        $query->where('customer.created_at > ' . (time() - 24 * 3600));
     }
 ])->all();
 // join with sub-relations: join with books and books' authors
@@ -638,7 +638,7 @@ For example, you may filter the primary models by the conditions on the related 
 above. You may also sort the primary models using columns from the related tables.
 
 When using [[yii\db\ActiveQuery::joinWith()|joinWith()]], you are responsible to disambiguate column names.
-In the above examples, we use `tbl_item.id` and `tbl_order.id` to disambiguate the `id` column references
+In the above examples, we use `item.id` and `order.id` to disambiguate the `id` column references
 because both of the order table and the item table contain a column named `id`.
 
 By default, when you join with a relation, the relation will also be eagerly loaded. You may change this behavior
@@ -678,8 +678,8 @@ When you perform query using [[yii\db\ActiveQuery::joinWith()|joinWith()]], the 
 of the corresponding JOIN query. For example,
 
 ```php
-// SELECT tbl_user.* FROM tbl_user LEFT JOIN tbl_item ON tbl_item.owner_id=tbl_user.id AND category_id=1
-// SELECT * FROM tbl_item WHERE owner_id IN (...) AND category_id=1
+// SELECT user.* FROM user LEFT JOIN item ON item.owner_id=user.id AND category_id=1
+// SELECT * FROM item WHERE owner_id IN (...) AND category_id=1
 $users = User::find()->joinWith('books')->all();
 ```
 
@@ -687,9 +687,9 @@ Note that if you use eager loading via [[yii\db\ActiveQuery::with()]] or lazy lo
 in the WHERE part of the corresponding SQL statement, because there is no JOIN query involved. For example,
 
 ```php
-// SELECT * FROM tbl_user WHERE id=10
+// SELECT * FROM user WHERE id=10
 $user = User::find(10);
-// SELECT * FROM tbl_item WHERE owner_id=10 AND category_id=1
+// SELECT * FROM item WHERE owner_id=10 AND category_id=1
 $books = $user->books;
 ```
 

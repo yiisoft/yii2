@@ -228,6 +228,7 @@ Yii Framework 2 Change Log
 	- Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers\Url::canonical` instead.
 - Chg #2691: Null parameters will not be included in the generated URLs by `UrlManager` (gonimar, qiangxue)
 - Chg #2734: `FileCache::keyPrefix` defaults to empty string now (qiangxue)
+- Chg #2911: Removed `tbl_` default for table prefix (samdark)
 _ Chg #2912: Relative view files will be looked for under the directory containing the view currently being rendered (qiangxue)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)

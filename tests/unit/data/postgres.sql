@@ -4,28 +4,28 @@
  * and create an account 'postgres/postgres' which owns this test database.
  */
 
-DROP TABLE IF EXISTS tbl_order_item CASCADE;
-DROP TABLE IF EXISTS tbl_item CASCADE;
-DROP TABLE IF EXISTS tbl_order CASCADE;
-DROP TABLE IF EXISTS tbl_category CASCADE;
-DROP TABLE IF EXISTS tbl_customer CASCADE;
-DROP TABLE IF EXISTS tbl_profile CASCADE;
-DROP TABLE IF EXISTS tbl_type CASCADE;
-DROP TABLE IF EXISTS tbl_null_values CASCADE;
-DROP TABLE IF EXISTS tbl_constraints CASCADE;
+DROP TABLE IF EXISTS order_item CASCADE;
+DROP TABLE IF EXISTS item CASCADE;
+DROP TABLE IF EXISTS order CASCADE;
+DROP TABLE IF EXISTS category CASCADE;
+DROP TABLE IF EXISTS customer CASCADE;
+DROP TABLE IF EXISTS profile CASCADE;
+DROP TABLE IF EXISTS type CASCADE;
+DROP TABLE IF EXISTS null_values CASCADE;
+DROP TABLE IF EXISTS constraints CASCADE;
 
-CREATE TABLE tbl_constraints
+CREATE TABLE constraints
 (
   id integer not null,
   field1 varchar(255)
 );
 
-CREATE TABLE tbl_profile (
+CREATE TABLE profile (
   id serial not null primary key,
   description varchar(128) NOT NULL
 );
 
-CREATE TABLE tbl_customer (
+CREATE TABLE customer (
   id serial not null primary key,
   email varchar(128) NOT NULL,
   name varchar(128),
@@ -34,35 +34,35 @@ CREATE TABLE tbl_customer (
   profile_id integer
 );
 
-comment on column public.tbl_customer.email is 'someone@example.com';
+comment on column public.customer.email is 'someone@example.com';
 
-CREATE TABLE tbl_category (
+CREATE TABLE category (
   id serial not null primary key,
   name varchar(128) NOT NULL
 );
 
-CREATE TABLE tbl_item (
+CREATE TABLE item (
   id serial not null primary key,
   name varchar(128) NOT NULL,
-  category_id integer NOT NULL references tbl_category(id) on UPDATE CASCADE on DELETE CASCADE
+  category_id integer NOT NULL references category(id) on UPDATE CASCADE on DELETE CASCADE
 );
 
-CREATE TABLE tbl_order (
+CREATE TABLE order (
   id serial not null primary key,
-  customer_id integer NOT NULL references tbl_customer(id) on UPDATE CASCADE on DELETE CASCADE,
+  customer_id integer NOT NULL references customer(id) on UPDATE CASCADE on DELETE CASCADE,
   created_at integer NOT NULL,
   total decimal(10,0) NOT NULL
 );
 
-CREATE TABLE tbl_order_item (
-  order_id integer NOT NULL references tbl_order(id) on UPDATE CASCADE on DELETE CASCADE,
-  item_id integer NOT NULL references tbl_item(id) on UPDATE CASCADE on DELETE CASCADE,
+CREATE TABLE order_item (
+  order_id integer NOT NULL references order(id) on UPDATE CASCADE on DELETE CASCADE,
+  item_id integer NOT NULL references item(id) on UPDATE CASCADE on DELETE CASCADE,
   quantity integer NOT NULL,
   subtotal decimal(10,0) NOT NULL,
   PRIMARY KEY (order_id,item_id)
 );
 
-CREATE TABLE tbl_null_values (
+CREATE TABLE null_values (
   id INT NOT NULL,
   var1 INT NULL,
   var2 INT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE tbl_null_values (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE tbl_type (
+CREATE TABLE type (
   int_col integer NOT NULL,
   int_col2 integer DEFAULT '1',
   char_col char(100) NOT NULL,
@@ -86,58 +86,58 @@ CREATE TABLE tbl_type (
   bool_col2 smallint DEFAULT '1'
 );
 
-INSERT INTO tbl_profile (description) VALUES ('profile customer 1');
-INSERT INTO tbl_profile (description) VALUES ('profile customer 3');
+INSERT INTO profile (description) VALUES ('profile customer 1');
+INSERT INTO profile (description) VALUES ('profile customer 3');
 
-INSERT INTO tbl_customer (email, name, address, status, profile_id) VALUES ('user1@example.com', 'user1', 'address1', 1, 1);
-INSERT INTO tbl_customer (email, name, address, status) VALUES ('user2@example.com', 'user2', 'address2', 1);
-INSERT INTO tbl_customer (email, name, address, status, profile_id) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
+INSERT INTO customer (email, name, address, status, profile_id) VALUES ('user1@example.com', 'user1', 'address1', 1, 1);
+INSERT INTO customer (email, name, address, status) VALUES ('user2@example.com', 'user2', 'address2', 1);
+INSERT INTO customer (email, name, address, status, profile_id) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
 
-INSERT INTO tbl_category (name) VALUES ('Books');
-INSERT INTO tbl_category (name) VALUES ('Movies');
+INSERT INTO category (name) VALUES ('Books');
+INSERT INTO category (name) VALUES ('Movies');
 
-INSERT INTO tbl_item (name, category_id) VALUES ('Agile Web Application Development with Yii1.1 and PHP5', 1);
-INSERT INTO tbl_item (name, category_id) VALUES ('Yii 1.1 Application Development Cookbook', 1);
-INSERT INTO tbl_item (name, category_id) VALUES ('Ice Age', 2);
-INSERT INTO tbl_item (name, category_id) VALUES ('Toy Story', 2);
-INSERT INTO tbl_item (name, category_id) VALUES ('Cars', 2);
+INSERT INTO item (name, category_id) VALUES ('Agile Web Application Development with Yii1.1 and PHP5', 1);
+INSERT INTO item (name, category_id) VALUES ('Yii 1.1 Application Development Cookbook', 1);
+INSERT INTO item (name, category_id) VALUES ('Ice Age', 2);
+INSERT INTO item (name, category_id) VALUES ('Toy Story', 2);
+INSERT INTO item (name, category_id) VALUES ('Cars', 2);
 
-INSERT INTO tbl_order (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
-INSERT INTO tbl_order (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
-INSERT INTO tbl_order (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
+INSERT INTO order (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO order (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
+INSERT INTO order (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
 
-INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
-INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
-INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
-INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
-INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
-INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
+INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
+INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
+INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
+INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 /**
  * (Postgres-)Database Schema for validator tests
  */
 
-DROP TABLE IF EXISTS tbl_validator_main CASCADE;
-DROP TABLE IF EXISTS tbl_validator_ref CASCADE;
+DROP TABLE IF EXISTS validator_main CASCADE;
+DROP TABLE IF EXISTS validator_ref CASCADE;
 
-CREATE TABLE tbl_validator_main (
+CREATE TABLE validator_main (
   id integer not null primary key,
   field1 VARCHAR(255)
 );
 
-CREATE TABLE tbl_validator_ref (
+CREATE TABLE validator_ref (
   id integer not null primary key,
   a_field VARCHAR(255),
   ref     integer
 );
 
-INSERT INTO tbl_validator_main (id, field1) VALUES (1, 'just a string1');
-INSERT INTO tbl_validator_main (id, field1) VALUES (2, 'just a string2');
-INSERT INTO tbl_validator_main (id, field1) VALUES (3, 'just a string3');
-INSERT INTO tbl_validator_main (id, field1) VALUES (4, 'just a string4');
-INSERT INTO tbl_validator_ref (id, a_field, ref) VALUES (1, 'ref_to_2', 2);
-INSERT INTO tbl_validator_ref (id, a_field, ref) VALUES (2, 'ref_to_2', 2);
-INSERT INTO tbl_validator_ref (id, a_field, ref) VALUES (3, 'ref_to_3', 3);
-INSERT INTO tbl_validator_ref (id, a_field, ref) VALUES (4, 'ref_to_4', 4);
-INSERT INTO tbl_validator_ref (id, a_field, ref) VALUES (5, 'ref_to_4', 4);
-INSERT INTO tbl_validator_ref (id, a_field, ref) VALUES (6, 'ref_to_5', 5);
+INSERT INTO validator_main (id, field1) VALUES (1, 'just a string1');
+INSERT INTO validator_main (id, field1) VALUES (2, 'just a string2');
+INSERT INTO validator_main (id, field1) VALUES (3, 'just a string3');
+INSERT INTO validator_main (id, field1) VALUES (4, 'just a string4');
+INSERT INTO validator_ref (id, a_field, ref) VALUES (1, 'ref_to_2', 2);
+INSERT INTO validator_ref (id, a_field, ref) VALUES (2, 'ref_to_2', 2);
+INSERT INTO validator_ref (id, a_field, ref) VALUES (3, 'ref_to_3', 3);
+INSERT INTO validator_ref (id, a_field, ref) VALUES (4, 'ref_to_4', 4);
+INSERT INTO validator_ref (id, a_field, ref) VALUES (5, 'ref_to_4', 4);
+INSERT INTO validator_ref (id, a_field, ref) VALUES (6, 'ref_to_5', 5);

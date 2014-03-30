@@ -11,7 +11,7 @@ A typical usage of the query builder looks like the following:
 ```php
 $rows = (new \yii\db\Query())
     ->select('id, name')
-    ->from('tbl_user')
+    ->from('user')
     ->limit(10)
     ->all();
 
@@ -19,7 +19,7 @@ $rows = (new \yii\db\Query())
 
 $query = (new \yii\db\Query())
     ->select('id, name')
-    ->from('tbl_user')
+    ->from('user')
     ->limit(10);
 
 // Create a command. You can get the actual SQL using $command->sql
@@ -62,7 +62,7 @@ In order to form a basic `SELECT` query, you need to specify what columns to sel
 
 ```php
 $query->select('id, name')
-    ->from('tbl_user');
+    ->from('user');
 ```
 
 Select options can be specified as a comma-separated string, as in the above, or as an array.
@@ -70,7 +70,7 @@ The array syntax is especially useful when forming the selection dynamically:
 
 ```php
 $query->select(['id', 'name'])
-    ->from('tbl_user');
+    ->from('user');
 ```
 
 > Info: You should always use the array format if your `SELECT` clause contains SQL expressions.
@@ -78,14 +78,14 @@ $query->select(['id', 'name'])
 > If you list it together with other columns in a string, the expression may be split into several parts
 > by commas, which is not what you want to see.
 
-When specifying columns, you may include the table prefixes or column aliases, e.g., `tbl_user.id`, `tbl_user.id AS user_id`.
+When specifying columns, you may include the table prefixes or column aliases, e.g., `user.id`, `user.id AS user_id`.
 If you are using array to specify the columns, you may also use the array keys to specify the column aliases,
-e.g., `['user_id' => 'tbl_user.id', 'user_name' => 'tbl_user.name']`.
+e.g., `['user_id' => 'user.id', 'user_name' => 'user.name']`.
 
 To select distinct rows, you may call `distinct()`, like the following:
 
 ```php
-$query->select('user_id')->distinct()->from('tbl_post');
+$query->select('user_id')->distinct()->from('post');
 ```
 
 ### `FROM`
@@ -93,30 +93,30 @@ $query->select('user_id')->distinct()->from('tbl_post');
 To specify which table(s) to select data from, call `from()`:
 
 ```php
-$query->select('*')->from('tbl_user');
+$query->select('*')->from('user');
 ```
 
 You may specify multiple tables using a comma-separated string or an array.
-Table names can contain schema prefixes (e.g. `'public.tbl_user'`) and/or table aliases (e.g. `'tbl_user u'`).
+Table names can contain schema prefixes (e.g. `'public.user'`) and/or table aliases (e.g. `'user u'`).
 The method will automatically quote the table names unless it contains some parenthesis
 (which means the table is given as a sub-query or DB expression). For example,
 
 ```php
-$query->select('u.*, p.*')->from(['tbl_user u', 'tbl_post p']);
+$query->select('u.*, p.*')->from(['user u', 'post p']);
 ```
 
 When the tables are specified as an array, you may also use the array keys as the table aliases
 (if a table does not need alias, do not use a string key). For example,
 
 ```php
-$query->select('u.*, p.*')->from(['u' => 'tbl_user u', 'p' => 'tbl_post']);
+$query->select('u.*, p.*')->from(['u' => 'user u', 'p' => 'post']);
 ```
 
 You may specify a sub-query using a `Query` object. In this case, the corresponding array key will be used
 as the alias for the sub-query.
 
 ```php
-$subQuery = (new Query())->select('id')->from('tbl_user')->where('status=1');
+$subQuery = (new Query())->select('id')->from('user')->where('status=1');
 $query->select('*')->from(['u' => $subQuery]);
 ```
 
@@ -293,9 +293,9 @@ The `JOIN` clauses are generated in the Query Builder by using the applicable jo
 This left join selects data from two related tables in one query:
 
 ```php
-$query->select(['tbl_user.name AS author', 'tbl_post.title as title'])
-    ->from('tbl_user')
-    ->leftJoin('tbl_post', 'tbl_post.user_id = tbl_user.id');
+$query->select(['user.name AS author', 'post.title as title'])
+    ->from('user')
+    ->leftJoin('post', 'post.user_id = user.id');
 ```
 
 In the code, the `leftJoin()` method's first parameter
@@ -304,7 +304,7 @@ specifies the table to join to. The second parameter defines the join condition.
 If your database application supports other join types, you can use those via the  generic `join` method:
 
 ```php
-$query->join('FULL OUTER JOIN', 'tbl_post', 'tbl_post.user_id = tbl_user.id');
+$query->join('FULL OUTER JOIN', 'post', 'post.user_id = user.id');
 ```
 
 The first argument is the join type to perform. The second is the table to join to, and the third is the condition.
@@ -325,10 +325,10 @@ In Yii in order to build it you can first form two query objects and then use `u
 
 ```php
 $query = new Query();
-$query->select("id, 'post' as type, name")->from('tbl_post')->limit(10);
+$query->select("id, 'post' as type, name")->from('post')->limit(10);
 
 $anotherQuery = new Query();
-$anotherQuery->select('id, 'user' as type, name')->from('tbl_user')->limit(10);
+$anotherQuery->select('id, 'user' as type, name')->from('user')->limit(10);
 
 $query->union($anotherQuery);
 ```
@@ -348,7 +348,7 @@ Batch query can be used like the following:
 use yii\db\Query;
 
 $query = (new Query())
-    ->from('tbl_user')
+    ->from('user')
     ->orderBy('id');
 
 foreach ($query->batch() as $users) {
@@ -377,7 +377,7 @@ will still keep the proper index. For example,
 use yii\db\Query;
 
 $query = (new Query())
-    ->from('tbl_user')
+    ->from('user')
     ->indexBy('username');
 
 foreach ($query->batch() as $users) {

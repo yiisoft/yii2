@@ -3,31 +3,31 @@
  * The database setup in config.php is required to perform then relevant tests:
  */
 
-DROP TABLE IF EXISTS tbl_composite_fk CASCADE;
-DROP TABLE IF EXISTS tbl_order_item CASCADE;
-DROP TABLE IF EXISTS tbl_item CASCADE;
-DROP TABLE IF EXISTS tbl_order CASCADE;
-DROP TABLE IF EXISTS tbl_category CASCADE;
-DROP TABLE IF EXISTS tbl_customer CASCADE;
-DROP TABLE IF EXISTS tbl_profile CASCADE;
-DROP TABLE IF EXISTS tbl_null_values CASCADE;
-DROP TABLE IF EXISTS tbl_type CASCADE;
-DROP TABLE IF EXISTS tbl_constraints CASCADE;
+DROP TABLE IF EXISTS composite_fk CASCADE;
+DROP TABLE IF EXISTS order_item CASCADE;
+DROP TABLE IF EXISTS item CASCADE;
+DROP TABLE IF EXISTS order CASCADE;
+DROP TABLE IF EXISTS category CASCADE;
+DROP TABLE IF EXISTS customer CASCADE;
+DROP TABLE IF EXISTS profile CASCADE;
+DROP TABLE IF EXISTS null_values CASCADE;
+DROP TABLE IF EXISTS type CASCADE;
+DROP TABLE IF EXISTS constraints CASCADE;
 
-CREATE TABLE `tbl_constraints`
+CREATE TABLE `constraints`
 (
   `id` integer not null,
   `field1` varchar(255)
 );
 
 
-CREATE TABLE `tbl_profile` (
+CREATE TABLE `profile` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `description` varchar(128) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `tbl_customer` (
+CREATE TABLE `customer` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(128) NOT NULL,
   `name` varchar(128),
@@ -37,50 +37,50 @@ CREATE TABLE `tbl_customer` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `tbl_category` (
+CREATE TABLE `category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `tbl_item` (
+CREATE TABLE `item` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL,
   `category_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_item_category_id` (`category_id`),
-  CONSTRAINT `FK_item_category_id` FOREIGN KEY (`category_id`) REFERENCES `tbl_category` (`id`) ON DELETE CASCADE
+  CONSTRAINT `FK_item_category_id` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `tbl_order` (
+CREATE TABLE `order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `customer_id` int(11) NOT NULL,
   `created_at` int(11) NOT NULL,
   `total` decimal(10,0) NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `FK_order_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `tbl_customer` (`id`) ON DELETE CASCADE
+  CONSTRAINT `FK_order_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `tbl_order_item` (
+CREATE TABLE `order_item` (
   `order_id` int(11) NOT NULL,
   `item_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
   `subtotal` decimal(10,0) NOT NULL,
   PRIMARY KEY (`order_id`,`item_id`),
   KEY `FK_order_item_item_id` (`item_id`),
-  CONSTRAINT `FK_order_item_order_id` FOREIGN KEY (`order_id`) REFERENCES `tbl_order` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `FK_order_item_item_id` FOREIGN KEY (`item_id`) REFERENCES `tbl_item` (`id`) ON DELETE CASCADE
+  CONSTRAINT `FK_order_item_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_order_item_item_id` FOREIGN KEY (`item_id`) REFERENCES `item` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `tbl_composite_fk` (
+CREATE TABLE `composite_fk` (
   `id` int(11) NOT NULL,
   `order_id` int(11) NOT NULL,
   `item_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `FK_composite_fk_order_item` FOREIGN KEY (`order_id`,`item_id`) REFERENCES `tbl_order_item` (`order_id`,`item_id`) ON DELETE CASCADE
+  CONSTRAINT `FK_composite_fk_order_item` FOREIGN KEY (`order_id`,`item_id`) REFERENCES `order_item` (`order_id`,`item_id`) ON DELETE CASCADE
 );
 
-CREATE TABLE tbl_null_values (
+CREATE TABLE null_values (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `var1` INT UNSIGNED NULL,
   `var2` INT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE tbl_null_values (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE `tbl_type` (
+CREATE TABLE `type` (
   `int_col` int(11) NOT NULL,
   `int_col2` int(11) DEFAULT '1',
   `char_col` char(100) NOT NULL,
@@ -104,61 +104,61 @@ CREATE TABLE `tbl_type` (
   `bool_col2` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO tbl_profile (description) VALUES ('profile customer 1');
-INSERT INTO tbl_profile (description) VALUES ('profile customer 3');
+INSERT INTO profile (description) VALUES ('profile customer 1');
+INSERT INTO profile (description) VALUES ('profile customer 3');
 
-INSERT INTO tbl_customer (email, name, address, status, profile_id) VALUES ('user1@example.com', 'user1', 'address1', 1, 1);
-INSERT INTO tbl_customer (email, name, address, status) VALUES ('user2@example.com', 'user2', 'address2', 1);
-INSERT INTO tbl_customer (email, name, address, status, profile_id) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
+INSERT INTO customer (email, name, address, status, profile_id) VALUES ('user1@example.com', 'user1', 'address1', 1, 1);
+INSERT INTO customer (email, name, address, status) VALUES ('user2@example.com', 'user2', 'address2', 1);
+INSERT INTO customer (email, name, address, status, profile_id) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
 
-INSERT INTO tbl_category (name) VALUES ('Books');
-INSERT INTO tbl_category (name) VALUES ('Movies');
+INSERT INTO category (name) VALUES ('Books');
+INSERT INTO category (name) VALUES ('Movies');
 
-INSERT INTO tbl_item (name, category_id) VALUES ('Agile Web Application Development with Yii1.1 and PHP5', 1);
-INSERT INTO tbl_item (name, category_id) VALUES ('Yii 1.1 Application Development Cookbook', 1);
-INSERT INTO tbl_item (name, category_id) VALUES ('Ice Age', 2);
-INSERT INTO tbl_item (name, category_id) VALUES ('Toy Story', 2);
-INSERT INTO tbl_item (name, category_id) VALUES ('Cars', 2);
+INSERT INTO item (name, category_id) VALUES ('Agile Web Application Development with Yii1.1 and PHP5', 1);
+INSERT INTO item (name, category_id) VALUES ('Yii 1.1 Application Development Cookbook', 1);
+INSERT INTO item (name, category_id) VALUES ('Ice Age', 2);
+INSERT INTO item (name, category_id) VALUES ('Toy Story', 2);
+INSERT INTO item (name, category_id) VALUES ('Cars', 2);
 
-INSERT INTO tbl_order (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
-INSERT INTO tbl_order (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
-INSERT INTO tbl_order (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
+INSERT INTO order (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO order (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
+INSERT INTO order (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
 
-INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
-INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
-INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
-INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
-INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
-INSERT INTO tbl_order_item (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
+INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
+INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
+INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
+INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 
 /**
  * (MySQL-)Database Schema for validator tests
  */
 
-DROP TABLE IF EXISTS tbl_validator_main CASCADE;
-DROP TABLE IF EXISTS tbl_validator_ref CASCADE;
+DROP TABLE IF EXISTS validator_main CASCADE;
+DROP TABLE IF EXISTS validator_ref CASCADE;
 
-CREATE TABLE tbl_validator_main (
+CREATE TABLE validator_main (
   `id`     INT(11) NOT NULL AUTO_INCREMENT,
   `field1` VARCHAR(255),
   PRIMARY KEY (`id`)
 ) ENGINE =InnoDB  DEFAULT CHARSET =utf8;
 
-CREATE TABLE tbl_validator_ref (
+CREATE TABLE validator_ref (
   `id`      INT(11) NOT NULL AUTO_INCREMENT,
   `a_field` VARCHAR(255),
   `ref`     INT(11),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO tbl_validator_main (id, field1) VALUES (1, 'just a string1');
-INSERT INTO tbl_validator_main (id, field1) VALUES (2, 'just a string2');
-INSERT INTO tbl_validator_main (id, field1) VALUES (3, 'just a string3');
-INSERT INTO tbl_validator_main (id, field1) VALUES (4, 'just a string4');
-INSERT INTO tbl_validator_ref (a_field, ref) VALUES ('ref_to_2', 2);
-INSERT INTO tbl_validator_ref (a_field, ref) VALUES ('ref_to_2', 2);
-INSERT INTO tbl_validator_ref (a_field, ref) VALUES ('ref_to_3', 3);
-INSERT INTO tbl_validator_ref (a_field, ref) VALUES ('ref_to_4', 4);
-INSERT INTO tbl_validator_ref (a_field, ref) VALUES ('ref_to_4', 4);
-INSERT INTO tbl_validator_ref (a_field, ref) VALUES ('ref_to_5', 5);
+INSERT INTO validator_main (id, field1) VALUES (1, 'just a string1');
+INSERT INTO validator_main (id, field1) VALUES (2, 'just a string2');
+INSERT INTO validator_main (id, field1) VALUES (3, 'just a string3');
+INSERT INTO validator_main (id, field1) VALUES (4, 'just a string4');
+INSERT INTO validator_ref (a_field, ref) VALUES ('ref_to_2', 2);
+INSERT INTO validator_ref (a_field, ref) VALUES ('ref_to_2', 2);
+INSERT INTO validator_ref (a_field, ref) VALUES ('ref_to_3', 3);
+INSERT INTO validator_ref (a_field, ref) VALUES ('ref_to_4', 4);
+INSERT INTO validator_ref (a_field, ref) VALUES ('ref_to_4', 4);
+INSERT INTO validator_ref (a_field, ref) VALUES ('ref_to_5', 5);

@@ -22,23 +22,23 @@ use yii\db\Query;
  * The database must contain the following two tables:
  *
  * ~~~
- * CREATE TABLE tbl_source_message (
+ * CREATE TABLE source_message (
  *     id INTEGER PRIMARY KEY AUTO_INCREMENT,
  *     category VARCHAR(32),
  *     message TEXT
  * );
  *
- * CREATE TABLE tbl_message (
+ * CREATE TABLE message (
  *     id INTEGER,
  *     language VARCHAR(16),
  *     translation TEXT,
  *     PRIMARY KEY (id, language),
  *     CONSTRAINT fk_message_source_message FOREIGN KEY (id)
- *         REFERENCES tbl_source_message (id) ON DELETE CASCADE ON UPDATE RESTRICT
+ *         REFERENCES source_message (id) ON DELETE CASCADE ON UPDATE RESTRICT
  * );
  * ~~~
  *
- * The `tbl_source_message` table stores the messages to be translated, and the `tbl_message` table stores
+ * The `source_message` table stores the messages to be translated, and the `message` table stores
  * the translated messages. The name of these two tables can be customized by setting [[sourceMessageTable]]
  * and [[messageTable]], respectively.
  *

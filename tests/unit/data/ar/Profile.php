@@ -16,6 +16,6 @@ class Profile extends ActiveRecord
 {
     public static function tableName()
     {
-        return 'tbl_profile';
+        return 'profile';
     }
 }
