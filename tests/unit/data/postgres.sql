@@ -44,19 +44,19 @@ CREATE TABLE "category" (
 CREATE TABLE "item" (
   id serial not null primary key,
   name varchar(128) NOT NULL,
-  category_id integer NOT NULL references category(id) on UPDATE CASCADE on DELETE CASCADE
+  category_id integer NOT NULL references "category"(id) on UPDATE CASCADE on DELETE CASCADE
 );
 
 CREATE TABLE "order" (
   id serial not null primary key,
-  customer_id integer NOT NULL references customer(id) on UPDATE CASCADE on DELETE CASCADE,
+  customer_id integer NOT NULL references "customer"(id) on UPDATE CASCADE on DELETE CASCADE,
   created_at integer NOT NULL,
   total decimal(10,0) NOT NULL
 );
 
 CREATE TABLE "order_item" (
-  order_id integer NOT NULL references order(id) on UPDATE CASCADE on DELETE CASCADE,
-  item_id integer NOT NULL references item(id) on UPDATE CASCADE on DELETE CASCADE,
+  order_id integer NOT NULL references "order"(id) on UPDATE CASCADE on DELETE CASCADE,
+  item_id integer NOT NULL references "item"(id) on UPDATE CASCADE on DELETE CASCADE,
   quantity integer NOT NULL,
   subtotal decimal(10,0) NOT NULL,
   PRIMARY KEY (order_id,item_id)
