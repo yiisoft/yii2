@@ -182,6 +182,7 @@ Yii Framework 2 Change Log
 - Enh: Added `yii\web\UrlRuleInterface` and `yii\web\CompositeUrlRule` (qiangxue)
 - Enh: Added `yii\web\Request::getAuthUser()` and `getAuthPassword()` (qiangxue)
 - Enh: Added summaryOptions and emptyTextOptions to BaseListView (johonunu)
+- Enh: Implemented Oracle column comment reading from another schema (gureedo, samdark)
 - Chg #47: Changed Markdown library to cebe/markdown and adjusted Markdown helper API (cebe)
 - Chg #735: Added back `ActiveField::hiddenInput()` (qiangxue)
 - Chg #1186: Changed `Sort` to use comma to separate multiple sort fields and use negative sign to indicate descending sort (qiangxue)
