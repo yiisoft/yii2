@@ -92,54 +92,20 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     private $_related = [];
 
     /**
-     * Creates an [[ActiveQuery]] instance for query purpose.
-     *
-     * The returned [[ActiveQuery]] instance can be further customized by calling
-     * methods defined in [[ActiveQuery]] before `one()`, `all()` or `value()` is
-     * called to return the populated active records:
-     *
-     * ~~~
-     * // find all customers
-     * $customers = Customer::find()->all();
-     *
-     * // find all active customers and order them by their age:
-     * $customers = Customer::find()
-     * ->where(['status' => 1])
-     * ->orderBy('age')
-     * ->all();
-     *
-     * // find a single customer whose primary key value is 10
-     * $customer = Customer::find(10);
-     *
-     * // the above is equivalent to:
-     * $customer = Customer::find()->where(['id' => 10])->one();
-     *
-     * // find a single customer whose age is 30 and whose status is 1
-     * $customer = Customer::find(['age' => 30, 'status' => 1]);
-     *
-     * // the above is equivalent to:
-     * $customer = Customer::find()->where(['age' => 30, 'status' => 1])->one();
-     * ~~~
-     *
-     * @param mixed $q the query parameter. This can be one of the followings:
-     *
-     *  - a scalar value (integer or string): query by a single primary key value and return the
-     *    corresponding record.
-     *  - an array of name-value pairs: query by a set of column values and return a single record matching all of them.
-     *  - null: return a new [[ActiveQuery]] object for further query purpose.
-     *
-     * @return ActiveQuery|static|null When `$q` is null, a new [[ActiveQuery]] instance
-     * is returned; when `$q` is a scalar or an array, an ActiveRecord object matching it will be
-     * returned (null will be returned if there is no matching).
-     * @throws InvalidConfigException if the AR class does not have a primary key
-     * @see createQuery()
+     * @inheritdoc
      */
-    public static function find($q = null)
+    public static function find()
     {
         $query = static::createQuery();
+        $args = func_get_args();
+        if (empty($args)) {
+            return $query;
+        }
+
+        $q = reset($args);
         if (is_array($q)) {
             return $query->andWhere($q)->one();
-        } elseif ($q !== null) {
+        } else {
             // query by primary key
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
@@ -148,8 +114,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
             }
         }
-
-        return $query;
     }
 
     /**

@@ -96,25 +96,51 @@ interface ActiveRecordInterface
     /**
      * Creates an [[ActiveQueryInterface|ActiveQuery]] instance for query purpose.
      *
-     * This method is usually ment to be used like this:
+     * The returned [[ActiveQueryInterface|ActiveQuery]] instance can be further customized by calling
+     * methods defined in [[ActiveQueryInterface]] before `one()` or `all()` is called to return
+     * populated ActiveRecord instances. For example,
      *
      * ```php
-     * Customer::find(1); // find one customer by primary key
-     * Customer::find()->all(); // find all customers
+     * // find the customer whose ID is 1
+     * $customer = Customer::find()->where(['id' => 1])->one();
+     *
+     * // find all active customers and order them by their age:
+     * $customers = Customer::find()
+     *     ->where(['status' => 1])
+     *     ->orderBy('age')
+     *     ->all();
      * ```
      *
-     * @param mixed $q the query parameter. This can be one of the followings:
+     * This method can also take a parameter which can be:
      *
      *  - a scalar value (integer or string): query by a single primary key value and return the
-     *    corresponding record.
-     *  - an array of name-value pairs: query by a set of attribute values and return a single record matching all of them.
-     *  - null (not specified): return a new [[ActiveQuery]] object for further query purpose.
+     *    corresponding record (or null if not found).
+     *  - an array of name-value pairs: query by a set of attribute values and return a single record
+     *    matching all of them (or null if not found).
      *
-     * @return ActiveQueryInterface|static|null When `$q` is null, a new [[ActiveQuery]] instance
-     * is returned; when `$q` is a scalar or an array, an ActiveRecord object matching it will be
-     * returned (null will be returned if there is no matching).
+     * Note that in this case, the method will automatically call the `one()` method and return an
+     * [[ActiveRecordInterface|ActiveRecord]] instance. For example,
+     *
+     * ```php
+     * // find a single customer whose primary key value is 10
+     * $customer = Customer::find(10);
+     *
+     * // the above code is equivalent to:
+     * $customer = Customer::find()->where(['id' => 10])->one();
+     *
+     * // find a single customer whose age is 30 and whose status is 1
+     * $customer = Customer::find(['age' => 30, 'status' => 1]);
+     *
+     * // the above code is equivalent to:
+     * $customer = Customer::find()->where(['age' => 30, 'status' => 1])->one();
+     * ```
+     *
+     * @return ActiveQueryInterface|static|null When this method receives no parameter, a new [[ActiveQuery]] instance
+     * will be returned; Otherwise, the parameter will be treated as a primary key value or a set of column
+     * values, and an ActiveRecord object matching it will be returned (null will be returned if there is no matching).
+     * @see createQuery()
      */
-    public static function find($q = null);
+    public static function find();
 
     /**
      * Creates an [[ActiveQueryInterface|ActiveQuery]] instance.
