@@ -44,7 +44,7 @@ class UserFixture extends ActiveFixture
 The fixture data for an `ActiveFixture` fixture is usually provided in a file located at `FixturePath/data/TableName.php`,
 where `FixturePath` stands for the directory containing the fixture class file, and `TableName`
 is the name of the table associated with the fixture. In the example above, the file should be
-`@app/tests/fixtures/data/tbl_user.php`. The data file should return an array of data rows
+`@app/tests/fixtures/data/user.php`. The data file should return an array of data rows
 to be inserted into the user table. For example,
 
 ```php

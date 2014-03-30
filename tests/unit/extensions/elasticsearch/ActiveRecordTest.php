@@ -102,8 +102,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $customer->setAttributes(['email' => 'user3@example.com', 'name' => 'user3', 'address' => 'address3', 'status' => 2], false);
         $customer->save(false);
 
-//		INSERT INTO tbl_category (name) VALUES ('Books');
-//		INSERT INTO tbl_category (name) VALUES ('Movies');
+//		INSERT INTO category (name) VALUES ('Books');
+//		INSERT INTO category (name) VALUES ('Movies');
 
         $item = new Item();
         $item->id = 1;

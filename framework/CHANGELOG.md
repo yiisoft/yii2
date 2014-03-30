@@ -182,6 +182,7 @@ Yii Framework 2 Change Log
 - Enh: Added `yii\web\UrlRuleInterface` and `yii\web\CompositeUrlRule` (qiangxue)
 - Enh: Added `yii\web\Request::getAuthUser()` and `getAuthPassword()` (qiangxue)
 - Enh: Added summaryOptions and emptyTextOptions to BaseListView (johonunu)
+- Enh: Implemented Oracle column comment reading from another schema (gureedo, samdark)
 - Chg #47: Changed Markdown library to cebe/markdown and adjusted Markdown helper API (cebe)
 - Chg #735: Added back `ActiveField::hiddenInput()` (qiangxue)
 - Chg #1186: Changed `Sort` to use comma to separate multiple sort fields and use negative sign to indicate descending sort (qiangxue)
@@ -218,6 +219,9 @@ Yii Framework 2 Change Log
 - Chg #2281: Renamed `ActiveRecord::create()` to `populateRecord()` and changed signature. This method will not call instantiate() anymore (cebe)
 - Chg #2405: The CSS class of `MaskedInput` now defaults to `form-control` (qiangxue)
 - Chg #2426: Changed URL creation method signatures to be consistent (samdark)
+- Chg #2516: Moved error handling from application to ErrorHandler class and fixed problems with HTTP Exception response code (cebe)
+    - `Yii::$app->exception` has now moved to `Yii::$app->errorHandler->exception`
+    - `yii\base\ErrorHandler` was split into `yii\web\ErrorHandler` and `yii\console\ErrorHandler`
 - Chg #2544: Changed `DetailView`'s `name:format:label` to `attribute:format:label` to match `GridView` (samdark)
 - Chg #2603: `yii\base\ErrorException` now extends `\ErrorException` (samdark)
 - Chg #2629: `Module::controllerPath` is now read only, and all controller classes must be namespaced under `Module::controllerNamespace`. (qiangxue)
@@ -228,6 +232,7 @@ Yii Framework 2 Change Log
 	- Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers\Url::canonical` instead.
 - Chg #2691: Null parameters will not be included in the generated URLs by `UrlManager` (gonimar, qiangxue)
 - Chg #2734: `FileCache::keyPrefix` defaults to empty string now (qiangxue)
+- Chg #2911: Removed `tbl_` default for table prefix (samdark)
 _ Chg #2912: Relative view files will be looked for under the directory containing the view currently being rendered (qiangxue)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)

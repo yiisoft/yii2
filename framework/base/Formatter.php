@@ -473,7 +473,8 @@ class Formatter extends Component
 
     /**
      * Formats the value as the time interval between a date and now in human readable form.
-     * @param integer|string|DateTime|DateInterval $value the value to be formatted. The following
+     *
+     * @param integer|string|DateTime|\DateInterval $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
@@ -481,6 +482,7 @@ class Formatter extends Component
      * - a PHP DateTime object
      * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
      *
+     * @param integer|string|DateTime|\DateInterval $referenceTime if specified the value is used instead of now
      * @return string the formatted result
      */
     public function asRelativeTime($value, $referenceTime = null)

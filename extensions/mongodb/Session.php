@@ -8,6 +8,7 @@
 namespace yii\mongodb;
 
 use Yii;
+use yii\base\ErrorHandler;
 use yii\base\InvalidConfigException;
 use yii\di\Instance;
 
@@ -48,6 +49,7 @@ class Session extends \yii\web\Session
      * This collection is better to be pre-created with fields 'id' and 'expire' indexed.
      */
     public $sessionCollection = 'session';
+
 
     /**
      * Initializes the Session component.
@@ -148,10 +150,11 @@ class Session extends \yii\web\Session
                 ['upsert' => true]
             );
         } catch (\Exception $e) {
-            if (YII_DEBUG) {
-                echo $e->getMessage();
-            }
-            // it is too late to log an error message here
+            $exception = ErrorHandler::convertExceptionToString($e);
+            // its too late to use Yii logging here
+            error_log($exception);
+            echo $exception;
+
             return false;
         }
 

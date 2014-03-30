@@ -14,7 +14,7 @@ class Order extends ActiveRecord
 {
     public static function tableName()
     {
-        return 'tbl_order';
+        return 'order';
     }
 
     public function getCustomer()
@@ -59,7 +59,7 @@ class Order extends ActiveRecord
     public function getBooks()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
-            ->viaTable('tbl_order_item', ['order_id' => 'id'])
+            ->viaTable('order_item', ['order_id' => 'id'])
             ->where(['category_id' => 1]);
     }
 
@@ -67,7 +67,7 @@ class Order extends ActiveRecord
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
             ->onCondition(['category_id' => 1])
-            ->viaTable('tbl_order_item', ['order_id' => 'id']);
+            ->viaTable('order_item', ['order_id' => 'id']);
     }
 
     public function beforeSave($insert)

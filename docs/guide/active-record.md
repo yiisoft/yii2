@@ -1,30 +1,41 @@
 Active Record
 =============
 
-Active Record implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
-The premise behind Active Record is that an individual [[yii\db\ActiveRecord|ActiveRecord]] object is associated with a specific row in a database table. The object's attributes are mapped to the columns of the corresponding table. Referencing an Active Record attribute is equivalent to accessing
-the corresponding table column for that record.
+[Active Record](http://en.wikipedia.org/wiki/Active_record_pattern) provides an object-oriented interface
+for accessing data stored in a database. An Active Record class is associated with a database table,
+an Active Record instance corresponds to a row of that table, and an attribute of an Active Record
+instance represents the value of a column in that row. Instead of writing raw SQL statements,
+you can work with Active Record in an object-oriented fashion to manipulate the data in database tables.
 
-As an example, say that the `Customer` ActiveRecord class is associated with the
-`tbl_customer` table. This would mean that the class's `name` attribute is automatically mapped to the `name` column in `tbl_customer`.
-Thanks to Active Record, assuming the variable `$customer` is an object of type `Customer`, to get the value of the `name` column for the table row, you can use the expression `$customer->name`. In this example, Active Record is providing an object-oriented interface for accessing data stored in the database. But Active Record provides much more functionality than this.
-
-With Active Record, instead of writing raw SQL statements to perform database queries, you can call intuitive methods to achieve the same goals. For example, calling [[yii\db\ActiveRecord::save()|save()]] would perform an INSERT or UPDATE query, creating or updating a row in the associated table of the ActiveRecord class:
+For example, assume `Customer` is an Active Record class is associated with the `customer` table
+and `name` is a column of `customer` table. You can write the following code to insert a new
+row into `customer` table:
 
 ```php
 $customer = new Customer();
 $customer->name = 'Qiang';
-$customer->save();  // a new row is inserted into tbl_customer
+$customer->save();
+```
+
+The above code is equivalent to using the following raw SQL statement, which is less
+intuitive, more error prone, and may have compatibility problem for different DBMS:
+
+```php
+$db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
+    ':name' => 'Qiang',
+])->execute();
 ```
 
 
-Declaring ActiveRecord Classes
+Declaring Active Record Classes
 ------------------------------
 
-To declare an ActiveRecord class you need to extend [[yii\db\ActiveRecord]] and
-implement the `tableName` method:
+To declare an Active Record class you need to extend [[yii\db\ActiveRecord]] and implement
+the `tableName` method that returns the name of the database table associated with the class:
 
 ```php
+namespace app\models;
+
 use yii\db\ActiveRecord;
 
 class Customer extends ActiveRecord
@@ -34,115 +45,18 @@ class Customer extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'tbl_customer';
+        return 'customer';
     }
 }
 ```
-
-The `tableName` method only has to return the name of the database table associated with the class.
-
-Class instances are obtained in one of two ways:
-
-* Using the `new` operator to create a new, empty object
-* Using a method to fetch an existing record (or records) from the database
-
-Connecting to the Database
-----------------------
-
-ActiveRecord relies on a [[yii\db\Connection|DB connection]] to perform the underlying DB operations.
-By default, ActiveRecord assumes that there is an application component named `db` which provides the needed
-[[yii\db\Connection]] instance. Usually this component is configured in application configuration file:
-
-```php
-return [
-    'components' => [
-        'db' => [
-            'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=testdb',
-            'username' => 'demo',
-            'password' => 'demo',
-        ],
-    ],
-];
-```
-
-Please read the [Database basics](database-basics.md) section to learn more on how to configure and use database connections.
-
-Querying Data from the Database
----------------------------
-
-There are two ActiveRecord methods for querying data from database:
-
- - [[yii\db\ActiveRecord::find()]]
- - [[yii\db\ActiveRecord::findBySql()]]
-
-Both methods return an [[yii\db\ActiveQuery]] instance, which extends [[yii\db\Query]], and thus supports the same set
-of flexible and powerful DB query methods. The following examples demonstrate some of the possibilities.
-
-```php
-// to retrieve all *active* customers and order them by their ID:
-$customers = Customer::find()
-    ->where(['status' => Customer::STATUS_ACTIVE])
-    ->orderBy('id')
-    ->all();
-
-// to return a single customer whose ID is 1:
-$customer = Customer::find(1);
-
-// the above code is equivalent to the following:
-$customer = Customer::find()
-    ->where(['id' => 1])
-    ->one();
-
-// to retrieve customers using a raw SQL statement:
-$sql = 'SELECT * FROM tbl_customer';
-$customers = Customer::findBySql($sql)->all();
-
-// to return the number of *active* customers:
-$count = Customer::find()
-    ->where(['status' => Customer::STATUS_ACTIVE])
-    ->count();
-
-// to return customers in terms of arrays rather than `Customer` objects:
-$customers = Customer::find()
-    ->asArray()
-    ->all();
-// each element of $customers is an array of name-value pairs
-
-// to index the result by customer IDs:
-$customers = Customer::find()->indexBy('id')->all();
-// $customers array is indexed by customer IDs
-```
-
-> Note: In the code above `Customer::STATUS_ACTIVE` is a constant defined in the class itself. It is a good practice to
-  use such approach instead of relying on hardcoded strings and numbers directly.
-
-
-Batch query is also supported when working with Active Record. For example,
-
-```php
-// fetch 10 customers at a time
-foreach (Customer::find()->batch(10) as $customers) {
-    // $customers is an array of 10 or fewer Customer objects
-}
-// fetch 10 customers at a time and iterate them one by one
-foreach (Customer::find()->each(10) as $customer) {
-    // $customer is a Customer object
-}
-// batch query with eager loading
-foreach (Customer::find()->with('orders')->each() as $customer) {
-}
-```
-
-As explained in [Query Builder](query-builder.md), batch query is very useful when you are fetching
-a large amount of data from database. It will keep your memory usage under a limit.
 
 
 Accessing Column Data
 ---------------------
 
-ActiveRecord maps each column of the corresponding database table row to an attribute in the ActiveRecord
-object. The attribute behaves like any regular object public property. The attribute's name will be the same as the corresponding column name, and is case-sensitive.
+Active Record maps each column of the corresponding database table row to an attribute in the Active Record
+object. An attribute behaves like a regular object public property. The name of an attribute is the same
+as the corresponding column name and is case-sensitive.
 
 To read the value of a column, you can use the following syntax:
 
@@ -159,21 +73,159 @@ $customer->email = 'jane@example.com';
 $customer->save();
 ```
 
-Manipulating Data in the Database
+
+Connecting to Database
+----------------------
+
+Active Record uses a [[yii\db\Connection|DB connection]] to exchange data with database. By default,
+it uses the `db` application component as the connection. As explained in [Database basics](database-basics.md),
+you may configure the `db` component in the application configuration file like follows,
+
+```php
+return [
+    'components' => [
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=localhost;dbname=testdb',
+            'username' => 'demo',
+            'password' => 'demo',
+        ],
+    ],
+];
+```
+
+If you are using multiple databases in your application and you want to use a different DB connection
+for your Active Record class, you may override the [[yii\db\ActiveRecord::getDb()|getDb()]] method:
+
+```php
+class Customer extends ActiveRecord
+{
+    // ...
+
+    public static function getDb()
+    {
+        return \Yii::$app->db2;  // use "db2" application component
+    }
+}
+```
+
+
+Querying Data from Database
+---------------------------
+
+Active Record provides two entry methods for building DB queries and populating data into Active Record instances:
+
+ - [[yii\db\ActiveRecord::find()]]
+ - [[yii\db\ActiveRecord::findBySql()]]
+
+Both methods return an [[yii\db\ActiveQuery]] instance, which extends [[yii\db\Query]], and thus supports the same set
+of flexible and powerful DB query building methods, such as `where()`, `join()`, `orderBy()`, etc. The following examples
+demonstrate some of the possibilities.
+
+```php
+// to retrieve all *active* customers and order them by their ID:
+$customers = Customer::find()
+    ->where(['status' => Customer::STATUS_ACTIVE])
+    ->orderBy('id')
+    ->all();
+
+// to return a single customer whose ID is 1:
+$customer = Customer::find()
+    ->where(['id' => 1])
+    ->one();
+
+// to return the number of *active* customers:
+$count = Customer::find()
+    ->where(['status' => Customer::STATUS_ACTIVE])
+    ->count();
+
+// to index the result by customer IDs:
+$customers = Customer::find()->indexBy('id')->all();
+// $customers array is indexed by customer IDs
+
+// to retrieve customers using a raw SQL statement:
+$sql = 'SELECT * FROM customer';
+$customers = Customer::findBySql($sql)->all();
+```
+
+> Tip: In the code above `Customer::STATUS_ACTIVE` is a constant defined in `Customer`. It is a good practice to
+  use meaningful constant names rather than hardcoded strings or numbers in your code.
+
+
+The `find()` method also supports the following shortcut usage which allows you to retrieve an Active Record
+instance based on a primary key value or a set of column values. The main difference here is that instead of
+returning a [[yii\db\ActiveQuery]] instance, the method takes the column value(s) and returns an Active Record
+instance directly without the need to call `one()`.
+
+```php
+// to return a single customer whose ID is 1:
+$customer = Customer::find(1);
+
+// to return an *active* customer whose ID is 1:
+$customer = Customer::find([
+    'id' => 1,
+    'status' => Customer::STATUS_ACTIVE,
+]);
+```
+
+
+### Retrieving Data in Arrays
+
+Sometimes when you are processing a large amount of data, you may want to use arrays to hold the data
+retrieved from database to save memory. This can be done by calling `asArray()`:
+
+```php
+// to return customers in terms of arrays rather than `Customer` objects:
+$customers = Customer::find()
+    ->asArray()
+    ->all();
+// each element of $customers is an array of name-value pairs
+```
+
+
+### Retrieving Data in Batches
+
+In [Query Builder](query-builder.md), we have explained that you may use *batch query* to keep your memory
+usage under a limit when querying a large amount of data from database. You may use the same technique
+in Active Record. For example,
+
+```php
+// fetch 10 customers at a time
+foreach (Customer::find()->batch(10) as $customers) {
+    // $customers is an array of 10 or fewer Customer objects
+}
+// fetch 10 customers at a time and iterate them one by one
+foreach (Customer::find()->each(10) as $customer) {
+    // $customer is a Customer object
+}
+// batch query with eager loading
+foreach (Customer::find()->with('orders')->each() as $customer) {
+}
+```
+
+
+Manipulating Data in Database
 -----------------------------
 
-ActiveRecord provides the following methods to insert, update and delete data in the database:
+Active Record provides the following methods to insert, update and delete a single row in a table associated with
+a single Active Record instance:
 
 - [[yii\db\ActiveRecord::save()|save()]]
 - [[yii\db\ActiveRecord::insert()|insert()]]
 - [[yii\db\ActiveRecord::update()|update()]]
 - [[yii\db\ActiveRecord::delete()|delete()]]
+
+Active Record also provides the following static methods that apply to a whole table associated with
+an Active Record class. Be extremely careful when using these methods as they affect the whole table.
+For example, `deleteAll()` will delete ALL rows in the table.
+
 - [[yii\db\ActiveRecord::updateCounters()|updateCounters()]]
 - [[yii\db\ActiveRecord::updateAll()|updateAll()]]
 - [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]]
 - [[yii\db\ActiveRecord::deleteAll()|deleteAll()]]
 
-Note that [[yii\db\ActiveRecord::updateAll()|updateAll()]], [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]] and [[yii\db\ActiveRecord::deleteAll()|deleteAll()]] are static methods that apply to the whole database table. The other methods only apply to the row associated with the ActiveRecord object through which the method is being called.
+
+The following examples show how to use these methods:
 
 ```php
 // to insert a new customer record
@@ -195,10 +247,17 @@ $customer->delete();
 Customer::updateAllCounters(['age' => 1]);
 ```
 
-> Info: The `save()` method will either perform an `INSERT` or `UPDATE` SQL statement, depending
-  on whether the ActiveRecord being saved is new or not by checking `ActiveRecord::isNewRecord`.
+> Info: The `save()` method will call either `insert()` or `update()` depending on whether
+  the Active Record instance is new or not (internally it will check the value of [[yii\db\ActiveRecord::isNewRecord]].
+  If an Active Record is instantiated via the `new` operator, calling `save()` will
+  insert a row in the table; If an Active Record is obtained by `find()`, calling `save()` will
+  update the corresponding row in the table.
 
-In order to load default values from database schema you may call `loadDefaultValues()` method:
+
+### Loading Default Values
+
+Your table columns may be defined with default values. Sometimes, you may want to populate your
+Active Record attributes with these default values. To do so, you may call the `loadDefaultValues()` method:
 
 ```php
 $customer = new Customer();
@@ -215,6 +274,7 @@ ActiveRecord inherits data validation and data input features from [[yii\base\Mo
 automatically when `save()` is performed. If data validation fails, the saving operation will be cancelled.
 
 For more details refer to the [Model](model.md) section of this guide.
+
 
 Querying Relational Data
 ------------------------
@@ -272,8 +332,8 @@ $orders = $customer->orders;  // $orders is an array of Order objects
 Behind the scene, the above code executes the following two SQL queries, one for each line of code:
 
 ```sql
-SELECT * FROM tbl_customer WHERE id=1;
-SELECT * FROM tbl_order WHERE customer_id=1;
+SELECT * FROM customer WHERE id=1;
+SELECT * FROM order WHERE customer_id=1;
 ```
 
 > Tip: If you access the expression `$customer->orders` again, it will not perform the second SQL query again.
@@ -321,7 +381,7 @@ Sometimes, two tables are related together via an intermediary table called [piv
 we can customize the [[yii\db\ActiveQuery]] object by calling its [[yii\db\ActiveQuery::via()|via()]] or
 [[yii\db\ActiveQuery::viaTable()|viaTable()]] method.
 
-For example, if table `tbl_order` and table `tbl_item` are related via pivot table `tbl_order_item`,
+For example, if table `order` and table `item` are related via pivot table `order_item`,
 we can declare the `items` relation in the `Order` class like the following:
 
 ```php
@@ -330,7 +390,7 @@ class Order extends \yii\db\ActiveRecord
     public function getItems()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
-            ->viaTable('tbl_order_item', ['order_id' => 'id']);
+            ->viaTable('order_item', ['order_id' => 'id']);
     }
 }
 ```
@@ -366,9 +426,9 @@ to retrieve the corresponding data and populate it into the related objects. No 
 if you access the same related objects again. We call this *lazy loading*. For example,
 
 ```php
-// SQL executed: SELECT * FROM tbl_customer WHERE id=1
+// SQL executed: SELECT * FROM customer WHERE id=1
 $customer = Customer::find(1);
-// SQL executed: SELECT * FROM tbl_order WHERE customer_id=1
+// SQL executed: SELECT * FROM order WHERE customer_id=1
 $orders = $customer->orders;
 // no SQL executed
 $orders2 = $customer->orders;
@@ -377,11 +437,11 @@ $orders2 = $customer->orders;
 Lazy loading is very convenient to use. However, it may suffer from a performance issue in the following scenario:
 
 ```php
-// SQL executed: SELECT * FROM tbl_customer LIMIT 100
+// SQL executed: SELECT * FROM customer LIMIT 100
 $customers = Customer::find()->limit(100)->all();
 
 foreach ($customers as $customer) {
-    // SQL executed: SELECT * FROM tbl_order WHERE customer_id=...
+    // SQL executed: SELECT * FROM order WHERE customer_id=...
     $orders = $customer->orders;
     // ...handle $orders...
 }
@@ -394,8 +454,8 @@ is performed to bring back the orders of that customer.
 To solve the above performance problem, you can use the so-called *eager loading* approach by calling [[yii\db\ActiveQuery::with()]]:
 
 ```php
-// SQL executed: SELECT * FROM tbl_customer LIMIT 100;
-//               SELECT * FROM tbl_orders WHERE customer_id IN (1,2,...)
+// SQL executed: SELECT * FROM customer LIMIT 100;
+//               SELECT * FROM orders WHERE customer_id IN (1,2,...)
 $customers = Customer::find()->limit(100)
     ->with('orders')->all();
 
@@ -426,11 +486,11 @@ done for both lazy loading and eager loading. For example,
 
 ```php
 $customer = Customer::find(1);
-// lazy loading: SELECT * FROM tbl_order WHERE customer_id=1 AND subtotal>100
+// lazy loading: SELECT * FROM order WHERE customer_id=1 AND subtotal>100
 $orders = $customer->getOrders()->where('subtotal>100')->all();
 
-// eager loading: SELECT * FROM tbl_customer LIMIT 100
-//                SELECT * FROM tbl_order WHERE customer_id IN (1,2,...) AND subtotal>100
+// eager loading: SELECT * FROM customer LIMIT 100
+//                SELECT * FROM order WHERE customer_id IN (1,2,...) AND subtotal>100
 $customers = Customer::find()->limit(100)->with([
     'orders' => function($query) {
         $query->andWhere('subtotal>100');
@@ -470,11 +530,11 @@ that finds those orders, and accessing `customer->orders` will trigger one SQL e
 the `customer` of an order will trigger another SQL execution:
 
 ```php
-// SELECT * FROM tbl_customer WHERE id=1
+// SELECT * FROM customer WHERE id=1
 $customer = Customer::find(1);
 // echoes "not equal"
-// SELECT * FROM tbl_order WHERE customer_id=1
-// SELECT * FROM tbl_customer WHERE id=1
+// SELECT * FROM order WHERE customer_id=1
+// SELECT * FROM customer WHERE id=1
 if ($customer->orders[0]->customer === $customer) {
     echo 'equal';
 } else {
@@ -499,10 +559,10 @@ class Customer extends ActiveRecord
 Now if we execute the same query as shown above, we would get:
 
 ```php
-// SELECT * FROM tbl_customer WHERE id=1
+// SELECT * FROM customer WHERE id=1
 $customer = Customer::find(1);
 // echoes "equal"
-// SELECT * FROM tbl_order WHERE customer_id=1
+// SELECT * FROM order WHERE customer_id=1
 if ($customer->orders[0]->customer === $customer) {
     echo 'equal';
 } else {
@@ -514,8 +574,8 @@ In the above, we have shown how to use inverse relations in lazy loading. Invers
 eager loading:
 
 ```php
-// SELECT * FROM tbl_customer
-// SELECT * FROM tbl_order WHERE customer_id IN (1, 2, ...)
+// SELECT * FROM customer
+// SELECT * FROM order WHERE customer_id IN (1, 2, ...)
 $customers = Customer::find()->with('orders')->all();
 // echoes "equal"
 if ($customers[0]->orders[0]->customer === $customers[0]) {
@@ -540,7 +600,7 @@ explicitly to build up the JOIN query, you may reuse the existing relation defin
 
 ```php
 // find all orders and sort the orders by the customer id and the order id. also eager loading "customer"
-$orders = Order::find()->joinWith('customer')->orderBy('tbl_customer.id, tbl_order.id')->all();
+$orders = Order::find()->joinWith('customer')->orderBy('customer.id, order.id')->all();
 // find all orders that contain books, and eager loading "books"
 $orders = Order::find()->innerJoinWith('books')->all();
 ```
@@ -557,7 +617,7 @@ and you may also join with sub-relations. For example,
 $orders = Order::find()->innerJoinWith([
     'books',
     'customer' => function ($query) {
-        $query->where('tbl_customer.created_at > ' . (time() - 24 * 3600));
+        $query->where('customer.created_at > ' . (time() - 24 * 3600));
     }
 ])->all();
 // join with sub-relations: join with books and books' authors
@@ -578,7 +638,7 @@ For example, you may filter the primary models by the conditions on the related 
 above. You may also sort the primary models using columns from the related tables.
 
 When using [[yii\db\ActiveQuery::joinWith()|joinWith()]], you are responsible to disambiguate column names.
-In the above examples, we use `tbl_item.id` and `tbl_order.id` to disambiguate the `id` column references
+In the above examples, we use `item.id` and `order.id` to disambiguate the `id` column references
 because both of the order table and the item table contain a column named `id`.
 
 By default, when you join with a relation, the relation will also be eagerly loaded. You may change this behavior
@@ -618,8 +678,8 @@ When you perform query using [[yii\db\ActiveQuery::joinWith()|joinWith()]], the 
 of the corresponding JOIN query. For example,
 
 ```php
-// SELECT tbl_user.* FROM tbl_user LEFT JOIN tbl_item ON tbl_item.owner_id=tbl_user.id AND category_id=1
-// SELECT * FROM tbl_item WHERE owner_id IN (...) AND category_id=1
+// SELECT user.* FROM user LEFT JOIN item ON item.owner_id=user.id AND category_id=1
+// SELECT * FROM item WHERE owner_id IN (...) AND category_id=1
 $users = User::find()->joinWith('books')->all();
 ```
 
@@ -627,9 +687,9 @@ Note that if you use eager loading via [[yii\db\ActiveQuery::with()]] or lazy lo
 in the WHERE part of the corresponding SQL statement, because there is no JOIN query involved. For example,
 
 ```php
-// SELECT * FROM tbl_user WHERE id=10
+// SELECT * FROM user WHERE id=10
 $user = User::find(10);
-// SELECT * FROM tbl_item WHERE owner_id=10 AND category_id=1
+// SELECT * FROM item WHERE owner_id=10 AND category_id=1
 $books = $user->books;
 ```
 

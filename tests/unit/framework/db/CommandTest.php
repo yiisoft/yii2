@@ -19,7 +19,7 @@ class CommandTest extends DatabaseTestCase
         $this->assertEquals(null, $command->sql);
 
         // string
-        $sql = 'SELECT * FROM tbl_customer';
+        $sql = 'SELECT * FROM customer';
         $command = $db->createCommand($sql);
         $this->assertEquals($sql, $command->sql);
     }
@@ -28,11 +28,11 @@ class CommandTest extends DatabaseTestCase
     {
         $db = $this->getConnection(false);
 
-        $sql = 'SELECT * FROM tbl_customer';
+        $sql = 'SELECT * FROM customer';
         $command = $db->createCommand($sql);
         $this->assertEquals($sql, $command->sql);
 
-        $sql2 = 'SELECT * FROM tbl_order';
+        $sql2 = 'SELECT * FROM order';
         $command->sql = $sql2;
         $this->assertEquals($sql2, $command->sql);
     }
@@ -41,16 +41,16 @@ class CommandTest extends DatabaseTestCase
     {
         $db = $this->getConnection(false);
 
-        $sql = 'SELECT [[id]], [[t.name]] FROM {{tbl_customer}} t';
+        $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
-        $this->assertEquals("SELECT `id`, `t`.`name` FROM `tbl_customer` t", $command->sql);
+        $this->assertEquals("SELECT `id`, `t`.`name` FROM `customer` t", $command->sql);
     }
 
     public function testPrepareCancel()
     {
         $db = $this->getConnection(false);
 
-        $command = $db->createCommand('SELECT * FROM tbl_customer');
+        $command = $db->createCommand('SELECT * FROM customer');
         $this->assertEquals(null, $command->pdoStatement);
         $command->prepare();
         $this->assertNotEquals(null, $command->pdoStatement);
@@ -62,11 +62,11 @@ class CommandTest extends DatabaseTestCase
     {
         $db = $this->getConnection();
 
-        $sql = 'INSERT INTO tbl_customer(email, name , address) VALUES (\'user4@example.com\', \'user4\', \'address4\')';
+        $sql = 'INSERT INTO customer(email, name , address) VALUES (\'user4@example.com\', \'user4\', \'address4\')';
         $command = $db->createCommand($sql);
         $this->assertEquals(1, $command->execute());
 
-        $sql = 'SELECT COUNT(*) FROM tbl_customer WHERE name =\'user4\'';
+        $sql = 'SELECT COUNT(*) FROM customer WHERE name =\'user4\'';
         $command = $db->createCommand($sql);
         $this->assertEquals(1, $command->queryScalar());
 
@@ -80,55 +80,55 @@ class CommandTest extends DatabaseTestCase
         $db = $this->getConnection();
 
         // query
-        $sql = 'SELECT * FROM tbl_customer';
+        $sql = 'SELECT * FROM customer';
         $reader = $db->createCommand($sql)->query();
         $this->assertTrue($reader instanceof DataReader);
 
         // queryAll
-        $rows = $db->createCommand('SELECT * FROM tbl_customer')->queryAll();
+        $rows = $db->createCommand('SELECT * FROM customer')->queryAll();
         $this->assertEquals(3, count($rows));
         $row = $rows[2];
         $this->assertEquals(3, $row['id']);
         $this->assertEquals('user3', $row['name']);
 
-        $rows = $db->createCommand('SELECT * FROM tbl_customer WHERE id=10')->queryAll();
+        $rows = $db->createCommand('SELECT * FROM customer WHERE id=10')->queryAll();
         $this->assertEquals([], $rows);
 
         // queryOne
-        $sql = 'SELECT * FROM tbl_customer ORDER BY id';
+        $sql = 'SELECT * FROM customer ORDER BY id';
         $row = $db->createCommand($sql)->queryOne();
         $this->assertEquals(1, $row['id']);
         $this->assertEquals('user1', $row['name']);
 
-        $sql = 'SELECT * FROM tbl_customer ORDER BY id';
+        $sql = 'SELECT * FROM customer ORDER BY id';
         $command = $db->createCommand($sql);
         $command->prepare();
         $row = $command->queryOne();
         $this->assertEquals(1, $row['id']);
         $this->assertEquals('user1', $row['name']);
 
-        $sql = 'SELECT * FROM tbl_customer WHERE id=10';
+        $sql = 'SELECT * FROM customer WHERE id=10';
         $command = $db->createCommand($sql);
         $this->assertFalse($command->queryOne());
 
         // queryColumn
-        $sql = 'SELECT * FROM tbl_customer';
+        $sql = 'SELECT * FROM customer';
         $column = $db->createCommand($sql)->queryColumn();
         $this->assertEquals(range(1, 3), $column);
 
-        $command = $db->createCommand('SELECT id FROM tbl_customer WHERE id=10');
+        $command = $db->createCommand('SELECT id FROM customer WHERE id=10');
         $this->assertEquals([], $command->queryColumn());
 
         // queryScalar
-        $sql = 'SELECT * FROM tbl_customer ORDER BY id';
+        $sql = 'SELECT * FROM customer ORDER BY id';
         $this->assertEquals($db->createCommand($sql)->queryScalar(), 1);
 
-        $sql = 'SELECT id FROM tbl_customer ORDER BY id';
+        $sql = 'SELECT id FROM customer ORDER BY id';
         $command = $db->createCommand($sql);
         $command->prepare();
         $this->assertEquals(1, $command->queryScalar());
 
-        $command = $db->createCommand('SELECT id FROM tbl_customer WHERE id=10');
+        $command = $db->createCommand('SELECT id FROM customer WHERE id=10');
         $this->assertFalse($command->queryScalar());
 
         $command = $db->createCommand('bad SQL');
@@ -141,7 +141,7 @@ class CommandTest extends DatabaseTestCase
         $db = $this->getConnection();
 
         // bindParam
-        $sql = 'INSERT INTO tbl_customer(email, name, address) VALUES (:email, :name, :address)';
+        $sql = 'INSERT INTO customer(email, name, address) VALUES (:email, :name, :address)';
         $command = $db->createCommand($sql);
         $email = 'user4@example.com';
         $name = 'user4';
@@ -151,12 +151,12 @@ class CommandTest extends DatabaseTestCase
         $command->bindParam(':address', $address);
         $command->execute();
 
-        $sql = 'SELECT name FROM tbl_customer WHERE email=:email';
+        $sql = 'SELECT name FROM customer WHERE email=:email';
         $command = $db->createCommand($sql);
         $command->bindParam(':email', $email);
         $this->assertEquals($name, $command->queryScalar());
 
-        $sql = 'INSERT INTO tbl_type (int_col, char_col, float_col, blob_col, numeric_col, bool_col) VALUES (:int_col, :char_col, :float_col, :blob_col, :numeric_col, :bool_col)';
+        $sql = 'INSERT INTO type (int_col, char_col, float_col, blob_col, numeric_col, bool_col) VALUES (:int_col, :char_col, :float_col, :blob_col, :numeric_col, :bool_col)';
         $command = $db->createCommand($sql);
         $intCol = 123;
         $charCol = 'abc';
@@ -172,7 +172,7 @@ class CommandTest extends DatabaseTestCase
         $command->bindParam(':bool_col', $boolCol);
         $this->assertEquals(1, $command->execute());
 
-        $sql = 'SELECT * FROM tbl_type';
+        $sql = 'SELECT * FROM type';
         $row = $db->createCommand($sql)->queryOne();
         $this->assertEquals($intCol, $row['int_col']);
         $this->assertEquals($charCol, $row['char_col']);
@@ -181,12 +181,12 @@ class CommandTest extends DatabaseTestCase
         $this->assertEquals($numericCol, $row['numeric_col']);
 
         // bindValue
-        $sql = 'INSERT INTO tbl_customer(email, name, address) VALUES (:email, \'user5\', \'address5\')';
+        $sql = 'INSERT INTO customer(email, name, address) VALUES (:email, \'user5\', \'address5\')';
         $command = $db->createCommand($sql);
         $command->bindValue(':email', 'user5@example.com');
         $command->execute();
 
-        $sql = 'SELECT email FROM tbl_customer WHERE name=:name';
+        $sql = 'SELECT email FROM customer WHERE name=:name';
         $command = $db->createCommand($sql);
         $command->bindValue(':name', 'user5');
         $this->assertEquals('user5@example.com', $command->queryScalar());
@@ -197,20 +197,20 @@ class CommandTest extends DatabaseTestCase
         $db = $this->getConnection();
 
         // default: FETCH_ASSOC
-        $sql = 'SELECT * FROM tbl_customer';
+        $sql = 'SELECT * FROM customer';
         $command = $db->createCommand($sql);
         $result = $command->queryOne();
         $this->assertTrue(is_array($result) && isset($result['id']));
 
         // FETCH_OBJ, customized via fetchMode property
-        $sql = 'SELECT * FROM tbl_customer';
+        $sql = 'SELECT * FROM customer';
         $command = $db->createCommand($sql);
         $command->fetchMode = \PDO::FETCH_OBJ;
         $result = $command->queryOne();
         $this->assertTrue(is_object($result));
 
         // FETCH_NUM, customized in query method
-        $sql = 'SELECT * FROM tbl_customer';
+        $sql = 'SELECT * FROM customer';
         $command = $db->createCommand($sql);
         $result = $command->queryOne([], \PDO::FETCH_NUM);
         $this->assertTrue(is_array($result) && isset($result[0]));
@@ -219,7 +219,7 @@ class CommandTest extends DatabaseTestCase
     public function testBatchInsert()
     {
         $command = $this->getConnection()->createCommand();
-        $command->batchInsert('tbl_customer',
+        $command->batchInsert('customer',
             ['email', 'name', 'address'], [
                 ['t1@example.com', 't1', 't1 address'],
                 ['t2@example.com', null, false],

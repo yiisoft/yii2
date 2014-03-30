@@ -71,8 +71,8 @@ class ActiveRecordTest extends RedisTestCase
         $customer->setAttributes(['email' => 'user3@example.com', 'name' => 'user3', 'address' => 'address3', 'status' => 2, 'profile_id' => 2], false);
         $customer->save(false);
 
-//		INSERT INTO tbl_category (name) VALUES ('Books');
-//		INSERT INTO tbl_category (name) VALUES ('Movies');
+//		INSERT INTO category (name) VALUES ('Books');
+//		INSERT INTO category (name) VALUES ('Movies');
 
         $item = new Item();
         $item->setAttributes(['name' => 'Agile Web Application Development with Yii1.1 and PHP5', 'category_id' => 1], false);

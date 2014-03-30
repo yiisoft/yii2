@@ -135,7 +135,7 @@ class Command extends \yii\db\Command
      * For example,
      *
      * ~~~
-     * $connection->createCommand()->update('tbl_user', ['status' => 1], 'age > 30')->execute();
+     * $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
      * ~~~
      *
      * The method will properly escape the column names and bind the values to be updated.

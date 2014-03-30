@@ -104,16 +104,16 @@ class ActiveRecordTest extends DatabaseTestCase
     public function testFindBySql()
     {
         // find one
-        $customer = Customer::findBySql('SELECT * FROM tbl_customer ORDER BY id DESC')->one();
+        $customer = Customer::findBySql('SELECT * FROM customer ORDER BY id DESC')->one();
         $this->assertTrue($customer instanceof Customer);
         $this->assertEquals('user3', $customer->name);
 
         // find all
-        $customers = Customer::findBySql('SELECT * FROM tbl_customer')->all();
+        $customers = Customer::findBySql('SELECT * FROM customer')->all();
         $this->assertEquals(3, count($customers));
 
         // find with parameter binding
-        $customer = Customer::findBySql('SELECT * FROM tbl_customer WHERE id=:id', [':id' => 2])->one();
+        $customer = Customer::findBySql('SELECT * FROM customer WHERE id=:id', [':id' => 2])->one();
         $this->assertTrue($customer instanceof Customer);
         $this->assertEquals('user2', $customer->name);
     }
@@ -269,7 +269,7 @@ class ActiveRecordTest extends DatabaseTestCase
     public function testJoinWith()
     {
         // left join and eager loading
-        $orders = Order::find()->joinWith('customer')->orderBy('tbl_customer.id DESC, tbl_order.id')->all();
+        $orders = Order::find()->joinWith('customer')->orderBy('customer.id DESC, order.id')->all();
         $this->assertEquals(3, count($orders));
         $this->assertEquals(2, $orders[0]->id);
         $this->assertEquals(3, $orders[1]->id);
@@ -281,9 +281,9 @@ class ActiveRecordTest extends DatabaseTestCase
         // inner join filtering and eager loading
         $orders = Order::find()->innerJoinWith([
             'customer' => function ($query) {
-                $query->where('tbl_customer.id=2');
+                $query->where('customer.id=2');
             },
-        ])->orderBy('tbl_order.id')->all();
+        ])->orderBy('order.id')->all();
         $this->assertEquals(2, count($orders));
         $this->assertEquals(2, $orders[0]->id);
         $this->assertEquals(3, $orders[1]->id);
@@ -293,9 +293,9 @@ class ActiveRecordTest extends DatabaseTestCase
         // inner join filtering, eager loading, conditions on both primary and relation
         $orders = Order::find()->innerJoinWith([
             'customer' => function ($query) {
-                $query->where(['tbl_customer.id' => 2]);
+                $query->where(['customer.id' => 2]);
             },
-        ])->where(['tbl_order.id' => [1, 2]])->orderBy('tbl_order.id')->all();
+        ])->where(['order.id' => [1, 2]])->orderBy('order.id')->all();
         $this->assertEquals(1, count($orders));
         $this->assertEquals(2, $orders[0]->id);
         $this->assertTrue($orders[0]->isRelationPopulated('customer'));
@@ -303,9 +303,9 @@ class ActiveRecordTest extends DatabaseTestCase
         // inner join filtering without eager loading
         $orders = Order::find()->innerJoinWith([
             'customer' => function ($query) {
-                $query->where('tbl_customer.id=2');
+                $query->where('customer.id=2');
             },
-        ], false)->orderBy('tbl_order.id')->all();
+        ], false)->orderBy('order.id')->all();
         $this->assertEquals(2, count($orders));
         $this->assertEquals(2, $orders[0]->id);
         $this->assertEquals(3, $orders[1]->id);
@@ -315,15 +315,15 @@ class ActiveRecordTest extends DatabaseTestCase
         // inner join filtering without eager loading, conditions on both primary and relation
         $orders = Order::find()->innerJoinWith([
             'customer' => function ($query) {
-                    $query->where(['tbl_customer.id' => 2]);
+                    $query->where(['customer.id' => 2]);
             },
-        ], false)->where(['tbl_order.id' => [1, 2]])->orderBy('tbl_order.id')->all();
+        ], false)->where(['order.id' => [1, 2]])->orderBy('order.id')->all();
         $this->assertEquals(1, count($orders));
         $this->assertEquals(2, $orders[0]->id);
         $this->assertFalse($orders[0]->isRelationPopulated('customer'));
 
         // join with via-relation
-        $orders = Order::find()->innerJoinWith('books')->orderBy('tbl_order.id')->all();
+        $orders = Order::find()->innerJoinWith('books')->orderBy('order.id')->all();
         $this->assertEquals(2, count($orders));
         $this->assertEquals(1, $orders[0]->id);
         $this->assertEquals(3, $orders[1]->id);
@@ -335,12 +335,12 @@ class ActiveRecordTest extends DatabaseTestCase
         // join with sub-relation
         $orders = Order::find()->innerJoinWith([
             'items' => function ($q) {
-                $q->orderBy('tbl_item.id');
+                $q->orderBy('item.id');
             },
             'items.category' => function ($q) {
-                $q->where('tbl_category.id = 2');
+                $q->where('category.id = 2');
             },
-        ])->orderBy('tbl_order.id')->all();
+        ])->orderBy('order.id')->all();
         $this->assertEquals(1, count($orders));
         $this->assertTrue($orders[0]->isRelationPopulated('items'));
         $this->assertEquals(2, $orders[0]->id);
@@ -351,9 +351,9 @@ class ActiveRecordTest extends DatabaseTestCase
         // join with table alias
         $orders = Order::find()->joinWith([
             'customer' => function ($q) {
-                $q->from('tbl_customer c');
+                $q->from('customer c');
             }
-        ])->orderBy('c.id DESC, tbl_order.id')->all();
+        ])->orderBy('c.id DESC, order.id')->all();
         $this->assertEquals(3, count($orders));
         $this->assertEquals(2, $orders[0]->id);
         $this->assertEquals(3, $orders[1]->id);
@@ -363,7 +363,7 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertTrue($orders[2]->isRelationPopulated('customer'));
 
         // join with ON condition
-        $orders = Order::find()->joinWith('books2')->orderBy('tbl_order.id')->all();
+        $orders = Order::find()->joinWith('books2')->orderBy('order.id')->all();
         $this->assertEquals(3, count($orders));
         $this->assertEquals(1, $orders[0]->id);
         $this->assertEquals(2, $orders[1]->id);
@@ -411,22 +411,22 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1, $customer->id);
         $order = Order::find()->joinWith([
             'items' => function ($q) {
-                $q->from(['items' => 'tbl_item'])
+                $q->from(['items' => 'item'])
                     ->orderBy('items.id');
             },
-        ])->orderBy('tbl_order.id')->one();
+        ])->orderBy('order.id')->one();
     }
 
     public function testJoinWithAndScope()
     {
         // hasOne inner join
-        $customers = Customer::find()->active()->innerJoinWith('profile')->orderBy('tbl_customer.id')->all();
+        $customers = Customer::find()->active()->innerJoinWith('profile')->orderBy('customer.id')->all();
         $this->assertEquals(1, count($customers));
         $this->assertEquals(1, $customers[0]->id);
         $this->assertTrue($customers[0]->isRelationPopulated('profile'));
 
         // hasOne outer join
-        $customers = Customer::find()->active()->joinWith('profile')->orderBy('tbl_customer.id')->all();
+        $customers = Customer::find()->active()->joinWith('profile')->orderBy('customer.id')->all();
         $this->assertEquals(2, count($customers));
         $this->assertEquals(1, $customers[0]->id);
         $this->assertEquals(2, $customers[1]->id);
@@ -438,9 +438,9 @@ class ActiveRecordTest extends DatabaseTestCase
         // hasMany
         $customers = Customer::find()->active()->joinWith([
             'orders' => function ($q) {
-                $q->orderBy('tbl_order.id');
+                $q->orderBy('order.id');
             }
-        ])->orderBy('tbl_customer.id DESC, tbl_order.id')->all();
+        ])->orderBy('customer.id DESC, order.id')->all();
         $this->assertEquals(2, count($customers));
         $this->assertEquals(2, $customers[0]->id);
         $this->assertEquals(1, $customers[1]->id);

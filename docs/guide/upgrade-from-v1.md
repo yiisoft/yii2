@@ -396,7 +396,7 @@ and [[yii\db\QueryBuilder|QueryBuilder]] to generate SQL statements from query o
 ```php
 $query = new \yii\db\Query();
 $query->select('id, name')
-      ->from('tbl_user')
+      ->from('user')
       ->limit(10);
 
 $command = $query->createCommand();

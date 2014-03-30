@@ -132,7 +132,7 @@ SELECT a.column_name, a.data_type ||
     com.comments as column_comment
 FROM ALL_TAB_COLUMNS A
 inner join ALL_OBJECTS B ON b.owner = a.owner and ltrim(B.OBJECT_NAME) = ltrim(A.TABLE_NAME)
-LEFT JOIN user_col_comments com ON (A.table_name = com.table_name AND A.column_name = com.column_name)
+LEFT JOIN all_col_comments com ON (A.owner = com.owner AND A.table_name = com.table_name AND A.column_name = com.column_name)
 WHERE
     a.owner = '{$schemaName}'
     and (b.object_type = 'TABLE' or b.object_type = 'VIEW')

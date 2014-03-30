@@ -28,8 +28,8 @@ class QueryTest extends SphinxTestCase
     public function testFrom()
     {
         $query = new Query;
-        $query->from('tbl_user');
-        $this->assertEquals(['tbl_user'], $query->from);
+        $query->from('user');
+        $this->assertEquals(['user'], $query->from);
     }
 
     public function testMatch()

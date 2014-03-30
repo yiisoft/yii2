@@ -80,7 +80,7 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 {
     public function up()
     {
-        $this->createTable('tbl_news', [
+        $this->createTable('news', [
             'id' => 'pk',
             'title' => Schema::TYPE_STRING . ' NOT NULL',
             'content' => Schema::TYPE_TEXT,
@@ -89,7 +89,7 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 
     public function down()
     {
-        $this->dropTable('tbl_news');
+        $this->dropTable('news');
     }
 
 }
@@ -124,13 +124,13 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 {
     public function safeUp()
     {
-        $this->createTable('tbl_news', [
+        $this->createTable('news', [
             'id' => 'pk',
             'title' => Schema::TYPE_STRING . ' NOT NULL',
             'content' => Schema::TYPE_TEXT,
         ]);
 
-        $this->createTable('tbl_user', [
+        $this->createTable('user', [
             'id' => 'pk',
             'login' => Schema::TYPE_STRING . ' NOT NULL',
             'password' => Schema::TYPE_STRING . ' NOT NULL',
@@ -139,8 +139,8 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 
     public function safeDown()
     {
-        $this->dropTable('tbl_news');
-        $this->dropTable('tbl_user');
+        $this->dropTable('news');
+        $this->dropTable('user');
     }
 
 }
@@ -169,8 +169,8 @@ the migrations, it will run the `up()` method in every new migration class, one
 after another, in the order of the timestamp value in the class name.
 
 After applying a migration, the migration tool will keep a record in a database
-table named `tbl_migration`. This allows the tool to identify which migrations
-have been applied and which are not. If the `tbl_migration` table does not exist,
+table named `migration`. This allows the tool to identify which migrations
+have been applied and which are not. If the `migration` table does not exist,
 the tool will automatically create it in the database specified by the `db`
 application component.
 
@@ -284,7 +284,7 @@ line:
   sub-directory under the application base path.
 
 * `migrationTable`: string, specifies the name of the database table for storing
-  migration history information. It defaults to `tbl_migration`. The table
+  migration history information. It defaults to `migration`. The table
   structure is `version varchar(255) primary key, apply_time integer`.
 
 * `connectionID`: string, specifies the ID of the database application component.

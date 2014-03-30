@@ -8,6 +8,7 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\Component;
+use yii\base\ErrorHandler;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\base\Model;
@@ -140,8 +141,7 @@ class ActiveField extends Component
         try {
             return $this->render();
         } catch (\Exception $e) {
-            trigger_error($e->getMessage() . "\n\n" . $e->getTraceAsString());
-
+            ErrorHandler::convertExceptionToError($e);
             return '';
         }
     }

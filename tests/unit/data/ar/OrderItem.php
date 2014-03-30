@@ -14,7 +14,7 @@ class OrderItem extends ActiveRecord
 {
     public static function tableName()
     {
-        return 'tbl_order_item';
+        return 'order_item';
     }
 
     public function getOrder()
