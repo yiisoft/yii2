@@ -301,7 +301,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getCookieParams()
     {
-        return array_merge(session_get_cookie_params(), $this->_cookieParams);
+        return array_merge(session_get_cookie_params(), array_change_key_case($this->_cookieParams));
     }
 
     /**
@@ -314,7 +314,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setCookieParams(array $value)
     {
-        $this->_cookieParams = array_change_key_case($value);
+        $this->_cookieParams = $value;
     }
 
     /**
