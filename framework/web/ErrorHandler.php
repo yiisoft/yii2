@@ -66,7 +66,11 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     protected function renderException($exception)
     {
-        $response = Yii::$app->getResponse();
+        if (Yii::$app->has('response')) {
+            $response = Yii::$app->getResponse();
+        } else {
+            $response = new Response();
+        }
 
         $useErrorView = $response->format === \yii\web\Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
 
@@ -80,7 +84,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         } elseif ($response->format === \yii\web\Response::FORMAT_HTML) {
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest' || YII_ENV_TEST) {
                 // AJAX request
-                $response->data = '<pre>' . htmlspecialchars($this->convertExceptionToString($exception), ENT_QUOTES, Yii::$app->charset) . '</pre>';
+                $response->data = '<pre>' . $this->htmlEncode($this->convertExceptionToString($exception)) . '</pre>';
             } else {
                 // if there is an error during error rendering it's useful to
                 // display PHP error in debug mode instead of a blank screen
@@ -175,7 +179,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     public function renderFile($_file_, $_params_)
     {
         $_params_['handler'] = $this;
-        if ($this->exception instanceof ErrorException) {
+        if ($this->exception instanceof ErrorException || !Yii::$app->has('view')) {
             ob_start();
             ob_implicit_flush(false);
             extract($_params_, EXTR_OVERWRITE);

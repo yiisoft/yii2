@@ -95,7 +95,7 @@ abstract class ErrorHandler extends Component
                 if (PHP_SAPI === 'cli') {
                     echo $msg . "\n";
                 } else {
-                    echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, $this->charset) . '</pre>';
+                    echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, Yii::$app->charset) . '</pre>';
                 }
             }
             $msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
