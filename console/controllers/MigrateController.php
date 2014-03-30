@@ -33,7 +33,7 @@ use yii\helpers\FileHelper;
  * create it as follows:
  *
  * ~~~
- * CREATE TABLE tbl_migration (
+ * CREATE TABLE migration (
  *     version varchar(180) PRIMARY KEY,
  *     apply_time integer
  * )

@@ -26,11 +26,11 @@ use yii\di\Instance;
  *
  * ~~~
  * $count = Yii::$app->db->createCommand('
- *     SELECT COUNT(*) FROM tbl_user WHERE status=:status
+ *     SELECT COUNT(*) FROM user WHERE status=:status
  * ', [':status' => 1])->queryScalar();
  *
  * $dataProvider = new SqlDataProvider([
- *     'sql' => 'SELECT * FROM tbl_user WHERE status=:status',
+ *     'sql' => 'SELECT * FROM user WHERE status=:status',
  *     'params' => [':status' => 1],
  *     'totalCount' => $count,
  *     'sort' => [

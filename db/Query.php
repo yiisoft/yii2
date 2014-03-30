@@ -25,7 +25,7 @@ use yii\base\Component;
  * $query = new Query;
  * // compose the query
  * $query->select('id, name')
- *     ->from('tbl_user')
+ *     ->from('user')
  *     ->limit(10);
  * // build and execute the query
  * $rows = $query->all();
@@ -60,7 +60,7 @@ class Query extends Component implements QueryInterface
      */
     public $distinct;
     /**
-     * @var array the table(s) to be selected from. For example, `['tbl_user', 'tbl_post']`.
+     * @var array the table(s) to be selected from. For example, `['user', 'post']`.
      * This is used to construct the FROM clause in a SQL statement.
      * @see from()
      */
@@ -82,8 +82,8 @@ class Query extends Component implements QueryInterface
      *
      * ~~~
      * [
-     *     ['INNER JOIN', 'tbl_user', 'tbl_user.id = author_id'],
-     *     ['LEFT JOIN', 'tbl_team', 'tbl_team.id = team_id'],
+     *     ['INNER JOIN', 'user', 'user.id = author_id'],
+     *     ['LEFT JOIN', 'team', 'team.id = team_id'],
      * ]
      * ~~~
      */
@@ -143,9 +143,9 @@ class Query extends Component implements QueryInterface
      * For example,
      *
      * ```php
-     * $query = (new Query)->from('tbl_user');
+     * $query = (new Query)->from('user');
      * foreach ($query->batch() as $rows) {
-     *     // $rows is an array of 10 or fewer rows from tbl_user
+     *     // $rows is an array of 10 or fewer rows from user table
      * }
      * ```
      *
@@ -171,7 +171,7 @@ class Query extends Component implements QueryInterface
      * only one row of data is returned. For example,
      *
      * ```php
-     * $query = (new Query)->from('tbl_user');
+     * $query = (new Query)->from('user');
      * foreach ($query->each() as $row) {
      * }
      * ```
@@ -383,7 +383,7 @@ class Query extends Component implements QueryInterface
      * Sets the SELECT part of the query.
      * @param string|array $columns the columns to be selected.
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
-     * Columns can contain table prefixes (e.g. "tbl_user.id") and/or column aliases (e.g. "tbl_user.id AS user_id").
+     * Columns can be prefixed with table names (e.g. "user.id") and/or contain column aliases (e.g. "user.id AS user_id").
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
      *
@@ -422,9 +422,9 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the FROM part of the query.
-     * @param string|array $tables the table(s) to be selected from. This can be either a string (e.g. `'tbl_user'`)
-     * or an array (e.g. `['tbl_user', 'tbl_profile']`) specifying one or several table names.
-     * Table names can contain schema prefixes (e.g. `'public.tbl_user'`) and/or table aliases (e.g. `'tbl_user u'`).
+     * @param string|array $tables the table(s) to be selected from. This can be either a string (e.g. `'user'`)
+     * or an array (e.g. `['user', 'profile']`) specifying one or several table names.
+     * Table names can contain schema prefixes (e.g. `'public.user'`) and/or table aliases (e.g. `'user u'`).
      * The method will automatically quote the table names unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
@@ -581,7 +581,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $table the table to be joined.
      *
      * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
@@ -606,7 +606,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $table the table to be joined.
      *
      * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
@@ -631,7 +631,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $table the table to be joined.
      *
      * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
@@ -656,7 +656,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $table the table to be joined.
      *
      * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
