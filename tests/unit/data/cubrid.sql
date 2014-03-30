@@ -3,16 +3,16 @@
  * The database setup in config.php is required to perform then relevant tests:
  */
 
-DROP TABLE IF EXISTS composite_fk;
-DROP TABLE IF EXISTS order_item;
-DROP TABLE IF EXISTS item;
-DROP TABLE IF EXISTS order;
-DROP TABLE IF EXISTS category;
-DROP TABLE IF EXISTS customer;
-DROP TABLE IF EXISTS profile;
-DROP TABLE IF EXISTS null_values;
-DROP TABLE IF EXISTS type;
-DROP TABLE IF EXISTS constraints;
+DROP TABLE IF EXISTS `composite_fk`;
+DROP TABLE IF EXISTS `order_item`;
+DROP TABLE IF EXISTS `item`;
+DROP TABLE IF EXISTS `order`;
+DROP TABLE IF EXISTS `category`;
+DROP TABLE IF EXISTS `customer`;
+DROP TABLE IF EXISTS `profile`;
+DROP TABLE IF EXISTS `null_values`;
+DROP TABLE IF EXISTS `type`;
+DROP TABLE IF EXISTS `constraints`;
 
 CREATE TABLE `constraints`
 (
@@ -104,29 +104,29 @@ CREATE TABLE `composite_fk` (
   CONSTRAINT `FK_composite_fk_order_item` FOREIGN KEY (`order_id`,`item_id`) REFERENCES `order_item` (`order_id`,`item_id`) ON DELETE CASCADE
 );
 
-INSERT INTO profile (description) VALUES ('profile customer 1');
-INSERT INTO profile (description) VALUES ('profile customer 3');
+INSERT INTO `profile` (description) VALUES ('profile customer 1');
+INSERT INTO `profile` (description) VALUES ('profile customer 3');
 
-INSERT INTO customer (email, name, address, status, profile_id) VALUES ('user1@example.com', 'user1', 'address1', 1, 1);
-INSERT INTO customer (email, name, address, status) VALUES ('user2@example.com', 'user2', 'address2', 1);
-INSERT INTO customer (email, name, address, status, profile_id) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
+INSERT INTO `customer` (email, name, address, status, profile_id) VALUES ('user1@example.com', 'user1', 'address1', 1, 1);
+INSERT INTO `customer` (email, name, address, status) VALUES ('user2@example.com', 'user2', 'address2', 1);
+INSERT INTO `customer` (email, name, address, status, profile_id) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
 
-INSERT INTO category (name) VALUES ('Books');
-INSERT INTO category (name) VALUES ('Movies');
+INSERT INTO `category` (name) VALUES ('Books');
+INSERT INTO `category` (name) VALUES ('Movies');
 
-INSERT INTO item (name, category_id) VALUES ('Agile Web Application Development with Yii1.1 and PHP5', 1);
-INSERT INTO item (name, category_id) VALUES ('Yii 1.1 Application Development Cookbook', 1);
-INSERT INTO item (name, category_id) VALUES ('Ice Age', 2);
-INSERT INTO item (name, category_id) VALUES ('Toy Story', 2);
-INSERT INTO item (name, category_id) VALUES ('Cars', 2);
+INSERT INTO `item` (name, category_id) VALUES ('Agile Web Application Development with Yii1.1 and PHP5', 1);
+INSERT INTO `item` (name, category_id) VALUES ('Yii 1.1 Application Development Cookbook', 1);
+INSERT INTO `item` (name, category_id) VALUES ('Ice Age', 2);
+INSERT INTO `item` (name, category_id) VALUES ('Toy Story', 2);
+INSERT INTO `item` (name, category_id) VALUES ('Cars', 2);
 
-INSERT INTO order (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
-INSERT INTO order (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
-INSERT INTO order (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
+INSERT INTO `order` (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO `order` (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
+INSERT INTO `order` (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
 
-INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
-INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
-INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
-INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
-INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
-INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
+INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
+INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
+INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
+INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);

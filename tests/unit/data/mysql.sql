@@ -3,16 +3,16 @@
  * The database setup in config.php is required to perform then relevant tests:
  */
 
-DROP TABLE IF EXISTS composite_fk CASCADE;
-DROP TABLE IF EXISTS order_item CASCADE;
-DROP TABLE IF EXISTS item CASCADE;
-DROP TABLE IF EXISTS order CASCADE;
-DROP TABLE IF EXISTS category CASCADE;
-DROP TABLE IF EXISTS customer CASCADE;
-DROP TABLE IF EXISTS profile CASCADE;
-DROP TABLE IF EXISTS null_values CASCADE;
-DROP TABLE IF EXISTS type CASCADE;
-DROP TABLE IF EXISTS constraints CASCADE;
+DROP TABLE IF EXISTS `composite_fk` CASCADE;
+DROP TABLE IF EXISTS `order_item` CASCADE;
+DROP TABLE IF EXISTS `item` CASCADE;
+DROP TABLE IF EXISTS `order` CASCADE;
+DROP TABLE IF EXISTS `category` CASCADE;
+DROP TABLE IF EXISTS `customer` CASCADE;
+DROP TABLE IF EXISTS `profile` CASCADE;
+DROP TABLE IF EXISTS `null_values` CASCADE;
+DROP TABLE IF EXISTS `type` CASCADE;
+DROP TABLE IF EXISTS `constraints` CASCADE;
 
 CREATE TABLE `constraints`
 (
@@ -104,61 +104,61 @@ CREATE TABLE `type` (
   `bool_col2` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO profile (description) VALUES ('profile customer 1');
-INSERT INTO profile (description) VALUES ('profile customer 3');
+INSERT INTO `profile` (description) VALUES ('profile customer 1');
+INSERT INTO `profile` (description) VALUES ('profile customer 3');
 
-INSERT INTO customer (email, name, address, status, profile_id) VALUES ('user1@example.com', 'user1', 'address1', 1, 1);
-INSERT INTO customer (email, name, address, status) VALUES ('user2@example.com', 'user2', 'address2', 1);
-INSERT INTO customer (email, name, address, status, profile_id) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
+INSERT INTO `customer` (email, name, address, status, profile_id) VALUES ('user1@example.com', 'user1', 'address1', 1, 1);
+INSERT INTO `customer` (email, name, address, status) VALUES ('user2@example.com', 'user2', 'address2', 1);
+INSERT INTO `customer` (email, name, address, status, profile_id) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
 
-INSERT INTO category (name) VALUES ('Books');
-INSERT INTO category (name) VALUES ('Movies');
+INSERT INTO `category` (name) VALUES ('Books');
+INSERT INTO `category` (name) VALUES ('Movies');
 
-INSERT INTO item (name, category_id) VALUES ('Agile Web Application Development with Yii1.1 and PHP5', 1);
-INSERT INTO item (name, category_id) VALUES ('Yii 1.1 Application Development Cookbook', 1);
-INSERT INTO item (name, category_id) VALUES ('Ice Age', 2);
-INSERT INTO item (name, category_id) VALUES ('Toy Story', 2);
-INSERT INTO item (name, category_id) VALUES ('Cars', 2);
+INSERT INTO `item` (name, category_id) VALUES ('Agile Web Application Development with Yii1.1 and PHP5', 1);
+INSERT INTO `item` (name, category_id) VALUES ('Yii 1.1 Application Development Cookbook', 1);
+INSERT INTO `item` (name, category_id) VALUES ('Ice Age', 2);
+INSERT INTO `item` (name, category_id) VALUES ('Toy Story', 2);
+INSERT INTO `item` (name, category_id) VALUES ('Cars', 2);
 
-INSERT INTO order (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
-INSERT INTO order (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
-INSERT INTO order (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
+INSERT INTO `order` (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO `order` (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
+INSERT INTO `order` (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
 
-INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
-INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
-INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
-INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
-INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
-INSERT INTO order_item (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
+INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
+INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
+INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
+INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 
 /**
  * (MySQL-)Database Schema for validator tests
  */
 
-DROP TABLE IF EXISTS validator_main CASCADE;
-DROP TABLE IF EXISTS validator_ref CASCADE;
+DROP TABLE IF EXISTS `validator_main` CASCADE;
+DROP TABLE IF EXISTS `validator_ref` CASCADE;
 
-CREATE TABLE validator_main (
+CREATE TABLE `validator_main` (
   `id`     INT(11) NOT NULL AUTO_INCREMENT,
   `field1` VARCHAR(255),
   PRIMARY KEY (`id`)
 ) ENGINE =InnoDB  DEFAULT CHARSET =utf8;
 
-CREATE TABLE validator_ref (
+CREATE TABLE `validator_ref` (
   `id`      INT(11) NOT NULL AUTO_INCREMENT,
   `a_field` VARCHAR(255),
   `ref`     INT(11),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO validator_main (id, field1) VALUES (1, 'just a string1');
-INSERT INTO validator_main (id, field1) VALUES (2, 'just a string2');
-INSERT INTO validator_main (id, field1) VALUES (3, 'just a string3');
-INSERT INTO validator_main (id, field1) VALUES (4, 'just a string4');
-INSERT INTO validator_ref (a_field, ref) VALUES ('ref_to_2', 2);
-INSERT INTO validator_ref (a_field, ref) VALUES ('ref_to_2', 2);
-INSERT INTO validator_ref (a_field, ref) VALUES ('ref_to_3', 3);
-INSERT INTO validator_ref (a_field, ref) VALUES ('ref_to_4', 4);
-INSERT INTO validator_ref (a_field, ref) VALUES ('ref_to_4', 4);
-INSERT INTO validator_ref (a_field, ref) VALUES ('ref_to_5', 5);
+INSERT INTO `validator_main` (id, field1) VALUES (1, 'just a string1');
+INSERT INTO `validator_main` (id, field1) VALUES (2, 'just a string2');
+INSERT INTO `validator_main` (id, field1) VALUES (3, 'just a string3');
+INSERT INTO `validator_main` (id, field1) VALUES (4, 'just a string4');
+INSERT INTO `validator_ref` (a_field, ref) VALUES ('ref_to_2', 2);
+INSERT INTO `validator_ref` (a_field, ref) VALUES ('ref_to_2', 2);
+INSERT INTO `validator_ref` (a_field, ref) VALUES ('ref_to_3', 3);
+INSERT INTO `validator_ref` (a_field, ref) VALUES ('ref_to_4', 4);
+INSERT INTO `validator_ref` (a_field, ref) VALUES ('ref_to_4', 4);
+INSERT INTO `validator_ref` (a_field, ref) VALUES ('ref_to_5', 5);
