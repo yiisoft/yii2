@@ -28,6 +28,6 @@ class m130524_201442_init extends \yii\db\Migration
 
     public function down()
     {
-        $this->dropTable('user');
+        $this->dropTable($this->db->tablePrefix . 'user');
     }
 }
