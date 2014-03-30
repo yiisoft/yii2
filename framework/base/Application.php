@@ -561,7 +561,6 @@ abstract class Application extends Module
     {
         return [
             'log' => ['class' => 'yii\log\Dispatcher'],
-            'errorHandler' => ['class' => 'yii\base\ErrorHandler'],
             'view' => ['class' => 'yii\web\View'],
             'formatter' => ['class' => 'yii\base\Formatter'],
             'i18n' => ['class' => 'yii\i18n\I18N'],
