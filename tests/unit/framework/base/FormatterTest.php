@@ -269,19 +269,6 @@ class FormatterTest extends TestCase
         $dateThen = new DateTime('2014-02-28');
         $this->assertSame('a month ago', $this->formatter->asRelativeTime($dateThen, $dateNow));
 
-        // Relative to current time tests (can't test with seconds though due to the tests computation time)
-        $this->assertSame('4 minutes ago', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_244_seconds])));
-        $this->assertSame('a minute ago', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_1_minute])));
-        $this->assertSame('33 minutes ago', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_33_minutes])));
-        $this->assertSame('an hour ago', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_1_hour])));
-        $this->assertSame('6 hours ago', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_6_hours])));
-        $this->assertSame('a day ago', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_1_day])));
-        $this->assertSame('2 months ago', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_89_days])));
-        $this->assertSame('a month ago', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_1_month])));
-        $this->assertSame('5 months ago', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_5_months])));
-        $this->assertSame('a year ago', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_1_year])));
-        $this->assertSame('12 years ago', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_12_years])));
-
         // Invert all the DateIntervals
         $interval_1_second->invert = true;
         $interval_244_seconds->invert = true;
@@ -334,21 +321,5 @@ class FormatterTest extends TestCase
         $dateThen = new DateTime('2014-03-31');
         $this->assertSame('in a month', $this->formatter->asRelativeTime($this->buildDateSubIntervals('2014-03-03', [$interval_1_month]), $dateNow));
         $this->assertSame('in 28 days', $this->formatter->asRelativeTime($dateThen, $dateNow));
-
-        // Relative to current time tests (can't test with seconds though due to the tests computation time)
-        // We add 5 seconds to compensate for tests computation time
-        $interval_5_seconds = new DateInterval('PT5S');
-        $interval_5_seconds->invert = true;
-        $this->assertSame('in 4 minutes', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_244_seconds, $interval_5_seconds])));
-        $this->assertSame('in a minute', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_1_minute, $interval_5_seconds])));
-        $this->assertSame('in 33 minutes', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_33_minutes, $interval_5_seconds])));
-        $this->assertSame('in an hour', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_1_hour, $interval_5_seconds])));
-        $this->assertSame('in 6 hours', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_6_hours, $interval_5_seconds])));
-        $this->assertSame('in a day', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_1_day, $interval_5_seconds])));
-        $this->assertSame('in 2 months', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_89_days, $interval_5_seconds])));
-        $this->assertSame('in a month', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_1_month, $interval_5_seconds])));
-        $this->assertSame('in 5 months', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_5_months, $interval_5_seconds])));
-        $this->assertSame('in a year', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_1_year, $interval_5_seconds])));
-        $this->assertSame('in 12 years', $this->formatter->asRelativeTime($this->buildDateSubIntervals('now', [$interval_12_years, $interval_5_seconds])));
     }
 }
