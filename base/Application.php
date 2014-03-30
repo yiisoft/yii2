@@ -179,15 +179,8 @@ abstract class Application extends Module
 
         $this->state = self::STATE_BEGIN;
 
-        // TODO how to deal with exceptions thrown in preInit()
+        $this->registerErrorHandler($config);
         $this->preInit($config);
-        if (YII_ENABLE_ERROR_HANDLER) {
-            if (isset($config['components']['errorHandler'])) {
-                $this->set('errorHandler', $config['components']['errorHandler']);
-                unset($config['components']['errorHandler']);
-            }
-            $this->getErrorHandler()->register();
-        }
 
         Component::__construct($config);
     }
@@ -203,13 +196,13 @@ abstract class Application extends Module
     public function preInit(&$config)
     {
         if (!isset($config['id'])) {
-            throw new InvalidConfigException('The "id" configuration is required.');
+            throw new InvalidConfigException('The "id" configuration for the Application is required.');
         }
         if (isset($config['basePath'])) {
             $this->setBasePath($config['basePath']);
             unset($config['basePath']);
         } else {
-            throw new InvalidConfigException('The "basePath" configuration is required.');
+            throw new InvalidConfigException('The "basePath" configuration for the Application is required.');
         }
 
         if (isset($config['vendorPath'])) {
@@ -289,6 +282,22 @@ abstract class Application extends Module
     {
         $this->get('log');
         parent::preloadComponents();
+    }
+
+    /**
+     * Registers the errorHandler component as a PHP error handler.
+     */
+    protected function registerErrorHandler(&$config)
+    {
+        if (YII_ENABLE_ERROR_HANDLER) {
+            if (!isset($config['components']['errorHandler']['class'])) {
+                echo "Error: no errorHandler component is configured.\n";
+                exit(1);
+            }
+            $this->set('errorHandler', $config['components']['errorHandler']);
+            unset($config['components']['errorHandler']);
+            $this->getErrorHandler()->register();
+        }
     }
 
     /**
