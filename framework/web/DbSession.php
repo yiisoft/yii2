@@ -182,10 +182,11 @@ class DbSession extends Session
                     ->execute();
             }
         } catch (\Exception $e) {
-            if (YII_DEBUG) {
-                echo $e->getMessage();
-            }
-            // it is too late to log an error message here
+            $exception = ErrorHandler::convertExceptionToString($e);
+            // its too late to use Yii logging here
+            error_log($exception);
+            echo $exception;
+
             return false;
         }
 
