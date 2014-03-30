@@ -287,7 +287,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function createServerInformationLink()
     {
-        static $serverUrls = [
+        $serverUrls = [
             'http://httpd.apache.org/' => ['apache'],
             'http://nginx.org/' => ['nginx'],
             'http://lighttpd.net/' => ['lighttpd'],
