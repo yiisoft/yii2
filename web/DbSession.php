@@ -16,7 +16,7 @@ use yii\di\Instance;
 /**
  * DbSession extends [[Session]] by using database as session data storage.
  *
- * By default, DbSession stores session data in a DB table named 'tbl_session'. This table
+ * By default, DbSession stores session data in a DB table named 'session'. This table
  * must be pre-created. The table name can be changed by setting [[sessionTable]].
  *
  * The following example shows how you can configure the application to use DbSession:
@@ -48,7 +48,7 @@ class DbSession extends Session
      * The table should be pre-created as follows:
      *
      * ~~~
-     * CREATE TABLE tbl_session
+     * CREATE TABLE session
      * (
      *     id CHAR(40) NOT NULL PRIMARY KEY,
      *     expire INTEGER,
@@ -182,10 +182,11 @@ class DbSession extends Session
                     ->execute();
             }
         } catch (\Exception $e) {
-            if (YII_DEBUG) {
-                echo $e->getMessage();
-            }
-            // it is too late to log an error message here
+            $exception = ErrorHandler::convertExceptionToString($e);
+            // its too late to use Yii logging here
+            error_log($exception);
+            echo $exception;
+
             return false;
         }
 

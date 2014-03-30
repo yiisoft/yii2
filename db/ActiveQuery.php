@@ -357,7 +357,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * // find all orders, eager loading "books", and sort the orders and books by the book names.
      * Order::find()->joinWith([
      *     'books' => function ($query) {
-     *         $query->orderBy('tbl_item.name');
+     *         $query->orderBy('item.name');
      *     }
      * ])->all();
      * ```
@@ -628,7 +628,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * public function getItems()
      * {
      *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
-     *                 ->viaTable('tbl_order_item', ['order_id' => 'id']);
+     *                 ->viaTable('order_item', ['order_id' => 'id']);
      * }
      * ```
      *
