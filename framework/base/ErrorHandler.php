@@ -52,7 +52,7 @@ abstract class ErrorHandler extends Component
     {
         ini_set('display_errors', false);
         set_exception_handler([$this, 'handleException']);
-        set_error_handler([$this, 'handleError']); // TODO care for errorReporting set to deprecated or not
+        set_error_handler([$this, 'handleError']);
         if ($this->memoryReserveSize > 0) {
             $this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
         }
@@ -120,10 +120,10 @@ abstract class ErrorHandler extends Component
      */
     public function handleError($code, $message, $file, $line)
     {
-        if (error_reporting() & $code) { // TODO care for errorReporting set to deprecated or not
+        if (error_reporting() & $code) {
             // load ErrorException manually here because autoloading them will not work
             // when error occurs while autoloading a class
-            if (!class_exists('\\yii\\base\\ErrorException', false)) {
+            if (!class_exists('yii\\base\\ErrorException', false)) {
                 require_once(__DIR__ . '/ErrorException.php');
             }
             $exception = new ErrorException($message, $code, $code, $file, $line);
@@ -151,7 +151,7 @@ abstract class ErrorHandler extends Component
 
         // load ErrorException manually here because autoloading them will not work
         // when error occurs while autoloading a class
-        if (!class_exists('\\yii\\base\\ErrorException', false)) {
+        if (!class_exists('yii\\base\\ErrorException', false)) {
             require_once(__DIR__ . '/ErrorException.php');
         }
 
