@@ -16,26 +16,6 @@ class ActiveRecordTest extends RedisTestCase
 {
     use ActiveRecordTestTrait;
 
-    public function callCustomerFind($q = null)
-    {
-        return Customer::find($q);
-    }
-
-    public function callOrderFind($q = null)
-    {
-        return Order::find($q);
-    }
-
-    public function callOrderItemFind($q = null)
-    {
-        return OrderItem::find($q);
-    }
-
-    public function callItemFind($q = null)
-    {
-        return Item::find($q);
-    }
-
     public function getCustomerClass()
     {
         return Customer::className();
@@ -142,7 +122,7 @@ class ActiveRecordTest extends RedisTestCase
         $this->markTestSkipped('Redis does not support orderBy.');
     }
 
-    public function testSatisticalFind()
+    public function testStatisticalFind()
     {
         // find count, sum, average, min, max, scalar
         $this->assertEquals(3, Customer::find()->count());
@@ -155,19 +135,19 @@ class ActiveRecordTest extends RedisTestCase
         $this->assertEquals(7, OrderItem::find()->sum('quantity'));
     }
 
-    public function testfindIndexBy()
+    public function testFindIndexBy()
     {
         $customerClass = $this->getCustomerClass();
         /** @var TestCase|ActiveRecordTestTrait $this */
         // indexBy
-        $customers = $this->callCustomerFind()->indexBy('name')/*->orderBy('id')*/->all();
+        $customers = Customer::find()->indexBy('name')/*->orderBy('id')*/->all();
         $this->assertEquals(3, count($customers));
         $this->assertTrue($customers['user1'] instanceof $customerClass);
         $this->assertTrue($customers['user2'] instanceof $customerClass);
         $this->assertTrue($customers['user3'] instanceof $customerClass);
 
         // indexBy callable
-        $customers = $this->callCustomerFind()->indexBy(function ($customer) {
+        $customers = Customer::find()->indexBy(function ($customer) {
             return $customer->id . '-' . $customer->name;
         })/*->orderBy('id')*/->all(); // TODO this test is duplicated because of missing orderBy support in redis
         $this->assertEquals(3, count($customers));
@@ -181,50 +161,53 @@ class ActiveRecordTest extends RedisTestCase
         // TODO this test is duplicated because of missing orderBy support in redis
         /** @var TestCase|ActiveRecordTestTrait $this */
         // all()
-        $customers = $this->callCustomerFind()->all();
+        $customers = Customer::find()->all();
         $this->assertEquals(3, count($customers));
 
-        $customers = $this->callCustomerFind()/*->orderBy('id')*/->limit(1)->all();
+        $customers = Customer::find()/*->orderBy('id')*/->limit(1)->all();
         $this->assertEquals(1, count($customers));
         $this->assertEquals('user1', $customers[0]->name);
 
-        $customers = $this->callCustomerFind()/*->orderBy('id')*/->limit(1)->offset(1)->all();
+        $customers = Customer::find()/*->orderBy('id')*/->limit(1)->offset(1)->all();
         $this->assertEquals(1, count($customers));
         $this->assertEquals('user2', $customers[0]->name);
 
-        $customers = $this->callCustomerFind()/*->orderBy('id')*/->limit(1)->offset(2)->all();
+        $customers = Customer::find()/*->orderBy('id')*/->limit(1)->offset(2)->all();
         $this->assertEquals(1, count($customers));
         $this->assertEquals('user3', $customers[0]->name);
 
-        $customers = $this->callCustomerFind()/*->orderBy('id')*/->limit(2)->offset(1)->all();
+        $customers = Customer::find()/*->orderBy('id')*/->limit(2)->offset(1)->all();
         $this->assertEquals(2, count($customers));
         $this->assertEquals('user2', $customers[0]->name);
         $this->assertEquals('user3', $customers[1]->name);
 
-        $customers = $this->callCustomerFind()->limit(2)->offset(3)->all();
+        $customers = Customer::find()->limit(2)->offset(3)->all();
         $this->assertEquals(0, count($customers));
 
         // one()
-        $customer = $this->callCustomerFind()/*->orderBy('id')*/->one();
+        $customer = Customer::find()/*->orderBy('id')*/->one();
         $this->assertEquals('user1', $customer->name);
 
-        $customer = $this->callCustomerFind()/*->orderBy('id')*/->offset(0)->one();
+        $customer = Customer::find()/*->orderBy('id')*/->offset(0)->one();
         $this->assertEquals('user1', $customer->name);
 
-        $customer = $this->callCustomerFind()/*->orderBy('id')*/->offset(1)->one();
+        $customer = Customer::find()/*->orderBy('id')*/->offset(1)->one();
         $this->assertEquals('user2', $customer->name);
 
-        $customer = $this->callCustomerFind()/*->orderBy('id')*/->offset(2)->one();
+        $customer = Customer::find()/*->orderBy('id')*/->offset(2)->one();
         $this->assertEquals('user3', $customer->name);
 
-        $customer = $this->callCustomerFind()->offset(3)->one();
+        $customer = Customer::find()->offset(3)->one();
         $this->assertNull($customer);
     }
 
     public function testFindEagerViaRelation()
     {
+        /** @var \yii\db\ActiveRecordInterface $orderClass */
+        $orderClass = $this->getOrderClass();
+
         /** @var TestCase|ActiveRecordTestTrait $this */
-        $orders = $this->callOrderFind()->with('items')/*->orderBy('id')*/->all(); // TODO this test is duplicated because of missing orderBy support in redis
+        $orders = $orderClass::find()->with('items')/*->orderBy('id')*/->all(); // TODO this test is duplicated because of missing orderBy support in redis
         $this->assertEquals(3, count($orders));
         $order = $orders[0];
         $this->assertEquals(1, $order->id);

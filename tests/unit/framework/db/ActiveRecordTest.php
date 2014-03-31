@@ -26,26 +26,6 @@ class ActiveRecordTest extends DatabaseTestCase
         ActiveRecord::$db = $this->getConnection();
     }
 
-    public function callCustomerFind($q = null)
-    {
-        return Customer::find($q);
-    }
-
-    public function callOrderFind($q = null)
-    {
-        return Order::find($q);
-    }
-
-    public function callOrderItemFind($q = null)
-    {
-        return OrderItem::find($q);
-    }
-
-    public function callItemFind($q = null)
-    {
-        return Item::find($q);
-    }
-
     public function getCustomerClass()
     {
         return Customer::className();
@@ -69,7 +49,7 @@ class ActiveRecordTest extends DatabaseTestCase
     public function testCustomColumns()
     {
         // find custom column
-        $customer = $this->callCustomerFind()->select(['*', '(status*2) AS status2'])
+        $customer = Customer::find()->select(['*', '(status*2) AS status2'])
             ->where(['name' => 'user3'])->one();
         $this->assertEquals(3, $customer->id);
         $this->assertEquals(4, $customer->status2);
@@ -78,19 +58,19 @@ class ActiveRecordTest extends DatabaseTestCase
     public function testStatisticalFind()
     {
         // find count, sum, average, min, max, scalar
-        $this->assertEquals(3, $this->callCustomerFind()->count());
-        $this->assertEquals(2, $this->callCustomerFind()->where('id=1 OR id=2')->count());
-        $this->assertEquals(6, $this->callCustomerFind()->sum('id'));
-        $this->assertEquals(2, $this->callCustomerFind()->average('id'));
-        $this->assertEquals(1, $this->callCustomerFind()->min('id'));
-        $this->assertEquals(3, $this->callCustomerFind()->max('id'));
-        $this->assertEquals(3, $this->callCustomerFind()->select('COUNT(*)')->scalar());
+        $this->assertEquals(3, Customer::find()->count());
+        $this->assertEquals(2, Customer::find()->where('id=1 OR id=2')->count());
+        $this->assertEquals(6, Customer::find()->sum('id'));
+        $this->assertEquals(2, Customer::find()->average('id'));
+        $this->assertEquals(1, Customer::find()->min('id'));
+        $this->assertEquals(3, Customer::find()->max('id'));
+        $this->assertEquals(3, Customer::find()->select('COUNT(*)')->scalar());
     }
 
     public function testFindScalar()
     {
         // query scalar
-        $customerName = $this->callCustomerFind()->where(['id' => 2])->select('name')->scalar();
+        $customerName = Customer::find()->where(['id' => 2])->select('name')->scalar();
         $this->assertEquals('user2', $customerName);
     }
 
@@ -168,7 +148,7 @@ class ActiveRecordTest extends DatabaseTestCase
     public function testDeeplyNestedTableRelation()
     {
         /** @var Customer $customer */
-        $customer = $this->callCustomerFind(1);
+        $customer = Customer::find(1);
         $this->assertNotNull($customer);
 
         $items = $customer->orderItems;

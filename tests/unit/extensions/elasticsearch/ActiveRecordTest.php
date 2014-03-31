@@ -20,26 +20,6 @@ class ActiveRecordTest extends ElasticSearchTestCase
 {
     use ActiveRecordTestTrait;
 
-    public function callCustomerFind($q = null)
-    {
-        return Customer::find($q);
-    }
-
-    public function callOrderFind($q = null)
-    {
-        return Order::find($q);
-    }
-
-    public function callOrderItemFind($q = null)
-    {
-        return OrderItem::find($q);
-    }
-
-    public function callItemFind($q = null)
-    {
-        return Item::find($q);
-    }
-
     public function getCustomerClass()
     {
         return Customer::className();
@@ -164,7 +144,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
     public function testFindAsArray()
     {
         // asArray
-        $customer = $this->callCustomerFind()->where(['id' => 2])->asArray()->one();
+        $customer = Customer::find()->where(['id' => 2])->asArray()->one();
         $this->assertEquals([
             'id' => 2,
             'email' => 'user2@example.com',
@@ -177,7 +157,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testSearch()
     {
-        $customers = $this->callCustomerFind()->search()['hits'];
+        $customers = Customer::find()->search()['hits'];
         $this->assertEquals(3, $customers['total']);
         $this->assertEquals(3, count($customers['hits']));
         $this->assertTrue($customers['hits'][0] instanceof Customer);
@@ -185,12 +165,12 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertTrue($customers['hits'][2] instanceof Customer);
 
         // limit vs. totalcount
-        $customers = $this->callCustomerFind()->limit(2)->search()['hits'];
+        $customers = Customer::find()->limit(2)->search()['hits'];
         $this->assertEquals(3, $customers['total']);
         $this->assertEquals(2, count($customers['hits']));
 
         // asArray
-        $result = $this->callCustomerFind()->asArray()->search()['hits'];
+        $result = Customer::find()->asArray()->search()['hits'];
         $this->assertEquals(3, $result['total']);
         $customers = $result['hits'];
         $this->assertEquals(3, count($customers));
@@ -213,7 +193,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         // TODO test asArray() + fields() + indexBy()
 
         // find by attributes
-        $result = $this->callCustomerFind()->where(['name' => 'user2'])->search()['hits'];
+        $result = Customer::find()->where(['name' => 'user2'])->search()['hits'];
         $customer = reset($result['hits']);
         $this->assertTrue($customer instanceof Customer);
         $this->assertEquals(2, $customer->id);
@@ -223,7 +203,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testSearchFacets()
     {
-        $result = $this->callCustomerFind()->addStatisticalFacet('status_stats', ['field' => 'status'])->search();
+        $result = Customer::find()->addStatisticalFacet('status_stats', ['field' => 'status'])->search();
         $this->assertArrayHasKey('facets', $result);
         $this->assertEquals(3, $result['facets']['status_stats']['count']);
         $this->assertEquals(4, $result['facets']['status_stats']['total']); // sum of values
@@ -400,10 +380,10 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $customer->save(false);
         $this->afterSave();
 
-        $customers = $this->callCustomerFind()->where(['status' => true])->all();
+        $customers = Customer::find()->where(['status' => true])->all();
         $this->assertEquals(1, count($customers));
 
-        $customers = $this->callCustomerFind()->where(['status' => false])->all();
+        $customers = Customer::find()->where(['status' => false])->all();
         $this->assertEquals(2, count($customers));
     }
 
@@ -411,7 +391,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
     {
         /** @var TestCase|ActiveRecordTestTrait $this */
         // indexBy + asArray
-        $customers = $this->callCustomerFind()->asArray()->fields(['id', 'name'])->all();
+        $customers = Customer::find()->asArray()->fields(['id', 'name'])->all();
         $this->assertEquals(3, count($customers));
         $this->assertArrayHasKey('id', $customers[0]);
         $this->assertArrayHasKey('name', $customers[0]);
@@ -435,7 +415,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $customerClass = $this->getCustomerClass();
         /** @var TestCase|ActiveRecordTestTrait $this */
         // indexBy + asArray
-        $customers = $this->callCustomerFind()->indexBy('name')->fields('id', 'name')->all();
+        $customers = Customer::find()->indexBy('name')->fields('id', 'name')->all();
         $this->assertEquals(3, count($customers));
         $this->assertTrue($customers['user1'] instanceof $customerClass);
         $this->assertTrue($customers['user2'] instanceof $customerClass);
@@ -457,7 +437,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertNull($customers['user3']->status);
 
         // indexBy callable + asArray
-        $customers = $this->callCustomerFind()->indexBy(function ($customer) {
+        $customers = Customer::find()->indexBy(function ($customer) {
             return $customer->id . '-' . $customer->name;
         })->fields('id', 'name')->all();
         $this->assertEquals(3, count($customers));
@@ -485,7 +465,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
     {
         /** @var TestCase|ActiveRecordTestTrait $this */
         // indexBy + asArray
-        $customers = $this->callCustomerFind()->indexBy('name')->asArray()->fields('id', 'name')->all();
+        $customers = Customer::find()->indexBy('name')->asArray()->fields('id', 'name')->all();
         $this->assertEquals(3, count($customers));
         $this->assertArrayHasKey('id', $customers['user1']);
         $this->assertArrayHasKey('name', $customers['user1']);
@@ -504,7 +484,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertArrayNotHasKey('status', $customers['user3']);
 
         // indexBy callable + asArray
-        $customers = $this->callCustomerFind()->indexBy(function ($customer) {
+        $customers = Customer::find()->indexBy(function ($customer) {
             return $customer['id'] . '-' . $customer['name'];
         })->asArray()->fields('id', 'name')->all();
         $this->assertEquals(3, count($customers));
