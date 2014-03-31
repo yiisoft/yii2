@@ -26,6 +26,23 @@ $db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
 ])->execute();
 ```
 
+Below is the list of databases that are currently supported by Yii Active Record:
+
+* MySQL 4.1 or later: via [[yii\db\ActiveRecord]]
+* PostgreSQL 7.3 or later: via [[yii\db\ActiveRecord]]
+* SQLite 2 and 3: via [[yii\db\ActiveRecord]]
+* Microsoft SQL Server 2010 or later: via [[yii\db\ActiveRecord]]
+* Oracle: via [[yii\db\ActiveRecord]]
+* CUBRID 9.1 or later: via [[yii\db\ActiveRecord]]
+* Sphnix: via [[yii\sphinx\ActiveRecord]], requires `yii2-sphinx` extension
+* ElasticSearch: via [[yii\elasticsearch\ActiveRecord]], requires `yii2-elasticsearch` extension
+* Redis 2.6.12 or later: via [[yii\redis\ActiveRecord]], requires `yii2-redis` extension
+* MongoDB 1.3.0 or later: via [[yii\mongodb\ActiveRecord]], requires `yii2-mongodb` extension
+
+As you can see, Yii provides Active Record support for relational databases as well as NoSQL databases.
+In this tutorial, we will mainly describe the usage of Active Record for relational databases.
+However, most content described here are also applicable to Active Record for NoSQL databases.
+
 
 Declaring Active Record Classes
 ------------------------------
@@ -247,37 +264,94 @@ $customer->delete();
 Customer::updateAllCounters(['age' => 1]);
 ```
 
-> Info: The `save()` method will call either `insert()` or `update()` depending on whether
-  the Active Record instance is new or not (internally it will check the value of [[yii\db\ActiveRecord::isNewRecord]].
+> Info: The `save()` method will call either `insert()` or `update()`, depending on whether
+  the Active Record instance is new or not (internally it will check the value of [[yii\db\ActiveRecord::isNewRecord]]).
   If an Active Record is instantiated via the `new` operator, calling `save()` will
-  insert a row in the table; If an Active Record is obtained by `find()`, calling `save()` will
+  insert a row in the table; if an Active Record is obtained by `find()`, calling `save()` will
   update the corresponding row in the table.
+
+
+### Data Input and Validation
+
+Because Active Record extends from [[yii\base\Model]], it supports the same data input and validation features
+as described in [Model](model.md). For example, you may declare validation rules by overwriting the
+[[yii\base\Model::rules()|rules()]] method; you may massively assign user input data to an Active Record instance;
+and you may call [[yii\base\Model::validate()|validate()]] to trigger data validation.
+
+When you call `save()`, `insert()` or `update()`, these methods will automatically call [[yii\base\Model::validate()|validate()]].
+If the validation fails, the corresponding data saving operation will be cancelled.
+
+The following example shows how to use an Active Record to collect/validate user input and save them into database:
+
+```php
+// creating a new record
+$model = new Customer;
+if ($model->load(Yii::$app->request->post()) && $model->save()) {
+    // the user input has been collected, validated and saved
+}
+
+// updating a record whose primary key is $id
+$model = Customer::find($id);
+if ($model === null) {
+    throw new NotFoundHttpException;
+}
+if ($model->load(Yii::$app->request->post()) && $model->save()) {
+    // the user input has been collected, validated and saved
+}
+```
 
 
 ### Loading Default Values
 
-Your table columns may be defined with default values. Sometimes, you may want to populate your
-Active Record attributes with these default values. To do so, you may call the `loadDefaultValues()` method:
+Your table columns may be defined with default values. Sometimes, you may want to pre-populate your
+Web form for an Active Record with these values. To do so, call the `loadDefaultValues()` method before
+rendering the form:
 
 ```php
 $customer = new Customer();
 $customer->loadDefaultValues();
-$customer->name = 'Alexander';
-$customer->save();
+// ... render HTML form for $customer ...
 ```
 
 
-Data Input and Validation
+Active Record Life Cycles
 -------------------------
 
-ActiveRecord inherits data validation and data input features from [[yii\base\Model]]. Data validation is called
-automatically when `save()` is performed. If data validation fails, the saving operation will be cancelled.
+It is important to understand the life cycles of Active Record when it is used to manipulate data in database.
+These life cycles are typically associated with corresponding events which allow you to inject code
+to intercept or respond to these events. They are especially useful for developing Active Record [behaviors](behaviors.md).
 
-For more details refer to the [Model](model.md) section of this guide.
+When instantiating a new Active Record instance, we will have the following life cycles:
+
+1. constructor
+2. [[yii\db\ActiveRecord::init()|init()]]: will trigger an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event
+
+When querying data through the [[yii\db\ActiveRecord::find()|find()]] method, we will have the following life cycles
+for EVERY newly populated Active Record instance:
+
+1. constructor
+2. [[yii\db\ActiveRecord::init()|init()]]: will trigger an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event
+3. [[yii\db\ActiveRecord::afterFind()|afterFind()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] event
+
+When calling [[yii\db\ActiveRecord::save()|save()]] to insert or update an ActiveRecord, we will have
+the following life cycles:
+
+1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event
+2. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] event
+3. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event
+4. perform the actual data insertion or updating
+5. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] or [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] event
+
+And Finally when calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an ActiveRecord, we will have
+the following life cycles:
+
+1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event
+2. perform the actual data deletion
+3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event
 
 
-Querying Relational Data
-------------------------
+Working with Relational Data
+----------------------------
 
 You can use ActiveRecord to also query a table's relational data (i.e., selection of data from Table A can also pull
 in related data from Table B). Thanks to ActiveRecord, the relational data returned can be accessed like a property
@@ -715,39 +789,6 @@ $customer->link('orders', $order);
 
 The [[yii\db\ActiveRecord::link()|link()]] call above will set the `customer_id` of the order to be the primary key
 value of `$customer` and then call [[yii\db\ActiveRecord::save()|save()]] to save the order into database.
-
-
-Life Cycles of an ActiveRecord Object
--------------------------------------
-
-An ActiveRecord object undergoes different life cycles when it is used in different cases.
-Subclasses or ActiveRecord behaviors may "inject" custom code in these life cycles through
-method overriding and event handling mechanisms.
-
-When instantiating a new ActiveRecord instance, we will have the following life cycles:
-
-1. constructor
-2. [[yii\db\ActiveRecord::init()|init()]]: will trigger an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event
-
-When getting an ActiveRecord instance through the [[yii\db\ActiveRecord::find()|find()]] method, we will have the following life cycles:
-
-1. constructor
-2. [[yii\db\ActiveRecord::init()|init()]]: will trigger an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event
-3. [[yii\db\ActiveRecord::afterFind()|afterFind()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] event
-
-When calling [[yii\db\ActiveRecord::save()|save()]] to insert or update an ActiveRecord, we will have the following life cycles:
-
-1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event
-2. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] event
-3. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event
-4. perform the actual data insertion or updating
-5. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] or [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] event
-
-Finally when calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an ActiveRecord, we will have the following life cycles:
-
-1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event
-2. perform the actual data deletion
-3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event
 
 
 Scopes
