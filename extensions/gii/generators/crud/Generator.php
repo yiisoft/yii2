@@ -400,10 +400,10 @@ class Generator extends \yii\gii\Generator
                 case Schema::TYPE_TIME:
                 case Schema::TYPE_DATETIME:
                 case Schema::TYPE_TIMESTAMP:
-                    $conditions[] = "\$this->addFilter(\$query, '{$column}');";
+                    $conditions[] = "\$query->andFilter(['{$column}' => \$this->{$column}]);";
                     break;
                 default:
-                    $conditions[] = "\$this->addFilter(\$query, '{$column}', true);";
+                    $conditions[] = "\$this->addFilter(['like', '{$column}', \$this->{$column}]);";
                     break;
             }
         }
