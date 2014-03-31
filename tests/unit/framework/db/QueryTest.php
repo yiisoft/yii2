@@ -109,11 +109,7 @@ class QueryTest extends DatabaseTestCase
     public function testFilterRecursively()
     {
         $query = new Query();
-        $query->filter(['not', ['like', 'name', '']]);
-        $this->assertEquals(null, $query->where);
-
-        $query->where(['id' => 1]);
-        $query->filter(['and', ['like', 'name', '']]);
+        $query->filter(['and', ['like', 'name', ''], ['like', 'title', ''], ['id' => 1], ['not', ['like', 'name', '']]]);
         $this->assertEquals(['id' => 1], $query->where);
     }
 

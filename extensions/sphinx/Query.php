@@ -822,11 +822,24 @@ class Query extends Component implements QueryInterface
                 case 'NOT':
                 case 'AND':
                 case 'OR':
-                    $subCondition = $this->filterCondition($condition[1]);
-                    if ($this->parameterNotEmpty($subCondition)) {
-                        $condition[1] = $subCondition;
-                    } else {
+                    for ($i = 1, $operandsCount = count($condition); $i < $operandsCount; $i++) {
+                        $subCondition = $this->filterCondition($condition[$i]);
+                        if ($this->parameterNotEmpty($subCondition)) {
+                            $condition[$i] = $subCondition;
+                        } else {
+                            unset($condition[$i]);
+                        }
+                    }
+
+                    $operandsCount = count($condition) - 1;
+                    if ($operator === 'NOT' && $operandsCount === 0) {
                         $condition = [];
+                    } else {
+                        // reindex array
+                        array_splice($condition, 0, 0);
+                        if ($operandsCount === 1) {
+                            $condition = $condition[1];
+                        }
                     }
                 break;
                 case 'IN':
