@@ -11,7 +11,7 @@ class m130524_201442_init extends \yii\db\Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB';
         }
 
-        $this->createTable($this->db->tablePrefix . 'user', [
+        $this->createTable('{{%user}}', [
             'id' => Schema::TYPE_PK,
             'username' => Schema::TYPE_STRING . ' NOT NULL',
             'auth_key' => Schema::TYPE_STRING . '(32) NOT NULL',
@@ -28,6 +28,6 @@ class m130524_201442_init extends \yii\db\Migration
 
     public function down()
     {
-        $this->dropTable($this->db->tablePrefix . 'user');
+        $this->dropTable('{{%user}}');
     }
 }
