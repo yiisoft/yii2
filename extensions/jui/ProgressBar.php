@@ -26,7 +26,7 @@ use yii\helpers\Html;
  * and [[end()]] calls within the widget container:
  *
  * ~~~php
- * ProgressBar::widget([
+ * ProgressBar::begin([
  *     'clientOptions' => ['value' => 75],
   * ]);
  *
