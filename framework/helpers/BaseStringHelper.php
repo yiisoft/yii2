@@ -87,4 +87,30 @@ class BaseStringHelper
             return '';
         }
     }
+    
+    /**
+     * Truncates a string to the specified length.
+     * @param string $string The string to truncate.
+     * @param integer $length The new length of the string.
+     * @param string $suffix A value to affix to the end.
+     * @return string the truncated string.
+     */
+    public static function truncate($string, $length, $suffix = '...')
+    {
+        return substr($string, 0, $length) . $suffix;
+    }
+    
+    /**
+     * Split a string into words preserving whitespace and return the specified amount of words.
+     * @param string $string The string to truncate.
+     * @param integer $count How many words to truncate to.
+     * @param string $suffix A value to affix to the end.
+     * @return string the truncated string.
+     */
+    public static function truncateWords($string, $count, $suffix = '...')
+    {
+        $words = preg_split('/(\s+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
+
+        return implode('', array_slice($words, 0, ($count * 2) - 1)) . $suffix;
+    }
 }
