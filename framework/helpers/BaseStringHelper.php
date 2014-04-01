@@ -97,7 +97,11 @@ class BaseStringHelper
      */
     public static function truncate($string, $length, $suffix = '...')
     {
-        return substr($string, 0, $length) . $suffix;
+        if (strlen($string) > $length) {
+            return substr($string, 0, $length) . $suffix;
+        } else {
+            return $string;
+        }
     }
     
     /**
@@ -109,8 +113,11 @@ class BaseStringHelper
      */
     public static function truncateWords($string, $count, $suffix = '...')
     {
-        $words = preg_split('/(\s+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
-
-        return implode('', array_slice($words, 0, ($count * 2) - 1)) . $suffix;
+        $words = preg_split('/(\s+)/', trim($string), null, PREG_SPLIT_DELIM_CAPTURE);
+        if (count($words) / 2 > $count) {
+            return implode('', array_slice($words, 0, ($count * 2) - 1)) . $suffix;
+        } else {
+            return $string;
+        }
     }
 }
