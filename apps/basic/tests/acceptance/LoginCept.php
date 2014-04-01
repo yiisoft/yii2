@@ -18,6 +18,9 @@ $I->see('Password cannot be blank.');
 $I->amGoingTo('try to login with wrong credentials');
 $loginPage->login('admin', 'wrong');
 $I->expectTo('see validations errors');
+if (method_exists($I, 'wait')) {
+    $I->wait(3); // only for selenium
+}
 $I->see('Incorrect username or password.');
 
 $I->amGoingTo('try to login with correct credentials');
