@@ -19,7 +19,7 @@ use yii\base\InvalidParamException;
  * will be displayed.
  *
  * Users specify a view in the format of `path/to/view`, which translates to the view name
- * `BasePath/path/to/view` where `BasePath` is given by [[\yii\base\ViewAction::$basePath]].
+ * `ViewPrefix/path/to/view` where `ViewPrefix` is given by [[\yii\base\ViewAction::$viewPrefix]].
  *
  * Note, the user specified view can only contain word characters, dots and dashes and
  * the first letter must be a word letter.
@@ -42,7 +42,7 @@ class ViewAction extends Action
      * @var string the name of the default view when [[\yii\base\ViewAction::$viewParam]] GET parameter is not provided
      * by user. Defaults to 'index'. This should be in the format of 'path/to/view', similar to that given in
      * the GET parameter.
-     * @see \yii\base\ViewAction::$basePath
+     * @see \yii\base\ViewAction::$viewPrefix
      */
     public $defaultView = 'index';
 
@@ -54,7 +54,7 @@ class ViewAction extends Action
      * The actual view file is determined by [[\yii\base\View::getViewFile()]].
      * @see \yii\base\View::getViewFile()
      */
-    public $basePath = 'pages';
+    public $viewPrefix = 'pages';
 
     /**
      * @var mixed the name of the layout to be applied to the views.
@@ -128,8 +128,8 @@ class ViewAction extends Action
             }
         }
 
-        if (!empty($this->basePath)) {
-            $viewPath = $this->basePath . '/' . $viewPath;
+        if (!empty($this->viewPrefix)) {
+            $viewPath = $this->viewPrefix . '/' . $viewPath;
             return $viewPath;
         }
         return $viewPath;
