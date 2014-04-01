@@ -74,7 +74,7 @@ class ViewAction extends Action
         }
 
         try {
-            return $this->controller->render($viewPath);
+            return $this->render($viewPath);
         } catch (InvalidParamException $e) {
             if (YII_DEBUG) {
                 throw new NotFoundHttpException($e->getMessage());
@@ -84,6 +84,17 @@ class ViewAction extends Action
                 );
             }
         }
+    }
+
+    /**
+     * Renders a view
+     *
+     * @param string $viewPath view path
+     * @return string result of the rendering
+     */
+    protected function render($viewPath)
+    {
+        return $this->controller->render($viewPath);
     }
 
     /**
