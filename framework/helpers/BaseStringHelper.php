@@ -97,8 +97,8 @@ class BaseStringHelper
      */
     public static function truncate($string, $length, $suffix = '...')
     {
-        if (strlen($string) > $length) {
-            return substr($string, 0, $length) . $suffix;
+        if (mb_strlen($string) > $length) {
+            return trim(mb_substr($string, 0, $length)) . $suffix;
         } else {
             return $string;
         }
