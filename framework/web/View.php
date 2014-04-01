@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\helpers\Html;
 use yii\base\InvalidConfigException;
+use yii\helpers\Url;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -371,7 +372,7 @@ class View extends \yii\base\View
         } else {
             $am = Yii::$app->getAssetManager();
             $am->bundles[$key] = new AssetBundle([
-                'css' => [$url],
+                'css' => [Url::to($url)],
                 'cssOptions' => $options,
                 'depends' => (array) $depends,
             ]);
@@ -432,11 +433,8 @@ class View extends \yii\base\View
             $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
         } else {
             $am = Yii::$app->getAssetManager();
-            if (strpos($url, '/') !== 0 && strpos($url, '://') === false) {
-                $url = Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
-            }
             $am->bundles[$key] = new AssetBundle([
-                'js' => [$url],
+                'js' => [Url::to($url)],
                 'jsOptions' => $options,
                 'depends' => (array) $depends,
             ]);
