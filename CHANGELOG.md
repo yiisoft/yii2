@@ -276,6 +276,7 @@ _ Chg #2912: Relative view files will be looked for under the directory containi
 - New #1956: Implemented test fixture framework (qiangxue)
 - New #2149: Added `yii\base\DynamicModel` to support ad-hoc data validation (qiangxue)
 - New #2360: Added `AttributeBehavior` and `BlameableBehavior`, and renamed `AutoTimestamp` to `TimestampBehavior` (lucianobaraglia, qiangxue)
+- New #2932: Added `yii\web\ViewAction` that allow you to render views based on GET parameter (samdark)
 - New: Yii framework now comes with core messages in multiple languages
 - New: Added `yii\codeception\DbTestCase` (qiangxue)
 - New: Added `yii\web\PrefixUrlRule` (qiangxue)
