@@ -15,8 +15,6 @@ use yii\base\InvalidParamException;
  *
  * By default, the view being displayed is specified via the `view` GET parameter.
  * The name of the GET parameter can be customized via [[\yii\base\ViewAction::$viewParam]].
- * If the user doesn't provide the GET parameter, the default view specified by [[\yii\base\ViewAction::$defaultView]]
- * will be displayed.
  *
  * Users specify a view in the format of `path/to/view`, which translates to the view name
  * `ViewPrefix/path/to/view` where `ViewPrefix` is given by [[\yii\base\ViewAction::$viewPrefix]].
@@ -37,14 +35,6 @@ class ViewAction extends Action
      * @var string the name of the GET parameter that contains the requested view name. Defaults to 'view'.
      */
     public $viewParam = 'view';
-
-    /**
-     * @var string the name of the default view when [[\yii\base\ViewAction::$viewParam]] GET parameter is not provided
-     * by user. Defaults to 'index'. This should be in the format of 'path/to/view', similar to that given in
-     * the GET parameter.
-     * @see \yii\base\ViewAction::$viewPrefix
-     */
-    public $defaultView = 'index';
 
     /**
      * @var string the base path for the views. Defaults to 'pages'.
@@ -116,11 +106,8 @@ class ViewAction extends Action
     protected function getViewPath()
     {
         $viewPath = \Yii::$app->request->get($this->viewParam);
-        if (empty($viewPath) || !is_string($viewPath)) {
-            $viewPath = $this->defaultView;
-        }
 
-        if (!preg_match('/^\w[\w\/\-]*$/', $viewPath)) {
+        if (empty($viewPath) || !is_string($viewPath) || !preg_match('/^\w[\w\/\-]*$/', $viewPath)) {
             if (YII_DEBUG) {
                 throw new NotFoundHttpException("The requested view \"$viewPath\" should start with a word char and contain word chars, forward slashes and dashes only.");
             } else {
