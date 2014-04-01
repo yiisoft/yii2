@@ -7,6 +7,7 @@
 
 namespace yii\web;
 
+use Yii;
 use yii\base\Action;
 use yii\base\InvalidParamException;
 
@@ -14,16 +15,14 @@ use yii\base\InvalidParamException;
  * ViewAction represents an action that displays a view according to a user-specified parameter.
  *
  * By default, the view being displayed is specified via the `view` GET parameter.
- * The name of the GET parameter can be customized via [[\yii\base\ViewAction::$viewParam]].
+ * The name of the GET parameter can be customized via [[viewParam]].
  *
  * Users specify a view in the format of `path/to/view`, which translates to the view name
- * `ViewPrefix/path/to/view` where `ViewPrefix` is given by [[\yii\base\ViewAction::$viewPrefix]].
+ * `ViewPrefix/path/to/view` where `ViewPrefix` is given by [[viewPrefix]]. The view will then
+ * be rendered by the [[\yii\base\Controller::render()|render()]] method of the currently active controller.
  *
- * Note, the user specified view can only contain word characters, dots and dashes and
- * the first letter must be a word letter.
- *
- * @property string $requestedView The name of the view requested by the user.
- * This is in the format of 'path/to/view'.
+ * Note that the user-specified view name must start with a word character and can only contain
+ * word characters, forward slashes, dots and dashes.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -32,22 +31,21 @@ use yii\base\InvalidParamException;
 class ViewAction extends Action
 {
     /**
-     * @var string the name of the GET parameter that contains the requested view name. Defaults to 'view'.
+     * @var string the name of the GET parameter that contains the requested view name.
      */
     public $viewParam = 'view';
 
     /**
-     * @var string the base path for the views. Defaults to 'pages'.
-     * The base path will be prefixed to any user-specified page view.
+     * @var string a string to be prefixed to the user-specified view name to form a complete view name.
      * For example, if a user requests for `tutorial/chap1`, the corresponding view name will
-     * be `pages/tutorial/chap1`, assuming the base path is `pages`.
-     * The actual view file is determined by [[\yii\base\View::getViewFile()]].
-     * @see \yii\base\View::getViewFile()
+     * be `pages/tutorial/chap1`, assuming the prefix is `pages`.
+     * The actual view file is determined by [[\yii\base\View::findViewFile()]].
+     * @see \yii\base\View::findViewFile()
      */
     public $viewPrefix = 'pages';
 
     /**
-     * @var mixed the name of the layout to be applied to the views.
+     * @var mixed the name of the layout to be applied to the requested view.
      * This will be assigned to [[\yii\base\Controller::$layout]] before the view is rendered.
      * Defaults to null, meaning the controller's layout will be used.
      * If false, no layout will be applied.
@@ -61,7 +59,7 @@ class ViewAction extends Action
      */
     public function run()
     {
-        $viewPath = $this->getViewPath();
+        $viewName = $this->resolveViewName();
 
         $controllerLayout = null;
         if($this->layout !== null) {
@@ -70,19 +68,25 @@ class ViewAction extends Action
         }
 
         try {
-            $output = $this->render($viewPath);
+            $output = $this->render($viewName);
+
+            if ($controllerLayout) {
+                $this->controller->layout = $controllerLayout;
+            }
+
         } catch (InvalidParamException $e) {
+
+            if ($controllerLayout) {
+                $this->controller->layout = $controllerLayout;
+            }
+
             if (YII_DEBUG) {
                 throw new NotFoundHttpException($e->getMessage());
             } else {
                 throw new NotFoundHttpException(
-                    \Yii::t('yii', 'The requested view "{name}" was not found.', ['name' => $viewPath])
+                    Yii::t('yii', 'The requested view "{name}" was not found.', ['name' => $viewName])
                 );
             }
-        }
-
-        if ($controllerLayout) {
-            $this->controller->layout = $controllerLayout;
         }
 
         return $output;
@@ -91,37 +95,32 @@ class ViewAction extends Action
     /**
      * Renders a view
      *
-     * @param string $viewPath view path
+     * @param string $viewName view name
      * @return string result of the rendering
      */
-    protected function render($viewPath)
+    protected function render($viewName)
     {
-        return $this->controller->render($viewPath);
+        return $this->controller->render($viewName);
     }
 
     /**
-     * Obtain view path from GET
+     * Resolves the view name currently being requested.
      *
-     * @return string view path
-     * @throws NotFoundHttpException if view path doesn't match allowed format
+     * @return string the resolved view name
+     * @throws NotFoundHttpException if the specified view name is invalid
      */
-    protected function getViewPath()
+    protected function resolveViewName()
     {
-        $viewPath = \Yii::$app->request->get($this->viewParam);
+        $viewName = Yii::$app->request->get($this->viewParam);
 
-        if (empty($viewPath) || !is_string($viewPath) || !preg_match('/^\w[\w\/\-]*$/', $viewPath)) {
+        if (!is_string($viewName) || !preg_match('/^\w[\w\/\-\.]*$/', $viewName)) {
             if (YII_DEBUG) {
-                throw new NotFoundHttpException("The requested view \"$viewPath\" should start with a word char and contain word chars, forward slashes and dashes only.");
+                throw new NotFoundHttpException("The requested view \"$viewName\" must start with a word character and can contain only word characters, forward slashes, dots and dashes.");
             } else {
-                throw new NotFoundHttpException(\Yii::t('yii', 'The requested view "{name}" was not found.', ['name' => $viewPath]));
+                throw new NotFoundHttpException(Yii::t('yii', 'The requested view "{name}" was not found.', ['name' => $viewName]));
             }
         }
 
-        if (!empty($this->viewPrefix)) {
-            $viewPath = $this->viewPrefix . '/' . $viewPath;
-            return $viewPath;
-        }
-        return $viewPath;
+        return empty($this->viewPrefix) ? $viewName : $this->viewPrefix . '/' . $viewName;
     }
 }
- 
