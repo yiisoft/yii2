@@ -55,11 +55,6 @@ class ViewAction extends Action
     public $layout;
 
     /**
-     * @var string Used to store controller layout during executin and then restore it
-     */
-    private $_controllerLayout;
-
-    /**
      * Runs the action.
      * This method displays the view requested by the user.
      * @throws NotFoundHttpException if the view file cannot be found
@@ -68,13 +63,14 @@ class ViewAction extends Action
     {
         $viewPath = $this->getViewPath();
 
+        $controllerLayout = null;
         if($this->layout !== null) {
-            $this->_controllerLayout = $this->controller->layout;
+            $controllerLayout = $this->controller->layout;
             $this->controller->layout = $this->layout;
         }
 
         try {
-            return $this->render($viewPath);
+            $output = $this->render($viewPath);
         } catch (InvalidParamException $e) {
             if (YII_DEBUG) {
                 throw new NotFoundHttpException($e->getMessage());
@@ -84,6 +80,12 @@ class ViewAction extends Action
                 );
             }
         }
+
+        if ($controllerLayout) {
+            $this->controller->layout = $controllerLayout;
+        }
+
+        return $output;
     }
 
     /**
@@ -95,17 +97,6 @@ class ViewAction extends Action
     protected function render($viewPath)
     {
         return $this->controller->render($viewPath);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function afterRun()
-    {
-        if ($this->layout !== null) {
-            $this->controller->layout = $this->_controllerLayout;
-        }
-        parent::afterRun();
     }
 
     /**
