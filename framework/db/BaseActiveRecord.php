@@ -304,7 +304,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param array $link the primary-foreign key constraint. The keys of the array refer to
      * the attributes of the record associated with the `$class` model, while the values of the
      * array refer to the corresponding attributes in **this** AR class.
-     * @return ActiveQueryInterface the relational query object.
+     * @return ActiveQuery the relational query object.
      */
     public function hasOne($class, $link)
     {
@@ -346,7 +346,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param array $link the primary-foreign key constraint. The keys of the array refer to
      * the attributes of the record associated with the `$class` model, while the values of the
      * array refer to the corresponding attributes in **this** AR class.
-     * @return ActiveQueryInterface the relational query object.
+     * @return ActiveQuery the relational query object.
      */
     public function hasMany($class, $link)
     {
