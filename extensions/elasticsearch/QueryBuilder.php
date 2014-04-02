@@ -62,17 +62,17 @@ class QueryBuilder extends \yii\base\Object
         }
 
         $whereFilter = $this->buildCondition($query->where);
-        if (is_string($query->filterPart)) {
+        if (is_string($query->filter)) {
             if (empty($whereFilter)) {
-                $parts['filter'] = $query->filterPart;
+                $parts['filter'] = $query->filter;
             } else {
-                $parts['filter'] = '{"and": [' . $query->filterPart . ', ' . Json::encode($whereFilter) . ']}';
+                $parts['filter'] = '{"and": [' . $query->filter . ', ' . Json::encode($whereFilter) . ']}';
             }
-        } elseif ($query->filterPart !== null) {
+        } elseif ($query->filter !== null) {
             if (empty($whereFilter)) {
-                $parts['filter'] = $query->filterPart;
+                $parts['filter'] = $query->filter;
             } else {
-                $parts['filter'] = ['and' => [$query->filterPart, $whereFilter]];
+                $parts['filter'] = ['and' => [$query->filter, $whereFilter]];
             }
         } elseif (!empty($whereFilter)) {
             $parts['filter'] = $whereFilter;
