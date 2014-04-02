@@ -51,12 +51,6 @@ class QueryTest extends DatabaseTestCase
 
     public function testFilterWhere()
     {
-        // should just call where() when string is passed
-        $query = new Query;
-        $query->filterWhere('id = :id', [':id' => null]);
-        $this->assertEquals('id = :id', $query->where);
-        $this->assertEquals([':id' => null], $query->params);
-
         // should work with hash format
         $query = new Query;
         $query->filterWhere([
