@@ -1050,7 +1050,6 @@ class BaseHtml
      */
     public static function error($model, $attribute, $options = [])
     {
-        $attribute = static::getAttributeName($attribute);
         $error = $model->getFirstError($attribute);
         $tag = isset($options['tag']) ? $options['tag'] : 'div';
         unset($options['tag']);
