@@ -49,6 +49,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'basePath' => __DIR__,
         ];
         $defaultConfig['vendorPath'] = dirname(dirname(__DIR__)) . '/vendor';
+        $defaultConfig['bowerPath'] = dirname(dirname(__DIR__)) . '/bower_components';
 
         new $appClass(ArrayHelper::merge($defaultConfig, $config));
     }
