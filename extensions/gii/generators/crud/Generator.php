@@ -403,7 +403,7 @@ class Generator extends \yii\gii\Generator
                     $conditions[] = "\$query->andFilterWhere(['{$column}' => \$this->{$column}]);";
                     break;
                 default:
-                    $conditions[] = "\$this->andFilterWhere(['like', '{$column}', \$this->{$column}]);";
+                    $conditions[] = "\$query->andFilterWhere(['like', '{$column}', \$this->{$column}]);";
                     break;
             }
         }
