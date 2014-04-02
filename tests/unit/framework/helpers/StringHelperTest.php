@@ -65,4 +65,19 @@ class StringHelperTest extends TestCase
         $this->assertEquals('foo', StringHelper::basename('/bar/foo/'));
         $this->assertEquals('foo', StringHelper::basename('\\bar\\foo\\'));
     }
+    
+    public function testTruncate()
+    {
+        $this->assertEquals('string test', StringHelper::truncate('string test', 20));
+        $this->assertEquals('string...', StringHelper::truncate('string test', 6));
+        $this->assertEquals('string!!!', StringHelper::truncate('string test', 6, '!!!'));
+    }
+    
+    public function testTruncateWords()
+    {
+        $this->assertEquals('this is a string test', StringHelper::truncateWords('this is a string test', 5));
+        $this->assertEquals('this is a string...', StringHelper::truncateWords('this is a string test', 4));
+        $this->assertEquals('this is a string!!!', StringHelper::truncateWords('this is a string test', 4, '!!!'));
+        $this->assertEquals('this is a big     space...', StringHelper::truncateWords('this is a big     space string', 5));
+    }
 }
