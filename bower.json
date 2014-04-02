@@ -1,0 +1,8 @@
+{
+    "name": "yii2-dev",
+    "authors": [],
+    "private": true,
+    "dependencies": {
+	    "jquery": "2.0.3"
+	}
+}
