@@ -2,6 +2,7 @@
 
 namespace yiiunit\extensions\redis;
 
+use yii\redis\ActiveQuery;
 use yiiunit\data\ar\redis\ActiveRecord;
 use yiiunit\data\ar\redis\Customer;
 use yiiunit\data\ar\redis\OrderItem;
@@ -238,5 +239,63 @@ class ActiveRecordTest extends RedisTestCase
 
         $this->assertNull(OrderItem::find($pk));
         $this->assertNotNull(OrderItem::find(['order_id' => 2, 'item_id' => 10]));
+    }
+
+    public function testFilterWhere()
+    {
+        // should work with hash format
+        $query = new ActiveQuery();
+        $query->filterWhere([
+            'id' => 0,
+            'title' => '   ',
+            'author_ids' => [],
+        ]);
+        $this->assertEquals(['id' => 0], $query->where);
+
+        $query->andFilterWhere(['status' => null]);
+        $this->assertEquals(['id' => 0], $query->where);
+
+        $query->orFilterWhere(['name' => '']);
+        $this->assertEquals(['id' => 0], $query->where);
+
+        // should work with operator format
+        $query = new ActiveQuery();
+        $condition = ['like', 'name', 'Alex'];
+        $query->filterWhere($condition);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['between', 'id', null, null]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->orFilterWhere(['not between', 'id', null, null]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['in', 'id', []]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['not in', 'id', []]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['not in', 'id', []]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['like', 'id', '']);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['or like', 'id', '']);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['not like', 'id', '   ']);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['or not like', 'id', null]);
+        $this->assertEquals($condition, $query->where);
+    }
+
+    public function testFilterWhereRecursively()
+    {
+        $query = new ActiveQuery();
+        $query->filterWhere(['and', ['like', 'name', ''], ['like', 'title', ''], ['id' => 1], ['not', ['like', 'name', '']]]);
+        $this->assertEquals(['id' => 1], $query->where);
     }
 }
