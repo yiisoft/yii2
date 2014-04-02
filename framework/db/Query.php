@@ -531,6 +531,26 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * Sets the WHERE part of the query ignoring empty parameters.
+     *
+     * @param string|array $condition the conditions that should be put in the WHERE part. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
+     * @return static the query object itself
+     * @see andFilter()
+     * @see orFilter()
+     */
+    public function filter($condition, $params = [])
+    {
+        $condition = $this->filterCondition($condition);
+        if ($condition !== []) {
+            $this->where($condition, $params);
+        }
+
+        return $this;
+    }
+
+    /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
@@ -553,6 +573,27 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * Adds an additional WHERE condition to the existing one ignoring empty parameters.
+     * The new condition and the existing one will be joined using the 'AND' operator.
+     *
+     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
+     * @return static the query object itself
+     * @see filter()
+     * @see orFilter()
+     */
+    public function andFilter($condition, $params = [])
+    {
+        $condition = $this->filterCondition($condition);
+        if ($condition !== []) {
+            $this->andWhere($condition, $params);
+        }
+
+        return $this;
+    }
+
+    /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
@@ -570,6 +611,27 @@ class Query extends Component implements QueryInterface
             $this->where = ['or', $this->where, $condition];
         }
         $this->addParams($params);
+
+        return $this;
+    }
+
+    /**
+     * Adds an additional WHERE condition to the existing one ignoring empty parameters.
+     * The new condition and the existing one will be joined using the 'OR' operator.
+     *
+     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
+     * @return static the query object itself
+     * @see filter()
+     * @see andFilter()
+     */
+    public function orFilter($condition, $params = [])
+    {
+        $condition = $this->filterCondition($condition);
+        if ($condition !== []) {
+            $this->orWhere($condition, $params);
+        }
 
         return $this;
     }
@@ -830,5 +892,63 @@ class Query extends Component implements QueryInterface
         }
 
         return $this;
+    }
+
+    /**
+     * Returns new condition with empty (null, empty string, blank string, or empty array) parameters removed
+     *
+     * @param array $condition original condition
+     * @return array condition with empty parameters removed
+     */
+    protected function filterCondition($condition)
+    {
+        if (is_array($condition) && isset($condition[0])) {
+            $operator = strtoupper($condition[0]);
+
+            switch ($operator) {
+                case 'NOT':
+                case 'AND':
+                case 'OR':
+                    for ($i = 1, $operandsCount = count($condition); $i < $operandsCount; $i++) {
+                        $subCondition = $this->filterCondition($condition[$i]);
+                        if ($this->parameterNotEmpty($subCondition)) {
+                            $condition[$i] = $subCondition;
+                        } else {
+                            unset($condition[$i]);
+                        }
+                    }
+
+                    $operandsCount = count($condition) - 1;
+                    if ($operator === 'NOT' && $operandsCount === 0) {
+                        $condition = [];
+                    } else {
+                        // reindex array
+                        array_splice($condition, 0, 0);
+                        if ($operandsCount === 1) {
+                            $condition = $condition[1];
+                        }
+                    }
+                break;
+                case 'IN':
+                case 'NOT IN':
+                case 'LIKE':
+                case 'OR LIKE':
+                case 'NOT LIKE':
+                case 'OR NOT LIKE':
+                    if (!$this->parameterNotEmpty($condition[2])) {
+                        $condition = [];
+                    }
+                break;
+                case 'BETWEEN':
+                case 'NOT BETWEEN':
+                    if (!$this->parameterNotEmpty($condition[2]) && !$this->parameterNotEmpty($condition[3])) {
+                        $condition = [];
+                    }
+                break;
+            }
+        } else {
+            $condition = $this->filterHashCondition($condition);
+        }
+        return $condition;
     }
 }

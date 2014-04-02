@@ -144,6 +144,17 @@ interface QueryInterface
     public function where($condition);
 
     /**
+     * Sets the WHERE part of the query ignoring empty parameters.
+     *
+     * @param array $condition the conditions that should be put in the WHERE part. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see andFilter()
+     * @see orFilter()
+     */
+    public function filter($condition);
+
+    /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
@@ -155,6 +166,17 @@ interface QueryInterface
     public function andWhere($condition);
 
     /**
+     * Adds an additional WHERE condition to the existing one ignoring empty parameters.
+     * The new condition and the existing one will be joined using the 'AND' operator.
+     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see filter()
+     * @see orFilter()
+     */
+    public function andFilter($condition);
+
+    /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
@@ -164,6 +186,17 @@ interface QueryInterface
      * @see andWhere()
      */
     public function orWhere($condition);
+
+    /**
+     * Adds an additional WHERE condition to the existing one ignoring empty parameters.
+     * The new condition and the existing one will be joined using the 'OR' operator.
+     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see filter()
+     * @see andFilter()
+     */
+    public function orFilter($condition);
 
     /**
      * Sets the ORDER BY part of the query.
