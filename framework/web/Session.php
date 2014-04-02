@@ -20,9 +20,6 @@ use yii\base\InvalidParamException;
  * To start the session, call [[open()]]; To complete and send out session data, call [[close()]];
  * To destroy the session, call [[destroy()]].
  *
- * By default, [[autoStart]] is true which means the session will be started automatically
- * when the session component is accessed the first time.
- *
  * Session can be used like an array to set and get session data. For example,
  *
  * ~~~
