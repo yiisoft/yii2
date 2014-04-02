@@ -173,6 +173,29 @@ $rowCount = $connection->createCommand($sql)->queryScalar();
 In the code above `[[X]]` will be converted to properly quoted column name while `{{Y}}` will be converted to properly
 quoted table name.
 
+For table names there's a special variant `{{%Y}}` that allows you to automatically appending table prefix if it is set:
+
+```php
+$sql = "SELECT COUNT([[$column]]) FROM {{%$table}}";
+$rowCount = $connection->createCommand($sql)->queryScalar();
+```
+
+The code above will result in selecting from `tbl_table` if you have table prefix configured like the following in your
+config file:
+
+```php
+return [
+    // ...
+    'components' => [
+        // ...
+        'db' => [
+            // ...
+            'tablePrefix' => 'tbl_',
+        ],
+    ],
+];
+```
+
 The alternative is to quote table and column names manually using [[yii\db\Connection::quoteTableName()]] and
 [[yii\db\Connection::quoteColumnName()]]:
 
