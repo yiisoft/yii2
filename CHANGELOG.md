@@ -114,6 +114,7 @@ Yii Framework 2 Change Log
 - Enh #1921: Grid view ActionColumn now allow to name buttons like `{controller/action}` (creocoder)
 - Enh #1973: `yii message/extract` is now able to generate `.po` files (SergeiKutanov, samdark)
 - Enh #1984: ActionFilter will now mark event as handled when action run is aborted (cebe)
+- Enh #2002: Added filterWhere() method to yii\db\Query to allow easy addition of search filter conditions by ignoring empty search fields (samdark, cebe)
 - Enh #2003: Added `filter` property to `ExistValidator` and `UniqueValidator` to support adding additional filtering conditions (qiangxue)
 - Enh #2008: `yii message/extract` is now able to save translation strings to database (kate-kate, samdark)
 - Enh #2043: Added support for custom request body parsers (danschmidt5189, cebe)
