@@ -149,10 +149,10 @@ interface QueryInterface
      * @param array $condition the conditions that should be put in the WHERE part. Please refer to [[where()]]
      * on how to specify this parameter.
      * @return static the query object itself
-     * @see andFilter()
-     * @see orFilter()
+     * @see andFilterWhere()
+     * @see orFilterWhere()
      */
-    public function filter($condition);
+    public function filterWhere($condition);
 
     /**
      * Adds an additional WHERE condition to the existing one.
@@ -171,10 +171,10 @@ interface QueryInterface
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @return static the query object itself
-     * @see filter()
-     * @see orFilter()
+     * @see filterWhere()
+     * @see orFilterWhere()
      */
-    public function andFilter($condition);
+    public function andFilterWhere($condition);
 
     /**
      * Adds an additional WHERE condition to the existing one.
@@ -193,10 +193,10 @@ interface QueryInterface
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @return static the query object itself
-     * @see filter()
-     * @see andFilter()
+     * @see filterWhere()
+     * @see andFilterWhere()
      */
-    public function orFilter($condition);
+    public function orFilterWhere($condition);
 
     /**
      * Sets the ORDER BY part of the query.

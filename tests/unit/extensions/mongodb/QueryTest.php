@@ -72,7 +72,7 @@ class QueryTest extends MongoDbTestCase
     {
         // should work with hash format
         $query = new Query;
-        $query->filter([
+        $query->filterWhere([
             'id' => 0,
             'title' => '   ',
             'author_ids' => [],

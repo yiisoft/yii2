@@ -466,7 +466,6 @@ class Query extends Component implements QueryInterface
     {
         $this->where = $condition;
         $this->addParams($params);
-
         return $this;
     }
 
@@ -480,13 +479,12 @@ class Query extends Component implements QueryInterface
      * @see andFilter()
      * @see orFilter()
      */
-    public function filter($condition, $params = [])
+    public function filterWhere($condition, $params = [])
     {
         $condition = $this->filterCondition($condition);
         if ($condition !== []) {
             $this->where($condition, $params);
         }
-
         return $this;
     }
 
@@ -508,7 +506,6 @@ class Query extends Component implements QueryInterface
             $this->where = ['and', $this->where, $condition];
         }
         $this->addParams($params);
-
         return $this;
     }
 
@@ -523,13 +520,12 @@ class Query extends Component implements QueryInterface
      * @see filter()
      * @see orFilter()
      */
-    public function andFilter($condition, $params = [])
+    public function andFilterWhere($condition, $params = [])
     {
         $condition = $this->filterCondition($condition);
         if ($condition !== []) {
             $this->andWhere($condition, $params);
         }
-
         return $this;
     }
 
@@ -551,7 +547,6 @@ class Query extends Component implements QueryInterface
             $this->where = ['or', $this->where, $condition];
         }
         $this->addParams($params);
-
         return $this;
     }
 
@@ -566,13 +561,12 @@ class Query extends Component implements QueryInterface
      * @see filter()
      * @see andFilter()
      */
-    public function orFilter($condition, $params = [])
+    public function orFilterWhere($condition, $params = [])
     {
         $condition = $this->filterCondition($condition);
         if ($condition !== []) {
             $this->orWhere($condition, $params);
         }
-
         return $this;
     }
 
@@ -824,7 +818,7 @@ class Query extends Component implements QueryInterface
                 case 'OR':
                     for ($i = 1, $operandsCount = count($condition); $i < $operandsCount; $i++) {
                         $subCondition = $this->filterCondition($condition[$i]);
-                        if ($this->parameterNotEmpty($subCondition)) {
+                        if ($this->isParameterNotEmpty($subCondition)) {
                             $condition[$i] = $subCondition;
                         } else {
                             unset($condition[$i]);
@@ -848,13 +842,13 @@ class Query extends Component implements QueryInterface
                 case 'OR LIKE':
                 case 'NOT LIKE':
                 case 'OR NOT LIKE':
-                    if (!$this->parameterNotEmpty($condition[2])) {
+                    if (!$this->isParameterNotEmpty($condition[2])) {
                         $condition = [];
                     }
                 break;
                 case 'BETWEEN':
                 case 'NOT BETWEEN':
-                    if (!$this->parameterNotEmpty($condition[2]) && !$this->parameterNotEmpty($condition[3])) {
+                    if (!$this->isParameterNotEmpty($condition[2]) && !$this->isParameterNotEmpty($condition[3])) {
                         $condition = [];
                     }
                 break;

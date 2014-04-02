@@ -6,6 +6,7 @@
  */
 
 namespace yii\db;
+use yii\base\NotSupportedException;
 
 /**
  * The BaseQuery trait represents the minimum method set of a database Query.
@@ -67,7 +68,6 @@ trait QueryTrait
     public function indexBy($column)
     {
         $this->indexBy = $column;
-
         return $this;
     }
 
@@ -84,68 +84,6 @@ trait QueryTrait
     public function where($condition)
     {
         $this->where = $condition;
-
-        return $this;
-    }
-
-    /**
-     * Returns true if value passed is null, empty string, blank string, or empty array.
-     *
-     * @param $value
-     * @return boolean if parameter is empty
-     */
-    protected function parameterNotEmpty($value)
-    {
-        if (is_string($value)) {
-            $value = trim($value);
-        }
-        return $value !== '' && $value !== [] && $value !== null;
-    }
-
-    /**
-    * Returns new condition with empty (null, empty string, blank string, or empty array) parameters in hash format
-    * removed
-    *
-    * @param array $condition original condition
-    * @return array condition with empty parameters removed
-    */
-    protected function filterHashCondition($condition)
-    {
-        if (is_array($condition) && !isset($condition[0])) {
-            // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
-            $condition = array_filter($condition, [$this, 'parameterNotEmpty']);
-        }
-        return $condition;
-    }
-
-    /**
-     * Returns new condition with empty (null, empty string, blank string, or empty array) parameters removed
-     *
-     * @param array $condition original condition
-     * @return array condition with empty parameters removed
-     */
-    protected function filterCondition($condition)
-    {
-        return $this->filterHashCondition($condition);
-    }
-
-    /**
-     * Sets the WHERE part of the query ignoring empty parameters.
-     *
-     * See [[QueryInterface::where()]] for detailed documentation.
-     *
-     * @param array $condition the conditions that should be put in the WHERE part.
-     * @return static the query object itself
-     * @see andFilter()
-     * @see orFilter()
-     */
-    public function filter($condition)
-    {
-        $condition = $this->filterCondition($condition);
-        if ($condition !== []) {
-            $this->where($condition);
-        }
-
         return $this;
     }
 
@@ -165,27 +103,6 @@ trait QueryTrait
         } else {
             $this->where = ['and', $this->where, $condition];
         }
-
-        return $this;
-    }
-
-    /**
-     * Adds an additional WHERE condition to the existing one ignoring empty parameters.
-     * The new condition and the existing one will be joined using the 'AND' operator.
-     *
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
-     * on how to specify this parameter.
-     * @return static the query object itself
-     * @see filter()
-     * @see orFilter()
-     */
-    public function andFilter($condition)
-    {
-        $condition = $this->filterCondition($condition);
-        if ($condition !== []) {
-            $this->andWhere($condition);
-        }
-
         return $this;
     }
 
@@ -205,28 +122,116 @@ trait QueryTrait
         } else {
             $this->where = ['or', $this->where, $condition];
         }
-
         return $this;
     }
 
     /**
-     * Adds an additional WHERE condition to the existing one ignoring empty parameters.
-     * The new condition and the existing one will be joined using the 'OR' operator.
+     * Sets the WHERE part of the query but ignores [[isParameterNotEmpty|empty parameters]].
      *
+     * This function can be used to pass fields of a search form directly as search condition
+     * by ignoring fields that have not been filled.
+     *
+     * @param array $condition the conditions that should be put in the WHERE part.
+     * See [[where()]] on how to specify this parameter.
+     * @return static the query object itself
+     * @see where()
+     * @see andFilterWhere()
+     * @see orFilterWhere()
+     */
+    public function filterWhere($condition)
+    {
+        $condition = $this->filterCondition($condition);
+        if ($condition !== []) {
+            $this->where($condition);
+        }
+        return $this;
+    }
+
+    /**
+     * Adds an additional WHERE condition to the existing one but ignores [[isParameterNotEmpty|empty parameters]].
+     * The new condition and the existing one will be joined using the 'AND' operator.
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @return static the query object itself
-     * @see filter()
-     * @see andFilter()
+     * @see filterWhere()
+     * @see orFilterWhere()
      */
-    public function orFilter($condition)
+    public function andFilterWhere($condition)
+    {
+        $condition = $this->filterCondition($condition);
+        if ($condition !== []) {
+            $this->andWhere($condition);
+        }
+        return $this;
+    }
+
+    /**
+     * Adds an additional WHERE condition to the existing one but ignores [[isParameterNotEmpty|empty parameters]].
+     * The new condition and the existing one will be joined using the 'OR' operator.
+     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see filterWhere()
+     * @see andFilterWhere()
+     */
+    public function orFilterWhere($condition)
     {
         $condition = $this->filterCondition($condition);
         if ($condition !== []) {
             $this->orWhere($condition);
         }
-
         return $this;
+    }
+
+    /**
+     * Returns a new condition with [[isParameterNotEmpty|empty parameters]] removed.
+     *
+     * @param array $condition original condition
+     * @return array condition with [[isParameterNotEmpty|empty parameters]] removed.
+     */
+    protected function filterCondition($condition)
+    {
+        if (is_array($condition) && !isset($condition[0])) {
+            return $this->filterHashCondition($condition);
+        } else {
+            throw new NotSupportedException('filterWhere() only supports hash condition format.');
+        }
+    }
+
+    /**
+     * Returns `true` if value passed is not "empty".
+     *
+     * The value is considered "empty", if
+     *
+     * - it is `null`,
+     * - an empty string (`''`),
+     * - a string containing only whitespace characters,
+     * - or an empty array.
+     *
+     * @param $value
+     * @return boolean if parameter is empty
+     */
+    protected function isParameterNotEmpty($value)
+    {
+        if (is_string($value)) {
+            $value = trim($value);
+        }
+        return $value !== '' && $value !== [] && $value !== null;
+    }
+
+    /**
+     * Returns a new hash condition without [[isParameterNotEmpty|empty parameters]].
+     *
+     * @param array $condition original condition
+     * @return array condition without [[isParameterNotEmpty|empty parameters]].
+     */
+    protected function filterHashCondition($condition)
+    {
+        if (is_array($condition) && !isset($condition[0])) {
+            // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
+            return array_filter($condition, [$this, 'isParameterNotEmpty']);
+        }
+        return $condition;
     }
 
     /**
@@ -245,7 +250,6 @@ trait QueryTrait
     public function orderBy($columns)
     {
         $this->orderBy = $this->normalizeOrderBy($columns);
-
         return $this;
     }
 
@@ -267,7 +271,6 @@ trait QueryTrait
         } else {
             $this->orderBy = array_merge($this->orderBy, $columns);
         }
-
         return $this;
     }
 
@@ -285,7 +288,6 @@ trait QueryTrait
                     $result[$column] = SORT_ASC;
                 }
             }
-
             return $result;
         }
     }
@@ -298,7 +300,6 @@ trait QueryTrait
     public function limit($limit)
     {
         $this->limit = $limit;
-
         return $this;
     }
 
@@ -310,7 +311,6 @@ trait QueryTrait
     public function offset($offset)
     {
         $this->offset = $offset;
-
         return $this;
     }
 }

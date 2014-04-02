@@ -64,13 +64,13 @@ class QueryTest extends SphinxTestCase
     {
         // should just call where() when string is passed
         $query = new Query;
-        $query->filter('id = :id', [':id' => null]);
+        $query->filterWhere('id = :id', [':id' => null]);
         $this->assertEquals('id = :id', $query->where);
         $this->assertEquals([':id' => null], $query->params);
 
         // should work with hash format
         $query = new Query;
-        $query->filter([
+        $query->filterWhere([
             'id' => 0,
             'title' => '   ',
             'author_ids' => [],
@@ -86,7 +86,7 @@ class QueryTest extends SphinxTestCase
         // should work with operator format
         $query = new Query;
         $condition = ['like', 'name', 'Alex'];
-        $query->filter($condition);
+        $query->filterWhere($condition);
         $this->assertEquals($condition, $query->where);
 
         $query->andFilter(['between', 'id', null, null]);
@@ -120,7 +120,7 @@ class QueryTest extends SphinxTestCase
     public function testFilterRecursively()
     {
         $query = new Query();
-        $query->filter(['and', ['like', 'name', ''], ['like', 'title', ''], ['id' => 1], ['not', ['like', 'name', '']]]);
+        $query->filterWhere(['and', ['like', 'name', ''], ['like', 'title', ''], ['id' => 1], ['not', ['like', 'name', '']]]);
         $this->assertEquals(['id' => 1], $query->where);
     }
 
