@@ -30,6 +30,7 @@ trait ActiveQueryTrait
      */
     public $asArray;
 
+
     /**
      * Sets the [[asArray]] property.
      * @param boolean $value whether to return the query results in terms of arrays instead of Active Records.
@@ -38,7 +39,6 @@ trait ActiveQueryTrait
     public function asArray($value = true)
     {
         $this->asArray = $value;
-
         return $this;
     }
 
