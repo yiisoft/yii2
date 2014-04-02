@@ -167,6 +167,46 @@ class QueryTest extends ElasticSearchTestCase
 
         $query->orFilterWhere(['name' => '']);
         $this->assertEquals(['id' => 0], $query->where);
+
+        // should work with operator format
+        $query = new Query;
+        $condition = ['like', 'name', 'Alex'];
+        $query->filterWhere($condition);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['between', 'id', null, null]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->orFilterWhere(['not between', 'id', null, null]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['in', 'id', []]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['not in', 'id', []]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['not in', 'id', []]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['like', 'id', '']);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['or like', 'id', '']);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['not like', 'id', '   ']);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['or not like', 'id', null]);
+        $this->assertEquals($condition, $query->where);
+    }
+
+    public function testFilterWhereRecursively()
+    {
+        $query = new Query();
+        $query->filterWhere(['and', ['like', 'name', ''], ['like', 'title', ''], ['id' => 1], ['not', ['like', 'name', '']]]);
+        $this->assertEquals(['id' => 1], $query->where);
     }
 
     // TODO test facets
