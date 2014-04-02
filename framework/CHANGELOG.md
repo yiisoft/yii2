@@ -280,7 +280,7 @@ _ Chg #2912: Relative view files will be looked for under the directory containi
 - New: Yii framework now comes with core messages in multiple languages
 - New: Added `yii\codeception\DbTestCase` (qiangxue)
 - New: Added `yii\web\PrefixUrlRule` (qiangxue)
-
+- Chg #2946: Added Bower package manager support for jQuery (pmoust) 
 
 2.0.0 alpha, December 1, 2013
 ---------------------------
