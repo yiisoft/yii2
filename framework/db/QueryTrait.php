@@ -190,7 +190,7 @@ trait QueryTrait
      *
      * @param array $condition original condition
      * @return array condition with [[isParameterNotEmpty|empty parameters]] removed.
-     * @throws NotSupportedException if the condition format is not supported
+     * @throws NotSupportedException if the condition operator is not supported
      */
     protected function filterCondition($condition)
     {
@@ -244,7 +244,7 @@ trait QueryTrait
             // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
             return array_filter($condition, [$this, 'isParameterNotEmpty']);
         } else {
-            throw new NotSupportedException("filterWhere() does not support plain string conditions use where() instead.");
+            return $condition;
         }
         return $condition;
     }
