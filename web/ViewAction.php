@@ -36,6 +36,14 @@ class ViewAction extends Action
     public $viewParam = 'view';
 
     /**
+     * @var string the name of the default view when [[\yii\web\ViewAction::$viewParam]] GET parameter is not provided
+     * by user. Defaults to 'index'. This should be in the format of 'path/to/view', similar to that given in the
+     * GET parameter.
+     * @see \yii\web\ViewAction::$viewPrefix
+     */
+    public $defaultView = 'index';
+
+    /**
      * @var string a string to be prefixed to the user-specified view name to form a complete view name.
      * For example, if a user requests for `tutorial/chap1`, the corresponding view name will
      * be `pages/tutorial/chap1`, assuming the prefix is `pages`.
@@ -111,7 +119,7 @@ class ViewAction extends Action
      */
     protected function resolveViewName()
     {
-        $viewName = Yii::$app->request->get($this->viewParam);
+        $viewName = Yii::$app->request->get($this->viewParam, $this->defaultView);
 
         if (!is_string($viewName) || !preg_match('/^\w[\w\/\-\.]*$/', $viewName)) {
             if (YII_DEBUG) {
