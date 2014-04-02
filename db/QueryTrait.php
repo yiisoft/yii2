@@ -188,14 +188,63 @@ trait QueryTrait
      *
      * @param array $condition original condition
      * @return array condition with [[isParameterNotEmpty|empty parameters]] removed.
+     * @throws NotSupportedException if the condition format is not supported
      */
     protected function filterCondition($condition)
     {
-        if (is_array($condition) && !isset($condition[0])) {
-            return $this->filterHashCondition($condition);
+        if (is_array($condition) && isset($condition[0])) {
+            $operator = strtoupper($condition[0]);
+
+            switch ($operator) {
+                case 'NOT':
+                case 'AND':
+                case 'OR':
+                    for ($i = 1, $operandsCount = count($condition); $i < $operandsCount; $i++) {
+                        $subCondition = $this->filterCondition($condition[$i]);
+                        if ($this->isParameterNotEmpty($subCondition)) {
+                            $condition[$i] = $subCondition;
+                        } else {
+                            unset($condition[$i]);
+                        }
+                    }
+
+                    $operandsCount = count($condition) - 1;
+                    if ($operator === 'NOT' && $operandsCount === 0) {
+                        $condition = [];
+                    } else {
+                        // reindex array
+                        array_splice($condition, 0, 0);
+                        if ($operandsCount === 1) {
+                            $condition = $condition[1];
+                        }
+                    }
+                break;
+                case 'IN':
+                case 'NOT IN':
+                case 'LIKE':
+                case 'OR LIKE':
+                case 'NOT LIKE':
+                case 'OR NOT LIKE':
+                    if (!$this->isParameterNotEmpty($condition[2])) {
+                        $condition = [];
+                    }
+                break;
+                case 'BETWEEN':
+                case 'NOT BETWEEN':
+                    if (!$this->isParameterNotEmpty($condition[2]) && !$this->isParameterNotEmpty($condition[3])) {
+                        $condition = [];
+                    }
+                break;
+                default:
+                    throw new NotSupportedException("filterWhere() does not support the '$operator' operator.");
+            }
+        } elseif (is_array($condition)) {
+            // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
+            return array_filter($condition, [$this, 'isParameterNotEmpty']);
         } else {
-            throw new NotSupportedException('filterWhere() only supports hash condition format.');
+            throw new NotSupportedException("filterWhere() does not support plain string conditions use where() instead.");
         }
+        return $condition;
     }
 
     /**
@@ -217,21 +266,6 @@ trait QueryTrait
             $value = trim($value);
         }
         return $value !== '' && $value !== [] && $value !== null;
-    }
-
-    /**
-     * Returns a new hash condition without [[isParameterNotEmpty|empty parameters]].
-     *
-     * @param array $condition original condition
-     * @return array condition without [[isParameterNotEmpty|empty parameters]].
-     */
-    protected function filterHashCondition($condition)
-    {
-        if (is_array($condition) && !isset($condition[0])) {
-            // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
-            return array_filter($condition, [$this, 'isParameterNotEmpty']);
-        }
-        return $condition;
     }
 
     /**
