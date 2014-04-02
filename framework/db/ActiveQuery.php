@@ -615,7 +615,46 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $this->on = $condition;
         $this->addParams($params);
+        return $this;
+    }
 
+    /**
+     * Adds an additional ON condition to the existing one.
+     * The new condition and the existing one will be joined using the 'AND' operator.
+     * @param string|array $condition the new ON condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see onCondition()
+     * @see orOnCondition()
+     */
+    public function andOnCondition($condition, $params = [])
+    {
+        if ($this->on === null) {
+            $this->on = $condition;
+        } else {
+            $this->on = ['and', $this->on, $condition];
+        }
+        $this->addParams($params);
+        return $this;
+    }
+
+    /**
+     * Adds an additional ON condition to the existing one.
+     * The new condition and the existing one will be joined using the 'OR' operator.
+     * @param string|array $condition the new ON condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see onCondition()
+     * @see andOnCondition()
+     */
+    public function orOnCondition($condition, $params = [])
+    {
+        if ($this->on === null) {
+            $this->on = $condition;
+        } else {
+            $this->on = ['or', $this->on, $condition];
+        }
+        $this->addParams($params);
         return $this;
     }
 
