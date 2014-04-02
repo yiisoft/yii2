@@ -49,7 +49,7 @@ class QueryTest extends DatabaseTestCase
         $this->assertEquals([':id' => 1, ':name' => 'something', ':age' => '30'], $query->params);
     }
 
-    public function testFilter()
+    public function testFilterWhere()
     {
         // should just call where() when string is passed
         $query = new Query;
@@ -66,10 +66,10 @@ class QueryTest extends DatabaseTestCase
         ]);
         $this->assertEquals(['id' => 0], $query->where);
 
-        $query->andFilter(['status' => null]);
+        $query->andFilterWhere(['status' => null]);
         $this->assertEquals(['id' => 0], $query->where);
 
-        $query->orFilter(['name' => '']);
+        $query->orFilterWhere(['name' => '']);
         $this->assertEquals(['id' => 0], $query->where);
 
         // should work with operator format
@@ -78,31 +78,31 @@ class QueryTest extends DatabaseTestCase
         $query->filterWhere($condition);
         $this->assertEquals($condition, $query->where);
 
-        $query->andFilter(['between', 'id', null, null]);
+        $query->andFilterWhere(['between', 'id', null, null]);
         $this->assertEquals($condition, $query->where);
 
-        $query->orFilter(['not between', 'id', null, null]);
+        $query->orFilterWhere(['not between', 'id', null, null]);
         $this->assertEquals($condition, $query->where);
 
-        $query->andFilter(['in', 'id', []]);
+        $query->andFilterWhere(['in', 'id', []]);
         $this->assertEquals($condition, $query->where);
 
-        $query->andFilter(['not in', 'id', []]);
+        $query->andFilterWhere(['not in', 'id', []]);
         $this->assertEquals($condition, $query->where);
 
-        $query->andFilter(['not in', 'id', []]);
+        $query->andFilterWhere(['not in', 'id', []]);
         $this->assertEquals($condition, $query->where);
 
-        $query->andFilter(['like', 'id', '']);
+        $query->andFilterWhere(['like', 'id', '']);
         $this->assertEquals($condition, $query->where);
 
-        $query->andFilter(['or like', 'id', '']);
+        $query->andFilterWhere(['or like', 'id', '']);
         $this->assertEquals($condition, $query->where);
 
-        $query->andFilter(['not like', 'id', '   ']);
+        $query->andFilterWhere(['not like', 'id', '   ']);
         $this->assertEquals($condition, $query->where);
 
-        $query->andFilter(['or not like', 'id', null]);
+        $query->andFilterWhere(['or not like', 'id', null]);
         $this->assertEquals($condition, $query->where);
     }
 

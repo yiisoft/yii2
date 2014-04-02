@@ -151,7 +151,7 @@ class QueryTest extends ElasticSearchTestCase
 
     }
 
-    public function testFilter()
+    public function testFilterWhere()
     {
         // should work with hash format
         $query = new Query;
@@ -162,10 +162,10 @@ class QueryTest extends ElasticSearchTestCase
         ]);
         $this->assertEquals(['id' => 0], $query->where);
 
-        $query->andFilter(['status' => null]);
+        $query->andFilterWhere(['status' => null]);
         $this->assertEquals(['id' => 0], $query->where);
 
-        $query->orFilter(['name' => '']);
+        $query->orFilterWhere(['name' => '']);
         $this->assertEquals(['id' => 0], $query->where);
     }
 
