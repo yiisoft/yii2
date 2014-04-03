@@ -244,7 +244,7 @@ class ActiveRecordTest extends RedisTestCase
     public function testFilterWhere()
     {
         // should work with hash format
-        $query = new ActiveQuery();
+        $query = new ActiveQuery('dummy');
         $query->filterWhere([
             'id' => 0,
             'title' => '   ',
@@ -259,7 +259,7 @@ class ActiveRecordTest extends RedisTestCase
         $this->assertEquals(['id' => 0], $query->where);
 
         // should work with operator format
-        $query = new ActiveQuery();
+        $query = new ActiveQuery('dummy');
         $condition = ['like', 'name', 'Alex'];
         $query->filterWhere($condition);
         $this->assertEquals($condition, $query->where);
@@ -294,7 +294,7 @@ class ActiveRecordTest extends RedisTestCase
 
     public function testFilterWhereRecursively()
     {
-        $query = new ActiveQuery();
+        $query = new ActiveQuery('dummy');
         $query->filterWhere(['and', ['like', 'name', ''], ['like', 'title', ''], ['id' => 1], ['not', ['like', 'name', '']]]);
         $this->assertEquals(['and', ['id' => 1]], $query->where);
     }
