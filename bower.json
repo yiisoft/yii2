@@ -1,0 +1,8 @@
+{
+    "name": "yii2",
+    "private": true,
+    "dependencies": {
+        "jquery": "2.0.3"
+    },
+    "author": "Dimitrios Mengidis <tydeas@peopleperhour.com>"
+}
