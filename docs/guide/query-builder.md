@@ -214,7 +214,7 @@ Operator can be one of the following:
   It will build a `EXISTS (sub-query)` expression.
 - `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
 
-If you are building parts of condition dynamically it's very convenient to use `andWhere` and `orWhere`:
+If you are building parts of condition dynamically it's very convenient to use `andWhere()` and `orWhere()`:
 
 ```php
 $status = 10;
@@ -231,6 +231,31 @@ In case `$search` isn't empty the following SQL will be generated:
 ```sql
 WHERE (`status` = 10) AND (`title` LIKE '%yii%')
 ```
+
+#### Building Filter Conditions
+
+When building filter conditions based on user inputs, you usually want to specially handle "empty inputs"
+by ignoring them in the filters. For example, you have an HTML form that takes username and email inputs.
+If the user only enters something in the username input, you may want to build a query that only tries to
+match the entered username. You may use the `filterWhere()` method achieve this goal:
+
+```php
+// $username and $email are from user inputs
+$query->filterWhere([
+    'username' => $username,
+    'email' => $email,
+]);
+```
+
+The `filterWhere()` method is very similar to `where()`. The main difference is that `filterWhere()`
+will remove empty values from the provided condition. So if `$email` is "empty", the resulting query
+will be `...WHERE username=:username`; and if both `$username` and `$email` are "empty", the query
+will have no `WHERE` part.
+
+A value is *empty* if it is null, an empty string, a string consisting of whitespaces, or an empty array.
+
+You may also use `andFilterWhere()` and `orFilterWhere()` to append more filter conditions.
+
 
 ### `ORDER BY`
 
