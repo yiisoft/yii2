@@ -93,6 +93,17 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
 
     /**
+     * Constructor.
+     * @param array $modelClass the model class associated with this query
+     * @param array $config configurations to be applied to the newly created query object
+     */
+    public function __construct($modelClass, $config = [])
+    {
+        $this->modelClass = $modelClass;
+        parent::__construct($config);
+    }
+
+    /**
      * Executes query and returns all results as an array.
      * @param Connection $db the DB connection used to create the DB command.
      * If null, the DB connection returned by [[modelClass]] will be used.
@@ -682,8 +693,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function viaTable($tableName, $link, $callable = null)
     {
-        $relation = new ActiveQuery([
-            'modelClass' => get_class($this->primaryModel),
+        $relation = new ActiveQuery(get_class($this->primaryModel), [
             'from' => [$tableName],
             'link' => $link,
             'multiple' => true,
