@@ -15,7 +15,7 @@ use yii\web\AssetBundle;
  */
 class SelectableAsset extends AssetBundle
 {
-    public $sourcePath = '@yii/jui/assets';
+    public $sourcePath = '@bower/jquery-ui/ui';
     public $js = [
         'jquery.ui.selectable.js',
     ];

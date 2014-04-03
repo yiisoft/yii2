@@ -33,6 +33,8 @@ use yii\web\HttpException;
  * @property \yii\web\UrlManager $urlManager The URL manager for this application. This property is read-only.
  * @property string $vendorPath The directory that stores vendor files. Defaults to "vendor" directory under
  * [[basePath]].
+ * @property string $bowerPath The directory that stores Bower packages. Defaults to "bower_components" directory under
+ * [[basePath]].
  * @property View|\yii\web\View $view The view object that is used to render various view files. This property
  * is read-only.
  *
@@ -212,6 +214,15 @@ abstract class Application extends Module
             // set "@vendor"
             $this->getVendorPath();
         }
+
+        if (isset($config['bowerPath'])) {
+            $this->setBowerPath($config['bowerPath']);
+            unset($config['bowerPath']);
+        } else {
+            // set "@bower"
+            $this->getBowerPath();
+        }
+
         if (isset($config['runtimePath'])) {
             $this->setRuntimePath($config['runtimePath']);
             unset($config['runtimePath']);
@@ -417,6 +428,32 @@ abstract class Application extends Module
     {
         $this->_vendorPath = Yii::getAlias($path);
         Yii::setAlias('@vendor', $this->_vendorPath);
+    }
+
+    private $_bowerPath;
+
+    /**
+     * Returns the directory that stores Bower packages.
+     * @return string the directory that Bower packages.
+     * Defaults to "bower_components" directory under [[basePath]].
+     */
+    public function getBowerPath()
+    {
+        if ($this->_bowerPath === null) {
+            $this->setBowerPath($this->getBasePath() . DIRECTORY_SEPARATOR . 'bower_components');
+        }
+
+        return $this->_bowerPath;
+    }
+
+    /**
+     * Sets the directory that stores Bower packages.
+     * @param string $path the directory that stores Bower packages.
+     */
+    public function setBowerPath($path)
+    {
+        $this->_bowerPath = Yii::getAlias($path);
+        Yii::setAlias('@bower', $this->_bowerPath);
     }
 
     /**

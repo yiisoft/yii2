@@ -81,6 +81,7 @@ The following aliases are predefined by the core framework:
 - `@app` - base path of currently running application.
 - `@runtime` - runtime directory.
 - `@vendor` - Composer vendor directory.
+- `@bower` - Bower packages directory.
 - `@webroot` - web root directory of currently running web application.
 - `@web` - base URL of currently running web application.
 
