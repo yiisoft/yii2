@@ -838,10 +838,9 @@ use yii\db\ActiveRecord;
 
 class Comment extends ActiveRecord
 {
-    public static function createQuery($config = [])
+    public static function createQuery()
     {
-        $config['modelClass'] = get_called_class();
-        return new CommentQuery($config);
+        return new CommentQuery(get_called_class());
     }
 }
 ```
@@ -910,10 +909,9 @@ If you used Yii 1.1 before, you may know a concept called *default scope*. A def
 applies to ALL queries. You can define a default scope easily by overriding [[yii\db\ActiveRecord::createQuery()]]. For example,
 
 ```php
-public static function createQuery($config = [])
+public static function createQuery()
 {
-    $config['modelClass'] = get_called_class();
-    return (new ActiveQuery($config))->where(['deleted' => false]);
+    return parent::createQuery()->where(['deleted' => false]);
 }
 ```
 
