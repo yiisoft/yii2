@@ -148,7 +148,7 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * Creates an [[ActiveQuery]] instance.
      *
-     * This method is called by [[find()]], [[findBySql()]] to start a SELECT query but also
+     * This method is called by [[find()]] to start a SELECT query but also
      * by [[hasOne()]] and [[hasMany()]] to create a relational query.
      * You may override this method to return a customized query (e.g. `CustomerQuery` specified
      * written for querying `Customer` purpose.)
