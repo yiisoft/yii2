@@ -3,6 +3,7 @@
     "authors": [],
     "private": true,
     "dependencies": {
-	    "jquery": "2.0.3"
+	    "jquery": "2.0.3",
+	    "jquery-ui": "1.10.4"
 	}
 }
