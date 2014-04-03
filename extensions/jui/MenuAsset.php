@@ -15,7 +15,7 @@ use yii\web\AssetBundle;
  */
 class MenuAsset extends AssetBundle
 {
-    public $sourcePath = '@yii/jui/assets';
+    public $sourcePath = '@bower/jquery-ui/ui';
     public $js = [
         'jquery.ui.menu.js',
     ];

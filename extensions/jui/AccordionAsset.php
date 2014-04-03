@@ -15,7 +15,7 @@ use yii\web\AssetBundle;
  */
 class AccordionAsset extends AssetBundle
 {
-    public $sourcePath = '@yii/jui/assets';
+    public $sourcePath = '@bower/jquery-ui/ui';
     public $js = [
         'jquery.ui.accordion.js',
     ];
