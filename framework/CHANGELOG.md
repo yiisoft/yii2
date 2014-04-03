@@ -3,6 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.0 beta under development
 ----------------------------
+
 - Bug #1265: AssetController does not override 'js' and 'css' for compressed bundles (klimov-paul)
 - Bug #1326: The `visible` setting for `DetailView` doesn't work as expected (qiangxue)
 - Bug #1412: `FileValidator` and `ImageValidator` still trigger `uploadRequired` error in some case when `skipOnEmpty` is true and no upload is provided (qiangxue)
@@ -283,9 +284,8 @@ Yii Framework 2 Change Log
 - New: Added `yii\codeception\DbTestCase` (qiangxue)
 - New: Added `yii\web\PrefixUrlRule` (qiangxue)
 
-
-2.0.0 alpha, December 1, 2013
----------------------------
+2.0.0-alpha, December 1, 2013
+-----------------------------
 
 - Initial release.
 - Official extensions released in this version:

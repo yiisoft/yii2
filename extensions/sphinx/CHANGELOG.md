@@ -14,7 +14,7 @@ Yii Framework 2 sphinx extension Change Log
              All relational queries are now directly served by `ActiveQuery` allowing to use
              custom scopes in relations (cebe)
 
-2.0.0 alpha, December 1, 2013
+2.0.0-alpha, December 1, 2013
 -----------------------------
 
 - Initial release.

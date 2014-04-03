@@ -6,7 +6,7 @@ Yii Framework 2 smarty extension Change Log
 
 - no changes in this release.
 
-2.0.0 alpha, December 1, 2013
+2.0.0-alpha, December 1, 2013
 -----------------------------
 
 - Initial release.

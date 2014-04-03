@@ -11,7 +11,7 @@ Yii Framework 2 debug extension Change Log
 - Enh #1667: Added mail panel (Ragazzo, 6pblcb)
 - Enh #2006: Added total queries count monitoring (o-rey, Ragazzo)
 
-2.0.0 alpha, December 1, 2013
+2.0.0-alpha, December 1, 2013
 -----------------------------
 
 - Initial release.

@@ -19,7 +19,7 @@ Yii Framework 2 gii extension Change Log
 - Enh #2822: possibility to generate I18N messages (lucianobaraglia)
 - Enh #2843: Option to filter files according to the action. (thiagotalma)
 
-2.0.0 alpha, December 1, 2013
+2.0.0-alpha, December 1, 2013
 -----------------------------
 
 - Initial release.
