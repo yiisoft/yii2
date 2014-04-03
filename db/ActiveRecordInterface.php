@@ -155,19 +155,18 @@ interface ActiveRecordInterface
      * You may also define default conditions that should apply to all queries unless overridden:
      *
      * ```php
-     * public static function createQuery($config = [])
+     * public static function createQuery()
      * {
-     *     return parent::createQuery($config)->where(['deleted' => false]);
+     *     return parent::createQuery()->where(['deleted' => false]);
      * }
      * ```
      *
      * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
      * default condition. Using [[Query::where()]] will override the default condition.
      *
-     * @param array $config the configuration passed to the ActiveQuery class.
      * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
      */
-    public static function createQuery($config = []);
+    public static function createQuery();
 
     /**
      * Updates records using the provided attribute values and conditions.
