@@ -115,7 +115,7 @@ class QueryTest extends SphinxTestCase
     {
         $query = new Query();
         $query->filterWhere(['and', ['like', 'name', ''], ['like', 'title', ''], ['id' => 1], ['not', ['like', 'name', '']]]);
-        $this->assertEquals(['id' => 1], $query->where);
+        $this->assertEquals(['and', ['id' => 1]], $query->where);
     }
 
     public function testGroup()

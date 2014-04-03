@@ -573,65 +573,6 @@ class Query extends Component implements QueryInterface
     }
 
     /**
-     * Sets the WHERE part of the query ignoring empty parameters.
-     *
-     * @param string|array $condition the conditions that should be put in the WHERE part. Please refer to [[where()]]
-     * on how to specify this parameter.
-     * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
-     * @see andFilter()
-     * @see orFilter()
-     */
-    public function filterWhere($condition, $params = [])
-    {
-        $condition = $this->filterCondition($condition);
-        if ($condition !== []) {
-            $this->where($condition, $params);
-        }
-        return $this;
-    }
-
-    /**
-     * Adds an additional WHERE condition to the existing one ignoring empty parameters.
-     * The new condition and the existing one will be joined using the 'AND' operator.
-     *
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
-     * on how to specify this parameter.
-     * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
-     * @see filter()
-     * @see orFilter()
-     */
-    public function andFilterWhere($condition, $params = [])
-    {
-        $condition = $this->filterCondition($condition);
-        if ($condition !== []) {
-            $this->andWhere($condition, $params);
-        }
-        return $this;
-    }
-
-    /**
-     * Adds an additional WHERE condition to the existing one ignoring empty parameters.
-     * The new condition and the existing one will be joined using the 'OR' operator.
-     *
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
-     * on how to specify this parameter.
-     * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
-     * @see filter()
-     * @see andFilter()
-     */
-    public function orFilterWhere($condition, $params = [])
-    {
-        $condition = $this->filterCondition($condition);
-        if ($condition !== []) {
-            $this->orWhere($condition, $params);
-        }
-        return $this;
-    }
-
-    /**
      * Appends a JOIN part to the query.
      * The first parameter specifies what type of join it is.
      * @param string $type the type of join, such as INNER JOIN, LEFT JOIN.
