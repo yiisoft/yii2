@@ -25,17 +25,15 @@ echo "<?php\n";
 namespace <?= StringHelper::dirname(ltrim($generator->searchModelClass, '\\')) ?>;
 
 use Yii;
-use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use <?= ltrim($generator->modelClass, '\\') . (isset($modelAlias) ? " as $modelAlias" : "") ?>;
 
 /**
  * <?= $searchModelClass ?> represents the model behind the search form about `<?= $generator->modelClass ?>`.
  */
-class <?= $searchModelClass ?> extends Model
-{
-    public $<?= implode(";\n    public $", $searchAttributes) ?>;
+class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $modelClass ?>
 
+{
     public function rules()
     {
         return [
@@ -43,21 +41,10 @@ class <?= $searchModelClass ?> extends Model
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-<?php foreach ($labels as $name => $label): ?>
-            <?= "'$name' => " . $generator->generateString($label) . ",\n" ?>
-<?php endforeach; ?>
-        ];
-    }
-
     public function search($params)
     {
-        $query = <?= isset($modelAlias) ? $modelAlias : $modelClass ?>::find();
+        $query = $this->find();
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
