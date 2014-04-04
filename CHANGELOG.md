@@ -123,9 +123,9 @@ Yii Framework 2 Change Log
 - Enh #2051: Do not save null data into database when using RBAC (qiangxue)
 - Enh #2054: Added support for using custom application configuration with the console command runner (qiangxue)
 - Enh #2079:
-	- i18n now falls back to `en` from `en-US` if message translation isn't found (samdark)
-	- View now falls back to `en` from `en-US` if file not found (samdark)
-	- Default `sourceLanguage` and `language` are now `en` (samdark)
+    - i18n now falls back to `en` from `en-US` if message translation isn't found (samdark)
+    - View now falls back to `en` from `en-US` if file not found (samdark)
+    - Default `sourceLanguage` and `language` are now `en` (samdark)
 - Enh #2101: Gii is now using model labels when generating search (thiagotalma)
 - Enh #2102: DetailView now allow use `category.name` as attribute name (creocoder)
 - Enh #2102: DetailView now allow use custom label in string format like `name:format:label` (creocoder)
@@ -202,17 +202,17 @@ Yii Framework 2 Change Log
 - Chg #1958: `beforeSubmit` in `yii.activeform` is now executed after validation and before form submission (6pblcb)
 - Chg #2025: Removed ability to declare scopes in ActiveRecord (samdark)
 - Chg #2043:
-	- Renamed `yii\web\Request::acceptedLanguages` to `acceptableLanguages` (qiangxue)
-	- Removed `yii\web\Request::getPost()`, `getPut()`, `getDelete()`, `getPatch()` in favor of `getBodyParam()` (cebe)
-	- Renamed `yii\web\Request::get()` to `getQueryParams()` and `getRestParams()` to `getBodyParams()` (cebe)
-	- Added `yii\web\Request::get($name = null, $defaultValue = null)` and `yii\web\Request::post($name = null, $defaultValue = null)` (samdark)
+    - Renamed `yii\web\Request::acceptedLanguages` to `acceptableLanguages` (qiangxue)
+    - Removed `yii\web\Request::getPost()`, `getPut()`, `getDelete()`, `getPatch()` in favor of `getBodyParam()` (cebe)
+    - Renamed `yii\web\Request::get()` to `getQueryParams()` and `getRestParams()` to `getBodyParams()` (cebe)
+    - Added `yii\web\Request::get($name = null, $defaultValue = null)` and `yii\web\Request::post($name = null, $defaultValue = null)` (samdark)
 - Chg #2059: Implemented git-flavored file excluding/filtering for `FileHelper` (nineinchnick)
 - Chg #2063: Removed `yii\web\Request::acceptTypes` and renamed `yii\web\Request::acceptedContentTypes` to `acceptableContentTypes` (qiangxue)
 - Chg #2103: Renamed AccessDeniedHttpException to ForbiddenHttpException (danschmidt5189)
 - Chg #2146: Removed `ActiveRelation` class and `ActiveRelationInterface`, moved the functionality to `ActiveQuery`.
              All relational queries are now directly served by `ActiveQuery` allowing to use custom scopes in relations
              and also to declare arbitrary queries as relations.
-			 Also removed `ActiveRecordInterface::createActiveRelation()` (cebe)
+             Also removed `ActiveRecordInterface::createActiveRelation()` (cebe)
 - Chg #2157: The '*' category pattern will match all categories that do not match any other patterns listed in `I18N::translations` (qiangxue, Ragazzo)
 - Chg #2161: Added ability to use `return` in `Widget::run` (samdark)
 - Chg #2173: Removed `StringHelper::diff()`, Moved `phpspec/php-diff` dependency from `yiisoft/yii2` to `yiisoft/yii2-gii` (samdark)
@@ -229,10 +229,10 @@ Yii Framework 2 Change Log
 - Chg #2603: `yii\base\ErrorException` now extends `\ErrorException` (samdark)
 - Chg #2629: `Module::controllerPath` is now read only, and all controller classes must be namespaced under `Module::controllerNamespace`. (qiangxue)
 - Chg #2630: API changes for URLs generation (samdark, qiangxue, cebe)
-	- Added `yii\helpers\Url`.
-	- Removed `yii\helpers\Html::url`, use `yii\helpers\Url::to` instead.
-	- Removed `yii\web\Controller::createUrl` and `yii\web\Controller::createAbsoluteUrl`, use `yii\helpers\Url::toRoute` instead.
-	- Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers\Url::canonical` instead.
+    - Added `yii\helpers\Url`.
+    - Removed `yii\helpers\Html::url`, use `yii\helpers\Url::to` instead.
+    - Removed `yii\web\Controller::createUrl` and `yii\web\Controller::createAbsoluteUrl`, use `yii\helpers\Url::toRoute` instead.
+    - Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers\Url::canonical` instead.
 - Chg #2691: Null parameters will not be included in the generated URLs by `UrlManager` (gonimar, qiangxue)
 - Chg #2734: `FileCache::keyPrefix` defaults to empty string now (qiangxue)
 - Chg #2911: Removed `tbl_` default for table prefix (samdark)
@@ -254,16 +254,16 @@ Yii Framework 2 Change Log
 - Chg: Renamed `csrf-var` to `csrf-param` for CSRF header name (Dilip)
 - Chg: The directory holding email templates is renamed from `mails` to `mail` (qiangxue)
 - Chg: Renamed properties `fooVar` to `fooParam` for various classes (qiangxue)
-	- Renamed `ActiveForm::ajaxVar` to `ajaxParam`
-	- Renamed `Pagination::pageVar` to `pageParam`
-	- Renamed `Sort::sortVar` to `sortParam`
-	- Renamed `yii\web\Request::csrfVar` to `csrfParam`
-	- Renamed `yii\web\Request::methodVar` to `methodParam`
-	- Renamed `UrlManager::routeVar` to `routeParam`
-	- Renamed `yii\web\Session::flashVar` to `flashParam`
-	- Renamed `yii\web\User::idVar` to `idParam`
-	- Renamed `yii\web\User::authTimeoutVar` to `authTimeoutParam`
-	- Renamed `yii\web\User::returnUrlVar` to `returnUrlParam`
+    - Renamed `ActiveForm::ajaxVar` to `ajaxParam`
+    - Renamed `Pagination::pageVar` to `pageParam`
+    - Renamed `Sort::sortVar` to `sortParam`
+    - Renamed `yii\web\Request::csrfVar` to `csrfParam`
+    - Renamed `yii\web\Request::methodVar` to `methodParam`
+    - Renamed `UrlManager::routeVar` to `routeParam`
+    - Renamed `yii\web\Session::flashVar` to `flashParam`
+    - Renamed `yii\web\User::idVar` to `idParam`
+    - Renamed `yii\web\User::authTimeoutVar` to `authTimeoutParam`
+    - Renamed `yii\web\User::returnUrlVar` to `returnUrlParam`
 - Chg: Added `View::viewFile` and removed `ViewEvent::viewFile` (qiangxue)
 - Chg: Changed `Controller::afterAction()`, `Module::afterAction()` and `ActionFilter::afterAction()` to pass `$result` by value instead of reference (qiangxue)
 - Chg: `yii\base\Extension::init()` is renamed to `bootstrap()` (qiangxue)
