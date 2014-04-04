@@ -601,8 +601,22 @@ class PhpManager extends Manager
      *
      * @param Rule $rule the rule that has been changed.
      */
-    public function saveRule(Rule $rule)
+    public function insertRule(Rule $rule)
     {
+        $this->_rules[$rule->name] = $rule;
+    }
+
+    /**
+     * Updates existing rule.
+     *
+     * @param string $name the name of the rule to update
+     * @param Rule $rule new rule
+     */
+    public function updateRule($name, Rule $rule)
+    {
+        if ($rule->name !== $name) {
+            unset($this->_rules[$name]);
+        }
         $this->_rules[$rule->name] = $rule;
     }
 
