@@ -40,9 +40,9 @@ class Item extends Object
      */
     public $description;
     /**
-     * @var string the business rule associated with this item
+     * @var string name of the rule associated with this item
      */
-    public $bizRule;
+    public $ruleName;
     /**
      * @var mixed the additional data associated with this item
      */
@@ -66,7 +66,7 @@ class Item extends Object
     public function checkAccess($itemName, $params = [])
     {
         Yii::trace('Checking permission: ' . $this->_name, __METHOD__);
-        if ($this->manager->executeBizRule($this->bizRule, $params, $this->data)) {
+        if ($this->manager->executeRule($this->ruleName, $params, $this->data)) {
             if ($this->_name == $itemName) {
                 return true;
             }
@@ -146,17 +146,18 @@ class Item extends Object
 
     /**
      * Assigns this item to a user.
+     *
      * @param mixed $userId the user ID (see [[\yii\web\User::id]])
-     * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
+     * @param Rule $rule the rule to be executed when [[checkAccess()]] is called
      * for this particular authorization item.
      * @param mixed $data additional data associated with this assignment
      * @return Assignment the authorization assignment information.
      * @throws \yii\base\Exception if the item has already been assigned to the user
      * @see Manager::assign
      */
-    public function assign($userId, $bizRule = null, $data = null)
+    public function assign($userId, Rule $rule = null, $data = null)
     {
-        return $this->manager->assign($userId, $this->_name, $bizRule, $data);
+        return $this->manager->assign($userId, $this->_name, $rule, $data);
     }
 
     /**
