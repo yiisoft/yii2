@@ -273,6 +273,7 @@ Yii Framework 2 Change Log
 - Chg: Removed `yii\grid\Column::getDataCellContent()` and renamed `yii\grid\DataColumn::getDataCellContent()` to `yii\grid\DataColumn::getDataCellValue()` (cebe)
 - Chg: `yii\log\Logger` is split into `yii\log\Logger` and `yii\log\Dispatcher`. (qiangxue)
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
+- New #303: Added built-in support for REST API (qiangxue)
 - New #503: Added `yii\di\Container` and `yii\di\ServiceLocator` (qiangxue)
 - New #706: Added `yii\widgets\Pjax` and enhanced `GridView` to work with `Pjax` to support AJAX-update (qiangxue)
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
