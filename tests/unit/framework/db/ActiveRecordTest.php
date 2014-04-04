@@ -426,7 +426,16 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1, $customers[1]->id);
         $this->assertTrue($customers[0]->isRelationPopulated('orders'));
         $this->assertTrue($customers[1]->isRelationPopulated('orders'));
+    }
 
+    /**
+     * This query will do the same join twice, ensure duplicated JOIN gets removed
+     * https://github.com/yiisoft/yii2/pull/2650
+     */
+    public function testJoinWithVia()
+    {
+        Order::getDb()->getQueryBuilder()->separator = "\n";
+        Order::find()->joinWith('itemsInOrder1')->joinWith('items')->all();
     }
 
     public function testInverseOf()
