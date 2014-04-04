@@ -348,10 +348,14 @@ class FileHelperTest extends TestCase
         $file = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_test.txt';
         file_put_contents($file, 'some text');
         $this->assertEquals('text/plain', FileHelper::getMimeType($file));
-
+		
+		// see http://stackoverflow.com/questions/477816/what-is-the-correct-json-content-type
+		// JSON/JSONP should not use text/plain - see http://jibbering.com/blog/?p=514
+		// with "fileinfo" extension enabled, returned MIME is not quite correctly "text/plain"
+		// without "fileinfo" it falls back to getMimeTypeByExtension() and returns application/json
         $file = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_test.json';
         file_put_contents($file, '{"a": "b"}');
-        $this->assertEquals('text/plain', FileHelper::getMimeType($file));
+        $this->assertTrue(in_array(FileHelper::getMimeType($file), array('application/json', 'text/plain')));
     }
 
     public function testNormalizePath()
