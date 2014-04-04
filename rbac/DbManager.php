@@ -77,7 +77,7 @@ class DbManager extends Manager
      * @param mixed $userId the user ID. This should can be either an integer or a string representing
      * the unique identifier of a user. See [[\yii\web\User::id]].
      * @param string $itemName the name of the operation that need access check
-     * @param array $params name-value pairs that would be passed to biz rules associated
+     * @param array $params name-value pairs that would be passed to rules associated
      * with the tasks and roles assigned to the user. A param with name 'userId' is added to this array,
      * which holds the value of `$userId`.
      * @return boolean whether the operations can be performed by the user.
@@ -95,7 +95,7 @@ class DbManager extends Manager
      * @param mixed $userId the user ID. This should can be either an integer or a string representing
      * the unique identifier of a user. See [[\yii\web\User::id]].
      * @param string $itemName the name of the operation that need access check
-     * @param array $params name-value pairs that would be passed to biz rules associated
+     * @param array $params name-value pairs that would be passed to rules associated
      * with the tasks and roles assigned to the user. A param with name 'userId' is added to this array,
      * which holds the value of `$userId`.
      * @param Assignment[] $assignments the assignments to the specified user
@@ -116,7 +116,7 @@ class DbManager extends Manager
             }
             if (isset($assignments[$itemName])) {
                 $assignment = $assignments[$itemName];
-                if ($this->executeRule($assignment->bizRule, $params, $assignment->data)) {
+                if ($this->executeRule($assignment->ruleName, $params, $assignment->data)) {
                     return true;
                 }
             }
@@ -216,7 +216,7 @@ class DbManager extends Manager
     public function getItemChildren($names)
     {
         $query = new Query;
-        $rows = $query->select(['name', 'type', 'description', 'biz_rule', 'data'])
+        $rows = $query->select(['name', 'type', 'description', 'rule_name', 'data'])
             ->from([$this->itemTable, $this->itemChildTable])
             ->where(['parent' => $names, 'name' => new Expression('child')])
             ->createCommand($this->db)
@@ -231,7 +231,7 @@ class DbManager extends Manager
                 'name' => $row['name'],
                 'type' => $row['type'],
                 'description' => $row['description'],
-                'bizRule' => $row['biz_rule'],
+                'ruleName' => $row['rule_name'],
                 'data' => $data,
             ]);
         }
@@ -259,7 +259,7 @@ class DbManager extends Manager
             ->insert($this->assignmentTable, [
                 'user_id' => $userId,
                 'item_name' => $itemName,
-                'biz_rule' => $ruleName,
+                'rule_name' => $ruleName,
                 'data' => $data === null ? null : serialize($data),
             ])
             ->execute();
@@ -268,7 +268,7 @@ class DbManager extends Manager
             'manager' => $this,
             'userId' => $userId,
             'itemName' => $itemName,
-            'bizRule' => $ruleName,
+            'ruleName' => $ruleName,
             'data' => $data,
         ]);
     }
@@ -338,7 +338,7 @@ class DbManager extends Manager
                 'manager' => $this,
                 'userId' => $row['user_id'],
                 'itemName' => $row['item_name'],
-                'bizRule' => $row['biz_rule'],
+                'ruleName' => $row['rule_name'],
                 'data' => $data,
             ]);
         } else {
@@ -368,7 +368,7 @@ class DbManager extends Manager
                 'manager' => $this,
                 'userId' => $row['user_id'],
                 'itemName' => $row['item_name'],
-                'bizRule' => $row['biz_rule'],
+                'ruleName' => $row['rule_name'],
                 'data' => $data,
             ]);
         }
@@ -384,7 +384,7 @@ class DbManager extends Manager
     {
         $this->db->createCommand()
             ->update($this->assignmentTable, [
-                'biz_rule' => $assignment->bizRule,
+                'rule_name' => $assignment->ruleName,
                 'data' => $assignment->data === null ? null : serialize($assignment->data),
             ], [
                 'user_id' => $assignment->userId,
@@ -412,12 +412,12 @@ class DbManager extends Manager
                 ->where(['type' => $type])
                 ->createCommand($this->db);
         } elseif ($type === null) {
-            $command = $query->select(['name', 'type', 'description', 't1.biz_rule', 't1.data'])
+            $command = $query->select(['name', 'type', 'description', 't1.rule_name', 't1.data'])
                 ->from([$this->itemTable . ' t1', $this->assignmentTable . ' t2'])
                 ->where(['user_id' => $userId, 'name' => new Expression('item_name')])
                 ->createCommand($this->db);
         } else {
-            $command = $query->select(['name', 'type', 'description', 't1.biz_rule', 't1.data'])
+            $command = $query->select(['name', 'type', 'description', 't1.rule_name', 't1.data'])
                 ->from([$this->itemTable . ' t1', $this->assignmentTable . ' t2'])
                 ->where(['user_id' => $userId, 'type' => $type, 'name' => new Expression('item_name')])
                 ->createCommand($this->db);
@@ -432,7 +432,7 @@ class DbManager extends Manager
                 'name' => $row['name'],
                 'type' => $row['type'],
                 'description' => $row['description'],
-                'bizRule' => $row['biz_rule'],
+                'ruleName' => $row['rule_name'],
                 'data' => $data,
             ]);
         }
@@ -463,7 +463,7 @@ class DbManager extends Manager
                 'name' => $name,
                 'type' => $type,
                 'description' => $description,
-                'biz_rule' => $rule,
+                'rule_name' => $rule,
                 'data' => $data === null ? null : serialize($data),
             ])
             ->execute();
@@ -473,7 +473,7 @@ class DbManager extends Manager
             'name' => $name,
             'type' => $type,
             'description' => $description,
-            'bizRule' => $rule,
+            'ruleName' => $rule,
             'data' => $data,
         ]);
     }
@@ -522,7 +522,7 @@ class DbManager extends Manager
                 'name' => $row['name'],
                 'type' => $row['type'],
                 'description' => $row['description'],
-                'bizRule' => $row['biz_rule'],
+                'ruleName' => $row['rule_name'],
                 'data' => $data,
             ]);
         } else {
@@ -623,7 +623,7 @@ class DbManager extends Manager
      */
     public function removeRule($name)
     {
-        // TODO: Implement removeRule() method.
+        return $this->db->createCommand()->delete($this->ruleTable, ['name' => $name])->execute();
     }
 
     /**
@@ -633,7 +633,12 @@ class DbManager extends Manager
      */
     public function saveRule(Rule $rule)
     {
-        // TODO: Implement saveRule() method.
+        $data = serialize($rule);
+        try {
+            $this->db->createCommand()->insert($this->ruleTable, ['name' => $rule->name, 'data' => $data])->execute();
+        } catch (\yii\db\Exception $e) {
+            $this->db->createCommand()->update($this->ruleTable, ['data' => $data], ['name' => $rule->name])->execute();
+        }
     }
 
     /**
@@ -644,7 +649,10 @@ class DbManager extends Manager
      */
     public function getRule($name)
     {
-        // TODO: Implement getRule() method.
+        $query = new Query;
+        $query->select(['data'])->from($this->ruleTable)->where(['name' => $name]);
+        $row = $query->createCommand($this->db)->queryOne();
+        return $row === false ? null : unserialize($row['data']);
     }
 
     /**
@@ -654,5 +662,13 @@ class DbManager extends Manager
      */
     public function getRules()
     {
-        // TODO: Implement getRules() method.
-    }}
+        $query = new Query();
+        $rows = $query->from($this->ruleTable)->createCommand($this->db)->queryAll();
+
+        $rules = [];
+        foreach ($rows as $row) {
+            $rules[$row['name']] = unserialize($row['data']);
+        }
+        return $rules;
+    }
+}

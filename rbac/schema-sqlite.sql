@@ -29,9 +29,10 @@ create table "auth_item"
    "rule_name"            varchar(64),
    "data"                 text,
    primary key ("name"),
-   foreign key ("rule_name") references "auth_rule" ("name") on delete set null on update cascade,
-   key "type" ("type")
+   foreign key ("rule_name") references "auth_rule" ("name") on delete set null on update cascade
 );
+
+create index "auth_item_type_idx" on "auth_item" ("type");
 
 create table "auth_item_child"
 (
