@@ -38,18 +38,26 @@ class DbManager extends Manager
      * with a DB connection object.
      */
     public $db = 'db';
+
     /**
-     * @var string the name of the table storing authorization items. Defaults to 'auth_item'.
+     * @var string the name of the table storing authorization items. Defaults to "auth_item".
      */
     public $itemTable = '{{%auth_item}}';
+
     /**
-     * @var string the name of the table storing authorization item hierarchy. Defaults to 'auth_item_child'.
+     * @var string the name of the table storing authorization item hierarchy. Defaults to "auth_item_child".
      */
     public $itemChildTable = '{{%auth_item_child}}';
+
     /**
-     * @var string the name of the table storing authorization item assignments. Defaults to 'auth_assignment'.
+     * @var string the name of the table storing authorization item assignments. Defaults to "auth_assignment".
      */
     public $assignmentTable = '{{%auth_assignment}}';
+
+    /**
+     * @var string the name of the table storing rules. Defaults to "auth_rule".
+     */
+    public $ruleTable = '{{%auth_rule}}';
 
     private $_usingSqlite;
 
@@ -102,13 +110,13 @@ class DbManager extends Manager
         if (!isset($params['userId'])) {
             $params['userId'] = $userId;
         }
-        if ($this->executeBizRule($item->bizRule, $params, $item->data)) {
+        if ($this->executeRule($item->ruleName, $params, $item->data)) {
             if (in_array($itemName, $this->defaultRoles)) {
                 return true;
             }
             if (isset($assignments[$itemName])) {
                 $assignment = $assignments[$itemName];
-                if ($this->executeBizRule($assignment->bizRule, $params, $assignment->data)) {
+                if ($this->executeRule($assignment->bizRule, $params, $assignment->data)) {
                     return true;
                 }
             }
@@ -233,15 +241,16 @@ class DbManager extends Manager
 
     /**
      * Assigns an authorization item to a user.
-     * @param mixed $userId the user ID (see [[\yii\web\User::id]])
+     *
+*@param mixed $userId the user ID (see [[\yii\web\User::id]])
      * @param string $itemName the item name
-     * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
+     * @param string $ruleName the business rule to be executed when [[checkAccess()]] is called
      * for this particular authorization item.
      * @param mixed $data additional data associated with this assignment
      * @return Assignment the authorization assignment information.
      * @throws InvalidParamException if the item does not exist or if the item has already been assigned to the user
      */
-    public function assign($userId, $itemName, $bizRule = null, $data = null)
+    public function assign($userId, $itemName, $ruleName = null, $data = null)
     {
         if ($this->usingSqlite() && $this->getItem($itemName) === null) {
             throw new InvalidParamException("The item '$itemName' does not exist.");
@@ -250,7 +259,7 @@ class DbManager extends Manager
             ->insert($this->assignmentTable, [
                 'user_id' => $userId,
                 'item_name' => $itemName,
-                'biz_rule' => $bizRule,
+                'biz_rule' => $ruleName,
                 'data' => $data === null ? null : serialize($data),
             ])
             ->execute();
@@ -259,7 +268,7 @@ class DbManager extends Manager
             'manager' => $this,
             'userId' => $userId,
             'itemName' => $itemName,
-            'bizRule' => $bizRule,
+            'bizRule' => $ruleName,
             'data' => $data,
         ]);
     }
@@ -371,7 +380,7 @@ class DbManager extends Manager
      * Saves the changes to an authorization assignment.
      * @param Assignment $assignment the assignment that has been changed.
      */
-    public function saveAssignment($assignment)
+    public function saveAssignment(Assignment $assignment)
     {
         $this->db->createCommand()
             ->update($this->assignmentTable, [
@@ -437,23 +446,24 @@ class DbManager extends Manager
      * It has three types: operation, task and role.
      * Authorization items form a hierarchy. Higher level items inheirt permissions representing
      * by lower level items.
+     *
      * @param string $name the item name. This must be a unique identifier.
      * @param integer $type the item type (0: operation, 1: task, 2: role).
      * @param string $description description of the item
-     * @param string $bizRule business rule associated with the item. This is a piece of
+     * @param string $rule business rule associated with the item. This is a piece of
      * PHP code that will be executed when [[checkAccess()]] is called for the item.
      * @param mixed $data additional data associated with the item.
      * @return Item the authorization item
      * @throws Exception if an item with the same name already exists
      */
-    public function createItem($name, $type, $description = '', $bizRule = null, $data = null)
+    public function createItem($name, $type, $description = '', $rule = null, $data = null)
     {
         $this->db->createCommand()
             ->insert($this->itemTable, [
                 'name' => $name,
                 'type' => $type,
                 'description' => $description,
-                'biz_rule' => $bizRule,
+                'biz_rule' => $rule,
                 'data' => $data === null ? null : serialize($data),
             ])
             ->execute();
@@ -463,7 +473,7 @@ class DbManager extends Manager
             'name' => $name,
             'type' => $type,
             'description' => $description,
-            'bizRule' => $bizRule,
+            'bizRule' => $rule,
             'data' => $data,
         ]);
     }
@@ -525,7 +535,7 @@ class DbManager extends Manager
      * @param Item $item the item to be saved.
      * @param string $oldName the old item name. If null, it means the item name is not changed.
      */
-    public function saveItem($item, $oldName = null)
+    public function saveItem(Item $item, $oldName = null)
     {
         if ($this->usingSqlite() && $oldName !== null && $item->getName() !== $oldName) {
             $this->db->createCommand()
@@ -544,7 +554,7 @@ class DbManager extends Manager
                 'name' => $item->getName(),
                 'type' => $item->type,
                 'description' => $item->description,
-                'biz_rule' => $item->bizRule,
+                'rule_name' => $item->ruleName,
                 'data' => $item->data === null ? null : serialize($item->data),
             ], [
                 'name' => $oldName === null ? $item->getName() : $oldName,
@@ -604,4 +614,45 @@ class DbManager extends Manager
     {
         return $this->_usingSqlite;
     }
-}
+
+    /**
+     * Removes the specified rule.
+     *
+     * @param string $name the name of the rule to be removed
+     * @return boolean whether the rule exists in the storage and has been removed
+     */
+    public function removeRule($name)
+    {
+        // TODO: Implement removeRule() method.
+    }
+
+    /**
+     * Saves the changes to the rule.
+     *
+     * @param Rule $rule the rule that has been changed.
+     */
+    public function saveRule(Rule $rule)
+    {
+        // TODO: Implement saveRule() method.
+    }
+
+    /**
+     * Returns rule given its name.
+     *
+     * @param string $name name of the rule.
+     * @return Rule
+     */
+    public function getRule($name)
+    {
+        // TODO: Implement getRule() method.
+    }
+
+    /**
+     * Returns all rules.
+     *
+     * @return Rule[]
+     */
+    public function getRules()
+    {
+        // TODO: Implement getRules() method.
+    }}
