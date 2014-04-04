@@ -183,7 +183,7 @@ class PhpManager extends Manager
     /**
      * Assigns an authorization item to a user.
      *
-*@param mixed $userId the user ID (see [[\yii\web\User::id]])
+     * @param mixed $userId the user ID (see [[\yii\web\User::id]])
      * @param string $itemName the item name
      * @param string $ruleName the business rule to be executed when [[checkAccess()]] is called
      * for this particular authorization item.

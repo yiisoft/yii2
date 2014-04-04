@@ -147,7 +147,7 @@ class Item extends Object
     /**
      * Assigns this item to a user.
      *
-*@param mixed $userId the user ID (see [[\yii\web\User::id]])
+     * @param mixed $userId the user ID (see [[\yii\web\User::id]])
      * @param Rule $rule the rule to be executed when [[checkAccess()]] is called
      * for this particular authorization item.
      * @param mixed $data additional data associated with this assignment
