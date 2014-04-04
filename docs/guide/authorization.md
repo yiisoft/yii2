@@ -148,7 +148,7 @@ $notGuest = new NotGuestRule();
 
 return [
     'rules' => [
-        $rule->name => serialize($notGuest),
+        $notGuest->name => serialize($notGuest),
     ],
     'items' => [
         // HERE ARE YOUR MANAGEMENT TASKS
