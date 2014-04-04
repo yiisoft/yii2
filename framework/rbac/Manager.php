@@ -323,11 +323,19 @@ abstract class Manager extends Component
     abstract public function removeRule($name);
 
     /**
-     * Saves the changes to the rule.
+     * Inserts new rule.
      *
-     * @param Rule $rule the rule that has been changed.
+     * @param Rule $rule the rule that needs to be stored.
      */
-    abstract public function saveRule(Rule $rule);
+    abstract public function insertRule(Rule $rule);
+
+    /**
+     * Updates existing rule.
+     *
+     * @param string $name the name of the rule to update
+     * @param Rule $rule new rule
+     */
+    abstract public function updateRule($name, Rule $rule);
 
     /**
      * Returns rule given its name.

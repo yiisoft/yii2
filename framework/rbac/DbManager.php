@@ -631,14 +631,20 @@ class DbManager extends Manager
      *
      * @param Rule $rule the rule that has been changed.
      */
-    public function saveRule(Rule $rule)
+    public function insertRule(Rule $rule)
     {
-        $data = serialize($rule);
-        try {
-            $this->db->createCommand()->insert($this->ruleTable, ['name' => $rule->name, 'data' => $data])->execute();
-        } catch (\yii\db\Exception $e) {
-            $this->db->createCommand()->update($this->ruleTable, ['data' => $data], ['name' => $rule->name])->execute();
-        }
+        $this->db->createCommand()->insert($this->ruleTable, ['name' => $rule->name, 'data' => serialize($rule)])->execute();
+    }
+
+    /**
+     * Updates existing rule.
+     *
+     * @param string $name the name of the rule to update
+     * @param Rule $rule new rule
+     */
+    public function updateRule($name, Rule $rule)
+    {
+        $this->db->createCommand()->update($this->ruleTable, ['name' => $rule->name, 'data' => serialize($rule)], ['name' => $name])->execute();
     }
 
     /**

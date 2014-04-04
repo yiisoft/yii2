@@ -178,29 +178,44 @@ abstract class ManagerTestCase extends TestCase
         $this->assertNull($rule);
     }
 
-    public function testSaveRule()
+    public function testInsertRule()
     {
         $ruleName = 'isReallyReallyAuthor';
         $rule = new AuthorRule(['name' => $ruleName, 'reallyReally' => true]);
-        $this->auth->saveRule($rule);
+        $this->auth->insertRule($rule);
 
         /** @var AuthorRule $rule */
         $rule = $this->auth->getRule($ruleName);
         $this->assertEquals($ruleName, $rule->name);
         $this->assertEquals(true, $rule->reallyReally);
+    }
 
+    public function testUpdateRule()
+    {
+        $rule = $this->auth->getRule('isAuthor');
+        $rule->name = "newName";
         $rule->reallyReally = false;
-        $this->auth->saveRule($rule);
+        $this->auth->updateRule('isAuthor', $rule);
 
         /** @var AuthorRule $rule */
-        $rule = $this->auth->getRule($ruleName);
+        $rule = $this->auth->getRule('isAuthor');
+        $this->assertEquals(null, $rule);
+
+        $rule = $this->auth->getRule('newName');
+        $this->assertEquals("newName", $rule->name);
         $this->assertEquals(false, $rule->reallyReally);
+
+        $rule->reallyReally = true;
+        $this->auth->updateRule('newName', $rule);
+
+        $rule = $this->auth->getRule('newName');
+        $this->assertEquals(true, $rule->reallyReally);
     }
 
     public function testGetRules()
     {
         $rule = new AuthorRule(['name' => 'isReallyReallyAuthor', 'reallyReally' => true]);
-        $this->auth->saveRule($rule);
+        $this->auth->insertRule($rule);
 
         $rules = $this->auth->getRules();
 
@@ -281,7 +296,7 @@ abstract class ManagerTestCase extends TestCase
 
     protected function prepareData()
     {
-        $this->auth->saveRule(new AuthorRule());
+        $this->auth->insertRule(new AuthorRule());
 
         $this->auth->createOperation('createPost', 'create a post');
         $this->auth->createOperation('readPost', 'read a post');
