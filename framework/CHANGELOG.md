@@ -79,6 +79,7 @@ Yii Framework 2 Change Log
 - Enh #46: Added Image extension based on [Imagine library](http://imagine.readthedocs.org) (tonydspaniard)
 - Enh #364: Improve Inflector::slug with `intl` transliteration. Improved transliteration char map. (tonydspaniard)
 - Enh #497: Removed `\yii\log\Target::logUser` and added `\yii\log\Target::prefix` to support customizing message prefix (qiangxue)
+- Enh #499: Decoupled `Rule` from RBAC `Item` (samdark, qiangxue)
 - Enh #797: Added support for validating multiple columns by `UniqueValidator` and `ExistValidator` (qiangxue)
 - Enh #802: Added support for retrieving sub-array element or child object property through `ArrayHelper::getValue()` (qiangxue, cebe)
 - Enh #938: Added `yii\web\View::renderAjax()` and `yii\web\Controller::renderAjax()` (qiangxue)

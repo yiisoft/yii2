@@ -98,11 +98,11 @@ abstract class ManagerTestCase extends TestCase
 
     public function testAssign()
     {
-        $auth = $this->auth->assign('new user', 'createPost', 'rule', 'data');
+        $auth = $this->auth->assign('new user', 'createPost', 'isAuthor', 'data');
         $this->assertTrue($auth instanceof Assignment);
         $this->assertEquals($auth->userId, 'new user');
         $this->assertEquals($auth->itemName, 'createPost');
-        $this->assertEquals($auth->ruleName, 'rule');
+        $this->assertEquals($auth->ruleName, 'isAuthor');
         $this->assertEquals($auth->data, 'data');
 
         $this->setExpectedException('\yii\base\Exception');

@@ -10,11 +10,17 @@ namespace yii\rbac;
 use yii\base\Object;
 
 /**
- * Rule
- * @property string $name
+ * Rule represents a business constraint that may be assigned and the applied to
+ * an authorization item or assignment.
+ *
+ * @author Alexander Makarov <sam@rmcreative.ru>
+ * @since 2.0
  */
 abstract class Rule extends Object
 {
+    /**
+     * @var string name of the rule
+     */
     public $name;
 
     /**
