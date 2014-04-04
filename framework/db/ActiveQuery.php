@@ -414,6 +414,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $this->with($with);
         }
 
+        // remove duplicated joins added by joinWithRelations that may be added
+        // e.g. when joining a relation and a via relation at the same time
+        $uniqueJoins = [];
+        foreach($this->join as $j) {
+            $uniqueJoins[serialize($j)] = $j;
+        }
+        $this->join = array_values($uniqueJoins);
+
         if (!empty($join)) {
             // append explicit join to joinWith()
             // https://github.com/yiisoft/yii2/issues/2880
