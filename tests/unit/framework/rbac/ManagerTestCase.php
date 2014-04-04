@@ -181,7 +181,7 @@ abstract class ManagerTestCase extends TestCase
     public function testSaveRule()
     {
         $ruleName = 'isReallyReallyAuthor';
-        $rule = new AuthorRule($ruleName, ['reallyReally' => true]);
+        $rule = new AuthorRule(['name' => $ruleName, 'reallyReally' => true]);
         $this->auth->saveRule($rule);
 
         /** @var AuthorRule $rule */
@@ -199,7 +199,7 @@ abstract class ManagerTestCase extends TestCase
 
     public function testGetRules()
     {
-        $rule = new AuthorRule('isReallyReallyAuthor', ['reallyReally' => true]);
+        $rule = new AuthorRule(['name' => 'isReallyReallyAuthor', 'reallyReally' => true]);
         $this->auth->saveRule($rule);
 
         $rules = $this->auth->getRules();
