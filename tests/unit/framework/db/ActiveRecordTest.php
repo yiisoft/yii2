@@ -435,7 +435,11 @@ class ActiveRecordTest extends DatabaseTestCase
     public function testJoinWithVia()
     {
         Order::getDb()->getQueryBuilder()->separator = "\n";
-        Order::find()->joinWith('itemsInOrder1')->joinWith('items')->all();
+        Order::find()->joinWith('itemsInOrder1')->joinWith([
+            'items' => function ($q) {
+                $q->orderBy('item.id');
+            },
+        ])->all();
     }
 
     public function testInverseOf()
