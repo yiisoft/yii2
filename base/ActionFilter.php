@@ -24,6 +24,10 @@ class ActionFilter extends Behavior
      * @var array list of action IDs that this filter should apply to. If this property is not set,
      * then the filter applies to all actions, unless they are listed in [[except]].
      * If an action ID appears in both [[only]] and [[except]], this filter will NOT apply to it.
+     *
+     * Note that if the filter is attached to a module, the action IDs should also include child module IDs (if any)
+     * and controller IDs.
+     * 
      * @see except
      */
     public $only;
