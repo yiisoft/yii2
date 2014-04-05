@@ -106,12 +106,8 @@ class Controller extends \yii\web\Controller
     public function beforeAction($action)
     {
         $this->authenticate($action);
-        if (parent::beforeAction($action)) {
-            $this->checkRateLimit($action);
-            return true;
-        } else {
-            return false;
-        }
+        $this->checkRateLimit($action);
+        return parent::beforeAction($action);
     }
 
     /**
