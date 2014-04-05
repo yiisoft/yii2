@@ -311,4 +311,39 @@ class BaseUrl
 
         return $url;
     }
+    
+    
+    /**
+	 * ...
+	 * 
+	 * @param array|string $query_arg_add   add key=value to url params;
+	 * @param array|string $remove_query_arg   unset get params;
+	 * 
+	 * @return string;
+	 */
+	public static function current($query_arg_add = [], $remove_query_arg = [])
+	{
+		$request = Yii::$app->getRequest();
+		$array_get = $request->get();
+
+		if(  is_string($remove_query_arg)  )
+			$remove_query_arg = explode(',',$remove_query_arg);
+		
+		if( count($array_get) )
+			foreach($remove_query_arg as $key )
+			{
+				if(isset($array_get[$key]))
+					unset($array_get[$key]);
+			}
+		if(is_string($query_arg_add))
+		{
+			$merge1 = [];
+			parse_str($query_arg_add, $merge1);
+			$query_arg_add = $merge1;
+		}
+		$array_get = array_merge([$url],$array_get,$query_arg_add);
+		
+		return Url::to($array_get);
+	}
+    
 }
