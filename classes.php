@@ -258,7 +258,7 @@ return [
   'yii\web\NotAcceptableHttpException' => YII_PATH . '/web/NotAcceptableHttpException.php',
   'yii\web\NotFoundHttpException' => YII_PATH . '/web/NotFoundHttpException.php',
   'yii\filters\PageCache' => YII_PATH . '/filters/PageCache.php',
-  'yii\web\PrefixUrlRule' => YII_PATH . '/web/PrefixUrlRule.php',
+  'yii\web\GroupUrlRule' => YII_PATH . '/web/GroupUrlRule.php',
   'yii\web\Request' => YII_PATH . '/web/Request.php',
   'yii\web\RequestParserInterface' => YII_PATH . '/web/RequestParserInterface.php',
   'yii\web\Response' => YII_PATH . '/web/Response.php',
