@@ -13,7 +13,7 @@ namespace yii\base;
  * An action filter will participate in the action execution workflow by responding to
  * the `beforeAction` and `afterAction` events triggered by modules and controllers.
  *
- * Check implementation of [[\yii\web\AccessControl]], [[\yii\web\PageCache]] and [[\yii\web\HttpCache]] as examples on how to use it.
+ * Check implementation of [[\yii\filters\AccessControl]], [[\yii\filters\PageCache]] and [[\yii\filters\HttpCache]] as examples on how to use it.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

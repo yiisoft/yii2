@@ -318,7 +318,7 @@ Action Filters
 
 Action filters are implemented via behaviors now. You should extend from [[yii\base\ActionFilter]] to
 define a new filter. To use a filter, you should attach the filter class to the controller
-as a behavior. For example, to use the [[yii\web\AccessControl]] filter, you should have the following
+as a behavior. For example, to use the [[yii\filters\AccessControl]] filter, you should have the following
 code in a controller:
 
 ```php
@@ -326,7 +326,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => 'yii\web\AccessControl',
+            'class' => 'yii\filters\AccessControl',
             'rules' => [
                 ['allow' => true, 'actions' => ['admin'], 'roles' => ['@']],
             ],

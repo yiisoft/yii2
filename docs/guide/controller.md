@@ -199,7 +199,7 @@ public function behaviors()
 {
     return [
         'httpCache' => [
-            'class' => \yii\web\HttpCache::className(),
+            'class' => \yii\filters\HttpCache::className(),
             'only' => ['index'],
             'lastModified' => function ($action, $params) {
                 $q = new \yii\db\Query();
@@ -225,8 +225,8 @@ The return value of [[yii\base\ActionFilter::beforeAction()|beforeAction()]] det
 an action should be executed or not. If `beforeAction()` of a filter returns false, the filters after this one
 will be skipped and the action will not be executed.
 
-The [authorization](authorization.md) section of this guide shows how to use the [[yii\web\AccessControl]] filter,
-and the [caching](caching.md) section gives more details about the [[yii\web\PageCache]] and [[yii\web\HttpCache]] filters.
+The [authorization](authorization.md) section of this guide shows how to use the [[yii\filters\AccessControl]] filter,
+and the [caching](caching.md) section gives more details about the [[yii\filters\PageCache]] and [[yii\filters\HttpCache]] filters.
 These built-in filters are also good references when you learn to create your own filters.
 
 

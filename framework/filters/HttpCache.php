@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\filters;
 
 use Yii;
 use yii\base\ActionFilter;
@@ -25,7 +25,7 @@ use yii\base\Action;
  * {
  *     return [
  *         'httpCache' => [
- *             'class' => \yii\web\HttpCache::className(),
+ *             'class' => \yii\filters\HttpCache::className(),
  *             'only' => ['index'],
  *             'lastModified' => function ($action, $params) {
  *                 $q = new \yii\db\Query();

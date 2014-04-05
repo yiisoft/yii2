@@ -13,7 +13,7 @@ In particular, Yii provides support for the following aspects regarding RESTful 
 * Authentication;
 * Authorization;
 * Support for HATEOAS;
-* Caching via `yii\web\HttpCache`;
+* Caching via `yii\filters\HttpCache`;
 * Rate limiting;
 * Searching and filtering: TBD
 * Testing: TBD
@@ -783,7 +783,7 @@ Accept: application/vnd.company.myapp-v1+json
 ```
 
 Both methods have pros and cons, and there are a lot of debates about them. Below we describe a practical strategy
-of API versioning that is a kind of mix of these two methods:
+of API versioning that is kind of a mix of these two methods:
 
 * Put each major version of API implementation in a separate module whose ID is the major version number (e.g. `v1`, `v2`).
   Naturally, the API URLs will contain major version numbers.
@@ -793,7 +793,9 @@ of API versioning that is a kind of mix of these two methods:
 For each module serving a major version, it should include the resource classes and the controller classes
 serving for that specific version. To better separate code responsibility, you may keep a common set of
 base resource and controller classes, and subclass them in each individual version module. Within the subclasses,
-implement the concrete code such as `Model::fields()`. As a result, your code may be organized like the following:
+implement the concrete code such as `Model::fields()`.
+
+Your code may be organized like the following:
 
 ```
 api/
