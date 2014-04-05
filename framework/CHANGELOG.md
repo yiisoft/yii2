@@ -287,7 +287,7 @@ Yii Framework 2 Change Log
 - New #2932: Added `yii\web\ViewAction` that allow you to render views based on GET parameter (samdark)
 - New: Yii framework now comes with core messages in multiple languages
 - New: Added `yii\codeception\DbTestCase` (qiangxue)
-- New: Added `yii\web\PrefixUrlRule` (qiangxue)
+- New: Added `yii\web\GroupUrlRule` (qiangxue)
 
 2.0.0-alpha, December 1, 2013
 -----------------------------

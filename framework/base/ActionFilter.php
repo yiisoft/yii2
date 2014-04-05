@@ -27,7 +27,7 @@ class ActionFilter extends Behavior
      *
      * Note that if the filter is attached to a module, the action IDs should also include child module IDs (if any)
      * and controller IDs.
-     * 
+     *
      * @see except
      */
     public $only;
