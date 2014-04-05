@@ -255,8 +255,8 @@ class Generator extends \yii\gii\Generator
             $db = $this->getDbConnection();
             $uniqueIndexes = $db->getSchema()->findUniqueIndexes($table);
             foreach ($uniqueIndexes as $uniqueColumns) {
-                // Avoid validating auto incrementable columns
-                if (!$this->isUniqueColumnAutoIncrementable($table, $uniqueColumns)) {
+                // Avoid validating auto incremental columns
+                if (!$this->isColumnAutoIncremental($table, $uniqueColumns)) {
                     $attributesCount = count($uniqueColumns);
 
                     if ($attributesCount == 1) {
@@ -579,15 +579,15 @@ class Generator extends \yii\gii\Generator
     }
 
     /**
-     * Checks if any of the specified columns of an unique index is auto incrementable.
+     * Checks if any of the specified columns is auto incremental.
      * @param  \yii\db\TableSchema $table   the table schema
      * @param  array               $columns columns to check for autoIncrement property
-     * @return boolean             whether any of the specified columns is auto incrementable.
+     * @return boolean             whether any of the specified columns is auto incremental.
      */
-    protected function isUniqueColumnAutoIncrementable($table, $columns)
+    protected function isColumnAutoIncremental($table, $columns)
     {
         foreach ($columns as $column) {
-            if ($table->columns[$column]->autoIncrement) {
+            if (isset($table->columns[$column]) && $table->columns[$column]->autoIncrement) {
                 return true;
             }
         }
