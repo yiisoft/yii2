@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\filters;
 
 use Yii;
 use yii\base\ActionFilter;
@@ -28,7 +28,7 @@ use yii\caching\Dependency;
  * {
  *     return [
  *         'pageCache' => [
- *             'class' => \yii\web\PageCache::className(),
+ *             'class' => \yii\filters\PageCache::className(),
  *             'only' => ['list'],
  *             'duration' => 60,
  *             'dependency' => [

@@ -13,7 +13,7 @@ use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
 use yii\web\UnsupportedMediaTypeHttpException;
 use yii\web\TooManyRequestsHttpException;
-use yii\web\VerbFilter;
+use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
 
 /**
