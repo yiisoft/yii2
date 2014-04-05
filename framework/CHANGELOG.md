@@ -237,6 +237,7 @@ Yii Framework 2 Change Log
     - Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers\Url::canonical` instead.
 - Chg #2691: Null parameters will not be included in the generated URLs by `UrlManager` (gonimar, qiangxue)
 - Chg #2734: `FileCache::keyPrefix` defaults to empty string now (qiangxue)
+- Chg #2816: Changed default date and time format of `yii\base\Formatter` to `Y-m-d` and `H:i:s` (qiangxue)
 - Chg #2911: Removed `tbl_` default for table prefix (samdark)
 - Chg #2912: Relative view files will be looked for under the directory containing the view currently being rendered (qiangxue)
 - Chg #2955: Changed the signature of ActiveQuery constructors and `ActiveRecord::createQuery()` to simplify customizing ActiveQuery classes (qiangxue)
