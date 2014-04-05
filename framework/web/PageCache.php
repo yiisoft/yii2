@@ -31,7 +31,7 @@ use yii\caching\Dependency;
  *             'class' => \yii\web\PageCache::className(),
  *             'only' => ['list'],
  *             'duration' => 60,
- *             'dependecy' => [
+ *             'dependency' => [
  *                 'class' => 'yii\caching\DbDependency',
  *                 'sql' => 'SELECT COUNT(*) FROM post',
  *             ],

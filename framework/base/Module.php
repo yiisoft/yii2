@@ -38,6 +38,16 @@ use yii\di\ServiceLocator;
 class Module extends ServiceLocator
 {
     /**
+     * @event ActionEvent an event raised before executing a controller action.
+     * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
+     */
+    const EVENT_BEFORE_ACTION = 'beforeAction';
+    /**
+     * @event ActionEvent an event raised after executing a controller action.
+     */
+    const EVENT_AFTER_ACTION = 'afterAction';
+
+    /**
      * @var array custom module parameters (name => value).
      */
     public $params = [];
@@ -551,28 +561,61 @@ class Module extends ServiceLocator
     }
 
     /**
-     * This method is invoked right before an action of this module is to be executed (after all possible filters.)
-     * You may override this method to do last-minute preparation for the action.
-     * Make sure you call the parent implementation so that the relevant event is triggered.
+     * This method is invoked right before an action within this module is executed.
+     *
+     * The method will trigger the [[EVENT_BEFORE_ACTION]] event. The return value of the method
+     * will determine whether the action should continue to run.
+     *
+     * If you override this method, your code should look like the following:
+     *
+     * ```php
+     * public function beforeAction($action)
+     * {
+     *     if (parent::beforeAction($action)) {
+     *         // your custom code here
+     *         return true;  // or false if needed
+     *     } else {
+     *         return false;
+     *     }
+     * }
+     * ```
+     *
      * @param Action $action the action to be executed.
      * @return boolean whether the action should continue to be executed.
      */
     public function beforeAction($action)
     {
-        return true;
+        $event = new ActionEvent($action);
+        $this->trigger(self::EVENT_BEFORE_ACTION, $event);
+        return $event->isValid;
     }
 
     /**
-     * This method is invoked right after an action of this module has been executed.
-     * You may override this method to do some postprocessing for the action.
-     * Make sure you call the parent implementation so that the relevant event is triggered.
-     * Also make sure you return the action result, whether it is processed or not.
+     * This method is invoked right after an action within this module is executed.
+     *
+     * The method will trigger the [[EVENT_AFTER_ACTION]] event. The return value of the method
+     * will be used as the action return value.
+     *
+     * If you override this method, your code should look like the following:
+     *
+     * ```php
+     * public function afterAction($action, $result)
+     * {
+     *     $result = parent::afterAction($action, $result);
+     *     // your custom code here
+     *     return $result;
+     * }
+     * ```
+     *
      * @param Action $action the action just executed.
      * @param mixed $result the action return result.
      * @return mixed the processed action result.
      */
     public function afterAction($action, $result)
     {
-        return $result;
+        $event = new ActionEvent($action);
+        $event->result = $result;
+        $this->trigger(self::EVENT_AFTER_ACTION, $event);
+        return $event->result;
     }
 }
