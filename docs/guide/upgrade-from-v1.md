@@ -151,6 +151,13 @@ accessible in any view file via `$this`. This is one of the biggest changes comp
 It refers to the view object that is used to render the view file. To access the controller
 or the widget object, you have to use `$this->context` now.
 
+For partial views, the [[yii\web\View|View]] class now includes a `render()` function. This creates another significant change in the usage of views compared to 1.1:
+**`$this->render(...)` does not output the processed content; you must echo it yourself.**
+
+```php
+echo $this->render('_item', ['item' => $item]);
+```
+
 Because you can access the view object through the "view" application component,
 you can now render a view file like the following anywhere in your code, not necessarily
 in controllers or widgets:
