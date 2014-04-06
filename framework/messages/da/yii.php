@@ -17,6 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return array (
+  'The requested view "{name}" was not found.' => 'Den ønskede visning "{name}" blev ikke fundet.',
   '(not set)' => '(ikke defineret)',
   'An internal server error occurred.' => 'Der opstod en intern server fejl.',
   'Are you sure you want to delete this item?' => 'Er du sikker på, at du vil slette dette element?',
