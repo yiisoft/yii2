@@ -289,6 +289,7 @@ Yii Framework 2 Change Log
 - New: Yii framework now comes with core messages in multiple languages
 - New: Added `yii\codeception\DbTestCase` (qiangxue)
 - New: Added `yii\web\GroupUrlRule` (qiangxue)
+- New: Added `yii\filters\RateLimiter` (qiangxue)
 
 2.0.0-alpha, December 1, 2013
 -----------------------------
