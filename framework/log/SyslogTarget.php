@@ -7,7 +7,6 @@
 namespace yii\log;
 
 use Yii;
-use yii\log\Target;
 
 /**
  * SyslogTarget write log to syslog.
@@ -30,11 +29,12 @@ class SyslogTarget extends Target
      * @var array syslog levels
      */
     private $syslogLevels = [
-		'trace' => LOG_DEBUG,
-		'info' => LOG_INFO,
-		'profile' => LOG_NOTICE,
-		'warning' => LOG_WARNING,
-		'error' => LOG_ERR,
+        Logger::LEVEL_TRACE => LOG_DEBUG,
+        Logger::LEVEL_PROFILE_BEGIN => LOG_DEBUG,
+        Logger::LEVEL_PROFILE_END => LOG_DEBUG,
+        Logger::LEVEL_INFO => LOG_INFO,
+        Logger::LEVEL_WARNING => LOG_WARNING,
+        Logger::LEVEL_ERROR => LOG_ERR,
 	];
 
     /**
@@ -44,9 +44,25 @@ class SyslogTarget extends Target
     {
         openlog($this->identity, LOG_ODELAY | LOG_PID, $this->facility);
         foreach($this->messages as $message){
-            list($text, $level, $category, $timestamp) = $message;
-            syslog($this->syslogLevels[$level], $category . ':' . $text);
+            syslog($this->syslogLevels[$message[1]], $this->formatMessage($message));
         }
         closelog();
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function formatMessage($message)
+    {
+        list($text, $level, $category, $timestamp) = $message;
+        $level = Logger::getLevelName($level);
+        if (!is_string($text)) {
+            $text = var_export($text, true);
+        }
+
+        $prefix = $this->prefix ? call_user_func($this->prefix, $message) : $this->getMessagePrefix($message);
+
+        return "{$prefix}[$level][$category] $text";
+    }
+
 }
