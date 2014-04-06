@@ -74,7 +74,7 @@ class Controller extends \yii\web\Controller
                 'class' => VerbFilter::className(),
                 'actions' => $this->verbs(),
             ],
-            'auth' => [
+            'authenticator' => [
                 'class' => CompositeAuth::className(),
             ],
             'rateLimiter' => [
