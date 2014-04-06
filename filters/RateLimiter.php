@@ -40,11 +40,6 @@ use yii\web\TooManyRequestsHttpException;
 class RateLimiter extends ActionFilter
 {
     /**
-     * @var RateLimitInterface the user object that implements the RateLimitInterface.
-     * If not set, it will take the value of `Yii::$app->user->getIdentity(false)`.
-     */
-    public $user;
-    /**
      * @var boolean whether to include rate limit headers in the response
      */
     public $enableRateLimitHeaders = true;
@@ -52,6 +47,19 @@ class RateLimiter extends ActionFilter
      * @var string the message to be displayed when rate limit exceeds
      */
     public $errorMessage = 'Rate limit exceeded.';
+    /**
+     * @var RateLimitInterface the user object that implements the RateLimitInterface.
+     * If not set, it will take the value of `Yii::$app->user->getIdentity(false)`.
+     */
+    public $user;
+    /**
+     * @var Request the current request. If not set, the `request` application component will be used.
+     */
+    public $request;
+    /**
+     * @var Response the response to be sent. If not set, the `response` application component will be used.
+     */
+    public $response;
 
 
     /**
@@ -62,7 +70,12 @@ class RateLimiter extends ActionFilter
         $user = $this->user ? : Yii::$app->getUser()->getIdentity(false);
         if ($user instanceof RateLimitInterface) {
             Yii::trace('Check rate limit', __METHOD__);
-            $this->checkRateLimit($user, Yii::$app->getRequest(), Yii::$app->getResponse(), $action);
+            $this->checkRateLimit(
+                $user,
+                $this->request ? : Yii::$app->getRequest(),
+                $this->response ? : Yii::$app->getResponse(),
+                $action
+            );
         } elseif ($user) {
             Yii::info('Rate limit skipped: "user" does not implement RateLimitInterface.');
         } else {
