@@ -17,7 +17,6 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return array (
-  'The requested view "{name}" was not found.' => 'Den ønskede visning "{name}" blev ikke fundet.',
   '(not set)' => '(ikke defineret)',
   'An internal server error occurred.' => 'Der opstod en intern server fejl.',
   'Are you sure you want to delete this item?' => 'Er du sikker på, at du vil slette dette element?',
@@ -47,6 +46,7 @@ return array (
   'The image "{file}" is too large. The width cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'Billedet "{file}" er for stort. Bredden må ikke være større end {limit, number} {limit, plural, one{pixel} other{pixels}}.',
   'The image "{file}" is too small. The height cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'Billedet "{file}" er for lille. Højden må ikke være mindre end {limit, number} {limit, plural, one{pixel} other{pixels}}.',
   'The image "{file}" is too small. The width cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'Billedet "{file}" er for lille. Bredden må ikke være mindre end {limit, number} {limit, plural, one{pixel} other{pixels}}.',
+  'The requested view "{name}" was not found.' => 'Den ønskede visning "{name}" blev ikke fundet.',
   'The verification code is incorrect.' => 'Verifikationskoden er ikke korrekt.',
   'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => 'Total <b>{count, number}</b> {count, plural, one{element} other{elementer}}.',
   'Unable to verify your data submission.' => 'Kunne ikke verificere din data indsendelse.',
