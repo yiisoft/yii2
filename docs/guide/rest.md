@@ -689,7 +689,7 @@ To prevent abuse, you should consider adding rate limiting to your APIs. For exa
 of each user to be at most 100 API calls within a period of 10 minutes. If too many requests are received from a user
 within the period of the time, a response with status code 429 (meaning Too Many Requests) should be returned.
 
-To enable rate limiting, the [[yii\web\User::identityClass|user identity class]] should implement [[yii\rest\RateLimitInterface]].
+To enable rate limiting, the [[yii\web\User::identityClass|user identity class]] should implement [[yii\filters\RateLimitInterface]].
 This interface requires implementation of the following three methods:
 
 * `getRateLimit()`: returns the maximum number of allowed requests and the time period, e.g., `[100, 600]` means
@@ -703,16 +703,32 @@ And `loadAllowance()` and `saveAllowance()` can then be implementation by readin
 of the two columns corresponding to the current authenticated user. To improve performance, you may also
 consider storing these information in cache or some NoSQL storage.
 
-Once the identity class implements the required interface, Yii will automatically use the rate limiter
-as specified by [[yii\rest\Controller::rateLimiter]] to perform rate limiting check. The rate limiter
-will thrown a [[yii\web\TooManyRequestsHttpException]] if rate limit is exceeded.
+Once the identity class implements the required interface, Yii will automatically use [[yii\filters\RateLimiter]]
+configured as an action filter for [[yii\rest\Controller]] to perform rate limiting check. The rate limiter
+will thrown a [[yii\web\TooManyRequestsHttpException]] if rate limit is exceeded. You may configure the rate limiter
+as follows in your REST controller classes,
 
-When rate limiting is enabled, every response will be sent with the following HTTP headers containing
+```php
+public function behaviors()
+{
+    return array_merge(parent::behaviors(), [
+        'rateLimiter' => [
+            'class' => \yii\filters\RateLimiter::className(),
+            'enableRateLimitHeaders' => false,
+        ],
+    ]);
+}
+```
+
+When rate limiting is enabled, by default every response will be sent with the following HTTP headers containing
 the current rate limiting information:
 
 * `X-Rate-Limit-Limit`: The maximum number of requests allowed with a time period;
 * `X-Rate-Limit-Remaining`: The number of remaining requests in the current time period;
 * `X-Rate-Limit-Reset`: The number of seconds to wait in order to get the maximum number of allowed requests.
+
+You may disable these headers by configuring [[yii\filters\RateLimiter::enableRateLimitHeaders]] to be false,
+like shown in the above code example.
 
 
 Error Handling

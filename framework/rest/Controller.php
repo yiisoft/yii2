@@ -9,10 +9,10 @@ namespace yii\rest;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\filters\RateLimiter;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
 use yii\web\UnsupportedMediaTypeHttpException;
-use yii\web\TooManyRequestsHttpException;
 use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
 
@@ -50,14 +50,6 @@ class Controller extends \yii\web\Controller
      */
     public $authMethods;
     /**
-     * @var string|array the rate limiter class or configuration. If this is not set or empty,
-     * the rate limiting will be disabled. Note that if the user is not authenticated, the rate limiting
-     * will also NOT be performed.
-     * @see checkRateLimit()
-     * @see authMethods
-     */
-    public $rateLimiter = 'yii\rest\RateLimiter';
-    /**
      * @var string the chosen API version number, or null if [[supportedVersions]] is empty.
      * @see supportedVersions
      */
@@ -88,6 +80,9 @@ class Controller extends \yii\web\Controller
                 'class' => VerbFilter::className(),
                 'actions' => $this->verbs(),
             ],
+            'rateLimiter' => [
+                'class' => RateLimiter::className(),
+            ],
         ];
     }
 
@@ -106,7 +101,6 @@ class Controller extends \yii\web\Controller
     public function beforeAction($action)
     {
         $this->authenticate($action);
-        $this->checkRateLimit($action);
         return parent::beforeAction($action);
     }
 
@@ -190,30 +184,6 @@ class Controller extends \yii\web\Controller
         /** @var AuthInterface $auth */
         $auth = reset($this->authMethods);
         $auth->handleFailure($response);
-    }
-
-    /**
-     * Ensures the rate limit is not exceeded.
-     *
-     * This method will use [[rateLimiter]] to check rate limit. In order to perform rate limiting check,
-     * the user must be authenticated and the user identity object (`Yii::$app->user->identity`) must
-     * implement [[RateLimitInterface]].
-     *
-     * @param \yii\base\Action $action the action to be executed
-     * @throws TooManyRequestsHttpException if the rate limit is exceeded.
-     */
-    protected function checkRateLimit($action)
-    {
-        if (empty($this->rateLimiter)) {
-            return;
-        }
-
-        $identity = Yii::$app->getUser()->getIdentity(false);
-        if ($identity instanceof RateLimitInterface) {
-            /** @var RateLimiter $rateLimiter */
-            $rateLimiter = Yii::createObject($this->rateLimiter);
-            $rateLimiter->check($identity, Yii::$app->getRequest(), Yii::$app->getResponse(), $action);
-        }
     }
 
     /**
