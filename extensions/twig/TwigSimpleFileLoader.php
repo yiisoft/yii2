@@ -64,11 +64,17 @@ class TwigSimpleFileLoader implements \Twig_LoaderInterface
 
     /**
      * internally used to get absolute path of given file name
-     * @param  string $name file name
+     * @param string $name file name
      * @return string absolute path of file
      */
-    protected function getFilePath($name)
+    protected  function getFilePath($name)
     {
-        return $this->_dir . '/' . $name;
+        $basePath = \Yii::getAlias($this->_dir . '/' . $name);
+
+        if (\Yii::$app->view->theme !== null) {
+            return \Yii::$app->view->theme->applyTo($basePath);
+        }
+
+        return $basePath;
     }
 }
