@@ -8,10 +8,9 @@
 namespace yii\rest;
 
 use Yii;
-use yii\base\InvalidConfigException;
+use yii\filters\auth\CompositeAuth;
 use yii\filters\RateLimiter;
 use yii\web\Response;
-use yii\web\UnauthorizedHttpException;
 use yii\web\UnsupportedMediaTypeHttpException;
 use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
@@ -23,8 +22,9 @@ use yii\web\ForbiddenHttpException;
  *
  * 1. Resolving response format and API version number (see [[supportedFormats]], [[supportedVersions]] and [[version]]);
  * 2. Validating request method (see [[verbs()]]).
- * 3. Authenticating user (see [[authenticate()]]);
- * 4. Formatting response data (see [[serializeData()]]).
+ * 3. Authenticating user (see [[\yii\filters\auth\AuthInterface]]);
+ * 4. Rate limiting (see [[\yii\filters\RateLimiter]]);
+ * 5. Formatting response data (see [[serializeData()]]).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -43,12 +43,6 @@ class Controller extends \yii\web\Controller
      * @inheritdoc
      */
     public $enableCsrfValidation = false;
-    /**
-     * @var array the supported authentication methods. This property should take a list of supported
-     * authentication methods, each represented by an authentication class or configuration.
-     * If this is not set or empty, it means authentication is disabled.
-     */
-    public $authMethods;
     /**
      * @var string the chosen API version number, or null if [[supportedVersions]] is empty.
      * @see supportedVersions
@@ -80,6 +74,9 @@ class Controller extends \yii\web\Controller
                 'class' => VerbFilter::className(),
                 'actions' => $this->verbs(),
             ],
+            'auth' => [
+                'class' => CompositeAuth::className(),
+            ],
             'rateLimiter' => [
                 'class' => RateLimiter::className(),
             ],
@@ -93,15 +90,6 @@ class Controller extends \yii\web\Controller
     {
         parent::init();
         $this->resolveFormatAndVersion();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function beforeAction($action)
-    {
-        $this->authenticate($action);
-        return parent::beforeAction($action);
     }
 
     /**
@@ -154,36 +142,6 @@ class Controller extends \yii\web\Controller
     protected function verbs()
     {
         return [];
-    }
-
-    /**
-     * Authenticates the user.
-     * This method implements the user authentication based on an access token sent through the `Authorization` HTTP header.
-     * @param \yii\base\Action $action the action to be executed
-     * @throws UnauthorizedHttpException if the user is not authenticated successfully
-     * @throws InvalidConfigException if an auth method declared in [[authMethods]] is invalid.
-     */
-    protected function authenticate($action)
-    {
-        if (empty($this->authMethods)) {
-            return;
-        }
-
-        $user = Yii::$app->getUser();
-        $request = Yii::$app->getRequest();
-        $response = Yii::$app->getResponse();
-        foreach ($this->authMethods as $i => $auth) {
-            $this->authMethods[$i] = $auth = Yii::createObject($auth);
-            if (!$auth instanceof AuthInterface) {
-                throw new InvalidConfigException(get_class($auth) . ' must implement yii\rest\AuthInterface');
-            } elseif ($auth->authenticate($user, $request, $response) !== null) {
-                return;
-            }
-        }
-
-        /** @var AuthInterface $auth */
-        $auth = reset($this->authMethods);
-        $auth->handleFailure($response);
     }
 
     /**

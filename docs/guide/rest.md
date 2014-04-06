@@ -599,29 +599,47 @@ There are different ways to send an access token:
   server and sent to the API server via [HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750),
   according to the OAuth2 protocol.
 
-Yii supports all of the above authentication methods and can be further extended to support other methods.
+Yii supports all of the above authentication methods. You can also easily create new authentication methods.
 
 To enable authentication for your APIs, do the following two steps:
 
-1. Configure [[yii\rest\Controller::authMethods]] with the authentication methods you plan to use.
+1. Specify which authentication methods you plan to use by configuring the `auth` behavior
+   in your REST controller classes.
 2. Implement [[yii\web\IdentityInterface::findIdentityByAccessToken()]] in your [[yii\web\User::identityClass|user identity class]].
 
-For example, to enable all three authentication methods explained above, you would configure `authMethods`
-as follows,
+For example, to enable all three authentication methods explained above, you can configure `auth` like following,
 
 ```php
-class UserController extends ActiveController
+public function behaviors()
 {
-    public $authMethods = [
-        'yii\rest\HttpBasicAuth',
-        'yii\rest\QueryParamAuth',
-        'yii\rest\HttpBearerAuth',
-    ];
+    return array_merge(parent::behaviors(), [
+        'auth' => [
+            'authMethods' => [
+                \yii\filters\auth\HttpBasicAuth::className(),
+                \yii\filters\auth\QueryParamAuth::className(),
+                \yii\filters\auth\HttpBearerAuth::className(),
+            ],
+        ],
+    ]);
 }
 ```
 
-Each element in `authMethods` should be an auth class name or a configuration array. An auth class
+Each element in `authMethods` should be an auth method class name or a configuration array. An auth class
 must implement [[yii\rest\AuthInterface]].
+
+If you only want to a single authentication method, such as HTTP Basic Auth, you may use the following code:
+
+```php
+public function behaviors()
+{
+    return array_merge(parent::behaviors(), [
+        'auth' => [
+            'class' => \yii\filters\auth\HttpBasicAuth::className(),
+        ],
+    ]);
+}
+```
+
 
 Implementation of `findIdentityByAccessToken()` is application specific. For example, in simple scenarios
 when each user can only have one access token, you may store the access token in an `access_token` column
@@ -713,7 +731,6 @@ public function behaviors()
 {
     return array_merge(parent::behaviors(), [
         'rateLimiter' => [
-            'class' => \yii\filters\RateLimiter::className(),
             'enableRateLimitHeaders' => false,
         ],
     ]);
