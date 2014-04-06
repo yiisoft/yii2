@@ -4,7 +4,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace app\components;
+namespace yii\log;
 
 use Yii;
 use yii\log\Target;
@@ -20,7 +20,7 @@ class SyslogTarget extends Target
     /**
      * @var string Syslog identity
      */
-    public $ident;
+    public $identity;
     /**
      * @var integer syslog facility.
      */
@@ -42,7 +42,7 @@ class SyslogTarget extends Target
      */
     public function export()
     {
-        openlog($this->ident, LOG_ODELAY | LOG_PID, $this->facility);
+        openlog($this->identity, LOG_ODELAY | LOG_PID, $this->facility);
         foreach($this->messages as $message){
             list($text, $level, $category, $timestamp) = $message;
             syslog($this->syslogLevels[$level], $category . ':' . $text);
