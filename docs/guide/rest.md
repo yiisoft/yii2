@@ -607,38 +607,48 @@ To enable authentication for your APIs, do the following two steps:
    in your REST controller classes.
 2. Implement [[yii\web\IdentityInterface::findIdentityByAccessToken()]] in your [[yii\web\User::identityClass|user identity class]].
 
-For example, to enable all three authentication methods explained above, you can configure `authenticator` like following,
+
+For example, to use HTTP Basic Auth, you may configure `authenticator` as follows,
 
 ```php
+use yii\helpers\ArrayHelper;
+use yii\filters\auth\HttpBasicAuth;
+
 public function behaviors()
 {
-    return array_merge(parent::behaviors(), [
+    return ArrayHelper::merge(parent::behaviors(), [
         'authenticator' => [
+            'class' => HttpBasicAuth::className(),
+        ],
+    ]);
+}
+```
+
+If you want to support all three authentication methods explained above, you can use `CompositeAuth` like the following,
+
+```php
+use yii\helpers\ArrayHelper;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
+
+public function behaviors()
+{
+    return ArrayHelper::merge(parent::behaviors(), [
+        'authenticator' => [
+            'class' => CompositeAuth::className(),
             'authMethods' => [
-                \yii\filters\auth\HttpBasicAuth::className(),
-                \yii\filters\auth\QueryParamAuth::className(),
-                \yii\filters\auth\HttpBearerAuth::className(),
+                HttpBasicAuth::className(),
+                HttpBearerAuth::className(),
+                QueryParamAuth::className(),
             ],
         ],
     ]);
 }
 ```
 
-Each element in `authMethods` should be an auth method class name or a configuration array. An auth class
-must implement [[yii\rest\AuthInterface]].
-
-If you only want to a single authentication method, such as HTTP Basic Auth, you may use the following code:
-
-```php
-public function behaviors()
-{
-    return array_merge(parent::behaviors(), [
-        'authenticator' => [
-            'class' => \yii\filters\auth\HttpBasicAuth::className(),
-        ],
-    ]);
-}
-```
+Each element in `authMethods` should be an auth method class name or a configuration array.
 
 
 Implementation of `findIdentityByAccessToken()` is application specific. For example, in simple scenarios
@@ -727,10 +737,14 @@ will thrown a [[yii\web\TooManyRequestsHttpException]] if rate limit is exceeded
 as follows in your REST controller classes,
 
 ```php
+use yii\helpers\ArrayHelper;
+use yii\filters\RateLimiter;
+
 public function behaviors()
 {
-    return array_merge(parent::behaviors(), [
+    return ArrayHelper::merge(parent::behaviors(), [
         'rateLimiter' => [
+            'class' => RateLimiter::className(),
             'enableRateLimitHeaders' => false,
         ],
     ]);
