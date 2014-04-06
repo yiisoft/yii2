@@ -603,17 +603,17 @@ Yii supports all of the above authentication methods. You can also easily create
 
 To enable authentication for your APIs, do the following two steps:
 
-1. Specify which authentication methods you plan to use by configuring the `auth` behavior
+1. Specify which authentication methods you plan to use by configuring the `authenticator` behavior
    in your REST controller classes.
 2. Implement [[yii\web\IdentityInterface::findIdentityByAccessToken()]] in your [[yii\web\User::identityClass|user identity class]].
 
-For example, to enable all three authentication methods explained above, you can configure `auth` like following,
+For example, to enable all three authentication methods explained above, you can configure `authenticator` like following,
 
 ```php
 public function behaviors()
 {
     return array_merge(parent::behaviors(), [
-        'auth' => [
+        'authenticator' => [
             'authMethods' => [
                 \yii\filters\auth\HttpBasicAuth::className(),
                 \yii\filters\auth\QueryParamAuth::className(),
@@ -633,7 +633,7 @@ If you only want to a single authentication method, such as HTTP Basic Auth, you
 public function behaviors()
 {
     return array_merge(parent::behaviors(), [
-        'auth' => [
+        'authenticator' => [
             'class' => \yii\filters\auth\HttpBasicAuth::className(),
         ],
     ]);
