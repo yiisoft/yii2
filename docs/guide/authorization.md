@@ -266,7 +266,7 @@ simple checks could be used instead. For example such code that uses RBAC:
 ```php
 public function editArticle($id)
 {
-  $article = Article::find($id);
+  $article = Article::findOne($id);
   if (!$article) {
     throw new NotFoundHttpException;
   }
@@ -282,7 +282,7 @@ can be replaced with simpler code that doesn't use RBAC:
 ```php
 public function editArticle($id)
 {
-    $article = Article::find(['id' => $id, 'author_id' => \Yii::$app->user->id]);
+    $article = Article::findOne(['id' => $id, 'author_id' => \Yii::$app->user->id]);
     if (!$article) {
       throw new NotFoundHttpException;
     }

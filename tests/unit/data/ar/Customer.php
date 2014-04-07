@@ -13,7 +13,6 @@ use yiiunit\framework\db\ActiveRecordTest;
  * @property string $address
  * @property integer $status
  *
- * @method CustomerQuery|Customer|null find($q = null) static
  * @method CustomerQuery findBySql($sql, $params = []) static
  */
 class Customer extends ActiveRecord
@@ -62,7 +61,11 @@ class Customer extends ActiveRecord
         parent::afterSave($insert);
     }
 
-    public static function createQuery()
+    /**
+     * @inheritdoc
+     * @return CustomerQuery
+     */
+    public static function find()
     {
         return new CustomerQuery(get_called_class());
     }

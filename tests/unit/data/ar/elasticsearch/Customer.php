@@ -64,7 +64,11 @@ class Customer extends ActiveRecord
 
     }
 
-    public static function createQuery()
+    /**
+     * @inheritdoc
+     * @return CustomerQuery
+     */
+    public static function find()
     {
         return new CustomerQuery(get_called_class());
     }

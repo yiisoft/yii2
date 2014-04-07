@@ -454,7 +454,7 @@ $customers = Customer::find()
     ->orderBy('id')
     ->all();
 // return the customer whose PK is 1
-$customer = Customer::find(1);
+$customer = Customer::findOne(1);
 ```
 
 

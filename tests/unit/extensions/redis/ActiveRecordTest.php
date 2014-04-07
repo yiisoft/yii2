@@ -229,7 +229,7 @@ class ActiveRecordTest extends RedisTestCase
     {
         // updateCounters
         $pk = ['order_id' => 2, 'item_id' => 4];
-        $orderItem = OrderItem::find($pk);
+        $orderItem = OrderItem::findOne($pk);
         $this->assertEquals(2, $orderItem->order_id);
         $this->assertEquals(4, $orderItem->item_id);
 
@@ -237,8 +237,8 @@ class ActiveRecordTest extends RedisTestCase
         $orderItem->item_id = 10;
         $orderItem->save();
 
-        $this->assertNull(OrderItem::find($pk));
-        $this->assertNotNull(OrderItem::find(['order_id' => 2, 'item_id' => 10]));
+        $this->assertNull(OrderItem::findOne($pk));
+        $this->assertNotNull(OrderItem::findOne(['order_id' => 2, 'item_id' => 10]));
     }
 
     public function testFilterWhere()

@@ -25,7 +25,11 @@ class Customer extends ActiveRecord
         return $this->hasMany(CustomerOrder::className(), ['customer_id' => '_id']);
     }
 
-    public static function createQuery()
+    /**
+     * @inheritdoc
+     * @return CustomerQuery
+     */
+    public static function find()
     {
         return new CustomerQuery(get_called_class());
     }

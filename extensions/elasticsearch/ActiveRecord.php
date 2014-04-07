@@ -65,19 +65,21 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * @inheritdoc
      */
-    public static function find($q = null)
+    public static function find()
     {
-        $query = static::createQuery();
-        $args = func_get_args();
-        if (empty($args)) {
-            return $query;
-        }
+        return new ActiveQuery(get_called_class());
+    }
 
-        $q = reset($args);
-        if (is_array($q)) {
-            return $query->andWhere($q)->one();
+    /**
+     * @inheritdoc
+     */
+    public static function findOne($condtion)
+    {
+        $query = static::find();
+        if (is_array($condtion)) {
+            return $query->andWhere($condtion)->one();
         } else {
-            return static::get($q);
+            return static::get($condtion);
         }
     }
 
@@ -144,33 +146,6 @@ class ActiveRecord extends BaseActiveRecord
     // TODO add more like this feature http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-more-like-this.html
 
     // TODO add percolate functionality http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-percolate.html
-
-    /**
-     * Creates an [[ActiveQuery]] instance.
-     *
-     * This method is called by [[find()]] to start a SELECT query but also
-     * by [[hasOne()]] and [[hasMany()]] to create a relational query.
-     * You may override this method to return a customized query (e.g. `CustomerQuery` specified
-     * written for querying `Customer` purpose.)
-     *
-     * You may also define default conditions that should apply to all queries unless overridden:
-     *
-     * ```php
-     * public static function createQuery()
-     * {
-     *     return parent::createQuery()->where(['deleted' => false]);
-     * }
-     * ```
-     *
-     * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
-     * default condition. Using [[Query::where()]] will override the default condition.
-     *
-     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
-     */
-    public static function createQuery()
-    {
-        return new ActiveQuery(get_called_class());
-    }
 
     // TODO implement copy and move as pk change is not possible
 
