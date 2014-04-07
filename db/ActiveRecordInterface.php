@@ -72,7 +72,7 @@ interface ActiveRecordInterface
     /**
      * Returns the old primary key value(s).
      * This refers to the primary key value that is populated into the record
-     * after executing a find method (e.g. find(), findAll()).
+     * after executing a find method (e.g. find(), findOne()).
      * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
      * @param boolean $asArray whether to return the primary key value as an array. If true,
      * the return value will be an array with column name as key and column value as value.
@@ -111,7 +111,32 @@ interface ActiveRecordInterface
      *     ->all();
      * ```
      *
-     * This method can also take a parameter which can be:
+     * This method is also called by [[BaseActiveRecord::hasOne()]] and [[BaseActiveRecord::hasMany()]] to
+     * create a relational query.
+     *
+     * You may override this method to return a customized query (e.g. `CustomerQuery` specified
+     * written for querying `Customer` purpose.)
+     *
+     * You may also define default conditions that should apply to all queries unless overridden:
+     *
+     * ```php
+     * public static function find()
+     * {
+     *     return parent::find()->where(['deleted' => false]);
+     * }
+     * ```
+     *
+     * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
+     * default condition. Using [[Query::where()]] will override the default condition.
+     *
+     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
+     */
+    public static function find();
+
+    /**
+     * Returns a single active record model instance given a primary key or an array of column values.
+     *
+     * The method accepts:
      *
      *  - a scalar value (integer or string): query by a single primary key value and return the
      *    corresponding record (or null if not found).
@@ -123,50 +148,22 @@ interface ActiveRecordInterface
      *
      * ```php
      * // find a single customer whose primary key value is 10
-     * $customer = Customer::find(10);
+     * $customer = Customer::findOne(10);
      *
      * // the above code is equivalent to:
      * $customer = Customer::find()->where(['id' => 10])->one();
      *
      * // find a single customer whose age is 30 and whose status is 1
-     * $customer = Customer::find(['age' => 30, 'status' => 1]);
+     * $customer = Customer::findOne(['age' => 30, 'status' => 1]);
      *
      * // the above code is equivalent to:
      * $customer = Customer::find()->where(['age' => 30, 'status' => 1])->one();
      * ```
      *
-     * @return ActiveQueryInterface|static|null When this method receives no parameter, a new [[ActiveQuery]] instance
-     * will be returned; Otherwise, the parameter will be treated as a primary key value or a set of column
-     * values, and an ActiveRecord object matching it will be returned (null will be returned if there is no matching).
-     * @see createQuery()
+     * @param mixed $condition primary key value or a set of column values
+     * @return static ActiveRecord instance or null if nothing matched
      */
-    public static function find();
-
-    /**
-     * Creates an [[ActiveQueryInterface|ActiveQuery]] instance.
-     *
-     * This method is called by [[find()]] to start a SELECT query but also
-     * by [[BaseActiveRecord::hasOne()]] and [[BaseActiveRecord::hasMany()]] to
-     * create a relational query.
-     *
-     * You may override this method to return a customized query (e.g. `CustomerQuery` specified
-     * written for querying `Customer` purpose.)
-     *
-     * You may also define default conditions that should apply to all queries unless overridden:
-     *
-     * ```php
-     * public static function createQuery()
-     * {
-     *     return parent::createQuery()->where(['deleted' => false]);
-     * }
-     * ```
-     *
-     * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
-     * default condition. Using [[Query::where()]] will override the default condition.
-     *
-     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
-     */
-    public static function createQuery();
+    public static function findOne($condition);
 
     /**
      * Updates records using the provided attribute values and conditions.

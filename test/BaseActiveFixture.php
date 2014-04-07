@@ -68,7 +68,7 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
             $keys[$key] = isset($row[$key]) ? $row[$key] : null;
         }
 
-        return $this->_models[$name] = $modelClass::find($keys);
+        return $this->_models[$name] = $modelClass::findOne($keys);
     }
 
     /**

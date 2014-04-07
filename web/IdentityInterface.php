@@ -18,7 +18,7 @@ namespace yii\web;
  * {
  *     public static function findIdentity($id)
  *     {
- *         return static::find($id);
+ *         return static::findOne($id);
  *     }
  *
  *     public function getId()
