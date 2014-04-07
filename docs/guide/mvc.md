@@ -2,7 +2,7 @@ MVC Overview
 ============
 
 Yii implements the model-view-controller (MVC) design pattern, which is
-widely adopted in web and other application programming. MVC aims to separate business logic from
+widely adopted in Web and other application programming. MVC aims to separate business logic from
 user interface considerations, allowing developers to more easily change one component of an application without affecting, or even touching, another.
 
 In MVC, the *model* represents both the
@@ -27,7 +27,7 @@ The following diagram shows a typical workflow of a Yii application  handling a 
 ![Typical workflow of a Yii application](images/flow.png)
 
 1. A user makes a request of the URL `http://www.example.com/index.php?r=post/show&id=1`.
-   The web server handles the request by executing the bootstrap script `index.php`.
+   The Web server handles the request by executing the bootstrap script `index.php`.
 2. The bootstrap script creates an [[yii\web\Application|Application]] instance and runs it.
 3. The Application instance obtains the detailed user request information from an application component named `request`.
 4. The application determines which [controller](controller.md) and which action of that controller was requested.
