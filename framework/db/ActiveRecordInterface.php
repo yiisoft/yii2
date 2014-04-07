@@ -114,27 +114,44 @@ interface ActiveRecordInterface
      * This method is also called by [[BaseActiveRecord::hasOne()]] and [[BaseActiveRecord::hasMany()]] to
      * create a relational query.
      *
-     * You may override this method to return a customized query (e.g. `CustomerQuery` specified
-     * written for querying `Customer` purpose.)
-     *
-     * You may also define default conditions that should apply to all queries unless overridden:
+     * You may override this method to return a customized query. For example,
      *
      * ```php
-     * public static function find()
+     * class Customer extends ActiveRecord
      * {
-     *     return parent::find()->where(['deleted' => false]);
+     *     public static function find()
+     *     {
+     *         // use CustomerQuery instead of the default ActiveQuery
+     *         return new CustomerQuery(get_called_class());
+     *     }
      * }
      * ```
      *
-     * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
-     * default condition. Using [[Query::where()]] will override the default condition.
+     * The following code shows how to apply a default condition for all queries:
+     *
+     * ```php
+     * class Customer extends ActiveRecord
+     * {
+     *     public static function find()
+     *     {
+     *         return parent::find()->where(['deleted' => false]);
+     *     }
+     * }
+     *
+     * // Use andWhere()/orWhere() to apply the default condition
+     * // SELECT FROM customer WHERE `deleted`=:deleted AND age>30
+     * $customers = Customer::find()->andWhere('age>30')->all();
+     *
+     * // Use where() to ignore the default condition
+     * // SELECT FROM customer WHERE age>30
+     * $customers = Customer::find()->where('age>30')->all();
      *
      * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
      */
     public static function find();
 
     /**
-     * Returns a single active record model instance given a primary key or an array of column values.
+     * Returns a single active record model instance by a primary key or an array of column values.
      *
      * The method accepts:
      *
@@ -143,7 +160,7 @@ interface ActiveRecordInterface
      *  - an array of name-value pairs: query by a set of attribute values and return a single record
      *    matching all of them (or null if not found).
      *
-     * Note that in this case, the method will automatically call the `one()` method and return an
+     * Note that this method will automatically call the `one()` method and return an
      * [[ActiveRecordInterface|ActiveRecord]] instance. For example,
      *
      * ```php
@@ -153,7 +170,7 @@ interface ActiveRecordInterface
      * // the above code is equivalent to:
      * $customer = Customer::find()->where(['id' => 10])->one();
      *
-     * // find a single customer whose age is 30 and whose status is 1
+     * // find the first customer whose age is 30 and whose status is 1
      * $customer = Customer::findOne(['age' => 30, 'status' => 1]);
      *
      * // the above code is equivalent to:
@@ -161,9 +178,47 @@ interface ActiveRecordInterface
      * ```
      *
      * @param mixed $condition primary key value or a set of column values
-     * @return static ActiveRecord instance or null if nothing matched
+     * @return static ActiveRecord instance matching the condition, or null if nothing matches.
      */
     public static function findOne($condition);
+
+    /**
+     * Returns a list of active record models that match the specified primary key value or a set of column values.
+     *
+     * The method accepts:
+     *
+     *  - a scalar value (integer or string): query by a single primary key value and return the
+     *    corresponding record (or null if not found).
+     *  - an array of name-value pairs: query by a set of attribute values and return a single record
+     *    matching all of them (or null if not found).
+     *
+     * Note that this method will automatically call the `all()` method and return an array of
+     * [[ActiveRecordInterface|ActiveRecord]] instances. For example,
+     *
+     * ```php
+     * // find the customers whose primary key value is 10
+     * $customers = Customer::findAll(10);
+     *
+     * // the above code is equivalent to:
+     * $customers = Customer::find()->where(['id' => 10])->all();
+     *
+     * // find the customers whose primary key value is 10, 11 or 12.
+     * $customers = Customer::findAll([10, 11, 12]);
+     *
+     * // the above code is equivalent to:
+     * $customers = Customer::find()->where(['id' => [10, 11, 12]])->all();
+     *
+     * // find customers whose age is 30 and whose status is 1
+     * $customers = Customer::findOne(['age' => 30, 'status' => 1]);
+     *
+     * // the above code is equivalent to:
+     * $customers = Customer::find()->where(['age' => 30, 'status' => 1])->all();
+     * ```
+     *
+     * @param mixed $condition primary key value or a set of column values
+     * @return array an array of ActiveRecord instance, or an empty array if nothing matches.
+     */
+    public static function findAll($condition);
 
     /**
      * Updates records using the provided attribute values and conditions.
@@ -208,7 +263,7 @@ interface ActiveRecordInterface
      * For example, to save a customer record:
      *
      * ~~~
-     * $customer = new Customer; // or $customer = Customer::find($id);
+     * $customer = new Customer; // or $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
      * $customer->save();
@@ -249,7 +304,7 @@ interface ActiveRecordInterface
      * Usage example:
      *
      * ```php
-     * $customer = Customer::find($id);
+     * $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
      * $customer->update();

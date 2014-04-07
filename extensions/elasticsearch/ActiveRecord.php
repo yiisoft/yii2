@@ -10,6 +10,7 @@ namespace yii\elasticsearch;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
 use yii\helpers\StringHelper;
@@ -73,13 +74,26 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * @inheritdoc
      */
-    public static function findOne($condtion)
+    public static function findOne($condition)
     {
         $query = static::find();
-        if (is_array($condtion)) {
-            return $query->andWhere($condtion)->one();
+        if (is_array($condition)) {
+            return $query->andWhere($condition)->one();
         } else {
-            return static::get($condtion);
+            return static::get($condition);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function findAll($condition)
+    {
+        $query = static::find();
+        if (ArrayHelper::isAssociative($condition)) {
+            return $query->andWhere($condition)->all();
+        } else {
+            return static::mget((array) $condition);
         }
     }
 
@@ -120,14 +134,18 @@ class ActiveRecord extends BaseActiveRecord
      *
      * Please refer to the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html)
      * for more details on these options.
-     * @return static|null The record instance or null if it was not found.
+     * @return array The record instances, or empty array if nothing was found
      */
-
-    public static function mget($primaryKeys, $options = [])
+    public static function mget(array $primaryKeys, $options = [])
     {
         if (empty($primaryKeys)) {
             return [];
         }
+        if (count($primaryKeys) === 1) {
+            $model = static::get(reset($primaryKeys));
+            return $model === null ? [] : [$model];
+        }
+
         $command = static::getDb()->createCommand();
         $result = $command->mget(static::index(), static::type(), $primaryKeys, $options);
         $models = [];

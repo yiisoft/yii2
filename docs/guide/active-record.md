@@ -169,10 +169,9 @@ $customers = Customer::findBySql($sql)->all();
   use meaningful constant names rather than hardcoded strings or numbers in your code.
 
 
-There is a shortcut method `findOne()` that allows you to retrieve an Active Record instance based on a primary
-key value or a set of column values. The main difference here is that instead of returning a [[yii\db\ActiveQuery]]
-instance, the method takes the column value(s) and returns an Active Record instance directly without the need
-to call `one()`.
+Two shortcut methods are provided to return Active Record instances matching a primary key value or a set of
+column values: `findOne()` and `findAll()`. The former returns the first matching instance while the latter
+returns all of them. For example,
 
 ```php
 // to return a single customer whose ID is 1:
@@ -182,6 +181,14 @@ $customer = Customer::findOne(1);
 $customer = Customer::findOne([
     'id' => 1,
     'status' => Customer::STATUS_ACTIVE,
+]);
+
+// to return customers whose ID is 1, 2 or 3:
+$customers = Customer::findAll([1, 2, 3]);
+
+// to return customers whose status is "deleted":
+$customer = Customer::findAll([
+    'status' => Customer::STATUS_DELETED,
 ]);
 ```
 

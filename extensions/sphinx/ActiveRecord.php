@@ -423,7 +423,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      * For example, to update an article record:
      *
      * ~~~
-     * $article = Article::find(['id' => $id]);
+     * $article = Article::findOne($id);
      * $article->genre_id = $genreId;
      * $article->group_id = $groupId;
      * $article->update();

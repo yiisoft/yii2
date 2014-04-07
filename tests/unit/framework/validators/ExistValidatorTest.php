@@ -57,38 +57,38 @@ class ExistValidatorTest extends DatabaseTestCase
     {
         // existing value on different table
         $val = new ExistValidator(['targetClass' => ValidatorTestMainModel::className(), 'targetAttribute' => 'id']);
-        $m = ValidatorTestRefModel::find(['id' => 1]);
+        $m = ValidatorTestRefModel::findOne(['id' => 1]);
         $val->validateAttribute($m, 'ref');
         $this->assertFalse($m->hasErrors());
         // non-existing value on different table
         $val = new ExistValidator(['targetClass' => ValidatorTestMainModel::className(), 'targetAttribute' => 'id']);
-        $m = ValidatorTestRefModel::find(['id' => 6]);
+        $m = ValidatorTestRefModel::findOne(['id' => 6]);
         $val->validateAttribute($m, 'ref');
         $this->assertTrue($m->hasErrors('ref'));
         // existing value on same table
         $val = new ExistValidator(['targetAttribute' => 'ref']);
-        $m = ValidatorTestRefModel::find(['id' => 2]);
+        $m = ValidatorTestRefModel::findOne(['id' => 2]);
         $val->validateAttribute($m, 'test_val');
         $this->assertFalse($m->hasErrors());
         // non-existing value on same table
         $val = new ExistValidator(['targetAttribute' => 'ref']);
-        $m = ValidatorTestRefModel::find(['id' => 5]);
+        $m = ValidatorTestRefModel::findOne(['id' => 5]);
         $val->validateAttribute($m, 'test_val_fail');
         $this->assertTrue($m->hasErrors('test_val_fail'));
         // check for given value (true)
         $val = new ExistValidator();
-        $m = ValidatorTestRefModel::find(['id' => 3]);
+        $m = ValidatorTestRefModel::findOne(['id' => 3]);
         $val->validateAttribute($m, 'ref');
         $this->assertFalse($m->hasErrors());
         // check for given defaults (false)
         $val = new ExistValidator();
-        $m = ValidatorTestRefModel::find(['id' => 4]);
+        $m = ValidatorTestRefModel::findOne(['id' => 4]);
         $m->a_field = 'some new value';
         $val->validateAttribute($m, 'a_field');
         $this->assertTrue($m->hasErrors('a_field'));
         // check array
         $val = new ExistValidator(['targetAttribute' => 'ref']);
-        $m = ValidatorTestRefModel::find(['id' => 2]);
+        $m = ValidatorTestRefModel::findOne(['id' => 2]);
         $m->test_val = [1,2,3];
         $val->validateAttribute($m, 'test_val');
         $this->assertTrue($m->hasErrors('test_val'));
