@@ -93,12 +93,13 @@ class BaseStringHelper
      * @param string $string The string to truncate.
      * @param integer $length The new length of the string.
      * @param string $suffix A value to affix to the end.
+     * @param string $encoding The charset to use, defaults to application current.
      * @return string the truncated string.
      */
-    public static function truncate($string, $length, $suffix = '...')
+    public static function truncate($string, $length, $suffix = '...', $encoding = null)
     {
         if (mb_strlen($string) > $length) {
-            return trim(mb_substr($string, 0, $length)) . $suffix;
+            return trim(mb_substr($string, 0, $length, $encoding ?: \Yii::$app->charset)) . $suffix;
         } else {
             return $string;
         }
