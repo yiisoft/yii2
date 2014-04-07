@@ -655,6 +655,9 @@ class DbManager extends Manager
      */
     public function getRule($name)
     {
+        if ($name === null) {
+            return null;
+        }
         $query = new Query;
         $query->select(['data'])->from($this->ruleTable)->where(['name' => $name]);
         $row = $query->createCommand($this->db)->queryOne();

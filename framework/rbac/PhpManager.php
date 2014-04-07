@@ -628,11 +628,7 @@ class PhpManager extends Manager
      */
     public function getRule($name)
     {
-        if (!isset($this->_rules[$name])) {
-            return null;
-        }
-
-        return $this->_rules[$name];
+        return $name !== null && isset($this->_rules[$name]) ? $this->_rules[$name] : null;
     }
 
     /**
