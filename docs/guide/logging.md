@@ -33,7 +33,8 @@ Log targets
 -----------
 
 When one of the logging methods is called, message is passed to [[yii\log\Logger]] component accessible as
-`Yii::$app->log->logger` or `Yii::getLogger()`. Logger accumulates messages in memory and then when there are enough messages or when current request finishes, sends them to different log targets, such as file or email.
+`Yii::getLogger()`. Logger accumulates messages in memory and then when there are enough messages
+or when the current request finishes, sends them to different log targets, such as file or email.
 
 You may configure the targets in application configuration, like the following:
 
