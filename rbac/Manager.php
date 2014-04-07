@@ -9,6 +9,7 @@ namespace yii\rbac;
 
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 
 /**
@@ -145,16 +146,21 @@ abstract class Manager extends Component
      * @param string $ruleName name of the rule to be executed.
      * @param array $params parameters passed to [[Manager::checkAccess()]].
      * @param mixed $data additional data associated with the authorization item or assignment.
-     * @return boolean whether the rule execution returns true.
-     * If the rule is empty, it will still return true.
+     * @return boolean whether the rule execution returns true. If `$ruleName` is null, true will be returned.
+     * @throws InvalidConfigException if `$ruleName` does not correspond to a valid rule.
      */
     public function executeRule($ruleName, $params, $data)
     {
-        $rule = $this->getRule($ruleName);
-        if ($rule) {
-            return $rule->execute($params, $data);
+        if ($ruleName !== null) {
+            $rule = $this->getRule($ruleName);
+            if ($rule instanceof Rule) {
+                return $rule->execute($params, $data);
+            } else {
+                throw new InvalidConfigException("Rule not found: $ruleName");
+            }
+        } else {
+            return true;
         }
-        return true;
     }
 
     /**
