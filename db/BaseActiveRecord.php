@@ -15,6 +15,7 @@ use yii\base\ModelEvent;
 use yii\base\NotSupportedException;
 use yii\base\UnknownMethodException;
 use yii\base\InvalidCallException;
+use yii\helpers\ArrayHelper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
@@ -97,7 +98,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public static function findOne($condition)
     {
         $query = static::find();
-        if (is_array($condition)) {
+        if (ArrayHelper::isAssociative($condition)) {
             // hash condition
             return $query->andWhere($condition)->one();
         } else {
@@ -117,15 +118,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public static function findAll($condition)
     {
         $query = static::find();
-        if (is_array($condition)) {
-
+        if (ArrayHelper::isAssociative($condition)) {
             // hash condition
-            return $query->andWhere($condition)->one();
+            return $query->andWhere($condition)->all();
         } else {
-            // query by primary key
+            // query by primary key(s)
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
-                return $query->andWhere([$primaryKey[0] => $condition])->one();
+                return $query->andWhere([$primaryKey[0] => $condition])->all();
             } else {
                 throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
             }
@@ -966,7 +966,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * Returns the old primary key value(s).
      * This refers to the primary key value that is populated into the record
-     * after executing a find method (e.g. one(), findOne()).
+     * after executing a find method (e.g. find(), findOne()).
      * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
      * @param boolean $asArray whether to return the primary key value as an array. If true,
      * the return value will be an array with column name as key and column value as value.

@@ -504,9 +504,9 @@ class BaseArrayHelper
      * the array to be treated as associative.
      * @return boolean whether the array is associative
      */
-    public static function isAssociative(array $array, $allStrings = true)
+    public static function isAssociative($array, $allStrings = true)
     {
-        if (empty($array)) {
+        if (!is_array($array) || empty($array)) {
             return false;
         }
 
@@ -540,8 +540,12 @@ class BaseArrayHelper
      * in order for the array to be treated as indexed.
      * @return boolean whether the array is associative
      */
-    public static function isIndexed(array $array, $consecutive = false)
+    public static function isIndexed($array, $consecutive = false)
     {
+        if (!is_array($array)) {
+            return false;
+        }
+
         if (empty($array)) {
             return true;
         }
