@@ -78,8 +78,7 @@ class NumberValidator extends Validator
     {
         $value = $object->$attribute;
         if (is_array($value)) {
-            $this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
-
+            $this->addError($object, $attribute, $this->message);
             return;
         }
         $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
