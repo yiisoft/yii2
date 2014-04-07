@@ -91,7 +91,7 @@ class BlogController extends Controller
 {
     public function actionView($id, $version = null)
     {
-        $post = Post::find($id);
+        $post = Post::findOne($id);
         $text = $post->text;
 
         if ($version) {
@@ -125,7 +125,7 @@ class BlogController extends Controller
 {
     public function actionUpdate($id)
     {
-        $post = Post::find($id);
+        $post = Post::findOne($id);
         if (!$post) {
             throw new NotFoundHttpException();
         }

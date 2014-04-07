@@ -24,7 +24,7 @@ class ActiveRelationTest extends SphinxTestCase
     public function testFindLazy()
     {
         /** @var ArticleDb $article */
-        $article = ArticleDb::find(['id' => 2]);
+        $article = ArticleDb::findOne(['id' => 2]);
         $this->assertFalse($article->isRelationPopulated('index'));
         $index = $article->index;
         $this->assertTrue($article->isRelationPopulated('index'));

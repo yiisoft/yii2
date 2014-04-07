@@ -85,7 +85,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      */
     public static function findBySql($sql, $params = [])
     {
-        $query = static::createQuery();
+        $query = static::find();
         $query->sql = $sql;
 
         return $query->params($params);
@@ -136,28 +136,9 @@ abstract class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Creates an [[ActiveQuery]] instance.
-     *
-     * This method is called by [[find()]], [[findBySql()]] to start a SELECT query but also
-     * by [[hasOne()]] and [[hasMany()]] to create a relational query.
-     * You may override this method to return a customized query (e.g. `CustomerQuery` specified
-     * written for querying `Customer` purpose.)
-     *
-     * You may also define default conditions that should apply to all queries unless overridden:
-     *
-     * ```php
-     * public static function createQuery()
-     * {
-     *     return parent::createQuery()->where(['deleted' => false]);
-     * }
-     * ```
-     *
-     * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
-     * default condition. Using [[Query::where()]] will override the default condition.
-     *
-     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+     * @inheritdoc
      */
-    public static function createQuery()
+    public static function find()
     {
         return new ActiveQuery(get_called_class());
     }
@@ -442,7 +423,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      * For example, to update an article record:
      *
      * ~~~
-     * $article = Article::find(['id' => $id]);
+     * $article = Article::findOne($id);
      * $article->genre_id = $genreId;
      * $article->group_id = $groupId;
      * $article->update();

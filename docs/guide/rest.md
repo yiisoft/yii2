@@ -663,7 +663,7 @@ class User extends ActiveRecord implements IdentityInterface
 {
     public static function findIdentityByAccessToken($token)
     {
-        return static::find(['access_token' => $token]);
+        return static::findOne(['access_token' => $token]);
     }
 }
 ```
