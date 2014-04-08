@@ -151,6 +151,9 @@ abstract class Manager extends Component
      */
     public function executeRule($ruleName, $params, $data)
     {
+        if ($ruleName === null) {
+            return true;
+        }
         $rule = $this->getRule($ruleName);
         if ($rule instanceof Rule) {
             return $rule->execute($params, $data);
