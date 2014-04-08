@@ -209,7 +209,7 @@ interface ActiveRecordInterface
      * $customers = Customer::find()->where(['id' => [10, 11, 12]])->all();
      *
      * // find customers whose age is 30 and whose status is 1
-     * $customers = Customer::findOne(['age' => 30, 'status' => 1]);
+     * $customers = Customer::findAll(['age' => 30, 'status' => 1]);
      *
      * // the above code is equivalent to:
      * $customers = Customer::find()->where(['age' => 30, 'status' => 1])->all();
