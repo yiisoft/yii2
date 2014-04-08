@@ -151,15 +151,11 @@ abstract class Manager extends Component
      */
     public function executeRule($ruleName, $params, $data)
     {
-        if ($ruleName !== null) {
-            $rule = $this->getRule($ruleName);
-            if ($rule instanceof Rule) {
-                return $rule->execute($params, $data);
-            } else {
-                throw new InvalidConfigException("Rule not found: $ruleName");
-            }
+        $rule = $this->getRule($ruleName);
+        if ($rule instanceof Rule) {
+            return $rule->execute($params, $data);
         } else {
-            return true;
+            throw new InvalidConfigException("Rule not found: $ruleName");
         }
     }
 
