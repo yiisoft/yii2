@@ -9,7 +9,7 @@ namespace yii\log;
 use Yii;
 
 /**
- * SyslogTarget write log to syslog.
+ * SyslogTarget writes log to syslog.
  *
  * @author miramir <gmiramir@gmail.com>
  * @since 2.0
@@ -17,9 +17,10 @@ use Yii;
 class SyslogTarget extends Target
 {
     /**
-     * @var string Syslog identity
+     * @var string syslog identity
      */
     public $identity;
+
     /**
      * @var integer syslog facility.
      */
@@ -35,15 +36,15 @@ class SyslogTarget extends Target
         Logger::LEVEL_INFO => LOG_INFO,
         Logger::LEVEL_WARNING => LOG_WARNING,
         Logger::LEVEL_ERROR => LOG_ERR,
-	];
+    ];
 
     /**
-     * Writes log messages to a syslog.
+     * Writes log messages to syslog
      */
     public function export()
     {
         openlog($this->identity, LOG_ODELAY | LOG_PID, $this->facility);
-        foreach($this->messages as $message){
+        foreach ($this->messages as $message) {
             syslog($this->syslogLevels[$message[1]], $this->formatMessage($message));
         }
         closelog();
@@ -64,5 +65,4 @@ class SyslogTarget extends Target
 
         return "{$prefix}[$level][$category] $text";
     }
-
 }
