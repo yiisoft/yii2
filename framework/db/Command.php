@@ -335,7 +335,7 @@ class Command extends \yii\base\Component
     /**
      * Executes the SQL statement and returns the value of the first column in the first row of data.
      * This method is best used when only a single value is needed for a query.
-     * @return string|boolean the value of the first column in the first row of the query result.
+     * @return string|null|boolean the value of the first column in the first row of the query result.
      * False is returned if there is no value.
      * @throws Exception execution failed
      */
