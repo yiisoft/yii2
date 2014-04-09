@@ -565,16 +565,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * @param boolean $runValidation whether to perform validation before saving the record.
      * If the validation fails, the record will not be saved to database.
-     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * @param array $attributeNames list of attribute names that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
      * @return boolean whether the saving succeeds
      */
-    public function save($runValidation = true, $attributes = null)
+    public function save($runValidation = true, $attributeNames = null)
     {
         if ($this->getIsNewRecord()) {
-            return $this->insert($runValidation, $attributes);
+            return $this->insert($runValidation, $attributeNames);
         } else {
-            return $this->update($runValidation, $attributes) !== false;
+            return $this->update($runValidation, $attributeNames) !== false;
         }
     }
 
@@ -620,7 +620,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * @param boolean $runValidation whether to perform validation before saving the record.
      * If the validation fails, the record will not be inserted into the database.
-     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * @param array $attributeNames list of attribute names that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
      * @return integer|boolean the number of rows affected, or false if validation fails
      * or [[beforeSave()]] stops the updating process.
@@ -628,12 +628,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * being updated is outdated.
      * @throws \Exception in case update failed.
      */
-    public function update($runValidation = true, $attributes = null)
+    public function update($runValidation = true, $attributeNames = null)
     {
-        if ($runValidation && !$this->validate($attributes)) {
+        if ($runValidation && !$this->validate($attributeNames)) {
             return false;
         }
-        return $this->updateInternal($attributes);
+        return $this->updateInternal($attributeNames);
     }
 
     /**

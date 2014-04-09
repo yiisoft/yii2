@@ -480,7 +480,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * @param boolean $runValidation whether to perform validation before saving the record.
      * If the validation fails, the record will not be inserted into the database.
-     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * @param array $attributeNames list of attributes that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
      * @return integer|boolean the number of rows affected, or false if validation fails
      * or [[beforeSave()]] stops the updating process.
@@ -488,9 +488,9 @@ class ActiveRecord extends BaseActiveRecord
      * being updated is outdated.
      * @throws \Exception in case update failed.
      */
-    public function update($runValidation = true, $attributes = null)
+    public function update($runValidation = true, $attributeNames = null)
     {
-        if ($runValidation && !$this->validate($attributes)) {
+        if ($runValidation && !$this->validate($attributeNames)) {
             Yii::info('Model not updated due to validation error.', __METHOD__);
             return false;
         }
@@ -498,7 +498,7 @@ class ActiveRecord extends BaseActiveRecord
         if ($this->isTransactional(self::OP_UPDATE)) {
             $transaction = $db->beginTransaction();
             try {
-                $result = $this->updateInternal($attributes);
+                $result = $this->updateInternal($attributeNames);
                 if ($result === false) {
                     $transaction->rollBack();
                 } else {
@@ -509,7 +509,7 @@ class ActiveRecord extends BaseActiveRecord
                 throw $e;
             }
         } else {
-            $result = $this->updateInternal($attributes);
+            $result = $this->updateInternal($attributeNames);
         }
 
         return $result;
