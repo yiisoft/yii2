@@ -52,10 +52,6 @@ class Module extends ServiceLocator
      */
     public $params = [];
     /**
-     * @var array the IDs of the components or modules that should be preloaded right after initialization.
-     */
-    public $preload = [];
-    /**
      * @var string an ID that uniquely identifies this module among other modules which have the same [[module|parent]].
      */
     public $id;
@@ -137,9 +133,10 @@ class Module extends ServiceLocator
 
     /**
      * Initializes the module.
+     *
      * This method is called after the module is created and initialized with property values
-     * given in configuration. The default implementation will call [[preloadComponents()]] to
-     * load components that are declared in [[preload]].
+     * given in configuration. The default implementation will initialize [[controllerNamespace]]
+     * if it is not set.
      *
      * If you override this method, please make sure you call the parent implementation.
      */
@@ -151,7 +148,6 @@ class Module extends ServiceLocator
                 $this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
             }
         }
-        $this->preloadComponents();
     }
 
     /**
@@ -403,23 +399,6 @@ class Module extends ServiceLocator
     {
         foreach ($modules as $id => $module) {
             $this->_modules[$id] = $module;
-        }
-    }
-
-    /**
-     * Loads components that are declared in [[preload]].
-     * @throws InvalidConfigException if a component or module to be preloaded is unknown
-     */
-    public function preloadComponents()
-    {
-        foreach ($this->preload as $id) {
-            if ($this->has($id)) {
-                $this->get($id);
-            } elseif ($this->hasModule($id)) {
-                $this->getModule($id);
-            } else {
-                throw new InvalidConfigException("Unknown component or module: $id");
-            }
         }
     }
 
