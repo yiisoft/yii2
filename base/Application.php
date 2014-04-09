@@ -12,18 +12,22 @@ use Yii;
 /**
  * Application is the base class for all application classes.
  *
+ * @property \yii\web\AssetManager $assetManager The asset manager component. This property is read-only.
  * @property \yii\rbac\Manager $authManager The auth manager for this application. Null is returned if auth
  * manager is not configured. This property is read-only.
  * @property string $basePath The root directory of the application.
  * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
  * This property is read-only.
  * @property \yii\db\Connection $db The database connection. This property is read-only.
- * @property ErrorHandler $errorHandler The error handler application component. This property is read-only.
+ * @property \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
+ * component. This property is read-only.
  * @property \yii\base\Formatter $formatter The formatter application component. This property is read-only.
  * @property \yii\i18n\I18N $i18n The internationalization component. This property is read-only.
  * @property \yii\log\Dispatcher $log The log dispatcher component. This property is read-only.
  * @property \yii\mail\MailerInterface $mail The mailer interface. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
+ * @property \yii\web\Response|\yii\console\Response $response The response component. This property is
+ * read-only.
  * @property string $runtimePath The directory that stores runtime files. Defaults to the "runtime"
  * subdirectory under [[basePath]].
  * @property string $timeZone The time zone used by this application.

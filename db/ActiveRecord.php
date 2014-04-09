@@ -71,7 +71,7 @@ use yii\helpers\StringHelper;
  *
  * @method ActiveQuery hasMany(string $class, array $link) see BaseActiveRecord::hasMany() for more info
  * @method ActiveQuery hasOne(string $class, array $link) see BaseActiveRecord::hasOne() for more info
- * 
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
