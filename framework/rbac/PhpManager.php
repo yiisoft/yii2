@@ -24,6 +24,7 @@ use yii\base\InvalidParamException;
  * Use [[DbManager]] for more complex authorization data.
  *
  * @property Item[] $items The authorization items of the specific type. This property is read-only.
+ * @property Rule[] $rules This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
