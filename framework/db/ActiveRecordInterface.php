@@ -272,11 +272,11 @@ interface ActiveRecordInterface
      * @param boolean $runValidation whether to perform validation before saving the record.
      * If the validation fails, the record will not be saved to database. `false` will be returned
      * in this case.
-     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * @param array $attributeNames list of attributes that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
      * @return boolean whether the saving succeeds
      */
-    public function save($runValidation = true, $attributes = null);
+    public function save($runValidation = true, $attributeNames = null);
 
     /**
      * Inserts the record into the database using the attribute values of this record.
@@ -312,14 +312,14 @@ interface ActiveRecordInterface
      *
      * @param boolean $runValidation whether to perform validation before saving the record.
      * If the validation fails, the record will not be inserted into the database.
-     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * @param array $attributeNames list of attributes that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
      * @return integer|boolean the number of rows affected, or false if validation fails
      * or updating process is stopped for other reasons.
      * Note that it is possible that the number of rows affected is 0, even though the
      * update execution is successful.
      */
-    public function update($runValidation = true, $attributes = null);
+    public function update($runValidation = true, $attributeNames = null);
 
     /**
      * Deletes the record from the database.
