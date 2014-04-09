@@ -311,7 +311,7 @@ $attributes = [
     'content' => 'Never allow assigning attributes that are not meant to be assigned.',
 ];
 $post->attributes = $attributes;
-var_dump($attributes);
+var_dump($post->attributes);
 ```
 
 In the code above we're assigning corresponding data to model attributes named as array keys. The key difference from mass
