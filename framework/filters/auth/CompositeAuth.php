@@ -41,12 +41,21 @@ class CompositeAuth extends AuthMethod
     /**
      * @var array the supported authentication methods. This property should take a list of supported
      * authentication methods, each represented by an authentication class or configuration.
-     * If this is not set or empty, no authentication will be performed.
+     *
+     * If this property is empty, no authentication will be performed.
      *
      * Note that an auth method class must implement the [[\yii\filters\auth\AuthInterface]] interface.
      */
     public $authMethods = [];
 
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeAction($action)
+    {
+        return empty($this->authMethods) ? true : parent::beforeAction($action);
+    }
 
     /**
      * @inheritdoc

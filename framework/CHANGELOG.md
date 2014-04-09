@@ -287,6 +287,7 @@ Yii Framework 2 Change Log
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
 - New #1956: Implemented test fixture framework (qiangxue)
+- New #2034: Added `ContentNegotiator` to support response format and language negotiation (qiangxue)
 - New #2149: Added `yii\base\DynamicModel` to support ad-hoc data validation (qiangxue)
 - New #2360: Added `AttributeBehavior` and `BlameableBehavior`, and renamed `AutoTimestamp` to `TimestampBehavior` (lucianobaraglia, qiangxue)
 - New #2932: Added `yii\web\ViewAction` that allow you to render views based on GET parameter (samdark)

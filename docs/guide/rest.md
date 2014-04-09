@@ -5,7 +5,7 @@ Yii provides a whole set of tools to greatly simplify the task of implementing R
 In particular, Yii provides support for the following aspects regarding RESTful APIs:
 
 * Quick prototyping with support for common APIs for ActiveRecord;
-* Response format (supporting JSON and XML by default) and API version negotiation;
+* Response format (supporting JSON and XML by default) negotiation;
 * Customizable object serialization with support for selectable output fields;
 * Proper formatting of collection data and validation errors;
 * Efficient routing with proper HTTP verb check;
@@ -187,7 +187,23 @@ Formatting Response Data
 ------------------------
 
 By default, Yii supports two response formats for RESTful APIs: JSON and XML. If you want to support
-other formats, you should configure [[yii\rest\Controller::supportedFormats]] and also [[yii\web\Response::formatters]].
+other formats, you should configure the `contentNegotiator` behavior in your REST controller classes as follows,
+
+
+```php
+use yii\helpers\ArrayHelper;
+
+public function behaviors()
+{
+    return ArrayHelper::merge(parent::behaviors(), [
+        'contentNegotiator' => [
+            'formats' => [
+                // ... other supported formats ...
+            ],
+        ],
+    ]);
+}
+```
 
 Formatting response data in general involves two steps:
 
@@ -808,8 +824,8 @@ The following list summarizes the HTTP status code that are used by the Yii REST
 * `500`: Internal server error. This could be caused by internal program errors.
 
 
-Versioning
-----------
+API Versioning
+--------------
 
 Your APIs should be versioned. Unlike Web applications which you have full control on both client side and server side
 code, for APIs you usually do not have control of the client code that consumes the APIs. Therefore, backward
@@ -902,14 +918,16 @@ As a result, `http://example.com/v1/users` will return the list of users in vers
 Using modules, code for different major versions can be well isolated. And it is still possible
 to reuse code across modules via common base classes and other shared classes.
 
-To deal with minor version numbers, you may take advantage of the content type negotiation
-feature provided by [[yii\rest\Controller]]:
+To deal with minor version numbers, you may take advantage of the content negotiation
+feature provided by the [[yii\filters\ContentNegotiator|contentNegotiator]] behavior. The `contentNegotiator`
+behavior will set the [[yii\web\Response::acceptParams]] property when it determines which
+content type to support.
 
-* Specify a list of supported minor versions (within the major version of the containing module)
-  via [[yii\rest\Controller::supportedVersions]].
-* Get the version number by reading [[yii\rest\Controller::version]].
-* In relevant code, such as actions, resource classes, serializers, etc., write conditional
-  code according to the requested minor version number.
+For example, if a request is sent with the HTTP header `Accept: application/json; version=v1`,
+after content negotiation, [[yii\web\Response::acceptParams]] will contain the value `['version' => 'v1']`.
+
+Based on the version information in `acceptParams`, you may write conditional code in places
+such as actions, resource classes, serializers, etc.
 
 Since minor versions require maintaining backward compatibility, hopefully there are not much
 version checks in your code. Otherwise, chances are that you may need to create a new major version.

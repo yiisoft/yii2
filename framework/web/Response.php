@@ -102,23 +102,16 @@ class Response extends \yii\base\Response
      */
     public $format = self::FORMAT_HTML;
     /**
-     * @var array a list of supported response formats. The keys are MIME types (e.g. `application/json`)
-     * while the values are the corresponding formats (e.g. `html`, `json`) which must be supported by [[formatters]].
-     * When this property is set, a content type negotiation process will be conducted to determine
-     * the value of [[format]] and the corresponding [[mimeType]] and [[acceptParams]] values.
+     * @var string the MIME type (e.g. `application/json`) from the request ACCEPT header chosen for this response.
+     * This property is mainly set by [\yii\filters\ContentNegotiator]].
      */
-    public $supportedFormats;
+    public $acceptMimeType;
     /**
-     * @var string the MIME type (e.g. `application/json`) chosen for this response after content type negotiation.
-     * This property will be set by the content type negotiation process.
+     * @var array the parameters (e.g. `['q' => 1, 'version' => '1.0']`) associated with the [[acceptMimeType|chosen MIME type]].
+     * This is a list of name-value pairs associated with [[mimeType]] from the ACCEPT HTTP header.
+     * This property is mainly set by [\yii\filters\ContentNegotiator]].
      */
-    public $mimeType;
-    /**
-     * @var array the parameters (e.g. `['q' => 1, 'version' => '1.0']`) for the MIME type chosen
-     * by the content type negotiation. This is a list of name-value pairs associated with [[mimeType]]
-     * from the ACCEPT HTTP header. This property will be set by the content type negotiation process.
-     */
-    public $acceptParams;
+    public $acceptParams = [];
     /**
      * @var array the formatters for converting data into the response content of the specified [[format]].
      * The array keys are the format names, and the array values are the corresponding configurations
