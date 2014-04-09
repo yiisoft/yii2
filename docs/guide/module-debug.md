@@ -25,7 +25,7 @@ To enable these features, add these lines to your configuration file to enable t
 ```php
 'preload' => ['debug'],
 'modules' => [
-    'debug' => ['yii\debug\Module']
+    'debug' => 'yii\debug\Module',
 ]
 ```
 
