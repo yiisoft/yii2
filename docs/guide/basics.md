@@ -8,7 +8,7 @@ Component and Object
 Classes of the Yii framework usually extend from one of the two base classes [[yii\base\Object]] or [[yii\base\Component]].
 These classes provide useful features that are added automatically to all classes extending from them.
 
-The [[yii\base\Object|Object]] class provides a [configuration and property feature](../api/base/Object.md).
+The [[yii\base\Object|Object]] class provides the [configuration and property feature](../api/base/Object.md).
 The [[yii\base\Component|Component]] class extends from [[yii\base\Object|Object]] and adds
 [event handling](events.md) and [behaviors](behaviors.md).
 
@@ -89,7 +89,7 @@ All classes, interfaces and traits are loaded automatically at the moment they a
 Yii's autoloader works according to [PSR-4](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md).
 That means namespaces, classes, interfaces and traits must correspond to file system paths and file names accordinly, except for root namespace paths that are defined by an alias.
 
-For example, if the standard alias `@app` refers to `/var/www/example.com/` then `\app\models\User` will be loaded from `/var/www/example.com/app/models/User.php`.
+For example, if the standard alias `@app` refers to `/var/www/example.com/` then `\app\models\User` will be loaded from `/var/www/example.com/models/User.php`.
 
 Custom aliases may be added using the following code:
 
