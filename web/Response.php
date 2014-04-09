@@ -130,7 +130,7 @@ class Response extends \yii\base\Response
         self::FORMAT_XML => 'yii\web\XmlResponseFormatter',
         self::FORMAT_JSON => 'yii\web\JsonResponseFormatter',
         self::FORMAT_JSONP => [
-            'class' => 'yii\web\HtmlResponseFormatter',
+            'class' => 'yii\web\JsonResponseFormatter',
             'useJsonp' => true,
         ],
     ];
