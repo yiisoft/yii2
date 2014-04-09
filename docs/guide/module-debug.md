@@ -23,7 +23,7 @@ Installing and configuring
 To enable these features, add these lines to your configuration file to enable the debug module:
 
 ```php
-'preload' => ['debug'],
+'bootstrap' => ['debug'],
 'modules' => [
     'debug' => 'yii\debug\Module',
 ]
@@ -32,7 +32,7 @@ To enable these features, add these lines to your configuration file to enable t
 By default, the debug module only works when browsing the website from localhost. If you want to use it on a remote (staging) server, add the parameter `allowedIPs` to the configuration to whitelist your IP:
 
 ```php
-'preload' => ['debug'],
+'bootstrap' => ['debug'],
 'modules' => [
     'debug' => [
         'class' => 'yii\debug\Module',
@@ -169,7 +169,7 @@ Now it's time to tell the debugger to use the new panel. In `config/web.php`, th
 ```php
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
-    $config['preload'][] = 'debug';
+    $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         'panels' => [

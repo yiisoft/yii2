@@ -9,7 +9,6 @@ $params = array_merge(
 return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
-    'preload' => ['log'],
     'controllerNamespace' => 'backend\controllers',
     'modules' => [],
     'components' => [

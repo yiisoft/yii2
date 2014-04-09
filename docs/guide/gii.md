@@ -58,7 +58,7 @@ In basic application template configuration structure is a bit different so Gii 
 if (YII_ENV_DEV)
 {
     // configuration adjustments for 'dev' environment
-    $config['preload'][] = 'debug';
+    $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = 'yii\debug\Module';
     $config['modules']['gii'] = 'yii\gii\Module'; // <--- here
 }
@@ -70,7 +70,7 @@ So in order to adjust IP address you need to do it like the following:
 if (YII_ENV_DEV)
 {
     // configuration adjustments for 'dev' environment
-    $config['preload'][] = 'debug';
+    $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = 'yii\debug\Module';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',

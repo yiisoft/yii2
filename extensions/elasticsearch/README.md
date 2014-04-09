@@ -176,7 +176,7 @@ enabled, it is sufficient to just add the panels configuration):
 
 ```php
 	// ...
-	'preload' => 'debug',
+	'bootstrap' => ['debug'],
 	'modules' => [
 		'debug' => [
 			'class' => 'yii\\debug\\Module',

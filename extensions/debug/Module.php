@@ -9,6 +9,7 @@ namespace yii\debug;
 
 use Yii;
 use yii\base\Application;
+use yii\base\BootstrapInterface;
 use yii\helpers\Url;
 use yii\web\View;
 use yii\web\ForbiddenHttpException;
@@ -19,7 +20,7 @@ use yii\web\ForbiddenHttpException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Module extends \yii\base\Module
+class Module extends \yii\base\Module implements BootstrapInterface
 {
     /**
      * @var array the list of IPs that are allowed to access this module.
@@ -72,10 +73,6 @@ class Module extends \yii\base\Module
         parent::init();
         $this->dataPath = Yii::getAlias($this->dataPath);
         $this->logTarget = Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
-        // do not initialize view component before application is ready (needed when debug in preload)
-        Yii::$app->on(Application::EVENT_BEFORE_REQUEST, function () {
-            Yii::$app->getView()->on(View::EVENT_END_BODY, [$this, 'renderToolbar']);
-        });
 
         // merge custom panels and core panels so that they are ordered mainly by custom panels
         if (empty($this->panels)) {
@@ -95,6 +92,17 @@ class Module extends \yii\base\Module
             $config['id'] = $id;
             $this->panels[$id] = Yii::createObject($config);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function bootstrap($app)
+    {
+        // delay attaching event handler to the view component after it is fully configured
+        $app->on(Application::EVENT_BEFORE_REQUEST, function () use ($app) {
+            $app->getView()->on(View::EVENT_END_BODY, [$this, 'renderToolbar']);
+        });
     }
 
     /**
