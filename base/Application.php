@@ -137,29 +137,32 @@ abstract class Application extends Module
      * [
      *     'name' => 'extension name',
      *     'version' => 'version number',
-     *     'bootstrap' => 'BootstrapClassName',
+     *     'bootstrap' => 'BootstrapClassName',  // optional, may also be a configuration array
      *     'alias' => [
      *         '@alias1' => 'to/path1',
      *         '@alias2' => 'to/path2',
      *     ],
      * ]
      * ~~~
+     *
+     * The "bootstrap" class listed above will be instantiated during the application
+     * [[bootstrap()|bootstrapping process]]. If the class implements [[BootstrapInterface]],
+     * its [[BootstrapInterface::bootstrap()|bootstrap()]] method will be also be called.
      */
     public $extensions = [];
     /**
-     * @var array list of bootstrap components that should be run right after
-     * the application is configured.
+     * @var array list of components that should be run during the application [[bootstrap()|bootstrapping process]].
      *
-     * Each bootstrap component may be specified in one of the following formats:
+     * Each component may be specified in one of the following formats:
      *
      * - an application component ID as specified via [[components]].
      * - a module ID as specified via [[modules]].
      * - a class name.
      * - a configuration array.
      *
-     * Note that a bootstrap component must implement [[BootstrapInterface]], or an exception will be thrown.
-     * The [[BootstrapInterface::bootstrap()]] method of each bootstrap component will be called
-     * when the component is instantiated and run in in [[bootstrap()]].
+     * During the bootstrapping process, each component will be instantiated. If the component class
+     * implements [[BootstrapInterface]], its [[BootstrapInterface::bootstrap()|bootstrap()]] method
+     * will be also be called.
      */
     public $bootstrap = [];
     /**
@@ -245,7 +248,6 @@ abstract class Application extends Module
     public function init()
     {
         $this->state = self::STATE_INIT;
-        $this->get('log');
         $this->bootstrap();
     }
 
@@ -253,7 +255,6 @@ abstract class Application extends Module
      * Initializes extensions and executes bootstrap components.
      * This method is called by [[init()]] after the application has been fully configured.
      * If you override this method, make sure you also call the parent implementation.
-     * @throws InvalidConfigException if a bootstrap component does not implement BootstrapInterface
      */
     protected function bootstrap()
     {
@@ -266,10 +267,10 @@ abstract class Application extends Module
             if (isset($extension['bootstrap'])) {
                 $component = Yii::createObject($extension['bootstrap']);
                 if ($component instanceof BootstrapInterface) {
+                    Yii::trace("Bootstrap with " . get_class($component) . '::bootstrap()', __METHOD__);
                     $component->bootstrap($this);
                 } else {
-                    $class = is_array($extension['bootstrap']) ? $extension['bootstrap']['class'] : $extension['bootstrap'];
-                    throw new InvalidConfigException("$class must implement \\yii\\base\\BootstrapInterface");
+                    Yii::trace("Bootstrap with " . get_class($component), __METHOD__);
                 }
             }
         }
@@ -280,6 +281,8 @@ abstract class Application extends Module
                     $component = $this->get($class);
                 } elseif ($this->hasModule($class)) {
                     $component = $this->getModule($class);
+                } elseif (strpos($class, '\\') === false) {
+                    throw new InvalidConfigException("Unknown bootstrap component ID: $class");
                 }
             }
             if (!isset($component)) {
@@ -287,9 +290,10 @@ abstract class Application extends Module
             }
 
             if ($component instanceof BootstrapInterface) {
+                Yii::trace("Bootstrap with " . get_class($component) . '::bootstrap()', __METHOD__);
                 $component->bootstrap($this);
             } else {
-                throw new InvalidConfigException((is_array($class) ? $class['class'] : $class) . " must implement \\yii\\base\\BootstrapInterface");
+                Yii::trace("Bootstrap with " . get_class($component), __METHOD__);
             }
         }
     }
