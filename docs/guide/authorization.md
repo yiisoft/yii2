@@ -127,6 +127,7 @@ Now create custom rule class:
 namespace app\rbac;
 
 use yii\rbac\Rule;
+use Yii;
 
 class NotGuestRule extends Rule
 {
