@@ -14,7 +14,7 @@ use yii\helpers\Html;
 use yii\authclient\ClientInterface;
 
 /**
- * Choice prints buttons for authentication via various auth clients.
+ * AuthChoice prints buttons for authentication via various auth clients.
  * It opens a popup window for the client authentication process.
  * By default this widget relies on presence of [[\yii\authclient\Collection]] among application components
  * to get auth clients information.
@@ -22,7 +22,7 @@ use yii\authclient\ClientInterface;
  * Example:
  *
  * ~~~php
- * <?= yii\authclient\widgets\Choice::widget([
+ * <?= yii\authclient\widgets\AuthChoice::widget([
  *     'baseAuthUrl' => ['site/auth']
  * ]); ?>
  * ~~~
@@ -33,17 +33,17 @@ use yii\authclient\ClientInterface;
  *
  * ~~~php
  * <?php
- * use yii\authclient\widgets\Choice;
+ * use yii\authclient\widgets\AuthChoice;
  * ?>
- * <?php $authChoice = Choice::begin([
+ * <?php $authAuthChoice = AuthChoice::begin([
  *     'baseAuthUrl' => ['site/auth']
  * ]); ?>
  * <ul>
- * <?php foreach ($authChoice->getClients() as $client): ?>
- *     <li><?= $authChoice->clientLink($client) ?></li>
+ * <?php foreach ($authAuthChoice->getClients() as $client): ?>
+ *     <li><?= $authAuthChoice->clientLink($client) ?></li>
  * <?php endforeach; ?>
  * </ul>
- * <?php Choice::end(); ?>
+ * <?php AuthChoice::end(); ?>
  * ~~~
  *
  * This widget supports following keys for [[ClientInterface::getViewOptions()]] result:
@@ -58,7 +58,7 @@ use yii\authclient\ClientInterface;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class Choice extends Widget
+class AuthChoice extends Widget
 {
     /**
      * @var string name of the auth client collection application component.
@@ -83,7 +83,7 @@ class Choice extends Widget
     public $popupMode = true;
     /**
      * @var boolean indicates if widget content, should be rendered automatically.
-     * Note: this value automatically set to 'false' at the first call of [[createProviderUrl()]]
+     * Note: this value automatically set to 'false' at the first call of [[createClientUrl()]]
      */
     public $autoRender = true;
 
@@ -226,7 +226,7 @@ class Choice extends Widget
     {
         if ($this->popupMode) {
             $view = Yii::$app->getView();
-            ChoiceAsset::register($view);
+            AuthChoiceAsset::register($view);
             $view->registerJs("\$('#" . $this->getId() . "').authchoice();");
         }
         $this->options['id'] = $this->getId();

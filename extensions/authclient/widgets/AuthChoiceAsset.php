@@ -10,12 +10,12 @@ namespace yii\authclient\widgets;
 use yii\web\AssetBundle;
 
 /**
- * ChoiceAsset is an asset bundle for [[Choice]] widget.
+ * AuthChoiceAsset is an asset bundle for [[AuthChoice]] widget.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class ChoiceAsset extends AssetBundle
+class AuthChoiceAsset extends AssetBundle
 {
     public $sourcePath = '@yii/authclient/widgets/assets';
     public $js = [

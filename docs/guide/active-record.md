@@ -169,19 +169,26 @@ $customers = Customer::findBySql($sql)->all();
   use meaningful constant names rather than hardcoded strings or numbers in your code.
 
 
-The `find()` method also supports the following shortcut usage which allows you to retrieve an Active Record
-instance based on a primary key value or a set of column values. The main difference here is that instead of
-returning a [[yii\db\ActiveQuery]] instance, the method takes the column value(s) and returns an Active Record
-instance directly without the need to call `one()`.
+Two shortcut methods are provided to return Active Record instances matching a primary key value or a set of
+column values: `findOne()` and `findAll()`. The former returns the first matching instance while the latter
+returns all of them. For example,
 
 ```php
 // to return a single customer whose ID is 1:
-$customer = Customer::find(1);
+$customer = Customer::findOne(1);
 
 // to return an *active* customer whose ID is 1:
-$customer = Customer::find([
+$customer = Customer::findOne([
     'id' => 1,
     'status' => Customer::STATUS_ACTIVE,
+]);
+
+// to return customers whose ID is 1, 2 or 3:
+$customers = Customer::findAll([1, 2, 3]);
+
+// to return customers whose status is "deleted":
+$customer = Customer::findAll([
+    'status' => Customer::STATUS_DELETED,
 ]);
 ```
 
@@ -252,12 +259,12 @@ $customer->email = 'james@example.com';
 $customer->save();  // equivalent to $customer->insert();
 
 // to update an existing customer record
-$customer = Customer::find($id);
+$customer = Customer::findOne($id);
 $customer->email = 'james@example.com';
 $customer->save();  // equivalent to $customer->update();
 
 // to delete an existing customer record
-$customer = Customer::find($id);
+$customer = Customer::findOne($id);
 $customer->delete();
 
 // to increment the age of ALL customers by 1
@@ -267,8 +274,8 @@ Customer::updateAllCounters(['age' => 1]);
 > Info: The `save()` method will call either `insert()` or `update()`, depending on whether
   the Active Record instance is new or not (internally it will check the value of [[yii\db\ActiveRecord::isNewRecord]]).
   If an Active Record is instantiated via the `new` operator, calling `save()` will
-  insert a row in the table; if an Active Record is obtained by `find()`, calling `save()` will
-  update the corresponding row in the table.
+  insert a row in the table; calling `save()` on active record fetched from database will update the corresponding
+  row in the table.
 
 
 ### Data Input and Validation
@@ -291,7 +298,7 @@ if ($model->load(Yii::$app->request->post()) && $model->save()) {
 }
 
 // updating a record whose primary key is $id
-$model = Customer::find($id);
+$model = Customer::findOne($id);
 if ($model === null) {
     throw new NotFoundHttpException;
 }
@@ -399,7 +406,7 @@ that is defined by the corresponding getter method:
 
 ```php
 // get the orders of a customer
-$customer = Customer::find(1);
+$customer = Customer::findOne(1);
 $orders = $customer->orders;  // $orders is an array of Order objects
 ```
 
@@ -501,7 +508,7 @@ if you access the same related objects again. We call this *lazy loading*. For e
 
 ```php
 // SQL executed: SELECT * FROM customer WHERE id=1
-$customer = Customer::find(1);
+$customer = Customer::findOne(1);
 // SQL executed: SELECT * FROM order WHERE customer_id=1
 $orders = $customer->orders;
 // no SQL executed
@@ -559,7 +566,7 @@ Sometimes, you may want to customize the relational queries on the fly. This can
 done for both lazy loading and eager loading. For example,
 
 ```php
-$customer = Customer::find(1);
+$customer = Customer::findOne(1);
 // lazy loading: SELECT * FROM order WHERE customer_id=1 AND subtotal>100
 $orders = $customer->getOrders()->where('subtotal>100')->all();
 
@@ -605,7 +612,7 @@ the `customer` of an order will trigger another SQL execution:
 
 ```php
 // SELECT * FROM customer WHERE id=1
-$customer = Customer::find(1);
+$customer = Customer::findOne(1);
 // echoes "not equal"
 // SELECT * FROM order WHERE customer_id=1
 // SELECT * FROM customer WHERE id=1
@@ -634,7 +641,7 @@ Now if we execute the same query as shown above, we would get:
 
 ```php
 // SELECT * FROM customer WHERE id=1
-$customer = Customer::find(1);
+$customer = Customer::findOne(1);
 // echoes "equal"
 // SELECT * FROM order WHERE customer_id=1
 if ($customer->orders[0]->customer === $customer) {
@@ -762,7 +769,7 @@ in the WHERE part of the corresponding SQL statement, because there is no JOIN q
 
 ```php
 // SELECT * FROM user WHERE id=10
-$user = User::find(10);
+$user = User::findOne(10);
 // SELECT * FROM item WHERE owner_id=10 AND category_id=1
 $books = $user->books;
 ```
@@ -781,7 +788,7 @@ For example, given a customer and a new order, we can use the following code to 
 order owned by the customer:
 
 ```php
-$customer = Customer::find(1);
+$customer = Customer::findOne(1);
 $order = new Order();
 $order->subtotal = 100;
 $customer->link('orders', $order);
@@ -828,7 +835,7 @@ Important points are:
 2. A method should be `public` and should return `$this` in order to allow method chaining. It may accept parameters.
 3. Check [[yii\db\ActiveQuery]] methods that are very useful for modifying query conditions.
 
-Second, override [[yii\db\ActiveRecord::createQuery()]] to use the custom query class instead of the regular [[yii\db\ActiveQuery|ActiveQuery]].
+Second, override [[yii\db\ActiveRecord::find()]] to use the custom query class instead of the regular [[yii\db\ActiveQuery|ActiveQuery]].
 For the example above, you need to write the following code:
 
 ```php
@@ -838,7 +845,11 @@ use yii\db\ActiveRecord;
 
 class Comment extends ActiveRecord
 {
-    public static function createQuery()
+    /**
+     * @inheritdoc
+     * @return CommentQuery
+     */
+    public static function find()
     {
         return new CommentQuery(get_called_class());
     }
@@ -875,43 +886,15 @@ $posts = Post::find()->with([
 ])->all();
 ```
 
-
-### Making it IDE-friendly
-
-In order to make most modern IDE autocomplete happy you need to override return types for some methods of both model
-and query like the following:
-
-```php
-/**
- * @method \app\models\CommentQuery|static|null find($q = null) static
- * @method \app\models\CommentQuery findBySql($sql, $params = []) static
- */
-class Comment extends ActiveRecord
-{
-    // ...
-}
-```
-
-```php
-/**
- * @method \app\models\Comment|array|null one($db = null)
- * @method \app\models\Comment[]|array all($db = null)
- */
-class CommentQuery extends ActiveQuery
-{
-    // ...
-}
-```
-
 ### Default Scope
 
 If you used Yii 1.1 before, you may know a concept called *default scope*. A default scope is a scope that
-applies to ALL queries. You can define a default scope easily by overriding [[yii\db\ActiveRecord::createQuery()]]. For example,
+applies to ALL queries. You can define a default scope easily by overriding [[yii\db\ActiveRecord::find()]]. For example,
 
 ```php
-public static function createQuery()
+public static function find()
 {
-    return parent::createQuery()->where(['deleted' => false]);
+    return parent::find()->where(['deleted' => false]);
 }
 ```
 

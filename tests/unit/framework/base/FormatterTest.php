@@ -121,24 +121,24 @@ class FormatterTest extends TestCase
     public function testAsDate()
     {
         $value = time();
-        $this->assertSame(date('Y/m/d', $value), $this->formatter->asDate($value));
-        $this->assertSame(date('Y-m-d', $value), $this->formatter->asDate($value, 'Y-m-d'));
+        $this->assertSame(date('Y-m-d', $value), $this->formatter->asDate($value));
+        $this->assertSame(date('Y/m/d', $value), $this->formatter->asDate($value, 'Y/m/d'));
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDate(null));
     }
 
     public function testAsTime()
     {
         $value = time();
-        $this->assertSame(date('h:i:s A', $value), $this->formatter->asTime($value));
-        $this->assertSame(date('h:i:s', $value), $this->formatter->asTime($value, 'h:i:s'));
+        $this->assertSame(date('H:i:s', $value), $this->formatter->asTime($value));
+        $this->assertSame(date('h:i:s A', $value), $this->formatter->asTime($value, 'h:i:s A'));
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asTime(null));
     }
 
     public function testAsDatetime()
     {
         $value = time();
-        $this->assertSame(date('Y/m/d h:i:s A', $value), $this->formatter->asDatetime($value));
-        $this->assertSame(date('Y-m-d h:i:s', $value), $this->formatter->asDatetime($value, 'Y-m-d h:i:s'));
+        $this->assertSame(date('Y-m-d H:i:s', $value), $this->formatter->asDatetime($value));
+        $this->assertSame(date('Y/m/d h:i:s A', $value), $this->formatter->asDatetime($value, 'Y/m/d h:i:s A'));
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDatetime(null));
     }
 
@@ -193,9 +193,9 @@ class FormatterTest extends TestCase
     public function testFormat()
     {
         $value = time();
-        $this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, 'date'));
-        $this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, 'DATE'));
-        $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, ['date', 'Y-m-d']));
+        $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'date'));
+        $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'DATE'));
+        $this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, ['date', 'Y/m/d']));
         $this->setExpectedException('\yii\base\InvalidParamException');
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'data'));
     }

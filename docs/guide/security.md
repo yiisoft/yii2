@@ -3,6 +3,7 @@ Security
 
 Good security is vital to the health and success of any application. Unfortunately, many developers cut corners when it comes to security, either due to a lack of understanding or because implementation is too much of a hurdle. To make your Yii powered application as secure as possible, Yii has included several excellent and easy to use security features.
 
+
 Hashing and verifying passwords
 -------------------------------
 
@@ -85,6 +86,45 @@ Checks if the data integrity has been compromised
 $data = \yii\helpers\Security::validateData($data, $secretKey);
 ```
 
+
+todo: XSS prevention, CSRF prevention, cookie protection, refer to 1.1 guide
+
+You also can disable CSRF validation per controller and/or action, by setting its property:
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+
+class SiteController extends Controller
+{
+    public $enableCsrfValidation = false;
+
+    public function actionIndex()
+    {
+        // CSRF validation will not be applied to this and other actions
+    }
+
+}
+```
+
+To disable CSRF validation per custom actions you can do:
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+
+class SiteController extends Controller
+{
+    public function beforeAction($action)
+    {
+        // ...set `$this->enableCsrfValidation` here based on some conditions...
+        // call parent method that will check CSRF if such property is true.
+        return parent::beforeAction($action);
+    }
+}
+```
 
 Securing Cookies
 ----------------

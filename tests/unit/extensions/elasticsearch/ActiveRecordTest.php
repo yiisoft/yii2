@@ -243,7 +243,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
     public function testFindLazy()
     {
         /** @var $customer Customer */
-        $customer = Customer::find(2);
+        $customer = Customer::findOne(2);
         $orders = $customer->orders;
         $this->assertEquals(2, count($orders));
 
@@ -314,7 +314,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
     {
         $pkName = 'id';
 
-        $orderItem = Order::find([$pkName => 2]);
+        $orderItem = Order::findOne([$pkName => 2]);
         $this->assertEquals(2, $orderItem->primaryKey);
         $this->assertEquals(2, $orderItem->oldPrimaryKey);
         $this->assertEquals(2, $orderItem->$pkName);
@@ -330,8 +330,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals(13, $orderItem->oldPrimaryKey);
         $this->assertEquals(13, $orderItem->$pkName);
 
-        $this->assertNull(Order::find([$pkName => 2]));
-        $this->assertNotNull(Order::find([$pkName => 13]));
+        $this->assertNull(Order::findOne([$pkName => 2]));
+        $this->assertNotNull(Order::findOne([$pkName => 13]));
     }
 
     public function testFindLazyVia2()

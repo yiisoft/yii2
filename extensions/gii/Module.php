@@ -32,8 +32,8 @@ use yii\web\ForbiddenHttpException;
  * With the above configuration, you will be able to access GiiModule in your browser using
  * the URL `http://localhost/path/to/index.php?r=gii`
  *
- * If your application enables [[UrlManager::enablePrettyUrl|pretty URLs]] and you have defined
- * custom URL rules or enabled [[UrlManager::enableStrictParsing], you may need to add
+ * If your application enables [[\yii\web\UrlManager::enablePrettyUrl|pretty URLs]] and you have defined
+ * custom URL rules or enabled [[\yii\web\UrlManager::enableStrictParsing], you may need to add
  * the following URL rules at the beginning of your URL rule set in your application configuration
  * in order to access Gii:
  *

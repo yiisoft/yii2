@@ -48,7 +48,7 @@ class Controller extends \yii\base\Controller
 
     /**
      * Binds the parameters to the action.
-     * This method is invoked by [[Action]] when it begins to run with the given parameters.
+     * This method is invoked by [[\yii\base\Action]] when it begins to run with the given parameters.
      * This method will check the parameter names that the action requires and return
      * the provided parameters according to the requirement. If there is any missing parameter,
      * an exception will be thrown.

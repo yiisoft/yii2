@@ -24,7 +24,7 @@ class ExternalActiveRelationTest extends SphinxTestCase
     public function testFindLazy()
     {
         /** @var ArticleIndex $article */
-        $article = ArticleIndex::find(['id' => 2]);
+        $article = ArticleIndex::findOne(['id' => 2]);
 
         // has one :
         $this->assertFalse($article->isRelationPopulated('source'));

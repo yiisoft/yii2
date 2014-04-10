@@ -100,7 +100,7 @@ class Request extends \yii\base\Request
      *
      * Note, this feature requires that the user client accepts cookie. Also, to use this feature,
      * forms submitted via POST method must contain a hidden input whose name is specified by [[csrfParam]].
-     * You may use [[\yii\web\Html::beginForm()]] to generate his hidden input.
+     * You may use [[\yii\helpers\Html::beginForm()]] to generate his hidden input.
      *
      * In JavaScript, you may get the values of [[csrfParam]] and [[csrfToken]] via `yii.getCsrfParam()` and
      * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
@@ -337,7 +337,7 @@ class Request extends \yii\base\Request
      * Returns the request parameters given in the request body.
      *
      * Request parameters are determined using the parsers configured in [[parsers]] property.
-     * If no parsers are configured for the current [[contentType]] it uses the PHP function [[mb_parse_str()]]
+     * If no parsers are configured for the current [[contentType]] it uses the PHP function `mb_parse_str()`
      * to parse the [[rawBody|request body]].
      * @return array the request parameters given in the request body.
      * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].

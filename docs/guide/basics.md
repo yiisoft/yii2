@@ -5,7 +5,7 @@ Basic concepts of Yii
 Component and Object
 --------------------
 
-Classes of the Yii framework usually extend from one of the two base classes [[yii\base\Object]] and [[yii\base\Component]].
+Classes of the Yii framework usually extend from one of the two base classes [[yii\base\Object]] or [[yii\base\Component]].
 These classes provide useful features that are added automatically to all classes extending from them.
 
 The [[yii\base\Object|Object]] class provides the [configuration and property feature](../api/base/Object.md).
@@ -42,12 +42,11 @@ class MyClass extends \yii\base\Object
 }
 ```
 
-In the above, the last parameter of the constructor must take a configuration array
-which contains name-value pairs for initializing the properties at the end of the constructor.
-You can override the `init()` method to do initialization work that should be done after
-the configuration is applied.
+In the above example, the last parameter of the constructor must take a configuration array
+which contains name-value pairs that will be used to initialize the object's properties at the end of the constructor.
+You can override the `init()` method to do initialization work after the configuration is applied.
 
-By following this convention, you will be able to create and configure a new object
+By following this convention, you will be able to create and configure new objects
 using a configuration array like the following:
 
 ```php
@@ -63,13 +62,11 @@ Path Aliases
 ------------
 
 Yii 2.0 expands the usage of path aliases to both file/directory paths and URLs. An alias
-must start with a `@` character so that it can be differentiated from file/directory paths and URLs.
-For example, the alias `@yii` refers to the Yii installation directory while `@web` contains base URL for currently
-running web application. Path aliases are supported in most places in the Yii core code. For example,
-`FileCache::cachePath` can take both a path alias and a normal directory path.
+must start with an `@` symbol so that it can be differentiated from file/directory paths and URLs.
+For example, the alias `@yii` refers to the Yii installation directory while `@web` contains the base URL for the currently running web application. Path aliases are supported in most places in the Yii core code. For example, `FileCache::cachePath` can accept both a path alias and a normal directory path.
 
-Path alias is also closely related with class namespaces. It is recommended that a path
-alias be defined for each root namespace so that you can use Yii the class autoloader without
+Path aliases are also closely related to class namespaces. It is recommended that a path
+alias be defined for each root namespace so that Yii's class autoloader can be used without
 any further configuration. For example, because `@yii` refers to the Yii installation directory,
 a class like `yii\web\Request` can be autoloaded by Yii. If you use a third party library
 such as Zend Framework, you may define a path alias `@Zend` which refers to its installation
@@ -87,28 +84,25 @@ The following aliases are predefined by the core framework:
 Autoloading
 -----------
 
-All classes, interfaces and traits are loaded automatically at the moment they are used. There's no need to use
-`include` or `require`. It is, as well, true for Composer-loaded packages and Yii extensions.
+All classes, interfaces and traits are loaded automatically at the moment they are used. There's no need to use `include` or `require`. It is true for Composer-loaded packages as well as Yii extensions.
 
-Autoloader works according to [PSR-4](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md).
-That means namespaces and class, interface and trait names should correspond to file system paths except root namespace
-path that is defined by an alias.
+Yii's autoloader works according to [PSR-4](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md).
+That means namespaces, classes, interfaces and traits must correspond to file system paths and file names accordinly, except for root namespace paths that are defined by an alias.
 
-For example, if standard alias `@app` refers to `/var/www/example.com/` then `\app\models\User` will be loaded from
-`/var/www/example.com/app/models/User.php`.
+For example, if the standard alias `@app` refers to `/var/www/example.com/` then `\app\models\User` will be loaded from `/var/www/example.com/models/User.php`.
 
-Custom alias may be added using the following code:
+Custom aliases may be added using the following code:
 
 ```php
 Yii::setAlias('@shared', realpath('~/src/shared'));
 ```
 
-Additional autoloaders may be registered using standard PHP `spl_autoload_register`.
+Additional autoloaders may be registered using PHP's standard `spl_autoload_register`.
 
 Helper classes
 --------------
 
-Helper class typically contains static methods only and used as follows:
+Helper classes typically contain static methods only and are used as follows:
 
 ```php
 use \yii\helpers\Html;

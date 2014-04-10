@@ -377,4 +377,23 @@ class ArrayHelperTest extends TestCase
 
         $this->assertEquals($expected, ArrayHelper::getValue($array, $key, $default));
     }
+
+    public function testIsAssociative()
+    {
+        $this->assertFalse(ArrayHelper::isAssociative('test'));
+        $this->assertFalse(ArrayHelper::isAssociative([]));
+        $this->assertFalse(ArrayHelper::isAssociative([1, 2, 3]));
+        $this->assertTrue(ArrayHelper::isAssociative(['name' => 1, 'value' => 'test']));
+        $this->assertFalse(ArrayHelper::isAssociative(['name' => 1, 'value' => 'test', 3]));
+        $this->assertTrue(ArrayHelper::isAssociative(['name' => 1, 'value' => 'test', 3], false));
+    }
+
+    public function testIsIndexed()
+    {
+        $this->assertFalse(ArrayHelper::isIndexed('test'));
+        $this->assertTrue(ArrayHelper::isIndexed([]));
+        $this->assertTrue(ArrayHelper::isIndexed([1, 2, 3]));
+        $this->assertTrue(ArrayHelper::isIndexed([2 => 'a', 3 => 'b']));
+        $this->assertFalse(ArrayHelper::isIndexed([2 => 'a', 3 => 'b'], true));
+    }
 }

@@ -24,6 +24,7 @@ use yii\base\InvalidParamException;
  * Use [[DbManager]] for more complex authorization data.
  *
  * @property Item[] $items The authorization items of the specific type. This property is read-only.
+ * @property Rule[] $rules This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
@@ -43,6 +44,7 @@ class PhpManager extends Manager
     private $_items = []; // itemName => item
     private $_children = []; // itemName, childName => child
     private $_assignments = []; // userId, itemName => assignment
+    private $_rules = []; // ruleName => rule
 
 
     /**
@@ -62,7 +64,7 @@ class PhpManager extends Manager
      * @param mixed $userId the user ID. This can be either an integer or a string representing
      * @param string $itemName the name of the operation that need access check
      * the unique identifier of a user. See [[\yii\web\User::id]].
-     * @param array $params name-value pairs that would be passed to biz rules associated
+     * @param array $params name-value pairs that would be passed to rules associated
      * with the tasks and roles assigned to the user. A param with name 'userId' is added to
      * this array, which holds the value of `$userId`.
      * @return boolean whether the operations can be performed by the user.
@@ -78,14 +80,14 @@ class PhpManager extends Manager
         if (!isset($params['userId'])) {
             $params['userId'] = $userId;
         }
-        if ($this->executeBizRule($item->bizRule, $params, $item->data)) {
+        if ($this->executeRule($item->ruleName, $params, $item->data)) {
             if (in_array($itemName, $this->defaultRoles)) {
                 return true;
             }
             if (isset($this->_assignments[$userId][$itemName])) {
                 /** @var Assignment $assignment */
                 $assignment = $this->_assignments[$userId][$itemName];
-                if ($this->executeBizRule($assignment->bizRule, $params, $assignment->data)) {
+                if ($this->executeRule($assignment->ruleName, $params, $assignment->data)) {
                     return true;
                 }
             }
@@ -181,15 +183,16 @@ class PhpManager extends Manager
 
     /**
      * Assigns an authorization item to a user.
+     *
      * @param mixed $userId the user ID (see [[\yii\web\User::id]])
      * @param string $itemName the item name
-     * @param string $bizRule the business rule to be executed when [[checkAccess()]] is called
+     * @param string $ruleName the business rule to be executed when [[checkAccess()]] is called
      * for this particular authorization item.
      * @param mixed $data additional data associated with this assignment
      * @return Assignment the authorization assignment information.
      * @throws InvalidParamException if the item does not exist or if the item has already been assigned to the user
      */
-    public function assign($userId, $itemName, $bizRule = null, $data = null)
+    public function assign($userId, $itemName, $ruleName = null, $data = null)
     {
         if (!isset($this->_items[$itemName])) {
             throw new InvalidParamException("Unknown authorization item '$itemName'.");
@@ -200,7 +203,7 @@ class PhpManager extends Manager
                 'manager' => $this,
                 'userId' => $userId,
                 'itemName' => $itemName,
-                'bizRule' => $bizRule,
+                'ruleName' => $ruleName,
                 'data' => $data,
             ]);
         }
@@ -314,16 +317,17 @@ class PhpManager extends Manager
      * It has three types: operation, task and role.
      * Authorization items form a hierarchy. Higher level items inheirt permissions representing
      * by lower level items.
+     *
      * @param string $name the item name. This must be a unique identifier.
      * @param integer $type the item type (0: operation, 1: task, 2: role).
      * @param string $description description of the item
-     * @param string $bizRule business rule associated with the item. This is a piece of
+     * @param string $rule business rule associated with the item. This is a piece of
      * PHP code that will be executed when [[checkAccess()]] is called for the item.
      * @param mixed $data additional data associated with the item.
      * @return Item the authorization item
      * @throws Exception if an item with the same name already exists
      */
-    public function createItem($name, $type, $description = '', $bizRule = null, $data = null)
+    public function createItem($name, $type, $description = '', $rule = null, $data = null)
     {
         if (isset($this->_items[$name])) {
             throw new Exception('Unable to add an item whose name is the same as an existing item.');
@@ -334,7 +338,7 @@ class PhpManager extends Manager
             'name' => $name,
             'type' => $type,
             'description' => $description,
-            'bizRule' => $bizRule,
+            'ruleName' => $rule,
             'data' => $data,
         ]);
     }
@@ -377,7 +381,7 @@ class PhpManager extends Manager
      * @param string $oldName the old item name. If null, it means the item name is not changed.
      * @throws InvalidParamException if an item with the same name already taken
      */
-    public function saveItem($item, $oldName = null)
+    public function saveItem(Item $item, $oldName = null)
     {
         if ($oldName !== null && ($newName = $item->getName()) !== $oldName) { // name changed
             if (isset($this->_items[$newName])) {
@@ -410,7 +414,7 @@ class PhpManager extends Manager
      * Saves the changes to an authorization assignment.
      * @param Assignment $assignment the assignment that has been changed.
      */
-    public function saveAssignment($assignment)
+    public function saveAssignment(Assignment $assignment)
     {
     }
 
@@ -427,7 +431,7 @@ class PhpManager extends Manager
             $items[$name] = [
                 'type' => $item->type,
                 'description' => $item->description,
-                'bizRule' => $item->bizRule,
+                'ruleName' => $item->ruleName,
                 'data' => $item->data,
             ];
             if (isset($this->_children[$name])) {
@@ -443,14 +447,19 @@ class PhpManager extends Manager
                 /** @var Assignment $assignment */
                 if (isset($items[$name])) {
                     $items[$name]['assignments'][$userId] = [
-                        'bizRule' => $assignment->bizRule,
+                        'ruleName' => $assignment->ruleName,
                         'data' => $assignment->data,
                     ];
                 }
             }
         }
 
-        $this->saveToFile($items, $this->authFile);
+        $rules = [];
+        foreach ($this->_rules as $name => $rule) {
+            $rules[$name] = serialize($rule);
+        }
+
+        $this->saveToFile(['items' => $items, 'rules' => $rules], $this->authFile);
     }
 
     /**
@@ -460,37 +469,45 @@ class PhpManager extends Manager
     {
         $this->clearAll();
 
-        $items = $this->loadFromFile($this->authFile);
+        $data = $this->loadFromFile($this->authFile);
 
-        foreach ($items as $name => $item) {
-            $this->_items[$name] = new Item([
-                'manager' => $this,
-                'name' => $name,
-                'type' => $item['type'],
-                'description' => $item['description'],
-                'bizRule' => $item['bizRule'],
-                'data' => $item['data'],
-            ]);
-        }
+        if (isset($data['items'])) {
+            foreach ($data['items'] as $name => $item) {
+                $this->_items[$name] = new Item([
+                    'manager' => $this,
+                    'name' => $name,
+                    'type' => $item['type'],
+                    'description' => $item['description'],
+                    'ruleName' => $item['ruleName'],
+                    'data' => $item['data'],
+                ]);
+            }
 
-        foreach ($items as $name => $item) {
-            if (isset($item['children'])) {
-                foreach ($item['children'] as $childName) {
-                    if (isset($this->_items[$childName])) {
-                        $this->_children[$name][$childName] = $this->_items[$childName];
+            foreach ($data['items'] as $name => $item) {
+                if (isset($item['children'])) {
+                    foreach ($item['children'] as $childName) {
+                        if (isset($this->_items[$childName])) {
+                            $this->_children[$name][$childName] = $this->_items[$childName];
+                        }
+                    }
+                }
+                if (isset($item['assignments'])) {
+                    foreach ($item['assignments'] as $userId => $assignment) {
+                        $this->_assignments[$userId][$name] = new Assignment([
+                            'manager' => $this,
+                            'userId' => $userId,
+                            'itemName' => $name,
+                            'ruleName' => $assignment['ruleName'],
+                            'data' => $assignment['data'],
+                        ]);
                     }
                 }
             }
-            if (isset($item['assignments'])) {
-                foreach ($item['assignments'] as $userId => $assignment) {
-                    $this->_assignments[$userId][$name] = new Assignment([
-                        'manager' => $this,
-                        'userId' => $userId,
-                        'itemName' => $name,
-                        'bizRule' => $assignment['bizRule'],
-                        'data' => $assignment['data'],
-                    ]);
-                }
+        }
+
+        if (isset($data['rules'])) {
+            foreach ($data['rules'] as $name => $ruleData) {
+                $this->_rules[$name] = unserialize($ruleData);
             }
         }
     }
@@ -561,5 +578,67 @@ class PhpManager extends Manager
     protected function saveToFile($data, $file)
     {
         file_put_contents($file, "<?php\nreturn " . var_export($data, true) . ";\n", LOCK_EX);
+    }
+
+    /**
+     * Removes the specified rule.
+     *
+     * @param string $name the name of the rule to be removed
+     * @return boolean whether the rule exists in the storage and has been removed
+     */
+    public function removeRule($name)
+    {
+        if (isset($this->_rules[$name])) {
+            unset($this->_rules[$name]);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * Saves the changes to the rule.
+     *
+     * @param Rule $rule the rule that has been changed.
+     */
+    public function insertRule(Rule $rule)
+    {
+        $this->_rules[$rule->name] = $rule;
+    }
+
+    /**
+     * Updates existing rule.
+     *
+     * @param string $name the name of the rule to update
+     * @param Rule $rule new rule
+     */
+    public function updateRule($name, Rule $rule)
+    {
+        if ($rule->name !== $name) {
+            unset($this->_rules[$name]);
+        }
+        $this->_rules[$rule->name] = $rule;
+    }
+
+    /**
+     * Returns rule given its name.
+     *
+     * @param string $name name of the rule.
+     * @return Rule
+     */
+    public function getRule($name)
+    {
+        return isset($this->_rules[$name]) ? $this->_rules[$name] : null;
+    }
+
+    /**
+     * Returns all rules.
+     *
+     * @return Rule[]
+     */
+    public function getRules()
+    {
+        return $this->_rules;
     }
 }

@@ -34,7 +34,7 @@ use <?= ltrim($generator->modelClass, '\\') ?>;
 use <?= ltrim($generator->searchModelClass, '\\') . (isset($searchModelAlias) ? " as $searchModelAlias" : "") ?>;
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\NotFoundHttpException;
-use yii\web\VerbFilter;
+use yii\filters\VerbFilter;
 
 /**
  * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
@@ -150,7 +150,7 @@ if (count($pks) === 1) {
     $condition = '[' . implode(', ', $condition) . ']';
 }
 ?>
-        if (($model = <?= $modelClass ?>::find(<?= $condition ?>)) !== null) {
+        if (($model = <?= $modelClass ?>::findOne(<?= $condition ?>)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

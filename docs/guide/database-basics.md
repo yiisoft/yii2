@@ -44,6 +44,20 @@ return [
 ];
 ```
 
+There is a peculiarity when you want to work with the database through the `ODBC` layer. When using `ODBC`,
+connection `DSN` doesn't indicate uniquely what database type is being used. That's why you have to override
+`driverName` property of [[yii\db\Connection]] class to disambiguate that:
+
+```php
+'db' => [
+	'class' => 'yii\db\Connection',
+	'driverName' => 'mysql',
+	'dsn' => 'odbc:Driver={MySQL};Server=localhost;Database=test',
+	'username' => 'root',
+	'password' => '',
+],
+```
+
 Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) for more details
 on the format of the DSN string.
 

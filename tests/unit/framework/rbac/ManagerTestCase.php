@@ -8,7 +8,7 @@ use yiiunit\TestCase;
 
 abstract class ManagerTestCase extends TestCase
 {
-    /** @var \yii\rbac\PhpManager|\yii\rbac\DbManager */
+    /** @var \yii\rbac\Manager */
     protected $auth;
 
     public function testCreateItem()
@@ -16,24 +16,24 @@ abstract class ManagerTestCase extends TestCase
         $type = Item::TYPE_TASK;
         $name = 'editUser';
         $description = 'edit a user';
-        $bizRule = 'checkUserIdentity()';
+        $ruleName = 'isAuthor';
         $data = [1, 2, 3];
-        $item = $this->auth->createItem($name, $type, $description, $bizRule, $data);
+        $item = $this->auth->createItem($name, $type, $description, $ruleName, $data);
         $this->assertTrue($item instanceof Item);
         $this->assertEquals($item->type, $type);
         $this->assertEquals($item->name, $name);
         $this->assertEquals($item->description, $description);
-        $this->assertEquals($item->bizRule, $bizRule);
+        $this->assertEquals($item->ruleName, $ruleName);
         $this->assertEquals($item->data, $data);
 
         // test shortcut
         $name2 = 'createUser';
-        $item2 = $this->auth->createRole($name2, $description, $bizRule, $data);
+        $item2 = $this->auth->createRole($name2, $description, $ruleName, $data);
         $this->assertEquals($item2->type, Item::TYPE_ROLE);
 
         // test adding an item with the same name
         $this->setExpectedException('\yii\base\Exception');
-        $this->auth->createItem($name, $type, $description, $bizRule, $data);
+        $this->auth->createItem($name, $type, $description, $ruleName, $data);
     }
 
     public function testGetItem()
@@ -98,11 +98,11 @@ abstract class ManagerTestCase extends TestCase
 
     public function testAssign()
     {
-        $auth = $this->auth->assign('new user', 'createPost', 'rule', 'data');
+        $auth = $this->auth->assign('new user', 'createPost', 'isAuthor', 'data');
         $this->assertTrue($auth instanceof Assignment);
         $this->assertEquals($auth->userId, 'new user');
         $this->assertEquals($auth->itemName, 'createPost');
-        $this->assertEquals($auth->bizRule, 'rule');
+        $this->assertEquals($auth->ruleName, 'isAuthor');
         $this->assertEquals($auth->data, 'data');
 
         $this->setExpectedException('\yii\base\Exception');
@@ -168,14 +168,79 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->addItemChild('readPost', 'readPost');
     }
 
-    public function testExecuteBizRule()
+    public function testGetRule()
     {
-        $this->assertTrue($this->auth->executeBizRule(null, [], null));
-        $this->assertTrue($this->auth->executeBizRule('return 1 == true;', [], null));
-        $this->assertTrue($this->auth->executeBizRule('return $params[0] == $params[1];', [1, '1'], null));
-        if (!defined('HHVM_VERSION')) { // invalid code crashes on HHVM
-            $this->assertFalse($this->auth->executeBizRule('invalid;', [], null));
+        $rule = $this->auth->getRule('isAuthor');
+        $this->assertInstanceOf('yii\rbac\Rule', $rule);
+        $this->assertEquals('isAuthor', $rule->name);
+
+        $rule = $this->auth->getRule('nonExisting');
+        $this->assertNull($rule);
+    }
+
+    public function testInsertRule()
+    {
+        $ruleName = 'isReallyReallyAuthor';
+        $rule = new AuthorRule(['name' => $ruleName, 'reallyReally' => true]);
+        $this->auth->insertRule($rule);
+
+        /** @var AuthorRule $rule */
+        $rule = $this->auth->getRule($ruleName);
+        $this->assertEquals($ruleName, $rule->name);
+        $this->assertEquals(true, $rule->reallyReally);
+    }
+
+    public function testUpdateRule()
+    {
+        $rule = $this->auth->getRule('isAuthor');
+        $rule->name = "newName";
+        $rule->reallyReally = false;
+        $this->auth->updateRule('isAuthor', $rule);
+
+        /** @var AuthorRule $rule */
+        $rule = $this->auth->getRule('isAuthor');
+        $this->assertEquals(null, $rule);
+
+        $rule = $this->auth->getRule('newName');
+        $this->assertEquals("newName", $rule->name);
+        $this->assertEquals(false, $rule->reallyReally);
+
+        $rule->reallyReally = true;
+        $this->auth->updateRule('newName', $rule);
+
+        $rule = $this->auth->getRule('newName');
+        $this->assertEquals(true, $rule->reallyReally);
+    }
+
+    public function testGetRules()
+    {
+        $rule = new AuthorRule(['name' => 'isReallyReallyAuthor', 'reallyReally' => true]);
+        $this->auth->insertRule($rule);
+
+        $rules = $this->auth->getRules();
+
+        $ruleNames = [];
+        foreach ($rules as $rule) {
+            $ruleNames[] = $rule->name;
         }
+
+        $this->assertContains('isReallyReallyAuthor', $ruleNames);
+        $this->assertContains('isAuthor', $ruleNames);
+    }
+
+    public function testRemoveRule()
+    {
+        $this->auth->removeRule('isAuthor');
+        $rules = $this->auth->getRules();
+
+        $this->assertEmpty($rules);
+    }
+
+    public function testExecuteRule()
+    {
+        $this->assertTrue($this->auth->executeRule(null, [], null));
+        $this->assertTrue($this->auth->executeRule('isAuthor', ['userID' => 1, 'authorID' => 1], null));
+        $this->assertFalse($this->auth->executeRule('isAuthor', ['userID' => 1, 'authorID' => 2], null));
     }
 
     public function testCheckAccess()
@@ -231,12 +296,14 @@ abstract class ManagerTestCase extends TestCase
 
     protected function prepareData()
     {
+        $this->auth->insertRule(new AuthorRule());
+
         $this->auth->createOperation('createPost', 'create a post');
         $this->auth->createOperation('readPost', 'read a post');
         $this->auth->createOperation('updatePost', 'update a post');
         $this->auth->createOperation('deletePost', 'delete a post');
 
-        $task = $this->auth->createTask('updateOwnPost', 'update a post by author himself', 'return $params["authorID"] == $params["userID"];');
+        $task = $this->auth->createTask('updateOwnPost', 'update a post by author himself', 'isAuthor');
         $task->addChild('updatePost');
 
         $role = $this->auth->createRole('reader');
