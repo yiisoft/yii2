@@ -257,8 +257,8 @@ interface ActiveRecordInterface
     /**
      * Saves the current record.
      *
-     * This method will call [[insert()]] when [[getIsNewRecord|isNewRecord]] is true, or [[update()]]
-     * when [[getIsNewRecord|isNewRecord]] is false.
+     * This method will call [[insert()]] when [[getIsNewRecord()|isNewRecord]] is true, or [[update()]]
+     * when [[getIsNewRecord()|isNewRecord]] is false.
      *
      * For example, to save a customer record:
      *
@@ -337,7 +337,7 @@ interface ActiveRecordInterface
 
     /**
      * Returns a value indicating whether the given active record is the same as the current one.
-     * Two [[isNewRecord|new]] records are considered to be not equal.
+     * Two [[getIsNewRecord()|new]] records are considered to be not equal.
      * @param static $record record to compare to
      * @return boolean whether the two active records refer to the same row in the same database table.
      */

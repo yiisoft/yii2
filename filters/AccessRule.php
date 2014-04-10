@@ -60,7 +60,7 @@ class AccessRule extends Component
      * @var array list of request methods (e.g. `GET`, `POST`) that this rule applies to.
      * The request methods must be specified in uppercase.
      * If not set or empty, it means this rule applies to all request methods.
-     * @see Request::requestMethod
+     * @see \yii\web\Request::method
      */
     public $verbs;
     /**

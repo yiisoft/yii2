@@ -34,7 +34,6 @@ use yii\validators\Validator;
  * - [[EVENT_AFTER_VALIDATE]]: an event raised at the end of [[validate()]]
  *
  * You may directly use Model to store model data, or extend it with customization.
- * You may also customize Model by attaching [[ModelBehavior|model behaviors]].
  *
  * @property \yii\validators\Validator[] $activeValidators The validators applicable to the current
  * [[scenario]]. This property is read-only.
@@ -229,7 +228,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     /**
      * Returns the form name that this model class should use.
      *
-     * The form name is mainly used by [[\yii\web\ActiveForm]] to determine how to name
+     * The form name is mainly used by [[\yii\widgets\ActiveForm]] to determine how to name
      * the input fields for the attributes in a model. If the form name is "A" and an attribute
      * name is "b", then the corresponding input name would be "A[b]". If the form name is
      * an empty string, then the input name would be "b".

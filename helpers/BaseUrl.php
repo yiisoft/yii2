@@ -269,8 +269,8 @@ class BaseUrl
 
     /**
      * Returns the canonical URL of the currently requested page.
-     * The canonical URL is constructed using the current controller's [[yii\web\Controller::route]] and
-     * [[yii\web\Controller::actionParams]]. You may use the following code in the layout view to add a link tag
+     * The canonical URL is constructed using the current controller's [[\yii\web\Controller::route]] and
+     * [[\yii\web\Controller::actionParams]]. You may use the following code in the layout view to add a link tag
      * about canonical URL:
      *
      * ```php

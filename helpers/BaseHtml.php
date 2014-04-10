@@ -301,7 +301,7 @@ class BaseHtml
      * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
      * such as an image tag. If this is coming from end users, you should consider [[encode()]]
      * it to prevent XSS attacks.
-     * @param array|string|null $url the URL for the hyperlink tag. This parameter will be processed by [[yii\helpers\Url::to()]]
+     * @param array|string|null $url the URL for the hyperlink tag. This parameter will be processed by [[\yii\helpers\Url::to()]]
      * and will be used for the "href" attribute of the tag. If this parameter is null, the "href" attribute
      * will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
@@ -309,7 +309,7 @@ class BaseHtml
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      * @return string the generated hyperlink
-     * @see yii\helpers\Url::to()
+     * @see \yii\helpers\Url::to()
      */
     public static function a($text, $url = null, $options = [])
     {
@@ -342,7 +342,7 @@ class BaseHtml
 
     /**
      * Generates an image tag.
-     * @param array|string $src the image URL. This parameter will be processed by [[yii\helpers\Url::to()]].
+     * @param array|string $src the image URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.

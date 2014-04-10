@@ -748,7 +748,7 @@ class QueryBuilder extends \yii\base\Object
     /**
      * @param integer $limit
      * @param integer $offset
-     * @return string the LIMIT and OFFSET clauses built from [[Query::$limit]].
+     * @return string the LIMIT and OFFSET clauses
      */
     public function buildLimit($limit, $offset)
     {

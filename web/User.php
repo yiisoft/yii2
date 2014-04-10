@@ -578,13 +578,13 @@ class User extends Component
      * @param string $operation the name of the operation that need access check.
      * @param array $params name-value pairs that would be passed to business rules associated
      * with the tasks and roles assigned to the user. A param with name 'userId' is added to
-     * this array, which holds the value of [[id]] when [[DbAuthManager]] or
-     * [[PhpAuthManager]] is used.
+     * this array, which holds the value of [[id]] when [[\yii\rbac\DbManager]] or
+     * [[\yii\rbac\PhpManager]] is used.
      * @param boolean $allowCaching whether to allow caching the result of access check.
      * When this parameter is true (default), if the access check of an operation was performed
      * before, its result will be directly returned when calling this method to check the same
      * operation. If this parameter is false, this method will always call
-     * [[AuthManager::checkAccess()]] to obtain the up-to-date access result. Note that this
+     * [[\yii\rbac\Manager::checkAccess()]] to obtain the up-to-date access result. Note that this
      * caching is effective only within the same request and only works when `$params = []`.
      * @return boolean whether the operations can be performed by this user.
      */

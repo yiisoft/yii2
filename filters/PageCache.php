@@ -99,7 +99,7 @@ class PageCache extends ActionFilter
     public $enabled = true;
     /**
      * @var \yii\base\View the view component to use for caching. If not set, the default application view component
-     * [[Application::view]] will be used.
+     * [[\yii\web\Application::view]] will be used.
      */
     public $view;
 
