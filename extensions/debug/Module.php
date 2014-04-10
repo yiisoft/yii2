@@ -71,8 +71,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public function init()
     {
         parent::init();
+
         $this->dataPath = Yii::getAlias($this->dataPath);
-        $this->logTarget = Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
 
         // merge custom panels and core panels so that they are ordered mainly by custom panels
         if (empty($this->panels)) {
@@ -99,6 +99,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function bootstrap($app)
     {
+        $this->logTarget = Yii::$app->getLog()->targets['debug'] = new LogTarget($this);
+
         // delay attaching event handler to the view component after it is fully configured
         $app->on(Application::EVENT_BEFORE_REQUEST, function () use ($app) {
             $app->getView()->on(View::EVENT_END_BODY, [$this, 'renderToolbar']);
