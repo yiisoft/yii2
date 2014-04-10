@@ -71,9 +71,15 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public function init()
     {
         parent::init();
-
         $this->dataPath = Yii::getAlias($this->dataPath);
+        $this->initPanels();
+    }
 
+    /**
+     * Initializes panels.
+     */
+    protected function initPanels()
+    {
         // merge custom panels and core panels so that they are ordered mainly by custom panels
         if (empty($this->panels)) {
             $this->panels = $this->corePanels();

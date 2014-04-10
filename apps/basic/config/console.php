@@ -8,6 +8,7 @@ $db = require(__DIR__ . '/db.php');
 return [
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),
+    'bootstrap' => ['log'],
     'controllerNamespace' => 'app\commands',
     'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
     'components' => [
