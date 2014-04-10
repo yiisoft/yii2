@@ -152,22 +152,24 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function addTypeLinks($code)
     {
-        $html = '';
-        if (strpos($code, '\\') !== false) {
-            // namespaced class
-            foreach (explode('\\', $code) as $part) {
-                $html .= '<a href="http://yiiframework.com/doc/api/2.0/' . $this->htmlEncode($part) . '" target="_blank">' . $this->htmlEncode($part) . '</a>\\';
-            }
-            $html = rtrim($html, '\\');
-        } elseif (strpos($code, '()') !== false) {
-            // method/function call
-            $html = preg_replace_callback('/^(.*)\(\)$/', function ($matches) {
-                return '<a href="http://yiiframework.com/doc/api/2.0/' . $this->htmlEncode($matches[1]) . '" target="_blank">' .
-                $this->htmlEncode($matches[1]) . '</a>()';
-            }, $code);
+        if (strpos($code, 'yii\\') !== 0) {
+            return $this->htmlEncode($code);
         }
 
-        return $html;
+        if (($pos = strpos($code, '::')) !== false) {
+            $class = substr($code, 0, $pos);
+            $method = substr($code, $pos + 2);
+        } else {
+            $class = $code;
+        }
+
+        $page = $this->htmlEncode(strtolower(str_replace('\\', '-', $class)));
+        $url = "http://www.yiiframework.com/doc-2.0/$page.html";
+        if (isset($method)) {
+            $url .= "#$method-detail";
+        }
+
+        return '<a href="' . $url . '" target="_blank">' . $this->htmlEncode($code) . '</a>';
     }
 
     /**

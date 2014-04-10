@@ -126,14 +126,13 @@ class View extends Component
      * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
      *   The actual view file will be looked for under the [[Application::viewPath|view path]] of the application.
      * - absolute path within current module (e.g. "/site/index"): the view name starts with a single slash.
-     *   The actual view file will be looked for under the [[Module::viewPath|view path]] of [[module]].
+     *   The actual view file will be looked for under the [[Module::viewPath|view path]] of the [[Controller::module|current module]].
      * - relative view (e.g. "index"): the view name does not start with `@` or `/`. The corresponding view file will be
      *   looked for under the [[ViewContextInterface::getViewPath()|view path]] of the view `$context`.
      *   If `$context` is not given, it will be looked for under the directory containing the view currently
      *   being rendered (i.e., this happens when rendering a view within another view).
      *
-     * @param string $view the view name. Please refer to [[Controller::findViewFile()]]
-     * and [[Widget::findViewFile()]] on how to specify this parameter.
+     * @param string $view the view name.
      * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @param object $context the context to be assigned to the view and can later be accessed via [[context]]
      * in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
@@ -201,7 +200,7 @@ class View extends Component
      *
      * The method will call [[FileHelper::localize()]] to localize the view file.
      *
-     * If [[renderer]] is enabled (not null), the method will use it to render the view file.
+     * If [[renderers|renderer]] is enabled (not null), the method will use it to render the view file.
      * Otherwise, it will simply include the view file as a normal PHP file, capture its output and
      * return it as a string.
      *

@@ -8,8 +8,6 @@
 namespace yii\db\oci;
 
 use yii\base\InvalidParamException;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 
 /**
  * QueryBuilder is the query builder for Oracle databases.

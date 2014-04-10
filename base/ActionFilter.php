@@ -8,10 +8,12 @@
 namespace yii\base;
 
 /**
- * ActionFilter provides a base implementation for action filters that can be added to a controller
- * to handle the `beforeAction` event.
+ * ActionFilter is the base class for action filters.
  *
- * Check implementation of [[\yii\web\AccessControl]], [[\yii\web\PageCache]] and [[\yii\web\HttpCache]] as examples on how to use it.
+ * An action filter will participate in the action execution workflow by responding to
+ * the `beforeAction` and `afterAction` events triggered by modules and controllers.
+ *
+ * Check implementation of [[\yii\filters\AccessControl]], [[\yii\filters\PageCache]] and [[\yii\filters\HttpCache]] as examples on how to use it.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -22,6 +24,10 @@ class ActionFilter extends Behavior
      * @var array list of action IDs that this filter should apply to. If this property is not set,
      * then the filter applies to all actions, unless they are listed in [[except]].
      * If an action ID appears in both [[only]] and [[except]], this filter will NOT apply to it.
+     *
+     * Note that if the filter is attached to a module, the action IDs should also include child module IDs (if any)
+     * and controller IDs.
+     *
      * @see except
      */
     public $only;
@@ -31,43 +37,54 @@ class ActionFilter extends Behavior
      */
     public $except = [];
 
+
     /**
-     * Declares event handlers for the [[owner]]'s events.
-     * @return array events (array keys) and the corresponding event handler methods (array values).
+     * @inheritdoc
      */
-    public function events()
+    public function attach($owner)
     {
-        return [
-            Controller::EVENT_BEFORE_ACTION => 'beforeFilter',
-            Controller::EVENT_AFTER_ACTION => 'afterFilter',
-        ];
+        $this->owner = $owner;
+        $owner->on(Controller::EVENT_BEFORE_ACTION, [$this, 'beforeFilter']);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function detach()
+    {
+        if ($this->owner) {
+            $this->owner->off(Controller::EVENT_BEFORE_ACTION, [$this, 'beforeFilter']);
+            $this->owner->off(Controller::EVENT_AFTER_ACTION, [$this, 'afterFilter']);
+            $this->owner = null;
+        }
     }
 
     /**
      * @param ActionEvent $event
-     * @return boolean
      */
     public function beforeFilter($event)
     {
-        if ($this->isActive($event->action)) {
-            $event->isValid = $this->beforeAction($event->action);
-            if (!$event->isValid) {
-                $event->handled = true;
-            }
+        if (!$this->isActive($event->action)) {
+            return;
         }
 
-        return $event->isValid;
+        $event->isValid = $this->beforeAction($event->action);
+        if ($event->isValid) {
+            // call afterFilter only if beforeFilter succeeds
+            // beforeFilter and afterFilter should be properly nested
+            $this->owner->on(Controller::EVENT_AFTER_ACTION, [$this, 'afterFilter'], null, false);
+        } else {
+            $event->handled = true;
+        }
     }
 
     /**
      * @param ActionEvent $event
-     * @return boolean
      */
     public function afterFilter($event)
     {
-        if ($this->isActive($event->action)) {
-            $event->result = $this->afterAction($event->action, $event->result);
-        }
+        $event->result = $this->afterAction($event->action, $event->result);
+        $this->owner->off(Controller::EVENT_AFTER_ACTION, [$this, 'afterFilter']);
     }
 
     /**
@@ -100,6 +117,16 @@ class ActionFilter extends Behavior
      */
     protected function isActive($action)
     {
-        return !in_array($action->id, $this->except, true) && (empty($this->only) || in_array($action->id, $this->only, true));
+        if ($this->owner instanceof Module) {
+            // convert action uniqueId into an ID relative to the module
+            $mid = $this->owner->getUniqueId();
+            $id = $action->getUniqueId();
+            if ($mid !== '' && strpos($id, $mid) === 0) {
+                $id = substr($id, strlen($mid) + 1);
+            }
+        } else {
+            $id = $action->id;
+        }
+        return !in_array($id, $this->except, true) && (empty($this->only) || in_array($id, $this->only, true));
     }
 }

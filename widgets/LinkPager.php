@@ -123,7 +123,7 @@ class LinkPager extends Widget
 
     /**
      * Registers relational link tags in the html header for prev, next, first and last page.
-     * These links are generated using [[yii\data\Pagination::getLinks()]].
+     * These links are generated using [[\yii\data\Pagination::getLinks()]].
      * @see http://www.w3.org/TR/html401/struct/links.html#h-12.1.2
      */
     protected function registerLinkTags()

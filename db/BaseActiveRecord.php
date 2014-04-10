@@ -14,6 +14,7 @@ use yii\base\ModelEvent;
 use yii\base\NotSupportedException;
 use yii\base\UnknownMethodException;
 use yii\base\InvalidCallException;
+use yii\helpers\ArrayHelper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
@@ -93,22 +94,37 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * @inheritdoc
      */
-    public static function find()
+    public static function findOne($condition)
     {
-        $query = static::createQuery();
-        $args = func_get_args();
-        if (empty($args)) {
-            return $query;
-        }
-
-        $q = reset($args);
-        if (is_array($q)) {
-            return $query->andWhere($q)->one();
+        $query = static::find();
+        if (ArrayHelper::isAssociative($condition)) {
+            // hash condition
+            return $query->andWhere($condition)->one();
         } else {
             // query by primary key
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
-                return $query->andWhere([$primaryKey[0] => $q])->one();
+                return $query->andWhere([$primaryKey[0] => $condition])->one();
+            } else {
+                throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function findAll($condition)
+    {
+        $query = static::find();
+        if (ArrayHelper::isAssociative($condition)) {
+            // hash condition
+            return $query->andWhere($condition)->all();
+        } else {
+            // query by primary key(s)
+            $primaryKey = static::primaryKey();
+            if (isset($primaryKey[0])) {
+                return $query->andWhere([$primaryKey[0] => $condition])->all();
             } else {
                 throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
             }
@@ -309,7 +325,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         /** @var ActiveRecordInterface $class */
         /** @var ActiveQuery $query */
-        $query = $class::createQuery();
+        $query = $class::find();
         $query->primaryModel = $this;
         $query->link = $link;
         $query->multiple = false;
@@ -350,7 +366,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         /** @var ActiveRecordInterface $class */
         /** @var ActiveQuery $query */
-        $query = $class::createQuery();
+        $query = $class::find();
         $query->primaryModel = $this;
         $query->link = $link;
         $query->multiple = true;
@@ -539,7 +555,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * For example, to save a customer record:
      *
      * ~~~
-     * $customer = new Customer;  // or $customer = Customer::find($id);
+     * $customer = new Customer;  // or $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
      * $customer->save();
@@ -548,16 +564,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * @param boolean $runValidation whether to perform validation before saving the record.
      * If the validation fails, the record will not be saved to database.
-     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * @param array $attributeNames list of attribute names that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
      * @return boolean whether the saving succeeds
      */
-    public function save($runValidation = true, $attributes = null)
+    public function save($runValidation = true, $attributeNames = null)
     {
         if ($this->getIsNewRecord()) {
-            return $this->insert($runValidation, $attributes);
+            return $this->insert($runValidation, $attributeNames);
         } else {
-            return $this->update($runValidation, $attributes) !== false;
+            return $this->update($runValidation, $attributeNames) !== false;
         }
     }
 
@@ -583,7 +599,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * For example, to update a customer record:
      *
      * ~~~
-     * $customer = Customer::find($id);
+     * $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
      * $customer->update();
@@ -603,7 +619,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * @param boolean $runValidation whether to perform validation before saving the record.
      * If the validation fails, the record will not be inserted into the database.
-     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * @param array $attributeNames list of attribute names that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
      * @return integer|boolean the number of rows affected, or false if validation fails
      * or [[beforeSave()]] stops the updating process.
@@ -611,12 +627,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * being updated is outdated.
      * @throws \Exception in case update failed.
      */
-    public function update($runValidation = true, $attributes = null)
+    public function update($runValidation = true, $attributeNames = null)
     {
-        if ($runValidation && !$this->validate($attributes)) {
+        if ($runValidation && !$this->validate($attributeNames)) {
             return false;
         }
-        return $this->updateInternal($attributes);
+        return $this->updateInternal($attributeNames);
     }
 
     /**
@@ -694,7 +710,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * An example usage is as follows:
      *
      * ~~~
-     * $post = Post::find($id);
+     * $post = Post::findOne($id);
      * $post->updateCounters(['view_count' => 1]);
      * ~~~
      *
@@ -890,7 +906,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function refresh()
     {
-        $record = $this->find($this->getPrimaryKey(true));
+        $record = $this->findOne($this->getPrimaryKey(true));
         if ($record === null) {
             return false;
         }
@@ -949,7 +965,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * Returns the old primary key value(s).
      * This refers to the primary key value that is populated into the record
-     * after executing a find method (e.g. find(), findAll()).
+     * after executing a find method (e.g. find(), findOne()).
      * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
      * @param boolean $asArray whether to return the primary key value as an array. If true,
      * the return value will be an array with column name as key and column value as value.

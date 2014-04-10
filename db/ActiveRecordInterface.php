@@ -72,7 +72,7 @@ interface ActiveRecordInterface
     /**
      * Returns the old primary key value(s).
      * This refers to the primary key value that is populated into the record
-     * after executing a find method (e.g. find(), findAll()).
+     * after executing a find method (e.g. find(), findOne()).
      * The value remains unchanged even if the primary key attribute is manually assigned with a different value.
      * @param boolean $asArray whether to return the primary key value as an array. If true,
      * the return value will be an array with column name as key and column value as value.
@@ -111,62 +111,114 @@ interface ActiveRecordInterface
      *     ->all();
      * ```
      *
-     * This method can also take a parameter which can be:
+     * This method is also called by [[BaseActiveRecord::hasOne()]] and [[BaseActiveRecord::hasMany()]] to
+     * create a relational query.
+     *
+     * You may override this method to return a customized query. For example,
+     *
+     * ```php
+     * class Customer extends ActiveRecord
+     * {
+     *     public static function find()
+     *     {
+     *         // use CustomerQuery instead of the default ActiveQuery
+     *         return new CustomerQuery(get_called_class());
+     *     }
+     * }
+     * ```
+     *
+     * The following code shows how to apply a default condition for all queries:
+     *
+     * ```php
+     * class Customer extends ActiveRecord
+     * {
+     *     public static function find()
+     *     {
+     *         return parent::find()->where(['deleted' => false]);
+     *     }
+     * }
+     *
+     * // Use andWhere()/orWhere() to apply the default condition
+     * // SELECT FROM customer WHERE `deleted`=:deleted AND age>30
+     * $customers = Customer::find()->andWhere('age>30')->all();
+     *
+     * // Use where() to ignore the default condition
+     * // SELECT FROM customer WHERE age>30
+     * $customers = Customer::find()->where('age>30')->all();
+     *
+     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
+     */
+    public static function find();
+
+    /**
+     * Returns a single active record model instance by a primary key or an array of column values.
+     *
+     * The method accepts:
      *
      *  - a scalar value (integer or string): query by a single primary key value and return the
      *    corresponding record (or null if not found).
      *  - an array of name-value pairs: query by a set of attribute values and return a single record
      *    matching all of them (or null if not found).
      *
-     * Note that in this case, the method will automatically call the `one()` method and return an
+     * Note that this method will automatically call the `one()` method and return an
      * [[ActiveRecordInterface|ActiveRecord]] instance. For example,
      *
      * ```php
      * // find a single customer whose primary key value is 10
-     * $customer = Customer::find(10);
+     * $customer = Customer::findOne(10);
      *
      * // the above code is equivalent to:
      * $customer = Customer::find()->where(['id' => 10])->one();
      *
-     * // find a single customer whose age is 30 and whose status is 1
-     * $customer = Customer::find(['age' => 30, 'status' => 1]);
+     * // find the first customer whose age is 30 and whose status is 1
+     * $customer = Customer::findOne(['age' => 30, 'status' => 1]);
      *
      * // the above code is equivalent to:
      * $customer = Customer::find()->where(['age' => 30, 'status' => 1])->one();
      * ```
      *
-     * @return ActiveQueryInterface|static|null When this method receives no parameter, a new [[ActiveQuery]] instance
-     * will be returned; Otherwise, the parameter will be treated as a primary key value or a set of column
-     * values, and an ActiveRecord object matching it will be returned (null will be returned if there is no matching).
-     * @see createQuery()
+     * @param mixed $condition primary key value or a set of column values
+     * @return static ActiveRecord instance matching the condition, or null if nothing matches.
      */
-    public static function find();
+    public static function findOne($condition);
 
     /**
-     * Creates an [[ActiveQueryInterface|ActiveQuery]] instance.
+     * Returns a list of active record models that match the specified primary key value or a set of column values.
      *
-     * This method is called by [[find()]] to start a SELECT query but also
-     * by [[BaseActiveRecord::hasOne()]] and [[BaseActiveRecord::hasMany()]] to
-     * create a relational query.
+     * The method accepts:
      *
-     * You may override this method to return a customized query (e.g. `CustomerQuery` specified
-     * written for querying `Customer` purpose.)
+     *  - a scalar value (integer or string): query by a single primary key value and return the
+     *    corresponding record (or null if not found).
+     *  - an array of name-value pairs: query by a set of attribute values and return a single record
+     *    matching all of them (or null if not found).
      *
-     * You may also define default conditions that should apply to all queries unless overridden:
+     * Note that this method will automatically call the `all()` method and return an array of
+     * [[ActiveRecordInterface|ActiveRecord]] instances. For example,
      *
      * ```php
-     * public static function createQuery()
-     * {
-     *     return parent::createQuery()->where(['deleted' => false]);
-     * }
+     * // find the customers whose primary key value is 10
+     * $customers = Customer::findAll(10);
+     *
+     * // the above code is equivalent to:
+     * $customers = Customer::find()->where(['id' => 10])->all();
+     *
+     * // find the customers whose primary key value is 10, 11 or 12.
+     * $customers = Customer::findAll([10, 11, 12]);
+     *
+     * // the above code is equivalent to:
+     * $customers = Customer::find()->where(['id' => [10, 11, 12]])->all();
+     *
+     * // find customers whose age is 30 and whose status is 1
+     * $customers = Customer::findAll(['age' => 30, 'status' => 1]);
+     *
+     * // the above code is equivalent to:
+     * $customers = Customer::find()->where(['age' => 30, 'status' => 1])->all();
      * ```
      *
-     * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
-     * default condition. Using [[Query::where()]] will override the default condition.
-     *
-     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
+     * @param mixed $condition primary key value or a set of column values
+     * @return array an array of ActiveRecord instance, or an empty array if nothing matches.
      */
-    public static function createQuery();
+    public static function findAll($condition);
 
     /**
      * Updates records using the provided attribute values and conditions.
@@ -205,13 +257,13 @@ interface ActiveRecordInterface
     /**
      * Saves the current record.
      *
-     * This method will call [[insert()]] when [[getIsNewRecord|isNewRecord]] is true, or [[update()]]
-     * when [[getIsNewRecord|isNewRecord]] is false.
+     * This method will call [[insert()]] when [[getIsNewRecord()|isNewRecord]] is true, or [[update()]]
+     * when [[getIsNewRecord()|isNewRecord]] is false.
      *
      * For example, to save a customer record:
      *
      * ~~~
-     * $customer = new Customer; // or $customer = Customer::find($id);
+     * $customer = new Customer; // or $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
      * $customer->save();
@@ -220,11 +272,11 @@ interface ActiveRecordInterface
      * @param boolean $runValidation whether to perform validation before saving the record.
      * If the validation fails, the record will not be saved to database. `false` will be returned
      * in this case.
-     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * @param array $attributeNames list of attributes that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
      * @return boolean whether the saving succeeds
      */
-    public function save($runValidation = true, $attributes = null);
+    public function save($runValidation = true, $attributeNames = null);
 
     /**
      * Inserts the record into the database using the attribute values of this record.
@@ -252,7 +304,7 @@ interface ActiveRecordInterface
      * Usage example:
      *
      * ```php
-     * $customer = Customer::find($id);
+     * $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
      * $customer->update();
@@ -260,14 +312,14 @@ interface ActiveRecordInterface
      *
      * @param boolean $runValidation whether to perform validation before saving the record.
      * If the validation fails, the record will not be inserted into the database.
-     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * @param array $attributeNames list of attributes that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
      * @return integer|boolean the number of rows affected, or false if validation fails
      * or updating process is stopped for other reasons.
      * Note that it is possible that the number of rows affected is 0, even though the
      * update execution is successful.
      */
-    public function update($runValidation = true, $attributes = null);
+    public function update($runValidation = true, $attributeNames = null);
 
     /**
      * Deletes the record from the database.
@@ -285,7 +337,7 @@ interface ActiveRecordInterface
 
     /**
      * Returns a value indicating whether the given active record is the same as the current one.
-     * Two [[isNewRecord|new]] records are considered to be not equal.
+     * Two [[getIsNewRecord()|new]] records are considered to be not equal.
      * @param static $record record to compare to
      * @return boolean whether the two active records refer to the same row in the same database table.
      */

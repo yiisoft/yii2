@@ -8,24 +8,26 @@
 namespace yii\base;
 
 use Yii;
-use yii\helpers\Console;
-use yii\web\HttpException;
 
 /**
  * Application is the base class for all application classes.
  *
+ * @property \yii\web\AssetManager $assetManager The asset manager component. This property is read-only.
  * @property \yii\rbac\Manager $authManager The auth manager for this application. Null is returned if auth
  * manager is not configured. This property is read-only.
  * @property string $basePath The root directory of the application.
  * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
  * This property is read-only.
  * @property \yii\db\Connection $db The database connection. This property is read-only.
- * @property ErrorHandler $errorHandler The error handler application component. This property is read-only.
+ * @property \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
+ * component. This property is read-only.
  * @property \yii\base\Formatter $formatter The formatter application component. This property is read-only.
  * @property \yii\i18n\I18N $i18n The internationalization component. This property is read-only.
  * @property \yii\log\Dispatcher $log The log dispatcher component. This property is read-only.
  * @property \yii\mail\MailerInterface $mail The mailer interface. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
+ * @property \yii\web\Response|\yii\console\Response $response The response component. This property is
+ * read-only.
  * @property string $runtimePath The directory that stores runtime files. Defaults to the "runtime"
  * subdirectory under [[basePath]].
  * @property string $timeZone The time zone used by this application.
@@ -49,16 +51,6 @@ abstract class Application extends Module
      * @event Event an event raised after the application successfully handles a request (before the response is sent out).
      */
     const EVENT_AFTER_REQUEST = 'afterRequest';
-    /**
-     * @event ActionEvent an event raised before executing a controller action.
-     * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
-     */
-    const EVENT_BEFORE_ACTION = 'beforeAction';
-    /**
-     * @event ActionEvent an event raised after executing a controller action.
-     */
-    const EVENT_AFTER_ACTION = 'afterAction';
-
     /**
      * Application state used by [[state]]: application just started.
      */
@@ -145,19 +137,32 @@ abstract class Application extends Module
      * [
      *     'name' => 'extension name',
      *     'version' => 'version number',
-     *     'bootstrap' => 'BootstrapClassName',
+     *     'bootstrap' => 'BootstrapClassName',  // optional, may also be a configuration array
      *     'alias' => [
      *         '@alias1' => 'to/path1',
      *         '@alias2' => 'to/path2',
      *     ],
      * ]
      * ~~~
+     *
+     * The "bootstrap" class listed above will be instantiated during the application
+     * [[bootstrap()|bootstrapping process]]. If the class implements [[BootstrapInterface]],
+     * its [[BootstrapInterface::bootstrap()|bootstrap()]] method will be also be called.
      */
     public $extensions = [];
     /**
-     * @var array list of bootstrap classes or their configurations. A bootstrap class must implement
-     * [[BootstrapInterface]]. The [[BootstrapInterface::bootstrap()]] method of each bootstrap class
-     * will be invoked at the beginning of [[init()]].
+     * @var array list of components that should be run during the application [[bootstrap()|bootstrapping process]].
+     *
+     * Each component may be specified in one of the following formats:
+     *
+     * - an application component ID as specified via [[components]].
+     * - a module ID as specified via [[modules]].
+     * - a class name.
+     * - a configuration array.
+     *
+     * During the bootstrapping process, each component will be instantiated. If the component class
+     * implements [[BootstrapInterface]], its [[BootstrapInterface::bootstrap()|bootstrap()]] method
+     * will be also be called.
      */
     public $bootstrap = [];
     /**
@@ -243,45 +248,54 @@ abstract class Application extends Module
     public function init()
     {
         $this->state = self::STATE_INIT;
-
-        $this->initExtensions($this->extensions);
-        foreach ($this->bootstrap as $class) {
-            /** @var BootstrapInterface $bootstrap */
-            $bootstrap = Yii::createObject($class);
-            $bootstrap->bootstrap($this);
-        }
-        parent::init();
+        $this->bootstrap();
     }
 
     /**
-     * Initializes the extensions.
-     * @param array $extensions the extensions to be initialized. Please refer to [[extensions]]
-     * for the structure of the extension array.
+     * Initializes extensions and executes bootstrap components.
+     * This method is called by [[init()]] after the application has been fully configured.
+     * If you override this method, make sure you also call the parent implementation.
      */
-    protected function initExtensions($extensions)
+    protected function bootstrap()
     {
-        foreach ($extensions as $extension) {
+        foreach ($this->extensions as $extension) {
             if (!empty($extension['alias'])) {
                 foreach ($extension['alias'] as $name => $path) {
                     Yii::setAlias($name, $path);
                 }
             }
             if (isset($extension['bootstrap'])) {
-                /** @var BootstrapInterface $bootstrap */
-                $bootstrap = Yii::createObject($extension['bootstrap']);
-                $bootstrap->bootstrap($this);
+                $component = Yii::createObject($extension['bootstrap']);
+                if ($component instanceof BootstrapInterface) {
+                    Yii::trace("Bootstrap with " . get_class($component) . '::bootstrap()', __METHOD__);
+                    $component->bootstrap($this);
+                } else {
+                    Yii::trace("Bootstrap with " . get_class($component), __METHOD__);
+                }
             }
         }
-    }
 
-    /**
-     * Loads components that are declared in [[preload]].
-     * @throws InvalidConfigException if a component or module to be preloaded is unknown
-     */
-    public function preloadComponents()
-    {
-        $this->get('log');
-        parent::preloadComponents();
+        foreach ($this->bootstrap as $class) {
+            if (is_string($class)) {
+                if ($this->has($class)) {
+                    $component = $this->get($class);
+                } elseif ($this->hasModule($class)) {
+                    $component = $this->getModule($class);
+                } elseif (strpos($class, '\\') === false) {
+                    throw new InvalidConfigException("Unknown bootstrap component ID: $class");
+                }
+            }
+            if (!isset($component)) {
+                $component = Yii::createObject($class);
+            }
+
+            if ($component instanceof BootstrapInterface) {
+                Yii::trace("Bootstrap with " . get_class($component) . '::bootstrap()', __METHOD__);
+                $component->bootstrap($this);
+            } else {
+                Yii::trace("Bootstrap with " . get_class($component), __METHOD__);
+            }
+        }
     }
 
     /**
