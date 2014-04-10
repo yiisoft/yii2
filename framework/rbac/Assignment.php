@@ -12,7 +12,7 @@ use yii\base\Object;
 
 /**
  * Assignment represents an assignment of a role to a user.
- * It includes additional assignment information such as [[bizRule]] and [[data]].
+ * It includes additional assignment information such as [[ruleName]] and [[data]].
  * Do not create a Assignment instance using the 'new' operator.
  * Instead, call [[Manager::assign()]].
  *

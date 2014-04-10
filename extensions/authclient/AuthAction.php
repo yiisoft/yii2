@@ -46,7 +46,7 @@ use Yii;
  * This action handles the redirection and closing of popup window correctly.
  *
  * @see Collection
- * @see \yii\authclient\widgets\Choice
+ * @see \yii\authclient\widgets\AuthChoice
  *
  * @property string $cancelUrl Cancel URL.
  * @property string $successUrl Successful URL.

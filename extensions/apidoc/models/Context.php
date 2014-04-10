@@ -83,7 +83,7 @@ class Context extends Component
         }
         // update interfaces of subclasses
         foreach ($this->classes as $class) {
-            $this->updateSubclassInferfacesTraits($class);
+            $this->updateSubclassInterfacesTraits($class);
         }
         // update implementedBy and usedBy for interfaces and traits
         foreach ($this->classes as $class) {
@@ -129,13 +129,13 @@ class Context extends Component
      * Add implemented interfaces and used traits to subclasses
      * @param ClassDoc $class
      */
-    protected function updateSubclassInferfacesTraits($class)
+    protected function updateSubclassInterfacesTraits($class)
     {
         foreach ($class->subclasses as $subclass) {
             $subclass = $this->classes[$subclass];
             $subclass->interfaces = array_unique(array_merge($subclass->interfaces, $class->interfaces));
             $subclass->traits = array_unique(array_merge($subclass->traits, $class->traits));
-            $this->updateSubclassInferfacesTraits($subclass);
+            $this->updateSubclassInterfacesTraits($subclass);
         }
     }
 

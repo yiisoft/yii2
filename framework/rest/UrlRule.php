@@ -47,12 +47,10 @@ use yii\web\CompositeUrlRule;
  * ]
  * ```
  *
- * The property [[controller]] is required and should be the controller ID. It should be prefixed with
- * the module ID if the controller is within a module.
- *
+ * The property [[controller]] is required and should represent one or multiple controller IDs.
+ * Each controller ID should be prefixed with the module ID if the controller is within a module.
  * The controller ID used in the pattern will be automatically pluralized (e.g. `user` becomes `users`
- * as shown in the above examples). You may configure [[urlName]] to explicitly specify the controller ID
- * in the pattern.
+ * as shown in the above examples).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -133,7 +131,7 @@ class UrlRule extends CompositeUrlRule
      * @var boolean whether to automatically pluralize the URL names for controllers.
      * If true, a controller ID will appear in plural form in URLs. For example, `user` controller
      * will appear as `users` in URLs.
-     * @see controllers
+     * @see controller
      */
     public $pluralize = true;
 

@@ -103,7 +103,7 @@ class ActiveRecord extends BaseActiveRecord
             $db = static::getDb();
             $values = $this->getDirtyAttributes($attributes);
             $pk = [];
-//			if ($values === []) {
+            //			if ($values === []) {
             foreach ($this->primaryKey() as $key) {
                 $pk[$key] = $values[$key] = $this->getAttribute($key);
                 if ($pk[$key] === null) {
@@ -111,7 +111,7 @@ class ActiveRecord extends BaseActiveRecord
                     $this->setAttribute($key, $values[$key]);
                 }
             }
-//			}
+            //			}
             // save pk in a findall pool
             $db->executeCommand('RPUSH', [static::keyPrefix(), static::buildKey($pk)]);
 

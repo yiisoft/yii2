@@ -83,7 +83,7 @@ class AuthChoice extends Widget
     public $popupMode = true;
     /**
      * @var boolean indicates if widget content, should be rendered automatically.
-     * Note: this value automatically set to 'false' at the first call of [[createProviderUrl()]]
+     * Note: this value automatically set to 'false' at the first call of [[createClientUrl()]]
      */
     public $autoRender = true;
 
