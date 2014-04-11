@@ -191,10 +191,6 @@ Sorting data
 Filtering data
 --------------
 
-- https://github.com/yiisoft/yii2/issues/1581
-
-TBD
-
 For filtering data the GridView needs a [model](model.md) that takes the input from the filtering
 form and adjusts the query of the dataprovider to respect the search criteria.
 A common practice when using [active records](active-record.md) is to create a search Model class
@@ -253,7 +249,40 @@ class PostSearch extends Post
 
 ```
 
-Filtering by related columns
+You can use this function in the controller to get the dataProvider for the GridView:
+
+```php
+$searchModel = new PostSearch();
+$dataProvider = $searchModel->search($_GET);
+
+return $this->render('myview', [
+	'dataProvider' => $dataProvider,
+	'searchModel' => $searchModel,
+]);
+```
+
+And in the view you then assign the `$dataProvider` and `$searchModel` to the GridView:
+
+```php
+echo GridView::widget([
+    'dataProvider' => $dataProvider,
+	'filterModel' => $searchModel,
+]);
+```
+
+
+Working with model relations
 ----------------------------
 
+When displaying Active records in a GridView you might encounter the case where you display values of related
+columns such as the posts authors name instead of just his `id`.
+You do this by defining the attribute name in columns as `author.name` when the `Post` model
+has a relation named `author` and the author model has an attribute `name`.
+The GridView will then display the name of the author but sorting and filtering are not enabled by default.
+You have to adjust the `PostSearch` model to add this functionallity.
+
 TBD
+
+- https://github.com/yiisoft/yii2/issues/1581
+- https://github.com/yiisoft/yii2/issues/3013
+
