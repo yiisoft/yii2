@@ -93,8 +93,8 @@ class Generator extends \yii\gii\Generator
         return array_merge(parent::hints(), [
             'ns' => 'This is the namespace of the ActiveRecord class to be generated, e.g., <code>app\models</code>',
             'db' => 'This is the ID of the DB application component.',
-            'tableName' => 'This is the name of the DB table that the new ActiveRecord class is associated with, e.g. <code>tbl_post</code>.
-                The table name may consist of the DB schema part if needed, e.g. <code>public.tbl_post</code>.
+            'tableName' => 'This is the name of the DB table that the new ActiveRecord class is associated with, e.g. <code>post</code>.
+                The table name may consist of the DB schema part if needed, e.g. <code>public.post</code>.
                 The table name may end with asterisk to match multiple table names, e.g. <code>tbl_*</code>
                 will match tables who name starts with <code>tbl_</code>. In this case, multiple ActiveRecord classes
                 will be generated, one for each matching table name; and the class names will be generated from
@@ -255,8 +255,8 @@ class Generator extends \yii\gii\Generator
             $db = $this->getDbConnection();
             $uniqueIndexes = $db->getSchema()->findUniqueIndexes($table);
             foreach ($uniqueIndexes as $uniqueColumns) {
-                // Avoid validating auto incrementable columns
-                if (!$this->isUniqueColumnAutoIncrementable($table, $uniqueColumns)) {
+                // Avoid validating auto incremental columns
+                if (!$this->isColumnAutoIncremental($table, $uniqueColumns)) {
                     $attributesCount = count($uniqueColumns);
 
                     if ($attributesCount == 1) {
@@ -579,15 +579,15 @@ class Generator extends \yii\gii\Generator
     }
 
     /**
-     * Checks if any of the specified columns of an unique index is auto incrementable.
+     * Checks if any of the specified columns is auto incremental.
      * @param  \yii\db\TableSchema $table   the table schema
      * @param  array               $columns columns to check for autoIncrement property
-     * @return boolean             whether any of the specified columns is auto incrementable.
+     * @return boolean             whether any of the specified columns is auto incremental.
      */
-    protected function isUniqueColumnAutoIncrementable($table, $columns)
+    protected function isColumnAutoIncremental($table, $columns)
     {
         foreach ($columns as $column) {
-            if ($table->columns[$column]->autoIncrement) {
+            if (isset($table->columns[$column]) && $table->columns[$column]->autoIncrement) {
                 return true;
             }
         }

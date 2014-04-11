@@ -3,7 +3,7 @@
 namespace yiiunit\data\ar;
 
 /**
- * Model representing tbl_type table
+ * Model representing type table
  *
  * @property int $int_col
  * @property int $int_col2 DEFAULT 1
@@ -25,7 +25,7 @@ class Type extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'tbl_type';
+        return 'type';
     }
 }
  

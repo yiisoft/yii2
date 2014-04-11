@@ -126,7 +126,7 @@ class ActiveDataProviderTest extends DatabaseTestCase
         $query = new Query;
         $provider = new ActiveDataProvider([
             'db' => $this->getConnection(),
-            'query' => $query->from('tbl_order')->orderBy('id'),
+            'query' => $query->from('order')->orderBy('id'),
         ]);
         $orders = $provider->getModels();
         $this->assertEquals(3, count($orders));
@@ -136,7 +136,7 @@ class ActiveDataProviderTest extends DatabaseTestCase
         $query = new Query;
         $provider = new ActiveDataProvider([
             'db' => $this->getConnection(),
-            'query' => $query->from('tbl_order'),
+            'query' => $query->from('order'),
             'pagination' => [
                 'pageSize' => 2,
             ]
@@ -150,7 +150,7 @@ class ActiveDataProviderTest extends DatabaseTestCase
         $query = new Query;
         $provider = new ActiveDataProvider([
             'db' => $this->getConnection(),
-            'query' => $query->from('tbl_order')->orderBy('id'),
+            'query' => $query->from('order')->orderBy('id'),
         ]);
         $this->assertEquals(3, count($provider->getModels()));
 
@@ -165,7 +165,7 @@ class ActiveDataProviderTest extends DatabaseTestCase
         $query = new Query;
         $provider = new ActiveDataProvider([
             'db' => $this->getConnection(),
-            'query' => $query->from('tbl_order')->orderBy('id'),
+            'query' => $query->from('order')->orderBy('id'),
         ]);
         $pagination = $provider->getPagination();
         $this->assertEquals(0, $pagination->getPageCount());

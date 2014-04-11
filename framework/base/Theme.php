@@ -27,23 +27,23 @@ use yii\helpers\FileHelper;
  *    to replace the original view file.
  * 4. If Step 2 or 3 fails, the original view file will be used.
  *
- * For example, if [[pathMap]] is `['/web/views' => '/web/themes/basic']`,
- * then the themed version for a view file `/web/views/site/index.php` will be
- * `/web/themes/basic/site/index.php`.
+ * For example, if [[pathMap]] is `['@app/views' => '@app/themes/basic']`,
+ * then the themed version for a view file `@app/views/site/index.php` will be
+ * `@app/themes/basic/site/index.php`.
  *
  * It is possible to map a single path to multiple paths. For example,
  *
  * ~~~
  * 'pathMap' => [
- *     '/web/views' => [
- *         '/web/themes/christmas',
- *         '/web/themes/basic',
+ *     '@app/views' => [
+ *         '@app/themes/christmas',
+ *         '@app/themes/basic',
  *     ],
  * ]
  * ~~~
  *
- * In this case, the themed version could be either `/web/themes/christmas/site/index.php` or
- * `/web/themes/basic/site/index.php`. The former has precedence over the latter if both files exist.
+ * In this case, the themed version could be either `@app/themes/christmas/site/index.php` or
+ * `@app/themes/basic/site/index.php`. The former has precedence over the latter if both files exist.
  *
  * To use a theme, you should configure the [[View::theme|theme]] property of the "view" application
  * component like the following:
@@ -51,7 +51,7 @@ use yii\helpers\FileHelper;
  * ~~~
  * 'view' => [
  *     'theme' => [
- *         'basePath' => '@webroot/themes/basic',
+ *         'basePath' => '@app/themes/basic',
  *         'baseUrl' => '@web/themes/basic',
  *     ],
  * ],

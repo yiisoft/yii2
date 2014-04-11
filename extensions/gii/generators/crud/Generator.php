@@ -386,7 +386,9 @@ class Generator extends \yii\gii\Generator
                 $columns[$column->name] = $column->type;
             }
         }
-        $conditions = [];
+
+        $likeConditions = [];
+        $hashConditions = [];
         foreach ($columns as $column => $type) {
             switch ($type) {
                 case Schema::TYPE_SMALLINT:
@@ -400,12 +402,22 @@ class Generator extends \yii\gii\Generator
                 case Schema::TYPE_TIME:
                 case Schema::TYPE_DATETIME:
                 case Schema::TYPE_TIMESTAMP:
-                    $conditions[] = "\$this->addCondition(\$query, '{$column}');";
+                    $hashConditions[] = "'{$column}' => \$this->{$column},";
                     break;
                 default:
-                    $conditions[] = "\$this->addCondition(\$query, '{$column}', true);";
+                    $likeConditions[] = "->andFilterWhere(['like', '{$column}', \$this->{$column}])";
                     break;
             }
+        }
+
+        $conditions = [];
+        if (!empty($hashConditions)) {
+            $conditions[] = "\$query->andFilterWhere([\n"
+                . str_repeat(' ', 12) . implode("\n" . str_repeat(' ', 12), $hashConditions)
+                . "\n" . str_repeat(' ', 8) . "]);\n";
+        }
+        if (!empty($likeConditions)) {
+            $conditions[] = "\$query" . implode("\n" . str_repeat(' ', 12), $likeConditions) . ";\n";
         }
 
         return $conditions;

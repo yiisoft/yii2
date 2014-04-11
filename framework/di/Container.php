@@ -301,6 +301,13 @@ class Container extends Component
         unset($this->_definitions[$class], $this->_singletons[$class]);
     }
 
+    /**
+     * Normalizes the class definition.
+     * @param string $class class name
+     * @param string|array|callable $definition the class definition
+     * @return array the normalized class definition
+     * @throws InvalidConfigException if the definition is invalid.
+     */
     protected function normalizeDefinition($class, $definition)
     {
         if (empty($definition)) {
@@ -311,7 +318,11 @@ class Container extends Component
             return $definition;
         } elseif (is_array($definition)) {
             if (!isset($definition['class'])) {
-                $definition['class'] = $class;
+                if (strpos($class, '\\') !== false) {
+                    $definition['class'] = $class;
+                } else {
+                    throw new InvalidConfigException("A class definition requires a \"class\" member.");
+                }
             }
             return $definition;
         } else {

@@ -68,13 +68,17 @@ class ActiveRecord extends BaseActiveRecord
     public static function find($q = null)
     {
         $query = static::createQuery();
-        if (is_array($q)) {
-            return $query->andWhere($q)->one();
-        } elseif ($q !== null) {
-            return static::get($q);
+        $args = func_get_args();
+        if (empty($args)) {
+            return $query;
         }
 
-        return $query;
+        $q = reset($args);
+        if (is_array($q)) {
+            return $query->andWhere($q)->one();
+        } else {
+            return static::get($q);
+        }
     }
 
     /**
@@ -144,7 +148,7 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * Creates an [[ActiveQuery]] instance.
      *
-     * This method is called by [[find()]], [[findBySql()]] to start a SELECT query but also
+     * This method is called by [[find()]] to start a SELECT query but also
      * by [[hasOne()]] and [[hasMany()]] to create a relational query.
      * You may override this method to return a customized query (e.g. `CustomerQuery` specified
      * written for querying `Customer` purpose.)
@@ -152,23 +156,20 @@ class ActiveRecord extends BaseActiveRecord
      * You may also define default conditions that should apply to all queries unless overridden:
      *
      * ```php
-     * public static function createQuery($config = [])
+     * public static function createQuery()
      * {
-     *     return parent::createQuery($config)->where(['deleted' => false]);
+     *     return parent::createQuery()->where(['deleted' => false]);
      * }
      * ```
      *
      * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
      * default condition. Using [[Query::where()]] will override the default condition.
      *
-     * @param  array       $config the configuration passed to the ActiveQuery class.
      * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
-    public static function createQuery($config = [])
+    public static function createQuery()
     {
-        $config['modelClass'] = get_called_class();
-
-        return new ActiveQuery($config);
+        return new ActiveQuery(get_called_class());
     }
 
     // TODO implement copy and move as pk change is not possible

@@ -16,7 +16,7 @@ class CubridCommandTest extends CommandTest
         $db = $this->getConnection();
 
         // bindParam
-        $sql = 'INSERT INTO tbl_customer(email, name, address) VALUES (:email, :name, :address)';
+        $sql = 'INSERT INTO customer(email, name, address) VALUES (:email, :name, :address)';
         $command = $db->createCommand($sql);
         $email = 'user4@example.com';
         $name = 'user4';
@@ -26,12 +26,12 @@ class CubridCommandTest extends CommandTest
         $command->bindParam(':address', $address);
         $command->execute();
 
-        $sql = 'SELECT name FROM tbl_customer WHERE email=:email';
+        $sql = 'SELECT name FROM customer WHERE email=:email';
         $command = $db->createCommand($sql);
         $command->bindParam(':email', $email);
         $this->assertEquals($name, $command->queryScalar());
 
-        $sql = "INSERT INTO tbl_type (int_col, char_col, char_col2, enum_col, float_col, blob_col, numeric_col, bool_col) VALUES (:int_col, '', :char_col, :enum_col, :float_col, CHAR_TO_BLOB(:blob_col), :numeric_col, :bool_col)";
+        $sql = "INSERT INTO type (int_col, char_col, char_col2, enum_col, float_col, blob_col, numeric_col, bool_col) VALUES (:int_col, '', :char_col, :enum_col, :float_col, CHAR_TO_BLOB(:blob_col), :numeric_col, :bool_col)";
         $command = $db->createCommand($sql);
         $intCol = 123;
         $charCol = 'abc';
@@ -49,7 +49,7 @@ class CubridCommandTest extends CommandTest
         $command->bindParam(':bool_col', $boolCol);
         $this->assertEquals(1, $command->execute());
 
-        $sql = 'SELECT * FROM tbl_type';
+        $sql = 'SELECT * FROM type';
         $row = $db->createCommand($sql)->queryOne();
         $this->assertEquals($intCol, $row['int_col']);
         $this->assertEquals($enumCol, $row['enum_col']);
@@ -60,12 +60,12 @@ class CubridCommandTest extends CommandTest
         $this->assertEquals($boolCol, $row['bool_col']);
 
         // bindValue
-        $sql = 'INSERT INTO tbl_customer(email, name, address) VALUES (:email, \'user5\', \'address5\')';
+        $sql = 'INSERT INTO customer(email, name, address) VALUES (:email, \'user5\', \'address5\')';
         $command = $db->createCommand($sql);
         $command->bindValue(':email', 'user5@example.com');
         $command->execute();
 
-        $sql = 'SELECT email FROM tbl_customer WHERE name=:name';
+        $sql = 'SELECT email FROM customer WHERE name=:name';
         $command = $db->createCommand($sql);
         $command->bindValue(':name', 'user5');
         $this->assertEquals('user5@example.com', $command->queryScalar());
@@ -75,8 +75,8 @@ class CubridCommandTest extends CommandTest
     {
         $db = $this->getConnection(false);
 
-        $sql = 'SELECT [[id]], [[t.name]] FROM {{tbl_customer}} t';
+        $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
-        $this->assertEquals('SELECT "id", "t"."name" FROM "tbl_customer" t', $command->sql);
+        $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
     }
 }

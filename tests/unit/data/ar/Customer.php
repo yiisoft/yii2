@@ -25,7 +25,7 @@ class Customer extends ActiveRecord
 
     public static function tableName()
     {
-        return 'tbl_customer';
+        return 'customer';
     }
 
     public function getProfile()
@@ -49,9 +49,9 @@ class Customer extends ActiveRecord
         /** @var ActiveQuery $rel */
         $rel = $this->hasMany(Item::className(), ['id' => 'item_id']);
 
-        return $rel->viaTable('tbl_order_item', ['order_id' => 'id'], function ($q) {
+        return $rel->viaTable('order_item', ['order_id' => 'id'], function ($q) {
             /** @var ActiveQuery $q */
-            $q->viaTable('tbl_order', ['customer_id' => 'id']);
+            $q->viaTable('order', ['customer_id' => 'id']);
         })->orderBy('id');
     }
 
@@ -62,10 +62,8 @@ class Customer extends ActiveRecord
         parent::afterSave($insert);
     }
 
-    public static function createQuery($config = [])
+    public static function createQuery()
     {
-        $config['modelClass'] = get_called_class();
-
-        return new CustomerQuery($config);
+        return new CustomerQuery(get_called_class());
     }
 }

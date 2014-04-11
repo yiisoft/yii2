@@ -71,6 +71,8 @@ return [
     'jpeg' => 'image/jpeg',
     'jpg' => 'image/jpeg',
     'js' => 'application/x-javascript',
+    'json' => 'application/json',
+    'jsonp' => 'text/javascript',
     'kar' => 'audio/midi',
     'latex' => 'application/x-latex',
     'lha' => 'application/octet-stream',

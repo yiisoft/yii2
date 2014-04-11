@@ -38,15 +38,15 @@ class Formatter extends Component
     /**
      * @var string the default format string to be used to format a date using PHP date() function.
      */
-    public $dateFormat = 'Y/m/d';
+    public $dateFormat = 'Y-m-d';
     /**
      * @var string the default format string to be used to format a time using PHP date() function.
      */
-    public $timeFormat = 'h:i:s A';
+    public $timeFormat = 'H:i:s';
     /**
      * @var string the default format string to be used to format a date and time using PHP date() function.
      */
-    public $datetimeFormat = 'Y/m/d h:i:s A';
+    public $datetimeFormat = 'Y-m-d H:i:s';
     /**
      * @var string the text to be displayed when formatting a null. Defaults to '<span class="not-set">(not set)</span>'.
      */
@@ -473,7 +473,8 @@ class Formatter extends Component
 
     /**
      * Formats the value as the time interval between a date and now in human readable form.
-     * @param integer|string|DateTime|DateInterval $value the value to be formatted. The following
+     *
+     * @param integer|string|DateTime|\DateInterval $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
@@ -481,6 +482,7 @@ class Formatter extends Component
      * - a PHP DateTime object
      * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
      *
+     * @param integer|string|DateTime|\DateInterval $referenceTime if specified the value is used instead of now
      * @return string the formatted result
      */
     public function asRelativeTime($value, $referenceTime = null)

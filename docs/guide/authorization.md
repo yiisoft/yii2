@@ -7,7 +7,7 @@ of controlling it.
 Access control basics
 ---------------------
 
-Basic access control is very simple to implement using [[yii\web\AccessControl]]:
+Basic access control is very simple to implement using [[yii\filters\AccessControl]]:
 
 ```php
 class SiteController extends Controller
@@ -16,7 +16,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => \yii\web\AccessControl::className(),
+                'class' => \yii\filters\AccessControl::className(),
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -38,7 +38,7 @@ class SiteController extends Controller
 
 In the code above we're attaching access control behavior to a controller. Since there's `only` option specified, it
 will be applied to 'login', 'logout' and 'signup' actions only. A set of rules that are basically options for
-[[yii\web\AccessRule]] reads as follows:
+[[yii\filters\AccessRule]] reads as follows:
 
 - Allow all guest (not yet authenticated) users to access 'login' and 'signup' actions.
 - Allow authenticated users to access 'logout' action.
@@ -46,7 +46,7 @@ will be applied to 'login', 'logout' and 'signup' actions only. A set of rules t
 Rules are checked one by one from top to bottom. If rule matches, action takes place immediately. If not, next rule is
 checked. If no rules matched access is denied.
 
-[[yii\web\AccessRule]] is quite flexible and allows additionally to what was demonstrated checking IPs and request method
+[[yii\filters\AccessRule]] is quite flexible and allows additionally to what was demonstrated checking IPs and request method
 (i.e. POST, GET). If it's not enough you can specify your own check via anonymous function:
 
 ```php
@@ -56,7 +56,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => \yii\web\AccessControl::className(),
+                'class' => \yii\filters\AccessControl::className(),
                 'only' => ['special-callback'],
                 'rules' => [
                     [
@@ -121,71 +121,94 @@ class PhpManager extends \yii\rbac\PhpManager
 }
 ```
 
+Now create custom rule class:
+
+```php
+namespace app\rbac;
+
+use yii\rbac\Rule;
+
+class NotGuestRule extends Rule
+{
+    public function execute($params, $data)
+    {
+        return !Yii::$app->user->isGuest;
+    }
+}
+```
+
 Then create permissions hierarchy in `@app/data/rbac.php`:
 
 ```php
 <?php
 use yii\rbac\Item;
+use app\rbac\NotGuestRule;
+
+$notGuest = new NotGuestRule();
 
 return [
-    // HERE ARE YOUR MANAGEMENT TASKS
-    'manageThing0' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'bizRule' => NULL, 'data' => NULL],
-    'manageThing1' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'bizRule' => NULL, 'data' => NULL],
-    'manageThing2' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'bizRule' => NULL, 'data' => NULL],
-    'manageThing3' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'bizRule' => NULL, 'data' => NULL],
-
-    // AND THE ROLES
-    'guest' => [
-        'type' => Item::TYPE_ROLE,
-        'description' => 'Guest',
-        'bizRule' => NULL,
-        'data' => NULL
+    'rules' => [
+        $notGuest->name => serialize($notGuest),
     ],
+    'items' => [
+        // HERE ARE YOUR MANAGEMENT TASKS
+        'manageThing0' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'ruleName' => NULL, 'data' => NULL],
+        'manageThing1' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'ruleName' => NULL, 'data' => NULL],
+        'manageThing2' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'ruleName' => NULL, 'data' => NULL],
+        'manageThing3' => ['type' => Item::TYPE_OPERATION, 'description' => '...', 'ruleName' => NULL, 'data' => NULL],
 
-    'user' => [
-        'type' => Item::TYPE_ROLE,
-        'description' => 'User',
-        'children' => [
-            'guest',
-            'manageThing0', // User can edit thing0
+        // AND THE ROLES
+        'guest' => [
+            'type' => Item::TYPE_ROLE,
+            'description' => 'Guest',
+            'ruleName' => NULL,
+            'data' => NULL
         ],
-        'bizRule' => 'return !Yii::$app->user->isGuest;',
-        'data' => NULL
-    ],
 
-    'moderator' => [
-        'type' => Item::TYPE_ROLE,
-        'description' => 'Moderator',
-        'children' => [
-            'user',         // Can manage all that user can
-            'manageThing1', // and also thing1
+        'user' => [
+            'type' => Item::TYPE_ROLE,
+            'description' => 'User',
+            'children' => [
+                'guest',
+                'manageThing0', // User can edit thing0
+            ],
+            'ruleName' => $notGuest->name,
+            'data' => NULL
         ],
-        'bizRule' => NULL,
-        'data' => NULL
-    ],
 
-    'admin' => [
-        'type' => Item::TYPE_ROLE,
-        'description' => 'Admin',
-        'children' => [
-            'moderator',    // can do all the stuff that moderator can
-            'manageThing2', // and also manage thing2
+        'moderator' => [
+            'type' => Item::TYPE_ROLE,
+            'description' => 'Moderator',
+            'children' => [
+                'user',         // Can manage all that user can
+                'manageThing1', // and also thing1
+            ],
+            'ruleName' => NULL,
+            'data' => NULL
         ],
-        'bizRule' => NULL,
-        'data' => NULL
-    ],
 
-    'godmode' => [
-        'type' => Item::TYPE_ROLE,
-        'description' => 'Super admin',
-        'children' => [
-            'admin',        // can do all that admin can
-            'manageThing3', // and also thing3
+        'admin' => [
+            'type' => Item::TYPE_ROLE,
+            'description' => 'Admin',
+            'children' => [
+                'moderator',    // can do all the stuff that moderator can
+                'manageThing2', // and also manage thing2
+            ],
+            'ruleName' => NULL,
+            'data' => NULL
         ],
-        'bizRule' => NULL,
-        'data' => NULL
-    ],
 
+        'godmode' => [
+            'type' => Item::TYPE_ROLE,
+            'description' => 'Super admin',
+            'children' => [
+                'admin',        // can do all that admin can
+                'manageThing3', // and also thing3
+            ],
+            'ruleName' => NULL,
+            'data' => NULL
+        ],
+    ],
 ];
 ```
 
@@ -196,7 +219,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => 'yii\web\AccessControl',
+            'class' => 'yii\filters\AccessControl',
             'except' => ['something'],
             'rules' => [
                 [

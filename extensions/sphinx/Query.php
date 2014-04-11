@@ -466,7 +466,6 @@ class Query extends Component implements QueryInterface
     {
         $this->where = $condition;
         $this->addParams($params);
-
         return $this;
     }
 
@@ -488,7 +487,6 @@ class Query extends Component implements QueryInterface
             $this->where = ['and', $this->where, $condition];
         }
         $this->addParams($params);
-
         return $this;
     }
 
@@ -510,7 +508,6 @@ class Query extends Component implements QueryInterface
             $this->where = ['or', $this->where, $condition];
         }
         $this->addParams($params);
-
         return $this;
     }
 

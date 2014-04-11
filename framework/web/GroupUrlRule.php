@@ -11,13 +11,13 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * PrefixUrlRule represents a collection of URL rules sharing the same prefix in their patterns and routes.
+ * GroupUrlRule represents a collection of URL rules sharing the same prefix in their patterns and routes.
  *
- * PrefixUrlRule is best used by a module which often uses module ID as the prefix for the URL rules.
+ * GroupUrlRule is best used by a module which often uses module ID as the prefix for the URL rules.
  * For example, the following code creates a rule for the `admin` module:
  *
  * ```php
- * new PrefixUrlRule([
+ * new GroupUrlRule([
  *     'prefix' => 'admin',
  *     'rules' => [
  *         'login' => 'user/login',
@@ -38,14 +38,14 @@ use yii\base\InvalidConfigException;
  * The above example assumes the prefix for patterns and routes are the same. They can be made different
  * by configuring [[prefix]] and [[routePrefix]] separately.
  *
- * Using a PrefixUrlRule is more efficient than directly declaring the individual rules its contains.
- * This is because PrefixUrlRule can quickly determine if it should process a URL parsing or creation request
+ * Using a GroupUrlRule is more efficient than directly declaring the individual rules it contains.
+ * This is because GroupUrlRule can quickly determine if it should process a URL parsing or creation request
  * by simply checking if the prefix matches.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class PrefixUrlRule extends CompositeUrlRule
+class GroupUrlRule extends CompositeUrlRule
 {
     /**
      * @var array the rules contained within this composite rule. Please refer to [[UrlManager::rules]]

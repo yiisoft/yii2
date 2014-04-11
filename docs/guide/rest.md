@@ -13,7 +13,7 @@ In particular, Yii provides support for the following aspects regarding RESTful 
 * Authentication;
 * Authorization;
 * Support for HATEOAS;
-* Caching via `yii\web\HttpCache`;
+* Caching via `yii\filters\HttpCache`;
 * Rate limiting;
 * Searching and filtering: TBD
 * Testing: TBD
@@ -599,29 +599,47 @@ There are different ways to send an access token:
   server and sent to the API server via [HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750),
   according to the OAuth2 protocol.
 
-Yii supports all of the above authentication methods and can be further extended to support other methods.
+Yii supports all of the above authentication methods. You can also easily create new authentication methods.
 
 To enable authentication for your APIs, do the following two steps:
 
-1. Configure [[yii\rest\Controller::authMethods]] with the authentication methods you plan to use.
+1. Specify which authentication methods you plan to use by configuring the `authenticator` behavior
+   in your REST controller classes.
 2. Implement [[yii\web\IdentityInterface::findIdentityByAccessToken()]] in your [[yii\web\User::identityClass|user identity class]].
 
-For example, to enable all three authentication methods explained above, you would configure `authMethods`
-as follows,
+For example, to enable all three authentication methods explained above, you can configure `authenticator` like following,
 
 ```php
-class UserController extends ActiveController
+public function behaviors()
 {
-    public $authMethods = [
-        'yii\rest\HttpBasicAuth',
-        'yii\rest\QueryParamAuth',
-        'yii\rest\HttpBearerAuth',
-    ];
+    return array_merge(parent::behaviors(), [
+        'authenticator' => [
+            'authMethods' => [
+                \yii\filters\auth\HttpBasicAuth::className(),
+                \yii\filters\auth\QueryParamAuth::className(),
+                \yii\filters\auth\HttpBearerAuth::className(),
+            ],
+        ],
+    ]);
 }
 ```
 
-Each element in `authMethods` should be an auth class name or a configuration array. An auth class
+Each element in `authMethods` should be an auth method class name or a configuration array. An auth class
 must implement [[yii\rest\AuthInterface]].
+
+If you only want to a single authentication method, such as HTTP Basic Auth, you may use the following code:
+
+```php
+public function behaviors()
+{
+    return array_merge(parent::behaviors(), [
+        'authenticator' => [
+            'class' => \yii\filters\auth\HttpBasicAuth::className(),
+        ],
+    ]);
+}
+```
+
 
 Implementation of `findIdentityByAccessToken()` is application specific. For example, in simple scenarios
 when each user can only have one access token, you may store the access token in an `access_token` column
@@ -689,7 +707,7 @@ To prevent abuse, you should consider adding rate limiting to your APIs. For exa
 of each user to be at most 100 API calls within a period of 10 minutes. If too many requests are received from a user
 within the period of the time, a response with status code 429 (meaning Too Many Requests) should be returned.
 
-To enable rate limiting, the [[yii\web\User::identityClass|user identity class]] should implement [[yii\rest\RateLimitInterface]].
+To enable rate limiting, the [[yii\web\User::identityClass|user identity class]] should implement [[yii\filters\RateLimitInterface]].
 This interface requires implementation of the following three methods:
 
 * `getRateLimit()`: returns the maximum number of allowed requests and the time period, e.g., `[100, 600]` means
@@ -703,16 +721,31 @@ And `loadAllowance()` and `saveAllowance()` can then be implementation by readin
 of the two columns corresponding to the current authenticated user. To improve performance, you may also
 consider storing these information in cache or some NoSQL storage.
 
-Once the identity class implements the required interface, Yii will automatically use the rate limiter
-as specified by [[yii\rest\Controller::rateLimiter]] to perform rate limiting check. The rate limiter
-will thrown a [[yii\web\TooManyRequestsHttpException]] if rate limit is exceeded.
+Once the identity class implements the required interface, Yii will automatically use [[yii\filters\RateLimiter]]
+configured as an action filter for [[yii\rest\Controller]] to perform rate limiting check. The rate limiter
+will thrown a [[yii\web\TooManyRequestsHttpException]] if rate limit is exceeded. You may configure the rate limiter
+as follows in your REST controller classes,
 
-When rate limiting is enabled, every response will be sent with the following HTTP headers containing
+```php
+public function behaviors()
+{
+    return array_merge(parent::behaviors(), [
+        'rateLimiter' => [
+            'enableRateLimitHeaders' => false,
+        ],
+    ]);
+}
+```
+
+When rate limiting is enabled, by default every response will be sent with the following HTTP headers containing
 the current rate limiting information:
 
 * `X-Rate-Limit-Limit`: The maximum number of requests allowed with a time period;
 * `X-Rate-Limit-Remaining`: The number of remaining requests in the current time period;
 * `X-Rate-Limit-Reset`: The number of seconds to wait in order to get the maximum number of allowed requests.
+
+You may disable these headers by configuring [[yii\filters\RateLimiter::enableRateLimitHeaders]] to be false,
+like shown in the above code example.
 
 
 Error Handling
@@ -783,7 +816,7 @@ Accept: application/vnd.company.myapp-v1+json
 ```
 
 Both methods have pros and cons, and there are a lot of debates about them. Below we describe a practical strategy
-of API versioning that is a kind of mix of these two methods:
+of API versioning that is kind of a mix of these two methods:
 
 * Put each major version of API implementation in a separate module whose ID is the major version number (e.g. `v1`, `v2`).
   Naturally, the API URLs will contain major version numbers.
@@ -793,7 +826,9 @@ of API versioning that is a kind of mix of these two methods:
 For each module serving a major version, it should include the resource classes and the controller classes
 serving for that specific version. To better separate code responsibility, you may keep a common set of
 base resource and controller classes, and subclass them in each individual version module. Within the subclasses,
-implement the concrete code such as `Model::fields()`. As a result, your code may be organized like the following:
+implement the concrete code such as `Model::fields()`.
+
+Your code may be organized like the following:
 
 ```
 api/

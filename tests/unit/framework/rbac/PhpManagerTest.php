@@ -7,6 +7,7 @@ use yii\rbac\PhpManager;
 
 /**
  * @group rbac
+ * @property \yii\rbac\PhpManager $auth
  */
 class PhpManagerTest extends ManagerTestCase
 {

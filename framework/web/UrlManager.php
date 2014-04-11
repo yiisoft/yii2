@@ -148,9 +148,9 @@ class UrlManager extends Component
             $this->cache = Yii::$app->get($this->cache, false);
         }
         if ($this->cache instanceof Cache) {
-            $key = __CLASS__;
+            $cacheKey = __CLASS__;
             $hash = md5(json_encode($this->rules));
-            if (($data = $this->cache->get($key)) !== false && isset($data[1]) && $data[1] === $hash) {
+            if (($data = $this->cache->get($cacheKey)) !== false && isset($data[1]) && $data[1] === $hash) {
                 $this->rules = $data[0];
 
                 return;
@@ -177,8 +177,8 @@ class UrlManager extends Component
         }
         $this->rules = $rules;
 
-        if (isset($key, $hash)) {
-            $this->cache->set($key, [$this->rules, $hash]);
+        if (isset($cacheKey, $hash)) {
+            $this->cache->set($cacheKey, [$this->rules, $hash]);
         }
     }
 

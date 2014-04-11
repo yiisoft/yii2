@@ -93,6 +93,17 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
 
     /**
+     * Constructor.
+     * @param array $modelClass the model class associated with this query
+     * @param array $config configurations to be applied to the newly created query object
+     */
+    public function __construct($modelClass, $config = [])
+    {
+        $this->modelClass = $modelClass;
+        parent::__construct($config);
+    }
+
+    /**
      * Executes query and returns all results as an array.
      * @param Connection $db the DB connection used to create the DB command.
      * If null, the DB connection returned by [[modelClass]] will be used.
@@ -357,7 +368,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * // find all orders, eager loading "books", and sort the orders and books by the book names.
      * Order::find()->joinWith([
      *     'books' => function ($query) {
-     *         $query->orderBy('tbl_item.name');
+     *         $query->orderBy('item.name');
      *     }
      * ])->all();
      * ```
@@ -402,6 +413,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
             $this->with($with);
         }
+
+        // remove duplicated joins added by joinWithRelations that may be added
+        // e.g. when joining a relation and a via relation at the same time
+        $uniqueJoins = [];
+        foreach($this->join as $j) {
+            $uniqueJoins[serialize($j)] = $j;
+        }
+        $this->join = array_values($uniqueJoins);
 
         if (!empty($join)) {
             // append explicit join to joinWith()
@@ -615,7 +634,46 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $this->on = $condition;
         $this->addParams($params);
+        return $this;
+    }
 
+    /**
+     * Adds an additional ON condition to the existing one.
+     * The new condition and the existing one will be joined using the 'AND' operator.
+     * @param string|array $condition the new ON condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see onCondition()
+     * @see orOnCondition()
+     */
+    public function andOnCondition($condition, $params = [])
+    {
+        if ($this->on === null) {
+            $this->on = $condition;
+        } else {
+            $this->on = ['and', $this->on, $condition];
+        }
+        $this->addParams($params);
+        return $this;
+    }
+
+    /**
+     * Adds an additional ON condition to the existing one.
+     * The new condition and the existing one will be joined using the 'OR' operator.
+     * @param string|array $condition the new ON condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see onCondition()
+     * @see andOnCondition()
+     */
+    public function orOnCondition($condition, $params = [])
+    {
+        if ($this->on === null) {
+            $this->on = $condition;
+        } else {
+            $this->on = ['or', $this->on, $condition];
+        }
+        $this->addParams($params);
         return $this;
     }
 
@@ -628,7 +686,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * public function getItems()
      * {
      *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
-     *                 ->viaTable('tbl_order_item', ['order_id' => 'id']);
+     *                 ->viaTable('order_item', ['order_id' => 'id']);
      * }
      * ```
      *
@@ -643,8 +701,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function viaTable($tableName, $link, $callable = null)
     {
-        $relation = new ActiveQuery([
-            'modelClass' => get_class($this->primaryModel),
+        $relation = new ActiveQuery(get_class($this->primaryModel), [
             'from' => [$tableName],
             'link' => $link,
             'multiple' => true,

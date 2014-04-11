@@ -64,10 +64,8 @@ class Customer extends ActiveRecord
 
     }
 
-    public static function createQuery($config = [])
+    public static function createQuery()
     {
-        $config['modelClass'] = get_called_class();
-
-        return new CustomerQuery($config);
+        return new CustomerQuery(get_called_class());
     }
 }

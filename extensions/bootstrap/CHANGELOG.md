@@ -17,7 +17,7 @@ Yii Framework 2 bootstrap extension Change Log
 - Chg #1459: Update Collapse to use bootstrap 3 classes (tonydspaniard)
 - Chg #1820: Update Progress to use bootstrap 3 markup (samdark)
 
-2.0.0 alpha, December 1, 2013
+2.0.0-alpha, December 1, 2013
 -----------------------------
 
 - Initial release.

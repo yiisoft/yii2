@@ -136,7 +136,7 @@ interface QueryInterface
      * - `or not like`: similar to the `not like` operator except that `OR` is used to concatenate
      * the `NOT LIKE` predicates.
      *
-     * @param array $condition the conditions that should be put in the WHERE part.
+     * @param string|array $condition the conditions that should be put in the WHERE part.
      * @return static the query object itself
      * @see andWhere()
      * @see orWhere()
@@ -164,6 +164,39 @@ interface QueryInterface
      * @see andWhere()
      */
     public function orWhere($condition);
+
+    /**
+     * Sets the WHERE part of the query ignoring empty parameters.
+     *
+     * @param array $condition the conditions that should be put in the WHERE part. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see andFilterWhere()
+     * @see orFilterWhere()
+     */
+    public function filterWhere(array $condition);
+
+    /**
+     * Adds an additional WHERE condition to the existing one ignoring empty parameters.
+     * The new condition and the existing one will be joined using the 'AND' operator.
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see filterWhere()
+     * @see orFilterWhere()
+     */
+    public function andFilterWhere(array $condition);
+
+    /**
+     * Adds an additional WHERE condition to the existing one ignoring empty parameters.
+     * The new condition and the existing one will be joined using the 'OR' operator.
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see filterWhere()
+     * @see andFilterWhere()
+     */
+    public function orFilterWhere(array $condition);
 
     /**
      * Sets the ORDER BY part of the query.

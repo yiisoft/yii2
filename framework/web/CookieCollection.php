@@ -37,7 +37,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
     /**
      * Constructor.
      * @param array $cookies the cookies that this collection initially contains. This should be
-     * an array of name-value pairs.s
+     * an array of name-value pairs.
      * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($cookies = [], $config = [])

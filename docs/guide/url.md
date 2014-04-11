@@ -232,7 +232,7 @@ return [
 ### Handling REST requests
 
 TBD:
-- RESTful routing: [[yii\web\VerbFilter]], [[yii\web\UrlManager::$rules]]
+- RESTful routing: [[yii\filters\VerbFilter]], [[yii\filters\UrlManager::$rules]]
 - Json API:
   - response: [[yii\web\Response::format]]
   - request: [[yii\web\Request::$parsers]], [[yii\web\JsonParser]]

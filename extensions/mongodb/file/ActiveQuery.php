@@ -40,6 +40,18 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     use ActiveQueryTrait;
     use ActiveRelationTrait;
 
+
+    /**
+     * Constructor.
+     * @param array $modelClass the model class associated with this query
+     * @param array $config configurations to be applied to the newly created query object
+     */
+    public function __construct($modelClass, $config = [])
+    {
+        $this->modelClass = $modelClass;
+        parent::__construct($config);
+    }
+
     /**
      * Executes query and returns all results as an array.
      * @param  \yii\mongodb\Connection $db the Mongo connection used to execute the query.

@@ -32,10 +32,9 @@ use <?= ltrim($generator->modelClass, '\\') . (isset($modelAlias) ? " as $modelA
 /**
  * <?= $searchModelClass ?> represents the model behind the search form about `<?= $generator->modelClass ?>`.
  */
-class <?= $searchModelClass ?> extends Model
-{
-    public $<?= implode(";\n    public $", $searchAttributes) ?>;
+class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $modelClass ?>
 
+{
     public function rules()
     {
         return [
@@ -43,21 +42,16 @@ class <?= $searchModelClass ?> extends Model
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
+    public function scenarios()
     {
-        return [
-<?php foreach ($labels as $name => $label): ?>
-            <?= "'$name' => " . $generator->generateString($label) . ",\n" ?>
-<?php endforeach; ?>
-        ];
+        // bypass scenarios() implementation in the parent class
+        return Model::scenarios();
     }
 
     public function search($params)
     {
         $query = <?= isset($modelAlias) ? $modelAlias : $modelClass ?>::find();
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -69,24 +63,5 @@ class <?= $searchModelClass ?> extends Model
         <?= implode("\n        ", $searchConditions) ?>
 
         return $dataProvider;
-    }
-
-    protected function addCondition($query, $attribute, $partialMatch = false)
-    {
-        if (($pos = strrpos($attribute, '.')) !== false) {
-            $modelAttribute = substr($attribute, $pos + 1);
-        } else {
-            $modelAttribute = $attribute;
-        }
-
-        $value = $this->$modelAttribute;
-        if (trim($value) === '') {
-            return;
-        }
-        if ($partialMatch) {
-            $query->andWhere(['like', $attribute, $value]);
-        } else {
-            $query->andWhere([$attribute => $value]);
-        }
     }
 }

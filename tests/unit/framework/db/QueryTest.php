@@ -29,8 +29,8 @@ class QueryTest extends DatabaseTestCase
     public function testFrom()
     {
         $query = new Query;
-        $query->from('tbl_user');
-        $this->assertEquals(['tbl_user'], $query->from);
+        $query->from('user');
+        $this->assertEquals(['user'], $query->from);
     }
 
     public function testWhere()
@@ -47,6 +47,64 @@ class QueryTest extends DatabaseTestCase
         $query->orWhere('age = :age', [':age' => '30']);
         $this->assertEquals(['or', ['and', 'id = :id', 'name = :name'], 'age = :age'], $query->where);
         $this->assertEquals([':id' => 1, ':name' => 'something', ':age' => '30'], $query->params);
+    }
+
+    public function testFilterWhere()
+    {
+        // should work with hash format
+        $query = new Query;
+        $query->filterWhere([
+            'id' => 0,
+            'title' => '   ',
+            'author_ids' => [],
+        ]);
+        $this->assertEquals(['id' => 0], $query->where);
+
+        $query->andFilterWhere(['status' => null]);
+        $this->assertEquals(['id' => 0], $query->where);
+
+        $query->orFilterWhere(['name' => '']);
+        $this->assertEquals(['id' => 0], $query->where);
+
+        // should work with operator format
+        $query = new Query;
+        $condition = ['like', 'name', 'Alex'];
+        $query->filterWhere($condition);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['between', 'id', null, null]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->orFilterWhere(['not between', 'id', null, null]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['in', 'id', []]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['not in', 'id', []]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['not in', 'id', []]);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['like', 'id', '']);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['or like', 'id', '']);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['not like', 'id', '   ']);
+        $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['or not like', 'id', null]);
+        $this->assertEquals($condition, $query->where);
+    }
+
+    public function testFilterRecursively()
+    {
+        $query = new Query();
+        $query->filterWhere(['and', ['like', 'name', ''], ['like', 'title', ''], ['id' => 1], ['not', ['like', 'name', '']]]);
+        $this->assertEquals(['and', ['id' => 1]], $query->where);
     }
 
     public function testJoin()
@@ -117,10 +175,10 @@ class QueryTest extends DatabaseTestCase
     {
         $db = $this->getConnection();
 
-        $result = (new Query)->from('tbl_customer')->where(['status' => 2])->one($db);
+        $result = (new Query)->from('customer')->where(['status' => 2])->one($db);
         $this->assertEquals('user3', $result['name']);
 
-        $result = (new Query)->from('tbl_customer')->where(['status' => 3])->one($db);
+        $result = (new Query)->from('customer')->where(['status' => 3])->one($db);
         $this->assertFalse($result);
     }
 }
