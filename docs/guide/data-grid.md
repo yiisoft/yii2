@@ -324,3 +324,6 @@ public function rules()
 ```
 
 In `search()` you then just add another filter condition with `$query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);`.
+
+> Info: For more information on `joinWith` and the queries performed in the background, check the
+> [active record docs on eager and lazy loading](active-record.md#lazy-and-eager-loading).
