@@ -274,15 +274,53 @@ echo GridView::widget([
 Working with model relations
 ----------------------------
 
-When displaying Active records in a GridView you might encounter the case where you display values of related
+When displaying active records in a GridView you might encounter the case where you display values of related
 columns such as the posts authors name instead of just his `id`.
 You do this by defining the attribute name in columns as `author.name` when the `Post` model
 has a relation named `author` and the author model has an attribute `name`.
 The GridView will then display the name of the author but sorting and filtering are not enabled by default.
-You have to adjust the `PostSearch` model to add this functionallity.
+You have to adjust the `PostSearch` model that has been introduced in the last section to add this functionallity.
 
-TBD
+To enable sorting on a related column you have to join the related table and add the sorting rule
+to the Sort component of the dataprovider:
 
-- https://github.com/yiisoft/yii2/issues/1581
-- https://github.com/yiisoft/yii2/issues/3013
+```php
+$query = Post::find();
+$dataProvider = new ActiveDataProvider([
+    'query' => $query,
+]);
 
+// join with relation `author` that is a relation to the table `users`
+// and set the table alias to be `author`
+$query->joinWith(['author' => function($query) { $query->from(['author' => 'users']); }]);
+// enable sorting for the related column
+$dataProvider->sort->attributes['author.name'] = [
+    'asc' => ['author.name' => SORT_ASC],
+    'desc' => ['author.name' => SORT_DESC],
+];
+
+// ...
+```
+
+Filtering also needs the joinWith call as above. You also need to define the searchable column in attributes and rules like this:
+
+```php
+public function attributes()
+{
+    // add related fields to searchable attributes when in search scenario
+    if ($this->getScenario() == 'search') {
+        return array_merge(parent::attributes(), ['site.number']);
+    }
+    return parent::attributes();
+}
+
+public function rules()
+{
+    return [
+        [['id'], 'integer'],
+        [['title', 'creation_date', 'author.name'], 'safe'],
+    ];
+}
+```
+
+In `search()` you then just add another filter condition with `$query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);`.
