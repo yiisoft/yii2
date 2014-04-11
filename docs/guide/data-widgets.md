@@ -1,6 +1,48 @@
 Data widgets
 ============
 
+GridView
+--------
+
+The [[yii\grid\GridView]] widget is a powerful tool to create a data grid that provides pagination, sorting
+and filtering of the data out of the box.
+The GridView gets its data from a [data provider](data-providers.md) which is responsible for sorting and
+pagination.
+The following code shows a basic example of a gridview showing Users from the database(`User` is an [active record](active-record.md)):
+
+In the controller action:
+
+```php
+$dataProvider = new ActiveDataProvider(['query' => User::find()]);
+
+return $this->render('myview', ['dataProvider' => $dataProvider]);
+```
+
+In the view `myview.php`:
+
+```php
+echo GridView::widget([
+    'dataProvider' => $dataProvider,
+    'columns' => [
+        'id',
+        'name',
+        'email',
+        'last_login_date:datetime',
+        [
+            'class' => 'yii\grid\ActionColumn',
+        ]
+    ],
+]); ?>
+```
+
+### Filtering
+
+TDB
+
+### Filtering by related columns
+
+TDB
+
 ListView
 --------
 
