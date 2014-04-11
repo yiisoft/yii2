@@ -275,14 +275,14 @@ Working with model relations
 ----------------------------
 
 When displaying active records in a GridView you might encounter the case where you display values of related
-columns such as the posts authors name instead of just his `id`.
+columns such as the post's author's name instead of just his `id`.
 You do this by defining the attribute name in columns as `author.name` when the `Post` model
 has a relation named `author` and the author model has an attribute `name`.
 The GridView will then display the name of the author but sorting and filtering are not enabled by default.
 You have to adjust the `PostSearch` model that has been introduced in the last section to add this functionallity.
 
 To enable sorting on a related column you have to join the related table and add the sorting rule
-to the Sort component of the dataprovider:
+to the Sort component of the data provider:
 
 ```php
 $query = Post::find();
@@ -307,11 +307,8 @@ Filtering also needs the joinWith call as above. You also need to define the sea
 ```php
 public function attributes()
 {
-    // add related fields to searchable attributes when in search scenario
-    if ($this->getScenario() == 'search') {
-        return array_merge(parent::attributes(), ['site.number']);
-    }
-    return parent::attributes();
+    // add related fields to searchable attributes
+    return array_merge(parent::attributes(), ['author.name']);
 }
 
 public function rules()
