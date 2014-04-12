@@ -29,8 +29,6 @@ abstract class DbManagerTestCase extends ManagerTestCase
         }
 
         $this->auth = new DbManager(['db' => $this->getConnection()]);
-        $this->auth->init();
-        $this->prepareData();
     }
 
     protected function tearDown()

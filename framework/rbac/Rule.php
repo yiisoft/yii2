@@ -10,8 +10,7 @@ namespace yii\rbac;
 use yii\base\Object;
 
 /**
- * Rule represents a business constraint that may be assigned and the applied to
- * an authorization item or assignment.
+ * Rule represents a business constraint that may be associated with a role, permission or assignment.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
@@ -22,13 +21,21 @@ abstract class Rule extends Object
      * @var string name of the rule
      */
     public $name;
+    /**
+     * @var integer UNIX timestamp representing the rule creation time
+     */
+    public $createdAt;
+    /**
+     * @var integer UNIX timestamp representing the rule updating time
+     */
+    public $updatedAt;
 
     /**
      * Executes the rule.
      *
-     * @param array $params parameters passed to [[Manager::checkAccess()]].
-     * @param mixed $data additional data associated with the authorization item or assignment.
-     * @return boolean whether the rule execution returns true.
+     * @param Item $item the auth item that this rule is associated with
+     * @param array $params parameters passed to [[ManagerInterface::allow()]].
+     * @return boolean a value indicating whether the rule permits the auth item it is associated with.
      */
-    abstract public function execute($params, $data);
+    abstract public function execute($item, $params);
 }
