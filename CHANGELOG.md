@@ -282,6 +282,7 @@ Yii Framework 2 Change Log
 - Chg: `yii\log\Logger` is split into `yii\log\Logger` and `yii\log\Dispatcher`. (qiangxue)
 - Chg: Moved all filter classes to namespace `yii\filters` (qiangxue)
 - Chg: Removed `Application::preload` in favor of `Application::bootstrap` (qiangxue)
+- Chg: Re-implemented RBAC by following more closely to the original NIST RBAC model. Dropped `yii\rbac\PhpManager`. (qiangxue)
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #303: Added built-in support for REST API (qiangxue)
 - New #503: Added `yii\di\Container` and `yii\di\ServiceLocator` (qiangxue)
