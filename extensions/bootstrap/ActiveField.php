@@ -62,7 +62,7 @@ use yii\helpers\ArrayHelper;
  *     ]
  * ]);
  *
- * // With standard layout you would use 'template' to size a specific field:
+ * // With 'default' layout you would use 'template' to size a specific field:
  * // echo $form->field($model, 'demo', [
  * //     'template' => '{label} <div class="row"><div class="col-sm-4">{input}{error}{hint}</div></div>'
  * // ]);
@@ -84,12 +84,12 @@ use yii\helpers\ArrayHelper;
 class ActiveField extends \yii\widgets\ActiveField
 {
     /**
-     * @var bool whether to render [[checkboxList()]] and [[radioList()]] inline. Default is `false`.
+     * @var bool whether to render [[checkboxList()]] and [[radioList()]] inline.
      */
     public $inline = false;
 
     /**
-     * @var string|null optional template to render the `{input}` placheolder content
+     * @var string|null optional template to render the `{input}` placeholder content
      */
     public $inputTemplate;
 
@@ -119,7 +119,7 @@ class ActiveField extends \yii\widgets\ActiveField
     public $enableLabel = true;
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function __construct($config = [])
     {
@@ -129,7 +129,7 @@ class ActiveField extends \yii\widgets\ActiveField
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function render($content = null)
     {
@@ -140,7 +140,7 @@ class ActiveField extends \yii\widgets\ActiveField
                 $this->parts['{beginWrapper}'] = Html::beginTag($tag, $options);
                 $this->parts['{endWrapper}'] = Html::endTag($tag);
             }
-            if ($this->enableLabel===false) {
+            if ($this->enableLabel === false) {
                 $this->parts['{label}'] = '';
                 $this->parts['{beginLabel}'] = '';
                 $this->parts['{labelTitle}'] = '';
@@ -148,7 +148,7 @@ class ActiveField extends \yii\widgets\ActiveField
             } elseif (!isset($this->parts['{beginLabel}'])) {
                 $this->renderLabelParts();
             }
-            if ($this->enableError===false) {
+            if ($this->enableError === false) {
                 $this->parts['{error}'] = '';
             }
             if ($this->inputTemplate) {
@@ -161,13 +161,13 @@ class ActiveField extends \yii\widgets\ActiveField
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function checkbox($options = [], $enclosedByLabel = true)
     {
         if ($enclosedByLabel) {
             if (!isset($options['template'])) {
-                if ($this->form->layout==='horizontal') {
+                if ($this->form->layout === 'horizontal') {
                     $this->template = "{beginWrapper}\n<div class=\"checkbox\">\n{beginLabel}\n{input}\n{labelTitle}\n{endLabel}\n</div>\n{error}\n{endWrapper}\n{hint}";
                     Html::addCssClass($this->wrapperOptions, $this->horizontalCssClasses['offset']);
                 } else {
@@ -182,7 +182,7 @@ class ActiveField extends \yii\widgets\ActiveField
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function checkboxList($items, $options = [])
     {
@@ -202,7 +202,7 @@ class ActiveField extends \yii\widgets\ActiveField
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function radioList($items, $options = [])
     {
@@ -222,13 +222,13 @@ class ActiveField extends \yii\widgets\ActiveField
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function label($label = null, $options = [])
     {
         if (is_bool($label)) {
             $this->enableLabel = $label;
-            if ($label===false && $this->form->layout==='horizontal') {
+            if ($label === false && $this->form->layout === 'horizontal') {
                 Html::addCssClass($this->wrapperOptions, $this->horizontalCssClasses['offset']);
             }
         } else {
@@ -271,7 +271,7 @@ class ActiveField extends \yii\widgets\ActiveField
 
         $layout = $instanceConfig['form']->layout;
 
-        if ($layout==='horizontal') {
+        if ($layout === 'horizontal') {
             $config['template'] = "{label}\n{beginWrapper}\n{input}\n{error}\n{endWrapper}\n{hint}";
             $cssClasses = [
                 'offset' => 'col-sm-offset-3',
@@ -285,10 +285,10 @@ class ActiveField extends \yii\widgets\ActiveField
             }
             $config['horizontalCssClasses'] = $cssClasses;
             $config['wrapperOptions'] = ['class' => $cssClasses['wrapper']];
-            $config['labelOptions'] = ['class' => 'control-label '.$cssClasses['label']];
-            $config['errorOptions'] = ['class' => 'help-block '.$cssClasses['error']];
-            $config['hintOptions'] = ['class' => 'help-block '.$cssClasses['hint'] ];
-        } elseif ($layout==='inline') {
+            $config['labelOptions'] = ['class' => 'control-label ' . $cssClasses['label']];
+            $config['errorOptions'] = ['class' => 'help-block ' . $cssClasses['error']];
+            $config['hintOptions'] = ['class' => 'help-block ' . $cssClasses['hint']];
+        } elseif ($layout === 'inline') {
             $config['labelOptions'] = ['class' => 'sr-only'];
             $config['enableError'] = false;
         }
@@ -303,7 +303,7 @@ class ActiveField extends \yii\widgets\ActiveField
     protected function renderLabelParts($label = null, $options = [])
     {
         $options = array_merge($this->labelOptions, $options);
-        if ($label===null) {
+        if ($label === null) {
             if (isset($options['label'])) {
                 $label = $options['label'];
                 unset($options['label']);

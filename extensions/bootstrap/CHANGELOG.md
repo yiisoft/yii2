@@ -4,7 +4,6 @@ Yii Framework 2 bootstrap extension Change Log
 2.0.0 beta under development
 ----------------------------
 
-- Enh #3029: Added `ActiveForm` and `ActiveField` (mikehaertl)
 - Bug #2361: `yii\bootstrap\NavBar::brandUrl` should default to the home URL of application (qiangxue)
 - Enh #1474: Added option to make NavBar 100% width (cebe)
 - Enh #1552: It is now possible to use multiple bootstrap NavBar in a single page (Alex-Code)
@@ -17,6 +16,7 @@ Yii Framework 2 bootstrap extension Change Log
 - Enh #2643: Add size attribute to Modal (tof06)
 - Chg #1459: Update Collapse to use bootstrap 3 classes (tonydspaniard)
 - Chg #1820: Update Progress to use bootstrap 3 markup (samdark)
+- New #3029: Added `yii\bootstrap\ActiveForm` and `yii\bootstrap\ActiveField` (mikehaertl)
 
 2.0.0-alpha, December 1, 2013
 -----------------------------

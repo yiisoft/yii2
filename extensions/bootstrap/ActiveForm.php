@@ -7,10 +7,9 @@
 
 namespace yii\bootstrap;
 
-use yii\helpers\ArrayHelper;
+use Yii;
 use yii\helpers\Html;
 use yii\base\InvalidConfigException;
-use Yii;
 
 /**
  * A Bootstrap 3 enhanced version of [[yii\widgets\ActiveForm]].
@@ -73,29 +72,29 @@ class ActiveForm extends \yii\widgets\ActiveForm
     public $options = ['role' => 'form'];
 
     /**
-     * @var string the form layout. Either 'standard' (default), 'horizontal' or 'inline'.
-     * By chosing a layout, an appropriate default field configuration is applied. This will
+     * @var string the form layout. Either 'default', 'horizontal' or 'inline'.
+     * By choosing a layout, an appropriate default field configuration is applied. This will
      * render the form fields with slightly different markup for each layout. You can
      * override these defaults through [[fieldConfig]].
      * @see \yii\bootstrap\ActiveField for details on Bootstrap 3 field configuration
      */
-    public $layout = 'standard';
+    public $layout = 'default';
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function init()
     {
-        if (!in_array($this->layout, ['standard','horizontal','inline'])) {
-            throw new InvalidConfigException('Invalid layout type: '.$this->layout);
+        if (!in_array($this->layout, ['default', 'horizontal', 'inline'])) {
+            throw new InvalidConfigException('Invalid layout type: ' . $this->layout);
         }
 
-        if ($this->layout!=='standard') {
-            Html::addCssClass($this->options, 'form-'.$this->layout);
+        if ($this->layout !== 'default') {
+            Html::addCssClass($this->options, 'form-' . $this->layout);
         }
         if (!isset($this->fieldConfig['class'])) {
             $this->fieldConfig['class'] = ActiveField::className();
         }
-        return parent::init();
+        parent::init();
     }
 }
