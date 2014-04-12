@@ -570,33 +570,32 @@ class User extends Component
     }
 
     /**
-     * Performs access check for this user.
+     * Checks if the user can perform the operation as specified by the given permission.
      *
      * Note that you must configure "authManager" application component in order to use this method.
      * Otherwise an exception will be thrown.
      *
-     * @param string $operation the name of the operation that need access check.
-     * @param array $params name-value pairs that would be passed to business rules associated
-     * with the tasks and roles assigned to the user. A param with name 'userId' is added to
-     * this array, which holds the value of [[id]] when [[\yii\rbac\DbManager]] or
-     * [[\yii\rbac\PhpManager]] is used.
+     * @param string $permissionName the name of the permission (e.g. "edit post") that needs access check.
+     * @param array $params name-value pairs that would be passed to the rules associated
+     * with the roles and permissions assigned to the user. A param with name 'user' is added to
+     * this array, which holds the value of [[id]].
      * @param boolean $allowCaching whether to allow caching the result of access check.
      * When this parameter is true (default), if the access check of an operation was performed
      * before, its result will be directly returned when calling this method to check the same
      * operation. If this parameter is false, this method will always call
-     * [[\yii\rbac\Manager::checkAccess()]] to obtain the up-to-date access result. Note that this
+     * [[\yii\rbac\ManagerInterface::checkAccess()]] to obtain the up-to-date access result. Note that this
      * caching is effective only within the same request and only works when `$params = []`.
-     * @return boolean whether the operations can be performed by this user.
+     * @return boolean whether the user can perform the operation as specified by the given permission.
      */
-    public function checkAccess($operation, $params = [], $allowCaching = true)
+    public function can($permissionName, $params = [], $allowCaching = true)
     {
         $auth = Yii::$app->getAuthManager();
-        if ($allowCaching && empty($params) && isset($this->_access[$operation])) {
-            return $this->_access[$operation];
+        if ($allowCaching && empty($params) && isset($this->_access[$permissionName])) {
+            return $this->_access[$permissionName];
         }
-        $access = $auth->checkAccess($this->getId(), $operation, $params);
+        $access = $auth->checkAccess($this->getId(), $permissionName, $params);
         if ($allowCaching && empty($params)) {
-            $this->_access[$operation] = $access;
+            $this->_access[$permissionName] = $access;
         }
 
         return $access;
