@@ -297,7 +297,7 @@ Yii Framework 2 Change Log
 - New #2932: Added `yii\web\ViewAction` that allow you to render views based on GET parameter (samdark)
 - New #2998: Added `framework\log\SyslogTarget` that is able to write log to syslog (miramir, samdark)
 - New #3029: Added `yii\bootstrap\ActiveForm` and `yii\bootstrap\ActiveField` (mikehaertl)
-- New: Yii framework now comes with core messages in multiple languages
+- New: Yii framework now comes with core messages translated into 24 languages
 - New: Added `yii\codeception\DbTestCase` (qiangxue)
 - New: Added `yii\web\GroupUrlRule` (qiangxue)
 - New: Added `yii\filters\RateLimiter` (qiangxue)
