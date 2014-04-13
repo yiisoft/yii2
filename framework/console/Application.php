@@ -1,7 +1,5 @@
 <?php
 /**
- * Console Application class file.
- *
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
@@ -45,8 +43,6 @@ use yii\base\InvalidRouteException;
  * ~~~
  * yii help
  * ~~~
- *
- * @property Response $response The response component. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

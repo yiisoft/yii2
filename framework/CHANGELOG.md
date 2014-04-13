@@ -1,8 +1,8 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.0 beta under development
-----------------------------
+2.0.0-beta April 13, 2014
+-------------------------
 
 - Bug #1265: AssetController does not override 'js' and 'css' for compressed bundles (klimov-paul)
 - Bug #1326: The `visible` setting for `DetailView` doesn't work as expected (qiangxue)
@@ -64,6 +64,7 @@ Yii Framework 2 Change Log
 - Bug #2834: When overriding i18n translation sources from config using `app*` or `yii*` default `app` and `yii` sources were not removed (samdark)
 - Bug #2848: Individual queries should be enclosed within parenthesis in a UNION query (qiangxue)
 - Bug #2862: Using `DbCache` while enabling schema caching may cause infinite loops (qiangxue)
+- Bug #3052: Fixed the issue that cache dependency data is not reused when `reusable` is set true (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
@@ -188,6 +189,9 @@ Yii Framework 2 Change Log
 - Enh: Implemented Oracle column comment reading from another schema (gureedo, samdark)
 - Enh: Added support to allow an event handler to be inserted at the beginning of the existing event handler list (qiangxue)
 - Enh: Improved action filter and action execution flow by supporting installing action filters at controller, module and application levels (qiangxue)
+- Enh: Added `isAssociative()` and `isIndexed()` to `yii\helpers\ArrayHelper` (qiangxue)
+- Enh: Added `addSelect` to `yii\db\Query` (Alex-Code)
+- Enh: Added ODBC support in `yii\db\Connection` (nineinchnick, resurtm)
 - Chg #47: Changed Markdown library to cebe/markdown and adjusted Markdown helper API (cebe)
 - Chg #735: Added back `ActiveField::hiddenInput()` (qiangxue)
 - Chg #1186: Changed `Sort` to use comma to separate multiple sort fields and use negative sign to indicate descending sort (qiangxue)
@@ -240,7 +244,8 @@ Yii Framework 2 Change Log
 - Chg #2816: Changed default date and time format of `yii\base\Formatter` to `Y-m-d` and `H:i:s` (qiangxue)
 - Chg #2911: Removed `tbl_` default for table prefix (samdark)
 - Chg #2912: Relative view files will be looked for under the directory containing the view currently being rendered (qiangxue)
-- Chg #2955: Changed the signature of ActiveQuery constructors and `ActiveRecord::createQuery()` to simplify customizing ActiveQuery classes (qiangxue)
+- Chg #2955: Changed the signature of ActiveQuery constructors and replaced `ActiveRecord::createQuery()` with `find()` to simplify customizing ActiveQuery classes (qiangxue)
+- Chg #2999: Added `findOne()` and `findAll()` to replace the usage of `ActiveRecord::find($condition)`. (samdark, qiangxue)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
@@ -276,6 +281,9 @@ Yii Framework 2 Change Log
 - Chg: Removed `yii\grid\Column::getDataCellContent()` and renamed `yii\grid\DataColumn::getDataCellContent()` to `yii\grid\DataColumn::getDataCellValue()` (cebe)
 - Chg: `yii\log\Logger` is split into `yii\log\Logger` and `yii\log\Dispatcher`. (qiangxue)
 - Chg: Moved all filter classes to namespace `yii\filters` (qiangxue)
+- Chg: Removed `Application::preload` in favor of `Application::bootstrap` (qiangxue)
+- Chg: Re-implemented RBAC by following more closely to the original NIST RBAC model. Dropped `yii\rbac\PhpManager`. (qiangxue)
+- Chg: Renamed `yii\web\User::checkAccess()` to `yii\web\User::can()` (qiangxue)
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
 - New #303: Added built-in support for REST API (qiangxue)
 - New #503: Added `yii\di\Container` and `yii\di\ServiceLocator` (qiangxue)
@@ -283,14 +291,18 @@ Yii Framework 2 Change Log
 - New #1393: [Codeception testing framework integration](https://github.com/yiisoft/yii2-codeception) (Ragazzo)
 - New #1438: [MongoDB integration](https://github.com/yiisoft/yii2-mongodb) ActiveRecord and Query (klimov-paul)
 - New #1956: Implemented test fixture framework (qiangxue)
+- New #2034: Added `ContentNegotiator` to support response format and language negotiation (qiangxue)
 - New #2149: Added `yii\base\DynamicModel` to support ad-hoc data validation (qiangxue)
 - New #2360: Added `AttributeBehavior` and `BlameableBehavior`, and renamed `AutoTimestamp` to `TimestampBehavior` (lucianobaraglia, qiangxue)
 - New #2932: Added `yii\web\ViewAction` that allow you to render views based on GET parameter (samdark)
-- New: Yii framework now comes with core messages in multiple languages
+- New #2998: Added `framework\log\SyslogTarget` that is able to write log to syslog (miramir, samdark)
+- New #3029: Added `yii\bootstrap\ActiveForm` and `yii\bootstrap\ActiveField` (mikehaertl)
+- New: Yii framework now comes with core messages translated into 26 languages, many thanks to all our translators!
 - New: Added `yii\codeception\DbTestCase` (qiangxue)
 - New: Added `yii\web\GroupUrlRule` (qiangxue)
 - New: Added `yii\filters\RateLimiter` (qiangxue)
 - New: Added various authentication methods, including `HttpBasicAuth`, `HttpBearerAuth`, `QueryParamAuth`, and `CompositeAuth` (qiangxue)
+- New: Added `HtmlResponseFormatter` and `JsonResponseFormatter` (qiangxue)
 
 2.0.0-alpha, December 1, 2013
 -----------------------------

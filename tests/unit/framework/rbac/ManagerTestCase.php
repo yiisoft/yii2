@@ -4,12 +4,58 @@ namespace yiiunit\framework\rbac;
 
 use yii\rbac\Assignment;
 use yii\rbac\Item;
+use yii\rbac\Permission;
+use yii\rbac\Role;
 use yiiunit\TestCase;
 
 abstract class ManagerTestCase extends TestCase
 {
-    /** @var \yii\rbac\Manager */
+    /**
+     * @var \yii\rbac\ManagerInterface
+     */
     protected $auth;
+
+    public function testCreateRoleAndPermission()
+    {
+        $role = $this->auth->createRole('admin');
+        $this->assertTrue($role instanceof Role);
+        $this->assertEquals(Item::TYPE_ROLE, $role->type);
+        $this->assertEquals('admin', $role->name);
+    }
+
+    public function testCreatePermission()
+    {
+        $permission = $this->auth->createPermission('edit post');
+        $this->assertTrue($permission instanceof Permission);
+        $this->assertEquals(Item::TYPE_PERMISSION, $permission->type);
+        $this->assertEquals('edit post', $permission->name);
+    }
+
+    public function testAdd()
+    {
+        $role = $this->auth->createRole('admin');
+        $role->description = 'administrator';
+        $this->assertTrue($this->auth->add($role));
+
+        $permission = $this->auth->createPermission('edit post');
+        $permission->description = 'edit a post';
+        $this->assertTrue($this->auth->add($permission));
+
+        $rule = new AuthorRule(['name' => 'is author', 'reallyReally' => true]);
+        $this->assertTrue($this->auth->add($rule));
+
+        // todo: check duplication of name
+    }
+/*
+    public function testRemove()
+    {
+
+    }
+
+    public function testUpdate()
+    {
+
+    }
 
     public function testCreateItem()
     {
@@ -43,7 +89,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertNull($this->auth->getItem('unknown'));
     }
 
-    public function testRemoveAuthItem()
+    public function testRemoveItem()
     {
         $this->assertTrue($this->auth->getItem('updatePost') instanceof Item);
         $this->assertTrue($this->auth->removeItem('updatePost'));
@@ -167,9 +213,12 @@ abstract class ManagerTestCase extends TestCase
         $this->setExpectedException('\yii\base\Exception');
         $this->auth->addItemChild('readPost', 'readPost');
     }
+    */
 
     public function testGetRule()
     {
+        $this->prepareData();
+
         $rule = $this->auth->getRule('isAuthor');
         $this->assertInstanceOf('yii\rbac\Rule', $rule);
         $this->assertEquals('isAuthor', $rule->name);
@@ -178,13 +227,14 @@ abstract class ManagerTestCase extends TestCase
         $this->assertNull($rule);
     }
 
-    public function testInsertRule()
+    public function testAddRule()
     {
+        $this->prepareData();
+
         $ruleName = 'isReallyReallyAuthor';
         $rule = new AuthorRule(['name' => $ruleName, 'reallyReally' => true]);
-        $this->auth->insertRule($rule);
+        $this->auth->add($rule);
 
-        /** @var AuthorRule $rule */
         $rule = $this->auth->getRule($ruleName);
         $this->assertEquals($ruleName, $rule->name);
         $this->assertEquals(true, $rule->reallyReally);
@@ -192,12 +242,13 @@ abstract class ManagerTestCase extends TestCase
 
     public function testUpdateRule()
     {
+        $this->prepareData();
+
         $rule = $this->auth->getRule('isAuthor');
         $rule->name = "newName";
         $rule->reallyReally = false;
-        $this->auth->updateRule('isAuthor', $rule);
+        $this->auth->update('isAuthor', $rule);
 
-        /** @var AuthorRule $rule */
         $rule = $this->auth->getRule('isAuthor');
         $this->assertEquals(null, $rule);
 
@@ -206,7 +257,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals(false, $rule->reallyReally);
 
         $rule->reallyReally = true;
-        $this->auth->updateRule('newName', $rule);
+        $this->auth->update('newName', $rule);
 
         $rule = $this->auth->getRule('newName');
         $this->assertEquals(true, $rule->reallyReally);
@@ -214,8 +265,10 @@ abstract class ManagerTestCase extends TestCase
 
     public function testGetRules()
     {
+        $this->prepareData();
+
         $rule = new AuthorRule(['name' => 'isReallyReallyAuthor', 'reallyReally' => true]);
-        $this->auth->insertRule($rule);
+        $this->auth->add($rule);
 
         $rules = $this->auth->getRules();
 
@@ -230,103 +283,87 @@ abstract class ManagerTestCase extends TestCase
 
     public function testRemoveRule()
     {
-        $this->auth->removeRule('isAuthor');
+        $this->prepareData();
+
+        $this->auth->remove($this->auth->getRule('isAuthor'));
         $rules = $this->auth->getRules();
 
         $this->assertEmpty($rules);
     }
 
-    public function testExecuteRule()
-    {
-        $this->assertTrue($this->auth->executeRule(null, [], null));
-        $this->assertTrue($this->auth->executeRule('isAuthor', ['userID' => 1, 'authorID' => 1], null));
-        $this->assertFalse($this->auth->executeRule('isAuthor', ['userID' => 1, 'authorID' => 2], null));
-    }
-
     public function testCheckAccess()
     {
-        $results = [
+        $this->prepareData();
+
+        $testSuites = [
             'reader A' => [
                 'createPost' => false,
                 'readPost' => true,
                 'updatePost' => false,
-                'updateOwnPost' => false,
-                'deletePost' => false,
+                'updateAnyPost' => false,
             ],
             'author B' => [
                 'createPost' => true,
                 'readPost' => true,
                 'updatePost' => true,
-                'updateOwnPost' => true,
-                'deletePost' => false,
+                'updateAnyPost' => false,
             ],
-            'editor C' => [
-                'createPost' => false,
-                'readPost' => true,
-                'updatePost' => true,
-                'updateOwnPost' => false,
-                'deletePost' => false,
-            ],
-            'admin D' => [
+            'admin C' => [
                 'createPost' => true,
                 'readPost' => true,
-                'updatePost' => true,
-                'updateOwnPost' => false,
-                'deletePost' => true,
-            ],
-            'reader E' => [
-                'createPost' => false,
-                'readPost' => false,
                 'updatePost' => false,
-                'updateOwnPost' => false,
-                'deletePost' => false,
+                'updateAnyPost' => true,
             ],
         ];
 
         $params = ['authorID' => 'author B'];
 
-        foreach (['reader A', 'author B', 'editor C', 'admin D'] as $user) {
-            $params['userID'] = $user;
-            foreach (['createPost', 'readPost', 'updatePost', 'updateOwnPost', 'deletePost'] as $operation) {
-                $result = $this->auth->checkAccess($user, $operation, $params);
-                $this->assertEquals($results[$user][$operation], $result);
+        foreach ($testSuites as $user => $tests) {
+            foreach ($tests as $permission => $result) {
+                $this->assertEquals($result, $this->auth->checkAccess($user, $permission, $params), "Checking $user can $permission");
             }
         }
     }
 
     protected function prepareData()
     {
-        $this->auth->insertRule(new AuthorRule());
+        $rule = new AuthorRule;
+        $this->auth->add($rule);
 
-        $this->auth->createOperation('createPost', 'create a post');
-        $this->auth->createOperation('readPost', 'read a post');
-        $this->auth->createOperation('updatePost', 'update a post');
-        $this->auth->createOperation('deletePost', 'delete a post');
+        $createPost = $this->auth->createPermission('createPost');
+        $createPost->description = 'create a post';
+        $this->auth->add($createPost);
 
-        $task = $this->auth->createTask('updateOwnPost', 'update a post by author himself', 'isAuthor');
-        $task->addChild('updatePost');
+        $readPost = $this->auth->createPermission('readPost');
+        $readPost->description = 'read a post';
+        $this->auth->add($readPost);
 
-        $role = $this->auth->createRole('reader');
-        $role->addChild('readPost');
+        $updatePost = $this->auth->createPermission('updatePost');
+        $updatePost->description = 'update a post';
+        $updatePost->ruleName = $rule->name;
+        $this->auth->add($updatePost);
 
-        $role = $this->auth->createRole('author');
-        $role->addChild('reader');
-        $role->addChild('createPost');
-        $role->addChild('updateOwnPost');
+        $updateAnyPost = $this->auth->createPermission('updateAnyPost');
+        $updateAnyPost->description = 'update any post';
+        $this->auth->add($updateAnyPost);
 
-        $role = $this->auth->createRole('editor');
-        $role->addChild('reader');
-        $role->addChild('updatePost');
+        $reader = $this->auth->createRole('reader');
+        $this->auth->add($reader);
+        $this->auth->addChild($reader, $readPost);
 
-        $role = $this->auth->createRole('admin');
-        $role->addChild('editor');
-        $role->addChild('author');
-        $role->addChild('deletePost');
+        $author = $this->auth->createRole('author');
+        $this->auth->add($author);
+        $this->auth->addChild($author, $createPost);
+        $this->auth->addChild($author, $updatePost);
+        $this->auth->addChild($author, $reader);
 
-        $this->auth->assign('reader A', 'reader');
-        $this->auth->assign('author B', 'author');
-        $this->auth->assign('editor C', 'editor');
-        $this->auth->assign('admin D', 'admin');
-        $this->auth->assign('reader E', 'reader');
+        $admin = $this->auth->createRole('admin');
+        $this->auth->add($admin);
+        $this->auth->addChild($admin, $author);
+        $this->auth->addChild($admin, $updateAnyPost);
+
+        $this->auth->assign($reader, 'reader A');
+        $this->auth->assign($author, 'author B');
+        $this->auth->assign($admin, 'admin C');
     }
 }

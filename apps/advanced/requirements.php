@@ -32,27 +32,27 @@ $requirements = array(
         'name' => 'PDO extension',
         'mandatory' => true,
         'condition' => extension_loaded('pdo'),
-        'by' => 'All <a href="http://www.yiiframework.com/doc/api/#system.db">DB-related classes</a>',
+        'by' => 'All DB-related classes',
     ),
     array(
         'name' => 'PDO SQLite extension',
         'mandatory' => false,
         'condition' => extension_loaded('pdo_sqlite'),
-        'by' => 'All <a href="http://www.yiiframework.com/doc/api/#system.db">DB-related classes</a>',
+        'by' => 'All DB-related classes',
         'memo' => 'Required for SQLite database.',
     ),
     array(
         'name' => 'PDO MySQL extension',
         'mandatory' => false,
         'condition' => extension_loaded('pdo_mysql'),
-        'by' => 'All <a href="http://www.yiiframework.com/doc/api/#system.db">DB-related classes</a>',
+        'by' => 'All DB-related classes',
         'memo' => 'Required for MySQL database.',
     ),
     array(
         'name' => 'PDO PostgreSQL extension',
         'mandatory' => false,
         'condition' => extension_loaded('pdo_pgsql'),
-        'by' => 'All <a href="http://www.yiiframework.com/doc/api/#system.db">DB-related classes</a>',
+        'by' => 'All DB-related classes',
         'memo' => 'Required for PostgreSQL database.',
     ),
     // Cache :
@@ -60,21 +60,21 @@ $requirements = array(
         'name' => 'Memcache extension',
         'mandatory' => false,
         'condition' => extension_loaded('memcache') || extension_loaded('memcached'),
-        'by' => '<a href="http://www.yiiframework.com/doc/api/CMemCache">CMemCache</a>',
-        'memo' => extension_loaded('memcached') ? 'To use memcached set <a href="http://www.yiiframework.com/doc/api/CMemCache#useMemcached-detail">CMemCache::useMemcached</a> to <code>true</code>.' : ''
+        'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-caching-memcache.html">MemCache</a>',
+        'memo' => extension_loaded('memcached') ? 'To use memcached set <a href="http://www.yiiframework.com/doc-2.0/yii-caching-memcache.html#$useMemcached-detail">MemCache::useMemcached</a> to <code>true</code>.' : ''
     ),
     array(
         'name' => 'APC extension',
         'mandatory' => false,
         'condition' => extension_loaded('apc'),
-        'by' => '<a href="http://www.yiiframework.com/doc/api/CApcCache">CApcCache</a>',
+        'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-caching-apccache.html">ApcCache</a>',
     ),
     // Additional PHP extensions :
     array(
         'name' => 'Mcrypt extension',
         'mandatory' => false,
         'condition' => extension_loaded('mcrypt'),
-        'by' => '<a href="http://www.yiiframework.com/doc/api/CSecurityManager">CSecurityManager</a>',
+        'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-helpers-security.html">Security Helper</a>',
         'memo' => 'Required by encrypt and decrypt methods.'
     ),
     // PHP ini :
@@ -102,7 +102,7 @@ $requirements = array(
     'phpSmtp' => array(
         'name' => 'PHP mail SMTP',
         'mandatory' => false,
-        'condition' => strlen(ini_get('SMTP'))>0,
+        'condition' => strlen(ini_get('SMTP')) > 0,
         'by' => 'Email sending',
         'memo' => 'PHP mail SMTP server required',
     ),

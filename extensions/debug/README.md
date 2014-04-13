@@ -33,7 +33,7 @@ Once the extension is installed, simply modify your application configuration as
 
 ```php
 return [
-	'preload' => ['debug'],
+	'bootstrap' => ['debug'],
 	'modules' => [
 		'debug' => 'yii\debug\Module',
 		...

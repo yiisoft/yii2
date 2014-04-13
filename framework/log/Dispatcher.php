@@ -88,7 +88,7 @@ class Dispatcher extends Component
     }
 
     /**
-     * Initializes the logger by registering [[flush()]] as a shutdown function.
+     * @inheritdoc
      */
     public function init()
     {

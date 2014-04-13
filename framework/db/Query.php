@@ -409,6 +409,26 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * Add more columns to the SELECT part of the query.
+     * @param string|array $columns the columns to add to the select.
+     * @return static the query object itself
+     * @see select()
+     */
+    public function addSelect($columns)
+    {
+        if (!is_array($columns)) {
+            $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+        }
+        if ($this->select === null) {
+            $this->select = $columns;
+        } else {
+            $this->select = array_merge($this->select, $columns);
+        }
+        
+        return $this;
+    }
+
+    /**
      * Sets the value indicating whether to SELECT DISTINCT or not.
      * @param boolean $value whether to SELECT DISTINCT or not.
      * @return static the query object itself

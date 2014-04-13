@@ -136,7 +136,7 @@ class BaseImage
     }
 
     /**
-     * Creates a thumbnail image. The function differs from [[\Imagine\Image\ImageInterface::thumbnail()]] function that
+     * Creates a thumbnail image. The function differs from `\Imagine\Image\ImageInterface::thumbnail()` function that
      * it keeps the aspect ratio of the image.
      * @param  string         $filename the image file path or path alias.
      * @param  integer        $width    the width in pixels to create the thumbnail

@@ -22,8 +22,8 @@ trait ActiveRelationTrait
     /**
      * @var boolean whether this query represents a relation to more than one record.
      * This property is only used in relational context. If true, this relation will
-     * populate all query results into AR instances using [[all()]].
-     * If false, only the first row of the results will be retrieved using [[one()]].
+     * populate all query results into AR instances using [[Query::all()|all()]].
+     * If false, only the first row of the results will be retrieved using [[Query::one()|one()]].
      */
     public $multiple;
     /**

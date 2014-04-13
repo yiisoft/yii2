@@ -43,7 +43,7 @@ class UploadedFile extends Object
     /**
      * @var string the MIME-type of the uploaded file (such as "image/gif").
      * Since this MIME type is not checked on the server side, do not take this value for granted.
-     * Instead, use [[FileHelper::getMimeType()]] to determine the exact MIME type.
+     * Instead, use [[\yii\helpers\FileHelper::getMimeType()]] to determine the exact MIME type.
      */
     public $type;
     /**
@@ -70,7 +70,7 @@ class UploadedFile extends Object
 
     /**
      * Returns an uploaded file for the given model attribute.
-     * The file should be uploaded using [[ActiveForm::fileInput()]].
+     * The file should be uploaded using [[\yii\widgets\ActiveField::fileInput()]].
      * @param \yii\base\Model $model the data model
      * @param string $attribute the attribute name. The attribute name may contain array indexes.
      * For example, '[1]file' for tabular file uploading; and 'file[1]' for an element in a file array.

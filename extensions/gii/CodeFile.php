@@ -50,7 +50,7 @@ class CodeFile extends Object
      */
     public $content;
     /**
-     * @var string the operation to be performed. This can be [[OP_NEW]], [[OP_OVERWRITE]] or [[OP_SKIP]].
+     * @var string the operation to be performed. This can be [[OP_CREATE]], [[OP_OVERWRITE]] or [[OP_SKIP]].
      */
     public $operation;
 

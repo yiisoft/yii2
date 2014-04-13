@@ -101,13 +101,13 @@ class ActiveRecordTest extends DatabaseTestCase
     public function testFindLazyViaTable()
     {
         /** @var Order $order */
-        $order = Order::find(1);
+        $order = Order::findOne(1);
         $this->assertEquals(1, $order->id);
         $this->assertEquals(2, count($order->books));
         $this->assertEquals(1, $order->items[0]->id);
         $this->assertEquals(2, $order->items[1]->id);
 
-        $order = Order::find(2);
+        $order = Order::findOne(2);
         $this->assertEquals(2, $order->id);
         $this->assertEquals(0, count($order->books));
     }
@@ -148,7 +148,7 @@ class ActiveRecordTest extends DatabaseTestCase
     public function testDeeplyNestedTableRelation()
     {
         /** @var Customer $customer */
-        $customer = Customer::find(1);
+        $customer = Customer::findOne(1);
         $this->assertNotNull($customer);
 
         $items = $customer->orderItems;
@@ -356,11 +356,11 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1, count($orders[2]->books2));
 
         // lazy loading with ON condition
-        $order = Order::find(1);
+        $order = Order::findOne(1);
         $this->assertEquals(2, count($order->books2));
-        $order = Order::find(2);
+        $order = Order::findOne(2);
         $this->assertEquals(0, count($order->books2));
-        $order = Order::find(3);
+        $order = Order::findOne(3);
         $this->assertEquals(1, count($order->books2));
 
         // eager loading with ON condition
@@ -384,7 +384,7 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(3, count($orders));
 
         // https://github.com/yiisoft/yii2/issues/2880
-        $query = Order::find(1);
+        $query = Order::findOne(1);
         $customer = $query->getCustomer()->joinWith([
             'orders' => function ($q) { $q->orderBy([]); }
         ])->one();
@@ -451,13 +451,13 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertTrue($customers[0]->orders2[0]->customer2 === $customers[0]);
         $this->assertTrue(empty($customers[1]->orders2));
         // lazy loading
-        $customer = Customer::find(2);
+        $customer = Customer::findOne(2);
         $orders = $customer->orders2;
         $this->assertTrue(count($orders) === 2);
         $this->assertTrue($customer->orders2[0]->customer2 === $customer);
         $this->assertTrue($customer->orders2[1]->customer2 === $customer);
         // ad-hoc lazy loading
-        $customer = Customer::find(2);
+        $customer = Customer::findOne(2);
         $orders = $customer->getOrders2()->all();
         $this->assertTrue(count($orders) === 2);
         $this->assertTrue($customer->orders2[0]->customer2 === $customer);
