@@ -41,7 +41,6 @@ use yii\base\InvalidConfigException;
  * To get a different column layout in horizontal mode you can modify those options
  * through [[fieldConfig]]:
  *
- *
  * ```php
  * $form = ActiveForm::begin([
  *     'layout' => 'horizontal',

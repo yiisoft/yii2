@@ -32,7 +32,6 @@ class ReleaseController extends Controller
     {
         $this->closeChangelogs($version);
         $this->composerSetStability($version);
-        $this->composerCreateLocks();
         $this->updateYiiVersion($version);
     }
 
@@ -105,11 +104,6 @@ class ReleaseController extends Controller
                 dirname(YII_PATH) . '/apps/benchmark/composer.json',
             ]
         );
-    }
-
-    protected function composerCreateLocks()
-    {
-        $this->confirm('Run composer update for each app and commit the composer.lock file. Hit enter when done.');
     }
 
     protected function updateYiiVersion($version)

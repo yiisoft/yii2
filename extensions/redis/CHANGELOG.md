@@ -1,8 +1,8 @@
 Yii Framework 2 redis extension Change Log
 ==========================================
 
-2.0.0 beta under development
-----------------------------
+2.0.0-beta April 13, 2014
+-------------------------
 
 - Bug #1993: afterFind event in AR is now called after relations have been populated (cebe, creocoder)
 - Enh #1773: keyPrefix property of Session and Cache is not restricted to alnum characters anymore (cebe)

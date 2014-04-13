@@ -89,8 +89,7 @@ use yii\caching\Cache;
  * ]
  * ~~~
  *
- * @property string $driverName Name of the DB driver. Change this property if you want to override the
- * driver name specified in [[dsn]]. This can be useful if you're working with the database via ODBC layer.
+ * @property string $driverName Name of the DB driver.
  * @property boolean $isActive Whether the DB connection is established. This property is read-only.
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
  * sequence object. This property is read-only.

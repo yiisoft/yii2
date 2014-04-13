@@ -1,8 +1,8 @@
 Yii Framework 2 bootstrap extension Change Log
 ==============================================
 
-2.0.0 beta under development
-----------------------------
+2.0.0-beta April 13, 2014
+-------------------------
 
 - Bug #2361: `yii\bootstrap\NavBar::brandUrl` should default to the home URL of application (qiangxue)
 - Enh #1474: Added option to make NavBar 100% width (cebe)

@@ -1,8 +1,8 @@
 Yii Framework 2 debug extension Change Log
 ==========================================
 
-2.0.0 beta under development
-----------------------------
+2.0.0-beta April 13, 2014
+-------------------------
 
 - Bug #1783: Using VarDumper::dumpAsString() instead var_export(), because var_export() does not handle circular references. (djagya)
 - Bug #1504: Debug toolbar isn't loaded successfully in some environments when xdebug is enabled (qiangxue)
