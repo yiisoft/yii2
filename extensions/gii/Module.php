@@ -122,9 +122,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
     {
         $app->urlManager->addRules(
             [
-                'gii'                               => 'gii',
-                'gii/<controller:\w+>'              => 'gii/<controller>',
-                'gii/<controller:\w+>/<action:\w+>' => 'gii/<controller>/<action>',
+                $this->id => 'gii',
+                $this->id.'/<controller:\w+>' => 'gii/<controller>',
+                $this->id.'/<controller:\w+>/<action:\w+>' => 'gii/<controller>/<action>',
             ]
         );
     }
