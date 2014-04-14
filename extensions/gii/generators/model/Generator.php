@@ -575,7 +575,7 @@ class Generator extends \yii\gii\Generator
      */
     protected function getDbConnection()
     {
-        return Yii::$app->{$this->db};
+        return Yii::$app->get($this->db, false);
     }
 
     /**
