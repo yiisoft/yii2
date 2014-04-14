@@ -8,6 +8,7 @@
 namespace yii\gii;
 
 use Yii;
+use yii\base\BootstrapInterface;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -51,7 +52,7 @@ use yii\web\ForbiddenHttpException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Module extends \yii\base\Module
+class Module extends \yii\base\Module implements BootstrapInterface
 {
     /**
      * @inheritdoc
@@ -111,6 +112,20 @@ class Module extends \yii\base\Module
         } else {
             throw new ForbiddenHttpException('You are not allowed to access this page.');
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function bootstrap($app)
+    {
+        $app->urlManager->addRules(
+            [
+                'gii'                               => 'gii',
+                'gii/<controller:\w+>'              => 'gii/<controller>',
+                'gii/<controller:\w+>/<action:\w+>' => 'gii/<controller>/<action>',
+            ]
+        );
     }
 
     /**
