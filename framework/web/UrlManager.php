@@ -127,6 +127,8 @@ class UrlManager extends Component
     private $_baseUrl;
     private $_hostInfo;
 
+    const VERBS  = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
+
     /**
      * Initializes UrlManager.
      */
@@ -157,28 +159,59 @@ class UrlManager extends Component
             }
         }
 
-        $rules = [];
-        $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
-        foreach ($this->rules as $key => $rule) {
-            if (!is_array($rule)) {
-                $rule = ['route' => $rule];
-                if (preg_match("/^((?:($verbs),)*($verbs))\\s+(.*)$/", $key, $matches)) {
-                    $rule['verb'] = explode(',', $matches[1]);
-                    $rule['mode'] = UrlRule::PARSING_ONLY;
-                    $key = $matches[4];
-                }
-                $rule['pattern'] = $key;
-            }
-            $rule = Yii::createObject(array_merge($this->ruleConfig, $rule));
-            if (!$rule instanceof UrlRuleInterface) {
-                throw new InvalidConfigException('URL rule class must implement UrlRuleInterface.');
-            }
-            $rules[] = $rule;
-        }
-        $this->rules = $rules;
+        $rules       = $this->rules;
+        $this->rules = [];
+        $this->addRules($rules, true);
 
         if (isset($cacheKey, $hash)) {
             $this->cache->set($cacheKey, [$this->rules, $hash]);
+        }
+    }
+
+    /**
+     * Parse a pattern and create a UrlRule object.
+     * Refactored from compileRules().
+     * @param $pattern
+     * @param $route
+     * @return UrlRule
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function parseRule($pattern, $route)
+    {
+        if (!is_array($route)) {
+            $route = ['route' => $route];
+            if (preg_match('/^((?:(' . self::VERBS . '),)*(' . self::VERBS . '))\\s+(.*)$/', $pattern, $matches)) {
+                $route['verb'] = explode(',', $matches[1]);
+                $route['mode'] = UrlRule::PARSING_ONLY;
+                $pattern       = $matches[4];
+            }
+            $route['pattern'] = $pattern;
+        }
+        $route = Yii::createObject(array_merge($this->ruleConfig, $route));
+        if (!$route instanceof UrlRuleInterface) {
+            throw new InvalidConfigException('URL rule class must implement UrlRuleInterface.');
+        }
+
+        return $route;
+    }
+
+    /**
+     * Adds rules to the UrlManager.
+     * Refactored from compileRules() to allow simple addition of rules by modules
+     * after the configuration has been loaded.
+     * @param array $rules
+     * @param bool $addToBottom
+     */
+    public function addRules($rules, $addToBottom = false)
+    {
+        $newRules = [];
+        foreach ($rules as $pattern => $rule) {
+            $newRules[] = $this->parseRule($pattern, $rule);
+        }
+        if ($addToBottom) {
+            $this->rules = \yii\helpers\ArrayHelper::merge($this->rules, $newRules);
+        } else {
+            $this->rules = \yii\helpers\ArrayHelper::merge($newRules, $this->rules);
         }
     }
 
