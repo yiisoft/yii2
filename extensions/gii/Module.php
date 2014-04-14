@@ -98,9 +98,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public function init()
     {
         parent::init();
-        foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
-            $this->generators[$id] = Yii::createObject($config);
-        }
     }
 
     /**
@@ -109,6 +106,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
     public function beforeAction($action)
     {
         if ($this->checkAccess()) {
+            foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
+                $this->generators[$id] = Yii::createObject($config);
+            }
             return parent::beforeAction($action);
         } else {
             throw new ForbiddenHttpException('You are not allowed to access this page.');
