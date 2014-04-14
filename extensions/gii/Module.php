@@ -1,14 +1,16 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link      http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license   http://www.yiiframework.com/license/
  */
 
 namespace yii\gii;
 
 use Yii;
+use yii\base\BootstrapInterface;
 use yii\web\ForbiddenHttpException;
+use yii\web\UrlManager;
 
 /**
  * This is the main module class for the Gii module.
@@ -49,10 +51,10 @@ use yii\web\ForbiddenHttpException;
  * You can then access Gii via URL: `http://localhost/path/to/index.php/gii`
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
-class Module extends \yii\base\Module
-{
+class Module extends \yii\base\Module implements BootstrapInterface {
+
     /**
      * @inheritdoc
      */
@@ -93,8 +95,7 @@ class Module extends \yii\base\Module
     /**
      * @inheritdoc
      */
-    public function init()
-    {
+    public function init() {
         parent::init();
         foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
             $this->generators[$id] = Yii::createObject($config);
@@ -104,8 +105,7 @@ class Module extends \yii\base\Module
     /**
      * @inheritdoc
      */
-    public function beforeAction($action)
-    {
+    public function beforeAction($action) {
         if ($this->checkAccess()) {
             return parent::beforeAction($action);
         } else {
@@ -114,13 +114,30 @@ class Module extends \yii\base\Module
     }
 
     /**
+     * @inheritdoc
+     */
+    public function bootstrap($app) {
+        $app->urlManager->addRules(
+            [
+                'gii'                               => 'gii',
+                'gii/<controller:\w+>'              => 'gii/<controller>',
+                'gii/<controller:\w+>/<action:\w+>' => 'gii/<controller>/<action>',
+            ]
+        );
+    }
+
+    /**
      * @return boolean whether the module can be accessed by the current user
      */
-    protected function checkAccess()
-    {
+    protected function checkAccess() {
         $ip = Yii::$app->getRequest()->getUserIP();
         foreach ($this->allowedIPs as $filter) {
-            if ($filter === '*' || $filter === $ip || (($pos = strpos($filter, '*')) !== false && !strncmp($ip, $filter, $pos))) {
+            if ($filter === '*' || $filter === $ip || (($pos = strpos($filter, '*')) !== false && !strncmp(
+                $ip,
+                $filter,
+                $pos
+            ))
+            ) {
                 return true;
             }
         }
@@ -131,17 +148,17 @@ class Module extends \yii\base\Module
 
     /**
      * Returns the list of the core code generator configurations.
+     *
      * @return array the list of the core code generator configurations.
      */
-    protected function coreGenerators()
-    {
+    protected function coreGenerators() {
         return [
-            'model' => ['class' => 'yii\gii\generators\model\Generator'],
-            'crud' => ['class' => 'yii\gii\generators\crud\Generator'],
+            'model'      => ['class' => 'yii\gii\generators\model\Generator'],
+            'crud'       => ['class' => 'yii\gii\generators\crud\Generator'],
             'controller' => ['class' => 'yii\gii\generators\controller\Generator'],
-            'form' => ['class' => 'yii\gii\generators\form\Generator'],
-            'module' => ['class' => 'yii\gii\generators\module\Generator'],
-            'extension' => ['class' => 'yii\gii\generators\extension\Generator'],
+            'form'       => ['class' => 'yii\gii\generators\form\Generator'],
+            'module'     => ['class' => 'yii\gii\generators\module\Generator'],
+            'extension'  => ['class' => 'yii\gii\generators\extension\Generator'],
         ];
     }
 }
