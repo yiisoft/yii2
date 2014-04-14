@@ -4,7 +4,7 @@ Yii Framework 2 bootstrap extension Change Log
 2.0.0-rc under development
 --------------------------
 
-- no changes in this release.
+- Enh: Added `yii\bootstrap\ButtonDropdown::iconOptions` (jom)
 
 
 2.0.0-beta April 13, 2014

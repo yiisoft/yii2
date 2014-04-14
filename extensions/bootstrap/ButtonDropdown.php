@@ -58,6 +58,11 @@ class ButtonDropdown extends Widget
      * @var boolean whether the label should be HTML-encoded.
      */
     public $encodeLabel = true;
+    /**
+     * @var array the HTML attributes for the icon in the button label.
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $iconOptions = [];
 
     /**
      * Renders the widget.
@@ -79,18 +84,21 @@ class ButtonDropdown extends Widget
         if ($this->encodeLabel) {
             $label = Html::encode($label);
         }
+        if (!isset($this->iconOptions['class'])) {
+            $this->iconOptions['class'] = 'caret';
+        }
         if ($this->split) {
             $options = $this->options;
             $this->options['data-toggle'] = 'dropdown';
             Html::addCssClass($this->options, 'dropdown-toggle');
             $splitButton = Button::widget([
-                'label' => '<span class="caret"></span>',
+                'label' => Html::tag('span', '', $this->iconOptions),
                 'encodeLabel' => false,
                 'options' => $this->options,
                 'view' => $this->getView(),
             ]);
         } else {
-            $label .= ' <span class="caret"></span>';
+            $label .= ' ' . Html::tag('span', '', $this->iconOptions);
             $options = $this->options;
             if (!isset($options['href'])) {
                 $options['href'] = '#';
