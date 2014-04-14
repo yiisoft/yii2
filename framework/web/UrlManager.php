@@ -160,7 +160,10 @@ class UrlManager extends Component {
             }
         }
 
-        $this->addRules($this->rules, true);
+        $rules = $this->rules;
+        $this->rules = [];
+
+        $this->addRules($rules, true);
 
         if (isset($cacheKey, $hash)) {
             $this->cache->set($cacheKey, [$this->rules, $hash]);
