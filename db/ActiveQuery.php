@@ -416,7 +416,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         // remove duplicated joins added by joinWithRelations that may be added
         // e.g. when joining a relation and a via relation at the same time
         $uniqueJoins = [];
-        foreach($this->join as $j) {
+        foreach ($this->join as $j) {
             $uniqueJoins[serialize($j)] = $j;
         }
         $this->join = array_values($uniqueJoins);
@@ -641,6 +641,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * The new condition and the existing one will be joined using the 'AND' operator.
      * @param string|array $condition the new ON condition. Please refer to [[where()]]
      * on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
      * @return static the query object itself
      * @see onCondition()
      * @see orOnCondition()
@@ -661,6 +662,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * The new condition and the existing one will be joined using the 'OR' operator.
      * @param string|array $condition the new ON condition. Please refer to [[where()]]
      * on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
      * @return static the query object itself
      * @see onCondition()
      * @see andOnCondition()
