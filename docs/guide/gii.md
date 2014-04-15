@@ -96,6 +96,7 @@ By default there are the following generators available:
 - **Form Generator** - This generator generates a view script file that displays a form to collect input for the
   specified model class.
 - **Module Generator** - This generator helps you to generate the skeleton code needed by a Yii module.
+- **Extension Generator** - This generator helps you to generate the files needed by a Yii extension.
 
 After choosing a generator by clicking on the "Start" button you will see a form that allows you to configure the
 parameters of the generator. Fill out the form according to your needs and press the "Preview" button to get a
@@ -127,14 +128,97 @@ adjust directory permissions so that your webserver is able to write to the dire
 Creating your own templates
 ---------------------------
 
-Every generator has a form field that lets you choose a template to use for code generation.
-By default gii only provides one template but you can create your own templates that are adjusted to your needs.
+Every generator has a form field `Code Template` that lets you choose a template to use for code generation.
+By default gii only provides one template `default` but you can create your own templates that are adjusted to your needs.
 
-TBD
+If you open a folder `@app\vendor\yiisoft\yii2-gii\generators`, you'll see six folders of generators.
+```
++ controller
+- crud
+    + default
++ extension
++ form
++ model
++ module
+```
+This is name generator. If you open any of these folders, you can see the folder `default`. This folder is name of the template.
 
+Copy folder `@app\vendor\yiisoft\yii2-gii\generators\crud\default` to another location, for example `@app\myTemplates\crud\`. Now open this folder and modify any template to fit your desires, for example, add `errorSummary` in `views\_form.php`:
+```php
+<?php
+//...
+<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-form">
+
+    <?= "<?php " ?>$form = ActiveForm::begin(); ?>
+    <?= "<?=" ?> $form->errorSummary($model) ?> <!-- ADDED HERE -->
+    <?php foreach ($safeAttributes as $attribute) {
+        echo "    <?= " . $generator->generateActiveField($attribute) . " ?>\n\n";
+    } ?>
+//...
+```
+All, in fact our template ready. Now you need to tell GII about our template.The setting is made in the config file:
+```php
+//config/web.php for basic app
+//..
+if (YII_ENV_DEV) {    
+    $config['modules']['gii'] = [
+        'class' => 'yii\gii\Module',      
+        'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'],  
+        'generators'=>[ //here
+            'crud'=>[ //name generator 
+                'class'=>'yii\gii\generators\crud\Generator', //class generator 
+                'templates'=>[ //setting for out tempates
+                    'myCrud'=>'@app\myTemplates\crud\default', //name tempate => path to template
+                ]
+            ]
+        ],
+    ];
+}
+```
+Open the CRUD generator and you will see that in the field `Code Template` of form appeared own template .
 
 Creating your own generators
 ----------------------------
 
-TBD
+Open the folder of any generator and you will see two files `form.php` and `Generator.php`. One is the form, the second is the class generator. For create your own generator, you need to create or override these classes in any folder. Again as in the previous paragraph customize configuration:
+```php
+//config/web.php for basic app
+//..
+if (YII_ENV_DEV) {    
+    $config['modules']['gii'] = [
+        'class' => 'yii\gii\Module',      
+        'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'],  
+         'generators'=>[
+            'myCrud'=>[
+                'class'=>'app\myTemplates\crud\Generator',
+                'templates'=>[
+                    'my'=>'@app/myTemplates/crud/default',
+                ]
+            ]
+        ],
+    ];
+}
+```
+
+```php
+// @app/myTemplates/crud/Generator.php
+<?php
+namespace app\myTemplates\crud;
+class Generator extends \yii\gii\Generator
+{
+    public function getName()
+    {
+        return 'MY CRUD Generator';
+    }
+
+    public function getDescription()
+    {
+        return 'My crud generator. The same as a native, but he is mine...';
+    }
+    
+    // ...
+}
+
+```
+Open gii Module and You will see that added a new generator.
 
