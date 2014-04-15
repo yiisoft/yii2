@@ -70,8 +70,7 @@ class Widget extends Component implements ViewContextInterface
         if (!empty(self::$stack)) {
             $widget = array_pop(self::$stack);
             if (get_class($widget) === get_called_class()) {
-                $widget->run();
-
+                echo $widget->run();
                 return $widget;
             } else {
                 throw new InvalidCallException("Expecting end() of " . get_class($widget) . ", found " . get_called_class());

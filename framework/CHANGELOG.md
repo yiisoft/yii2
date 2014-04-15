@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.0-rc under development
 --------------------------
 
+- Bug #3091: Fixed inconsistent treatment of `Widget::run()` when a widget is used as a container and as a self-contained object (qiangxue)
 - no changes in this release.
 
 
