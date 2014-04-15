@@ -287,6 +287,23 @@ public function rules()
 }
 ```
 
+When you need conditional validation logic on client-side (`enableClientValidation` is true), don't forget 
+to add `whenClient`:
+
+```php
+public function rules()
+{
+    $usa = [
+        'server-side' => function($model) { return $model->country == Country::USA; },
+        'client-side' => "function (attribute, value) {return $('#country').value == 'USA';}"
+    ];
+  
+    return [
+        ['state', 'required', 'when' => $usa['server-side'], 'whenClient' => $usa['client-side']],
+    ];
+}
+```
+
 
 Massive Attribute Retrieval and Assignment
 ------------------------------------------
