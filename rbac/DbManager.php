@@ -368,7 +368,7 @@ class DbManager extends BaseManager
             return [];
         }
         $query = (new Query)->from($this->itemTable)->where([
-            'type' => Item::TYPE_PERMISSION, 
+            'type' => Item::TYPE_PERMISSION,
             'name' => array_keys($result),
         ]);
         $permissions = [];
@@ -377,7 +377,7 @@ class DbManager extends BaseManager
         }
         return $permissions;
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -392,11 +392,11 @@ class DbManager extends BaseManager
         foreach ($query->column($this->db) as $roleName) {
             $this->getChildrenRecursive($roleName, $childrenList, $result);
         }
-        
+
         if (empty($result)) {
             return [];
         }
-        
+
         $query = (new Query)->from($this->itemTable)->where([
             'type' => Item::TYPE_PERMISSION,
             'name' => array_keys($result),
@@ -551,6 +551,17 @@ class DbManager extends BaseManager
     /**
      * @inheritdoc
      */
+    public function hasChild($parent, $child)
+    {
+        return (new Query)
+            ->from($this->itemChildTable)
+            ->where(['parent' => $parent->name, 'child' => $child->$name])
+            ->one($this->db) !== false;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getChildren($name)
     {
         $query = (new Query)
@@ -627,20 +638,78 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Removes all authorization data.
+     * @inheritdoc
      */
-    public function clearAll()
+    public function removeAll()
     {
-        $this->clearAssignments();
+        $this->removeAllAssignments();
         $this->db->createCommand()->delete($this->itemChildTable)->execute();
         $this->db->createCommand()->delete($this->itemTable)->execute();
         $this->db->createCommand()->delete($this->ruleTable)->execute();
     }
 
     /**
-     * Removes all authorization assignments.
+     * @inheritdoc
      */
-    public function clearAssignments()
+    public function removeAllPermissions()
+    {
+        $this->removeAllItems(Item::TYPE_PERMISSION);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeAllRoles()
+    {
+        $this->removeAllItems(Item::TYPE_ROLE);
+    }
+
+    /**
+     * Removes all auth items of the specified type.
+     * @param integer $type the auth item type (either Item::TYPE_PERMISSION or Item::TYPE_ROLE)
+     */
+    protected function removeAllItems($type)
+    {
+        if (!$this->supportsCascadeUpdate()) {
+            $names = (new Query)
+                ->select(['name'])
+                ->from($this->itemTable)
+                ->where(['type' => $type])
+                ->column($this->db);
+            if (empty($names)) {
+                return;
+            }
+            $key = $type == Item::TYPE_PERMISSION ? 'child' : 'parent';
+            $this->db->createCommand()
+                ->delete($this->itemChildTable, [$key => $names])
+                ->execute();
+            $this->db->createCommand()
+                ->delete($this->assignmentTable, ['item_name' => $names])
+                ->execute();
+        }
+        $this->db->createCommand()
+            ->delete($this->itemTable, ['type' => $type])
+            ->execute();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeAllRules()
+    {
+        if (!$this->supportsCascadeUpdate()) {
+            $this->db->createCommand()
+                ->update($this->itemTable, ['ruleName' => null])
+                ->execute();
+        }
+
+        $this->db->createCommand()->delete($this->ruleTable)->execute();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeAllAssignments()
     {
         $this->db->createCommand()->delete($this->assignmentTable)->execute();
     }
