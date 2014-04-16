@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #3091: Fixed inconsistent treatment of `Widget::run()` when a widget is used as a container and as a self-contained object (qiangxue)
 - Enh #3103: debugger panel is now not displayed when printing a page (githubjeka)
 - Enh #3108: Added `yii\debug\Module::enableDebugLogs` to disable logging debug logs by default (qiangxue)
+- Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
 
 
