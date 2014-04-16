@@ -608,11 +608,11 @@ class PhpManager extends BaseManager
 
                 $this->_items[$name] = new $class([
                     'name' => $name,
-                    'description' => $item['description'],
-                    'ruleName' => $item['ruleName'],
-                    'data' => $item['data'],
-                    'createdAt' => isset($item['createdAt']) ? $item['createdAt'] : time(),
-                    'updatedAt' => isset($item['updatedAt']) ? $item['updatedAt'] : time(),
+                    'description' => isset($item['description']) ? $item['description'] : null,
+                    'ruleName' => isset($item['ruleName']) ? $item['ruleName'] : null,
+                    'data' => isset($item['data']) ? $item['data'] : null,
+                    'createdAt' => isset($item['createdAt']) ? $item['createdAt'] : null,
+                    'updatedAt' => isset($item['updatedAt']) ? $item['updatedAt'] : null,
                 ]);
             }
 
@@ -629,7 +629,7 @@ class PhpManager extends BaseManager
                         $this->_assignments[$userId][$name] = new Assignment([
                             'userId' => $userId,
                             'roleName' => $assignment['roleName'],
-                            'createdAt' => isset($assignment['createdAt']) ? $assignment['createdAt'] : time(),
+                            'createdAt' => isset($assignment['createdAt']) ? $assignment['createdAt'] : null,
                         ]);
                     }
                 }
@@ -651,12 +651,12 @@ class PhpManager extends BaseManager
         $items = [];
         foreach ($this->_items as $name => $item) {
             /** @var Item $item */
-            $items[$name] = [
+            $items[$name] = array_filter([
                 'type' => $item->type,
                 'description' => $item->description,
                 'ruleName' => $item->ruleName,
                 'data' => $item->data,
-            ];
+            ]);
             if (isset($this->_children[$name])) {
                 foreach ($this->_children[$name] as $child) {
                     /** @var Item $child */
