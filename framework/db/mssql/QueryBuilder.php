@@ -60,7 +60,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $hasLimit = $this->hasLimit($limit);
         if ($hasOffset || $hasLimit) {
             // http://technet.microsoft.com/en-us/library/gg699618.aspx
-            $sql = 'OFFSET ' . ($hasOffset ? $offset : '0');
+            $sql = 'OFFSET ' . ($hasOffset ? $offset : '0') . ' ROWS';
             if ($hasLimit) {
                 $sql .= " FETCH NEXT $limit ROWS ONLY";
             }
