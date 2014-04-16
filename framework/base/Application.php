@@ -276,6 +276,7 @@ abstract class Application extends Module
         }
 
         foreach ($this->bootstrap as $class) {
+            $component = null;
             if (is_string($class)) {
                 if ($this->has($class)) {
                     $component = $this->get($class);
