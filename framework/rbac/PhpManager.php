@@ -117,7 +117,7 @@ class PhpManager extends BaseManager
             return false;
         }
 
-        if (isset($this->defaultRoles[$itemName]) || isset($assignments[$itemName])) {
+        if (in_array($itemName, $this->defaultRoles) || isset($assignments[$itemName])) {
             return true;
         }
 
