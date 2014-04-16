@@ -433,11 +433,11 @@ class Generator extends \yii\gii\Generator
         $class = $this->modelClass;
         $pks = $class::primaryKey();
         if (count($pks) === 1) {
-            return "'id' => \$model->{$pks[0]}";
+            return "'id' => (string)\$model->{$pks[0]}";
         } else {
             $params = [];
             foreach ($pks as $pk) {
-                $params[] = "'$pk' => \$model->$pk";
+                $params[] = "'$pk' => (string)\$model->$pk";
             }
 
             return implode(', ', $params);
