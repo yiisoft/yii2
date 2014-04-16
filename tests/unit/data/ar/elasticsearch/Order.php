@@ -59,7 +59,7 @@ class Order extends ActiveRecord
 //	public function getBooks()
 //	{
 //		return $this->hasMany('Item', ['id' => 'item_id'])
-//			->viaTable('tbl_order_item', ['order_id' => 'id'])
+//			->viaTable('order_item', ['order_id' => 'id'])
 //			->where(['category_id' => 1]);
 //	}
 

@@ -65,6 +65,20 @@ Root directory contains a set of files.
 - `yii` - console application bootstrap.
 - `yii.bat` - same for Windows.
 
+Predefined path aliases
+-----------------------
+
+- @yii - framework directory.
+- @app - base path of currently running application.
+- @common - common directory.
+- @frontend - frontend web application directory.
+- @backend - backend web application directory.
+- @console - console directory.
+- @runtime - runtime directory of currently running web application.
+- @vendor - Composer vendor directory.
+- @web - base URL of currently running web application.
+- @webroot - web root directory of currently running web application.
+
 Applications
 ------------
 
@@ -180,7 +194,7 @@ Creating links from backend to frontend
 ---------------------------------------
 
 Often it's required to create links from backend application to frontend application. Since frontend application may
-contain its own URL manager rules you need to duplicate that for backend application naming it differently:
+contain its own URL manager rules you need to duplicate that for backend application by naming it differently:
 
 ```php
 return [
@@ -196,7 +210,7 @@ return [
 ];
 ```
 
-After it is done you can get URL poiting to frontend like the following:
+After it is done, you can get URL pointing to frontend like the following:
 
 ```php
 echo Yii::$app->urlManagerFrontend->createUrl(...);

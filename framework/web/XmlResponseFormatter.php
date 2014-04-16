@@ -51,8 +51,12 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public function format($response)
     {
+        $charset = $this->encoding === null ? $response->charset : $this->encoding;
+        if (stripos($this->contentType, 'charset') === false) {
+            $this->contentType .= '; charset=' . $charset;
+        }
         $response->getHeaders()->set('Content-Type', $this->contentType);
-        $dom = new DOMDocument($this->version, $this->encoding === null ? $response->charset : $this->encoding);
+        $dom = new DOMDocument($this->version, $charset);
         $root = new DOMElement($this->rootTag);
         $dom->appendChild($root);
         $this->buildXml($root, $response->data);

@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\rest;
+namespace yii\filters\auth;
 
 use yii\web\User;
 use yii\web\Request;
@@ -14,7 +14,7 @@ use yii\web\IdentityInterface;
 use yii\web\UnauthorizedHttpException;
 
 /**
- * AuthInterface is the interface required by classes that support user authentication.
+ * AuthInterface is the interface that should be implemented by auth method classes.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

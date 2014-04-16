@@ -8,7 +8,7 @@
  * @var string[] $lines
  * @var integer $begin
  * @var integer $end
- * @var \yii\base\ErrorHandler $handler
+ * @var \yii\web\ErrorHandler $handler
  */
 ?>
 <li class="<?php if (!$handler->isCoreFile($file) || $index === 1) echo 'application'; ?> call-stack-item"
@@ -20,7 +20,7 @@
             <?php if ($method !== null): ?>
                 <span class="call">
                     <?php if ($file !== null) echo '&ndash;' ?>
-                    <?php if ($class !== null) echo $handler->addTypeLinks($class) . '::'; ?><?= $handler->addTypeLinks($method . '()') ?>
+                    <?= $class !== null ? $handler->addTypeLinks("$class::$method()") : $method . '()' ?>
                 </span>
             <?php endif; ?>
             <span class="at"><?php if ($line !== null) echo 'at line'; ?></span>

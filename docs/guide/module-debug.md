@@ -1,39 +1,38 @@
 Debug toolbar and debugger
 ==========================
 
-Yii2 includes a handy toolbar to aid faster development and debugging as well as debugger. Toolbar displays information
-about currently opened page while using debugger you can analyze data collected before.
+Yii2 includes a handy toolbar, and built-in debugger, for faster development and debugging of your applications. The toolbar displays information
+about the currently opened page, while the debugger can be used to analyze data you've previously collected (i.e., to confirm the values of variables).
 
-Out of the box it allows you to:
+Out of the box these tools allow you to:
 
-- Quickly getting framework version, PHP version, response status, current controller and action, performance info and
-  more via toolbar.
-- Browsing application and PHP configuration.
-- Browsing request data, request and response headers, session data and environment.
-- Viewing, searching, filtering logs.
-- View profiling results.
-- View database queries.
-- View emails sent.
+- Quickly get the framework version, PHP version, response status, current controller and action, performance info and
+  more via toolbar
+- Browse the application and PHP configuration
+- View the request data, request and response headers, session data, and environment variables
+- See, search, and filter the logs
+- View any profiling results
+- View the database queries executed by the page
+- View the emails sent by the application
 
-All these are available per request so you can browse past requests as well.
+All of this information will be available per request, allowing you to revisit the information for past requests as well.
 
 Installing and configuring
 --------------------------
 
-Add these lines to your config file:
+To enable these features, add these lines to your configuration file to enable the debug module:
 
 ```php
-'preload' => ['debug'],
+'bootstrap' => ['debug'],
 'modules' => [
-    'debug' => ['yii\debug\Module']
+    'debug' => 'yii\debug\Module',
 ]
 ```
 
-> Note: by default the debug module only works when browsing the website from the localhost. If you want to use it
-> on a remote (staging) server, add the parameter allowedIPs to the config to whitelist your IP, e.g. :**
+By default, the debug module only works when browsing the website from localhost. If you want to use it on a remote (staging) server, add the parameter `allowedIPs` to the configuration to whitelist your IP:
 
 ```php
-'preload' => ['debug'],
+'bootstrap' => ['debug'],
 'modules' => [
     'debug' => [
         'class' => 'yii\debug\Module',
@@ -54,16 +53,18 @@ If you are using `enableStrictParsing` URL manager option, add the following to 
 ],
 ```
 
-### Extra config for logging and profiling
+### Extra configuration for logging and profiling
 
-Logging and profiling are simple but very powerful tools that may help you to understand execution flow of both the
-framework and the application. These are useful both for development and production environments.
+Logging and profiling are simple but powerful tools that may help you to understand the execution flow of both the
+framework and the application. These tools are useful for development and production environments alike.
 
-While in production environment you should log only important enough messages manually as described in
-[logging guide section](logging.md), in development environment it's especially useful to get execution trace.
+While in a production environment, you should log only significantly important  messages manually, as described in
+[logging guide section](logging.md). It hurts performance too much to continue to log all messages in production.
 
-In order to get trace messages that help you to understand what happens under the hood of the framework, you need to set
-trace level in the config:
+In a development environment, the more logging the better, and it's especially useful to record the execution trace.
+
+In order to see the trace messages that will help you to understand what happens under the hood of the framework, you need to set the
+trace level in the configuration file:
 
 ```php
 return [
@@ -73,24 +74,27 @@ return [
             'traceLevel' => YII_DEBUG ? 3 : 0, // <-- here
 ```
 
-By default it's automatically set to `3` if Yii is run in debug mode i.e. your `index.php` file contains the following:
+By default, the trace level is automatically set to `3` if Yii is running in debug mode, as determined by the presence of the following line in your `index.php` file:
 
 ```php
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 ```
 
-> Note: Make sure to disable debug mode on production since it may have significan performance effect and expose sensible
-information to end users.
+> Note: Make sure to disable debug mode in production environments since it may have a significant and adverse performance effect. Further, the debug mode may expose sensitive information to end users.
 
 Creating your own panels
 ------------------------
 
-Both toolbar and debugger are highly configurable and customizable. You can create your own panels that could collect
-and display extra data. Below we'll describe a process of creation of a simple custom panel that collects views rendered
-during request, shows a number in the toolbar and allows you checking view names in debugger. Below we're assuming
-basic application template.
+Both the toolbar and debugger are highly configurable and customizable. To do so, you can create your own panels that collect
+and display the specific data you want. Below we'll describe the process of creating a simple custom panel that:
 
-First we need to implement panel class in `panels/ViewsPanel.php`:
+- Collects the views rendered during a request
+- Shows the number of views rendered in the toolbar
+- Allows you to check the view names in the debugger
+
+The assumption is that you're using the basic application template.
+
+First we need to implement the `Panel` class in `panels/ViewsPanel.php`:
 
 ```php
 <?php
@@ -151,23 +155,21 @@ class ViewsPanel extends Panel
 }
 ```
 
-The workflow for the code above is the following:
+The workflow for the code above is:
 
-1. `init` is executed before running any controller action. Best place to attach handlers that will collect data.
-2. `save` is called after controller action is executed. Data returned is stored in data file. If nothing returned panel
-   won't render.
-3. Data from data file is loaded into `$this->data`. For toolbar it's always latest data, for debugger it may be selected
-   to be read from any previous data file.
-4. Toolbar takes its contents from `getSummary`. There we're showing a number of view files rendered. Debugger uses
+1. `init` is executed before any controller action is run. This method is the best place to attach handlers that will collect data during the controller action's execution.
+2. `save` is called after controller action is executed. The data returned by this method will be stored in a data file. If nothing is returned by this method, the panel
+   won't be rendered.
+3. The data from the data file is loaded into `$this->data`. For the toolbar, this will always represent the latest data, For the debugger, this property may be set to be read from any previous data file as well.
+4. The toolbar takes its contents from `getSummary`. There, we're showing the number of view files rendered. The debugger uses
    `getDetail` for the same purpose.
 
-Now it's time to tell debugger to use our new panel. In `config/web.php` debug configuration is modified to be the
-following:
+Now it's time to tell the debugger to use the new panel. In `config/web.php`, the debug configuration is modified to:
 
 ```php
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
-    $config['preload'][] = 'debug';
+    $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         'panels' => [

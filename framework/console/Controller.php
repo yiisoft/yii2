@@ -264,10 +264,10 @@ class Controller extends \yii\base\Controller
      * Note that the values setting via options are not available
      * until [[beforeAction()]] is being called.
      *
-     * @param string $id action name
+     * @param string $actionId the action id of the current request
      * @return array the names of the options valid for the action
      */
-    public function options($id)
+    public function options($actionId)
     {
         // $id might be used in subclass to provide options specific to action id
         return ['color', 'interactive'];

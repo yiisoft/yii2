@@ -35,10 +35,6 @@ abstract class Dependency extends \yii\base\Object
      * @var array static storage of cached data for reusable dependencies.
      */
     private static $_reusableData = [];
-    /**
-     * @var string a unique hash value for this cache dependency.
-     */
-    private $_hash;
 
     /**
      * Evaluates the dependency by generating and saving the data related with dependency.
@@ -47,16 +43,14 @@ abstract class Dependency extends \yii\base\Object
      */
     public function evaluateDependency($cache)
     {
-        if (!$this->reusable) {
-            $this->data = $this->generateDependencyData($cache);
+        if ($this->reusable) {
+            $hash = $this->generateReusableHash();
+            if (!array_key_exists($hash, self::$_reusableData)) {
+                self::$_reusableData[$hash] = $this->generateDependencyData($cache);
+            }
+            $this->data = self::$_reusableData[$hash];
         } else {
-            if ($this->_hash === null) {
-                $this->_hash = sha1(serialize($this));
-            }
-            if (!array_key_exists($this->_hash, self::$_reusableData)) {
-                self::$_reusableData[$this->_hash] = $this->generateDependencyData($cache);
-            }
-            $this->data = self::$_reusableData[$this->_hash];
+            $this->data = $this->generateDependencyData($cache);
         }
     }
 
@@ -67,18 +61,16 @@ abstract class Dependency extends \yii\base\Object
      */
     public function getHasChanged($cache)
     {
-        if (!$this->reusable) {
-            return $this->generateDependencyData($cache) !== $this->data;
+        if ($this->reusable) {
+            $hash = $this->generateReusableHash();
+            if (!array_key_exists($hash, self::$_reusableData)) {
+                self::$_reusableData[$hash] = $this->generateDependencyData($cache);
+            }
+            $data = self::$_reusableData[$hash];
         } else {
-            if ($this->_hash === null) {
-                $this->_hash = sha1(serialize($this));
-            }
-            if (!array_key_exists($this->_hash, self::$_reusableData)) {
-                self::$_reusableData[$this->_hash] = $this->generateDependencyData($cache);
-            }
-
-            return self::$_reusableData[$this->_hash] !== $this->data;
+            $data = $this->generateDependencyData($cache);
         }
+        return $data !== $this->data;
     }
 
     /**
@@ -87,6 +79,20 @@ abstract class Dependency extends \yii\base\Object
     public static function resetReusableData()
     {
         self::$_reusableData = [];
+    }
+
+    /**
+     * Generates a unique hash that can be used for retrieving reusable dependency data.
+     * @return string a unique hash value for this cache dependency.
+     * @see reusable
+     */
+    protected function generateReusableHash()
+    {
+        $data = $this->data;
+        $this->data = null;  // https://github.com/yiisoft/yii2/issues/3052
+        $key = sha1(serialize($this));
+        $this->data = $data;
+        return $key;
     }
 
     /**

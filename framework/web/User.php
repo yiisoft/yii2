@@ -46,8 +46,8 @@ use yii\base\InvalidConfigException;
  *
  * @property string|integer $id The unique identifier for the user. If null, it means the user is a guest.
  * This property is read-only.
- * @property IdentityInterface $identity The identity object associated with the currently logged-in user.
- * Null is returned if the user is not logged in (not authenticated).
+ * @property IdentityInterface|null $identity The identity object associated with the currently logged-in
+ * user. `null` is returned if the user is not logged in (not authenticated).
  * @property boolean $isGuest Whether the current user is a guest. This property is read-only.
  * @property string $returnUrl The URL that the user should be redirected to after login. Note that the type
  * of this property differs in getter and setter. See [[getReturnUrl()]] and [[setReturnUrl()]] for details.
@@ -141,8 +141,8 @@ class User extends Component
      * @param boolean $checkSession whether to check the session if the identity has never been determined before.
      * If the identity is already determined (e.g., by calling [[setIdentity()]] or [[login()]]),
      * then this parameter has no effect.
-     * @return IdentityInterface the identity object associated with the currently logged-in user.
-     * Null is returned if the user is not logged in (not authenticated).
+     * @return IdentityInterface|null the identity object associated with the currently logged-in user.
+     * `null` is returned if the user is not logged in (not authenticated).
      * @see login()
      * @see logout()
      */
@@ -170,7 +170,7 @@ class User extends Component
      * [[switchIdentity()]]. Those methods will try to use session and cookie to maintain the user authentication
      * status.
      *
-     * @param IdentityInterface $identity the identity object associated with the currently logged user.
+     * @param IdentityInterface|null $identity the identity object associated with the currently logged user.
      */
     public function setIdentity($identity)
     {
@@ -570,33 +570,32 @@ class User extends Component
     }
 
     /**
-     * Performs access check for this user.
+     * Checks if the user can perform the operation as specified by the given permission.
      *
      * Note that you must configure "authManager" application component in order to use this method.
      * Otherwise an exception will be thrown.
      *
-     * @param string $operation the name of the operation that need access check.
-     * @param array $params name-value pairs that would be passed to business rules associated
-     * with the tasks and roles assigned to the user. A param with name 'userId' is added to
-     * this array, which holds the value of [[id]] when [[DbAuthManager]] or
-     * [[PhpAuthManager]] is used.
+     * @param string $permissionName the name of the permission (e.g. "edit post") that needs access check.
+     * @param array $params name-value pairs that would be passed to the rules associated
+     * with the roles and permissions assigned to the user. A param with name 'user' is added to
+     * this array, which holds the value of [[id]].
      * @param boolean $allowCaching whether to allow caching the result of access check.
      * When this parameter is true (default), if the access check of an operation was performed
      * before, its result will be directly returned when calling this method to check the same
      * operation. If this parameter is false, this method will always call
-     * [[AuthManager::checkAccess()]] to obtain the up-to-date access result. Note that this
+     * [[\yii\rbac\ManagerInterface::checkAccess()]] to obtain the up-to-date access result. Note that this
      * caching is effective only within the same request and only works when `$params = []`.
-     * @return boolean whether the operations can be performed by this user.
+     * @return boolean whether the user can perform the operation as specified by the given permission.
      */
-    public function checkAccess($operation, $params = [], $allowCaching = true)
+    public function can($permissionName, $params = [], $allowCaching = true)
     {
         $auth = Yii::$app->getAuthManager();
-        if ($allowCaching && empty($params) && isset($this->_access[$operation])) {
-            return $this->_access[$operation];
+        if ($allowCaching && empty($params) && isset($this->_access[$permissionName])) {
+            return $this->_access[$permissionName];
         }
-        $access = $auth->checkAccess($this->getId(), $operation, $params);
+        $access = $auth->checkAccess($this->getId(), $permissionName, $params);
         if ($allowCaching && empty($params)) {
-            $this->_access[$operation] = $access;
+            $this->_access[$permissionName] = $access;
         }
 
         return $access;

@@ -91,6 +91,18 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public $sql;
 
+
+    /**
+     * Constructor.
+     * @param array $modelClass the model class associated with this query
+     * @param array $config configurations to be applied to the newly created query object
+     */
+    public function __construct($modelClass, $config = [])
+    {
+        $this->modelClass = $modelClass;
+        parent::__construct($config);
+    }
+
     /**
      * Sets the [[snippetCallback]] to [[fetchSnippetSourceFromModels()]], which allows to
      * fetch the snippet source strings from the Active Record models, using method

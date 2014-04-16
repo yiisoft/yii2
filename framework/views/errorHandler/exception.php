@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \Exception $exception
- * @var \yii\base\ErrorHandler $handler
+ * @var \yii\web\ErrorHandler $handler
  */
 ?>
 <?php if (method_exists($this, 'beginPage')) $this->beginPage(); ?>

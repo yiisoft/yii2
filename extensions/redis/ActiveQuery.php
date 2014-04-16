@@ -7,6 +7,7 @@
 
 namespace yii\redis;
 
+use yii\base\Component;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\db\ActiveQueryInterface;
@@ -70,11 +71,23 @@ use yii\db\QueryTrait;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
+class ActiveQuery extends Component implements ActiveQueryInterface
 {
     use QueryTrait;
     use ActiveQueryTrait;
     use ActiveRelationTrait;
+
+
+    /**
+     * Constructor.
+     * @param array $modelClass the model class associated with this query
+     * @param array $config configurations to be applied to the newly created query object
+     */
+    public function __construct($modelClass, $config = [])
+    {
+        $this->modelClass = $modelClass;
+        parent::__construct($config);
+    }
 
     /**
      * Executes the query and returns all results as an array.
@@ -270,7 +283,7 @@ class ActiveQuery extends \yii\base\Component implements ActiveQueryInterface
 
     /**
      * Executes a script created by [[LuaScriptBuilder]]
-     * @param  Connection             $db         the database connection used to execute the query.
+     * @param  Connection|null        $db         the database connection used to execute the query.
      *                                            If this parameter is not given, the `db` application component will be used.
      * @param  string                 $type       the type of the script to generate
      * @param  string                 $columnName

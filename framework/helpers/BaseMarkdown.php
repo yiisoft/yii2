@@ -1,7 +1,7 @@
 <?php
 /**
- * @copyright Copyright (c) 2008 Yii Software LLC
  * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -82,7 +82,7 @@ class BaseMarkdown
      * @return \cebe\markdown\Parser
      * @throws \yii\base\InvalidParamException when an undefined flavor is given.
      */
-    private static function getParser($flavor)
+    protected static function getParser($flavor)
     {
         /** @var \cebe\markdown\Markdown $parser */
         if (!isset(static::$flavors[$flavor])) {

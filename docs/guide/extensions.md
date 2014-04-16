@@ -129,9 +129,9 @@ namespace myname\mywidget;
 use yii\base\BootstrapInterface;
 use yii\base\Application;
 
-class Bootstrap implements BootstrapInterface
+class MyBootstrapClass implements BootstrapInterface
 {
-    public function bootstrap(Application $app)
+    public function bootstrap($app)
     {
         $app->on(Application::EVENT_BEFORE_REQUEST, function () {
              // do something here
@@ -145,7 +145,7 @@ You then list this bootstrap class in `composer.json` as follows,
 ```json
 {
     "extra": {
-        "bootstrap": "path\\to\\MyBootstrapClass"
+        "bootstrap": "myname\\mywidget\\MyBootstrapClass"
     }
 }
 ```

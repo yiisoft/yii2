@@ -22,8 +22,8 @@ trait ActiveRelationTrait
     /**
      * @var boolean whether this query represents a relation to more than one record.
      * This property is only used in relational context. If true, this relation will
-     * populate all query results into AR instances using [[all()]].
-     * If false, only the first row of the results will be retrieved using [[one()]].
+     * populate all query results into AR instances using [[Query::all()|all()]].
+     * If false, only the first row of the results will be retrieved using [[Query::one()|one()]].
      */
     public $multiple;
     /**
@@ -86,7 +86,7 @@ trait ActiveRelationTrait
      * public function getOrderItems()
      * {
      *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
-     *                 ->via('orders', ['order_id' => 'id']);
+     *                 ->via('orders');
      * }
      * ```
      *
@@ -356,12 +356,39 @@ trait ActiveRelationTrait
         return $buckets;
     }
 
+    private function prefixKeyColumns($attributes)
+    {
+        if ($this instanceof ActiveQuery && (!empty($this->join) || !empty($this->joinWith))) {
+            if (empty($this->from)) {
+                /** @var ActiveRecord $modelClass */
+                $modelClass = $this->modelClass;
+                $alias = $modelClass::tableName();
+            } else {
+                foreach ($this->from as $alias => $table) {
+                    if (!is_string($alias)) {
+                        $alias = $table;
+                    }
+                    break;
+                }
+            }
+            if (isset($alias)) {
+                foreach ($attributes as $i => $attribute) {
+                	$attributes[$i] = "$alias.$attribute";
+                }
+            }
+        }
+        return $attributes;
+    }
+
     /**
      * @param array $models
      */
     private function filterByModels($models)
     {
         $attributes = array_keys($this->link);
+
+        $attributes = $this->prefixKeyColumns($attributes);
+
         $values = [];
         if (count($attributes) === 1) {
             // single key

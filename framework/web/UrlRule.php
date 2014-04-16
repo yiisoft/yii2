@@ -101,6 +101,7 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     private $_routeParams = [];
 
+
     /**
      * Initializes this rule.
      */

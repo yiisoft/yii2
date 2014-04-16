@@ -1,6 +1,13 @@
 Data widgets
 ============
 
+GridView
+--------
+
+The [[yii\grid\GridView]] widget is a powerful tool to create a data grid that provides pagination, sorting
+and filtering of the data out of the box. See the [data grid section](data-grid.md) for more details.
+
+
 ListView
 --------
 

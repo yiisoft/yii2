@@ -53,6 +53,7 @@ use yii\helpers\StringHelper;
  * @property boolean $isHead Whether this is a HEAD request. This property is read-only.
  * @property boolean $isOptions Whether this is a OPTIONS request. This property is read-only.
  * @property boolean $isPatch Whether this is a PATCH request. This property is read-only.
+ * @property boolean $isPjax Whether this is a PJAX request. This property is read-only.
  * @property boolean $isPost Whether this is a POST request. This property is read-only.
  * @property boolean $isPut Whether this is a PUT request. This property is read-only.
  * @property boolean $isSecureConnection If the request is sent via secure channel (https). This property is
@@ -99,7 +100,7 @@ class Request extends \yii\base\Request
      *
      * Note, this feature requires that the user client accepts cookie. Also, to use this feature,
      * forms submitted via POST method must contain a hidden input whose name is specified by [[csrfParam]].
-     * You may use [[\yii\web\Html::beginForm()]] to generate his hidden input.
+     * You may use [[\yii\helpers\Html::beginForm()]] to generate his hidden input.
      *
      * In JavaScript, you may get the values of [[csrfParam]] and [[csrfToken]] via `yii.getCsrfParam()` and
      * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
@@ -123,8 +124,8 @@ class Request extends \yii\base\Request
      */
     public $enableCookieValidation = true;
     /**
-     * @var string|boolean the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
-     * request tunneled through POST. Default to '_method'.
+     * @var string the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
+     * request tunneled through POST. Defaults to '_method'.
      * @see getMethod()
      * @see getBodyParams()
      */
@@ -336,7 +337,7 @@ class Request extends \yii\base\Request
      * Returns the request parameters given in the request body.
      *
      * Request parameters are determined using the parsers configured in [[parsers]] property.
-     * If no parsers are configured for the current [[contentType]] it uses the PHP function [[mb_parse_str()]]
+     * If no parsers are configured for the current [[contentType]] it uses the PHP function `mb_parse_str()`
      * to parse the [[rawBody|request body]].
      * @return array the request parameters given in the request body.
      * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].

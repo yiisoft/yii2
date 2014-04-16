@@ -49,33 +49,11 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Creates an [[ActiveQuery]] instance.
-     *
-     * This method is called by [[find()]], [[findBySql()]] to start a SELECT query but also
-     * by [[hasOne()]] and [[hasMany()]] to create a relational query.
-     * You may override this method to return a customized query (e.g. `CustomerQuery` specified
-     * written for querying `Customer` purpose.)
-     *
-     * You may also define default conditions that should apply to all queries unless overridden:
-     *
-     * ```php
-     * public static function createQuery($config = [])
-     * {
-     *     return parent::createQuery($config)->where(['deleted' => false]);
-     * }
-     * ```
-     *
-     * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
-     * default condition. Using [[Query::where()]] will override the default condition.
-     *
-     * @param  array       $config the configuration passed to the ActiveQuery class.
-     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+     * @inheritdoc
      */
-    public static function createQuery($config = [])
+    public static function find()
     {
-        $config['modelClass'] = get_called_class();
-
-        return new ActiveQuery($config);
+        return new ActiveQuery(get_called_class());
     }
 
     /**
@@ -125,7 +103,7 @@ class ActiveRecord extends BaseActiveRecord
             $db = static::getDb();
             $values = $this->getDirtyAttributes($attributes);
             $pk = [];
-//			if ($values === []) {
+            //			if ($values === []) {
             foreach ($this->primaryKey() as $key) {
                 $pk[$key] = $values[$key] = $this->getAttribute($key);
                 if ($pk[$key] === null) {
@@ -133,7 +111,7 @@ class ActiveRecord extends BaseActiveRecord
                     $this->setAttribute($key, $values[$key]);
                 }
             }
-//			}
+            //			}
             // save pk in a findall pool
             $db->executeCommand('RPUSH', [static::keyPrefix(), static::buildKey($pk)]);
 
@@ -146,8 +124,8 @@ class ActiveRecord extends BaseActiveRecord
             }
             $db->executeCommand('HMSET', $args);
 
-            $this->setOldAttributes($values);
             $this->afterSave(true);
+            $this->setOldAttributes($values);
 
             return true;
         }
@@ -175,7 +153,7 @@ class ActiveRecord extends BaseActiveRecord
         }
         $db = static::getDb();
         $n = 0;
-        foreach (static::fetchPks($condition) as $pk) {
+        foreach (self::fetchPks($condition) as $pk) {
             $newPk = $pk;
             $pk = static::buildKey($pk);
             $key = static::keyPrefix() . ':a:' . $pk;
@@ -228,7 +206,7 @@ class ActiveRecord extends BaseActiveRecord
         }
         $db = static::getDb();
         $n = 0;
-        foreach (static::fetchPks($condition) as $pk) {
+        foreach (self::fetchPks($condition) as $pk) {
             $key = static::keyPrefix() . ':a:' . static::buildKey($pk);
             foreach ($counters as $attribute => $value) {
                 $db->executeCommand('HINCRBY', [$key, $attribute, $value]);
@@ -257,7 +235,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         $db = static::getDb();
         $attributeKeys = [];
-        $pks = static::fetchPks($condition);
+        $pks = self::fetchPks($condition);
         $db->executeCommand('MULTI');
         foreach ($pks as $pk) {
             $pk = static::buildKey($pk);
@@ -277,7 +255,7 @@ class ActiveRecord extends BaseActiveRecord
 
     private static function fetchPks($condition)
     {
-        $query = static::createQuery();
+        $query = static::find();
         $query->where($condition);
         $records = $query->asArray()->all(); // TODO limit fetched columns to pk
         $primaryKey = static::primaryKey();

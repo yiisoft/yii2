@@ -1,7 +1,8 @@
 Model
 =====
 
-In keeping with the MVC approach, a model in Yii is intended for storing or temporarily representing application data.
+In keeping with the MVC approach, a model in Yii is intended for storing or temporarily representing application data, as well as defining the busines rules by which the data must abide.
+
 Yii models have the following basic features:
 
 - Attribute declaration: a model defines what is considered an attribute.
@@ -286,6 +287,23 @@ public function rules()
 }
 ```
 
+When you need conditional validation logic on client-side (`enableClientValidation` is true), don't forget 
+to add `whenClient`:
+
+```php
+public function rules()
+{
+    $usa = [
+        'server-side' => function($model) { return $model->country == Country::USA; },
+        'client-side' => "function (attribute, value) {return $('#country').value == 'USA';}"
+    ];
+  
+    return [
+        ['state', 'required', 'when' => $usa['server-side'], 'whenClient' => $usa['client-side']],
+    ];
+}
+```
+
 
 Massive Attribute Retrieval and Assignment
 ------------------------------------------
@@ -295,7 +313,7 @@ The following code will return *all* attributes in the `$post` model
 as an array of name-value pairs.
 
 ```php
-$post = Post::find(42);
+$post = Post::findOne(42);
 if ($post) {
     $attributes = $post->attributes;
     var_dump($attributes);
@@ -311,7 +329,7 @@ $attributes = [
     'content' => 'Never allow assigning attributes that are not meant to be assigned.',
 ];
 $post->attributes = $attributes;
-var_dump($attributes);
+var_dump($post->attributes);
 ```
 
 In the code above we're assigning corresponding data to model attributes named as array keys. The key difference from mass
@@ -356,7 +374,7 @@ class User extends ActiveRecord
 For the code above mass assignment will be allowed strictly according to `scenarios()`:
 
 ```php
-$user = User::find(42);
+$user = User::findOne(42);
 $data = ['password' => '123'];
 $user->attributes = $data;
 print_r($user->attributes);
@@ -365,7 +383,7 @@ print_r($user->attributes);
 Will give you empty array because there's no default scenario defined in our `scenarios()`.
 
 ```php
-$user = User::find(42);
+$user = User::findOne(42);
 $user->scenario = 'signup';
 $data = [
     'username' => 'samdark',
@@ -406,7 +424,7 @@ class User extends ActiveRecord
 The code above assumes default scenario so mass assignment will be available for all fields with `rules` defined:
 
 ```php
-$user = User::find(42);
+$user = User::findOne(42);
 $data = [
     'username' => 'samdark',
     'first_name' => 'Alexander',
@@ -453,7 +471,7 @@ class User extends ActiveRecord
 Mass assignment is still available by default:
 
 ```php
-$user = User::find(42);
+$user = User::findOne(42);
 $data = [
     'username' => 'samdark',
     'first_name' => 'Alexander',

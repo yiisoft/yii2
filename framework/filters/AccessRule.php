@@ -5,10 +5,13 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\filters;
 
 use yii\base\Component;
 use yii\base\Action;
+use yii\web\User;
+use yii\web\Request;
+use yii\web\Controller;
 
 /**
  * This class represents an access rule defined by the [[AccessControl]] action filter
@@ -39,8 +42,8 @@ class AccessRule extends Component
      * - `?`: matches a guest user (not authenticated yet)
      * - `@`: matches an authenticated user
      *
-     * Using additional role names requires RBAC (Role-Based Access Control), and
-     * [[User::checkAccess()]] will be called.
+     * Using other role names requires RBAC (Role-Based Access Control), and
+     * [[User::can()]] will be called.
      *
      * If this property is not set or empty, it means this rule applies to all roles.
      */
@@ -57,7 +60,7 @@ class AccessRule extends Component
      * @var array list of request methods (e.g. `GET`, `POST`) that this rule applies to.
      * The request methods must be specified in uppercase.
      * If not set or empty, it means this rule applies to all request methods.
-     * @see Request::requestMethod
+     * @see \yii\web\Request::method
      */
     public $verbs;
     /**
@@ -145,7 +148,7 @@ class AccessRule extends Component
                 if (!$user->getIsGuest()) {
                     return true;
                 }
-            } elseif ($user->checkAccess($role)) {
+            } elseif ($user->can($role)) {
                 return true;
             }
         }

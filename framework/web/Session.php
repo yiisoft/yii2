@@ -20,9 +20,6 @@ use yii\base\InvalidParamException;
  * To start the session, call [[open()]]; To complete and send out session data, call [[close()]];
  * To destroy the session, call [[destroy()]].
  *
- * By default, [[autoStart]] is true which means the session will be started automatically
- * when the session component is accessed the first time.
- *
  * Session can be used like an array to set and get session data. For example,
  *
  * ~~~
@@ -35,7 +32,7 @@ use yii\base\InvalidParamException;
  * ~~~
  *
  * Session can be extended to support customized session storage.
- * To do so, override [[useCustomStorage()]] so that it returns true, and
+ * To do so, override [[useCustomStorage]] so that it returns true, and
  * override these methods with the actual logic about using custom storage:
  * [[openSession()]], [[closeSession()]], [[readSession()]], [[writeSession()]],
  * [[destroySession()]] and [[gcSession()]].
@@ -84,10 +81,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public $handler;
     /**
      * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
-     * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httpOnly'
+     * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httponly'
      * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
      */
-    private $_cookieParams = ['httpOnly' => true];
+    private $_cookieParams = ['httponly' => true];
 
     /**
      * Initializes the application component.
@@ -301,20 +298,14 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getCookieParams()
     {
-        $params = session_get_cookie_params();
-        if (isset($params['httponly'])) {
-            $params['httpOnly'] = $params['httponly'];
-            unset($params['httponly']);
-        }
-
-        return array_merge($params, $this->_cookieParams);
+        return array_merge(session_get_cookie_params(), array_change_key_case($this->_cookieParams));
     }
 
     /**
      * Sets the session cookie parameters.
      * The cookie parameters passed to this method will be merged with the result
      * of `session_get_cookie_params()`.
-     * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httpOnly`.
+     * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httponly`.
      * @throws InvalidParamException if the parameters are incomplete.
      * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
      */
@@ -333,10 +324,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         $data = $this->getCookieParams();
         extract($data);
-        if (isset($lifetime, $path, $domain, $secure, $httpOnly)) {
-            session_set_cookie_params($lifetime, $path, $domain, $secure, $httpOnly);
+        if (isset($lifetime, $path, $domain, $secure, $httponly)) {
+            session_set_cookie_params($lifetime, $path, $domain, $secure, $httponly);
         } else {
-            throw new InvalidParamException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httpOnly.');
+            throw new InvalidParamException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httponly.');
         }
     }
 
@@ -438,7 +429,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Session open handler.
-     * This method should be overridden if [[useCustomStorage()]] returns true.
+     * This method should be overridden if [[useCustomStorage]] returns true.
      * Do not call this method directly.
      * @param string $savePath session save path
      * @param string $sessionName session name
@@ -451,7 +442,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Session close handler.
-     * This method should be overridden if [[useCustomStorage()]] returns true.
+     * This method should be overridden if [[useCustomStorage]] returns true.
      * Do not call this method directly.
      * @return boolean whether session is closed successfully
      */
@@ -462,7 +453,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Session read handler.
-     * This method should be overridden if [[useCustomStorage()]] returns true.
+     * This method should be overridden if [[useCustomStorage]] returns true.
      * Do not call this method directly.
      * @param string $id session ID
      * @return string the session data
@@ -474,7 +465,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Session write handler.
-     * This method should be overridden if [[useCustomStorage()]] returns true.
+     * This method should be overridden if [[useCustomStorage]] returns true.
      * Do not call this method directly.
      * @param string $id session ID
      * @param string $data session data
@@ -487,7 +478,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Session destroy handler.
-     * This method should be overridden if [[useCustomStorage()]] returns true.
+     * This method should be overridden if [[useCustomStorage]] returns true.
      * Do not call this method directly.
      * @param string $id session ID
      * @return boolean whether session is destroyed successfully
@@ -499,7 +490,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Session GC (garbage collection) handler.
-     * This method should be overridden if [[useCustomStorage()]] returns true.
+     * This method should be overridden if [[useCustomStorage]] returns true.
      * Do not call this method directly.
      * @param integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
      * @return boolean whether session is GCed successfully

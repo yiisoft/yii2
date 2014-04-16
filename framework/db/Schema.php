@@ -87,7 +87,7 @@ abstract class Schema extends Object
      */
     public function getTableSchema($name, $refresh = false)
     {
-        if (isset($this->_tables[$name]) && !$refresh) {
+        if (array_key_exists($name, $this->_tables) && !$refresh) {
             return $this->_tables[$name];
         }
 
@@ -100,15 +100,17 @@ abstract class Schema extends Object
             if ($cache instanceof Cache) {
                 $key = $this->getCacheKey($name);
                 if ($refresh || ($table = $cache->get($key)) === false) {
-                    $table = $this->loadTableSchema($realName);
+                    $this->_tables[$name] = $table = $this->loadTableSchema($realName);
                     if ($table !== null) {
                         $cache->set($key, $table, $db->schemaCacheDuration, new GroupDependency([
                             'group' => $this->getCacheGroup(),
                         ]));
                     }
+                } else {
+                    $this->_tables[$name] = $table;
                 }
 
-                return $this->_tables[$name] = $table;
+                return $this->_tables[$name];
             }
         }
 

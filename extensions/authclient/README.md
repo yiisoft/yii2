@@ -74,10 +74,10 @@ class SiteController extends Controller
 }
 ```
 
-You may use [[yii\authclient\widgets\Choice]] to compose auth client selection:
+You may use [[yii\authclient\widgets\AuthChoice]] to compose auth client selection:
 
 ```
-<?= yii\authclient\widgets\Choice::widget([
+<?= yii\authclient\widgets\AuthChoice::widget([
      'baseAuthUrl' => ['site/auth']
 ]) ?>
 ```
@@ -119,7 +119,7 @@ Defining list of attributes, which external auth provider should return, depends
 
 Each auth client has "viewOptions" attribute. It is an array, which stores name-value pairs,
 which serve to compose client representation in the view.
-For example widget [[yii\authclient\widgets\Choice]] uses keys "popupWidth" and "popupHeight" to
+For example widget [[yii\authclient\widgets\AuthChoice]] uses keys "popupWidth" and "popupHeight" to
 determine the size of authentication popup window.
 
 

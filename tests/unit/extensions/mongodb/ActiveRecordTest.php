@@ -66,16 +66,16 @@ class ActiveRecordTest extends MongoDbTestCase
 
         // find by _id
         $testId = $this->testRows[0]['_id'];
-        $customer = Customer::find($testId);
+        $customer = Customer::findOne($testId);
         $this->assertTrue($customer instanceof Customer);
         $this->assertEquals($testId, $customer->_id);
 
         // find by column values
-        $customer = Customer::find(['name' => 'name5']);
+        $customer = Customer::findOne(['name' => 'name5']);
         $this->assertTrue($customer instanceof Customer);
         $this->assertEquals($this->testRows[4]['_id'], $customer->_id);
         $this->assertEquals('name5', $customer->name);
-        $customer = Customer::find(['name' => 'unexisting name']);
+        $customer = Customer::findOne(['name' => 'unexisting name']);
         $this->assertNull($customer);
 
         // find by attributes
@@ -142,7 +142,7 @@ class ActiveRecordTest extends MongoDbTestCase
         $record->save();
 
         // save
-        $record = Customer::find($record->_id);
+        $record = Customer::findOne($record->_id);
         $this->assertTrue($record instanceof Customer);
         $this->assertEquals(7, $record->status);
         $this->assertFalse($record->isNewRecord);
@@ -151,14 +151,14 @@ class ActiveRecordTest extends MongoDbTestCase
         $record->save();
         $this->assertEquals(9, $record->status);
         $this->assertFalse($record->isNewRecord);
-        $record2 = Customer::find($record->_id);
+        $record2 = Customer::findOne($record->_id);
         $this->assertEquals(9, $record2->status);
 
         // updateAll
         $pk = ['_id' => $record->_id];
         $ret = Customer::updateAll(['status' => 55], $pk);
         $this->assertEquals(1, $ret);
-        $record = Customer::find($pk);
+        $record = Customer::findOne($pk);
         $this->assertEquals(55, $record->status);
     }
 
@@ -175,9 +175,9 @@ class ActiveRecordTest extends MongoDbTestCase
         $record->status = 7;
         $record->save();
 
-        $record = Customer::find($record->_id);
+        $record = Customer::findOne($record->_id);
         $record->delete();
-        $record = Customer::find($record->_id);
+        $record = Customer::findOne($record->_id);
         $this->assertNull($record);
 
         // deleteAll
@@ -198,7 +198,7 @@ class ActiveRecordTest extends MongoDbTestCase
     {
         $this->assertEquals(1, Customer::updateAllCounters(['status' => 10], ['status' => 10]));
 
-        $record = Customer::find(['status' => 10]);
+        $record = Customer::findOne(['status' => 10]);
         $this->assertNull($record);
     }
 
@@ -207,14 +207,14 @@ class ActiveRecordTest extends MongoDbTestCase
      */
     public function testUpdateCounters()
     {
-        $record = Customer::find($this->testRows[9]);
+        $record = Customer::findOne($this->testRows[9]);
 
         $originalCounter = $record->status;
         $counterIncrement = 20;
         $record->updateCounters(['status' => $counterIncrement]);
         $this->assertEquals($originalCounter + $counterIncrement, $record->status);
 
-        $refreshedRecord = Customer::find($record->_id);
+        $refreshedRecord = Customer::findOne($record->_id);
         $this->assertEquals($originalCounter + $counterIncrement, $refreshedRecord->status);
     }
 
@@ -234,13 +234,13 @@ class ActiveRecordTest extends MongoDbTestCase
         $record->save();
 
         // save
-        $record = Customer::find($record->_id);
+        $record = Customer::findOne($record->_id);
         $newAddress = [
             'city' => 'AnotherCity'
         ];
         $record->address = $newAddress;
         $record->save();
-        $record2 = Customer::find($record->_id);
+        $record2 = Customer::findOne($record->_id);
         $this->assertEquals($newAddress, $record2->address);
     }
 

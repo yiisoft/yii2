@@ -7,7 +7,7 @@ $extensions = $panel->getExtensions();
 <h1>Configuration</h1>
 
 <?php
-echo $this->render('panels/config/table', [
+echo $this->render('table', [
     'caption' => 'Application Configuration',
     'values' => [
         'Yii Version' => $panel->data['application']['yii'],
@@ -18,13 +18,13 @@ echo $this->render('panels/config/table', [
 ]);
 
 if (!empty($extensions)) {
-    echo $this->render('panels/config/table', [
+    echo $this->render('table', [
         'caption' => 'Installed Extensions',
         'values' => $extensions,
     ]);
 }
 
-echo $this->render('panels/config/table', [
+echo $this->render('table', [
     'caption' => 'PHP Configuration',
     'values' => [
         'PHP Version' => $panel->data['php']['version'],

@@ -5,7 +5,7 @@ Yii provides a whole set of tools to greatly simplify the task of implementing R
 In particular, Yii provides support for the following aspects regarding RESTful APIs:
 
 * Quick prototyping with support for common APIs for ActiveRecord;
-* Response format (supporting JSON and XML by default) and API version negotiation;
+* Response format (supporting JSON and XML by default) negotiation;
 * Customizable object serialization with support for selectable output fields;
 * Proper formatting of collection data and validation errors;
 * Efficient routing with proper HTTP verb check;
@@ -13,7 +13,7 @@ In particular, Yii provides support for the following aspects regarding RESTful 
 * Authentication;
 * Authorization;
 * Support for HATEOAS;
-* Caching via `yii\web\HttpCache`;
+* Caching via `yii\filters\HttpCache`;
 * Rate limiting;
 * Searching and filtering: TBD
 * Testing: TBD
@@ -187,7 +187,23 @@ Formatting Response Data
 ------------------------
 
 By default, Yii supports two response formats for RESTful APIs: JSON and XML. If you want to support
-other formats, you should configure [[yii\rest\Controller::supportedFormats]] and also [[yii\web\Response::formatters]].
+other formats, you should configure the `contentNegotiator` behavior in your REST controller classes as follows,
+
+
+```php
+use yii\helpers\ArrayHelper;
+
+public function behaviors()
+{
+    return ArrayHelper::merge(parent::behaviors(), [
+        'contentNegotiator' => [
+            'formats' => [
+                // ... other supported formats ...
+            ],
+        ],
+    ]);
+}
+```
 
 Formatting response data in general involves two steps:
 
@@ -599,29 +615,57 @@ There are different ways to send an access token:
   server and sent to the API server via [HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750),
   according to the OAuth2 protocol.
 
-Yii supports all of the above authentication methods and can be further extended to support other methods.
+Yii supports all of the above authentication methods. You can also easily create new authentication methods.
 
 To enable authentication for your APIs, do the following two steps:
 
-1. Configure [[yii\rest\Controller::authMethods]] with the authentication methods you plan to use.
+1. Specify which authentication methods you plan to use by configuring the `authenticator` behavior
+   in your REST controller classes.
 2. Implement [[yii\web\IdentityInterface::findIdentityByAccessToken()]] in your [[yii\web\User::identityClass|user identity class]].
 
-For example, to enable all three authentication methods explained above, you would configure `authMethods`
-as follows,
+
+For example, to use HTTP Basic Auth, you may configure `authenticator` as follows,
 
 ```php
-class UserController extends ActiveController
+use yii\helpers\ArrayHelper;
+use yii\filters\auth\HttpBasicAuth;
+
+public function behaviors()
 {
-    public $authMethods = [
-        'yii\rest\HttpBasicAuth',
-        'yii\rest\QueryParamAuth',
-        'yii\rest\HttpBearerAuth',
-    ];
+    return ArrayHelper::merge(parent::behaviors(), [
+        'authenticator' => [
+            'class' => HttpBasicAuth::className(),
+        ],
+    ]);
 }
 ```
 
-Each element in `authMethods` should be an auth class name or a configuration array. An auth class
-must implement [[yii\rest\AuthInterface]].
+If you want to support all three authentication methods explained above, you can use `CompositeAuth` like the following,
+
+```php
+use yii\helpers\ArrayHelper;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\auth\QueryParamAuth;
+
+public function behaviors()
+{
+    return ArrayHelper::merge(parent::behaviors(), [
+        'authenticator' => [
+            'class' => CompositeAuth::className(),
+            'authMethods' => [
+                HttpBasicAuth::className(),
+                HttpBearerAuth::className(),
+                QueryParamAuth::className(),
+            ],
+        ],
+    ]);
+}
+```
+
+Each element in `authMethods` should be an auth method class name or a configuration array.
+
 
 Implementation of `findIdentityByAccessToken()` is application specific. For example, in simple scenarios
 when each user can only have one access token, you may store the access token in an `access_token` column
@@ -635,7 +679,7 @@ class User extends ActiveRecord implements IdentityInterface
 {
     public static function findIdentityByAccessToken($token)
     {
-        return static::find(['access_token' => $token]);
+        return static::findOne(['access_token' => $token]);
     }
 }
 ```
@@ -689,7 +733,7 @@ To prevent abuse, you should consider adding rate limiting to your APIs. For exa
 of each user to be at most 100 API calls within a period of 10 minutes. If too many requests are received from a user
 within the period of the time, a response with status code 429 (meaning Too Many Requests) should be returned.
 
-To enable rate limiting, the [[yii\web\User::identityClass|user identity class]] should implement [[yii\rest\RateLimitInterface]].
+To enable rate limiting, the [[yii\web\User::identityClass|user identity class]] should implement [[yii\filters\RateLimitInterface]].
 This interface requires implementation of the following three methods:
 
 * `getRateLimit()`: returns the maximum number of allowed requests and the time period, e.g., `[100, 600]` means
@@ -703,16 +747,35 @@ And `loadAllowance()` and `saveAllowance()` can then be implementation by readin
 of the two columns corresponding to the current authenticated user. To improve performance, you may also
 consider storing these information in cache or some NoSQL storage.
 
-Once the identity class implements the required interface, Yii will automatically use the rate limiter
-as specified by [[yii\rest\Controller::rateLimiter]] to perform rate limiting check. The rate limiter
-will thrown a [[yii\web\TooManyRequestsHttpException]] if rate limit is exceeded.
+Once the identity class implements the required interface, Yii will automatically use [[yii\filters\RateLimiter]]
+configured as an action filter for [[yii\rest\Controller]] to perform rate limiting check. The rate limiter
+will thrown a [[yii\web\TooManyRequestsHttpException]] if rate limit is exceeded. You may configure the rate limiter
+as follows in your REST controller classes,
 
-When rate limiting is enabled, every response will be sent with the following HTTP headers containing
+```php
+use yii\helpers\ArrayHelper;
+use yii\filters\RateLimiter;
+
+public function behaviors()
+{
+    return ArrayHelper::merge(parent::behaviors(), [
+        'rateLimiter' => [
+            'class' => RateLimiter::className(),
+            'enableRateLimitHeaders' => false,
+        ],
+    ]);
+}
+```
+
+When rate limiting is enabled, by default every response will be sent with the following HTTP headers containing
 the current rate limiting information:
 
 * `X-Rate-Limit-Limit`: The maximum number of requests allowed with a time period;
 * `X-Rate-Limit-Remaining`: The number of remaining requests in the current time period;
 * `X-Rate-Limit-Reset`: The number of seconds to wait in order to get the maximum number of allowed requests.
+
+You may disable these headers by configuring [[yii\filters\RateLimiter::enableRateLimitHeaders]] to be false,
+like shown in the above code example.
 
 
 Error Handling
@@ -761,8 +824,8 @@ The following list summarizes the HTTP status code that are used by the Yii REST
 * `500`: Internal server error. This could be caused by internal program errors.
 
 
-Versioning
-----------
+API Versioning
+--------------
 
 Your APIs should be versioned. Unlike Web applications which you have full control on both client side and server side
 code, for APIs you usually do not have control of the client code that consumes the APIs. Therefore, backward
@@ -783,7 +846,7 @@ Accept: application/vnd.company.myapp-v1+json
 ```
 
 Both methods have pros and cons, and there are a lot of debates about them. Below we describe a practical strategy
-of API versioning that is a kind of mix of these two methods:
+of API versioning that is kind of a mix of these two methods:
 
 * Put each major version of API implementation in a separate module whose ID is the major version number (e.g. `v1`, `v2`).
   Naturally, the API URLs will contain major version numbers.
@@ -793,7 +856,9 @@ of API versioning that is a kind of mix of these two methods:
 For each module serving a major version, it should include the resource classes and the controller classes
 serving for that specific version. To better separate code responsibility, you may keep a common set of
 base resource and controller classes, and subclass them in each individual version module. Within the subclasses,
-implement the concrete code such as `Model::fields()`. As a result, your code may be organized like the following:
+implement the concrete code such as `Model::fields()`.
+
+Your code may be organized like the following:
 
 ```
 api/
@@ -853,14 +918,16 @@ As a result, `http://example.com/v1/users` will return the list of users in vers
 Using modules, code for different major versions can be well isolated. And it is still possible
 to reuse code across modules via common base classes and other shared classes.
 
-To deal with minor version numbers, you may take advantage of the content type negotiation
-feature provided by [[yii\rest\Controller]]:
+To deal with minor version numbers, you may take advantage of the content negotiation
+feature provided by the [[yii\filters\ContentNegotiator|contentNegotiator]] behavior. The `contentNegotiator`
+behavior will set the [[yii\web\Response::acceptParams]] property when it determines which
+content type to support.
 
-* Specify a list of supported minor versions (within the major version of the containing module)
-  via [[yii\rest\Controller::supportedVersions]].
-* Get the version number by reading [[yii\rest\Controller::version]].
-* In relevant code, such as actions, resource classes, serializers, etc., write conditional
-  code according to the requested minor version number.
+For example, if a request is sent with the HTTP header `Accept: application/json; version=v1`,
+after content negotiation, [[yii\web\Response::acceptParams]] will contain the value `['version' => 'v1']`.
+
+Based on the version information in `acceptParams`, you may write conditional code in places
+such as actions, resource classes, serializers, etc.
 
 Since minor versions require maintaining backward compatibility, hopefully there are not much
 version checks in your code. Otherwise, chances are that you may need to create a new major version.

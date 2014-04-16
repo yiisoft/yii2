@@ -5,7 +5,7 @@ use yii\helpers\Html;
 
 $listView = new ListView([
         'dataProvider' => $dataProvider,
-        'itemView' => 'panels/mail/_item',
+        'itemView' => '_item',
         'layout' => "{summary}\n{items}\n{pager}\n",
     ]);
 $listView->sorter = ['options' => ['class'=>'mail-sorter']];

@@ -85,7 +85,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      */
     public static function findBySql($sql, $params = [])
     {
-        $query = static::createQuery();
+        $query = static::find();
         $query->sql = $sql;
 
         return $query->params($params);
@@ -136,33 +136,11 @@ abstract class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * Creates an [[ActiveQuery]] instance.
-     *
-     * This method is called by [[find()]], [[findBySql()]] to start a SELECT query but also
-     * by [[hasOne()]] and [[hasMany()]] to create a relational query.
-     * You may override this method to return a customized query (e.g. `CustomerQuery` specified
-     * written for querying `Customer` purpose.)
-     *
-     * You may also define default conditions that should apply to all queries unless overridden:
-     *
-     * ```php
-     * public static function createQuery($config = [])
-     * {
-     *     return parent::createQuery($config)->where(['deleted' => false]);
-     * }
-     * ```
-     *
-     * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
-     * default condition. Using [[Query::where()]] will override the default condition.
-     *
-     * @param  array       $config the configuration passed to the ActiveQuery class.
-     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+     * @inheritdoc
      */
-    public static function createQuery($config = [])
+    public static function find()
     {
-        $config['modelClass'] = get_called_class();
-
-        return new ActiveQuery($config);
+        return new ActiveQuery(get_called_class());
     }
 
     /**
@@ -416,10 +394,9 @@ abstract class ActiveRecord extends BaseActiveRecord
         if (!$command->execute()) {
             return false;
         }
-        foreach ($values as $name => $value) {
-            $this->setOldAttribute($name, $value);
-        }
+
         $this->afterSave(true);
+        $this->setOldAttributes($values);
 
         return true;
     }
@@ -446,7 +423,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      * For example, to update an article record:
      *
      * ~~~
-     * $article = Article::find(['id' => $id]);
+     * $article = Article::findOne($id);
      * $article->genre_id = $genreId;
      * $article->group_id = $groupId;
      * $article->update();
@@ -466,7 +443,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      *
      * @param  boolean              $runValidation whether to perform validation before saving the record.
      *                                             If the validation fails, the record will not be inserted into the database.
-     * @param  array                $attributes    list of attributes that need to be saved. Defaults to null,
+     * @param  array                $attributeNames    list of attributes that need to be saved. Defaults to null,
      *                                             meaning all attributes that are loaded from DB will be saved.
      * @return integer|boolean      the number of rows affected, or false if validation fails
      *                                            or [[beforeSave()]] stops the updating process.
@@ -474,16 +451,16 @@ abstract class ActiveRecord extends BaseActiveRecord
      *                                            being updated is outdated.
      * @throws \Exception           in case update failed.
      */
-    public function update($runValidation = true, $attributes = null)
+    public function update($runValidation = true, $attributeNames = null)
     {
-        if ($runValidation && !$this->validate($attributes)) {
+        if ($runValidation && !$this->validate($attributeNames)) {
             return false;
         }
         $db = static::getDb();
         if ($this->isTransactional(self::OP_UPDATE) && $db->getTransaction() === null) {
             $transaction = $db->beginTransaction();
             try {
-                $result = $this->updateInternal($attributes);
+                $result = $this->updateInternal($attributeNames);
                 if ($result === false) {
                     $transaction->rollBack();
                 } else {
@@ -494,7 +471,7 @@ abstract class ActiveRecord extends BaseActiveRecord
                 throw $e;
             }
         } else {
-            $result = $this->updateInternal($attributes);
+            $result = $this->updateInternal($attributeNames);
         }
 
         return $result;
@@ -512,7 +489,6 @@ abstract class ActiveRecord extends BaseActiveRecord
         $values = $this->getDirtyAttributes($attributes);
         if (empty($values)) {
             $this->afterSave(false);
-
             return 0;
         }
 
@@ -554,10 +530,10 @@ abstract class ActiveRecord extends BaseActiveRecord
             }
         }
 
+        $this->afterSave(false);
         foreach ($values as $name => $value) {
             $this->setOldAttribute($name, $this->getAttribute($name));
         }
-        $this->afterSave(false);
 
         return $rows;
     }

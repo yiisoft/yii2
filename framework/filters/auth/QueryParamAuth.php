@@ -5,37 +5,37 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\rest;
+namespace yii\filters\auth;
 
 use Yii;
-use yii\base\Component;
 use yii\web\UnauthorizedHttpException;
 
 /**
- * HttpBearerAuth implements the authentication method based on HTTP Bearer token.
+ * QueryParamAuth is an action filter that supports the authentication based on the access token passed through a query parameter.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class HttpBearerAuth extends Component implements AuthInterface
+class QueryParamAuth extends AuthMethod
 {
     /**
-     * @var string the HTTP authentication realm
+     * @var string the parameter name for passing the access token
      */
-    public $realm = 'api';
+    public $tokenParam = 'access-token';
 
     /**
      * @inheritdoc
      */
     public function authenticate($user, $request, $response)
     {
-        $authHeader = $request->getHeaders()->get('Authorization');
-        if ($authHeader !== null && preg_match("/^Bearer\\s+(.*?)$/", $authHeader, $matches)) {
-            $identity = $user->loginByAccessToken($matches[1]);
+        $accessToken = $request->get($this->tokenParam);
+        if (is_string($accessToken)) {
+            $identity = $user->loginByAccessToken($accessToken);
             if ($identity !== null) {
                 return $identity;
             }
-
+        }
+        if ($accessToken !== null) {
             $this->handleFailure($response);
         }
 
@@ -47,7 +47,6 @@ class HttpBearerAuth extends Component implements AuthInterface
      */
     public function handleFailure($response)
     {
-        $response->getHeaders()->set('WWW-Authenticate', "Bearer realm=\"{$this->realm}\"");
         throw new UnauthorizedHttpException('You are requesting with an invalid access token.');
     }
 }

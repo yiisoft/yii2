@@ -1,7 +1,5 @@
 <?php
 /**
- * Console Application class file.
- *
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
@@ -45,8 +43,6 @@ use yii\base\InvalidRouteException;
  * ~~~
  * yii help
  * ~~~
- *
- * @property Response $response The response component. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -149,15 +145,6 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the response component.
-     * @return Response the response component
-     */
-    public function getResponse()
-    {
-        return $this->get('response');
-    }
-
-    /**
      * Runs a controller action specified by a route.
      * This method parses the specified route and creates the corresponding child module(s), controller and action
      * instances. It then calls [[Controller::runAction()]] to run the action with the given parameters.
@@ -197,9 +184,20 @@ class Application extends \yii\base\Application
      */
     public function coreComponents()
     {
-        return array_merge([
+        return array_merge(parent::coreComponents(), [
             'request' => ['class' => 'yii\console\Request'],
             'response' => ['class' => 'yii\console\Response'],
-        ], parent::coreComponents());
+        ]);
+    }
+
+    /**
+     * Registers the errorHandler component as a PHP error handler.
+     */
+    protected function registerErrorHandler(&$config)
+    {
+        if (!isset($config['components']['errorHandler']['class'])) {
+            $config['components']['errorHandler']['class'] = 'yii\\console\\ErrorHandler';
+        }
+        parent::registerErrorHandler($config);
     }
 }

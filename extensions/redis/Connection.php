@@ -65,7 +65,6 @@ class Connection extends Component
      * @var float timeout to use for redis socket when reading and writing data. If not set the php default value will be used.
      */
     public $dataTimeout = null;
-
     /**
      * @var array List of available redis commands http://redis.io/commands
      */
@@ -214,6 +213,7 @@ class Connection extends Component
      * @var resource redis socket connection
      */
     private $_socket;
+
 
     /**
      * Closes the connection when this component is being serialized.

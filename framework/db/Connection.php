@@ -39,9 +39,9 @@ use yii\caching\Cache;
  * After the DB connection is established, one can execute SQL statements like the following:
  *
  * ~~~
- * $command = $connection->createCommand('SELECT * FROM tbl_post');
+ * $command = $connection->createCommand('SELECT * FROM post');
  * $posts = $command->queryAll();
- * $command = $connection->createCommand('UPDATE tbl_post SET status=1');
+ * $command = $connection->createCommand('UPDATE post SET status=1');
  * $command->execute();
  * ~~~
  *
@@ -50,7 +50,7 @@ use yii\caching\Cache;
  * to prevent SQL injection attacks. The following is an example:
  *
  * ~~~
- * $command = $connection->createCommand('SELECT * FROM tbl_post WHERE id=:id');
+ * $command = $connection->createCommand('SELECT * FROM post WHERE id=:id');
  * $command->bindValue(':id', $_GET['id']);
  * $post = $command->query();
  * ~~~
@@ -89,7 +89,7 @@ use yii\caching\Cache;
  * ]
  * ~~~
  *
- * @property string $driverName Name of the DB driver. This property is read-only.
+ * @property string $driverName Name of the DB driver.
  * @property boolean $isActive Whether the DB connection is established. This property is read-only.
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
  * sequence object. This property is read-only.
@@ -221,7 +221,7 @@ class Connection extends Component
      * as `{{%TableName}}`, then the percentage character `%` will be replaced with this
      * property value. For example, `{{%post}}` becomes `{{tbl_post}}`.
      */
-    public $tablePrefix = 'tbl_';
+    public $tablePrefix = '';
     /**
      * @var array mapping between PDO driver names and [[Schema]] classes.
      * The keys of the array are PDO driver names while the values the corresponding
@@ -261,6 +261,10 @@ class Connection extends Component
      * @var Schema the database schema
      */
     private $_schema;
+    /**
+     * @var string driver name
+     */
+    private $_driverName;
 
     /**
      * Returns a value indicating whether the DB connection is established.
@@ -348,11 +352,13 @@ class Connection extends Component
         $pdoClass = $this->pdoClass;
         if ($pdoClass === null) {
             $pdoClass = 'PDO';
-            if (($pos = strpos($this->dsn, ':')) !== false) {
+            if ($this->_driverName !== null) {
+                $driver = $this->_driverName;
+            } elseif (($pos = strpos($this->dsn, ':')) !== false) {
                 $driver = strtolower(substr($this->dsn, 0, $pos));
-                if ($driver === 'mssql' || $driver === 'dblib' || $driver === 'sqlsrv') {
-                    $pdoClass = 'yii\db\mssql\PDO';
-                }
+            }
+            if (isset($driver) && ($driver === 'mssql' || $driver === 'dblib' || $driver === 'sqlsrv')) {
+                $pdoClass = 'yii\db\mssql\PDO';
             }
         }
 
@@ -533,17 +539,29 @@ class Connection extends Component
     }
 
     /**
-     * Returns the name of the DB driver for the current [[dsn]].
+     * Returns the name of the DB driver. Based on the the current [[dsn]], in case it was not set explicitly
+     * by an end user.
      * @return string name of the DB driver
      */
     public function getDriverName()
     {
-        if (($pos = strpos($this->dsn, ':')) !== false) {
-            return strtolower(substr($this->dsn, 0, $pos));
-        } else {
-            $this->open();
-
-            return strtolower($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
+        if ($this->_driverName === null) {
+            if (($pos = strpos($this->dsn, ':')) !== false) {
+                $this->_driverName = strtolower(substr($this->dsn, 0, $pos));
+            } else {
+                $this->open();
+                $this->_driverName = strtolower($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
+            }
         }
+        return $this->_driverName;
+    }
+
+    /**
+     * Changes the current driver name.
+     * @param string $driverName name of the DB driver
+     */
+    public function setDriverName($driverName)
+    {
+        $this->_driverName = strtolower($driverName);
     }
 }

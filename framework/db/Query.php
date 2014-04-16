@@ -25,7 +25,7 @@ use yii\base\Component;
  * $query = new Query;
  * // compose the query
  * $query->select('id, name')
- *     ->from('tbl_user')
+ *     ->from('user')
  *     ->limit(10);
  * // build and execute the query
  * $rows = $query->all();
@@ -60,7 +60,7 @@ class Query extends Component implements QueryInterface
      */
     public $distinct;
     /**
-     * @var array the table(s) to be selected from. For example, `['tbl_user', 'tbl_post']`.
+     * @var array the table(s) to be selected from. For example, `['user', 'post']`.
      * This is used to construct the FROM clause in a SQL statement.
      * @see from()
      */
@@ -82,8 +82,8 @@ class Query extends Component implements QueryInterface
      *
      * ~~~
      * [
-     *     ['INNER JOIN', 'tbl_user', 'tbl_user.id = author_id'],
-     *     ['LEFT JOIN', 'tbl_team', 'tbl_team.id = team_id'],
+     *     ['INNER JOIN', 'user', 'user.id = author_id'],
+     *     ['LEFT JOIN', 'team', 'team.id = team_id'],
      * ]
      * ~~~
      */
@@ -124,6 +124,16 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * Prepares for building SQL.
+     * This method is called by [[QueryBuilder]] when it starts to build SQL from a query object.
+     * You may override this method to do some final preparation work when converting a query into a SQL statement.
+     * @param QueryBuilder $builder
+     */
+    public function prepareBuild($builder)
+    {
+    }
+
+    /**
      * Starts a batch query.
      *
      * A batch query supports fetching data in batches, which can keep the memory usage under a limit.
@@ -133,9 +143,9 @@ class Query extends Component implements QueryInterface
      * For example,
      *
      * ```php
-     * $query = (new Query)->from('tbl_user');
+     * $query = (new Query)->from('user');
      * foreach ($query->batch() as $rows) {
-     *     // $rows is an array of 10 or fewer rows from tbl_user
+     *     // $rows is an array of 10 or fewer rows from user table
      * }
      * ```
      *
@@ -161,7 +171,7 @@ class Query extends Component implements QueryInterface
      * only one row of data is returned. For example,
      *
      * ```php
-     * $query = (new Query)->from('tbl_user');
+     * $query = (new Query)->from('user');
      * foreach ($query->each() as $row) {
      * }
      * ```
@@ -373,7 +383,7 @@ class Query extends Component implements QueryInterface
      * Sets the SELECT part of the query.
      * @param string|array $columns the columns to be selected.
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
-     * Columns can contain table prefixes (e.g. "tbl_user.id") and/or column aliases (e.g. "tbl_user.id AS user_id").
+     * Columns can be prefixed with table names (e.g. "user.id") and/or contain column aliases (e.g. "user.id AS user_id").
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
      *
@@ -399,6 +409,26 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * Add more columns to the SELECT part of the query.
+     * @param string|array $columns the columns to add to the select.
+     * @return static the query object itself
+     * @see select()
+     */
+    public function addSelect($columns)
+    {
+        if (!is_array($columns)) {
+            $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+        }
+        if ($this->select === null) {
+            $this->select = $columns;
+        } else {
+            $this->select = array_merge($this->select, $columns);
+        }
+        
+        return $this;
+    }
+
+    /**
      * Sets the value indicating whether to SELECT DISTINCT or not.
      * @param boolean $value whether to SELECT DISTINCT or not.
      * @return static the query object itself
@@ -412,9 +442,9 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the FROM part of the query.
-     * @param string|array $tables the table(s) to be selected from. This can be either a string (e.g. `'tbl_user'`)
-     * or an array (e.g. `['tbl_user', 'tbl_profile']`) specifying one or several table names.
-     * Table names can contain schema prefixes (e.g. `'public.tbl_user'`) and/or table aliases (e.g. `'tbl_user u'`).
+     * @param string|array $tables the table(s) to be selected from. This can be either a string (e.g. `'user'`)
+     * or an array (e.g. `['user', 'profile']`) specifying one or several table names.
+     * Table names can contain schema prefixes (e.g. `'public.user'`) and/or table aliases (e.g. `'user u'`).
      * The method will automatically quote the table names unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
@@ -449,13 +479,14 @@ class Query extends Component implements QueryInterface
      * - operator format: `[operator, operand1, operand2, ...]`
      *
      * A condition in hash format represents the following SQL expression in general:
-     * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array,
+     * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array or a Query object,
      * an `IN` expression will be generated. And if a value is null, `IS NULL` will be used
      * in the generated expression. Below are some examples:
      *
      * - `['type' => 1, 'status' => 2]` generates `(type = 1) AND (status = 2)`.
      * - `['id' => [1, 2, 3], 'status' => 2]` generates `(id IN (1, 2, 3)) AND (status = 2)`.
      * - `['status' => null] generates `status IS NULL`.
+     * - `['id' => $query]` generates `id IN (...sub-query...)`
      *
      * A condition in operator format generates the SQL expression according to the specified operator, which
      * can be one of the followings:
@@ -475,10 +506,12 @@ class Query extends Component implements QueryInterface
      * - `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
      * in the generated condition.
      *
-     * - `in`: operand 1 should be a column or DB expression, and operand 2 be an array representing
-     * the range of the values that the column or DB expression should be in. For example,
-     * `['in', 'id', [1, 2, 3]]` will generate `id IN (1, 2, 3)`.
-     * The method will properly quote the column name and escape values in the range.
+     * - `in`: operand 1 should be a column or DB expression with parenthesis. Operand 2 can be an array
+     * or a Query object. If the former, the array represents the range of the values that the column
+     * or DB expression should be in. If the latter, a sub-query will be generated to represent the range.
+     * For example, `['in', 'id', [1, 2, 3]]` will generate `id IN (1, 2, 3)`;
+     * `['in', 'id', (new Query)->select('id')->from('user'))]` will generate
+     * `id IN (SELECT id FROM user)`. The method will properly quote the column name and escape values in the range.
      *
      * - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
      *
@@ -516,7 +549,6 @@ class Query extends Component implements QueryInterface
     {
         $this->where = $condition;
         $this->addParams($params);
-
         return $this;
     }
 
@@ -560,7 +592,6 @@ class Query extends Component implements QueryInterface
             $this->where = ['or', $this->where, $condition];
         }
         $this->addParams($params);
-
         return $this;
     }
 
@@ -571,7 +602,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $table the table to be joined.
      *
      * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
@@ -596,7 +627,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $table the table to be joined.
      *
      * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
@@ -621,7 +652,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $table the table to be joined.
      *
      * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
@@ -646,7 +677,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $table the table to be joined.
      *
      * Use string to represent the name of the table to be joined.
-     * Table name can contain schema prefix (e.g. 'public.tbl_user') and/or table alias (e.g. 'tbl_user u').
+     * Table name can contain schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *

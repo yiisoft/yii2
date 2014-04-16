@@ -137,7 +137,7 @@ sending either `ETag` or `Last-Modified` header in your application response. If
 HTTP specification (most browsers are), content will be fetched only if it is different from what it was prevously.
 
 Forming proper headers is time consuming task so Yii provides a shortcut in form of controller filter
-[[yii\web\HttpCache]]. Using it is very easy. In a controller you need to implement `behaviors` method like
+[[yii\filters\HttpCache]]. Using it is very easy. In a controller you need to implement `behaviors` method like
 the following:
 
 ```php
@@ -145,7 +145,7 @@ public function behaviors()
 {
     return [
         'httpCache' => [
-            'class' => \yii\web\HttpCache::className(),
+            'class' => \yii\filters\HttpCache::className(),
             'only' => ['list'],
             'lastModified' => function ($action, $params) {
                 $q = new Query();

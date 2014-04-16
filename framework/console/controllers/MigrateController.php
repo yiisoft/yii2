@@ -1,6 +1,5 @@
 <?php
 /**
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
@@ -33,7 +32,7 @@ use yii\helpers\FileHelper;
  * create it as follows:
  *
  * ~~~
- * CREATE TABLE tbl_migration (
+ * CREATE TABLE migration (
  *     version varchar(180) PRIMARY KEY,
  *     apply_time integer
  * )
@@ -92,14 +91,13 @@ class MigrateController extends Controller
     public $db = 'db';
 
     /**
-     * Returns the names of the global options for this command.
-     * @return array the names of the global options for this command.
+     * @inheritdoc
      */
-    public function options($id)
+    public function options($actionId)
     {
-        return array_merge(parent::options($id),
+        return array_merge(parent::options($actionId),
             ['migrationPath', 'migrationTable', 'db'], // global for all actions
-            ($id == 'create') ? ['templateFile'] : [] // action create
+            ($actionId == 'create') ? ['templateFile'] : [] // action create
         );
     }
 

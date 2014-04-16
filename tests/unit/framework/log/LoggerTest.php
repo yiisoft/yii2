@@ -8,6 +8,9 @@ namespace yiiunit\framework\log;
 use yii\log\Logger;
 use yiiunit\TestCase;
 
+/**
+ * @group log
+ */
 class LoggerTest extends TestCase
 {
 

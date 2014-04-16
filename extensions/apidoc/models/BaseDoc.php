@@ -63,7 +63,7 @@ class BaseDoc extends Object
         $docblock = $reflector->getDocBlock();
         if ($docblock !== null) {
             $this->shortDescription = ucfirst($docblock->getShortDescription());
-            if (empty($this->shortDescription) && !($this instanceof PropertyDoc) && $context !== null) {
+            if (empty($this->shortDescription) && !($this instanceof PropertyDoc) && $context !== null && $docblock->getTagsByName('inheritdoc') === null) {
                 $context->errors[] = [
                     'line' => $this->startLine,
                     'file' => $this->sourceFile,

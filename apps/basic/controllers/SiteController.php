@@ -3,9 +3,9 @@
 namespace app\controllers;
 
 use Yii;
-use yii\web\AccessControl;
+use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\web\VerbFilter;
+use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 

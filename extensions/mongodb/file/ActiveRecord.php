@@ -45,33 +45,11 @@ use yii\web\UploadedFile;
 abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
 {
     /**
-     * Creates an [[ActiveQuery]] instance.
-     *
-     * This method is called by [[find()]], [[findBySql()]] to start a SELECT query but also
-     * by [[hasOne()]] and [[hasMany()]] to create a relational query.
-     * You may override this method to return a customized query (e.g. `CustomerQuery` specified
-     * written for querying `Customer` purpose.)
-     *
-     * You may also define default conditions that should apply to all queries unless overridden:
-     *
-     * ```php
-     * public static function createQuery($config = [])
-     * {
-     *     return parent::createQuery($config)->where(['deleted' => false]);
-     * }
-     * ```
-     *
-     * Note that all queries should use [[Query::andWhere()]] and [[Query::orWhere()]] to keep the
-     * default condition. Using [[Query::where()]] will override the default condition.
-     *
-     * @param  array       $config the configuration passed to the ActiveQuery class.
-     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+     * @inheritdoc
      */
-    public static function createQuery($config = [])
+    public static function find()
     {
-        $config['modelClass'] = get_called_class();
-
-        return new ActiveQuery($config);
+        return new ActiveQuery(get_called_class());
     }
 
     /**
@@ -147,10 +125,10 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
             $newId = $collection->insert($values);
         }
         $this->setAttribute('_id', $newId);
-        foreach ($values as $name => $value) {
-            $this->setOldAttribute($name, $value);
-        }
+        $values['_id'] = $newId;
+
         $this->afterSave(true);
+        $this->setOldAttributes($values);
 
         return true;
     }
@@ -167,7 +145,6 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
         $values = $this->getDirtyAttributes($attributes);
         if (empty($values)) {
             $this->afterSave(false);
-
             return 0;
         }
 
@@ -219,10 +196,10 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
             }
         }
 
+        $this->afterSave(false);
         foreach ($values as $name => $value) {
             $this->setOldAttribute($name, $this->getAttribute($name));
         }
-        $this->afterSave(false);
 
         return $rows;
     }

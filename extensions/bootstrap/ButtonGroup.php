@@ -72,7 +72,7 @@ class ButtonGroup extends Widget
     }
 
     /**
-     * Generates the buttons that compound the group as specified on [[items]].
+     * Generates the buttons that compound the group as specified on [[buttons]].
      * @return string the rendering result.
      */
     protected function renderButtons()

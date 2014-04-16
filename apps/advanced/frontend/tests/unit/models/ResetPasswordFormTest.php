@@ -29,7 +29,7 @@ class ResetPasswordFormTest extends DbTestCase
         return [
             'user' => [
                 'class' => UserFixture::className(),
-                'dataFile' => '@frontend/tests/unit/fixtures/data/tbl_user.php'
+                'dataFile' => '@frontend/tests/unit/fixtures/data/user.php'
             ],
         ];
     }

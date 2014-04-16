@@ -61,7 +61,7 @@ class Menu extends Widget
      * - active: boolean, optional, whether this menu item is in active state (currently selected).
      *   If a menu item is active, its CSS class will be appended with [[activeCssClass]].
      *   If this option is not set, the menu item will be set active automatically when the current request
-     *   is triggered by [[url]]. For more details, please refer to [[isItemActive()]].
+     *   is triggered by `url`. For more details, please refer to [[isItemActive()]].
      * - template: string, optional, the template used to render the content of this menu item.
      *   The token `{url}` will be replaced by the URL associated with this menu item,
      *   and the token `{label}` will be replaced by the label of the menu item.

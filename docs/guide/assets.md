@@ -55,6 +55,8 @@ to specify `$sourcePath` instead of `$basePath` and `$baseUrl`. Files will be co
 to the `web/assets` directory of your application prior to being registered.
 In this case `$basePath` and `$baseUrl` are generated automatically at the time of publishing the asset bundle.
 
+> **Note:** do not use the `web/assets` path to put your own files in it. It is meant to be used only for asset publishing. When you create files that are already in web accessable directory put them in folders like `web/css` or `web/js`.
+
 Dependencies on other asset bundles are specified via `$depends` property. It is an array that contains fully qualified
 class names of bundle classes that should be published in order for this bundle to work properly.
 Javascript and CSS files for `AppAsset` are added to the header after the files of [[yii\web\YiiAsset]] and

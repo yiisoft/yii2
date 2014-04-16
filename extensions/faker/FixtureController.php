@@ -52,7 +52,7 @@ use yii\helpers\FileHelper;
  *
  * - `$fixture` - current fixture array.
  * - `$faker` - faker generator instance
- * - `$index` - current fixture index. For example if user need to generate 3 fixtures for tbl_user, it will be 0..2
+ * - `$index` - current fixture index. For example if user need to generate 3 fixtures for user table, it will be 0..2
  *
  * After you set all needed fields in callback, you need to return $fixture array back from the callback.
  *
@@ -171,12 +171,11 @@ class FixtureController extends \yii\console\controllers\FixtureController
 
 
     /**
-     * Returns the names of the global options for this command.
-     * @return array the names of the global options for this command.
+     * @inheritdoc
      */
-    public function options($id)
+    public function options($actionId)
     {
-        return array_merge(parent::options($id), [
+        return array_merge(parent::options($actionId), [
             'templatePath', 'language', 'fixtureDataPath'
         ]);
     }

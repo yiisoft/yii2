@@ -30,7 +30,7 @@ use yii\helpers\ArrayHelper;
  * ~~~
  * $query = new Query;
  * $provider = new ArrayDataProvider([
- *     'allModels' => $query->from('tbl_post')->all(),
+ *     'allModels' => $query->from('post')->all(),
  *     'sort' => [
  *         'attributes' => ['id', 'username', 'email'],
  *     ],
@@ -63,6 +63,7 @@ class ArrayDataProvider extends BaseDataProvider
      * The array elements must use zero-based integer keys.
      */
     public $allModels;
+
 
     /**
      * @inheritdoc

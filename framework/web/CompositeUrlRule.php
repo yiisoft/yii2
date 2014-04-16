@@ -11,9 +11,7 @@ use Yii;
 use yii\base\Object;
 
 /**
- * CompositeUrlRule represents a collection of related URL rules.
- *
- * These URL rules are typically created for a common purpose (e.g. RESTful API for a resource).
+ * CompositeUrlRule is the base class for URL rule classes that consist of multiple simpler rules.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

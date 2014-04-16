@@ -181,7 +181,7 @@ class Serializer extends Component
      * Serializes a pagination into an array.
      * @param Pagination $pagination
      * @return array the array representation of the pagination
-     * @see addPaginationHeader()
+     * @see addPaginationHeaders()
      */
     protected function serializePagination($pagination)
     {

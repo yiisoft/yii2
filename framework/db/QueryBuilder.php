@@ -64,23 +64,13 @@ class QueryBuilder extends \yii\base\Object
      */
     public function build($query, $params = [])
     {
+        $query->prepareBuild($this);
+
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 
-        $select = $query->select;
-        $from = $query->from;
-        if ($from === null && $query instanceof ActiveQuery) {
-            /** @var ActiveRecord $modelClass */
-            $modelClass = $query->modelClass;
-            $tableName = $modelClass::tableName();
-            $from = [$tableName];
-            if ($select === null && !empty($query->join)) {
-                $select = ["$tableName.*"];
-            }
-        }
-
         $clauses = [
-            $this->buildSelect($select, $params, $query->distinct, $query->selectOption),
-            $this->buildFrom($from, $params),
+            $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
+            $this->buildFrom($query->from, $params),
             $this->buildJoin($query->join, $params),
             $this->buildWhere($query->where, $params),
             $this->buildGroupBy($query->groupBy),
@@ -104,7 +94,7 @@ class QueryBuilder extends \yii\base\Object
      * For example,
      *
      * ~~~
-     * $sql = $queryBuilder->insert('tbl_user', [
+     * $sql = $queryBuilder->insert('user', [
      *	 'name' => 'Sam',
      *	 'age' => 30,
      * ], $params);
@@ -151,7 +141,7 @@ class QueryBuilder extends \yii\base\Object
      * For example,
      *
      * ~~~
-     * $sql = $queryBuilder->batchInsert('tbl_user', ['name', 'age'], [
+     * $sql = $queryBuilder->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
      *     ['Linda', 25],
@@ -206,7 +196,7 @@ class QueryBuilder extends \yii\base\Object
      *
      * ~~~
      * $params = [];
-     * $sql = $queryBuilder->update('tbl_user', ['status' => 1], 'age > 30', $params);
+     * $sql = $queryBuilder->update('user', ['status' => 1], 'age > 30', $params);
      * ~~~
      *
      * The method will properly escape the table and column names.
@@ -252,7 +242,7 @@ class QueryBuilder extends \yii\base\Object
      * For example,
      *
      * ~~~
-     * $sql = $queryBuilder->delete('tbl_user', 'status = 0');
+     * $sql = $queryBuilder->delete('user', 'status = 0');
      * ~~~
      *
      * The method will properly escape the table and column names.
@@ -286,7 +276,7 @@ class QueryBuilder extends \yii\base\Object
      * For example,
      *
      * ~~~
-     * $sql = $queryBuilder->createTable('tbl_user', [
+     * $sql = $queryBuilder->createTable('user', [
      *	 'id' => 'pk',
      *	 'name' => 'string',
      *	 'age' => 'integer',
@@ -642,23 +632,7 @@ class QueryBuilder extends \yii\base\Object
             return '';
         }
 
-        foreach ($tables as $i => $table) {
-            if ($table instanceof Query) {
-                list($sql, $params) = $this->build($table, $params);
-                $tables[$i] = "($sql) " . $this->db->quoteTableName($i);
-            } elseif (is_string($i)) {
-                if (strpos($table, '(') === false) {
-                    $table = $this->db->quoteTableName($table);
-                }
-                $tables[$i] = "$table " . $this->db->quoteTableName($i);
-            } elseif (strpos($table, '(') === false) {
-                if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
-                    $tables[$i] = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
-                } else {
-                    $tables[$i] = $this->db->quoteTableName($table);
-                }
-            }
-        }
+        $tables = $this->quoteTableNames($tables, $params);
 
         return 'FROM ' . implode(', ', $tables);
     }
@@ -681,21 +655,8 @@ class QueryBuilder extends \yii\base\Object
             }
             // 0:join type, 1:join table, 2:on-condition (optional)
             list ($joinType, $table) = $join;
-            if (is_array($table)) {
-                $query = reset($table);
-                if (!$query instanceof Query) {
-                    throw new Exception('The sub-query for join must be an instance of yii\db\Query.');
-                }
-                $alias = $this->db->quoteTableName(key($table));
-                list ($sql, $params) = $this->build($query, $params);
-                $table = "($sql) $alias";
-            } elseif (strpos($table, '(') === false) {
-                if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
-                    $table = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
-                } else {
-                    $table = $this->db->quoteTableName($table);
-                }
-            }
+            $tables = $this->quoteTableNames((array)$table, $params);
+            $table = reset($tables);
             $joins[$i] = "$joinType $table";
             if (isset($join[2])) {
                 $condition = $this->buildCondition($join[2], $params);
@@ -706,6 +667,28 @@ class QueryBuilder extends \yii\base\Object
         }
 
         return implode($this->separator, $joins);
+    }
+
+    private function quoteTableNames($tables, &$params)
+    {
+        foreach ($tables as $i => $table) {
+            if ($table instanceof Query) {
+                list($sql, $params) = $this->build($table, $params);
+                $tables[$i] = "($sql) " . $this->db->quoteTableName($i);
+            } elseif (is_string($i)) {
+                if (strpos($table, '(') === false) {
+                    $table = $this->db->quoteTableName($table);
+                }
+                $tables[$i] = "$table " . $this->db->quoteTableName($i);
+            } elseif (strpos($table, '(') === false) {
+                if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
+                    $tables[$i] = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
+                } else {
+                    $tables[$i] = $this->db->quoteTableName($table);
+                }
+            }
+        }
+        return $tables;
     }
 
     /**
@@ -765,7 +748,7 @@ class QueryBuilder extends \yii\base\Object
     /**
      * @param integer $limit
      * @param integer $offset
-     * @return string the LIMIT and OFFSET clauses built from [[Query::$limit]].
+     * @return string the LIMIT and OFFSET clauses
      */
     public function buildLimit($limit, $offset)
     {
@@ -908,7 +891,8 @@ class QueryBuilder extends \yii\base\Object
     {
         $parts = [];
         foreach ($condition as $column => $value) {
-            if (is_array($value)) { // IN condition
+            if (is_array($value) || $value instanceof Query) {
+                // IN condition
                 $parts[] = $this->buildInCondition('IN', [$column, $value], $params);
             } else {
                 if (strpos($column, '(') === false) {
@@ -1030,15 +1014,36 @@ class QueryBuilder extends \yii\base\Object
 
         list($column, $values) = $operands;
 
-        $values = (array) $values;
-
-        if (empty($values) || $column === []) {
+        if ($values === [] || $column === []) {
             return $operator === 'IN' ? '0=1' : '';
         }
 
+        if ($values instanceof Query) {
+            // sub-query
+            list($sql, $params) = $this->build($values, $params);
+            $column = (array)$column;
+            if (is_array($column)) {
+                foreach ($column as $i => $col) {
+                    if (strpos($col, '(') === false) {
+                        $column[$i] = $this->db->quoteColumnName($col);
+                    }
+                }
+                return '(' . implode(', ', $column) . ") $operator ($sql)";
+            } else {
+                if (strpos($column, '(') === false) {
+                    $column = $this->db->quoteColumnName($column);
+                }
+                return "$column $operator ($sql)";
+            }
+        }
+
+        $values = (array) $values;
+
         if (count($column) > 1) {
             return $this->buildCompositeInCondition($operator, $column, $values, $params);
-        } elseif (is_array($column)) {
+        }
+
+        if (is_array($column)) {
             $column = reset($column);
         }
         foreach ($values as $i => $value) {

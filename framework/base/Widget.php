@@ -70,8 +70,7 @@ class Widget extends Component implements ViewContextInterface
         if (!empty(self::$stack)) {
             $widget = array_pop(self::$stack);
             if (get_class($widget) === get_called_class()) {
-                $widget->run();
-
+                echo $widget->run();
                 return $widget;
             } else {
                 throw new InvalidCallException("Expecting end() of " . get_class($widget) . ", found " . get_called_class());
@@ -173,7 +172,7 @@ class Widget extends Component implements ViewContextInterface
      *
      * If the view name does not contain a file extension, it will use the default one `.php`.
 
-     * @param string $view the view name. Please refer to [[findViewFile()]] on how to specify a view name.
+     * @param string $view the view name.
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * @return string the rendering result.
      * @throws InvalidParamException if the view file does not exist.
@@ -205,16 +204,5 @@ class Widget extends Component implements ViewContextInterface
         $class = new ReflectionClass($this);
 
         return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
-    }
-
-    /**
-     * Finds the view file based on the given view name.
-     * File will be searched under [[viewPath]] directory.
-     * @param string $view the view name.
-     * @return string the view file path. Note that the file may not exist.
-     */
-    public function findViewFile($view)
-    {
-        return $this->getViewPath() . DIRECTORY_SEPARATOR . $view;
     }
 }

@@ -15,7 +15,7 @@ use yii\di\Instance;
 /**
  * DbTarget stores log messages in a database table.
  *
- * By default, DbTarget stores the log messages in a DB table named 'tbl_log'. This table
+ * By default, DbTarget stores the log messages in a DB table named 'log'. This table
  * must be pre-created. The table name can be changed by setting [[logTable]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -34,7 +34,7 @@ class DbTarget extends Target
      * The table should be pre-created as follows:
      *
      * ~~~
-     * CREATE TABLE tbl_log (
+     * CREATE TABLE log (
      *	   id       BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
      *	   level    INTEGER,
      *	   category VARCHAR(255),

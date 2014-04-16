@@ -43,7 +43,7 @@ class UploadedFile extends Object
     /**
      * @var string the MIME-type of the uploaded file (such as "image/gif").
      * Since this MIME type is not checked on the server side, do not take this value for granted.
-     * Instead, use [[FileHelper::getMimeType()]] to determine the exact MIME type.
+     * Instead, use [[\yii\helpers\FileHelper::getMimeType()]] to determine the exact MIME type.
      */
     public $type;
     /**
@@ -55,6 +55,7 @@ class UploadedFile extends Object
      * @see http://www.php.net/manual/en/features.file-upload.errors.php
      */
     public $error;
+
 
     /**
      * String output.
@@ -69,7 +70,7 @@ class UploadedFile extends Object
 
     /**
      * Returns an uploaded file for the given model attribute.
-     * The file should be uploaded using [[ActiveForm::fileInput()]].
+     * The file should be uploaded using [[\yii\widgets\ActiveField::fileInput()]].
      * @param \yii\base\Model $model the data model
      * @param string $attribute the attribute name. The attribute name may contain array indexes.
      * For example, '[1]file' for tabular file uploading; and 'file[1]' for an element in a file array.
@@ -80,7 +81,6 @@ class UploadedFile extends Object
     public static function getInstance($model, $attribute)
     {
         $name = Html::getInputName($model, $attribute);
-
         return static::getInstanceByName($name);
     }
 
@@ -95,7 +95,6 @@ class UploadedFile extends Object
     public static function getInstances($model, $attribute)
     {
         $name = Html::getInputName($model, $attribute);
-
         return static::getInstancesByName($name);
     }
 
@@ -108,8 +107,7 @@ class UploadedFile extends Object
      */
     public static function getInstanceByName($name)
     {
-        $files = static::loadFiles();
-
+        $files = self::loadFiles();
         return isset($files[$name]) ? $files[$name] : null;
     }
 
@@ -124,17 +122,16 @@ class UploadedFile extends Object
      */
     public static function getInstancesByName($name)
     {
-        $files = static::loadFiles();
+        $files = self::loadFiles();
         if (isset($files[$name])) {
             return [$files[$name]];
         }
         $results = [];
         foreach ($files as $key => $file) {
             if (strpos($key, "{$name}[") === 0) {
-                $results[] = self::$_files[$key];
+                $results[] = $file;
             }
         }
-
         return $results;
     }
 
@@ -166,7 +163,6 @@ class UploadedFile extends Object
                 return copy($this->tempName, $file);
             }
         }
-
         return false;
     }
 
@@ -209,7 +205,6 @@ class UploadedFile extends Object
                 }
             }
         }
-
         return self::$_files;
     }
 

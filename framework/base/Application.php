@@ -8,23 +8,26 @@
 namespace yii\base;
 
 use Yii;
-use yii\helpers\Console;
-use yii\web\HttpException;
 
 /**
  * Application is the base class for all application classes.
  *
- * @property \yii\rbac\Manager $authManager The auth manager for this application. This property is read-only.
+ * @property \yii\web\AssetManager $assetManager The asset manager component. This property is read-only.
+ * @property \yii\rbac\ManagerInterface $authManager The auth manager for this application. Null is returned
+ * if auth manager is not configured. This property is read-only.
  * @property string $basePath The root directory of the application.
  * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
  * This property is read-only.
  * @property \yii\db\Connection $db The database connection. This property is read-only.
- * @property ErrorHandler $errorHandler The error handler application component. This property is read-only.
+ * @property \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
+ * component. This property is read-only.
  * @property \yii\base\Formatter $formatter The formatter application component. This property is read-only.
  * @property \yii\i18n\I18N $i18n The internationalization component. This property is read-only.
- * @property \yii\log\Logger $log The log component. This property is read-only.
+ * @property \yii\log\Dispatcher $log The log dispatcher component. This property is read-only.
  * @property \yii\mail\MailerInterface $mail The mailer interface. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
+ * @property \yii\web\Response|\yii\console\Response $response The response component. This property is
+ * read-only.
  * @property string $runtimePath The directory that stores runtime files. Defaults to the "runtime"
  * subdirectory under [[basePath]].
  * @property string $timeZone The time zone used by this application.
@@ -49,21 +52,39 @@ abstract class Application extends Module
      */
     const EVENT_AFTER_REQUEST = 'afterRequest';
     /**
-     * @event ActionEvent an event raised before executing a controller action.
-     * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
+     * Application state used by [[state]]: application just started.
      */
-    const EVENT_BEFORE_ACTION = 'beforeAction';
+    const STATE_BEGIN = 0;
     /**
-     * @event ActionEvent an event raised after executing a controller action.
+     * Application state used by [[state]]: application is initializing.
      */
-    const EVENT_AFTER_ACTION = 'afterAction';
+    const STATE_INIT = 1;
+    /**
+     * Application state used by [[state]]: application is triggering [[EVENT_BEFORE_REQUEST]].
+     */
+    const STATE_BEFORE_REQUEST = 2;
+    /**
+     * Application state used by [[state]]: application is handling the request.
+     */
+    const STATE_HANDLING_REQUEST = 3;
+    /**
+     * Application state used by [[state]]: application is triggering [[EVENT_AFTER_REQUEST]]..
+     */
+    const STATE_AFTER_REQUEST = 4;
+    /**
+     * Application state used by [[state]]: application is about to send response.
+     */
+    const STATE_SENDING_RESPONSE = 5;
+    /**
+     * Application state used by [[state]]: application has ended.
+     */
+    const STATE_END = 6;
 
     /**
      * @var string the namespace that controller classes are in. If not set,
      * it will use the "app\controllers" namespace.
      */
     public $controllerNamespace = 'app\\controllers';
-
     /**
      * @var string the application name.
      */
@@ -97,13 +118,6 @@ abstract class Application extends Module
      */
     public $layout = 'main';
     /**
-     * @var integer the size of the reserved memory. A portion of memory is pre-allocated so that
-     * when an out-of-memory issue occurs, the error handler is able to handle the error with
-     * the help of this reserved memory. If you set this value to be 0, no memory will be reserved.
-     * Defaults to 256KB.
-     */
-    public $memoryReserveSize = 262144;
-    /**
      * @var string the requested route
      */
     public $requestedRoute;
@@ -123,31 +137,40 @@ abstract class Application extends Module
      * [
      *     'name' => 'extension name',
      *     'version' => 'version number',
-     *     'bootstrap' => 'BootstrapClassName',
+     *     'bootstrap' => 'BootstrapClassName',  // optional, may also be a configuration array
      *     'alias' => [
      *         '@alias1' => 'to/path1',
      *         '@alias2' => 'to/path2',
      *     ],
      * ]
      * ~~~
+     *
+     * The "bootstrap" class listed above will be instantiated during the application
+     * [[bootstrap()|bootstrapping process]]. If the class implements [[BootstrapInterface]],
+     * its [[BootstrapInterface::bootstrap()|bootstrap()]] method will be also be called.
      */
     public $extensions = [];
     /**
-     * @var array list of bootstrap classes or their configurations. A bootstrap class must implement
-     * [[BootstrapInterface]]. The [[BootstrapInterface::bootstrap()]] method of each bootstrap class
-     * will be invoked at the beginning of [[init()]].
+     * @var array list of components that should be run during the application [[bootstrap()|bootstrapping process]].
+     *
+     * Each component may be specified in one of the following formats:
+     *
+     * - an application component ID as specified via [[components]].
+     * - a module ID as specified via [[modules]].
+     * - a class name.
+     * - a configuration array.
+     *
+     * During the bootstrapping process, each component will be instantiated. If the component class
+     * implements [[BootstrapInterface]], its [[BootstrapInterface::bootstrap()|bootstrap()]] method
+     * will be also be called.
      */
     public $bootstrap = [];
     /**
-     * @var \Exception the exception that is being handled currently. When this is not null,
-     * it means the application is handling some exception and extra care should be taken.
+     * @var integer the current application state during a request handling life cycle.
+     * This property is managed by the application. Do not modify this property.
      */
-    public $exception;
+    public $state;
 
-    /**
-     * @var string Used to reserve memory for fatal error handler.
-     */
-    private $_memoryReserve;
 
     /**
      * Constructor.
@@ -159,8 +182,10 @@ abstract class Application extends Module
     {
         Yii::$app = $this;
 
+        $this->state = self::STATE_BEGIN;
+
+        $this->registerErrorHandler($config);
         $this->preInit($config);
-        $this->registerErrorHandlers();
 
         Component::__construct($config);
     }
@@ -176,13 +201,13 @@ abstract class Application extends Module
     public function preInit(&$config)
     {
         if (!isset($config['id'])) {
-            throw new InvalidConfigException('The "id" configuration is required.');
+            throw new InvalidConfigException('The "id" configuration for the Application is required.');
         }
         if (isset($config['basePath'])) {
             $this->setBasePath($config['basePath']);
             unset($config['basePath']);
         } else {
-            throw new InvalidConfigException('The "basePath" configuration is required.');
+            throw new InvalidConfigException('The "basePath" configuration for the Application is required.');
         }
 
         if (isset($config['vendorPath'])) {
@@ -222,59 +247,71 @@ abstract class Application extends Module
      */
     public function init()
     {
-        $this->initExtensions($this->extensions);
-        foreach ($this->bootstrap as $class) {
-            /** @var BootstrapInterface $bootstrap */
-            $bootstrap = Yii::createObject($class);
-            $bootstrap->bootstrap($this);
-        }
-        parent::init();
+        $this->state = self::STATE_INIT;
+        $this->bootstrap();
     }
 
     /**
-     * Initializes the extensions.
-     * @param array $extensions the extensions to be initialized. Please refer to [[extensions]]
-     * for the structure of the extension array.
+     * Initializes extensions and executes bootstrap components.
+     * This method is called by [[init()]] after the application has been fully configured.
+     * If you override this method, make sure you also call the parent implementation.
      */
-    protected function initExtensions($extensions)
+    protected function bootstrap()
     {
-        foreach ($extensions as $extension) {
+        foreach ($this->extensions as $extension) {
             if (!empty($extension['alias'])) {
                 foreach ($extension['alias'] as $name => $path) {
                     Yii::setAlias($name, $path);
                 }
             }
             if (isset($extension['bootstrap'])) {
-                /** @var BootstrapInterface $bootstrap */
-                $bootstrap = Yii::createObject($extension['bootstrap']);
-                $bootstrap->bootstrap($this);
+                $component = Yii::createObject($extension['bootstrap']);
+                if ($component instanceof BootstrapInterface) {
+                    Yii::trace("Bootstrap with " . get_class($component) . '::bootstrap()', __METHOD__);
+                    $component->bootstrap($this);
+                } else {
+                    Yii::trace("Bootstrap with " . get_class($component), __METHOD__);
+                }
+            }
+        }
+
+        foreach ($this->bootstrap as $class) {
+            $component = null;
+            if (is_string($class)) {
+                if ($this->has($class)) {
+                    $component = $this->get($class);
+                } elseif ($this->hasModule($class)) {
+                    $component = $this->getModule($class);
+                } elseif (strpos($class, '\\') === false) {
+                    throw new InvalidConfigException("Unknown bootstrap component ID: $class");
+                }
+            }
+            if (!isset($component)) {
+                $component = Yii::createObject($class);
+            }
+
+            if ($component instanceof BootstrapInterface) {
+                Yii::trace("Bootstrap with " . get_class($component) . '::bootstrap()', __METHOD__);
+                $component->bootstrap($this);
+            } else {
+                Yii::trace("Bootstrap with " . get_class($component), __METHOD__);
             }
         }
     }
 
     /**
-     * Loads components that are declared in [[preload]].
-     * @throws InvalidConfigException if a component or module to be preloaded is unknown
+     * Registers the errorHandler component as a PHP error handler.
      */
-    public function preloadComponents()
-    {
-        $this->get('log');
-        parent::preloadComponents();
-    }
-
-    /**
-     * Registers error handlers.
-     */
-    public function registerErrorHandlers()
+    protected function registerErrorHandler(&$config)
     {
         if (YII_ENABLE_ERROR_HANDLER) {
-            ini_set('display_errors', 0);
-            set_exception_handler([$this, 'handleException']);
-            set_error_handler([$this, 'handleError']);
-            if ($this->memoryReserveSize > 0) {
-                $this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
+            if (!isset($config['components']['errorHandler']['class'])) {
+                echo "Error: no errorHandler component is configured.\n";
+                exit(1);
             }
-            register_shutdown_function([$this, 'handleFatalError']);
+            $this->set('errorHandler', $config['components']['errorHandler']);
+            unset($config['components']['errorHandler']);
+            $this->getErrorHandler()->register();
         }
     }
 
@@ -308,12 +345,30 @@ abstract class Application extends Module
      */
     public function run()
     {
-        $this->trigger(self::EVENT_BEFORE_REQUEST);
-        $response = $this->handleRequest($this->getRequest());
-        $this->trigger(self::EVENT_AFTER_REQUEST);
-        $response->send();
+        try {
 
-        return $response->exitStatus;
+            $this->state = self::STATE_BEFORE_REQUEST;
+            $this->trigger(self::EVENT_BEFORE_REQUEST);
+
+            $this->state = self::STATE_HANDLING_REQUEST;
+            $response = $this->handleRequest($this->getRequest());
+
+            $this->state = self::STATE_AFTER_REQUEST;
+            $this->trigger(self::EVENT_AFTER_REQUEST);
+
+            $this->state = self::STATE_SENDING_RESPONSE;
+            $response->send();
+
+            $this->state = self::STATE_END;
+
+            return $response->exitStatus;
+
+        } catch (ExitException $e) {
+
+            $this->end($e->statusCode, isset($response) ? $response : null);
+            return $e->statusCode;
+
+        }
     }
 
     /**
@@ -414,8 +469,8 @@ abstract class Application extends Module
     }
 
     /**
-     * Returns the log component.
-     * @return \yii\log\Logger the log component
+     * Returns the log dispatcher component.
+     * @return \yii\log\Dispatcher the log dispatcher component
      */
     public function getLog()
     {
@@ -424,7 +479,7 @@ abstract class Application extends Module
 
     /**
      * Returns the error handler component.
-     * @return ErrorHandler the error handler application component.
+     * @return \yii\web\ErrorHandler|\yii\console\ErrorHandler the error handler application component.
      */
     public function getErrorHandler()
     {
@@ -456,6 +511,15 @@ abstract class Application extends Module
     public function getRequest()
     {
         return $this->get('request');
+    }
+
+    /**
+     * Returns the response component.
+     * @return \yii\web\Response|\yii\console\Response the response component
+     */
+    public function getResponse()
+    {
+        return $this->get('response');
     }
 
     /**
@@ -496,12 +560,21 @@ abstract class Application extends Module
 
     /**
      * Returns the auth manager for this application.
-     * @return \yii\rbac\Manager the auth manager for this application.
+     * @return \yii\rbac\ManagerInterface the auth manager for this application.
      * Null is returned if auth manager is not configured.
      */
     public function getAuthManager()
     {
         return $this->get('authManager', false);
+    }
+
+    /**
+     * Returns the asset manager.
+     * @return \yii\web\AssetManager the asset manager component
+     */
+    public function getAssetManager()
+    {
+        return $this->get('assetManager');
     }
 
     /**
@@ -511,165 +584,41 @@ abstract class Application extends Module
     public function coreComponents()
     {
         return [
-            'log' => ['class' => 'yii\log\Logger'],
-            'errorHandler' => ['class' => 'yii\base\ErrorHandler'],
+            'log' => ['class' => 'yii\log\Dispatcher'],
+            'view' => ['class' => 'yii\web\View'],
             'formatter' => ['class' => 'yii\base\Formatter'],
             'i18n' => ['class' => 'yii\i18n\I18N'],
             'mail' => ['class' => 'yii\swiftmailer\Mailer'],
             'urlManager' => ['class' => 'yii\web\UrlManager'],
-            'view' => ['class' => 'yii\web\View'],
+            'assetManager' => ['class' => 'yii\web\AssetManager'],
         ];
     }
 
     /**
-     * Handles uncaught PHP exceptions.
-     *
-     * This method is implemented as a PHP exception handler.
-     *
-     * @param \Exception $exception the exception that is not caught
+     * Terminates the application.
+     * This method replaces the `exit()` function by ensuring the application life cycle is completed
+     * before terminating the application.
+     * @param integer $status the exit status (value 0 means normal exit while other values mean abnormal exit).
+     * @param Response $response the response to be sent. If not set, the default application [[response]] component will be used.
+     * @throws ExitException if the application is in testing mode
      */
-    public function handleException($exception)
+    public function end($status = 0, $response = null)
     {
-        $this->exception = $exception;
-
-        // disable error capturing to avoid recursive errors while handling exceptions
-        restore_error_handler();
-        restore_exception_handler();
-        try {
-            $this->logException($exception);
-            if (($handler = $this->getErrorHandler()) !== null) {
-                $handler->handle($exception);
-            } else {
-                echo $this->renderException($exception);
-                if (PHP_SAPI === 'cli' && !YII_ENV_TEST) {
-                    exit(1);
-                }
-            }
-        } catch (\Exception $e) {
-            // exception could be thrown in ErrorHandler::handle()
-            $msg = (string) $e;
-            $msg .= "\nPrevious exception:\n";
-            $msg .= (string) $exception;
-            if (YII_DEBUG) {
-                if (PHP_SAPI === 'cli') {
-                    echo $msg . "\n";
-                } else {
-                    echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, $this->charset) . '</pre>';
-                }
-            }
-            $msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
-            error_log($msg);
-            exit(1);
-        }
-    }
-
-    /**
-     * Handles PHP execution errors such as warnings, notices.
-     *
-     * This method is used as a PHP error handler. It will simply raise an `ErrorException`.
-     *
-     * @param integer $code the level of the error raised
-     * @param string $message the error message
-     * @param string $file the filename that the error was raised in
-     * @param integer $line the line number the error was raised at
-     *
-     * @throws ErrorException
-     */
-    public function handleError($code, $message, $file, $line)
-    {
-        if (error_reporting() & $code) {
-            // load ErrorException manually here because autoloading them will not work
-            // when error occurs while autoloading a class
-            if (!class_exists('\\yii\\base\\Exception', false)) {
-                require_once(__DIR__ . '/Exception.php');
-            }
-            if (!class_exists('\\yii\\base\\ErrorException', false)) {
-                require_once(__DIR__ . '/ErrorException.php');
-            }
-            $exception = new ErrorException($message, $code, $code, $file, $line);
-
-            // in case error appeared in __toString method we can't throw any exception
-            $trace = debug_backtrace(false);
-            array_shift($trace);
-            foreach ($trace as $frame) {
-                if ($frame['function'] == '__toString') {
-                    $this->handleException($exception);
-                    exit(1);
-                }
-            }
-
-            throw $exception;
-        }
-    }
-
-    /**
-     * Handles fatal PHP errors
-     */
-    public function handleFatalError()
-    {
-        unset($this->_memoryReserve);
-
-        // load ErrorException manually here because autoloading them will not work
-        // when error occurs while autoloading a class
-        if (!class_exists('\\yii\\base\\Exception', false)) {
-            require_once(__DIR__ . '/Exception.php');
-        }
-        if (!class_exists('\\yii\\base\\ErrorException', false)) {
-            require_once(__DIR__ . '/ErrorException.php');
+        if ($this->state === self::STATE_BEFORE_REQUEST || $this->state === self::STATE_HANDLING_REQUEST) {
+            $this->state = self::STATE_AFTER_REQUEST;
+            $this->trigger(self::EVENT_AFTER_REQUEST);
         }
 
-        $error = error_get_last();
-
-        if (ErrorException::isFatalError($error)) {
-            $exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
-            $this->exception = $exception;
-            // use error_log because it's too late to use Yii log
-            error_log($exception);
-
-            if (($handler = $this->getErrorHandler()) !== null) {
-                $handler->handle($exception);
-            } else {
-                echo $this->renderException($exception);
-            }
-
-            exit(1);
+        if ($this->state !== self::STATE_SENDING_RESPONSE && $this->state !== self::STATE_END) {
+            $this->state = self::STATE_END;
+            $response = $response ? : $this->getResponse();
+            $response->send();
         }
-    }
 
-    /**
-     * Renders an exception without using rich format.
-     * @param \Exception $exception the exception to be rendered.
-     * @return string the rendering result
-     */
-    public function renderException($exception)
-    {
-        if ($exception instanceof Exception && ($exception instanceof UserException || !YII_DEBUG)) {
-            $message = $exception->getName() . ': ' . $exception->getMessage();
-            if (Yii::$app->controller instanceof \yii\console\Controller) {
-                $message = Yii::$app->controller->ansiFormat($message, Console::FG_RED);
-            }
+        if (YII_ENV_TEST) {
+            throw new ExitException($status);
         } else {
-            $message = YII_DEBUG ? (string) $exception : 'Error: ' . $exception->getMessage();
+            exit($status);
         }
-        if (PHP_SAPI === 'cli') {
-            return $message . "\n";
-        } else {
-            return '<pre>' . htmlspecialchars($message, ENT_QUOTES, $this->charset) . '</pre>';
-        }
-    }
-
-    /**
-     * Logs the given exception
-     * @param \Exception $exception the exception to be logged
-     */
-    protected function logException($exception)
-    {
-        $category = get_class($exception);
-        if ($exception instanceof HttpException) {
-            $category = 'yii\\web\\HttpException:' . $exception->statusCode;
-        } elseif ($exception instanceof \ErrorException) {
-            $category .= ':' . $exception->getSeverity();
-        }
-        Yii::error((string) $exception, $category);
     }
 }

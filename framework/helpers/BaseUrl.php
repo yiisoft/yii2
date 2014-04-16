@@ -108,7 +108,7 @@ class BaseUrl
      * @return string normalized route suitable for UrlManager
      * @throws InvalidParamException a relative route is given while there is no active controller
      */
-    private static function normalizeRoute($route)
+    protected static function normalizeRoute($route)
     {
         $route = (string) $route;
         if (strncmp($route, '/', 1) === 0) {
@@ -269,8 +269,8 @@ class BaseUrl
 
     /**
      * Returns the canonical URL of the currently requested page.
-     * The canonical URL is constructed using the current controller's [[yii\web\Controller::route]] and
-     * [[yii\web\Controller::actionParams]]. You may use the following code in the layout view to add a link tag
+     * The canonical URL is constructed using the current controller's [[\yii\web\Controller::route]] and
+     * [[\yii\web\Controller::actionParams]]. You may use the following code in the layout view to add a link tag
      * about canonical URL:
      *
      * ```php

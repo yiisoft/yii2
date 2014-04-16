@@ -191,4 +191,136 @@ Sorting data
 Filtering data
 --------------
 
-- https://github.com/yiisoft/yii2/issues/1581
+For filtering data the GridView needs a [model](model.md) that takes the input from the filtering
+form and adjusts the query of the dataprovider to respect the search criteria.
+A common practice when using [active records](active-record.md) is to create a search Model class
+that extends from the active record class. This class then defines the validation rules for the search
+and provides a `search()` method that will return the data provider.
+
+To add search capability for the `Post` model we can create `PostSearch` like in the following example:
+
+```php
+<?php
+
+namespace app\models;
+
+use Yii;
+use yii\base\Model;
+use yii\data\ActiveDataProvider;
+
+class PostSearch extends Post
+{
+    public function rules()
+    {
+        // only fields in rules() are searchable
+        return [
+            [['id'], 'integer'],
+            [['title', 'creation_date'], 'safe'],
+        ];
+    }
+
+    public function scenarios()
+    {
+        // bypass scenarios() implementation in the parent class
+        return Model::scenarios();
+    }
+
+    public function search($params)
+    {
+        $query = Post::find();
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+
+        // load the seach form data and validate
+        if (!($this->load($params) && $this->validate())) {
+            return $dataProvider;
+        }
+
+        // adjust the query by adding the filters
+        $query->andFilterWhere(['id' => $this->id]);
+        $query->andFilterWhere(['like', 'title', $this->name])
+              ->andFilterWhere(['like', 'creation_date', $this->creation_date]);
+
+        return $dataProvider;
+    }
+}
+
+```
+
+You can use this function in the controller to get the dataProvider for the GridView:
+
+```php
+$searchModel = new PostSearch();
+$dataProvider = $searchModel->search($_GET);
+
+return $this->render('myview', [
+	'dataProvider' => $dataProvider,
+	'searchModel' => $searchModel,
+]);
+```
+
+And in the view you then assign the `$dataProvider` and `$searchModel` to the GridView:
+
+```php
+echo GridView::widget([
+    'dataProvider' => $dataProvider,
+	'filterModel' => $searchModel,
+]);
+```
+
+
+Working with model relations
+----------------------------
+
+When displaying active records in a GridView you might encounter the case where you display values of related
+columns such as the post's author's name instead of just his `id`.
+You do this by defining the attribute name in columns as `author.name` when the `Post` model
+has a relation named `author` and the author model has an attribute `name`.
+The GridView will then display the name of the author but sorting and filtering are not enabled by default.
+You have to adjust the `PostSearch` model that has been introduced in the last section to add this functionallity.
+
+To enable sorting on a related column you have to join the related table and add the sorting rule
+to the Sort component of the data provider:
+
+```php
+$query = Post::find();
+$dataProvider = new ActiveDataProvider([
+    'query' => $query,
+]);
+
+// join with relation `author` that is a relation to the table `users`
+// and set the table alias to be `author`
+$query->joinWith(['author' => function($query) { $query->from(['author' => 'users']); }]);
+// enable sorting for the related column
+$dataProvider->sort->attributes['author.name'] = [
+    'asc' => ['author.name' => SORT_ASC],
+    'desc' => ['author.name' => SORT_DESC],
+];
+
+// ...
+```
+
+Filtering also needs the joinWith call as above. You also need to define the searchable column in attributes and rules like this:
+
+```php
+public function attributes()
+{
+    // add related fields to searchable attributes
+    return array_merge(parent::attributes(), ['author.name']);
+}
+
+public function rules()
+{
+    return [
+        [['id'], 'integer'],
+        [['title', 'creation_date', 'author.name'], 'safe'],
+    ];
+}
+```
+
+In `search()` you then just add another filter condition with `$query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);`.
+
+> Info: For more information on `joinWith` and the queries performed in the background, check the
+> [active record docs on eager and lazy loading](active-record.md#lazy-and-eager-loading).

@@ -4,7 +4,38 @@ Using 3rd-Party Libraries
 Yii is carefully designed so that third-party libraries can be
 easily integrated to further extend Yii's functionalities.
 
-TODO: namespaces and composer explanations
+Using Packages Installed via Composer
+-------------------------------------
+
+Packages installed via Composer can be directly used in Yii without any special handling.
+
+
+Using Downloaded Libraries
+--------------------------
+
+If a library has its own class autoloader, please follow its instruction on how to install the autoloader.
+
+If a library does not have a class autoloader, you may face one of the following scenarios:
+
+* The library requires specific PHP include path configuration.
+* The library requires explicitly including one or several of its files.
+* Neither of the above.
+
+In the last scenario, the library is not written very well, but you can still do the following
+work to make it work with Yii:
+
+* Identify which classes the library contains.
+* List the classes and the corresponding file paths in `Yii::$classMap`.
+
+For example, if none of the classes in a library is namespaced, you may register the classes with Yii
+like the following in the entry script after including `yii.php`:
+
+```php
+Yii::$classMap['Class1'] = 'path/to/Class1.php';
+Yii::$classMap['Class2'] = 'path/to/Class2.php';
+// ...
+```
+
 
 Using Yii in 3rd-Party Systems
 ------------------------------
@@ -77,7 +108,7 @@ Yii::$classMap = include($yii2path . '/classes.php');
 
 Using this, defines all necessary constants and autoloader of Yii1.
 Now we need to add all fields and methods from `YiiBase` of Yii1 to our 'Yii' class.
-Unfortunally, there is no way to do so but copy-paste:
+Unfortunately, there is no way to do so but copy-paste:
 
 ```php
 $yii2path = '/path/to/yii2';

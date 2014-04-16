@@ -41,55 +41,8 @@ class PhpDocController extends Controller
      */
     public function actionProperty($root = null)
     {
-        $except = [];
-        if ($root === null) {
-            $root = dirname(YII_PATH);
-            $extensionPath = "$root/extensions";
-            foreach (scandir($extensionPath) as $extension) {
-                if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
-                    Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
-                }
-            }
+        $files = $this->findFiles($root);
 
-            $except = [
-                '.git/',
-                '/apps/',
-                '/build/',
-                '/docs/',
-                '/extensions/apidoc/helpers/PrettyPrinter.php',
-                '/extensions/codeception/TestCase.php',
-                '/extensions/codeception/DbTestCase.php',
-                '/extensions/composer/',
-                '/extensions/gii/components/DiffRendererHtmlInline.php',
-                '/extensions/gii/generators/extension/templates/*',
-                '/extensions/twig/TwigSimpleFileLoader.php',
-                '/framework/BaseYii.php',
-                '/framework/Yii.php',
-                'tests/',
-                'vendor/',
-            ];
-        }
-        $root = FileHelper::normalizePath($root);
-        $options = [
-            'filter' => function ($path) {
-                if (is_file($path)) {
-                    $file = basename($path);
-                    if ($file[0] < 'A' || $file[0] > 'Z') {
-                        return false;
-                    }
-                }
-
-                return null;
-            },
-            'only' => ['*.php'],
-            'except' => array_merge($except, [
-                'views/',
-                'requirements/',
-                'gii/generators/',
-                'vendor/',
-            ]),
-        ];
-        $files = FileHelper::findFiles($root, $options);
         $nFilesTotal = 0;
         $nFilesUpdated = 0;
         foreach ($files as $file) {
@@ -113,11 +66,132 @@ class PhpDocController extends Controller
     }
 
     /**
+     * Fix some issues with PHPdoc in files
+     *
+     * @param string $root the directory to parse files from. Defaults to YII_PATH.
+     */
+    public function actionFix($root = null)
+    {
+        $files = $this->findFiles($root);
+
+        $nFilesTotal = 0;
+        $nFilesUpdated = 0;
+        foreach ($files as $file) {
+            $contents = file_get_contents($file);
+            $sha = sha1($contents);
+
+            // fix line endings
+            $lines = preg_split('/(\r\n|\n|\r)/', $contents);
+
+            $this->fixFileDoc($lines);
+
+            $newContent = implode("\n", $lines);
+            if ($sha !== sha1($newContent)) {
+                $nFilesUpdated++;
+            }
+            file_put_contents($file, $newContent);
+            $nFilesTotal++;
+        }
+
+        $this->stdout("\nParsed $nFilesTotal files.\n");
+        $this->stdout("Updated $nFilesUpdated files.\n");
+
+    }
+
+    /**
      * @inheritdoc
      */
-    public function options($id)
+    public function options($actionId)
     {
-        return array_merge(parent::options($id), ['updateFiles']);
+        return array_merge(parent::options($actionId), ['updateFiles']);
+    }
+
+    protected function findFiles($root)
+    {
+        $except = [];
+        if ($root === null) {
+            $root = dirname(YII_PATH);
+            $extensionPath = "$root/extensions";
+            foreach (scandir($extensionPath) as $extension) {
+                if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
+                    Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
+                }
+            }
+
+            $except = [
+                '.git/',
+                '/apps/',
+                '/build/',
+                '/docs/',
+                '/extensions/apidoc/helpers/PrettyPrinter.php',
+                '/extensions/codeception/TestCase.php',
+                '/extensions/codeception/DbTestCase.php',
+                '/extensions/composer/',
+                '/extensions/gii/components/DiffRendererHtmlInline.php',
+                '/extensions/gii/generators/extension/default/*',
+                '/extensions/twig/TwigSimpleFileLoader.php',
+                '/framework/BaseYii.php',
+                '/framework/Yii.php',
+                'tests/',
+                'vendor/',
+            ];
+        }
+        $root = FileHelper::normalizePath($root);
+        $options = [
+            'filter' => function ($path) {
+                    if (is_file($path)) {
+                        $file = basename($path);
+                        if ($file[0] < 'A' || $file[0] > 'Z') {
+                            return false;
+                        }
+                    }
+
+                    return null;
+                },
+            'only' => ['*.php'],
+            'except' => array_merge($except, [
+                'views/',
+                'requirements/',
+                'gii/generators/',
+                'vendor/',
+            ]),
+        ];
+        return FileHelper::findFiles($root, $options);
+    }
+
+    protected function fixFileDoc(&$lines)
+    {
+        // find namespace
+        $namespace = false;
+        $namespaceLine = '';
+        $contentAfterNamespace = false;
+        foreach($lines as $i => $line) {
+            if (substr(trim($line), 0, 9) === 'namespace') {
+                $namespace = $i;
+                $namespaceLine = trim($line);
+            } elseif ($namespace !== false && trim($line) !== '') {
+                $contentAfterNamespace = $i;
+                break;
+            }
+        }
+
+        if ($namespace !== false && $contentAfterNamespace !== false) {
+            while($contentAfterNamespace > 0) {
+                array_shift($lines);
+                $contentAfterNamespace--;
+            }
+            $lines = array_merge([
+                "<?php",
+                "/**",
+                " * @link http://www.yiiframework.com/",
+                " * @copyright Copyright (c) 2008 Yii Software LLC",
+                " * @license http://www.yiiframework.com/license/",
+                " */",
+                "",
+                $namespaceLine,
+                ""
+            ], $lines);
+        }
     }
 
     protected function updateClassPropertyDocs($file, $className, $propertyDoc)

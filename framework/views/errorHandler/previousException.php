@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \yii\base\Exception $exception
- * @var \yii\base\ErrorHandler $handler
+ * @var \yii\web\ErrorHandler $handler
  */
 ?>
 <div class="previous">

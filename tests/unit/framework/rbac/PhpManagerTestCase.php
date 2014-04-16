@@ -7,8 +7,9 @@ use yii\rbac\PhpManager;
 
 /**
  * @group rbac
+ * @property \yii\rbac\PhpManager $auth
  */
-class PhpManagerTest extends ManagerTestCase
+class PhpManagerTestCase extends ManagerTestCase
 {
     protected function setUp()
     {
@@ -16,10 +17,9 @@ class PhpManagerTest extends ManagerTestCase
         $this->mockApplication();
         $authFile = Yii::$app->getRuntimePath() . '/rbac.php';
         @unlink($authFile);
-        $this->auth = new PhpManager;
+        $this->auth = new PhpManager();
         $this->auth->authFile = $authFile;
         $this->auth->init();
-        $this->prepareData();
     }
 
     protected function tearDown()
@@ -30,9 +30,11 @@ class PhpManagerTest extends ManagerTestCase
 
     public function testSaveLoad()
     {
+        $this->prepareData();
         $this->auth->save();
         $this->auth->clearAll();
         $this->auth->load();
-        $this->testCheckAccess();
+        // TODO : Check if loaded and saved data are the same.
     }
-}
+
+} 

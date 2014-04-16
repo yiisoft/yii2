@@ -1,6 +1,5 @@
 <?php
 /**
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
@@ -62,7 +61,7 @@ namespace yii\db;
  * If a relation involves a pivot table, it may be specified by [[via()]] or [[viaTable()]] method.
  * These methods may only be called in a relational context. Same is true for [[inverseOf()]], which
  * marks a relation as inverse of another relation and [[onCondition()]] which adds a condition that
- * is to be added to relational querys join condition.
+ * is to be added to relational query join condition.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -91,6 +90,18 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public $joinWith;
 
+
+    /**
+     * Constructor.
+     * @param array $modelClass the model class associated with this query
+     * @param array $config configurations to be applied to the newly created query object
+     */
+    public function __construct($modelClass, $config = [])
+    {
+        $this->modelClass = $modelClass;
+        parent::__construct($config);
+    }
+
     /**
      * Executes query and returns all results as an array.
      * @param Connection $db the DB connection used to create the DB command.
@@ -100,6 +111,40 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function all($db = null)
     {
         return parent::all($db);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function prepareBuild($builder)
+    {
+        if (!empty($this->joinWith)) {
+            $this->buildJoinWith();
+            $this->joinWith = null;    // clean it up to avoid issue https://github.com/yiisoft/yii2/issues/2687
+        }
+
+        if (empty($this->from)) {
+            /** @var ActiveRecord $modelClass */
+            $modelClass = $this->modelClass;
+            $tableName = $modelClass::tableName();
+            $this->from = [$tableName];
+        }
+
+        if (empty($this->select) && !empty($this->join)) {
+            foreach ((array)$this->from as $alias => $table) {
+                if (is_string($alias)) {
+                    $this->select = ["$alias.*"];
+                } elseif (is_string($table)) {
+                    if (preg_match('/^(.*?)\s+({{\w+}}|\w+)$/', $table, $matches)) {
+                        $alias = $matches[2];
+                    } else {
+                        $alias = $table;
+                    }
+                    $this->select = ["$alias.*"];
+                }
+                break;
+            }
+        }
     }
 
     /**
@@ -159,7 +204,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $key = $model[$pk];
                 if (isset($hash[$key])) {
                     unset($models[$i]);
-                } else {
+                } elseif ($key !== null) {
                     $hash[$key] = true;
                 }
             }
@@ -232,7 +277,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Creates a DB command that can be used to execute this query.
-     * @param Connection $db the DB connection used to create the DB command.
+     * @param Connection|null $db the DB connection used to create the DB command.
      * If null, the DB connection returned by [[modelClass]] will be used.
      * @return Command the created DB command instance.
      */
@@ -245,10 +290,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if ($this->sql === null) {
-            if (!empty($this->joinWith)) {
-                $this->buildJoinWith();
-                $this->joinWith = null;    // clean it up to avoid issue https://github.com/yiisoft/yii2/issues/2687
-            }
             list ($sql, $params) = $db->getQueryBuilder()->build($this);
         } else {
             $sql = $this->sql;
@@ -260,7 +301,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Creates a command for lazy loading of a relation.
-     * @param Connection $db the DB connection used to create the DB command.
+     * @param Connection|null $db the DB connection used to create the DB command.
      * @return Command the created DB command instance.
      */
     private function createRelationalCommand($db = null)
@@ -326,7 +367,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * // find all orders, eager loading "books", and sort the orders and books by the book names.
      * Order::find()->joinWith([
      *     'books' => function ($query) {
-     *         $query->orderBy('tbl_item.name');
+     *         $query->orderBy('item.name');
      *     }
      * ])->all();
      * ```
@@ -348,6 +389,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     private function buildJoinWith()
     {
+        $join = $this->join;
+        $this->join = [];
+
         foreach ($this->joinWith as $config) {
             list ($with, $eagerLoading, $joinType) = $config;
             $this->joinWithRelations(new $this->modelClass, $with, $joinType);
@@ -367,6 +411,20 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
 
             $this->with($with);
+        }
+
+        // remove duplicated joins added by joinWithRelations that may be added
+        // e.g. when joining a relation and a via relation at the same time
+        $uniqueJoins = [];
+        foreach ($this->join as $j) {
+            $uniqueJoins[serialize($j)] = $j;
+        }
+        $this->join = array_values($uniqueJoins);
+
+        if (!empty($join)) {
+            // append explicit join to joinWith()
+            // https://github.com/yiisoft/yii2/issues/2880
+            $this->join = empty($this->join) ? $join : array_merge($this->join, $join);
         }
     }
 
@@ -524,7 +582,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         } else {
             $on = $child->on;
         }
-        $this->join($joinType, $childTable, $on);
+        $this->join($joinType, empty($child->from) ? $childTable : $child->from, $on);
 
         if (!empty($child->where)) {
             $this->andWhere($child->where);
@@ -575,7 +633,48 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $this->on = $condition;
         $this->addParams($params);
+        return $this;
+    }
 
+    /**
+     * Adds an additional ON condition to the existing one.
+     * The new condition and the existing one will be joined using the 'AND' operator.
+     * @param string|array $condition the new ON condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
+     * @return static the query object itself
+     * @see onCondition()
+     * @see orOnCondition()
+     */
+    public function andOnCondition($condition, $params = [])
+    {
+        if ($this->on === null) {
+            $this->on = $condition;
+        } else {
+            $this->on = ['and', $this->on, $condition];
+        }
+        $this->addParams($params);
+        return $this;
+    }
+
+    /**
+     * Adds an additional ON condition to the existing one.
+     * The new condition and the existing one will be joined using the 'OR' operator.
+     * @param string|array $condition the new ON condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
+     * @return static the query object itself
+     * @see onCondition()
+     * @see andOnCondition()
+     */
+    public function orOnCondition($condition, $params = [])
+    {
+        if ($this->on === null) {
+            $this->on = $condition;
+        } else {
+            $this->on = ['or', $this->on, $condition];
+        }
+        $this->addParams($params);
         return $this;
     }
 
@@ -588,7 +687,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * public function getItems()
      * {
      *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
-     *                 ->viaTable('tbl_order_item', ['order_id' => 'id']);
+     *                 ->viaTable('order_item', ['order_id' => 'id']);
      * }
      * ```
      *
@@ -603,8 +702,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function viaTable($tableName, $link, $callable = null)
     {
-        $relation = new ActiveQuery([
-            'modelClass' => get_class($this->primaryModel),
+        $relation = new ActiveQuery(get_class($this->primaryModel), [
             'from' => [$tableName],
             'link' => $link,
             'multiple' => true,

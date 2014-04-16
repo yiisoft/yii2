@@ -98,7 +98,7 @@ class View extends Component
 
     /**
      * @var array the view files currently being rendered. There may be multiple view files being
-     * rendered at a moment because one may render a view file within another.
+     * rendered at a moment because one view may be rendered within another.
      */
     private $_viewFiles = [];
 
@@ -126,14 +126,17 @@ class View extends Component
      * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
      *   The actual view file will be looked for under the [[Application::viewPath|view path]] of the application.
      * - absolute path within current module (e.g. "/site/index"): the view name starts with a single slash.
-     *   The actual view file will be looked for under the [[Module::viewPath|view path]] of [[module]].
-     * - resolving any other format will be performed via [[ViewContext::findViewFile()]].
+     *   The actual view file will be looked for under the [[Module::viewPath|view path]] of the [[Controller::module|current module]].
+     * - relative view (e.g. "index"): the view name does not start with `@` or `/`. The corresponding view file will be
+     *   looked for under the [[ViewContextInterface::getViewPath()|view path]] of the view `$context`.
+     *   If `$context` is not given, it will be looked for under the directory containing the view currently
+     *   being rendered (i.e., this happens when rendering a view within another view).
      *
-     * @param string $view the view name. Please refer to [[Controller::findViewFile()]]
-     * and [[Widget::findViewFile()]] on how to specify this parameter.
+     * @param string $view the view name.
      * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
-     * @param object $context the context that the view should use for rendering the view. If null,
-     * existing [[context]] will be used.
+     * @param object $context the context to be assigned to the view and can later be accessed via [[context]]
+     * in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
+     * the view file corresponding to a relative view name.
      * @return string the rendering result
      * @throws InvalidParamException if the view cannot be resolved or the view file does not exist.
      * @see renderFile()
@@ -141,7 +144,6 @@ class View extends Component
     public function render($view, $params = [], $context = null)
     {
         $viewFile = $this->findViewFile($view, $context);
-
         return $this->renderFile($viewFile, $params, $context);
     }
 
@@ -149,10 +151,12 @@ class View extends Component
      * Finds the view file based on the given view name.
      * @param string $view the view name or the path alias of the view file. Please refer to [[render()]]
      * on how to specify this parameter.
-     * @param object $context the context that the view should be used to search the view file. If null,
-     * existing [[context]] will be used.
+     * @param object $context the context to be assigned to the view and can later be accessed via [[context]]
+     * in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
+     * the view file corresponding to a relative view name.
      * @return string the view file path. Note that the file may not exist.
-     * @throws InvalidCallException if [[context]] is required and invalid.
+     * @throws InvalidCallException if a relative view name is given while there is no active context to
+     * determine the corresponding view file.
      */
     protected function findViewFile($view, $context = null)
     {
@@ -169,16 +173,12 @@ class View extends Component
             } else {
                 throw new InvalidCallException("Unable to locate view file for view '$view': no active controller.");
             }
+        } elseif ($context instanceof ViewContextInterface) {
+            $file = $context->getViewPath() . DIRECTORY_SEPARATOR . $view;
+        } elseif (($currentViewFile = $this->getViewFile()) !== false) {
+            $file = dirname($currentViewFile) . DIRECTORY_SEPARATOR . $view;
         } else {
-            // context required
-            if ($context === null) {
-                $context = $this->context;
-            }
-            if ($context instanceof ViewContextInterface) {
-                $file = $context->findViewFile($view);
-            } else {
-                throw new InvalidCallException("Unable to locate view file for view '$view': no active view context.");
-            }
+            throw new InvalidCallException("Unable to resolve view file for view '$view': no active view context.");
         }
 
         if (pathinfo($file, PATHINFO_EXTENSION) !== '') {
@@ -200,7 +200,7 @@ class View extends Component
      *
      * The method will call [[FileHelper::localize()]] to localize the view file.
      *
-     * If [[renderer]] is enabled (not null), the method will use it to render the view file.
+     * If [[renderers|renderer]] is enabled (not null), the method will use it to render the view file.
      * Otherwise, it will simply include the view file as a normal PHP file, capture its output and
      * return it as a string.
      *
@@ -214,6 +214,7 @@ class View extends Component
     public function renderFile($viewFile, $params = [], $context = null)
     {
         $viewFile = Yii::getAlias($viewFile);
+
         if ($this->theme !== null) {
             $viewFile = $this->theme->applyTo($viewFile);
         }

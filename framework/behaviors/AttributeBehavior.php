@@ -66,7 +66,8 @@ class AttributeBehavior extends Behavior
      * The signature of the function should be as follows,
      *
      * ```php
-     * function ($event) {
+     * function ($event)
+     * {
      *     // return value will be assigned to the attribute
      * }
      * ```
@@ -83,7 +84,7 @@ class AttributeBehavior extends Behavior
 
     /**
      * Evaluates the attribute value and assigns it to the current attributes.
-     * @param $event
+     * @param Event $event
      */
     public function evaluateAttributes($event)
     {

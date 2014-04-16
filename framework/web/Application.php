@@ -13,10 +13,7 @@ use yii\base\InvalidRouteException;
 /**
  * Application is the base class for all web application classes.
  *
- * @property AssetManager $assetManager The asset manager component. This property is read-only.
  * @property string $homeUrl The homepage URL.
- * @property Request $request The request component. This property is read-only.
- * @property Response $response The response component. This property is read-only.
  * @property Session $session The session component. This property is read-only.
  * @property User $user The user component. This property is read-only.
  *
@@ -56,12 +53,13 @@ class Application extends \yii\base\Application
     /**
      * @inheritdoc
      */
-    public function preloadComponents()
+    protected function bootstrap()
     {
-        parent::preloadComponents();
         $request = $this->getRequest();
         Yii::setAlias('@webroot', dirname($request->getScriptFile()));
         Yii::setAlias('@web', $request->getBaseUrl());
+
+        parent::bootstrap();
     }
 
     /**
@@ -124,24 +122,6 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the request component.
-     * @return Request the request component
-     */
-    public function getRequest()
-    {
-        return $this->get('request');
-    }
-
-    /**
-     * Returns the response component.
-     * @return Response the response component
-     */
-    public function getResponse()
-    {
-        return $this->get('response');
-    }
-
-    /**
      * Returns the session component.
      * @return Session the session component
      */
@@ -160,25 +140,26 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the asset manager.
-     * @return AssetManager the asset manager component
-     */
-    public function getAssetManager()
-    {
-        return $this->get('assetManager');
-    }
-
-    /**
      * @inheritdoc
      */
     public function coreComponents()
     {
-        return array_merge([
+        return array_merge(parent::coreComponents(), [
             'request' => ['class' => 'yii\web\Request'],
             'response' => ['class' => 'yii\web\Response'],
             'session' => ['class' => 'yii\web\Session'],
             'user' => ['class' => 'yii\web\User'],
-            'assetManager' => ['class' => 'yii\web\AssetManager'],
-        ], parent::coreComponents());
+        ]);
+    }
+
+    /**
+     * Registers the errorHandler component as a PHP error handler.
+     */
+    protected function registerErrorHandler(&$config)
+    {
+        if (!isset($config['components']['errorHandler']['class'])) {
+            $config['components']['errorHandler']['class'] = 'yii\\web\\ErrorHandler';
+        }
+        parent::registerErrorHandler($config);
     }
 }

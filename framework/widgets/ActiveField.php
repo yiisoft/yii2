@@ -4,10 +4,12 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
 namespace yii\widgets;
 
 use Yii;
 use yii\base\Component;
+use yii\base\ErrorHandler;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\base\Model;
@@ -140,8 +142,7 @@ class ActiveField extends Component
         try {
             return $this->render();
         } catch (\Exception $e) {
-            trigger_error($e->getMessage() . "\n\n" . $e->getTraceAsString());
-
+            ErrorHandler::convertExceptionToError($e);
             return '';
         }
     }
@@ -225,7 +226,8 @@ class ActiveField extends Component
 
     /**
      * Generates a label tag for [[attribute]].
-     * @param string $label the label to use. If null, it will be generated via [[Model::getAttributeLabel()]].
+     * @param string|boolean $label the label to use. If null, the label will be generated via [[Model::getAttributeLabel()]].
+     * If false, the generated field will not contain the label part.
      * Note that this will NOT be [[Html::encode()|encoded]].
      * @param array $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
      * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
@@ -234,6 +236,11 @@ class ActiveField extends Component
      */
     public function label($label = null, $options = [])
     {
+        if ($label === false) {
+            $this->parts['{label}'] = '';
+            return $this;
+        }
+
         $options = array_merge($this->labelOptions, $options);
         if ($label !== null) {
             $options['label'] = $label;
@@ -246,7 +253,7 @@ class ActiveField extends Component
     /**
      * Generates a tag that contains the first validation error of [[attribute]].
      * Note that even if there is no validation error, this method will still return an empty error tag.
-     * @param array $options the tag options in terms of name-value pairs. It will be merged with [[errorOptions]].
+     * @param array|boolean $options the tag options in terms of name-value pairs. It will be merged with [[errorOptions]].
      * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
      * using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
      *
@@ -254,10 +261,16 @@ class ActiveField extends Component
      *
      * - tag: this specifies the tag name. If not set, "div" will be used.
      *
+     * If this parameter is false, no error tag will be rendered.
+     *
      * @return static the field object itself
      */
     public function error($options = [])
     {
+        if ($options === false) {
+            $this->parts['{error}'] = '';
+            return $this;
+        }
         $options = array_merge($this->errorOptions, $options);
         $this->parts['{error}'] = Html::error($this->model, $this->attribute, $options);
 

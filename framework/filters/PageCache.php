@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\filters;
 
 use Yii;
 use yii\base\ActionFilter;
@@ -28,10 +28,10 @@ use yii\caching\Dependency;
  * {
  *     return [
  *         'pageCache' => [
- *             'class' => \yii\web\PageCache::className(),
+ *             'class' => \yii\filters\PageCache::className(),
  *             'only' => ['list'],
  *             'duration' => 60,
- *             'dependecy' => [
+ *             'dependency' => [
  *                 'class' => 'yii\caching\DbDependency',
  *                 'sql' => 'SELECT COUNT(*) FROM post',
  *             ],
@@ -99,7 +99,7 @@ class PageCache extends ActionFilter
     public $enabled = true;
     /**
      * @var \yii\base\View the view component to use for caching. If not set, the default application view component
-     * [[Application::view]] will be used.
+     * [[\yii\web\Application::view]] will be used.
      */
     public $view;
 

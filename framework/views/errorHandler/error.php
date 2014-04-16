@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \Exception $exception
- * @var \yii\base\ErrorHandler $handler
+ * @var \yii\web\ErrorHandler $handler
  */
 if ($exception instanceof \yii\web\HttpException) {
     $code = $exception->statusCode;

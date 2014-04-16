@@ -41,16 +41,16 @@ class ActiveRecordTest extends SphinxTestCase
         $this->assertTrue($articles[1] instanceof ArticleIndex);
 
         // find fulltext
-        $article = ArticleIndex::find(2);
+        $article = ArticleIndex::findOne(2);
         $this->assertTrue($article instanceof ArticleIndex);
         $this->assertEquals(2, $article->id);
 
         // find by column values
-        $article = ArticleIndex::find(['id' => 2, 'author_id' => 2]);
+        $article = ArticleIndex::findOne(['id' => 2, 'author_id' => 2]);
         $this->assertTrue($article instanceof ArticleIndex);
         $this->assertEquals(2, $article->id);
         $this->assertEquals(2, $article->author_id);
-        $article = ArticleIndex::find(['id' => 2, 'author_id' => 1]);
+        $article = ArticleIndex::findOne(['id' => 2, 'author_id' => 1]);
         $this->assertNull($article);
 
         // find by attributes
@@ -148,7 +148,7 @@ class ActiveRecordTest extends SphinxTestCase
         $record->save();
 
         // save
-        $record = RuntimeIndex::find(2);
+        $record = RuntimeIndex::findOne(2);
         $this->assertTrue($record instanceof RuntimeIndex);
         $this->assertEquals(7, $record->type_id);
         $this->assertFalse($record->isNewRecord);
@@ -157,14 +157,14 @@ class ActiveRecordTest extends SphinxTestCase
         $record->save();
         $this->assertEquals(9, $record->type_id);
         $this->assertFalse($record->isNewRecord);
-        $record2 = RuntimeIndex::find(['id' => 2]);
+        $record2 = RuntimeIndex::findOne(['id' => 2]);
         $this->assertEquals(9, $record2->type_id);
 
         // replace
         $query = 'replace';
         $rows = RuntimeIndex::find()->match($query)->all();
         $this->assertEmpty($rows);
-        $record = RuntimeIndex::find(2);
+        $record = RuntimeIndex::findOne(2);
         $record->content = 'Test content with ' . $query;
         $record->save();
         $rows = RuntimeIndex::find()->match($query);
@@ -174,7 +174,7 @@ class ActiveRecordTest extends SphinxTestCase
         $pk = ['id' => 2];
         $ret = RuntimeIndex::updateAll(['type_id' => 55], $pk);
         $this->assertEquals(1, $ret);
-        $record = RuntimeIndex::find($pk);
+        $record = RuntimeIndex::findOne($pk);
         $this->assertEquals(55, $record->type_id);
     }
 
@@ -192,9 +192,9 @@ class ActiveRecordTest extends SphinxTestCase
         $record->category = [1, 2];
         $record->save();
 
-        $record = RuntimeIndex::find(2);
+        $record = RuntimeIndex::findOne(2);
         $record->delete();
-        $record = RuntimeIndex::find(2);
+        $record = RuntimeIndex::findOne(2);
         $this->assertNull($record);
 
         // deleteAll

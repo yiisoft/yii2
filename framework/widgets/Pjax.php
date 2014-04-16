@@ -136,18 +136,13 @@ class Pjax extends Widget
 
         // only need the content enclosed within this widget
         $response = Yii::$app->getResponse();
-        $level = ob_get_level();
         $response->clearOutputBuffers();
         $response->setStatusCode(200);
         $response->format = Response::FORMAT_HTML;
         $response->content = $content;
         $response->send();
 
-        // re-enable output buffer to capture content after this widget
-        for (; $level > 0; --$level) {
-            ob_start();
-            ob_implicit_flush(false);
-        }
+        Yii::$app->end();
     }
 
     /**
