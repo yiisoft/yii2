@@ -6,7 +6,7 @@ Out of the box, Yii includes support for the [Bootstrap 3](http://getbootstrap.c
 The core of Bootstrap is represented by two parts:
 
 - CSS basics, such as a grid layout system, typography, helper classes, and responsive utilities.
-- Ready to use components, such as menus, pagination, modal boxes, tabs etc.
+- Ready to use components, such as forms, menus, pagination, modal boxes, tabs etc.
 
 Basics
 ------
@@ -33,6 +33,7 @@ Yii widgets
 Most complex bootstrap components are wrapped into Yii widgets to allow more robust syntax and integrate with
 framework features. All widgets belong to `\yii\bootstrap` namespace:
 
+- [[yii\bootstrap\ActiveForm|ActiveForm]]
 - [[yii\bootstrap\Alert|Alert]]
 - [[yii\bootstrap\Button|Button]]
 - [[yii\bootstrap\ButtonDropdown|ButtonDropdown]]
