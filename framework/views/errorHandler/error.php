@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \yii\base\Exception $exception
+ * @var \Exception|\yii\base\Exception $exception
  * @var \yii\web\ErrorHandler $handler
  */
 if ($exception instanceof \yii\web\HttpException) {
