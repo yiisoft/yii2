@@ -344,7 +344,8 @@ class MessageFormatter extends Component
                     return $arg;
                 }
                 throw new NotSupportedException("Message format 'number' is only supported for integer values. You have to install PHP intl extension to use this feature.");
-            case 'none': return $arg;
+            case 'none':
+                return $arg;
             case 'select':
                 /* http://icu-project.org/apiref/icu4c/classicu_1_1SelectFormat.html
                 selectStyle = (selector '{' message '}')+

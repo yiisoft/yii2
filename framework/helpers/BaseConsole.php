@@ -341,6 +341,7 @@ class BaseConsole
             function ($ansi) use (&$tags) {
                 $styleA = [];
                 foreach (explode(';', $ansi) as $controlCode) {
+                    $style = [];
                     switch ($controlCode) {
                         case self::FG_BLACK:
                             $style = ['color' => '#000000'];

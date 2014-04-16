@@ -107,15 +107,26 @@ class MemCache extends Cache
                     $timeout = (int) ($server->timeout / 1000) + (($server->timeout % 1000 > 0) ? 1 : 0);
                     if ($paramCount === 9) {
                         $cache->addServer(
-                            $server->host, $server->port, $server->persistent,
-                            $server->weight, $timeout, $server->retryInterval,
-                            $server->status, $server->failureCallback, $server->timeout
+                            $server->host,
+                            $server->port,
+                            $server->persistent,
+                            $server->weight,
+                            $timeout,
+                            $server->retryInterval,
+                            $server->status,
+                            $server->failureCallback,
+                            $server->timeout
                         );
                     } else {
                         $cache->addServer(
-                            $server->host, $server->port, $server->persistent,
-                            $server->weight, $timeout, $server->retryInterval,
-                            $server->status, $server->failureCallback
+                            $server->host,
+                            $server->port,
+                            $server->persistent,
+                            $server->weight,
+                            $timeout,
+                            $server->retryInterval,
+                            $server->status,
+                            $server->failureCallback
                         );
                     }
                 }
