@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Enh #3108: Added `yii\debug\Module::enableDebugLogs` to disable logging debug logs by default (qiangxue)
 - Enh #3132: `yii\rbac\PhpManager` now supports more compact data file format (qiangxue)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
+- Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
 
 
