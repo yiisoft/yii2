@@ -181,6 +181,7 @@ class Theme extends Component
      * Converts a relative file path into an absolute one using [[basePath]].
      * @param string $path the relative file path to be converted.
      * @return string the absolute file path
+     * @throws InvalidConfigException if [[baseUrl]] is not set
      */
     public function getPath($path)
     {

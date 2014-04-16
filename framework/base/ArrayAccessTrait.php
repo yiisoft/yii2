@@ -15,6 +15,8 @@ namespace yii\base;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @property array $data
  */
 trait ArrayAccessTrait
 {

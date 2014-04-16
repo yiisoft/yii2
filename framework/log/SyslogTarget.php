@@ -29,7 +29,7 @@ class SyslogTarget extends Target
     /**
      * @var array syslog levels
      */
-    private $syslogLevels = [
+    private $_syslogLevels = [
         Logger::LEVEL_TRACE => LOG_DEBUG,
         Logger::LEVEL_PROFILE_BEGIN => LOG_DEBUG,
         Logger::LEVEL_PROFILE_END => LOG_DEBUG,
@@ -45,7 +45,7 @@ class SyslogTarget extends Target
     {
         openlog($this->identity, LOG_ODELAY | LOG_PID, $this->facility);
         foreach ($this->messages as $message) {
-            syslog($this->syslogLevels[$message[1]], $this->formatMessage($message));
+            syslog($this->_syslogLevels[$message[1]], $this->formatMessage($message));
         }
         closelog();
     }
