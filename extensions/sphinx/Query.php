@@ -404,13 +404,14 @@ class Query extends Component implements QueryInterface
      * - operator format: `[operator, operand1, operand2, ...]`
      *
      * A condition in hash format represents the following SQL expression in general:
-     * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array,
+     * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array or a Query object,
      * an `IN` expression will be generated. And if a value is null, `IS NULL` will be used
      * in the generated expression. Below are some examples:
      *
      * - `['type' => 1, 'status' => 2]` generates `(type = 1) AND (status = 2)`.
      * - `['id' => [1, 2, 3], 'status' => 2]` generates `(id IN (1, 2, 3)) AND (status = 2)`.
      * - `['status' => null] generates `status IS NULL`.
+     * - `['id' => $query]` generates `id IN (...sub-query...)`
      *
      * A condition in operator format generates the SQL expression according to the specified operator, which
      * can be one of the followings:
@@ -430,10 +431,14 @@ class Query extends Component implements QueryInterface
      * - `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
      * in the generated condition.
      *
-     * - `in`: operand 1 should be a column or DB expression, and operand 2 be an array representing
-     * the range of the values that the column or DB expression should be in. For example,
-     * `['in', 'id', [1, 2, 3]]` will generate `id IN (1, 2, 3)`.
-     * The method will properly quote the column name and escape values in the range.
+     * - `in`: operand 1 should be a column or DB expression with parenthesis. Operand 2 can be an array
+     * or a Query object. If the former, the array represents the range of the values that the column
+     * or DB expression should be in. If the latter, a sub-query will be generated to represent the range.
+     * For example, `['in', 'id', [1, 2, 3]]` will generate `id IN (1, 2, 3)`;
+     * `['in', 'id', (new Query)->select('id')->from('user'))]` will generate
+     * `id IN (SELECT id FROM user)`. The method will properly quote the column name and escape values in the range.
+     * The `in` operator also supports composite columns. In this case, operand 1 should be an array of the columns,
+     * while operand 2 should be an array of arrays or a `Query` object representing the range of the columns.
      *
      * - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
      *
