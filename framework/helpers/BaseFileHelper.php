@@ -37,7 +37,22 @@ class BaseFileHelper
      */
     public static function normalizePath($path, $ds = DIRECTORY_SEPARATOR)
     {
-        return rtrim(strtr($path, ['/' => $ds, '\\' => $ds]), $ds);
+		return self::simplifyPath(rtrim(strtr($path, ['/' => $ds, '\\' => $ds]), $ds), $ds);
+    }
+	
+	/**
+     * Silmplify a file/directory path.
+     * @param string $path the file/directory path to be normalized
+     * @param string $ds the directory separator to be used in the normalized result. Defaults to `DIRECTORY_SEPARATOR`.
+     * @return string the normalized file/directory path
+     */
+    public static function simplifyPath($path, $ds = DIRECTORY_SEPARATOR)
+    {
+        return preg_replace_callback('/[\\\\\\/]{1}([\\w\\d\\.\\-_]*)[\\\\\\/]{1}(\\.\\.|\\.)[\\\\\\/]{1}/s', 
+			function ($m)  use ($ds) {
+				return $m[2] === '..' ?  $ds : $ds.$m[1].$ds;
+			},
+			$path);
     }
 
     /**
