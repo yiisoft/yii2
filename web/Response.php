@@ -118,15 +118,7 @@ class Response extends \yii\base\Response
      * for creating the formatter objects.
      * @see format
      */
-    public $formatters = [
-        self::FORMAT_HTML => 'yii\web\HtmlResponseFormatter',
-        self::FORMAT_XML => 'yii\web\XmlResponseFormatter',
-        self::FORMAT_JSON => 'yii\web\JsonResponseFormatter',
-        self::FORMAT_JSONP => [
-            'class' => 'yii\web\JsonResponseFormatter',
-            'useJsonp' => true,
-        ],
-    ];
+    public $formatters = [];
     /**
      * @var mixed the original response data. When this is not null, it will be converted into [[content]]
      * according to [[format]] when the response is being sent out.
@@ -259,6 +251,8 @@ class Response extends \yii\base\Response
         if ($this->charset === null) {
             $this->charset = Yii::$app->charset;
         }
+        $formatters = $this->defaultFormatters();
+        $this->formatters = empty($this->formatters) ? $formatters : array_merge($formatters, $this->formatters);
     }
 
     /**
@@ -838,6 +832,22 @@ class Response extends \yii\base\Response
     public function getIsEmpty()
     {
         return in_array($this->getStatusCode(), [201, 204, 304]);
+    }
+
+    /**
+     * @return array the formatters that are supported by default
+     */
+    protected function defaultFormatters()
+    {
+        return [
+            self::FORMAT_HTML => 'yii\web\HtmlResponseFormatter',
+            self::FORMAT_XML => 'yii\web\XmlResponseFormatter',
+            self::FORMAT_JSON => 'yii\web\JsonResponseFormatter',
+            self::FORMAT_JSONP => [
+                'class' => 'yii\web\JsonResponseFormatter',
+                'useJsonp' => true,
+            ],
+        ];
     }
 
     /**
