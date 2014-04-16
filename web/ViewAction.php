@@ -70,7 +70,7 @@ class ViewAction extends Action
         $viewName = $this->resolveViewName();
 
         $controllerLayout = null;
-        if($this->layout !== null) {
+        if ($this->layout !== null) {
             $controllerLayout = $this->controller->layout;
             $this->controller->layout = $this->layout;
         }

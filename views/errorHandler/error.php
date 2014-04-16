@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \Exception $exception
+ * @var \yii\base\Exception $exception
  * @var \yii\web\ErrorHandler $handler
  */
 if ($exception instanceof \yii\web\HttpException) {
@@ -22,8 +22,11 @@ if ($exception instanceof \yii\base\UserException) {
 } else {
     $message = 'An internal server error occurred.';
 }
+
+if (method_exists($this, 'beginPage')) {
+    $this->beginPage();
+}
 ?>
-<?php if (method_exists($this, 'beginPage')) $this->beginPage(); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -80,7 +83,14 @@ if ($exception instanceof \yii\base\UserException) {
     <div class="version">
         <?= date('Y-m-d H:i:s', time()) ?>
     </div>
-    <?php if (method_exists($this, 'endBody')) $this->endBody(); // to allow injecting code into body (mostly by Yii Debug Toolbar) ?>
+    <?php
+    if (method_exists($this, 'endBody')) {
+        $this->endBody(); // to allow injecting code into body (mostly by Yii Debug Toolbar)
+    }
+    ?>
 </body>
 </html>
-<?php if (method_exists($this, 'endPage')) $this->endPage(); ?>
+<?php
+if (method_exists($this, 'endPage')) {
+    $this->endPage();
+}

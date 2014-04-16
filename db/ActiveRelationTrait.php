@@ -16,6 +16,10 @@ use yii\base\InvalidParamException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @method ActiveRelationTrait one()
+ * @method ActiveRelationTrait[] all()
+ * @property ActiveRecord $modelClass
  */
 trait ActiveRelationTrait
 {
@@ -248,12 +252,20 @@ trait ActiveRelationTrait
         }
     }
 
+    /**
+     * @param ActiveRecordInterface[] $primaryModels primary models
+     * @param ActiveRecordInterface[] $models models
+     * @param string $primaryName the primary relation name
+     * @param string $name the relation name
+     * @return null
+     */
     private function populateInverseRelation(&$primaryModels, $models, $primaryName, $name)
     {
         if (empty($models) || empty($primaryModels)) {
             return;
         }
         $model = reset($models);
+        /** @var ActiveQueryInterface|ActiveQuery $relation */
         $relation = $model instanceof ActiveRecordInterface ? $model->getRelation($name) : (new $this->modelClass)->getRelation($name);
 
         if ($relation->multiple) {

@@ -28,18 +28,18 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      */
     public $useJsonp = false;
 
-     /**
-      * Formats the specified response.
-      * @param Response $response the response to be formatted.
-      */
-     public function format($response)
-     {
-         if ($this->useJsonp) {
-             $this->formatJsonp($response);
-         } else {
-             $this->formatJson($response);
-         }
-     }
+    /**
+     * Formats the specified response.
+     * @param Response $response the response to be formatted.
+     */
+    public function format($response)
+    {
+        if ($this->useJsonp) {
+            $this->formatJsonp($response);
+        } else {
+            $this->formatJson($response);
+        }
+    }
 
     /**
      * Formats response data in JSON format.
