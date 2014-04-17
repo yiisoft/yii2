@@ -87,7 +87,12 @@ class Dropdown extends Widget
             $linkOptions['tabindex'] = '-1';
             $content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
             if (!empty($item['items'])) {
-                $content .= $this->renderItems($item['items']);
+                $content .= static::widget([
+                    'items' => $item['items'],
+                    'encodeLabels' => $this->encodeLabels,
+                    'clientOptions' => $this->clientOptions,
+                    'view' => $this->view,
+                ]);
                 Html::addCssClass($options, 'dropdown-submenu');
             }
             $lines[] = Html::tag('li', $content, $options);
