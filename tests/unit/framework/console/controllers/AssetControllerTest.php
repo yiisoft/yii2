@@ -356,6 +356,16 @@ EOL;
                 src: url('../input/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype');
                 }",
             ],
+            [
+                "@font-face {
+                src: url(data:application/x-font-ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwT==) format('truetype');
+                }",
+                '/test/base/path/assets/input/css',
+                '/test/base/path/assets/output',
+                "@font-face {
+                src: url(data:application/x-font-ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwT==) format('truetype');
+                }",
+            ],
         ];
     }
 
