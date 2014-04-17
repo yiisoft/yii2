@@ -211,11 +211,13 @@ Building authorization data is all about the following kinds of work:
 * associating rules with roles and permissions;
 * assigning roles to users.
 
-The work can be done once for all via a console command for applications that require very simple RBAC.
-It may also need a set of user interfaces to allow applications with complex RBAC needs to continuously
-updating the authorization data.
+For applications that require very simple RBAC, the above work can be done once for all via a console command.
+For applications that require complex RBAC with dynamic update to the authorization data, special user interfaces
+may need to be developed.
 
-The example below shows how to use `authManager` to build authorization data:
+The example below shows how to make use of the APIs offered by `authManager` to build authorization data. If you
+use a console command to create the authorization data, you may put this piece of code in an action of the console
+command.
 
 ```php
 $auth = Yii::$app->authManager;
