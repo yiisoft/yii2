@@ -159,6 +159,7 @@ trait ActiveQueryTrait
     {
         $primaryModel = new $this->modelClass;
         $relations = $this->normalizeRelations($primaryModel, $with);
+        /** @var ActiveQuery $relation */
         foreach ($relations as $name => $relation) {
             if ($relation->asArray === null) {
                 // inherit asArray from primary query

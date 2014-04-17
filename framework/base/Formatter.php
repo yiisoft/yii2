@@ -184,9 +184,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
 
-        return str_replace('<p></p>', '',
-            '<p>' . preg_replace('/[\r\n]{2,}/', "</p>\n<p>", Html::encode($value)) . '</p>'
-        );
+        return str_replace('<p></p>', '', '<p>' . preg_replace('/[\r\n]{2,}/', "</p>\n<p>", Html::encode($value)) . '</p>');
     }
 
     /**

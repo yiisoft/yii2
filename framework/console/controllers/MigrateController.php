@@ -95,7 +95,8 @@ class MigrateController extends Controller
      */
     public function options($actionId)
     {
-        return array_merge(parent::options($actionId),
+        return array_merge(
+            parent::options($actionId),
             ['migrationPath', 'migrationTable', 'db'], // global for all actions
             ($actionId == 'create') ? ['templateFile'] : [] // action create
         );

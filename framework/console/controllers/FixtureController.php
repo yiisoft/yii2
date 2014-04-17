@@ -89,8 +89,9 @@ class FixtureController extends Controller
         }
 
         if (!$foundFixtures) {
-            throw new Exception("No files were found by name: \"" . implode(', ', $fixtures) . "\".\n"
-                . "Check that files with these name exists, under fixtures path: \n\"" . $this->getFixturePath() . "\"."
+            throw new Exception(
+                "No files were found by name: \"" . implode(', ', $fixtures) . "\".\n" .
+                "Check that files with these name exists, under fixtures path: \n\"" . $this->getFixturePath() . "\"."
             );
         }
 
@@ -131,8 +132,9 @@ class FixtureController extends Controller
         }
 
         if (!$foundFixtures) {
-            throw new Exception("No files were found by name: \"" . implode(', ', $fixtures) . "\".\n"
-                . "Check that fixtures with these name exists, under fixtures path: \n\"" . $this->getFixturePath() . "\"."
+            throw new Exception(
+                "No files were found by name: \"" . implode(', ', $fixtures) . "\".\n" .
+                "Check that fixtures with these name exists, under fixtures path: \n\"" . $this->getFixturePath() . "\"."
             );
         }
 
