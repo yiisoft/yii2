@@ -190,19 +190,21 @@ abstract class BaseManager extends Component implements ManagerInterface
      * If the item does not specify a rule, this method will return true. Otherwise, it will
      * return the value of [[Rule::execute()]].
      *
+     * @param string|integer $user the user ID. This should be either an integer or a string representing
+     * the unique identifier of a user. See [[\yii\web\User::id]].
      * @param Item $item the auth item that needs to execute its rule
      * @param array $params parameters passed to [[ManagerInterface::checkAccess()]] and will be passed to the rule
      * @return boolean the return value of [[Rule::execute()]]. If the auth item does not specify a rule, true will be returned.
      * @throws InvalidConfigException if the auth item has an invalid rule.
      */
-    protected function executeRule($item, $params)
+    protected function executeRule($user, $item, $params)
     {
         if ($item->ruleName === null) {
             return true;
         }
         $rule = $this->getRule($item->ruleName);
         if ($rule instanceof Rule) {
-            return $rule->execute($item, $params);
+            return $rule->execute($user, $item, $params);
         } else {
             throw new InvalidConfigException("Rule not found: {$item->ruleName}");
         }
