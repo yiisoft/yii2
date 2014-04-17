@@ -436,7 +436,7 @@ class Generator extends \yii\gii\Generator
             if (get_parent_class(new $class) == 'yii\mongodb\ActiveRecord') {
                 return "'id' => (string)\$model->{$pks[0]}";
             } else {
-               return "'id' => \$model->{$pks[0]}"; 
+                return "'id' => \$model->{$pks[0]}"; 
             }
         } else {
             $params = [];
