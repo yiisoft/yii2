@@ -266,7 +266,7 @@ trait QueryTrait
             case 'BETWEEN':
             case 'NOT BETWEEN':
                 if (array_key_exists(1, $condition) && array_key_exists(2, $condition)) {
-                    if ($this->isEmpty($condition[2]) || $this->isEmpty($condition[3])) {
+                    if ($this->isEmpty($condition[1]) || $this->isEmpty($condition[2])) {
                         return [];
                     }
                 }
