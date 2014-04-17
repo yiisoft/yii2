@@ -45,7 +45,10 @@ class FixtureHelper extends Module
         $this->unloadFixtures();
     }
 
-    protected function fixtures()
+    /**
+     * @inheritdoc
+     */
+    public function fixtures()
     {
         return [
             'user' => [

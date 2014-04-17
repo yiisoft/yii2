@@ -355,7 +355,7 @@ class FileHelperTest extends TestCase
         // without "fileinfo" it falls back to getMimeTypeByExtension() and returns application/json
         $file = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_test.json';
         file_put_contents($file, '{"a": "b"}');
-        $this->assertTrue(in_array(FileHelper::getMimeType($file), array('application/json', 'text/plain')));
+        $this->assertTrue(in_array(FileHelper::getMimeType($file), ['application/json', 'text/plain']));
     }
 
     public function testNormalizePath()
