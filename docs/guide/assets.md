@@ -51,11 +51,15 @@ application's `web` directory.
 is an [alias][] that corresponds to your website base URL such as `http://example.com/`.
 
 In case you have asset files under a non web accessible directory, that is the case for any extension, you need
-to specify `$sourcePath` instead of `$basePath` and `$baseUrl`. Files will be copied or symlinked from source path
-to the `web/assets` directory of your application prior to being registered.
+to specify `$sourcePath` instead of `$basePath` and `$baseUrl`. **All files** from the source path will be copied
+or symlinked to the `web/assets` directory of your application prior to being registered.
 In this case `$basePath` and `$baseUrl` are generated automatically at the time of publishing the asset bundle.
+This is the way to work with assets when you want to publish the whole directory no matter what's in be it images,
+webfonts etc.
 
-> **Note:** do not use the `web/assets` path to put your own files in it. It is meant to be used only for asset publishing. When you create files that are already in web accessable directory put them in folders like `web/css` or `web/js`.
+
+> **Note:** do not use the `web/assets` path to put your own files in it. It is meant to be used only for asset publishing.
+> When you create files that are already in web accessable directory put them in folders like `web/css` or `web/js`.
 
 Dependencies on other asset bundles are specified via `$depends` property. It is an array that contains fully qualified
 class names of bundle classes that should be published in order for this bundle to work properly.
