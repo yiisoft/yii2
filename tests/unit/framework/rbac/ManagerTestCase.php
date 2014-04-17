@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\rbac;
 
-use yii\rbac\Assignment;
 use yii\rbac\Item;
 use yii\rbac\Permission;
 use yii\rbac\Role;
