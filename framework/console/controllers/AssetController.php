@@ -573,6 +573,9 @@ EOD;
      */
     public function actionTemplate($configFile)
     {
+        $jsCompressor = var_export($this->jsCompressor, true);
+        $cssCompressor = var_export($this->cssCompressor, true);
+
         $template = <<<EOD
 <?php
 /**
@@ -581,6 +584,10 @@ EOD;
  * Please define these missing path aliases.
  */
 return [
+    // Adjust command/callback for JavaScript files compressing:
+    'jsCompressor' => {$jsCompressor},
+    // Adjust command/callback for CSS files compressing:
+    'cssCompressor' => {$cssCompressor},
     // The list of asset bundles to compress:
     'bundles' => [
         // 'yii\web\YiiAsset',

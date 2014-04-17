@@ -240,6 +240,8 @@ EOL;
         $configFileName = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
         $this->runAssetControllerAction('template', [$configFileName]);
         $this->assertTrue(file_exists($configFileName), 'Unable to create config file template!');
+        $config = require($configFileName);
+        $this->assertTrue(is_array($config), 'Invalid config created!');
     }
 
     public function testActionCompress()
