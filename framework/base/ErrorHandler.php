@@ -44,7 +44,6 @@ abstract class ErrorHandler extends Component
      */
     private $_memoryReserve;
 
-
     /**
      * Register this errorhandler
      */

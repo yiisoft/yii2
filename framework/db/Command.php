@@ -231,7 +231,7 @@ class Command extends \yii\base\Component
      * e.g. `[':name' => 'John', ':age' => 25]`. By default, the PDO type of each value is determined
      * by its PHP type. You may explicitly specify the PDO type by using an array: `[value, type]`,
      * e.g. `[':name' => 'John', ':profile' => [$profile, \PDO::PARAM_LOB]]`.
-     * @return static the current command being executed
+     * @return Command the current command being executed
      */
     public function bindValues($values)
     {

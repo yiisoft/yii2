@@ -58,6 +58,8 @@ use yii\db\Expression;
  * $this->timestamp->touch('creation_time');
  * ```
  *
+ * @property BaseActiveRecord $owner The owner model that this behavior is attached to.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

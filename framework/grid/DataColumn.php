@@ -96,7 +96,6 @@ class DataColumn extends Column
      */
     public $filterInputOptions = ['class' => 'form-control', 'id' => null];
 
-
     /**
      * @inheritdoc
      */

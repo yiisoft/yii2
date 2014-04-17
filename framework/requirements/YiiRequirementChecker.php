@@ -321,6 +321,8 @@ class YiiRequirementChecker
             return ob_get_clean();
         } else {
             require($_viewFile_);
+
+            return null;
         }
     }
 

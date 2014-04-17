@@ -85,7 +85,6 @@ class BaseYii
      */
     public static $container;
 
-
     /**
      * Returns a string representing the current version of the Yii framework.
      * @return string the version of Yii framework
@@ -349,7 +348,7 @@ class BaseYii
     }
 
     private static $_logger;
-    
+
     /**
      * @return Logger message logger
      */
