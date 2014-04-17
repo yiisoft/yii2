@@ -13,10 +13,10 @@ namespace yii\base;
  * Note that ArrayAccessTrait requires the class using it contain a property named `data` which should be an array.
  * The data will be exposed by ArrayAccessTrait to support accessing the class object like an array.
  *
+ * @property array $data
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
- *
- * @property array $data
  */
 trait ArrayAccessTrait
 {
