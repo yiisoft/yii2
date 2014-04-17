@@ -424,7 +424,7 @@ class Query extends Component implements QueryInterface
         } else {
             $this->select = array_merge($this->select, $columns);
         }
-        
+
         return $this;
     }
 

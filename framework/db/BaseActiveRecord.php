@@ -383,6 +383,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Note that this method does not check if the relation exists or not.
      * @param string $name the relation name (case-sensitive)
      * @param ActiveRecordInterface|array|null $records the related records to be populated into the relation.
+     * @return void
      */
     public function populateRelation($name, $records)
     {
@@ -911,7 +912,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function refresh()
     {
-        /** @var ActiveQuery $record */
+        /** @var ActiveRecord $record */
         $record = $this->findOne($this->getPrimaryKey(true));
         if ($record === null) {
             return false;
@@ -1036,7 +1037,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * For example, by creating a record based on the value of a column,
      * you may implement the so-called single-table inheritance mapping.
      * @param array $row row data to be populated into the record.
-     * @return static the newly created active record
+     * @return BaseActiveRecord the newly created active record
      */
     public static function instantiate($row)
     {

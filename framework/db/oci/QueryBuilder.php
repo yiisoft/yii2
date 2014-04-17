@@ -17,7 +17,7 @@ use yii\base\InvalidParamException;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
-    private $sql;
+    private $_sql;
 
     /**
      * @inheritdoc
@@ -37,16 +37,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $this->buildHaving($query->having, $params),
             $this->buildOrderBy($query->orderBy),
         ];
-        $this->sql = implode($this->separator, array_filter($clauses));
+        $this->_sql = implode($this->separator, array_filter($clauses));
 
-        $this->sql = $this->buildLimit($query->limit, $query->offset);
+        $this->_sql = $this->buildLimit($query->limit, $query->offset);
 
         $union = $this->buildUnion($query->union, $params);
         if ($union !== '') {
-            $this->sql = "{$this->sql}{$this->separator}$union";
+            $this->_sql = "{$this->_sql}{$this->separator}$union";
         }
 
-        return [$this->sql, $params];
+        return [$this->_sql, $params];
     }
 
     public function buildLimit($limit, $offset)
@@ -64,14 +64,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $filter = implode(' and ', $filters);
 
             return <<<EOD
-WITH USER_SQL AS ({$this->sql}),
+WITH USER_SQL AS ({$this->_sql}),
     PAGINATION AS (SELECT USER_SQL.*, rownum as rowNumId FROM USER_SQL)
 SELECT *
 FROM PAGINATION
 WHERE $filter
 EOD;
         } else {
-            return $this->sql;
+            return $this->_sql;
         }
     }
 

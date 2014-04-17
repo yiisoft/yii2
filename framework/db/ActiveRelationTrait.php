@@ -16,10 +16,6 @@ use yii\base\InvalidParamException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
- *
- * @method ActiveRelationTrait one()
- * @method ActiveRelationTrait[] all()
- * @property ActiveRecord $modelClass
  */
 trait ActiveRelationTrait
 {
@@ -185,7 +181,7 @@ trait ActiveRelationTrait
     /**
      * Finds the related records and populates them into the primary models.
      * @param string $name the relation name
-     * @param array $primaryModels primary models
+     * @param ActiveRecord[] $primaryModels primary models
      * @return array the related models
      * @throws InvalidConfigException if [[link]] is invalid
      */
@@ -253,8 +249,8 @@ trait ActiveRelationTrait
     }
 
     /**
-     * @param ActiveRecordInterface[] $primaryModels primary models
-     * @param ActiveRecordInterface[] $models models
+     * @param ActiveRecord[] $primaryModels primary models
+     * @param ActiveRecord[] $models models
      * @param string $primaryName the primary relation name
      * @param string $name the relation name
      * @return null
@@ -368,6 +364,10 @@ trait ActiveRelationTrait
         return $buckets;
     }
 
+    /**
+     * @param array $attributes
+     * @return array
+     */
     private function prefixKeyColumns($attributes)
     {
         if ($this instanceof ActiveQuery && (!empty($this->join) || !empty($this->joinWith))) {
@@ -385,7 +385,7 @@ trait ActiveRelationTrait
             }
             if (isset($alias)) {
                 foreach ($attributes as $i => $attribute) {
-                	$attributes[$i] = "$alias.$attribute";
+                    $attributes[$i] = "$alias.$attribute";
                 }
             }
         }

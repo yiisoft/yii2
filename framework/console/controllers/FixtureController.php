@@ -56,7 +56,6 @@ class FixtureController extends Controller
         'yii\test\InitDb',
     ];
 
-
     /**
      * @inheritdoc
      */
@@ -118,6 +117,7 @@ class FixtureController extends Controller
      * whitespace between names.
      * @param array|string $fixtures
      * @param array|string $except
+     * @throws Exception
      */
     public function actionUnload(array $fixtures, array $except = [])
     {
