@@ -74,9 +74,6 @@ class DbManager extends BaseManager
     public function checkAccess($userId, $permissionName, $params = [])
     {
         $assignments = $this->getAssignments($userId);
-        if (!isset($params['user'])) {
-            $params['user'] = $userId;
-        }
         return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
     }
 
@@ -100,7 +97,7 @@ class DbManager extends BaseManager
 
         Yii::trace($item instanceof Role ? "Checking role: $itemName" : "Checking permission: $itemName", __METHOD__);
 
-        if (!$this->executeRule($item, $params)) {
+        if (!$this->executeRule($user, $item, $params)) {
             return false;
         }
 

@@ -14,3 +14,6 @@ Upgrade from Yii 2.0 Beta
 
 * If you used `clearAll()` or `clearAllAssignments()` of `yii\rbac\DbManager`, you should replace
   them with `removeAll()` and `removeAllAssignments()` respectively.
+* If you created RBAC rule classes, you should modify their `execute()` method by adding `$user`
+  as the first parameter: `execute($user, $item, $params)`. The `$user` parameter represents
+  the ID of the user currently being access checked. Previously, this is passed via `$params['user']`.

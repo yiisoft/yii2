@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
+- Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
 
 
 2.0.0-beta April 13, 2014
