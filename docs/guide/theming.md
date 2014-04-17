@@ -29,6 +29,23 @@ In the above `pathMap` defines where to look for view files while `baseUrl` defi
 from these files. In our case `pathMap` is `['@app/views' => '@app/themes/basic']` so the themed version
 for a view file `@app/views/site/index.php` will be `@app/themes/basic/site/index.php`.
 
+### Theming widgets
+
+In order to theme a widget view located at `@app/widgets/currency/views/index.php` you need the following config for
+view component theme:
+
+```php
+'components' => [
+    'view' => [
+        'theme' => [
+            'pathMap' => ['@app/widgets/currency/views' => '@app/themes/basic/widgets/currency'],
+        ],
+    ],
+],
+```
+
+With the config above you can create themed version of a widget view at `@app/themes/basic/widgets/currency/index.php`.
+
 Using multiple paths
 --------------------
 
