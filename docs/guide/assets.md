@@ -207,6 +207,10 @@ The template itself looks like the following:
  * Please define these missing path aliases.
  */
 return [
+    // Adjust command/callback for JavaScript files compressing:
+    'jsCompressor' => 'java -jar compiler.jar --js {from} --js_output_file {to}',
+    // Adjust command/callback for CSS files compressing:
+    'cssCompressor' => 'java -jar yuicompressor.jar --type css {from} -o {to}',
     // The list of asset bundles to compress:
     'bundles' => [
         // 'yii\web\YiiAsset',
@@ -238,6 +242,11 @@ everything to `path/to/web` that can be accessed like `http://example.com/` i.e.
 
 JavaScript files are combined, compressed and written to `js/all-{ts}.js` where {ts} is replaced with current UNIX
 timestamp.
+
+`jsCompressor` and `cssCompressor` are console commands or PHP callbacks, which should perform JavaScript and CSS files
+compression correspondingly. You should adjust these values according to your environment.
+By default Yii relies on [Closure Compiler](https://developers.google.com/closure/compiler/) for JavaScript file compression,
+and on [YUI Compressor](https://github.com/yui/yuicompressor/). You should install this utilities manually, if you wish to use them.
 
 ### Providing compression tools
 
