@@ -87,10 +87,6 @@ echo Url::toRoute(['/date-time/fast-forward', 'id' => 105]);
 Yii::setAlias('@google', 'http://google.com/');
 echo Url::to('@google');
 
-// get canonical URL for the curent page
-// /index.php?r=management/default/users
-echo Url::canonical();
-
 // get home URL
 // /index.php?r=site/index
 echo Url::home();
@@ -101,6 +97,27 @@ Url::previous(); // get previously saved URL
 
 > **Tip**: In order to generate URL with a hashtag, for example `/index.php?r=site/page&id=100#title`, you need to
   specify the parameter named `#` using `Url::to(['post/read', 'id' => 100, '#' => 'title'])`.
+
+There's also `Url::canonical()` method that allows you to generate
+[canonical URL](https://en.wikipedia.org/wiki/Canonical_link_element) for the currently executing action.
+The method ignores all action parameters except ones passed via action arguments:
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+use yii\helpers\Url;
+
+class CanonicalController extends Controller
+{
+    public function actionTest($page)
+    {
+        echo Url::canonical();
+    }
+}
+```
+
+When accessed as `/index.php?r=canonical/test&page=hello&number=42` canonical URL will be `/index.php?r=canonical/test&page=hello`.
 
 Customizing URLs
 ----------------
