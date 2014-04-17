@@ -1,5 +1,4 @@
 <?php
-use yii\helpers\Html;
 use yii\helpers\Json;
 
 /* @var $this \yii\base\View */

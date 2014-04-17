@@ -7,9 +7,7 @@
 
 namespace yii\apidoc\templates\online;
 
-use yii\apidoc\models\Context;
 use yii\apidoc\models\TypeDoc;
-use yii\console\Controller;
 use Yii;
 use yii\helpers\Console;
 

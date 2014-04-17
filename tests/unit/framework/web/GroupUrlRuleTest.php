@@ -3,7 +3,6 @@
 namespace yiiunit\framework\web;
 
 use yii\web\UrlManager;
-use yii\web\UrlRule;
 use yii\web\GroupUrlRule;
 use yii\web\Request;
 use yiiunit\TestCase;

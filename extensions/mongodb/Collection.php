@@ -10,7 +10,6 @@ namespace yii\mongodb;
 use yii\base\InvalidParamException;
 use yii\base\Object;
 use Yii;
-use yii\helpers\Json;
 
 /**
  * Collection represents the Mongo collection information.
