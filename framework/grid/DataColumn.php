@@ -182,4 +182,31 @@ class DataColumn extends Column
             return parent::renderDataCellContent($model, $key, $index);
         }
     }
+
+    /**
+     * Checks for filter errors and sets up an indication if there are any
+     */
+    public function checkForFilterErrors() 
+    {
+        if ($this->filter !== false && $this->grid->filterModel instanceof Model &&
+                  $this->attribute !== null && $this->grid->filterModel->isAttributeActive($this->attribute) && 
+                  ArrayHelper::keyExists($this->attribute, $this->grid->filterModel->errors)) 
+        {
+            $filterClass = ArrayHelper::getValue($this->filterOptions, 'class', '');
+            if ($filterClass) 
+            { 
+                $filterClass .= ' ';
+            }
+            $this->filterOptions['class'] = $filterClass . 'has-error';
+        }
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function renderFilterCell()
+    {
+        $this->checkForFilterErrors();
+        return parent::renderFilterCell();
+    }
 }
