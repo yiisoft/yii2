@@ -13,7 +13,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class UnknownMethodException extends Exception
+class UnknownMethodException extends \BadMethodCallException
 {
     /**
      * @return string the user-friendly name of this exception
