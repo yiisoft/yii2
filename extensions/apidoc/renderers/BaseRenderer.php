@@ -21,7 +21,6 @@ use yii\apidoc\models\TraitDoc;
 use yii\apidoc\models\TypeDoc;
 use yii\base\Component;
 use yii\console\Controller;
-use yii\helpers\Html;
 
 /**
  * Base class for all documentation renderers

@@ -4,16 +4,22 @@ Yii Framework 2 Change Log
 2.0.0-rc under development
 --------------------------
 
+- Bug #2563: Theming is not working if the path map of the theme contains ".." or "." in the paths (qiangxue)
 - Bug #3042: `yii\widgets\Pjax` should end application right after it finishes responding to a pjax request (qiangxue)
 - Bug #3066: `yii\db\mssql\Schema::getTableSchema()` should return null when the table does not exist (qiangxue)
 - Bug #3091: Fixed inconsistent treatment of `Widget::run()` when a widget is used as a container and as a self-contained object (qiangxue)
 - Bug #3121: `yii\base\Application::bootstrap` may fail to load some components if they are specified as class names (qiangxue)
+- Bug #3125: `yii\console\controllers\AssetController` now respects data URL resources (klimov-paul)
 - Bug #3128: Fixed the bug that `defaultRoles` set in RBAC manager was not working as specified (qiangxue)
+- Bug #3153: Fixed the bug that using "between" operator to build a SQL query will cause a PHP notice (gonimar)
+- Enh #2837: Error page now shows arguments in stack trace method calls (samdark)
+- Enh #3088: The debug and gii modules will manage their own URL rules now (hiltonjanfield, qiangxue)
 - Enh #3103: debugger panel is now not displayed when printing a page (githubjeka)
 - Enh #3108: Added `yii\debug\Module::enableDebugLogs` to disable logging debug logs by default (qiangxue)
 - Enh #3132: `yii\rbac\PhpManager` now supports more compact data file format (qiangxue)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
+- Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
 - Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
 

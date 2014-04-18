@@ -911,7 +911,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function refresh()
     {
-        /** @var ActiveQuery $record */
+        /** @var BaseActiveRecord $record */
         $record = $this->findOne($this->getPrimaryKey(true));
         if ($record === null) {
             return false;

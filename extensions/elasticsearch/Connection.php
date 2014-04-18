@@ -173,11 +173,26 @@ class Connection extends Component
         return $command;
     }
 
+    /**
+     * Creates new query builder instance
+     * @return QueryBuilder
+     */
     public function getQueryBuilder()
     {
         return new QueryBuilder($this);
     }
 
+    /**
+     * Performs GET HTTP request
+     *
+     * @param string $url URL
+     * @param array $options URL options
+     * @param string $body request body
+     * @param boolean $raw if response body contains JSON and should be decoded
+     * @return mixed response
+     * @throws Exception
+     * @throws \yii\base\InvalidConfigException
+     */
     public function get($url, $options = [], $body = null, $raw = false)
     {
         $this->open();
@@ -185,6 +200,16 @@ class Connection extends Component
         return $this->httpRequest('GET', $this->createUrl($url, $options), $body, $raw);
     }
 
+    /**
+     * Performs HEAD HTTP request
+     *
+     * @param string $url URL
+     * @param array $options URL options
+     * @param string $body request body
+     * @return mixed response
+     * @throws Exception
+     * @throws \yii\base\InvalidConfigException
+     */
     public function head($url, $options = [], $body = null)
     {
         $this->open();
@@ -192,6 +217,17 @@ class Connection extends Component
         return $this->httpRequest('HEAD', $this->createUrl($url, $options), $body);
     }
 
+    /**
+     * Performs POST HTTP request
+     *
+     * @param string $url URL
+     * @param array $options URL options
+     * @param string $body request body
+     * @param boolean $raw if response body contains JSON and should be decoded
+     * @return mixed response
+     * @throws Exception
+     * @throws \yii\base\InvalidConfigException
+     */
     public function post($url, $options = [], $body = null, $raw = false)
     {
         $this->open();
@@ -199,6 +235,17 @@ class Connection extends Component
         return $this->httpRequest('POST', $this->createUrl($url, $options), $body, $raw);
     }
 
+    /**
+     * Performs PUT HTTP request
+     *
+     * @param string $url URL
+     * @param array $options URL options
+     * @param string $body request body
+     * @param boolean $raw if response body contains JSON and should be decoded
+     * @return mixed response
+     * @throws Exception
+     * @throws \yii\base\InvalidConfigException
+     */
     public function put($url, $options = [], $body = null, $raw = false)
     {
         $this->open();
@@ -206,6 +253,17 @@ class Connection extends Component
         return $this->httpRequest('PUT', $this->createUrl($url, $options), $body, $raw);
     }
 
+    /**
+     * Performs DELETE HTTP request
+     *
+     * @param string $url URL
+     * @param array $options URL options
+     * @param string $body request body
+     * @param boolean $raw if response body contains JSON and should be decoded
+     * @return mixed response
+     * @throws Exception
+     * @throws \yii\base\InvalidConfigException
+     */
     public function delete($url, $options = [], $body = null, $raw = false)
     {
         $this->open();
@@ -213,6 +271,13 @@ class Connection extends Component
         return $this->httpRequest('DELETE', $this->createUrl($url, $options), $body, $raw);
     }
 
+    /**
+     * Creates URL
+     *
+     * @param mixed $path path
+     * @param array $options URL options
+     * @return array
+     */
     private function createUrl($path, $options = [])
     {
         if (!is_string($path)) {
@@ -232,6 +297,17 @@ class Connection extends Component
         return [$this->nodes[$this->activeNode]['http_address'], $url];
     }
 
+    /**
+     * Performs HTTP request
+     *
+     * @param string $method method name
+     * @param string $url URL
+     * @param string $requestBody request body
+     * @param boolean $raw if response body contains JSON and should be decoded
+     * @throws Exception if request failed
+     * @throws \yii\base\InvalidParamException
+     * @return mixed response
+     */
     protected function httpRequest($method, $url, $requestBody = null, $raw = false)
     {
         $method = strtoupper($method);

@@ -349,7 +349,7 @@ class BaseYii
     }
 
     private static $_logger;
-    
+
     /**
      * @return Logger message logger
      */

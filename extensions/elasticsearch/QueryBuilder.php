@@ -133,11 +133,11 @@ class QueryBuilder extends \yii\base\Object
 
     /**
      * Parses the condition specification and generates the corresponding SQL expression.
-     * @param  string|array      $condition the condition specification. Please refer to [[Query::where()]]
-     *                                      on how to specify a condition.
-     * @param  array             $params    the binding parameters to be populated
-     * @return string            the generated SQL expression
-     * @throws \yii\db\Exception if the condition is in bad format
+     *
+     * @param  string|array $condition the condition specification. Please refer to [[Query::where()]] on how to specify a condition.
+     * @throws \yii\base\InvalidParamException if unknown operator is used in query
+     * @throws \yii\base\NotSupportedException if string conditions are used in where
+     * @return string the generated SQL expression
      */
     public function buildCondition($condition)
     {

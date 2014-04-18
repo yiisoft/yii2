@@ -34,7 +34,8 @@ abstract class BasePage extends Component
 
     /**
      * Constructor.
-     * @param \Codeception\AbstractGuy the testing guy object
+     *
+     * @param \Codeception\AbstractGuy $I the testing guy object
      */
     public function __construct($I)
     {

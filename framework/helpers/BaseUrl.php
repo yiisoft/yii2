@@ -9,7 +9,6 @@ namespace yii\helpers;
 
 use Yii;
 use yii\base\InvalidParamException;
-use yii\web\Controller;
 
 /**
  * BaseUrl provides concrete implementation for [[Url]].

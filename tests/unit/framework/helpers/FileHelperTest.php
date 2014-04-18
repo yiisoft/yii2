@@ -355,12 +355,18 @@ class FileHelperTest extends TestCase
         // without "fileinfo" it falls back to getMimeTypeByExtension() and returns application/json
         $file = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_test.json';
         file_put_contents($file, '{"a": "b"}');
-        $this->assertTrue(in_array(FileHelper::getMimeType($file), array('application/json', 'text/plain')));
+        $this->assertTrue(in_array(FileHelper::getMimeType($file), ['application/json', 'text/plain']));
     }
 
     public function testNormalizePath()
     {
-        $this->assertEquals(DIRECTORY_SEPARATOR.'home'.DIRECTORY_SEPARATOR.'demo', FileHelper::normalizePath('/home\demo/'));
+        $ds = DIRECTORY_SEPARATOR;
+        $this->assertEquals("{$ds}a{$ds}b", FileHelper::normalizePath('//a\b/'));
+        $this->assertEquals("{$ds}b{$ds}c", FileHelper::normalizePath('/a/../b/c'));
+        $this->assertEquals("{$ds}c", FileHelper::normalizePath('/a\\b/../..///c'));
+        $this->assertEquals("{$ds}c", FileHelper::normalizePath('/a/.\\b//../../c'));
+        $this->assertEquals("c", FileHelper::normalizePath('/a/.\\b/../..//../c'));
+        $this->assertEquals("..{$ds}c", FileHelper::normalizePath('//a/.\\b//..//..//../../c'));
     }
 
     public function testLocalizedDirectory()

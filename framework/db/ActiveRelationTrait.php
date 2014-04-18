@@ -257,7 +257,6 @@ trait ActiveRelationTrait
      * @param ActiveRecordInterface[] $models models
      * @param string $primaryName the primary relation name
      * @param string $name the relation name
-     * @return null
      */
     private function populateInverseRelation(&$primaryModels, $models, $primaryName, $name)
     {
@@ -368,6 +367,10 @@ trait ActiveRelationTrait
         return $buckets;
     }
 
+    /**
+     * @param array $attributes the attributes to prefix
+     * @return array
+     */
     private function prefixKeyColumns($attributes)
     {
         if ($this instanceof ActiveQuery && (!empty($this->join) || !empty($this->joinWith))) {
@@ -385,7 +388,7 @@ trait ActiveRelationTrait
             }
             if (isset($alias)) {
                 foreach ($attributes as $i => $attribute) {
-                	$attributes[$i] = "$alias.$attribute";
+                    $attributes[$i] = "$alias.$attribute";
                 }
             }
         }

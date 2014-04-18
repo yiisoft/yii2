@@ -118,6 +118,7 @@ class FixtureController extends Controller
      * whitespace between names.
      * @param array|string $fixtures
      * @param array|string $except
+     * @throws \yii\console\Exception in case no fixtures are found.
      */
     public function actionUnload(array $fixtures, array $except = [])
     {

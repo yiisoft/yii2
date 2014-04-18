@@ -107,6 +107,7 @@ class Query extends Component implements QueryInterface
      */
     public $params = [];
 
+
     /**
      * Creates a DB command that can be used to execute this query.
      * @param Connection $db the database connection used to generate the SQL statement.
@@ -201,7 +202,6 @@ class Query extends Component implements QueryInterface
     public function all($db = null)
     {
         $rows = $this->createCommand($db)->queryAll();
-
         return $this->prepareResult($rows);
     }
 
@@ -226,7 +226,6 @@ class Query extends Component implements QueryInterface
             }
             $result[$key] = $row;
         }
-
         return $result;
     }
 
@@ -343,7 +342,6 @@ class Query extends Component implements QueryInterface
         $this->select = [new Expression('1')];
         $command = $this->createCommand($db);
         $this->select = $select;
-
         return $command->queryScalar() !== false;
     }
 
@@ -404,7 +402,6 @@ class Query extends Component implements QueryInterface
         }
         $this->select = $columns;
         $this->selectOption = $option;
-
         return $this;
     }
 
@@ -424,7 +421,6 @@ class Query extends Component implements QueryInterface
         } else {
             $this->select = array_merge($this->select, $columns);
         }
-        
         return $this;
     }
 
@@ -436,7 +432,6 @@ class Query extends Component implements QueryInterface
     public function distinct($value = true)
     {
         $this->distinct = $value;
-
         return $this;
     }
 
@@ -462,7 +457,6 @@ class Query extends Component implements QueryInterface
             $tables = preg_split('/\s*,\s*/', trim($tables), -1, PREG_SPLIT_NO_EMPTY);
         }
         $this->from = $tables;
-
         return $this;
     }
 
@@ -570,7 +564,6 @@ class Query extends Component implements QueryInterface
             $this->where = ['and', $this->where, $condition];
         }
         $this->addParams($params);
-
         return $this;
     }
 
@@ -618,7 +611,6 @@ class Query extends Component implements QueryInterface
     public function join($type, $table, $on = '', $params = [])
     {
         $this->join[] = [$type, $table, $on];
-
         return $this->addParams($params);
     }
 
@@ -643,7 +635,6 @@ class Query extends Component implements QueryInterface
     public function innerJoin($table, $on = '', $params = [])
     {
         $this->join[] = ['INNER JOIN', $table, $on];
-
         return $this->addParams($params);
     }
 
@@ -668,7 +659,6 @@ class Query extends Component implements QueryInterface
     public function leftJoin($table, $on = '', $params = [])
     {
         $this->join[] = ['LEFT JOIN', $table, $on];
-
         return $this->addParams($params);
     }
 
@@ -693,7 +683,6 @@ class Query extends Component implements QueryInterface
     public function rightJoin($table, $on = '', $params = [])
     {
         $this->join[] = ['RIGHT JOIN', $table, $on];
-
         return $this->addParams($params);
     }
 
@@ -712,7 +701,6 @@ class Query extends Component implements QueryInterface
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         $this->groupBy = $columns;
-
         return $this;
     }
 
@@ -735,7 +723,6 @@ class Query extends Component implements QueryInterface
         } else {
             $this->groupBy = array_merge($this->groupBy, $columns);
         }
-
         return $this;
     }
 
@@ -752,7 +739,6 @@ class Query extends Component implements QueryInterface
     {
         $this->having = $condition;
         $this->addParams($params);
-
         return $this;
     }
 
@@ -774,7 +760,6 @@ class Query extends Component implements QueryInterface
             $this->having = ['and', $this->having, $condition];
         }
         $this->addParams($params);
-
         return $this;
     }
 
@@ -796,7 +781,6 @@ class Query extends Component implements QueryInterface
             $this->having = ['or', $this->having, $condition];
         }
         $this->addParams($params);
-
         return $this;
     }
 
@@ -809,7 +793,6 @@ class Query extends Component implements QueryInterface
     public function union($sql, $all = false)
     {
         $this->union[] = [ 'query' => $sql, 'all' => $all ];
-
         return $this;
     }
 
@@ -823,7 +806,6 @@ class Query extends Component implements QueryInterface
     public function params($params)
     {
         $this->params = $params;
-
         return $this;
     }
 
@@ -849,7 +831,6 @@ class Query extends Component implements QueryInterface
                 }
             }
         }
-
         return $this;
     }
 }

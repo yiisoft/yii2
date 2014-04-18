@@ -12,7 +12,6 @@ use yii\filters\auth\CompositeAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\RateLimiter;
 use yii\web\Response;
-use yii\web\UnsupportedMediaTypeHttpException;
 use yii\filters\VerbFilter;
 use yii\web\ForbiddenHttpException;
 

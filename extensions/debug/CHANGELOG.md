@@ -4,6 +4,7 @@ Yii Framework 2 debug extension Change Log
 2.0.0-rc under development
 --------------------------
 
+- Enh #3088: The debug module will manage their own URL rules now (qiangxue)
 - Enh #3103: debugger panel is now not displayed when printing a page (githubjeka)
 - Enh #3108: Added `yii\debug\Module::enableDebugLogs` to disable logging debug logs by default (qiangxue)
 
