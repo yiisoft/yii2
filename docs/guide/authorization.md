@@ -408,23 +408,35 @@ class UserGroupRule extends Rule
     public function execute($user, $item, $params)
     {
         $group = \Yii::$app->user->identity->group;
-        return $group == 1 && $item->name === 'admin' || $group == 2 && $item->name === 'author';
+        if ($item->name === 'admin') {
+            return $group == 1;
+        } elseif ($item->name === 'author') {
+            return $group == 1 || $group == 2;
+        } else {
+            return false;
+        }
     }
 }
 
 $rule = new \app\rbac\UserGroupRule;
 $auth->add($rule);
 
-$admin = $auth->createRole('admin');
-$admin->ruleName = $rule->name;
-$auth->add($admin);
-// ... add permissions as children of $admin ...
-
 $author = $auth->createRole('author');
 $author->ruleName = $rule->name;
 $auth->add($author);
 // ... add permissions as children of $author ...
+
+$admin = $auth->createRole('admin');
+$admin->ruleName = $rule->name;
+$auth->add($admin);
+$auth->addChild($admin, $author);
+// ... add permissions as children of $admin ...
 ```
+
+Note that in the above, because "author" is added as a child of "admin", when you implement the `execute()` method
+of the rule class, you need to respect this hierarchy as well. That is why when the role name is "author",
+the `execute()` method will return true if the user group is either 1 or 2 (meaning the user is in either "admin"
+group or "author" group).
 
 Next, configure `authManager` by listing the two roles in [[yii\rbac\ManagerInterface::defaultRoles]]:
 
