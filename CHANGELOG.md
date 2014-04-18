@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #3125: `yii\console\controllers\AssetController` now respects data URL resources (klimov-paul)
 - Bug #3128: Fixed the bug that `defaultRoles` set in RBAC manager was not working as specified (qiangxue)
 - Bug #3153: Fixed the bug that using "between" operator to build a SQL query will cause a PHP notice (gonimar)
+- Enh #2837: Error page now shows arguments in stack trace method calls (samdark)
 - Enh #3103: debugger panel is now not displayed when printing a page (githubjeka)
 - Enh #3108: Added `yii\debug\Module::enableDebugLogs` to disable logging debug logs by default (qiangxue)
 - Enh #3132: `yii\rbac\PhpManager` now supports more compact data file format (qiangxue)
