@@ -56,6 +56,25 @@ class DbManager extends BaseManager
      */
     public $ruleTable = '{{%auth_rule}}';
 
+    /**
+     * @var array user assignments
+     */
+    private $_assignments;
+
+    /**
+     * @var Item[] cached items
+     */
+    private $_items;
+
+    /**
+     * @var Rule[] cached rules
+     */
+    private $_rules;
+
+    /**
+     * @var array cached parents
+     */
+    private $_parents;
 
     /**
      * Initializes the application component.
@@ -73,8 +92,10 @@ class DbManager extends BaseManager
      */
     public function checkAccess($userId, $permissionName, $params = [])
     {
-        $assignments = $this->getAssignments($userId);
-        return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
+        if (!isset($this->_assignments[$userId])) {
+            $this->_assignments[$userId] = $this->getAssignments($userId);
+        }
+        return $this->checkAccessRecursive($userId, $permissionName, $params, $this->_assignments[$userId]);
     }
 
     /**
@@ -95,7 +116,7 @@ class DbManager extends BaseManager
             return false;
         }
 
-        Yii::trace($item instanceof Role ? "Checking role: $itemName" : "Checking permission: $itemName", __METHOD__);
+        \Yii::trace($item instanceof Role ? "Checking role: $itemName" : "Checking permission: $itemName", __METHOD__);
 
         if (!$this->executeRule($user, $item, $params)) {
             return false;
@@ -105,12 +126,14 @@ class DbManager extends BaseManager
             return true;
         }
 
-        $query = new Query;
-        $parents = $query->select(['parent'])
-            ->from($this->itemChildTable)
-            ->where(['child' => $itemName])
-            ->column($this->db);
-        foreach ($parents as $parent) {
+        if (!isset($this->_parents[$itemName])) {
+            $query = new Query();
+            $this->_parents[$itemName] = $query->select(['parent'])
+                ->from($this->itemChildTable)
+                ->where(['child' => $itemName])
+                ->column($this->db);
+        }
+        foreach ($this->_parents[$itemName] as $parent) {
             if ($this->checkAccessRecursive($user, $parent, $params, $assignments)) {
                 return true;
             }
@@ -124,19 +147,22 @@ class DbManager extends BaseManager
      */
     protected function getItem($name)
     {
-        $row = (new Query)->from($this->itemTable)
-            ->where(['name' => $name])
-            ->one($this->db);
+        if (!isset($this->_items[$name])) {
+            $row = (new Query)->from($this->itemTable)
+                ->where(['name' => $name])
+                ->one($this->db);
 
-        if ($row === false) {
-            return null;
+            if ($row === false) {
+                return null;
+            }
+
+            if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
+                $data = null;
+            }
+            $this->_items[$name] = $this->populateItem($row);
         }
 
-        if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
-            $data = null;
-        }
-
-        return $this->populateItem($row);
+        return $this->_items[$name];
     }
 
     /**
@@ -441,11 +467,15 @@ class DbManager extends BaseManager
      */
     public function getRule($name)
     {
-        $row = (new Query)->select(['data'])
-            ->from($this->ruleTable)
-            ->where(['name' => $name])
-            ->one($this->db);
-        return $row === false ? null : unserialize($row['data']);
+        if (!isset($this->_rules[$name])) {
+            $row = (new Query)->select(['data'])
+                ->from($this->ruleTable)
+                ->where(['name' => $name])
+                ->one($this->db);
+            $this->_rules[$name] = $row === false ? null : unserialize($row['data']);
+        }
+
+        return $this->_rules[$name];
     }
 
     /**
