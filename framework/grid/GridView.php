@@ -216,7 +216,8 @@ class GridView extends BaseListView
     /**
      * Renders the list of filterModel errors
      */
-    public function renderErrorsList() {
+    public function renderErrorsList()
+    {
         if ($this->filterModel instanceof Model && $this->filterModel->hasErrors()) {
             $errorsList = [];
             foreach($this->filterModel->errors as $attribute => $errors) {
@@ -230,7 +231,8 @@ class GridView extends BaseListView
     /**
      * @inheritdoc
      */
-    public function renderSummary() {
+    public function renderSummary()
+    {
         $summary = parent::renderSummary();
         $errorsList = $this->renderErrorsList();
         return $summary . $errorsList;
