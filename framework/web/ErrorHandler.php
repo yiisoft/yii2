@@ -352,11 +352,13 @@ class ErrorHandler extends \yii\base\ErrorHandler
             } elseif (is_bool($value)) {
                 $args[$key] = '<span class="keyword">' . ($value ? 'true' : 'false') . '</span>';
             } elseif (is_string($value)) {
-                if (strlen($value) > 64) {
-                    $value = substr($value, 0, 64) . '...';
+                $fullValue = $this->htmlEncode($value);
+                if (mb_strlen($value, 'utf8') > 32) {
+                    $displayValue = $this->htmlEncode(mb_substr($value, 0, 32, 'utf8')) . '...';
+                    $args[$key] = "<span class=\"string\" title=\"$fullValue\">'$displayValue'</span>";
+                } else {
+                    $args[$key] = "<span class=\"string\">'$fullValue'</span>";
                 }
-                $value = $this->htmlEncode($value);
-                $args[$key] = "<span class=\"string\">'$value'</span>";
             } elseif (is_array($value)) {
                 $args[$key] = '[' . $this->argumentsToString($value) . ']';
             } elseif ($value === null) {
