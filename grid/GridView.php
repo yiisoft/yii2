@@ -212,7 +212,34 @@ class GridView extends BaseListView
         $view->registerJs("jQuery('#$id').yiiGridView($options);");
         parent::run();
     }
-
+    
+    /**
+     * Renders the list of filterModel errors
+     */
+    public function renderErrorsList()
+    {
+        if ($this->filterModel instanceof Model && $this->filterModel->hasErrors()) 
+        {
+            $errorsList = [];
+            foreach($this->filterModel->errors as $attribute => $errors) 
+            {
+                    $errorsList = ArrayHelper::merge($errorsList, $errors); 
+            }
+            return Html::tag('div', Html::ul($errorsList, ['class' => 'help-block']), ['class' => 'has-error']);
+        }
+        return '';
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function renderSummary()
+    {
+        $summary = parent::renderSummary();
+        $errorsList = $this->renderErrorsList();
+        return $summary . $errorsList;
+    }
+    
     /**
      * Returns the options for the grid view JS widget.
      * @return array the options
