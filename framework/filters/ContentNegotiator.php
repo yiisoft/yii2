@@ -116,7 +116,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      * Array keys are not always required. When an array value does not have a key, the matching of the requested language
      * will be based on a language fallback mechanism. For example, a value of `en` will match `en`, `en_US`, `en-US`, `en-GB`, etc.
      *
-     * If this property is empty or not set, response format negotiation will be skipped.
+     * If this property is empty or not set, language negotiation will be skipped.
      */
     public $languages;
     /**
