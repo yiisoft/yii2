@@ -54,6 +54,12 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * the oldest ones will be removed.
      */
     public $historySize = 50;
+    /**
+     * @var boolean whether to enable message logging for the requests about debug module actions.
+     * You normally do not want to keep these logs because they may distract you from the logs about your applications.
+     * You may want to enable the debug logs if you want to investigate how the debug module itself works.
+     */
+    public $enableDebugLogs = false;
 
     /**
      * Returns Yii logo ready to use in `<img src="`
@@ -118,13 +124,23 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function beforeAction($action)
     {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        if (!$this->enableDebugLogs) {
+            foreach (Yii::$app->getLog()->targets as $target) {
+                $target->enabled = false;
+            }
+        }
+
+        // do not display debug toolbar when in debug view mode
         Yii::$app->getView()->off(View::EVENT_END_BODY, [$this, 'renderToolbar']);
-        unset(Yii::$app->getLog()->targets['debug']);
-        $this->logTarget = null;
 
         if ($this->checkAccess()) {
-            return parent::beforeAction($action);
+            return true;
         } elseif ($action->id === 'toolbar') {
+            // Accessing toolbar remotely is normal. Do not throw exception.
             return false;
         } else {
             throw new ForbiddenHttpException('You are not allowed to access this page.');

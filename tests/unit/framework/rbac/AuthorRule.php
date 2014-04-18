@@ -14,8 +14,8 @@ class AuthorRule extends Rule
     /**
      * @inheritdoc
      */
-    public function execute($item, $params)
+    public function execute($user, $item, $params)
     {
-        return $params['authorID'] == $params['user'];
+        return $params['authorID'] == $user;
     }
 }

@@ -263,7 +263,7 @@ class Container extends Component
      */
     public function setSingleton($class, $definition = [], array $params = [])
     {
-        $this->_definitions[$class] = $this->normalizeDefinition($class, $definition);;
+        $this->_definitions[$class] = $this->normalizeDefinition($class, $definition);
         $this->_params[$class] = $params;
         $this->_singletons[$class] = null;
         return $this;

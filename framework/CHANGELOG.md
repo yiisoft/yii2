@@ -1,6 +1,23 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.0-rc under development
+--------------------------
+
+- Bug #3042: `yii\widgets\Pjax` should end application right after it finishes responding to a pjax request (qiangxue)
+- Bug #3066: `yii\db\mssql\Schema::getTableSchema()` should return null when the table does not exist (qiangxue)
+- Bug #3091: Fixed inconsistent treatment of `Widget::run()` when a widget is used as a container and as a self-contained object (qiangxue)
+- Bug #3121: `yii\base\Application::bootstrap` may fail to load some components if they are specified as class names (qiangxue)
+- Bug #3128: Fixed the bug that `defaultRoles` set in RBAC manager was not working as specified (qiangxue)
+- Enh #3103: debugger panel is now not displayed when printing a page (githubjeka)
+- Enh #3108: Added `yii\debug\Module::enableDebugLogs` to disable logging debug logs by default (qiangxue)
+- Enh #3132: `yii\rbac\PhpManager` now supports more compact data file format (qiangxue)
+- Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
+- Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
+- Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
+- Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
+
+
 2.0.0-beta April 13, 2014
 -------------------------
 

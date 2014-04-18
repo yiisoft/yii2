@@ -142,8 +142,7 @@ class DataColumn extends Column
         if (is_string($this->filter)) {
             return $this->filter;
         } elseif ($this->filter !== false && $this->grid->filterModel instanceof Model &&
-                  $this->attribute !== null && $this->grid->filterModel->isAttributeActive($this->attribute))
-        {
+                  $this->attribute !== null && $this->grid->filterModel->isAttributeActive($this->attribute)) {
             if (is_array($this->filter)) {
                 $options = array_merge(['prompt' => ''], $this->filterInputOptions);
                 return Html::activeDropDownList($this->grid->filterModel, $this->attribute, $this->filter, $options);

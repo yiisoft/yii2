@@ -65,8 +65,8 @@ class AccessControl extends ActionFilter
      * function ($rule, $action)
      * ~~~
      *
-     * where `$rule` is this rule, and `$action` is the current [[Action|action]] object.
-     * `$rule` will be `null` if access is denied because none of the rules matched.
+     * where `$rule` is the rule that denies the user, and `$action` is the current [[Action|action]] object.
+     * `$rule` can be `null` if access is denied because none of the rules matched.
      */
     public $denyCallback;
     /**

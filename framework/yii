@@ -17,8 +17,8 @@ defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 require(__DIR__ . '/Yii.php');
 
 $application = new yii\console\Application([
-	'id' => 'yii-console',
-	'basePath' => __DIR__ . '/console',
+    'id' => 'yii-console',
+    'basePath' => __DIR__ . '/console',
 ]);
 $exitCode = $application->run();
 exit($exitCode);

@@ -263,6 +263,9 @@ SQL;
 
         try {
             $columns = $this->db->createCommand($sql)->queryAll();
+            if (empty($columns)) {
+                return false;
+            }
         } catch (\Exception $e) {
             return false;
         }

@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\rbac;
 
-use yii\rbac\Assignment;
 use yii\rbac\Item;
 use yii\rbac\Permission;
 use yii\rbac\Role;
@@ -365,5 +364,36 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->assign($reader, 'reader A');
         $this->auth->assign($author, 'author B');
         $this->auth->assign($admin, 'admin C');
+    }
+
+    public function testGetPermissionsByRole()
+    {
+        $this->prepareData();
+        $roles = $this->auth->getPermissionsByRole('admin');
+        $expectedPermissions = ['createPost', 'updatePost', 'readPost', 'updateAnyPost'];
+        $this->assertEquals(count($roles), count($expectedPermissions));
+        foreach ($expectedPermissions as $permission) {
+            $this->assertTrue($roles[$permission] instanceof Permission);
+        }
+    }
+
+    public function testGetPermissionsByUser()
+    {
+        $this->prepareData();
+        $roles = $this->auth->getPermissionsByUser('author B');
+        $expectedPermissions = ['createPost', 'updatePost', 'readPost'];
+        $this->assertEquals(count($roles), count($expectedPermissions));
+        foreach ($expectedPermissions as $permission) {
+            $this->assertTrue($roles[$permission] instanceof Permission);
+        }
+    }
+
+    public function testGetRolesByUser()
+    {
+        $this->prepareData();
+        $roles = $this->auth->getRolesByUser('reader A');
+        $this->assertTrue(reset($roles) instanceof Role);
+        $this->assertEquals($roles['reader']->name, 'reader');
+
     }
 }

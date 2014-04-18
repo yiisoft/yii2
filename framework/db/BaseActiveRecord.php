@@ -145,6 +145,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
      * Please refer to [[Query::where()]] on how to specify this parameter.
      * @return integer the number of rows updated
+     * @throws NotSupportedException if not overrided
      */
     public static function updateAll($attributes, $condition = '')
     {
@@ -164,6 +165,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
      * Please refer to [[Query::where()]] on how to specify this parameter.
      * @return integer the number of rows updated
+     * @throws NotSupportedException if not overrided
      */
     public static function updateAllCounters($counters, $condition = '')
     {
@@ -184,6 +186,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Please refer to [[Query::where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return integer the number of rows deleted
+     * @throws NotSupportedException if not overrided
      */
     public static function deleteAll($condition = '', $params = [])
     {
@@ -908,6 +911,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function refresh()
     {
+        /** @var ActiveQuery $record */
         $record = $this->findOne($this->getPrimaryKey(true));
         if ($record === null) {
             return false;

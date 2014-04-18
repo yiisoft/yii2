@@ -65,6 +65,20 @@ Root directory contains a set of files.
 - `yii` - console application bootstrap.
 - `yii.bat` - same for Windows.
 
+Predefined path aliases
+-----------------------
+
+- @yii - framework directory.
+- @app - base path of currently running application.
+- @common - common directory.
+- @frontend - frontend web application directory.
+- @backend - backend web application directory.
+- @console - console directory.
+- @runtime - runtime directory of currently running web application.
+- @vendor - Composer vendor directory.
+- @web - base URL of currently running web application.
+- @webroot - web root directory of currently running web application.
+
 Applications
 ------------
 
