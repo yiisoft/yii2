@@ -203,64 +203,103 @@ The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
 ### Building Authorization Data
 
-Building authorization data is all about the following kinds of work: 
+Building authorization data is all about the following tasks:
 
-* defining roles and permissions;
-* establishing relations among roles and permissions;
-* defining rules;
-* associating rules with roles and permissions;
-* assigning roles to users.
+- defining roles and permissions;
+- establishing relations among roles and permissions;
+- defining rules;
+- associating rules with roles and permissions;
+- assigning roles to users.
 
-For applications that require very simple RBAC, the above work can be done once for all via a console command.
-For applications that require complex RBAC with dynamic update to the authorization data, special user interfaces
-may need to be developed.
+Depending on authorization flexibility requirements the tasks above could be done in different ways.
 
-The example below shows how to make use of the APIs offered by `authManager` to build authorization data. If you
-use a console command to create the authorization data, you may put this piece of code in an action of the console
-command.
+If your persmissions hierarchy doesn't change at all and you have a fixed number of users you can create a console
+command that will initialize authorization data once via APIs offered by `authManager`:
 
 ```php
-$auth = Yii::$app->authManager;
+<?php
+namespace app\commands;
 
-// add "createPost" permission
-$createPost = $auth->createPermission('createPost');
-$createPost->description = 'create a post';
-$auth->add($createPost);
+use yii\console\Controller;
 
-// add "readPost" permission
-$readPost = $auth->createPermission('readPost');
-$readPost->description = 'read a post';
-$auth->add($readPost);
+class RbacController extends Controller
+{
+    public function actionInit()
+    {
+        $auth = Yii::$app->authManager;
 
-// add "updatePost" permission
-$updatePost = $auth->createPermission('updatePost');
-$updatePost->description = 'update post';
-$auth->add($updatePost);
+        // add "createPost" permission
+        $createPost = $auth->createPermission('createPost');
+        $createPost->description = 'create a post';
+        $auth->add($createPost);
 
-// add "reader" role and give this role the "readPost" permission
-$reader = $auth->createRole('reader');
-$auth->add($reader);
-$auth->addChild($reader, $readPost);
+        // add "readPost" permission
+        $readPost = $auth->createPermission('readPost');
+        $readPost->description = 'read a post';
+        $auth->add($readPost);
 
-// add "author" role and give this role the "createPost" permission
-// as well as the permissions of the "reader" role
-$author = $auth->createRole('author');
-$auth->add($author);
-$auth->addChild($author, $createPost);
-$auth->addChild($author, $reader);
+        // add "updatePost" permission
+        $updatePost = $auth->createPermission('updatePost');
+        $updatePost->description = 'update post';
+        $auth->add($updatePost);
 
-// add "admin" role and give this role the "updatePost" permission
-// as well as the permissions of the "author" role
-$admin = $auth->createRole('admin');
-$auth->add($admin);
-$auth->addChild($admin, $updatePost);
-$auth->addChild($admin, $author);
+        // add "reader" role and give this role the "readPost" permission
+        $reader = $auth->createRole('reader');
+        $auth->add($reader);
+        $auth->addChild($reader, $readPost);
 
-// assign roles to users
-$auth->assign($reader, 'reader A');
-$auth->assign($author, 'author B');
-$auth->assign($admin, 'admin C');
+        // add "author" role and give this role the "createPost" permission
+        // as well as the permissions of the "reader" role
+        $author = $auth->createRole('author');
+        $auth->add($author);
+        $auth->addChild($author, $createPost);
+        $auth->addChild($author, $reader);
+
+        // add "admin" role and give this role the "updatePost" permission
+        // as well as the permissions of the "author" role
+        $admin = $auth->createRole('admin');
+        $auth->add($admin);
+        $auth->addChild($admin, $updatePost);
+        $auth->addChild($admin, $author);
+
+        // Assign roles to users. 10, 14 and 26 are IDs returned by IdentityInterface::getId()
+        // usually implemented in your User model.
+        $auth->assign($reader, 10);
+        $auth->assign($author, 14);
+        $auth->assign($admin, 26);
+    }
+}
 ```
+
+If your application allows user signup you need to assign roles to these new users once. For example, in order for all
+signed up users to become authors you in advanced application template you need to modify `common\models\User::create()`
+as follows:
+
+```php
+public static function create($attributes)
+{
+    /** @var User $user */
+    $user = new static();
+    $user->setAttributes($attributes);
+    $user->setPassword($attributes['password']);
+    $user->generateAuthKey();
+    if ($user->save()) {
+
+        // the following three lines were added:
+        $auth = Yii::$app->authManager;
+        $adminRole = $auth->getRole('author');
+        $auth->assign($adminRole, $user->getId());
+
+        return $user;
+    } else {
+        return null;
+    }
+}
+```
+
+For applications that require complex access control with dynamically updated authorization data, special user interfaces
+(i.e. admin panel) may need to be developed using APIs offered by `authManager`.
+
 
 > Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in the file `@app/data/rbac.php`.
   Sometimes when you want to make some minor changes to the RBAC data, you may directly edit this file.
