@@ -360,7 +360,13 @@ class FileHelperTest extends TestCase
 
     public function testNormalizePath()
     {
-        $this->assertEquals(DIRECTORY_SEPARATOR.'home'.DIRECTORY_SEPARATOR.'demo', FileHelper::normalizePath('/home\demo/'));
+        $ds = DIRECTORY_SEPARATOR;
+        $this->assertEquals("{$ds}a{$ds}b", FileHelper::normalizePath('//a\b/'));
+        $this->assertEquals("{$ds}b{$ds}c", FileHelper::normalizePath('/a/../b/c'));
+        $this->assertEquals("{$ds}c", FileHelper::normalizePath('/a\\b/../..///c'));
+        $this->assertEquals("{$ds}c", FileHelper::normalizePath('/a/.\\b//../../c'));
+        $this->assertEquals("c", FileHelper::normalizePath('/a/.\\b/../..//../c'));
+        $this->assertEquals("..{$ds}c", FileHelper::normalizePath('//a/.\\b//..//..//../../c'));
     }
 
     public function testLocalizedDirectory()
