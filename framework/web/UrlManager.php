@@ -156,14 +156,21 @@ class UrlManager extends Component
 
     /**
      * Adds additional URL rules.
+     *
      * This method will call [[buildRules()]] to parse the given rule declarations and then append or insert
      * them to the existing [[rules]].
+     *
+     * Note that if [[enablePrettyUrl]] is false, this method will do nothing.
+     *
      * @param array $rules the new rules to be added. Each array element represents a single rule declaration.
      * Please refer to [[rules]] for the acceptable rule format.
      * @param boolean $append whether to add the new rules by appending them to the end of the existing rules.
      */
     public function addRules($rules, $append = true)
     {
+        if (!$this->enablePrettyUrl) {
+            return;
+        }
         $rules = $this->buildRules($rules);
         if ($append) {
             $this->rules = array_merge($this->rules, $rules);
