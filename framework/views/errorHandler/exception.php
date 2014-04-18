@@ -150,6 +150,7 @@ html,body{
     margin: 0 auto;
     padding: 0 50px;
     position: relative;
+    white-space: nowrap;
 }
 .call-stack ul li a{
     color: #505050;
@@ -286,54 +287,32 @@ html,body{
 }
 
 /* highlight.js */
-pre .subst,pre .title{
-    font-weight: normal;
-    color: #505050;
-}
-pre .comment,pre .template_comment,pre .javadoc,pre .diff .header{
+.comment{
     color: #808080;
     font-style: italic;
 }
-pre .annotation,pre .decorator,pre .preprocessor,pre .doctype,pre .pi,pre .chunk,pre .shebang,pre .apache .cbracket,
-pre .prompt,pre .http .title{
-    color: #808000;
-}
-pre .tag,pre .pi{
-    background: #efefef;
-}
-pre .tag .title,pre .id,pre .attr_selector,pre .pseudo,pre .literal,pre .keyword,pre .hexcolor,pre .css .function,
-pre .ini .title,pre .css .class,pre .list .title,pre .clojure .title,pre .nginx .title,pre .tex .command,
-pre .request,pre .status{
+.keyword{
     color: #000080;
 }
-pre .attribute,pre .rules .keyword,pre .number,pre .date,pre .regexp,pre .tex .special{
+.number{
     color: #00a;
 }
-pre .number,pre .regexp{
+.number{
     font-weight: normal;
 }
-pre .string,pre .value,pre .filter .argument,pre .css .function .params,pre .apache .tag{
+.string, .value{
     color: #0a0;
 }
-pre .symbol,pre .ruby .symbol .string,pre .char,pre .tex .formula{
+.symbol, .char {
     color: #505050;
     background: #d0eded;
     font-style: italic;
 }
-pre .phpdoc,pre .yardoctag,pre .javadoctag{
+.phpdoc{
     text-decoration: underline;
 }
-pre .variable,pre .envvar,pre .apache .sqbracket,pre .nginx .built_in{
+.variable{
     color: #a00;
-}
-pre .addition{
-    background: #baeeba;
-}
-pre .deletion{
-    background: #ffc8bd;
-}
-pre .diff .change{
-    background: #bccff9;
 }
     </style>
 </head>
@@ -367,10 +346,10 @@ pre .diff .change{
 
     <div class="call-stack">
         <ul>
-            <?= $handler->renderCallStackItem($exception->getFile(), $exception->getLine(), null, null, 1) ?>
+            <?= $handler->renderCallStackItem($exception->getFile(), $exception->getLine(), null, null, [], 1) ?>
             <?php for ($i = 0, $trace = $exception->getTrace(), $length = count($trace); $i < $length; ++$i): ?>
                 <?= $handler->renderCallStackItem(@$trace[$i]['file'] ?: null, @$trace[$i]['line'] ?: null,
-                    @$trace[$i]['class'] ?: null, @$trace[$i]['function'] ?: null, $i + 2) ?>
+                    @$trace[$i]['class'] ?: null, @$trace[$i]['function'] ?: null, $trace[$i]['args'], $i + 2) ?>
             <?php endfor; ?>
         </ul>
     </div>

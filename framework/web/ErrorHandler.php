@@ -152,15 +152,18 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function addTypeLinks($code)
     {
-        if (strpos($code, 'yii\\') !== 0) {
-            return $this->htmlEncode($code);
-        }
-
-        if (($pos = strpos($code, '::')) !== false) {
-            $class = substr($code, 0, $pos);
-            $method = substr($code, $pos + 2);
+        if (preg_match('/(.*?)::([^(]+)\((.*)\)/', $code, $matches)) {
+            $class = $matches[1];
+            $method = $matches[2];
+            $args = $matches[3];
+            $text = $this->htmlEncode($class) . '::' . $this->htmlEncode($method) . '(' . $args . ')';
         } else {
             $class = $code;
+            $text = $this->htmlEncode($class);
+        }
+
+        if (strpos($code, 'yii\\') !== 0) {
+            return $text;
         }
 
         $page = $this->htmlEncode(strtolower(str_replace('\\', '-', $class)));
@@ -169,7 +172,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $url .= "#$method-detail";
         }
 
-        return '<a href="' . $url . '" target="_blank">' . $this->htmlEncode($code) . '</a>';
+        return '<a href="' . $url . '" target="_blank">' . $text . '</a>';
     }
 
     /**
@@ -215,9 +218,10 @@ class ErrorHandler extends \yii\base\ErrorHandler
      * @param string|null $class called class name.
      * @param string|null $method called function/method name.
      * @param integer $index number of the call stack element.
+     * @param array $args array of method arguments.
      * @return string HTML content of the rendered call stack element.
      */
-    public function renderCallStackItem($file, $line, $class, $method, $index)
+    public function renderCallStackItem($file, $line, $class, $method, $args, $index)
     {
         $lines = [];
         $begin = $end = 0;
@@ -242,6 +246,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             'lines' => $lines,
             'begin' => $begin,
             'end' => $end,
+            'args' => $args,
         ]);
     }
 
@@ -318,5 +323,58 @@ class ErrorHandler extends \yii\base\ErrorHandler
     public function createFrameworkVersionLink()
     {
         return '<a href="http://github.com/yiisoft/yii2/" target="_blank">' . $this->htmlEncode(Yii::getVersion()) . '</a>';
+    }
+
+    /**
+     * Converts arguments array to its string representation
+     *
+     * @param array $args arguments array to be converted
+     * @return string string representation of the arguments array
+     */
+    public function argumentsToString($args)
+    {
+        $count = 0;
+        $isAssoc = $args !== array_values($args);
+
+        foreach ($args as $key => $value) {
+            $count++;
+            if($count>=5) {
+                if($count>5) {
+                    unset($args[$key]);
+                } else {
+                    $args[$key] = '...';
+                }
+                continue;
+            }
+
+            if (is_object($value)) {
+                $args[$key] = '<span class="title">' . $this->htmlEncode(get_class($value)) . '</span>';
+            } elseif (is_bool($value)) {
+                $args[$key] = '<span class="keyword">' . ($value ? 'true' : 'false') . '</span>';
+            } elseif (is_string($value)) {
+                if (strlen($value) > 64) {
+                    $value = substr($value, 0, 64) . '...';
+                }
+                $value = $this->htmlEncode($value);
+                $args[$key] = "<span class=\"string\">'$value'</span>";
+            } elseif (is_array($value)) {
+                $args[$key] = '[' . $this->argumentsToString($value) . ']';
+            } elseif ($value === null) {
+                $args[$key] = '<span class="keyword">null</span>';
+            } elseif(is_resource($value)) {
+                $args[$key] = '<span class="keyword">resource</span>';
+            } else {
+                $args[$key] = '<span class="number">' . $value . '</span>';
+            }
+
+            if (is_string($key)) {
+                $args[$key] = '<span class="string">\'' . $this->htmlEncode($key) . "'</span> => $args[$key]";
+            } elseif ($isAssoc) {
+                $args[$key] = "<span class=\"number\">$key</span> => $args[$key]";
+            }
+        }
+        $out = implode(", ", $args);
+
+        return $out;
     }
 }
