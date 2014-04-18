@@ -118,6 +118,10 @@ class Module extends \yii\base\Module
      */
     protected function checkAccess()
     {
+        if (Yii::$app instanceof \yii\console\Application) {
+            return true;
+        }
+
         $ip = Yii::$app->getRequest()->getUserIP();
         foreach ($this->allowedIPs as $filter) {
             if ($filter === '*' || $filter === $ip || (($pos = strpos($filter, '*')) !== false && !strncmp($ip, $filter, $pos))) {
