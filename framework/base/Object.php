@@ -214,7 +214,7 @@ class Object
      */
     public function __call($name, $params)
     {
-        throw new UnknownMethodException('Unknown method: ' . get_class($this) . "::$name()");
+        throw new UnknownMethodException('Calling unknown method: ' . get_class($this) . "::$name()");
     }
 
     /**
