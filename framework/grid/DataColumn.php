@@ -184,7 +184,7 @@ class DataColumn extends Column
     }
 
     /**
-     * Checks for filter errors and sets up an indication if there is any
+     * Checks for filter errors and sets up an indication if there are any
      */
     public function checkForFilterErrors() {
         if ($this->filter !== false && $this->grid->filterModel instanceof Model &&
