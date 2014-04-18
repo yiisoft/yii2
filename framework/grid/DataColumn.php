@@ -183,12 +183,16 @@ class DataColumn extends Column
         }
     }
 
+    /**
+     * Checks for filter errors and sets up an indication if there is any
+     */
     public function checkForFilterErrors() {
         if ($this->filter !== false && $this->grid->filterModel instanceof Model &&
                   $this->attribute !== null && $this->grid->filterModel->isAttributeActive($this->attribute) && 
-                  array_key_exists($this->attribute, $this->grid->filterModel->errors)) {
-                  $filterClass = array_key_exists('class', $this->filterOptions) ? $this->filterOptions['class'] . ' ' : '';
-                  $this->filterOptions['class'] = $filterClass . 'has-error';
+                  ArrayHelper::keyExists($this->attribute, $this->grid->filterModel->errors)) {
+            $filterClass = ArrayHelper::getValue($this->filterOptions, 'class', '');
+            if ($filterClass) { $filterClass .= ' '; }
+            $this->filterOptions['class'] = $filterClass . 'has-error';
         }
     }
     
