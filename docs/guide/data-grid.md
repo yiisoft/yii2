@@ -15,7 +15,7 @@ automatically degrade to normal page requests and are still functioning as expec
 The minimal code needed to use GridView is as follows:
 
 ```php
-use yii\data\GridView;
+use yii\grid\GridView;
 use yii\data\ActiveDataProvider;
 
 $dataProvider = new ActiveDataProvider([

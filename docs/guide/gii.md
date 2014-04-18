@@ -8,7 +8,7 @@ as well as complete CRUD controllers.
 Installing and configuring
 --------------------------
 
-Gii is an offical Yii extension. The preferred way to install this extension is through
+Gii is an official Yii extension. The preferred way to install this extension is through
 [composer](http://getcomposer.org/download/).
 
 You can either run this command:
@@ -26,11 +26,14 @@ Or you can add this code to the require section of your `composer.json` file:
 Once the Gii extension has been installed, you enable it by adding these lines to your application configuration file:
 
 ```php
-'modules' => [
-    'gii' => [
-        'class' => 'yii\gii\Module',
+return [
+    'bootstrap' => ['gii'],
+    'modules' => [
+        'gii' => 'yii\gii\Module',
+        // ...
     ],
-]
+    // ...
+];
 ```
 
 You can then access Gii through the following URL:
@@ -39,7 +42,15 @@ You can then access Gii through the following URL:
 http://localhost/path/to/index.php?r=gii
 ```
 
-> Note: if you are accessing gii from an IP address other than localhost, access will be denied by default. To circumvent that default, add the allowed IP addressess to the configuration:
+If you have enabled pretty URLs, you may use the following URL:
+
+```
+http://localhost/path/to/index.php/gii
+```
+
+
+> Note: if you are accessing gii from an IP address other than localhost, access will be denied by default.
+> To circumvent that default, add the allowed IP addresses to the configuration:
 >
 ```php
 'gii' => [
@@ -55,11 +66,12 @@ In basic application template configuration structure is a bit different so Gii 
 
 ```php
 // ...
-if (YII_ENV_DEV)
-{
+if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = 'yii\debug\Module';
+
+    $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = 'yii\gii\Module'; // <--- here
 }
 ```
@@ -67,11 +79,12 @@ if (YII_ENV_DEV)
 So in order to adjust IP address you need to do it like the following:
 
 ```php
-if (YII_ENV_DEV)
-{
+if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = 'yii\debug\Module';
+
+    $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
         'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'],
@@ -100,8 +113,8 @@ By default there are the following generators available:
 
 After choosing a generator by clicking on the "Start" button you will see a form that allows you to configure the
 parameters of the generator. Fill out the form according to your needs and press the "Preview" button to get a
-preview of the code that gii is about to generated. Dependend on the generator you chose and whether the files
-already existed or not you will get an ouput similar to what you see in the following picuture:
+preview of the code that gii is about to generated. Depending on the generator you chose and whether the files
+already existed or not, you will get an output similar to what you see in the following picture:
 
 ![Gii preview](images/gii-preview.png)
 
@@ -143,7 +156,9 @@ If you open a folder `@app\vendor\yiisoft\yii2-gii\generators`, you'll see six f
 ```
 This is name generator. If you open any of these folders, you can see the folder `default`. This folder is name of the template.
 
-Copy folder `@app\vendor\yiisoft\yii2-gii\generators\crud\default` to another location, for example `@app\myTemplates\crud\`. Now open this folder and modify any template to fit your desires, for example, add `errorSummary` in `views\_form.php`:
+Copy folder `@app\vendor\yiisoft\yii2-gii\generators\crud\default` to another location, for example `@app\myTemplates\crud\`.
+Now open this folder and modify any template to fit your desires, for example, add `errorSummary` in `views\_form.php`:
+
 ```php
 <?php
 //...
@@ -156,19 +171,21 @@ Copy folder `@app\vendor\yiisoft\yii2-gii\generators\crud\default` to another lo
     } ?>
 //...
 ```
-All, in fact our template ready. Now you need to tell GII about our template.The setting is made in the config file:
+
+Now you need to tell GII about our template.The setting is made in the config file:
+
 ```php
-//config/web.php for basic app
-//..
+// config/web.php for basic app
+// ...
 if (YII_ENV_DEV) {    
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',      
         'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'],  
-        'generators'=>[ //here
-            'crud'=>[ //name generator 
-                'class'=>'yii\gii\generators\crud\Generator', //class generator 
-                'templates'=>[ //setting for out tempates
-                    'myCrud'=>'@app\myTemplates\crud\default', //name tempate => path to template
+        'generators' => [ //here
+            'crud' => [ //name generator
+                'class' => 'yii\gii\generators\crud\Generator', //class generator
+                'templates' => [ //setting for out templates
+                    'myCrud' => '@app\myTemplates\crud\default', //name template => path to template
                 ]
             ]
         ],
@@ -180,7 +197,10 @@ Open the CRUD generator and you will see that in the field `Code Template` of fo
 Creating your own generators
 ----------------------------
 
-Open the folder of any generator and you will see two files `form.php` and `Generator.php`. One is the form, the second is the class generator. For create your own generator, you need to create or override these classes in any folder. Again as in the previous paragraph customize configuration:
+Open the folder of any generator and you will see two files `form.php` and `Generator.php`.
+One is the form, the second is the class generator. For create your own generator, you need to create or
+override these classes in any folder. Again as in the previous paragraph customize configuration:
+
 ```php
 //config/web.php for basic app
 //..
@@ -188,11 +208,11 @@ if (YII_ENV_DEV) {
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',      
         'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'],  
-         'generators'=>[
-            'myCrud'=>[
-                'class'=>'app\myTemplates\crud\Generator',
-                'templates'=>[
-                    'my'=>'@app/myTemplates/crud/default',
+         'generators' => [
+            'myCrud' => [
+                'class' => 'app\myTemplates\crud\Generator',
+                'templates' => [
+                    'my' => '@app/myTemplates/crud/default',
                 ]
             ]
         ],
@@ -204,6 +224,7 @@ if (YII_ENV_DEV) {
 // @app/myTemplates/crud/Generator.php
 <?php
 namespace app\myTemplates\crud;
+
 class Generator extends \yii\gii\Generator
 {
     public function getName()
@@ -218,7 +239,7 @@ class Generator extends \yii\gii\Generator
     
     // ...
 }
-
 ```
-Open gii Module and You will see that added a new generator.
+
+Open Gii Module and you will see a new generator appears in it.
 

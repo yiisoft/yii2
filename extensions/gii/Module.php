@@ -8,6 +8,7 @@
 namespace yii\gii;
 
 use Yii;
+use yii\base\BootstrapInterface;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -17,7 +18,7 @@ use yii\web\ForbiddenHttpException;
  *
  * ~~~
  * return [
- *     ......
+ *     'bootstrap' => ['gii'],
  *     'modules' => [
  *         'gii' => ['class' => 'yii\gii\Module'],
  *     ],
@@ -32,26 +33,13 @@ use yii\web\ForbiddenHttpException;
  * With the above configuration, you will be able to access GiiModule in your browser using
  * the URL `http://localhost/path/to/index.php?r=gii`
  *
- * If your application enables [[\yii\web\UrlManager::enablePrettyUrl|pretty URLs]] and you have defined
- * custom URL rules or enabled [[\yii\web\UrlManager::enableStrictParsing], you may need to add
- * the following URL rules at the beginning of your URL rule set in your application configuration
- * in order to access Gii:
- *
- * ~~~
- * 'rules' => [
- *     'gii' => 'gii',
- *     'gii/<controller>' => 'gii/<controller>',
- *     'gii/<controller>/<action>' => 'gii/<controller>/<action>',
- *     ...
- * ],
- * ~~~
- *
- * You can then access Gii via URL: `http://localhost/path/to/index.php/gii`
+ * If your application enables [[\yii\web\UrlManager::enablePrettyUrl|pretty URLs]],
+ * you can then access Gii via URL: `http://localhost/path/to/index.php/gii`
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Module extends \yii\base\Module
+class Module extends \yii\base\Module implements BootstrapInterface
 {
     /**
      * @inheritdoc
@@ -90,15 +78,17 @@ class Module extends \yii\base\Module
      */
     public $newDirMode = 0777;
 
+
     /**
      * @inheritdoc
      */
-    public function init()
+    public function bootstrap($app)
     {
-        parent::init();
-        foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
-            $this->generators[$id] = Yii::createObject($config);
-        }
+        $app->getUrlManager()->addRules([
+            $this->id => $this->id . '/default/index',
+            $this->id . '/<id:\w+>' => $this->id . '/default/view',
+            $this->id . '/<controller:\w+>/<action:\w+>' => $this->id . '/<controller>/<action>',
+        ], false);
     }
 
     /**
@@ -106,6 +96,10 @@ class Module extends \yii\base\Module
      */
     public function beforeAction($action)
     {
+        foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
+            $this->generators[$id] = Yii::createObject($config);
+        }
+
         if ($this->checkAccess()) {
             return parent::beforeAction($action);
         } else {
