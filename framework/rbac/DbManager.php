@@ -552,7 +552,7 @@ class DbManager extends BaseManager
     {
         return (new Query)
             ->from($this->itemChildTable)
-            ->where(['parent' => $parent->name, 'child' => $child->$name])
+            ->where(['parent' => $parent->name, 'child' => $child->name])
             ->one($this->db) !== false;
     }
 
