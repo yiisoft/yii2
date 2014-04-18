@@ -190,9 +190,11 @@ class DataColumn extends Column
     {
         if ($this->filter !== false && $this->grid->filterModel instanceof Model &&
                   $this->attribute !== null && $this->grid->filterModel->isAttributeActive($this->attribute) && 
-                  ArrayHelper::keyExists($this->attribute, $this->grid->filterModel->errors)) {
+                  ArrayHelper::keyExists($this->attribute, $this->grid->filterModel->errors)) 
+        {
             $filterClass = ArrayHelper::getValue($this->filterOptions, 'class', '');
-            if ($filterClass) { 
+            if ($filterClass) 
+            { 
                 $filterClass .= ' ';
             }
             $this->filterOptions['class'] = $filterClass . 'has-error';

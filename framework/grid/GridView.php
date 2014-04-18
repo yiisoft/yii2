@@ -218,9 +218,11 @@ class GridView extends BaseListView
      */
     public function renderErrorsList()
     {
-        if ($this->filterModel instanceof Model && $this->filterModel->hasErrors()) {
+        if ($this->filterModel instanceof Model && $this->filterModel->hasErrors()) 
+        {
             $errorsList = [];
-            foreach($this->filterModel->errors as $attribute => $errors) {
+            foreach($this->filterModel->errors as $attribute => $errors) 
+            {
                     $errorsList = ArrayHelper::merge($errorsList, $errors); 
             }
             return Html::tag('div', Html::ul($errorsList, ['class' => 'help-block']), ['class' => 'has-error']);
