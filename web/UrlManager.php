@@ -133,14 +133,7 @@ class UrlManager extends Component
     public function init()
     {
         parent::init();
-        $this->compileRules();
-    }
 
-    /**
-     * Parses the URL rules.
-     */
-    protected function compileRules()
-    {
         if (!$this->enablePrettyUrl || empty($this->rules)) {
             return;
         }
@@ -152,15 +145,46 @@ class UrlManager extends Component
             $hash = md5(json_encode($this->rules));
             if (($data = $this->cache->get($cacheKey)) !== false && isset($data[1]) && $data[1] === $hash) {
                 $this->rules = $data[0];
-
-                return;
+            } else {
+                $this->rules = $this->buildRules($this->rules);
+                $this->cache->set($cacheKey, [$this->rules, $hash]);
             }
+        } else {
+            $this->rules = $this->buildRules($this->rules);
         }
+    }
 
-        $rules = [];
+    /**
+     * Adds additional URL rules.
+     * This method will call [[buildRules()]] to parse the given rule declarations and then append or insert
+     * them to the existing [[rules]].
+     * @param array $rules the new rules to be added. Each array element represents a single rule declaration.
+     * Please refer to [[rules]] for the acceptable rule format.
+     * @param boolean $append whether to add the new rules by appending them to the end of the existing rules.
+     */
+    public function addRules($rules, $append = true)
+    {
+        $rules = $this->buildRules($rules);
+        if ($append) {
+            $this->rules = array_merge($this->rules, $rules);
+        } else {
+            $this->rules = array_merge($rules, $this->rules);
+        }
+    }
+
+    /**
+     * Builds URL rule objects from the given rule declarations.
+     * @param array $rules the rule declarations. Each array element represents a single rule declaration.
+     * Please refer to [[rules]] for the acceptable rule formats.
+     * @return UrlRuleInterface[] the rule objects built from the given rule declarations
+     * @throws InvalidConfigException if a rule declaration is invalid
+     */
+    protected function buildRules($rules)
+    {
+        $compiledRules = [];
         $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
-        foreach ($this->rules as $key => $rule) {
-            if (!is_array($rule)) {
+        foreach ($rules as $key => $rule) {
+            if (is_string($rule)) {
                 $rule = ['route' => $rule];
                 if (preg_match("/^((?:($verbs),)*($verbs))\\s+(.*)$/", $key, $matches)) {
                     $rule['verb'] = explode(',', $matches[1]);
@@ -169,17 +193,15 @@ class UrlManager extends Component
                 }
                 $rule['pattern'] = $key;
             }
-            $rule = Yii::createObject(array_merge($this->ruleConfig, $rule));
+            if (is_array($rule)) {
+                $rule = Yii::createObject(array_merge($this->ruleConfig, $rule));
+            }
             if (!$rule instanceof UrlRuleInterface) {
                 throw new InvalidConfigException('URL rule class must implement UrlRuleInterface.');
             }
-            $rules[] = $rule;
+            $compiledRules[] = $rule;
         }
-        $this->rules = $rules;
-
-        if (isset($cacheKey, $hash)) {
-            $this->cache->set($cacheKey, [$this->rules, $hash]);
-        }
+        return $compiledRules;
     }
 
     /**
