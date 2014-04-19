@@ -9,7 +9,7 @@
 namespace yii\console\controllers;
 
 /**
- * Action run a Gii generator.
+ * Action to run a Gii generator.
  * @author Tobias Munk <schmunk@usrbin.de>
  * @since  2.0
  */
@@ -22,6 +22,10 @@ class GenerateAction extends \yii\base\Action
     public function getUniqueId()
     {
         return 'gii/' . $this->generatorName;
+    }
+
+    public function getReflectionClass(){
+        return $this->loadGenerator($this->generatorName);
     }
 
     /**

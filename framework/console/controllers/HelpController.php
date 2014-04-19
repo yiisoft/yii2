@@ -246,6 +246,8 @@ class HelpController extends Controller
         }
         if ($action instanceof InlineAction) {
             $reflection = new \ReflectionMethod($controller, $action->actionMethod);
+        } elseif (method_exists($action, 'getReflectionClass')) {
+            $reflection = new \ReflectionClass($action->getReflectionClass());
         } else {
             $reflection = new \ReflectionClass($action);
         }
@@ -286,6 +288,8 @@ class HelpController extends Controller
         }
         if ($action instanceof InlineAction) {
             $method = new \ReflectionMethod($controller, $action->actionMethod);
+        } elseif (method_exists($action, 'getReflectionClass')) {
+            $method = new \ReflectionMethod($action->getReflectionClass(), 'generate');
         } else {
             $method = new \ReflectionMethod($action, 'run');
         }
@@ -371,6 +375,11 @@ class HelpController extends Controller
         $optionNames = $controller->options($actionID);
         if (empty($optionNames)) {
             return [];
+        }
+
+        $action = $controller->createAction($actionID);
+        if (method_exists($action, 'getReflectionClass')) {
+            $controller = $action->getReflectionClass();
         }
 
         $class = new \ReflectionClass($controller);
