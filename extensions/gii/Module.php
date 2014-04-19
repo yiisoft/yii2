@@ -84,6 +84,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function bootstrap($app)
     {
+        $app->controllerMap['gii'] = 'yii\console\controllers\GiiController';
+
         $app->getUrlManager()->addRules([
             $this->id => $this->id . '/default/index',
             $this->id . '/<id:\w+>' => $this->id . '/default/view',
