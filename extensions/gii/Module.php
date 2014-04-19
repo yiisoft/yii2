@@ -94,12 +94,18 @@ class Module extends \yii\base\Module implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    public function beforeAction($action)
-    {
+    public function init(){
+        parent::init();
         foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
             $this->generators[$id] = Yii::createObject($config);
         }
+    }
 
+    /**
+     * @inheritdoc
+     */
+    public function beforeAction($action)
+    {
         if ($this->checkAccess()) {
             return parent::beforeAction($action);
         } else {
