@@ -237,12 +237,17 @@ class GridView extends BaseListView
      */
     public function renderItems()
     {
+        $caption = $this->renderCaption();
+        $columnGroup = $this->renderColumnGroup();
+        $tableHeader = $this->showHeader ? $this->renderTableHeader() : false;
+        $tableBody = $this->renderTableBody();
+        $tableFooter = $this->showFooter ? $this->renderTableFooter() : false;
         $content = array_filter([
-            $this->renderCaption(),
-            $this->renderColumnGroup(),
-            $this->showHeader ? $this->renderTableHeader() : false,
-            $this->renderTableBody(),
-            $this->showFooter ? $this->renderTableFooter() : false,
+            $caption,
+            $columnGroup,
+            $tableHeader,
+            $tableFooter,
+            $tableBody,
         ]);
 
         return Html::tag('table', implode("\n", $content), $this->tableOptions);
