@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.0-rc under development
 --------------------------
 
+- Bug #3194: Date formatter works only for timestamps in the year range 1970 to 2038.
 - Bug #2563: Theming is not working if the path map of the theme contains ".." or "." in the paths (qiangxue)
 - Bug #2801: Fixed the issue that GridView gets footer content before data cells content (ElisDN)
 - Bug #3042: `yii\widgets\Pjax` should end application right after it finishes responding to a pjax request (qiangxue)
