@@ -126,6 +126,7 @@ If `scenarios` method is not defined, default scenario is applied. That means at
 considered *active*.
 
 If you want to keep the default scenario available besides your own scenarios, use inheritance to include it:
+
 ```php
 class User extends \yii\db\ActiveRecord
 {
