@@ -342,18 +342,24 @@ class Formatter extends Component
 
     /**
      * Normalizes the given datetime value as one that can be taken by various date/time formatting methods.
+     *
      * @param mixed $value the datetime value to be normalized.
      * @return integer the normalized datetime value
      */
     protected function normalizeDatetimeValue($value)
     {
         if (is_string($value)) {
-            return is_numeric($value) || $value === '' ? (int) $value : strtotime($value);
+            if (is_numeric($value) || $value === '') {
+                $value = (double)$value;
+            } else {
+                $date = new DateTime($value);
+                $value = $date->format('U');
+            }
+            return $value;
         } elseif ($value instanceof DateTime || $value instanceof \DateTimeInterface) {
-            /** @var $value \DateTimeInterface */
-            return $value->getTimestamp();
+            return $value->format('U');
         } else {
-            return (int) $value;
+            return (double)$value;
         }
     }
 
