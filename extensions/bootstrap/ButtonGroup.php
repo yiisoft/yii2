@@ -40,6 +40,12 @@ use yii\helpers\Html;
 class ButtonGroup extends Widget
 {
     /**
+     * default container fo the buttonGroup
+     * @var string
+     */
+    public $tag = 'div';
+    
+    /**
      * @var array list of buttons. Each array element represents a single button
      * which can be specified as a string or an array of the following structure:
      *
@@ -62,12 +68,13 @@ class ButtonGroup extends Widget
         Html::addCssClass($this->options, 'btn-group');
     }
 
+
     /**
      * Renders the widget.
      */
     public function run()
     {
-        echo Html::tag('div', $this->renderButtons(), $this->options);
+        echo Html::tag($this->tag, $this->renderButtons(), $this->options);
         BootstrapAsset::register($this->getView());
     }
 
