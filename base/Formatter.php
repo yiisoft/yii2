@@ -352,7 +352,11 @@ class Formatter extends Component
             if (is_numeric($value) || $value === '') {
                 $value = (double)$value;
             } else {
-                $date = new DateTime($value);
+                try {
+                    $date = new DateTime($value);
+                } catch (\Exception $e) {
+                    return false;
+                }
                 $value = $date->format('U');
             }
             return $value;
@@ -506,7 +510,7 @@ class Formatter extends Component
                 // to create a DateInterval with it
                 try {
                     $interval = new \DateInterval($value);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     // invalid date/time and invalid interval
                     return $this->nullDisplay;
                 }
