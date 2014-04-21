@@ -19,10 +19,8 @@ Getting started
 - [Upgrading from 1.1 to 2.0](upgrade-from-v1.md)
 - [Installation](installation.md) - How to download Yii and configure the Webserver?
 - [Configuration](configuration.md) - Configuration of a Yii application
-
 - [Basic Application Template](apps-basic.md) - A template to start a basic frontend application.
 - [Advanced Application Template](apps-advanced.md) - The basis for more advanced applications.
-
 - [Creating your own Application structure](apps-own.md) - Learn how to start from scratch.
 
 Base concepts
@@ -83,6 +81,7 @@ Advanced Topics
 
 - [Asset Management](assets.md)
 - [Working with forms](form.md)
+- [Implementing RESTful Web Service APIs](rest.md)
 - [Bootstrap widgets](bootstrap-widgets.md) - Using [twitter bootstrap](http://getbootstrap.com/)
 - [Theming](theming.md)
 - [Caching](caching.md) - Caching data, page fragments and http requests
@@ -91,6 +90,7 @@ Advanced Topics
 - [Console Application](console.md)
 - [Performance Tuning](performance.md)
 - [Testing](testing.md)
+- [Managing Test Fixtures](test-fixture.md)
 - [Service Locator and Dependency Injection](di.md)
 
 References
