@@ -240,6 +240,8 @@ EOL;
         $configFileName = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
         $this->runAssetControllerAction('template', [$configFileName]);
         $this->assertTrue(file_exists($configFileName), 'Unable to create config file template!');
+        $config = require($configFileName);
+        $this->assertTrue(is_array($config), 'Invalid config created!');
     }
 
     public function testActionCompress()
@@ -354,6 +356,16 @@ EOL;
                 "@font-face {
                 src: url('../input/fonts/glyphicons-halflings-regular.eot');
                 src: url('../input/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype');
+                }",
+            ],
+            [
+                "@font-face {
+                src: url(data:application/x-font-ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwT==) format('truetype');
+                }",
+                '/test/base/path/assets/input/css',
+                '/test/base/path/assets/output',
+                "@font-face {
+                src: url(data:application/x-font-ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwT==) format('truetype');
                 }",
             ],
         ];

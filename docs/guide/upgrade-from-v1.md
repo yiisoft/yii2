@@ -151,6 +151,13 @@ accessible in any view file via `$this`. This is one of the biggest changes comp
 It refers to the view object that is used to render the view file. To access the controller
 or the widget object, you have to use `$this->context` now.
 
+For partial views, the [[yii\web\View|View]] class now includes a `render()` function. This creates another significant change in the usage of views compared to 1.1:
+**`$this->render(...)` does not output the processed content; you must echo it yourself.**
+
+```php
+echo $this->render('_item', ['item' => $item]);
+```
+
 Because you can access the view object through the "view" application component,
 you can now render a view file like the following anywhere in your code, not necessarily
 in controllers or widgets:
@@ -318,7 +325,7 @@ Action Filters
 
 Action filters are implemented via behaviors now. You should extend from [[yii\base\ActionFilter]] to
 define a new filter. To use a filter, you should attach the filter class to the controller
-as a behavior. For example, to use the [[yii\web\AccessControl]] filter, you should have the following
+as a behavior. For example, to use the [[yii\filters\AccessControl]] filter, you should have the following
 code in a controller:
 
 ```php
@@ -326,7 +333,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => 'yii\web\AccessControl',
+            'class' => 'yii\filters\AccessControl',
             'rules' => [
                 ['allow' => true, 'actions' => ['admin'], 'roles' => ['@']],
             ],
@@ -447,7 +454,7 @@ $customers = Customer::find()
     ->orderBy('id')
     ->all();
 // return the customer whose PK is 1
-$customer = Customer::find(1);
+$customer = Customer::findOne(1);
 ```
 
 

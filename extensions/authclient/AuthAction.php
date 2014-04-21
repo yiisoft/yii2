@@ -46,7 +46,7 @@ use Yii;
  * This action handles the redirection and closing of popup window correctly.
  *
  * @see Collection
- * @see \yii\authclient\widgets\Choice
+ * @see \yii\authclient\widgets\AuthChoice
  *
  * @property string $cancelUrl Cancel URL.
  * @property string $successUrl Successful URL.
@@ -209,7 +209,6 @@ class AuthAction extends Action
         if ($response instanceof Response) {
             return $response;
         }
-
         return $this->redirectSuccess();
     }
 
@@ -233,7 +232,6 @@ class AuthAction extends Action
         ];
         $response = Yii::$app->getResponse();
         $response->content = Yii::$app->getView()->renderFile($viewFile, $viewData);
-
         return $response;
     }
 
@@ -247,7 +245,6 @@ class AuthAction extends Action
         if ($url === null) {
             $url = $this->getSuccessUrl();
         }
-
         return $this->redirect($url);
     }
 
@@ -261,7 +258,6 @@ class AuthAction extends Action
         if ($url === null) {
             $url = $this->getCancelUrl();
         }
-
         return $this->redirect($url, false);
     }
 
@@ -292,7 +288,6 @@ class AuthAction extends Action
             }
         } else {
             $url = $client->buildAuthUrl();
-
             return Yii::$app->getResponse()->redirect($url);
         }
 
@@ -325,7 +320,6 @@ class AuthAction extends Action
         } else {
             // Upgrade to access token.
             $client->fetchAccessToken();
-
             return $this->authSuccess($client);
         }
     }
@@ -366,7 +360,6 @@ class AuthAction extends Action
             }
         } else {
             $url = $client->buildAuthUrl();
-
             return Yii::$app->getResponse()->redirect($url);
         }
     }

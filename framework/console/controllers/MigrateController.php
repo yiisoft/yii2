@@ -1,6 +1,5 @@
 <?php
 /**
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
@@ -96,7 +95,8 @@ class MigrateController extends Controller
      */
     public function options($actionId)
     {
-        return array_merge(parent::options($actionId),
+        return array_merge(
+            parent::options($actionId),
             ['migrationPath', 'migrationTable', 'db'], // global for all actions
             ($actionId == 'create') ? ['templateFile'] : [] // action create
         );

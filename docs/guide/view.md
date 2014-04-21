@@ -396,6 +396,50 @@ view rendered by controller we can use the following:
 echo $this->context->getRoute();
 ```
 
+### Static Pages
+
+If you need to render static pages you can use class `ViewAction`. It represents an action that displays a view according
+to a user-specified parameter.
+
+Usage of the class is simple. In your controller use the class via `actions` method:
+
+```php
+class SiteController extends Controller
+{
+    public function actions()
+    {
+        return [
+            'static' => [
+                'class' => '\yii\web\ViewAction',
+            ],
+        ];
+    }
+
+    //...
+}
+```
+
+Then create `index.php` in `@app/views/site/pages/`:
+
+```php
+//index.php
+<h1>Hello, I am a static page!</h1>
+```
+
+That's it. Now you can try it using `/index.php?r=site/static`.
+
+By default, the view being displayed is specified via the `view` GET parameter. 
+If you open `/index.php?r=site/static?&view=about` then `@app/views/site/pages/about.php` view file will be used.
+
+If not changed or specified via GET defaults are the following:
+
+- GET parameter name: `view`.
+- View file used if parameter is missing: `index.php`.
+- Directory where views are stored (`viewPrefix`): `pages`.
+- Layout for the page rendered matches the one used in controller.
+
+For more information see [[yii\web\ViewAction]].
+
 ### Caching blocks
 
 To learn about caching of view fragments please refer to [caching](caching.md) section of the guide.

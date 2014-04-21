@@ -14,13 +14,10 @@ class ArticleDb extends ActiveRecordDb
 
     public function getIndex()
     {
-        $config = [
-            'modelClass' => ArticleIndex::className(),
+        return new ActiveQuery(ArticleIndex::className(), [
             'primaryModel' => $this,
             'link' => ['id' => 'id'],
             'multiple' => false,
-        ];
-
-        return new ActiveQuery($config);
+        ]);
     }
 }

@@ -194,9 +194,12 @@ class FixtureController extends \yii\console\controllers\FixtureController
 
     /**
      * Generates fixtures and fill them with Faker data.
-     * @param string  $file  filename for the table template. You can generate all fixtures for all tables
-     *                       by specifying keyword "all" as filename.
+     *
+     * @param array|string $file filename for the table template.
+     * You can generate all fixtures for all tables by specifying keyword "all" as filename.
      * @param integer $times how much fixtures do you want per table
+     * @throws \yii\base\InvalidParamException
+     * @throws \yii\console\Exception
      */
     public function actionGenerate(array $file, $times = 2)
     {

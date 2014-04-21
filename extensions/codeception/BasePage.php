@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\codeception;
 
@@ -29,7 +34,8 @@ abstract class BasePage extends Component
 
     /**
      * Constructor.
-     * @param \Codeception\AbstractGuy the testing guy object
+     *
+     * @param \Codeception\AbstractGuy $I the testing guy object
      */
     public function __construct($I)
     {

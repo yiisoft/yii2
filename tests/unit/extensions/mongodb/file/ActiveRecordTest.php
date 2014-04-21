@@ -86,16 +86,16 @@ class ActiveRecordTest extends MongoDbTestCase
 
         // find by _id
         $testId = $this->testRows[0]['_id'];
-        $customer = CustomerFile::find($testId);
+        $customer = CustomerFile::findOne($testId);
         $this->assertTrue($customer instanceof CustomerFile);
         $this->assertEquals($testId, $customer->_id);
 
         // find by column values
-        $customer = CustomerFile::find(['tag' => 'tag5']);
+        $customer = CustomerFile::findOne(['tag' => 'tag5']);
         $this->assertTrue($customer instanceof CustomerFile);
         $this->assertEquals($this->testRows[4]['_id'], $customer->_id);
         $this->assertEquals('tag5', $customer->tag);
-        $customer = CustomerFile::find(['tag' => 'unexisting tag']);
+        $customer = CustomerFile::findOne(['tag' => 'unexisting tag']);
         $this->assertNull($customer);
 
         // find by attributes
@@ -205,7 +205,7 @@ class ActiveRecordTest extends MongoDbTestCase
         $record->save();
 
         // save
-        $record = CustomerFile::find($record->_id);
+        $record = CustomerFile::findOne($record->_id);
         $this->assertTrue($record instanceof CustomerFile);
         $this->assertEquals(7, $record->status);
         $this->assertFalse($record->isNewRecord);
@@ -214,14 +214,14 @@ class ActiveRecordTest extends MongoDbTestCase
         $record->save();
         $this->assertEquals(9, $record->status);
         $this->assertFalse($record->isNewRecord);
-        $record2 = CustomerFile::find($record->_id);
+        $record2 = CustomerFile::findOne($record->_id);
         $this->assertEquals(9, $record2->status);
 
         // updateAll
         $pk = ['_id' => $record->_id];
         $ret = CustomerFile::updateAll(['status' => 55], $pk);
         $this->assertEquals(1, $ret);
-        $record = CustomerFile::find($pk);
+        $record = CustomerFile::findOne($pk);
         $this->assertEquals(55, $record->status);
     }
 
@@ -239,13 +239,13 @@ class ActiveRecordTest extends MongoDbTestCase
         $record->save();
 
         $updateFileName = __FILE__;
-        $record = CustomerFile::find($record->_id);
+        $record = CustomerFile::findOne($record->_id);
         $record->setAttribute('file', $updateFileName);
         $record->status = 55;
         $record->save();
         $this->assertEquals(file_get_contents($updateFileName), $record->getFileContent());
 
-        $record2 = CustomerFile::find($record->_id);
+        $record2 = CustomerFile::findOne($record->_id);
         $this->assertEquals($record->status, $record2->status);
         $this->assertEquals(file_get_contents($updateFileName), $record2->getFileContent());
         $this->assertEquals($record->tag, $record2->tag);
@@ -265,13 +265,13 @@ class ActiveRecordTest extends MongoDbTestCase
         $record->save();
 
         $updateFileContent = 'New updated file content';
-        $record = CustomerFile::find($record->_id);
+        $record = CustomerFile::findOne($record->_id);
         $record->setAttribute('newFileContent', $updateFileContent);
         $record->status = 55;
         $record->save();
         $this->assertEquals($updateFileContent, $record->getFileContent());
 
-        $record2 = CustomerFile::find($record->_id);
+        $record2 = CustomerFile::findOne($record->_id);
         $this->assertEquals($record->status, $record2->status);
         $this->assertEquals($updateFileContent, $record2->getFileContent());
     }
@@ -292,7 +292,7 @@ class ActiveRecordTest extends MongoDbTestCase
         $this->assertTrue($record->writeFile($outputFileName));
         $this->assertEquals($newFileContent, file_get_contents($outputFileName));
 
-        $record2 = CustomerFile::find($record->_id);
+        $record2 = CustomerFile::findOne($record->_id);
         $outputFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . 'out_refreshed.txt';
         $this->assertTrue($record2->writeFile($outputFileName));
         $this->assertEquals($newFileContent, file_get_contents($outputFileName));
@@ -315,7 +315,7 @@ class ActiveRecordTest extends MongoDbTestCase
         fclose($fileResource);
         $this->assertEquals($newFileContent, $contents);
 
-        $record2 = CustomerFile::find($record->_id);
+        $record2 = CustomerFile::findOne($record->_id);
         $fileResource = $record2->getFileResource();
         $contents = stream_get_contents($fileResource);
         fclose($fileResource);

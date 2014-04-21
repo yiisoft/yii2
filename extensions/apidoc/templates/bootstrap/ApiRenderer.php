@@ -6,11 +6,9 @@
  */
 
 namespace yii\apidoc\templates\bootstrap;
-use yii\apidoc\models\Context;
-use yii\console\Controller;
+
 use Yii;
 use yii\helpers\Console;
-use yii\helpers\Html;
 
 /**
  *

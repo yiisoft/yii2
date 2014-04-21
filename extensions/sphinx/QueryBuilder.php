@@ -634,7 +634,8 @@ class QueryBuilder extends Object
     {
         $parts = [];
         foreach ($condition as $column => $value) {
-            if (is_array($value)) { // IN condition
+            if (is_array($value) || $value instanceof Query) {
+                // IN condition
                 $parts[] = $this->buildInCondition($indexes, 'IN', [$column, $value], $params);
             } else {
                 if (strpos($column, '(') === false) {
@@ -729,15 +730,35 @@ class QueryBuilder extends Object
 
         list($column, $values) = $operands;
 
-        $values = (array) $values;
-
-        if (empty($values) || $column === []) {
+        if ($values === [] || $column === []) {
             return $operator === 'IN' ? '0=1' : '';
         }
 
+        if ($values instanceof Query) {
+            // sub-query
+            list($sql, $params) = $this->build($values, $params);
+            $column = (array)$column;
+            if (is_array($column)) {
+                foreach ($column as $i => $col) {
+                    if (strpos($col, '(') === false) {
+                        $column[$i] = $this->db->quoteColumnName($col);
+                    }
+                }
+                return '(' . implode(', ', $column) . ") $operator ($sql)";
+            } else {
+                if (strpos($column, '(') === false) {
+                    $column = $this->db->quoteColumnName($column);
+                }
+                return "$column $operator ($sql)";
+            }
+        }
+
+        $values = (array) $values;
+
         if (count($column) > 1) {
             return $this->buildCompositeInCondition($indexes, $operator, $column, $values, $params);
-        } elseif (is_array($column)) {
+        }
+        if (is_array($column)) {
             $column = reset($column);
         }
         foreach ($values as $i => $value) {

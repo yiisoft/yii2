@@ -1,7 +1,7 @@
 <?php
 /**
- * @copyright Copyright (c) 2008 Yii Software LLC
  * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -500,10 +500,14 @@ class BaseInflector
             return $number . 'th';
         }
         switch ($number % 10) {
-            case 1: return $number . 'st';
-            case 2: return $number . 'nd';
-            case 3: return $number . 'rd';
-            default: return $number . 'th';
+            case 1:
+                return $number . 'st';
+            case 2:
+                return $number . 'nd';
+            case 3:
+                return $number . 'rd';
+            default:
+                return $number . 'th';
         }
     }
 }

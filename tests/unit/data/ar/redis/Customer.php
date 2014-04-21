@@ -11,6 +11,9 @@ class Customer extends ActiveRecord
 
     public $status2;
 
+    /**
+     * @inheritdoc
+     */
     public function attributes()
     {
         return ['id', 'email', 'name', 'address', 'status', 'profile_id'];
@@ -24,6 +27,9 @@ class Customer extends ActiveRecord
         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function afterSave($insert)
     {
         ActiveRecordTest::$afterSaveInsert = $insert;
@@ -31,10 +37,12 @@ class Customer extends ActiveRecord
         parent::afterSave($insert);
     }
 
-    public static function createQuery($config = [])
+    /**
+     * @inheritdoc
+     * @return CustomerQuery
+     */
+    public static function find()
     {
-        $config['modelClass'] = get_called_class();
-
-        return new CustomerQuery($config);
+        return new CustomerQuery(get_called_class());
     }
 }

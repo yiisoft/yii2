@@ -1,6 +1,5 @@
 <?php
 /**
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
@@ -222,7 +221,7 @@ class MessageController extends Controller
             } else {
                 $last_id = $db->getLastInsertID();
                 $db->createCommand()
-                ->update(
+                    ->update(
                         $sourceMessageTable,
                         ['message' => new \yii\db\Expression("CONCAT('@@',message,'@@')")],
                         ['in', 'id', $obsolete]
@@ -254,7 +253,10 @@ class MessageController extends Controller
         foreach ($translator as $currentTranslator) {
             $n = preg_match_all(
                 '/\b' . $currentTranslator . '\s*\(\s*(\'.*?(?<!\\\\)\'|".*?(?<!\\\\)")\s*,\s*(\'.*?(?<!\\\\)\'|".*?(?<!\\\\)")\s*[,\)]/s',
-                $subject, $matches, PREG_SET_ORDER);
+                $subject,
+                $matches,
+                PREG_SET_ORDER
+            );
             for ($i = 0; $i < $n; ++$i) {
                 if (($pos = strpos($matches[$i][1], '.')) !== false) {
                     $category = substr($matches[$i][1], $pos + 1, -1);

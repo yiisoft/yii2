@@ -63,7 +63,11 @@ class PropertyDoc extends BaseDoc
             $this->defaultValue = PrettyPrinter::getRepresentationOfValue($reflector->getNode()->default);
         }
 
+        $hasInheritdoc = false;
         foreach ($this->tags as $tag) {
+            if ($tag->getName() === 'inheritdoc') {
+                $hasInheritdoc = true;
+            }
             if ($tag instanceof VarTag) {
                 $this->type = $tag->getType();
                 $this->types = $tag->getTypes();
@@ -75,7 +79,7 @@ class PropertyDoc extends BaseDoc
                 }
             }
         }
-        if (empty($this->shortDescription) && $context !== null) {
+        if (empty($this->shortDescription) && $context !== null && !$hasInheritdoc) {
             $context->errors[] = [
                 'line' => $this->startLine,
                 'file' => $this->sourceFile,

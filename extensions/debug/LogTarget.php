@@ -100,7 +100,7 @@ class LogTarget extends Target
      * Processes the given log messages.
      * This method will filter the given messages with [[levels]] and [[categories]].
      * And if requested, it will also export the filtering result to specific medium (e.g. email).
-     * @param array   $messages log messages to be processed. See [[Logger::messages]] for the structure
+     * @param array   $messages log messages to be processed. See [[\yii\log\Logger::messages]] for the structure
      *                          of each message.
      * @param boolean $final    whether this method is called at the end of the current application
      */

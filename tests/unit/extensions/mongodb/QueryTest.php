@@ -68,6 +68,24 @@ class QueryTest extends MongoDbTestCase
         );
     }
 
+    public function testFilterWhere()
+    {
+        // should work with hash format
+        $query = new Query;
+        $query->filterWhere([
+            'id' => 0,
+            'title' => '   ',
+            'author_ids' => [],
+        ]);
+        $this->assertEquals(['id' => 0], $query->where);
+
+        $query->andFilterWhere(['status' => null]);
+        $this->assertEquals(['id' => 0], $query->where);
+
+        $query->orFilterWhere(['name' => '']);
+        $this->assertEquals(['id' => 0], $query->where);
+    }
+
     public function testOrder()
     {
         $query = new Query;

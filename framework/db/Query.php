@@ -107,6 +107,7 @@ class Query extends Component implements QueryInterface
      */
     public $params = [];
 
+
     /**
      * Creates a DB command that can be used to execute this query.
      * @param Connection $db the database connection used to generate the SQL statement.
@@ -201,7 +202,6 @@ class Query extends Component implements QueryInterface
     public function all($db = null)
     {
         $rows = $this->createCommand($db)->queryAll();
-
         return $this->prepareResult($rows);
     }
 
@@ -226,7 +226,6 @@ class Query extends Component implements QueryInterface
             }
             $result[$key] = $row;
         }
-
         return $result;
     }
 
@@ -343,7 +342,6 @@ class Query extends Component implements QueryInterface
         $this->select = [new Expression('1')];
         $command = $this->createCommand($db);
         $this->select = $select;
-
         return $command->queryScalar() !== false;
     }
 
@@ -404,7 +402,25 @@ class Query extends Component implements QueryInterface
         }
         $this->select = $columns;
         $this->selectOption = $option;
+        return $this;
+    }
 
+    /**
+     * Add more columns to the SELECT part of the query.
+     * @param string|array $columns the columns to add to the select.
+     * @return static the query object itself
+     * @see select()
+     */
+    public function addSelect($columns)
+    {
+        if (!is_array($columns)) {
+            $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+        }
+        if ($this->select === null) {
+            $this->select = $columns;
+        } else {
+            $this->select = array_merge($this->select, $columns);
+        }
         return $this;
     }
 
@@ -416,7 +432,6 @@ class Query extends Component implements QueryInterface
     public function distinct($value = true)
     {
         $this->distinct = $value;
-
         return $this;
     }
 
@@ -442,7 +457,6 @@ class Query extends Component implements QueryInterface
             $tables = preg_split('/\s*,\s*/', trim($tables), -1, PREG_SPLIT_NO_EMPTY);
         }
         $this->from = $tables;
-
         return $this;
     }
 
@@ -459,13 +473,14 @@ class Query extends Component implements QueryInterface
      * - operator format: `[operator, operand1, operand2, ...]`
      *
      * A condition in hash format represents the following SQL expression in general:
-     * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array,
+     * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array or a Query object,
      * an `IN` expression will be generated. And if a value is null, `IS NULL` will be used
      * in the generated expression. Below are some examples:
      *
      * - `['type' => 1, 'status' => 2]` generates `(type = 1) AND (status = 2)`.
      * - `['id' => [1, 2, 3], 'status' => 2]` generates `(id IN (1, 2, 3)) AND (status = 2)`.
      * - `['status' => null] generates `status IS NULL`.
+     * - `['id' => $query]` generates `id IN (...sub-query...)`
      *
      * A condition in operator format generates the SQL expression according to the specified operator, which
      * can be one of the followings:
@@ -485,10 +500,12 @@ class Query extends Component implements QueryInterface
      * - `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
      * in the generated condition.
      *
-     * - `in`: operand 1 should be a column or DB expression, and operand 2 be an array representing
-     * the range of the values that the column or DB expression should be in. For example,
-     * `['in', 'id', [1, 2, 3]]` will generate `id IN (1, 2, 3)`.
-     * The method will properly quote the column name and escape values in the range.
+     * - `in`: operand 1 should be a column or DB expression with parenthesis. Operand 2 can be an array
+     * or a Query object. If the former, the array represents the range of the values that the column
+     * or DB expression should be in. If the latter, a sub-query will be generated to represent the range.
+     * For example, `['in', 'id', [1, 2, 3]]` will generate `id IN (1, 2, 3)`;
+     * `['in', 'id', (new Query)->select('id')->from('user'))]` will generate
+     * `id IN (SELECT id FROM user)`. The method will properly quote the column name and escape values in the range.
      *
      * - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
      *
@@ -526,7 +543,6 @@ class Query extends Component implements QueryInterface
     {
         $this->where = $condition;
         $this->addParams($params);
-
         return $this;
     }
 
@@ -548,7 +564,6 @@ class Query extends Component implements QueryInterface
             $this->where = ['and', $this->where, $condition];
         }
         $this->addParams($params);
-
         return $this;
     }
 
@@ -570,7 +585,6 @@ class Query extends Component implements QueryInterface
             $this->where = ['or', $this->where, $condition];
         }
         $this->addParams($params);
-
         return $this;
     }
 
@@ -597,7 +611,6 @@ class Query extends Component implements QueryInterface
     public function join($type, $table, $on = '', $params = [])
     {
         $this->join[] = [$type, $table, $on];
-
         return $this->addParams($params);
     }
 
@@ -622,7 +635,6 @@ class Query extends Component implements QueryInterface
     public function innerJoin($table, $on = '', $params = [])
     {
         $this->join[] = ['INNER JOIN', $table, $on];
-
         return $this->addParams($params);
     }
 
@@ -647,7 +659,6 @@ class Query extends Component implements QueryInterface
     public function leftJoin($table, $on = '', $params = [])
     {
         $this->join[] = ['LEFT JOIN', $table, $on];
-
         return $this->addParams($params);
     }
 
@@ -672,7 +683,6 @@ class Query extends Component implements QueryInterface
     public function rightJoin($table, $on = '', $params = [])
     {
         $this->join[] = ['RIGHT JOIN', $table, $on];
-
         return $this->addParams($params);
     }
 
@@ -691,7 +701,6 @@ class Query extends Component implements QueryInterface
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         $this->groupBy = $columns;
-
         return $this;
     }
 
@@ -714,7 +723,6 @@ class Query extends Component implements QueryInterface
         } else {
             $this->groupBy = array_merge($this->groupBy, $columns);
         }
-
         return $this;
     }
 
@@ -731,7 +739,6 @@ class Query extends Component implements QueryInterface
     {
         $this->having = $condition;
         $this->addParams($params);
-
         return $this;
     }
 
@@ -753,7 +760,6 @@ class Query extends Component implements QueryInterface
             $this->having = ['and', $this->having, $condition];
         }
         $this->addParams($params);
-
         return $this;
     }
 
@@ -775,7 +781,6 @@ class Query extends Component implements QueryInterface
             $this->having = ['or', $this->having, $condition];
         }
         $this->addParams($params);
-
         return $this;
     }
 
@@ -788,7 +793,6 @@ class Query extends Component implements QueryInterface
     public function union($sql, $all = false)
     {
         $this->union[] = [ 'query' => $sql, 'all' => $all ];
-
         return $this;
     }
 
@@ -802,7 +806,6 @@ class Query extends Component implements QueryInterface
     public function params($params)
     {
         $this->params = $params;
-
         return $this;
     }
 
@@ -828,7 +831,6 @@ class Query extends Component implements QueryInterface
                 }
             }
         }
-
         return $this;
     }
 }

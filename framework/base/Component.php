@@ -473,12 +473,19 @@ class Component extends Object
      * @param callable $handler the event handler
      * @param mixed $data the data to be passed to the event handler when the event is triggered.
      * When the event handler is invoked, this data can be accessed via [[Event::data]].
+     * @param boolean $append whether to append new event handler to the end of the existing
+     * handler list. If false, the new handler will be inserted at the beginning of the existing
+     * handler list.
      * @see off()
      */
-    public function on($name, $handler, $data = null)
+    public function on($name, $handler, $data = null, $append = true)
     {
         $this->ensureBehaviors();
-        $this->_events[$name][] = [$handler, $data];
+        if ($append || empty($this->_events[$name])) {
+            $this->_events[$name][] = [$handler, $data];
+        } else {
+            array_unshift($this->_events[$name], [$handler, $data]);
+        }
     }
 
     /**
@@ -498,7 +505,6 @@ class Component extends Object
         }
         if ($handler === null) {
             unset($this->_events[$name]);
-
             return true;
         } else {
             $removed = false;

@@ -6,8 +6,8 @@
  */
 
 namespace yii\apidoc\templates\bootstrap;
+
 use Yii;
-use yii\helpers\Html;
 
 /**
  *

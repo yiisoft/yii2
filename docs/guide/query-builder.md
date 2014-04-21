@@ -172,6 +172,20 @@ results in this WHERE clause:
 WHERE (`status` IS NULL)
 ```
 
+You can also create sub-queries with `Query` objects like the following,
+
+```php
+$userQuery = (new Query)->select('id')->from('user');
+$query->where(['id' => $userQuery]);
+```
+
+which will generate the following SQL:
+
+```sql
+WHERE `id` IN (SELECT `id` FROM `user`)
+```
+
+
 Another way to use the method is the operand format which is `[operator, operand1, operand2, ...]`.
 
 Operator can be one of the following:
@@ -187,10 +201,14 @@ Operator can be one of the following:
    For example, `['between', 'id', 1, 10]` will generate `id BETWEEN 1 AND 10`.
 - `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
   in the generated condition.
-- `in`: operand 1 should be a column or DB expression, and operand 2 be an array representing
-  the range of the values that the column or DB expression should be in. For example,
+- `in`: operand 1 should be a column or DB expression. Operand 2 can be either an array or a `Query` object.
+  It will generate an `IN` condition. If Operand 2 is an array, it will represent the range of the values
+  that the column or DB expression should be; If Operand 2 is a `Query` object, a sub-query will be generated
+  and used as the range of the column or DB expression. For example,
   `['in', 'id', [1, 2, 3]]` will generate `id IN (1, 2, 3)`.
   The method will properly quote the column name and escape values in the range.
+  The `in` operator also supports composite columns. In this case, operand 1 should be an array of the columns,
+  while operand 2 should be an array of arrays or a `Query` object representing the range of the columns.
 - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
 - `like`: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
   the values that the column or DB expression should be like.
@@ -214,7 +232,7 @@ Operator can be one of the following:
   It will build a `EXISTS (sub-query)` expression.
 - `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
 
-If you are building parts of condition dynamically it's very convenient to use `andWhere` and `orWhere`:
+If you are building parts of condition dynamically it's very convenient to use `andWhere()` and `orWhere()`:
 
 ```php
 $status = 10;
@@ -231,6 +249,31 @@ In case `$search` isn't empty the following SQL will be generated:
 ```sql
 WHERE (`status` = 10) AND (`title` LIKE '%yii%')
 ```
+
+#### Building Filter Conditions
+
+When building filter conditions based on user inputs, you usually want to specially handle "empty inputs"
+by ignoring them in the filters. For example, you have an HTML form that takes username and email inputs.
+If the user only enters something in the username input, you may want to build a query that only tries to
+match the entered username. You may use the `filterWhere()` method achieve this goal:
+
+```php
+// $username and $email are from user inputs
+$query->filterWhere([
+    'username' => $username,
+    'email' => $email,
+]);
+```
+
+The `filterWhere()` method is very similar to `where()`. The main difference is that `filterWhere()`
+will remove empty values from the provided condition. So if `$email` is "empty", the resulting query
+will be `...WHERE username=:username`; and if both `$username` and `$email` are "empty", the query
+will have no `WHERE` part.
+
+A value is *empty* if it is null, an empty string, a string consisting of whitespaces, or an empty array.
+
+You may also use `andFilterWhere()` and `orFilterWhere()` to append more filter conditions.
+
 
 ### `ORDER BY`
 

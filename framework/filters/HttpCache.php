@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\filters;
 
 use Yii;
 use yii\base\ActionFilter;
@@ -25,11 +25,11 @@ use yii\base\Action;
  * {
  *     return [
  *         'httpCache' => [
- *             'class' => \yii\web\HttpCache::className(),
- *             'only' => ['list'],
+ *             'class' => \yii\filters\HttpCache::className(),
+ *             'only' => ['index'],
  *             'lastModified' => function ($action, $params) {
- *                 $q = new Query();
- *                 return strtotime($q->from('users')->max('updated_timestamp'));
+ *                 $q = new \yii\db\Query();
+ *                 return $q->from('user')->max('updated_at');
  *             },
  * //            'etagSeed' => function ($action, $params) {
  * //                return // generate etag seed here
@@ -138,7 +138,7 @@ class HttpCache extends ActionFilter
 
     /**
      * Sends the cache control header to the client
-     * @see cacheControl
+     * @see cacheControlHeader
      */
     protected function sendCacheControlHeader()
     {

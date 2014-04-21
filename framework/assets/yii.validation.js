@@ -65,7 +65,7 @@ yii.validation = (function ($) {
                 pub.addMessage(messages, options.tooLong, value);
             }
             if (options.is !== undefined && value.length != options.is) {
-                pub.addMessage(messages, options.is, value);
+                pub.addMessage(messages, options.notEqual, value);
             }
         },
 

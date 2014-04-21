@@ -38,15 +38,15 @@ class Formatter extends Component
     /**
      * @var string the default format string to be used to format a date using PHP date() function.
      */
-    public $dateFormat = 'Y/m/d';
+    public $dateFormat = 'Y-m-d';
     /**
      * @var string the default format string to be used to format a time using PHP date() function.
      */
-    public $timeFormat = 'h:i:s A';
+    public $timeFormat = 'H:i:s';
     /**
      * @var string the default format string to be used to format a date and time using PHP date() function.
      */
-    public $datetimeFormat = 'Y/m/d h:i:s A';
+    public $datetimeFormat = 'Y-m-d H:i:s';
     /**
      * @var string the text to be displayed when formatting a null. Defaults to '<span class="not-set">(not set)</span>'.
      */
@@ -184,9 +184,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
 
-        return str_replace('<p></p>', '',
-            '<p>' . preg_replace('/[\r\n]{2,}/', "</p>\n<p>", Html::encode($value)) . '</p>'
-        );
+        return str_replace('<p></p>', '', '<p>' . preg_replace('/[\r\n]{2,}/', "</p>\n<p>", Html::encode($value)) . '</p>');
     }
 
     /**
@@ -344,17 +342,28 @@ class Formatter extends Component
 
     /**
      * Normalizes the given datetime value as one that can be taken by various date/time formatting methods.
+     *
      * @param mixed $value the datetime value to be normalized.
      * @return integer the normalized datetime value
      */
     protected function normalizeDatetimeValue($value)
     {
         if (is_string($value)) {
-            return is_numeric($value) || $value === '' ? (int) $value : strtotime($value);
+            if (is_numeric($value) || $value === '') {
+                $value = (double)$value;
+            } else {
+                try {
+                    $date = new DateTime($value);
+                } catch (\Exception $e) {
+                    return false;
+                }
+                $value = $date->format('U');
+            }
+            return $value;
         } elseif ($value instanceof DateTime || $value instanceof \DateTimeInterface) {
-            return $value->getTimestamp();
+            return $value->format('U');
         } else {
-            return (int) $value;
+            return (double)$value;
         }
     }
 
@@ -424,8 +433,8 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
-        $ds = isset($this->decimalSeparator) ? $this->decimalSeparator: '.';
-        $ts = isset($this->thousandSeparator) ? $this->thousandSeparator: ',';
+        $ds = isset($this->decimalSeparator) ? $this->decimalSeparator : '.';
+        $ts = isset($this->thousandSeparator) ? $this->thousandSeparator : ',';
 
         return number_format($value, $decimals, $ds, $ts);
     }
@@ -501,7 +510,7 @@ class Formatter extends Component
                 // to create a DateInterval with it
                 try {
                     $interval = new \DateInterval($value);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     // invalid date/time and invalid interval
                     return $this->nullDisplay;
                 }

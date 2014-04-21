@@ -90,10 +90,10 @@ class Action extends \yii\base\Action
         if (count($keys) > 1) {
             $values = explode(',', $id);
             if (count($keys) === count($values)) {
-                $model = $modelClass::find(array_combine($keys, $values));
+                $model = $modelClass::findOne(array_combine($keys, $values));
             }
         } elseif ($id !== null) {
-            $model = $modelClass::find($id);
+            $model = $modelClass::findOne($id);
         }
 
         if (isset($model)) {

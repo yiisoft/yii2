@@ -12,6 +12,8 @@ use Yii;
 /**
  * Controller is the base class for classes containing controller logic.
  *
+ * @property Module[] $modules All ancestor modules that this controller is located within. This property is
+ * read-only.
  * @property string $route The route (module ID, controller ID and action ID) of the current request. This
  * property is read-only.
  * @property string $uniqueId The controller ID that is prefixed with the module ID (if any). This property is
@@ -113,31 +115,48 @@ class Controller extends Component implements ViewContextInterface
     public function runAction($id, $params = [])
     {
         $action = $this->createAction($id);
-        if ($action !== null) {
-            Yii::trace("Route to run: " . $action->getUniqueId(), __METHOD__);
-            if (Yii::$app->requestedAction === null) {
-                Yii::$app->requestedAction = $action;
-            }
-            $oldAction = $this->action;
-            $this->action = $action;
-            $result = null;
-            $event = new ActionEvent($action);
-            Yii::$app->trigger(Application::EVENT_BEFORE_ACTION, $event);
-            if ($event->isValid && $this->module->beforeAction($action) && $this->beforeAction($action)) {
-                $result = $action->runWithParams($params);
-                $result = $this->afterAction($action, $result);
-                $result = $this->module->afterAction($action, $result);
-                $event = new ActionEvent($action);
-                $event->result = $result;
-                Yii::$app->trigger(Application::EVENT_AFTER_ACTION, $event);
-                $result = $event->result;
-            }
-            $this->action = $oldAction;
-
-            return $result;
-        } else {
+        if ($action === null) {
             throw new InvalidRouteException('Unable to resolve the request: ' . $this->getUniqueId() . '/' . $id);
         }
+
+        Yii::trace("Route to run: " . $action->getUniqueId(), __METHOD__);
+
+        if (Yii::$app->requestedAction === null) {
+            Yii::$app->requestedAction = $action;
+        }
+
+        $oldAction = $this->action;
+        $this->action = $action;
+
+        $modules = [];
+        $runAction = true;
+
+        foreach ($this->getModules() as $module) {
+            if ($module->beforeAction($action)) {
+                array_unshift($modules, $module);
+            } else {
+                $runAction = false;
+                break;
+            }
+        }
+
+        $result = null;
+
+        if ($runAction) {
+            if ($this->beforeAction($action)) {
+                $result = $action->runWithParams($params);
+                $result = $this->afterAction($action, $result);
+            }
+        }
+
+        foreach ($modules as $module) {
+            /** @var Module $module */
+            $result = $module->afterAction($action, $result);
+        }
+
+        $this->action = $oldAction;
+
+        return $result;
     }
 
     /**
@@ -207,25 +226,52 @@ class Controller extends Component implements ViewContextInterface
     }
 
     /**
-     * This method is invoked right before an action is to be executed (after all possible filters).
-     * You may override this method to do last-minute preparation for the action.
-     * If you override this method, please make sure you call the parent implementation first.
+     * This method is invoked right before an action is executed.
+     *
+     * The method will trigger the [[EVENT_BEFORE_ACTION]] event. The return value of the method
+     * will determine whether the action should continue to run.
+     *
+     * If you override this method, your code should look like the following:
+     *
+     * ```php
+     * public function beforeAction($action)
+     * {
+     *     if (parent::beforeAction($action)) {
+     *         // your custom code here
+     *         return true;  // or false if needed
+     *     } else {
+     *         return false;
+     *     }
+     * }
+     * ```
+     *
      * @param Action $action the action to be executed.
-     * @return boolean whether the action should continue to be executed.
+     * @return boolean whether the action should continue to run.
      */
     public function beforeAction($action)
     {
         $event = new ActionEvent($action);
         $this->trigger(self::EVENT_BEFORE_ACTION, $event);
-
         return $event->isValid;
     }
 
     /**
      * This method is invoked right after an action is executed.
-     * You may override this method to do some postprocessing for the action.
-     * If you override this method, please make sure you call the parent implementation first.
-     * Also make sure you return the action result, whether it is processed or not.
+     *
+     * The method will trigger the [[EVENT_AFTER_ACTION]] event. The return value of the method
+     * will be used as the action return value.
+     *
+     * If you override this method, your code should look like the following:
+     *
+     * ```php
+     * public function afterAction($action, $result)
+     * {
+     *     $result = parent::afterAction($action, $result);
+     *     // your custom code here
+     *     return $result;
+     * }
+     * ```
+     *
      * @param Action $action the action just executed.
      * @param mixed $result the action return result.
      * @return mixed the processed action result.
@@ -235,8 +281,24 @@ class Controller extends Component implements ViewContextInterface
         $event = new ActionEvent($action);
         $event->result = $result;
         $this->trigger(self::EVENT_AFTER_ACTION, $event);
-
         return $event->result;
+    }
+
+    /**
+     * Returns all ancestor modules of this controller.
+     * The first module in the array is the outermost one (i.e., the application instance),
+     * while the last is the innermost one.
+     * @return Module[] all ancestor modules that this controller is located within.
+     */
+    public function getModules()
+    {
+        $modules = [$this->module];
+        $module = $this->module;
+        while ($module->module !== null) {
+            array_unshift($modules, $module->module);
+            $module = $module->module;
+        }
+        return $modules;
     }
 
     /**

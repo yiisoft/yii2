@@ -37,7 +37,7 @@ class Order extends ActiveRecord
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
             ->via('orderItems', function ($q) {
                 // additional query configuration
-            })->orderBy('id');
+            })->orderBy('item.id');
     }
 
     public function getItemsInOrder1()

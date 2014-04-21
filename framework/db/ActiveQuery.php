@@ -1,6 +1,5 @@
 <?php
 /**
- * @author Qiang Xue <qiang.xue@gmail.com>
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
@@ -91,6 +90,17 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public $joinWith;
 
+
+    /**
+     * Constructor.
+     * @param array $modelClass the model class associated with this query
+     * @param array $config configurations to be applied to the newly created query object
+     */
+    public function __construct($modelClass, $config = [])
+    {
+        $this->modelClass = $modelClass;
+        parent::__construct($config);
+    }
 
     /**
      * Executes query and returns all results as an array.
@@ -403,6 +413,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $this->with($with);
         }
 
+        // remove duplicated joins added by joinWithRelations that may be added
+        // e.g. when joining a relation and a via relation at the same time
+        $uniqueJoins = [];
+        foreach ($this->join as $j) {
+            $uniqueJoins[serialize($j)] = $j;
+        }
+        $this->join = array_values($uniqueJoins);
+
         if (!empty($join)) {
             // append explicit join to joinWith()
             // https://github.com/yiisoft/yii2/issues/2880
@@ -623,6 +641,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * The new condition and the existing one will be joined using the 'AND' operator.
      * @param string|array $condition the new ON condition. Please refer to [[where()]]
      * on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
      * @return static the query object itself
      * @see onCondition()
      * @see orOnCondition()
@@ -643,6 +662,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * The new condition and the existing one will be joined using the 'OR' operator.
      * @param string|array $condition the new ON condition. Please refer to [[where()]]
      * on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
      * @return static the query object itself
      * @see onCondition()
      * @see andOnCondition()
@@ -682,8 +702,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function viaTable($tableName, $link, $callable = null)
     {
-        $relation = new ActiveQuery([
-            'modelClass' => get_class($this->primaryModel),
+        $relation = new ActiveQuery(get_class($this->primaryModel), [
             'from' => [$tableName],
             'link' => $link,
             'multiple' => true,

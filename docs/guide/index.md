@@ -36,6 +36,7 @@ Base concepts
 - [Event Handling](events.md) - The Yii event handling mechanism
 - [Behaviors](behaviors.md)
 
+
 Database
 --------
 
@@ -90,6 +91,7 @@ Advanced Topics
 - [Console Application](console.md)
 - [Performance Tuning](performance.md)
 - [Testing](testing.md)
+- [Service Locator and Dependency Injection](di.md)
 
 References
 ----------

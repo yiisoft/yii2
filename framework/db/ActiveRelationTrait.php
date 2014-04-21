@@ -16,14 +16,18 @@ use yii\base\InvalidParamException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @method ActiveRelationTrait one()
+ * @method ActiveRelationTrait[] all()
+ * @property ActiveRecord $modelClass
  */
 trait ActiveRelationTrait
 {
     /**
      * @var boolean whether this query represents a relation to more than one record.
      * This property is only used in relational context. If true, this relation will
-     * populate all query results into AR instances using [[all()]].
-     * If false, only the first row of the results will be retrieved using [[one()]].
+     * populate all query results into AR instances using [[Query::all()|all()]].
+     * If false, only the first row of the results will be retrieved using [[Query::one()|one()]].
      */
     public $multiple;
     /**
@@ -86,7 +90,7 @@ trait ActiveRelationTrait
      * public function getOrderItems()
      * {
      *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
-     *                 ->via('orders', ['order_id' => 'id']);
+     *                 ->via('orders');
      * }
      * ```
      *
@@ -248,12 +252,19 @@ trait ActiveRelationTrait
         }
     }
 
+    /**
+     * @param ActiveRecordInterface[] $primaryModels primary models
+     * @param ActiveRecordInterface[] $models models
+     * @param string $primaryName the primary relation name
+     * @param string $name the relation name
+     */
     private function populateInverseRelation(&$primaryModels, $models, $primaryName, $name)
     {
         if (empty($models) || empty($primaryModels)) {
             return;
         }
         $model = reset($models);
+        /** @var ActiveQueryInterface|ActiveQuery $relation */
         $relation = $model instanceof ActiveRecordInterface ? $model->getRelation($name) : (new $this->modelClass)->getRelation($name);
 
         if ($relation->multiple) {
@@ -356,6 +367,10 @@ trait ActiveRelationTrait
         return $buckets;
     }
 
+    /**
+     * @param array $attributes the attributes to prefix
+     * @return array
+     */
     private function prefixKeyColumns($attributes)
     {
         if ($this instanceof ActiveQuery && (!empty($this->join) || !empty($this->joinWith))) {
@@ -373,7 +388,7 @@ trait ActiveRelationTrait
             }
             if (isset($alias)) {
                 foreach ($attributes as $i => $attribute) {
-                	$attributes[$i] = "$alias.$attribute";
+                    $attributes[$i] = "$alias.$attribute";
                 }
             }
         }

@@ -38,13 +38,19 @@ use yii\di\ServiceLocator;
 class Module extends ServiceLocator
 {
     /**
+     * @event ActionEvent an event raised before executing a controller action.
+     * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
+     */
+    const EVENT_BEFORE_ACTION = 'beforeAction';
+    /**
+     * @event ActionEvent an event raised after executing a controller action.
+     */
+    const EVENT_AFTER_ACTION = 'afterAction';
+
+    /**
      * @var array custom module parameters (name => value).
      */
     public $params = [];
-    /**
-     * @var array the IDs of the components or modules that should be preloaded right after initialization.
-     */
-    public $preload = [];
     /**
      * @var string an ID that uniquely identifies this module among other modules which have the same [[module|parent]].
      */
@@ -87,7 +93,7 @@ class Module extends ServiceLocator
      */
     public $controllerNamespace;
     /**
-     * @return string the default route of this module. Defaults to 'default'.
+     * @var string the default route of this module. Defaults to 'default'.
      * The route may consist of child module ID, controller ID, and/or action ID.
      * For example, `help`, `post/create`, `admin/post/create`.
      * If action ID is not given, it will take the default value as specified in
@@ -127,9 +133,10 @@ class Module extends ServiceLocator
 
     /**
      * Initializes the module.
+     *
      * This method is called after the module is created and initialized with property values
-     * given in configuration. The default implementation will call [[preloadComponents()]] to
-     * load components that are declared in [[preload]].
+     * given in configuration. The default implementation will initialize [[controllerNamespace]]
+     * if it is not set.
      *
      * If you override this method, please make sure you call the parent implementation.
      */
@@ -141,7 +148,6 @@ class Module extends ServiceLocator
                 $this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
             }
         }
-        $this->preloadComponents();
     }
 
     /**
@@ -397,23 +403,6 @@ class Module extends ServiceLocator
     }
 
     /**
-     * Loads components that are declared in [[preload]].
-     * @throws InvalidConfigException if a component or module to be preloaded is unknown
-     */
-    public function preloadComponents()
-    {
-        foreach ($this->preload as $id) {
-            if ($this->has($id)) {
-                $this->get($id);
-            } elseif ($this->hasModule($id)) {
-                $this->getModule($id);
-            } else {
-                throw new InvalidConfigException("Unknown component or module: $id");
-            }
-        }
-    }
-
-    /**
      * Runs a controller action specified by a route.
      * This method parses the specified route and creates the corresponding child module(s), controller and action
      * instances. It then calls [[Controller::runAction()]] to run the action with the given parameters.
@@ -551,28 +540,61 @@ class Module extends ServiceLocator
     }
 
     /**
-     * This method is invoked right before an action of this module is to be executed (after all possible filters.)
-     * You may override this method to do last-minute preparation for the action.
-     * Make sure you call the parent implementation so that the relevant event is triggered.
+     * This method is invoked right before an action within this module is executed.
+     *
+     * The method will trigger the [[EVENT_BEFORE_ACTION]] event. The return value of the method
+     * will determine whether the action should continue to run.
+     *
+     * If you override this method, your code should look like the following:
+     *
+     * ```php
+     * public function beforeAction($action)
+     * {
+     *     if (parent::beforeAction($action)) {
+     *         // your custom code here
+     *         return true;  // or false if needed
+     *     } else {
+     *         return false;
+     *     }
+     * }
+     * ```
+     *
      * @param Action $action the action to be executed.
      * @return boolean whether the action should continue to be executed.
      */
     public function beforeAction($action)
     {
-        return true;
+        $event = new ActionEvent($action);
+        $this->trigger(self::EVENT_BEFORE_ACTION, $event);
+        return $event->isValid;
     }
 
     /**
-     * This method is invoked right after an action of this module has been executed.
-     * You may override this method to do some postprocessing for the action.
-     * Make sure you call the parent implementation so that the relevant event is triggered.
-     * Also make sure you return the action result, whether it is processed or not.
+     * This method is invoked right after an action within this module is executed.
+     *
+     * The method will trigger the [[EVENT_AFTER_ACTION]] event. The return value of the method
+     * will be used as the action return value.
+     *
+     * If you override this method, your code should look like the following:
+     *
+     * ```php
+     * public function afterAction($action, $result)
+     * {
+     *     $result = parent::afterAction($action, $result);
+     *     // your custom code here
+     *     return $result;
+     * }
+     * ```
+     *
      * @param Action $action the action just executed.
      * @param mixed $result the action return result.
      * @return mixed the processed action result.
      */
     public function afterAction($action, $result)
     {
-        return $result;
+        $event = new ActionEvent($action);
+        $event->result = $result;
+        $this->trigger(self::EVENT_AFTER_ACTION, $event);
+        return $event->result;
     }
 }

@@ -349,14 +349,24 @@ class FileHelperTest extends TestCase
         file_put_contents($file, 'some text');
         $this->assertEquals('text/plain', FileHelper::getMimeType($file));
 
+        // see http://stackoverflow.com/questions/477816/what-is-the-correct-json-content-type
+        // JSON/JSONP should not use text/plain - see http://jibbering.com/blog/?p=514
+        // with "fileinfo" extension enabled, returned MIME is not quite correctly "text/plain"
+        // without "fileinfo" it falls back to getMimeTypeByExtension() and returns application/json
         $file = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_test.json';
         file_put_contents($file, '{"a": "b"}');
-        $this->assertEquals('text/plain', FileHelper::getMimeType($file));
+        $this->assertTrue(in_array(FileHelper::getMimeType($file), ['application/json', 'text/plain']));
     }
 
     public function testNormalizePath()
     {
-        $this->assertEquals(DIRECTORY_SEPARATOR.'home'.DIRECTORY_SEPARATOR.'demo', FileHelper::normalizePath('/home\demo/'));
+        $ds = DIRECTORY_SEPARATOR;
+        $this->assertEquals("{$ds}a{$ds}b", FileHelper::normalizePath('//a\b/'));
+        $this->assertEquals("{$ds}b{$ds}c", FileHelper::normalizePath('/a/../b/c'));
+        $this->assertEquals("{$ds}c", FileHelper::normalizePath('/a\\b/../..///c'));
+        $this->assertEquals("{$ds}c", FileHelper::normalizePath('/a/.\\b//../../c'));
+        $this->assertEquals("c", FileHelper::normalizePath('/a/.\\b/../..//../c'));
+        $this->assertEquals("..{$ds}c", FileHelper::normalizePath('//a/.\\b//..//..//../../c'));
     }
 
     public function testLocalizedDirectory()

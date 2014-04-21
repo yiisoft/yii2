@@ -7,6 +7,8 @@
 
 namespace yii\db;
 
+use yii\base\NotSupportedException;
+
 /**
  * The BaseQuery trait represents the minimum method set of a database Query.
  *
@@ -76,7 +78,7 @@ trait QueryTrait
      *
      * See [[QueryInterface::where()]] for detailed documentation.
      *
-     * @param array $condition the conditions that should be put in the WHERE part.
+     * @param string|array $condition the conditions that should be put in the WHERE part.
      * @return static the query object itself
      * @see andWhere()
      * @see orWhere()
@@ -123,6 +125,177 @@ trait QueryTrait
             $this->where = ['or', $this->where, $condition];
         }
         return $this;
+    }
+
+    /**
+     * Sets the WHERE part of the query but ignores [[isEmpty()|empty operands]].
+     *
+     * This method is similar to [[where()]]. The main difference is that this method will
+     * remove [[isEmpty()|empty query operands]]. As a result, this method is best suited
+     * for building query conditions based on filter values entered by users.
+     *
+     * The following code shows the difference between this method and [[where()]]:
+     *
+     * ```php
+     * // WHERE `age`=:age
+     * $query->filterWhere(['name' => null, 'age' => 20]);
+     * // WHERE `age`=:age
+     * $query->where(['age' => 20]);
+     * // WHERE `name` IS NULL AND `age`=:age
+     * $query->where(['name' => null, 'age' => 20]);
+     * ```
+     *
+     * Note that unlike [[where()]], you cannot pass binding parameters to this method.
+     *
+     * @param array $condition the conditions that should be put in the WHERE part.
+     * See [[where()]] on how to specify this parameter.
+     * @return static the query object itself
+     * @see where()
+     * @see andFilterWhere()
+     * @see orFilterWhere()
+     */
+    public function filterWhere(array $condition)
+    {
+        $condition = $this->filterCondition($condition);
+        if ($condition !== []) {
+            $this->where($condition);
+        }
+        return $this;
+    }
+
+    /**
+     * Adds an additional WHERE condition to the existing one but ignores [[isEmpty()|empty operands]].
+     * The new condition and the existing one will be joined using the 'AND' operator.
+     *
+     * This method is similar to [[andWhere()]]. The main difference is that this method will
+     * remove [[isEmpty()|empty query operands]]. As a result, this method is best suited
+     * for building query conditions based on filter values entered by users.
+     *
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see filterWhere()
+     * @see orFilterWhere()
+     */
+    public function andFilterWhere(array $condition)
+    {
+        $condition = $this->filterCondition($condition);
+        if ($condition !== []) {
+            $this->andWhere($condition);
+        }
+        return $this;
+    }
+
+    /**
+     * Adds an additional WHERE condition to the existing one but ignores [[isEmpty()|empty operands]].
+     * The new condition and the existing one will be joined using the 'OR' operator.
+     *
+     * This method is similar to [[orWhere()]]. The main difference is that this method will
+     * remove [[isEmpty()|empty query operands]]. As a result, this method is best suited
+     * for building query conditions based on filter values entered by users.
+     *
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @return static the query object itself
+     * @see filterWhere()
+     * @see andFilterWhere()
+     */
+    public function orFilterWhere(array $condition)
+    {
+        $condition = $this->filterCondition($condition);
+        if ($condition !== []) {
+            $this->orWhere($condition);
+        }
+        return $this;
+    }
+
+    /**
+     * Removes [[isEmpty()|empty operands]] from the given query condition.
+     *
+     * @param array $condition the original condition
+     * @return array the condition with [[isEmpty()|empty operands]] removed.
+     * @throws NotSupportedException if the condition operator is not supported
+     */
+    protected function filterCondition($condition)
+    {
+        if (!is_array($condition)) {
+            return $condition;
+        }
+
+        if (!isset($condition[0])) {
+            // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
+            foreach ($condition as $name => $value) {
+                if ($this->isEmpty($value)) {
+                    unset($condition[$name]);
+                }
+            }
+            return $condition;
+        }
+
+        // operator format: operator, operand 1, operand 2, ...
+
+        $operator = array_shift($condition);
+
+        switch (strtoupper($operator)) {
+            case 'NOT':
+            case 'AND':
+            case 'OR':
+                foreach ($condition as $i => $operand) {
+                    $subCondition = $this->filterCondition($operand);
+                    if ($this->isEmpty($subCondition)) {
+                        unset($condition[$i]);
+                    } else {
+                        $condition[$i] = $subCondition;
+                    }
+                }
+
+                if (empty($condition)) {
+                    return [];
+                }
+                break;
+            case 'IN':
+            case 'NOT IN':
+            case 'LIKE':
+            case 'OR LIKE':
+            case 'NOT LIKE':
+            case 'OR NOT LIKE':
+                if (array_key_exists(1, $condition) && $this->isEmpty($condition[1])) {
+                    return [];
+                }
+                break;
+            case 'BETWEEN':
+            case 'NOT BETWEEN':
+                if (array_key_exists(1, $condition) && array_key_exists(2, $condition)) {
+                    if ($this->isEmpty($condition[1]) || $this->isEmpty($condition[2])) {
+                        return [];
+                    }
+                }
+                break;
+            default:
+                throw new NotSupportedException("Operator not supported: $operator");
+        }
+
+        array_unshift($condition, $operator);
+
+        return $condition;
+    }
+
+    /**
+     * Returns a value indicating whether the give value is "empty".
+     *
+     * The value is considered "empty", if one of the following conditions is satisfied:
+     *
+     * - it is `null`,
+     * - an empty string (`''`),
+     * - a string containing only whitespace characters,
+     * - or an empty array.
+     *
+     * @param mixed $value
+     * @return boolean if the value is empty
+     */
+    protected function isEmpty($value)
+    {
+        return $value === '' || $value === [] || $value === null || is_string($value) && trim($value) === '';
     }
 
     /**

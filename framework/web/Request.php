@@ -100,7 +100,7 @@ class Request extends \yii\base\Request
      *
      * Note, this feature requires that the user client accepts cookie. Also, to use this feature,
      * forms submitted via POST method must contain a hidden input whose name is specified by [[csrfParam]].
-     * You may use [[\yii\web\Html::beginForm()]] to generate his hidden input.
+     * You may use [[\yii\helpers\Html::beginForm()]] to generate his hidden input.
      *
      * In JavaScript, you may get the values of [[csrfParam]] and [[csrfToken]] via `yii.getCsrfParam()` and
      * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
@@ -337,7 +337,7 @@ class Request extends \yii\base\Request
      * Returns the request parameters given in the request body.
      *
      * Request parameters are determined using the parsers configured in [[parsers]] property.
-     * If no parsers are configured for the current [[contentType]] it uses the PHP function [[mb_parse_str()]]
+     * If no parsers are configured for the current [[contentType]] it uses the PHP function `mb_parse_str()`
      * to parse the [[rawBody|request body]].
      * @return array the request parameters given in the request body.
      * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
@@ -671,15 +671,16 @@ class Request extends \yii\base\Request
         // try to encode in UTF8 if not so
         // http://w3.org/International/questions/qa-forms-utf-8.html
         if (!preg_match('%^(?:
-                [\x09\x0A\x0D\x20-\x7E]              # ASCII
-                | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-                | \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
-                | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-                | \xED[\x80-\x9F][\x80-\xBF]         # excluding surrogates
-                | \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
-                | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-                | \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
-                )*$%xs', $pathInfo)) {
+            [\x09\x0A\x0D\x20-\x7E]              # ASCII
+            | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+            | \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
+            | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+            | \xED[\x80-\x9F][\x80-\xBF]         # excluding surrogates
+            | \xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
+            | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+            | \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
+            )*$%xs', $pathInfo)
+        ) {
             $pathInfo = utf8_encode($pathInfo);
         }
 

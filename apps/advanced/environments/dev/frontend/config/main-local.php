@@ -4,8 +4,10 @@ $config = [];
 
 if (!YII_ENV_TEST) {
     // configuration adjustments for 'dev' environment
-    $config['preload'][] = 'debug';
+    $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = 'yii\debug\Module';
+
+    $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = 'yii\gii\Module';
 }
 

@@ -96,6 +96,7 @@ class Query extends Component implements QueryInterface
 
     public $facets = [];
 
+
     public function init()
     {
         parent::init();
@@ -271,7 +272,6 @@ class Query extends Component implements QueryInterface
         foreach ($result['hits']['hits'] as $row) {
             $column[] = isset($row['fields'][$field]) ? $row['fields'][$field] : null;
         }
-
         return $column;
     }
 
@@ -316,7 +316,6 @@ class Query extends Component implements QueryInterface
     public function addFacet($name, $type, $options)
     {
         $this->facets[$name] = [$type => $options];
-
         return $this;
     }
 
@@ -450,7 +449,6 @@ class Query extends Component implements QueryInterface
     public function query($query)
     {
         $this->query = $query;
-
         return $this;
     }
 
@@ -462,7 +460,6 @@ class Query extends Component implements QueryInterface
     public function filter($filter)
     {
         $this->filter = $filter;
-
         return $this;
     }
 
@@ -479,7 +476,6 @@ class Query extends Component implements QueryInterface
     {
         $this->index = $index;
         $this->type = $type;
-
         return $this;
     }
 
@@ -496,7 +492,6 @@ class Query extends Component implements QueryInterface
         } else {
             $this->fields = func_get_args();
         }
-
         return $this;
     }
 
@@ -510,7 +505,6 @@ class Query extends Component implements QueryInterface
     public function timeout($timeout)
     {
         $this->timeout = $timeout;
-
         return $this;
     }
 }

@@ -51,9 +51,15 @@ application's `web` directory.
 is an [alias][] that corresponds to your website base URL such as `http://example.com/`.
 
 In case you have asset files under a non web accessible directory, that is the case for any extension, you need
-to specify `$sourcePath` instead of `$basePath` and `$baseUrl`. Files will be copied or symlinked from source path
-to the `web/assets` directory of your application prior to being registered.
+to specify `$sourcePath` instead of `$basePath` and `$baseUrl`. **All files** from the source path will be copied
+or symlinked to the `web/assets` directory of your application prior to being registered.
 In this case `$basePath` and `$baseUrl` are generated automatically at the time of publishing the asset bundle.
+This is the way to work with assets when you want to publish the whole directory no matter what's in be it images,
+webfonts etc.
+
+
+> **Note:** do not use the `web/assets` path to put your own files in it. It is meant to be used only for asset publishing.
+> When you create files that are already in web accessable directory put them in folders like `web/css` or `web/js`.
 
 Dependencies on other asset bundles are specified via `$depends` property. It is an array that contains fully qualified
 class names of bundle classes that should be published in order for this bundle to work properly.
@@ -205,6 +211,10 @@ The template itself looks like the following:
  * Please define these missing path aliases.
  */
 return [
+    // Adjust command/callback for JavaScript files compressing:
+    'jsCompressor' => 'java -jar compiler.jar --js {from} --js_output_file {to}',
+    // Adjust command/callback for CSS files compressing:
+    'cssCompressor' => 'java -jar yuicompressor.jar --type css {from} -o {to}',
     // The list of asset bundles to compress:
     'bundles' => [
         // 'yii\web\YiiAsset',
@@ -236,6 +246,11 @@ everything to `path/to/web` that can be accessed like `http://example.com/` i.e.
 
 JavaScript files are combined, compressed and written to `js/all-{ts}.js` where {ts} is replaced with current UNIX
 timestamp.
+
+`jsCompressor` and `cssCompressor` are console commands or PHP callbacks, which should perform JavaScript and CSS files
+compression correspondingly. You should adjust these values according to your environment.
+By default Yii relies on [Closure Compiler](https://developers.google.com/closure/compiler/) for JavaScript file compression,
+and on [YUI Compressor](https://github.com/yui/yuicompressor/). You should install this utilities manually, if you wish to use them.
 
 ### Providing compression tools
 

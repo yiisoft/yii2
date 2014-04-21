@@ -41,6 +41,9 @@ use yii\helpers\Url;
  */
 class View extends \yii\base\View
 {
+    /**
+     * @event Event an event that is triggered by [[beginBody()]].
+     */
     const EVENT_BEGIN_BODY = 'beginBody';
     /**
      * @event Event an event that is triggered by [[endBody()]].

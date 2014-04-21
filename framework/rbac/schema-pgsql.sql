@@ -12,15 +12,28 @@
 drop table if exists "auth_assignment";
 drop table if exists "auth_item_child";
 drop table if exists "auth_item";
+drop table if exists "auth_rule";
+
+create table "auth_rule"
+(
+    "name"  varchar(64) not null,
+    "data"  text,
+    "created_at"           integer,
+    "updated_at"           integer,
+    primary key ("name")
+);
 
 create table "auth_item"
 (
    "name"                 varchar(64) not null,
    "type"                 integer not null,
    "description"          text,
-   "biz_rule"              text,
+   "rule_name"            varchar(64),
    "data"                 text,
-   primary key ("name")
+   "created_at"           integer,
+   "updated_at"           integer,
+   primary key ("name"),
+   foreign key ("rule_name") references "auth_rule" ("name") on delete set null on update cascade
 );
 
 create index auth_item_type_idx on "auth_item" ("type");
@@ -38,8 +51,7 @@ create table "auth_assignment"
 (
    "item_name"            varchar(64) not null,
    "user_id"              varchar(64) not null,
-   "biz_rule"              text,
-   "data"                 text,
+   "created_at"           integer,
    primary key ("item_name","user_id"),
    foreign key ("item_name") references "auth_item" ("name") on delete cascade on update cascade
 );

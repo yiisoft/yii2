@@ -5,11 +5,13 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\filters;
 
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\web\User;
+use yii\web\ForbiddenHttpException;
 
 /**
  * AccessControl provides simple access control based on a set of rules.
@@ -28,7 +30,7 @@ use yii\base\ActionFilter;
  * {
  *     return [
  *         'access' => [
- *             'class' => \yii\web\AccessControl::className(),
+ *             'class' => \yii\filters\AccessControl::className(),
  *             'only' => ['create', 'update'],
  *             'rules' => [
  *                 // deny all POST requests
@@ -63,15 +65,15 @@ class AccessControl extends ActionFilter
      * function ($rule, $action)
      * ~~~
      *
-     * where `$rule` is this rule, and `$action` is the current [[Action|action]] object.
-     * `$rule` will be `null` if access is denied because none of the rules matched.
+     * where `$rule` is the rule that denies the user, and `$action` is the current [[Action|action]] object.
+     * `$rule` can be `null` if access is denied because none of the rules matched.
      */
     public $denyCallback;
     /**
      * @var array the default configuration of access rules. Individual rule configurations
      * specified via [[rules]] will take precedence when the same property of the rule is configured.
      */
-    public $ruleConfig = ['class' => 'yii\web\AccessRule'];
+    public $ruleConfig = ['class' => 'yii\filters\AccessRule'];
     /**
      * @var array a list of access rule objects or configuration arrays for creating the rule objects.
      * If a rule is specified via a configuration array, it will be merged with [[ruleConfig]] first

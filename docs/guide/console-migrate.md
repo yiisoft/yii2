@@ -37,7 +37,7 @@ is used as part of a PHP class name in the migration. Therefore, it should only 
 digits and/or underscore characters.
 
 The above command will create a new
-file named `m101129_185401_create_news_table.php`. This file will be created within the `protected/migrations` directory. Initially, the migration file will be generated with the following code:
+file named `m101129_185401_create_news_table.php`. This file will be created within the `@app/migrations` directory. Initially, the migration file will be generated with the following code:
 
 ```php
 class m101129_185401_create_news_table extends \yii\db\Migration
