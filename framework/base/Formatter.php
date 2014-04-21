@@ -23,6 +23,7 @@ use yii\helpers\Html;
  * You can access that instance via `Yii::$app->formatter`.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 2.0
  */
 class Formatter extends Component
