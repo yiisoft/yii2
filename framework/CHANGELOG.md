@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.0-rc under development
 --------------------------
 
-- Bug #3194: Date formatter works only for timestamps in the year range 1970 to 2038.
 - Bug #2563: Theming is not working if the path map of the theme contains ".." or "." in the paths (qiangxue)
 - Bug #2801: Fixed the issue that GridView gets footer content before data cells content (ElisDN)
 - Bug #3042: `yii\widgets\Pjax` should end application right after it finishes responding to a pjax request (qiangxue)
@@ -15,6 +14,7 @@ Yii Framework 2 Change Log
 - Bug #3128: Fixed the bug that `defaultRoles` set in RBAC manager was not working as specified (qiangxue)
 - Bug #3153: Fixed the bug that using "between" operator to build a SQL query will cause a PHP notice (gonimar)
 - Bug #3184: Fixed the bug that client validation for string length comparison did not set error message correctly (Sergeygithub)
+- Bug #3194: Date formatter works only for timestamps in the year range 1970 to 2038 (kartik-v)
 - Enh #2837: Error page now shows arguments in stack trace method calls (samdark)
 - Enh #3088: The debug and gii modules will manage their own URL rules now (hiltonjanfield, qiangxue)
 - Enh #3103: debugger panel is now not displayed when printing a page (githubjeka)
