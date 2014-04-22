@@ -15,6 +15,8 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\widgets\BaseListView;
+use yii\helpers\ArrayHelper;
+use yii\base\Model;
 
 /**
  * The GridView widget is used to display data in a grid.
@@ -174,6 +176,17 @@ class GridView extends BaseListView
      */
     public $filterRowOptions = ['class' => 'filters'];
 
+    /**
+     * @var string the layout that determines how different sections of the list view should be organized.
+     * The following tokens will be replaced with the corresponding section contents:
+     *
+     * - `{summary}`: the summary section. See [[renderSummary()]].
+     * - `{error}`: the filter model errors. See [[renderErrors()]].
+     * - `{items}`: the list items. See [[renderItems()]].
+     * - `{sorter}`: the sorter. See [[renderSorter()]].
+     * - `{pager}`: the pager. See [[renderPager()]].
+     */
+    public $layout = "{summary}\n{errors}\n{items}\n{pager}";
 
     /**
      * Initializes the grid view.
@@ -228,7 +241,17 @@ class GridView extends BaseListView
             return Html::tag('div', Html::ul($errorsList, ['class' => 'help-block']), ['class' => 'has-error']);
         }
         
-        return parent::renderErrors();
+        return '';
+    }
+    
+    public function renderSection($name)
+    {
+        switch ($name) {
+            case "{errors}":
+                return $this->renderErrors();
+            default:
+                return parent::renderSection($name);
+        }
     }
     
     /**
