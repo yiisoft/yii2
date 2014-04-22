@@ -15,8 +15,8 @@ use yii\web\AssetBundle;
  */
 class ThemeAsset extends AssetBundle
 {
-    public $sourcePath = '@yii/jui/assets';
+    public $sourcePath = '@bower/jquery-ui/themes';
     public $css = [
-        'theme/jquery.ui.css',
+        'smoothness/jquery.ui.css',
     ];
 }

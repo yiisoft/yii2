@@ -15,7 +15,7 @@ use yii\web\AssetBundle;
  */
 class CoreAsset extends AssetBundle
 {
-    public $sourcePath = '@yii/jui/assets';
+    public $sourcePath = '@bower/jquery-ui/ui';
     public $js = [
         'jquery.ui.core.js',
         'jquery.ui.widget.js',

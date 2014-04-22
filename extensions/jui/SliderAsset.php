@@ -15,7 +15,7 @@ use yii\web\AssetBundle;
  */
 class SliderAsset extends AssetBundle
 {
-    public $sourcePath = '@yii/jui/assets';
+    public $sourcePath = '@bower/jquery-ui/ui';
     public $js = [
         'jquery.ui.slider.js',
     ];

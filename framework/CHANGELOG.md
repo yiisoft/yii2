@@ -329,6 +329,8 @@ Yii Framework 2 Change Log
 - New #3029: Added `yii\bootstrap\ActiveForm` and `yii\bootstrap\ActiveField` (mikehaertl)
 - New: Yii framework now comes with core messages translated into 26 languages, many thanks to all our translators!
 - New: Added `yii\codeception\DbTestCase` (qiangxue)
+- New: Added `yii\web\PrefixUrlRule` (qiangxue)
+- Chg #2946: Added Bower package manager support for jquery and jquery-ui / jui (pmoust) 
 - New: Added `yii\web\GroupUrlRule` (qiangxue)
 - New: Added `yii\filters\RateLimiter` (qiangxue)
 - New: Added various authentication methods, including `HttpBasicAuth`, `HttpBearerAuth`, `QueryParamAuth`, and `CompositeAuth` (qiangxue)

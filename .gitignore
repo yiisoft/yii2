@@ -15,6 +15,9 @@ Thumbs.db
 # composer vendor dir
 /vendor
 
+# bower components dir
+/bower_components
+
 # composer itself is not needed
 composer.phar
 # composer.lock should not be committed as we always want the latest versions
