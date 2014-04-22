@@ -452,11 +452,13 @@ abstract class Schema extends Object
      */
     protected function getColumnPhpType($column)
     {
-        static $typeMap = [ // abstract type => php type
+        static $typeMap = [
+            // abstract type => php type
             'smallint' => 'integer',
             'integer' => 'integer',
             'boolean' => 'boolean',
             'float' => 'double',
+            'binary' => 'resource',
         ];
         if (isset($typeMap[$column->type])) {
             if ($column->type === 'integer') {
