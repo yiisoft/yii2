@@ -76,7 +76,7 @@
 		"yiisoft/jquery-pjax": "*",
 		"ezyang/htmlpurifier": "4.6.*",
 		"cebe/markdown": "0.9.*",
-		"beelab/bowerphp": "dev-master"
+		"beelab/bowerphp": "0.1.*@alpha"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "3.7.*",
