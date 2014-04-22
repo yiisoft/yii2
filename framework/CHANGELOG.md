@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Chg #3175: InvalidCallException, InvalidParamException, UnknownMethodException are now extended from SPL BadMethodCallException (samdark)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
 - Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
+- Chg #3209: Added Bower package manager support for jquery and jquery-ui / jui (pmoust) 
 
 
 2.0.0-beta April 13, 2014
@@ -329,7 +330,6 @@ Yii Framework 2 Change Log
 - New: Yii framework now comes with core messages translated into 26 languages, many thanks to all our translators!
 - New: Added `yii\codeception\DbTestCase` (qiangxue)
 - New: Added `yii\web\PrefixUrlRule` (qiangxue)
-- Chg #2946: Added Bower package manager support for jquery and jquery-ui / jui (pmoust) 
 - New: Added `yii\web\GroupUrlRule` (qiangxue)
 - New: Added `yii\filters\RateLimiter` (qiangxue)
 - New: Added various authentication methods, including `HttpBasicAuth`, `HttpBearerAuth`, `QueryParamAuth`, and `CompositeAuth` (qiangxue)
