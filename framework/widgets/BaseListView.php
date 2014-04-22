@@ -78,11 +78,12 @@ abstract class BaseListView extends Widget
      * The following tokens will be replaced with the corresponding section contents:
      *
      * - `{summary}`: the summary section. See [[renderSummary()]].
+     * - `{errors}`: the errors section. See [[renderErrors()]].
      * - `{items}`: the list items. See [[renderItems()]].
      * - `{sorter}`: the sorter. See [[renderSorter()]].
      * - `{pager}`: the pager. See [[renderPager()]].
      */
-    public $layout = "{summary}\n{items}\n{pager}";
+    public $layout = "{summary}\n{errors}\n{items}\n{pager}";
 
     /**
      * Renders the data models.
@@ -90,6 +91,15 @@ abstract class BaseListView extends Widget
      */
     abstract public function renderItems();
 
+    /**
+     * Renders the list of errors, if there are any
+     * @return string the rendering result
+     */
+    public function renderErrors() 
+    {
+        return '';
+    }
+    
     /**
      * Initializes the view.
      */
@@ -131,6 +141,8 @@ abstract class BaseListView extends Widget
     public function renderSection($name)
     {
         switch ($name) {
+            case '{errors}':
+                return $this->renderErrors();
             case '{summary}':
                 return $this->renderSummary();
             case '{items}':
