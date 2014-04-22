@@ -101,7 +101,6 @@ abstract class BaseListView extends Widget
         if ($this->emptyText === null) {
             $this->emptyText = Yii::t('yii', 'No results found.');
         }
-        $this->dataProvider->prepare();
     }
 
     /**
