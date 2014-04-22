@@ -118,7 +118,7 @@
 
         destroy: function () {
             return this.each(function () {
-                $(window).unbind('.yiiActiveForm');
+                $(this).unbind('.yiiActiveForm');
                 $(this).removeData('yiiActiveForm');
             });
         },
