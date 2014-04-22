@@ -98,7 +98,7 @@ class BaseStringHelper
      */
     public static function truncate($string, $length, $suffix = '...', $encoding = null)
     {
-        if (mb_strlen($string) > $length) {
+        if (mb_strlen($string, $encoding ?: \Yii::$app->charset) > $length) {
             return trim(mb_substr($string, 0, $length, $encoding ?: \Yii::$app->charset)) . $suffix;
         } else {
             return $string;
@@ -114,7 +114,7 @@ class BaseStringHelper
      */
     public static function truncateWords($string, $count, $suffix = '...')
     {
-        $words = preg_split('/(\s+)/', trim($string), null, PREG_SPLIT_DELIM_CAPTURE);
+        $words = preg_split('/(\s+)/u', trim($string), null, PREG_SPLIT_DELIM_CAPTURE);
         if (count($words) / 2 > $count) {
             return implode('', array_slice($words, 0, ($count * 2) - 1)) . $suffix;
         } else {
