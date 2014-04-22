@@ -80,4 +80,15 @@ class Facebook extends OAuth2
     {
         return 'Facebook';
     }
+    
+    /**
+     * @inheritdoc
+     */
+	public function buildAuthUrl(array $params = [])
+	{
+		if (!empty($this->viewOptions['display']) && $this->viewOptions['display'] == 'popup') {
+			$params['display'] = 'popup';
+		}
+		return parent::buildAuthUrl($params);
+	}
 }
