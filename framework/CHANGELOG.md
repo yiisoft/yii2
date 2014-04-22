@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #2563: Theming is not working if the path map of the theme contains ".." or "." in the paths (qiangxue)
 - Bug #2801: Fixed the issue that GridView gets footer content before data cells content (ElisDN)
+- Bug #2853: ActiveRecord did not handle resource-typed columns well (chris68, qiangxue)
 - Bug #3042: `yii\widgets\Pjax` should end application right after it finishes responding to a pjax request (qiangxue)
 - Bug #3066: `yii\db\mssql\Schema::getTableSchema()` should return null when the table does not exist (qiangxue)
 - Bug #3091: Fixed inconsistent treatment of `Widget::run()` when a widget is used as a container and as a self-contained object (qiangxue)
