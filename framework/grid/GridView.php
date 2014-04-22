@@ -214,9 +214,9 @@ class GridView extends BaseListView
     }
     
     /**
-     * Renders the list of filterModel errors
+     * @inheritdoc
      */
-    public function renderErrorsList()
+    public function renderErrors()
     {
         if ($this->filterModel instanceof Model && $this->filterModel->hasErrors()) 
         {
@@ -227,17 +227,8 @@ class GridView extends BaseListView
             }
             return Html::tag('div', Html::ul($errorsList, ['class' => 'help-block']), ['class' => 'has-error']);
         }
-        return '';
-    }
-    
-    /**
-     * @inheritdoc
-     */
-    public function renderSummary()
-    {
-        $summary = parent::renderSummary();
-        $errorsList = $this->renderErrorsList();
-        return $summary . $errorsList;
+        
+        return parent::renderErrors();
     }
     
     /**
