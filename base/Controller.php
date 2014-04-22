@@ -398,14 +398,13 @@ class Controller extends Component implements ViewContextInterface
      * The [[render()]], [[renderPartial()]] and [[renderFile()]] methods will use
      * this view object to implement the actual view rendering.
      * If not set, it will default to the "view" application component.
-     * @return View the view object that can be used to render views or view files.
+     * @return View|\yii\web\View the view object that can be used to render views or view files.
      */
     public function getView()
     {
         if ($this->_view === null) {
             $this->_view = Yii::$app->getView();
         }
-
         return $this->_view;
     }
 
