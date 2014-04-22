@@ -6,6 +6,9 @@ use yii\validators\RegularExpressionValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
+/**
+ * @group validators
+ */
 class RegularExpressionValidatorTest extends TestCase
 {
     protected function setUp()

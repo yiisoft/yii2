@@ -6,6 +6,9 @@ use yii\validators\RangeValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
+/**
+ * @group validators
+ */
 class RangeValidatorTest extends TestCase
 {
     protected function setUp()

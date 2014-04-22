@@ -6,7 +6,7 @@ use yii\validators\DefaultValueValidator;
 use yiiunit\TestCase;
 
 /**
- * DefaultValueValidatorTest
+ * @group validators
  */
 class DefaultValueValidatorTest extends TestCase
 {

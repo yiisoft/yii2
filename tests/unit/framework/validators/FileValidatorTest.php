@@ -8,6 +8,9 @@ use Yii;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
+/**
+ * @group validators
+ */
 class FileValidatorTest extends TestCase
 {
     public function setUp()

@@ -6,7 +6,7 @@ use yii\validators\BooleanValidator;
 use yiiunit\TestCase;
 
 /**
- * BooleanValidatorTest
+ * @group validators
  */
 class BooleanValidatorTest extends TestCase
 {

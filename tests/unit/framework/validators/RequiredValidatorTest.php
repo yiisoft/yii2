@@ -5,6 +5,9 @@ use yii\validators\RequiredValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
+/**
+ * @group validators
+ */
 class RequiredValidatorTest extends TestCase
 {
     protected function setUp()
