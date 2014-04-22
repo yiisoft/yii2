@@ -111,7 +111,7 @@
                     $form.on('mouseup.yiiActiveForm keyup.yiiActiveForm', ':submit', function () {
                         $form.data('yiiActiveForm').submitObject = $(this);
                     });
-                    $form.on('submit', methods.submitForm);
+                    $form.on('submit.yiiActiveForm', methods.submitForm);
                 }
             });
         },
