@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #2563: Theming is not working if the path map of the theme contains ".." or "." in the paths (qiangxue)
 - Bug #2801: Fixed the issue that GridView gets footer content before data cells content (ElisDN)
+- Bug #2853: ActiveRecord did not handle resource-typed columns well (chris68, qiangxue)
 - Bug #3042: `yii\widgets\Pjax` should end application right after it finishes responding to a pjax request (qiangxue)
 - Bug #3066: `yii\db\mssql\Schema::getTableSchema()` should return null when the table does not exist (qiangxue)
 - Bug #3091: Fixed inconsistent treatment of `Widget::run()` when a widget is used as a container and as a self-contained object (qiangxue)
@@ -15,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #3153: Fixed the bug that using "between" operator to build a SQL query will cause a PHP notice (gonimar)
 - Bug #3184: Fixed the bug that client validation for string length comparison did not set error message correctly (Sergeygithub)
 - Bug #3194: Date formatter works only for timestamps in the year range 1970 to 2038 (kartik-v)
+- Bug #3204: `yii\di\Container` did not handle the `$config` parameter well in case when it does not have a default value (qiangxue)
 - Enh #2837: Error page now shows arguments in stack trace method calls (samdark)
 - Enh #3088: The debug and gii modules will manage their own URL rules now (hiltonjanfield, qiangxue)
 - Enh #3103: debugger panel is now not displayed when printing a page (githubjeka)
