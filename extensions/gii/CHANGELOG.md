@@ -4,6 +4,7 @@ Yii Framework 2 gii extension Change Log
 2.0.0-rc under development
 --------------------------
 
+- Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
 - Enh #3088: The gii module will manage their own URL rules now (qiangxue)
 
 

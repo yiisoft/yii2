@@ -96,15 +96,29 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function beforeAction($action)
     {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        if (!$this->checkAccess()) {
+            throw new ForbiddenHttpException('You are not allowed to access this page.');
+        }
+
         foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
             $this->generators[$id] = Yii::createObject($config);
         }
 
-        if ($this->checkAccess()) {
-            return parent::beforeAction($action);
-        } else {
-            throw new ForbiddenHttpException('You are not allowed to access this page.');
-        }
+        $this->resetGlobalSettings();
+
+        return true;
+    }
+
+    /**
+     * Resets potentially incompatible global settings done in app config.
+     */
+    protected function resetGlobalSettings()
+    {
+        Yii::$app->assetManager->bundles = [];
     }
 
     /**
