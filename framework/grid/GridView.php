@@ -181,7 +181,7 @@ class GridView extends BaseListView
      * The following tokens will be replaced with the corresponding section contents:
      *
      * - `{summary}`: the summary section. See [[renderSummary()]].
-     * - `{error}`: the filter model errors. See [[renderErrors()]].
+     * - `{errors}`: the filter model errors. See [[renderErrors()]].
      * - `{items}`: the list items. See [[renderItems()]].
      * - `{sorter}`: the sorter. See [[renderSorter()]].
      * - `{pager}`: the pager. See [[renderPager()]].
@@ -225,25 +225,20 @@ class GridView extends BaseListView
         $view->registerJs("jQuery('#$id').yiiGridView($options);");
         parent::run();
     }
-    
+
     /**
-     * @inheritdoc
+     * Renders validator errors of filter model.
+     * @return string the rendering result.
      */
     public function renderErrors()
     {
-        if ($this->filterModel instanceof Model && $this->filterModel->hasErrors()) 
-        {
-            $errorsList = [];
-            foreach($this->filterModel->errors as $attribute => $errors) 
-            {
-                    $errorsList = ArrayHelper::merge($errorsList, $errors); 
-            }
-            return Html::tag('div', Html::ul($errorsList, ['class' => 'help-block']), ['class' => 'has-error']);
+        if ($this->filterModel instanceof Model && $this->filterModel->hasErrors()) {
+            return Html::tag('div', Html::ul($this->filterModel->getFirstErrors(), ['class' => 'help-block']), ['class' => 'has-error']);
+        } else {
+            return '';
         }
-        
-        return '';
     }
-    
+
     public function renderSection($name)
     {
         switch ($name) {
@@ -253,7 +248,7 @@ class GridView extends BaseListView
                 return parent::renderSection($name);
         }
     }
-    
+
     /**
      * Returns the options for the grid view JS widget.
      * @return array the options
@@ -351,7 +346,7 @@ class GridView extends BaseListView
             $content .= $this->renderFilters();
         }
 
-        return "<thead>\n" .  $content . "\n</thead>";
+        return "<thead>\n" . $content . "\n</thead>";
     }
 
     /**
@@ -448,7 +443,7 @@ class GridView extends BaseListView
         } else {
             $options = $this->rowOptions;
         }
-        $options['data-key'] = is_array($key) ? json_encode($key) : (string) $key;
+        $options['data-key'] = is_array($key) ? json_encode($key) : (string)$key;
 
         return Html::tag('tr', implode('', $cells), $options);
     }
@@ -466,7 +461,7 @@ class GridView extends BaseListView
                 $column = $this->createDataColumn($column);
             } else {
                 $column = Yii::createObject(array_merge([
-                    'class' => $this->dataColumnClass ?: DataColumn::className(),
+                    'class' => $this->dataColumnClass ? : DataColumn::className(),
                     'grid' => $this,
                 ], $column));
             }
@@ -491,7 +486,7 @@ class GridView extends BaseListView
         }
 
         return Yii::createObject([
-            'class' => $this->dataColumnClass ?: DataColumn::className(),
+            'class' => $this->dataColumnClass ? : DataColumn::className(),
             'grid' => $this,
             'attribute' => $matches[1],
             'format' => isset($matches[3]) ? $matches[3] : 'text',
