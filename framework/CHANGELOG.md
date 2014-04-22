@@ -21,6 +21,7 @@ Yii Framework 2 Change Log
 - Bug #3204: `yii\di\Container` did not handle the `$config` parameter well in case when it does not have a default value (qiangxue)
 - Bug #3216: Fixed the bug that `yii.activeForm.destroy()` did not remove `submit` event handlers (qiangxue)
 - Enh #2837: Error page now shows arguments in stack trace method calls (samdark)
+- Enh #3008: Added `Html::errorSummary()` (qiangxue)
 - Enh #3088: The debug and gii modules will manage their own URL rules now (hiltonjanfield, qiangxue)
 - Enh #3103: debugger panel is now not displayed when printing a page (githubjeka)
 - Enh #3108: Added `yii\debug\Module::enableDebugLogs` to disable logging debug logs by default (qiangxue)
