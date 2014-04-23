@@ -6,7 +6,7 @@
  */
 
 
-namespace yii\console\controllers;
+namespace yii\gii\commands;
 
 /**
  * Action to run a Gii generator.

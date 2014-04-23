@@ -5,7 +5,7 @@
  * @license   http://www.yiiframework.com/license/
  */
 
-namespace yii\console\controllers;
+namespace yii\gii\commands;
 
 use Yii;
 use yii\console\Controller;
@@ -52,7 +52,7 @@ class GiiController extends Controller
         foreach (Yii::$app->getModule('console-gii')->generators as $name => $generator) {
             // create a generate action for every generator
             $actions[$name] = [
-                'class'         => '\yii\console\controllers\GenerateAction',
+                'class'         => '\yii\gii\commands\GenerateAction',
                 'generatorName' => $name,
             ];
         }
