@@ -30,6 +30,7 @@ class Generator extends \yii\gii\Generator
     public $baseClass = 'yii\db\ActiveRecord';
     public $generateRelations = true;
     public $generateLabelsFromComments = false;
+    public $useTablePefix=false;
 
     /**
      * @inheritdoc
@@ -65,6 +66,7 @@ class Generator extends \yii\gii\Generator
             [['baseClass'], 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
             [['generateRelations', 'generateLabelsFromComments'], 'boolean'],
             [['enableI18N'], 'boolean'],
+            [['useTablePefix'], 'boolean'],
             [['messageCategory'], 'validateMessageCategory', 'skipOnEmpty' => false],
         ]);
     }
@@ -531,6 +533,27 @@ class Generator extends \yii\gii\Generator
         }
 
         return $this->_tableNames = $tableNames;
+    }
+
+    /**
+     * Generates a the tablename with tableprefix usage .
+     * @param  string $tableName the table name (which may contain schema prefix)
+     * @return string the generated table name if useTablePefix == true return with {{%}} depending of the position of the prefix
+     */
+    public function generateTablename($tableName)
+    {
+        if (!$this->useTablePefix) {
+            return $tableName;
+        } else {
+            $db = $this->getDbConnection();
+            $patterns = [];
+            if (preg_match("/^{$db->tablePrefix}(.*?)$/", $tableName, $matches)) {
+                $tableName = '{{%'.$matches[1].'}}';
+            } elseif (preg_match("/^(.*?){$db->tablePrefix}$/", $tableName, $matches)) {
+                $tableName = '{{'.$matches[1].'%}}';
+            }
+            return $tableName;
+        }
     }
 
     /**
