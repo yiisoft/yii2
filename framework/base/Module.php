@@ -263,8 +263,8 @@ class Module extends ServiceLocator
      *
      * ~~~
      * [
-     *	'@models' => '@app/models', // an existing alias
-     *	'@backend' => __DIR__ . '/../backend',  // a directory
+     *     '@models' => '@app/models', // an existing alias
+     *     '@backend' => __DIR__ . '/../backend',  // a directory
      * ]
      * ~~~
      */

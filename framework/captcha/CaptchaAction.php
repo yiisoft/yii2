@@ -82,7 +82,7 @@ class CaptchaAction extends Action
     /**
      * @var integer the offset between characters. Defaults to -2. You can adjust this property
      * in order to decrease or increase the readability of the captcha.
-     **/
+     */
     public $offset = -2;
     /**
      * @var string the TrueType font file. This can be either a file path or path alias.

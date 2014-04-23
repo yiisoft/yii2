@@ -95,8 +95,8 @@ class QueryBuilder extends \yii\base\Object
      *
      * ~~~
      * $sql = $queryBuilder->insert('user', [
-     *	 'name' => 'Sam',
-     *	 'age' => 30,
+     *  'name' => 'Sam',
+     *  'age' => 30,
      * ], $params);
      * ~~~
      *
@@ -277,9 +277,9 @@ class QueryBuilder extends \yii\base\Object
      *
      * ~~~
      * $sql = $queryBuilder->createTable('user', [
-     *	 'id' => 'pk',
-     *	 'name' => 'string',
-     *	 'age' => 'integer',
+     *  'id' => 'pk',
+     *  'name' => 'string',
+     *  'age' => 'integer',
      * ]);
      * ~~~
      *
@@ -350,7 +350,7 @@ class QueryBuilder extends \yii\base\Object
      * Builds a SQL statement for removing a primary key constraint to an existing table.
      * @param string $name the name of the primary key constraint to be removed.
      * @param string $table the table that the primary key constraint will be removed from.
-     * @return string the SQL statement for removing a primary key constraint from an existing table.	 *
+     * @return string the SQL statement for removing a primary key constraint from an existing table.
      */
     public function dropPrimaryKey($name, $table)
     {

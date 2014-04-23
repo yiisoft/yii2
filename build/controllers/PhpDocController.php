@@ -205,16 +205,18 @@ class PhpDocController extends Controller
         $listIndent = false;
         $indent = '';
         foreach($lines as $i => $line) {
-            if (preg_match('~^(\s+)/\*\*$~', $line, $matches)) {
+            if (preg_match('~^(\s*)/\*\*$~', $line, $matches)) {
                 $docBlock = true;
                 $indent = $matches[1];
-            } elseif (preg_match('~^(\s+)\*/~', $line)) {
+            } elseif (preg_match('~^(\s+)\*+/~', $line)) {
+                if ($docBlock) { // could be the end of normal comment
+                    $lines[$i] = $indent . ' */';
+                }
                 $docBlock = false;
                 $codeBlock = false;
                 $listIndent = '';
-                $lines[$i] = $indent . ' */';
             } elseif ($docBlock) {
-                $docLine = trim($line, " \t*");
+                $docLine = str_replace("\t", '    ', rtrim(substr(ltrim($line), 2)));
                 if (empty($docLine)) {
                     $listIndent = '';
                 } elseif ($docLine[0] === '@') {
@@ -223,15 +225,16 @@ class PhpDocController extends Controller
                     $docLine = preg_replace('/\s+/', ' ', $docLine);
                 } elseif (preg_match('/^(~~~|```)/', $docLine)) {
                     $codeBlock = !$codeBlock;
-                } elseif (preg_match('/^([0-9]+\.|-|\*|\+) /', $docLine, $matches)) {
+                    $listIndent = '';
+                } elseif (preg_match('/^(\s*)([0-9]+\.|-|\*|\+) /', $docLine, $matches)) {
                     $listIndent = str_repeat(' ', strlen($matches[0]));
                     $lines[$i] = $indent . ' * ' . $docLine;
                     continue;
                 }
                 if ($codeBlock) {
-                    $lines[$i] = rtrim($indent . ' * ' . substr(ltrim($line), 2));
+                    $lines[$i] = rtrim($indent . ' * ' . $docLine);
                 } else {
-                    $lines[$i] = rtrim($indent . ' * ' . $listIndent . $docLine);
+                    $lines[$i] = rtrim($indent . ' * ' . (empty($listIndent) ? $docLine : ($listIndent . ltrim($docLine))));
                 }
             }
         }
