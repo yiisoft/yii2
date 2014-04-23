@@ -30,8 +30,8 @@ class GuideController extends BaseController
 
     /**
      * Renders API documentation files
-     * @param  array  $sourceDirs
-     * @param  string $targetDir
+     * @param array $sourceDirs
+     * @param string $targetDir
      * @return int
      */
     public function actionIndex(array $sourceDirs, $targetDir)

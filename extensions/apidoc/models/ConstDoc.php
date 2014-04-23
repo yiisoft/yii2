@@ -20,8 +20,8 @@ class ConstDoc extends BaseDoc
 
     /**
      * @param \phpDocumentor\Reflection\ClassReflector\ConstantReflector $reflector
-     * @param Context                                                    $context
-     * @param array                                                      $config
+     * @param Context $context
+     * @param array $config
      */
     public function __construct($reflector = null, $context = null, $config = [])
     {

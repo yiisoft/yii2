@@ -238,7 +238,7 @@ class Generator extends \yii\gii\Generator
     }
 
     /**
-     * @param  string $action the action ID
+     * @param string $action the action ID
      * @return string the action view file path
      */
     public function getViewFile($action)

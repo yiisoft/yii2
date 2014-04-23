@@ -57,7 +57,7 @@ class ColumnSchema extends Object
     /**
      * Converts the input value according to [[phpType]].
      * If the value is null or an [[Expression]], it will not be converted.
-     * @param  mixed $value input value
+     * @param mixed $value input value
      * @return mixed converted value
      */
     public function typecast($value)

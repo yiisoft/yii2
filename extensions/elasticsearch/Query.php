@@ -109,9 +109,9 @@ class Query extends Component implements QueryInterface
 
     /**
      * Creates a DB command that can be used to execute this query.
-     * @param  Connection $db the database connection used to execute the query.
-     *                        If this parameter is not given, the `elasticsearch` application component will be used.
-     * @return Command    the created DB command instance.
+     * @param Connection $db the database connection used to execute the query.
+     * If this parameter is not given, the `elasticsearch` application component will be used.
+     * @return Command the created DB command instance.
      */
     public function createCommand($db = null)
     {
@@ -126,9 +126,9 @@ class Query extends Component implements QueryInterface
 
     /**
      * Executes the query and returns all results as an array.
-     * @param  Connection $db the database connection used to execute the query.
-     *                        If this parameter is not given, the `elasticsearch` application component will be used.
-     * @return array      the query results. If the query results in nothing, an empty array will be returned.
+     * @param Connection $db the database connection used to execute the query.
+     * If this parameter is not given, the `elasticsearch` application component will be used.
+     * @return array the query results. If the query results in nothing, an empty array will be returned.
      */
     public function all($db = null)
     {
@@ -161,10 +161,10 @@ class Query extends Component implements QueryInterface
 
     /**
      * Executes the query and returns a single row of result.
-     * @param  Connection    $db the database connection used to execute the query.
-     *                           If this parameter is not given, the `elasticsearch` application component will be used.
+     * @param Connection $db the database connection used to execute the query.
+     * If this parameter is not given, the `elasticsearch` application component will be used.
      * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
-     *                          results in nothing.
+     * results in nothing.
      */
     public function one($db = null)
     {
@@ -183,12 +183,14 @@ class Query extends Component implements QueryInterface
 
     /**
      * Executes the query and returns the complete search result including e.g. hits, facets, totalCount.
-     * @param  Connection $db      the database connection used to execute the query.
-     *                             If this parameter is not given, the `elasticsearch` application component will be used.
-     * @param  array      $options The options given with this query. Possible options are:
-     *                             - [routing](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search.html#search-routing)
-     *                             - [search_type](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-search-type.html)
-     * @return array      the query results.
+     * @param Connection $db the database connection used to execute the query.
+     * If this parameter is not given, the `elasticsearch` application component will be used.
+     * @param array $options The options given with this query. Possible options are:
+     *
+     *  - [routing](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search.html#search-routing)
+     *  - [search_type](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-search-type.html)
+     *
+     * @return array the query results.
      */
     public function search($db = null, $options = [])
     {
@@ -224,9 +226,9 @@ class Query extends Component implements QueryInterface
      *
      * This will not run facet queries.
      *
-     * @param  Connection $db the database connection used to execute the query.
-     *                        If this parameter is not given, the `elasticsearch` application component will be used.
-     * @return array      the query results. If the query results in nothing, an empty array will be returned.
+     * @param Connection $db the database connection used to execute the query.
+     * If this parameter is not given, the `elasticsearch` application component will be used.
+     * @return array the query results. If the query results in nothing, an empty array will be returned.
      */
     public function delete($db = null)
     {
@@ -237,11 +239,11 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the query result as a scalar value.
      * The value returned will be the specified field in the first document of the query results.
-     * @param  string     $field name of the attribute to select
-     * @param  Connection $db    the database connection used to execute the query.
-     *                           If this parameter is not given, the `elasticsearch` application component will be used.
-     * @return string     the value of the specified attribute in the first record of the query result.
-     *                          Null is returned if the query result is empty or the field does not exist.
+     * @param string $field name of the attribute to select
+     * @param Connection $db the database connection used to execute the query.
+     * If this parameter is not given, the `elasticsearch` application component will be used.
+     * @return string the value of the specified attribute in the first record of the query result.
+     * Null is returned if the query result is empty or the field does not exist.
      */
     public function scalar($field, $db = null)
     {
@@ -255,10 +257,10 @@ class Query extends Component implements QueryInterface
 
     /**
      * Executes the query and returns the first column of the result.
-     * @param  string     $field the field to query over
-     * @param  Connection $db    the database connection used to execute the query.
-     *                           If this parameter is not given, the `elasticsearch` application component will be used.
-     * @return array      the first column of the query result. An empty array is returned if the query results in nothing.
+     * @param string $field the field to query over
+     * @param Connection $db the database connection used to execute the query.
+     * If this parameter is not given, the `elasticsearch` application component will be used.
+     * @return array the first column of the query result. An empty array is returned if the query results in nothing.
      */
     public function column($field, $db = null)
     {
@@ -277,10 +279,10 @@ class Query extends Component implements QueryInterface
 
     /**
      * Returns the number of records.
-     * @param  string     $q  the COUNT expression. This parameter is ignored by this implementation.
-     * @param  Connection $db the database connection used to execute the query.
-     *                        If this parameter is not given, the `elasticsearch` application component will be used.
-     * @return integer    number of records
+     * @param string $q the COUNT expression. This parameter is ignored by this implementation.
+     * @param Connection $db the database connection used to execute the query.
+     * If this parameter is not given, the `elasticsearch` application component will be used.
+     * @return integer number of records
      */
     public function count($q = '*', $db = null)
     {
@@ -296,9 +298,9 @@ class Query extends Component implements QueryInterface
 
     /**
      * Returns a value indicating whether the query result contains any row of data.
-     * @param  Connection $db the database connection used to execute the query.
-     *                        If this parameter is not given, the `elasticsearch` application component will be used.
-     * @return boolean    whether the query result contains any row of data.
+     * @param Connection $db the database connection used to execute the query.
+     * If this parameter is not given, the `elasticsearch` application component will be used.
+     * @return boolean whether the query result contains any row of data.
      */
     public function exists($db = null)
     {
@@ -307,10 +309,10 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds a facet search to this query.
-     * @param  string       $name    the name of this facet
-     * @param  string       $type    the facet type. e.g. `terms`, `range`, `histogram`...
-     * @param  string|array $options the configuration options for this facet. Can be an array or a json string.
-     * @return static       the query object itself
+     * @param string $name the name of this facet
+     * @param string $type the facet type. e.g. `terms`, `range`, `histogram`...
+     * @param string|array $options the configuration options for this facet. Can be an array or a json string.
+     * @return static the query object itself
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-query-facet.html
      */
     public function addFacet($name, $type, $options)
@@ -321,8 +323,8 @@ class Query extends Component implements QueryInterface
 
     /**
      * The `terms facet` allow to specify field facets that return the N most frequent terms.
-     * @param  string $name    the name of this facet
-     * @param  array  $options additional option. Please refer to the elasticsearch documentation for details.
+     * @param string $name the name of this facet
+     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
      * @return static the query object itself
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-terms-facet.html
      */
@@ -334,8 +336,8 @@ class Query extends Component implements QueryInterface
     /**
      * Range facet allows to specify a set of ranges and get both the number of docs (count) that fall
      * within each range, and aggregated data either based on the field, or using another field.
-     * @param  string $name    the name of this facet
-     * @param  array  $options additional option. Please refer to the elasticsearch documentation for details.
+     * @param string $name the name of this facet
+     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
      * @return static the query object itself
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-range-facet.html
      */
@@ -348,8 +350,8 @@ class Query extends Component implements QueryInterface
      * The histogram facet works with numeric data by building a histogram across intervals of the field values.
      * Each value is "rounded" into an interval (or placed in a bucket), and statistics are provided per
      * interval/bucket (count and total).
-     * @param  string $name    the name of this facet
-     * @param  array  $options additional option. Please refer to the elasticsearch documentation for details.
+     * @param string $name the name of this facet
+     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
      * @return static the query object itself
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-histogram-facet.html
      */
@@ -360,8 +362,8 @@ class Query extends Component implements QueryInterface
 
     /**
      * A specific histogram facet that can work with date field types enhancing it over the regular histogram facet.
-     * @param  string $name    the name of this facet
-     * @param  array  $options additional option. Please refer to the elasticsearch documentation for details.
+     * @param string $name the name of this facet
+     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
      * @return static the query object itself
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-date-histogram-facet.html
      */
@@ -373,8 +375,8 @@ class Query extends Component implements QueryInterface
     /**
      * A filter facet (not to be confused with a facet filter) allows you to return a count of the hits matching the filter.
      * The filter itself can be expressed using the Query DSL.
-     * @param  string $name   the name of this facet
-     * @param  string $filter the query in Query DSL
+     * @param string $name the name of this facet
+     * @param string $filter the query in Query DSL
      * @return static the query object itself
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-filter-facet.html
      */
@@ -386,8 +388,8 @@ class Query extends Component implements QueryInterface
     /**
      * A facet query allows to return a count of the hits matching the facet query.
      * The query itself can be expressed using the Query DSL.
-     * @param  string $name  the name of this facet
-     * @param  string $query the query in Query DSL
+     * @param string $name the name of this facet
+     * @param string $query the query in Query DSL
      * @return static the query object itself
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-query-facet.html
      */
@@ -399,8 +401,8 @@ class Query extends Component implements QueryInterface
     /**
      * Statistical facet allows to compute statistical data on a numeric fields. The statistical data include count,
      * total, sum of squares, mean (average), minimum, maximum, variance, and standard deviation.
-     * @param  string $name    the name of this facet
-     * @param  array  $options additional option. Please refer to the elasticsearch documentation for details.
+     * @param string $name the name of this facet
+     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
      * @return static the query object itself
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-statistical-facet.html
      */
@@ -412,8 +414,8 @@ class Query extends Component implements QueryInterface
     /**
      * The `terms_stats` facet combines both the terms and statistical allowing to compute stats computed on a field,
      * per term value driven by another field.
-     * @param  string $name    the name of this facet
-     * @param  array  $options additional option. Please refer to the elasticsearch documentation for details.
+     * @param string $name the name of this facet
+     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
      * @return static the query object itself
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-terms-stats-facet.html
      */
@@ -425,8 +427,8 @@ class Query extends Component implements QueryInterface
     /**
      * The `geo_distance` facet is a facet providing information for ranges of distances from a provided `geo_point`
      * including count of the number of hits that fall within each range, and aggregation information (like `total`).
-     * @param  string $name    the name of this facet
-     * @param  array  $options additional option. Please refer to the elasticsearch documentation for details.
+     * @param string $name the name of this facet
+     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
      * @return static the query object itself
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-geo-distance-facet.html
      */
@@ -443,7 +445,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the querypart of this search query.
-     * @param  string $query
+     * @param string $query
      * @return static the query object itself
      */
     public function query($query)
@@ -454,7 +456,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the filter part of this search query.
-     * @param  string $filter
+     * @param string $filter
      * @return static the query object itself
      */
     public function filter($filter)
@@ -465,11 +467,11 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the index and type to retrieve documents from.
-     * @param  string|array $index The index to retrieve data from. This can be a string representing a single index
-     *                             or a an array of multiple indexes. If this is `null` it means that all indexes are being queried.
-     * @param  string|array $type  The type to retrieve data from. This can be a string representing a single type
-     *                             or a an array of multiple types. If this is `null` it means that all types are being queried.
-     * @return static       the query object itself
+     * @param string|array $index The index to retrieve data from. This can be a string representing a single index
+     * or a an array of multiple indexes. If this is `null` it means that all indexes are being queried.
+     * @param string|array $type The type to retrieve data from. This can be a string representing a single type
+     * or a an array of multiple types. If this is `null` it means that all types are being queried.
+     * @return static the query object itself
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-search.html#search-multi-index-type
      */
     public function from($index, $type = null)
@@ -481,7 +483,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the fields to retrieve from the documents.
-     * @param  array  $fields the fields to be selected.
+     * @param array $fields the fields to be selected.
      * @return static the query object itself
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-fields.html
      */
@@ -497,9 +499,9 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the search timeout.
-     * @param  integer $timeout A search timeout, bounding the search request to be executed within the specified time value
-     *                          and bail with the hits accumulated up to that point when expired. Defaults to no timeout.
-     * @return static  the query object itself
+     * @param integer $timeout A search timeout, bounding the search request to be executed within the specified time value
+     * and bail with the hits accumulated up to that point when expired. Defaults to no timeout.
+     * @return static the query object itself
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-body.html#_parameters_3
      */
     public function timeout($timeout)

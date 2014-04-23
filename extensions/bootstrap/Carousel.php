@@ -117,9 +117,9 @@ class Carousel extends Widget
 
     /**
      * Renders a single carousel item
-     * @param  string|array           $item  a single item from [[items]]
-     * @param  integer                $index the item index as the first item should be set to `active`
-     * @return string                 the rendering result
+     * @param string|array $item a single item from [[items]]
+     * @param integer $index the item index as the first item should be set to `active`
+     * @return string the rendering result
      * @throws InvalidConfigException if the item is invalid
      */
     public function renderItem($item, $index)

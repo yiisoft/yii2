@@ -191,7 +191,7 @@ class Message extends BaseMessage
      * Sets the message body.
      * If body is already set and its content type matches given one, it will
      * be overridden, if content type miss match the multipart message will be composed.
-     * @param string $body        body content.
+     * @param string $body body content.
      * @param string $contentType body content type.
      */
     protected function setBody($body, $contentType)

@@ -100,11 +100,11 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * Gets a record by its primary key.
      *
-     * @param  mixed       $primaryKey the primaryKey value
-     * @param  array       $options    options given in this parameter are passed to elasticsearch
-     *                                 as request URI parameters.
-     *                                 Please refer to the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html)
-     *                                 for more details on these options.
+     * @param mixed $primaryKey the primaryKey value
+     * @param array $options options given in this parameter are passed to elasticsearch
+     * as request URI parameters.
+     * Please refer to the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html)
+     * for more details on these options.
      * @return static|null The record instance or null if it was not found.
      */
     public static function get($primaryKey, $options = [])
@@ -129,8 +129,8 @@ class ActiveRecord extends BaseActiveRecord
      * Gets a list of records by its primary keys.
      *
      * @param array $primaryKeys an array of primaryKey values
-     * @param array $options     options given in this parameter are passed to elasticsearch
-     *                           as request URI parameters.
+     * @param array $options options given in this parameter are passed to elasticsearch
+     * as request URI parameters.
      *
      * Please refer to the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html)
      * for more details on these options.
@@ -177,7 +177,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Sets the primary key
-     * @param  mixed                          $value
+     * @param mixed $value
      * @throws \yii\base\InvalidCallException when record is not new
      */
     public function setPrimaryKey($value)
@@ -301,11 +301,11 @@ class ActiveRecord extends BaseActiveRecord
      * depends on the row data to be populated into the record.
      * For example, by creating a record based on the value of a column,
      * you may implement the so-called single-table inheritance mapping.
-     * @param  array  $row row data to be populated into the record.
-     *                     This array consists of the following keys:
-     *                     - `_source`: refers to the attributes of the record.
-     *                     - `_type`: the type this record is stored in.
-     *                     - `_index`: the index this record is stored in.
+     * @param array $row row data to be populated into the record.
+     * This array consists of the following keys:
+     *  - `_source`: refers to the attributes of the record.
+     *  - `_type`: the type this record is stored in.
+     *  - `_index`: the index this record is stored in.
      * @return static the newly created active record
      */
     public static function instantiate($row)
@@ -347,11 +347,11 @@ class ActiveRecord extends BaseActiveRecord
      * ~~~
      *
      * @param boolean $runValidation whether to perform validation before saving the record.
-     *                               If the validation fails, the record will not be inserted into the database.
-     * @param array   $attributes    list of attributes that need to be saved. Defaults to null,
-     *                               meaning all attributes will be saved.
-     * @param array   $options       options given in this parameter are passed to elasticsearch
-     *                               as request URI parameters. These are among others:
+     * If the validation fails, the record will not be inserted into the database.
+     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * meaning all attributes will be saved.
+     * @param array $options options given in this parameter are passed to elasticsearch
+     * as request URI parameters. These are among others:
      *
      * - `routing` define shard placement of this record.
      * - `parent` by giving the primaryKey of another record this defines a parent-child relation
@@ -407,9 +407,9 @@ class ActiveRecord extends BaseActiveRecord
      * Customer::updateAll(['status' => 1], [2, 3, 4]);
      * ~~~
      *
-     * @param  array   $attributes attribute values (name-value pairs) to be saved into the table
-     * @param  array   $condition  the conditions that will be put in the WHERE part of the UPDATE SQL.
-     *                             Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
+     * @param array $attributes attribute values (name-value pairs) to be saved into the table
+     * @param array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+     * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
      * @return integer the number of rows updated
      */
     public static function updateAll($attributes, $condition = [])
@@ -465,11 +465,11 @@ class ActiveRecord extends BaseActiveRecord
      * Customer::updateAllCounters(['age' => 1]);
      * ~~~
      *
-     * @param  array        $counters  the counters to be updated (attribute name => increment value).
-     *                                 Use negative values if you want to decrement the counters.
-     * @param  string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
-     *                                 Please refer to [[Query::where()]] on how to specify this parameter.
-     * @return integer      the number of rows updated
+     * @param array $counters the counters to be updated (attribute name => increment value).
+     * Use negative values if you want to decrement the counters.
+     * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+     * Please refer to [[Query::where()]] on how to specify this parameter.
+     * @return integer the number of rows updated
      */
     public static function updateAllCounters($counters, $condition = [])
     {
@@ -531,8 +531,8 @@ class ActiveRecord extends BaseActiveRecord
      * Customer::deleteAll('status = 3');
      * ~~~
      *
-     * @param  array   $condition the conditions that will be put in the WHERE part of the DELETE SQL.
-     *                            Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
+     * @param array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
+     * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
      * @return integer the number of rows deleted
      */
     public static function deleteAll($condition = [])

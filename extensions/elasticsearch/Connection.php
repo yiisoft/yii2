@@ -161,7 +161,7 @@ class Connection extends Component
 
     /**
      * Creates a command for execution.
-     * @param  array   $config the configuration for the Command class
+     * @param array $config the configuration for the Command class
      * @return Command the DB command
      */
     public function createCommand($config = [])

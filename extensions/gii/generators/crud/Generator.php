@@ -214,7 +214,7 @@ class Generator extends \yii\gii\Generator
 
     /**
      * Generates code for active field
-     * @param  string $attribute
+     * @param string $attribute
      * @return string
      */
     public function generateActiveField($attribute)
@@ -248,7 +248,7 @@ class Generator extends \yii\gii\Generator
 
     /**
      * Generates code for active search field
-     * @param  string $attribute
+     * @param string $attribute
      * @return string
      */
     public function generateActiveSearchField($attribute)
@@ -267,7 +267,7 @@ class Generator extends \yii\gii\Generator
 
     /**
      * Generates column format
-     * @param  \yii\db\ColumnSchema $column
+     * @param \yii\db\ColumnSchema $column
      * @return string
      */
     public function generateColumnFormat($column)

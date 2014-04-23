@@ -122,9 +122,9 @@ abstract class BaseRenderer extends Component
 
     /**
      * creates a link to a subject
-     * @param  PropertyDoc|MethodDoc|ConstDoc|EventDoc $subject
-     * @param  string                                  $title
-     * @param  array                                   $options additional HTML attributes for the link.
+     * @param PropertyDoc|MethodDoc|ConstDoc|EventDoc $subject
+     * @param string $title
+     * @param array $options additional HTML attributes for the link.
      * @return string
      */
     public function createSubjectLink($subject, $title = null, $options = [])
@@ -177,7 +177,7 @@ abstract class BaseRenderer extends Component
      * generate link markup
      * @param $text
      * @param $href
-     * @param  array $options additional HTML attributes for the link.
+     * @param array $options additional HTML attributes for the link.
      * @return mixed
      */
     abstract protected function generateLink($text, $href, $options = []);
@@ -191,7 +191,7 @@ abstract class BaseRenderer extends Component
 
     /**
      * Generate an url to a guide page
-     * @param  string $file
+     * @param string $file
      * @return string
      */
     public function generateGuideUrl($file)

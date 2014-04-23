@@ -45,8 +45,8 @@ class Database extends Object
 
     /**
      * Returns the Mongo collection with the given name.
-     * @param  string     $name    collection name
-     * @param  boolean    $refresh whether to reload the collection instance even if it is found in the cache.
+     * @param string $name collection name
+     * @param boolean $refresh whether to reload the collection instance even if it is found in the cache.
      * @return Collection Mongo collection instance.
      */
     public function getCollection($name, $refresh = false)
@@ -60,8 +60,8 @@ class Database extends Object
 
     /**
      * Returns Mongo GridFS collection with given prefix.
-     * @param  string          $prefix  collection prefix.
-     * @param  boolean         $refresh whether to reload the collection instance even if it is found in the cache.
+     * @param string $prefix collection prefix.
+     * @param boolean $refresh whether to reload the collection instance even if it is found in the cache.
      * @return file\Collection Mongo GridFS collection.
      */
     public function getFileCollection($prefix = 'fs', $refresh = false)
@@ -75,7 +75,7 @@ class Database extends Object
 
     /**
      * Selects collection with given name.
-     * @param  string     $name collection name.
+     * @param string $name collection name.
      * @return Collection collection instance.
      */
     protected function selectCollection($name)
@@ -88,7 +88,7 @@ class Database extends Object
 
     /**
      * Selects GridFS collection with given prefix.
-     * @param  string          $prefix file collection prefix.
+     * @param string $prefix file collection prefix.
      * @return file\Collection file collection instance.
      */
     protected function selectFileCollection($prefix)
@@ -104,10 +104,10 @@ class Database extends Object
      * Note: Mongo creates new collections automatically on the first demand,
      * this method makes sense only for the migration script or for the case
      * you need to create collection with the specific options.
-     * @param  string           $name    name of the collection
-     * @param  array            $options collection options in format: "name" => "value"
+     * @param string $name name of the collection
+     * @param array $options collection options in format: "name" => "value"
      * @return \MongoCollection new Mongo collection instance.
-     * @throws Exception        on failure.
+     * @throws Exception on failure.
      */
     public function createCollection($name, $options = [])
     {
@@ -127,9 +127,9 @@ class Database extends Object
 
     /**
      * Executes Mongo command.
-     * @param  array     $command command specification.
-     * @param  array     $options options in format: "name" => "value"
-     * @return array     database response.
+     * @param array $command command specification.
+     * @param array $options options in format: "name" => "value"
+     * @return array database response.
      * @throws Exception on failure.
      */
     public function executeCommand($command, $options = [])
@@ -151,7 +151,7 @@ class Database extends Object
 
     /**
      * Checks if command execution result ended with an error.
-     * @param  mixed     $result raw command execution result.
+     * @param mixed $result raw command execution result.
      * @throws Exception if an error occurred.
      */
     protected function tryResultError($result)

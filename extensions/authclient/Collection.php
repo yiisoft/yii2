@@ -69,8 +69,8 @@ class Collection extends Component
     }
 
     /**
-     * @param  string                $id service id.
-     * @return ClientInterface       auth client instance.
+     * @param string $id service id.
+     * @return ClientInterface auth client instance.
      * @throws InvalidParamException on non existing client request.
      */
     public function getClient($id)
@@ -87,7 +87,7 @@ class Collection extends Component
 
     /**
      * Checks if client exists in the hub.
-     * @param  string  $id client id.
+     * @param string $id client id.
      * @return boolean whether client exist.
      */
     public function hasClient($id)
@@ -97,8 +97,8 @@ class Collection extends Component
 
     /**
      * Creates auth client instance from its array configuration.
-     * @param  string          $id     auth client id.
-     * @param  array           $config auth client instance configuration.
+     * @param string $id auth client id.
+     * @param array $config auth client instance configuration.
      * @return ClientInterface auth client instance.
      */
     protected function createClient($id, $config)

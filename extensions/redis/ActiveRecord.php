@@ -141,9 +141,9 @@ class ActiveRecord extends BaseActiveRecord
      * Customer::updateAll(['status' => 1], ['id' => 2]);
      * ~~~
      *
-     * @param  array   $attributes attribute values (name-value pairs) to be saved into the table
-     * @param  array   $condition  the conditions that will be put in the WHERE part of the UPDATE SQL.
-     *                             Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
+     * @param array $attributes attribute values (name-value pairs) to be saved into the table
+     * @param array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+     * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
      * @return integer the number of rows updated
      */
     public static function updateAll($attributes, $condition = null)
@@ -193,10 +193,10 @@ class ActiveRecord extends BaseActiveRecord
      * Customer::updateAllCounters(['age' => 1]);
      * ~~~
      *
-     * @param  array   $counters  the counters to be updated (attribute name => increment value).
-     *                            Use negative values if you want to decrement the counters.
-     * @param  array   $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
-     *                            Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
+     * @param array $counters the counters to be updated (attribute name => increment value).
+     * Use negative values if you want to decrement the counters.
+     * @param array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+     * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
      * @return integer the number of rows updated
      */
     public static function updateAllCounters($counters, $condition = null)
@@ -227,8 +227,8 @@ class ActiveRecord extends BaseActiveRecord
      * Customer::deleteAll(['status' => 3]);
      * ~~~
      *
-     * @param  array   $condition the conditions that will be put in the WHERE part of the DELETE SQL.
-     *                            Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
+     * @param array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
+     * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
      * @return integer the number of rows deleted
      */
     public static function deleteAll($condition = null)
@@ -275,7 +275,7 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * Builds a normalized key from a given primary key value.
      *
-     * @param  mixed  $key the key to be normalized
+     * @param mixed $key the key to be normalized
      * @return string the generated key
      */
     public static function buildKey($key)

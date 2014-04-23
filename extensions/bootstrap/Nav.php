@@ -136,8 +136,8 @@ class Nav extends Widget
 
     /**
      * Renders a widget's item.
-     * @param  string|array           $item the item to render.
-     * @return string                 the rendering result.
+     * @param string|array $item the item to render.
+     * @return string the rendering result.
      * @throws InvalidConfigException
      */
     public function renderItem($item)
@@ -211,7 +211,7 @@ class Nav extends Widget
      * as the route for the item and the rest of the elements are the associated parameters.
      * Only when its route and parameters match [[route]] and [[params]], respectively, will a menu item
      * be considered active.
-     * @param  array   $item the menu item to be checked
+     * @param array $item the menu item to be checked
      * @return boolean whether the menu item is active
      */
     protected function isItemActive($item)

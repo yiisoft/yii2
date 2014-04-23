@@ -25,17 +25,17 @@ abstract class BaseMethod extends Object
 
     /**
      * Generates OAuth request signature.
-     * @param  string $baseString signature base string.
-     * @param  string $key        signature key.
+     * @param string $baseString signature base string.
+     * @param string $key signature key.
      * @return string signature string.
      */
     abstract public function generateSignature($baseString, $key);
 
     /**
      * Verifies given OAuth request.
-     * @param  string  $signature  signature to be verified.
-     * @param  string  $baseString signature base string.
-     * @param  string  $key        signature key.
+     * @param string $signature signature to be verified.
+     * @param string $baseString signature base string.
+     * @param string $key signature key.
      * @return boolean success.
      */
     public function verify($signature, $baseString, $key)

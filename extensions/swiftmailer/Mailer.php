@@ -101,7 +101,7 @@ class Mailer extends BaseMailer
     }
 
     /**
-     * @param  array|\Swift_Transport $transport
+     * @param array|\Swift_Transport $transport
      * @throws InvalidConfigException on invalid argument.
      */
     public function setTransport($transport)
@@ -149,9 +149,9 @@ class Mailer extends BaseMailer
 
     /**
      * Creates email transport instance by its array configuration.
-     * @param  array                            $config transport configuration.
+     * @param array $config transport configuration.
      * @throws \yii\base\InvalidConfigException on invalid transport configuration.
-     * @return \Swift_Transport                 transport instance.
+     * @return \Swift_Transport transport instance.
      */
     protected function createTransport(array $config)
     {
@@ -178,8 +178,8 @@ class Mailer extends BaseMailer
 
     /**
      * Creates Swift library object, from given array configuration.
-     * @param  array                            $config object configuration
-     * @return Object                           created object
+     * @param array $config object configuration
+     * @return Object created object
      * @throws \yii\base\InvalidConfigException on invalid configuration.
      */
     protected function createSwiftObject(array $config)

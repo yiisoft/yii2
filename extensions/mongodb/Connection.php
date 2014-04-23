@@ -54,12 +54,12 @@ use Yii;
  *
  * ~~~
  * [
- *	 'components' => [
- *		 'mongodb' => [
- *			 'class' => '\yii\mongodb\Connection',
- *			 'dsn' => 'mongodb://developer:password@localhost:27017/mydatabase',
- *		 ],
- *	 ],
+ *      'components' => [
+ *          'mongodb' => [
+ *              'class' => '\yii\mongodb\Connection',
+ *              'dsn' => 'mongodb://developer:password@localhost:27017/mydatabase',
+ *          ],
+ *      ],
  * ]
  * ~~~
  *
@@ -119,9 +119,9 @@ class Connection extends Component
 
     /**
      * Returns the Mongo collection with the given name.
-     * @param  string|null $name    collection name, if null default one will be used.
-     * @param  boolean     $refresh whether to reestablish the database connection even if it is found in the cache.
-     * @return Database    database instance.
+     * @param string|null $name collection name, if null default one will be used.
+     * @param boolean $refresh whether to reestablish the database connection even if it is found in the cache.
+     * @return Database database instance.
      */
     public function getDatabase($name = null, $refresh = false)
     {
@@ -138,7 +138,7 @@ class Connection extends Component
     /**
      * Returns [[defaultDatabaseName]] value, if it is not set,
      * attempts to determine it from [[dsn]] value.
-     * @return string                           default database name
+     * @return string default database name
      * @throws \yii\base\InvalidConfigException if unable to determine default database name.
      */
     protected function fetchDefaultDatabaseName()
@@ -158,7 +158,7 @@ class Connection extends Component
 
     /**
      * Selects the database with given name.
-     * @param  string   $name database name.
+     * @param string $name database name.
      * @return Database database instance.
      */
     protected function selectDatabase($name)
@@ -173,11 +173,11 @@ class Connection extends Component
 
     /**
      * Returns the Mongo collection with the given name.
-     * @param  string|array $name    collection name. If string considered as the name of the collection
-     *                               inside the default database. If array - first element considered as the name of the database,
-     *                               second - as name of collection inside that database
-     * @param  boolean      $refresh whether to reload the collection instance even if it is found in the cache.
-     * @return Collection   Mongo collection instance.
+     * @param string|array $name collection name. If string considered as the name of the collection
+     * inside the default database. If array - first element considered as the name of the database,
+     * second - as name of collection inside that database
+     * @param boolean $refresh whether to reload the collection instance even if it is found in the cache.
+     * @return Collection Mongo collection instance.
      */
     public function getCollection($name, $refresh = false)
     {
@@ -192,11 +192,11 @@ class Connection extends Component
 
     /**
      * Returns the Mongo GridFS collection.
-     * @param  string|array    $prefix  collection prefix. If string considered as the prefix of the GridFS
-     *                                  collection inside the default database. If array - first element considered as the name of the database,
-     *                                  second - as prefix of the GridFS collection inside that database, if no second element present
-     *                                  default "fs" prefix will be used.
-     * @param  boolean         $refresh whether to reload the collection instance even if it is found in the cache.
+     * @param string|array $prefix collection prefix. If string considered as the prefix of the GridFS
+     * collection inside the default database. If array - first element considered as the name of the database,
+     * second - as prefix of the GridFS collection inside that database, if no second element present
+     * default "fs" prefix will be used.
+     * @param boolean $refresh whether to reload the collection instance even if it is found in the cache.
      * @return file\Collection Mongo GridFS collection instance.
      */
     public function getFileCollection($prefix = 'fs', $refresh = false)

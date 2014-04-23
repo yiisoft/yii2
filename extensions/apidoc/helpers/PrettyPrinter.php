@@ -26,7 +26,7 @@ class PrettyPrinter extends \phpDocumentor\Reflection\PrettyPrinter
     /**
      * Returns a simple human readable output for a value.
      *
-     * @param  PHPParser_Node_Expr $value The value node as provided by PHP-Parser.
+     * @param PHPParser_Node_Expr $value The value node as provided by PHP-Parser.
      * @return string
      */
     public static function getRepresentationOfValue(PHPParser_Node_Expr $value)

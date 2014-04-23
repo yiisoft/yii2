@@ -100,7 +100,7 @@ abstract class Generator extends Model
      * Derived classes usually should override this method if they require the existence of
      * certain template files.
      * @return array list of code template files that are required. They should be file paths
-     *               relative to [[templatePath]].
+     * relative to [[templatePath]].
      */
     public function requiredTemplates()
     {
@@ -256,11 +256,11 @@ abstract class Generator extends Model
 
     /**
      * Saves the generated code into files.
-     * @param  CodeFile[] $files   the code files to be saved
-     * @param  array      $answers
-     * @param  string     $results this parameter receives a value from this method indicating the log messages
-     *                             generated while saving the code files.
-     * @return boolean    whether there is any error while saving the code files.
+     * @param CodeFile[] $files the code files to be saved
+     * @param array $answers
+     * @param string $results this parameter receives a value from this method indicating the log messages
+     * generated while saving the code files.
+     * @return boolean whether there is any error while saving the code files.
      */
     public function save($files, $answers, &$results)
     {
@@ -287,7 +287,7 @@ abstract class Generator extends Model
     }
 
     /**
-     * @return string                 the root path of the template files that are currently being used.
+     * @return string the root path of the template files that are currently being used.
      * @throws InvalidConfigException if [[template]] is invalid
      */
     public function getTemplatePath()
@@ -302,9 +302,9 @@ abstract class Generator extends Model
     /**
      * Generates code using the specified code template and parameters.
      * Note that the code template will be used as a PHP file.
-     * @param  string $template the code template file. This must be specified as a file path
-     *                          relative to [[templatePath]].
-     * @param  array  $params   list of parameters to be passed to the template file.
+     * @param string $template the code template file. This must be specified as a file path
+     * relative to [[templatePath]].
+     * @param array $params list of parameters to be passed to the template file.
      * @return string the generated code
      */
     public function render($template, $params = [])
@@ -340,7 +340,7 @@ abstract class Generator extends Model
      * If the `extends` option is specified, it will also check if the class is a child class
      * of the class represented by the `extends` option.
      * @param string $attribute the attribute being validated
-     * @param array  $params    the validation options
+     * @param array $params the validation options
      */
     public function validateClass($attribute, $params)
     {
@@ -364,7 +364,7 @@ abstract class Generator extends Model
      * An inline validator that checks if the attribute value refers to a valid namespaced class name.
      * The validator will check if the directory containing the new class file exist or not.
      * @param string $attribute the attribute being validated
-     * @param array  $params    the validation options
+     * @param array $params the validation options
      */
     public function validateNewClass($attribute, $params)
     {
@@ -393,7 +393,7 @@ abstract class Generator extends Model
     }
 
     /**
-     * @param  string  $value the attribute to be validated
+     * @param string $value the attribute to be validated
      * @return boolean whether the value is a reserved PHP keyword.
      */
     public function isReservedKeyword($value)

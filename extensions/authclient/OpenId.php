@@ -210,7 +210,7 @@ class OpenId extends BaseClient implements ClientInterface
 
     /**
      * Checks if the server specified in the url exists.
-     * @param  string  $url URL to check
+     * @param string $url URL to check
      * @return boolean true, if the server exists; false otherwise
      */
     public function hostExists($url)
@@ -230,10 +230,10 @@ class OpenId extends BaseClient implements ClientInterface
 
     /**
      * Sends HTTP request.
-     * @param  string              $url    request URL.
-     * @param  string              $method request method.
-     * @param  array               $params request params.
-     * @return array|string        response.
+     * @param string $url request URL.
+     * @param string $method request method.
+     * @param array $params request params.
+     * @return array|string response.
      * @throws \yii\base\Exception on failure.
      */
     protected function sendCurlRequest($url, $method = 'GET', $params = [])
@@ -287,11 +287,11 @@ class OpenId extends BaseClient implements ClientInterface
 
     /**
      * Sends HTTP request.
-     * @param  string                          $url    request URL.
-     * @param  string                          $method request method.
-     * @param  array                           $params request params.
-     * @return array|string                    response.
-     * @throws \yii\base\Exception             on failure.
+     * @param string $url request URL.
+     * @param string $method request method.
+     * @param array $params request params.
+     * @return array|string response.
+     * @throws \yii\base\Exception on failure.
      * @throws \yii\base\NotSupportedException if request method is not supported.
      */
     protected function sendStreamRequest($url, $method = 'GET', $params = [])
@@ -377,9 +377,9 @@ class OpenId extends BaseClient implements ClientInterface
 
     /**
      * Sends request to the server
-     * @param  string       $url    request URL.
-     * @param  string       $method request method.
-     * @param  array        $params request parameters.
+     * @param string $url request URL.
+     * @param string $method request method.
+     * @param array $params request parameters.
      * @return array|string response.
      */
     protected function sendRequest($url, $method = 'GET', $params = [])
@@ -393,9 +393,9 @@ class OpenId extends BaseClient implements ClientInterface
 
     /**
      * Combines given URLs into single one.
-     * @param  string       $baseUrl       base URL.
-     * @param  string|array $additionalUrl additional URL string or information array.
-     * @return string       composed URL.
+     * @param string $baseUrl base URL.
+     * @param string|array $additionalUrl additional URL string or information array.
+     * @return string composed URL.
      */
     protected function buildUrl($baseUrl, $additionalUrl)
     {
@@ -424,11 +424,11 @@ class OpenId extends BaseClient implements ClientInterface
 
     /**
      * Scans content for <meta>/<link> tags and extract information from them.
-     * @param  string         $content             HTML content to be be parsed.
-     * @param  string         $tag                 name of the source tag.
-     * @param  string         $matchAttributeName  name of the source tag attribute, which should contain $matchAttributeValue
-     * @param  string         $matchAttributeValue required value of $matchAttributeName
-     * @param  string         $valueAttributeName  name of the source tag attribute, which should contain searched value.
+     * @param string $content HTML content to be be parsed.
+     * @param string $tag name of the source tag.
+     * @param string $matchAttributeName name of the source tag attribute, which should contain $matchAttributeValue
+     * @param string $matchAttributeValue required value of $matchAttributeName
+     * @param string $valueAttributeName name of the source tag attribute, which should contain searched value.
      * @return string|boolean searched value, "false" on failure.
      */
     protected function extractHtmlTagValue($content, $tag, $matchAttributeName, $matchAttributeValue, $valueAttributeName)
@@ -442,14 +442,14 @@ class OpenId extends BaseClient implements ClientInterface
 
     /**
      * Performs Yadis and HTML discovery.
-     * @param  string    $url Identity URL.
-     * @return array     OpenID provider info, following keys will be available:
-     *                       - 'url' - string OP Endpoint (i.e. OpenID provider address).
-     *                       - 'version' - integer OpenID protocol version used by provider.
-     *                       - 'identity' - string identity value.
-     *                       - 'identifier_select' - boolean whether to request OP to select identity for an user in OpenID 2, does not affect OpenID 1.
-     *                       - 'ax' - boolean whether AX attributes should be used.
-     *                       - 'sreg' - boolean whether SREG attributes should be used.
+     * @param string $url Identity URL.
+     * @return array OpenID provider info, following keys will be available:
+     * - 'url' - string OP Endpoint (i.e. OpenID provider address).
+     * - 'version' - integer OpenID protocol version used by provider.
+     * - 'identity' - string identity value.
+     * - 'identifier_select' - boolean whether to request OP to select identity for an user in OpenID 2, does not affect OpenID 1.
+     * - 'ax' - boolean whether AX attributes should be used.
+     * - 'sreg' - boolean whether SREG attributes should be used.
      * @throws Exception on failure.
      */
     public function discover($url)
@@ -694,7 +694,7 @@ class OpenId extends BaseClient implements ClientInterface
 
     /**
      * Builds authentication URL for the protocol version 1.
-     * @param  array  $serverInfo OpenID server info.
+     * @param array $serverInfo OpenID server info.
      * @return string authentication URL.
      */
     protected function buildAuthUrlV1($serverInfo)
@@ -722,7 +722,7 @@ class OpenId extends BaseClient implements ClientInterface
 
     /**
      * Builds authentication URL for the protocol version 2.
-     * @param  array  $serverInfo OpenID server info.
+     * @param array $serverInfo OpenID server info.
      * @return string authentication URL.
      */
     protected function buildAuthUrlV2($serverInfo)
@@ -758,8 +758,8 @@ class OpenId extends BaseClient implements ClientInterface
 
     /**
      * Returns authentication URL. Usually, you want to redirect your user to it.
-     * @param  boolean   $identifierSelect whether to request OP to select identity for an user in OpenID 2, does not affect OpenID 1.
-     * @return string    the authentication URL.
+     * @param boolean $identifierSelect whether to request OP to select identity for an user in OpenID 2, does not affect OpenID 1.
+     * @return string the authentication URL.
      * @throws Exception on failure.
      */
     public function buildAuthUrl($identifierSelect = null)
@@ -783,7 +783,7 @@ class OpenId extends BaseClient implements ClientInterface
 
     /**
      * Performs OpenID verification with the OP.
-     * @param  boolean $validateRequiredAttributes whether to validate required attributes.
+     * @param boolean $validateRequiredAttributes whether to validate required attributes.
      * @return boolean whether the verification was successful.
      */
     public function validate($validateRequiredAttributes = true)

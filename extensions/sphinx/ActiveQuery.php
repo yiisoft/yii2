@@ -133,9 +133,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Executes query and returns all results as an array.
-     * @param  Connection $db the DB connection used to create the DB command.
-     *                        If null, the DB connection returned by [[modelClass]] will be used.
-     * @return array      the query results. If the query results in nothing, an empty array will be returned.
+     * @param Connection $db the DB connection used to create the DB command.
+     * If null, the DB connection returned by [[modelClass]] will be used.
+     * @return array the query results. If the query results in nothing, an empty array will be returned.
      */
     public function all($db = null)
     {
@@ -161,11 +161,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Executes query and returns a single row of result.
-     * @param  Connection              $db the DB connection used to create the DB command.
-     *                                     If null, the DB connection returned by [[modelClass]] will be used.
+     * @param Connection $db the DB connection used to create the DB command.
+     * If null, the DB connection returned by [[modelClass]] will be used.
      * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
-     *                                    the query result may be either an array or an ActiveRecord object. Null will be returned
-     *                                    if the query results in nothing.
+     * the query result may be either an array or an ActiveRecord object. Null will be returned
+     * if the query results in nothing.
      */
     public function one($db = null)
     {
@@ -198,9 +198,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Creates a DB command that can be used to execute this query.
-     * @param  Connection $db the DB connection used to create the DB command.
-     *                        If null, the DB connection returned by [[modelClass]] will be used.
-     * @return Command    the created DB command instance.
+     * @param Connection $db the DB connection used to create the DB command.
+     * If null, the DB connection returned by [[modelClass]] will be used.
+     * @return Command the created DB command instance.
      */
     public function createCommand($db = null)
     {
@@ -251,9 +251,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Fetches the source for the snippets using [[ActiveRecord::getSnippetSource()]] method.
-     * @param  ActiveRecord[]                 $models raw query result rows.
+     * @param ActiveRecord[] $models raw query result rows.
      * @throws \yii\base\InvalidCallException if [[asArray]] enabled.
-     * @return array                          snippet source strings
+     * @return array snippet source strings
      */
     protected function fetchSnippetSourceFromModels($models)
     {

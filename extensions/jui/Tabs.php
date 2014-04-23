@@ -69,7 +69,7 @@ class Tabs extends Widget
      * - content: string, the content to show when corresponding tab is clicked. Can be omitted if url is specified.
      * - url: mixed, mixed, optional, the url to load tab contents via AJAX. It is required if no content is specified.
      * - template: string, optional, the header link template to render the header link. If none specified
-     * [[linkTemplate]] will be used instead.
+     *   [[linkTemplate]] will be used instead.
      * - options: array, optional, the HTML attributes of the header.
      * - headerOptions: array, optional, the HTML attributes for the header container tag.
      */
@@ -113,7 +113,7 @@ class Tabs extends Widget
 
     /**
      * Renders tab items as specified on [[items]].
-     * @return string                  the rendering result.
+     * @return string the rendering result.
      * @throws InvalidConfigException.
      */
     protected function renderItems()

@@ -202,39 +202,50 @@ class PhpDocController extends Controller
     {
         $docBlock = false;
         $codeBlock = false;
-        $listIndent = false;
+        $listIndent = '';
+        $tag = false;
         $indent = '';
         foreach($lines as $i => $line) {
             if (preg_match('~^(\s*)/\*\*$~', $line, $matches)) {
                 $docBlock = true;
                 $indent = $matches[1];
-            } elseif (preg_match('~^(\s+)\*+/~', $line)) {
+            } elseif (preg_match('~^(\s*)\*+/~', $line)) {
                 if ($docBlock) { // could be the end of normal comment
                     $lines[$i] = $indent . ' */';
                 }
                 $docBlock = false;
                 $codeBlock = false;
                 $listIndent = '';
+                $tag = false;
             } elseif ($docBlock) {
-                $docLine = str_replace("\t", '    ', rtrim(substr(ltrim($line), 2)));
+                $line = ltrim($line);
+                if (isset($line[0]) && $line[0] === '*') {
+                    $line = substr($line, 1);
+                }
+                if (isset($line[0]) && $line[0] === ' ') {
+                    $line = substr($line, 1);
+                }
+                $docLine = str_replace("\t", '    ', rtrim($line));
                 if (empty($docLine)) {
                     $listIndent = '';
                 } elseif ($docLine[0] === '@') {
                     $listIndent = '';
                     $codeBlock = false;
+                    $tag = true;
                     $docLine = preg_replace('/\s+/', ' ', $docLine);
                 } elseif (preg_match('/^(~~~|```)/', $docLine)) {
                     $codeBlock = !$codeBlock;
                     $listIndent = '';
                 } elseif (preg_match('/^(\s*)([0-9]+\.|-|\*|\+) /', $docLine, $matches)) {
                     $listIndent = str_repeat(' ', strlen($matches[0]));
+                    $tag = false;
                     $lines[$i] = $indent . ' * ' . $docLine;
                     continue;
                 }
                 if ($codeBlock) {
                     $lines[$i] = rtrim($indent . ' * ' . $docLine);
                 } else {
-                    $lines[$i] = rtrim($indent . ' * ' . (empty($listIndent) ? $docLine : ($listIndent . ltrim($docLine))));
+                    $lines[$i] = rtrim($indent . ' * ' . (empty($listIndent) && !$tag ? $docLine : ($listIndent . ltrim($docLine))));
                 }
             }
         }

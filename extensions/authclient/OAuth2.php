@@ -52,7 +52,7 @@ class OAuth2 extends BaseOAuth
 
     /**
      * Composes user authorization URL.
-     * @param  array  $params additional auth GET params.
+     * @param array $params additional auth GET params.
      * @return string authorization URL.
      */
     public function buildAuthUrl(array $params = [])
@@ -72,8 +72,8 @@ class OAuth2 extends BaseOAuth
 
     /**
      * Fetches access token from authorization code.
-     * @param  string     $authCode authorization code, usually comes at $_GET['code'].
-     * @param  array      $params   additional request params.
+     * @param string $authCode authorization code, usually comes at $_GET['code'].
+     * @param array $params additional request params.
      * @return OAuthToken access token.
      */
     public function fetchAccessToken($authCode, array $params = [])
@@ -94,10 +94,10 @@ class OAuth2 extends BaseOAuth
 
     /**
      * Composes HTTP request CUrl options, which will be merged with the default ones.
-     * @param  string    $method request type.
-     * @param  string    $url    request URL.
-     * @param  array     $params request params.
-     * @return array     CUrl options.
+     * @param string $method request type.
+     * @param string $url request URL.
+     * @param array $params request params.
+     * @return array CUrl options.
      * @throws Exception on failure.
      */
     protected function composeRequestCurlOptions($method, $url, array $params)
@@ -133,12 +133,12 @@ class OAuth2 extends BaseOAuth
 
     /**
      * Performs request to the OAuth API.
-     * @param  OAuthToken $accessToken actual access token.
-     * @param  string     $url         absolute API URL.
-     * @param  string     $method      request method.
-     * @param  array      $params      request parameters.
-     * @return array      API response.
-     * @throws Exception  on failure.
+     * @param OAuthToken $accessToken actual access token.
+     * @param string $url absolute API URL.
+     * @param string $method request method.
+     * @param array $params request parameters.
+     * @return array API response.
+     * @throws Exception on failure.
      */
     protected function apiInternal($accessToken, $url, $method, array $params)
     {
@@ -149,7 +149,7 @@ class OAuth2 extends BaseOAuth
 
     /**
      * Gets new auth token to replace expired one.
-     * @param  OAuthToken $token expired auth token.
+     * @param OAuthToken $token expired auth token.
      * @return OAuthToken new auth token.
      */
     public function refreshAccessToken(OAuthToken $token)
@@ -180,7 +180,7 @@ class OAuth2 extends BaseOAuth
 
     /**
      * Creates token from its configuration.
-     * @param  array      $tokenConfig token configuration.
+     * @param array $tokenConfig token configuration.
      * @return OAuthToken token instance.
      */
     protected function createToken(array $tokenConfig = [])

@@ -128,8 +128,8 @@ class Query extends Component implements QueryInterface
     private $_connection;
 
     /**
-     * @param  Connection $connection Sphinx connection instance
-     * @return static     the query object itself
+     * @param Connection $connection Sphinx connection instance
+     * @return static the query object itself
      */
     public function setConnection($connection)
     {
@@ -160,9 +160,9 @@ class Query extends Component implements QueryInterface
 
     /**
      * Creates a Sphinx command that can be used to execute this query.
-     * @param  Connection $connection the Sphinx connection used to generate the SQL statement.
-     *                                If this parameter is not given, the `sphinx` application component will be used.
-     * @return Command    the created Sphinx command instance.
+     * @param Connection $connection the Sphinx connection used to generate the SQL statement.
+     * If this parameter is not given, the `sphinx` application component will be used.
+     * @return Command the created Sphinx command instance.
      */
     public function createCommand($connection = null)
     {
@@ -175,9 +175,9 @@ class Query extends Component implements QueryInterface
 
     /**
      * Executes the query and returns all results as an array.
-     * @param  Connection $db the Sphinx connection used to generate the SQL statement.
-     *                        If this parameter is not given, the `sphinx` application component will be used.
-     * @return array      the query results. If the query results in nothing, an empty array will be returned.
+     * @param Connection $db the Sphinx connection used to generate the SQL statement.
+     * If this parameter is not given, the `sphinx` application component will be used.
+     * @return array the query results. If the query results in nothing, an empty array will be returned.
      */
     public function all($db = null)
     {
@@ -201,10 +201,10 @@ class Query extends Component implements QueryInterface
 
     /**
      * Executes the query and returns a single row of result.
-     * @param  Connection    $db the Sphinx connection used to generate the SQL statement.
-     *                           If this parameter is not given, the `sphinx` application component will be used.
+     * @param Connection $db the Sphinx connection used to generate the SQL statement.
+     * If this parameter is not given, the `sphinx` application component will be used.
      * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
-     *                          results in nothing.
+     * results in nothing.
      */
     public function one($db = null)
     {
@@ -219,10 +219,10 @@ class Query extends Component implements QueryInterface
     /**
      * Returns the query result as a scalar value.
      * The value returned will be the first column in the first row of the query results.
-     * @param  Connection     $db the Sphinx connection used to generate the SQL statement.
-     *                            If this parameter is not given, the `sphinx` application component will be used.
+     * @param Connection $db the Sphinx connection used to generate the SQL statement.
+     * If this parameter is not given, the `sphinx` application component will be used.
      * @return string|boolean the value of the first column in the first row of the query result.
-     *                           False is returned if the query result is empty.
+     * False is returned if the query result is empty.
      */
     public function scalar($db = null)
     {
@@ -231,9 +231,9 @@ class Query extends Component implements QueryInterface
 
     /**
      * Executes the query and returns the first column of the result.
-     * @param  Connection $db the Sphinx connection used to generate the SQL statement.
-     *                        If this parameter is not given, the `sphinx` application component will be used.
-     * @return array      the first column of the query result. An empty array is returned if the query results in nothing.
+     * @param Connection $db the Sphinx connection used to generate the SQL statement.
+     * If this parameter is not given, the `sphinx` application component will be used.
+     * @return array the first column of the query result. An empty array is returned if the query results in nothing.
      */
     public function column($db = null)
     {
@@ -242,11 +242,11 @@ class Query extends Component implements QueryInterface
 
     /**
      * Returns the number of records.
-     * @param  string     $q  the COUNT expression. Defaults to '*'.
-     *                        Make sure you properly quote column names in the expression.
-     * @param  Connection $db the Sphinx connection used to generate the SQL statement.
-     *                        If this parameter is not given, the `sphinx` application component will be used.
-     * @return integer    number of records
+     * @param string $q the COUNT expression. Defaults to '*'.
+     * Make sure you properly quote column names in the expression.
+     * @param Connection $db the Sphinx connection used to generate the SQL statement.
+     * If this parameter is not given, the `sphinx` application component will be used.
+     * @return integer number of records
      */
     public function count($q = '*', $db = null)
     {
@@ -257,11 +257,11 @@ class Query extends Component implements QueryInterface
 
     /**
      * Returns the sum of the specified column values.
-     * @param  string     $q  the column name or expression.
-     *                        Make sure you properly quote column names in the expression.
-     * @param  Connection $db the Sphinx connection used to generate the SQL statement.
-     *                        If this parameter is not given, the `sphinx` application component will be used.
-     * @return integer    the sum of the specified column values
+     * @param string $q the column name or expression.
+     * Make sure you properly quote column names in the expression.
+     * @param Connection $db the Sphinx connection used to generate the SQL statement.
+     * If this parameter is not given, the `sphinx` application component will be used.
+     * @return integer the sum of the specified column values
      */
     public function sum($q, $db = null)
     {
@@ -272,11 +272,11 @@ class Query extends Component implements QueryInterface
 
     /**
      * Returns the average of the specified column values.
-     * @param  string     $q  the column name or expression.
-     *                        Make sure you properly quote column names in the expression.
-     * @param  Connection $db the Sphinx connection used to generate the SQL statement.
-     *                        If this parameter is not given, the `sphinx` application component will be used.
-     * @return integer    the average of the specified column values.
+     * @param string $q the column name or expression.
+     * Make sure you properly quote column names in the expression.
+     * @param Connection $db the Sphinx connection used to generate the SQL statement.
+     * If this parameter is not given, the `sphinx` application component will be used.
+     * @return integer the average of the specified column values.
      */
     public function average($q, $db = null)
     {
@@ -287,11 +287,11 @@ class Query extends Component implements QueryInterface
 
     /**
      * Returns the minimum of the specified column values.
-     * @param  string     $q  the column name or expression.
-     *                        Make sure you properly quote column names in the expression.
-     * @param  Connection $db the Sphinx connection used to generate the SQL statement.
-     *                        If this parameter is not given, the `sphinx` application component will be used.
-     * @return integer    the minimum of the specified column values.
+     * @param string $q the column name or expression.
+     * Make sure you properly quote column names in the expression.
+     * @param Connection $db the Sphinx connection used to generate the SQL statement.
+     * If this parameter is not given, the `sphinx` application component will be used.
+     * @return integer the minimum of the specified column values.
      */
     public function min($q, $db = null)
     {
@@ -302,11 +302,11 @@ class Query extends Component implements QueryInterface
 
     /**
      * Returns the maximum of the specified column values.
-     * @param  string     $q  the column name or expression.
-     *                        Make sure you properly quote column names in the expression.
-     * @param  Connection $db the Sphinx connection used to generate the SQL statement.
-     *                        If this parameter is not given, the `sphinx` application component will be used.
-     * @return integer    the maximum of the specified column values.
+     * @param string $q the column name or expression.
+     * Make sure you properly quote column names in the expression.
+     * @param Connection $db the Sphinx connection used to generate the SQL statement.
+     * If this parameter is not given, the `sphinx` application component will be used.
+     * @return integer the maximum of the specified column values.
      */
     public function max($q, $db = null)
     {
@@ -317,9 +317,9 @@ class Query extends Component implements QueryInterface
 
     /**
      * Returns a value indicating whether the query result contains any row of data.
-     * @param  Connection $db the Sphinx connection used to generate the SQL statement.
-     *                        If this parameter is not given, the `sphinx` application component will be used.
-     * @return boolean    whether the query result contains any row of data.
+     * @param Connection $db the Sphinx connection used to generate the SQL statement.
+     * If this parameter is not given, the `sphinx` application component will be used.
+     * @return boolean whether the query result contains any row of data.
      */
     public function exists($db = null)
     {
@@ -330,12 +330,12 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the SELECT part of the query.
-     * @param  string|array $columns the columns to be selected.
-     *                               Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
-     *                               The method will automatically quote the column names unless a column contains some parenthesis
-     *                               (which means the column contains a Sphinx expression).
-     * @param  string       $option  additional option that should be appended to the 'SELECT' keyword.
-     * @return static       the query object itself
+     * @param string|array $columns the columns to be selected.
+     * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
+     * The method will automatically quote the column names unless a column contains some parenthesis
+     * (which means the column contains a Sphinx expression).
+     * @param string $option additional option that should be appended to the 'SELECT' keyword.
+     * @return static the query object itself
      */
     public function select($columns, $option = null)
     {
@@ -350,8 +350,8 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the value indicating whether to SELECT DISTINCT or not.
-     * @param  boolean $value whether to SELECT DISTINCT or not.
-     * @return static  the query object itself
+     * @param boolean $value whether to SELECT DISTINCT or not.
+     * @return static the query object itself
      */
     public function distinct($value = true)
     {
@@ -362,11 +362,11 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the FROM part of the query.
-     * @param  string|array $tables the table(s) to be selected from. This can be either a string (e.g. `'idx_user'`)
-     *                              or an array (e.g. `['idx_user', 'idx_user_delta']`) specifying one or several index names.
-     *                              The method will automatically quote the table names unless it contains some parenthesis
-     *                              (which means the table is given as a sub-query or Sphinx expression).
-     * @return static       the query object itself
+     * @param string|array $tables the table(s) to be selected from. This can be either a string (e.g. `'idx_user'`)
+     * or an array (e.g. `['idx_user', 'idx_user_delta']`) specifying one or several index names.
+     * The method will automatically quote the table names unless it contains some parenthesis
+     * (which means the table is given as a sub-query or Sphinx expression).
+     * @return static the query object itself
      */
     public function from($tables)
     {
@@ -381,7 +381,7 @@ class Query extends Component implements QueryInterface
     /**
      * Sets the fulltext query text. This text will be composed into
      * MATCH operator inside the WHERE clause.
-     * @param  string $query fulltext query text.
+     * @param string $query fulltext query text.
      * @return static the query object itself
      */
     public function match($query)
@@ -417,53 +417,53 @@ class Query extends Component implements QueryInterface
      * can be one of the followings:
      *
      * - `and`: the operands should be concatenated together using `AND`. For example,
-     * `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,
-     * it will be converted into a string using the rules described here. For example,
-     * `['and', 'type=1', ['or', 'id=1', 'id=2']]` will generate `type=1 AND (id=1 OR id=2)`.
-     * The method will NOT do any quoting or escaping.
+     *   `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,
+     *   it will be converted into a string using the rules described here. For example,
+     *   `['and', 'type=1', ['or', 'id=1', 'id=2']]` will generate `type=1 AND (id=1 OR id=2)`.
+     *   The method will NOT do any quoting or escaping.
      *
      * - `or`: similar to the `and` operator except that the operands are concatenated using `OR`.
      *
      * - `between`: operand 1 should be the column name, and operand 2 and 3 should be the
-     * starting and ending values of the range that the column is in.
-     * For example, `['between', 'id', 1, 10]` will generate `id BETWEEN 1 AND 10`.
+     *   starting and ending values of the range that the column is in.
+     *   For example, `['between', 'id', 1, 10]` will generate `id BETWEEN 1 AND 10`.
      *
      * - `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
-     * in the generated condition.
+     *   in the generated condition.
      *
      * - `in`: operand 1 should be a column or DB expression with parenthesis. Operand 2 can be an array
-     * or a Query object. If the former, the array represents the range of the values that the column
-     * or DB expression should be in. If the latter, a sub-query will be generated to represent the range.
-     * For example, `['in', 'id', [1, 2, 3]]` will generate `id IN (1, 2, 3)`;
-     * `['in', 'id', (new Query)->select('id')->from('user'))]` will generate
-     * `id IN (SELECT id FROM user)`. The method will properly quote the column name and escape values in the range.
-     * The `in` operator also supports composite columns. In this case, operand 1 should be an array of the columns,
-     * while operand 2 should be an array of arrays or a `Query` object representing the range of the columns.
+     *   or a Query object. If the former, the array represents the range of the values that the column
+     *   or DB expression should be in. If the latter, a sub-query will be generated to represent the range.
+     *   For example, `['in', 'id', [1, 2, 3]]` will generate `id IN (1, 2, 3)`;
+     *   `['in', 'id', (new Query)->select('id')->from('user'))]` will generate
+     *   `id IN (SELECT id FROM user)`. The method will properly quote the column name and escape values in the range.
+     *   The `in` operator also supports composite columns. In this case, operand 1 should be an array of the columns,
+     *   while operand 2 should be an array of arrays or a `Query` object representing the range of the columns.
      *
      * - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
      *
      * - `like`: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
-     * the values that the column or DB expression should be like.
-     * For example, `['like', 'name', '%tester%']` will generate `name LIKE '%tester%'`.
-     * When the value range is given as an array, multiple `LIKE` predicates will be generated and concatenated
-     * using `AND`. For example, `['like', 'name', ['%test%', '%sample%']]` will generate
-     * `name LIKE '%test%' AND name LIKE '%sample%'`.
-     * The method will properly quote the column name and escape values in the range.
-     * Sometimes, you may want to add the percentage characters to the matching value by yourself, you may supply
-     * a third operand `false` to do so. For example, `['like', 'name', '%tester', false]` will generate `name LIKE '%tester'`.
+     *   the values that the column or DB expression should be like.
+     *   For example, `['like', 'name', '%tester%']` will generate `name LIKE '%tester%'`.
+     *   When the value range is given as an array, multiple `LIKE` predicates will be generated and concatenated
+     *   using `AND`. For example, `['like', 'name', ['%test%', '%sample%']]` will generate
+     *   `name LIKE '%test%' AND name LIKE '%sample%'`.
+     *   The method will properly quote the column name and escape values in the range.
+     *   Sometimes, you may want to add the percentage characters to the matching value by yourself, you may supply
+     *   a third operand `false` to do so. For example, `['like', 'name', '%tester', false]` will generate `name LIKE '%tester'`.
      *
      * - `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`
-     * predicates when operand 2 is an array.
+     *   predicates when operand 2 is an array.
      *
      * - `not like`: similar to the `like` operator except that `LIKE` is replaced with `NOT LIKE`
-     * in the generated condition.
+     *   in the generated condition.
      *
      * - `or not like`: similar to the `not like` operator except that `OR` is used to concatenate
-     * the `NOT LIKE` predicates.
+     *   the `NOT LIKE` predicates.
      *
-     * @param  string|array $condition the conditions that should be put in the WHERE part.
-     * @param  array        $params    the parameters (name => value) to be bound to the query.
-     * @return static       the query object itself
+     * @param string|array $condition the conditions that should be put in the WHERE part.
+     * @param array $params the parameters (name => value) to be bound to the query.
+     * @return static the query object itself
      * @see andWhere()
      * @see orWhere()
      */
@@ -477,10 +477,10 @@ class Query extends Component implements QueryInterface
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
-     * @param  string|array $condition the new WHERE condition. Please refer to [[where()]]
-     *                                 on how to specify this parameter.
-     * @param  array        $params    the parameters (name => value) to be bound to the query.
-     * @return static       the query object itself
+     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
+     * @return static the query object itself
      * @see where()
      * @see orWhere()
      */
@@ -498,10 +498,10 @@ class Query extends Component implements QueryInterface
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
-     * @param  string|array $condition the new WHERE condition. Please refer to [[where()]]
-     *                                 on how to specify this parameter.
-     * @param  array        $params    the parameters (name => value) to be bound to the query.
-     * @return static       the query object itself
+     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
+     * @return static the query object itself
      * @see where()
      * @see andWhere()
      */
@@ -518,11 +518,11 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the GROUP BY part of the query.
-     * @param  string|array $columns the columns to be grouped by.
-     *                               Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
-     *                               The method will automatically quote the column names unless a column contains some parenthesis
-     *                               (which means the column contains a DB expression).
-     * @return static       the query object itself
+     * @param string|array $columns the columns to be grouped by.
+     * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
+     * The method will automatically quote the column names unless a column contains some parenthesis
+     * (which means the column contains a DB expression).
+     * @return static the query object itself
      * @see addGroupBy()
      */
     public function groupBy($columns)
@@ -537,11 +537,11 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds additional group-by columns to the existing ones.
-     * @param  string|array $columns additional columns to be grouped by.
-     *                               Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
-     *                               The method will automatically quote the column names unless a column contains some parenthesis
-     *                               (which means the column contains a DB expression).
-     * @return static       the query object itself
+     * @param string|array $columns additional columns to be grouped by.
+     * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
+     * The method will automatically quote the column names unless a column contains some parenthesis
+     * (which means the column contains a DB expression).
+     * @return static the query object itself
      * @see groupBy()
      */
     public function addGroupBy($columns)
@@ -560,8 +560,8 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the parameters to be bound to the query.
-     * @param  array  $params list of query parameter values indexed by parameter placeholders.
-     *                        For example, `[':name' => 'Dan', ':age' => 31]`.
+     * @param array $params list of query parameter values indexed by parameter placeholders.
+     * For example, `[':name' => 'Dan', ':age' => 31]`.
      * @return static the query object itself
      * @see addParams()
      */
@@ -574,8 +574,8 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds additional parameters to be bound to the query.
-     * @param  array  $params list of query parameter values indexed by parameter placeholders.
-     *                        For example, `[':name' => 'Dan', ':age' => 31]`.
+     * @param array $params list of query parameter values indexed by parameter placeholders.
+     * For example, `[':name' => 'Dan', ':age' => 31]`.
      * @return static the query object itself
      * @see params()
      */
@@ -600,7 +600,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the query options.
-     * @param  array  $options query options in format: optionName => optionValue
+     * @param array $options query options in format: optionName => optionValue
      * @return static the query object itself
      * @see addOptions()
      */
@@ -613,7 +613,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds additional query options.
-     * @param  array  $options query options in format: optionName => optionValue
+     * @param array $options query options in format: optionName => optionValue
      * @return static the query object itself
      * @see options()
      */
@@ -630,12 +630,12 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the WITHIN GROUP ORDER BY part of the query.
-     * @param  string|array $columns the columns (and the directions) to find best row within a group.
-     *                               Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-     *                               (e.g. `['id' => Query::SORT_ASC, 'name' => Query::SORT_DESC]`).
-     *                               The method will automatically quote the column names unless a column contains some parenthesis
-     *                               (which means the column contains a DB expression).
-     * @return static       the query object itself
+     * @param string|array $columns the columns (and the directions) to find best row within a group.
+     * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+     * (e.g. `['id' => Query::SORT_ASC, 'name' => Query::SORT_DESC]`).
+     * The method will automatically quote the column names unless a column contains some parenthesis
+     * (which means the column contains a DB expression).
+     * @return static the query object itself
      * @see addWithin()
      */
     public function within($columns)
@@ -647,12 +647,12 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds additional WITHIN GROUP ORDER BY columns to the query.
-     * @param  string|array $columns the columns (and the directions) to find best row within a group.
-     *                               Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-     *                               (e.g. `['id' => Query::SORT_ASC, 'name' => Query::SORT_DESC]`).
-     *                               The method will automatically quote the column names unless a column contains some parenthesis
-     *                               (which means the column contains a DB expression).
-     * @return static       the query object itself
+     * @param string|array $columns the columns (and the directions) to find best row within a group.
+     * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+     * (e.g. `['id' => Query::SORT_ASC, 'name' => Query::SORT_DESC]`).
+     * The method will automatically quote the column names unless a column contains some parenthesis
+     * (which means the column contains a DB expression).
+     * @return static the query object itself
      * @see within()
      */
     public function addWithin($columns)
@@ -670,8 +670,8 @@ class Query extends Component implements QueryInterface
     /**
      * Sets the PHP callback, which should be used to retrieve the source data
      * for the snippets building.
-     * @param  callable $callback PHP callback, which should be used to fetch source data for the snippets.
-     * @return static   the query object itself
+     * @param callable $callback PHP callback, which should be used to fetch source data for the snippets.
+     * @return static the query object itself
      * @see snippetCallback
      */
     public function snippetCallback($callback)
@@ -683,7 +683,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the call snippets query options.
-     * @param  array  $options call snippet options in format: option_name => option_value
+     * @param array $options call snippet options in format: option_name => option_value
      * @return static the query object itself
      * @see snippetCallback
      */
@@ -697,7 +697,7 @@ class Query extends Component implements QueryInterface
     /**
      * Fills the query result rows with the snippets built from source determined by
      * [[snippetCallback]] result.
-     * @param  array                $rows raw query result rows.
+     * @param array $rows raw query result rows.
      * @return array|ActiveRecord[] query result rows with filled up snippets.
      */
     protected function fillUpSnippets($rows)
@@ -718,9 +718,9 @@ class Query extends Component implements QueryInterface
 
     /**
      * Builds a snippets from provided source data.
-     * @param  array                $source the source data to extract a snippet from.
+     * @param array $source the source data to extract a snippet from.
      * @throws InvalidCallException in case [[match]] is not specified.
-     * @return array                snippets list.
+     * @return array snippets list.
      */
     protected function callSnippets(array $source)
     {
@@ -729,9 +729,9 @@ class Query extends Component implements QueryInterface
 
     /**
      * Builds a snippets from provided source data by the given index.
-     * @param  array                $source the source data to extract a snippet from.
-     * @param  string               $from   name of the source index.
-     * @return array                snippets list.
+     * @param array $source the source data to extract a snippet from.
+     * @param string $from name of the source index.
+     * @return array snippets list.
      * @throws InvalidCallException in case [[match]] is not specified.
      */
     protected function callSnippetsInternal(array $source, $from)

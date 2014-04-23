@@ -1,7 +1,5 @@
 <?php
 /**
- * Simple file system wrapper for twig to process twig files
- *
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
@@ -32,8 +30,8 @@ class TwigSimpleFileLoader implements \Twig_LoaderInterface
     /**
      * Compare a file's freshness with previously stored timestamp
      *
-     * @param  string  $name file name to check
-     * @param  integer $time timestamp to compare with
+     * @param string $name file name to check
+     * @param integer $time timestamp to compare with
      * @return boolean true if file is still fresh and not changes, false otherwise
      */
     public function isFresh($name, $time)
@@ -44,7 +42,7 @@ class TwigSimpleFileLoader implements \Twig_LoaderInterface
     /**
      * Get the source of given file name
      *
-     * @param  string $name file name
+     * @param string $name file name
      * @return string contents of given file name
      */
     public function getSource($name)
@@ -54,7 +52,7 @@ class TwigSimpleFileLoader implements \Twig_LoaderInterface
 
     /**
      * Get unique key that can represent this file uniquely among other files.
-     * @param  string $name
+     * @param string $name
      * @return string
      */
     public function getCacheKey($name)
@@ -64,7 +62,7 @@ class TwigSimpleFileLoader implements \Twig_LoaderInterface
 
     /**
      * internally used to get absolute path of given file name
-     * @param  string $name file name
+     * @param string $name file name
      * @return string absolute path of file
      */
     protected function getFilePath($name)

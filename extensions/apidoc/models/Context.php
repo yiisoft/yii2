@@ -175,7 +175,7 @@ class Context extends Component
 
     /**
      * @param MethodDoc $method
-     * @param ClassDoc  $parent
+     * @param ClassDoc $parent
      */
     private function inheritMethodRecursive($method, $class)
     {
@@ -271,8 +271,8 @@ class Context extends Component
     }
 
     /**
-     * @param  MethodDoc $method
-     * @param  integer   $number number of not optional parameters
+     * @param MethodDoc $method
+     * @param integer $number number of not optional parameters
      * @return bool
      */
     private function paramsOptional($method, $number = 0)
@@ -287,7 +287,7 @@ class Context extends Component
     }
 
     /**
-     * @param  MethodDoc $method
+     * @param MethodDoc $method
      * @return ParamDoc
      */
     private function getFirstNotOptionalParameter($method)
@@ -302,8 +302,8 @@ class Context extends Component
     }
 
     /**
-     * @param  ClassDoc        $classA
-     * @param  ClassDoc|string $classB
+     * @param ClassDoc $classA
+     * @param ClassDoc|string $classB
      * @return boolean
      */
     protected function isSubclassOf($classA, $classB)

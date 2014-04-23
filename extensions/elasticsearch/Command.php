@@ -42,7 +42,7 @@ class Command extends Component
     public $options = [];
 
     /**
-     * @param  array $options
+     * @param array $options
      * @return mixed
      */
     public function search($options = [])
@@ -65,11 +65,11 @@ class Command extends Component
 
     /**
      * Inserts a document into an index
-     * @param  string       $index
-     * @param  string       $type
-     * @param  string|array $data    json string or array of data to store
-     * @param  null         $id      the documents id. If not specified Id will be automatically chosen
-     * @param  array        $options
+     * @param string $index
+     * @param string $type
+     * @param string|array $data json string or array of data to store
+     * @param null $id the documents id. If not specified Id will be automatically chosen
+     * @param array $options
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-index_.html
      */
@@ -89,7 +89,7 @@ class Command extends Component
      * @param $index
      * @param $type
      * @param $id
-     * @param  array $options
+     * @param array $options
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html
      */
@@ -105,7 +105,7 @@ class Command extends Component
      * @param $index
      * @param $type
      * @param $ids
-     * @param  array $options
+     * @param array $options
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-multi-get.html
      */
@@ -147,7 +147,7 @@ class Command extends Component
      * @param $index
      * @param $type
      * @param $id
-     * @param  array $options
+     * @param array $options
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete.html
      */
@@ -161,7 +161,7 @@ class Command extends Component
      * @param $index
      * @param $type
      * @param $id
-     * @param  array $options
+     * @param array $options
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-update.html
      */
@@ -176,7 +176,7 @@ class Command extends Component
     /**
      * creates an index
      * @param $index
-     * @param  array $configuration
+     * @param array $configuration
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-create-index.html
      */
@@ -319,8 +319,8 @@ class Command extends Component
     }
 
     /**
-     * @param  string $index
-     * @param  string $type
+     * @param string $index
+     * @param string $type
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-mapping.html
      */
@@ -342,7 +342,7 @@ class Command extends Component
 
     /**
      * @param $index
-     * @param  string $type
+     * @param string $type
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-field-mapping.html
      */
@@ -368,7 +368,7 @@ class Command extends Component
      * @param $pattern
      * @param $settings
      * @param $mappings
-     * @param  integer $order
+     * @param integer $order
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-templates.html
      */

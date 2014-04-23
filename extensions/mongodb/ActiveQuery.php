@@ -110,9 +110,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Executes query and returns all results as an array.
-     * @param  Connection $db the Mongo connection used to execute the query.
-     *                        If null, the Mongo connection returned by [[modelClass]] will be used.
-     * @return array      the query results. If the query results in nothing, an empty array will be returned.
+     * @param Connection $db the Mongo connection used to execute the query.
+     * If null, the Mongo connection returned by [[modelClass]] will be used.
+     * @return array the query results. If the query results in nothing, an empty array will be returned.
      */
     public function all($db = null)
     {
@@ -137,11 +137,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Executes query and returns a single row of result.
-     * @param  Connection              $db the Mongo connection used to execute the query.
-     *                                     If null, the Mongo connection returned by [[modelClass]] will be used.
+     * @param Connection $db the Mongo connection used to execute the query.
+     * If null, the Mongo connection returned by [[modelClass]] will be used.
      * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
-     *                                    the query result may be either an array or an ActiveRecord object. Null will be returned
-     *                                    if the query results in nothing.
+     * the query result may be either an array or an ActiveRecord object. Null will be returned
+     * if the query results in nothing.
      */
     public function one($db = null)
     {
@@ -172,7 +172,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Returns the Mongo collection for this query.
-     * @param  Connection $db Mongo connection.
+     * @param Connection $db Mongo connection.
      * @return Collection collection instance.
      */
     public function getCollection($db = null)

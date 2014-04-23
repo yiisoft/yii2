@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\codeception;
 
@@ -33,8 +38,8 @@ class TestCase extends Test
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when executing `$value = $object->property;`.
-     * @param  string                   $name the property name
-     * @return mixed                    the property value
+     * @param string $name the property name
+     * @return mixed the property value
      * @throws UnknownPropertyException if the property is not defined
      */
     public function __get($name)
@@ -52,10 +57,10 @@ class TestCase extends Test
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when an unknown method is being invoked.
-     * @param  string                 $name   the method name
-     * @param  array                  $params method parameters
+     * @param string $name the method name
+     * @param array $params method parameters
      * @throws UnknownMethodException when calling unknown method
-     * @return mixed                  the method return value
+     * @return mixed the method return value
      */
     public function __call($name, $params)
     {
@@ -89,10 +94,10 @@ class TestCase extends Test
 
     /**
      * Mocks up the application instance.
-     * @param  array                                         $config the configuration that should be used to generate the application instance.
-     *                                                               If null, [[appConfig]] will be used.
+     * @param array $config the configuration that should be used to generate the application instance.
+     * If null, [[appConfig]] will be used.
      * @return \yii\web\Application|\yii\console\Application the application instance
-     * @throws InvalidConfigException                        if the application configuration is invalid
+     * @throws InvalidConfigException if the application configuration is invalid
      */
     protected function mockApplication($config = null)
     {

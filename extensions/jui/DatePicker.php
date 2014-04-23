@@ -37,7 +37,7 @@ use yii\helpers\Json;
  *         'dateFormat' => 'yy-mm-dd',
  *     ],
  * ]);
- *```
+ * ```
  *
  * @see http://api.jqueryui.com/datepicker/
  * @author Alexander Kochetov <creocoder@gmail.com>

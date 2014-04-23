@@ -25,8 +25,8 @@ class Query extends \yii\mongodb\Query
 {
     /**
      * Returns the Mongo collection for this query.
-     * @param  \yii\mongodb\Connection $db Mongo connection.
-     * @return Collection              collection instance.
+     * @param \yii\mongodb\Connection $db Mongo connection.
+     * @return Collection collection instance.
      */
     public function getCollection($db = null)
     {
@@ -38,10 +38,10 @@ class Query extends \yii\mongodb\Query
     }
 
     /**
-     * @param  \MongoGridFSCursor $cursor  Mongo cursor instance to fetch data from.
-     * @param  boolean            $all     whether to fetch all rows or only first one.
-     * @param  string|callable    $indexBy value to index by.
-     * @return array|boolean      result.
+     * @param \MongoGridFSCursor $cursor Mongo cursor instance to fetch data from.
+     * @param boolean $all whether to fetch all rows or only first one.
+     * @param string|callable $indexBy value to index by.
+     * @return array|boolean result.
      * @see Query::fetchRows()
      */
     protected function fetchRowsInternal($cursor, $all, $indexBy)

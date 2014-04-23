@@ -104,7 +104,7 @@ class RsaSha1 extends BaseMethod
      * Creates initial value for {@link publicCertificate}.
      * This method will attempt to fetch the certificate value from {@link publicCertificateFile} file.
      * @throws InvalidConfigException on failure.
-     * @return string                 public certificate content.
+     * @return string public certificate content.
      */
     protected function initPublicCertificate()
     {
@@ -123,7 +123,7 @@ class RsaSha1 extends BaseMethod
      * Creates initial value for {@link privateCertificate}.
      * This method will attempt to fetch the certificate value from {@link privateCertificateFile} file.
      * @throws InvalidConfigException on failure.
-     * @return string                 private certificate content.
+     * @return string private certificate content.
      */
     protected function initPrivateCertificate()
     {

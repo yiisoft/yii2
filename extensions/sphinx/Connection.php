@@ -69,8 +69,8 @@ class Connection extends \yii\db\Connection
 
     /**
      * Obtains the schema information for the named index.
-     * @param  string      $name    index name.
-     * @param  boolean     $refresh whether to reload the table schema even if it is found in the cache.
+     * @param string $name index name.
+     * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
      * @return IndexSchema index schema information. Null if the named index does not exist.
      */
     public function getIndexSchema($name, $refresh = false)
@@ -83,7 +83,7 @@ class Connection extends \yii\db\Connection
      * If the index name contains schema prefix, the prefix will also be properly quoted.
      * If the index name is already quoted or contains special characters including '(', '[[' and '{{',
      * then this method will do nothing.
-     * @param  string $name index name
+     * @param string $name index name
      * @return string the properly quoted index name
      */
     public function quoteIndexName($name)
@@ -93,7 +93,7 @@ class Connection extends \yii\db\Connection
 
     /**
      * Alias of [[quoteIndexName()]].
-     * @param  string $name table name
+     * @param string $name table name
      * @return string the properly quoted table name
      */
     public function quoteTableName($name)
@@ -103,8 +103,8 @@ class Connection extends \yii\db\Connection
 
     /**
      * Creates a command for execution.
-     * @param  string  $sql    the SQL statement to be executed
-     * @param  array   $params the parameters to be bound to the SQL statement
+     * @param string $sql the SQL statement to be executed
+     * @param array $params the parameters to be bound to the SQL statement
      * @return Command the Sphinx command
      */
     public function createCommand($sql = null, $params = [])
@@ -120,8 +120,8 @@ class Connection extends \yii\db\Connection
 
     /**
      * This method is not supported by Sphinx.
-     * @param  string                          $sequenceName name of the sequence object
-     * @return string                          the row ID of the last row inserted, or the last value retrieved from the sequence object
+     * @param string $sequenceName name of the sequence object
+     * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
      * @throws \yii\base\NotSupportedException always.
      */
     public function getLastInsertID($sequenceName = '')

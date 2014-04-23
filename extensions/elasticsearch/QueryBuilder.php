@@ -27,7 +27,7 @@ class QueryBuilder extends \yii\base\Object
     /**
      * Constructor.
      * @param Connection $connection the database connection.
-     * @param array      $config     name-value pairs that will be used to initialize the object properties
+     * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($connection, $config = [])
     {
@@ -37,9 +37,9 @@ class QueryBuilder extends \yii\base\Object
 
     /**
      * Generates query from a [[Query]] object.
-     * @param  Query $query the [[Query]] object from which the query will be generated
+     * @param Query $query the [[Query]] object from which the query will be generated
      * @return array the generated SQL statement (the first array element) and the corresponding
-     *                     parameters to be bound to the SQL statement (the second array element).
+     * parameters to be bound to the SQL statement (the second array element).
      */
     public function build($query)
     {
@@ -134,7 +134,7 @@ class QueryBuilder extends \yii\base\Object
     /**
      * Parses the condition specification and generates the corresponding SQL expression.
      *
-     * @param  string|array $condition the condition specification. Please refer to [[Query::where()]] on how to specify a condition.
+     * @param string|array $condition the condition specification. Please refer to [[Query::where()]] on how to specify a condition.
      * @throws \yii\base\InvalidParamException if unknown operator is used in query
      * @throws \yii\base\NotSupportedException if string conditions are used in where
      * @return string the generated SQL expression

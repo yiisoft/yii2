@@ -166,9 +166,9 @@ class AuthChoice extends Widget
 
     /**
      * Outputs client auth link.
-     * @param ClientInterface $client      external auth client instance.
-     * @param string          $text        link text, if not set - default value will be generated.
-     * @param array           $htmlOptions link HTML options.
+     * @param ClientInterface $client external auth client instance.
+     * @param string $text link text, if not set - default value will be generated.
+     * @param array $htmlOptions link HTML options.
      */
     public function clientLink($client, $text = null, array $htmlOptions = [])
     {
@@ -193,8 +193,8 @@ class AuthChoice extends Widget
 
     /**
      * Composes client auth URL.
-     * @param  ClientInterface $provider external auth client instance.
-     * @return string          auth URL.
+     * @param ClientInterface $provider external auth client instance.
+     * @return string auth URL.
      */
     public function createClientUrl($provider)
     {

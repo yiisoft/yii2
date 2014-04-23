@@ -130,8 +130,8 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
     }
 
     /**
-     * @param  array|signature\BaseMethod $signatureMethod signature method instance or its array configuration.
-     * @throws InvalidParamException      on wrong argument.
+     * @param array|signature\BaseMethod $signatureMethod signature method instance or its array configuration.
+     * @throws InvalidParamException on wrong argument.
      */
     public function setSignatureMethod($signatureMethod)
     {
@@ -164,10 +164,10 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 
     /**
      * Sends HTTP request.
-     * @param  string    $method request type.
-     * @param  string    $url    request URL.
-     * @param  array     $params request params.
-     * @return array     response.
+     * @param string $method request type.
+     * @param string $url request URL.
+     * @param array $params request params.
+     * @return array response.
      * @throws Exception on failure.
      */
     protected function sendRequest($method, $url, array $params = [])
@@ -208,9 +208,9 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * Merge CUrl options.
      * If each options array has an element with the same key value, the latter
      * will overwrite the former.
-     * @param  array $options1 options to be merged to.
-     * @param  array $options2 options to be merged from. You can specify additional
-     *                         arrays via third argument, fourth argument etc.
+     * @param array $options1 options to be merged to.
+     * @param array $options2 options to be merged from. You can specify additional
+     * arrays via third argument, fourth argument etc.
      * @return array merged options (the original options are not changed.)
      */
     protected function mergeCurlOptions($options1, $options2)
@@ -243,10 +243,10 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 
     /**
      * Processes raw response converting it to actual data.
-     * @param  string    $rawResponse raw response.
-     * @param  string    $contentType response content type.
+     * @param string $rawResponse raw response.
+     * @param string $contentType response content type.
      * @throws Exception on failure.
-     * @return array     actual response.
+     * @return array actual response.
      */
     protected function processResponse($rawResponse, $contentType = self::CONTENT_TYPE_AUTO)
     {
@@ -288,8 +288,8 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 
     /**
      * Converts XML document to array.
-     * @param  string|\SimpleXMLElement $xml xml to process.
-     * @return array                    XML array representation.
+     * @param string|\SimpleXMLElement $xml xml to process.
+     * @return array XML array representation.
      */
     protected function convertXmlToArray($xml)
     {
@@ -308,7 +308,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 
     /**
      * Attempts to determine HTTP request content type by headers.
-     * @param  array  $headers request headers.
+     * @param array $headers request headers.
      * @return string content type.
      */
     protected function determineContentTypeByHeaders(array $headers)
@@ -330,7 +330,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 
     /**
      * Attempts to determine the content type from raw content.
-     * @param  string $rawContent raw response content.
+     * @param string $rawContent raw response content.
      * @return string response type.
      */
     protected function determineContentTypeByRaw($rawContent)
@@ -350,7 +350,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 
     /**
      * Creates signature method instance from its configuration.
-     * @param  array                $signatureMethodConfig signature method configuration.
+     * @param array $signatureMethodConfig signature method configuration.
      * @return signature\BaseMethod signature method instance.
      */
     protected function createSignatureMethod(array $signatureMethodConfig)
@@ -364,7 +364,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 
     /**
      * Creates token from its configuration.
-     * @param  array      $tokenConfig token configuration.
+     * @param array $tokenConfig token configuration.
      * @return OAuthToken token instance.
      */
     protected function createToken(array $tokenConfig = [])
@@ -378,8 +378,8 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 
     /**
      * Composes URL from base URL and GET params.
-     * @param  string $url    base URL.
-     * @param  array  $params GET params.
+     * @param string $url base URL.
+     * @param array $params GET params.
      * @return string composed URL.
      */
     protected function composeUrl($url, array $params = [])
@@ -396,8 +396,8 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 
     /**
      * Saves token as persistent state.
-     * @param  OAuthToken $token auth token
-     * @return static     self reference.
+     * @param OAuthToken $token auth token
+     * @return static self reference.
      */
     protected function saveAccessToken(OAuthToken $token)
     {
@@ -423,8 +423,8 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 
     /**
      * Sets persistent state.
-     * @param  string $key   state key.
-     * @param  mixed  $value state value
+     * @param string $key state key.
+     * @param mixed $value state value
      * @return static self reference.
      */
     protected function setState($key, $value)
@@ -438,8 +438,8 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 
     /**
      * Returns persistent state value.
-     * @param  string $key state key.
-     * @return mixed  state value.
+     * @param string $key state key.
+     * @return mixed state value.
      */
     protected function getState($key)
     {
@@ -452,7 +452,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 
     /**
      * Removes persistent state value.
-     * @param  string  $key state key.
+     * @param string $key state key.
      * @return boolean success.
      */
     protected function removeState($key)
@@ -475,10 +475,10 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 
     /**
      * Performs request to the OAuth API.
-     * @param  string    $apiSubUrl API sub URL, which will be append to [[apiBaseUrl]], or absolute API URL.
-     * @param  string    $method    request method.
-     * @param  array     $params    request parameters.
-     * @return array     API response
+     * @param string $apiSubUrl API sub URL, which will be append to [[apiBaseUrl]], or absolute API URL.
+     * @param string $method request method.
+     * @param array $params request parameters.
+     * @return array API response
      * @throws Exception on failure.
      */
     public function api($apiSubUrl, $method = 'GET', array $params = [])
@@ -498,29 +498,29 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
 
     /**
      * Composes HTTP request CUrl options, which will be merged with the default ones.
-     * @param  string    $method request type.
-     * @param  string    $url    request URL.
-     * @param  array     $params request params.
-     * @return array     CUrl options.
+     * @param string $method request type.
+     * @param string $url request URL.
+     * @param array $params request params.
+     * @return array CUrl options.
      * @throws Exception on failure.
      */
     abstract protected function composeRequestCurlOptions($method, $url, array $params);
 
     /**
      * Gets new auth token to replace expired one.
-     * @param  OAuthToken $token expired auth token.
+     * @param OAuthToken $token expired auth token.
      * @return OAuthToken new auth token.
      */
     abstract public function refreshAccessToken(OAuthToken $token);
 
     /**
      * Performs request to the OAuth API.
-     * @param  OAuthToken $accessToken actual access token.
-     * @param  string     $url         absolute API URL.
-     * @param  string     $method      request method.
-     * @param  array      $params      request parameters.
-     * @return array      API response.
-     * @throws Exception  on failure.
+     * @param OAuthToken $accessToken actual access token.
+     * @param string $url absolute API URL.
+     * @param string $method request method.
+     * @param array $params request parameters.
+     * @return array API response.
+     * @throws Exception on failure.
      */
     abstract protected function apiInternal($accessToken, $url, $method, array $params);
 }

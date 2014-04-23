@@ -313,8 +313,8 @@ class Connection extends Component
 
     /**
      *
-     * @param  string $name
-     * @param  array  $params
+     * @param string $name
+     * @param array $params
      * @return mixed
      */
     public function __call($name, $params)
@@ -331,10 +331,10 @@ class Connection extends Component
      * Executes a redis command.
      * For a list of available commands and their parameters see http://redis.io/commands.
      *
-     * @param  string                 $name   the name of the command
-     * @param  array                  $params list of parameters for the command
+     * @param string $name the name of the command
+     * @param array $params list of parameters for the command
      * @return array|bool|null|string Dependend on the executed command this method
-     *                                       will return different data types:
+     * will return different data types:
      *
      * - `true` for commands that return "status reply".
      * - `string` for commands that return "integer reply"

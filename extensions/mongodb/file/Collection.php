@@ -35,7 +35,7 @@ class Collection extends \yii\mongodb\Collection
 
     /**
      * Returns the Mongo collection for the file chunks.
-     * @param  boolean                 $refresh whether to reload the collection instance even if it is found in the cache.
+     * @param boolean $refresh whether to reload the collection instance even if it is found in the cache.
      * @return \yii\mongodb\Collection mongo collection instance.
      */
     public function getChunkCollection($refresh = false)
@@ -52,10 +52,10 @@ class Collection extends \yii\mongodb\Collection
 
     /**
      * Removes data from the collection.
-     * @param  array           $condition description of records to remove.
-     * @param  array           $options   list of options in format: optionName => optionValue.
+     * @param array $condition description of records to remove.
+     * @param array $options list of options in format: optionName => optionValue.
      * @return integer|boolean number of updated documents or whether operation was successful.
-     * @throws Exception       on failure.
+     * @throws Exception on failure.
      */
     public function remove($condition = [], $options = [])
     {
@@ -68,11 +68,11 @@ class Collection extends \yii\mongodb\Collection
     /**
      * Creates new file in GridFS collection from given local filesystem file.
      * Additional attributes can be added file document using $metadata.
-     * @param  string    $filename name of the file to store.
-     * @param  array     $metadata other metadata fields to include in the file document.
-     * @param  array     $options  list of options in format: optionName => optionValue
-     * @return mixed     the "_id" of the saved file document. This will be a generated [[\MongoId]]
-     *                            unless an "_id" was explicitly specified in the metadata.
+     * @param string $filename name of the file to store.
+     * @param array $metadata other metadata fields to include in the file document.
+     * @param array $options list of options in format: optionName => optionValue
+     * @return mixed the "_id" of the saved file document. This will be a generated [[\MongoId]]
+     * unless an "_id" was explicitly specified in the metadata.
      * @throws Exception on failure.
      */
     public function insertFile($filename, $metadata = [], $options = [])
@@ -95,11 +95,11 @@ class Collection extends \yii\mongodb\Collection
     /**
      * Creates new file in GridFS collection with specified content.
      * Additional attributes can be added file document using $metadata.
-     * @param  string    $bytes    string of bytes to store.
-     * @param  array     $metadata other metadata fields to include in the file document.
-     * @param  array     $options  list of options in format: optionName => optionValue
-     * @return mixed     the "_id" of the saved file document. This will be a generated [[\MongoId]]
-     *                            unless an "_id" was explicitly specified in the metadata.
+     * @param string $bytes string of bytes to store.
+     * @param array $metadata other metadata fields to include in the file document.
+     * @param array $options list of options in format: optionName => optionValue
+     * @return mixed the "_id" of the saved file document. This will be a generated [[\MongoId]]
+     * unless an "_id" was explicitly specified in the metadata.
      * @throws Exception on failure.
      */
     public function insertFileContent($bytes, $metadata = [], $options = [])
@@ -122,11 +122,11 @@ class Collection extends \yii\mongodb\Collection
     /**
      * Creates new file in GridFS collection from uploaded file.
      * Additional attributes can be added file document using $metadata.
-     * @param  string    $name     name of the uploaded file to store. This should correspond to
-     *                             the file field's name attribute in the HTML form.
-     * @param  array     $metadata other metadata fields to include in the file document.
-     * @return mixed     the "_id" of the saved file document. This will be a generated [[\MongoId]]
-     *                            unless an "_id" was explicitly specified in the metadata.
+     * @param string $name name of the uploaded file to store. This should correspond to
+     * the file field's name attribute in the HTML form.
+     * @param array $metadata other metadata fields to include in the file document.
+     * @return mixed the "_id" of the saved file document. This will be a generated [[\MongoId]]
+     * unless an "_id" was explicitly specified in the metadata.
      * @throws Exception on failure.
      */
     public function insertUploads($name, $metadata = [])
@@ -147,9 +147,9 @@ class Collection extends \yii\mongodb\Collection
 
     /**
      * Retrieves the file with given _id.
-     * @param  mixed                 $id _id of the file to find.
+     * @param mixed $id _id of the file to find.
      * @return \MongoGridFSFile|null found file, or null if file does not exist
-     * @throws Exception             on failure.
+     * @throws Exception on failure.
      */
     public function get($id)
     {
@@ -169,8 +169,8 @@ class Collection extends \yii\mongodb\Collection
 
     /**
      * Deletes the file with given _id.
-     * @param  mixed     $id _id of the file to find.
-     * @return boolean   whether the operation was successful.
+     * @param mixed $id _id of the file to find.
+     * @return boolean whether the operation was successful.
      * @throws Exception on failure.
      */
     public function delete($id)

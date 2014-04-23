@@ -64,7 +64,7 @@ class OAuth1 extends BaseOAuth
 
     /**
      * Fetches the OAuth request token.
-     * @param  array      $params additional request params.
+     * @param array $params additional request params.
      * @return OAuthToken request token.
      */
     public function fetchRequestToken(array $params = [])
@@ -89,10 +89,10 @@ class OAuth1 extends BaseOAuth
 
     /**
      * Composes user authorization URL.
-     * @param  OAuthToken $requestToken OAuth request token.
-     * @param  array      $params       additional request params.
-     * @return string     authorize URL
-     * @throws Exception  on failure.
+     * @param OAuthToken $requestToken OAuth request token.
+     * @param array $params additional request params.
+     * @return string authorize URL
+     * @throws Exception on failure.
      */
     public function buildAuthUrl(OAuthToken $requestToken = null, array $params = [])
     {
@@ -109,11 +109,11 @@ class OAuth1 extends BaseOAuth
 
     /**
      * Fetches OAuth access token.
-     * @param  OAuthToken $requestToken  OAuth request token.
-     * @param  string     $oauthVerifier OAuth verifier.
-     * @param  array      $params        additional request params.
+     * @param OAuthToken $requestToken OAuth request token.
+     * @param string $oauthVerifier OAuth verifier.
+     * @param array $params additional request params.
      * @return OAuthToken OAuth access token.
-     * @throws Exception  on failure.
+     * @throws Exception on failure.
      */
     public function fetchAccessToken(OAuthToken $requestToken = null, $oauthVerifier = null, array $params = [])
     {
@@ -148,10 +148,10 @@ class OAuth1 extends BaseOAuth
 
     /**
      * Sends HTTP request, signed by {@link signatureMethod}.
-     * @param  string $method request type.
-     * @param  string $url    request URL.
-     * @param  array  $params request params.
-     * @return array  response.
+     * @param string $method request type.
+     * @param string $url request URL.
+     * @param array $params request params.
+     * @return array response.
      */
     protected function sendSignedRequest($method, $url, array $params = [])
     {
@@ -163,10 +163,10 @@ class OAuth1 extends BaseOAuth
 
     /**
      * Composes HTTP request CUrl options, which will be merged with the default ones.
-     * @param  string    $method request type.
-     * @param  string    $url    request URL.
-     * @param  array     $params request params.
-     * @return array     CUrl options.
+     * @param string $method request type.
+     * @param string $url request URL.
+     * @param array $params request params.
+     * @return array CUrl options.
      * @throws Exception on failure.
      */
     protected function composeRequestCurlOptions($method, $url, array $params)
@@ -207,12 +207,12 @@ class OAuth1 extends BaseOAuth
 
     /**
      * Performs request to the OAuth API.
-     * @param  OAuthToken $accessToken actual access token.
-     * @param  string     $url         absolute API URL.
-     * @param  string     $method      request method.
-     * @param  array      $params      request parameters.
-     * @return array      API response.
-     * @throws Exception  on failure.
+     * @param OAuthToken $accessToken actual access token.
+     * @param string $url absolute API URL.
+     * @param string $method request method.
+     * @param array $params request parameters.
+     * @return array API response.
+     * @throws Exception on failure.
      */
     protected function apiInternal($accessToken, $url, $method, array $params)
     {
@@ -225,7 +225,7 @@ class OAuth1 extends BaseOAuth
 
     /**
      * Gets new auth token to replace expired one.
-     * @param  OAuthToken $token expired auth token.
+     * @param OAuthToken $token expired auth token.
      * @return OAuthToken new auth token.
      */
     public function refreshAccessToken(OAuthToken $token)
@@ -282,10 +282,10 @@ class OAuth1 extends BaseOAuth
 
     /**
      * Sign request with {@link signatureMethod}.
-     * @param  string $method request method.
-     * @param  string $url    request URL.
-     * @param  array  $params request params.
-     * @return array  signed request params.
+     * @param string $method request method.
+     * @param string $url request URL.
+     * @param array $params request params.
+     * @return array signed request params.
      */
     protected function signRequest($method, $url, array $params)
     {
@@ -300,9 +300,9 @@ class OAuth1 extends BaseOAuth
 
     /**
      * Creates signature base string, which will be signed by {@link signatureMethod}.
-     * @param  string $method request method.
-     * @param  string $url    request URL.
-     * @param  array  $params request params.
+     * @param string $method request method.
+     * @param string $url request URL.
+     * @param array $params request params.
      * @return string base signature string.
      */
     protected function composeSignatureBaseString($method, $url, array $params)
@@ -341,8 +341,8 @@ class OAuth1 extends BaseOAuth
 
     /**
      * Composes authorization header content.
-     * @param  array  $params request params.
-     * @param  string $realm  authorization realm.
+     * @param array $params request params.
+     * @param string $realm authorization realm.
      * @return string authorization header content.
      */
     protected function composeAuthorizationHeader(array $params, $realm = '')

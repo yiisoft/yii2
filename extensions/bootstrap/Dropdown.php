@@ -62,8 +62,8 @@ class Dropdown extends Widget
 
     /**
      * Renders menu items.
-     * @param  array                  $items the menu items to be rendered
-     * @return string                 the rendering result.
+     * @param array $items the menu items to be rendered
+     * @return string the rendering result.
      * @throws InvalidConfigException if the label option is not specified in one of the items.
      */
     protected function renderItems($items)

@@ -76,8 +76,8 @@ class ClassDoc extends TypeDoc
 
     /**
      * @param \phpDocumentor\Reflection\ClassReflector $reflector
-     * @param Context                                  $context
-     * @param array                                    $config
+     * @param Context $context
+     * @param array $config
      */
     public function __construct($reflector = null, $context = null, $config = [])
     {

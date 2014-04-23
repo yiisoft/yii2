@@ -93,8 +93,8 @@ class OAuthToken extends Object
 
     /**
      * Sets param by name.
-     * @param string $name  param name.
-     * @param mixed  $value param value,
+     * @param string $name param name.
+     * @param mixed $value param value,
      */
     public function setParam($name, $value)
     {
@@ -103,8 +103,8 @@ class OAuthToken extends Object
 
     /**
      * Returns param by name.
-     * @param  string $name param name.
-     * @return mixed  param value.
+     * @param string $name param name.
+     * @return mixed param value.
      */
     public function getParam($name)
     {
@@ -113,7 +113,7 @@ class OAuthToken extends Object
 
     /**
      * Sets token value.
-     * @param  string $token token value.
+     * @param string $token token value.
      * @return static self reference.
      */
     public function setToken($token)

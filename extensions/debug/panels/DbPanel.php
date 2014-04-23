@@ -115,7 +115,7 @@ class DbPanel extends Panel
     /**
      * Returns total query time.
      *
-     * @param  array   $timings
+     * @param array $timings
      * @return integer total time
      */
     protected function getTotalQueryTime($timings)
@@ -158,7 +158,7 @@ class DbPanel extends Panel
     /**
      * Returns databse query type.
      *
-     * @param  string $timing timing procedure string
+     * @param string $timing timing procedure string
      * @return string query type such as select, insert, delete, etc.
      */
     protected function getQueryType($timing)
@@ -172,7 +172,7 @@ class DbPanel extends Panel
     /**
      * Check if given queries count is critical according settings.
      *
-     * @param  integer $count queries count
+     * @param integer $count queries count
      * @return boolean
      */
     public function isQueryCountCritical($count)
