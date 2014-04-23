@@ -141,16 +141,22 @@ class DataColumn extends Column
     {
         if (is_string($this->filter)) {
             return $this->filter;
-        } elseif ($this->filter !== false && $this->grid->filterModel instanceof Model &&
-                  $this->attribute !== null && $this->grid->filterModel->isAttributeActive($this->attribute)) {
-            if ($this->grid->filterModel->hasErrors($this->attribute)) {
-                 Html::addCssClass($this->filterOptions, 'has-error');
+        }
+
+        $model = $this->grid->filterModel;
+
+        if ($this->filter !== false && $model instanceof Model && $this->attribute !== null && $model->isAttributeActive($this->attribute)) {
+            if ($model->hasErrors($this->attribute)) {
+                Html::addCssClass($this->filterOptions, 'has-error');
+                $error = Html::error($model, $this->attribute, $this->grid->filterErrorOptions);
+            } else {
+                $error = '';
             }
             if (is_array($this->filter)) {
                 $options = array_merge(['prompt' => ''], $this->filterInputOptions);
-                return Html::activeDropDownList($this->grid->filterModel, $this->attribute, $this->filter, $options);
+                return Html::activeDropDownList($model, $this->attribute, $this->filter, $options) . ' ' . $error;
             } else {
-                return Html::activeTextInput($this->grid->filterModel, $this->attribute, $this->filterInputOptions);
+                return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . ' ' . $error;
             }
         } else {
             return parent::renderFilterCellContent();
