@@ -1032,6 +1032,46 @@ class BaseHtml
     }
 
     /**
+     * Generates a summary of the validation errors.
+     * If there is no validation error, an empty error summary markup will still be generated, but it will be hidden.
+     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed
+     * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
+     *
+     * - header: string, the header HTML for the error summary. If not set, a default prompt string will be used.
+     * - footer: string, the footer HTML for the error summary.
+     *
+     * The rest of the options will be rendered as the attributes of the container tag. The values will
+     * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+     * @return string the generated error summary
+     */
+    public static function errorSummary($models, $options = [])
+    {
+        $lines = [];
+        if (!is_array($models)) {
+            $models = [$models];
+        }
+        foreach ($models as $model) {
+            /** @var Model $model */
+            foreach ($model->getFirstErrors() as $error) {
+                $lines[] = Html::encode($error);
+            }
+        }
+
+        $header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii', 'Please fix the following errors:') . '</p>';
+        $footer = isset($options['footer']) ? $options['footer'] : '';
+        unset($options['header'], $options['footer']);
+
+        if (empty($lines)) {
+            // still render the placeholder for client-side validation use
+            $content = "<ul></ul>";
+            $options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
+        } else {
+            $content = "<ul><li>" . implode("</li>\n<li>", $lines) . "</li></ul>";
+        }
+        return Html::tag('div', $header . $content . $footer, $options);
+    }
+
+    /**
      * Generates a tag that contains the first validation error of the specified model attribute.
      * Note that even if there is no validation error, this method will still return an empty error tag.
      * @param Model $model the model object
