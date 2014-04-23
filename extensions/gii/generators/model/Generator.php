@@ -546,7 +546,6 @@ class Generator extends \yii\gii\Generator
             return $tableName;
         } else {
             $db = $this->getDbConnection();
-            $patterns = [];
             if (preg_match("/^{$db->tablePrefix}(.*?)$/", $tableName, $matches)) {
                 $tableName = '{{%'.$matches[1].'}}';
             } elseif (preg_match("/^(.*?){$db->tablePrefix}$/", $tableName, $matches)) {
