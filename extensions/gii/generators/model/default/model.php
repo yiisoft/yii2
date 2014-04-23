@@ -39,7 +39,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
      */
     public static function tableName()
     {
-        return '<?= $generator->generateTablename($tableName) ?>';
+        return '<?= $generator->generateTableName($tableName) ?>';
     }
 <?php if ($generator->db !== 'db'): ?>
 
