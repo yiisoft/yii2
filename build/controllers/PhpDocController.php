@@ -30,9 +30,9 @@ class PhpDocController extends Controller
     public $updateFiles = true;
 
     /**
-     * Generates `@property annotations` in class files from getters and setters
+     * Generates `@property` annotations in class files from getters and setters
      *
-     * Property description will be taken from getter or setter or from an `@property annotation`
+     * Property description will be taken from getter or setter or from an `@property` annotation
      * in the getters docblock if there is one defined.
      *
      * See https://github.com/yiisoft/yii2/wiki/Core-framework-code-style#documentation for details.
