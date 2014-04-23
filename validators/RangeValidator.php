@@ -33,7 +33,7 @@ class RangeValidator extends Validator
     /**
      * @var boolean whether to invert the validation logic. Defaults to false. If set to true,
      * the attribute value should NOT be among the list of values defined via [[range]].
-     **/
+     */
     public $not = false;
 
     /**

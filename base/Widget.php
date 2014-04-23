@@ -171,7 +171,7 @@ class Widget extends Component implements ViewContextInterface
      * - relative path (e.g. "index"): the actual view file will be looked for under [[viewPath]].
      *
      * If the view name does not contain a file extension, it will use the default one `.php`.
-
+     *
      * @param string $view the view name.
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * @return string the rendering result.

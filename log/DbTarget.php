@@ -35,11 +35,11 @@ class DbTarget extends Target
      *
      * ~~~
      * CREATE TABLE log (
-     *	   id       BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-     *	   level    INTEGER,
-     *	   category VARCHAR(255),
-     *	   log_time INTEGER,
-     *	   message  TEXT,
+     *     id       BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+     *     level    INTEGER,
+     *     category VARCHAR(255),
+     *     log_time INTEGER,
+     *     message  TEXT,
      *     INDEX idx_log_level (level),
      *     INDEX idx_log_category (category)
      * )

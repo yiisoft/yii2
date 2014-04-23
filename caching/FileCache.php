@@ -52,7 +52,7 @@ class FileCache extends Cache
      * @var integer the probability (parts per million) that garbage collection (GC) should be performed
      * when storing a piece of data in the cache. Defaults to 10, meaning 0.001% chance.
      * This number should be between 0 and 1000000. A value 0 means no GC will be performed at all.
-     **/
+     */
     public $gcProbability = 10;
     /**
      * @var integer the permission to be set for newly created cache files.

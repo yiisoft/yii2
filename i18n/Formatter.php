@@ -305,7 +305,7 @@ class Formatter extends \yii\base\Formatter
     /**
      * Creates a number formatter based on the given type and format.
      * @param integer $type the type of the number formatter
-     * @param string $format the format to be used.  Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
+     * @param string $format the format to be used. Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
      * @return NumberFormatter the created formatter instance
      */
     protected function createNumberFormatter($type, $format)
