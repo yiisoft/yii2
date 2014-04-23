@@ -84,6 +84,7 @@ class PhpDocController extends Controller
             $lines = preg_split('/(\r\n|\n|\r)/', $contents);
 
             $this->fixFileDoc($lines);
+            $this->fixDocBlockIndentation($lines);
 
             $newContent = implode("\n", $lines);
             if ($sha !== sha1($newContent)) {
@@ -191,6 +192,48 @@ class PhpDocController extends Controller
                 $namespaceLine,
                 ""
             ], $lines);
+        }
+    }
+
+    /**
+     * Markdown aware fix of whitespace issues in doc comments
+     */
+    protected function fixDocBlockIndentation(&$lines)
+    {
+        $docBlock = false;
+        $codeBlock = false;
+        $listIndent = false;
+        $indent = '';
+        foreach($lines as $i => $line) {
+            if (preg_match('~^(\s+)/\*\*$~', $line, $matches)) {
+                $docBlock = true;
+                $indent = $matches[1];
+            } elseif (preg_match('~^(\s+)\*/~', $line)) {
+                $docBlock = false;
+                $codeBlock = false;
+                $listIndent = '';
+                $lines[$i] = $indent . ' */';
+            } elseif ($docBlock) {
+                $docLine = trim($line, " \t*");
+                if (empty($docLine)) {
+                    $listIndent = '';
+                } elseif ($docLine[0] === '@') {
+                    $listIndent = '';
+                    $codeBlock = false;
+                    $docLine = preg_replace('/\s+/', ' ', $docLine);
+                } elseif (preg_match('/^(~~~|```)/', $docLine)) {
+                    $codeBlock = !$codeBlock;
+                } elseif (preg_match('/^([0-9]+\.|-|\*|\+) /', $docLine, $matches)) {
+                    $listIndent = str_repeat(' ', strlen($matches[0]));
+                    $lines[$i] = $indent . ' * ' . $docLine;
+                    continue;
+                }
+                if ($codeBlock) {
+                    $lines[$i] = rtrim($indent . ' * ' . substr(ltrim($line), 2));
+                } else {
+                    $lines[$i] = rtrim($indent . ' * ' . $listIndent . $docLine);
+                }
+            }
         }
     }
 
