@@ -102,12 +102,15 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
 
     /**
      * Returns whether there is a cookie with the specified name.
+     * Note that if a cookie is marked for deletion from browser, this method will return false.
      * @param string $name the cookie name
      * @return boolean whether the named cookie exists
+     * @see remove()
      */
     public function has($name)
     {
-        return isset($this->_cookies[$name]);
+        return isset($this->_cookies[$name]) && $this->_cookies[$name]->value !== ''
+            && ($this->_cookies[$name]->expire === null || $this->_cookies[$name]->expire >= time());
     }
 
     /**
