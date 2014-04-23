@@ -38,6 +38,7 @@ return array (
   'Please fix the following errors:' => 'Por favor, corrija os seguintes erros:',
   'Please upload a file.' => 'Por favor, faça upload de um arquivo.',
   'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Exibindo <b>{begin, number}-{end, number}</b> de <b>{totalCount, number}</b> {totalCount, plural, one{item} other{itens}}.',
+  'The combination of {labels} and {lastLabel} has already been taken.' => 'A combinação de {labels} e {lastLabel} já foi selecionada.',
   'The file "{file}" is not an image.' => 'O arquivo “{file}” não é uma imagem.',
   'The file "{file}" is too big. Its size cannot exceed {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'O arquivo “{file}” é grande demais. Seu tamanho não pode exceder {limit, number} {limit, plural, one{byte} other{bytes}}.',
   'The file "{file}" is too small. Its size cannot be smaller than {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'O arquivo “{file}” é pequeno demais. Seu tamanho não pode ser menor que {limit, number} {limit, plural, one{byte} other{bytes}}.',

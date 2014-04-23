@@ -265,7 +265,14 @@ class Generator extends \yii\gii\Generator
                         $labels = array_intersect_key($this->generateLabels($table), array_flip($uniqueColumns));
                         $lastLabel = array_pop($labels);
                         $columnsList = implode("', '", $uniqueColumns);
-                        $rules[] = "[['" . $columnsList . "'], 'unique', 'targetAttribute' => ['" . $columnsList . "'], 'message' => 'The combination of " . implode(', ', $labels) . " and " . $lastLabel . " has already been taken.']";
+                        $rules[] = "[['" . $columnsList . "'], 'unique', 'targetAttribute' => ['" . $columnsList . "'], 'message' => '" . \Yii::t(
+                            'yii',
+                            'The combination of {labels} and {lastLabel} has already been taken.',
+                            [
+                                'labels' => implode(', ', $labels),
+                                'lastLabel' => $lastLabel
+                            ]
+                        ) . "']";
                     }
                 }
             }
