@@ -217,41 +217,12 @@ class ActiveForm extends Widget
      * The rest of the options will be rendered as the attributes of the container tag. The values will
      * be HTML-encoded using [[\yii\helpers\Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
      * @return string the generated error summary
+     * @see errorSummaryCssClass
      */
     public function errorSummary($models, $options = [])
     {
-        if (!is_array($models)) {
-            $models = [$models];
-        }
-
-        $lines = [];
-        foreach ($models as $model) {
-            /** @var Model $model */
-            foreach ($model->getFirstErrors() as $error) {
-                $lines[] = Html::encode($error);
-            }
-        }
-
-        $header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii', 'Please fix the following errors:') . '</p>';
-        $footer = isset($options['footer']) ? $options['footer'] : '';
-        unset($options['header'], $options['footer']);
-
-        if (!isset($options['class'])) {
-            $options['class'] = $this->errorSummaryCssClass;
-        } else {
-            $options['class'] .= ' ' . $this->errorSummaryCssClass;
-        }
-
-        if (!empty($lines)) {
-            $content = "<ul><li>" . implode("</li>\n<li>", $lines) . "</li></ul>";
-
-            return Html::tag('div', $header . $content . $footer, $options);
-        } else {
-            $content = "<ul></ul>";
-            $options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
-
-            return Html::tag('div', $header . $content . $footer, $options);
-        }
+        Html::addCssClass($options, $this->errorSummaryCssClass);
+        return Html::errorSummary($models, $options);
     }
 
     /**
