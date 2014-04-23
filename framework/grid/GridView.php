@@ -15,7 +15,6 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\widgets\BaseListView;
-use yii\helpers\ArrayHelper;
 use yii\base\Model;
 
 /**
@@ -142,6 +141,9 @@ class GridView extends BaseListView
      * Both "format" and "label" are optional. They will take default values if absent.
      */
     public $columns = [];
+    /**
+     * @var string the HTML display when the content of a cell is empty
+     */
     public $emptyCell = '&nbsp;';
     /**
      * @var \yii\base\Model the model that keeps the user-entered filter data. When this property is set,
@@ -161,6 +163,9 @@ class GridView extends BaseListView
      * as GET parameters to this URL.
      */
     public $filterUrl;
+    /**
+     * @var string additional jQuery selector for selecting filter input fields
+     */
     public $filterSelector;
     /**
      * @var string whether the filters should be displayed in the grid view. Valid values include:
@@ -175,18 +180,29 @@ class GridView extends BaseListView
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $filterRowOptions = ['class' => 'filters'];
+    /**
+     * @var array the options for rendering the filter error summary.
+     * Please refer to [[Html::errorSummary()]] for more details about how to specify the options.
+     * @see renderErrors()
+     */
+    public $filterErrorSummaryOptions = ['class' => 'error-summary'];
+    /**
+     * @var array the options for rendering every filter error message.
+     * This is mainly used by [[Html::error()]] when rendering an error message next to every filter input field.
+     */
+    public $filterErrorOptions = ['class' => 'help-block'];
 
     /**
      * @var string the layout that determines how different sections of the list view should be organized.
      * The following tokens will be replaced with the corresponding section contents:
      *
      * - `{summary}`: the summary section. See [[renderSummary()]].
-     * - `{errors}`: the filter model errors. See [[renderErrors()]].
+     * - `{errors}`: the filter model error summary. See [[renderErrors()]].
      * - `{items}`: the list items. See [[renderItems()]].
      * - `{sorter}`: the sorter. See [[renderSorter()]].
      * - `{pager}`: the pager. See [[renderPager()]].
      */
-    public $layout = "{summary}\n{errors}\n{items}\n{pager}";
+    public $layout = "{summary}\n{items}\n{pager}";
 
     /**
      * Initializes the grid view.
@@ -233,12 +249,15 @@ class GridView extends BaseListView
     public function renderErrors()
     {
         if ($this->filterModel instanceof Model && $this->filterModel->hasErrors()) {
-            return Html::tag('div', Html::ul($this->filterModel->getFirstErrors(), ['class' => 'help-block']), ['class' => 'has-error']);
+            return Html::errorSummary($this->filterModel, $this->filterErrorSummaryOptions);
         } else {
             return '';
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function renderSection($name)
     {
         switch ($name) {

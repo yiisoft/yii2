@@ -46,7 +46,7 @@ abstract class ErrorHandler extends Component
 
 
     /**
-     * Register this errorhandler
+     * Register this error handler
      */
     public function register()
     {

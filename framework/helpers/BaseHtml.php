@@ -1047,7 +1047,10 @@ class BaseHtml
     public static function errorSummary($models, $options = [])
     {
         $lines = [];
-        foreach ((array)$models as $model) {
+        if (!is_array($models)) {
+            $models = [$models];
+        }
+        foreach ($models as $model) {
             /** @var Model $model */
             foreach ($model->getFirstErrors() as $error) {
                 $lines[] = Html::encode($error);
