@@ -24,8 +24,22 @@ class GenerateAction extends \yii\base\Action
         return 'gii/' . $this->generatorName;
     }
 
-    public function getReflectionClass(){
-        return $this->loadGenerator($this->generatorName);
+    public function getActionSummaryReflectionClass()
+    {
+        $this->loadGenerator($this->generatorName);
+        return new \ReflectionClass($this->generator);
+    }
+
+    public function getActionHelpReflectionMethod()
+    {
+        $this->loadGenerator($this->generatorName);
+        return new \ReflectionMethod($this->generator, 'generate');
+    }
+
+    public function getOptionHelpsReflectionClass()
+    {
+        $this->loadGenerator($this->generatorName);
+        return $this->generator;
     }
 
     /**

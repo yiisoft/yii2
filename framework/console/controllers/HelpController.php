@@ -246,10 +246,8 @@ class HelpController extends Controller
         }
         if ($action instanceof InlineAction) {
             $reflection = new \ReflectionMethod($controller, $action->actionMethod);
-        } elseif (method_exists($action, 'getReflectionClass')) {
-            $reflection = new \ReflectionClass($action->getReflectionClass());
         } else {
-            $reflection = new \ReflectionClass($action);
+            $reflection = $action->getActionSummaryReflectionClass();
         }
         $tags = $this->parseComment($reflection->getDocComment());
         if ($tags['description'] !== '') {
@@ -291,7 +289,7 @@ class HelpController extends Controller
         } elseif (method_exists($action, 'getReflectionClass')) {
             $method = new \ReflectionMethod($action->getReflectionClass(), 'generate');
         } else {
-            $method = new \ReflectionMethod($action, 'run');
+            $method = $action->getActionHelpReflectionMethod();
         }
 
         $tags = $this->parseComment($method->getDocComment());
@@ -378,13 +376,11 @@ class HelpController extends Controller
         }
 
         $action = $controller->createAction($actionID);
-        if (method_exists($action, 'getReflectionClass')) {
-            $controller = $action->getReflectionClass();
-        }
+        $controller = $action->getOptionHelpsReflectionClass();
 
         $class = new \ReflectionClass($controller);
         $options = [];
-        foreach ($class->getProperties() as $property) {
+        foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
             $name = $property->getName();
             if (!in_array($name, $optionNames, true)) {
                 continue;
