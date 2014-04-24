@@ -22,6 +22,10 @@ class Schema extends \yii\db\Schema
      */
     public $defaultSchema = 'dbo';
     /**
+     * @var string the collation used for the current database.
+     */
+    protected $collation = null;
+    /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
      */
     public $typeMap = [
@@ -235,7 +239,7 @@ class Schema extends \yii\db\Schema
      */
     protected function findColumns($table)
     {
-        $columnsTableName = 'information_schema.columns';
+        $columnsTableName = $this->schemaCase('information_schema.columns');
         $whereSql = "[t1].[table_name] = '{$table->name}'";
         if ($table->catalogName !== null) {
             $columnsTableName = "{$table->catalogName}.{$columnsTableName}";
@@ -292,8 +296,8 @@ SQL;
      */
     protected function findPrimaryKeys($table)
     {
-        $keyColumnUsageTableName = 'information_schema.key_column_usage';
-        $tableConstraintsTableName = 'information_schema.table_constraints';
+        $keyColumnUsageTableName = $this->schemaCase('information_schema.key_column_usage');
+        $tableConstraintsTableName = $this->schemaCase('information_schema.table_constraints');
         if ($table->catalogName !== null) {
             $keyColumnUsageTableName = $table->catalogName . '.' . $keyColumnUsageTableName;
             $tableConstraintsTableName = $table->catalogName . '.' . $tableConstraintsTableName;
@@ -325,8 +329,8 @@ SQL;
      */
     protected function findForeignKeys($table)
     {
-        $referentialConstraintsTableName = 'information_schema.referential_constraints';
-        $keyColumnUsageTableName = 'information_schema.key_column_usage';
+        $referentialConstraintsTableName = $this->schemaCase('information_schema.referential_constraints');
+        $keyColumnUsageTableName = $this->schemaCase('information_schema.key_column_usage');
         if ($table->catalogName !== null) {
             $referentialConstraintsTableName = $table->catalogName . '.' . $referentialConstraintsTableName;
             $keyColumnUsageTableName = $table->catalogName . '.' . $keyColumnUsageTableName;
@@ -374,10 +378,37 @@ SQL;
 
         $sql = <<<SQL
 SELECT [t].[table_name]
-FROM [information_schema].[tables] AS [t]
+FROM {$this->schemaCase('[information_schema].[tables]')} AS [t]
 WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'BASE TABLE'
 SQL;
 
         return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
     }
+	
+    /**
+     * Returns the right schema case-sensitive for MSSQL (versions older than 2012).
+	 * View Collation Information (http://msdn.microsoft.com/en-us/library/hh230914.aspx)
+	 * Selecting a SQL Server Collation (http://msdn.microsoft.com/en-us/library/ms144250(v=sql.105).aspx)
+     * @return string right schema case-sensitive.
+	 *
+	 * @author Henrique Dias <heukirne[at]gmail[dot]com>
+	 */
+    protected function schemaCase($str)
+    {
+	
+		if ($this->collation == null)  {			
+			$sql = <<<SQL
+SELECT collation_name FROM sys.databases
+WHERE name = :db;
+SQL;
+		
+			$this->collation = $this->db->createCommand($sql, [':db' => 'master'])->queryColumn();		
+		}
+	
+
+		
+		if (strpos($this->collation[0], 'CI') === false) return strtoupper($str);
+		else $str;
+    }	
+
 }
