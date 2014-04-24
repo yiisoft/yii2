@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Bug #3194: Date formatter works only for timestamps in the year range 1970 to 2038 (kartik-v)
 - Bug #3204: `yii\di\Container` did not handle the `$config` parameter well in case when it does not have a default value (qiangxue)
 - Bug #3216: Fixed the bug that `yii.activeForm.destroy()` did not remove `submit` event handlers (qiangxue)
+- Bug: Return value for DateTime->format('U') casted to double to allow correct date formatting (pgaultier)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2837: Error page now shows arguments in stack trace method calls (samdark)
 - Enh #3008: Added `Html::errorSummary()` (qiangxue)
