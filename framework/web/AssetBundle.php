@@ -169,7 +169,7 @@ class AssetBundle extends Object
         if ($this->sourcePath !== null && !isset($this->basePath, $this->baseUrl)) {
             list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
         }
-        $converter = $am->getConverter();
+        /*$converter = $am->getConverter();
         foreach ($this->js as $i => $js) {
             if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
                 if (isset($this->basePath, $this->baseUrl)) {
@@ -187,6 +187,6 @@ class AssetBundle extends Object
                     $this->css[$i] = '/' . $css;
                 }
             }
-        }
+        }*/
     }
 }

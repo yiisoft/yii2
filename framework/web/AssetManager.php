@@ -241,29 +241,27 @@ class AssetManager extends Component
         if (is_file($src)) {
             $dir = $this->hash(dirname($src) . filemtime($src));
             $fileName = basename($src);
+            $srcDir = dirname($src);
             $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
+
+            $fileName = $this->publishFile($fileName, $srcDir, $dstDir);
+
             $dstFile = $dstDir . DIRECTORY_SEPARATOR . $fileName;
-
-            if (!is_dir($dstDir)) {
-                FileHelper::createDirectory($dstDir, $this->dirMode, true);
-            }
-
-            if ($this->linkAssets) {
-                if (!is_file($dstFile)) {
-                    symlink($src, $dstFile);
-                }
-            } elseif (@filemtime($dstFile) < @filemtime($src)) {
-                copy($src, $dstFile);
-                if ($this->fileMode !== null) {
-                    @chmod($dstFile, $this->fileMode);
-                }
-            }
 
             return $this->_published[$path] = [$dstFile, $this->baseUrl . "/$dir/$fileName"];
         } else {
             $dir = $this->hash($src . filemtime($src));
             $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
-            if ($this->linkAssets) {
+
+            $srcFiles = FileHelper::findFiles($src);
+            foreach ($srcFiles as $srcFile) {
+                $fileName = basename($srcFile);
+                $srcDir = dirname($srcFile);
+                $pathDiff = str_replace($src, '', $srcDir);
+                $fileName = $this->publishFile($fileName, $srcDir, $dstDir . $pathDiff);
+            }
+
+            /*if ($this->linkAssets) {
                 if (!is_dir($dstDir)) {
                     symlink($src, $dstDir);
                 }
@@ -283,9 +281,36 @@ class AssetManager extends Component
                     $opts['afterCopy'] = $options['afterCopy'];
                 }
                 FileHelper::copyDirectory($src, $dstDir, $opts);
-            }
+            }*/
 
             return $this->_published[$path] = [$dstDir, $this->baseUrl . '/' . $dir];
+        }
+    }
+
+    protected function publishFile($fileName, $srcPath, $dstPath)
+    {
+        $srcFile = $srcPath . DIRECTORY_SEPARATOR . $fileName;
+        $dstFile = $dstPath . DIRECTORY_SEPARATOR . $fileName;
+
+        if (!is_dir($dstPath)) {
+            FileHelper::createDirectory($dstPath, $this->dirMode, true);
+        }
+
+        $convertedFileName = $this->getConverter()->convert($fileName, $srcPath, $dstPath);
+        if ($convertedFileName === false) {
+            if ($this->linkAssets) {
+                if (!is_file($dstFile)) {
+                    symlink($srcFile, $dstFile);
+                }
+            } elseif (@filemtime($dstFile) < @filemtime($srcFile)) {
+                copy($srcFile, $dstFile);
+                if ($this->fileMode !== null) {
+                    @chmod($dstFile, $this->fileMode);
+                }
+            }
+            return $fileName;
+        } else {
+            return $convertedFileName;
         }
     }
 
