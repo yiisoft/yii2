@@ -357,11 +357,11 @@ class Formatter extends Component
                 } catch (\Exception $e) {
                     return false;
                 }
-                $value = $date->format('U');
+                $value = (double)$date->format('U');
             }
             return $value;
         } elseif ($value instanceof DateTime || $value instanceof \DateTimeInterface) {
-            return $value->format('U');
+            return (double)$value->format('U');
         } else {
             return (double)$value;
         }
