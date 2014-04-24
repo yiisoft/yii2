@@ -173,7 +173,7 @@ class AssetBundle extends Object
         foreach ($this->js as $i => $js) {
             if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
                 if (isset($this->basePath, $this->baseUrl)) {
-                    $this->js[$i] = $converter->convert($js, $this->basePath, $this->baseUrl);
+                    $this->js[$i] = $converter->convert($js, $this->basePath);
                 } else {
                     $this->js[$i] = '/' . $js;
                 }
@@ -182,7 +182,7 @@ class AssetBundle extends Object
         foreach ($this->css as $i => $css) {
             if (strpos($css, '/') !== 0 && strpos($css, '://') === false) {
                 if (isset($this->basePath, $this->baseUrl)) {
-                    $this->css[$i] = $converter->convert($css, $this->basePath, $this->baseUrl);
+                    $this->css[$i] = $converter->convert($css, $this->basePath);
                 } else {
                     $this->css[$i] = '/' . $css;
                 }
