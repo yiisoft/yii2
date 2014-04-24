@@ -22,8 +22,6 @@ return [
         'writable' => [
             'backend/runtime',
             'backend/web/assets',
-            'console/runtime',
-            'console/migrations',
             'frontend/runtime',
             'frontend/web/assets',
         ],
@@ -36,8 +34,6 @@ return [
         'writable' => [
             'backend/runtime',
             'backend/web/assets',
-            'console/runtime',
-            'console/migrations',
             'frontend/runtime',
             'frontend/web/assets',
         ],
