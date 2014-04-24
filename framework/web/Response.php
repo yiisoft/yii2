@@ -242,7 +242,7 @@ class Response extends \yii\base\Response
     public function init()
     {
         if ($this->version === null) {
-            if (isset($_SERVER['SERVER_PROTOCOL']) && $_SERVER['SERVER_PROTOCOL'] === '1.0') {
+            if (isset($_SERVER['SERVER_PROTOCOL']) && $_SERVER['SERVER_PROTOCOL'] === 'HTTP/1.0') {
                 $this->version = '1.0';
             } else {
                 $this->version = '1.1';
