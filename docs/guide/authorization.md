@@ -370,7 +370,7 @@ if (\Yii::$app->user->can('createPost')) {
 To check the `updateOwnPost` permission, an extra parameter is required by the `AuthorRule` described before.
 
 ```php
-if (\Yii::$app->user->can('updatePost', ['post' => $post])) {
+if (\Yii::$app->user->can('updateOwnPost', ['post' => $post])) {
     // update post
 }
 ```

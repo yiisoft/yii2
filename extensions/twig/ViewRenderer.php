@@ -23,7 +23,8 @@ use yii\helpers\Url;
 class ViewRenderer extends BaseViewRenderer
 {
     /**
-     * @var string the directory or path alias pointing to where Twig cache will be stored.
+     * @var string the directory or path alias pointing to where Twig cache will be stored. Set to false to disable
+     * templates cache.
      */
     public $cachePath = '@runtime/Twig/cache';
     /**
@@ -114,12 +115,21 @@ class ViewRenderer extends BaseViewRenderer
             $this->setLexerOptions($this->lexerOptions);
         }
 
+//        $this->addFunctions([
+//            'rot13' => 'str_rot13',
+//            'jsonEncode' => '\yii\helpers\Json::encode',
+//        ]);
+
         // Adding global 'void' function (usage: {{void(App.clientScript.registerScriptFile(...))}})
         $this->twig->addFunction('void', new \Twig_Function_Function(function ($argument) {
         }));
 
         $this->twig->addFunction('path', new \Twig_Function_Function(function ($path, $args = []) {
             return Url::to(array_merge([$path], $args));
+        }));
+
+        $this->twig->addFunction('url', new \Twig_Function_Function(function ($path, $args = []) {
+            return Url::to(array_merge([$path], $args), true);
         }));
 
         $this->twig->addGlobal('app', \Yii::$app);

@@ -50,15 +50,35 @@ or `$this->renderPartial()` controller calls:
 echo $this->render('renderer.twig', ['username' => 'Alex']);
 ```
 
-### Additional functions
+### Additional syntax
 
-Yii adds the following construct to the standard Twig syntax:
+Yii adds some extra syntax constructs additionally to standard Twig ones.
+
+
+###
+
+{{registerAssetBundle('AppAsset')}} - Registers asset bundle of a given name
+
+
+### Forms
+
+```
+{% set form = form_begin({ ... }) %}
+{{ form.field(...) }}
+{% form.end() %}
+```
+
+
+#### Getting URL for a route
+
+There are two functions you can use for URLs:
 
 ```php
 <a href="{{ path('blog/view', {'alias' : post.alias}) }}">{{ post.title }}</a>
+<a href="{{ url('blog/view', {'alias' : post.alias}) }}">{{ post.title }}</a>
 ```
 
-Internally, the `path()` function calls Yii's `Url::to()` method.
+`path` generates relative URL while `url` generates absolute one. Internally both are using [[\yii\helpers\Url]].
 
 ### Additional variables
 
