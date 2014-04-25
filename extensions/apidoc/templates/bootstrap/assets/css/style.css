@@ -109,3 +109,69 @@ table.summary-table .col-defined  { width: 15%; }
 	color: #bbb;
 	text-decoration: none;
 }
+
+
+#search-resultbox {
+    position: fixed;
+    left: 25%;
+    right: 25%;
+    bottom: 0;
+    top: 50px;
+    z-index: 1000;
+
+    background: #fff;
+    border: solid 1px #000;
+}
+
+#search-results {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    overflow: auto;
+    max-height: 100%;
+}
+
+#search-results li, #search-results li a {
+    margin: 0;
+    padding: 0;
+    display: block;
+    min-height: 50px;
+    width: 100%;
+
+    color: #333333;
+}
+
+#search-results li a .title, #search-results li .no-results {
+    padding: 10px 20px 5px 20px;
+    display: block;
+
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 120%;
+}
+
+#search-results li a .description {
+    padding: 5px 20px 10px 20px;
+    display: block;
+
+    text-decoration: none;
+    font-weight: normal;
+    font-size: 90%;
+    border-bottom: solid 1px #dddddd;
+}
+
+#search-results li a:hover, #search-results li a.selected {
+    background: #44B5F6;
+    text-decoration: none;
+}
+
+.navbar-form {
+    width: 50%;
+    max-width: 350px;
+}
+
+.navbar-form div, .navbar-form .form-control {
+    width: 100%;
+}
+
