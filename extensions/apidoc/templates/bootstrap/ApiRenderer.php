@@ -8,7 +8,9 @@
 namespace yii\apidoc\templates\bootstrap;
 
 use Yii;
+use yii\apidoc\helpers\ApiIndexer;
 use yii\helpers\Console;
+use yii\helpers\FileHelper;
 
 /**
  *
@@ -73,6 +75,16 @@ class ApiRenderer extends \yii\apidoc\templates\html\ApiRenderer
             ]);
         }
         file_put_contents($targetDir . '/index.html', $indexFileContent);
+
+        if ($this->controller !== null) {
+            $this->controller->stdout('done.' . PHP_EOL, Console::FG_GREEN);
+            $this->controller->stdout('generating search index...');
+        }
+
+        $indexer = new ApiIndexer();
+        $indexer->indexFiles(FileHelper::findFiles($targetDir, ['only' => ['*.html']]), $targetDir);
+        $js = $indexer->exportJs();
+        file_put_contents($targetDir . '/jssearch.index.js', $js);
 
         if ($this->controller !== null) {
             $this->controller->stdout('done.' . PHP_EOL, Console::FG_GREEN);
