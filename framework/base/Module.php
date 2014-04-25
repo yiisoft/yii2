@@ -531,7 +531,7 @@ class Module extends ServiceLocator
         }
 
         if (is_subclass_of($className, 'yii\base\Controller')) {
-            return new $className($id, $this);
+            return Yii::createObject($className, [$id, $this]);
         } elseif (YII_DEBUG) {
             throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
         } else {
