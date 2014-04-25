@@ -1,43 +1,59 @@
 What is Yii
 ===========
 
-Yii is a high-performance, component-based PHP framework for rapidly developing large-scale Web applications. Yii enables maximum reusability in Web
-programming and can significantly accelerate your Web application development
-process. The name Yii (pronounced `Yee` or `[ji:]`) is an acronym for
-**Yes It Is!**.
-
-
-Requirements
-------------
-
-To run a Yii-powered Web application, you need a Web server that supports
-PHP 5.4.0 or greater.
-
-For developers who want to use Yii, understanding object-oriented
-programming (OOP) is very helpful, as Yii is a pure OOP framework.
-Yii 2.0 also makes use of the latest features of PHP, including [namespaces](http://www.php.net/manual/en/language.namespaces.php),
-so you should be familiar with how those work, too.
+Yii is a high performance, component-based PHP framework for rapidly developing modern Web applications.
+The name Yii (pronounced `Yee` or `[ji:]`) means simple and evolutionary in Chinese. It can also
+be considered as the acronym for **Yes It Is!**
 
 
 What is Yii Best for?
 ---------------------
 
-Yii is a generic Web programming framework that can be used for developing
-virtually any type of Web application. Because it is light weight and
-equipped with sophisticated caching mechanisms, Yii is especially suited
-to high-traffic applications such as portals, forums, content
-management systems (CMS), e-commerce projects, and so on.
+Yii is a generic Web programming framework, meaning that it can be used for developing all kinds
+of Web applications based on PHP. Because of its component-based architecture and sophisticated caching
+support, it is especially suitable for developing large-scale applications such as portals, forums, content
+management systems (CMS), e-commerce projects, RESTful Web services, and so on.
 
 
 How does Yii Compare with Other Frameworks?
 -------------------------------------------
 
-- Like most PHP frameworks, Yii uses the MVC (Model-View-Controller) design approach.
-- Yii is a full-stack framework providing many solutions and components, such as logging, session management, caching, etc.
-- Yii strikes a good balance between simplicity and being feature-rich.
-- Syntax and overall development usability are taken seriously by the Yii development team.
-- Performance is one of the key goals for the Yii framework.
-- The Yii development team is constantly watching what other Web frameworks are doing to consider what best practices and
-  features should be incorporated into Yii. The initial Yii release was heavily influenced by Ruby on Rails.
-  Still, no framework or feature is being blindly copied into Yii; all decisions are based upon what's best
-  for Web developers and in keeping with Yii's philosophy.
+- Like most PHP frameworks, Yii implements the MVC (Model-View-Controller) design pattern and promotes code
+  organization based on this pattern.
+- Yii takes the philosophy that code should be written in a simple yet elegant way. It will never try to
+  over-design things mainly for the purpose of following some design pattern.
+- Yii is a full-stack framework providing many proven and ready-to-use features, such as query builders
+  and ActiveRecord supporting relational and NoSQL databases, RESTful API development support, multi-tier
+  caching support, etc.
+- Yii is extremely extensible. You can customize or replace nearly every piece of core code. You can also
+  take advantage of its solid extension architecture, use or develop redistributable extensions.
+- High performance is always a primary goal of Yii.
+
+Yii is a not one-man show. It is backed up by a strong core developer team as well as a large community
+with many professionals who are constantly contributing to the development of Yii. The Yii developer team
+is keeping a close eye on the latest trends of Web development as well as the best practices and features
+found in other frameworks and projects. They are being wisely incorporated into the framework and exposed
+under a simple and elegant interface.
+
+
+Yii Versions
+------------
+
+Yii has two major versions available currently: 1.1 and 2.0. Version 1.1 is the old generation and is
+currently under maintenance mode. Version 2.0 is a complete rewrite of Yii by adopting the latest
+technologies and protocols, such as Composer, PSR, namespaces, traits, etc. Version 2.0 represents the latest
+generation of the framework and will receive our main development efforts in the next few years.
+This guide is mainly about version 2.0.
+
+
+Requirements and Prerequisites
+------------------------------
+
+Yii 2.0 requires PHP 5.4.0 or above. You may find out more detailed requirements for individual features
+by running the requirement checker included in every release.
+
+Using Yii requires basic knowledge about object-oriented programming (OOP), as Yii is a pure OOP-based framework.
+Yii 2.0 also makes use of the latest features of PHP, such as [namespaces](http://www.php.net/manual/en/language.namespaces.php),
+[traits](http://www.php.net/manual/en/language.oop5.traits.php). Understanding these concepts will help
+you pick up Yii 2.0 more easily.
+
