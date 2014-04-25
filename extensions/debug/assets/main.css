@@ -38,6 +38,11 @@ td, th {
 	word-break: break-all;
 }
 
+.not-set {
+	color: #c55;
+	font-style: italic;
+}
+
 .detail-grid-view th {
     white-space: nowrap;
 }
