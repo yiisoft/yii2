@@ -134,7 +134,7 @@ $('#searchbox').on("keyup", function(event) {
     $('#search-resultbox').show();
     $('#search-results').html('<li><span class="no-results">No results</span></li>');
 
-    var result = $.jssearch.search(query);
+    var result = jssearch.search(query);
 
     if (result.length > 0) {
         var i = 0;
