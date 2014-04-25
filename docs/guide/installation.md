@@ -59,6 +59,10 @@ in the Yii Framework, should be protected from web access to prevent possible ex
 Requirements
 ------------
 
+Yii 2 requires PHP 5.4.0 or higher. Yii has been tested with the [Apache HTTP server](http://httpd.apache.org/) and
+[Nginx HTTP server](http://nginx.org/) on both Windows and Linux.
+Yii may also be usable on other web servers and platforms, provided that PHP 5.4 or higher is present.
+
 After installing Yii, you may want to verify that your server satisfies
 Yii's requirements. You can do so by running the requirement checker
 script in a web browser or from the command line.
@@ -75,19 +79,15 @@ php requirements.php
 In order to run this script in your browser, you must make sure it's within a web directory, and then
 access `http://hostname/path/to/yii-app/requirements.php` in your browser.
 
-Yii 2 requires PHP 5.4.0 or higher. Yii has been tested with the [Apache HTTP server](http://httpd.apache.org/) and
-[Nginx HTTP server](http://nginx.org/) on Windows and Linux.
-Yii may also be usable on other web servers and platforms, provided that PHP 5.4 or higher is supported.
-
 
 Recommended Apache Configuration
 --------------------------------
 
 Yii is ready to work with a default Apache web server configuration. As a security measure, Yii comes with `.htaccess`
-files in the Yii framework folder to deny access to those restricted resources.
+files in the Yii framework folder to deny access to the application's restricted resources.
 
 By default, requests for pages in a Yii-based site go through the bootstrap file, usually named `index.php`, and placed
-in the application's `web` directory. The result will be URLs in the format `http://hostname/index.php/controller/action/param/value`.
+in the application's home directory. The result will be URLs in the format `http://hostname/index.php/controller/action/param/value`.
 
 To hide the bootstrap file in your URLs, add `mod_rewrite` instructions to the `.htaccess` file in your web document root
 (or add the instructions to the virtual host configuration in Apache's `httpd.conf` file, `Directory` section for your webroot).
@@ -96,10 +96,10 @@ The applicable instructions are:
 ~~~
 RewriteEngine on
 
-# If a directory or a file exists, use it directly
+# If a directory or a file exists, use the request directly
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-# Otherwise forward it to index.php
+# Otherwise forward the request to index.php
 RewriteRule . index.php
 ~~~
 
