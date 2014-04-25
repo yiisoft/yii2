@@ -267,6 +267,9 @@ $customer->save();  // equivalent to $customer->update();
 $customer = Customer::findOne($id);
 $customer->delete();
 
+// to delete several customers
+Customer::deleteAll('age > :age AND gender = :gender', [':age' => 20, ':gender' => 'M']);
+
 // to increment the age of ALL customers by 1
 Customer::updateAllCounters(['age' => 1]);
 ```
