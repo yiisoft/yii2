@@ -6,37 +6,6 @@ an "add" event when the user adds a comment to a post.
 
 Events are very useful for two reasons. First, they can make your components more flexible. Second, you can hook your own code into the regular workflow of both the framework and the extensions in use.
 
-Triggering events
------------------
-
-Any component can trigger events using `trigger` method:
-
-```php
-$this->trigger('myEvent');
-
-// or
-
-$event = new CreateUserEvent(); // extended from yii\base\Event
-$event->userName = 'Alexander';
-$this->trigger('createUserEvent', $event);
-```
-
-Event name should be unique within the class it is defined at. Event names are *case-sensitive*. It is a good practice
-to define event names using class constants:
-
-```php
-class Mailer extends Component
-{
-    const EVENT_SEND_EMAIL = 'sendEmail';
-
-    public function send()
-    {
-        // ...
-        $this->trigger(self::EVENT_SEND_EMAIL);
-    }
-}
-```
-
 Attaching event handlers
 ------------------------
 
@@ -106,6 +75,37 @@ return [
         ],
     ],
 ];
+```
+
+Triggering events
+-----------------
+
+Any component can trigger an event using the `trigger` method:
+
+```php
+$this->trigger('myEvent');
+
+// or
+
+$event = new CreateUserEvent(); // extended from yii\base\Event
+$event->userName = 'Alexander';
+$this->trigger('createUserEvent', $event);
+```
+
+Event name should be unique within the class it is defined at. Event names are *case-sensitive*. It is a good practice
+to define event names using class constants:
+
+```php
+class Mailer extends Component
+{
+    const EVENT_SEND_EMAIL = 'sendEmail';
+
+    public function send()
+    {
+        // ...
+        $this->trigger(self::EVENT_SEND_EMAIL);
+    }
+}
 ```
 
 Removing Event Handlers
