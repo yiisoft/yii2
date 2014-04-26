@@ -22,12 +22,12 @@ use yii\helpers\FileHelper;
 class PhpDocController extends Controller
 {
     public $defaultAction = 'property';
-
     /**
      * @var boolean whether to update class docs directly. Setting this to false will just output docs
      * for copy and paste.
      */
     public $updateFiles = true;
+
 
     /**
      * Generates `@property` annotations in class files from getters and setters
@@ -125,6 +125,7 @@ class PhpDocController extends Controller
                 '/build/',
                 '/docs/',
                 '/extensions/apidoc/helpers/PrettyPrinter.php',
+                '/extensions/apidoc/helpers/ApiIndexer.php',
                 '/extensions/codeception/TestCase.php',
                 '/extensions/codeception/DbTestCase.php',
                 '/extensions/composer/',
@@ -133,6 +134,7 @@ class PhpDocController extends Controller
                 '/extensions/twig/TwigSimpleFileLoader.php',
                 '/framework/BaseYii.php',
                 '/framework/Yii.php',
+                'assets/',
                 'tests/',
                 'vendor/',
             ];
