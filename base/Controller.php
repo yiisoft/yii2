@@ -18,7 +18,7 @@ use Yii;
  * property is read-only.
  * @property string $uniqueId The controller ID that is prefixed with the module ID (if any). This property is
  * read-only.
- * @property View $view The view object that can be used to render views or view files.
+ * @property View|\yii\web\View $view The view object that can be used to render views or view files.
  * @property string $viewPath The directory containing the view files for this controller. This property is
  * read-only.
  *
@@ -410,7 +410,7 @@ class Controller extends Component implements ViewContextInterface
 
     /**
      * Sets the view object to be used by this controller.
-     * @param View $view the view object that can be used to render views or view files.
+     * @param View|\yii\web\View $view the view object that can be used to render views or view files.
      */
     public function setView($view)
     {

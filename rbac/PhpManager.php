@@ -22,9 +22,6 @@ use Yii;
  * (for example, the authorization data for a personal blog system).
  * Use [[DbManager]] for more complex authorization data.
  *
- * @property Item[] $items The authorization items of the specific type. This property is read-only.
- * @property Rule[] $rules This property is read-only.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @author Christophe Boulain <christophe.boulain@gmail.com>
