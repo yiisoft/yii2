@@ -29,12 +29,13 @@ How does Yii Compare with Other Frameworks?
   take advantage of its solid extension architecture, use or develop redistributable extensions.
 - High performance is always a primary goal of Yii.
 
-Yii is a not one-man show. It is backed up by a strong core developer team as well as a large community
+Yii is not a one-man show, it is backed up by a [strong core developer team][] as well as a large community
 with many professionals who are constantly contributing to the development of Yii. The Yii developer team
 is keeping a close eye on the latest trends of Web development as well as the best practices and features
 found in other frameworks and projects. They are being wisely incorporated into the framework and exposed
 under a simple and elegant interface.
 
+[strong core developer team]: http://www.yiiframework.com/about/
 
 Yii Versions
 ------------
