@@ -1,11 +1,10 @@
 Events
 ======
 
-Event is a way to "inject" custom code into existing code at certain places. For example, a comment object can trigger
-an "add" event when the user adds a comment. We can write custom code and attach it to this event so that when the event
-is triggered (i.e. comment will be added), our custom code will be executed.
+Yii uses events to "inject" custom code into existing code at certain execution points. For example, a comment object can trigger
+an "add" event when the user adds a comment to a post. 
 
-Events are very useful both to make your components flexible and to hook into framework and extensions workflow.
+Events are very useful for two reasons. First, they can make your components more flexible. Second, you can hook your own code into the regular workflow of both the framework and the extensions in use.
 
 Triggering events
 -----------------
