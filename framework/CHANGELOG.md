@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Enh #3132: `yii\rbac\PhpManager` now supports more compact data file format (qiangxue)
 - Enh #3154: Added validation error display for `GridView` filters (ivan-kolmychek)
 - Enh #3222: Added `useTablePrefix` option to the model generator for Gii (horizons2)
+- Enh #3230: Added `yii\filters\AccessControl::user` to support access control with different actors (qiangxue)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
