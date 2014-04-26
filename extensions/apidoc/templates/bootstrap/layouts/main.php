@@ -83,15 +83,13 @@ $this->beginPage();
     $this->registerJsFile('./jssearch.index.js', 'yii\apidoc\templates\bootstrap\assets\JsSearchAsset');
     $this->registerJs(<<<JS
 
-$('#searchbox').focus();
+var searchBox = $('#searchbox');
 
-$(document).on("keyup", function(event) {
-    if (event.which == 27) {
-        $('#search-resultbox').hide();
-    }
-});
+// focus the search field
+searchBox.focus();
 
-$('#searchbox').on("keyup", function(event) {
+// search when typing in search field
+searchBox.on("keyup", function(event) {
     var query = $(this).val();
 
     if (query == '' || event.which == 27) {
@@ -151,13 +149,22 @@ $('#searchbox').on("keyup", function(event) {
         $('#search-results').html(resHtml);
     }
 });
+
+// hide the search results on ESC
+$(document).on("keyup", function(event) { if (event.which == 27) { $('#search-resultbox').hide(); } });
+// hide search results on click to document
+$(document).bind('click', function (e) { $('#search-resultbox').hide(); });
+// except the following:
+searchBox.bind('click', function(e) { e.stopPropagation(); });
+$('#search-resultbox').bind('click', function(e) { e.stopPropagation(); });
+
 JS
 );
 
     NavBar::end();
     ?>
 
-    <div id="search-resultbox" style="display: none;">
+    <div id="search-resultbox" style="display: none;" class="modal-content">
         <ul id="search-results">
         </ul>
     </div>

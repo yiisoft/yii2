@@ -119,8 +119,12 @@ table.summary-table .col-defined  { width: 15%; }
     top: 50px;
     z-index: 1000;
 
-    background: #fff;
-    border: solid 1px #000;
+    border-radius: 0;
+    /* reset all due to android browser issues http://caniuse.com/#search=border-radius */
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 #search-results {
