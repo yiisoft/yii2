@@ -109,7 +109,7 @@ When the tables are specified as an array, you may also use the array keys as th
 (if a table does not need alias, do not use a string key). For example,
 
 ```php
-$query->select('u.*, p.*')->from(['u' => 'user u', 'p' => 'post']);
+$query->select('u.*, p.*')->from(['u' => 'user', 'p' => 'post']);
 ```
 
 You may specify a sub-query using a `Query` object. In this case, the corresponding array key will be used
