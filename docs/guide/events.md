@@ -9,28 +9,28 @@ Events are very useful for two reasons. First, they can make your components mor
 Attaching event handlers
 ------------------------
 
-One or multiple PHP callbacks, called *event handlers*, can be attached to an event. When an event is raised, the event
-handlers will be invoked automatically in the order they were attached.
+One or multiple PHP callbacks, called *event handlers*, can be attached to an event. When the event occurs, the event
+handlers will be invoked automatically in the order in which they were attached.
 
-There are two main methods of attaching event handlers. It can be done either via code or via application config.
+There are two main ways to attaching event handlers. You can do so either via inline code or via the application configuration.
 
-> Tip: In order to get up to date list of framework and extension events search code for `->trigger`.
+> Tip: In order to get an up-to-date list of framework and extension events, search the framework code for `->trigger`.
 
 ### Attaching event handlers via code
 
-You can assign event handlers using `on` method of the component instance. The method's first argument is the name of
-the event to watch for; the second is the handler to be called when that event occurs:
+You can assign event handlers witin your code using the `on` method of a component object. The method's first argument is the name of
+the event to watch for; the second is the handler (i.e., function) to be called when that event occurs:
 
 ```php
 $component->on($eventName, $handler);
 ```
 
-The handler must be a valid PHP callback. This could be represented as:
+The handler must be a valid PHP callback. This could be represented as any of the following:
 
-- The name of a global function.
-- An array consisting of a model name and method name.
-- An array consisting of an object and a method name.
-- An anonymous function.
+- The name of a global function
+- An array consisting of a model name and method name
+- An array consisting of an object and a method name
+- An anonymous function
 
 ```php
 // Global function:
@@ -51,7 +51,7 @@ $component->on($eventName, function ($event) {
 As shown in the anonymous function example, the event handling function must be defined so that it takes one argument.
 This will be an [[yii\base\Event]] object.
 
-In order to pass extra data supply it via third argument:
+In order to pass extra data to the handler, supply the data as a third argument to the `on` method. Within the handler, the extra data will be available in `$event->data`:
 
 ```php
 $component->on($eventName, function ($event) {
@@ -61,7 +61,7 @@ $component->on($eventName, function ($event) {
 
 ### Attaching event handlers via config
 
-It is possible to use application config to attach event hanelers:
+You can also attach event handlers within your configuration file. To do so, add an element to the component to which the handler should be attached. The syntax is `"on <event>" => handler`:
 
 ```php
 return [
@@ -76,6 +76,8 @@ return [
     ],
 ];
 ```
+
+When attaching event handlers in this way, the handler must be an anonymous function.
 
 Triggering events
 -----------------
