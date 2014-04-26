@@ -82,7 +82,9 @@ When attaching event handlers in this way, the handler must be an anonymous func
 Triggering events
 -----------------
 
-Any component can trigger an event using the `trigger` method:
+Most events will be triggered through the normal workflow. For example, the "beforeSave" event occurs before an Active Record model is saved. 
+
+But you can also manually trigger an event using the `trigger` method, invoked on the component with the attached event handler:
 
 ```php
 $this->trigger('myEvent');
@@ -94,8 +96,8 @@ $event->userName = 'Alexander';
 $this->trigger('createUserEvent', $event);
 ```
 
-Event name should be unique within the class it is defined at. Event names are *case-sensitive*. It is a good practice
-to define event names using class constants:
+The event name needs to be unique within the class it is defined. Event names are *case-sensitive*, bu it is a good practice
+to define event names as class constants:
 
 ```php
 class Mailer extends Component
@@ -113,36 +115,41 @@ class Mailer extends Component
 Removing Event Handlers
 -----------------------
 
-The correspondoing `off` method removes an event handler:
+The corresponding `off` method removes an event handler:
 
 ```php
 $component->off($eventName);
 ```
 
 Yii supports the ability to associate multiple handlers with the same event. When using `off` as in the above,
-every handler is removed. To remove only a specific handler, provide that as the second argument to `off`:
+every handler will be removed. To remove only a specific handler, provide that as the second argument to `off`:
 
 ```php
 $component->off($eventName, $handler);
 ```
 
-The `$handler` should be presented in the `off` method in the same way as was presented in `on` in order to remove it.
+The `$handler` should be presented in the `off` method in the same way as was presented in the `on` call in order to remove it. 
+
+> Tip: You probably don't want to use anonymous functions for event handlers that you expect to later remove.
 
 Global Events
 -------------
 
-You can use "global" events instead of per-component ones. To trigger a global event use an application instance instead
-of specific component:
+You can use "global" events instead of per-component ones. A global event can take place on any component type. 
+
+In order to attach a handler to a global event, call the `on` method on the application instance:
+
+```php
+Yii::$app->on($eventName, $handler);
+```
+
+Global events are triggered on the application instance instead
+of a specific component:
 
 ```php
 Yii::$app->trigger($eventName);
 ```
 
-In order to attach a handler to it use the following:
-
-```php
-Yii::$app->on($eventName, $handler);
-```
 
 Class Events
 ------------
