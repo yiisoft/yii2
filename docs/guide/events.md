@@ -96,8 +96,8 @@ $event->userName = 'Alexander';
 $this->trigger('createUserEvent', $event);
 ```
 
-The event name needs to be unique within the class it is defined. Event names are *case-sensitive*, bu it is a good practice
-to define event names as class constants:
+The event name needs to be unique within the class it is defined. Event names are *case-sensitive*, but it is a good practice
+to define event names using class constants:
 
 ```php
 class Mailer extends Component
