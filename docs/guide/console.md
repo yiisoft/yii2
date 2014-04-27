@@ -1,27 +1,27 @@
 Console applications
 ====================
 
-Yii has full featured support of console. Console application structure in Yii is very similar to web application. It
-consists of one or more [[yii\console\Controller]] (often referred to as commands). Each has one or more actions.
+Yii has full featured support for console applications, whose structure is very similar to a Yii web application. A console application
+consists of one or more [[yii\console\Controller]] classes, which are often referred to as "commands" in the console environment. Each controller can also have one or more actions, just like web controllers.
 
 Usage
 -----
 
-You can execute controller action using the following syntax:
+You execute a console controller action using the following syntax:
 
 ```
 yii <route> [--option1=value1 --option2=value2 ... argument1 argument2 ...]
 ```
 
-For example, [[yii\console\controllers\MigrateController::actionCreate()|MigrateController::actionCreate()]]
+For example, the [[yii\console\controllers\MigrateController::actionCreate()|MigrateController::actionCreate()]]
 with [[yii\console\controllers\MigrateController::$migrationTable|MigrateController::$migrationTable]] set can
-be called from command line like the following:
+be called from command line like so:
 
 ```
 yii migrate/create --migrationTable=my_migration
 ```
 
-In the above `yii` is console application entry script described below.
+In the above `yii` is the console application entry script described below.
 
 Entry script
 ------------
