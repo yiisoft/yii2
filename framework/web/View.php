@@ -362,6 +362,7 @@ class View extends \yii\base\View
      * @param string $url the CSS file to be registered.
      * @param array $depends the names of the asset bundles that this CSS file depends on
      * @param array $options the HTML attributes for the link tag.
+     * Please refer to [[Html::cssFile()]] for supported options.
      * @param string $key the key that identifies the CSS script file. If null, it will use
      * $url as the key. If two CSS files are registered with the same key, the latter
      * will overwrite the former.
@@ -421,6 +422,8 @@ class View extends \yii\base\View
      * - [[POS_HEAD]]: in the head section
      * - [[POS_BEGIN]]: at the beginning of the body section
      * - [[POS_END]]: at the end of the body section. This is the default value.
+     *
+     * Please refer to [[Html::jsFile()]] for other supported options.
      *
      * @param string $key the key that identifies the JS script file. If null, it will use
      * $url as the key. If two JS files are registered with the same key, the latter
