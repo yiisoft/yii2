@@ -193,13 +193,18 @@ class BaseHtml
 
     /**
      * Generates a link tag that refers to an external CSS file.
-     * @param array|string $url the URL of the external CSS file. This parameter will be processed by [[\yii\helpers\Url::to()]].
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
-     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-     * If a value is null, the corresponding attribute will not be rendered.
+     * @param array|string $url the URL of the external CSS file. This parameter will be processed by [[Url::to()]].
+     * @param array $options the tag options in terms of name-value pairs. The following option is specially handled:
+     *
+     * - condition: specifies the conditional comments for IE, e.g., `lt IE 9`. When this is specified,
+     *   the generated `script` tag will be enclosed within the conditional comments. This is mainly useful
+     *   for supporting old versions of IE browsers.
+     *
+     * The rest of the options will be rendered as the attributes of the resulting link tag. The values will
+     * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      * @return string the generated link tag
-     * @see \yii\helpers\Url::to()
+     * @see Url::to()
      */
     public static function cssFile($url, $options = [])
     {
@@ -208,29 +213,45 @@ class BaseHtml
         }
         $options['href'] = Url::to($url);
 
-        return static::tag('link', '', $options);
+        if (isset($options['condition'])) {
+            $condition = $options['condition'];
+            unset($options['condition']);
+            return "<!--[if $condition]-->\n" . static::tag('link', '', $options) . "\n<![endif]-->";
+        } else {
+            return static::tag('link', '', $options);
+        }
     }
 
     /**
      * Generates a script tag that refers to an external JavaScript file.
-     * @param string $url the URL of the external JavaScript file. This parameter will be processed by [[\yii\helpers\Url::to()]].
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
-     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-     * If a value is null, the corresponding attribute will not be rendered.
+     * @param string $url the URL of the external JavaScript file. This parameter will be processed by [[Url::to()]].
+     * @param array $options the tag options in terms of name-value pairs. The following option is specially handled:
+     *
+     * - condition: specifies the conditional comments for IE, e.g., `lt IE 9`. When this is specified,
+     *   the generated `script` tag will be enclosed within the conditional comments. This is mainly useful
+     *   for supporting old versions of IE browsers.
+     *
+     * The rest of the options will be rendered as the attributes of the resulting script tag. The values will
+     * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      * @return string the generated script tag
-     * @see \yii\helpers\Url::to()
+     * @see Url::to()
      */
     public static function jsFile($url, $options = [])
     {
         $options['src'] = Url::to($url);
-
-        return static::tag('script', '', $options);
+        if (isset($options['condition'])) {
+            $condition = $options['condition'];
+            unset($options['condition']);
+            return "<!--[if $condition]-->\n" . static::tag('script', '', $options) . "\n<![endif]-->";
+        } else {
+            return static::tag('script', '', $options);
+        }
     }
 
     /**
      * Generates a form start tag.
-     * @param array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
+     * @param array|string $action the form action URL. This parameter will be processed by [[Url::to()]].
      * @param string $method the form submission method, such as "post", "get", "put", "delete" (case-insensitive).
      * Since most browsers only support "post" and "get", if other methods are given, they will
      * be simulated using "post", and a hidden input will be added which contains the actual method type.
@@ -301,7 +322,7 @@ class BaseHtml
      * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
      * such as an image tag. If this is coming from end users, you should consider [[encode()]]
      * it to prevent XSS attacks.
-     * @param array|string|null $url the URL for the hyperlink tag. This parameter will be processed by [[\yii\helpers\Url::to()]]
+     * @param array|string|null $url the URL for the hyperlink tag. This parameter will be processed by [[Url::to()]]
      * and will be used for the "href" attribute of the tag. If this parameter is null, the "href" attribute
      * will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
@@ -342,7 +363,7 @@ class BaseHtml
 
     /**
      * Generates an image tag.
-     * @param array|string $src the image URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
+     * @param array|string $src the image URL. This parameter will be processed by [[Url::to()]].
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
