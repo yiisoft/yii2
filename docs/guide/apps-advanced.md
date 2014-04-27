@@ -1,7 +1,7 @@
 Advanced application template
 =============================
 
-This template is for large projects developed in teams where backend is divided from frontend, application is deployed
+This template is for large projects developed in teams where the backend is divided from the frontend, application is deployed
 to multiple servers etc. This application template also goes a bit further regarding features and provides essential
 database, signup and password restore out of the box.
 
@@ -14,7 +14,7 @@ If you do not have [Composer](http://getcomposer.org/), you may download it from
 [http://getcomposer.org/](http://getcomposer.org/) or run the following command on Linux/Unix/MacOS:
 
 ~~~
-curl -s http://getcomposer.org/installer | php
+curl -sS http://getcomposer.org/installer | php
 ~~~
 
 You can then install the application using the following command:
@@ -33,9 +33,13 @@ the installed application. You only need to do these once for all.
    ```
    php /path/to/yii-application/init
    ```
+   Otherwise, in production execute `init` in non-interactive mode.
+   ```
+   php /path/to/yii-application/init --env=prod overwrite=n
+   ```
 2. Create a new database and adjust the `components.db` configuration in `common/config/main-local.php` accordingly.
 3. Apply migrations with console command `yii migrate`.
-4. Set document roots of your Web server:
+4. Set document roots of your web server:
 
 - for frontend `/path/to/yii-application/frontend/web/` and using the URL `http://frontend/`
 - for backend `/path/to/yii-application/backend/web/` and using the URL `http://backend/`
@@ -88,29 +92,29 @@ cron jobs and low-level server management. Also it's used during application dep
 
 There's also a `common` directory that contains files used by more than one application. For example, `User` model.
 
-frontend and backend are both web applications and both contain `web` directory. That's the webroot you should point your
-webserver to.
+frontend and backend are both web applications and both contain the `web` directory. That's the webroot you should point your
+web server to.
 
 Each application has its own namespace and alias corresponding to its name. Same applies to common directory.
 
 Configuration and environments
 ------------------------------
 
-There are multiple problems with straightforward approach to configuration:
+There are multiple problems with a typical approach to configuration:
 
 - Each team member has its own configuration options. Committing such config will affect other team members.
-- Production database password and API keys should not end up in repository.
-- There are multiple servers: development, testing, production. Each should have its own configuration.
+- Production database password and API keys should not end up in the repository.
+- There are multiple server environments: development, testing, production. Each should have its own configuration.
 - Defining all configuration options for each case is very repetitive and takes too much time to maintain.
 
-In order to solve these issues Yii introduces environments concept that is very simple. Each environment is represented
-by a set of files under `environments` directory. `init` command is used to switch between these. What it really does is
-just copying everything from environment directory over the root directory where all applications are.
+In order to solve these issues Yii introduces a simple environments concept. Each environment is represented
+by a set of files under the `environments` directory. The `init` command is used to switch between these. What it really does is
+copy everything from the environment directory over to the root directory where all applications are.
 
 Typically environment contains application bootstrap files such as `index.php` and config files suffixed with
 `-local.php`. These are added to `.gitignore` and never added to source code repository.
 
-In order to avoid duplication configurations are overriding each other. For example, frontend reads configuration in the
+In order to avoid duplication configurations are overriding each other. For example, the frontend reads configuration in the
 following order:
 
 - `common/config/main.php`
@@ -134,7 +138,7 @@ Here's the full scheme:
 Configuring Composer
 --------------------
 
-After application template is installed it's a good idea to adjust default `composer.json` that can be found in the root
+After the application template is installed it's a good idea to adjust default `composer.json` that can be found in the root
 directory:
 
 ```json
@@ -184,7 +188,7 @@ directory:
 First we're updating basic information. Change `name`, `description`, `keywords`, `homepage` and `support` to match
 your project.
 
-Now the interesting part. You can add more packages your application needs to `require` section.
+Now the interesting part. You can add more packages your application needs to the `require` section.
 All these packages are coming from [packagist.org](https://packagist.org/) so feel free to browse the website for useful code.
 
 After your `composer.json` is changed you can run `php composer.phar update --prefer-dist`, wait till packages are downloaded and
@@ -193,8 +197,8 @@ installed and then just use them. Autoloading of classes will be handled automat
 Creating links from backend to frontend
 ---------------------------------------
 
-Often it's required to create links from backend application to frontend application. Since frontend application may
-contain its own URL manager rules you need to duplicate that for backend application by naming it differently:
+Often it's required to create links from the backend application to the frontend application. Since the frontend application may
+contain its own URL manager rules you need to duplicate that for the backend application by naming it differently:
 
 ```php
 return [
@@ -210,7 +214,7 @@ return [
 ];
 ```
 
-After it is done, you can get URL pointing to frontend like the following:
+After it is done, you can get an URL pointing to frontend like the following:
 
 ```php
 echo Yii::$app->urlManagerFrontend->createUrl(...);
