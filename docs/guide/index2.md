@@ -71,6 +71,7 @@ Presenting Data
 * Sorting
 * Data Providers
 * Data Widgets
+* Managing Assets
 
 
 Working with Database
@@ -79,10 +80,20 @@ Working with Database
 * Data Access Objects - Connecting to a database, basic queries, transactions and schema manipulation
 * Query Builder - Querying the database using a simple abstraction layer
 * Active Record - The active record ORM, retrieving and manipulating records and defining relations
+* Migrations
 * Sphinx
 * Redis
 * MongoDB
 * ElasticSearch
+
+
+Security
+--------
+
+* Authentication
+* Authorization
+* Auth Clients
+* Best Practices
 
 
 Caching
@@ -92,6 +103,22 @@ Caching
 * Data Caching
 * Fragment and Page Caching
 * HTTP Caching
+
+
+RESTful Web Services
+--------------------
+
+* Quick Start
+* API Endpoints
+* Resources
+* Data Formatting
+* Authentication
+* Rate Limiting
+* Versioning
+* Caching
+* Error Handling
+* Testing
+* Documentation
 
 
 Testing
@@ -114,24 +141,24 @@ Extending Yii
 * Using Yii 1.1 and 2.0 Together
 
 
-Special Topics
---------------
+Development Tools
+-----------------
 
-* Authentication
-* Authorization
-* Auth Clients
-* Console Commands
 * Debug Toolbar and Debugger
 * Generating Code using Gii
 * Generating API Documentation
+* Using Composer
+
+
+Special Topics
+--------------
+
+* Console Commands
 * Handling Errors
 * Internationalization
 * Logging
 * Mailing
-* Managing Assets
 * Performance Tuning
-* RESTful Web Services
-* Security
 * Template Engines
 * Theming
 
