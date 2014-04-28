@@ -52,6 +52,7 @@ use yii\helpers\FileHelper;
  * ~~~
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Tobias Munk <schmunk@usrbin.de>
  * @since 2.0
  */
 class MigrateController extends Controller
@@ -70,6 +71,10 @@ class MigrateController extends Controller
      * a path alias or a directory.
      */
     public $migrationPath = '@app/migrations';
+    /**
+     * @var array additional aliases of migration directories
+     */
+    public $migrationLookup = [];
     /**
      * @var string the name of the table for keeping applied migration information.
      */
@@ -97,7 +102,7 @@ class MigrateController extends Controller
     {
         return array_merge(
             parent::options($actionId),
-            ['migrationPath', 'migrationTable', 'db'], // global for all actions
+            ['migrationPath', 'migrationLookup', 'migrationTable', 'db'], // global for all actions
             ($actionId == 'create') ? ['templateFile'] : [] // action create
         );
     }
@@ -117,7 +122,6 @@ class MigrateController extends Controller
                 echo "";
                 FileHelper::createDirectory($path);
             }
-            $this->migrationPath = $path;
 
             if ($action->id !== 'create') {
                 if (is_string($this->db)) {
@@ -130,7 +134,7 @@ class MigrateController extends Controller
 
             $version = Yii::getVersion();
             echo "Yii Migration Tool (based on Yii v{$version})\n\n";
-
+            echo "Database Connection: ".\Yii::$app->db->dsn."\n\n";
             return true;
         } else {
             return false;
@@ -171,14 +175,18 @@ class MigrateController extends Controller
             echo "Total $n out of $total new " . ($total === 1 ? 'migration' : 'migrations') . " to be applied:\n";
         }
 
-        foreach ($migrations as $migration) {
+        echo "\nLookup:\n";
+        foreach (array_unique($migrations) as $migration => $alias) {
+            echo "    $alias\n";
+        }
+        echo "\nMigrations:\n";
+        foreach ($migrations as $migration => $alias) {
             echo "    $migration\n";
         }
-        echo "\n";
 
         if ($this->confirm('Apply the above ' . ($n === 1 ? 'migration' : 'migrations') . "?")) {
-            foreach ($migrations as $migration) {
-                if (!$this->migrateUp($migration)) {
+            foreach ($migrations as $migration => $alias) {
+                if (!$this->migrateUp($migration, $alias)) {
                     echo "\nMigration failed. The rest of the migrations are canceled.\n";
 
                     return;
@@ -214,18 +222,17 @@ class MigrateController extends Controller
 
             return;
         }
-        $migrations = array_keys($migrations);
 
         $n = count($migrations);
         echo "Total $n " . ($n === 1 ? 'migration' : 'migrations') . " to be reverted:\n";
-        foreach ($migrations as $migration) {
-            echo "    $migration\n";
+        foreach ($migrations as $migration => $info) {
+            echo "    $migration (".$info['alias'].")\n";
         }
         echo "\n";
 
         if ($this->confirm('Revert the above ' . ($n === 1 ? 'migration' : 'migrations') . "?")) {
-            foreach ($migrations as $migration) {
-                if (!$this->migrateDown($migration)) {
+            foreach ($migrations as $migration => $info) {
+                if (!$this->migrateDown($migration, $info['alias'])) {
                     echo "\nMigration failed. The rest of the migrations are canceled.\n";
 
                     return;
@@ -263,25 +270,24 @@ class MigrateController extends Controller
 
             return;
         }
-        $migrations = array_keys($migrations);
 
         $n = count($migrations);
         echo "Total $n " . ($n === 1 ? 'migration' : 'migrations') . " to be redone:\n";
-        foreach ($migrations as $migration) {
+        foreach ($migrations as $migration => $info) {
             echo "    $migration\n";
         }
         echo "\n";
 
         if ($this->confirm('Redo the above ' . ($n === 1 ? 'migration' : 'migrations') . "?")) {
-            foreach ($migrations as $migration) {
-                if (!$this->migrateDown($migration)) {
+            foreach ($migrations as $migration => $info) {
+                if (!$this->migrateDown($migration, $info['alias'])) {
                     echo "\nMigration failed. The rest of the migrations are canceled.\n";
 
                     return;
                 }
             }
-            foreach (array_reverse($migrations) as $migration) {
-                if (!$this->migrateUp($migration)) {
+            foreach (array_reverse($migrations) as $migration => $info) {
+                if (!$this->migrateUp($migration, $info['alias'])) {
                     echo "\nMigration failed. The rest of the migrations migrations are canceled.\n";
 
                     return;
@@ -352,13 +358,16 @@ class MigrateController extends Controller
 
         // try mark up
         $migrations = $this->getNewMigrations();
-        foreach ($migrations as $i => $migration) {
+        $i = 0;
+        foreach ($migrations as $migration => $alias) {
+            $stack[] = $migration;
             if (strpos($migration, $version . '_') === 0) {
                 if ($this->confirm("Set migration history at $originalVersion?")) {
                     $command = $this->db->createCommand();
-                    for ($j = 0; $j <= $i; ++$j) {
+                    foreach ($stack AS $applyMigration) {
                         $command->insert($this->migrationTable, [
-                            'version' => $migrations[$j],
+                            'version' => $applyMigration,
+                            'alias' => $alias,
                             'apply_time' => time(),
                         ])->execute();
                     }
@@ -367,6 +376,7 @@ class MigrateController extends Controller
 
                 return;
             }
+            $i++;
         }
 
         // try mark down
@@ -422,8 +432,8 @@ class MigrateController extends Controller
             } else {
                 echo "Total $n " . ($n === 1 ? 'migration has' : 'migrations have') . " been applied before:\n";
             }
-            foreach ($migrations as $version => $time) {
-                echo "    (" . date('Y-m-d H:i:s', $time) . ') ' . $version . "\n";
+            foreach ($migrations as $version => $info) {
+                echo "    (" . date('Y-m-d H:i:s', $info['apply_time']) . ') ' . $version . "\n";
             }
         }
     }
@@ -500,7 +510,7 @@ class MigrateController extends Controller
      * @param string $class the migration class name
      * @return boolean whether the migration is successful
      */
-    protected function migrateUp($class)
+    protected function migrateUp($class, $alias)
     {
         if ($class === self::BASE_MIGRATION) {
             return true;
@@ -508,10 +518,11 @@ class MigrateController extends Controller
 
         echo "*** applying $class\n";
         $start = microtime(true);
-        $migration = $this->createMigration($class);
+        $migration = $this->createMigration($class, $alias);
         if ($migration->up() !== false) {
             $this->db->createCommand()->insert($this->migrationTable, [
                 'version' => $class,
+                'alias' => $alias,
                 'apply_time' => time(),
             ])->execute();
             $time = microtime(true) - $start;
@@ -531,7 +542,7 @@ class MigrateController extends Controller
      * @param string $class the migration class name
      * @return boolean whether the migration is successful
      */
-    protected function migrateDown($class)
+    protected function migrateDown($class, $alias)
     {
         if ($class === self::BASE_MIGRATION) {
             return true;
@@ -539,7 +550,7 @@ class MigrateController extends Controller
 
         echo "*** reverting $class\n";
         $start = microtime(true);
-        $migration = $this->createMigration($class);
+        $migration = $this->createMigration($class, $alias);
         if ($migration->down() !== false) {
             $this->db->createCommand()->delete($this->migrationTable, [
                 'version' => $class,
@@ -561,10 +572,10 @@ class MigrateController extends Controller
      * @param string $class the migration class name
      * @return \yii\db\Migration the migration instance
      */
-    protected function createMigration($class)
+    protected function createMigration($class, $alias)
     {
-        $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
-        require_once($file);
+        $file = $class . '.php';
+        require_once(\Yii::getAlias($alias).'/'.$file);
 
         return new $class(['db' => $this->db]);
     }
@@ -598,12 +609,14 @@ class MigrateController extends Controller
 
         // try migrate up
         $migrations = $this->getNewMigrations();
-        foreach ($migrations as $i => $migration) {
+        $i = 0;
+        foreach ($migrations as $migration => $alias) {
             if (strpos($migration, $version . '_') === 0) {
                 $this->actionUp($i + 1);
 
                 return;
             }
+            $i++;
         }
 
         // try migrate down
@@ -634,15 +647,18 @@ class MigrateController extends Controller
             $this->createMigrationHistoryTable();
         }
         $query = new Query;
-        $rows = $query->select(['version', 'apply_time'])
+        $rows = $query->select(['version', 'alias', 'apply_time'])
             ->from($this->migrationTable)
             ->orderBy('version DESC')
             ->limit($limit)
             ->createCommand($this->db)
             ->queryAll();
         $history = ArrayHelper::map($rows, 'version', 'apply_time');
-        unset($history[self::BASE_MIGRATION]);
+        foreach($rows AS $row) {
+            $history[$row['version']] = ['apply_time'=>$row['apply_time'],'alias'=>$row['alias']];
+        }
 
+        unset($history[self::BASE_MIGRATION]);
         return $history;
     }
 
@@ -655,10 +671,12 @@ class MigrateController extends Controller
         echo "Creating migration history table \"$tableName\"...";
         $this->db->createCommand()->createTable($this->migrationTable, [
             'version' => 'varchar(180) NOT NULL PRIMARY KEY',
+            'alias' => 'varchar(180) NOT NULL',
             'apply_time' => 'integer',
         ])->execute();
         $this->db->createCommand()->insert($this->migrationTable, [
             'version' => self::BASE_MIGRATION,
+            'alias' => $this->migrationPath,
             'apply_time' => time(),
         ])->execute();
         echo "done.\n";
@@ -666,28 +684,36 @@ class MigrateController extends Controller
 
     /**
      * Returns the migrations that are not applied.
-     * @return array list of new migrations
+     * @return array list of new migrations, (key: migration version; value: alias)
      */
     protected function getNewMigrations()
     {
         $applied = [];
-        foreach ($this->getMigrationHistory(-1) as $version => $time) {
+        foreach ($this->getMigrationHistory(-1) as $version => $info) {
             $applied[substr($version, 1, 13)] = true;
         }
 
+        $directories = ArrayHelper::merge([$this->migrationPath], $this->migrationLookup);
+
         $migrations = [];
-        $handle = opendir($this->migrationPath);
-        while (($file = readdir($handle)) !== false) {
-            if ($file === '.' || $file === '..') {
-                continue;
+        foreach ($directories AS $alias) {
+            $dir = Yii::getAlias($alias);
+            $handle = opendir($dir);
+            while (($file = readdir($handle)) !== false) {
+                if ($file === '.' || $file === '..') {
+                    continue;
+                }
+                $path = $dir . DIRECTORY_SEPARATOR . $file;
+                if (preg_match('/^(m(\d{6}_\d{6})_.*?)\.php$/', $file, $matches) && is_file(
+                        $path
+                    ) && !isset($applied[$matches[2]])
+                ) {
+                    $migrations[$matches[1]] = $alias;
+                }
             }
-            $path = $this->migrationPath . DIRECTORY_SEPARATOR . $file;
-            if (preg_match('/^(m(\d{6}_\d{6})_.*?)\.php$/', $file, $matches) && is_file($path) && !isset($applied[$matches[2]])) {
-                $migrations[] = $matches[1];
-            }
+            closedir($handle);
         }
-        closedir($handle);
-        sort($migrations);
+        ksort($migrations);
 
         return $migrations;
     }
