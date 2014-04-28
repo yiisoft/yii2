@@ -12,75 +12,128 @@ Getting Started
 * Starting with Basic App
 * Starting with Advanced App
 * Starting from Scratch
-* What's Next
 
 
-Fundamentals
-------------
+Basic Concepts
+--------------
 
-* Properties, Events and Behaviors
-* Class Autoloading
+* Object Properties
+* Events
+* Behaviors
 * Object Configurations
+* Class Autoloading
 * Path Aliases
-* Request Lifecyle
+* Extensions
+* Service Locator
+* Dependency Injection Container
+
+
+Key Components
+--------------
+
 * Entry Scripts
 * Applications
 * Controllers and Actions
 * Views
 * Models
-* Requests
-* Responses
-* Filters
+* Action Filters
 * Widgets
 * Modules
-* Extensions
+* Code Organization
+
+
+Handling Requests
+-----------------
+
+* Request Lifecycle
+* Bootstrapping
+* Routing
+* Requests
+* Responses
+* Sessions and Cookies
+* URL Parsing and Generation
+
+
+Collecting Input Data
+---------------------
+
+* Creating Forms
+* Input Validation
+* Uploading Files
+* Handling Multiple Models
+
+
+Presenting Data
+---------------
+
+* Data Formatting
+* Pagination
+* Sorting
+* Data Providers
+* Data Widgets
 
 
 Working with Database
 ---------------------
 
-* Basics - Connecting to a database, basic queries, transactions and schema manipulation
+* Data Access Objects - Connecting to a database, basic queries, transactions and schema manipulation
 * Query Builder - Querying the database using a simple abstraction layer
-* ActiveRecord - The active record ORM, retrieving and manipulating records and defining relations
-* Working with Redis
-* Working with MongoDB
-* Working with ElasticSearch
-* Working with Sphinx
+* Active Record - The active record ORM, retrieving and manipulating records and defining relations
+* Sphinx
+* Redis
+* MongoDB
+* ElasticSearch
+
+
+Caching
+-------
+
+* Overview
+* Data Caching
+* Fragment and Page Caching
+* HTTP Caching
+
+
+Testing
+-------
+
+* Overview
+* Unit Tests
+* Functional Tests
+* Acceptance Tests
+* Fixtures
+
+
+Extending Yii
+-------------
+
+* Creating Extensions
+* Customizing Core Code
+* Using 3rd-Party Libraries
+* Using Yii in 3rd-Party Systems
+* Using Yii 1.1 and 2.0 Together
 
 
 Special Topics
 --------------
 
-* Asset Management
 * Authentication
 * Authorization
-* Building RESTful Web Services
-* Caching
+* Auth Clients
 * Console Commands
-* Creating Extensions
-* Data Formatting
 * Debug Toolbar and Debugger
-* Error Handling
-* File Upload
 * Generating Code using Gii
 * Generating API Documentation
-* Input Validation
+* Handling Errors
 * Internationalization
 * Logging
 * Mailing
-* Pagination and Sorting
+* Managing Assets
 * Performance Tuning
-* Routing and URL Management
+* RESTful Web Services
 * Security
-* Service Locator and Dependency Injection
-* Testing
+* Template Engines
 * Theming
-* Using Auth Clients
-* Using Template Engines
-* Working with 3rd-Party Code
-* Working with Cookies
-* Working with HTML Forms
-* Working with Sessions
 
 
 Widgets
