@@ -1,5 +1,41 @@
-Data grid
-=========
+Data widgets
+============
+
+ListView
+--------
+
+
+
+DetailView
+----------
+
+DetailView displays the detail of a single data [[yii\widgets\DetailView::$model|model]].
+ 
+It is best used for displaying a model in a regular format (e.g. each model attribute is displayed as a row in a table).
+The model can be either an instance of [[\yii\base\Model]] or an associative array.
+ 
+DetailView uses the [[yii\widgets\DetailView::$attributes]] property to determines which model attributes should be displayed and how they
+should be formatted.
+ 
+A typical usage of DetailView is as follows:
+ 
+```php
+echo DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+        'title',             // title attribute (in plain text)
+        'description:html',  // description attribute in HTML
+        [                    // the owner name of the model
+            'label' => 'Owner',
+            'value' => $model->owner->name,
+        ],
+    ],
+]);
+```
+
+
+GridView
+--------
 
 Data grid or GridView is one of the most powerful Yii widgets. It is extremely useful if you need to quickly build admin
 section of the system. It takes data from [data provider](data-providers.md) and renders each row using a set of columns
@@ -32,8 +68,7 @@ echo GridView::widget([
 The above code first creates a data provider and then uses GridView to display every attribute in every row taken from
 data provider. The displayed table is equiped with sorting and pagination functionality.
 
-Grid columns
-------------
+### Grid columns
 
 Yii grid consists of a number of columns. Depending on column type and settings these are able to present data differently.
 
@@ -147,9 +182,9 @@ rendered for the current row.
 #### Checkbox column
 
 CheckboxColumn displays a column of checkboxes.
- 
+
 To add a CheckboxColumn to the [[yii\grid\GridView]], add it to the [[yii\grid\GridView::$columns|columns]] configuration as follows:
- 
+
 ```php
 echo GridView::widget([
     'dataProvider' => $dataProvider,
@@ -324,3 +359,4 @@ In `search()` you then just add another filter condition with `$query->andFilter
 
 > Info: For more information on `joinWith` and the queries performed in the background, check the
 > [active record docs on eager and lazy loading](active-record.md#lazy-and-eager-loading).
+
