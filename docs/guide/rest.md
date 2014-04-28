@@ -830,7 +830,7 @@ API Versioning
 Your APIs should be versioned. Unlike Web applications which you have full control on both client side and server side
 code, for APIs you usually do not have control of the client code that consumes the APIs. Therefore, backward
 compatibility (BC) of the APIs should be maintained whenever possible, and if some BC-breaking changes must be
-introduced to the APIs, you should bump up the version number. You may refer to [Symantic Versioning](http://semver.org/)
+introduced to the APIs, you should bump up the version number. You may refer to [Semantic Versioning](http://semver.org/)
 for more information about designing the version numbers of your APIs.
 
 Regarding how to implement API versioning, a common practice is to embed the version number in the API URLs.
