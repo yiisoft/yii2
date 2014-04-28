@@ -141,8 +141,8 @@ In the code above `$url` is the URL that the column creates for the button, and 
 rendered for the current row.
 
 - `urlCreator` is a callback that creates a button URL using the specified model information. The signature of
-  the callback should be the same as that of [[yii\grid\ActionColumn\createUrl()]]. If this property is not set,
-  button URLs will be created using [[yii\grid\ActionColumn\createUrl()]].
+  the callback should be the same as that of [[yii\grid\ActionColumn::createUrl()]]. If this property is not set,
+  button URLs will be created using [[yii\grid\ActionColumn::createUrl()]].
 
 #### Checkbox column
 

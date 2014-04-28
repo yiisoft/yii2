@@ -94,7 +94,7 @@ Two special roles are recognized, and they are checked via [[yii\web\User::isGue
 Using other role names requires RBAC (to be described in the next section), and [[yii\web\User::can()]] will be called.
 If this option is empty or not set, it means this rule applies to all roles.
 
- * [[yii\filters\AccessRule::ips|ips]]: specifies which [[yii\web\Request::Request::userIP|client IP addresses]] this rule matches.
+ * [[yii\filters\AccessRule::ips|ips]]: specifies which [[yii\web\Request::userIP|client IP addresses]] this rule matches.
 An IP address can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
 For example, '192.168.*' matches all IP addresses in the segment '192.168.'. If this option is empty or not set,
 it means this rule applies to all IP addresses.
