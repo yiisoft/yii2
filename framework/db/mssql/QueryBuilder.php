@@ -163,11 +163,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $this->buildGroupBy($query->groupBy),
             $this->buildHaving($query->having, $params),
             $this->buildOrderBy($query->orderBy),
-            $this->olderMssql()?'':$this->buildLimit($query->limit, $query->offset),
+            $this->olderMssql() ? '' : $this->buildLimit($query->limit, $query->offset),
         ];
 
         $sql = implode($this->separator, array_filter($clauses));
-        if ($this->olderMssql()) $sql = $this->applyLimit($sql, $query->limit, $query->offset);
+        if ($this->olderMssql()) {
+            $sql = $this->applyLimit($sql, $query->limit, $query->offset);
+        }
 
         $union = $this->buildUnion($query->union, $params);
         if ($union !== '') {
@@ -188,7 +190,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * The modification is done with reference to the notes from
      * http://troels.arvin.dk/db/rdbms/#select-limit-offset
      *
-     * <code>
+     * ```SQL
      * SELECT * FROM (
      *  SELECT TOP n * FROM (
      *    SELECT TOP z columns      -- (z=n+skip)
@@ -196,25 +198,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
      *    ORDER BY key ASC
      *  ) AS FOO ORDER BY key DESC -- ('FOO' may be anything)
      * ) AS BAR ORDER BY key ASC    -- ('BAR' may be anything)
-     * </code>
+     * ```
      *
-     * <b>Regular expressions are used to alter the SQL query. The resulting SQL query
-     * may be malformed for complex queries.</b> The following restrictions apply
+     * **Regular expressions are used to alter the SQL query. The resulting SQL query may be malformed for complex queries.** The following restrictions apply
      *
-     * <ul>
-     *   <li>
-     * In particular, <b>commas</b> should <b>NOT</b>
-     * be used as part of the ordering expression or identifier. Commas must only be
-     * used for separating the ordering clauses.
-     *   </li>
-     *   <li>
-     * In the ORDER BY clause, the column name should NOT be be qualified
-     * with a table name or view name. Alias the column names or use column index.
-     *   </li>
-     *   <li>
-     * No clauses should follow the ORDER BY clause, e.g. no COMPUTE or FOR clauses.
-     *   </li>
-     * </ul>
+     * - In particular, **commas** should **NOT** be used as part of the ordering expression or identifier. Commas must only be used for separating the ordering clauses.
+     * - In the ORDER BY clause, the column name should NOT be be qualified with a table name or view name. Alias the column names or use column index.
+     * - No clauses should follow the ORDER BY clause, e.g. no COMPUTE or FOR clauses.
      *
      * @param string $sql SQL query string.
      * @param integer $limit maximum number of rows, -1 to ignore limit.
@@ -270,29 +260,26 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $matches=array();
         $ordering=array();
         preg_match_all('/(ORDER BY)[\s"\[](.*)(ASC|DESC)?(?:[\s"\[]|$|COMPUTE|FOR)/i', $sql, $matches);
-        if(count($matches)>1 && count($matches[2]) > 0)
-        {
+        if(count($matches)>1 && count($matches[2]) > 0) {
             $parts = explode(',', $matches[2][0]);
-            foreach($parts as $part)
-            {
+            foreach($parts as $part) {
                 $subs=array();
-                if(preg_match_all('/(.*)[\s"\]](ASC|DESC)$/i', trim($part), $subs))
-                {
-                    if(count($subs) > 1 && count($subs[2]) > 0)
-                    {
+                if(preg_match_all('/(.*)[\s"\]](ASC|DESC)$/i', trim($part), $subs)) {
+                    if(count($subs) > 1 && count($subs[2]) > 0) {
                         $name='';
-                        foreach(explode('.', $subs[1][0]) as $p)
-                        {
-                            if($name!=='')
+                        foreach(explode('.', $subs[1][0]) as $p) {
+                            if($name!=='') {
                                 $name.='.';
+                            }
                             $name.='[' . trim($p, '[]') . ']';
                         }
                         $ordering[$name] = $subs[2][0];
                     }
                     //else what?
                 }
-                else
+                else {
                     $ordering[trim($part)] = 'ASC';
+                }
             }
         }
 
@@ -302,8 +289,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $matches = array();
             $pattern = '/\s+'.str_replace(array('[',']'), array('\[','\]'), $name).'\s+AS\s+(\[[^\]]+\])/i';
             preg_match($pattern, $sql, $matches);
-            if(isset($matches[1]))
-            {
+            if(isset($matches[1])) {
                 $ordering[$matches[1]] = $ordering[$name];
                 unset($ordering[$name]);
             }
@@ -321,11 +307,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected function joinOrdering($orders, $newPrefix)
     {
-        if(count($orders)>0)
-        {
+        if(count($orders)>0) {
             $str=array();
-            foreach($orders as $column => $direction)
+            foreach($orders as $column => $direction) {
                 $str[] = $column.' '.$direction;
+            }
             $orderBy = 'ORDER BY '.implode(', ', $str);
             return preg_replace('/\s+\[[^\]]+\]\.(\[[^\]]+\])/i', ' '.$newPrefix.'.\1', $orderBy);
         }
@@ -339,8 +325,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected function reverseDirection($orders)
     {
-        foreach($orders as $column => $direction)
+        foreach($orders as $column => $direction) {
             $orders[$column] = strtolower(trim($direction))==='desc' ? 'ASC' : 'DESC';
+        }
         return $orders;
     }
     
