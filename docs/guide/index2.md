@@ -31,6 +31,7 @@ Basic Concepts
 Key Components
 --------------
 
+* MVC Overview
 * Entry Scripts
 * Applications
 * Controllers and Actions
@@ -39,7 +40,6 @@ Key Components
 * Action Filters
 * Widgets
 * Modules
-* Code Organization
 
 
 Handling Requests
