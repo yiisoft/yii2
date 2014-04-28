@@ -3,7 +3,7 @@ What is Yii
 
 Yii is a high performance, component-based PHP framework for rapidly developing modern Web applications.
 The name Yii (pronounced `Yee` or `[ji:]`) means simple and evolutionary in Chinese. It can also
-be considered as the acronym for **Yes It Is!**
+be considered as the acronym for **Yes It Is**!
 
 
 What is Yii Best for?
@@ -31,9 +31,9 @@ How does Yii Compare with Other Frameworks?
 
 Yii is not a one-man show, it is backed up by a [strong core developer team][] as well as a large community
 with many professionals who are constantly contributing to the development of Yii. The Yii developer team
-is keeping a close eye on the latest trends of Web development as well as the best practices and features
-found in other frameworks and projects. They are being wisely incorporated into the framework and exposed
-under a simple and elegant interface.
+is keeping a close eye on the latest trends of Web development and the best practices and features
+found in other frameworks and projects. They are being carefully incorporated into the core framework and exposed
+via simple and elegant interfaces.
 
 [strong core developer team]: http://www.yiiframework.com/about/
 

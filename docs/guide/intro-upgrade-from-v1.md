@@ -1,9 +1,10 @@
-Upgrading from Yii 1.1
-======================
+Upgrading from Version 1.1
+==========================
 
-In this chapter, we list the major changes introduced in Yii 2.0 since version 1.1.
-We hope this list will make it easier for you to upgrade from Yii 1.1 and quickly
-master Yii 2.0 based on your existing Yii knowledge.
+Because Yii 2.0 is a complete rewrite of the framework, upgrading from version 1.1 is not trivial.
+We recommend you read through this guide before performing the upgrade. In this chapter, we will
+summarize the major differences between 1.1 and 2.0. We hope this will make it easier for you
+to upgrade from Yii 1.1 and quickly master Yii 2.0 based on your existing Yii knowledge.
 
 
 Namespace
@@ -21,15 +22,13 @@ Component and Object
 --------------------
 
 Yii 2.0 breaks the `CComponent` class in 1.1 into two classes: [[yii\base\Object]] and [[yii\base\Component]].
-The [[yii\base\Object|Object]] class is a lightweight base class that allows defining class properties
+The [[yii\base\Object|Object]] class is a lightweight base class that allows defining [object properties](basic-properties.md)
 via getters and setters. The [[yii\base\Component|Component]] class extends from [[yii\base\Object|Object]] and supports
-the event feature and the behavior feature.
+[events](basic-events.md) and [behaviors](basic-behaviors.md).
 
 If your class does not need the event or behavior feature, you should consider using
-`Object` as the base class. This is usually the case for classes that represent basic
+[[yii\base\Object|Object]] as the base class. This is usually the case for classes that represent basic
 data structures.
-
-More details about Object and component can be found in the [Basic concepts section](basics.md).
 
 
 Object Configuration
@@ -74,15 +73,22 @@ $object = Yii::createObject([
 ], [$param1, $param2]);
 ```
 
-More on configuration can be found in the [Basic concepts section](basics.md).
+More details about configurations can be found in the [Object Configurations](basic-configs.md) chapter.
 
 
 Events
 ------
 
 There is no longer the need to define an `on`-method in order to define an event in Yii 2.0.
-Instead, you can use whatever event names. To attach a handler to an event, you should now
-use the `on` method:
+Instead, you can use whatever event names. You can trigger an event by calling
+the [[yii\base\Component::trigger()|trigger()]] method:
+
+```php
+$event = new \yii\base\Event;
+$component->trigger($eventName, $event);
+```
+
+And to attach a handler to an event, you can use the [[yii\base\Component::on()|on()]] method:
 
 ```php
 $component->on($eventName, $handler);
@@ -90,45 +96,16 @@ $component->on($eventName, $handler);
 // $component->off($eventName, $handler);
 ```
 
-
-When you attach a handler, you can now associate it with some parameters which can be later
-accessed via the event parameter by the handler:
-
-```php
-$component->on($eventName, $handler, $params);
-```
+There are many enhancements to the event features. For more details, please refer to the [Events](basic-events.md) chapter.
 
 
-Because of this change, you can now use "global" events. Simply trigger and attach handlers to
-an event of the application instance:
+Path Aliases
+------------
 
-```php
-Yii::$app->on($eventName, $handler);
-....
-// this will trigger the event and cause $handler to be invoked.
-Yii::$app->trigger($eventName);
-```
-
-If you need to handle all instances of a class instead of the object you can attach a handler like the following:
-
-```php
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-    Yii::trace(get_class($event->sender) . ' is inserted.');
-});
-```
-
-The code above defines a handler that will be triggered for every Active Record object's `EVENT_AFTER_INSERT` event.
-
-See [Event handling section](events.md) for more details.
-
-
-Path Alias
-----------
-
-Yii 2.0 expands the usage of path aliases to both file/directory paths and URLs. An alias
-must start with a `@` character so that it can be differentiated from file/directory paths and URLs.
+Yii 2.0 expands the usage of path aliases to both file/directory paths and URLs. It also requires
+an alias name to start with a `@` character so that it can be differentiated from normal file/directory paths and URLs.
 For example, the alias `@yii` refers to the Yii installation directory. Path aliases are
-supported in most places in the Yii core code. For example, `FileCache::cachePath` can take
+supported in most places in the Yii core code. For example, [[yii\caching\FileCache::cachePath]] can take
 both a path alias and a normal directory path.
 
 Path alias is also closely related with class namespaces. It is recommended that a path
@@ -138,11 +115,11 @@ a class like `yii\web\Request` can be autoloaded by Yii. If you use a third part
 such as Zend Framework, you may define a path alias `@Zend` which refers to its installation
 directory and Yii will be able to autoload any class in this library.
 
-More on path aliases can be found in the [Basic concepts section](basics.md).
+More on path aliases can be found in the [Path Aliases](basic-aliases.md) chapter.
 
 
-View
-----
+Views
+-----
 
 Yii 2.0 introduces a [[yii\web\View|View]] class to represent the view part of the MVC pattern.
 It can be configured globally through the "view" application component. It is also
@@ -190,24 +167,30 @@ mainly used when using HTML forms to collect user inputs for a model. Previously
 this is usually hardcoded as the class name of the model.
 
 New methods called [[yii\base\Model::load()|load()] and [[yii\base\Model::loadMultiple()|Model::loadMultiple()]] are
-introduced to simplify the data population from user inputs to a model. For example,
+introduced to simplify the data population from user inputs to a model. For example, to populate a single model,
 
 ```php
 $model = new Post();
-if ($model->load($_POST)) {...}
+if ($model->load($_POST)) {
+    // ...
+}
+
 // which is equivalent to:
+
 if (isset($_POST['Post'])) {
     $model->attributes = $_POST['Post'];
 }
+```
 
-$model->save();
+and to populate multiple models (tabular inputs):
 
+```php
 $postTags = [];
 $tagsCount = count($_POST['PostTag']);
 while ($tagsCount-- > 0) {
     $postTags[] = new PostTag(['post_id' => $model->id]);
 }
-Model::loadMultiple($postTags, $_POST);
+\yii\base\Model::loadMultiple($postTags, $_POST);
 ```
 
 Yii 2.0 introduces a new method called [[yii\base\Model::scenarios()|scenarios()]] to declare which attributes require
@@ -225,17 +208,16 @@ public function scenarios()
 }
 ```
 
-
 This method also determines which attributes are safe and which are not. In particular,
 given a scenario, if an attribute appears in the corresponding attribute list in [[yii\base\Model::scenarios()|scenarios()]]
 and the name is not prefixed with `!`, it is considered *safe*.
 
-Because of the above change, Yii 2.0 no longer has "unsafe" validator.
+Because of the above change, Yii 2.0 no longer has the "unsafe" validator.
 
 If your model only has one scenario (very common), you do not have to overwrite [[yii\base\Model::scenarios()|scenarios()]],
 and everything will still work like the 1.1 way.
 
-To learn more about Yii 2.0 models refer to [Models](model.md) section of the guide.
+To learn more about Yii 2.0 models refer to the [Models](basic-models.md) chapter.
 
 
 Controllers
@@ -245,35 +227,33 @@ The [[yii\base\Controller::render()|render()]] and [[yii\base\Controller::render
 now return the rendering results instead of directly sending them out.
 You have to `echo` them explicitly, e.g., `echo $this->render(...);`.
 
-To learn more about Yii 2.0 controllers refer to [Controller](controller.md) section of the guide.
+Please refer to the [Controllers](structure-controllers.md) chapter for more details.
 
 
 Widgets
 -------
 
 Using a widget is more straightforward in 2.0. You mainly use the
-[[yii\base\Widget::begin()|begin()]],
-[[yii\base\Widget::end()|end()]] and
-[[yii\base\Widget::widget()|widget()]]
+[[yii\base\Widget::begin()|begin()]], [[yii\base\Widget::end()|end()]] and [[yii\base\Widget::widget()|widget()]]
 methods of the [[yii\base\Widget|Widget]] class. For example,
 
 ```php
+use yii\widgets\Menu;
+use yii\widgets\ActiveForm;
+
 // Note that you have to "echo" the result to display it
-echo \yii\widgets\Menu::widget(['items' => $items]);
+echo Menu::widget(['items' => $items]);
 
 // Passing an array to initialize the object properties
-$form = \yii\widgets\ActiveForm::begin([
+$form = ActiveForm::begin([
     'options' => ['class' => 'form-horizontal'],
     'fieldConfig' => ['inputOptions' => ['class' => 'input-xlarge']],
 ]);
-... form inputs here ...
-\yii\widgets\ActiveForm::end();
+... form input fields here ...
+ActiveForm::end();
 ```
 
-Previously in 1.1, you would have to enter the widget class names as strings via the `beginWidget()`,
-`endWidget()` and `widget()` methods of `CBaseController`. The approach above gets better IDE support.
-
-For more on widgets see the [View section](view.md#widgets).
+Please refer to the [Widgets](structure-widgets.md) chapter for more details.
 
 
 Themes
