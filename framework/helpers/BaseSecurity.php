@@ -197,7 +197,7 @@ class BaseSecurity
         if ($keys === null) {
             $keys = [];
             if (is_file($keyFile)) {
-                $keys = json_decode(file_get_contents($keyFile), true);
+                $keys = Json::decode(file_get_contents($keyFile), true);
             }
         }
         if (!isset($keys[$name])) {

@@ -218,7 +218,7 @@ abstract class Generator extends Model
         $stickyAttributes = $this->stickyAttributes();
         $path = $this->getStickyDataFile();
         if (is_file($path)) {
-            $result = json_decode(file_get_contents($path), true);
+            $result = Json::decode(file_get_contents($path), true);
             if (is_array($result)) {
                 foreach ($stickyAttributes as $name) {
                     if (isset($result[$name])) {

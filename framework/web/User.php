@@ -241,7 +241,7 @@ class User extends Component
         $name = $this->identityCookie['name'];
         $value = Yii::$app->getRequest()->getCookies()->getValue($name);
         if ($value !== null) {
-            $data = json_decode($value, true);
+            $data = Json::decode($value, true);
             if (count($data) === 3 && isset($data[0], $data[1], $data[2])) {
                 list ($id, $authKey, $duration) = $data;
                 /** @var IdentityInterface $class */
@@ -460,7 +460,7 @@ class User extends Component
         $name = $this->identityCookie['name'];
         $value = Yii::$app->getRequest()->getCookies()->getValue($name);
         if ($value !== null) {
-            $data = json_decode($value, true);
+            $data = Json::decode($value, true);
             if (is_array($data) && isset($data[2])) {
                 $cookie = new Cookie($this->identityCookie);
                 $cookie->value = $value;
