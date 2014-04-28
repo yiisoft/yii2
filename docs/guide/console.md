@@ -26,7 +26,7 @@ In the above `yii` is the console application entry script described below.
 Entry script
 ------------
 
-The console application entry script is equivalent to the `index.php` bootstrap file used for the web application. The console entry script is typically called `yii`, and is located in your application's root directory (e.g., `protected`). The contents of the console application entry script contains
+The console application entry script is equivalent to the `index.php` bootstrap file used for the web application. The console entry script is typically called `yii`, and located in your application's root directory. The contents of the console application entry script contains
 code like the following:
 
 ```php
@@ -34,10 +34,6 @@ code like the following:
 <?php
 /**
  * Yii console bootstrap file.
- *
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
