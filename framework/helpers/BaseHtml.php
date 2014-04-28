@@ -12,6 +12,7 @@ use yii\base\InvalidParamException;
 use yii\db\ActiveRecordInterface;
 use yii\web\Request;
 use yii\base\Model;
+use yii\helpers\Json;
 
 /**
  * BaseHtml provides concrete implementation for [[Html]].
@@ -1836,13 +1837,13 @@ class BaseHtml
             foreach ($value as $i => $v) {
                 if ($v instanceof ActiveRecordInterface) {
                     $v = $v->getPrimaryKey(false);
-                    $value[$i] = is_array($v) ? json_encode($v) : $v;
+                    $value[$i] = is_array($v) ? Json::encode($v) : $v;
                 }
             }
         } elseif ($value instanceof ActiveRecordInterface) {
             $value = $value->getPrimaryKey(false);
 
-            return is_array($value) ? json_encode($value) : $value;
+            return is_array($value) ? Json::encode($value) : $value;
         }
 
         return $value;

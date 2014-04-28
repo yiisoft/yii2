@@ -10,6 +10,7 @@ namespace yii\grid;
 use Closure;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
+use yii\helpers\Json;
 
 /**
  * CheckboxColumn displays a column of checkboxes in a grid view.
@@ -78,7 +79,7 @@ class CheckboxColumn extends Column
     {
         $name = rtrim($this->name, '[]') . '_all';
         $id = $this->grid->options['id'];
-        $options = json_encode([
+        $options = Json::encode([
             'name' => $this->name,
             'multiple' => $this->multiple,
             'checkAll' => $name,
@@ -102,7 +103,7 @@ class CheckboxColumn extends Column
         } else {
             $options = $this->checkboxOptions;
             if (!isset($options['value'])) {
-                $options['value'] = is_array($key) ? json_encode($key) : $key;
+                $options['value'] = is_array($key) ? Json::encode($key) : $key;
             }
         }
 

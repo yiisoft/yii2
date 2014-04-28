@@ -10,6 +10,7 @@ namespace yii\widgets;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Json;
 
 /**
  *
@@ -100,7 +101,7 @@ class ListView extends BaseListView
         $options = $this->itemOptions;
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         if ($tag !== false) {
-            $options['data-key'] = is_array($key) ? json_encode($key) : (string) $key;
+            $options['data-key'] = is_array($key) ? Json::encode($key) : (string) $key;
 
             return Html::tag($tag, $content, $options);
         } else {

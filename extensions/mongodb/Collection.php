@@ -7,9 +7,10 @@
 
 namespace yii\mongodb;
 
+use Yii;
 use yii\base\InvalidParamException;
 use yii\base\Object;
-use Yii;
+use yii\helpers\Json;
 
 /**
  * Collection represents the Mongo collection information.
@@ -119,11 +120,11 @@ class Collection extends Object
      */
     protected function encodeLogData($data)
     {
-        return json_encode($this->processLogData($data));
+        return Json::encode($this->processLogData($data));
     }
 
     /**
-     * Pre-processes the log data before sending it to `json_encode()`.
+     * Pre-processes the log data before sending it to `\yii\helpers\Json::encode()`.
      * @param mixed $data raw data.
      * @return mixed the processed data.
      */

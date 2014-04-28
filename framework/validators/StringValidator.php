@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\Json;
 
 /**
  * StringValidator validates that the attribute value is of certain length.
@@ -182,6 +183,6 @@ class StringValidator extends Validator
 
         ValidationAsset::register($view);
 
-        return 'yii.validation.string(value, messages, ' . json_encode($options) . ');';
+        return 'yii.validation.string(value, messages, ' . Json::encode($options) . ');';
     }
 }

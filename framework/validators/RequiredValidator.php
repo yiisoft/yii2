@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\Json;
 
 /**
  * RequiredValidator validates that the specified attribute does not have null or empty value.
@@ -106,6 +107,6 @@ class RequiredValidator extends Validator
 
         ValidationAsset::register($view);
 
-        return 'yii.validation.required(value, messages, ' . json_encode($options) . ');';
+        return 'yii.validation.required(value, messages, ' . Json::encode($options) . ');';
     }
 }

@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\helpers\Json;
 
 /**
  * User is the class for the "user" application component that manages the user authentication status.
@@ -481,7 +482,7 @@ class User extends Component
     protected function sendIdentityCookie($identity, $duration)
     {
         $cookie = new Cookie($this->identityCookie);
-        $cookie->value = json_encode([
+        $cookie->value = Json::encode([
             $identity->getId(),
             $identity->getAuthKey(),
             $duration,

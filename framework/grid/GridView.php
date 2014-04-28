@@ -16,6 +16,7 @@ use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\widgets\BaseListView;
 use yii\base\Model;
+use yii\helpers\Json;
 
 /**
  * The GridView widget is used to display data in a grid.
@@ -462,7 +463,7 @@ class GridView extends BaseListView
         } else {
             $options = $this->rowOptions;
         }
-        $options['data-key'] = is_array($key) ? json_encode($key) : (string)$key;
+        $options['data-key'] = is_array($key) ? Json::encode($key) : (string)$key;
 
         return Html::tag('tr', implode('', $cells), $options);
     }

@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\caching\Cache;
+use yii\helpers\Json;
 
 /**
  * UrlManager handles HTTP request parsing and creation of URLs based on a set of rules.
@@ -142,7 +143,7 @@ class UrlManager extends Component
         }
         if ($this->cache instanceof Cache) {
             $cacheKey = __CLASS__;
-            $hash = md5(json_encode($this->rules));
+            $hash = md5(Json::encode($this->rules));
             if (($data = $this->cache->get($cacheKey)) !== false && isset($data[1]) && $data[1] === $hash) {
                 $this->rules = $data[0];
             } else {

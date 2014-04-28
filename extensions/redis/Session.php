@@ -9,6 +9,7 @@ namespace yii\redis;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\Json;
 
 /**
  * Redis Session implements a session component using [redis](http://redis.io/) as the storage medium.
@@ -149,6 +150,6 @@ class Session extends \yii\web\Session
      */
     protected function calculateKey($id)
     {
-        return $this->keyPrefix . md5(json_encode([__CLASS__, $id]));
+        return $this->keyPrefix . md5(Json::encode([__CLASS__, $id]));
     }
 }

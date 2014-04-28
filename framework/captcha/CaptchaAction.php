@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Action;
 use yii\base\InvalidConfigException;
 use yii\helpers\Url;
+use yii\helpers\Json;
 
 /**
  * CaptchaAction renders a CAPTCHA image.
@@ -118,7 +119,7 @@ class CaptchaAction extends Action
             // AJAX request for regenerating code
             $code = $this->getVerifyCode(true);
 
-            return json_encode([
+            return Json::encode([
                 'hash1' => $this->generateValidationHash($code),
                 'hash2' => $this->generateValidationHash(strtolower($code)),
                 // we add a random 'v' parameter so that FireFox can refresh the image

@@ -11,6 +11,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\validators\ValidationAsset;
 use yii\validators\Validator;
+use yii\helpers\Json;
 
 /**
  * CaptchaValidator validates that the attribute value is the same as the verification code displayed in the CAPTCHA.
@@ -102,6 +103,6 @@ class CaptchaValidator extends Validator
 
         ValidationAsset::register($view);
 
-        return 'yii.validation.captcha(value, messages, ' . json_encode($options) . ');';
+        return 'yii.validation.captcha(value, messages, ' . Json::encode($options) . ');';
     }
 }

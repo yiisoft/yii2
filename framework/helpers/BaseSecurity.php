@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\helpers\Json;
 
 /**
  * BaseSecurity provides concrete implementation for [[Security]].
@@ -201,7 +202,7 @@ class BaseSecurity
         }
         if (!isset($keys[$name])) {
             $keys[$name] = static::generateRandomKey($length);
-            file_put_contents($keyFile, json_encode($keys));
+            file_put_contents($keyFile, Json::encode($keys));
         }
 
         return $keys[$name];
