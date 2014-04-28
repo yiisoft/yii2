@@ -10,6 +10,7 @@ namespace yii\validators;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
+use yii\helpers\Json;
 
 /**
  * CompareValidator compares the specified attribute value with another value and validates if they are equal.
@@ -210,6 +211,6 @@ class CompareValidator extends Validator
 
         ValidationAsset::register($view);
 
-        return 'yii.validation.compare(value, messages, ' . json_encode($options) . ');';
+        return 'yii.validation.compare(value, messages, ' . Json::encode($options) . ');';
     }
 }

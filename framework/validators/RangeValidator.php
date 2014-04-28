@@ -9,6 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\Json;
 
 /**
  * RangeValidator validates that the attribute value is among a list of values.
@@ -83,6 +84,6 @@ class RangeValidator extends Validator
 
         ValidationAsset::register($view);
 
-        return 'yii.validation.range(value, messages, ' . json_encode($options) . ');';
+        return 'yii.validation.range(value, messages, ' . Json::encode($options) . ');';
     }
 }

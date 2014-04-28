@@ -11,6 +11,7 @@ use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use yii\helpers\Json;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
@@ -300,6 +301,6 @@ class ActiveRecord extends BaseActiveRecord
             }
         }
 
-        return md5(json_encode($key));
+        return md5(Json::encode($key));
     }
 }

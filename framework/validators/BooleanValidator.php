@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\Json;
 
 /**
  * BooleanValidator checks if the attribute value is a boolean value.
@@ -86,6 +87,6 @@ class BooleanValidator extends Validator
 
         ValidationAsset::register($view);
 
-        return 'yii.validation.boolean(value, messages, ' . json_encode($options) . ');';
+        return 'yii.validation.boolean(value, messages, ' . Json::encode($options) . ');';
     }
 }

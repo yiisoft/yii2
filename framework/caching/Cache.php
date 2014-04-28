@@ -10,6 +10,7 @@ namespace yii\caching;
 use Yii;
 use yii\base\Component;
 use yii\helpers\StringHelper;
+use yii\helpers\Json;
 
 /**
  * Cache is the base class for cache classes supporting different cache storage implementation.
@@ -98,7 +99,7 @@ abstract class Cache extends Component implements \ArrayAccess
         if (is_string($key)) {
             $key = ctype_alnum($key) && StringHelper::byteLength($key) <= 32 ? $key : md5($key);
         } else {
-            $key = md5(json_encode($key));
+            $key = md5(Json::encode($key));
         }
 
         return $this->keyPrefix . $key;

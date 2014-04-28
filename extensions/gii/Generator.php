@@ -12,6 +12,7 @@ use ReflectionClass;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\web\View;
+use yii\helpers\Json;
 
 /**
  * This is the base class for all generator classes.
@@ -217,7 +218,7 @@ abstract class Generator extends Model
         $stickyAttributes = $this->stickyAttributes();
         $path = $this->getStickyDataFile();
         if (is_file($path)) {
-            $result = json_decode(file_get_contents($path), true);
+            $result = Json::decode(file_get_contents($path), true);
             if (is_array($result)) {
                 foreach ($stickyAttributes as $name) {
                     if (isset($result[$name])) {
@@ -242,7 +243,7 @@ abstract class Generator extends Model
         }
         $path = $this->getStickyDataFile();
         @mkdir(dirname($path), 0755, true);
-        file_put_contents($path, json_encode($values));
+        file_put_contents($path, Json::encode($values));
     }
 
     /**
