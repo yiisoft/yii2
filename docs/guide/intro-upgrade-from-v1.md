@@ -181,7 +181,7 @@ In the above, two scenarios are declared: `backend` and `frontend`. For the `bac
 The [[yii\base\Model::rules()|rules()]] method is still used to declare validation rules. Note that because
 of the introduction of [[yii\base\Model::scenarios()|scenarios()]], there is no more `unsafe` validator.
 
-In most cases, you do not need to overwrite [[yii\base\Model::scenarios()|scenarios()]]
+In most cases, you do not need to override [[yii\base\Model::scenarios()|scenarios()]]
 if the [[yii\base\Model::rules()|rules()]] method fully specifies the scenarios and there is no need to declare
 `unsafe` attributes.
 
