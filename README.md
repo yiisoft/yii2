@@ -48,11 +48,10 @@ The minimum requirement by Yii is that your Web server supports PHP 5.4.
 DOCUMENTATION
 -------------
 
-A draft of the [Definitive Guide](docs/guide/index.md) is available.
+A draft of the [Definitive Guide](docs/guide/README.md) is available.
 
 API docs and a rendering of the definitive guide are currently
-available at http://stuff.cebe.cc/yii2docs/ (updated four times per hour).
-We will make guide and API docs available on yiiframework.com with the beta release.
+available at http://stuff.cebe.cc/yii2docs/ (updated four times per hour) and at http://www.yiiframework.com/doc-2.0/guide-index.html.
 
 For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/upgrade-from-v1.md)
 to have a general idea of what has changed in 2.0.
