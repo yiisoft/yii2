@@ -109,7 +109,6 @@ class Event extends Object
         }
         if ($handler === null) {
             unset(self::$_events[$name][$class]);
-
             return true;
         } else {
             $removed = false;
