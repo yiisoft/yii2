@@ -25,7 +25,7 @@ Yii Framework 2 Change Log
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2837: Error page now shows arguments in stack trace method calls (samdark)
 - Enh #2906: Added support for using conditional comments for js and css files registered through asset bundles and Html helper (exromany, qiangxue)
-- Enh #2942: Added truncate and truncateWord methods (Alex-Code)
+- Enh #2942: Added truncate and truncateWord methods (Alex-Code, samdark)
 - Enh #3008: Added `Html::errorSummary()` (qiangxue)
 - Enh #3088: The debug and gii modules will manage their own URL rules now (hiltonjanfield, qiangxue)
 - Enh #3103: debugger panel is now not displayed when printing a page (githubjeka)
