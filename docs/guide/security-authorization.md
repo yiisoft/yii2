@@ -268,18 +268,19 @@ After executing the command we'll get the following hierarchy:
 Author can create post, admin can update post and do everything author can.
 
 If your application allows user signup you need to assign roles to these new users once. For example, in order for all
-signed up users to become authors you in advanced application template you need to modify `common\models\User::create()`
+signed up users to become authors you in advanced application template you need to modify `frontend\models\SignupForm::signup()`
 as follows:
 
 ```php
-public static function create($attributes)
+public function signup()
 {
-    /** @var User $user */
-    $user = new static();
-    $user->setAttributes($attributes);
-    $user->setPassword($attributes['password']);
-    $user->generateAuthKey();
-    if ($user->save()) {
+    if ($this->validate()) {
+        $user = new User();
+        $user->username = $this->username;
+        $user->email = $this->email;
+        $user->setPassword($this->password);
+        $user->generateAuthKey();
+        $user->save(false);
 
         // the following three lines were added:
         $auth = Yii::$app->authManager;
@@ -287,9 +288,9 @@ public static function create($attributes)
         $auth->assign($authorRole, $user->getId());
 
         return $user;
-    } else {
-        return null;
     }
+
+    return null;
 }
 ```
 
