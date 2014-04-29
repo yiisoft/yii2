@@ -259,6 +259,10 @@ trait QueryTrait
             case 'OR LIKE':
             case 'NOT LIKE':
             case 'OR NOT LIKE':
+            case 'ILIKE': // PostgreSQL operator for case insensitive LIKE
+            case 'OR ILIKE':
+            case 'NOT ILIKE':
+            case 'OR NOT ILIKE':
                 if (array_key_exists(1, $condition) && $this->isEmpty($condition[1])) {
                     return [];
                 }
