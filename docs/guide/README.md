@@ -27,7 +27,7 @@ Getting Started
 Basic Concepts
 --------------
 
-* [Object Properties](basic-properties.md)
+* [Properties](basic-properties.md)
 * [Events](basic-events.md)
 * [Behaviors](basic-behaviors.md)
 * [Object Configurations](basic-configs.md)

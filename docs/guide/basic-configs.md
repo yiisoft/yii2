@@ -158,3 +158,23 @@ widgets without specifying the class for every widget usage, you can do the foll
 
 The code above should be executed once before `LinkPager` widget is used. It can be done in `index.php`, the application
 configuration file, or anywhere else.
+
+
+
+### Attaching event handlers via config
+
+You can also attach event handlers within your configuration file. To do so, add an element to the component to which the handler should be attached. The syntax is `"on <event>" => handler`:
+
+```php
+return [
+    // ...
+    'components' => [
+        'db' => [
+            // ...
+            'on afterOpen' => function ($event) {
+                // do something right after connected to database
+            }
+        ],
+    ],
+];
+```

@@ -1,5 +1,5 @@
-Object Properties
-=================
+Properties
+==========
 
 In PHP, class member variables are also called *properties*. They are part of a class definition and are used
 to represent the state of a class instance. In practice, you may often want to do some special handling when
