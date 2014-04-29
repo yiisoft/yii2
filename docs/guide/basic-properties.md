@@ -14,8 +14,12 @@ The drawback of the above code is that you have to call `trim()` everywhere when
 property. And if in future, the `label` property has a new requirement, such as the first letter must be turned
 into upper case, you would have to modify all those places - a practice you want to avoid as much as possible.
 
-To solve this problem, Yii introduces the support for defining properties based on *getter* and *setter* class methods.
-**A class must extend from [[yii\base\Object]] or its child class if it wants to get this support.**
+To solve this problem, Yii introduces a base class called [[yii\base\Object]] to support defining properties
+based on *getter* and *setter* class methods. If a class needs such a support, it should extend from
+[[yii\base\Object]] or its child class.
+
+> Info: Nearly every core class in the Yii framework extends from [[yii\base\Object]] or its child class.
+  This means whenever you see a getter or setter in a core class, you can use it like a property.
 
 A getter method is a method whose name starts with the word `get`, while a setter method starts with `set`.
 The name after the `get` or `set` prefix defines the name of a property. For example, a getter `getLabel()` and/or
@@ -54,19 +58,22 @@ $label = $object->label;
 $object->label = 'abc';
 ```
 
-A property defined by a getter without a setter is read only. Trying to assign a value to such a property will cause
+A property defined by a getter without a setter is *read only*. Trying to assign a value to such a property will cause
 an [[yii\base\InvalidCallException|InvalidCallException]]. Similarly, a property defined by a setter without a getter
-is write only, and trying to read such a property will also cause an exception. It is not common to have write-only
+is *write only*, and trying to read such a property will also cause an exception. It is not common to have write-only
 properties.
 
-Back to the problem we described at the beginning, the `trim()` function is now called within the setter `setLabel()`.
-If a new requirement comes that the first letter of the label should be turned into upper case, we only need to
-modify the `setLabel()` method without touching other code.
+There are several special rules or limitations of the properties defined based on getters and setters.
 
+* The names of such properties are *case-insensitive*. For example, `$object->label` and `$object->Label` are the same.
+  This is because PHP method names are case-insensitive.
+* If the name of such a property is the same as a class member variable, the latter will take precedence.
+  For example, if the above `Foo` class has a member variable `label`, then the assignment `$object->label = 'abc'`
+  will happen to the member variable instead of the setter `setLabel()`.
+* The properties do not support visibility. It makes no difference for the visibility of a property
+  if the defining getter or setter method is public, protected or private.
+* The properties can only be defined by *non-static* getters and/or setters. Static methods do not count.
 
-There are some special rules or limitations of the properties defined based on getters and setters.
-First, the names of such properties are *case-insensitive*. This is because PHP method names are case-insensitive.
-Second, the properties do not support visibility. It makes no difference for the visibility of a property
-if the defining getter or setter method is public, protected or private. Third, the properties can only
-be defined by *non-static* getters and/or setters. Static methods do not count.
-
+Back to the problem we described at the very beginning, instead of calling `trim()` everywhere, we are calling it
+only within the setter `setLabel()`. And if a new requirement comes that the first letter of the label should
+be turned into upper case, we just need to modify the `setLabel()` method without touching any other code.
