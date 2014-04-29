@@ -379,4 +379,17 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
         return $out;
     }
+
+    /**
+     * Returns human-readable exception name
+     * @param \Exception $exception
+     * @return string human-readable exception name or null if it cannot be determined
+     */
+    public function getExceptionName($exception)
+    {
+        if ($exception instanceof \yii\base\Exception || $exception instanceof \yii\base\InvalidCallException || $exception instanceof \yii\base\InvalidParamException || $exception instanceof \yii\base\UnknownMethodException) {
+            return $exception->getName();
+        }
+        return null;
+    }
 }
