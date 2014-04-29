@@ -276,7 +276,7 @@ I18N
 
 Yii 2.0 removes date formatter and number formatter in favor of the PECL intl PHP module.
 
-Message translation is still supported, but managed via the `i18n` application component.
+Message translation is now performed via the `i18n` application component.
 The component manages a set of message sources, which allows you to use different message
 sources based on message categories.
 
