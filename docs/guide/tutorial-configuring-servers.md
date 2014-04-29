@@ -1,6 +1,8 @@
 Installation
 ============
 
+> Note: This chapter is under development.
+
 There are two ways you can install the Yii framework:
 
 * Via [Composer](http://getcomposer.org/) (recommended)

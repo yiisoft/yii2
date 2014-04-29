@@ -1,6 +1,8 @@
 Query Builder and Query
 =======================
 
+> Note: This chapter is under development.
+
 Yii provides a basic database access layer as described in the [Database basics](database-basics.md) section.
 The database access layer provides a low-level way to interact with the database. While useful in some situations,
 it can be tedious and error-prone to write raw SQLs. An alternative approach is to use the Query Builder.

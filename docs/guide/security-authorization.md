@@ -1,6 +1,8 @@
 Authorization
 =============
 
+> Note: This chapter is under development.
+
 Authorization is the process of verifying that a user has enough permission to do something. Yii provides two authorization
 methods: Access Control Filter (ACF) and Role-Based Access Control (RBAC).
 

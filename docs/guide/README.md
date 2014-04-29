@@ -23,6 +23,7 @@ Getting Started
 * [Starting with Advanced App](start-advanced.md) - Best for developing an enterprise application by a team
 * [Starting from Scratch](start-scratch.md) - Learning more in-depth details of creating a Yii application step-by-step
 
+
 Basic Concepts
 --------------
 
@@ -30,11 +31,11 @@ Basic Concepts
 * [Events](basic-events.md)
 * [Behaviors](basic-behaviors.md)
 * [Object Configurations](basic-configs.md)
-* **TBD** [Class Autoloading](basic-autoloading.md)
-* **TBD** [Path Aliases](basic-alias.md)
+* [Class Autoloading](basic-autoloading.md)
+* [Path Aliases](basic-alias.md)
 * **TBD** [Extensions](basic-extensions.md)
 * [Service Locator](basic-service-locator.md)
-* **TBD** [Dependency Injection Container](basic-di-container.md)
+* [Dependency Injection Container](basic-di-container.md)
 
 
 Basic Structure
@@ -63,6 +64,19 @@ Handling Requests
 * **TBD** [Filtering](runtime-filtering.md)
 
 
+Working with Databases
+----------------------
+
+* [Data Access Objects](db-dao.md) - Connecting to a database, basic queries, transactions and schema manipulation
+* [Query Builder](db-query-builder.md) - Querying the database using a simple abstraction layer
+* [Active Record](db-active-record.md) - The active record ORM, retrieving and manipulating records and defining relations
+* [Migrations](db-migrations.md) - Version control your databases in a team development environment
+* **TBD** [Sphinx](db-sphinx.md)
+* **TBD** [Redis](db-redis.md)
+* **TBD** [MongoDB](db-mongodb.md)
+* **TBD** [ElasticSearch](db-elastic-search.md)
+
+
 Collecting Inputs
 -----------------
 
@@ -81,19 +95,6 @@ Presenting Data
 * [Data Providers](output-data-providers.md)
 * [Data Widgets](output-data-widgets.md)
 * [Managing Assets](output-assets.md)
-
-
-Working with Database
----------------------
-
-* [Data Access Objects](db-dao.md) - Connecting to a database, basic queries, transactions and schema manipulation
-* [Query Builder](db-query-builder.md) - Querying the database using a simple abstraction layer
-* [Active Record](db-active-record.md) - The active record ORM, retrieving and manipulating records and defining relations
-* [Migrations](db-migrations.md)
-* **TBD** [Sphinx](db-sphinx.md)
-* **TBD** [Redis](db-redis.md)
-* **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elastic-search.md)
 
 
 Security
@@ -130,6 +131,14 @@ RESTful Web Services
 * **TBD** [Testing](rest-testing.md)
 
 
+Development Tools
+-----------------
+
+* [Debug Toolbar and Debugger](tool-debugger.md)
+* [Generating Code using Gii](tool-gii.md)
+* **TBD** [Generating API Documentation](tool-api-doc.md)
+
+
 Testing
 -------
 
@@ -149,14 +158,6 @@ Extending Yii
 * **TBD** [Using Yii in 3rd-Party Systems](extend-embedding-in-others.md)
 * **TBD** [Using Yii 1.1 and 2.0 Together](extend-using-v1-v2.md)
 * [Using Composer](extend-using-composer.md)
-
-
-Development Tools
------------------
-
-* [Debug Toolbar and Debugger](tool-debugger.md)
-* [Generating Code using Gii](tool-gii.md)
-* **TBD** [Generating API Documentation](tool-api-doc.md)
 
 
 Special Topics
@@ -192,6 +193,7 @@ Widgets
 Helpers
 -------
 
+* [Overview](helper-overview.md)
 * **TBD** [ArrayHelper](helper-array.md)
 * **TBD** [Html](helper-html.md)
 * **TBD** [Url](helper-url.md)

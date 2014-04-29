@@ -1,6 +1,8 @@
 Working with forms
 ==================
 
+> Note: This chapter is under development.
+
 The primary way of using forms in Yii is through [[yii\widgets\ActiveForm]]. This approach should be preferred when
 the form is based upon  a model. Additionally, there are some useful methods in [[yii\helpers\Html]] that are typically
 used for adding buttons and help text to any form.

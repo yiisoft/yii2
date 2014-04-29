@@ -1,6 +1,8 @@
 Controller
 ==========
 
+> Note: This chapter is under development.
+
 Controller is one of the key parts of the application. It determines how to handle incoming request and creates a response.
 
 Most often a controller takes HTTP request data and returns HTML, JSON or XML as a response.

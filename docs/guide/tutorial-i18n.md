@@ -1,6 +1,8 @@
 Internationalization
 ====================
 
+> Note: This chapter is under development.
+
 Internationalization (I18N) refers to the process of designing a software application so that it can be adapted to
 various languages and regions without engineering changes. For Web applications, this is of particular importance
 because the potential users may be worldwide.

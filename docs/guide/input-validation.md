@@ -1,6 +1,8 @@
 Model validation reference
 ==========================
 
+> Note: This chapter is under development.
+
 As a model both represents data and defines the business rules to which that data must adhere, comprehending data validation is key to using Yii. In order to learn model validation basics, please refer to [Model, Validation subsection](model.md#Validation).
 
 This guide describes all of Yii's validators and their parameters.

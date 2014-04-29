@@ -1,6 +1,8 @@
 Error Handling
 ==============
 
+> Note: This chapter is under development.
+
 Error handling in Yii is different than handling errors in plain PHP. First of all, Yii will convert all non-fatal errors
 to *exceptions*:
 

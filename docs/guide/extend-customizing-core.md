@@ -1,6 +1,8 @@
 Helper Classes
 ==============
 
+> Note: This chapter is under development.
+
 Yii provides many classes that help simplify  common coding tasks, such as string or array manipulations,
 HTML code generation, and so forth. These helper classes are organized under the `yii\helpers` namespace and
 are all static classes (meaning they contain only static properties and methods and should not be instantiated).

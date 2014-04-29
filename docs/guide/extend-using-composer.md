@@ -1,6 +1,8 @@
 Composer
 ========
 
+> Note: This chapter is under development.
+
 Yii2 uses Composer as its dependency management tool. Composer is a PHP utility that can automatically handle the installation of needed libraries and
 extensions, thereby keeping those third-party resources up to date while absolving you of the need to manually manage the project's dependencies.
 

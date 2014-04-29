@@ -1,126 +1,72 @@
-Basic concepts of Yii
-=====================
+Object Properties
+=================
 
-
-Component and Object
---------------------
-
-Classes of the Yii framework usually extend from one of the two base classes [[yii\base\Object]] or [[yii\base\Component]].
-These classes provide useful features that are added automatically to all classes extending from them.
-
-The [[yii\base\Object|Object]] class provides the [configuration and property feature](../api/base/Object.md).
-The [[yii\base\Component|Component]] class extends from [[yii\base\Object|Object]] and adds
-[event handling](events.md) and [behaviors](behaviors.md).
-
-[[yii\base\Object|Object]] is usually used for classes that represent basic data structures while
-[[yii\base\Component|Component]] is used for application components and other classes that implement higher logic.
-
-
-Object Configuration
---------------------
-
-The [[yii\base\Object|Object]] class introduces a uniform way of configuring objects. Any descendant class
-of [[yii\base\Object|Object]] should declare its constructor (if needed) in the following way so that
-it can be properly configured:
+In PHP, class member variables are also called *properties*. They are part of a class definition and are used
+to represent the state of a class instance. In practice, you may often want to do some special handling when
+a property is being read or modified. For example, you may want to trim a string when it is being assigned
+to a `label` property. You could use the following code to achieve this task:
 
 ```php
-class MyClass extends \yii\base\Object
-{
-    public function __construct($param1, $param2, $config = [])
-    {
-        // ... initialization before configuration is applied
+$object->label = trim($label);
+```
 
-        parent::__construct($config);
+The drawback of the above code is that you have to call `trim()` everywhere whenever you modify the `label`
+property. And if in future, the `label` property has a new requirement, such as the first letter must be turned
+into upper case, you would have to modify all those places - a practice you want to avoid as much as possible.
+
+To solve this problem, Yii introduces the support for defining properties based on *getter* and *setter* class methods.
+**A class must extend from [[yii\base\Object]] or its child class if it wants to get this support.**
+
+A getter method is a method whose name starts with the word `get`, while a setter method starts with `set`.
+The name after the `get` or `set` prefix defines the name of a property. For example, a getter `getLabel()` and/or
+a setter `setLabel()` defines a property named `label`, as shown in the following code:
+
+```php
+namespace app\components;
+
+use yii\base\Object;
+
+class Foo extend Object
+{
+    private $_label;
+
+    public function getLabel()
+    {
+        return $this->_label;
     }
 
-    public function init()
+    public function setLabel($value)
     {
-        parent::init();
-
-        // ... initialization after configuration is applied
+        $this->_label = trim($value);
     }
 }
 ```
 
-In the above example, the last parameter of the constructor must take a configuration array
-which contains name-value pairs that will be used to initialize the object's properties at the end of the constructor.
-You can override the `init()` method to do initialization work after the configuration is applied.
-
-By following this convention, you will be able to create and configure new objects
-using a configuration array like the following:
+Properties defined by getters/setters can be used like class member variables. The main difference is that
+when such a property is being read, the corresponding getter method will be called; and when the property is
+being assigned, the corresponding setter method will be called. For example,
 
 ```php
-$object = Yii::createObject([
-    'class' => 'MyClass',
-    'property1' => 'abc',
-    'property2' => 'cde',
-], [$param1, $param2]);
+// equivalent to $label = $object->getLabel();
+$label = $object->label;
+
+// equivalent to $object->setLabel('abc');
+$object->label = 'abc';
 ```
 
+A property defined by a getter without a setter is read only. Trying to assign a value to such a property will cause
+an [[yii\base\InvalidCallException|InvalidCallException]]. Similarly, a property defined by a setter without a getter
+is write only, and trying to read such a property will also cause an exception. It is not common to have write-only
+properties.
 
-Path Aliases
-------------
+Back to the problem we described at the beginning, the `trim()` function is now called within the setter `setLabel()`.
+If a new requirement comes that the first letter of the label should be turned into upper case, we only need to
+modify the `setLabel()` method without touching other code.
 
-Yii 2.0 expands the usage of path aliases to both file/directory paths and URLs. An alias
-must start with an `@` symbol so that it can be differentiated from file/directory paths and URLs.
-For example, the alias `@yii` refers to the Yii installation directory while `@web` contains the base URL for the currently running web application. Path aliases are supported in most places in the Yii core code. For example, `FileCache::cachePath` can accept both a path alias and a normal directory path.
 
-Path aliases are also closely related to class namespaces. It is recommended that a path
-alias should be defined for each root namespace so that Yii's class autoloader can be used without
-any further configuration. For example, because `@yii` refers to the Yii installation directory,
-a class like `yii\web\Request` can be autoloaded by Yii. If you use a third party library
-such as Zend Framework, you may define a path alias `@Zend` which refers to its installation
-directory and Yii will be able to autoload any class in this library.
+There are some special rules or limitations of the properties defined based on getters and setters.
+First, the names of such properties are *case-insensitive*. This is because PHP method names are case-insensitive.
+Second, the properties do not support visibility. It makes no difference for the visibility of a property
+if the defining getter or setter method is public, protected or private. Third, the properties can only
+be defined by *non-static* getters and/or setters. Static methods do not count.
 
-The following aliases are predefined by the core framework:
-
-- `@yii` - framework directory.
-- `@app` - base path of currently running application.
-- `@runtime` - runtime directory.
-- `@vendor` - Composer vendor directory.
-- `@webroot` - web root directory of currently running web application.
-- `@web` - base URL of currently running web application.
-
-Autoloading
------------
-
-All classes, interfaces and traits are loaded automatically at the moment they are used. There's no need to use `include` or `require`. It is true for Composer-loaded packages as well as Yii extensions.
-
-Yii's autoloader works according to [PSR-4](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md).
-That means namespaces, classes, interfaces and traits must correspond to file system paths and file names accordinly, except for root namespace paths that are defined by an alias.
-
-For example, if the standard alias `@app` refers to `/var/www/example.com/` then `\app\models\User` will be loaded from `/var/www/example.com/models/User.php`.
-
-Custom aliases may be added using the following code:
-
-```php
-Yii::setAlias('@shared', realpath('~/src/shared'));
-```
-
-Additional autoloaders may be registered using PHP's standard `spl_autoload_register`.
-
-Helper classes
---------------
-
-Helper classes typically contain static methods only and are used as follows:
-
-```php
-use \yii\helpers\Html;
-echo Html::encode('Test > test');
-```
-
-There are several classes provided by framework:
-
-- ArrayHelper
-- Console
-- FileHelper
-- Html
-- HtmlPurifier
-- Image
-- Inflector
-- Json
-- Markdown
-- Security
-- StringHelper
-- Url
-- VarDumper

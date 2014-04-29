@@ -1,6 +1,8 @@
 Implementing RESTful Web Service APIs
 =====================================
 
+> Note: This chapter is under development.
+
 Yii provides a whole set of tools to greatly simplify the task of implementing RESTful Web Service APIs.
 In particular, Yii provides support for the following aspects regarding RESTful APIs:
 

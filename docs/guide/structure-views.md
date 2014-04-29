@@ -1,6 +1,8 @@
 View
 ====
 
+> Note: This chapter is under development.
+
 The view component is an important part of MVC. The view acts as the interface to the application, making it responsible
 for presenting data to end users, displaying forms, and so forth.
 

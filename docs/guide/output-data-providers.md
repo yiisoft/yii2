@@ -1,6 +1,8 @@
 Data providers
 ==============
 
+> Note: This chapter is under development.
+
 Data provider abstracts data set via [[yii\data\DataProviderInterface]] and handles pagination and sorting.
 It can be used by [grids](data-grid.md), [lists and other data widgets](data-widgets.md).
 
