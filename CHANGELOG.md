@@ -286,6 +286,7 @@ Yii Framework 2 Change Log
     - Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers\Url::canonical` instead.
 - Chg #2691: Null parameters will not be included in the generated URLs by `UrlManager` (gonimar, qiangxue)
 - Chg #2734: `FileCache::keyPrefix` defaults to empty string now (qiangxue)
+- Chg #2796: Removed `Application::preload` in favor of `Application::bootstrap` (qiangxue)
 - Chg #2816: Changed default date and time format of `yii\base\Formatter` to `Y-m-d` and `H:i:s` (qiangxue)
 - Chg #2911: Removed `tbl_` default for table prefix (samdark)
 - Chg #2912: Relative view files will be looked for under the directory containing the view currently being rendered (qiangxue)
@@ -326,7 +327,6 @@ Yii Framework 2 Change Log
 - Chg: Removed `yii\grid\Column::getDataCellContent()` and renamed `yii\grid\DataColumn::getDataCellContent()` to `yii\grid\DataColumn::getDataCellValue()` (cebe)
 - Chg: `yii\log\Logger` is split into `yii\log\Logger` and `yii\log\Dispatcher`. (qiangxue)
 - Chg: Moved all filter classes to namespace `yii\filters` (qiangxue)
-- Chg: Removed `Application::preload` in favor of `Application::bootstrap` (qiangxue)
 - Chg: Re-implemented RBAC by following more closely to the original NIST RBAC model. Dropped `yii\rbac\PhpManager`. (qiangxue)
 - Chg: Renamed `yii\web\User::checkAccess()` to `yii\web\User::can()` (qiangxue)
 - New #66: [Auth client library](https://github.com/yiisoft/yii2-authclient) OpenId, OAuth1, OAuth2 clients (klimov-paul)
