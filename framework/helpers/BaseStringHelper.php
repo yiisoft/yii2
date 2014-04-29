@@ -89,11 +89,12 @@ class BaseStringHelper
     }
     
     /**
-     * Truncates a string to the specified length.
+     * Truncates a string to the number of characters specified.
+     *
      * @param string $string The string to truncate.
-     * @param integer $length The new length of the string.
-     * @param string $suffix A value to affix to the end.
-     * @param string $encoding The charset to use, defaults to application current.
+     * @param integer $length How many characters from original string to include into truncated string.
+     * @param string $suffix String to append to the end of truncated string.
+     * @param string $encoding The charset to use, defaults to charset currently used by application.
      * @return string the truncated string.
      */
     public static function truncate($string, $length, $suffix = '...', $encoding = null)
@@ -106,10 +107,11 @@ class BaseStringHelper
     }
     
     /**
-     * Split a string into words preserving whitespace and return the specified amount of words.
+     * Truncates a string to the number of words specified.
+     *
      * @param string $string The string to truncate.
-     * @param integer $count How many words to truncate to.
-     * @param string $suffix A value to affix to the end.
+     * @param integer $count How many words from original string to include into truncated string.
+     * @param string $suffix String to append to the end of truncated string.
      * @return string the truncated string.
      */
     public static function truncateWords($string, $count, $suffix = '...')

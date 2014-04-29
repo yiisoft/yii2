@@ -10,6 +10,12 @@ use yiiunit\TestCase;
  */
 class StringHelperTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->mockApplication();
+    }
+
     public function testStrlen()
     {
         $this->assertEquals(4, StringHelper::byteLength('this'));
@@ -68,16 +74,16 @@ class StringHelperTest extends TestCase
     
     public function testTruncate()
     {
-        $this->assertEquals('string test', StringHelper::truncate('string test', 20));
-        $this->assertEquals('string...', StringHelper::truncate('string test', 6));
-        $this->assertEquals('string!!!', StringHelper::truncate('string test', 6, '!!!'));
+        $this->assertEquals('привет, я multibyte...', StringHelper::truncate('привет, я multibyte строка!', 20));
+        $this->assertEquals('Не трогаем строку', StringHelper::truncate('Не трогаем строку', 20));
+        $this->assertEquals('исполь!!!', StringHelper::truncate('используем восклицательные знаки', 6, '!!!'));
     }
     
     public function testTruncateWords()
     {
-        $this->assertEquals('this is a string test', StringHelper::truncateWords('this is a string test', 5));
-        $this->assertEquals('this is a string...', StringHelper::truncateWords('this is a string test', 4));
-        $this->assertEquals('this is a string!!!', StringHelper::truncateWords('this is a string test', 4, '!!!'));
-        $this->assertEquals('this is a big     space...', StringHelper::truncateWords('this is a big     space string', 5));
+        $this->assertEquals('это тестовая multibyte строка', StringHelper::truncateWords('это тестовая multibyte строка', 5));
+        $this->assertEquals('это тестовая multibyte...', StringHelper::truncateWords('это тестовая multibyte строка', 3));
+        $this->assertEquals('это тестовая multibyte!!!', StringHelper::truncateWords('это тестовая multibyte строка', 3, '!!!'));
+        $this->assertEquals('это строка с          неожиданными...', StringHelper::truncateWords('это строка с          неожиданными пробелами', 4));
     }
 }
