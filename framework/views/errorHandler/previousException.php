@@ -8,8 +8,9 @@
     <span class="arrow">&crarr;</span>
     <h2>
         <span>Caused by:</span>
-        <?php if ($exception instanceof \yii\base\Exception): ?>
-            <span><?= $handler->htmlEncode($exception->getName()) ?></span> &ndash;
+        <?php $name = $handler->getExceptionName($exception);
+            if ($name !== null): ?>
+            <span><?= $handler->htmlEncode($name) ?></span> &ndash;
             <?= $handler->addTypeLinks(get_class($exception)) ?>
         <?php else: ?>
             <span><?= $handler->htmlEncode(get_class($exception)) ?></span>
