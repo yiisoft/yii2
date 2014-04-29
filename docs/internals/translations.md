@@ -27,3 +27,17 @@ In the translation file each array element represents the translation (value) of
 the message is considered as not translated. Messages that no longer need translation will have their translations
 enclosed between a pair of '@@' marks. Message string can be used with plural forms format. Check [i18n section
 of the guide](../guide/i18n.md) for details.
+
+Documentation
+-------------
+
+Put documentation translations under `docs/<original>_<language>` where `<original>` is the original documentation name
+such as `guide` or `internals` and `<language>` is the language code of the language docs are translated to. For the
+Russian guide translation it is `docs/guide_ru`.
+
+After initial work is done you can get what's changed since last translation of the file using a special command from
+`build` directory:
+
+```
+build translation ../docs/guide" "../docs/guide_ru" --title="Russian guide translation report" > report_guide_ru.html
+```
