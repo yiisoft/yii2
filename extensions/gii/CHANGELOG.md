@@ -5,6 +5,7 @@ Yii Framework 2 gii extension Change Log
 --------------------------
 
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
+- Bug #3265: Fixed incorrect controller class name validation (suralc)
 - Enh #3088: The gii module will manage their own URL rules now (qiangxue)
 - Enh #3222: Added `useTablePrefix` option to the model generator for Gii (horizons2)
 
