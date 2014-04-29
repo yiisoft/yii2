@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\db\Query;
 use yii\db\QueryBuilder;
 use yii\db\Schema;
 use yii\db\mysql\QueryBuilder as MysqlQueryBuilder;
@@ -24,15 +25,15 @@ class QueryBuilderTest extends DatabaseTestCase
     {
         switch ($this->driverName) {
             case 'mysql':
-                return new MysqlQueryBuilder($this->getConnection());
+                return new MysqlQueryBuilder($this->getConnection(true, false));
             case 'sqlite':
-                return new SqliteQueryBuilder($this->getConnection());
+                return new SqliteQueryBuilder($this->getConnection(true, false));
             case 'mssql':
-                return new MssqlQueryBuilder($this->getConnection());
+                return new MssqlQueryBuilder($this->getConnection(true, false));
             case 'pgsql':
-                return new PgsqlQueryBuilder($this->getConnection());
+                return new PgsqlQueryBuilder($this->getConnection(true, false));
             case 'cubrid':
-                return new CubridQueryBuilder($this->getConnection());
+                return new CubridQueryBuilder($this->getConnection(true, false));
         }
         throw new \Exception('Test is not implemented for ' . $this->driverName);
     }
@@ -111,6 +112,58 @@ class QueryBuilderTest extends DatabaseTestCase
             list ($column, $expected) = $item;
             $this->assertEquals($expected, $qb->getColumnType($column));
         }
+    }
+
+    public function conditionProvider()
+    {
+        $conditions = [
+            // empty values
+            [ ['like', 'name', []], '0=1', [] ],
+            [ ['not like', 'name', []], '', [] ],
+            [ ['or like', 'name', []], '0=1', [] ],
+            [ ['or not like', 'name', []], '', [] ],
+
+            // simple like
+            [ ['like', 'name', 'heyho'], '"name" LIKE :qp0', [':qp0' => '%heyho%'] ],
+            [ ['not like', 'name', 'heyho'], '"name" NOT LIKE :qp0', [':qp0' => '%heyho%'] ],
+            [ ['or like', 'name', 'heyho'], '"name" LIKE :qp0', [':qp0' => '%heyho%'] ],
+            [ ['or not like', 'name', 'heyho'], '"name" NOT LIKE :qp0', [':qp0' => '%heyho%'] ],
+
+            // like for many values
+            [ ['like', 'name', ['heyho', 'abc']], '"name" LIKE :qp0 AND "name" LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
+            [ ['not like', 'name', ['heyho', 'abc']], '"name" NOT LIKE :qp0 AND "name" NOT LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
+            [ ['or like', 'name', ['heyho', 'abc']], '"name" LIKE :qp0 OR "name" LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
+            [ ['or not like', 'name', ['heyho', 'abc']], '"name" NOT LIKE :qp0 OR "name" NOT LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
+
+            // TODO add more conditions
+            // IN
+            // NOT
+            // ...
+        ];
+
+        // adjust dbms specific escaping
+        foreach($conditions as $i => $condition) {
+            switch ($this->driverName) {
+                case 'mssql':
+                case 'mysql':
+                case 'sqlite':
+                    $conditions[$i][1] = str_replace('"', '`', $condition[1]);
+                    break;
+            }
+
+        }
+        return $conditions;
+    }
+
+    /**
+     * @dataProvider conditionProvider
+     */
+    public function testBuildCondition($condition, $expected, $expectedParams)
+    {
+        $query = (new Query())->where($condition);
+        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        $this->assertEquals($expectedParams, $params);
+        $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . $expected), $sql);
     }
 
     public function testAddDropPrimaryKey()

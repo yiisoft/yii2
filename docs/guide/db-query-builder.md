@@ -195,12 +195,16 @@ Operator can be one of the following:
   it will be converted into a string using the rules described here. For example,
   `['and', 'type=1', ['or', 'id=1', 'id=2']]` will generate `type=1 AND (id=1 OR id=2)`.
   The method will NOT do any quoting or escaping.
+
 - `or`: similar to the `and` operator except that the operands are concatenated using `OR`.
+
 - `between`: operand 1 should be the column name, and operand 2 and 3 should be the
    starting and ending values of the range that the column is in.
    For example, `['between', 'id', 1, 10]` will generate `id BETWEEN 1 AND 10`.
+
 - `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
   in the generated condition.
+
 - `in`: operand 1 should be a column or DB expression. Operand 2 can be either an array or a `Query` object.
   It will generate an `IN` condition. If Operand 2 is an array, it will represent the range of the values
   that the column or DB expression should be; If Operand 2 is a `Query` object, a sub-query will be generated
@@ -209,7 +213,9 @@ Operator can be one of the following:
   The method will properly quote the column name and escape values in the range.
   The `in` operator also supports composite columns. In this case, operand 1 should be an array of the columns,
   while operand 2 should be an array of arrays or a `Query` object representing the range of the columns.
+
 - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
+
 - `like`: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
   the values that the column or DB expression should be like.
   For example, `['like', 'name', 'tester']` will generate `name LIKE '%tester%'`.
@@ -222,14 +228,22 @@ Operator can be one of the following:
   You may use `false` or an empty array to indicate the values are already escaped and no escape
   should be applied. Note that when using an escape mapping (or the third operand is not provided),
   the values will be automatically enclosed within a pair of percentage characters.
+
+  > Note: When using PostgreSQL you may also use [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)
+  > instead of `like` for case-insensitive matching.
+
 - `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`
   predicates when operand 2 is an array.
+
 - `not like`: similar to the `like` operator except that `LIKE` is replaced with `NOT LIKE`
   in the generated condition.
+
 - `or not like`: similar to the `not like` operator except that `OR` is used to concatenate
   the `NOT LIKE` predicates.
+
 - `exists`: requires one operand which must be an instance of [[yii\db\Query]] representing the sub-query.
   It will build a `EXISTS (sub-query)` expression.
+
 - `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
 
 If you are building parts of condition dynamically it's very convenient to use `andWhere()` and `orWhere()`:
