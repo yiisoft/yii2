@@ -189,35 +189,88 @@ $foo->off(Foo::EVENT_HELLO);
 ```
 
 
-Global Events
--------------
+Class-Level Event Handlers
+--------------------------
 
-You can use "global" events instead of per-component ones. A global event can take place on any component type.
+In the above sections, we have described how to attach a handler to an event at *instance level*.
+Sometimes, you may want to respond to an event triggered by EVERY instance of a class instead of
+a specific instance. Instead of attaching an event handler to every instance, you may attach the handler
+at *class level* by calling the static method [[yii\base\Event::on()]].
 
-In order to attach a handler to a global event, call the `on` method on the application instance:
-
-```php
-Yii::$app->on($eventName, $handler);
-```
-
-Global events are triggered on the application instance instead
-of a specific component:
+For example, an [Active Record](db-active-record.md) object will trigger a [[yii\base\ActiveRecord::EVENT_AFTER_INSERT]]
+event whenever it inserts a new record into the database. In order to track insertions done by EVERY
+[Active Record](db-active-record.md) object, you may write the following code:
 
 ```php
-Yii::$app->trigger($eventName);
-```
+use Yii;
+use yii\base\Event;
+use yii\db\ActiveRecord;
 
-
-Class Events
-------------
-
-It is possible to attach event handlers to all instances of a class instead of individual instances. To do so, use
-the static `Event::on` method:
-
-```php
 Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-    Yii::trace(get_class($event->sender) . ' is inserted.');
+    Yii::trace(get_class($event->sender) . ' is inserted');
 });
 ```
 
-The code above defines a handler that will be triggered for every Active Record object's `EVENT_AFTER_INSERT` event.
+The event handler will get invoked whenever an instance of [[yii\base\ActiveRecord|ActiveRecord]] or its child class triggers
+the [[yii\base\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] event. In the handler, you can get the object
+that triggers the event through `$event->sender`.
+
+When an object triggers an event, it will first call instance-level handlers, followed by class-level handlers.
+
+You may trigger an *class-level* event by calling the static method [[yii\base\Event::trigger()]]. A class-level
+event is not associated with a particular object. As a result, it will cause the invocation of class-level event
+handlers only. For example,
+
+```php
+use yii\base\Event;
+
+Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
+    echo $event->sender;  // displays "app\models\Foo"
+});
+
+Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+```
+
+Note that in this case, `$event->sender` refers to the name of the class triggering the event instead of an object instance.
+
+> Note: Because a class-level handler will respond to an event triggered by any instance of that class or its child
+  class, you should use it carefully, especially if the class is a low-level base class, such as [[yii\base\Object]].
+
+To detach a class-level event handler, call [[yii\base\Event::off()]]. For example,
+
+```php
+// detach $handler
+Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+
+// detach all handlers of Foo::EVENT_HELLO
+Event::off(Foo::className(), Foo::EVENT_HELLO);
+```
+
+
+Global Events
+-------------
+
+The so-called *global event* is actually a trick based on the event mechanism described above.
+It requires a globally accessible singleton, such as the [application](structure-applications.md) instance.
+
+An event sender, instead of calling its own `trigger()` method, will call the singleton's `trigger()` method
+to trigger the event. Similarly, the event handlers are attached to the event of the singleton. For example,
+
+```php
+use Yii;
+use yii\base\Event;
+use app\components\Foo;
+
+Yii::$app->on('bar', function ($event) {
+    echo get_class($event->sender);  // displays "app\components\Foo"
+});
+
+Yii::$app->trigger('bar', new Event(['sender' => new Foo]));
+```
+
+A benefit of global events is that you do not need the object when attaching a handler to the event
+which will be triggered by the object. Instead, the handler attachment and the event triggering are both
+done through the singleton (e.g. the application instance).
+
+However, because the namespace of the global events is shared by all parties, you should name the global events
+wisely, such as introducing some sort of namespace (e.g. "frontend.mail.sent", "backend.mail.sent").
