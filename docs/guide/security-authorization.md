@@ -164,14 +164,14 @@ To facilitate our description next, we will first introduce some basic RBAC conc
 
 ### Basic Concepts
 
-A role represents a collection of *permissions* (e.g. viewing reports, creating reports). A role may be assigned
+A role represents a collection of *permissions* (e.g. creating posts, updating posts). A role may be assigned
 to one or multiple users. To check if a user has a specified permission, we may check if the user is assigned
 with a role that contains that permission.
 
 Associated with each role or permission, there may be a *rule*. A rule represents a piece of code that will be
 executed during access check to determine if the corresponding role or permission applies to the current user.
-For example, the "update report" permission may have a rule that checks if the current user is the report creator.
-During access checking, if the user is NOT the report creator, he/she will be considered not having the "update report" permission.
+For example, the "update post" permission may have a rule that checks if the current user is the post creator.
+During access checking, if the user is NOT the post creator, he/she will be considered not having the "update post" permission.
 
 Both roles and permissions can be organized in a hierarchy. In particular, a role may consist of other roles or permissions;
 and a permission may consist of other permissions. Yii implements a *partial order* hierarchy which includes the
@@ -232,26 +232,15 @@ class RbacController extends Controller
 
         // add "createPost" permission
         $createPost = $auth->createPermission('createPost');
-        $createPost->description = 'create a post';
+        $createPost->description = 'Create a post';
         $auth->add($createPost);
-
-        // add "readPost" permission
-        $readPost = $auth->createPermission('readPost');
-        $readPost->description = 'read a post';
-        $auth->add($readPost);
 
         // add "updatePost" permission
         $updatePost = $auth->createPermission('updatePost');
-        $updatePost->description = 'update post';
+        $updatePost->description = 'Update post';
         $auth->add($updatePost);
 
-        // add "reader" role and give this role the "readPost" permission
-        $reader = $auth->createRole('reader');
-        $auth->add($reader);
-        $auth->addChild($reader, $readPost);
-
         // add "author" role and give this role the "createPost" permission
-        // as well as the permissions of the "reader" role
         $author = $auth->createRole('author');
         $auth->add($author);
         $auth->addChild($author, $createPost);
@@ -264,14 +253,19 @@ class RbacController extends Controller
         $auth->addChild($admin, $updatePost);
         $auth->addChild($admin, $author);
 
-        // Assign roles to users. 10, 14 and 26 are IDs returned by IdentityInterface::getId()
+        // Assign roles to users. 1 and 2 are IDs returned by IdentityInterface::getId()
         // usually implemented in your User model.
-        $auth->assign($reader, 10);
-        $auth->assign($author, 14);
-        $auth->assign($admin, 26);
+        $auth->assign($author, 2);
+        $auth->assign($admin, 1);
     }
 }
 ```
+
+After executing the command we'll get the following hierarchy:
+
+![Simple RBAC hierarchy](images/rbac-hierarchy-1.png "Simple RBAC hierarchy")
+
+Author can create post, admin can update post and do everything author can.
 
 If your application allows user signup you need to assign roles to these new users once. For example, in order for all
 signed up users to become authors you in advanced application template you need to modify `common\models\User::create()`
@@ -289,8 +283,8 @@ public static function create($attributes)
 
         // the following three lines were added:
         $auth = Yii::$app->authManager;
-        $adminRole = $auth->getRole('author');
-        $auth->assign($adminRole, $user->getId());
+        $authorRole = $auth->getRole('author');
+        $auth->assign($authorRole, $user->getId());
 
         return $user;
     } else {
@@ -310,8 +304,9 @@ For applications that require complex access control with dynamically updated au
 ### Using Rules
 
 As aforementioned, rules add additional constraint to roles and permissions. A rule is a class extending
-from [[yii\rbac\Rule]]. It must implement the [[yii\rbac\Rule::execute()|execute()]] method. Below is
-an example:
+from [[yii\rbac\Rule]]. It must implement the [[yii\rbac\Rule::execute()|execute()]] method. In the hierarchy we've
+created previously author cannot edit his own post. Let's fix it. First we need a rule to verify that the use is post
+author:
 
 ```php
 namespace app\rbac;
@@ -338,8 +333,8 @@ class AuthorRule extends Rule
 }
 ```
 
-The rule above checks if the `post` is created by `$user`. It can be used in the following
-to create a special permission `updateOwnPost`:
+The rule above checks if the `post` is created by `$user`. We'll create a special permission `updateOwnPost` in the
+command we've used previously:
 
 ```php
 // add the rule
@@ -348,14 +343,20 @@ $auth->add($rule);
 
 // add the "updateOwnPost" permission and associate the rule with it.
 $updateOwnPost = $this->auth->createPermission('updateOwnPost');
-$updateOwnPost->description = 'update own post';
+$updateOwnPost->description = 'Update own post';
 $updateOwnPost->ruleName = $rule->name;
 $auth->add($updateOwnPost);
+
+// "updateOwnPost" will be used from "updatePost"
+$auth->addChild($updatePost, $updateOwnPost);
 
 // allow "author" to update their own posts
 $auth->addChild($author, $updateOwnPost);
 ```
 
+Now we've got the following hierarchy:
+
+![RBAC hierarchy with a rule](images/rbac-hierarchy-2.png "RBAC hierarchy with a rule")
 
 ### Access Check
 
@@ -369,14 +370,30 @@ if (\Yii::$app->user->can('createPost')) {
 }
 ```
 
-To check the `updateOwnPost` permission, an extra parameter is required by the `AuthorRule` described before.
+If the current user is Jane with ID=1 we're starting at `createPost` and trying to get to `Jane`:
+
+![Access check](images/rbac-access-check-1.png "Access check")
+
+In order to check if user can update post we need to pass an extra parameter that is required by the `AuthorRule` described before:
 
 ```php
-if (\Yii::$app->user->can('updateOwnPost', ['post' => $post])) {
+if (\Yii::$app->user->can('updatePost', ['post' => $post])) {
     // update post
 }
 ```
 
+Here's what happens if current user is John:
+
+
+![Access check](images/rbac-access-check-2.png "Access check")
+
+We're starting with the `updatePost` and going through `updateOwnPost`. In order to pass it `AuthorRule` should return
+`true` from its `execute` method. The method receives its `$params` from `can` method call so the value is
+`['post' => $post]`. If everything is OK we're getting to `author` that is assigned to John.
+
+In case of Jane it is a bit simpler since she's an admin:
+
+![Access check](images/rbac-access-check-3.png "Access check")
 
 ### Using Default Roles
 
