@@ -108,7 +108,7 @@ If you want to use one of HTML5 fields you may specify input type directly like 
 <?= $form->field($model, 'email')->input('email') ?>
 ```
 
-Specifying attribute of the model can be does in more sophisticated ways for example when an attribute may
+Specifying the attribute of the model can be done in more sophisticated ways. For example when an attribute may
 take an array value when uploading multiple files or selecting multiple items you may specify it by appending `[]`
 to the attribute name:
 
