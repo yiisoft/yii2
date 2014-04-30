@@ -8,7 +8,6 @@
 namespace yii\db\mssql;
 
 use yii\base\InvalidParamException;
-use PDO;
 use yii\db\Query;
 
 /**
@@ -195,6 +194,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $select = implode(', ', $query->select);
         if($select === '*') {
             $columns = $this->getAllColumnNames($query->from[0]);
+            if (is_array($columns))
+                $select = implode(', ', $columns);
+            else
+                $select = $columns;
             $select = implode(', ', $columns);
         }
         $sql = str_replace($originalOrdering, '', $sql);
