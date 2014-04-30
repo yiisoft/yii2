@@ -113,8 +113,8 @@ class View extends Component
             if (!isset($this->theme['class'])) {
                 $this->theme['class'] = 'yii\base\Theme';
             }
-            $this->theme = Yii::createObject($this->theme);
         }
+        $this->theme = Yii::createObject($this->theme);
     }
 
     /**
