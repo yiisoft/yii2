@@ -1,5 +1,5 @@
 <?php
-namespace yiiunitframeworkhelpers;
+namespace yii\unit\framework\helpers;
 
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
