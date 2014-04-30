@@ -138,20 +138,17 @@ class BaseStringHelper
         }
     }
 
+
     /**
      * Truncates a html string of the number of words or exact
-     *
-     * @static
-     *
-     * @param string $string
-     * @param int    $count
-     * @param string $ending
-     * @param bool   $exact
-     * @param bool   $considerHtml
+     * 
+     * @param      $string
+     * @param      $count
+     * @param      $suffix
+     * @param bool $exact
      *
      * @return string
      */
-
     private static function truncateHtml($string, $count, $suffix, $exact = false)
     {
         // if the plain text is shorter than the maximum length, return the whole text
