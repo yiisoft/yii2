@@ -72,7 +72,7 @@ class View extends Component
      */
     public $defaultExtension = 'php';
     /**
-     * @var Theme|array the theme object or the configuration array for creating the theme object.
+     * @var Theme|array|string the theme object or the configuration for creating the theme object.
      * If not set, it means theming is not enabled.
      */
     public $theme;
@@ -113,6 +113,8 @@ class View extends Component
             if (!isset($this->theme['class'])) {
                 $this->theme['class'] = 'yii\base\Theme';
             }
+            $this->theme = Yii::createObject($this->theme);
+        } elseif (is_string($this->theme)) {
             $this->theme = Yii::createObject($this->theme);
         }
     }
