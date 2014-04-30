@@ -59,7 +59,7 @@ class LoginForm extends Model
 }
 ```
 
-The controller will pass an instance of that model to the view, wherein the Active Form widget is used:
+The controller will pass an instance of that model to the view, wherein the [[yii\widgets\ActiveForm|ActiveForm]] widget is used:
 
 ```php
 use yii\helpers\Html;
@@ -106,6 +106,18 @@ If you want to use one of HTML5 fields you may specify input type directly like 
 
 ```php
 <?= $form->field($model, 'email')->input('email') ?>
+```
+
+Specifying attribute of the model can be does in more sophisticated ways for example when an attribute may
+take an array value when uploading multiple files or selecting multiple items you may specify it by appending `[]`
+to the attribute name:
+
+```php
+// allow multiple files to be uploaded:
+echo $form->field($model, 'uploadFile[]')->fileInput('multiple'=>'multiple');
+
+// allow multiple items to be checked:
+echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Item B', 'c' => 'Item C']);
 ```
 
 > **Tip**: in order to style required fields with asterisk you can use the following CSS:
