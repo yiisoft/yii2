@@ -31,7 +31,11 @@ namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>
 
 use Yii;
 use <?= ltrim($generator->modelClass, '\\') ?>;
+<?php if(!empty($generator->searchModelClass)){ ?>
 use <?= ltrim($generator->searchModelClass, '\\') . (isset($searchModelAlias) ? " as $searchModelAlias" : "") ?>;
+<?php }else{ ?>
+use yii\data\ActiveDataProvider;
+<?php } ?>
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -59,6 +63,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionIndex()
     {
+<?php if(!empty($generator->searchModelClass)){ ?>
         $searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>;
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
@@ -66,6 +71,15 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
         ]);
+<?php }else{ ?>
+        $dataProvider = new ActiveDataProvider([
+            'query' => <?= $modelClass ?>::find(),
+        ]);
+
+        return $this->render('index', [
+            'dataProvider' => $dataProvider,
+        ]);
+<?php } ?>
     }
 
     /**
