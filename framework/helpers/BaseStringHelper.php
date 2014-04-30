@@ -141,11 +141,11 @@ class BaseStringHelper
 
     /**
      * Truncates a html string of the number of words or exact
-     * 
-     * @param      $string
-     * @param      $count
-     * @param      $suffix
-     * @param bool $exact
+     *
+     * @param string $string
+     * @param int    $count
+     * @param string $suffix
+     * @param bool   $exact
      *
      * @return string
      */
