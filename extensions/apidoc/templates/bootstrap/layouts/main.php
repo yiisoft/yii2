@@ -80,7 +80,16 @@ $this->beginPage();
   </div>
 </div>
 <?php
-    $this->registerJsFile('./jssearch.index.js', 'yii\apidoc\templates\bootstrap\assets\JsSearchAsset');
+    \yii\apidoc\templates\bootstrap\assets\JsSearchAsset::register($this);
+
+    // defer loading of the search index: https://developers.google.com/speed/docs/best-practices/payload?csw=1#DeferLoadingJS
+    $this->registerJs(<<<JS
+var element = document.createElement("script");
+element.src = "./jssearch.index.js";
+document.body.appendChild(element);
+JS
+);
+
     $this->registerJs(<<<JS
 
 var searchBox = $('#searchbox');
