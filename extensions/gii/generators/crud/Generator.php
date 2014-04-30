@@ -35,7 +35,7 @@ class Generator extends \yii\gii\Generator
     public $controllerClass;
     public $baseControllerClass = 'yii\web\Controller';
     public $indexWidgetType = 'grid';
-    public $searchModelClass;
+    public $searchModelClass = '';
 
     /**
      * @inheritdoc
@@ -61,13 +61,12 @@ class Generator extends \yii\gii\Generator
     {
         return array_merge(parent::rules(), [
             [['moduleID', 'controllerClass', 'modelClass', 'searchModelClass', 'baseControllerClass'], 'filter', 'filter' => 'trim'],
-            [['modelClass', 'searchModelClass', 'controllerClass', 'baseControllerClass', 'indexWidgetType'], 'required'],
+            [['modelClass', 'controllerClass', 'baseControllerClass', 'indexWidgetType'], 'required'],
             [['searchModelClass'], 'compare', 'compareAttribute' => 'modelClass', 'operator' => '!==', 'message' => 'Search Model Class must not be equal to Model Class.'],
             [['modelClass', 'controllerClass', 'baseControllerClass', 'searchModelClass'], 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
             [['modelClass'], 'validateClass', 'params' => ['extends' => BaseActiveRecord::className()]],
             [['baseControllerClass'], 'validateClass', 'params' => ['extends' => Controller::className()]],
             [['controllerClass'], 'match', 'pattern' => '/Controller$/', 'message' => 'Controller class name must be suffixed with "Controller".'],
-            [['controllerClass'], 'match', 'pattern' => '/(^|\\\\)[A-Z][^\\\\]+Controller$/', 'message' => 'Controller class name must start with an uppercase letter.'],
             [['controllerClass', 'searchModelClass'], 'validateNewClass'],
             [['indexWidgetType'], 'in', 'range' => ['grid', 'list']],
             [['modelClass'], 'validateModelClass'],
@@ -101,8 +100,7 @@ class Generator extends \yii\gii\Generator
             'modelClass' => 'This is the ActiveRecord class associated with the table that CRUD will be built upon.
                 You should provide a fully qualified class name, e.g., <code>app\models\Post</code>.',
             'controllerClass' => 'This is the name of the controller class to be generated. You should
-                provide a fully qualified namespaced class, .e.g, <code>app\controllers\PostController</code>.
-                The controller class name should follow the CamelCase scheme with an uppercase first letter',
+                provide a fully qualified namespaced class, .e.g, <code>app\controllers\PostController</code>.',
             'baseControllerClass' => 'This is the class that the new CRUD controller class will extend from.
                 You should provide a fully qualified class name, e.g., <code>yii\web\Controller</code>.',
             'moduleID' => 'This is the ID of the module that the generated controller will belong to.
@@ -162,15 +160,20 @@ class Generator extends \yii\gii\Generator
     public function generate()
     {
         $controllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
-        $searchModel = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->searchModelClass, '\\') . '.php'));
+
         $files = [
             new CodeFile($controllerFile, $this->render('controller.php')),
-            new CodeFile($searchModel, $this->render('search.php')),
         ];
+
+        if(!empty($this->searchModelClass)){
+            $searchModel = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->searchModelClass, '\\') . '.php'));
+            $files[] = new CodeFile($searchModel, $this->render('search.php'));
+        }
 
         $viewPath = $this->getViewPath();
         $templatePath = $this->getTemplatePath() . '/views';
         foreach (scandir($templatePath) as $file) {
+            if(empty($this->searchModelClass) && $file==='_search.php') continue;
             if (is_file($templatePath . '/' . $file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
                 $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file"));
             }
@@ -216,7 +219,7 @@ class Generator extends \yii\gii\Generator
 
     /**
      * Generates code for active field
-     * @param string $attribute
+     * @param  string $attribute
      * @return string
      */
     public function generateActiveField($attribute)
@@ -250,7 +253,7 @@ class Generator extends \yii\gii\Generator
 
     /**
      * Generates code for active search field
-     * @param string $attribute
+     * @param  string $attribute
      * @return string
      */
     public function generateActiveSearchField($attribute)
@@ -269,7 +272,7 @@ class Generator extends \yii\gii\Generator
 
     /**
      * Generates column format
-     * @param \yii\db\ColumnSchema $column
+     * @param  \yii\db\ColumnSchema $column
      * @return string
      */
     public function generateColumnFormat($column)
@@ -438,7 +441,7 @@ class Generator extends \yii\gii\Generator
             if (is_subclass_of($class, 'yii\mongodb\ActiveRecord')) {
                 return "'id' => (string)\$model->{$pks[0]}";
             } else {
-                return "'id' => \$model->{$pks[0]}"; 
+                return "'id' => \$model->{$pks[0]}";
             }
         } else {
             $params = [];
@@ -446,7 +449,7 @@ class Generator extends \yii\gii\Generator
                 if (is_subclass_of($class, 'yii\mongodb\ActiveRecord')) {
                     $params[] = "'$pk' => (string)\$model->$pk";
                 } else {
-                    $params[] = "'$pk' => \$model->$pk";                   
+                    $params[] = "'$pk' => \$model->$pk";
                 }
             }
 
