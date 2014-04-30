@@ -349,7 +349,7 @@ $updateOwnPost->ruleName = $rule->name;
 $auth->add($updateOwnPost);
 
 // "updateOwnPost" will be used from "updatePost"
-$auth->addChild($updatePost, $updateOwnPost);
+$auth->addChild($updateOwnPost, $updatePost);
 
 // allow "author" to update their own posts
 $auth->addChild($author, $updateOwnPost);
