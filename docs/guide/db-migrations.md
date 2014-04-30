@@ -109,6 +109,10 @@ See documentation of [[yii\db\QueryBuilder::getColumnType()]] for more details a
 of available types. You may also use the constants defined in [[yii\db\Schema]] to
 define column types.
 
+> Note: You can add constraints and other custom table options at the end of the table description by
+> specifying them as simple string. For example in the above migration, after `content` attribute definition
+> you can write `'CONSTRAINT ...'` or other custom options.
+
 
 Transactional Migrations
 ------------------------
