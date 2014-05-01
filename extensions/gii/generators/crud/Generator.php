@@ -167,7 +167,7 @@ class Generator extends \yii\gii\Generator
             new CodeFile($controllerFile, $this->render('controller.php')),
         ];
 
-        if(!empty($this->searchModelClass)){
+        if (!empty($this->searchModelClass)) {
             $searchModel = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->searchModelClass, '\\') . '.php'));
             $files[] = new CodeFile($searchModel, $this->render('search.php'));
         }
@@ -175,7 +175,9 @@ class Generator extends \yii\gii\Generator
         $viewPath = $this->getViewPath();
         $templatePath = $this->getTemplatePath() . '/views';
         foreach (scandir($templatePath) as $file) {
-            if(empty($this->searchModelClass) && $file==='_search.php') continue;
+            if (empty($this->searchModelClass) && $file === '_search.php') {
+                continue;
+            }
             if (is_file($templatePath . '/' . $file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
                 $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file"));
             }
@@ -443,7 +445,7 @@ class Generator extends \yii\gii\Generator
             if (is_subclass_of($class, 'yii\mongodb\ActiveRecord')) {
                 return "'id' => (string)\$model->{$pks[0]}";
             } else {
-                return "'id' => \$model->{$pks[0]}"; 
+                return "'id' => \$model->{$pks[0]}";
             }
         } else {
             $params = [];
@@ -451,7 +453,7 @@ class Generator extends \yii\gii\Generator
                 if (is_subclass_of($class, 'yii\mongodb\ActiveRecord')) {
                     $params[] = "'$pk' => (string)\$model->$pk";
                 } else {
-                    $params[] = "'$pk' => \$model->$pk";                   
+                    $params[] = "'$pk' => \$model->$pk";
                 }
             }
 
