@@ -100,9 +100,9 @@ class BaseStringHelper
     public static function truncate($string, $length, $suffix = '...', $encoding = null, $asHtml = false)
     {
         if ($asHtml){
-            return self::truncateHtml($string, $length, $suffix, true);
+            return self::truncateHtml($string, $length, $suffix, true, $encoding);
         }
-        
+
         if (mb_strlen($string, $encoding ?: \Yii::$app->charset) > $length) {
             return trim(mb_substr($string, 0, $length, $encoding ?: \Yii::$app->charset)) . $suffix;
         } else {
@@ -141,17 +141,15 @@ class BaseStringHelper
      * @param bool $exact
      * @return string
      */
-    private static function truncateHtml($string, $count, $suffix, $exact = false)
+    private static function truncateHtml($string, $count, $suffix, $exact = false, $encoding = null)
     {
         // if the plain text is shorter than the maximum length, return the whole text
-        if (strlen(preg_replace('/<.*?>/', '', $string)) <= $count) {
+        if (mb_strlen(preg_replace('/<.*?>/', '', $string), is_null($encoding)?\Yii::$app->charset:$encoding) <= $count) {
             return $string;
         }
-
         // splits all html-tags to scanable lines
         preg_match_all('/(<.+?>)?([^<>]*)/s', $string, $lines, PREG_SET_ORDER);
-
-        $totalCount = strlen($suffix);
+        $totalCount = mb_strlen($suffix, is_null($encoding)?\Yii::$app->charset:$encoding);
         $openTags = [];
         $truncate = '';
         foreach ($lines as $lineMap) {
@@ -175,7 +173,8 @@ class BaseStringHelper
                 $truncate .= $lineMap[1];
             }
             // calculate the length of the plain text part of the line; handle entities as one character
-            $stringLength = strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', ' ', $lineMap[2]));
+            $stringLength = mb_strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', ' ', $lineMap[2]),is_null($encoding)?\Yii::$app->charset:$encoding);
+
             if (($totalCount + $stringLength) > $count) {
                 // the number of characters which are left
                 $left = $count - $totalCount;
@@ -186,18 +185,18 @@ class BaseStringHelper
                     foreach ($entities[0] as $entity) {
                         if ($entity[1] + 1 - $entitiesCount <= $left) {
                             $left--;
-                            $entitiesCount += strlen($entity[0]);
+                            $entitiesCount += mb_strlen($entity[0],is_null($encoding)?\Yii::$app->charset:$encoding);
                         } else {
                             // no more characters left
                             break;
                         }
                     }
                 }
-                $truncate .= substr($lineMap[2], 0, $left + $entitiesCount);
+                $truncate .= mb_substr($lineMap[2], 0, $left + $entitiesCount,is_null($encoding)?\Yii::$app->charset:$encoding);
                 // maximum lenght is reached, so get off the loop
                 break;
             } else {
-                $truncate .= $lineMap[2];
+                $truncate .=  $lineMap[2];
                 $totalCount += $stringLength;
             }
             // if the maximum length is reached, get off the loop
@@ -221,6 +220,10 @@ class BaseStringHelper
         foreach ($openTags as $tag) {
             $truncate .= Html::endTag($tag);
         }
-        return $truncate;
+        if(is_null($encoding)){
+            return $truncate;
+        }
+        return mb_convert_encoding($truncate,$encoding);
     }
+
 }
