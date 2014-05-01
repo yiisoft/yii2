@@ -178,3 +178,27 @@ return [
     ],
 ];
 ```
+
+
+### Attaching behaviors from config
+
+One can attach a behavior to a component when configuring it with a configuration array. The syntax is like the
+following:
+
+```php
+return [
+    // ...
+    'components' => [
+        'myComponent' => [
+            // ...
+            'as tree' => [
+                'class' => 'Tree',
+                'root' => 0,
+            ],
+        ],
+    ],
+];
+```
+
+In the config above `as tree` stands for attaching a behavior named `tree`, and the array will be passed to [[\Yii::createObject()]]
+to create the behavior object.
