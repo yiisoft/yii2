@@ -19,6 +19,24 @@ the [Starting from Basic App](start-basic.md) chapter to learn how to install Yi
 create new extensions or turn your existing 1.1 extensions into 2.0, please refer to
 the [Creating Extensions](extend-creating-extensions.md) chapter.
 
+PHP
+---
+
+Yii 1.1 was developed to be compatible with PHP 5.2. Yii 2.0 minimum requirement is PHP 5.4 that is a huge improvement
+in both performance and features. And since these features are actually used you need to get yourself familiar with them.
+Here's the list:
+
+- [Namespaces](http://php.net/manual/en/language.namespaces.php).
+- [Anonymous functions](http://php.net/manual/en/functions.anonymous.php).
+- Short array syntax. It's easy, just use `[` and `]` instead of `array(` and `)`.
+- Short `echo` in form of `<?=` used in framework views. In PHP 5.4 it's always available unlike
+  [`<?` that isn't safe to use](http://php.net/manual/en/language.basic-syntax.phptags.php).
+- [SPL](http://php.net/manual/en/book.spl.php).
+- [Late Static Bindings](http://php.net/manual/en/language.oop5.late-static-bindings.php).
+- [Date and Time](http://php.net/manual/en/book.datetime.php).
+- [Traits](http://php.net/manual/en/language.oop5.traits.php).
+- [intl](http://php.net/manual/en/book.intl.php). Yii 2.0 has many convenience wrappers for intl features in `i18n`
+  component but it worth reading anyway to undestand it better.
 
 Namespace
 ---------
