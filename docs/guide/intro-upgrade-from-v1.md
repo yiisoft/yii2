@@ -35,8 +35,8 @@ Here's the list:
 - [Late Static Bindings](http://php.net/manual/en/language.oop5.late-static-bindings.php).
 - [Date and Time](http://php.net/manual/en/book.datetime.php).
 - [Traits](http://php.net/manual/en/language.oop5.traits.php).
-- [intl](http://php.net/manual/en/book.intl.php). Yii 2.0 has many convenience wrappers for intl features in `i18n`
-  component but it worth reading anyway to undestand it better.
+- [intl](http://php.net/manual/en/book.intl.php). Yii 2.0 has many convenient wrappers for intl features in `i18n`
+  components but it is worth reading anyway to understand it better.
 
 Namespace
 ---------
