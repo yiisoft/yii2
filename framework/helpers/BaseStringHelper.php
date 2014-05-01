@@ -144,12 +144,12 @@ class BaseStringHelper
     private static function truncateHtml($string, $count, $suffix, $exact = false, $encoding = null)
     {
         // if the plain text is shorter than the maximum length, return the whole text
-        if (mb_strlen(preg_replace('/<.*?>/', '', $string), is_null($encoding)?\Yii::$app->charset:$encoding) <= $count) {
+        if (mb_strlen(preg_replace('/<.*?>/', '', $string)) <= $count) {
             return $string;
         }
         // splits all html-tags to scanable lines
         preg_match_all('/(<.+?>)?([^<>]*)/s', $string, $lines, PREG_SET_ORDER);
-        $totalCount = mb_strlen($suffix, is_null($encoding)?\Yii::$app->charset:$encoding);
+        $totalCount = mb_strlen($suffix);
         $openTags = [];
         $truncate = '';
         foreach ($lines as $lineMap) {
@@ -173,7 +173,7 @@ class BaseStringHelper
                 $truncate .= $lineMap[1];
             }
             // calculate the length of the plain text part of the line; handle entities as one character
-            $stringLength = mb_strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', ' ', $lineMap[2]),is_null($encoding)?\Yii::$app->charset:$encoding);
+            $stringLength = mb_strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', ' ', $lineMap[2]));
 
             if (($totalCount + $stringLength) > $count) {
                 // the number of characters which are left
@@ -185,14 +185,14 @@ class BaseStringHelper
                     foreach ($entities[0] as $entity) {
                         if ($entity[1] + 1 - $entitiesCount <= $left) {
                             $left--;
-                            $entitiesCount += mb_strlen($entity[0],is_null($encoding)?\Yii::$app->charset:$encoding);
+                            $entitiesCount += mb_strlen($entity[0]);
                         } else {
                             // no more characters left
                             break;
                         }
                     }
                 }
-                $truncate .= mb_substr($lineMap[2], 0, $left + $entitiesCount,is_null($encoding)?\Yii::$app->charset:$encoding);
+                $truncate .= mb_substr($lineMap[2], 0, $left + $entitiesCount);
                 // maximum lenght is reached, so get off the loop
                 break;
             } else {
