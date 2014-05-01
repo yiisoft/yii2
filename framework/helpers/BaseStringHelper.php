@@ -99,8 +99,10 @@ class BaseStringHelper
      */
     public static function truncate($string, $length, $suffix = '...', $encoding = null, $asHtml = false)
     {
-        if ($asHtml)
+        if ($asHtml){
             return self::truncateHtml($string, $length, $suffix, true);
+        }
+        
         if (mb_strlen($string, $encoding ?: \Yii::$app->charset) > $length) {
             return trim(mb_substr($string, 0, $length, $encoding ?: \Yii::$app->charset)) . $suffix;
         } else {
@@ -132,7 +134,7 @@ class BaseStringHelper
 
     /**
      * Truncates a html string of the number of words or exact
-     * 
+     *
      * @param string $string
      * @param int $count
      * @param string $suffix
