@@ -38,6 +38,7 @@ docs/                documentation
 extensions/          extensions
 framework/           core framework code
 tests/               tests of the core framework code
+```
 
 
 REQUIREMENTS
