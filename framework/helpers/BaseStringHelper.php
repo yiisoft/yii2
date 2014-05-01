@@ -97,9 +97,9 @@ class BaseStringHelper
      * @param string $encoding The charset to use, defaults to charset currently used by application.
      * @return string the truncated string.
      */
-    public static function truncate($string, $length, $suffix = '...', $encoding = null,$asHtml = false)
+    public static function truncate($string, $length, $suffix = '...', $encoding = null, $asHtml = false)
     {
-        if ( $asHtml )
+        if ($asHtml)
             return self::truncateHtml($string, $length, $suffix, true);
         if (mb_strlen($string, $encoding ?: \Yii::$app->charset) > $length) {
             return trim(mb_substr($string, 0, $length, $encoding ?: \Yii::$app->charset)) . $suffix;
@@ -107,7 +107,7 @@ class BaseStringHelper
             return $string;
         }
     }
-    
+
     /**
      * Truncates a string to the number of words specified.
      *
@@ -116,10 +116,12 @@ class BaseStringHelper
      * @param string $suffix String to append to the end of truncated string.
      * @return string the truncated string.
      */
-    public static function truncateWords($string, $count, $suffix = '...',$asHtml = false)
+    public static function truncateWords($string, $count, $suffix = '...', $asHtml = false)
     {
-        if ( $asHtml )
+        if ($asHtml) {
             return self::truncateHtml($string, $count, $suffix, false);
+        }
+
         $words = preg_split('/(\s+)/u', trim($string), null, PREG_SPLIT_DELIM_CAPTURE);
         if (count($words) / 2 > $count) {
             return implode('', array_slice($words, 0, ($count * 2) - 1)) . $suffix;
@@ -130,18 +132,17 @@ class BaseStringHelper
 
     /**
      * Truncates a html string of the number of words or exact
-     *
+     * 
      * @param string $string
-     * @param int    $count
+     * @param int $count
      * @param string $suffix
-     * @param bool   $exact
-     *
+     * @param bool $exact
      * @return string
      */
     private static function truncateHtml($string, $count, $suffix, $exact = false)
     {
         // if the plain text is shorter than the maximum length, return the whole text
-        if ( strlen(preg_replace('/<.*?>/', '', $string)) <= $count ) {
+        if (strlen(preg_replace('/<.*?>/', '', $string)) <= $count) {
             return $string;
         }
 
@@ -149,22 +150,22 @@ class BaseStringHelper
         preg_match_all('/(<.+?>)?([^<>]*)/s', $string, $lines, PREG_SET_ORDER);
 
         $totalCount = strlen($suffix);
-        $openTags   = [];
-        $truncate   = '';
-        foreach ( $lines as $lineMap ) {
+        $openTags = [];
+        $truncate = '';
+        foreach ($lines as $lineMap) {
             // if there is any html-tag in this line, handle it and add it (uncounted) to the output
-            if ( !empty($lineMap[1]) ) {
+            if (!empty($lineMap[1])) {
                 // if it's an "empty element" with or without xhtml-conform closing slash
-                if ( preg_match('/^<(\s*.+?\/\s*|\s*(img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param)(\s.+?)?)>$/is', $lineMap[1]) ) {
+                if (preg_match('/^<(\s*.+?\/\s*|\s*(img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param)(\s.+?)?)>$/is', $lineMap[1])) {
                     // do nothing if tag is a closing tag
-                } else if ( preg_match('/^<\s*\/([^\s]+?)\s*>$/s', $lineMap[1], $tagMap) ) {
+                } elseif (preg_match('/^<\s*\/([^\s]+?)\s*>$/s', $lineMap[1], $tagMap)) {
                     // delete tag from $open_tags list
                     $pos = array_search($tagMap[1], $openTags);
-                    if ( $pos !== false ) {
-                        ArrayHelper::remove($openTags,$pos);
+                    if ($pos !== false) {
+                        ArrayHelper::remove($openTags, $pos);
                     }
                     // if tag is an opening tag
-                } else if ( preg_match('/^<\s*([^\s>!]+).*?>$/s', $lineMap[1], $tagMap) ) {
+                } elseif (preg_match('/^<\s*([^\s>!]+).*?>$/s', $lineMap[1], $tagMap)) {
                     // add tag to the beginning of $open_tags list
                     array_unshift($openTags, strtolower($tagMap[1]));
                 }
@@ -172,16 +173,16 @@ class BaseStringHelper
                 $truncate .= $lineMap[1];
             }
             // calculate the length of the plain text part of the line; handle entities as one character
-            $stringLength     = strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', ' ', $lineMap[2]));
-            if ( ($totalCount + $stringLength) > $count ) {
+            $stringLength = strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', ' ', $lineMap[2]));
+            if (($totalCount + $stringLength) > $count) {
                 // the number of characters which are left
-                $left           = $count - $totalCount;
-                $entitiesCount  = 0;
+                $left = $count - $totalCount;
+                $entitiesCount = 0;
                 // search for html entities
-                if ( preg_match_all('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', $lineMap[2], $entities, PREG_OFFSET_CAPTURE) ) {
+                if (preg_match_all('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', $lineMap[2], $entities, PREG_OFFSET_CAPTURE)) {
                     // calculate the real length of all entities in the legal range
-                    foreach ( $entities[0] as $entity ) {
-                        if ( $entity[1] + 1 - $entitiesCount <= $left ) {
+                    foreach ($entities[0] as $entity) {
+                        if ($entity[1] + 1 - $entitiesCount <= $left) {
                             $left--;
                             $entitiesCount += strlen($entity[0]);
                         } else {
@@ -190,33 +191,33 @@ class BaseStringHelper
                         }
                     }
                 }
-                $truncate   .= substr($lineMap[2], 0, $left + $entitiesCount);
+                $truncate .= substr($lineMap[2], 0, $left + $entitiesCount);
                 // maximum lenght is reached, so get off the loop
                 break;
             } else {
-                $truncate   .= $lineMap[2];
+                $truncate .= $lineMap[2];
                 $totalCount += $stringLength;
             }
             // if the maximum length is reached, get off the loop
-            if ( $totalCount >= $count ) {
+            if ($totalCount >= $count) {
                 break;
             }
         }
 
         // if the words shouldn't be cut in the middle...
-        if ( !$exact ) {
+        if (!$exact) {
             // ...search the last occurance of a space...
-            $space          = strrpos($truncate, ' ');
-            if ( isset($space) ) {
+            $space = strrpos($truncate, ' ');
+            if (isset($space)) {
                 // ...and cut the text in this position
-                $truncate   = substr($truncate, 0, $space);
+                $truncate = substr($truncate, 0, $space);
             }
         }
         // add the defined ending to the text
-        $truncate       .= $suffix;
+        $truncate .= $suffix;
         // close all unclosed html-tags
-        foreach ( $openTags as $tag ) {
-            $truncate   .= Html::endTag($tag);
+        foreach ($openTags as $tag) {
+            $truncate .= Html::endTag($tag);
         }
         return $truncate;
     }
