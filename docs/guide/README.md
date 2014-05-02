@@ -27,6 +27,7 @@ Getting Started
 Basic Concepts
 --------------
 
+* [Components](basic-components.md)
 * [Properties](basic-properties.md)
 * [Events](basic-events.md)
 * [Behaviors](basic-behaviors.md)

@@ -1,204 +1,238 @@
-Configuration
-=============
+Configurations
+==============
 
-> Note: This chapter is under development.
+Configurations are widely used in Yii for creating new objects or initializing existing objects.
+They usually include the class names of the objects being created and a list of initial values
+that should be assigned to object [properties](basic-properties.md). They may also include a list of
+handlers that should be attached to the object [events](basic-events.md), and/or a list of
+[behaviors](basic-behaviors.md) that should be attached to the objects.
 
-Object Configuration
+In the following, a configuration is used to create and initialize a DB connection:
+
+```php
+$config = [
+    'class' => 'yii\db\Connection',
+    'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
+    'username' => 'root',
+    'password' => '',
+    'charset' => 'utf8',
+];
+
+$db = Yii::createObject($config);
+```
+
+The [[Yii::createObject()]] method takes a configuration and creates an object based on the class name
+specified in the configuration. When the object is being instantiated, the rest of the configuration
+will be used to initialize the object properties, event handlers and/or behaviors.
+
+If you already have an object, you may use [[Yii::configure()]] to initialize the object properties with
+a configuration, like the following,
+
+```php
+Yii::configure($object, $config);
+```
+
+Note that in this case, the configuration should not contain the `class` element.
+
+
+Configuration Format
 --------------------
 
-The [[yii\base\Object|Object]] class introduces a uniform way of configuring objects. Any descendant class
-of [[yii\base\Object|Object]] should declare its constructor (if needed) in the following way so that
-it can be properly configured:
+The format of a configuration can be formally described as follows,
 
 ```php
-class MyClass extends \yii\base\Object
-{
-    public function __construct($param1, $param2, $config = [])
-    {
-        // ... initialization before configuration is applied
-
-        parent::__construct($config);
-    }
-
-    public function init()
-    {
-        parent::init();
-
-        // ... initialization after configuration is applied
-    }
-}
+[
+    'class' => 'ClassName',
+    'propertyName' => 'propertyValue',
+    'on eventName' => $eventHandler,
+    'as behaviorName' => $behaviorConfig,
+]
 ```
 
-In the above example, the last parameter of the constructor must take a configuration array
-which contains name-value pairs that will be used to initialize the object's properties at the end of the constructor.
-You can override the `init()` method to do initialization work after the configuration is applied.
+where
 
-By following this convention, you will be able to create and configure new objects
-using a configuration array like the following:
+* The `class` element specifies a fully qualified class name for the object being created.
+* The `propertyName` elements specify the property initial values. The keys are the property names, and the
+  values are the corresponding initial values. Only public member variables and [properties](basic-properties.md)
+  defined by getters/setters can be configured.
+* The `on eventName` elements specify what handlers should be attached to the object [events](basic-events.md).
+  Notice that the array keys are formed by prefixing event names with `on `. Please refer to
+  the [Events](basic-events.md) chapter for supported event handler formats.
+* And the `as behaviorName` elements specify what [behaviors](basic-behaviors.md) should be attached to the object.
+  Notice that the array keys are formed by prefixing behavior names with `on `. `$behaviorConfig` represents
+  the configuration for creating a behavior, like a normal configuration as we are describing here.
 
-```php
-$object = Yii::createObject([
-    'class' => 'MyClass',
-    'property1' => 'abc',
-    'property2' => 'cde',
-], [$param1, $param2]);
-```
-
-
-Yii applications rely upon components to perform most of the common tasks, such as connecting to a database, routing browser
-requests, and handling sessions. How these stock components behave can be adjusted by *configuring* your Yii application.
-The majority of components have sensible default settings, so it's unlikely that you'll do a lot of configuration. Still, there are some mandatory configuration settings that you will have to establish, such as the database connection.
-
-How an application is configured depends upon the application template in use, but there are some general principles that apply in every Yii case.
-
-Configuring options in the bootstrap file
------------------------------------------
-
-For each application in Yii there is at least one bootstrap file: a PHP script through which all requests are handled. For web applications, the bootstrap file is  typically `index.php`; for
-console applications, the bootstrap file is `yii`. Both bootstrap files perform nearly the same job:
-
-1. Setting common constants.
-2. Including the Yii framework itself.
-3. Including [Composer autoloader](http://getcomposer.org/doc/01-basic-usage.md#autoloading).
-4. Reading the configuration file into `$config`.
-5. Creating a new application instance, configured via `$config`, and running that instance.
-
-Like any resource in your Yii application, the bootstrap file can be edited to fit your needs. A typical change is to the value of `YII_DEBUG`. This constant should be `true` during development, but always `false` on production sites.
-
-The default bootstrap structure sets `YII_DEBUG` to `false` if not defined:
+Below is an example showing a configuration with property initial values, event handlers and behaviors:
 
 ```php
-defined('YII_DEBUG') or define('YII_DEBUG', false);
-```
-
-During development, you can change this to `true`:
-
-```php
-define('YII_DEBUG', true); // Development only 
-defined('YII_DEBUG') or define('YII_DEBUG', false);
-```
-
-Configuring the application instance
-------------------------------------
-
-An application instance is configured when it's created in the bootstrap file. The configuration is typically
-stored in a PHP file stored in the `/config` application directory. The file has this structure to begin:
-
-```php
-<?php
-return [
-    'id' => 'applicationId',
-    'basePath' => dirname(__DIR__),
-    'components' => [
-        // configuration of application components goes here...
+[
+    'class' => 'app\components\SearchEngine',
+    'apiKey' => 'xxxxxxxx',
+    'on search' => function ($event) {
+        Yii::info("Keyword searched: " . $event->keyword);
+    },
+    'as indexer' => [
+        'class' => 'app\components\IndexerBehavior',
+        // ... property init values ...
     ],
-    'params' => require(__DIR__ . '/params.php'),
-];
+]
 ```
 
-The configuration is a large array of key-value pairs. In the above, the array keys are the names of application properties. Depending upon the application type, you can configure the properties of
-either [[yii\web\Application]] or [[yii\console\Application]] classes. Both classes extend  [[yii\base\Application]].
 
-Note that you can configure not only public class properties, but any property accessible via a setter. For example, to
-  configure the runtime path, you can use a key named `runtimePath`. There's no such property in the application class, but
-  since the class has a corresponding setter named `setRuntimePath`, `runtimePath` becomes configurable.
-  The ability to configure properties via setters is available to any class that extends from [[yii\base\Object]], which is nearly every class in the Yii framework.
+Using Configurations
+--------------------
 
-Configuring application components
-----------------------------------
+Configurations are used in many places in Yii. At the beginning of this chapter, we have shown how to use
+create an object according to a configuration by using [[Yii::createObject()]]. In this section, we will
+describe application configurations and widget configurations - two major usages of configurations.
 
-The majority of the Yii functionality comes from application components. These components are attached to the application instance via the instance's `components` property:
+
+### Application Configurations
+
+Configuration for an [application](structure-applications.md) is probably one of the most complex configurations.
+This is because the [[yii\web\Application|application]] class has a lot of configurable properties and events.
+More importantly, its [[yii\web\Application::components|components]] property can receive an array of configurations
+for creating components that are registered through the application. The following is an abstract from the application
+configuration file for the [basic application template](start-basic.md).
 
 ```php
-<?php
-return [
-    'id' => 'applicationId',
+$config = [
+    'id' => 'basic',
     'basePath' => dirname(__DIR__),
+    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
     'components' => [
-        'cache' => ['class' => 'yii\caching\FileCache'],
-        'user' => ['identityClass' => 'app\models\User'],
-        'errorHandler' => ['errorAction' => 'site/error'],
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
+        ],
+        'mail' => [
+            'class' => 'yii\swiftmailer\Mailer',
+        ],
         'log' => [
+            'class' => 'yii\log\Dispatcher',
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
                 ],
             ],
         ],
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=localhost;dbname=stay2',
+            'username' => 'root',
+            'password' => '',
+            'charset' => 'utf8',
+        ],
     ],
-    // ...
 ];
 ```
 
-In the above code, four components are configured: `cache`, `user`, `errorHandler`, `log`. Each entry's key is a component ID. The values are subarrays used to configure that component. The component ID is also used to access the component anywhere within the application, using code like `\Yii::$app->myComponent`.
-
-The configuration array has one special key named `class` that identifies the component's base class. The rest of the keys and values are used
-to configure component properties in the same way as top-level keys are used to configure the application's properties.
-
-Each application has a predefined set of components. To configure one of these, the `class` key can be omitted to use the default Yii class for that component. You can check the `coreComponents()` method of the application you are using
-to get a list of component IDs and corresponding classes.
-
-Note that Yii is smart enough to only configure the component when it's actually being used: for example, if you configure the `cache` component in your configuration file but never use the `cache` component in your code, no instance of that component will be created and no time is wasted configuring it.
-
-Setting component defaults class-wide
-------------------------------------
-
-For each component you can specify class-wide defaults. For example, if you want to change the class used for all `LinkPager`
-widgets without specifying the class for every widget usage, you can do the following:
+The configuration does not have a `class` key. This is because it is used as follows in
+an [entry script](structure-entry-scripts.md), where the class name is already given,
 
 ```php
-\Yii::$container->set('yii\widgets\LinkPager', [
-    'options' => [
-        'class' => 'pagination',
+(new yii\web\Application($config))->run();
+```
+
+For more details about configuring the `components` property of an application can be found
+in the [Applications](structure-applications.md) chapter and the [Service Locator](basic-service-locator.md) chapter.
+
+
+### Widget Configurations
+
+When using [widgets](structure-widgets.md), you often need to use configurations to customize the widget properties.
+Both of the [[yii\base\Widget::widget()]] and [[yii\base\Widget::beginWidget()]] methods can be used to create
+a widget. They take a configuration array, like the following,
+
+```php
+use yii\widgets\Menu;
+
+echo Menu::widget([
+    'activateItems' => false,
+    'items' => [
+        ['label' => 'Home', 'url' => ['site/index']],
+        ['label' => 'Products', 'url' => ['product/index']],
+        ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
     ],
 ]);
 ```
 
-The code above should be executed once before `LinkPager` widget is used. It can be done in `index.php`, the application
-configuration file, or anywhere else.
+The above code creates a `Menu` widget and initializes its `activeItems` property to be false.
+The `items` property is also configured with menu items to be displayed.
+
+Note that because the class name is already given, the configuration array should NOT have the `class` key.
 
 
+Configuration Files
+-------------------
 
-### Attaching event handlers via config
-
-You can also attach event handlers within your configuration file. To do so, add an element to the component to which the handler should be attached. The syntax is `"on <event>" => handler`:
+When a configuration is very complex, a common practice is to store it in one or multiple PHP files, known as
+*configuration files*. To use a configuration, simply "require" the corresponding configuration file.
+For example, you may keep an application configuration in a file named `web.php`, like the following,
 
 ```php
 return [
-    // ...
-    'components' => [
-        'db' => [
-            // ...
-            'on afterOpen' => function ($event) {
-                // do something right after connected to database
-            }
-        ],
-    ],
+    'id' => 'basic',
+    'basePath' => dirname(__DIR__),
+    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'components' => require(__DIR__ . '/components.php'),
 ];
 ```
 
-
-### Attaching behaviors from config
-
-One can attach a behavior to a component when configuring it with a configuration array. The syntax is like the
-following:
+Because the `components` configuration is complex too, you store it in a separate file called `components.php`
+and "require" this file in `web.php` as shown above. The content of `components.php` is as follows,
 
 ```php
 return [
-    // ...
-    'components' => [
-        'myComponent' => [
-            // ...
-            'as tree' => [
-                'class' => 'Tree',
-                'root' => 0,
+    'cache' => [
+        'class' => 'yii\caching\FileCache',
+    ],
+    'mail' => [
+        'class' => 'yii\swiftmailer\Mailer',
+    ],
+    'log' => [
+        'class' => 'yii\log\Dispatcher',
+        'traceLevel' => YII_DEBUG ? 3 : 0,
+        'targets' => [
+            [
+                'class' => 'yii\log\FileTarget',
             ],
         ],
     ],
+    'db' => [
+        'class' => 'yii\db\Connection',
+        'dsn' => 'mysql:host=localhost;dbname=stay2',
+        'username' => 'root',
+        'password' => '',
+        'charset' => 'utf8',
+    ],
 ];
 ```
 
-In the config above `as tree` stands for attaching a behavior named `tree`, and the array will be passed to [[\Yii::createObject()]]
-to create the behavior object.
+And the code for starting an application becomes,
+
+```php
+$config = require('path/to/web.php');
+(new yii\web\Application($config))->run();
+```
+
+
+Default Configurations
+----------------------
+
+The [[Yii::createObject()]] method is implemented based on a [dependency injection container](basic-di-container.md).
+It allows you specify a set of the so-called *default configurations* which will be applied to ANY instances of
+the specified classes when they are being created using [[Yii::createObject()]]. The default configurations
+can be specified by calling `Yii::$container->set()` in the [bootstrapping](runtime-bootstrapping.md) code.
+
+For example, if you want to customize [[yii\widgets\LinkPager]] so that ALL link pagers will show at most 5 page buttons
+(the default value is 10), you may use the following code to achieve this goal,
+
+```php
+\Yii::$container->set('yii\widgets\LinkPager', [
+    'maxButtonCount' => 5,
+]);
+```
+
+Without using default configurations, you would have to configure `maxButtonCount` in every place where you use
+link pagers.
