@@ -186,7 +186,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
             if (isset($text)) {
                 $message->setTextBody($text);
             } elseif (isset($html)) {
-                $html = preg_replace('|<style[^>]*>(.*)</style>|is', '', $html);
+                $html = preg_replace('|<style[^>]*>(.*?)</style>|is', '', $html);
                 $message->setTextBody(strip_tags($html));
             }
         }
