@@ -11,17 +11,18 @@ All Rights Reserved.
 Introduction
 ------------
 
-* [About Yii](intro-yii.md) - What is Yii and what is it good for?
+* [About Yii](intro-yii.md)
 * [Upgrading from Version 1.1](intro-upgrade-from-v1.md)
 
 
 Getting Started
 ---------------
 
-* **TBD** [Overview](start-overview.md) - Where should you start from?
-* [Starting with Basic App](start-basic.md) - Best for developing a single-tier application by a single person
-* [Starting with Advanced App](start-advanced.md) - Best for developing an enterprise application by a team
-* [Starting from Scratch](start-scratch.md) - Learning more in-depth details of creating a Yii application step-by-step
+* [Preparing Your Environment](start-environment.md)
+* [Creating Your First Yii Application](start-basic.md)
+* **TBD** [Application Structure](start-structure.md)
+* **TBD** [Request Lifecycle](start-lifecycle.md)
+* **TBD** [Next Steps](start-next-steps.md)
 
 
 Basic Concepts
@@ -55,7 +56,6 @@ Basic Structure
 Handling Requests
 -----------------
 
-* **TBD** [Request Lifecycle](runtime-lifecycle.md)
 * **TBD** [Bootstrapping](runtime-bootstrapping.md)
 * **TBD** [Routing](runtime-routing.md)
 * **TBD** [Requests](runtime-requests.md)
@@ -164,7 +164,8 @@ Extending Yii
 Special Topics
 --------------
 
-* [Configuring Web Servers](tutorial-configuring-servers.md)
+* [Advanced Application Template](tutorial-advanced-app.md)
+* [Building Application from Scratch](tutorial-start-from-scratch.md)
 * [Console Commands](tutorial-console.md)
 * [Handling Errors](tutorial-handling-errors.md)
 * [Internationalization](tutorial-i18n.md)
