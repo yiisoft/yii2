@@ -236,3 +236,40 @@ For example, if you want to customize [[yii\widgets\LinkPager]] so that ALL link
 
 Without using default configurations, you would have to configure `maxButtonCount` in every place where you use
 link pagers.
+
+
+Environment Constants
+---------------------
+
+Configurations often vary according to the environment in which an application runs. For example,
+in development environment, you may want to use a database named `mydb_dev`, while on production server
+you may want to use the `mydb_prod` database. To facilitate switching environments, Yii provides a constant
+named `YII_ENV` that you may define in the [entry script](structure-entry.md) of your application.
+For example,
+
+```php
+defined('YII_ENV') or define('YII_ENV', 'dev');
+```
+
+You may define `YII_ENV` as one of the following values:
+
+- `prod`: production environment. The constant `YII_ENV_PROD` will evaluate as true.
+  This is the default value of `YII_ENV` if you do not define it.
+- `dev`: development environment. The constant `YII_ENV_DEV` will evaluate as true.
+- `test`: testing environment. The constant `YII_ENV_TEST` will evaluate as true.
+
+With these environment constants, you may specify your configurations conditionally based on
+the current environment. For example, your application configuration may contain the following
+code to enable the [debug toolbar and debugger](tool-debugger.md) in development environment.
+
+```php
+$config = [...];
+
+if (YII_ENV_DEV) {
+    // configuration adjustments for 'dev' environment
+    $config['bootstrap'][] = 'debug';
+    $config['modules']['debug'] = 'yii\debug\Module';
+}
+
+return $config;
+```
