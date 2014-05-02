@@ -20,30 +20,14 @@ Getting Started
 
 * [Preparing Your Environment](start-environment.md)
 * [Creating Your First Yii Application](start-basic.md)
-* **TBD** [Application Structure](start-structure.md)
-* **TBD** [Request Lifecycle](start-lifecycle.md)
+* [Application Structure](start-structure.md)
+* [Request Lifecycle](start-lifecycle.md)
 * **TBD** [Next Steps](start-next-steps.md)
 
 
-Basic Concepts
---------------
+Application Structure
+---------------------
 
-* [Components](basic-components.md)
-* [Properties](basic-properties.md)
-* [Events](basic-events.md)
-* [Behaviors](basic-behaviors.md)
-* [Configurations](basic-configs.md)
-* [Class Autoloading](basic-autoloading.md)
-* [Aliases](basic-alias.md)
-* **TBD** [Extensions](basic-extensions.md)
-* [Service Locator](basic-service-locator.md)
-* [Dependency Injection Container](basic-di-container.md)
-
-
-Basic Structure
----------------
-
-* [MVC Overview](structure-mvc.md)
 * **TBD** [Entry Scripts](structure-entry-scripts.md)
 * **TBD** [Applications](structure-applications.md)
 * [Controllers and Actions](structure-controllers.md)
@@ -63,6 +47,21 @@ Handling Requests
 * **TBD** [Sessions and Cookies](runtime-sessions-cookies.md)
 * [URL Parsing and Generation](runtime-url-handling.md)
 * **TBD** [Filtering](runtime-filtering.md)
+
+
+Basic Concepts
+--------------
+
+* [Components](basic-components.md)
+* [Properties](basic-properties.md)
+* [Events](basic-events.md)
+* [Behaviors](basic-behaviors.md)
+* [Configurations](basic-configs.md)
+* [Class Autoloading](basic-autoloading.md)
+* [Aliases](basic-alias.md)
+* **TBD** [Extensions](basic-extensions.md)
+* [Service Locator](basic-service-locator.md)
+* [Dependency Injection Container](basic-di-container.md)
 
 
 Working with Databases
