@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.0-rc under development
 --------------------------
 
+- Bug #3325: Fixed the bug that IE conditional comments content was being loaded in all browsers instead of targeted ones (mbman)
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
 - Bug #2563: Theming is not working if the path map of the theme contains ".." or "." in the paths (qiangxue)
 - Bug #2801: Fixed the issue that GridView gets footer content before data cells content (ElisDN)
