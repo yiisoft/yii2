@@ -61,7 +61,7 @@ class MyClass extends Object
 }
 ```
 
-This will make your components [configurable](basic-configurations.md) when they are being created. For example,
+This will make your components [configurable](basic-configs.md) when they are being created. For example,
 
 ```php
 $component = new MyClass(1, 2, ['prop1' => 3, 'prop2' => 4]);
@@ -72,6 +72,10 @@ $component = \Yii::createObject([
     'prop2' => 4,
 ], [1, 2]);
 ```
+
+> Info: While the call of [[Yii::createObject()]] looks more complicated, it is more powerful due to
+  the fact that it is implemented on top of a [dependency injection container](basic-di-container.md).
+  
 
 The [[yii\base\Object]] class enforces the following object lifecycle:
 
