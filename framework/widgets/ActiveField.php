@@ -130,6 +130,10 @@ class ActiveField extends Component
      */
     public $parts = [];
 
+    /**
+     * @var string id of the input field. If
+     */
+    public $inputId;
 
     /**
      * PHP magic method that returns the string representation of this object.
@@ -198,7 +202,8 @@ class ActiveField extends Component
             $this->form->attributes[$this->attribute] = $clientOptions;
         }
 
-        $inputID = Html::getInputId($this->model, $this->attribute);
+		// Use $this->inputId if it set
+        $inputID = $this->inputId === null ? Html::getInputId($this->model, $this->attribute) : $this->inputId;
         $attribute = Html::getAttributeName($this->attribute);
         $options = $this->options;
         $class = isset($options['class']) ? [$options['class']] : [];
@@ -704,7 +709,8 @@ class ActiveField extends Component
         }
 
         if ($enableClientValidation && !empty($options['validate']) || $enableAjaxValidation) {
-            $inputID = Html::getInputId($this->model, $this->attribute);
+			// Use $this->inputId if it set
+            $inputID = $this->inputId === null ? Html::getInputId($this->model, $this->attribute) : $this->inputId;
             $options['id'] = $inputID;
             $options['name'] = $this->attribute;
             foreach (['validateOnChange', 'validateOnType', 'validationDelay'] as $name) {
