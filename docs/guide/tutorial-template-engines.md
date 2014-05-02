@@ -39,7 +39,7 @@ your `composer.json` file to include them, too:
 "yiisoft/yii2-smarty": "*",
 "yiisoft/yii2-twig": "*",
 ```
-That code would be added to the `require` section of `composer.json`. After making that change and saving the file, you can install the extensions by running `composer update --preder-dist` in the command-line.
+That code would be added to the `require` section of `composer.json`. After making that change and saving the file, you can install the extensions by running `composer update --prefer-dist` in the command-line.
 
 Twig
 ----
