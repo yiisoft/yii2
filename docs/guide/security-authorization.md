@@ -181,7 +181,7 @@ more special *tree* hierarchy. While a role can contain a permission, it is not 
 ### Configuring RBAC Manager
 
 Before we set off to define authorization data and perform access checking, we need to configure the
-[[yii\base\Application::authManager|authManager]] application component. Yii provides two types of authorization managers: 
+[[yii\base\Application::authManager|authManager]] application component. Yii provides two types of authorization managers:
 [[yii\rbac\PhpManager]] and [[yii\rbac\DbManager]]. The former uses a PHP script file to store authorization
 data, while the latter stores authorization data in database. You may consider using the former if your application
 does not require very dynamic role and permission management.
@@ -416,6 +416,7 @@ You can create set up the RBAC data as follows,
 ```php
 namespace app\rbac;
 
+use Yii;
 use yii\rbac\Rule;
 
 /**
@@ -427,14 +428,15 @@ class UserGroupRule extends Rule
 
     public function execute($user, $item, $params)
     {
-        $group = \Yii::$app->user->identity->group;
-        if ($item->name === 'admin') {
-            return $group == 1;
-        } elseif ($item->name === 'author') {
-            return $group == 1 || $group == 2;
-        } else {
-            return false;
+        if (!Yii::$app->user->isGuest) {
+            $group = Yii::$app->user->identity->group;
+            if ($item->name === 'admin') {
+                return $group == 1;
+            } elseif ($item->name === 'author') {
+                return $group == 1 || $group == 2;
+            }
         }
+        return false;
     }
 }
 
