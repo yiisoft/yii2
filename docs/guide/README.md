@@ -57,7 +57,7 @@ Key Concepts
 * [Properties](concept-properties.md)
 * [Events](concept-events.md)
 * [Behaviors](concept-behaviors.md)
-* [Configurations](concept-configs.md)
+* [Configurations](concept-configurations.md)
 * [Aliases](concept-aliases.md)
 * [Class Autoloading](concept-autoloading.md)
 * [Service Locator](concept-service-locator.md)

@@ -35,8 +35,8 @@ Yii::setAlias('@foobar', '@foo/bar');
 
 Root aliases are usually defined during the [bootstrapping](runtime-bootstrapping.md) stage.
 For example, you may call [[Yii::setAlias()]] in the [entry script](structure-entry-scripts.md).
-For convenience, [Application](structure-applications.md) provides writable property named `aliases`
-that you can configure in the application [configuration](concept-configs.md), like the following,
+For convenience, [Application](structure-applications.md) provides a writable property named `aliases`
+that you can configure in the application [configuration](concept-configurations.md), like the following,
 
 ```php
 return [
@@ -115,7 +115,7 @@ The following is the list of the predefined aliases:
 
 The `@yii` alias is defined when you include the `Yii.php` file in your [entry script](structure-entry-scripts.md),
 while the rest of the aliases are defined in the application constructor when applying the application
-[configuration](concept-configs.md).
+[configuration](concept-configurations.md).
 
 
 Extension Aliases

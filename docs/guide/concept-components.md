@@ -61,7 +61,7 @@ class MyClass extends Object
 }
 ```
 
-This will make your components [configurable](concept-configs.md) when they are being created. For example,
+This will make your components [configurable](concept-configurations.md) when they are being created. For example,
 
 ```php
 $component = new MyClass(1, 2, ['prop1' => 3, 'prop2' => 4]);

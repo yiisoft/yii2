@@ -98,7 +98,7 @@ class User extends ActiveRecord
 }
 ```
 
-The [[yii\base\Component::behaviors()|behaviors()]] method should return a list of behavior [configurations](concept-configs.md).
+The [[yii\base\Component::behaviors()|behaviors()]] method should return a list of behavior [configurations](concept-configurations.md).
 Each behavior configuration can be either a behavior class name or a configuration array.
 
 You may associate a name with a behavior by specifying the array key corresponding to the behavior configuration.
