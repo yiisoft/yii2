@@ -35,6 +35,7 @@ Application Structure
 * [Models](structure-models.md)
 * **TBD** [Widgets](structure-widgets.md)
 * **TBD** [Modules](structure-modules.md)
+* **TBD** [Extensions](structure-extensions.md)
 
 
 Handling Requests
@@ -49,17 +50,16 @@ Handling Requests
 * **TBD** [Filtering](runtime-filtering.md)
 
 
-Basic Concepts
---------------
+Key Concepts
+------------
 
 * [Components](basic-components.md)
 * [Properties](basic-properties.md)
 * [Events](basic-events.md)
 * [Behaviors](basic-behaviors.md)
 * [Configurations](basic-configs.md)
-* [Class Autoloading](basic-autoloading.md)
 * [Aliases](basic-alias.md)
-* **TBD** [Extensions](basic-extensions.md)
+* [Class Autoloading](basic-autoloading.md)
 * [Service Locator](basic-service-locator.md)
 * [Dependency Injection Container](basic-di-container.md)
 
@@ -77,8 +77,8 @@ Working with Databases
 * **TBD** [ElasticSearch](db-elastic-search.md)
 
 
-Collecting Inputs
------------------
+Getting User Inputs
+-------------------
 
 * [Creating Forms](input-forms.md)
 * [Input Validation](input-validation.md)

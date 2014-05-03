@@ -244,7 +244,7 @@ Environment Constants
 Configurations often vary according to the environment in which an application runs. For example,
 in development environment, you may want to use a database named `mydb_dev`, while on production server
 you may want to use the `mydb_prod` database. To facilitate switching environments, Yii provides a constant
-named `YII_ENV` that you may define in the [entry script](structure-entry.md) of your application.
+named `YII_ENV` that you may define in the [entry script](structure-entry-scripts.md) of your application.
 For example,
 
 ```php
