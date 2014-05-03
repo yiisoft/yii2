@@ -97,7 +97,7 @@ Connecting to Database
 ----------------------
 
 Active Record uses a [[yii\db\Connection|DB connection]] to exchange data with database. By default,
-it uses the `db` application component as the connection. As explained in [Database basics](database-basics.md),
+it uses the `db` application component as the connection. As explained in [Database basics](db-dao.md),
 you may configure the `db` component in the application configuration file like follows,
 
 ```php
@@ -211,7 +211,7 @@ $customers = Customer::find()
 
 ### Retrieving Data in Batches
 
-In [Query Builder](query-builder.md), we have explained that you may use *batch query* to keep your memory
+In [Query Builder](db-query-builder.md), we have explained that you may use *batch query* to keep your memory
 usage under a limit when querying a large amount of data from database. You may use the same technique
 in Active Record. For example,
 
@@ -286,7 +286,7 @@ Customer::updateAllCounters(['age' => 1]);
 ### Data Input and Validation
 
 Because Active Record extends from [[yii\base\Model]], it supports the same data input and validation features
-as described in [Model](model.md). For example, you may declare validation rules by overwriting the
+as described in [Model](structure-models.md). For example, you may declare validation rules by overwriting the
 [[yii\base\Model::rules()|rules()]] method; you may massively assign user input data to an Active Record instance;
 and you may call [[yii\base\Model::validate()|validate()]] to trigger data validation.
 
@@ -331,7 +331,7 @@ Active Record Life Cycles
 
 It is important to understand the life cycles of Active Record when it is used to manipulate data in database.
 These life cycles are typically associated with corresponding events which allow you to inject code
-to intercept or respond to these events. They are especially useful for developing Active Record [behaviors](behaviors.md).
+to intercept or respond to these events. They are especially useful for developing Active Record [behaviors](basic-behaviors.md).
 
 When instantiating a new Active Record instance, we will have the following life cycles:
 
@@ -1053,5 +1053,5 @@ TODO
 See also
 --------
 
-- [Model](model.md)
+- [Model](structure-models.md)
 - [[yii\db\ActiveRecord]]
