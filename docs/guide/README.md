@@ -53,15 +53,15 @@ Handling Requests
 Key Concepts
 ------------
 
-* [Components](basic-components.md)
-* [Properties](basic-properties.md)
-* [Events](basic-events.md)
-* [Behaviors](basic-behaviors.md)
-* [Configurations](basic-configs.md)
-* [Aliases](basic-alias.md)
-* [Class Autoloading](basic-autoloading.md)
-* [Service Locator](basic-service-locator.md)
-* [Dependency Injection Container](basic-di-container.md)
+* [Components](concept-components.md)
+* [Properties](concept-properties.md)
+* [Events](concept-events.md)
+* [Behaviors](concept-behaviors.md)
+* [Configurations](concept-configs.md)
+* [Aliases](concept-aliases.md)
+* [Class Autoloading](concept-autoloading.md)
+* [Service Locator](concept-service-locator.md)
+* [Dependency Injection Container](concept-di-container.md)
 
 
 Working with Databases

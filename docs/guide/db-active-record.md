@@ -331,7 +331,7 @@ Active Record Life Cycles
 
 It is important to understand the life cycles of Active Record when it is used to manipulate data in database.
 These life cycles are typically associated with corresponding events which allow you to inject code
-to intercept or respond to these events. They are especially useful for developing Active Record [behaviors](basic-behaviors.md).
+to intercept or respond to these events. They are especially useful for developing Active Record [behaviors](concept-behaviors.md).
 
 When instantiating a new Active Record instance, we will have the following life cycles:
 

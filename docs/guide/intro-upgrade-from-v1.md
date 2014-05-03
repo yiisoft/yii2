@@ -54,9 +54,9 @@ Component and Object
 --------------------
 
 Yii 2.0 breaks the `CComponent` class in 1.1 into two classes: [[yii\base\Object]] and [[yii\base\Component]].
-The [[yii\base\Object|Object]] class is a lightweight base class that allows defining [object properties](basic-properties.md)
+The [[yii\base\Object|Object]] class is a lightweight base class that allows defining [object properties](concept-properties.md)
 via getters and setters. The [[yii\base\Component|Component]] class extends from [[yii\base\Object|Object]] and supports
-[events](basic-events.md) and [behaviors](basic-behaviors.md).
+[events](concept-events.md) and [behaviors](concept-behaviors.md).
 
 If your class does not need the event or behavior feature, you should consider using
 [[yii\base\Object|Object]] as the base class. This is usually the case for classes that represent basic
@@ -105,7 +105,7 @@ $object = Yii::createObject([
 ], [$param1, $param2]);
 ```
 
-More details about configurations can be found in the [Object Configurations](basic-configs.md) chapter.
+More details about configurations can be found in the [Object Configurations](concept-configs.md) chapter.
 
 
 Events
@@ -128,7 +128,7 @@ $component->on($eventName, $handler);
 // $component->off($eventName, $handler);
 ```
 
-There are many enhancements to the event features. For more details, please refer to the [Events](basic-events.md) chapter.
+There are many enhancements to the event features. For more details, please refer to the [Events](concept-events.md) chapter.
 
 
 Path Aliases
@@ -147,7 +147,7 @@ a class like `yii\web\Request` can be autoloaded by Yii. If you use a third part
 such as Zend Framework, you may define a path alias `@Zend` which refers to its installation
 directory and Yii will be able to autoload any class in this library.
 
-More on path aliases can be found in the [Path Aliases](basic-aliases.md) chapter.
+More on path aliases can be found in the [Path Aliases](concept-aliases.md) chapter.
 
 
 Views

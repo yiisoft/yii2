@@ -2,8 +2,8 @@ Components
 ==========
 
 Components are the main building blocks in Yii applications. Components are instances of [[yii\base\Component]]
-or it child class. They support features such as [properties](basic-properties.md), [events](basic-events.md) and
-[behaviors](basic-behaviors.md), which makes them more customizable and easier to use. For example, you may use
+or it child class. They support features such as [properties](concept-properties.md), [events](concept-events.md) and
+[behaviors](concept-behaviors.md), which makes them more customizable and easier to use. For example, you may use
 the included [[yii\jui\DatePicker|date picker widget]], a user interface component, in a [view](structure-view.md)
 to generate an interactive date picker:
 
@@ -20,10 +20,10 @@ echo DatePicker::widget([
 ```
 
 While components are very powerful, they are a bit heavier compared to normal objects, due to the fact that
-it takes extra memory and CPU time in order to support [events](basic-events.md) and [behaviors](basic-behaviors.md).
+it takes extra memory and CPU time in order to support [events](concept-events.md) and [behaviors](concept-behaviors.md).
 If your components do not need these two features, you may consider extending your component class from
 [[yii\base\Object]] instead of [[yii\base\Component]], which will make your components as efficient as normal objects,
-but with the extra support for [properties](basic-properties.md).
+but with the extra support for [properties](concept-properties.md).
 
 When extending your class from [[yii\base\Component]] or [[yii\base\Object]], it is recommended that you follow
 these conventions:
@@ -61,7 +61,7 @@ class MyClass extends Object
 }
 ```
 
-This will make your components [configurable](basic-configs.md) when they are being created. For example,
+This will make your components [configurable](concept-configs.md) when they are being created. For example,
 
 ```php
 $component = new MyClass(1, 2, ['prop1' => 3, 'prop2' => 4]);
@@ -74,7 +74,7 @@ $component = \Yii::createObject([
 ```
 
 > Info: While the call of [[Yii::createObject()]] looks more complicated, it is more powerful due to
-  the fact that it is implemented on top of a [dependency injection container](basic-di-container.md).
+  the fact that it is implemented on top of a [dependency injection container](concept-di-container.md).
   
 
 The [[yii\base\Object]] class enforces the following object lifecycle:

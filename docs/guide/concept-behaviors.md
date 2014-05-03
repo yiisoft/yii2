@@ -6,7 +6,7 @@ as [mixins](http://en.wikipedia.org/wiki/Mixin), allow you to enhance the functi
 of an existing [[yii\base\Component|component]] class without the need of changing its class inheritance.
 When a behavior is attached to a component, it will "inject" its methods and properties into the component,
 and you can access these methods and properties as if they are defined by the component class. Moreover, a behavior
-can respond to the [events](basic-events.md) triggered by the component so that it can customize or adapt the normal
+can respond to the [events](concept-events.md) triggered by the component so that it can customize or adapt the normal
 code execution of the component.
 
 
@@ -18,7 +18,7 @@ attach a behavior in the next section.
 
 Once a behavior is attached to a component, its usage is straightforward.
 
-You can access a *public* member variable or a [property](basic-properties.md) defined by a getter and/or a setter
+You can access a *public* member variable or a [property](concept-properties.md) defined by a getter and/or a setter
 of the behavior through the component it is attached to, like the following,
 
 ```php
@@ -98,7 +98,7 @@ class User extends ActiveRecord
 }
 ```
 
-The [[yii\base\Component::behaviors()|behaviors()]] method should return a list of behavior [configurations](basic-configs.md).
+The [[yii\base\Component::behaviors()|behaviors()]] method should return a list of behavior [configurations](concept-configs.md).
 Each behavior configuration can be either a behavior class name or a configuration array.
 
 You may associate a name with a behavior by specifying the array key corresponding to the behavior configuration.
@@ -180,7 +180,7 @@ class MyBehavior extends Behavior
 The above code defines the behavior class `app\components\MyBehavior` which will provides two properties
 `prop1` and `prop2`, and one method `foo()` to the component it is attached to. Note that property `prop2`
 is defined via the getter `getProp2()` and the setter `setProp2()`. This is so because [[yii\base\Object]]
-is an ancestor class of [[yii\base\Behavior]], which supports defining [properties](basic-properties.md) by getters/setters.
+is an ancestor class of [[yii\base\Behavior]], which supports defining [properties](concept-properties.md) by getters/setters.
 
 Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
 
@@ -220,7 +220,7 @@ its handler `beforeValidate()`. When specifying an event handler, you may use on
 * an anonymous function.
 
 The signature of an event handler should be as follows, where `$event` refers to the event parameter. Please refer
-to the [Events](basic-events.md) chapter for more details about events.
+to the [Events](concept-events.md) chapter for more details about events.
 
 ```php
 function ($event) {

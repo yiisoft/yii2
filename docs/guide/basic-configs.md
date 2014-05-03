@@ -3,9 +3,9 @@ Configurations
 
 Configurations are widely used in Yii for creating new objects or initializing existing objects.
 They usually include the class names of the objects being created and a list of initial values
-that should be assigned to object [properties](basic-properties.md). They may also include a list of
-handlers that should be attached to the object [events](basic-events.md), and/or a list of
-[behaviors](basic-behaviors.md) that should be attached to the objects.
+that should be assigned to object [properties](concept-properties.md). They may also include a list of
+handlers that should be attached to the object [events](concept-events.md), and/or a list of
+[behaviors](concept-behaviors.md) that should be attached to the objects.
 
 In the following, a configuration is used to create and initialize a DB connection:
 
@@ -53,12 +53,12 @@ where
 
 * The `class` element specifies a fully qualified class name for the object being created.
 * The `propertyName` elements specify the property initial values. The keys are the property names, and the
-  values are the corresponding initial values. Only public member variables and [properties](basic-properties.md)
+  values are the corresponding initial values. Only public member variables and [properties](concept-properties.md)
   defined by getters/setters can be configured.
-* The `on eventName` elements specify what handlers should be attached to the object [events](basic-events.md).
+* The `on eventName` elements specify what handlers should be attached to the object [events](concept-events.md).
   Notice that the array keys are formed by prefixing event names with `on `. Please refer to
-  the [Events](basic-events.md) chapter for supported event handler formats.
-* And the `as behaviorName` elements specify what [behaviors](basic-behaviors.md) should be attached to the object.
+  the [Events](concept-events.md) chapter for supported event handler formats.
+* And the `as behaviorName` elements specify what [behaviors](concept-behaviors.md) should be attached to the object.
   Notice that the array keys are formed by prefixing behavior names with `on `. `$behaviorConfig` represents
   the configuration for creating a behavior, like a normal configuration as we are describing here.
 
@@ -135,7 +135,7 @@ an [entry script](structure-entry-scripts.md), where the class name is already g
 ```
 
 For more details about configuring the `components` property of an application can be found
-in the [Applications](structure-applications.md) chapter and the [Service Locator](basic-service-locator.md) chapter.
+in the [Applications](structure-applications.md) chapter and the [Service Locator](concept-service-locator.md) chapter.
 
 
 ### Widget Configurations
@@ -220,7 +220,7 @@ $config = require('path/to/web.php');
 Default Configurations
 ----------------------
 
-The [[Yii::createObject()]] method is implemented based on a [dependency injection container](basic-di-container.md).
+The [[Yii::createObject()]] method is implemented based on a [dependency injection container](concept-di-container.md).
 It allows you specify a set of the so-called *default configurations* which will be applied to ANY instances of
 the specified classes when they are being created using [[Yii::createObject()]]. The default configurations
 can be specified by calling `Yii::$container->set()` in the [bootstrapping](runtime-bootstrapping.md) code.
