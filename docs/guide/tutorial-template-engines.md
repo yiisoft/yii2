@@ -52,26 +52,26 @@ or `$this->renderPartial()` controller calls:
 echo $this->render('renderer.twig', ['username' => 'Alex']);
 ```
 
-### Additional syntax
-
-Yii adds some extra syntax constructs additionally to standard Twig ones.
-
-
-###
-
-{{registerAssetBundle('AppAsset')}} - Registers asset bundle of a given name
-
-
 ### Forms
 
+There are two form helper functions `form_begin` and `form_end` to make using forms more convenient:
+
 ```
-{% set form = form_begin({ ... }) %}
-{{ form.field(...) }}
-{% form.end() %}
+{% set form = form_begin({
+    'id' : 'login-form',
+    'options' : {'class' : 'form-horizontal'},
+}) %}
+    {{ form.field(model, 'username') | raw }}
+    {{ form.field(model, 'password').passwordInput() | raw }}
+
+    <div class="form-group">
+        <input type="submit" value="Login" class="btn btn-primary" />
+    </div>
+{{ form_end() }}
 ```
 
 
-#### Getting URL for a route
+### Getting URL for a route
 
 There are two functions you can use for URLs:
 

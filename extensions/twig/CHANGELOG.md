@@ -5,6 +5,7 @@ Yii Framework 2 twig extension Change Log
 --------------------------
 
 - Bug #2925: Fixed throwing exception when accessing AR property with null value (samdark)
+- Enh #1799: Added `form_begin`, `form_end` to twig extension (samdark)
 
 
 2.0.0-beta April 13, 2014
