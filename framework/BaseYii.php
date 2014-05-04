@@ -199,8 +199,8 @@ class BaseYii
      * @param string $alias the alias name (e.g. "@yii"). It must start with a '@' character.
      * It may contain the forward slash '/' which serves as boundary character when performing
      * alias translation by [[getAlias()]].
-     * @param string $path the path corresponding to the alias. Trailing '/' and '\' characters
-     * will be trimmed. This can be
+     * @param string $path the path corresponding to the alias. If this is null, the alias will
+     * be removed. Trailing '/' and '\' characters will be trimmed. This can be
      *
      * - a directory or a file path (e.g. `/tmp`, `/tmp/main.txt`)
      * - a URL (e.g. `http://www.yiiframework.com`)

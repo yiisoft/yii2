@@ -192,7 +192,6 @@ class Context extends Component
                 return $this->inheritMethodRecursive($method, $parent);
             }
         }
-
         return $method;
     }
 
@@ -209,7 +208,7 @@ class Context extends Component
             if ($method->isStatic) {
                 continue;
             }
-            if (!strncmp($name, 'get', 3) && $this->paramsOptional($method)) {
+            if (!strncmp($name, 'get', 3) && strlen($name) > 3 && $this->paramsOptional($method)) {
                 $propertyName = '$' . lcfirst(substr($method->name, 3));
                 if (isset($class->properties[$propertyName])) {
                     $property = $class->properties[$propertyName];
@@ -238,7 +237,7 @@ class Context extends Component
                     ]);
                 }
             }
-            if (!strncmp($name, 'set', 3) && $this->paramsOptional($method, 1)) {
+            if (!strncmp($name, 'set', 3) && strlen($name) > 3 && $this->paramsOptional($method, 1)) {
                 $propertyName = '$' . lcfirst(substr($method->name, 3));
                 if (isset($class->properties[$propertyName])) {
                     $property = $class->properties[$propertyName];
@@ -282,7 +281,6 @@ class Context extends Component
                 return false;
             }
         }
-
         return true;
     }
 
@@ -297,7 +295,6 @@ class Context extends Component
                 return $param;
             }
         }
-
         return null;
     }
 
@@ -320,7 +317,6 @@ class Context extends Component
                 return true;
             }
         }
-
         return false;
     }
 }

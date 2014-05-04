@@ -8,9 +8,8 @@ if ($exception instanceof \yii\web\HttpException) {
 } else {
     $code = $exception->getCode();
 }
-if ($exception instanceof \yii\base\Exception) {
-    $name = $exception->getName();
-} else {
+$name = $handler->getExceptionName($exception);
+if ($name === null) {
     $name = 'Error';
 }
 if ($code) {

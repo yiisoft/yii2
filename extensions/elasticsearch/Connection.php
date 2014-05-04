@@ -17,6 +17,7 @@ use yii\helpers\Json;
  *
  * @property string $driverName Name of the DB driver. This property is read-only.
  * @property boolean $isActive Whether the DB connection is established. This property is read-only.
+ * @property QueryBuilder $queryBuilder This property is read-only.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

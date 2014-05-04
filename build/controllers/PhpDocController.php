@@ -22,12 +22,12 @@ use yii\helpers\FileHelper;
 class PhpDocController extends Controller
 {
     public $defaultAction = 'property';
-
     /**
      * @var boolean whether to update class docs directly. Setting this to false will just output docs
      * for copy and paste.
      */
     public $updateFiles = true;
+
 
     /**
      * Generates `@property` annotations in class files from getters and setters
@@ -125,6 +125,7 @@ class PhpDocController extends Controller
                 '/build/',
                 '/docs/',
                 '/extensions/apidoc/helpers/PrettyPrinter.php',
+                '/extensions/apidoc/helpers/ApiIndexer.php',
                 '/extensions/codeception/TestCase.php',
                 '/extensions/codeception/DbTestCase.php',
                 '/extensions/composer/',
@@ -133,6 +134,7 @@ class PhpDocController extends Controller
                 '/extensions/twig/TwigSimpleFileLoader.php',
                 '/framework/BaseYii.php',
                 '/framework/Yii.php',
+                'assets/',
                 'tests/',
                 'vendor/',
             ];
@@ -414,11 +416,11 @@ class PhpDocController extends Controller
             $gets = $this->match(
                 '#\* @return (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
                 '[\s\n]{2,}public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)#',
-                $class['content']);
+                $class['content'], true);
             $sets = $this->match(
                 '#\* @param (?<type>[\w\\|\\\\\\[\\]]+) \$\w+(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
                 '[\s\n]{2,}public function (?<kind>set)(?<name>\w+)\(\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)#',
-                $class['content']);
+                $class['content'], true);
             // check for @property annotations in getter and setter
             $properties = $this->match(
                 '#\* @(?<kind>property) (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
@@ -498,15 +500,24 @@ class PhpDocController extends Controller
         return [$className, $phpdoc];
     }
 
-    protected function match($pattern, $subject)
+    protected function match($pattern, $subject, $split = false)
     {
         $sets = [];
-        preg_match_all($pattern . 'suU', $subject, $sets, PREG_SET_ORDER);
-        foreach ($sets as &$set)
-            foreach ($set as $i => $match)
-                if (is_numeric($i) /*&& $i != 0*/)
-                    unset($set[$i]);
+        // split subject by double newlines because regex sometimes has problems with matching
+        // in the complete set of methods
+        // example: yii\di\ServiceLocator setComponents() is not recognized in the whole but in
+        // a part of the class.
+        $parts = $split ? explode("\n\n", $subject) : [$subject];
+        foreach($parts as $part) {
+            preg_match_all($pattern . 'suU', $part, $matches, PREG_SET_ORDER);
+            foreach ($matches as &$set) {
+                foreach ($set as $i => $match)
+                    if (is_numeric($i) /*&& $i != 0*/)
+                        unset($set[$i]);
 
+                $sets[] = $set;
+            }
+        }
         return $sets;
     }
 

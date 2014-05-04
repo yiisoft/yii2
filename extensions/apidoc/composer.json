@@ -23,7 +23,8 @@
 		"yiisoft/yii2-bootstrap": "*",
 		"phpdocumentor/reflection": ">=1.0.3",
 		"phpdocumentor/reflection-docblock": ">2.0.1",
-		"nikic/php-parser": "0.9.*"
+		"nikic/php-parser": "0.9.*",
+		"cebe/js-search": "*"
 	},
 	"autoload": {
 		"psr-4": { "yii\\apidoc\\": "" }

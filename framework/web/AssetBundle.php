@@ -95,12 +95,12 @@ class AssetBundle extends Object
      */
     public $css = [];
     /**
-     * @var array the options that will be passed to [[\yii\web\View::registerJsFile()]]
+     * @var array the options that will be passed to [[View::registerJsFile()]]
      * when registering the JS files in this bundle.
      */
     public $jsOptions = [];
     /**
-     * @var array the options that will be passed to [[\yii\web\View::registerCssFile()]]
+     * @var array the options that will be passed to [[View::registerCssFile()]]
      * when registering the CSS files in this bundle.
      */
     public $cssOptions = [];
@@ -143,14 +143,14 @@ class AssetBundle extends Object
     public function registerAssetFiles($view)
     {
         foreach ($this->js as $js) {
-            if (strpos($js, '/') !== 0 && strpos($js, '://') === false) {
+            if ($js[0] !== '/' && $js[0] !== '.' && strpos($js, '://') === false) {
                 $view->registerJsFile($this->baseUrl . '/' . $js, [], $this->jsOptions);
             } else {
                 $view->registerJsFile($js, [], $this->jsOptions);
             }
         }
         foreach ($this->css as $css) {
-            if (strpos($css, '/') !== 0 && strpos($css, '://') === false) {
+            if ($css[0] !== '/' && $css[0] !== '.' && strpos($css, '://') === false) {
                 $view->registerCssFile($this->baseUrl . '/' . $css, [], $this->cssOptions);
             } else {
                 $view->registerCssFile($css, [], $this->cssOptions);

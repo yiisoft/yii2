@@ -173,6 +173,9 @@ class ActiveField extends \yii\widgets\ActiveField
                 } else {
                     $this->template = "<div class=\"checkbox\">\n{beginLabel}\n{input}\n{labelTitle}\n{endLabel}\n{error}\n{hint}\n</div>";
                 }
+            } else {
+                $this->template = $options['template'];
+                unset($options['template']);
             }
             $this->labelOptions['class'] = null;
         }
@@ -189,6 +192,9 @@ class ActiveField extends \yii\widgets\ActiveField
         if ($this->inline) {
             if (!isset($options['template'])) {
                 $this->template = "{label}\n{beginWrapper}\n{input}\n{error}\n{endWrapper}\n{hint}";
+            } else {
+                $this->template = $options['template'];
+                unset($options['template']);
             }
             if (!isset($options['itemOptions'])) {
                 $options['itemOptions'] = [
@@ -209,6 +215,9 @@ class ActiveField extends \yii\widgets\ActiveField
         if ($this->inline) {
             if (!isset($options['template'])) {
                 $this->template = "{label}\n{beginWrapper}\n{input}\n{error}\n{endWrapper}\n{hint}";
+            } else {
+                $this->template = $options['template'];
+                unset($options['template']);
             }
             if (!isset($options['itemOptions'])) {
                 $options['itemOptions'] = [

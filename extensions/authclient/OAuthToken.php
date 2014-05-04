@@ -18,7 +18,7 @@ use yii\base\Object;
  * @property boolean $isExpired Is token expired. This property is read-only.
  * @property boolean $isValid Is token valid. This property is read-only.
  * @property array $params This property is read-only.
- * @property string $token Token value. This property is read-only.
+ * @property string $token Token value.
  * @property string $tokenSecret Token secret value.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>

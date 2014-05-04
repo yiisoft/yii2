@@ -200,6 +200,7 @@ return [
   'yii\rbac\Item' => YII_PATH . '/rbac/Item.php',
   'yii\rbac\ManagerInterface' => YII_PATH . '/rbac/ManagerInterface.php',
   'yii\rbac\Permission' => YII_PATH . '/rbac/Permission.php',
+  'yii\rbac\PhpManager' => YII_PATH . '/rbac/PhpManager.php',
   'yii\rbac\Role' => YII_PATH . '/rbac/Role.php',
   'yii\rbac\Rule' => YII_PATH . '/rbac/Rule.php',
   'yii\requirements\YiiRequirementChecker' => YII_PATH . '/requirements/YiiRequirementChecker.php',

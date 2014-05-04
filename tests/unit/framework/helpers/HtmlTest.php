@@ -85,12 +85,14 @@ class HtmlTest extends TestCase
     {
         $this->assertEquals('<link href="http://example.com" rel="stylesheet">', Html::cssFile('http://example.com'));
         $this->assertEquals('<link href="/test" rel="stylesheet">', Html::cssFile(''));
+        $this->assertEquals("<!--[if IE 9]>\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<![endif]-->", Html::cssFile('http://example.com', ['condition' => 'IE 9']));
     }
 
     public function testJsFile()
     {
         $this->assertEquals('<script src="http://example.com"></script>', Html::jsFile('http://example.com'));
         $this->assertEquals('<script src="/test"></script>', Html::jsFile(''));
+        $this->assertEquals("<!--[if IE 9]>\n" . '<script src="http://example.com"></script>' . "\n<![endif]-->", Html::jsFile('http://example.com', ['condition' => 'IE 9']));
     }
 
     public function testBeginForm()

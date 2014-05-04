@@ -20,7 +20,10 @@ return [
     'Development' => [
         'path' => 'dev',
         'writable' => [
-            // handled by composer.json already
+            'backend/runtime',
+            'backend/web/assets',
+            'frontend/runtime',
+            'frontend/web/assets',
         ],
         'executable' => [
             'yii',
@@ -29,7 +32,10 @@ return [
     'Production' => [
         'path' => 'prod',
         'writable' => [
-            // handled by composer.json already
+            'backend/runtime',
+            'backend/web/assets',
+            'frontend/runtime',
+            'frontend/web/assets',
         ],
         'executable' => [
             'yii',
