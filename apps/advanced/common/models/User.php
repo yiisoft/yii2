@@ -45,6 +45,20 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+      * @inheritdoc
+      */
+     public function rules()
+     {
+         return [
+             ['status', 'default', 'value' => self::STATUS_ACTIVE],
+             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+
+             ['role', 'default', 'value' => self::ROLE_USER],
+             ['role', 'in', 'range' => [self::ROLE_USER]],
+         ];
+     }
+
+    /**
      * @inheritdoc
      */
     public static function findIdentity($id)
