@@ -112,7 +112,7 @@ class Generator extends \yii\gii\Generator
         return [
             'vendorName'  => 'This refers to the name of the publisher, your GitHub user name is usually a good choice, eg. <code>myself</code>.',
             'packageName' => 'This is the name of the extension on packagist, eg. <code>yii2-foobar</code>.',
-            'namespace'   => 'PSR-4, eg. <code>myself\foobar\</code> This will be added to your autoloading by composer. Do not use yii or yii2 in the namespace.',
+            'namespace'   => 'PSR-4, eg. <code>myself\foobar\</code> This will be added to your autoloading by composer. Do not use yii, yii2 or yiisoft in the namespace.',
             'keywords'    => 'Comma separated keywords for this extension.',
             'outputPath'  => 'The temporary location of the generated files.',
             'title'       => 'A more descriptive name of your application for the README file.',
