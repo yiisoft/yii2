@@ -39,7 +39,7 @@ use yii\helpers\Html;
  *             'label' => 'Ajax tab',
  *             'url' => ['ajax/content'],
  *         ],
- *     ),
+ *     ],
  *     'options' => ['tag' => 'div'],
  *     'itemOptions' => ['tag' => 'div'],
  *     'headerOptions' => ['class' => 'my-class'],
