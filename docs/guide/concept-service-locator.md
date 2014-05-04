@@ -10,7 +10,7 @@ In Yii, a service locator is simply an instance of [[yii\di\ServiceLocator]] or 
 The most commonly used service locator in Yii is the *application* object which can be accessed through
 `\Yii::$app`. The services it provides are called *application components*, such as the `request`, `response`,
 `urlManager` components. You may configure these components or even replace them with your own implementations easily
-through functionality provided the service locator.
+through functionality provided by the service locator.
 
 Besides the application object, each module object is also a service locator.
 
