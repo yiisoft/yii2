@@ -17,7 +17,6 @@ use yii\base\InvalidParamException;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
-
     /**
      * @var array mapping from abstract column types (keys) to physical column types (values).
      */
@@ -39,6 +38,30 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BOOLEAN => 'boolean',
         Schema::TYPE_MONEY => 'numeric(19,4)',
     ];
+    /**
+     * @var array map of query condition to builder methods.
+     * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.
+     */
+    protected $conditionBuilders = [
+        'NOT' => 'buildNotCondition',
+        'AND' => 'buildAndCondition',
+        'OR' => 'buildAndCondition',
+        'BETWEEN' => 'buildBetweenCondition',
+        'NOT BETWEEN' => 'buildBetweenCondition',
+        'IN' => 'buildInCondition',
+        'NOT IN' => 'buildInCondition',
+        'LIKE' => 'buildLikeCondition',
+        'ILIKE' => 'buildLikeCondition',
+        'NOT LIKE' => 'buildLikeCondition',
+        'NOT ILIKE' => 'buildLikeCondition',
+        'OR LIKE' => 'buildLikeCondition',
+        'OR ILIKE' => 'buildLikeCondition',
+        'OR NOT LIKE' => 'buildLikeCondition',
+        'OR NOT ILIKE' => 'buildLikeCondition',
+        'EXISTS' => 'buildExistsCondition',
+        'NOT EXISTS' => 'buildExistsCondition',
+    ];
+
 
     /**
      * Builds a SQL statement for dropping an index.

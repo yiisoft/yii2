@@ -48,7 +48,7 @@ class BaseFileHelper
         // the path may contain ".", ".." or double slashes, need to clean them up
         $parts = [];
         foreach (explode($ds, $path) as $part) {
-            if ($part === '..' && !empty($parts)) {
+            if ($part === '..' && !empty($parts) && end($parts) !== '..') {
                 array_pop($parts);
             } elseif ($part === '.' || $part === '' && !empty($parts)) {
                 continue;

@@ -10,6 +10,7 @@ namespace yii\log;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\helpers\VarDumper;
 use yii\web\Request;
 
 /**
@@ -115,7 +116,7 @@ abstract class Target extends Component
         $context = [];
         foreach ($this->logVars as $name) {
             if (!empty($GLOBALS[$name])) {
-                $context[] = "\${$name} = " . var_export($GLOBALS[$name], true);
+                $context[] = "\${$name} = " . VarDumper::dumpAsString($GLOBALS[$name]);
             }
         }
 

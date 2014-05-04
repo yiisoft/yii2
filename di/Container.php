@@ -277,7 +277,7 @@ class Container extends Component
      */
     public function has($class)
     {
-        return isset($this->_singletons[$class]);
+        return isset($this->_definitions[$class]);
     }
 
     /**

@@ -12,12 +12,16 @@
     <meta charset="utf-8"/>
 
     <title><?php
+        $name = $handler->getExceptionName($exception);
         if ($exception instanceof \yii\web\HttpException) {
-            echo (int) $exception->statusCode . ' ' . $handler->htmlEncode($exception->getName());
-        } elseif ($exception instanceof \yii\base\Exception) {
-            echo $handler->htmlEncode($exception->getName() . ' – ' . get_class($exception));
+            echo (int) $exception->statusCode . ' ' . $handler->htmlEncode($name);
         } else {
-            echo $handler->htmlEncode(get_class($exception));
+            $name = $handler->getExceptionName($exception);
+            if ($name !== null) {
+                echo $handler->htmlEncode($name . ' – ' . get_class($exception));
+            } else {
+                echo $handler->htmlEncode(get_class($exception));
+            }
         }
     ?></title>
 
@@ -331,11 +335,14 @@ html,body{
                 if ($exception instanceof \yii\web\HttpException) {
                     echo '<span>' . $handler->createHttpStatusLink($exception->statusCode, $handler->htmlEncode($exception->getName())) . '</span>';
                     echo ' &ndash; ' . $handler->addTypeLinks(get_class($exception));
-                } elseif ($exception instanceof \yii\base\Exception) {
-                    echo '<span>' . $handler->htmlEncode($exception->getName()) . '</span>';
-                    echo ' &ndash; ' . $handler->addTypeLinks(get_class($exception));
                 } else {
-                    echo '<span>' . $handler->htmlEncode(get_class($exception)) . '</span>';
+                    $name = $handler->getExceptionName($exception);
+                    if ($name !== null) {
+                        echo '<span>' . $handler->htmlEncode($name) . '</span>';
+                        echo ' &ndash; ' . $handler->addTypeLinks(get_class($exception));
+                    } else {
+                        echo '<span>' . $handler->htmlEncode(get_class($exception)) . '</span>';
+                    }
                 }
             ?></h1>
         <?php endif; ?>

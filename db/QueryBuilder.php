@@ -41,6 +41,26 @@ class QueryBuilder extends \yii\base\Object
      * Child classes should override this property to declare supported type mappings.
      */
     public $typeMap = [];
+    /**
+     * @var array map of query condition to builder methods.
+     * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.
+     */
+    protected $conditionBuilders = [
+        'NOT' => 'buildNotCondition',
+        'AND' => 'buildAndCondition',
+        'OR' => 'buildAndCondition',
+        'BETWEEN' => 'buildBetweenCondition',
+        'NOT BETWEEN' => 'buildBetweenCondition',
+        'IN' => 'buildInCondition',
+        'NOT IN' => 'buildInCondition',
+        'LIKE' => 'buildLikeCondition',
+        'NOT LIKE' => 'buildLikeCondition',
+        'OR LIKE' => 'buildLikeCondition',
+        'OR NOT LIKE' => 'buildLikeCondition',
+        'EXISTS' => 'buildExistsCondition',
+        'NOT EXISTS' => 'buildExistsCondition',
+    ];
+
 
     /**
      * Constructor.
@@ -844,39 +864,22 @@ class QueryBuilder extends \yii\base\Object
      */
     public function buildCondition($condition, &$params)
     {
-        static $builders = [
-            'NOT' => 'buildNotCondition',
-            'AND' => 'buildAndCondition',
-            'OR' => 'buildAndCondition',
-            'BETWEEN' => 'buildBetweenCondition',
-            'NOT BETWEEN' => 'buildBetweenCondition',
-            'IN' => 'buildInCondition',
-            'NOT IN' => 'buildInCondition',
-            'LIKE' => 'buildLikeCondition',
-            'NOT LIKE' => 'buildLikeCondition',
-            'OR LIKE' => 'buildLikeCondition',
-            'OR NOT LIKE' => 'buildLikeCondition',
-            'EXISTS' => 'buildExistsCondition',
-            'NOT EXISTS' => 'buildExistsCondition',
-        ];
-
         if (!is_array($condition)) {
             return (string) $condition;
         } elseif (empty($condition)) {
             return '';
         }
+
         if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
             $operator = strtoupper($condition[0]);
-            if (isset($builders[$operator])) {
-                $method = $builders[$operator];
+            if (isset($this->conditionBuilders[$operator])) {
+                $method = $this->conditionBuilders[$operator];
                 array_shift($condition);
-
                 return $this->$method($operator, $condition, $params);
             } else {
                 throw new InvalidParamException('Found unknown operator in query: ' . $operator);
             }
         } else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
-
             return $this->buildHashCondition($condition, $params);
         }
     }
@@ -912,7 +915,6 @@ class QueryBuilder extends \yii\base\Object
                 }
             }
         }
-
         return count($parts) === 1 ? $parts[0] : '(' . implode(') AND (', $parts) . ')';
     }
 
@@ -1071,7 +1073,6 @@ class QueryBuilder extends \yii\base\Object
             return "$column $operator (" . implode(', ', $values) . ')';
         } else {
             $operator = $operator === 'IN' ? '=' : '<>';
-
             return $column . $operator . reset($values);
         }
     }
@@ -1130,19 +1131,19 @@ class QueryBuilder extends \yii\base\Object
         $escape = isset($operands[2]) ? $operands[2] : ['%'=>'\%', '_'=>'\_', '\\'=>'\\\\'];
         unset($operands[2]);
 
+        if (!preg_match('/^(AND |OR |)(((NOT |))I?LIKE)/', $operator, $matches)) {
+            throw new InvalidParamException("Invalid operator '$operator'.");
+        }
+        $andor = ' ' . (!empty($matches[1]) ? $matches[1] : 'AND ');
+        $not = !empty($matches[3]);
+        $operator = $matches[2];
+
         list($column, $values) = $operands;
 
         $values = (array) $values;
 
         if (empty($values)) {
-            return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0=1' : '';
-        }
-
-        if ($operator === 'LIKE' || $operator === 'NOT LIKE') {
-            $andor = ' AND ';
-        } else {
-            $andor = ' OR ';
-            $operator = $operator === 'OR LIKE' ? 'LIKE' : 'NOT LIKE';
+            return $not ? '' : '0=1';
         }
 
         if (strpos($column, '(') === false) {
@@ -1171,7 +1172,6 @@ class QueryBuilder extends \yii\base\Object
     {
         if ($operands[0] instanceof Query) {
             list($sql, $params) = $this->build($operands[0], $params);
-
             return "$operator ($sql)";
         } else {
             throw new InvalidParamException('Subquery for EXISTS operator must be a Query object.');
