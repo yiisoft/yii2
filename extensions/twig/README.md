@@ -13,6 +13,7 @@ return [
             'renderers' => [
                 'twig' => [
                     'class' => 'yii\twig\ViewRenderer',
+                    // set cachePath to false in order to disable template caching
                     //'cachePath' => '@runtime/Twig/cache',
                     //'options' => [], /*  Array of twig options */
                     // ... see ViewRenderer for more options
