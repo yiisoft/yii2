@@ -6,6 +6,7 @@ Yii Framework 2 gii extension Change Log
 
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
 - Bug #3265: Fixed incorrect controller class name validation (suralc)
+- Enh #2018: Search model is not required anymore in CRUD generator (johonunu)
 - Enh #3088: The gii module will manage their own URL rules now (qiangxue)
 - Enh #3222: Added `useTablePrefix` option to the model generator for Gii (horizons2)
 
@@ -27,7 +28,6 @@ Yii Framework 2 gii extension Change Log
 - Enh #2633: Keyboard shortcuts to browse through files (thiagotalma)
 - Enh #2822: possibility to generate I18N messages (lucianobaraglia)
 - Enh #2843: Option to filter files according to the action. (thiagotalma)
-- Enh #2018: Search model not required anymore in crud generator. (johonunu)
 
 2.0.0-alpha, December 1, 2013
 -----------------------------
