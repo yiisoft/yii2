@@ -27,6 +27,7 @@ Yii Framework 2 gii extension Change Log
 - Enh #2633: Keyboard shortcuts to browse through files (thiagotalma)
 - Enh #2822: possibility to generate I18N messages (lucianobaraglia)
 - Enh #2843: Option to filter files according to the action. (thiagotalma)
+- Enh #2018: Search model not required anymore in crud generator. (johonunu)
 
 2.0.0-alpha, December 1, 2013
 -----------------------------
