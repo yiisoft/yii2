@@ -62,10 +62,13 @@ Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 Using Other Autoloaders
 -----------------------
 
-You may use the Yii autoloader together with the Composer autoloader or the autoloaders from other libraries.
-When you are doing this, you should consider including the `Yii.php` file *after* all other autoloaders are installed.
-This will make the Yii autoloader to be the first one responding to any class autoloading request, which offers
-you more efficient autoloading. For example, the following code is extracted from
+Because Yii embraces Composer as a package dependency manager, it is recommended that you also install
+the Composer autoloader. If you are using some 3rd-party libraries that have their autoloaders, you should
+also install them.
+
+When you are using the Yii autoloader together with other autoloaders, you should include the `Yii.php` file
+*after* all other autoloaders are installed. This will make the Yii autoloader to be the first one responding to
+any class autoloading request. For example, the following code is extracted from
 the [entry script](structure-entry-scripts.md) of the [Basic Application Template](start-basic.md). The first
 line installs the Composer autoloader, while the second line installs the Yii autoloader.
 
@@ -74,9 +77,19 @@ require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 ```
 
-You may also use the Composer autoloader alone without the Yii autoloader. However, by doing so, the performance
+You may use the Composer autoloader alone without the Yii autoloader. However, by doing so, the performance
 of your class autoloading may be degraded, and you must follow the rules set by Composer in order for your classes
 to be autoloadable.
 
 > Info: If you do not want to use the Yii autoloader, you must create your own version of the `Yii.php` file
   and include it in your [entry script](structure-entry-scripts.md).
+
+
+Autoloading Extension Classes
+-----------------------------
+
+The Yii autoloader is capable of autoloading [extension](structure-extensions.md) classes. The sole requirement
+is that an extension specifies the `autoload` section correctly in its `composer.json` file. Please refer to the
+[Composer documentation](https://getcomposer.org/doc/04-schema.md#autoload) for more details about specifying `autoload`.
+
+In case you do not use the Yii autoloader, the Composer autoloader can still autoload extension classes for you.
