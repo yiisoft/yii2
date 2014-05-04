@@ -132,6 +132,7 @@ helpers and your own variables there:
 'globals' => [
     'html' => '\yii\helpers\Html',
     'name' => 'Carsten',
+    'GridView' => '\yii\grid\GridView',
 ],
 ```
 
@@ -139,6 +140,8 @@ Once configured, in your template you can use the globals in the following way:
 
 ```
 Hello, {{name}}! {{ html.a('Please login', 'site/login') | raw }}.
+
+{{ GridView.widget({'dataProvider' : provider}) | raw }}
 ```
 
 #### Functions
