@@ -16,9 +16,7 @@
  *
  * NOTE: this file must be saved in UTF-8 encoding.
  */
-return array (
-  'Are you sure to delete this item?' => '@@Ar tikrai norite ištrinti šį elementą?@@',
-  'Only files with these mimeTypes are allowed: {mimeTypes}.' => '@@Leidžiama įkelti failus tik šių MIME tipų: {mimeTypes}.@@',
+return [
   '(not set)' => '(nenustatyta)',
   'An internal server error occurred.' => 'Įvyko vidinė serverio klaida',
   'Are you sure you want to delete this item?' => 'Ar tikrai norite ištrinti šį elementą?',
@@ -105,4 +103,4 @@ return array (
   '{n} MB' => '{n} MB',
   '{n} PB' => '{n} PB',
   '{n} TB' => '{n} TB',
-);
+];
