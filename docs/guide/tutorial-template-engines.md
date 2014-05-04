@@ -44,15 +44,44 @@ That code would be added to the `require` section of `composer.json`. After maki
 Twig
 ----
 
-To use Twig, you need to create templates in files that have the `.twig` extension (or use another file extension but configure the component accordingly).
-Unlike standard view files, when using Twig you must include the extension in your `$this->render()`
-or `$this->renderPartial()` controller calls:
+To use Twig, you need to create templates in files that have the `.twig` extension (or use another file extension but
+configure the component accordingly). Unlike standard view files, when using Twig you must include the extension
+in your `$this->render()` or `$this->renderPartial()` controller calls:
 
 ```php
 echo $this->render('renderer.twig', ['username' => 'Alex']);
 ```
 
-### Forms
+### Template syntax
+
+The best resource to learn Twig basics is its official documentation you can find at
+[twig.sensiolabs.org](http://twig.sensiolabs.org/documentation). Additionally there are Yii-specific addtions
+described below.
+
+#### Method and function calls
+
+If you need result you can call a method or a function using the following syntax:
+
+```
+{% set result = my_function({'a' : 'b'}) %}
+{% set result = myObject.my_function({'a' : 'b'}) %}
+```
+
+If you need to echo result instead of assigning it to a variable:
+
+```
+{{ my_function({'a' : 'b'}) }}
+{{ myObject.my_function({'a' : 'b'}) }}
+```
+
+In case you don't need result you shoud use `void` wrapper:
+
+```
+{{ void(my_function({'a' : 'b'})) }}
+{{ void(myObject.my_function({'a' : 'b'})} }}
+```
+
+#### Forms
 
 There are two form helper functions `form_begin` and `form_end` to make using forms more convenient:
 
@@ -71,9 +100,9 @@ There are two form helper functions `form_begin` and `form_end` to make using fo
 ```
 
 
-### Getting URL for a route
+#### URLs
 
-There are two functions you can use for URLs:
+There are two functions you can use for building URLs:
 
 ```php
 <a href="{{ path('blog/view', {'alias' : post.alias}) }}">{{ post.title }}</a>
@@ -82,17 +111,22 @@ There are two functions you can use for URLs:
 
 `path` generates relative URL while `url` generates absolute one. Internally both are using [[\yii\helpers\Url]].
 
-### Additional variables
+#### Additional variables
 
-Within Twig templates, you can also make use of these variables:
+Within Twig templates the following variables are always defined:
 
 - `app`, which equates to `\Yii::$app`
 - `this`, which equates to the current `View` object
 
-### Globals
+### Additional configuration
 
-You can add global helpers or values via the application configuration's `globals` variable. You can define both Yii helpers and your own
-variables there:
+Yii Twig extension allows you to define your own syntax and bring regular helper classes into templates. Let's review
+configuration options.
+
+#### Globals
+
+You can add global helpers or values via the application configuration's `globals` variable. You can define both Yii
+helpers and your own variables there:
 
 ```php
 'globals' => [
@@ -107,7 +141,25 @@ Once configured, in your template you can use the globals in the following way:
 Hello, {{name}}! {{ html.a('Please login', 'site/login') | raw }}.
 ```
 
-### Additional filters
+#### Functions
+
+You can define additional functions like the following:
+
+```php
+'functions' => [
+    'rot13' => 'str_rot13',
+    'truncate' => '\yii\helpers\StringHelper::truncate',
+],
+```
+
+In template they could be used like the following:
+
+```
+`{{ rot13('test') }}`
+`{{ truncate(post.text, 100) }}`
+```
+
+#### Filters
 
 Additional filters may be added via the application configuration's `filters` option:
 
@@ -117,7 +169,7 @@ Additional filters may be added via the application configuration's `filters` op
 ],
 ```
 
-Then in the template you can use:
+Then in the template you can apply filter using the following syntax:
 
 ```
 {{ model|jsonEncode }}
