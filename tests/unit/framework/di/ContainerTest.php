@@ -36,6 +36,8 @@ class ContainerTest extends TestCase
         $this->assertTrue($foo instanceof $Foo);
         $this->assertTrue($foo->bar instanceof $Bar);
         $this->assertTrue($foo->bar->qux instanceof $Qux);
+        $foo2 = $container->get($Foo);
+        $this->assertFalse($foo === $foo2);
 
         // full wiring
         $container = new Container;
@@ -80,5 +82,12 @@ class ContainerTest extends TestCase
         $this->assertTrue($foo instanceof $Foo);
         $this->assertTrue($foo->bar instanceof $Bar);
         $this->assertTrue($foo->bar->qux instanceof $Qux);
+
+        // wiring by closure
+        $container = new Container;
+        $container->set('qux', new Qux);
+        $qux1 = $container->get('qux');
+        $qux2 = $container->get('qux');
+        $this->assertTrue($qux1 === $qux2);
     }
 }
