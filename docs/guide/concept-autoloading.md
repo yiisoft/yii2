@@ -1,37 +1,82 @@
 Class Autoloading
 =================
 
-> Note: This chapter is under development.
-
 Yii relies on the [class autoloading mechanism](http://www.php.net/manual/en/language.oop5.autoload.php)
-to locate and include required class files. A class file will be automatically included by a class autoloader
-when the corresponding class is referenced for the first time during the code execution. Because only
-the necessary files are included and parsed, it improves the application performance.
-
-Yii comes with a high-performance class autoloader which is installed when you include the `framework/Yii.php` file
-in your [entry script](structure-entry-scripts.md). The autoloader is compliant to the
+to locate and include required class files. It provides a high-performance class autoloader that is compliant to the
 [PSR-4 standard](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md).
+The autoloader is installed when you include the `Yii.php` file.
 
-Below is a list of the rules that you should follow if you want to use the Yii class autoloader to autoload
-your class files.
-
-*
-It has the benefit that a class file is included onl
+> Note: For simplicity of description, in this chapter we will only talk about autoloading of classes. However, keep in
+  mind that the content we are describing here applies to autoloading of interfaces and traits as well.
 
 
-All classes, interfaces and traits are loaded automatically at the moment they are used.
-There's no need to use `include` or `require`. It is true for Composer-loaded packages as well as Yii extensions.
+<a name="using-yii-autoloader"></a>
+Using the Yii Autoloader
+------------------------
 
-Yii's autoloader works according to the [PSR-4 standard](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md).
-That means namespaces, classes, interfaces and traits must correspond to file system paths and file names accordingly,
-except for root namespace paths that are defined by an alias.
+To make use of the Yii class autoloader, you should follow two simple rules when creating and naming your classes:
 
-For example, if the standard alias `@app` refers to `/var/www/example.com/` then `\app\models\User` will be loaded from `/var/www/example.com/models/User.php`.
-
-Custom aliases may be added using the following code:
+* Each class must be under some namespace (e.g. `foo\bar\MyClass`).
+* Each class must be saved in an individual file whose path is determined by the following algorithm:
 
 ```php
-Yii::setAlias('@shared', realpath('~/src/shared'));
+// $className is a fully qualified class name with the leading backslash
+$classFile = Yii::getAlias('@' . str_replace('\\', '/', $className) . '.php');
 ```
 
-Additional autoloaders may be registered using PHP's standard `spl_autoload_register`.
+For example, if a class name is `foo\bar\MyClass`, the [alias](concept-aliases.md) for the corresponding class file path
+would be `@foo/bar/MyClass.php`. In order for this alias to be able to be resolved into a file path,
+either `@foo` or `@foo/bar` must be a [root alias](concept-aliases.md#defining-aliases).
+
+When you are using the [Basic Application Template](start-basic.md), you may put your classes under the top-level
+namespace `app` so that they can be autoloaded by Yii without the need of defining a new alias. This is because
+`@app` is a [predefined alias](concept-aliases.md#predefined-aliases), and a class name like `app\components\MyClass`
+can be resolved into the class file `AppBasePath/components/MyClass.php`, according to the algorithm we just described.
+
+In the [Advanced Application Template](tutorial-advanced-app.md), each tier has its own root alias. For example,
+the front-end tier has a root alias `@frontend` while the back-end tier `@backend`. As a result, you may
+put the front-end classes under the namespace `frontend` while the back-end classes under `backend`. This will
+allow these classes to be autoloaded by the Yii autoloader.
+
+
+<a name="class-map"></a>
+Class Map
+---------
+
+The Yii class autoloader supports the *class map* feature which maps class names to the corresponding class file paths.
+When the autoloader is loading a class, it will first check if the class is found in the map. If so, the corresponding
+file path will be included directly without further check. This makes class autoloading super fast. In fact,
+all core Yii classes are being autoloaded this way.
+
+You may add a class to the class map `Yii::$classMap` as follows,
+
+```php
+Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
+```
+
+[Aliases](concept-aliases.md) can be used to specify class file paths. You should set the class map in the
+[bootstrapping](runtime-bootstrapping.md) process so that the map is ready before your classes are used.
+
+
+<a name="using-other-autoloaders"></a>
+Using Other Autoloaders
+-----------------------
+
+You may use the Yii autoloader together with the Composer autoloader or the autoloaders from other libraries.
+When you are doing this, you should consider including the `Yii.php` file *after* all other autoloaders are installed.
+This will make the Yii autoloader to be the first one responding to any class autoloading request, which offers
+you more efficient autoloading. For example, the following code is extracted from
+the [entry script](structure-entry-scripts.md) of the [Basic Application Template](start-basic.md). The first
+line installs the Composer autoloader, while the second line installs the Yii autoloader.
+
+```php
+require(__DIR__ . '/../vendor/autoload.php');
+require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+```
+
+You may also use the Composer autoloader alone without the Yii autoloader. However, by doing so, the performance
+of your class autoloading may be degraded, and you must follow the rules set by Composer in order for your classes
+to be autoloadable.
+
+> Info: If you do not want to use the Yii autoloader, you must create your own version of the `Yii.php` file
+  and include it in your [entry script](structure-entry-scripts.md).
