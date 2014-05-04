@@ -85,6 +85,7 @@ to be autoloadable.
   and include it in your [entry script](structure-entry-scripts.md).
 
 
+<a name="autoloading-extension-classes"></a>
 Autoloading Extension Classes
 -----------------------------
 
