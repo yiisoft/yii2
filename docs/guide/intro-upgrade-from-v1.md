@@ -301,9 +301,8 @@ Please refer to the [Internationalization](tutorial-i18n.md) section for more de
 Action Filters
 --------------
 
-Action filters are implemented via behaviors now. You should extend from [[yii\base\ActionFilter]] to
-define a new filter. To use a filter, you should attach the filter class to the controller
-as a behavior. For example, to use the [[yii\filters\AccessControl]] filter, you should have the following
+Action filters are implemented via behaviors now. To define a new, custom filter, extend from [[yii\base\ActionFilter]]. To use a filter, attach the filter class to the controller
+as a behavior. For example, to use the [[yii\filters\AccessControl]] filter, you would have the following
 code in a controller:
 
 ```php
@@ -326,12 +325,12 @@ Please refer to the [Filtering](runtime-filtering.md) section for more details.
 Assets
 ------
 
-Yii 2.0 introduces a new concept called *asset bundle* which replaces the script package concept in 1.1.
+Yii 2.0 introduces a new concept called *asset bundle* that replaces the script package concept found in Yii 1.1.
 
 An asset bundle is a collection of asset files (e.g. JavaScript files, CSS files, image files, etc.)
-under a directory. Each asset bundle is represented as a class extending [[yii\web\AssetBundle]].
-By registering an asset bundle via [[yii\web\AssetBundle::register()]], you will be able to make
-the assets in that bundle accessible via Web, and the page registering the bundle will automatically
+within a directory. Each asset bundle is represented as a class extending [[yii\web\AssetBundle]].
+By registering an asset bundle via [[yii\web\AssetBundle::register()]], you make
+the assets in that bundle accessible via the Web. Unlike in Yii 1, the page registering the bundle will automatically
 contain the references to the JavaScript and CSS files specified in that bundle.
 
 Please refer to the [Managing Assets](output-assets.md) section for more details.
@@ -340,7 +339,7 @@ Please refer to the [Managing Assets](output-assets.md) section for more details
 Helpers
 -------
 
-Yii 2.0 introduces many commonly used static helper classes, such as
+Yii 2.0 introduces many commonly used static helper classes, including.
 
 * [[yii\helpers\Html]]
 * [[yii\helpers\ArrayHelper]]
@@ -349,13 +348,14 @@ Yii 2.0 introduces many commonly used static helper classes, such as
 * [[yii\helpers\Json]]
 * [[yii\helpers\Security]]
 
+Please refer to the [Helper Overview](helper-overview.md) section for more details.
 
 Forms
 -----
 
 Yii 2.0 introduces the *field* concept for building a form using [[yii\widgets\ActiveForm]]. A field
 is a container consisting of a label, an input, an error message, and/or a hint text.
-It is represented as an [[yii\widgets\ActiveField|ActiveField]] object.
+A field is represented as an [[yii\widgets\ActiveField|ActiveField]] object.
 Using fields, you can build a form more cleanly than before:
 
 ```php
@@ -368,13 +368,15 @@ Using fields, you can build a form more cleanly than before:
 <?php yii\widgets\ActiveForm::end(); ?>
 ```
 
+Please refer to the [Creating Forms](input-forms.md) section for more details.
+
 
 Query Builder
 -------------
 
-In 1.1, query building is scattered among several classes, including `CDbCommand`,
+In 1.1, query building was scattered among several classes, including `CDbCommand`,
 `CDbCriteria`, and `CDbCommandBuilder`. Yii 2.0 represents a DB query in terms of a [[yii\db\Query|Query]] object
-which can be turned into a SQL statement with the help of [[yii\db\QueryBuilder|QueryBuilder]] behind the scene.
+that can be turned into a SQL statement with the help of [[yii\db\QueryBuilder|QueryBuilder]] behind the scene.
 For example:
 
 ```php
@@ -396,7 +398,7 @@ Please refer to the [Query Builder](db-query-builder.md) section for more detail
 Active Record
 -------------
 
-Yii 2.0 introduces a lot of changes to [Active Record](db-active-record.md). Two most obvious ones are:
+Yii 2.0 introduces a lot of changes to [Active Record](db-active-record.md). Two most obvious ones are
 query building and relational query handling.
 
 The `CDbCriteria` class in 1.1 is replaced by [[yii\db\ActiveQuery]] which extends from [[yii\db\Query]] and thus
