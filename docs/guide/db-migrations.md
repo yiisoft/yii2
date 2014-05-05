@@ -1,7 +1,7 @@
 Database Migration
 ==================
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 Like source code, the structure of a database evolves as a database-driven application is developed and maintained. For example, during development, a new table may be added; Or, after the application goes live, it may be discovered that an additional index is required. It is important to keep track of these structural database changes (called **migration**), just as changes to the source code is tracked using version control. If the source code and the database become out of sync, bugs will occur, or the whole application might break. For this reason, Yii provides a database migration
 tool that can keep track of database migration history, apply new migrations, or revert existing ones.

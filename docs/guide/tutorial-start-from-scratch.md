@@ -1,7 +1,7 @@
 Creating your own Application structure
 =======================================
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 While [basic](apps-basic.md) and [advanced](apps-advanced.md) application templates are great for most of your needs
 you may want to create your own application template to start your projects with.

@@ -283,7 +283,7 @@ the declarations in [[yii\console\Controller::options()]].
 
 Yii 2.0 supports automatic generation of command help information from comment blocks.
 
-Please refer to the [Console Commands](tutorial-console.md) chapter for more details.
+Please refer to the [Console Commands](tutorial-console.md) section for more details.
 
 
 I18N
@@ -320,7 +320,7 @@ public function behaviors()
 }
 ```
 
-Please refer to the [Filtering](runtime-filtering.md) chapter for more details.
+Please refer to the [Filtering](runtime-filtering.md) section for more details.
 
 
 Assets
@@ -334,7 +334,7 @@ By registering an asset bundle via [[yii\web\AssetBundle::register()]], you will
 the assets in that bundle accessible via Web, and the page registering the bundle will automatically
 contain the references to the JavaScript and CSS files specified in that bundle.
 
-Please refer to the [Managing Assets](output-assets.md) chapter for more details.
+Please refer to the [Managing Assets](output-assets.md) section for more details.
 
 
 Helpers
@@ -390,7 +390,7 @@ $rows = $command->queryAll();
 
 Best of all, such query building methods can also be used when working with [Active Record](db-active-record.md).
 
-Please refer to the [Query Builder](db-query-builder.md) chapter for more details.
+Please refer to the [Query Builder](db-query-builder.md) section for more details.
 
 
 Active Record
@@ -446,7 +446,7 @@ $customers = Customer::find()->asArray()->all();
 ```
 
 There are many other changes and enhancements to Active Record. Please refer to
-the [Active Record](db-active-record.md) chapter for more details.
+the [Active Record](db-active-record.md) section for more details.
 
 
 User and IdentityInterface
@@ -480,5 +480,5 @@ Using Yii 1.1 and 2.x together
 ------------------------------
 
 If you have legacy Yii 1.1 code and you want to use it together with Yii 2.0, please refer to
-the [Using Yii 1.1 and 2.0 Together](extend-using-v1-v2.md) chapter.
+the [Using Yii 1.1 and 2.0 Together](extend-using-v1-v2.md) section.
 

@@ -1,7 +1,7 @@
 Authentication
 ==============
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 Authentication is the act of verifying who a user is, and is the basis of the login process. Typically, authentication uses the combination of an identifier--a username or email address--and a password. The user submits these values  through a form, and the application then compares the submitted information against that previously stored (e.g., upon registration).
 

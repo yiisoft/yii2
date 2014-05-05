@@ -1,7 +1,7 @@
 Implementing RESTful Web Service APIs
 =====================================
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 Yii provides a whole set of tools to greatly simplify the task of implementing RESTful Web Service APIs.
 In particular, Yii provides support for the following aspects regarding RESTful APIs:
@@ -315,7 +315,7 @@ For API endpoints about resource collections, pagination is supported out-of-box
 through query parameters `page` and `per-page`, an API consumer may specify which page of data
 to return and how many data items should be included in each page. The corresponding response
 will include the pagination information by the following HTTP headers (please also refer to the first example
-in this chapter):
+in this section):
 
 * `X-Pagination-Total-Count`: The total number of data items;
 * `X-Pagination-Page-Count`: The number of pages;
@@ -701,7 +701,7 @@ Authorization
 
 After a user is authenticated, you probably want to check if he has the permission to perform the requested
 action for the requested resource. This process is called *authorization* which is covered in detail in
-the [Authorization chapter](authorization.md).
+the [Authorization section](authorization.md).
 
 You may use the Role-Based Access Control (RBAC) component to implementation authorization.
 

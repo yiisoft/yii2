@@ -1,7 +1,7 @@
 Logging
 =======
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 Yii provides flexible and extensible logger that is able to handle messages according to severity level or their type.
 You may filter messages by multiple criteria and forward them to files, email, debugger etc.

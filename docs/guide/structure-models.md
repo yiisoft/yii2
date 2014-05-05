@@ -1,7 +1,7 @@
 Model
 =====
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 In keeping with the MVC approach, a model in Yii is intended for storing or temporarily representing application data, as well as defining the busines rules by which the data must abide.
 

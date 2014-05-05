@@ -1,7 +1,7 @@
 Debug toolbar and debugger
 ==========================
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 Yii2 includes a handy toolbar, and built-in debugger, for faster development and debugging of your applications. The toolbar displays information
 about the currently opened page, while the debugger can be used to analyze data you've previously collected (i.e., to confirm the values of variables).

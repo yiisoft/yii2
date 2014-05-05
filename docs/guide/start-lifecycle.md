@@ -1,7 +1,7 @@
 Request Lifecycle
 =================
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 The following diagram shows a typical workflow of a Yii application  handling a user request:
 

@@ -1,7 +1,7 @@
 Application Structure
 =====================
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 Yii implements the model-view-controller (MVC) design pattern, which is
 widely adopted in Web and other application programming. MVC aims to separate business logic from

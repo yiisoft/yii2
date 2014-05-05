@@ -1,7 +1,7 @@
 Advanced application template
 =============================
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 This template is for large projects developed in teams where the backend is divided from the frontend, application is deployed
 to multiple servers etc. This application template also goes a bit further regarding features and provides essential

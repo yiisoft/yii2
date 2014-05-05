@@ -1,7 +1,7 @@
 Using 3rd-Party Libraries
 =========================
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 Yii is carefully designed so that third-party libraries can be
 easily integrated to further extend Yii's functionalities.

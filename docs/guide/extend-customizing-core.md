@@ -1,7 +1,7 @@
 Helper Classes
 ==============
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 Yii provides many classes that help simplify  common coding tasks, such as string or array manipulations,
 HTML code generation, and so forth. These helper classes are organized under the `yii\helpers` namespace and

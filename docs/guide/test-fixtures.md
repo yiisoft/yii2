@@ -1,7 +1,7 @@
 Fixtures
 ========
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 Fixtures are important part of testing. Their main purpose is to set up the environment in a fixed/known state
 so that your tests are repeatable and run in an expected way. Yii provides a fixture framework that allows
