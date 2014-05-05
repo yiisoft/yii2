@@ -1,30 +1,29 @@
 Upgrading from Version 1.1
 ==========================
 
-There are many differences between Yii version 2.0 and 1.1, because Yii is completely rewritten for 2.0.
-As a result, upgrading from version 1.1 is not as trivial as upgrading between minor versions. In this chapter,
-we will summarize the major differences between the two versions.
+There are many differences between versions 1.1 and 2.0 of the Yii as the framework was completely rewritten for 2.0.
+As a result, upgrading from version 1.1 is not as trivial as upgrading between minor versions. In this guide you'll find the major differences between the two versions.
 
-Please note that Yii 2.0 introduces many new features which are not covered in this summary. It is highly recommended
-that you read through the whole definitive guide to learn about these features. Chances could be that
-some features you previously have to develop by yourself are already part of the core code now.
+Please note that Yii 2.0 introduces more new features than are covered in this summary. It is highly recommended
+that you read through the whole definitive guide to learn about them all. Chances are that
+some features you previously had to develop for yourself are now part of the core code.
 
 
 Installation
 ------------
 
-Yii 2.0 fully embraces [Composer](https://getcomposer.org/), a de facto PHP package manager. Installation
-of the core framework as well as extensions are all installed through Composer. Please refer to
-the [Starting from Basic App](start-basic.md) chapter to learn how to install Yii 2.0. If you want to
-create new extensions or turn your existing 1.1 extensions into 2.0, please refer to
-the [Creating Extensions](extend-creating-extensions.md) chapter.
+Yii 2.0 fully embraces [Composer](https://getcomposer.org/), the de facto PHP package manager. Installation
+of the core framework, as well as extensions, are handled through Composer. Please refer to
+the [Starting from Basic App](start-basic.md) section to learn how to install Yii 2.0. If you want to
+create new extensions, or turn your existing 1.1 extensions into 2.0-compatible extensions, please refer to
+the [Creating Extensions](extend-creating-extensions.md) section of the guide.
 
 
 PHP Requirements
 ----------------
 
-Yii 2.0 requires PHP 5.4 or above, which is a huge improvement over PHP 5.2 as required by Yii 1.1.
-As a result, there are many differences at language level that you should pay attention to.
+Yii 2.0 requires PHP 5.4 or above, which is a huge improvement over PHP version 5.2 that is required by Yii 1.1.
+As a result, there are many differences on the language level that you should pay attention to.
 Below is a summary of the major changes regarding PHP:
 
 - [Namespaces](http://php.net/manual/en/language.namespaces.php).
@@ -44,10 +43,11 @@ Namespace
 
 The most obvious change in Yii 2.0 is the use of namespaces. Almost every core class
 is namespaced, e.g., `yii\web\Request`. The "C" prefix is no longer used in class names.
-The naming of the namespaces follows the directory structure. For example, `yii\web\Request`
-indicates the corresponding class file is `web/Request.php` under the Yii framework folder.
-You can use any core class without explicitly including that class file, thanks to the Yii
-class loader.
+The naming scheme now follows the directory structure. For example, `yii\web\Request`
+indicates that the corresponding class file is `web/Request.php` under the Yii framework folder.
+
+(You can use any core class without explicitly including that class file, thanks to the Yii
+class loader.)
 
 
 Component and Object
@@ -90,12 +90,12 @@ class MyClass extends \yii\base\Object
 ```
 
 In the above, the last parameter of the constructor must take a configuration array
-which contains name-value pairs for initializing the properties at the end of the constructor.
+that contains name-value pairs for initializing the properties at the end of the constructor.
 You can override the [[yii\base\Object::init()|init()]] method to do initialization work that should be done after
-the configuration is applied.
+the configuration has been applied.
 
-By following this convention, you will be able to create and configure a new object
-using a configuration array like the following:
+By following this convention, you will be able to create and configure new objects
+using a configuration array:
 
 ```php
 $object = Yii::createObject([
@@ -105,14 +105,13 @@ $object = Yii::createObject([
 ], [$param1, $param2]);
 ```
 
-More details about configurations can be found in the [Object Configurations](concept-configurations.md) chapter.
+More details about configurations can be found in the [Object Configurations](concept-configurations.md) section.
 
 
 Events
 ------
 
-There is no longer the need to define an `on`-method in order to define an event in Yii 2.0.
-Instead, you can use whatever event names. You can trigger an event by calling
+In Yii 1, events were created by defining an `on`-method (e.g., `onBeforeSave`). In Yii 2, you can now use any event name. You trigger an event by calling
 the [[yii\base\Component::trigger()|trigger()]] method:
 
 ```php
@@ -120,7 +119,7 @@ $event = new \yii\base\Event;
 $component->trigger($eventName, $event);
 ```
 
-And to attach a handler to an event, you can use the [[yii\base\Component::on()|on()]] method:
+To attach a handler to an event, use the [[yii\base\Component::on()|on()]] method:
 
 ```php
 $component->on($eventName, $handler);
@@ -128,39 +127,38 @@ $component->on($eventName, $handler);
 // $component->off($eventName, $handler);
 ```
 
-There are many enhancements to the event features. For more details, please refer to the [Events](concept-events.md) chapter.
+There are many enhancements to the event features. For more details, please refer to the [Events](concept-events.md) section.
 
 
 Path Aliases
 ------------
 
-Yii 2.0 expands the usage of path aliases to both file/directory paths and URLs. It also requires
-an alias name to start with a `@` character so that it can be differentiated from normal file/directory paths and URLs.
+Yii 2.0 expands the usage of path aliases to both file/directory paths and URLs. Yii 2.0 also now requires
+an alias name to start with the `@` character, to differentiate aliases from normal file/directory paths or URLs.
 For example, the alias `@yii` refers to the Yii installation directory. Path aliases are
 supported in most places in the Yii core code. For example, [[yii\caching\FileCache::cachePath]] can take
 both a path alias and a normal directory path.
 
-Path alias is also closely related with class namespaces. It is recommended that a path
-alias be defined for each root namespace so that you can use Yii the class autoloader without
+A path alias is also closely related to a class namespace. It is recommended that a path
+alias be defined for each root namespace, thereby allowing you to use Yii the class autoloader without
 any further configuration. For example, because `@yii` refers to the Yii installation directory,
-a class like `yii\web\Request` can be autoloaded by Yii. If you use a third party library
-such as Zend Framework, you may define a path alias `@Zend` which refers to its installation
-directory and Yii will be able to autoload any class in this library.
+a class like `yii\web\Request` can be autoloaded. If you use a third party library,
+such as the Zend Framework, you may define a path alias `@Zend` that refers to that framework's installation
+directory. Once you've done that, Yii will be able to autoload any class in that Zend Framework library, too.
 
-More on path aliases can be found in the [Path Aliases](concept-aliases.md) chapter.
+More on path aliases can be found in the [Path Aliases](concept-aliases.md) section.
 
 
 Views
 -----
 
-The most significant change about views is that `$this` in a view no longer refers to
-the current controller or widget. Instead, it refers to a *view* object which is a new concept
-introduced in 2.0. The *view* object is of class [[yii\web\View]] which represents the view part
-of the MVC pattern. In you want to access the controller or widget in a view, you should use `$this->context`.
+The most significant change about views in Yii 2 is that the special variable `$this` in a view no longer refers to
+the current controller or widget. Instead, `$this` now refers to a *view* object, a new concept
+introduced in 2.0. The *view* object is of type [[yii\web\View]], which represents the view part
+of the MVC pattern. In you want to access the controller or widget in a view, you can use `$this->context`.
 
-To render a partial view within another view, you should use `$this->render()` now.
-And you have to echo it explicitly because the `render()` method will return the rendering
-result rather than directly displaying it. For example,
+To render a partial view within another view, you use `$this->render()`, not `$this->renderPartial()`. The call to `render` also now has to be explicitly echoed, as the `render()` method returns the rendering
+result, rather than directly displaying it. For example:
 
 ```php
 echo $this->render('_item', ['item' => $item]);
@@ -170,18 +168,17 @@ Besides using PHP as the primary template language, Yii 2.0 is also equipped wit
 support for two popular template engines: Smarty and Twig. The Prado template engine is no longer supported.
 To use these template engines, you need to configure the `view` application component by setting the
 [[yii\base\View::$renderers|View::$renderers]] property. Please refer to the [Template Engines](tutorial-template-engines.md)
-chapter for more details.
+section for more details.
 
 
 Models
 ------
 
-Yii 2.0 uses [[yii\base\Model]] as the base model class which is similar to `CModel` in 1.1.
-The class `CFormModel` is dropped. Instead, you should extend [[yii\base\Model]] to create a form model class.
+Yii 2.0 uses [[yii\base\Model]] as the base model, similar to `CModel` in 1.1.
+The class `CFormModel` has been dropped entirely. Instead, in Yii 2 you should extend [[yii\base\Model]] to create a form model class.
 
 Yii 2.0 introduces a new method called [[yii\base\Model::scenarios()|scenarios()]] to declare
-supported scenarios and under which scenario an attribute needs to be validated and can be considered as safe or not.
-For example,
+supported scenarios, and to indicate under which scenario an attribute needs to be validated, can be considered as safe or not, etc. For example:
 
 ```php
 public function scenarios()
@@ -193,28 +190,27 @@ public function scenarios()
 }
 ```
 
-In the above, two scenarios are declared: `backend` and `frontend`. For the `backend` scenario, both of the
-`email` and `role` attributes are safe and can be massively assigned; for the `frontend` scenario,
-`email` can be massively assigned while `role` cannot. Both `email` and `role` should be validated.
+In the above, two scenarios are declared: `backend` and `frontend`. For the `backend` scenario, both the
+`email` and `role` attributes are safe, and can be massively assigned. For the `frontend` scenario,
+`email` can be massively assigned while `role` cannot. Both `email` and `role` should be validated using rules.
 
-The [[yii\base\Model::rules()|rules()]] method is still used to declare validation rules. Note that because
-of the introduction of [[yii\base\Model::scenarios()|scenarios()]], there is no more `unsafe` validator.
+The [[yii\base\Model::rules()|rules()]] method is still used to declare the validation rules. Note that due to the introduction of [[yii\base\Model::scenarios()|scenarios()]], there is no longer an `unsafe` validator.
 
 In most cases, you do not need to override [[yii\base\Model::scenarios()|scenarios()]]
-if the [[yii\base\Model::rules()|rules()]] method fully specifies the scenarios and there is no need to declare
+if the [[yii\base\Model::rules()|rules()]] method fully specifies the scenarios that will exist, and if there is no need to declare
 `unsafe` attributes.
 
-To learn more details about models, please refer to the [Models](basic-models.md) chapter.
+To learn more details about models, please refer to the [Models](basic-models.md) section.
 
 
 Controllers
 -----------
 
-Yii 2.0 uses [[yii\web\Controller]] as the base controller class which is similar to `CWebController` in 1.1.
-And [[yii\base\Action]] is the base class for action classes.
+Yii 2.0 uses [[yii\web\Controller]] as the base controller class, similar to `CWebController` in Yii 1.1.
+[[yii\base\Action]] is the base class for action classes.
 
-The most obvious change when you write code in a controller action is that you should return the content
-that you want to render instead of echoing it. For example,
+The most obvious impact of these changes on your code is that a controller action should return the content
+that you want to render instead of echoing it:
 
 ```php
 public function actionView($id)
@@ -228,17 +224,17 @@ public function actionView($id)
 }
 ```
 
-Please refer to the [Controllers](structure-controllers.md) chapter for more details about controllers.
+Please refer to the [Controllers](structure-controllers.md) section for more details about controllers.
 
 
 Widgets
 -------
 
-Yii 2.0 uses [[yii\base\Widget]] as the base widget class which is similar to `CWidget` in 1.1.
+Yii 2.0 uses [[yii\base\Widget]] as the base widget class, similar to `CWidget` in Yii 1.1.
 
-To get better IDE support, Yii 2.0 introduces a new syntax for using widgets. The static methods
-[[yii\base\Widget::begin()|begin()]], [[yii\base\Widget::end()|end()]] and [[yii\base\Widget::widget()|widget()]]
-are introduced and can be used as follows,
+To get better support for the framework in IDEs, Yii 2.0 introduces a new syntax for using widgets. The static methods
+[[yii\base\Widget::begin()|begin()]], [[yii\base\Widget::end()|end()]], and [[yii\base\Widget::widget()|widget()]]
+have been introduced, to be used like so:
 
 ```php
 use yii\widgets\Menu;
@@ -256,29 +252,29 @@ $form = ActiveForm::begin([
 ActiveForm::end();
 ```
 
-Please refer to the [Widgets](structure-widgets.md) chapter for more details.
+Please refer to the [Widgets](structure-widgets.md) section for more details.
 
 
 Themes
 ------
 
-Themes work completely different in 2.0. They are now based on a path mapping mechanism which maps a source
+Themes work completely differently in 2.0. They are now based on a path mapping mechanism that maps a source
 view file path to a themed view file path. For example, if the path map for a theme is
-`['/web/views' => '/web/themes/basic']`, then the themed version for a view file
+`['/web/views' => '/web/themes/basic']`, then the themed version for the view file
 `/web/views/site/index.php` will be `/web/themes/basic/site/index.php`. For this reason, themes can now
-be applied to any view file, even if a view rendered outside of the context of a controller or a widget.
+be applied to any view file, even a view rendered outside of the context of a controller or a widget.
 
-Also, there is no more `CThemeManager`. Instead, `theme` is a configurable property of the `view`
+Also, there is no more `CThemeManager` component. Instead, `theme` is a configurable property of the `view`
 application component.
 
-Please refer to the [Theming](tutorial-theming.md) chapter for more details.
+Please refer to the [Theming](tutorial-theming.md) section for more details.
 
 
 Console Applications
 --------------------
 
 Console applications are now organized as controllers, like Web applications. Console controllers
-should extend from [[yii\console\Controller]] which is similar to `CConsoleCommand` in 1.1.
+should extend from [[yii\console\Controller]], similar to `CConsoleCommand` in 1.1.
 
 To run a console command, use `yii <route>`, where `<route>` stands for a controller route
 (e.g. `sitemap/index`). Additional anonymous arguments are passed as the parameters to the
@@ -293,13 +289,13 @@ Please refer to the [Console Commands](tutorial-console.md) chapter for more det
 I18N
 ----
 
-Yii 2.0 removes date formatter and number formatter in favor of the PECL intl PHP module.
+Yii 2.0 removes the built-in date formatter and number formatter pieces in favor of the [PECL intl PHP module](http://pecl.php.net/package/intl).
 
 Message translation is now performed via the `i18n` application component.
-The component manages a set of message sources, which allows you to use different message
+This component manages a set of message sources, which allows you to use different message
 sources based on message categories.
 
-Please refer to the [Internationalization](tutorial-i18n.md) chapter for more details.
+Please refer to the [Internationalization](tutorial-i18n.md) section for more details.
 
 
 Action Filters
