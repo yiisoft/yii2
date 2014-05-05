@@ -398,22 +398,21 @@ Please refer to the [Query Builder](db-query-builder.md) section for more detail
 Active Record
 -------------
 
-Yii 2.0 introduces a lot of changes to [Active Record](db-active-record.md). Two most obvious ones are
+Yii 2.0 introduces a lot of changes to [Active Record](db-active-record.md). The two most obvious ones involve
 query building and relational query handling.
 
-The `CDbCriteria` class in 1.1 is replaced by [[yii\db\ActiveQuery]] which extends from [[yii\db\Query]] and thus
-inherits all query building methods. You call [[yii\db\ActiveRecord::find()]] to start building a query.
-For example,
+The `CDbCriteria` class in 1.1 is replaced by [[yii\db\ActiveQuery]] in Yii 2. That class extends from [[yii\db\Query]], and thus
+inherits all query building methods. You call [[yii\db\ActiveRecord::find()]] to start building a query:
 
 ```php
-// to retrieve all *active* customers and order them by their ID:
+// To retrieve all *active* customers and order them by their ID:
 $customers = Customer::find()
     ->where(['status' => $active])
     ->orderBy('id')
     ->all();
 ```
 
-To declare a relation, you simply define a getter method that returns an [[yii\db\ActiveQuery|ActiveQuery]] object.
+To declare a relation, simply define a getter method that returns an [[yii\db\ActiveQuery|ActiveQuery]] object.
 The property name defined by the getter represents the relation name. For example, the following code declares
 an `orders` relation (in 1.1, you would have to declare relations in a central place `relations()`):
 
@@ -427,20 +426,20 @@ class Customer extends \yii\db\ActiveRecord
 }
 ```
 
-You can use `$customer->orders` to access the customer's orders. You can also use the following code
-to perform on-the-fly relational query with customized query conditions:
+Now you can use `$customer->orders` to access a customer's orders from the related table. You can also use the following code
+to perform an on-the-fly relational query with a customized query condition:
 
 ```php
 $orders = $customer->getOrders()->andWhere('status=1')->all();
 ```
 
 When eager loading a relation, Yii 2.0 does it differently from 1.1. In particular, in 1.1 a JOIN query
-would be created to bring both the primary and the relational records; in 2.0, two SQL statements are executed
+would be created to select both the primary and the relational records. In Yii 2.0, two SQL statements are executed
 without using JOIN: the first statement brings back the primary records and the second brings back the relational
 records by filtering with the primary keys of the primary records.
 
 Instead of returning [[yii\db\ActiveRecord|ActiveRecord]] objects, you may chain the [[yii\db\ActiveQuery::asArray()|asArray()]]
-method when building a query to return large number of records. This will cause the query result to be returned
+method when building a query to return a large number of records. This will cause the query result to be returned
 as arrays, which can significantly reduce the needed CPU time and memory if large number of records . For example,
 
 ```php
@@ -456,15 +455,17 @@ User and IdentityInterface
 
 The `CWebUser` class in 1.1 is now replaced by [[yii\web\User]], and there is no more
 `CUserIdentity` class. Instead, you should implement the [[yii\web\IdentityInterface]] which
-is much more straightforward to implement. The advanced application template provides such an example.
+is much more straightforward to use. The advanced application template provides such an example.
+
+Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Application Technique](tutorial-advanced-app.md) sections for more details.
 
 
 URL Management
 --------------
 
-URL management is similar to 1.1. A major enhancement is that it now supports optional
+URL management in Yii 2 is similar to that 1.1. A major enhancement is that URL management now supports optional
 parameters. For example, if you have rule declared as follows, then it will match
-both `post/popular` and `post/1/popular`. In 1.1, you would have to use two rules to achieve
+both `post/popular` and `post/1/popular`. In 1.1, you would have had to use two rules to achieve
 the same goal.
 
 ```php
@@ -475,12 +476,11 @@ the same goal.
 ]
 ```
 
-More details in the [Url manager docs](url.md).
-
+Please refer to the [Url manager docs](url.md) section for more details.
 
 Using Yii 1.1 and 2.x together
 ------------------------------
 
-If you have legacy Yii 1.1 code and you want to use it together with Yii 2.0, please refer to
+If you have legacy Yii 1.1 code that you want to use together with Yii 2.0, please refer to
 the [Using Yii 1.1 and 2.0 Together](extend-using-v1-v2.md) section.
 
