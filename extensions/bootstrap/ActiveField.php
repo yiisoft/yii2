@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 /**
  * A Bootstrap 3 enhanced version of [[yii\widgets\ActiveField]].
  *
- * This class adds some useful features to [[yii\widgets\ActiveField]] to render all
+ * This class adds some useful features to [[yii\widgets\ActiveField|ActiveField]] to render all
  * sorts of Bootstrap 3 form fields in different form layouts:
  *
  * - [[inputTemplate]] is an optional template to render complex inputs, for example input groups
