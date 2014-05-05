@@ -463,8 +463,8 @@ Please refer to the [Authentication](security-authentication.md), [Authorization
 URL Management
 --------------
 
-URL management in Yii 2 is similar to that 1.1. A major enhancement is that URL management now supports optional
-parameters. For example, if you have rule declared as follows, then it will match
+URL management in Yii 2 is similar to that in 1.1. A major enhancement is that URL management now supports optional
+parameters. For example, if you have a rule declared as follows, then it will match
 both `post/popular` and `post/1/popular`. In 1.1, you would have had to use two rules to achieve
 the same goal.
 
