@@ -191,14 +191,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
     protected function rewriteLimitOffsetSql($sql, $limit, $offset, $query)
     {
         $originalOrdering = $this->buildOrderBy($query->orderBy);
-        $select = implode(', ', $query->select);
-        if($select === '*') {
+        if ($query->select) {
+            $select = implode(', ', $query->select);
+        }
+        else {
+            $select = $query->select = '*';
+        }
+        if ($select === '*') {
             $columns = $this->getAllColumnNames($query->from[0]);
-            if (is_array($columns))
+            if ($columns && is_array($columns))
                 $select = implode(', ', $columns);
             else
                 $select = $columns;
-            $select = implode(', ', $columns);
         }
         $sql = str_replace($originalOrdering, '', $sql);
         $sql = preg_replace('/^([\s(])*SELECT( DISTINCT)?(?!\s*TOP\s*\()/i', "\\1SELECT\\2 rowNum = ROW_NUMBER() over ({$originalOrdering}),", $sql);
