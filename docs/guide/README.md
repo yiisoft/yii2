@@ -18,11 +18,13 @@ Introduction
 Getting Started
 ---------------
 
-* [Preparing Your Environment](start-environment.md)
-* [Creating Your First Yii Application](start-basic.md)
-* [Application Structure](start-structure.md)
-* [Request Lifecycle](start-lifecycle.md)
-* **TBD** [Next Steps](start-next-steps.md)
+* [Installing Yii](start-installation.md)
+* [Running Applications](start-workflow.md)
+* [Saying "Hello World"](start-hello-world.md)
+* [Working with Forms](start-forms.md)
+* [Working with Databases](start-databases.md)
+* [Generating Code with Gii](start-gii.md)
+* [Looking Ahead](start-looking-head.md)
 
 
 Application Structure
@@ -77,8 +79,8 @@ Working with Databases
 * **TBD** [ElasticSearch](db-elastic-search.md)
 
 
-Getting User Inputs
--------------------
+Getting Data from Users
+-----------------------
 
 * [Creating Forms](input-forms.md)
 * [Input Validation](input-validation.md)
@@ -86,7 +88,7 @@ Getting User Inputs
 * **TBD** [Inputs for Multiple Models](input-multiple-models.md)
 
 
-Presenting Data
+Displaying Data
 ---------------
 
 * **TBD** [Data Formatting](output-formatting.md)
@@ -188,7 +190,6 @@ Widgets
 * LinkSorter: link to demo page
 * [Bootstrap Widgets](bootstrap-widgets.md)
 * **TBD** [Jquery UI Widgets](jui-widgets.md)
-
 
 
 Helpers
