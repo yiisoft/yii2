@@ -214,7 +214,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!$table) {
             return null;
         }
-        $columns = (new Query())
+        $columns = (new \yii\db\Query())
             ->select('name')
             ->from('sys.columns')
             ->where("object_id = OBJECT_ID('dbo.{$table}')")
