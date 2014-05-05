@@ -139,4 +139,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return "ALTER TABLE {$table} {$enable} CONSTRAINT ALL";
     }
+    
+    public function buildOrderBy($columns)
+    {
+        if (empty($columns)) {
+            return 'ORDER BY (SELECT NULL)'; // hack so limit will work if no order by is specified
+        } else {
+            return parent::buildOrderBy($columns);
+        }
+    }
 }
