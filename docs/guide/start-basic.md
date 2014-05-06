@@ -1,7 +1,7 @@
 Basic application template
 ==========================
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 The basic Yii application template is a perfect fit for small projects or when you're just learning the framework.
 

@@ -1,7 +1,7 @@
 Bootstrap Widgets
 =================
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 Out of the box, Yii includes support for the [Bootstrap 3](http://getbootstrap.com/) markup and components framework
 (also known as "Twitter Bootstrap"). Bootstrap is an excellent, responsive framework that can greatly speed up the

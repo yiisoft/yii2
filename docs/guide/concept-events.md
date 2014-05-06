@@ -129,7 +129,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 ```
 
 You may also attach event handlers through [configurations](concept-configurations.md). For more details, please
-refer to the [Configurations](concept-configurations.md#configuration-format) chapter.
+refer to the [Configurations](concept-configurations.md#configuration-format) section.
 
 
 When attaching an event handler, you may provide additional data as the third parameter to [[yii\base\Component::on()]].
@@ -201,7 +201,7 @@ $foo->off(Foo::EVENT_HELLO);
 Class-Level Event Handlers
 --------------------------
 
-In the above sections, we have described how to attach a handler to an event at *instance level*.
+In the above subsections, we have described how to attach a handler to an event at *instance level*.
 Sometimes, you may want to respond to an event triggered by EVERY instance of a class instead of
 a specific instance. Instead of attaching an event handler to every instance, you may attach the handler
 at *class level* by calling the static method [[yii\base\Event::on()]].

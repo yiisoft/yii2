@@ -58,7 +58,7 @@ where
   defined by getters/setters can be configured.
 * The `on eventName` elements specify what handlers should be attached to the object [events](concept-events.md).
   Notice that the array keys are formed by prefixing event names with `on `. Please refer to
-  the [Events](concept-events.md) chapter for supported event handler formats.
+  the [Events](concept-events.md) section for supported event handler formats.
 * And the `as behaviorName` elements specify what [behaviors](concept-behaviors.md) should be attached to the object.
   Notice that the array keys are formed by prefixing behavior names with `on `. `$behaviorConfig` represents
   the configuration for creating a behavior, like a normal configuration as we are describing here.
@@ -84,8 +84,8 @@ Below is an example showing a configuration with property initial values, event 
 Using Configurations
 --------------------
 
-Configurations are used in many places in Yii. At the beginning of this chapter, we have shown how to use
-create an object according to a configuration by using [[Yii::createObject()]]. In this section, we will
+Configurations are used in many places in Yii. At the beginning of this section, we have shown how to use
+create an object according to a configuration by using [[Yii::createObject()]]. In this subsection, we will
 describe application configurations and widget configurations - two major usages of configurations.
 
 
@@ -138,7 +138,7 @@ an [entry script](structure-entry-scripts.md), where the class name is already g
 ```
 
 For more details about configuring the `components` property of an application can be found
-in the [Applications](structure-applications.md) chapter and the [Service Locator](concept-service-locator.md) chapter.
+in the [Applications](structure-applications.md) section and the [Service Locator](concept-service-locator.md) section.
 
 
 <a name="widget-configurations"></a>

@@ -6,7 +6,7 @@ to locate and include required class files. It provides a high-performance class
 [PSR-4 standard](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md).
 The autoloader is installed when you include the `Yii.php` file.
 
-> Note: For simplicity of description, in this chapter we will only talk about autoloading of classes. However, keep in
+> Note: For simplicity of description, in this section we will only talk about autoloading of classes. However, keep in
   mind that the content we are describing here applies to autoloading of interfaces and traits as well.
 
 

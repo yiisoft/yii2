@@ -1,7 +1,7 @@
 Advanced application template
 =============================
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 This template is for large projects developed in teams where the backend is divided from the frontend, application is deployed
 to multiple servers etc. This application template also goes a bit further regarding features and provides essential
@@ -74,16 +74,20 @@ Root directory contains a set of files.
 Predefined path aliases
 -----------------------
 
-- @yii - framework directory.
-- @app - base path of currently running application.
-- @common - common directory.
-- @frontend - frontend web application directory.
-- @backend - backend web application directory.
-- @console - console directory.
-- @runtime - runtime directory of currently running web application.
-- @vendor - Composer vendor directory.
-- @web - base URL of currently running web application.
-- @webroot - web root directory of currently running web application.
+- `@yii` - framework directory.
+- `@app` - base path of currently running application.
+- `@common` - common directory.
+- `@frontend` - frontend web application directory.
+- `@backend` - backend web application directory.
+- `@console` - console directory.
+- `@runtime` - runtime directory of currently running web application.
+- `@vendor` - Composer vendor directory.
+- `@web` - base URL of currently running web application.
+- `@webroot` - web root directory of currently running web application.
+
+The aliases specific to the directory structure of the advanced application
+(`@common`,  `@frontend`, `@backend`, and `@console`) are defined in `common/config/aliases.php`.
+
 
 Applications
 ------------

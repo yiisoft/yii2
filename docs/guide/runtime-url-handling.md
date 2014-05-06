@@ -1,7 +1,7 @@
 URL Management
 ==============
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 The concept of URL management in Yii is fairly simple. URL management is based on the premise that the application uses
 internal routes and parameters everywhere. The framework itself will then translate routes into URLs, and vice versa, according to the URL manager's configuration. This approach allows you to change site-wide URLs merely by

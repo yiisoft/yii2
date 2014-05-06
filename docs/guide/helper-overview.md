@@ -1,7 +1,7 @@
 Helpers
 =======
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 Helper classes typically contain static methods only and are used as follows:
 

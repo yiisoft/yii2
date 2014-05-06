@@ -11,6 +11,7 @@ use Yii;
 use yii\base\View;
 use yii\base\ViewRenderer as BaseViewRenderer;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 /**
  * TwigViewRenderer allows you to use Twig templates in views.
@@ -115,11 +116,6 @@ class ViewRenderer extends BaseViewRenderer
             $this->setLexerOptions($this->lexerOptions);
         }
 
-//        $this->addFunctions([
-//            'rot13' => 'str_rot13',
-//            'jsonEncode' => '\yii\helpers\Json::encode',
-//        ]);
-
         // Adding global 'void' function (usage: {{void(App.clientScript.registerScriptFile(...))}})
         $this->twig->addFunction('void', new \Twig_Function_Function(function ($argument) {
         }));
@@ -130,6 +126,14 @@ class ViewRenderer extends BaseViewRenderer
 
         $this->twig->addFunction('url', new \Twig_Function_Function(function ($path, $args = []) {
             return Url::to(array_merge([$path], $args), true);
+        }));
+
+        $this->twig->addFunction('form_begin', new \Twig_Function_Function(function ($args = []) {
+            return ActiveForm::begin($args);
+        }));
+
+        $this->twig->addFunction('form_end', new \Twig_Function_Function(function () {
+            ActiveForm::end();
         }));
 
         $this->twig->addGlobal('app', \Yii::$app);

@@ -628,7 +628,7 @@ class BaseConsole
      */
     public static function stdin($raw = false)
     {
-        return $raw ? fgets(STDIN) : rtrim(fgets(STDIN), PHP_EOL);
+        return $raw ? fgets(\STDIN) : rtrim(fgets(\STDIN), PHP_EOL);
     }
 
     /**
@@ -639,7 +639,7 @@ class BaseConsole
      */
     public static function stdout($string)
     {
-        return fwrite(STDOUT, $string);
+        return fwrite(\STDOUT, $string);
     }
 
     /**
@@ -650,7 +650,7 @@ class BaseConsole
      */
     public static function stderr($string)
     {
-        return fwrite(STDERR, $string);
+        return fwrite(\STDERR, $string);
     }
 
     /**

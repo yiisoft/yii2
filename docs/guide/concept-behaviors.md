@@ -15,7 +15,7 @@ Using Behaviors
 ---------------
 
 To use a behavior, you first need to attach it to a [[yii\base\Component|component]]. We will describe how to
-attach a behavior in the next section.
+attach a behavior in the next subsection.
 
 Once a behavior is attached to a component, its usage is straightforward.
 
@@ -129,7 +129,7 @@ $component->attachBehavior('myBehavior3', [
 ```
 
 You may also attach behaviors through [configurations](concept-configurations.md). For more details, please
-refer to the [Configurations](concept-configurations.md#configuration-format) chapter.
+refer to the [Configurations](concept-configurations.md#configuration-format) section.
 
 
 <a name="detaching-behaviors"></a>
@@ -184,7 +184,7 @@ class MyBehavior extends Behavior
 }
 ```
 
-The above code defines the behavior class `app\components\MyBehavior` which will provides two properties
+The above code defines the behavior class `app\components\MyBehavior` which will provide two properties
 `prop1` and `prop2`, and one method `foo()` to the component it is attached to. Note that property `prop2`
 is defined via the getter `getProp2()` and the setter `setProp2()`. This is so because [[yii\base\Object]]
 is an ancestor class of [[yii\base\Behavior]], which supports defining [properties](concept-properties.md) by getters/setters.
@@ -227,7 +227,7 @@ its handler `beforeValidate()`. When specifying an event handler, you may use on
 * an anonymous function.
 
 The signature of an event handler should be as follows, where `$event` refers to the event parameter. Please refer
-to the [Events](concept-events.md) chapter for more details about events.
+to the [Events](concept-events.md) section for more details about events.
 
 ```php
 function ($event) {

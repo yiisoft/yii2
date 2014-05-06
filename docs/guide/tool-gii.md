@@ -1,7 +1,7 @@
 The Gii code generation tool
 ============================
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 Yii includes a handy tool, named Gii, that provides rapid prototyping by generating commonly used code snippets
 as well as complete CRUD controllers.

@@ -1,7 +1,7 @@
 Installation
 ============
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 There are two ways you can install the Yii framework:
 
