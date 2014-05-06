@@ -144,6 +144,8 @@ class MigrateController extends Controller
      *
      * @param integer $limit the number of new migrations to be applied. If 0, it means
      * applying all available new migrations.
+     *
+     * @return integer the status of the action execution. 0 means normal, other values mean abnormal.
      */
     public function actionUp($limit = 0)
     {
@@ -151,7 +153,7 @@ class MigrateController extends Controller
         if (empty($migrations)) {
             echo "No new migration found. Your system is up-to-date.\n";
 
-            return;
+            return self::EXIT_CODE_NORMAL;
         }
 
         $total = count($migrations);
@@ -177,7 +179,7 @@ class MigrateController extends Controller
                 if (!$this->migrateUp($migration)) {
                     echo "\nMigration failed. The rest of the migrations are canceled.\n";
 
-                    return;
+                    return self::EXIT_CODE_ERROR;
                 }
             }
             echo "\nMigrated up successfully.\n";
@@ -196,6 +198,8 @@ class MigrateController extends Controller
      * @param integer $limit the number of migrations to be reverted. Defaults to 1,
      * meaning the last applied migration will be reverted.
      * @throws Exception if the number of the steps specified is less than 1.
+     *
+     * @return integer the status of the action execution. 0 means normal, other values mean abnormal.
      */
     public function actionDown($limit = 1)
     {
@@ -208,7 +212,7 @@ class MigrateController extends Controller
         if (empty($migrations)) {
             echo "No migration has been done before.\n";
 
-            return;
+            return self::EXIT_CODE_NORMAL;
         }
         $migrations = array_keys($migrations);
 
@@ -224,7 +228,7 @@ class MigrateController extends Controller
                 if (!$this->migrateDown($migration)) {
                     echo "\nMigration failed. The rest of the migrations are canceled.\n";
 
-                    return;
+                    return self::EXIT_CODE_ERROR;
                 }
             }
             echo "\nMigrated down successfully.\n";
@@ -245,6 +249,8 @@ class MigrateController extends Controller
      * @param integer $limit the number of migrations to be redone. Defaults to 1,
      * meaning the last applied migration will be redone.
      * @throws Exception if the number of the steps specified is less than 1.
+     *
+     * @return integer the status of the action execution. 0 means normal, other values mean abnormal.
      */
     public function actionRedo($limit = 1)
     {
@@ -257,7 +263,7 @@ class MigrateController extends Controller
         if (empty($migrations)) {
             echo "No migration has been done before.\n";
 
-            return;
+            return self::EXIT_CODE_NORMAL;
         }
         $migrations = array_keys($migrations);
 
@@ -273,14 +279,14 @@ class MigrateController extends Controller
                 if (!$this->migrateDown($migration)) {
                     echo "\nMigration failed. The rest of the migrations are canceled.\n";
 
-                    return;
+                    return self::EXIT_CODE_ERROR;
                 }
             }
             foreach (array_reverse($migrations) as $migration) {
                 if (!$this->migrateUp($migration)) {
                     echo "\nMigration failed. The rest of the migrations migrations are canceled.\n";
 
-                    return;
+                    return self::EXIT_CODE_ERROR;
                 }
             }
             echo "\nMigration redone successfully.\n";
@@ -361,7 +367,7 @@ class MigrateController extends Controller
                     echo "The migration history is set at $originalVersion.\nNo actual migration was performed.\n";
                 }
 
-                return;
+                return self::EXIT_CODE_NORMAL;
             }
         }
 
@@ -383,7 +389,7 @@ class MigrateController extends Controller
                     }
                 }
 
-                return;
+                return self::EXIT_CODE_NORMAL;
             }
         }
 
@@ -598,7 +604,7 @@ class MigrateController extends Controller
             if (strpos($migration, $version . '_') === 0) {
                 $this->actionUp($i + 1);
 
-                return;
+                return self::EXIT_CODE_NORMAL;
             }
         }
 
@@ -612,7 +618,7 @@ class MigrateController extends Controller
                     $this->actionDown($i);
                 }
 
-                return;
+                return self::EXIT_CODE_NORMAL;
             }
         }
 

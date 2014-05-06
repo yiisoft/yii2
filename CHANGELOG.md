@@ -45,6 +45,8 @@ Yii Framework 2 Change Log
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
 - Enh: Added support to insert an event handler at the beginning of class-level event handler queue (qiangxue)
+- Enh: Added `yii\console\Controller::EXIT_CODE_NORMAL` and `yii\console\Controller::EXIT_CODE_ERROR` constants (samdark)
+- Enh: `yii\console\MigrateController` now returns `yii\console\Controller::EXIT_CODE_ERROR` in case of failed migration (samdark)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
 - Chg #3036: Upgraded Twitter Bootstrap to 3.1.x (qiangxue)
 - Chg #3175: InvalidCallException, InvalidParamException, UnknownMethodException are now extended from SPL BadMethodCallException (samdark)
