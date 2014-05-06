@@ -21,7 +21,7 @@ use yii\di\Instance;
  * The database connection is specified by [[db]]. The database schema could be initialized by applying migration:
  *
  * ```
- *  yii migrate --migrationPath=/vendor/yiisoft/yii2/rbac/migrations/
+ * yii migrate --migrationPath=@yii/rbac/migrations/
  * ```
  *
  * You may change the names of the three tables used to store the authorization data by setting [[itemTable]],
