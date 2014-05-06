@@ -74,8 +74,9 @@ abstract class Schema extends Object
 
     /**
      * @var array map of DB errors and corresponding exceptions
+     * If left part is found in DB error message exception class from the right part is used.
      */
-    public $errorMap = [
+    public $exceptionMap = [
         'SQLSTATE[23' => '\yii\db\IntegrityException',
     ];
 
