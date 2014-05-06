@@ -315,7 +315,7 @@ class Command extends Component
     {
         $body = $mapping !== null ? (is_string($mapping) ? $mapping : Json::encode($mapping)) : null;
 
-        return $this->db->put([$index, $type, '_mapping'], $options, $body);
+        return $this->db->put([$index, '_mapping', $type], $options, $body);
     }
 
     /**
@@ -326,7 +326,7 @@ class Command extends Component
      */
     public function getMapping($index = '_all', $type = '_all')
     {
-        return $this->db->get([$index, $type, '_mapping']);
+        return $this->db->get([$index, '_mapping', $type]);
     }
 
     /**
@@ -337,7 +337,7 @@ class Command extends Component
      */
     public function deleteMapping($index, $type)
     {
-        return $this->db->delete([$index, $type]);
+        return $this->db->delete([$index, '_mapping', $type]);
     }
 
     /**
@@ -346,10 +346,11 @@ class Command extends Component
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-field-mapping.html
      */
-    public function getFieldMapping($index, $type = '_all')
-    {
-        return $this->db->put([$index, $type, '_mapping']);
-    }
+//    public function getFieldMapping($index, $type = '_all')
+//    {
+//		// TODO implement
+//        return $this->db->put([$index, $type, '_mapping']);
+//    }
 
     /**
      * @param $options
