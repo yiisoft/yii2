@@ -81,10 +81,6 @@ class MigrateController extends Controller
      */
     public $templateFile = '@yii/views/migration.php';
     /**
-     * @var boolean whether to execute the migration in an interactive mode.
-     */
-    public $interactive = true;
-    /**
      * @var Connection|string the DB connection object or the application
      * component ID of the DB connection.
      */
