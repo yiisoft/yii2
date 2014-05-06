@@ -78,7 +78,7 @@ $provider = new ArrayDataProvider([
 $posts = $provider->getModels();
 ```
 
-> Note: if you want to use the sorting feature, you must configure the [[sort]] property
+> Note: if you want to use the sorting feature, you must configure the [[yii\data\ArrayDataProvider::$sort]] property
 so that the provider knows which columns can be sorted.
 
 SQL data provider

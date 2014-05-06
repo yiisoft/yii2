@@ -6,7 +6,6 @@ all their dependent objects. [Martin's article](http://martinfowler.com/articles
 explained why DI container is useful. Here we will mainly explain the usage of the DI container provided by Yii.
 
 
-<a name="dependency-injection"></a>
 Dependency Injection
 --------------------
 
@@ -18,7 +17,6 @@ dependency injection:
 * PHP callable injection.
 
 
-<a name="constructor-injection"></a>
 ### Constructor Injection
 
 The DI container supports constructor injection with the help of type hints for constructor parameters.
@@ -41,7 +39,6 @@ $foo = new Foo($bar);
 ```
 
 
-<a name="setter-and-property-injection"></a>
 ### Setter and Property Injection
 
 Setter and property injection is supported through [configurations](concept-configurations.md).
@@ -76,7 +73,6 @@ $container->get('Foo', [], [
 ```
 
 
-<a name="php-callable-injection"></a>
 ### PHP Callable Injection
 
 In this case, the container will use a registered PHP callable to build new instances of a class.
@@ -92,7 +88,6 @@ $foo = $container->get('Foo');
 ```
 
 
-<a name="registering-dependencies"></a>
 Registering Dependencies
 ------------------------
 
@@ -162,7 +157,6 @@ $container->setSingleton('yii\db\Connection', [
 ```
 
 
-<a name="resolving-dependencies"></a>
 Resolving Dependencies
 ----------------------
 
@@ -252,7 +246,6 @@ $lister = new UserLister($finder);
 ```
 
 
-<a name="practical-usages"></a>
 Practical Usages
 ----------------
 
@@ -315,7 +308,6 @@ Now if you access the controller again, an instance of `app\components\BookingSe
 created and injected as the 3rd parameter to the controller's constructor.
 
 
-<a name="when-to-register-dependencies"></a>
 When to Register Dependencies
 -----------------------------
 
@@ -328,7 +320,6 @@ as early as possible. The followings are the recommended practices:
   in the bootstrap class of the extension.
 
 
-<a name="summary"></a>
 Summary
 -------
 

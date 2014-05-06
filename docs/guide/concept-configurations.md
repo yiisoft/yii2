@@ -35,7 +35,6 @@ Yii::configure($object, $config);
 Note that in this case, the configuration should not contain the `class` element.
 
 
-<a name="configuration-format"></a>
 Configuration Format
 --------------------
 
@@ -80,7 +79,6 @@ Below is an example showing a configuration with property initial values, event 
 ```
 
 
-<a name="using-configurations"></a>
 Using Configurations
 --------------------
 
@@ -89,7 +87,6 @@ create an object according to a configuration by using [[Yii::createObject()]]. 
 describe application configurations and widget configurations - two major usages of configurations.
 
 
-<a name="application-configurations"></a>
 ### Application Configurations
 
 Configuration for an [application](structure-applications.md) is probably one of the most complex configurations.
@@ -141,11 +138,10 @@ For more details about configuring the `components` property of an application c
 in the [Applications](structure-applications.md) section and the [Service Locator](concept-service-locator.md) section.
 
 
-<a name="widget-configurations"></a>
 ### Widget Configurations
 
 When using [widgets](structure-widgets.md), you often need to use configurations to customize the widget properties.
-Both of the [[yii\base\Widget::widget()]] and [[yii\base\Widget::beginWidget()]] methods can be used to create
+Both of the [[yii\base\Widget::widget()]] and [[yii\base\Widget::begin()]] methods can be used to create
 a widget. They take a configuration array, like the following,
 
 ```php
@@ -167,7 +163,6 @@ The `items` property is also configured with menu items to be displayed.
 Note that because the class name is already given, the configuration array should NOT have the `class` key.
 
 
-<a name="configuration-files"></a>
 Configuration Files
 -------------------
 
@@ -222,7 +217,6 @@ $config = require('path/to/web.php');
 ```
 
 
-<a name="default-configurations"></a>
 Default Configurations
 ----------------------
 
@@ -244,7 +238,6 @@ Without using default configurations, you would have to configure `maxButtonCoun
 link pagers.
 
 
-<a name="environment-constants"></a>
 Environment Constants
 ---------------------
 

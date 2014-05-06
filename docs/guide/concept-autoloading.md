@@ -10,7 +10,6 @@ The autoloader is installed when you include the `Yii.php` file.
   mind that the content we are describing here applies to autoloading of interfaces and traits as well.
 
 
-<a name="using-yii-autoloader"></a>
 Using the Yii Autoloader
 ------------------------
 
@@ -39,7 +38,6 @@ put the front-end classes under the namespace `frontend` while the back-end clas
 allow these classes to be autoloaded by the Yii autoloader.
 
 
-<a name="class-map"></a>
 Class Map
 ---------
 
@@ -58,7 +56,6 @@ Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 [bootstrapping](runtime-bootstrapping.md) process so that the map is ready before your classes are used.
 
 
-<a name="using-other-autoloaders"></a>
 Using Other Autoloaders
 -----------------------
 
@@ -85,7 +82,6 @@ to be autoloadable.
   and include it in your [entry script](structure-entry-scripts.md).
 
 
-<a name="autoloading-extension-classes"></a>
 Autoloading Extension Classes
 -----------------------------
 
