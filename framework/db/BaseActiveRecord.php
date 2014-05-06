@@ -114,7 +114,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * @inheritdoc
-     * @return static[]|array an array of ActiveRecord instance, or an empty array if nothing matches.
+     * @return static[] an array of ActiveRecord instance, or an empty array if nothing matches.
      */
     public static function findAll($condition)
     {
