@@ -13,7 +13,7 @@ use yii\web\UnauthorizedHttpException;
 /**
  * HttpBearerAuth is an action filter that supports the authentication method based on HTTP Bearer token.
  *
- * You may use HttpBasicAuth by attaching it as a behavior to a controller or module, like the following:
+ * You may use HttpBearerAuth by attaching it as a behavior to a controller or module, like the following:
  *
  * ```php
  * public function behaviors()
