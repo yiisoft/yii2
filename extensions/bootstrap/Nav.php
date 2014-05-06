@@ -29,8 +29,8 @@ use yii\helpers\Html;
  *             'label' => 'Dropdown',
  *             'items' => [
  *                  ['label' => 'Level 1 - Dropdown A', 'url' => '#'],
- *                  '<li class="divider"></li>',
- *                  '<li class="dropdown-header">Dropdown Header</li>',
+ *                  '---', // creates a divider
+ *                  ['label' => 'Dropdown Header'], // creaetes a header
  *                  ['label' => 'Level 1 - Dropdown B', 'url' => '#'],
  *             ],
  *         ],
@@ -38,7 +38,9 @@ use yii\helpers\Html;
  * ]);
  * ```
  *
- * Note: Multilevel dropdowns beyond Level 1 are not supported in Bootstrap 3.
+ * Note: Multilevel dropdowns beyond Level 1 are not supported by default in Bootstrap 3.
+ * The internal functionality to generate multi-level menus is available, however custom CSS
+ * is required to make them appear, such as the example at http://www.bootply.com/86684.
  *
  * @see http://getbootstrap.com/components/#dropdowns
  * @see http://getbootstrap.com/components/#nav
