@@ -216,14 +216,16 @@ class User extends Component
      * Note that unlike [[login()]], this method will NOT start a session to remember the user authentication status.
      * Also if the access token is invalid, the user will remain as a guest.
      * @param string $token the access token
+     * @param mixed $type the type of the token. The value of this parameter depends on the implementation.
+     * For example, [[\yii\filters\auth\HttpBearerAuth]] will set this parameter to be `yii\filters\auth\HttpBearerAuth`.
      * @return IdentityInterface the identity associated with the given access token. Null is returned if
      * the access token is invalid.
      */
-    public function loginByAccessToken($token)
+    public function loginByAccessToken($token, $type = null)
     {
         /** @var IdentityInterface $class */
         $class = $this->identityClass;
-        $identity = $class::findIdentityByAccessToken($token);
+        $identity = $class::findIdentityByAccessToken($token, $type);
         $this->setIdentity($identity);
 
         return $identity;
