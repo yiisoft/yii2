@@ -219,7 +219,7 @@ class Connection extends Component
      */
     public function getIsActive()
     {
-        return is_object($this->mongoClient) && $this->mongoClient->connected;
+        return is_object($this->mongoClient) && $this->mongoClient->getConnections() != [];
     }
 
     /**
