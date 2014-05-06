@@ -7,7 +7,6 @@ For example, the alias `@yii` represents the installation path of the Yii framew
 the base URL for the currently running Web application.
 
 
-<a name="defining-aliases"></a>
 Defining Aliases
 ----------------
 
@@ -50,7 +49,6 @@ return [
 ```
 
 
-<a name="resolving-aliases"></a>
 Resolving Aliases
 -----------------
 
@@ -83,7 +81,6 @@ Yii::getAlias('@foo/bar/file.php');   // displays: /path2/bar/file.php
 If `@foo/bar` is not defined as a root alias, the last statement would display `/path/to/foo/bar/file.php`.
 
 
-<a name="using-aliases"></a>
 Using Aliases
 -------------
 
@@ -103,7 +100,6 @@ $cache = new FileCache([
 Please pay attention to the API documentation to see if a property or method parameter supports aliases.
 
 
-<a name="predefined-aliases"></a>
 Predefined Aliases
 ------------------
 
@@ -122,7 +118,6 @@ while the rest of the aliases are defined in the application constructor when ap
 [configuration](concept-configurations.md).
 
 
-<a name="extension-aliases"></a>
 Extension Aliases
 -----------------
 

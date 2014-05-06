@@ -10,8 +10,6 @@ Yii introduces a base class called [[yii\base\Component]] to support events. If 
 events, it should extend from [[yii\base\Component]] or its child class.
 
 
-<a name="triggering-events"></a>
-
 Triggering Events
 -----------------
 
@@ -78,8 +76,6 @@ When the [[yii\base\Component::trigger()]] method is called, it will call handle
 the named event.
 
 
-<a name="event-handlers"></a>
-
 Event Handlers
 --------------
 
@@ -105,8 +101,6 @@ Through the `$event` parameter, an event handler may get the following informati
 - [[yii\base\Event::sender|event sender]]: the object whose `trigger()` method is called.
 - [[yii\base\Event::data|custom data]]: the data that is provided when attaching the event handler (to be explained shortly).
 
-
-<a name="attaching-event-handlers"></a>
 
 Attaching Event Handlers
 ------------------------
@@ -169,8 +163,6 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 ```
 
 
-<a name="detaching-event-handlers"></a>
-
 Detaching Event Handlers
 ------------------------
 
@@ -200,8 +192,6 @@ To detach ALL handlers from an event, simply call [[yii\base\Component::off()]] 
 $foo->off(Foo::EVENT_HELLO);
 ```
 
-
-<a name="class-level-event-handlers"></a>
 
 Class-Level Event Handlers
 --------------------------
@@ -260,8 +250,6 @@ Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
 Event::off(Foo::className(), Foo::EVENT_HELLO);
 ```
 
-
-<a name="global-events"></a>
 
 Global Events
 -------------

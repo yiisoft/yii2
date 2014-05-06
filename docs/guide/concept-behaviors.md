@@ -10,7 +10,6 @@ can respond to the [events](concept-events.md) triggered by the component so tha
 code execution of the component.
 
 
-<a name="using-behaviors"></a>
 Using Behaviors
 ---------------
 
@@ -55,7 +54,6 @@ $behaviors = $component->getBehaviors();
 ```
 
 
-<a name="attaching-behaviors"></a>
 Attaching Behaviors
 -------------------
 
@@ -132,7 +130,6 @@ You may also attach behaviors through [configurations](concept-configurations.md
 refer to the [Configurations](concept-configurations.md#configuration-format) section.
 
 
-<a name="detaching-behaviors"></a>
 Detaching Behaviors
 -------------------
 
@@ -149,7 +146,6 @@ $component->detachBehaviors();
 ```
 
 
-<a name="defining-behaviors"></a>
 Defining Behaviors
 ------------------
 
@@ -235,7 +231,6 @@ function ($event) {
 ```
 
 
-<a name="using-timestamp-behavior"></a>
 Using `TimestampBehavior`
 -------------------------
 
@@ -294,7 +289,6 @@ $user->touch('login_time');
 ```
 
 
-<a name="comparison-with-traits"></a>
 Comparison with Traits
 ----------------------
 
@@ -303,7 +297,6 @@ properties and methods to the primary class, they differ in many aspects. As exp
 both have pros and cons. They are more like complements rather than replacements to each other.
 
 
-<a name="pros-for-behaviors"></a>
 ### Pros for Behaviors
 
 Behavior classes, like normal classes, support inheritance. Traits, on the other hand,
@@ -322,7 +315,6 @@ Name conflict caused by different traits requires you to manually resolve it by 
 properties or methods.
 
 
-<a name="pros-for-traits"></a>
 ### Pros for Traits
 
 Traits are much more efficient than behaviors because behaviors are objects which take both time and memory.
