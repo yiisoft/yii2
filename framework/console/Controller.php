@@ -49,7 +49,7 @@ class Controller extends \yii\base\Controller
      * @param resource $stream the stream to check.
      * @return boolean Whether to enable ANSI style in output.
      */
-    public function isColorEnabled($stream = STDOUT)
+    public function isColorEnabled($stream = \STDOUT)
     {
         return $this->color ===  null ? Console::streamSupportsAnsiColors($stream) : $this->color;
     }
@@ -192,13 +192,13 @@ class Controller extends \yii\base\Controller
      */
     public function stderr($string)
     {
-        if ($this->isColorEnabled(STDERR)) {
+        if ($this->isColorEnabled(\STDERR)) {
             $args = func_get_args();
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
 
-        return fwrite(STDERR, $string);
+        return fwrite(\STDERR, $string);
     }
 
     /**
