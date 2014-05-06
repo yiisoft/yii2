@@ -19,26 +19,6 @@ abstract class DbManagerTestCase extends ManagerTestCase
      */
     protected static $db;
 
-    /**
-     * @return MigrateController
-     */
-    protected static function getMigrator()
-    {
-        $app = new Application([
-            'id' => 'Migrator',
-            'basePath' => '@yiiunit',
-            'components' => [
-                'db' => static::getConnection(),
-                'authManager' => '\yii\rbac\DbManager',
-            ],
-        ]);
-
-        $migrator = new MigrateController('migrate', $app, []);
-        $migrator->migrationPath = '@yii/rbac/migrations/';
-        $migrator->interactive = false;
-        return $migrator;
-    }
-
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -50,12 +30,21 @@ abstract class DbManagerTestCase extends ManagerTestCase
             static::markTestSkipped('pdo and ' . $pdo_database . ' extension are required.');
         }
 
-        static::getMigrator()->run('up');
+        new Application([
+            'id' => 'Migrator',
+            'basePath' => '@yiiunit',
+            'components' => [
+                'db' => static::getConnection(),
+                'authManager' => '\yii\rbac\DbManager',
+            ],
+        ]);
+
+        \Yii::$app->runAction('migrate/up', ['migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
     }
 
     public static function tearDownAfterClass()
     {
-        static::getMigrator()->run('down');
+        \Yii::$app->runAction('migrate/down', ['migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
         if (static::$db) {
             static::$db->close();
         }
