@@ -3,6 +3,7 @@ namespace yiiunit\framework\rbac;
 
 use Yii;
 use yii\console\Application;
+use yii\console\Controller;
 use yii\console\controllers\MigrateController;
 use yii\db\Connection;
 use yii\rbac\DbManager;
@@ -20,7 +21,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      */
     protected static $db;
 
-    public static function getApplication()
+    protected static function runConsoleAction($route, $params = [])
     {
         if (Yii::$app === null) {
             new Application([
@@ -32,7 +33,15 @@ abstract class DbManagerTestCase extends ManagerTestCase
                 ],
             ]);
         }
-        return Yii::$app;
+
+        ob_start();
+        $result = Yii::$app->runAction('migrate/up', ['migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
+        echo "Result is ".$result;
+        if ($result !== Controller::EXIT_CODE_NORMAL) {
+            ob_end_flush();
+        } else {
+            ob_end_clean();
+        }
     }
 
     public static function setUpBeforeClass()
@@ -46,12 +55,12 @@ abstract class DbManagerTestCase extends ManagerTestCase
             static::markTestSkipped('pdo and ' . $pdo_database . ' extension are required.');
         }
 
-        static::getApplication()->runAction('migrate/up', ['migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
+        static::runConsoleAction('migrate/up', ['migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
     }
 
     public static function tearDownAfterClass()
     {
-        static::getApplication()->runAction('migrate/down', ['migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
+        static::runConsoleAction('migrate/down', ['migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
         if (static::$db) {
             static::$db->close();
         }
