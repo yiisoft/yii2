@@ -781,10 +781,13 @@ class Command extends \yii\base\Component
             throw $e;
         } else {
             $exceptionClass = '\yii\db\Exception';
-            $errorMap = $this->db->getSchema()->errorMap;
-            foreach ($errorMap as $error => $class) {
-                if (strpos($e->getMessage(), $error) !== false) {
-                    $exceptionClass = $class;
+            $schema = $this->db->getSchema();
+            if ($schema instanceof Schema) {
+                $exceptionMap = $schema->exceptionMap;
+                foreach ($exceptionMap as $error => $class) {
+                    if (strpos($e->getMessage(), $error) !== false) {
+                        $exceptionClass = $class;
+                    }
                 }
             }
 
