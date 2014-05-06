@@ -1,6 +1,8 @@
 <?php
 namespace yiiunit\framework\rbac;
 
+use yii\console\Application;
+use yii\console\controllers\MigrateController;
 use yii\db\Connection;
 use yii\rbac\DbManager;
 
@@ -17,6 +19,22 @@ abstract class DbManagerTestCase extends ManagerTestCase
      */
     protected $db;
 
+    protected function getMigrator()
+    {
+        $app = new Application([
+            'id' => 'Migrator',
+            'basePath' => '@yiiunit',
+            'components' => [
+                'db' => $this->getConnection(),
+            ],
+        ]);
+
+        $migrator = new MigrateController('migrate', $app, []);
+        $migrator->migrationPath = '@yii/rbac/migrations/';
+        $migrator->interactive = false;
+        return $migrator;
+    }
+
     protected function setUp()
     {
         parent::setUp();
@@ -29,11 +47,13 @@ abstract class DbManagerTestCase extends ManagerTestCase
         }
 
         $this->auth = new DbManager(['db' => $this->getConnection()]);
+        $this->getMigrator()->run('up');
     }
 
     protected function tearDown()
     {
         parent::tearDown();
+        $this->getMigrator()->run('down');
         if ($this->db) {
             $this->db->close();
         }
@@ -64,12 +84,6 @@ abstract class DbManagerTestCase extends ManagerTestCase
         }
         if ($open) {
             $db->open();
-            $lines = explode(';', file_get_contents(\Yii::getAlias('@yii/rbac/schema-'.$this->driverName.'.sql')));
-            foreach ($lines as $line) {
-                if (trim($line) !== '') {
-                    $db->pdo->exec($line);
-                }
-            }
         }
         $this->db = $db;
 
