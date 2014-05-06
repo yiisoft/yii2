@@ -284,7 +284,7 @@ class Command extends \yii\base\Component
             return $n;
         } catch (\Exception $e) {
             Yii::endProfile($token, __METHOD__);
-            $this->handleError($e, $rawSql);
+            $this->handleException($e, $rawSql);
         }
     }
 
@@ -417,7 +417,7 @@ class Command extends \yii\base\Component
             return $result;
         } catch (\Exception $e) {
             Yii::endProfile($token, 'yii\db\Command::query');
-            $this->handleError($e, $rawSql);
+            $this->handleException($e, $rawSql);
         }
     }
 
@@ -775,7 +775,7 @@ class Command extends \yii\base\Component
      * @param string $rawSql SQL that produced exception
      * @throws Exception
      */
-    protected function handleError(\Exception $e, $rawSql)
+    protected function handleException(\Exception $e, $rawSql)
     {
         if ($e instanceof Exception) {
             throw $e;
