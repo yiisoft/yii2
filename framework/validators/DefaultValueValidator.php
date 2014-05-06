@@ -19,7 +19,12 @@ namespace yii\validators;
 class DefaultValueValidator extends Validator
 {
     /**
-     * @var mixed a closure returning the default value or the default value to be set to the specified attributes.
+     * @var mixed a PHP callable returning the default value or the default value to be set to the specified attributes.
+     * The function signature must be as follows,
+     *
+     * ~~~
+     * function foo($object, $attribute) {...return $value; }
+     * ~~~
      */
     public $value;
     /**
@@ -35,7 +40,7 @@ class DefaultValueValidator extends Validator
     {
         if ($this->isEmpty($object->$attribute)) {
             if ($this->value instanceof \Closure) {
-                $object->$attribute = call_user_func($this->value);
+                $object->$attribute = call_user_func($this->value, $object, $attribute);
             } else {
                 $object->$attribute = $this->value;
             }
