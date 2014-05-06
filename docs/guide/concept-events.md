@@ -11,6 +11,7 @@ events, it should extend from [[yii\base\Component]] or its child class.
 
 
 <a name="triggering-events"></a>
+
 Triggering Events
 -----------------
 
@@ -78,6 +79,7 @@ the named event.
 
 
 <a name="event-handlers"></a>
+
 Event Handlers
 --------------
 
@@ -105,6 +107,7 @@ Through the `$event` parameter, an event handler may get the following informati
 
 
 <a name="attaching-event-handlers"></a>
+
 Attaching Event Handlers
 ------------------------
 
@@ -167,6 +170,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 
 
 <a name="detaching-event-handlers"></a>
+
 Detaching Event Handlers
 ------------------------
 
@@ -198,6 +202,7 @@ $foo->off(Foo::EVENT_HELLO);
 
 
 <a name="class-level-event-handlers"></a>
+
 Class-Level Event Handlers
 --------------------------
 
@@ -206,7 +211,7 @@ Sometimes, you may want to respond to an event triggered by EVERY instance of a 
 a specific instance. Instead of attaching an event handler to every instance, you may attach the handler
 at *class level* by calling the static method [[yii\base\Event::on()]].
 
-For example, an [Active Record](db-active-record.md) object will trigger a [[yii\base\ActiveRecord::EVENT_AFTER_INSERT]]
+For example, an [Active Record](db-active-record.md) object will trigger a [[yii\db\ActiveRecord::EVENT_AFTER_INSERT]]
 event whenever it inserts a new record into the database. In order to track insertions done by EVERY
 [Active Record](db-active-record.md) object, you may write the following code:
 
@@ -220,8 +225,8 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 });
 ```
 
-The event handler will get invoked whenever an instance of [[yii\base\ActiveRecord|ActiveRecord]] or its child class triggers
-the [[yii\base\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] event. In the handler, you can get the object
+The event handler will get invoked whenever an instance of [[yii\db\ActiveRecord|ActiveRecord]] or its child class triggers
+the [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] event. In the handler, you can get the object
 that triggers the event through `$event->sender`.
 
 When an object triggers an event, it will first call instance-level handlers, followed by class-level handlers.
@@ -257,6 +262,7 @@ Event::off(Foo::className(), Foo::EVENT_HELLO);
 
 
 <a name="global-events"></a>
+
 Global Events
 -------------
 
