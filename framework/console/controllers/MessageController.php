@@ -54,7 +54,7 @@ class MessageController extends Controller
         $filePath = Yii::getAlias($filePath);
         if (file_exists($filePath)) {
             if (!$this->confirm("File '{$filePath}' already exists. Do you wish to overwrite it?")) {
-                return;
+                return self::EXIT_CODE_NORMAL;
             }
         }
         copy(Yii::getAlias('@yii/views/messageConfig.php'), $filePath);
@@ -298,7 +298,7 @@ class MessageController extends Controller
             if (array_keys($translated) == $messages) {
                 echo "nothing new...skipped.\n";
 
-                return;
+                return self::EXIT_CODE_NORMAL;
             }
             $merged = [];
             $untranslated = [];

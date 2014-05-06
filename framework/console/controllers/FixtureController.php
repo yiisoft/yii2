@@ -96,7 +96,7 @@ class FixtureController extends Controller
         }
 
         if (!$this->confirmLoad($foundFixtures, $except)) {
-            return;
+            return self::EXIT_CODE_NORMAL;
         }
 
         $filtered = array_diff($foundFixtures, $except);
@@ -140,7 +140,7 @@ class FixtureController extends Controller
         }
 
         if (!$this->confirmUnload($foundFixtures, $except)) {
-            return;
+            return self::EXIT_CODE_NORMAL;
         }
 
         $filtered = array_diff($foundFixtures, $except);
