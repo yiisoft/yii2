@@ -11,21 +11,25 @@ use yii\rbac\DbManager;
  */
 abstract class DbManagerTestCase extends ManagerTestCase
 {
-    protected $database;
-    protected $driverName = 'mysql';
+    protected static $database;
+    protected static $driverName = 'mysql';
 
     /**
      * @var Connection
      */
-    protected $db;
+    protected static $db;
 
-    protected function getMigrator()
+    /**
+     * @return MigrateController
+     */
+    protected static function getMigrator()
     {
         $app = new Application([
             'id' => 'Migrator',
             'basePath' => '@yiiunit',
             'components' => [
-                'db' => $this->getConnection(),
+                'db' => static::getConnection(),
+                'authManager' => '\yii\rbac\DbManager',
             ],
         ]);
 
@@ -35,29 +39,41 @@ abstract class DbManagerTestCase extends ManagerTestCase
         return $migrator;
     }
 
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        $databases = static::getParam('databases');
+        static::$database = $databases[static::$driverName];
+        $pdo_database = 'pdo_' . static::$driverName;
+
+        if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
+            static::markTestSkipped('pdo and ' . $pdo_database . ' extension are required.');
+        }
+
+        static::getMigrator()->run('up');
+    }
+
+    public static function tearDownAfterClass()
+    {
+        static::getMigrator()->run('down');
+        if (static::$db) {
+            static::$db->close();
+        }
+        \Yii::$app = null;
+        parent::tearDownAfterClass();
+    }
+
     protected function setUp()
     {
         parent::setUp();
-        $databases = $this->getParam('databases');
-        $this->database = $databases[$this->driverName];
-        $pdo_database = 'pdo_'.$this->driverName;
-
-        if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
-            $this->markTestSkipped('pdo and '.$pdo_database.' extension are required.');
-        }
-
         $this->auth = new DbManager(['db' => $this->getConnection()]);
-        $this->getMigrator()->run('up');
+
     }
 
     protected function tearDown()
     {
         parent::tearDown();
-        $this->getMigrator()->run('down');
-        if ($this->db) {
-            $this->db->close();
-        }
-        $this->destroyApplication();
+        $this->auth->removeAll();
     }
 
     /**
@@ -68,24 +84,24 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @throws \yii\base\InvalidConfigException
      * @return \yii\db\Connection
      */
-    public function getConnection($reset = true, $open = true)
+    public static function getConnection($reset = true, $open = true)
     {
-        if (!$reset && $this->db) {
-            return $this->db;
+        if (!$reset && static::$db) {
+            return static::$db;
         }
         $db = new Connection;
-        $db->dsn = $this->database['dsn'];
-        if (isset($this->database['username'])) {
-            $db->username = $this->database['username'];
-            $db->password = $this->database['password'];
+        $db->dsn = static::$database['dsn'];
+        if (isset(static::$database['username'])) {
+            $db->username = static::$database['username'];
+            $db->password = static::$database['password'];
         }
-        if (isset($this->database['attributes'])) {
-            $db->attributes = $this->database['attributes'];
+        if (isset(static::$database['attributes'])) {
+            $db->attributes = static::$database['attributes'];
         }
         if ($open) {
             $db->open();
         }
-        $this->db = $db;
+        static::$db = $db;
 
         return $db;
     }
