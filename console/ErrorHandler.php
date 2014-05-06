@@ -64,7 +64,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     protected function formatMessage($message, $format = [Console::FG_RED, Console::BOLD])
     {
-        $stream = (PHP_SAPI === 'cli') ? STDERR : STDOUT;
+        $stream = (PHP_SAPI === 'cli') ? \STDERR : \STDOUT;
         // try controller first to allow check for --color switch
         if (Yii::$app->controller instanceof \yii\console\Controller && Yii::$app->controller->isColorEnabled($stream)
             || Yii::$app instanceof \yii\console\Application && Console::streamSupportsAnsiColors($stream)) {
