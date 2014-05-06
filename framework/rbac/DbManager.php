@@ -18,9 +18,13 @@ use yii\di\Instance;
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
  *
- * The database connection is specified by [[db]]. And the database schema
- * should be as described in "framework/rbac/*.sql". You may change the names of
- * the three tables used to store the authorization data by setting [[itemTable]],
+ * The database connection is specified by [[db]]. The database schema could be initialized by applying migration:
+ *
+ * ```
+ *  yii migrate --migrationPath=/vendor/yiisoft/yii2/rbac/migrations/
+ * ```
+ *
+ * You may change the names of the three tables used to store the authorization data by setting [[itemTable]],
  * [[itemChildTable]] and [[assignmentTable]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
