@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #3268: Fixed the bug that the schema name in a table name was not respected by `yii\db\mysql\Schema` (terazoid, qiangxue)
 - Bug #3311: Fixed the bug that `yii\di\Container::has()` did not return correct value (mgrechanik, qiangxue)
 - Bug #3327: Fixed "Unable to find debug data" when logging objects with circular references (jarekkozak, samdark)
+- Bug #3368: Fix for comparing numeric attributes in JavaScript (technixp)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2837: Error page now shows arguments in stack trace method calls (samdark)
 - Enh #2906: Added support for using conditional comments for js and css files registered through asset bundles and Html helper (exromany, qiangxue)
