@@ -284,13 +284,7 @@ class Command extends \yii\base\Component
             return $n;
         } catch (\Exception $e) {
             Yii::endProfile($token, __METHOD__);
-            if ($e instanceof Exception) {
-                throw $e;
-            } else {
-                $message = $e->getMessage() . "\nThe SQL being executed was: $rawSql";
-                $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-                throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
-            }
+            $this->handleError($e, $rawSql);
         }
     }
 
@@ -423,13 +417,7 @@ class Command extends \yii\base\Component
             return $result;
         } catch (\Exception $e) {
             Yii::endProfile($token, 'yii\db\Command::query');
-            if ($e instanceof Exception) {
-                throw $e;
-            } else {
-                $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
-                $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-                throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
-            }
+            $this->handleError($e, $rawSql);
         }
     }
 
@@ -778,5 +766,31 @@ class Command extends \yii\base\Component
         $sql = $this->db->getQueryBuilder()->checkIntegrity($check, $schema, $table);
 
         return $this->setSql($sql);
+    }
+
+    /**
+     * Handles database error
+     *
+     * @param \Exception $e
+     * @param string $rawSql SQL that produced exception
+     * @throws Exception
+     */
+    protected function handleError(\Exception $e, $rawSql)
+    {
+        if ($e instanceof Exception) {
+            throw $e;
+        } else {
+            $exceptionClass = '\yii\db\Exception';
+            $errorMap = $this->db->getSchema()->errorMap;
+            foreach ($errorMap as $error => $class) {
+                if (strpos($e->getMessage(), $error) !== false) {
+                    $exceptionClass = $class;
+                }
+            }
+
+            $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
+            $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+            throw new $exceptionClass($message, $errorInfo, (int) $e->getCode(), $e);
+        }
     }
 }

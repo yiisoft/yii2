@@ -73,6 +73,13 @@ abstract class Schema extends Object
     private $_builder;
 
     /**
+     * @var array map of DB errors and corresponding exceptions
+     */
+    public $errorMap = [
+        'SQLSTATE[23' => '\yii\db\IntegrityException',
+    ];
+
+    /**
      * Loads the metadata for the specified table.
      * @param string $name table name
      * @return TableSchema DBMS-dependent table metadata, null if the table does not exist.
