@@ -77,32 +77,28 @@ abstract class DbManagerTestCase extends ManagerTestCase
     }
 
     /**
-     * @param  boolean $reset whether to clean up the test database
-     * @param  boolean $open whether to open and populate test database
      * @throws \yii\base\InvalidParamException
      * @throws \yii\db\Exception
      * @throws \yii\base\InvalidConfigException
      * @return \yii\db\Connection
      */
-    public static function getConnection($reset = true, $open = true)
+    public static function getConnection()
     {
-        if (!$reset && static::$db) {
-            return static::$db;
+        if (static::$db == null) {
+            $db = new Connection;
+            $db->dsn = static::$database['dsn'];
+            if (isset(static::$database['username'])) {
+                $db->username = static::$database['username'];
+                $db->password = static::$database['password'];
+            }
+            if (isset(static::$database['attributes'])) {
+                $db->attributes = static::$database['attributes'];
+            }
+            if (!$db->isActive) {
+                $db->open();
+            }
+            static::$db = $db;
         }
-        $db = new Connection;
-        $db->dsn = static::$database['dsn'];
-        if (isset(static::$database['username'])) {
-            $db->username = static::$database['username'];
-            $db->password = static::$database['password'];
-        }
-        if (isset(static::$database['attributes'])) {
-            $db->attributes = static::$database['attributes'];
-        }
-        if ($open) {
-            $db->open();
-        }
-        static::$db = $db;
-
-        return $db;
+        return static::$db;
     }
 }

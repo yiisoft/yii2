@@ -33,8 +33,8 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'data' => Schema::TYPE_TEXT,
             'created_at' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_INTEGER,
+            'PRIMARY KEY (name)',
         ], $tableOptions);
-        $this->addPrimaryKey('pk-auth_rule', $authManager->ruleTable, 'name');
 
         $this->createTable($authManager->itemTable, [
             'name' => Schema::TYPE_STRING . '(64) NOT NULL',
@@ -44,26 +44,26 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'data' => Schema::TYPE_TEXT,
             'created_at' => Schema::TYPE_INTEGER,
             'updated_at' => Schema::TYPE_INTEGER,
+            'PRIMARY KEY (name)',
+            'FOREIGN KEY (rule_name) REFERENCES ' . $authManager->ruleTable . ' (name) ON DELETE SET NULL ON UPDATE CASCADE',
         ], $tableOptions);
-        $this->addPrimaryKey('pk-auth_item', $authManager->itemTable, 'name');
-        $this->addForeignKey('fk-auth_item-rule_name', $authManager->itemTable, 'rule_name', $authManager->ruleTable, 'name', 'SET NULL', 'CASCADE');
         $this->createIndex('idx-auth_item-type', $authManager->itemTable, 'type');
 
         $this->createTable($authManager->itemChildTable, [
             'parent' => Schema::TYPE_STRING . '(64) NOT NULL',
             'child' => Schema::TYPE_STRING . '(64) NOT NULL',
+            'PRIMARY KEY (parent, child)',
+            'FOREIGN KEY (parent) REFERENCES ' . $authManager->itemTable . ' (name) ON DELETE CASCADE ON UPDATE CASCADE',
+            'FOREIGN KEY (child) REFERENCES ' . $authManager->itemTable . ' (name) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
-        $this->addPrimaryKey('pk-auth_item_child', $authManager->itemChildTable, ['parent', 'child']);
-        $this->addForeignKey('fk-auth_item_child-parent', $authManager->itemChildTable, 'parent', $authManager->itemTable, 'name', 'CASCADE', 'CASCADE');
-        $this->addForeignKey('fk-auth_item_child-child', $authManager->itemChildTable, 'child', $authManager->itemTable, 'name', 'CASCADE', 'CASCADE');
 
         $this->createTable($authManager->assignmentTable, [
             'item_name' => Schema::TYPE_STRING . '(64) NOT NULL',
             'user_id' => Schema::TYPE_STRING . '(64) NOT NULL',
             'created_at' => Schema::TYPE_INTEGER,
+            'PRIMARY KEY (item_name, user_id)',
+            'FOREIGN KEY (item_name) REFERENCES ' . $authManager->itemTable . ' (name) ON DELETE CASCADE ON UPDATE CASCADE',
         ], $tableOptions);
-        $this->addPrimaryKey('pk-auth_assignment', $authManager->assignmentTable, ['item_name', 'user_id']);
-        $this->addForeignKey('fk-auth_assignment-item_name', $authManager->assignmentTable, 'item_name', $authManager->itemTable, 'name', 'CASCADE', 'CASCADE');
     }
 
     public function down()
