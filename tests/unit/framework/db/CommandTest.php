@@ -287,4 +287,16 @@ class CommandTest extends DatabaseTestCase
     public function testDropIndex()
     {
     }
+
+    public function testIntegrityViolation()
+    {
+        $this->setExpectedException('\yii\db\IntegrityException');
+
+        $db = $this->getConnection();
+
+        $sql = 'INSERT INTO profile(id, description) VALUES (123, \'duplicate\')';
+        $command = $db->createCommand($sql);
+        $command->execute();
+        $command->execute();
+    }
 }
