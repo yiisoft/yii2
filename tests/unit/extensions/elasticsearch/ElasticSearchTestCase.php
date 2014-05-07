@@ -17,7 +17,7 @@ class ElasticSearchTestCase extends TestCase
     {
         $this->mockApplication();
 
-        $databases = $this->getParam('databases');
+        $databases = self::getParam('databases');
         $params = isset($databases['elasticsearch']) ? $databases['elasticsearch'] : null;
         if ($params === null || !isset($params['dsn'])) {
             $this->markTestSkipped('No elasticsearch server connection configured.');
@@ -40,7 +40,7 @@ class ElasticSearchTestCase extends TestCase
      */
     public function getConnection($reset = true)
     {
-        $databases = $this->getParam('databases');
+        $databases = self::getParam('databases');
         $params = isset($databases['elasticsearch']) ? $databases['elasticsearch'] : [];
         $db = new Connection();
         if ($reset) {

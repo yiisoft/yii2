@@ -460,7 +460,7 @@ of the rule class, you need to respect this hierarchy as well. That is why when 
 the `execute()` method will return true if the user group is either 1 or 2 (meaning the user is in either "admin"
 group or "author" group).
 
-Next, configure `authManager` by listing the two roles in [[yii\rbac\ManagerInterface::defaultRoles]]:
+Next, configure `authManager` by listing the two roles in [[yii\rbac\BaseManager::$defaultRoles]]:
 
 ```php
 return [

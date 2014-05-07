@@ -48,7 +48,7 @@ class SphinxTestCase extends TestCase
         if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
             $this->markTestSkipped('pdo and pdo_mysql extension are required.');
         }
-        $config = $this->getParam('sphinx');
+        $config = self::getParam('sphinx');
         if (!empty($config)) {
             $this->sphinxConfig = $config['sphinx'];
             $this->dbConfig = $config['db'];

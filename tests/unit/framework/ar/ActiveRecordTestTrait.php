@@ -70,25 +70,6 @@ trait ActiveRecordTestTrait
         $this->assertTrue($customers[1] instanceof $customerClass);
         $this->assertTrue($customers[2] instanceof $customerClass);
 
-        // find all asArray
-        $customers = $customerClass::find()->asArray()->all();
-        $this->assertEquals(3, count($customers));
-        $this->assertArrayHasKey('id', $customers[0]);
-        $this->assertArrayHasKey('name', $customers[0]);
-        $this->assertArrayHasKey('email', $customers[0]);
-        $this->assertArrayHasKey('address', $customers[0]);
-        $this->assertArrayHasKey('status', $customers[0]);
-        $this->assertArrayHasKey('id', $customers[1]);
-        $this->assertArrayHasKey('name', $customers[1]);
-        $this->assertArrayHasKey('email', $customers[1]);
-        $this->assertArrayHasKey('address', $customers[1]);
-        $this->assertArrayHasKey('status', $customers[1]);
-        $this->assertArrayHasKey('id', $customers[2]);
-        $this->assertArrayHasKey('name', $customers[2]);
-        $this->assertArrayHasKey('email', $customers[2]);
-        $this->assertArrayHasKey('address', $customers[2]);
-        $this->assertArrayHasKey('status', $customers[2]);
-
         // find by a single primary key
         $customer = $customerClass::findOne(2);
         $this->assertTrue($customer instanceof $customerClass);
@@ -136,6 +117,25 @@ trait ActiveRecordTestTrait
             'status' => 1,
             'profile_id' => null,
         ], $customer);
+
+        // find all asArray
+        $customers = $customerClass::find()->asArray()->all();
+        $this->assertEquals(3, count($customers));
+        $this->assertArrayHasKey('id', $customers[0]);
+        $this->assertArrayHasKey('name', $customers[0]);
+        $this->assertArrayHasKey('email', $customers[0]);
+        $this->assertArrayHasKey('address', $customers[0]);
+        $this->assertArrayHasKey('status', $customers[0]);
+        $this->assertArrayHasKey('id', $customers[1]);
+        $this->assertArrayHasKey('name', $customers[1]);
+        $this->assertArrayHasKey('email', $customers[1]);
+        $this->assertArrayHasKey('address', $customers[1]);
+        $this->assertArrayHasKey('status', $customers[1]);
+        $this->assertArrayHasKey('id', $customers[2]);
+        $this->assertArrayHasKey('name', $customers[2]);
+        $this->assertArrayHasKey('email', $customers[2]);
+        $this->assertArrayHasKey('address', $customers[2]);
+        $this->assertArrayHasKey('status', $customers[2]);
     }
 
     public function testFindScalar()

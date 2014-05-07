@@ -45,8 +45,27 @@ class QueryBuilder extends \yii\base\Object
     {
         $parts = [];
 
-        if ($query->fields !== null) {
-            $parts['fields'] = (array) $query->fields;
+        if ($query->fields === []) {
+            $parts['fields'] = [];
+        } elseif ($query->fields !== null) {
+            $fields = [];
+            $scriptFields = [];
+            foreach($query->fields as $key => $field) {
+                if (is_int($key)) {
+                    $fields[] = $field;
+                } else {
+                    $scriptFields[$key] = $field;
+                }
+            }
+            if (!empty($fields)) {
+                $parts['fields'] = $fields;
+            }
+            if (!empty($scriptFields)) {
+                $parts['script_fields'] = $scriptFields;
+            }
+        }
+        if ($query->source !== null) {
+            $parts['_source'] = $query->source;
         }
         if ($query->limit !== null && $query->limit >= 0) {
             $parts['size'] = $query->limit;

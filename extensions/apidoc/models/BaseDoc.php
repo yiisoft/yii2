@@ -42,6 +42,26 @@ class BaseDoc extends Object
      */
     public $tags = [];
 
+    public function hasTag($name)
+    {
+        foreach ($this->tags as $tag) {
+            if (strtolower($tag->getName()) == $name) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function removeTag($name)
+    {
+        foreach ($this->tags as $i => $tag) {
+            if (strtolower($tag->getName()) == $name) {
+                unset($this->tags[$i]);
+            }
+        }
+    }
+
+
     /**
      * @param \phpDocumentor\Reflection\BaseReflector $reflector
      * @param Context $context
@@ -70,7 +90,7 @@ class BaseDoc extends Object
                     'message' => "No short description for " . substr(StringHelper::basename(get_class($this)), 0, -3) . " '{$this->name}'",
                 ];
             }
-            $this->description = $docblock->getLongDescription();
+            $this->description = $docblock->getLongDescription()->getContents();
 
             $this->phpDocContext = $docblock->getContext();
 

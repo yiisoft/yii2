@@ -54,7 +54,7 @@ class Widget extends Component implements ViewContextInterface
         $config['class'] = get_called_class();
         /** @var Widget $widget */
         $widget = Yii::createObject($config);
-        self::$stack[] = $widget;
+        static::$stack[] = $widget;
 
         return $widget;
     }
@@ -67,8 +67,8 @@ class Widget extends Component implements ViewContextInterface
      */
     public static function end()
     {
-        if (!empty(self::$stack)) {
-            $widget = array_pop(self::$stack);
+        if (!empty(static::$stack)) {
+            $widget = array_pop(static::$stack);
             if (get_class($widget) === get_called_class()) {
                 echo $widget->run();
                 return $widget;
@@ -108,7 +108,7 @@ class Widget extends Component implements ViewContextInterface
     public function getId($autoGenerate = true)
     {
         if ($autoGenerate && $this->_id === null) {
-            $this->_id = self::$autoIdPrefix . self::$counter++;
+            $this->_id = static::$autoIdPrefix . static::$counter++;
         }
 
         return $this->_id;

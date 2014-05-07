@@ -32,7 +32,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @param string $token the token to be looked for
      * @return IdentityInterface|null the identity object that matches the given token.
      */
-    public static function findIdentityByAccessToken($token)
+    public static function findIdentityByAccessToken($token, $type = null)
     {
         return static::findOne(['access_token' => $token]);
     }
