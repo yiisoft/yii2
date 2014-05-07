@@ -193,6 +193,9 @@ class Validator extends Component
                     $params[$name] = $value;
                 }
             } else {
+                if (!class_exists($type)) {
+                    throw new InvalidConfigException("Unknown validator: '$type'.");
+                }
                 $params['class'] = $type;
             }
         }
