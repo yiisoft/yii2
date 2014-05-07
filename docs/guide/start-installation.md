@@ -6,6 +6,7 @@ The former is the preferred way as it allows you to install new [extensions](str
 or update Yii by running a single command.
 
 
+<a name="installing-via-composer"></a>
 Installing via Composer
 -----------------------
 
@@ -39,6 +40,7 @@ composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic bas
 Note that the development version of Yii should not be used for production as it may break your running code.
 
 
+<a name="installing-from-archive-file"></a>
 Installing from an Archive File
 -------------------------------
 
@@ -48,6 +50,7 @@ Installing Yii from an archive file involves two steps:
 2. Unpack the downloaded file to a Web accessible folder.
 
 
+<a name="other-installation-options"></a>
 Other Installation Options
 --------------------------
 
@@ -62,6 +65,7 @@ There are other installation options available:
   you may consider [Advanced Application Template](tutorial-advanced-app.md).
 
 
+<a name="verifying-installation"></a>
 Verifying Installation
 ----------------------
 
@@ -84,28 +88,110 @@ Yii's requirements by using one of the following approaches:
   ```
 
 You should configure your PHP installation so that it meets the minimum requirement of Yii.
-
-Yii has been tested with the [Apache HTTP server](http://httpd.apache.org/) and [Nginx HTTP server](http://nginx.org/)
-on both Windows and Linux. It requires PHP 5.4 or above. And you should install
+In general, you should have PHP 5.4 or above. And you should install
 the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) and a corresponding database driver
 (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
-Adjusting Document Root
+<a name="configuring-web-servers"></a>
+Configuring Web Servers
 -----------------------
 
-The above installation is fine in a development environment which can only be accessed from the local machine
-or the local network.
+> Info: You may skip this sub-section for now if you are just testing driving Yii with no intention
+  of deploying it to a production server.
 
-In a production environment, you should configure the Web server by pointing its document root
-to the `basic/web` folder. This is necessary because besides Web accessible files under the `basic/web` folder,
-the `basic` folder also contains your application code and/or sensitive data files that you do not want to
-expose to the Web. After the adjustment, you should be able to access the installed application via URL:
+The application installed according to the above instructions should work out of box with either
+an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
+either Windows or Linux.
+
+On a production server, you may want to configure your Web server so that the application can be accessed
+via the URL `http://hostname` without the part `/basic/web/index.php`. This requires configuring your
+Web server by
+
+* pointing the Web document root to the `basic/web` folder;
+* and hiding `index.php` from the URL.
+
+By setting `basic/web` as the document root, you also secure your application by preventing end users
+from accessing your private application code and sensitive data files that are stored in the sibling directories
+of `basic/web`.
+
+Below we show the configurations recommended for Apache and Nginx.
+
+> Info: If your application will run in a shared hosting environment where you do not have the permission
+to modify its Web server setting, you may adjust the structure of your application. Please refer to
+the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more details.
+
+
+<a name="recommended-apache-configuration"></a>
+### Recommended Apache Configuration
+
+Use the following configuration in Apache's `httpd.conf` file or within a virtual host configuration. Note that you
+should replace `path/to/basic/web` with the actual path of `basic/web`.
 
 ```
-http://localhost/index.php
+# Set document root to be "basic/web"
+DocumentRoot "path/to/basic/web"
+
+<Directory "path/to/basic/web">
+    RewriteEngine on
+
+    # If a directory or a file exists, use the request directly
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # Otherwise forward the request to index.php
+    RewriteRule . index.php
+
+    # ...other settings...
+</Directory>
 ```
 
-If you plan to deploy your application to a shared hosting environment and you do not have the permission
-to modify its Web server setting, please refer to the [Shared Hosting Environment](tutorial-shared-hosting.md) section
-on how to adjust your application.
+
+<a name="recommended-nginx-configuration"></a>
+### Recommended Nginx Configuration
+
+You should have installed PHP as an [FPM SAPI](http://php.net/install.fpm) for [Nginx](http://wiki.nginx.org/).
+Use the following Nginx configuration and replace `path/to/basic/web` with the actual path of `basic/web`.
+
+```
+server {
+    charset utf-8;
+    client_max_body_size 128M;
+
+    listen 80; ## listen for ipv4
+    #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
+
+    server_name mysite.local;
+    root        /path/to/basic/web;
+    index       index.php;
+
+    access_log  /path/to/project/log/access.log main;
+    error_log   /path/to/project/log/error.log;
+
+    location / {
+        # Redirect everything that isn't a real file to index.php
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    # uncomment to avoid processing of calls to non-existing static files by Yii
+    #location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
+    #    try_files $uri =404;
+    #}
+    #error_page 404 /404.html;
+
+    location ~ \.php$ {
+        include fastcgi.conf;
+        fastcgi_pass   127.0.0.1:9000;
+        #fastcgi_pass unix:/var/run/php5-fpm.sock;
+    }
+
+    location ~ /\.(ht|svn|git) {
+        deny all;
+    }
+}
+```
+
+When using this configuration, you should set `cgi.fix_pathinfo=0` in the `php.ini` file
+in order to avoid many unnecessary system `stat()` calls.
+
+Also note that when running an HTTPS server you need to add `fastcgi_param HTTPS on;` so that Yii
+can properly detect if a connection is secure.
