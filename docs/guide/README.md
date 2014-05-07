@@ -173,6 +173,7 @@ Special Topics
 * [Logging](tutorial-logging.md)
 * **TBD** [Mailing](tutorial-mailing.md)
 * [Performance Tuning](tutorial-performance-tuning.md)
+* **TBD** [Shared Hosting Environment](tutorial-shared-hosting.md)
 * [Template Engines](tutorial-template-engines.md)
 * [Theming](tutorial-theming.md)
 
