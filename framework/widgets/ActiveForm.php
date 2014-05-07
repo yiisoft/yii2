@@ -55,6 +55,10 @@ class ActiveForm extends Widget
      */
     public $errorCssClass = 'has-error';
     /**
+     * @var string the jQuery selector of the error tag
+     */
+    public $errorSelector = 'span';
+    /**
      * @var string the CSS class that is added to a field container when the associated attribute is successfully validated.
      */
     public $successCssClass = 'has-success';
@@ -169,13 +173,41 @@ class ActiveForm extends Widget
     {
         if (!empty($this->attributes)) {
             $id = $this->options['id'];
+            $attributes = Json::encode($this->processAttributes());
             $options = Json::encode($this->getClientOptions());
-            $attributes = Json::encode($this->attributes);
             $view = $this->getView();
             ActiveFormAsset::register($view);
             $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
         }
         echo Html::endForm();
+    }
+
+    /**
+     * Returns the attributes with validation config.
+     * @return array the processed attributes
+     */
+    protected function processAttributes()
+    {
+        if (isset(array_values($this->attributes)[0]['error'])) {
+            $this->errorSelector = array_values($this->attributes)[0]['error'];
+        }
+        $attributes = [];
+        $mainConfig = [
+            'validateOnChange' => $this->validateOnChange,
+            'validateOnType' => $this->validateOnType,
+            'validationDelay' => $this->validationDelay,
+            'error' => $this->errorSelector
+        ];
+
+        foreach ($this->attributes as $attribute => $config) {
+            $attributes[$attribute] = array_diff($config, $mainConfig, [
+                'name' => $config['name'],
+                'container' => ".field-{$config['id']}",
+                'input' => "#{$config['id']}"
+            ]);
+        }
+
+        return $attributes;
     }
 
     /**
@@ -192,6 +224,12 @@ class ActiveForm extends Widget
             'validatingCssClass' => $this->validatingCssClass,
             'ajaxParam' => $this->ajaxParam,
             'ajaxDataType' => $this->ajaxDataType,
+            'validationDefaults' => [
+                'validateOnChange' => $this->validateOnChange,
+                'validateOnType' => $this->validateOnType,
+                'validationDelay' => $this->validationDelay,
+                'error' => $this->errorSelector
+            ]
         ];
         if ($this->validationUrl !== null) {
             $options['validationUrl'] = Url::to($this->validationUrl);

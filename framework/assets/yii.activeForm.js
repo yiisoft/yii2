@@ -35,6 +35,8 @@
         validatingCssClass: 'validating',
         // the URL for performing AJAX-based validation. If not set, it will use the the form's action
         validationUrl: undefined,
+        // the object with default attributes settings for validation
+        validationDefaults: {},
         // a callback that is called before submitting the form. The signature of the callback should be:
         // function ($form) { ...return false to cancel submission...}
         beforeSubmit: undefined,
@@ -89,8 +91,9 @@
                 if (settings.validationUrl === undefined) {
                     settings.validationUrl = $form.prop('action');
                 }
+                var attributesDefaults = $.extend({}, attributeDefaults, settings.validationDefaults || {});
                 $.each(attributes, function (i) {
-                    attributes[i] = $.extend({value: getValue($form, this)}, attributeDefaults, this);
+                    attributes[i] = $.extend({value: getValue($form, this)}, attributesDefaults, this);
                 });
                 $form.data('yiiActiveForm', {
                     settings: settings,
@@ -150,7 +153,7 @@
                 var errors = [];
                 $.each(data.attributes, function () {
                     if (updateInput($form, this, messages)) {
-                        errors.push(this.input);
+                        errors.push(this.input || '#' + this.id);
                     }
                 });
                 updateSummary($form, messages);
@@ -190,7 +193,7 @@
                     // Without setTimeout() we would get the input values that are not reset yet.
                     this.value = getValue($form, this);
                     this.status = 0;
-                    var $container = $form.find(this.container);
+                    var $container = $form.find(this.container || '.field-' + this.id);
                     $container.removeClass(
                         data.settings.validatingCssClass + ' ' +
                             data.settings.errorCssClass + ' ' +
@@ -251,7 +254,7 @@
             $.each(data.attributes, function () {
                 if (this.status === 2) {
                     this.status = 3;
-                    $form.find(this.container).addClass(data.settings.validatingCssClass);
+                    $form.find(this.container || '.field-' + this.id).addClass(data.settings.validatingCssClass);
                 }
             });
             validate($form, function (messages) {
@@ -348,7 +351,7 @@
         attribute.status = 1;
         if ($input.length) {
             hasError = messages && $.isArray(messages[attribute.id]) && messages[attribute.id].length;
-            var $container = $form.find(attribute.container);
+            var $container = $form.find(attribute.container || '.field-' + attribute.id);
             var $error = $container.find(attribute.error);
             if (hasError) {
                 $error.text(messages[attribute.id][0]);
@@ -399,7 +402,8 @@
     };
 
     var findInput = function ($form, attribute) {
-        var $input = $form.find(attribute.input);
+        var input = attribute.input || '#' + attribute.id;
+        var $input = $form.find(input);
         if ($input.length && $input[0].tagName.toLowerCase() === 'div') {
             // checkbox list or radio list
             return $input.find('input');
