@@ -15,4 +15,9 @@ class PostgreSQLCommandTest extends CommandTest
         $command = $db->createCommand($sql);
         $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
     }
+
+    public function testBindParamValue()
+    {
+        $this->markTestIncomplete('TODO: impement it');
+    }
 } 
