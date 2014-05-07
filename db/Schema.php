@@ -77,7 +77,7 @@ abstract class Schema extends Object
      * If left part is found in DB error message exception class from the right part is used.
      */
     public $exceptionMap = [
-        'SQLSTATE[23' => '\yii\db\IntegrityException',
+        'SQLSTATE[23' => 'yii\db\IntegrityException',
     ];
 
     /**
@@ -486,7 +486,7 @@ abstract class Schema extends Object
      * @param string $rawSql SQL that produced exception
      * @throws Exception
      */
-    protected function handleException(\Exception $e, $rawSql)
+    public function handleException(\Exception $e, $rawSql)
     {
         if ($e instanceof Exception) {
             throw $e;

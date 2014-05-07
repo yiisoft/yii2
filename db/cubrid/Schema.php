@@ -69,7 +69,7 @@ class Schema extends \yii\db\Schema
      * If left part is found in DB error message exception class from the right part is used.
      */
     public $exceptionMap = [
-        'Operation would have caused one or more unique constraint violations' => '\yii\db\IntegrityException',
+        'Operation would have caused one or more unique constraint violations' => 'yii\db\IntegrityException',
     ];
 
     /**
