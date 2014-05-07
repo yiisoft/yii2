@@ -25,10 +25,6 @@ class CreateAction extends Action
      */
     public $scenario = Model::SCENARIO_DEFAULT;
     /**
-     * @var boolean whether to start a DB transaction when saving the model.
-     */
-    public $transactional = true;
-    /**
      * @var string the name of the view action. This property is need to create the URL when the mode is successfully created.
      */
     public $viewAction = 'view';
@@ -52,23 +48,7 @@ class CreateAction extends Action
         ]);
 
         $model->load(Yii::$app->getRequest()->getBodyParams(), '');
-
-        if ($this->transactional && $model instanceof ActiveRecord) {
-            if ($model->validate()) {
-                $transaction = $model->getDb()->beginTransaction();
-                try {
-                    $model->insert(false);
-                    $transaction->commit();
-                } catch (\Exception $e) {
-                    $transaction->rollback();
-                    throw $e;
-                }
-            }
-        } else {
-            $model->save();
-        }
-
-        if (!$model->hasErrors()) {
+        if ($model->save()) {
             $response = Yii::$app->getResponse();
             $response->setStatusCode(201);
             $id = implode(',', array_values($model->getPrimaryKey(true)));

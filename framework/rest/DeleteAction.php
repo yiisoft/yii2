@@ -19,11 +19,6 @@ use yii\db\ActiveRecord;
 class DeleteAction extends Action
 {
     /**
-     * @var boolean whether to start a DB transaction when deleting the model.
-     */
-    public $transactional = true;
-
-    /**
      * Deletes a model.
      */
     public function run($id)
@@ -34,18 +29,7 @@ class DeleteAction extends Action
             call_user_func($this->checkAccess, $this->id, $model);
         }
 
-        if ($this->transactional && $model instanceof ActiveRecord) {
-            $transaction = $model->getDb()->beginTransaction();
-            try {
-                $model->delete();
-                $transaction->commit();
-            } catch (\Exception $e) {
-                $transaction->rollback();
-                throw $e;
-            }
-        } else {
-            $model->delete();
-        }
+        $model->delete();
 
         Yii::$app->getResponse()->setStatusCode(204);
     }
