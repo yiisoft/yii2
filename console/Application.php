@@ -138,7 +138,7 @@ class Application extends \yii\base\Application
             return $result;
         } else {
             $response = $this->getResponse();
-            $response->exitStatus = (int) $result;
+            $response->exitStatus = $result;
 
             return $response;
         }
@@ -157,7 +157,7 @@ class Application extends \yii\base\Application
     public function runAction($route, $params = [])
     {
         try {
-            return parent::runAction($route, $params);
+            return (int)parent::runAction($route, $params);
         } catch (InvalidRouteException $e) {
             throw new Exception(Yii::t('yii', 'Unknown command "{command}".', ['command' => $route]), 0, $e);
         }

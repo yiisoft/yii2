@@ -29,6 +29,9 @@ use yii\helpers\Console;
  */
 class Controller extends \yii\base\Controller
 {
+    const EXIT_CODE_NORMAL = 0;
+    const EXIT_CODE_ERROR = 1;
+
     /**
      * @var boolean whether to run the command interactively.
      */
