@@ -55,6 +55,7 @@ Yii Framework 2 Change Log
 - Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
 - Chg: `yii\grid\DataColumn::getDataCellValue()` visibility is now `public` to allow accessing the value from a GridView directly (cebe)
 - Chg: `yii\data\ActiveDataProvider::$query` will not be modified directly with pagination and sorting anymore so it will be reuseable (cebe)
+- Chg: Removed `yii\rest\ActiveController::$transactional` property and connected functionality (samdark)
 
 
 2.0.0-beta April 13, 2014
