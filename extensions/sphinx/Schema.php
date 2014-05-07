@@ -60,6 +60,12 @@ class Schema extends Object
     private $_builder;
 
     /**
+     * @var array map of DB errors and corresponding exceptions
+     * If left part is found in DB error message exception class from the right part is used.
+     */
+    public $exceptionMap = [];
+
+    /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
      */
     public $typeMap = [
