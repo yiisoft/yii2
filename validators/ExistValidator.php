@@ -89,19 +89,17 @@ class ExistValidator extends Validator
             $params = [$targetAttribute => $object->$attribute];
         }
 
-        foreach ($params as $value) {
-            if (is_array($value)) {
-                $this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
-
-                return;
-            }
-        }
-
         $targetClass = $this->targetClass === null ? get_class($object) : $this->targetClass;
         $query = $this->createQuery($targetClass, $params);
 
-        if (!$query->exists()) {
-            $this->addError($object, $attribute, $this->message);
+        if (is_array($object->$attribute)) {
+            if ($query->count() !== count($object->$attribute)) {
+                $this->addError($object, $attribute, $this->message);
+            }
+        } else {
+            if (!$query->exists()) {
+                $this->addError($object, $attribute, $this->message);
+            }
         }
     }
 
