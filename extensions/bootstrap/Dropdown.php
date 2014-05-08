@@ -38,7 +38,7 @@ class Dropdown extends Widget
     /**
      * @var boolean whether the labels for header items should be HTML-encoded.
      */
-    public $encodeLabels = true;
+    public $encodeLabel = true;
 
 
     /**
@@ -81,7 +81,10 @@ class Dropdown extends Widget
             if (!isset($item['label'])) {
                 throw new InvalidConfigException("The 'label' option is required.");
             }
-            $label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
+            if (isset($item['encodeLabel'])) {
+                $this->encodeLabel = $item['encodeLabel'];
+            }
+            $label = $this->encodeLabel ? Html::encode($item['label']) : $item['label'];
             $options = ArrayHelper::getValue($item, 'options', []);
             $linkOptions = ArrayHelper::getValue($item, 'linkOptions', []);
             $linkOptions['tabindex'] = '-1';
