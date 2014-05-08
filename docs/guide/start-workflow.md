@@ -67,7 +67,7 @@ all [controller classes](structure-controllers.md).
 
 The following diagram shows the static structure of an application:
 
-![Static structure of Yii application](images/structure.png)
+![Static structure of Yii application](images/application-structure.png)
 
 
 Request Lifecycle
@@ -75,7 +75,7 @@ Request Lifecycle
 
 The following diagram shows a typical workflow of a Yii application  handling a user request:
 
-![Typical workflow of a Yii application](images/flow.png)
+![Typical workflow of a Yii application](images/application-lifecycle.png)
 
 1. A user makes a request of the URL `http://www.example.com/index.php?r=post/show&id=1`.
    The Web server handles the request by executing the bootstrap script `index.php`.
