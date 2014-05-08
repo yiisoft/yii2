@@ -20,7 +20,7 @@ Getting Started
 
 * [Installing Yii](start-installation.md)
 * [Running Applications](start-workflow.md)
-* [Saying "Hello World"](start-hello-world.md)
+* [Saying Hello](start-hello.md)
 * [Working with Forms](start-forms.md)
 * [Working with Databases](start-databases.md)
 * [Generating Code with Gii](start-gii.md)
