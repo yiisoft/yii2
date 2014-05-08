@@ -178,6 +178,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return [$sql, $params];
     }
 
+    // apply limit
     public function applyLimit($sql, $query)
     {
         $limit = $query->limit !== null ? (int)$query->limit : -1;
@@ -187,6 +188,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $sql;
     }
 
+    // rewrite sql query
     protected function rewriteLimitOffsetSql($sql, $limit, $offset, $query)
     {
         $originalOrdering = $this->buildOrderBy($query->orderBy);
@@ -209,6 +211,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $sql;
     }
 
+    // get all columns of table
     protected function getAllColumnNames($table = null)
     {
         if (!$table) {
@@ -222,6 +225,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $columns;
     }
 
+    // check version MS SQL Server
     protected function olderMssql()
     {
         $this->db->open();
