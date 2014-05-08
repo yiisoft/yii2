@@ -32,13 +32,17 @@ After you install the application, you have to conduct the following steps to in
 the installed application. You only need to do these once for all.
 
 1. Execute the `init` command and select `dev` as environment.
-   ```
-   php /path/to/yii-application/init
-   ```
-   Otherwise, in production execute `init` in non-interactive mode.
-   ```
-   php /path/to/yii-application/init --env=prod overwrite=n
-   ```
+
+    ```
+    php /path/to/yii-application/init
+    ```
+
+    Otherwise, in production execute `init` in non-interactive mode.
+
+    ```
+    php /path/to/yii-application/init --env=prod overwrite=n
+    ```
+
 2. Create a new database and adjust the `components.db` configuration in `common/config/main-local.php` accordingly.
 3. Apply migrations with console command `yii migrate`.
 4. Set document roots of your web server:
