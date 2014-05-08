@@ -46,10 +46,10 @@ Twig
 
 To use Twig, you need to create templates in files that have the `.twig` extension (or use another file extension but
 configure the component accordingly). Unlike standard view files, when using Twig you must include the extension
-in your `$this->render()` or `$this->renderPartial()` controller calls:
+in your `$this->render()` controller call:
 
 ```php
-echo $this->render('renderer.twig', ['username' => 'Alex']);
+return $this->render('renderer.twig', ['username' => 'Alex']);
 ```
 
 ### Template syntax
@@ -186,7 +186,7 @@ To use Smarty, you need to create templates in files that have the `.tpl` extens
 or `$this->renderPartial()` controller calls:
 
 ```php
-echo $this->render('renderer.tpl', ['username' => 'Alex']);
+return $this->render('renderer.tpl', ['username' => 'Alex']);
 ```
 
 ### Additional functions
