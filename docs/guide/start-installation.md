@@ -70,16 +70,17 @@ Verifying Installation
 ----------------------
 
 After installation, you can use your browser to access the installed Yii application with the following URL,
-assuming you have installed Yii in a directory named `basic` that is under the document root of your Web server,
+assuming you have installed Yii in a directory named `basic` that is under the document root of your Web server
+and the server name is `hostname`,
 
 ```
-http://localhost/basic/web/index.php
+http://hostname/basic/web/index.php
 ```
 
 You should see a "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
 Yii's requirements by using one of the following approaches:
 
-* Use a browser to access the URL `http://localhost/basic/requirements.php`
+* Use a browser to access the URL `http://hostname/basic/requirements.php`
 * Run the following commands:
 
   ```
@@ -105,17 +106,14 @@ an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http
 either Windows or Linux.
 
 On a production server, you may want to configure your Web server so that the application can be accessed
-via the URL `http://hostname` without the part `/basic/web/index.php`. This requires configuring your
-Web server by
+via the URL `http://hostname/index.php` instead of `http://hostname/basic/web/index.php`. This
+requires pointing the document root of your Web server to the `basic/web` folder. And you may also
+want to hide `index.php` from the URL, as described in the [URL Parsing and Generation](runtime-url-handling.md) section.
+In this subsection, we will show how to configure your Apache or Nginx server to achieve these goals.
 
-* pointing the Web document root to the `basic/web` folder;
-* and hiding `index.php` from the URL.
-
-By setting `basic/web` as the document root, you also secure your application by preventing end users
-from accessing your private application code and sensitive data files that are stored in the sibling directories
-of `basic/web`.
-
-Below we show the configurations recommended for Apache and Nginx.
+> Info: By setting `basic/web` as the document root, you also prevent end users from accessing
+your private application code and sensitive data files that are stored in the sibling directories
+of `basic/web`. This makes your application more secure.
 
 > Info: If your application will run in a shared hosting environment where you do not have the permission
 to modify its Web server setting, you may adjust the structure of your application. Please refer to
