@@ -1,10 +1,12 @@
 Saying Hello
 ============
 
-In this section, we will describe how to add to your application a new page that displays "Hello".
+In this section, we will describe how to create a new page displaying "Hello" in your application.
 To achieve this goal, you will create an [action](structure-controllers.md) as well as
-a [view](structure-views.md). Yii dispatches the page request to the action which in turn
-renders the view with "Hello" to the user.
+a [view](structure-views.md):
+
+* The application will dispatch the page request to the action;
+* And the action will in turn render the view that shows "Hello" to the end user.
 
 Through this tutorial, you will learn
 
@@ -16,16 +18,23 @@ Through this tutorial, you will learn
 Creating an Action
 ------------------
 
-[Actions](structure-controllers.md) are the only objects that end users can directly refer to and request
-for execution. Actions are grouped by [controllers](structure-controllers.md). The execution result of
-an action is the response that an end user will receive.
+For the "Hello" task, you will create a `say` [action](structure-controllers.md) which reads
+a `message` parameter from a request and displays the message back to the user. If the request
+does not provide a `message` parameter, the action will display the default "Hello".
 
-For the "Hello" task, you will create a `say` action which reads a `message` parameter from
-a request and displays the message content back to the user. If the `message` parameter is not given,
-it will use the default value "Hello". For simplicity, you may put this action in an existing
-controller `SiteController` which is defined in the class file `controllers/SiteController.php`:
+> Info: [Actions](structure-controllers.md) are the objects that end users can directly refer to for
+  execution. Actions are grouped by [controllers](structure-controllers.md). The execution result of
+  an action is the response that an end user will receive.
+
+Actions must be declared in [controllers](structure-controllers.md). For simplicity, you may
+declare the `say` action in the existing controller `SiteController` which is defined
+in the class file `controllers/SiteController.php`:
 
 ```php
+namespace app\controllers;
+
+use yii\web\Controller;
+
 class SiteController extends Controller
 {
     // ...existing code...
@@ -38,27 +47,29 @@ class SiteController extends Controller
 ```
 
 In the above code, the `say` action is defined as a method named `actionSay` in `SiteController`.
-Yii uses the prefix `action` to differentiate action methods from non-action methods in the class.
+Yii uses the prefix `action` to differentiate action methods from non-action methods in a controller class.
 The name after the `action` prefix is treated as the ID of the corresponding action.
 
-> Info: Actions defined by action methods are called *inline actions*. Yii will create an [[yii\base\InlineAction|InlineAction]]
-  object during runtime which will call the corresponding action method to handle a request.
+> Info: Action IDs are in lower case. If an action ID has multiple words, they should be concatenated by dashes,
+  e.g., `create-comment`. Action method names are derived from action IDs by removing dashes from the IDs,
+  turning the first letter in each word into upper case, and prefixing them with `action`. For example,
+  the action ID `create-comment` corresponds to the action method name `actionCreateComment`.
 
 The action method takes a parameter `$message` which defaults to `"Hello"`. When the application
-receives a request and determines the `say` action is responsible to handle the request, it will
+receives a request and determines that the `say` action is responsible for handling the request, it will
 populate this parameter with the same named parameter found in the request.
 
-Within the action method, the [[yii\web\Controller::render()|render()]] method is called which
-renders a [view](structure-views.md) named `say` and passes along the `message` parameter. The rendering
-result is returned by the action method, which will be taken by the application and displayed to the end user.
+Within the action method, [[yii\web\Controller::render()|render()]] is called to render
+a [view](structure-views.md) named `say`. The `message` parameter is also passed to the view
+so that it can be echoed there. The rendering result is returned by the action method, which will be taken
+by the application and displayed to the end user.
 
 
 Creating a View
 ---------------
 
 [Views](structure-views.md) are scripts that you write to compose response content.
-For the "Hello" task, you will create a `say` view which echoes the `message` parameter
-passed from the `say` action when it calls `render()`:
+For the "Hello" task, you will create a `say` view to echo the `message` parameter received from the action method:
 
 ```php
 <?php
@@ -67,17 +78,17 @@ use yii\helpers\Html;
 <?= Html::encode($message) ?>
 ```
 
-Note that in the above code, the `message` parameter is [[yii\helpers\Html::encode()|HTML-encoded]]
-before being echoed. This is necessary because the parameter is coming from end users who may attempt
-[cross-site scripting (XSS) attacks](http://en.wikipedia.org/wiki/Cross-site_scripting) by embedding
-malicious JavaScript code in the parameter.
-
 The `say` view should be saved in the file `views/site/say.php`. When the method [[yii\web\Controller::render()|render()]]
 is called in an action, it will look for a PHP file named as `views/ControllerID/ActionID/ViewName.php`.
 
-> Tip: You may put more content in the `say` view. They can be HTML tags, plain text, or even PHP statements.
-  In fact, the `say` view is just a PHP script which is executed by the [[yii\web\Controller::render()|render()]] method.
-  The content echoed by the view script will be forwarded by the application as the response to the end user.
+Note that in the above code, the `message` parameter is [[yii\helpers\Html::encode()|HTML-encoded]]
+before being echoed. This is necessary because the parameter comes from end users who may attempt
+[cross-site scripting (XSS) attacks](http://en.wikipedia.org/wiki/Cross-site_scripting) by embedding
+malicious JavaScript code in the parameter.
+
+You may put more content in the `say` view. They can be HTML tags, plain text, or even PHP statements.
+In fact, the `say` view is just a PHP script which is executed by the [[yii\web\Controller::render()|render()]] method.
+The content echoed by the view script will be forwarded by the application as the response to the end user.
 
 
 How It Works
@@ -94,6 +105,9 @@ the application. If you omit the `message` parameter in the URL, you would see t
 This is because `message` is passed as a parameter to the `actionSay()` method, and when it is omitted,
 the default value of `"Hello"` will come into play.
 
+> Info: The new page shares the same header and footer as other pages because the [[yii\web\Controller::render()|render()]]
+  method will automatically embed the result of the `say` view in a so-called [layout](structure-views.md) `views/layouts/main.php`.
+
 The `r` parameter requires more explanation. It stands for [route](runtime-routing.md) which is a globally unique ID
 referring to an action. Its format is `ControllerID/ActionID`. When the application receives
 a request, it will check this parameter and use the `ControllerID` part to determine which controller
@@ -102,13 +116,20 @@ to determine which action should be instantiated to do the real work. In our cas
 will be resolved into the `SiteController` controller class and the `say` action. As a result,
 the `SiteController::actionSay()` method will be called to handle the request.
 
+> Info: Like actions, controllers also have IDs that uniquely identify them in an application.
+  Controller IDs use the same naming rules as action IDs. Controller class names are derived from
+  controller IDs by removing dashes from the IDs, turning the first letter in each word into upper case,
+  and suffixing them with the word `Controller`. For example, the controller ID `post-comment` corresponds
+  to the controller class name `PostCommentController`.
+
 
 Summary
 -------
 
 In this section, you have touched the controller part and the view part in the MVC design pattern.
-You created an action as part of a controller to handle requests. And you also created a view script
-to compose response content. There is no model involved in this task because the only data used is
-the simple `message` parameter.
+You created an action as part of a controller to handle requests. And you also created a view
+to compose response content. There is no model involved because the only data used is the simple `message` parameter.
 
-In the next section, you will get into touch with the model part through building HTML forms.
+You also have learned the route concept which is the bridge between user requests and controller actions.
+
+In the next section, you will learn how to create a model and add a new page with an HTML form.
