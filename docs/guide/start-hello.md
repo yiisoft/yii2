@@ -15,6 +15,7 @@ Through this tutorial, you will learn
 * How an application dispatches requests to [actions](structure-controllers.md).
 
 
+<a name="creating-action"></a>
 Creating an Action
 ------------------
 
@@ -65,6 +66,7 @@ so that it can be echoed there. The rendering result is returned by the action m
 by the application and displayed to the end user.
 
 
+<a name="creating-view"></a>
 Creating a View
 ---------------
 
@@ -91,6 +93,7 @@ In fact, the `say` view is just a PHP script which is executed by the [[yii\web\
 The content echoed by the view script will be forwarded by the application as the response to the end user.
 
 
+<a name="how-it-works"></a>
 How It Works
 ------------
 
@@ -123,6 +126,7 @@ the `SiteController::actionSay()` method will be called to handle the request.
   to the controller class name `PostCommentController`.
 
 
+<a name="summary"></a>
 Summary
 -------
 
