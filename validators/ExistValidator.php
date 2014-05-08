@@ -93,12 +93,14 @@ class ExistValidator extends Validator
         $query = $this->createQuery($targetClass, $params);
 
         if (is_array($object->$attribute)) {
-            if ($query->count() !== count($object->$attribute)) {
-                $this->addError($object, $attribute, $this->message);
+            if ($query->count() === count($object->$attribute)) {
+                return;
             }
-        } elseif (!$query->exists()) {
-            $this->addError($object, $attribute, $this->message);
+        } elseif ($query->exists()) {
+            return;
         }
+
+        $this->addError($object, $attribute, $this->message);
     }
 
     /**
