@@ -96,10 +96,8 @@ class ExistValidator extends Validator
             if ($query->count() !== count($object->$attribute)) {
                 $this->addError($object, $attribute, $this->message);
             }
-        } else {
-            if (!$query->exists()) {
-                $this->addError($object, $attribute, $this->message);
-            }
+        } elseif (!$query->exists()) {
+            $this->addError($object, $attribute, $this->message);
         }
     }
 
