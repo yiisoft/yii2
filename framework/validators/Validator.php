@@ -10,6 +10,7 @@ namespace yii\validators;
 use Yii;
 use yii\base\Component;
 use yii\base\NotSupportedException;
+use yii\base\InvalidConfigException;
 
 /**
  * Validator is the base class for all validators.
