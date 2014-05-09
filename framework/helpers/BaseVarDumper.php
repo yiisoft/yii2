@@ -6,6 +6,7 @@
  */
 
 namespace yii\helpers;
+use yii\base\Arrayable;
 
 /**
  * BaseVarDumper provides concrete implementation for [[VarDumper]].
@@ -121,6 +122,62 @@ class BaseVarDumper
                     self::$_output .= "\n" . $spaces . ')';
                 }
                 break;
+        }
+    }
+
+    public static function export($var)
+    {
+        echo static::exportAsString($var);
+    }
+
+    public static function exportAsString($var)
+    {
+        self::$_output = '';
+        self::exportInternal($var, 0);
+        return self::$_output;
+    }
+
+    private static function exportInternal($var, $level)
+    {
+        switch (gettype($var)) {
+            case 'NULL':
+                self::$_output .= 'null';
+                break;
+            case 'array':
+                if (empty($var)) {
+                    self::$_output .= '[]';
+                } else {
+                    $keys = array_keys($var);
+                    $outputKeys = ($keys !== range(0, sizeof($var) - 1));
+                    $spaces = str_repeat(' ', $level * 4);
+                    self::$_output .= '[';
+                    foreach ($keys as $key) {
+                        self::$_output .= "\n" . $spaces . '    ';
+                        if ($outputKeys) {
+                            self::exportInternal($key, 0);
+                            self::$_output .= ' => ';
+                        }
+                        self::exportInternal($var[$key], $level + 1);
+                        self::$_output .= ',';
+                    }
+                    self::$_output .= "\n" . $spaces . ']';
+                }
+                break;
+            case 'object':
+                if ($var instanceof Arrayable) {
+                    self::exportInternal($var->toArray(), $level);
+                } elseif ($var instanceof \IteratorAggregate) {
+                    $varAsArray = [];
+                    foreach ($var as $key => $value) {
+                        $varAsArray[$key] = $value;
+                    }
+                    self::exportInternal($varAsArray, $level);
+                } else {
+                    self::$_output .= serialize($var);
+                }
+                break;
+            default:
+                self::$_output .= var_export($var, true);
         }
     }
 }
