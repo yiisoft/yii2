@@ -250,6 +250,7 @@ Yii Framework 2 Change Log
 - Enh: Added `isAssociative()` and `isIndexed()` to `yii\helpers\ArrayHelper` (qiangxue)
 - Enh: Added `addSelect` to `yii\db\Query` (Alex-Code)
 - Enh: Added ODBC support in `yii\db\Connection` (nineinchnick, resurtm)
+- Enh: Added `all` option to `MigrateController::actionDown()` action (creocoder, umneeq)
 - Chg #47: Changed Markdown library to cebe/markdown and adjusted Markdown helper API (cebe)
 - Chg #735: Added back `ActiveField::hiddenInput()` (qiangxue)
 - Chg #1186: Changed `Sort` to use comma to separate multiple sort fields and use negative sign to indicate descending sort (qiangxue)
