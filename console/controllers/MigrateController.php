@@ -193,6 +193,7 @@ class MigrateController extends Controller
      * ~~~
      * yii migrate/down     # revert the last migration
      * yii migrate/down 3   # revert the last 3 migrations
+     * yii migrate/down all # revert all migrations
      * ~~~
      *
      * @param integer $limit the number of migrations to be reverted. Defaults to 1,
