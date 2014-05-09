@@ -88,7 +88,7 @@ RESULT;
 
         $var = new \StdClass();
         $var->testField = 'Test Value';
-        $expectedResult = serialize($var);
+        $expectedResult = "unserialize('" . serialize($var) . "')";
         $data[] = [$var, $expectedResult];
 
         return $data;
