@@ -182,17 +182,7 @@ class BaseVarDumper
                 }
                 break;
             case 'object':
-                if ($var instanceof Arrayable) {
-                    self::exportInternal($var->toArray(), $level);
-                } elseif ($var instanceof \IteratorAggregate) {
-                    $varAsArray = [];
-                    foreach ($var as $key => $value) {
-                        $varAsArray[$key] = $value;
-                    }
-                    self::exportInternal($varAsArray, $level);
-                } else {
-                    self::$_output .= serialize($var);
-                }
+                self::$_output .= 'unserialize(' . var_export(serialize($var), true) . ')';
                 break;
             default:
                 self::$_output .= var_export($var, true);
