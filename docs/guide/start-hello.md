@@ -134,6 +134,6 @@ In this section, you have touched the controller part and the view part in the M
 You created an action as part of a controller to handle requests. And you also created a view
 to compose response content. There is no model involved because the only data used is the simple `message` parameter.
 
-You also have learned the route concept which is the bridge between user requests and controller actions.
+You have also learned the route concept which is the bridge between user requests and controller actions.
 
 In the next section, you will learn how to create a model and add a new page with an HTML form.
