@@ -91,8 +91,8 @@ class ExistValidatorTest extends DatabaseTestCase
         $this->assertTrue($m->hasErrors('a_field'));
         // check array
         $val = new ExistValidator(['targetAttribute' => 'ref']);
-        $m = ValidatorTestRefModel::findOne(['id' => 2]);
-        $m->test_val = [1, 2, 3];
+        $m = new ValidatorTestRefModel();
+        $m->test_val = [2, 3, 4, 5];
         $val->validateAttribute($m, 'test_val');
         $this->assertFalse($m->hasErrors('test_val'));
     }
