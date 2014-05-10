@@ -111,6 +111,10 @@ class Generator extends \yii\gii\Generator
                 you may want to uncheck this option to accelerate the code generation process.',
             'generateLabelsFromComments' => 'This indicates whether the generator should generate attribute labels
                 by using the comments of the corresponding DB columns.',
+            'useTablePrefix' => 'This indicates whether the table name returned by the generated ActiveRecord class
+                should consider the <code>tablePrefix</code> setting of the DB connection. For example, if the
+                table name is <code>tbl_post</code> and <code>tablePrefix=tbl_</code>, the ActiveRecord class
+                will return the table name as <code>{{%post}}</code>.',
         ]);
     }
 
