@@ -110,7 +110,7 @@ class Generator extends \yii\gii\Generator
             'indexWidgetType' => 'This is the widget type to be used in the index page to display list of the models.
                 You may choose either <code>GridView</code> or <code>ListView</code>',
             'searchModelClass' => 'This is the name of the search model class to be generated. You should provide a fully
-                qualified namespaced class name, e.g., <code>app\models\search\PostSearch</code>.',
+                qualified namespaced class name, e.g., <code>app\models\PostSearch</code>.',
         ]);
     }
 
