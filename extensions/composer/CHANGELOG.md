@@ -4,8 +4,7 @@ Yii Framework 2 composer extension Change Log
 2.0.0-rc under development
 --------------------------
 
-- no changes in this release.
-
+- Bug #3438: Fixed support for non-lowercase package names (cebe)
 
 2.0.0-beta April 13, 2014
 -------------------------

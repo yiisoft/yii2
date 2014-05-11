@@ -110,7 +110,7 @@ class Installer extends LibraryInstaller
             foreach ($autoload['psr-0'] as $name => $path) {
                 $name = str_replace('\\', '/', trim($name, '\\'));
                 if (!$fs->isAbsolutePath($path)) {
-                    $path = $this->vendorDir . '/' . $package->getName() . '/' . $path;
+                    $path = $this->vendorDir . '/' . $package->getPrettyName() . '/' . $path;
                 }
                 $path = $fs->normalizePath($path);
                 if (strpos($path . '/', $vendorDir . '/') === 0) {
@@ -125,7 +125,7 @@ class Installer extends LibraryInstaller
             foreach ($autoload['psr-4'] as $name => $path) {
                 $name = str_replace('\\', '/', trim($name, '\\'));
                 if (!$fs->isAbsolutePath($path)) {
-                    $path = $this->vendorDir . '/' . $package->getName() . '/' . $path;
+                    $path = $this->vendorDir . '/' . $package->getPrettyName() . '/' . $path;
                 }
                 $path = $fs->normalizePath($path);
                 if (strpos($path . '/', $vendorDir . '/') === 0) {
