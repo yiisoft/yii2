@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Bug #3327: Fixed "Unable to find debug data" when logging objects with circular references (jarekkozak, samdark)
 - Bug #3368: Fix for comparing numeric attributes in JavaScript (technixp)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
+- Bug: Fixed the issue that `ServiceLocator` still returns the old component after calling `set()` with a new definition (qiangxue)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2435: `yii\db\IntegrityException` is now thrown on database integrity errors instead of general `yii\db\Exception` (samdark)
 - Enh #2837: Error page now shows arguments in stack trace method calls (samdark)
