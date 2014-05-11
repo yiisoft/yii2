@@ -11,38 +11,25 @@ All Rights Reserved.
 Introduction
 ------------
 
-* [About Yii](intro-yii.md) - What is Yii and what is it good for?
+* [About Yii](intro-yii.md)
 * [Upgrading from Version 1.1](intro-upgrade-from-v1.md)
 
 
 Getting Started
 ---------------
 
-* **TBD** [Overview](start-overview.md) - Where should you start from?
-* [Starting with Basic App](start-basic.md) - Best for developing a single-tier application by a single person
-* [Starting with Advanced App](start-advanced.md) - Best for developing an enterprise application by a team
-* [Starting from Scratch](start-scratch.md) - Learning more in-depth details of creating a Yii application step-by-step
+* [Installing Yii](start-installation.md)
+* [Running Applications](start-workflow.md)
+* [Saying Hello](start-hello.md)
+* [Working with Forms](start-forms.md)
+* [Working with Databases](start-databases.md)
+* [Generating Code with Gii](start-gii.md)
+* [Looking Ahead](start-looking-head.md)
 
 
-Basic Concepts
---------------
+Application Structure
+---------------------
 
-* [Components](basic-components.md)
-* [Properties](basic-properties.md)
-* [Events](basic-events.md)
-* [Behaviors](basic-behaviors.md)
-* [Configurations](basic-configs.md)
-* [Class Autoloading](basic-autoloading.md)
-* [Aliases](basic-alias.md)
-* **TBD** [Extensions](basic-extensions.md)
-* [Service Locator](basic-service-locator.md)
-* [Dependency Injection Container](basic-di-container.md)
-
-
-Basic Structure
----------------
-
-* [MVC Overview](structure-mvc.md)
 * **TBD** [Entry Scripts](structure-entry-scripts.md)
 * **TBD** [Applications](structure-applications.md)
 * [Controllers and Actions](structure-controllers.md)
@@ -50,12 +37,12 @@ Basic Structure
 * [Models](structure-models.md)
 * **TBD** [Widgets](structure-widgets.md)
 * **TBD** [Modules](structure-modules.md)
+* **TBD** [Extensions](structure-extensions.md)
 
 
 Handling Requests
 -----------------
 
-* **TBD** [Request Lifecycle](runtime-lifecycle.md)
 * **TBD** [Bootstrapping](runtime-bootstrapping.md)
 * **TBD** [Routing](runtime-routing.md)
 * **TBD** [Requests](runtime-requests.md)
@@ -63,6 +50,20 @@ Handling Requests
 * **TBD** [Sessions and Cookies](runtime-sessions-cookies.md)
 * [URL Parsing and Generation](runtime-url-handling.md)
 * **TBD** [Filtering](runtime-filtering.md)
+
+
+Key Concepts
+------------
+
+* [Components](concept-components.md)
+* [Properties](concept-properties.md)
+* [Events](concept-events.md)
+* [Behaviors](concept-behaviors.md)
+* [Configurations](concept-configurations.md)
+* [Aliases](concept-aliases.md)
+* [Class Autoloading](concept-autoloading.md)
+* [Service Locator](concept-service-locator.md)
+* [Dependency Injection Container](concept-di-container.md)
 
 
 Working with Databases
@@ -78,8 +79,8 @@ Working with Databases
 * **TBD** [ElasticSearch](db-elastic-search.md)
 
 
-Collecting Inputs
------------------
+Getting Data from Users
+-----------------------
 
 * [Creating Forms](input-forms.md)
 * [Input Validation](input-validation.md)
@@ -87,7 +88,7 @@ Collecting Inputs
 * **TBD** [Inputs for Multiple Models](input-multiple-models.md)
 
 
-Presenting Data
+Displaying Data
 ---------------
 
 * **TBD** [Data Formatting](output-formatting.md)
@@ -164,13 +165,15 @@ Extending Yii
 Special Topics
 --------------
 
-* [Configuring Web Servers](tutorial-configuring-servers.md)
+* [Advanced Application Template](tutorial-advanced-app.md)
+* [Building Application from Scratch](tutorial-start-from-scratch.md)
 * [Console Commands](tutorial-console.md)
 * [Handling Errors](tutorial-handling-errors.md)
 * [Internationalization](tutorial-i18n.md)
 * [Logging](tutorial-logging.md)
 * **TBD** [Mailing](tutorial-mailing.md)
 * [Performance Tuning](tutorial-performance-tuning.md)
+* **TBD** [Shared Hosting Environment](tutorial-shared-hosting.md)
 * [Template Engines](tutorial-template-engines.md)
 * [Theming](tutorial-theming.md)
 
@@ -188,7 +191,6 @@ Widgets
 * LinkSorter: link to demo page
 * [Bootstrap Widgets](bootstrap-widgets.md)
 * **TBD** [Jquery UI Widgets](jui-widgets.md)
-
 
 
 Helpers

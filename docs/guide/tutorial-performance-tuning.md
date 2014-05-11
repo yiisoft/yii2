@@ -1,7 +1,7 @@
 Performance Tuning
 ==================
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 The performance of your web application is based upon two parts. First is the framework performance
 and the second is the application itself. Yii has a pretty low performance impact

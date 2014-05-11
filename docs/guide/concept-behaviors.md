@@ -6,19 +6,19 @@ as [mixins](http://en.wikipedia.org/wiki/Mixin), allow you to enhance the functi
 of an existing [[yii\base\Component|component]] class without the need of changing its class inheritance.
 When a behavior is attached to a component, it will "inject" its methods and properties into the component,
 and you can access these methods and properties as if they are defined by the component class. Moreover, a behavior
-can respond to the [events](basic-events.md) triggered by the component so that it can customize or adapt the normal
+can respond to the [events](concept-events.md) triggered by the component so that it can customize or adapt the normal
 code execution of the component.
 
 
-Using Behaviors
+Using Behaviors <a name="using-behaviors"></a>
 ---------------
 
 To use a behavior, you first need to attach it to a [[yii\base\Component|component]]. We will describe how to
-attach a behavior in the next section.
+attach a behavior in the next subsection.
 
 Once a behavior is attached to a component, its usage is straightforward.
 
-You can access a *public* member variable or a [property](basic-properties.md) defined by a getter and/or a setter
+You can access a *public* member variable or a [property](concept-properties.md) defined by a getter and/or a setter
 of the behavior through the component it is attached to, like the following,
 
 ```php
@@ -54,7 +54,7 @@ $behaviors = $component->getBehaviors();
 ```
 
 
-Attaching Behaviors
+Attaching Behaviors <a name="attaching-behaviors"></a>
 -------------------
 
 You can attach a behavior to a [[yii\base\Component|component]] either statically or dynamically. The former
@@ -98,7 +98,7 @@ class User extends ActiveRecord
 }
 ```
 
-The [[yii\base\Component::behaviors()|behaviors()]] method should return a list of behavior [configurations](basic-configs.md).
+The [[yii\base\Component::behaviors()|behaviors()]] method should return a list of behavior [configurations](concept-configurations.md).
 Each behavior configuration can be either a behavior class name or a configuration array.
 
 You may associate a name with a behavior by specifying the array key corresponding to the behavior configuration.
@@ -126,8 +126,11 @@ $component->attachBehavior('myBehavior3', [
 ]);
 ```
 
+You may also attach behaviors through [configurations](concept-configurations.md). For more details, please
+refer to the [Configurations](concept-configurations.md#configuration-format) section.
 
-Detaching Behaviors
+
+Detaching Behaviors <a name="detaching-behaviors"></a>
 -------------------
 
 To detach a behavior, you can call [[yii\base\Component::detachBehavior()]] with the name associated with the behavior:
@@ -143,7 +146,7 @@ $component->detachBehaviors();
 ```
 
 
-Defining Behaviors
+Defining Behaviors <a name="defining-behaviors"></a>
 ------------------
 
 To define a behavior, create a class by extending from [[yii\base\Behavior]] or its child class. For example,
@@ -177,10 +180,10 @@ class MyBehavior extends Behavior
 }
 ```
 
-The above code defines the behavior class `app\components\MyBehavior` which will provides two properties
+The above code defines the behavior class `app\components\MyBehavior` which will provide two properties
 `prop1` and `prop2`, and one method `foo()` to the component it is attached to. Note that property `prop2`
 is defined via the getter `getProp2()` and the setter `setProp2()`. This is so because [[yii\base\Object]]
-is an ancestor class of [[yii\base\Behavior]], which supports defining [properties](basic-properties.md) by getters/setters.
+is an ancestor class of [[yii\base\Behavior]], which supports defining [properties](concept-properties.md) by getters/setters.
 
 Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
 
@@ -220,7 +223,7 @@ its handler `beforeValidate()`. When specifying an event handler, you may use on
 * an anonymous function.
 
 The signature of an event handler should be as follows, where `$event` refers to the event parameter. Please refer
-to the [Events](basic-events.md) chapter for more details about events.
+to the [Events](concept-events.md) section for more details about events.
 
 ```php
 function ($event) {
@@ -228,7 +231,7 @@ function ($event) {
 ```
 
 
-Using `TimestampBehavior`
+Using `TimestampBehavior` <a name="using-timestamp-behavior"></a>
 -------------------------
 
 To wrap up, let's take a look at [[yii\behaviors\TimestampBehavior]] - a behavior that supports automatically
@@ -286,7 +289,7 @@ $user->touch('login_time');
 ```
 
 
-Comparison with Traits
+Comparison with Traits <a name="comparison-with-traits"></a>
 ----------------------
 
 While behaviors are similar to [traits](http://www.php.net/traits) in that they both "inject" their
@@ -294,6 +297,7 @@ properties and methods to the primary class, they differ in many aspects. As exp
 both have pros and cons. They are more like complements rather than replacements to each other.
 
 
+<a name="pros-for-behaviors"></a>
 ### Pros for Behaviors
 
 Behavior classes, like normal classes, support inheritance. Traits, on the other hand,
@@ -312,7 +316,7 @@ Name conflict caused by different traits requires you to manually resolve it by 
 properties or methods.
 
 
-### Pros for Traits
+### Pros for Traits <a name="pros-for-traits"></a>
 
 Traits are much more efficient than behaviors because behaviors are objects which take both time and memory.
 

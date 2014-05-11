@@ -34,7 +34,7 @@ class MongoDbTestCase extends TestCase
         if (!extension_loaded('mongo')) {
             $this->markTestSkipped('mongo extension required.');
         }
-        $config = $this->getParam('mongodb');
+        $config = self::getParam('mongodb');
         if (!empty($config)) {
             $this->mongoDbConfig = $config;
         }

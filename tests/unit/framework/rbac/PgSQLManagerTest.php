@@ -6,5 +6,5 @@ namespace yiiunit\framework\rbac;
  */
 class PgSQLManagerTest extends DbManagerTestCase
 {
-    protected $driverName = 'pgsql';
+    protected static $driverName = 'pgsql';
 }

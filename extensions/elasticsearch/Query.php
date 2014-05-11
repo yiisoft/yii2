@@ -58,12 +58,51 @@ class Query extends Component implements QueryInterface
 
     /**
      * @var array the fields being retrieved from the documents. For example, `['id', 'name']`.
-     * If not set, it means retrieving all fields. An empty array will result in no fields being
-     * retrieved. This means that only the primaryKey of a record will be available in the result.
+     * If not set, this option will not be applied to the query and no fields will be returned.
+     * In this case the `_source` field will be returned by default which can be configured using [[source]].
+     * Setting this to an empty array will result in no fields being retrieved, which means that only the primaryKey
+     * of a record will be available in the result.
+     *
+     * For each field you may also add an array representing a [script field]. Example:
+     *
+     * ```php
+     * $query->fields = [
+     *     'id',
+     *     'name',
+     *     'value_times_two' => [
+     *         'script' => "doc['my_field_name'].value * 2",
+     *     ],
+     *     'value_times_factor' => [
+     *         'script' => "doc['my_field_name'].value * factor",
+     *         'params' => [
+     *             'factor' => 2.0
+     *         ],
+     *     ],
+     * ]
+     * ```
+     *
+     * > Note: Field values are [always returned as arrays] even if they only have one value.
+     *
+     * [always returned as arrays]: http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/_return_values.html#_return_values
+     * [script field]: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-script-fields.html
+     *
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-fields.html#search-request-fields
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-script-fields.html
      * @see fields()
+     * @see source
      */
     public $fields;
+    /**
+     * @var array this option controls how the `_source` field is returned from the documents. For example, `['id', 'name']`
+     * means that only the `id` and `name` field should be returned from `_source`.
+     * If not set, it means retrieving the full `_source` field unless [[fields]] are specified.
+     * Setting this option to `false` will disable return of the `_source` field, this means that only the primaryKey
+     * of a record will be available in the result.
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-source-filtering.html
+     * @see source()
+     * @see fields
+     */
+    public $source;
     /**
      * @var string|array The index to retrieve data from. This can be a string representing a single index
      * or a an array of multiple indexes. If this is not set, indexes are being queried.
@@ -137,25 +176,20 @@ class Query extends Component implements QueryInterface
             return [];
         }
         $rows = $result['hits']['hits'];
-        if ($this->indexBy === null && $this->fields === null) {
+        if ($this->indexBy === null) {
             return $rows;
         }
         $models = [];
         foreach ($rows as $key => $row) {
-            if ($this->fields !== null) {
-                $row['_source'] = isset($row['fields']) ? $row['fields'] : [];
-                unset($row['fields']);
-            }
             if ($this->indexBy !== null) {
                 if (is_string($this->indexBy)) {
-                    $key = $row['_source'][$this->indexBy];
+                    $key = isset($row['fields'][$this->indexBy]) ? reset($row['fields'][$this->indexBy]) : $row['_source'][$this->indexBy];
                 } else {
                     $key = call_user_func($this->indexBy, $row);
                 }
             }
             $models[$key] = $row;
         }
-
         return $models;
     }
 
@@ -173,10 +207,6 @@ class Query extends Component implements QueryInterface
             return false;
         }
         $record = reset($result['hits']['hits']);
-        if ($this->fields !== null) {
-            $record['_source'] = isset($record['fields']) ? $record['fields'] : [];
-            unset($record['fields']);
-        }
 
         return $record;
     }
@@ -195,25 +225,18 @@ class Query extends Component implements QueryInterface
     public function search($db = null, $options = [])
     {
         $result = $this->createCommand($db)->search($options);
-        if (!empty($result['hits']['hits']) && ($this->indexBy === null || $this->fields === null)) {
+        if (!empty($result['hits']['hits']) && $this->indexBy !== null) {
             $rows = [];
             foreach ($result['hits']['hits'] as $key => $row) {
-                if ($this->fields !== null) {
-                    $row['_source'] = isset($row['fields']) ? $row['fields'] : [];
-                    unset($row['fields']);
-                }
-                if ($this->indexBy !== null) {
-                    if (is_string($this->indexBy)) {
-                        $key = $row['_source'][$this->indexBy];
-                    } else {
-                        $key = call_user_func($this->indexBy, $row);
-                    }
+                if (is_string($this->indexBy)) {
+                    $key = isset($row['fields'][$this->indexBy]) ? $row['fields'][$this->indexBy] : $row['_source'][$this->indexBy];
+                } else {
+                    $key = call_user_func($this->indexBy, $row);
                 }
                 $rows[$key] = $row;
             }
             $result['hits']['hits'] = $rows;
         }
-
         return $result;
     }
 
@@ -247,12 +270,17 @@ class Query extends Component implements QueryInterface
      */
     public function scalar($field, $db = null)
     {
-        $record = self::one($db); // TODO limit fields to the one required
-        if ($record !== false && isset($record['_source'][$field])) {
-            return $record['_source'][$field];
-        } else {
-            return null;
+        $record = self::one($db);
+        if ($record !== false) {
+            if ($field === '_id') {
+                return $record['_id'];
+            } elseif (isset($record['_source'][$field])) {
+                return $record['_source'][$field];
+            } elseif (isset($record['fields'][$field])) {
+                return count($record['fields'][$field]) == 1 ? reset($record['fields'][$field]) : $record['fields'][$field];
+            }
         }
+        return null;
     }
 
     /**
@@ -265,14 +293,14 @@ class Query extends Component implements QueryInterface
     public function column($field, $db = null)
     {
         $command = $this->createCommand($db);
-        $command->queryParts['fields'] = [$field];
+        $command->queryParts['_source'] = [$field];
         $result = $command->search();
         if (empty($result['hits']['hits'])) {
             return [];
         }
         $column = [];
         foreach ($result['hits']['hits'] as $row) {
-            $column[] = isset($row['fields'][$field]) ? $row['fields'][$field] : null;
+            $column[] = isset($row['_source'][$field]) ? $row['_source'][$field] : null;
         }
         return $column;
     }
@@ -493,6 +521,22 @@ class Query extends Component implements QueryInterface
             $this->fields = $fields;
         } else {
             $this->fields = func_get_args();
+        }
+        return $this;
+    }
+
+    /**
+     * Sets the source filtering, specifying how the `_source` field of the document should be returned.
+     * @param array $source the source patterns to be selected.
+     * @return static the query object itself
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-source-filtering.html
+     */
+    public function source($source)
+    {
+        if (is_array($source) || $source === null) {
+            $this->source = $source;
+        } else {
+            $this->source = func_get_args();
         }
         return $this;
     }

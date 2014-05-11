@@ -7,6 +7,7 @@
 
 namespace yii\elasticsearch;
 
+use yii\base\NotSupportedException;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
 use yii\db\ActiveRelationTrait;
@@ -143,47 +144,21 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function all($db = null)
     {
+        if ($this->asArray) {
+            // TODO implement with
+            return parent::all($db);
+        }
+
         $result = $this->createCommand($db)->search();
         if (empty($result['hits']['hits'])) {
             return [];
         }
-        if ($this->fields !== null) {
-            foreach ($result['hits']['hits'] as &$row) {
-                $row['_source'] = isset($row['fields']) ? $row['fields'] : [];
-                unset($row['fields']);
-            }
-            unset($row);
-        }
-        /** @var ActiveRecord $modelClass */
-        $modelClass = $this->modelClass;
-        $pk = $modelClass::primaryKey()[0];
-        if ($this->asArray && $this->indexBy) {
-            foreach ($result['hits']['hits'] as &$row) {
-                if ($pk === '_id') {
-                    $row['_source']['_id'] = $row['_id'];
-                }
-                $row['_source']['_score'] = $row['_score'];
-                $row = $row['_source'];
-            }
-            unset($row);
-        }
         $models = $this->createModels($result['hits']['hits']);
-        if ($this->asArray && !$this->indexBy) {
-            foreach ($models as $key => $model) {
-                if ($pk === '_id') {
-                    $model['_source']['_id'] = $model['_id'];
-                }
-                $model['_source']['_score'] = $model['_score'];
-                $models[$key] = $model['_source'];
-            }
-        }
         if (!empty($this->with)) {
             $this->findWith($this->with, $models);
         }
-        if (!$this->asArray) {
-            foreach ($models as $model) {
-                $model->afterFind();
-            }
+        foreach ($models as $model) {
+            $model->afterFind();
         }
 
         return $models;
@@ -203,30 +178,34 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return null;
         }
         if ($this->asArray) {
-            /** @var ActiveRecord $modelClass */
-            $modelClass = $this->modelClass;
-            $model = $result['_source'];
-            $pk = $modelClass::primaryKey()[0];
-            if ($pk === '_id') {
-                $model['_id'] = $result['_id'];
-            }
-            $model['_score'] = $result['_score'];
+            // TODO implement with
+//            /** @var ActiveRecord $modelClass */
+//            $modelClass = $this->modelClass;
+//            $model = $result['_source'];
+//            $pk = $modelClass::primaryKey()[0];
+//            if ($pk === '_id') {
+//                $model['_id'] = $result['_id'];
+//            }
+//            $model['_score'] = $result['_score'];
+//            if (!empty($this->with)) {
+//                $models = [$model];
+//                $this->findWith($this->with, $models);
+//                $model = $models[0];
+//            }
+            return $result;
         } else {
             /** @var ActiveRecord $class */
             $class = $this->modelClass;
             $model = $class::instantiate($result);
             $class::populateRecord($model, $result);
-        }
-        if (!empty($this->with)) {
-            $models = [$model];
-            $this->findWith($this->with, $models);
-            $model = $models[0];
-        }
-        if (!$this->asArray) {
+            if (!empty($this->with)) {
+                $models = [$model];
+                $this->findWith($this->with, $models);
+                $model = $models[0];
+            }
             $model->afterFind();
+            return $model;
         }
-
-        return $model;
     }
 
     /**
@@ -235,27 +214,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function search($db = null, $options = [])
     {
         $result = $this->createCommand($db)->search($options);
-        if (!empty($result['hits']['hits'])) {
+        // TODO implement with for asArray
+        if (!empty($result['hits']['hits']) && !$this->asArray) {
             $models = $this->createModels($result['hits']['hits']);
-            if ($this->asArray) {
-                /** @var ActiveRecord $modelClass */
-                $modelClass = $this->modelClass;
-                $pk = $modelClass::primaryKey()[0];
-                foreach ($models as $key => $model) {
-                    if ($pk === '_id') {
-                        $model['_source']['_id'] = $model['_id'];
-                    }
-                    $model['_source']['_score'] = $model['_score'];
-                    $models[$key] = $model['_source'];
-                }
-            }
             if (!empty($this->with)) {
                 $this->findWith($this->with, $models);
             }
-            if (!$this->asArray) {
-                foreach ($models as $model) {
-                    $model->afterFind();
-                }
+            foreach ($models as $model) {
+                $model->afterFind();
             }
             $result['hits']['hits'] = $models;
         }
@@ -266,28 +232,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * @inheritdoc
      */
-    public function scalar($field, $db = null)
-    {
-        $record = parent::one($db);
-        if ($record !== false) {
-            if ($field == '_id') {
-                return $record['_id'];
-            } elseif (isset($record['_source'][$field])) {
-                return $record['_source'][$field];
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function column($field, $db = null)
     {
         if ($field == '_id') {
             $command = $this->createCommand($db);
             $command->queryParts['fields'] = [];
+            $command->queryParts['_source'] = false;
             $result = $command->search();
             if (empty($result['hits']['hits'])) {
                 return [];

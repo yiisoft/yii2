@@ -83,9 +83,6 @@ class GuideController extends BaseController
      */
     protected function findFiles($path, $except = [])
     {
-        if (empty($except)) {
-            $except = ['README.md'];
-        }
         $path = FileHelper::normalizePath($path);
         $options = [
             'only' => ['*.md'],

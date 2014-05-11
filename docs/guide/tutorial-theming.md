@@ -1,7 +1,7 @@
 Theming
 =======
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 A theme is a directory of view and layout files. Each file of the theme overrides corresponding file of an application
 when rendered. A single application may use multiple themes and each may provide totally different experience. At any

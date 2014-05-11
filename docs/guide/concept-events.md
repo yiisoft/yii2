@@ -10,7 +10,7 @@ Yii introduces a base class called [[yii\base\Component]] to support events. If 
 events, it should extend from [[yii\base\Component]] or its child class.
 
 
-Triggering Events
+Triggering Events <a name="triggering-events"></a>
 -----------------
 
 Events are triggered by calling the [[yii\base\Component::trigger()]] method. The method requires an *event name*
@@ -76,7 +76,7 @@ When the [[yii\base\Component::trigger()]] method is called, it will call handle
 the named event.
 
 
-Event Handlers
+Event Handlers <a name="event-handlers"></a>
 --------------
 
 An event handler is a [PHP callback](http://www.php.net/manual/en/language.types.callable.php) that gets executed
@@ -102,7 +102,7 @@ Through the `$event` parameter, an event handler may get the following informati
 - [[yii\base\Event::data|custom data]]: the data that is provided when attaching the event handler (to be explained shortly).
 
 
-Attaching Event Handlers
+Attaching Event Handlers <a name="attaching-event-handlers"></a>
 ------------------------
 
 You can attach a handler to an event by calling the [[yii\base\Component::on()]] method. For example,
@@ -124,6 +124,10 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
     // event handling logic
 });
 ```
+
+You may also attach event handlers through [configurations](concept-configurations.md). For more details, please
+refer to the [Configurations](concept-configurations.md#configuration-format) section.
+
 
 When attaching an event handler, you may provide additional data as the third parameter to [[yii\base\Component::on()]].
 The data will be made available to the handler when the event is triggered and the handler is called. For example,
@@ -159,7 +163,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 ```
 
 
-Detaching Event Handlers
+Detaching Event Handlers <a name="detaching-event-handlers"></a>
 ------------------------
 
 To detach a handler from an event, call the [[yii\base\Component::off()]] method. For example,
@@ -189,10 +193,10 @@ $foo->off(Foo::EVENT_HELLO);
 ```
 
 
-Class-Level Event Handlers
+Class-Level Event Handlers <a name="class-level-event-handlers"></a>
 --------------------------
 
-In the above sections, we have described how to attach a handler to an event at *instance level*.
+In the above subsections, we have described how to attach a handler to an event at *instance level*.
 Sometimes, you may want to respond to an event triggered by EVERY instance of a class instead of
 a specific instance. Instead of attaching an event handler to every instance, you may attach the handler
 at *class level* by calling the static method [[yii\base\Event::on()]].
@@ -247,7 +251,7 @@ Event::off(Foo::className(), Foo::EVENT_HELLO);
 ```
 
 
-Global Events
+Global Events <a name="global-events"></a>
 -------------
 
 The so-called *global event* is actually a trick based on the event mechanism described above.

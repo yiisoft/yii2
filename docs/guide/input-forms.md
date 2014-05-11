@@ -1,7 +1,7 @@
 Working with forms
 ==================
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 The primary way of using forms in Yii is through [[yii\widgets\ActiveForm]]. This approach should be preferred when
 the form is based upon  a model. Additionally, there are some useful methods in [[yii\helpers\Html]] that are typically
@@ -114,7 +114,7 @@ to the attribute name:
 
 ```php
 // allow multiple files to be uploaded:
-echo $form->field($model, 'uploadFile[]')->fileInput('multiple'=>'multiple');
+echo $form->field($model, 'uploadFile[]')->fileInput(['multiple'=>'multiple']);
 
 // allow multiple items to be checked:
 echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Item B', 'c' => 'Item C']);

@@ -1,7 +1,7 @@
 Managing assets
 ===============
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 An asset in Yii is a file that is included into the page. It could be CSS, JavaScript or
 any other file. The framework provides many ways to work with assets from basics such as adding `<script src="...">` tags

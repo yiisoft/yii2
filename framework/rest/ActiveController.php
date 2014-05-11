@@ -50,11 +50,6 @@ class ActiveController extends Controller
      * @see \yii\base\Model::scenarios()
      */
     public $createScenario = Model::SCENARIO_DEFAULT;
-    /**
-     * @var boolean whether to use a DB transaction when creating, updating or deleting a model.
-     * This property is only useful for relational database.
-     */
-    public $transactional = true;
 
     /**
      * @inheritdoc
@@ -88,20 +83,17 @@ class ActiveController extends Controller
                 'modelClass' => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
                 'scenario' => $this->createScenario,
-                'transactional' => $this->transactional,
             ],
             'update' => [
                 'class' => 'yii\rest\UpdateAction',
                 'modelClass' => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
                 'scenario' => $this->updateScenario,
-                'transactional' => $this->transactional,
             ],
             'delete' => [
                 'class' => 'yii\rest\DeleteAction',
                 'modelClass' => $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
-                'transactional' => $this->transactional,
             ],
             'options' => [
                 'class' => 'yii\rest\OptionsAction',

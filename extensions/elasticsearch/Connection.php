@@ -109,7 +109,7 @@ class Connection extends Component
             if (strncmp($host, 'inet[/', 6) == 0) {
                 $host = substr($host, 6, -1);
             }
-            $response = $this->httpRequest('GET', 'http://' . $host . '/_cluster/nodes');
+            $response = $this->httpRequest('GET', 'http://' . $host . '/_nodes');
             $this->nodes = $response['nodes'];
             if (empty($this->nodes)) {
                 throw new Exception('cluster autodetection did not find any active node.');

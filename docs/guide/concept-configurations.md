@@ -3,9 +3,9 @@ Configurations
 
 Configurations are widely used in Yii for creating new objects or initializing existing objects.
 They usually include the class names of the objects being created and a list of initial values
-that should be assigned to object [properties](basic-properties.md). They may also include a list of
-handlers that should be attached to the object [events](basic-events.md), and/or a list of
-[behaviors](basic-behaviors.md) that should be attached to the objects.
+that should be assigned to object [properties](concept-properties.md). They may also include a list of
+handlers that should be attached to the object [events](concept-events.md), and/or a list of
+[behaviors](concept-behaviors.md) that should be attached to the objects.
 
 In the following, a configuration is used to create and initialize a DB connection:
 
@@ -35,7 +35,7 @@ Yii::configure($object, $config);
 Note that in this case, the configuration should not contain the `class` element.
 
 
-Configuration Format
+Configuration Format <a name="configuration-format"></a>
 --------------------
 
 The format of a configuration can be formally described as follows,
@@ -53,12 +53,12 @@ where
 
 * The `class` element specifies a fully qualified class name for the object being created.
 * The `propertyName` elements specify the property initial values. The keys are the property names, and the
-  values are the corresponding initial values. Only public member variables and [properties](basic-properties.md)
+  values are the corresponding initial values. Only public member variables and [properties](concept-properties.md)
   defined by getters/setters can be configured.
-* The `on eventName` elements specify what handlers should be attached to the object [events](basic-events.md).
+* The `on eventName` elements specify what handlers should be attached to the object [events](concept-events.md).
   Notice that the array keys are formed by prefixing event names with `on `. Please refer to
-  the [Events](basic-events.md) chapter for supported event handler formats.
-* And the `as behaviorName` elements specify what [behaviors](basic-behaviors.md) should be attached to the object.
+  the [Events](concept-events.md) section for supported event handler formats.
+* And the `as behaviorName` elements specify what [behaviors](concept-behaviors.md) should be attached to the object.
   Notice that the array keys are formed by prefixing behavior names with `on `. `$behaviorConfig` represents
   the configuration for creating a behavior, like a normal configuration as we are describing here.
 
@@ -79,15 +79,15 @@ Below is an example showing a configuration with property initial values, event 
 ```
 
 
-Using Configurations
+Using Configurations <a name="using-configurations"></a>
 --------------------
 
-Configurations are used in many places in Yii. At the beginning of this chapter, we have shown how to use
-create an object according to a configuration by using [[Yii::createObject()]]. In this section, we will
+Configurations are used in many places in Yii. At the beginning of this section, we have shown how to use
+create an object according to a configuration by using [[Yii::createObject()]]. In this subsection, we will
 describe application configurations and widget configurations - two major usages of configurations.
 
 
-### Application Configurations
+### Application Configurations <a name="application-configurations"></a>
 
 Configuration for an [application](structure-applications.md) is probably one of the most complex configurations.
 This is because the [[yii\web\Application|application]] class has a lot of configurable properties and events.
@@ -135,10 +135,10 @@ an [entry script](structure-entry-scripts.md), where the class name is already g
 ```
 
 For more details about configuring the `components` property of an application can be found
-in the [Applications](structure-applications.md) chapter and the [Service Locator](basic-service-locator.md) chapter.
+in the [Applications](structure-applications.md) section and the [Service Locator](concept-service-locator.md) section.
 
 
-### Widget Configurations
+### Widget Configurations <a name="widget-configurations"></a>
 
 When using [widgets](structure-widgets.md), you often need to use configurations to customize the widget properties.
 Both of the [[yii\base\Widget::widget()]] and [[yii\base\Widget::beginWidget()]] methods can be used to create
@@ -163,7 +163,7 @@ The `items` property is also configured with menu items to be displayed.
 Note that because the class name is already given, the configuration array should NOT have the `class` key.
 
 
-Configuration Files
+Configuration Files <a name="configuration-files"></a>
 -------------------
 
 When a configuration is very complex, a common practice is to store it in one or multiple PHP files, known as
@@ -217,10 +217,10 @@ $config = require('path/to/web.php');
 ```
 
 
-Default Configurations
+Default Configurations <a name="default-configurations"></a>
 ----------------------
 
-The [[Yii::createObject()]] method is implemented based on a [dependency injection container](basic-di-container.md).
+The [[Yii::createObject()]] method is implemented based on a [dependency injection container](concept-di-container.md).
 It allows you specify a set of the so-called *default configurations* which will be applied to ANY instances of
 the specified classes when they are being created using [[Yii::createObject()]]. The default configurations
 can be specified by calling `Yii::$container->set()` in the [bootstrapping](runtime-bootstrapping.md) code.
@@ -236,3 +236,40 @@ For example, if you want to customize [[yii\widgets\LinkPager]] so that ALL link
 
 Without using default configurations, you would have to configure `maxButtonCount` in every place where you use
 link pagers.
+
+
+Environment Constants <a name="environment-constants"></a>
+---------------------
+
+Configurations often vary according to the environment in which an application runs. For example,
+in development environment, you may want to use a database named `mydb_dev`, while on production server
+you may want to use the `mydb_prod` database. To facilitate switching environments, Yii provides a constant
+named `YII_ENV` that you may define in the [entry script](structure-entry-scripts.md) of your application.
+For example,
+
+```php
+defined('YII_ENV') or define('YII_ENV', 'dev');
+```
+
+You may define `YII_ENV` as one of the following values:
+
+- `prod`: production environment. The constant `YII_ENV_PROD` will evaluate as true.
+  This is the default value of `YII_ENV` if you do not define it.
+- `dev`: development environment. The constant `YII_ENV_DEV` will evaluate as true.
+- `test`: testing environment. The constant `YII_ENV_TEST` will evaluate as true.
+
+With these environment constants, you may specify your configurations conditionally based on
+the current environment. For example, your application configuration may contain the following
+code to enable the [debug toolbar and debugger](tool-debugger.md) in development environment.
+
+```php
+$config = [...];
+
+if (YII_ENV_DEV) {
+    // configuration adjustments for 'dev' environment
+    $config['bootstrap'][] = 'debug';
+    $config['modules']['debug'] = 'yii\debug\Module';
+}
+
+return $config;
+```

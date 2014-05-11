@@ -139,7 +139,6 @@ class Foo
 ### 4.5 Constructors
 
 - `__construct` should be used instead of PHP 4 style constructors.
-- When instantiating class it should be `new MyClass();` instead of `new MyClass;`.
 
 ## 5 PHP
 

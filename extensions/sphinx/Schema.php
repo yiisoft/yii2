@@ -11,6 +11,7 @@ use yii\base\Object;
 use yii\caching\Cache;
 use Yii;
 use yii\caching\GroupDependency;
+use yii\db\Exception;
 
 /**
  * Schema represents the Sphinx schema information.
@@ -498,5 +499,23 @@ class Schema extends Object
         $column->phpType = $this->getColumnPhpType($column);
 
         return $column;
+    }
+
+    /**
+     * Handles database error
+     *
+     * @param \Exception $e
+     * @param string $rawSql SQL that produced exception
+     * @throws Exception
+     */
+    public function handleException(\Exception $e, $rawSql)
+    {
+        if ($e instanceof Exception) {
+            throw $e;
+        } else {
+            $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
+            $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+            throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
+        }
     }
 }

@@ -1,7 +1,7 @@
 Database basics
 ===============
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 Yii has a database access layer built on top of PHP's [PDO](http://www.php.net/manual/en/book.pdo.php). It provides
 uniform API and solves some inconsistencies between different DBMS. By default Yii supports the following DBMS:
@@ -182,7 +182,7 @@ Quoting table and column names
 Most of the time you would use the following syntax for quoting table and column names:
 
 ```php
-$sql = "SELECT COUNT([[$column]]) FROM {{$table}}";
+$sql = "SELECT COUNT([[$column]]) FROM {{table}}";
 $rowCount = $connection->createCommand($sql)->queryScalar();
 ```
 
@@ -192,7 +192,7 @@ quoted table name.
 For table names there's a special variant `{{%Y}}` that allows you to automatically appending table prefix if it is set:
 
 ```php
-$sql = "SELECT COUNT([[$column]]) FROM {{%$table}}";
+$sql = "SELECT COUNT([[$column]]) FROM {{%table}}";
 $rowCount = $connection->createCommand($sql)->queryScalar();
 ```
 

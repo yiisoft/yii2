@@ -114,7 +114,7 @@ class ActiveRecord extends BaseActiveRecord
         }
         $command = static::getDb()->createCommand();
         $result = $command->get(static::index(), static::type(), $primaryKey, $options);
-        if ($result['exists']) {
+        if ($result['found']) {
             $model = static::instantiate($result);
             static::populateRecord($model, $result);
             $model->afterFind();
@@ -150,7 +150,7 @@ class ActiveRecord extends BaseActiveRecord
         $result = $command->mget(static::index(), static::type(), $primaryKeys, $options);
         $models = [];
         foreach ($result['docs'] as $doc) {
-            if ($doc['exists']) {
+            if ($doc['found']) {
                 $model = static::instantiate($doc);
                 static::populateRecord($model, $doc);
                 $model->afterFind();
@@ -282,8 +282,23 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function populateRecord($record, $row)
     {
-        parent::populateRecord($record, $row['_source']);
-        $pk = static::primaryKey()[0];
+        $attributes = [];
+        if (isset($row['_source'])) {
+            $attributes = $row['_source'];
+        }
+        if (isset($row['fields'])) {
+            // reset fields in case it is scalar value TODO use field metadata for this
+            foreach($row['fields'] as $key => $value) {
+                if (count($value) == 1) {
+                    $row['fields'][$key] = reset($value);
+                }
+            }
+            $attributes = array_merge($attributes, $row['fields']);
+        }
+
+        parent::populateRecord($record, $attributes);
+
+        $pk = static::primaryKey()[0];//TODO should always set ID in case of fields are not returned
         if ($pk === '_id') {
             $record->_id = $row['_id'];
         }
@@ -379,9 +394,9 @@ class ActiveRecord extends BaseActiveRecord
                 $options
             );
 
-            if (!isset($response['ok'])) {
-                return false;
-            }
+//            if (!isset($response['ok'])) {
+//                return false;
+//            }
             $pk = static::primaryKey()[0];
             $this->$pk = $response['_id'];
             if ($pk != '_id') {
@@ -444,13 +459,13 @@ class ActiveRecord extends BaseActiveRecord
         $n = 0;
         $errors = [];
         foreach ($response['items'] as $item) {
-            if (isset($item['update']['error'])) {
-                $errors[] = $item['update'];
-            } elseif ($item['update']['ok']) {
+            if (isset($item['update']['status']) && $item['update']['status'] == 200) {
                 $n++;
+            } else {
+                $errors[] = $item['update'];
             }
         }
-        if (!empty($errors)) {
+        if (!empty($errors) || isset($response['errors']) && $response['errors']) {
             throw new Exception(__METHOD__ . ' failed updating records.', $errors);
         }
 
@@ -508,13 +523,13 @@ class ActiveRecord extends BaseActiveRecord
         $n = 0;
         $errors = [];
         foreach ($response['items'] as $item) {
-            if (isset($item['update']['error'])) {
-                $errors[] = $item['update'];
-            } elseif ($item['update']['ok']) {
+            if (isset($item['update']['status']) && $item['update']['status'] == 200) {
                 $n++;
+            } else {
+                $errors[] = $item['update'];
             }
         }
-        if (!empty($errors)) {
+        if (!empty($errors) || isset($response['errors']) && $response['errors']) {
             throw new Exception(__METHOD__ . ' failed updating records counters.', $errors);
         }
 
@@ -563,13 +578,15 @@ class ActiveRecord extends BaseActiveRecord
         $n = 0;
         $errors = [];
         foreach ($response['items'] as $item) {
-            if (isset($item['delete']['error'])) {
+            if (isset($item['delete']['status']) && $item['delete']['status'] == 200) {
+                if (isset($item['delete']['found']) && $item['delete']['found']) {
+                    $n++;
+                }
+            } else {
                 $errors[] = $item['delete'];
-            } elseif ($item['delete']['found'] && $item['delete']['ok']) {
-                $n++;
             }
         }
-        if (!empty($errors)) {
+        if (!empty($errors) || isset($response['errors']) && $response['errors']) {
             throw new Exception(__METHOD__ . ' failed deleting records.', $errors);
         }
 

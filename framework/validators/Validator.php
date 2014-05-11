@@ -10,6 +10,7 @@ namespace yii\validators;
 use Yii;
 use yii\base\Component;
 use yii\base\NotSupportedException;
+use yii\base\InvalidConfigException;
 
 /**
  * Validator is the base class for all validators.
@@ -193,6 +194,9 @@ class Validator extends Component
                     $params[$name] = $value;
                 }
             } else {
+                if (!class_exists($type)) {
+                    throw new InvalidConfigException("Unknown validator: '$type'.");
+                }
                 $params['class'] = $type;
             }
         }

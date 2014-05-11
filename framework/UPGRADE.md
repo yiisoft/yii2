@@ -21,3 +21,11 @@ Upgrade from Yii 2.0 Beta
 
 * If you override `yii\grid\DataColumn::getDataCellValue()` with visibility `protected` you have
   to change visibility to `public` as visibility of the base method has changed.
+
+* If you have classes implementing `yii\web\IdentityInterface` (very common), you should modify
+  the signature of `findIdentityByAccessToken()` as
+  `public static function findIdentityByAccessToken($token, $type = null)`. The new `$type` parameter
+  will contain the type information about the access token. For example, if you use
+  `yii\filters\auth\HttpBearerAuth` authentication method, the value of this parameter will be
+  `yii\filters\auth\HttpBearerAuth`. This allows you to differentiate access tokens taken by
+  different authentication methods.

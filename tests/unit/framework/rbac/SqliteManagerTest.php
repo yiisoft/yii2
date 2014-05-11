@@ -6,5 +6,5 @@ namespace yiiunit\framework\rbac;
  */
 class SqliteManagerTest extends DbManagerTestCase
 {
-    protected $driverName = 'sqlite';
+    protected static $driverName = 'sqlite';
 }

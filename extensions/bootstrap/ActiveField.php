@@ -11,13 +11,13 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 
 /**
- * A Bootstrap 3 enhanced version of [[yii\widgets\ActiveField]].
+ * A Bootstrap 3 enhanced version of [[\yii\widgets\ActiveField]].
  *
- * This class adds some useful features to [[yii\widgets\ActiveField|ActiveField]] to render all
+ * This class adds some useful features to [[\yii\widgets\ActiveField|ActiveField]] to render all
  * sorts of Bootstrap 3 form fields in different form layouts:
  *
  * - [[inputTemplate]] is an optional template to render complex inputs, for example input groups
- * - [[horizontalClass]] defines the CSS grid classes to add to label, wrapper, error and hint
+ * - [[horizontalCssClasses]] defines the CSS grid classes to add to label, wrapper, error and hint
  *   in horizontal forms
  * - [[inline]]/[[inline()]] is used to render inline [[checkboxList()]] and [[radioList()]]
  * - [[enableError]] can be set to `false` to disable to the error

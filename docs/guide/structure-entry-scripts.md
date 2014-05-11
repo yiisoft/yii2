@@ -1,7 +1,7 @@
 Entry Scripts
 =============
 
-> Note: This chapter is under development.
+> Note: This section is under development.
 
 Configuring options in the bootstrap file
 -----------------------------------------

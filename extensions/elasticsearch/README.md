@@ -22,6 +22,10 @@ return [
 ];
 ```
 
+Requirements
+------------
+
+elasticsearch version 1.0 or higher is required.
 
 Installation
 ------------

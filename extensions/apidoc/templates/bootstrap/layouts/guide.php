@@ -14,11 +14,16 @@ $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
         <?php
         asort($headlines);
         $nav = [];
-        $nav[] = [
-            'label' => 'Index',
-            'url' => $this->context->generateGuideUrl('index.md'),
-            'active' => isset($currentFile) && (basename($currentFile) == 'index.md'),
-        ];
+        foreach ($headlines as $file => $headline) {
+            if (basename($file) == 'README.md') {
+                $nav[] = [
+                    'label' => $headline,
+                    'url' => $this->context->generateGuideUrl($file),
+                    'active' => isset($currentFile) && ($file == $currentFile),
+                ];
+                unset($headlines[$file]);
+            }
+        }
         foreach ($headlines as $file => $headline) {
             $nav[] = [
                 'label' => $headline,
