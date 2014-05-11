@@ -45,25 +45,27 @@ Therefore, your application has already enabled Gii, and you can access it via t
 http://hostname/index.php?r=gii
 ```
 
+![Gii](images/start-gii.png)
+
 
 Generating an Active Record Class <a name="generating-ar"></a>
 ---------------------------------
 
-To use Gii to generate an Active Record class, select the "Model Generator". You will see the following page:
-
-
-Fill out the form as follows:
+To use Gii to generate an Active Record class, select the "Model Generator" and fill out the form as follows,
 
 * Table Name: `country`
 * Model Class: `Country`
 
+![Model Generator](images/start-gii-model.png)
+
 Click on the "Preview" button. You will see `models/Country.php` is listed in the result.
 You may click on it to preview its content.
-
 
 Because in the last section, you have already created the same file `models/Country.php`, if you click
 the `diff` button next to the file name, you will see the difference between the code to be generated
 and the code that you have already written.
+
+![Model Generator Preview](images/start-gii-model-preview.png)
 
 Check the checkbox next to "overwrite" and then click on the "Generate" button. You will see
 a confirmation page indicating the code has been successfully generated and your existing `models/Country.php`
@@ -79,12 +81,13 @@ To create CRUD code, select the "CRUD Generator". Fill out the form as follows:
 * Search Model Class: `app\models\CountrySearch`
 * Controller Class: `app\controllers\CountryController`
 
+![CRUD Generator](images/start-gii-crud.png)
+
 Click on the "Preview" button. You will see a list of files to be generated, as shown below.
 
-
-Make sure you have checked the checkbox for the `controllers/CityController.php` line. This is needed
-because you have already created this file in the previous section and the file needs to be overwritten
-to have full CRUD support.
+Make sure you have checked the overwrite checkboxes for both `controllers/CountryController.php` and
+`views/country/index.php` files. This is needed because you have already created these files
+in the previous section and you want to have them overwritten to have full CRUD support.
 
 
 How It Works <a name="how-it-works"></a>
@@ -101,6 +104,10 @@ or filter it by entering filter conditions in the column headers.
 
 For each country displayed in the grid, you may choose to view its detail, update it or delete it.
 You may also click on the "Create Country" button on top of the grid to create a new country.
+
+![Data Grid of Countries](images/start-gii-country-grid.png)
+
+![Updating a Country](images/start-gii-country-update.png)
 
 The following is the list of the generated files in case you want to dig out how these features are implemented,
 or if you want to customize them.

@@ -89,6 +89,8 @@ To represent and fetch the data in the `country` table, create an [Active Record
 class named `Country` and save it in the file `models/Country.php`.
 
 ```php
+<?php
+
 namespace app\models;
 
 use yii\db\ActiveRecord;
@@ -136,6 +138,8 @@ for all actions about manipulating country data. Name this new controller as `Co
 an `index` action in it, as shown in the following,
 
 ```php
+<?php
+
 namespace app\controllers;
 
 use yii\web\Controller;
@@ -193,6 +197,7 @@ with the following content:
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
 ?>
+<h1>Countries</h1>
 <ul>
 <?php foreach ($countries as $country): ?>
     <li>
@@ -219,6 +224,8 @@ To see how it works, use your browser to access the following URL:
 ```
 http://hostname/index.php?r=country/index
 ```
+
+![Country List](images/start-country-list.png)
 
 You will see a page showing five countries. And below the countries, you will see a pager with four buttons.
 If you click on the button "2", you will see that the page displays another five countries in the database.

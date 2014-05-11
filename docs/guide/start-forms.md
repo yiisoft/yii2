@@ -23,6 +23,8 @@ save the class in the file `models/EntryForm.php`. Please refer to the [Class Au
 section for more details about the class file naming convention.
 
 ```php
+<?php
+
 namespace app\models;
 
 use yii\base\Model;
@@ -64,6 +66,8 @@ Creating an Action <a name="creating-action"></a>
 Next, create an `entry` action in the `site` controller, like you did in the previous section.
 
 ```php
+<?php
+
 namespace app\controllers;
 
 use Yii;
@@ -170,8 +174,13 @@ is also displayed indicating what data you need to enter. If you click the submi
 entering anything, or if you do not provide a valid email address, you will see an error message that
 is displayed next to each problematic input field.
 
+![Form with Validation Errors](images/start-form-validation.png)
+
 After entering a valid name and email address and clicking the submit button, you will see a new page
 displaying the data that you just entered.
+
+![Confirmation of Data Entry](images/start-entry-confirmation.png)
+
 
 
 ### Magic Explained <a name="magic-explained"></a>

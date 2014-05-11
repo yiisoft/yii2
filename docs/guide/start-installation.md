@@ -73,7 +73,9 @@ and the server name is `hostname`,
 http://hostname/basic/web/index.php
 ```
 
-You should see a "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
+![Successful Installation of Yii](images/start-app-installed.png)
+
+You should see the above "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
 Yii's requirements by using one of the following approaches:
 
 * Use a browser to access the URL `http://hostname/basic/requirements.php`

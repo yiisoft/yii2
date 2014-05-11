@@ -31,6 +31,8 @@ declare the `say` action in the existing controller `SiteController` which is de
 in the class file `controllers/SiteController.php`:
 
 ```php
+<?php
+
 namespace app\controllers;
 
 use yii\web\Controller;
@@ -99,6 +101,8 @@ After creating the action and the view, you may access the new page by the follo
 ```
 http://hostname/index.php?r=site/say&message=Hello+World
 ```
+
+![Hello World](images/start-hello-world.png)
 
 This will show a page displaying "Hello World". The page shares the same header and footer as other pages of
 the application. If you omit the `message` parameter in the URL, you would see the page displays "Hello".
