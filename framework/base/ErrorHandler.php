@@ -60,6 +60,15 @@ abstract class ErrorHandler extends Component
     }
 
     /**
+     * Deregister this error handler by restoring the PHP error and exception handlers.
+     */
+    public function deRegister()
+    {
+        restore_error_handler();
+        restore_exception_handler();
+    }
+
+    /**
      * Handles uncaught PHP exceptions.
      *
      * This method is implemented as a PHP exception handler.
