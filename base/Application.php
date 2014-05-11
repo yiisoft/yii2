@@ -309,6 +309,14 @@ abstract class Application extends Module
                 echo "Error: no errorHandler component is configured.\n";
                 exit(1);
             }
+            // allow using ErrorHandler from the app namespace
+            if (strncmp($config['components']['errorHandler']['class'], 'app\\', 4) === 0) {
+                if (isset($config['basePath'])) {
+                    Yii::setAlias('@app', $config['basePath']);
+                } else {
+                    throw new InvalidConfigException('The "basePath" configuration for the Application is required.');
+                }
+            }
             $this->set('errorHandler', $config['components']['errorHandler']);
             unset($config['components']['errorHandler']);
             $this->getErrorHandler()->register();
