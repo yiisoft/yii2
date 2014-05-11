@@ -10,8 +10,7 @@ The autoloader is installed when you include the `Yii.php` file.
   mind that the content we are describing here applies to autoloading of interfaces and traits as well.
 
 
-<a name="using-yii-autoloader"></a>
-Using the Yii Autoloader
+Using the Yii Autoloader <a name="using-yii-autoloader"></a>
 ------------------------
 
 To make use of the Yii class autoloader, you should follow two simple rules when creating and naming your classes:
@@ -39,8 +38,7 @@ put the front-end classes under the namespace `frontend` while the back-end clas
 allow these classes to be autoloaded by the Yii autoloader.
 
 
-<a name="class-map"></a>
-Class Map
+Class Map <a name="class-map"></a>
 ---------
 
 The Yii class autoloader supports the *class map* feature which maps class names to the corresponding class file paths.
@@ -58,8 +56,7 @@ Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 [bootstrapping](runtime-bootstrapping.md) process so that the map is ready before your classes are used.
 
 
-<a name="using-other-autoloaders"></a>
-Using Other Autoloaders
+Using Other Autoloaders <a name="using-other-autoloaders"></a>
 -----------------------
 
 Because Yii embraces Composer as a package dependency manager, it is recommended that you also install
@@ -85,8 +82,7 @@ to be autoloadable.
   and include it in your [entry script](structure-entry-scripts.md).
 
 
-<a name="autoloading-extension-classes"></a>
-Autoloading Extension Classes
+Autoloading Extension Classes <a name="autoloading-extension-classes"></a>
 -----------------------------
 
 The Yii autoloader is capable of autoloading [extension](structure-extensions.md) classes. The sole requirement

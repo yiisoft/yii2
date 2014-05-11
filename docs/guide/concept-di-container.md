@@ -6,8 +6,7 @@ all their dependent objects. [Martin's article](http://martinfowler.com/articles
 explained why DI container is useful. Here we will mainly explain the usage of the DI container provided by Yii.
 
 
-<a name="dependency-injection"></a>
-Dependency Injection
+Dependency Injection <a name="dependency-injection"></a>
 --------------------
 
 Yii provides the DI container feature through the class [[yii\di\Container]]. It supports the following kinds of
@@ -18,8 +17,7 @@ dependency injection:
 * PHP callable injection.
 
 
-<a name="constructor-injection"></a>
-### Constructor Injection
+### Constructor Injection <a name="constructor-injection"></a>
 
 The DI container supports constructor injection with the help of type hints for constructor parameters.
 The type hints tell the container which classes or interfaces are dependent when it is used to create a new object.
@@ -41,8 +39,7 @@ $foo = new Foo($bar);
 ```
 
 
-<a name="setter-and-property-injection"></a>
-### Setter and Property Injection
+### Setter and Property Injection <a name="setter-and-property-injection"></a>
 
 Setter and property injection is supported through [configurations](concept-configurations.md).
 When registering a dependency or when creating a new object, you can provide a configuration which
@@ -76,8 +73,7 @@ $container->get('Foo', [], [
 ```
 
 
-<a name="php-callable-injection"></a>
-### PHP Callable Injection
+### PHP Callable Injection <a name="php-callable-injection"></a>
 
 In this case, the container will use a registered PHP callable to build new instances of a class.
 The callable is responsible to resolve the dependencies and inject them appropriately to the newly
@@ -92,8 +88,7 @@ $foo = $container->get('Foo');
 ```
 
 
-<a name="registering-dependencies"></a>
-Registering Dependencies
+Registering Dependencies <a name="registering-dependencies"></a>
 ------------------------
 
 You can use [[yii\di\Container::set()]] to register dependencies. The registration requires a dependency name
@@ -162,8 +157,7 @@ $container->setSingleton('yii\db\Connection', [
 ```
 
 
-<a name="resolving-dependencies"></a>
-Resolving Dependencies
+Resolving Dependencies <a name="resolving-dependencies"></a>
 ----------------------
 
 Once you have registered dependencies, you can use the DI container to create new objects,
@@ -252,9 +246,8 @@ $lister = new UserLister($finder);
 ```
 
 
-<a name="practical-usages"></a>
-Practical Usages
-----------------
+Practical Usage <a name="practical-usage"></a>
+---------------
 
 Yii creates a DI container when you include the `Yii.php` file in the [entry script](structure-entry-scripts.md)
 of your application. The DI container is accessible via [[Yii::$container]]. When you call [[Yii::createObject()]],
@@ -315,8 +308,7 @@ Now if you access the controller again, an instance of `app\components\BookingSe
 created and injected as the 3rd parameter to the controller's constructor.
 
 
-<a name="when-to-register-dependencies"></a>
-When to Register Dependencies
+When to Register Dependencies <a name="when-to-register-dependencies"></a>
 -----------------------------
 
 Because dependencies are needed when new objects are being created, their registration should be done
@@ -328,8 +320,7 @@ as early as possible. The followings are the recommended practices:
   in the bootstrap class of the extension.
 
 
-<a name="summary"></a>
-Summary
+Summary <a name="summary"></a>
 -------
 
 Both dependency injection and [service locator](concept-service-locator.md) are popular design patterns

@@ -15,8 +15,7 @@ Through this tutorial, you will learn
 * How to build an HTML form in a [view](structure-views.md).
 
 
-<a name="creating-model"></a>
-Creating a Model
+Creating a Model <a name="creating-model"></a>
 ----------------
 
 To represent the data entered by a user, create an `EntryForm` model class as shown below and
@@ -59,8 +58,7 @@ failure will turn on the [[yii\base\Model::hasErrors|hasErrors]] property, and t
 [[yii\base\Model::getErrors|errors]] you may learn what validation errors the model has.
 
 
-<a name="creating-action"></a>
-Creating an Action
+Creating an Action <a name="creating-action"></a>
 ------------------
 
 Next, create an `entry` action in the `site` controller, like you did in the previous section.
@@ -110,8 +108,7 @@ be rendered, which will show the HTML form together with the validation error me
   In the above code, the `request` component is used to access the `$_POST` data.
 
 
-<a name="creating-views"></a>
-Creating Views
+Creating Views <a name="creating-views"></a>
 --------------
 
 Finally, create two views named `entry-confirm` and `entry` that are rendered by the `entry` action,
@@ -159,8 +156,7 @@ and the second the "email" data. After the input fields, the [[yii\helpers\Html:
 is called to generate a submit button.
 
 
-<a name="how-it-works"></a>
-How It Works
+How It Works <a name="how-it-works"></a>
 ------------
 
 To see how it works, use your browser to access the following URL:
@@ -178,8 +174,7 @@ After entering a valid name and email address and clicking the submit button, yo
 displaying the data that you just entered.
 
 
-<a name="magic-explained"></a>
-### Magic Explained
+### Magic Explained <a name="magic-explained"></a>
 
 You may wonder how the HTML form works behind the scene, because it seems almost magical that it can
 display a label for each input field and show error messages if you do not enter the data correctly
@@ -205,8 +200,7 @@ the following code:
   view code into reusable widgets to simplify view development in future.
 
 
-<a name="summary"></a>
-Summary
+Summary <a name="summary"></a>
 -------
 
 In this section, you have touched every part in the MVC design pattern. You have learned how

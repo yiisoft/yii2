@@ -17,8 +17,7 @@ Note that in order to finish this section, you should have basic knowledge and e
 In particular, you should know how to create a database and how to execute SQL statements using a DB client tool.
 
 
-<a name="preparing-database"></a>
-Preparing a Database
+Preparing a Database <a name="preparing-database"></a>
 --------------------
 
 To begin with, create a database named `yii2basic` from which you will fetch data in your application.
@@ -50,8 +49,7 @@ To this end, you have a database named `yii2basic`, and within this database the
 with ten rows of data.
 
 
-<a name="configuring-db-connection"></a>
-Configuring a DB Connection
+Configuring a DB Connection <a name="configuring-db-connection"></a>
 ---------------------------
 
 Make sure you have installed the [PDO](http://www.php.net/manual/en/book.pdo.php) PHP extension and
@@ -84,8 +82,7 @@ The DB connection configured above can be accessed in the code via the expressio
   For more information, please refer to the [Configurations](concept-configurations.md) section.
 
 
-<a name="creating-active-record"></a>
-Creating an Active Record
+Creating an Active Record <a name="creating-active-record"></a>
 -------------------------
 
 To represent and fetch the data in the `country` table, create an [Active Record](db-active-record.md)
@@ -130,8 +127,7 @@ You may find more detailed information in the [Active Record](db-active-record.m
 use a lower-level data accessing method called [Data Access Objects](db-dao.md).
 
 
-<a name="creating-action"></a>
-Creating an Action
+Creating an Action <a name="creating-action"></a>
 ------------------
 
 To expose the country data to end users, you need to create a new action. Instead of doing this in the `site`
@@ -185,8 +181,7 @@ At the end, the `index` action renders a view named `index` and passes the count
 information to it.
 
 
-<a name="creating-view"></a>
-Creating a View
+Creating a View <a name="creating-view"></a>
 ---------------
 
 Under the `views` directory, first create a sub-directory named `country`. This will used to hold all
@@ -216,8 +211,7 @@ The `LinkPager` widget displays a list of page buttons. Clicking on any of them 
 in the corresponding page.
 
 
-<a name="how-it-works"></a>
-How It Works
+How It Works <a name="how-it-works"></a>
 ------------
 
 To see how it works, use your browser to access the following URL:
@@ -247,8 +241,7 @@ Behind the scene, [[yii\data\Pagination|Pagination]] is playing the magic.
   for display.
 
 
-<a name="summary"></a>
-Summary
+Summary <a name="summary"></a>
 -------
 
 In this section, you have learned how to work with a database. You have also learned how to fetch and display
