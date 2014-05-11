@@ -166,6 +166,14 @@ class Context extends Component
         foreach ($class->methods as $m) {
             if ($m->hasTag('inheritdoc')) {
                 $inheritedMethod = $this->inheritMethodRecursive($m, $class);
+                if (!$inheritedMethod) {
+                    $this->errors[] = [
+                        'line' => $m->startLine,
+                        'file' => $class->sourceFile,
+                        'message' => "Method {$m->name} has no parent to inherit from in {$class->name}.",
+                    ];
+                    continue;
+                }
                 foreach (['shortDescription', 'description', 'return', 'returnType', 'returnTypes', 'exceptions'] as $property) {
                     if (empty($m->$property) || is_string($m->$property) && trim($m->$property) === '') {
                         $m->$property = $inheritedMethod->$property;
