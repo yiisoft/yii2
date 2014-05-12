@@ -193,26 +193,26 @@ class ActiveField extends Component
      */
     public function begin()
     {
-      $clientOptions = $this->getClientOptions();
-      if (!empty($clientOptions)) {
-        $this->form->attributes[$this->attribute] = $clientOptions;
-      }
+        $clientOptions = $this->getClientOptions();
+        if (!empty($clientOptions)) {
+            $this->form->attributes[$this->attribute] = $clientOptions;
+        }
 
-      $inputID = Html::getInputId($this->model, $this->attribute);
-      $attribute = Html::getAttributeName($this->attribute);
-      $options = $this->options;
-      $class = isset($options['class']) ? [$options['class']] : [];
-      $class[] = "field-$inputID";
-      if ($this->model->isAttributeRequired($attribute)) {
-        $class[] = $this->form->requiredCssClass;
-      }
-      if ($this->model->hasErrors($attribute)) {
-        $class[] = $this->form->errorCssClass;
-      }
-      $options['class'] = implode(' ', $class);
-      $tag = ArrayHelper::remove($options, 'tag', 'div');
+        $inputID = Html::getInputId($this->model, $this->attribute);
+        $attribute = Html::getAttributeName($this->attribute);
+        $options = $this->options;
+        $class = isset($options['class']) ? [$options['class']] : [];
+        $class[] = "field-$inputID";
+        if ($this->model->isAttributeRequired($attribute)) {
+            $class[] = $this->form->requiredCssClass;
+        }
+        if ($this->model->hasErrors($attribute)) {
+            $class[] = $this->form->errorCssClass;
+        }
+        $options['class'] = implode(' ', $class);
+        $tag = ArrayHelper::remove($options, 'tag', 'div');
 
-      return (empty($tag) ? "" : Html::beginTag($tag, $options));
+        return (empty($tag) ? "" : Html::beginTag($tag, $options));
     }
 
     /**
@@ -221,8 +221,8 @@ class ActiveField extends Component
      */
     public function end()
     {
-      $tag = ArrayHelper::remove($this->options, 'tag', 'div');
-      return (empty($tag) ? "" : Html::endTag($tag));
+        $tag = ArrayHelper::remove($this->options, 'tag', 'div');
+        return (empty($tag) ? "" : Html::endTag($tag));
     }
 
     /**
