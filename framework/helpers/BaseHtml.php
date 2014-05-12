@@ -1098,8 +1098,8 @@ class BaseHtml
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
-     * @param array $options the tag options in terms of name-value pairs. The values will be HTML-encoded
-     * using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+     * @param array $options the tag options in terms of name-value pairs. By default the values will be HTML-encoded
+     * using [[encode()]], you can change it with setting 'encode' option to false. If a value is null, the corresponding attribute will not be rendered.
      *
      * The following options are specially handled:
      *
@@ -1113,10 +1113,12 @@ class BaseHtml
     {
         $attribute = static::getAttributeName($attribute);
         $error = $model->getFirstError($attribute);
+        $encode = !isset($options['encode']) || $options['encode'];
+        unset($options['encode']);
         $tag = isset($options['tag']) ? $options['tag'] : 'div';
         unset($options['tag']);
 
-        return Html::tag($tag, Html::encode($error), $options);
+        return Html::tag($tag, $encode ? Html::encode($error) : $error, $options);
     }
 
     /**
