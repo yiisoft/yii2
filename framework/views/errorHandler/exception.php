@@ -87,6 +87,9 @@ html,body{
     font-size: 20px;
     line-height: 1.25;
 }
+.header pre{
+	margin: 10px 0;
+}
 
 /* previous exceptions */
 .header .previous{
@@ -104,8 +107,8 @@ html,body{
     filter: progid:DXImageTransform.Microsoft.BasicImage(mirror=1);
     font-size: 26px;
     position: absolute;
-    margin-top: -5px;
-    margin-left: -25px;
+    margin-top: -3px;
+    margin-left: -30px;
     color: #e51717;
 }
 .header .previous h2{
@@ -129,6 +132,10 @@ html,body{
 .header .previous p{
     font-size: 14px;
     color: #aaa;
+}
+.header .previous pre{
+	font-size: 14px;
+	margin: 10px 0;
 }
 
 /* call stack */
@@ -347,6 +354,10 @@ html,body{
             ?></h1>
         <?php endif; ?>
         <h2><?= nl2br($handler->htmlEncode($exception->getMessage())) ?></h2>
+
+	    <?php if ($exception instanceof \yii\db\Exception && !empty($exception->errorInfo)) {
+		    echo '<pre>Error Info: ' . print_r($exception->errorInfo, true) . '</pre>';
+	    } ?>
 
         <?= $handler->renderPreviousExceptions($exception) ?>
     </div>

@@ -127,6 +127,9 @@ class ErrorHandler extends \yii\base\ErrorHandler
         }
         if (YII_DEBUG) {
             $array['stack-trace'] = explode("\n", $exception->getTraceAsString());
+            if ($exception instanceof \yii\db\Exception) {
+                $array['error-info'] = $this->errorInfo;
+            }
         }
         if (($prev = $exception->getPrevious()) !== null) {
             $array['previous'] = $this->convertExceptionToArray($prev);
@@ -169,7 +172,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $page = $this->htmlEncode(strtolower(str_replace('\\', '-', $class)));
         $url = "http://www.yiiframework.com/doc-2.0/$page.html";
         if (isset($method)) {
-            $url .= "#$method-detail";
+            $url .= "#$method()-detail";
         }
 
         return '<a href="' . $url . '" target="_blank">' . $text . '</a>';
