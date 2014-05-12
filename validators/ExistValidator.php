@@ -63,6 +63,11 @@ class ExistValidator extends Validator
     public $filter;
 
     /**
+     * @var boolean whether to allow array type attribute.
+     */
+    public $allowArray = false;
+
+    /**
      * @inheritdoc
      */
     public function init()
@@ -81,6 +86,9 @@ class ExistValidator extends Validator
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
 
         if (is_array($targetAttribute)) {
+            if ($this->allowArray) {
+                throw new InvalidConfigException('The "targetAttribute" property must be configured as a string.');
+            }
             $params = [];
             foreach ($targetAttribute as $k => $v) {
                 $params[$v] = is_integer($k) ? $object->$v : $object->$k;
@@ -89,11 +97,19 @@ class ExistValidator extends Validator
             $params = [$targetAttribute => $object->$attribute];
         }
 
+        foreach ($params as $value) {
+            if (!$this->allowArray && is_array($value)) {
+                $this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
+
+                return;
+            }
+        }
+
         $targetClass = $this->targetClass === null ? get_class($object) : $this->targetClass;
         $query = $this->createQuery($targetClass, $params);
 
         if (is_array($object->$attribute)) {
-            if ($query->count() >= count($object->$attribute)) {
+            if ($query->count("DISTINCT [[$targetAttribute]]") === count($object->$attribute)) {
                 return;
             }
         } elseif ($query->exists()) {
