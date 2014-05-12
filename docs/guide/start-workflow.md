@@ -14,7 +14,7 @@ and how the application handles requests in general.
 Functionalities
 ---------------
 
-The application that you have installed has four pages:
+The application that you have installed contains four pages:
 
 * the homepage is the page displayed when you access the URL `http://hostname/index.php`;
 * the "About" page;
@@ -54,45 +54,42 @@ basic/                  application base path
 ```
 
 In general, the files in the application can be divided into two parts: those under `basic/web` and those
-under other directories. The former can be directly accessed from Web, while the latter can/should not.
+under other directories. The former can be directly accessed from Web, while the latter can not and should not.
 
-Your application uses a single entry `web/index.php`. It is the only PHP script that is directly accessible from Web.
-It takes ALL Web requests, creates an [application](structure-applications.md) instance to handle the requests,
-and then sends back the responses.
-
-Yii implements the [model-view-controller (MVC)](http://wikipedia.org/wiki/Model-view-controller) design pattern,
-as reflected in the above directory organization. The `models` directory contains all [model classes](structure-models.md),
+Yii implements the [model-view-controller (MVC)](http://wikipedia.org/wiki/Model-view-controller) design pattern
+which is reflected in the above directory organization. The `models` directory contains all [model classes](structure-models.md),
 the `views` directory contains all [view scripts](structure-views.md), and the `controllers` directory contains
 all [controller classes](structure-controllers.md).
 
-The following diagram shows the static structure of an application:
+The following diagram shows the static structure of an application.
 
-![Static structure of Yii application](images/application-structure.png)
+![Static Structure of Application](images/application-structure.png)
+
+Each application has an entry script `web/index.php` which is the only Web accessible PHP script in the application.
+The entry script takes an incoming request and creates an [application](structure-applications.md) instance to handle it.
+The [application](structure-applications.md) resolves the request with the help of its [components](concept-components.md)
+and dispatches the request to MVC. [Widgets](structure-widgets.md) are used in the [views](structure-views.md)
+to help build complex and dynamic user interface elements.
 
 
 Request Lifecycle
 -----------------
 
-The following diagram shows a typical workflow of a Yii application  handling a user request:
+The following diagram shows how an application handles a request.
 
-![Typical workflow of a Yii application](images/application-lifecycle.png)
+![Request Lifecycle](images/application-lifecycle.png)
 
-1. A user makes a request of the URL `http://www.example.com/index.php?r=post/show&id=1`.
-   The Web server handles the request by executing the bootstrap script `index.php`.
-2. The bootstrap script creates an [[yii\web\Application|Application]] instance and runs it.
-3. The Application instance obtains the detailed user request information from an application component named `request`.
-4. The application determines which [controller](controller.md) and which action of that controller was requested.
-   This is accomplished with the help of an application component named `urlManager`.
-   For this example, the controller is `post`, which refers to the `PostController` class, and the action is `show`,
-   whose actual meaning is determined by the controller.
-5. The application creates an instance of the requested controller to further handle the user's request.
-   The controller determines that the action `show` refers to a method named `actionShow` in the controller class.
-   The controller then creates and executes any filters associated with this action (e.g. access control or benchmarking).
-   The action is then executed, if execution is allowed by the filters (e.g., if the user has permission to execute that action).
-6. The action creates a `Post` [model](model.md) instance, using the underlying database table, where the ID value of the corresponding record is `1`.
-7. The action renders a [view](view.md) named `show`, providing to the view the `Post` model instance.
-8. The view reads the attributes of the `Post` model instance and displays the values of those attributes.
-9. The view executes some [widgets](view.md#widgets).
-10. The view rendering result--the output from the previous steps--is embedded within a [layout](view.md#layout) to create a complete HTML page.
-11. The action completes the view rendering and displays the result to the user.
+1. A user makes a request to the [entry script](structure-entry-scripts.md) `web/index.php`.
+2. The entry script loads the application [configuration](concept-configurations.md) and creates
+   an [application](structure-applications.md) instance to handle the request.
+3. The application resolves the requested [route](runtime-routing.md) with the help of
+   the [request](runtime-requests.md) application component.
+4. The application creates a [controller](structure-controllers.md) instance to handle the request.
+5. The controller creates an [action](structure-controllers.md) instance and performs the filters for the action.
+6. If any filter fails, the action is cancelled.
+7. If all filters pass, the action is being executed.
+8. The action loads a data model, possibly from a database.
+9. The action renders a view with the data model.
+10. The rendering result is to the [response](runtime-responses.md) application component.
+11. The response component sends the rendering result to the user.
 
