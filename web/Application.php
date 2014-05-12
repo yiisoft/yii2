@@ -149,17 +149,7 @@ class Application extends \yii\base\Application
             'response' => ['class' => 'yii\web\Response'],
             'session' => ['class' => 'yii\web\Session'],
             'user' => ['class' => 'yii\web\User'],
+            'errorHandler' => ['class' => 'yii\web\ErrorHandler'],
         ]);
-    }
-
-    /**
-     * Registers the errorHandler component as a PHP error handler.
-     */
-    protected function registerErrorHandler(&$config)
-    {
-        if (!isset($config['components']['errorHandler']['class'])) {
-            $config['components']['errorHandler']['class'] = 'yii\\web\\ErrorHandler';
-        }
-        parent::registerErrorHandler($config);
     }
 }
