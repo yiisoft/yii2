@@ -122,15 +122,15 @@ RESTful Web Services
 --------------------
 
 * [Quick Start](rest-quick-start.md)
-* **TBD** [Resources](rest-resources.md)
-* **TBD** [Routing](rest-routing.md)
-* **TBD** [Data Formatting](rest-data-formatting.md)
-* **TBD** [Authentication](rest-authentication.md)
-* **TBD** [Rate Limiting](rest-rate-limiting.md)
-* **TBD** [Versioning](rest-versioning.md)
-* **TBD** [Caching](rest-caching.md)
-* **TBD** [Error Handling](rest-error-handling.md)
-* **TBD** [Testing](rest-testing.md)
+* [Resources](rest-resources.md)
+* [Controllers](rest-controllers.md)
+* [Routing](rest-routing.md)
+* [Data Formatting](rest-data-formatting.md)
+* [Authentication](rest-authentication.md)
+* [Rate Limiting](rest-rate-limiting.md)
+* [Versioning](rest-versioning.md)
+* [Caching](rest-caching.md)
+* [Error Handling](rest-error-handling.md)
 
 
 Development Tools
