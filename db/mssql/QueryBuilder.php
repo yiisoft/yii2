@@ -219,6 +219,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             ->from('sys.columns')
             ->where("object_id = OBJECT_ID('dbo.{$table}')")
             ->column();
+        array_walk($columns, create_function('&$str', '$str = "[$str]";'));
         return $columns;
     }
 
