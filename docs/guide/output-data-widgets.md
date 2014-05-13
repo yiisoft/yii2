@@ -218,15 +218,15 @@ echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'], // <-- here
+        // ...
 ```
 
-Sorting data
-------------
+
+### Sorting data
 
 - https://github.com/yiisoft/yii2/issues/1576
 
-Filtering data
---------------
+### Filtering data
 
 For filtering data the GridView needs a [model](model.md) that takes the input from the filtering
 form and adjusts the query of the dataprovider to respect the search criteria.
@@ -308,8 +308,7 @@ echo GridView::widget([
 ```
 
 
-Working with model relations
-----------------------------
+### Working with model relations
 
 When displaying active records in a GridView you might encounter the case where you display values of related
 columns such as the post's author's name instead of just his `id`.
@@ -362,3 +361,39 @@ In `search()` you then just add another filter condition with `$query->andFilter
 > Info: For more information on `joinWith` and the queries performed in the background, check the
 > [active record docs on eager and lazy loading](active-record.md#lazy-and-eager-loading).
 
+### Multiple GridViews on one page
+
+You can use more than one GridView on a single page but some additional configuration is needed so that
+they do not interfer.
+When using multiple instances of GridView you have to configure different parameter names for
+the generated sort and pagination links so that each GridView has its individual sorting and pagination.
+You do so by setting the [[yii\data\Sort::sortParam|sortParam]] and [[yii\data\Pagination::pageParam|pageParam]]
+of the dataProviders [[yii\data\BaseDataProvider::$sort|sort]] and [[yii\data\BaseDataProvider::$pagination|pagination]]
+instance.
+
+Assume we want to list `Post` and `User` models for which we have already prepared two data providers
+in `$userProvider` and `$postProvider`:
+
+```php
+use yii\grid\GridView;
+
+$userProvider->pagination->pageParam = 'user-page';
+$userProvider->sort->sortParam = 'user-sort';
+
+$postProvider->pagination->pageParam = 'post-page';
+$postProvider->sort->sortParam = 'post-sort';
+
+echo '<h1>Users</h1>';
+echo GridView::widget([
+    'dataProvider' => $userProvider,
+]);
+
+echo '<h1>Posts</h1>';
+echo GridView::widget([
+    'dataProvider' => $postProvider,
+]);
+```
+
+### Using GridView with Pjax
+
+TDB
