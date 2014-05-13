@@ -97,11 +97,13 @@ class ExistValidator extends Validator
             $params = [$targetAttribute => $object->$attribute];
         }
 
-        foreach ($params as $value) {
-            if (!$this->allowArray && is_array($value)) {
-                $this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
+        if (!$this->allowArray) {
+            foreach ($params as $value) {
+                if (is_array($value)) {
+                    $this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
 
-                return;
+                    return;
+                }
             }
         }
 
