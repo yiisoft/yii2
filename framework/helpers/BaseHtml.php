@@ -1098,7 +1098,7 @@ class BaseHtml
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
-     * @param array $options the tag options in terms of name-value pairs. By default the values will be HTML-encoded
+     * @param array $options the tag options in terms of name-value pairs. The values will be HTML-encoded
      * using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
      *
      * The following options are specially handled:
