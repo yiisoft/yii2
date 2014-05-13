@@ -1099,11 +1099,12 @@ class BaseHtml
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
      * @param array $options the tag options in terms of name-value pairs. By default the values will be HTML-encoded
-     * using [[encode()]], you can change it with setting 'encode' option to false. If a value is null, the corresponding attribute will not be rendered.
+     * using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
      *
      * The following options are specially handled:
      *
      * - tag: this specifies the tag name. If not set, "div" will be used.
+     * - encode: boolean, whether to HTML-encode the error message. Defaults to true.
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
