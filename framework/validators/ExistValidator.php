@@ -111,7 +111,7 @@ class ExistValidator extends Validator
         $query = $this->createQuery($targetClass, $params);
 
         if (is_array($object->$attribute)) {
-            if ($query->count("DISTINCT [[$targetAttribute]]") === count($object->$attribute)) {
+            if ($query->count("DISTINCT [[$targetAttribute]]") == count($object->$attribute)) {
                 return;
             }
         } elseif ($query->exists()) {
