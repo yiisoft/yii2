@@ -160,8 +160,8 @@ and the second the "email" data. After the input fields, the [[yii\helpers\Html:
 is called to generate a submit button.
 
 
-How It Works <a name="how-it-works"></a>
-------------
+Trying it Out <a name="trying-it-out"></a>
+-------------
 
 To see how it works, use your browser to access the following URL:
 

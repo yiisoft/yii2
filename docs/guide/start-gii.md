@@ -90,8 +90,8 @@ Make sure you have checked the overwrite checkboxes for both `controllers/Countr
 in the previous section and you want to have them overwritten to have full CRUD support.
 
 
-How It Works <a name="how-it-works"></a>
-------------
+Trying it Out <a name="trying-it-out"></a>
+-------------
 
 To see how it works, use your browser to access the following URL:
 

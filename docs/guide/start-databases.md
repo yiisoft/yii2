@@ -216,8 +216,8 @@ The `LinkPager` widget displays a list of page buttons. Clicking on any of them 
 in the corresponding page.
 
 
-How It Works <a name="how-it-works"></a>
-------------
+Trying it Out <a name="trying-it-out"></a>
+-------------
 
 To see how it works, use your browser to access the following URL:
 

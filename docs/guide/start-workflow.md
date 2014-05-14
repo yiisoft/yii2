@@ -11,7 +11,7 @@ and how the application handles requests in general.
   Please adjust the URLs accordingly in our descriptions.
 
 
-Functionalities
+Functionalities <a name="functionalities"></a>
 ---------------
 
 The application that you have installed contains four pages:
@@ -30,7 +30,7 @@ This is a useful [debugger tool](tool-debugger.md) provided by Yii to help you c
 about the application execution, such as log messages, response status, database queries, and so on.
 
 
-Application Structure
+Application Structure <a name="application-structure"></a>
 ---------------------
 
 The following is a list of the most important directories and files in your application,
@@ -72,7 +72,7 @@ and dispatches the request to MVC. [Widgets](structure-widgets.md) are used in t
 to help build complex and dynamic user interface elements.
 
 
-Request Lifecycle
+Request Lifecycle <a name="request-lifecycle"></a>
 -----------------
 
 The following diagram shows how an application handles a request.

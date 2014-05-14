@@ -1,8 +1,8 @@
-Quick Start
-===========
+A Quick Start
+=============
 
 Yii provides a whole set of tools to simplify the task of implementing RESTful Web Service APIs.
-In particular, Yii provides support for the following aspects regarding RESTful APIs:
+In particular, Yii supports the following features about RESTful APIs:
 
 * Quick prototyping with support for common APIs for [Active Record](db-active-record.md);
 * Response format (supporting JSON and XML by default) negotiation;
@@ -16,7 +16,8 @@ In particular, Yii provides support for the following aspects regarding RESTful 
 * Rate limiting;
 
 
-Let's use a quick example to show how to build a set of RESTful APIs using Yii.
+In the following, we use an example to illustrate how you can build a set of RESTful APIs with some minimal coding effort.
+
 Assume you want to expose the user data via RESTful APIs. The user data are stored in the user DB table,
 and you have already created the [[yii\db\ActiveRecord|ActiveRecord]] class `app\models\User` to access the user data.
 
@@ -37,6 +38,9 @@ class UserController extends ActiveController
 }
 ```
 
+The controller class extends from [[yii\rest\ActiveController]]. By specifying [[yii\rest\ActiveController::modelClass|modelClass]]
+as `app\models\User`, the controller knows what model can be used for fetching and manipulating data.
+
 
 Configuring URL Rules
 ---------------------
@@ -54,7 +58,11 @@ Then, modify the configuration about the `urlManager` component in your applicat
 ]
 ```
 
-Trying it Out
+The above configuration mainly adds a URL rule for the `user` controller so that the user data
+can be accessed and manipulated with pretty URLs and meaningful HTTP verbs.
+
+
+Trying it Out <a name="trying-it-out"></a>
 -------------
 
 With the above minimal amount of effort, you have already finished your task of creating the RESTful APIs
@@ -159,10 +167,11 @@ Using the Yii RESTful API framework, you implement an API endpoint in terms of a
 a controller to organize the actions that implement the endpoints for a single type of resource.
 
 Resources are represented as data models which extend from the [[yii\base\Model]] class.
-If you are working with databases (relational or NoSQL), it is recommended you use ActiveRecord to represent resources.
+If you are working with databases (relational or NoSQL), it is recommended you use [[yii\db\ActiveRecord|ActiveRecord]]
+to represent resources.
 
 You may use [[yii\rest\UrlRule]] to simplify the routing to your API endpoints.
 
-While not required, it is recommended that you develop your RESTful APIs as an application, separated from
-your Web front end and back end.
+While not required, it is recommended that you develop your RESTful APIs as a separate application, different from
+your Web front end and back end for easier maintenance.
 

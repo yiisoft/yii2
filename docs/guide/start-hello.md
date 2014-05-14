@@ -93,8 +93,8 @@ In fact, the `say` view is just a PHP script which is executed by the [[yii\web\
 The content echoed by the view script will be forwarded by the application as the response to the end user.
 
 
-How It Works <a name="how-it-works"></a>
-------------
+Trying it Out <a name="trying-it-out"></a>
+-------------
 
 After creating the action and the view, you may access the new page by the following URL:
 
