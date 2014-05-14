@@ -68,7 +68,7 @@ echo GridView::widget([
 ```
 
 The above code first creates a data provider and then uses GridView to display every attribute in every row taken from
-data provider. The displayed table is equiped with sorting and pagination functionality.
+data provider. The displayed table is equipped with sorting and pagination functionality.
 
 ### Grid columns
 
@@ -229,7 +229,7 @@ echo GridView::widget([
 ### Filtering data
 
 For filtering data the GridView needs a [model](model.md) that takes the input from the filtering
-form and adjusts the query of the dataprovider to respect the search criteria.
+form and adjusts the query of the dataProvider to respect the search criteria.
 A common practice when using [active records](active-record.md) is to create a search Model class
 that extends from the active record class. This class then defines the validation rules for the search
 and provides a `search()` method that will return the data provider.
@@ -315,7 +315,7 @@ columns such as the post's author's name instead of just his `id`.
 You do this by defining the attribute name in columns as `author.name` when the `Post` model
 has a relation named `author` and the author model has an attribute `name`.
 The GridView will then display the name of the author but sorting and filtering are not enabled by default.
-You have to adjust the `PostSearch` model that has been introduced in the last section to add this functionallity.
+You have to adjust the `PostSearch` model that has been introduced in the last section to add this functionality.
 
 To enable sorting on a related column you have to join the related table and add the sorting rule
 to the Sort component of the data provider:
@@ -364,7 +364,7 @@ In `search()` you then just add another filter condition with `$query->andFilter
 ### Multiple GridViews on one page
 
 You can use more than one GridView on a single page but some additional configuration is needed so that
-they do not interfer.
+they do not interfere.
 When using multiple instances of GridView you have to configure different parameter names for
 the generated sort and pagination links so that each GridView has its individual sorting and pagination.
 You do so by setting the [[yii\data\Sort::sortParam|sortParam]] and [[yii\data\Pagination::pageParam|pageParam]]
@@ -396,4 +396,4 @@ echo GridView::widget([
 
 ### Using GridView with Pjax
 
-TDB
+TBD
