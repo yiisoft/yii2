@@ -591,7 +591,13 @@ class QueryBuilder extends \yii\base\Object
             return $this->typeMap[$type];
         } elseif (preg_match('/^(\w+)\((.+?)\)(.*)$/', $type, $matches)) {
             if (isset($this->typeMap[$matches[1]])) {
-                return preg_replace('/\(.+\)/', '(' . $matches[2] . ')', $this->typeMap[$matches[1]]) . $matches[3];
+                $ptype = $this->typeMap[$matches[1]];
+                if (strpos($ptype, '(') !== false) {
+                    // replace the precision in $ptype with the actual one
+                    return preg_replace('/\(.+\)/', '(' . $matches[2] . ')', $ptype) . $matches[3];
+                } else {
+                    return "{$ptype}({$matches[2]}){$matches[3]}";
+                }
             }
         } elseif (preg_match('/^(\w+)\s+/', $type, $matches)) {
             if (isset($this->typeMap[$matches[1]])) {

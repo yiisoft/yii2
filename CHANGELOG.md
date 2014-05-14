@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Bug #3431: Allow using extended ErrorHandler class from the app namespace (cebe)
 - Bug #3436: Fixed the issue that `ServiceLocator` still returns the old component after calling `set()` with a new definition (qiangxue)
 - Bug #3458: Fixed the bug that the image rendered by `CaptchaAction` was using a wrong content type (MDMunir, qiangxue)
+- Bug #3469: Fixed the bug that `QueryBuilder::getColumnType()` may drop the provided column precision in certain cases (qiangxue, Ragazzo)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2435: `yii\db\IntegrityException` is now thrown on database integrity errors instead of general `yii\db\Exception` (samdark)
