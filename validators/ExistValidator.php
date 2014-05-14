@@ -126,9 +126,6 @@ class ExistValidator extends Validator
      */
     protected function validateValue($value)
     {
-        if (is_array($value)) {
-            return [$this->message, []];
-        }
         if ($this->targetClass === null) {
             throw new InvalidConfigException('The "targetClass" property must be set.');
         }
@@ -138,7 +135,11 @@ class ExistValidator extends Validator
 
         $query = $this->createQuery($this->targetClass, [$this->targetAttribute => $value]);
 
-        return $query->exists() ? null : [$this->message, []];
+        if (is_array($value)) {
+            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
+        } else {
+            return $query->exists() ? null : [$this->message, []];
+        }
     }
 
     /**
