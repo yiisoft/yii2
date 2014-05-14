@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Action;
 use yii\base\InvalidConfigException;
 use yii\helpers\Url;
+use yii\web\Response;
 
 /**
  * CaptchaAction renders a CAPTCHA image.
@@ -127,7 +128,7 @@ class CaptchaAction extends Action
             ]);
         } else {
             $this->setHttpHeaders();
-
+            Yii::$app->response->format = Response::FORMAT_RAW;
             return $this->renderImage($this->getVerifyCode());
         }
     }
