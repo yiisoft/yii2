@@ -205,14 +205,12 @@ class MigrateController extends Controller
     public function actionDown($limit = 1)
     {
         if ($limit === 'all') {
-            $query = new Query;
-            $limit = $query->from($this->migrationTable)->count();
+            $limit = null;
         } else {
             $limit = (int) $limit;
-        }
-
-        if ($limit < 1) {
-            throw new Exception("The step argument must be greater than 0.");
+            if ($limit < 1) {
+                throw new Exception("The step argument must be greater than 0.");
+            }
         }
 
         $migrations = $this->getMigrationHistory($limit);
