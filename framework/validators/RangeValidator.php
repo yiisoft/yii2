@@ -55,8 +55,14 @@ class RangeValidator extends Validator
      */
     protected function validateValue($value)
     {
-        $valid = !$this->not && in_array($value, $this->range, $this->strict)
-            || $this->not && !in_array($value, $this->range, $this->strict);
+        $valid = false;
+
+        foreach ((array)$value as $v) {
+            if (!($valid = !$this->not && in_array($v, $this->range, $this->strict)
+                || $this->not && !in_array($v, $this->range, $this->strict))) {
+                break;
+            }
+        }
 
         return $valid ? null : [$this->message, []];
     }
