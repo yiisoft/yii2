@@ -103,6 +103,13 @@ class ExistValidatorTest extends DatabaseTestCase
         $m->test_val = [95, 96, 97, 98];
         $val->validateAttribute($m, 'test_val');
         $this->assertTrue($m->hasErrors('test_val'));
+        // partial-existing array
+        $val = new ExistValidator(['targetAttribute' => 'ref']);
+        $val->allowArray = true;
+        $m = new ValidatorTestRefModel();
+        $m->test_val = [2, 97, 3, 98];
+        $val->validateAttribute($m, 'test_val');
+        $this->assertTrue($m->hasErrors('test_val'));
         // existing array (allowArray = false)
         $val = new ExistValidator(['targetAttribute' => 'ref']);
         $val->allowArray = false;
