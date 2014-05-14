@@ -89,7 +89,7 @@ class Installer extends LibraryInstaller
             $extension['alias'] = $alias;
         }
         $extra = $package->getExtra();
-        if (isset($extra[self::EXTRA_BOOTSTRAP]) && is_string($extra[self::EXTRA_BOOTSTRAP])) {
+        if (isset($extra[self::EXTRA_BOOTSTRAP])) {
             $extension['bootstrap'] = $extra[self::EXTRA_BOOTSTRAP];
         }
 
