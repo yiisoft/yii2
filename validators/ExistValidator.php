@@ -111,14 +111,12 @@ class ExistValidator extends Validator
         $query = $this->createQuery($targetClass, $params);
 
         if (is_array($object->$attribute)) {
-            if ($query->count("DISTINCT [[$targetAttribute]]") == count($object->$attribute)) {
-                return;
+            if ($query->count("DISTINCT [[$targetAttribute]]") != count($object->$attribute)) {
+                $this->addError($object, $attribute, $this->message);
             }
-        } elseif ($query->exists()) {
-            return;
+        } elseif (!$query->exists()) {
+            $this->addError($object, $attribute, $this->message);
         }
-
-        $this->addError($object, $attribute, $this->message);
     }
 
     /**
@@ -136,6 +134,9 @@ class ExistValidator extends Validator
         $query = $this->createQuery($this->targetClass, [$this->targetAttribute => $value]);
 
         if (is_array($value)) {
+            if (!$this->allowArray) {
+                return [$this->message, []];
+            }
             return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
         } else {
             return $query->exists() ? null : [$this->message, []];
