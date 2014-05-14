@@ -930,7 +930,7 @@ class Feature extends \yii\db\ActiveRecord
 
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['product_id' => 'id']);
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
     }
 }
 
@@ -940,7 +940,7 @@ class Product extends \yii\db\ActiveRecord
 
     public function getFeatures()
     {
-        return $this->hasMany(Feature::className(), ['id' => 'product_id']);
+        return $this->hasMany(Feature::className(), ['product_id' => 'id']);
     }
 }
 ```
