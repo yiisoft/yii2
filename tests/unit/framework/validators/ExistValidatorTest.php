@@ -89,13 +89,34 @@ class ExistValidatorTest extends DatabaseTestCase
         $m->a_field = 'some new value';
         $val->validateAttribute($m, 'a_field');
         $this->assertTrue($m->hasErrors('a_field'));
-        // check array
+        // existing array
         $val = new ExistValidator(['targetAttribute' => 'ref']);
         $val->allowArray = true;
         $m = new ValidatorTestRefModel();
         $m->test_val = [2, 3, 4, 5];
         $val->validateAttribute($m, 'test_val');
         $this->assertFalse($m->hasErrors('test_val'));
+        // non-existing array
+        $val = new ExistValidator(['targetAttribute' => 'ref']);
+        $val->allowArray = true;
+        $m = new ValidatorTestRefModel();
+        $m->test_val = [95, 96, 97, 98];
+        $val->validateAttribute($m, 'test_val');
+        $this->assertTrue($m->hasErrors('test_val'));
+        // existing array (allowArray = false)
+        $val = new ExistValidator(['targetAttribute' => 'ref']);
+        $val->allowArray = false;
+        $m = new ValidatorTestRefModel();
+        $m->test_val = [2, 3, 4, 5];
+        $val->validateAttribute($m, 'test_val');
+        $this->assertTrue($m->hasErrors('test_val'));
+        // non-existing array (allowArray = false)
+        $val = new ExistValidator(['targetAttribute' => 'ref']);
+        $val->allowArray = false;
+        $m = new ValidatorTestRefModel();
+        $m->test_val = [95, 96, 97, 98];
+        $val->validateAttribute($m, 'test_val');
+        $this->assertTrue($m->hasErrors('test_val'));
     }
 
     public function testValidateCompositeKeys()
