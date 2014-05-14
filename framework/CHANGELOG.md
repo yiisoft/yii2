@@ -52,6 +52,7 @@ Yii Framework 2 Change Log
 - Enh: Added `yii\console\Controller::EXIT_CODE_NORMAL` and `yii\console\Controller::EXIT_CODE_ERROR` constants (samdark)
 - Enh: `yii\console\MigrateController` now returns `yii\console\Controller::EXIT_CODE_ERROR` in case of failed migration (samdark)
 - Enh: Added method ErrorHandler::unregister() for unregistering the ErrorHandler (cebe)
+- Enh: Added `all` option to `MigrateController::actionDown()` action (creocoder, umneeq)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
 - Chg #3036: Upgraded Twitter Bootstrap to 3.1.x (qiangxue)
 - Chg #3175: InvalidCallException, InvalidParamException, UnknownMethodException are now extended from SPL BadMethodCallException (samdark)
