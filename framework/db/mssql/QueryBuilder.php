@@ -214,11 +214,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!$table) {
             return null;
         }
-        $columns = (new \yii\db\Query())
-            ->select('name')
-            ->from('sys.columns')
-            ->where("object_id = OBJECT_ID('dbo.{$table}')")
-            ->column();
+        $columns = $this->db->createCommand("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='{$table}'")->queryColumn();
         array_walk($columns, create_function('&$str', '$str = "[$str]";'));
         return $columns;
     }
