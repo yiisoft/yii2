@@ -197,7 +197,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $select = $query->select = '*';
         }
         if ($select === '*') {
-            $columns = $this->getAllColumnNames($query->from[0]);
+            $columns = $this->getAllColumnNames($query->modelClass);
             if ($columns && is_array($columns))
                 $select = implode(', ', $columns);
             else
@@ -209,13 +209,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $sql;
     }
 
-    protected function getAllColumnNames($table = null)
+    protected function getAllColumnNames($modelClass = null)
     {
-        if (!$table) {
+        if (!$modelClass) {
             return null;
         }
-        $columns = $this->db->createCommand("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='{$table}'")->queryColumn();
-        array_walk($columns, create_function('&$str', '$str = "[$str]";'));
+        $model = new $modelClass;
+        $schema = $model->getTableSchema();
+        $columns = array_keys($schema->columns);
         return $columns;
     }
 
