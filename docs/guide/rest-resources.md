@@ -1,44 +1,65 @@
 Resources
 =========
 
-RESTful APIs are mostly about accessing and manipulating *resources*, also known as [models](structure-models.md)
-in the MVC paradigm. You can represent a resource as an object of an arbitrary class.
+RESTful APIs are all about accessing and manipulating *resources*. You may view resources as
+[models](structure-models.md) in the MVC paradigm.
 
-By default, Yii will return all public property values of a resource object through RESTful APIs.
-However, if the resource implements the [[yii\base\Arrayable]] interface, Yii will return the result
-of the [[yii\base\Arrayable::toArray()]] method, instead.
+While there is no restriction in how to represent a resource, in Yii you usually would represent resources
+in terms of objects of [[yii\base\Model]] or its child classes (e.g. [[yii\db\ActiveRecord]]), for the
+following reasons:
 
-In most cases, your resource classes should extend from [[yii\base\Model]] or its child class
-(e.g. [[yii\db\ActiveRecord]] for DB-related resources) for the following reasons:
-
-* [[yii\base\Model]] implements [[yii\base\Arrayable]], and you can specify what data should be returned
-  by your resource class;
+* [[yii\base\Model]] implements the [[yii\base\Arrayable]] interface, which allows you to
+  customize how you want to expose resource data through RESTful APIs.
 * [[yii\base\Model]] supports [input validation](input-validation.md), which is useful if your RESTful APIs
   need to support data input.
+* [[yii\db\ActiveRecord]] provides powerful DB data access and manipulation support, which makes it
+  a perfect fit if your resource data is stored in databases.
 
-In this section, we will mainly describe how to specify the data to be returned by your resource classes,
-assuming they extend from [[yii\base\Model]].
-
-
-
-By default, all public member variables of a resource
-
-When developing a resource class, besides the normal business logic that you should put in the class,
-a major development effort lies in declaring what information about the resource can be returned by the RESTful APIs.
+In this section, we will mainly describe how a resource class extending from [[yii\base\Model]] (or its child classes)
+can specify what data may be returned via RESTful APIs. If the resource class does not extend from [[yii\base\Model]],
+then all its public member variables will be returned.
 
 
+Fields
+------
+
+When a resource object is sent in response to a RESTful API request, it involves the following two steps:
+
+1. The object is converted into an array by [[yii\rest\Serializer]]. This is the focus of this section.
+2. The array is serialized into a string in a requested format (e.g. JSON, XML) by
+   [[yii\web\ResponseFormatterInterface|response formatters]]. This will be the focus of the next section.
+
+By overriding [[yii\base\Model::fields()|fields()]] and/or [[yii\base\Model::extraFields()|extraFields()]],
+you may specify what data, called *fields*, in the resource can be put in the array representation of a resource object.
+The difference between these two methods is that the former specifies the default set of fields which should
+be included in the array representation, while the latter specifies additional fields which may be included
+in the array if an end user requests for them via the `expand` query parameter. For example,
+
+```
+// returns all fields as declared in fields()
+http://localhost/users
+
+// only returns field id and email, provided they are declared in fields()
+http://localhost/users?fields=id,email
+
+// returns all fields in fields() and field profile if it is in extraFields()
+http://localhost/users?expand=profile
+
+// only returns field id, email and profile, provided they are in fields() and extraFields()
+http://localhost/users?fields=id,email&expand=profile
+```
 
 
-For classes extending from [[yii\base\Model]] or [[yii\db\ActiveRecord]], besides directly overriding `toArray()`,
-you may also override the `fields()` method and/or the `extraFields()` method to customize the data being returned.
+### Overriding `fields()`
 
-The method [[yii\base\Model::fields()]] declares a set of *fields* that should be included in the result.
-A field is simply a named data item. In a result array, the array keys are the field names, and the array values
-are the corresponding field values. The default implementation of [[yii\base\Model::fields()]] is to return
-all attributes of a model as the output fields; for [[yii\db\ActiveRecord::fields()]], by default it will return
-the names of the attributes whose values have been populated into the object.
+By default, [[yii\base\Model::fields()]] returns all model attributes as fields, while
+[[yii\db\ActiveRecord::fields()]] only returns the attributes which have been populated from DB.
 
-You can override the `fields()` method to add, remove, rename or redefine fields. For example,
+You can override `fields()` to add, remove, rename or redefine fields. The return value of `fields()`
+should be an array. The array keys are the field names, and the array values are the corresponding
+field definitions which can be either property/attribute names or anonymous functions returning the
+corresponding field values. In the special case when a field name is the same as its defining attribute
+name, you can omit the array key. For example,
 
 ```php
 // explicitly list every field, best used when you want to make sure the changes
@@ -70,23 +91,34 @@ public function fields()
 }
 ```
 
-The return value of `fields()` should be an array. The array keys are the field names, and the array values
-are the corresponding field definitions which can be either property/attribute names or anonymous functions
-returning the corresponding field values.
-
 > Warning: Because by default all attributes of a model will be included in the API result, you should
 > examine your data to make sure they do not contain sensitive information. If there is such information,
-> you should override `fields()` or `toArray()` to filter them out. In the above example, we choose
+> you should override `fields()` to filter them out. In the above example, we choose
 > to filter out `auth_key`, `password_hash` and `password_reset_token`.
 
-You may use the `fields` query parameter to specify which fields in `fields()` should be included in the result.
-If this parameter is not specified, all fields returned by `fields()` will be returned.
 
-The method [[yii\base\Model::extraFields()]] is very similar to [[yii\base\Model::fields()]].
-The difference between these methods is that the latter declares the fields that should be returned by default,
-while the former declares the fields that should only be returned when the user specifies them in the `expand` query parameter.
+### Overriding `extraFields()`
 
-For example, `http://localhost/users?fields=id,email&expand=profile` may return the following JSON data:
+By default, [[yii\base\Model::extraFields()]] returns nothing, while [[yii\db\ActiveRecord::extraFields()]]
+returns the names of the relations that have been populated from DB.
+
+The return data format of `extraFields()` is the same as that of `fields()`. Usually, `extraFields()`
+is mainly used to specify fields whose values are objects. For example, given the following field
+declaration,
+
+```php
+public function fields()
+{
+    return ['id', 'email'];
+}
+
+public function extraFields()
+{
+    return ['profile'];
+}
+```
+
+the request with `http://localhost/users?fields=id,email&expand=profile` may return the following JSON data:
 
 ```php
 [
@@ -101,3 +133,89 @@ For example, `http://localhost/users?fields=id,email&expand=profile` may return 
     ...
 ]
 ```
+
+
+Links
+-----
+
+[HATEOAS](http://en.wikipedia.org/wiki/HATEOAS), an abbreviation for Hypermedia as the Engine of Application State,
+promotes that RESTful APIs should return information that allow clients to discover actions supported for the returned
+resources. The key of HATEOAS is to return a set of hyperlinks with relation information when resource data are served
+by the APIs.
+
+Your resource classes may support HATEOAS by implementing the [[yii\web\Linkable]] interface. The interface
+contains a single method [[yii\web\Linkable::getLinks()|getLinks()]] which should return a list of [[yii\web\Link|links]].
+Typically, you should return at least the `self` link representing the URL to the resource object itself. For example,
+
+```php
+use yii\db\ActiveRecord;
+use yii\web\Link;
+use yii\web\Linkable;
+use yii\helpers\Url;
+
+class User extends ActiveRecord implements Linkable
+{
+    public function getLinks()
+    {
+        return [
+            Link::REL_SELF => Url::to(['user', 'id' => $this->id], true),
+        ];
+    }
+}
+```
+
+When a `User` object is returned in a response, it will contain a `_links` element representing the links related
+to the user, for example,
+
+```
+{
+    "id": 100,
+    "email": "user@example.com",
+    // ...
+    "_links" => [
+        "self": "https://example.com/users/100"
+    ]
+}
+```
+
+
+Collections
+-----------
+
+Resource objects can be grouped into *collections*. Each collection contains a list of resource objects
+of the same type.
+
+While collections can be represented as arrays, it is usually more desirable to represent them
+as [data providers](output-data-providers.md). This is because data providers support sorting and pagination
+of resources, which is a commonly needed feature for RESTful APIs returning collections. For example,
+the following action returns a data provider about the post resources:
+
+```php
+namespace app\controllers;
+
+use yii\rest\Controller;
+use yii\data\ActiveDataProvider;
+use app\models\Post;
+
+class PostController extends Controller
+{
+    public function actionIndex()
+    {
+        return new ActiveDataProvider([
+            'query' => Post::find(),
+        ]);
+    }
+}
+```
+
+When a data provider is being sent in a RESTful API response, [[yii\rest\Serializer]] will take out the current
+page of resources and serialize them as an array of resource objects. Additionally, [[yii\rest\Serializer]]
+will also include the pagination information by the following HTTP headers:
+
+* `X-Pagination-Total-Count`: The total number of resources;
+* `X-Pagination-Page-Count`: The number of pages;
+* `X-Pagination-Current-Page`: The current page (1-based);
+* `X-Pagination-Per-Page`: The number of resources in each page;
+* `Link`: A set of navigational links allowing client to traverse the resources page by page.
+
+An example may be found in the [Quick Start](rest-quick-start.md#trying-it-out) section.

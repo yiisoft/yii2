@@ -121,7 +121,7 @@ Caching
 RESTful Web Services
 --------------------
 
-* [A Quick Start](rest-quick-start.md)
+* [Quick Start](rest-quick-start.md)
 * [Resources](rest-resources.md)
 * [Controllers](rest-controllers.md)
 * [Routing](rest-routing.md)
