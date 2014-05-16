@@ -1,7 +1,6 @@
 <?php
 
 use yii\helpers\StringHelper;
-use yii\helpers\Inflector;
 
 /**
  * This is the template for generating CRUD search class of the specified model.
@@ -11,6 +10,7 @@ use yii\helpers\Inflector;
  */
 
 $modelClass = StringHelper::basename($generator->modelClass);
+$modelClassNamespaced = $generator->modelClass;
 $searchModelClass = StringHelper::basename($generator->searchModelClass);
 if ($modelClass === $searchModelClass) {
     $modelAlias = $modelClass . 'Model';
@@ -38,7 +38,7 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
 {
     public static function tableName()
     {
-        return '{{%<?= Inflector::underscore($modelClass) ?>}}';
+        return '<?= $modelClassNamespaced::tableName() ?>';
     }
 
     public function rules()
