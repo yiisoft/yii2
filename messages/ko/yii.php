@@ -18,19 +18,19 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return array (
-  '(not set)' => '(설정되어있지않습니)',
+  '(not set)' => '(설정되어있지않습니다)',
   'An internal server error occurred.' => '서버 오류가 발생하였습니다.',
   'Are you sure to delete this item?' => '이 항목을 삭제하시겠습니까?',
   'Delete' => '삭제',
   'Error' => '오류',
-  'File upload failed.' => '파일 업로드에 실해하였습니다.',
+  'File upload failed.' => '파일 업로드 실패하였습니다.',
   'Home' => '홈',
-  'Invalid data received for parameter "{param}".' => '매개변수"{param}"에 잘못된 데이터를 받았습니다.',
+  'Invalid data received for parameter "{param}".' => '매개변수"{param}"를 위한 데이터가 잘못된 데이터입니다.',
   'Login Required' => '로그인이 필요합니다.',
   'Missing required arguments: {params}' => '필요한 인수가 없습니다: {params}',
   'Missing required parameters: {params}' => '필요한 매개변수가 없습니다: {params}',
   'No' => '아니오',
-  'No help for unknown command "{command}".' => '알 수 없는 명령  "{command}"에 대한 도움말이 없습니다.',
+  'No help for unknown command "{command}".' => '알 수 없는 명령 "{command}"에 대한 도움말이 없습니다.',
   'No help for unknown sub-command "{command}".' => '알 수 없는 하위명령  "{command}"에 대한 도움말이 없습니다.',
   'No results found.' => '결과가 없습니다.',
   'Only files with these extensions are allowed: {extensions}.' => '다음의 확장명을 가진 파일만 허용됩니다: {extensions}',
