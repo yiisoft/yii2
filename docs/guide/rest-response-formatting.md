@@ -1,5 +1,19 @@
-Data Formatting
-===============
+Response Formatting
+===================
+
+As described in the [Resources](rest-resources.md) section, we have shown how to specify what data a resource
+can expose through RESTful APIs. In this section, we will describe the behind-the-scene work regarding how a
+resource is being turned into a string in the format that is requested by end users. We will also describe
+the possible options that you have in order to customize this process.
+
+
+
+individual
+
+there are two steps involved in formatting response data.
+The first step is to convert resources or resource collections into arrays, and the second step is to serialize
+the arrays into strings in the requested format. The first step has been covered in the [Resources](rest-resources.md)
+section. In this section, we will mainly describe the second step.
 
 By default, Yii supports two response formats for RESTful APIs: JSON and XML. If you want to support
 other formats, you should configure the `contentNegotiator` behavior in your REST controller classes as follows,

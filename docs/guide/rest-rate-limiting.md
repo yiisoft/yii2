@@ -1,5 +1,5 @@
 Rate Limiting
--------------
+=============
 
 To prevent abuse, you should consider adding rate limiting to your APIs. For example, you may limit the API usage
 of each user to be at most 100 API calls within a period of 10 minutes. If too many requests are received from a user
@@ -25,17 +25,11 @@ will thrown a [[yii\web\TooManyRequestsHttpException]] if rate limit is exceeded
 as follows in your REST controller classes,
 
 ```php
-use yii\helpers\ArrayHelper;
-use yii\filters\RateLimiter;
-
 public function behaviors()
 {
-    return ArrayHelper::merge(parent::behaviors(), [
-        'rateLimiter' => [
-            'class' => RateLimiter::className(),
-            'enableRateLimitHeaders' => false,
-        ],
-    ]);
+    $behaviors = parent::behaviors();
+    $behaviors['rateLimiter']['enableRateLimitHeaders'] = false;
+    return $behaviors;
 }
 ```
 

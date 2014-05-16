@@ -1,5 +1,5 @@
-API Versioning
---------------
+Versioning
+==========
 
 Your APIs should be versioned. Unlike Web applications which you have full control on both client side and server side
 code, for APIs you usually do not have control of the client code that consumes the APIs. Therefore, backward

@@ -27,7 +27,8 @@ When a resource object is sent in response to a RESTful API request, it involves
 
 1. The object is converted into an array by [[yii\rest\Serializer]]. This is the focus of this section.
 2. The array is serialized into a string in a requested format (e.g. JSON, XML) by
-   [[yii\web\ResponseFormatterInterface|response formatters]]. This will be the focus of the next section.
+   [[yii\web\ResponseFormatterInterface|response formatters]]. This will be the focus of
+   the [Response Formatting](rest-response-formatting.md) section.
 
 By overriding [[yii\base\Model::fields()|fields()]] and/or [[yii\base\Model::extraFields()|extraFields()]],
 you may specify what data, called *fields*, in the resource can be put in the array representation of a resource object.

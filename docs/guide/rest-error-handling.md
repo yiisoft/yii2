@@ -1,8 +1,8 @@
 Error Handling
---------------
+==============
 
 When handling a RESTful API request, if there is an error in the user request or if something unexpected
-happens on the server, you may simply throw an exception to notify the user something wrong happened.
+happens on the server, you may simply throw an exception to notify the user that something wrong has happened.
 If you can identify the cause of the error (e.g. the requested resource does not exist), you should
 consider throwing an exception with a proper HTTP status code (e.g. [[yii\web\NotFoundHttpException]]
 representing a 404 HTTP status code). Yii will send the response with the corresponding HTTP status

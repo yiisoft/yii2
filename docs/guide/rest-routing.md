@@ -1,9 +1,8 @@
 Routing
--------
+=======
 
 With resource and controller classes ready, you can access the resources using the URL like
-`http://localhost/index.php?r=user/create`. As you can see, the format of the URL is the same as that
-for Web applications.
+`http://localhost/index.php?r=user/create`, similar to what you can do with normal Web applications.
 
 In practice, you usually want to enable pretty URLs and take advantage of HTTP verbs.
 For example, a request `POST /users` would mean accessing the `user/create` action.

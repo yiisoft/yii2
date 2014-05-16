@@ -157,7 +157,7 @@ For example, the URL `http://localhost/users?fields=id,email` will only return t
 
 > Info: You may have noticed that the result of `http://localhost/users` includes some sensitive fields,
 > such as `password_hash`, `auth_key`. You certainly do not want these to appear in your API result.
-> You can and should filter out these fields as described in the [Data Formatting](rest-data-formatting.md) section.
+> You can and should filter out these fields as described in the [Response Formatting](rest-response-formatting.md) section.
 
 
 Summary

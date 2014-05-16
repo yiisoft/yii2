@@ -125,12 +125,12 @@ RESTful Web Services
 * [Resources](rest-resources.md)
 * [Controllers](rest-controllers.md)
 * [Routing](rest-routing.md)
-* [Data Formatting](rest-data-formatting.md)
+* [Response Formatting](rest-response-formatting.md)
 * [Authentication](rest-authentication.md)
 * [Rate Limiting](rest-rate-limiting.md)
 * [Versioning](rest-versioning.md)
-* [Caching](rest-caching.md)
 * [Error Handling](rest-error-handling.md)
+* [Caching](rest-caching.md)
 
 
 Development Tools
