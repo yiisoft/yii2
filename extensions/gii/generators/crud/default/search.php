@@ -10,6 +10,7 @@ use yii\helpers\StringHelper;
  */
 
 $modelClass = StringHelper::basename($generator->modelClass);
+$modelClassNamespaced = $generator->modelClass;
 $searchModelClass = StringHelper::basename($generator->searchModelClass);
 if ($modelClass === $searchModelClass) {
     $modelAlias = $modelClass . 'Model';
@@ -35,6 +36,11 @@ use <?= ltrim($generator->modelClass, '\\') . (isset($modelAlias) ? " as $modelA
 class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $modelClass ?>
 
 {
+    public static function tableName()
+    {
+        return '<?= $modelClassNamespaced::tableName() ?>';
+    }
+
     public function rules()
     {
         return [
