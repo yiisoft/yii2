@@ -25,11 +25,23 @@ class ActiveForm extends Widget
 {
     /**
      * @param array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
+     * @see method for specifying the HTTP method for this form.
      */
     public $action = '';
     /**
-     * @var string the form submission method. This should be either 'post' or 'get'.
-     * Defaults to 'post'.
+     * @var string the form submission method. This should be either 'post' or 'get'. Defaults to 'post'.
+     *
+     * When you set this to 'get' you may see the url parameters repeated on each request.
+     * This is because the default value of [[action]] is set to be the current request url and each submit
+     * will add new parameters instead of replacing existing ones.
+     * You may set [[action]] explicitly to avoid this:
+     *
+     * ```php
+     * $form = ActiveForm::begin([
+     *     'method' => 'get',
+     *     'action' => ['controller/action'],
+     * ]);
+     * ```
      */
     public $method = 'post';
     /**
