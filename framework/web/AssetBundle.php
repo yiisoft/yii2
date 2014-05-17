@@ -144,16 +144,16 @@ class AssetBundle extends Object
     {
         foreach ($this->js as $js) {
             if ($js[0] !== '/' && $js[0] !== '.' && strpos($js, '://') === false) {
-                $view->registerJsFile($this->baseUrl . '/' . $js, [], $this->jsOptions);
+                $view->registerJsFile($this->baseUrl . '/' . $js, $this->jsOptions);
             } else {
-                $view->registerJsFile($js, [], $this->jsOptions);
+                $view->registerJsFile($js, $this->jsOptions);
             }
         }
         foreach ($this->css as $css) {
             if ($css[0] !== '/' && $css[0] !== '.' && strpos($css, '://') === false) {
-                $view->registerCssFile($this->baseUrl . '/' . $css, [], $this->cssOptions);
+                $view->registerCssFile($this->baseUrl . '/' . $css, $this->cssOptions);
             } else {
-                $view->registerCssFile($css, [], $this->cssOptions);
+                $view->registerCssFile($css, $this->cssOptions);
             }
         }
     }
