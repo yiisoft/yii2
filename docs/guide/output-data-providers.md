@@ -4,7 +4,7 @@ Data providers
 > Note: This section is under development.
 
 Data provider abstracts data set via [[yii\data\DataProviderInterface]] and handles pagination and sorting.
-It can be used by [grids](data-grid.md), [lists and other data widgets](data-widgets.md).
+It can be used by [grids, lists and other data widgets](output-data-widgets.md).
 
 In Yii there are three built-in data providers: [[yii\data\ActiveDataProvider]], [[yii\data\ArrayDataProvider]] and
 [[yii\data\SqlDataProvider]].
