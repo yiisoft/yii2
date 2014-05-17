@@ -367,7 +367,7 @@ class View extends \yii\base\View
      * $url as the key. If two CSS files are registered with the same key, the latter
      * will overwrite the former.
      */
-    public function registerCssFile($url, $depends = [], $options = [], $key = null)
+    public function registerCssFile($url, $options = [], $depends = [], $key = null)
     {
         $url = Yii::getAlias($url);
         $key = $key ?: $url;
@@ -429,7 +429,7 @@ class View extends \yii\base\View
      * $url as the key. If two JS files are registered with the same key, the latter
      * will overwrite the former.
      */
-    public function registerJsFile($url, $depends = [], $options = [], $key = null)
+    public function registerJsFile($url, $options = [], $depends = [], $key = null)
     {
         $url = Yii::getAlias($url);
         $key = $key ?: $url;
