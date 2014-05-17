@@ -98,8 +98,7 @@ If authentication fails, a response with HTTP status 401 will be sent back toget
 (such as a `WWW-Authenticate` header for HTTP Basic Auth).
 
 
-Authorization <a name="authorization"></a>
--------------
+## Authorization <a name="authorization"></a>
 
 After a user is authenticated, you probably want to check if he or she has the permission to perform the requested
 action for the requested resource. This process is called *authorization* which is covered in detail in

@@ -20,8 +20,7 @@ can specify what data may be returned via RESTful APIs. If the resource class do
 then all its public member variables will be returned.
 
 
-Fields
-------
+## Fields <a name="fields"></a>
 
 When a resource object is sent in response to a RESTful API request, it involves the following two steps:
 
@@ -51,7 +50,7 @@ http://localhost/users?fields=id,email&expand=profile
 ```
 
 
-### Overriding `fields()`
+### Overriding `fields()` <a name="overriding-fileds"></a>
 
 By default, [[yii\base\Model::fields()]] returns all model attributes as fields, while
 [[yii\db\ActiveRecord::fields()]] only returns the attributes which have been populated from DB.
@@ -98,7 +97,7 @@ public function fields()
 > to filter out `auth_key`, `password_hash` and `password_reset_token`.
 
 
-### Overriding `extraFields()`
+### Overriding `extraFields()` <a name="overriding-extra-fields"></a>
 
 By default, [[yii\base\Model::extraFields()]] returns nothing, while [[yii\db\ActiveRecord::extraFields()]]
 returns the names of the relations that have been populated from DB.
@@ -136,8 +135,7 @@ the request with `http://localhost/users?fields=id,email&expand=profile` may ret
 ```
 
 
-Links
------
+## Links <a name="links"></a>
 
 [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS), an abbreviation for Hypermedia as the Engine of Application State,
 promotes that RESTful APIs should return information that allow clients to discover actions supported for the returned
@@ -180,8 +178,7 @@ to the user, for example,
 ```
 
 
-Collections
------------
+## Collections <a name="collections"></a>
 
 Resource objects can be grouped into *collections*. Each collection contains a list of resource objects
 of the same type.

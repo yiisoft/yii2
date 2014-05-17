@@ -30,7 +30,7 @@ Getting Started
 Application Structure
 ---------------------
 
-* **TBD** [Entry Scripts](structure-entry-scripts.md)
+* [Entry Scripts](structure-entry-scripts.md)
 * **TBD** [Applications](structure-applications.md)
 * [Controllers and Actions](structure-controllers.md)
 * [Views](structure-views.md)

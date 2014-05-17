@@ -3,16 +3,15 @@ Entry Scripts
 
 Entry scripts are the first chain in the application bootstrapping process. An application (either
 Web application or console application) has a single entry script. End users make requests to
-an application by accessing its entry script.
+entry scripts which instantiate application instances and forward the requests to them.
 
 Entry scripts for Web applications must be stored under Web accessible directories so that they
-can be accessed by end users. They are often named as `index.php`, but can also be any other names,
-provided Web servers can locate them. For example, the URL `http://hostname/index.php` will execute
-the entry script `index.php`.
+can be accessed by end users. They are often named as `index.php`, but can also use any other names,
+provided Web servers can locate them.
 
 Entry scripts for console applications are usually stored under the [base path](structure-applications.md)
-of applications. They are often named as `yii` (with the `.php` suffix) and should be made executable
-so that users can run console applications with command `./yii <route> [arguments] [options]`.
+of applications and are named as `yii` (with the `.php` suffix). They should be made executable
+so that users can run console applications through the command `./yii <route> [arguments] [options]`.
 
 Entry scripts mainly do the following work:
 
@@ -23,9 +22,14 @@ Entry scripts mainly do the following work:
 * Create and configure an [application](structure-applications.md) instance;
 * Call [[yii\base\Application::run()]] to process the incoming request.
 
+
+## Web Applications <a name="web-applications"></a>
+
 The following is the code in the entry script for the [Basic Web Application Template](start-installation.md).
 
 ```php
+<?php
+
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
@@ -43,63 +47,70 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 
-Configuring options in the bootstrap file
------------------------------------------
+## Console Applications <a name="console-applications"></a>
 
-For each application in Yii there is at least one bootstrap file: a PHP script through which all requests are handled. For web applications, the bootstrap file is  typically `index.php`; for
-console applications, the bootstrap file is `yii`. Both bootstrap files perform nearly the same job:
-
-1. Setting common constants.
-2. Including the Yii framework itself.
-3. Including [Composer autoloader](http://getcomposer.org/doc/01-basic-usage.md#autoloading).
-4. Reading the configuration file into `$config`.
-5. Creating a new application instance, configured via `$config`, and running that instance.
-
-Like any resource in your Yii application, the bootstrap file can be edited to fit your needs. A typical change is to the value of `YII_DEBUG`. This constant should be `true` during development, but always `false` on production sites.
-
-The default bootstrap structure sets `YII_DEBUG` to `false` if not defined:
+Similarly, the following is the code for the entry script of a console application:
 
 ```php
-defined('YII_DEBUG') or define('YII_DEBUG', false);
+#!/usr/bin/env php
+<?php
+/**
+ * Yii console bootstrap file.
+ *
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
+defined('YII_DEBUG') or define('YII_DEBUG', true);
+
+// fcgi doesn't have STDIN and STDOUT defined by default
+defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
+defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
+
+// register Composer autoloader
+require(__DIR__ . '/vendor/autoload.php');
+
+// load application configuration
+require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+
+// load application configuration
+$config = require(__DIR__ . '/config/console.php');
+
+$application = new yii\console\Application($config);
+$exitCode = $application->run();
+exit($exitCode);
 ```
 
-During development, you can change this to `true`:
+
+## Defining Constants <a name="defining-constants"></a>
+
+Entry scripts are the best place for defining global constants. Yii supports the following three constants:
+
+* `YII_DEBUG`: specifies whether the application is running in debug mode. When in debug mode, an application
+  will keep more log information, and will reveal detailed error call stacks if exceptions are thrown. For this
+  reason, debug mode should be used mainly during development. The default value of `YII_DEBUG` is false.
+* `YII_ENV`: specifies which environment the application is running in. This has been described in
+  more detail in the [Configurations](concept-configurations.md#environment-constants) section.
+  The default value of `YII_ENV` is `'prod'`, meaning the application is running in production environment.
+* `YII_ENABLE_ERROR_HANDLER`: specifies whether to enable the error handler provided by Yii. The default
+  value of this constant is true.
+
+When defining a constant, we often use the code like the following:
 
 ```php
-define('YII_DEBUG', true); // Development only
-defined('YII_DEBUG') or define('YII_DEBUG', false);
+defined('YII_DEBUG') or define('YII_DEBUG', true);
 ```
 
+which is equivalent to the following code:
 
-The entry script is the bootstrap PHP script that handles user requests
-initially. It is the only PHP script that end users can directly request to
-execute.
+```php
+if (!defined('YII_DEBUG')) {
+    define('YII_DEBUG', true);
+}
+```
 
-In most cases, the entry script of a Yii application contains code that
-is as simple as this:
+Clearly the former is more succinct and easier to understand.
 
-~~~
-[php]
-// remove the following line when in production mode
-defined('YII_DEBUG') or define('YII_DEBUG',true);
-// include Yii bootstrap file
-require_once('path/to/yii/framework/yii.php');
-// create application instance and run
-$configFile='path/to/config/file.php';
-Yii::createWebApplication($configFile)->run();
-~~~
-
-The script first includes the Yii framework bootstrap file `yii.php`. It
-then creates a Web application instance with the specified configuration
-and runs it.
-
-Debug Mode
-----------
-
-A Yii application can run in either debug or production mode, as determined by
-the value of the constant `YII_DEBUG`. By default, this constant value is defined
-as `false`, meaning production mode. To run in debug mode, define this
-constant as `true` before including the `yii.php` file. Running the application
-in debug mode is less efficient because it keeps many internal logs. On the
-other hand, debug mode is also more helpful during the development stage
-because it provides richer debugging information when an error occurs.
+Constant definitions should be done at the very beginning of an entry script so that they can take effect
+when other PHP files are being included.
