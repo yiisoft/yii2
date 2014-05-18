@@ -113,9 +113,9 @@ Caching
 -------
 
 * [Overview](caching-overview.md)
-* **TBD** [Data Caching](caching-data.md)
-* **TBD** [Fragment and Page Caching](caching-fragment.md)
-* **TBD** [HTTP Caching](caching-http.md)
+* [Data Caching](caching-data.md)
+* [Content Caching](caching-content.md)
+* [HTTP Caching](caching-http.md)
 
 
 RESTful Web Services
@@ -130,7 +130,6 @@ RESTful Web Services
 * [Rate Limiting](rest-rate-limiting.md)
 * [Versioning](rest-versioning.md)
 * [Error Handling](rest-error-handling.md)
-* [Caching](rest-caching.md)
 
 
 Development Tools
