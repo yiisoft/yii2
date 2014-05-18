@@ -22,15 +22,14 @@ then all its public member variables will be returned.
 
 ## Fields <a name="fields"></a>
 
-When a resource object is sent in response to a RESTful API request, it involves the following two steps:
-
-1. The object is converted into an array by [[yii\rest\Serializer]]. This is the focus of this section.
-2. The array is serialized into a string in a requested format (e.g. JSON, XML) by
-   [[yii\web\ResponseFormatterInterface|response formatters]]. This will be the focus of
-   the [Response Formatting](rest-response-formatting.md) section.
+When including a resource in a RESTful API response, the resource needs to be serialized into a string.
+Yii breaks this process into two steps. First, the resource is converted into an array by [[yii\rest\Serializer]].
+Second, the array is serialized into a string in a requested format (e.g. JSON, XML) by
+[[yii\web\ResponseFormatterInterface|response formatters]]. The first step is what you should mainly focus when
+developing a resource class.
 
 By overriding [[yii\base\Model::fields()|fields()]] and/or [[yii\base\Model::extraFields()|extraFields()]],
-you may specify what data, called *fields*, in the resource can be put in the array representation of a resource object.
+you may specify what data, called *fields*, in the resource can be put into its array representation.
 The difference between these two methods is that the former specifies the default set of fields which should
 be included in the array representation, while the latter specifies additional fields which may be included
 in the array if an end user requests for them via the `expand` query parameter. For example,
@@ -50,7 +49,7 @@ http://localhost/users?fields=id,email&expand=profile
 ```
 
 
-### Overriding `fields()` <a name="overriding-fileds"></a>
+### Overriding `fields()` <a name="overriding-fields"></a>
 
 By default, [[yii\base\Model::fields()]] returns all model attributes as fields, while
 [[yii\db\ActiveRecord::fields()]] only returns the attributes which have been populated from DB.

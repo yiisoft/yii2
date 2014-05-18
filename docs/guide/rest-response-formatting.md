@@ -1,68 +1,95 @@
 Response Formatting
 ===================
 
-As described in the [Resources](rest-resources.md) section, we have shown how to specify what data a resource
-can expose through RESTful APIs. In this section, we will describe the behind-the-scene work regarding how a
-resource is being turned into a string in the format that is requested by end users. We will also describe
-the possible options that you have in order to customize this process.
+When handling a RESTful API request, an application usually takes the following steps that are related
+with response formatting:
+
+1. Determine various factors that may affect the response format, such as media type, language, version, etc.
+   This process is also known as [content negotiation](http://en.wikipedia.org/wiki/Content_negotiation).
+2. Convert resource objects into arrays, as described in the [Resources](rest-resources.md) section.
+   This is done by [[yii\rest\Serializer]].
+3. Convert arrays into a string in the format as determined by the content negotiation step. This is
+   done by [[yii\web\ResponseFormatterInterface|response formatters]] registered with
+   the [[yii\web\Response::formatters|response]] application component.
 
 
+## Content Negotiation <a name="content-negotiation"></a>
 
-individual
+Yii supports content negotiation via the [[yii\filters\ContentNegotiator]] filter. The the RESTful API base
+controller class [[yii\rest\Controller]] is equipped with this filter under the name of `contentNegotiator`.
+The filer provides response format negotiation as well as language negotiation. For example, if a RESTful
+API request contains the following header,
 
-there are two steps involved in formatting response data.
-The first step is to convert resources or resource collections into arrays, and the second step is to serialize
-the arrays into strings in the requested format. The first step has been covered in the [Resources](rest-resources.md)
-section. In this section, we will mainly describe the second step.
+```
+Accept: application/json; q=1.0, */*; q=0.1
+```
 
-By default, Yii supports two response formats for RESTful APIs: JSON and XML. If you want to support
-other formats, you should configure the `contentNegotiator` behavior in your REST controller classes as follows,
+it will get a response in JSON format, like the following:
 
+```
+$ curl -i -H "Accept: application/json; q=1.0, */*; q=0.1" "http://localhost/users"
+
+HTTP/1.1 200 OK
+Date: Sun, 02 Mar 2014 05:31:43 GMT
+Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
+X-Powered-By: PHP/5.4.20
+X-Pagination-Total-Count: 1000
+X-Pagination-Page-Count: 50
+X-Pagination-Current-Page: 1
+X-Pagination-Per-Page: 20
+Link: <http://localhost/users?page=1>; rel=self,
+      <http://localhost/users?page=2>; rel=next,
+      <http://localhost/users?page=50>; rel=last
+Transfer-Encoding: chunked
+Content-Type: application/json; charset=UTF-8
+
+[
+    {
+        "id": 1,
+        ...
+    },
+    {
+        "id": 2,
+        ...
+    },
+    ...
+]
+```
+
+Behind the scene, before a RESTful API controller action is executed, the [[yii\filters\ContentNegotiator]]
+filter will check the `Accept` HTTP header in the request and set the [[yii\web\Response::format|response format]]
+to be `'json'`. After the action is executed and returns the resulting resource object or collection,
+[[yii\rest\Serializer]] will convert the result into an array. And finally, [[yii\web\JsonResponseFormatter]]
+will serialize the array into a JSON string and include it in the response body.
+
+By default, RESTful APIs support both JSON and XML formats. To support a new format, you should configure
+the [[yii\filters\ContentNegotiator::formats|formats]] property of the `contentNegotiator` filter like
+the following in your API controller classes:
 
 ```php
-use yii\helpers\ArrayHelper;
+use yii\web\Response;
 
 public function behaviors()
 {
-    return ArrayHelper::merge(parent::behaviors(), [
-        'contentNegotiator' => [
-            'formats' => [
-                // ... other supported formats ...
-            ],
-        ],
-    ]);
+    $behaviors = parent::behaviors();
+    $behaviors['contentNegotiator']['formats']['text/html'] = Response::FORMAT_HTML;
+    return $behaviors;
 }
 ```
 
-Formatting response data in general involves two steps:
-
-1. The objects (including embedded objects) in the response data are converted into arrays by [[yii\rest\Serializer]];
-2. The array data are converted into different formats (e.g. JSON, XML) by [[yii\web\ResponseFormatterInterface|response formatters]].
-
-Step 2 is usually a very mechanical data conversion process and can be well handled by the built-in response formatters.
-Step 1 involves some major development effort as explained below.
-
-When the [[yii\rest\Serializer|serializer]] converts an object into an array, it will call the `toArray()` method
-of the object if it implements [[yii\base\Arrayable]]. If an object does not implement this interface,
-its public properties will be returned instead.
-
-You may wonder who triggers the conversion from objects to arrays when an action returns an object or object collection.
-The answer is that this is done by [[yii\rest\Controller::serializer]] in the [[yii\base\Controller::afterAction()|afterAction()]]
-method. By default, [[yii\rest\Serializer]] is used as the serializer that can recognize resource objects extending from
-[[yii\base\Model]] and collection objects implementing [[yii\data\DataProviderInterface]]. The serializer
-will call the `toArray()` method of these objects and pass the `fields` and `expand` user parameters to the method.
-If there are any embedded objects, they will also be converted into arrays recursively.
-
-If all your resource objects are of [[yii\base\Model]] or its child classes, such as [[yii\db\ActiveRecord]],
-and you only use [[yii\data\DataProviderInterface]] as resource collections, the default data formatting
-implementation should work very well. However, if you want to introduce some new resource classes that do not
-extend from [[yii\base\Model]], or if you want to use some new collection classes, you will need to
-customize the serializer class and configure [[yii\rest\Controller::serializer]] to use it.
-You new resource classes may use the trait [[yii\base\ArrayableTrait]] to support selective field output
-as explained above.
+The keys of the `formats` property are the supported MIME types, while the values are the corresponding
+response format names which must be supported in [[yii\web\Response::formatters]].
 
 
-Sometimes, you may want to help simplify the client development work by including pagination information
+## Data Serializing <a name="data-serializing"></a>
+
+As we have described above, [[yii\rest\Serializer]] is the central piece responsible for converting resource
+objects or collections into arrays. It recognizes objects implementing [[yii\base\ArrayableInterface]] as
+well as [[yii\data\DataProviderInterface]]. The former is mainly implemented by resource objects, while
+the latter resource collections.
+
+You may configure the serializer by setting the [[yii\rest\Controller::serializer]] property with a configuration array.
+For example, sometimes you may want to help simplify the client development work by including pagination information
 directly in the response body. To do so, configure the [[yii\rest\Serializer::collectionEnvelope]] property
 as follows:
 
