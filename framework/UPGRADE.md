@@ -29,3 +29,7 @@ Upgrade from Yii 2.0 Beta
   `yii\filters\auth\HttpBearerAuth` authentication method, the value of this parameter will be
   `yii\filters\auth\HttpBearerAuth`. This allows you to differentiate access tokens taken by
   different authentication methods.
+
+* If you are sharing the same cache across different applications, you should configure
+  the `keyPrefix` property of the cache component to use some unique string.
+  Previously, this property was automatically assigned with a unique string.

@@ -1,8 +1,6 @@
 Working with Forms
 ==================
 
-> Note: This section is under development.
-
 In this section, we will describe how to create a new page to get data from users.
 The page will display a form with a name input field and an email input field.
 After getting these data from a user, the page will echo them back to the user for confirmation.
@@ -17,8 +15,7 @@ Through this tutorial, you will learn
 * How to build an HTML form in a [view](structure-views.md).
 
 
-<a name="creating-model"></a>
-Creating a Model
+Creating a Model <a name="creating-model"></a>
 ----------------
 
 To represent the data entered by a user, create an `EntryForm` model class as shown below and
@@ -26,6 +23,8 @@ save the class in the file `models/EntryForm.php`. Please refer to the [Class Au
 section for more details about the class file naming convention.
 
 ```php
+<?php
+
 namespace app\models;
 
 use yii\base\Model;
@@ -61,13 +60,14 @@ failure will turn on the [[yii\base\Model::hasErrors|hasErrors]] property, and t
 [[yii\base\Model::getErrors|errors]] you may learn what validation errors the model has.
 
 
-<a name="creating-action"></a>
-Creating an Action
+Creating an Action <a name="creating-action"></a>
 ------------------
 
 Next, create an `entry` action in the `site` controller, like you did in the previous section.
 
 ```php
+<?php
+
 namespace app\controllers;
 
 use Yii;
@@ -112,8 +112,7 @@ be rendered, which will show the HTML form together with the validation error me
   In the above code, the `request` component is used to access the `$_POST` data.
 
 
-<a name="creating-views"></a>
-Creating Views
+Creating Views <a name="creating-views"></a>
 --------------
 
 Finally, create two views named `entry-confirm` and `entry` that are rendered by the `entry` action,
@@ -161,9 +160,8 @@ and the second the "email" data. After the input fields, the [[yii\helpers\Html:
 is called to generate a submit button.
 
 
-<a name="how-it-works"></a>
-How It Works
-------------
+Trying it Out <a name="trying-it-out"></a>
+-------------
 
 To see how it works, use your browser to access the following URL:
 
@@ -176,12 +174,16 @@ is also displayed indicating what data you need to enter. If you click the submi
 entering anything, or if you do not provide a valid email address, you will see an error message that
 is displayed next to each problematic input field.
 
+![Form with Validation Errors](images/start-form-validation.png)
+
 After entering a valid name and email address and clicking the submit button, you will see a new page
 displaying the data that you just entered.
 
+![Confirmation of Data Entry](images/start-entry-confirmation.png)
 
-<a name="magic-explained"></a>
-### Magic Explained
+
+
+### Magic Explained <a name="magic-explained"></a>
 
 You may wonder how the HTML form works behind the scene, because it seems almost magical that it can
 display a label for each input field and show error messages if you do not enter the data correctly
@@ -207,8 +209,7 @@ the following code:
   view code into reusable widgets to simplify view development in future.
 
 
-<a name="summary"></a>
-Summary
+Summary <a name="summary"></a>
 -------
 
 In this section, you have touched every part in the MVC design pattern. You have learned how

@@ -63,6 +63,11 @@ class ExistValidator extends Validator
     public $filter;
 
     /**
+     * @var boolean whether to allow array type attribute.
+     */
+    public $allowArray = false;
+
+    /**
      * @inheritdoc
      */
     public function init()
@@ -81,6 +86,9 @@ class ExistValidator extends Validator
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
 
         if (is_array($targetAttribute)) {
+            if ($this->allowArray) {
+                throw new InvalidConfigException('The "targetAttribute" property must be configured as a string.');
+            }
             $params = [];
             foreach ($targetAttribute as $k => $v) {
                 $params[$v] = is_integer($k) ? $object->$v : $object->$k;
@@ -89,18 +97,24 @@ class ExistValidator extends Validator
             $params = [$targetAttribute => $object->$attribute];
         }
 
-        foreach ($params as $value) {
-            if (is_array($value)) {
-                $this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
+        if (!$this->allowArray) {
+            foreach ($params as $value) {
+                if (is_array($value)) {
+                    $this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
 
-                return;
+                    return;
+                }
             }
         }
 
         $targetClass = $this->targetClass === null ? get_class($object) : $this->targetClass;
         $query = $this->createQuery($targetClass, $params);
 
-        if (!$query->exists()) {
+        if (is_array($object->$attribute)) {
+            if ($query->count("DISTINCT [[$targetAttribute]]") != count($object->$attribute)) {
+                $this->addError($object, $attribute, $this->message);
+            }
+        } elseif (!$query->exists()) {
             $this->addError($object, $attribute, $this->message);
         }
     }
@@ -110,9 +124,6 @@ class ExistValidator extends Validator
      */
     protected function validateValue($value)
     {
-        if (is_array($value)) {
-            return [$this->message, []];
-        }
         if ($this->targetClass === null) {
             throw new InvalidConfigException('The "targetClass" property must be set.');
         }
@@ -122,7 +133,14 @@ class ExistValidator extends Validator
 
         $query = $this->createQuery($this->targetClass, [$this->targetAttribute => $value]);
 
-        return $query->exists() ? null : [$this->message, []];
+        if (is_array($value)) {
+            if (!$this->allowArray) {
+                return [$this->message, []];
+            }
+            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
+        } else {
+            return $query->exists() ? null : [$this->message, []];
+        }
     }
 
     /**

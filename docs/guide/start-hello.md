@@ -15,8 +15,7 @@ Through this tutorial, you will learn
 * How an application dispatches requests to [actions](structure-controllers.md).
 
 
-<a name="creating-action"></a>
-Creating an Action
+Creating an Action <a name="creating-action"></a>
 ------------------
 
 For the "Hello" task, you will create a `say` [action](structure-controllers.md) which reads
@@ -32,6 +31,8 @@ declare the `say` action in the existing controller `SiteController` which is de
 in the class file `controllers/SiteController.php`:
 
 ```php
+<?php
+
 namespace app\controllers;
 
 use yii\web\Controller;
@@ -66,8 +67,7 @@ so that it can be echoed there. The rendering result is returned by the action m
 by the application and displayed to the end user.
 
 
-<a name="creating-view"></a>
-Creating a View
+Creating a View <a name="creating-view"></a>
 ---------------
 
 [Views](structure-views.md) are scripts that you write to compose response content.
@@ -93,15 +93,16 @@ In fact, the `say` view is just a PHP script which is executed by the [[yii\web\
 The content echoed by the view script will be forwarded by the application as the response to the end user.
 
 
-<a name="how-it-works"></a>
-How It Works
-------------
+Trying it Out <a name="trying-it-out"></a>
+-------------
 
 After creating the action and the view, you may access the new page by the following URL:
 
 ```
 http://hostname/index.php?r=site/say&message=Hello+World
 ```
+
+![Hello World](images/start-hello-world.png)
 
 This will show a page displaying "Hello World". The page shares the same header and footer as other pages of
 the application. If you omit the `message` parameter in the URL, you would see the page displays "Hello".
@@ -126,8 +127,7 @@ the `SiteController::actionSay()` method will be called to handle the request.
   to the controller class name `PostCommentController`.
 
 
-<a name="summary"></a>
-Summary
+Summary <a name="summary"></a>
 -------
 
 In this section, you have touched the controller part and the view part in the MVC design pattern.

@@ -9,6 +9,7 @@ php:
 # run build against PHP 5.6 and hhvm but allow them to fail
 # http://docs.travis-ci.com/user/build-configuration/#Rows-That-are-Allowed-To-Fail
 matrix:
+  fast_finish: true
   allow_failures:
     - php: hhvm
     - php: 5.6

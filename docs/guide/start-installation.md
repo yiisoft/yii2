@@ -6,8 +6,7 @@ The former is the preferred way as it allows you to install new [extensions](str
 or update Yii by running a single command.
 
 
-<a name="installing-via-composer"></a>
-Installing via Composer
+Installing via Composer <a name="installing-via-composer"></a>
 -----------------------
 
 If you do not already have Composer installed, you may get it by following the instructions at
@@ -40,8 +39,7 @@ composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic bas
 Note that the development version of Yii should not be used for production as it may break your running code.
 
 
-<a name="installing-from-archive-file"></a>
-Installing from an Archive File
+Installing from an Archive File <a name="installing-from-archive-file"></a>
 -------------------------------
 
 Installing Yii from an archive file involves two steps:
@@ -50,8 +48,7 @@ Installing Yii from an archive file involves two steps:
 2. Unpack the downloaded file to a Web accessible folder.
 
 
-<a name="other-installation-options"></a>
-Other Installation Options
+Other Installation Options <a name="other-installation-options"></a>
 --------------------------
 
 The above installation instructions show how to install Yii in terms of a basic Web application that works out of box.
@@ -65,8 +62,7 @@ There are other installation options available:
   you may consider [Advanced Application Template](tutorial-advanced-app.md).
 
 
-<a name="verifying-installation"></a>
-Verifying Installation
+Verifying Installation <a name="verifying-installation"></a>
 ----------------------
 
 After installation, you can use your browser to access the installed Yii application with the following URL,
@@ -77,7 +73,9 @@ and the server name is `hostname`,
 http://hostname/basic/web/index.php
 ```
 
-You should see a "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
+![Successful Installation of Yii](images/start-app-installed.png)
+
+You should see the above "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
 Yii's requirements by using one of the following approaches:
 
 * Use a browser to access the URL `http://hostname/basic/requirements.php`
@@ -94,8 +92,7 @@ the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) and a
 (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
-<a name="configuring-web-servers"></a>
-Configuring Web Servers
+Configuring Web Servers <a name="configuring-web-servers"></a>
 -----------------------
 
 > Info: You may skip this sub-section for now if you are just testing driving Yii with no intention
@@ -120,8 +117,7 @@ to modify its Web server setting, you may adjust the structure of your applicati
 the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more details.
 
 
-<a name="recommended-apache-configuration"></a>
-### Recommended Apache Configuration
+### Recommended Apache Configuration <a name="recommended-apache-configuration"></a>
 
 Use the following configuration in Apache's `httpd.conf` file or within a virtual host configuration. Note that you
 should replace `path/to/basic/web` with the actual path of `basic/web`.
@@ -144,8 +140,7 @@ DocumentRoot "path/to/basic/web"
 ```
 
 
-<a name="recommended-nginx-configuration"></a>
-### Recommended Nginx Configuration
+### Recommended Nginx Configuration <a name="recommended-nginx-configuration"></a>
 
 You should have installed PHP as an [FPM SAPI](http://php.net/install.fpm) for [Nginx](http://wiki.nginx.org/).
 Use the following Nginx configuration and replace `path/to/basic/web` with the actual path of `basic/web`.

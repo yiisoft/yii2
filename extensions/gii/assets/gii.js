@@ -45,6 +45,8 @@ yii.gii = (function ($) {
             $modal.find('.modal-title').text($link.data('title'));
             $modal.find('.modal-body').html('Loading ...');
             $modal.modal('show');
+            var checked = $('a.' + $modal.data('action') + '[href="' + $link.attr('href') + '"]').closest('tr').find('input').get(0).checked;
+            $modal.find('.modal-checkbox span').toggleClass('glyphicon-check', checked).toggleClass('glyphicon-unchecked', !checked);
             $.ajax({
                 type: 'POST',
                 cache: false,
@@ -57,6 +59,7 @@ yii.gii = (function ($) {
                         var index = $files.filter('[href="' + $link.attr('href') + '"]').index(filesSelector);
                         var $prev = $files.eq(index - 1);
                         var $next = $files.eq((index + 1 == $files.length ? 0 : index + 1));
+                        $modal.data('current', $files.eq(index));
                         $modal.find('.modal-previous').attr('href', $prev.attr('href')).data('title', $prev.data('title'));
                         $modal.find('.modal-next').attr('href', $next.attr('href')).data('title', $next.data('title'));
                     }
@@ -77,8 +80,21 @@ yii.gii = (function ($) {
                 $('.modal-next').trigger('click');
             } else if (e.keyCode === 82) {
                 $('.modal-refresh').trigger('click');
+            } else if (e.keyCode === 32) {
+                $('.modal-checkbox').trigger('click');
             }
         });
+
+        $('.modal-checkbox').on('click', checkFileToggle);
+    };
+
+    var checkFileToggle = function () {
+        var $modal = $('#preview-modal');
+        var $checkbox = $modal.data('current').closest('tr').find('input');
+        var checked = !$checkbox.prop('checked');
+        $checkbox.prop('checked', checked);
+        $modal.find('.modal-checkbox span').toggleClass('glyphicon-check', checked).toggleClass('glyphicon-unchecked', !checked);
+        return false;
     };
 
     var checkAllToggle = function () {

@@ -10,8 +10,7 @@ can respond to the [events](concept-events.md) triggered by the component so tha
 code execution of the component.
 
 
-<a name="using-behaviors"></a>
-Using Behaviors
+Using Behaviors <a name="using-behaviors"></a>
 ---------------
 
 To use a behavior, you first need to attach it to a [[yii\base\Component|component]]. We will describe how to
@@ -55,8 +54,7 @@ $behaviors = $component->getBehaviors();
 ```
 
 
-<a name="attaching-behaviors"></a>
-Attaching Behaviors
+Attaching Behaviors <a name="attaching-behaviors"></a>
 -------------------
 
 You can attach a behavior to a [[yii\base\Component|component]] either statically or dynamically. The former
@@ -132,8 +130,7 @@ You may also attach behaviors through [configurations](concept-configurations.md
 refer to the [Configurations](concept-configurations.md#configuration-format) section.
 
 
-<a name="detaching-behaviors"></a>
-Detaching Behaviors
+Detaching Behaviors <a name="detaching-behaviors"></a>
 -------------------
 
 To detach a behavior, you can call [[yii\base\Component::detachBehavior()]] with the name associated with the behavior:
@@ -149,8 +146,7 @@ $component->detachBehaviors();
 ```
 
 
-<a name="defining-behaviors"></a>
-Defining Behaviors
+Defining Behaviors <a name="defining-behaviors"></a>
 ------------------
 
 To define a behavior, create a class by extending from [[yii\base\Behavior]] or its child class. For example,
@@ -235,8 +231,7 @@ function ($event) {
 ```
 
 
-<a name="using-timestamp-behavior"></a>
-Using `TimestampBehavior`
+Using `TimestampBehavior` <a name="using-timestamp-behavior"></a>
 -------------------------
 
 To wrap up, let's take a look at [[yii\behaviors\TimestampBehavior]] - a behavior that supports automatically
@@ -294,8 +289,7 @@ $user->touch('login_time');
 ```
 
 
-<a name="comparison-with-traits"></a>
-Comparison with Traits
+Comparison with Traits <a name="comparison-with-traits"></a>
 ----------------------
 
 While behaviors are similar to [traits](http://www.php.net/traits) in that they both "inject" their
@@ -322,8 +316,7 @@ Name conflict caused by different traits requires you to manually resolve it by 
 properties or methods.
 
 
-<a name="pros-for-traits"></a>
-### Pros for Traits
+### Pros for Traits <a name="pros-for-traits"></a>
 
 Traits are much more efficient than behaviors because behaviors are objects which take both time and memory.
 

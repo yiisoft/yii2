@@ -61,6 +61,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public $enableDebugLogs = false;
 
+
     /**
      * Returns Yii logo ready to use in `<img src="`
      *

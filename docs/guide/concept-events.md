@@ -10,8 +10,7 @@ Yii introduces a base class called [[yii\base\Component]] to support events. If 
 events, it should extend from [[yii\base\Component]] or its child class.
 
 
-<a name="triggering-events"></a>
-Triggering Events
+Triggering Events <a name="triggering-events"></a>
 -----------------
 
 Events are triggered by calling the [[yii\base\Component::trigger()]] method. The method requires an *event name*
@@ -77,8 +76,7 @@ When the [[yii\base\Component::trigger()]] method is called, it will call handle
 the named event.
 
 
-<a name="event-handlers"></a>
-Event Handlers
+Event Handlers <a name="event-handlers"></a>
 --------------
 
 An event handler is a [PHP callback](http://www.php.net/manual/en/language.types.callable.php) that gets executed
@@ -104,8 +102,7 @@ Through the `$event` parameter, an event handler may get the following informati
 - [[yii\base\Event::data|custom data]]: the data that is provided when attaching the event handler (to be explained shortly).
 
 
-<a name="attaching-event-handlers"></a>
-Attaching Event Handlers
+Attaching Event Handlers <a name="attaching-event-handlers"></a>
 ------------------------
 
 You can attach a handler to an event by calling the [[yii\base\Component::on()]] method. For example,
@@ -166,8 +163,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 ```
 
 
-<a name="detaching-event-handlers"></a>
-Detaching Event Handlers
+Detaching Event Handlers <a name="detaching-event-handlers"></a>
 ------------------------
 
 To detach a handler from an event, call the [[yii\base\Component::off()]] method. For example,
@@ -197,8 +193,7 @@ $foo->off(Foo::EVENT_HELLO);
 ```
 
 
-<a name="class-level-event-handlers"></a>
-Class-Level Event Handlers
+Class-Level Event Handlers <a name="class-level-event-handlers"></a>
 --------------------------
 
 In the above subsections, we have described how to attach a handler to an event at *instance level*.
@@ -256,8 +251,7 @@ Event::off(Foo::className(), Foo::EVENT_HELLO);
 ```
 
 
-<a name="global-events"></a>
-Global Events
+Global Events <a name="global-events"></a>
 -------------
 
 The so-called *global event* is actually a trick based on the event mechanism described above.

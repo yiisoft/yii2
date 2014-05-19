@@ -19,6 +19,7 @@ Out of the box these tools allow you to:
 
 All of this information will be available per request, allowing you to revisit the information for past requests as well.
 
+
 Installing and configuring
 --------------------------
 
@@ -31,7 +32,8 @@ To enable these features, add these lines to your configuration file to enable t
 ]
 ```
 
-By default, the debug module only works when browsing the website from localhost. If you want to use it on a remote (staging) server, add the parameter `allowedIPs` to the configuration to whitelist your IP:
+By default, the debug module only works when browsing the website from localhost. If you want to use it on a remote (staging)
+server, add the parameter `allowedIPs` to the configuration to whitelist your IP:
 
 ```php
 'bootstrap' => ['debug'],
@@ -54,6 +56,11 @@ If you are using `enableStrictParsing` URL manager option, add the following to 
     ],
 ],
 ```
+
+> Note: the debugger stores information about each request in the `@runtime/debug` directory. If you have problems using
+> The debugger such as weird error messages when using it or the toolbar not showing up or not showing any requests, check
+> whether the web server has enough permissions to access this directory and the files located inside.
+
 
 ### Extra configuration for logging and profiling
 
@@ -83,6 +90,7 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 ```
 
 > Note: Make sure to disable debug mode in production environments since it may have a significant and adverse performance effect. Further, the debug mode may expose sensitive information to end users.
+
 
 Creating your own panels
 ------------------------
