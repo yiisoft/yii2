@@ -729,6 +729,8 @@ class BaseHtml
      *
      * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
      *   except that the array keys represent the optgroup labels specified in $items.
+     * - encodeSpaces: bool, whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     *   Defaults to `true`.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -742,7 +744,8 @@ class BaseHtml
             return static::listBox($name, $selection, $items, $options);
         }
         $options['name'] = $name;
-        $selectOptions = static::renderSelectOptions($selection, $items, $options);
+        $encodeSpaces = ArrayHelper::remove($options, 'encodeSpaces', true);
+        $selectOptions = static::renderSelectOptions($selection, $items, $options, $encodeSpaces);
 
         return static::tag('select', "\n" . $selectOptions . "\n", $options);
     }
@@ -777,6 +780,8 @@ class BaseHtml
      * - unselect: string, the value that will be submitted when no option is selected.
      *   When this attribute is set, a hidden field will be generated so that if no option is selected in multiple
      *   mode, we can still obtain the posted unselect value.
+     * - encodeSpaces: bool, whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     *   Defaults to `true`.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -803,7 +808,8 @@ class BaseHtml
         } else {
             $hidden = '';
         }
-        $selectOptions = static::renderSelectOptions($selection, $items, $options);
+        $encodeSpaces = ArrayHelper::remove($options, 'encodeSpaces', true);
+        $selectOptions = static::renderSelectOptions($selection, $items, $options, $encodeSpaces);
 
         return $hidden . static::tag('select', "\n" . $selectOptions . "\n", $options);
     }
@@ -1534,14 +1540,16 @@ class BaseHtml
      * @param array $tagOptions the $options parameter that is passed to the [[dropDownList()]] or [[listBox()]] call.
      * This method will take out these elements, if any: "prompt", "options" and "groups". See more details
      * in [[dropDownList()]] for the explanation of these elements.
+     * @param bool $encodeSpaces whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     * Defaults to `true`.
      *
      * @return string the generated list options
      */
-    public static function renderSelectOptions($selection, $items, &$tagOptions = [])
+    public static function renderSelectOptions($selection, $items, &$tagOptions = [], $encodeSpaces = true)
     {
         $lines = [];
         if (isset($tagOptions['prompt'])) {
-            $prompt = str_replace(' ', '&nbsp;', static::encode($tagOptions['prompt']));
+            $prompt = $encodeSpaces ? str_replace(' ', '&nbsp;', static::encode($tagOptions['prompt'])) : static::encode($tagOptions['prompt']);
             $lines[] = static::tag('option', $prompt, ['value' => '']);
         }
 
@@ -1554,7 +1562,7 @@ class BaseHtml
                 $groupAttrs = isset($groups[$key]) ? $groups[$key] : [];
                 $groupAttrs['label'] = $key;
                 $attrs = ['options' => $options, 'groups' => $groups];
-                $content = static::renderSelectOptions($selection, $value, $attrs);
+                $content = static::renderSelectOptions($selection, $value, $attrs, $encodeSpaces);
                 $lines[] = static::tag('optgroup', "\n" . $content . "\n", $groupAttrs);
             } else {
                 $attrs = isset($options[$key]) ? $options[$key] : [];
@@ -1562,7 +1570,7 @@ class BaseHtml
                 $attrs['selected'] = $selection !== null &&
                         (!is_array($selection) && !strcmp($key, $selection)
                         || is_array($selection) && in_array($key, $selection));
-                $lines[] = static::tag('option', str_replace(' ', '&nbsp;', static::encode($value)), $attrs);
+                $lines[] = static::tag('option', ($encodeSpaces ? str_replace(' ', '&nbsp;', static::encode($value)) : static::encode($value)), $attrs);
             }
         }
 
