@@ -25,6 +25,9 @@ Yii Framework 2 Change Log
 - Bug #3311: Fixed the bug that `yii\di\Container::has()` did not return correct value (mgrechanik, qiangxue)
 - Bug #3327: Fixed "Unable to find debug data" when logging objects with circular references (jarekkozak, samdark)
 - Bug #3368: Fix for comparing numeric attributes in JavaScript (technixp)
+- Bug #3431: Allow using extended ErrorHandler class from the app namespace (cebe)
+- Bug #3436: Fixed the issue that `ServiceLocator` still returns the old component after calling `set()` with a new definition (qiangxue)
+- Bug #3458: Fixed the bug that the image rendered by `CaptchaAction` was using a wrong content type (MDMunir, qiangxue)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2435: `yii\db\IntegrityException` is now thrown on database integrity errors instead of general `yii\db\Exception` (samdark)
@@ -49,6 +52,9 @@ Yii Framework 2 Change Log
 - Enh: Added support to insert an event handler at the beginning of class-level event handler queue (qiangxue)
 - Enh: Added `yii\console\Controller::EXIT_CODE_NORMAL` and `yii\console\Controller::EXIT_CODE_ERROR` constants (samdark)
 - Enh: `yii\console\MigrateController` now returns `yii\console\Controller::EXIT_CODE_ERROR` in case of failed migration (samdark)
+- Enh: Added method ErrorHandler::unregister() for unregistering the ErrorHandler (cebe)
+- Enh: Added `all` option to `MigrateController::actionDown()` action (creocoder, umneeq)
+- Enh: Added support for array attributes in `exist` validator (creocoder)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
 - Chg #3036: Upgraded Twitter Bootstrap to 3.1.x (qiangxue)
 - Chg #3175: InvalidCallException, InvalidParamException, UnknownMethodException are now extended from SPL BadMethodCallException (samdark)
@@ -58,7 +64,7 @@ Yii Framework 2 Change Log
 - Chg: `yii\grid\DataColumn::getDataCellValue()` visibility is now `public` to allow accessing the value from a GridView directly (cebe)
 - Chg: `yii\data\ActiveDataProvider::$query` will not be modified directly with pagination and sorting anymore so it will be reuseable (cebe)
 - Chg: Removed `yii\rest\ActiveController::$transactional` property and connected functionality (samdark)
-
+- Chg: Changed the default value of the `keyPrefix` property of cache components to be null (qiangxue)
 
 2.0.0-beta April 13, 2014
 -------------------------

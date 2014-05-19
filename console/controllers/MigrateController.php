@@ -193,6 +193,7 @@ class MigrateController extends Controller
      * ~~~
      * yii migrate/down     # revert the last migration
      * yii migrate/down 3   # revert the last 3 migrations
+     * yii migrate/down all # revert all migrations
      * ~~~
      *
      * @param integer $limit the number of migrations to be reverted. Defaults to 1,
@@ -203,9 +204,13 @@ class MigrateController extends Controller
      */
     public function actionDown($limit = 1)
     {
-        $limit = (int) $limit;
-        if ($limit < 1) {
-            throw new Exception("The step argument must be greater than 0.");
+        if ($limit === 'all') {
+            $limit = null;
+        } else {
+            $limit = (int) $limit;
+            if ($limit < 1) {
+                throw new Exception("The step argument must be greater than 0.");
+            }
         }
 
         $migrations = $this->getMigrationHistory($limit);

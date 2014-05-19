@@ -184,8 +184,9 @@ abstract class Application extends Module
 
         $this->state = self::STATE_BEGIN;
 
-        $this->registerErrorHandler($config);
         $this->preInit($config);
+
+        $this->registerErrorHandler($config);
 
         Component::__construct($config);
     }

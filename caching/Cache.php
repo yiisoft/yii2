@@ -7,7 +7,6 @@
 
 namespace yii\caching;
 
-use Yii;
 use yii\base\Component;
 use yii\helpers\StringHelper;
 
@@ -52,10 +51,9 @@ use yii\helpers\StringHelper;
 abstract class Cache extends Component implements \ArrayAccess
 {
     /**
-     * @var string a string prefixed to every cache key so that it is unique. If not set,
-     * it will use a prefix generated from [[\yii\base\Application::id]]. You may set this property to be an empty string
-     * if you don't want to use key prefix. It is recommended that you explicitly set this property to some
-     * static value if the cached data needs to be shared among multiple applications.
+     * @var string a string prefixed to every cache key so that it is unique globally in the whole cache storage.
+     * It is recommended that you set a unique cache key prefix for each application if the same cache
+     * storage is being used by different applications.
      *
      * To ensure interoperability, only alphanumeric characters should be used.
      */
@@ -71,17 +69,6 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public $serializer;
 
-    /**
-     * Initializes the application component.
-     * This method overrides the parent implementation by setting default cache key prefix.
-     */
-    public function init()
-    {
-        parent::init();
-        if ($this->keyPrefix === null) {
-            $this->keyPrefix = substr(md5(Yii::$app->id), 0, 5);
-        }
-    }
 
     /**
      * Builds a normalized cache key from a given key.

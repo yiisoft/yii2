@@ -187,17 +187,7 @@ class Application extends \yii\base\Application
         return array_merge(parent::coreComponents(), [
             'request' => ['class' => 'yii\console\Request'],
             'response' => ['class' => 'yii\console\Response'],
+            'errorHandler' => ['class' => 'yii\console\ErrorHandler'],
         ]);
-    }
-
-    /**
-     * Registers the errorHandler component as a PHP error handler.
-     */
-    protected function registerErrorHandler(&$config)
-    {
-        if (!isset($config['components']['errorHandler']['class'])) {
-            $config['components']['errorHandler']['class'] = 'yii\\console\\ErrorHandler';
-        }
-        parent::registerErrorHandler($config);
     }
 }

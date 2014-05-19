@@ -609,8 +609,8 @@ class Response extends \yii\base\Response
      * ~~~
      *
      * @param string $filePath file name with full path
-     * @param string $mimeType the MIME type of the file. If null, it will be determined based on `$filePath`.
      * @param string $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
+     * @param string $mimeType the MIME type of the file. If null, it will be determined based on `$filePath`.
      * @param string $xHeader the name of the x-sendfile header.
      * @return static the response object itself
      */
