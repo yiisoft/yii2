@@ -34,7 +34,13 @@ And the following example shows how to use ActiveDataProvider without ActiveReco
 $query = new Query();
 $provider = new ActiveDataProvider([
     'query' => $query->from('post'),
-    'sort'=>['defaultOrder'=>['name' => SORT_ASC,'created_at' => SORT_DESC]],
+    'sort' => [
+        // Set the default sort by name ASC and created_at DESC.
+        'defaultOrder' => [
+            'name' => SORT_ASC, 
+            'created_at' => SORT_DESC
+        ]
+    ],
     'pagination' => [
         'pageSize' => 20,
     ],
