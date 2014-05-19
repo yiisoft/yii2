@@ -127,24 +127,13 @@ class BaseVarDumper
     }
 
     /**
-     * Outputs a parsable string representation of a variable.
-     * This method achieves the similar functionality as var_export
-     * but is more robust when handling arrays and objects.
-     * @param mixed $var variable to be exported.
-     */
-    public static function export($var)
-    {
-        echo static::exportAsString($var);
-    }
-
-    /**
      * Returns a parsable string representation of a variable.
      * This method achieves the similar functionality as var_export
      * but is more robust when handling arrays and objects.
      * @param mixed $var variable to be exported.
      * @return string parsable string representation of a variable.
      */
-    public static function exportAsString($var)
+    public static function export($var)
     {
         self::$_output = '';
         self::exportInternal($var, 0);
