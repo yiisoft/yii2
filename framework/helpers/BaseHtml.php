@@ -83,6 +83,7 @@ class BaseHtml
     /**
      * Encodes special characters into HTML entities.
      * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
+     *
      * @param string $content the content to be encoded
      * @param boolean $doubleEncode whether to encode HTML entities in `$content`. If false,
      * HTML entities in `$content` will not be further encoded.
@@ -98,6 +99,7 @@ class BaseHtml
     /**
      * Decodes special HTML entities back to the corresponding characters.
      * This is the opposite of [[encode()]].
+     *
      * @param string $content the content to be decoded
      * @return string the decoded content
      * @see encode()
@@ -110,6 +112,7 @@ class BaseHtml
 
     /**
      * Generates a complete HTML tag.
+     *
      * @param string $name the tag name
      * @param string $content the content to be enclosed between the start and end tags. It will not be HTML-encoded.
      * If this is coming from end users, you should consider [[encode()]] it to prevent XSS attacks.
@@ -135,6 +138,7 @@ class BaseHtml
 
     /**
      * Generates a start tag.
+     *
      * @param string $name the tag name
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
@@ -151,6 +155,7 @@ class BaseHtml
 
     /**
      * Generates an end tag.
+     *
      * @param string $name the tag name
      * @return string the generated end tag
      * @see beginTag()
@@ -163,6 +168,7 @@ class BaseHtml
 
     /**
      * Generates a style tag.
+     *
      * @param string $content the style content
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
@@ -178,6 +184,7 @@ class BaseHtml
 
     /**
      * Generates a script tag.
+     *
      * @param string $content the script content
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
@@ -193,6 +200,7 @@ class BaseHtml
 
     /**
      * Generates a link tag that refers to an external CSS file.
+     *
      * @param array|string $url the URL of the external CSS file. This parameter will be processed by [[Url::to()]].
      * @param array $options the tag options in terms of name-value pairs. The following option is specially handled:
      *
@@ -224,6 +232,7 @@ class BaseHtml
 
     /**
      * Generates a script tag that refers to an external JavaScript file.
+     *
      * @param string $url the URL of the external JavaScript file. This parameter will be processed by [[Url::to()]].
      * @param array $options the tag options in terms of name-value pairs. The following option is specially handled:
      *
@@ -251,6 +260,7 @@ class BaseHtml
 
     /**
      * Generates a form start tag.
+     *
      * @param array|string $action the form action URL. This parameter will be processed by [[Url::to()]].
      * @param string $method the form submission method, such as "post", "get", "put", "delete" (case-insensitive).
      * Since most browsers only support "post" and "get", if other methods are given, they will
@@ -287,8 +297,8 @@ class BaseHtml
             foreach (explode('&', substr($action, $pos + 1)) as $pair) {
                 if (($pos1 = strpos($pair, '=')) !== false) {
                     $hiddenInputs[] = static::hiddenInput(
-                        urldecode(substr($pair, 0, $pos1)),
-                        urldecode(substr($pair, $pos1 + 1))
+                                            urldecode(substr($pair, 0, $pos1)),
+                                                urldecode(substr($pair, $pos1 + 1))
                     );
                 } else {
                     $hiddenInputs[] = static::hiddenInput(urldecode($pair), '');
@@ -309,6 +319,7 @@ class BaseHtml
 
     /**
      * Generates a form end tag.
+     *
      * @return string the generated tag
      * @see beginForm()
      */
@@ -319,6 +330,7 @@ class BaseHtml
 
     /**
      * Generates a hyperlink tag.
+     *
      * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
      * such as an image tag. If this is coming from end users, you should consider [[encode()]]
      * it to prevent XSS attacks.
@@ -343,6 +355,7 @@ class BaseHtml
 
     /**
      * Generates a mailto hyperlink.
+     *
      * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
      * such as an image tag. If this is coming from end users, you should consider [[encode()]]
      * it to prevent XSS attacks.
@@ -363,6 +376,7 @@ class BaseHtml
 
     /**
      * Generates an image tag.
+     *
      * @param array|string $src the image URL. This parameter will be processed by [[Url::to()]].
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
@@ -382,6 +396,7 @@ class BaseHtml
 
     /**
      * Generates a label tag.
+     *
      * @param string $content label text. It will NOT be HTML-encoded. Therefore you can pass in HTML code
      * such as an image tag. If this is is coming from end users, you should [[encode()]]
      * it to prevent XSS attacks.
@@ -402,6 +417,7 @@ class BaseHtml
 
     /**
      * Generates a button tag.
+     *
      * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
      * Therefore you can pass in HTML code such as an image tag. If this is is coming from end users,
      * you should consider [[encode()]] it to prevent XSS attacks.
@@ -418,6 +434,7 @@ class BaseHtml
 
     /**
      * Generates a submit button tag.
+     *
      * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
      * Therefore you can pass in HTML code such as an image tag. If this is is coming from end users,
      * you should consider [[encode()]] it to prevent XSS attacks.
@@ -436,6 +453,7 @@ class BaseHtml
 
     /**
      * Generates a reset button tag.
+     *
      * @param string $content the content enclosed within the button tag. It will NOT be HTML-encoded.
      * Therefore you can pass in HTML code such as an image tag. If this is is coming from end users,
      * you should consider [[encode()]] it to prevent XSS attacks.
@@ -454,6 +472,7 @@ class BaseHtml
 
     /**
      * Generates an input type of the given type.
+     *
      * @param string $type the type attribute.
      * @param string $name the name attribute. If it is null, the name attribute will not be generated.
      * @param string $value the value attribute. If it is null, the value attribute will not be generated.
@@ -467,13 +486,14 @@ class BaseHtml
     {
         $options['type'] = $type;
         $options['name'] = $name;
-        $options['value'] = $value === null ? null : (string) $value;
+        $options['value'] = $value === null ? null : (string)$value;
 
         return static::tag('input', '', $options);
     }
 
     /**
      * Generates an input button.
+     *
      * @param string $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
@@ -491,6 +511,7 @@ class BaseHtml
 
     /**
      * Generates a submit input button.
+     *
      * @param string $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
@@ -508,6 +529,7 @@ class BaseHtml
 
     /**
      * Generates a reset input button.
+     *
      * @param string $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
      * Attributes whose value is null will be ignored and not put in the tag returned.
@@ -524,6 +546,7 @@ class BaseHtml
 
     /**
      * Generates a text input field.
+     *
      * @param string $name the name attribute.
      * @param string $value the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
@@ -539,6 +562,7 @@ class BaseHtml
 
     /**
      * Generates a hidden input field.
+     *
      * @param string $name the name attribute.
      * @param string $value the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
@@ -554,6 +578,7 @@ class BaseHtml
 
     /**
      * Generates a password input field.
+     *
      * @param string $name the name attribute.
      * @param string $value the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
@@ -572,6 +597,7 @@ class BaseHtml
      * To use a file input field, you should set the enclosing form's "enctype" attribute to
      * be "multipart/form-data". After the form is submitted, the uploaded file information
      * can be obtained via $_FILES[$name] (see PHP documentation).
+     *
      * @param string $name the name attribute.
      * @param string $value the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
@@ -587,6 +613,7 @@ class BaseHtml
 
     /**
      * Generates a text area input.
+     *
      * @param string $name the input name
      * @param string $value the input value. Note that it will be encoded using [[encode()]].
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
@@ -604,6 +631,7 @@ class BaseHtml
 
     /**
      * Generates a radio button input.
+     *
      * @param string $name the name attribute.
      * @param boolean $checked whether the radio button should be checked.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
@@ -627,7 +655,7 @@ class BaseHtml
      */
     public static function radio($name, $checked = false, $options = [])
     {
-        $options['checked'] = (boolean) $checked;
+        $options['checked'] = (boolean)$checked;
         $value = array_key_exists('value', $options) ? $options['value'] : '1';
         if (isset($options['uncheck'])) {
             // add a hidden field so that if the radio button is not selected, it still submits a value
@@ -654,6 +682,7 @@ class BaseHtml
 
     /**
      * Generates a checkbox input.
+     *
      * @param string $name the name attribute.
      * @param boolean $checked whether the checkbox should be checked.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
@@ -677,7 +706,7 @@ class BaseHtml
      */
     public static function checkbox($name, $checked = false, $options = [])
     {
-        $options['checked'] = (boolean) $checked;
+        $options['checked'] = (boolean)$checked;
         $value = array_key_exists('value', $options) ? $options['value'] : '1';
         if (isset($options['uncheck'])) {
             // add a hidden field so that if the checkbox is not selected, it still submits a value
@@ -704,6 +733,7 @@ class BaseHtml
 
     /**
      * Generates a drop-down list.
+     *
      * @param string $name the input name
      * @param string $selection the selected value
      * @param array $items the option data items. The array keys are option values, and the array values
@@ -729,6 +759,8 @@ class BaseHtml
      *
      * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
      *   except that the array keys represent the optgroup labels specified in $items.
+     * - encodeSpaces: bool, whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     *   Defaults to `true`.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -742,13 +774,15 @@ class BaseHtml
             return static::listBox($name, $selection, $items, $options);
         }
         $options['name'] = $name;
-        $selectOptions = static::renderSelectOptions($selection, $items, $options);
+        $encodeSpaces = ArrayHelper::remove($options, 'encodeSpaces', true);
+        $selectOptions = static::renderSelectOptions($selection, $items, $options, $encodeSpaces);
 
         return static::tag('select', "\n" . $selectOptions . "\n", $options);
     }
 
     /**
      * Generates a list box.
+     *
      * @param string $name the input name
      * @param string|array $selection the selected value(s)
      * @param array $items the option data items. The array keys are option values, and the array values
@@ -777,6 +811,8 @@ class BaseHtml
      * - unselect: string, the value that will be submitted when no option is selected.
      *   When this attribute is set, a hidden field will be generated so that if no option is selected in multiple
      *   mode, we can still obtain the posted unselect value.
+     * - encodeSpaces: bool, whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     *   Defaults to `true`.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -803,7 +839,8 @@ class BaseHtml
         } else {
             $hidden = '';
         }
-        $selectOptions = static::renderSelectOptions($selection, $items, $options);
+        $encodeSpaces = ArrayHelper::remove($options, 'encodeSpaces', true);
+        $selectOptions = static::renderSelectOptions($selection, $items, $options, $encodeSpaces);
 
         return $hidden . static::tag('select', "\n" . $selectOptions . "\n", $options);
     }
@@ -812,6 +849,7 @@ class BaseHtml
      * Generates a list of checkboxes.
      * A checkbox list allows multiple selection, like [[listBox()]].
      * As a result, the corresponding submitted value is an array.
+     *
      * @param string $name the name attribute of each checkbox.
      * @param string|array $selection the selected value(s).
      * @param array $items the data item used to generate the checkboxes.
@@ -885,6 +923,7 @@ class BaseHtml
     /**
      * Generates a list of radio buttons.
      * A radio button list is like a checkbox list, except that it only allows single selection.
+     *
      * @param string $name the name attribute of each radio button.
      * @param string|array $selection the selected value(s).
      * @param array $items the data item used to generate the radio buttons.
@@ -950,6 +989,7 @@ class BaseHtml
 
     /**
      * Generates an unordered list.
+     *
      * @param array|\Traversable $items the items for generating the list. Each item generates a single list item.
      * Note that items will be automatically HTML encoded if `$options['encode']` is not set or true.
      * @param array $options options (name => config) for the radio button list. The following options are supported:
@@ -995,6 +1035,7 @@ class BaseHtml
 
     /**
      * Generates an ordered list.
+     *
      * @param array|\Traversable $items the items for generating the list. Each item generates a single list item.
      * Note that items will be automatically HTML encoded if `$options['encode']` is not set or true.
      * @param array $options options (name => config) for the radio button list. The following options are supported:
@@ -1026,6 +1067,7 @@ class BaseHtml
     /**
      * Generates a label tag for the given model attribute.
      * The label text is the label associated with the attribute, obtained via [[Model::getAttributeLabel()]].
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
@@ -1055,6 +1097,7 @@ class BaseHtml
     /**
      * Generates a summary of the validation errors.
      * If there is no validation error, an empty error summary markup will still be generated, but it will be hidden.
+     *
      * @param Model|Model[] $models the model(s) whose validation errors are to be displayed
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
@@ -1095,6 +1138,7 @@ class BaseHtml
     /**
      * Generates a tag that contains the first validation error of the specified model attribute.
      * Note that even if there is no validation error, this method will still return an empty error tag.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
@@ -1123,6 +1167,7 @@ class BaseHtml
      * Generates an input tag for the given model attribute.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
+     *
      * @param string $type the input type (e.g. 'text', 'password')
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
@@ -1147,6 +1192,7 @@ class BaseHtml
      * Generates a text input tag for the given model attribute.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
@@ -1164,6 +1210,7 @@ class BaseHtml
      * Generates a hidden input tag for the given model attribute.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
@@ -1181,6 +1228,7 @@ class BaseHtml
      * Generates a password input tag for the given model attribute.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
@@ -1198,6 +1246,7 @@ class BaseHtml
      * Generates a file input tag for the given model attribute.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
@@ -1211,12 +1260,13 @@ class BaseHtml
         // add a hidden field so that if a model only has a file field, we can
         // still use isset($_POST[$modelClass]) to detect if the input is submitted
         return static::activeHiddenInput($model, $attribute, ['id' => null, 'value' => ''])
-            . static::activeInput('file', $model, $attribute, $options);
+        . static::activeInput('file', $model, $attribute, $options);
     }
 
     /**
      * Generates a textarea tag for the given model attribute.
      * The model attribute value will be used as the content in the textarea.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
@@ -1239,6 +1289,7 @@ class BaseHtml
     /**
      * Generates a radio button tag for the given model attribute.
      * This method will generate the "checked" tag attribute according to the model attribute value.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
@@ -1284,6 +1335,7 @@ class BaseHtml
     /**
      * Generates a checkbox tag for the given model attribute.
      * This method will generate the "checked" tag attribute according to the model attribute value.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
@@ -1328,6 +1380,7 @@ class BaseHtml
     /**
      * Generates a drop-down list for the given model attribute.
      * The selection of the drop-down list is taken from the value of the model attribute.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
@@ -1378,6 +1431,7 @@ class BaseHtml
     /**
      * Generates a list box.
      * The selection of the list box is taken from the value of the model attribute.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
@@ -1433,6 +1487,7 @@ class BaseHtml
      * A checkbox list allows multiple selection, like [[listBox()]].
      * As a result, the corresponding submitted value is an array.
      * The selection of the checkbox list is taken from the value of the model attribute.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
@@ -1478,6 +1533,7 @@ class BaseHtml
      * Generates a list of radio buttons.
      * A radio button list is like a checkbox list, except that it only allows single selection.
      * The selection of the radio buttons is taken from the value of the model attribute.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
@@ -1521,6 +1577,7 @@ class BaseHtml
 
     /**
      * Renders the option tags that can be used by [[dropDownList()]] and [[listBox()]].
+     *
      * @param string|array $selection the selected value(s). This can be either a string for single selection
      * or an array for multiple selections.
      * @param array $items the option data items. The array keys are option values, and the array values
@@ -1535,13 +1592,16 @@ class BaseHtml
      * This method will take out these elements, if any: "prompt", "options" and "groups". See more details
      * in [[dropDownList()]] for the explanation of these elements.
      *
+     * @param bool $encodeSpaces whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     * Defaults to `true`.
+     *
      * @return string the generated list options
      */
-    public static function renderSelectOptions($selection, $items, &$tagOptions = [])
+    public static function renderSelectOptions($selection, $items, &$tagOptions = [], $encodeSpaces = true)
     {
         $lines = [];
         if (isset($tagOptions['prompt'])) {
-            $prompt = str_replace(' ', '&nbsp;', static::encode($tagOptions['prompt']));
+            $prompt = $encodeSpaces ? str_replace(' ', '&nbsp;', static::encode($tagOptions['prompt'])) : static::encode($tagOptions['prompt']);
             $lines[] = static::tag('option', $prompt, ['value' => '']);
         }
 
@@ -1554,15 +1614,15 @@ class BaseHtml
                 $groupAttrs = isset($groups[$key]) ? $groups[$key] : [];
                 $groupAttrs['label'] = $key;
                 $attrs = ['options' => $options, 'groups' => $groups];
-                $content = static::renderSelectOptions($selection, $value, $attrs);
+                $content = static::renderSelectOptions($selection, $value, $attrs, $encodeSpaces);
                 $lines[] = static::tag('optgroup', "\n" . $content . "\n", $groupAttrs);
             } else {
                 $attrs = isset($options[$key]) ? $options[$key] : [];
-                $attrs['value'] = (string) $key;
+                $attrs['value'] = (string)$key;
                 $attrs['selected'] = $selection !== null &&
-                        (!is_array($selection) && !strcmp($key, $selection)
+                    (!is_array($selection) && !strcmp($key, $selection)
                         || is_array($selection) && in_array($key, $selection));
-                $lines[] = static::tag('option', str_replace(' ', '&nbsp;', static::encode($value)), $attrs);
+                $lines[] = static::tag('option', ($encodeSpaces ? str_replace(' ', '&nbsp;', static::encode($value)) : static::encode($value)), $attrs);
             }
         }
 
@@ -1622,6 +1682,7 @@ class BaseHtml
     /**
      * Adds a CSS class to the specified options.
      * If the CSS class is already in the options, it will not be added again.
+     *
      * @param array $options the options to be modified.
      * @param string $class the CSS class to be added
      */
@@ -1639,6 +1700,7 @@ class BaseHtml
 
     /**
      * Removes a CSS class from the specified options.
+     *
      * @param array $options the options to be modified.
      * @param string $class the CSS class to be removed
      */
@@ -1714,7 +1776,7 @@ class BaseHtml
     {
         if (!empty($options['style'])) {
             $style = static::cssStyleToArray($options['style']);
-            foreach ((array) $properties as $property) {
+            foreach ((array)$properties as $property) {
                 unset($style[$property]);
             }
             $options['style'] = static::cssStyleFromArray($style);
@@ -1787,6 +1849,7 @@ class BaseHtml
      *   for the first model in tabular input.
      *
      * If `$attribute` has neither prefix nor suffix, it will be returned back without change.
+     *
      * @param string $attribute the attribute name or expression
      * @return string the attribute name without prefix and suffix.
      * @throws InvalidParamException if the attribute name contains non-word characters.
@@ -1886,6 +1949,7 @@ class BaseHtml
      *
      * This method converts the result [[getInputName()]] into a valid input ID.
      * For example, if [[getInputName()]] returns `Post[content]`, this method will return `post-content`.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for explanation of attribute expression.
      * @return string the generated input ID
