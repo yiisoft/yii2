@@ -591,7 +591,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function has($key)
     {
         $this->open();
-
         return isset($_SESSION[$key]);
     }
 
@@ -625,6 +624,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @param boolean $delete whether to delete this flash message right after this method is called.
      * If false, the flash message will be automatically deleted after the next request.
      * @return mixed the flash message
+     * @see setFlash()
+     * @see hasFlash()
+     * @see getAllFlashes()
+     * @see removeFlash()
      */
     public function getFlash($key, $defaultValue = null, $delete = false)
     {
@@ -643,7 +646,26 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Returns all flash messages.
+     *
+     * You may use this method to display all the flash messages in a view file:
+     *
+     * ```php
+     * <?php
+     * foreach(Yii::$app->session->getAllFlashes() as $key => $message) {
+     *     echo '<div class="alert alert-' . $key . '">' . $message . '</div>';
+     * } ?>
+     * ```
+     *
+     * With the above code you can use the [bootstrap alert][] classes such as `success`, `info`, `danger`
+     * as the flash message key to influence the color of the div.
+     *
+     * [bootstrap alert]: http://getbootstrap.com/components/#alerts
+     *
      * @return array flash messages (key => message).
+     * @see setFlash()
+     * @see getFlash()
+     * @see hasFlash()
+     * @see removeFlash()
      */
     public function getAllFlashes()
     {
@@ -665,6 +687,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * and normal session variables share the same name space. If you have a normal
      * session variable using the same name, its value will be overwritten by this method.
      * @param mixed $value flash message
+     * @see getFlash()
+     * @see removeFlash()
      */
     public function setFlash($key, $value = true)
     {
@@ -681,6 +705,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * and normal session variables share the same name space.  If you have a normal
      * session variable using the same name, it will be removed by this method.
      * @return mixed the removed flash message. Null if the flash message does not exist.
+     * @see getFlash()
+     * @see setFlash()
+     * @see removeAllFlashes()
      */
     public function removeFlash($key)
     {
@@ -697,6 +724,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * Note that flash messages and normal session variables share the same name space.
      * If you have a normal session variable using the same name, it will be removed
      * by this method.
+     * @see getFlash()
+     * @see setFlash()
+     * @see removeFlash()
      */
     public function removeAllFlashes()
     {
