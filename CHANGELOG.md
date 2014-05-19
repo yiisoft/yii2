@@ -54,6 +54,7 @@ Yii Framework 2 Change Log
 - Enh: Added method ErrorHandler::unregister() for unregistering the ErrorHandler (cebe)
 - Enh: Added `all` option to `MigrateController::actionDown()` action (creocoder, umneeq)
 - Enh: Added support for array attributes in `exist` validator (creocoder)
+- Enh: Added support for using path alias with `FileDependency::fileName` (qiangxue)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
 - Chg #3036: Upgraded Twitter Bootstrap to 3.1.x (qiangxue)
 - Chg #3175: InvalidCallException, InvalidParamException, UnknownMethodException are now extended from SPL BadMethodCallException (samdark)
