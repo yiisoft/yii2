@@ -5,7 +5,7 @@ Caching is a cheap and effective way to improve the performance of a Web applica
 static data in cache and serving it from cache when requested, the application saves the time that would be
 required to generate the data from scratch.
 
-Caching occurs at different levels and places in a Web application. On the server side, at the lower level,
+Caching can occur at different levels and places in a Web application. On the server side, at the lower level,
 cache may be used to store basic data, such as a list of most recent article information fetched from database;
 and at the higher level, cache may be used to store the page content, such as the rendering result of the most
 recent articles. On the client side, HTTP caching may be used to keep most recently visited page content in
@@ -20,15 +20,17 @@ Yii supports all these caching mechanisms which are described in the following s
 
 ## Cache Components
 
-Server-side caching (data caching and content caching) relies on the so-called cache components.
-Each cache component represents a persistent caching storage and provides a common set of APIs
+Server-side caching (data caching and content caching) relies on the so-called *cache components*.
+Each cache component represents a caching storage and provides a common set of APIs
 that may be called to store data in the cache and retrieve it later.
 
-Cache components are usually registered as application components. Most cache-dependent classes
-(such as [[yii\web\UrlManager]]) use the [[yii\base\Application::getCache()|cache]] application
-component as their default cache component. The following code shows how you can configure
-this component in the application configuration and use [memcached](http://memcached.org/) with
-two cache servers:
+Cache components are usually registered as application components so that they can be globally
+configurable and accessible. You may register multiple cache components in a single application.
+In most cases you would configure at least the [[yii\base\Application::getCache()|cache]] component
+because it is the default cache component being used by most cache-dependent classes, such as [[yii\web\UrlManager]].
+
+The following code shows how to configure the `cache` application component to
+use [memcached](http://memcached.org/) with two cache servers:
 
 ```php
 'components' => [
@@ -50,30 +52,27 @@ two cache servers:
 ],
 ```
 
-When the application is running, the cache component can be accessed through the expression `Yii::$app->cache`.
+You may access the `cache` component by using the expression `Yii::$app->cache`.
 
-> Tip: You may configure multiple cache components.
-
-Yii provides various cache components that can store cached data in different media. The following
-is a summary of the available cache components:
+The following is a summary of the built-in cache components supported by Yii:
 
 * [[yii\caching\ApcCache]]: uses PHP [APC](http://php.net/manual/en/book.apc.php) extension. This option can be
   considered as the fastest one when dealing with cache for a centralized thick application (e.g. one
   server, no dedicated load balancers, etc.).
 
-* [[yii\caching\DbCache]]: uses a database table to store cached data. By default, it will create and use a
-  [SQLite3](http://sqlite.org/) database under the runtime directory. You can explicitly specify a database for
-  it to use by setting its `db` property.
+* [[yii\caching\DbCache]]: uses a database table to store cached data. To use this cache, you must
+  create a table as specified in [[yii\caching\DbCache::cacheTable]].
 
-* [[yii\caching\DummyCache]]: presents dummy cache that does no caching at all. The purpose of this component
-  is to simplify the code that needs to check the availability of cache. For example, during development or if
-  the server doesn't have actual cache support, we can use this cache component. When an actual cache support
-  is enabled, we can switch to use the corresponding cache component. In both cases, we can use the same
-  code `Yii::$app->cache->get($key)` to attempt retrieving a piece of data without worrying that
+* [[yii\caching\DummyCache]]: serves as a cache placeholder which does no real caching.
+  The purpose of this component is to simplify the code that needs to check the availability of cache.
+  For example, during development or if the server doesn't have actual cache support, you may configure
+  a cache component to use this cache. When an actual cache support is enabled, you can switch to use
+  the corresponding cache component. In both cases, you may use the same code
+  `Yii::$app->cache->get($key)` to attempt retrieving data from the cache without worrying that
   `Yii::$app->cache` might be `null`.
 
 * [[yii\caching\FileCache]]: uses standard files to store cached data. This is particular suitable
-  to cache large chunk of data (such as pages).
+  to cache large chunk of data, such as page content.
 
 * [[yii\caching\MemCache]]: uses PHP [memcache](http://php.net/manual/en/book.memcache.php)
   and [memcached](http://php.net/manual/en/book.memcached.php) extensions. This option can be considered as
@@ -92,17 +91,6 @@ is a summary of the available cache components:
   [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
   as the underlying caching medium.
 
-Tip: because all these cache components extend from the same base class [[yii\caching\Cache]], one can switch to use
-a different type of cache without modifying the code that uses cache.
-
-Caching can be used at different levels. At the lowest level, we use cache to store a single piece of data,
-such as a variable, and we call this data caching. At the next level, we store in cache a page fragment which
-is generated by a portion of a view script. And at the highest level, we store a whole page in cache and serve
-it from cache as needed.
-
-In the next few subsections, we elaborate how to use cache at these levels.
-
-Note, by definition, cache is a volatile storage medium. It does not ensure the existence of the cached
-data even if it does not expire. Therefore, do not use cache as a persistent storage (e.g. do not use cache
-to store session data or other valuable information).
+> Because all cache components extend from the same base class [[yii\caching\Cache]], you can switch to use
+  a different type of cache without modifying the code that uses a cache.
 

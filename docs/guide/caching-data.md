@@ -1,5 +1,5 @@
 Data Caching
-------------
+============
 
 Data caching is about storing some PHP variable in cache and retrieving it later from cache. For this purpose,
 the cache component base class [[yii\caching\Cache]] provides two methods that are used most of the time:
@@ -359,4 +359,6 @@ of each entry to be 1MB. Therefore, if the size of a query result exceeds this l
 the caching will fail.
 
 
-<div class="revision">$Id$</div>
+Note, by definition, cache is a volatile storage medium. It does not ensure the existence of the cached
+data even if it does not expire. Therefore, do not use cache as a persistent storage (e.g. do not use cache
+to store session data or other valuable information).
