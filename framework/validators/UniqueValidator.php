@@ -38,7 +38,7 @@ class UniqueValidator extends Validator
 {
     /**
      * @var string the name of the ActiveRecord class that should be used to validate the uniqueness
-     * of the current attribute value. It not set, it will use the ActiveRecord class of the attribute being validated.
+     * of the current attribute value. If not set, it will use the ActiveRecord class of the attribute being validated.
      * @see targetAttribute
      */
     public $targetClass;
