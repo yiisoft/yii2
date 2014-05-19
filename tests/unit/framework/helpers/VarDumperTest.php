@@ -102,6 +102,8 @@ RESULT;
      */
     public function testExport($var, $expectedResult)
     {
-        $this->assertEquals($expectedResult, VarDumper::exportAsString($var));
+        $exportResult = VarDumper::export($var);
+        $this->assertEquals($expectedResult, $exportResult);
+        $this->assertEquals($var, eval('return ' . $exportResult . ';'));
     }
 }
