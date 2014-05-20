@@ -1104,6 +1104,7 @@ class BaseHtml
      * The following options are specially handled:
      *
      * - tag: this specifies the tag name. If not set, "div" will be used.
+     * - encode: boolean, whether to HTML-encode the error message. Defaults to true.
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
@@ -1113,10 +1114,12 @@ class BaseHtml
     {
         $attribute = static::getAttributeName($attribute);
         $error = $model->getFirstError($attribute);
+        $encode = !isset($options['encode']) || $options['encode'];
+        unset($options['encode']);
         $tag = isset($options['tag']) ? $options['tag'] : 'div';
         unset($options['tag']);
 
-        return Html::tag($tag, Html::encode($error), $options);
+        return Html::tag($tag, $encode ? Html::encode($error) : $error, $options);
     }
 
     /**

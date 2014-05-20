@@ -727,8 +727,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * The data to be loaded is `$data[formName]`, where `formName` refers to the value of [[formName()]].
      * If [[formName()]] is empty, the whole `$data` array will be used to populate the model.
      * The data being populated is subject to the safety check by [[setAttributes()]].
-     * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
-     * supplied by end user.
+     * @param array|string $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
+     * supplied by end user. Also it can be string 'post' or 'get' - in this case data will be loaded from the corresponding request.
      * @param string $formName the form name to be used for loading the data into the model.
      * If not set, [[formName()]] will be used.
      * @return boolean whether the model is successfully populated with some data.
@@ -736,6 +736,13 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function load($data, $formName = null)
     {
         $scope = $formName === null ? $this->formName() : $formName;
+        if(is_string($data)){
+            switch(strtolower($data)){
+                case 'post' : $data = Yii::$app->request->post(); break;
+                case 'get' : $data = Yii::$app->request->get(); break;
+                default: return false;
+            }
+        }
         if ($scope == '' && !empty($data)) {
             $this->setAttributes($data);
 
