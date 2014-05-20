@@ -42,7 +42,7 @@ class FragmentCache extends Widget
      * ~~~
      * [
      *     'class' => 'yii\caching\DbDependency',
-     *     'sql' => 'SELECT MAX(lastModified) FROM Post',
+     *     'sql' => 'SELECT MAX(updated_at) FROM post',
      * ]
      * ~~~
      *
