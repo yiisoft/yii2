@@ -16,8 +16,7 @@
  *
  * NOTE: this file must be saved in UTF-8 encoding.
  */
-return array (
-    'View' => 'Перегляд',
+return [
     '(not set)' => '(не задано)',
     'An internal server error occurred.' => 'Виникла внутрішня помилка сервера.',
     'Are you sure you want to delete this item?' => 'Ви впевнені, що хочете видалити цей елемент?',
@@ -34,7 +33,6 @@ return array (
     'No help for unknown sub-command "{command}".' => 'Довідка недоступна для невідомої субкоманди "{command}".',
     'No results found.' => 'Нічого не знайдено.',
     'Only files with these extensions are allowed: {extensions}.' => 'Дозволене завантаження файлів тільки з наступними розширеннями: {extensions}.',
-    'Only files with these mimeTypes are allowed: {mimeTypes}.' => 'Дозволене завантаження файлів тільки з наступними MIME-типами: {mimeTypes}.',
     'Page not found.' => 'Сторінка не знайдена.',
     'Please fix the following errors:' => 'Виправте такі помилки:',
     'Please upload a file.' => 'Завантажте файл.',
@@ -53,6 +51,7 @@ return array (
     'Unknown command "{command}".' => 'Невідома команда "{command}".',
     'Unknown option: --{name}' => 'Невідома опція : --{name}',
     'Update' => 'Редагувати',
+    'View' => 'Перегляд',
     'Yes' => 'Так',
     'You are not allowed to perform this action.' => 'Вам не дозволено проводити дану дію.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Ви не можете завантажувати більше {limit, number} {limit, plural, one{файла} few{файлів} many{файлів} other{файла}}.',
@@ -78,4 +77,4 @@ return array (
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 'Значення «{attribute}» повинно містити мінімум {min, number} {min, plural, one{символ} few{символа} many{символів} other{символа}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => 'Значення «{attribute}» повинно містити максимум {max, number} {max, plural, one{символ} few{символа} many{символів} other{символа}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => 'Значення «{attribute}» повинно містити {length, number} {length, plural, one{символ} few{символа} many{символів} other{символа}}.',
-);
+];

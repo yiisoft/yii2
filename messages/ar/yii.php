@@ -16,11 +16,9 @@
  *
  * NOTE: this file must be saved in UTF-8 encoding.
  */
-return array(
-    'the input value' => 'قيمة المُدخل',
+return [
     '(not set)' => '(لم تحدد)',
     'An internal server error occurred.' => '.حدث خطأ داخلي في الخادم',
-    'Are you sure to delete this item?' => 'هل أنت متأكد من حذف هذا العنصر؟',
     'Delete' => 'حذف',
     'Error' => 'خطأ',
     'File upload failed.' => '.فشل في تحميل الملف',
@@ -34,7 +32,6 @@ return array(
     'No help for unknown sub-command "{command}".' => 'ليس هناك مساعدة لأمر فرعي غير معروف "{command}".',
     'No results found.' => 'لا نتائج وجدت.',
     'Only files with these extensions are allowed: {extensions}.' => 'فقط الملفات التي تحمل هذه الصيغ مسموح بها: {extentions}.',
-    'Only files with these mimeTypes are allowed: {mimeTypes}.' => 'فقط الملفات التي تحمل هذه الصيغ مسموح بها: {extentions}.',
     'Page not found.' => 'الصفحة غير موجودة',
     'Please fix the following errors:' => 'الرجاء تصحيح الأخطاء التالية:',
     'Please upload a file.' => 'الرجاء تحميل ملف.',
@@ -57,6 +54,7 @@ return array(
     'Yes' => 'نعم',
     'You are not allowed to perform this action.' => 'لا تستطيع القيام بهذاالعمل',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'تستطيع كأقصى حد تحميل {limit, number} {limit, plural, one{file} other{files}}.',
+    'the input value' => 'قيمة المُدخل',
     '{attribute} "{value}" has already been taken.' => '{attribute} "{value}" سبق استعماله',
     '{attribute} cannot be blank.' => '{attribute} لا يمكن تركه فارغًا.',
     '{attribute} is invalid.' => '{attribute} غير صالح.',
@@ -78,4 +76,4 @@ return array(
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} يجب أن يحتوي على أكثر من {min, number} {min, plural, one{character} other{characters}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} يجب أن لا يحتوي على أكثر من {max, number} {max, plural, one{character} other{characters}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute}  يجب أن يحتوي على {length, number} {length, plural, one{character} other{characters}}.',
-);
+];
