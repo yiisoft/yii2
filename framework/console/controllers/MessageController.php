@@ -11,6 +11,7 @@ use Yii;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\FileHelper;
+use yii\helpers\VarDumper;
 
 /**
  * Extracts messages to be translated from source files.
@@ -374,7 +375,7 @@ class MessageController extends Controller
         if ($format === 'po') {
             $content = $merged;
         } else {
-            $array = str_replace("\r", '', var_export($merged, true));
+            $array = VarDumper::export($merged);
             $content = <<<EOD
 <?php
 /**

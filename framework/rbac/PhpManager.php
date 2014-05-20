@@ -10,6 +10,7 @@ namespace yii\rbac;
 use yii\base\InvalidCallException;
 use yii\base\InvalidParamException;
 use Yii;
+use yii\helpers\VarDumper;
 
 /**
  * PhpManager represents an authorization manager that stores authorization
@@ -703,6 +704,6 @@ class PhpManager extends BaseManager
      */
     protected function saveToFile($data, $file)
     {
-        file_put_contents($file, "<?php\nreturn " . var_export($data, true) . ";\n", LOCK_EX);
+        file_put_contents($file, "<?php\nreturn " . VarDumper::export($data) . ";\n", LOCK_EX);
     }
 }
