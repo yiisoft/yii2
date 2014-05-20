@@ -127,11 +127,18 @@ class BaseVarDumper
     }
 
     /**
-     * Returns a parsable string representation of a variable.
-     * This method achieves the similar functionality as var_export
-     * but is more robust when handling arrays and objects.
-     * @param mixed $var variable to be exported.
-     * @return string parsable string representation of a variable.
+     * Exports a variable as a string representation.
+     *
+     * The string is a valid PHP expression that can be evaluated by PHP parser
+     * and the evaluation result will give back the variable value.
+     *
+     * This method is similar to `var_export()`. The main difference is that
+     * it generates more compact string representation using short array syntax.
+     *
+     * PHP 5.4 or above is required to parse the exported value.
+     *
+     * @param mixed $var the variable to be exported.
+     * @return string a string representation of the variable
      */
     public static function export($var)
     {
