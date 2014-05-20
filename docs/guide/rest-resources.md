@@ -153,10 +153,10 @@ use yii\helpers\Url;
 
 class User extends ActiveRecord implements Linkable
 {
-    public function getLinks()
+   public function getLinks()
     {
         return [
-            Link::REL_SELF => Url::to(['user', 'id' => $this->id], true),
+            Link::REL_SELF => Url::to(['users/'.$this->id],true),
         ];
     }
 }
