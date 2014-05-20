@@ -10,6 +10,7 @@ namespace yii\console\controllers;
 use Yii;
 use yii\console\Exception;
 use yii\console\Controller;
+use yii\helpers\VarDumper;
 
 /**
  * Allows you to combine and compress your JavaScript and CSS files.
@@ -392,7 +393,7 @@ class AssetController extends Controller
                 }
             }
         }
-        $array = var_export($array, true);
+        $array = VarDumper::export($array);
         $version = date('Y-m-d H:i:s', time());
         $bundleFileContent = <<<EOD
 <?php
@@ -573,8 +574,8 @@ EOD;
      */
     public function actionTemplate($configFile)
     {
-        $jsCompressor = var_export($this->jsCompressor, true);
-        $cssCompressor = var_export($this->cssCompressor, true);
+        $jsCompressor = VarDumper::export($this->jsCompressor);
+        $cssCompressor = VarDumper::export($this->cssCompressor);
 
         $template = <<<EOD
 <?php

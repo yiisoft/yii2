@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Exception;
 use yii\base\ErrorException;
 use yii\base\UserException;
+use yii\helpers\VarDumper;
 
 /**
  * ErrorHandler handles uncaught PHP errors and exceptions.
@@ -262,7 +263,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $request = '';
         foreach (['_GET', '_POST', '_SERVER', '_FILES', '_COOKIE', '_SESSION', '_ENV'] as $name) {
             if (!empty($GLOBALS[$name])) {
-                $request .= '$' . $name . ' = ' . var_export($GLOBALS[$name], true) . ";\n\n";
+                $request .= '$' . $name . ' = ' . VarDumper::export($GLOBALS[$name]) . ";\n\n";
             }
         }
 
