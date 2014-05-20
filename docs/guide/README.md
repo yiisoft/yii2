@@ -31,7 +31,7 @@ Application Structure
 ---------------------
 
 * [Entry Scripts](structure-entry-scripts.md)
-* **TBD** [Applications](structure-applications.md)
+* [Applications](structure-applications.md)
 * [Controllers and Actions](structure-controllers.md)
 * [Views](structure-views.md)
 * [Models](structure-models.md)
