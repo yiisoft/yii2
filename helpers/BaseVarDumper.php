@@ -7,6 +7,8 @@
 
 namespace yii\helpers;
 
+use yii\base\Arrayable;
+
 /**
  * BaseVarDumper provides concrete implementation for [[VarDumper]].
  *
@@ -121,6 +123,58 @@ class BaseVarDumper
                     self::$_output .= "\n" . $spaces . ')';
                 }
                 break;
+        }
+    }
+
+    /**
+     * Returns a parsable string representation of a variable.
+     * This method achieves the similar functionality as var_export
+     * but is more robust when handling arrays and objects.
+     * @param mixed $var variable to be exported.
+     * @return string parsable string representation of a variable.
+     */
+    public static function export($var)
+    {
+        self::$_output = '';
+        self::exportInternal($var, 0);
+        return self::$_output;
+    }
+
+    /**
+     * @param mixed $var variable to be exported
+     * @param integer $level depth level
+     */
+    private static function exportInternal($var, $level)
+    {
+        switch (gettype($var)) {
+            case 'NULL':
+                self::$_output .= 'null';
+                break;
+            case 'array':
+                if (empty($var)) {
+                    self::$_output .= '[]';
+                } else {
+                    $keys = array_keys($var);
+                    $outputKeys = ($keys !== range(0, sizeof($var) - 1));
+                    $spaces = str_repeat(' ', $level * 4);
+                    self::$_output .= '[';
+                    foreach ($keys as $key) {
+                        self::$_output .= "\n" . $spaces . '    ';
+                        if ($outputKeys) {
+                            self::exportInternal($key, 0);
+                            self::$_output .= ' => ';
+                        }
+                        self::exportInternal($var[$key], $level + 1);
+                        self::$_output .= ',';
+                    }
+                    self::$_output .= "\n" . $spaces . ']';
+                }
+                break;
+            case 'object':
+                self::$_output .= 'unserialize(' . var_export(serialize($var), true) . ')';
+                break;
+            default:
+                self::$_output .= var_export($var, true);
         }
     }
 }

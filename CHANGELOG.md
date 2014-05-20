@@ -42,6 +42,7 @@ Yii Framework 2 Change Log
 - Enh #3154: Added validation error display for `GridView` filters (ivan-kolmychek)
 - Enh #3222: Added `useTablePrefix` option to the model generator for Gii (horizons2)
 - Enh #3230: Added `yii\filters\AccessControl::user` to support access control with different actors (qiangxue)
+- Enh #3232: Added `export()` and `exportAsString()` methods to `yii\helpers\BaseVarDumper` (klimov-paul)
 - Enh #3252: Added support for case insensitive matching using ILIKE to PostgreSQL QueryBuilder (cebe)
 - Enh #3298: Supported configuring `View::theme` using a class name (netyum, qiangxue)
 - Enh #3328: `BaseMailer` generates better text body from html body (armab)
