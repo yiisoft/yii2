@@ -8,7 +8,7 @@ and [content caching](caching-content.md).
 The following code is a typical usage pattern of data caching, where `$cache` refers to
 a [cache component](#cache-components):
 
-```
+```php
 // try retrieving $data from cache
 $data = $cache->get($key);
 
