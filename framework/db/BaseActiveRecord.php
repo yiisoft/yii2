@@ -1294,21 +1294,20 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function unlinkAll($name)
     {
         $relation = $this->getRelation($name);
-        if (!empty($relation->via)) {
-            $viaTable = $viaTable = reset($relation->via->from);
-            /** @var ActiveQuery $viaRelation */
-            $viaRelation = $relation->via;
-            $columns = [];
-            /** @var $viaClass ActiveRecordInterface */
-            foreach ($viaRelation->link as $a => $b) {
-                $columns[$a] = $this->$b;
-            }
-            /** @var Command $command */
-            $command = static::getDb()->createCommand();
-            $command->delete($viaTable, $columns)->execute();
-        } else {
+        if (empty($relation->via)) {
             throw new InvalidCallException('Unable to unlink relationship for the current model. This method is only for many to many relationships.');
         }
+        $viaTable = $viaTable = reset($relation->via->from);
+        /** @var ActiveQuery $viaRelation */
+        $viaRelation = $relation->via;
+        $columns = [];
+        /** @var $viaClass ActiveRecordInterface */
+        foreach ($viaRelation->link as $a => $b) {
+            $columns[$a] = $this->$b;
+        }
+        /** @var Command $command */
+        $command = static::getDb()->createCommand();
+        $command->delete($viaTable, $columns)->execute();
     }
 
     /**
