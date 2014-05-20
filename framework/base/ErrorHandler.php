@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\helpers\VarDumper;
 use yii\web\HttpException;
 
 /**
@@ -107,7 +108,7 @@ abstract class ErrorHandler extends Component
                     echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, Yii::$app->charset) . '</pre>';
                 }
             }
-            $msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
+            $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
             error_log($msg);
             exit(1);
         }
