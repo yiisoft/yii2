@@ -1284,6 +1284,34 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
+     * Destroys the relationship in current model.
+     *
+     * Note that this method for relations many to many
+     *
+     * @param string $name the case sensitive name of the relationship.
+     * @throws InvalidCallException if the models cannot be unlinked
+     */
+    public function unlinkAll($name)
+    {
+        $relation = $this->getRelation($name);
+        if (!empty($relation->via)) {
+            $viaTable = $viaTable = reset($relation->via->from);
+            /** @var ActiveQuery $viaRelation */
+            $viaRelation = $relation->via;
+            $columns = [];
+            /** @var $viaClass ActiveRecordInterface */
+            foreach ($viaRelation->link as $a => $b) {
+                $columns[$a] = $this->$b;
+            }
+            /** @var Command $command */
+            $command = static::getDb()->createCommand();
+            $command->delete($viaTable, $columns)->execute();
+        } else {
+            throw new InvalidCallException('Unable to unlink relationship for the current model. This method is only for many to many relationships.');
+        }
+    }
+
+    /**
      * @param array $link
      * @param ActiveRecordInterface $foreignModel
      * @param ActiveRecordInterface $primaryModel
