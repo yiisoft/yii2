@@ -38,7 +38,7 @@ class HtmlTest extends TestCase
 
     public function testEncode()
     {
-        $this->assertEquals("a&lt;&gt;&amp;&quot;&#039;", Html::encode("a<>&\"'"));
+        $this->assertEquals("a&lt;&gt;&amp;&quot;&#039;�", Html::encode("a<>&\"'\x80"));
     }
 
     public function testDecode()
