@@ -56,7 +56,8 @@ class BaseFileHelper
                 $parts[] = $part;
             }
         }
-        return implode($ds, $parts);
+        $path = implode($ds, $parts);
+        return $path === '' ? '.' : $path;
     }
 
     /**
