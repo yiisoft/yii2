@@ -1286,28 +1286,62 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * Destroys the relationship in current model.
      *
-     * Note that this method for relations many to many
+     *  The model with the foreign key of the relationship will be deleted if `$delete` is true.
+     *  Otherwise, the foreign key will be set null and the model will be saved without validation.
+     *
+     *  Note to destroy the relationship without removing records make sure your keys can be set to null
      *
      * @param string $name the case sensitive name of the relationship.
-     * @throws InvalidCallException if the models cannot be unlinked
+     * @param boolean $delete whether to delete the model that contains the foreign key.
      */
-    public function unlinkAll($name)
+    public function unlinkAll($name, $delete = false)
     {
         $relation = $this->getRelation($name);
-        if (empty($relation->via)) {
-            throw new InvalidCallException('Unable to unlink relationship for the current model. This method is only for many to many relationships.');
-        }
-        $viaTable = $viaTable = reset($relation->via->from);
-        /** @var ActiveQuery $viaRelation */
-        $viaRelation = $relation->via;
-        $columns = [];
-        /** @var $viaClass ActiveRecordInterface */
-        foreach ($viaRelation->link as $a => $b) {
-            $columns[$a] = $this->$b;
-        }
         /** @var Command $command */
         $command = static::getDb()->createCommand();
-        $command->delete($viaTable, $columns)->execute();
+        $columns = [];
+        $condition = [];
+        if (empty($relation->via)) {
+            /** @var $viaClass \yii\db\ActiveRecord */
+            $viaClass = $relation->modelClass;
+            if ($delete) {
+                foreach ($relation->link as $a => $b) {
+                    $condition[$a] = $this->$b;
+                }
+                $command->delete($viaClass::tableName(), $condition)->execute();
+            } else {
+                foreach ($relation->link as $a => $b) {
+                    $columns[$a] = null;
+                    $condition[$a] = $this->$b;
+                }
+                $command->update($viaClass::tableName(), $columns, $condition)->execute();
+            }
+        } else {
+            $viaTable = $viaTable = reset($relation->via->from);
+            /** @var ActiveQuery $viaRelation */
+            $viaRelation = $relation->via;
+            if ($delete) {
+                foreach ($viaRelation->link as $a => $b) {
+                    $condition[$a] = $this->$b;
+                }
+                $command->delete($viaTable, $condition)->execute();
+            } else {
+                foreach ($viaRelation->link as $a => $b) {
+                    $columns[$a] = null;
+                    $condition[$a] = $this->$b;
+                }
+                $command->update($viaTable, $columns,$condition)->execute();
+            }
+        }
+
+        if (!$relation->multiple) {
+            unset($this->_related[$name]);
+        } elseif (isset($this->_related[$name])) {
+            /** @var ActiveRecordInterface $b */
+            foreach (array_keys($this->_related[$name]) as $a) {
+                unset($this->_related[$name][$a]);
+            }
+        }
     }
 
     /**
