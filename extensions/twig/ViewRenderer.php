@@ -147,9 +147,10 @@ class ViewRenderer extends BaseViewRenderer
             if(!is_array($namespaces)) {
                 $namespaces = array($namespaces);
             }
-            foreach($namespaces as $name) {
-                $class = end(explode('\\', $name));
-                $this->namespaces[ $class ] = $name;
+            foreach($namespaces as $namespace) {
+                $elems = explode('\\', $namespace);
+                $class = end($elems);
+                $this->namespaces[ $class ] = $namespace;
             }
             return null;
         }));
@@ -166,7 +167,7 @@ class ViewRenderer extends BaseViewRenderer
                 $name = $this->namespaces[$name];
 
             return $name::$method($args);
-        }),['is_safe' => ['html']]);
+        },['is_safe' => ['html']]));
 
         $this->twig->addFunction(new \Twig_SimpleFunction('widget', function ($name, $args = []) {
             if(isset($this->namespaces[$name]))
@@ -305,7 +306,8 @@ class ViewRenderer extends BaseViewRenderer
         $namespaces = $this->namespaces;
         $this->namespaces = [];
         foreach($namespaces as $namespace) {
-            $class = end(explode('\\', $namespace));
+            $elems = explode('\\', $namespace);
+            $class = end($elems);
             $this->namespaces[ $class ] = $namespace;
         }
     }
