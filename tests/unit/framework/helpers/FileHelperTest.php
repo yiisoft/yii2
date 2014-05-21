@@ -369,10 +369,16 @@ class FileHelperTest extends TestCase
         $this->assertEquals("..{$ds}c", FileHelper::normalizePath('//a/.\\b//..//..//../../c'));
 
         // relative paths
+        $this->assertEquals(".", FileHelper::normalizePath('.'));
+        $this->assertEquals(".", FileHelper::normalizePath('./'));
+        $this->assertEquals("a", FileHelper::normalizePath('.\\a'));
+        $this->assertEquals("a/b", FileHelper::normalizePath('./a\\b'));
+        $this->assertEquals(".", FileHelper::normalizePath('./a\\../'));
         $this->assertEquals("..{$ds}..{$ds}a", FileHelper::normalizePath('../..\\a'));
         $this->assertEquals("..{$ds}..{$ds}a", FileHelper::normalizePath('../..\\a/../a'));
         $this->assertEquals("..{$ds}..{$ds}b", FileHelper::normalizePath('../..\\a/../b'));
         $this->assertEquals("..{$ds}a", FileHelper::normalizePath('./..\\a'));
+        $this->assertEquals("..{$ds}a", FileHelper::normalizePath('././..\\a'));
         $this->assertEquals("..{$ds}a", FileHelper::normalizePath('./..\\a/../a'));
         $this->assertEquals("..{$ds}b", FileHelper::normalizePath('./..\\a/../b'));
     }
