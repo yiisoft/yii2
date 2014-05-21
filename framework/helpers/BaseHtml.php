@@ -745,7 +745,6 @@ class BaseHtml
         }
         $options['name'] = $name;
         $selectOptions = static::renderSelectOptions($selection, $items, $options);
-        unset($options['encodeSpaces']);
         return static::tag('select', "\n" . $selectOptions . "\n", $options);
     }
 
@@ -808,7 +807,6 @@ class BaseHtml
             $hidden = '';
         }
         $selectOptions = static::renderSelectOptions($selection, $items, $options);
-        unset($options['encodeSpaces']);
         return $hidden . static::tag('select', "\n" . $selectOptions . "\n", $options);
     }
 
@@ -1358,6 +1356,8 @@ class BaseHtml
      *
      * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
      *   except that the array keys represent the optgroup labels specified in $items.
+     * - encodeSpaces: bool, whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     *   Defaults to `false`.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -1411,6 +1411,8 @@ class BaseHtml
      * - unselect: string, the value that will be submitted when no option is selected.
      *   When this attribute is set, a hidden field will be generated so that if no option is selected in multiple
      *   mode, we can still obtain the posted unselect value.
+     * - encodeSpaces: bool, whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     *   Defaults to `false`.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
