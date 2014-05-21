@@ -372,7 +372,7 @@ class FileHelperTest extends TestCase
         $this->assertEquals(".", FileHelper::normalizePath('.'));
         $this->assertEquals(".", FileHelper::normalizePath('./'));
         $this->assertEquals("a", FileHelper::normalizePath('.\\a'));
-        $this->assertEquals("a/b", FileHelper::normalizePath('./a\\b'));
+        $this->assertEquals("a{$ds}b", FileHelper::normalizePath('./a\\b'));
         $this->assertEquals(".", FileHelper::normalizePath('./a\\../'));
         $this->assertEquals("..{$ds}..{$ds}a", FileHelper::normalizePath('../..\\a'));
         $this->assertEquals("..{$ds}..{$ds}a", FileHelper::normalizePath('../..\\a/../a'));
