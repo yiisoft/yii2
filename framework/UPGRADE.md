@@ -36,5 +36,5 @@ Upgrade from Yii 2.0 Beta
 
 * If you are using `dropDownList`, `listBox`, `activeDropDownList`, or `activeListBox`, in the 
   yii\helpers\Html class, a new parameter `encodeSpaces` is now available within the `options` array. 
-  This defaults to `false`. If this is set to `true` all spaces in the rendered option value and prompt 
-  will be replaced with `&nbsp;`, the HTML non breaking space character.
+  This defaults to `false`. If this is set to `true`, all spaces in the rendered option value and
+  prompt will be replaced with `&nbsp;`, the HTML non breaking space character.
