@@ -73,6 +73,11 @@ class ViewRenderer extends BaseViewRenderer
      */
     public $lexerOptions = [];
     /**
+     * @var array PHP namespaces
+     * Example: `['yii\bootstrap\NavBar']`
+     */
+    public $namespaces = [];
+    /**
      * @var \Twig_Environment twig environment object that do all rendering twig templates
      */
     public $twig;
@@ -83,6 +88,8 @@ class ViewRenderer extends BaseViewRenderer
             'cache' => Yii::getAlias($this->cachePath),
             'charset' => Yii::$app->charset,
         ], $this->options));
+
+        $this->prepareNamespaces();
 
         // Adding custom extensions
         if (!empty($this->extensions)) {
@@ -134,6 +141,52 @@ class ViewRenderer extends BaseViewRenderer
 
         $this->twig->addFunction('form_end', new \Twig_Function_Function(function () {
             ActiveForm::end();
+        }));
+
+        $this->twig->addFunction('use', new \Twig_Function_Function(function($namespaces) {
+            if(!is_array($namespaces)) {
+                $namespaces = array($namespaces);
+            }
+            foreach($namespaces as $name) {
+                $class = end(explode('\\', $name));
+                $this->namespaces[ $class ] = $name;
+            }
+            return null;
+        }));
+
+        $this->twig->addFunction('static', new \Twig_Function_Function(function($name, $method, $args = []) {
+            if(isset($this->namespaces[$name]))
+                $name = $this->namespaces[$name];
+
+            $name::$method($args);
+        }));
+
+        $this->twig->addFunction('echo_static', new \Twig_Function_Function(function($name, $method, $args = []) {
+            if(isset($this->namespaces[$name]))
+                $name = $this->namespaces[$name];
+
+            return $name::$method($args);
+        }),['is_safe' => ['html']]);
+
+        $this->twig->addFunction('widget', new \Twig_Function_Function(function ($name, $args = []) {
+            if(isset($this->namespaces[$name]))
+                $name = $this->namespaces[$name];
+
+            return $name::widget($args);
+        },['is_safe' => ['html']]));
+
+        $this->twig->addFunction('widget_begin', new \Twig_Function_Function(function($name, $args = []) {
+            if(isset($this->namespaces[$name]))
+                $name = $this->namespaces[$name];
+
+            $name::begin($args);
+        }));
+
+        $this->twig->addFunction('widget_end', new \Twig_Function_Function(function($name, $args = []){
+            if(isset($this->namespaces[$name]))
+                $name = $this->namespaces[$name];
+
+            $name::end($args);
         }));
 
         $this->twig->addGlobal('app', \Yii::$app);
@@ -241,6 +294,19 @@ class ViewRenderer extends BaseViewRenderer
             } else {
                 throw new \Exception("Incorrect options for \"$classType\" $name.");
             }
+        }
+    }
+
+    /**
+     * Prepares namespaces for usable format
+     */
+    private function prepareNamespaces()
+    {
+        $namespaces = $this->namespaces;
+        $this->namespaces = [];
+        foreach($namespaces as $namespace) {
+            $class = end(explode('\\', $namespace));
+            $this->namespaces[ $class ] = $namespace;
         }
     }
 }
