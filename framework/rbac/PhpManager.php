@@ -537,7 +537,7 @@ class PhpManager extends BaseManager
         $this->_items[$item->name] = $item;
         if ($name !== $item->name) {
             if (isset($this->_items[$item->name])) {
-                throw new InvalidParamException("Unable to change the item name. The name '{$item->name} is already used by another item.");
+                throw new InvalidParamException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
             }
             if (isset($this->_items[$name])) {
                 unset ($this->_items[$name]);
