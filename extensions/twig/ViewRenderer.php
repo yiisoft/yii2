@@ -124,7 +124,7 @@ class ViewRenderer extends BaseViewRenderer
         }
 
         // Adding global 'void' function (usage: {{void(App.clientScript.registerScriptFile(...))}})
-        $this->twig->addFunction(new \Twig_SimpleFunction('void', function ($argument) {
+        $this->twig->addFunction(new \Twig_SimpleFunction('void', function () {
         }));
 
         $this->twig->addFunction(new \Twig_SimpleFunction('path', function ($path, $args = []) {
