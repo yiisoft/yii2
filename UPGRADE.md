@@ -33,3 +33,8 @@ Upgrade from Yii 2.0 Beta
 * If you are sharing the same cache across different applications, you should configure
   the `keyPrefix` property of the cache component to use some unique string.
   Previously, this property was automatically assigned with a unique string.
+
+* If you are using `yii\helpers\Html::dropDownList` or `yii\helpers\Html::listBox`, a new parameter
+   `encodeSpaces` is now available within the `options` array. This defaults to `false`. If 
+  set to `true` all spaces in the rendered option value and prompt will be replaced with `&nbsp;`
+  the HTML non breaking space character.
