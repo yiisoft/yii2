@@ -58,7 +58,7 @@ class BaseFileHelper
                 $parts[] = $part;
             }
         }
-        if (count($parts)>1 && $parts[0] === '.') {
+        if (count($parts) > 1 && $parts[0] === '.') {
             array_shift($parts);
         }
         return implode($ds, $parts);
