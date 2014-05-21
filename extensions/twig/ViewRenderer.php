@@ -124,26 +124,26 @@ class ViewRenderer extends BaseViewRenderer
         }
 
         // Adding global 'void' function (usage: {{void(App.clientScript.registerScriptFile(...))}})
-        $this->twig->addFunction('void', new \Twig_Function_Function(function ($argument) {
+        $this->twig->addFunction(new \Twig_SimpleFunction('void', function ($argument) {
         }));
 
-        $this->twig->addFunction('path', new \Twig_Function_Function(function ($path, $args = []) {
+        $this->twig->addFunction(new \Twig_SimpleFunction('path', function ($path, $args = []) {
             return Url::to(array_merge([$path], $args));
         }));
 
-        $this->twig->addFunction('url', new \Twig_Function_Function(function ($path, $args = []) {
+        $this->twig->addFunction(new \Twig_SimpleFunction('url', function ($path, $args = []) {
             return Url::to(array_merge([$path], $args), true);
         }));
 
-        $this->twig->addFunction('form_begin', new \Twig_Function_Function(function ($args = []) {
+        $this->twig->addFunction(new \Twig_SimpleFunction('form_begin', function ($args = []) {
             return ActiveForm::begin($args);
         }));
 
-        $this->twig->addFunction('form_end', new \Twig_Function_Function(function () {
+        $this->twig->addFunction(new \Twig_SimpleFunction('form_end', function () {
             ActiveForm::end();
         }));
 
-        $this->twig->addFunction('use', new \Twig_Function_Function(function($namespaces) {
+        $this->twig->addFunction(new \Twig_SimpleFunction('use', function($namespaces) {
             if(!is_array($namespaces)) {
                 $namespaces = array($namespaces);
             }
@@ -154,35 +154,35 @@ class ViewRenderer extends BaseViewRenderer
             return null;
         }));
 
-        $this->twig->addFunction('static', new \Twig_Function_Function(function($name, $method, $args = []) {
+        $this->twig->addFunction(new \Twig_SimpleFunction('static', function($name, $method, $args = []) {
             if(isset($this->namespaces[$name]))
                 $name = $this->namespaces[$name];
 
             $name::$method($args);
         }));
 
-        $this->twig->addFunction('echo_static', new \Twig_Function_Function(function($name, $method, $args = []) {
+        $this->twig->addFunction(new \Twig_SimpleFunction('echo_static', function($name, $method, $args = []) {
             if(isset($this->namespaces[$name]))
                 $name = $this->namespaces[$name];
 
             return $name::$method($args);
         }),['is_safe' => ['html']]);
 
-        $this->twig->addFunction('widget', new \Twig_Function_Function(function ($name, $args = []) {
+        $this->twig->addFunction(new \Twig_SimpleFunction('widget', function ($name, $args = []) {
             if(isset($this->namespaces[$name]))
                 $name = $this->namespaces[$name];
 
             return $name::widget($args);
         },['is_safe' => ['html']]));
 
-        $this->twig->addFunction('widget_begin', new \Twig_Function_Function(function($name, $args = []) {
+        $this->twig->addFunction(new \Twig_SimpleFunction('widget_begin', function($name, $args = []) {
             if(isset($this->namespaces[$name]))
                 $name = $this->namespaces[$name];
 
             $name::begin($args);
         }));
 
-        $this->twig->addFunction('widget_end', new \Twig_Function_Function(function($name, $args = []){
+        $this->twig->addFunction(new \Twig_SimpleFunction('widget_end', function($name, $args = []){
             if(isset($this->namespaces[$name]))
                 $name = $this->namespaces[$name];
 
