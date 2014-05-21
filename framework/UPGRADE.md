@@ -34,7 +34,6 @@ Upgrade from Yii 2.0 Beta
   the `keyPrefix` property of the cache component to use some unique string.
   Previously, this property was automatically assigned with a unique string.
 
-* If you are using `dropDownList`, `listBox`, `activeDropDownList`, or `activeListBox`, in the 
-  yii\helpers\Html class, a new parameter `encodeSpaces` is now available within the `options` array. 
-  This defaults to `false`. If this is set to `true`, all spaces in the rendered option value and
-  prompt will be replaced with `&nbsp;`, the HTML non breaking space character.
+* If you are using `dropDownList()`, `listBox()`, `activeDropDownList()`, or `activeListBox()`
+  of `yii\helpers\Html`, and your list options use multiple blank spaces to format and align
+  option label texts, you need to specify the option `encodeSpaces` to be true.
