@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.0-rc under development
 --------------------------
 
-- Enh #3472: Added configurable option to encode spaces in dropDownLists and listBoxes (kartik-v)
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
 - Bug #2563: Theming is not working if the path map of the theme contains ".." or "." in the paths (qiangxue)
 - Bug #2801: Fixed the issue that GridView gets footer content before data cells content (ElisDN)
@@ -46,6 +45,7 @@ Yii Framework 2 Change Log
 - Enh #3252: Added support for case insensitive matching using ILIKE to PostgreSQL QueryBuilder (cebe)
 - Enh #3298: Supported configuring `View::theme` using a class name (netyum, qiangxue)
 - Enh #3328: `BaseMailer` generates better text body from html body (armab)
+- Enh #3472: Added configurable option to encode spaces in dropDownLists and listBoxes (kartik-v)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
