@@ -49,12 +49,17 @@ class BaseFileHelper
         $parts = [];
         foreach (explode($ds, $path) as $part) {
             if ($part === '..' && !empty($parts) && end($parts) !== '..') {
-                array_pop($parts);
-            } elseif ($part === '.' || $part === '' && !empty($parts)) {
+                if (array_pop($parts) === ".") {
+                    $parts[] = '..';
+                }
+            } elseif (( $part === '.' || $part === '' ) && !empty($parts)) {
                 continue;
             } else {
                 $parts[] = $part;
             }
+        }
+        if (count($parts)>1 && $parts[0] === '.') {
+            array_shift($parts);
         }
         return implode($ds, $parts);
     }
