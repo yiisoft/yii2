@@ -140,9 +140,12 @@ class LinkPager extends Widget
      */
     protected function renderPageButtons()
     {
-        $buttons = [];
-
         $pageCount = $this->pagination->getPageCount();
+        if ($pageCount < 2) {
+            return '';
+        }
+        
+        $buttons = [];
         $currentPage = $this->pagination->getPage();
 
         // first page
