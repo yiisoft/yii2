@@ -62,6 +62,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function batchInsert($table, $columns, $rows)
     {
+        // Limit of 500 terms http://www.sqlite.org/limits.html#max_compound_select
+        if (count($rows) > 500) { 
+            throw new InvalidParamException("SQLite can insert a maximum of 500 rows at a time"); 
+        }
+
         if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
             $columnSchemas = $tableSchema->columns;
         } else {
