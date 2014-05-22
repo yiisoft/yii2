@@ -289,14 +289,21 @@ EOD;
 <option value="value2">text2</option>
 </select>
 EOD;
-        $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems(), ['size' => 5, 'encodeSpaces' => true]));
+        $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems(), ['size' => 5]));
+        $expected = <<<EOD
+<select name="test" size="4">
+<option value="value1&lt;&gt;">text1&lt;&gt;</option>
+<option value="value  2">text  2</option>
+</select>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems2()));
         $expected = <<<EOD
 <select name="test" size="4">
 <option value="value1&lt;&gt;">text1&lt;&gt;</option>
 <option value="value  2">text&nbsp;&nbsp;2</option>
 </select>
 EOD;
-        $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems2()));
+        $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems2(), ['encodeSpaces' => true]));
         $expected = <<<EOD
 <select name="test" size="4">
 <option value="value1">text1</option>
@@ -499,7 +506,15 @@ EOD;
         ];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['value111', 'value1'], $data, $attributes));
 
-        $attributes['encodeSpaces'] = false;
+        $attributes = [
+            'prompt' => 'please select<>',
+            'options' => [
+                'value111' => ['class' => 'option'],
+            ],
+            'groups' => [
+                'group12' => ['class' => 'group'],
+            ],
+        ];
         $this->assertEqualsWithoutLE(str_replace('&nbsp;', ' ', $expected), Html::renderSelectOptions(['value111', 'value1'], $data, $attributes));
     }
 
