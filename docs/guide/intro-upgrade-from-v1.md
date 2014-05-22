@@ -447,6 +447,17 @@ as arrays, which can significantly reduce the needed CPU time and memory if larg
 $customers = Customer::find()->asArray()->all();
 ```
 
+Another change is that you can't define attribute default values through public properties anymore.
+If you need those, you should set them in the init method of your record class.
+
+```php
+public function init()
+{
+    parent::init();
+    $this->status = self::STATUS_NEW;
+}
+```
+
 There are many other changes and enhancements to Active Record. Please refer to
 the [Active Record](db-active-record.md) section for more details.
 
