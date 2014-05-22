@@ -744,6 +744,7 @@ class BaseHtml
             return static::listBox($name, $selection, $items, $options);
         }
         $options['name'] = $name;
+        unset($options['unselect']);
         $selectOptions = static::renderSelectOptions($selection, $items, $options);
         return static::tag('select', "\n" . $selectOptions . "\n", $options);
     }
@@ -1367,16 +1368,11 @@ class BaseHtml
      */
     public static function activeDropDownList($model, $attribute, $items, $options = [])
     {
-        if (!empty($options['multiple'])) {
+        if (empty($options['multiple'])) {
+            return static::activeListInput('dropDownList', $model, $attribute, $items, $options);
+        } else {
             return static::activeListBox($model, $attribute, $items, $options);
         }
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $selection = static::getAttributeValue($model, $attribute);
-        if (!array_key_exists('id', $options)) {
-            $options['id'] = static::getInputId($model, $attribute);
-        }
-
-        return static::dropDownList($name, $selection, $items, $options);
     }
 
     /**
@@ -1422,16 +1418,7 @@ class BaseHtml
      */
     public static function activeListBox($model, $attribute, $items, $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $selection = static::getAttributeValue($model, $attribute);
-        if (!array_key_exists('unselect', $options)) {
-            $options['unselect'] = '';
-        }
-        if (!array_key_exists('id', $options)) {
-            $options['id'] = static::getInputId($model, $attribute);
-        }
-
-        return static::listBox($name, $selection, $items, $options);
+        return static::activeListInput('listBox', $model, $attribute, $items, $options);
     }
 
     /**
@@ -1468,16 +1455,7 @@ class BaseHtml
      */
     public static function activeCheckboxList($model, $attribute, $items, $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $selection = static::getAttributeValue($model, $attribute);
-        if (!array_key_exists('unselect', $options)) {
-            $options['unselect'] = '';
-        }
-        if (!array_key_exists('id', $options)) {
-            $options['id'] = static::getInputId($model, $attribute);
-        }
-
-        return static::checkboxList($name, $selection, $items, $options);
+        return static::activeListInput('checkboxList', $model, $attribute, $items, $options);
     }
 
     /**
@@ -1513,6 +1491,25 @@ class BaseHtml
      */
     public static function activeRadioList($model, $attribute, $items, $options = [])
     {
+        return static::activeListInput('radioList', $model, $attribute, $items, $options);
+    }
+
+    /**
+     * Generates a list of input fields.
+     * This method is mainly called by [[activeListBox()]], [[activeRadioList()]] and [[activeCheckBoxList()]].
+     * @param string $type the input type. This can be 'listBox', 'radioList', or 'checkBoxList'.
+     * @param Model $model the model object
+     * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
+     * about attribute expression.
+     * @param array $items the data item used to generate the input fields.
+     * The array keys are the labels, while the array values are the corresponding input values.
+     * Note that the labels will NOT be HTML-encoded, while the values will.
+     * @param array $options options (name => config) for the input list. The supported special options
+     * depend on the input type specified by `$type`.
+     * @return string the generated input list
+     */
+    protected static function activeListInput($type, $model, $attribute, $items, $options = [])
+    {
         $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
         $selection = static::getAttributeValue($model, $attribute);
         if (!array_key_exists('unselect', $options)) {
@@ -1522,7 +1519,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
 
-        return static::radioList($name, $selection, $items, $options);
+        return static::$type($name, $selection, $items, $options);
     }
 
     /**
