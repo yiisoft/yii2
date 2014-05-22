@@ -110,7 +110,7 @@ class RateLimiter extends ActionFilter
             throw new TooManyRequestsHttpException($this->errorMessage);
         } else {
             $user->saveAllowance($request, $action, $allowance - 1, $current);
-            $this->addRateLimitHeaders($response, $limit, $allowance, (int) (($limit - $allowance) * $window / $limit));
+            $this->addRateLimitHeaders($response, $limit, $allowance - 1, (int) (($limit - $allowance) * $window / $limit));
         }
     }
 
