@@ -29,6 +29,7 @@ Yii Framework 2 Change Log
 - Bug #3436: Fixed the issue that `ServiceLocator` still returns the old component after calling `set()` with a new definition (qiangxue)
 - Bug #3458: Fixed the bug that the image rendered by `CaptchaAction` was using a wrong content type (MDMunir, qiangxue)
 - Bug #3522: Fixed BaseFileHelper::normalizePath to allow a (.) for the current path. (skotos)
+- Bug #3548: Fixed the bug that X-Rate-Limit-Remaining header is always zero when using RateLimiter (qiangxue)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2435: `yii\db\IntegrityException` is now thrown on database integrity errors instead of general `yii\db\Exception` (samdark)
