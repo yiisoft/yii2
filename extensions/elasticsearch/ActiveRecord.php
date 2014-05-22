@@ -53,7 +53,7 @@ class ActiveRecord extends BaseActiveRecord
     private $_id;
     private $_score;
     private $_version;
-	private $_highlight;
+    private $_highlight;
 
     /**
      * Returns the database connection used by this AR class.
