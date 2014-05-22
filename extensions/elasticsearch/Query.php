@@ -132,6 +132,11 @@ class Query extends Component implements QueryInterface
      * the elasticsearch [Query DSL](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html).
      */
     public $filter;
+    /**
+     * @var array The highlight part of this search query. This is an array that allows to highlight search results
+     * on one or more fields.
+     */
+    public $highlight;
 
     public $facets = [];
 
@@ -522,6 +527,18 @@ class Query extends Component implements QueryInterface
         } else {
             $this->fields = func_get_args();
         }
+        return $this;
+    }
+
+    /**
+     * Sets a highlight parameters to retrieve from the documents.
+     * @param array $highlight array of parameters to highlight results.
+     * @return static the query object itself
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-highlighting.html
+     */
+    public function highlight($highlight)
+    {
+        $this->highlight = $highlight;
         return $this;
     }
 

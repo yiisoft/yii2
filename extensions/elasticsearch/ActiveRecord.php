@@ -42,6 +42,8 @@ use yii\helpers\StringHelper;
  *
  * @property float $score Returns the score of this record when it was retrieved via a [[find()]] query. This
  * property is read-only.
+ * @property array $highlight Returns a list of arrays with highlighted excerpts indexed by field names. This
+ * property is read-only.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -51,6 +53,7 @@ class ActiveRecord extends BaseActiveRecord
     private $_id;
     private $_score;
     private $_version;
+    private $_highlight;
 
     /**
      * Returns the database connection used by this AR class.
@@ -173,6 +176,14 @@ class ActiveRecord extends BaseActiveRecord
     public function getScore()
     {
         return $this->_score;
+    }
+
+    /**
+     * @return array|null A list of arrays with highlighted excerpts indexed by field names.
+     */
+    public function getHighlight()
+    {
+        return $this->_highlight;
     }
 
     /**
@@ -302,6 +313,7 @@ class ActiveRecord extends BaseActiveRecord
         if ($pk === '_id') {
             $record->_id = $row['_id'];
         }
+        $record->_highlight = isset($row['highlight']) ? $row['highlight'] : null;
         $record->_score = isset($row['_score']) ? $row['_score'] : null;
         $record->_version = isset($row['_version']) ? $row['_version'] : null; // TODO version should always be available...
     }
