@@ -35,6 +35,10 @@ class RangeValidator extends Validator
      * the attribute value should NOT be among the list of values defined via [[range]].
      */
     public $not = false;
+    /**
+     * @var boolean whether to allow array type attribute.
+     */
+    public $allowArray = false;
 
     /**
      * @inheritdoc
@@ -55,6 +59,10 @@ class RangeValidator extends Validator
      */
     protected function validateValue($value)
     {
+        if (!$this->allowArray && is_array($value)) {
+            return [$this->message, []];
+        }
+
         $valid = false;
 
         foreach ((array)$value as $v) {
