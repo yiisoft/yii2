@@ -71,6 +71,7 @@ Yii Framework 2 Change Log
 - Chg: `yii\data\ActiveDataProvider::$query` will not be modified directly with pagination and sorting anymore so it will be reuseable (cebe)
 - Chg: Removed `yii\rest\ActiveController::$transactional` property and connected functionality (samdark)
 - Chg: Changed the default value of the `keyPrefix` property of cache components to be null (qiangxue)
+- Chg #3544: Add `$key` to function parameter `yii\grid\DataColumn::value` (mdmunir)
 
 2.0.0-beta April 13, 2014
 -------------------------
