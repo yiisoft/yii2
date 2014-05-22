@@ -69,7 +69,7 @@ class RangeValidator extends Validator
             $valid = !$this->not && in_array($v, $this->range, $this->strict)
                 || $this->not && !in_array($v, $this->range, $this->strict);
 
-            if ($valid) {
+            if (!$valid) {
                 break;
             }
         }
