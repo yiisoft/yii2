@@ -63,18 +63,16 @@ class RangeValidator extends Validator
             return [$this->message, []];
         }
 
-        $valid = false;
+        $in = true;
 
         foreach ((array)$value as $v) {
-            $valid = !$this->not && in_array($v, $this->range, $this->strict)
-                || $this->not && !in_array($v, $this->range, $this->strict);
-
-            if (!$valid) {
+            if (!in_array($v, $this->range, $this->strict)) {
+                $in = false;
                 break;
             }
         }
 
-        return $valid ? null : [$this->message, []];
+        return ($this->not xor $in) ? null : [$this->message, []];
     }
 
     /**
