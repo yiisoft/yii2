@@ -38,6 +38,11 @@ class Command extends Component
      * @var array list of arrays or json strings that become parts of a query
      */
     public $queryParts;
+    /**
+     * @var array list of arrays to highlight search results on one or more fields
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-highlighting.html
+     */
+    public $highlight;
 
     public $options = [];
 

@@ -97,6 +97,10 @@ class QueryBuilder extends \yii\base\Object
             $parts['filter'] = $whereFilter;
         }
 
+        if($query->highlight) {
+            $parts['highlight'] = $query->highlight;
+        }
+
         $sort = $this->buildOrderBy($query->orderBy);
         if (!empty($sort)) {
             $parts['sort'] = $sort;
