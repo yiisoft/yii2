@@ -101,7 +101,7 @@ class LinkPager extends Widget
     /**
      * @var boolean Render widget when only one page exist. Defaults to `false`.
      */
-    public $showWrapper = false;
+    public $renderOnSinglePage = false;
 
     /**
      * Initializes the pager.
@@ -145,7 +145,7 @@ class LinkPager extends Widget
     protected function renderPageButtons()
     {
         $pageCount = $this->pagination->getPageCount();
-        if ($pageCount < 2 && !$this->showWrapper) {
+        if ($pageCount < 2 && !$this->renderOnSinglePage) {
             return '';
         }
 
