@@ -89,7 +89,8 @@ class Module extends ServiceLocator
      * @var string the namespace that controller classes are in. If not set,
      * it will use the "controllers" sub-namespace under the namespace of this module.
      * For example, if the namespace of this module is "foo\bar", then the default
-     * controller namespace would be "foo\bar\controllers".
+     * controller namespace would be "foo\bar\controllers". You must define
+     * an alias for "foo" or [[Yii::getControllerPath()] will fail.
      */
     public $controllerNamespace;
     /**
