@@ -72,7 +72,7 @@ class RangeValidator extends Validator
             }
         }
 
-        return ($this->not xor $in) ? null : [$this->message, []];
+        return $this->not !== $in ? null : [$this->message, []];
     }
 
     /**

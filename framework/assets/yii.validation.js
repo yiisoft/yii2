@@ -91,10 +91,19 @@ yii.validation = (function ($) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
             }
-            var valid = !options.not && $.inArray(value, options.range) > -1
-                || options.not && $.inArray(value, options.range) == -1;
 
-            if (!valid) {
+            var inArray = true;
+
+            $.each(value, function(i, v) {
+                if ($.inArray(v, options.range) == -1) {
+                    inArray = false;
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+
+            if (options.not !== inArray) {
                 pub.addMessage(messages, options.message, value);
             }
         },
