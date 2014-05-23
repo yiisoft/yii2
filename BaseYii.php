@@ -264,9 +264,10 @@ class BaseYii
      * will be loaded using the `@yii/bootstrap` alias which points to the directory where bootstrap extension
      * files are installed and all classes from other `yii` namespaces will be loaded from the yii framework directory.
      *
+     * Also the [guide section on autoloading][guide-concept-autoloading].
+     *
      * @param string $className the fully qualified class name without a leading backslash "\"
      * @throws UnknownClassException if the class does not exist in the class file
-     * @see the [guide section on autoloading][guide-concept-autoloading].
      */
     public static function autoload($className)
     {
