@@ -72,7 +72,7 @@ class RangeValidator extends Validator
             }
         }
 
-        return ($this->not xor $in) ? null : [$this->message, []];
+        return $this->not !== $in ? null : [$this->message, []];
     }
 
     /**
@@ -93,6 +93,9 @@ class RangeValidator extends Validator
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
+        }
+        if ($this->allowArray) {
+            $options['allowArray'] = 1;
         }
 
         ValidationAsset::register($view);
