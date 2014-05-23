@@ -168,7 +168,7 @@ class Schema extends \yii\db\Schema
 
         $column->phpType = $this->getColumnPhpType($column);
 
-        if ($column->type !== 'timestamp' || $info['Default'] !== 'CURRENT_TIMESTAMP') {
+        if (!$column->isPrimaryKey && ($column->type !== 'timestamp' || $info['Default'] !== 'CURRENT_TIMESTAMP')) {
             $column->defaultValue = $column->typecast($info['Default']);
         }
 

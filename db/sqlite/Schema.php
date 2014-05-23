@@ -238,11 +238,13 @@ class Schema extends \yii\db\Schema
         }
         $column->phpType = $this->getColumnPhpType($column);
 
-        $value = trim($info['dflt_value'], "'\"");
-        if ($column->type === 'string') {
-            $column->defaultValue = $value;
-        } else {
-            $column->defaultValue = $column->typecast(strcasecmp($value, 'null') ? $value : null);
+        if (!$column->isPrimaryKey) {
+            $value = trim($info['dflt_value'], "'\"");
+            if ($column->type === 'string') {
+                $column->defaultValue = $value;
+            } else {
+                $column->defaultValue = $column->typecast(strcasecmp($value, 'null') ? $value : null);
+            }
         }
 
         return $column;
