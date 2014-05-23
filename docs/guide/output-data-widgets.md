@@ -293,8 +293,8 @@ $searchModel = new PostSearch();
 $dataProvider = $searchModel->search($_GET);
 
 return $this->render('myview', [
-	'dataProvider' => $dataProvider,
-	'searchModel' => $searchModel,
+    'dataProvider' => $dataProvider,
+    'searchModel' => $searchModel,
 ]);
 ```
 
@@ -303,7 +303,7 @@ And in the view you then assign the `$dataProvider` and `$searchModel` to the Gr
 ```php
 echo GridView::widget([
     'dataProvider' => $dataProvider,
-	'filterModel' => $searchModel,
+    'filterModel' => $searchModel,
 ]);
 ```
 

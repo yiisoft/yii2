@@ -9,8 +9,8 @@ To use this extension, you have to configure the Connection class in your applic
 
 ```php
 return [
-	//....
-	'components' => [
+    //....
+    'components' => [
         'elasticsearch' => [
             'class' => 'yii\elasticsearch\Connection',
             'nodes' => [
@@ -18,7 +18,7 @@ return [
                 // configure more hosts if you have a cluster
             ],
         ],
-	]
+    ]
 ];
 ```
 
@@ -152,11 +152,11 @@ $result = Article::find()->query(["field" => ["title" => "yii"]])->all(); // art
 
 // http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-flt-query.html
 $query = Article::find()->query([
-	"fuzzy_like_this" => [
-		"fields" => ["title", "description"],
-		"like_text" => "This query will return articles that are similar to this text :-)",
+    "fuzzy_like_this" => [
+        "fields" => ["title", "description"],
+        "like_text" => "This query will return articles that are similar to this text :-)",
         "max_query_terms" : 12
-	]
+    ]
 ]);
 
 $query->all(); // gives you all the documents
@@ -179,19 +179,19 @@ Add the following to you application config to enable it (if you already have th
 enabled, it is sufficient to just add the panels configuration):
 
 ```php
-	// ...
-	'bootstrap' => ['debug'],
-	'modules' => [
-		'debug' => [
-			'class' => 'yii\\debug\\Module',
-			'panels' => [
-				'elasticsearch' => [
-					'class' => 'yii\\elasticsearch\\DebugPanel',
-				],
-			],
-		],
-	],
-	// ...
+    // ...
+    'bootstrap' => ['debug'],
+    'modules' => [
+        'debug' => [
+            'class' => 'yii\\debug\\Module',
+            'panels' => [
+                'elasticsearch' => [
+                    'class' => 'yii\\elasticsearch\\DebugPanel',
+                ],
+            ],
+        ],
+    ],
+    // ...
 ```
 
 ![elasticsearch DebugPanel](images/README-debug.png)

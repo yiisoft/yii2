@@ -52,11 +52,11 @@ connection `DSN` doesn't indicate uniquely what database type is being used. Tha
 
 ```php
 'db' => [
-	'class' => 'yii\db\Connection',
-	'driverName' => 'mysql',
-	'dsn' => 'odbc:Driver={MySQL};Server=localhost;Database=test',
-	'username' => 'root',
-	'password' => '',
+    'class' => 'yii\db\Connection',
+    'driverName' => 'mysql',
+    'dsn' => 'odbc:Driver={MySQL};Server=localhost;Database=test',
+    'username' => 'root',
+    'password' => '',
 ],
 ```
 

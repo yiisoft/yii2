@@ -24,7 +24,7 @@ code {
 }
 
 div.code {
-	display: none;
+    display: none;
     color: #000000;
     background-color: #FFF5E6;
     font-family: "courier new", "times new roman", monospace;
@@ -43,57 +43,57 @@ div.code {
 }
 
 table.summaryTable {
-	background: #E6ECFF;
-	border-collapse: collapse;
-	width: 100%;
+    background: #E6ECFF;
+    border-collapse: collapse;
+    width: 100%;
 }
 
 table.summaryTable th, table.summaryTable td {
-	border: 1px #BFCFFF solid;
-	padding: 0.2em;
+    border: 1px #BFCFFF solid;
+    padding: 0.2em;
 }
 
 table.summaryTable th {
-	background: #CCD9FF;
-	text-align: left;
+    background: #CCD9FF;
+    text-align: left;
 }
 
 #nav {
-	padding: 3px;
-	margin: 0 0 10px 0;
-	border-top: 1px #BFCFFF solid;
+    padding: 3px;
+    margin: 0 0 10px 0;
+    border-top: 1px #BFCFFF solid;
 }
 
 #classDescription {
-	padding: 5px;
-	margin: 10px 0 20px 0;
-	border-bottom: 1px solid #BFCFFF;
+    padding: 5px;
+    margin: 10px 0 20px 0;
+    border-bottom: 1px solid #BFCFFF;
 }
 
 .detailHeader {
-	font-weight: bold;
-	font-size: 12pt;
-	margin: 30px 0 5px 0;
-	border-bottom: 1px solid #BFCFFF;
+    font-weight: bold;
+    font-size: 12pt;
+    margin: 30px 0 5px 0;
+    border-bottom: 1px solid #BFCFFF;
 }
 
 .detailHeaderTag {
-	font-weight: normal;
-	font-size: 10pt;
+    font-weight: normal;
+    font-size: 10pt;
 }
 
 
 .paramNameCol {
-	width: 12%;
-	font-weight: bold;
+    width: 12%;
+    font-weight: bold;
 }
 
 .paramTypeCol {
-	width: 12%;
+    width: 12%;
 }
 
 .sourceCode {
-	margin: 5px 0;
-	padding:5px;
-	background:#FFF5E6;
+    margin: 5px 0;
+    padding:5px;
+    background:#FFF5E6;
 }

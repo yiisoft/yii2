@@ -64,7 +64,7 @@ The term "class" refers to all classes and interfaces here.
  */
 class MyClass extends \yii\Object implements MyInterface
 {
-	// code
+    // code
 }
 ```
 
@@ -77,8 +77,8 @@ For example:
 <?php
 class Foo
 {
-	const VERSION = '1.0';
-	const DATE_APPROVED = '2012-06-01';
+    const VERSION = '1.0';
+    const DATE_APPROVED = '2012-06-01';
 }
 ```
 ### 4.2. Properties
@@ -101,9 +101,9 @@ For example:
 <?php
 class Foo
 {
-	public $publicProp;
-	protected $protectedProp;
-	private $_privateProp;
+    public $publicProp;
+    protected $protectedProp;
+    private $_privateProp;
 }
 ```
 
@@ -121,14 +121,14 @@ class Foo
  */
 class Foo
 {
-	/**
-	 * Documentation
-	 */
-	public function bar()
-	{
-		// code
-		return $value;
-	}
+    /**
+     * Documentation
+     */
+    public function bar()
+    {
+        // code
+        return $value;
+    }
 }
 ~~~
 
@@ -150,8 +150,8 @@ Use the following format for associative arrays:
 
 ```php
 $config = [
-	'name'  => 'Yii',
-	'options' => ['usePHP' => true],
+    'name'  => 'Yii',
+    'options' => ['usePHP' => true],
 ];
 ```
 
@@ -161,8 +161,8 @@ Changing type of an existing variable is considered as a bad practice. Try not t
 ```php
 public function save(Transaction $transaction, $argument2 = 100)
 {
-	$transaction = new Connection; // bad
-	$argument2 = 200; // good
+    $transaction = new Connection; // bad
+    $argument2 = 200; // good
 }
 ```
 
@@ -201,8 +201,8 @@ When string is long format is the following:
 
 ```php
 $sql = "SELECT *"
-	. "FROM `post` "
-	. "WHERE `id` = 121 ";
+    . "FROM `post` "
+    . "WHERE `id` = 121 ";
 ```
 
 ### 5.3 arrays
@@ -223,9 +223,9 @@ If there are too many elements for a single line:
 
 ```php
 $arr = [
-	3, 14, 15,
-	92, 6, $test,
-	'Yii', 'Framework',
+    3, 14, 15,
+    92, 6, $test,
+    'Yii', 'Framework',
 ];
 ```
 
@@ -235,8 +235,8 @@ Use the following format for associative arrays:
 
 ```php
 $config = [
-	'name'  => 'Yii',
-	'options' => ['usePHP' => true],
+    'name'  => 'Yii',
+    'options' => ['usePHP' => true],
 ];
 ```
 
@@ -250,16 +250,16 @@ $config = [
 
 ```php
 if ($event === null) {
-	return new Event();
+    return new Event();
 } elseif ($event instanceof CoolEvent) {
-	return $event->instance();
+    return $event->instance();
 } else {
-	return null;
+    return null;
 }
 
 // the following is NOT allowed:
 if (!$model && null === $event)
-	throw new Exception('test');
+    throw new Exception('test');
 ```
 
 #### switch
@@ -268,18 +268,18 @@ Use the following formatting for switch:
 
 ```php
 switch ($this->phpType) {
-	case 'string':
-		$a = (string)$value;
-		break;
-	case 'integer':
-	case 'int':
-		$a = (integer)$value;
-		break;
-	case 'boolean':
-		$a = (boolean)$value;
-		break;
-	default:
-		$a = null;
+    case 'string':
+        $a = (string)$value;
+        break;
+    case 'integer':
+    case 'int':
+        $a = (integer)$value;
+        break;
+    case 'boolean':
+        $a = (boolean)$value;
+        break;
+    default:
+        $a = null;
 }
 ```
 
@@ -291,8 +291,8 @@ doIt(2, 3);
 doIt(['a' => 'b']);
 
 doIt('a', [
-	'a' => 'b',
-	'c' => 'd',
+    'a' => 'b',
+    'c' => 'd',
 ]);
 ```
 
@@ -304,17 +304,17 @@ Note space between `function`/`use` tokens and open parenthesis:
 // good
 $n = 100;
 $sum = array_reduce($numbers, function ($r, $x) use ($n) {
-	$this->doMagic();
-	$r += $x * $n;
-	return $r;
+    $this->doMagic();
+    $r += $x * $n;
+    return $r;
 });
 
 // bad
 $n = 100;
 $mul = array_reduce($numbers, function($r, $x) use($n) {
-	$this->doMagic();
-	$r *= $x * $n;
-	return $r;
+    $this->doMagic();
+    $r *= $x * $n;
+    return $r;
 });
 ```
 
@@ -336,17 +336,17 @@ Documentation
   in `@return`. Here is an example:
 
   ```php
-	<?php
-	/**
-	 * Returns the errors for all attribute or a single attribute.
-	 * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
-	 * @property array An array of errors for all attributes. Empty array is returned if no error.
-	 * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
-	 * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
-	 * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
-	 * ...
-	 */
-	public function getErrors($attribute = null)
+    <?php
+    /**
+     * Returns the errors for all attribute or a single attribute.
+     * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
+     * @property array An array of errors for all attributes. Empty array is returned if no error.
+     * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
+     * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
+     * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
+     * ...
+     */
+    public function getErrors($attribute = null)
   ```
 
 #### File
@@ -393,11 +393,11 @@ class Component extends \yii\base\Object
  */
 public function getEventHandlers($name)
 {
-	if (!isset($this->_e[$name])) {
-		$this->_e[$name] = new Vector;
-	}
-	$this->ensureBehaviors();
-	return $this->_e[$name];
+    if (!isset($this->_e[$name])) {
+        $this->_e[$name] = new Vector;
+    }
+    $this->ensureBehaviors();
+    return $this->_e[$name];
 }
 ```
 

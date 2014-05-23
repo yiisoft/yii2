@@ -149,14 +149,14 @@ life cycle:
 
    4. Initialize the application with [CApplication::init()]
        - Register application behaviors;
-	   - Load static application components;
+       - Load static application components;
 
    5. Raise an [onBeginRequest|CApplication::onBeginRequest] event;
 
    6. Process the user request:
-	   - Collect information about the request;
-	   - Create a controller;
-	   - Run the controller;
+       - Collect information about the request;
+       - Create a controller;
+       - Run the controller;
 
    7. Raise an [onEndRequest|CApplication::onEndRequest] event;
 
