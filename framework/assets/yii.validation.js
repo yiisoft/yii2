@@ -108,7 +108,7 @@ yii.validation = (function ($) {
                 }
             });
 
-            if (options.not !== inArray) {
+            if (options.not === inArray) {
                 pub.addMessage(messages, options.message, value);
             }
         },
