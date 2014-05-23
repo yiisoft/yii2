@@ -86,7 +86,7 @@ abstract class Application extends Module
      * class name.
      * The default namespace is "app\controllers".
      *
-     * @see the [guide section on autoloading][guide-concept-autoloading] to learn more about
+     * See also the [guide section on autoloading][guide-concept-autoloading] to learn more about
      * defining namespaces and how classes are loaded.
      */
     public $controllerNamespace = 'app\\controllers';
