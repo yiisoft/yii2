@@ -92,6 +92,11 @@ yii.validation = (function ($) {
                 return;
             }
 
+            if (!options.allowArray && $.isArray(value)) {
+                pub.addMessage(messages, options.message, value);
+                return;
+            }
+
             var inArray = true;
 
             $.each(value, function(i, v) {
