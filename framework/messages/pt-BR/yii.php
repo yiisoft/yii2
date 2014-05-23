@@ -20,6 +20,7 @@ return [
     '(not set)' => '(não definido)',
     'An internal server error occurred.' => 'Ocorreu um erro interno do servidor.',
     'Delete' => 'Excluir',
+    'Are you sure you want to delete this item?' => 'Confirma a exclusão deste item?',
     'Error' => 'Erro',
     'File upload failed.' => 'O upload do arquivo falhou.',
     'Home' => 'Página Inicial',
