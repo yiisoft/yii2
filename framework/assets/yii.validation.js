@@ -99,7 +99,7 @@ yii.validation = (function ($) {
 
             var inArray = true;
 
-            $.each(value, function(i, v) {
+            $.each($.isArray(value) ? value : [value], function(i, v) {
                 if ($.inArray(v, options.range) == -1) {
                     inArray = false;
                     return false;
