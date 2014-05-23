@@ -86,10 +86,16 @@ class Module extends ServiceLocator
      */
     public $controllerMap = [];
     /**
-     * @var string the namespace that controller classes are in. If not set,
-     * it will use the "controllers" sub-namespace under the namespace of this module.
+     * @var string the namespace that controller classes are in.
+     * This namespace will be used to load controller classes by prepending it to the controller
+     * class name.
+     *
+     * If not set, it will use the `controllers` sub-namespace under the namespace of this module.
      * For example, if the namespace of this module is "foo\bar", then the default
      * controller namespace would be "foo\bar\controllers".
+     *
+     * @see the [guide section on autoloading][guide-concept-autoloading] to learn more about
+     * defining namespaces and how classes are loaded.
      */
     public $controllerNamespace;
     /**

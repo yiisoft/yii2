@@ -31,7 +31,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public $allowedIPs = ['127.0.0.1', '::1'];
     /**
-     * @var string the namespace that controller classes are in.
+     * @inheritdoc
      */
     public $controllerNamespace = 'yii\debug\controllers';
     /**
