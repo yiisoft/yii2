@@ -116,7 +116,23 @@ the cache if the page content has been modified.
 ## `Cache-Control` Header <a name="cache-control"></a>
 
 The `Cache-Control` header specifies the general caching policy for pages. You may send it by configuring
-the [[yii\filters\HttpCache::cacheControlHeader]] property with the header value.
+the [[yii\filters\HttpCache::cacheControlHeader]] property with the header value. By default, the following
+header will be sent:
+
+```
+Cache-Control: public, max-age=3600
+```
+
+## Session Cache Limiter <a name="session-cache-limiter"></a>
+
+When a page uses session, PHP will automatically send some cache-related HTTP headers as specified in
+the `session.cache_limiter` PHP INI setting. These headers may interfere or disable the caching
+that you want from `HttpCache`. To prevent this problem, by default `HttpCache` will disable sending
+these headers automatically. If you want to change this behavior, you should configure the
+[[yii\filters\HttpCache::sessionCacheLimiter]] property. The property can take a string value, including
+`public`, `private`, `private_no_expire`, and `nocache`. Please refer to the PHP manual about
+[session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
+for explanations about these values.
 
 
 ## SEO Implications <a name="seo-implications"></a>

@@ -75,9 +75,25 @@ class HttpCache extends ActionFilter
      */
     public $params;
     /**
-     * @var string HTTP cache control header. If null, the header will not be sent.
+     * @var string the value of the `Cache-Control` HTTP header. If null, the header will not be sent.
      */
-    public $cacheControlHeader = 'max-age=3600, public';
+    public $cacheControlHeader = 'public, max-age=3600';
+    /**
+     * @var string the name of the cache limiter to be set when [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
+     * is called. The default value is an empty string, meaning turning off automatic sending of cache headers entirely.
+     * You may set this property to be `public`, `private`, `private_no_expire`, and `nocache`.
+     * Please refer to [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
+     * for detailed explanation of these values.
+     *
+     * If this is property is null, then `session_cache_limiter()` will not be called. As a result,
+     * PHP will send headers according to the `session.cache_limiter` PHP ini setting.
+     */
+    public $sessionCacheLimiter = '';
+    /**
+     * @var boolean a value indicating whether this filter should be enabled.
+     */
+    public $enabled = true;
+
 
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
@@ -87,6 +103,10 @@ class HttpCache extends ActionFilter
      */
     public function beforeAction($action)
     {
+        if (!$this->enabled) {
+            return true;
+        }
+
         $verb = Yii::$app->getRequest()->getMethod();
         if ($verb !== 'GET' && $verb !== 'HEAD' || $this->lastModified === null && $this->etagSeed === null) {
             return true;
@@ -102,6 +122,7 @@ class HttpCache extends ActionFilter
         }
 
         $this->sendCacheControlHeader();
+
         $response = Yii::$app->getResponse();
         if ($etag !== null) {
             $response->getHeaders()->set('Etag', $etag);
@@ -142,9 +163,13 @@ class HttpCache extends ActionFilter
      */
     protected function sendCacheControlHeader()
     {
-        session_cache_limiter('public');
+        if ($this->sessionCacheLimiter !== null) {
+            session_cache_limiter($this->sessionCacheLimiter);
+        }
+
         $headers = Yii::$app->getResponse()->getHeaders();
         $headers->set('Pragma');
+
         if ($this->cacheControlHeader !== null) {
             $headers->set('Cache-Control', $this->cacheControlHeader);
         }

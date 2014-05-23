@@ -52,6 +52,7 @@ Yii Framework 2 Change Log
 - Enh #3328: `BaseMailer` generates better text body from html body (armab)
 - Enh #3472: Added configurable option to encode spaces in dropDownLists and listBoxes (kartik-v)
 - Enh #3518: `yii\helpers\Html::encode()` now replaces invalid code sequences with "?" (DaSourcerer)
+- Enh #3521: Added `yii\filters\HttpCache::sessionCacheLimiter` (qiangxue)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
