@@ -458,6 +458,9 @@ public function init()
 }
 ```
 
+There where some problems with overriding the constructor of an ActiveRecord class in 1.1. These are not present in
+version 2.0 anymore. Note that when adding parameters to the constructor you might have to override [[yii\db\ActiveRecord::instantiate()]].
+
 There are many other changes and enhancements to Active Record. Please refer to
 the [Active Record](db-active-record.md) section for more details.
 
