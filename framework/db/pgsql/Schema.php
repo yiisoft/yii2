@@ -44,6 +44,7 @@ class Schema extends \yii\db\Schema
         'double precision' => self::TYPE_DECIMAL,
         'inet' => self::TYPE_STRING,
         'smallint' => self::TYPE_SMALLINT,
+        'int2' => self::TYPE_INTEGER,
         'int4' => self::TYPE_INTEGER,
         'int8' => self::TYPE_BIGINT,
         'integer' => self::TYPE_INTEGER,
