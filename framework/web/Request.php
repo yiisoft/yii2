@@ -1136,6 +1136,20 @@ class Request extends \yii\base\Request
     }
 
     /**
+     * Gets the Etags.
+     *
+     * @return array The entity tags
+     */
+    public function getETags()
+    {
+        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+            return preg_split('/[\s,]+/', $_SERVER['HTTP_IF_NONE_MATCH'], -1, PREG_SPLIT_NO_EMPTY);
+        } else {
+            return [];
+        }
+    }
+
+    /**
      * Returns the cookie collection.
      * Through the returned cookie collection, you may access a cookie using the following syntax:
      *
