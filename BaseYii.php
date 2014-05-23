@@ -266,6 +266,7 @@ class BaseYii
      *
      * @param string $className the fully qualified class name without a leading backslash "\"
      * @throws UnknownClassException if the class does not exist in the class file
+     * @see the [guide section on autoloading][guide-concept-autoloading].
      */
     public static function autoload($className)
     {
