@@ -51,6 +51,11 @@ class FileTarget extends Target
 	 * but read-only for other users.
 	 */
 	public $dirMode = 0775;
+    /**
+     * @var boolean Whether to rotate primary log by copy and truncate
+	 * which is more compatible with log tailers. Defaults to false.
+     */
+	public $rotateByCopy=false;
 
 
 	/**
@@ -107,21 +112,29 @@ class FileTarget extends Target
 	 * Rotates log files.
 	 */
 	protected function rotateFiles()
-	{
-		$file = $this->logFile;
-		for ($i = $this->maxLogFiles; $i > 0; --$i) {
-			$rotateFile = $file . '.' . $i;
-			if (is_file($rotateFile)) {
-				// suppress errors because it's possible multiple processes enter into this section
-				if ($i === $this->maxLogFiles) {
-					@unlink($rotateFile);
-				} else {
-					@rename($rotateFile, $file . '.' . ($i + 1));
-				}
-			}
-		}
-		if (is_file($file)) {
-			@rename($file, $file . '.1'); // suppress errors because it's possible multiple processes enter into this section
-		}
-	}
+    {
+        $file = $this->logFile;
+        for ($i = $this->maxLogFiles; $i > 0; --$i) {
+            $rotateFile = $file . '.' . $i;
+            if (is_file($rotateFile)) {
+                // suppress errors because it's possible multiple processes enter into this section
+                if ($i === $this->maxLogFiles) {
+                    @unlink($rotateFile);
+                } else {
+                    if ($this->rotateByCopy) {
+                        @copy($rotateFile, $file . '.' . ($i + 1));
+                        if ($fp = @fopen($rotateFile, 'a')) {
+                            @ftruncate($fp, 0);
+                            @fclose($fp);
+                        }
+                    } else {
+                        @rename($rotateFile, $file . '.' . ($i + 1));
+                    }
+                }
+            }
+        }
+        if (is_file($file)) {
+            @rename($file, $file . '.1'); // suppress errors because it's possible multiple processes enter into this section
+        }
+    }
 }
