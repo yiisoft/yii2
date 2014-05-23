@@ -82,12 +82,10 @@ abstract class Application extends Module
 
     /**
      * @var string the namespace that controller classes are located in.
-     * This namespace will be used to load controller classes by prepending it to the controller
-     * class name.
-     * The default namespace is "app\controllers".
+     * This namespace will be used to load controller classes by prepending it to the controller class name.
+     * The default namespace is `app\controllers`.
      *
-     * See also the [guide section on autoloading][guide-concept-autoloading] to learn more about
-     * defining namespaces and how classes are loaded.
+     * Please refer to the [guide about class autoloading][guide-concept-autoloading] for more details.
      */
     public $controllerNamespace = 'app\\controllers';
     /**
