@@ -94,6 +94,9 @@ class RangeValidator extends Validator
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
         }
+        if ($this->allowArray) {
+            $options['allowArray'] = 1;
+        }
 
         ValidationAsset::register($view);
 
