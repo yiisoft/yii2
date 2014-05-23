@@ -221,7 +221,7 @@ class Schema extends \yii\db\Schema
         if ($info['column_default'] == '(NULL)') {
             $info['column_default'] = null;
         }
-        if ($column->type !== 'timestamp' || $info['column_default'] !== 'CURRENT_TIMESTAMP') {
+        if (!$column->isPrimaryKey && ($column->type !== 'timestamp' || $info['column_default'] !== 'CURRENT_TIMESTAMP')) {
             $column->defaultValue = $column->typecast($info['column_default']);
         }
 

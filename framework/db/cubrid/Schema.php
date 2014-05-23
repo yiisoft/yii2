@@ -227,6 +227,10 @@ class Schema extends \yii\db\Schema
 
         $column->phpType = $this->getColumnPhpType($column);
 
+        if ($column->isPrimaryKey) {
+            return $column;
+        }
+
         if ($column->type === 'timestamp' && $info['Default'] === 'CURRENT_TIMESTAMP' ||
             $column->type === 'datetime' && $info['Default'] === 'SYS_DATETIME' ||
             $column->type === 'date' && $info['Default'] === 'SYS_DATE' ||

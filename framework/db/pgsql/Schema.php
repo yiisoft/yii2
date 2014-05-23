@@ -367,14 +367,12 @@ SQL;
         foreach ($columns as $column) {
             $column = $this->loadColumnSchema($column);
             $table->columns[$column->name] = $column;
-            if ($column->isPrimaryKey === true) {
+            if ($column->isPrimaryKey) {
                 $table->primaryKey[] = $column->name;
                 if ($table->sequenceName === null && preg_match("/nextval\\('\"?\\w+\"?\.?\"?\\w+\"?'(::regclass)?\\)/", $column->defaultValue) === 1) {
                     $table->sequenceName = preg_replace(['/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'], '', $column->defaultValue);
                 }
-            }
-
-            if ($column->defaultValue) {
+            } elseif ($column->defaultValue) {
                 if (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches) || preg_match("/^(.*?)::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $matches[1];
                 }

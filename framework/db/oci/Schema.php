@@ -170,10 +170,12 @@ EOD;
         $this->extractColumnType($c, $column['DATA_TYPE']);
         $this->extractColumnSize($c, $column['DATA_TYPE']);
 
-        if (stripos($column['DATA_DEFAULT'], 'timestamp') !== false) {
-            $c->defaultValue = null;
-        } else {
-            $c->defaultValue = $c->typecast($column['DATA_DEFAULT']);
+        if (!$column->isPrimaryKey) {
+            if (stripos($column['DATA_DEFAULT'], 'timestamp') !== false) {
+                $c->defaultValue = null;
+            } else {
+                $c->defaultValue = $c->typecast($column['DATA_DEFAULT']);
+            }
         }
 
         return $c;
