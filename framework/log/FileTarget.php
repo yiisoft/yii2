@@ -53,12 +53,11 @@ class FileTarget extends Target
 	public $dirMode = 0775;
     /**
      * @var boolean Whether to rotate primary log by copy and truncate
-	 * which is more compatible with log tailers. Defaults to false.
+     * which is more compatible with log tailers. Defaults to false.
      */
-	public $rotateByCopy=false;
+    public $rotateByCopy = false;
 
-
-	/**
+    /**
 	 * Initializes the route.
 	 * This method is invoked after the route is created by the route manager.
 	 */
