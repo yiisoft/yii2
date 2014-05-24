@@ -227,8 +227,8 @@ return [
         'app\config\AllAsset' => [
             'basePath' => 'path/to/web',
             'baseUrl' => '',
-            'js' => 'js/all-{ts}.js',
-            'css' => 'css/all-{ts}.css',
+            'js' => 'js/all-{hash}.js',
+            'css' => 'css/all-{hash}.css',
         ],
     ],
     // Asset manager configuration:
@@ -246,8 +246,8 @@ everything to `path/to/web` that can be accessed like `http://example.com/` i.e.
 > Note: in the console environment some path aliases like '@webroot' and '@web' may not exist,
   so corresponding paths inside the configuration should be specified directly.
 
-JavaScript files are combined, compressed and written to `js/all-{ts}.js` where {ts} is replaced with current UNIX
-timestamp.
+JavaScript files are combined, compressed and written to `js/all-{hash}.js` where {hash} is replaced with the hash of
+the resulting file.
 
 `jsCompressor` and `cssCompressor` are console commands or PHP callbacks, which should perform JavaScript and CSS files
 compression correspondingly. You should adjust these values according to your environment.

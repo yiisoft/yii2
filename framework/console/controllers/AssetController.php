@@ -10,6 +10,7 @@ namespace yii\console\controllers;
 use Yii;
 use yii\console\Exception;
 use yii\console\Controller;
+use yii\helpers\StringHelper;
 use yii\helpers\VarDumper;
 
 /**
@@ -52,14 +53,13 @@ class AssetController extends Controller
      *
      * ~~~
      * 'app\config\AllAsset' => [
-     *     'js' => 'js/all-{ts}.js',
-     *     'css' => 'css/all-{ts}.css',
+     *     'js' => 'js/all-{hash}.js',
+     *     'css' => 'css/all-{hash}.css',
      *     'depends' => [ ... ],
      * ]
      * ~~~
      *
-     * File names can contain placeholder "{ts}", which will be filled by current timestamp, while
-     * file creation.
+     * File names can contain placeholder "{hash}", which will be filled by the hash of the resulting file.
      */
     public $targets = [];
     /**
@@ -138,14 +138,13 @@ class AssetController extends Controller
         $this->loadConfiguration($configFile);
         $bundles = $this->loadBundles($this->bundles);
         $targets = $this->loadTargets($this->targets, $bundles);
-        $timestamp = time();
         foreach ($targets as $name => $target) {
             echo "Creating output bundle '{$name}':\n";
             if (!empty($target->js)) {
-                $this->buildTarget($target, 'js', $bundles, $timestamp);
+                $this->buildTarget($target, 'js', $bundles);
             }
             if (!empty($target->css)) {
-                $this->buildTarget($target, 'css', $bundles, $timestamp);
+                $this->buildTarget($target, 'css', $bundles);
             }
             echo "\n";
         }
@@ -282,14 +281,11 @@ class AssetController extends Controller
      * @param \yii\web\AssetBundle $target output asset bundle
      * @param string $type either 'js' or 'css'.
      * @param \yii\web\AssetBundle[] $bundles source asset bundles.
-     * @param integer $timestamp current timestamp.
      * @throws Exception on failure.
      */
-    protected function buildTarget($target, $type, $bundles, $timestamp)
+    protected function buildTarget($target, $type, $bundles)
     {
-        $outputFile = strtr($target->$type, [
-            '{ts}' => $timestamp,
-        ]);
+        $tempFile = strtr($target->$type, ['{hash}' => 'temp']);
         $inputFiles = [];
 
         foreach ($target->depends as $name) {
@@ -302,10 +298,13 @@ class AssetController extends Controller
             }
         }
         if ($type === 'js') {
-            $this->compressJsFiles($inputFiles, $target->basePath . '/' . $outputFile);
+            $this->compressJsFiles($inputFiles, $target->basePath . '/' . $tempFile);
         } else {
-            $this->compressCssFiles($inputFiles, $target->basePath . '/' . $outputFile);
+            $this->compressCssFiles($inputFiles, $target->basePath . '/' . $tempFile);
         }
+
+        $outputFile = strtr($target->$type, ['{hash}' => md5_file($tempFile)]);
+        rename($tempFile, $outputFile);
         $target->$type = [$outputFile];
     }
 
@@ -599,8 +598,8 @@ return [
         'app\assets\AllAsset' => [
             'basePath' => 'path/to/web',
             'baseUrl' => '',
-            'js' => 'js/all-{ts}.js',
-            'css' => 'css/all-{ts}.css',
+            'js' => 'js/all-{hash}.js',
+            'css' => 'css/all-{hash}.css',
         ],
     ],
     // Asset manager configuration:
