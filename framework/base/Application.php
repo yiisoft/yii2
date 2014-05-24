@@ -8,7 +8,6 @@
 namespace yii\base;
 
 use Yii;
-use yii\log\Logger;
 
 /**
  * Application is the base class for all application classes.
@@ -153,8 +152,8 @@ abstract class Application extends Module
      * [[bootstrap()|bootstrapping process]]. If the class implements [[BootstrapInterface]],
      * its [[BootstrapInterface::bootstrap()|bootstrap()]] method will be also be called.
      *
-     * If the property isn't specified in the application bootstrap file i.e. index.php, content is loaded automatically
-     * from @vendor/yiisoft/extensions.php.
+     * If not set explicitily in the application config, this property will be populated with the contents of
+     * `@vendor/yiisoft/extensions.php`.
      */
     public $extensions;
     /**
@@ -267,11 +266,8 @@ abstract class Application extends Module
     protected function bootstrap()
     {
         if ($this->extensions === null) {
-            try {
-                $this->extensions = include Yii::getAlias('@vendor/yiisoft/extensions.php');
-            } catch (ErrorException $e) {
-                $this->extensions = [];
-            }
+            $file = Yii::getAlias('@vendor/yiisoft/extensions.php');
+            $this->extensions = is_file($file) ? include($file) : [];
         }
         foreach ($this->extensions as $extension) {
             if (!empty($extension['alias'])) {
