@@ -42,3 +42,5 @@ Upgrade from Yii 2.0 Beta
   to return cell values (via `yii\grid\DataColumn::value`), you may need to adjust the signature
   of the callable to be `function ($model, $key, $index, $widget)`. The `$key` parameter was newly added
   in this release.
+
+* `yii\console\controllers\AssetController` is now using hashes instead of timestamps. Replace all `{ts}` with `{hash}`.
