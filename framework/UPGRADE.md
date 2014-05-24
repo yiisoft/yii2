@@ -37,3 +37,8 @@ Upgrade from Yii 2.0 Beta
 * If you are using `dropDownList()`, `listBox()`, `activeDropDownList()`, or `activeListBox()`
   of `yii\helpers\Html`, and your list options use multiple blank spaces to format and align
   option label texts, you need to specify the option `encodeSpaces` to be true.
+
+* If you are using `yii\grid\GridView` and have configured a data column to use a PHP callable
+  to return cell values (via `yii\grid\DataColumn::value`), you may need to adjust the signature
+  of the callable to be `function ($model, $key, $index, $widget)`. The `$key` parameter was newly added
+  in this release.
