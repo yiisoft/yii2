@@ -156,11 +156,10 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function addTypeLinks($code)
     {
-        if (preg_match('/(.*?)::([^(]+)\((.*)\)/', $code, $matches)) {
+        if (preg_match('/(.*?)::([^(]+)/', $code, $matches)) {
             $class = $matches[1];
             $method = $matches[2];
-            $args = $matches[3];
-            $text = $this->htmlEncode($class) . '::' . $this->htmlEncode($method) . '(' . $args . ')';
+            $text = $this->htmlEncode($class) . '::' . $this->htmlEncode($method);
         } else {
             $class = $code;
             $text = $this->htmlEncode($class);
