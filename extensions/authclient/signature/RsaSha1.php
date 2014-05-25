@@ -13,7 +13,7 @@ use yii\base\NotSupportedException;
 /**
  * RsaSha1 represents 'RSA-SHA1' signature method.
  *
- * Note: This class require PHP "OpenSSL" extension({@link http://php.net/manual/en/book.openssl.php}).
+ * > **Note:** This class requires PHP "OpenSSL" extension(<http://php.net/manual/en/book.openssl.php>).
  *
  * @property string $privateCertificate Private key certificate content.
  * @property string $publicCertificate Public key certificate content.
@@ -25,12 +25,12 @@ class RsaSha1 extends BaseMethod
 {
     /**
      * @var string OpenSSL private key certificate content.
-     * This value can be fetched from file specified by {@link privateCertificateFile}.
+     * This value can be fetched from file specified by [[privateCertificateFile]].
      */
     protected $_privateCertificate;
     /**
      * @var string OpenSSL public key certificate content.
-     * This value can be fetched from file specified by {@link publicCertificateFile}.
+     * This value can be fetched from file specified by [[publicCertificateFile]].
      */
     protected $_publicCertificate;
     /**
@@ -101,8 +101,8 @@ class RsaSha1 extends BaseMethod
     }
 
     /**
-     * Creates initial value for {@link publicCertificate}.
-     * This method will attempt to fetch the certificate value from {@link publicCertificateFile} file.
+     * Creates initial value for [[publicCertificate]].
+     * This method will attempt to fetch the certificate value from [[publicCertificateFile]] file.
      * @throws InvalidConfigException on failure.
      * @return string public certificate content.
      */
@@ -120,8 +120,8 @@ class RsaSha1 extends BaseMethod
     }
 
     /**
-     * Creates initial value for {@link privateCertificate}.
-     * This method will attempt to fetch the certificate value from {@link privateCertificateFile} file.
+     * Creates initial value for [[privateCertificate]].
+     * This method will attempt to fetch the certificate value from [[privateCertificateFile]] file.
      * @throws InvalidConfigException on failure.
      * @return string private certificate content.
      */

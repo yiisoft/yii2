@@ -28,7 +28,7 @@ use yii\authclient\ClientInterface;
  * ~~~
  *
  * You can customize the widget appearance by using [[begin()]] and [[end()]] syntax
- * along with using method {@link clientLink()} or {@link createClientUrl()}.
+ * along with using method [[clientLink()]] or [[createClientUrl()]].
  * For example:
  *
  * ~~~php

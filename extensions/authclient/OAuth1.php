@@ -147,7 +147,7 @@ class OAuth1 extends BaseOAuth
     }
 
     /**
-     * Sends HTTP request, signed by {@link signatureMethod}.
+     * Sends HTTP request, signed by [[signatureMethod]].
      * @param string $method request type.
      * @param string $url request URL.
      * @param array $params request params.
@@ -235,7 +235,7 @@ class OAuth1 extends BaseOAuth
     }
 
     /**
-     * Composes default {@link returnUrl} value.
+     * Composes default [[returnUrl]] value.
      * @return string return URL.
      */
     protected function defaultReturnUrl()
@@ -281,7 +281,7 @@ class OAuth1 extends BaseOAuth
     }
 
     /**
-     * Sign request with {@link signatureMethod}.
+     * Sign request with [[signatureMethod]].
      * @param string $method request method.
      * @param string $url request URL.
      * @param array $params request params.
@@ -299,7 +299,7 @@ class OAuth1 extends BaseOAuth
     }
 
     /**
-     * Creates signature base string, which will be signed by {@link signatureMethod}.
+     * Creates signature base string, which will be signed by [[signatureMethod]].
      * @param string $method request method.
      * @param string $url request URL.
      * @param array $params request params.

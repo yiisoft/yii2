@@ -166,7 +166,7 @@ class OAuth2 extends BaseOAuth
     }
 
     /**
-     * Composes default {@link returnUrl} value.
+     * Composes default [[returnUrl]] value.
      * @return string return URL.
      */
     protected function defaultReturnUrl()
