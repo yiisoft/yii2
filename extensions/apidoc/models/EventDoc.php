@@ -39,11 +39,7 @@ class EventDoc extends ConstDoc
                 $this->type = $eventTag->getType();
                 $this->types = $eventTag->getTypes();
                 $this->description = ucfirst($eventTag->getDescription());
-                if (($pos = strpos($this->description, '.')) !== false) {
-                    $this->shortDescription = substr($this->description, 0, $pos);
-                } else {
-                    $this->shortDescription = $this->description;
-                }
+                $this->shortDescription = BaseDoc::extractFirstSentence($this->description);
                 unset($this->tags[$i]);
             }
         }

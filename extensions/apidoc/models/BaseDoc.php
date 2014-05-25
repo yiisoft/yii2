@@ -127,4 +127,20 @@ class BaseDoc extends Object
 //		$lines = file(YII_PATH . $this->sourcePath);
 //		return implode("", array_slice($lines, $this->startLine - 1, $this->endLine - $this->startLine + 1));
 //	}
+
+    public static function extractFirstSentence($text)
+    {
+        if (mb_strlen($text) > 4 && ($pos = mb_strpos($text, '.', 4, 'utf-8')) !== false) {
+            $sentence = mb_substr($text, 0, $pos + 1, 'utf-8');
+            if (mb_strlen($text) >= $pos + 3) {
+                $abbrev = mb_substr($text, $pos - 1, 4);
+                if ($abbrev === 'e.g.' || $abbrev === 'i.e.') { // do not break sentence after abbreviation
+                    $sentence .= static::extractFirstSentence(mb_substr($text, $pos + 1));
+                }
+            }
+            return $sentence;
+        } else {
+            return $text;
+        }
+    }
 }

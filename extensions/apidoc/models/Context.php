@@ -289,8 +289,7 @@ class Context extends Component
                         'isStatic' => false,
                         'type' => $method->returnType,
                         'types' => $method->returnTypes,
-                        'shortDescription' => (($pos = strpos($method->return, '.')) !== false) ?
-                                substr($method->return, 0, $pos) : $method->return,
+                        'shortDescription' => BaseDoc::extractFirstSentence($method->return),
                         'description' => $method->return,
                         'getter' => $method
                         // TODO set default value
@@ -319,8 +318,7 @@ class Context extends Component
                         'isStatic' => false,
                         'type' => $param->type,
                         'types' => $param->types,
-                        'shortDescription' => (($pos = strpos($param->description, '.')) !== false) ?
-                                substr($param->description, 0, $pos) : $param->description,
+                        'shortDescription' => BaseDoc::extractFirstSentence($param->description),
                         'description' => $param->description,
                         'setter' => $method
                     ]);

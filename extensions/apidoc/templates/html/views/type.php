@@ -80,8 +80,10 @@ $renderer = $this->context;
 </table>
 
 <div id="classDescription">
-    <strong><?= ApiMarkdown::process($type->shortDescription, $type, true) ?></strong>
-    <p><?= ApiMarkdown::process($type->description, $type) ?></p>
+    <p><strong><?= ApiMarkdown::process($type->shortDescription, $type, true) ?></strong></p>
+    <?= ApiMarkdown::process($type->description, $type) ?>
+
+    <?= $this->render('seeAlso', ['object' => $type]) ?>
 </div>
 
 <a name="properties"></a>
