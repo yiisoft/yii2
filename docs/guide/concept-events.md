@@ -3,18 +3,18 @@ Events
 
 Events allow you to inject custom code into existing code at certain execution points. You can attach custom
 code to an event so that when the event is triggered, the code gets executed automatically. For example,
-a mailer object may trigger a `messageSent` event when it successfully sends out a message. If you want to keep
-track of the messages that are successfully sent, you may attach the tracking code to the `messageSent` event.
+a mailer object may trigger a `messageSent` event when it successfully sends a message. If you want to keep
+track of the messages that are successfully sent, you could then simply attach the tracking code to the `messageSent` event.
 
 Yii introduces a base class called [[yii\base\Component]] to support events. If a class needs to trigger
-events, it should extend from [[yii\base\Component]] or its child class.
+events, it should extend from [[yii\base\Component]] or a child class.
 
 
 Triggering Events <a name="triggering-events"></a>
 -----------------
 
-Events are triggered by calling the [[yii\base\Component::trigger()]] method. The method requires an *event name*
-and optionally an event object which describes the parameters to be passed to the event handlers. For example,
+Events are triggered by calling the [[yii\base\Component::trigger()]] method. The method requires an *event name*,
+and optionally an event object that describes the parameters to be passed to the event handlers. For example:
 
 ```php
 namespace app\components;
@@ -36,15 +36,15 @@ class Foo extends Component
 In the above code, when you call `bar()`, it will trigger an event named `hello`.
 
 > Tip: It is recommended to use class constants to represent event names. In the above example, the constant
-  `EVENT_HELLO` is used to represent `hello`. This has two benefits. First, it prevents typos and can get IDE
+  `EVENT_HELLO` is used to represent `hello`. This approach has two benefits. First, it prevents typos and can impact IDE
   auto-completion support. Second, you can tell what events are supported by a class by simply checking the constant
   declarations.
 
-Sometimes when triggering an event, you may want to pass along some additional information to the event handlers.
+Sometimes when triggering an event, you may want to pass along additional information to the event handlers.
 For example, a mailer may want pass the message information to the handlers of the `messageSent` event so that the handlers
-can know what messages are sent. To do so, you can provide an event object as the second parameter to
+can know the particulars of the sent messages. To do so, you can provide an event object as the second parameter to
 the [[yii\base\Component::trigger()]] method. The event object must be an instance of the [[yii\base\Event]] class
-or its child class. For example,
+or a child class. For example:
 
 ```php
 namespace app\components;
