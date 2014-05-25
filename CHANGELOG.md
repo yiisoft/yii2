@@ -32,6 +32,7 @@ Yii Framework 2 Change Log
 - Bug #3548: Fixed the bug that X-Rate-Limit-Remaining header is always zero when using RateLimiter (qiangxue)
 - Bug #3564: Fixed the bug that primary key columns should not take default values from schema (qiangxue)
 - Bug #3567: Fixed the bug that smallint was treated as string for PostgreSQL (qiangxue)
+- Bug #3578: Fixed postgreSQL column type detection, added missing types (MDMunir, cebe)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2435: `yii\db\IntegrityException` is now thrown on database integrity errors instead of general `yii\db\Exception` (samdark)
