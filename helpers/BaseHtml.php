@@ -129,7 +129,6 @@ class BaseHtml
     public static function tag($name, $content = '', $options = [])
     {
         $html = "<$name" . static::renderTagAttributes($options) . '>';
-
         return isset(static::$voidElements[strtolower($name)]) ? $html : "$html$content</$name>";
     }
 
@@ -337,7 +336,6 @@ class BaseHtml
         if ($url !== null) {
             $options['href'] = Url::to($url);
         }
-
         return static::tag('a', $text, $options);
     }
 
@@ -357,7 +355,6 @@ class BaseHtml
     public static function mailto($text, $email = null, $options = [])
     {
         $options['href'] = 'mailto:' . ($email === null ? $text : $email);
-
         return static::tag('a', $text, $options);
     }
 
@@ -376,7 +373,6 @@ class BaseHtml
         if (!isset($options['alt'])) {
             $options['alt'] = '';
         }
-
         return static::tag('img', '', $options);
     }
 
@@ -396,7 +392,6 @@ class BaseHtml
     public static function label($content, $for = null, $options = [])
     {
         $options['for'] = $for;
-
         return static::tag('label', $content, $options);
     }
 
@@ -430,7 +425,6 @@ class BaseHtml
     public static function submitButton($content = 'Submit', $options = [])
     {
         $options['type'] = 'submit';
-
         return static::button($content, $options);
     }
 
@@ -448,7 +442,6 @@ class BaseHtml
     public static function resetButton($content = 'Reset', $options = [])
     {
         $options['type'] = 'reset';
-
         return static::button($content, $options);
     }
 
@@ -468,7 +461,6 @@ class BaseHtml
         $options['type'] = $type;
         $options['name'] = $name;
         $options['value'] = $value === null ? null : (string) $value;
-
         return static::tag('input', '', $options);
     }
 
@@ -485,7 +477,6 @@ class BaseHtml
     {
         $options['type'] = 'button';
         $options['value'] = $label;
-
         return static::tag('input', '', $options);
     }
 
@@ -502,7 +493,6 @@ class BaseHtml
     {
         $options['type'] = 'submit';
         $options['value'] = $label;
-
         return static::tag('input', '', $options);
     }
 
@@ -518,7 +508,6 @@ class BaseHtml
     {
         $options['type'] = 'reset';
         $options['value'] = $label;
-
         return static::tag('input', '', $options);
     }
 
@@ -598,7 +587,6 @@ class BaseHtml
     public static function textarea($name, $value = '', $options = [])
     {
         $options['name'] = $name;
-
         return static::tag('textarea', static::encode($value), $options);
     }
 
@@ -992,7 +980,6 @@ class BaseHtml
                 $results[] = static::tag('li', $encode ? static::encode($item) : $item, $itemOptions);
             }
         }
-
         return static::tag($tag, "\n" . implode("\n", $results) . "\n", $options);
     }
 
@@ -1022,7 +1009,6 @@ class BaseHtml
     public static function ol($items, $options = [])
     {
         $options['tag'] = 'ol';
-
         return static::ul($items, $options);
     }
 
@@ -1051,7 +1037,6 @@ class BaseHtml
         $attribute = static::getAttributeName($attribute);
         $label = isset($options['label']) ? $options['label'] : static::encode($model->getAttributeLabel($attribute));
         unset($options['label'], $options['for']);
-
         return static::label($label, $for, $options);
     }
 
@@ -1118,7 +1103,6 @@ class BaseHtml
         $error = $model->getFirstError($attribute);
         $tag = isset($options['tag']) ? $options['tag'] : 'div';
         unset($options['tag']);
-
         return Html::tag($tag, Html::encode($error), $options);
     }
 
@@ -1142,7 +1126,6 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
-
         return static::input($type, $name, $value, $options);
     }
 
@@ -1235,7 +1218,6 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
-
         return static::textarea($name, $value, $options);
     }
 
@@ -1518,7 +1500,6 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
-
         return static::$type($name, $selection, $items, $options);
     }
 
@@ -1775,7 +1756,6 @@ class BaseHtml
                 $result[trim($property[0])] = trim($property[1]);
             }
         }
-
         return $result;
     }
 
@@ -1899,7 +1879,6 @@ class BaseHtml
     public static function getInputId($model, $attribute)
     {
         $name = strtolower(static::getInputName($model, $attribute));
-
-        return str_replace(['[]', '][', '[', ']', ' '], ['', '-', '-', '', '-'], $name);
+        return str_replace(['[]', '][', '[', ']', ' ', '.'], ['', '-', '-', '', '-', '-'], $name);
     }
 }

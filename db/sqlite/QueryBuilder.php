@@ -139,7 +139,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+        return 'PRAGMA foreign_keys='.(int)$check;
     }
 
     /**
