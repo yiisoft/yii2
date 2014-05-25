@@ -285,7 +285,7 @@ class AssetController extends Controller
      */
     protected function buildTarget($target, $type, $bundles)
     {
-        $tempFile = strtr($target->$type, ['{hash}' => 'temp']);
+        $tempFile = $target->basePath . '/' . strtr($target->$type, ['{hash}' => 'temp']);
         $inputFiles = [];
 
         foreach ($target->depends as $name) {
@@ -298,12 +298,12 @@ class AssetController extends Controller
             }
         }
         if ($type === 'js') {
-            $this->compressJsFiles($inputFiles, $target->basePath . '/' . $tempFile);
+            $this->compressJsFiles($inputFiles, $tempFile);
         } else {
-            $this->compressCssFiles($inputFiles, $target->basePath . '/' . $tempFile);
+            $this->compressCssFiles($inputFiles, $tempFile);
         }
 
-        $outputFile = strtr($target->$type, ['{hash}' => md5_file($tempFile)]);
+        $outputFile = $target->basePath . '/' . strtr($target->$type, ['{hash}' => md5_file($tempFile)]);
         rename($tempFile, $outputFile);
         $target->$type = [$outputFile];
     }
