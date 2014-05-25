@@ -20,7 +20,7 @@
             <?php if ($method !== null): ?>
                 <span class="call">
                     <?php if ($file !== null) echo '&ndash;' ?>
-                    <?= $class !== null ? $handler->addTypeLinks("$class::$method(" . $handler->argumentsToString($args) . ")") : $handler->htmlEncode($method) . '(' . $handler->argumentsToString($args) . ')' ?>
+                    <?= ($class !== null ? $handler->addTypeLinks("$class::$method") : $handler->htmlEncode($method)) . '(' . $handler->argumentsToString($args) . ')' ?>
                 </span>
             <?php endif; ?>
             <span class="at"><?php if ($line !== null) echo 'at line'; ?></span>
