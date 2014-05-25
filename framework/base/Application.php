@@ -151,8 +151,11 @@ abstract class Application extends Module
      * The "bootstrap" class listed above will be instantiated during the application
      * [[bootstrap()|bootstrapping process]]. If the class implements [[BootstrapInterface]],
      * its [[BootstrapInterface::bootstrap()|bootstrap()]] method will be also be called.
+     *
+     * If not set explicitily in the application config, this property will be populated with the contents of
+     * `@vendor/yiisoft/extensions.php`.
      */
-    public $extensions = [];
+    public $extensions;
     /**
      * @var array list of components that should be run during the application [[bootstrap()|bootstrapping process]].
      *
@@ -262,6 +265,10 @@ abstract class Application extends Module
      */
     protected function bootstrap()
     {
+        if ($this->extensions === null) {
+            $file = Yii::getAlias('@vendor/yiisoft/extensions.php');
+            $this->extensions = is_file($file) ? include($file) : [];
+        }
         foreach ($this->extensions as $extension) {
             if (!empty($extension['alias'])) {
                 foreach ($extension['alias'] as $name => $path) {
