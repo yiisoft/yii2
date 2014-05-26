@@ -23,7 +23,7 @@ class DateValidator extends Validator
      * Please refer to <http://www.php.net/manual/en/datetime.createfromformat.php> on
      * supported formats.
      */
-    public $format = 'Y-m-d';
+    public $format = null;
     /**
      * @var string the name of the attribute to receive the parsing result.
      * When this property is not null and the validation is successful, the named attribute will
@@ -39,6 +39,9 @@ class DateValidator extends Validator
         parent::init();
         if ($this->message === null) {
             $this->message = Yii::t('yii', 'The format of {attribute} is invalid.');
+        }
+        if ($this->format === null){
+            $this->format = Yii::$app->formatter->dateFormat;
         }
     }
 
