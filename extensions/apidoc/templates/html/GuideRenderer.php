@@ -81,7 +81,7 @@ abstract class GuideRenderer extends BaseGuideRenderer
         $headlines = [];
         foreach ($files as $file) {
             $fileData[$file] = file_get_contents($file);
-            if (basename($file) == 'index.md') {
+            if (basename($file) == 'README.md') {
                 continue; // to not add index file to nav
             }
             if (preg_match("/^(.*)\n=+/", $fileData[$file], $matches)) {

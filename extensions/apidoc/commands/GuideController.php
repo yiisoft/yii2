@@ -78,6 +78,7 @@ class GuideController extends BaseController
         file_put_contents($targetDir . '/guide-references.txt', implode("\n", $references));
     }
 
+
     /**
      * @inheritdoc
      */

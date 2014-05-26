@@ -24,7 +24,9 @@
 		"phpdocumentor/reflection": ">=1.0.3",
 		"phpdocumentor/reflection-docblock": ">2.0.1",
 		"nikic/php-parser": "0.9.*",
-		"cebe/js-search": "*"
+		"cebe/js-search": "*",
+		"cebe/markdown": "dev-master as 0.9.0",
+		"cebe/markdown-latex": "*"
 	},
 	"autoload": {
 		"psr-4": { "yii\\apidoc\\": "" }

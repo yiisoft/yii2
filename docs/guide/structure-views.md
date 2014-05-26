@@ -311,7 +311,7 @@ use yii\helpers\Html;
     <div class="container">
         <?= $content ?>
     </div>
-    <footer class="footer">© 2013 me :)</footer>
+    <footer class="footer">&copy; 2013 me :)</footer>
 <?php $this->endBody() ?>
 </body>
 </html>
