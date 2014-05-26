@@ -841,12 +841,12 @@ class Comment extends \yii\mongodb\ActiveRecord
 }
 ```
 
-All Active Record feature like: eager and lazy loading, establishing and breaking a relationship and so on, are
+All Active Record features like eager and lazy loading, establishing and breaking a relationship and so on, are
 available for cross-DBMS relations.
 
-Note: do not forget Active Record solutions for different DBMS may have specific methods and features, which may not be
-applied for cross-DBMS relations. For example: usage of [[yii\db\ActiveQuery::joinWith()]] will obviously not work with
-relation to the MongoDB collection.
+> Note: do not forget Active Record solutions for different DBMS may have specific methods and features, which may not be
+  applied for cross-DBMS relations. For example: usage of [[yii\db\ActiveQuery::joinWith()]] will obviously not work with
+  relation to the MongoDB collection.
 
 
 Scopes
