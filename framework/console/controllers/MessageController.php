@@ -173,7 +173,7 @@ class MessageController extends Controller
 
             if (isset($current[$category])) {
                 $new[$category] = array_diff($msgs, $current[$category]);
-                $obsolete = array_diff($current[$category], $msgs);
+                $obsolete += array_diff($current[$category], $msgs);
             } else {
                 $new[$category] = $msgs;
             }
