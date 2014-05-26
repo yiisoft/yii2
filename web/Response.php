@@ -216,7 +216,7 @@ class Response extends \yii\base\Response
         450 => 'Blocked by Windows Parental Controls',
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
-        502 => 'Bad Gateway ou Proxy Error',
+        502 => 'Bad Gateway or Proxy Error',
         503 => 'Service Unavailable',
         504 => 'Gateway Time-out',
         505 => 'HTTP Version not supported',
