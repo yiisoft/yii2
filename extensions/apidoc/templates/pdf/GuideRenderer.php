@@ -10,6 +10,7 @@ namespace yii\apidoc\templates\pdf;
 use cebe\markdown\latex\GithubMarkdown;
 use Yii;
 use yii\apidoc\helpers\ApiIndexer;
+use yii\apidoc\helpers\IndexFileAnalyzer;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
@@ -43,15 +44,17 @@ class GuideRenderer extends \yii\apidoc\templates\html\GuideRenderer
         }
         $done = 0;
         $fileData = [];
-//        $headlines = [];
+        $chapters = [];
         foreach ($files as $file) {
             if (basename($file) == 'README.md') {
+                $indexAnalyzer = new IndexFileAnalyzer();
+                $chapters = $indexAnalyzer->analyze(file_get_contents($file));
                 continue; // to not add index file to nav
             }
             if (basename($file) == 'tutorial-i18n.md') {
                 continue; // TODO avoid i18n tut because of non displayable characters right now. need to fix it.
             }
-            $fileData[$file] = file_get_contents($file);
+            $fileData[basename($file)] = file_get_contents($file);
 //            if (preg_match("/^(.*)\n=+/", $fileData[$file], $matches)) {
 //                $headlines[$file] = $matches[1];
 //            } else {
@@ -61,22 +64,19 @@ class GuideRenderer extends \yii\apidoc\templates\html\GuideRenderer
 
         $md = new GithubMarkdown();
         $output = '';
-        foreach ($fileData as $file => $content) {
-            $output .= $md->parse($content) . "\n\n"; // TODO generate links to yiiframework.com by default
-//            $output = $this->fixMarkdownLinks($output);
-//            if ($this->layout !== false) {
-//                $params = [
-////                    'headlines' => $headlines,
-//                    'currentFile' => $file,
-//                    'content' => $output,
-//                ];
-//                $output = $this->getView()->renderFile($this->layout, $params, $this);
-//            }
-//            $fileName = $this->generateGuideFileName($file);
-//            file_put_contents($targetDir . '/' . $fileName, $output);
+        foreach ($chapters as $chapter) {
 
-            if ($this->controller !== null) {
-                Console::updateProgress(++$done, $fileCount);
+            $output .= '\chapter{' . $chapter['headline'] . "}\n";
+            foreach($chapter['content'] as $content) {
+                if (isset($fileData[$content['file']])) {
+                    $output .= $md->parse($fileData[$content['file']]) . "\n\n";
+                } else {
+                    $output .= '\newpage\textbf{Error: not existing file: '.$content['file'].'}\newpage'."\n";
+                }
+
+                if ($this->controller !== null) {
+                    Console::updateProgress(++$done, $fileCount);
+                }
             }
         }
         file_put_contents($targetDir . '/guide.tex', $output);
