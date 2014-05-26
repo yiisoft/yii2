@@ -1598,7 +1598,7 @@ class BaseHtml
             } elseif (is_array($value) && $name === 'data') {
                 foreach ($value as $n => $v) {
                     if (is_array($v)) {
-                        $html .= " $name-$n='" . Json::encode($v) . "'";
+                        $html .= " $name-$n='" . Json::encode($v, JSON_HEX_APOS) . "'";
                     } else {
                         $html .= " $name-$n=\"" . static::encode($v) . '"';
                     }
