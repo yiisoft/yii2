@@ -387,9 +387,9 @@ class Customer extends \yii\db\ActiveRecord
 
 class Order extends \yii\db\ActiveRecord
 {
-    // Order has_one Customer via Customer.id -> customer_id
     public function getCustomer()
     {
+        // Order has_one Customer via Customer.id -> customer_id
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }
@@ -801,6 +801,52 @@ $customer->link('orders', $order);
 
 The [[yii\db\ActiveRecord::link()|link()]] call above will set the `customer_id` of the order to be the primary key
 value of `$customer` and then call [[yii\db\ActiveRecord::save()|save()]] to save the order into database.
+
+
+Cross-DBMS Relations
+--------------------
+
+ActiveRecord allows to establish relationship between entities from different DBMS. For example: between relational
+database table and MongoDB collection. Such relation does not require any special code:
+
+```php
+// Relational database Active Record
+class Customer extends \yii\db\ActiveRecord
+{
+    public static function tableName()
+    {
+        return 'customer';
+    }
+
+    public function getComments()
+    {
+        // Customer, stored in relational database, has many Comments, stored in MongoDB collection:
+        return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+    }
+}
+
+// MongoDb Active Record
+class Comment extends \yii\mongodb\ActiveRecord
+{
+    public static function collectionName()
+    {
+        return 'comment';
+    }
+
+    public function getCustomer()
+    {
+        // Comment, stored in MongoDB collection, has one Customer, stored in relational database:
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+    }
+}
+```
+
+All Active Record features like eager and lazy loading, establishing and breaking a relationship and so on, are
+available for cross-DBMS relations.
+
+> Note: do not forget Active Record solutions for different DBMS may have specific methods and features, which may not be
+  applied for cross-DBMS relations. For example: usage of [[yii\db\ActiveQuery::joinWith()]] will obviously not work with
+  relation to the MongoDB collection.
 
 
 Scopes
