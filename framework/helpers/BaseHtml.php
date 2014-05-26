@@ -1569,6 +1569,8 @@ class BaseHtml
      * the array will be "expanded" and a list data attributes will be rendered. For example,
      * if `'data' => ['id' => 1, 'name' => 'yii']`, then this will be rendered:
      * `data-id="1" data-name="yii"`.
+     * Additionally `'data' => ['params' => ['id' => 1, 'name' => 'yii'], 'status' => 'ok']` will be rendered as:
+     * `data-params='{"id":1,"name":"yii"}' data-status="ok"`.
      *
      * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
      * @return string the rendering result. If the attributes are not empty, they will be rendered
@@ -1595,7 +1597,11 @@ class BaseHtml
                 }
             } elseif (is_array($value) && $name === 'data') {
                 foreach ($value as $n => $v) {
-                    $html .= " $name-$n=\"" . static::encode($v) . '"';
+                    if (is_array($v)) {
+                        $html .= " $name-$n='" . Json::encode($v) . "'";
+                    } else {
+                        $html .= " $name-$n=\"" . static::encode($v) . '"';
+                    }
                 }
             } elseif ($value !== null) {
                 $html .= " $name=\"" . static::encode($value) . '"';
