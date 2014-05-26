@@ -114,6 +114,21 @@ class QueryBuilderTest extends DatabaseTestCase
         }
     }
 
+    public function testCreateTableColumnTypes()
+    {
+        $qb = $this->getQueryBuilder();
+        $columns = [];
+        $i = 0;
+        foreach ($this->columnTypes() as $item) {
+            list ($column, $expected) = $item;
+            if (strncmp($column, 'pk', 2) !== 0) {
+                $columns['col' . ++$i] = str_replace('CHECK (value', 'CHECK (col' . $i, $column);
+            }
+        }
+        $this->getConnection(false)->createCommand($qb->createTable('column_type_table', $columns))->execute();
+        $this->getConnection(false)->createCommand($qb->dropTable('column_type_table'))->execute();
+    }
+
     public function conditionProvider()
     {
         $conditions = [
