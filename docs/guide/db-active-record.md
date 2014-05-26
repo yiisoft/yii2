@@ -387,9 +387,9 @@ class Customer extends \yii\db\ActiveRecord
 
 class Order extends \yii\db\ActiveRecord
 {
-    // Order has_one Customer via Customer.id -> customer_id
     public function getCustomer()
     {
+        // Order has_one Customer via Customer.id -> customer_id
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }
