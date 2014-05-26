@@ -35,8 +35,7 @@ Yii::configure($object, $config);
 Note that in this case, the configuration should not contain the `class` element.
 
 
-Configuration Format <a name="configuration-format"></a>
---------------------
+## Configuration Format <a name="configuration-format"></a>
 
 The format of a configuration can be formally described as follows,
 
@@ -79,8 +78,7 @@ Below is an example showing a configuration with property initial values, event 
 ```
 
 
-Using Configurations <a name="using-configurations"></a>
---------------------
+## Using Configurations <a name="using-configurations"></a>
 
 Configurations are used in many places in Yii. At the beginning of this section, we have shown how to use
 create an object according to a configuration by using [[Yii::createObject()]]. In this subsection, we will
@@ -163,11 +161,10 @@ The `items` property is also configured with menu items to be displayed.
 Note that because the class name is already given, the configuration array should NOT have the `class` key.
 
 
-Configuration Files <a name="configuration-files"></a>
--------------------
+## Configuration Files <a name="configuration-files"></a>
 
 When a configuration is very complex, a common practice is to store it in one or multiple PHP files, known as
-*configuration files*. To use a configuration, simply "require" the corresponding configuration file.
+*configuration files*. A configuration file returns a PHP array representing the configuration.
 For example, you may keep an application configuration in a file named `web.php`, like the following,
 
 ```php
@@ -209,7 +206,7 @@ return [
 ];
 ```
 
-And the code for starting an application becomes,
+To get a configuration stored in a configuration file, simply "require" it, like the following:
 
 ```php
 $config = require('path/to/web.php');
@@ -217,8 +214,7 @@ $config = require('path/to/web.php');
 ```
 
 
-Default Configurations <a name="default-configurations"></a>
-----------------------
+## Default Configurations <a name="default-configurations"></a>
 
 The [[Yii::createObject()]] method is implemented based on a [dependency injection container](concept-di-container.md).
 It allows you specify a set of the so-called *default configurations* which will be applied to ANY instances of
@@ -238,8 +234,7 @@ Without using default configurations, you would have to configure `maxButtonCoun
 link pagers.
 
 
-Environment Constants <a name="environment-constants"></a>
----------------------
+## Environment Constants <a name="environment-constants"></a>
 
 Configurations often vary according to the environment in which an application runs. For example,
 in development environment, you may want to use a database named `mydb_dev`, while on production server
