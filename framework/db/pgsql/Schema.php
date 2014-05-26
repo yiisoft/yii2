@@ -406,6 +406,7 @@ SQL;
                 if ($table->sequenceName === null && preg_match("/nextval\\('\"?\\w+\"?\.?\"?\\w+\"?'(::regclass)?\\)/", $column->defaultValue) === 1) {
                     $table->sequenceName = preg_replace(['/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'], '', $column->defaultValue);
                 }
+                $column->defaultValue = null;
             } elseif ($column->defaultValue) {
                 if (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches) || preg_match("/^(.*?)::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $matches[1];
