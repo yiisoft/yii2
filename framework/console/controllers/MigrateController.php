@@ -640,13 +640,20 @@ class MigrateController extends Controller
         if ($this->db->schema->getTableSchema($this->migrationTable, true) === null) {
             $this->createMigrationHistoryTable();
         }
-        $query = new Query;
-        $rows = $query->select(['version', 'apply_time'])
+
+        $query = new Query();
+        $query->select(['version', 'apply_time'])
             ->from($this->migrationTable)
-            ->orderBy('version DESC')
-            ->limit($limit)
-            ->createCommand($this->db)
-            ->queryAll();
+            ->orderBy('version DESC');
+
+        $showAll = ($limit == 0);
+
+        if (!$showAll) {
+            $query->limit($limit);
+        }
+
+        $rows = $query->all($this->db);
+
         $history = ArrayHelper::map($rows, 'version', 'apply_time');
         unset($history[self::BASE_MIGRATION]);
 
