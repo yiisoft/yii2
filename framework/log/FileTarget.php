@@ -51,6 +51,11 @@ class FileTarget extends Target
      * but read-only for other users.
      */
     public $dirMode = 0775;
+    /**
+     * @var boolean Whether to rotate primary log by copy and truncate
+     * which is more compatible with log tailers. Defaults to false.
+     */
+    public $rotateByCopy = false;
 
     /**
      * Initializes the route.
@@ -115,7 +120,15 @@ class FileTarget extends Target
                 if ($i === $this->maxLogFiles) {
                     @unlink($rotateFile);
                 } else {
-                    @rename($rotateFile, $file . '.' . ($i + 1));
+                    if ($this->rotateByCopy) {
+                        @copy($rotateFile, $file . '.' . ($i + 1));
+                        if ($fp = @fopen($rotateFile, 'a')) {
+                            @ftruncate($fp, 0);
+                            @fclose($fp);
+                        }
+                    } else {
+                        @rename($rotateFile, $file . '.' . ($i + 1));
+                    }
                 }
             }
         }
