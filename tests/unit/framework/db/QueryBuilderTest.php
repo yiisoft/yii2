@@ -117,6 +117,9 @@ class QueryBuilderTest extends DatabaseTestCase
     public function testCreateTableColumnTypes()
     {
         $qb = $this->getQueryBuilder();
+        if ($qb->db->getTableSchema('column_type_table', true) !== null) {
+            $this->getConnection(false)->createCommand($qb->dropTable('column_type_table'))->execute();
+        }
         $columns = [];
         $i = 0;
         foreach ($this->columnTypes() as $item) {
@@ -126,7 +129,6 @@ class QueryBuilderTest extends DatabaseTestCase
             }
         }
         $this->getConnection(false)->createCommand($qb->createTable('column_type_table', $columns))->execute();
-        $this->getConnection(false)->createCommand($qb->dropTable('column_type_table'))->execute();
     }
 
     public function conditionProvider()
