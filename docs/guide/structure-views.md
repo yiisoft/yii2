@@ -329,6 +329,30 @@ Several special methods such as [[yii\web\View::beginPage()|beginPage()]]/[[yii\
 are triggering page rendering events that are used for registering scripts, links and process page in many other ways.
 Always include these in your layout in order for the rendering to work correctly.
 
+By default layout is loaded from `views/layouts/main.php`. You may change it at controller or module level by setting
+different value to `layout` propery.
+
+In order to pass data from controller to layout, that you may need for breadcrumbs or similar elements, use view component
+data property. In controller it can be set as:
+
+```php
+$this->view->params['breadcrumbs'][] = 'Contact';
+```
+
+In a view it will be:
+
+```php
+$this->params['breadcrumbs'][] = 'Contact';
+```
+
+In layout file the value can be used like the following:
+
+```php
+<?= Breadcrumbs::widget([
+    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+]) ?>
+```
+
 ### Partials
 
 Often you need to reuse some HTML markup in many views and often it's too simple to create a full-featured widget for it.
