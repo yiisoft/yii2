@@ -48,10 +48,15 @@ where to store temporary files, etc. In the following, we will summarize these p
 In any application, you should at least configure two properties: [[yii\base\Application::id|id]]
 and [[yii\base\Application::basePath|basePath]].
 
-####
+
+#### [[yii\base\Application::id|id]]
+
 The [[yii\base\Application::id|id]] property specifies a unique ID that differentiates an application
 from others. It is mainly used programmatically. Although not a requirement, for best interoperability
 it is recommended that you use alphanumeric characters only when specifying an application ID.
+
+
+#### [[yii\base\Application::basePath|basePath]]
 
 The [[yii\base\Application::basePath|basePath]] property specifies the root directory of an application.
 It is the directory that contains all protected source code of an application system. Under this directory,
@@ -69,7 +74,8 @@ path. Derived paths may then be formed using this alias (e.g. `@app/runtime` to 
 
 ### Important Properties
 
-You usually will configure the properties as their values differ across different applications.
+The properties described in this subsection often need to be configured because they differ across
+different applications.
 
 
 #### [[yii\base\Application::aliases|aliases]]
@@ -129,12 +135,91 @@ During the bootstrapping process, each component will be instantiated. If the co
 implements [[yii\base\BootstrapInterface]], its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method
 will be also be called.
 
+Another practical example is in the application configuration for the [Basic Application Template](start-installation.md),
+where the `debug` and `gii` modules are configured as bootstrap components when the application is running
+in development environment,
+
+```php
+if (YII_ENV_DEV) {
+    // configuration adjustments for 'dev' environment
+    $config['bootstrap'][] = 'debug';
+    $config['modules']['debug'] = 'yii\debug\Module';
+
+    $config['bootstrap'][] = 'gii';
+    $config['modules']['gii'] = 'yii\gii\Module';
+}
+```
+
+> Note: Putting too many components in `bootstrap` will degrade the performance of your application because
+  for each request, the same set of components need to be run. So use bootstrap components judiciously.
+
 
 #### [[yii\base\Application::components|components]]
 
+This is the single most important property. It allows you to configure a list of named components
+called *application components* that you can use in other places. For example,
+
+```php
+[
+    'components' => [
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
+        ],
+        'user' => [
+            'identityClass' => 'app\models\User',
+            'enableAutoLogin' => true,
+        ],
+    ],
+]
+```
+
+More details about how to configure and use this property are described in the
+[application components](#application-components) section.
+
+
 #### [[yii\base\Application::controllerMap|controllerMap]]
 
+This property allows you to map a controller ID to an arbitrary controller class. By default, Yii maps
+controller IDs to controller classes based on a [convention](#controllerNamespace) (e.g. the ID `post` would be mapped
+to `app\controllers\PostController`). By configuring this property, you can break the convention for
+specific controllers. In the following example, `account` will be mapped to
+`app\controllers\UserController`, while `article` will be mapped to `app\controllers\PostController`.
+
+```php
+[
+    'controllerMap' => [
+        [
+            'account' => 'app\controllers\UserController',
+            'article' => [
+                'class' => 'app\controllers\PostController',
+                'pageTitle' => 'something new',
+            ],
+        ],
+    ],
+]
+```
+
+The array keys of this property represent the controller IDs, while the array values represent the corresponding
+controller class names or [configurations](concept-configurations.md).
+
+
 #### [[yii\base\Application::controllerNamespace|controllerNamespace]]
+
+This property specifies the default namespace under which controller classes should be located. It defaults to
+`app\controllers`. If a controller ID is `post`, by convention the corresponding controller class name (without
+namespace) would be `PostController`, and the fully qualified class name would be `app\controllers\PostController`.
+
+Controller classes may also be located under sub-directories of the directory corresponding to this namespace.
+For example, given a controller ID `admin/post`, the corresponding fully qualified controller class would
+be `app\controllers\admin\PostController`.
+
+It is important that the fully qualified controller classes should be [autoloadable](concept-autoloading.md)
+and the actual namespace of your controller classes match the value of this property. Otherwise,
+you will receive "Page Not Found" error when accessing the application.
+
+In case you want to break the convention as described above, you may configure the [controllerMap](#controllerMap)
+property.
+
 
 #### [[yii\base\Application::language|language]]
 
