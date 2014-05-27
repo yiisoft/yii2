@@ -75,6 +75,7 @@ for accessing the user data. The APIs you have created include:
 * `OPTIONS /users`: show the supported verbs regarding endpoint `/users`;
 * `OPTIONS /users/123`: show the supported verbs regarding endpoint `/users/123`.
 
+Note that Yii automatically pluralizes controller names for use in endpoints. 
 You may access your APIs with the `curl` command like the following,
 
 ```
