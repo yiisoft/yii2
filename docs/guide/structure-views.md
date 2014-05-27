@@ -333,7 +333,7 @@ By default layout is loaded from `views/layouts/main.php`. You may change it at 
 different value to `layout` propery.
 
 In order to pass data from controller to layout, that you may need for breadcrumbs or similar elements, use view component
-data property. In controller it can be set as:
+params property. In controller it can be set as:
 
 ```php
 $this->view->params['breadcrumbs'][] = 'Contact';
