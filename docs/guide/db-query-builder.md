@@ -48,7 +48,8 @@ the query, execute it, and return the result. For example,
 - [[yii\db\Query::scalar()|scalar()]]: returns the first column in the first row of the result.
 - [[yii\db\Query::exists()|exists()]]: returns a value indicating whether the query results in anything.
 - [[yii\db\Query::count()|count()]]: returns the result of a `COUNT` query. Other similar methods
-  include `sum()`, `average()`, `max()`, `min()`, which support the so-called aggregational data query.
+  include `sum($q)`, `average($q)`, `max($q)`, `min($q)`, which support the so-called aggregational data query. `$q`
+  parameter is mandatory for these methods and can be either the column name or expression.
 
 
 Building Query
