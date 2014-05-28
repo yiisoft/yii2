@@ -114,8 +114,15 @@ class Captcha extends InputWidget
      */
     protected function getClientOptions()
     {
+        $route = $this->captchaAction;
+        if (is_array($route)) {
+            $route[CaptchaAction::REFRESH_GET_VAR] = 1;
+        } else {
+            $route = [$route, CaptchaAction::REFRESH_GET_VAR => 1];
+        }
+
         $options = [
-            'refreshUrl' => Url::to(['/' . $this->captchaAction, CaptchaAction::REFRESH_GET_VAR => 1]),
+            'refreshUrl' => Url::toRoute($route),
             'hashKey' => "yiiCaptcha/{$this->captchaAction}",
         ];
 
