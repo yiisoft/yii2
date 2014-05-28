@@ -5,6 +5,8 @@ There are many differences between versions 1.1 and 2.0 of Yii as the framework 
 As a result, upgrading from version 1.1 is not as trivial as upgrading between minor versions. In this guide you'll
 find the major differences between the two versions.
 
+If you have not used Yii 1.1 before, you can safely skip this section and turn directly to "[Getting started](start-installation.md)".
+
 Please note that Yii 2.0 introduces more new features than are covered in this summary. It is highly recommended
 that you read through the whole definitive guide to learn about them all. Chances are that
 some features you previously had to develop for yourself are now part of the core code.
