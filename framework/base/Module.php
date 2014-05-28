@@ -248,7 +248,7 @@ class Module extends ServiceLocator
 
     /**
      * Sets the directory that contains the layout files.
-     * @param string $path the root directory of layout files.
+     * @param string $path the root directory or path alias of layout files.
      * @throws InvalidParamException if the directory is invalid
      */
     public function setLayoutPath($path)

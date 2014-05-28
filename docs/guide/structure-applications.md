@@ -249,12 +249,13 @@ property.
 #### [[yii\base\Application::language|language]]
 
 This property specifies the language in which the application should display content to end users.
-You should configure this property if your application needs to support multiple languages.
+The default value of this property is `en`, meaning English. You should configure this property
+if your application needs to support multiple languages.
 
 The value of this property determines various [internationalization](tutorial-i18n.md) aspects,
 including message translation, date formatting, number formatting, etc. For example, the [[yii\jui\DatePicker]] widget
 will use this property value by default to determine in which language the calendar should be displayed and how
-should the date be formatted. The default value of this property is `en`.
+should the date be formatted.
 
 It is recommended that you specify a language in terms of an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag).
 For example, `en` stands for English, while `en-US` stands for English (United States).
@@ -322,11 +323,23 @@ Later if you decide to change the thumbnail size, you only need to modify it in 
 without touching any dependent code.
 
 
+#### [[yii\base\Application::sourceLanguage|sourceLanguage]]
+
+This property specifies the language that the application code is written in. The default value is `'en'`,
+meaning English. You should configure this property if the text content in your code is not in English.
+
+Like the [language](#language) property, you should configure this property in terms of
+an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands for English,
+while `en-US` stands for English (United States).
+
+More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
+
+
 #### [[yii\base\Application::timeZone|timeZone]]
 
 This property is provided as an alternative way of setting the default time zone of PHP runtime.
-By configuring this property, you are essentially calling the PHP function [date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php).
-For example,
+By configuring this property, you are essentially calling the PHP function
+[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). For example,
 
 ```php
 [
@@ -405,25 +418,161 @@ array. An extension may also define a few [aliases](concept-aliases.md).
 
 #### [[yii\base\Application::layout|layout]]
 
+This property specifies the name of the default layout that should be used when rendering a [view](structure-views.md).
+The default value is `'main'`, meaning the layout file `main.php` under the [layout path](#layoutPath) should be used.
+If both of the [layout path](#layoutPath) and the [view path](#viewPath) are taking the default values,
+the default layout file can be represented as the path alias `@app/views/layouts/main.php`.
+
+You may configure this property to be `false` if you want to disable layout by default, although this is very rare.
 
 
 #### [[yii\base\Application::layoutPath|layoutPath]]
 
+This property specifies the path where layout files should be looked for. The default value is
+the `layouts` sub-directory under the [view path](#viewPath). If the [view path](#viewPath) is taking
+its default value, the default layout path can be represented as the path alias `@app/views/layouts`.
+
+You may configure it as a directory or a path [alias](concept-aliases.md).
+
+
 #### [[yii\base\Application::runtimePath|runtimePath]]
 
-#### [[yii\base\Application::sourceLanguage|sourceLanguage]]
+This property specifies the path where temporary files, such as log files, cache files, can be generated.
+The default value is the directory represented by the alias `@app/runtime`.
+
+You may configure it as a directory or a path [alias](concept-aliases.md). Note that the runtime path must
+be writable by the process running the application. And the path should be protected from being accessed
+by end users because the temporary files under it may contain sensitive information.
+
+To simplify accessing to this path, Yii has predefined a path alias named `@runtime` for it.
+
 
 #### [[yii\base\Application::viewPath|viewPath]]
 
+This property specifies the root directory where view files are located. The default value is the directory
+represented by the alias `@app/views`. You may configure it as a directory or a path [alias](concept-aliases.md).
+
+
 #### [[yii\base\Application::vendorPath|vendorPath]]
 
+This property specifies the vendor directory managed by [Composer](http://getcomposer.org). It contains
+all third party libraries used by your application, including the Yii framework. The default value is
+the directory represented by the alias `@app/vendor`.
+
+You may configure this property as a directory or a path [alias](concept-aliases.md). When you modify
+this property, make sure you also adjust the Composer configuration accordingly.
+
+To simplify accessing to this path, Yii has predefined a path alias named `@vendor` for it.
+
+
 #### [[yii\console\Application::enableCoreCommands|enableCoreCommands]]
+
+This property is supported by [[yii\console\Application|console applications]] only. It specifies
+whether the core commands included in the Yii release should be enabled. The default value is `true`.
+
+
+## Application Events
+
+An application triggers several events during the lifecycle of handling an request. You may attach event
+handlers to these events in application configurations like the following,
+
+```php
+[
+    'on beforeRequest' => function ($event) {
+        // ...
+    },
+]
+```
+
+The use of the `on eventName` syntax is described in the [Configurations](concept-configurations.md#configuration-format)
+section.
+
+Alternatively, you may attach event handlers during the [bootstrapping process](runtime-bootstrapping.md) process
+after the application instance is created. For example,
+
+```php
+\Yii::$app->on(\yii\base\Application::EVENT_BEFORE_REQUEST, function ($event) {
+    // ...
+});
+```
+
+### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]]
+
+This event is triggered *before* an application handles a request. The actual event name is `beforeRequest`.
+
+When this event is triggered, the application instance has been configured and initialized. So it is a good place
+to insert your custom code via the event mechanism to intercept the request handling process. For example,
+in the event handler, you may dynamically set the [[yii\base\Application::language]] property based on some parameters.
+
+
+### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_REQUEST]]
+
+This event is triggered *after* an application finishes handling a request but *before* sending the response.
+The actual event name is `afterRequest`.
+
+When this event is triggered, the request handling is completed and you may take this chance to do some postprocessing
+of the request or customize the response.
+
+Note that the [[yii\web\Response|response]] component also triggers some events while it is sending out
+response content to end users. Those events are triggered *after* this event.
+
+
+### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_ACTION]]
+
+This event is triggered *before* running every [controller action](structure-controllers.md).
+The actual event name is `beforeAction`.
+
+The event parameter is an instance of [[yii\base\ActionEvent]]. An event handler may set
+the [[yii\base\ActionEvent::isValid]] property to be `false` to stop running the action.
+For example,
+
+```php
+[
+    'on beforeAction' => function ($event) {
+        if (some condition) {
+            $event->isValid = false;
+        } else {
+        }
+    },
+]
+```
+
+Note that the same `beforeAction` event is also triggered by [modules](structure-modules.md)
+and [controllers)(structure-controllers.md). Application objects are the first ones
+triggering this event, followed by modules (if any), and finally controllers. If an event handler
+sets [[yii\base\ActionEvent::isValid]] to be `false`, all the following events will NOT be triggered.
+
+
+### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_ACTION]]
+
+This event is triggered *after* running every [controller action](structure-controllers.md).
+The actual event name is `afterAction`.
+
+The event parameter is an instance of [[yii\base\ActionEvent]]. Through
+the [[yii\base\ActionEvent::result]] property, an event handler may access or modify the action result.
+For example,
+
+```php
+[
+    'on afterAction' => function ($event) {
+        if (some condition) {
+            // modify $event->result
+        } else {
+        }
+    },
+]
+```
+
+Note that the same `afterAction` event is also triggered by [modules](structure-modules.md)
+and [controllers)(structure-controllers.md). These objects trigger this event in the reverse order
+as for that of `beforeAction`. That is, controllers are the first objects triggering this event,
+followed by modules (if any), and finally applications.
 
 
 ## Application Components
 
 Applications are [service locators](concept-service-locators.md). They host a set of the so-called
-*application components* that provide different services for request processing. For example,
+*application components* that provide different services for processing requests. For example,
 the `urlManager` component is responsible for routing Web requests to appropriate controllers;
 the `db` component provides DB-related services; and so on.
 
@@ -437,88 +586,74 @@ Application components can be any objects. You can register them with an applica
 globally accessible. This is usually done by configuring the [[yii\base\Application::components]] property,
 as described in the [components](#components) subsection.
 
-Yii predefines a set of core application components to provide features common among different applications.
-For example, the [[yii\web\Application::request|request]] component is used to collect information about
-a user request and resolve it into a [route](runtime-routing.md). By configuring the properties of these core
-components, you can customize nearly every aspect of Yii.
+Yii defines a set of *core* application components with fixed IDs and default configurations. For example,
+the [[yii\web\Application::request|request]] component is used to collect information about
+a user request and resolve it into a [route](runtime-routing.md); the [[yii\base\Application::db|db]]
+component represents a database connection through which you can perform database queries.
+It is with help of these core application components that Yii applications are able to handle user requests.
 
-Below is the list of the predefined core application components:
+Below is the list of the predefined core application components. You may configure and customize them
+like you do with normal application components. When you are configuring a core application component,
+if you do not specify its class, the default one will be used.
 
-   - [assetManager|CWebApplication::assetManager]: [CAssetManager] -
-manages the publishing of private asset files.
-
-   - [authManager|CWebApplication::authManager]: [CAuthManager] - manages role-based access control (RBAC).
-
-   - [cache|CApplication::cache]: [CCache] - provides data caching
-functionality. Note, you must specify the actual class (e.g.
-[CMemCache], [CDbCache]). Otherwise, null will be returned when you
-access this component.
-
-   - [clientScript|CWebApplication::clientScript]: [CClientScript] -
-manages client scripts (javascript and CSS).
-
-   - [coreMessages|CApplication::coreMessages]: [CPhpMessageSource] -
-provides translated core messages used by the Yii framework.
-
-   - [db|CApplication::db]: [CDbConnection] - provides the database
-connection. Note, you must configure its
-[connectionString|CDbConnection::connectionString] property in order
-to use this component.
-
-   - [errorHandler|CApplication::errorHandler]: [CErrorHandler] - handles
-uncaught PHP errors and exceptions.
-
-   - [format|CApplication::format]: [CFormatter] - formats data values
-for display purpose.
-
-   - [messages|CApplication::messages]: [CPhpMessageSource] - provides
-translated messages used by the Yii application.
-
-   - [request|CWebApplication::request]: [CHttpRequest] - provides
-information related to user requests.
-
-   - [securityManager|CApplication::securityManager]: [CSecurityManager] -
-provides security-related services, such as hashing and encryption.
-
-   - [session|CWebApplication::session]: [CHttpSession] - provides
-session-related functionality.
-
-   - [statePersister|CApplication::statePersister]: [CStatePersister] -
-provides the mechanism for persisting global state.
-
-   - [urlManager|CWebApplication::urlManager]: [CUrlManager] - provides
-URL parsing and creation functionality.
-
-   - [user|CWebApplication::user]: [CWebUser] - carries identity-related
-information about the current user.
-
-   - [themeManager|CWebApplication::themeManager]: [CThemeManager] - manages themes.
+* [[yii\web\AssetManager|assetManager]]: manages asset bundles and asset publishing.
+  Please refer to the [Managing Assets](output-assets.md) section for more details.
+* [[yii\db\Connection|db]]: represents a database connection through which you can perform DB queries.
+  Note that when you configure this component, you must specify the component class as well as other required
+  component properties, such as [[yii\db\Connection::dsn]].
+  Please refer to the [Data Access Objects](db-dao.md) section for more details.
+* [[yii\base\Application::errorHandler|errorHandler]]: handles PHP errors and exceptions.
+  Please refer to the [Handling Errors](tutorial-handling-errors.md) section for more details.
+* [[yii\base\Formatter|formatter]]: formats data when they are displayed to end users. For example, a number
+  may be displayed with thousand separator, a date may be formatted in long format.
+  Please refer to the [Data Formatting](output-formatting.md) section for more details.
+* [[yii\i18n\I18N|i18n]]: supports message translation and formatting.
+  Please refer to the [Internationalization](tutorial-i18n.md) section for more details.
+* [[yii\log\Dispatcher|log]]: manages log targets.
+  Please refer to the [Logging](tutorial-logging.md) section for more details.
+* [[yii\swiftmailer\Mailer|mail]]: supports mail composing and sending.
+  Please refer to the [Mailing](tutorial-mailing.md) section for more details.
+* [[yii\base\Application::response|response]]: represents the response being sent to end users.
+  Please refer to the [Responses](runtime-responses.md) section for more details.
+* [[yii\base\Application::request|request]]: represents the request received from end users.
+  Please refer to the [Requests](runtime-requests.md) section for more details.
+* [[yii\web\Session|session]]: represents the session information. This component is only available
+  in [[yii\web\Application|Web applications]].
+  Please refer to the [Sessions and Cookies](runtime-sessions-cookies.md) section for more details.
+* [[yii\web\UrlManager|urlManager]]: supports URL parsing and creation.
+  Please refer to the [URL Parsing and Generation](runtime-url-handling.md) section for more details.
+* [[yii\web\User|user]]: represents the user authentication information. This component is only available
+  in [[yii\web\Application|Web applications]]
+  Please refer to the [Authentication](security-authentication.md) section for more details.
+* [[yii\web\View|view]]: supports view rendering.
+  Please refer to the [Views](structure-views.md) section for more details.
 
 
 ## Application Lifecycle
 
+When an [entry script](structure-entry-scripts.md) is being executed to handle a request,
+an application will undergo the following lifecycle:
 
-When handling a user request, an application will undergo the following
-life cycle:
+1. The entry script loads the application configuration as an array.
+2. The entry script creates a new instance of the application:
 
-   0. Pre-initialize the application with [CApplication::preinit()];
+    2.1 [[yii\base\Application::preInit()|preInit()]] is called, which configures some high priority
+        application properties, such as [[yii\base\Application::basePath|basePath]].
+    2.2 Register the [[yii\base\Application::errorHandler|error handler]].
+    2.3 Configure application properties.
+    2.4 [[yii\base\Application::init()|init()]] is called which further calls
+        [[yii\base\Application::bootstrap()|bootstrap()]] to run bootstrap components.
 
-   1. Set up the error handling;
+3. The entry script calls [[yii\base\Application::run()]] to run the application:
 
-   2. Register core application components;
+    3.1 Trigger the [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] event.
+    3.2 Handle the request:
 
-   3. Load application configuration;
+        3.2.1 Resolve the request into a [route](runtime-routing.md) and the associated parameters.
+        3.2.2 Create the module, controller and action objects as specified by the route.
+        3.2.3 Run the action.
 
-   4. Initialize the application with [CApplication::init()]
-       - Register application behaviors;
-       - Load static application components;
+    3.3 Trigger the [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] event.
+    3.4 Send response to the end user.
 
-   5. Raise an [onBeginRequest|CApplication::onBeginRequest] event;
-
-   6. Process the user request:
-       - Collect information about the request;
-       - Create a controller;
-       - Run the controller;
-
-   7. Raise an [onEndRequest|CApplication::onEndRequest] event;
-
+4. The entry script receives the exit status from the application and completes the request processing.
