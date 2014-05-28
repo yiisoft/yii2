@@ -129,7 +129,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         if (YII_DEBUG) {
             $array['stack-trace'] = explode("\n", $exception->getTraceAsString());
             if ($exception instanceof \yii\db\Exception) {
-                $array['error-info'] = $this->errorInfo;
+                $array['error-info'] = $exception->errorInfo;
             }
         }
         if (($prev = $exception->getPrevious()) !== null) {
