@@ -13,6 +13,9 @@ use cebe\markdown\Markdown;
 
 class IndexFileAnalyzer extends Markdown
 {
+    public $title;
+    public $introduction;
+
     private $_chapter = 0;
     private $_chapters = [];
 
@@ -25,22 +28,39 @@ class IndexFileAnalyzer extends Markdown
 
     protected function renderHeadline($block)
     {
-        $this->_chapters[++$this->_chapter] = [
-            'headline' => $block['content'],
-            'content' => [],
-        ];
+        if ($this->_chapter === 0) {
+            $this->title = $block['content'];
+            $this->introduction = '';
+            $this->_chapter++;
+        } else {
+            $this->_chapter++;
+            $this->_chapters[$this->_chapter] = [
+                'headline' => $block['content'],
+                'content' => [],
+            ];
+        }
         return parent::renderHeadline($block);
+    }
+
+    protected function renderParagraph($block)
+    {
+        if ($this->_chapter < 1) {
+            $this->introduction .= implode("\n", $block['content']);
+        }
+        return parent::renderParagraph($block);
     }
 
     protected function renderList($block)
     {
-        foreach ($block['items'] as $item => $itemLines) {
-            if (preg_match('~\[([^\]]+)\]\(([^\)]+)\)(.*)~', implode("\n", $itemLines), $matches)) {
-                $this->_chapters[$this->_chapter]['content'][] = [
-                    'headline' => $matches[1],
-                    'file' => $matches[2],
-                    'teaser' => $matches[3],
-                ];
+        if ($this->_chapter > 0) {
+            foreach ($block['items'] as $item => $itemLines) {
+                if (preg_match('~\[([^\]]+)\]\(([^\)]+)\)(.*)~', implode("\n", $itemLines), $matches)) {
+                    $this->_chapters[$this->_chapter]['content'][] = [
+                        'headline' => $matches[1],
+                        'file' => $matches[2],
+                        'teaser' => $matches[3],
+                    ];
+                }
             }
         }
         return parent::renderList($block);

@@ -69,9 +69,13 @@ class GuideRenderer extends \yii\apidoc\templates\html\GuideRenderer
             $output .= '\chapter{' . $chapter['headline'] . "}\n";
             foreach($chapter['content'] as $content) {
                 if (isset($fileData[$content['file']])) {
+                    $md->labelPrefix = $content['file'] . '#';
+                    $output .= '\label{'. $content['file'] . '}';
                     $output .= $md->parse($fileData[$content['file']]) . "\n\n";
                 } else {
-                    $output .= '\newpage\textbf{Error: not existing file: '.$content['file'].'}\newpage'."\n";
+                    $output .= '\newpage';
+                    $output .= '\label{'. $content['file'] . '}';
+                    $output .= '\textbf{Error: not existing file: '.$content['file'].'}\newpage'."\n";
                 }
 
                 if ($this->controller !== null) {

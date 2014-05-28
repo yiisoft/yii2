@@ -1,5 +1,4 @@
-\documentclass[a4paper, 10pt]{book}
-
+\documentclass[a4paper,11pt,twoside]{book}
 
 % english and utf8
 %\usepackage[T1]{fontenc}
@@ -75,9 +74,78 @@
 % http://tex.stackexchange.com/questions/23711/strikethrough-text
 \usepackage{ulem}
 
+\newcommand{\centeronpage}{% Horizontal adjustment of image
+  \ifodd\value{page}\hspace*{\dimexpr\evensidemargin-\oddsidemargin}\else\hspace*{-\dimexpr\evensidemargin-\oddsidemargin}\fi%
+}
+
+\title{The definitive Guide to Yii 2.0}
+\author{
+    Qiang Xue,
+    Alexander Makarov,
+    Carsten Brandt,
+    Klimov Paul
+    and
+    many contributors from the Yii community
+}
+
+%\setlength{\oddsidemargin}{15.5pt}
+%\setlength{\evensidemargin}{15.5pt}
+
+% uncomment for debugging layout issues
+%\usepackage{showframe}
+
 \begin{document}
 
+    \frontmatter
+
+    \begin{titlepage}
+        % ensure centering the title page by ignoring odd and even margin
+        \setlength{\oddsidemargin}{-1in}
+        \setlength{\evensidemargin}{-1in}
+        \setlength{\textwidth}{\paperwidth}
+
+        \vspace*{\fill}
+
+        % typesetting the title line
+        \noindent
+        \parbox{\textwidth}{\centering \bfseries \Huge
+            The Definitive Guide
+        }\vspace{.5cm}
+        \parbox{\textwidth}{\centering \bfseries \Huge
+            to
+        }\vspace{.5cm}
+        \parbox{\textwidth}{\centering \bfseries \Huge
+            Yii 2.0
+        }
+
+        \vfill
+
+        % typesetting authors
+        \noindent
+        \parbox{\textwidth}{\centering \Large
+            Qiang Xue,\\
+            Alexander Makarov,\\
+            Carsten Brandt,\\
+            Klimov Paul\\
+            and\\
+            the Yii community
+        }
+
+        \vspace*{\fill}
+
+        \noindent
+        \parbox{\textwidth}{\centering
+            Copyright 2014 Yii Software LLC.
+        }
+    \end{titlepage}
+
+    %Take a blank Page
+    \pagebreak \thispagestyle{empty} \cleardoublepage
+
+    \setcounter{tocdepth}{1}
     \tableofcontents
+
+    \mainmatter
 
 	\include{guide}
 
