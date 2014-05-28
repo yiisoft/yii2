@@ -154,10 +154,30 @@ if (YII_ENV_DEV) {
   for each request, the same set of components need to be run. So use bootstrap components judiciously.
 
 
+#### [[yii\web\Application::catchAll|catchAll]]
+
+This property is supported by [[yii\web\Application|Web applications]] only. It specifies
+a [controller action](structure-controllers.md) which should handle all user requests. This is mainly
+used when the application is in maintenance mode and needs to handle all incoming requests via a single action.
+
+The configuration is an array whose first element specifies the route of the action.
+The rest of the array elements (key-value pairs) specify the parameters to be bound to the action. For example,
+
+```php
+[
+    'catchAll' => [
+        'offline/notice',
+        'param1' => 'value1',
+        'param2' => 'value2',
+    ],
+]
+```
+
+
 #### [[yii\base\Application::components|components]]
 
-This is the single most important property. It allows you to configure a list of named components
-called *application components* that you can use in other places. For example,
+This is the single most important property. It allows you to register a list of named components
+called [application components](#application-components) that you can use in other places. For example,
 
 ```php
 [
@@ -173,8 +193,13 @@ called *application components* that you can use in other places. For example,
 ]
 ```
 
-More details about how to configure and use this property are described in the
-[application components](#application-components) section.
+Each application component is specified as a key-value pair in the array. The key represents the application ID,
+while the value represents the component class name or [configuration](concept-configurations.md).
+
+You can register any component with an application, and the component can later be accessed globally
+using the expression `\Yii::$app->ComponentID`.
+
+Please read the [application components](#application-components) section for details.
 
 
 #### [[yii\base\Application::controllerMap|controllerMap]]
@@ -223,42 +248,176 @@ property.
 
 #### [[yii\base\Application::language|language]]
 
+This property specifies the language in which the application should display content to end users.
+You should configure this property if your application needs to support multiple languages.
+
+The value of this property determines various [internationalization](tutorial-i18n.md) aspects,
+including message translation, date formatting, number formatting, etc. For example, the [[yii\jui\DatePicker]] widget
+will use this property value by default to determine in which language the calendar should be displayed and how
+should the date be formatted. The default value of this property is `en`.
+
+It is recommended that you specify a language in terms of an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag).
+For example, `en` stands for English, while `en-US` stands for English (United States).
+
+More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
+
+
 #### [[yii\base\Application::modules|modules]]
+
+This property specifies the [modules](structure-modules.md) that the application contains.
+
+The property takes an array of module classes or [configurations](concept-configurations.md) with the array keys
+being the module IDs. For example,
+
+```php
+[
+    'modules' => [
+        // a "booking" module specified with the module class
+        'booking' => 'app\modules\booking\BookingModule',
+
+        // a "comment" module specified with a configuration array
+        'comment' => [
+            'class' => 'app\modules\comment\CommentModule',
+            'db' => 'db',
+        ],
+    ],
+]
+```
+
+Please refer to the [Modules](structure-modules.md) section for more details.
+
 
 #### [[yii\base\Application::name|name]]
 
+This property specifies the application name that may be displayed to end users. Unlike the
+[[yii\base\Application::id|id]] property which should take a unique value, the value of this property is mainly for
+display purpose and does not need to be unique.
+
+You do not always need to configure this property if none of your code is using it.
+
+
 #### [[yii\base\Application::params|params]]
+
+This property specifies an array of globally accessible application parameters. Instead of using hardcoded
+numbers and strings everywhere in your code, it is a good practice to define them as application parameters
+in a single place and use the parameters in places where needed. For example, you may define the thumbnail
+image size as a parameter like the following:
+
+```php
+[
+    'params' => [
+        'thumbnail.size' => [128, 128],
+    ],
+]
+```
+
+Then in your code where you need to use the size value, you can simply use the code like the following:
+
+```php
+$size = \Yii::$app->params['thumbnail.size'];
+$width = \Yii::$app->params['thumbnail.size'][0];
+```
+
+Later if you decide to change the thumbnail size, you only need to modify it in the application configuration
+without touching any dependent code.
+
+
+#### [[yii\base\Application::timeZone|timeZone]]
+
+This property is provided as an alternative way of setting the default time zone of PHP runtime.
+By configuring this property, you are essentially calling the PHP function [date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php).
+For example,
+
+```php
+[
+    'timeZone' => 'America/Los_Angeles',
+]
+```
+
 
 #### [[yii\base\Application::version|version]]
 
+This property specifies the version of the application. It defaults to `'1.0'`. You do not always need to configure
+this property if none of your code is using it.
+
 
 ### Useful Properties
+
+The properties described in this subsection are not commonly configured because their default values
+stipulate common conventions. However, you may still configure them in case you want to break the conventions.
+
+
+#### [[yii\base\Application::charset|charset]]
+
+This property specifies the charset that the application uses. The default value is `'UTF-8'` which should
+be kept as is for most applications unless you are working with some legacy systems that use a lot of non-unicode data.
+
+
+#### [[yii\base\Application::defaultRoute|defaultRoute]]
+
+This property specifies the [route](runtime-routing.md) that an application should use when a request
+does not specify one. The route may consist of child module ID, controller ID, and/or action ID.
+For example, `help`, `post/create`, `admin/post/create`. If action ID is not given, it will take the default
+value as specified in [[yii\base\Controller::defaultAction]].
+
+For [yii\web\Application|Web applications], the default value of this property is `'site'`, which means
+the `SiteController` controller and its default action should be used. As a result, if you access
+the application without specifying a route, it will show the result of `app\controllers\SiteController::actionIndex()`.
+
+For [yii\console\Application|console applications], the default value is `'help'`, which means the core command
+[[yii\console\controllers\HelpController::actionIndex()]] should be used. As a result, if you run the command `yii`
+without providing any arguments, it will display the help information.
+
+
+#### [[yii\base\Application::extensions|extensions]]
+
+This property specifies the list of [extensions](structure-extensions.md) that are installed and used by the application.
+By default, it will take the array returned by the file `@vendor/yiisoft/extensions.php`. The `extensions.php` file
+is generated and maintained automatically when you use [Composer](http://getcomposer.org) to install extensions.
+So in most cases, you do not need to configure this property.
+
+In the special case when you want to maintain extensions manually, you may configure this property like the following:
+
+```php
+[
+    'extensions' => [
+        [
+            'name' => 'extension name',
+            'version' => 'version number',
+            'bootstrap' => 'BootstrapClassName',  // optional, may also be a configuration array
+            'alias' => [  // optional
+                '@alias1' => 'to/path1',
+                '@alias2' => 'to/path2',
+            ],
+        ],
+
+        // ... more extensions like the above ...
+
+    ],
+]
+```
+
+As you can see, the property takes an array of extension specifications. Each extension is specified with an array
+consisting of `name` and `version` elements. If an extension needs to run during the [bootstrap](runtime-bootstrapping.md)
+property, a `bootstrap` element may be specified with a bootstrap class name or a [configuration](concept-configurations.md)
+array. An extension may also define a few [aliases](concept-aliases.md).
+
+
+#### [[yii\base\Application::layout|layout]]
+
+
 
 #### [[yii\base\Application::layoutPath|layoutPath]]
 
 #### [[yii\base\Application::runtimePath|runtimePath]]
 
+#### [[yii\base\Application::sourceLanguage|sourceLanguage]]
+
 #### [[yii\base\Application::viewPath|viewPath]]
 
 #### [[yii\base\Application::vendorPath|vendorPath]]
 
-#### [[yii\base\Application::timeZone|timeZone]]
-
-#### [[yii\base\Application::layout|layout]]
-
-#### [[yii\base\Application::defaultRoute|defaultRoute]]
-
-#### [[yii\base\Application::charset|charset]]
-
-#### [[yii\base\Application::sourceLanguage|sourceLanguage]]
-
-#### [[yii\base\Application::extensions|extensions]]
-
-// WEB
-    public $catchAll;
-
-// Console
-    public $enableCoreCommands = true;
+#### [[yii\console\Application::enableCoreCommands|enableCoreCommands]]
 
 
 ## Application Components
@@ -275,35 +434,15 @@ For example, you can use `Yii::$app->db` to get the [[yii\db\Connection|DB conne
 to get the [[yii\caching\Cache|primary cache]] registered with the application.
 
 Application components can be any objects. You can register them with an application to make them
-globally accessible. This is usually done by configuring the [[yii\base\Application::components]] property in the
-application configuration like the following:
+globally accessible. This is usually done by configuring the [[yii\base\Application::components]] property,
+as described in the [components](#components) subsection.
 
-```php
-[
-    'components' => [
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
-        ],
-        'mail' => [
-            'class' => 'yii\swiftmailer\Mailer',
-        ],
-    ],
-]
-```
+Yii predefines a set of core application components to provide features common among different applications.
+For example, the [[yii\web\Application::request|request]] component is used to collect information about
+a user request and resolve it into a [route](runtime-routing.md). By configuring the properties of these core
+components, you can customize nearly every aspect of Yii.
 
-The array keys are the IDs of the application components, and the array values are the
-[configurations](concept-configurations.md) for the corresponding application components.
-
-
-Yii predefines a set of core application components to provide features
-common among Web applications. For example, the
-[request|CWebApplication::request] component is used to collect
-information about a user request and provide information such as the
-requested URL and cookies.  By configuring the properties of these core
-components, we can change the default behavior of nearly every aspect
-of Yii.
-
-Here is a list the core components that are pre-declared by [CWebApplication]:
+Below is the list of the predefined core application components:
 
    - [assetManager|CWebApplication::assetManager]: [CAssetManager] -
 manages the publishing of private asset files.

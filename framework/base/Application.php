@@ -101,7 +101,9 @@ abstract class Application extends Module
      */
     public $charset = 'UTF-8';
     /**
-     * @var string the language that is meant to be used for end users.
+     * @var string the language that is meant to be used for end users. It is recommended that you
+     * use [IETF language tags](http://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands
+     * for English, while `en-US` stands for English (United States).
      * @see sourceLanguage
      */
     public $language = 'en';
@@ -152,7 +154,7 @@ abstract class Application extends Module
      * [[bootstrap()|bootstrapping process]]. If the class implements [[BootstrapInterface]],
      * its [[BootstrapInterface::bootstrap()|bootstrap()]] method will be also be called.
      *
-     * If not set explicitily in the application config, this property will be populated with the contents of
+     * If not set explicitly in the application config, this property will be populated with the contents of
      * `@vendor/yiisoft/extensions.php`.
      */
     public $extensions;
