@@ -36,6 +36,7 @@ class CaptchaValidator extends Validator
     public $caseSensitive = false;
     /**
      * @var string the route of the controller action that renders the CAPTCHA image.
+     * Should be an absolute route (with a leading slash) when used in a module.
      */
     public $captchaAction = 'site/captcha';
 
