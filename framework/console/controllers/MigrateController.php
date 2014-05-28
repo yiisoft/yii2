@@ -204,10 +204,7 @@ class MigrateController extends Controller
      */
     public function actionDown($limit = 1)
     {
-
-        $downAll = ($limit === 'all');
-
-        if ($downAll) {
+        if ($limit === 'all') {
             $limit = null;
         } else {
             $limit = (int) $limit;
@@ -265,9 +262,7 @@ class MigrateController extends Controller
      */
     public function actionRedo($limit = 1)
     {
-        $redoAll = ($limit === 'all');
-
-        if ($redoAll) {
+        if ($limit === 'all') {
             $limit = null;
         } else {
             $limit = (int) $limit;
@@ -432,9 +427,7 @@ class MigrateController extends Controller
      */
     public function actionHistory($limit = 10)
     {
-        $showAll = ($limit === 'all');
-
-        if ($showAll) {
+        if ($limit === 'all') {
             $limit = null;
         } else {
             $limit = (int) $limit;
@@ -477,9 +470,7 @@ class MigrateController extends Controller
      */
     public function actionNew($limit = 10)
     {
-        $showAll = ($limit === 'all');
-
-        if ($showAll) {
+        if ($limit === 'all') {
             $limit = null;
         } else {
             $limit = (int) $limit;
