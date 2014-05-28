@@ -36,6 +36,7 @@ Yii Framework 2 Change Log
 - Bug #3578: Fixed postgreSQL column type detection, added missing types (MDMunir, cebe)
 - Bug #3591: Fix incomplete obsolete filling in i18n `MessageController::saveMessagesToDb()` (advsm)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
+- Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2435: `yii\db\IntegrityException` is now thrown on database integrity errors instead of general `yii\db\Exception` (samdark)
 - Enh #2837: Error page now shows arguments in stack trace method calls (samdark)
