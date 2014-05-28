@@ -35,6 +35,7 @@ Yii Framework 2 Change Log
 - Bug #3567: Fixed the bug that smallint was treated as string for PostgreSQL (qiangxue)
 - Bug #3578: Fixed postgreSQL column type detection, added missing types (MDMunir, cebe)
 - Bug #3591: Fix incomplete obsolete filling in i18n `MessageController::saveMessagesToDb()` (advsm)
+- Bug #3601 : Fixed the bug that prevents using captcha in a module (klevron)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
