@@ -14,7 +14,7 @@ In order to install Composer, check the official guide for your operating system
 * [Linux](http://getcomposer.org/doc/00-intro.md#installation-nix)
 * [Windows](http://getcomposer.org/doc/00-intro.md#installation-windows)
 
-All of the details can be found in the guide, but you'll either download Composer directly from [http://getcomposer.org/](http://getcomposer.org/), or run the following command:
+All of the details can be found in the guide, but you'll either download Composer directly from <http://getcomposer.org/>, or run the following command:
 
 ```
 curl -s http://getcomposer.org/installer | php
