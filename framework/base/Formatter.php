@@ -438,6 +438,19 @@ class Formatter extends Component
 
         return number_format($value, $decimals, $ds, $ts);
     }
+    
+    /**
+     * Formats the value as a money with decimal and thousand separators.
+     * @param mixed $value the value to be formatted
+     * @return string the formatted result
+     * @see decimalSeparator
+     * @see thousandSeparator
+     * @see [[asNumber]]
+     */
+    public function asMoney($value)
+    {
+        return $this->asNumber($value, $this->sizeFormat['decimals']);
+    }
 
     /**
      * Formats the value in bytes as a size in human readable form.
