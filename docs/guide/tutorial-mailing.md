@@ -104,7 +104,7 @@ use yii\helpers\Url;
 In order to compose message content via view file simply pass view name to the `compose()` method:
 
 ```php
-Yii::$app->mail->compose('homelink') // message body becomes a view rendering result here
+Yii::$app->mail->compose('home-link') // message body becomes a view rendering result here
     ->setFrom('from@domain.com')
     ->setTo('to@domain.com')
     ->setSubject('Message subject')
@@ -120,14 +120,97 @@ Yii::$app->mail->compose('greetings', [
 ]);
 ```
 
+You can specify different view files for HTML and plain text message contents:
+
+```php
+Yii::$app->mail->compose([
+    'html' => 'contact-html',
+    'text' => 'contact-text',
+]);
+```
+
+If you specify view name as a scalar string, its rendering result will be used as HTML body, while
+plain text body will be composed by removing all HTML entities from HTML one.
+
+View rendering result can be wrapped into the layout, which an be setup using [[yii\mail\BaseMailer::htmlLayout]]
+and [[yii\mail\BaseMailer::textLayout]]. It will work the same way like layouts in regular web application.
+Layout can be used to setup mail CSS styles or other shared content:
+
+```php
+<?php
+use yii\helpers\Html;
+
+/**
+ * @var \yii\web\View $this view component instance
+ * @var \yii\mail\BaseMessage $message instance of newly created mail message
+ * @var string $content main view render result
+ */
+?>
+<?php $this->beginPage() ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=<?= $message->charset ?>" />
+    <style type="text/css">
+        .heading {...}
+        .list {...}
+        .footer {...}
+    </style>
+    <?php $this->head() ?>
+</head>
+<body>
+    <?php $this->beginBody() ?>
+    <?= $content ?>
+    <div class="footer">With kind regards, <?= Yii::$app->name ?> team</div>
+    <?php $this->endBody() ?>
+</body>
+</html>
+<?php $this->endPage() ?>
+```
+
 
 File attachment
 ---------------
+
+You can add attachments to message using methods `attach()` and `attachContent()`:
+
+```php
+$message = Yii::$app->mail->compose();
+
+// Attach file from local file system:
+$message->attach('/path/to/source/file.pdf');
+
+// Create attachment on-the-fly
+$message->attachContent('Attachment content', ['fileName' => 'attach.txt', 'contentType' => 'text/plain']);
+```
 
 
 Embed images
 ------------
 
+You can embed images into the message content using `embed()` method. This method returns the attachment id,
+which should be then used at 'img' tag.
+This method is easy to use when composing message content via view file:
 
-Creating your own mail extension
---------------------------------
+```php
+Yii::$app->mail->compose('embed-email', ['imageFileName' => '/path/to/image.jpg'])
+    // ...
+    ->send();
+```
+
+Then inside view file you can use following code:
+
+```php
+<img src="<?= $message->embed($imageFileName); ?>">
+```
+
+
+Creating your own mail solution
+-------------------------------
+
+In order to create your own custom mail solution, you need to create 2 classes: one for the 'Mailer' and
+another one for the 'Message'.
+You can use `yii\mail\BaseMailer` and `yii\mail\BaseMessage` as a base classes for your solution. These classes
+already contains basic logic, which is described in this guide. However, their usage is not mandatory, it is enough
+to implement `yii\mail\MailerInterface` and `yii\mail\MessageInterface` interfaces.
+Then you need to implement all abstract methods to build you solution.
