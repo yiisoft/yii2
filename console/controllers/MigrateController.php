@@ -214,11 +214,13 @@ class MigrateController extends Controller
         }
 
         $migrations = $this->getMigrationHistory($limit);
+
         if (empty($migrations)) {
             echo "No migration has been done before.\n";
 
             return self::EXIT_CODE_NORMAL;
         }
+
         $migrations = array_keys($migrations);
 
         $n = count($migrations);
@@ -249,6 +251,7 @@ class MigrateController extends Controller
      * ~~~
      * yii migrate/redo     # redo the last applied migration
      * yii migrate/redo 3   # redo the last 3 applied migrations
+     * yii migrate/redo all # redo all migrations
      * ~~~
      *
      * @param integer $limit the number of migrations to be redone. Defaults to 1,
@@ -259,17 +262,23 @@ class MigrateController extends Controller
      */
     public function actionRedo($limit = 1)
     {
-        $limit = (int) $limit;
-        if ($limit < 1) {
-            throw new Exception("The step argument must be greater than 0.");
+        if ($limit === 'all') {
+            $limit = null;
+        } else {
+            $limit = (int) $limit;
+            if ($limit < 1) {
+                throw new Exception("The step argument must be greater than 0.");
+            }
         }
 
         $migrations = $this->getMigrationHistory($limit);
+
         if (empty($migrations)) {
             echo "No migration has been done before.\n";
 
             return self::EXIT_CODE_NORMAL;
         }
+
         $migrations = array_keys($migrations);
 
         $n = count($migrations);
@@ -410,7 +419,7 @@ class MigrateController extends Controller
      * ~~~
      * yii migrate/history     # showing the last 10 migrations
      * yii migrate/history 5   # showing the last 5 migrations
-     * yii migrate/history 0   # showing the whole history
+     * yii migrate/history all # showing the whole history
      * ~~~
      *
      * @param integer $limit the maximum number of migrations to be displayed.
@@ -418,8 +427,17 @@ class MigrateController extends Controller
      */
     public function actionHistory($limit = 10)
     {
-        $limit = (int) $limit;
+        if ($limit === 'all') {
+            $limit = null;
+        } else {
+            $limit = (int) $limit;
+            if ($limit < 1) {
+                throw new Exception("The step argument must be greater than 0.");
+            }
+        }
+
         $migrations = $this->getMigrationHistory($limit);
+
         if (empty($migrations)) {
             echo "No migration has been done before.\n";
         } else {
@@ -444,7 +462,7 @@ class MigrateController extends Controller
      * ~~~
      * yii migrate/new     # showing the first 10 new migrations
      * yii migrate/new 5   # showing the first 5 new migrations
-     * yii migrate/new 0   # showing all new migrations
+     * yii migrate/new all # showing all new migrations
      * ~~~
      *
      * @param integer $limit the maximum number of new migrations to be displayed.
@@ -452,13 +470,22 @@ class MigrateController extends Controller
      */
     public function actionNew($limit = 10)
     {
-        $limit = (int) $limit;
+        if ($limit === 'all') {
+            $limit = null;
+        } else {
+            $limit = (int) $limit;
+            if ($limit < 1) {
+                throw new Exception("The step argument must be greater than 0.");
+            }
+        }
+
         $migrations = $this->getNewMigrations();
+
         if (empty($migrations)) {
             echo "No new migrations found. Your system is up-to-date.\n";
         } else {
             $n = count($migrations);
-            if ($limit > 0 && $n > $limit) {
+            if ($limit && $n > $limit) {
                 $migrations = array_slice($migrations, 0, $limit);
                 echo "Showing $limit out of $n new " . ($n === 1 ? 'migration' : 'migrations') . ":\n";
             } else {
