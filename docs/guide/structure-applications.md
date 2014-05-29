@@ -586,6 +586,11 @@ Application components can be any objects. You can register them with an applica
 globally accessible. This is usually done by configuring the [[yii\base\Application::components]] property,
 as described in the [components](#components) subsection.
 
+> Info: While you can register as many application components as you want, you should do this judiciously.
+  Application components are like global variables. Using too many application components can potentially
+  make your code harder to test and maintain. In many cases, you can simply create a local component
+  and use it when needed.
+
 Yii defines a set of *core* application components with fixed IDs and default configurations. For example,
 the [[yii\web\Application::request|request]] component is used to collect information about
 a user request and resolve it into a [route](runtime-routing.md); the [[yii\base\Application::db|db]]
@@ -636,20 +641,16 @@ an application will undergo the following lifecycle:
 
 1. The entry script loads the application configuration as an array.
 2. The entry script creates a new instance of the application:
-
-  2.1 [[yii\base\Application::preInit()|preInit()]] is called, which configures some high priority
-      application properties, such as [[yii\base\Application::basePath|basePath]].
-  2.2 Register the [[yii\base\Application::errorHandler|error handler]].
-  2.3 Configure application properties.
-  2.4 [[yii\base\Application::init()|init()]] is called which further calls
-      [[yii\base\Application::bootstrap()|bootstrap()]] to run bootstrap components.
-
+  * [[yii\base\Application::preInit()|preInit()]] is called, which configures some high priority
+    application properties, such as [[yii\base\Application::basePath|basePath]].
+  * Register the [[yii\base\Application::errorHandler|error handler]].
+  * Configure application properties.
+  * [[yii\base\Application::init()|init()]] is called which further calls
+    [[yii\base\Application::bootstrap()|bootstrap()]] to run bootstrap components.
 3. The entry script calls [[yii\base\Application::run()]] to run the application:
-
-  3.1 Trigger the [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] event.
-  3.2 Handle the request: resolve the request into a [route](runtime-routing.md) and the associated parameters;
-      create the module, controller and action objects as specified by the route; and run the action.
-  3.3 Trigger the [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] event.
-  3.4 Send response to the end user.
-
+  * Trigger the [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] event.
+  * Handle the request: resolve the request into a [route](runtime-routing.md) and the associated parameters;
+    create the module, controller and action objects as specified by the route; and run the action.
+  * Trigger the [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] event.
+  * Send response to the end user.
 4. The entry script receives the exit status from the application and completes the request processing.
