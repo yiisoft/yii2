@@ -35,7 +35,7 @@ return [
     'Page not found.' => 'Pagina non trovata',
     'Please fix the following errors:' => 'Per favore correggi i seguenti errori:',
     'Please upload a file.' => 'Per favore carica il file.',
-    'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Mostro <b>{begin, number}-{end, number}</b> di <b>{totalCount, number}</b> {totalCount, plural, one{elemento} other{elementi}}.',
+    'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Visualizzo <b>{begin, number}-{end, number}</b> di <b>{totalCount, number}</b> {totalCount, plural, one{elemento} other{elementi}}.',
     'The file "{file}" is not an image.' => 'Questo file "{file}" non è una immagine.',
     'The file "{file}" is too big. Its size cannot exceed {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'Il file "{file}"è troppo grande. La dimensione non può superare {limit, number} {limit, plural, one{byte} other{bytes}}.',
     'The file "{file}" is too small. Its size cannot be smaller than {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'Il file "{file}" è troppo piccollo. La dimensione non può essere più piccola di {limit, number} {limit, plural, one{byte} other{bytes}}.',
