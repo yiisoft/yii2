@@ -73,6 +73,11 @@ class Formatter extends \yii\base\Formatter
      * If not set, the thousand separator corresponding to [[locale]] will be used.
      */
     public $thousandSeparator;
+    /**
+     * @var string the international curency symbol displayed when formatting a number.
+     * If not set, the thousand separator corresponding to [[locale]] will be used.
+     */
+    public $intlCurrencySymbol;
 
     /**
      * Initializes the component.
@@ -88,13 +93,16 @@ class Formatter extends \yii\base\Formatter
         if ($this->locale === null) {
             $this->locale = Yii::$app->language;
         }
-        if ($this->decimalSeparator === null || $this->thousandSeparator === null) {
+        if ($this->decimalSeparator === null || $this->thousandSeparator === null || $this->intlCurrencySymbol === null) {
             $formatter = new NumberFormatter($this->locale, NumberFormatter::DECIMAL);
             if ($this->decimalSeparator === null) {
                 $this->decimalSeparator = $formatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
             }
             if ($this->thousandSeparator === null) {
                 $this->thousandSeparator = $formatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
+            }
+            if ($this->intlCurrencySymbol === null) {
+                $this->intlCurrencySymbol = $formatter->getSymbol(NumberFormatter::INTL_CURRENCY_SYMBOL);
             }
         }
 
@@ -261,10 +269,14 @@ class Formatter extends \yii\base\Formatter
      * for details on how to specify a format.
      * @return string the formatted result.
      */
-    public function asCurrency($value, $currency = 'USD', $format = null)
+    public function asCurrency($value, $currency = null, $format = null)
     {
         if ($value === null) {
             return $this->nullDisplay;
+        }
+        
+        if ($currency === null){
+            $currency = $this->intlCurrencySymbol;
         }
 
         return $this->createNumberFormatter(NumberFormatter::CURRENCY, $format)->formatCurrency($value, $currency);
