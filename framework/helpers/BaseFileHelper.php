@@ -209,6 +209,9 @@ class BaseFileHelper
         if ($handle === false) {
             throw new InvalidParamException('Unable to open directory: ' . $src);
         }
+        if (!isset($options['basePath'])) {
+            $options['basePath'] = realpath($src);
+        }
         while (($file = readdir($handle)) !== false) {
             if ($file === '.' || $file === '..') {
                 continue;

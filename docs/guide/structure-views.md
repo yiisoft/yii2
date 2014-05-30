@@ -330,7 +330,7 @@ are triggering page rendering events that are used for registering scripts, link
 Always include these in your layout in order for the rendering to work correctly.
 
 By default layout is loaded from `views/layouts/main.php`. You may change it at controller or module level by setting
-different value to `layout` propery.
+different value to `layout` property.
 
 In order to pass data from controller to layout, that you may need for breadcrumbs or similar elements, use view component
 params property. In controller it can be set as:
@@ -351,6 +351,17 @@ In layout file the value can be used like the following:
 <?= Breadcrumbs::widget([
     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
 ]) ?>
+```
+
+You may also wrap the view render result into a layout using [[yii\base\View::beginContent()]], [[yii\base\View::endContent()]].
+This approach can be used while applying nested layouts:
+
+```php
+<?php $this->beginContent('//layouts/overall') ?>
+<div class="content">
+    <?= $content ?>
+<div>
+<?php $this->endContent() ?>
 ```
 
 ### Partials
