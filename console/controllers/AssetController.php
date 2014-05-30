@@ -10,7 +10,6 @@ namespace yii\console\controllers;
 use Yii;
 use yii\console\Exception;
 use yii\console\Controller;
-use yii\helpers\StringHelper;
 use yii\helpers\VarDumper;
 
 /**
