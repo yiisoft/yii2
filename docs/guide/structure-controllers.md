@@ -22,7 +22,7 @@ a controller ID and an action ID forms a *route* which takes the format of `Cont
 
 End users can address any controller action through the corresponding route. For example, the URL
 `http://hostname/index.php?r=site/index` specifies that the request should be handled by the `site` controller
-using its `index` action.
+using its `index` action. Please refer to the [Routing](runtime-routing.md) section for more details.
 
 By default, controller and action IDs should contain lower-case alphanumeric characters and dashes only.
 For example, `site`, `index`, `post-comment` and `comment2` are all valid controller/action IDs, while
@@ -85,6 +85,22 @@ property, like the following in an [application configuration](structure-applica
             ],
         ],
     ],
+]
+```
+
+
+### Default Controller
+
+Each application has a default controller specified via the [[yii\base\Application::defaultRoute]] property.
+When a request does not specify a [route](#ids-routes), the route specified by this property will be used.
+For [[yii\web\Application|Web applications]], its value is `'site'`, while for [[yii\console\Application|console applications]],
+it is `help`. Therefore, if a URL is `http://hostname/index.php`, it means the `site` controller will handle the request.
+
+You may change the default controller with the following [application configuration](structure-applications.md#application-configurations):
+
+```php
+[
+    'defaultRoute' => 'main',
 ]
 ```
 
@@ -221,6 +237,7 @@ class SiteController extends Controller
     }
 }
 ```
+
 
 ### Action Parameters
 
