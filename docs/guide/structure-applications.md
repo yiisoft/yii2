@@ -217,7 +217,7 @@ specific controllers. In the following example, `account` will be mapped to
             'account' => 'app\controllers\UserController',
             'article' => [
                 'class' => 'app\controllers\PostController',
-                'pageTitle' => 'something new',
+                'enableCsrfValidation' => false,
             ],
         ],
     ],
