@@ -9,7 +9,6 @@ namespace yii\apidoc\helpers;
 
 use cebe\markdown\GithubMarkdown;
 use phpDocumentor\Reflection\DocBlock\Type\Collection;
-use yii\apidoc\models\MethodDoc;
 use yii\apidoc\models\TypeDoc;
 use yii\apidoc\renderers\BaseRenderer;
 use yii\helpers\Inflector;

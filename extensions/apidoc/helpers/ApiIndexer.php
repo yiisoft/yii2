@@ -11,7 +11,6 @@ namespace yii\apidoc\helpers;
 use cebe\jssearch\Indexer;
 use cebe\jssearch\tokenizer\StandardTokenizer;
 use cebe\jssearch\TokenizerInterface;
-use yii\helpers\StringHelper;
 
 class ApiIndexer extends Indexer
 {

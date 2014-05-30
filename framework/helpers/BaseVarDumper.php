@@ -7,8 +7,6 @@
 
 namespace yii\helpers;
 
-use yii\base\Arrayable;
-
 /**
  * BaseVarDumper provides concrete implementation for [[VarDumper]].
  *

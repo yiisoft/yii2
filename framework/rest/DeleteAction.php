@@ -8,7 +8,6 @@
 namespace yii\rest;
 
 use Yii;
-use yii\db\ActiveRecord;
 
 /**
  * DeleteAction implements the API endpoint for deleting a model.
