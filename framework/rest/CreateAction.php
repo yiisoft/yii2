@@ -9,7 +9,6 @@ namespace yii\rest;
 
 use Yii;
 use yii\base\Model;
-use yii\db\ActiveRecord;
 use yii\helpers\Url;
 
 /**

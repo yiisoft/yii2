@@ -32,9 +32,11 @@ Application Structure
 
 * [Entry Scripts](structure-entry-scripts.md)
 * [Applications](structure-applications.md)
-* [Controllers and Actions](structure-controllers.md)
+* [Application Components](structure-application-components.md)
+* [Controllers](structure-controllers.md)
 * [Views](structure-views.md)
 * [Models](structure-models.md)
+* **TBD** [Filters](structure-filters.md)
 * **TBD** [Widgets](structure-widgets.md)
 * **TBD** [Modules](structure-modules.md)
 * **TBD** [Extensions](structure-extensions.md)
@@ -49,7 +51,7 @@ Handling Requests
 * **TBD** [Responses](runtime-responses.md)
 * **TBD** [Sessions and Cookies](runtime-sessions-cookies.md)
 * [URL Parsing and Generation](runtime-url-handling.md)
-* **TBD** [Filtering](runtime-filtering.md)
+
 
 
 Key Concepts

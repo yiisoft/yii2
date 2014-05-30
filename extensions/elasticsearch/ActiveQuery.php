@@ -7,7 +7,6 @@
 
 namespace yii\elasticsearch;
 
-use yii\base\NotSupportedException;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveQueryTrait;
 use yii\db\ActiveRelationTrait;

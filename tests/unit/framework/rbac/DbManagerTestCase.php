@@ -4,7 +4,6 @@ namespace yiiunit\framework\rbac;
 use Yii;
 use yii\console\Application;
 use yii\console\Controller;
-use yii\console\controllers\MigrateController;
 use yii\db\Connection;
 use yii\rbac\DbManager;
 

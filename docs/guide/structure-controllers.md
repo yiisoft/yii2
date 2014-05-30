@@ -1,19 +1,107 @@
-Controller
-==========
+Controllers
+===========
 
-> Note: This section is under development.
+Controllers are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
+They contain the actual logic about processing requests and generating responses. In particular, after
+taking over the control from [applications](structure-applications.md), controllers will analyze incoming request data,
+pass them to [models](structure-models.md), inject model results into [views](structure-views.md),
+and finally generate outgoing responses.
 
-Controller is one of the key parts of the application. It determines how to handle incoming request and creates a response.
+Controllers are composed by *actions*, each of which deals with one particular type of request. A controller
+can have one or multiple actions.
 
-Most often a controller takes HTTP request data and returns HTML, JSON or XML as a response.
+> Info: You may consider a controller as a grouping of similar actions. The controller provides an environment
+  for sharing common data among its actions.
 
-Basics
-------
 
-Controller resides in application's `controllers` directory and is named like `SiteController.php`,
-where the `Site` part could be anything describing a set of actions it contains.
+## IDs and Routes
 
-The basic web controller is a class that extends [[yii\web\Controller]] and could be very simple:
+Both controllers and actions have IDs. Controller IDs are used to uniquely identify controllers within the same
+application, while actions IDs are used to identify actions within the same controller. The combination of
+a controller ID and an action ID forms a *route* which takes the format of `ControllerID/ActionID`.
+
+End users can address any controller action through the corresponding route. For example, the URL
+`http://hostname/index.php?r=site/index` specifies that the request should be handled by the `site` controller
+using its `index` action.
+
+By default, controller and action IDs should contain lower-case alphanumeric characters and dashes only.
+For example, `site`, `index`, `post-comment` and `comment2` are all valid controller/action IDs, while
+`Site`, `postComment` and `index?` are not. To use other characters in the IDs, you should configure
+[[yii\base\Application::controllerMap]] and/or override [[yii\base\Controller::actions()]].
+
+In practice, a controller is often designed to handle the requests about a specific type of resource,
+while each action within it supports a specific manipulation about that resource type. For this reason,
+controller IDs are often nouns, while action IDs are often verbs. For example, you may create an `article`
+controller to handle all requests about article data; and within the `article` controller, you may create
+actions such as `create`, `update`, `delete` to support the corresponding manipulations about articles.
+
+
+## Creating Controllers
+
+In [[yii\web\Application|Web applications]], controllers should extend from [[yii\web\Controller]] or its
+child classes. Similarly in [[yii\console\Application|console applications]], controllers should extend from
+[[yii\console\Controller]] or its child classes.
+
+Controller classes should be [autoloadable](concept-autoloading.md). They should be created under
+the namespace as specified by [[yii\base\Application::controllerNamespace]]. By default, it is `app\controllers`.
+This means controller classes should usually be located under the path aliased as `@app/controllers`.
+
+The following code defines a `site` controller:
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+
+class SiteController extends Controller
+{
+}
+```
+
+As aforementioned, the class should be saved in the file `@app/controllers/SiteController.php`.
+
+
+### Controller Class Naming
+
+The controller class name `SiteController` is derived from the controller ID `site` according to the following rules:
+
+* Turn the first letter in each word into upper case;
+* Remove dashes;
+* Append the suffix `Controller`.
+
+For example, `site` becomes `SiteController`, and `post-comment` becomes `PostCommentController`.
+
+If you want to name controller classes in a different way, you may configure the [[yii\base\Application::controllerMap]]
+property, like the following in an [application configuration](structure-applications.md#application-configurations):
+
+```php
+[
+    'controllerMap' => [
+        [
+            'account' => 'app\controllers\UserController',
+            'article' => [
+                'class' => 'app\controllers\PostController',
+                'enableCsrfValidation' => false,
+            ],
+        ],
+    ],
+]
+```
+
+
+## Creating Actions
+
+You can create actions in two ways: inline actions and standalone actions. An inline action is
+defined as a method in the controller class, while a standalone action is a class extending
+[[yii\base\Action]] or its child class. Inline actions take less effort to create and are often preferred
+if you have no intention to reuse these actions. Standalone actions, on the other hand, are mainly
+created to be used in different controllers or be redistributed as [extensions](structure-extensions.md).
+
+
+### Inline Actions
+
+Inline actions are defined in terms of *public* `action*` methods in controller classes. The following code defines
+two actions `index` and `hello-world`.
 
 ```php
 namespace app\controllers;
@@ -24,62 +112,117 @@ class SiteController extends Controller
 {
     public function actionIndex()
     {
-        // will render view from "views/site/index.php"
         return $this->render('index');
     }
 
-    public function actionTest()
+    public function actionHelloWorld()
     {
-        // will just print "test" to the browser
-        return 'test';
+        return 'Hello World';
     }
 }
 ```
 
-As you can see, typical controller contains actions that are public class methods named as `actionSomething`.
-The output of an action is what the method returns: it could be a string or an instance of [[yii\web\Response]], [for example](#custom-response-class).
-The return value will be handled by the `response` application
-component which can convert the output to different formats such as JSON for example. The default behavior
-is to output the value unchanged though.
+Action IDs for inline actions must contain lower-case alphanumeric characters and dashes only. And the names
+of the `action*` methods are derived from action IDs according to the following criteria:
+
+* Turn the first letter in each word of the action ID into upper case;
+* Remove dashes;
+* Prepend the prefix `action`.
+
+For example, `index` becomes `actionIndex`, and `hello-world` becomes `actionHelloWorld`, as shown in the
+above example.
+
+> Note: The names of `action*` methods are *case-sensitive*. If you have a method named `ActionIndex`,
+  it will not be considered as an `action*` method, and as a result, the request for the `index` action
+  will result in an exception. Also note that `action*` methods must be public. A private or protected
+  `action*` method does NOT define an inline action.
+
+The return value of an `action*` method can be either a [response](runtime-responses.md) object or
+the data to be populated into a [response](runtime-responses.md). In particular, for Web applications,
+the data will be assigned to [[yii\web\Response::data]], while for console applications, the data
+will be assigned to [[yii\console\Response::exitStatus]]. In the example above, each action returns
+a string which will be assigned to [[yii\web\Response::data]] and further displayed to end users.
+
+Inline actions are preferred in most cases because they take little effort to create. However, if an action
+can be reused in another controller or application, you may consider defining it as a standalone action.
 
 
-Routes
-------
+### Standalone Actions
 
-Each controller action has a corresponding internal route. In our example above `actionIndex` has `site/index` route
-and `actionTest` has `site/test` route. In this route `site` is referred to as controller ID while `test` is action ID.
+Standalone actions are defined in terms of action classes extending [[yii\base\Action]] or its child classes.
+For example, in the Yii releases, there are [[yii\web\ViewAction]] a nd [[yii\web\ErrorAction]], both of which
+are standalone actions.
 
-By default you can access specific controller and action using the `http://example.com/?r=controller/action` URL. This
-behavior is fully customizable. For more details please refer to [URL Management](url.md).
+To use a standalone action, you should override the [[yii\base\Controller::actions()]] method in your
+controller classes like the following:
 
-If a controller is located inside a module, the route of its actions will be in the format of `module/controller/action`.
+```php
+public function actions()
+{
+    return [
+        // declares "error" action using a class name
+        'error' => 'yii\web\ErrorAction',
 
-A controller can be located under a subdirectory of the controller directory of an application or module. The route
-will be prefixed with the corresponding directory names. For example, you may have a `UserController` under `controllers/admin`.
-The route of its `actionIndex` would be `admin/user/index`, and `admin/user` would be the controller ID.
+        // declares "view" action using a configuration array
+        'view' => [
+            'class' => 'yii\web\ViewAction',
+            'viewPrefix' => '',
+        ],
+    ];
+}
+```
 
-In case module, controller or action specified isn't found Yii will return "not found" page and HTTP status code 404.
+The method should return an array whose keys are action IDs and values the corresponding action class names
+or [configurations](concept-configurations.md).
 
-> Note: If module name, controller name or action name contains camelCased words, internal route will use dashes i.e. for
-`DateTimeController::actionFastForward` route will be `date-time/fast-forward`.
+Action IDs for standalone actions can contain arbitrary characters, as long as they are declared in
+the [[yii\base\Controller::actions()]] method.
 
-### Defaults
+To create a standalone action class, you should extend [[yii\base\Action]] or its child class, and implement
+a public method named `run()`. The role of the `run()` method is similar to an inline action method. For example,
 
-If user isn't specifying any route i.e. using URL like `http://example.com/`, Yii assumes that default route should be
-used. It is determined by [[yii\web\Application::defaultRoute]] method and is `site` by default meaning that `SiteController`
-will be loaded.
+```php
+<?php
+namespace app\components;
 
-A controller has a default action. When the user request does not specify which action to execute by using an URL such as
-`http://example.com/?r=site`, the default action will be executed. By default, the default action is named as `index`.
-It can be changed by setting the [[yii\base\Controller::defaultAction]] property.
+use yii\base\Action;
 
-Action parameters
------------------
+class DemoAction extends Action
+{
+    public function run()
+    {
+        return "Hello World";
+    }
+}
+```
 
-It was already mentioned that a simple action is just a public method named as `actionSomething`. Now we'll review
-ways that an action can get parameters from HTTP.
 
-### Action parameters
+### Default Action
+
+Each controller has a default action specified via the [[yii\base\Controller::defaultAction]] property.
+When a [route](#ids-routes) contains the controller ID only, it implies that the default action of
+the specified controller is requested.
+
+By default, the default action is set as `index`. If you want to change the default value, simply override
+this property in the controller class, like the following:
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+
+class SiteController extends Controller
+{
+    public $defaultAction = 'home';
+
+    public function actionHome()
+    {
+        return $this->render('home');
+    }
+}
+```
+
+### Action Parameters
 
 You can define named arguments for an action and these will be automatically populated from corresponding values from
 `$_GET`. This is very convenient both because of the short syntax and an ability to specify defaults:
@@ -111,6 +254,9 @@ class BlogController extends Controller
 The action above can be accessed using either `http://example.com/?r=blog/view&id=42` or
 `http://example.com/?r=blog/view&id=42&version=3`. In the first case `version` isn't specified and default parameter
 value is used instead.
+
+
+### Action Patterns
 
 ### Getting data from request
 
@@ -144,141 +290,21 @@ class BlogController extends Controller
 }
 ```
 
-Standalone actions
-------------------
 
-If action is generic enough it makes sense to implement it in a separate class to be able to reuse it.
-Create `actions/Page.php`
+## Controllers in Modules and Subdirectories
 
-```php
-namespace app\actions;
+If a controller is located inside a module, the route of its actions will be in the format of `module/controller/action`.
 
-class Page extends \yii\base\Action
-{
-    public $view = 'index';
+A controller can be located under a subdirectory of the controller directory of an application or module. The route
+will be prefixed with the corresponding directory names. For example, you may have a `UserController` under `controllers/admin`.
+The route of its `actionIndex` would be `admin/user/index`, and `admin/user` would be the controller ID.
 
-    public function run()
-    {
-        return $this->controller->render($view);
-    }
-}
-```
-
-The following code is too simple to implement as a separate action but gives an idea of how it works. Action implemented
-can be used in your controller as following:
-
-```php
-class SiteController extends \yii\web\Controller
-{
-    public function actions()
-    {
-        return [
-            'about' => [
-                'class' => 'app\actions\Page',
-                'view' => 'about',
-            ],
-        ];
-    }
-}
-```
-
-After doing so you can access your action as `http://example.com/?r=site/about`.
+In case module, controller or action specified isn't found Yii will return "not found" page and HTTP status code 404.
 
 
-Action Filters
---------------
-
-You may apply some action filters to controller actions to accomplish tasks such as determining
-who can access the current action, decorating the result of the action, etc.
-
-An action filter is an instance of a class extending [[yii\base\ActionFilter]].
-
-To use an action filter, attach it as a behavior to a controller or a module. The following
-example shows how to enable HTTP caching for the `index` action:
-
-```php
-public function behaviors()
-{
-    return [
-        'httpCache' => [
-            'class' => \yii\filters\HttpCache::className(),
-            'only' => ['index'],
-            'lastModified' => function ($action, $params) {
-                $q = new \yii\db\Query();
-                return $q->from('user')->max('updated_at');
-            },
-        ],
-    ];
-}
-```
-
-You may use multiple action filters at the same time. These filters will be applied in the
-order they are declared in `behaviors()`. If any of the filter cancels the action execution,
-the filters after it will be skipped.
-
-When you attach a filter to a controller, it can be applied to all actions of that controller;
-If you attach a filter to a module (or application), it can be applied to the actions of any controller
-within that module (or application).
-
-To create a new action filter, extend from [[yii\base\ActionFilter]] and override the
-[[yii\base\ActionFilter::beforeAction()|beforeAction()]] and [[yii\base\ActionFilter::afterAction()|afterAction()]]
-methods. The former will be executed before an action runs while the latter after an action runs.
-The return value of [[yii\base\ActionFilter::beforeAction()|beforeAction()]] determines whether
-an action should be executed or not. If `beforeAction()` of a filter returns false, the filters after this one
-will be skipped and the action will not be executed.
-
-The [authorization](authorization.md) section of this guide shows how to use the [[yii\filters\AccessControl]] filter,
-and the [caching](caching.md) section gives more details about the [[yii\filters\PageCache]] and [[yii\filters\HttpCache]] filters.
-These built-in filters are also good references when you learn to create your own filters.
+> Note: If module name, controller name or action name contains camelCased words, internal route will use dashes i.e. for
+`DateTimeController::actionFastForward` route will be `date-time/fast-forward`.
 
 
-Catching all incoming requests
-------------------------------
+## Controller Lifecycle <a name="lifecycle"></a>
 
-Sometimes it is useful to handle all incoming requests with a single controller action. For example, displaying a notice
-when website is in maintenance mode. In order to do it you should configure web application `catchAll` property either
-dynamically or via application config:
-
-```php
-return [
-    'id' => 'basic',
-    'basePath' => dirname(__DIR__),
-    // ...
-    'catchAll' => [ // <-- here
-        'offline/notice',
-        'param1' => 'value1',
-        'param2' => 'value2',
-    ],
-]
-```
-
-In the above `offline/notice` refer to `OfflineController::actionNotice()`. `param1` and `param2` are parameters passed
-to action method.
-
-Custom response class
----------------------
-
-```php
-namespace app\controllers;
-
-use yii\web\Controller;
-use app\components\web\MyCustomResponse; #extended from yii\web\Response
-
-class SiteController extends Controller
-{
-    public function actionCustom()
-    {
-        /*
-         * do your things here
-         * since Response in extended from yii\base\Object, you can initialize its values by passing in
-         * __constructor() simple array.
-         */
-        return new MyCustomResponse(['data' => $myCustomData]);
-    }
-}
-```
-
-See also
---------
-
-- [Console](console.md)

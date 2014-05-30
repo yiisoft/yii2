@@ -9,11 +9,9 @@ namespace yii\apidoc\templates\pdf;
 
 use cebe\markdown\latex\GithubMarkdown;
 use Yii;
-use yii\apidoc\helpers\ApiIndexer;
 use yii\apidoc\helpers\ApiMarkdownLaTeX;
 use yii\apidoc\helpers\IndexFileAnalyzer;
 use yii\helpers\Console;
-use yii\helpers\FileHelper;
 
 /**
  *

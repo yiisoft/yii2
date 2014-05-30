@@ -177,7 +177,7 @@ The rest of the array elements (key-value pairs) specify the parameters to be bo
 #### [[yii\base\Application::components|components]] <a name="components"></a>
 
 This is the single most important property. It allows you to register a list of named components
-called [application components](#application-components) that you can use in other places. For example,
+called [application components](#structure-application-components.md) that you can use in other places. For example,
 
 ```php
 [
@@ -199,7 +199,7 @@ while the value represents the component class name or [configuration](concept-c
 You can register any component with an application, and the component can later be accessed globally
 using the expression `\Yii::$app->ComponentID`.
 
-Please read the [application components](#application-components) section for details.
+Please read the [Application Components](structure-application-components.md) section for details.
 
 
 #### [[yii\base\Application::controllerMap|controllerMap]] <a name="controllerMap"></a>
@@ -217,7 +217,7 @@ specific controllers. In the following example, `account` will be mapped to
             'account' => 'app\controllers\UserController',
             'article' => [
                 'class' => 'app\controllers\PostController',
-                'pageTitle' => 'something new',
+                'enableCsrfValidation' => false,
             ],
         ],
     ],
@@ -567,71 +567,6 @@ Note that the same `afterAction` event is also triggered by [modules](structure-
 and [controllers)(structure-controllers.md). These objects trigger this event in the reverse order
 as for that of `beforeAction`. That is, controllers are the first objects triggering this event,
 followed by modules (if any), and finally applications.
-
-
-## Application Components <a name="application-components"></a>
-
-Applications are [service locators](concept-service-locators.md). They host a set of the so-called
-*application components* that provide different services for processing requests. For example,
-the `urlManager` component is responsible for routing Web requests to appropriate controllers;
-the `db` component provides DB-related services; and so on.
-
-Each application component has an ID that uniquely identifies itself among other application components
-in the same application. You can access an application component through the expression `$app->ID`,
-where `$app` refers to an application instance, and `ID` stands for the ID of an application component.
-For example, you can use `Yii::$app->db` to get the [[yii\db\Connection|DB connection]], and `Yii::$app->cache`
-to get the [[yii\caching\Cache|primary cache]] registered with the application.
-
-Application components can be any objects. You can register them with an application to make them
-globally accessible. This is usually done by configuring the [[yii\base\Application::components]] property,
-as described in the [components](#components) subsection.
-
-> Info: While you can register as many application components as you want, you should do this judiciously.
-  Application components are like global variables. Using too many application components can potentially
-  make your code harder to test and maintain. In many cases, you can simply create a local component
-  and use it when needed.
-
-Yii defines a set of *core* application components with fixed IDs and default configurations. For example,
-the [[yii\web\Application::request|request]] component is used to collect information about
-a user request and resolve it into a [route](runtime-routing.md); the [[yii\base\Application::db|db]]
-component represents a database connection through which you can perform database queries.
-It is with help of these core application components that Yii applications are able to handle user requests.
-
-Below is the list of the predefined core application components. You may configure and customize them
-like you do with normal application components. When you are configuring a core application component,
-if you do not specify its class, the default one will be used.
-
-* [[yii\web\AssetManager|assetManager]]: manages asset bundles and asset publishing.
-  Please refer to the [Managing Assets](output-assets.md) section for more details.
-* [[yii\db\Connection|db]]: represents a database connection through which you can perform DB queries.
-  Note that when you configure this component, you must specify the component class as well as other required
-  component properties, such as [[yii\db\Connection::dsn]].
-  Please refer to the [Data Access Objects](db-dao.md) section for more details.
-* [[yii\base\Application::errorHandler|errorHandler]]: handles PHP errors and exceptions.
-  Please refer to the [Handling Errors](tutorial-handling-errors.md) section for more details.
-* [[yii\base\Formatter|formatter]]: formats data when they are displayed to end users. For example, a number
-  may be displayed with thousand separator, a date may be formatted in long format.
-  Please refer to the [Data Formatting](output-formatting.md) section for more details.
-* [[yii\i18n\I18N|i18n]]: supports message translation and formatting.
-  Please refer to the [Internationalization](tutorial-i18n.md) section for more details.
-* [[yii\log\Dispatcher|log]]: manages log targets.
-  Please refer to the [Logging](tutorial-logging.md) section for more details.
-* [[yii\swiftmailer\Mailer|mail]]: supports mail composing and sending.
-  Please refer to the [Mailing](tutorial-mailing.md) section for more details.
-* [[yii\base\Application::response|response]]: represents the response being sent to end users.
-  Please refer to the [Responses](runtime-responses.md) section for more details.
-* [[yii\base\Application::request|request]]: represents the request received from end users.
-  Please refer to the [Requests](runtime-requests.md) section for more details.
-* [[yii\web\Session|session]]: represents the session information. This component is only available
-  in [[yii\web\Application|Web applications]].
-  Please refer to the [Sessions and Cookies](runtime-sessions-cookies.md) section for more details.
-* [[yii\web\UrlManager|urlManager]]: supports URL parsing and creation.
-  Please refer to the [URL Parsing and Generation](runtime-url-handling.md) section for more details.
-* [[yii\web\User|user]]: represents the user authentication information. This component is only available
-  in [[yii\web\Application|Web applications]]
-  Please refer to the [Authentication](security-authentication.md) section for more details.
-* [[yii\web\View|view]]: supports view rendering.
-  Please refer to the [Views](structure-views.md) section for more details.
 
 
 ## Application Lifecycle <a name="application-lifecycle"></a>
