@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #3311: Fixed the bug that `yii\di\Container::has()` did not return correct value (mgrechanik, qiangxue)
 - Bug #3327: Fixed "Unable to find debug data" when logging objects with circular references (jarekkozak, samdark)
 - Bug #3368: Fix for comparing numeric attributes in JavaScript (technixp)
+- Bug #3393: Fix `yii\helpers\FileHelper::copyDirectory()` pattern not working (klimov-paul)
 - Bug #3431: Allow using extended ErrorHandler class from the app namespace (cebe)
 - Bug #3436: Fixed the issue that `ServiceLocator` still returns the old component after calling `set()` with a new definition (qiangxue)
 - Bug #3458: Fixed the bug that the image rendered by `CaptchaAction` was using a wrong content type (MDMunir, qiangxue)
