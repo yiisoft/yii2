@@ -265,6 +265,7 @@ class Formatter extends \yii\base\Formatter
      * Formats the value as a currency number.
      * @param mixed $value the value to be formatted
      * @param string $currency the 3-letter ISO 4217 currency code indicating the currency to use.
+     * If null, [[currencySymbol]] will be used.
      * @param string $format the format to be used. Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
      * for details on how to specify a format.
      * @return string the formatted result.
