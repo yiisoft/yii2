@@ -216,7 +216,7 @@ class Controller extends Component implements ViewContextInterface
             $methodName = 'action' . str_replace(' ', '', ucwords(implode(' ', explode('-', $id))));
             if (method_exists($this, $methodName)) {
                 $method = new \ReflectionMethod($this, $methodName);
-                if ($method->getName() === $methodName) {
+                if ($method->isPublic() && $method->getName() === $methodName) {
                     return new InlineAction($id, $this, $methodName);
                 }
             }
