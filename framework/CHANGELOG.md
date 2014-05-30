@@ -65,6 +65,7 @@ Yii Framework 2 Change Log
 - Enh #3574: Add integrity check support for SQLite (zeeke)
 - Enh #3597: Nested array support for HTML5 custom "data-*" attributes (armab)
 - Enh #3607: Added support for limit in migrations actions: history, new, redo (Ragazzo)
+- Enh #3636: Hide menu container tag with empty items in `yii\widgets\Menu` (arturf)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
