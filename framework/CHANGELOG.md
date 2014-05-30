@@ -77,6 +77,7 @@ Yii Framework 2 Change Log
 - Enh: Added support for using path alias with `FileDependency::fileName` (qiangxue)
 - Enh: Added param `hideOnSinglePage` to `yii\widgets\LinkPager` (arturf)
 - Enh: Added support for array attributes in `in` validator (creocoder)
+- Enh: Hide menu container tag with empty items in `yii\widgets\Menu` (arturf)
 - Chg #2898: `yii\console\controllers\AssetController` is now using hashes instead of timestamps (samdark)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
 - Chg #3036: Upgraded Twitter Bootstrap to 3.1.x (qiangxue)
