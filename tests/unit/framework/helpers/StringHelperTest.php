@@ -99,11 +99,10 @@ class StringHelperTest extends TestCase
         $this->assertArrayNotHasKey('authority', $r);
         $this->assertArrayNotHasKey('matches', $r);
         $this->assertArrayHasKey('matches', StringHelper::parseUri('assets://localhost/path', true));
-		$this->assertEmpty(StringHelper::parseUri(''));
-		$this->assertEquals(['authority' => 'abc', 'path' => '/fdg'], StringHelper::parseUri('//abc/fdg'));
-		$this->assertEquals(['path' => 'testfile.php'], StringHelper::parseUri('testfile.php'));
-		$this->assertEquals(['path' => '/file'], StringHelper::parseUri('///file'));
-		$this->assertEquals(['scheme' => 'file', 'path' =>'/'], StringHelper::parseUri('file:///'));
-		
-	}
+        $this->assertEmpty(StringHelper::parseUri(''));
+        $this->assertEquals(['authority' => 'abc', 'path' => '/fdg'], StringHelper::parseUri('//abc/fdg'));
+        $this->assertEquals(['path' => 'testfile.php'], StringHelper::parseUri('testfile.php'));
+        $this->assertEquals(['path' => '/file'], StringHelper::parseUri('///file'));
+        $this->assertEquals(['scheme' => 'file', 'path' =>'/'], StringHelper::parseUri('file:///'));
+    }
 }
