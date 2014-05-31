@@ -37,6 +37,7 @@ Yii Framework 2 Change Log
 - Bug #3578: Fixed postgreSQL column type detection, added missing types (MDMunir, cebe)
 - Bug #3591: Fixed incomplete obsolete filling in i18n `MessageController::saveMessagesToDb()` (advsm)
 - Bug #3601: Fixed the bug that the refresh URL was not generated correctly by `Captcha` (qiangxue, klevron)
+- Bug #3653: Fixed the bug when PDO question mark parameters in a prepared statement were not 1-based (armab)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
