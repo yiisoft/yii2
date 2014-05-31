@@ -824,7 +824,12 @@ class Query extends Component implements QueryInterface
             } else {
                 foreach ($params as $name => $value) {
                     if (is_integer($name)) {
-                        $this->params[] = $value;
+                        // Question mark parameters are 1-based
+                        if (!array_key_exists(1, $this->params)) {
+                            $this->params[1] = $value;
+                        } else {
+                            $this->params[] = $value;
+                        }
                     } else {
                         $this->params[$name] = $value;
                     }
