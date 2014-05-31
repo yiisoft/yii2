@@ -223,8 +223,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function one($db = null)
     {
-        $command = $this->createCommand($db);
-        $row = $command->queryOne();
+        $row = parent::one($db);
         if ($row !== false) {
             if ($this->asArray) {
                 $model = $row;
