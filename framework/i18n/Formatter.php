@@ -77,7 +77,7 @@ class Formatter extends \yii\base\Formatter
      * @var string the international currency symbol displayed when formatting a number.
      * If not set, the currency symbol corresponding to [[locale]] will be used.
      */
-    public $currencySymbol;
+    public $currencyCode;
 
     /**
      * Initializes the component.
@@ -93,7 +93,7 @@ class Formatter extends \yii\base\Formatter
         if ($this->locale === null) {
             $this->locale = Yii::$app->language;
         }
-        if ($this->decimalSeparator === null || $this->thousandSeparator === null || $this->currencySymbol === null) {
+        if ($this->decimalSeparator === null || $this->thousandSeparator === null || $this->currencyCode === null) {
             $formatter = new NumberFormatter($this->locale, NumberFormatter::DECIMAL);
             if ($this->decimalSeparator === null) {
                 $this->decimalSeparator = $formatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
@@ -101,8 +101,8 @@ class Formatter extends \yii\base\Formatter
             if ($this->thousandSeparator === null) {
                 $this->thousandSeparator = $formatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
             }
-            if ($this->currencySymbol === null) {
-                $this->currencySymbol = $formatter->getSymbol(NumberFormatter::INTL_CURRENCY_SYMBOL);
+            if ($this->currencyCode === null) {
+                $this->currencyCode = $formatter->getSymbol(NumberFormatter::INTL_CURRENCY_SYMBOL);
             }
         }
 
@@ -277,7 +277,7 @@ class Formatter extends \yii\base\Formatter
         }
         
         if ($currency === null){
-            $currency = $this->currencySymbol;
+            $currency = $this->currencyCode;
         }
 
         return $this->createNumberFormatter(NumberFormatter::CURRENCY, $format)->formatCurrency($value, $currency);
