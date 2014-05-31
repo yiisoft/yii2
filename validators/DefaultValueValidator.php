@@ -23,7 +23,10 @@ class DefaultValueValidator extends Validator
      * The function signature must be as follows,
      *
      * ~~~
-     * function foo($object, $attribute) {...return $value; }
+     * function foo($object, $attribute) {
+     *     // compute value
+     *     return $value;
+     * }
      * ~~~
      */
     public $value;
