@@ -74,8 +74,8 @@ class Formatter extends \yii\base\Formatter
      */
     public $thousandSeparator;
     /**
-     * @var string the international currency symbol displayed when formatting a number.
-     * If not set, the currency symbol corresponding to [[locale]] will be used.
+     * @var string the international currency code displayed when formatting a number.
+     * If not set, the currency code corresponding to [[locale]] will be used.
      */
     public $currencyCode;
 
