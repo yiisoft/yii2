@@ -40,6 +40,12 @@ class Order extends ActiveRecord
             })->orderBy('item.id');
     }
 
+    public function getItemsWithNullFK()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->viaTable('order_item_with_null_fk', ['order_id' => 'id']);
+    }
+
     public function getItemsInOrder1()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
@@ -60,6 +66,13 @@ class Order extends ActiveRecord
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
             ->viaTable('order_item', ['order_id' => 'id'])
+            ->where(['category_id' => 1]);
+    }
+
+    public function getBooksWithNullFK()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->viaTable('order_item_with_null_fk', ['order_id' => 'id'])
             ->where(['category_id' => 1]);
     }
 
