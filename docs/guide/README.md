@@ -30,6 +30,7 @@ Getting Started
 Application Structure
 ---------------------
 
+* [Overview](structure-overview.md)
 * [Entry Scripts](structure-entry-scripts.md)
 * [Applications](structure-applications.md)
 * [Application Components](structure-application-components.md)
